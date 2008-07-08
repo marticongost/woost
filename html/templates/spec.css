@@ -1,0 +1,37 @@
+body {
+	font-size: 10pt;
+}
+
+section {
+	display: block;
+	padding: 16px;
+}
+
+header {
+	font-weight: bold;
+}
+
+body > section > header {
+	font-size: 22pt;
+}
+
+body > section > section > header {
+	font-size: 18pt;
+}
+
+body > section > section > section > header {
+	font-size: 14pt;
+}
+
+body > section > section > section > section header {
+	text-decoration: underline;
+}
+
+example {
+	display: block;
+	white-space: pre;
+	font-family: Bitstream Vera Sans Mono, Lucida Console, Courier New;
+	border: 1px solid rgb(200,200,200);
+	padding: 4px;
+	color: rgb(30,50,120);
+}
