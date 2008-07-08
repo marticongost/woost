@@ -7,7 +7,7 @@
 @since:			March 2008
 """
 import sqlalchemy as sa
-from sqlalchemy.orm import scoped_session, sessionmaker, relation
+from sqlalchemy.orm import scoped_session, sessionmaker, relation, backref
 from magicbullet.modeling import getter
 from magicbullet.pkgutils import get_full_name
 from magicbullet import schema
@@ -28,8 +28,10 @@ schema.Member.column_properties = None
 
 schema.Integer.auto_increment = False
 
+schema.Reference.cardinality = None
 schema.Reference.related_end = None
 
+schema.Collection.cardinality = None
 schema.Collection.related_end = None
 schema.Collection.secondary_table = None
 
@@ -49,9 +51,8 @@ def map_types():
 
 class PersistentSchema(type, schema.Schema):
  
-    _mapped = False
-
     metadata = sa.MetaData()
+    table = None
     mapper_options = {
         "save_on_init": False        
     }
@@ -60,9 +61,10 @@ class PersistentSchema(type, schema.Schema):
 
         type.__init__(cls, name, bases, members)
         schema.Schema.__init__(cls)
-        cls.table = None
-        
-        # Qualified name for the schema
+        cls._mapped = False
+
+        # Schema name
+        cls.name = name.lower()
         full_name = get_full_name(cls)
 
         pos = full_name.find(".")
@@ -126,11 +128,9 @@ class PersistentSchema(type, schema.Schema):
         schema.Schema.add_member(cls, member)
 
     def map(cls):
-     
-        cls._mapped = True
-
+             
         cls._resolve_relations()
-
+        
         table = cls._create_table(cls.__table_name, cls.__extra_table_members)
         
         if table:
@@ -138,6 +138,8 @@ class PersistentSchema(type, schema.Schema):
 
         if cls.table:
             cls.mapper = cls._create_mapper()
+
+        cls._mapped = True
     
     def _resolve_relations(cls):
 
@@ -216,7 +218,7 @@ class PersistentSchema(type, schema.Schema):
             
             for member in own_members.itervalues():
                 cls._declare_member(member, table)
-            
+           
             if extra_table_members:
                 for table_member in extra_table_members:
                     if isinstance(table_member, sa.Column):
@@ -232,9 +234,9 @@ class PersistentSchema(type, schema.Schema):
             pass
         
         elif isinstance(member, schema.Collection):
-            
+
             if member.cardinality == CARDINALITY_MANY_TO_MANY \
-            and not member.items._mapped:
+            and not member.items.__dict__["_mapped"]:
                 cls._declare_many_to_many_relation(member)
        
         # Foreign key
@@ -409,21 +411,30 @@ class PersistentSchema(type, schema.Schema):
         for member in cls.members(recursive = False).itervalues():
             related_type = cls._get_related_type(member)
             
-            if related_type and not related_type._mapped:                
+            if related_type and not related_type.__dict__["_mapped"]:                
                 
-                rel_options = {
-                    "lazy": "dynamic",
-                    "backref": backref(
-                        member.related_end.name,
-                        lazy = "dynamic"
-                    )
-                }
+                rel_options = {}
+                backref_options = {}
+                
+                if member.cardinality == CARDINALITY_ONE_TO_ONE:                    
+                    if member.persisted:
+                        backref_options["uselist"] = False
+                    else:
+                        rel_options["uselist"] = False
+                else:
+                    rel_options["lazy"] = "dynamic"
+                    backref_options["lazy"] = "dynamic"
 
-                if member.cardinality == CARDINALITY_MANY_TO_MANY:
-                    rel_options["secondary"] = member.secondary_table
+                    if member.cardinality == CARDINALITY_MANY_TO_MANY:
+                        rel_options["secondary"] = member.secondary_table
 
-                properties[member.name] = relation(related_type, **rel_options)                
+                rel_options["backref"] = backref(
+                    member.related_end.name,
+                    **backref_options
+                )
 
+                properties[member.name] = relation(related_type, **rel_options)
+                
         return session.mapper(
             cls,
             cls.table,
@@ -464,17 +475,15 @@ if __name__ == "__main__":
             min = 0.01
         )
 
-        brand = schema.Reference(type = "magicbullet.Brand",
-                persisted = False)
-
+        brand = schema.Reference(type = "magicbullet.Brand")
         
-        colors = schema.Collection(type = "magicbullet.Color")
+        colors = schema.Collection(items = "magicbullet.Color")
 
 
     class Color(Persistent):
 
         id = schema.Integer(
-            price = True,
+            primary = True,
             auto_increment = True
         )
 
@@ -484,7 +493,7 @@ if __name__ == "__main__":
             max = 255
         )
 
-        products = schema.Collection(type = "magicbullet.Product")
+        products = schema.Collection(items = "magicbullet.Product")
 
 
     class Brand(Persistent):
@@ -528,8 +537,14 @@ if __name__ == "__main__":
     metadata.drop_all()
     metadata.create_all()
 
-#    p1 = Product()
-#    p1.name = u"Trendynator 3000"
-#    p1.price = Decimal("2.5")
-#    session.commit()
+    p1 = Product(
+        name = u"Trendynator 3000",
+        price = Decimal("2.5")
+    )
+    
+    b1 = Brand(name = u"Crapware")
+
+    session.save(p1)
+    session.save(b1)
+    session.flush()
 
