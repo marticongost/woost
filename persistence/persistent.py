@@ -8,6 +8,7 @@
 """
 import sqlalchemy as sa
 from sqlalchemy.orm import scoped_session, sessionmaker, relation, backref
+from sqlalchemy.ext.orderinglist import ordering_list
 from magicbullet.modeling import getter
 from magicbullet.pkgutils import get_full_name
 from magicbullet import schema
@@ -34,6 +35,7 @@ schema.Reference.related_end = None
 schema.Collection.cardinality = None
 schema.Collection.related_end = None
 schema.Collection.secondary_table = None
+schema.Collection.ordered = False
 
 schema.Schema.primary_key = None
 
@@ -61,7 +63,7 @@ class PersistentSchema(type, schema.Schema):
 
         type.__init__(cls, name, bases, members)
         schema.Schema.__init__(cls)
-        cls._mapped = False
+        cls.mapper = None
 
         # Schema name
         cls.name = name.lower()
@@ -138,8 +140,6 @@ class PersistentSchema(type, schema.Schema):
 
         if cls.table:
             cls.mapper = cls._create_mapper()
-
-        cls._mapped = True
     
     def _resolve_relations(cls):
 
@@ -235,13 +235,25 @@ class PersistentSchema(type, schema.Schema):
         
         elif isinstance(member, schema.Collection):
 
+            # Many to many
             if member.cardinality == CARDINALITY_MANY_TO_MANY \
-            and not member.items.__dict__["_mapped"]:
+            and member.items.mapper is None:
+
+                # Secondary table
                 cls._declare_many_to_many_relation(member)
+
+                # Ordering
+                if member.ordered:
+                    pass
        
         # Foreign key
         elif isinstance(member, schema.Reference):
             cls._declare_foreign_key(member.type, member.name, table)
+
+            if member.cardinality == CARDINALITY_ONE_TO_MANY:
+                table.append_column(
+                    sa.Column(member.name + "_order", sa.Integer)
+                )
 
         # Regular column
         else:
@@ -410,9 +422,8 @@ class PersistentSchema(type, schema.Schema):
 
         for member in cls.members(recursive = False).itervalues():
             related_type = cls._get_related_type(member)
-            
-            if related_type and not related_type.__dict__["_mapped"]:                
-                
+
+            if related_type and related_type.mapper is None:
                 rel_options = {}
                 backref_options = {}
                 
@@ -422,11 +433,35 @@ class PersistentSchema(type, schema.Schema):
                     else:
                         rel_options["uselist"] = False
                 else:
-                    rel_options["lazy"] = "dynamic"
-                    backref_options["lazy"] = "dynamic"
+                    ordered = False
+                    rel_options["cascade"] = "all, delete, delete-orphan"
 
-                    if member.cardinality == CARDINALITY_MANY_TO_MANY:
-                        rel_options["secondary"] = member.secondary_table
+                    if member.cardinality == CARDINALITY_ONE_TO_MANY:
+                        
+                        many = (
+                            member if isinstance(member, schema.Collection)
+                            else member.related_end
+                        )
+
+                        # Ordered one-to-many relation
+                        if many.ordered:
+                            ordered = True
+                            ordering_key = many.related_end.name + "_order"
+                            ordering_options = (
+                                rel_options if member is many
+                                else backref_options
+                            )
+                            ordering_options["collection_class"] = \
+                                ordering_list(ordering_key)
+                            ordering_options["order_by"] = [ordering_key]
+
+                    if not ordered:
+                        rel_options["lazy"] = "dynamic"
+                        backref_options["lazy"] = "dynamic"
+
+                        # Many-to-many secondary table
+                        if member.cardinality == CARDINALITY_MANY_TO_MANY:
+                            rel_options["secondary"] = member.secondary_table
 
                 rel_options["backref"] = backref(
                     member.related_end.name,
@@ -455,60 +490,37 @@ class Persistent(object):
 
 if __name__ == "__main__":
 
-    from decimal import Decimal
-
-    class Product(Persistent):
+    class Presentation(Persistent):
 
         id = schema.Integer(
             primary = True,
             auto_increment = True
         )
 
-        name = schema.String(
-            unique = True,
+        title = schema.String(
             required = True,
             max = 255
         )
 
-        price = schema.Decimal(
-            required = True,
-            min = 0.01
+        slides = schema.Collection(
+            items = "magicbullet.Slide",
+            ordered = True
         )
 
-        brand = schema.Reference(type = "magicbullet.Brand")
-        
-        colors = schema.Collection(items = "magicbullet.Color")
 
-
-    class Color(Persistent):
+    class Slide(Persistent):
 
         id = schema.Integer(
             primary = True,
             auto_increment = True
         )
 
-        name = schema.String(
-            unique = True,
+        title = schema.String(
             required = True,
             max = 255
         )
 
-        products = schema.Collection(items = "magicbullet.Product")
-
-
-    class Brand(Persistent):
-
-        id = schema.Integer(
-            primary = True,
-            auto_increment = True
-        )
-
-        name = schema.String(
-            unique = True,
-            required = True
-        )
-
-        products = schema.Collection(items = "magicbullet.Product")
+        presentation = schema.Reference(type = "magicbullet.Presentation")
 
 
     from sqlalchemy.databases import postgres
@@ -528,7 +540,7 @@ if __name__ == "__main__":
     engine = sa.create_engine(
         "postgres://marti:saussage@localhost/sitebasis"
     )
-    engine.echo = True
+    #engine.echo = True
 
     map_types()
 
@@ -537,14 +549,15 @@ if __name__ == "__main__":
     metadata.drop_all()
     metadata.create_all()
 
-    p1 = Product(
-        name = u"Trendynator 3000",
-        price = Decimal("2.5")
-    )
+    p = Presentation(title = u"How to cook a delicious CMS")        
+    session.save(p)
     
-    b1 = Brand(name = u"Crapware")
+    p.slides.append(Slide(title = u"Introduction"))
+    p.slides.append(Slide(title = u"Ingredients"))
+    p.slides.append(Slide(title = u"Procedure"))
+    p.slides.append(Slide(title = u"Conclusion"))
+    p.slides.insert(0, Slide(title = u"Cover"))
+    p.slides.append(Slide(title = u"Questions?"))
 
-    session.save(p1)
-    session.save(b1)
     session.flush()
 
