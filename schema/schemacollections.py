@@ -37,7 +37,23 @@ class Collection(Member):
 
     def __init__(self, doc = None, **kwargs):
         Member.__init__(self, doc, **kwargs)
-        self.add_validation(Collection.collection_validation_rule)
+        self.add_validation(self.__class__.collection_validation_rule)
+        self.add_validation(self.__class__.items_validation_rule)
+
+    def _set_size(self, size):
+        self.min = size
+        self.max = max
+
+    size = property(None, _set_size, doc = """
+        A convenience write-only property that sets L{min} and L{max} at once.
+        @type: int
+        """)
+
+    def produce_default(self):
+        if self.default is None and self.type is not None:
+            return self.type
+        else:
+            return self.default
 
     def collection_validation_rule(self, value, context):
         """Validation rule for collections. Checks the L{min}, L{max} and
@@ -45,7 +61,6 @@ class Collection(Member):
 
         if value is not None:
             
-            # Size validation
             size = len(value)
             min = self.resolve_constraint(self.min, context)
             max = self.resolve_constraint(self.max, context)
@@ -56,22 +71,26 @@ class Collection(Member):
             elif max is not None and size > max:
                 yield MaxItemsError(self, value, context, max)
 
-            # Item validation
-            # TODO: Prevent cycles
-            # TODO: Nested constraints: all items must not only comply with a
-            # standard schema, but also satisfy additional constraints that
-            # only apply to members of the collection -- necessary? one can
-            # always copy() the schema and modify it
-            items = self.resolve_constraint(self.items, context)
+    def items_validation_rule(self, value, context):
+        """Validation rule for collection items. Checks the L{items}
+        constraint."""
 
-            if items is not None:
-                
-                context.enter(self, value)
-    
-                try:
-                    for item in value:
-                        for error in items.get_errors(item, context):
-                            yield error
-                finally:
-                    context.leave()
+        # TODO: Prevent cycles
+        # TODO: Nested constraints: all items must not only comply with a
+        # standard schema, but also satisfy additional constraints that
+        # only apply to members of the collection -- necessary? one can
+        # always copy() the schema and modify it
+
+        items = self.resolve_constraint(self.items, context)
+
+        if items is not None:
+            
+            context.enter(self, value)
+
+            try:
+                for item in value:
+                    for error in items.get_errors(item, context):
+                        yield error
+            finally:
+                context.leave()
 

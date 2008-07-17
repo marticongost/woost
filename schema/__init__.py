@@ -11,6 +11,7 @@ from magicbullet.schema.member import Member
 from magicbullet.schema.schema import Schema
 from magicbullet.schema.rangedmember import RangedMember
 from magicbullet.schema.schemacollections import Collection
+from magicbullet.schema.schemamappings import Mapping
 from magicbullet.schema.schemareference import Reference
 from magicbullet.schema.schemastrings import String
 from magicbullet.schema.schemanumbers import Number, Integer, Decimal, Float
