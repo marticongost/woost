@@ -64,8 +64,20 @@ class Schema(Member):
 
         prevent_cycle(bases)
 
-        self.__bases = bases
-        self.bases = ListWrapper(bases)    
+        if self.__bases is None:
+            self.__bases = bases
+            self.bases = ListWrapper(bases)
+        else:
+            self.__bases.extend(bases)        
+
+    def ascend_inheritance(self, include_self = False):
+        
+        if include_self:
+            yield self
+
+        for base in self.__bases:
+            for ascendant in base.ascend_inheritance(True):
+                yield ascendant
 
     def add_member(self, member):
         """Adds a new member to the schema.
