@@ -10,6 +10,7 @@ Provides the base class for all schema members.
 from itertools import chain
 from copy import deepcopy
 from magicbullet.modeling import ListWrapper
+from magicbullet.pkgutils import import_object
 from magicbullet.schema import exceptions
 from magicbullet.schema.validationcontext import ValidationContext
 
@@ -24,12 +25,6 @@ class Member(object):
     
     This class acts mostly as an abstract type, used as a base by all the
     different kinds of members that can comprise a schema.
-
-    @ivar type: Imposes a data type constraint on the member. All values
-        assigned to this member must be instances of the specified data type.
-        Breaking this restriction will produce a validation error of type
-        L{TypeCheckError<exceptions.TypeCheckError>}.
-    @type type: type
 
     @ivar default: The default value for the member.
     
@@ -117,6 +112,33 @@ class Member(object):
         (trying to do so will raise a L{MemberReacquiredError} exception).
         @type: L{Schema<schema.Schema>}
         """)
+
+    def _get_type(self):
+        
+        type = self.type
+
+        # Resolve string references
+        if isinstance(type, basestring):
+            self.type = type = import_object(type)
+        
+        return type
+
+    def _set_type(self, type):
+        self.type = type
+
+    type = property(_get_type, _set_type, doc = """
+        Imposes a data type constraint on the member. All values assigned to
+        this member must be instances of the specified data type. Breaking this
+        restriction will produce a validation error of type
+        L{TypeCheckError<exceptions.TypeCheckError>}.
+        @type type: type or str
+        """)
+
+    def produce_default(self):
+        """Generates a default value for the member. Can be overriden (ie. to
+        produce dynamic default values).
+        """
+        return self.default
 
     def copy(self):
         """Creates a deep, unbound copy of the member.
