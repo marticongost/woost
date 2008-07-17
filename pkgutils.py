@@ -12,6 +12,29 @@ from types import ModuleType
 
 PYTHON_EXTENSIONS = ".py", ".pyc", ".pyo", ".pyd"
 
+def import_object(name):
+    """Obtains a reference to an object, given its fully qualified name.
+    
+    @param name: The fully qualified name of the object to import.
+    @type name: str
+
+    @return: The requested object.
+    @rtype: object
+
+    @raise ImportError: Raised if there's no module or package matching the
+        indicated qualified name.
+
+    @raise AttributeError: Raised if the indicated module or package doesn't
+        contain the requested object.
+    """
+    components = name.split(".")
+    module = __import__(".".join(components[:-1]))
+    
+    for component in components[1:]:
+        module = getattr(obj, module)
+
+    return getattr(module, components[-1])
+
 def get_full_name(obj):
     """Obtains the canonical, fully qualified name of the provided python
     object.
@@ -117,16 +140,4 @@ def get_path_name(path):
         path = parent_path                        
 
     return ".".join(reversed(components))
-
-if __name__ == "__main__":
-    pass
-
-#    assert get_path_name("/home/marti/Projectes/magicbullet") == "magicbullet"
-#    assert get_path_name("/home/marti/Projectes/magicbullet/") == "magicbullet"
-#    assert get_path_name("/home/marti/Projectes/magicbullet/__init__.py") == "magicbullet"
-#    assert get_path_name("/home/marti/Projectes/magicbullet/modeling.py") == "magicbullet.modeling"
-#    assert get_path_name("/home/marti/Projectes/magicbullet/schema") == "magicbullet.schema"
-#    assert get_path_name("/home/marti/Projectes/magicbullet/schema/") == "magicbullet.schema"
-#    assert get_path_name("/home/marti/Projectes/magicbullet/schema/__init__.py") == "magicbullet.schema"
-#    assert get_path_name("/home/marti/Projectes/magicbullet/schema/schema.py") == "magicbullet.schema.schema"
 
