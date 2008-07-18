@@ -10,6 +10,7 @@ Provides a member that handles compound values.
 from magicbullet.modeling import empty_dict, empty_list, \
                               ListWrapper, DictWrapper
 from magicbullet.schema.member import Member
+from magicbullet.schema.exceptions import SchemaIntegrityError
 
 class Schema(Member):
     """A data structure, made up of one or more L{members<member.Member>}.
@@ -88,12 +89,16 @@ class Schema(Member):
         @raise SchemaIntegrityError: Raised when trying to add an anonymous
             member to the schema. All members must have a unique name.
         """
+        self._check_member(member)
+        self._add_member(member)
 
+    def _check_member(self, member):
         if member.name is None:
             raise SchemaIntegrityError(
                 "Can't add an anonymous member to %s" % self
             )
 
+    def _add_member(self, member):
         if self.__members is None:
             self.__members = {}
 

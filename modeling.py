@@ -260,7 +260,7 @@ class SetWrapper(object):
         return self._set.__xor__(other)
 
     def __str__(self):
-        return self._set.__str__(self)
+        return self._set.__str__()
 
     def copy(self):
         return self._set.copy()

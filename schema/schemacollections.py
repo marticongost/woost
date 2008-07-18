@@ -8,6 +8,7 @@ Provides a class to describe members that handle sets of values.
 @since:			March 2008
 """
 from magicbullet.schema.member import Member
+from magicbullet.schema.schemareference import Reference
 from magicbullet.schema.exceptions import MinItemsError, MaxItemsError
 
 class Collection(Member):
@@ -25,20 +26,31 @@ class Collection(Member):
         than this limit will produce a
         L{MinItemsError<exceptions.MinItemsError>} during validation.
     @type max: int
-
-    @ivar items: The schema that items in the collection must comply with.
-        Specified as a member, which will be used as the validator for all
-        values added to the collection.
-    @type: L{Member<member.Member>}
     """
     min = None
     max = None
-    items = None
 
     def __init__(self, doc = None, **kwargs):
+        self.__items = None
         Member.__init__(self, doc, **kwargs)
         self.add_validation(self.__class__.collection_validation_rule)
         self.add_validation(self.__class__.items_validation_rule)
+
+    def _get_items(self):
+        return self.__items
+
+    def _set_items(self, items):
+        if not isinstance(items, Member):
+            self.__items = Reference(type = items)
+        else:
+            self.__items = items
+
+    items = property(_get_items, _set_items, doc = """
+        The schema that items in the collection must comply with. Specified as
+        a member, which will be used as the validator for all values added to
+        the collection. Can be set using a a fully qualified python name.
+        @type: L{Member<member.Member>}
+        """)
 
     def _set_size(self, size):
         self.min = size
@@ -51,9 +63,9 @@ class Collection(Member):
 
     def produce_default(self):
         if self.default is None and self.type is not None:
-            return self.type
+            return self.type()
         else:
-            return self.default
+            return Member.produce_default(self)
 
     def collection_validation_rule(self, value, context):
         """Validation rule for collections. Checks the L{min}, L{max} and

@@ -6,7 +6,13 @@
 @organization:	Whads/Accent SL
 @since:			June 2008
 """
+from magicbullet import schema
+from magicbullet.models import Item
 
 class Resource(Item):
-    pass
+    
+    html = schema.String(
+        required = True
+    )
+
 

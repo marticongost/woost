@@ -8,11 +8,9 @@
 """
 from magicbullet import schema
 from magicbullet.models import Item
+from magicbullet.persistence import Query
 
-class Selection(Item):
- 
-    query = schema.String(
-        required = True,
-        max = 1024
-    )
+class DynamicGroup(Item):
+
+    query = schema.Reference(type = Query)
 

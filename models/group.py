@@ -12,6 +12,6 @@ from magicbullet.models import Item
 class Group(Item):
  
     members = schema.Collection(
-        items = "magicbullet.Item"
+        items = "magicbullet.models.Item"
     )
 

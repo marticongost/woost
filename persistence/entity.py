@@ -7,19 +7,23 @@
 @since:			July 2008
 """
 from persistent import Persistent
+from persistent.list import PersistentList
+from persistent.mapping import PersistentMapping
 from BTrees.OOBTree import OOBTree
 from BTrees.IOBTree import IOBTree
-from BTrees.FOBTree import FOBTree
+from magicbullet.pkgutils import get_full_name
 from magicbullet import schema
 from magicbullet.schema.exceptions import ValidationError
 from magicbullet.modeling import getter
-from magicbullet.persistence import datastore, incremental_id, Index
+from magicbullet.persistence.datastore import datastore
+from magicbullet.persistence.incremental_id import incremental_id
+from magicbullet.persistence.index import Index
 
 default = object()
 
 # Default collection types
-schema.Collection.default = DynamicDefault(PersistentList)
-schema.Mapping.default = DynamicDefault(PersistentMapping)
+schema.Collection.default = schema.DynamicDefault(PersistentList)
+schema.Mapping.default = schema.DynamicDefault(PersistentMapping)
 
 # Translation
 schema.Member.translated = False
@@ -31,7 +35,7 @@ schema.Member.indexed = False
 schema.Member.index = None
 schema.Member.btree_type = OOBTree
 schema.Integer.btree_type = IOBTree
-schema.Float.btree_type = FOBTree
+schema.Member.unique = False
 schema.Schema.indexed = True
 
 # Relations
@@ -41,6 +45,9 @@ schema.Collection.bidirectional = False
 # TODO: bidirectional relations
 # TODO: versioning
 
+# Create a stub for the Entity class
+Entity = None
+
 class EntityClass(type, schema.Schema):
 
     def __init__(cls, name, bases, members):
@@ -48,21 +55,18 @@ class EntityClass(type, schema.Schema):
         type.__init__(cls, name, bases, members)
         schema.Schema.__init__(cls)
 
-        self.__full_name = get_full_name(cls)
+        cls.name = name
+        cls.__full_name = get_full_name(cls)
+
         cls._sealed = False
 
         # Inherit base schemas
         for base in bases:
-            if base is not Entity and isinstance(base, EntityClass):
+            if Entity and base is not Entity and isinstance(base, EntityClass):
                 cls.inherit(base)
 
-        # Fill the schema with members declared as class attributes
-        for name, member in members.iteritems():
-            if isinstance(member, schema.Member):
-                cls.add_member(member)
-
         # Instance index (one per subclass)
-        if cls.indexed:
+        if Entity and cls.indexed:
             
             # Add an id field to all root schemas. Will be set to an incremental
             # integer when calling Entity.store()
@@ -71,14 +75,19 @@ class EntityClass(type, schema.Schema):
                 cls.add_member(cls.id)
             
             # Create an index for instances of the class
-            key = self.__full_name + "_index"
-            root = datastore.root()
-            index = root.get(key)
+            key = cls.__full_name + "_index"
+            index = datastore.root.get(key)
 
             if index is None:
-                root[key] = index = IOBTree()
+                datastore.root[key] = index = IOBTree()
             
             cls.index = index
+
+        # Fill the schema with members declared as class attributes
+        for name, member in members.iteritems():
+            if isinstance(member, schema.Member):
+                member.name = name
+                cls.add_member(member)
 
         # Seal the schema, so that no further modification is possible
         cls._sealed = True
@@ -94,21 +103,32 @@ class EntityClass(type, schema.Schema):
         self._seal_check()
         schema.Schema.inherit(cls, *bases)
 
-    def add_member(cls, member):
+    def _check_member(cls, member):
+
+        print member
 
         # Make sure the schema can't be extended after the class declaration is
         # over
-        self._seal_check()
+        cls._seal_check()
 
-        # Enforce the 'unique' constraint
+        schema.Schema._check_member(cls, member)
+
+        # Unique members require a general class index, or a specific index for
+        # the member
+        if member.unique and not (member.indexed or cls.indexed):
+            raise ValueError(
+                "Can't enforce the unique constraint on %s.%s "
+                "without a class or member index"
+                % (cls.__full_name, member.name))
+
+    def _add_member(cls, member):
+       
+        schema.Schema._add_member(cls, member)
+
+        # Install a descriptor to mediate access to the member
+        setattr(cls, member.name, MemberDescriptor(member))
+
         if member.unique:
-
-            if not member.indexed or cls.indexed:
-                raise ValueError(
-                    "Can't enforce the unique constraint on %s.%s "
-                    "without a class or member index"
-                    % (cls.__full_name, member.name))
-
             if cls._unique_validation_rule \
             not in member.validations(recursive = False):
                 member.add_validation(cls._unique_validation_rule)
@@ -150,10 +170,7 @@ class EntityClass(type, schema.Schema):
             
             member.index = index
         
-        schema.Schema.add_member(cls, member)
 
-        # Install a descriptor to mediate access to the member
-        setattr(cls, member.name, MemberDescriptor(member))
 
     def _unique_validation_rule(cls, member, value, context):
 
@@ -166,11 +183,11 @@ class EntityClass(type, schema.Schema):
 
     def _create_translation_schema(cls):
         
-        translation_bases = [
+        translation_bases = tuple(
             base.translation
             for base in cls.bases
             if base.translation
-        ]
+        )
 
         cls.translation = translation_schema = EntityClass(
             cls.name + "Translation",
@@ -197,8 +214,8 @@ class EntityClass(type, schema.Schema):
                 required = True,
                 format = "a-z{2}"
             ),
-            values = self.translation
-        )
+            values = cls.translation
+        ))
 
 
 class Entity(Persistent):

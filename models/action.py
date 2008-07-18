@@ -7,14 +7,9 @@
 @since:			June 2008
 """
 from magicbullet import schema
-from magicbullet.persistence import Persistent
+from magicbullet.persistence.entity import Entity, EntityClass
 
-class Action(Persistent):
-
-    id = schema.Integer(
-        primary = True,
-        auto_increment = True
-    )
+class Action(Entity):
 
     identifier = schema.String(
         max = 10,
@@ -27,6 +22,4 @@ class Action(Persistent):
         unique = True,
         translated = True
     )
-
-    types = schema.Collection(items = "magicbullet.ItemType")
 

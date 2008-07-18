@@ -33,14 +33,14 @@ class Publishable(Item):
    
     controller = schema.String(max = 1024)
 
-    template = schema.Reference(type = "magicbullet.Template")
+    template = schema.Reference(type = "magicbullet.models.Template")
     
-    draft_source = schema.Reference(type = "magicbullet.Publishable")
+    draft_source = schema.Reference(type = "magicbullet.models.Publishable")
 
-    drafts = schema.Collection(items = "magicbullet.Publishable")
+    drafts = schema.Collection(items = "magicbullet.models.Publishable")
 
     attachments = schema.Collection(
-        items = "magicbullet.File",
+        items = "magicbullet.models.File",
         ordered = True
     )
 

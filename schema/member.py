@@ -14,6 +14,15 @@ from magicbullet.pkgutils import import_object
 from magicbullet.schema import exceptions
 from magicbullet.schema.validationcontext import ValidationContext
 
+class DynamicDefault(object):
+
+    def __init__(self, factory):
+        self.factory = factory
+
+    def __call__(self):
+        return self.factory()
+
+
 class Member(object):
     """Schema members are the distinct data units that comprise a
     L{schema<schema.Schema>}.
@@ -58,6 +67,8 @@ class Member(object):
         self._validations = []
         self._validations_wrapper = ListWrapper(self._validations)
         self.add_validation(Member.member_validation_rule)
+
+        self.__type = None
 
         if doc is not None:
             self.__doc__ = doc
@@ -115,16 +126,14 @@ class Member(object):
 
     def _get_type(self):
         
-        type = self.type
-
         # Resolve string references
-        if isinstance(type, basestring):
-            self.type = type = import_object(type)
+        if isinstance(self.__type, basestring):
+            self.__type = type = import_object(type)
         
-        return type
+        return self.__type
 
     def _set_type(self, type):
-        self.type = type
+        self.__type = type
 
     type = property(_get_type, _set_type, doc = """
         Imposes a data type constraint on the member. All values assigned to
@@ -138,7 +147,10 @@ class Member(object):
         """Generates a default value for the member. Can be overriden (ie. to
         produce dynamic default values).
         """
-        return self.default
+        if isinstance(self.default, DynamicDefault):
+            return self.default()
+        else:
+            return self.default
 
     def copy(self):
         """Creates a deep, unbound copy of the member.
@@ -179,7 +191,7 @@ class Member(object):
         """
         self._validations.remove(validation)
 
-    def validations(self):
+    def validations(self, recursive = True):
         """Iterates over all the validation rules that apply to the member.
 
         @return: The sequence of validation rules for the member.

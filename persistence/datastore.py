@@ -7,8 +7,9 @@
 @since:			July 2008
 """
 from threading import local
-from ZODB import FileStorage, DB
+from ZODB import DB
 import transaction
+from magicbullet import settings
 from magicbullet.modeling import getter
 
 class DataStore(object):
@@ -49,4 +50,7 @@ class DataStore(object):
         if hasattr(self._thread_data, "connection"):
             self._thread_data.connection.close()
             del self._thread_data.connection
+
+
+datastore = DataStore(settings.storage)
 

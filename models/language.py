@@ -18,10 +18,6 @@ class Language(Item):
     )
         
     fallback_languages = schema.Collection(
-        items = "magicbullet.Language"
-    )
-
-    dependant_languages = schema.Collection(
-        items = "magicbullet.Language"
+        items = "magicbullet.models.Language"
     )
 

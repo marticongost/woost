@@ -18,10 +18,10 @@ class Template(Item):
     )
 
     types = schema.Collection(
-        items = "magicbullet.ItemType"
+        items = EntityClass
     )
     
     items = schema.Collection(
-        items = "magicbullet.Publishable"
+        items = "magicbullet.models.Publishable"
     )
 

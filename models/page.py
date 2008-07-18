@@ -11,10 +11,10 @@ from magicbullet.models import Item
 
 class Page(Item):
 
-    parent = schema.Reference(type = "magicbullet.Page")
+    parent = schema.Reference(type = "magicbullet.models.Page")
  
     children = schema.Collection(
-        items = "magicbullet.Page",
+        items = "magicbullet.models.Page",
         ordered = True
     )
 
@@ -24,7 +24,7 @@ class Page(Item):
     )
 
     resources = schema.Collection(
-        items = "magicbullet.Resource",
+        items = "magicbullet.models.Resource",
         ordered = True
     )
 

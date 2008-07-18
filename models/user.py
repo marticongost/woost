@@ -19,10 +19,10 @@ class User(Item):
     )
 
     authored_items = schema.Collection(
-        items = "magicbullet.Item"
+        items = "magicbullet.models.Item"
     )
 
     owned_items = schema.Collection(
-        items = "magicbullet.Item"
+        items = "magicbullet.models.Item"
     )
 

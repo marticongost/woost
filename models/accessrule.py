@@ -7,29 +7,24 @@
 @since:			July 2008
 """
 from magicbullet import schema
-from magicbullet.models import Item
+from magicbullet.models.item import Item
 
 class AccessRule(Item):
 
-    subject = schema.Reference(type = "magicbullet.Item")
+    actor = schema.Reference(type = "magicbullet.models.Item")
 
-    target_instance = schema.Reference(type = "magicbullet.Item")
+    target_instance = schema.Reference(type = "magicbullet.models.Item")
 
-    target_type = schema.Reference(type = "magicbullet.ItemType")
+    target_type = schema.Reference(type = "magicbullet.models.ItemType")
 
-    target_ancestor = schema.Reference(type = "magicbullet.ItemType")
+    target_ancestor = schema.Reference(type = "magicbullet.models.ItemType")
 
-    action = schema.Reference(type = "magicbullet.Action")
+    action = schema.Reference(type = "magicbullet.models.Action")
 
-    language = schema.Reference(type = "magicbullet.Language")
+    language = schema.Reference(type = "magicbullet.models.Language")
 
     allowed = schema.Boolean(
         required = True,
         default = True
-    )
-
-    order = schema.Integer(
-        required = True,
-        unique = True
     )
 

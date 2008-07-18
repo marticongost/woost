@@ -7,6 +7,7 @@
 @since:			July 2008
 """
 from threading import Lock
+from magicbullet.persistence.datastore import datastore
 
 class IncrementalIdGenerator(object):
 
@@ -34,4 +35,9 @@ class IncrementalIdGenerator(object):
             self._lock.release()
 
         return self._current_id
+
+_id_generator = IncrementalIdGenerator()
+
+def incremental_id():
+    return _id_generator.generate_id(datastore.root)
 
