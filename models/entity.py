@@ -7,26 +7,49 @@
 @since:			July 2008
 """
 from persistent import Persistent
+from BTrees.OOBTree import OOBTree
 from BTrees.IOBTree import IOBTree
+from BTrees.FOBTree import FOBTree
+from magicbullet import schema
+from magicbullet.schema.exceptions import ValidationError
 from magicbullet.modeling import getter
-from magicbullet.schema import Schema, Member, String, Mapping
-from magicbullet.persistence import datastore, incremental_id
+from magicbullet.persistence import datastore, incremental_id, Index
 
 default = object()
 
-Member.translated = False
-Member.translation = None
-Member.translation_source = None
+# Default collection types
+schema.Collection.default = DynamicDefault(PersistentList)
+schema.Mapping.default = DynamicDefault(PersistentMapping)
 
+# Translation
+schema.Member.translated = False
+schema.Member.translation = None
+schema.Member.translation_source = None
 
-class EntityClass(type, Schema):
+# Indexing
+schema.Member.indexed = False
+schema.Member.index = None
+schema.Member.btree_type = OOBTree
+schema.Integer.btree_type = IOBTree
+schema.Float.btree_type = FOBTree
+schema.Schema.indexed = True
+
+# Relations
+schema.Reference.bidirectional = False
+schema.Collection.bidirectional = False
+
+# TODO: bidirectional relations
+# TODO: versioning
+
+class EntityClass(type, schema.Schema):
 
     def __init__(cls, name, bases, members):
         
         type.__init__(cls, name, bases, members)
-        Schema.__init__(cls)
+        schema.Schema.__init__(cls)
 
-        cls.__sealed = False
+        self.__full_name = get_full_name(cls)
+        cls._sealed = False
 
         # Inherit base schemas
         for base in bases:
@@ -38,35 +61,38 @@ class EntityClass(type, Schema):
             if isinstance(member, schema.Member):
                 cls.add_member(member)
 
-        # On translated entities, add a 'translations' collection to the schema
-        if cls.translated:
-            cls.add_member(Mapping(
-                name = "translations",
-                keys = String(
-                    required = True,
-                    format = "a-z{2}"
-                ),
-                values = self.translation
-            )
+        # Instance index (one per subclass)
+        if cls.indexed:
+            
+            # Add an id field to all root schemas. Will be set to an incremental
+            # integer when calling Entity.store()
+            if not cls.bases:
+                cls.id = schema.Integer(name = "id")
+                cls.add_member(cls.id)
+            
+            # Create an index for instances of the class
+            key = self.__full_name + "_index"
+            root = datastore.root()
+            index = root.get(key)
 
-        # Create an index for instances of the class
-        key = get_full_name(cls) + "-instances"
-        cls.index = datastore.root.get(key)
-
-        if cls.index is None:
-            cls.index = IOBTree()
-            datastore.root[key] = index
+            if index is None:
+                root[key] = index = IOBTree()
+            
+            cls.index = index
 
         # Seal the schema, so that no further modification is possible
-        cls.__sealed = True
+        cls._sealed = True
+
+        if cls.translation:
+            cls.translation._sealed = True
 
     def _seal_check(cls):
-        if cls.__sealed:
+        if cls._sealed:
             raise TypeError("Can't alter an entity's schema after declaration")
 
-    def inherit(cls, base):
+    def inherit(cls, *bases):
         self._seal_check()
-        Schema.inherit(cls, base)
+        schema.Schema.inherit(cls, *bases)
 
     def add_member(cls, member):
 
@@ -74,32 +100,105 @@ class EntityClass(type, Schema):
         # over
         self._seal_check()
 
+        # Enforce the 'unique' constraint
+        if member.unique:
+
+            if not member.indexed or cls.indexed:
+                raise ValueError(
+                    "Can't enforce the unique constraint on %s.%s "
+                    "without a class or member index"
+                    % (cls.__full_name, member.name))
+
+            if cls._unique_validation_rule \
+            not in member.validations(recursive = False):
+                member.add_validation(cls._unique_validation_rule)
+        
         if member.translated:
-            
-            # Get the translated version of the schema, creating it if
-            # necessary
-            translation_schema = cls.translation
 
-            if translation_schema is None:
+            # Create a translation schema for the entity, to hold its
+            # translated members
+            if cls.translation is None:
+                cls.translation = cls._create_translation_schema()
                 cls.translated = True
-                cls.translation = translation_schema = Schema()
-
-                for base in cls.bases:
-                    if base.translation:
-                        translation_schema.inherit(base.translation)
-            
+                            
             # Create the translated version of the member, and add it to the
             # translated version of the schema
-            translated_member = member.copy()
-            translated_member.translated = False
-            translated_member.translation_source = member
-            member.translation = translated_member
-            translation_schema.add_member(translated_member)
+            member.translation = member.copy()
+            member.translation.translated = False
+            member.translation.translation_source = member
+            cls.translation.add_member(member.translation)
         
-            # Install a descriptor to mediate access to the translated member
-            setattr(cls, member.name, TranslationAccessor(member))
+        # An indexed member gets its own btree        
+        if member.indexed and member.index is None:
+            
+            root = datastore.root
+            key = self.__full_name + "-" + member.name + "_index"
+            index = root.get(key)
+
+            if index is None:
+                
+                # Unique indices use a "raw" ZODB's binary tree
+                if member.unique:
+                    index = member.btree_type()
+
+                # Multi-value indices are wrapped inside an Index instance,
+                # which organizes colliding keys into sets of values
+                else:
+                    index = Index(member.btree_type())
+                
+                root[key] = index
+            
+            member.index = index
         
-        Schema.add_member(cls, member)
+        schema.Schema.add_member(cls, member)
+
+        # Install a descriptor to mediate access to the member
+        setattr(cls, member.name, MemberDescriptor(member))
+
+    def _unique_validation_rule(cls, member, value, context):
+
+        if (member.indexed and value in member.index) \
+        or any(
+            instance.get(member) == value
+            for instance in member.schema.index.itervalues()
+        ):
+            yield UniqueValueError(member, value, context)
+
+    def _create_translation_schema(cls):
+        
+        translation_bases = [
+            base.translation
+            for base in cls.bases
+            if base.translation
+        ]
+
+        cls.translation = translation_schema = EntityClass(
+            cls.name + "Translation",
+            translation_bases,
+            {"indexed": False}
+        )
+
+        cls.translation._sealed = False
+
+        if not translation_bases:
+            cls.translation.add_member(schema.Reference(
+                name = "translated_object",
+                type = cls,
+                required = True
+            ))
+            cls.translation.add_member(schema.String(
+                name = "language",
+                required = True
+            ))
+
+        cls.add_member(schema.Mapping(
+            name = "translations",
+            keys = schema.String(
+                required = True,
+                format = "a-z{2}"
+            ),
+            values = self.translation
+        )
 
 
 class Entity(Persistent):
@@ -116,26 +215,55 @@ class Entity(Persistent):
             value = values.get(name, default)
 
             if value is default:
+                
+                if member.translated:
+                    continue
+
                 value = member.produce_default()
 
-            setattr(self, name, value)
+            self.set(self, member, value)
 
-    def store(self):
+        # Acquire an incremental id
+        if self.__class__.indexed:
+            
+            if self.id is None:
+                self.id = incremental_id()
 
-        self.id = incremental_id()
+            for schema in self.__class__.ascend_inheritance(True):
+                schema.index[self.id] = self
 
-        for schema in self.__class__.ascend_inheritance(True):
-            schema.index[self.id] = self
+    def _update_index(self, member, language, previous_value, new_value):
+            
+        if member.indexed and previous_value != new_value:
+            
+            if language:
+                previous_value = (language, previous_value)
+                new_value = (language, new_value)
+
+            if member.unique:
+                if previous_value is not None:
+                    del member.index[previous_value]
+
+                if new_value is not None:
+                    member.index[new_value] = self
+            else:
+                if previous_value is not None:
+                    member.index.remove(previous_value, self)
+
+                if new_value is not None:
+                    member.index.add(new_value, self)
 
     def get(self, member, language = None):
 
-        if not isinstance(member, Member):
+        # Normalize the member argument to a schema.Member reference
+        if not isinstance(member, schema.Member):
 
             if isinstance(member, basestring):
                 member = self.__class__[member]                
             else:
                 raise TypeError("Expected a string or a member reference")
 
+        # Getting a translated value: turn it into a regular get
         if member.translated:
             
             language = require_language(language)
@@ -144,38 +272,74 @@ class Entity(Persistent):
             if translation is None:
                 return None
             else:
-                return getattr(translation, member.name)
+                return translation.get(member.translation)
+
+        # Regular get
         else:
-            return getattr(self, member.name)
+            return getattr(self, "_" + member.name)
 
     def set(self, member, value, language = None):
 
-       if not isinstance(member, Member):
+        # Normalize the member argument to a schema.Member reference
+        if not isinstance(member, schema.Member):
 
             if isinstance(member, basestring):
                 member = self.__class__[member]                
             else:
                 raise TypeError("Expected a string or a member reference")
 
+        # Assigning a translated value: turn it into a regular assignment
         if member.translated:
 
+            # Setting multiple translations at once
             if isinstance(value, Translations):
                 for language, translated_value in value.iteritems():
                     self.set(member, translated_value, language)
+
+            # Make sure the translation for the specified language exists, and
+            # then resolve the assignment against it
+            # TODO: This could be optmized to avoid the call totranslation.set
             else:
                 language = require_language(language)
                 translation = self.translations.get(language)
 
                 if translation is None:
-                    translation = Translation()
-                    self.translations[language] = translation
+                    translation = self._new_translation(language)
 
-                setattr(translation, member.name, value)
+                translation.set(member.translation, value)
+
+        elif language:
+            raise ValueError(
+                "Can't specify the value language for a non translated member")
+        
+        # Regular assignment
         else:
-            setattr(self, member.name, value)
+            if member.indexed:
+                previous_value = getattr(self, "_" + member.name, None)
+
+            setattr(self, "_" + member.name, value)
+
+            # Update the member's index
+            if member.indexed:
+                if member.translation_source:
+                    member = member.translation_source
+                    instance = self.translated_object
+                    language = self.language
+                else:
+                    instance = self
+                    language = None
+
+                instance._update_index(member, language, previous_value, value)
+
+    def _new_translation(self, language):
+        translation = self.translation(
+            object = self,
+            language = language)
+        self.translations[language] = translation
+        return translation
 
 
-class TranslationAccessor(object):
+class MemberDescriptor(object):
 
     def __init__(self, member):
         self.member = member
@@ -193,4 +357,14 @@ class TranslationAccessor(object):
 
 class Translations(dict):
     pass
+
+
+class UniqueValueError(ValidationError):
+    """A validation error produced when a unique field is given a value that is
+    already present in the database.
+    """
+
+    def __repr__(self):
+        return "%s (value already present in the database)" \
+            % ValidationError.__repr__(self)
 
