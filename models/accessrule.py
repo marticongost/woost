@@ -7,6 +7,7 @@
 @since:			July 2008
 """
 from magicbullet import schema
+from magicbullet.persistence import EntityClass
 from magicbullet.models.item import Item
 
 class AccessRule(Item):
@@ -15,9 +16,9 @@ class AccessRule(Item):
 
     target_instance = schema.Reference(type = "magicbullet.models.Item")
 
-    target_type = schema.Reference(type = "magicbullet.models.ItemType")
+    target_type = schema.Reference(type = EntityClass)
 
-    target_ancestor = schema.Reference(type = "magicbullet.models.ItemType")
+    target_ancestor = schema.Reference(type = "magicbullet.models.Page")
 
     action = schema.Reference(type = "magicbullet.models.Action")
 
