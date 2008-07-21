@@ -6,6 +6,7 @@
 @organization:	Whads/Accent SL
 @since:			July 2008
 """
+import sys
 from persistent import Persistent
 from persistent.list import PersistentList
 from persistent.mapping import PersistentMapping
@@ -14,6 +15,7 @@ from BTrees.IOBTree import IOBTree
 from magicbullet.pkgutils import get_full_name
 from magicbullet import schema
 from magicbullet.schema.exceptions import ValidationError
+from magicbullet.language import require_language
 from magicbullet.modeling import getter
 from magicbullet.persistence.datastore import datastore
 from magicbullet.persistence.incremental_id import incremental_id
@@ -100,12 +102,10 @@ class EntityClass(type, schema.Schema):
             raise TypeError("Can't alter an entity's schema after declaration")
 
     def inherit(cls, *bases):
-        self._seal_check()
+        cls._seal_check()
         schema.Schema.inherit(cls, *bases)
 
     def _check_member(cls, member):
-
-        print member
 
         # Make sure the schema can't be extended after the class declaration is
         # over
@@ -127,7 +127,7 @@ class EntityClass(type, schema.Schema):
 
         # Install a descriptor to mediate access to the member
         setattr(cls, member.name, MemberDescriptor(member))
-
+        
         if member.unique:
             if cls._unique_validation_rule \
             not in member.validations(recursive = False):
@@ -137,8 +137,9 @@ class EntityClass(type, schema.Schema):
 
             # Create a translation schema for the entity, to hold its
             # translated members
-            if cls.translation is None:
-                cls.translation = cls._create_translation_schema()
+            if cls.translation is None \
+            or cls.translation.translation_source is not cls:
+                cls._create_translation_schema()
                 cls.translated = True
                             
             # Create the translated version of the member, and add it to the
@@ -152,7 +153,7 @@ class EntityClass(type, schema.Schema):
         if member.indexed and member.index is None:
             
             root = datastore.root
-            key = self.__full_name + "-" + member.name + "_index"
+            key = cls.__full_name + "-" + member.name + "_index"
             index = root.get(key)
 
             if index is None:
@@ -169,8 +170,6 @@ class EntityClass(type, schema.Schema):
                 root[key] = index
             
             member.index = index
-        
-
 
     def _unique_validation_rule(cls, member, value, context):
 
@@ -187,13 +186,22 @@ class EntityClass(type, schema.Schema):
             base.translation
             for base in cls.bases
             if base.translation
-        )
+        ) or (Entity,)
 
         cls.translation = translation_schema = EntityClass(
             cls.name + "Translation",
             translation_bases,
             {"indexed": False}
         )
+
+        # Make the translation class available at the module level, so its
+        # instances can be pickled (required by ZODB's persistence machinery)
+        setattr(
+            sys.modules[cls.__module__],
+            cls.translation.name,
+            cls.translation)
+
+        cls.translation.__module__ = cls.__module__
 
         cls.translation._sealed = False
 
@@ -230,7 +238,7 @@ class Entity(Persistent):
         # a default value definition
         for name, member in self.__class__.members().iteritems():
             value = values.get(name, default)
-
+            
             if value is default:
                 
                 if member.translated:
@@ -238,7 +246,7 @@ class Entity(Persistent):
 
                 value = member.produce_default()
 
-            self.set(self, member, value)
+            self.set(member, value)
 
         # Acquire an incremental id
         if self.__class__.indexed:
@@ -362,7 +370,7 @@ class MemberDescriptor(object):
         self.member = member
 
     def __get__(self, instance, type = None):
-        
+
         if instance is None:
             return self.member
         else:

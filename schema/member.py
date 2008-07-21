@@ -61,6 +61,9 @@ class Member(object):
     require_none = False
     enumeration = None
 
+    # Attributes that deserve special treatment when performing a deep copy
+    _special_copy_keys = set(["_validations_wrapper", "_validations"])
+
     def __init__(self, doc = None, **kwargs):
         self._name = None
         self._schema = None
@@ -161,6 +164,23 @@ class Member(object):
         copied_member = deepcopy(self)
         copied_member._schema = None
         return copied_member
+    
+    def __deepcopy__(self, memo):
+
+        copy = self.__class__()
+        memo[id(self)] = copy
+
+        for key, value in self.__dict__.iteritems():
+            if key not in self._special_copy_keys:
+                copy.__dict__[key] = deepcopy(value, memo)
+        
+        copy._validations = list(self._validations)
+        memo[id(self._validations)] = copy._validations
+        
+        copy._validations_wrapper = ListWrapper(copy._validations)
+        memo[id(copy._validations_wrapper)] = copy._validations_wrapper
+
+        return copy
 
     def add_validation(self, validation):
         """Adds a validation function to the member.
@@ -193,6 +213,12 @@ class Member(object):
 
     def validations(self, recursive = True):
         """Iterates over all the validation rules that apply to the member.
+
+        @param recursive: Indicates if the produced set of validations should
+            include those declared on members contained within the member. This
+            parameter is only meaningful on L{compound members<>}, but is made
+            available globally in order to allow the method to be called
+            polymorphically using a consistent signature.
 
         @return: The sequence of validation rules for the member.
         @rtype: callable iterable

@@ -11,6 +11,8 @@ from magicbullet.persistence import Entity
 
 class Item(Entity):
 
+    indexed = True
+
     title = schema.String(
         max = 255,
         required = True,

@@ -10,16 +10,18 @@ from magicbullet import schema
 from magicbullet.persistence.entity import Entity, EntityClass
 
 class Action(Entity):
-
+    
     identifier = schema.String(
         max = 10,
         required = True,
-        unique = True
+        unique = True,
+        indexed = True
     )
 
     title = schema.String(
         required = True,
         unique = True,
+        indexed = True,
         translated = True
     )
 

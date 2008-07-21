@@ -13,5 +13,5 @@ class File(Publishable):
     
     file_path = schema.String()
 
-    translation_path = schema.String(translated = True)
+    translation_file_path = schema.String(translated = True)
 

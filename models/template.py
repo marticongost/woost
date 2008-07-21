@@ -7,6 +7,7 @@
 @since:			June 2008
 """
 from magicbullet import schema
+from magicbullet.persistence import EntityClass
 from magicbullet.models import Item
 
 class Template(Item):

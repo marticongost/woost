@@ -76,9 +76,10 @@ class Schema(Member):
         if include_self:
             yield self
 
-        for base in self.__bases:
-            for ascendant in base.ascend_inheritance(True):
-                yield ascendant
+        if self.__bases:
+            for base in self.__bases:
+                for ascendant in base.ascend_inheritance(True):
+                    yield ascendant
 
     def add_member(self, member):
         """Adds a new member to the schema.
