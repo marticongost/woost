@@ -78,8 +78,8 @@ class DictWrapper(object):
     def __reduce__(self):
         return self._dict.__reduce__()
 
-    def __reduce_ex__(self):
-        return self._dict.__reduce_ex__()
+    def __reduce_ex__(self, protocol):
+        return self._dict.__reduce_ex__(protocol)
 
     def __repr__(self):
         return self._dict.__repr__()
@@ -167,8 +167,8 @@ class ListWrapper(object):
     def __reduce__(self):
         return self._list.__reduce__()
 
-    def __reduce_ex__(self):
-        return self._list.__reduce_ex__()
+    def __reduce_ex__(self, protocol):
+        return self._list.__reduce_ex__(protocol)
 
     def __repr__(self):
         return self._list.__repr__()
@@ -238,8 +238,8 @@ class SetWrapper(object):
     def __reduce__(self):
         return self._set.__reduce__()
 
-    def __reduce_ex__(self):
-        return self._set.__reduce_ex__()
+    def __reduce_ex__(self, protocol):
+        return self._set.__reduce_ex__(protocol)
 
     def __repr__(self):
         return self._set.__repr__()
