@@ -12,6 +12,7 @@ from copy import deepcopy
 from magicbullet.modeling import ListWrapper
 from magicbullet.pkgutils import import_object
 from magicbullet.schema import exceptions
+from magicbullet.schema.expressions import Variable
 from magicbullet.schema.validationcontext import ValidationContext
 
 class DynamicDefault(object):
@@ -23,7 +24,7 @@ class DynamicDefault(object):
         return self.factory()
 
 
-class Member(object):
+class Member(Variable):
     """Schema members are the distinct data units that comprise a
     L{schema<schema.Schema>}.
 
@@ -48,7 +49,7 @@ class Member(object):
         L{NoneRequiredError<exceptions.NoneRequiredError>}.
     @type require_none: bool
 
-    @ivar enumeration: Establishes a limitted set of acceptable values for the
+    @ivar enumeration: Establishes a limited set of acceptable values for the
         member. If a member with this constraint is given a value not found
         inside the set, an L{EnumerationError<exceptions.EnumerationError>}
         error will be triggered.
@@ -71,6 +72,7 @@ class Member(object):
         self._validations_wrapper = ListWrapper(self._validations)
         self.add_validation(Member.member_validation_rule)
 
+        Variable.__init__(self, None)
         self.__type = None
 
         if doc is not None:
@@ -147,7 +149,7 @@ class Member(object):
         """)
 
     def produce_default(self):
-        """Generates a default value for the member. Can be overriden (ie. to
+        """Generates a default value for the member. Can be overridden (ie. to
         produce dynamic default values).
         """
         if isinstance(self.default, DynamicDefault):
