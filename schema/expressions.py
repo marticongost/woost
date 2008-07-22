@@ -70,6 +70,21 @@ class Expression(object):
     def __pos__(self):
         return PositiveExpression(self, expr)
 
+    def startswith(self, expr):
+        return StartsWithExpression(self, expr)
+
+    def endswith(self, expr):
+        return EndsWithExpression(self, expr)
+
+    def __contains__(self, expr):
+        return ContainsExpression(expr, self)
+
+    def match(self, expr):
+        return MatchExpression(expr)
+
+    def search(self, expr):
+        return SearchExpression(expr)
+
 
 class Constant(Expression):
 
@@ -153,3 +168,36 @@ class PositiveExpression(Expression):
     op = operator.pos
 
 
+class StartsWithExpression(Expression):
+    
+    def op(self, a, b):
+        return a.startswith(b)
+
+
+class EndsWithExpression(Expression):
+
+    def op(self, a, b):
+        return a.endswith(b)
+
+
+class ContainsExpression(Expression):
+    op = operator.contains    
+
+
+class MatchExpression(Expression):
+
+    def op(self, a, b):
+        if isinstance(b, basestring):
+            b = re.compile(b)
+
+        return b.match(a)
+
+
+class SearchExpression(Expression):
+
+    def op(self, a, b):
+        if isinstance(b, basestring):
+            b = re.compile(b)
+
+        return b.search(a)
+ 
