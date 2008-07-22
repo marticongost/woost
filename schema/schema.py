@@ -280,18 +280,25 @@ class Schema(Member):
         @raise KeyError: Raised if neither the schema or its bases possess a
             member with the specified name.
         """
-        schema = self
+        def find_member(schema):
 
-        while schema:
             member = schema.__members and schema.__members.get(name)
 
-            if member:
-                return member
+            if member is None and schema.__bases:
+                for base in schema.__bases:
+                    member = find_member(base)                    
+                    if member:
+                        break
 
-            schema = schema.__base
-        
-        raise KeyError("%s doesn't define a '%s' member" % (self, name))
+            return member
 
+        member = find_member(self)
+
+        if member is None:
+            raise KeyError("%s doesn't define a '%s' member" % (self, name))
+            
+        return member
+    
     def __setitem__(self, name, member):
         """Overrides the indexing operator to bind members to the schema under
         the specified name.
