@@ -37,7 +37,6 @@ schema.Member.indexed = False
 schema.Member.index = None
 schema.Member.btree_type = OOBTree
 schema.Integer.btree_type = IOBTree
-schema.Integer.incremental = False
 schema.Member.primary = False
 schema.Member.unique = False
 schema.Schema.indexed = True
@@ -89,7 +88,7 @@ class EntityClass(type, schema.Schema):
                     unique = True,
                     required = True,
                     indexed = True,
-                    incremental = True)
+                    default = schema.DynamicDefault(incremental_id))
                 cls.add_member(cls.id)
 
             # Subclass index
@@ -261,16 +260,7 @@ class Entity(Persistent):
                 value = member.produce_default()
 
             self.set(member, value)
-
-        # Acquire an incremental id
-        if self.__class__.indexed:
-            
-            if self.id is None:
-                self.id = incremental_id()
-
-            for schema in self.__class__.ascend_inheritance(True):
-                schema.index[self.id] = self
-
+    
     def _update_index(self, member, language, previous_value, new_value):
             
         if member.indexed and previous_value != new_value:
@@ -279,7 +269,14 @@ class Entity(Persistent):
                 previous_value = (language, previous_value)
                 new_value = (language, new_value)
 
-            if member.unique:
+            if member.primary:
+                for schema in self.__class__.ascend_inheritance(True):
+                    if previous_value is not None:
+                        del schema.index[previous_value]
+                    if new_value is not None:
+                        schema.index[new_value] = self
+
+            elif member.unique:
                 if previous_value is not None:
                     del member.index[previous_value]
 
