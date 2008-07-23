@@ -61,14 +61,14 @@ class Expression(object):
     def or_(self, expr):
         return OrExpression(self, expr)
 
-    def not_(self, expr):
-        return NotExpression(self, expr)
+    def not_(self):
+        return NotExpression(self)
 
     def __neg__(self):
-        return NegativeExpression(self, expr)
+        return NegativeExpression(self)
 
     def __pos__(self):
-        return PositiveExpression(self, expr)
+        return PositiveExpression(self)
 
     def startswith(self, expr):
         return StartsWithExpression(self, expr)

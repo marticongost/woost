@@ -33,7 +33,7 @@ class Query(object):
 
     def __init__(self,
         entity_class,
-        filter = None,
+        filters = None,
         order = None,
         range = None):
 
@@ -41,11 +41,14 @@ class Query(object):
         or not entity_class.indexed:
             raise TypeError("An indexed entity class is required")
 
+        if filters is not None and not isinstance(filters, list):
+            filters = [filters]
+
         self.__entity_class = entity_class
         self.__parent = None
-        self.__filters = filter if isinstance(filter, list) else [filter]
-        self.__order = order
-        self.__range = range
+        self.filters = filters
+        self.order = order
+        self.range = range
 
     @getter
     def entity_class(self):
@@ -63,7 +66,7 @@ class Query(object):
 
     def __apply_filters(self):
 
-        instances = self.__entity_class.index
+        instances = self.__entity_class.index.itervalues()
 
         filters = self.filters
 
@@ -73,7 +76,7 @@ class Query(object):
             execution_plan = []
 
             for filter in filters:
-                member = filter.operands[0]                
+                member = filter.operands[0]
                 expr_speed = self._expression_speed.get(filter.__class__, 0)
 
                 if member.indexed \
@@ -164,7 +167,7 @@ class Query(object):
                 # Brute force matching
                 else:
                     if subset is None:
-                        subset = instances.itervalues()
+                        subset = instances
                     
                     subset = [instance
                               for instance in subset
@@ -187,7 +190,7 @@ class Query(object):
             order = [+self.__entity_class.id]
 
         main_order = order[0]
-        main_criteria = main_order.operands[0].operands[0]
+        main_criteria = main_order.operands[0]
         filters = self.filters
 
         unaltered_order = not filters or (
@@ -197,16 +200,14 @@ class Query(object):
         # Sort using an index
         if main_criteria.indexed and len(order) == 1 and unaltered_order:
 
-            if not filters:
-
-                # Prepend instances that aren't present in the index (all
-                # instances with a `None` value)
-                if not main_criteria.required:
-                    none_instances = difference(
-                        self.__entity_class.index,
-                        main_criteria.index
-                    )
-                    subset = chain(none_instances, main_criteria.index)
+            # Prepend instances that aren't present in the index (all
+            # instances with a `None` value)
+            if not filters and not main_criteria.required:
+                none_instances = difference(
+                    self.__entity_class.index,
+                    main_criteria.index
+                )
+                subset = chain(none_instances, main_criteria.index)
 
             if isinstance(main_order, expressions.NegativeExpression):
                 if not isinstance(subset, list):
@@ -260,7 +261,12 @@ class Query(object):
         return self.execute().__iter__()
 
     def __len__(self):
-        return len(self.execute())
+        results = self.execute()       
+
+        if not hasattr(results, "__len__"):
+            results = list(results)
+
+        return len(results)
 
     def __notzero__(self):
         return bool(self.execute())
@@ -292,4 +298,12 @@ class Query(object):
             self.__filter = filter
         else:
             self.__filter &= filter
+
+if __name__ == "__main__":
+    from time import time
+    from magicbullet.models import Publishable    
+
+    t = time()
+    print len(Query(Publishable))
+    print time() - t
 

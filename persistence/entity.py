@@ -37,8 +37,10 @@ schema.Member.indexed = False
 schema.Member.index = None
 schema.Member.btree_type = OOBTree
 schema.Integer.btree_type = IOBTree
+schema.Member.primary = False
 schema.Member.unique = False
 schema.Schema.indexed = True
+schema.Schema.primary_member = None
 
 # Relations
 schema.Reference.bidirectional = False
@@ -73,18 +75,14 @@ class EntityClass(type, schema.Schema):
             # Add an id field to all root schemas. Will be set to an incremental
             # integer when calling Entity.store()
             if not cls.bases:
-                cls.id = schema.Integer(name = "id")
+                cls.id = schema.Integer(
+                    name = "id",
+                    primary  =True,
+                    unique = True,
+                    required = True,
+                    indexed = True)
                 cls.add_member(cls.id)
-            
-            # Create an index for instances of the class
-            key = cls.__full_name + "_index"
-            index = datastore.root.get(key)
-
-            if index is None:
-                datastore.root[key] = index = IOBTree()
-            
-            cls.index = index
-
+                        
         # Fill the schema with members declared as class attributes
         for name, member in members.iteritems():
             if isinstance(member, schema.Member):
@@ -127,7 +125,10 @@ class EntityClass(type, schema.Schema):
 
         # Install a descriptor to mediate access to the member
         setattr(cls, member.name, MemberDescriptor(member))
-        
+ 
+        if member.primary:
+            cls.primary_member = member
+
         if member.unique:
             if cls._unique_validation_rule \
             not in member.validations(recursive = False):
@@ -170,6 +171,10 @@ class EntityClass(type, schema.Schema):
                 root[key] = index
             
             member.index = index
+
+    @getter
+    def index(cls):
+        return cls.primary_member and cls.primary_member.index
 
     def _unique_validation_rule(cls, member, value, context):
 
