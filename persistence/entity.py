@@ -37,6 +37,7 @@ schema.Member.indexed = False
 schema.Member.index = None
 schema.Member.btree_type = OOBTree
 schema.Integer.btree_type = IOBTree
+schema.Integer.incremental = False
 schema.Member.primary = False
 schema.Member.unique = False
 schema.Schema.indexed = True
@@ -68,26 +69,38 @@ class EntityClass(type, schema.Schema):
         for base in bases:
             if Entity and base is not Entity and isinstance(base, EntityClass):
                 cls.inherit(base)
-
-        # Instance index (one per subclass)
-        if Entity and cls.indexed:
-            
-            # Add an id field to all root schemas. Will be set to an incremental
-            # integer when calling Entity.store()
-            if not cls.bases:
-                cls.id = schema.Integer(
-                    name = "id",
-                    primary  =True,
-                    unique = True,
-                    required = True,
-                    indexed = True)
-                cls.add_member(cls.id)
-                        
+                       
         # Fill the schema with members declared as class attributes
         for name, member in members.iteritems():
             if isinstance(member, schema.Member):
                 member.name = name
                 cls.add_member(member)
+
+        # Instance index
+        if Entity and cls.indexed:
+            
+            # Add an 'id' field to all indexed schemas that don't define their
+            # own primary member explicitly. Will be set to an incremental
+            # integer when calling Entity.store()
+            if not cls.primary_member:
+                cls.id = schema.Integer(
+                    name = "id",
+                    primary = True,
+                    unique = True,
+                    required = True,
+                    indexed = True,
+                    incremental = True)
+                cls.add_member(cls.id)
+
+            # Subclass index
+            key = cls.__full_name
+            index = datastore.root.get(key)
+            
+            if index is None:
+                index = cls.primary_member.btree_type()
+                datastore.root[key] = index
+            
+            cls.index = index            
 
         # Seal the schema, so that no further modification is possible
         cls._sealed = True
@@ -101,7 +114,7 @@ class EntityClass(type, schema.Schema):
 
     def inherit(cls, *bases):
         cls._seal_check()
-        schema.Schema.inherit(cls, *bases)
+        schema.Schema.inherit(cls, *bases)        
 
     def _check_member(cls, member):
 
@@ -151,10 +164,10 @@ class EntityClass(type, schema.Schema):
             cls.translation.add_member(member.translation)
         
         # An indexed member gets its own btree        
-        if member.indexed and member.index is None:
+        if member.indexed and member.index is None and not member.primary:
             
             root = datastore.root
-            key = cls.__full_name + "-" + member.name + "_index"
+            key = cls.__full_name + "." + member.name
             index = root.get(key)
 
             if index is None:
