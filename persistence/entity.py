@@ -185,10 +185,6 @@ class EntityClass(type, schema.Schema):
             
             member.index = index
 
-    @getter
-    def index(cls):
-        return cls.primary_member and cls.primary_member.index
-
     def _unique_validation_rule(cls, member, value, context):
 
         if (member.indexed and value in member.index) \
