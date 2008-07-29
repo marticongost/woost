@@ -1,0 +1,15 @@
+<html
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:py="http://genshi.edgewall.org/">
+	
+	<head>
+		<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+        <title>$item.title</title>
+        <py:for each="resource in item.resources">${Markup(resource.html)}</py:for>
+	</head>
+	
+	<body>
+        ${Markup(item.body)}
+	</body>
+
+</html>

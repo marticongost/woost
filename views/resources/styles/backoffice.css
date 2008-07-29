@@ -1,0 +1,14 @@
+
+body {
+    border: 1px solid rgb(120,120,120);
+    padding: 10px;
+    margin: 5px;
+    font-family: Bitstream Vera Sans;
+    font-size: 10pt;
+}
+
+body.error {
+    border-color: rgb(235,110,40);
+    background-color: rgb(255,240,220);
+}
+

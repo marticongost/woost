@@ -7,9 +7,10 @@
 @since:			June 2008
 """
 from magicbullet import schema
-from magicbullet.models import Item
+from magicbullet.models import Publishable
 
-class Page(Item):
+
+class Page(Publishable):
 
     parent = schema.Reference(type = "magicbullet.models.Page")
  
@@ -27,4 +28,10 @@ class Page(Item):
         items = "magicbullet.models.Resource",
         ordered = True
     )
+
+
+class StandardPage(Page):
+    
+    body = schema.String(translated = True)
+
 

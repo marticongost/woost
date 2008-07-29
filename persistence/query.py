@@ -6,6 +6,8 @@
 @organization:	Whads/Accent SL
 @since:			July 2008
 """
+from __future__ import with_statement
+
 from itertools import chain
 from magicbullet.modeling import getter
 from magicbullet.persistence import EntityClass
@@ -59,59 +61,44 @@ class Query(object):
         return self.__parent
 
     def execute(self):
-        subset = self.__apply_filters()        
+        subset = self.__apply_filters()
         subset = self.__apply_order(subset)
-        subset = self.__apply_range(subset)        
+        subset = self.__apply_range(subset)
         return subset
 
     def __apply_filters(self):
 
-        instances = self.__entity_class.index.itervalues()
-
+        dataset = None
         filters = self.filters
 
+        if not filters:
+            dataset = self.__entity_class.index.values()
+    
         if filters:
             
-            # Create an optimized execution plan
-            execution_plan = []
-
-            for filter in filters:
-                member = filter.operands[0]
-                expr_speed = self._expression_speed.get(filter.__class__, 0)
-
-                if member.indexed \
-                and filter.__class__ in self._indexable_expressions:
-                    if member.unique:
-                        indexing = 0
-                    else:
-                        indexing = 1
-                else:
-                    indexing = 2
-                
-                order = (indexing, expr_speed)
-                execution_plan.append((order, filter))
-
-            execution_plan.sort()
-            
-            # Apply the execution plan
-            subset = None
             single_match = False
 
-            for order, filter in execution_plan:
+            for order, filter in self._get_execution_plan(filters):
                 
-                member, value = filter.operands
+                member, value_expr = filter.operands
+                value = value_expr.value
 
                 # Apply the filter using an index
                 if member.indexed and not single_match:
+
+                    if member.primary:
+                        index = self.__entity_class.index
+                    else:
+                        index = member.index
 
                     # Equal
                     if isinstance(filter, expressions.EqualExpression):
 
                         if member.unique:
-                            match = member.index.get(value)
+                            match = index.get(value)
                             
                             if match:
-                                subset = set([match])
+                                matches = set([match])
                                 
                                 # Special case: after an 'identity' filter is
                                 # resolved (an equality check against a unique
@@ -120,15 +107,15 @@ class Query(object):
                                 # instead (should be faster)
                                 single_match = True
                             else:
-                                subset = set()
+                                matches = set()
                         else:
-                            matches = member.index.get(value)
+                            matches = index.get(value)
                     
                     # Different
                     elif isinstance(filter, expressions.NotEqualExpression):
-                        lower = member.index.values(
+                        lower = index.values(
                             max = value, excludemax = True)
-                        higher = member.index.values(
+                        higher = index.values(
                             min = value, excludemin = True)
                         matches = chain(lower, higher)
 
@@ -137,7 +124,7 @@ class Query(object):
                         expressions.GreaterExpression,
                         expressions.GreaterEqualExpression
                     )):
-                        matches = member.index.values(
+                        matches = index.values(
                             min = value,
                             excludemax = isinstance(filter,
                                 expressions.GreaterExpression)
@@ -148,39 +135,67 @@ class Query(object):
                         expressions.LowerExpression,
                         expressions.LowerEqualExpression
                     )):
-                        matches = member.index.values(
+                        matches = index.values(
                             max = value,
                             excludemax = isinstance(filter,
                                 expressions.LowerExpression)
                         )
 
+                    else:
+                        raise TypeError(
+                            "Can't match %s against an index" % filter)
+
                     # Add matches together
                     if matches:
-                        if subset:
-                            if not isinstance(subset, set):
-                                subset = set(subset)
+                        if dataset:
+                            if not isinstance(dataset, set):
+                                dataset = set(dataset)
 
-                            subset = subset.intersection(matches)
+                            dataset = dataset.intersection(matches)
                         else:
-                            subset = matches
+                            dataset = matches
+                    else:
+                        dataset = None
 
                 # Brute force matching
                 else:
-                    if subset is None:
-                        subset = instances
+                    if dataset is None:
+                        dataset = self.__entity_class.index.itervalues()
                     
-                    subset = [instance
-                              for instance in subset
-                              if filter.eval(instance.__dict__)]
+                    dataset = [instance
+                              for instance in dataset
+                              if filter.eval(instance, getattr)]
 
                 # As soon as the matching set is reduced to an empty set
                 # there's no point in applying any further filter
-                if not subset:
+                if not dataset:
                     break
 
-            instances = subset
+        return dataset
 
-        return instances
+    def _get_execution_plan(self, filters):
+
+        # Create an optimized execution plan
+        execution_plan = []
+
+        for filter in filters:
+            member = filter.operands[0]
+            expr_speed = self._expression_speed.get(filter.__class__, 0)
+
+            if member.indexed \
+            and filter.__class__ in self._indexable_expressions:
+                if member.unique:
+                    indexing = 0
+                else:
+                    indexing = 1
+            else:
+                indexing = 2
+            
+            order = (indexing, expr_speed)
+            execution_plan.append((order, filter))
+
+        execution_plan.sort()
+        return execution_plan
 
     def __apply_order(self, subset):
         
@@ -258,16 +273,13 @@ class Query(object):
         return subset
 
     def __iter__(self):
-        return self.execute().__iter__()
+        for instance in self.execute():
+            yield instance
 
     def __len__(self):
         results = self.execute()       
-
-        if not hasattr(results, "__len__"):
-            results = list(results)
-
         return len(results)
-
+    
     def __notzero__(self):
         return bool(self.execute())
 
@@ -300,10 +312,27 @@ class Query(object):
             self.__filter &= filter
 
 if __name__ == "__main__":
-    from time import time
-    from magicbullet.models import Publishable    
+    
+    from magicbullet.models import Publishable
 
-    t = time()
-    print len(Query(Publishable))
-    print time() - t
+    print "Start"
+    
+    for i in range(5):
+
+        print "-" * 30
+
+        query = Query(Publishable,
+            filters = [
+#                    Publishable.id <= 50,
+                Publishable.enabled == True
+            ]
+        ).execute()
+
+#        query = (item for item in Publishable.index.itervalues(max = 50)
+#                if item.enabled)
+
+        for item in query:
+            x = item.id
+            y = item.get("title", "ca")
+
 

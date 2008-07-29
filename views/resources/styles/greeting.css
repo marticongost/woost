@@ -1,0 +1,21 @@
+
+html {
+    background-color: rgb(190,200,215);
+    margin: 0;
+    padding: 15px;
+    text-align: center;
+}
+
+body {
+    text-align: left;
+    margin: auto;
+    margin-top: 20%;
+    width: 50%;
+    font-family: Bitstream Vera Sans;
+    -moz-border-radius: 9px;
+    border-radius: 9px;
+    padding: 20px;
+    border: 2px solid rgb(140,150,165);
+    background-color: rgb(240,245,250);
+}
+

@@ -15,8 +15,13 @@ from magicbullet.models.dynamicgroup import DynamicGroup
 from magicbullet.models.publishable import Publishable
 from magicbullet.models.template import Template
 from magicbullet.models.user import User
-from magicbullet.models.accessrule import AccessRule
-from magicbullet.models.page import Page
+from magicbullet.models.accessrule import (
+    AccessRule,
+    allowed,
+    restrict_access,
+    AccessDeniedError
+)
+from magicbullet.models.page import Page, StandardPage
 from magicbullet.models.file import File
 from magicbullet.models.news import News
 from magicbullet.models.resource import Resource

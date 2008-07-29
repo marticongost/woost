@@ -7,7 +7,7 @@
 @since:			June 2008
 """
 from magicbullet import schema
-from magicbullet.persistence import Entity
+from magicbullet.persistence import Entity, datastore
 
 class Item(Entity):
 
@@ -31,4 +31,18 @@ class Item(Entity):
     groups = schema.Collection(
         items = "magicbullet.models.Group"
     )
+
+    def get_roles(self, context):
+        
+        roles = [self]
+        target_instance = context.get("target_instance")
+
+        if target_instance and target_instance.owner is self:
+            roles.append(datastore.root["owner_role"])
+
+        if target_instance and target_instance.author is self:
+            roles.append(datastore.root["author_role"])
+        
+        roles.extend(self.groups)
+        return roles
 

@@ -14,7 +14,8 @@ class User(Item):
     email = schema.String(
         required = True,
         unique = True,
-        max = 255
+        max = 255,
+        indexed = True
         # TODO: format
     )
 

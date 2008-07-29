@@ -25,3 +25,12 @@ class Action(Entity):
         translated = True
     )
 
+    def __repr__(self):
+        
+        base_repr = Entity.__repr__(self)
+
+        if self.identifier:
+            base_repr += " (" + self.identifier + ")"
+
+        return base_repr
+

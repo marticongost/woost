@@ -10,16 +10,16 @@ from threading import local
 
 _thread_data = local()
 
-def get_language():
+def get_content_language():
     return getattr(_thread_data, "language", None)
 
-def set_language(language):
+def set_content_language(language):
     _thread_data.language = language
 
-def require_language(language = None):
+def require_content_language(language = None):
     
     if language is None:
-        language = get_language()
+        language = get_content_language()
 
     if language is None:
         raise NoActiveLanguageError()

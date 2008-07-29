@@ -8,9 +8,17 @@
 """
 from magicbullet import schema
 from magicbullet.models import Item
+from datetime import datetime
 
 class Publishable(Item):
 
+    def __init__(self, **values):
+        Item.__init__(self, **values)
+        self.__handler_name = None
+        self._v_handler = None
+
+    # Publication state
+    #--------------------------------------------------------------------------    
     enabled = schema.Boolean(
         required = True,
         default = True
@@ -22,19 +30,52 @@ class Publishable(Item):
         min = lambda ctx: ctx.validable.pub_start
     )
 
-    path = schema.String(
-        max = 1024
-    )
+    def is_current(self):
+        now = datetime.now()
+        return (self.start_date is None or self.start_date <= now) \
+            and (self.end_date is None or self.end_date > now)
 
-    path_is_regexp = schema.Boolean(
-        required = True,
-        default = False
+    def is_published(self):
+        return self.enabled and self.is_current()
+
+    # Behavior and appearance
+    #--------------------------------------------------------------------------
+    path = schema.String(
+        max = 1024,
+        indexed = True,
+        unique = True
     )
-   
-    controller = schema.String(max = 1024)
 
     template = schema.Reference(type = "magicbullet.models.Template")
     
+    def _get_handler(self):
+        
+        handler = getattr(self, "_v_handler", None)
+
+        if handler is None and self.__handler_name:
+            self._v_handler = handler = import_object(self.__handler_name)
+        
+        return handler
+
+    def _set_handler(self, value):
+        
+        if isinstance(value, basestring):
+            self.__handler_name = value
+            self._v_handler = import_object(value)
+        else:
+            self.__handler_name = get_full_name(value)
+            self._v_handler = value
+
+    handler = property(_get_handler, _set_handler, doc = """
+        Gets or sets the callable that handles requests for the item. The
+        callable can be specified using a reference or its fully qualified
+        name. In either case, the callable must be bound to a fully qualified
+        name, so that it can be persisted.
+        @type: callable or str
+        """)
+
+    # Drafts
+    #--------------------------------------------------------------------------
     draft_source = schema.Reference(type = "magicbullet.models.Publishable")
 
     drafts = schema.Collection(items = "magicbullet.models.Publishable")

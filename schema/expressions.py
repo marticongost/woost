@@ -15,8 +15,9 @@ class Expression(object):
     def __init__(self, *operands):
         self.operands = tuple(self.wrap(operand) for operand in operands)
 
-    def eval(self, context):
-        return self.op(*[operand.eval(context) for operand in self.operands])
+    def eval(self, context, get_value = operator.getitem):
+        return self.op(*[operand.eval(context, get_value)
+                         for operand in self.operands])
 
     @classmethod
     def wrap(cls, expr):
@@ -91,7 +92,7 @@ class Constant(Expression):
     def __init__(self, value):
         self.value = value
 
-    def eval(self, context):
+    def eval(self, context, get_value):
         return self.value
 
 
@@ -100,8 +101,8 @@ class Variable(Expression):
     def __init__(self, name):
         self.name = name
 
-    def eval(self, context):
-        return context[self.name]
+    def eval(self, context, get_value):
+        return get_value(context, self.name)
 
 
 class EqualExpression(Expression):
