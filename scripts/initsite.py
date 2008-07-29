@@ -27,7 +27,6 @@ def init_site(admin_identifier, admin_password):
     back_office = BackOffice()    
     back_office.critical = True
     back_office.path = "cms"
-    back_office_uri = site.uri(back_office.path)
 
     back_office.set("title", u"MagicBullet CMS", "ca")
     back_office.set("title", u"MagicBullet CMS", "es")
@@ -51,7 +50,7 @@ def init_site(admin_identifier, admin_password):
     )
     message_stylesheet.html = \
         u"""<link rel="Stylesheet" type="text/css" href="%s"/>""" \
-        % site.uri("resources", "styles", "greeting.css")
+        % site.uri("resources", "styles", "message.css")
 
     # Create the temporary home page
     site.home = StandardPage()
@@ -64,13 +63,16 @@ def init_site(admin_identifier, admin_password):
     site.home.set_translations("body",
         ca = u"El teu lloc web s'ha creat correctament. Ja pots començar a "
             u"<a href='%s'>treballar-hi</a> i substituir aquesta pàgina amb "
-            u"els teus propis continguts." % back_office_uri,
+            u"els teus propis continguts."
+            % site.uri("content", "ca", back_office.path),
         es = u"Tu sitio web se ha creado correctamente. Ya puedes empezar a "
             u"<a href='%s'>trabajar</a> en él y sustituir esta página "
-            u"con tus propios contenidos." % back_office_uri,
+            u"con tus propios contenidos."
+            % site.uri("content", "es", back_office.path),
         en = u"Your web site has been created successfully. You can start "
             u"<a href='%s'>working on it</a> and replace this page with your "
-            u"own content." % back_office_uri        
+            u"own content."
+            % site.uri("content", "en", back_office.path)
     )
     site.home.resources.append(message_stylesheet)
 
