@@ -108,7 +108,9 @@ def init_site(admin_identifier, admin_password):
     <input type="text" name="user" value=""/>
     <label for="password">%s:</label>
     <input type="password" name="password"/>
-    <input type="submit" name="authenticate" value="%s"/>
+    <div class="buttons">
+        <input type="submit" name="authenticate" value="%s"/>
+    </div>
 </form>
 """
     login_page.set_translations("body",
