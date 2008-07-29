@@ -42,6 +42,17 @@ def init_site(admin_identifier, admin_password):
         en = u"Empty template"
     )
 
+    # Create standard resources
+    message_stylesheet = Resource()
+    message_stylesheet.set_translations("title",
+        ca = u"Full d'estils de benvinguda",
+        es = u"Hoja de estilos de bienvenida",
+        en = u"Greeting stylesheet"
+    )
+    message_stylesheet.html = \
+        u"""<link rel="Stylesheet" type="text/css" href="%s"/>""" \
+        % site.uri("resources", "styles", "greeting.css")
+
     # Create the temporary home page
     site.home = StandardPage()
     site.home.template = empty_template
@@ -61,18 +72,25 @@ def init_site(admin_identifier, admin_password):
             u"<a href='%s'>working on it</a> and replace this page with your "
             u"own content." % back_office_uri        
     )
+    site.home.resources.append(message_stylesheet)
 
-    greeting_stylesheet = Resource()
-    greeting_stylesheet.set_translations("title",
-        ca = u"Full d'estils de benvinguda",
-        es = u"Hoja de estilos de bienvenida",
-        en = u"Greeting stylesheet"
+    # Create the 'content not found' page
+    site.not_found_error_page = StandardPage()
+    site.not_found_error_page.template = empty_template
+    site.not_found_error_page.set_translations("title",
+        ca = u"Pàgina no trobada",
+        es = u"Página no encontrada",
+        en = u"Page not found"
     )
-    greeting_stylesheet.html = \
-        u"""<link rel="Stylesheet" type="text/css" href="%s"/>""" \
-        % site.uri("resources", "styles", "greeting.css")
-
-    site.home.resources.append(greeting_stylesheet)
+    site.not_found_error_page.set_translations("body",
+        ca = u"La direcció indicada no coincideix amb cap dels continguts "
+             u"del web. Si us plau, revísa-la i torna-ho a provar.",
+        es = u"La dirección indicada no coincide con ninguno de los "
+             u"contenidos del web. Por favor, revísala y intentalo de nuevo.",
+        en = u"Couldn't find the indicated address. Please, verify it and try "
+             u"again."
+    )
+    site.not_found_error_page.resources.append(message_stylesheet)
 
     # Create the authentication form
     login_page = StandardPage()
@@ -111,7 +129,7 @@ def init_site(admin_identifier, admin_password):
 </p>
 """ + (login_form % (u"User", u"Password", u"Enter"))
     )
-
+    login_page.resources.append(message_stylesheet)
     site.forbidden_error_page = login_page
     
     # Create standard users and roles
