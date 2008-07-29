@@ -126,7 +126,7 @@ class Site(Entity):
                 raise cherrypy.NotFound()
 
             path.pop(0)
-            language = path.pop(1)
+            language = path.pop(0)
             set_content_language(language)
         else:
             set_content_language(self.default_language)
