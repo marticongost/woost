@@ -14,7 +14,10 @@ from genshi.filters import Translator
 from genshi.template import TemplateLoader
 from magicbullet.translations import translations
 from magicbullet.language import set_content_language
-from magicbullet.controllers.authentication import Authentication
+from magicbullet.controllers.authentication import (
+    Authentication,
+    AuthenticationFailedError
+)
 from magicbullet.controllers.dispatcher import Dispatcher
 from magicbullet import schema
 from magicbullet.persistence import Entity, datastore
@@ -159,7 +162,7 @@ class Site(Entity):
             status = 404
             error_page = self.not_found_error_page
         
-        elif isinstance(error, AccessDeniedError):
+        elif isinstance(error, (AccessDeniedError, AuthenticationFailedError)):
             status = 403
             error_page = self.forbidden_error_page
        

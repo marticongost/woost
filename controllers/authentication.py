@@ -54,17 +54,17 @@ class Authentication(object):
         identifier = identifier.strip()
 
         if identifier and password:
-            user = self.identifier_field.index[identifier]
+            user = self.identifier_field.index.get(identifier)
 
             if user \
             and self.encryption.new(password).digest() == user.password:
                 self.user = user
                 return user
 
-        raise AuthenticationFailed(identifier)
+        raise AuthenticationFailedError(identifier)
 
 
-class AuthenticationFailed(Exception):
+class AuthenticationFailedError(Exception):
     """An exception raised when a user authentication attempt fails."""
 
     def __init__(self, identifier):
