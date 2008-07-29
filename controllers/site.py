@@ -57,15 +57,17 @@ class Site(Entity):
     )
 
     not_found_error_page = schema.Reference(
-        type = "magicbullet.models.Publishable",
-        required = False
+        type = "magicbullet.models.Publishable"
     )
 
     forbidden_error_page = schema.Reference(
-        type = "magicbullet.models.Publishable",
-        required = False
+        type = "magicbullet.models.Publishable"
     )
     
+    generic_error_page = schema.Reference(
+        type = "magicbullet.models.Publishable"
+    )
+
     virtual_path = "/"
 
     _cp_config = {
@@ -166,6 +168,9 @@ class Site(Entity):
             status = 403
             error_page = self.forbidden_error_page
        
+        if error_page is None:
+            error_page = self.generic_error_page
+
         if error_page:
             self.dispatcher.validate(error_page)
             return status, self.dispatcher.respond(error_page)
