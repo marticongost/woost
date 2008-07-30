@@ -11,6 +11,13 @@ from magicbullet.models import Publishable
 
 class BackOffice(Publishable):
 
-    def handle_request(self, site):
+    def index(self, site):
         return site.render("back_office_page_tree", item = self)
+
+    index.exposed = True
+
+    def content(self, site):
+        return site.render("back_office_content", item = self)
+
+    content.exposed = True
 

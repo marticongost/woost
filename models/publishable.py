@@ -6,9 +6,10 @@
 @organization:	Whads/Accent SL
 @since:			July 2008
 """
+from datetime import datetime
+import cherrypy
 from magicbullet import schema
 from magicbullet.models import Item
-from datetime import datetime
 
 class Publishable(Item):
 
@@ -73,6 +74,17 @@ class Publishable(Item):
         name, so that it can be persisted.
         @type: callable or str
         """)
+    
+    def index(self, site):
+
+        template = site.get_content_template(self)
+
+        if template is None:
+            raise cherrypy.NotFound()
+
+        return site.render(template.identifier, item = self)       
+
+    index.exposed = True
 
     # Drafts
     #--------------------------------------------------------------------------

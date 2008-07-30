@@ -46,36 +46,38 @@ class Dispatcher(object):
 
     def respond(self, content, extra_path = None):
         
-        handler = self.get_content_handler(content)
+        if extra_path is None:
+            extra_path = []
 
-        if getattr(handler, "accepts_extra_path", False):
-
-            if extra_path is None:
-                extra_path = []
-
-            return handler(content, self.site, extra_path)
-        else:
-            if extra_path:
-                raise cherrypy.NotFound()
-
-            return handler(content, self.site)
-
-    def get_content_handler(self, content):
-        return content.handler \
-            or getattr(content.__class__, "handle_request", None) \
-            or self.default_handler
-
-    def get_content_template(self, content):
-        return content.template
-
-    def render_content(self, content, site):
-
-        template = self.get_content_template(content)
-
-        if template is None:
+        handler = self.get_content_handler(content, extra_path)
+        
+        if handler is None:
             raise cherrypy.NotFound()
 
-        return site.render(template.identifier, item = content)
-    
-    default_handler = render_content
+        if getattr(handler, "im_self", None) is content:
+            return handler(self.site, *extra_path)
+        else:
+            return handler(content, self.site, *extra_path)
+
+    def get_content_handler(self, content, extra_path):
+        
+        handler = content.handler or content
+        
+        while extra_path:
+            child = getattr(handler, extra_path[0], None)
+            
+            if child is None:
+                handler = getattr(handler, "default", None)
+                break
+
+            handler = child
+            extra_path.pop(0)
+        
+        if handler is not None and not callable(handler):
+            handler = getattr(handler, "index", None)
+        
+        if handler is not None and not getattr(handler, "exposed", False):
+            handler = None
+
+        return handler
 

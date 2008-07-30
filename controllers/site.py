@@ -177,6 +177,9 @@ class Site(Entity):
         else:
             raise
 
+    def get_content_template(self, content):
+        return content.template
+
     def render(self, template_name, **kwargs):
         template = self.template_loader.load(template_name + ".html")
         template.filters.insert(0, Translator(translations.request))
