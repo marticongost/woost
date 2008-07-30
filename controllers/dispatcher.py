@@ -15,15 +15,25 @@ class Dispatcher(object):
         self.site = site
 
     def dispatch(self, path): 
-        content = self.resolve(path)
+        content, extra_path = self.resolve(path)        
         self.validate(content)
-        return self.respond(content)
+        return self.respond(content, extra_path)
 
     def resolve(self, path):
-        if path:
-            return Publishable.path.index.get(path)
+        
+        base_path = path.split("/") if path else None
+        extra_path = []
+        
+        while base_path:
+            content = Publishable.path.index.get("/".join(base_path))
+            if content:
+                break
+            else:
+                extra_path.insert(0, base_path.pop())
         else:
-            return self.site.home
+            content = self.site.home
+        
+        return content, extra_path
 
     def validate(self, content):
 
@@ -34,9 +44,21 @@ class Dispatcher(object):
             action = "read",
             target_instance = content)
 
-    def respond(self, content):        
+    def respond(self, content, extra_path = None):
+        
         handler = self.get_content_handler(content)
-        return handler(content)
+
+        if getattr(handler, "accepts_extra_path", False):
+
+            if extra_path is None:
+                extra_path = []
+
+            return handler(content, extra_path)
+        else:
+            if extra_path:
+                raise cherrypy.NotFound()
+
+            return handler(content)
 
     def get_content_handler(self, content):
         return content.handler \
