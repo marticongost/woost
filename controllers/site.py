@@ -144,7 +144,7 @@ class Site(Entity):
             user = self.auth.user
             roles = user.get_roles(context)
 
-            if user is not self.auth.anonymous_user:
+            if user.anonymous:
                 roles.append(datastore.root["authenticated_role"])
                 
             context["roles"] = roles
@@ -182,5 +182,6 @@ class Site(Entity):
         template.filters.insert(0, Translator(translations.request))
         kwargs.setdefault("translations", translations)
         kwargs.setdefault("user", self.auth.user)
+        kwargs.setdefault("site", self)
         return template.generate(**kwargs).render("html", doctype = "html")
 

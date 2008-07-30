@@ -1,14 +1,93 @@
 
-body {
-    border: 1px solid rgb(120,120,120);
-    padding: 10px;
-    margin: 5px;
+html, body {
+    margin: 0;
+    padding: 0;
     font-family: Bitstream Vera Sans;
-    font-size: 10pt;
+    font-size: 11pt;
 }
 
-body.error {
-    border-color: rgb(235,110,40);
-    background-color: rgb(255,240,220);
+body {
+    padding: 1em;
 }
 
+#header {
+    width: 100%;
+    overflow: hidden;
+    margin-bottom: 1em;
+}
+
+#header h1 {
+    margin: 0;
+    padding: 0;
+    font-size: 1.5em;
+    color: rgb(100,125,150);
+    float: left;
+}
+
+#identity {    
+    float: right;
+    margin-top: 0.5em;
+    font-size: 0.8em;
+}
+
+#identity .user_identifier {
+    color: rgb(100,100,100);
+    font-weight: bold;
+}
+
+#identity form {
+    display: inline;
+    margin: 0;
+    padding: 0;
+}
+
+a, #identity input {
+    font-size: inherit;
+    background: none;
+    border: none;
+    text-decoration: none;
+    color: rgb(100,125,150);
+    margin: 0;
+    padding: 0;
+}
+
+#navigation {
+    clear: both;
+    margin-bottom: 2em;
+    padding-top: 0.5em;
+    padding-bottom: 0.5em;
+    overflow: hidden;
+    width: 100%;
+    border: 1px dotted rgb(210,220,230);
+    border-left: none;
+    border-right: none;
+}
+
+#navigation a {
+    margin-right: 1.5em;
+    float: left;
+    display: block;
+    background-repeat: no-repeat;
+    background-position: 0 1px;
+    padding-left: 1.3em;
+}
+
+#site_tab {
+    background-image: url(site.png);
+}
+
+#pages_tab {
+    background-image: url(pages.png);
+}
+
+#content_tab {
+    background-image: url(document.png);
+}
+
+#access_rules_tab {
+    background-image: url(access_rule.png);
+}
+
+#body {
+    clear: both;
+}

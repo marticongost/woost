@@ -1,20 +1,41 @@
-<html>
+<html
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:py="http://genshi.edgewall.org/">
 	
 	<head>
 		<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
         <title>MagicBullet CMS</title>
         <link rel="Stylesheet" type="text/css" href="/resources/styles/backoffice.css"/>
+        <py:for each="resource in item.resources">${resource.html}</py:for>
 	</head>
 	
     <body>
 
-        <div id="header"></div>
+        <div id="header">
+            <h1>MagicBullet CMS</h1>
+            <div id="identity" py:if="not user.anonymous">
+                You are logged in as
+                <span class="user_identifier">${user.title}</span>.
+                <form method="post">
+                    <input type="submit" name="logout" value="Logout"/>
+                </form>
+            </div>
+        </div>
 
-        <div id="navigation"></div>
+        <div id="navigation">
+            <a id="site_tab" href="${site.uri(item.path), 'site'}">Site</a>
+            <a id="pages_tab" href="${site.uri(item.path, 'pages')}">Pages</a>
+            <a id="content_tab" href="${site.uri(item.path, 'content')}">Content</a>
+            <a id="access_rules_tab" href="${site.uri(item.path, 'rules')}">Access rules</a>
+        </div>
         
-        <div id="body"></div>
+        <div id="body">
+            <body-block/>
+        </div>
 
-        <div id="footer"></div>
+        <div id="footer">
+            <footer-block/>
+        </div>
 
 	</body>
 

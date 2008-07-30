@@ -138,6 +138,7 @@ def init_site(admin_identifier, admin_password):
     
     # Create standard users and roles
     anonymous_role = datastore.root["anonymous_role"] = User()    
+    anonymous_role.anonymous = True
     anonymous_role.critical = True
     anonymous_role.set_translations("title",
         ca = u"Anònim",

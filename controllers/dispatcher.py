@@ -53,12 +53,12 @@ class Dispatcher(object):
             if extra_path is None:
                 extra_path = []
 
-            return handler(content, extra_path)
+            return handler(content, self.site, extra_path)
         else:
             if extra_path:
                 raise cherrypy.NotFound()
 
-            return handler(content)
+            return handler(content, self.site)
 
     def get_content_handler(self, content):
         return content.handler \
@@ -68,14 +68,14 @@ class Dispatcher(object):
     def get_content_template(self, content):
         return content.template
 
-    def render_content(self, content):
+    def render_content(self, content, site):
 
         template = self.get_content_template(content)
 
         if template is None:
             raise cherrypy.NotFound()
 
-        return self.site.render(template.identifier, item = content)
+        return site.render(template.identifier, item = content)
     
     default_handler = render_content
 

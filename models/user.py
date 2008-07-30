@@ -10,7 +10,9 @@ from magicbullet import schema
 from magicbullet.models import Item
 
 class User(Item):
-    
+ 
+    anonymous = False
+
     email = schema.String(
         required = True,
         unique = True,
