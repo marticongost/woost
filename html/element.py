@@ -54,6 +54,7 @@ class Element(object):
         self.__client_params = None
         self.__is_ready = False
         self.__ready_handlers = None
+        self.__value = None
 
         if tag is not default:
             self.tag = tag
@@ -97,6 +98,30 @@ class Element(object):
 
             desc += ">"
             return desc
+
+    # Data binding
+    #------------------------------------------------------------------------------
+    def _get_value(self):
+        return self.__value.value
+    
+    def _set_value(self, value):
+
+        if value is None:
+            value = ""
+
+        if self.__value is None:
+            self.__value = Content(value)
+            self.append(self.__value)
+        else:
+            self.__value.value = value
+
+    value = property(_get_value, _set_value, doc = """
+        Gets or sets the text content of the element.
+        @type: str
+        """)
+    
+    item = None
+    member = None
 
     # Rendering
     #--------------------------------------------------------------------------
@@ -509,6 +534,7 @@ class Element(object):
 class Content(Element):
  
     styled_class = False
+    value = None
 
     def __init__(self, value, *args, **kwargs):
         Element.__init__(self, *args, **kwargs)
