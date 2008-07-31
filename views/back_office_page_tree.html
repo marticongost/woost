@@ -1,3 +1,20 @@
+<?python
+from magicbullet.html import Element
+from magicbullet.html.treeview import TreeView
+
+class PageTreeView(TreeView):
+
+    def create_label(self, page):
+        link = Element("a")
+        link.add_class(page.__class__.__name__)
+        link["href"] = cms.uri(item.path, "pages", str(page.id))
+        link.append(page.title)
+        return link
+
+tree_view = PageTreeView()
+tree_view.root = site.home
+?>
+
 <html
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:py="http://genshi.edgewall.org/"
@@ -6,7 +23,7 @@
     <title py:match="title">Tree view</title>
 
 	<div py:match="body-block">
-        Here goes the tree view
+        ${Markup(tree_view.render())}
     </div>
 
     <xi:include href="back_office_layout.html"/>

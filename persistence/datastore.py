@@ -36,7 +36,8 @@ class DataStore(object):
         root = getattr(self._thread_data, "root", None)
 
         if root is None:
-            self._thread_data.root = root = self.connection.root()
+            root = self.connection.root()
+            self._thread_data.root = root
 
         return root
 
@@ -52,7 +53,11 @@ class DataStore(object):
         connection = getattr(self._thread_data, "connection", None)
 
         if connection is None:
-            self._thread_data.connection = connection = self.db.open()
+            print ":" * 80
+            print "Opening datastore"
+            print ":" * 80
+            connection = self.db.open()
+            self._thread_data.connection = connection
 
         return connection
 
@@ -64,13 +69,20 @@ class DataStore(object):
         Accessing the L{root} or L{connection} properties after this method is
         called will spawn a new database connection.
         """
+        print ":" * 80
+        print "Closing datastore"
+        print ":" * 80
+
         if hasattr(self._thread_data, "root"):
-            del self._thread_data.root
+            self._thread_data.root = None
 
         if hasattr(self._thread_data, "connection"):
             self._thread_data.connection.close()
-            del self._thread_data.connection
+            self._thread_data.connection = None
 
+    def sync(self):
+        self._thread_data.root = None
+        self.connection.sync()
 
 datastore = DataStore(settings.storage)
 

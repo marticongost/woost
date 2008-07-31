@@ -7,61 +7,58 @@
 @since:			July 2008
 """
 import cherrypy
-from magicbullet.models import Publishable
+from magicbullet.models import Publishable, Site
+from magicbullet.controllers.module import Module
 
-class Dispatcher(object):
 
-    def __init__(self, site):
-        self.site = site
+class Dispatcher(Module):
 
-    def dispatch(self, path): 
-        content, extra_path = self.resolve(path)        
-        self.validate(content)
-        return self.respond(content, extra_path)
+    def process_request(self, request):
+        
+        publishable, extra_path = self.resolve(request.path)
+        request.publishable = publishable
+        request.extra_path = extra_path
+        
+        self.validate(publishable)
+
+        request.output = self.respond(request)
 
     def resolve(self, path):
         
-        base_path = path.split("/") if path else None
         extra_path = []
         
-        while base_path:
-            content = Publishable.path.index.get("/".join(base_path))
-            if content:
+        while path:
+            publishable = Publishable.path.index.get("/".join(path))
+            if publishable:
                 break
             else:
-                extra_path.insert(0, base_path.pop())
+                extra_path.insert(0, path.pop())
         else:
-            content = self.site.home
+            publishable = Site.main.home
         
-        return content, extra_path
+        return publishable, extra_path
 
-    def validate(self, content):
+    def validate(self, publishable):
 
-        if content is None or not content.is_published():
+        if publishable is None or not publishable.is_published():
             raise cherrypy.NotFound()
         
-        self.site.restrict_access(
+        self.application.authorization.restrict_access(
             action = "read",
-            target_instance = content)
+            target_instance = publishable)
 
-    def respond(self, content, extra_path = None):
+    def respond(self, request):
         
-        if extra_path is None:
-            extra_path = []
-
-        handler = self.get_content_handler(content, extra_path)
+        handler = self.find_handler(request.publishable, request.extra_path)
         
         if handler is None:
             raise cherrypy.NotFound()
 
-        if getattr(handler, "im_self", None) is content:
-            return handler(self.site, *extra_path)
-        else:
-            return handler(content, self.site, *extra_path)
+        return handler(self.application, request)
 
-    def get_content_handler(self, content, extra_path):
+    def find_handler(self, publishable, extra_path):
         
-        handler = content.handler or content
+        handler = publishable.handler or publishable
         
         while extra_path:
             child = getattr(handler, extra_path[0], None)

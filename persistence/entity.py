@@ -191,7 +191,7 @@ class EntityClass(type, schema.Schema):
             cls.translation.add_member(member.translation)
         
         # An indexed member gets its own btree
-        if member.indexed and member.index is None and not member.primary:            
+        if member.indexed and member.index_key is None:
             member.index_key = cls.__full_name + "." + member.name
 
     def _unique_validation_rule(cls, member, value, context):

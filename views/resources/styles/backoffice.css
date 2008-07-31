@@ -64,7 +64,7 @@ a, #identity input {
 }
 
 #navigation a {
-    margin-right: 1.5em;
+    margin-right: 2em;
     float: left;
     display: block;
     background-repeat: no-repeat;
@@ -90,4 +90,8 @@ a, #identity input {
 
 #body {
     clear: both;
+}
+
+.PageTreeView li {
+    list-style-type: none;
 }

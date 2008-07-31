@@ -7,6 +7,7 @@ Provides base and default content types for the MagicBullet CMS.
 @organization:	Whads/Accent SL
 @since:			June 2008
 """
+from magicbullet.models.site import Site
 from magicbullet.models.item import Item
 from magicbullet.models.action import Action
 from magicbullet.models.language import Language

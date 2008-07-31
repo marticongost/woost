@@ -11,16 +11,25 @@ import cherrypy
 from magicbullet.modeling import getter
 from magicbullet.models import User
 from magicbullet.persistence import datastore
+from magicbullet.controllers.module import Module
 
-class Authentication(object):
+
+class Authentication(Module):
 
     SESSION_KEY = "user_id"
 
     encryption = sha
     identifier_field = User.email
 
-    def __init__(self, site):
-        self.site = site
+    def process_request(self, request):
+
+        params = cherrypy.request.params
+
+        if "authenticate" in params:
+            self.login(
+                params.get("user"),
+                params.get("password")
+            )
 
     def _get_user(self):
         user_id = cherrypy.session.get(self.SESSION_KEY)

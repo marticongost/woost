@@ -21,6 +21,21 @@ def wrapper(function):
 def getter(function):
     return property(function, doc = function.__doc__)
 
+class classgetter(object):
+
+    def __init__(self, func):
+        self.func = func
+
+    def __get__(self, instance, cls = None):
+        
+        if cls is None and instance is not None:
+            cls = type(instance)
+           
+        if cls is None:
+            return self
+        else:
+            return self.func(cls)
+
 def refine(element):
     
     def decorator(function):

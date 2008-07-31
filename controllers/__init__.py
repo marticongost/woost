@@ -7,5 +7,6 @@ Controllers for the CMS backend and frontend applications.
 @organization:	Whads/Accent SL
 @since:			July 2008
 """
-from magicbullet.controllers.site import Site
+from magicbullet.controllers.application import CMS
+from magicbullet.controllers.module import Module
 

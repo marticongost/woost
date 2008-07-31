@@ -6,8 +6,10 @@
 @organization:	Whads/Accent SL
 @since:			July 2008
 """
+import sha
 from magicbullet.persistence import datastore
 from magicbullet.models import (
+    Site,
     Action,
     AccessRule,
     User,
@@ -15,22 +17,28 @@ from magicbullet.models import (
     Resource,
     Template
 )
-from magicbullet.controllers import Site
 from magicbullet.controllers.backoffice import BackOffice
 
-def init_site(admin_identifier, admin_password):
-
+def init_site(
+    admin_email = "admin@localhost",
+    admin_password = "",
+    uri = "/"):
+    
     # Create the site
     site = Site()
+    site.languages = ["ca", "es", "en"]
+    datastore.root["main_site"] = site
     
     # Create the back office interface
     back_office = BackOffice()    
     back_office.critical = True
     back_office.path = "cms"
 
-    back_office.set("title", u"MagicBullet CMS", "ca")
-    back_office.set("title", u"MagicBullet CMS", "es")
-    back_office.set("title", u"MagicBullet CMS", "en")
+    back_office.set_translations("title",
+        ca = u"MagicBullet CMS",
+        es = u"MagicBullet CMS",
+        en = u"MagicBullet CMS"
+    )
  
     # Create standard templates
     empty_template = Template()
@@ -50,7 +58,7 @@ def init_site(admin_identifier, admin_password):
     )
     message_stylesheet.html = \
         u"""<link rel="Stylesheet" type="text/css" href="%s"/>""" \
-        % site.uri("resources", "styles", "message.css")
+        % (uri + "resources/styles/message.css")
 
     # Create the temporary home page
     site.home = StandardPage()
@@ -64,15 +72,15 @@ def init_site(admin_identifier, admin_password):
         ca = u"El teu lloc web s'ha creat correctament. Ja pots començar a "
             u"<a href='%s'>treballar-hi</a> i substituir aquesta pàgina amb "
             u"els teus propis continguts."
-            % site.uri("content", "ca", back_office.path),
+            % (uri + back_office.path),
         es = u"Tu sitio web se ha creado correctamente. Ya puedes empezar a "
             u"<a href='%s'>trabajar</a> en él y sustituir esta página "
             u"con tus propios contenidos."
-            % site.uri("content", "es", back_office.path),
+            % (uri + back_office.path),
         en = u"Your web site has been created successfully. You can start "
             u"<a href='%s'>working on it</a> and replace this page with your "
             u"own content."
-            % site.uri("content", "en", back_office.path)
+            % (uri + back_office.path)
     )
     site.home.resources.append(message_stylesheet)
 
@@ -172,8 +180,8 @@ def init_site(admin_identifier, admin_password):
  
     admin = User()
     admin.critical = True
-    admin.set(site.auth.identifier_field, admin_identifier)
-    admin.password = site.auth.encryption.new(admin_password).digest()
+    admin.email = admin_email
+    admin.password = sha.new(admin_password).digest()
     admin.set_translations("title",
         ca = u"Administrador",
         es = u"Administrador",
@@ -238,15 +246,15 @@ if __name__ == "__main__":
     def random_string(length, source = letters + digits + "!?.-$#&@*"):
         return "".join(choice(source) for i in range(length))
 
-    admin_identifier = "admin@localhost"
-    admin_password = random_string(8)
+    admin_email = "admin@localhost"
+    admin_password = "foo" #random_string(8)
 
-    init_site(admin_identifier, admin_password)
+    init_site(admin_email, admin_password)
     
     print u"Your site has been successfully created. You can start it by " \
           u"executing the 'run.py' script. An administrator account for the " \
           u"content manager interface has been generated, with the " \
           u"following credentials:\n\n" \
-          u"\tIdentifier: %s\n" \
-          u"\tPassword:   %s\n\n" % (admin_identifier, admin_password)
+          u"\tEmail:     %s\n" \
+          u"\tPassword:  %s\n\n" % (admin_email, admin_password)
 

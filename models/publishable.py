@@ -75,14 +75,14 @@ class Publishable(Item):
         @type: callable or str
         """)
     
-    def index(self, site):
+    def index(self, cms, request):
 
-        template = site.get_content_template(self)
+        template = self.template
 
         if template is None:
             raise cherrypy.NotFound()
 
-        return site.render(template.identifier, item = self)       
+        return cms.rendering.render(template.identifier, item = self)       
 
     index.exposed = True
 
