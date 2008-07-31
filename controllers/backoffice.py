@@ -7,17 +7,16 @@
 @since:			July 2008
 """
 from magicbullet.models import Publishable
+from magicbullet.controllers import exposed
 
 
 class BackOffice(Publishable):
 
+    @exposed
     def index(self, cms, request):
         return cms.rendering.render("back_office_page_tree", item = self)
 
-    index.exposed = True
-
+    @exposed
     def content(self, cms, request):
         return cms.rendering.render("back_office_content", item = self)
-
-    content.exposed = True
 

@@ -1,0 +1,27 @@
+<?python
+from magicbullet.html import Element
+from magicbullet.html.table import Table
+from magicbullet.models import Item
+
+item_type = Item
+
+table = Table()
+table.schema = item_type
+table.data = Item.index.values()
+
+?>
+
+<html
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:py="http://genshi.edgewall.org/"
+    xmlns:xi="http://www.w3.org/2001/XInclude">
+
+    <title py:match="title">Tree view</title>
+
+	<div py:match="body-block">
+        ${Markup(table.render())}
+    </div>
+
+    <xi:include href="back_office_layout.html"/>
+
+</html>

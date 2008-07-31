@@ -9,4 +9,5 @@ Controllers for the CMS backend and frontend applications.
 """
 from magicbullet.controllers.application import CMS
 from magicbullet.controllers.module import Module
+from magicbullet.controllers.exposed import exposed
 

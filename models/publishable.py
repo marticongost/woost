@@ -10,6 +10,8 @@ from datetime import datetime
 import cherrypy
 from magicbullet import schema
 from magicbullet.models import Item
+from magicbullet.controllers.exposed import exposed
+
 
 class Publishable(Item):
 
@@ -75,6 +77,7 @@ class Publishable(Item):
         @type: callable or str
         """)
     
+    @exposed
     def index(self, cms, request):
 
         template = self.template
@@ -83,8 +86,6 @@ class Publishable(Item):
             raise cherrypy.NotFound()
 
         return cms.rendering.render(template.identifier, item = self)       
-
-    index.exposed = True
 
     # Drafts
     #--------------------------------------------------------------------------
