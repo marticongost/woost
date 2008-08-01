@@ -24,11 +24,6 @@ class Page(Publishable):
         default = False
     )
 
-    resources = schema.Collection(
-        items = "magicbullet.models.Resource",
-        ordered = True
-    )
-
 
 class StandardPage(Page):
     

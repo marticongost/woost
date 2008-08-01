@@ -90,6 +90,11 @@ class Publishable(Item):
 
         return cms.rendering.render(template.identifier, item = self)       
 
+    resources = schema.Collection(
+        items = "magicbullet.models.Resource",
+        ordered = True
+    )
+
     # Drafts
     #--------------------------------------------------------------------------
     draft_source = schema.Reference(type = "magicbullet.models.Publishable")
