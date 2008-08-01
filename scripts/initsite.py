@@ -24,6 +24,59 @@ def init_site(
     admin_password = "",
     uri = "/"):
     
+    # Create the administrator user    
+    admin = User()
+    admin.critical = True
+    admin.email = admin_email
+    admin.password = sha.new(admin_password).digest()
+    admin.set_translations("title",
+        ca = u"Administrador",
+        es = u"Administrador",
+        en = u"Administrator"
+    )
+
+    # Create standard users and roles
+    anonymous_role = datastore.root["anonymous_role"] = User()
+    anonymous_role.anonymous = True
+    anonymous_role.critical = True
+    anonymous_role.author = admin
+    anonymous_role.owner = admin
+    anonymous_role.set_translations("title",
+        ca = u"Anònim",
+        es = u"Anónimo",
+        en = u"Anonymous"
+    )
+
+    authenticated_role = datastore.root["authenticated_role"] = User()
+    authenticated_role.critical = True
+    authenticated_role.author = admin
+    authenticated_role.owner = admin
+    authenticated_role.set_translations("title",
+        ca = u"Autenticat",
+        es = u"Autenticado",
+        en = u"Authenticated"
+    )
+
+    author_role = datastore.root["author_role"] = User()
+    author_role.critical = True
+    author_role.author = admin
+    author_role.owner = admin
+    author_role.set_translations("title",
+        ca = u"Autor",
+        es = u"Autor",
+        en = u"Author"
+    )
+
+    owner_role = datastore.root["owner_role"] = User()
+    owner_role.critical = True
+    owner_role.author = admin
+    owner_role.owner = admin
+    owner_role.set_translations("title",
+        ca = u"Propietari",
+        es = u"Propietario",
+        en = u"Owner"
+    )
+
     # Create the site
     site = Site()
     site.languages = ["ca", "es", "en"]
@@ -33,7 +86,8 @@ def init_site(
     back_office = BackOffice()    
     back_office.critical = True
     back_office.path = "cms"
-
+    back_office.author = admin
+    back_office.owner = admin
     back_office.set_translations("title",
         ca = u"MagicBullet CMS",
         es = u"MagicBullet CMS",
@@ -48,6 +102,8 @@ def init_site(
         es = u"Plantilla vacía",
         en = u"Empty template"
     )
+    empty_template.author = admin
+    empty_template.owner = admin
 
     # Create standard resources
     message_stylesheet = Resource()
@@ -59,10 +115,14 @@ def init_site(
     message_stylesheet.html = \
         u"""<link rel="Stylesheet" type="text/css" href="%s"/>""" \
         % (uri + "resources/styles/message.css")
+    message_stylesheet.author = admin
+    message_stylesheet.owner = admin
 
     # Create the temporary home page
     site.home = StandardPage()
     site.home.template = empty_template
+    site.home.author = admin
+    site.home.owner = admin
     site.home.set_translations("title",
         ca = u"Benvingut!",
         es = u"Bienvenido!",
@@ -86,6 +146,8 @@ def init_site(
 
     # Create the 'content not found' page
     site.not_found_error_page = StandardPage()
+    site.not_found_error_page.author = admin
+    site.not_found_error_page.owner = admin
     site.not_found_error_page.template = empty_template
     site.not_found_error_page.set_translations("title",
         ca = u"Pàgina no trobada",
@@ -104,6 +166,8 @@ def init_site(
 
     # Create the authentication form
     login_page = StandardPage()
+    login_page.author = admin
+    login_page.owner = admin
     login_page.template = empty_template
     login_page.set_translations("title",
         ca = u"Autenticació d'usuari",
@@ -142,51 +206,7 @@ def init_site(
 """ + (login_form % (u"User", u"Password", u"Enter"))
     )
     login_page.resources.append(message_stylesheet)
-    site.forbidden_error_page = login_page
-    
-    # Create standard users and roles
-    anonymous_role = datastore.root["anonymous_role"] = User()    
-    anonymous_role.anonymous = True
-    anonymous_role.critical = True
-    anonymous_role.set_translations("title",
-        ca = u"Anònim",
-        es = u"Anónimo",
-        en = u"Anonymous"
-    )
-
-    authenticated_role = datastore.root["authenticated_role"] = User()
-    authenticated_role.critical = True
-    authenticated_role.set_translations("title",
-        ca = u"Autenticat",
-        es = u"Autenticado",
-        en = u"Authenticated"
-    )
-
-    author_role = datastore.root["author_role"] = User()
-    author_role.critical = True
-    author_role.set_translations("title",
-        ca = u"Autor",
-        es = u"Autor",
-        en = u"Author"
-    )
-
-    owner_role = datastore.root["owner_role"] = User()
-    owner_role.critical = True
-    owner_role.set_translations("title",
-        ca = u"Propietari",
-        es = u"Propietario",
-        en = u"Owner"
-    )
- 
-    admin = User()
-    admin.critical = True
-    admin.email = admin_email
-    admin.password = sha.new(admin_password).digest()
-    admin.set_translations("title",
-        ca = u"Administrador",
-        es = u"Administrador",
-        en = u"Administrator"
-    )
+    site.forbidden_error_page = login_page  
 
     # Create standard actions
     create = Action()
@@ -225,16 +245,44 @@ def init_site(
     rules = AccessRule.registry()
 
     # - by default, all content can be viewed by anybody
-    rules.append(AccessRule(action = read, allowed = True))
+    rules.append(
+        AccessRule(
+            action = read,
+            allowed = True,
+            author = admin,
+            owner = admin
+        )
+    )
 
     # - access to the back office requires special privileges
-    rules.append(AccessRule(target_instance = back_office, allowed = False))
+    rules.append(
+        AccessRule(
+            target_instance = back_office,
+            allowed = False,
+            author = admin,
+            owner = admin
+        )
+    )
 
     # - the administrator has full control
-    rules.append(AccessRule(role = admin, allowed = True))
+    rules.append(
+        AccessRule(
+            role = admin,
+            allowed = True,
+            author = admin,
+            owner = admin
+        )
+    )
 
     # - content owners have full control
-    rules.append(AccessRule(role = owner_role, allowed = True))
+    rules.append(
+        AccessRule(
+            role = owner_role,
+            allowed = True,
+            author = admin,
+            owner = admin
+        )
+    )
 
     datastore.commit()
 
