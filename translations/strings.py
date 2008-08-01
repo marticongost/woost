@@ -9,25 +9,25 @@
 from magicbullet.translations.translation import TranslationsRepository
 translations = TranslationsRepository()
 
-translations.define("Site",
+translations.define("site_section",
     ca = u"Lloc web",
     es = u"Sitio web",
     en = u"Web site"
 )
 
-translations.define("Pages",
+translations.define("pages_section",
     ca = u"Pàgines",
     es = u"Páginas",
     en = u"Pages"
 )
 
-translations.define("Content",
+translations.define("content_section",
     ca = u"Contingut",
     es = u"Contenido",
     en = u"Content"
 )
 
-translations.define("Access rules",
+translations.define("access_rules_section",
     ca = u"Regles d'accés",
     es = u"Reglas de acceso",
     en = u"Access rules"
