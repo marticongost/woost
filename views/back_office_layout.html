@@ -14,19 +14,19 @@
         <div id="header">
             <h1>MagicBullet CMS</h1>
             <div id="identity" py:if="not user.anonymous">
-                You are logged in as
+                ${translations.request("logged in as")}
                 <span class="user_identifier">${user.title}</span>.
                 <form method="post">
-                    <input type="submit" name="logout" value="Logout"/>
+                    <input type="submit" name="logout" value="${translations.request('Logout')}"/>
                 </form>
             </div>
         </div>
 
         <div id="navigation">
-            <a id="site_tab" href="${cms.uri(item.path), 'site'}">Site</a>
-            <a id="pages_tab" href="${cms.uri(item.path, 'pages')}">Pages</a>
-            <a id="content_tab" href="${cms.uri(item.path, 'content')}">Content</a>
-            <a id="access_rules_tab" href="${cms.uri(item.path, 'rules')}">Access rules</a>
+            <a id="site_tab" href="${cms.uri(item.path), 'site'}">${translations.request("Site")}</a>
+            <a id="pages_tab" href="${cms.uri(item.path, 'pages')}">${translations.request("Pages")}</a>
+            <a id="content_tab" href="${cms.uri(item.path, 'content')}">${translations.request("Content")}</a>
+            <a id="access_rules_tab" href="${cms.uri(item.path, 'rules')}">${translations.request("Access rules")}</a>
         </div>
         
         <div id="body">

@@ -95,8 +95,9 @@ class DataDisplay(object):
         label = self.__member_labels.get(member, None)
 
         if label is None:
+            effective_member = getattr(member, "copy_source", member)
             label = translations.request(
-                "%s.%s" % (member.schema.name, member.name)
+                "%s.%s" % (effective_member.schema.name, effective_member.name)
             )
 
         return label

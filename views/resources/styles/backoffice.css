@@ -92,6 +92,60 @@ a, #identity input {
     clear: both;
 }
 
-.PageTreeView li {
-    list-style-type: none;
+.PageTreeView ul {
+	padding-top: 1em;
 }
+
+.PageTreeView li {
+    list-style-type: none;	
+	padding-bottom: 1em;
+}
+
+.PageTreeView li .label {
+	font-weight: bold;
+}
+
+.PageTreeView .actions {
+	margin-top: 0.3em;
+}
+
+.PageTreeView .actions a {
+	padding-top: 0.2em;
+	padding-bottom: 0.2em;
+	font-size: 0.8em;
+	background-repeat: no-repeat;
+	background-position: 0 1px;
+	padding-left: 1.7em;
+	margin-right: 1.5em;
+}
+
+.PageTreeView .actions .new {
+	background-image: url(new.png);
+}
+
+.PageTreeView .actions .edit {
+	background-image: url(edit.png);
+}
+
+.PageTreeView .actions .reorder {
+	background-image: url(reorder.png);
+}
+
+.PageTreeView .actions .delete {
+	background-image: url(delete.png);
+}
+
+.Table {
+	border-collapse: collapse;
+}
+
+.Table th, .Table td {
+	text-align: left;
+	padding: 0.5em;
+	padding-right: 1em;
+}
+
+.Table .even {
+	background-color: rgb(230,235,242);
+}
+

@@ -9,7 +9,9 @@ Definition of multi-language string catalogs.
 """
 from magicbullet.translations.translation import (
     TranslationsRepository,
-    Translation
+    Translation,
+    get_language,
+    set_language
 )
 
 from magicbullet.translations.strings import translations

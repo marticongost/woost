@@ -9,8 +9,9 @@
 from magicbullet.models import Publishable
 from magicbullet.controllers import exposed
 
-
 class BackOffice(Publishable):
+    
+    sections = ["site", "pages", "content", "access_rules"]
 
     @exposed
     def index(self, cms, request):

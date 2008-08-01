@@ -10,7 +10,10 @@ from datetime import datetime
 import cherrypy
 from magicbullet import schema
 from magicbullet.models import Item
-from magicbullet.controllers.exposed import exposed
+
+def exposed(func):
+    func.exposed = True
+    return func
 
 
 class Publishable(Item):

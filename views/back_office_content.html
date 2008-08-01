@@ -1,12 +1,17 @@
 <?python
 from magicbullet.html import Element
 from magicbullet.html.table import Table
+from magicbullet.schema import Member
 from magicbullet.models import Item
 
 item_type = Item
 
 table = Table()
-table.schema = item_type
+table.schema = item_type.copy(
+    inheritance = False,
+    validations = False,
+    exclude = ("translations", "groups")
+)
 table.data = Item.index.values()
 
 ?>

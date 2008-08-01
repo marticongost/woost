@@ -236,25 +236,27 @@ class Schema(Member):
         
         # Normalize inclusions to member references
         include = include and set(
-            member[m] if isinstance(member, basestring) else member
+            self[member] if isinstance(member, basestring) else member
             for member in include
         )
         
         # Normalize exclusions to member references
         exclude = exclude and set(
-            member[m] if isinstance(member, basestring) else member
+            self[member] if isinstance(member, basestring) else member
             for member in exclude
         )
         
         # Create member copies
-        copied_members = (
-            member.copy()
-            for member in (include or copied_members.itervalues())
-            if not exclude or member not in exclude
-        )
+        member_copies = []
+
+        for member in (include or copied_members.itervalues()):
+            if not exclude or member not in exclude:
+                member_copy = member.copy()
+                member_copy.copy_source = member
+                member_copies.append(member_copy)
         
         # Create the copy
-        copy = self.__class__(members = copied_members)
+        copy = Schema(members = member_copies)
 
         if inheritance:
             copy.inherit(*self.bases)
