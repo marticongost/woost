@@ -97,7 +97,7 @@ class EntityClass(type, schema.Schema):
 
         cls.name = name
         cls.__full_name = get_full_name(cls)
-
+        cls.members_order = members.get("members_order")
         cls._sealed = False
 
         # Inherit base schemas

@@ -32,6 +32,7 @@ class Schema(Member):
         is a shallow list; to obtain the full inheritance tree, use the
         L{ascend_inheritance} method instead.
     """
+    members_order = None
 
     def __init__(self, **kwargs):
 
@@ -362,4 +363,57 @@ class Schema(Member):
                         yield error
             finally:
                 context.leave()
+
+    def ordered_members(self, recursive = True):
+        """Gets a list containing all the members defined by the schema, in
+        order.
+        
+        Schemas can define the ordering for their members by supplying a
+        L{members_order} attribute, which should contain a series of object or
+        string references to members defined by the schema. Members not in that
+        list will be appended at the end, sorted by name. Inherited members
+        will be prepended, in the order defined by their parent schema.
+        
+        Alternatively, schema subclasses can override this method to allow for
+        more involved sorting logic.
+        
+        @param recursive: Indicates if the returned list should contain members
+            inherited from base schemas (True) or if only members directly
+            defined by the schema should be included.
+        @type recursive: bool
+
+        @return: The list of members in the schema, in order.
+        @rtype: L{Member<member.Member>} list
+        """
+        ordered_members = []
+        
+        if recursive and self.__bases:
+            for base in self.__bases:
+                ordered_members.extend(base.ordered_members(True))
+        
+        ordering = self.members_order
+
+        if ordering:
+            ordering = [
+                (
+                    self.__members[member]
+                    if isinstance(member, basestring)
+                    else member
+                )
+                for member in ordering
+            ]
+            ordered_members.extend(ordering)
+            remaining_members = \
+                set(self.__members.itervalues()) - set(ordering)
+        else:
+            remaining_members = self.__members.itervalues() \
+                                if self.__members \
+                                else ()
+
+        if remaining_members:
+            ordered_members.extend(
+                sorted(remaining_members, key = lambda m: m.name)
+            )
+
+        return ordered_members
 
