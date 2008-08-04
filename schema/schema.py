@@ -261,6 +261,32 @@ class Schema(Member):
 
         if inheritance:
             copy.inherit(*self.bases)
+            copy.members_order = self.members_order
+        else:
+            members_order = []
+
+            def get_members_order(schema):
+
+                if schema and schema.__bases:
+                    for base in schema.__bases:
+                        get_members_order(schema)    
+                        
+                schema_order = (
+                    (
+                        member
+                        if isinstance(member, basestring)
+                        else member.name
+                    )
+                    for member in schema.members_order
+                )
+
+                members_order.extend(
+                    member
+                    for member in schema_order
+                    if member in copy.__members)
+
+            get_members_order(self)
+            copy.members_order = members_order
 
         if members:
             copy.expand(members)
