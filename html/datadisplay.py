@@ -39,7 +39,8 @@ class DataDisplay(object):
 
     @getter
     def displayed_members(self):
-        return (member for member in self.schema.members(True).itervalues()
+        return (member
+                for member in self.schema.ordered_members(True)
                 if self.get_member_displayed(member))
 
     def get_member_displayed(self, member):
