@@ -11,6 +11,8 @@ from magicbullet.persistence import Entity, datastore
 
 class Item(Entity):
 
+    members_order = "id", "title", "description", "author", "owner", "groups"
+
     indexed = True
 
     title = schema.String(
