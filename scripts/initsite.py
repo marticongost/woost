@@ -26,6 +26,8 @@ def init_site(
     
     # Create the administrator user    
     admin = User()
+    admin.author = admin
+    admin.owner = admin
     admin.critical = True
     admin.email = admin_email
     admin.password = sha.new(admin_password).digest()
