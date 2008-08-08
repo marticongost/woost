@@ -1,9 +1,4 @@
 
-* {
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
-}
-
 html, body {
     margin: 0;
     padding: 0;
@@ -13,9 +8,9 @@ html, body {
 
 #header {
     padding: 1em;
-    width: 100%;
     overflow: hidden;
     background-color: rgb(245,245,245);
+    border-bottom: 1px dotted rgb(210,220,230);
 }
 
 #header h1 {
@@ -56,27 +51,38 @@ a, #identity input {
 
 #navigation {
     clear: both;
-    overflow: hidden;
-    width: 100%;
-    border: 1px dotted rgb(210,220,230);
+    overflow: visible;
+    border-bottom: 1px solid rgb(210,220,230);
     border-left: none;
     border-right: none;
+    margin-top: 0.75em;
+    height: 2.1em;
 }
 
-#navigation a {    
+#navigation a {
+    color: rgb(75,75,75);
+    position: relative;
+    top: -1px;
+    height: 1.3em;
     float: left;
     display: block;
     background-repeat: no-repeat;
-    background-position: 0.7em 0.6em;
-    padding-left: 2em;
-    padding-top: 0.5em;
-    padding-bottom: 0.5em;
-    padding-right: 1em;
-    border-right: 1px dotted rgb(210,220,230);
+    background-position: 0.5em 0.5em;
+    background-color: rgb(245,245,245);
+    padding-left: 1.8em;
+    padding-top: 0.4em;
+    padding-bottom: 0.4em;
+    padding-right: 0.8em;
+    margin-left: 0.2em;
+    border: 1px solid rgb(210,220,230);
+    -moz-border-radius-topleft: 5px;
+    -moz-border-radius-topright: 5px;
 }
 
 #navigation a.selected {
     font-weight: bold;
+    border-bottom-color: white;
+    background-color: white;
 }
 
 #site_tab {
