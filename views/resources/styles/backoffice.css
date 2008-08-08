@@ -164,3 +164,56 @@ a, #identity input {
 	background-color: rgb(235,240,247);
 }
 
+.Table .element div {
+    background-repeat: no-repeat;
+    padding-left: 1.5em;
+}
+
+.Table .element .Item {
+    background-image: url(../images/types/Item.png);
+}
+
+.Table .element .AccessRule {
+    background-image: url(../images/types/AccessRule.png);
+}
+
+.Table .element .DynamicGroup {
+    background-image: url(../images/types/DynamicGroup.png);
+}
+
+.Table .element .Group {
+    background-image: url(../images/types/Group.png);
+}
+
+.Table .element .Publishable {
+    background-image: url(../images/types/Publishable.png);
+}
+
+.Table .element .Page {
+    background-image: url(../images/types/Page.png);
+}
+
+.Table .element .Event {
+    background-image: url(../images/types/Event.png);
+}
+
+.Table .element .File {
+    background-image: url(../images/types/File.png);
+}
+
+.Table .element .News {
+    background-image: url(../images/types/News.png);
+}
+
+.Table .element .Resource {
+    background-image: url(../images/types/Resource.png);
+}
+
+.Table .element .Template {
+    background-image: url(../images/types/Template.png);
+}
+
+.Table .element .User {
+    background-image: url(../images/types/User.png);
+}
+

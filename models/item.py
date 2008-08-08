@@ -48,3 +48,6 @@ class Item(Entity):
         roles.extend(self.groups)
         return roles
 
+    def __translate__(self, language, **kwargs):
+        return self.get("title", language)
+

@@ -8,7 +8,7 @@ Visual elements for data binding.
 @since:			July 2008
 """
 from magicbullet.modeling import getter
-from magicbullet.translations import translations
+from magicbullet.translations import translate
 from magicbullet.html import Element
 
 
@@ -97,10 +97,7 @@ class DataDisplay(object):
         label = self.__member_labels.get(member, None)
 
         if label is None:
-            effective_member = getattr(member, "copy_source", member)
-            label = translations.request(
-                "%s.%s" % (effective_member.schema.name, effective_member.name)
-            )
+            label = translate(member)
 
         return label
 
@@ -180,7 +177,19 @@ class DataDisplay(object):
 
     def get_member_value(self, obj, member):
         expr = self.__member_expressions.get(member)
-        return expr(obj) if expr else getattr(obj, member.name, None)
+        
+        if expr:
+            return expr(obj)
+        else:
+            value = getattr(obj, member.name, None)
+
+            if value is not None:
+                try:
+                    value = translate(value)
+                except KeyError:
+                    pass
+            
+            return value
         
     def get_member_display(self, obj, member):
         

@@ -7,11 +7,12 @@ Definition of multi-language string catalogs.
 @organization:	Whads/Accent SL
 @since:			July 2008
 """
-from magicbullet.translations.translation import (
+from magicbullet.translations.translation import (    
     TranslationsRepository,
     Translation,
     get_language,
-    set_language
+    set_language,
+    translate
 )
 
 from magicbullet.translations.strings import translations

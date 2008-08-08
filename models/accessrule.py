@@ -108,6 +108,11 @@ class AccessRule(Item):
         return self.target_ancestor is None \
             or page.descends_from(self.target_ancestor)  
 
+    def __translate__(self, language, **kwargs):
+        # TODO
+        return u"Regla d'accés"
+
+
 def allowed(**context):
     
     # Implicit language

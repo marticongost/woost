@@ -18,6 +18,18 @@ def get_language():
 def set_language(language):
     setattr(_thread_data, "language", language)
 
+def translate(obj, language = None, **kwargs):
+
+    translator = getattr(obj, "__translate__", None)
+
+    if language is None:
+        language = get_language()
+
+    if translator:
+        return translator(language, **kwargs)
+    else:
+        return translations(obj, language, **kwargs)
+
 
 class TranslationsRepository(DictWrapper):
 
@@ -26,9 +38,10 @@ class TranslationsRepository(DictWrapper):
         DictWrapper.__init__(self, self.__translations)
 
     def __setitem__(self, language, translation):
-        self.__translations[language] = translation  
+        self.__translations[language] = translation
+        translation.language = language
 
-    def define(self, key, **strings):
+    def define(self, obj, **strings):
 
         for language, string in strings.iteritems():
             translation = self.__translations.get(language)
@@ -37,48 +50,39 @@ class TranslationsRepository(DictWrapper):
                 translation = Translation()
                 self.__translations[language] = translation
             
-            translation[key] = string
+            translation[obj] = string
 
-    def __call__(self, key, *args, **kwargs):
+    def __call__(self, obj, language, **kwargs):
         
-        language = get_language()
         translation = self.__translations.get(language, _undefined)
 
         if translation is _undefined:
-            raise KeyError("Can't find a translation for %s" % key)
+            raise KeyError("Can't find a translation for %r in language %s"
+                            % (obj, language))
         
-        return translation(key, *args, **kwargs)
-
-    def request(self, key, *args, **kwargs):
-        
-        language = get_language()
-        translation = self.__translations.get(language, _undefined)
-
-        if translation is _undefined:
-            return key
-        else:
-            return translation.request(key, *args, **kwargs)
+        return translation(obj, **kwargs)
 
 
 class Translation(DictWrapper):
-    
+
+    language = None
     fallback = None
 
     def __init__(self):
         self.__strings = {}
         DictWrapper(self.__strings)
 
-    def __setitem__(self, key, string):
-        self.__strings[key] = string
+    def __setitem__(self, obj, string):
+        self.__strings[obj] = string
 
-    def _get_with_fallback(self, key, default = None):
+    def _get_with_fallback(self, obj, default = None):
         
-        string = self.__strings.get(key, _undefined)
+        string = self.__strings.get(obj, _undefined)
 
         if string is _undefined:
             if self.fallback:
                 for fallback in self.fallback:
-                    string = fallback._get_with_fallback(key)
+                    string = fallback._get_with_fallback(obj)
                     if string is not _undefined:
                         break
                 else:
@@ -86,31 +90,23 @@ class Translation(DictWrapper):
 
         return string
 
-    def __call__(self, key, *args, **kwargs):
+    def __call__(self, obj, **kwargs):
         
-        string = self._get_with_fallback(key, _undefined)
+        string = self._get_with_fallback(obj, _undefined)
 
         if string is _undefined:
-            raise KeyError("Can't find a translation for %s" % key)
+            raise KeyError("Can't find a translation for %s" % obj)
              
         # Custom python expression
         if callable(string):
-            string = string(self, *args, **kwargs)
+            string = string(self, obj, **kwargs)
 
         # String formatting
-        elif args or kwargs:
-
-            if args and kwargs:
-                raise ValueError("Can't inject both positional and keyword "
-                    "arguments into a translation")
-
-            string = string % (args or kwargs)
+        elif kwargs:
+            string = string % kwargs
 
         return string
 
-    def request(self, key, *args, **kwargs):
-        try:
-            return self(key, *args, **kwargs)
-        except KeyError:
-            return key
+
+translations = TranslationsRepository()
 

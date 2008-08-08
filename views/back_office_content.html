@@ -7,13 +7,24 @@ from magicbullet.models import Item
 item_type = Item
 
 table = Table()
+table.data = Item.index.values()
 table.schema = item_type.copy(
     inheritance = False,
     validations = False,
-    exclude = ("translations", "groups")
+    exclude = ("id", "translations", "groups"),
+    members = (Member(name = "element"),)
 )
-table.data = Item.index.values()
+table.schema.name = "BackOfficeContentTable"
+table.schema.members_order.insert(0, "element")
 
+def display_element(table, item, member):
+    display = Element()
+    display.append(translate(item))
+    for schema in item.__class__.descend_inheritance(True):
+        display.add_class(schema.name)
+    return display
+
+table.set_member_display("element", display_element)
 ?>
 
 <html

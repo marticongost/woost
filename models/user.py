@@ -29,3 +29,6 @@ class User(Item):
         items = "magicbullet.models.Item"
     )
 
+    def __translate__(self, language, **kwargs):
+        return self.get("title", language) or self.email
+

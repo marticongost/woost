@@ -25,7 +25,7 @@ class PageTreeView(TreeView):
             button = Element("a")
             button.add_class(action)
             button["href"] = "#" + action
-            button.append(translations.request("PageTreeView-" + action))
+            button.append(translate("PageTreeView-" + action))
             actions.append(button)
 
         return actions
@@ -39,7 +39,7 @@ tree_view.root = site.home
     xmlns:py="http://genshi.edgewall.org/"
     xmlns:xi="http://www.w3.org/2001/XInclude">
 
-    <title py:match="title">${translations.request("Pages")}</title>
+    <title py:match="title">${translate("Pages")}</title>
 
     <div py:match="body-block">
         ${Markup(tree_view.render())}

@@ -268,6 +268,7 @@ class Schema(Member):
         
         # Create the copy
         copy = Schema(members = member_copies)
+        copy.name = self.name
 
         if inheritance:
             copy.inherit(*self.bases)

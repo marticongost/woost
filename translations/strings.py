@@ -6,8 +6,7 @@
 @organization:	Whads/Accent SL
 @since:			July 2008
 """
-from magicbullet.translations.translation import TranslationsRepository
-translations = TranslationsRepository()
+from magicbullet.translations.translation import translations
 
 translations.define("site_section",
     ca = u"Lloc web",
@@ -103,5 +102,11 @@ translations.define("Item.groups",
     ca = u"Grups",
     es = u"Grupos",
     en = u"Groups"
+)
+
+translations.define("BackOfficeContentTable.element",
+    ca = u"Element",
+    es = u"Elemento",
+    en = u"Item"
 )
 

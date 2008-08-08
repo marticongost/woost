@@ -11,6 +11,7 @@ from itertools import chain
 from copy import deepcopy
 from magicbullet.modeling import ListWrapper
 from magicbullet.pkgutils import import_object
+from magicbullet.translations import translate
 from magicbullet.schema import exceptions
 from magicbullet.schema.expressions import Variable
 from magicbullet.schema.validationcontext import ValidationContext
@@ -321,4 +322,14 @@ class Member(Variable):
 
             if type and not isinstance(value, type):
                 yield exceptions.TypeCheckError(self, value, context, type)
+
+    def __translate__(self, language, **kwargs):        
+        try:            
+            return translate(self.schema.name + "." + self.name)
+        except KeyError:
+            copy_source = getattr(self, "copy_source", None)
+            if copy_source:
+                return translate(copy_source)
+            else:
+                raise
 
