@@ -165,6 +165,11 @@ a, #identity input {
 	padding-right: 1em;
 }
 
+.Table .selection {
+    width: 1.5em;
+    padding-right: 0;
+}
+
 .Table .even {
 	background-color: rgb(230,235,242);
 	background-color: rgb(235,240,247);

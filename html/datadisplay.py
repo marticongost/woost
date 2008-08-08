@@ -7,7 +7,7 @@ Visual elements for data binding.
 @organization:	Whads/Accent SL
 @since:			July 2008
 """
-from magicbullet.modeling import getter
+from magicbullet.modeling import getter, ListWrapper
 from magicbullet.translations import translate
 from magicbullet.html import Element
 
@@ -220,12 +220,19 @@ class DataDisplay(object):
         self.__member_type[member_type] = display
 
 
+NO_SELECTION = 0
+SINGLE_SELECTION = 1
+MULTIPLE_SELECTION = 2
+
 class CollectionDisplay(DataDisplay):
 
     order = None
     sortable = True
+    selection_mode = NO_SELECTION
+    selection = None
 
     def __init__(self):
+        DataDisplay.__init__(self)
         self.__member_sortable = {}
         self.__filters = []
         self.filters = ListWrapper(self.__filters)
@@ -241,4 +248,13 @@ class CollectionDisplay(DataDisplay):
     def add_filter(self, filter):
         self.__filters.append(filter)
     
+    def is_selected(self, item):
+        
+        if self.selection is not None:
+            if self.selection_mode == SINGLE_SELECTION:
+                return item == self.selection
+            elif self.selection_mode == MULTIPLE_SELECTION:
+                return item in self.selection
+
+        return False
 

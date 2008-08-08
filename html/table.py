@@ -7,15 +7,18 @@
 @since:			October 2007
 """
 from magicbullet.html.element import Element
-from magicbullet.html.datadisplay import DataDisplay
+from magicbullet.html.datadisplay import (
+    CollectionDisplay,
+    NO_SELECTION, SINGLE_SELECTION, MULTIPLE_SELECTION
+)
 
-class Table(Element, DataDisplay):
+class Table(Element, CollectionDisplay):
     
     tag = "table"
 
     def __init__(self, *args, **kwargs):
         Element.__init__(self, *args, **kwargs)
-        DataDisplay.__init__(self)
+        CollectionDisplay.__init__(self)
         self.__column_display = {}
         self.__column_labels = {}
 
@@ -35,6 +38,12 @@ class Table(Element, DataDisplay):
         self._fill_body()
 
     def _fill_head(self):
+
+        if self.selection_mode != NO_SELECTION:
+            selection_header = Element("th")
+            selection_header.add_class("selection")
+            self.head_row.append(selection_header)
+
         for column in self.displayed_members:
             header = self.create_header(column)
             self.head_row.append(header)
@@ -47,6 +56,23 @@ class Table(Element, DataDisplay):
     def create_row(self, index, item):
         row = Element("tr")
         row.add_class(index % 2 == 0 and "odd" or "even")
+
+        if self.selection_mode != NO_SELECTION:
+            selection_control = Element("input")
+            selection_control["name"] = self["name"] + "_selection"
+            selection_control["value"] = str(item.id)
+
+            if self.selection_mode == SINGLE_SELECTION:
+                selection_control["type"] = "radio"
+                selection_control["selected"] = self.is_selected(item)
+            else:
+                selection_control["type"] = "checkbox"
+                selection_control["checked"] = self.is_selected(item)
+
+            selection_cell = Element("td")
+            selection_cell.add_class("selection")
+            selection_cell.append(selection_control)
+            row.append(selection_cell)
 
         for column in self.displayed_members:
             cell = self.create_cell(item, column)
