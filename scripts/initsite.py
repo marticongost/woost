@@ -176,7 +176,7 @@ def init_site(
         es = u"Autenticación de usuario",
         en = u"User authentication"
     )
-    login_form = """
+    login_form = u"""
 <form method="post">
     <label for="user">%s:</label>
     <input type="text" name="user" value=""/>
