@@ -32,8 +32,6 @@ table.set_member_display("element", display_element)
     xmlns:py="http://genshi.edgewall.org/"
     xmlns:xi="http://www.w3.org/2001/XInclude">
 
-    <title py:match="title">Tree view</title>
-
 	<div py:match="body-block">
         ${Markup(table.render())}
     </div>

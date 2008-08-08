@@ -11,20 +11,9 @@ from magicbullet.persistence import Entity, datastore
 
 class Item(Entity):
 
-    members_order = "id", "title", "description", "author", "owner", "groups"
+    members_order = "id", "author", "owner", "groups"
 
     indexed = True
-
-    title = schema.String(
-        max = 255,
-        required = True,
-        translated = True
-    )
-
-    description = schema.String(
-        max = 1000,
-        translated = True
-    )
 
     author = schema.Reference(type = "magicbullet.models.User")
     
@@ -47,7 +36,4 @@ class Item(Entity):
         
         roles.extend(self.groups)
         return roles
-
-    def __translate__(self, language, **kwargs):
-        return self.get("title", language)
 

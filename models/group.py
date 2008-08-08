@@ -11,7 +11,17 @@ from magicbullet.models import Item
 
 class Group(Item):
  
-    members = schema.Collection(
+    title = schema.String(
+        required = True,
+        unique = True,
+        indexed = True,
+        translated = True
+    )
+
+    group_members = schema.Collection(
         items = "magicbullet.models.Item"
     )
+
+    def __translate__(self, language, **kwargs):
+        return self.get("title", language)
 

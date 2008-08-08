@@ -16,6 +16,7 @@ from magicbullet.models.dynamicgroup import DynamicGroup
 from magicbullet.models.publishable import Publishable
 from magicbullet.models.template import Template
 from magicbullet.models.user import User
+from magicbullet.models.role import Role
 from magicbullet.models.accessrule import (
     AccessRule,
     allowed,

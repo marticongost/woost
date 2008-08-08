@@ -255,6 +255,8 @@ class Schema(Member):
         exclude = exclude and set(
             self[member] if isinstance(member, basestring) else member
             for member in exclude
+            if not isinstance(member, basestring)
+                or (self.__members and member in self.__members)
         )
         
         # Create member copies

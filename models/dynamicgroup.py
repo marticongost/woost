@@ -12,5 +12,15 @@ from magicbullet.persistence import Query
 
 class DynamicGroup(Item):
 
+    title = schema.String(
+        required = True,
+        unique = True,
+        indexed = True,
+        translated = True
+    )
+
     query = schema.Reference(type = Query)
+
+    def __translate__(self, language, **kwargs):
+        return self.get("title", language)
 

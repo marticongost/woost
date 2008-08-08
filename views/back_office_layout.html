@@ -8,7 +8,7 @@ from magicbullet.html import Element
 	
 	<head>
 		<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
-        <title>MagicBullet CMS</title>
+        <title>${translate(item)}</title>
         <link rel="Stylesheet" type="text/css" href="/resources/styles/backoffice.css"/>
         <py:for each="resource in item.resources">${resource.html}</py:for>
 	</head>
@@ -16,10 +16,10 @@ from magicbullet.html import Element
     <body>
 
         <div id="header">
-            <h1>MagicBullet CMS</h1>
+            <h1>${translate(item)}</h1>
             <div id="identity" py:if="not user.anonymous">
                 ${translate("logged in as")}
-                <span class="user_identifier">${user.title}</span>.
+                <span class="user_identifier">${translate(user)}</span>.
                 <form method="post">
                     <input type="submit" name="logout" value="${translate('Logout')}"/>
                 </form>

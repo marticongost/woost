@@ -30,5 +30,5 @@ class User(Item):
     )
 
     def __translate__(self, language, **kwargs):
-        return self.get("title", language) or self.email
+        return self.email
 

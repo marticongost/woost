@@ -39,8 +39,6 @@ tree_view.root = site.home
     xmlns:py="http://genshi.edgewall.org/"
     xmlns:xi="http://www.w3.org/2001/XInclude">
 
-    <title py:match="title">${translate("Pages")}</title>
-
     <div py:match="body-block">
         ${Markup(tree_view.render())}
     </div>

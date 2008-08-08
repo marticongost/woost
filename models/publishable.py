@@ -23,6 +23,26 @@ class Publishable(Item):
         self.__handler_name = None
         self._v_handler = None
 
+    # Title and description
+    #------------------------------------------------------------------------------
+    title = schema.String(
+        required = True,
+        unique = True,
+        indexed = True,
+        translated = True
+    )
+
+    inner_title = schema.String(
+        translated = True
+    )
+
+    description = schema.String(
+        translated = True
+    )
+
+    def __translate__(self, language, **kwargs):
+        return self.get("title", language)
+
     # Publication state
     #--------------------------------------------------------------------------    
     enabled = schema.Boolean(

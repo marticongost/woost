@@ -13,6 +13,8 @@ from magicbullet.models import (
     Action,
     AccessRule,
     User,
+    Role,
+    Group,
     StandardPage,
     Resource,
     Template
@@ -23,22 +25,31 @@ def init_site(
     admin_email = "admin@localhost",
     admin_password = "",
     uri = "/"):
-    
-    # Create the administrator user    
+ 
+    datastore.root.clear()
+
+    # Create the administrator user
     admin = User()
     admin.author = admin
     admin.owner = admin
     admin.critical = True
     admin.email = admin_email
     admin.password = sha.new(admin_password).digest()
-    admin.set_translations("title",
-        ca = u"Administrador",
-        es = u"Administrador",
-        en = u"Administrator"
+    
+    administrators = Group()
+    administrators.author = admin
+    administrators.owner = admin
+    administrators.critical = True
+    administrators.set_translations("title",
+        ca = u"Administradors",
+        es = u"Administradores",
+        en = u"Administrators"
     )
-
+    administrators.group_members.append(admin)
+    admin.groups.append(administrators)
+        
     # Create standard users and roles
-    anonymous_role = datastore.root["anonymous_role"] = User()
+    anonymous_role = datastore.root["anonymous_role"] = Role()
     anonymous_role.anonymous = True
     anonymous_role.critical = True
     anonymous_role.author = admin
@@ -49,7 +60,7 @@ def init_site(
         en = u"Anonymous"
     )
 
-    authenticated_role = datastore.root["authenticated_role"] = User()
+    authenticated_role = datastore.root["authenticated_role"] = Role()
     authenticated_role.critical = True
     authenticated_role.author = admin
     authenticated_role.owner = admin
@@ -59,7 +70,7 @@ def init_site(
         en = u"Authenticated"
     )
 
-    author_role = datastore.root["author_role"] = User()
+    author_role = datastore.root["author_role"] = Role()
     author_role.critical = True
     author_role.author = admin
     author_role.owner = admin
@@ -69,7 +80,7 @@ def init_site(
         en = u"Author"
     )
 
-    owner_role = datastore.root["owner_role"] = User()
+    owner_role = datastore.root["owner_role"] = Role()
     owner_role.critical = True
     owner_role.author = admin
     owner_role.owner = admin
@@ -91,9 +102,9 @@ def init_site(
     back_office.author = admin
     back_office.owner = admin
     back_office.set_translations("title",
-        ca = u"MagicBullet CMS",
-        es = u"MagicBullet CMS",
-        en = u"MagicBullet CMS"
+        ca = u"Gestor de continguts",
+        es = u"Gestor de contenidos",
+        en = u"Content Manager"
     )
  
     # Create standard templates
@@ -266,10 +277,10 @@ def init_site(
         )
     )
 
-    # - the administrator has full control
+    # - administrators have full control
     rules.append(
         AccessRule(
-            role = admin,
+            role = administrators,
             allowed = True,
             author = admin,
             owner = admin

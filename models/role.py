@@ -4,13 +4,13 @@
 @author:		Martí Congost
 @contact:		marti.congost@whads.com
 @organization:	Whads/Accent SL
-@since:			July 2008
+@since:			August 2008
 """
 from magicbullet import schema
 from magicbullet.models import Item
 
-class Language(Item):
- 
+class Role(Item):
+
     title = schema.String(
         required = True,
         unique = True,
@@ -18,15 +18,7 @@ class Language(Item):
         translated = True
     )
 
-    iso_code = schema.String(
-        required = True,
-        unique = True,
-        max = 64
-    )
-        
-    fallback_languages = schema.Collection(
-        items = "magicbullet.models.Language"
-    )
+    anonymous = False
 
     def __translate__(self, language, **kwargs):
         return self.get("title", language)

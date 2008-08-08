@@ -12,6 +12,13 @@ from magicbullet.models import Item
 
 class Template(Item):
  
+    title = schema.String(
+        required = True,
+        unique = True,
+        indexed = True,
+        translated = True
+    )
+
     identifier = schema.String(
         required = True,
         unique = True,
@@ -25,4 +32,7 @@ class Template(Item):
     items = schema.Collection(
         items = "magicbullet.models.Publishable"
     )
+
+    def __translate__(self, language, **kwargs):
+        return self.get("title", language)
 

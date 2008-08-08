@@ -34,3 +34,6 @@ class Action(Entity):
 
         return base_repr
 
+    def __translate__(self, language, **kwargs):
+        return self.get("title", language)
+

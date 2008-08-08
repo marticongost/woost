@@ -190,7 +190,6 @@ a, #identity input {
 }
 
 .Table .element .Page {
-    background-image: url(../images/types/Page.png);
 }
 
 .Table .element .Event {
@@ -213,7 +212,8 @@ a, #identity input {
     background-image: url(../images/types/Template.png);
 }
 
-.Table .element .User {
+.Table .element .User,
+.Table .element .Role {
     background-image: url(../images/types/User.png);
 }
 

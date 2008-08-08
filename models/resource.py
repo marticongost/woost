@@ -10,9 +10,18 @@ from magicbullet import schema
 from magicbullet.models import Item
 
 class Resource(Item):
-    
+
+    title = schema.String(
+        required = True,
+        unique = True,
+        indexed = True,
+        translated = True
+    )
+
     html = schema.String(
         required = True
     )
 
+    def __translate__(self, language, **kwargs):
+        return self.get("title", language)
 

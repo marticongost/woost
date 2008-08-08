@@ -13,6 +13,7 @@ from magicbullet.persistence import EntityClass, datastore
 from magicbullet.models.item import Item
 from magicbullet.models.action import Action
 from magicbullet.language import get_content_language
+from magicbullet.translations import translate
 
 
 class AccessRule(Item):
@@ -109,8 +110,46 @@ class AccessRule(Item):
             or page.descends_from(self.target_ancestor)  
 
     def __translate__(self, language, **kwargs):
-        # TODO
-        return u"Regla d'accés"
+        if language == "en":
+            trans = []
+            
+            if self.role is None:
+                if self.allowed:
+                    trans.append("Anybody can ")
+                else:
+                    trans.append("Nobody can")
+            else:
+                trans.append(translate(self.role, language))
+                trans.append(self.allowed and "can" or "can't")
+            
+            trans.append(
+                translate(self.action, language).lower()
+                          if self.action
+                          else "access")
+
+            if self.target_instance:
+                trans.append(translate(self.target_instance, language))
+            elif self.target_type:
+                trans.append(
+                    translate(self.target_type.name + "-plural", language))
+            else:
+                trans.append("any item")
+            
+            if self.target_ancestor:
+                trans.append(
+                    "descending from "
+                    + translate(self.target_ancestor, language))
+
+            if self.language:
+                trans.append(
+                    "in " + translate(self.language, language))
+
+            return " ".join(trans)
+
+        elif language == "ca":
+            return "Regla d'accés"
+        elif language == "es":
+            return "Regla de acceso"
 
 
 def allowed(**context):
