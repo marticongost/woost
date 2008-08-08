@@ -23,6 +23,7 @@ class DataDisplay(object):
         self.__member_displayed = {}
         self.__member_labels = {}
         self.__member_editable = {}
+        self.__member_expressions = {}
         self.__member_display = {}
         self.__member_type_display = {}
 
@@ -150,22 +151,55 @@ class DataDisplay(object):
         """
         self.__member_editable[self._resolve_member(member)] = editable
 
+    def get_member_expression(self, member):
+        """Returns the expression used to obtain the value for the given
+        member. If 'None' is given, values for the member will be obtained
+        using regular attribute access.
+
+        @param member: The member to get the expression for.
+        @type member: str or L{Member<magicbullet.schema.member.Member>}
+
+        @return: The custom expression used to obtain the values for the
+            member, if any.
+        @rtype: callable
+        """
+        return self.__member_expressions.get(self._resolve_member(member))
+
+    def set_member_expression(self, member, expression):
+        """Sets the expression used to obtain the value for the given
+        member. If 'None' is given, values for the member will be obtained
+        using regular attribute access.
+
+        @param member: The member for which the expression is set.
+        @type member: str or L{Member<magicbullet.schema.member.Member>}
+
+        @param expression: The expression assigned to the member.
+        @rtype: callable
+        """
+        self.__member_expressions[self._resolve_member(member)] = expression
+
     def get_member_value(self, obj, member):
-        return getattr(obj, member.name, None)
+        expr = self.__member_expressions.get(member)
+        return expr(obj) if expr else getattr(obj, member.name, None)
         
-    def get_member_display(self, obj, member, value):
+    def get_member_display(self, obj, member):
         
         member = self._resolve_member(member)
         display = self.__member_display.get(member)
 
         if display is None:
             display = self.get_member_type_display(member.__class__)
-        
-        display = (display or Element)()
-        display.column = member
-        display.item = obj
-        display.value = str(value)
-        return display
+ 
+        if display:
+            display_instance = display(self, obj, member)
+        else:
+            value = self.get_member_value(obj, member)
+            display_instance = Element()
+            display_instance.value = unicode(value)
+
+        display_instance.member = member
+        display_instance.item = obj
+        return display_instance
 
     def set_member_display(self, member, display):
         self.__member_display[self._resolve_member(member)] = display

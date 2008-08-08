@@ -63,8 +63,7 @@ class Table(Element, DataDisplay):
     def create_cell(self, item, column):
         cell = Element("td")
         self._init_cell(cell, column)
-        value = self.get_member_value(item, column)
-        display = self.get_member_display(item, column, value)        
+        display = self.get_member_display(item, column)
         cell.append(display)
         return cell
 
