@@ -228,3 +228,21 @@ a, #identity input {
     background-image: url(../images/types/User.png);
 }
 
+#toolbar {
+	margin-top: 1em;
+	margin-bottom: 0.5em;
+	padding: 0.2em;
+	background-color: rgb(250,250,250);
+	border: 1px dotted rgb(240,240,240);
+}
+
+#toolbar button {
+	background: none;
+	border: none;
+	cursor: pointer;
+	font-size: 85%;
+}
+
+#toolbar button img {
+	vertical-align: middle;
+}

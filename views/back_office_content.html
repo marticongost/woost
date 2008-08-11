@@ -36,7 +36,27 @@ table.set_member_display("element", display_element)
 
     <div py:match="body-block">
         <form method="get">
-            <?python
+
+			<div id="toolbar">
+				<button name="new">
+					<img src="${cms.uri('resources', 'images', 'new.png')}"/>
+					<label>New item</label>
+				</button>
+				<button name="edit">
+					<img src="${cms.uri('resources', 'images', 'edit.png')}"/>
+					<label>Edit</label>
+				</button>
+				<button name="delete">
+					<img src="${cms.uri('resources', 'images', 'delete.png')}"/>
+					<label>Delete</label>
+				</button>
+				<button name="history">
+					<img src="${cms.uri('resources', 'images', 'history.png')}"/>
+					<label>History</label>
+				</button>
+			</div>
+
+			<?python
             from cherrypy import request
             print ">" * 80
             print request.params.get("content_selection")
