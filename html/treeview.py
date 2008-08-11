@@ -12,11 +12,18 @@ class TreeView(Element):
 
     tag = "ul"
     root = None
+    root_visible = True
 
     def _ready(self):
         if self.root is not None:
-            self.root_entry = self.create_entry(self.root)
-            self.append(self.root_entry)
+            if self.root_visible:
+                self.root_entry = self.create_entry(self.root)
+                self.append(self.root_entry)
+            else:
+                container = self.create_children_container(
+                    self.root,
+                    self.get_child_items(self.root))
+                self.append(container)
 
     def create_entry(self, item):
         
