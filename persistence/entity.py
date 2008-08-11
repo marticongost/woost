@@ -97,6 +97,7 @@ class EntityClass(type, schema.Schema):
 
         cls.name = name
         cls.__full_name = get_full_name(cls)
+        cls.__derived_entities = []
         cls.members_order = members.get("members_order")
         cls._sealed = False
 
@@ -104,7 +105,7 @@ class EntityClass(type, schema.Schema):
         for base in bases:
             if Entity and base is not Entity and isinstance(base, EntityClass):
                 cls.inherit(base)
-                       
+        
         # Fill the schema with members declared as class attributes
         for name, member in members.iteritems():
             if isinstance(member, schema.Member):
@@ -141,7 +142,10 @@ class EntityClass(type, schema.Schema):
 
     def inherit(cls, *bases):
         cls._seal_check()
-        schema.Schema.inherit(cls, *bases)        
+        schema.Schema.inherit(cls, *bases)
+        
+        for base in bases:
+            base.__derived_entities.append(cls)
 
     def _check_member(cls, member):
 
@@ -247,6 +251,13 @@ class EntityClass(type, schema.Schema):
             ),
             values = cls.translation
         ))
+
+    def derived_entities(cls, recursive = True):
+        for entity in cls.__derived_entities:
+            yield entity
+            if recursive:
+                for descendant in entity.derived_entities(True):
+                    yield descendant
 
 
 class Entity(Persistent):
