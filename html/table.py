@@ -56,29 +56,34 @@ class Table(Element, CollectionDisplay):
     def create_row(self, index, item):
         row = Element("tr")
         row.add_class(index % 2 == 0 and "odd" or "even")
-
-        if self.selection_mode != NO_SELECTION:
-            selection_control = Element("input")
-            selection_control["name"] = self["name"] + "_selection"
-            selection_control["value"] = str(item.id)
-
-            if self.selection_mode == SINGLE_SELECTION:
-                selection_control["type"] = "radio"
-                selection_control["selected"] = self.is_selected(item)
-            else:
-                selection_control["type"] = "checkbox"
-                selection_control["checked"] = self.is_selected(item)
-
-            selection_cell = Element("td")
-            selection_cell.add_class("selection")
-            selection_cell.append(selection_control)
-            row.append(selection_cell)
-
+        
+        if self.selection_mode != NO_SELECTION:            
+            row.append(self.create_selection_cell(item))
+            
         for column in self.displayed_members:
             cell = self.create_cell(item, column)
             row.append(cell)
         
         return row
+
+    def create_selection_cell(self, item):
+
+        selection_control = Element("input")
+        selection_control["name"] = self["name"] + "_selection"
+        selection_control["id"] = self["name"] + "_selection_" + str(item.id)
+        selection_control["value"] = str(item.id)
+
+        if self.selection_mode == SINGLE_SELECTION:
+            selection_control["type"] = "radio"
+            selection_control["selected"] = self.is_selected(item)
+        else:
+            selection_control["type"] = "checkbox"
+            selection_control["checked"] = self.is_selected(item)
+
+        selection_cell = Element("td")
+        selection_cell.add_class("selection")
+        selection_cell.append(selection_control)
+        return selection_cell
 
     def create_header(self, column):
         header = Element("th")

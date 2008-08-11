@@ -175,7 +175,7 @@ a, #identity input {
 	background-color: rgb(235,240,247);
 }
 
-.Table .element div {
+.Table .element label {
     background-repeat: no-repeat;
     padding-left: 1.5em;
 }
