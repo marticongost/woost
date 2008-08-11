@@ -8,11 +8,10 @@ certain ranges.
 @organization:	Whads/Accent SL
 @since:			April 2008
 """
-from magicbullet.schema.member import Member
 from magicbullet.schema.exceptions import MinValueError, MaxValueError
 
-class RangedMember(Member):
-    """An abstract class, used as a base for members that can constrain their
+class RangedMember(object):
+    """A mixin class, used as a base for members that can constrain their
     values to a certain range (numbers, dates, etc).
     
     @ivar min: Sets the minimum value accepted by the member. If set to a value
@@ -26,8 +25,7 @@ class RangedMember(Member):
     min = None
     max = None
 
-    def __init__(self, doc = None, **kwargs):
-        Member.__init__(self, doc, **kwargs)
+    def __init__(self):
         self.add_validation(RangedMember.range_validation_rule)
 
     def range_validation_rule(self, value, context):

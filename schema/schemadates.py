@@ -29,7 +29,8 @@ class BaseDateTime(Schema, RangedMember):
    
     def __init__(self, **kwargs):
         
-        super(BaseDateTime, self).__init__(**kwargs)
+        Schema.__init__(self, **kwargs)
+        RangedMember.__init__(self)
 
         if self._is_date:
             self.add_member(Integer(name = "day", min = 1, max = get_max_day))
