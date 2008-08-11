@@ -180,51 +180,50 @@ a, #identity input {
     padding-left: 1.5em;
 }
 
-.Table .element .Item {
+.Item {
     background-image: url(../images/types/Item.png);
 }
 
-.Table .element .AccessRule {
+.AccessRule {
     background-image: url(../images/types/AccessRule.png);
 }
 
-.Table .element .DynamicGroup {
+.DynamicGroup {
     background-image: url(../images/types/DynamicGroup.png);
 }
 
-.Table .element .Group {
+.Group {
     background-image: url(../images/types/Group.png);
 }
 
-.Table .element .Publishable {
+.Publishable {
     background-image: url(../images/types/Publishable.png);
 }
 
-.Table .element .Page {
+.Page {
 }
 
-.Table .element .Event {
+.Event {
     background-image: url(../images/types/Event.png);
 }
 
-.Table .element .File {
+.File {
     background-image: url(../images/types/File.png);
 }
 
-.Table .element .News {
+.News {
     background-image: url(../images/types/News.png);
 }
 
-.Table .element .Resource {
+.Resource {
     background-image: url(../images/types/Resource.png);
 }
 
-.Table .element .Template {
+.Template {
     background-image: url(../images/types/Template.png);
 }
 
-.Table .element .User,
-.Table .element .Role {
+.User, .Role {
     background-image: url(../images/types/User.png);
 }
 
@@ -236,13 +235,60 @@ a, #identity input {
 	border: 1px dotted rgb(240,240,240);
 }
 
-#toolbar button {
+#toolbar .toolbar_button {
 	background: none;
 	border: none;
 	cursor: pointer;
 	font-size: 85%;
+    margin: 0;
+    padding: 0;
+    margin-right: 1em;
 }
 
-#toolbar button img {
+#toolbar .toolbar_button img {
 	vertical-align: middle;
+}
+
+#toolbar #new_item {
+    float: left;
+    position: relative;
+    top: 1px;
+    overflow: visible;
+    height: auto;
+}
+
+.ContentTypeSelector {
+    display: none;
+    position: absolute;
+    top: 1.9em;
+    border: 1px solid rgb(210,220,230);
+    background-color: rgb(250,250,250);
+    padding: 0.4em 0.8em;
+    margin: 0;
+}
+
+#toolbar #new_item:hover .ContentTypeSelector {
+    display: block;
+}
+
+.ContentTypeSelector ul, li {
+    padding-left: 0;
+    margin-left: 0;
+}
+
+.ContentTypeSelector ul ul {
+    padding-left: 2em;
+}
+
+.ContentTypeSelector li {
+    list-style-type: none;
+    padding-top: 0.4em;
+    padding-bottom: 0.4em;
+}
+
+.ContentTypeSelector .entry_label {
+    background-repeat: no-repeat;
+    padding-left: 1.75em;
+    padding-bottom: 0.2em;
+    color: black;
 }

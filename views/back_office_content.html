@@ -1,5 +1,6 @@
 <?python
 from magicbullet.html import Element
+from magicbullet.views.contenttypetree import ContentTypeTree
 from magicbullet.html.table import Table, MULTIPLE_SELECTION
 from magicbullet.schema import Member
 from magicbullet.models import Item
@@ -39,30 +40,35 @@ table.set_member_display("element", display_element)
         <form method="get">
 
 			<div id="toolbar">
-				<button name="new">
+				<div class="toolbar_button" id="new_item">
 					<img src="${cms.uri('resources', 'images', 'new.png')}"/>
 					<label>New item</label>
-				</button>
-				<button name="edit">
+					<?python
+					class ContentTypeSelector(ContentTypeTree):
+					
+						def create_label(self, item):
+							label = ContentTypeTree.create_label(self, item)
+							label.tag = "a"
+							label["href"] = "#"
+							return label
+
+					type_selector = ContentTypeSelector()
+					?>
+					${Markup(type_selector.render())}
+				</div>
+				<button class="toolbar_button" name="edit">
 					<img src="${cms.uri('resources', 'images', 'edit.png')}"/>
 					<label>Edit</label>
 				</button>
-				<button name="delete">
+				<button class="toolbar_button" name="delete">
 					<img src="${cms.uri('resources', 'images', 'delete.png')}"/>
 					<label>Delete</label>
 				</button>
-				<button name="history">
+				<button class="toolbar_button" name="history">
 					<img src="${cms.uri('resources', 'images', 'history.png')}"/>
 					<label>History</label>
 				</button>
 			</div>
-
-			<?python
-            from cherrypy import request
-            print ">" * 80
-            print request.params.get("content_selection")
-            print ">" * 80
-            ?>
             ${Markup(table.render())}
         </form>
     </div>
