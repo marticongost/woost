@@ -255,8 +255,7 @@ class Schema(Member):
         exclude = exclude and set(
             self[member] if isinstance(member, basestring) else member
             for member in exclude
-            if not isinstance(member, basestring)
-                or (self.__members and member in self.__members)
+            if not isinstance(member, basestring) or member in copied_members
         )
         
         # Create member copies
@@ -282,21 +281,22 @@ class Schema(Member):
 
                 if schema and schema.__bases:
                     for base in schema.__bases:
-                        get_members_order(schema)    
-                        
-                schema_order = (
-                    (
-                        member
-                        if isinstance(member, basestring)
-                        else member.name
+                        get_members_order(base)
+                
+                if schema.members_order:
+                    schema_order = (
+                        (
+                            member
+                            if isinstance(member, basestring)
+                            else member.name
+                        )
+                        for member in schema.members_order
                     )
-                    for member in schema.members_order
-                )
 
-                members_order.extend(
-                    member
-                    for member in schema_order
-                    if member in copy.__members)
+                    members_order.extend(
+                        member
+                        for member in schema_order
+                        if member in copy.__members)
 
             get_members_order(self)
             copy.members_order = members_order
@@ -373,14 +373,14 @@ class Schema(Member):
                     for base in schema.__bases:
                         descend(base)
 
-                if schema.__validations:
-                    validations.extend(schema.__validations)
+                if schema._validations:
+                    validations.extend(schema._validations)
             
             descend(self)
             return ListWrapper(validations)
 
-        elif self.__validations:
-            return ListWrapper(self.__validations)
+        elif self._validations:
+            return ListWrapper(self._validations)
         
         else:
             return empty_list

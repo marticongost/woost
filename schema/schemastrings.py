@@ -93,3 +93,12 @@ class String(Member):
             if format is not None and not format.search(value):
                 yield FormatError(self, value, context, format)
 
+    # Special treatment for the 'format' property (regular expressions don't
+    # support deep copying)
+    _special_copy_keys = Member._special_copy_keys | set(["_format"])
+
+    def __deepcopy__(self, memo):
+        copy = Member.__deepcopy__(self, memo)
+        copy.format = self.format
+        return copy
+
