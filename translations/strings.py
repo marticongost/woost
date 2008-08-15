@@ -110,3 +110,97 @@ translations.define("BackOfficeContentTable.element",
     en = u"Item"
 )
 
+# Publishable
+#------------------------------------------------------------------------------
+translations.define("Publishable.title",
+    ca = u"Títol",
+    es = u"Título",
+    en = u"Title"
+)
+
+translations.define("Publishable.inner_title",
+    ca = u"Títol interior",
+    es = u"Título interior",
+    en = u"Inner title"
+)
+
+translations.define("Publishable.description",
+    ca = u"Descripció",
+    es = u"Descripción",
+    en = u"Description"
+)
+
+translations.define("Publishable.start_date",
+    ca = u"Data d'inici",
+    es = u"Fecha de inicio",
+    en = u"Start date"
+)
+
+translations.define("Publishable.end_date",
+    ca = u"Data de fí",
+    es = u"Fecha de fín",
+    en = u"End date"
+)
+
+translations.define("Publishable.path",
+    ca = u"Camí de publicació",
+    es = u"Camino de publicación",
+    en = u"Publication path"
+)
+
+translations.define("Publishable.template",
+    ca = u"Plantilla",
+    es = u"Plantilla",
+    en = u"Template"
+)
+
+translations.define("Publishable.enabled",
+    ca = u"Habilitat",
+    es = u"Habilitado",
+    en = u"Enabled"
+)
+
+translations.define("Publishable.attachments",
+    ca = u"Fitxers adjunts",
+    es = u"Ficheros adjuntos",
+    en = u"Attachments"
+)
+
+translations.define("Publishable.resources",
+    ca = u"Recursos HTML",
+    es = u"Recursos HTML",
+    en = u"HTML Resources"
+)
+
+translations.define("Publishable.draft_source",
+    ca = u"Original",
+    es = u"Original",
+    en = u"Master item"
+)
+
+translations.define("Publishable.drafts",
+    ca = u"Esborranys",
+    es = u"Borradores",
+    en = u"Drafts"
+)
+
+# Page
+#------------------------------------------------------------------------------
+translations.define("Page.parent",
+    ca = u"Pàgina pare",
+    es = u"Página padre",
+    en = u"Parent page"
+)
+
+translations.define("Page.children",
+    ca = u"Pàgines filles",
+    es = u"Páginas hijas",
+    en = u"Child pages"
+)
+
+translations.define("Page.hidden",
+    ca = u"Oculta",
+    es = u"Oculta",
+    en = u"Hidden"
+)
+
