@@ -3,13 +3,12 @@ from magicbullet.html import Element
 from magicbullet.views.contenttypetree import ContentTypeTree
 from magicbullet.html.table import Table, MULTIPLE_SELECTION
 from magicbullet.schema import Member
-from magicbullet.models import Item as item_type
 
 table = Table()
 table["name"] = "content"
 table.selection_mode = MULTIPLE_SELECTION
-table.data = item_type.index.values()
-table.schema = item_type.copy(
+table.data = content_type.index.values()
+table.schema = content_type.copy(
     inheritance = False,
     validations = False,
     exclude = ("id", "translations", "groups"),
@@ -38,36 +37,52 @@ table.set_member_display("element", display_element)
     <div py:match="body-block">
         <form method="get">
 
-			<div id="toolbar">
-				<div class="toolbar_button" id="new_item">
-					<img src="${cms.uri('resources', 'images', 'new.png')}"/>
-					<label>New item</label>
-					<?python
-					class ContentTypeSelector(ContentTypeTree):
-					
-						def create_label(self, item):
-							label = ContentTypeTree.create_label(self, item)
-							label.tag = "a"
-							label["href"] = "#"
-							return label
+            <div id="toolbar">
+                <div class="toolbar_button" id="new_item">
+                    <img src="${cms.uri('resources', 'images', 'new.png')}"/>
+                    <label>New item</label>
+                    <?python
+                    class NewItemSelector(ContentTypeTree):
+                        def create_label(self, item):
+                            label = ContentTypeTree.create_label(self, item)
+                            label.tag = "a"
+                            label["href"] = "#"
+                            return label
+                    ?>
+                    ${Markup(NewItemSelector().render())}
+                </div>
+                <button class="toolbar_button" name="edit">
+                    <img src="${cms.uri('resources', 'images', 'edit.png')}"/>
+                    <label>Edit</label>
+                </button>
+                <button class="toolbar_button" name="delete">
+                    <img src="${cms.uri('resources', 'images', 'delete.png')}"/>
+                    <label>Delete</label>
+                </button>
+                <button class="toolbar_button" name="history">
+                    <img src="${cms.uri('resources', 'images', 'history.png')}"/>
+                    <label>History</label>
+                </button>
+                <?python
+                class ContentTypeSelector(ContentTypeTree):
+                
+                    def create_label(self, item):
+                        label = ContentTypeTree.create_label(self, item)
+                        label.tag = "a"
+                        label["href"] = "?type=" + item.__name__
+                        return label
 
-					type_selector = ContentTypeSelector()
-					?>
-					${Markup(type_selector.render())}
-				</div>
-				<button class="toolbar_button" name="edit">
-					<img src="${cms.uri('resources', 'images', 'edit.png')}"/>
-					<label>Edit</label>
-				</button>
-				<button class="toolbar_button" name="delete">
-					<img src="${cms.uri('resources', 'images', 'delete.png')}"/>
-					<label>Delete</label>
-				</button>
-				<button class="toolbar_button" name="history">
-					<img src="${cms.uri('resources', 'images', 'history.png')}"/>
-					<label>History</label>
-				</button>
-			</div>
+                type_selector = ContentTypeSelector()
+                type_selector.root_visible = True
+                    
+                selected_content_type = type_selector.create_label(content_type)
+                selected_content_type.tag = "div"
+                selected_content_type["id"] = "content_type_selector"
+                selected_content_type.add_class("toolbar_button")
+                selected_content_type.append(type_selector)
+                ?>
+                ${Markup(selected_content_type.render())}
+            </div>
             ${Markup(table.render())}
         </form>
     </div>

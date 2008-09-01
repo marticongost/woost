@@ -7,7 +7,8 @@
 @since:			July 2008
 """
 import cherrypy
-from magicbullet.models import Publishable
+from itertools import chain
+from magicbullet.models import Item, Publishable
 from magicbullet.controllers import exposed
 
 class BackOffice(Publishable):
@@ -27,7 +28,17 @@ class BackOffice(Publishable):
 
     @exposed
     def content(self, cms, request):
+
+        requested_type = request.params.get("type")
+
+        if requested_type is not None:
+            for entity in chain([Item], Item.derived_entities()):
+                if entity.__name__ == requested_type:
+                    requested_type = entity
+                    break
+                           
         return cms.rendering.render("back_office_content",
             item = self,
-            active_section = "content")
+            active_section = "content",
+            content_type = requested_type or Item)
 

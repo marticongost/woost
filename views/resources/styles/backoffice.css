@@ -227,18 +227,26 @@ a, #identity input {
     background-image: url(../images/types/User.png);
 }
 
+/* Toolbar
+-----------------------------------------------------------------------------*/
+
 #toolbar {
 	margin-top: 1em;
 	margin-bottom: 0.5em;
 	padding: 0.2em;
 	background-color: rgb(250,250,250);
 	border: 1px dotted rgb(240,240,240);
+    height: 1.7em;
+}
+
+#toolbar button.toolbar_button {
+    background: none;
+	border: none;
+	cursor: pointer;
 }
 
 #toolbar .toolbar_button {
-	background: none;
-	border: none;
-	cursor: pointer;
+	float: left;
 	font-size: 85%;
     margin: 0;
     padding: 0;
@@ -249,15 +257,24 @@ a, #identity input {
 	vertical-align: middle;
 }
 
-#toolbar #new_item {
-    float: left;
+#toolbar #new_item,
+#toolbar #content_type_selector {
     position: relative;
     top: 1px;
     overflow: visible;
     height: auto;
 }
 
-.ContentTypeSelector {
+#toolbar #content_type_selector {
+    float: right;
+    height: 1.7em;
+}
+
+#toolbar #content_type_selector .ContentTypeTree {
+    right: 0px;
+}
+
+.ContentTypeTree {
     display: none;
     position: absolute;
     top: 1.9em;
@@ -267,26 +284,30 @@ a, #identity input {
     margin: 0;
 }
 
-#toolbar #new_item:hover .ContentTypeSelector {
+#toolbar .toolbar_button:hover .ContentTypeTree {
     display: block;
 }
 
-.ContentTypeSelector ul, li {
+.ContentTypeTree ul, li {
     padding-left: 0;
+    padding-top: 0.4em;
+    padding-bottom: 0.4em;
     margin-left: 0;
+    list-style-type: none;
 }
 
-.ContentTypeSelector ul ul {
+.ContentTypeTree li li {
     padding-left: 2em;
 }
 
-.ContentTypeSelector li {
-    list-style-type: none;
-    padding-top: 0.4em;
-    padding-bottom: 0.4em;
+.ContentTypeTree .entry_label {
+    background-repeat: no-repeat;
+    padding-left: 1.75em;
+    padding-bottom: 0.2em;
+    color: black;
 }
 
-.ContentTypeSelector .entry_label {
+#toolbar #content_type_selector {
     background-repeat: no-repeat;
     padding-left: 1.75em;
     padding-bottom: 0.2em;
