@@ -2,7 +2,7 @@
 from magicbullet.html import Element
 from magicbullet.views.contenttypetree import ContentTypeTree
 from magicbullet.html.table import Table, MULTIPLE_SELECTION
-from magicbullet.schema import Member
+from magicbullet.schema import Member, Collection
 
 class ContentTable(Table):
     def repr_value(self, item, member, value):
@@ -18,7 +18,11 @@ table.data = content_type.index.values()
 table.schema = content_type.copy(
     inheritance = False,
     validations = False,
-    exclude = ("id", "translations", "groups"),
+    exclude = ["id", "draft_source"] + [
+        member
+        for member in content_type.members().itervalues()
+        if isinstance(member, Collection)
+    ],
     members = (Member(name = "element"),)
 )
 
