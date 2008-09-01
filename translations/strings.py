@@ -68,6 +68,28 @@ translations.define("PageTreeView-delete",
     en = u"Delete"
 )
 
+translations.define("New item",
+    ca = u"Nou element",
+    es = u"Nuevo elemento",
+    en = u"New item")
+
+translations.define("Edit",
+    ca = u"Editar",
+    es = u"Editar",
+    en = u"Edit")
+
+translations.define("Delete",
+    ca = u"Eliminar",
+    es = u"Eliminar",
+    en = u"Delete")
+
+translations.define("History",
+    ca = u"Històric",
+    es = u"Histórico",
+    en = u"History")
+
+# Item
+#------------------------------------------------------------------------------
 translations.define("Item.id",
     ca = u"ID",
     es = u"ID",
