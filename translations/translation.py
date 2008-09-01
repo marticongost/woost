@@ -57,8 +57,12 @@ class TranslationsRepository(DictWrapper):
         translation = self.__translations.get(language, _undefined)
 
         if translation is _undefined:
-            raise KeyError("Can't find a translation for %r in language %s"
+            default = kwargs.get("default", _undefined)
+            if default is _undefined:
+                raise KeyError("Can't find a translation for %r in language %s"
                             % (obj, language))
+            else:
+                return unicode(default)
         
         return translation(obj, **kwargs)
 
@@ -75,28 +79,29 @@ class Translation(DictWrapper):
     def __setitem__(self, obj, string):
         self.__strings[obj] = string
 
-    def _get_with_fallback(self, obj, default = None):
+    def _get_with_fallback(self, obj):
         
         string = self.__strings.get(obj, _undefined)
 
-        if string is _undefined:
-            if self.fallback:
-                for fallback in self.fallback:
-                    string = fallback._get_with_fallback(obj)
-                    if string is not _undefined:
-                        break
-                else:
-                    string = default
+        if string is _undefined and self.fallback:
+            for fallback in self.fallback:
+                string = fallback._get_with_fallback(obj)
+                if string is not _undefined:
+                    break
 
         return string
 
     def __call__(self, obj, **kwargs):
         
-        string = self._get_with_fallback(obj, _undefined)
+        string = self._get_with_fallback(obj)
 
         if string is _undefined:
-            raise KeyError("Can't find a translation for %s" % obj)
-             
+            default = kwargs.get("default", _undefined)
+            if default is _undefined:
+                raise KeyError("Can't find a translation for %s" % obj)
+            else:
+                return unicode(default)
+        
         # Custom python expression
         if callable(string):
             string = string(self, obj, **kwargs)

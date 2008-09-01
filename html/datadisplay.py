@@ -181,16 +181,11 @@ class DataDisplay(object):
         if expr:
             return expr(obj)
         else:
-            value = getattr(obj, member.name, None)
+            return getattr(obj, member.name, None)
 
-            if value is not None:
-                try:
-                    value = translate(value)
-                except KeyError:
-                    pass
-            
-            return value
-        
+    def repr_value(self, obj, member, value):
+        return translate(value, default = value)
+
     def get_member_display(self, obj, member):
         
         member = self._resolve_member(member)
@@ -202,10 +197,8 @@ class DataDisplay(object):
         if display:
             display_instance = display(self, obj, member)
         else:
-            value = self.get_member_value(obj, member)
-            display_instance = Element()
-            display_instance.value = unicode(value)
-
+            display_instance = self.default_display(obj, member)
+            
         display_instance.member = member
         display_instance.item = obj
         return display_instance
@@ -218,6 +211,12 @@ class DataDisplay(object):
 
     def set_member_type_display(self, member_type, display):
         self.__member_type[member_type] = display
+
+    def default_display(self, obj, member):
+        value = self.get_member_value(obj, member)
+        display = Element()
+        display.value = unicode(self.repr_value(obj, member, value))
+        return display
 
 
 NO_SELECTION = 0

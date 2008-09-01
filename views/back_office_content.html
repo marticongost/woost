@@ -4,7 +4,14 @@ from magicbullet.views.contenttypetree import ContentTypeTree
 from magicbullet.html.table import Table, MULTIPLE_SELECTION
 from magicbullet.schema import Member
 
-table = Table()
+class ContentTable(Table):
+    def repr_value(self, item, member, value):
+        if value is None:
+            return "-"
+        else:
+            return translate(value, default = value)
+
+table = ContentTable()
 table["name"] = "content"
 table.selection_mode = MULTIPLE_SELECTION
 table.data = content_type.index.values()
