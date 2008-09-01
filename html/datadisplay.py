@@ -18,6 +18,7 @@ class DataDisplay(object):
     data = None
     schema = None
     editable = True
+    translations = None
 
     def __init__(self):
         self.__member_displayed = {}

@@ -160,9 +160,17 @@ a, #identity input {
 }
 
 .Table th, .Table td {
+    vertical-align: top;
 	text-align: left;
 	padding: 0.5em;
 	padding-right: 1em;
+}
+
+.Table tr.translations th {
+    font-size: 80%;
+    font-weight: normal;
+    font-style: italic;
+    color: rgb(75,75,75);
 }
 
 .Table .selection {

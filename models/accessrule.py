@@ -147,9 +147,9 @@ class AccessRule(Item):
             return " ".join(trans)
 
         elif language == "ca":
-            return "Regla d'accés"
+            return u"Regla d'accés"
         elif language == "es":
-            return "Regla de acceso"
+            return u"Regla de acceso"
 
 
 def allowed(**context):

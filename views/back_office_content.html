@@ -12,6 +12,7 @@ class ContentTable(Table):
             return translate(value, default = value)
 
 table = ContentTable()
+table.translations = site.languages            
 table["name"] = "content"
 table.selection_mode = MULTIPLE_SELECTION
 table.data = content_type.index.values()

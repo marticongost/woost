@@ -11,6 +11,8 @@ from magicbullet.html.datadisplay import (
     CollectionDisplay,
     NO_SELECTION, SINGLE_SELECTION, MULTIPLE_SELECTION
 )
+from magicbullet.translations import translate
+from magicbullet.language import get_content_language, set_content_language
 
 class Table(Element, CollectionDisplay):
     
@@ -39,14 +41,39 @@ class Table(Element, CollectionDisplay):
 
     def _fill_head(self):
 
+        # Translation row
+        translations = self.translations
+        if translations:
+            translation_labels = [
+                translate(language)
+                for language in translations
+            ]
+            self.translation_row = Element("tr")
+            self.translation_row.add_class("translations")
+            self.head.append(self.translation_row)
+
+        # Selection column
         if self.selection_mode != NO_SELECTION:
             selection_header = Element("th")
             selection_header.add_class("selection")
             self.head_row.append(selection_header)
-
+            if translations:
+                selection_header["rowspan"] = "2"
+        
+        # Regular columns
         for column in self.displayed_members:
             header = self.create_header(column)
             self.head_row.append(header)
+
+            if translations:
+                if column.translated:
+                    header["colspan"] = str(len(translations))
+                    for label in translation_labels:
+                        translation_header = Element("th")
+                        translation_header.append(label)
+                        self.translation_row.append(translation_header)
+                else:
+                    header["rowspan"] = "2"
     
     def _fill_body(self):
         for i, item in enumerate(self.data):
@@ -61,8 +88,16 @@ class Table(Element, CollectionDisplay):
             row.append(self.create_selection_cell(item))
             
         for column in self.displayed_members:
-            cell = self.create_cell(item, column)
-            row.append(cell)
+            if self.translations and column.translated:
+                current_content_language = get_content_language()
+                for language in self.translations:
+                    set_content_language(language)
+                    cell = self.create_cell(item, column)
+                    row.append(cell)
+                set_content_language(current_content_language)
+            else:
+                cell = self.create_cell(item, column)
+                row.append(cell)
         
         return row
 

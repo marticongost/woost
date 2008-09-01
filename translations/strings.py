@@ -20,6 +20,24 @@ translations.define(False,
     en = u"No"
 )
 
+translations.define("ca",
+    ca = u"Català",
+    es = u"Catalán",
+    en = u"Catalan"
+)
+
+translations.define("es",
+    ca = u"Castellà",
+    es = u"Español",
+    en = u"Spanish"
+)
+
+translations.define("en",
+    ca = u"Anglès",
+    es = u"Inglés",
+    en = u"English"
+)
+
 translations.define("site_section",
     ca = u"Lloc web",
     es = u"Sitio web",
