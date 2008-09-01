@@ -8,6 +8,18 @@
 """
 from magicbullet.translations.translation import translations
 
+translations.define(True,
+    ca = u"Sí",
+    es = u"Sí",
+    en = u"Yes"
+)
+
+translations.define(False,
+    ca = u"No",
+    es = u"No",
+    en = u"No"
+)
+
 translations.define("site_section",
     ca = u"Lloc web",
     es = u"Sitio web",
@@ -177,8 +189,8 @@ translations.define("Publishable.template",
 )
 
 translations.define("Publishable.enabled",
-    ca = u"Habilitat",
-    es = u"Habilitado",
+    ca = u"Actiu",
+    es = u"Activo",
     en = u"Enabled"
 )
 
