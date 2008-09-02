@@ -95,7 +95,7 @@ class Collection(Member):
 
         items = self.resolve_constraint(self.items, context)
 
-        if items is not None:
+        if items is not None and value is not None:
             
             context.enter(self, value)
 

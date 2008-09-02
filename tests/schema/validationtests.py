@@ -45,35 +45,35 @@ class MemberValidationTestCase(ValidationTestCase):
     
     def test_required(self):
 
-        from magicbullet.schema import Member, ValueRequiredError
+        from magicbullet.schema import Member, exceptions
 
         self._test_validation(
             Member(required = True),
             [1, 0, -2, "a", "hello world!!", "", [], {}],
             [None],
-            ValueRequiredError
+            exceptions.ValueRequiredError
         )
 
     def test_require_none(self):
 
-        from magicbullet.schema import Member, NoneRequiredError
+        from magicbullet.schema import Member, exceptions
 
         self._test_validation(
             Member(require_none = True),
             [None],
             [1, 0, -2, "a", "hello world!!", "", [], {}],
-            NoneRequiredError
+            exceptions.NoneRequiredError
         )
 
     def test_type(self):
 
-        from magicbullet.schema import Member, TypeCheckError
+        from magicbullet.schema import Member, exceptions
 
         self._test_validation(
             Member(type = basestring),
             [None, "hello world", u"Hola món!", ""],
             [15, 0, [], ["hello world"], {}],
-            TypeCheckError,
+            exceptions.TypeCheckError,
             {"type": basestring}
         )
 
@@ -81,113 +81,113 @@ class MemberValidationTestCase(ValidationTestCase):
             Member(type = float),
             [None, 1.5, 27.104, 12.8],
             ["", "hello!", 2, {}, [1.5, 27.3]],
-            TypeCheckError,
+            exceptions.TypeCheckError,
             {"type": float}
         )
 
     def test_enumeration(self):
 
-        from magicbullet.schema import Member, EnumerationError
+        from magicbullet.schema import Member, exceptions
 
         self._test_validation(
             Member(enumeration = ["cherry", "apple", "peach"]),            
             [None, "cherry", "apple", "peach"],
             ["coconut", "watermelon", "banana"],
-            EnumerationError
+            exceptions.EnumerationError
         )
     
 class StringValidationTestCase(ValidationTestCase):
 
     def test_min(self):
 
-        from magicbullet.schema import String, MinLengthError
+        from magicbullet.schema import String, exceptions
 
         self._test_validation(
             String(min = 5),
             [None, "hello", "strange", ", strange world!!"],
             ["", "hulo", "hum"],
-            MinLengthError
+            exceptions.MinLengthError
         )
 
     def test_max(self):
         
-        from magicbullet.schema import String, MaxLengthError
+        from magicbullet.schema import String, exceptions
 
         self._test_validation(
             String(max = 5),
             [None, "", "hi", "hulo", "hello"],
             ["greetings", "welcome"],
-            MaxLengthError
+            exceptions.MaxLengthError
         )
 
     def test_format(self):
 
-        from magicbullet.schema import String, FormatError
+        from magicbullet.schema import String, exceptions
 
         self._test_validation(
             String(format = r"^\d{4}-\d{2}[a-zA-Z]$"),
             [None, "4261-85M", "7508-34x"],
             ["", "Bugger numeric codes", "AAADSADS20934832498234"],
-            FormatError
+            exceptions.FormatError
         )
 
 class IntegerValidationTestCase(ValidationTestCase):
 
     def test_min(self):
 
-        from magicbullet.schema import Integer, MinValueError
+        from magicbullet.schema import Integer, exceptions
 
         self._test_validation(
             Integer(min = 5),
             [None, 5, 6, 15, 300],
             [4, 3, 0, -2, -100],
-            MinValueError
+            exceptions.MinValueError
         )    
 
     def test_max(self):
 
-        from magicbullet.schema import Integer, MaxValueError
+        from magicbullet.schema import Integer, exceptions
 
         self._test_validation(
             Integer(max = 5),
             [None, 5, 4, 0, -6, -78],
             [6, 7, 15, 100, 300],
-            MaxValueError
+            exceptions.MaxValueError
         )
 
 class CollectionValidationTestCase(ValidationTestCase):
 
     def test_min(self):
         
-        from magicbullet.schema import Collection, MinItemsError
+        from magicbullet.schema import Collection, exceptions
 
         self._test_validation(
             Collection(min = 3),
             [None, [1, 2, 3], ["a", "b", "c", "d"], range(50)],
             [[], ["a"], [1, 2]],
-            MinItemsError
+            exceptions.MinItemsError
         )
 
     def test_max(self):
 
-        from magicbullet.schema import Collection, MaxItemsError
+        from magicbullet.schema import Collection, exceptions
 
         self._test_validation(
             Collection(max = 3),
             [None, [], ["a"], (1, 2), set([1, 2, 3])],
             [["a", "b", "c", "d"], range(10)],
-            MaxItemsError
+            exceptions.MaxItemsError
         )
 
-    def test_content(self):
+    def test_items(self):
 
-        from magicbullet.schema import Collection, Integer, TypeCheckError
+        from magicbullet.schema import Collection, Integer, exceptions
 
         self._test_validation(
-            Collection(content = Integer()),
+            Collection(items = Integer()),
             [None, [], [1], [1, 2], set([1, 2, 3]), tuple(range(10))],
             [["a", "b", "c"], [3.5, 2.7, 1.4]],
-            TypeCheckError,
+            exceptions.TypeCheckError,
             error_count = 3
         )
 
@@ -195,7 +195,7 @@ class SchemaValidationTestCase(ValidationTestCase):
 
     def test_scalar(self):
 
-        from magicbullet.schema import Schema, Integer, TypeCheckError
+        from magicbullet.schema import Schema, Integer, exceptions
         
         class Validable(object):
             def __init__(self, foo):
@@ -210,7 +210,7 @@ class SchemaValidationTestCase(ValidationTestCase):
             }),
             [Validable(None), Validable(1), Validable(15)],
             [Validable(""), Validable("hello, world!"), Validable(3.15)],
-            TypeCheckError
+            exceptions.TypeCheckError
         )
 
 if __name__ == "__main__":

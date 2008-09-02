@@ -64,7 +64,9 @@ class Member(Variable):
     enumeration = None
 
     # Attributes that deserve special treatment when performing a deep copy
-    _special_copy_keys = set(["_validations_wrapper", "_validations"])
+    _special_copy_keys = set([
+        "_schema", "_validations_wrapper", "_validations"
+    ])
 
     def __init__(self, doc = None, **kwargs):
         self._name = None
@@ -165,7 +167,6 @@ class Member(Variable):
         @rtype: L{Member}
         """
         copied_member = deepcopy(self)
-        copied_member._schema = None
         return copied_member
     
     def __deepcopy__(self, memo):
@@ -238,9 +239,6 @@ class Member(Variable):
             process.
         @type context: L{ValidationContext<validationcontext.ValidationContext>}
         """
-        if context is None:
-            context = ValidationContext()
-
         for error in self.get_errors(value, context):
             return False
 
@@ -260,7 +258,7 @@ class Member(Variable):
             iterable
         """
         if context is None:
-            context = ValidationContext()
+            context = ValidationContext(self, value)
 
         if self._validations:
             for validation in self._validations:
