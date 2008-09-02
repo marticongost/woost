@@ -17,4 +17,7 @@ from magicbullet.schema.schemastrings import String
 from magicbullet.schema.schemanumbers import Number, Integer, Decimal, Float
 from magicbullet.schema.schemabooleans import Boolean
 from magicbullet.schema.schemadates import DateTime, Date, Time
-
+from magicbullet.schema.adapter import (
+    Adapter, RuleSet,
+    Rule, Copy, Exclusion, Split, Join
+)
