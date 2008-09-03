@@ -239,7 +239,7 @@ class Schema(Member):
             copy. When given as a mapping, the keys will be used for the member
             names.
         @type members: L{Member<member.Member>} list
-                       or (str, L{Member<member.Member>}) dict
+            or (str, L{Member<member.Member>}) dict
         """ 
         
         # Get available members
@@ -264,12 +264,12 @@ class Schema(Member):
         for member in (include or copied_members.itervalues()):
             if not exclude or member not in exclude:
                 member_copy = member.copy()
-                member_copy.copy_source = member
                 member_copies.append(member_copy)
         
         # Create the copy
         copy = Schema(members = member_copies)
         copy.name = self.name
+        copy.copy_source = self
 
         if inheritance:
             copy.inherit(*self.bases)

@@ -184,6 +184,8 @@ class Member(Variable):
         copy._validations_wrapper = ListWrapper(copy._validations)
         memo[id(copy._validations_wrapper)] = copy._validations_wrapper
 
+        copy.copy_source = self
+
         return copy
 
     def add_validation(self, validation):
@@ -322,7 +324,7 @@ class Member(Variable):
                 yield exceptions.TypeCheckError(self, value, context, type)
 
     def __translate__(self, language, **kwargs):        
-        try:            
+        try:
             return translate(self.schema.name + "." + self.name)
         except KeyError:
             copy_source = getattr(self, "copy_source", None)
