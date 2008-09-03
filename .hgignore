@@ -1,3 +1,4 @@
 syntax: glob
 settings.py
 data
+views/resources/scripts/tinymce
