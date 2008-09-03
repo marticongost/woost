@@ -38,6 +38,7 @@ class Form(Element, DataDisplay):
         self.submit_button = Element("button")
         self.submit_button["type"] = "submit"
         self.submit_button.append(translate("Submit"))
+        self.append(self.submit_button)
 
     def _ready(self):
         self._fill_fields()
