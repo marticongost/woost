@@ -6,6 +6,7 @@
 @organization:	Whads/Accent SL
 @since:			July 2008
 """
+from os.path import join
 from genshi.template import TemplateLoader
 from magicbullet.translations import translate
 from magicbullet.models import Site
@@ -23,7 +24,7 @@ class Rendering(Module):
         Module.attach(self, application)
         
         self.template_loader = TemplateLoader(
-            self.application.views_path,
+            join(self.application.views_path, "templates"),
             **self.loader_options
         )
 
