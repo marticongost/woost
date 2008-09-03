@@ -202,6 +202,10 @@ class Element(object):
             self.__ready_handlers.append(handler)
 
     def _ready(self):
+        
+        if self.member:
+            self.add_class(self.member.__class__.__name__)
+
         if self.__ready_handlers:
             for handler in self.__ready_handlers:
                 handler()
