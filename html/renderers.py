@@ -80,7 +80,8 @@ class Renderer(object):
         out(" ")
 
         if key in self.flag_attributes:
-            self._write_flag(key, out)
+            if value:
+                self._write_flag(key, out)
         else:
             out(key)
             out("=")
