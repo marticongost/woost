@@ -29,8 +29,7 @@ class Page(Publishable):
 class StandardPage(Page):
     
     body = schema.String(
-        translated = True,
-        display = TinyMCE
+        translated = True
     )
 
 

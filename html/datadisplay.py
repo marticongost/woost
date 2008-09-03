@@ -14,11 +14,6 @@ from magicbullet.html import Element
 from magicbullet.typemapping import TypeMapping
 from magicbullet.schema import Member
 
-# Add a property to schema members so they can specify their prefered visual
-# display
-Member.display = None
-
-
 class DataDisplay(object):
     """Base class for all visual components that can display schema-based data.
     """
@@ -208,9 +203,6 @@ class DataDisplay(object):
         
         member = self._resolve_member(member)
         display = self.__member_display.get(member)
-
-        if display is None:
-            display = member.display
 
         if display is None:
             display = self.get_member_type_display(member.__class__)

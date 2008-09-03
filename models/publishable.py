@@ -48,8 +48,7 @@ class Publishable(Item):
     )
 
     description = schema.String(
-        translated = True,
-        display = TinyMCE
+        translated = True
     )
 
     def __translate__(self, language, **kwargs):
