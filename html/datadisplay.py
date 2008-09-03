@@ -7,9 +7,16 @@ Visual elements for data binding.
 @organization:	Whads/Accent SL
 @since:			July 2008
 """
+from operator import getitem
 from magicbullet.modeling import getter, ListWrapper
 from magicbullet.translations import translate
 from magicbullet.html import Element
+from magicbullet.typemapping import TypeMapping
+from magicbullet.schema import Member
+
+# Add a property to schema members so they can specify their prefered visual
+# display
+Member.display = None
 
 
 class DataDisplay(object):
@@ -19,6 +26,8 @@ class DataDisplay(object):
     schema = None
     editable = True
     translations = None
+    get_value = None
+    set_value = None
 
     def __init__(self):
         self.__member_displayed = {}
@@ -26,7 +35,7 @@ class DataDisplay(object):
         self.__member_editable = {}
         self.__member_expressions = {}
         self.__member_display = {}
-        self.__member_type_display = {}
+        self.__member_type_display = TypeMapping()
 
     def _resolve_member(self, member):
 
@@ -182,10 +191,18 @@ class DataDisplay(object):
         if expr:
             return expr(obj)
         else:
-            return getattr(obj, member.name, None)
+            if self.get_value:
+                return self.get_value(obj, member.name)
+            elif isinstance(obj, dict):
+                return obj.get(member.name, None)
+            else:
+                return getattr(obj, member.name, None)
 
     def repr_value(self, obj, member, value):
-        return translate(value, default = value)
+        if value is None:
+            return u""
+        else:
+            return translate(value, default = value)
 
     def get_member_display(self, obj, member):
         
@@ -193,16 +210,23 @@ class DataDisplay(object):
         display = self.__member_display.get(member)
 
         if display is None:
+            display = member.display
+
+        if display is None:
             display = self.get_member_type_display(member.__class__)
+        
+        if display is None:
+            display = self.default_display(obj, member)
  
-        if display:
-            display_instance = display(self, obj, member)
-        else:
-            display_instance = self.default_display(obj, member)
-            
-        display_instance.member = member
-        display_instance.item = obj
-        return display_instance
+        if isinstance(display, type) and issubclass(display, Element):
+            display = display()
+            display.data = obj
+            display.member = member
+            display.value = self.get_member_value(obj, member)
+        elif callable(display):
+            display = display(self, obj, member)
+        
+        return display
 
     def set_member_display(self, member, display):
         self.__member_display[self._resolve_member(member)] = display
@@ -211,7 +235,7 @@ class DataDisplay(object):
         return self.__member_type_display.get(member_type)
 
     def set_member_type_display(self, member_type, display):
-        self.__member_type[member_type] = display
+        self.__member_type_display[member_type] = display
 
     def default_display(self, obj, member):
         value = self.get_member_value(obj, member)
