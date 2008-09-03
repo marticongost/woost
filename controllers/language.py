@@ -20,9 +20,10 @@ class Language(Module):
         path = request.path
 
         if not path or path[0] not in Site.main.languages:
-            raise cherrypy.HTTPRedirect(
-                self.application.uri(self.infer_language(), *path)
-            )
+            uri = self.application.uri(self.infer_language(), *path)
+            if cherrypy.request.query_string:
+                uri += "?" + cherrypy.request.query_string
+            raise cherrypy.HTTPRedirect(uri)
 
         language = path.pop(0)
         set_language(language)
