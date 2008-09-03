@@ -8,6 +8,7 @@
 """
 from operator import getitem, setitem
 from magicbullet.modeling import ListWrapper
+from magicbullet.schema.schema import Schema
 from magicbullet.schema.schemastrings import String
 
 _do_nothing = lambda member: None
@@ -37,11 +38,21 @@ class Adapter(object):
         self.import_rules = RuleSet()
         self.export_rules = RuleSet()
 
-    def import_schema(self, source_schema, target_schema):
-        self.import_rules.adapt_schema(source_schema, target_schema)
+    def import_schema(self, source_schema, target_schema = None):
 
-    def export_schema(self, source_schema, target_schema):
+        if target_schema is None:
+            target_schema = Schema()
+
+        self.import_rules.adapt_schema(source_schema, target_schema)
+        return target_schema
+
+    def export_schema(self, source_schema, target_schema = None):
+
+        if target_schema is None:
+            target_schema = Schema()
+
         self.export_rules.adapt_schema(source_schema, target_schema)
+        return target_schema
 
     def import_object(self,
         source_object,
@@ -148,7 +159,9 @@ class RuleSet(object):
         
         if self.implicit_copy:
             remaining_keys = set(source_schema.members())
-            consume_key = remaining_keys.remove
+            def consume_key(key):
+                if key in remaining_keys:
+                    remaining_keys.remove(key)
         else:
             consume_key = _do_nothing
         
@@ -175,7 +188,9 @@ class RuleSet(object):
 
         if self.implicit_copy:
             remaining_keys = set(source_schema.members())
-            consume_key = remaining_keys.remove
+            def consume_key(key):
+                if key in remaining_keys:
+                    remaining_keys.remove(key)
         else:
             consume_key = _do_nothing
         
