@@ -8,6 +8,7 @@
 """
 import cherrypy
 from magicbullet.models import Publishable, Site
+from magicbullet.models.publishable import exposed
 from magicbullet.controllers.module import Module
 
 
@@ -49,26 +50,33 @@ class Dispatcher(Module):
 
     def respond(self, request):
         
-        handler = self.find_handler(request.publishable, request.extra_path)
+        handler = self.find_handler(
+            request.publishable.handler or request.publishable,
+            request.extra_path)
         
         if handler is None:
             raise cherrypy.NotFound()
 
         return handler(self.application, request)
 
-    def find_handler(self, publishable, extra_path):
-        
-        handler = publishable.handler or publishable
-        
+    def find_handler(self, handler, extra_path):
+                
         while extra_path:
-            child = getattr(handler, extra_path[0], None)
+
+            resolver = getattr(handler, "resolve", None)
+
+            if resolver:
+                child = resolver(extra_path)
+            else:
+                child = getattr(handler, extra_path[0], None)
+                if child:
+                    extra_path.pop(0)
             
             if child is None:
                 handler = getattr(handler, "default", None)
                 break
 
             handler = child
-            extra_path.pop(0)
         
         if handler is not None and not callable(handler):
             handler = getattr(handler, "index", None)
@@ -77,4 +85,15 @@ class Dispatcher(Module):
             handler = None
 
         return handler
+
+
+class Resolver(object):
+
+    def __init__(self, function):
+        self.function = function
+
+    def resolve(self, cms, request):
+        return self.function(self, cms, request)
+
+resolver = Resolver
 
