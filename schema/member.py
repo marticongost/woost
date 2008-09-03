@@ -63,6 +63,9 @@ class Member(Variable):
     require_none = False
     enumeration = None
 
+    copy_source = None
+    adaptation_source = None
+
     # Attributes that deserve special treatment when performing a deep copy
     _special_copy_keys = set([
         "_schema", "_validations_wrapper", "_validations"

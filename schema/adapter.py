@@ -173,6 +173,20 @@ class RuleSet(object):
             copy_rule.adapt_schema(
                 source_schema, target_schema, _do_nothing)
 
+        # Preserve member order
+        target_members = target_schema.members()
+        target_order = []
+        ordered_members = set()
+
+        for source_member in source_schema.ordered_members():
+            for target_member in target_members.itervalues():
+                if target_member.adaptation_source is source_member \
+                and target_member not in ordered_members:
+                    target_order.append(target_member)
+                    ordered_members.add(target_member)
+
+        target_schema.members_order = target_order
+
     def adapt_object(self,
         source_object,
         target_object,
@@ -289,14 +303,16 @@ class Copy(Rule):
         for source_name, target_name in self.mapping.iteritems():
             
             consume_key(source_name)
+            source_member = source_schema[source_name]
 
             try:
                 target_member = target_schema[target_name]
             except KeyError:
-                source_member = source_schema[source_name]
                 target_member = source_member.copy()
                 target_member.name = target_name
             
+            target_member.adaptation_source = source_member
+
             if self.properties:
                 for prop_name, prop_value in self.properties.iteritems():
                     setattr(target_member, prop_name, prop_value)
@@ -377,7 +393,8 @@ class Split(Rule):
         consume_key(self.source)
         
         for target in self.targets:
-            self._adapt_member(target_schema, target)
+            target_member = self._adapt_member(target_schema, target)
+            target_member.adaptation_source = source_schema[self.source]
 
     def adapt_object(self,
         source_object,
@@ -417,7 +434,8 @@ class Join(Rule):
         for source in self.sources:
             consume_key(source)
         
-        self._adapt_member(target_schema, self.target)
+        target_member = self._adapt_member(target_schema, self.target)
+        target_member.adaptation_source = source_schema[self.sources[0]]
 
     def adapt_object(self,
         source_object,
