@@ -49,7 +49,7 @@ def display_reference(table, item, member):
         display = Element("a")
         display["href"] = cms.uri(requested_item.path,
                                   "edit",
-                                  "?selection=%d" % value.id)
+                                  "?content_selection=%d" % value.id)
         
     display.append(table.repr_value(item, member, value))
     return display
@@ -64,7 +64,7 @@ table.set_member_type_display(Reference, display_reference)
     xmlns:xi="http://www.w3.org/2001/XInclude">
 
     <div py:match="body-block">
-        <form method="get">
+        <form method="get" action="${cms.uri(requested_item.path)}">
 
             <div id="toolbar">
                 <div class="toolbar_button" id="new_item">
@@ -72,26 +72,28 @@ table.set_member_type_display(Reference, display_reference)
                     <label>${translate("New item")}</label>
                     <?python
                     class NewItemSelector(ContentTypeTree):
-                        def create_label(self, item):
-                            label = ContentTypeTree.create_label(self, item)
+                        def create_label(self, content_type):
+                            label = ContentTypeTree.create_label(self, content_type)
                             label.tag = "a"
-                            label["href"] = "#"
+                            label["href"] = cms.uri(requested_item.path, 'new') \
+                                + "?content_type=" + content_type.__name__
                             return label
                     ?>
                     ${Markup(NewItemSelector().render())}
                 </div>
-                <button class="toolbar_button" name="edit">
+                <button class="toolbar_button" name="section" value="edit">
                     <img src="${cms.uri('resources', 'images', 'edit.png')}"/>
                     <label>${translate("Edit")}</label>
                 </button>
-                <button class="toolbar_button" name="delete">
+                <button class="toolbar_button" name="section" value="delete">
                     <img src="${cms.uri('resources', 'images', 'delete.png')}"/>
                     <label>${translate("Delete")}</label>
                 </button>
-                <button class="toolbar_button" name="history">
+                <button class="toolbar_button" name="section" value="history">
                     <img src="${cms.uri('resources', 'images', 'history.png')}"/>
                     <label>${translate("History")}</label>
                 </button>
+
                 <?python
                 class ContentTypeSelector(ContentTypeTree):
                 

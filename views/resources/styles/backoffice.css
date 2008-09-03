@@ -49,6 +49,10 @@ a, #identity input {
     padding: 0;
 }
 
+a img {
+    border: none;
+}
+
 #navigation {
     clear: both;
     overflow: visible;
@@ -256,14 +260,10 @@ a, #identity input {
     height: 1.7em;
 }
 
-#toolbar button.toolbar_button {
-    background: none;
-	border: none;
-	cursor: pointer;
-}
-
 #toolbar .toolbar_button {
-	float: left;
+	background: none;
+	border: none;
+    float: left;
 	font-size: 85%;
     margin: 0;
     padding: 0;

@@ -31,7 +31,11 @@ class BackOffice(Publishable):
 
     @exposed
     def index(self, cms, request):
-        raise cherrypy.HTTPRedirect(cms.uri(self.path, self.default_section))
+        section = request.params.get("section", self.default_section)
+        raise cherrypy.HTTPRedirect(
+            cms.uri(self.path, section)
+            + "?" + cherrypy.request.query_string
+        )
 
     @exposed
     def pages(self, cms, request):
@@ -54,7 +58,7 @@ class BackOffice(Publishable):
 
     @exposed
     def edit(self, cms, request):
-        item_id = int(request.params["selection"])
+        item_id = int(request.params["content_selection"])
         item = Item.index[item_id]
         return self._edit(cms, request, item.__class__, item)
 
