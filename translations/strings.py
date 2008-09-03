@@ -62,6 +62,18 @@ translations.define("access_rules_section",
     en = u"Access rules"
 )
 
+translations.define("edit_section",
+    ca = u"Edició",
+    es = u"Edición",
+    en = u"Edit"
+)
+
+translations.define("history_section",
+    ca = u"Històric",
+    es = u"Histórico",
+    en = u"History"
+)
+
 translations.define("logged in as",
     ca = u"Estàs identificat com a",
     es = u"Estás identificado como",
@@ -72,6 +84,12 @@ translations.define("Logout",
     ca = u"Sortir",
     es = u"Salir",
     en = u"Logout"
+)
+
+translations.define("Submit",
+    ca = u"Confirmar",
+    es = u"Confirmar",
+    en = u"Submit"
 )
 
 translations.define("PageTreeView-new",
@@ -254,5 +272,33 @@ translations.define("Page.hidden",
     ca = u"Oculta",
     es = u"Oculta",
     en = u"Hidden"
+)
+
+# StandardPage
+#------------------------------------------------------------------------------
+translations.define("StandardPage.body",
+    ca = u"Cos",
+    es = u"Cuerpo",
+    en = u"Body"
+)
+
+# User
+#------------------------------------------------------------------------------
+translations.define("User.email",
+    ca = u"Correu electrònic",
+    es = u"Correo electrónico",
+    en = u"E-mail address"
+)
+
+translations.define("User.authored_items",
+    ca = u"Contingut creat per l'usuari",
+    es = u"Contingut creado por el usuario",
+    en = u"Content created by the user"
+)
+
+translations.define("User.owned_items",
+    ca = u"Contingut propietat de l'usuari",
+    es = u"Contingut propiedad del usuario",
+    en = u"Content owned by the user"
 )
 

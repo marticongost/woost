@@ -1,0 +1,35 @@
+<?python
+from magicbullet.html.form import Form
+?>
+
+<html
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:py="http://genshi.edgewall.org/"
+    xmlns:xi="http://www.w3.org/2001/XInclude">
+
+    <title py:match="title" once="True">
+        ${translate(edited_item)}
+    </title>
+    
+    <head py:match="head" once="True">
+        ${select("*|text()")}
+        <script type="text/javascript" src="/resources/scripts/tinymce/jscripts/tiny_mce/tiny_mce.js"></script>
+    </head>
+
+
+    <h1 py:match="h1" once="True">
+        ${translate(edited_item)}
+    </h1>
+
+    <div py:match="body-block" once="True">
+        <?python
+        form = Form()
+        form.data = form_data
+        form.schema = form_schema
+        ?>
+        ${Markup(form.render())}
+    </div>
+
+    <xi:include href="back_office_layout.html"/>
+
+</html>

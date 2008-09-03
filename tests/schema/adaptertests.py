@@ -199,6 +199,21 @@ class CopyTestCase(TestCase):
         self.assertEqual(user.enabled, True)
 
 
+class ExclusionTestCase(TestCase):
+
+    def test_exclude_undefined_member(self):
+
+        from magicbullet.schema import Adapter, Schema
+        
+        adapter = Adapter()
+        adapter.exclude("fictitious_member")
+        
+        user_schema = get_user_schema()
+        form_schema = Schema()
+        adapter.export_schema(user_schema, form_schema)
+        self.assertFalse("fictitious_member" in form_schema.members())
+        
+
 if __name__ == "__main__":
     from unittest import main
     main()

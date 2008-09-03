@@ -101,6 +101,14 @@ a, #identity input {
     background-image: url(access_rule.png);
 }
 
+#edit_tab {
+    background-image: url(edit.png);
+}
+
+#history_tab {
+    background-image: url(history.png);
+}
+
 #body {
     clear: both;
     padding: 1em;
@@ -171,6 +179,7 @@ a, #identity input {
     font-weight: normal;
     font-style: italic;
     color: rgb(75,75,75);
+    padding-top: 0;
 }
 
 .Table .selection {
@@ -321,3 +330,24 @@ a, #identity input {
     padding-bottom: 0.2em;
     color: black;
 }
+
+/* Generated forms
+-----------------------------------------------------------------------------*/
+.Form .field {
+    overflow: hidden;
+    clear: left;
+    margin-bottom: 0.7em;
+}
+
+.Form label {
+    display: block;
+    float: left;
+    width: 10em;
+    padding-top: 0.3em;
+}
+
+.Form .control {
+    float: left;
+}
+
+

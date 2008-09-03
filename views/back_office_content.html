@@ -2,7 +2,7 @@
 from magicbullet.html import Element
 from magicbullet.views.contenttypetree import ContentTypeTree
 from magicbullet.html.table import Table, MULTIPLE_SELECTION
-from magicbullet.schema import Member, Collection
+from magicbullet.schema import Member, Collection, Reference
 
 class ContentTable(Table):
     def repr_value(self, item, member, value):
@@ -39,6 +39,23 @@ def display_element(table, item, member):
     return display
 
 table.set_member_display("element", display_element)
+
+def display_reference(table, item, member):
+    value = table.get_member_value(item, member)
+    
+    if value is None:
+        display = Element()
+    else:
+        display = Element("a")
+        display["href"] = cms.uri(requested_item.path,
+                                  "edit",
+                                  "?selection=%d" % value.id)
+        
+    display.append(table.repr_value(item, member, value))
+    return display
+
+table.set_member_type_display(Reference, display_reference)
+
 ?>
 
 <html

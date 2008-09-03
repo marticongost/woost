@@ -8,6 +8,7 @@
 """
 from magicbullet import schema
 from magicbullet.models import Publishable
+from magicbullet.html.tinymce import TinyMCE
 
 
 class Page(Publishable):
@@ -27,6 +28,9 @@ class Page(Publishable):
 
 class StandardPage(Page):
     
-    body = schema.String(translated = True)
+    body = schema.String(
+        translated = True,
+        display = TinyMCE
+    )
 
 

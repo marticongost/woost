@@ -13,7 +13,7 @@ class PageTreeView(TreeView):
         link = Element("a")
         link.add_class("label")
         link.add_class(page.__class__.__name__)
-        link["href"] = cms.uri(item.path, "pages", str(page.id))
+        link["href"] = cms.uri(requested_item.path, "pages", str(page.id))
         link.append(page.title)
         return link
 

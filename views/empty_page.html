@@ -4,12 +4,12 @@
 	
 	<head>
 		<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
-        <title>$item.title</title>
-        <py:for each="resource in item.resources">${Markup(resource.html)}</py:for>
+        <title>$requested_item.title</title>
+        <py:for each="resource in requested_item.resources">${Markup(resource.html)}</py:for>
 	</head>
 	
 	<body>
-        ${Markup(item.body)}
+        ${Markup(requested_item.body)}
 	</body>
 
 </html>

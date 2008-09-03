@@ -10,6 +10,7 @@ from datetime import datetime
 import cherrypy
 from magicbullet import schema
 from magicbullet.models import Item
+from magicbullet.html.tinymce import TinyMCE
 
 def exposed(func):
     func.exposed = True
@@ -37,7 +38,8 @@ class Publishable(Item):
     )
 
     description = schema.String(
-        translated = True
+        translated = True,
+        display = TinyMCE
     )
 
     def __translate__(self, language, **kwargs):
@@ -108,7 +110,7 @@ class Publishable(Item):
         if template is None:
             raise cherrypy.NotFound()
 
-        return cms.rendering.render(template.identifier, item = self)       
+        return cms.rendering.render(template.identifier, requested_item = self)
 
     resources = schema.Collection(
         items = "magicbullet.models.Resource",
