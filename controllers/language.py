@@ -18,17 +18,24 @@ class Language(Module):
     def process_request(self, request):
 
         path = request.path
+        language = path[0] if path and path[0] in Site.main.languages else None
 
-        if not path or path[0] not in Site.main.languages:
-            uri = self.application.uri(self.infer_language(), *path)
+        if language is None:
+            language = self.infer_language()
+
+            uri = self.application.uri(language, *path)
             if cherrypy.request.query_string:
                 uri += "?" + cherrypy.request.query_string
+
             raise cherrypy.HTTPRedirect(uri)
+        else:
+            cherrypy.response.cookie["language"] = language
 
         language = path.pop(0)
         set_language(language)
         set_content_language(language)
         
     def infer_language(self):
-        return Site.main.default_language
+        return cherrypy.request.cookie["language"].value \
+            or Site.main.default_language
 
