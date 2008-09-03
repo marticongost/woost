@@ -19,6 +19,16 @@ def exposed(func):
 
 class Publishable(Item):
 
+    members_order = (
+        "title",
+        "inner_title",
+        "description",
+        "path",
+        "enabled",
+        "start_date",
+        "end_date"
+    )
+
     def __init__(self, **values):
         Item.__init__(self, **values)
         self.__handler_name = None
