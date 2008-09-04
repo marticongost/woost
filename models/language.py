@@ -11,6 +11,8 @@ from magicbullet.models import Item
 
 class Language(Item):
  
+    members_order = "title", "iso_code", "fallback_languages"
+
     title = schema.String(
         required = True,
         unique = True,

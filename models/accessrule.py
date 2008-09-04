@@ -30,6 +30,16 @@ class AccessRule(Item):
     for more than one constraint, all of them will be taken into account to
     further reduce the reach of the rule.
     """
+    members_order = (
+        "role",
+        "target_instance",
+        "target_type",
+        "target_ancestor",
+        "action",
+        "language",
+        "allowed"
+    )
+    
     role = schema.Reference(type = "magicbullet.models.Item")
 
     target_instance = schema.Reference(type = "magicbullet.models.Item")

@@ -12,6 +12,8 @@ from magicbullet.persistence import Query
 
 class DynamicGroup(Item):
 
+    members_order = "title", "query"
+
     title = schema.String(
         required = True,
         unique = True,

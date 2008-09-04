@@ -340,12 +340,66 @@ translations.define("AccessRule",
     en = u"Access rule"
 )
 
+translations.define("AccessRule.action",
+    ca = u"Acció",
+    es = u"Acción",
+    en = u"Action"
+)
+
+translations.define("AccessRule.language",
+    ca = u"Idioma",
+    es = u"Idioma",
+    en = u"Language"
+)
+
+translations.define("AccessRule.role",
+    ca = u"Rol d'usuari",
+    es = u"Rol de usuario",
+    en = u"User role"
+)
+
+translations.define("AccessRule.target_instance",
+    ca = u"Element afectat",
+    es = u"Elemento afectado",
+    en = u"Target element"
+)
+
+translations.define("AccessRule.target_type",
+    ca = u"Tipus d'element afectat",
+    es = u"Tipo de elemento afectado",
+    en = u"Target type"
+)
+
+translations.define("AccessRule.target_ancestor",
+    ca = u"Ancestre",
+    es = u"Ancestro",
+    en = u"Ancestor"
+)
+
+translations.define("AccessRule.allowed",
+    ca = u"Permès",
+    es = u"Permitido",
+    en = u"Allowed"
+)
+
 # Resource
 #------------------------------------------------------------------------------
 translations.define("Resource",
     ca = u"Recurs HTML",
     es = u"Recurso HTML",
     en = u"HTML Resource"
+)
+
+translations.define("Resource.title",
+    ca = u"Nom",
+    es = u"Nombre",
+    en = u"Name"
+)
+
+translations.define("Resource.html",
+    ca = u"Codi HTML",
+    es = u"Código HTML",
+    en = u"HTML code"
 )
 
 # Group
@@ -356,12 +410,30 @@ translations.define("Group",
     en = u"Group"
 )
 
+translations.define("Group.title",
+    ca = u"Nom",
+    es = u"Nombre",
+    en = u"Name"
+)
+
 # Dynamic group
 #------------------------------------------------------------------------------
 translations.define("DynamicGroup",
     ca = u"Grup dinàmic",
     es = u"Grupo dinámico",
     en = u"Dynamic group"
+)
+
+translations.define("DynamicGroup.title",
+    ca = u"Nom",
+    es = u"Nombre",
+    en = u"Name"
+)
+
+translations.define("DynamicGroup.query",
+    ca = u"Selecció",
+    es = u"Selección",
+    en = u"Selection"
 )
 
 # Back office
@@ -380,12 +452,36 @@ translations.define("File",
     en = u"File"
 )
 
+translations.define("File.file_path",
+    ca = u"Ruta del fitxer",
+    es = u"Ruta del fichero",
+    en = u"File path"
+)
+
+translations.define("File.translation_file_path",
+    ca = u"Ruta del fitxer traduït",
+    es = u"Ruta del fichero traducido",
+    en = u"File translation path"
+)
+
 # News
 #------------------------------------------------------------------------------
 translations.define("News",
     ca = u"Notícia",
     es = u"Noticia",
     en = u"News"
+)
+
+translations.define("News.summary",
+    ca = u"Sumari",
+    es = u"Sumario",
+    en = u"Summary"
+)
+
+translations.define("News.body",
+    ca = u"Cos",
+    es = u"Cuerpo",
+    en = u"Body"
 )
 
 # Event
@@ -396,12 +492,42 @@ translations.define("Event",
     en = u"Event"
 )
 
+translations.define("Event.event_start",
+    ca = u"Inici de l'esdeveniment",
+    es = u"Inicio del evento",
+    en = u"Event start"
+)
+
+translations.define("Event.event_end",
+    ca = u"Fí de l'esdeveniment",
+    es = u"Fin del evento",
+    en = u"Event end"
+)
+
+translations.define("Event.event_location",
+    ca = u"Lloc",
+    es = u"Lugar",
+    en = u"Place"
+)
+
+translations.define("Event.body",
+    ca = u"Cos",
+    es = u"Cuerpo",
+    en = u"Body"
+)
+
 # Role
 #------------------------------------------------------------------------------
 translations.define("Role",
     ca = u"Rol d'usuari",
     es = u"Rol de usuario",
     en = u"User role"
+)
+
+translations.define("Role.title",
+    ca = u"Nom",
+    es = u"Nombre",
+    en = u"Name"
 )
 
 # Template
@@ -412,6 +538,18 @@ translations.define("Template",
     en = u"Template"
 )
 
+translations.define("Template.title",
+    ca = u"Nom",
+    es = u"Nombre",
+    en = u"Name"
+)
+
+translations.define("Template.identifier",
+    ca = u"Identificador",
+    es = u"Identificador",
+    en = u"Identifier"
+)
+
 # Language
 #------------------------------------------------------------------------------
 translations.define("Language",
@@ -420,4 +558,15 @@ translations.define("Language",
     en = u"Language"
 )
 
+translations.define("Language.title",
+    ca = u"Nom",
+    es = u"Nombre",
+    en = u"Name"
+)
+
+translations.define("Language.iso_code",
+    ca = u"Codi ISO",
+    es = u"Código ISO",
+    en = u"ISO code"
+)
 

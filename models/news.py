@@ -11,6 +11,8 @@ from magicbullet.models import Publishable
 
 class News(Publishable):
 
+    members_order = "summary", "body"
+
     summary = schema.String()
 
     body = schema.String()

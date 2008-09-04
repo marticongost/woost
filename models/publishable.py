@@ -26,7 +26,8 @@ class Publishable(Item):
         "path",
         "enabled",
         "start_date",
-        "end_date"
+        "end_date",
+        "template"
     )
 
     def __init__(self, **values):

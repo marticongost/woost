@@ -11,6 +11,8 @@ from magicbullet.models import Publishable
 
 class Event(Publishable):
 
+    members_order = "event_start", "event_end", "event_location", "body"
+
     event_start = schema.DateTime()
 
     event_end = schema.DateTime()

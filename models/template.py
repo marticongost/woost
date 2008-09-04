@@ -11,7 +11,9 @@ from magicbullet.persistence import EntityClass
 from magicbullet.models import Item
 
 class Template(Item):
- 
+
+    members_order = "title", "identifier", "types", "items"
+
     title = schema.String(
         required = True,
         unique = True,

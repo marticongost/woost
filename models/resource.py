@@ -11,6 +11,8 @@ from magicbullet.models import Item
 
 class Resource(Item):
 
+    members_order = "title", "html"
+
     title = schema.String(
         required = True,
         unique = True,
