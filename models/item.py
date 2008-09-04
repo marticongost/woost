@@ -9,15 +9,24 @@
 from magicbullet import schema
 from magicbullet.persistence import Entity, datastore
 
+# Add an extension property to control member visibility on item listings
+schema.Member.listed_by_default = True
+
+
 class Item(Entity):
 
     members_order = "id", "author", "owner", "groups"
 
     indexed = True
 
-    author = schema.Reference(type = "magicbullet.models.User")
+    author = schema.Reference(
+        type = "magicbullet.models.User",
+        listed_by_default = False
+    )
     
-    owner = schema.Reference(type = "magicbullet.models.User")
+    owner = schema.Reference(
+        type = "magicbullet.models.User"
+    )
 
     groups = schema.Collection(
         items = "magicbullet.models.Group"

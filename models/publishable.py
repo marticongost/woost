@@ -45,11 +45,13 @@ class Publishable(Item):
     )
 
     inner_title = schema.String(
-        translated = True
+        translated = True,
+        listed_by_default = False
     )
 
     description = schema.String(
-        translated = True
+        translated = True,
+        listed_by_default = False
     )
 
     def __translate__(self, language, **kwargs):
@@ -59,13 +61,17 @@ class Publishable(Item):
     #--------------------------------------------------------------------------    
     enabled = schema.Boolean(
         required = True,
-        default = True
+        default = True,
+        listed_by_default = False
     )
 
-    start_date = schema.DateTime()
+    start_date = schema.DateTime(
+        listed_by_default = False        
+    )
 
     end_date = schema.DateTime(
-        min = lambda ctx: ctx.validable.pub_start
+        min = lambda ctx: ctx.validable.pub_start,
+        listed_by_default = False
     )
 
     def is_current(self):
@@ -84,7 +90,10 @@ class Publishable(Item):
         unique = True
     )
 
-    template = schema.Reference(type = "magicbullet.models.Template")
+    template = schema.Reference(
+        type = "magicbullet.models.Template",
+        listed_by_default = False
+    )
     
     def _get_handler(self):
         
