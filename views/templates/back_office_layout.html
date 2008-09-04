@@ -10,6 +10,7 @@ from magicbullet.html import Element
 		<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
         <title>${translate(requested_item)}</title>
         <link rel="Stylesheet" type="text/css" href="/resources/styles/backoffice.css"/>
+        <script type="text/javascript" src="/resources/scripts/jquery.js"></script>
         <py:for each="resource in requested_item.resources">${resource.html}</py:for>
 	</head>
 	

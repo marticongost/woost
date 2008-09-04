@@ -196,8 +196,11 @@ a img {
 }
 
 .Table .even {
-	background-color: rgb(230,235,242);
 	background-color: rgb(235,240,247);
+}
+
+.Table .selected {
+    background-color: rgb(200,205,207);
 }
 
 .Table .element label {

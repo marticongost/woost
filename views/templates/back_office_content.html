@@ -63,6 +63,11 @@ table.set_member_type_display(Reference, display_reference)
     xmlns:py="http://genshi.edgewall.org/"
     xmlns:xi="http://www.w3.org/2001/XInclude">
 
+    <head py:match="head" once="True">
+        ${select("*|text()")}
+        <script type="text/javascript" src="/resources/scripts/backoffice_content.js"></script>
+    </head>
+
     <div py:match="body-block">
         <form method="get" action="${cms.uri(requested_item.path)}">
 
