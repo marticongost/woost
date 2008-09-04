@@ -26,5 +26,6 @@ from magicbullet.models.accessrule import (
 from magicbullet.models.page import Page, StandardPage
 from magicbullet.models.file import File
 from magicbullet.models.news import News
+from magicbullet.models.event import Event
 from magicbullet.models.resource import Resource
 
