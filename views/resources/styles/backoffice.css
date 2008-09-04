@@ -70,14 +70,8 @@ a img {
     height: 1.3em;
     float: left;
     display: block;
-    background-repeat: no-repeat;
-    background-position: 0.5em 0.5em;
     background-color: rgb(245,245,245);
-/*  Uncomment the following two lines and comment the third one two disable
- *  icons on tabs*/
-/*    background-image: none !important;*/
-/*    padding-left: 0.8em;*/
-    padding-left: 1.8em;
+    padding-left: 0.8em;
     padding-top: 0.4em;
     padding-bottom: 0.4em;
     padding-right: 0.8em;
@@ -91,30 +85,6 @@ a img {
     font-weight: bold;
     border-bottom-color: white;
     background-color: white;
-}
-
-#site_tab {
-    background-image: url(site.png);
-}
-
-#pages_tab {
-    background-image: url(pages.png);
-}
-
-#content_tab {
-    background-image: url(document.png);
-}
-
-#access_rules_tab {
-    background-image: url(access_rule.png);
-}
-
-#edit_tab {
-    background-image: url(edit.png);
-}
-
-#history_tab {
-    background-image: url(history.png);
 }
 
 #body {
