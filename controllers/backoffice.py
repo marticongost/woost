@@ -29,6 +29,20 @@ class BackOffice(Publishable):
                 if entity.__name__ == requested_type:
                     return entity
 
+    def _get_visible_members(self, content_type):
+
+        param = cherrypy.request.params.get("members")
+
+        if param is not None:
+            if isinstance(param, (list, tuple, set)):
+                return set(param)
+            else:
+                return set(param.split(","))
+        else:
+            return set(member.name
+                    for member in content_type.members().itervalues()
+                    if member.listed_by_default)
+
     @exposed
     def index(self, cms, request):
         section = request.params.get("section", self.default_section)
@@ -45,12 +59,17 @@ class BackOffice(Publishable):
             active_section = "pages")
 
     @exposed
-    def content(self, cms, request):        
+    def content(self, cms, request):
+
+        content_type = self._get_content_type(Item)
+        visible_members = self._get_visible_members(content_type)
+
         return cms.rendering.render("back_office_content",
             requested_item = self,
             sections = self.root_sections,
             active_section = "content",
-            content_type = self._get_content_type(Item))
+            content_type = content_type,
+            visible_members = visible_members)
 
     @exposed
     def new(self, cms, request):        

@@ -30,9 +30,10 @@ table.schema.name = "BackOfficeContentTable"
 table.schema.add_member(Member(name = "element"))
 table.schema.members_order.insert(0, "element")
 
-for member in table.schema.members().itervalues():
-    if not member.listed_by_default:
-        table.set_member_displayed(member, False)
+visible_members.add("element")
+
+for member_name in table.schema.members():
+    table.set_member_displayed(member_name, member_name in visible_members)
 
 def display_element(table, item, member):
     display = Element("label")
