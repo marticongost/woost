@@ -76,7 +76,7 @@ table.set_member_type_display(Reference, display_reference)
                             label = ContentTypeTree.create_label(self, content_type)
                             label.tag = "a"
                             label["href"] = cms.uri(requested_item.path, 'new') \
-                                + "?content_type=" + content_type.__name__
+                                + "?type=" + content_type.__name__
                             return label
                     ?>
                     ${Markup(NewItemSelector().render())}
