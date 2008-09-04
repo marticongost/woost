@@ -32,5 +32,5 @@ class ContentTypeTree(TreeView):
     def get_child_items(self, content_type):
         return sorted(
             content_type.derived_entities(recursive = False),
-            key = lambda ct: ct.__name__)
+            key = lambda ct: translate(ct.__name__))
 
