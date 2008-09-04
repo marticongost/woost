@@ -6,28 +6,39 @@
 @organization:	Whads/Accent SL
 @since:			September 2008
 """
-from magicbullet.html import Element
-from magicbullet.schema import Number
 from magicbullet.translations import translate
+from magicbullet.schema import Number
+from magicbullet.html import Element
+from magicbullet.html.checkbox import CheckBox
 
 class Selector(Element):
 
+    name = None
     items = ()
     value = None
+   
+    def __init__(self, *args, **kwargs):
+        Element.__init__(self, *args, **kwargs)
+        self._is_selected = lambda item: False
 
     def _ready(self):
 
         Element._ready(self)
 
-        if self.member and self.items is None:
-            
-            if self.member.enumeration:
-                self.items = self.member.enumeration
-
-            elif isinstance(self.member, Number) \
-            and self.member.min and self.member.max:
-                self.items = range(self.member.min, self.member.max + 1)
+        if self.member:
         
+            if self.name is None and self.member.name:
+                self.name = self.member.name
+
+            if self.items is None:
+            
+                if self.member.enumeration:
+                    self.items = self.member.enumeration
+
+                elif isinstance(self.member, Number) \
+                and self.member.min and self.member.max:
+                    self.items = range(self.member.min, self.member.max + 1)
+            
         self._fill_entries()
 
     def _fill_entries(self):
@@ -38,7 +49,7 @@ class Selector(Element):
                 entry = self.create_entry(
                     value,
                     label,
-                    self.__is_selected(value)
+                    self._is_selected(value)
                 )
                 self.append(entry)
         else:
@@ -48,7 +59,7 @@ class Selector(Element):
                 entry = self.create_entry(
                     value,
                     label,
-                    self.__is_selected(value)
+                    self._is_selected(value)
                 )
                 self.append(entry)
     
@@ -67,26 +78,19 @@ class Selector(Element):
     def __set_value(self, value):
         self.__value = value
 
-        if isinstance(value, (list, tuple, set)):
+        if value is None:
+            self._is_selected = lambda item: False
+        elif isinstance(value, (list, tuple, set)):
             selection = set(self.get_item_value(item for item in value))
-            self.__is_selected = lambda item: item in selection
+            self._is_selected = lambda item: item in selection
         else:
             selection = self.get_item_value(value)
-            self.__is_selected = lambda item: item == selection
+            self._is_selected = lambda item: item == selection
 
 
 class DropdownSelector(Selector):
 
     tag = "select"
-
-    def _ready(self):
-        
-        Selector._ready(self)
-
-        if self.member:
-            
-            # Name binding
-            self["name"] = self.member.name
 
     def create_entry(self, value, label, selected):
         entry = Element("option")
@@ -94,6 +98,17 @@ class DropdownSelector(Selector):
         entry["selected"] = selected
         entry.append(label)
         return entry
+
+    def _get_name(self):
+        return self["name"]
+
+    def _set_name(self, value):
+        self["name"] = value
+
+    name = property(_get_name, _set_name, doc = """
+        Gets or sets the name that the selector will take in HTML forms.
+        @type: str
+        """)
 
 
 class RadioSelector(Selector):
@@ -103,11 +118,29 @@ class RadioSelector(Selector):
         entry = Element("input")
         entry["type"] = "radio"
         entry["value"] = value
-        entry["selected"] = selected
-        
-        if self.member:
-            entry["name"] = self.member.name
-
+        entry["selected"] = selected        
+        entry["name"] = self.name
         entry.append(label)
+        return entry
+
+
+class CheckList(Selector):
+
+    def create_entry(self, value, label, selected):
+
+        entry = Element()
+        entry_id = self.name + "-" + value
+
+        entry.check = CheckBox()
+        entry.check["name"] = self.name
+        entry.check["id"] = entry_id
+        entry.check.value = selected
+        entry.append(entry.check)
+
+        entry.label = Element("label")
+        entry.label["for"] = entry_id
+        entry.label.append(label)
+        entry.append(entry.label)
+
         return entry
 
