@@ -266,14 +266,17 @@ a img {
     height: 1.7em;
 }
 
-#toolbar .toolbar_button {
-	background: none;
-	border: none;
+#toolbar .toolbar_button {    
     float: left;
 	font-size: 85%;
     margin: 0;
     padding: 0;
     margin-right: 1em;
+}
+
+#toolbar button.toolbar_button {
+    background: none;
+	border: none;
 }
 
 #toolbar .toolbar_button img {
