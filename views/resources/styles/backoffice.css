@@ -73,6 +73,10 @@ a img {
     background-repeat: no-repeat;
     background-position: 0.5em 0.5em;
     background-color: rgb(245,245,245);
+/*  Uncomment the following two lines and comment the third one two disable
+ *  icons on tabs*/
+/*    background-image: none !important;*/
+/*    padding-left: 0.8em;*/
     padding-left: 1.8em;
     padding-top: 0.4em;
     padding-bottom: 0.4em;
@@ -201,6 +205,8 @@ a img {
     padding-left: 1.5em;
 }
 
+/* Content type icons
+-----------------------------------------------------------------------------*/
 .Item {
     background-image: url(../images/types/Item.png);
 }
@@ -291,13 +297,16 @@ a img {
     right: 0px;
 }
 
+/* Content type dropdown
+-----------------------------------------------------------------------------*/
 .ContentTypeTree {
     display: none;
     position: absolute;
     top: 1.9em;
     border: 1px solid rgb(210,220,230);
     background-color: rgb(250,250,250);
-    padding: 0.4em 0.8em;
+    padding: 0 0.8em;
+    padding-bottom: 0.8em;
     margin: 0;
 }
 
@@ -307,10 +316,15 @@ a img {
 
 .ContentTypeTree ul, li {
     padding-left: 0;
-    padding-top: 0.4em;
-    padding-bottom: 0.4em;
-    margin-left: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    margin: 0;
     list-style-type: none;
+}
+
+.ContentTypeTree li {
+    padding-top: 0.8em;
+    white-space: nowrap;
 }
 
 .ContentTypeTree li li {

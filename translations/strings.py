@@ -138,6 +138,12 @@ translations.define("History",
 
 # Item
 #------------------------------------------------------------------------------
+translations.define("Item",
+    ca = u"Element genèric",
+    es = u"Elemento genérico",
+    en = u"Generic element"
+)
+
 translations.define("Item.id",
     ca = u"ID",
     es = u"ID",
@@ -182,6 +188,12 @@ translations.define("BackOfficeContentTable.element",
 
 # Publishable
 #------------------------------------------------------------------------------
+translations.define("Publishable",
+    ca = u"Element publicable",
+    es = u"Elemento publicable",
+    en = u"Publishable element"
+)
+
 translations.define("Publishable.title",
     ca = u"Títol",
     es = u"Título",
@@ -256,6 +268,12 @@ translations.define("Publishable.drafts",
 
 # Page
 #------------------------------------------------------------------------------
+translations.define("Page",
+    ca = u"Pàgina",
+    es = u"Página",
+    en = u"Page"
+)
+
 translations.define("Page.parent",
     ca = u"Pàgina pare",
     es = u"Página padre",
@@ -276,6 +294,12 @@ translations.define("Page.hidden",
 
 # StandardPage
 #------------------------------------------------------------------------------
+translations.define("StandardPage",
+    ca = u"Pàgina estàndard",
+    es = u"Página estándar",
+    en = u"Standard page"
+)
+
 translations.define("StandardPage.body",
     ca = u"Cos",
     es = u"Cuerpo",
@@ -284,6 +308,12 @@ translations.define("StandardPage.body",
 
 # User
 #------------------------------------------------------------------------------
+translations.define("User",
+    ca = u"Usuari",
+    es = u"Usuario",
+    en = u"User"
+)
+
 translations.define("User.email",
     ca = u"Correu electrònic",
     es = u"Correo electrónico",
@@ -301,4 +331,93 @@ translations.define("User.owned_items",
     es = u"Contingut propiedad del usuario",
     en = u"Content owned by the user"
 )
+
+# Access rule
+#------------------------------------------------------------------------------
+translations.define("AccessRule",
+    ca = u"Regla d'accés",
+    es = u"Regla de acceso",
+    en = u"Access rule"
+)
+
+# Resource
+#------------------------------------------------------------------------------
+translations.define("Resource",
+    ca = u"Recurs HTML",
+    es = u"Recurso HTML",
+    en = u"HTML Resource"
+)
+
+# Group
+#------------------------------------------------------------------------------
+translations.define("Group",
+    ca = u"Grup",
+    es = u"Grupo",
+    en = u"Group"
+)
+
+# Dynamic group
+#------------------------------------------------------------------------------
+translations.define("DynamicGroup",
+    ca = u"Grup dinàmic",
+    es = u"Grupo dinámico",
+    en = u"Dynamic group"
+)
+
+# Back office
+#------------------------------------------------------------------------------
+translations.define("BackOffice",
+    ca = u"Gestor de continguts",
+    es = u"Gestor de contenidos",
+    en = u"Content manager"
+)
+
+# File
+#------------------------------------------------------------------------------
+translations.define("File",
+    ca = u"Fitxer",
+    es = u"Fichero",
+    en = u"File"
+)
+
+# News
+#------------------------------------------------------------------------------
+translations.define("News",
+    ca = u"Notícia",
+    es = u"Noticia",
+    en = u"News"
+)
+
+# Event
+#------------------------------------------------------------------------------
+translations.define("Event",
+    ca = u"Esdeveniment",
+    es = u"Evento",
+    en = u"Event"
+)
+
+# Role
+#------------------------------------------------------------------------------
+translations.define("Role",
+    ca = u"Rol d'usuari",
+    es = u"Rol de usuario",
+    en = u"User role"
+)
+
+# Template
+#------------------------------------------------------------------------------
+translations.define("Template",
+    ca = u"Plantilla",
+    es = u"Plantilla",
+    en = u"Template"
+)
+
+# Language
+#------------------------------------------------------------------------------
+translations.define("Language",
+    ca = u"Idioma",
+    es = u"Idioma",
+    en = u"Language"
+)
+
 

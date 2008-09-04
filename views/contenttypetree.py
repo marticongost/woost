@@ -9,6 +9,7 @@
 from magicbullet.html import Element
 from magicbullet.html.treeview import TreeView
 from magicbullet.models import Item
+from magicbullet.translations import translate
 
 
 class ContentTypeTree(TreeView):
@@ -25,7 +26,7 @@ class ContentTypeTree(TreeView):
         for schema in content_type.descend_inheritance(True):
             label.add_class(schema.name)
 
-        label.append(content_type.__name__)
+        label.append(translate(content_type.__name__))
         return label
 
     def get_child_items(self, content_type):
