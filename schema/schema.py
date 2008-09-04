@@ -7,6 +7,7 @@ Provides a member that handles compound values.
 @organization:	Whads/Accent SL
 @since:			March 2008
 """
+from copy import deepcopy
 from magicbullet.modeling import empty_dict, empty_list, \
                               ListWrapper, DictWrapper
 from magicbullet.schema.member import Member
@@ -200,116 +201,6 @@ class Schema(Member):
         else:
             return DictWrapper(self.__members or empty_dict)
 
-    def copy(self,
-        inheritance = True,
-        validations = True,
-        include = None,
-        exclude = None,
-        members = None):
-        """Creates a copy of the schema. By default, inheritance information,
-        validations and members directly declared by the model will be copied.
-
-        @param inheritance: Indicates if the copy will inherit from the same
-            bases that the model schema inherits from (this is the default
-            behavior). When set to False, the copy will be created without it
-            inheriting from any schema, but the set of validations and members
-            to copy will be expanded to include inherited members.
-        @type include: bool
-
-        @param validations: Determines if validation rules defined by the model
-            will be copied (this is the default behavior). The set of copied
-            validations will depend on the value of the L{inheritance}
-            parameter (a value of True will copy just the validations directly
-            defined by the model, whereas False will also include validations
-            inherited from base schemas).
-        @type include: bool
-
-        @param include: Limits the members that will be copied from the model.
-            This list can be further restricted if the L{exclude} parameter is
-            given a value. Members can be indicated either by name or through
-            an object reference.
-        @type include: (L{Member<member.Member>} or str) sequence
-
-        @param exclude: Indicates a set of members that should not be copied.
-            Members can be indicated either by name or through an object
-            reference.
-        @type exclude: (L{Member<member.Member>} or str) sequence
-
-        @param members: A list or mapping of additional members to add to the
-            copy. When given as a mapping, the keys will be used for the member
-            names.
-        @type members: L{Member<member.Member>} list
-            or (str, L{Member<member.Member>}) dict
-        """ 
-        
-        # Get available members
-        copied_members = self.members(recursive = not inheritance)
-        
-        # Normalize inclusions to member references
-        include = include and set(
-            self[member] if isinstance(member, basestring) else member
-            for member in include
-        )
-        
-        # Normalize exclusions to member references
-        exclude = exclude and set(
-            self[member] if isinstance(member, basestring) else member
-            for member in exclude
-            if not isinstance(member, basestring) or member in copied_members
-        )
-        
-        # Create member copies
-        member_copies = []
-
-        for member in (include or copied_members.itervalues()):
-            if not exclude or member not in exclude:
-                member_copy = member.copy()
-                member_copies.append(member_copy)
-        
-        # Create the copy
-        copy = Schema(members = member_copies)
-        copy.name = self.name
-        copy.copy_source = self
-
-        if inheritance:
-            copy.inherit(*self.bases)
-            copy.members_order = self.members_order
-        else:
-            members_order = []
-
-            def get_members_order(schema):
-
-                if schema and schema.__bases:
-                    for base in schema.__bases:
-                        get_members_order(base)
-                
-                if schema.members_order:
-                    schema_order = (
-                        (
-                            member
-                            if isinstance(member, basestring)
-                            else member.name
-                        )
-                        for member in schema.members_order
-                    )
-
-                    members_order.extend(
-                        member
-                        for member in schema_order
-                        if member in copy.__members)
-
-            get_members_order(self)
-            copy.members_order = members_order
-
-        if members:
-            copy.expand(members)
-
-        if validations:
-            for validation in self.validations(recursive = not inheritance):
-                copy.add_validation(validation)
-
-        return copy
-
     def __getitem__(self, name):
         """Overrides the indexing operator to retrieve members by name.
 
@@ -455,4 +346,6 @@ class Schema(Member):
             )
 
         return ordered_members
+
+Schema._copy_class = Schema
 

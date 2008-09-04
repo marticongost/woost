@@ -63,12 +63,13 @@ class Member(Variable):
     require_none = False
     enumeration = None
 
+    _copy_class = None
     copy_source = None
     adaptation_source = None
 
     # Attributes that deserve special treatment when performing a deep copy
     _special_copy_keys = set([
-        "_schema", "_validations_wrapper", "_validations"
+        "__class__", "_schema", "_validations_wrapper", "_validations"
     ])
 
     def __init__(self, doc = None, **kwargs):
@@ -169,12 +170,15 @@ class Member(Variable):
         @return: The resulting copy.
         @rtype: L{Member}
         """
-        copied_member = deepcopy(self)
-        return copied_member
+        return deepcopy(self)
     
     def __deepcopy__(self, memo):
 
-        copy = self.__class__()
+        if self._copy_class:
+            copy = self._copy_class()
+        else:
+            copy = self.__class__()
+
         memo[id(self)] = copy
 
         for key, value in self.__dict__.iteritems():

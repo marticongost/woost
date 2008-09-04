@@ -2,7 +2,7 @@
 from magicbullet.html import Element
 from magicbullet.views.contenttypetree import ContentTypeTree
 from magicbullet.html.table import Table, MULTIPLE_SELECTION
-from magicbullet.schema import Member, Collection, Reference
+from magicbullet.schema import Adapter, Member, Collection, Reference
 
 class ContentTable(Table):
     def repr_value(self, item, member, value):
@@ -16,18 +16,18 @@ table.translations = site.languages
 table["name"] = "content"
 table.selection_mode = MULTIPLE_SELECTION
 table.data = content_type.index.values()
-table.schema = content_type.copy(
-    inheritance = False,
-    validations = False,
-    exclude = ["id", "draft_source"] + [
-        member
-        for member in content_type.members().itervalues()
-        if isinstance(member, Collection)
-    ],
-    members = (Member(name = "element"),)
-)
 
+adapter = Adapter()
+adapter.exclude(["id", "draft_source"])
+adapter.exclude([
+    member.name
+    for member in content_type.members().itervalues()
+    if isinstance(member, Collection)
+])
+
+table.schema = adapter.export_schema(content_type)
 table.schema.name = "BackOfficeContentTable"
+table.schema.add_member(Member(name = "element"))
 table.schema.members_order.insert(0, "element")
 
 def display_element(table, item, member):
