@@ -72,21 +72,24 @@ class Selector(Element):
     def create_entry(self, value, label, selected):
         pass
 
-    def __get_value(self):
+    def _get_value(self):
         return self.__value
 
-    def __set_value(self, value):
+    def _set_value(self, value):
         self.__value = value
 
         if value is None:
             self._is_selected = lambda item: False
         elif isinstance(value, (list, tuple, set)):
-            selection = set(self.get_item_value(item for item in value))
+            selection = set(self.get_item_value(item) for item in value)
             self._is_selected = lambda item: item in selection
         else:
             selection = self.get_item_value(value)
             self._is_selected = lambda item: item == selection
 
+    value = property(_get_value, _set_value, doc = """
+        Gets or sets the active selection for the selector.
+        """)
 
 class DropdownSelector(Selector):
 
