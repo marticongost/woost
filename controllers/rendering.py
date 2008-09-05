@@ -11,6 +11,7 @@ from genshi.template import TemplateLoader
 from magicbullet.translations import translate
 from magicbullet.models import Site
 from magicbullet.controllers.module import Module
+from magicbullet.controllers.viewstate import view_state, view_state_form
 
 
 class Rendering(Module):
@@ -36,6 +37,8 @@ class Rendering(Module):
         values.setdefault("user", self.application.authentication.user)
         values.setdefault("site", Site.main)
         values.setdefault("cms", self.application)
+        values.setdefault("view_state", view_state)
+        values.setdefault("view_state_form", view_state_form)
 
         return template.generate(**values).render(
             self.format,
