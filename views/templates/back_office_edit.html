@@ -26,6 +26,13 @@ from magicbullet.html.form import Form
         form = Form()
         form.data = form_data
         form.schema = form_schema
+
+        # Temporary HACK!
+        from magicbullet.html.tinymce import TinyMCE
+        if "description" in form_schema.members():
+            form.set_member_display("description", TinyMCE)
+        if "body" in form_schema.members():
+            form.set_member_display("body", TinyMCE)
         ?>
         ${Markup(form.render())}
     </div>

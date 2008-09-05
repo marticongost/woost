@@ -29,6 +29,7 @@ table.schema = adapter.export_schema(content_type)
 table.schema.name = "BackOfficeContentTable"
 table.schema.add_member(Member(name = "element"))
 table.schema.members_order.insert(0, "element")
+table.set_member_label("element", translate(content_type.__name__))
 
 visible_members.add("element")
 
@@ -80,8 +81,10 @@ table.set_member_type_display(Reference, display_reference)
 
             <div id="toolbar">
                 <div class="toolbar_button" id="new_item">
-                    <img src="${cms.uri('resources', 'images', 'new.png')}"/>
-                    <label>${translate("New item")}</label>
+                    <span class="label">
+                        <img src="${cms.uri('resources', 'images', 'new.png')}"/>
+                        ${translate("New item")}
+                    </span>
                     <?python
                     class NewItemSelector(ContentTypeTree):
                         def create_label(self, content_type):
@@ -106,46 +109,9 @@ table.set_member_type_display(Reference, display_reference)
                     <label>${translate("History")}</label>
                 </button>
 
-                <!--! Content type selector -->
-                <?python
-                class ContentTypeSelector(ContentTypeTree):
-                
-                    def create_label(self, item):
-                        label = ContentTypeTree.create_label(self, item)
-                        label.tag = "a"
-                        label["href"] = "?" + view_state(type = item.__name__)
-                        return label
-
-                type_selector = ContentTypeSelector()
-                type_selector.root_visible = True
-                
-                selected_content_type = type_selector.create_label(content_type)
-                selected_content_type.tag = "div"
-                selected_content_type["id"] = "content_type_selector"
-                selected_content_type.add_class("toolbar_button")
-                selected_content_type.append(type_selector)
-                ?>
-                ${Markup(selected_content_type.render())}
-
-                <!--! Visible languages selector -->
-                <div id="content_languages" class="toolbar_button">
-                    ${translate("Content languages")}
-                    <div id="content_languages_dropdown">
-                        <?python
-                        from magicbullet.html.selectors import CheckList
-                        content_language_selector = CheckList()
-                        content_language_selector.name = "language"
-                        content_language_selector.items = site.languages
-                        content_language_selector.value = content_languages
-                        ?>
-                        ${Markup(content_language_selector.render())}
-                        <input type="submit" value="${translate('Submit')}"/>
-                    </div>
-                </div>
-
                 <!--! Visible members selector -->
                 <div id="visible_members" class="toolbar_button">
-                    ${translate("Visible members")}
+                    <span class="label">${translate("Visible members")}</span>
                     <div id="visible_members_dropdown">
                         <?python
                         from magicbullet.html.selectors import CheckList
@@ -163,6 +129,40 @@ table.set_member_type_display(Reference, display_reference)
                         ${Markup(members_selector.render())}
                         <input type="submit" value="${translate('Submit')}"/>
                     </div>
+                </div>
+
+                <!--! Visible languages selector -->
+                <div id="content_languages" class="toolbar_button">
+                    <span class="label">${translate("Content languages")}</span>
+                    <div id="content_languages_dropdown">
+                        <?python
+                        from magicbullet.html.selectors import CheckList
+                        content_language_selector = CheckList()
+                        content_language_selector.name = "language"
+                        content_language_selector.items = site.languages
+                        content_language_selector.value = content_languages
+                        ?>
+                        ${Markup(content_language_selector.render())}
+                        <input type="submit" value="${translate('Submit')}"/>
+                    </div>
+                </div>
+
+                <!--! Content type selector -->
+                <div id="content_type_selector" class="toolbar_button">
+                    <span class="label">${translate("Type")}</span>
+                    <?python
+                    class ContentTypeSelector(ContentTypeTree):
+                    
+                        def create_label(self, item):
+                            label = ContentTypeTree.create_label(self, item)
+                            label.tag = "a"
+                            label["href"] = "?" + view_state(type = item.__name__, members = None)
+                            return label
+
+                    type_selector = ContentTypeSelector()
+                    type_selector.root_visible = True
+                    ?>
+                    ${Markup(type_selector.render())}
                 </div>
             </div>
             ${Markup(table.render())}

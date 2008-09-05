@@ -92,16 +92,22 @@ translations.define("Submit",
     en = u"Submit"
 )
 
+translations.define("Type",
+    ca = u"Tipus",
+    es = u"Tipo",
+    en = u"Type"
+)
+
 translations.define("Visible members",
-    ca = u"Camps visibles",
-    es = u"Campos visibles",
-    en = u"Visible fields"
+    ca = u"Camps",
+    es = u"Campos",
+    en = u"Fields"
 )
 
 translations.define("Content languages",
-    ca = u"Idiomes visibles",
-    es = u"Idiomas visibles",
-    en = u"Visible languages"
+    ca = u"Idiomes",
+    es = u"Idiomas",
+    en = u"Languages"
 )
 
 translations.define("PageTreeView-new",
