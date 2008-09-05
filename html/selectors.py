@@ -138,6 +138,7 @@ class CheckList(Selector):
         entry.check["name"] = self.name
         entry.check["id"] = entry_id
         entry.check.value = selected
+        entry.check["value"] = value
         entry.append(entry.check)
 
         entry.label = Element("label")
