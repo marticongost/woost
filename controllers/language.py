@@ -36,6 +36,6 @@ class Language(Module):
         set_content_language(language)
         
     def infer_language(self):
-        return cherrypy.request.cookie["language"].value \
-            or Site.main.default_language
+        cookie = cherrypy.request.cookie.get("language")
+        return cookie.value if cookie else Site.main.default_language
 
