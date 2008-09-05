@@ -74,16 +74,9 @@ table.set_member_type_display(Reference, display_reference)
     </head>
 
     <div py:match="body-block">
-        <form method="get" action="${cms.uri(requested_item.path)}">
+        <form method="get" action="${cms.uri(requested_item.path, 'content')}">
 
-            <?python
-            from magicbullet.html.selectors import CheckList
-            content_language_selector = CheckList()
-            content_language_selector.name = "language"
-            content_language_selector.items = site.languages
-            content_language_selector.value = content_languages
-            ?>
-            ${Markup(content_language_selector.render())}
+            ${Markup(view_state_form(language = None))}
 
             <div id="toolbar">
                 <div class="toolbar_button" id="new_item">
@@ -112,19 +105,19 @@ table.set_member_type_display(Reference, display_reference)
                     <img src="${cms.uri('resources', 'images', 'history.png')}"/>
                     <label>${translate("History")}</label>
                 </button>
-
+                
                 <?python
                 class ContentTypeSelector(ContentTypeTree):
                 
                     def create_label(self, item):
                         label = ContentTypeTree.create_label(self, item)
                         label.tag = "a"
-                        label["href"] = "?type=" + item.__name__
+                        label["href"] = "?" + view_state(type = item.__name__)
                         return label
 
                 type_selector = ContentTypeSelector()
                 type_selector.root_visible = True
-                    
+                
                 selected_content_type = type_selector.create_label(content_type)
                 selected_content_type.tag = "div"
                 selected_content_type["id"] = "content_type_selector"
@@ -132,6 +125,21 @@ table.set_member_type_display(Reference, display_reference)
                 selected_content_type.append(type_selector)
                 ?>
                 ${Markup(selected_content_type.render())}
+
+                <div id="content_languages" class="toolbar_button">
+                    ${translate("Content languages")}
+                    <div id="content_languages_dropdown">
+                        <?python
+                        from magicbullet.html.selectors import CheckList
+                        content_language_selector = CheckList()
+                        content_language_selector.name = "language"
+                        content_language_selector.items = site.languages
+                        content_language_selector.value = content_languages
+                        ?>
+                        ${Markup(content_language_selector.render())}
+                        <input type="submit" value="${translate('Submit')}"/>
+                    </div>
+                </div>
             </div>
             ${Markup(table.render())}
         </form>

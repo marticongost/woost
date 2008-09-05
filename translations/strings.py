@@ -92,6 +92,12 @@ translations.define("Submit",
     en = u"Submit"
 )
 
+translations.define("Content languages",
+    ca = u"Idiomes visibles",
+    es = u"Idiomas visibles",
+    en = u"Visible languages"
+)
+
 translations.define("PageTreeView-new",
     ca = u"Crear pàgina filla",
     es = u"Crear página hija",
