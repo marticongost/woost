@@ -92,6 +92,12 @@ translations.define("Submit",
     en = u"Submit"
 )
 
+translations.define("Visible members",
+    ca = u"Camps visibles",
+    es = u"Campos visibles",
+    en = u"Visible fields"
+)
+
 translations.define("Content languages",
     ca = u"Idiomes visibles",
     es = u"Idiomas visibles",
