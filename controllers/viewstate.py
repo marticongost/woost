@@ -13,6 +13,11 @@ from urllib import urlencode, quote
 def get_state(**kwargs):
     state = parse_qs(cherrypy.request.query_string)
     state.update(kwargs)
+    
+    for key, value in state.items():
+        if value is None:
+            del state[key]
+
     return state
 
 def view_state(**kwargs):
