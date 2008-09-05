@@ -8,6 +8,7 @@
 """
 import cherrypy
 from itertools import chain
+from magicbullet.language import get_content_language
 from magicbullet.schema import Adapter, Collection
 from magicbullet.models import Item, Publishable
 from magicbullet.controllers import exposed
@@ -28,6 +29,18 @@ class BackOffice(Publishable):
             for entity in chain([Item], Item.derived_entities()):
                 if entity.__name__ == requested_type:
                     return entity
+
+    def _get_content_languages(self):
+
+        param = cherrypy.request.params.get("language")
+
+        if param is not None:
+            if isinstance(param, (list, tuple, set)):
+                return set(param)
+            else:
+                return set(param.split(","))
+        else:
+            return [get_content_language()]
 
     def _get_visible_members(self, content_type):
 
@@ -62,6 +75,7 @@ class BackOffice(Publishable):
     def content(self, cms, request):
 
         content_type = self._get_content_type(Item)
+        content_languages = self._get_content_languages()
         visible_members = self._get_visible_members(content_type)
 
         return cms.rendering.render("back_office_content",
@@ -69,6 +83,7 @@ class BackOffice(Publishable):
             sections = self.root_sections,
             active_section = "content",
             content_type = content_type,
+            content_languages = content_languages,
             visible_members = visible_members)
 
     @exposed
