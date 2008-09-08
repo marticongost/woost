@@ -80,21 +80,25 @@ table.set_member_type_display(Reference, display_reference)
             ${Markup(view_state_form(language = None, members = None))}
 
             <div id="toolbar">
-                <div class="toolbar_button" id="new_item">
+                <div id="new_item" class="toolbar_button">
                     <span class="label">
                         <img src="${cms.uri('resources', 'images', 'new.png')}"/>
                         ${translate("New item")}
                     </span>
-                    <?python
-                    class NewItemSelector(ContentTypeTree):
-                        def create_label(self, content_type):
-                            label = ContentTypeTree.create_label(self, content_type)
-                            label.tag = "a"
-                            label["href"] = cms.uri(requested_item.path, 'new') \
-                                + "?type=" + content_type.__name__
-                            return label
-                    ?>
-                    ${Markup(NewItemSelector().render())}
+                    <div class="selector_content">
+                        <?python
+                        class NewItemSelector(ContentTypeTree):
+                            def create_label(self, content_type):
+                                label = ContentTypeTree.create_label(self, content_type)
+                                label.tag = "a"
+                                label["href"] = cms.uri(requested_item.path, 'new') \
+                                    + "?type=" + content_type.__name__
+                                return label
+
+                        new_item_selector = NewItemSelector()
+                        ?>
+                        ${Markup(NewItemSelector().render())}
+                    </div>
                 </div>
                 <button class="toolbar_button" name="section" value="edit">
                     <img src="${cms.uri('resources', 'images', 'edit.png')}"/>
@@ -112,7 +116,7 @@ table.set_member_type_display(Reference, display_reference)
                 <!--! Visible members selector -->
                 <div id="visible_members" class="toolbar_button">
                     <span class="label">${translate("Visible members")}</span>
-                    <div id="visible_members_dropdown">
+                    <div class="selector_content">
                         <?python
                         from magicbullet.html.selectors import CheckList
 
@@ -134,7 +138,7 @@ table.set_member_type_display(Reference, display_reference)
                 <!--! Visible languages selector -->
                 <div id="content_languages" class="toolbar_button">
                     <span class="label">${translate("Content languages")}</span>
-                    <div id="content_languages_dropdown">
+                    <div class="selector_content">
                         <?python
                         from magicbullet.html.selectors import CheckList
                         content_language_selector = CheckList()
@@ -148,21 +152,23 @@ table.set_member_type_display(Reference, display_reference)
                 </div>
 
                 <!--! Content type selector -->
-                <div id="content_type_selector" class="toolbar_button">
+                <div id="content_type" class="toolbar_button">
                     <span class="label">${translate("Type")}</span>
-                    <?python
-                    class ContentTypeSelector(ContentTypeTree):
-                    
-                        def create_label(self, item):
-                            label = ContentTypeTree.create_label(self, item)
-                            label.tag = "a"
-                            label["href"] = "?" + view_state(type = item.__name__, members = None)
-                            return label
+                    <div class="selector_content">
+                        <?python
+                        class ContentTypeSelector(ContentTypeTree):
+                        
+                            def create_label(self, item):
+                                label = ContentTypeTree.create_label(self, item)
+                                label.tag = "a"
+                                label["href"] = "?" + view_state(type = item.__name__, members = None)
+                                return label
 
-                    type_selector = ContentTypeSelector()
-                    type_selector.root_visible = True
-                    ?>
-                    ${Markup(type_selector.render())}
+                        type_selector = ContentTypeSelector()
+                        type_selector.root_visible = True
+                        ?>
+                        ${Markup(type_selector.render())}
+                    </div>
                 </div>
             </div>
             ${Markup(table.render())}
