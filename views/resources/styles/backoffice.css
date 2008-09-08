@@ -241,8 +241,8 @@ a img {
 	margin-top: 1em;
 	margin-bottom: 0.5em;
 	padding: 0.2em;
-	background-color: rgb(250,250,250);
-	border: 1px dotted rgb(240,240,240);
+	background-color: rgb(242,240,235);
+	border: 1px solid rgb(232,230,225);
     height: 1.7em;
 }
 
@@ -289,7 +289,8 @@ a img {
     height: 2.1em;
 }
 
-#toolbar .selector_content {    
+#toolbar .selector_content {
+    min-width: 8em;
     display: none;
     position: absolute;
     top: 2.2em;
@@ -317,18 +318,22 @@ a img {
 
 /* Visible members dropdown
 -----------------------------------------------------------------------------*/
-#visible_members_selector .CheckList {
+#visible_members .CheckList {
     margin-bottom: 0.4em;
 }
 
 /* Content languages dropdown
 -----------------------------------------------------------------------------*/
-#content_languages_selector .CheckList {
+#content_languages .CheckList {
     margin-bottom: 0.4em;
 }
 
 /* Content type dropdown
 -----------------------------------------------------------------------------*/
+.ContentTypeTree .selected {
+    font-weight: bold;
+}
+
 .ContentTypeTree,
 .ContentTypeTree ul,
 .ContentTypeTree li {
