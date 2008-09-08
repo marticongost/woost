@@ -75,7 +75,7 @@ table.set_member_type_display(Reference, display_reference)
     </head>
 
     <div py:match="body-block">
-        <form method="get" action="${cms.uri(requested_item.path, 'content')}">
+        <form method="get" action="${cms.uri(requested_item.path)}">
 
             ${Markup(view_state_form(language = None, members = None))}
 
@@ -131,7 +131,7 @@ table.set_member_type_display(Reference, display_reference)
                         members_selector.value = visible_members
                         ?>
                         ${Markup(members_selector.render())}
-                        <input type="submit" value="${translate('Submit')}"/>
+                        <button name="section" value="content">${translate("Submit")}</button>
                     </div>
                 </div>
 
@@ -147,7 +147,7 @@ table.set_member_type_display(Reference, display_reference)
                         content_language_selector.value = content_languages
                         ?>
                         ${Markup(content_language_selector.render())}
-                        <input type="submit" value="${translate('Submit')}"/>
+                        <button name="section" value="content">${translate("Submit")}</button>
                     </div>
                 </div>
 
