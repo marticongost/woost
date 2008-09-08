@@ -12,6 +12,7 @@ from magicbullet.language import get_content_language
 from magicbullet.schema import Adapter, Collection
 from magicbullet.models import Item, Document
 from magicbullet.controllers import exposed
+from magicbullet.controllers.viewstate import view_state
 
 class BackOffice(Document):
     
@@ -61,7 +62,7 @@ class BackOffice(Document):
         section = request.params.get("section", self.default_section)
         raise cherrypy.HTTPRedirect(
             cms.uri(self.path, section)
-            + "?" + cherrypy.request.query_string
+            + "?" + view_state(section = None)
         )
 
     @exposed
