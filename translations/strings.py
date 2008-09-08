@@ -285,9 +285,9 @@ translations.define("Document.drafts",
 )
 
 translations.define("Document.parent",
-    ca = u"Pàgina pare",
-    es = u"Página padre",
-    en = u"Parent page"
+    ca = u"Pare",
+    es = u"Padre",
+    en = u"Parent"
 )
 
 translations.define("Document.children",
