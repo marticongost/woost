@@ -313,7 +313,7 @@ class Query(object):
 
 if __name__ == "__main__":
     
-    from magicbullet.models import Publishable
+    from magicbullet.models import Document
 
     print "Start"
     
@@ -321,14 +321,14 @@ if __name__ == "__main__":
 
         print "-" * 30
 
-        query = Query(Publishable,
+        query = Query(Document,
             filters = [
-#                    Publishable.id <= 50,
-                Publishable.enabled == True
+#                    Document.id <= 50,
+                Document.enabled == True
             ]
         ).execute()
 
-#        query = (item for item in Publishable.index.itervalues(max = 50)
+#        query = (item for item in Document.index.itervalues(max = 50)
 #                if item.enabled)
 
         for item in query:

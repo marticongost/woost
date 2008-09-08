@@ -204,109 +204,101 @@ translations.define("BackOfficeContentTable.element",
     en = u"Item"
 )
 
-# Publishable
+# Document
 #------------------------------------------------------------------------------
-translations.define("Publishable",
-    ca = u"Element publicable",
-    es = u"Elemento publicable",
-    en = u"Publishable element"
+translations.define("Document",
+    ca = u"Document",
+    es = u"Documento",
+    en = u"Document"
 )
 
-translations.define("Publishable.title",
+translations.define("Document.title",
     ca = u"Títol",
     es = u"Título",
     en = u"Title"
 )
 
-translations.define("Publishable.inner_title",
+translations.define("Document.inner_title",
     ca = u"Títol interior",
     es = u"Título interior",
     en = u"Inner title"
 )
 
-translations.define("Publishable.description",
+translations.define("Document.description",
     ca = u"Descripció",
     es = u"Descripción",
     en = u"Description"
 )
 
-translations.define("Publishable.start_date",
+translations.define("Document.start_date",
     ca = u"Data d'inici",
     es = u"Fecha de inicio",
     en = u"Start date"
 )
 
-translations.define("Publishable.end_date",
+translations.define("Document.end_date",
     ca = u"Data de fí",
     es = u"Fecha de fín",
     en = u"End date"
 )
 
-translations.define("Publishable.path",
+translations.define("Document.path",
     ca = u"Camí de publicació",
     es = u"Camino de publicación",
     en = u"Publication path"
 )
 
-translations.define("Publishable.template",
+translations.define("Document.template",
     ca = u"Plantilla",
     es = u"Plantilla",
     en = u"Template"
 )
 
-translations.define("Publishable.enabled",
+translations.define("Document.enabled",
     ca = u"Actiu",
     es = u"Activo",
     en = u"Enabled"
 )
 
-translations.define("Publishable.attachments",
+translations.define("Document.attachments",
     ca = u"Fitxers adjunts",
     es = u"Ficheros adjuntos",
     en = u"Attachments"
 )
 
-translations.define("Publishable.resources",
+translations.define("Document.resources",
     ca = u"Recursos HTML",
     es = u"Recursos HTML",
     en = u"HTML Resources"
 )
 
-translations.define("Publishable.draft_source",
+translations.define("Document.draft_source",
     ca = u"Original",
     es = u"Original",
     en = u"Master item"
 )
 
-translations.define("Publishable.drafts",
+translations.define("Document.drafts",
     ca = u"Esborranys",
     es = u"Borradores",
     en = u"Drafts"
 )
 
-# Page
-#------------------------------------------------------------------------------
-translations.define("Page",
-    ca = u"Pàgina",
-    es = u"Página",
-    en = u"Page"
-)
-
-translations.define("Page.parent",
+translations.define("Document.parent",
     ca = u"Pàgina pare",
     es = u"Página padre",
     en = u"Parent page"
 )
 
-translations.define("Page.children",
+translations.define("Document.children",
     ca = u"Pàgines filles",
     es = u"Páginas hijas",
     en = u"Child pages"
 )
 
-translations.define("Page.hidden",
-    ca = u"Oculta",
-    es = u"Oculta",
+translations.define("Document.hidden",
+    ca = u"Ocult",
+    es = u"Oculto",
     en = u"Hidden"
 )
 

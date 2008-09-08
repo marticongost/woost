@@ -7,9 +7,9 @@
 @since:			July 2008
 """
 from magicbullet import schema
-from magicbullet.models import Publishable
+from magicbullet.models.document import Document
 
-class File(Publishable):
+class File(Document):
  
     members_order = "file_path", "translation_file_path"
 

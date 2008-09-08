@@ -7,8 +7,8 @@
 @since:			July 2008
 """
 import cherrypy
-from magicbullet.models import Publishable, Site
-from magicbullet.models.publishable import exposed
+from magicbullet.models import Document, Site
+from magicbullet.models.document import exposed
 from magicbullet.controllers.module import Module
 
 
@@ -16,11 +16,11 @@ class Dispatcher(Module):
 
     def process_request(self, request):
         
-        publishable, extra_path = self.resolve(request.path)
-        request.publishable = publishable
+        document, extra_path = self.resolve(request.path)
+        request.document = document
         request.extra_path = extra_path
         
-        self.validate(publishable)
+        self.validate(document)
 
         request.output = self.respond(request)
 
@@ -29,29 +29,29 @@ class Dispatcher(Module):
         extra_path = []
         
         while path:
-            publishable = Publishable.path.index.get("/".join(path))
-            if publishable:
+            document = Document.path.index.get("/".join(path))
+            if document:
                 break
             else:
                 extra_path.insert(0, path.pop())
         else:
-            publishable = Site.main.home
+            document = Site.main.home
         
-        return publishable, extra_path
+        return document, extra_path
 
-    def validate(self, publishable):
+    def validate(self, document):
 
-        if publishable is None or not publishable.is_published():
+        if document is None or not document.is_published():
             raise cherrypy.NotFound()
         
         self.application.authorization.restrict_access(
             action = "read",
-            target_instance = publishable)
+            target_instance = document)
 
     def respond(self, request):
         
         handler = self.find_handler(
-            request.publishable.handler or request.publishable,
+            request.document.handler or request.document,
             request.extra_path)
         
         if handler is None:

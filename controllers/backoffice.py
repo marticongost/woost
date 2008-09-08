@@ -10,10 +10,10 @@ import cherrypy
 from itertools import chain
 from magicbullet.language import get_content_language
 from magicbullet.schema import Adapter, Collection
-from magicbullet.models import Item, Publishable
+from magicbullet.models import Item, Document
 from magicbullet.controllers import exposed
 
-class BackOffice(Publishable):
+class BackOffice(Document):
     
     default_section = "pages"
     root_sections = ["site", "pages", "content", "access_rules"]

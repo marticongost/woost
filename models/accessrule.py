@@ -46,7 +46,7 @@ class AccessRule(Item):
 
     target_type = schema.Reference(type = EntityClass)
 
-    target_ancestor = schema.Reference(type = "magicbullet.models.Page")
+    target_ancestor = schema.Reference(type = "magicbullet.models.Document")
 
     action = schema.Reference(type = "magicbullet.models.Action")
 

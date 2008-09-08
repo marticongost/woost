@@ -32,19 +32,19 @@ class Site(Entity):
     )
 
     home = schema.Reference(
-        type = "magicbullet.models.Publishable",
+        type = "magicbullet.models.Document",
         required = True
     )
 
     not_found_error_page = schema.Reference(
-        type = "magicbullet.models.Publishable"
+        type = "magicbullet.models.Document"
     )
 
     forbidden_error_page = schema.Reference(
-        type = "magicbullet.models.Publishable"
+        type = "magicbullet.models.Document"
     )
     
     generic_error_page = schema.Reference(
-        type = "magicbullet.models.Publishable"
+        type = "magicbullet.models.Document"
     )
 

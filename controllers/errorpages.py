@@ -34,7 +34,7 @@ class ErrorPages(Module):
         if error_page:
             dispatcher = self.application.dispatcher
             dispatcher.validate(error_page)            
-            request.publishable = error_page
+            request.document = error_page
             request.extra_path = None            
             cherrypy.request.status = 404 
             request.output = dispatcher.respond(request)

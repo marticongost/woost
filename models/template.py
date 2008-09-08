@@ -32,7 +32,7 @@ class Template(Item):
     )
     
     items = schema.Collection(
-        items = "magicbullet.models.Publishable"
+        items = "magicbullet.models.Document"
     )
 
     def __translate__(self, language, **kwargs):

@@ -13,7 +13,7 @@ from magicbullet.models.action import Action
 from magicbullet.models.language import Language
 from magicbullet.models.group import Group
 from magicbullet.models.dynamicgroup import DynamicGroup
-from magicbullet.models.publishable import Publishable
+from magicbullet.models.document import Document
 from magicbullet.models.template import Template
 from magicbullet.models.user import User
 from magicbullet.models.role import Role
@@ -23,7 +23,7 @@ from magicbullet.models.accessrule import (
     restrict_access,
     AccessDeniedError
 )
-from magicbullet.models.page import Page, StandardPage
+from magicbullet.models.standardpage import StandardPage
 from magicbullet.models.file import File
 from magicbullet.models.news import News
 from magicbullet.models.event import Event

@@ -7,9 +7,9 @@
 @since:			September 2008
 """
 from magicbullet import schema
-from magicbullet.models import Publishable
+from magicbullet.models.document import Document
 
-class Event(Publishable):
+class Event(Document):
 
     members_order = "event_start", "event_end", "event_location", "body"
 

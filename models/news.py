@@ -7,9 +7,9 @@
 @since:			July 2008
 """
 from magicbullet import schema
-from magicbullet.models import Publishable
+from magicbullet.models.document import Document
 
-class News(Publishable):
+class News(Document):
 
     members_order = "summary", "body"
 
