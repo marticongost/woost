@@ -221,6 +221,8 @@ class EntityClass(type, schema.Schema):
             {"indexed": False}
         )
 
+        cls.translation.translation_source = cls
+
         # Make the translation class available at the module level, so its
         # instances can be pickled (required by ZODB's persistence machinery)
         setattr(
