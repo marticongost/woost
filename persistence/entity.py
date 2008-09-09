@@ -303,7 +303,9 @@ class EntityClass(type, schema.Schema):
                       for schema in cls.bases
                       if schema.revision_state)
 
-        if not bases:
+        is_versioning_root = not bases
+
+        if is_versioning_root:
             from magicbullet.persistence.revisions import RevisionState
             bases = (RevisionState,)
 
@@ -325,6 +327,13 @@ class EntityClass(type, schema.Schema):
         cls.revision_state.__module__ = cls.__module__
         
         cls.revision_state._sealed = False
+
+        if is_versioning_root:
+            cls.revision_state.add_member(schema.Collection(
+                name = "revisions",
+                required = True,
+                items = "magicbullet.persistence.Revision"
+            ))
 
     def derived_entities(cls, recursive = True):
         for entity in cls.__derived_entities:
