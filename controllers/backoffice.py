@@ -17,7 +17,7 @@ from magicbullet.controllers.viewstate import view_state
 class BackOffice(Document):
     
     default_section = "pages"
-    root_sections = ["site", "pages", "content", "access_rules"]
+    root_sections = ["content", "history"]
     item_sections = ["edit", "history"]
 
     def _get_content_type(self, default = None):
