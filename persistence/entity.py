@@ -82,16 +82,30 @@ schema.Member.index = property(_get_index, _set_index, doc = """
 schema.Reference.bidirectional = False
 schema.Collection.bidirectional = False
 
+# Versioning
+schema.Schema.versioned = True
+schema.Member.revision_state = None
+schema.Member.revision_state_source = None
+
 # TODO: bidirectional relations
-# TODO: versioning
 
 # Create a stub for the Entity class
 Entity = None
 
+# Debugging
+indent = 0
+DEBUG = False
+
+
 class EntityClass(type, schema.Schema):
 
     def __init__(cls, name, bases, members):
-        
+         
+        if DEBUG:
+            global indent
+            print "\t" * indent, "<%s>" % name
+            indent += 1
+
         type.__init__(cls, name, bases, members)
         schema.Schema.__init__(cls)
 
@@ -105,7 +119,11 @@ class EntityClass(type, schema.Schema):
         for base in bases:
             if Entity and base is not Entity and isinstance(base, EntityClass):
                 cls.inherit(base)
-        
+
+        # Versioning schema
+        if Entity and cls.versioned:
+            cls._create_revision_state_schema()
+
         # Fill the schema with members declared as class attributes
         for name, member in members.iteritems():
             if isinstance(member, schema.Member):
@@ -136,6 +154,10 @@ class EntityClass(type, schema.Schema):
         if cls.translation:
             cls.translation._sealed = True
 
+        if DEBUG:
+            indent -= 1
+            print "\t" * indent, "</%s>" % cls.name
+
     def _seal_check(cls):
         if cls._sealed:
             raise TypeError("Can't alter an entity's schema after declaration")
@@ -146,6 +168,18 @@ class EntityClass(type, schema.Schema):
         
         for base in bases:
             base.__derived_entities.append(cls)
+
+    def add_member(cls, member):
+
+        if DEBUG:
+            global indent
+            print "\t" * indent, "%s.%s" % (cls.name, member.name)
+            indent += 1
+
+        schema.Schema.add_member(cls, member)
+
+        if DEBUG:
+            indent -= 1
 
     def _check_member(cls, member):
 
@@ -193,7 +227,16 @@ class EntityClass(type, schema.Schema):
             member.translation.translated = False
             member.translation.translation_source = member
             cls.translation.add_member(member.translation)
-        
+
+        if cls.revision_state:
+
+            # Create a versioned copy of the member, and add it to the
+            # entity's revision state schema
+            member.revision_state = member.copy()
+            member.revision_state.revision_state_source = member
+            member.revision_state.unique = False
+            cls.revision_state.add_member(member.revision_state)
+
         # An indexed member gets its own btree
         if member.indexed and member.index_key is None:
             member.index_key = cls.__full_name + "." + member.name
@@ -215,10 +258,10 @@ class EntityClass(type, schema.Schema):
             if base.translation
         ) or (Entity,)
 
-        cls.translation = translation_schema = EntityClass(
+        cls.translation = EntityClass(
             cls.name + "Translation",
             translation_bases,
-            {"indexed": False}
+            {"indexed": False, "versioned": False}
         )
 
         cls.translation.translation_source = cls
@@ -253,6 +296,35 @@ class EntityClass(type, schema.Schema):
             ),
             values = cls.translation
         ))
+
+    def _create_revision_state_schema(cls):
+        
+        bases = tuple(schema.revision_state
+                      for schema in cls.bases
+                      if schema.revision_state)
+
+        if not bases:
+            from magicbullet.persistence.revisions import RevisionState
+            bases = (RevisionState,)
+
+        cls.revision_state = EntityClass(
+            cls.name + "RevisionState", 
+            bases,
+            {"indexed": False}
+        )
+
+        cls.revision_state.revision_state_source = cls
+
+        # Make the revision state class available at the module level, so its
+        # instances can be pickled (required by ZODB's persistence machinery)
+        setattr(
+            sys.modules[cls.__module__],
+            cls.revision_state.name,
+            cls.revision_state)
+
+        cls.revision_state.__module__ = cls.__module__
+        
+        cls.revision_state._sealed = False
 
     def derived_entities(cls, recursive = True):
         for entity in cls.__derived_entities:
