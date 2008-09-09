@@ -15,7 +15,11 @@ table = ContentTable()
 table.translations = content_languages #site.languages            
 table["name"] = "content"
 table.selection_mode = MULTIPLE_SELECTION
-table.data = content_type.index.values()
+table.data = [
+    item
+    for item in content_type.index.itervalues()
+    if cms.authorization.allows(action = "read", target_instance = item)
+]
 
 adapter = Adapter()
 adapter.exclude(["id", "draft_source"])
