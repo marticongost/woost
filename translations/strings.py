@@ -137,7 +137,7 @@ translations.define("PageTreeView-delete",
 translations.define("New item",
     ca = u"Nou element",
     es = u"Nuevo elemento",
-    en = u"New item")
+    en = u"New")
 
 translations.define("Edit",
     ca = u"Editar",
@@ -154,12 +154,24 @@ translations.define("History",
     es = u"Histórico",
     en = u"History")
 
+translations.define("BackOfficeContentTable.element",
+    ca = u"Element",
+    es = u"Elemento",
+    en = u"Item"
+)
+
 # Item
 #------------------------------------------------------------------------------
 translations.define("Item",
     ca = u"Element genèric",
     es = u"Elemento genérico",
     en = u"Generic element"
+)
+
+translations.define("Item-plural",
+    ca = u"Elements genèrics",
+    es = u"Elementos genéricos",
+    en = u"Generic elements"
 )
 
 translations.define("Item.id",
@@ -198,18 +210,18 @@ translations.define("Item.groups",
     en = u"Groups"
 )
 
-translations.define("BackOfficeContentTable.element",
-    ca = u"Element",
-    es = u"Elemento",
-    en = u"Item"
-)
-
 # Document
 #------------------------------------------------------------------------------
 translations.define("Document",
     ca = u"Document",
     es = u"Documento",
     en = u"Document"
+)
+
+translations.define("Document-plural",
+    ca = u"Documents",
+    es = u"Documentos",
+    en = u"Documents"
 )
 
 translations.define("Document.title",
@@ -310,6 +322,12 @@ translations.define("StandardPage",
     en = u"Standard page"
 )
 
+translations.define("StandardPage-plural",
+    ca = u"Pàgines estàndard",
+    es = u"Páginas estándar",
+    en = u"Standard pages"
+)
+
 translations.define("StandardPage.body",
     ca = u"Cos",
     es = u"Cuerpo",
@@ -322,6 +340,12 @@ translations.define("User",
     ca = u"Usuari",
     es = u"Usuario",
     en = u"User"
+)
+
+translations.define("User-plural",
+    ca = u"Usuaris",
+    es = u"Usuarios",
+    en = u"Users"
 )
 
 translations.define("User.email",
@@ -348,6 +372,12 @@ translations.define("AccessRule",
     ca = u"Regla d'accés",
     es = u"Regla de acceso",
     en = u"Access rule"
+)
+
+translations.define("AccessRule-plural",
+    ca = u"Regles d'accés",
+    es = u"Reglas de acceso",
+    en = u"Access rules"
 )
 
 translations.define("AccessRule.action",
@@ -400,6 +430,12 @@ translations.define("Resource",
     en = u"HTML Resource"
 )
 
+translations.define("Resource-plural",
+    ca = u"Recursos HTML",
+    es = u"Recursos HTML",
+    en = u"HTML Resources"
+)
+
 translations.define("Resource.title",
     ca = u"Nom",
     es = u"Nombre",
@@ -420,6 +456,12 @@ translations.define("Group",
     en = u"Group"
 )
 
+translations.define("Group-plural",
+    ca = u"Grups",
+    es = u"Grupos",
+    en = u"Groups"
+)
+
 translations.define("Group.title",
     ca = u"Nom",
     es = u"Nombre",
@@ -432,6 +474,12 @@ translations.define("DynamicGroup",
     ca = u"Grup dinàmic",
     es = u"Grupo dinámico",
     en = u"Dynamic group"
+)
+
+translations.define("DynamicGroup-plural",
+    ca = u"Grups dinàmics",
+    es = u"Grupos dinámicos",
+    en = u"Dynamic groups"
 )
 
 translations.define("DynamicGroup.title",
@@ -454,12 +502,24 @@ translations.define("BackOffice",
     en = u"Content manager"
 )
 
+translations.define("BackOffice-plural",
+    ca = u"Gestors de continguts",
+    es = u"Gestores de contenidos",
+    en = u"Content managers"
+)
+
 # File
 #------------------------------------------------------------------------------
 translations.define("File",
     ca = u"Fitxer",
     es = u"Fichero",
     en = u"File"
+)
+
+translations.define("File-plural",
+    ca = u"Fitxers",
+    es = u"Ficheros",
+    en = u"Files"
 )
 
 translations.define("File.file_path",
@@ -482,6 +542,12 @@ translations.define("News",
     en = u"News"
 )
 
+translations.define("News-plural",
+    ca = u"Notícies",
+    es = u"Noticias",
+    en = u"News"
+)
+
 translations.define("News.summary",
     ca = u"Sumari",
     es = u"Sumario",
@@ -500,6 +566,12 @@ translations.define("Event",
     ca = u"Esdeveniment",
     es = u"Evento",
     en = u"Event"
+)
+
+translations.define("Event-plural",
+    ca = u"Esdeveniments",
+    es = u"Eventos",
+    en = u"Events"
 )
 
 translations.define("Event.event_start",
@@ -534,6 +606,12 @@ translations.define("Role",
     en = u"User role"
 )
 
+translations.define("Role-plural",
+    ca = u"Rols d'usuari",
+    es = u"Rols de usuario",
+    en = u"User roles"
+)
+
 translations.define("Role.title",
     ca = u"Nom",
     es = u"Nombre",
@@ -546,6 +624,12 @@ translations.define("Template",
     ca = u"Plantilla",
     es = u"Plantilla",
     en = u"Template"
+)
+
+translations.define("Template-plural",
+    ca = u"Plantilles",
+    es = u"Plantillas",
+    en = u"Templates"
 )
 
 translations.define("Template.title",
@@ -566,6 +650,12 @@ translations.define("Language",
     ca = u"Idioma",
     es = u"Idioma",
     en = u"Language"
+)
+
+translations.define("Language-plural",
+    ca = u"Idiomes",
+    es = u"Idiomas",
+    en = u"Languages"
 )
 
 translations.define("Language.title",
