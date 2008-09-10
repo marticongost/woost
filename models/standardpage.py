@@ -13,7 +13,8 @@ from magicbullet.models.document import Document
 class StandardPage(Document):
     
     body = schema.String(
-        translated = True
+        translated = True,
+        listed_by_default = False
     )
 
 
