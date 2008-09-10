@@ -140,7 +140,7 @@ class Member(Variable):
         
         # Resolve string references
         if isinstance(self.__type, basestring):
-            self.__type = type = import_object(type)
+            self.__type = import_object(self.__type)
         
         return self.__type
 
