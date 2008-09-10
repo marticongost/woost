@@ -6,7 +6,9 @@
 @organization:	Whads/Accent SL
 @since:			July 2008
 """
+from magicbullet.translations import translate
 from magicbullet.html import Element
+
 
 class TreeView(Element):
 
@@ -42,8 +44,11 @@ class TreeView(Element):
     def create_label(self, item):
         label = Element("div")
         label.add_class("entry_label")
-        label.append(item.title)
+        label.append(self.get_item_label(item))
         return label
+
+    def get_item_label(self, item):
+        return translate(item)
 
     def create_children_container(self, item, children):
         
