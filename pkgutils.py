@@ -28,12 +28,15 @@ def import_object(name):
         contain the requested object.
     """
     components = name.split(".")
-    module = __import__(".".join(components[:-1]))
+    obj = __import__(".".join(components[:-1]))
     
     for component in components[1:]:
-        module = getattr(obj, module)
+        try:            
+            obj = getattr(obj, component)
+        except AttributeError:
+            raise ImportError("Can't import name %s" % name)
 
-    return getattr(module, components[-1])
+    return obj
 
 def get_full_name(obj):
     """Obtains the canonical, fully qualified name of the provided python
