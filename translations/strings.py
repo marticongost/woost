@@ -135,8 +135,8 @@ translations.define("PageTreeView-delete",
 )
 
 translations.define("New item",
-    ca = u"Nou element",
-    es = u"Nuevo elemento",
+    ca = u"Nou",
+    es = u"Nuevo",
     en = u"New")
 
 translations.define("Edit",
