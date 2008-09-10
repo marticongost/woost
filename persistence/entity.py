@@ -16,10 +16,10 @@ from magicbullet.pkgutils import get_full_name
 from magicbullet import schema
 from magicbullet.schema.exceptions import ValidationError
 from magicbullet.language import require_content_language
-from magicbullet.modeling import getter
 from magicbullet.persistence.datastore import datastore
 from magicbullet.persistence.incremental_id import incremental_id
 from magicbullet.persistence.index import Index
+from magicbullet.persistence import relations
 
 default = object()
 
@@ -78,16 +78,10 @@ schema.Member.index = property(_get_index, _set_index, doc = """
     Gets or sets the index for the members.
     """)
 
-# Relations
-schema.Reference.bidirectional = False
-schema.Collection.bidirectional = False
-
 # Versioning
 schema.Schema.versioned = True
 schema.Member.revision_state = None
 schema.Member.revision_state_source = None
-
-# TODO: bidirectional relations
 
 # Create a stub for the Entity class
 Entity = None
@@ -202,16 +196,42 @@ class EntityClass(type, schema.Schema):
         schema.Schema._add_member(cls, member)
 
         # Install a descriptor to mediate access to the member
-        setattr(cls, member.name, MemberDescriptor(member))
- 
+        descriptor = MemberDescriptor(member)
+        setattr(cls, member.name, descriptor)
+         
+        # Instrument relations
+        if getattr(member, "bidirectional", False):
+            
+            def instrument_collection(obj, member, value):
+                if value is not None:
+                    if isinstance(value, (list, PersistentList)):
+                        value = relations.RelationList(value)
+                        value.owner = obj
+                        value.member = member
+                    elif isinstance(value, set):
+                        value = relations.RelationSet(value)
+                        value.owner = obj
+                        value.member = member
+                    elif isinstance(value, (dict, PersistentMapping)):
+                        value = relations.RelationDict(value)
+                        value.owner = obj
+                        value.member = member
+
+                return value
+
+            descriptor.normalization = instrument_collection
+                    
+        # Primary member
         if member.primary:
             cls.primary_member = member
 
+        # Unique values restriction/index
         if member.unique:
             if cls._unique_validation_rule \
             not in member.validations(recursive = False):
                 member.add_validation(cls._unique_validation_rule)
         
+        # Translation
         if member.translated:
 
             # Create a translation schema for the entity, to hold its
@@ -240,7 +260,7 @@ class EntityClass(type, schema.Schema):
         # An indexed member gets its own btree
         if member.indexed and member.index_key is None:
             member.index_key = cls.__full_name + "." + member.name
-
+        
     def _unique_validation_rule(cls, member, value, context):
 
         if (member.indexed and value in member.index) \
@@ -463,6 +483,7 @@ class MemberDescriptor(object):
 
     def __init__(self, member):
         self.member = member
+        self.normalization = lambda obj, member, value: value
         self.__priv_key = "_" + member.name
 
         if member.translated:
@@ -491,21 +512,22 @@ class MemberDescriptor(object):
             return getattr(translation, self.__priv_key)
 
     def __set__(self, instance, value):        
-        self._setter(instance, value)            
+        self._setter(
+            instance,
+            self.normalization(instance, self.member, value)
+        )
 
     def _set_value(self, instance, value):
         
-        indexed = self.member.indexed
-        
-        if indexed:
-            previous_value = getattr(instance, self.__priv_key, None)
-
+        previous_value = getattr(instance, self.__priv_key, None)
         setattr(instance, self.__priv_key, value)
 
-        if indexed:
+        if self.member.indexed:
             instance._update_index(self.member, None, previous_value, value)
 
-    def _set_translated_value(self, instance, value, language = None):      
+        self.__update_relation(instance, value, previous_value)
+
+    def _set_translated_value(self, instance, value, language = None):
 
         # Make sure the translation for the specified language exists, and
         # then resolve the assignment against it
@@ -515,16 +537,25 @@ class MemberDescriptor(object):
         if translation is None:
             translation = instance._new_translation(language)
 
-        indexed = self.member.indexed
-        
-        if indexed:
-            previous_value = getattr(translation, self.__priv_key, None)
-
+        previous_value = getattr(translation, self.__priv_key, None)
         setattr(translation, self.__priv_key, value)
 
-        if indexed:
+        if self.member.indexed:
             instance._update_index(
                 self.member, language, previous_value, value)
+
+        self.__update_relation(instance, value, previous_value)
+
+    def __update_relation(self, instance, value, previous_value):
+
+        if isinstance(self.member, schema.Reference) \
+        and self.member.bidirectional:
+
+            if previous_value is not None:
+                relations.unrelate(value, instance, self.member.related_end)
+
+            if value is not None:
+                relations.relate(value, instance, self.member.related_end)
 
 
 class UniqueValueError(ValidationError):
