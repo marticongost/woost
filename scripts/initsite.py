@@ -7,6 +7,19 @@
 @since:			July 2008
 """
 import sha
+
+# Initialize the ZODB, bypassing the DataStore machinery. This is an ugly hack
+# avoiding a hang up when trying to connect the client to an empty database;
+# should be properly fixed on datastore.py.
+from magicbullet.settings import storage
+from transaction import commit
+from ZODB import DB
+db = DB(storage)
+conn = db.open()
+conn.root()
+commit()
+conn.close()
+
 from magicbullet.persistence import datastore
 from magicbullet.models import (
     Site,
