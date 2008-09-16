@@ -41,39 +41,21 @@ class Table(Element, CollectionDisplay):
 
     def _fill_head(self):
 
-        # Translation row
-        translations = self.translations
-        if translations:
-            translation_labels = [
-                translate(language)
-                for language in translations
-            ]
-            self.translation_row = Element("tr")
-            self.translation_row.add_class("translations")
-            self.head.append(self.translation_row)
-
         # Selection column
         if self.selection_mode != NO_SELECTION:
             selection_header = Element("th")
             selection_header.add_class("selection")
             self.head_row.append(selection_header)
-            if translations:
-                selection_header["rowspan"] = "2"
         
         # Regular columns
         for column in self.displayed_members:
-            header = self.create_header(column)
-            self.head_row.append(header)
-
-            if translations:
-                if column.translated:
-                    header["colspan"] = str(len(translations))
-                    for label in translation_labels:
-                        translation_header = Element("th")
-                        translation_header.append(label)
-                        self.translation_row.append(translation_header)
-                else:
-                    header["rowspan"] = "2"
+            if column.translated:
+                for language in self.translations:
+                    header = self.create_header(column, language)
+                    self.head_row.append(header)
+            else:
+                header = self.create_header(column)
+                self.head_row.append(header)
     
     def _fill_body(self):
         for i, item in enumerate(self.data):
@@ -92,7 +74,7 @@ class Table(Element, CollectionDisplay):
                 current_content_language = get_content_language()
                 for language in self.translations:
                     set_content_language(language)
-                    cell = self.create_cell(item, column)
+                    cell = self.create_cell(item, column, language)
                     row.append(cell)
                 set_content_language(current_content_language)
             else:
@@ -120,19 +102,33 @@ class Table(Element, CollectionDisplay):
         selection_cell.append(selection_control)
         return selection_cell
 
-    def create_header(self, column):
+    def create_header(self, column, language = None):
         header = Element("th")
         header.append(self.get_member_label(column))
-        self._init_cell(header, column)
-        return header
+        self._init_cell(header, column, language)
 
-    def create_cell(self, item, column):
+        if language:
+            translation_label = self.create_translation_label(language)
+            header.append(translation_label)
+
+        return header
+    
+    def create_translation_label(self, language):
+        label = Element("span")
+        label.add_class("translation")
+        label.append(u"(" + translate(language) + u")")
+        return label
+
+    def create_cell(self, item, column, language = None):
         cell = Element("td")
-        self._init_cell(cell, column)
+        self._init_cell(cell, column, language)
         display = self.get_member_display(item, column)
         cell.append(display)
         return cell
 
-    def _init_cell(self, cell, column):
+    def _init_cell(self, cell, column, language = None):
         cell.add_class(column.name)
+
+        if language:
+            cell.add_class(language)
 
