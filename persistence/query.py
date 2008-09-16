@@ -6,8 +6,6 @@
 @organization:	Whads/Accent SL
 @since:			July 2008
 """
-from __future__ import with_statement
-
 from itertools import chain
 from magicbullet.modeling import getter
 from magicbullet.persistence import EntityClass
@@ -74,8 +72,7 @@ class Query(object):
         if not filters:
             dataset = self.__entity_class.index.values()
     
-        if filters:
-            
+        else:
             single_match = False
 
             for order, filter in self._get_execution_plan(filters):
@@ -215,7 +212,7 @@ class Query(object):
         # Sort using an index
         if main_criteria.indexed and len(order) == 1 and unaltered_order:
 
-            # Prepend instances that aren't present in the index (all
+            # Prepend instances that aren't contained in the index (all
             # instances with a `None` value)
             if not filters and not main_criteria.required:
                 none_instances = difference(
