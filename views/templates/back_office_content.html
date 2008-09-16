@@ -6,6 +6,7 @@ from magicbullet.views.contenttypetree import (
     ContentTypeTree
 )
 from magicbullet.html.table import Table, MULTIPLE_SELECTION
+from magicbullet.html.pager import Pager
 from magicbullet.schema import Adapter, Member, Collection, Reference
 
 class ContentTable(Table):
@@ -21,7 +22,7 @@ table["name"] = "content"
 table.selection_mode = MULTIPLE_SELECTION
 table.data = [
     item
-    for item in content_type.index.itervalues()
+    for item in items
     if cms.authorization.allows(action = "read", target_instance = item)
 ]
 
@@ -100,6 +101,14 @@ table.set_member_type_display(Reference, display_reference)
         content_type_path.value = content_type
         ?>
         ${Markup(content_type_path.render())}
+
+        <?python
+        pager = Pager()
+        pager.page = page
+        pager.page_size = page_size
+        pager.item_count = item_count
+        ?>
+        ${Markup(pager.render())}
 
         <form method="get" action="${cms.uri(requested_item.path)}">
 

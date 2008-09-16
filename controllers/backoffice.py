@@ -79,10 +79,26 @@ class BackOffice(Document):
         content_languages = self._get_content_languages()
         visible_members = self._get_visible_members(content_type)
 
+        items = content_type.index.values()
+        item_count = len(items)
+
+        page = request.params.get("page")
+        page = int(page) if page else 0
+
+        page_size = request.params.get("page_size")
+        page_size = int(page_size) if page_size else 15
+
+        if page_size:
+            items = items[page * page_size: (page + 1) * page_size]
+        
         return cms.rendering.render("back_office_content",
             requested_item = self,
             sections = self.root_sections,
             active_section = "content",
+            items = items,
+            page = page,
+            page_size = page_size,
+            item_count = item_count,
             content_type = content_type,
             content_languages = content_languages,
             visible_members = visible_members)
