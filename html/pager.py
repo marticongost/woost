@@ -18,6 +18,7 @@ class Pager(Element):
     item_count = 0
     page = 0
     page_size = 15
+    hide_when_empty = True
     visible_pages = 10
     visible_pages_options = (10, 15, 20, 30, 50, 100)
     
@@ -45,7 +46,12 @@ class Pager(Element):
         
         Element._ready(self)
 
-        page_count = self.page_count        
+        page_count = self.page_count
+
+        # Hide the pager when only one page is visible
+        if self.hide_when_empty and page_count < 2:
+            self.visible = False
+            return
         
         # First page
         if self.page == 0:

@@ -468,7 +468,7 @@ a img {
 .Pager {
     float: right;
     font-size: 85%;
-    margin-bottom: 0.5em;
+    margin-bottom: 0.75em;
 }
 
 .Pager * {
