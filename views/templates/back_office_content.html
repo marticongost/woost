@@ -93,7 +93,11 @@ table.set_member_type_display(Reference, display_reference)
                     def create_label(self, item):
                         label = ContentTypeTree.create_label(self, item)
                         label.tag = "a"
-                        label["href"] = "?" + view_state(type = item.__name__, members = None)
+                        label["href"] = "?" + view_state(
+                            type = item.__name__,
+                            page = None,
+                            members = None
+                        )
                         return label
 
         content_type_path = BackOfficeContentTypePath()
