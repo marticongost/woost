@@ -9,10 +9,12 @@
 import cherrypy
 from itertools import chain
 from magicbullet.language import get_content_language
-from magicbullet.schema import Adapter, Collection
+from magicbullet.schema import Member, Adapter, Collection
 from magicbullet.models import Item, Document
 from magicbullet.controllers import exposed
 from magicbullet.controllers.viewstate import view_state
+from magicbullet.controllers.usercollection import UserCollection
+
 
 class BackOffice(Document):
     
@@ -43,20 +45,6 @@ class BackOffice(Document):
         else:
             return [get_content_language()]
 
-    def _get_visible_members(self, content_type):
-
-        param = cherrypy.request.params.get("members")
-
-        if param is not None:
-            if isinstance(param, (list, tuple, set)):
-                return set(param)
-            else:
-                return set(param.split(","))
-        else:
-            return set(member.name
-                    for member in content_type.members().itervalues()
-                    if member.listed_by_default)
-
     @exposed
     def index(self, cms, request):
         section = request.params.get("section", self.default_section)
@@ -76,32 +64,24 @@ class BackOffice(Document):
     def content(self, cms, request):
 
         content_type = self._get_content_type(Item)
-        content_languages = self._get_content_languages()
-        visible_members = self._get_visible_members(content_type)
+        content_languages = self._get_content_languages()        
+        
+        content_adapter = self.get_list_adapter(content_type)
+        content_schema = content_adapter.export_schema(content_type)
+        content_schema.name = "BackOfficeContentView"
+        content_schema.add_member(Member(name = "element"))
+        content_schema.members_order.insert(0, "element")
 
-        items = content_type.index.values()
-        item_count = len(items)
-
-        page = request.params.get("page")
-        page = int(page) if page else 0
-
-        page_size = request.params.get("page_size")
-        page_size = int(page_size) if page_size else 15
-
-        if page_size:
-            items = items[page * page_size: (page + 1) * page_size]
+        collection = UserCollection(content_type, content_schema)
+        collection.read(request.params)
         
         return cms.rendering.render("back_office_content",
             requested_item = self,
             sections = self.root_sections,
-            active_section = "content",
-            items = items,
-            page = page,
-            page_size = page_size,
-            item_count = item_count,
+            active_section = "content",            
             content_type = content_type,
             content_languages = content_languages,
-            visible_members = visible_members)
+            collection = collection)
 
     @exposed
     def new(self, cms, request):        
@@ -179,4 +159,24 @@ class BackOffice(Document):
             for member in content_type.members().itervalues()
             if isinstance(member, Collection)
         ])
+
+    def get_list_adapter(self, content_type):
+        adapter = Adapter()
+        self._init_list_adapter(adapter, content_type)
+        return adapter
+
+    def _init_list_adapter(self, adapter, content_type):
+        
+        adapter.exclude([
+            "id",
+            "draft_source"
+        ])
+
+        adapter.exclude([
+            member.name
+            for member in content_type.members().itervalues()
+            if isinstance(member, Collection)
+        ])
+
+
 

@@ -221,7 +221,7 @@ class SetWrapper(object):
         return self._items.__cmp__(other)
 
     def __contains__(self, item):
-        return self._items.__contains(item)
+        return self._items.__contains__(item)
 
     def __eq__(self, other):
         return self._items.__eq__(other)

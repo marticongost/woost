@@ -6,6 +6,7 @@
 @organization:	Whads/Accent SL
 @since:			September 2008
 """
+from magicbullet.modeling import ListWrapper, SetWrapper
 from magicbullet.translations import translate
 from magicbullet.schema import Number
 from magicbullet.html import Element
@@ -80,8 +81,8 @@ class Selector(Element):
 
         if value is None:
             self._is_selected = lambda item: False
-        elif isinstance(value, (list, tuple, set)):
-            selection = set(self.get_item_value(item) for item in value)
+        elif isinstance(value, (list, tuple, set, ListWrapper, SetWrapper)):            
+            selection = set(self.get_item_value(item) for item in value)                
             self._is_selected = lambda item: item in selection
         else:
             selection = self.get_item_value(value)

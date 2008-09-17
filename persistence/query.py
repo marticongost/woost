@@ -263,7 +263,7 @@ class Query(object):
     def __apply_range(self, subset):
 
         range = self.range
-
+        
         if range:
             subset = subset[range[0]:range[1]]
 
@@ -282,6 +282,19 @@ class Query(object):
 
     def __contains__(self, item):
         return bool(self.select_by(id = item.id))
+
+    def __getitem__(self, index):
+        
+        # Retrieve a slice
+        if isinstance(index, slice):
+            if index.step is not None and index.step != 1:
+                raise ValueError("Can't retrieve a query slice using a step "
+                        "different than 1")
+            return self.select(range = (index.start, index.stop))
+
+        # Retrieve a single item
+        else:
+            return self.execute()[index]
 
     def select(self,
         filter = None,

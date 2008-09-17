@@ -5,71 +5,9 @@ from magicbullet.views.contenttypetree import (
     ContentTypeSelector,
     ContentTypeTree
 )
-from magicbullet.html.table import Table, MULTIPLE_SELECTION
 from magicbullet.html.pager import Pager
-from magicbullet.schema import Adapter, Member, Collection, Reference
-
-class ContentTable(Table):
-    def repr_value(self, item, member, value):
-        if value is None:
-            return "-"
-        else:
-            return translate(value, default = value)
-
-table = ContentTable()
-table.translations = content_languages #site.languages            
-table["name"] = "content"
-table.selection_mode = MULTIPLE_SELECTION
-table.data = [
-    item
-    for item in items
-    if cms.authorization.allows(action = "read", target_instance = item)
-]
-
-adapter = Adapter()
-adapter.exclude(["id", "draft_source"])
-adapter.exclude([
-    member.name
-    for member in content_type.members().itervalues()
-    if isinstance(member, Collection)
-])
-
-table.schema = adapter.export_schema(content_type)
-table.schema.name = "BackOfficeContentTable"
-table.schema.add_member(Member(name = "element"))
-table.schema.members_order.insert(0, "element")
-
-visible_members.add("element")
-
-for member_name in table.schema.members():
-    table.set_member_displayed(member_name, member_name in visible_members)
-
-def display_element(table, item, member):
-    display = Element("label")
-    display["for"] = table["name"] + "_selection_" + str(item.id)
-    display.append(translate(item))
-    for schema in item.__class__.descend_inheritance(True):
-        display.add_class(schema.name)
-    return display
-
-table.set_member_display("element", display_element)
-
-def display_reference(table, item, member):
-    value = table.get_member_value(item, member)
-    
-    if value is None:
-        display = Element()
-    else:
-        display = Element("a")
-        display["href"] = cms.uri(requested_item.path,
-                                  "edit",
-                                  "?content_selection=%d" % value.id)
-        
-    display.append(table.repr_value(item, member, value))
-    return display
-
-table.set_member_type_display(Reference, display_reference)
-
+from magicbullet.html.table import MULTIPLE_SELECTION
+from magicbullet.views.contenttable import ContentTable
 ?>
 
 <html
@@ -108,9 +46,9 @@ table.set_member_type_display(Reference, display_reference)
 
         <?python
         pager = Pager()
-        pager.page = page
-        pager.page_size = page_size
-        pager.item_count = item_count
+        pager.page = collection.page
+        pager.page_size = collection.page_size
+        pager.item_count = len(collection.subset())
         ?>
         ${Markup(pager.render())}
 
@@ -165,8 +103,8 @@ table.set_member_type_display(Reference, display_reference)
 
                         members_selector = MembersSelector()
                         members_selector.name = "members"
-                        members_selector.items = table.schema.ordered_members()
-                        members_selector.value = visible_members
+                        members_selector.items = collection.schema.ordered_members()
+                        members_selector.value = collection.members
                         ?>
                         ${Markup(members_selector.render())}
                         <button name="section" value="content">${translate("Submit")}</button>
@@ -189,7 +127,26 @@ table.set_member_type_display(Reference, display_reference)
                     </div>
                 </div>                
             </div>
-            ${Markup(table.render())}
+            <?python
+            content_table = ContentTable()
+            content_table.cms = cms
+            content_table.base_url = cms.uri(requested_item.path)
+            content_table.schema = collection.schema
+            content_table["name"] = "content"
+            content_table.translations = content_languages
+            content_table.selection_mode = MULTIPLE_SELECTION
+            content_table.data = [
+                item
+                for item in collection.page_subset()
+                if cms.authorization.allows(action = "read", target_instance = item)
+            ]
+            for member_name in content_table.schema.members():
+                content_table.set_member_displayed(
+                    member_name,
+                    member_name in collection.members
+                )
+            ?>
+            ${Markup(content_table.render())}
         </form>
     </div>
 

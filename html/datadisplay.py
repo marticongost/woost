@@ -43,6 +43,9 @@ class DataDisplay(object):
         else:
             return member
 
+    def _normalize_member(self, member):
+        return member if isinstance(member, basestring) else member.name
+
     @getter
     def displayed_members(self):
         return (member
@@ -69,7 +72,7 @@ class DataDisplay(object):
         @rtype: bool
         """
         return self.__member_displayed.get(
-                    self._resolve_member(member),
+                    self._normalize_member(member),
                     True)
     
     def set_member_displayed(self, member, displayed):
@@ -85,7 +88,7 @@ class DataDisplay(object):
             otherwise.
         @type displayed: bool
         """
-        self.__member_displayed[self._resolve_member(member)] = displayed
+        self.__member_displayed[self._normalize_member(member)] = displayed
 
     def get_member_label(self, member):
         """Gets the descriptive, human readable title for the member, as shown
@@ -98,11 +101,10 @@ class DataDisplay(object):
         @return: The descriptive title for the member.
         @rtype: unicode
         """
-        member = self._resolve_member(member)
-        label = self.__member_labels.get(member, None)
+        label = self.__member_labels.get(self._normalize_member(member), None)
 
         if label is None:
-            label = translate(member)
+            label = translate(self._resolve_member(member))
 
         return label
 
@@ -117,7 +119,7 @@ class DataDisplay(object):
             member.
         @type label: unicode
         """
-        self.__member_labels[self._resolve_member(member)] = label
+        self.__member_labels[self._normalize_member(member)] = label
 
     def get_member_editable(self, member):
         """Indicates if the given member should be editable by users. This
@@ -134,7 +136,7 @@ class DataDisplay(object):
         @rtype: bool
         """
         return self.__member_editable.get(
-                    self._resolve_member(member),
+                    self._normalize_member(member),
                     self.editable)
 
     def set_member_editable(self, member, editable):
@@ -151,7 +153,7 @@ class DataDisplay(object):
             unmodifiable piece of data.
         @type editable: bool
         """
-        self.__member_editable[self._resolve_member(member)] = editable
+        self.__member_editable[self._normalize_member(member)] = editable
 
     def get_member_expression(self, member):
         """Returns the expression used to obtain the value for the given
@@ -165,7 +167,7 @@ class DataDisplay(object):
             member, if any.
         @rtype: callable
         """
-        return self.__member_expressions.get(self._resolve_member(member))
+        return self.__member_expressions.get(self._normalize_member(member))
 
     def set_member_expression(self, member, expression):
         """Sets the expression used to obtain the value for the given
@@ -178,11 +180,11 @@ class DataDisplay(object):
         @param expression: The expression assigned to the member.
         @rtype: callable
         """
-        self.__member_expressions[self._resolve_member(member)] = expression
+        self.__member_expressions[self._normalize_member(member)] = expression
 
     def get_member_value(self, obj, member):
         expr = self.__member_expressions.get(member)
-        
+
         if expr:
             return expr(obj)
         else:
@@ -200,9 +202,9 @@ class DataDisplay(object):
             return translate(value, default = value)
 
     def get_member_display(self, obj, member):
-        
+
         member = self._resolve_member(member)
-        display = self.__member_display.get(member)
+        display = self.__member_display.get(self._normalize_member(member))
 
         if display is None:
             display = self.get_member_type_display(member.__class__)
@@ -221,7 +223,7 @@ class DataDisplay(object):
         return display
 
     def set_member_display(self, member, display):
-        self.__member_display[self._resolve_member(member)] = display
+        self.__member_display[self._normalize_member(member)] = display
 
     def get_member_type_display(self, member_type):
         return self.__member_type_display.get(member_type)
@@ -255,11 +257,11 @@ class CollectionDisplay(DataDisplay):
 
     def get_member_sortable(self, member):
         return self.__member_sortable.get(
-            self._resolve_member(member),
+            self._normalize_member(member),
             self.sortable)
 
     def set_member_sortable(self, member, sortable):
-        self.__member_sortable[self._resolve_member(member)] = editable
+        self.__member_sortable[self._normalize_member(member)] = editable
 
     def add_filter(self, filter):
         self.__filters.append(filter)

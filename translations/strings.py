@@ -154,7 +154,7 @@ translations.define("History",
     es = u"Histórico",
     en = u"History")
 
-translations.define("BackOfficeContentTable.element",
+translations.define("BackOfficeContentView.element",
     ca = u"Element",
     es = u"Elemento",
     en = u"Item"
