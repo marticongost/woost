@@ -205,7 +205,7 @@ class Query(object):
         # single, indexed member without any filter in place
 
         if not self.order:
-            return
+            return subset
 
         if not isinstance(subset, list):
             subset = list(subset)
