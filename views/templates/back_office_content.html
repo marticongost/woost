@@ -7,6 +7,7 @@ from magicbullet.views.contenttypetree import (
 )
 from magicbullet.html.pager import Pager
 from magicbullet.html.table import MULTIPLE_SELECTION
+from magicbullet.html.selectors import CheckList, LinkSelector
 from magicbullet.views.contenttable import ContentTable
 ?>
 
@@ -93,9 +94,7 @@ from magicbullet.views.contenttable import ContentTable
                 <div id="visible_members" class="toolbar_button selector">
                     <span class="label">${translate("Visible members")}</span>
                     <div class="selector_content">
-                        <?python
-                        from magicbullet.html.selectors import CheckList
-
+                        <?python                        
                         class MembersSelector(CheckList):
                             def get_item_value(self, item):
                                 return item if isinstance(item, basestring) \
@@ -116,7 +115,6 @@ from magicbullet.views.contenttable import ContentTable
                     <span class="label">${translate("Content languages")}</span>
                     <div class="selector_content">
                         <?python
-                        from magicbullet.html.selectors import CheckList
                         content_language_selector = CheckList()
                         content_language_selector.name = "language"
                         content_language_selector.items = site.languages
@@ -125,29 +123,41 @@ from magicbullet.views.contenttable import ContentTable
                         ${Markup(content_language_selector.render())}
                         <button name="section" value="content">${translate("Submit")}</button>
                     </div>
-                </div>                
+                </div>
+
+                <!--! Content view selector -->
+                <div id="content_languages"
+                    class="toolbar_button selector"
+                    py:if="len(content_views) &gt; 1">
+                    <span class="label">${translate("View as")}</span>
+                    <div class="selector_content">
+                        <?python
+                        class ContentViewSelector(LinkSelector):
+
+                            def get_item_label(self, content_view):
+                                return translate(content_view.content_view_id)
+                            
+                            def get_item_value(self, content_view):
+                                return content_view.content_view_id
+
+                        content_view_selector = ContentViewSelector()
+                        content_view_selector.name = "content_view"
+                        content_view_selector.items = content_views
+                        content_view_selector.value = content_view
+                        ?>
+                        ${Markup(content_view_selector.render())}
+                    </div>
+                </div>
             </div>
             <?python
-            content_table = ContentTable()
-            content_table.cms = cms
-            content_table.base_url = cms.uri(requested_item.path)
-            content_table.schema = collection.schema
-            content_table["name"] = "content"
-            content_table.translations = content_languages
-            content_table.selection_mode = MULTIPLE_SELECTION
-            content_table.order = collection.order
-            content_table.data = [
-                item
-                for item in collection.page_subset()
-                if cms.authorization.allows(action = "read", target_instance = item)
-            ]
-            for member_name in content_table.schema.members():
-                content_table.set_member_displayed(
-                    member_name,
-                    member_name in collection.members
-                )
+            viewer = content_view()
+            viewer.cms = cms
+            viewer.requested_item = requested_item
+            viewer.site = site
+            viewer.user_collection = collection
+            viewer.languages = content_languages
             ?>
-            ${Markup(content_table.render())}
+            ${Markup(viewer.render())}
         </form>
     </div>
 

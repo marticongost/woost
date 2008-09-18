@@ -380,6 +380,12 @@ a img {
     margin-bottom: 0.4em;
 }
 
+/* Link selectors
+-----------------------------------------------------------------------------*/
+.LinkSelector .selected {
+    font-weight: bold;
+}
+
 /* Content type dropdown
 -----------------------------------------------------------------------------*/
 .ContentTypeTree .selected {

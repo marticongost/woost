@@ -160,6 +160,26 @@ translations.define("BackOfficeContentView.element",
     en = u"Item"
 )
 
+# Content views
+#------------------------------------------------------------------------------
+translations.define("View as",
+    ca = u"Visualització",
+    es = u"Visualización",
+    en = u"View as"
+)
+
+translations.define("TableContentView",
+    ca = u"Llistat",
+    es = u"Listado",
+    en = u"Listing"
+)
+
+translations.define("TreeContentView",
+    ca = u"Arbre",
+    es = u"Árbol",
+    en = u"Tree"
+)
+
 # Item
 #------------------------------------------------------------------------------
 translations.define("Item",

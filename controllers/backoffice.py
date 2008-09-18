@@ -14,6 +14,11 @@ from magicbullet.models import Item, Document
 from magicbullet.controllers import exposed
 from magicbullet.controllers.viewstate import view_state
 from magicbullet.controllers.usercollection import UserCollection
+from magicbullet.controllers.contentviews import (
+    ContentViewsRegistry,
+    TableContentView,
+    TreeContentView
+)
 
 
 class BackOffice(Document):
@@ -22,6 +27,10 @@ class BackOffice(Document):
     root_sections = ["content", "history"]
     item_sections = ["edit", "history"]
 
+    content_views = ContentViewsRegistry()
+    content_views.add(Item, TableContentView, True)
+    content_views.add(Document, TreeContentView, True)
+        
     def _get_content_type(self, default = None):
 
         requested_type = cherrypy.request.params.get("type")
@@ -45,6 +54,18 @@ class BackOffice(Document):
         else:
             return [get_content_language()]
 
+    def _get_content_views(self, content_type):
+
+        content_views = self.content_views.get(content_type)
+        content_view_param = cherrypy.request.params.get("content_view")
+
+        if content_view_param is not None:
+            for content_view in content_views:
+                if content_view.content_view_id == content_view_param:
+                    return content_views, content_view
+
+        return content_views, self.content_views.get_default(content_type)
+
     @exposed
     def index(self, cms, request):
         section = request.params.get("section", self.default_section)
@@ -64,7 +85,9 @@ class BackOffice(Document):
     def content(self, cms, request):
 
         content_type = self._get_content_type(Item)
-        content_languages = self._get_content_languages()        
+        content_languages = self._get_content_languages()
+        content_views, active_content_view = \
+            self._get_content_views(content_type)
         
         content_adapter = self.get_list_adapter(content_type)
         content_schema = content_adapter.export_schema(content_type)
@@ -73,15 +96,29 @@ class BackOffice(Document):
         content_schema.members_order.insert(0, "element")
 
         collection = UserCollection(content_type, content_schema)
+
+        # Initialize the content collection with the parameters set by the
+        # current content view (this allows views to disable sorting, filters,
+        # etc, depending on the nature of their user interface)
+        content_view_collection_params = \
+            getattr(active_content_view, "collection_params", None)
+
+        if content_view_collection_params:
+            for key, value in content_view_collection_params.iteritems():
+                setattr(collection, key, value)
+
         collection.read(request.params)
         
         return cms.rendering.render("back_office_content",
             requested_item = self,
             sections = self.root_sections,
-            active_section = "content",            
+            active_section = "content",
             content_type = content_type,
             content_languages = content_languages,
-            collection = collection)
+            collection = collection,
+            content_views = content_views,
+            content_view = active_content_view
+        )
 
     @exposed
     def new(self, cms, request):        
