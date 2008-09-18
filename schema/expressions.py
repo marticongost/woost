@@ -81,10 +81,13 @@ class Expression(object):
         return ContainsExpression(expr, self)
 
     def match(self, expr):
-        return MatchExpression(expr)
+        return MatchExpression(self, expr)
 
     def search(self, expr):
-        return SearchExpression(expr)
+        return SearchExpression(self, expr)
+
+    def translated_into(self, language):
+        return TranslationExpression(self, language)
 
 
 class Constant(Expression):
@@ -92,7 +95,7 @@ class Constant(Expression):
     def __init__(self, value):
         self.value = value
 
-    def eval(self, context, get_value):
+    def eval(self, context, get_value = operator.getitem):
         return self.value
 
 
@@ -101,7 +104,7 @@ class Variable(Expression):
     def __init__(self, name):
         self.name = name
 
-    def eval(self, context, get_value):
+    def eval(self, context, get_value = operator.getitem):
         return get_value(context, self.name)
 
 
@@ -202,3 +205,10 @@ class SearchExpression(Expression):
 
         return b.search(a)
  
+
+class TranslationExpression(Expression):
+
+    def eval(self, context, get_value = operator.getitem):
+        return context.get(self.operands[0], self.operands[1].value)
+    
+
