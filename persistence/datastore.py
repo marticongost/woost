@@ -53,9 +53,6 @@ class DataStore(object):
         connection = getattr(self._thread_data, "connection", None)
 
         if connection is None:
-            print ":" * 80
-            print "Opening datastore"
-            print ":" * 80
             connection = self.db.open()
             self._thread_data.connection = connection
 
@@ -69,10 +66,6 @@ class DataStore(object):
         Accessing the L{root} or L{connection} properties after this method is
         called will spawn a new database connection.
         """
-        print ":" * 80
-        print "Closing datastore"
-        print ":" * 80
-
         if hasattr(self._thread_data, "root"):
             self._thread_data.root = None
 

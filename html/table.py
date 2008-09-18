@@ -13,10 +13,19 @@ from magicbullet.html.datadisplay import (
 )
 from magicbullet.translations import translate
 from magicbullet.language import get_content_language, set_content_language
+from magicbullet.schema.expressions import (
+    TranslationExpression,
+    PositiveExpression,
+    NegativeExpression
+)
+from magicbullet.controllers.viewstate import view_state
 
 class Table(Element, CollectionDisplay):
     
     tag = "table"
+    ascending_order_image = "ascending.png"
+    descending_order_image = "descending.png"
+    base_image_url = None
 
     def __init__(self, *args, **kwargs):
         Element.__init__(self, *args, **kwargs)
@@ -41,39 +50,39 @@ class Table(Element, CollectionDisplay):
 
     def _fill_head(self):
 
-        # Translation row
-        translations = self.translations
-        if translations:
-            translation_labels = [
-                translate(language)
-                for language in translations
-            ]
-            self.translation_row = Element("tr")
-            self.translation_row.add_class("translations")
-            self.head.append(self.translation_row)
+        # Cache sorted columns
+        if self.order:
+            
+            self.__sorted_columns = sorted_columns = {}
+            
+            for criteria in self.order:
+                sign = criteria.__class__
+                expr = criteria.operands[0]
+                
+                if isinstance(expr, TranslationExpression):
+                    member = expr.operands[0].name
+                    language = expr.operands[1].value
+                else:
+                    member = expr.name
+                    language = None
+
+                sorted_columns[(member, language)] = sign
 
         # Selection column
         if self.selection_mode != NO_SELECTION:
             selection_header = Element("th")
             selection_header.add_class("selection")
             self.head_row.append(selection_header)
-            if translations:
-                selection_header["rowspan"] = "2"
         
         # Regular columns
         for column in self.displayed_members:
-            header = self.create_header(column)
-            self.head_row.append(header)
-
-            if translations:
-                if column.translated:
-                    header["colspan"] = str(len(translations))
-                    for label in translation_labels:
-                        translation_header = Element("th")
-                        translation_header.append(label)
-                        self.translation_row.append(translation_header)
-                else:
-                    header["rowspan"] = "2"
+            if column.translated:
+                for language in self.translations:
+                    header = self.create_header(column, language)
+                    self.head_row.append(header)
+            else:
+                header = self.create_header(column)
+                self.head_row.append(header)
     
     def _fill_body(self):
         for i, item in enumerate(self.data):
@@ -92,7 +101,7 @@ class Table(Element, CollectionDisplay):
                 current_content_language = get_content_language()
                 for language in self.translations:
                     set_content_language(language)
-                    cell = self.create_cell(item, column)
+                    cell = self.create_cell(item, column, language)
                     row.append(cell)
                 set_content_language(current_content_language)
             else:
@@ -120,19 +129,70 @@ class Table(Element, CollectionDisplay):
         selection_cell.append(selection_control)
         return selection_cell
 
-    def create_header(self, column):
+    def create_header(self, column, language = None):
+        
         header = Element("th")
-        header.append(self.get_member_label(column))
-        self._init_cell(header, column)
-        return header
+        self._init_cell(header, column, language)
+        
+        label = Element("span")
+        label.add_class("label")
+        label.append(self.get_member_label(column))
+        header.append(label)
 
-    def create_cell(self, item, column):
+        # Sorting
+        if self.get_member_sortable(column):
+            label.tag = "a"
+            sign = ""
+
+            if self.order:
+                current_direction = self.__sorted_columns.get(
+                    (column.name, language)
+                )
+
+                if current_direction is not None:
+                    header.add_class("sorted")
+
+                    if current_direction is PositiveExpression:
+                        header.add_class("ascending")
+                        sign = "-"
+                    elif current_direction is NegativeExpression:
+                        header.add_class("descending")
+ 
+            order_param = sign + column.name
+
+            if language:
+                order_param += "." + language
+
+            label["href"] = "?" + view_state(order = order_param)
+
+        # Translation label
+        if language:
+            translation_label = self.create_translation_label(language)
+            header.append(translation_label)
+                        
+        return header
+    
+    def create_translation_label(self, language):
+        label = Element("span")
+        label.add_class("translation")
+        label.append(u"(" + translate(language) + u")")
+        return label
+
+    def create_cell(self, item, column, language = None):
         cell = Element("td")
-        self._init_cell(cell, column)
+
+        if self.order \
+        and (column.name, language) in self.__sorted_columns:
+            cell.add_class("sorted")
+
+        self._init_cell(cell, column, language)
         display = self.get_member_display(item, column)
         cell.append(display)
         return cell
 
-    def _init_cell(self, cell, column):
+    def _init_cell(self, cell, column, language = None):
         cell.add_class(column.name)
+
+        if language:
+            cell.add_class(language)
 

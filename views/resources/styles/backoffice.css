@@ -150,8 +150,7 @@ a img {
     width: 100%;
 }
 
-.Table th {
-    font-weight: bold;
+.Table th span.label {
     color: rgb(75,75,75);
 }
 
@@ -163,7 +162,9 @@ a img {
     font-size: 85%;
 }
 
-.Table tr.translations th {
+/*.Table tr.translations th {*/
+.Table th .translation {
+    margin-left: 0.5em;
     font-size: 80%;
     font-weight: normal;
     font-style: italic;
@@ -180,13 +181,48 @@ a img {
 	background-color: rgb(235,240,247);
 }
 
-.Table .selected {
-    background-color: rgb(200,205,207);
+.Table .odd {
+    background-color: white;
+}
+
+.Table .even td.sorted {
+    background-color: rgb(225,230,237);
+    background-color: rgb(220,225,232);
+    background-color: rgb(220,225,227);
+}
+
+.Table .odd td.sorted {
+    background-color: rgb(235,240,247);
+}
+
+.Table tr.selected td,
+.Table tr.selected td * {
+    background-color: rgb(200,205,207) !important;
+    background-color: rgb(75,75,75) !important;
+    color: white !important;
 }
 
 .Table .element label {
     background-repeat: no-repeat;
     padding-left: 1.5em;
+}
+
+.Table td a {
+    text-decoration: underline;
+}
+
+.Table th.sorted .label {
+    padding-right: 1em;
+    background-repeat: no-repeat;
+    background-position: center right;
+}
+
+.Table th.ascending .label {
+    background-image: url(ascending.png);
+}
+
+.Table th.descending .label {
+    background-image: url(descending.png);
 }
 
 /* Content type icons
@@ -239,7 +275,7 @@ a img {
 -----------------------------------------------------------------------------*/
 
 #toolbar {
-	clear: left;
+	clear: both;
     margin-top: 1em;
 	margin-bottom: 0.5em;
 	background-color: rgb(242,240,235);
@@ -344,6 +380,12 @@ a img {
     margin-bottom: 0.4em;
 }
 
+/* Link selectors
+-----------------------------------------------------------------------------*/
+.LinkSelector .selected {
+    font-weight: bold;
+}
+
 /* Content type dropdown
 -----------------------------------------------------------------------------*/
 .ContentTypeTree .selected {
@@ -407,7 +449,6 @@ a img {
     margin: 0;
     padding: 0;
     margin-top: 0.5em;
-    margin-bottom: 1.2em;
     height: 1.5em;
 }
 
@@ -463,4 +504,54 @@ a img {
 .ContentTypePath .leaf .label {
     border-color: transparent;
 }
+
+/* Pager
+-----------------------------------------------------------------------------*/
+.Pager {
+    float: right;
+    font-size: 85%;
+    margin-bottom: 0.75em;
+}
+
+.Pager * {
+    float: left;
+    display: block;
+}
+
+.Pager .previous {
+    margin-left: 0.3em;
+}
+
+.Pager .next {
+    margin-right: 0.3em;
+}
+
+.Pager .page_links {
+    margin-left: 0.8em;
+    margin-right: 0.8em;
+}
+
+.Pager .page_links a {
+    margin-left: 0.5em;
+}
+
+.Pager .page_links a.selected {
+    font-weight: bold;
+}
+
+/* Tree content view
+-----------------------------------------------------------------------------*/
+
+.TreeContentView .expander {
+    margin-right: 0.3em;
+}
+
+.TreeContentView .expander img {
+    vertical-align: middle;
+}
+
+.TreeContentView .depth_level {
+    padding-left: 2em;
+}
+
 

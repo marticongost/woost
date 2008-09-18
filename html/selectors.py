@@ -6,10 +6,12 @@
 @organization:	Whads/Accent SL
 @since:			September 2008
 """
+from magicbullet.modeling import ListWrapper, SetWrapper
 from magicbullet.translations import translate
 from magicbullet.schema import Number
 from magicbullet.html import Element
 from magicbullet.html.checkbox import CheckBox
+from magicbullet.controllers.viewstate import view_state
 
 class Selector(Element):
 
@@ -80,8 +82,8 @@ class Selector(Element):
 
         if value is None:
             self._is_selected = lambda item: False
-        elif isinstance(value, (list, tuple, set)):
-            selection = set(self.get_item_value(item) for item in value)
+        elif isinstance(value, (list, tuple, set, ListWrapper, SetWrapper)):            
+            selection = set(self.get_item_value(item) for item in value)                
             self._is_selected = lambda item: item in selection
         else:
             selection = self.get_item_value(value)
@@ -117,13 +119,29 @@ class DropdownSelector(Selector):
 class RadioSelector(Selector):
 
     def create_entry(self, value, label, selected):
-        
         entry = Element("input")
         entry["type"] = "radio"
         entry["value"] = value
         entry["selected"] = selected        
         entry["name"] = self.name
         entry.append(label)
+        return entry
+
+
+class LinkSelector(Selector):
+
+    def create_entry(self, value, label, selected):
+        
+        entry = Element()
+
+        if selected:
+            entry.add_class("selected")
+
+        link = Element("a")
+        link["href"] = "?" + view_state(**{self.name: value})
+        link.append(label)
+        entry.append(link)
+
         return entry
 
 

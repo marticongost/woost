@@ -332,11 +332,16 @@ class Member(Variable):
 
     def __translate__(self, language, **kwargs):        
         try:
-            return translate(self.schema.name + "." + self.name)
+            return translate(
+                self.schema.name + "." + self.name,
+                language,
+                **kwargs
+            )
         except KeyError:
             copy_source = getattr(self, "copy_source", None)
+
             if copy_source:
-                return translate(copy_source)
+                return translate(copy_source, language, **kwargs)
             else:
                 raise
 

@@ -5,70 +5,10 @@ from magicbullet.views.contenttypetree import (
     ContentTypeSelector,
     ContentTypeTree
 )
-from magicbullet.html.table import Table, MULTIPLE_SELECTION
-from magicbullet.schema import Adapter, Member, Collection, Reference
-
-class ContentTable(Table):
-    def repr_value(self, item, member, value):
-        if value is None:
-            return "-"
-        else:
-            return translate(value, default = value)
-
-table = ContentTable()
-table.translations = content_languages #site.languages            
-table["name"] = "content"
-table.selection_mode = MULTIPLE_SELECTION
-table.data = [
-    item
-    for item in content_type.index.itervalues()
-    if cms.authorization.allows(action = "read", target_instance = item)
-]
-
-adapter = Adapter()
-adapter.exclude(["id", "draft_source"])
-adapter.exclude([
-    member.name
-    for member in content_type.members().itervalues()
-    if isinstance(member, Collection)
-])
-
-table.schema = adapter.export_schema(content_type)
-table.schema.name = "BackOfficeContentTable"
-table.schema.add_member(Member(name = "element"))
-table.schema.members_order.insert(0, "element")
-
-visible_members.add("element")
-
-for member_name in table.schema.members():
-    table.set_member_displayed(member_name, member_name in visible_members)
-
-def display_element(table, item, member):
-    display = Element("label")
-    display["for"] = table["name"] + "_selection_" + str(item.id)
-    display.append(translate(item))
-    for schema in item.__class__.descend_inheritance(True):
-        display.add_class(schema.name)
-    return display
-
-table.set_member_display("element", display_element)
-
-def display_reference(table, item, member):
-    value = table.get_member_value(item, member)
-    
-    if value is None:
-        display = Element()
-    else:
-        display = Element("a")
-        display["href"] = cms.uri(requested_item.path,
-                                  "edit",
-                                  "?content_selection=%d" % value.id)
-        
-    display.append(table.repr_value(item, member, value))
-    return display
-
-table.set_member_type_display(Reference, display_reference)
-
+from magicbullet.html.pager import Pager
+from magicbullet.html.table import MULTIPLE_SELECTION
+from magicbullet.html.selectors import CheckList, LinkSelector
+from magicbullet.views.contenttable import ContentTable
 ?>
 
 <html
@@ -92,7 +32,11 @@ table.set_member_type_display(Reference, display_reference)
                     def create_label(self, item):
                         label = ContentTypeTree.create_label(self, item)
                         label.tag = "a"
-                        label["href"] = "?" + view_state(type = item.__name__, members = None)
+                        label["href"] = "?" + view_state(
+                            type = item.__name__,
+                            page = None,
+                            members = None
+                        )
                         return label
 
         content_type_path = BackOfficeContentTypePath()
@@ -100,6 +44,14 @@ table.set_member_type_display(Reference, display_reference)
         content_type_path.value = content_type
         ?>
         ${Markup(content_type_path.render())}
+
+        <?python
+        pager = Pager()
+        pager.page = collection.page
+        pager.page_size = collection.page_size
+        pager.item_count = len(collection.subset())
+        ?>
+        ${Markup(pager.render())}
 
         <form method="get" action="${cms.uri(requested_item.path)}">
 
@@ -142,9 +94,7 @@ table.set_member_type_display(Reference, display_reference)
                 <div id="visible_members" class="toolbar_button selector">
                     <span class="label">${translate("Visible members")}</span>
                     <div class="selector_content">
-                        <?python
-                        from magicbullet.html.selectors import CheckList
-
+                        <?python                        
                         class MembersSelector(CheckList):
                             def get_item_value(self, item):
                                 return item if isinstance(item, basestring) \
@@ -152,8 +102,8 @@ table.set_member_type_display(Reference, display_reference)
 
                         members_selector = MembersSelector()
                         members_selector.name = "members"
-                        members_selector.items = table.schema.ordered_members()
-                        members_selector.value = visible_members
+                        members_selector.items = collection.schema.ordered_members()
+                        members_selector.value = collection.members
                         ?>
                         ${Markup(members_selector.render())}
                         <button name="section" value="content">${translate("Submit")}</button>
@@ -165,7 +115,6 @@ table.set_member_type_display(Reference, display_reference)
                     <span class="label">${translate("Content languages")}</span>
                     <div class="selector_content">
                         <?python
-                        from magicbullet.html.selectors import CheckList
                         content_language_selector = CheckList()
                         content_language_selector.name = "language"
                         content_language_selector.items = site.languages
@@ -174,9 +123,41 @@ table.set_member_type_display(Reference, display_reference)
                         ${Markup(content_language_selector.render())}
                         <button name="section" value="content">${translate("Submit")}</button>
                     </div>
-                </div>                
+                </div>
+
+                <!--! Content view selector -->
+                <div id="content_languages"
+                    class="toolbar_button selector"
+                    py:if="len(content_views) &gt; 1">
+                    <span class="label">${translate("View as")}</span>
+                    <div class="selector_content">
+                        <?python
+                        class ContentViewSelector(LinkSelector):
+
+                            def get_item_label(self, content_view):
+                                return translate(content_view.content_view_id)
+                            
+                            def get_item_value(self, content_view):
+                                return content_view.content_view_id
+
+                        content_view_selector = ContentViewSelector()
+                        content_view_selector.name = "content_view"
+                        content_view_selector.items = content_views
+                        content_view_selector.value = content_view
+                        ?>
+                        ${Markup(content_view_selector.render())}
+                    </div>
+                </div>
             </div>
-            ${Markup(table.render())}
+            <?python
+            viewer = content_view()
+            viewer.cms = cms
+            viewer.requested_item = requested_item
+            viewer.site = site
+            viewer.user_collection = collection
+            viewer.languages = content_languages
+            ?>
+            ${Markup(viewer.render())}
         </form>
     </div>
 

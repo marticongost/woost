@@ -6,12 +6,13 @@
 @organization:	Whads/Accent SL
 @since:			July 2008
 """
-from __future__ import with_statement
-
 from itertools import chain
 from magicbullet.modeling import getter
 from magicbullet.persistence import EntityClass
-from magicbullet.schema import expressions
+from magicbullet.schema import Member, expressions
+
+inherit = object()
+
 
 class Query(object):
 
@@ -60,116 +61,117 @@ class Query(object):
     def parent(self):
         return self.__parent
 
-    def execute(self):
+    def execute(self, _sorted = True):
+        
         subset = self.__apply_filters()
-        subset = self.__apply_order(subset)
+        
+        if _sorted:
+            subset = self.__apply_order(subset)
+
         subset = self.__apply_range(subset)
+        
         return subset
 
     def __apply_filters(self):
 
-        dataset = None
-        filters = self.filters
-
-        if not filters:
-            dataset = self.__entity_class.index.values()
+        if not self.filters:
+            return self.__entity_class.index.values()
     
-        if filters:
+        dataset = None
+        single_match = False
+
+        for order, filter in self._get_execution_plan(self.filters):
             
-            single_match = False
+            member, value_expr = filter.operands
+            value = value_expr.value
 
-            for order, filter in self._get_execution_plan(filters):
-                
-                member, value_expr = filter.operands
-                value = value_expr.value
+            # Apply the filter using an index
+            if member.indexed and not single_match:
 
-                # Apply the filter using an index
-                if member.indexed and not single_match:
-
-                    if member.primary:
-                        index = self.__entity_class.index
-                    else:
-                        index = member.index
-
-                    # Equal
-                    if isinstance(filter, expressions.EqualExpression):
-
-                        if member.unique:
-                            match = index.get(value)
-                            
-                            if match:
-                                matches = set([match])
-                                
-                                # Special case: after an 'identity' filter is
-                                # resolved (an equality check against a unique
-                                # index), all further filters will ignore
-                                # indices and use direct logical matching
-                                # instead (should be faster)
-                                single_match = True
-                            else:
-                                matches = set()
-                        else:
-                            matches = index.get(value)
-                    
-                    # Different
-                    elif isinstance(filter, expressions.NotEqualExpression):
-                        lower = index.values(
-                            max = value, excludemax = True)
-                        higher = index.values(
-                            min = value, excludemin = True)
-                        matches = chain(lower, higher)
-
-                    # Greater
-                    elif isinstance(filter, (
-                        expressions.GreaterExpression,
-                        expressions.GreaterEqualExpression
-                    )):
-                        matches = index.values(
-                            min = value,
-                            excludemax = isinstance(filter,
-                                expressions.GreaterExpression)
-                        )
-                
-                    # Lower
-                    elif isinstance(filter, (
-                        expressions.LowerExpression,
-                        expressions.LowerEqualExpression
-                    )):
-                        matches = index.values(
-                            max = value,
-                            excludemax = isinstance(filter,
-                                expressions.LowerExpression)
-                        )
-
-                    else:
-                        raise TypeError(
-                            "Can't match %s against an index" % filter)
-
-                    # Add matches together
-                    if matches:
-                        if dataset:
-                            if not isinstance(dataset, set):
-                                dataset = set(dataset)
-
-                            dataset = dataset.intersection(matches)
-                        else:
-                            dataset = matches
-                    else:
-                        dataset = None
-
-                # Brute force matching
+                if member.primary:
+                    index = self.__entity_class.index
                 else:
-                    if dataset is None:
-                        dataset = self.__entity_class.index.itervalues()
-                    
-                    dataset = [instance
-                              for instance in dataset
-                              if filter.eval(instance, getattr)]
+                    index = member.index
 
-                # As soon as the matching set is reduced to an empty set
-                # there's no point in applying any further filter
-                if not dataset:
-                    break
+                # Equal
+                if isinstance(filter, expressions.EqualExpression):
+
+                    if member.unique:
+                        match = index.get(value)
+                        
+                        if match:
+                            matches = set([match])
+                            
+                            # Special case: after an 'identity' filter is
+                            # resolved (an equality check against a unique
+                            # index), all further filters will ignore
+                            # indices and use direct logical matching
+                            # instead (should be faster)
+                            single_match = True
+                        else:
+                            matches = set()
+                    else:
+                        matches = index.get(value)
+                
+                # Different
+                elif isinstance(filter, expressions.NotEqualExpression):
+                    lower = index.values(
+                        max = value, excludemax = True)
+                    higher = index.values(
+                        min = value, excludemin = True)
+                    matches = chain(lower, higher)
+
+                # Greater
+                elif isinstance(filter, (
+                    expressions.GreaterExpression,
+                    expressions.GreaterEqualExpression
+                )):
+                    matches = index.values(
+                        min = value,
+                        excludemax = isinstance(filter,
+                            expressions.GreaterExpression)
+                    )
+            
+                # Lower
+                elif isinstance(filter, (
+                    expressions.LowerExpression,
+                    expressions.LowerEqualExpression
+                )):
+                    matches = index.values(
+                        max = value,
+                        excludemax = isinstance(filter,
+                            expressions.LowerExpression)
+                    )
+
+                else:
+                    raise TypeError(
+                        "Can't match %s against an index" % filter)
+
+                # Add matches together
+                if matches:
+                    if dataset:
+                        if not isinstance(dataset, set):
+                            dataset = set(dataset)
+
+                        dataset = dataset.intersection(matches)
+                    else:
+                        dataset = matches
+                else:
+                    dataset = None
+
+            # Brute force matching
+            else:
+                if dataset is None:
+                    dataset = self.__entity_class.index.itervalues()
+                
+                dataset = [instance
+                          for instance in dataset
+                          if filter.eval(instance, getattr)]
+
+            # As soon as the matching set is reduced to an empty set
+            # there's no point in applying any further filter
+            if not dataset:
+                break
 
         return dataset
 
@@ -198,75 +200,49 @@ class Query(object):
         return execution_plan
 
     def __apply_order(self, subset):
-        
-        order = self.order
+ 
+        # TODO: Should optimize the usual case where sorting is done on a
+        # single, indexed member without any filter in place
 
-        if order is None:
-            order = [+self.__entity_class.id]
+        if not self.order:
+            return subset
 
-        main_order = order[0]
-        main_criteria = main_order.operands[0]
-        filters = self.filters
+        if not isinstance(subset, list):
+            subset = list(subset)
 
-        unaltered_order = not filters or (
-            len(filters) == 1 and filters[0].operands[0] is main_criteria
-        )
+        cmp_sequence = [
+            (
+                expr.operands[0],
+                isinstance(expr, expressions.NegativeExpression)
+            )
+            for expr in self.order
+        ]
 
-        # Sort using an index
-        if main_criteria.indexed and len(order) == 1 and unaltered_order:
+        def compare(a, b):
+            
+            values_a = []
+            values_b = []
 
-            # Prepend instances that aren't present in the index (all
-            # instances with a `None` value)
-            if not filters and not main_criteria.required:
-                none_instances = difference(
-                    self.__entity_class.index,
-                    main_criteria.index
-                )
-                subset = chain(none_instances, main_criteria.index)
+            for expr, descending in cmp_sequence:
+                value_a = expr.eval(a, getattr)
+                value_b = expr.eval(b, getattr)
 
-            if isinstance(main_order, expressions.NegativeExpression):
-                if not isinstance(subset, list):
-                    subset = list(subset)
-                subset.reverse()
+                if descending:
+                    value_a, value_b = value_b, value_a
 
-        # Regular sort
-        else:
-            if not isinstance(subset, list):
-                subset = list(subset)
+                values_a.append(value_a)
+                values_b.append(value_b)
 
-            cmp_sequence = [
-                (
-                    expr.operands[0],
-                    isinstance(expr, expressions.NegativeExpression)
-                )
-                for expr in order
-            ]
+            return cmp(values_a, values_b)
 
-            def compare(a, b):
-                
-                values_a = []
-                values_b = []
-
-                for member, reversed_member in cmp_sequence:
-                    value_a = a.get(member)
-                    value_b = b.get(member)
-
-                    if reversed_member:
-                        value_a, value_b = value_b, value_a
-
-                    values_a.append(value_a)
-                    values_b.append(value_b)
-
-                return cmp(values_a, values_b)
-
-            subset.sort(cmp = compare)
+        subset.sort(cmp = compare)
 
         return subset
 
     def __apply_range(self, subset):
 
         range = self.range
-
+        
         if range:
             subset = subset[range[0]:range[1]]
 
@@ -277,25 +253,39 @@ class Query(object):
             yield instance
 
     def __len__(self):
-        results = self.execute()       
+        results = self.execute(_sorted = False)
         return len(results)
     
     def __notzero__(self):
-        return bool(self.execute())
+        # TODO: Could be optimized to quit as soon as the first match is found
+        return bool(self.execute(_sorted = False))
 
     def __contains__(self, item):
         return bool(self.select_by(id = item.id))
 
+    def __getitem__(self, index):
+        
+        # Retrieve a slice
+        if isinstance(index, slice):
+            if index.step is not None and index.step != 1:
+                raise ValueError("Can't retrieve a query slice using a step "
+                        "different than 1")
+            return self.select(range = (index.start, index.stop))
+
+        # Retrieve a single item
+        else:
+            return self.execute()[index]
+
     def select(self,
-        filter = None,
-        order = None,
-        range = None):
+        filters = inherit,
+        order = inherit,
+        range = inherit):
         
         child_query = self.__class__(
             self.__entity_class,
-            filter,
-            order,
-            range)
+            self.filters if filters is inherit else filters,
+            self.order if order is inherit else order,
+            self.range if range is inherit else range)
 
         child_query.__parent = self
         return child_query
@@ -306,33 +296,22 @@ class Query(object):
             self.add_filter(key == value)
 
     def add_filter(self, filter):
-        if self.__filter is None:
-            self.__filter = filter
+        if self.filters is None:
+            self.filters = [filter]
         else:
-            self.__filter &= filter
+            self.filters.append(filter)
 
-if __name__ == "__main__":
-    
-    from magicbullet.models import Document
+    def add_order(self, criteria):
+        
+        if isinstance(criteria, basestring):
+            member = self.entity_class[criteria]
+            criteria = expressions.PositiveExpression(member)
+        
+        elif isinstance(criteria, Member):
+            criteria = expressions.PositiveExpression(criteria)
+        
+        if self.order is None:
+            self.order = []
 
-    print "Start"
-    
-    for i in range(5):
-
-        print "-" * 30
-
-        query = Query(Document,
-            filters = [
-#                    Document.id <= 50,
-                Document.enabled == True
-            ]
-        ).execute()
-
-#        query = (item for item in Document.index.itervalues(max = 50)
-#                if item.enabled)
-
-        for item in query:
-            x = item.id
-            y = item.get("title", "ca")
-
+        self.order.append(criteria)
 

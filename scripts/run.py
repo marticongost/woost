@@ -15,7 +15,8 @@ src_code_path = abspath(join(dirname(abspath(__file__)), "..", ".."))
 if src_code_path not in sys.path:
     sys.path.append(src_code_path)
 
+from magicbullet.settings import server_config
 from magicbullet.controllers import CMS
 cms = CMS()
-cherrypy.quickstart(cms, cms.virtual_path)
+cherrypy.quickstart(cms, cms.virtual_path, server_config)
 
