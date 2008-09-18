@@ -50,6 +50,24 @@ class Table(Element, CollectionDisplay):
 
     def _fill_head(self):
 
+        # Cache sorted columns
+        if self.order:
+            
+            self.__sorted_columns = sorted_columns = {}
+            
+            for criteria in self.order:
+                sign = criteria.__class__
+                expr = criteria.operands[0]
+                
+                if isinstance(expr, TranslationExpression):
+                    member = expr.operands[0].name
+                    language = expr.operands[1].value
+                else:
+                    member = expr.name
+                    language = None
+
+                sorted_columns[(member, language)] = sign
+
         # Selection column
         if self.selection_mode != NO_SELECTION:
             selection_header = Element("th")
@@ -127,24 +145,18 @@ class Table(Element, CollectionDisplay):
             sign = ""
 
             if self.order:
-                for criteria in self.order:
-                    sort_expr = criteria.operands[0]
-                                      
-                    if isinstance(sort_expr, TranslationExpression):
-                        is_sorted = (
-                            sort_expr.operands[0].name == column.name
-                            and sort_expr.operands[1].value == language
-                        )
-                    else:
-                        is_sorted = sort_expr.name == column.name
+                current_direction = self.__sorted_columns.get(
+                    (column.name, language)
+                )
 
-                    if is_sorted:
-                        header.add_class("sorted")
-                        if isinstance(criteria, PositiveExpression):
-                            sign = "-"
-                            header.add_class("ascending")
-                        elif isinstance(criteria, NegativeExpression):
-                            header.add_class("descending")
+                if current_direction is not None:
+                    header.add_class("sorted")
+
+                    if current_direction is PositiveExpression:
+                        header.add_class("ascending")
+                        sign = "-"
+                    elif current_direction is NegativeExpression:
+                        header.add_class("descending")
  
             order_param = sign + column.name
 
@@ -168,6 +180,11 @@ class Table(Element, CollectionDisplay):
 
     def create_cell(self, item, column, language = None):
         cell = Element("td")
+
+        if self.order \
+        and (column.name, language) in self.__sorted_columns:
+            cell.add_class("sorted")
+
         self._init_cell(cell, column, language)
         display = self.get_member_display(item, column)
         cell.append(display)

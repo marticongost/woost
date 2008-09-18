@@ -181,8 +181,25 @@ a img {
 	background-color: rgb(235,240,247);
 }
 
-.Table .selected {
-    background-color: rgb(200,205,207);
+.Table .odd {
+    background-color: white;
+}
+
+.Table .even td.sorted {
+    background-color: rgb(225,230,237);
+    background-color: rgb(220,225,232);
+    background-color: rgb(220,225,227);
+}
+
+.Table .odd td.sorted {
+    background-color: rgb(235,240,247);
+}
+
+.Table tr.selected td,
+.Table tr.selected td * {
+    background-color: rgb(200,205,207) !important;
+    background-color: rgb(75,75,75) !important;
+    color: white !important;
 }
 
 .Table .element label {
