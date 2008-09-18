@@ -135,6 +135,7 @@ from magicbullet.views.contenttable import ContentTable
             content_table["name"] = "content"
             content_table.translations = content_languages
             content_table.selection_mode = MULTIPLE_SELECTION
+            content_table.order = collection.order
             content_table.data = [
                 item
                 for item in collection.page_subset()

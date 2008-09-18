@@ -150,8 +150,7 @@ a img {
     width: 100%;
 }
 
-.Table th {
-    font-weight: bold;
+.Table th span.label {
     color: rgb(75,75,75);
 }
 
@@ -189,6 +188,24 @@ a img {
 .Table .element label {
     background-repeat: no-repeat;
     padding-left: 1.5em;
+}
+
+.Table td a {
+    text-decoration: underline;
+}
+
+.Table th.sorted .label {
+    padding-right: 1em;
+    background-repeat: no-repeat;
+    background-position: center right;
+}
+
+.Table th.ascending .label {
+    background-image: url(ascending.png);
+}
+
+.Table th.descending .label {
+    background-image: url(descending.png);
 }
 
 /* Content type icons

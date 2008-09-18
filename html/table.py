@@ -13,10 +13,19 @@ from magicbullet.html.datadisplay import (
 )
 from magicbullet.translations import translate
 from magicbullet.language import get_content_language, set_content_language
+from magicbullet.schema.expressions import (
+    TranslationExpression,
+    PositiveExpression,
+    NegativeExpression
+)
+from magicbullet.controllers.viewstate import view_state
 
 class Table(Element, CollectionDisplay):
     
     tag = "table"
+    ascending_order_image = "ascending.png"
+    descending_order_image = "descending.png"
+    base_image_url = None
 
     def __init__(self, *args, **kwargs):
         Element.__init__(self, *args, **kwargs)
@@ -103,14 +112,52 @@ class Table(Element, CollectionDisplay):
         return selection_cell
 
     def create_header(self, column, language = None):
+        
         header = Element("th")
-        header.append(self.get_member_label(column))
         self._init_cell(header, column, language)
+        
+        label = Element("span")
+        label.add_class("label")
+        label.append(self.get_member_label(column))
+        header.append(label)
 
+        # Sorting
+        if self.get_member_sortable(column):
+            label.tag = "a"
+            sign = ""
+
+            if self.order:
+                for criteria in self.order:
+                    sort_expr = criteria.operands[0]
+                                      
+                    if isinstance(sort_expr, TranslationExpression):
+                        is_sorted = (
+                            sort_expr.operands[0].name == column.name
+                            and sort_expr.operands[1].value == language
+                        )
+                    else:
+                        is_sorted = sort_expr.name == column.name
+
+                    if is_sorted:
+                        header.add_class("sorted")
+                        if isinstance(criteria, PositiveExpression):
+                            sign = "-"
+                            header.add_class("ascending")
+                        elif isinstance(criteria, NegativeExpression):
+                            header.add_class("descending")
+ 
+            order_param = sign + column.name
+
+            if language:
+                order_param += "." + language
+
+            label["href"] = "?" + view_state(order = order_param)
+
+        # Translation label
         if language:
             translation_label = self.create_translation_label(language)
             header.append(translation_label)
-
+                        
         return header
     
     def create_translation_label(self, language):

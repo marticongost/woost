@@ -20,6 +20,7 @@ class ContentTable(Table):
         Table.__init__(self, *args, **kwargs)
         cls = self.__class__
         self.set_member_display("element", cls.display_element)
+        self.set_member_sortable("element", False)
         self.set_member_type_display(Reference, cls.display_reference)
 
     def repr_value(self, item, member, value):
@@ -47,11 +48,8 @@ class ContentTable(Table):
             display = Element()
         else:
             display = Element("a")
-            display["href"] = self.cms.uri(
-                self.base_url,
-                "edit",
+            display["href"] = self.base_url + "/edit" \
                 "?content_selection=%d" % value.id
-            )
         
         display.append(self.repr_value(item, member, value))
 

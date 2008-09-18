@@ -8,6 +8,10 @@
 """
 from magicbullet.modeling import ListWrapper, SetWrapper, getter
 from magicbullet.persistence.query import Query
+from magicbullet.schema.expressions import (
+    PositiveExpression,
+    NegativeExpression
+)
 
 
 class UserCollection(object):
@@ -134,10 +138,13 @@ class UserCollection(object):
                     key = key[1:]
                 else:
                     sign = PositiveExpression
-                    if key.startswith("+"):
-                        key = key[1:]
 
-                member = self._get_member(key)
+                member = self._get_member(
+                    key,
+                    translatable = True,
+                    from_entity = True
+                )
+
                 self.__order.append(sign(member))
 
     def _read_filters(self, params):
@@ -158,7 +165,7 @@ class UserCollection(object):
 
             for key in members_param:
                 self._get_member(key)
-                members.append(key)
+                members.add(key)
 
     def _get_qualified_name(self, param):
         if self.name:
@@ -166,16 +173,25 @@ class UserCollection(object):
         else:
             return param
 
-    def _get_member(self, name):
+    def _get_member(self, key, translatable = False, from_entity = False):
         
+        if translatable:
+            parts = key.split(".")
+            name = parts[0]
+        else:
+            name = key
+
         try:
-            member = self.__schema[name]
+            schema = self.__entity_type if from_entity else self.__schema
+            member = schema[name]
         except KeyError:
             member = None
 
         if member is None or name not in self.public_members:
-            raise ValueError("Invalid field: %s" % name)
+            raise ValueError("Invalid field: %s" % repr(parts))
+
+        if translatable and len(parts) > 1:
+            member = member.translated_into(parts[1])
 
         return member
-
 

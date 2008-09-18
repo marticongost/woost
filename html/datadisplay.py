@@ -261,7 +261,7 @@ class CollectionDisplay(DataDisplay):
             self.sortable)
 
     def set_member_sortable(self, member, sortable):
-        self.__member_sortable[self._normalize_member(member)] = editable
+        self.__member_sortable[self._normalize_member(member)] = sortable
 
     def add_filter(self, filter):
         self.__filters.append(filter)
