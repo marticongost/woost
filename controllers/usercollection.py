@@ -145,7 +145,8 @@ class UserCollection(object):
                     from_entity = True
                 )
 
-                self.__order.append(sign(member))
+                if member:
+                    self.__order.append(sign(member))
 
     def _read_filters(self, params):
         # TODO
@@ -164,8 +165,8 @@ class UserCollection(object):
             self.__members_wrapper = SetWrapper(members)
 
             for key in members_param:
-                self._get_member(key)
-                members.add(key)
+                if self._get_member(key):
+                    members.add(key)
 
     def _get_qualified_name(self, param):
         if self.name:
@@ -186,9 +187,9 @@ class UserCollection(object):
             member = schema[name]
         except KeyError:
             member = None
-
+    
         if member is None or name not in self.public_members:
-            raise ValueError("Invalid field: %s" % repr(parts))
+            return None
 
         if translatable and len(parts) > 1:
             member = member.translated_into(parts[1])
