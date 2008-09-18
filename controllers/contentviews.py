@@ -128,17 +128,14 @@ class TreeContentView(ContentTable, ContentView):
 
         if expanded_param:
             if isinstance(expanded_param, basestring):
-                return set(expanded_param.split(","))
+                return set(int(id) for id in expanded_param.split(","))
             else:
-                return set(expanded_param)
+                return set(int(id) for id in expanded_param)
 
         return set()
 
     def _ready(self):
-        
-        self.__depth = 0
-        self.__expanded = self._get_expanded()
-
+                
         self.base_url = self.cms.uri(self.requested_item.path)
         self.schema = self.user_collection.schema
         self["name"] = "content"
@@ -161,6 +158,27 @@ class TreeContentView(ContentTable, ContentView):
 
         ContentTable._ready(self)
 
+    def _fill_body(self):
+        
+        self.__depth = 0
+        self.__index = 0
+        self.__expanded = self._get_expanded()
+
+        for item in self.data:
+            self._fill_branch(item)            
+
+    def _fill_branch(self, item):
+
+        row = self.create_row(self.__index, item)
+        self.append(row)
+        self.__index += 1
+
+        if item.id in self.__expanded:
+            self.__depth += 1
+            for item in self.get_children(item):
+                self._fill_branch(item)
+            self.__depth -= 1
+
     def display_element(self, item, member):
         
         entry = container = Element()
@@ -169,8 +187,8 @@ class TreeContentView(ContentTable, ContentView):
         # hack, but all known alternatives aren't any better, and at least this
         # allows indentation style to be kept on a style sheet, where it
         # belongs.
-        if self.__depth > 1:
-            for i in range(self.__depth - 1):
+        if self.__depth:
+            for i in range(self.__depth):
                 nested_container = Element()
                 nested_container.add_class("depth_level")
                 container.append(nested_container)

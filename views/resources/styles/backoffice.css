@@ -539,3 +539,19 @@ a img {
     font-weight: bold;
 }
 
+/* Tree content view
+-----------------------------------------------------------------------------*/
+
+.TreeContentView .expander {
+    margin-right: 0.3em;
+}
+
+.TreeContentView .expander img {
+    vertical-align: middle;
+}
+
+.TreeContentView .depth_level {
+    padding-left: 2em;
+}
+
+
