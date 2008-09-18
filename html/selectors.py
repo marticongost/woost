@@ -11,6 +11,7 @@ from magicbullet.translations import translate
 from magicbullet.schema import Number
 from magicbullet.html import Element
 from magicbullet.html.checkbox import CheckBox
+from magicbullet.controllers.viewstate import view_state
 
 class Selector(Element):
 
@@ -118,13 +119,29 @@ class DropdownSelector(Selector):
 class RadioSelector(Selector):
 
     def create_entry(self, value, label, selected):
-        
         entry = Element("input")
         entry["type"] = "radio"
         entry["value"] = value
         entry["selected"] = selected        
         entry["name"] = self.name
         entry.append(label)
+        return entry
+
+
+class LinkSelector(Selector):
+
+    def create_entry(self, value, label, selected):
+        
+        entry = Element()
+
+        if selected:
+            entry.add_class("selected")
+
+        link = Element("a")
+        link["href"] = "?" + view_state(**{self.name: value})
+        link.append(label)
+        entry.append(link)
+
         return entry
 
 
