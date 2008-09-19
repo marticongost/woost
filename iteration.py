@@ -36,3 +36,21 @@ def last(collection, **kwargs):
 
     return item
 
+def is_empty(collection):
+    """Indicates if the given iterable object contains at least one item. Note
+    that calling this function on an iterator will consume its first item.
+
+    @param collection: The iterable object to be tested.
+    @type collection: iterable
+
+    @return: True if the object contains at least one item, False if it is
+        empty.
+    @rtype: bool
+    """
+    try:
+        iter(collection).next()
+    except StopIteration:
+        return True
+    else:
+        return False
+
