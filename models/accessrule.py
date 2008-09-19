@@ -83,28 +83,18 @@ class AccessRule(Item):
         @rtype: bool
         """       
         # TODO: Document the matches_*** protocol
-        print "Testing rule #" + str(self.id)
 
         for key, context_value in context.iteritems():
-
-            print "Key:", key, \
-                "| Rule value:", getattr(self, key, "None"), \
-                "| Context value:", context_value, \
-                "| Result:",
 
             test = getattr(self, "matches_" + key, None)
 
             if test:
                 if not test(context_value):
-                    print "Failed"
                     return False
             else:
                 rule_value = getattr(self, key, None)
                 if rule_value is not None and rule_value != context_value:
-                    print "Failed"
                     return False
-
-            print "Passed"
            
         return True
 
