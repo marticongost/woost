@@ -200,7 +200,8 @@ class EntityClass(type, schema.Schema):
         setattr(cls, member.name, descriptor)
          
         # Instrument relations
-        if getattr(member, "bidirectional", False):
+        if isinstance(member, schema.Collection) \
+        and getattr(member, "bidirectional", False):
             
             def instrument_collection(obj, member, value):
                 if value is not None:
@@ -386,10 +387,13 @@ class Entity(Persistent):
             setattr(self, name, value)
  
     def __repr__(self):
+        
         if self.__class__.indexed:
-            return "%s #%d" % (self.__class__.__name__, self.id)
-        else:
-            return self.__class__.__name__ + " instance"
+            id = getattr(self, "id", None)
+            if id is not None:
+                return "%s #%d" % (self.__class__.__name__, self.id)
+        
+        return self.__class__.__name__ + " instance"
 
     def _update_index(self, member, language, previous_value, new_value):
 
@@ -512,14 +516,12 @@ class MemberDescriptor(object):
             return getattr(translation, self.__priv_key)
 
     def __set__(self, instance, value):        
-        self._setter(
-            instance,
-            self.normalization(instance, self.member, value)
-        )
+        self._setter(instance, value)
 
     def _set_value(self, instance, value):
         
         previous_value = getattr(instance, self.__priv_key, None)
+        value = self.normalization(instance, self.member, value)
         setattr(instance, self.__priv_key, value)
 
         if self.member.indexed:
@@ -538,6 +540,7 @@ class MemberDescriptor(object):
             translation = instance._new_translation(language)
 
         previous_value = getattr(translation, self.__priv_key, None)
+        value = self.normalization(instance, self.member, value)
         setattr(translation, self.__priv_key, value)
 
         if self.member.indexed:

@@ -7,6 +7,7 @@
 @since:			September 2008
 """
 from threading import local
+from persistent import Persistent
 from magicbullet.modeling import (
     getter,
     InstrumentedList,
@@ -42,16 +43,42 @@ def unrelate(obj, related_obj, member):
         _thread_data.member = None
 
 
-class RelationCollection(object):
+class RelationCollection(Persistent):
 
     owner = None
     member = None
+    __member_name = None
+    _v_member = None
+
+    def _get_member(self):
+        if self._v_member is None \
+        and self.__member_name \
+        and self.owner:
+            self._v_member = self.owner.__class__[self.__member_name]
+
+        return self._v_member
+
+    def _set_member(self, member):
+
+        if isinstance(member, basestring):
+            self.__member_name = member
+            self._v_member = None
+        else:
+            self.__member_name = member.name
+            self._v_member = member
+
+    member = property(_get_member, _set_member, doc = """
+        Gets or sets the schema member that the collection represents.
+        @type: L{Collection<magicbullet.schema.schemacollections.Collection>}
+        """)
 
     def item_added(self, item):
         relate(item, self.owner, self.member.related_end)
+        self._p_changed = True
         
-    def item_removed(self, item):        
-        unrelate(item, self.owner, self.member.related_end)            
+    def item_removed(self, item):
+        unrelate(item, self.owner, self.member.related_end)
+        self._p_changed = True
 
 
 class RelationList(RelationCollection, InstrumentedList):
@@ -76,7 +103,7 @@ class RelationDict(RelationCollection, InstrumentedDict):
 
     def get_item_key(self, item):
         raise TypeError("Don't know how to obtain a key from %s; "
-            "perhaps you should override the get_item_key() method?"
+            "the collection hasn't overriden its get_item_key() method."
             % item)
 
     def add(self, item):
