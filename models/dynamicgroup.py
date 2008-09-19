@@ -8,7 +8,7 @@
 """
 from magicbullet import schema
 from magicbullet.models import Item
-from magicbullet.persistence import Query
+from magicbullet.persistence import Entity, Query
 
 class DynamicGroup(Item):
 
@@ -24,5 +24,6 @@ class DynamicGroup(Item):
     query = schema.Reference(type = Query)
 
     def __translate__(self, language, **kwargs):
-        return self.get("title", language)
+        return self.get("title", language) \
+            or Entity.__translate__(self, language, **kwargs)
 

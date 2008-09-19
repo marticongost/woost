@@ -16,6 +16,7 @@ from magicbullet.pkgutils import get_full_name
 from magicbullet import schema
 from magicbullet.schema.exceptions import ValidationError
 from magicbullet.language import require_content_language
+from magicbullet.translations import translate
 from magicbullet.persistence.datastore import datastore
 from magicbullet.persistence.incremental_id import incremental_id
 from magicbullet.persistence.index import Index
@@ -394,6 +395,12 @@ class Entity(Persistent):
                 return "%s #%d" % (self.__class__.__name__, self.id)
         
         return self.__class__.__name__ + " instance"
+
+    def __translate__(self, language, **kwargs):
+        return (
+            translate(self.__class__.__name__, language, **kwargs)
+            + " #" + str(self.id)
+        )
 
     def _update_index(self, member, language, previous_value, new_value):
 

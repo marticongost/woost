@@ -7,6 +7,7 @@
 @since:			August 2008
 """
 from magicbullet import schema
+from magicbullet.persistence import Entity
 from magicbullet.models import Item
 
 class Role(Item):
@@ -21,5 +22,6 @@ class Role(Item):
     anonymous = False
 
     def __translate__(self, language, **kwargs):
-        return self.get("title", language)
+        return self.get("title", language) \
+            or Entity.__translate__(self, language, **kwargs)
 
