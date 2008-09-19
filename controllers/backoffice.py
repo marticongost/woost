@@ -136,6 +136,7 @@ class BackOffice(Document):
         form_schema = form_adapter.export_schema(content_type)
         form_schema.name = "edit_form"
         form_data = {}
+        saved = False
 
         # Form submitted: update the edited item with the provided form data
         if "save" in request.params:
@@ -154,8 +155,7 @@ class BackOffice(Document):
         # First load: dump the edited item's data unto the form
         elif item:
             form_adapter.export_object(item, form_data, content_type)
-            saved = False
-        
+                
         return cms.rendering.render("back_office_edit",
             requested_item = self,
             sections = self.get_item_sections(item) if item else [],
