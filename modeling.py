@@ -78,7 +78,10 @@ class DictWrapper(object):
         return self._items.__hash__(other)
 
     def __iter__(self):
-        return self._items.__iter__()
+        try:
+            return self._items.__iter__()
+        except AttributeError:
+            return (item for item in self._items)
 
     def __le__(self, other):
         return self._items.__le__(other)
@@ -166,7 +169,10 @@ class ListWrapper(object):
         return self._items.__hash__()
 
     def __iter__(self):
-        return self._items.__iter__()
+        try:
+            return self._items.__iter__()
+        except AttributeError:
+            return (item for item in self._items)
 
     def __le__(self, other):
         return self._items.__le__(other)
@@ -236,7 +242,10 @@ class SetWrapper(object):
         return self._items.__hash__()
 
     def __iter__(self):
-        return self._items.__iter__()
+        try:
+            return self._items.__iter__()
+        except AttributeError:
+            return (item for item in self._items)
 
     def __le__(self, other):
         return self._items.__le__(other)
