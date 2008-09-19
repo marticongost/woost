@@ -11,6 +11,7 @@ from inspect import getmro
 from persistent import Persistent
 from persistent.mapping import PersistentMapping
 import cherrypy
+from magicbullet.iteration import is_empty
 from magicbullet.typemapping import TypeMapping
 from magicbullet.html import Element
 from magicbullet.html.table import MULTIPLE_SELECTION
@@ -80,6 +81,9 @@ class ContentView(object):
 
 class TableContentView(ContentTable, ContentView):
 
+    sortable = True
+    selection_mode = MULTIPLE_SELECTION
+
     def _ready(self):
 
         self.base_url = self.cms.uri(self.requested_item.path)
@@ -87,7 +91,6 @@ class TableContentView(ContentTable, ContentView):
         self.order = self.user_collection.order
         self["name"] = "content"
         self.translations = self.languages
-        self.selection_mode = MULTIPLE_SELECTION
         
         is_allowed = self.cms.authorization.allows
 
@@ -115,12 +118,14 @@ class TreeContentView(ContentTable, ContentView):
     }
 
     children_member = "children"
+    sortable = False
+    selection_mode = MULTIPLE_SELECTION
 
     def get_children(self, item):
         is_allowed = self.cms.authorization.allows
-        return [child
+        return (child
                 for child in item.get(self.children_member)
-                if is_allowed(action = "read", target_instance = child)]
+                if is_allowed(action = "read", target_instance = child))
 
     def _get_expanded(self):
         
@@ -140,7 +145,6 @@ class TreeContentView(ContentTable, ContentView):
         self.schema = self.user_collection.schema
         self["name"] = "content"
         self.translations = self.languages
-        self.selection_mode = MULTIPLE_SELECTION
         
         is_allowed = self.cms.authorization.allows
 
@@ -193,27 +197,32 @@ class TreeContentView(ContentTable, ContentView):
                 nested_container.add_class("depth_level")
                 container.append(nested_container)
                 container = nested_container
-        
-        is_expanded = item.id in self.__expanded
-        
-        if is_expanded:
-            state = "expanded"
-            expander_ids = (id for id in self.__expanded if id != item.id)
+ 
+        if is_empty(self.get_children(item)):
+            entry.add_class("leaf")
+
         else:
-            state = "collapsed"
-            expander_ids = chain((id for id in self.__expanded), [item.id])
+            is_expanded = item.id in self.__expanded
             
-        expanded_param = ",".join(str(id) for id in expander_ids)
-        
-        expander = Element("a")
-        expander["href"] = "?" + view_state(expanded = expanded_param)
-        expander.add_class("expander")        
-        expander.append(
-            Element("img",
-                src = self.cms.uri("resources", "images", state + ".png")
+            if is_expanded:
+                state = "expanded"
+                expander_ids = (id for id in self.__expanded if id != item.id)
+            else:
+                state = "collapsed"
+                expander_ids = chain((id for id in self.__expanded), [item.id])
+                
+            expanded_param = ",".join(str(id) for id in expander_ids)
+            entry.add_class(state)
+            
+            expander = Element("a")
+            expander["href"] = "?" + view_state(expanded = expanded_param)
+            expander.add_class("expander")        
+            expander.append(
+                Element("img",
+                    src = self.cms.uri("resources", "images", state + ".png")
+                )
             )
-        )
-        container.append(expander)
+            container.append(expander)
 
         label = ContentTable.display_element(self, item, member)
         container.append(label)
