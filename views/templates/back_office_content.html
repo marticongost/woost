@@ -99,6 +99,9 @@ from magicbullet.views.contenttable import ContentTable
                             def get_item_value(self, item):
                                 return item if isinstance(item, basestring) \
                                     else item.name
+                            
+                            def get_item_label(self, member):
+                                return translate(member)
 
                         members_selector = MembersSelector()
                         members_selector.name = "members"
