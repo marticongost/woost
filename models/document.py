@@ -9,6 +9,7 @@
 from datetime import datetime
 import cherrypy
 from magicbullet import schema
+from magicbullet.persistence import Entity
 from magicbullet.models import Item
 
 def exposed(func):
@@ -54,7 +55,8 @@ class Document(Item):
     )
 
     def __translate__(self, language, **kwargs):
-        return self.get("title", language)
+        return self.get("title", language) \
+            or Entity.__translate__(self, language, **kwargs)
 
     # Publication state
     #--------------------------------------------------------------------------    
@@ -148,11 +150,17 @@ class Document(Item):
 
     # Hierarchy
     #------------------------------------------------------------------------------    
-    parent = schema.Reference(type = "magicbullet.models.Document")
+    parent = schema.Reference(
+        type = "magicbullet.models.Document",
+        bidirectional = True,
+        related_key = "children",
+        listed_by_default = False
+    )
  
     children = schema.Collection(
         items = "magicbullet.models.Document",
-        ordered = True
+        bidirectional = True,
+        related_key = "parent"
     )
 
     hidden = schema.Boolean(
