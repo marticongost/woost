@@ -160,6 +160,33 @@ translations.define("BackOfficeContentView.element",
     en = u"Item"
 )
 
+translations.define("Item count",
+    ca = lambda t, k, page_range, item_count: \
+        u"Mostrant resultats <strong>%d-%d</strong> de %d" % (
+            page_range[0], page_range[1], item_count
+        ),
+    es = lambda t, k, page_range, item_count: \
+        u"Mostrando resultados <strong>%d-%d</strong> de %d" % (
+            page_range[0], page_range[1], item_count
+        ),
+    en = lambda t, k, page_range, item_count: \
+        u"Showing results <strong>%d-%d</strong> of %d" % (
+            page_range[0], page_range[1], item_count
+        )
+)
+
+translations.define("Results per page",
+    ca = u"Resultats per pàgina",
+    es = u"Resultados por página",
+    en = u"Results per page"
+)
+
+translations.define("No results",
+    ca = u"La vista activa no conté cap element.",
+    es = u"La vista activa no contiene ningún elemento.",
+    en = u"The current view has no matching items."
+)
+
 # Content views
 #------------------------------------------------------------------------------
 translations.define("View as",

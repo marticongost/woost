@@ -32,11 +32,7 @@ from magicbullet.views.contenttable import ContentTable
                     def create_label(self, item):
                         label = ContentTypeTree.create_label(self, item)
                         label.tag = "a"
-                        label["href"] = "?" + view_state(
-                            type = item.__name__,
-                            page = None,
-                            members = None
-                        )
+                        label["href"] = "?type=" + item.__name__
                         return label
 
         content_type_path = BackOfficeContentTypePath()
@@ -46,12 +42,38 @@ from magicbullet.views.contenttable import ContentTable
         ${Markup(content_type_path.render())}
 
         <?python
-        pager = Pager()
-        pager.page = collection.page
-        pager.page_size = collection.page_size
-        pager.item_count = len(collection.subset())
+        page_subset = collection.page_subset()
+        page_subset_count = len(page_subset)
+        subset_count = len(collection.subset())
         ?>
-        ${Markup(pager.render())}
+
+        <py:if test="collection.allow_paging">
+            <?python
+            pager = Pager()
+            pager.page = collection.page
+            pager.page_size = collection.page_size
+            pager.item_count = subset_count
+            ?>
+            ${Markup(pager.render())}
+
+            <div id="page_size" py:if="subset_count">
+                ${translate("Results per page")}
+                <input
+                    type="text"
+                    name="${collection.get_param_name('page_size')}"
+                    value="${collection.page_size}"/>
+            </div>
+
+            <div id="item_count" py:if="subset_count">
+                ${Markup(translate("Item count",
+                    page_range = (
+                        page_subset.range[0] + 1,
+                        page_subset.range[1] + 1
+                    ),
+                    item_count = subset_count
+                 ))}
+             </div>
+        </py:if>
 
         <form method="get" action="${cms.uri(requested_item.path)}">
 
@@ -152,15 +174,28 @@ from magicbullet.views.contenttable import ContentTable
                     </div>
                 </div>
             </div>
-            <?python
-            viewer = content_view()
-            viewer.cms = cms
-            viewer.requested_item = requested_item
-            viewer.site = site
-            viewer.user_collection = collection
-            viewer.languages = content_languages
-            ?>
-            ${Markup(viewer.render())}
+
+            <py:if test="page_subset_count">
+                <div id="selection_options">
+                    Select:
+                    <a href="#">All</a>,
+                    <a href="#">None</a>
+                </div>
+
+                <?python
+                viewer = content_view()
+                viewer.cms = cms
+                viewer.requested_item = requested_item
+                viewer.site = site
+                viewer.user_collection = collection
+                viewer.languages = content_languages
+                ?>
+                ${Markup(viewer.render())}
+            </py:if>
+            
+            <div id="no_results" py:if="not page_subset_count">
+                ${translate("No results")}                
+            </div>
         </form>
     </div>
 

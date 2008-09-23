@@ -6,12 +6,14 @@
 @organization:	Whads/Accent SL
 @since:			September 2008
 """
-from magicbullet.modeling import ListWrapper, SetWrapper, getter
+import cherrypy
+from magicbullet.modeling import ListWrapper, SetWrapper, getter, empty_set
 from magicbullet.persistence.query import Query
 from magicbullet.schema.expressions import (
     PositiveExpression,
     NegativeExpression
 )
+from magicbullet.controllers.viewstate import get_persistent_param
 
 
 class UserCollection(object):
@@ -26,6 +28,10 @@ class UserCollection(object):
 
     page = 0
     page_size = 15
+
+    persistence_prefix = None
+    persistence_duration = -1
+    persistent_params = empty_set
 
     def __init__(self, entity_type, schema = None, public_members = None):
         
@@ -92,35 +98,54 @@ class UserCollection(object):
         
         return subset
 
-    def read(self, params):
+    def read(self):
         
         if self.allow_paging:
-            self._read_paging(params)
+            self._read_paging()
 
         if self.allow_sorting:
-            self._read_sorting(params)
+            self._read_sorting()
 
         if self.allow_filters:
-            self._read_filters(params)
+            self._read_filters()
 
         if self.allow_member_selection:
-            self._read_member_selection(params)
+            self._read_member_selection()
 
-    def _read_paging(self, params):
+    def _get_param(self, name):
 
-        page_param = params.get(self._get_qualified_name("page"))
+        full_name = self.get_param_name(name)
+        
+        if name in self.persistent_params:
+
+            if self.persistence_prefix:
+                cookie_name = self.persistence_prefix + "-" + full_name
+            else:
+                cookie_name = full_name
+            
+            return get_persistent_param(
+                full_name,
+                cookie_name = cookie_name,
+                cookie_duration = self.persistence_duration                
+            )
+        else:
+            return cherrypy.request.params.get(full_name)
+
+    def _read_paging(self):
+
+        page_param = self._get_param("page")
         
         if page_param:
             self.page = int(page_param)
 
-        page_size_param = params.get(self._get_qualified_name("page_size"))
+        page_size_param = self._get_param("page_size")
 
         if page_size_param:
             self.page_size = int(page_size_param)
 
-    def _read_sorting(self, params):
+    def _read_sorting(self):
 
-        order_param = params.get(self._get_qualified_name("order"))
+        order_param = self._get_param("order")
 
         if order_param:
 
@@ -148,13 +173,13 @@ class UserCollection(object):
                 if member:
                     self.__order.append(sign(member))
 
-    def _read_filters(self, params):
+    def _read_filters(self):
         # TODO
         pass
 
-    def _read_member_selection(self, params):
+    def _read_member_selection(self):
         
-        members_param = params.get(self._get_qualified_name("members"))
+        members_param = self._get_param("members")
 
         if members_param:
 
@@ -168,7 +193,7 @@ class UserCollection(object):
                 if self._get_member(key):
                     members.add(key)
 
-    def _get_qualified_name(self, param):
+    def get_param_name(self, param):
         if self.name:
             return self.name + "-" + param
         else:

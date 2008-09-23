@@ -145,6 +145,12 @@ a img {
 	background-image: url(delete.png);
 }
 
+#selection_options {
+    font-size: 85%;
+    margin: 1em;
+    margin-bottom: 0.6em;
+}
+
 .Table {
 	border-collapse: collapse;
     width: 100%;
@@ -507,10 +513,21 @@ a img {
 
 /* Pager
 -----------------------------------------------------------------------------*/
-.Pager {
+
+#item_count, #page_size, .Pager {
     float: right;
     font-size: 85%;
     margin-bottom: 0.75em;
+    margin-left: 2em;
+}
+
+#item_count, .Pager {
+    padding-top: 0.3em;
+}
+
+#page_size input {
+    font-size: inherit;
+    width: 2.5em;
 }
 
 .Pager * {
@@ -531,12 +548,18 @@ a img {
     margin-right: 0.8em;
 }
 
-.Pager .page_links a {
+.Pager .page_links a + a {
     margin-left: 0.5em;
 }
 
 .Pager .page_links a.selected {
     font-weight: bold;
+}
+
+#no_results {
+    margin-top: 2em;
+    border: 1px dotted rgb(200,160,120);
+    padding: 0.5em;
 }
 
 /* Tree content view

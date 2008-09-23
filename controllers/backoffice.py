@@ -8,11 +8,12 @@
 """
 import cherrypy
 from itertools import chain
+from magicbullet import settings
 from magicbullet.language import get_content_language
 from magicbullet.schema import Member, Adapter, Collection
 from magicbullet.models import Item, Document
 from magicbullet.controllers import exposed
-from magicbullet.controllers.viewstate import view_state
+from magicbullet.controllers.viewstate import view_state, get_persistent_param
 from magicbullet.controllers.usercollection import UserCollection
 from magicbullet.controllers.contentviews import (
     ContentViewsRegistry,
@@ -30,21 +31,37 @@ class BackOffice(Document):
     content_views = ContentViewsRegistry()
     content_views.add(Item, TableContentView, True)
     content_views.add(Document, TreeContentView, True)
+
+    settings_duration = getattr(
+        settings,
+        "back_office_settings_duration",
+        -1
+    )
         
     def _get_content_type(self, default = None):
 
-        requested_type = cherrypy.request.params.get("type")
+        type_param = get_persistent_param(
+            "type",
+            cookie_duration = self.settings_duration
+        )
 
-        if requested_type is None:
+        if type_param is None:
             return default
         else:
             for entity in chain([Item], Item.derived_entities()):
-                if entity.__name__ == requested_type:
+                if entity.__name__ == type_param:
                     return entity
 
-    def _get_content_languages(self):
+    def _get_content_type_param(self, content_type, param_name):                        
+        return get_persistent_param(
+            param_name,
+            cookie_name = content_type.__name__ + "-" + param_name,
+            cookie_duration = self.settings_duration
+        )
 
-        param = cherrypy.request.params.get("language")
+    def _get_content_languages(self, content_type):
+
+        param = self._get_content_type_param(content_type, "language")
 
         if param is not None:
             if isinstance(param, (list, tuple, set)):
@@ -57,7 +74,8 @@ class BackOffice(Document):
     def _get_content_views(self, content_type):
 
         content_views = self.content_views.get(content_type)
-        content_view_param = cherrypy.request.params.get("content_view")
+        content_view_param = \
+            self._get_content_type_param(content_type, "content_view")
 
         if content_view_param is not None:
             for content_view in content_views:
@@ -85,7 +103,7 @@ class BackOffice(Document):
     def content(self, cms, request):
 
         content_type = self._get_content_type(Item)
-        content_languages = self._get_content_languages()
+        content_languages = self._get_content_languages(content_type)
         content_views, active_content_view = \
             self._get_content_views(content_type)
         
@@ -96,6 +114,9 @@ class BackOffice(Document):
         content_schema.members_order.insert(0, "element")
 
         collection = UserCollection(content_type, content_schema)
+        collection.persistence_prefix = content_type.__name__
+        collection.persistence_duration = self.settings_duration
+        collection.persistent_params = set(("members", "order"))
 
         # Initialize the content collection with the parameters set by the
         # current content view (this allows views to disable sorting, filters,
@@ -107,7 +128,7 @@ class BackOffice(Document):
             for key, value in content_view_collection_params.iteritems():
                 setattr(collection, key, value)
 
-        collection.read(request.params)
+        collection.read()
         
         return cms.rendering.render("back_office_content",
             requested_item = self,
@@ -214,6 +235,4 @@ class BackOffice(Document):
             for member in content_type.members().itervalues()
             if isinstance(member, Collection)
         ])
-
-
 

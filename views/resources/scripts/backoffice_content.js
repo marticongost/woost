@@ -20,6 +20,11 @@ jQuery(function () {
         }
     }
 
+    // Hide checkboxes, but keep them around for form submission purposes
+    jQuery(".ContentTable .selection")
+        .css({width: 0})
+        .find("input").css({position: "absolute", left: "-1000px"});
+    
     jQuery(".ContentTable .selection input")
         .each(highlightSelection)
         .change(highlightSelection);

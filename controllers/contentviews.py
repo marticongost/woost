@@ -111,7 +111,7 @@ class TableContentView(ContentTable, ContentView):
 
 class TreeContentView(ContentTable, ContentView):
 
-    user_collection_params = {
+    collection_params = {
         "allow_sorting": False,
         "allow_filters": False,
         "allow_paging": False
