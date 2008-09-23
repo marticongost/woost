@@ -25,8 +25,8 @@ from magicbullet.persistence import relations
 default = object()
 
 # Default collection types
-schema.Collection.default = schema.DynamicDefault(PersistentList)
-schema.Mapping.default = schema.DynamicDefault(PersistentMapping)
+schema.Collection.default_type = PersistentList
+schema.Mapping.default_type = PersistentMapping
 
 # Translation
 schema.Member.translated = False
@@ -40,7 +40,6 @@ schema.Member.index_type = OOBTree
 schema.Integer.index_type = IOBTree
 schema.Member.primary = False
 schema.Member.unique = False
-schema.Schema.indexed = True
 schema.Schema.primary_member = None
 
 def _get_index(self):
@@ -79,11 +78,6 @@ schema.Member.index = property(_get_index, _set_index, doc = """
     Gets or sets the index for the members.
     """)
 
-# Versioning
-schema.Schema.versioned = True
-schema.Member.revision_state = None
-schema.Member.revision_state_source = None
-
 # Create a stub for the Entity class
 Entity = None
 
@@ -115,10 +109,6 @@ class EntityClass(type, schema.Schema):
             if Entity and base is not Entity and isinstance(base, EntityClass):
                 cls.inherit(base)
 
-        # Versioning schema
-        if Entity and cls.versioned:
-            cls._create_revision_state_schema()
-
         # Fill the schema with members declared as class attributes
         for name, member in members.iteritems():
             if isinstance(member, schema.Member):
@@ -140,7 +130,8 @@ class EntityClass(type, schema.Schema):
                     unique = True,
                     required = True,
                     indexed = True,
-                    default = schema.DynamicDefault(incremental_id))
+                    default = schema.DynamicDefault(incremental_id)
+                )
                 cls.add_member(cls.id)
 
         # Seal the schema, so that no further modification is possible
@@ -250,15 +241,6 @@ class EntityClass(type, schema.Schema):
             member.translation.translation_source = member
             cls.translation.add_member(member.translation)
 
-        if cls.revision_state:
-
-            # Create a versioned copy of the member, and add it to the
-            # entity's revision state schema
-            member.revision_state = member.copy()
-            member.revision_state.revision_state_source = member
-            member.revision_state.unique = False
-            cls.revision_state.add_member(member.revision_state)
-
         # An indexed member gets its own btree
         if member.indexed and member.index_key is None:
             member.index_key = cls.__full_name + "." + member.name
@@ -283,7 +265,7 @@ class EntityClass(type, schema.Schema):
         cls.translation = EntityClass(
             cls.name + "Translation",
             translation_bases,
-            {"indexed": False, "versioned": False}
+            {"indexed": False}
         )
 
         cls.translation.translation_source = cls
@@ -312,50 +294,13 @@ class EntityClass(type, schema.Schema):
 
         cls.add_member(schema.Mapping(
             name = "translations",
+            required = True,
             keys = schema.String(
                 required = True,
                 format = "a-z{2}"
             ),
             values = cls.translation
         ))
-
-    def _create_revision_state_schema(cls):
-        
-        bases = tuple(schema.revision_state
-                      for schema in cls.bases
-                      if schema.revision_state)
-
-        is_versioning_root = not bases
-
-        if is_versioning_root:
-            from magicbullet.persistence.revisions import RevisionState
-            bases = (RevisionState,)
-
-        cls.revision_state = EntityClass(
-            cls.name + "RevisionState", 
-            bases,
-            {"indexed": False}
-        )
-
-        cls.revision_state.revision_state_source = cls
-
-        # Make the revision state class available at the module level, so its
-        # instances can be pickled (required by ZODB's persistence machinery)
-        setattr(
-            sys.modules[cls.__module__],
-            cls.revision_state.name,
-            cls.revision_state)
-
-        cls.revision_state.__module__ = cls.__module__
-        
-        cls.revision_state._sealed = False
-
-        if is_versioning_root:
-            cls.revision_state.add_member(schema.Collection(
-                name = "revisions",
-                required = True,
-                items = "magicbullet.persistence.Revision"
-            ))
 
     def derived_entities(cls, recursive = True):
         for entity in cls.__derived_entities:
@@ -369,15 +314,19 @@ class Entity(Persistent):
 
     __metaclass__ = EntityClass
 
+    indexed = True
+
     def __init__(self, **values):
 
         Persistent.__init__(self)
+
+        self._v_initializing = True
 
         # Set the value of all object members, either from a parameter or from
         # a default value definition
         for name, member in self.__class__.members().iteritems():
             value = values.get(name, default)
-            
+
             if value is default:
                 
                 if member.translated:
@@ -387,6 +336,8 @@ class Entity(Persistent):
 
             setattr(self, name, value)
  
+        self._v_initializing = False
+
     def __repr__(self):
         
         if self.__class__.indexed:
@@ -489,6 +440,9 @@ class Entity(Persistent):
         self.translations[language] = translation
         return translation
 
+    def on_member_set(self, member, value, language):
+        return value
+
 
 class MemberDescriptor(object):
 
@@ -529,6 +483,7 @@ class MemberDescriptor(object):
         
         previous_value = getattr(instance, self.__priv_key, None)
         value = self.normalization(instance, self.member, value)
+        value = instance.on_member_set(self.member, value, None)
         setattr(instance, self.__priv_key, value)
 
         if self.member.indexed:
@@ -548,6 +503,7 @@ class MemberDescriptor(object):
 
         previous_value = getattr(translation, self.__priv_key, None)
         value = self.normalization(instance, self.member, value)
+        value = instance.on_member_set(self.member, value, language)
         setattr(translation, self.__priv_key, value)
 
         if self.member.indexed:

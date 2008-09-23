@@ -20,7 +20,8 @@ class Group(Item):
     )
 
     group_members = schema.Collection(
-        items = "magicbullet.models.Item"
+        items = "magicbullet.models.Item",
+        bidirectional = True
     )
 
     def __translate__(self, language, **kwargs):

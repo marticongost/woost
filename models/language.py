@@ -26,7 +26,7 @@ class Language(Item):
         unique = True,
         max = 64
     )
-        
+    
     fallback_languages = schema.Collection(
         items = "magicbullet.models.Language"
     )

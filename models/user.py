@@ -21,14 +21,6 @@ class User(Item):
         # TODO: format
     )
 
-    authored_items = schema.Collection(
-        items = "magicbullet.models.Item"
-    )
-
-    owned_items = schema.Collection(
-        items = "magicbullet.models.Item"
-    )
-
     def __translate__(self, language, **kwargs):
         return self.email
 

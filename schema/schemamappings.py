@@ -24,6 +24,7 @@ class Mapping(Collection):
     """
     keys = None
     values = None
+    default_type = dict
 
     def items_validation_rule(self, value, context):
 

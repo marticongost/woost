@@ -8,6 +8,8 @@
 """
 from threading import local
 from persistent import Persistent
+from persistent.list import PersistentList
+from persistent.mapping import PersistentMapping
 from magicbullet.modeling import (
     getter,
     InstrumentedList,
@@ -20,15 +22,33 @@ _thread_data = local()
 
 def relate(obj, related_obj, member):
     
-    if getattr(_thread_data, "member", None) is not member.related_end:
-        _thread_data.member = member
+    if not getattr(_thread_data, "relating", False):
+        try:
+            _thread_data.relating = True
 
-        if isinstance(member, schema.Reference):
-            setattr(obj, member.name, related_obj)
-        else:
-            getattr(obj, member.name).add(related_obj)
+            if isinstance(member, schema.Reference):
+                setattr(obj, member.name, related_obj)
+            else:
+                collection = getattr(obj, member.name)                
+                
+                if collection is None:
+                    
+                    # Try to create a new, empty collection automatically
+                    collection_type = member.type or member.default_type
 
-        _thread_data.member = None
+                    if collection_type:
+                        if member.name == "changes":
+                            print "*" * 80
+                        setattr(obj, member.name, collection_type())
+                        collection = getattr(obj, member.name)
+                    else:
+                        raise ValueError("Error relating %s to %s on %s; "
+                            "the target collection is undefined"
+                            % (obj, related_obj, member))
+
+                collection.add(related_obj)
+        finally:
+            _thread_data.relating = False
 
 def unrelate(obj, related_obj, member):
     
@@ -102,9 +122,12 @@ class RelationDict(RelationCollection, InstrumentedDict):
         InstrumentedDict.__init__(self, items)
 
     def get_item_key(self, item):
-        raise TypeError("Don't know how to obtain a key from %s; "
-            "the collection hasn't overriden its get_item_key() method."
-            % item)
+        if self.member.get_item_key:
+            return self.member.get_item_key(self, item)
+        else:
+            raise TypeError("Don't know how to obtain a key from %s; "
+                "the collection hasn't overriden its get_item_key() method."
+                % item)
 
     def add(self, item):
         self[self.get_item_key(item)] = item
@@ -147,6 +170,8 @@ def _get_related_end(self):
 def _get_related_type(member):
     if isinstance(member, schema.Reference):
         return member.type
+    elif isinstance(member, schema.Mapping):
+        return member.values.type
     else:
         return member.items.type
 
@@ -159,10 +184,13 @@ schema.Collection.bidirectional = False
 schema.Collection._related_end = None
 schema.Collection.related_end = getter(_get_related_end)
 schema.Collection.related_key = None
+schema.Collection.type = PersistentList
 
+schema.Mapping.get_item_key = None
 schema.Mapping.bidirectional_keys = False
 schema.Mapping.bidirectional_values = False
 schema.Mapping.bidirectional = getter(
     lambda self: self.bidirectional_keys or self.bidirectional_values
 )
+schema.Mapping.type = PersistentMapping
 

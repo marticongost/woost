@@ -17,3 +17,8 @@ class File(Document):
 
     translation_file_path = schema.String(translated = True)
 
+    documents = schema.Collection(
+        items = "magicbullet.models.Document",
+        bidirectional = True
+    )
+

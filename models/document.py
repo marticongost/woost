@@ -132,20 +132,24 @@ class Document(Item):
 
         return cms.rendering.render(template.identifier, requested_item = self)
 
-    resources = schema.Collection(
-        items = "magicbullet.models.Resource",
-        ordered = True
-    )
-
     # Drafts
     #--------------------------------------------------------------------------
     draft_source = schema.Reference(type = "magicbullet.models.Document")
 
-    drafts = schema.Collection(items = "magicbullet.models.Document")
+    drafts = schema.Collection(
+        items = "magicbullet.models.Document"
+    )
+
+    # Resources and attachments
+    #------------------------------------------------------------------------------    
+    resources = schema.Collection(
+        items = "magicbullet.models.Resource",
+        bidirectional = True
+    )
 
     attachments = schema.Collection(
         items = "magicbullet.models.File",
-        ordered = True
+        bidirectional = True
     )
 
     # Hierarchy

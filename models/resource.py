@@ -25,6 +25,11 @@ class Resource(Item):
         required = True
     )
 
+    documents = schema.Collection(
+        items = "magicbullet.models.Document",
+        bidirectional = True
+    )
+
     def __translate__(self, language, **kwargs):
         return self.get("title", language) \
             or Entity.__translate__(self, language, **kwargs)

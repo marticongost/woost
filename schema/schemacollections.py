@@ -27,8 +27,10 @@ class Collection(Member):
         L{MinItemsError<exceptions.MinItemsError>} during validation.
     @type max: int
     """
+    required = True
     min = None
     max = None
+    default_type = list
 
     def __init__(self, doc = None, **kwargs):
         self.__items = None
@@ -62,10 +64,13 @@ class Collection(Member):
         """)
 
     def produce_default(self):
-        if self.default is None and self.type is not None:
-            return self.type()
-        else:
-            return Member.produce_default(self)
+        if self.default is None and self.required:
+            if self.type is not None:
+                return self.type()
+            elif self.default_type is not None:
+                return self.default_type()
+        
+        return Member.produce_default(self)
 
     def collection_validation_rule(self, value, context):
         """Validation rule for collections. Checks the L{min}, L{max} and

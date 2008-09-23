@@ -32,7 +32,8 @@ class Template(Item):
     )
     
     items = schema.Collection(
-        items = "magicbullet.models.Document"
+        items = "magicbullet.models.Document",
+        bidirectional = True
     )
 
     def __translate__(self, language, **kwargs):
