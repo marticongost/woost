@@ -42,6 +42,7 @@ from magicbullet.html import Element
                 tab = Element("a")
                 tab["id"] = section_name + "_tab"
                 tab["href"] = cms.uri(requested_item.path, section_name)
+                tab.add_class("tab")
 
                 if selected:
                     tab.add_class("selected")

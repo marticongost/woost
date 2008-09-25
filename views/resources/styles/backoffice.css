@@ -74,7 +74,7 @@ a img {
     height: 2.1em;
 }
 
-#navigation a {
+#navigation .tab {
     color: rgb(75,75,75);
     position: relative;
     top: -1px;
@@ -99,52 +99,19 @@ a img {
     background-color: white;
 }
 
+#back {
+    float: right;
+    margin-right: 1.1em;
+    margin-top: 0.1em;
+    background-image: url(../images/previous.png);
+    background-repeat: no-repeat;
+    padding-left: 1.8em;
+    font-size: 85%;
+}
+
 #body {
     clear: both;
     padding: 1em;
-}
-
-.PageTreeView ul {
-	padding-top: 1em;
-}
-
-.PageTreeView li {
-    list-style-type: none;	
-	padding-bottom: 1em;
-}
-
-.PageTreeView li .label {
-	font-weight: bold;
-}
-
-.PageTreeView .actions {
-	margin-top: 0.3em;
-}
-
-.PageTreeView .actions a {
-	padding-top: 0.2em;
-	padding-bottom: 0.2em;
-	font-size: 0.8em;
-	background-repeat: no-repeat;
-	background-position: 0 1px;
-	padding-left: 1.7em;
-	margin-right: 1.5em;
-}
-
-.PageTreeView .actions .new {
-	background-image: url(new.png);
-}
-
-.PageTreeView .actions .edit {
-	background-image: url(edit.png);
-}
-
-.PageTreeView .actions .reorder {
-	background-image: url(reorder.png);
-}
-
-.PageTreeView .actions .delete {
-	background-image: url(delete.png);
 }
 
 #selection_options {
@@ -152,6 +119,32 @@ a img {
     margin: 1em;
     margin-bottom: 0.6em;
 }
+
+/* Forms
+-----------------------------------------------------------------------------*/
+fieldset {
+    border: none;
+    margin: 0;
+    padding: 0;
+    padding-left: 1.5em;
+    padding-top: 0.5em;
+    margin-bottom: 1.5em;
+}
+
+fieldset legend {
+    position: relative;
+    font-weight: bold;
+    margin: 0;
+    padding: 0;
+    margin-left: -1.5em;
+}
+
+.buttons {
+    clear: both;
+}
+
+/* Tables
+-----------------------------------------------------------------------------*/
 
 .Table {
 	clear: both;
@@ -625,5 +618,26 @@ td.changes li.modify {
 
 td.changes li.delete {
     background-image: url(delete.png);
+}
+
+/* Edit form
+-----------------------------------------------------------------------------*/
+ 
+fieldset.properties, fieldset.relations {
+    float: left;
+}
+
+fieldset.relations {
+    margin-left: 6em;
+}
+
+fieldset.relations label {
+    margin-right: 2em;
+}
+
+.relation_count {
+    margin-left: 0.4em;
+    color: rgb(75,75,75);
+    font-size: 85%;
 }
 

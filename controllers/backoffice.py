@@ -26,7 +26,7 @@ class BackOffice(Document):
     
     default_section = "content"
     root_sections = ["content", "history"]
-    item_sections = ["edit", "history"]
+    item_sections = ["edit", "drafts", "history"]
 
     content_views = ContentViewsRegistry()
     content_views.add(Item, TableContentView, True)
@@ -118,7 +118,7 @@ class BackOffice(Document):
         
         form_adapter = self.get_form_adapter(content_type)
         form_schema = form_adapter.export_schema(content_type)
-        form_schema.name = "edit_form"
+        form_schema.name = "BackOfficeEditForm"
         form_data = {}
         saved = False
 
@@ -151,16 +151,8 @@ class BackOffice(Document):
             saved = saved)
     
     def get_item_sections(self, item):
+        return self.item_sections
         
-        sections = list(self.item_sections)
-
-        for member in item.__class__.members().itervalues():
-            if isinstance(member, Collection) \
-            and member.name not in ("changes", "translations"):
-                sections.insert(1, member)
-
-        return sections
-
     def _get_content_type(self, default = None):
 
         type_param = get_persistent_param(
@@ -218,14 +210,12 @@ class BackOffice(Document):
             "id",
             "author",
             "owner",
-            "draft_source"
+            "translations",
+            "changes"
         ])
 
-        adapter.exclude([
-            member.name
-            for member in content_type.members().itervalues()
-            if isinstance(member, Collection)
-        ])
+        if issubclass(content_type, Document):
+            adapter.exclude(["drafts", "draft_source"])
 
     def get_list_adapter(self, content_type):
         adapter = Adapter()

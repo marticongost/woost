@@ -44,28 +44,22 @@ translations.define("site_section",
     en = u"Web site"
 )
 
-translations.define("pages_section",
-    ca = u"Pàgines",
-    es = u"Páginas",
-    en = u"Pages"
-)
-
 translations.define("content_section",
     ca = u"Contingut",
     es = u"Contenido",
     en = u"Content"
 )
 
-translations.define("access_rules_section",
-    ca = u"Regles d'accés",
-    es = u"Reglas de acceso",
-    en = u"Access rules"
-)
-
 translations.define("edit_section",
     ca = u"Edició",
     es = u"Edición",
     en = u"Edit"
+)
+
+translations.define("drafts_section",
+    ca = u"Esborranys",
+    es = u"Borradores",
+    en = u"Drafts"
 )
 
 translations.define("history_section",
@@ -203,6 +197,26 @@ translations.define("TreeContentView",
     ca = u"Arbre",
     es = u"Árbol",
     en = u"Tree"
+)
+
+# Edit form
+#------------------------------------------------------------------------------
+translations.define("BackOfficeEditForm.translations",
+    ca = u"Traduccions",
+    es = u"Traducciones",
+    en = u"Translations"
+)
+
+translations.define("BackOfficeEditForm.properties",
+    ca = u"Propietats",
+    es = u"Propiedades",
+    en = u"Properties"
+)
+
+translations.define("BackOfficeEditForm.relations",
+    ca = u"Relacions",
+    es = u"Relaciones",
+    en = u"Relations"
 )
 
 # Item
