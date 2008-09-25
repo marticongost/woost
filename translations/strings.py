@@ -110,49 +110,47 @@ translations.define("Content languages",
     en = u"Languages"
 )
 
-translations.define("PageTreeView-new",
-    ca = u"Crear pàgina filla",
-    es = u"Crear página hija",
-    en = u"Create child page"
+translations.define("New item",
+    ca = u"Nou",
+    es = u"Nuevo",
+    en = u"New"
 )
 
-translations.define("PageTreeView-edit",
+translations.define("Edit",
     ca = u"Editar",
     es = u"Editar",
     en = u"Edit"
 )
 
-translations.define("PageTreeView-reorder",
-    ca = u"Canviar l'ordre",
-    es = u"Cambiar orden",
-    en = u"Change order"
-)
-
-translations.define("PageTreeView-delete",
+translations.define("Delete",
     ca = u"Eliminar",
     es = u"Eliminar",
     en = u"Delete"
 )
 
-translations.define("New item",
-    ca = u"Nou",
-    es = u"Nuevo",
-    en = u"New")
-
-translations.define("Edit",
-    ca = u"Editar",
-    es = u"Editar",
-    en = u"Edit")
-
-translations.define("Delete",
-    ca = u"Eliminar",
-    es = u"Eliminar",
-    en = u"Delete")
-
 translations.define("History",
     ca = u"Històric",
     es = u"Histórico",
-    en = u"History")
+    en = u"History"
+)
+
+translations.define("Backout",
+    ca = u"Desfer",
+    es = u"Deshacer",
+    en = u"Backout"
+)
+
+translations.define("Revert",
+    ca = u"Tornar enrera",
+    es = u"Volver atrás",
+    en = u"Revert"
+)
+
+translations.define("Forget",
+    ca = u"Oblidar",
+    es = u"Olvidar",
+    en = u"Forget"
+)
 
 translations.define("BackOfficeContentView.element",
     ca = u"Element",
@@ -717,3 +715,28 @@ translations.define("Language.iso_code",
     en = u"ISO code"
 )
 
+# ChangeSet
+#------------------------------------------------------------------------------
+translations.define("ChangeSet.id",
+    ca = u"ID",
+    es = u"ID",
+    en = u"ID"
+)
+
+translations.define("ChangeSet.author",
+    ca = u"Autor",
+    es = u"Autor",
+    en = u"Author"
+)
+
+translations.define("ChangeSet.date",
+    ca = u"Data",
+    es = u"Fecha",
+    en = u"Date"
+)
+
+translations.define("ChangeSet.changes",
+    ca = u"Canvis",
+    es = u"Cambios",
+    en = u"Changes"
+)

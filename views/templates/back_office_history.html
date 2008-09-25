@@ -1,0 +1,107 @@
+<?python
+from magicbullet.modeling import refine
+from magicbullet.html import Element
+from magicbullet.html.pager import Pager
+from magicbullet.html.table import Table, MULTIPLE_SELECTION
+?>
+
+<html
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:py="http://genshi.edgewall.org/"
+    xmlns:xi="http://www.w3.org/2001/XInclude">
+
+    <head py:match="head" once="True">
+        ${select("*|text()")}
+        <script type="text/javascript" src="/resources/scripts/backoffice_content.js"></script>
+    </head>
+
+    <div py:match="body-block">
+
+        <?python
+        page_subset = collection.page_subset()
+        page_subset_count = len(page_subset)
+        subset_count = len(collection.subset())
+        ?>
+
+        <?python
+        pager = Pager()
+        pager.page = collection.page
+        pager.page_size = collection.page_size
+        pager.item_count = subset_count
+        ?>
+        ${Markup(pager.render())}
+
+        <div id="page_size" py:if="subset_count">
+            ${translate("Results per page")}
+            <input
+                type="text"
+                name="${collection.get_param_name('page_size')}"
+                value="${collection.page_size}"/>
+        </div>
+        
+        <div id="item_count" py:if="subset_count">
+            ${Markup(translate("Item count",
+                page_range = (
+                    page_subset.range[0] + 1,
+                    page_subset.range[1] + 1
+                ),
+                item_count = subset_count
+            ))}
+        </div>
+
+		<div id="toolbar">
+			<button class="toolbar_button" name="section" value="backout">
+				<img src="${cms.uri('resources', 'images', 'backout.png')}"/>
+				<label>${translate("Backout")}</label>
+			</button>
+			<button class="toolbar_button" name="section" value="revert">
+				<img src="${cms.uri('resources', 'images', 'revert.png')}"/>
+				<label>${translate("Revert")}</label>
+			</button>
+			<button class="toolbar_button" name="section" value="forget">
+				<img src="${cms.uri('resources', 'images', 'delete.png')}"/>
+				<label>${translate("Forget")}</label>
+			</button>
+		</div>
+
+		<py:if test="page_subset_count">
+            <?python
+            table = Table()
+            table["name"] = "history"
+            table.data = page_subset
+            table.schema = collection.schema
+            table.selection_mode = MULTIPLE_SELECTION
+
+            @refine(table)
+            def display_changes(self, obj, member):
+
+                changes = self.get_member_value(obj, member)
+
+                sorted_changes = sorted([
+                    (change.action.identifier, translate(change.target))
+                    for change in changes.itervalues()
+                ])
+                   
+                ul = Element("ul")
+
+                for action_id, desc in sorted_changes:
+                    li = Element("li")
+                    li.add_class(action_id)
+                    li.append(desc)
+                    ul.append(li)
+
+                return ul
+
+            ?>
+            ${Markup(table.render())}
+        </py:if>
+            
+        <div id="no_results" py:if="not page_subset_count">
+            ${translate("No results")}
+        </div>
+
+    </div>
+
+    <xi:include href="back_office_layout.html"/>
+
+</html>

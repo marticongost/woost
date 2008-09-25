@@ -73,6 +73,7 @@ class ChangeSet(Entity):
     """A persistent record of a set of L{changes<Change>} performed on one or
     more CMS items."""
 
+    members_order = "id", "author", "date", "changes"
     indexed = True
 
     changes = schema.Collection(

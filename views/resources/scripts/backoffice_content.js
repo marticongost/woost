@@ -21,27 +21,50 @@ jQuery(function () {
     }
 
     // Hide checkboxes, but keep them around for form submission purposes
-    jQuery(".ContentTable .selection")
+    jQuery(".Table .selection")
         .css({width: 0})
         .find("input").css({position: "absolute", left: "-1000px"});
     
-    jQuery(".ContentTable .selection input")
+    jQuery(".Table .selection input")
         .each(highlightSelection)
         .change(highlightSelection);
 
-    jQuery(".ContentTable .element label").dblclick(function () {
+    jQuery(".Table tr")
         
-        jQuery(".ContentTable .selection input").each(function () {
-            this.checked = false;
-            highlightSelection.call(this);
-        });
+        // Togle row selection when clicking a row
+        .click(function (e) {
+            
+            var src = e.target || e.srcElement;
+            var srcTag = src.tagName.toLowerCase();
 
-        jQuery(this).parents("tr").find(".selection input").each(function () {
-            this.checked = true;
-            highlightSelection.call(this);
-        });
+            if (srcTag != "label" && srcTag != "input" && srcTag != "button" && srcTag != "textarea") {
+                var check = jQuery(this).find(".selection input").get(0);
+                check.checked = !check.checked;
+            }
+            
+            highlightSelection.call(check);
+        })
 
-        jQuery(".toolbar_button[value=edit]").click();
-    });
+        .dblclick(function () {
+        
+            jQuery(".Table .selection input").each(function () {
+                this.checked = false;
+                highlightSelection.call(this);
+            });
+
+            if (jQuery(this).is(".Table tr")) {
+                var row = this;
+            }
+            else {
+                var row = jQuery(this).parents(".Table tr");
+            }
+
+            jQuery(row).find(".selection input").each(function () {
+                this.checked = true;
+                highlightSelection.call(this);
+            });
+            
+            jQuery(".toolbar_button[value=edit]").click();
+        });
 });
 

@@ -207,6 +207,12 @@ class DataDisplay(object):
         display = self.__member_display.get(self._normalize_member(member))
 
         if display is None:
+            display_method = getattr(self, "display_" + member.name, None)
+            
+            if display_method:
+                display = display_method(obj, member)
+
+        if display is None:
             display = self.get_member_type_display(member.__class__)
         
         if display is None:

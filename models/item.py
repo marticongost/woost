@@ -142,8 +142,8 @@ class Item(Entity):
 
             if member.translated:
                 value = dict(
-                    translation.get(key)
-                    for translation in self.translations.itervalues()
+                    (language, translation.get(key))
+                    for language, translation in self.translations.iteritems()
                 )
             else:
                 value = self.get(key)

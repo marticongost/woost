@@ -11,7 +11,7 @@ from itertools import chain
 from magicbullet import settings
 from magicbullet.language import get_content_language
 from magicbullet.schema import Member, Adapter, Collection
-from magicbullet.models import Item, Document
+from magicbullet.models import Item, Document, ChangeSet
 from magicbullet.controllers import exposed
 from magicbullet.controllers.viewstate import view_state, get_persistent_param
 from magicbullet.controllers.usercollection import UserCollection
@@ -38,52 +38,6 @@ class BackOffice(Document):
         -1
     )
         
-    def _get_content_type(self, default = None):
-
-        type_param = get_persistent_param(
-            "type",
-            cookie_duration = self.settings_duration
-        )
-
-        if type_param is None:
-            return default
-        else:
-            for entity in chain([Item], Item.derived_entities()):
-                if entity.__name__ == type_param:
-                    return entity
-
-    def _get_content_type_param(self, content_type, param_name):                        
-        return get_persistent_param(
-            param_name,
-            cookie_name = content_type.__name__ + "-" + param_name,
-            cookie_duration = self.settings_duration
-        )
-
-    def _get_content_languages(self, content_type):
-
-        param = self._get_content_type_param(content_type, "language")
-
-        if param is not None:
-            if isinstance(param, (list, tuple, set)):
-                return set(param)
-            else:
-                return set(param.split(","))
-        else:
-            return [get_content_language()]
-
-    def _get_content_views(self, content_type):
-
-        content_views = self.content_views.get(content_type)
-        content_view_param = \
-            self._get_content_type_param(content_type, "content_view")
-
-        if content_view_param is not None:
-            for content_view in content_views:
-                if content_view.content_view_id == content_view_param:
-                    return content_views, content_view
-
-        return content_views, self.content_views.get_default(content_type)
-
     @exposed
     def index(self, cms, request):
         section = request.params.get("section", self.default_section)
@@ -93,11 +47,19 @@ class BackOffice(Document):
         )
 
     @exposed
-    def pages(self, cms, request):
-        return cms.rendering.render("back_office_page_tree",
+    def history(self, cms, request):
+
+        collection = UserCollection(ChangeSet)
+        collection.allow_sorting = False
+        collection.allow_filters = False
+        collection.allow_member_selection = False
+        collection.read()
+
+        return cms.rendering.render("back_office_history",
             requested_item = self,
             sections = self.root_sections,
-            active_section = "pages")
+            active_section = "history",
+            collection = collection)
 
     @exposed
     def content(self, cms, request):
@@ -197,6 +159,52 @@ class BackOffice(Document):
                 sections.insert(1, member)
 
         return sections
+
+    def _get_content_type(self, default = None):
+
+        type_param = get_persistent_param(
+            "type",
+            cookie_duration = self.settings_duration
+        )
+
+        if type_param is None:
+            return default
+        else:
+            for entity in chain([Item], Item.derived_entities()):
+                if entity.__name__ == type_param:
+                    return entity
+
+    def _get_content_type_param(self, content_type, param_name):                        
+        return get_persistent_param(
+            param_name,
+            cookie_name = content_type.__name__ + "-" + param_name,
+            cookie_duration = self.settings_duration
+        )
+
+    def _get_content_languages(self, content_type):
+
+        param = self._get_content_type_param(content_type, "language")
+
+        if param is not None:
+            if isinstance(param, (list, tuple, set)):
+                return set(param)
+            else:
+                return set(param.split(","))
+        else:
+            return [get_content_language()]
+
+    def _get_content_views(self, content_type):
+
+        content_views = self.content_views.get(content_type)
+        content_view_param = \
+            self._get_content_type_param(content_type, "content_view")
+
+        if content_view_param is not None:
+            for content_view in content_views:
+                if content_view.content_view_id == content_view_param:
+                    return content_views, content_view
+
+        return content_views, self.content_views.get_default(content_type)
 
     def get_form_adapter(self, content_type):
         adapter = Adapter()
