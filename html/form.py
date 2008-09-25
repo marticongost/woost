@@ -6,13 +6,15 @@
 @organization:	Whads/Accent SL
 @since:			September 2008
 """
+from magicbullet.modeling import getter, ListWrapper
+from magicbullet.translations import translate
+from magicbullet.schema import Member, Boolean, Reference
 from magicbullet.html.element import Element
 from magicbullet.html.datadisplay import DataDisplay
 from magicbullet.html.textbox import TextBox
 from magicbullet.html.checkbox import CheckBox
 from magicbullet.html.selectors import DropdownSelector
-from magicbullet.translations import translate
-from magicbullet.schema import Member, Boolean, Reference
+
 
 class Form(Element, DataDisplay):
 
@@ -24,6 +26,8 @@ class Form(Element, DataDisplay):
         self.set_member_type_display(Member, TextBox)
         self.set_member_type_display(Boolean, CheckBox)
         self.set_member_type_display(Reference, DropdownSelector)
+        self.__groups = []
+        self.groups = ListWrapper(self.__groups)
 
     def _build(self):
 
@@ -45,10 +49,41 @@ class Form(Element, DataDisplay):
 
     def _fill_fields(self):
         if self.schema:
-            for member in self.displayed_members:
-                field_entry = self.create_field(member)
-                self.fields.append(field_entry)
+            if self.__groups:                
+                members = self.displayed_members
+
+                for group in self.__groups:
+
+                    fieldset = self.create_fieldset(group)
+                    self.fields.append(fieldset)
+                    setattr(self, group.id + "_group", fieldset)
+
+                    remaining_members = []
+
+                    for member in members:
+                        if group.matches(member):
+                            field_entry = self.create_field(member)
+                            fieldset.append(field_entry)
+                        else:
+                            remaining_members.append(member)
+
+                    members = remaining_members
+            else:
+                for member in self.displayed_members:
+                    field_entry = self.create_field(member)
+                    self.fields.append(field_entry)
     
+    def create_fieldset(self, group):
+
+        fieldset = Element("fieldset")
+        fieldset.add_class(group.id)
+        
+        fieldset.legend = Element("legend")
+        fieldset.legend.append(translate(self.schema.name + "." + group.id))
+        fieldset.append(fieldset.legend)
+
+        return fieldset
+
     def create_field(self, member):
         
         # Container
@@ -57,12 +92,12 @@ class Form(Element, DataDisplay):
         field_entry.add_class(member.name)
         
         # Label
-        label = self.create_field_label(member)
-        field_entry.append(label)
+        field_entry.label = self.create_field_label(member)
+        field_entry.append(field_entry.label)
 
         # Control
-        control = self.get_member_display(self.data, member)
-        field_entry.append(control)
+        field_entry.control = self.get_member_display(self.data, member)
+        field_entry.append(field_entry.control)
 
         return field_entry
 
@@ -74,4 +109,33 @@ class Form(Element, DataDisplay):
         
         return label
 
+    def add_group(self, group):
+        self.__groups.append(group)
+
+
+class FormGroup(object):
+
+    def __init__(self, id, members_filter):        
+        self.__id = id
+        self.__members_filter = members_filter
+
+        if callable(members_filter):
+            self.__match_expr = members_filter
+        else:
+            members = set(self._normalize_member(member)
+                          for member in members_filter)
+
+            self.__match_expr = \
+                lambda member: self._normalize_member(member) in members
+
+    @getter
+    def id(self):
+        return self.__id
+
+    @getter
+    def members_filter(self):
+        return self.__members_filter
+
+    def matches(self, member):
+        return self.__match_expr(member)
 
