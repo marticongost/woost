@@ -90,6 +90,8 @@ a img {
     border: 1px solid rgb(200,210,220);
     -moz-border-radius-topleft: 5px;
     -moz-border-radius-topright: 5px;
+    border-radius-topleft: 5px;
+    border-radius-topright: 5px;
 }
 
 #navigation a.selected {
@@ -224,6 +226,12 @@ a img {
     background-position: center right;
 }
 
+.Table td.element label {
+    padding-top: 0.1em;
+    padding-bottom: 0.1em;
+    background-position: center left;
+}
+
 .Table th.ascending .label {
     background-image: url(ascending.png);
 }
@@ -274,8 +282,12 @@ a img {
     background-image: url(../images/types/Template.png);
 }
 
-.User, .Role {
+.User {
     background-image: url(../images/types/User.png);
+}
+
+.Role {
+    background-image: url(../images/types/Role.png);
 }
 
 /* Toolbar
