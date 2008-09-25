@@ -132,14 +132,6 @@ class Document(Item):
 
         return cms.rendering.render(template.identifier, requested_item = self)
 
-    # Drafts
-    #--------------------------------------------------------------------------
-    draft_source = schema.Reference(type = "magicbullet.models.Document")
-
-    drafts = schema.Collection(
-        items = "magicbullet.models.Document"
-    )
-
     # Resources and attachments
     #------------------------------------------------------------------------------    
     resources = schema.Collection(

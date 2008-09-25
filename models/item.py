@@ -26,6 +26,8 @@ class Item(Entity):
 
     indexed = True
  
+    # Versioning
+    #------------------------------------------------------------------------------    
     changes = schema.Collection(
         required = True,
         versioned = False,
@@ -33,6 +35,20 @@ class Item(Entity):
         bidirectional = True
     )
 
+    draft_source = schema.Reference(
+        type = "magicbullet.models.Item",
+        related_key = "drafts",
+        bidirectional = True
+    )
+
+    drafts = schema.Collection(
+        items = "magicbullet.models.Item",
+        related_key = "draft_source",
+        bidirectional = True
+    )
+
+    # Users and permissions
+    #------------------------------------------------------------------------------    
     author = schema.Reference(
         indexed = True,
         type = "magicbullet.models.User",
