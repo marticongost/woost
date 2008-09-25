@@ -89,8 +89,8 @@ class TableContentView(ContentTable, ContentView):
         self.base_url = self.cms.uri(self.requested_item.path)
         self.schema = self.user_collection.schema
         self.order = self.user_collection.order
-        self["name"] = "content"
         self.translations = self.languages
+        self.selection = self.user_collection.selection
         
         is_allowed = self.cms.authorization.allows
 
@@ -143,8 +143,8 @@ class TreeContentView(ContentTable, ContentView):
                 
         self.base_url = self.cms.uri(self.requested_item.path)
         self.schema = self.user_collection.schema
-        self["name"] = "content"
         self.translations = self.languages
+        self.selection = self.user_collection.selection
         
         is_allowed = self.cms.authorization.allows
 

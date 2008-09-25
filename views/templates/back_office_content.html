@@ -77,7 +77,11 @@ from magicbullet.views.contenttable import ContentTable
 
         <form method="get" action="${cms.uri(requested_item.path)}">
 
-            ${Markup(view_state_form(language = None, members = None))}
+            ${Markup(view_state_form(
+                language = None,
+                members = None,
+                selection = None
+            ))}
 
             <div id="toolbar">
                 <div id="new_item" class="toolbar_button selector">

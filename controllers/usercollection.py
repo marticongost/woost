@@ -25,9 +25,13 @@ class UserCollection(object):
     allow_sorting = True
     allow_filters = True
     allow_member_selection = True
+    allow_selection = True
 
     page = 0
     page_size = 15
+
+    selection = None
+    selection_parser = int
 
     persistence_prefix = None
     persistence_duration = -1
@@ -112,6 +116,9 @@ class UserCollection(object):
         if self.allow_member_selection:
             self._read_member_selection()
 
+        if self.allow_selection:
+            self._read_selection()
+
     def _get_param(self, name):
 
         full_name = self.get_param_name(name)
@@ -192,6 +199,20 @@ class UserCollection(object):
             for key in members_param:
                 if self._get_member(key):
                     members.add(key)
+
+    def _read_selection(self):
+
+        selection_param = self._get_param("selection")
+
+        if selection_param:
+            
+            if isinstance(selection_param, basestring):
+                selection_param = selection_param.split(",")
+
+            self.selection = [
+                self.selection_parser(value)
+                for value in selection_param
+            ]
 
     def get_param_name(self, param):
         if self.name:

@@ -47,21 +47,6 @@ class BackOffice(Document):
         )
 
     @exposed
-    def history(self, cms, request):
-
-        collection = UserCollection(ChangeSet)
-        collection.allow_sorting = False
-        collection.allow_filters = False
-        collection.allow_member_selection = False
-        collection.read()
-
-        return cms.rendering.render("back_office_history",
-            requested_item = self,
-            sections = self.root_sections,
-            active_section = "history",
-            collection = collection)
-
-    @exposed
     def content(self, cms, request):
 
         content_type = self._get_content_type(Item)
@@ -79,6 +64,7 @@ class BackOffice(Document):
         collection.persistence_prefix = content_type.__name__
         collection.persistence_duration = self.settings_duration
         collection.persistent_params = set(("members", "order"))
+        collection.selection_parser = lambda param: Item.index.get(int(param))
 
         # Initialize the content collection with the parameters set by the
         # current content view (this allows views to disable sorting, filters,
@@ -102,6 +88,21 @@ class BackOffice(Document):
             content_views = content_views,
             content_view = active_content_view
         )
+        
+    @exposed
+    def history(self, cms, request):
+
+        collection = UserCollection(ChangeSet)
+        collection.allow_sorting = False
+        collection.allow_filters = False
+        collection.allow_member_selection = False
+        collection.read()
+
+        return cms.rendering.render("back_office_history",
+            requested_item = self,
+            sections = self.root_sections,
+            active_section = "history",
+            collection = collection)
 
     @exposed
     def new(self, cms, request):        

@@ -18,10 +18,9 @@ class ContentTable(Table):
 
     def __init__(self, *args, **kwargs):
         Table.__init__(self, *args, **kwargs)
-        cls = self.__class__
-        self.set_member_display("element", cls.display_element)
         self.set_member_sortable("element", False)
-        self.set_member_type_display(Reference, cls.display_reference)
+        self.set_member_type_display(
+            Reference, self.__class__.display_reference)
 
     def repr_value(self, item, member, value):
         if value is None:
@@ -32,7 +31,7 @@ class ContentTable(Table):
     def display_element(self, item, member):
         
         display = Element("label")
-        display["for"] = self["name"] + "_selection_" + str(item.id)
+        display["for"] = "selection_" + str(item.id)
         display.append(translate(item))
 
         for schema in item.__class__.descend_inheritance(True):

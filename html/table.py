@@ -113,8 +113,8 @@ class Table(Element, CollectionDisplay):
     def create_selection_cell(self, item):
 
         selection_control = Element("input")
-        selection_control["name"] = self["name"] + "_selection"
-        selection_control["id"] = self["name"] + "_selection_" + str(item.id)
+        selection_control["name"] = "selection"
+        selection_control["id"] = "selection_" + str(item.id)
         selection_control["value"] = str(item.id)
 
         if self.selection_mode == SINGLE_SELECTION:
