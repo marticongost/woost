@@ -211,11 +211,12 @@ class BackOffice(Document):
             "author",
             "owner",
             "translations",
-            "changes"
+            "changes",
+            "creation_time",
+            "last_update_time",
+            "drafts",
+            "draft_source"
         ])
-
-        if issubclass(content_type, Document):
-            adapter.exclude(["drafts", "draft_source"])
 
     def get_list_adapter(self, content_type):
         adapter = Adapter()

@@ -6,6 +6,7 @@
 @organization:	Whads/Accent SL
 @since:			June 2008
 """
+from datetime import datetime
 from persistent.mapping import PersistentMapping
 from magicbullet import schema
 from magicbullet.persistence import Entity, EntityClass, datastore
@@ -45,6 +46,14 @@ class Item(Entity):
         items = "magicbullet.models.Item",
         related_key = "draft_source",
         bidirectional = True
+    )
+
+    creation_time = schema.DateTime(
+        versioned = False        
+    )
+
+    last_update_time = schema.DateTime(
+        versioned = False        
     )
 
     # Users and permissions
@@ -98,6 +107,9 @@ class Item(Entity):
             change.item_state = self._get_revision_state()
             change.changeset = changeset
             
+            self.creation_time = datetime.now()
+            self.last_update_time = datetime.now()
+
             if "author" not in values:
                 self.author = changeset.author
 
@@ -125,6 +137,7 @@ class Item(Entity):
                 change.changed_members = set()
                 change.item_state = self._get_revision_state()
                 change.changeset = changeset
+                self.last_update_time = datetime.now()
             else:
                 action_type = change.action.identifier
 

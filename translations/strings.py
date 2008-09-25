@@ -275,6 +275,30 @@ translations.define("Item.changes",
     en = u"Changes"
 )
 
+translations.define("Item.draft_source",
+    ca = u"Original",
+    es = u"Original",
+    en = u"Master item"
+)
+
+translations.define("Item.drafts",
+    ca = u"Esborranys",
+    es = u"Borradores",
+    en = u"Drafts"
+)
+
+translations.define("Item.creation_time",
+    ca = u"Data de creació",
+    es = u"Fecha de creación",
+    en = u"Creation date"
+)
+
+translations.define("Item.last_update_time",
+    ca = u"Última modificació",
+    es = u"Última modificación",
+    en = u"Last updated"
+)
+
 # Document
 #------------------------------------------------------------------------------
 translations.define("Document",
@@ -347,18 +371,6 @@ translations.define("Document.resources",
     ca = u"Recursos HTML",
     es = u"Recursos HTML",
     en = u"HTML Resources"
-)
-
-translations.define("Document.draft_source",
-    ca = u"Original",
-    es = u"Original",
-    en = u"Master item"
-)
-
-translations.define("Document.drafts",
-    ca = u"Esborranys",
-    es = u"Borradores",
-    en = u"Drafts"
 )
 
 translations.define("Document.parent",
