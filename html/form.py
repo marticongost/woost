@@ -21,13 +21,13 @@ class Form(Element, DataDisplay):
     tag = "form"
 
     def __init__(self, *args, **kwargs):
-        Element.__init__(self, *args, **kwargs)
         DataDisplay.__init__(self)
         self.set_member_type_display(Member, TextBox)
         self.set_member_type_display(Boolean, CheckBox)
         self.set_member_type_display(Reference, DropdownSelector)
         self.__groups = []
         self.groups = ListWrapper(self.__groups)
+        Element.__init__(self, *args, **kwargs)
 
     def _build(self):
 
