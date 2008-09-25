@@ -110,7 +110,7 @@ class BackOffice(Document):
 
     @exposed
     def edit(self, cms, request):
-        item_id = int(request.params["content_selection"])
+        item_id = int(request.params["selection"])
         item = Item.index[item_id]
         return self._edit(cms, request, item.__class__, item)
 
@@ -156,7 +156,7 @@ class BackOffice(Document):
 
         for member in item.__class__.members().itervalues():
             if isinstance(member, Collection) \
-            and member.name != "translations":
+            and member.name not in ("changes", "translations"):
                 sections.insert(1, member)
 
         return sections

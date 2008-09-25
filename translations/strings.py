@@ -255,6 +255,12 @@ translations.define("Item.groups",
     en = u"Groups"
 )
 
+translations.define("Item.changes",
+    ca = u"Canvis",
+    es = u"Cambios",
+    en = u"Changes"
+)
+
 # Document
 #------------------------------------------------------------------------------
 translations.define("Document",
@@ -511,6 +517,12 @@ translations.define("Group.title",
     ca = u"Nom",
     es = u"Nombre",
     en = u"Name"
+)
+
+translations.define("Group.group_members",
+    ca = u"Membres",
+    es = u"Miembros",
+    en = u"Members"
 )
 
 # Dynamic group
