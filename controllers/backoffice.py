@@ -27,7 +27,7 @@ class BackOffice(Document):
     
     default_section = "content"
     root_sections = ["content", "history"]
-    item_sections = ["edit", "drafts", "history"]
+    item_sections = ["fields"]
 
     content_views = ContentViewsRegistry()
     content_views.add(Item, TableContentView, True)
@@ -62,6 +62,7 @@ class BackOffice(Document):
         content_schema.members_order.insert(0, "element")
 
         collection = UserCollection(content_type, content_schema)
+        collection.base_filter = content_type.draft_source == None
         collection.persistence_prefix = content_type.__name__
         collection.persistence_duration = self.settings_duration
         collection.persistent_params = set(("members", "order"))
@@ -150,7 +151,7 @@ class BackOffice(Document):
         return cms.rendering.render("back_office_edit",
             requested_item = self,
             sections = self.get_item_sections(item) if item else [],
-            active_section = "edit" if item else None,
+            active_section = "fields",
             content_type = content_type,
             edited_item = item,
             form_data = form_data,
@@ -158,7 +159,11 @@ class BackOffice(Document):
             saved = saved)
     
     def get_item_sections(self, item):
-        return self.item_sections
+        return self.item_sections + [
+            member for member in item.__class__.members().itervalues()
+            if isinstance(member, Collection)
+            and member.name not in ("drafts", "changes", "translations")
+        ]
         
     def _get_content_type(self, default = None):
 

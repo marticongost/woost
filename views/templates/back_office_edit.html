@@ -29,6 +29,7 @@ from magicbullet.schema import DictAccessor
     <div py:match="body-block">
         <?python       
         form = ContentForm()
+        form["id"] = "edit_form"
         form.accessor = DictAccessor
         form.data = form_data
         form.schema = form_schema

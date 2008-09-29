@@ -18,19 +18,6 @@ class ContentForm(Form):
 
         Form._build(self)
 
-        self.set_member_type_display(
-            Collection,
-            self.__class__.display_collection
-        )
-
-        self.add_group(
-            FormGroup(
-                "translations",
-                lambda member: not isinstance(member, Collection) \
-                               and member.translated
-            )
-        )
-
         self.add_group(
             FormGroup(
                 "properties",
@@ -41,28 +28,39 @@ class ContentForm(Form):
 
         self.add_group(
             FormGroup(
-                "relations",
-                lambda member: isinstance(member, Collection)
+                "translations",
+                lambda member: not isinstance(member, Collection) \
+                               and member.translated
             )
         )
 
-    def create_field(self, member):
+    def _ready(self):
+
+        Form._ready(self)
+
+        if self.translations:
+            headers = self.create_translation_headers()
+            self.translations_fieldset.insert(0, headers)
+
+    def create_translation_headers(self):
+
+        headers = Element("div")
+        headers.add_class("translation_headers")
+    
+        for language in self.translations:
+            header = self.create_language_header(language)
+            headers.append(header)
+
+        return headers
+
+    def create_language_header(self, language):
         
-        field = Form.create_field(self, member)
+        header = Element("div")
+        header.add_class("language")
+        
+        label = Element("span")
+        label.append(translate(language))
+        header.append(label)
 
-        # Add an item count next to each relation
-        if isinstance(member, Collection):
-            collection = self.get_member_value(self.data, member)
-            rel_count = Element("span")
-            rel_count.add_class("relation_count")
-            rel_count.append("(%d)" % len(collection))
-            field.label.append(rel_count)
-
-        return field
-
-    def display_collection(self, obj, member):
-        button = Element("button")
-        button["type"] = "submit"
-        button.append(translate("Edit"))
-        return button  
+        return header
 

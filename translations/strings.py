@@ -50,16 +50,10 @@ translations.define("content_section",
     en = u"Content"
 )
 
-translations.define("edit_section",
-    ca = u"Edició",
-    es = u"Edición",
-    en = u"Edit"
-)
-
-translations.define("drafts_section",
-    ca = u"Esborranys",
-    es = u"Borradores",
-    en = u"Drafts"
+translations.define("fields_section",
+    ca = u"Camps",
+    es = u"Campos",
+    en = u"Fields"
 )
 
 translations.define("history_section",
@@ -150,6 +144,12 @@ translations.define("BackOfficeContentView.element",
     ca = u"Element",
     es = u"Elemento",
     en = u"Item"
+)
+
+translations.define("draft_seq_name",
+    ca = u"Esborrany %(index)s",
+    es = u"Borrador %(index)s",
+    en = u"Draft %(index)s"
 )
 
 translations.define("Item count",
@@ -273,6 +273,12 @@ translations.define("Item.changes",
     ca = u"Canvis",
     es = u"Cambios",
     en = u"Changes"
+)
+
+translations.define("Item.is_draft",
+    ca = u"És esborrany",
+    es = u"Es borrador",
+    en = u"Is draft"
 )
 
 translations.define("Item.draft_source",

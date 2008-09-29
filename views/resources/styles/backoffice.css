@@ -139,6 +139,16 @@ fieldset legend {
     margin-left: -1.5em;
 }
 
+.Form .required label {
+    color: rgb(75,85,95);
+    font-weight: bold;
+}
+
+.Form .required label:after {
+    content: '*';
+    padding-left: 0.2em;
+}
+
 .field .language {
     float: left;
     width: 18em;
@@ -150,8 +160,29 @@ fieldset legend {
     width: 18em;
 }
 
+.field .mceEditor .mceLayout {
+    width: 16.6em !important;
+}
+
 .buttons {
     clear: both;
+}
+
+.ContentForm .translation_headers {
+    margin-left: 10em;
+    padding-bottom: 0.5em;
+    overflow: hidden;
+}
+
+.ContentForm .translation_headers .language {
+    float: left;
+    width: 18em;
+}
+
+.ContentForm .translation_headers .language span {
+    color: rgb(75,75,75);
+    font-style: italic;
+    font-size: 85%;
 }
 
 /* Tables
@@ -219,6 +250,19 @@ fieldset legend {
     white-space: nowrap;
     background-repeat: no-repeat;
     padding-left: 1.5em;
+}
+
+.draft,
+.Table .draft {
+    background-color: rgb(245,235,170);
+}
+
+.Table .nested_draft td.element {
+    padding-left: 2em;
+}
+
+.Table .nested_draft td.element label {
+    background-image: url(edit.png);
 }
 
 .Table td a {
@@ -634,22 +678,13 @@ td.changes li.delete {
 
 /* Edit form
 -----------------------------------------------------------------------------*/
- 
-fieldset.properties, fieldset.relations {
-    float: left;
+#edit_form legend {
+    display: none;
+    margin-left: 0;
 }
 
-fieldset.relations {
-    margin-left: 6em;
-}
-
-fieldset.relations label {
-    margin-right: 2em;
-}
-
-.relation_count {
-    margin-left: 0.4em;
-    color: rgb(75,75,75);
-    font-size: 85%;
+#edit_form fieldset {
+    padding-left: 0;
+    margin: 0;
 }
 
