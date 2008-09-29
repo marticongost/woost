@@ -21,6 +21,7 @@ class Form(Element, DataDisplay):
 
     tag = "form"
     translations = None
+    hide_empty_fieldsets = True
 
     def __init__(self, *args, **kwargs):
         DataDisplay.__init__(self)
@@ -60,16 +61,21 @@ class Form(Element, DataDisplay):
                     self.fields.append(fieldset)
                     setattr(self, group.id + "_group", fieldset)
 
+                    has_match = False
                     remaining_members = []
 
                     for member in members:
                         if group.matches(member):
                             field_entry = self.create_field(member)
                             fieldset.append(field_entry)
+                            has_match = True
                         else:
                             remaining_members.append(member)
 
                     members = remaining_members
+
+                    if self.hide_empty_fieldsets and not has_match:
+                        fieldset.visible = False
             else:
                 for member in self.displayed_members:
                     field_entry = self.create_field(member)
