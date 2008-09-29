@@ -59,7 +59,7 @@ class Form(Element, DataDisplay):
 
                     fieldset = self.create_fieldset(group)
                     self.fields.append(fieldset)
-                    setattr(self, group.id + "_group", fieldset)
+                    setattr(self, group.id + "_fieldset", fieldset)
 
                     has_match = False
                     remaining_members = []
@@ -98,7 +98,10 @@ class Form(Element, DataDisplay):
         field_entry = Element()
         field_entry.add_class("field")
         field_entry.add_class(member.name)
-                
+             
+        if member.required:
+            field_entry.add_class("required")
+
         # Label
         field_entry.label = self.create_field_label(member)
         field_entry.append(field_entry.label)
@@ -134,12 +137,10 @@ class Form(Element, DataDisplay):
         display.add_class("control")
         return display
 
-    def create_field_label(self, member):
-        
+    def create_field_label(self, member):        
         label = Element("label")
         label["for"] = member.name
-        label.append(self.get_member_label(member))
-        
+        label.append(self.get_member_label(member))       
         return label
 
     def add_group(self, group):
