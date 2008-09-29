@@ -216,7 +216,7 @@ class AdaptationContext(object):
         @type key: str
         """
         if self.consume_keys:
-            self.remaining_keys.remove(key)
+            self.remaining_keys.discard(key)
 
 
 class Adapter(object):
