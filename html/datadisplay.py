@@ -9,10 +9,12 @@ Visual elements for data binding.
 """
 from operator import getitem
 from magicbullet.modeling import getter, ListWrapper
+from magicbullet.language import require_content_language
 from magicbullet.translations import translate
 from magicbullet.html import Element
 from magicbullet.typemapping import TypeMapping
-from magicbullet.schema import Member
+from magicbullet.schema import Member, AttributeAccessor
+
 
 class DataDisplay(object):
     """Base class for all visual components that can display schema-based data.
@@ -21,8 +23,7 @@ class DataDisplay(object):
     schema = None
     editable = True
     translations = None
-    get_value = None
-    set_value = None
+    accessor = AttributeAccessor
 
     def __init__(self):
         self.__member_displayed = {}
@@ -182,18 +183,21 @@ class DataDisplay(object):
         """
         self.__member_expressions[self._normalize_member(member)] = expression
 
-    def get_member_value(self, obj, member):
+    def get_member_value(self, obj, member, language = None):
+        
+        translated = member.translated
         expr = self.__member_expressions.get(member)
 
+        if translated and language is None:
+            language = require_content_language()
+
         if expr:
-            return expr(obj)
-        else:
-            if self.get_value:
-                return self.get_value(obj, member.name)
-            elif isinstance(obj, dict):
-                return obj.get(member.name, None)
+            if translated:
+                return expr(obj, language)
             else:
-                return getattr(obj, member.name, None)
+                return expr(obj)
+        else:
+            return self.accessor.get(obj, member.name, None, language)
 
     def repr_value(self, obj, member, value):
         if value is None:

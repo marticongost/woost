@@ -6,9 +6,10 @@
 @organization:	Whads/Accent SL
 @since:			September 2008
 """
+from simplejson import dumps
+from magicbullet.language import get_content_language
 from magicbullet.html import Element
 from magicbullet.html.textarea import TextArea
-from simplejson import dumps
 
 class TinyMCE(Element):
     
@@ -32,7 +33,10 @@ class TinyMCE(Element):
             self.textarea["name"] = self.member.name
 
         if self.textarea["id"] is None:
-            self.textarea["id"] = self.textarea["name"] + "_editor"
+            id = self.textarea["name"] + "_editor"
+            if self.language:
+                id += "-" + self.language
+            self.textarea["id"] = id
 
         params = self.tinymce_params.copy()
         params["mode"] = "exact"

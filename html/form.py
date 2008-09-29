@@ -6,6 +6,7 @@
 @organization:	Whads/Accent SL
 @since:			September 2008
 """
+from magicbullet.language import get_content_language, set_content_language
 from magicbullet.modeling import getter, ListWrapper
 from magicbullet.translations import translate
 from magicbullet.schema import Member, Boolean, Reference
@@ -19,6 +20,7 @@ from magicbullet.html.selectors import DropdownSelector
 class Form(Element, DataDisplay):
 
     tag = "form"
+    translations = None
 
     def __init__(self, *args, **kwargs):
         DataDisplay.__init__(self)
@@ -49,7 +51,7 @@ class Form(Element, DataDisplay):
 
     def _fill_fields(self):
         if self.schema:
-            if self.__groups:                
+            if self.__groups:
                 members = self.displayed_members
 
                 for group in self.__groups:
@@ -90,16 +92,41 @@ class Form(Element, DataDisplay):
         field_entry = Element()
         field_entry.add_class("field")
         field_entry.add_class(member.name)
-        
+                
         # Label
         field_entry.label = self.create_field_label(member)
         field_entry.append(field_entry.label)
 
         # Control
-        field_entry.control = self.get_member_display(self.data, member)
-        field_entry.append(field_entry.control)
+        if member.translated and self.translations:
+            
+            field_entry.add_class("translated")
+
+            current_language = get_content_language()
+
+            for language in self.translations:
+                set_content_language(language)
+                
+                control_container = Element()
+                control_container.add_class("language")
+                control_container.add_class(language)
+                field_entry.append(control_container)
+
+                control = self.get_member_display(self.data, member)
+                control.language = language
+                control_container.append(control)
+
+            set_content_language(current_language)
+        else:
+            field_entry.control = self.get_member_display(self.data, member)
+            field_entry.append(field_entry.control)
 
         return field_entry
+
+    def get_member_display(self, obj, member):
+        display = DataDisplay.get_member_display(self, obj, member)
+        display.add_class("control")
+        return display
 
     def create_field_label(self, member):
         

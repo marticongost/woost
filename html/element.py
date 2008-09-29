@@ -23,6 +23,7 @@ class Element(object):
     theme = None
     visible = True
     collapsible = False
+    language = None
 
     def __init__(self,
         tag = default,
