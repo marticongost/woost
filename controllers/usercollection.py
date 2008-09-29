@@ -37,7 +37,11 @@ class UserCollection(object):
     persistence_duration = -1
     persistent_params = empty_set
 
-    def __init__(self, entity_type, schema = None, public_members = None):
+    def __init__(self,
+        entity_type,
+        schema = None,
+        public_members = None,
+        base_filter = None):
         
         self.__entity_type = entity_type
         self.__schema = schema or entity_type
@@ -51,6 +55,7 @@ class UserCollection(object):
             )
 
         self.public_members = public_members
+        self.base_filter = base_filter
 
         self.__filters = []
         self.filters = ListWrapper(self.__filters)
@@ -83,6 +88,9 @@ class UserCollection(object):
         
         subset = Query(self.entity_type)
         
+        if self.base_filter:
+            subset.add_filter(self.base_filter)
+
         for expression in self.__filters:
             subset.add_filter(expression)
 
