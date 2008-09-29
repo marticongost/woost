@@ -139,6 +139,17 @@ fieldset legend {
     margin-left: -1.5em;
 }
 
+.field .language {
+    float: left;
+    width: 18em;
+}
+
+.field input.control,
+.field textarea.control,
+.field select.control {
+    width: 18em;
+}
+
 .buttons {
     clear: both;
 }

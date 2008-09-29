@@ -1,5 +1,6 @@
 <?python
 from magicbullet.views.contentform import ContentForm
+from magicbullet.schema import DictAccessor
 ?>
 
 <html
@@ -28,8 +29,12 @@ from magicbullet.views.contentform import ContentForm
     <div py:match="body-block">
         <?python       
         form = ContentForm()
+        form.accessor = DictAccessor
         form.data = form_data
         form.schema = form_schema
+
+        # Temporary HACK!
+        form.translations = site.languages
 
         # Temporary HACK!
         from magicbullet.html.tinymce import TinyMCE

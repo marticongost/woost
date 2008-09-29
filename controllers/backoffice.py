@@ -10,7 +10,8 @@ import cherrypy
 from itertools import chain
 from magicbullet import settings
 from magicbullet.language import get_content_language
-from magicbullet.schema import Member, Adapter, Collection
+from magicbullet.schema import Member, Adapter, Collection, DictAccessor
+from magicbullet.persistence import datastore, EntityAccessor
 from magicbullet.models import Item, Document, ChangeSet
 from magicbullet.controllers import exposed
 from magicbullet.controllers.viewstate import view_state, get_persistent_param
@@ -138,7 +139,13 @@ class BackOffice(Document):
 
         # First load: dump the edited item's data unto the form
         elif item:
-            form_adapter.export_object(item, form_data, content_type)
+            form_adapter.export_object(
+                item,
+                form_data,
+                content_type,
+                form_schema,
+                source_accessor = EntityAccessor,
+                target_accessor = DictAccessor)
                 
         return cms.rendering.render("back_office_edit",
             requested_item = self,

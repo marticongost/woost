@@ -13,6 +13,7 @@ from persistent.mapping import PersistentMapping
 import cherrypy
 from magicbullet.iteration import is_empty
 from magicbullet.typemapping import TypeMapping
+from magicbullet.persistence import EntityAccessor
 from magicbullet.html import Element
 from magicbullet.html.table import MULTIPLE_SELECTION
 from magicbullet.controllers.viewstate import view_state
@@ -81,6 +82,7 @@ class ContentView(object):
 
 class TableContentView(ContentTable, ContentView):
 
+    accessor = EntityAccessor
     sortable = True
     selection_mode = MULTIPLE_SELECTION
 
@@ -117,6 +119,7 @@ class TreeContentView(ContentTable, ContentView):
         "allow_paging": False
     }
 
+    accessor = EntityAccessor
     children_member = "children"
     sortable = False
     selection_mode = MULTIPLE_SELECTION
