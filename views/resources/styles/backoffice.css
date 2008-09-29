@@ -216,6 +216,7 @@ fieldset legend {
 }
 
 .Table .element label {
+    white-space: nowrap;
     background-repeat: no-repeat;
     padding-left: 1.5em;
 }
