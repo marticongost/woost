@@ -11,30 +11,228 @@ from magicbullet.modeling import ListWrapper
 from magicbullet.schema.schema import Schema
 from magicbullet.schema.schemastrings import String
 
-_do_nothing = lambda member: None
-
 _undefined = object()
 
-def default_getter(obj):
-    if isinstance(obj, dict):
-        return getitem
-    else:
-        return getattr
 
-def default_setter(obj):
+class MemberAccessor(object):
+
+    @classmethod
+    def get(cls, obj, key, default = _undefined, language = None):
+        """Gets a value from the indicated object.
+        
+        @param obj: The object to get the value from.
+        @type obj: object
+
+        @param key: The name of the value to retrieve.
+        @type key: str
+
+        @param default: Provides a the default value that will be returned in
+            case the supplied object doesn't define the requested key. If this
+            parameter is not set, a KeyError exception will be raised.            
+
+        @param language: Required for multi-language values. Indicates the
+            language to retrieve the value in.
+        @type language: str
     
-    if isinstance(obj, dict):
-        return setitem
-    else:
-        return setattr
+        @return: The requested value, if defined. If not, the method either
+            returns the default value (if one has been specified) or raises a
+            KeyError exception.
+
+        @raise KeyError: Raised when an attempt is made to access an undefined
+            key, and no default value is provided.
+        """
+
+    @classmethod
+    def set(cls, obj, key, value, language = None):
+        """Sets the value of a key on the indicated object.
+        
+        @param obj: The object to set the value on.
+        @type obj: object
+
+        @param key: The key to set.
+        @type key: str
+
+        @param language: Required for multi-language values. Indicates the
+            language that the value is assigned to.
+        @type language: str
+        """
+
+    @classmethod
+    def languages(cls, obj, key):
+        """Determines the set of languages that the given object key is
+        translated into.
+        
+        @param obj: The object to evaluate.
+        @type obj: object
+
+        @param key: The key to evaluate.
+        @type key: str
+
+        @return: A sequence or set of language identifiers.
+        @rtype: str iterable
+        """
+
+
+class DictAccessor(MemberAccessor):
+
+    @classmethod
+    def get(cls, obj, key, default = _undefined, language = None):
+
+        if language:
+            translation = obj.get(key)
+            
+            if translation is None:
+                value = _undefined
+            else:
+                value = translation.get(language, _undefined)
+        else:
+            value = obj.get(key, _undefined)
+
+        if value is _undefined:
+            raise KeyError(key)
+
+        return value
+
+    @classmethod
+    def set(cls, obj, key, value, language):
+        if language:
+            translation = obj.get(key)
+            if translation is None:
+                obj[key] = translation = {}
+            translation[language] = value
+        else:        
+            obj[key] = value
+
+    @classmethod
+    def languages(cls, obj, key):
+        items = obj.get(key)
+        return items.iterkeys() if items else ()
+
+
+class AttributeAccessor(MemberAccessor):
+
+    @classmethod
+    def get(cls, obj, key, default = _undefined, language = None):        
+        if language:
+            raise ValueError(
+                "AttributeAccessor can't operate on translated members")
+        else:
+            if default is _undefined:
+                return getattr(obj, key)
+            else:
+                return getattr(obj, key, default)
+
+    @classmethod
+    def set(cls, obj, key, value, language):
+        if language:
+            raise ValueError(
+                "AttributeAccessor can't operate on translated members")
+        else:
+            setattr(obj, key, value)
+
+    @classmethod
+    def languages(cls, obj, key):
+        return None,
+
+
+class AdaptationContext(object):
+
+    def __init__(self,
+        source_object = None,
+        target_object = None,
+        source_schema = None,
+        target_schema = None,
+        source_accessor = None,
+        target_accessor = None,
+        consume_keys = True):
+
+        self.source_object = source_object
+        self.target_object = target_object
+        self.source_accessor = source_accessor
+        self.target_accessor = target_accessor
+        self.source_schema = source_schema
+        self.target_schema = target_schema
+        self.consume_keys = consume_keys
+        self.remaining_keys = (
+            set(source_schema.members())
+            if consume_keys
+            else None
+        )
+
+    def get(self, key, default = _undefined, language = None):
+        """Gets a key from the source object.
+ 
+        @param key: The name of the value to retrieve.
+        @type key: str
+
+        @param default: Provides a the default value that will be returned in
+            case the supplied object doesn't define the requested key. If this
+            parameter is not set, a KeyError exception will be raised.
+
+        @param language: Required for multi-language values. Indicates the
+            language to retrieve the value in.
+        @type language: str
+    
+        @return: The requested value, if defined. If not, the method either
+            returns the default value (if one has been specified) or raises a
+            KeyError exception.
+
+        @raise KeyError: Raised when an attempt is made to access an undefined
+            key, and no default value is provided.
+        """
+        return self.source_accessor.get(
+                self.source_object, key, default, language)
+    
+    def set(self, key, value, language = None):
+        """Sets the value of a key on the target object.
+        
+        @param obj: The object to set the value on.
+        @type obj: object
+
+        @param key: The key to set.
+        @type key: str
+
+        @param language: Required for multi-language values. Indicates the
+            language that the value is assigned to.
+        @type language: str
+        """
+        return self.target_accessor.set(
+                self.target_object, key, value, language)
+
+    def iter_languages(self, source_key):
+        if self.source_schema and self.source_schema[source_key].translated:
+            return self.source_accessor.languages(
+                self.source_object,
+                source_key)
+        else:
+            return (None,)
+
+    def consume(self, key):
+        """Marks the given key as processed, which will exclude it from the
+        implicit copy process. It is the responsibility of each L{Rule}
+        subclass to call this method on every key it handles.
+        
+        @param key: The key to consume.
+        @type key: str
+        """
+        if self.consume_keys:
+            self.remaining_keys.remove(key)
 
 
 class Adapter(object):
 
     copy_validations = True
 
-    def __init__(self):
-        self.__implicit_copy = True
+    def __init__(self,
+        source_accessor = AttributeAccessor,
+        target_accessor = AttributeAccessor,
+        implicit_copy = True,
+        copy_validations = True):
+
+        self.source_accessor = source_accessor
+        self.target_accessor = target_accessor
+        self.__implicit_copy = implicit_copy
+        self.copy_validations = copy_validations
         self.import_rules = RuleSet()
         self.export_rules = RuleSet()
 
@@ -58,29 +256,61 @@ class Adapter(object):
         source_object,
         target_object,
         source_schema = None,
-        get_value = None,
-        set_value = None):
+        target_schema = None,
+        source_accessor = None,
+        target_accessor = None):
         
+        if source_accessor is None:
+            source_accessor = self.source_accessor
+            if source_accessor is None:
+                raise ValueError(
+                    "A source member accessor is required to import the object"
+                )
+
+        if target_accessor is None:
+            target_accessor = self.target_accessor
+            if target_accessor is None:
+                raise ValueError(
+                    "A target member accessor is required to import the object"
+                )
+
         self.import_rules.adapt_object(
             source_object,
             target_object,
+            source_accessor,
+            target_accessor,
             source_schema,
-            get_value,
-            set_value)
+            target_schema)
 
     def export_object(self,        
         source_object,
         target_object,
         source_schema = None,
-        get_value = None,
-        set_value = None):
+        target_schema = None,
+        source_accessor = None,
+        target_accessor = None):
         
+        if source_accessor is None:
+            source_accessor = self.source_accessor
+            if source_accessor is None:
+                raise ValueError(
+                    "A source member accessor is required to import the object"
+                )
+
+        if target_accessor is None:
+            target_accessor = self.target_accessor
+            if target_accessor is None:
+                raise ValueError(
+                    "A target member accessor is required to import the object"
+                )
+
         self.export_rules.adapt_object(
             source_object,
             target_object,
+            source_accessor,
+            target_accessor,
             source_schema,
-            get_value,
-            set_value)
+            target_schema)
 
     def _get_implicit_copy(self):
         return self.__implicit_copy
@@ -156,22 +386,20 @@ class RuleSet(object):
         self.__rules.remove(rule)
     
     def adapt_schema(self, source_schema, target_schema):
-        
-        if self.implicit_copy:
-            remaining_keys = set(source_schema.members())
-            def consume_key(key):
-                if key in remaining_keys:
-                    remaining_keys.remove(key)
-        else:
-            consume_key = _do_nothing
+
+        context = AdaptationContext(
+            source_schema = source_schema,
+            target_schema = target_schema,
+            consume_keys = self.implicit_copy
+        )
         
         for rule in self.__rules:
-            rule.adapt_schema(source_schema, target_schema, consume_key)
+            rule.adapt_schema(context)
 
         if self.implicit_copy:
-            copy_rule = Copy(remaining_keys)
-            copy_rule.adapt_schema(
-                source_schema, target_schema, _do_nothing)
+            copy_rule = Copy(context.remaining_keys)
+            context.consume_keys = False
+            copy_rule.adapt_schema(context)
 
         # Preserve member order
         target_members = target_schema.members()
@@ -190,59 +418,46 @@ class RuleSet(object):
     def adapt_object(self,
         source_object,
         target_object,
+        source_accessor,
+        target_accessor,
         source_schema = None,
-        get_value = None,
-        set_value = None):
+        target_schema = None):
         
-        if get_value is None:
-            get_value = default_getter(source_object)
+        if source_accessor is None:
+            raise ValueError(
+                "A source member accessor is required to import the object"
+            )
 
-        if set_value is None:
-            set_value = default_setter(target_object)
+        if target_accessor is None:
+            raise ValueError(
+                "A target member accessor is required to import the object"
+            )
 
-        if self.implicit_copy:
-            remaining_keys = set(source_schema.members())
-            def consume_key(key):
-                if key in remaining_keys:
-                    remaining_keys.remove(key)
-        else:
-            consume_key = _do_nothing
-        
+        context = AdaptationContext(
+            source_object = source_object,
+            target_object = target_object,
+            source_accessor = source_accessor,
+            target_accessor = target_accessor,
+            source_schema = source_schema,
+            target_schema = target_schema,
+            consume_keys = self.implicit_copy
+        )
+      
         for rule in self.__rules:
-            rule.adapt_object(
-                source_object,
-                target_object,
-                source_schema,
-                get_value,
-                set_value,
-                consume_key)
+            rule.adapt_object(context)
 
         if self.implicit_copy:
-            copy_rule = Copy(remaining_keys)
-            copy_rule.adapt_object(
-                source_object,
-                target_object,
-                source_schema,
-                get_value,
-                set_value,
-                _do_nothing)
+            copy_rule = Copy(context.remaining_keys)
+            context.consume_keys = False
+            copy_rule.adapt_object(context)
 
 
 class Rule(object):
 
-    def adapt_schema(self,
-        source_schema,
-        target_schema,
-        consume_key):
+    def adapt_schema(self, context):
         pass
 
-    def adapt_object(self,
-        source_object,
-        target_object,
-        source_schema,        
-        get_value,
-        set_value,
-        consume_key):
+    def adapt_object(self, context):
         pass
 
     def _adapt_member(self, schema, properties):
@@ -295,18 +510,15 @@ class Copy(Rule):
         @type: (str, str) mapping
         """)
 
-    def adapt_schema(self,
-        source_schema,
-        target_schema,
-        consume_key):
+    def adapt_schema(self, context):
 
         for source_name, target_name in self.mapping.iteritems():
             
-            consume_key(source_name)
-            source_member = source_schema[source_name]
+            context.consume(source_name)
+            source_member = context.source_schema[source_name]
 
             try:
-                target_member = target_schema[target_name]
+                target_member = context.target_schema[target_name]
             except KeyError:
                 target_member = source_member.copy()
                 target_member.name = target_name
@@ -318,49 +530,35 @@ class Copy(Rule):
                     setattr(target_member, prop_name, prop_value)
 
             if not target_member.schema:
-                target_schema.add_member(target_member)
+                context.target_schema.add_member(target_member)
 
-    def adapt_object(self,
-        source_object,
-        target_object,
-        source_schema,        
-        get_value,
-        set_value,
-        consume_key):
+    def adapt_object(self, context):
         
         for source_name, target_name in self.mapping.iteritems():
-            consume_key(source_name)
-            value = get_value(source_object, source_name)
 
-            if self.transform:
-                value = self.transform(value)
+            context.consume(source_name)
 
-            set_value(target_object, target_name, value)
+            for language in context.iter_languages(source_name):
+                
+                value = context.get(source_name, None, language)
+
+                if self.transform:
+                    value = self.transform(value)
+
+                context.set(target_name, value, language)
 
 
 class Exclusion(Rule):
 
     def __init__(self, excluded_members):
         self.excluded_members = excluded_members
-
-    def adapt_schema(self,
-        source_schema,
-        target_schema,
-        consume_key):
-
+    
+    def _consume_keys(self, context):
         for excluded_key in self.excluded_members:
-            consume_key(excluded_key)
+            context.consume(excluded_key)
 
-    def adapt_object(self,
-        source_object,
-        target_object,
-        source_schema,
-        get_value,
-        set_value,
-        consume_key):
-        
-        for excluded_key in self.excluded_members:
-            consume_key(excluded_key)
+    adapt_schema = _consume_keys
+    adapt_object = _consume_keys
 
 
 class Split(Rule):
@@ -385,34 +583,28 @@ class Split(Rule):
 
         self.targets = norm_targets
     
-    def adapt_schema(self,
-        source_schema,
-        target_schema,
-        consume_key):
+    def adapt_schema(self, context):
 
-        consume_key(self.source)
+        context.consume(self.source)
         
         for target in self.targets:
-            target_member = self._adapt_member(target_schema, target)
-            target_member.adaptation_source = source_schema[self.source]
+            target_member = self._adapt_member(context.target_schema, target)
+            target_member.adaptation_source = \
+                context.source_schema[self.source]
 
-    def adapt_object(self,
-        source_object,
-        target_object,
-        source_schema,
-        get_value,
-        set_value,
-        consume_key):
+    def adapt_object(self, context):
 
-        consume_key(self.source)
+        context.consume(self.source)
 
-        value = get_value(source_object, self.source)
+        for language in context.languages(source_name):
+            
+            value = context.get(self.source, None, language)
 
-        if value is not None:
-            parts = value.split(self.separator)
+            if value is not None:
+                parts = value.split(self.separator)
 
-            for target, part in zip(self.targets, parts):
-                setattr(target_object, target["name"], part)
+                for target, part in zip(self.targets, parts):
+                    context.set(target["name"], part, language)
 
 
 class Join(Rule):
@@ -426,38 +618,42 @@ class Join(Rule):
 
         self.target = target
 
-    def adapt_schema(self,
-        source_schema,
-        target_schema,
-        consume_key):
+    def adapt_schema(self, context):
 
         for source in self.sources:
-            consume_key(source)
+            context.consume(source)
         
-        target_member = self._adapt_member(target_schema, self.target)
-        target_member.adaptation_source = source_schema[self.sources[0]]
+        target_member = self._adapt_member(context.target_schema, self.target)
+        target_member.adaptation_source = \
+            context.source_schema[self.sources[0]]
 
-    def adapt_object(self,
-        source_object,
-        target_object,
-        source_schema,
-        get_value,
-        set_value,
-        consume_key):
+    def adapt_object(self, context):
 
-        parts = []
+        # Make a first pass over the data, to find all languages the value has
+        # been translated into
+        languages = set()
 
         for source in self.sources:
             consume_key(source)
-            value = get_value(source_object, source)
+            languages.update(context.languages(source))
+        
+        # For each of those languages, try to join all source members into a
+        # a single value
+        for language in languages:
 
-            if value is None:
-                break
+            parts = []
+
+            for source in self.sources:
+
+                value = get_value(source_object, source)
+
+                if value is None:
+                    break
+                else:
+                    parts.append(value)
             else:
-                parts.append(value)
-        else:
-            value = self.glue.join(unicode(part) for part in parts)
-            set_value(target_object, self.target["name"], value)
+                value = self.glue.join(unicode(part) for part in parts)
+                context.set(self.target["name"], value)
 
 
 if __name__ == "__main__":
@@ -472,7 +668,7 @@ if __name__ == "__main__":
         export_transform = lambda value: not value
     )
 
-    user_schema = Schema(members = {
+    product_schema = Schema(members = {
         "id": Integer(
             required = True,
             unique = True,
@@ -480,33 +676,46 @@ if __name__ == "__main__":
         ),
         "name": String(
             required = True,
+            translated = True,
             min = 4,
-            max = 20,
-            format = re.compile("^[a-zA-Z][a-zA-Z_0-9]*$")
+            max = 20
         ),
         "enabled": Boolean(
             required = True,
             default = True
         )
     })    
-   
-    class User(object):
-        pass
-    
-    user = User()
-    user.id = 3
-    user.name = "Kurt Russell"
-    user.enabled = False
+       
+    product = {}
+    product["id"] = 3
+    product["name"] = {
+        "en": u"Kurt Russell action figure",
+        "ca": u"Figura d'acció de Kurt Russell"
+    }
+    product["enabled"] = False
 
-    form_schema = Schema()
-    adapter.export_schema(user_schema, form_schema)
+    form_schema = adapter.export_schema(product_schema)
     form = {}
     
-    adapter.export_object(user, form, user_schema)
+    adapter.export_object(
+        product,
+        form,
+        product_schema,
+        form_schema,
+        source_accessor = DictAccessor,
+        target_accessor = DictAccessor)
+    
     print form
-    form["name"] = "Chuck Norris"
+    form["name"]["es"] = "Chuck Norris"
     form["disabled"] = False
 
-    adapter.import_object(form, user, form_schema)
-    print user.__dict__
+    adapter.import_object(        
+        form,
+        product,
+        form_schema,
+        product_schema,
+        source_accessor = DictAccessor,
+        target_accessor = DictAccessor)
+
+    print product
 

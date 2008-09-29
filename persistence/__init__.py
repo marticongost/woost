@@ -9,7 +9,7 @@ and declarative queries over indices.
 @organization:	Whads/Accent SL
 @since:			July 2008
 """
-from magicbullet.persistence.entity import Entity, EntityClass
+from magicbullet.persistence.entity import Entity, EntityClass, EntityAccessor
 from magicbullet.persistence.datastore import datastore
 from magicbullet.persistence.incremental_id import incremental_id
 from magicbullet.persistence.index import Index

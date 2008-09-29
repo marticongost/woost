@@ -57,15 +57,20 @@ class Member(Variable):
     @type enumeration: any container
     """
 
+    # Constraints
     type = None
     default = None
     required = False
     require_none = False
     enumeration = None
 
+    # Copying and adaptation
     _copy_class = None
     copy_source = None
     adaptation_source = None
+
+    # Translation
+    translated = False
 
     # Attributes that deserve special treatment when performing a deep copy
     _special_copy_keys = set([

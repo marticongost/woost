@@ -29,7 +29,6 @@ schema.Collection.default_type = PersistentList
 schema.Mapping.default_type = PersistentMapping
 
 # Translation
-schema.Member.translated = False
 schema.Member.translation = None
 schema.Member.translation_source = None
 
@@ -522,6 +521,36 @@ class MemberDescriptor(object):
 
             if value is not None:
                 relations.relate(value, instance, self.member.related_end)
+
+_undefined = object()
+
+class EntityAccessor(schema.MemberAccessor):
+    """A member accessor for entity instances, used by
+    L{adapters<magicbullet.schema.adapters.Adapter>} to retrieve and set object
+    values.
+    """
+
+    @classmethod
+    def get(cls, obj, key, default = _undefined, language = None):
+        try:
+            return obj.get(key, language)
+
+        except AttributeError:
+            if default is _undefined:
+                raise
+
+            return default
+
+    @classmethod
+    def set(cls, obj, key, value, language = None):
+        obj.set(key, value, language)
+
+    @classmethod
+    def languages(cls, obj, key):
+        if obj.__class__.translated:
+            return obj.translations.keys()
+        else:
+            return (None,)
 
 
 class UniqueValueError(ValidationError):
