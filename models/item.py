@@ -36,6 +36,11 @@ class Item(Entity):
         bidirectional = True
     )
 
+    is_draft = schema.Boolean(
+        required = True,
+        default = False
+    )
+
     draft_source = schema.Reference(
         type = "magicbullet.models.Item",
         related_key = "drafts",
