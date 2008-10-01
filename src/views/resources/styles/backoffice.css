@@ -1,0 +1,712 @@
+
+html, body {
+    margin: 0;
+    padding: 0;
+}
+
+.BackOfficeLayout {
+    font-family: Bitstream Vera Sans;
+    font-size: 11pt;
+}
+
+.BackOfficeLayout .header {
+    padding: 0.8em;
+    overflow: hidden;
+    background-color: rgb(245,245,245);
+    background-color: #eceeef;
+    background-repeat:repeat-y;
+    background-image: url(header_background.png);
+    border-bottom: 1px solid rgb(200,210,220);
+    border-bottom: 1px solid rgb(180,190,200);
+}
+
+.BackOfficeLayout h1 {
+    margin: 0;
+    padding: 0;
+    font-size: 1.3em;
+    color: rgb(75,85,95);
+    float: left;
+}
+
+.BackOfficeLayout .identity {
+    float: right;
+    margin-top: 0.4em;
+    font-size: 0.7em;
+}
+
+.BackOfficeLayout .identity strong {
+    color: rgb(75,75,75);
+    font-weight: bold;
+}
+
+.BackOfficeLayout .identity form {
+    display: inline;
+    margin: 0;
+    padding: 0;
+}
+
+.BackOfficeLayout a, .BackOfficeLayout .identity button {
+    font-size: inherit;
+    background: none;
+    border: none;
+    text-decoration: none;
+    color: rgb(100,125,150);
+    color: rgb(50,80,110);
+    margin: 0;
+    padding: 0;
+    cursor: pointer;
+}
+
+.BackOfficeLayout a img {
+    border: none;
+}
+
+.BackOfficeLayout .CheckList div {
+    white-space: nowrap;
+}
+
+.BackOfficeLayout .navigation {
+    clear: both;
+    overflow: visible;
+    border-bottom: 1px solid rgb(200,210,220);
+    border-left: none;
+    border-right: none;
+    margin-top: 0.75em;
+    height: 2.1em;
+}
+
+.BackOfficeLayout .navigation .section {
+    color: rgb(75,75,75);
+    position: relative;
+    top: -1px;
+    height: 1.3em;
+    float: left;
+    display: block;
+    background-color: rgb(240,240,240);
+    padding-left: 0.8em;
+    padding-top: 0.4em;
+    padding-bottom: 0.4em;
+    padding-right: 0.8em;
+    margin-right: 0.2em;
+    border: 1px solid rgb(200,210,220);
+    -moz-border-radius-topleft: 5px;
+    -moz-border-radius-topright: 5px;
+    border-radius-topleft: 5px;
+    border-radius-topright: 5px;
+}
+
+.BackOfficeLayout .navigation a.selected {
+    border-bottom-color: white;
+    background-color: white;
+}
+
+.BackOfficeLayout .go_back {
+    float: right;
+    margin-right: 1.1em;
+    margin-top: 0.1em;
+    background-image: url(../images/previous.png);
+    background-repeat: no-repeat;
+    padding-left: 1.8em;
+    font-size: 85%;
+}
+
+.BackOfficeLayout .body {
+    clear: both;
+    padding: 1em;
+}
+
+.BackOfficeLayout .selection_options {
+    font-size: 85%;
+    margin: 1em;
+    margin-bottom: 0.6em;
+}
+
+/* Forms
+-----------------------------------------------------------------------------*/
+.BackOfficeLayout fieldset {
+    border: none;
+    margin: 0;
+    padding: 0;
+    padding-left: 1.5em;
+    padding-top: 0.5em;
+    margin-bottom: 1.5em;
+}
+
+.BackOfficeLayout fieldset legend {
+    position: relative;
+    font-weight: bold;
+    margin: 0;
+    padding: 0;
+    margin-left: -1.5em;
+}
+
+.BackOfficeLayout .Form .required label {
+    color: rgb(75,85,95);
+    font-weight: bold;
+}
+
+.BackOfficeLayout .Form .required label:after {
+    content: '*';
+    padding-left: 0.2em;
+}
+
+.BackOfficeLayout .field .language {
+    float: left;
+    width: 18em;
+}
+
+.BackOfficeLayout .field input.control,
+.BackOfficeLayout .field textarea.control,
+.BackOfficeLayout .field select.control {
+    width: 18em;
+}
+
+.BackOfficeLayout .field .mceEditor .mceLayout {
+    width: 16.6em !important;
+}
+
+.BackOfficeLayout .buttons {
+    clear: both;
+}
+
+.BackOfficeLayout .ContentForm .translation_headers {
+    margin-left: 10em;
+    padding-bottom: 0.5em;
+    overflow: hidden;
+}
+
+.BackOfficeLayout .ContentForm .translation_headers .language {
+    float: left;
+    width: 18em;
+}
+
+.BackOfficeLayout .ContentForm .translation_headers .language span {
+    color: rgb(75,75,75);
+    font-style: italic;
+    font-size: 85%;
+}
+
+.BackOfficeLayout .Form .field {
+    overflow: hidden;
+    clear: left;
+    margin-bottom: 0.7em;
+}
+
+.BackOfficeLayout .Form label {
+    display: block;
+    float: left;
+    width: 10em;
+    padding-top: 0.3em;
+}
+
+.BackOfficeLayout .Form .control {
+    float: left;
+}
+
+/* Tables
+-----------------------------------------------------------------------------*/
+
+.BackOfficeLayout .Table {
+	clear: both;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.BackOfficeLayout .Table th span.label {
+    color: rgb(75,75,75);
+}
+
+.BackOfficeLayout .Table th, .Table td {
+    vertical-align: top;
+	text-align: left;
+	padding: 0.5em;
+	padding-right: 1em;
+    font-size: 85%;
+}
+
+/*.Table tr.translations th {*/
+.BackOfficeLayout .Table th .translation {
+    margin-left: 0.5em;
+    font-size: 80%;
+    font-weight: normal;
+    font-style: italic;
+    color: rgb(75,75,75);
+    padding-top: 0;
+}
+
+.BackOfficeLayout .Table .selection {
+    width: 1.5em;
+    padding-right: 0;
+}
+
+.BackOfficeLayout .Table .even {
+	background-color: rgb(235,240,247);
+}
+
+.BackOfficeLayout .Table .odd {
+    background-color: white;
+}
+
+.BackOfficeLayout .Table .even td.sorted {
+    background-color: rgb(225,230,237);
+    background-color: rgb(220,225,232);
+    background-color: rgb(220,225,227);
+}
+
+.BackOfficeLayout .Table .odd td.sorted {
+    background-color: rgb(235,240,247);
+}
+
+.BackOfficeLayout .Table tr.selected td,
+.BackOfficeLayout .Table tr.selected td * {
+    background-color: rgb(200,205,207) !important;
+    background-color: rgb(75,75,75) !important;
+    color: white !important;
+}
+
+.BackOfficeLayout .Table .element_column label {
+    white-space: nowrap;
+    background-repeat: no-repeat;
+    padding-left: 1.5em;
+}
+
+.BackOfficeLayout .draft,
+.BackOfficeLayout .Table .draft {
+    background-color: rgb(245,237,185);
+}
+
+.BackOfficeLayout .Table .nested_draft td.element_column {
+    padding-left: 2em;
+}
+
+.BackOfficeLayout .Table .nested_draft td.element_column label {
+    background-image: url(edit.png);
+}
+
+.BackOfficeLayout .Table td a {
+    text-decoration: underline;
+}
+
+.BackOfficeLayout .Table th.sorted .label {
+    padding-right: 1em;
+    background-repeat: no-repeat;
+    background-position: center right;
+}
+
+.BackOfficeLayout .Table td.element_column label {
+    padding-top: 0.1em;
+    padding-bottom: 0.1em;
+    background-position: center left;
+}
+
+.BackOfficeLayout .Table th.ascending .label {
+    background-image: url(ascending.png);
+}
+
+.BackOfficeLayout .Table th.descending .label {
+    background-image: url(descending.png);
+}
+
+/* Content type icons
+-----------------------------------------------------------------------------*/
+.BackOfficeLayout .Item {
+    background-image: url(../images/types/Item.png);
+}
+
+.BackOfficeLayout .AccessRule {
+    background-image: url(../images/types/AccessRule.png);
+}
+
+.BackOfficeLayout .DynamicGroup {
+    background-image: url(../images/types/DynamicGroup.png);
+}
+
+.BackOfficeLayout .Group {
+    background-image: url(../images/types/Group.png);
+}
+
+.BackOfficeLayout .Document {
+    background-image: url(../images/types/Document.png);
+}
+
+.BackOfficeLayout .Event {
+    background-image: url(../images/types/Event.png);
+}
+
+.BackOfficeLayout .File {
+    background-image: url(../images/types/File.png);
+}
+
+.BackOfficeLayout .News {
+    background-image: url(../images/types/News.png);
+}
+
+.BackOfficeLayout .Resource {
+    background-image: url(../images/types/Resource.png);
+}
+
+.BackOfficeLayout .Template {
+    background-image: url(../images/types/Template.png);
+}
+
+.BackOfficeLayout .User {
+    background-image: url(../images/types/User.png);
+}
+
+.BackOfficeLayout .Role {
+    background-image: url(../images/types/Role.png);
+}
+
+/* Toolbar
+-----------------------------------------------------------------------------*/
+
+.BackOfficeLayout .toolbar {
+	clear: both;
+    margin-top: 1em;
+	margin-bottom: 0.5em;
+	background-color: rgb(242,240,235);
+	border: 1px solid rgb(232,230,225);
+    height: 2.1em;
+}
+
+.BackOfficeLayout .toolbar .toolbar_button {    
+    float: left;
+	font-size: 85%;
+    margin: 0;
+    padding: 0;
+    margin-right: 1em;
+}
+
+.BackOfficeLayout .toolbar .toolbar_button .label {
+    height: 2.1em;
+    padding-top: 0.2em;
+}
+
+.BackOfficeLayout .toolbar button.toolbar_button {
+    border: none;
+    background: none;
+    padding-top: 0.2em;
+}
+
+.BackOfficeLayout .toolbar .toolbar_button img {
+	vertical-align: middle;
+}
+
+.BackOfficeLayout .toolbar .toolbar_button .label {
+    display: block;
+}
+
+.BackOfficeLayout .toolbar .content_view,
+.BackOfficeLayout .toolbar .visible_languages,
+.BackOfficeLayout .toolbar .visible_members {
+    float: right;    
+}
+
+.BackOfficeLayout .toolbar .content_type .label,
+.BackOfficeLayout .toolbar .visible_languages .label,
+.BackOfficeLayout .toolbar .visible_members .label,
+.BackOfficeLayout .toolbar .content_view .label {
+    height: 1.9em;
+    padding-top: 0.4em;
+    padding-left: 0.5em !important;
+    background-position: right 0.8em;
+}
+
+.BackOfficeLayout .toolbar .visible_members .selector_content {
+    right: 0;
+}
+
+/* Dropdown selector
+-----------------------------------------------------------------------------*/
+.BackOfficeLayout .selector {
+    position: relative;
+    overflow: visible;
+    cursor: default;
+}
+
+.BackOfficeLayout .selector .label {
+    position: relative;
+    padding-left: 0.2em !important;
+    padding-right: 1em;
+    background: url(dropdown_arrow.png) no-repeat right 0.9em;
+    border: 1px solid transparent;
+    z-index: 2;
+}
+
+.BackOfficeLayout .selector:hover .label {
+    background-color: white;
+    border: 1px solid rgb(210,220,230);
+    border-bottom-color: white;
+}
+
+.BackOfficeLayout .selector_content {
+    min-width: 8em;
+    display: none;
+    position: absolute;
+    top: 2.3em;
+    border: 1px solid rgb(210,220,230);
+    background-color: rgb(250,250,250);
+    padding: 0.4em 0.6em;
+    margin: 0;
+    z-index: 1;
+    padding: 0.6em;
+}
+
+.BackOfficeLayout .selector:hover .selector_content {
+    display: block;
+}
+
+/* Visible members dropdown
+-----------------------------------------------------------------------------*/
+.BackOfficeLayout .visible_members .CheckList {
+    margin-bottom: 0.4em;
+}
+
+/* Content languages dropdown
+-----------------------------------------------------------------------------*/
+.BackOfficeLayout .visible_languages .CheckList {
+    margin-bottom: 0.4em;
+}
+
+/* Link selectors
+-----------------------------------------------------------------------------*/
+.BackOfficeLayout .LinkSelector .selected {
+    font-weight: bold;
+}
+
+/* Content type dropdown
+-----------------------------------------------------------------------------*/
+.BackOfficeLayout .ContentTypeTree .selected {
+    font-weight: bold;
+}
+
+.BackOfficeLayout .ContentTypeTree,
+.BackOfficeLayout .ContentTypeTree ul,
+.BackOfficeLayout .ContentTypeTree li {
+    padding-left: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    margin: 0;
+    list-style-type: none;
+}
+
+.BackOfficeLayout .ContentTypeTree li {
+    padding-top: 0.8em;
+    white-space: nowrap;
+}
+
+.BackOfficeLayout .ContentTypeTree li li {
+    padding-left: 2em;
+}
+
+.BackOfficeLayout .ContentTypeTree .entry_label {
+    background-repeat: no-repeat;
+    padding-left: 1.75em;
+    padding-bottom: 0.2em;
+    color: black;
+}
+
+.BackOfficeLayout .toolbar .content_type {
+    background-repeat: no-repeat;
+    padding-bottom: 0.2em;
+    color: black;
+}
+
+/* Content type path
+-----------------------------------------------------------------------------*/
+.BackOfficeLayout .ContentTypePath {
+    margin: 0;
+    padding: 0;
+    margin-top: 0.5em;
+    height: 1.5em;
+}
+
+.BackOfficeLayout .ContentTypePath .selector_content {
+    top: 1.4em;
+    z-index: 3;
+    padding: 0.4em;
+    min-width: 16em;
+}
+
+.BackOfficeLayout .ContentTypePath .selector_content > li {
+    font-size: 85%;
+}
+
+.BackOfficeLayout .ContentTypePath > li {
+    display: block;
+    float: left;
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+    padding-left: 2.4em;
+    background-image: url(path_separator.png);
+    background-repeat: no-repeat;
+    background-position: 1em 0.3em;
+}
+
+.BackOfficeLayout .ContentTypePath > li:first-child {
+    background-image: none;
+    padding-left: 0;
+}
+
+.BackOfficeLayout .ContentTypePath .selector {
+    height: 1.5em;
+}
+
+.BackOfficeLayout .ContentTypePath .selector .label {
+    padding-top: 0.2em;
+    padding-bottom: 0.2em;
+    padding-left: 0.2em;
+    z-index: 4;
+    background-position: right 0.6em;
+}
+
+.BackOfficeLayout .ContentTypePath > li:last-child .label {
+    color: black;
+    font-weight: bold;
+}
+
+.BackOfficeLayout .ContentTypePath .leaf .label {
+    background: none;
+}
+
+.BackOfficeLayout .ContentTypePath .leaf .label {
+    border-color: transparent;
+}
+
+/* Paging
+-----------------------------------------------------------------------------*/
+
+.BackOfficeLayout .item_count,
+.BackOfficeLayout .page_size,
+.BackOfficeLayout .Pager {
+    float: right;
+    font-size: 85%;
+    margin-bottom: 0.75em;
+    margin-left: 2em;
+}
+
+.BackOfficeLayout .item_count, .Pager {
+    padding-top: 0.3em;
+}
+
+.BackOfficeLayout .page_size input {
+    font-size: inherit;
+    width: 2.5em;
+    margin-left: 0.4em;
+}
+
+.BackOfficeLayout .Pager * {
+    float: left;
+    display: block;
+}
+
+.BackOfficeLayout .Pager .previous {
+    margin-left: 0.3em;
+}
+
+.BackOfficeLayout .Pager .next {
+    margin-right: 0.3em;
+}
+
+.BackOfficeLayout .Pager .page_links {
+    margin-left: 0.8em;
+    margin-right: 0.8em;
+}
+
+.BackOfficeLayout .Pager .page_links a + a {
+    margin-left: 0.5em;
+}
+
+.BackOfficeLayout .Pager .page_links a.selected {
+    font-weight: bold;
+}
+
+.BackOfficeLayout .no_results {
+    margin-top: 2em;
+    border: 1px dotted rgb(200,160,120);
+    padding: 0.5em;
+}
+
+/* Tree content view
+-----------------------------------------------------------------------------*/
+
+.BackOfficeLayout .TreeContentView .expander {
+    margin-right: 0.3em;
+}
+
+.BackOfficeLayout .TreeContentView .expander img {
+    vertical-align: middle;
+}
+
+.BackOfficeLayout .TreeContentView .depth_level {
+    padding-left: 1.8em;
+}
+
+.BackOfficeLayout .TreeContentView .leaf label {
+    margin-left: 1.5em;
+}
+
+/* History
+-----------------------------------------------------------------------------*/
+
+.BackOfficeHistoryView td.changes ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.BackOfficeHistoryView td.changes li {
+    background-position: left center;
+    background-repeat: no-repeat;
+    padding-top: 0.2em;
+    padding-bottom: 0.2em;
+    padding-left: 1.6em;
+}
+
+.BackOfficeHistoryView td.changes li + li {
+    margin-top: 0.3em;
+}
+
+.BackOfficeHistoryView td.changes li.create {
+    background-image: url(new.png);
+}
+
+.BackOfficeHistoryView td.changes li.modify {
+    background-image: url(edit.png);
+}
+
+.BackOfficeHistoryView td.changes li.delete {
+    background-image: url(delete.png);
+}
+
+/* Edit form
+-----------------------------------------------------------------------------*/
+.BackOfficeEditView .body {
+    padding-top: 0;
+}
+
+.BackOfficeEditView legend {
+    display: none;
+    margin-left: 0;
+}
+
+.BackOfficeEditView fieldset {
+    padding-left: 0;
+    margin: 0;
+}
+
+.BackOfficeEditView .edit_form .fields {
+    clear: left;
+    position: relative;
+    top: -1px;
+    padding: 1em;
+    border: 1px solid rgb(200,210,220);
+    border-top: none;
+}
+
+.BackOfficeEditView .buttons {
+    padding: 1em;
+    text-align: right;
+}
+

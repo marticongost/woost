@@ -162,9 +162,7 @@ def init_site(
             es = u"Hoja de estilos de bienvenida",
             en = u"Greeting stylesheet"
         )
-        message_stylesheet.html = \
-            u"""<link rel="Stylesheet" type="text/css" href="%s"/>""" \
-            % (uri + "resources/styles/message.css")
+        message_stylesheet.uri = uri + "resources/styles/message.css"
 
         # Create the temporary home page
         site.home = StandardPage()

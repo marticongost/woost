@@ -1,0 +1,20 @@
+<html
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:py="http://genshi.edgewall.org/">
+	
+	<head>
+		<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+        <title>$requested_item.title</title>
+        <py:for each="resource in requested_item.resources">            
+            <link py:if="resource.uri.endswith('.css')"
+                rel="Stylesheet" type="text/css" href="${resource.uri}"/>
+            <script py:if="resource.uri.endswith('.js')"
+                type="text/javascript" src="${resource.uri}"></script>
+        </py:for>
+	</head>
+	
+	<body>
+        ${Markup(requested_item.body)}
+	</body>
+
+</html>

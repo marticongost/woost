@@ -11,6 +11,7 @@ import operator
 class Expression(object):
     
     op = None
+    operands = ()
 
     def __init__(self, *operands):
         self.operands = tuple(self.wrap(operand) for operand in operands)
@@ -106,6 +107,15 @@ class Variable(Expression):
 
     def eval(self, context, get_value = operator.getitem):
         return get_value(context, self.name)
+
+
+class CustomExpression(Expression):
+
+    def __init__(self, expression):
+        self.expression = expression
+
+    def eval(self, context, get_value = operator.getitem):
+        return self.expression(context)
 
 
 class EqualExpression(Expression):
@@ -210,5 +220,4 @@ class TranslationExpression(Expression):
 
     def eval(self, context, get_value = operator.getitem):
         return context.get(self.operands[0], self.operands[1].value)
-    
 
