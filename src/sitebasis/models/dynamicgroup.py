@@ -6,9 +6,9 @@
 @organization:	Whads/Accent SL
 @since:			July 2008
 """
-from magicbullet import schema
-from magicbullet.models import Item
-from magicbullet.persistence import Entity, Query
+from cocktail import schema
+from cocktail.persistence import Entity, Query
+from sitebasis.models import Item
 
 class DynamicGroup(Item):
 

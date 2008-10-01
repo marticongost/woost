@@ -6,8 +6,8 @@
 @organization:	Whads/Accent SL
 @since:			September 2008
 """
-from magicbullet import schema
-from magicbullet.models.document import Document
+from cocktail import schema
+from sitebasis.models.document import Document
 
 class Event(Document):
 

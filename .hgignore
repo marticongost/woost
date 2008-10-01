@@ -1,4 +1,4 @@
 syntax: glob
-settings.py
 data
-views/resources/scripts/tinymce
+src/cocktail
+src/sitebasis/views/resources/scripts/tinymce

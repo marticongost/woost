@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<?py 
+from cocktail.schema import DictAccessor
+?>
+
+<div
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:py="http://www.whads.com/ns/cocktail/templates">
+
+    <?py
+    self.add_resource("/resources/styles/installer.css")
+    ?>
+
+    <h1>SiteBasis installation</h1>
+    
+    <py:cocktail.html.Form
+        py:id="installer_form"
+        py:data="@{self.data}"
+        py:schema="@{self.schema}"
+        py:accessor="${DictAccessor}">
+
+        <?py
+        def form_ready():
+            print self.schema
+
+        element.add_ready_handler(form_ready)
+        ?>
+
+    </py:cocktail.html.Form>
+    
+</div>
+

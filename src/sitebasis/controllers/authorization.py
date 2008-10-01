@@ -6,9 +6,9 @@
 @organization:	Whads/Accent SL
 @since:			July 2008
 """
-from magicbullet.persistence import datastore
-from magicbullet.models import allowed, AccessDeniedError
-from magicbullet.controllers.module import Module
+from cocktail.persistence import datastore
+from sitebasis.models import allowed, AccessDeniedError
+from sitebasis.controllers.module import Module
 
 
 class Authorization(Module):

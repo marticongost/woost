@@ -7,9 +7,9 @@
 @since:			July 2008
 """
 import cherrypy
-from magicbullet.models import Document, Site
-from magicbullet.models.document import exposed
-from magicbullet.controllers.module import Module
+from sitebasis.models import Document, Site
+from sitebasis.models.document import exposed
+from sitebasis.controllers.module import Module
 
 
 class Dispatcher(Module):

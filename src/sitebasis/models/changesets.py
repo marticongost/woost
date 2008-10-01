@@ -10,9 +10,9 @@ from datetime import datetime
 from threading import local
 from contextlib import contextmanager
 from persistent.mapping import PersistentMapping
-from magicbullet.modeling import classgetter
-from magicbullet import schema
-from magicbullet.persistence.entity import Entity
+from cocktail.modeling import classgetter
+from cocktail import schema
+from cocktail.persistence.entity import Entity
 
 @contextmanager
 def changeset_context(author = None):
@@ -25,7 +25,7 @@ def changeset_context(author = None):
     changeset.
 
     @param author: The author of the changeset.
-    @type author: L{User<magicbullet.models.User>}
+    @type author: L{User<sitebasis.models.User>}
 
     Example:
 
@@ -78,14 +78,14 @@ class ChangeSet(Entity):
 
     changes = schema.Collection(
         type = PersistentMapping,
-        items = "magicbullet.models.Change",
+        items = "sitebasis.models.Change",
         get_item_key = lambda collection, item: item.target.id,
         bidirectional = True
     )
     
     author = schema.Reference(
         required = True,
-        type = "magicbullet.models.User"
+        type = "sitebasis.models.User"
     )
 
     date = schema.DateTime(
@@ -122,18 +122,18 @@ class Change(Entity):
 
     changeset = schema.Reference(
         required = True,
-        type = "magicbullet.models.ChangeSet",
+        type = "sitebasis.models.ChangeSet",
         bidirectional = True
     )
 
     action = schema.Reference(
         required = True,
-        type = "magicbullet.models.Action"
+        type = "sitebasis.models.Action"
     )
 
     target = schema.Reference(
         required = True,
-        type = "magicbullet.models.Item",
+        type = "sitebasis.models.Item",
         bidirectional = True
     )
 

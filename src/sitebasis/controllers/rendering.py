@@ -8,10 +8,10 @@
 """
 from os.path import join
 from genshi.template import TemplateLoader
-from magicbullet.translations import translate
-from magicbullet.models import Site
-from magicbullet.controllers.module import Module
-from magicbullet.controllers.viewstate import view_state, view_state_form
+from cocktail.translations import translate
+from cocktail.controllers import view_state, view_state_form
+from sitebasis.models import Site
+from sitebasis.controllers.module import Module
 
 
 class Rendering(Module):

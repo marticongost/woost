@@ -6,8 +6,8 @@
 @organization:	Whads/Accent SL
 @since:			June 2008
 """
-from magicbullet import schema
-from magicbullet.persistence.entity import Entity, EntityClass
+from cocktail import schema
+from cocktail.persistence.entity import Entity, EntityClass
 
 class Action(Entity):
     

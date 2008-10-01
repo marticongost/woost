@@ -9,14 +9,14 @@
 import os.path
 from threading import local
 import cherrypy
-from magicbullet.modeling import ListWrapper
-from magicbullet.persistence import datastore
-from magicbullet.controllers.language import Language
-from magicbullet.controllers.authentication import Authentication
-from magicbullet.controllers.authorization import Authorization
-from magicbullet.controllers.dispatcher import Dispatcher
-from magicbullet.controllers.rendering import Rendering
-from magicbullet.controllers.errorpages import ErrorPages
+from cocktail.modeling import ListWrapper
+from cocktail.persistence import datastore
+from sitebasis.controllers.language import Language
+from sitebasis.controllers.authentication import Authentication
+from sitebasis.controllers.authorization import Authorization
+from sitebasis.controllers.dispatcher import Dispatcher
+from sitebasis.controllers.rendering import Rendering
+from sitebasis.controllers.errorpages import ErrorPages
 
 
 class CMS(object):

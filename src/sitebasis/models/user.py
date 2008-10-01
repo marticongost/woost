@@ -6,8 +6,8 @@
 @organization:	Whads/Accent SL
 @since:			July 2008
 """
-from magicbullet import schema
-from magicbullet.models import Item
+from cocktail import schema
+from sitebasis.models import Item
 
 class User(Item):
  

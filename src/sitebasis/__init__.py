@@ -1,10 +1,11 @@
 #-*- coding: utf-8 -*-
 """
-A python based Content Management System.
+SiteBasis is an object oriented, web based Content Management System, written
+in python.
 
 @author:		Martí Congost
 @contact:		marti.congost@whads.com
 @organization:	Whads/Accent SL
-@since:			November 2007
+@since:			October 2008
 """
 

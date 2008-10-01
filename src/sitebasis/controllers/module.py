@@ -6,7 +6,7 @@
 @organization:	Whads/Accent SL
 @since:			July 2008
 """
-from magicbullet.modeling import getter
+from cocktail.modeling import getter
 
 
 class Module(object):

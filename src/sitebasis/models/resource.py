@@ -6,9 +6,9 @@
 @organization:	Whads/Accent SL
 @since:			June 2008
 """
-from magicbullet import schema
-from magicbullet.persistence import Entity
-from magicbullet.models import Item
+from cocktail import schema
+from cocktail.persistence import Entity
+from sitebasis.models import Item
 
 class Resource(Item):
 
@@ -26,7 +26,7 @@ class Resource(Item):
     )
 
     documents = schema.Collection(
-        items = "magicbullet.models.Document",
+        items = "sitebasis.models.Document",
         bidirectional = True
     )
 

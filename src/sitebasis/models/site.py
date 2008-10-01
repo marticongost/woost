@@ -6,9 +6,9 @@
 @organization:	Whads/Accent SL
 @since:			July 2008
 """
-from magicbullet.modeling import classgetter
-from magicbullet import schema
-from magicbullet.persistence import Entity, datastore
+from cocktail.modeling import classgetter
+from cocktail import schema
+from cocktail.persistence import Entity, datastore
 
 
 class Site(Entity):
@@ -32,19 +32,19 @@ class Site(Entity):
     )
 
     home = schema.Reference(
-        type = "magicbullet.models.Document",
+        type = "sitebasis.models.Document",
         required = True
     )
 
     not_found_error_page = schema.Reference(
-        type = "magicbullet.models.Document"
+        type = "sitebasis.models.Document"
     )
 
     forbidden_error_page = schema.Reference(
-        type = "magicbullet.models.Document"
+        type = "sitebasis.models.Document"
     )
     
     generic_error_page = schema.Reference(
-        type = "magicbullet.models.Document"
+        type = "sitebasis.models.Document"
     )
 

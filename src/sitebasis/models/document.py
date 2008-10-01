@@ -8,9 +8,9 @@
 """
 from datetime import datetime
 import cherrypy
-from magicbullet import schema
-from magicbullet.persistence import Entity
-from magicbullet.models import Item
+from cocktail import schema
+from cocktail.persistence import Entity
+from sitebasis.models import Item
 
 def exposed(func):
     func.exposed = True
@@ -92,7 +92,7 @@ class Document(Item):
     )
 
     template = schema.Reference(
-        type = "magicbullet.models.Template",
+        type = "sitebasis.models.Template",
         listed_by_default = False
     )
     
@@ -135,26 +135,26 @@ class Document(Item):
     # Resources and attachments
     #------------------------------------------------------------------------------    
     resources = schema.Collection(
-        items = "magicbullet.models.Resource",
+        items = "sitebasis.models.Resource",
         bidirectional = True
     )
 
     attachments = schema.Collection(
-        items = "magicbullet.models.File",
+        items = "sitebasis.models.File",
         bidirectional = True
     )
 
     # Hierarchy
     #------------------------------------------------------------------------------    
     parent = schema.Reference(
-        type = "magicbullet.models.Document",
+        type = "sitebasis.models.Document",
         bidirectional = True,
         related_key = "children",
         listed_by_default = False
     )
  
     children = schema.Collection(
-        items = "magicbullet.models.Document",
+        items = "sitebasis.models.Document",
         bidirectional = True,
         related_key = "parent"
     )

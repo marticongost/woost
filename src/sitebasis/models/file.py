@@ -6,8 +6,8 @@
 @organization:	Whads/Accent SL
 @since:			July 2008
 """
-from magicbullet import schema
-from magicbullet.models.document import Document
+from cocktail import schema
+from sitebasis.models.document import Document
 
 class File(Document):
  
@@ -18,7 +18,7 @@ class File(Document):
     translation_file_path = schema.String(translated = True)
 
     documents = schema.Collection(
-        items = "magicbullet.models.Document",
+        items = "sitebasis.models.Document",
         bidirectional = True
     )
 

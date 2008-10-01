@@ -8,10 +8,10 @@
 """
 from datetime import datetime
 from persistent.mapping import PersistentMapping
-from magicbullet import schema
-from magicbullet.persistence import Entity, EntityClass, datastore
-from magicbullet.models.changesets import ChangeSet, Change
-from magicbullet.models.action import Action
+from cocktail import schema
+from cocktail.persistence import Entity, EntityClass, datastore
+from sitebasis.models.changesets import ChangeSet, Change
+from sitebasis.models.action import Action
 
 # Add an extension property to control member visibility on item listings
 schema.Member.listed_by_default = True
@@ -32,7 +32,7 @@ class Item(Entity):
     changes = schema.Collection(
         required = True,
         versioned = False,
-        items = "magicbullet.models.Change",
+        items = "sitebasis.models.Change",
         bidirectional = True
     )
 
@@ -43,13 +43,13 @@ class Item(Entity):
     )
 
     draft_source = schema.Reference(
-        type = "magicbullet.models.Item",
+        type = "sitebasis.models.Item",
         related_key = "drafts",
         bidirectional = True
     )
 
     drafts = schema.Collection(
-        items = "magicbullet.models.Item",
+        items = "sitebasis.models.Item",
         related_key = "draft_source",
         bidirectional = True
     )
@@ -66,17 +66,17 @@ class Item(Entity):
     #------------------------------------------------------------------------------    
     author = schema.Reference(
         indexed = True,
-        type = "magicbullet.models.User",
+        type = "sitebasis.models.User",
         listed_by_default = False
     )
     
     owner = schema.Reference(
         indexed = True,
-        type = "magicbullet.models.User"
+        type = "sitebasis.models.User"
     )
 
     groups = schema.Collection(
-        items = "magicbullet.models.Group",
+        items = "sitebasis.models.Group",
         bidirectional = True
     )
 

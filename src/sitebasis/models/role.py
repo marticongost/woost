@@ -6,9 +6,9 @@
 @organization:	Whads/Accent SL
 @since:			August 2008
 """
-from magicbullet import schema
-from magicbullet.persistence import Entity
-from magicbullet.models import Item
+from cocktail import schema
+from cocktail.persistence import Entity
+from sitebasis.models import Item
 
 class Role(Item):
 

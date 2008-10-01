@@ -6,9 +6,9 @@
 @organization:	Whads/Accent SL
 @since:			July 2008
 """
-from magicbullet import schema
-from magicbullet.persistence import Entity
-from magicbullet.models import Item
+from cocktail import schema
+from cocktail.persistence import Entity
+from sitebasis.models import Item
 
 class Language(Item):
  
@@ -28,7 +28,7 @@ class Language(Item):
     )
     
     fallback_languages = schema.Collection(
-        items = "magicbullet.models.Language"
+        items = "sitebasis.models.Language"
     )
 
     def __translate__(self, language, **kwargs):

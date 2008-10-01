@@ -7,9 +7,9 @@
 @since:			July 2008
 """
 import cherrypy
-from magicbullet.models import Site, AccessDeniedError
-from magicbullet.controllers.module import Module
-from magicbullet.controllers.authentication import AuthenticationFailedError
+from sitebasis.models import Site, AccessDeniedError
+from sitebasis.controllers.module import Module
+from sitebasis.controllers.authentication import AuthenticationFailedError
 
 
 class ErrorPages(Module):

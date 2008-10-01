@@ -8,10 +8,10 @@
 """
 import sha
 import cherrypy
-from magicbullet.modeling import getter
-from magicbullet.models import User
-from magicbullet.persistence import datastore
-from magicbullet.controllers.module import Module
+from cocktail.modeling import getter
+from cocktail.persistence import datastore
+from sitebasis.models import User
+from sitebasis.controllers.module import Module
 
 
 class Authentication(Module):
@@ -40,7 +40,7 @@ class Authentication(Module):
 
     user = property(_get_user, _set_user, doc = """
         Gets or sets the user for the current session.
-        @type: L{User<magicbullet.models.user.User>}
+        @type: L{User<sitebasis.models.user.User>}
         """)
 
     @getter

@@ -6,14 +6,13 @@
 @organization:	Whads/Accent SL
 @since:			July 2008
 """
-import operator
 from persistent.list import PersistentList
-from magicbullet import schema
-from magicbullet.persistence import EntityClass, datastore
-from magicbullet.models.item import Item
-from magicbullet.models.action import Action
-from magicbullet.language import get_content_language
-from magicbullet.translations import translate
+from cocktail.language import get_content_language
+from cocktail.translations import translate
+from cocktail import schema
+from cocktail .persistence import EntityClass, datastore
+from sitebasis.models.item import Item
+from sitebasis.models.action import Action
 
 
 class AccessRule(Item):
@@ -40,24 +39,24 @@ class AccessRule(Item):
         "allowed"
     )
     
-    role = schema.Reference(type = "magicbullet.models.Item")
+    role = schema.Reference(type = "sitebasis.models.Item")
 
-    target_instance = schema.Reference(type = "magicbullet.models.Item")
+    target_instance = schema.Reference(type = "sitebasis.models.Item")
 
     target_type = schema.Reference(type = EntityClass)
 
-    target_ancestor = schema.Reference(type = "magicbullet.models.Document")
+    target_ancestor = schema.Reference(type = "sitebasis.models.Document")
 
-    action = schema.Reference(type = "magicbullet.models.Action")
+    action = schema.Reference(type = "sitebasis.models.Action")
 
-    language = schema.Reference(type = "magicbullet.models.Language")
+    language = schema.Reference(type = "sitebasis.models.Language")
 
     allowed = schema.Boolean(
         required = True,
         default = True
     )
 
-    REGISTRY_KEY = "magicbullet.models.accessrule.AccessRule-registry"
+    REGISTRY_KEY = "sitebasis.models.accessrule.AccessRule-registry"
 
     @classmethod
     def registry(cls):

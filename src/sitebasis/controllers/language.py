@@ -7,10 +7,10 @@
 @since:			July 2008
 """
 import cherrypy
-from magicbullet.translations import set_language
-from magicbullet.language import set_content_language
-from magicbullet.models import Site
-from magicbullet.controllers.module import Module
+from cocktail.translations import set_language
+from cocktail.language import set_content_language
+from sitebasis.models import Site
+from sitebasis.controllers.module import Module
 
 
 class Language(Module):
