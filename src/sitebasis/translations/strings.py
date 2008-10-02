@@ -6,7 +6,7 @@
 @organization:	Whads/Accent SL
 @since:			July 2008
 """
-from magicbullet.translations.translation import translations, translate
+from cocktail.translations import translations, translate
 
 translations.define(True,
     ca = u"Sí",

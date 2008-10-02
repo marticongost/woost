@@ -142,7 +142,6 @@ html, body {
 
 .BackOfficeLayout .Form .required label {
     color: rgb(75,85,95);
-    font-weight: bold;
 }
 
 .BackOfficeLayout .Form .required label:after {
@@ -195,8 +194,9 @@ html, body {
 .BackOfficeLayout .Form label {
     display: block;
     float: left;
-    width: 10em;
+    width: 15em;
     padding-top: 0.3em;
+    white-space: nowrap;
 }
 
 .BackOfficeLayout .Form .control {
@@ -678,6 +678,29 @@ html, body {
 
 .BackOfficeHistoryView td.changes li.delete {
     background-image: url(delete.png);
+}
+
+/* Error box
+-----------------------------------------------------------------------------*/
+.BackOfficeLayout .error_box {
+    padding: 0.5em;
+    border: 1px solid rgb(240,210,190);
+    background-color: rgb(245,230,215);
+    margin-bottom: 1em;
+}
+
+.BackOfficeLayout .error_box ul,
+.BackOfficeLayout .error_box li {
+    display: block;
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.BackOfficeLayout .error_box li em {
+    font-style: normal;
+    font-weight: bold;
+    color: rgb(135,35,10);
 }
 
 /* Edit form

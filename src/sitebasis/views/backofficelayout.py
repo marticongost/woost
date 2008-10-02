@@ -6,8 +6,8 @@
 @organization:	Whads/Accent SL
 @since:			September 2008
 """
-from magicbullet.translations import translate
-from magicbullet.html import Element
+from cocktail.translations import translate
+from cocktail.html import Element
 
 
 class BackOfficeLayout(Element):
@@ -36,11 +36,12 @@ class BackOfficeLayout(Element):
 
     def _ready(self):
         
-        if self.page_title is None:
-            self.page_title = translate(self.backoffice)
+        if self.backoffice:
+            if self.page_title is None:
+                self.page_title = translate(self.backoffice)
 
-        for resource in self.backoffice.resources:
-            self.add_resource(resource.uri)
+            for resource in self.backoffice.resources:
+                self.add_resource(resource.uri)
 
         self._fill_title()
         self._fill_identity_info()

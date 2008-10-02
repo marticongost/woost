@@ -2,32 +2,46 @@
 
 <?py 
 from cocktail.schema import DictAccessor
+from cocktail.translations import translate
+from cocktail.html import PasswordBox
 ?>
 
-<div
+<py:sitebasis.views.backofficelayout.BackOfficeLayout
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:py="http://www.whads.com/ns/cocktail/templates">
 
     <?py
     self.add_resource("/resources/styles/installer.css")
+    self.page_title = translate("SiteBasis installation")
     ?>
 
-    <h1>SiteBasis installation</h1>
+    <py:with py:element="self.body">
+
+        <div py:id="error_box">
+            <py:ready>
+                <?py                
+                element.visible = bool(self.errors)
+                ?>
+                <ul py:if="self.errors">
+                    <li py:for="error in self.errors">${translate(error)}</li>
+                </ul>
+            </py:ready>
+        </div>
+
+        <py:cocktail.html.Form
+            py:id="installer_form"
+            py:data="@{self.data}"
+            py:schema="@{self.schema}"
+            py:accessor="${DictAccessor}"
+            method="post">
+            <?py
+            element.set_member_display("admin_password", PasswordBox)
+            element.submit_button.empty()
+            element.submit_button.append(translate("Install"))
+            ?>
+        </py:cocktail.html.Form>
+
+    </py:with>
     
-    <py:cocktail.html.Form
-        py:id="installer_form"
-        py:data="@{self.data}"
-        py:schema="@{self.schema}"
-        py:accessor="${DictAccessor}">
-
-        <?py
-        def form_ready():
-            print self.schema
-
-        element.add_ready_handler(form_ready)
-        ?>
-
-    </py:cocktail.html.Form>
-    
-</div>
+</py:sitebasis.views.backofficelayout.BackOfficeLayout>
 
