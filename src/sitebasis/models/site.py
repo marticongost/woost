@@ -8,10 +8,11 @@
 """
 from cocktail.modeling import classgetter
 from cocktail import schema
-from cocktail.persistence import Entity, datastore
+from cocktail.persistence import datastore
+from sitebasis.models.item import Item
 
 
-class Site(Entity):
+class Site(Item):
 
     indexed = True
 

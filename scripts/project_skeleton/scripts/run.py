@@ -15,8 +15,8 @@ def main():
         sys.path.append(src_code_path)
 
     # Launch the application server
-    from _PROJECT_.controllers import _PROJECT_PREFIX_CMS
-    cms = _PROJECT_PREFIX_CMS()
+    from _PROJECT_MODULE_.controllers import _PROJECT_NAME_CMS
+    cms = _PROJECT_NAME_CMS()
     cms.run()
 
 if __name__ == "__main__":

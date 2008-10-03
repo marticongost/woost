@@ -6,11 +6,11 @@
 @organization:	Whads/Accent SL
 @since:			September 2008
 """
-from magicbullet.translations import translate
-from magicbullet.html.element import Element
-from magicbullet.html.table import MULTIPLE_SELECTION
-from magicbullet.views.backofficelayout import BackOfficeLayout
-from magicbullet.views.collectionview import CollectionView
+from cocktail.translations import translate
+from cocktail.html import Element
+from cocktail.html.table import MULTIPLE_SELECTION
+from sitebasis.views.backofficelayout import BackOfficeLayout
+from sitebasis.views.collectionview import CollectionView
 
 
 class BackOfficeHistoryView(BackOfficeLayout):

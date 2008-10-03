@@ -16,30 +16,61 @@ from cocktail.html import PasswordBox
     ?>
 
     <py:with py:element="self.body">
-
-        <div py:id="error_box">
-            <py:ready>
-                <?py                
-                element.visible = bool(self.errors)
-                ?>
-                <ul py:if="self.errors">
-                    <li py:for="error in self.errors">${translate(error)}</li>
-                </ul>
-            </py:ready>
+        
+        <div class="success" py:visible="@{self.successful}">
+            ${translate("Installation successful")}
         </div>
 
-        <py:cocktail.html.Form
-            py:id="installer_form"
-            py:data="@{self.data}"
-            py:schema="@{self.schema}"
-            py:accessor="${DictAccessor}"
-            method="post">
-            <?py
-            element.set_member_display("admin_password", PasswordBox)
-            element.submit_button.empty()
-            element.submit_button.append(translate("Install"))
-            ?>
-        </py:cocktail.html.Form>
+        <py:block py:visible="@{not self.successful}">
+            <div py:id="error_box">
+                <py:ready>
+                    <?py                
+                    element.visible = bool(self.errors)
+                    ?>
+                    <ul py:if="self.errors">
+                        <li py:for="error in self.errors">
+                            <?py
+                            try:
+                                error_desc = translate(error)
+                            except:
+                                error_desc = translate("Unknown error", error = error)
+                            ?>
+                            ${error_desc}
+                        </li>
+                    </ul>
+                </py:ready>
+            </div>
+
+            <py:cocktail.html.Form
+                py:id="installer_form"
+                py:data="@{self.data}"
+                py:schema="@{self.schema}"
+                py:accessor="${DictAccessor}"
+                method="post">
+                <?py
+                element.add_group("project", [
+                    "project_name",
+                    "project_path",
+                    "admin_email",
+                    "admin_password"
+                ])
+                element.add_group("webserver", [
+                    "webserver_host",
+                    "webserver_port",
+                    "validate_webserver_address"
+                ])
+                element.add_group("database", [
+                    "database_host",
+                    "database_port",
+                    "validate_database_address"
+                ])
+
+                element.set_member_display("admin_password", PasswordBox)
+                element.submit_button.empty()
+                element.submit_button.append(translate("Install"))
+                ?>
+            </py:cocktail.html.Form>
+        </py:block>
 
     </py:with>
     

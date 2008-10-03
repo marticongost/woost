@@ -6,18 +6,22 @@
 @organization:	Whads/Accent SL
 @since:			October 2008
 """
-from magicbullet.translations import translate
-from magicbullet.html.element import Element, Content
-from magicbullet.html.pagingcontrols import PagingControls
-from magicbullet.html.table import MULTIPLE_SELECTION
-from magicbullet.html.selectors import CheckList, LinkSelector
-from magicbullet.views.contenttable import ContentTable
-from magicbullet.views.contenttypetree import (
+from cocktail.translations import translate
+from cocktail.html import (
+    Element,
+    Content,
+    PagingControls,
+    MULTIPLE_SELECTION,
+    CheckList,
+    LinkSelector
+)
+from cocktail.controllers import view_state, view_state_form
+from sitebasis.views.contenttable import ContentTable
+from sitebasis.views.contenttypetree import (
     ContentTypePath,
     ContentTypeSelector,
     ContentTypeTree
 )
-from magicbullet.controllers.viewstate import view_state, view_state_form
 
 
 class CollectionView(Element):

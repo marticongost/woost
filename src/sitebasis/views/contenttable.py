@@ -6,10 +6,9 @@
 @organization:	Whads/Accent SL
 @since:			September 2008
 """
-from magicbullet.translations import translate
-from magicbullet.schema import Reference
-from magicbullet.html import Element
-from magicbullet.html.table import Table
+from cocktail.translations import translate
+from cocktail.schema import Reference
+from cocktail.html import Element, Table
 
 
 class ContentTable(Table):

@@ -6,10 +6,10 @@
 @organization:	Whads/Accent SL
 @since:			September 2008
 """
-from magicbullet.persistence import EntityAccessor
-from magicbullet.html.datadisplay import MULTIPLE_SELECTION
-from magicbullet.views.contentview import ContentView
-from magicbullet.views.contenttable import ContentTable
+from cocktail.persistence import EntityAccessor
+from cocktail.html import MULTIPLE_SELECTION
+from sitebasis.views.contentview import ContentView
+from sitebasis.views.contenttable import ContentTable
 
 
 class FlatContentView(ContentView):

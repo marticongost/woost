@@ -6,11 +6,9 @@
 @organization:	Whads/Accent SL
 @since:			September 2008
 """
-from magicbullet.translations import translate
-from magicbullet.html.element import Element, Content
-from magicbullet.html.table import MULTIPLE_SELECTION
-from magicbullet.html.selectors import LinkSelector
-from magicbullet.views.contenttypetree import (
+from cocktail.translations import translate
+from cocktail.html import Element, Content, MULTIPLE_SELECTION, LinkSelector
+from sitebasis.views.contenttypetree import (
     ContentTypePath,
     ContentTypeSelector,
     ContentTypeTree

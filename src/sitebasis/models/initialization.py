@@ -4,25 +4,11 @@
 @author:		Martí Congost
 @contact:		marti.congost@whads.com
 @organization:	Whads/Accent SL
-@since:			July 2008
+@since:			October 2008
 """
 from __future__ import with_statement
-import sha
-
-# Initialize the ZODB, bypassing the DataStore machinery. This is an ugly
-# workaround avoiding a hang up when trying to connect the client to an empty
-# database; should be properly fixed on datastore.py.
-from magicbullet.settings import storage
-from transaction import commit
-from ZODB import DB
-db = DB(storage)
-conn = db.open()
-conn.root()
-commit()
-conn.close()
-
-from magicbullet.persistence import datastore
-from magicbullet.models import (
+from cocktail.persistence import datastore
+from sitebasis.models import (
     changeset_context,
     Site,
     Action,
@@ -34,7 +20,7 @@ from magicbullet.models import (
     Resource,
     Template
 )
-from magicbullet.controllers.backoffice import BackOffice
+from sitebasis.controllers.backoffice import BackOffice
 
 def init_site(
     admin_email = "admin@localhost",
@@ -78,6 +64,11 @@ def init_site(
 
     with changeset_context() as changeset:
         
+        # Create the site
+        site = Site()
+        site.languages = ["ca", "es", "en"]
+        datastore.root["main_site"] = site
+
         # Create the administrator user and groups
         admin = User()
         admin.author = admin
@@ -87,6 +78,7 @@ def init_site(
         admin.password = sha.new(admin_password).digest()
         
         changeset.author = admin
+        site.author = site.owner = admin
     
         administrators = Group()
         administrators.critical = True
@@ -130,14 +122,10 @@ def init_site(
             es = u"Propietario",
             en = u"Owner"
         )
-
-        # Create the site
-        site = Site()
-        site.languages = ["ca", "es", "en"]
-        datastore.root["main_site"] = site
     
         # Create the back office interface
-        back_office = BackOffice()
+        back_office = Document()
+        back_office.handler = BackOffice
         back_office.critical = True
         back_office.path = "cms"
         back_office.set_translations("title",
@@ -293,8 +281,8 @@ def init_site(
 
     datastore.commit()
 
-if __name__ == "__main__":
-    
+def main():
+
     from string import letters, digits
     from random import choice
  
@@ -302,7 +290,7 @@ if __name__ == "__main__":
         return "".join(choice(source) for i in range(length))
 
     admin_email = "admin@localhost"
-    admin_password = "foo" #random_string(8)
+    admin_password = random_string(8)
 
     init_site(admin_email, admin_password)
     
@@ -312,4 +300,7 @@ if __name__ == "__main__":
           u"following credentials:\n\n" \
           u"\tEmail:     %s\n" \
           u"\tPassword:  %s\n\n" % (admin_email, admin_password)
+
+if __name__ == "__main__":
+    main()
 

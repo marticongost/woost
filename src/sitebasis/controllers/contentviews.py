@@ -10,7 +10,7 @@ from itertools import chain
 from inspect import getmro
 from persistent import Persistent
 from persistent.mapping import PersistentMapping
-from magicbullet.typemapping import TypeMapping
+from cocktail.typemapping import TypeMapping
 
 
 class ContentViewsRegistry(Persistent):

@@ -6,10 +6,9 @@
 @organization:	Whads/Accent SL
 @since:			August 2008
 """
-from magicbullet.html import Element
-from magicbullet.html.treeview import TreeView
-from magicbullet.models import Item
-from magicbullet.translations import translate
+from cocktail.translations import translate
+from cocktail.html import Element, TreeView
+from sitebasis.models import Item
 
 
 class ContentTypeTree(TreeView):

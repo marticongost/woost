@@ -7,13 +7,12 @@
 @since:			September 2008
 """
 import cherrypy
-from magicbullet.iteration import is_empty
-from magicbullet.persistence import EntityAccessor
-from magicbullet.models import Site
-from magicbullet.html import Element
-from magicbullet.html.datadisplay import MULTIPLE_SELECTION
-from magicbullet.views.contentview import ContentView
-from magicbullet.views.contenttable import ContentTable
+from cocktail.iteration import is_empty
+from cocktail.persistence import EntityAccessor
+from cocktail.html import Element, MULTIPLE_SELECTION
+from sitebasis.models import Site
+from sitebasis.views.contentview import ContentView
+from sitebasis.views.contenttable import ContentTable
 
 class TreeContentView(ContentView):
 

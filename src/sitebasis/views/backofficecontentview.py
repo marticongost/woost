@@ -6,8 +6,8 @@
 @organization:	Whads/Accent SL
 @since:			September 2008
 """
-from magicbullet.views.backofficelayout import BackOfficeLayout
-from magicbullet.views.contentview import ContentView
+from sitebasis.views.backofficelayout import BackOfficeLayout
+from sitebasis.views.contentview import ContentView
 
 
 class BackOfficeContentView(BackOfficeLayout):

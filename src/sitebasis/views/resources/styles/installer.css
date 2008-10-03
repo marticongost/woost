@@ -3,3 +3,7 @@
     display: none;
 }
 
+.Installer .Form .webserver_port_field .control,
+.Installer .Form .database_port_field .control {
+    width: 3.5em;
+}

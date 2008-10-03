@@ -8,23 +8,24 @@
 """
 import cherrypy
 from itertools import chain
-from magicbullet import settings
-from magicbullet.language import get_content_language
-from magicbullet.schema import Member, Adapter, Collection, DictAccessor
-from magicbullet.schema.expressions import CustomExpression
-from magicbullet.persistence import datastore, EntityAccessor
-from magicbullet.models import Item, Document, ChangeSet, Site
-from magicbullet.controllers import exposed
-from magicbullet.controllers.viewstate import view_state, get_persistent_param
-from magicbullet.controllers.usercollection import UserCollection
-from magicbullet.controllers.contentviews import ContentViewsRegistry
-from magicbullet.views.backofficecontentview import BackOfficeContentView
-from magicbullet.views.flatcontentview import FlatContentView
-from magicbullet.views.treecontentview import TreeContentView
-from magicbullet.views.backofficeeditview import BackOfficeEditView
+
+from cocktail.language import get_content_language
+from cocktail.schema import Member, Adapter, Collection, DictAccessor
+from cocktail.schema.expressions import CustomExpression
+from cocktail.persistence import datastore, EntityAccessor
+from cocktail.controllers import view_state, get_persistent_param
+from cocktail.controllers.usercollection import UserCollection
+
+from sitebasis.models import Item, Document, ChangeSet, Site
+from sitebasis.views.backofficecontentview import BackOfficeContentView
+from sitebasis.views.flatcontentview import FlatContentView
+from sitebasis.views.treecontentview import TreeContentView
+from sitebasis.views.backofficeeditview import BackOfficeEditView
+from sitebasis.controllers import exposed
+from sitebasis.controllers.contentviews import ContentViewsRegistry
 
 
-class BackOffice(Document):
+class BackOffice(object):
     
     default_section = "content"
     item_sections = ["fields"]
@@ -33,12 +34,8 @@ class BackOffice(Document):
     content_views.add(Item, FlatContentView, True)
     content_views.add(Document, TreeContentView, True)
 
-    settings_duration = getattr(
-        settings,
-        "back_office_settings_duration",
-        -1
-    )
-        
+    settings_duration = 60 * 60 * 24 * 30 # ~= 1 month
+
     @exposed
     def index(self, cms, request):
         section = request.params.get("section", self.default_section)

@@ -6,10 +6,9 @@
 @organization:	Whads/Accent SL
 @since:			September 2008
 """
-from magicbullet.translations import translate
-from magicbullet.schema import Collection
-from magicbullet.html import Element
-from magicbullet.html.form import Form, FormGroup
+from cocktail.translations import translate
+from coctkail.schema import Collection
+from cocktail.html import Element, Form
 
 
 class ContentForm(Form):
@@ -19,19 +18,15 @@ class ContentForm(Form):
         Form._build(self)
 
         self.add_group(
-            FormGroup(
-                "properties",
-                lambda member: not isinstance(member, Collection) \
-                               and not member.translated
-            )
+            "properties",
+            lambda member: not isinstance(member, Collection) \
+                           and not member.translated
         )
 
         self.add_group(
-            FormGroup(
-                "translations",
-                lambda member: not isinstance(member, Collection) \
-                               and member.translated
-            )
+            "translations",
+            lambda member: not isinstance(member, Collection) \
+                           and member.translated
         )
 
     def _ready(self):

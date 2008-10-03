@@ -6,12 +6,12 @@
 @organization:	Whads/Accent SL
 @since:			September 2008
 """
-from magicbullet.translations import translate
-from magicbullet.schema import Collection, DictAccessor
-from magicbullet.models import Site
-from magicbullet.html import Element
-from magicbullet.views.backofficelayout import BackOfficeLayout
-from magicbullet.views.contentform import ContentForm
+from cocktail.translations import translate
+from cocktail.schema import Collection, DictAccessor
+from cocktail.html import Element
+from sitebasis.models import Site
+from sitebasis.views.backofficelayout import BackOfficeLayout
+from sitebasis.views.contentform import ContentForm
 
 
 class BackOfficeEditView(BackOfficeLayout):
@@ -70,7 +70,7 @@ class BackOfficeEditView(BackOfficeLayout):
             self.edit_form.translations = Site.main.languages
 
         # Temporary HACK!
-        from magicbullet.html.tinymce import TinyMCE
+        from cocktail.html import TinyMCE
         
         if "description" in self.form_schema.members():
             self.edit_form.set_member_display("description", TinyMCE)
