@@ -57,6 +57,9 @@ class CMS(object):
         self.add_module(self._rendering_module(), "rendering")
         self.add_module(self._error_handling_module(), "error_handling")
 
+    def run(self):
+        cherrypy.quickstart(self, self.virtual_path)
+
     def add_module(self, module, concept = None):
 
         if concept:
