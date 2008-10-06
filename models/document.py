@@ -24,10 +24,12 @@ class Document(Item):
         "title",
         "inner_title",
         "description",
-        "path",
         "enabled",
+        "hidden",
         "start_date",
         "end_date",
+        "parent",
+        "path",
         "template"
     )
 
