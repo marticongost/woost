@@ -8,36 +8,6 @@
 """
 from cocktail.translations import translations, translate
 
-translations.define(True,
-    ca = u"Sí",
-    es = u"Sí",
-    en = u"Yes"
-)
-
-translations.define(False,
-    ca = u"No",
-    es = u"No",
-    en = u"No"
-)
-
-translations.define("ca",
-    ca = u"Català",
-    es = u"Catalán",
-    en = u"Catalan"
-)
-
-translations.define("es",
-    ca = u"Castellà",
-    es = u"Español",
-    en = u"Spanish"
-)
-
-translations.define("en",
-    ca = u"Anglès",
-    es = u"Inglés",
-    en = u"English"
-)
-
 translations.define("site_section",
     ca = u"Lloc web",
     es = u"Sitio web",
@@ -63,11 +33,11 @@ translations.define("history_section",
 )
 
 translations.define("logged in as",
-    ca = lambda t, k, user: u"Estàs identificat com a " \
+    ca = lambda user: u"Estàs identificat com a " \
             "<strong>%s</strong>" % translate(user, "ca"),
-    es = lambda t, k, user: u"Estás identificado como " \
+    es = lambda user: u"Estás identificado como " \
             "<strong>%s</strong>" % translate(user, "es"),
-    en = lambda t, k, user: u"Logged in as "
+    en = lambda user: u"Logged in as "
             "<strong>%s</strong>" % translate(user, "en")
 )
 
@@ -75,12 +45,6 @@ translations.define("Logout",
     ca = u"Sortir",
     es = u"Salir",
     en = u"Logout"
-)
-
-translations.define("Submit",
-    ca = u"Confirmar",
-    es = u"Confirmar",
-    en = u"Submit"
 )
 
 translations.define("Type",
@@ -107,19 +71,19 @@ translations.define("New item",
     en = u"New"
 )
 
-translations.define("Edit",
+translations.define("edit",
     ca = u"Editar",
     es = u"Editar",
     en = u"Edit"
 )
 
-translations.define("Delete",
+translations.define("delete",
     ca = u"Eliminar",
     es = u"Eliminar",
     en = u"Delete"
 )
 
-translations.define("History",
+translations.define("history",
     ca = u"Històric",
     es = u"Histórico",
     en = u"History"
@@ -153,33 +117,6 @@ translations.define("draft_seq_name",
     ca = u"Esborrany %(index)s",
     es = u"Borrador %(index)s",
     en = u"Draft %(index)s"
-)
-
-translations.define("Item count",
-    ca = lambda t, k, page_range, item_count: \
-        u"Mostrant resultats <strong>%d-%d</strong> de %d" % (
-            page_range[0], page_range[1], item_count
-        ),
-    es = lambda t, k, page_range, item_count: \
-        u"Mostrando resultados <strong>%d-%d</strong> de %d" % (
-            page_range[0], page_range[1], item_count
-        ),
-    en = lambda t, k, page_range, item_count: \
-        u"Showing results <strong>%d-%d</strong> of %d" % (
-            page_range[0], page_range[1], item_count
-        )
-)
-
-translations.define("Results per page",
-    ca = u"Resultats per pàgina",
-    es = u"Resultados por página",
-    en = u"Results per page"
-)
-
-translations.define("No results",
-    ca = u"La vista activa no conté cap element.",
-    es = u"La vista activa no contiene ningún elemento.",
-    en = u"The current view has no matching items."
 )
 
 translations.define("Go back",
@@ -312,6 +249,56 @@ translations.define("Item.last_update_time",
     ca = u"Última modificació",
     es = u"Última modificación",
     en = u"Last updated"
+)
+
+# Site
+#------------------------------------------------------------------------------
+translations.define("Site",
+    ca = u"Lloc web",
+    es = u"Sitio web",
+    en = u"Site"
+)
+
+translations.define("Site-plural",
+    ca = u"Llocs web",
+    es = u"Sitios web",
+    en = u"Sites"
+)
+
+translations.define("Site.default_language",
+    ca = u"Idioma per defecte",
+    es = u"Idioma por defecto",
+    en = u"Default language"
+)
+
+translations.define("Site.languages",
+    ca = u"Idiomes",
+    es = u"Idiomas",
+    en = u"Languages"
+)
+
+translations.define("Site.home",
+    ca = u"Document d'inici",
+    es = u"Documento de inicio",
+    en = u"Home"
+)
+
+translations.define("Site.not_found_error",
+    ca = u"Pàgina d'error per document no trobat",
+    es = u"Página de error para documento no encontrado",
+    en = u"Document not found error page"
+)
+
+translations.define("Site.forbidden_error_page",
+    ca = u"Pàgina d'error per accés restringit",
+    es = u"Página de error para acceso restringido",
+    en = u"Access denied error page"
+)
+
+translations.define("Site.generic_error_page",
+    ca = u"Pàgina d'error genèric",
+    es = u"Página de error genérico",
+    en = u"Generic error page"
 )
 
 # Document

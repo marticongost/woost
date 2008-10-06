@@ -91,6 +91,14 @@ translations.define(
 )
 
 translations.define(
+    "sitebasis.controllers.installer.SubprocessError-instance",
+    en = lambda instance:
+        u"The installer found an unexpected error and couldn't continue. "
+        u"The <em>%s</em> process returned the following error: <pre>%s</pre>"
+        % (instance.cmd, instance.error_output)
+)
+
+translations.define(
     "Unknown error",
     en = lambda error: u"Unexpected <em>%s</em> exception: %s"
         % (error.__class__.__name__, error)
