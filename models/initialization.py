@@ -7,11 +7,13 @@
 @since:			October 2008
 """
 from __future__ import with_statement
+import sha
 from cocktail.persistence import datastore
 from sitebasis.models import (
     changeset_context,
     Site,
     Action,
+    Document,
     AccessRule,
     User,
     Role,
