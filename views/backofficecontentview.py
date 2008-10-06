@@ -29,6 +29,8 @@ class BackOfficeContentView(BackOfficeLayout):
         BackOfficeLayout._ready(self)
         
         self.body.append(self.content_view)
+        self.content_view["action"] = \
+            self.cms.uri(self.backoffice.path, "content")
         self.content_view.cms = self.cms
         self.content_view.backoffice = self.backoffice
         self.content_view.user_collection = self.user_collection
