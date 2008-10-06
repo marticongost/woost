@@ -8,4 +8,5 @@ in python.
 @organization:	Whads/Accent SL
 @since:			October 2008
 """
+from sitebasis.translations import strings
 
