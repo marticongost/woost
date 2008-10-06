@@ -10,7 +10,7 @@ import socket
 import re
 from os import listdir, mkdir
 from os.path import join, dirname, abspath, exists, isdir, isfile
-from subprocess import Popen
+from subprocess import Popen, PIPE
 import cherrypy
 from cocktail import schema
 from cocktail.translations import set_language
@@ -18,6 +18,7 @@ from cocktail.html.templates import TemplateLoader
 from cocktail.controllers import read_form
 from sitebasis import __file__ as sitebasis_file
 from sitebasis.translations import installerstrings
+from sitebasis.models.initialization import init_site
 
 
 class Installer(object):
@@ -152,6 +153,10 @@ class Installer(object):
                     self.install(form_data)
 
                 except Exception, ex:
+                    try:
+                        rmtree(form_data["project_path"])
+                    except:
+                        pass
                     errors.append(ex)
                 else:
                     successful = True
@@ -168,8 +173,9 @@ class Installer(object):
 
     def install(self, params):
         
+        params["project_module"] = params["project_name"].lower()
+
         self._create_project(params)
-        self._start_database(params)
         self._init_project(params)
 
     def _create_project(self, params):
@@ -178,8 +184,6 @@ class Installer(object):
             ("_%s_" % key.upper(), unicode(value))
             for key, value in params.iteritems()
         )
-
-        vars["_PROJECT_MODULE_"] = params["project_name"].lower()
 
         keys_expr = re.compile("|".join(vars))
 
@@ -211,7 +215,15 @@ class Installer(object):
         # Create the folder for the database
         mkdir(join(params["project_path"], "data"))
 
-    def _start_database(self, params):
+    def _subprocess(self, cmd):
+        # - Not used -
+        proc = Popen(cmd, shell = True, stderr = PIPE)
+        if proc.wait() != 0:
+            raise SubprocessError(cmd, proc.stderr.read())
+
+    def _init_project(self, params):
+
+        # Start the database
         cmd = "runzeo -f %s -a %s:%d" % (
             join(params["project_path"], "data", "database.fs"),
             params["database_host"],
@@ -219,11 +231,11 @@ class Installer(object):
         )
         Popen(cmd, shell = True)
 
-    def _init_project(self, params):
-        cmd = "python %s" \
-            % join(params["project_path"], "scripts", "initsite.py")
-        proc = Popen(cmd, shell = True)
-        proc.wait()    
+        __import__(params["project_module"])
+        init_site(
+            admin_email = params["admin_email"],
+            admin_password = params["admin_password"]
+        )
 
     def _is_valid_local_address(self, host, port):
         s = socket.socket()
@@ -265,4 +277,11 @@ class WrongAddressError(schema.exceptions.ValidationError):
 
         self.host_member = host_member
         self.port_member = port_member
+
+
+class SubprocessError(Exception):
+
+    def __init__(self, cmd, error_output):
+        self.cmd = cmd
+        self.error_output = error_output
 
