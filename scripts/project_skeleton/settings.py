@@ -11,7 +11,7 @@
 import cherrypy
 cherrypy.config.update({
     "global": {
-        "server.socket_host": _WEBSERVER_HOST_,
+        "server.socket_host": "_WEBSERVER_HOST_",
         "server.socket_port": _WEBSERVER_PORT_,
         "tools.encode.on": True,
         "tools.encode.encoding": "utf-8",
@@ -21,7 +21,7 @@ cherrypy.config.update({
 })
 
 # Object store provider
-from sitebasis.persistence import datastore
+from cocktail.persistence import datastore
 from ZEO.ClientStorage import ClientStorage
-datastore.storage = ClientStorage((_DATABASE_HOST_, _DATABASE_PORT_))
+datastore.storage = ClientStorage(("_DATABASE_HOST_", _DATABASE_PORT_))
 
