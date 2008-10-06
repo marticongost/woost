@@ -40,7 +40,7 @@ class BackOffice(object):
     def index(self, cms, request):
         section = request.params.get("section", self.default_section)
         raise cherrypy.HTTPRedirect(
-            cms.uri(self.path, section)
+            cms.uri(request.document.path, section)
             + "?" + view_state(section = None)
         )
 
@@ -85,10 +85,10 @@ class BackOffice(object):
         
         view = BackOfficeContentView()
         view.cms = cms
-        view.backoffice = self
+        view.backoffice = request.document
         view.user = cms.authentication.user
         view.section = "content"
-        view.collection = collection
+        view.user_collection = collection
         view.available_languages = Site.main.languages
         view.visible_languages = visible_languages 
         view.available_content_views = available_content_views
@@ -154,7 +154,7 @@ class BackOffice(object):
                 
         view = BackOfficeEditView()
         view.cms = cms
-        view.backoffice = self
+        view.backoffice = request.document
         view.user = cms.authentication.user
         view.section = "fields"
         view.content_type = content_type

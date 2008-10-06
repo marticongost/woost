@@ -10,6 +10,7 @@ from datetime import datetime
 import cherrypy
 from cocktail import schema
 from cocktail.persistence import Entity
+from cocktail.pkgutils import get_full_name, import_object
 from sitebasis.models import Item
 
 def exposed(func):
@@ -101,7 +102,12 @@ class Document(Item):
         handler = getattr(self, "_v_handler", None)
 
         if handler is None and self.__handler_name:
-            self._v_handler = handler = import_object(self.__handler_name)
+            handler = import_object(self.__handler_name)
+
+            if isinstance(handler, type):
+                handler = handler()
+
+            self._v_handler = handler
         
         return handler
 
