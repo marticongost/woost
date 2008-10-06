@@ -233,7 +233,8 @@ class BackOffice(object):
             "creation_time",
             "last_update_time",
             "drafts",
-            "draft_source"
+            "draft_source",
+            "is_draft"
         ])
 
     def get_list_adapter(self, content_type):
