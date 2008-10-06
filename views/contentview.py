@@ -8,6 +8,7 @@
 """
 from cocktail.translations import translate
 from cocktail.html import Element, Content, MULTIPLE_SELECTION, LinkSelector
+from cocktail.html.collectionview import CollectionView
 from sitebasis.views.contenttypetree import (
     ContentTypePath,
     ContentTypeSelector,
@@ -19,7 +20,8 @@ class ContentView(CollectionView):
 
     collection_params = None
     available_content_views = None
-
+    visible_languages = None
+    
     def _build(self):
 
         CollectionView._build(self)
@@ -29,8 +31,9 @@ class ContentView(CollectionView):
 
     def _ready(self):
 
-        Element._ready(self)
+        CollectionView._ready(self)
 
+        self.collection_display.translations = self.visible_languages
         self.content_type_path.value = self.user_collection.entity_type
 
         # Content views
@@ -82,7 +85,7 @@ class ContentView(CollectionView):
             button.add_class("toolbar_button")
             button.add_class(action)
         else:
-            button = CollectionView.create_button(self, action)
+            button = CollectionView.create_toolbar_button(self, action)
 
         return button
 

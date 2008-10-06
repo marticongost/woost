@@ -17,7 +17,6 @@ from sitebasis.views.contenttable import ContentTable
 class TreeContentView(ContentView):
 
     content_view_id = "tree"
-
     actions = "new", "edit", "delete", "history"
 
     collection_params = {
@@ -29,16 +28,10 @@ class TreeContentView(ContentView):
     def _ready(self):
         
         ContentView._ready(self)
-
-        self.tree = self.Tree()
-        self.tree.contentview = self
-        self.tree.accessor = EntityAccessor
-        self.tree.sortable = self.collection.allow_sorting
-        self.tree.selection_mode = MULTIPLE_SELECTION
-        self.tree.schema = self.collection.schema
-
+ 
+        self.collection_display.cms = self.cms
         home = Site.main.home
-        self.tree.data = (
+        self.collection_display.data = (
             [home]
             if self.cms.authorization.allows(
                 action = "read",
@@ -47,20 +40,12 @@ class TreeContentView(ContentView):
             else []
         )
 
-        self.tree.order = self.collection.order
-        self.tree.translations = self.visible_languages
-        self.tree.selection = self.collection.selection
-        self.tree.base_url = self.cms.uri(self.backoffice.path)
+        self.collection_display.base_url = self.cms.uri(self.backoffice.path)
 
-        for key in self.tree.schema.members():
-            self.tree.set_member_displayed(
-                key,
-                key in self.collection.members
-            )
-
-        self.view.append(self.tree)
-
-    class Tree(ContentTable):
+    class CollectionDisplay(ContentTable):
+        
+        accessor = EntityAccessor
+        selection_mode = MULTIPLE_SELECTION
 
         def get_children(self, item):
             return item.children
@@ -139,7 +124,7 @@ class TreeContentView(ContentView):
                 expander.add_class("expander")        
                 expander.append(
                     Element("img",
-                        src = self.contentview.cms.uri(
+                        src = self.cms.uri(
                             "resources", "images", state + ".png")
                     )
                 )

@@ -7,7 +7,7 @@
 @since:			September 2008
 """
 from cocktail.translations import translate
-from coctkail.schema import Collection
+from cocktail.schema import Collection
 from cocktail.html import Element, Form
 
 

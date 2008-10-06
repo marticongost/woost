@@ -19,9 +19,8 @@ class FlatContentView(ContentView):
 
     def _ready(self):
 
-        ContentView._ready(self)
-        self.collection_display.translations = self.visible_languages
-        self.collection_display.base_url = self.cms.uri(self.backoffice.path)        
+        ContentView._ready(self)        
+        self.collection_display.base_url = self.cms.uri(self.backoffice.path)
         
     class CollectionDisplay(ContentTable):
         accessor = EntityAccessor

@@ -13,7 +13,7 @@ from sitebasis.views.contentview import ContentView
 class BackOfficeContentView(BackOfficeLayout):
 
     sections = "content", "history"
-    collection = None
+    user_collection = None
     available_languages = None
     visible_languages = None
     available_content_views = None
@@ -31,7 +31,7 @@ class BackOfficeContentView(BackOfficeLayout):
         self.body.append(self.content_view)
         self.content_view.cms = self.cms
         self.content_view.backoffice = self.backoffice
-        self.content_view.collection = self.collection
+        self.content_view.user_collection = self.user_collection
         self.content_view.available_languages = self.available_languages
         self.content_view.visible_languages = self.visible_languages
         self.content_view.available_content_views = \
