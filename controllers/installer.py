@@ -11,7 +11,6 @@ import re
 from os import listdir, mkdir
 from os.path import join, dirname, abspath, exists, isdir, isfile
 from subprocess import Popen
-from shutil import copytree
 import cherrypy
 from cocktail import schema
 from cocktail.translations import set_language
@@ -23,13 +22,13 @@ from sitebasis.translations import installerstrings
 
 class Installer(object):
 
-    base_path = join(dirname(sitebasis_file), "..", "..")
+    base_path = dirname(sitebasis_file)
 
     skeleton_path = abspath(
         join(base_path, "scripts","project_skeleton")
     )
     
-    views_path = join(base_path, "src", "sitebasis", "views")
+    views_path = join(base_path, "views")
 
     resources = cherrypy.tools.staticdir.handler(
         section = "resources",
@@ -211,12 +210,6 @@ class Installer(object):
 
         # Create the folder for the database
         mkdir(join(params["project_path"], "data"))
-
-        # Copy the sitebasis package to the site
-        copytree(
-            join(self.base_path, "src", "sitebasis"),
-            join(params["project_path"], "src", "sitebasis")
-        )
 
     def _start_database(self, params):
         cmd = "runzeo -f %s -a %s:%d" % (

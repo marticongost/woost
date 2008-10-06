@@ -12,23 +12,10 @@ useful during development (ie. to setup working copies from version control, or
 to reset a site's state after some changes).
 """
 
-def main():
-
-    # Make sure the site's source code folder is present on the python path
-    from os.path import abspath, join, dirname
-    import sys
-
-    src_code_path = abspath(join(dirname(abspath(__file__)), "..", "src"))
-
-    if src_code_path not in sys.path:
-        sys.path.append(src_code_path)
-
-    # Load project settings
-    import _PROJECT_MODULE_
-
-    # Initialize the site
-    from sitebasis.models.initialization import main as init_site
-    init_site()
+# Load project settings
+import _PROJECT_MODULE_
+    
+from sitebasis.models.initialization import main
 
 if __name__ == "__main__":
     main()
