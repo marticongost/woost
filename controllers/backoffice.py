@@ -86,7 +86,6 @@ class BackOffice(object):
         view.user_collection = collection
         view.available_languages = Site.main.languages
         view.visible_languages = visible_languages
-        view.content_view = content_view()
         view.available_content_views = available_content_views
         view.content_view = content_view()
         return view.render_page()
