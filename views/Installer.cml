@@ -10,9 +10,13 @@ PasswordBox = loader.get_class("cocktail.html.PasswordBox")
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:py="http://www.whads.com/ns/cocktail/templates">
 
+    <?py-class
+    def get_page_title(self):
+        return translate("SiteBasis installation")
+    ?>
+
     <?py
     self.add_resource("/resources/styles/installer.css")
-    self.page_title = translate("SiteBasis installation")
     ?>
 
     <py:with py:element="self.body">

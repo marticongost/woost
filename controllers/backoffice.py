@@ -79,34 +79,17 @@ class BackOffice(object):
 
         collection.read()
  
-        from cocktail.modeling import refine
-        from cocktail.translations import translate
-        from cocktail.persistence import EntityAccessor
-        from cocktail.html import Content
-
-        html = []
-
-        def profile():
-            view = templates.new("sitebasis.views.BackOfficeContentView")
-            view.cms = cms
-            view.backoffice = request.document
-            view.section = "content"
-            view.user_collection = collection
-            view.available_languages = Site.main.languages
-            view.visible_languages = visible_languages
-            view.content_view = content_view()
-            view.available_content_views = available_content_views
-            view.content_view = content_view()
-            html.append(view.render_page())
-        
-        from cProfile import runctx
-        from pstats import Stats
-        runctx("profile()", globals(), locals(), "/tmp/report")
-        stats = Stats("/tmp/report")
-        stats.sort_stats("cumulative", "nfl")
-        stats.print_stats()
-
-        return html[0]
+        view = templates.new("sitebasis.views.BackOfficeContentView")
+        view.cms = cms
+        view.backoffice = request.document
+        view.section = "content"
+        view.user_collection = collection
+        view.available_languages = Site.main.languages
+        view.visible_languages = visible_languages
+        view.content_view = content_view()
+        view.available_content_views = available_content_views
+        view.content_view = content_view()
+        return view.render_page()
         
     @exposed
     def history(self, cms, request):

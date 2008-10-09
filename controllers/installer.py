@@ -14,11 +14,11 @@ from subprocess import Popen, PIPE
 import cherrypy
 from cocktail import schema
 from cocktail.translations import set_language
-from cocktail.html.templates import TemplateLoader
 from cocktail.controllers import read_form
 from sitebasis import __file__ as sitebasis_file
 from sitebasis.translations import installerstrings
 from sitebasis.models.initialization import init_site
+from sitebasis.views import templates
 
 
 class Installer(object):
@@ -36,10 +36,6 @@ class Installer(object):
         root = views_path,
         dir = "resources"
     )
-
-    def __init__(self):
-        self._templates = TemplateLoader()
-        self._templates.paths.append(self.views_path)
 
     @cherrypy.expose
     def index(self, **params):
@@ -163,7 +159,7 @@ class Installer(object):
         else:
             form_schema.init_instance(form_data)
 
-        view = self._templates.new("Installer.xml")
+        view = templates.new("sitebasis.views.Installer")
         view.submitted = submitted
         view.successful = successful
         view.schema = form_schema

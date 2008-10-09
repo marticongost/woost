@@ -33,8 +33,9 @@
         <?py
         self.page_title = self.get_page_title()
 
-        for resource in self.backoffice.resources:
-            self.add_resource(resource.uri)
+        if self.backoffice:
+            for resource in self.backoffice.resources:
+                self.add_resource(resource.uri)
         ?>
     </py:ready>
 
