@@ -3,10 +3,10 @@
 <?py 
 from cocktail.schema import DictAccessor
 from cocktail.translations import translate
-from cocktail.html import PasswordBox
+PasswordBox = loader.get_class("cocktail.html.PasswordBox")
 ?>
 
-<py:sitebasis.views.backofficelayout.BackOfficeLayout
+<py:sitebasis.views.BackOfficeLayout
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:py="http://www.whads.com/ns/cocktail/templates">
 
@@ -74,5 +74,5 @@ from cocktail.html import PasswordBox
 
     </py:with>
     
-</py:sitebasis.views.backofficelayout.BackOfficeLayout>
+</py:sitebasis.views.BackOfficeLayout>
 

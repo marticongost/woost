@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<py:sitebasis.views.backofficelayout.BackOfficeLayout
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:py="http://www.whads.com/ns/cocktail/templates">
+
+    <?py
+    self.sections = "content", "history"
+    self.add_resource("/resources/scripts/jquery.js")
+    self.add_resource("/resources/scripts/backoffice_content.js")
+    ?>
+
+    <py:ready>
+        <py:with
+            py:element="self.content_view"
+            py:parent="self.body"
+            action="${self.cms.uri(self.backoffice.path)}"
+            py:cms="${self.cms}"
+            py:backoffice="${self.backoffice}"
+            py:user_collection="${self.user_collection}"
+            py:available_languages="${self.available_languages}"
+            py:visible_languages="${self.visible_languages}"
+            py:available_content_views="${self.available_content_views}"
+            />
+    </py:ready>
+
+</py:sitebasis.views.backofficelayout.BackOfficeLayout>

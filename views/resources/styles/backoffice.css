@@ -75,7 +75,7 @@ html, body {
     height: 2.1em;
 }
 
-.BackOfficeLayout .navigation .section {
+.BackOfficeLayout .navigation .section_entry {
     color: rgb(75,75,75);
     position: relative;
     top: -1px;

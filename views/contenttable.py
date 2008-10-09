@@ -8,7 +8,9 @@
 """
 from cocktail.translations import translate
 from cocktail.schema import Reference
-from cocktail.html import Element, Table
+from cocktail.html import Element, templates
+
+Table = templates.get_class("cocktail.html.Table")
 
 
 class ContentTable(Table):
@@ -22,7 +24,7 @@ class ContentTable(Table):
             Reference, self.__class__.display_reference)
 
     def _fill_body(self):
-    
+
         for index, item in enumerate(self.data):
             row = self.create_row(index, item)
             self.append(row)

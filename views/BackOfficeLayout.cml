@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<div
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:py="http://www.whads.com/ns/cocktail/templates">
+
+    <?py-class
+
+    cms = None
+    backoffice = None
+    user = None
+    sections = ()
+    section = None
+
+    def get_page_title(self):
+        return self.backoffice and self.backoffice.title
+
+    def get_section_id(self, section):
+        return section
+
+    def get_section_label(self, section):
+        return translate(section + "_section")
+
+    def get_section_url(self, section):
+        return self.cms.uri(self.backoffice.path, section)
+    ?>
+
+    <?py
+    self.add_resource("/resources/styles/backoffice.css")
+    ?>
+
+    <py:ready>
+        <?py
+        self.page_title = self.get_page_title()
+
+        for resource in self.backoffice.resources:
+            self.add_resource(resource.uri)
+        ?>
+    </py:ready>
+
+    <div py:id="header">
+        <h1 py:id="title">@{self.page_title}</h1>
+
+        <div py:id="identity" py:if="self.user and not self.user.anonymous">
+            <span>@{translate("logged in as", user = self.user)}</span>
+            <form method="post">
+                <button name="logout" type="submit">
+                    ${translate("Logout")}
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div py:id="navigation">
+
+        <a py:def="section_entry"
+            py:args="section"
+            href="${self.get_section_url(section)}">
+            <?py
+            section_id = self.get_section_id(section)
+            element.section_id = section_id
+            element.add_class(section_id + "_section")
+
+            if section_id == self.section:
+                element.add_class("selected")
+            ?>
+            ${self.get_section_label(section)}
+        </a>
+
+        <py:ready>
+            <py:new py:element="self.create_section_entry(section)"
+                py:for="section in self.sections">
+                <?py
+                setattr(self, "section_" + element.section_id, element)
+                ?>
+            </py:new>
+        </py:ready>
+
+    </div>
+
+    <div py:id="body"/>
+
+    <div py:id="footer"/>
+
+</div>

@@ -6,21 +6,17 @@
 @organization:	Whads/Accent SL
 @since:			July 2008
 """
+import os
 import cherrypy
 from itertools import chain
-
 from cocktail.language import get_content_language
 from cocktail.schema import Member, Adapter, Collection, DictAccessor
 from cocktail.schema.expressions import CustomExpression
 from cocktail.persistence import datastore, EntityAccessor
 from cocktail.controllers import view_state, get_persistent_param
 from cocktail.controllers.usercollection import UserCollection
-
 from sitebasis.models import Item, Document, ChangeSet, Site
-from sitebasis.views.backofficecontentview import BackOfficeContentView
-from sitebasis.views.flatcontentview import FlatContentView
-from sitebasis.views.treecontentview import TreeContentView
-from sitebasis.views.backofficeeditview import BackOfficeEditView
+from sitebasis.views import templates
 from sitebasis.controllers import exposed
 from sitebasis.controllers.contentviews import ContentViewsRegistry
 
@@ -31,11 +27,11 @@ class BackOffice(object):
     item_sections = ["fields"]
 
     content_views = ContentViewsRegistry()
-    content_views.add(Item, FlatContentView, True)
-    content_views.add(Document, TreeContentView, True)
+    content_views.add(Item, "sitebasis.views.FlatContentView", True)
+    content_views.add(Document, "sitebasis.views.TreeContentView", True)
 
     settings_duration = 60 * 60 * 24 * 30 # ~= 1 month
-
+    
     @exposed
     def index(self, cms, request):
         section = request.params.get("section", self.default_section)
@@ -82,18 +78,35 @@ class BackOffice(object):
                 setattr(collection, key, value)
 
         collection.read()
+ 
+        from cocktail.modeling import refine
+        from cocktail.translations import translate
+        from cocktail.persistence import EntityAccessor
+        from cocktail.html import Content
+
+        html = []
+
+        def profile():
+            view = templates.new("sitebasis.views.BackOfficeContentView")
+            view.cms = cms
+            view.backoffice = request.document
+            view.section = "content"
+            view.user_collection = collection
+            view.available_languages = Site.main.languages
+            view.visible_languages = visible_languages
+            view.content_view = content_view()
+            view.available_content_views = available_content_views
+            view.content_view = content_view()
+            html.append(view.render_page())
         
-        view = BackOfficeContentView()
-        view.cms = cms
-        view.backoffice = request.document
-        view.user = cms.authentication.user
-        view.section = "content"
-        view.user_collection = collection
-        view.available_languages = Site.main.languages
-        view.visible_languages = visible_languages 
-        view.available_content_views = available_content_views
-        view.content_view = content_view()
-        return view.render_page()
+        from cProfile import runctx
+        from pstats import Stats
+        runctx("profile()", globals(), locals(), "/tmp/report")
+        stats = Stats("/tmp/report")
+        stats.sort_stats("cumulative", "nfl")
+        stats.print_stats()
+
+        return html[0]
         
     @exposed
     def history(self, cms, request):
@@ -206,16 +219,25 @@ class BackOffice(object):
 
     def _get_content_views(self, content_type):
 
-        content_views = self.content_views.get(content_type)
+        content_views = [
+            templates.get_class(cv)
+            for cv in self.content_views.get(content_type)
+        ]
+        
         content_view_param = \
             self._get_content_type_param(content_type, "content_view")
-
-        if content_view_param is not None:
+        
+        if content_view_param is not None:            
             for content_view in content_views:
                 if content_view.content_view_id == content_view_param:
                     return content_views, content_view
 
-        return content_views, self.content_views.get_default(content_type)
+        return (
+            content_views, 
+            templates.get_class(
+                self.content_views.get_default(content_type)
+            )
+        )
 
     def get_form_adapter(self, content_type):
         adapter = Adapter()

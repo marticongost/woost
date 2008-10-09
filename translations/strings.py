@@ -53,19 +53,7 @@ translations.define("Type",
     en = u"Type"
 )
 
-translations.define("Visible members",
-    ca = u"Camps",
-    es = u"Campos",
-    en = u"Fields"
-)
-
-translations.define("Content languages",
-    ca = u"Idiomes",
-    es = u"Idiomas",
-    en = u"Languages"
-)
-
-translations.define("New item",
+translations.define("new",
     ca = u"Nou",
     es = u"Nuevo",
     en = u"New"
