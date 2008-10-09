@@ -52,7 +52,7 @@
         </div>
     </div>
 
-    <div py:id="navigation">
+    <div py:id="navigation" py:visible="@{len(self.sections) > 1}">
 
         <a py:def="section_entry"
             py:args="section"
