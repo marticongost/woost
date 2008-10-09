@@ -10,16 +10,20 @@ from itertools import chain
 from inspect import getmro
 from persistent import Persistent
 from persistent.mapping import PersistentMapping
-from cocktail.typemapping import TypeMapping
 
 
 class ContentViewsRegistry(Persistent):
 
     def __init__(self):
-        self.__views = PersistentMapping()
-        self.__default_views = TypeMapping()
+        self.__views = {}
+        self.__default_views = {}
+        self.__inheritance = {}
 
-    def add(self, item_type, content_view, is_default = False):
+    def add(self,
+        item_type,
+        content_view,
+        is_default = False,
+        inherited = True):
 
         type_views = self.__views.get(item_type)
 
@@ -28,6 +32,7 @@ class ContentViewsRegistry(Persistent):
             self.__views[item_type] = type_views
         
         type_views.add(content_view)
+        self.__inheritance[(item_type, content_view)] = inherited
 
         if is_default:
             self.set_default(item_type, content_view)
@@ -38,16 +43,34 @@ class ContentViewsRegistry(Persistent):
         
         views = set()
 
-        for item_type in getmro(item_type):
-            type_views = self.__views.get(item_type)
+        for cls in getmro(item_type):
+            type_views = self.__views.get(cls)
             if type_views:
-                views.update(type_views)
+                views.update(
+                    content_view
+                    for content_view in type_views
+                    if cls is item_type
+                    or self.__inheritance[(cls, content_view)]
+                )
 
         return views
 
     def get_default(self, item_type):
-        return self.__default_views.get(item_type)
+        for cls in getmro(item_type):
+            default = self.__default_views.get(cls)
+            
+            if default is not None \
+            and (cls is item_type or self.__inheritance.get((cls, default))):
+                return default
+
+        return None
 
     def set_default(self, item_type, content_view):
         self.__default_views[item_type] = content_view
+
+    def is_inherited(self, item_type, content_view):
+        return self.__inheritance[(item_type, content_view)]
+
+    def set_inherited(self, item_type, content_view, inherited):
+        self.__inheritance[(item_type, content_view)] = inherited
 

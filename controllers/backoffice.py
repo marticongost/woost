@@ -27,8 +27,17 @@ class BackOffice(object):
     item_sections = ["fields"]
 
     content_views = ContentViewsRegistry()
-    content_views.add(Item, "sitebasis.views.FlatContentView", True)
-    content_views.add(Document, "sitebasis.views.TreeContentView", True)
+    content_views.add(
+        Item,
+        "sitebasis.views.FlatContentView",
+        is_default = True
+    )
+    content_views.add(
+        Document,
+        "sitebasis.views.TreeContentView", 
+        is_default = True,
+        inherited = False
+    )
 
     settings_duration = 60 * 60 * 24 * 30 # ~= 1 month
     
