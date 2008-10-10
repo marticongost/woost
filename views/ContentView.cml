@@ -13,7 +13,9 @@
         if action == "new":
             return self.create_new_toolbar_button()
         else:
-            return CollectionView.create_toolbar_button(self, action)
+            button = CollectionView.create_toolbar_button(self, action)
+            button["value"] = action
+            return button
     ?>
 
     <!-- Content type path -->
