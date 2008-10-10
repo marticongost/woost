@@ -15,7 +15,7 @@ html, body {
     background-color: rgb(245,245,245);
     background-color: #eceeef;
     background-repeat:repeat-y;
-    background-image: url(header_background.png);
+    background-image: url(../images/header_background.png);
     border-bottom: 1px solid rgb(200,210,220);
     border-bottom: 1px solid rgb(180,190,200);
 }
@@ -278,7 +278,7 @@ html, body {
 }
 
 .BackOfficeLayout .Table .nested_draft td.element_column label {
-    background-image: url(edit.png);
+    background-image: url(../images/edit_small.png);
 }
 
 .BackOfficeLayout .Table td a {
@@ -298,11 +298,11 @@ html, body {
 }
 
 .BackOfficeLayout .Table th.ascending .label {
-    background-image: url(ascending.png);
+    background-image: url(../images/ascending.png);
 }
 
 .BackOfficeLayout .Table th.descending .label {
-    background-image: url(descending.png);
+    background-image: url(../images/descending.png);
 }
 
 /* Content type icons
@@ -430,7 +430,7 @@ html, body {
     position: relative;
     padding-left: 0.2em !important;
     padding-right: 1em;
-    background: url(dropdown_arrow.png) no-repeat right 0.9em;
+    background: url(../images/dropdown_arrow.png) no-repeat right 0.9em;
     border: 1px solid transparent;
     z-index: 2;
 }
@@ -541,7 +541,7 @@ html, body {
     padding: 0;
     list-style-type: none;
     padding-left: 2.4em;
-    background-image: url(path_separator.png);
+    background-image: url(../images/path_separator.png);
     background-repeat: no-repeat;
     background-position: 1em 0.3em;
 }
@@ -671,15 +671,15 @@ html, body {
 }
 
 .BackOfficeHistoryView td.changes li.create {
-    background-image: url(new.png);
+    background-image: url(../images/new_small.png);
 }
 
 .BackOfficeHistoryView td.changes li.modify {
-    background-image: url(edit.png);
+    background-image: url(../images/edit_small.png);
 }
 
 .BackOfficeHistoryView td.changes li.delete {
-    background-image: url(delete.png);
+    background-image: url(../images/delete_small.png);
 }
 
 /* Errors and success
