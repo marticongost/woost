@@ -1,4 +1,3 @@
 syntax: glob
 data
-src/cocktail
-src/sitebasis/views/resources/scripts/tinymce
+views/resources/scripts/tinymce
