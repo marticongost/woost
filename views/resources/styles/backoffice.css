@@ -311,6 +311,10 @@ html, body {
     background-image: url(../images/types/Item.png);
 }
 
+.BackOfficeLayout .Site {
+    background-image: url(../images/types/Site.png);
+}
+
 .BackOfficeLayout .AccessRule {
     background-image: url(../images/types/AccessRule.png);
 }
