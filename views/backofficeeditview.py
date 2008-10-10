@@ -12,7 +12,6 @@ from cocktail.html import Element
 from sitebasis.models import Site
 from sitebasis.views import templates
 
-TinyMCE = templates.get_class("cocktail.html.TinyMCE")
 BackOfficeLayout = templates.get_class("sitebasis.views.BackOfficeLayout")
 ContentForm = templates.get_class("sitebasis.views.ContentForm")
 
@@ -64,17 +63,12 @@ class BackOfficeEditView(BackOfficeLayout):
         self.edit_form.data = self.form_data
         self.edit_form.schema = self.form_schema
         
-        if self.edited_item:
-            self.edit_form.translations = self.edited_item.translations.keys()
-        else:
-            self.edit_form.translations = Site.main.languages
-
-        # Temporary HACK!       
-        if "description" in self.form_schema.members():
-            self.edit_form.set_member_display("description", TinyMCE)
-        
-        if "body" in self.form_schema.members():
-            self.edit_form.set_member_display("body", TinyMCE)
+        if self.content_type.translated:
+            if self.edited_item:
+                self.edit_form.translations = \
+                    self.edited_item.translations.keys()
+            else:
+                self.edit_form.translations = Site.main.languages
 
     def get_page_title(self):
         if self.edited_item:
