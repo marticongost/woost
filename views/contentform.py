@@ -8,7 +8,9 @@
 """
 from cocktail.translations import translate
 from cocktail.schema import Collection
-from cocktail.html import Element, Form
+from cocktail.html import Element, templates
+
+Form = templates.get_class("cocktail.html.Form")
 
 
 class ContentForm(Form):

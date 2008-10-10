@@ -10,8 +10,11 @@ from cocktail.translations import translate
 from cocktail.schema import Collection, DictAccessor
 from cocktail.html import Element
 from sitebasis.models import Site
-from sitebasis.views.backofficelayout import BackOfficeLayout
-from sitebasis.views.contentform import ContentForm
+from sitebasis.views import templates
+
+TinyMCE = templates.get_class("cocktail.html.TinyMCE")
+BackOfficeLayout = templates.get_class("sitebasis.views.BackOfficeLayout")
+ContentForm = templates.get_class("sitebasis.views.ContentForm")
 
 
 class BackOfficeEditView(BackOfficeLayout):
@@ -25,10 +28,7 @@ class BackOfficeEditView(BackOfficeLayout):
     saved = None 
 
     def _build(self):
-        BackOfficeLayout._build(self)
-        self.add_resource(
-            "/resources/scripts/tinymce/jscripts/tiny_mce/tiny_mce.js")
-
+        BackOfficeLayout._build(self)        
         self.edit_form = self.create_edit_form()
         self.body.append(self.edit_form)
 
@@ -69,14 +69,18 @@ class BackOfficeEditView(BackOfficeLayout):
         else:
             self.edit_form.translations = Site.main.languages
 
-        # Temporary HACK!
-        from cocktail.html import TinyMCE
-        
+        # Temporary HACK!       
         if "description" in self.form_schema.members():
             self.edit_form.set_member_display("description", TinyMCE)
         
         if "body" in self.form_schema.members():
             self.edit_form.set_member_display("body", TinyMCE)
+
+    def get_page_title(self):
+        if self.edited_item:
+            return translate("editing", item = self.edited_item)
+        else:
+            return translate("creating", content_type = self.content_type)
 
     def get_section_id(self, section):
         if isinstance(section, Collection):

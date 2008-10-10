@@ -156,7 +156,7 @@ class BackOffice(object):
                 source_accessor = EntityAccessor,
                 target_accessor = DictAccessor)
                 
-        view = BackOfficeEditView()
+        view = templates.new("sitebasis.views.BackOfficeEditView")
         view.cms = cms
         view.backoffice = request.document
         view.user = cms.authentication.user

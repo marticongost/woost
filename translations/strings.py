@@ -77,6 +77,18 @@ translations.define("history",
     en = u"History"
 )
 
+translations.define("editing",
+    ca = lambda item: u"Editant <em>'%s'</em>" % translate(item, "ca"),
+    es = lambda item: u"Editando <em>'%s'</em>" % translate(item, "es"),
+    en = lambda item: u"Editing <em>'%s'</em>" %  translate(item, "en")
+)
+
+translations.define("creating",
+    ca = lambda content_type: u"Creant %s" % translate(content_type, "ca"),
+    es = lambda content_type: u"Creando %s" % translate(content_type, "es"),
+    en = lambda content_type: u"Creating %s" % translate(content_type, "en")
+)
+
 translations.define("Backout",
     ca = u"Desfer",
     es = u"Deshacer",
