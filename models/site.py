@@ -7,6 +7,7 @@
 @since:			July 2008
 """
 from cocktail.modeling import classgetter
+from cocktail.translations import translate
 from cocktail import schema
 from cocktail.persistence import datastore
 from sitebasis.models.item import Item
@@ -48,4 +49,7 @@ class Site(Item):
     generic_error_page = schema.Reference(
         type = "sitebasis.models.Document"
     )
+
+    def __translate__(self, language, **kwargs):
+        return translate(self.__class__.__name__, language, **kwargs)
 
