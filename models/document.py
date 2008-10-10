@@ -66,6 +66,7 @@ class Document(Item):
     enabled = schema.Boolean(
         required = True,
         default = True,
+        translated = True,
         listed_by_default = False
     )
 
