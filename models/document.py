@@ -23,9 +23,9 @@ class Document(Item):
     members_order = (
         "title",
         "inner_title",
-        "description",
         "enabled",
         "hidden",
+        "description",
         "start_date",
         "end_date",
         "parent",
