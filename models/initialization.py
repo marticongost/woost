@@ -22,7 +22,7 @@ from sitebasis.models import (
     Resource,
     Template
 )
-from sitebasis.controllers.backoffice import BackOffice
+from sitebasis.controllers.backoffice import BackOfficeController
 
 def init_site(
     admin_email = "admin@localhost",
@@ -127,7 +127,7 @@ def init_site(
     
         # Create the back office interface
         back_office = Document()
-        back_office.handler = BackOffice
+        back_office.handler = BackOfficeController
         back_office.critical = True
         back_office.path = "cms"
         back_office.set_translations("title",

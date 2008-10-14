@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<?py
+from cocktail.schema import Collection, DictAccessor
+from sitebasis.models import Site
+?>
+
+<py:sitebasis.views.BackOfficeLayout
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:py="http://www.whads.com/ns/cocktail/templates">
+
+    <?py-class
+    sections = ["fields"]
+    edited_item = None
+    content_type = None
+    form_schema = None
+    form_data = None
+    saved = None 
+
+    def get_page_title(self):
+        if self.edited_item:
+            return translate("editing", item = self.edited_item)
+        else:
+            return translate("creating", content_type = self.content_type)
+
+    def get_section_id(self, section):
+        if isinstance(section, Collection):
+            return section.name
+        else:
+            return section
+
+    def get_section_label(self, section):
+        if isinstance(section, Collection):
+            return translate(section)
+        else:
+            return BackOfficeLayout.get_section_label(self, section)
+
+    def get_section_url(self, section):
+        if isinstance(section, Collection):
+            return self.cms.uri(self.backoffice.path, section.name)
+        else:
+            return BackOfficeLayout.get_section_url(self, section)
+    ?>
+
+    <py:ready>
+        <?py
+        if self.edited_item:
+            self.page_title = translate(self.edited_item)
+        else:
+            self.page_title = translate("new " + self.content_type.name)
+        
+        # Confine each item collection to its own tab
+        self.sections = list(self.sections)
+        self.sections.extend(
+            member
+            for member in self.form_schema.members().itervalues()
+            if isinstance(member, Collection)
+                and not member.name in ("changes", "drafts", "translations")
+        )
+       
+        if self.content_type.translated:
+            if self.edited_item:
+                self.edit_form.translations = self.edited_item.translations.keys()
+            else:
+                self.edit_form.translations = Site.main.languages
+        ?>
+    </py:ready>
+
+    <py:sitebasis.views.ContentForm
+        py:id="edit_form"
+        py:parent="self.body"
+        py:accessor="${DictAccessor}"
+        py:data="@{self.form_data}"
+        py:schema="@{self.form_schema}">
+
+        <py:with py:element="element.submit_button">
+            <?py element.empty() ?>
+            Save
+        </py:with>
+
+        <py:with py:element="element.buttons">
+            <button py:index="0">Save draft</button>
+        </py:with>
+
+    </py:sitebasis.views.ContentForm>
+
+    <!-- Move the navigation bar inside the form, add a 'go back' link -->
+    <py:with
+        py:element="self.navigation"
+        py:parent="self.edit_form"
+        py:index="0">
+
+        <a py:id="go_back"
+            href="@{self.cms.uri(self.backoffice.path)}">
+            ${translate("Go back")}
+        </a>
+    </py:with>
+
+</py:sitebasis.views.BackOfficeLayout>
