@@ -179,6 +179,12 @@ translations.define("Item-plural",
     en = u"Generic elements"
 )
 
+translations.define("Item-none",
+    ca = u"Cap",
+    es = u"Ninguno",
+    en = u"None"
+)
+
 translations.define("Item.id",
     ca = u"ID",
     es = u"ID",
@@ -407,6 +413,10 @@ translations.define("StandardPage-plural",
     en = u"Standard pages"
 )
 
+translations.define("StandardPage-none",
+    es = u"Ninguna"
+)
+
 translations.define("StandardPage.body",
     ca = u"Cos",
     es = u"Cuerpo",
@@ -457,6 +467,12 @@ translations.define("AccessRule-plural",
     ca = u"Regles d'accés",
     es = u"Reglas de acceso",
     en = u"Access rules"
+)
+
+translations.define("Action-none",
+    ca = u"Cap",
+    es = u"Ninguna",
+    en = u"None"
 )
 
 translations.define("AccessRule.action",
@@ -633,6 +649,10 @@ translations.define("News-plural",
     en = u"News"
 )
 
+translations.define("News-none",    
+    es = u"Ninguna"
+)
+
 translations.define("News.summary",
     ca = u"Sumari",
     es = u"Sumario",
@@ -715,6 +735,10 @@ translations.define("Template-plural",
     ca = u"Plantilles",
     es = u"Plantillas",
     en = u"Templates"
+)
+
+translations.define("Template-none",
+    es = u"Ninguna"
 )
 
 translations.define("Template.title",

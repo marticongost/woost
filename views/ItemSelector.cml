@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<?py
+from sitebasis.models import Item
+import cherrypy
+?>
+
+<div
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:py="http://www.whads.com/ns/cocktail/templates">
+
+    <?py-class
+    value = None
+    ?>
+
+    <input py:id="input" type="hidden"/>
+
+    <button py:id="button" name="rel">
+        <span py:id="selection_label"/>
+    </button>
+
+    <py:ready>
+        <?py
+        if self.member:
+
+            self.input["name"] = self.member.name
+
+            rel = cherrypy.request.params.get("rel")
+            
+            if rel:
+                rel += "." + self.member.name
+            else:
+                rel = self.member.name
+
+            self.button["value"] = rel
+
+        if self.value is None:
+
+            self.selection_label.add_class("empty_selection")
+
+            if self.member:
+                content_type = self.member.related_end.schema
+            else:
+                content_type = Item
+
+            for content_type in content_type.descend_inheritance(True):
+                desc = translate(content_type.name + "-none", default = None)
+                if desc:
+                    self.selection_label.append(desc)
+                    break
+        else:        
+            self.input["value"] = self.value.id
+
+            self.selection_label.append(translate(self.value))
+            
+            for schema in self.value.__class__.descend_inheritance(True):
+                self.selection_label.add_class(schema.name)        
+        ?>
+    </py:ready>
+
+</div>

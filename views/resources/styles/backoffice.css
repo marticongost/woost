@@ -45,7 +45,9 @@ html, body {
     padding: 0;
 }
 
-.BackOfficeLayout a, .BackOfficeLayout .identity button {
+.BackOfficeLayout a,
+.BackOfficeLayout .identity button,
+.BackOfficeEditView .clear_button {
     font-size: inherit;
     background: none;
     border: none;
@@ -121,6 +123,13 @@ html, body {
     margin-bottom: 0.6em;
 }
 
+.BackOfficeLayout input[type=text],
+.BackOfficeLayout input[type=password],
+.BackOfficeLayout input[type=textarea] {
+    border: 1px solid rgb(200,200,200);
+    padding: 0.2em;
+}
+
 /* Forms
 -----------------------------------------------------------------------------*/
 .BackOfficeLayout fieldset {
@@ -156,6 +165,10 @@ html, body {
 .BackOfficeLayout .field textarea.control,
 .BackOfficeLayout .field select.control {
     width: 18em;
+}
+
+.BackOfficeLayout .field button.control {
+    width: 12em;
 }
 
 .BackOfficeLayout .field .mceEditor .mceLayout {
@@ -739,5 +752,25 @@ html, body {
 .BackOfficeEditView .buttons {
     padding: 1em;
     text-align: right;
+}
+
+.BackOfficeEditView .buttons button {
+    margin-left: 0.8em;
+    width: 9em;
+}
+
+.BackOfficeEditView .ItemSelector {
+    padding: 0.1em;
+}
+
+.BackOfficeEditView .ItemSelector .selection_label {
+    background-repeat: no-repeat;
+    padding-left: 1.4em;
+    color: rgb(75,75,75);
+}
+
+.BackOfficeEditView .Reference .empty_selection {
+    padding-left: 0;
+    font-style: italic;
 }
 
