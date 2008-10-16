@@ -12,7 +12,7 @@ from sitebasis.models import Item
 
 class Resource(Item):
 
-    members_order = "title", "html"
+    members_order = "title", "uri"
 
     title = schema.String(
         required = True,

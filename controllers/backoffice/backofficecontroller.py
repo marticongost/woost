@@ -19,9 +19,6 @@ from sitebasis.controllers.backoffice.contentcontroller \
 from sitebasis.controllers.backoffice.historycontroller \
     import HistoryController
 
-from sitebasis.controllers.backoffice.editcontroller \
-    import EditController
-
 
 class BackOfficeController(BaseBackOfficeController):
 
@@ -29,18 +26,23 @@ class BackOfficeController(BaseBackOfficeController):
 
     ContentController = ContentController
     HistoryController = HistoryController
-    EditController = EditController
 
     def __init__(self):
         BaseBackOfficeController.__init__(self)
         self.content = self.ContentController()
         self.history = self.HistoryController()
-        self.edit = self.EditController()
 
     def _run(self, context):
+        
         section = cherrypy.request.params.get("section", self.default_section)
+        view_state_params = {"section": None}
+        
+        if section == "edit":
+            section = "content/" + cherrypy.request.params["selection"]
+            view_state_params["selection"] = None
+
         raise cherrypy.HTTPRedirect(
             context["cms"].uri(context["request"].document.path, section)
-            + "?" + view_state(section = None)
+            + "?" + view_state(**view_state_params)
         )  
 

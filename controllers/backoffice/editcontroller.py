@@ -7,11 +7,11 @@
 @since:			October 2008
 """
 from __future__ import with_statement
-
 from cocktail.pkgutils import import_object
 from cocktail.schema import Adapter, DictAccessor
 from cocktail.persistence import datastore, EntityAccessor
-from sitebasis.models import Item, changeset_context
+from sitebasis.models import changeset_context
+
 from sitebasis.controllers.backoffice.basebackofficecontroller \
     import BaseBackOfficeController
 
@@ -20,9 +20,14 @@ class EditController(BaseBackOfficeController):
 
     view_class = "sitebasis.views.BackOfficeEditView"
 
-    def __init__(self):
+    def __init__(self, item, content_type, collections):
+     
         BaseBackOfficeController.__init__(self)
         
+        self.item = item
+        self.content_type = content_type
+        self.collections = collections
+
         self.__member_display = {}
 
         self.set_member_display(
@@ -38,18 +43,9 @@ class EditController(BaseBackOfficeController):
     def _init(self, context, cms, request):
         
         BaseBackOfficeController._init(self, context, cms, request)
-
-        item_id_param = request.params.get("selection")
-
-        if not item_id_param:
-            item = None
-            content_type = self._get_content_type(Item)
-        else:
-            item = Item.index[int(item_id_param)]
-            content_type = item.__class__
         
-        form_adapter = self.get_adapter(content_type)
-        form_schema = form_adapter.export_schema(content_type)
+        form_adapter = self.get_adapter(self.content_type)
+        form_schema = form_adapter.export_schema(self.content_type)
         form_schema.name = "BackOfficeEditForm"
         form_data = {}
         saved = False
@@ -59,16 +55,14 @@ class EditController(BaseBackOfficeController):
             read_form(form_schema, form_data)
         else:
             form_adapter.export_object(
-                item,
+                self.item,
                 form_data,
-                content_type,
+                self.content_type,
                 form_schema,
                 source_accessor = EntityAccessor,
                 target_accessor = DictAccessor)
 
         context.update(
-            item = item,
-            content_type = content_type,
             form_adapter = form_adapter,
             form_schema = form_schema,
             form_data = form_data,
@@ -80,17 +74,16 @@ class EditController(BaseBackOfficeController):
 
         if context["submitted"]:
 
-            item = context["item"]
-            
-            with changeset_context():
+            current_user = context["cms"].authentication.user
 
-                if item is None:
-                    item = context["content_type"]()
-                    item.author = item.owner = cms.authentication.user
+            with changeset_context(author = current_user):
+
+                if self.item is None:
+                    self.item = self.content_type()
             
                 form_adapter.import_object(
                     context["form_data"],
-                    item,
+                    self.item,
                     context["form_schema"])
 
             datastore.commit()
@@ -100,18 +93,17 @@ class EditController(BaseBackOfficeController):
 
         BaseBackOfficeController._init_view(self, view, context)
 
-        content_type = context["content_type"]
-
         view.backoffice = context["request"].document
         view.section = "fields"
-        view.content_type = content_type
-        view.edited_item = context["item"]
+        view.content_type = self.content_type
+        view.edited_item = self.item
         view.form_data = context["form_data"]
         view.form_schema = context["form_schema"]
+        view.collections = self.collections
         view.saved = context["saved"]
 
         # Set member displays
-        for cls in reversed(list(content_type.ascend_inheritance(True))):
+        for cls in reversed(list(self.content_type.ascend_inheritance(True))):
             cls_displays = self.__member_display.get(cls)    
             if cls_displays:
                 for key, display in cls_displays.iteritems():

@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 
+<?py
+from cocktail.iteration import is_empty
+from sitebasis.models import Item
+?>
+
 <py:cocktail.html.CollectionView
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:py="http://www.whads.com/ns/cocktail/templates">
@@ -8,6 +13,7 @@
     collection_params = None
     available_content_views = ()
     visible_languages = ()
+    root_content_type = Item
 
     def create_toolbar_button(self, action):
         if action == "new":
@@ -22,7 +28,18 @@
     <py:sitebasis.views.ContentTypePath
         py:id="content_type_path"
         py:value="@{self.user_collection.entity_type}"
-        py:index="0">
+        py:index="0"
+        py:root="@{self.root_content_type}">
+
+        <py:ready>
+            <?py
+            entity = self.user_collection.entity_type
+
+            if entity is self.root_content_type \
+            and is_empty(entity.derived_entities()):
+                element.visible = False
+            ?>
+        </py:ready>
 
         <py:with py:def="selector">
             <py:with py:def="tree" py:plural_labels="${True}">

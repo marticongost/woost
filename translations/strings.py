@@ -537,10 +537,10 @@ translations.define("Resource.title",
     en = u"Name"
 )
 
-translations.define("Resource.html",
-    ca = u"Codi HTML",
-    es = u"Código HTML",
-    en = u"HTML code"
+translations.define("Resource.uri",
+    ca = u"URI",
+    es = u"URI",
+    en = u"URI"
 )
 
 # Group

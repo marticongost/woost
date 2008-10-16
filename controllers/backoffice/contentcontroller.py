@@ -6,7 +6,7 @@
 @organization:	Whads/Accent SL
 @since:			October 2008
 """
-
+import cherrypy
 from cocktail.schema import Member, Adapter, Collection
 from cocktail.schema.expressions import CustomExpression
 from cocktail.language import get_content_language
@@ -16,8 +16,12 @@ from cocktail.controllers.usercollection import UserCollection
 from sitebasis.models import Site, Item, Document
 from sitebasis.views import templates
 from sitebasis.controllers.contentviews import ContentViewsRegistry
+
 from sitebasis.controllers.backoffice.basebackofficecontroller \
     import BaseBackOfficeController
+
+from sitebasis.controllers.backoffice.itemcontroller \
+    import ItemController
 
 
 class ContentController(BaseBackOfficeController):
@@ -28,6 +32,8 @@ class ContentController(BaseBackOfficeController):
     selection = MULTIPLE_SELECTION
     settings_duration = 60 * 60 * 24 * 30 # ~= 1 month
 
+    ItemController = ItemController
+    
     def __init__(self):
 
         BaseBackOfficeController.__init__(self)
@@ -47,6 +53,19 @@ class ContentController(BaseBackOfficeController):
             is_default = True,
             inherited = False
         )
+
+    def resolve(self, extra_path):
+        try:
+            item_id = int(extra_path.pop(0))
+        except ValueError:
+            return None
+        else:
+            try:
+                item = self.content_type.index[item_id]
+            except KeyError:
+                raise cherrypy.NotFound()
+
+            return self.ItemController(item)
 
     def _init(self, context, cms, request):
 

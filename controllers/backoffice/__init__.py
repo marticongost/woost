@@ -19,6 +19,15 @@ from sitebasis.controllers.backoffice.historycontroller \
 from sitebasis.controllers.backoffice.editcontroller \
     import EditController
 
+from sitebasis.controllers.backoffice.collectioncontroller \
+    import CollectionController
+
+from sitebasis.controllers.backoffice.itemcontroller \
+    import ItemController
+
 from sitebasis.controllers.backoffice.backofficecontroller \
     import BackOfficeController
+
+
+ItemController.CollectionController = CollectionController
 

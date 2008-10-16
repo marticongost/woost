@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<?py
+from cocktail.schema import Collection
+?>
+
+<py:sitebasis.views.BackOfficeLayout
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:py="http://www.whads.com/ns/cocktail/templates">
+
+    <?py-class
+    sections = ["fields"]
+    edited_item = None
+    content_type = None
+    collections = ()
+    
+    def get_page_title(self):
+        if self.edited_item:
+            return translate("editing", item = self.edited_item)
+        else:
+            return translate("creating", content_type = self.content_type)
+
+    def get_section_id(self, section):
+        if isinstance(section, Collection):
+            return section.name
+        else:
+            return section
+
+    def get_section_label(self, section):
+        if isinstance(section, Collection):
+            return translate(section)
+        else:
+            return BackOfficeLayout.get_section_label(self, section)
+
+    def get_section_url(self, section):
+        
+        section_id = self.get_section_id(section)
+        
+        if section_id == "fields":
+            section_id = ""
+
+        return self.cms.uri(
+            self.backoffice.path,
+            "content",
+            str(self.edited_item.id),
+            section_id
+        )
+    ?>
+
+    <py:ready>
+        <?py
+        # Confine each item collection to its own tab
+        self.sections = list(self.sections) + list(self.collections)
+        ?>
+    </py:ready>
+
+    <!-- Add a 'go back' link -->
+    <a py:id="go_back" py:parent="self.navigation"
+        href="@{self.cms.uri(self.backoffice.path)}">
+        ${translate("Go back")}
+    </a>
+
+</py:sitebasis.views.BackOfficeLayout>

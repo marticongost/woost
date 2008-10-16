@@ -17,13 +17,19 @@ class ContentTypePath(Element):
     
     tag = "ul"
     value = None
+    root = Item
 
     Entry = Element
     Selector = ContentTypeSelector
     
     def _ready(self):
         
-        inheritance_line = reversed(list(self.value.ascend_inheritance(True)))
+        inheritance_line = []
+        
+        for content_type in self.value.ascend_inheritance(True):
+            inheritance_line.insert(0, content_type)
+            if content_type is self.root:
+                break
         
         for content_type in inheritance_line:
             entry = self.create_entry(content_type)
