@@ -61,27 +61,43 @@ class Dispatcher(Module):
 
     def find_handler(self, handler, extra_path):
         
-        while extra_path:
+        is_default = False
 
-            resolver = getattr(handler, "resolve", None)
+        while handler and extra_path:
 
-            if resolver:
-                child = resolver(extra_path)
+            print "FIND HANDLER:", extra_path, handler
+
+            child = getattr(handler, extra_path[0], None)
+            print "CHILD ->", child, extra_path
+
+            if child:
+                extra_path.pop(0)
             else:
-                child = getattr(handler, extra_path[0], None)
-                if child:
-                    extra_path.pop(0)
+                resolver = getattr(handler, "resolve", None)
+
+                if resolver:
+                    child = resolver(extra_path)
+                    print "RESOLVER ->", child
             
             if child is None:
                 child = getattr(handler, "default", None)
-                break
+                print "DEFAULT ->", child
+                
+                if child is not None:
+                    is_default = True
+                    handler = child
+                    break
 
             handler = child
-        
+
         while handler is not None and not callable(handler):
             handler = getattr(handler, "index", None)            
+            print "INDEX ->", handler
         
-        if handler is not None and not getattr(handler, "exposed", False):
+        if handler is not None and (
+            (extra_path and not is_default)
+            or not getattr(handler, "exposed", False)
+        ):
             handler = None
 
         return handler
