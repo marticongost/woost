@@ -289,16 +289,16 @@ translations.define("Site.home",
     en = u"Home"
 )
 
-translations.define("Site.not_found_error",
+translations.define("Site.not_found_error_page",
     ca = u"Pàgina d'error per document no trobat",
     es = u"Página de error para documento no encontrado",
-    en = u"Document not found error page"
+    en = u"'Not found' error page"
 )
 
 translations.define("Site.forbidden_error_page",
     ca = u"Pàgina d'error per accés restringit",
     es = u"Página de error para acceso restringido",
-    en = u"Access denied error page"
+    en = u"'Access denied' error page"
 )
 
 translations.define("Site.generic_error_page",

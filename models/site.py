@@ -16,6 +16,13 @@ from sitebasis.models.item import Item
 class Site(Item):
 
     indexed = True
+    members_order = [
+        "default_language",
+        "home",
+        "generic_error_page",
+        "not_found_error_page",
+        "forbidden_error_page"
+    ]
 
     @classgetter
     def main(cls):
