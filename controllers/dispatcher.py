@@ -60,7 +60,7 @@ class Dispatcher(Module):
         return handler(self.application, request)
 
     def find_handler(self, handler, extra_path):
-                
+        
         while extra_path:
 
             resolver = getattr(handler, "resolve", None)
@@ -73,13 +73,13 @@ class Dispatcher(Module):
                     extra_path.pop(0)
             
             if child is None:
-                handler = getattr(handler, "default", None)
+                child = getattr(handler, "default", None)
                 break
 
             handler = child
         
-        if handler is not None and not callable(handler):
-            handler = getattr(handler, "index", None)
+        while handler is not None and not callable(handler):
+            handler = getattr(handler, "index", None)            
         
         if handler is not None and not getattr(handler, "exposed", False):
             handler = None
