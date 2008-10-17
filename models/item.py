@@ -74,9 +74,13 @@ class Item(Entity):
         @rtype: L{Item}
         """
 
+        # TODO: Collections (including 'translations'!) are copied by
+        # reference, they should be copied by value (but still using a shallow
+        # copy). Probably this should be solved at the adapter level.
+
         draft = self.__class__()
-        draft.is_draft = True
         draft.draft_source = self
+        draft.is_draft = True
 
         adapter = self.get_draft_adapter()
         adapter.export_object(
@@ -108,6 +112,23 @@ class Item(Entity):
             "owner"
         ])
         return adapter
+
+    # When validating unique members, ignore conflicts with the draft source
+    @classmethod
+    def _get_unique_validable(cls, context):
+        validable = EntityClass._get_unique_validable(cls, context)
+        return getattr(validable, "draft_source", validable)
+
+    # Make sure draft copies' members don't get indexed
+    def _update_index(self, member, language, previous_value, new_value):
+        if self.draft_source is None:
+            Entity._update_index(
+                self,
+                member,
+                language,
+                previous_value,
+                new_value
+            )
 
     # Users and permissions
     #------------------------------------------------------------------------------    
