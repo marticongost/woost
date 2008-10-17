@@ -25,11 +25,19 @@ class ItemController(BaseBackOfficeController):
     def __init__(self, item = None, content_type = None):
         BaseBackOfficeController.__init__(self)
         self.item = item
-        self.content_type = content_type \
-            or (item and item.__class__) \
-            or self._get_content_type(Item)
-        self.collections = self._get_collections()
+        self.__content_type = content_type
         
+        if item:
+            self.collections = self._get_collections()
+        else:
+            self.collections = []
+    
+    @getter
+    def content_type(self):
+        return self.__content_type \
+            or (self.item and self.item.__class__) \
+            or self._get_content_type(Item)
+
     @getter
     def index(self):
         return self.EditController(

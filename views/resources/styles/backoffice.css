@@ -89,7 +89,7 @@ html, body {
     padding-top: 0.4em;
     padding-bottom: 0.4em;
     padding-right: 0.8em;
-    margin-right: 0.2em;
+    margin-left: 0.2em;
     border: 1px solid rgb(200,210,220);
     -moz-border-radius-topleft: 5px;
     -moz-border-radius-topright: 5px;
@@ -172,7 +172,7 @@ html, body {
 }
 
 .BackOfficeLayout .field .mceEditor .mceLayout {
-    width: 16.6em !important;
+    width: 16.85em !important;
 }
 
 .BackOfficeLayout .buttons {
@@ -283,7 +283,7 @@ html, body {
 
 .BackOfficeLayout .draft,
 .BackOfficeLayout .Table .draft {
-    background-color: rgb(245,237,185);
+    background-color: rgb(250,242,190);
 }
 
 .BackOfficeLayout .Table .nested_draft td.element_column {
@@ -704,18 +704,17 @@ html, body {
 }
 
 .BackOfficeLayout .error_box {
-    padding: 0.5em;
-    border: 1px solid rgb(240,210,190);
+    border: 1px dotted rgb(200,160,120);
     background-color: rgb(245,230,215);
-    margin-bottom: 1em;
+    padding: 0.5em;
 }
 
-.BackOfficeLayout .error_box ul,
 .BackOfficeLayout .error_box li {
-    display: block;
     list-style-type: none;
-    padding: 0;
-    margin: 0;
+}
+
+.BackOfficeLayout .error_box li + li {
+    margin-top: 0.2em;
 }
 
 .BackOfficeLayout .error_box li em {
@@ -724,10 +723,32 @@ html, body {
     color: rgb(135,35,10);
 }
 
+.BackOfficeLayout .field .error {
+    border: 1px solid rgb(200,160,120) !important;
+    background-color: rgb(245,230,215) !important;
+}
+
 /* Edit form
 -----------------------------------------------------------------------------*/
-.BackOfficeEditView .body {
-    padding-top: 0;
+.BackOfficeItemView .draft_box {
+    margin: 0.5em;
+    padding: 0.5em;
+    border: 1px solid rgb(235,227,175);
+    font-size: 85%;
+}
+
+.BackOfficeItemView .draft_box strong {
+    margin-left: 0.3em;
+    color: rgb(135,35,10);
+    color: rgb(75,50,25);
+}
+
+.BackOfficeItemView .draft_box .draft_actions {
+    text-align: right;
+}
+
+.BackOfficeItemView .draft_box .draft_actions button {
+    margin-left: 0.3em;
 }
 
 .BackOfficeEditView legend {
@@ -740,15 +761,6 @@ html, body {
     margin: 0;
 }
 
-.BackOfficeEditView .edit_form .fields {
-    clear: left;
-    position: relative;
-    top: -1px;
-    padding: 1em;
-    border: 1px solid rgb(200,210,220);
-    border-top: none;
-}
-
 .BackOfficeEditView .buttons {
     padding: 1em;
     text-align: right;
@@ -756,11 +768,15 @@ html, body {
 
 .BackOfficeEditView .buttons button {
     margin-left: 0.8em;
-    width: 9em;
+    width: 11em;
 }
 
 .BackOfficeEditView .ItemSelector {
     padding: 0.1em;
+}
+
+.BackOfficeEditView .ItemSelector button {
+    width: 18.5em;
 }
 
 .BackOfficeEditView .ItemSelector .selection_label {

@@ -9,7 +9,7 @@
 from datetime import datetime
 from persistent.mapping import PersistentMapping
 from cocktail import schema
-from cocktail.persistence import Entity, EntityClass, datastore
+from cocktail.persistence import Entity, EntityClass, EntityAccessor, datastore
 from sitebasis.models.changesets import ChangeSet, Change
 from sitebasis.models.action import Action
 
@@ -22,6 +22,9 @@ schema.Member.versioned = True
 
 
 class Item(Entity):
+    """Base class for all CMS items. Provides basic functionality such as
+    authorship, group membership, draft copies and versioning.
+    """
 
     members_order = "id", "author", "owner", "groups"
 
@@ -34,6 +37,14 @@ class Item(Entity):
         versioned = False,
         items = "sitebasis.models.Change",
         bidirectional = True
+    )
+
+    creation_time = schema.DateTime(
+        versioned = False        
+    )
+
+    last_update_time = schema.DateTime(
+        versioned = False        
     )
 
     is_draft = schema.Boolean(
@@ -54,13 +65,48 @@ class Item(Entity):
         bidirectional = True
     )
 
-    creation_time = schema.DateTime(
-        versioned = False        
-    )
+    def make_draft(self):
+        """Creates a new draft copy of the item. Subclasses can tweak the copy
+        process by overriding either this method or L{_get_draft_adapter} (for
+        example, to exclude one or more members).
 
-    last_update_time = schema.DateTime(
-        versioned = False        
-    )
+        @return: The draft copy of the item.
+        @rtype: L{Item}
+        """
+
+        draft = self.__class__()
+        draft.is_draft = True
+        draft.draft_source = self
+
+        adapter = self.get_draft_adapter()
+        adapter.export_object(
+            self,
+            draft,
+            source_schema = self.__class__,
+            source_accessor = EntityAccessor,
+            target_accessor = EntityAccessor
+        )
+        
+        return draft
+
+    def get_draft_adapter(self):
+        """Produces an adapter that defines the copy process used by the
+        L{make_draft} method in order to produce draft copies of the item.
+
+        @return: An adapter with all the rules required to obtain a draft copy
+            of the item.
+        @rtype: L{Adapter<cocktail.schema.adapter.Adapter>}
+        """
+        adapter = schema.Adapter()
+        adapter.exclude([
+            "changes",
+            "is_draft",
+            "draft_source",
+            "drafts",
+            "author",
+            "owner"
+        ])
+        return adapter
 
     # Users and permissions
     #------------------------------------------------------------------------------    

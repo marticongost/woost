@@ -84,9 +84,12 @@ translations.define("editing",
 )
 
 translations.define("creating",
-    ca = lambda content_type: u"Creant %s" % translate(content_type, "ca"),
-    es = lambda content_type: u"Creando %s" % translate(content_type, "es"),
-    en = lambda content_type: u"Creating %s" % translate(content_type, "en")
+    ca = lambda content_type:
+        u"Creant %s" % translate(content_type.__name__, "ca").lower(),
+    es = lambda content_type:
+        u"Creando %s" % translate(content_type.__name__, "es").lower(),
+    en = lambda content_type:
+        u"Creating new %s" % translate(content_type.__name__, "en").lower()
 )
 
 translations.define("Backout",
@@ -123,6 +126,18 @@ translations.define("Go back",
     ca = u"Tornar enrera",
     es = u"Volver atrás",
     en = u"Go back"
+)
+
+translations.define("Save",
+    ca = u"Desar",
+    es = u"Guardar",
+    en = u"Save"
+)
+
+translations.define("Save draft",
+    ca = u"Desar esborrany",
+    es = u"Guardar borrador",
+    en = u"Save draft"
 )
 
 # Content views

@@ -13,6 +13,7 @@ from sitebasis.models import Site
     form_schema = None
     form_data = None
     saved = None 
+    submitted = False
     ?>
 
     <py:ready>
@@ -30,23 +31,35 @@ from sitebasis.models import Site
         py:parent="self.body"
         py:accessor="${DictAccessor}"
         py:data="@{self.form_data}"
-        py:schema="@{self.form_schema}">
+        py:schema="@{self.form_schema}"
+        py:errors="@{self.errors}"
+        method="post">
 
-        <py:with py:element="element.submit_button">
+        <py:with py:element="element.submit_button" name="save">
             <?py element.empty() ?>
-            Save
+            ${translate("Save")}
         </py:with>
 
-        <py:with py:element="element.buttons">
-            <button py:index="0">Save draft</button>
-        </py:with>
+        <py:ready>
+
+            <ul py:id="error_box"
+                py:if="self.submitted and self.errors"
+                py:before="self.edit_form.fields">
+
+                <li py:for="error in self.errors">
+                    ${translate(error)}
+                </li>
+            </ul>
+
+            <button
+                py:id="save_draft_button"
+                py:visible="@{not (self.edited_item and self.edited_item.is_draft)}"
+                py:parent="self.edit_form.buttons"
+                py:index="0">
+                ${translate("Save draft")}
+            </button>
+        </py:ready>
 
     </py:sitebasis.views.ContentForm>
-    
-    <!-- Move the navigation bar inside the form -->
-    <py:with
-        py:element="self.navigation"
-        py:parent="self.edit_form"
-        py:index="0" />
 
 </py:sitebasis.views.BackOfficeItemView>

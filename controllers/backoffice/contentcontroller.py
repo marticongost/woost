@@ -15,6 +15,7 @@ from cocktail.controllers import get_persistent_param
 from cocktail.controllers.usercollection import UserCollection
 from sitebasis.models import Site, Item, Document
 from sitebasis.views import templates
+from sitebasis.controllers import exposed
 from sitebasis.controllers.contentviews import ContentViewsRegistry
 
 from sitebasis.controllers.backoffice.basebackofficecontroller \
@@ -38,6 +39,8 @@ class ContentController(BaseBackOfficeController):
 
         BaseBackOfficeController.__init__(self)
 
+        self.new = self.ItemController()
+
         # Setup content views
         self.content_views = ContentViewsRegistry()
         
@@ -53,7 +56,7 @@ class ContentController(BaseBackOfficeController):
             is_default = True,
             inherited = False
         )
-
+        
     def resolve(self, extra_path):
         try:
             item_id = int(extra_path.pop(0))

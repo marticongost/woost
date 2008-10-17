@@ -49,7 +49,7 @@ class Dispatcher(Module):
             target_instance = document)
 
     def respond(self, request):
-        
+
         handler = self.find_handler(
             request.document.handler or request.document,
             request.extra_path)
@@ -65,10 +65,7 @@ class Dispatcher(Module):
 
         while handler and extra_path:
 
-            print "FIND HANDLER:", extra_path, handler
-
             child = getattr(handler, extra_path[0], None)
-            print "CHILD ->", child, extra_path
 
             if child:
                 extra_path.pop(0)
@@ -77,11 +74,9 @@ class Dispatcher(Module):
 
                 if resolver:
                     child = resolver(extra_path)
-                    print "RESOLVER ->", child
             
             if child is None:
                 child = getattr(handler, "default", None)
-                print "DEFAULT ->", child
                 
                 if child is not None:
                     is_default = True
@@ -92,7 +87,6 @@ class Dispatcher(Module):
 
         while handler is not None and not callable(handler):
             handler = getattr(handler, "index", None)            
-            print "INDEX ->", handler
         
         if handler is not None and (
             (extra_path and not is_default)

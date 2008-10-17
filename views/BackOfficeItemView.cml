@@ -15,7 +15,8 @@ from cocktail.schema import Collection
     collections = ()
     
     def get_page_title(self):
-        if self.edited_item:
+        if self.edited_item \
+        and not (self.edited_item.is_draft and self.edited_item.draft_source is None):
             return translate("editing", item = self.edited_item)
         else:
             return translate("creating", content_type = self.content_type)
@@ -42,7 +43,9 @@ from cocktail.schema import Collection
         return self.cms.uri(
             self.backoffice.path,
             "content",
-            str(self.edited_item.id),
+            str(self.edited_item.id)
+                if self.edited_item
+                else "new",
             section_id
         )
     ?>
@@ -53,6 +56,22 @@ from cocktail.schema import Collection
         self.sections = list(self.sections) + list(self.collections)
         ?>
     </py:ready>
+    
+    <div
+        py:id="draft_box"
+        py:visible="@{self.edited_item and self.edited_item.is_draft}"
+        py:before="self.navigation"
+        class="draft">
+        <py:ready py:if="self.draft_box.visible">
+            You are currently editing a draft copy of the item. The draft was created by
+            <strong>${translate(self.edited_item.author)}</strong>, and last modified on
+            <strong>${self.edited_item.last_update_time}</strong>.
+            <div py:id="draft_actions">
+                <button py:id="discard_draft">Discard draft</button>
+                <button py:id="confirm_draft">Confirm draft</button>
+            </div>
+        </py:ready>
+    </div>
 
     <!-- Add a 'go back' link -->
     <a py:id="go_back" py:parent="self.navigation"

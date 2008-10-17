@@ -7,10 +7,12 @@
 @since:			October 2008
 """
 from __future__ import with_statement
+import cherrypy
 from cocktail.pkgutils import import_object
-from cocktail.schema import Adapter, DictAccessor
+from cocktail.schema import Adapter, DictAccessor, Collection, ErrorList
 from cocktail.persistence import datastore, EntityAccessor
-from sitebasis.models import changeset_context
+from cocktail.controllers import read_form
+from sitebasis.models import changeset_context, Site
 
 from sitebasis.controllers.backoffice.basebackofficecontroller \
     import BaseBackOfficeController
@@ -21,7 +23,7 @@ class EditController(BaseBackOfficeController):
     view_class = "sitebasis.views.BackOfficeEditView"
 
     def __init__(self, item, content_type, collections):
-     
+
         BaseBackOfficeController.__init__(self)
         
         self.item = item
@@ -49,23 +51,42 @@ class EditController(BaseBackOfficeController):
         form_schema.name = "BackOfficeEditForm"
         form_data = {}
         saved = False
-        submitted = "save" in request.params
-
+        make_draft = "save_draft" in request.params
+        submitted = make_draft or ("save" in request.params)
+                
+        # Dump the form on the model
         if submitted:
-            read_form(form_schema, form_data)
+            read_form(form_schema, form_data,
+                languages = Site.main.languages) # TODO: Variable translations
+
+        # Dump the model on the form
         else:
+
+            if self.item:
+                source = self.item
+                source_accessor = EntityAccessor
+            else:
+                source = {}
+                source_accessor = DictAccessor
+                self.content_type.init_instance(
+                    source,
+                    accessor = source_accessor
+                )
+            
             form_adapter.export_object(
-                self.item,
+                source,
                 form_data,
                 self.content_type,
                 form_schema,
-                source_accessor = EntityAccessor,
-                target_accessor = DictAccessor)
+                source_accessor = source_accessor,
+                target_accessor = DictAccessor
+            )
 
         context.update(
             form_adapter = form_adapter,
             form_schema = form_schema,
             form_data = form_data,
+            make_draft = make_draft,
             submitted = submitted,
             saved = False
         )
@@ -74,20 +95,82 @@ class EditController(BaseBackOfficeController):
 
         if context["submitted"]:
 
-            current_user = context["cms"].authentication.user
+            form_data = context["form_data"]
+            form_schema = context["form_schema"]
 
+            errors = ErrorList(
+                form_schema.get_errors(
+                    form_data,
+                    persistent_object = self.item
+                )
+            )
+            context["errors"] = errors
+
+            if not errors:
+                self._save(context)
+
+    def _save(self, context):
+        
+        current_user = context["cms"].authentication.user
+
+        item = self.item
+        redirect = False
+        
+        # Create a draft
+        if context["make_draft"]:
+
+            # From an existing element
+            if item:
+                item = item.make_draft()
+
+            # From scratch
+            else:
+                item = self.content_type()
+                item.is_draft = True
+                
+            item.author = current_user
+            item.owner = current_user
+            redirect = True
+
+        # Store the changes on a draft
+        if item and item.is_draft:
+            self.apply_changes(context, item)
+
+        # Operate directly on the production item
+        else:
             with changeset_context(author = current_user):
 
-                if self.item is None:
-                    self.item = self.content_type()
+                if item is None:
+                    item = self.content_type()
+                    redirect = True
             
-                form_adapter.import_object(
-                    context["form_data"],
-                    self.item,
-                    context["form_schema"])
+                self.apply_changes(context, item)
 
-            datastore.commit()
-            context["saved"] = True
+        datastore.commit()
+
+        # A new item or draft was created; redirect the browser to it
+        if redirect:
+            raise cherrypy.HTTPRedirect(
+                context["cms"].uri(
+                    context["request"].document.path,
+                    "content", str(item.id)
+                )
+            )
+
+        context["saved"] = True
+
+    def apply_changes(self, context, item):
+
+        form_adapter = context["form_adapter"]
+        form_data = context["form_data"]
+        form_schema = context["form_schema"]
+        
+        form_adapter.import_object(
+            form_data,
+            item,
+            form_schema,
+            source_accessor = DictAccessor,
+            target_accessor = EntityAccessor)
 
     def _init_view(self, view, context):
 
@@ -101,6 +184,8 @@ class EditController(BaseBackOfficeController):
         view.form_schema = context["form_schema"]
         view.collections = self.collections
         view.saved = context["saved"]
+        view.submitted = context["submitted"]
+        view.errors = context.get("errors")
 
         # Set member displays
         for cls in reversed(list(self.content_type.ascend_inheritance(True))):
@@ -122,13 +207,17 @@ class EditController(BaseBackOfficeController):
             "id",
             "author",
             "owner",
-            "translations",
-            "changes",
             "creation_time",
             "last_update_time",
             "drafts",
             "draft_source",
             "is_draft"
+        ])
+
+        adapter.exclude([
+            member.name
+            for member in content_type.members().itervalues()
+            if isinstance(member, Collection)
         ])
 
     def set_member_display(self, member_ref, display):

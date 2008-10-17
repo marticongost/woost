@@ -62,7 +62,7 @@ from sitebasis.models import Item
             <py:sitebasis.views.ContentTypeTree
                 py:id="new_item_selector"
                 py:root="@{self.user_collection.entity_type}"
-                py:base_url="@{self.cms.uri(self.backoffice.path, 'new')}">
+                py:base_url="@{self.cms.uri(self.backoffice.path, 'content', 'new')}">
 
                 <py:with py:def="label" py:args="content_type"
                     py:tag="a"
