@@ -275,14 +275,17 @@ html, body {
     color: white !important;
 }
 
+.BackOfficeLayout .Table tr.draft td {
+    background-color: rgb(250,242,190) !important;
+}
+
 .BackOfficeLayout .Table .element_column label {
     white-space: nowrap;
     background-repeat: no-repeat;
     padding-left: 1.5em;
 }
 
-.BackOfficeLayout .draft,
-.BackOfficeLayout .Table .draft {
+.BackOfficeLayout .draft {
     background-color: rgb(250,242,190);
 }
 
