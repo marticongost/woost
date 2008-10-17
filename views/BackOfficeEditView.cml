@@ -55,7 +55,8 @@ from sitebasis.models import Site
                 py:id="save_draft_button"
                 py:visible="@{not (self.edited_item and self.edited_item.is_draft)}"
                 py:parent="self.edit_form.buttons"
-                py:index="0">
+                py:index="0"
+                name="make_draft">
                 ${translate("Save draft")}
             </button>
         </py:ready>

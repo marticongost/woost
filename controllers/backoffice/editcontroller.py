@@ -51,7 +51,7 @@ class EditController(BaseBackOfficeController):
         form_schema.name = "BackOfficeEditForm"
         form_data = {}
         saved = False
-        make_draft = "save_draft" in request.params
+        make_draft = "make_draft" in request.params
         submitted = make_draft or ("save" in request.params)
                 
         # Dump the form on the model
