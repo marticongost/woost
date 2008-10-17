@@ -79,8 +79,7 @@ class ContentTable(Table):
             display = Element()
         else:
             display = Element("a")
-            display["href"] = self.base_url + "/edit" \
-                "?content_selection=%d" % value.id
+            display["href"] = self.base_url + "/content/%d" % value.id
         
         display.append(self.repr_value(item, member, value))
 
