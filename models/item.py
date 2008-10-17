@@ -99,6 +99,7 @@ class Item(Entity):
         """
         adapter = schema.Adapter()
         adapter.exclude([
+            "id",
             "changes",
             "is_draft",
             "draft_source",
