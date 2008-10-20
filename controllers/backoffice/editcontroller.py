@@ -53,7 +53,7 @@ class EditController(BaseBackOfficeController):
         saved = False
         make_draft = "make_draft" in request.params
         submitted = make_draft or ("save" in request.params)
-                
+        
         # Dump the form on the model
         if submitted:
             read_form(form_schema, form_data,
@@ -186,6 +186,11 @@ class EditController(BaseBackOfficeController):
         view.saved = context["saved"]
         view.submitted = context["submitted"]
         view.errors = context.get("errors")
+
+        if self.item and self.item.draft_source:
+            view.changed_members = self.item.get_draft_changed_members()
+        else:
+            view.changed_members = set()
 
         # Set member displays
         for cls in reversed(list(self.content_type.ascend_inheritance(True))):

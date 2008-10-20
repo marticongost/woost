@@ -285,7 +285,8 @@ html, body {
     padding-left: 1.5em;
 }
 
-.BackOfficeLayout .draft {
+.BackOfficeLayout .draft,
+.BackOfficeLayout .changed {
     background-color: rgb(250,242,190);
 }
 

@@ -126,6 +126,43 @@ class Item(Entity):
                 new_value
             )
 
+    def get_draft_changed_members(self):
+        """Obtains the set of members of the item whose values differ to the
+        ones on the item's L{draft source<draft_source>}. Must be called on a
+        draft copy.
+        
+        @return: The set of changed members.
+        @rtype: L{member<cocktail.schema.member.Member>} set
+
+        @raise ValueError: Raised when the method is called on an item which
+            isn't a draft copy (ie. its L{draft source<draft_source>} is None).
+        """
+        source = self.draft_source
+
+        if source is None:
+            raise ValueError("%s is not a draft copy; can't determine its "
+                "changed members")
+
+        changed_members = set()
+        languages = self.translations.keys()
+
+        for member in self.__class__.members().itervalues():            
+            if member.translated:
+                for language in languages:
+                    source_value = source.get(member, language) 
+                    draft_value = self.get(member, language)
+
+                    if source_value != draft_value:
+                        changed_members.add((member, language))
+            else:
+                source_value = source.get(member) 
+                draft_value = self.get(member)
+
+                if source_value != draft_value:
+                    changed_members.add(member)
+
+        return changed_members
+        
     # Users and permissions
     #------------------------------------------------------------------------------    
     author = schema.Reference(

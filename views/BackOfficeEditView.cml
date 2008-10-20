@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <?py
+from cocktail.language import get_content_language
 from cocktail.schema import Collection, DictAccessor
 from sitebasis.models import Site
 ?>
@@ -14,6 +15,7 @@ from sitebasis.models import Site
     form_data = None
     saved = None 
     submitted = False
+    changed_members = None
     ?>
 
     <py:ready>
@@ -33,11 +35,30 @@ from sitebasis.models import Site
         py:data="@{self.form_data}"
         py:schema="@{self.form_schema}"
         py:errors="@{self.errors}"
+        py:changed_members="@{self.changed_members}"
         method="post">
 
-        <py:with py:element="element.submit_button" name="save">
-            <?py element.empty() ?>
-            ${translate("Save")}
+        <py:binding>
+            <?py
+            element.changed_members = set(
+                (member.name
+                    if not isinstance(member, tuple)
+                    else (member[0].name, member[1])
+                )
+                for member in self.changed_members
+            )
+            ?>
+        </py:binding>
+
+        <py:with py:def="control" py:args="obj, member">
+            <?py
+            key = member.name \
+                if not member.translated \
+                else (member.name, get_content_language())
+
+            if key in self.changed_members:
+                element.add_class("changed")
+            ?>
         </py:with>
 
         <py:ready>
@@ -60,6 +81,11 @@ from sitebasis.models import Site
                 ${translate("Save draft")}
             </button>
         </py:ready>
+        
+        <py:with py:element="element.submit_button" name="save">
+            <?py element.empty() ?>
+            ${translate("Save")}
+        </py:with>
 
     </py:sitebasis.views.ContentForm>
 
