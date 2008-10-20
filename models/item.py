@@ -73,11 +73,6 @@ class Item(Entity):
         @return: The draft copy of the item.
         @rtype: L{Item}
         """
-
-        # TODO: Collections (including 'translations'!) are copied by
-        # reference, they should be copied by value (but still using a shallow
-        # copy). Probably this should be solved at the adapter level.
-
         draft = self.__class__()
         draft.draft_source = self
         draft.is_draft = True
@@ -88,7 +83,8 @@ class Item(Entity):
             draft,
             source_schema = self.__class__,
             source_accessor = EntityAccessor,
-            target_accessor = EntityAccessor
+            target_accessor = EntityAccessor,
+            collection_copy_mode = schema.shallow
         )
         
         return draft
