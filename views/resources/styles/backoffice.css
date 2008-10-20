@@ -268,15 +268,15 @@ html, body {
     background-color: rgb(235,240,247);
 }
 
+.BackOfficeLayout .Table tr.draft td {
+    background-color: rgb(250,242,190) !important;
+}
+
 .BackOfficeLayout .Table tr.selected td,
 .BackOfficeLayout .Table tr.selected td * {
     background-color: rgb(200,205,207) !important;
     background-color: rgb(75,75,75) !important;
     color: white !important;
-}
-
-.BackOfficeLayout .Table tr.draft td {
-    background-color: rgb(250,242,190) !important;
 }
 
 .BackOfficeLayout .Table .element_column label {
