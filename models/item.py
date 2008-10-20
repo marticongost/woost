@@ -89,6 +89,32 @@ class Item(Entity):
         
         return draft
 
+    def confirm_draft(self):
+        """Confirms a draft. On draft copies, this applies all the changes made
+        by the draft to its source element, and deletes the draft. On brand new
+        drafts, the item itself simply drops its draft status, and otherwise
+        remains the same.
+        
+        @raise ValueError: Raised if the item is not a draft.
+        """            
+        if not self.is_draft:
+            raise ValueError("confirm_draft() must be called on a draft")
+
+        # TODO: Collections!
+        if self.draft_source is None:
+            self.is_draft = None
+        else:
+            adapter = self.get_draft_adapter()
+            adapter.import_object(
+                self,
+                self.draft_source,
+                source_scema = self.__class__,
+                source_accessor = EntityAccessor,
+                target_accessor = EntityAccessor,
+                collection_copy_mode = schema.shallow
+            )
+            self.delete()
+
     def get_draft_adapter(self):
         """Produces an adapter that defines the copy process used by the
         L{make_draft} method in order to produce draft copies of the item.
@@ -101,6 +127,7 @@ class Item(Entity):
         adapter.exclude([
             "id",
             "changes",
+            "translations",
             "is_draft",
             "draft_source",
             "drafts",
