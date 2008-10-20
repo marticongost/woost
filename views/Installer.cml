@@ -26,24 +26,22 @@ PasswordBox = loader.get_class("cocktail.html.PasswordBox")
         </div>
 
         <py:block py:visible="@{not self.successful}">
-            <div py:id="error_box">
+            <ul py:id="error_box">
                 <py:ready>
                     <?py                
                     element.visible = bool(self.errors)
                     ?>
-                    <ul py:if="self.errors">
-                        <li py:for="error in self.errors">
-                            <?py
-                            try:
-                                error_desc = translate(error)
-                            except:
-                                error_desc = translate("Unknown error", error = error)
-                            ?>
-                            ${error_desc}
-                        </li>
-                    </ul>
+					<li py:for="error in self.errors">
+						<?py
+						try:
+							error_desc = translate(error)
+						except:
+							error_desc = translate("Unknown error", error = error)
+						?>
+						${error_desc}
+					</li>
                 </py:ready>
-            </div>
+            </ul>
 
             <py:cocktail.html.Form
                 py:id="installer_form"
