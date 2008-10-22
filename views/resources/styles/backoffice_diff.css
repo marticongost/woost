@@ -1,0 +1,72 @@
+
+.BackOfficeDiffView .differences {
+    width: 100%;
+}
+
+.BackOfficeDiffView .diff_add {
+    color: rgb(0,125,0);
+    font-weight: bold;
+    background-color: rgb(230,255,210);
+}
+
+.BackOfficeDiffView .diff_sub {
+    color: rgb(150,0,0);
+    font-weight: bold;
+    background-color: rgb(255,230,210);
+}
+
+.BackOfficeDiffView .diff_chg {
+    color: rgb(25,25,175);
+    font-weight: bold;
+    background-color: rgb(215,255,215);
+}
+
+.BackOfficeDiffView .diff_next,
+.BackOfficeDiffView .diff_header {
+    display: none;
+}
+
+.BackOfficeDiffView .difference {
+    width: 100%;
+}
+
+.BackOfficeDiffView td.language {
+    color: rgb(75,75,75);
+    font-style: italic;
+}
+
+.BackOfficeDiffView .difference_row + .difference_row > td {
+    padding-top: 1em;
+}
+
+.BackOfficeDiffView .differences td,
+.BackOfficeDiffView .differences th {
+    text-align: left;
+}
+
+.BackOfficeDiffView .differences th + th,
+.BackOfficeDiffView .differences td + td {
+    padding-left: 1em;
+}
+
+.BackOfficeDiffView .diff {
+    border: none;
+    border-collapse: collapse;
+    table-layout: fixed;
+    width: 100%;
+    border: 1px solid rgb(160,160,160);
+}
+
+.BackOfficeDiffView .diff th,
+.BackOfficeDiffView .diff td {
+    border: 1px dashed rgb(200,200,200);
+    width: 50%;
+    padding: 0.2em !important;
+    font-family: Bitstream Vera Sans Mono, Lucida Console, Courier New;
+    font-size: 85%;
+}
+
+.BackOfficeDiffView .buttons {
+    padding-right: 0;
+}
+

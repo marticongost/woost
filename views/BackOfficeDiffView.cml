@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<?py
+import re
+import htmlentitydefs
+import cherrypy
+from difflib import HtmlDiff
+from cocktail.schema import String, get_accessor
+
+def unescape(text):
+    def fixup(m):
+        text = m.group(0)
+        if text[:2] == "&#":
+            # character reference
+            try:
+                if text[:3] == "&#x":
+                    return unichr(int(text[3:-1], 16))
+                else:
+                    return unichr(int(text[2:-1]))
+            except ValueError:
+                pass
+        else:
+            # named entity
+            try:
+                text = unichr(htmlentitydefs.name2codepoint[text[1:-1]])
+            except KeyError:
+                pass
+        return text # leave as is
+    return re.sub("&#?\w+;", fixup, text)
+?>
+
+<py:sitebasis.views.BackOfficeLayout
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:py="http://www.whads.com/ns/cocktail/templates">
+
+    <?py-class
+    source = None
+    source_accessor = None
+    target = None
+    target_accessor = None
+    differences = None
+    form_data = None
+    form_schema = None
+    visible_languages = None
+
+    def get_page_title(self):
+        return translate("Differences for", item = self.edited_item)
+    ?>
+
+    <?py
+    self.add_resource("/resources/styles/backoffice_diff.css")
+    ?>
+
+    <form py:id="differences_form" method="post" py:parent="self.body">
+       
+        <py:ready>
+            <py:cocktail.html.Form                
+                py:if="self.form_data"
+                py:embeded="${True}"
+                py:data="${self.form_data}"
+                py:schema="${self.form_schema}"
+                py:translations="${self.visible_languages}"
+                py:hidden="${True}"/>
+        </py:ready>
+
+        <p py:id="no_differences">
+            ${translate("No differences")}
+        </p>
+
+        <table py:id="differences" py:visible="@{self.differences}">
+            <tr>
+                <th class="check"/>
+                <th class="member">Member</th>
+                <th class="language">Language</th>
+                <th class="values">Differences</th>
+            </tr>
+                    
+            <tr py:def="difference_row" py:args="member, language">
+                <?py
+                key = member.name
+                revert_key = key
+
+                if language:
+                    revert_key += "-" + language
+
+                a = self.source_accessor.get(self.source, key, language = language)
+                b = self.target_accessor.get(self.target, key, language = language)
+                is_string = isinstance(member, String)
+                ?>
+                <td class="check">
+                    <input type="checkbox" name="reverted_members" value="${revert_key}"/>
+                </td>
+                <td class="member">${translate(member)}</td>
+                <td class="language">${language and translate(language) or "-"}</td>
+                <td class="values">
+                    <table class="diff" py:if="not is_string">
+                        <td>${a}</td>
+                        <td>${b}</td>
+                    </table>
+                    <?py
+                    if is_string:
+                        hd = HtmlDiff()
+                        element.append(
+                            hd.make_table(
+                                a and unescape(a).split("\n") or "",
+                                b and unescape(b).split("\n") or ""
+                            )
+                            .replace("<colgroup></colgroup>", "")
+                            .replace('nowrap="nowrap"', "")
+                            .replace("&nbsp;", " ")
+                        )
+                    ?>
+                </td>
+            </tr>
+
+            <py:ready>
+                <?py
+                if self.source_accessor is None:
+                    self.source_accessor = get_accessor(self.source)
+
+                if self.target_accessor is None:
+                    self.target_accessor = get_accessor(self.target)
+
+                diffs = sorted(self.differences, key = lambda diff: (diff[0].name, diff[1]))
+                ?>
+                <py:new
+                    py:element="self.create_difference_row(member, language)"
+                    py:for="member, language in diffs"/>
+            </py:ready>
+
+        </table>
+
+        <div py:id="buttons">
+            <button
+                py:id="revert_button"
+                py:visible="@{self.differences}"
+                name="action"
+                value="revert">
+                ${translate("Revert")}
+            </button>
+            <button py:id="close_button" name="action" value="read">${translate("Close")}</button>
+        </div>
+
+    </form>
+
+</py:sitebasis.views.BackOfficeLayout>

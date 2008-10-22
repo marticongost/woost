@@ -13,6 +13,7 @@ from cocktail.schema import Adapter, DictAccessor, Collection, ErrorList
 from cocktail.persistence import datastore, EntityAccessor
 from cocktail.controllers import read_form
 from sitebasis.models import changeset_context, Site
+from sitebasis.views import templates
 
 from sitebasis.controllers.backoffice.basebackofficecontroller \
     import BaseBackOfficeController
@@ -50,53 +51,53 @@ class EditController(BaseBackOfficeController):
         form_schema = form_adapter.export_schema(self.content_type)
         form_schema.name = "BackOfficeEditForm"
         form_data = {}
-        saved = False
-        make_draft = "make_draft" in request.params
-        submitted = make_draft or ("save" in request.params)
-        
-        # Dump the form on the model
+        languages = Site.main.languages # TODO: Variable translations
+        saved = False        
+        action = request.params.get("action")
+        submitted = action is not None
+                
+        # Load form data
         if submitted:
-            read_form(form_schema, form_data,
-                languages = Site.main.languages) # TODO: Variable translations
+            read_form(form_schema, form_data, languages = languages)
 
         # Dump the model on the form
         else:
 
             if self.item:
                 source = self.item
-                source_accessor = EntityAccessor
             else:
+                # Initialize the form with the default values for the model
                 source = {}
-                source_accessor = DictAccessor
-                self.content_type.init_instance(
-                    source,
-                    accessor = source_accessor
-                )
+                self.content_type.init_instance(source)
             
             form_adapter.export_object(
                 source,
                 form_data,
                 self.content_type,
-                form_schema,
-                source_accessor = source_accessor,
-                target_accessor = DictAccessor
+                form_schema
             )
 
         context.update(
             form_adapter = form_adapter,
             form_schema = form_schema,
             form_data = form_data,
-            make_draft = make_draft,
+            languages = languages,
+            action = action,
             submitted = submitted,
             saved = False
         )
 
     def _run(self, context):
 
-        if context["submitted"]:
+        action = context["action"]
+        
+        if action and action != "compare":
 
             form_data = context["form_data"]
-            form_schema = context["form_schema"]
+            form_schema = context["form_schema"]                  
+                
+            if action == "revert":
+                self._revert(context)
 
             errors = ErrorList(
                 form_schema.get_errors(
@@ -106,8 +107,46 @@ class EditController(BaseBackOfficeController):
             )
             context["errors"] = errors
 
-            if not errors:
+            if not errors and action in ("save", "make_draft"):
                 self._save(context)
+
+    def _revert(self, context):
+       
+        # Normalize the reverted members parameter to a collection
+        reverted_members = cherrypy.request.params.get("reverted_members")
+
+        if reverted_members is None:
+            return
+        elif isinstance(reverted_members, basestring):
+            reverted_members = reverted_members,
+        else:
+            reverted_members = set(reverted_members)
+
+        form_data = context["form_data"]
+        form_schema = context["form_schema"]
+        source = self.item.draft_source
+        languages = context["languages"]
+
+        for member in form_schema.members().itervalues():
+            
+            if isinstance(member, Collection):
+                continue
+             
+            if member.translated:
+                for language in languages:
+                    if (member.name + "-" + language) in reverted_members:
+                        DictAccessor.set(
+                            form_data,
+                            member.name,
+                            source.get(member.name, language),
+                            language = language
+                        )
+            elif member.name in reverted_members:
+                DictAccessor.set(
+                    form_data,
+                    member.name,
+                    source.get(member.name)
+                )
 
     def _save(self, context):
         
@@ -117,7 +156,7 @@ class EditController(BaseBackOfficeController):
         redirect = False
         
         # Create a draft
-        if context["make_draft"]:
+        if context["action"] == "make_draft":
 
             # From an existing element
             if item:
@@ -172,32 +211,69 @@ class EditController(BaseBackOfficeController):
             source_accessor = DictAccessor,
             target_accessor = EntityAccessor)
 
+    def _create_view(self, context):
+
+        action = context["action"]
+
+        if action == "compare":
+            return templates.new("sitebasis.views.BackOfficeDiffView")
+        else:
+            return BaseBackOfficeController._create_view(self, context)
+
     def _init_view(self, view, context):
 
         BaseBackOfficeController._init_view(self, view, context)
 
+        action = context["action"]
+
         view.backoffice = context["request"].document
-        view.section = "fields"
         view.content_type = self.content_type
         view.edited_item = self.item
         view.form_data = context["form_data"]
         view.form_schema = context["form_schema"]
-        view.collections = self.collections
-        view.saved = context["saved"]
-        view.submitted = context["submitted"]
         view.errors = context.get("errors")
+        view.visible_languages = context["languages"]
 
         if self.item and self.item.draft_source:
-            view.changed_members = self.item.get_draft_changed_members()
+            form_keys = set(context["form_schema"].members().iterkeys())
+            view.differences = [
+                (member, language)
+                for member, language in self.content_type.differences(
+                    self.item.draft_source,
+                    context["form_data"]
+                )
+                if member.name in form_keys \
+                    and not isinstance(member, Collection)
+            ]
+            for member, language in view.differences:
+                print "-" * 80
+                print member, language
+                print self.item.draft_source.get(member.name, language)
+                print DictAccessor.get(context["form_data"], member.name,
+                        language = language)
+                print "-" * 80
         else:
-            view.changed_members = set()
+            view.differences = set()
 
-        # Set member displays
-        for cls in reversed(list(self.content_type.ascend_inheritance(True))):
-            cls_displays = self.__member_display.get(cls)    
-            if cls_displays:
-                for key, display in cls_displays.iteritems():
-                    view.edit_form.set_member_display(key, display)
+        if action in (None, "read", "save", "make_draft", "revert"):
+            view.section = "fields"
+            view.collections = self.collections
+            view.saved = context["saved"]
+            view.submitted = context["submitted"]
+            
+            # Set member displays
+            if action not in ("preview", "compare"):
+                for cls in self.content_type.descend_inheritance(True):
+                    cls_displays = self.__member_display.get(cls)    
+                    if cls_displays:
+                        for key, display in cls_displays.iteritems():
+                            view.edit_form.set_member_display(key, display)
+
+        elif action == "compare":
+            view.source = self.item.draft_source
+            view.source_accessor = EntityAccessor
+            view.target = context["form_data"]
+            view.target_accessor = DictAccessor
 
         return view.render_page()
 

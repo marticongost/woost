@@ -15,7 +15,7 @@ from sitebasis.models import Site
     form_data = None
     saved = None 
     submitted = False
-    changed_members = None
+    differences = None
     ?>
 
     <py:ready>
@@ -35,28 +35,27 @@ from sitebasis.models import Site
         py:data="@{self.form_data}"
         py:schema="@{self.form_schema}"
         py:errors="@{self.errors}"
-        py:changed_members="@{self.changed_members}"
         method="post">
 
         <py:binding>
             <?py
-            element.changed_members = set(
-                (member.name
-                    if not isinstance(member, tuple)
-                    else (member[0].name, member[1])
-                )
-                for member in self.changed_members
+            element.differences = set(
+                (member.name, language)                    
+                for member, language in self.differences
             )
             ?>
         </py:binding>
 
         <py:with py:def="control" py:args="obj, member">
             <?py
-            key = member.name \
-                if not member.translated \
-                else (member.name, get_content_language())
+            key = (
+                member.name,
+                get_content_language()
+                    if member.translated
+                    else None
+            )
 
-            if key in self.changed_members:
+            if key in self.differences:
                 element.add_class("changed")
             ?>
         </py:with>
@@ -71,18 +70,40 @@ from sitebasis.models import Site
                     ${translate(error)}
                 </li>
             </ul>
+            
+            <button
+                py:id="compare_button"
+                py:visible="@{self.edited_item and self.edited_item.draft_source}"
+                py:parent="self.edit_form.buttons"
+                py:index="0"
+                name="action"
+                value="compare">
+                ${translate("Show differences")}
+            </button>
+
+            <button
+                py:id="preview_button"
+                py:parent="self.edit_form.buttons"
+                py:index="0"
+                name="action"
+                value="preview">
+                ${translate("Preview")}
+            </button>
 
             <button
                 py:id="save_draft_button"
                 py:visible="@{not (self.edited_item and self.edited_item.is_draft)}"
                 py:parent="self.edit_form.buttons"
                 py:index="0"
-                name="make_draft">
+                name="action"
+                value="make_draft">
                 ${translate("Save draft")}
             </button>
         </py:ready>
         
-        <py:with py:element="element.submit_button" name="save">
+        <py:with py:element="element.submit_button"
+            name="action"
+            value="save">
             <?py element.empty() ?>
             ${translate("Save")}
         </py:with>

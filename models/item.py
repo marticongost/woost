@@ -65,6 +65,19 @@ class Item(Entity):
         bidirectional = True
     )
 
+    _draft_excluded_members = (
+        "id",
+        "changes",
+        "translations",
+        "is_draft",
+        "draft_source",
+        "drafts",
+        "author",
+        "owner",
+        "last_update_time",
+        "creation_time"
+    )
+
     def make_draft(self):
         """Creates a new draft copy of the item. Subclasses can tweak the copy
         process by overriding either this method or L{_get_draft_adapter} (for
@@ -124,16 +137,7 @@ class Item(Entity):
         @rtype: L{Adapter<cocktail.schema.adapter.Adapter>}
         """
         adapter = schema.Adapter()
-        adapter.exclude([
-            "id",
-            "changes",
-            "translations",
-            "is_draft",
-            "draft_source",
-            "drafts",
-            "author",
-            "owner"
-        ])
+        adapter.exclude(self._draft_excluded_members)
         return adapter
 
     # When validating unique members, ignore conflicts with the draft source
@@ -153,42 +157,71 @@ class Item(Entity):
                 new_value
             )
 
-    def get_draft_changed_members(self):
-        """Obtains the set of members of the item whose values differ to the
-        ones on the item's L{draft source<draft_source>}. Must be called on a
-        draft copy.
+    @classmethod
+    def differences(cls,
+        source,
+        target,
+        source_accessor = None,
+        target_accessor = None):
+        """Obtains the set of members that differ between two items.
+
+        @param source: The first item to compare.
+        @param target: The other item to compare.
         
+        @param source_accessor: A data accessor used to extract data from the
+            source item.
+        @type source_accessor: L{Accessor<cocktail.accessors.Accessor>}
+            subclass
+
+        @param target_accessor: A data accessor used to extract data from the
+            target item.
+        @type target_accessor: L{Accessor<cocktail.accessors.Accessor>}
+            subclass
+
         @return: The set of changed members.
         @rtype: L{member<cocktail.schema.member.Member>} set
-
-        @raise ValueError: Raised when the method is called on an item which
-            isn't a draft copy (ie. its L{draft source<draft_source>} is None).
         """
-        source = self.draft_source
+        differences = set()
 
-        if source is None:
-            raise ValueError("%s is not a draft copy; can't determine its "
-                "changed members")
+        if source_accessor is None:
+            source_accessor = schema.get_accessor(source)
 
-        changed_members = set()
-        languages = self.translations.keys()
+        if target_accessor is None:
+            target_accessor = schema.get_accessor(target)
 
-        for member in self.__class__.members().itervalues():            
+        for member in cls.members().itervalues():
+            
+            key = member.name
+
+            if key in cls._draft_excluded_members:
+                continue
+            
             if member.translated:
-                for language in languages:
-                    source_value = source.get(member, language) 
-                    draft_value = self.get(member, language)
 
-                    if source_value != draft_value:
-                        changed_members.add((member, language))
+                for language in target_accessor.languages(target, key):
+
+                    source_value = source_accessor.get(
+                        source,
+                        key,
+                        default = None,
+                        language = language)
+
+                    target_value = target_accessor.get(
+                        target,
+                        key,
+                        default = None,
+                        language = language)
+
+                    if source_value != target_value:
+                        differences.add((member, language))
             else:
-                source_value = source.get(member) 
-                draft_value = self.get(member)
+                source_value = source_accessor.get(source, key, default = None)
+                target_value = target_accessor.get(target, key, default = None)
 
-                if source_value != draft_value:
-                    changed_members.add(member)
+                if source_value != target_value:
+                    differences.add((member, None))
 
-        return changed_members
+        return differences
         
     # Users and permissions
     #------------------------------------------------------------------------------    

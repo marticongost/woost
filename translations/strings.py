@@ -140,6 +140,36 @@ translations.define("Save draft",
     en = u"Save draft"
 )
 
+translations.define("Show differences",
+    ca = u"Veure diferències",
+    es = u"Ver diferencias",
+    en = u"Show differences"
+)
+
+translations.define("Preview",
+    ca = u"Vista prèvia",
+    es = u"Vista previa",
+    en = u"Preview"
+)
+
+translations.define("Close",
+    ca = u"Tancar",
+    es = u"Cerrar",
+    en = u"Close"
+)
+
+translations.define("Differences for",
+    ca = lambda item: u"Canvis a <em>'%s'</em>" % translate(item, "ca"),
+    es = lambda item: u"Cambios en <em>'%s'</em>" % translate(item, "es"),
+    en = lambda item: u"Changes in <em>'%s'</em>" % translate(item, "en")
+)
+
+translations.define("No differences",
+    ca = u"L'element no té cap canvi.",
+    es = u"El elemento no tiene ningún cambio.",
+    en = u"The item has no changes."
+)
+
 # Content views
 #------------------------------------------------------------------------------
 translations.define("View as",
@@ -556,6 +586,32 @@ translations.define("Resource.uri",
     ca = u"URI",
     es = u"URI",
     en = u"URI"
+)
+
+# Style
+#------------------------------------------------------------------------------
+translations.define("Style",
+    ca = u"Estil",
+    es = u"Estilo",
+    en = u"Style"
+)
+
+translations.define("Style-plural",
+    ca = u"Estils",
+    es = u"Estilos",
+    en = u"Styles"
+)
+
+translations.define("Style.title",
+    ca = u"Nom",
+    es = u"Nombre",
+    en = u"Name"
+)
+
+translations.define("Style.declarations",
+    ca = u"Declaracions CSS",
+    es = u"Declaraciones CSS",
+    en = u"CSS declarations"
 )
 
 # Group

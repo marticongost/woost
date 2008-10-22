@@ -356,12 +356,20 @@ html, body {
     background-image: url(../images/types/File.png);
 }
 
+.BackOfficeLayout .Language {
+    background-image: url(../images/types/Language.png);
+}
+
 .BackOfficeLayout .News {
     background-image: url(../images/types/News.png);
 }
 
 .BackOfficeLayout .Resource {
     background-image: url(../images/types/Resource.png);
+}
+
+.BackOfficeLayout .Style {
+    background-image: url(../images/types/Style.png);
 }
 
 .BackOfficeLayout .Template {
@@ -770,7 +778,12 @@ html, body {
     text-align: right;
 }
 
-.BackOfficeEditView .buttons button {
+.BackOfficeLayout .buttons {
+    padding: 1em;
+    text-align: right;
+}
+
+.BackOfficeLayout .buttons button {
     margin-left: 0.8em;
     width: 11em;
 }
