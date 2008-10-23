@@ -104,6 +104,12 @@ translations.define("Revert",
     en = u"Revert"
 )
 
+translations.define("Discard changes",
+    ca = u"Descartar",
+    es = u"Descartar",
+    en = u"Discard"
+)
+
 translations.define("Forget",
     ca = u"Oblidar",
     es = u"Olvidar",

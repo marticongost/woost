@@ -149,13 +149,6 @@ html, body {
     margin-left: -1.5em;
 }
 
-.BackOfficeLayout .Form .required label:after {
-    content: '*';
-    font-weight: bold;
-    color: rgb(100,125,150);
-    padding-left: 0.3em;
-}
-
 .BackOfficeLayout .field input.control,
 .BackOfficeLayout .field textarea.control,
 .BackOfficeLayout .field select.control {
@@ -174,28 +167,61 @@ html, body {
     clear: both;
 }
 
-.BackOfficeLayout .ContentForm .translation_headers span {
-    color: rgb(75,75,75);
-    font-style: italic;
-    font-size: 85%;
+.BackOfficeLayout .Form .fields > table,
+.BackOfficeLayout .Form fieldset > table {
+    border-spacing: 1em;
 }
 
-.BackOfficeLayout .Form .field {
+.BackOfficeLayout .Form div.field {
     overflow: hidden;
     clear: left;
     margin-bottom: 0.7em;
 }
 
+.BackOfficeLayout .Form tr.field {
+    clear: none;    
+}
+
+.BackOfficeLayout .Form div.field_instance {
+    float: left;
+    padding-right: 1.5em;
+}
+
+.BackOfficeLayout .Form td.field_instance {
+    padding: 0.4em;
+}
+
 .BackOfficeLayout .Form label {
     display: block;
-    float: left;
-    width: 15em;
-    padding-top: 0.3em;
+    padding-bottom: 0.2em;
     white-space: nowrap;
 }
 
+.BackOfficeLayout .Form label .language {
+    color: rgb(75,75,75);
+    font-style: italic;
+    font-size: 75%;
+    margin-left: 0.5em;
+}
+
+.BackOfficeLayout .Form .required_mark {
+    font-weight: bold;
+    color: rgb(100,125,150);
+    padding-left: 0.3em;
+}
+
+.BackOfficeLayout .Form .field_instance-CheckBox label {
+    display: inline;
+}
+
 .BackOfficeLayout .Form .control {
-    float: left;
+    font-size: 90%;
+}
+
+.BackOfficeLayout .Form td .control,
+.BackOfficeLayout .Form td .mceEditor .mceLayout,
+.BackOfficeLayout .Form td .ItemSelector button {
+    width: 100%;
 }
 
 /* Tables
@@ -272,6 +298,10 @@ html, body {
 .BackOfficeLayout .draft,
 .BackOfficeLayout .changed {
     background-color: rgb(250,242,190);
+}
+
+.BackOfficeLayout .changed {
+    border:1px solid #EBE3AF;
 }
 
 .BackOfficeLayout .Table .nested_draft td.element_column {
@@ -745,35 +775,6 @@ html, body {
 
 .BackOfficeItemView .draft_box .draft_actions button {
     margin-left: 0.3em;
-}
-
-.BackOfficeEditView legend {
-    display: none;
-    margin-left: 0;
-}
-
-.BackOfficeEditView fieldset {
-    padding-left: 0;
-    margin: 0;
-}
-
-.BackOfficeEditView .translations {
-    margin-top: 1.5em;
-    border-collapse: collapse;
-}
-
-.BackOfficeEditView .Form .field > td {
-    padding-bottom: 0.7em;
-}
-
-.BackOfficeEditView .translations .control_container {
-    padding-left: 0;
-    padding-right: 1em;
-}
-
-.BackOfficeEditView .buttons {
-    padding: 1em;
-    text-align: right;
 }
 
 .BackOfficeLayout .buttons {

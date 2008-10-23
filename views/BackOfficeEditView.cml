@@ -35,6 +35,7 @@ from sitebasis.models import Site
         py:data="@{self.form_data}"
         py:schema="@{self.form_schema}"
         py:errors="@{self.errors}"
+        py:table_layout="${True}"
         method="post">
 
         <py:binding>
@@ -46,7 +47,7 @@ from sitebasis.models import Site
             ?>
         </py:binding>
 
-        <py:with py:def="control" py:args="obj, member">
+        <py:with py:def="field_instance" py:args="member">
             <?py
             key = (
                 member.name,
@@ -61,6 +62,13 @@ from sitebasis.models import Site
         </py:with>
 
         <py:ready>
+
+            <?py
+            # Hide collections
+            for member in self.form_schema.members().itervalues():
+                if isinstance(member, Collection):
+                    element.set_field_displayed(member, False)
+            ?>
 
             <ul py:id="error_box"
                 py:if="self.submitted and self.errors"

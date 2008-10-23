@@ -63,7 +63,7 @@ def unescape(text):
                 py:hidden="${True}"/>
         </py:ready>
 
-        <p py:id="no_differences">
+        <p py:id="no_differences" py:visible="@{not self.differences}">
             ${translate("No differences")}
         </p>
 
@@ -93,21 +93,30 @@ def unescape(text):
                 <td class="member">${translate(member)}</td>
                 <td class="language">${language and translate(language) or "-"}</td>
                 <td class="values">
+                    <?py
+                    headers = "<tr><th>Previous</th><th>New</th></tr>"
+                    ?>
                     <table class="diff" py:if="not is_string">
-                        <td>${a}</td>
-                        <td>${b}</td>
+                        ${headers}
+                        <tr>
+                            <td>${a}</td>
+                            <td>${b}</td>
+                        </tr>
                     </table>
                     <?py
                     if is_string:
                         hd = HtmlDiff()
                         element.append(
-                            hd.make_table(
-                                a and unescape(a).split("\n") or "",
-                                b and unescape(b).split("\n") or ""
+                            re.compile("<table[^>]*>").sub(
+                                lambda match: match.group(0) + headers,
+                                hd.make_table(
+                                    a and unescape(a).split("\n") or "",
+                                    b and unescape(b).split("\n") or ""
+                                )
+                                .replace("<colgroup></colgroup>", "")
+                                .replace('nowrap="nowrap"', "")
+                                .replace("&nbsp;", " ")
                             )
-                            .replace("<colgroup></colgroup>", "")
-                            .replace('nowrap="nowrap"', "")
-                            .replace("&nbsp;", " ")
                         )
                     ?>
                 </td>
@@ -136,7 +145,7 @@ def unescape(text):
                 py:visible="@{self.differences}"
                 name="action"
                 value="revert">
-                ${translate("Revert")}
+                ${translate("Discard changes")}
             </button>
             <button py:id="close_button" name="action" value="read">${translate("Close")}</button>
         </div>
