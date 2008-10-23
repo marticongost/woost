@@ -22,6 +22,7 @@ from sitebasis.controllers.backoffice.basebackofficecontroller \
 class EditController(BaseBackOfficeController):
 
     view_class = "sitebasis.views.BackOfficeEditView"
+    rich_text_editor_class = "sitebasis.views.RichTextEditor"
 
     def __init__(self, item, content_type, collections):
 
@@ -35,12 +36,12 @@ class EditController(BaseBackOfficeController):
 
         self.set_member_display(
             "sitebasis.models.Document.description",
-            "cocktail.html.TinyMCE"
+            self.rich_text_editor_class
         )
 
         self.set_member_display(
             "sitebasis.models.StandardPage.body",
-            "cocktail.html.TinyMCE"
+            self.rich_text_editor_class
         )
         
     def _init(self, context, cms, request):
@@ -245,13 +246,6 @@ class EditController(BaseBackOfficeController):
                 if member.name in form_keys \
                     and not isinstance(member, Collection)
             ]
-            for member, language in view.differences:
-                print "-" * 80
-                print member, language
-                print self.item.draft_source.get(member.name, language)
-                print DictAccessor.get(context["form_data"], member.name,
-                        language = language)
-                print "-" * 80
         else:
             view.differences = set()
 
