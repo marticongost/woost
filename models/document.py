@@ -25,12 +25,12 @@ class Document(Item):
         "inner_title",
         "enabled",
         "hidden",
-        "description",
         "start_date",
         "end_date",
-        "parent",
         "path",
-        "template"
+        "parent",
+        "template",
+        "description"        
     )
 
     def __init__(self, **values):
