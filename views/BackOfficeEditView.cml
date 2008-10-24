@@ -16,6 +16,9 @@ from sitebasis.models import Site
     saved = None 
     submitted = False
     differences = None
+
+    available_languages = ()
+    translations = ()
     ?>
 
     <py:ready>
@@ -46,6 +49,38 @@ from sitebasis.models import Site
             )
             ?>
         </py:binding>
+
+        <!-- Translations selector -->
+        <div
+            py:id="translations_selector"
+            py:index="0"
+            class="selector">
+            
+            <span class="label">${translate("Translations")}</span>
+            
+            <ul class="selector_content">
+                <py:ready>
+                    <li py:for="language in self.available_languages">
+                        <?py
+                        has_translation = language in self.translations
+                        ?>
+                        <div class="language">${translate(language)}</div>
+                        <button
+                            py:if="not has_translation"
+                            name="add_translation"
+                            value="${language}">
+                            <img src="/resources/images/new_small.png"/>
+                        </button>
+                        <button
+                            py:if="has_translation"
+                            name="delete_translation"
+                            value="${language}">
+                            <img src="/resources/images/delete_small.png"/>
+                        </button>
+                    </li>
+                </py:ready>
+            </ul>
+        </div>
 
         <py:with py:def="field_instance" py:args="member">
             <?py

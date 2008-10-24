@@ -9,9 +9,10 @@
 from __future__ import with_statement
 import cherrypy
 from cocktail.pkgutils import import_object
-from cocktail.schema import Adapter, DictAccessor, Collection, ErrorList
+from cocktail.schema import \
+    Adapter, DictAccessor, Collection, String, ErrorList
 from cocktail.persistence import datastore, EntityAccessor
-from cocktail.controllers import read_form
+from cocktail.controllers import get_parameter
 from sitebasis.models import changeset_context, Site
 from sitebasis.views import templates
 
@@ -51,15 +52,31 @@ class EditController(BaseBackOfficeController):
         form_adapter = self.get_adapter(self.content_type)
         form_schema = form_adapter.export_schema(self.content_type)
         form_schema.name = "BackOfficeEditForm"
-        form_data = {}
-        languages = Site.main.languages # TODO: Variable translations
+        form_data = {}        
         saved = False        
         action = request.params.get("action")
         submitted = action is not None
-                
+        available_languages = Site.main.languages
+        
+        translations = get_parameter(
+            Collection(
+                name = "translations",
+                items = String)
+        )
+        
+        if translations is None:
+            if self.item and self.item.__class__.translated:
+                translations = self.item.translations.keys()
+            else:
+                translations = self.get_visible_languages()
+
         # Load form data
         if submitted:
-            read_form(form_schema, form_data, languages = languages)
+            get_parameter(
+                form_schema,
+                target = form_data,
+                languages = translations,
+                enable_defaults = False)
 
         # Dump the model on the form
         else:
@@ -82,7 +99,8 @@ class EditController(BaseBackOfficeController):
             form_adapter = form_adapter,
             form_schema = form_schema,
             form_data = form_data,
-            languages = languages,
+            translations = translations,
+            available_languages = available_languages,
             action = action,
             submitted = submitted,
             saved = False
@@ -126,7 +144,7 @@ class EditController(BaseBackOfficeController):
         form_data = context["form_data"]
         form_schema = context["form_schema"]
         source = self.item.draft_source
-        languages = context["languages"]
+        translations = context["translations"]
 
         for member in form_schema.members().itervalues():
             
@@ -134,7 +152,7 @@ class EditController(BaseBackOfficeController):
                 continue
              
             if member.translated:
-                for language in languages:
+                for language in translations:
                     if (member.name + "-" + language) in reverted_members:
                         DictAccessor.set(
                             form_data,
@@ -233,7 +251,8 @@ class EditController(BaseBackOfficeController):
         view.form_data = context["form_data"]
         view.form_schema = context["form_schema"]
         view.errors = context.get("errors")
-        view.visible_languages = context["languages"]
+        view.translations = context["translations"]
+        view.available_languages = context["available_languages"]
 
         if self.item and self.item.draft_source:
             form_keys = set(context["form_schema"].members().iterkeys())

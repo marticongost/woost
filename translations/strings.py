@@ -176,6 +176,12 @@ translations.define("No differences",
     en = u"The item has no changes."
 )
 
+translations.define("Translations",
+    ca = u"Traduccions",
+    es = u"Traducciones",
+    en = u"Translations"
+)
+
 # Content views
 #------------------------------------------------------------------------------
 translations.define("View as",
