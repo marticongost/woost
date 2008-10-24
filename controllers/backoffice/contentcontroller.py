@@ -31,8 +31,6 @@ class ContentController(BaseBackOfficeController):
     content_type = Item
     view_class = "sitebasis.views.BackOfficeContentView"
     selection = MULTIPLE_SELECTION
-    settings_duration = 60 * 60 * 24 * 30 # ~= 1 month
-
     ItemController = ItemController
     
     def __init__(self):
@@ -86,7 +84,7 @@ class ContentController(BaseBackOfficeController):
         
         context.update(
             content_type = content_type,
-            visible_languages = self._get_visible_languages(),
+            visible_languages = self.get_visible_languages(),
             available_languages = Site.main.languages,
             available_content_views = available_content_views,
             content_view = content_view(),
@@ -147,22 +145,6 @@ class ContentController(BaseBackOfficeController):
             cookie_name = content_type.__name__ + "-" + param_name,
             cookie_duration = self.settings_duration
         )
-
-    def _get_visible_languages(self):
-
-        param = get_persistent_param(
-            "language",
-            cookie_name = "visible_languages",
-            cookie_duration = self.settings_duration
-        )
-
-        if param is not None:
-            if isinstance(param, (list, tuple, set)):
-                return set(param)
-            else:
-                return set(param.split(","))
-        else:
-            return [get_content_language()]
 
     def _get_content_views(self, content_type):
 

@@ -8,6 +8,7 @@
 """
 from itertools import chain
 import cherrypy
+from cocktail.language import get_content_language
 from cocktail.controllers import BaseController, get_persistent_param
 from sitebasis.models import Item
 from sitebasis.controllers import exposed
@@ -17,7 +18,8 @@ class BaseBackOfficeController(BaseController):
 
     section = None
     persistent_content_type_choice = False
-
+    settings_duration = 60 * 60 * 24 * 30 # ~= 1 month
+    
     @exposed
     def index(self, *args, **kwargs):
         return BaseController.index(self, *args, **kwargs)
@@ -49,4 +51,20 @@ class BaseBackOfficeController(BaseController):
             for entity in chain([Item], Item.derived_entities()):
                 if entity.__name__ == type_param:
                     return entity
+
+    def get_visible_languages(self):
+
+        param = get_persistent_param(
+            "language",
+            cookie_name = "visible_languages",
+            cookie_duration = self.settings_duration
+        )
+
+        if param is not None:
+            if isinstance(param, (list, tuple, set)):
+                return set(param)
+            else:
+                return set(param.split(","))
+        else:
+            return [get_content_language()]
 
