@@ -86,7 +86,7 @@ class ContentController(BaseBackOfficeController):
         
         context.update(
             content_type = content_type,
-            visible_languages = self._get_visible_languages(content_type),
+            visible_languages = self._get_visible_languages(),
             available_languages = Site.main.languages,
             available_content_views = available_content_views,
             content_view = content_view(),
@@ -148,9 +148,13 @@ class ContentController(BaseBackOfficeController):
             cookie_duration = self.settings_duration
         )
 
-    def _get_visible_languages(self, content_type):
+    def _get_visible_languages(self):
 
-        param = self._get_content_type_param(content_type, "language")
+        param = get_persistent_param(
+            "language",
+            cookie_name = "visible_languages",
+            cookie_duration = self.settings_duration
+        )
 
         if param is not None:
             if isinstance(param, (list, tuple, set)):
