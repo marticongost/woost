@@ -182,6 +182,15 @@ translations.define("Translations",
     en = u"Translations"
 )
 
+translations.define("Draft source reference",
+    ca = u"Pots accedir a la còpia original de l'element "
+         u"<a href='%(location)s'>aquí</a>.",
+    es = u"Puedes acceder a la copia original del elemento "
+         u"<a href='%(location)s'>aquí</a>.",
+    en = u"The original copy of the item can be found "
+         u"<a href='%(location)s'>here</a>."
+)
+
 # Content views
 #------------------------------------------------------------------------------
 translations.define("View as",

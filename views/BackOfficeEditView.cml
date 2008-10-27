@@ -16,20 +16,9 @@ from sitebasis.models import Site
     saved = None 
     submitted = False
     differences = None
-
     available_languages = ()
     translations = ()
     ?>
-
-    <py:ready>
-        <?py
-        if self.content_type.translated:
-            if self.edited_item:
-                self.edit_form.translations = self.edited_item.translations.keys()
-            else:
-                self.edit_form.translations = Site.main.languages
-        ?>
-    </py:ready>
 
     <py:sitebasis.views.ContentForm
         py:id="edit_form"
@@ -38,8 +27,13 @@ from sitebasis.models import Site
         py:data="@{self.form_data}"
         py:schema="@{self.form_schema}"
         py:errors="@{self.errors}"
+        py:translations="@{self.translations}"
         py:table_layout="${True}"
         method="post">
+
+        <input type="hidden"
+            name="translations"
+            value="@{','.join(self.translations)}"/>
 
         <py:binding>
             <?py

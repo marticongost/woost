@@ -63,9 +63,25 @@ from cocktail.schema import Collection
         py:before="self.navigation"
         class="draft">
         <py:ready py:if="self.draft_box.visible">
-            You are currently editing a draft copy of the item. The draft was created by
-            <strong>${translate(self.edited_item.author)}</strong>, and last modified on
+            You are currently editing a draft.
+            <py:block py:if="self.edited_item.draft_source">
+                <?py
+                source_uri = self.cms.uri(
+                    self.backoffice.path,
+                    'content',
+                    str(self.edited_item.draft_source.id)
+                )
+                ?>
+                ${translate("Draft source reference", location = source_uri)}
+            </py:block>
+            The draft was created by
+            <strong>${translate(self.edited_item.author)}</strong>,
+            and was last modified on
             <strong>${self.edited_item.last_update_time}</strong>.
+            <p py:if="self.edited_item.draft_source">
+                
+            </p>
+
             <div py:id="draft_actions">
                 <button py:id="discard_draft">Discard draft</button>
                 <button py:id="confirm_draft">Confirm draft</button>
