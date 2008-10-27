@@ -6,6 +6,7 @@
 @organization:	Whads/Accent SL
 @since:			September 2008
 """
+from datetime import datetime
 from cocktail.translations import translate
 from cocktail.schema import Reference
 from cocktail.html import Element, templates
@@ -50,6 +51,8 @@ class ContentTable(Table):
     def repr_value(self, item, member, value):
         if value is None:
             return "-"
+        elif isinstance(value, datetime):
+            return value.strftime(translate("datetime format"))
         else:
             return translate(value, default = value)
 

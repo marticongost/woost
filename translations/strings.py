@@ -191,6 +191,12 @@ translations.define("Draft source reference",
          u"<a href='%(location)s'>here</a>."
 )
 
+translations.define("datetime format",
+    ca = "%d/%m/%Y %H:%M",
+    es = "%d/%m/%Y %H:%M",
+    en = "%Y-%m-%d %H:%M"
+)
+
 # Content views
 #------------------------------------------------------------------------------
 translations.define("View as",
