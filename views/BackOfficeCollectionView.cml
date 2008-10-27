@@ -28,7 +28,7 @@
             py:available_languages="${self.available_languages}"
             py:visible_languages="${self.visible_languages}"
             py:available_content_views="${self.available_content_views}"
-            py:actions="${['new']}"
+            py:actions="${['new', 'add', 'remove']}"
             py:root_content_type="${self.member.related_end.schema}"
             />
     </py:ready>
