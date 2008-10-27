@@ -77,6 +77,18 @@ translations.define("history",
     en = u"History"
 )
 
+translations.define("add",
+    ca = u"Afegir",
+    es = u"Añadir",
+    en = u"Add"
+)
+
+translations.define("remove",
+    ca = u"Treure",
+    es = u"Quitar",
+    en = u"Remove"
+)
+
 translations.define("editing",
     ca = lambda item: u"Editant <em>'%s'</em>" % translate(item, "ca"),
     es = lambda item: u"Editando <em>'%s'</em>" % translate(item, "es"),
