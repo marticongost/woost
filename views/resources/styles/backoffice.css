@@ -810,6 +810,7 @@ html, body {
 
 .BackOfficeEditView .translations_selector .language {
     float: left;
+    height: 2em;
 }
 
 .BackOfficeEditView .translations_selector button {
