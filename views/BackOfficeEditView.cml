@@ -48,32 +48,38 @@ from sitebasis.models import Site
         <div
             py:id="translations_selector"
             py:index="0"
+            py:visible="@{self.content_type.translated}"
             class="selector">
-            
-            <span class="label">${translate("Translations")}</span>
-            
-            <ul class="selector_content">
-                <py:ready>
+
+            <py:ready py:if="self.translations_selector.visible">
+                <span class="label">${translate("Translations")}</span>                
+                <ul class="selector_content">
                     <li py:for="language in self.available_languages">
                         <?py
                         has_translation = language in self.translations
                         ?>
-                        <div class="language">${translate(language)}</div>
+                        <div class="language">
+                            <?py
+                            if has_translation:
+                                element.add_class("selected")
+                            ?>
+                            ${translate(language)}
+                        </div>
                         <button
                             py:if="not has_translation"
                             name="add_translation"
                             value="${language}">
-                            <img src="/resources/images/new_small.png"/>
+                            <img src="/resources/images/add_small.png"/>
                         </button>
                         <button
-                            py:if="has_translation"
+                            py:if="has_translation and len(self.translations) > 1"
                             name="delete_translation"
                             value="${language}">
                             <img src="/resources/images/delete_small.png"/>
                         </button>
                     </li>
-                </py:ready>
-            </ul>
+                </ul>
+            </py:ready>
         </div>
 
         <py:with py:def="field_instance" py:args="member">
