@@ -61,7 +61,8 @@ class EditController(BaseBackOfficeController):
         translations = get_parameter(
             Collection(
                 name = "translations",
-                items = String)
+                items = String,
+                required = False)
         )
         
         if translations is None:
@@ -94,7 +95,7 @@ class EditController(BaseBackOfficeController):
                 self.content_type,
                 form_schema
             )
-
+        
         context.update(
             form_adapter = form_adapter,
             form_schema = form_schema,

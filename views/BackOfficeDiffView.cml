@@ -41,7 +41,7 @@ def unescape(text):
     differences = None
     form_data = None
     form_schema = None
-    visible_languages = None
+    translations = None
 
     def get_page_title(self):
         return translate("Differences for", item = self.edited_item)
@@ -54,12 +54,12 @@ def unescape(text):
     <form py:id="differences_form" method="post" py:parent="self.body">
        
         <py:ready>
-            <py:cocktail.html.Form                
+            <py:cocktail.html.Form
                 py:if="self.form_data"
                 py:embeded="${True}"
                 py:data="${self.form_data}"
                 py:schema="${self.form_schema}"
-                py:translations="${self.visible_languages}"
+                py:translations="${self.translations}"
                 py:hidden="${True}"/>
         </py:ready>
 
