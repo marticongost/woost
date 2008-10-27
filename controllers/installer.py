@@ -14,7 +14,7 @@ from subprocess import Popen, PIPE
 import cherrypy
 from cocktail import schema
 from cocktail.translations import set_language
-from cocktail.controllers import read_form
+from cocktail.controllers import get_parameter
 from sitebasis import __file__ as sitebasis_file
 from sitebasis.translations import installerstrings
 from sitebasis.models.initialization import init_site
@@ -138,7 +138,7 @@ class Installer(object):
         form_data = {}
 
         if submitted:
-            read_form(form_schema, form_data)
+            get_parameter(form_schema, target = form_data)
             errors = list(form_schema.get_errors(form_data))
 
             if not errors:
