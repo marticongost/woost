@@ -453,7 +453,8 @@ html, body {
 .BackOfficeLayout .toolbar .content_type .label,
 .BackOfficeLayout .toolbar .visible_languages .label,
 .BackOfficeLayout .toolbar .visible_members .label,
-.BackOfficeLayout .toolbar .content_view .label {
+.BackOfficeLayout .toolbar .content_view .label,
+.BackOfficeItemView .translations_selector .label {
     height: 1.9em;
     padding-top: 0.4em;
     padding-left: 0.5em !important;
@@ -771,8 +772,6 @@ html, body {
 }
 
 .BackOfficeItemView .draft_box strong {
-    margin-left: 0.3em;
-    color: rgb(135,35,10);
     color: rgb(75,50,25);
 }
 
@@ -784,38 +783,50 @@ html, body {
     margin-left: 0.3em;
 }
 
+.BackOfficeEditView .edit_form .fields {
+    clear: both;
+}
+
+.BackOfficeItemView .translations_selector {
+    font-size: 85%;
+    float: right;
+    margin-right: 1em;
+}
+
+.BackOfficeItemView .translations_selector .label {
+    display: block;
+}
+
+.BackOfficeEditView .translations_selector .selector_content {
+    list-style-type: none;
+    padding-right: 0.1;
+}
+
+.BackOfficeEditView .translations_selector .selector_content li {
+    clear: both;
+    margin: 0;
+    padding: 0;
+}
+
+.BackOfficeEditView .translations_selector .language {
+    float: left;
+}
+
+.BackOfficeEditView .translations_selector button {
+    float: right;
+    margin: 0;
+    padding: 0;
+    cursor: pointer;
+    border: none;
+    background: none;
+}
+
 .BackOfficeEditView .ItemSelector {
     padding: 0.1em;
 }
 
 .BackOfficeEditView .ItemSelector button {
     width: 18.5em;
-}
-
-.BackOfficeEditView .edit_form .fields {
-    clear: both;
-}
-
-.BackOfficeEditView .edit_form .translations_selector {
-    float: right;
-}
-
-.BackOfficeEditView .edit_form .translations_selector .selector_content {
-    list-style-type: none;
-}
-
-.BackOfficeEditView .edit_form .translations_selector .selector_content li {
-    clear: both;
-}
-
-.BackOfficeEditView .edit_form .translations_selector .language {
-    float: left;
-}
-
-.BackOfficeEditView .edit_form .translations_selector button {
-    float: right;
-    border: none;
-    background: none;
 }
 
 .BackOfficeEditView .ItemSelector .selection_label {

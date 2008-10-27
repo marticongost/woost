@@ -58,6 +58,7 @@ class EditController(BaseBackOfficeController):
         submitted = action is not None
         available_languages = Site.main.languages
         
+        # Determine active translations
         translations = get_parameter(
             Collection(
                 name = "translations",
@@ -70,6 +71,19 @@ class EditController(BaseBackOfficeController):
                 translations = self.item.translations.keys()
             else:
                 translations = self.get_visible_languages()
+
+        added_translation = request.params.get("add_translation")
+
+        if added_translation and added_translation not in translations:
+            translations.append(added_translation)
+
+        deleted_translation = request.params.get("delete_translation")
+
+        if deleted_translation:
+            try:
+                translations.remove(deleted_translation)
+            except ValueError:
+                pass
 
         # Load form data
         if submitted:
@@ -222,14 +236,21 @@ class EditController(BaseBackOfficeController):
 
         form_adapter = context["form_adapter"]
         form_data = context["form_data"]
-        form_schema = context["form_schema"]
-        
+        form_schema = context["form_schema"]        
+      
         form_adapter.import_object(
             form_data,
             item,
             form_schema,
             source_accessor = DictAccessor,
             target_accessor = EntityAccessor)
+        
+        # Drop deleted translations
+        deleted_languages = \
+            set(item.translations) - set(context["translations"])
+        
+        for language in deleted_languages:
+            del item.translations[language]
 
     def _create_view(self, context):
 
