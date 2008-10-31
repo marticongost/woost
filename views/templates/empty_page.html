@@ -4,8 +4,8 @@
 	
 	<head>
 		<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
-        <title>$requested_item.title</title>
-        <py:for each="resource in requested_item.resources">            
+        <title>$document.title</title>
+        <py:for each="resource in document.resources">            
             <link py:if="resource.uri.endswith('.css')"
                 rel="Stylesheet" type="text/css" href="${resource.uri}"/>
             <script py:if="resource.uri.endswith('.js')"
@@ -14,7 +14,7 @@
 	</head>
 	
 	<body>
-        ${Markup(requested_item.body)}
+        ${Markup(document.body)}
 	</body>
 
 </html>

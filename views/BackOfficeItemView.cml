@@ -2,6 +2,7 @@
 
 <?py
 from cocktail.schema import Collection
+from sitebasis.controllers import Request
 ?>
 
 <py:sitebasis.views.BackOfficeLayout
@@ -13,6 +14,7 @@ from cocktail.schema import Collection
     edited_item = None
     content_type = None
     collections = ()
+    edit_state = None
     
     def get_page_title(self):
         if self.edited_item \
@@ -20,7 +22,7 @@ from cocktail.schema import Collection
             return translate("editing", item = self.edited_item)
         else:
             return translate("creating", content_type = self.content_type)
-
+            
     def get_section_id(self, section):
         if isinstance(section, Collection):
             return section.name
@@ -32,67 +34,149 @@ from cocktail.schema import Collection
             return translate(section)
         else:
             return BackOfficeLayout.get_section_label(self, section)
-
-    def get_section_url(self, section):
-        
-        section_id = self.get_section_id(section)
-        
-        if section_id == "fields":
-            section_id = ""
-
-        return self.cms.uri(
-            self.backoffice.path,
-            "content",
-            str(self.edited_item.id)
-                if self.edited_item
-                else "new",
-            section_id
-        )
     ?>
 
-    <py:ready>
+    <!-- Move the navigation bar inside the central content -->
+    <py:with
+        py:element="self.navigation"
+        py:parent="self.body"
+        py:position="0">
+
+        <!-- And add a 'go back' link to it-->
+        <a py:id="go_back"
+            href="@{self.cms.uri(self.backoffice.path)}">
+            ${translate("Go back")}
+        </a>
+
+    </py:with>
+
+    <button
+        py:def="section_entry"
+        py:args="section"
+        name="section">
         <?py
-        # Confine each item collection to its own tab
-        self.sections = list(self.sections) + list(self.collections)
+        section_id = self.get_section_id(section)
+        element.section_id = section_id
+        element["value"] = section_id
+        element.add_class(section_id + "_section")
+
+        if section_id == self.get_section_id(self.section):
+            element.add_class("selected")
         ?>
-    </py:ready>
-    
-    <div
-        py:id="draft_box"
-        py:visible="@{self.edited_item and self.edited_item.is_draft}"
-        py:before="self.navigation"
-        class="draft">
-        <py:ready py:if="self.draft_box.visible">
-            You are currently editing a draft.
-            <py:block py:if="self.edited_item.draft_source">
-                <?py
-                source_uri = self.cms.uri(
-                    self.backoffice.path,
-                    'content',
-                    str(self.edited_item.draft_source.id)
-                )
-                ?>
-                ${translate("Draft source reference", location = source_uri)}
-            </py:block>
-            The draft was created by
-            <strong>${translate(self.edited_item.author)}</strong>,
-            and was last modified on
-            <strong>${self.edited_item.last_update_time}</strong>.
-            <p py:if="self.edited_item.draft_source">
-                
-            </p>
+        ${self.get_section_label(section)}
+    </button>
 
-            <div py:id="draft_actions">
-                <button py:id="discard_draft">Discard draft</button>
-                <button py:id="confirm_draft">Confirm draft</button>
+
+    <!-- Turn the central content into a form -->
+    <py:with
+        py:element="self.body"
+        py:tag="form"
+        method="post">
+
+        <div py:id="edit_form_frame">
+
+            <ul py:id="error_box"
+                py:visible="@{self.submitted and self.form_errors}">
+                <py:ready py:if="element.visible">
+                    <li py:for="error in self.form_errors">
+                        ${translate(error)}
+                    </li>
+                </py:ready>
+            </ul>
+
+            <!-- Draft remark -->
+            <div
+                py:id="draft_box"
+                py:visible="@{self.edited_item and self.edited_item.is_draft}"
+                py:before="self.navigation"
+                class="draft">
+                <py:ready py:if="self.draft_box.visible">
+                    You are currently editing a draft.
+                    <py:block py:if="self.edited_item.draft_source">
+                        <?py
+                        source_uri = self.cms.uri(
+                            self.backoffice.path,
+                            'content',
+                            str(self.edited_item.draft_source.id)
+                        )
+                        ?>
+                        ${translate("Draft source reference", location = source_uri)}
+                    </py:block>
+                    The draft was created by
+                    <strong>${translate(self.edited_item.author)}</strong>,
+                    and was last modified on
+                    <strong>${self.edited_item.last_update_time}</strong>.
+                    <p py:if="self.edited_item.draft_source">
+                        
+                    </p>
+
+                    <div py:id="draft_actions">
+                        <button py:id="discard_draft">Discard draft</button>
+                        <button py:id="confirm_draft">Confirm draft</button>
+                    </div>
+                </py:ready>
             </div>
-        </py:ready>
-    </div>
+        </div>
 
-    <!-- Add a 'go back' link -->
-    <a py:id="go_back" py:parent="self.navigation"
-        href="@{self.cms.uri(self.backoffice.path)}">
-        ${translate("Go back")}
-    </a>
+        <div py:id="buttons">
+
+            <py:ready>
+                <?py
+                # Hide collections
+                for member in self.form_schema.members().itervalues():
+                    if isinstance(member, Collection):
+                        element.set_field_displayed(member, False)
+                ?>                                
+                <button
+                    py:id="compare_button"
+                    py:visible="@{self.edited_item}"
+                    name="action"
+                    value="compare">
+                    ${translate("Show differences")}
+                </button>
+
+                <button
+                    py:id="preview_button"
+                    name="action"
+                    value="preview">
+                    ${translate("Preview")}
+                </button>
+
+                <button
+                    py:id="save_draft_button"
+                    py:visible="@{not (self.edited_item and self.edited_item.is_draft)}"
+                    name="action"
+                    value="make_draft">
+                    ${translate("Save draft")}
+                </button>
+
+                <button
+                    py:id="save_button"
+                    name="action"
+                    value="save">
+                    ${translate("Save")}
+                </button>
+            </py:ready>
+        </div>
+    </py:with>
+    
+    <py:ready>
+
+        <!-- Add a dedicated section for each collection -->
+        <?py
+        self.sections = list(self.sections)
+
+        for collection in self.collections:
+            self.sections.append(collection)
+        ?>
+
+        <!-- Preserve the current edit session -->
+        <input
+            py:if="self.edit_state"
+            py:parent="self.body"
+            type="hidden"
+            name="state"
+            value="${self.edit_state.id}"/>
+    </py:ready>
 
 </py:sitebasis.views.BackOfficeLayout>

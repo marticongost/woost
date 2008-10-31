@@ -7,7 +7,6 @@ Controllers for the CMS backend and frontend applications.
 @organization:	Whads/Accent SL
 @since:			July 2008
 """
-from sitebasis.controllers.application import CMS
+from sitebasis.controllers.application import CMS, Request
 from sitebasis.controllers.module import Module
-from sitebasis.controllers.dispatcher import resolver
-from sitebasis.models.document import exposed
+

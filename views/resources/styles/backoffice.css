@@ -4,10 +4,30 @@ html, body {
     padding: 0;
 }
 
+* {
+    box-sizing: content-box;
+    -moz-box-sizing: content-box;
+}
+
 .BackOfficeLayout {
     font-family: Bitstream Vera Sans;
     font-size: 11pt;
 }
+
+/*
+.BackOfficeLayout {
+    display: table;
+}
+
+.BackOfficeLayout .header,
+.BackOfficeLayout .navigation,
+.BackOfficeLayout .body {
+    display: table-row;
+}
+
+.BackOfficeItemView .navigation {
+    display: block;
+}*/
 
 .BackOfficeLayout .header {
     padding: 0.8em;
@@ -95,9 +115,11 @@ html, body {
     -moz-border-radius-topright: 5px;
     border-radius-topleft: 5px;
     border-radius-topright: 5px;
+    font-size: inherit;
+    cursor: pointer;
 }
 
-.BackOfficeLayout .navigation a.selected {
+.BackOfficeLayout .navigation .section_entry.selected {
     border-bottom-color: white;
     background-color: white;
 }
@@ -741,6 +763,7 @@ html, body {
     border: 1px dotted rgb(200,160,120);
     background-color: rgb(245,230,215);
     padding: 0.5em;
+    margin: 1em;
 }
 
 .BackOfficeLayout .error_box li {
@@ -764,8 +787,54 @@ html, body {
 
 /* Edit form
 -----------------------------------------------------------------------------*/
+
+.BackOfficeItemView .body {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 3.2em;
+    bottom: 0;
+}
+
+.BackOfficeItemView .navigation {
+    border: 0;
+}
+
+.BackOfficeItemView .navigation .section_entry {
+    z-index: 1;
+    margin-left: 0;
+    margin-right: 0.2em;
+}
+
+.BackOfficeItemView .edit_form_frame {
+    border: 1px solid rgb(200,210,220);
+    z-index: 0;
+    clear: both;
+    position: absolute;
+    left: 1em;
+    right: 1em;
+    top: 3.8em;
+    bottom: 4em;
+}
+
+.BackOfficeItemView .buttons {
+    position: absolute;
+    bottom: 0em;
+    right: 1em;
+}
+
+.BackOfficeItemView .edit_form {
+    padding: 0;
+    position: absolute;
+    top: 2.3em;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    overflow: auto;
+}
+
 .BackOfficeItemView .draft_box {
-    margin: 0.5em;
+    margin: 1em;
     padding: 0.5em;
     border: 1px solid rgb(235,227,175);
     font-size: 85%;
@@ -787,10 +856,16 @@ html, body {
     clear: both;
 }
 
+.BackOfficeItemView .edit_form_toolbar {
+    border-bottom: 1px solid rgb(230,235,240);
+    height: 2em;
+    padding-top: 0.3em;
+    padding-right: 0.3em;
+}
+
 .BackOfficeItemView .translations_selector {
     font-size: 85%;
     float: right;
-    margin-right: 1em;
 }
 
 .BackOfficeItemView .translations_selector .label {
@@ -800,6 +875,7 @@ html, body {
 .BackOfficeEditView .translations_selector .selector_content {
     list-style-type: none;
     padding-right: 0.1;
+    right: 0;
 }
 
 .BackOfficeEditView .translations_selector .selector_content li {

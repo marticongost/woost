@@ -51,18 +51,8 @@ def unescape(text):
     self.add_resource("/resources/styles/backoffice_diff.css")
     ?>
 
-    <form py:id="differences_form" method="post" py:parent="self.body">
+    <div py:id="differences_form" method="post" py:parent="self.body">
        
-        <py:ready>
-            <py:cocktail.html.Form
-                py:if="self.form_data"
-                py:embeded="${True}"
-                py:data="${self.form_data}"
-                py:schema="${self.form_schema}"
-                py:translations="${self.translations}"
-                py:hidden="${True}"/>
-        </py:ready>
-
         <p py:id="no_differences" py:visible="@{not self.differences}">
             ${translate("No differences")}
         </p>
@@ -150,6 +140,6 @@ def unescape(text):
             <button py:id="close_button" name="action" value="read">${translate("Close")}</button>
         </div>
 
-    </form>
+    </div>
 
 </py:sitebasis.views.BackOfficeLayout>

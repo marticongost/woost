@@ -9,6 +9,7 @@
 import cherrypy
 from cocktail.translations import set_language
 from cocktail.language import set_content_language
+from cocktail.controllers import Location
 from sitebasis.models import Site
 from sitebasis.controllers.module import Module
 
@@ -23,11 +24,9 @@ class Language(Module):
         if language is None:
             language = self.infer_language()
 
-            uri = self.application.uri(language, *path)
-            if cherrypy.request.query_string:
-                uri += "?" + cherrypy.request.query_string
-
-            raise cherrypy.HTTPRedirect(uri)
+            location = Location.get_current()
+            location.path_info = "/" + language + location.path_info
+            location.go()
         else:
             cherrypy.response.cookie["language"] = language
 

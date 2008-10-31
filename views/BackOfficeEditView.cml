@@ -20,137 +20,94 @@ from sitebasis.models import Site
     translations = ()
     ?>
 
-    <py:sitebasis.views.ContentForm
-        py:id="edit_form"
-        py:parent="self.body"
-        py:accessor="${DictAccessor}"
-        py:data="@{self.form_data}"
-        py:schema="@{self.form_schema}"
-        py:errors="@{self.errors}"
-        py:translations="@{self.translations}"
-        py:table_layout="${True}"
-        method="post">
+    <py:with py:element="self.edit_form_frame">
 
-        <input type="hidden"
-            name="translations"
-            value="@{','.join(self.translations)}"/>
+        <div py:id="edit_form_toolbar">
 
-        <py:binding>
-            <?py
-            element.differences = set(
-                (member.name, language)                    
-                for member, language in self.differences
-            )
-            ?>
-        </py:binding>
+            <!-- Translations selector -->
+            <div
+                py:id="translations_selector"
+                py:index="0"
+                py:visible="@{self.content_type.translated}"
+                class="selector">
 
-        <!-- Translations selector -->
-        <div
-            py:id="translations_selector"
-            py:index="0"
-            py:visible="@{self.content_type.translated}"
-            class="selector">
-
-            <py:ready py:if="self.translations_selector.visible">
-                <span class="label">${translate("Translations")}</span>                
-                <ul class="selector_content">
-                    <li py:for="language in self.available_languages">
-                        <?py
-                        has_translation = language in self.translations
-                        ?>
-                        <div class="language">
+                <py:ready py:if="self.translations_selector.visible">
+                    <span class="label">${translate("Translations")}</span>                
+                    <ul class="selector_content">
+                        <li py:for="language in self.available_languages">
                             <?py
-                            if has_translation:
-                                element.add_class("selected")
+                            has_translation = language in self.translations
                             ?>
-                            ${translate(language)}
-                        </div>
-                        <button
-                            py:if="not has_translation"
-                            name="add_translation"
-                            value="${language}">
-                            <img src="/resources/images/add_small.png"/>
-                        </button>
-                        <button
-                            py:if="has_translation and len(self.translations) > 1"
-                            name="delete_translation"
-                            value="${language}">
-                            <img src="/resources/images/delete_small.png"/>
-                        </button>
-                    </li>
-                </ul>
-            </py:ready>
+                            <div class="language">
+                                <?py
+                                if has_translation:
+                                    element.add_class("selected")
+                                ?>
+                                ${translate(language)}
+                            </div>
+                            <button
+                                py:if="not has_translation"
+                                name="add_translation"
+                                value="${language}">
+                                <img src="/resources/images/add_small.png"/>
+                            </button>
+                            <button
+                                py:if="has_translation and len(self.translations) > 1"
+                                name="delete_translation"
+                                value="${language}">
+                                <img src="/resources/images/delete_small.png"/>
+                            </button>
+                        </li>
+                    </ul>
+                </py:ready>
+            </div>
         </div>
 
-        <py:with py:def="field_instance" py:args="member">
-            <?py
-            key = (
-                member.name,
-                get_content_language()
-                    if member.translated
-                    else None
-            )
+        <py:sitebasis.views.ContentForm
+            py:embeded="${True}"
+            py:tag="div"
+            py:id="edit_form"
+            py:accessor="${DictAccessor}"
+            py:data="@{self.form_data}"
+            py:schema="@{self.form_schema}"
+            py:errors="@{self.submitted and self.form_errors}"
+            py:translations="@{self.translations}"
+            py:table_layout="${True}"
+            method="post">
 
-            if key in self.differences:
-                element.add_class("changed")
-            ?>
-        </py:with>
-
-        <py:ready>
-
-            <?py
-            # Hide collections
-            for member in self.form_schema.members().itervalues():
-                if isinstance(member, Collection):
-                    element.set_field_displayed(member, False)
-            ?>
-
-            <ul py:id="error_box"
-                py:if="self.submitted and self.errors"
-                py:before="self.edit_form.fields">
-
-                <li py:for="error in self.errors">
-                    ${translate(error)}
-                </li>
-            </ul>
+            <py:binding>
+                <?py
+                element.differences = set(
+                    (member.name, language)                    
+                    for member, language in self.differences
+                )
+                ?>
+            </py:binding>
             
-            <button
-                py:id="compare_button"
-                py:visible="@{self.edited_item and self.edited_item.draft_source}"
-                py:parent="self.edit_form.buttons"
-                py:index="0"
-                name="action"
-                value="compare">
-                ${translate("Show differences")}
-            </button>
+            <py:with py:def="field_instance" py:args="member">
+                <?py
+                key = (
+                    member.name,
+                    get_content_language()
+                        if member.translated
+                        else None
+                )
 
-            <button
-                py:id="preview_button"
-                py:parent="self.edit_form.buttons"
-                py:index="0"
-                name="action"
-                value="preview">
-                ${translate("Preview")}
-            </button>
+                if key in self.differences:
+                    element.add_class("changed")
+                ?>
+            </py:with>
+            
+        </py:sitebasis.views.ContentForm>
 
-            <button
-                py:id="save_draft_button"
-                py:visible="@{not (self.edited_item and self.edited_item.is_draft)}"
-                py:parent="self.edit_form.buttons"
-                py:index="0"
-                name="action"
-                value="make_draft">
-                ${translate("Save draft")}
-            </button>
-        </py:ready>
-        
-        <py:with py:element="element.submit_button"
-            name="action"
-            value="save">
-            <?py element.empty() ?>
-            ${translate("Save")}
-        </py:with>
+    </py:with>
 
-    </py:sitebasis.views.ContentForm>
+    <py:with
+        py:element="self.draft_box"
+        py:before="self.edit_form.fields"/>
+
+    <py:with
+        py:element="self.error_box"
+        py:before="self.edit_form.fields"/>
 
 </py:sitebasis.views.BackOfficeItemView>

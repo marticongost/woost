@@ -7,8 +7,8 @@
 @since:			October 2008
 """
 import cherrypy
-
-from cocktail.controllers import view_state
+from cocktail.controllers import BaseController, view_state
+from sitebasis.controllers import Request
 
 from sitebasis.controllers.backoffice.basebackofficecontroller \
     import BaseBackOfficeController
@@ -24,17 +24,13 @@ class BackOfficeController(BaseBackOfficeController):
 
     default_section = "content"
 
-    ContentController = ContentController
-    HistoryController = HistoryController
+    content = ContentController
+    history = HistoryController
 
-    def __init__(self):
-        BaseBackOfficeController.__init__(self)
-        self.content = self.ContentController()
-        self.history = self.HistoryController()
-
-    def _run(self, context):
+    def begin(self):
         
-        section = cherrypy.request.params.get("section", self.default_section)
+        params = cherrypy.request.params
+        section = params.get("section", self.default_section)
                 
         if section == "edit":
             section = "content/" + cherrypy.request.params["selection"]
@@ -42,7 +38,5 @@ class BackOfficeController(BaseBackOfficeController):
         else:
             qs = "?" + view_state(section = None)
 
-        raise cherrypy.HTTPRedirect(
-            context["cms"].uri(context["request"].document.path, section) + qs
-        )
+        raise cherrypy.HTTPRedirect(Request.current.uri(section) + qs)
 
