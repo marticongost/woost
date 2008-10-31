@@ -13,12 +13,10 @@ from cocktail.persistence import Entity
 from cocktail.pkgutils import get_full_name, import_object
 from sitebasis.models import Item
 
-def exposed(func):
-    func.exposed = True
-    return func
-
 
 class Document(Item):
+
+    default_handler = "sitebasis.controllers.defaulthandler.DefaultHandler"
 
     members_order = (
         "title",
@@ -35,7 +33,7 @@ class Document(Item):
 
     def __init__(self, **values):
         Item.__init__(self, **values)
-        self.__handler_name = None
+        self.__handler_name = self.default_handler
         self._v_handler = None
 
     # Title and description
@@ -129,17 +127,7 @@ class Document(Item):
         name. In either case, the callable must be bound to a fully qualified
         name, so that it can be persisted.
         @type: callable or str
-        """)
-    
-    @exposed
-    def index(self, cms, request):
-
-        template = self.template
-
-        if template is None:
-            raise cherrypy.NotFound()
-
-        return cms.rendering.render(template.identifier, requested_item = self)
+        """)   
 
     # Resources and attachments
     #------------------------------------------------------------------------------    

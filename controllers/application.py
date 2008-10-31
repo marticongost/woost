@@ -9,14 +9,18 @@
 import os.path
 from threading import local
 import cherrypy
-from cocktail.modeling import ListWrapper
+from cocktail.modeling import ListWrapper, classgetter
 from cocktail.persistence import datastore
+from cocktail.controllers import HTTPPostRedirect
+from sitebasis.models import Document
 from sitebasis.controllers.language import Language
 from sitebasis.controllers.authentication import Authentication
 from sitebasis.controllers.authorization import Authorization
 from sitebasis.controllers.dispatcher import Dispatcher
 from sitebasis.controllers.rendering import Rendering
 from sitebasis.controllers.errorpages import ErrorPages
+
+_thread_data = local()
 
 
 class CMS(object):
@@ -81,8 +85,10 @@ class CMS(object):
     def default(self, *args, **kwargs):
 
         request = Request()
+        request.cms = self
         request.path = list(args)
         request.params = kwargs
+        _thread_data.request = request
 
         try:
             datastore.sync()
@@ -91,17 +97,24 @@ class CMS(object):
                 module.process_request(request)
             
         except Exception, error:
-            handled = False
-            for module in self.__modules:
-                handled = handled \
-                        or module.handle_error(request, error, handled)
-
-            if not handled:
+            
+            if isinstance(error, cherrypy.HTTPRedirect):
                 raise
+            elif isinstance(error, HTTPPostRedirect):
+                return cherrypy.response.body
+            else:
+                handled = False
+                for module in self.__modules:
+                    handled = handled \
+                            or module.handle_error(request, error, handled)
+
+                if not handled:
+                    raise
 
         finally:
             datastore.abort() # Drop any uncommitted change
             datastore.close()
+            _thread_data.request = None
 
         return request.output
 
@@ -121,11 +134,26 @@ class CMS(object):
         path = [clean(self.virtual_path)]
         path.extend(clean(arg) for arg in args)
 
-        return "/" + "/".join(arg for arg in args if arg)
+        return "/" + "/".join(
+            arg.path if isinstance(arg, Document) else arg
+            for arg in args if arg
+        )
 
 
-class Request(object):    
+class Request(object):
+
+    cms = None
     path = None
     params = None
     output = ""
+
+    @classgetter
+    def current(self):
+        """Obtains the current request.
+        @type: L{Request}
+        """
+        return getattr(_thread_data, "request", None)
+
+    def uri(self, *args):
+        return self.cms.uri(self.document, *args)      
 

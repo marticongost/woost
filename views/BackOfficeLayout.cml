@@ -29,6 +29,8 @@
     self.add_resource("/resources/styles/backoffice.css")
     ?>
 
+    <link rel="icon" type="image/png" href="/resources/images/favicon.png"/>
+
     <py:ready>
         <?py
         self.page_title = self.get_page_title()

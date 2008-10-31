@@ -8,20 +8,16 @@
 """
 import cherrypy
 from sitebasis.models import Document, Site
-from sitebasis.models.document import exposed
 from sitebasis.controllers.module import Module
 
 
 class Dispatcher(Module):
 
     def process_request(self, request):
-        
         document, extra_path = self.resolve(request.path)
         request.document = document
         request.extra_path = extra_path
-        
         self.validate(document)
-
         request.output = self.respond(request)
 
     def resolve(self, path):
@@ -51,13 +47,14 @@ class Dispatcher(Module):
     def respond(self, request):
 
         handler = self.find_handler(
-            request.document.handler or request.document,
-            request.extra_path)
-        
+            request.document.handler,
+            request.extra_path
+        )
+
         if handler is None:
             raise cherrypy.NotFound()
 
-        return handler(self.application, request)
+        return handler(*(request.extra_path or []), **cherrypy.request.params)
 
     def find_handler(self, handler, extra_path):
         
@@ -69,6 +66,11 @@ class Dispatcher(Module):
 
             if child:
                 extra_path.pop(0)
+
+                # Per-request controller instantiation
+                if isinstance(child, type):
+                    child = child()
+                    child.parent = handler
             else:
                 resolver = getattr(handler, "resolve", None)
 
@@ -95,15 +97,4 @@ class Dispatcher(Module):
             handler = None
 
         return handler
-
-
-class Resolver(object):
-
-    def __init__(self, function):
-        self.function = function
-
-    def resolve(self, cms, request):
-        return self.function(self, cms, request)
-
-resolver = Resolver
 

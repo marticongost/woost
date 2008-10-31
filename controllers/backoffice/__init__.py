@@ -28,6 +28,3 @@ from sitebasis.controllers.backoffice.itemcontroller \
 from sitebasis.controllers.backoffice.backofficecontroller \
     import BackOfficeController
 
-
-ItemController.CollectionController = CollectionController
-
