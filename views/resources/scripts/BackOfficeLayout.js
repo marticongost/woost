@@ -13,7 +13,7 @@ jQuery(document).ready( function () {
                      var span = document.createElement('span');
                      var pos = this.nodeValue.indexOf(shortcut.toLowerCase())>0 ? this.nodeValue.indexOf(shortcut.toLowerCase()) : this.nodeValue.indexOf(shortcut.toUpperCase());
                      span.setAttribute('style','text-decoration: underline;');
-                     span.appendChild(document.createTextNode(shortcut.toUpperCase()));                     
+                     span.appendChild(document.createTextNode(this.nodeValue.substring(pos,pos+1)));                     
                      texttoshow.appendChild(document.createTextNode(this.nodeValue.substring(0,pos)));
                      texttoshow.appendChild(span);
                      texttoshow.appendChild(document.createTextNode(this.nodeValue.substring(pos+1)));
@@ -25,12 +25,12 @@ jQuery(document).ready( function () {
              jQuery(document).bind(
                 'keydown',
                 {
-                    combi:'Ctrl+' + shortcut.toLowerCase(),
+                    combi:'Alt+Shift+' + shortcut.toLowerCase(),
                     disableInInput: true,
                     extra: jqselector
                 },
                 function (evt){                
-                    jQuery("#" + evt.data.extra).click();
+                    jQuery("#" + evt.data.extra).attr('title','Alt+Shift+' + shortcut.toLowerCase()).click();                    
                     return false; 
              });
              
