@@ -18,7 +18,7 @@ from sitebasis.controllers import Request
     <?py-class
     sections = ["fields"]
     edited_item = None
-    content_type = None
+    edited_content_type = None
     collections = ()
     edit_state = None
     
@@ -27,7 +27,7 @@ from sitebasis.controllers import Request
         and not (self.edited_item.is_draft and self.edited_item.draft_source is None):
             return translate("editing", item = self.edited_item)
         else:
-            return translate("creating", content_type = self.content_type)
+            return translate("creating", content_type = self.edited_content_type)
             
     def get_section_id(self, section):
         if isinstance(section, Collection):

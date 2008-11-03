@@ -13,7 +13,7 @@ from sitebasis.controllers.backoffice.itemsectioncontroller \
     import ItemSectionController
 
 
-class CollectionController(ContentController, ItemSectionController):
+class CollectionController(ItemSectionController, ContentController):
  
     view_class = "sitebasis.views.BackOfficeCollectionView"
 
@@ -25,12 +25,13 @@ class CollectionController(ContentController, ItemSectionController):
 
     def _init_user_collection(self, user_collection):
         ContentController._init_user_collection(self, user_collection)
-        user_collection.base_collection = self.parent.item.get(self.member)
+        user_collection.base_collection = self.item.get(self.member)
         return user_collection
 
     def _init_view(self, view):
         ContentController._init_view(self, view)
-        view.edited_item = self.parent.item
+        view.edited_content_type = self.edited_content_type
+        view.edited_item = self.item
         view.submitted = self.submitted
         view.form_schema = self.form_schema
         view.form_data = self.form_data

@@ -28,7 +28,7 @@ from sitebasis.models import Site
             <div
                 py:id="translations_selector"
                 py:index="0"
-                py:visible="@{self.content_type.translated}"
+                py:visible="@{self.edited_content_type.translated}"
                 class="selector">
 
                 <py:ready py:if="self.translations_selector.visible">
