@@ -11,7 +11,8 @@ from threading import Lock
 import cherrypy
 from cocktail.modeling import cached_getter
 from cocktail.schema import Collection, String, Integer
-from cocktail.controllers import get_parameter, Location
+from cocktail.controllers import get_parameter, Location, view_state
+from sitebasis.controllers import Request
 
 from sitebasis.controllers.backoffice.basebackofficecontroller \
     import BaseBackOfficeController
@@ -116,11 +117,16 @@ class ItemController(BaseBackOfficeController):
         section = cherrypy.request.params.get("section", default)
 
         if section:
-            location = Location.get_current()
-            location.join_path(section)
-            location.params.pop("section", None)
-            location.query_string["state"] = self.edit_state.id
-            location.go()
+            uri = Request.current.uri(
+                "content",
+                str(self.item.id) if self.item else "new",
+                section
+            ) + "?" + view_state(
+                state = self.edit_state.id,
+                section = None
+            )
+
+            raise cherrypy.HTTPRedirect(uri)
 
     def end(self):
         if not self.redirecting:
