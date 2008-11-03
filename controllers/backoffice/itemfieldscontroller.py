@@ -11,18 +11,19 @@ import cherrypy
 from cocktail.modeling import cached_getter
 from cocktail.pkgutils import import_object
 from cocktail.schema import Adapter, Collection, String, ErrorList
+from cocktail.controllers import get_parameter
 from sitebasis.models import Site
-from sitebasis.controllers.backoffice.basebackofficecontroller \
-        import BaseBackOfficeController
+from sitebasis.controllers.backoffice.itemsectioncontroller \
+        import ItemSectionController
 
 
-class ItemFieldsController(BaseBackOfficeController):
+class ItemFieldsController(ItemSectionController):
 
     view_class = "sitebasis.views.BackOfficeEditView"
     rich_text_editor_class = "sitebasis.views.RichTextEditor"
 
     def __init__(self):
-        BaseBackOfficeController.__init__(self)
+        ItemSectionController.__init__(self)
         self.__member_display = {}
         self._setup_member_displays()
 
@@ -53,29 +54,66 @@ class ItemFieldsController(BaseBackOfficeController):
             self.rich_text_editor_class
         )
 
-    def end(self):
-        BaseBackOfficeController.end(self)
-        self.parent.save_edit_state()
+    @cached_getter
+    def form_data(self):
 
+        form_data = ItemSectionController.form_data(self)                
+        section = self.params.read(String("section", default = "fields"))
+        
+        translations = self.translations
+
+        added_translation = self.params.read(
+            String("add_translation",
+                enumeration = self.available_languages
+            )
+        )
+
+        deleted_translation = self.params.read(
+            String("delete_translation",
+                enumeration = translations
+            )
+        )
+
+        # Load form data from the request
+        if self.submitted \
+        or section != "fields" \
+        or added_translation \
+        or deleted_translation:
+
+            get_parameter(
+                self.form_schema,
+                target = form_data,
+                languages = translations,
+                enable_defaults = False,
+                strict = False)
+ 
+            if added_translation and added_translation not in translations:
+                translations.append(added_translation)
+
+            if deleted_translation:
+                translations.remove(deleted_translation)
+
+        return form_data
+    
     def _init_view(self, view):
         
-        BaseBackOfficeController._init_view(self, view)
+        ItemSectionController._init_view(self, view)
 
         view.section = "fields"
-        view.submitted = self.parent.submitted
-        view.edit_state = self.parent.edit_state
-        view.content_type = self.parent.content_type
-        view.edited_item = self.parent.item
-        view.form_data = self.parent.form_data
-        view.form_schema = self.parent.form_schema
-        view.form_errors = self.parent.form_errors
-        view.available_languages = self.parent.available_languages
-        view.translations = self.parent.translations
-        view.differences = self.parent.differences
+        view.submitted = self.submitted
+        view.edit_state = self.edit_state
+        view.content_type = self.content_type
+        view.edited_item = self.item
+        view.form_data = self.form_data
+        view.form_schema = self.form_schema
+        view.form_errors = self.form_errors
+        view.available_languages = self.available_languages
+        view.translations = self.translations
+        view.differences = self.differences
         view.collections = self.parent.collections
 
         # Set form displays
-        for cls in self.parent.content_type.descend_inheritance(True):
+        for cls in self.content_type.descend_inheritance(True):
             cls_displays = self.__member_display.get(cls)    
             if cls_displays:
                 for key, display in cls_displays.iteritems():
