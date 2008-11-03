@@ -44,6 +44,11 @@ jQuery(function () {
         
         jQuery(".translations_check").click( function () {
             jQuery("td." + jQuery(this).val()).toggle();
+            var ids = [];
+            jQuery(".translations_check:checked").each( function () {
+                ids.push(jQuery(this).val());
+            });           
+            jQuery.cookie('visible_languages','"' + ids.join(',') + '"')
         });
         
         jQuery(".translations_selector .selector_content")      
