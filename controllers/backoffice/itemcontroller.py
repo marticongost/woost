@@ -37,7 +37,7 @@ class ItemController(BaseBackOfficeController):
         collection_name = extra_path.pop(0)
 
         try:
-            member = self.content_type[collection_name]
+            member = self.edited_content_type[collection_name]
         except KeyError:
             return None
         else:
@@ -52,7 +52,7 @@ class ItemController(BaseBackOfficeController):
         return controller
 
     @cached_getter
-    def content_type(self):
+    def edited_content_type(self):
         return self.edit_state.content_type \
             or (self.item and self.item.__class__) \
             or self.get_content_type()
@@ -61,7 +61,7 @@ class ItemController(BaseBackOfficeController):
     def collections(self):
         return [
             member
-            for member in self.content_type.ordered_members()
+            for member in self.edited_content_type.ordered_members()
             if isinstance(member, Collection)
             and member.name not in ("changes", "drafts", "translations")
         ]
@@ -103,7 +103,7 @@ class ItemController(BaseBackOfficeController):
 
                         if parent_member_name:
                             state.parent_member = \
-                                self.content_type[parent_member_name]
+                                self.edited_content_type[parent_member_name]
 
                 # Preserve the session
                 edit_states[state_id] = state

@@ -26,8 +26,8 @@ class ItemSectionController(BaseBackOfficeController):
         return self.parent.item
 
     @cached_getter
-    def content_type(self):
-        return self.parent.content_type
+    def edited_content_type(self):
+        return self.parent.edited_content_type
 
     @cached_getter
     def form_adapter(self):
@@ -42,14 +42,14 @@ class ItemSectionController(BaseBackOfficeController):
              "draft_source",
              "is_draft"]
             + [member.name
-               for member in self.content_type.members().itervalues()
+               for member in self.edited_content_type.members().itervalues()
                if isinstance(member, Collection)]
         )
         return adapter
 
     @cached_getter
     def form_schema(self):
-        form_schema = self.form_adapter.export_schema(self.content_type)
+        form_schema = self.form_adapter.export_schema(self.edited_content_type)
         form_schema.name = "BackOfficeEditForm"
         return form_schema
 
@@ -65,7 +65,7 @@ class ItemSectionController(BaseBackOfficeController):
 
             # Item data
             form_source = self.item
-            source_schema = self.content_type
+            source_schema = self.edited_content_type
 
             # Default data
             if not form_source:
@@ -99,7 +99,7 @@ class ItemSectionController(BaseBackOfficeController):
             form_keys = set(self.form_schema.members().iterkeys())
             return [
                 (member, language)
-                for member, language in self.content_type.differences(
+                for member, language in self.edited_content_type.differences(
                     self.item.draft_source or self.item,
                     self.form_data
                 )
@@ -153,7 +153,7 @@ class ItemSectionController(BaseBackOfficeController):
 
             # From scratch
             else:
-                item = self.content_type()
+                item = self.edited_content_type()
                 item.is_draft = True
 
             item.author = user
@@ -169,7 +169,7 @@ class ItemSectionController(BaseBackOfficeController):
             with changeset_context(author = user):
 
                 if item is None:
-                    item = self.content_type()
+                    item = self.edited_content_type()
                     redirect = True
 
                 self.apply_changes(item)
@@ -209,7 +209,7 @@ class ItemSectionController(BaseBackOfficeController):
         edit_state = self.edit_state
         edit_state.form_data = self.form_data
         edit_state.translations = self.translations
-        edit_state.content_type = self.content_type
+        edit_state.content_type = self.edited_content_type
 
         edit_states = cherrypy.session["edit_states"]
         edit_states[edit_state.id] = edit_state
