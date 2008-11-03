@@ -13,7 +13,7 @@ from sitebasis.controllers.backoffice.itemsectioncontroller \
     import ItemSectionController
 
 
-class CollectionController(ContentController, ItemSectionController):
+class CollectionController(ItemSectionController, ContentController):
  
     view_class = "sitebasis.views.BackOfficeCollectionView"
 

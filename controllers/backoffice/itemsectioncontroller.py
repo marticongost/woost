@@ -199,7 +199,7 @@ class ItemSectionController(BaseBackOfficeController):
 
     def end(self):
         
-        if not self.error:
+        if not self.error or self.redirecting:
             self._save_edit_state()
 
         if not self.redirecting:
