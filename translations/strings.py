@@ -26,6 +26,12 @@ translations.define("fields_section",
     en = u"Fields"
 )
 
+translations.define("CollectionView visible members shortcut",
+    ca = u"c",
+    es = u"c",
+    en = u"f"
+)
+
 translations.define("history_section",
     ca = u"Històric",
     es = u"Histórico",
@@ -192,6 +198,12 @@ translations.define("Translations",
     ca = u"Traduccions",
     es = u"Traducciones",
     en = u"Translations"
+)
+
+translations.define("EditView translations shortcut",
+    ca = u"r",
+    es = u"r",
+    en = u"r"
 )
 
 translations.define("Draft source reference",
@@ -875,6 +887,12 @@ translations.define("Language-plural",
     ca = u"Idiomes",
     es = u"Idiomas",
     en = u"Languages"
+)
+
+translations.define("CollectionView visible languages shortcut",
+    ca = u"i",
+    es = u"i",
+    en = u"l"
 )
 
 translations.define("Language.title",

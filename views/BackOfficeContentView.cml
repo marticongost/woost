@@ -13,8 +13,7 @@
     content_view = None
     ?>
 
-    <?py
-    self.add_resource("/resources/scripts/jquery.js")
+    <?py    
     self.add_resource("/resources/scripts/backoffice_content.js")
     ?>
 

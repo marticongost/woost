@@ -54,6 +54,11 @@ from sitebasis.models import Item
     <!-- New item selector -->
     <div py:def="new_toolbar_button"
         class="selector toolbar_button new">
+        <?py
+        shortcut = translate("CollectionView new shortcut", default = "")
+        if shortcut:
+            element.set_client_param("shortcut", shortcut)
+        ?>
         <span class="label">
             <img src="${self.cms.uri('resources', 'images', 'new.png')}"/>
             ${translate("new")}
@@ -77,7 +82,14 @@ from sitebasis.models import Item
         py:element="self.settings_box">
 
         <div py:id="content_view" class="toolbar_button selector">
-            <span class="label">${translate("View as")}</span>
+            <span class="label">
+                <?py
+                shortcut = translate("ContentView view as shortcut", default = "")
+                if shortcut:
+                    element.set_client_param("shortcut", shortcut)
+                ?>
+                ${translate("View as")}
+            </span>
             <div class="selector_content">
                 <py:cocktail.html.LinkSelector
                     py:id="content_view_selector"

@@ -365,6 +365,15 @@ html, body {
     background-image: url(../images/descending.png);
 }
 
+.BackOfficeLayout .row_selector span {
+    padding-right: 1em;
+    font-size: 85%;
+}
+
+.BackOfficeLayout .row_selector a {
+    text-decoration: underline;
+}
+
 /* Content type icons
 -----------------------------------------------------------------------------*/
 .BackOfficeLayout .Item {
@@ -502,17 +511,25 @@ html, body {
     background: url(../images/dropdown_arrow.png) no-repeat right 0.9em;
     border: 1px solid transparent;
     z-index: 2;
+    cursor: pointer;
 }
 
-.BackOfficeLayout .selector:hover .label {
+.BackOfficeLayout .selector:hover .label,
+.BackOfficeLayout .selector.scripted.unfolded .label,
+.BackOfficeLayout .selector.scripted.unfolded:hover .label {
     background-color: white;
     border: 1px solid rgb(210,220,230);
     border-bottom-color: white;
 }
 
+.BackOfficeLayout .selector.scripted:hover .label {
+    border-color: transparent;
+    background-color: transparent;
+}
+
 .BackOfficeLayout .selector_content {
-    min-width: 8em;
     display: none;
+    min-width: 8em;
     position: absolute;
     top: 2.3em;
     border: 1px solid rgb(210,220,230);
@@ -523,8 +540,14 @@ html, body {
     padding: 0.6em;
 }
 
-.BackOfficeLayout .selector:hover .selector_content {
+.BackOfficeLayout .selector:hover .selector_content,
+.BackOfficeLayout .selector.scripted.unfolded .selector_content,
+.BackOfficeLayout .selector.scripted.unfolded:hover .selector_content {
     display: block;
+}
+
+.BackOfficeLayout .selector.scripted:hover .selector_content {
+    display: none;
 }
 
 /* Visible members dropdown
@@ -898,6 +921,21 @@ html, body {
     background: none;
 }
 
+.BackOfficeEditView .translations_selector.scripted .selector_content {
+    list-style-type: none;
+    padding-right: 0.1;
+}
+
+.BackOfficeEditView .translations_selector.scripted .selector_content li {
+    clear: both;
+    margin: 0;
+    padding: 0;
+}
+
+.BackOfficeEditView .translations_selector.scripted .selector_content li input {
+    float: left;
+}
+
 .BackOfficeEditView .ItemSelector {
     padding: 0.1em;
 }
@@ -916,4 +954,3 @@ html, body {
     padding-left: 0;
     font-style: italic;
 }
-
