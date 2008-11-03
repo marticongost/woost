@@ -102,7 +102,7 @@ class ItemFieldsController(ItemSectionController):
         view.section = "fields"
         view.submitted = self.submitted
         view.edit_state = self.edit_state
-        view.content_type = self.content_type
+        view.edited_content_type = self.edited_content_type
         view.edited_item = self.item
         view.form_data = self.form_data
         view.form_schema = self.form_schema
@@ -113,7 +113,7 @@ class ItemFieldsController(ItemSectionController):
         view.collections = self.parent.collections
 
         # Set form displays
-        for cls in self.content_type.descend_inheritance(True):
+        for cls in self.edited_content_type.descend_inheritance(True):
             cls_displays = self.__member_display.get(cls)    
             if cls_displays:
                 for key, display in cls_displays.iteritems():

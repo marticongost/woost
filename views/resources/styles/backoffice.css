@@ -14,21 +14,6 @@ html, body {
     font-size: 11pt;
 }
 
-/*
-.BackOfficeLayout {
-    display: table;
-}
-
-.BackOfficeLayout .header,
-.BackOfficeLayout .navigation,
-.BackOfficeLayout .body {
-    display: table-row;
-}
-
-.BackOfficeItemView .navigation {
-    display: block;
-}*/
-
 .BackOfficeLayout .header {
     padding: 0.8em;
     overflow: hidden;
