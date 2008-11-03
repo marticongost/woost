@@ -26,7 +26,10 @@
     ?>
 
     <?py
+    self.add_resource("/cocktail/scripts/jquery.js")
     self.add_resource("/resources/styles/backoffice.css")
+    self.add_resource("/resources/scripts/jquery.hotkeys.js")
+    self.add_resource("/resources/scripts/BackOfficeLayout.js")
     ?>
 
     <link rel="icon" type="image/png" href="/resources/images/favicon.png"/>
