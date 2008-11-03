@@ -22,6 +22,8 @@ jQuery(document).ready( function () {
                
              });                                             
              
+             jQuery("#" + jqselector).attr('title','Alt+Shift+' + shortcut.toLowerCase())
+             
              jQuery(document).bind(
                 'keydown',
                 {
@@ -30,7 +32,7 @@ jQuery(document).ready( function () {
                     extra: jqselector
                 },
                 function (evt){                
-                    jQuery("#" + evt.data.extra).attr('title','Alt+Shift+' + shortcut.toLowerCase()).click();                    
+                    jQuery("#" + evt.data.extra).click();                    
                     return false; 
              });
              
