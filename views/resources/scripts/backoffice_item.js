@@ -8,16 +8,6 @@
 -----------------------------------------------------------------------------*/
 
 jQuery(function () {
-    
-        jQuery(document).click(function (e) {                                       
-           jQuery(".script_selector").removeClass("script_selector");
-           jQuery(".script_selector_content:visible").toggle();
-        });
-        
-        jQuery(".selector").click( function (e) {
-            e.stopPropagation();
-        });
-        
         
         jQuery(".translations_selector .selector_content li").each( function () {            
             var check = document.createElement('input');
@@ -51,6 +41,8 @@ jQuery(function () {
             jQuery.cookie('visible_languages','"' + ids.join(',') + '"')
         });
         
+        
+        /*
         jQuery(".translations_selector .selector_content")      
             .addClass("script_selector_content")
             .removeClass("selector_content");        
@@ -65,7 +57,8 @@ jQuery(function () {
                 selector.toggleClass("script_selector");                
                 content_selector.toggle();
                 e.stopPropagation();
-         });         
+         });
+         */         
           
 });
 
