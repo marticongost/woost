@@ -7,7 +7,13 @@ from cocktail.schema import Collection
 <py:sitebasis.views.BackOfficeLayout
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:py="http://www.whads.com/ns/cocktail/templates">
-
+    
+    <?py
+    self.add_resource("/cocktail/resources/jquery.js")
+    self.add_resource("/resources/scripts/jquery.cookie.js")
+    self.add_resource("/resources/scripts/backoffice_item.js")
+    ?>
+    
     <?py-class
     sections = ["fields"]
     edited_item = None

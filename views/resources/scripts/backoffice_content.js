@@ -7,64 +7,48 @@
 @since:			September 2008
 -----------------------------------------------------------------------------*/
 
-jQuery(function () {
-
-    function highlightSelection() {
-        var row = jQuery(this).parents("tr");
-
-        if (this.checked) {
-            row.addClass("selected");
-        }
-        else {
-            row.removeClass("selected");
-        }
-    }
-
-    // Hide checkboxes, but keep them around for form submission purposes
-    jQuery(".Table .selection")
-        .css({width: 0})
-        .find("input").css({position: "absolute", left: "-1000px"});
-    
-    jQuery(".Table .selection input")
-        .each(highlightSelection)
-        .change(highlightSelection);
-
-    jQuery(".Table tr")
+jQuery(function () {        
+        //Toolbar
         
-        // Togle row selection when clicking a row
-        .click(function (e) {
-            
-            var src = e.target || e.srcElement;
-            var srcTag = src.tagName.toLowerCase();
-
-            if (srcTag != "label" && srcTag != "input" && srcTag != "button" && srcTag != "textarea") {
-                var check = jQuery(this).find(".selection input").get(0);
-                check.checked = !check.checked;
-            }
-            
-            highlightSelection.call(check);
-        })
-
-        .dblclick(function () {
-        
-            jQuery(".Table .selection input").each(function () {
-                this.checked = false;
-                highlightSelection.call(this);
-            });
-
-            if (jQuery(this).is(".Table tr")) {
-                var row = this;
-            }
-            else {
-                var row = jQuery(this).parents(".Table tr");
-            }
-
-            jQuery(row).find(".selection input").each(function () {
-                this.checked = true;
-                highlightSelection.call(this);
-            });
-            
-            jQuery(".toolbar_button[value=edit]").click();
+        jQuery(document).click(function (e) {                                       
+           jQuery(".script_selector").removeClass("script_selector");
+           jQuery(".script_selector_content:visible").toggle();
         });
+        
+        jQuery(".selector").click( function (e) {
+            e.stopPropagation();
+        });
+        
+        jQuery(".content_type_path .selector_content")
+            .addClass("script_selector_content")
+            .removeClass("selector_content");
+        
+            
+           
+         jQuery(".content_type_path .selector .label").click(function (e) {
+                var content_selector = jQuery(this).next(".script_selector_content");                
+                var selector = jQuery(this).parent(".selector");
+                jQuery(".selector").not(selector).removeClass("script_selector");
+                jQuery(".script_selector_content").not(content_selector).hide();
+                selector.toggleClass("script_selector");                
+                content_selector.toggle();
+                e.stopPropagation();
+         });
+        
+        jQuery(".toolbar .selector_content")
+            .addClass("script_selector_content")
+            .removeClass("selector_content");
+        
+            
+           
+         jQuery(".toolbar .selector .label").click(function (e) {
+                var content_selector = jQuery(this).next(".script_selector_content");
+                var selector = jQuery(this).parent(".selector");                
+                jQuery(".selector").not(selector).removeClass("script_selector");
+                jQuery(".script_selector_content").not(content_selector).hide();
+                selector.toggleClass("script_selector");                
+                content_selector.toggle();
+                e.stopPropagation();                
+         });
+  
 });
-
