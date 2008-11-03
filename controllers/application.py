@@ -9,6 +9,7 @@
 import os.path
 from threading import local
 import cherrypy
+from cocktail.html import __file__ as cocktail_html_path
 from cocktail.modeling import ListWrapper
 from cocktail.persistence import datastore
 from sitebasis.controllers.language import Language
@@ -35,6 +36,11 @@ class CMS(object):
     resources = cherrypy.tools.staticdir.handler(
         section = "resources",
         dir = os.path.join(views_path, "resources")
+    )
+        
+    cocktail = cherrypy.tools.staticdir.handler(
+        section = "cocktail",
+        dir = os.path.join(os.path.dirname(cocktail_html_path), "resources")
     )
 
     # Application modules

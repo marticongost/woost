@@ -505,6 +505,25 @@ html, body {
     display: block;
 }
 
+.BackOfficeLayout .script_selector .label {
+    background-color: white;
+    border: 1px solid rgb(210,220,230);
+    border-bottom-color: white;
+}
+
+.BackOfficeLayout .script_selector_content {
+    min-width: 8em;
+    display: none;
+    position: absolute;
+    top: 2.3em;
+    border: 1px solid rgb(210,220,230);
+    background-color: rgb(250,250,250);
+    padding: 0.4em 0.6em;
+    margin: 0;
+    z-index: 1;
+    padding: 0.6em;
+}
+
 /* Visible members dropdown
 -----------------------------------------------------------------------------*/
 .BackOfficeLayout .visible_members .CheckList {
@@ -577,7 +596,7 @@ html, body {
     min-width: 16em;
 }
 
-.BackOfficeLayout .ContentTypePath .selector_content > li {
+.BackOfficeLayout .ContentTypePath .selector_content > li { 
     font-size: 85%;
 }
 
@@ -621,6 +640,25 @@ html, body {
 
 .BackOfficeLayout .ContentTypePath .leaf .label {
     border-color: transparent;
+}
+
+.BackOfficeLayout .ContentTypePath .script_selector_content {
+    top: 1.4em;
+    z-index: 3;
+    padding: 0.4em;
+    min-width: 16em;
+}
+
+.BackOfficeLayout .ContentTypePath .script_selector_content > li { 
+    font-size: 85%;
+}
+
+.BackOfficeLayout .ContentTypePath .script_selector .label {
+    padding-top: 0.2em;
+    padding-bottom: 0.2em;
+    padding-left: 0.2em;
+    z-index: 4;
+    background-position: right 0.6em;
 }
 
 /* Paging
@@ -822,6 +860,22 @@ html, body {
     background: none;
 }
 
+.BackOfficeEditView .translations_selector .script_selector_content {
+    list-style-type: none;
+    padding-right: 0.1;
+}
+
+.BackOfficeEditView .translations_selector .script_selector_content li {
+    clear: both;
+    margin: 0;
+    padding: 0;
+}
+
+.BackOfficeEditView .translations_selector .script_selector_content li input {
+    float: left;
+}
+
+
 .BackOfficeEditView .ItemSelector {
     padding: 0.1em;
 }
@@ -841,3 +895,13 @@ html, body {
     font-style: italic;
 }
 
+/* Added elements by js
+-----------------------------------------------------------------------------*/
+.BackOfficeLayout .row_selector span {
+    padding-right: 1em;
+    font-size: 85%;
+}
+
+.BackOfficeLayout .row_selector a {
+    text-decoration: underline;
+}

@@ -52,6 +52,11 @@ from sitebasis.models import Site
             class="selector">
 
             <py:ready py:if="self.translations_selector.visible">
+                <?py
+                shortcut = translate("EditView translations shortcut", default = "")
+                if shortcut:
+                    element.set_client_param("shortcut", shortcut)
+                ?>
                 <span class="label">${translate("Translations")}</span>                
                 <ul class="selector_content">
                     <li py:for="language in self.available_languages">
