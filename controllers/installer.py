@@ -14,11 +14,11 @@ from subprocess import Popen, PIPE
 import cherrypy
 from cocktail import schema
 from cocktail.translations import set_language
+from cocktail.html import templates
 from cocktail.controllers import get_parameter
 from sitebasis import __file__ as sitebasis_file
 from sitebasis.translations import installerstrings
 from sitebasis.models.initialization import init_site
-from sitebasis.views import templates
 
 
 class Installer(object):
