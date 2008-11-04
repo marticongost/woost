@@ -94,7 +94,6 @@ from sitebasis.controllers import Request
             <div
                 py:id="draft_box"
                 py:visible="@{self.edited_item and self.edited_item.is_draft}"
-                py:before="self.navigation"
                 class="draft">
                 <py:ready py:if="self.draft_box.visible">
                     <?py
