@@ -22,13 +22,13 @@ jQuery(document).ready( function () {
                
              });                                             
              
-             jQuery("#" + jqselector).attr('title','Alt+Shift+' + shortcut.toLowerCase())
+             jQuery("#" + jqselector).attr('title','Alt+Shift+' + shortcut.toUpperCase())
              
              jQuery(document).bind(
                 'keydown',
                 {
                     combi:'Alt+Shift+' + shortcut.toLowerCase(),
-                    disableInInput: true,
+                    disableInInput: false,
                     extra: jqselector
                 },
                 function (evt){                
