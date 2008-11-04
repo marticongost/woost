@@ -51,7 +51,7 @@ def unescape(text):
     self.add_resource("/resources/styles/backoffice_diff.css")
     ?>
 
-    <div py:id="differences_form" method="post" py:parent="self.body">
+    <form py:id="differences_form" method="post" py:parent="self.body">
        
         <p py:id="no_differences" py:visible="@{not self.differences}">
             ${translate("No differences")}
@@ -137,9 +137,9 @@ def unescape(text):
                 value="revert">
                 ${translate("Discard changes")}
             </button>
-            <button py:id="close_button" name="action" value="read">${translate("Close")}</button>
+            <button py:id="close_button" name="section" value="fields">${translate("Close")}</button>
         </div>
 
-    </div>
+    </form>
 
 </py:sitebasis.views.BackOfficeLayout>

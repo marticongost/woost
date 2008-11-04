@@ -116,21 +116,25 @@ class ItemController(BaseBackOfficeController):
 
         return state
 
-    def switch_section(self, default = None):
+    def section_redirection(self, default = None):
 
         section = cherrypy.request.params.get("section", default)
 
         if section:
-            uri = Request.current.uri(
-                "content",
-                str(self.item.id) if self.item else "new",
-                section
-            ) + "?" + view_state(
-                state = self.edit_state.id,
-                section = None
-            )
+            self.switch_section(section)
 
-            raise cherrypy.HTTPRedirect(uri)
+    def switch_section(self, section):
+
+        uri = Request.current.uri(
+            "content",
+            str(self.item.id) if self.item else "new",
+            section
+        ) + "?" + view_state(
+            state = self.edit_state.id,
+            section = None
+        )
+
+        raise cherrypy.HTTPRedirect(uri)
 
     def end(self):
         if not self.redirecting:
