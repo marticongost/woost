@@ -10,7 +10,7 @@ html, body {
 }
 
 .BackOfficeLayout {
-    font-family: Bitstream Vera Sans;
+    font-family: Bitstream Vera Sans, Arial;
     font-size: 11pt;
 }
 
@@ -52,7 +52,8 @@ html, body {
 
 .BackOfficeLayout a,
 .BackOfficeLayout .identity button,
-.BackOfficeEditView .clear_button {
+.BackOfficeEditView .clear_button,
+.BackOfficeItemView .more_actions button {
     font-size: inherit;
     background: none;
     border: none;
@@ -509,7 +510,7 @@ html, body {
 .BackOfficeLayout .selector.scripted.unfolded .label,
 .BackOfficeLayout .selector.scripted.unfolded:hover .label {
     background-color: white;
-    border: 1px solid rgb(210,220,230);
+    border: 1px solid rgb(190,200,210);
     border-bottom-color: white;
 }
 
@@ -523,7 +524,7 @@ html, body {
     min-width: 8em;
     position: absolute;
     top: 2.3em;
-    border: 1px solid rgb(210,220,230);
+    border: 1px solid rgb(190,200,210);
     background-color: rgb(250,250,250);
     padding: 0.4em 0.6em;
     margin: 0;
@@ -951,6 +952,70 @@ html, body {
     font-style: italic;
 }
 
+.BackOfficeItemView .more_actions {
+    position: absolute;
+    left: 1.3em;
+    bottom: 1.2em;
+}
+
+.BackOfficeItemView .more_actions .label {
+    background-image: url(../images/dropup_arrow.png);
+    background-position: right 0.5em;
+    padding-left: 0.3em;
+}
+
+.BackOfficeLayout .more_actions:hover .label,
+.BackOfficeLayout .more_actions.scripted.unfolded .label,
+.BackOfficeLayout .more_actions.scripted.unfolded:hover .label {
+    border-top-color: white;
+    border-bottom-color: rgb(190,200,210);
+}
+
+.BackOfficeItemView .more_actions .selector_content {
+    position: static;
+    padding-left: 0.5em;
+}
+
+.BackOfficeItemView .more_actions .selector_content > * {
+    display: block;
+    border: none;
+    background-color: white;
+    background-repeat: no-repeat;
+    padding: 0;
+    padding-left: 20px;
+    margin: 0;
+}
+
+.BackOfficeItemView .more_actions .selector_content > button {
+    position: relative;
+    left: -2px;
+}
+
+.BackOfficeItemView .more_actions .selector_content > * + * {
+    margin-top: 0.5em;
+}
+
+.BackOfficeItemView .more_actions .selector_content > button + * {
+    margin-top: 0.3em;
+}
+
+.BackOfficeItemView .more_actions .delete_button {
+    background-image: url(../images/delete_small.png);
+}
+
+.BackOfficeItemView .more_actions .differences_button {
+    background-image: url(../images/differences_small.png);
+}
+
+.BackOfficeItemView .more_actions .preview_button {
+    background-image: url(../images/preview_small.png);
+}
+
+.BackOfficeItemView .more_actions .history_button {
+    background-image: url(../images/history_small.png);
+}
+
 .BackOfficeCollectionView .edit_form_frame {
     padding: 1em;
 }
+
