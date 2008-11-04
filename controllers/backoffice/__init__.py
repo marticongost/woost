@@ -16,9 +16,6 @@ from sitebasis.controllers.backoffice.contentcontroller \
 from sitebasis.controllers.backoffice.historycontroller \
     import HistoryController
 
-from sitebasis.controllers.backoffice.editcontroller \
-    import EditController
-
 from sitebasis.controllers.backoffice.collectioncontroller \
     import CollectionController
 
