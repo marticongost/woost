@@ -15,7 +15,7 @@ html, body {
 }
 
 .BackOfficeLayout .header {
-    padding: 0.8em;
+    padding: 0.6em;
     overflow: hidden;
     background-color: rgb(245,245,245);
     background-color: #eceeef;
@@ -28,7 +28,7 @@ html, body {
 .BackOfficeLayout h1 {
     margin: 0;
     padding: 0;
-    font-size: 1.3em;
+    font-size: 1.1em;
     color: rgb(75,85,95);
     float: left;
 }
@@ -798,14 +798,17 @@ html, body {
 
 .BackOfficeItemView .body {
     position: absolute;
-    left: 0;
-    right: 0;
-    top: 3.2em;
+    left: 0.7em;
+    right: 0.7em;
+    top: 2.6em;
     bottom: 0;
 }
 
 .BackOfficeItemView .navigation {
-    border: 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
 }
 
 .BackOfficeItemView .navigation .section_entry {
@@ -816,19 +819,21 @@ html, body {
 
 .BackOfficeItemView .edit_form_frame {
     border: 1px solid rgb(200,210,220);
+    border-top: none;
     z-index: 0;
     clear: both;
-    position: absolute;
-    left: 1em;
-    right: 1em;
-    top: 3.8em;
+    position: absolute;    
+    top: 2.8em;
     bottom: 4em;
+    left: 0;
+    right: 0;
 }
 
 .BackOfficeItemView .buttons {
     position: absolute;
     bottom: 0em;
-    right: 1em;
+    left: 0;
+    right: 0;
 }
 
 .BackOfficeItemView .edit_form {
