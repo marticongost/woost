@@ -136,14 +136,14 @@ from sitebasis.controllers import Request
                 <button
                     py:id="compare_button"
                     py:visible="@{self.edited_item}"
-                    name="action"
-                    value="compare">
+                    name="section"
+                    value="differences">
                     ${translate("Show differences")}
                 </button>
 
                 <button
                     py:id="preview_button"
-                    name="action"
+                    name="section"
                     value="preview">
                     ${translate("Preview")}
                 </button>

@@ -20,6 +20,9 @@ from sitebasis.controllers.backoffice.basebackofficecontroller \
 from sitebasis.controllers.backoffice.itemfieldscontroller \
     import ItemFieldsController
 
+from sitebasis.controllers.backoffice.differencescontroller \
+    import DifferencesController
+
 
 class ItemController(BaseBackOfficeController):
 
@@ -31,6 +34,7 @@ class ItemController(BaseBackOfficeController):
         self.item = item
 
     fields = ItemFieldsController
+    differences = DifferencesController
 
     def resolve(self, extra_path):
 
