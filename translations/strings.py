@@ -95,6 +95,18 @@ translations.define("remove",
     en = u"Remove"
 )
 
+translations.define("move_up",
+    ca = u"Moure amunt",
+    es = u"Mover arriba",
+    en = u"Move up"
+)
+
+translations.define("move_down",
+    ca = u"Moure avall",
+    es = u"Mover abajo",
+    en = u"Move down"
+)
+
 translations.define("editing",
     ca = lambda item: u"Editant <em>'%s'</em>" % translate(item, "ca"),
     es = lambda item: u"Editando <em>'%s'</em>" % translate(item, "es"),
