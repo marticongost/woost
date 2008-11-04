@@ -28,7 +28,7 @@ class Template(Item):
     )
 
     types = schema.Collection(
-        items = EntityClass
+        items = schema.Reference(type = EntityClass)
     )
     
     items = schema.Collection(
