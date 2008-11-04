@@ -97,29 +97,22 @@ from sitebasis.controllers import Request
                 py:before="self.navigation"
                 class="draft">
                 <py:ready py:if="self.draft_box.visible">
-                    You are currently editing a draft.
-                    <py:block py:if="self.edited_item.draft_source">
-                        <?py
+                    <?py
+                    if self.edited_item.draft_source:
                         source_uri = self.cms.uri(
                             self.backoffice.path,
                             'content',
                             str(self.edited_item.draft_source.id)
                         )
-                        ?>
-                        ${translate("Draft source reference", location = source_uri)}
-                    </py:block>
-                    The draft was created by
-                    <strong>${translate(self.edited_item.author)}</strong>,
-                    and was last modified on
-                    <strong>${self.edited_item.last_update_time}</strong>.
-                    <p py:if="self.edited_item.draft_source">
-                        
-                    </p>
-
-                    <div py:id="draft_actions">
-                        <button py:id="discard_draft">Discard draft</button>
-                        <button py:id="confirm_draft">Confirm draft</button>
-                    </div>
+                        element.append(
+                            translate(
+                                "Editing draft copy",
+                                location = source_uri
+                            )
+                        )
+                    else:
+                        element.append(translate("Editing draft"))
+                    ?>
                 </py:ready>
             </div>
         </div>
@@ -132,22 +125,7 @@ from sitebasis.controllers import Request
                 for member in self.form_schema.members().itervalues():
                     if isinstance(member, Collection):
                         element.set_field_displayed(member, False)
-                ?>                                
-                <button
-                    py:id="compare_button"
-                    py:visible="@{self.edited_item}"
-                    name="section"
-                    value="differences">
-                    ${translate("Show differences")}
-                </button>
-
-                <button
-                    py:id="preview_button"
-                    name="section"
-                    value="preview">
-                    ${translate("Preview")}
-                </button>
-
+                ?>                
                 <button
                     py:id="save_draft_button"
                     py:visible="@{not (self.edited_item and self.edited_item.is_draft)}"
@@ -162,9 +140,66 @@ from sitebasis.controllers import Request
                     value="save">
                     ${translate("Save")}
                 </button>
+
+                <button
+                    py:id="confirm_draft_button"
+                    py:visible="@{self.edited_item and self.edited_item.is_draft}"
+                    name="action"
+                    value="confirm_draft">
+                    ${translate("Confirm draft")}
+                </button>
+
             </py:ready>
         </div>
     </py:with>
+
+    <div
+        py:id="more_actions"
+        py:parent="self"
+        class="selector">
+        <div class="selector_content">
+            <a
+                py:id="delete_button"               
+                py:visible="@{self.edited_item is not None}">
+                <py:ready>
+                    <?py
+                    if self.edited_item:
+                        element["href"] = self.cms.uri(self.backoffice, "delete") \
+                            + "?selection=" + str(self.edited_item.id)
+                    else:
+                        element.visible = False
+                    ?>
+                </py:ready>
+                ${translate("delete")}
+            </a>
+            <a py:id="history_button">
+                <py:ready>
+                    <?py
+                    if self.edited_item:
+                        element["href"] = self.cms.uri(self.backoffice, "history") \
+                            + "?item=" + str(self.edited_item.id)
+                    else:
+                        element.visible = False
+                    ?>
+                </py:ready>
+                ${translate("history")}
+            </a>
+            <button
+                py:id="differences_button"
+                py:visible="@{self.edited_item}"
+                name="section"
+                value="differences">
+                ${translate("Show differences")}
+            </button>
+            <button
+                py:id="preview_button"
+                name="section"
+                value="preview">
+                ${translate("Preview")}
+            </button>
+        </div>
+        <span class="label">${translate("More actions")}</span>
+    </div>
     
     <py:ready>
 
