@@ -21,16 +21,16 @@ jQuery(function () {
             var loop = jQuery.cookie('visible_languages').replace(/"/g,"").split(',');
             for(i=0;i<loop.length;i++){
                 jQuery("input[value='" + loop[i] + "']").attr('checked','checked');
-            }
-            switchVisibleLang();                            
+            }                                      
          }
-        
-        
+                      
         function switchVisibleLang() {
             jQuery(".translations_check").not(":checked").each( function () {
                 jQuery("td." + jQuery(this).val()).toggle();
             });    
         }
+        
+         switchVisibleLang();
         
         jQuery(".translations_check").click( function () {
             jQuery("td." + jQuery(this).val()).toggle();
@@ -39,26 +39,7 @@ jQuery(function () {
                 ids.push(jQuery(this).val());
             });           
             jQuery.cookie('visible_languages','"' + ids.join(',') + '"')
-        });
-        
-        
-        /*
-        jQuery(".translations_selector .selector_content")      
-            .addClass("script_selector_content")
-            .removeClass("selector_content");        
-       
-                   
-           
-         jQuery(".translations_selector .label").click(function (e) {
-                var content_selector = jQuery(this).next(".script_selector_content");                
-                var selector = jQuery(this).parent(".selector");
-                jQuery(".selector").not(selector).removeClass("script_selector");
-                jQuery(".script_selector_content").not(content_selector).hide();
-                selector.toggleClass("script_selector");                
-                content_selector.toggle();
-                e.stopPropagation();
-         });
-         */         
+        });     
           
 });
 
