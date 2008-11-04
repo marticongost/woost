@@ -350,9 +350,15 @@ html, body {
     background-image: url(../images/descending.png);
 }
 
+.BackOfficeLayout .row_selector {
+    padding-top: 0.3em;
+    padding-bottom: 1em;
+    padding-left: 1em;
+    font-size: 85%;
+}
+
 .BackOfficeLayout .row_selector span {
     padding-right: 1em;
-    font-size: 85%;
 }
 
 .BackOfficeLayout .row_selector a {
@@ -943,4 +949,8 @@ html, body {
 .BackOfficeEditView .Reference .empty_selection {
     padding-left: 0;
     font-style: italic;
+}
+
+.BackOfficeCollectionView .edit_form_frame {
+    padding: 1em;
 }
