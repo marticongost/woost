@@ -218,6 +218,32 @@ translations.define("EditView translations shortcut",
     en = u"r"
 )
 
+translations.define("Confirm draft",
+    ca = u"Confirmar esborrany",
+    es = u"Confirmar borrador",
+    en = u"Confirm draft"
+)
+
+translations.define("Editing draft",
+    ca = u"Estàs editant un nou esborrany. L'element no esdevindrà actiu fins "
+         u"que no el confirmis.",
+    es = u"Estás editando un nuevo borrador. El elemento no se activará hasta "
+         u"que no lo confirmes.",
+    en = u"You are editing a new draft. The element won't become active until "
+         u"you confirm it."
+)
+
+translations.define("Editing draft copy",
+    ca = u"Estàs editant un esborrany d'un <a href='%(location)s'>element</a>."
+         u" Els canvis no es veuran reflectits a l'original fins que no "
+         u"confirmis l'esborrany.",
+    es = u"Estás editando un borrador de un <a href='%(location)s'>"
+         u"elemento</a>. Tus cambios no se verán reflejados en el original "
+         u"hasta que no confirmes el borrador.",
+    en = u"You are editing a draft of an <a href='%(location)s'>item</a>. "
+         u"Your changes won't be made permanent until you confirm the draft."
+)
+
 translations.define("Draft source reference",
     ca = u"Pots accedir a la còpia original de l'element "
          u"<a href='%(location)s'>aquí</a>.",
@@ -225,6 +251,12 @@ translations.define("Draft source reference",
          u"<a href='%(location)s'>aquí</a>.",
     en = u"The original copy of the item can be found "
          u"<a href='%(location)s'>here</a>."
+)
+
+translations.define("More actions",
+    ca = "Més accions",
+    es = "Más acciones",
+    en = "More actions"
 )
 
 translations.define("datetime format",
