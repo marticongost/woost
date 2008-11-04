@@ -182,9 +182,10 @@ html, body {
     width: 11em;
 }
 
-.BackOfficeLayout .Form .fields > table,
-.BackOfficeLayout .Form fieldset > table {
-    border-spacing: 1em;
+.BackOfficeLayout .Form .fields > table > tbody > tr > td,
+.BackOfficeLayout .Form fieldset > table > tbody > tr > td {
+    padding-right: 1.5em;
+    padding-bottom: 0.5em;
 }
 
 .BackOfficeLayout .Form div.field {
@@ -854,8 +855,8 @@ html, body {
 }
 
 .BackOfficeItemView .draft_box {
-    margin: 1em;
     padding: 0.5em;
+    margin-bottom: 1.5em;
     border: 1px solid rgb(235,227,175);
     font-size: 85%;
 }
@@ -1015,7 +1016,12 @@ html, body {
     background-image: url(../images/history_small.png);
 }
 
-.BackOfficeCollectionView .edit_form_frame {
+.BackOfficeItemView .edit_form_frame,
+.BackOfficeEditView .edit_form {
     padding: 1em;
+}
+
+.BackOfficeEditView .edit_form_frame {
+    padding: 0;
 }
 
