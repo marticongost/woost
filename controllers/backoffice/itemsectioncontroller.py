@@ -210,7 +210,7 @@ class ItemSectionController(BaseBackOfficeController):
             self._save_edit_state()
 
         if not self.redirecting:
-            self.parent.switch_section()
+            self.parent.section_redirection()
 
     def _save_edit_state(self):
         edit_state = self.edit_state
