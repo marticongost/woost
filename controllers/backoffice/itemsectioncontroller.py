@@ -95,19 +95,26 @@ class ItemSectionController(BaseBackOfficeController):
     @cached_getter
     def differences(self):
 
-        if self.item:
+        source = self.differences_source
+
+        if source:
             form_keys = set(self.form_schema.members().iterkeys())
             return [
                 (member, language)
                 for member, language in self.edited_content_type.differences(
-                    self.item.draft_source or self.item,
+                    source,
                     self.form_data
                 )
-                if member.name in form_keys \
+                if member.name in form_keys
                     and not isinstance(member, Collection)
             ]
         else:
             return set()
+
+    @cached_getter
+    def differences_source(self):
+        item = self.item
+        return item and self.item.draft_source or item
 
     @cached_getter
     def available_languages(self):
