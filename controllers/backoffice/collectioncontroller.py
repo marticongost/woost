@@ -6,6 +6,8 @@
 @organization:	Whads/Accent SL
 @since:			October 2008
 """
+from cocktail.modeling import cached_getter
+
 from sitebasis.controllers.backoffice.contentcontroller \
     import ContentController
 
@@ -22,6 +24,17 @@ class CollectionController(ItemSectionController, ContentController):
         ItemSectionController.__init__(self)
         self.member = member
         self.section = member
+
+    @cached_getter
+    def content_type(self):
+        root_content_type = self.member.related_end.schema
+        content_type = self.get_content_type()
+        
+        if content_type is None \
+        or not issubclass(content_type, root_content_type):
+            content_type = root_content_type
+            
+        return content_type
 
     def _init_user_collection(self, user_collection):
         ContentController._init_user_collection(self, user_collection)
