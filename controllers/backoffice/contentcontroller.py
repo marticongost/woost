@@ -11,11 +11,11 @@ from cocktail.modeling import cached_getter
 from cocktail.schema import Member, Adapter, Collection
 from cocktail.schema.expressions import CustomExpression
 from cocktail.language import get_content_language
+from cocktail.html import templates
 from cocktail.html.datadisplay import MULTIPLE_SELECTION
 from cocktail.controllers import get_persistent_param
 from cocktail.controllers.usercollection import UserCollection
 from sitebasis.models import Site, Item, Document
-from sitebasis.views import templates
 from sitebasis.controllers.contentviews import ContentViewsRegistry
 
 from sitebasis.controllers.backoffice.basebackofficecontroller \
