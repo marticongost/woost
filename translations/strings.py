@@ -65,10 +65,22 @@ translations.define("new",
     en = u"New"
 )
 
+translations.define("CollectionView new shortcut",
+    ca = u"n",
+    es = u"n",
+    en = u"n"
+)
+
 translations.define("edit",
     ca = u"Editar",
     es = u"Editar",
     en = u"Edit"
+)
+
+translations.define("CollectionView edit shortcut",
+    ca = u"e",
+    es = u"e",
+    en = u"e"
 )
 
 translations.define("delete",
@@ -77,10 +89,22 @@ translations.define("delete",
     en = u"Delete"
 )
 
+translations.define("CollectionView delete shortcut",
+    ca = u"i",
+    es = u"i",
+    en = u"d"
+)
+
 translations.define("history",
     ca = u"Històric",
     es = u"Histórico",
     en = u"History"
+)
+
+translations.define("CollectionView history shortcut",
+    ca = u"h",
+    es = u"h",
+    en = u"h"
 )
 
 translations.define("add",
