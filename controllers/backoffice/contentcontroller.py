@@ -226,8 +226,10 @@ class ContentController(BaseBackOfficeController):
 
     @cached_getter
     def selection_mode(self):
-        #if self.edit_stack and isinstance(self.edit_node, Reference):
-        return SINGLE_SELECTION
+        if self.edit_stack and isinstance(self.edit_node, Reference):
+            return SINGLE_SELECTION
+        else:
+            return MULTIPLE_SELECTION
 
     def _init_view(self, view):
 
