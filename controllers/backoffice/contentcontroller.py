@@ -8,11 +8,11 @@
 """
 import cherrypy
 from cocktail.modeling import cached_getter
-from cocktail.schema import Member, Adapter, Collection
+from cocktail.schema import Member, Adapter, Collection, Reference
 from cocktail.schema.expressions import CustomExpression
 from cocktail.language import get_content_language
 from cocktail.html import templates
-from cocktail.html.datadisplay import MULTIPLE_SELECTION
+from cocktail.html.datadisplay import SINGLE_SELECTION
 from cocktail.controllers import get_persistent_param
 from cocktail.controllers.usercollection import UserCollection
 from sitebasis.models import Site, Item, Document
@@ -29,7 +29,6 @@ class ContentController(BaseBackOfficeController):
 
     section = "content"
     default_content_type = Item
-    selection = MULTIPLE_SELECTION
     _item_controller_class = ItemController   
 
     @cached_getter
@@ -187,4 +186,7 @@ class ContentController(BaseBackOfficeController):
         view.visible_languages = self.visible_languages
         view.available_content_views = self.available_content_views
         view.content_view = self.content_view
+
+        if self.edit_stack and isinstance(self.edit_node, Reference):
+            view.selection_mode = SINGLE_SELECTION
 

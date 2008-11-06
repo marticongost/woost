@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 
+<?py
+from cocktail.html.datadisplay import MULTIPLE_SELECTION
+?>
+
 <py:sitebasis.views.BackOfficeLayout
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:py="http://www.whads.com/ns/cocktail/templates">
@@ -11,6 +15,7 @@
     available_content_views = ()
     content_view = None
     member = None
+    selection_mode = MULTIPLE_SELECTION
     ?>
 
     <?py
@@ -30,7 +35,23 @@
             py:available_content_views="${self.available_content_views}"
             py:actions="${['new']}"
             py:root_content_type="${self.edit_stack[-1].related_end.schema}"
-            />
+            py:selection_mode="@{self.selection_mode}"/>
+        <py:with py:element="self.buttons" py:after="self.content_view"/>
     </py:ready>
+
+    <div py:id="buttons">
+        <button
+            py:id="cancel_button"
+            name="action"
+            value="cancel">
+            ${translate("Cancel")}
+        </button>
+        <button
+            py:id="select_button"
+            name="action"
+            value="select">
+            ${translate("Select")}
+        </button>
+    </div>
 
 </py:sitebasis.views.BackOfficeLayout>
