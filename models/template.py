@@ -31,7 +31,8 @@ class Template(Item):
     
     items = schema.Collection(
         items = "sitebasis.models.Document",
-        bidirectional = True
+        bidirectional = True,
+        editable = False
     )
 
     def __translate__(self, language, **kwargs):

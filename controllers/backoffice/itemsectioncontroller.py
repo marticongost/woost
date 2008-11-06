@@ -33,19 +33,11 @@ class ItemSectionController(BaseBackOfficeController):
     @cached_getter
     def form_adapter(self):
         adapter = Adapter()
-        adapter.exclude(
-            ["id",
-             "author",
-             "owner",
-             "creation_time",
-             "last_update_time",
-             "drafts",
-             "draft_source",
-             "is_draft"]
-            + [member.name
-               for member in self.edited_content_type.members().itervalues()
-               if isinstance(member, Collection)]
-        )
+        adapter.exclude([
+            member.name
+            for member in self.edited_content_type.members().itervalues()
+            if not member.editable or isinstance(member, Collection)
+        ])
         return adapter
 
     @cached_getter

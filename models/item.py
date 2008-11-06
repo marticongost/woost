@@ -13,8 +13,11 @@ from cocktail.persistence import Entity, EntityClass, EntityAccessor, datastore
 from sitebasis.models.changesets import ChangeSet, Change
 from sitebasis.models.action import Action
 
-# Add an extension property to control member visibility on item listings
+# Add an extension property to control the default member visibility on item listings
 schema.Member.listed_by_default = True
+
+# Add an extension property to indicate if members should be editable by users
+schema.Member.editable = True
 
 # Add an extension property to determine if members should participate in item
 # revisions
@@ -35,47 +38,40 @@ class Item(Entity):
     changes = schema.Collection(
         required = True,
         versioned = False,
+        editable = False,
         items = "sitebasis.models.Change",
         bidirectional = True
     )
 
     creation_time = schema.DateTime(
-        versioned = False        
+        versioned = False,
+        editable = False
     )
 
     last_update_time = schema.DateTime(
-        versioned = False        
+        versioned = False,
+        editable = False
     )
 
     is_draft = schema.Boolean(
         required = True,
         default = False,
-        listed_by_default = False
+        listed_by_default = False,
+        editable = False
     )
 
     draft_source = schema.Reference(
         type = "sitebasis.models.Item",
         related_key = "drafts",
-        bidirectional = True
+        bidirectional = True,
+        editable = False
     )
 
     drafts = schema.Collection(
         items = "sitebasis.models.Item",
         related_key = "draft_source",
-        bidirectional = True
-    )
-
-    _draft_excluded_members = (
-        "id",
-        "changes",
-        "translations",
-        "is_draft",
-        "draft_source",
-        "drafts",
-        "author",
-        "owner",
-        "last_update_time",
-        "creation_time"
+        bidirectional = True,
+        editable = False
     )
 
     def make_draft(self):
@@ -137,7 +133,11 @@ class Item(Entity):
         @rtype: L{Adapter<cocktail.schema.adapter.Adapter>}
         """
         adapter = schema.Adapter()
-        adapter.exclude(self._draft_excluded_members)
+        adapter.exclude([
+            member.name
+            for member in self.members().itervalues()
+            if not member.editable
+        ])
         return adapter
 
     # When validating unique members, ignore conflicts with the draft source
@@ -191,10 +191,10 @@ class Item(Entity):
 
         for member in cls.members().itervalues():
             
-            key = member.name
-
-            if key in cls._draft_excluded_members:
+            if not member.editable:
                 continue
+            
+            key = member.name
             
             if member.translated:
 
@@ -227,12 +227,14 @@ class Item(Entity):
     #------------------------------------------------------------------------------    
     author = schema.Reference(
         indexed = True,
+        editable = False,
         type = "sitebasis.models.User",
         listed_by_default = False
     )
     
     owner = schema.Reference(
         indexed = True,
+        editable = False,
         type = "sitebasis.models.User"
     )
 
@@ -352,6 +354,7 @@ class Item(Entity):
     def _create_translation_schema(cls):
         rvalue = EntityClass._create_translation_schema(cls)
         cls.translations.versioned = False
+        cls.translations.editable = False
         return rvalue
 
     # Item removal overriden to make it versioning aware
@@ -372,4 +375,7 @@ class Item(Entity):
                 change.action = Action.identifier.index["delete"]
                 change.target = self
                 change.changeset = changeset
+
+Item.id.editable = False
+Item.changes.editable = False
 
