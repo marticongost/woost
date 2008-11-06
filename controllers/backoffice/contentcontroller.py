@@ -8,18 +8,20 @@
 """
 import cherrypy
 from cocktail.modeling import cached_getter
-from cocktail.schema import Member, Adapter, Collection, Reference
+from cocktail.schema import (
+    Member, Adapter, Collection, Reference, String, DictAccessor
+)
 from cocktail.schema.expressions import CustomExpression
 from cocktail.language import get_content_language
 from cocktail.html import templates
-from cocktail.html.datadisplay import SINGLE_SELECTION
+from cocktail.html.datadisplay import SINGLE_SELECTION, MULTIPLE_SELECTION
 from cocktail.controllers import get_persistent_param
 from cocktail.controllers.usercollection import UserCollection
 from sitebasis.models import Site, Item, Document
 from sitebasis.controllers.contentviews import ContentViewsRegistry
 
 from sitebasis.controllers.backoffice.basebackofficecontroller \
-    import BaseBackOfficeController
+    import BaseBackOfficeController, EditState
 
 from sitebasis.controllers.backoffice.itemcontroller \
     import ItemController
@@ -49,8 +51,53 @@ class ContentController(BaseBackOfficeController):
             return self._item_controller_class(item)
 
     @cached_getter
+    def action(self):
+        return self.params.read(String("action"))
+
+    def is_ready(self):
+        return self.action is not None
+
+    def submit(self):
+
+        if self.action in ("select", "cancel") and self.edit_stack:
+
+            if self.action == "select":
+                edit_state = self.edit_stack[-2]
+                member = self.edit_node
+
+                if isinstance(member, Reference):
+                    edit_section = "fields"
+                    DictAccessor.set(
+                        edit_state.form_data,
+                        member.name,
+                        self.user_collection.selection)
+                else:
+                    edit_section = member.name
+                    # TODO: Add related items to collections
+            
+            raise cherrypy.HTTPRedirect(
+                self.cms.uri(
+                    self.backoffice,
+                    "content",
+                    str(edit_state.item.id) if edit_state.item else "new",
+                    edit_section
+                ) + "?edit_stack=" + self.edit_stack.to_param(-1)
+            )
+
+    @cached_getter
     def content_type(self):
-        return self.get_content_type(self.default_content_type)
+
+        if self.edit_stack is None or isinstance(self.edit_node, EditState):
+            return self.get_content_type(self.default_content_type)
+        else:
+            root_content_type = self.edit_node.related_end.schema
+            content_type = self.get_content_type()
+            
+            if content_type is None \
+            or not issubclass(content_type, root_content_type):
+                content_type = root_content_type
+                
+            return content_type
 
     def _get_content_type_param(self, param_name):
         return get_persistent_param(
@@ -155,6 +202,7 @@ class ContentController(BaseBackOfficeController):
         user_collection.persistence_prefix = self.content_type.name
         user_collection.persistence_duration = self.settings_duration
         user_collection.persistent_params = set(("members", "order"))
+        user_collection.selection_mode = self.selection_mode
         user_collection.selection_parser = \
             lambda param: Item.index.get(int(param))
 
@@ -176,6 +224,11 @@ class ContentController(BaseBackOfficeController):
         else:
             return "sitebasis.views.BackOfficeContentView"
 
+    @cached_getter
+    def selection_mode(self):
+        #if self.edit_stack and isinstance(self.edit_node, Reference):
+        return SINGLE_SELECTION
+
     def _init_view(self, view):
 
         BaseBackOfficeController._init_view(self, view)
@@ -186,7 +239,5 @@ class ContentController(BaseBackOfficeController):
         view.visible_languages = self.visible_languages
         view.available_content_views = self.available_content_views
         view.content_view = self.content_view
-
-        if self.edit_stack and isinstance(self.edit_node, Reference):
-            view.selection_mode = SINGLE_SELECTION
+        view.selection_mode = self.selection_mode
 
