@@ -1,13 +1,15 @@
 jQuery(document).ready( function () {
              
-         jQuery("*[id^='_element']", document.body).each( function() {  
+         jQuery("*", document.body).each( function() {  
              
              //Shortcuts
              var shortcut = this.shortcut;
-             var jqselector = jQuery(this).is("button") ? jQuery(this).attr('id') : jQuery(this).attr('id') + " .label"; 
-             var txt = jQuery("#" + jqselector).contents("[nodeType=3]");          
              
              if(shortcut){
+             
+                var jqselector = jQuery(this).is("button") ? jQuery(this).attr('id') : jQuery(this).attr('id') + " .label"; 
+                var txt = jQuery("#" + jqselector).contents("[nodeType=3]");          
+             
                           
                  txt.each( function () {
                     if(this.nodeValue.match(new RegExp(shortcut.toUpperCase() + "|" +  shortcut.toLowerCase()))){                     
