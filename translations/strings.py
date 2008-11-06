@@ -943,6 +943,12 @@ translations.define("Template.identifier",
     en = u"Identifier"
 )
 
+translations.define("Template.items",
+    ca = u"Elements",
+    es = u"Elementos",
+    en = u"Items"
+)
+
 # Language
 #------------------------------------------------------------------------------
 translations.define("Language",
