@@ -209,8 +209,23 @@ class EditStack(ListWrapper):
         """
         return self._items.pop()
 
+    def go(self, offset):
+
+        node = self[len(self) - 1 + offset]
+        
+        if isinstance(node, EditState):
+            uri = Request.current.uri(
+                "content",
+                str(node.item.id) if node.item else "new"
+            )
+        else:
+            uri = Request.current.uri("content")
+
+        uri += "?edit_stack=" + self.to_param(offset)
+        raise cherrypy.HTTPRedirect(uri)
+
     def to_param(self, offset = 0):
-        return "%d-%d" % (self.id, len(self) + offset - 1)
+        return "%d-%d" % (self.id, len(self) -1 + offset)
 
 
 class EditState(object):
