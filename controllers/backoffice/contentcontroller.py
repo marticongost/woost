@@ -29,7 +29,6 @@ class ContentController(BaseBackOfficeController):
 
     section = "content"
     default_content_type = Item
-    view_class = "sitebasis.views.BackOfficeContentView"
     selection = MULTIPLE_SELECTION
     _item_controller_class = ItemController   
 
@@ -171,10 +170,18 @@ class ContentController(BaseBackOfficeController):
 
         return user_collection
 
+    @cached_getter
+    def view_class(self):
+        if self.edit_stack:
+            return "sitebasis.views.BackOfficeItemSelectorView"
+        else:
+            return "sitebasis.views.BackOfficeContentView"
+
     def _init_view(self, view):
 
         BaseBackOfficeController._init_view(self, view)
-        
+
+        view.edit_stack = self.edit_stack
         view.user_collection = self.user_collection
         view.available_languages = self.available_languages
         view.visible_languages = self.visible_languages

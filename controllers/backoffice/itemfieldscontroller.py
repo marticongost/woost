@@ -6,12 +6,12 @@
 @organization:	Whads/Accent SL
 @since:			October 2008
 """
-from __future__ import with_statement
 import cherrypy
 from cocktail.modeling import cached_getter
 from cocktail.pkgutils import import_object
-from cocktail.schema import Adapter, Collection, String, ErrorList
-from cocktail.controllers import get_parameter
+from cocktail.schema import \
+    Adapter, Collection, String, ErrorList, DictAccessor
+from cocktail.controllers import get_parameter, view_state
 from sitebasis.models import Site
 from sitebasis.controllers.backoffice.itemsectioncontroller \
         import ItemSectionController
@@ -59,6 +59,7 @@ class ItemFieldsController(ItemSectionController):
 
         form_data = ItemSectionController.form_data(self)                
         section = self.params.read(String("section", default = "fields"))
+        rel = self.params.read(String("rel"))
         
         translations = self.translations
 
@@ -78,7 +79,12 @@ class ItemFieldsController(ItemSectionController):
         if self.submitted \
         or section != "fields" \
         or added_translation \
-        or deleted_translation:
+        or deleted_translation \
+        or rel:
+
+            from pprint import pprint
+            print "<" * 80
+            print "Loading form data"
 
             get_parameter(
                 self.form_schema,
@@ -86,7 +92,11 @@ class ItemFieldsController(ItemSectionController):
                 languages = translations,
                 enable_defaults = False,
                 strict = False)
- 
+
+            pprint(cherrypy.request.params)
+            pprint(form_data)
+            print ">" * 80
+
             if added_translation and added_translation not in translations:
                 translations.append(added_translation)
 
@@ -101,7 +111,7 @@ class ItemFieldsController(ItemSectionController):
 
         view.section = "fields"
         view.submitted = self.submitted
-        view.edit_state = self.edit_state
+        view.edit_stack = self.edit_stack
         view.edited_content_type = self.edited_content_type
         view.edited_item = self.item
         view.form_data = self.form_data
@@ -118,4 +128,36 @@ class ItemFieldsController(ItemSectionController):
             if cls_displays:
                 for key, display in cls_displays.iteritems():
                     view.edit_form.set_member_display(key, display)
+
+    def _save_edit_state(self):
+        edit_state = self.edit_node
+        edit_state.form_data = self.form_data
+        edit_state.translations = self.translations
+
+    def end(self):
+
+        if not self.error or self.redirecting:
+            self._save_edit_state()
+
+        rel = self.params.read(String("rel"))
+
+        # Open the item selector
+        if rel:     
+            # Freeze the reference to the current node
+            self.edit_node
+
+            # Push the relation as a new edit node
+            member = self.edited_content_type[rel]
+            self.edit_stack.push(member)
+            value = DictAccessor.get(self.form_data, rel)
+
+            raise cherrypy.HTTPRedirect(
+                self.cms.uri(self.backoffice, "content")
+                + "?" + view_state(
+                    selection = value.id if value is not None else None,
+                    edit_stack = self.edit_stack.to_param()
+                )
+            )
+
+        ItemSectionController.end(self)
 
