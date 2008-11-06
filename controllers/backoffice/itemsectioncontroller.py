@@ -8,7 +8,7 @@
 """
 from __future__ import with_statement
 import cherrypy
-from cocktail.modeling import cached_getter
+from cocktail.modeling import cached_getter, getter
 from cocktail.schema import Adapter, Collection, String, ErrorList
 from sitebasis.models import Site
 from sitebasis.controllers.backoffice.basebackofficecontroller \
@@ -17,9 +17,9 @@ from sitebasis.controllers.backoffice.basebackofficecontroller \
 
 class ItemSectionController(BaseBackOfficeController):
 
-    @cached_getter
-    def edit_state(self):
-        return self.parent.edit_state
+    @getter
+    def edit_stack(self):
+        return self.parent.edit_stack
 
     @cached_getter
     def item(self):
@@ -56,7 +56,7 @@ class ItemSectionController(BaseBackOfficeController):
     @cached_getter
     def form_data(self):
         
-        form_data = self.edit_state.form_data
+        form_data = self.edit_node.form_data
         
         # Load model data into the form
         if form_data is None:
@@ -79,7 +79,7 @@ class ItemSectionController(BaseBackOfficeController):
                 self.form_schema
             )
 
-            self.edit_state.form_data = form_data
+            self.edit_node.form_data = form_data
 
         return form_data
 
@@ -123,7 +123,7 @@ class ItemSectionController(BaseBackOfficeController):
     @cached_getter
     def translations(self):
 
-        edit_state = self.edit_state
+        edit_state = self.edit_node
 
         # Determine active translations
         if edit_state.translations is None:
@@ -204,22 +204,20 @@ class ItemSectionController(BaseBackOfficeController):
         for language in (set(item.translations) - set(self.translations)):
             del item.translations[language]
 
+    def _init_view(self, view):
+        BaseBackOfficeController._init_view(self, view)        
+        view.edited_item = self.item
+        view.edited_content_type = self.edited_content_type
+        view.form_errors = self.form_errors
+        view.form_schema = self.form_schema
+        view.form_data = self.form_data
+        view.differences = self.differences
+        view.translations = self.translations
+
     def end(self):
         
-        if not self.error or self.redirecting:
-            self._save_edit_state()
+        BaseBackOfficeController.end(self)
 
         if not self.redirecting:
             self.parent.section_redirection()
-
-    def _save_edit_state(self):
-        edit_state = self.edit_state
-        edit_state.form_data = self.form_data
-        edit_state.translations = self.translations
-        edit_state.content_type = self.edited_content_type
-
-        edit_states = cherrypy.session["edit_states"]
-        edit_states[edit_state.id] = edit_state
-        cherrypy.session["edit_states"] = edit_states
-
 

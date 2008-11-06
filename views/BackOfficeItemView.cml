@@ -20,7 +20,7 @@ from sitebasis.controllers import Request
     edited_item = None
     edited_content_type = None
     collections = ()
-    edit_state = None
+    edit_stack = None
     
     def get_page_title(self):
         if self.edited_item \
@@ -46,15 +46,7 @@ from sitebasis.controllers import Request
     <py:with
         py:element="self.navigation"
         py:parent="self.body"
-        py:position="0">
-
-        <!-- And add a 'go back' link to it-->
-        <a py:id="go_back"
-            href="@{self.cms.uri(self.backoffice.path)}">
-            ${translate("Go back")}
-        </a>
-
-    </py:with>
+        py:position="0"/>
 
     <button
         py:def="section_entry"
@@ -150,55 +142,55 @@ from sitebasis.controllers import Request
 
             </py:ready>
         </div>
-    </py:with>
 
-    <div
-        py:id="more_actions"
-        py:parent="self"
-        class="selector">
-        <div class="selector_content">
-            <a
-                py:id="delete_button"               
-                py:visible="@{self.edited_item is not None}">
-                <py:ready>
-                    <?py
-                    if self.edited_item:
-                        element["href"] = self.cms.uri(self.backoffice, "delete") \
-                            + "?selection=" + str(self.edited_item.id)
-                    else:
-                        element.visible = False
-                    ?>
-                </py:ready>
-                ${translate("delete")}
-            </a>
-            <a py:id="history_button">
-                <py:ready>
-                    <?py
-                    if self.edited_item:
-                        element["href"] = self.cms.uri(self.backoffice, "history") \
-                            + "?item=" + str(self.edited_item.id)
-                    else:
-                        element.visible = False
-                    ?>
-                </py:ready>
-                ${translate("history")}
-            </a>
-            <button
-                py:id="differences_button"
-                py:visible="@{self.edited_item}"
-                name="section"
-                value="differences">
-                ${translate("Show differences")}
-            </button>
-            <button
-                py:id="preview_button"
-                name="section"
-                value="preview">
-                ${translate("Preview")}
-            </button>
+        <div
+            py:id="more_actions"
+            class="selector">
+
+            <div class="selector_content">
+                <a
+                    py:id="delete_button"               
+                    py:visible="@{self.edited_item is not None}">
+                    <py:ready>
+                        <?py
+                        if self.edited_item:
+                            element["href"] = self.cms.uri(self.backoffice, "delete") \
+                                + "?selection=" + str(self.edited_item.id)
+                        else:
+                            element.visible = False
+                        ?>
+                    </py:ready>
+                    ${translate("delete")}
+                </a>
+                <a py:id="history_button">
+                    <py:ready>
+                        <?py
+                        if self.edited_item:
+                            element["href"] = self.cms.uri(self.backoffice, "history") \
+                                + "?item=" + str(self.edited_item.id)
+                        else:
+                            element.visible = False
+                        ?>
+                    </py:ready>
+                    ${translate("history")}
+                </a>
+                <button
+                    py:id="differences_button"
+                    py:visible="@{self.edited_item}"
+                    name="section"
+                    value="differences">
+                    ${translate("Show differences")}
+                </button>
+                <button
+                    py:id="preview_button"
+                    name="section"
+                    value="preview">
+                    ${translate("Preview")}
+                </button>
+            </div>
+            <span class="label">${translate("More actions")}</span>
         </div>
-        <span class="label">${translate("More actions")}</span>
-    </div>
+    </py:with>
     
     <py:ready>
 
@@ -210,13 +202,6 @@ from sitebasis.controllers import Request
             self.sections.append(collection)
         ?>
 
-        <!-- Preserve the current edit session -->
-        <input
-            py:if="self.edit_state"
-            py:parent="self.body"
-            type="hidden"
-            name="state"
-            value="${self.edit_state.id}"/>
     </py:ready>
 
 </py:sitebasis.views.BackOfficeLayout>
