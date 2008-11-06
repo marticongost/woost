@@ -10,7 +10,7 @@ from __future__ import with_statement
 import cherrypy
 from cocktail.modeling import cached_getter, getter
 from cocktail.schema import Adapter, Collection, String, ErrorList
-from sitebasis.models import Site
+from sitebasis.models import Site, changeset_context
 from sitebasis.controllers.backoffice.basebackofficecontroller \
         import BaseBackOfficeController
 
