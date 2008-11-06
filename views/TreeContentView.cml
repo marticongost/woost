@@ -2,6 +2,7 @@
 
 <?py
 from sitebasis.models import Site
+from cocktail.html.datadisplay import MULTIPLE_SELECTION
 ?>
 
 <py:sitebasis.views.ContentView
@@ -11,6 +12,7 @@ from sitebasis.models import Site
     <?py-class
     content_view_id = "tree"
     actions = "new", "edit", "delete", "history"
+    selection_mode = MULTIPLE_SELECTION
 
     collection_params = {
         "allow_sorting": False,
@@ -23,7 +25,8 @@ from sitebasis.models import Site
         py:def="collection_display"
         py:cms="@{self.cms}"
         py:base_url="@{self.cms.uri(self.backoffice.path)}"
-        py:translations="@{self.visible_languages}">
+        py:translations="@{self.visible_languages}"
+        py:selection_mode="@{self.selection_mode}">
         <py:binding>
             <?py
             home = Site.main.home
