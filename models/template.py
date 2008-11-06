@@ -26,10 +26,6 @@ class Template(Item):
         unique = True,
         max = 255
     )
-
-    types = schema.Collection(
-        items = schema.Reference(type = EntityClass)
-    )
     
     items = schema.Collection(
         items = "sitebasis.models.Document",

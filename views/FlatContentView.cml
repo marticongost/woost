@@ -13,6 +13,7 @@ from cocktail.html.datadisplay import MULTIPLE_SELECTION
     content_view_id = "flat"
     actions = "new", "edit", "delete", "history"   
     cms = None
+    selection_mode = MULTIPLE_SELECTION
     ?>
 
     <py:sitebasis.views.ContentTable
@@ -20,6 +21,6 @@ from cocktail.html.datadisplay import MULTIPLE_SELECTION
         py:base_url="@{self.cms.uri(self.backoffice.path)}"
         py:accessor="${EntityAccessor}"
         py:translations="@{self.visible_languages}"
-        py:selection_mode="${MULTIPLE_SELECTION}"/>
+        py:selection_mode="@{self.selection_mode}"/>
 
 </py:sitebasis.views.ContentView>
