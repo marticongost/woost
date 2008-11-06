@@ -10,6 +10,7 @@ from __future__ import with_statement
 import cherrypy
 from cocktail.modeling import cached_getter, getter
 from cocktail.schema import Adapter, Collection, String, ErrorList
+from cocktail.persistence import datastore
 from sitebasis.models import Site, changeset_context
 from sitebasis.controllers.backoffice.basebackofficecontroller \
         import BaseBackOfficeController
@@ -169,7 +170,7 @@ class ItemSectionController(BaseBackOfficeController):
 
         # Store the changes on a draft
         if item and item.is_draft:
-            self.apply_changes(item)
+            self._apply_changes(item)
 
         # Operate directly on a production item
         else:
@@ -179,17 +180,14 @@ class ItemSectionController(BaseBackOfficeController):
                     item = self.edited_content_type()
                     redirect = True
 
-                self.apply_changes(item)
+                self._apply_changes(item)
 
         datastore.commit()
 
         # A new item or draft was created; redirect the browser to it
         if redirect:
             raise cherrypy.HTTPRedirect(
-                context["cms"].uri(
-                    context["request"].document.path,
-                    "content", str(item.id)
-                )
+                self.cms.uri(self.backoffice, "content", str(item.id))
             )
 
     def _apply_changes(self, item):
