@@ -209,8 +209,8 @@ class EditStack(ListWrapper):
         """
         return self._items.pop()
 
-    def to_param(self):
-        return "%d-%d" % (self.id, len(self) - 1)
+    def to_param(self, offset = 0):
+        return "%d-%d" % (self.id, len(self) + offset - 1)
 
 
 class EditState(object):
