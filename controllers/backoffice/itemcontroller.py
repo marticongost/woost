@@ -86,7 +86,7 @@ class ItemController(BaseBackOfficeController):
             member
             for member in self.edited_content_type.ordered_members()
             if isinstance(member, Collection)
-            and member.name not in ("changes", "drafts", "translations")
+            and member.editable
         ]
 
     def section_redirection(self, default = None):
