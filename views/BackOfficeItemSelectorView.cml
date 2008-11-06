@@ -37,6 +37,19 @@ from cocktail.html.datadisplay import MULTIPLE_SELECTION
             py:root_content_type="${self.edit_stack[-1].related_end.schema}"
             py:selection_mode="${self.selection_mode}">
 
+            <?py
+            edit_stack = self.edit_stack
+            ?>
+
+            <!-- Propagate the active edit stack when creating a new element -->
+            <py:with py:def="new_item_selector">
+                <py:with
+                    py:def="label"
+                    py:args="content_type"
+                    href="${element['href'] + '&amp;edit_stack=' + edit_stack.to_param(1)}"/>
+            </py:with>
+
+            <!-- Add buttons to confirm or cancel the selection -->
             <div py:id="buttons">
                 <button
                     py:id="cancel_button"
