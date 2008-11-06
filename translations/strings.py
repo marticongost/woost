@@ -278,9 +278,9 @@ translations.define("Draft source reference",
 )
 
 translations.define("More actions",
-    ca = "Més accions",
-    es = "Más acciones",
-    en = "More actions"
+    ca = u"Més accions",
+    es = u"Más acciones",
+    en = u"More actions"
 )
 
 translations.define("datetime format",
