@@ -12,7 +12,9 @@ from sitebasis.models import Item
 
 class Template(Item):
 
-    members_order = "title", "identifier", "types", "items"
+    members_order = "title", "identifier", "items"
+
+    # TODO: Allowed types
 
     title = schema.String(
         required = True,
