@@ -9,7 +9,9 @@
 from __future__ import with_statement
 import cherrypy
 from cocktail.modeling import cached_getter, getter
-from cocktail.schema import Adapter, Collection, String, ErrorList
+from cocktail.schema import (
+    Adapter, Reference, Collection, String, ErrorList, DictAccessor
+)
 from cocktail.persistence import datastore
 from sitebasis.models import Site, changeset_context
 from sitebasis.controllers.backoffice.basebackofficecontroller \
@@ -176,11 +178,33 @@ class ItemSectionController(BaseBackOfficeController):
 
         datastore.commit()
 
-        # A new item or draft was created; redirect the browser to it
+        # A new item or draft was created
         if redirect:
-            raise cherrypy.HTTPRedirect(
-                self.cms.uri(self.backoffice, "content", str(item.id))
-            )
+            
+            # The edit operation was the root of the edit stack; redirect the
+            # browser to the new item
+            if len(self.edit_stack) == 1:
+                raise cherrypy.HTTPRedirect(
+                    self.cms.uri(self.backoffice, "content", str(item.id))
+                )
+
+            # The edit operation was nested; relate the created item to its
+            # owner, and redirect the browser to the owner
+            else:
+                relation = self.edit_stack[-2]
+                parent_edit_state = self.edit_stack[-3]
+
+                if isinstance(relation, Reference):
+                    DictAccessor.set(
+                        parent_edit_state.form_data,
+                        relation.name,
+                        item
+                    )
+                else:
+                    # TODO: Add to related collection
+                    pass
+
+                self.edit_stack.go(-2)                
 
     def _apply_changes(self, item):
 

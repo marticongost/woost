@@ -73,9 +73,11 @@ class ItemController(BaseBackOfficeController):
 
     @cached_getter
     def edited_content_type(self):
+        requested_edit_stack = self.requested_edit_stack
         return (
-            (self.requested_edit_stack
-                and self.requested_edit_stack[-1].content_type)
+            (requested_edit_stack
+                and isinstance(self.requested_edit_stack[-1], EditState)
+                and requested_edit_stack[-1].content_type)
             or (self.item and self.item.__class__)
             or self.get_content_type()
         )
