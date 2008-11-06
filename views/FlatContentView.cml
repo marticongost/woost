@@ -2,7 +2,6 @@
 
 <?py
 from cocktail.persistence import EntityAccessor
-from cocktail.html.datadisplay import MULTIPLE_SELECTION
 ?>
 
 <py:sitebasis.views.ContentView
@@ -13,14 +12,12 @@ from cocktail.html.datadisplay import MULTIPLE_SELECTION
     content_view_id = "flat"
     actions = "new", "edit", "delete", "history"   
     cms = None
-    selection_mode = MULTIPLE_SELECTION
     ?>
 
     <py:sitebasis.views.ContentTable
         py:def="collection_display"
         py:base_url="@{self.cms.uri(self.backoffice.path)}"
         py:accessor="${EntityAccessor}"
-        py:translations="@{self.visible_languages}"
-        py:selection_mode="@{self.selection_mode}"/>
+        py:translations="@{self.visible_languages}"/>
 
 </py:sitebasis.views.ContentView>

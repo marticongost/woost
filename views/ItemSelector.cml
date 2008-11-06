@@ -39,7 +39,7 @@ import cherrypy
             self.selection_label.add_class("empty_selection")
 
             if self.member:
-                content_type = self.member.related_end.schema
+                content_type = self.member.type
             else:
                 content_type = Item
 

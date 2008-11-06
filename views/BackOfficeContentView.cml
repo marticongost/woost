@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
+<?py
+from cocktail.html.datadisplay import MULTIPLE_SELECTION
+?>
 
 <py:sitebasis.views.BackOfficeLayout
     xmlns="http://www.w3.org/1999/xhtml"
@@ -11,6 +14,7 @@
     visible_languages = ()
     available_content_views = ()
     content_view = None
+    selection_mode = MULTIPLE_SELECTION
     ?>
 
     <?py    
@@ -26,7 +30,8 @@
             py:user_collection="${self.user_collection}"
             py:available_languages="${self.available_languages}"
             py:visible_languages="${self.visible_languages}"
-            py:available_content_views="${self.available_content_views}" />
+            py:available_content_views="${self.available_content_views}"
+            py:selection_mode="${self.selection_mode}"/>
     </py:ready>
 
 </py:sitebasis.views.BackOfficeLayout>
