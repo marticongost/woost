@@ -8,7 +8,7 @@ Controllers for the CMS administration interface.
 @since:			October 2008
 """
 from sitebasis.controllers.backoffice.basebackofficecontroller \
-    import BaseBackOfficeController, EditStack, EditState
+    import BaseBackOfficeController, EditStack, EditNode, RelationNode
 
 from sitebasis.controllers.backoffice.contentcontroller \
     import ContentController

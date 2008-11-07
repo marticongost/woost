@@ -191,20 +191,10 @@ class ItemSectionController(BaseBackOfficeController):
             # The edit operation was nested; relate the created item to its
             # owner, and redirect the browser to the owner
             else:
-                relation = self.edit_stack[-2]
+                relation = self.edit_stack[-2].member
                 parent_edit_state = self.edit_stack[-3]
-
-                if isinstance(relation, Reference):
-                    DictAccessor.set(
-                        parent_edit_state.form_data,
-                        relation.name,
-                        item
-                    )
-                else:
-                    # TODO: Add to related collection
-                    pass
-
-                self.edit_stack.go(-2)                
+                parent_edit_state.relate(relation, item)
+                self.edit_stack.go(-3)
 
     def _apply_changes(self, item):
 
