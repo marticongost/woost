@@ -31,8 +31,8 @@ class ContentController(BaseBackOfficeController):
 
     section = "content"
     default_content_type = Item
-    _item_controller_class = ItemController   
-
+    _item_controller_class = ItemController
+    
     @cached_getter
     def new(self):
         return self._item_controller_class
@@ -226,6 +226,10 @@ class ContentController(BaseBackOfficeController):
             return SINGLE_SELECTION
         else:
             return MULTIPLE_SELECTION
+
+    @cached_getter
+    def persistent_content_type_choice(self):
+        return self.edit_stack is None
 
     def _init_view(self, view):
 

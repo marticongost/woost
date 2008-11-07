@@ -12,13 +12,13 @@ from itertools import chain
 from threading import Lock
 import cherrypy
 from cocktail.modeling import cached_getter, ListWrapper
-from cocktail.schema import DictAccessor, Collection
+from cocktail.schema import DictAccessor, Collection, String, Integer
 from cocktail.language import get_content_language
 from cocktail.controllers import \
     get_parameter, get_persistent_param, BaseController
+from cocktail.persistence.relations import add, remove
 from sitebasis.models import Item
 from sitebasis.controllers import Request
-from cocktail.schema import String, Integer
 
 
 class BaseBackOfficeController(BaseController):
@@ -215,12 +215,20 @@ class EditStack(ListWrapper):
         @param index: The position of the stack to move to.
         @type index: int
         """
+        if index < 0:
+            index = len(self) + index
+
         node = self[index]
         
         if isinstance(node, EditNode):
+            next_node = self[index + 1] if index + 1 < len(self) else None
             uri = Request.current.uri(
                 "content",
-                str(node.item.id) if node.item else "new"
+                str(node.item.id) if node.item else "new",
+                next_node.member.name
+                    if next_node and isinstance(next_node, RelationNode)
+                        and isinstance(next_node.member, Collection)
+                    else None
             )
         else:
             uri = Request.current.uri("content")
@@ -305,7 +313,7 @@ class EditNode(object):
         """
         if isinstance(member, Collection):
             collection = self.get_collection(member, True)
-            collection.add(item)
+            add(collection, item)
         else:
             DictAccessor.set(self.form_data, member.name, item)
 
@@ -323,7 +331,7 @@ class EditNode(object):
         """
         if isinstance(member, Collection):
             collection = self.get_collection(member, True)
-            collection.remove(item)
+            remove(collection, item)
         else:
             DictAccessor.set(self.form_data, member.name, None)
 

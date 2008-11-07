@@ -8,6 +8,9 @@
 """
 from cocktail.modeling import cached_getter
 
+from sitebasis.controllers.backoffice.basebackofficecontroller \
+    import RelationNode
+
 from sitebasis.controllers.backoffice.contentcontroller \
     import ContentController
 
@@ -18,6 +21,7 @@ from sitebasis.controllers.backoffice.itemsectioncontroller \
 class CollectionController(ItemSectionController, ContentController):
  
     view_class = "sitebasis.views.BackOfficeCollectionView"
+    persistent_content_type_choice = False
 
     def __init__(self, member):
         ContentController.__init__(self)
@@ -51,4 +55,25 @@ class CollectionController(ItemSectionController, ContentController):
         view.form_errors = self.form_errors
         view.member = self.member
         view.collections = self.parent.collections
+
+    def end(self):
+        
+        if self.action == "add":
+            
+            # Freeze the reference to the current node
+            self.edit_node
+
+            # Add a relation node to the edit stack, and redirect the user
+            # there
+            node = RelationNode()
+            node.member = self.member
+            node.action = "add"
+            self.edit_stack.push(node)
+            self.edit_stack.go()
+
+        elif self.action == "remove":
+            for item in self.user_collection.selection:
+                self.edit_node.unrelate(self.member, item)
+            
+        ItemSectionController.end(self)
 
