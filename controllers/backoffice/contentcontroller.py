@@ -21,7 +21,7 @@ from sitebasis.models import Site, Item, Document
 from sitebasis.controllers.contentviews import ContentViewsRegistry
 
 from sitebasis.controllers.backoffice.basebackofficecontroller \
-    import BaseBackOfficeController, EditNode
+    import BaseBackOfficeController, EditNode, RelationNode
 
 from sitebasis.controllers.backoffice.itemcontroller \
     import ItemController
@@ -220,7 +220,9 @@ class ContentController(BaseBackOfficeController):
 
     @cached_getter
     def selection_mode(self):
-        if self.edit_stack and isinstance(self.edit_node.member, Reference):
+        if self.edit_stack \
+        and isinstance(self.edit_node, RelationNode) \
+        and isinstance(self.edit_node.member, Reference):
             return SINGLE_SELECTION
         else:
             return MULTIPLE_SELECTION
