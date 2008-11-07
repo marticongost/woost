@@ -7,10 +7,12 @@
 @since:			October 2008
 """
 from __future__ import with_statement
+from copy import copy
 from itertools import chain
 from threading import Lock
 import cherrypy
 from cocktail.modeling import cached_getter, ListWrapper
+from cocktail.schema import DictAccessor, Collection
 from cocktail.language import get_content_language
 from cocktail.controllers import \
     get_parameter, get_persistent_param, BaseController
@@ -168,18 +170,16 @@ class EditStack(ListWrapper):
 
     The stack can contain two kind of nodes:
 
-        * L{EditState} nodes are associated with a single
+        * L{edit nodes<EditNode>} are associated with a single
           L{item<sitebasis.models.items.Item>}, and store all the changes
           performed on it before they are finally saved.
 
-        * Relation nodes can take the form of a
-          L{collection<cocktail.schema.schemacollections.Collection>} or a
-          L{relation<cocktail.schema.schemarelations.Relation>} member, and
-          indicate a nested edit operation on a related item or set of items.
+        * L{relation nodes<RelationNode>} indicate a nested edit operation on a
+          related item or set of items.
 
-    The first node of a stack is always an L{EditState} node. All further nodes
-    alternate their kind in succession (so the first L{EditState} node will be
-    followed by a relation node, then another L{EditState} node, and so on).
+    The first node of a stack is always an edit node. All further nodes
+    alternate their kind in succession (so the first node will be followed by a
+    relation node, then another edit node, and so on).
 
     @ivar id: A numerical identifier for the stack. It is guaranteed to be
         unique throughout the current browser session.
@@ -190,7 +190,7 @@ class EditStack(ListWrapper):
         """Adds a new node to the edit stack.
 
         @param node: The node to add.
-        @type node: L{EditState},
+        @type node: L{EditNode},
             L{collection<cocktail.schema.schemacollections.Collection>}
             or L{relation<cocktail.schema.schemarelations.Relation>}
         """
@@ -200,7 +200,7 @@ class EditStack(ListWrapper):
         """Removes the last node from the stack and returns it.
 
         @return: The last node of the stack.
-        @rtype: L{EditState},
+        @rtype: L{EditNode},
             L{collection<cocktail.schema.schemacollections.Collection>}
             or L{relation<cocktail.schema.schemarelations.Relation>}
 
@@ -209,11 +209,15 @@ class EditStack(ListWrapper):
         """
         return self._items.pop()
 
-    def go(self, offset):
+    def go(self, index = -1):
+        """Redirects the user to the indicated node of the edit stack.
 
-        node = self[len(self) - 1 + offset]
+        @param index: The position of the stack to move to.
+        @type index: int
+        """
+        node = self[index]
         
-        if isinstance(node, EditState):
+        if isinstance(node, EditNode):
             uri = Request.current.uri(
                 "content",
                 str(node.item.id) if node.item else "new"
@@ -221,19 +225,120 @@ class EditStack(ListWrapper):
         else:
             uri = Request.current.uri("content")
 
-        uri += "?edit_stack=" + self.to_param(offset)
+        uri += "?edit_stack=" + self.to_param(index)
         raise cherrypy.HTTPRedirect(uri)
 
-    def to_param(self, offset = 0):
-        return "%d-%d" % (self.id, len(self) -1 + offset)
+    def to_param(self, index = -1):
+        if index < 0:
+            index = len(self) + index
+
+        return "%d-%d" % (self.id, index)
 
 
-class EditState(object):
+class EditNode(object):
+    """An L{edit stack<EditStack>} node, used to maintain a set of changes for
+    an edited item before they are finally committed.
+
+    @ivar item: A reference to the item being edited. It will be None when
+        creating a new item.
+    @type item: L{Item<sitebasis.models.item.Item>}
+
+    @ivar content_type: The entity type of the edited item.
+    @type content_type: L{Entity<cocktail.persistence.entity.Entity>} subclass
+
+    @ivar form_data: The complete modified state of the edited item.
+    
+    @ivar translations: The list of translations defined by the item (note that
+        these can change during the course of an edit operation, so that's why
+        they are stored in here).
+    @type translations: str list 
+    """
 
     def __init__(self):
-        self.id = None
         self.item = None
         self.content_type = None
         self.form_data = None
         self.translations = None
+        self.__collections = {}
+
+    def get_collection(self, member, require_copy = False):
+        """Obtains the requested collection from the edited item.
+
+        @param member: The member matching the collection to retrieve.
+        @type member: L{Collection<cocktail.schema.schemacollections.Collection>}
+
+        @param require_copy: When set to True, the method will produce a copy
+            of the item's collection, and store it for further requests. This
+            should be set to True by any call that plans to alter the requested
+            collection.
+        @type require_copy: bool
+
+        @return: The requested collection.
+        """
+
+        key = member.name
+        collection = self.__collections.get(key)
+
+        if collection is None:
+            if self.item:
+                collection = self.item.get(key)
+
+                if require_copy:
+                    collection = copy(collection)
+                    self.__collections[key] = collection
+            else:
+                collection = member.produce_default()
+                self.__collections[key] = collection
+
+        return collection
+
+    def relate(self, member, item):
+        """Adds a relation between the edited item and another item.
+        
+        @param member: The member describing the relation between the two
+            items. It should be the end nearer to the edited item.
+        @type member: L{Collection<cocktail.schema.schemacollections.Collection>}
+            or L{Reference<cocktail.schema.schemareference.Reference>}
+
+        @param item: The item to relate.
+        @type item: L{Item<sitebasis.models.item.Item>}
+        """
+        if isinstance(member, Collection):
+            collection = self.get_collection(member, True)
+            collection.add(item)
+        else:
+            DictAccessor.set(self.form_data, member.name, item)
+
+    def unrelate(self, member, item):
+        """Breaks the relation between the edited item and one of its related
+        items.
+        
+        @param member: The member describing the relation between the two
+            items. It should be the end nearer to the edited item.
+        @type member: L{Collection<cocktail.schema.schemacollections.Collection>}
+            or L{Reference<cocktail.schema.schemareference.Reference>}
+
+        @param item: The item to unrelate.
+        @type item: L{Item<sitebasis.models.item.Item>}
+        """
+        if isinstance(member, Collection):
+            collection = self.get_collection(member, True)
+            collection.remove(item)
+        else:
+            DictAccessor.set(self.form_data, member.name, None)
+
+
+class RelationNode(object):
+    """An L{edit stack<EditStack>} node, used to maintain data about an action
+    affecting a relation.
+    
+    @var member: The member describing the relation that is being modified.
+    @type member: L{Collection<cocktail.schema.schemacollections.Collection>}
+        or L{Reference<cocktail.schema.schemareference.Reference>}
+
+    @var action: Can be one of 'add' or 'remove'.
+    @type action: str
+    """
+    member = None
+    action = None
 

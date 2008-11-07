@@ -13,6 +13,10 @@ from cocktail.schema import \
     Adapter, Collection, String, ErrorList, DictAccessor
 from cocktail.controllers import get_parameter, view_state
 from sitebasis.models import Site
+
+from sitebasis.controllers.backoffice.basebackofficecontroller \
+        import RelationNode
+
 from sitebasis.controllers.backoffice.itemsectioncontroller \
         import ItemSectionController
 
@@ -148,7 +152,9 @@ class ItemFieldsController(ItemSectionController):
 
             # Push the relation as a new edit node
             member = self.edited_content_type[rel]
-            self.edit_stack.push(member)
+            node = RelationNode()
+            node.member = member
+            self.edit_stack.push(node)
             value = DictAccessor.get(self.form_data, rel)
 
             raise cherrypy.HTTPRedirect(

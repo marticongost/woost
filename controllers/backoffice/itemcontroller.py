@@ -14,7 +14,7 @@ from cocktail.controllers import view_state
 from sitebasis.controllers import Request
 
 from sitebasis.controllers.backoffice.basebackofficecontroller \
-    import BaseBackOfficeController, EditState
+    import BaseBackOfficeController, EditNode
 
 from sitebasis.controllers.backoffice.itemfieldscontroller \
     import ItemFieldsController
@@ -63,8 +63,8 @@ class ItemController(BaseBackOfficeController):
             edit_stack = self._new_edit_stack()
 
         # If necessary, add a new node to the stack
-        if not edit_stack or not isinstance(edit_stack[-1], EditState):
-            edit_state = EditState()
+        if not edit_stack or not isinstance(edit_stack[-1], EditNode):
+            edit_state = EditNode()
             edit_state.item = self.item
             edit_state.content_type = self.edited_content_type
             edit_stack.push(edit_state)
@@ -76,7 +76,7 @@ class ItemController(BaseBackOfficeController):
         requested_edit_stack = self.requested_edit_stack
         return (
             (requested_edit_stack
-                and isinstance(self.requested_edit_stack[-1], EditState)
+                and isinstance(self.requested_edit_stack[-1], EditNode)
                 and requested_edit_stack[-1].content_type)
             or (self.item and self.item.__class__)
             or self.get_content_type()

@@ -21,7 +21,7 @@ from sitebasis.models import Site, Item, Document
 from sitebasis.controllers.contentviews import ContentViewsRegistry
 
 from sitebasis.controllers.backoffice.basebackofficecontroller \
-    import BaseBackOfficeController, EditState
+    import BaseBackOfficeController, EditNode
 
 from sitebasis.controllers.backoffice.itemcontroller \
     import ItemController
@@ -63,34 +63,28 @@ class ContentController(BaseBackOfficeController):
 
             if self.action == "select":
                 edit_state = self.edit_stack[-2]
-                member = self.edit_node
+                member = self.edit_node.member
 
                 if isinstance(member, Reference):
-                    edit_section = "fields"
-                    DictAccessor.set(
-                        edit_state.form_data,
-                        member.name,
-                        self.user_collection.selection)
+                    edit_state.relate(member, self.user_collection.selection)
                 else:
-                    edit_section = member.name
-                    # TODO: Add related items to collections
+                    if self.edit_node.action == "add":
+                        modify_relation = edit_state.relate 
+                    else:
+                        modify_relation = edit_state.unrelate 
+
+                    for item in self.user_collection.selection:
+                        modify_relation(member, item)
             
-            raise cherrypy.HTTPRedirect(
-                self.cms.uri(
-                    self.backoffice,
-                    "content",
-                    str(edit_state.item.id) if edit_state.item else "new",
-                    edit_section
-                ) + "?edit_stack=" + self.edit_stack.to_param(-1)
-            )
+            self.edit_stack.go(-2)
 
     @cached_getter
     def content_type(self):
 
-        if self.edit_stack is None or isinstance(self.edit_node, EditState):
+        if self.edit_stack is None or isinstance(self.edit_node, EditNode):
             return self.get_content_type(self.default_content_type)
         else:
-            root_content_type = self.edit_node.related_end.schema
+            root_content_type = self.edit_node.member.related_end.schema
             content_type = self.get_content_type()
             
             if content_type is None \
@@ -226,7 +220,7 @@ class ContentController(BaseBackOfficeController):
 
     @cached_getter
     def selection_mode(self):
-        if self.edit_stack and isinstance(self.edit_node, Reference):
+        if self.edit_stack and isinstance(self.edit_node.member, Reference):
             return SINGLE_SELECTION
         else:
             return MULTIPLE_SELECTION
