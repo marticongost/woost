@@ -85,21 +85,12 @@ class ItemFieldsController(ItemSectionController):
         or added_translation \
         or deleted_translation \
         or rel:
-
-            from pprint import pprint
-            print "<" * 80
-            print "Loading form data"
-
             get_parameter(
                 self.form_schema,
                 target = form_data,
                 languages = translations,
                 enable_defaults = False,
                 strict = False)
-
-            pprint(cherrypy.request.params)
-            pprint(form_data)
-            print ">" * 80
 
             if added_translation and added_translation not in translations:
                 translations.append(added_translation)
