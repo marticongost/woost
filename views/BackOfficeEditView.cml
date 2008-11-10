@@ -2,8 +2,6 @@
 
 <?py
 from cocktail.language import get_content_language
-from cocktail.schema import Collection, DictAccessor
-from sitebasis.models import Site
 ?>
 
 <py:sitebasis.views.BackOfficeItemView
@@ -72,7 +70,6 @@ from sitebasis.models import Site
             py:embeded="${True}"
             py:tag="div"
             py:id="edit_form"
-            py:accessor="${DictAccessor}"
             py:data="@{self.form_data}"
             py:schema="@{self.form_schema}"
             py:errors="@{self.submitted and self.form_errors}"
@@ -80,6 +77,7 @@ from sitebasis.models import Site
             py:table_layout="${True}"
             method="post">
 
+            <!-- Highlight changed members -->
             <py:binding>
                 <?py
                 element.differences = set(
@@ -88,7 +86,7 @@ from sitebasis.models import Site
                 )
                 ?>
             </py:binding>
-            
+
             <py:with py:def="field_instance" py:args="member">
                 <?py
                 key = (
