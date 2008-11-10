@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <?py
-from cocktail.controllers import view_state
 from sitebasis.controllers.backoffice import EditNode
 ?>
 
@@ -52,36 +51,9 @@ from sitebasis.controllers.backoffice import EditNode
     </py:ready>
 
     <div py:id="header">
-        <ul py:id="edit_stack">
-            <py:ready>
-                <li>
-                    <a href="${self.cms.uri(self.backoffice)}">${translate(self.backoffice)}</a>
-                </li>
-                <li py:if="self.edit_stack" py:for="step, edit_node in enumerate(self.edit_stack)">
-                    <img class="separator" src="/resources/images/path_separator.png"/>
-                    <a>
-                        <?py
-                        if isinstance(edit_node, EditNode):
-                            if edit_node.item:
-                                node_desc = translate(edit_node.item)
-                                item_id = str(edit_node.item.id)
-                            else:
-                                node_desc = translate("creating", content_type = edit_node.content_type)
-                                item_id = "new"
-
-                            node_uri = self.cms.uri(self.backoffice, "content", item_id)
-                        else:
-                            node_desc = translate(edit_node.member)
-                            node_uri = self.cms.uri(self.backoffice, "content")
-
-                        element["href"] = node_uri + "?edit_stack=" + self.edit_stack.to_param(step)
-                        element.append(node_desc)
-                        ?>
-                    </a>
-                </li>
-            </py:ready>
-        </ul>
-
+        <h1>
+            <py:ready>${self.page_title}</py:ready>
+        </h1>
         <div py:id="identity" py:if="self.user and not self.user.anonymous">
             <span>@{translate("logged in as", user = self.user)}</span>
             <form method="post">
@@ -91,6 +63,36 @@ from sitebasis.controllers.backoffice import EditNode
             </form>
         </div>
     </div>
+
+    <ul py:id="edit_stack" py:visible="@{self.edit_stack}">
+        <py:ready py:if="self.edit_stack">
+            <li>
+                <a href="${self.cms.uri(self.backoffice)}">${translate(self.backoffice)}</a>
+            </li>
+            <li py:for="step, edit_node in enumerate(self.edit_stack)">
+                <img class="separator" src="/resources/images/path_separator.png"/>
+                <a>
+                    <?py
+                    if isinstance(edit_node, EditNode):
+                        if edit_node.item:
+                            node_desc = translate(edit_node.item)
+                            item_id = str(edit_node.item.id)
+                        else:
+                            node_desc = translate("creating", content_type = edit_node.content_type)
+                            item_id = "new"
+
+                        node_uri = self.cms.uri(self.backoffice, "content", item_id)
+                    else:
+                        node_desc = translate(edit_node.member)
+                        node_uri = self.cms.uri(self.backoffice, "content")
+
+                    element["href"] = node_uri + "?edit_stack=" + self.edit_stack.to_param(step)
+                    element.append(node_desc)
+                    ?>
+                </a>
+            </li>
+        </py:ready>
+    </ul>
 
     <div py:id="navigation" py:visible="@{len(self.sections) > 1}">
 

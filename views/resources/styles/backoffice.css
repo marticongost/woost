@@ -25,12 +25,20 @@ html, body {
     border-bottom: 1px solid rgb(180,190,200);
 }
 
+.BackOfficeLayout .header h1 {
+    font-size: 120%;
+    padding: 0;
+    margin: 0;
+}
+
 .BackOfficeLayout ul.edit_stack {
     margin: 0;
-    padding: 0;
-    font-size: 1.1em;
+    padding: 0.3em 0.8em;
+    font-size: 90%;
     color: rgb(75,85,95);
-    float: left;
+    background-color: rgb(245,245,245);
+    border-bottom: 1px solid rgb(230,230,230);
+    overflow: hidden;
 }
 
 .BackOfficeLayout ul.edit_stack li {
@@ -823,7 +831,7 @@ html, body {
     position: absolute;
     left: 0.7em;
     right: 0.7em;
-    top: 2.6em;
+    top: 4.5em;
     bottom: 0;
 }
 
