@@ -300,6 +300,22 @@ class EditNode(object):
 
         return collection
 
+    def collection_has_changes(self, member):
+        """Indicates if the given collection has been changed.
+
+        @param member: The collection to evaluate.
+        @type member: L{Collection<cocktail.schema.schemacollections.Collection>}
+
+        @return: True if the edit state contains changes for the given
+            collection, False if the collection remains unchanged.
+        @rtype: bool
+        """
+        key = member.name
+        collection_state = self.__collections.get(key)
+
+        return collection_state is not None \
+            and (self.item is None or collection_state != self.item.get(key))
+
     def relate(self, member, item):
         """Adds a relation between the edited item and another item.
         
