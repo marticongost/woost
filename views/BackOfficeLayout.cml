@@ -74,7 +74,7 @@ from sitebasis.controllers.backoffice import EditNode
                             node_desc = translate(edit_node.member)
                             node_uri = self.cms.uri(self.backoffice, "content")
 
-                        element["href"] = node_uri + "?" + view_state(edit_stack = "%d-%d" % (self.edit_stack.id, step))
+                        element["href"] = node_uri + "?edit_stack=" + self.edit_stack.to_param(step)
                         element.append(node_desc)
                         ?>
                     </a>
