@@ -208,6 +208,15 @@ class ItemSectionController(BaseBackOfficeController):
         for language in (set(item.translations) - set(self.translations)):
             del item.translations[language]
 
+        # Save changes to collections
+        edit_state = self.edit_node
+
+        for member in self.edited_content_type.members().itervalues():
+            if member.editable \
+            and isinstance(member, Collection) \
+            and edit_state.collection_has_changes(member):
+                item.set(member.name, edit_state.get_collection(member))
+
     def _init_view(self, view):
         BaseBackOfficeController._init_view(self, view)        
         view.edited_item = self.item

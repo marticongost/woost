@@ -42,7 +42,8 @@ class CollectionController(ItemSectionController, ContentController):
 
     def _init_user_collection(self, user_collection):
         ContentController._init_user_collection(self, user_collection)
-        user_collection.base_collection = self.item.get(self.member)
+        user_collection.base_collection = \
+            self.edit_node.get_collection(self.member)
         return user_collection
 
     def _init_view(self, view):
@@ -56,7 +57,10 @@ class CollectionController(ItemSectionController, ContentController):
         view.member = self.member
         view.collections = self.parent.collections
 
-    def end(self):
+    def is_ready(self):
+        return self.action is not None
+
+    def submit(self):
         
         if self.action == "add":
             
@@ -72,8 +76,14 @@ class CollectionController(ItemSectionController, ContentController):
             self.edit_stack.go()
 
         elif self.action == "remove":
-            for item in self.user_collection.selection:
+            user_collection = self.user_collection
+
+            for item in user_collection.selection:
                 self.edit_node.unrelate(self.member, item)
-            
-        ItemSectionController.end(self)
+
+            user_collection.base_collection = \
+                self.edit_node.get_collection(self.member)
+
+        elif ItemSectionController.is_ready(self):
+            ItemSectionController.submit(self)
 
