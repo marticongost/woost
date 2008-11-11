@@ -9,10 +9,9 @@
 from datetime import datetime
 from threading import local
 from contextlib import contextmanager
-from persistent.mapping import PersistentMapping
 from cocktail.modeling import classgetter
 from cocktail import schema
-from cocktail.persistence.entity import Entity
+from cocktail.persistence import Entity, PersistentMapping
 
 @contextmanager
 def changeset_context(author = None):
