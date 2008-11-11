@@ -95,6 +95,7 @@ class Document(Item):
 
     template = schema.Reference(
         type = "sitebasis.models.Template",
+        bidirectional = True,
         listed_by_default = False
     )
     
