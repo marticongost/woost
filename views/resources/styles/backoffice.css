@@ -512,6 +512,18 @@ html, body {
     right: 0;
 }
 
+.content_view_selector > div {
+    margin-top: 0.1em;
+    float: left;
+    padding: 0.4em;
+}
+
+.content_view_selector > div.selected {
+    border: 1px solid rgb(195,190,160);
+    background-color: rgb(215,210,180);
+    -moz-border-radius: 3px;
+}
+
 /* Dropdown selector
 -----------------------------------------------------------------------------*/
 .BackOfficeLayout .selector {
