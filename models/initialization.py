@@ -291,8 +291,8 @@ def main():
     def random_string(length, source = letters + digits + "!?.-$#&@*"):
         return "".join(choice(source) for i in range(length))
 
-    admin_email = "admin@localhost"
-    admin_password = random_string(8)
+    admin_email = raw_input("Administrator email: ") or "admin@localhost"
+    admin_password = raw_input("Administrator password: ") or random_string(8)
 
     init_site(admin_email, admin_password)
     
