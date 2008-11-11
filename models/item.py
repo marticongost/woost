@@ -7,9 +7,10 @@
 @since:			June 2008
 """
 from datetime import datetime
-from persistent.mapping import PersistentMapping
 from cocktail import schema
-from cocktail.persistence import Entity, EntityClass, EntityAccessor, datastore
+from cocktail.persistence import (
+    Entity, EntityClass, EntityAccessor, datastore, PersistentMapping
+)
 from sitebasis.models.changesets import ChangeSet, Change
 from sitebasis.models.action import Action
 

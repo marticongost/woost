@@ -6,11 +6,10 @@
 @organization:	Whads/Accent SL
 @since:			July 2008
 """
-from persistent.list import PersistentList
 from cocktail.language import get_content_language
 from cocktail.translations import translate
 from cocktail import schema
-from cocktail .persistence import EntityClass, datastore
+from cocktail.persistence import EntityClass, datastore, PersistentList
 from sitebasis.models.item import Item
 from sitebasis.models.action import Action
 

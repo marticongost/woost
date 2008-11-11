@@ -9,7 +9,7 @@
 from itertools import chain
 from inspect import getmro
 from persistent import Persistent
-from persistent.mapping import PersistentMapping
+from cocktail.persistence import PersistentMapping
 
 
 class ContentViewsRegistry(Persistent):
