@@ -6,6 +6,7 @@
 @organization:	Whads/Accent SL
 @since:			October 2008
 """
+from __future__ import with_statement
 import cherrypy
 from cocktail.modeling import cached_getter
 from cocktail.schema import (
@@ -13,11 +14,12 @@ from cocktail.schema import (
 )
 from cocktail.schema.expressions import CustomExpression
 from cocktail.language import get_content_language
+from cocktail.persistence import datastore
 from cocktail.html import templates
 from cocktail.html.datadisplay import SINGLE_SELECTION, MULTIPLE_SELECTION
 from cocktail.controllers import get_persistent_param
 from cocktail.controllers.usercollection import UserCollection
-from sitebasis.models import Site, Item, Document
+from sitebasis.models import Site, Item, Document, changeset_context
 from sitebasis.controllers.contentviews import ContentViewsRegistry
 
 from sitebasis.controllers.backoffice.basebackofficecontroller \
@@ -77,6 +79,13 @@ class ContentController(BaseBackOfficeController):
                         modify_relation(member, item)
             
             self.edit_stack.go(-2)
+
+        elif self.action == "delete":
+            with changeset_context(self.cms.authentication.user):
+                for item in self.user_collection.selection:
+                    item.delete()
+
+            datastore.commit()
 
     @cached_getter
     def content_type(self):
@@ -145,7 +154,7 @@ class ContentController(BaseBackOfficeController):
     def content_adapter(self):
         adapter = Adapter()
         adapter.exclude(
-            ["id", "draft_source"]
+            ["id", "draft_source", "deleted"]
             + [
                 member.name
                 for member in self.content_type.members().itervalues()
