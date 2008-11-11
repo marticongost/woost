@@ -10,6 +10,7 @@ import socket
 import re
 from os import listdir, mkdir
 from os.path import join, dirname, abspath, exists, isdir, isfile
+from shutil import rmtree
 from subprocess import Popen, PIPE
 import cherrypy
 from cocktail import schema
@@ -149,11 +150,11 @@ class Installer(object):
                     self.install(form_data)
 
                 except Exception, ex:
+                    errors.append(ex)
                     try:
                         rmtree(form_data["project_path"])
-                    except:
-                        pass
-                    errors.append(ex)
+                    except Exception, rmex:
+                        errors.append(rmex)
                 else:
                     successful = True
         else:
@@ -245,18 +246,20 @@ class Installer(object):
         return True
 
     def run(self):
+        cherrypy.config.update(self.get_configuration())
+        cherrypy.quickstart(self, "/")
 
-        cherrypy.config.update({
+    def get_configuration(self):
+        return {
             "global": {
-                "server.socket_port": 8082,
+                "server.socket_port": 10000,
                 "tools.encode.on": True,
                 "tools.encode.encoding": "utf-8",
                 "tools.decode.on": True,
-                "tools.decode.encoding": 'utf-8'
+                "tools.decode.encoding": 'utf-8',
+                "engine.autoreload_on": False
             }
-        })
-
-        cherrypy.quickstart(self, "/")
+        }
 
 
 class InstallFolderExists(Exception):
