@@ -298,15 +298,15 @@ translations.define("View as",
 )
 
 translations.define("flat content view",
-    ca = u"Llistat",
-    es = u"Listado",
-    en = u"Listing"
+    ca = u"Veure com a llistat",
+    es = u"Ver como listado",
+    en = u"Show as listing"
 )
 
 translations.define("tree content view",
-    ca = u"Arbre",
-    es = u"Árbol",
-    en = u"Tree"
+    ca = u"Veure com a arbre",
+    es = u"Ver como árbol",
+    en = u"Show as tree"
 )
 
 # Edit form

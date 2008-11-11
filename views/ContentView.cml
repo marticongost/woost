@@ -81,30 +81,30 @@ from sitebasis.models import Item
     <py:with
         py:element="self.settings_box">
 
-        <div py:id="content_view" class="toolbar_button selector">
-            <span class="label">
+        <div py:id="content_view" class="toolbar_button">
+
+            <py:cocktail.html.LinkSelector
+                py:id="content_view_selector"
+                py:name="content_view">
+
                 <?py
-                shortcut = translate("ContentView view as shortcut", default = "")
-                if shortcut:
-                    element.set_client_param("shortcut", shortcut)
+                @refine(element)
+                def get_item_label(self, content_view):                    
+                    return translate(content_view.content_view_id + " content view")
+                
+                @refine(element)
+                def get_item_value(self, content_view):
+                    return content_view.content_view_id
                 ?>
-                ${translate("View as")}
-            </span>
-            <div class="selector_content">
-                <py:cocktail.html.LinkSelector
-                    py:id="content_view_selector"
-                    py:name="content_view">
-                    <?py
-                    @refine(element)
-                    def get_item_label(self, content_view):
-                        return translate(content_view.content_view_id + " content view")
-                    
-                    @refine(element)
-                    def get_item_value(self, content_view):
-                        return content_view.content_view_id
-                    ?>
-                </py:cocktail.html.LinkSelector>
-            </div>
+
+                <py:with
+                    py:def="entry_link" py:args="value, label"
+                    title="${label}">
+                    <?py element.empty() ?>
+                    <img src="/resources/images/${value.lower()}contentview.png"/>
+                </py:with>
+
+            </py:cocktail.html.LinkSelector>
 
             <py:ready>
                 <?py
