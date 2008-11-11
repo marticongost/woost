@@ -20,6 +20,10 @@ from sitebasis.models import Item
             return self.create_new_toolbar_button()
         else:
             button = CollectionView.create_toolbar_button(self, action)
+            
+            if action == "delete":
+                button["name"] = "action"
+
             button["value"] = action
             return button
     ?>

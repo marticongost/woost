@@ -36,6 +36,12 @@ class Item(Entity):
  
     # Versioning
     #------------------------------------------------------------------------------    
+    deleted = schema.Boolean(
+        required = True,
+        editable = False,
+        default = False
+    )
+    
     changes = schema.Collection(
         required = True,
         versioned = False,
@@ -368,14 +374,17 @@ class Item(Entity):
         if changeset:
             change = changeset.changes.get(self.id)
 
-            if change and change.action.identifier == "create":
+            if change and change.action.identifier != "delete":
                 del changeset.changes[self.id]
 
-            elif change.action.identifier != "delete":
+            if change is None \
+            or change.action.identifier not in ("create", "delete"):
                 change = Change()
                 change.action = Action.identifier.index["delete"]
                 change.target = self
                 change.changeset = changeset
+                self.deleted = True
+
 
 Item.id.editable = False
 Item.changes.editable = False

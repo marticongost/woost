@@ -42,6 +42,7 @@ class CollectionController(ItemSectionController, ContentController):
 
     def _init_user_collection(self, user_collection):
         ContentController._init_user_collection(self, user_collection)
+        user_collection.add_base_filter(Item.deleted.not_())
         user_collection.base_collection = \
             self.edit_node.get_collection(self.member)
         return user_collection
