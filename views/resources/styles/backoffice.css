@@ -31,7 +31,7 @@ html, body {
     margin: 0;
 }
 
-.BackOfficeLayout ul.edit_stack {
+.BackOfficeLayout ul.edit_path {
     margin: 0;
     padding: 0.3em 0.8em;
     font-size: 90%;
@@ -41,17 +41,17 @@ html, body {
     overflow: hidden;
 }
 
-.BackOfficeLayout ul.edit_stack li {
+.BackOfficeLayout ul.edit_path li {
     float: left;
     display: block;
     list-style-type: none;
 }
 
-.BackOfficeLayout ul.edit_stack li:last-child {
+.BackOfficeLayout ul.edit_path li:last-child {
     font-weight: bold;
 }
 
-.BackOfficeLayout ul.edit_stack .separator {
+.BackOfficeLayout ul.edit_path .separator {
     margin-left: 0.8em;
     margin-right: 0.4em;
 }
