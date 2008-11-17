@@ -7,6 +7,7 @@
 @since:			October 2008
 """
 from cocktail.modeling import cached_getter
+from sitebasis.models import Item
 
 from sitebasis.controllers.backoffice.basebackofficecontroller \
     import RelationNode
@@ -42,7 +43,6 @@ class CollectionController(ItemSectionController, ContentController):
 
     def _init_user_collection(self, user_collection):
         ContentController._init_user_collection(self, user_collection)
-        user_collection.add_base_filter(Item.deleted.not_())
         user_collection.base_collection = \
             self.edit_node.get_collection(self.member)
         return user_collection
