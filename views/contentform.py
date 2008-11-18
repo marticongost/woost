@@ -9,7 +9,6 @@
 from cocktail.translations import translate
 from cocktail.schema import Collection, Reference
 from cocktail.html import Element, templates
-from sitebasis.models import Item
 
 Form = templates.get_class("cocktail.html.Form")
 DropdownSelector = templates.get_class("cocktail.html.DropdownSelector")
