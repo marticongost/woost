@@ -42,7 +42,7 @@ class AccessRule(Item):
 
     target_instance = schema.Reference(type = "sitebasis.models.Item")
 
-    target_type = schema.Reference(type = EntityClass)
+    target_type = schema.Reference(class_family = "sitebasis.models.Item")
 
     target_ancestor = schema.Reference(type = "sitebasis.models.Document")
 
