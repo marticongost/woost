@@ -599,10 +599,6 @@ html, body {
 
 /* Content type dropdown
 -----------------------------------------------------------------------------*/
-.BackOfficeLayout .ContentTypeTree .selected {
-    font-weight: bold;
-}
-
 .BackOfficeLayout .ContentTypeTree,
 .BackOfficeLayout .ContentTypeTree ul,
 .BackOfficeLayout .ContentTypeTree li {
@@ -695,6 +691,28 @@ html, body {
 
 .BackOfficeLayout .ContentTypePath .leaf .label {
     border-color: transparent;
+}
+
+/* Content type picker
+-----------------------------------------------------------------------------*/
+.BackOfficeLayout .ContentTypePicker .label {
+    display: block;
+    padding: 0.5em 0.2em;
+}
+
+.BackOfficeLayout .ContentTypePicker .label .empty_option {
+    padding-left: 0;
+}
+
+.BackOfficeLayout .ContentTypePicker .selector_content {
+    max-height: 20em;
+    min-width: 16em;
+    overflow: auto;
+}
+
+.BackOfficeLayout .ContentTypePicker .entry_label {
+    display: inline;
+    margin-left: 0.3em;
 }
 
 /* Paging
