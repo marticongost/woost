@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <?py
+from cocktail.modeling import extend, call_base
 from cocktail.language import get_content_language
+from sitebasis.models import AccessRule
 ?>
 
 <py:sitebasis.views.BackOfficeItemView
@@ -76,6 +78,20 @@ from cocktail.language import get_content_language
             py:translations="@{self.translations}"
             py:table_layout="${True}"
             method="post">
+
+            <!-- Small tweaks for access rules -->
+            <?py
+            @extend(element)
+            def _resolve_member_display(form, obj, member):
+                
+                display = call_base(obj, member)
+
+                if issubclass(self.edited_content_type, AccessRule) \
+                and hasattr(display, "empty_label"):
+                    display.empty_label = translate("Any")
+
+                return display
+            ?>
 
             <!-- Highlight changed members -->
             <py:binding>
