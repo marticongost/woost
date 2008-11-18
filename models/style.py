@@ -7,6 +7,7 @@
 @since:			October 2008
 """
 from cocktail import schema
+from cocktail.modeling import getter
 from cocktail.persistence import Entity
 from sitebasis.models import Item
 
@@ -25,6 +26,14 @@ class Style(Item):
     declarations = schema.String(
         required = True
     )
+    
+    admin_declarations = schema.String(
+        required = False
+    )
+    
+    @getter
+    def class_name(self):
+	    return "sitebasis_style_%d" % self.id
 
     def __translate__(self, language, **kwargs):
         return self.get("title", language) \
