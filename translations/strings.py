@@ -733,6 +733,12 @@ translations.define("Style.declarations",
     en = u"CSS declarations"
 )
 
+translations.define("Style.admin_declarations",
+    ca = u"Declaracions CSS Admin",
+    es = u"Declaraciones CSS Admin",
+    en = u"Admin CSS declarations"
+)
+
 # Group
 #------------------------------------------------------------------------------
 translations.define("Group",

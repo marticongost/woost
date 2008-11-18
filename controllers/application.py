@@ -13,7 +13,7 @@ from cocktail.html import __file__ as cocktail_html_path
 from cocktail.modeling import ListWrapper, classgetter
 from cocktail.persistence import datastore
 from cocktail.controllers import HTTPPostRedirect
-from sitebasis.models import Document
+from sitebasis.models import Document, Style
 from sitebasis.controllers.language import Language
 from sitebasis.controllers.authentication import Authentication
 from sitebasis.controllers.authorization import Authorization
@@ -123,6 +123,13 @@ class CMS(object):
             _thread_data.request = None
 
         return request.output
+
+    @cherrypy.expose
+    def user_styles(self):
+        cherrypy.response.headers["Content-Type"] = "text/css"
+        for style in Style.index.itervalues():
+            declarations = style.admin_declarations or style.declarations  
+            yield ".%s{\n%s\n}\n" % (style.class_name, declarations)            
 
     def uri(self, *args):
         

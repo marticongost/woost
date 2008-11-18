@@ -6,16 +6,26 @@
 @organization:	Whads/Accent SL
 @since:			October 2008
 """
+from os.path import abspath, dirname, join
 from cocktail.html import templates
+from cocktail.translations import translate
+from sitebasis.models import Style
 
 TinyMCE = templates.get_class("cocktail.html.TinyMCE")
 
 
 class RichTextEditor(TinyMCE):
+    
+    
 
     def __init__(self, *args, **kwargs):
         TinyMCE.__init__(self, *args, **kwargs)
-        self.add_resource("/resources/scripts/RichTextEditor.js")
+        self.add_resource("/resources/scripts/RichTextEditor.js")                        
+
+        styles = [
+            "%s=%s" % (translate(style), style.class_name)
+            for style in Style.index.itervalues()
+        ]
 
         self.tinymce_params.update(
             init_instance_callback = "initRichTextEditor",
@@ -30,9 +40,10 @@ class RichTextEditor(TinyMCE):
             theme_advanced_toolbar_align = "left",
             theme_advanced_path = False,
             theme_advanced_resize_horizontal = False,
+            theme_advanced_styles = ";".join(styles),
+            content_css = "/user_styles/",
 #            fullscreen_new_window = True
             fullscreen_settings = {
                 "theme_advanced_toolbar_location": "bottom"
             }
         )
-
