@@ -76,7 +76,7 @@ class ItemController(BaseBackOfficeController):
         requested_edit_stack = self.requested_edit_stack
         return (
             (requested_edit_stack
-                and isinstance(self.requested_edit_stack[-1], EditNode)
+                and isinstance(requested_edit_stack[-1], EditNode)
                 and requested_edit_stack[-1].content_type)
             or (self.item and self.item.__class__)
             or self.get_content_type()
