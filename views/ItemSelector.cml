@@ -11,7 +11,7 @@ import cherrypy
 
     <?py-class
     value = None
-    __empty_label = None
+    _empty_label = None
     
     def _get_empty_label(self):
 
@@ -27,10 +27,10 @@ import cherrypy
                 if desc:
                     return desc
         
-            return self.__empty_label
+        return self._empty_label
 
     def _set_empty_label(self, value):
-        self.__empty_label = value
+        self._empty_label = value
 
     empty_label = property(_get_empty_label, _set_empty_label)
     ?>
