@@ -77,21 +77,19 @@ from sitebasis.models import AccessRule
             py:errors="@{self.submitted and self.form_errors}"
             py:translations="@{self.translations}"
             py:table_layout="${True}"
+            py:edited_content_type="@{self.edited_content_type}"
             method="post">
 
             <!-- Small tweaks for access rules -->
-            <?py
-            @extend(element)
-            def _resolve_member_display(form, obj, member):
-                
-                display = call_base(obj, member)
-
+            <py:with py:def="control" py:args="obj, member">
+                <?py            
                 if issubclass(self.edited_content_type, AccessRule) \
-                and hasattr(display, "empty_label"):
-                    display.empty_label = translate("Any")
+                and hasattr(element, "empty_label"):
+                    element.empty_label = translate("Any")
 
-                return display
-            ?>
+                return element
+                ?>
+            </py:with>
 
             <!-- Highlight changed members -->
             <py:binding>
