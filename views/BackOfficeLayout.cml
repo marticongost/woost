@@ -54,13 +54,15 @@ from sitebasis.controllers.backoffice import EditNode
         <h1>
             <py:ready>${self.page_title}</py:ready>
         </h1>
-        <div py:id="identity" py:if="self.user and not self.user.anonymous">
-            <span>@{translate("logged in as", user = self.user)}</span>
-            <form method="post">
-                <button name="logout" type="submit">
-                    ${translate("Logout")}
-                </button>
-            </form>
+        <div py:id="identity" py:visible="self.user and not self.user.anonymous">            
+            <py:ready py:if="element.visible">
+                <span>@{translate("logged in as", user = self.user)}</span>
+                <form method="post">
+                    <button name="logout" type="submit">
+                        ${translate("Logout")}
+                    </button>
+                </form>
+            </py:ready>
         </div>
     </div>
 
