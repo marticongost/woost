@@ -16,6 +16,8 @@ from sitebasis.controllers.module import Module
 
 class Language(Module):
 
+    cookie_duration = 60 * 60 * 24 * 15 # 15 days
+
     def process_request(self, request):
 
         path = request.path
@@ -29,6 +31,9 @@ class Language(Module):
             location.go()
         else:
             cherrypy.response.cookie["language"] = language
+            cookie = cherrypy.response.cookie["language"]
+            cookie["path"] = "/"
+            cookie["max-age"] = self.cookie_duration
 
         language = path.pop(0)
         set_language(language)
@@ -37,4 +42,16 @@ class Language(Module):
     def infer_language(self):
         cookie = cherrypy.request.cookie.get("language")
         return cookie.value if cookie else Site.main.default_language
+
+    def translate_uri(self, language):
+        
+        location = Location.get_current()
+        
+        path_components = location.path_info.strip("/").split("/")
+        if path_components and path_components[0] in Site.main.languages:
+            path_components.pop(0)
+
+        path_components.insert(0, language)
+        location.path_info = "/" + "/".join(path_components)
+        return location
 
