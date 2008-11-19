@@ -30,6 +30,8 @@ class Authentication(Module):
                 params.get("user"),
                 params.get("password")
             )
+        elif "logout" in params:
+            cherrypy.session.clear()
 
     def _get_user(self):
         user_id = cherrypy.session.get(self.SESSION_KEY)
