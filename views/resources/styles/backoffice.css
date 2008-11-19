@@ -95,6 +95,10 @@ html, body {
     padding: 0;
 }
 
+.BackOfficeLayout .identity button {
+    margin-left: 0.7em !important;
+}
+
 .BackOfficeLayout a,
 .BackOfficeLayout .identity button,
 .BackOfficeEditView .clear_button,
