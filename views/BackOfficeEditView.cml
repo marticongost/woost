@@ -19,6 +19,10 @@ from sitebasis.models import AccessRule
     available_languages = ()
     translations = ()
     ?>
+    
+    <?py
+        self.add_resource("/resources/scripts/BackOfficeEditView.js")        
+    ?>
 
     <py:with py:element="self.edit_form_frame">
 
@@ -83,6 +87,7 @@ from sitebasis.models import AccessRule
             <!-- Small tweaks for access rules -->
             <py:with py:def="control" py:args="obj, member">
                 <?py            
+                element.set_client_param("formto", True)          
                 if issubclass(self.edited_content_type, AccessRule) \
                 and hasattr(element, "empty_label"):
                     element.empty_label = translate("Any")
