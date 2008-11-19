@@ -62,7 +62,7 @@ from sitebasis.controllers.backoffice import EditNode
         <!-- Identity and logout -->
         <div py:id="identity" py:visible="self.user and not self.user.anonymous">
             <py:ready py:if="element.visible">
-                <span>@{translate("logged in as", user = self.user)}</span>
+                <strong>${translate(self.user)}</strong>
                 <form method="post">
                     <button name="logout" type="submit">
                         ${translate("Logout")}
