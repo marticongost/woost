@@ -16,7 +16,7 @@ html, body {
 
 .BackOfficeLayout .header {
     padding: 0.6em;
-    overflow: hidden;
+    height: 1.5em;
     background-color: rgb(245,245,245);
     background-color: #eceeef;
     background-repeat:repeat-y;
@@ -31,6 +31,26 @@ html, body {
     padding: 0;
     margin: 0;
     color: rgb(75,85,95);
+}
+
+.BackOfficeLayout .header .ui_language_selector {
+    float: right;
+    font-size: 0.7em;
+    margin-top: 0.4em;
+    margin-right: 3em;
+}
+
+.BackOfficeLayout .header .ui_language_selector .label {
+    padding-right: 1.5em;
+    background-position: center right;
+}
+
+.BackOfficeLayout .header .ui_language_selector .selector_content {
+    top: 1.4em;
+}
+
+.BackOfficeLayout .header .ui_language_selector .selector_content div + div {
+    margin-top: 0.4em;
 }
 
 .BackOfficeLayout ul.edit_path {
