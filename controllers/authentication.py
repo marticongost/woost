@@ -14,7 +14,7 @@ from sitebasis.models import User
 from sitebasis.controllers.module import Module
 
 
-class Authentication(Module):
+class AuthenticationModule(Module):
 
     SESSION_KEY = "user_id"
 

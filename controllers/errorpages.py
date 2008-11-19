@@ -12,7 +12,7 @@ from sitebasis.controllers.module import Module
 from sitebasis.controllers.authentication import AuthenticationFailedError
 
 
-class ErrorPages(Module):
+class ErrorPagesModule(Module):
 
     def handle_error(self, request, error, handled):
 

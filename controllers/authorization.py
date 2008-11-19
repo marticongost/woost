@@ -11,7 +11,7 @@ from sitebasis.models import allowed, AccessDeniedError
 from sitebasis.controllers.module import Module
 
 
-class Authorization(Module):
+class AuthorizationModule(Module):
 
     def allows(self, **context):
 

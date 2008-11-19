@@ -11,6 +11,7 @@ from cocktail.translations import translate
 from cocktail import schema
 from cocktail.persistence import datastore
 from sitebasis.models.item import Item
+from sitebasis.models.language import Language
 
 
 class Site(Item):
@@ -33,13 +34,6 @@ class Site(Item):
         default = "en"
     )
     
-    languages = schema.Collection(
-        required = True,
-        min = 1,
-        items = schema.String,
-        default = ["en"]
-    )
-
     home = schema.Reference(
         type = "sitebasis.models.Document",
         required = True

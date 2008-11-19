@@ -14,12 +14,12 @@ from cocktail.modeling import ListWrapper, classgetter
 from cocktail.persistence import datastore
 from cocktail.controllers import HTTPPostRedirect
 from sitebasis.models import Document, Style
-from sitebasis.controllers.language import Language
-from sitebasis.controllers.authentication import Authentication
-from sitebasis.controllers.authorization import Authorization
-from sitebasis.controllers.dispatcher import Dispatcher
-from sitebasis.controllers.rendering import Rendering
-from sitebasis.controllers.errorpages import ErrorPages
+from sitebasis.controllers.language import LanguageModule
+from sitebasis.controllers.authentication import AuthenticationModule
+from sitebasis.controllers.authorization import AuthorizationModule
+from sitebasis.controllers.dispatcher import DispatcherModule
+from sitebasis.controllers.rendering import RenderingModule
+from sitebasis.controllers.errorpages import ErrorPagesModule
 
 _thread_data = local()
 
@@ -48,12 +48,12 @@ class CMS(object):
     )
 
     # Application modules
-    _language_module = Language
-    _authentication_module = Authentication
-    _authorization_module = Authorization
-    _dispatcher_module = Dispatcher
-    _rendering_module = Rendering
-    _error_handling_module = ErrorPages
+    _language_module = LanguageModule
+    _authentication_module = AuthenticationModule
+    _authorization_module = AuthorizationModule
+    _dispatcher_module = DispatcherModule
+    _rendering_module = RenderingModule
+    _error_handling_module = ErrorPagesModule
 
     def __init__(self):
                 

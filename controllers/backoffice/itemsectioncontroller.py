@@ -13,7 +13,7 @@ from cocktail.schema import (
     Adapter, Reference, Collection, String, ErrorList, DictAccessor
 )
 from cocktail.persistence import datastore
-from sitebasis.models import Site, changeset_context
+from sitebasis.models import Language, changeset_context
 from sitebasis.controllers.backoffice.basebackofficecontroller \
         import BaseBackOfficeController
 
@@ -114,7 +114,7 @@ class ItemSectionController(BaseBackOfficeController):
 
     @cached_getter
     def available_languages(self):
-        return Site.main.languages
+        return Language.codes
 
     @cached_getter
     def translations(self):
