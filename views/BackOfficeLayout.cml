@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <?py
+from cocktail.translations import get_language
+from sitebasis.models import Site
 from sitebasis.controllers.backoffice import EditNode
 ?>
 
@@ -51,10 +53,14 @@ from sitebasis.controllers.backoffice import EditNode
     </py:ready>
 
     <div py:id="header">
+
+        <!-- Page title -->
         <h1>
             <py:ready>${self.page_title}</py:ready>
         </h1>
-        <div py:id="identity" py:visible="self.user and not self.user.anonymous">            
+
+        <!-- Identity and logout -->
+        <div py:id="identity" py:visible="self.user and not self.user.anonymous">
             <py:ready py:if="element.visible">
                 <span>@{translate("logged in as", user = self.user)}</span>
                 <form method="post">
@@ -63,6 +69,22 @@ from sitebasis.controllers.backoffice import EditNode
                     </button>
                 </form>
             </py:ready>
+        </div>
+
+        <!-- UI language selector -->
+        <div py:id="ui_language_selector" class="selector">
+            <div class="label">${translate("Language")}</div>
+            <py:cocktail.html.LinkSelector
+                class="selector_content"
+                py:items="${Site.main.languages}"
+                py:value="${get_language()}"
+                py:empty_option_displayed="${False}">
+                <?py
+                @refine(element)
+                def get_entry_url(selector, language):
+                    return self.cms.language.translate_uri(language)
+                ?>
+            </py:cocktail.html.LinkSelector>
         </div>
     </div>
 
