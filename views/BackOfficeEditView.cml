@@ -87,7 +87,7 @@ from sitebasis.models import AccessRule
             <!-- Small tweaks for access rules -->
             <py:with py:def="control" py:args="obj, member">
                 <?py            
-            element.set_client_param("formto", True)          
+                element.set_client_param("formto", True)          
                 if issubclass(self.edited_content_type, AccessRule) \
                 and hasattr(element, "empty_label"):
                     element.empty_label = translate("Any")
