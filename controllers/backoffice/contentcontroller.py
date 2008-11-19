@@ -19,7 +19,7 @@ from cocktail.html import templates
 from cocktail.html.datadisplay import SINGLE_SELECTION, MULTIPLE_SELECTION
 from cocktail.controllers import get_persistent_param
 from cocktail.controllers.usercollection import UserCollection
-from sitebasis.models import Site, Item, Document, changeset_context
+from sitebasis.models import Language, Item, Document, changeset_context
 from sitebasis.controllers.contentviews import ContentViewsRegistry
 
 from sitebasis.controllers.backoffice.basebackofficecontroller \
@@ -173,7 +173,7 @@ class ContentController(BaseBackOfficeController):
         
     @cached_getter
     def available_languages(self):
-        return Site.main.languages
+        return Language.codes
 
     @cached_getter
     def visible_languages(self):

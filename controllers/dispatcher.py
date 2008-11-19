@@ -11,7 +11,7 @@ from sitebasis.models import Document, Site
 from sitebasis.controllers.module import Module
 
 
-class Dispatcher(Module):
+class DispatcherModule(Module):
 
     def process_request(self, request):
         document, extra_path = self.resolve(request.path)

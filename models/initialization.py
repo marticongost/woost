@@ -8,10 +8,12 @@
 """
 from __future__ import with_statement
 import sha
+from cocktail.translations import translate
 from cocktail.persistence import datastore
 from sitebasis.models import (
     changeset_context,
     Site,
+    Language,
     Action,
     Document,
     AccessRule,
@@ -27,51 +29,39 @@ from sitebasis.controllers.backoffice import BackOfficeController
 def init_site(
     admin_email = "admin@localhost",
     admin_password = "",
+    languages = ("en",),
     uri = "/"):
  
     datastore.root.clear()
 
+    def set_translations(item, member, key, **kwargs):
+        for language in languages:
+            item.set(member, translate(key, language, **kwargs), language)
+
     # Create standard actions
     create = Action()
     create.identifier = "create"
-    create.set_translations("title",
-        ca = u"Crear",
-        es = u"Crear",
-        en = u"Create"
-    )
+    set_translations(create, "title", "Create action title")
 
     read = Action()
     read.identifier = "read"
-    read.set_translations("title",
-        ca = u"Veure",
-        es = u"Ver",
-        en = u"Read"
-    )
+    set_translations(read, "title", "Read action title")
 
     modify = Action()
     modify.identifier = "modify"
-    modify.set_translations("title",
-        ca = u"Modificar",
-        es = u"Modificar",
-        en = u"Modify"
-    )
+    set_translations(modify, "title", "Modify action title")
 
     delete = Action()
     delete.identifier = "delete"
-    delete.set_translations("title",
-        ca = u"Eliminar",
-        es = u"Eliminar",
-        en = u"Delete"
-    )
+    set_translations(delete, "title", "Delete action title")
 
     with changeset_context() as changeset:
         
         # Create the site
         site = Site()
-        site.languages = ["ca", "es", "en"]
         datastore.root["main_site"] = site
-
-        # Create the administrator user and groups
+        
+        # Create the administrator user
         admin = User()
         admin.author = admin
         admin.owner = admin
@@ -82,159 +72,91 @@ def init_site(
         changeset.author = admin
         site.author = site.owner = admin
     
+        # Create languages
+        for code in languages:
+            language = Language(iso_code = code)
+            language.iso_code = code
+ 
+        # Create the administrators group
         administrators = Group()
         administrators.critical = True
-        administrators.set_translations("title",
-            ca = u"Administradors",
-            es = u"Administradores",
-            en = u"Administrators"
-        )
+        set_translations(administrators, "title", "Administrators group title")
         administrators.group_members.append(admin)
-                
+
         # Create standard users and roles
         anonymous_role = datastore.root["anonymous_role"] = Role()
         anonymous_role.anonymous = True
         anonymous_role.critical = True
-        anonymous_role.set_translations("title",
-            ca = u"Anònim",
-            es = u"Anónimo",
-            en = u"Anonymous"
-        )
+        set_translations(anonymous_role, "title", "Anonymous role title")
 
         authenticated_role = datastore.root["authenticated_role"] = Role()
         authenticated_role.critical = True
-        authenticated_role.set_translations("title",
-            ca = u"Autenticat",
-            es = u"Autenticado",
-            en = u"Authenticated"
-        )
+        set_translations(authenticated_role, "title",
+            "Authenticated role title")
 
         author_role = datastore.root["author_role"] = Role()
         author_role.critical = True
-        author_role.set_translations("title",
-            ca = u"Autor",
-            es = u"Autor",
-            en = u"Author"
-        )
+        set_translations(author_role, "title", "Author role title")
 
         owner_role = datastore.root["owner_role"] = Role()
         owner_role.critical = True
-        owner_role.set_translations("title",
-            ca = u"Propietari",
-            es = u"Propietario",
-            en = u"Owner"
-        )
+        set_translations(owner_role, "title", "Owner role title")
     
         # Create the back office interface
         back_office = Document()
         back_office.handler = BackOfficeController
         back_office.critical = True
         back_office.path = "cms"
-        back_office.set_translations("title",
-            ca = u"Gestor de continguts",
-            es = u"Gestor de contenidos",
-            en = u"Content Manager"
-        )
+        set_translations(back_office, "title", "Back office title")
      
         # Create standard templates
         empty_template = Template()
         empty_template.identifier = "empty_page"
-        empty_template.set_translations("title",
-            ca = u"Plantilla buida",
-            es = u"Plantilla vacía",
-            en = u"Empty template"
-        )
+        set_translations(empty_template, "title", "Empty template title")
 
         # Create standard resources
         message_stylesheet = Resource()
-        message_stylesheet.set_translations("title",
-            ca = u"Full d'estils de benvinguda",
-            es = u"Hoja de estilos de bienvenida",
-            en = u"Greeting stylesheet"
-        )
         message_stylesheet.uri = uri + "resources/styles/message.css"
+        set_translations(message_stylesheet, "title",
+            "Message style sheet title")        
 
         # Create the temporary home page
         site.home = StandardPage()
         site.home.template = empty_template
-        site.home.set_translations("title",
-            ca = u"Benvingut!",
-            es = u"Bienvenido!",
-            en = u"Welcome!"
-        )
-        site.home.set_translations("body",
-            ca = u"El teu lloc web s'ha creat correctament. Ja pots començar "
-                u"a <a href='%s'>treballar-hi</a> i substituir aquesta pàgina "
-                u"amb els teus propis continguts."
-                % (uri + back_office.path),
-            es = u"Tu sitio web se ha creado correctamente. Ya puedes empezar "
-                u"a <a href='%s'>trabajar</a> en él y sustituir esta página "
-                u"con tus propios contenidos."
-                % (uri + back_office.path),
-            en = u"Your web site has been created successfully. You can start "
-                u"<a href='%s'>working on it</a> and replace this page with "
-                u"your own content."
-                % (uri + back_office.path)
+        set_translations(site.home, "title", "Home page title")            
+        set_translations(
+            site.home, "body", "Home page body",
+            uri = uri + back_office.path
         )
         site.home.resources.append(message_stylesheet)
 
         # Create the 'content not found' page
         site.not_found_error_page = StandardPage()
         site.not_found_error_page.template = empty_template
-        site.not_found_error_page.set_translations("title",
-            ca = u"Pàgina no trobada",
-            es = u"Página no encontrada",
-            en = u"Page not found"
-        )
-        site.not_found_error_page.set_translations("body",
-            ca = u"La direcció indicada no coincideix amb cap dels continguts "
-                 u"del web. Si us plau, revísa-la i torna-ho a provar.",
-            es = u"La dirección indicada no coincide con ninguno de los "
-                 u"contenidos del web. Por favor, revísala y intentalo de nuevo.",
-            en = u"Couldn't find the indicated address. Please, verify it and try "
-                 u"again."
-        )
+        set_translations(site.not_found_error_page, "title",
+            "Not found error page title")
+        set_translations(site.not_found_error_page, "body",
+            "Not found error page body")            
         site.not_found_error_page.resources.append(message_stylesheet)
 
         # Create the authentication form
+        login_form = u"""
+        <form method="post">
+            <label for="user">%s:</label>
+            <input type="text" name="user" value=""/>
+            <label for="password">%s:</label>
+            <input type="password" name="password"/>
+            <div class="buttons">
+                <input type="submit" name="authenticate" value="%s"/>
+            </div>
+        </form>
+        """
         login_page = StandardPage()
         login_page.template = empty_template
-        login_page.set_translations("title",
-            ca = u"Autenticació d'usuari",
-            es = u"Autenticación de usuario",
-            en = u"User authentication"
-        )
-        login_form = u"""
-<form method="post">
-    <label for="user">%s:</label>
-    <input type="text" name="user" value=""/>
-    <label for="password">%s:</label>
-    <input type="password" name="password"/>
-    <div class="buttons">
-        <input type="submit" name="authenticate" value="%s"/>
-    </div>
-</form>
-"""
-        login_page.set_translations("body",
-            ca = u"""
-<p>
-    L'accés a aquesta secció del web està restringit. Per favor,
-    introdueix les teves credencials d'usuari per continuar.
-</p>
-""" + (login_form % (u"Usuari", u"Contrasenya", u"Entrar")),
-            es = u"""
-<p>
-    El acceso a esta sección del sitio está restringido. Por favor,
-    introduce tus credenciales de usuario para continuar.
-</p>
-""" + (login_form % (u"Usuario", u"Contraseña", u"Entrar")),
-            en = u"""
-<p>
-    Access to this part of the website is restricted. Please, introduce
-    your user credentials to proceed.
-</p>
-""" + (login_form % (u"User", u"Password", u"Enter"))
-        )
+        set_translations(login_page, "title", "Login page title")
+        set_translations(login_page, "body", "Login page body",
+            form = login_form)
+
         login_page.resources.append(message_stylesheet)
         site.forbidden_error_page = login_page  
 
@@ -293,8 +215,9 @@ def main():
 
     admin_email = raw_input("Administrator email: ") or "admin@localhost"
     admin_password = raw_input("Administrator password: ") or random_string(8)
+    languages = raw_input("Languages: ") or "en"
 
-    init_site(admin_email, admin_password)
+    init_site(admin_email, admin_password, languages.split())
     
     print u"Your site has been successfully created. You can start it by " \
           u"executing the 'run.py' script. An administrator account for the " \

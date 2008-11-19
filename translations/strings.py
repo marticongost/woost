@@ -32,6 +32,12 @@ translations.define("CollectionView visible members shortcut",
     en = u"f"
 )
 
+translations.define("CollectionView visible languages shortcut",
+    ca = u"i",
+    es = u"i",
+    en = u"l"
+)
+
 translations.define("history_section",
     ca = u"Històric",
     es = u"Histórico",
@@ -289,6 +295,140 @@ translations.define("datetime format",
     en = "%Y-%m-%d %H:%M"
 )
 
+translations.define("Administrators group title",
+    ca = u"Administradors",
+    es = u"Administradores",
+    en = u"Administrators"
+)
+
+translations.define("Anonymous role title",
+    ca = u"Anònim",
+    es = u"Anónimo",
+    en = u"Anonymous"
+)
+
+translations.define("Authenticated role title",
+    ca = u"Autenticat",
+    es = u"Autenticado",
+    en = u"Authenticated"
+)
+
+translations.define("Author role title",
+    ca = u"Autor",
+    es = u"Autor",
+    en = u"Author"
+)
+
+translations.define("Owner role title",
+    ca = u"Propietari",
+    es = u"Propietario",
+    en = u"Owner"
+)
+
+translations.define("Back office title",
+    ca = u"Gestor de continguts",
+    es = u"Gestor de contenidos",
+    en = u"Content Manager"
+)
+
+translations.define("Empty template title",
+    ca = u"Plantilla buida",
+    es = u"Plantilla vacía",
+    en = u"Empty template"
+)
+
+translations.define("Message style sheet title",
+    ca = u"Full d'estils per missatges",
+    es = u"Hoja de estilos para mensajes",
+    en = u"Application messages stylesheet"
+)
+
+translations.define("Home page title",
+    ca = u"Benvingut!",
+    es = u"Bienvenido!",
+    en = u"Welcome!"
+)
+
+translations.define("Home page body",
+    ca = u"El teu lloc web s'ha creat correctament. Ja pots començar "
+        u"a <a href='%(uri)s'>treballar-hi</a> i substituir aquesta pàgina "
+        u"amb els teus propis continguts.",
+    es = u"Tu sitio web se ha creado correctamente. Ya puedes empezar "
+        u"a <a href='%(uri)s'>trabajar</a> en él y sustituir esta página "
+        u"con tus propios contenidos.",
+    en = u"Your web site has been created successfully. You can start "
+        u"<a href='%(uri)s'>working on it</a> and replace this page with "
+        u"your own content."
+)
+
+translations.define("Not found error page title",
+    ca = u"Pàgina no trobada",
+    es = u"Página no encontrada",
+    en = u"Page not found"
+)
+
+translations.define("Not found error page body",
+    ca = u"La direcció indicada no coincideix amb cap dels continguts "
+         u"del web. Si us plau, revísa-la i torna-ho a provar.",
+    es = u"La dirección indicada no coincide con ninguno de los "
+         u"contenidos del web. Por favor, revísala y intentalo de nuevo.",
+    en = u"Couldn't find the indicated address. Please, verify it and try "
+         u"again."
+)
+
+translations.define("Login page title",
+    ca = u"Autenticació d'usuari",
+    es = u"Autenticación de usuario",
+    en = u"User authentication"
+)
+
+translations.define("Login page body",
+    ca = lambda form: u"""
+    <p>
+        L'accés a aquesta secció del web està restringit. Per favor,
+        introdueix les teves credencials d'usuari per continuar.
+    </p>
+    """ + (form % (u"Usuari", u"Contrasenya", u"Entrar")),    
+    es = lambda form: u"""
+    <p>
+    El acceso a esta sección del sitio está restringido. Por favor,
+    introduce tus credenciales de usuario para continuar.
+    </p>
+    """ + (form % (u"Usuario", u"Contraseña", u"Entrar")),    
+    en = lambda form: u"""
+    <p>
+        Access to this part of the website is restricted. Please, introduce
+        your user credentials to proceed.
+    </p>
+    """ + (form % (u"User", u"Password", u"Enter"))
+)
+
+# Initialization content
+#------------------------------------------------------------------------------
+translations.define("Create action title",
+    ca = u"Crear",
+    es = u"Crear",
+    en = u"Create"
+)
+
+translations.define("Read action title",
+    ca = u"Veure",
+    es = u"Ver",
+    en = u"Read"
+)
+
+translations.define("Modify action title",
+    ca = u"Modificar",
+    es = u"Modificar",
+    en = u"Modify"
+)
+
+translations.define("Delete action title",
+    ca = u"Eliminar",
+    es = u"Eliminar",
+    en = u"Delete"
+)
+
 # Content views
 #------------------------------------------------------------------------------
 translations.define("View as",
@@ -439,12 +579,6 @@ translations.define("Site.default_language",
     ca = u"Idioma per defecte",
     es = u"Idioma por defecto",
     en = u"Default language"
-)
-
-translations.define("Site.languages",
-    ca = u"Idiomes",
-    es = u"Idiomas",
-    en = u"Languages"
 )
 
 translations.define("Site.home",
@@ -969,22 +1103,16 @@ translations.define("Language-plural",
     en = u"Languages"
 )
 
-translations.define("CollectionView visible languages shortcut",
-    ca = u"i",
-    es = u"i",
-    en = u"l"
-)
-
-translations.define("Language.title",
-    ca = u"Nom",
-    es = u"Nombre",
-    en = u"Name"
-)
-
 translations.define("Language.iso_code",
     ca = u"Codi ISO",
     es = u"Código ISO",
     en = u"ISO code"
+)
+
+translations.define("Language.fallback_languages",
+    ca = u"Idiomes substitutius",
+    es = u"Idiomas sustitutivos",
+    en = u"Fallback languages"
 )
 
 # ChangeSet

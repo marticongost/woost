@@ -14,7 +14,7 @@ from sitebasis.models import Site
 from sitebasis.controllers.module import Module
 
 
-class Rendering(Module):
+class RenderingModule(Module):
 
     loader_options = {"auto_reload": True}
     format = "html"

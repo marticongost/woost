@@ -6,20 +6,15 @@
 @organization:	Whads/Accent SL
 @since:			July 2008
 """
+from cocktail.modeling import classgetter
+from cocktail.translations import translate
 from cocktail import schema
 from cocktail.persistence import Entity
-from sitebasis.models import Item
+from sitebasis.models.item import Item
 
 class Language(Item):
  
-    members_order = "title", "iso_code", "fallback_languages"
-
-    title = schema.String(
-        required = True,
-        unique = True,
-        indexed = True,
-        translated = True
-    )
+    members_order = "iso_code", "fallback_languages"
 
     iso_code = schema.String(
         required = True,
@@ -31,7 +26,11 @@ class Language(Item):
         items = "sitebasis.models.Language"
     )
 
+    @classgetter
+    def codes(cls):
+        return [language.iso_code for language in cls.index.itervalues()]
+
     def __translate__(self, language, **kwargs):
-        return self.get("title", language) \
+        return self.iso_code and translate(self.iso_code) \
             or Entity.__translate__(self, language, **kwargs)
 

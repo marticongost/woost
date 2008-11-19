@@ -2,7 +2,7 @@
 
 <?py
 from cocktail.translations import get_language
-from sitebasis.models import Site
+from sitebasis.models import Site, Language
 from sitebasis.controllers.backoffice import EditNode
 ?>
 
@@ -76,7 +76,7 @@ from sitebasis.controllers.backoffice import EditNode
             <div class="label">${translate("Language")}</div>
             <py:cocktail.html.LinkSelector
                 class="selector_content"
-                py:items="${Site.main.languages}"
+                py:items="${Language.codes}"
                 py:value="${get_language()}"
                 py:empty_option_displayed="${False}">
                 <?py
