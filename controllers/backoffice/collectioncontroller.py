@@ -72,14 +72,9 @@ class CollectionController(ItemSectionController, ContentController):
 
     def _init_view(self, view):
         ContentController._init_view(self, view)
-        view.edited_content_type = self.edited_content_type
-        view.edited_item = self.item
-        view.submitted = self.submitted
-        view.form_schema = self.form_schema
-        view.form_data = self.form_data
-        view.form_errors = self.form_errors
+        ItemSectionController._init_view(self, view)        
+        view.submitted = self.submitted        
         view.member = self.member
-        view.collections = self.parent.collections
     
     def is_ready(self):
         return self.action is not None
