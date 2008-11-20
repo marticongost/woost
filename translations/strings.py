@@ -89,6 +89,30 @@ translations.define("CollectionView edit shortcut",
     en = u"e"
 )
 
+translations.define("order",
+    ca = u"Ordenar",
+    es = u"Ordenar",
+    en = u"Order"
+)
+
+translations.define("CollectionView order shortcut",
+    ca = u"o",
+    es = u"o",
+    en = u"o"
+)
+
+translations.define("move",
+    ca = u"Moure",
+    es = u"Mover",
+    en = u"Move"
+)
+
+translations.define("CollectionView move shortcut",
+    ca = u"m",
+    es = u"m",
+    en = u"m"
+)
+
 translations.define("delete",
     ca = u"Eliminar",
     es = u"Eliminar",
@@ -447,6 +471,12 @@ translations.define("tree content view",
     ca = u"Veure com a arbre",
     es = u"Ver como árbol",
     en = u"Show as tree"
+)
+
+translations.define("order content view",
+    ca = u"Veure com a llista ordenable",
+    es = u"Ver como lista ordenadable",
+    en = u"Show as ordered listing"
 )
 
 # Edit form

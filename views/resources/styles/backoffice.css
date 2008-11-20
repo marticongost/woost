@@ -416,6 +416,10 @@ html, body {
     text-decoration: underline;
 }
 
+.BackOfficeLayout .Table .position_mark button {
+    font-size: 85%;
+}
+
 /* Content type icons
 -----------------------------------------------------------------------------*/
 .BackOfficeLayout .Item {

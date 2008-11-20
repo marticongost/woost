@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?py
+from cocktail.schema import Schema, Member
+from cocktail.persistence import EntityAccessor
+from cocktail.html.datadisplay import SINGLE_SELECTION
+?>
+
+<py:sitebasis.views.BackOfficeLayout
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:py="http://www.whads.com/ns/cocktail/templates">
+
+    <?py-class
+    content_type = None
+    collection = None
+    ?>
+
+    <py:with py:element="self.body" py:tag="form" method="post">
+
+        <py:sitebasis.views.ContentTable
+            py:base_url="@{self.cms.uri(self.backoffice.path)}"
+            py:accessor="${EntityAccessor}"
+            py:selection_mode="${SINGLE_SELECTION}"
+            py:data="@{self.collection}"
+            py:selection_parameter="position">
+            <?py
+            element.schema = Schema(members = [Member("element")])
+            element.schema.name = "BackOfficeContentView"
+            element._entry_count = 0
+
+            @refine(element)
+            def get_item_id(table, item):
+                index = table._entry_count
+                table._entry_count += 1
+                return index
+            ?>
+            <py:ready>
+                <tr>
+                    <td><input type="radio" name="position" value="${len(self.collection)}"/></td>
+                    <td>Final de la llista</td>
+                </tr>
+            </py:ready>
+        </py:sitebasis.views.ContentTable>
+
+        <div py:id="buttons">
+            <button name="action" value="cancel">${translate("Cancel")}</button>
+            <button name="action" value="order">${translate("Select")}</button>
+        </div>
+
+    </py:with>
+
+</py:sitebasis.views.BackOfficeLayout>

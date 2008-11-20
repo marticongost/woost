@@ -19,6 +19,9 @@ from sitebasis.controllers.backoffice.contentcontroller \
 from sitebasis.controllers.backoffice.historycontroller \
     import HistoryController
 
+from sitebasis.controllers.backoffice.ordercontroller \
+    import OrderController
+
 
 class BackOfficeController(BaseBackOfficeController):
 
@@ -26,6 +29,7 @@ class BackOfficeController(BaseBackOfficeController):
 
     content = ContentController
     history = HistoryController
+    order = OrderController
 
     def begin(self):
         

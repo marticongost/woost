@@ -15,6 +15,9 @@ from sitebasis.models import Item
     visible_languages = ()
     root_content_type = Item
 
+    def init_user_collection(self, user_collection):
+        pass
+
     def create_toolbar_button(self, action):
         if action == "new":
             return self.create_new_toolbar_button()
