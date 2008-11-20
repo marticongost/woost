@@ -427,6 +427,12 @@ translations.define("Login page body",
     """ + (form % (u"User", u"Password", u"Enter"))
 )
 
+translations.define("BackOfficeOrderView last position",
+    ca = u"Final de la llista",
+    es = u"Final de la lista",
+    en = u"End of the list"
+)
+
 # Initialization content
 #------------------------------------------------------------------------------
 translations.define("Create action title",
