@@ -26,14 +26,19 @@ jQuery(function () {
                       
         function switchVisibleLang() {
             jQuery(".translations_check").not(":checked").each( function () {
-                jQuery("td." + jQuery(this).val()).toggle();
+                jQuery("td." + jQuery(this).val()).toggle();                
             });    
         }
         
          switchVisibleLang();
         
-        jQuery(".translations_check").click( function () {
+        jQuery(".translations_check").click( function () {	
             jQuery("td." + jQuery(this).val()).toggle();
+            jQuery("td." + jQuery(this).val() + ".field_instance-RichTextEditor").each( function () {
+                    jQuery(this).find('textarea').each( function () {                        
+                        resizeOne(jQuery(this).attr('id'));                        
+                    });
+            });            
             var ids = [];
             jQuery(".translations_check:checked").each( function () {
                 ids.push(jQuery(this).val());

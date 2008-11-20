@@ -44,6 +44,51 @@ jQuery(document).ready( function () {
               
             }
              
-        });                                
-  
+        });
+     
+        /*
+        if(jQuery.query.has("edit_stack")){
+            var stackparameter = jQuery.query.get("edit_stack");
+            var stack_parts = stackparameter.split("-");
+            alert(stack_parts[0] + ' ' + stack_parts[1]);
+        }
+        
+        jQuery("ul.edit_path li a").click( function () {
+             var qq = new jQuery.queryObject(jQuery(this).attr('href')); 
+             alert(qq.has("edit_stack"));
+             return false;
+        });
+            
+        if(stackparameter){
+        
+            var fields = null;
+            var form = null;
+                
+            jQuery("*", document.body).each( function() {        
+             if (this.formto){
+                fields = jQuery(this).find('input').not(':hidden').serializeArray();
+                form = this;
+             }
+            });
+            
+            jQuery(window).unload( function () {                
+            
+                    if(form && jQuery('.buttons')){
+                        
+                        var unload_fields = jQuery(form).find('input').not(':hidden').serializeArray();                
+                        
+                        jQuery.each(unload_fields, function (i, field) {                                    
+                            
+                            if(jQuery.trim(fields[i].value) != jQuery.trim(field.value)){
+                                var pass = confirm(cocktail.translate("BackOfficeLayout unchanged_message"));
+                                if(!pass) return false;
+                            }
+                        
+                        });                      
+                    }
+            });
+        
+        }
+        */                                  
+        
 });
