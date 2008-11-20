@@ -36,8 +36,10 @@ from sitebasis.controllers.backoffice import EditNode
     self.add_resource("/cocktail/scripts/jquery.js")
     self.add_resource("/resources/styles/backoffice.css")
     self.add_resource("/cocktail/scripts/jquery.hotkeys.js")
+    self.add_resource("/cocktail/scripts/jquery.query.js")
     self.add_resource("/resources/scripts/BackOfficeLayout.js")
-    self.add_resource("/cocktail/scripts/selectors.js")
+    self.add_resource("/cocktail/scripts/selectors.js")       
+    self.add_client_translation("BackOfficeLayout unchanged_message")
     ?>
 
     <link rel="icon" type="image/png" href="/resources/images/favicon.png"/>
@@ -114,7 +116,7 @@ from sitebasis.controllers.backoffice import EditNode
                     element.append(node_desc)
                     ?>
                 </a>
-            </li>
+            </li>            
         </py:ready>
     </ul>
 
