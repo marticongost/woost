@@ -10,7 +10,7 @@ from threading import Lock
 import cherrypy
 from cocktail.modeling import cached_getter
 from cocktail.schema import Collection
-from cocktail.controllers import view_state
+from cocktail.controllers import view_state, Location
 from sitebasis.controllers import Request
 
 from sitebasis.controllers.backoffice.basebackofficecontroller \
@@ -68,6 +68,10 @@ class ItemController(BaseBackOfficeController):
             edit_state.item = self.item
             edit_state.content_type = self.edited_content_type
             edit_stack.push(edit_state)
+            
+            location = Location.get_current()
+            location.params["edit_stack"] = edit_stack.to_param()
+            location.go()
 
         return edit_stack
 
