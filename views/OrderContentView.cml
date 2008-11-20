@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <?py
+from cocktail.modeling import ListWrapper
 from cocktail.persistence import EntityAccessor
 ?>
 
@@ -12,17 +13,19 @@ from cocktail.persistence import EntityAccessor
     content_view_id = "order"
     actions = "new", "edit", "delete", "history", "order"
     cms = None
-    collection_attribute = None
+
+    @classmethod
+    def compatible_with(cls, content_type, item = None, relation = None):
+        return isinstance(
+            cls.get_collection(content_type, item, relation),
+            (list, ListWrapper)
+        )
 
     def init_user_collection(self, user_collection):
         ContentView.init_user_collection(self, user_collection)
         user_collection.allow_sorting = False
         user_collection.allow_filters = False
         user_collection.allow_paging = False
-        user_collection.base_collection = getattr(
-            user_collection.entity_type,
-            self.collection_attribute
-        )
 
     ?>
 

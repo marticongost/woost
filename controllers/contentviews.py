@@ -10,6 +10,8 @@ from itertools import chain
 from inspect import getmro
 from persistent import Persistent
 from cocktail.persistence import PersistentMapping
+from cocktail.html import templates
+from sitebasis.models import Item, Document, AccessRule
 
 
 class ContentViewsRegistry(Persistent):
@@ -47,7 +49,7 @@ class ContentViewsRegistry(Persistent):
             type_views = self.__views.get(cls)
             if type_views:
                 views.update(
-                    content_view
+                    templates.get_class(content_view)
                     for content_view in type_views
                     if cls is item_type
                     or self.__inheritance[(cls, content_view)]
@@ -61,7 +63,7 @@ class ContentViewsRegistry(Persistent):
             
             if default is not None \
             and (cls is item_type or self.__inheritance.get((cls, default))):
-                return default
+                return templates.get_class(default)
 
         return None
 
@@ -73,4 +75,44 @@ class ContentViewsRegistry(Persistent):
 
     def set_inherited(self, item_type, content_view, inherited):
         self.__inheritance[(item_type, content_view)] = inherited
+
+
+# Global content views
+#------------------------------------------------------------------------------
+global_content_views = ContentViewsRegistry()
+
+global_content_views.add(
+    Item,
+    "sitebasis.views.FlatContentView",
+    is_default = True
+)
+
+global_content_views.add(
+    Document,
+    "sitebasis.views.TreeContentView",
+    is_default = True,
+    inherited = False
+)
+
+global_content_views.add(
+    AccessRule,
+    "sitebasis.views.AccessRuleOrderContentView",
+    is_default = True,
+    inherited = False
+)
+
+# Relation content views
+#------------------------------------------------------------------------------
+relation_content_views = ContentViewsRegistry()
+
+relation_content_views.add(
+    Item,
+    "sitebasis.views.OrderContentView",
+    is_default = True
+)
+
+relation_content_views.add(
+    Item,
+    "sitebasis.views.FlatContentView"
+)
 
