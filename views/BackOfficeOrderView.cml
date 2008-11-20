@@ -12,6 +12,7 @@ from cocktail.html.datadisplay import SINGLE_SELECTION
     <?py-class
     content_type = None
     collection = None
+    selection = None
     ?>
 
     <py:with py:element="self.body" py:tag="form" method="post">
@@ -32,13 +33,43 @@ from cocktail.html.datadisplay import SINGLE_SELECTION
                 index = table._entry_count
                 table._entry_count += 1
                 return index
+            
+            view = self
             ?>
+            <py:with py:def="row" py:args="i, item">
+                <?py
+                if item in view.selection:
+                    element.add_class("original_position")
+                ?>
+            </py:with>
+
+            <py:with py:def="selection_control" py:args="item">
+                <?py
+                if len(view.selection) == 1 and item in view.selection:
+                    element["disabled"] = True
+                ?>
+            </py:with>
+
             <py:ready>
                 <tr>
-                    <td><input type="radio" name="position" value="${len(self.collection)}"/></td>
-                    <td>Final de la llista</td>
+                    <?py
+                    size = len(self.collection)
+                    ?>
+                    <td>
+                        <input
+                            type="radio"
+                            name="position"
+                            id="position_${str(size)}"
+                            value="${str(size)}"/>
+                    </td>
+                    <td>
+                        <label for="position_${str(size)}">
+                            ${translate("BackOfficeOrderView last position")}
+                        </label>
+                    </td>
                 </tr>
             </py:ready>
+
         </py:sitebasis.views.ContentTable>
 
         <div py:id="buttons">

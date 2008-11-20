@@ -6,8 +6,13 @@
 @organization:	Whads/Accent SL
 @since:			October 2008
 """
-from cocktail.modeling import cached_getter
+import cherrypy
+
+from cocktail.modeling import cached_getter, ListWrapper
+from cocktail.html import templates
+from cocktail.controllers import view_state
 from sitebasis.models import Item
+from sitebasis.controllers.contentviews import relation_content_views
 
 from sitebasis.controllers.backoffice.basebackofficecontroller \
     import RelationNode
@@ -41,11 +46,29 @@ class CollectionController(ItemSectionController, ContentController):
             
         return content_type
 
-    def _init_user_collection(self, user_collection):
-        ContentController._init_user_collection(self, user_collection)
-        user_collection.base_collection = \
-            self.edit_node.get_collection(self.member)
-        return user_collection
+    def content_view_is_compatible(self, content_view):
+        return content_view.compatible_with(
+            self.content_type, self.item, self.member)
+
+    @cached_getter
+    def base_collection(self):
+        return self.edit_node.get_collection(self.member)
+
+    @cached_getter
+    def content_views_registry(self):
+        return relation_content_views
+
+    @cached_getter
+    def content_view(self):
+        content_view = ContentController.content_view(self)
+        content_view.actions = \
+            ["add", "remove"] + [action
+                                 for action in content_view.actions
+                                 if action not in ("new",
+                                                   "edit",
+                                                   "delete",
+                                                   "history")]
+        return content_view
 
     def _init_view(self, view):
         ContentController._init_view(self, view)
@@ -57,13 +80,35 @@ class CollectionController(ItemSectionController, ContentController):
         view.form_errors = self.form_errors
         view.member = self.member
         view.collections = self.parent.collections
-
+    
     def is_ready(self):
         return self.action is not None
 
     def submit(self):
         
-        if self.action == "add":
+        if self.action == "order":
+
+            node = RelationNode()
+            node.member = self.member
+            node.action = "order"
+            self.edit_node # Freeze the reference
+            self.edit_stack.push(node)
+
+            raise cherrypy.HTTPRedirect(
+                self.cms.uri(self.backoffice, "order")
+                + "?" + view_state(
+                    edit_stack = self.edit_stack.to_param(),
+                    selection = ",".join(
+                        str(item.id)
+                        for item in self.user_collection.selection
+                    ),
+                    item = self.item.id,
+                    member = self.member.name,
+                    type = self.content_type.name
+                )
+            )
+
+        elif self.action == "add":
             
             # Freeze the reference to the current node
             self.edit_node
@@ -84,6 +129,7 @@ class CollectionController(ItemSectionController, ContentController):
 
             user_collection.base_collection = \
                 self.edit_node.get_collection(self.member)
+       
 
         elif ItemSectionController.is_ready(self):
             ItemSectionController.submit(self)

@@ -1108,3 +1108,10 @@ html, body {
     padding: 0;
 }
 
+/* Order view
+-----------------------------------------------------------------------------*/
+.BackOfficeOrderView tr.original_position td.element_column {
+    font-style: italic;
+    color: rgb(75,75,75);
+}
+

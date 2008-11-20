@@ -10,7 +10,6 @@ import cherrypy
 from cocktail.modeling import cached_getter
 from cocktail.schema import String, Integer, Collection, Reference
 from cocktail.persistence import datastore
-from sitebasis.models import AccessRule
 from sitebasis.controllers.backoffice.basebackofficecontroller \
     import BaseBackOfficeController
 
@@ -29,15 +28,26 @@ class OrderController(BaseBackOfficeController):
             String("collection_attribute", format = "[a-z][_a-z0-9]*"))
 
     @cached_getter
-    def collection(self):
-        content_type = self.content_type
-        attribute = self.collection_attribute
-        
-        if not attribute:
-            raise ValueError(
-                "Need an attribute containing an ordered collection")
+    def member(self):
+        key = self.params.read(String("member"))
+        return self.content_type[key] if key else None
 
-        return getattr(content_type, attribute)
+    @cached_getter
+    def item(self):
+        id = self.params.read(Integer("item"))
+        member = self.member
+        if id and member:
+            return member.schema.index[id]
+
+    @cached_getter
+    def collection(self):
+        
+        if self.collection_attribute:
+            return getattr(self.content_type, self.collection_attribute)
+        elif self.item and self.member:
+            return self.item.get(self.member)
+        else:
+            raise ValueError("Need an ordered collection")
 
     @cached_getter
     def selection(self):
@@ -93,7 +103,12 @@ class OrderController(BaseBackOfficeController):
         if not self.redirecting:
             if self.action == "cancel" \
             or (self.action == "order" and self.successful):
-                raise cherrypy.HTTPRedirect(self.cms.uri(self.backoffice))
+                if self.edit_stack:
+                    self.edit_stack.go(-2)
+                else:
+                    raise cherrypy.HTTPRedirect(
+                        self.cms.uri(self.backoffice)
+                    )
 
     view_class = "sitebasis.views.BackOfficeOrderView"
 
