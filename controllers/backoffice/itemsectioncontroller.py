@@ -219,7 +219,8 @@ class ItemSectionController(BaseBackOfficeController):
                 item.set(member.name, edit_state.get_collection(member))
 
     def _init_view(self, view):
-        BaseBackOfficeController._init_view(self, view)        
+        BaseBackOfficeController._init_view(self, view)
+        view.collections = self.parent.collections
         view.edited_item = self.item
         view.edited_content_type = self.edited_content_type
         view.form_errors = self.form_errors

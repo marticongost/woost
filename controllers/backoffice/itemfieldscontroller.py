@@ -106,17 +106,8 @@ class ItemFieldsController(ItemSectionController):
 
         view.section = "fields"
         view.submitted = self.submitted
-        view.edit_stack = self.edit_stack
-        view.edited_content_type = self.edited_content_type
-        view.edited_item = self.item
-        view.form_data = self.form_data
-        view.form_schema = self.form_schema
-        view.form_errors = self.form_errors
         view.available_languages = self.available_languages
-        view.translations = self.translations
-        view.differences = self.differences
-        view.collections = self.parent.collections
-
+        
         # Set form displays
         for cls in self.edited_content_type.descend_inheritance(True):
             cls_displays = self.__member_display.get(cls)    
