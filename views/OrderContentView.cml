@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<?py
+from cocktail.persistence import EntityAccessor
+?>
+
+<py:sitebasis.views.ContentView
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:py="http://www.whads.com/ns/cocktail/templates">
+
+    <?py-class
+    content_view_id = "order"
+    actions = "new", "edit", "delete", "history", "order"
+    cms = None
+    collection_attribute = None
+
+    def init_user_collection(self, user_collection):
+        ContentView.init_user_collection(self, user_collection)
+        user_collection.allow_sorting = False
+        user_collection.allow_filters = False
+        user_collection.allow_paging = False
+        user_collection.base_collection = getattr(
+            user_collection.entity_type,
+            self.collection_attribute
+        )
+
+    ?>
+
+    <input type="hidden"
+        name="collection_attribute"
+        value="@{self.collection_attribute}"/>
+
+    <py:sitebasis.views.ContentTable
+        py:def="collection_display"
+        py:base_url="@{self.cms.uri(self.backoffice.path)}"
+        py:accessor="${EntityAccessor}"
+        py:translations="@{self.visible_languages}"/>
+
+</py:sitebasis.views.ContentView>

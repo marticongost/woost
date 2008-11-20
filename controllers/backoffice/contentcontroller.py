@@ -19,7 +19,9 @@ from cocktail.html import templates
 from cocktail.html.datadisplay import SINGLE_SELECTION, MULTIPLE_SELECTION
 from cocktail.controllers import get_persistent_param
 from cocktail.controllers.usercollection import UserCollection
-from sitebasis.models import Language, Item, Document, changeset_context
+from sitebasis.models import (
+    Language, Item, Document, AccessRule, changeset_context
+)
 from sitebasis.controllers.contentviews import ContentViewsRegistry
 
 from sitebasis.controllers.backoffice.basebackofficecontroller \
@@ -127,6 +129,13 @@ class ContentController(BaseBackOfficeController):
             inherited = False
         )
 
+        registry.add(
+            AccessRule,
+            "sitebasis.views.AccessRuleOrderContentView",
+            is_default = True,
+            inherited = False
+        )
+
         return registry
 
     @cached_getter
@@ -212,11 +221,7 @@ class ContentController(BaseBackOfficeController):
         # Initialize the content collection with the parameters set by the
         # current content view (this allows views to disable sorting, filters,
         # etc, depending on the nature of their user interface)        
-        cv_collection_params = self.content_view.collection_params
-
-        if cv_collection_params:
-            for key, value in cv_collection_params.iteritems():
-                setattr(user_collection, key, value)
+        self.content_view.init_user_collection(user_collection)
 
         return user_collection
 

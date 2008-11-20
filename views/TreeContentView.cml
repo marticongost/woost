@@ -12,11 +12,12 @@ from sitebasis.models import Site
     content_view_id = "tree"
     actions = "new", "edit", "delete", "history"
 
-    collection_params = {
-        "allow_sorting": False,
-        "allow_filters": False,
-        "allow_paging": False
-    }
+    def init_user_collection(self, user_collection):
+        ContentView.init_user_collection(self, user_collection)
+        user_collection.allow_sorting = False
+        user_collection.allow_filters = False
+        user_collection.allow_paging = False
+
     ?>
 
     <py:sitebasis.views.ContentTree
