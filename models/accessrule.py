@@ -6,6 +6,7 @@
 @organization:	Whads/Accent SL
 @since:			July 2008
 """
+from cocktail.modeling import classgetter
 from cocktail.language import get_content_language
 from cocktail.translations import translate
 from cocktail import schema
@@ -57,7 +58,7 @@ class AccessRule(Item):
 
     REGISTRY_KEY = "sitebasis.models.accessrule.AccessRule-registry"
 
-    @classmethod
+    @classgetter
     def registry(cls):
 
         registry = datastore.root.get(cls.REGISTRY_KEY)
@@ -169,7 +170,7 @@ def allowed(**context):
         context["action"] = Action.identifier.index[action]
 
     # Test the security context against the access rules registry
-    for rule in reversed(AccessRule.registry()):
+    for rule in reversed(AccessRule.registry):
         if rule.matches(context):
             return rule.allowed
 

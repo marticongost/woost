@@ -161,7 +161,7 @@ def init_site(
         site.forbidden_error_page = login_page  
 
         # Add standard access rules:
-        rules = AccessRule.registry()
+        rules = AccessRule.registry
 
         # - by default, all content can be viewed by anybody
         rules.append(
