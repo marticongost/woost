@@ -22,7 +22,7 @@ from cocktail.controllers.usercollection import UserCollection
 from sitebasis.models import (
     Language, Item, Document, AccessRule, changeset_context
 )
-from sitebasis.controllers.contentviews import ContentViewsRegistry
+from sitebasis.controllers.contentviews import global_content_views
 
 from sitebasis.controllers.backoffice.basebackofficecontroller \
     import BaseBackOfficeController, EditNode, RelationNode
@@ -113,51 +113,33 @@ class ContentController(BaseBackOfficeController):
 
     @cached_getter
     def content_views_registry(self):
-
-        registry = ContentViewsRegistry()
-        
-        registry.add(
-            Item,
-            "sitebasis.views.FlatContentView",
-            is_default = True
-        )
-
-        registry.add(
-            Document,
-            "sitebasis.views.TreeContentView",
-            is_default = True,
-            inherited = False
-        )
-
-        registry.add(
-            AccessRule,
-            "sitebasis.views.AccessRuleOrderContentView",
-            is_default = True,
-            inherited = False
-        )
-
-        return registry
+        return global_content_views
 
     @cached_getter
     def available_content_views(self):
-        return [
-            templates.get_class(cv)
-            for cv in self.content_views_registry.get(self.content_type)
-        ]
+        return [content_view
+                for content_view
+                    in self.content_views_registry.get(self.content_type)
+                if self.content_view_is_compatible(content_view)]
     
     @cached_getter
     def content_view(self):
 
         content_view_param = self._get_content_type_param("content_view")
+        default = None
         
         if content_view_param is not None:            
             for content_view in self.available_content_views:
                 if content_view.content_view_id == content_view_param:
                     return content_view()
 
-        return templates.new(
-            self.content_views_registry.get_default(self.content_type)            
-        )
+                if default is None:
+                    default = content_view
+
+        default = self.content_views_registry.get_default(self.content_type) \
+                  or default
+        
+        return default()
 
     @cached_getter
     def content_adapter(self):
@@ -200,6 +182,13 @@ class ContentController(BaseBackOfficeController):
         user_collection.read()
         return user_collection
 
+    def content_view_is_compatible(self, content_view):
+        return content_view.compatible_with(self.content_type)
+
+    @cached_getter
+    def base_collection(self):
+        return self.content_view.get_collection(self.content_type)
+
     def _init_user_collection(self, user_collection):
 
         # Exclude edit drafts
@@ -210,7 +199,8 @@ class ContentController(BaseBackOfficeController):
         user_collection.add_base_filter(CustomExpression(
             lambda item: is_allowed(action = "read", target_instance = item)
         ))
-
+        
+        user_collection.base_collection = self.base_collection        
         user_collection.persistence_prefix = self.content_type.name
         user_collection.persistence_duration = self.settings_duration
         user_collection.persistent_params = set(("members", "order"))
