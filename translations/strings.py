@@ -1170,3 +1170,11 @@ translations.define("ChangeSet.changes",
     es = u"Cambios",
     en = u"Changes"
 )
+
+# ClientParams
+#------------------------------------------------------------------------------
+translations.define("BackOfficeLayout unchanged_message",
+    ca = u"Segur que vols sortir sense guardar els canvis?",
+    es = u"¿Estás seguro que quieres salir sin guardar los cambios?",
+    en = u"Do you want to save your changes?"
+)

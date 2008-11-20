@@ -79,10 +79,10 @@ from sitebasis.models import AccessRule
             py:table_layout="${True}"
             py:edited_content_type="@{self.edited_content_type}"
             method="post">
-
+            
             <!-- Small tweaks for access rules -->
             <py:with py:def="control" py:args="obj, member">
-                <?py            
+                <?py                                      
                 if issubclass(self.edited_content_type, AccessRule) \
                 and hasattr(element, "empty_label"):
                     element.empty_label = translate("Any")
