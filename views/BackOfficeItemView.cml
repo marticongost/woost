@@ -60,6 +60,10 @@ from sitebasis.controllers import Request
 
         if section_id == self.get_section_id(self.section):
             element.add_class("selected")
+
+        if (section_id == "fields" and self.differences) \
+        or (isinstance(section, Collection) and self.edit_stack[-1].collection_has_changes(section)):
+            element.add_class("changed")
         ?>
         ${self.get_section_label(section)}
     </button>

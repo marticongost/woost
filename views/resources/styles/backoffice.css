@@ -361,7 +361,8 @@ html, body {
 }
 
 .BackOfficeLayout .draft,
-.BackOfficeLayout .changed {
+.BackOfficeLayout .changed,
+.BackOfficeItemView .navigation .section_entry.changed {
     background-color: rgb(250,242,190);
 }
 
