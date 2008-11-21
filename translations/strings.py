@@ -661,6 +661,12 @@ translations.define("Document-plural",
     en = u"Documents"
 )
 
+translations.define("Document.translations",
+    ca = u"Traduccions",
+    es = u"Traducciones",
+    en = u"Translations"
+)
+
 translations.define("Document.title",
     ca = u"Títol",
     es = u"Título",
