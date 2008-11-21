@@ -24,12 +24,10 @@ from sitebasis.controllers.backoffice.itemsectioncontroller \
 class ItemFieldsController(ItemSectionController):
 
     view_class = "sitebasis.views.BackOfficeEditView"
-    rich_text_editor_class = "sitebasis.views.RichTextEditor"
 
     def __init__(self):
         ItemSectionController.__init__(self)
         self.__member_display = {}
-        self._setup_member_displays()
 
     def set_member_display(self, member_ref, display):
 
@@ -45,18 +43,6 @@ class ItemFieldsController(ItemSectionController):
             self.__member_display[cls] = cls_displays
 
         cls_displays[member_name] = display
-
-    def _setup_member_displays(self):
-
-        self.set_member_display(
-            "sitebasis.models.Document.description",
-            self.rich_text_editor_class
-        )
-
-        self.set_member_display(
-            "sitebasis.models.StandardPage.body",
-            self.rich_text_editor_class
-        )
 
     @cached_getter
     def form_data(self):

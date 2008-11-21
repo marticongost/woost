@@ -17,7 +17,11 @@ class Event(Document):
 
     event_end = schema.DateTime()
 
-    event_location = schema.String()
+    event_location = schema.String(
+        edit_control = "cocktail.html.TextArea"
+    )
 
-    body = schema.String()
+    body = schema.String(
+        edit_control = "sitebasis.views.RichTextEditor"
+    )
 
