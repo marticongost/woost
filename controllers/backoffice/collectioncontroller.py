@@ -97,8 +97,7 @@ class CollectionController(EditController, ContentController):
                         for item in self.user_collection.selection
                     ),
                     item = self.item.id,
-                    member = self.member.name,
-                    type = self.edited_content_type.name
+                    member = self.member.name
                 )
             )
 
