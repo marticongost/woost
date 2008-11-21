@@ -7,15 +7,21 @@
 @since:			November 2008
 """
 import cherrypy
+from simplejson import dumps
 from cocktail.modeling import cached_getter
+from cocktail.iteration import first
+from cocktail.translations import translate
 from cocktail.schema import Reference, String, Integer, Collection, Reference
-from cocktail.persistence import datastore
 from sitebasis.models import Item
 from sitebasis.controllers.backoffice.basebackofficecontroller \
-    import BaseBackOfficeController
+    import BaseBackOfficeController, EditNode
 
 
 class OrderController(BaseBackOfficeController):
+
+    @cached_getter
+    def is_ajax(self):
+        return self.params.read(String("format")) == "json"
 
     @cached_getter
     def edited_content_type(self):
@@ -36,7 +42,12 @@ class OrderController(BaseBackOfficeController):
 
     @cached_getter
     def collection(self):
-        return self.item.get(self.member)
+
+        edit_node = first(node
+            for node in reversed(self.edit_stack)
+            if isinstance(node, EditNode))
+
+        return edit_node.get_collection(self.member, True)
 
     @cached_getter
     def selection(self):
@@ -84,12 +95,10 @@ class OrderController(BaseBackOfficeController):
 
             return collection
 
-        # TODO: Generate a revision
         rearrange(self.collection, self.selection, self.position)
-        datastore.commit()
 
     def end(self):
-        if not self.redirecting:
+        if not self.redirecting and not self.is_ajax:
             if self.action == "cancel" \
             or (self.action == "order" and self.successful):
                 if self.edit_stack:
@@ -106,4 +115,13 @@ class OrderController(BaseBackOfficeController):
         view.content_type = self.content_type
         view.collection = self.collection
         view.selection = self.selection
+
+    def render(self):
+        if self.is_ajax:
+            cherrypy.response.headers["Content-Type"] = "text/plain"
+            return dumps({
+                "error": self.error and translate(self.error)
+            })
+        else:
+            return BaseBackOfficeController.render(self)
 
