@@ -14,7 +14,8 @@ class StandardPage(Document):
     
     body = schema.String(
         translated = True,
-        listed_by_default = False
+        listed_by_default = False,
+        edit_control = "sitebasis.views.RichTextEditor"
     )
 
 

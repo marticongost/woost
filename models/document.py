@@ -52,7 +52,8 @@ class Document(Item):
 
     description = schema.String(
         translated = True,
-        listed_by_default = False
+        listed_by_default = False,
+        edit_control = "cocktail.html.TextArea"        
     )
 
     def __translate__(self, language, **kwargs):

@@ -20,17 +20,23 @@ class ContentForm(Form):
 
     def _resolve_member_display(self, obj, member):
 
-        if isinstance(member, Reference):
-            if member.class_family is not None:
-                display = templates.new("sitebasis.views.ContentTypePicker")                
-                display.root = member.class_family
-                return display
-            elif len(member.type.index) <= self.item_selector_threshold:
-                return ItemDropdownSelector
+        display = getattr(member, "edit_control", None)
+        
+        if display is None:
+
+            if isinstance(member, Reference):
+                if member.class_family is not None:
+                    display = \
+                        templates.new("sitebasis.views.ContentTypePicker")
+                    display.root = member.class_family
+                elif len(member.type.index) <= self.item_selector_threshold:
+                    display = ItemDropdownSelector
+                else:
+                    display = "sitebasis.views.ItemSelector"
             else:
-                return templates.get_class("sitebasis.views.ItemSelector")
-        else:
-            return Form._resolve_member_display(self, obj, member)
+                display = Form._resolve_member_display(self, obj, member)
+
+        return display
 
 
 class ItemDropdownSelector(DropdownSelector):
