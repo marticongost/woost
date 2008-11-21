@@ -641,6 +641,12 @@ translations.define("Site.generic_error_page",
     en = u"Generic error page"
 )
 
+translations.define("Site.access_rules_by_priority",
+    ca = u"Regles d'accés",
+    es = u"Reglas de acceso",
+    en = u"Access rules"
+)
+
 # Document
 #------------------------------------------------------------------------------
 translations.define("Document",

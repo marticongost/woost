@@ -11,7 +11,7 @@ from inspect import getmro
 from persistent import Persistent
 from cocktail.persistence import PersistentMapping
 from cocktail.html import templates
-from sitebasis.models import Item, Document, AccessRule
+from sitebasis.models import Item, Document
 
 
 class ContentViewsRegistry(Persistent):
@@ -90,13 +90,6 @@ global_content_views.add(
 global_content_views.add(
     Document,
     "sitebasis.views.TreeContentView",
-    is_default = True,
-    inherited = False
-)
-
-global_content_views.add(
-    AccessRule,
-    "sitebasis.views.AccessRuleOrderContentView",
     is_default = True,
     inherited = False
 )

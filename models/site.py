@@ -51,6 +51,10 @@ class Site(Item):
         type = "sitebasis.models.Document"
     )
 
+    access_rules_by_priority = schema.Collection(
+        items = "sitebasis.models.AccessRule"
+    )
+
     def __translate__(self, language, **kwargs):
         return translate(self.__class__.__name__, language, **kwargs)
 
