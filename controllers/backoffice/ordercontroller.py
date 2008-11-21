@@ -37,17 +37,18 @@ class OrderController(BaseBackOfficeController):
         return self.edited_content_type[key] if key else None
 
     @cached_getter
-    def item(self):
-        return self.params.read(Reference("item", type = Item))
-
-    @cached_getter
-    def collection(self):
-
-        edit_node = first(node
+    def edit_node(self):
+        return first(node
             for node in reversed(self.edit_stack)
             if isinstance(node, EditNode))
 
-        return edit_node.get_collection(self.member, True)
+    @cached_getter
+    def item(self):
+        return self.edit_node.item
+
+    @cached_getter
+    def collection(self):
+        return self.edit_node.get_collection(self.member, True)
 
     @cached_getter
     def selection(self):
@@ -120,7 +121,7 @@ class OrderController(BaseBackOfficeController):
         if self.is_ajax:
             cherrypy.response.headers["Content-Type"] = "text/plain"
             return dumps({
-                "error": self.error and translate(self.error)
+                "error": self.error and translate(self.error) or None
             })
         else:
             return BaseBackOfficeController.render(self)
