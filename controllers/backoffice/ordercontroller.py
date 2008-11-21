@@ -8,46 +8,35 @@
 """
 import cherrypy
 from cocktail.modeling import cached_getter
-from cocktail.schema import String, Integer, Collection, Reference
+from cocktail.schema import Reference, String, Integer, Collection, Reference
 from cocktail.persistence import datastore
+from sitebasis.models import Item
 from sitebasis.controllers.backoffice.basebackofficecontroller \
     import BaseBackOfficeController
 
 
 class OrderController(BaseBackOfficeController):
 
-    persistent_content_type_choice = True
+    @cached_getter
+    def edited_content_type(self):
+        return self.item.__class__
 
     @cached_getter
     def content_type(self):
-        return self.get_content_type()
-
-    @cached_getter
-    def collection_attribute(self):
-        return self.params.read(
-            String("collection_attribute", format = "[a-z][_a-z0-9]*"))
+        return self.member.items.type
 
     @cached_getter
     def member(self):
         key = self.params.read(String("member"))
-        return self.content_type[key] if key else None
+        return self.edited_content_type[key] if key else None
 
     @cached_getter
     def item(self):
-        id = self.params.read(Integer("item"))
-        member = self.member
-        if id and member:
-            return member.schema.index[id]
+        return self.params.read(Reference("item", type = Item))
 
     @cached_getter
     def collection(self):
-        
-        if self.collection_attribute:
-            return getattr(self.content_type, self.collection_attribute)
-        elif self.item and self.member:
-            return self.item.get(self.member)
-        else:
-            raise ValueError("Need an ordered collection")
+        return self.item.get(self.member)
 
     @cached_getter
     def selection(self):
@@ -76,7 +65,7 @@ class OrderController(BaseBackOfficeController):
             and self.position is not None
 
     def submit(self):
-
+        
         def rearrange(collection, items, position):
 
             size = len(collection)

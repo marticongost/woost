@@ -14,14 +14,11 @@ from sitebasis.models import Item
     available_content_views = ()
     visible_languages = ()
     root_content_type = Item
-    collection_attribute = None
 
     @classmethod
     def get_collection(cls, content_type, item = None, relation = None):
         if item:
             return item.get(relation)
-        elif cls.collection_attribute:
-            return getattr(content_type, cls.collection_attribute)            
         else:
             return None # default
 

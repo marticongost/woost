@@ -28,10 +28,6 @@ from cocktail.persistence import EntityAccessor
         user_collection.allow_paging = False
     ?>
 
-    <input type="hidden"
-        name="collection_attribute"
-        value="@{self.collection_attribute}"/>
-
     <py:with py:element="self.content_type_path" py:visible="${False}"/>
 
     <py:sitebasis.views.ContentTable
