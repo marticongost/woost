@@ -37,7 +37,7 @@ class CollectionController(ItemSectionController, ContentController):
 
     @cached_getter
     def content_type(self):
-        root_content_type = self.member.related_end.schema
+        root_content_type = self.member.items.type
         content_type = self.get_content_type()
         
         if content_type is None \
@@ -99,7 +99,7 @@ class CollectionController(ItemSectionController, ContentController):
                     ),
                     item = self.item.id,
                     member = self.member.name,
-                    type = self.content_type.name
+                    type = self.edited_content_type.name
                 )
             )
 
