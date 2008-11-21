@@ -426,6 +426,12 @@ html, body {
     font-size: 85%;
 }
 
+.BackOfficeLayout .Table .List {
+    margin: 0;
+    padding: 0;
+    list-style-position: inside;
+}
+
 /* Content type icons
 -----------------------------------------------------------------------------*/
 .BackOfficeLayout .Item {
