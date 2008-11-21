@@ -11,6 +11,7 @@ from cocktail.language import get_content_language
 from cocktail.translations import translate
 from cocktail import schema
 from cocktail.persistence import EntityClass, datastore, PersistentList
+from sitebasis.models.site import Site
 from sitebasis.models.item import Item
 from sitebasis.models.action import Action
 
@@ -29,6 +30,21 @@ class AccessRule(Item):
     for more than one constraint, all of them will be taken into account to
     further reduce the reach of the rule.
     """
+
+    def __init__(self, *args, **kwargs):
+        Item.__init__(self, *args, **kwargs)
+        Site.main.access_rules_by_priority.insert(0, self)
+
+    def delete(self):
+        Item.delete(self)
+        rules = Site.main.access_rules_by_priority
+
+        try:
+            while True:
+                rules.remove(self)
+        except ValueError:
+            pass
+
     members_order = (
         "role",
         "target_instance",
@@ -55,19 +71,7 @@ class AccessRule(Item):
         required = True,
         default = True
     )
-
-    REGISTRY_KEY = "sitebasis.models.accessrule.AccessRule-registry"
-
-    @classgetter
-    def registry(cls):
-
-        registry = datastore.root.get(cls.REGISTRY_KEY)
-
-        if registry is None:
-            datastore.root[cls.REGISTRY_KEY] = registry = PersistentList()
-
-        return registry
-
+    
     def matches(self, context):
         """Determines if the rule is applicable to the indicated access
         context.
@@ -170,7 +174,7 @@ def allowed(**context):
         context["action"] = Action.identifier.index[action]
 
     # Test the security context against the access rules registry
-    for rule in reversed(AccessRule.registry):
+    for rule in Site.main.access_rules_by_priority:
         if rule.matches(context):
             return rule.allowed
 
@@ -185,6 +189,7 @@ class AccessDeniedError(Exception):
     """An exception raised when trying to perform an unauthorized action."""
 
     def __init__(self, context):
-        Exception.__init__(self, "Unauthorized security context (%s)" % context)
+        Exception.__init__(self,
+            "Unauthorized security context (%s)" % context)
         self.context = context
 
