@@ -96,7 +96,6 @@ class CollectionController(EditController, ContentController):
                         str(item.id)
                         for item in self.user_collection.selection
                     ),
-                    item = self.item.id,
                     member = self.member.name
                 )
             )
