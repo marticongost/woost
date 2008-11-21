@@ -38,7 +38,9 @@ class EditController(BaseBackOfficeController):
         adapter.exclude([
             member.name
             for member in self.edited_content_type.members().itervalues()
-            if not member.editable or isinstance(member, Collection)
+            if not member.editable
+            or not member.visible
+            or isinstance(member, Collection)
         ])
         return adapter
 
