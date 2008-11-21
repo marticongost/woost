@@ -18,7 +18,7 @@ from sitebasis.controllers.backoffice.basebackofficecontroller \
         import BaseBackOfficeController
 
 
-class ItemSectionController(BaseBackOfficeController):
+class EditController(BaseBackOfficeController):
 
     @getter
     def edit_stack(self):

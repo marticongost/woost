@@ -20,18 +20,17 @@ from sitebasis.controllers.backoffice.basebackofficecontroller \
 from sitebasis.controllers.backoffice.contentcontroller \
     import ContentController
 
-from sitebasis.controllers.backoffice.itemsectioncontroller \
-    import ItemSectionController
+from sitebasis.controllers.backoffice.editcontroller import EditController
 
 
-class CollectionController(ItemSectionController, ContentController):
+class CollectionController(EditController, ContentController):
  
     view_class = "sitebasis.views.BackOfficeCollectionView"
     persistent_content_type_choice = False
 
     def __init__(self, member):
         ContentController.__init__(self)
-        ItemSectionController.__init__(self)
+        EditController.__init__(self)
         self.member = member
         self.section = member
 
@@ -72,7 +71,7 @@ class CollectionController(ItemSectionController, ContentController):
 
     def _init_view(self, view):
         ContentController._init_view(self, view)
-        ItemSectionController._init_view(self, view)        
+        EditController._init_view(self, view)        
         view.submitted = self.submitted        
         view.member = self.member
     
@@ -126,6 +125,6 @@ class CollectionController(ItemSectionController, ContentController):
                 self.edit_node.get_collection(self.member)
        
 
-        elif ItemSectionController.is_ready(self):
-            ItemSectionController.submit(self)
+        elif EditController.is_ready(self):
+            EditController.submit(self)
 

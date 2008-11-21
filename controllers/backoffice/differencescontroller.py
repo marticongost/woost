@@ -7,11 +7,10 @@
 @since:			November 2008
 """
 from cocktail.schema import Collection, String, DictAccessor
-from sitebasis.controllers.backoffice.itemsectioncontroller \
-    import ItemSectionController
+from sitebasis.controllers.backoffice.editcontroller import EditController
 
 
-class DifferencesController(ItemSectionController):
+class DifferencesController(EditController):
 
     view_class = "sitebasis.views.BackOfficeDiffView"
 
@@ -56,7 +55,7 @@ class DifferencesController(ItemSectionController):
         self.parent.switch_section("fields")
 
     def _init_view(self, view):
-        ItemSectionController._init_view(self, view)
+        EditController._init_view(self, view)
         view.submitted = False
         view.source = self.differences_source
         view.target = self.form_data

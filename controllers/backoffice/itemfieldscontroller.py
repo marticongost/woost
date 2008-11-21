@@ -17,16 +17,15 @@ from sitebasis.models import Site
 from sitebasis.controllers.backoffice.basebackofficecontroller \
         import RelationNode
 
-from sitebasis.controllers.backoffice.itemsectioncontroller \
-        import ItemSectionController
+from sitebasis.controllers.backoffice.editcontroller import EditController
 
 
-class ItemFieldsController(ItemSectionController):
+class ItemFieldsController(EditController):
 
     view_class = "sitebasis.views.BackOfficeEditView"
 
     def __init__(self):
-        ItemSectionController.__init__(self)
+        EditController.__init__(self)
         self.__member_display = {}
 
     def set_member_display(self, member_ref, display):
@@ -47,7 +46,7 @@ class ItemFieldsController(ItemSectionController):
     @cached_getter
     def form_data(self):
 
-        form_data = ItemSectionController.form_data(self)                
+        form_data = EditController.form_data(self)                
         section = self.params.read(String("section", default = "fields"))
         rel = self.params.read(String("rel"))
         
@@ -88,7 +87,7 @@ class ItemFieldsController(ItemSectionController):
     
     def _init_view(self, view):
         
-        ItemSectionController._init_view(self, view)
+        EditController._init_view(self, view)
 
         view.section = "fields"
         view.submitted = self.submitted
@@ -133,5 +132,5 @@ class ItemFieldsController(ItemSectionController):
                 )
             )
 
-        ItemSectionController.end(self)
+        EditController.end(self)
 
