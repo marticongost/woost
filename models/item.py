@@ -14,8 +14,15 @@ from cocktail.persistence import (
 from sitebasis.models.changesets import ChangeSet, Change
 from sitebasis.models.action import Action
 
+# Add an extension property to set the default HTML control for the member
+schema.Member.edit_control = None
+
 # Add an extension property to control the default member visibility on item listings
 schema.Member.listed_by_default = True
+schema.Collection.listed_by_default = False
+
+# Add an extension property to indicate if members should be visible by users
+schema.Member.visible = True
 
 # Add an extension property to indicate if members should be editable by users
 schema.Member.editable = True
@@ -39,7 +46,8 @@ class Item(Entity):
     deleted = schema.Boolean(
         required = True,
         editable = False,
-        default = False
+        default = False,
+        visible = False
     )
     
     changes = schema.Collection(
@@ -47,7 +55,8 @@ class Item(Entity):
         versioned = False,
         editable = False,
         items = "sitebasis.models.Change",
-        bidirectional = True
+        bidirectional = True,
+        visible = False
     )
 
     creation_time = schema.DateTime(
@@ -71,7 +80,8 @@ class Item(Entity):
         type = "sitebasis.models.Item",
         related_key = "drafts",
         bidirectional = True,
-        editable = False
+        editable = False,
+        listed_by_default = False
     )
 
     drafts = schema.Collection(
@@ -143,7 +153,7 @@ class Item(Entity):
         adapter.exclude([
             member.name
             for member in self.members().itervalues()
-            if not member.editable
+            if not member.editable or not member.visible
         ])
         return adapter
 
@@ -387,5 +397,6 @@ class Item(Entity):
 
 
 Item.id.editable = False
-Item.changes.editable = False
+Item.id.listed_by_default = False
+Item.changes.visible = False
 

@@ -144,14 +144,11 @@ class ContentController(BaseBackOfficeController):
     @cached_getter
     def content_adapter(self):
         adapter = Adapter()
-        adapter.exclude(
-            ["id", "draft_source", "deleted"]
-            + [
-                member.name
-                for member in self.content_type.members().itervalues()
-                if isinstance(member, Collection)
-            ]
-        )
+        adapter.exclude([
+            member.name
+            for member in self.content_type.members().itervalues()
+            if not member.visible
+        ])
         return adapter
 
     @cached_getter
