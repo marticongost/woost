@@ -55,21 +55,40 @@ class AccessRule(Item):
         "allowed"
     )
     
-    role = schema.Reference(type = "sitebasis.models.Item")
+    role = schema.Reference(
+        type = "sitebasis.models.Item",
+        listed_by_default = False        
+    )
 
-    target_instance = schema.Reference(type = "sitebasis.models.Item")
+    target_instance = schema.Reference(
+        type = "sitebasis.models.Item",
+        listed_by_default = False
+    )
 
-    target_type = schema.Reference(class_family = "sitebasis.models.Item")
+    target_type = schema.Reference(
+        class_family = "sitebasis.models.Item",
+        listed_by_default = False
+    )
 
-    target_ancestor = schema.Reference(type = "sitebasis.models.Document")
+    target_ancestor = schema.Reference(
+        type = "sitebasis.models.Document",
+        listed_by_default = False
+    )
 
-    action = schema.Reference(type = "sitebasis.models.Action")
+    action = schema.Reference(
+        type = "sitebasis.models.Action",
+        listed_by_default = False
+    )
 
-    language = schema.Reference(type = "sitebasis.models.Language")
+    language = schema.Reference(
+        type = "sitebasis.models.Language",
+        listed_by_default = False
+    )
 
     allowed = schema.Boolean(
         required = True,
-        default = True
+        default = True,
+        listed_by_default = False
     )
     
     def matches(self, context):
