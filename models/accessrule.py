@@ -13,6 +13,8 @@ from cocktail import schema
 from cocktail.persistence import EntityClass, datastore, PersistentList
 from sitebasis.models.site import Site
 from sitebasis.models.item import Item
+from sitebasis.models.group import Group
+from sitebasis.models.role import Role
 from sitebasis.models.action import Action
 
 
@@ -132,22 +134,24 @@ class AccessRule(Item):
             or page.descends_from(self.target_ancestor)  
 
     def __translate__(self, language, **kwargs):
+
+        trans = []
+
         if language == "en":
-            trans = []
             
             if self.role is None:
                 if self.allowed:
-                    trans.append("Anybody can ")
+                    trans.append(u"Anybody can ")
                 else:
-                    trans.append("Nobody can")
+                    trans.append(u"Nobody can")
             else:
                 trans.append(translate(self.role, language))
-                trans.append(self.allowed and "can" or "can't")
+                trans.append(self.allowed and u"can" or u"can't")
             
             trans.append(
                 translate(self.action, language).lower()
                           if self.action
-                          else "access")
+                          else u"access")
 
             if self.target_instance:
                 trans.append(translate(self.target_instance, language))
@@ -155,23 +159,94 @@ class AccessRule(Item):
                 trans.append(
                     translate(self.target_type.name + "-plural", language))
             else:
-                trans.append("any item")
+                trans.append(u"any item")
             
             if self.target_ancestor:
                 trans.append(
-                    "descending from "
+                    u"descending from "
                     + translate(self.target_ancestor, language))
 
             if self.language:
                 trans.append(
-                    "in " + translate(self.language, language))
-
-            return " ".join(trans)
+                    u"in " + translate(self.language, language))
 
         elif language == "ca":
-            return u"Regla d'accés"
+            
+            if self.role is None:
+                if self.allowed:
+                    trans.append(u"Tothom pot")
+                else:
+                    trans.append(u"Ningú pot")
+            else:
+                if isinstance(self.role, Group):
+                    trans.append("El grup")
+                elif isinstance(self.role, Role):
+                    trans.append("El rol")
+
+                trans.append(translate(self.role, language))
+                trans.append(self.allowed and u"pot" or u"no pot")
+                
+            trans.append(
+                translate(self.action, language).lower()
+                          if self.action
+                          else u"accedir a")
+
+            if self.target_instance:
+                trans.append(translate(self.target_instance, language))
+            elif self.target_type:
+                trans.append(
+                    translate(self.target_type.name + "-plural", language))
+            else:
+                trans.append(u"qualsevol element")
+            
+            if self.target_ancestor:
+                trans.append(
+                    u"dins de "
+                    + translate(self.target_ancestor, language))
+
+            if self.language:
+                trans.append(
+                    u"en " + translate(self.language, language))
+            
         elif language == "es":
-            return u"Regla de acceso"
+
+            if self.role is None:
+                if self.allowed:
+                    trans.append(u"Cualquiera puede")
+                else:
+                    trans.append(u"Nadie puede")
+            else:
+                if isinstance(self.role, Group):
+                    trans.append("El grupo")
+                elif isinstance(self.role, Role):
+                    trans.append("El rol")
+
+                trans.append(translate(self.role, language))            
+                trans.append(self.allowed and u"puede" or u"no puede")
+                
+            trans.append(
+                translate(self.action, language).lower()
+                          if self.action
+                          else u"acceder a")
+
+            if self.target_instance:
+                trans.append(translate(self.target_instance, language))
+            elif self.target_type:
+                trans.append(
+                    translate(self.target_type.name + "-plural", language))
+            else:
+                trans.append(u"cualquier elemento")
+            
+            if self.target_ancestor:
+                trans.append(
+                    u"dentro de "
+                    + translate(self.target_ancestor, language))
+
+            if self.language:
+                trans.append(
+                    u"en " + translate(self.language, language))
+
+        return u" ".join(trans)
 
 
 def allowed(**context):
