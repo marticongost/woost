@@ -260,12 +260,6 @@ translations.define("No differences",
     en = u"The item has no changes."
 )
 
-translations.define("Translations",
-    ca = u"Traduccions",
-    es = u"Traducciones",
-    en = u"Translations"
-)
-
 translations.define("EditView translations shortcut",
     ca = u"r",
     es = u"r",
@@ -661,12 +655,6 @@ translations.define("Document-plural",
     en = u"Documents"
 )
 
-translations.define("Document.translations",
-    ca = u"Traduccions",
-    es = u"Traducciones",
-    en = u"Translations"
-)
-
 translations.define("Document.title",
     ca = u"Títol",
     es = u"Título",
@@ -887,6 +875,12 @@ translations.define("Resource.uri",
     ca = u"URI",
     es = u"URI",
     en = u"URI"
+)
+
+translations.define("Resource.documents",
+    ca = u"Documents",
+    es = u"Documentos",
+    en = u"Documents"
 )
 
 # Style
