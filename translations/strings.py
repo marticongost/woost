@@ -691,7 +691,7 @@ translations.define("Document.path",
     en = u"Path"
 )
 
-translations.define("Document.path",
+translations.define("Document.full_path",
     ca = u"Ruta completa",
     es = u"Ruta completa",
     en = u"Full path"
