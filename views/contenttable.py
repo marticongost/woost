@@ -48,14 +48,6 @@ class ContentTable(Table):
 
         return row
 
-    def repr_value(self, item, member, value):
-        if value is None:
-            return "-"
-        elif isinstance(value, datetime):
-            return value.strftime(translate("datetime format"))
-        else:
-            return translate(value, default = value)
-
     def display_element(self, item, member):
         
         display = Element("label")
