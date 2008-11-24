@@ -686,9 +686,15 @@ translations.define("Document.end_date",
 )
 
 translations.define("Document.path",
-    ca = u"Camí de publicació",
-    es = u"Camino de publicación",
-    en = u"Publication path"
+    ca = u"Ruta",
+    es = u"Ruta",
+    en = u"Path"
+)
+
+translations.define("Document.path",
+    ca = u"Ruta completa",
+    es = u"Ruta completa",
+    en = u"Full path"
 )
 
 translations.define("Document.template",
