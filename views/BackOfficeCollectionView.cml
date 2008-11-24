@@ -21,9 +21,11 @@
     <py:ready>
         <py:with py:element="self.content_view"
             py:parent="self.edit_form_frame"
-            action="${self.cms.uri(self.backoffice.path)}"
             py:cms="${self.cms}"
             py:backoffice="${self.backoffice}"
+            py:tag="div"
+            method="${None}"
+            action="${None}"
             py:user_collection="${self.user_collection}"
             py:available_languages="${self.available_languages}"
             py:visible_languages="${self.visible_languages}"
