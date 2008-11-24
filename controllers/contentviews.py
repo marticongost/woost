@@ -89,7 +89,7 @@ global_content_views.add(
 
 global_content_views.add(
     Document,
-    "sitebasis.views.TreeContentView",
+    "sitebasis.views.DocumentTreeContentView",
     is_default = True,
     inherited = False
 )

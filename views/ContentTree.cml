@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <?py
+from itertools import chain
 import cherrypy
 from cocktail.iteration import is_empty
 from cocktail.persistence import EntityAccessor
+from cocktail.controllers import view_state
 from cocktail.html.datadisplay import MULTIPLE_SELECTION
 ?>
 
@@ -14,9 +16,10 @@ from cocktail.html.datadisplay import MULTIPLE_SELECTION
     <?py-class
     accessor = EntityAccessor
     selection_mode = MULTIPLE_SELECTION
+    children_collection = "children"
 
     def get_children(self, item):
-        return item.children
+        return item.get(self.children_collection)
 
     def _get_expanded(self):
         
@@ -50,13 +53,10 @@ from cocktail.html.datadisplay import MULTIPLE_SELECTION
             for item in self.get_children(item):
                 self._fill_branch(item)
             self.__depth -= 1
-    ?>
 
-    <py:ready>
-        <?py
-        self.set_member_display("element", self.create_element_cell)
-        ?>
-    </py:ready>
+    def display_element(self, item, member):
+        return self.create_element_cell(item, member)
+    ?>
 
     <div
         py:def="element_cell"
@@ -76,13 +76,12 @@ from cocktail.html.datadisplay import MULTIPLE_SELECTION
                 nested_container.add_class("depth_level")
                 container.append(nested_container)
                 container = nested_container
-        ?>
-
-        <?py
+        
         # Get the expansion state for the entry
+        empty = is_empty(self.get_children(item))
 
-        if is_empty(self.get_children(item)):
-            element.add_class("leaf")
+        if empty:
+            element.add_class("leaf")        
         else:
             is_expanded = item.id in self.__expanded
             
@@ -98,12 +97,14 @@ from cocktail.html.datadisplay import MULTIPLE_SELECTION
                     [item.id]
                 )
         
-        expanded_param = ",".join(str(id) for id in expander_ids)
-        element.add_class(state)        
+            expanded_param = ",".join(str(id) for id in expander_ids)
+            element.add_class(state)
         ?>
         <py:with py:element="container">
-            <a class="expander" href="?${view_state(expanded = expanded_param)}">
-                <img src="${self.cms.uri('resources', 'images', state + 'png')}"/>
+            <a py:if="not empty"
+                class="expander"
+                href="?${view_state(expanded = expanded_param)}">
+                <img src="${self.cms.uri('resources', 'images', state + '.png')}"/>
             </a>
             <py:new py:element="ContentTable.display_element(self, item, member)"/>
         </py:with>
