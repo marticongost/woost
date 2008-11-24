@@ -9,12 +9,14 @@
 
 jQuery(function () {
         
-        jQuery(".translations_selector .selector_content li").each( function () {            
-            var check = document.createElement('input');
-            check.className = 'translations_check';            
-            check.setAttribute('value',jQuery(this).find("button").val());
-            check.setAttribute('type','checkbox');
-            jQuery(this).prepend(check);                                                
+        jQuery(".translations_selector .selector_content li").each( function () {
+            if(jQuery(this).find('.language').hasClass('selected')){            
+                var check = document.createElement('input');
+                check.className = 'translations_check';            
+                check.setAttribute('value',jQuery(this).find("button").val());
+                check.setAttribute('type','checkbox');
+                jQuery(this).prepend(check);
+             }                                                
         });
         
         if(jQuery.cookie('visible_languages')){
