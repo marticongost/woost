@@ -9,11 +9,17 @@ from sitebasis.controllers import Request
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:py="http://www.whads.com/ns/cocktail/templates">
     
+    <py:ready>
+        <?py
+            self.set_client_param("edit_stack", self.edit_stack.to_param())
+        ?>
+    </py:ready>
+    
     <?py
     self.add_resource("/cocktail/scripts/jquery.js")
     self.add_resource("/cocktail/scripts/jquery.cookie.js")
     self.add_resource("/resources/scripts/backoffice_item.js")
-    ?>
+    ?>        
     
     <?py-class
     sections = ["fields"]
