@@ -8,7 +8,13 @@ from cocktail.persistence import EntityAccessor
 <py:sitebasis.views.ContentView
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:py="http://www.whads.com/ns/cocktail/templates">
-
+    
+    <?py
+        self.add_resource("/cocktail/styles/jquery.tablednd.css")
+        self.add_resource("/cocktail/scripts/jquery.tablednd.js")
+        self.add_resource("/resources/scripts/BackOfficeOrderView.js")
+    ?>
+    
     <?py-class
     content_view_id = "order"
     actions = "new", "edit", "delete", "history", "order"
