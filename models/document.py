@@ -86,14 +86,52 @@ class Document(Item):
     def is_published(self):
         return self.enabled and self.is_current()
 
-    # Behavior and appearance
-    #--------------------------------------------------------------------------
     path = schema.String(
         max = 1024,
-        indexed = True,
-        unique = True
+        indexed = True
     )
 
+    full_path = schema.String(
+        indexed = True,
+        unique = True,
+        editable = False
+    )
+
+    def on_member_set(self, member, value, language):
+
+        if member.name == "path":
+            self._update_path(self.parent, value)
+
+        elif member.name == "parent":
+            self._update_path(value, self.path)
+            
+        return Item.on_member_set(self, member, value, language)
+
+    def _update_path(self, parent, path):
+
+        parent_path = parent and parent.full_path
+
+        if parent_path and path:
+            self.full_path = parent_path + "/" + path
+        else:
+            self.full_path = path
+        
+        if self.children:
+            for child in self.children:
+                child._update_path(self, child.path)
+
+    def descend_documents(self, include_self = False):
+
+        if include_self:
+            yield self
+
+        if self.children:
+            for child in self.children:
+                for descendant in child.descend_documents(True):
+                    yield descendant
+
+    # Behavior and appearance
+    #--------------------------------------------------------------------------
     template = schema.Reference(
         type = "sitebasis.models.Template",
         bidirectional = True,

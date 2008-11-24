@@ -25,7 +25,7 @@ class DispatcherModule(Module):
         extra_path = []
         
         while path:
-            document = Document.path.index.get("/".join(path))
+            document = Document.full_path.index.get("/".join(path))
             if document:
                 break
             else:
