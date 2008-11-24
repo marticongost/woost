@@ -1128,3 +1128,10 @@ html, body {
     color: rgb(75,75,75);
 }
 
+/* Move view
+-----------------------------------------------------------------------------*/
+.BackOfficeMoveView .tree li {
+    list-style-type: none;
+}
+
+

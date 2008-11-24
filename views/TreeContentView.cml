@@ -10,7 +10,9 @@ from sitebasis.models import Site
 
     <?py-class
     content_view_id = "tree"
-    actions = "new", "edit", "delete", "history"
+    actions = "new", "edit", "delete", "move", "history"
+    root = None
+    children_collection = None
 
     def init_user_collection(self, user_collection):
         ContentView.init_user_collection(self, user_collection)
@@ -19,24 +21,29 @@ from sitebasis.models import Site
         user_collection.allow_paging = False
 
     ?>
+    <input type="hidden" name="root" value="@{self.root.id if self.root else None}"/>
+    <input type="hidden" name="member" value="@{self.children_collection}"/>
 
     <py:sitebasis.views.ContentTree
         py:def="collection_display"
         py:cms="@{self.cms}"
         py:base_url="@{self.cms.uri(self.backoffice.path)}"
-        py:translations="@{self.visible_languages}">
+        py:translations="@{self.visible_languages}"
+        py:children_collection="@{self.children_collection}">
+        
         <py:binding>
             <?py
-            home = Site.main.home
             element.data = (
-                [home]
-                if self.cms.authorization.allows(
+                [self.root]
+                if self.root and self.cms.authorization.allows(
                     action = "read",
-                    target_instance = home
+                    target_instance = self.root
                 )
                 else []
             )
             ?>
         </py:binding>
+
     </py:sitebasis.views.ContentTree>
+
 </py:sitebasis.views.ContentView>
