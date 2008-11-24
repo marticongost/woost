@@ -26,6 +26,7 @@ class Document(Item):
         "start_date",
         "end_date",
         "path",
+        "full_path",
         "parent",
         "template",
         "description"        
