@@ -60,8 +60,7 @@ class MoveController(BaseBackOfficeController):
         return self.params.read(String("action"))
 
     def is_ready(self):
-        return self.action == "move" \
-            and self.member \
+        return self.member \
             and self.slot \
             and self.selection
 
@@ -101,8 +100,7 @@ class MoveController(BaseBackOfficeController):
 
     def end(self):
         if not self.redirecting and not self.is_ajax:
-            if self.action == "cancel" \
-            or (self.action == "move" and self.successful):
+            if self.action == "cancel" or self.successful:
                 raise cherrypy.HTTPRedirect(self.cms.uri(self.backoffice))
 
     view_class = "sitebasis.views.BackOfficeMoveView"

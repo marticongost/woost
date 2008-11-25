@@ -21,24 +21,62 @@ from cocktail.html.datadisplay import SINGLE_SELECTION
         <py:cocktail.html.TreeView
             py:id="tree"
             py:root="@{self.root}"
-            py:root_visible="@{False}">
-
-            <py:with py:def="entry"
-                py:args="parent, position, item"
-                py:baseargs="item">
-                <?py
-                param = "%d-%d" % (parent.id, position)
-                ?>
-                <input
-                    py:index="0"
-                    type="radio"
-                    id="slot-${param}"
-                    name="slot"
-                    value="${param}"/>
-                <py:with py:element="entry.label" py:tag="label" for="slot-${param}"/>
-            </py:with>
+            py:root_visible="@{False}"
+            py:create_empty_containers="${True}">
 
             <?py
+            view = self
+
+            @refine(element)
+            def create_label(self, item):
+                label = loader.new("sitebasis.views.ItemLabel")
+                label.item = item
+
+                if self._is_selected(item):
+                    label.add_class("original_position")
+
+                return label 
+
+            @refine(element)
+            def create_slot(self, parent, position):
+
+                slot = Element("li")
+
+                if view.selection \
+                and any(parent.descends_from(item) for item in view.selection):
+                    slot.visible = False
+                else:
+                    slot.add_class("slot")
+
+                    button = Element("button")
+                    button["name"] = "slot"
+                    button["value"] = "%d-%d" % (parent.id, position)
+                    slot.append(button)
+
+                    label = Element("span")
+                    label.add_class("label")
+                    label.append(u"Moure aquí")
+                    button.append(label)
+
+                    button.slot_content = self.create_slot_content()
+                    button.append(button.slot_content)
+
+                return slot
+
+            @refine(element)
+            def create_slot_content(self):
+
+                slot_content = Element()
+                slot_content.add_class("slot_content")
+
+                if view.selection:
+                    for item in view.selection:
+                        label = loader.new("sitebasis.views.ItemLabel")
+                        label.item = item
+                        slot_content.append(label)
+
+                return slot_content
+
             @refine(element)
             def get_item_label(self, item):
                 return (
@@ -49,19 +87,42 @@ from cocktail.html.datadisplay import SINGLE_SELECTION
 
             @refine(element)
             def get_child_items(self, parent):
-                return (parent.children or []) + [None] if parent else []
+                return (parent.children or []) if parent else []
+                #return (parent.children or []) + [None] if parent else []
+
+            @refine(element)
+            def _is_selected(self, item):
+                return view.selection and item in view.selection
 
             @refine(element)
             def _fill_children_container(self, container, parent, children):
 
-                for i, child in enumerate(children):
-                    container.append(self.create_entry(parent, i, child))
+                position = 0
+                prev_slot = self.create_slot(parent, 0)
+                container.append(prev_slot)
+
+                if children:
+                    for child in children:
+
+                        container.append(self.create_entry(child))
+
+                        slot = self.create_slot(parent, position + 1)
+                        container.append(slot)
+
+                        if self._is_selected(child) and len(view.selection) == 1:
+                            slot.visible = False
+                            prev_slot.visible = False
+                        else:
+                            position += 1
+                        
+                        prev_slot = slot
+
             ?>
         </py:cocktail.html.TreeView>
 
         <div py:id="buttons">
             <button name="action" value="cancel">${translate("Cancel")}</button>
-            <button name="action" value="move">${translate("Select")}</button>
+            <!--<button name="action" value="move">${translate("Select")}</button>-->
         </div>
 
     </py:with>
