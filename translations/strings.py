@@ -427,6 +427,13 @@ translations.define("BackOfficeOrderView last position",
     en = u"End of the list"
 )
 
+translations.define(
+    "sitebasis.controllers.backoffice.movecontroller.TreeCycleError-instance",
+    ca = u"No es pot inserir un element dins de sí mateix.",
+    es = u"No se puede insertar un elemento dentro de si mismo.",
+    en = u"Can't insert an element into itself."
+)
+
 # Initialization content
 #------------------------------------------------------------------------------
 translations.define("Create action title",
