@@ -17,27 +17,15 @@ from cocktail.html.datadisplay import MULTIPLE_SELECTION
     accessor = EntityAccessor
     selection_mode = MULTIPLE_SELECTION
     children_collection = "children"
+    expanded = ()
 
     def get_children(self, item):
         return item.get(self.children_collection)
-
-    def _get_expanded(self):
-        
-        expanded_param = cherrypy.request.params.get("expanded")
-
-        if expanded_param:
-            if isinstance(expanded_param, basestring):
-                return set(int(id) for id in expanded_param.split(","))
-            else:
-                return set(int(id) for id in expanded_param)
-
-        return set()
 
     def _fill_body(self):
         
         self.__depth = 0
         self.__index = 0
-        self.__expanded = self._get_expanded()
 
         for item in self.data:
             self._fill_branch(item)            
@@ -48,7 +36,7 @@ from cocktail.html.datadisplay import MULTIPLE_SELECTION
         self.append(row)
         self.__index += 1
 
-        if item.id in self.__expanded:
+        if item.id in self.expanded:
             self.__depth += 1
             for item in self.get_children(item):
                 self._fill_branch(item)
@@ -83,17 +71,17 @@ from cocktail.html.datadisplay import MULTIPLE_SELECTION
         if empty:
             element.add_class("leaf")        
         else:
-            is_expanded = item.id in self.__expanded
+            is_expanded = item.id in self.expanded
             
             if is_expanded:
                 state = "expanded"
                 expander_ids = (id
-                                for id in self.__expanded
+                                for id in self.expanded
                                 if id != item.id)
             else:
                 state = "collapsed"
                 expander_ids = chain(
-                    (id for id in self.__expanded),
+                    (id for id in self.expanded),
                     [item.id]
                 )
         

@@ -104,7 +104,7 @@ class ContentController(BaseBackOfficeController):
                 
             return content_type
 
-    def _get_content_type_param(self, param_name):
+    def get_content_type_param(self, param_name):
         return get_persistent_param(
             param_name,
             cookie_name = self.content_type.__name__ + "-" + param_name,
@@ -125,21 +125,28 @@ class ContentController(BaseBackOfficeController):
     @cached_getter
     def content_view(self):
 
-        content_view_param = self._get_content_type_param("content_view")
+        content_view = None
+        content_view_param = self.get_content_type_param("content_view")
         default = None
         
         if content_view_param is not None:            
-            for content_view in self.available_content_views:
-                if content_view.content_view_id == content_view_param:
-                    return content_view()
+            for content_view_type in self.available_content_views:
+                if content_view_type.content_view_id == content_view_param:
+                    content_view = content_view_type()
+                    break
 
                 if default is None:
-                    default = content_view
-
-        default = self.content_views_registry.get_default(self.content_type) \
-                  or default
+                    default = content_view_type
         
-        return default()
+        if content_view is None:
+            default = (
+                self.content_views_registry.get_default(self.content_type)
+                or default
+            )
+            content_view = default()
+
+        content_view._attach(self)
+        return content_view
 
     @cached_getter
     def content_adapter(self):
@@ -208,7 +215,7 @@ class ContentController(BaseBackOfficeController):
         # Initialize the content collection with the parameters set by the
         # current content view (this allows views to disable sorting, filters,
         # etc, depending on the nature of their user interface)        
-        self.content_view.init_user_collection(user_collection)
+        self.content_view._init_user_collection(user_collection)
 
         return user_collection
 

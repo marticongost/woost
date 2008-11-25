@@ -26,7 +26,10 @@ from sitebasis.models import Item
     def compatible_with(cls, content_type, item = None, relation = None):
         return True
     
-    def init_user_collection(self, user_collection):
+    def _attach(self, controller):
+        pass
+
+    def _init_user_collection(self, user_collection):
         pass
 
     def create_toolbar_button(self, action):

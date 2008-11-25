@@ -14,8 +14,22 @@ from sitebasis.models import Site
     root = None
     children_collection = None
 
-    def init_user_collection(self, user_collection):
-        ContentView.init_user_collection(self, user_collection)
+    def _attach(self, controller):
+        ContentView._attach(self, controller)
+        expanded_param = controller.get_content_type_param("expanded")
+
+        if expanded_param:
+            if isinstance(expanded_param, basestring):
+                expanded = set(int(id) for id in expanded_param.split(","))
+            else:
+                expanded = set(int(id) for id in expanded_param)
+
+            self.expanded = expanded
+        else:
+            self.expanded = set()
+
+    def _init_user_collection(self, user_collection):
+        ContentView._init_user_collection(self, user_collection)
         user_collection.allow_sorting = False
         user_collection.allow_filters = False
         user_collection.allow_paging = False
@@ -29,7 +43,8 @@ from sitebasis.models import Site
         py:cms="@{self.cms}"
         py:base_url="@{self.cms.uri(self.backoffice.path)}"
         py:translations="@{self.visible_languages}"
-        py:children_collection="@{self.children_collection}">
+        py:children_collection="@{self.children_collection}"
+        py:expanded="@{self.expanded}">
         
         <py:binding>
             <?py
