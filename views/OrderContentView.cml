@@ -27,8 +27,8 @@ from cocktail.persistence import EntityAccessor
             (list, ListWrapper)
         )
 
-    def init_user_collection(self, user_collection):
-        ContentView.init_user_collection(self, user_collection)
+    def _init_user_collection(self, user_collection):
+        ContentView._init_user_collection(self, user_collection)
         user_collection.allow_sorting = False
         user_collection.allow_filters = False
         user_collection.allow_paging = False
