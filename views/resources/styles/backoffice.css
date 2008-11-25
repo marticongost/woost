@@ -102,7 +102,8 @@ html, body {
 .BackOfficeLayout a,
 .BackOfficeLayout .identity button,
 .BackOfficeEditView .clear_button,
-.BackOfficeItemView .more_actions button {
+.BackOfficeItemView .more_actions button
+/*.BackOfficeMoveView .tree button */ {
     font-size: inherit;
     background: none;
     border: none;
@@ -178,6 +179,10 @@ html, body {
     font-size: 85%;
     margin: 1em;
     margin-bottom: 0.6em;
+}
+
+.BackOfficeLayout .ItemLabel {
+    background-repeat: no-repeat;
 }
 
 .BackOfficeLayout input[type=text],
@@ -1132,6 +1137,58 @@ html, body {
 -----------------------------------------------------------------------------*/
 .BackOfficeMoveView .tree li {
     list-style-type: none;
+    margin-top: 0.7em;
 }
 
+.BackOfficeMoveView .tree .ItemLabel {
+    padding-left: 1.3em;
+}
+
+.BackOfficeMoveView .tree .slot button {
+    cursor: pointer;
+    border: none;
+    background: none;
+    position: relative;
+    left: -0.2em;
+    display: block;
+    margin: 0;
+    padding: 0.1em 0;
+    text-align: left;
+}
+
+.BackOfficeMoveView .tree .slot .label {
+    font-size: 80%;
+    color: rgb(50,80,110);
+}
+
+.BackOfficeMoveView .tree .slot_content {
+    display: none;
+}
+
+.BackOfficeMoveView .tree .slot button:hover {
+    border: 1px solid rgb(170,185,200);
+    background-color: rgb(230,235,240);
+    left: -0.3em;
+    padding-bottom: 0;
+}
+
+.BackOfficeMoveView .tree .slot button:hover .label {
+    display: none;
+}
+
+.BackOfficeMoveView .tree .slot .ItemLabel + .ItemLabel {
+    margin-top: 0.8em;
+}
+
+.BackOfficeMoveView .tree .slot button:hover .ItemLabel {
+    padding-left: 1.5em;
+}
+
+.BackOfficeMoveView .tree .slot button:hover .slot_content {
+    display: block;
+}
+
+.BackOfficeMoveView .original_position {
+    color: rgb(100,100,100);
+}
 
