@@ -131,6 +131,26 @@ class Document(Item):
                 for descendant in child.descend_documents(True):
                     yield descendant
 
+    def descends_from(self, document):
+        """Indicates if the document descends from the given document.
+
+        @param document: The hypothetical ancestor of the document.
+        @type document: L{Document}
+
+        @return: True if the document descends from the indicated ancestor, or
+            if the provided ancestor and the document are in fact the same
+            item; False in any other case.
+        @rtype: bool
+        """
+        ancestor = self
+
+        while ancestor is not None:
+            if ancestor is document:
+                return True
+            ancestor = ancestor.parent
+
+        return False
+
     # Behavior and appearance
     #--------------------------------------------------------------------------
     template = schema.Reference(
