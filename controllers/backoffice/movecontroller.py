@@ -60,7 +60,6 @@ class MoveController(BaseBackOfficeController):
         return self.params.read(String("action"))
 
     def is_ready(self):
-        print self.action, self.member, self.slot, self.selection
         return self.action == "move" \
             and self.member \
             and self.slot \
