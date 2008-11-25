@@ -69,6 +69,7 @@ class MoveController(BaseBackOfficeController):
 
         collection = self.collection
         selection = self.selection
+        parent = self.item
         position = self.position
         related_end = self.member.related_end
 
@@ -78,18 +79,25 @@ class MoveController(BaseBackOfficeController):
             position = size + position
 
         if position + len(selection) > size:
-            position = size - len(selection)
-        
+            position = size - len(selection)               
+
+        if any(parent.descends_from(item) for item in selection):
+            raise TreeCycleError()
+
         with changeset_context(author = self.user):
             for item in reversed(selection):
 
                 if isinstance(related_end, Reference) \
-                and item.get(related_end) is self.item:
+                and item.get(related_end) is parent:
                     collection.remove(item)
 
                 collection.insert(position, item)
         
         datastore.commit()
+
+    def handle_error(self, error):
+        if not self.is_ajax:
+            BaseBackOfficeController.handle_error(self, error)
 
     def end(self):
         if not self.redirecting and not self.is_ajax:
@@ -114,4 +122,9 @@ class MoveController(BaseBackOfficeController):
             })
         else:
             return BaseBackOfficeController.render(self)
+
+
+class TreeCycleError(Exception):
+    """An exception raised when trying to move an element to a position that
+    would turn the tree into a graph."""
 
