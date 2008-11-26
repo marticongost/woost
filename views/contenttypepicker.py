@@ -6,7 +6,7 @@
 @organization:	Whads/Accent SL
 @since:			November 2008
 """
-from cocktail.html import Element, AutoID
+from cocktail.html import Element
 from sitebasis.views.contenttypetree import ContentTypeTree
 
 
@@ -37,7 +37,6 @@ class ContentTypePicker(ContentTypeTree):
     def create_empty_option(self):
         
         entry = Element("li")
-        option_id = AutoID()
 
         entry.option = Element("input",
             type = "radio",
@@ -46,6 +45,7 @@ class ContentTypePicker(ContentTypeTree):
             value = self.empty_value,
             checked = self.value is None
         )
+        option_id = entry.option.require_id()
         entry.append(entry.option)
 
         entry.label = Element("label")
