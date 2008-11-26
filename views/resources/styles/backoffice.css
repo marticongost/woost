@@ -819,7 +819,7 @@ html, body {
 -----------------------------------------------------------------------------*/
 
 .BackOfficeLayout .TreeContentView .expander {
-    margin-right: 0.3em;
+    margin-left: -0.1em;
 }
 
 .BackOfficeLayout .TreeContentView .expander img {
