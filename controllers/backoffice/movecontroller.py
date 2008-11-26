@@ -40,7 +40,9 @@ class MoveController(BaseBackOfficeController):
 
     @cached_getter
     def selection(self):
-        return self.params.read(Collection("selection", items = Reference(type = Item)))
+        return self.params.read(
+            Collection("selection", items = Reference(type = Item))
+        )
 
     @cached_getter
     def slot(self):
@@ -77,8 +79,7 @@ class MoveController(BaseBackOfficeController):
         if position < 0:
             position = size + position
 
-        if position + len(selection) > size:
-            position = size - len(selection)               
+        position = min(position, size)
 
         if any(parent.descends_from(item) for item in selection):
             raise TreeCycleError()
