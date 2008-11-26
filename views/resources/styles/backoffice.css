@@ -540,14 +540,16 @@ html, body {
 
 .BackOfficeLayout .toolbar .content_view,
 .BackOfficeLayout .toolbar .visible_languages,
-.BackOfficeLayout .toolbar .visible_members {
-    float: right;    
+.BackOfficeLayout .toolbar .visible_members,
+.BackOfficeLayout .toolbar .filters {
+    float: right;
 }
 
 .BackOfficeLayout .toolbar .content_type .label,
 .BackOfficeLayout .toolbar .visible_languages .label,
 .BackOfficeLayout .toolbar .visible_members .label,
 .BackOfficeLayout .toolbar .content_view .label,
+.BackOfficeLayout .toolbar .filters .label,
 .BackOfficeItemView .translations_selector .label {
     height: 1.9em;
     padding-top: 0.4em;
@@ -555,7 +557,7 @@ html, body {
     background-position: right 0.8em;
 }
 
-.BackOfficeLayout .toolbar .visible_members .selector_content {
+.BackOfficeLayout .toolbar .filters .selector_content {
     right: 0;
 }
 
@@ -1190,5 +1192,24 @@ html, body {
 
 .BackOfficeMoveView .original_position {
     color: rgb(100,100,100);
+}
+
+/* Filter box
+-----------------------------------------------------------------------------*/
+.BackOfficeLayout .FilterBox {
+    min-width: 40em;
+}
+
+.BackOfficeLayout .FilterBox .filter_entry {
+    clear: left;
+}
+
+.BackOfficeLayout .FilterBox .filter_entry * {
+    clear: none !important;
+    float: left !important;
+}
+
+.BackOfficeLayout .FilterBox .operator_field .control {
+    width: 10em;
 }
 
