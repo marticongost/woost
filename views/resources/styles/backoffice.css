@@ -102,13 +102,12 @@ html, body {
 .BackOfficeLayout a,
 .BackOfficeLayout .identity button,
 .BackOfficeEditView .clear_button,
-.BackOfficeItemView .more_actions button
-/*.BackOfficeMoveView .tree button */ {
+.BackOfficeItemView .more_actions button,
+.BackOfficeLayout .new_filter_selector .label {
     font-size: inherit;
     background: none;
     border: none;
     text-decoration: none;
-    color: rgb(100,125,150);
     color: rgb(50,80,110);
     margin: 0;
     padding: 0;
@@ -299,6 +298,11 @@ html, body {
     margin-right: 0.5em;
 }
 
+.BackOfficeLayout .ui-datepicker-trigger {
+    margin-left: 0.3em;
+    vertical-align: middle;
+}
+
 /* Tables
 -----------------------------------------------------------------------------*/
 
@@ -413,6 +417,8 @@ html, body {
 }
 
 .BackOfficeLayout .row_selector {
+    clear: both;
+    margin-top: 0.5em;
     padding-top: 0.3em;
     padding-bottom: 1em;
     padding-left: 1em;
@@ -504,8 +510,7 @@ html, body {
 
 .BackOfficeLayout .toolbar {
 	clear: both;
-    margin-top: 1em;
-	margin-bottom: 0.5em;
+    margin-top: 1em;	
 	background-color: rgb(242,240,235);
 	border: 1px solid rgb(232,230,225);
     height: 2.1em;
@@ -540,8 +545,7 @@ html, body {
 
 .BackOfficeLayout .toolbar .content_view,
 .BackOfficeLayout .toolbar .visible_languages,
-.BackOfficeLayout .toolbar .visible_members,
-.BackOfficeLayout .toolbar .filters {
+.BackOfficeLayout .toolbar .visible_members {
     float: right;
 }
 
@@ -549,7 +553,6 @@ html, body {
 .BackOfficeLayout .toolbar .visible_languages .label,
 .BackOfficeLayout .toolbar .visible_members .label,
 .BackOfficeLayout .toolbar .content_view .label,
-.BackOfficeLayout .toolbar .filters .label,
 .BackOfficeItemView .translations_selector .label {
     height: 1.9em;
     padding-top: 0.4em;
@@ -557,7 +560,7 @@ html, body {
     background-position: right 0.8em;
 }
 
-.BackOfficeLayout .toolbar .filters .selector_content {
+.BackOfficeLayout .toolbar .visible_members .selector_content {
     right: 0;
 }
 
@@ -597,6 +600,7 @@ html, body {
     background-color: white;
     border: 1px solid rgb(190,200,210);
     border-bottom-color: white;
+    z-index: 1001;
 }
 
 .BackOfficeLayout .selector.scripted:hover .label {
@@ -621,6 +625,7 @@ html, body {
 .BackOfficeLayout .selector.scripted.unfolded .selector_content,
 .BackOfficeLayout .selector.scripted.unfolded:hover .selector_content {
     display: block;
+    z-index: 1000;
 }
 
 .BackOfficeLayout .selector.scripted:hover .selector_content {
@@ -1196,20 +1201,129 @@ html, body {
 
 /* Filter box
 -----------------------------------------------------------------------------*/
-.BackOfficeLayout .FilterBox {
-    min-width: 40em;
+.BackOfficeLayout .CollectionView .filters {
+    font-size: 85%;
+    margin-top: 0.3em;
+    border: 1px solid rgb(210,210,210);
+    background-color: rgb(245,245,245);
+}
+
+.BackOfficeLayout .CollectionView .filters:not(.empty) > .label {
+    font-weight: bold;
+}
+
+.BackOfficeLayout .CollectionView .filters.scripted > .label {
+    cursor: pointer;
+    padding: 0.5em;
+    padding-left: 1.2em;
+    background-repeat: no-repeat;
+    background-position: 0.4em center;
+    background-image: url(../images/collapsed_block.png);
+}
+
+.BackOfficeLayout .CollectionView .filters.scripted.expanded > .label {
+    background-image: url(../images/expanded_block.png);
+    border-bottom: 1px dotted rgb(210,210,210);
+    padding-left: 1.6em;
+}
+
+
+.BackOfficeLayout .CollectionView .filters .FilterBox {
+    padding: 0.5em;
+    padding-top: 1em;
+    background-color: rgb(240,240,240);
+}
+
+.BackOfficeLayout .CollectionView .filters.scripted .FilterBox {
+    display: none;
+}
+
+.BackOfficeLayout .CollectionView .filters.scripted.expanded .FilterBox {
+    display: block;
 }
 
 .BackOfficeLayout .FilterBox .filter_entry {
     clear: left;
 }
 
-.BackOfficeLayout .FilterBox .filter_entry * {
+.BackOfficeLayout .FilterBox .filter_entry .filter_desc,
+.BackOfficeLayout .FilterBox .filter_entry .filter_ui,
+.BackOfficeLayout .FilterBox .filter_entry .fields,
+.BackOfficeLayout .FilterBox .filter_entry .field,
+.BackOfficeLayout .FilterBox .filter_entry .field_instance {
     clear: none !important;
     float: left !important;
 }
 
+.BackOfficeLayout .FilterBox .filter_entry fieldset {
+    margin: 0;
+    padding: 0;
+}
+
+.BackOfficeLayout .CollectionView .filters .filter_desc {
+    min-width: 10em;
+    margin-top: 0.3em;
+}
+
+.BackOfficeLayout .FilterBox .filter_entry .language_field .control,
 .BackOfficeLayout .FilterBox .operator_field .control {
     width: 10em;
+}
+
+.BackOfficeLayout .CollectionView .filters .buttons {
+    padding: 0;
+}
+
+.BackOfficeLayout .CollectionView .filters:not(.empty) .buttons {
+    margin-top: 2em;
+}
+
+.BackOfficeLayout .CollectionView .filters .buttons button {
+    width: auto;
+}
+
+.BackOfficeLayout .CollectionView .filters .clear_button {
+    padding-left: 1.6em;
+    background-repeat: no-repeat;
+    background-position: left center;
+    background-image: url(../images/clear_small.png);
+}
+
+.BackOfficeLayout .CollectionView .filters .clear_button,
+.BackOfficeLayout .CollectionView .filters .new_filter_selector {
+    float: left;
+    margin-top: 0.5em;
+}
+
+.BackOfficeLayout .CollectionView .filters .new_filter_selector {
+    margin-right: 1em;
+}
+
+.BackOfficeLayout .CollectionView .filters .new_filter_selector .label {
+    padding-right: 0.3m;
+    padding-top: 0.3em;
+    padding-bottom: 0.3em;
+    padding-left: 1.5em !important;
+    background-position: 0.2em center;
+    background-image: url(../images/add_small.png);
+}
+
+.BackOfficeLayout .CollectionView .filters .new_filter_selector .selector_content {
+    overflow: auto;
+    max-height: 15em;
+    min-width: 12em;
+    top: 1.5em;
+}
+
+.BackOfficeLayout .CollectionView .filters .new_filter_selector .selector_content a {    
+    border: none;
+    background: none;
+    display: block;
+    cursor: pointer;
+    color: rgb(50,80,110);
+    text-align: left;
+    padding: 0;
+    margin: 0.3em 0;
+    font-size: 90%;
 }
 
