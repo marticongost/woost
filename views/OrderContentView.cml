@@ -2,7 +2,7 @@
 
 <?py
 from cocktail.modeling import ListWrapper
-from cocktail.persistence import EntityAccessor
+from cocktail.schema import SchemaObjectAccessor
 ?>
 
 <py:sitebasis.views.ContentView
@@ -39,7 +39,7 @@ from cocktail.persistence import EntityAccessor
     <py:sitebasis.views.ContentTable
         py:def="collection_display"
         py:base_url="@{self.cms.uri(self.backoffice.path)}"
-        py:accessor="${EntityAccessor}"
+        py:accessor="${SchemaObjectAccessor}"
         py:translations="@{self.visible_languages}"/>
 
 </py:sitebasis.views.ContentView>

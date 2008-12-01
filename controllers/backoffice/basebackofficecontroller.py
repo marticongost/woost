@@ -64,9 +64,9 @@ class BaseBackOfficeController(BaseController):
         if type_param is None:
             return default
         else:
-            for entity in chain([Item], Item.derived_entities()):
-                if entity.__name__ == type_param:
-                    return entity
+            for content_type in chain([Item], Item.derived_schemas()):
+                if content_type.__name__ == type_param:
+                    return content_type
 
     def get_visible_languages(self):
 
@@ -251,8 +251,8 @@ class EditNode(object):
         creating a new item.
     @type item: L{Item<sitebasis.models.item.Item>}
 
-    @ivar content_type: The entity type of the edited item.
-    @type content_type: L{Entity<cocktail.persistence.entity.Entity>} subclass
+    @ivar content_type: The type of the edited item.
+    @type content_type: L{Item<sitebasis.models.item.Item>} subclass
 
     @ivar form_data: The complete modified state of the edited item.
     

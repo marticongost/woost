@@ -7,7 +7,6 @@
 @since:			June 2008
 """
 from cocktail import schema
-from cocktail.persistence import Entity
 from sitebasis.models import Item
 
 class Resource(Item):
@@ -32,5 +31,5 @@ class Resource(Item):
 
     def __translate__(self, language, **kwargs):
         return self.get("title", language) \
-            or Entity.__translate__(self, language, **kwargs)
+            or Item.__translate__(self, language, **kwargs)
 

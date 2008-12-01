@@ -9,7 +9,6 @@
 from cocktail.modeling import classgetter
 from cocktail.translations import translate
 from cocktail import schema
-from cocktail.persistence import Entity
 from sitebasis.models.item import Item
 
 class Language(Item):
@@ -32,5 +31,5 @@ class Language(Item):
 
     def __translate__(self, language, **kwargs):
         return self.iso_code and translate(self.iso_code) \
-            or Entity.__translate__(self, language, **kwargs)
+            or Item.__translate__(self, language, **kwargs)
 

@@ -4,7 +4,7 @@
 from itertools import chain
 import cherrypy
 from cocktail.iteration import is_empty
-from cocktail.persistence import EntityAccessor
+from cocktail.schema import SchemaObjectAccessor
 from cocktail.controllers import view_state
 from cocktail.html.datadisplay import MULTIPLE_SELECTION
 ?>
@@ -14,7 +14,7 @@ from cocktail.html.datadisplay import MULTIPLE_SELECTION
     xmlns:py="http://www.whads.com/ns/cocktail/templates">
 
     <?py-class
-    accessor = EntityAccessor
+    accessor = SchemaObjectAccessor
     selection_mode = MULTIPLE_SELECTION
     children_collection = "children"
     expanded = ()

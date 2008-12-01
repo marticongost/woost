@@ -25,7 +25,6 @@ class LanguageModule(Module):
 
         if language is None:
             language = self.infer_language()
-
             location = Location.get_current()
             location.path_info = "/" + language + location.path_info
             location.go()

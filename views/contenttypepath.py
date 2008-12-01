@@ -42,7 +42,7 @@ class ContentTypePath(Element):
 
         Element._content_ready(self)
 
-        for derived_content_type in self.value.derived_entities():
+        for derived_content_type in self.value.derived_schemas():
             break
         else:
             self._last_entry.selector.tree.visible = False
