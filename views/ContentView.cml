@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <?py
+from cocktail.modeling import extend, call_base
 from cocktail.iteration import is_empty
 from sitebasis.models import Item
 ?>
@@ -89,7 +90,15 @@ from sitebasis.models import Item
                 py:id="new_item_selector"
                 py:root="@{self.user_collection.type}"
                 py:base_url="@{self.cms.uri(self.backoffice.path, 'content', 'new')}">
-
+        
+                <?py
+                @extend(element)
+                def get_child_items(self, content_type):
+                    return [child
+                            for child in call_base(content_type)
+                            if child.instantiable]
+                ?>
+                
                 <py:with py:def="label" py:args="content_type"
                     py:tag="a"
                     href="${self.base_url + '?type=' + content_type.__name__}"/>
