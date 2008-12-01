@@ -648,6 +648,12 @@ translations.define("Site.access_rules_by_priority",
     en = u"Access rules"
 )
 
+translations.define("Site.plugins",
+    ca = u"Extensions",
+    es = u"Extensiones",
+    en = u"Plug-ins"
+)
+
 # Document
 #------------------------------------------------------------------------------
 translations.define("Document",
@@ -1168,6 +1174,50 @@ translations.define("Language.fallback_languages",
     ca = u"Idiomes substitutius",
     es = u"Idiomas sustitutivos",
     en = u"Fallback languages"
+)
+
+# PlugIn
+#------------------------------------------------------------------------------
+translations.define("PlugIn",
+    ca = u"Extensió",
+    es = u"Extensión",
+    en = u"Plug-in"
+)
+
+translations.define("PlugIn-plural",
+    ca = u"Extensions",
+    es = u"Extensiones",
+    en = u"Plug-ins"
+)
+
+translations.define("PlugIn.title",
+    ca = u"Nom",
+    es = u"Nombre",
+    en = u"Name"
+)
+
+translations.define("PlugIn.description",
+    ca = u"Descripció",
+    es = u"Descripción",
+    en = u"Description"
+)
+
+translations.define("PlugIn.plugin_author",
+    ca = u"Autor de l'extensió",
+    es = u"Autor de la extensión",
+    en = u"Plug-in author"
+)
+
+translations.define("PlugIn.license",
+    ca = u"Llicència",
+    es = u"Licencia",
+    en = u"License"
+)
+
+translations.define("PlugIn.enabled",
+    ca = u"Activat",
+    es = u"Activado",
+    en = u"Enabled"
 )
 
 # ChangeSet

@@ -6,14 +6,15 @@
 @organization:	Whads/Accent SL
 @since:			July 2008
 """
-import os.path
+import os
 from threading import local
 import cherrypy
+from cocktail.pkgutils import import_object
 from cocktail.html import __file__ as cocktail_html_path
 from cocktail.modeling import ListWrapper, classgetter
 from cocktail.persistence import datastore
 from cocktail.controllers import HTTPPostRedirect
-from sitebasis.models import Document, Style
+from sitebasis.models import Site, Document, Style, PlugIn
 from sitebasis.controllers.language import LanguageModule
 from sitebasis.controllers.authentication import AuthenticationModule
 from sitebasis.controllers.authorization import AuthorizationModule
@@ -35,8 +36,8 @@ class CMS(object):
 
     # Static resources
     path = os.path.dirname(__file__)
-    views_path = os.path.join(path, "..", "views")
-
+    views_path = os.path.abspath(os.path.join(path, "..", "views"))
+    
     resources = cherrypy.tools.staticdir.handler(
         section = "resources",
         dir = os.path.join(views_path, "resources")
@@ -66,6 +67,47 @@ class CMS(object):
         self.add_module(self._dispatcher_module(), "dispatcher")
         self.add_module(self._rendering_module(), "rendering")
         self.add_module(self._error_handling_module(), "error_handling")
+
+        self.load_plugins()
+        datastore.commit()
+
+    def load_plugins(self):
+
+        site = Site.main
+
+        # Install new plugins
+        pkgname = self.__class__.__module__
+        pkgname = pkgname[:pkgname.find(".")] + ".plugins"
+
+        try:
+            plugins_path = os.path.abspath(
+                os.path.dirname(import_object(pkgname + ".__file__"))
+            )
+        
+            installed_plugin_types = \
+                set(plugin.__class__ for plugin in Site.main.plugins)
+
+            for name in os.listdir(plugins_path):
+                path = os.path.join(plugins_path, name)
+                if os.path.isdir(path):
+                    try:
+                        module = import_object(pkgname + "." + name)
+                    except (IOError, ImportError):
+                        pass
+                    else:
+                        for item in module.__dict__.itervalues():
+                            if issubclass(item, PlugIn) \
+                            and item not in installed_plugin_types:
+                                new_plugin = item()
+                                site.plugins.append(new_plugin)
+
+        except (IOError, ImportError):
+            pass
+
+        # Execute plugin initialization
+        for plugin in site.plugins:
+            if plugin.enabled:
+                plugin.initialize(self)
 
     def run(self):
         cherrypy.quickstart(self, self.virtual_path)

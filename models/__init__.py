@@ -55,4 +55,5 @@ from sitebasis.models.news import News
 from sitebasis.models.event import Event
 from sitebasis.models.resource import Resource
 from sitebasis.models.style import Style
+from sitebasis.models.plugin import PlugIn
 

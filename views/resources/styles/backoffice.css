@@ -505,6 +505,10 @@ html, body {
     background-image: url(../images/types/Role.png);
 }
 
+.BackOfficeLayout .PlugIn {
+    background-image: url(../images/types/PlugIn.png);
+}
+
 /* Toolbar
 -----------------------------------------------------------------------------*/
 

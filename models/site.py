@@ -55,6 +55,10 @@ class Site(Item):
         items = "sitebasis.models.AccessRule"
     )
 
+    plugins = schema.Collection(
+        items = "sitebasis.models.PlugIn"
+    )
+
     def __translate__(self, language, **kwargs):
         return translate(self.__class__.__name__, language, **kwargs)
 
