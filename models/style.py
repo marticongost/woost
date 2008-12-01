@@ -8,7 +8,6 @@
 """
 from cocktail import schema
 from cocktail.modeling import getter
-from cocktail.persistence import Entity
 from sitebasis.models import Item
 
 
@@ -33,9 +32,9 @@ class Style(Item):
     
     @getter
     def class_name(self):
-	    return "sitebasis_style_%d" % self.id
+        return "sitebasis_style_%d" % self.id
 
     def __translate__(self, language, **kwargs):
         return self.get("title", language) \
-            or Entity.__translate__(self, language, **kwargs)
+            or Item.__translate__(self, language, **kwargs)
 

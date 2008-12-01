@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <?py
-from cocktail.schema import Schema, Member
-from cocktail.persistence import EntityAccessor
+from cocktail.schema import Schema, Member, SchemaObjectAccessor
 from cocktail.html.datadisplay import SINGLE_SELECTION
 ?>
 
@@ -19,7 +18,7 @@ from cocktail.html.datadisplay import SINGLE_SELECTION
 
         <py:sitebasis.views.ContentTable
             py:base_url="@{self.cms.uri(self.backoffice.path)}"
-            py:accessor="${EntityAccessor}"
+            py:accessor="${SchemaObjectAccessor}"
             py:selection_mode="${SINGLE_SELECTION}"
             py:data="@{self.collection}"
             py:selection_parameter="position">

@@ -10,7 +10,6 @@ from cocktail.modeling import classgetter
 from cocktail.language import get_content_language
 from cocktail.translations import translate
 from cocktail import schema
-from cocktail.persistence import EntityClass, datastore, PersistentList
 from sitebasis.models.site import Site
 from sitebasis.models.item import Item
 from sitebasis.models.group import Group

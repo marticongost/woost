@@ -48,16 +48,16 @@ from sitebasis.models import Item
     <!-- Content type path -->
     <py:sitebasis.views.ContentTypePath
         py:id="content_type_path"
-        py:value="@{self.user_collection.entity_type}"
+        py:value="@{self.user_collection.type}"
         py:index="0"
         py:root="@{self.root_content_type}">
 
         <py:ready>
             <?py
-            entity = self.user_collection.entity_type
+            content_type = self.user_collection.type
 
-            if entity is self.root_content_type \
-            and is_empty(entity.derived_entities()):
+            if content_type is self.root_content_type \
+            and is_empty(content_type.derived_schemas()):
                 element.visible = False
             ?>
         </py:ready>
@@ -87,7 +87,7 @@ from sitebasis.models import Item
         <div class="selector_content">
             <py:sitebasis.views.ContentTypeTree
                 py:id="new_item_selector"
-                py:root="@{self.user_collection.entity_type}"
+                py:root="@{self.user_collection.type}"
                 py:base_url="@{self.cms.uri(self.backoffice.path, 'content', 'new')}">
 
                 <py:with py:def="label" py:args="content_type"

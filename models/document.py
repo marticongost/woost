@@ -9,7 +9,7 @@
 from datetime import datetime
 import cherrypy
 from cocktail import schema
-from cocktail.persistence import Entity
+from cocktail.persistence import PersistentObject
 from cocktail.pkgutils import get_full_name, import_object
 from sitebasis.models import Item
 
@@ -59,7 +59,7 @@ class Document(Item):
 
     def __translate__(self, language, **kwargs):
         return self.get("title", language) \
-            or Entity.__translate__(self, language, **kwargs)
+            or PersistentObject.__translate__(self, language, **kwargs)
 
     # Publication state
     #--------------------------------------------------------------------------    
@@ -98,15 +98,18 @@ class Document(Item):
         editable = False
     )
 
-    def on_member_set(self, member, value, language):
+    def on_member_set(self, member, value, previous_value, language):
+
+        value = Item.on_member_set(
+            self, member, value, previous_value, language)
 
         if member.name == "path":
             self._update_path(self.parent, value)
 
         elif member.name == "parent":
-            self._update_path(value, self.path)
-            
-        return Item.on_member_set(self, member, value, language)
+            self._update_path(value, self.path)            
+
+        return value
 
     def _update_path(self, parent, path):
 

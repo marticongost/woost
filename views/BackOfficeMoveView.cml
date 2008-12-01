@@ -1,9 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?py
-from cocktail.schema import Schema, Member
-from cocktail.persistence import EntityAccessor
-from cocktail.html.datadisplay import SINGLE_SELECTION
-?>
 
 <py:sitebasis.views.BackOfficeLayout
     xmlns="http://www.w3.org/1999/xhtml"

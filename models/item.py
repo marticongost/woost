@@ -9,7 +9,7 @@
 from datetime import datetime
 from cocktail import schema
 from cocktail.persistence import (
-    Entity, EntityClass, EntityAccessor, datastore, PersistentMapping
+    PersistentObject, PersistentClass, datastore, PersistentMapping
 )
 from sitebasis.models.changesets import ChangeSet, Change
 from sitebasis.models.action import Action
@@ -32,7 +32,7 @@ schema.Member.editable = True
 schema.Member.versioned = True
 
 
-class Item(Entity):
+class Item(PersistentObject):
     """Base class for all CMS items. Provides basic functionality such as
     authorship, group membership, draft copies and versioning.
     """
@@ -108,8 +108,8 @@ class Item(Entity):
             self,
             draft,
             source_schema = self.__class__,
-            source_accessor = EntityAccessor,
-            target_accessor = EntityAccessor,
+            source_accessor = schema.SchemaObjectAccessor,
+            target_accessor = schema.SchemaObjectAccessor,
             collection_copy_mode = schema.shallow
         )
         
@@ -135,8 +135,8 @@ class Item(Entity):
                 self,
                 self.draft_source,
                 source_scema = self.__class__,
-                source_accessor = EntityAccessor,
-                target_accessor = EntityAccessor,
+                source_accessor = schema.SchemaObjectAccessor,
+                target_accessor = schema.SchemaObjectAccessor,
                 collection_copy_mode = schema.shallow
             )
             self.delete()
@@ -160,13 +160,13 @@ class Item(Entity):
     # When validating unique members, ignore conflicts with the draft source
     @classmethod
     def _get_unique_validable(cls, context):
-        validable = EntityClass._get_unique_validable(cls, context)
+        validable = PersistentClass._get_unique_validable(cls, context)
         return getattr(validable, "draft_source", validable)
 
     # Make sure draft copies' members don't get indexed
     def _update_index(self, member, language, previous_value, new_value):
         if self.draft_source is None:
-            Entity._update_index(
+            PersistentObject._update_index(
                 self,
                 member,
                 language,
@@ -277,7 +277,7 @@ class Item(Entity):
     # Item instantiation overriden to make it versioning aware
     def __init__(self, **values):
 
-        Entity.__init__(self, **values)
+        PersistentObject.__init__(self, **values)
         
         changeset = ChangeSet.current
 
@@ -303,7 +303,7 @@ class Item(Entity):
                 self.owner = changeset.author
     
     # Item modification overriden to make it versioning aware
-    def on_member_set(self, member, value, language):
+    def on_member_set(self, member, value, previous_value, language):
 
         if getattr(self, "_v_initializing", False) \
         or not member.versioned:
@@ -369,7 +369,7 @@ class Item(Entity):
 
     @classmethod
     def _create_translation_schema(cls):
-        rvalue = EntityClass._create_translation_schema(cls)
+        rvalue = PersistentClass._create_translation_schema(cls)
         cls.translations.versioned = False
         cls.translations.editable = False
         return rvalue
@@ -377,7 +377,7 @@ class Item(Entity):
     # Item removal overriden to make it versioning aware
     def delete(self):
         
-        Entity.delete(self)
+        PersistentObject.delete(self)
         
         changeset = ChangeSet.current
         

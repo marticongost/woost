@@ -7,7 +7,7 @@
 @since:			July 2008
 """
 from cocktail import schema
-from cocktail.persistence import Entity, Query
+from cocktail.persistence import PersistentObject, Query
 from sitebasis.models import Item
 
 class DynamicGroup(Item):
@@ -25,5 +25,5 @@ class DynamicGroup(Item):
 
     def __translate__(self, language, **kwargs):
         return self.get("title", language) \
-            or Entity.__translate__(self, language, **kwargs)
+            or PersistentObject.__translate__(self, language, **kwargs)
 

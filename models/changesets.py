@@ -11,7 +11,7 @@ from threading import local
 from contextlib import contextmanager
 from cocktail.modeling import classgetter
 from cocktail import schema
-from cocktail.persistence import Entity, PersistentMapping
+from cocktail.persistence import PersistentObject
 
 @contextmanager
 def changeset_context(author = None):
@@ -68,7 +68,7 @@ def changeset_context(author = None):
 
         yield changeset
 
-class ChangeSet(Entity):
+class ChangeSet(PersistentObject):
     """A persistent record of a set of L{changes<Change>} performed on one or
     more CMS items."""
 
@@ -76,7 +76,7 @@ class ChangeSet(Entity):
     indexed = True
 
     changes = schema.Collection(
-        type = PersistentMapping,
+        type = dict,
         items = "sitebasis.models.Change",
         get_item_key = lambda collection, item: item.target.id,
         bidirectional = True
@@ -114,7 +114,7 @@ class ChangeSet(Entity):
                 "changeset in place")
 
 
-class Change(Entity):
+class Change(PersistentObject):
     """A persistent record of an action performed on a CMS item."""
 
     indexed = True

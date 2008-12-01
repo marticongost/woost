@@ -7,9 +7,9 @@
 @since:			June 2008
 """
 from cocktail import schema
-from cocktail.persistence.entity import Entity, EntityClass
+from cocktail.persistence import PersistentObject
 
-class Action(Entity):
+class Action(PersistentObject):
     
     identifier = schema.String(
         max = 10,
@@ -27,7 +27,7 @@ class Action(Entity):
 
     def __repr__(self):
         
-        base_repr = Entity.__repr__(self)
+        base_repr = PersistentObject.__repr__(self)
 
         if self.identifier:
             base_repr += " (" + self.identifier + ")"
@@ -36,5 +36,5 @@ class Action(Entity):
 
     def __translate__(self, language, **kwargs):
         return self.get("title", language) \
-            or Entity.__translate__(self, language, **kwargs)
+            or PersistentObject.__translate__(self, language, **kwargs)
 
