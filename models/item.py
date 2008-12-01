@@ -14,23 +14,6 @@ from cocktail.persistence import (
 from sitebasis.models.changesets import ChangeSet, Change
 from sitebasis.models.action import Action
 
-# Add an extension property to set the default HTML control for the member
-schema.Member.edit_control = None
-
-# Add an extension property to control the default member visibility on item listings
-schema.Member.listed_by_default = True
-schema.Collection.listed_by_default = False
-
-# Add an extension property to indicate if members should be visible by users
-schema.Member.visible = True
-
-# Add an extension property to indicate if members should be editable by users
-schema.Member.editable = True
-
-# Add an extension property to determine if members should participate in item
-# revisions
-schema.Member.versioned = True
-
 
 class Item(PersistentObject):
     """Base class for all CMS items. Provides basic functionality such as

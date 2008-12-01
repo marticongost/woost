@@ -7,6 +7,31 @@ Provides base and default content types for the sitebasis CMS.
 @organization:	Whads/Accent SL
 @since:			June 2008
 """
+from cocktail import schema
+
+# Add an extension property to set the default HTML control for the member
+schema.Member.edit_control = None
+
+# Add an extension property to control the default member visibility on item listings
+schema.Member.listed_by_default = True
+schema.Collection.listed_by_default = False
+
+# Add an extension property to indicate if members should be visible by users
+schema.Member.visible = True
+
+# Add an extension property to indicate if schemas should be instantiable by
+# users
+schema.Schema.instantiable = True
+
+# Add an extension property to indicate if members should be editable by users
+schema.Member.editable = True
+
+# Add an extension property to determine if members should participate in item
+# revisions
+schema.Member.versioned = True
+
+# Base content types
+#------------------------------------------------------------------------------
 from sitebasis.models.site import Site
 from sitebasis.models.changesets import ChangeSet, Change, changeset_context
 from sitebasis.models.item import Item
