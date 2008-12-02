@@ -22,11 +22,30 @@ class Item(PersistentObject):
 
     members_order = "id", "author", "owner", "groups"
 
+    # Indexing
+    #------------------------------------------------------------------------------    
     indexed = True
  
+     # When validating unique members, ignore conflicts with the draft source
+    @classmethod
+    def _get_unique_validable(cls, context):
+        validable = PersistentClass._get_unique_validable(cls, context)
+        return getattr(validable, "draft_source", validable)
+
+    # Make sure draft copies' members don't get indexed
+    def _update_index(self, member, language, previous_value, new_value):
+        if self.draft_source is None:
+            PersistentObject._update_index(
+                self,
+                member,
+                language,
+                previous_value,
+                new_value
+            )
+
     # Versioning
     #------------------------------------------------------------------------------    
-    deleted = schema.Boolean(
+    is_deleted = schema.Boolean(
         required = True,
         editable = False,
         default = False,
@@ -140,23 +159,6 @@ class Item(PersistentObject):
         ])
         return adapter
 
-    # When validating unique members, ignore conflicts with the draft source
-    @classmethod
-    def _get_unique_validable(cls, context):
-        validable = PersistentClass._get_unique_validable(cls, context)
-        return getattr(validable, "draft_source", validable)
-
-    # Make sure draft copies' members don't get indexed
-    def _update_index(self, member, language, previous_value, new_value):
-        if self.draft_source is None:
-            PersistentObject._update_index(
-                self,
-                member,
-                language,
-                previous_value,
-                new_value
-            )
-
     @classmethod
     def differences(cls,
         source,
@@ -222,7 +224,134 @@ class Item(PersistentObject):
                     differences.add((member, None))
 
         return differences
+
+    @classmethod
+    def _create_translation_schema(cls):
+        rvalue = PersistentClass._create_translation_schema(cls)
+        cls.translations.versioned = False
+        cls.translations.editable = False
+        return rvalue
+
+    def _get_revision_state(self):
+        """Produces a dictionary with the values for the item's versioned
+        members. The value of translated members is represented using a
+        (language, translated value) mapping.
+
+        @return: The item's current state.
+        @rtype: dict
+        """
+
+        # Store the item state for the revision
+        state = PersistentMapping()
+
+        for key, member in self.__class__.members().iteritems():
+           
+            if not member.versioned:
+                continue
+
+            if member.translated:
+                value = dict(
+                    (language, translation.get(key))
+                    for language, translation in self.translations.iteritems()
+                )
+            else:
+                value = self.get(key)
+
+            state[key] = value
+
+        return state
+
+    # Item instantiation overriden to make it versioning aware
+    def __init__(self, **values):
+
+        PersistentObject.__init__(self, **values)
         
+        changeset = ChangeSet.current
+
+        if changeset:
+            change = Change()
+            change.action = Action.identifier.index["create"]
+            change.target = self
+            change.changed_members = set(
+                member.name
+                for member in self.__class__.members().itervalues()
+                if member.versioned
+            )
+            change.item_state = self._get_revision_state()
+            change.changeset = changeset
+            changeset.changes[self.id] = change
+            
+            self.creation_time = datetime.now()
+            self.last_update_time = datetime.now()
+
+            if "author" not in values:
+                self.author = changeset.author
+
+            if "owner" not in values:
+                self.owner = changeset.author
+    
+    # Extend item modification to make it versioning aware
+    @classmethod
+    def _handle_changed(cls, event):
+
+        item = event.source
+
+        if getattr(item, "_v_initializing", False) \
+        or not event.member.versioned:
+            return
+
+        changeset = ChangeSet.current
+
+        if changeset:
+
+            member_name = event.member.name
+            language = event.language
+            change = changeset.changes.get(item.id)
+
+            if change is None:
+                action_type = "modify"
+                change = Change()
+                change.action = Action.identifier.index[action_type]
+                change.target = item
+                change.changed_members = set()
+                change.item_state = item._get_revision_state()
+                change.changeset = changeset
+                changeset.changes[item.id] = change
+                item.last_update_time = datetime.now()
+            else:
+                action_type = change.action.identifier
+
+            if action_type == "modify":
+                change.changed_members.add(member_name)
+                
+            if action_type in ("create", "modify"):
+                if language:
+                    change.item_state[member_name][language] = event.value
+                else:
+                    change.item_state[member_name] = event.value
+
+    # Extend item removal to make it versioning aware
+    @classmethod
+    def _handle_deleted(cls, event):
+                
+        changeset = ChangeSet.current
+        
+        if changeset:
+            item = event.source
+            change = changeset.changes.get(item.id)
+
+            if change and change.action.identifier != "delete":
+                del changeset.changes[item.id]
+
+            if change is None \
+            or change.action.identifier not in ("create", "delete"):
+                change = Change()
+                change.action = Action.identifier.index["delete"]
+                change.target = item
+                change.changeset = changeset
+                changeset.changes[item.id] = change
+                item.is_deleted = True
+
     # Users and permissions
     #------------------------------------------------------------------------------    
     author = schema.Reference(
@@ -255,129 +384,11 @@ class Item(PersistentObject):
             roles.append(datastore.root["author_role"])
         
         roles.extend(self.groups)
-        return roles
+        return roles 
 
-    # Item instantiation overriden to make it versioning aware
-    def __init__(self, **values):
 
-        PersistentObject.__init__(self, **values)
-        
-        changeset = ChangeSet.current
-
-        if changeset:
-            change = Change()
-            change.action = Action.identifier.index["create"]
-            change.target = self
-            change.changed_members = set(
-                member.name
-                for member in self.__class__.members().itervalues()
-                if member.versioned
-            )
-            change.item_state = self._get_revision_state()
-            change.changeset = changeset
-            
-            self.creation_time = datetime.now()
-            self.last_update_time = datetime.now()
-
-            if "author" not in values:
-                self.author = changeset.author
-
-            if "owner" not in values:
-                self.owner = changeset.author
-    
-    # Item modification overriden to make it versioning aware
-    def on_member_set(self, member, value, previous_value, language):
-
-        if getattr(self, "_v_initializing", False) \
-        or not member.versioned:
-            return value
-
-        changeset = ChangeSet.current
-
-        if changeset:
-
-            change = changeset.changes.get(self.id)
-        
-            if change is None:
-                action_type = "modify"
-                change = Change()
-                change.action = Action.identifier.index[action_type]
-                change.target = self
-                change.changed_members = set()
-                change.item_state = self._get_revision_state()
-                change.changeset = changeset
-                self.last_update_time = datetime.now()
-            else:
-                action_type = change.action.identifier
-
-            if action_type == "modify":
-                change.changed_members.add(member.name)
-                
-            if action_type in ("create", "modify"):
-                if language:
-                    change.item_state[member.name][language] = value
-                else:
-                    change.item_state[member.name] = value
-
-        return value
-
-    def _get_revision_state(self):
-        """Produces a dictionary with the values for the item's versioned
-        members. The value of translated members is represented using a
-        (language, translated value) mapping.
-
-        @return: The item's current state.
-        @rtype: dict
-        """
-
-        # Store the item state for the revision
-        state = PersistentMapping()
-
-        for key, member in self.__class__.members().iteritems():
-           
-            if not member.versioned:
-                continue
-
-            if member.translated:
-                value = dict(
-                    (language, translation.get(key))
-                    for language, translation in self.translations.iteritems()
-                )
-            else:
-                value = self.get(key)
-
-            state[key] = value
-
-        return state
-
-    @classmethod
-    def _create_translation_schema(cls):
-        rvalue = PersistentClass._create_translation_schema(cls)
-        cls.translations.versioned = False
-        cls.translations.editable = False
-        return rvalue
-
-    # Item removal overriden to make it versioning aware
-    def delete(self):
-        
-        PersistentObject.delete(self)
-        
-        changeset = ChangeSet.current
-        
-        if changeset:
-            change = changeset.changes.get(self.id)
-
-            if change and change.action.identifier != "delete":
-                del changeset.changes[self.id]
-
-            if change is None \
-            or change.action.identifier not in ("create", "delete"):
-                change = Change()
-                change.action = Action.identifier.index["delete"]
-                change.target = self
-                change.changeset = changeset
-                self.deleted = True
-
+Item.changed.append(Item._handle_changed)
+Item.deleted.append(Item._handle_deleted)
 
 Item.id.editable = False
 Item.id.listed_by_default = False
