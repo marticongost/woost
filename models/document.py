@@ -98,18 +98,17 @@ class Document(Item):
         editable = False
     )
 
-    def on_member_set(self, member, value, previous_value, language):
+    @classmethod
+    def _handle_changed(cls, event):
 
-        value = Item.on_member_set(
-            self, member, value, previous_value, language)
+        member = event.member
+        document = event.source
 
         if member.name == "path":
-            self._update_path(self.parent, value)
+            document._update_path(document.parent, event.value)
 
         elif member.name == "parent":
-            self._update_path(value, self.path)            
-
-        return value
+            document._update_path(event.value, document.path)
 
     def _update_path(self, parent, path):
 
@@ -224,4 +223,6 @@ class Document(Item):
         required = True,
         default = False
     )
+
+Document.changed.append(Document._handle_changed)
 

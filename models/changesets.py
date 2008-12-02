@@ -75,12 +75,7 @@ class ChangeSet(PersistentObject):
     members_order = "id", "author", "date", "changes"
     indexed = True
 
-    changes = schema.Collection(
-        type = dict,
-        items = "sitebasis.models.Change",
-        get_item_key = lambda collection, item: item.target.id,
-        bidirectional = True
-    )
+    changes = schema.Mapping()
     
     author = schema.Reference(
         required = True,
@@ -121,8 +116,7 @@ class Change(PersistentObject):
 
     changeset = schema.Reference(
         required = True,
-        type = "sitebasis.models.ChangeSet",
-        bidirectional = True
+        type = "sitebasis.models.ChangeSet"
     )
 
     action = schema.Reference(
