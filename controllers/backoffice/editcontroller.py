@@ -207,9 +207,11 @@ class EditController(BaseBackOfficeController):
             item,
             self.form_schema)
 
-        # Drop deleted translations
-        for language in (set(item.translations) - set(self.translations)):
-            del item.translations[language]
+        if self.edited_content_type.translated:
+
+            # Drop deleted translations
+            for language in (set(item.translations) - set(self.translations)):
+                del item.translations[language]
 
         # Save changes to collections
         edit_state = self.edit_node
