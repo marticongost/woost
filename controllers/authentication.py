@@ -6,7 +6,6 @@
 @organization:	Whads/Accent SL
 @since:			July 2008
 """
-import sha
 import cherrypy
 from cocktail.modeling import getter
 from cocktail.persistence import datastore
@@ -18,7 +17,6 @@ class AuthenticationModule(Module):
 
     SESSION_KEY = "user_id"
 
-    encryption = sha
     identifier_field = User.email
 
     def process_request(self, request):
@@ -67,8 +65,7 @@ class AuthenticationModule(Module):
         if identifier and password:
             user = self.identifier_field.index.get(identifier)
 
-            if user \
-            and self.encryption.new(password).digest() == user.password:
+            if user and user.test_password(password):            
                 self.user = user
                 return user
 
