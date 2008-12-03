@@ -12,11 +12,12 @@ from itertools import chain
 from threading import Lock
 import cherrypy
 from cocktail.modeling import cached_getter, ListWrapper
-from cocktail.schema import DictAccessor, Collection, String, Integer
+from cocktail.schema import (
+    DictAccessor, Collection, String, Integer, add, remove
+)
 from cocktail.language import get_content_language
 from cocktail.controllers import \
     get_parameter, get_persistent_param, BaseController
-from cocktail.persistence.relations import add, remove
 from sitebasis.models import Item
 from sitebasis.controllers import Request
 
