@@ -226,11 +226,10 @@ class Item(PersistentObject):
         return differences
 
     @classmethod
-    def _create_translation_schema(cls):
-        rvalue = PersistentClass._create_translation_schema(cls)
-        cls.translations.versioned = False
-        cls.translations.editable = False
-        return rvalue
+    def _create_translation_schema(cls, members):
+        members["versioned"] = False
+        members["editable"] = False
+        PersistentClass._create_translation_schema(cls, members)
 
     def _get_revision_state(self):
         """Produces a dictionary with the values for the item's versioned
