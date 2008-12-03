@@ -67,7 +67,7 @@ def init_site(
         admin.owner = admin
         admin.critical = True
         admin.email = admin_email
-        admin.password = sha.new(admin_password).digest()
+        admin.password = admin_password
         
         changeset.author = admin
         site.author = site.owner = admin
