@@ -1,4 +1,6 @@
 jQuery(document).ready( function () {
+    
+    if(jQuery(".OrderContentView .Table tbody tr").length > 1){
         
       jQuery(".OrderContentView .Table tbody tr").hover(function() {
             jQuery(this.cells[0]).addClass('showDragHandle');
@@ -34,7 +36,9 @@ jQuery(document).ready( function () {
       jQuery("*", document.body).each( function() {               
          if (this.edit_stack && typeof(this.edit_stack) == "string") edit_stack = this.edit_stack;                         
          if (this.member) member = this.member;
-      });  
+      }); 
+      
+      jQuery(".OrderContentView").append("<div class=\"error\" style=\"display:none;\"></div>"); 
     
       jQuery(".OrderContentView .Table").tableDnD({
             onDrop: function(table, row) {
@@ -51,21 +55,27 @@ jQuery(document).ready( function () {
                 url += "action=order&";
                 url += "format=json&";
                 url += "position=" + position;          
+                                                
                                                             
                 jQuery.ajax({
         			url: url,
-        			type: "POST",
+        			type: "GET",
         			data: {},
-        			complete: function(str){
-                        //alert(str.ResponseText);
+        			dataType: "json",
+        			contentType: "application/json; charset=utf-8",
+        			success: function(json){
+        			    jQuery(".error").hide();        			    
+                        if(json.error) jQuery(".error").html(json.error).show("slow");
         			},
         			error: function(XMLHttpRequest, textStatus, errorThrown){
-        			
+        			    jQuery(".error").hide();        			    
+        			    jQuery(".error").html(textStatus).show("slow");
         			}
-        		});
+        		});        		        		
                                 
             },
             dragHandle: "dragHandle",
             onDragClass: "mydragClass"
        });
+    }
 });

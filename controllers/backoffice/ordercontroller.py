@@ -81,7 +81,7 @@ class OrderController(BaseBackOfficeController):
         def rearrange(collection, items, position):
 
             size = len(collection)
-
+            
             if position < 0:
                 position = size + position
 
@@ -89,15 +89,19 @@ class OrderController(BaseBackOfficeController):
                 position = size - len(items)
 
             for item in items:
-                collection.remove(item)
+                collection.remove(item)            
             
-            for item in reversed(items):
-                collection.insert(position, item)
-
-            return collection
-
-        rearrange(self.collection, self.selection, self.position)
-
+            for item in reversed(list(items)):
+                collection.insert(position, item)                       
+            
+            return collection                   
+                   
+        rearrange(self.collection, self.selection, self.position)                
+    
+    def handle_error(self, error):
+	    if not self.is_ajax:
+		    BaseBackOfficeController.handle_error(self, error) 
+    
     def end(self):
         if not self.redirecting and not self.is_ajax:
             if self.action == "cancel" \
@@ -120,9 +124,15 @@ class OrderController(BaseBackOfficeController):
     def render(self):
         if self.is_ajax:
             cherrypy.response.headers["Content-Type"] = "text/plain"
+            desc = None
+            if(self.error):
+                try:
+                    desc = translate(self.error)
+                except KeyError:
+                    desc = translate("cocktail.unexpected_error", error = str(self.error))
+                
             return dumps({
-                "error": self.error and translate(self.error) or None
+                "error": desc
             })
         else:
             return BaseBackOfficeController.render(self)
-
