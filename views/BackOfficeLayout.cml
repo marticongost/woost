@@ -2,7 +2,6 @@
 
 <?py
 from cocktail.translations import get_language
-from sitebasis.models import Site, Language
 from sitebasis.controllers.backoffice import EditNode
 ?>
 
@@ -62,7 +61,7 @@ from sitebasis.controllers.backoffice import EditNode
         </h1>
 
         <!-- Identity and logout -->
-        <div py:id="identity" py:visible="self.user and not self.user.anonymous">
+        <div py:id="identity" py:visible="@{self.user and not self.user.anonymous}">
             <py:ready py:if="element.visible">
                 <strong>${translate(self.user)}</strong>
                 <form method="post">
@@ -78,7 +77,7 @@ from sitebasis.controllers.backoffice import EditNode
             <div class="label">${translate("Language")}</div>
             <py:cocktail.html.LinkSelector
                 class="selector_content"
-                py:items="${Language.codes}"
+                py:items="${translations.keys()}"
                 py:value="${get_language()}"
                 py:empty_option_displayed="${False}">
                 <?py
