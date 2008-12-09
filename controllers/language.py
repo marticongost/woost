@@ -18,7 +18,11 @@ class LanguageModule(Module):
 
     cookie_duration = 60 * 60 * 24 * 15 # 15 days
 
-    def process_request(self, request):
+    def __init__(self, *args, **kwargs):
+        Module.__init__(self, *args, **kwargs)
+        self.application.before_request.append(self.process_request_language)
+
+    def process_request_language(self, event):
 
         path = request.path
         language = path[0] if path and path[0] in Language.codes else None

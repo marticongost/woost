@@ -6,172 +6,181 @@
 @organization:	Whads/Accent SL
 @since:			July 2008
 """
-import os
-from threading import local
+from pkg_resources import resource_filename
 import cherrypy
-from cocktail.pkgutils import import_object
-from cocktail.html import __file__ as cocktail_html_path
-from cocktail.modeling import ListWrapper, classgetter
+from cocktail.events import Event
 from cocktail.persistence import datastore
-from cocktail.controllers import HTTPPostRedirect
-from sitebasis.models import Site, Document, Style, PlugIn
+from cocktail.controllers import Dispatcher
+from sitebasis.models import Site, Document, Style, AccessDeniedError
 from sitebasis.controllers.language import LanguageModule
-from sitebasis.controllers.authentication import AuthenticationModule
+from sitebasis.controllers.authentication import (
+    AuthenticationModule, AuthenticationFailedError
+)
 from sitebasis.controllers.authorization import AuthorizationModule
-from sitebasis.controllers.dispatcher import DispatcherModule
 from sitebasis.controllers.rendering import RenderingModule
-from sitebasis.controllers.errorpages import ErrorPagesModule
-
-_thread_data = local()
 
 
-class CMS(object):
+class CMSController(Controller):
 
+    # Application events
+    application_starting = Event(doc = """
+        An event triggered before the application's web server starts.
+        """)
+
+    application_ending = Event(doc = """
+        An event triggered after the application's web server is shutdown.
+        """)
+
+    loading_plugins = Event(doc = """
+        An event triggered before loading plug-ins.
+        """)
+
+    plugins_loaded = Event(doc = """
+        An event triggered after loading plugins.
+        """
+
+    # Application modules
+    LanguageModule = LanguageModule
+    AuthenticationModule = AuthenticationModule
+    AuthorizationModule = AuthorizationModule
+    RenderingModule = RenderingModule
+
+    def __init__(self):
+        
+        # Instantiate modules
+        self.language = self.LanguageModule(self)
+        self.authentication = self.AuthenticationModule(self)
+        self.authorization = self.AuthorizationModule(self)
+        self.rendering = self.RenderingModule(self)
+
+    # Webserver configuration
     virtual_path = "/"
-
-    # Cherrypy configuration
+    
     _cp_config = {
         "tools.sessions.on": True
     }
 
-    # Static resources
-    path = os.path.dirname(__file__)
-    views_path = os.path.abspath(os.path.join(path, "..", "views"))
-    
+    # Static resources    
     resources = cherrypy.tools.staticdir.handler(
         section = "resources",
-        dir = os.path.join(views_path, "resources")
+        dir = resource_filename("sitebasis.views", "resources")
     )
         
     cocktail = cherrypy.tools.staticdir.handler(
         section = "cocktail",
-        dir = os.path.join(os.path.dirname(cocktail_html_path), "resources")
+        dir = resource_filename("cocktail.html", "resources")
     )
 
-    # Application modules
-    _language_module = LanguageModule
-    _authentication_module = AuthenticationModule
-    _authorization_module = AuthorizationModule
-    _dispatcher_module = DispatcherModule
-    _rendering_module = RenderingModule
-    _error_handling_module = ErrorPagesModule
-
-    def __init__(self):
-                
-        self.__modules = []
-        self.modules = ListWrapper(self.__modules)
-
-        self.add_module(self._language_module(), "language")
-        self.add_module(self._authentication_module(), "authentication")
-        self.add_module(self._authorization_module(), "authorization")
-        self.add_module(self._dispatcher_module(), "dispatcher")
-        self.add_module(self._rendering_module(), "rendering")
-        self.add_module(self._error_handling_module(), "error_handling")
-
+    def __init__(self):                
         self.load_plugins()
-        datastore.commit()
+
+    def run(self):
+
+        cherrypy.config.update(
+            "global": {
+                "request.dispatch": Dispatcher()
+            }
+        )
+
+        self.application_starting()
+        cherrypy.quickstart(self, self.virtual_path)
+        self.application_ending()
 
     def load_plugins(self):
 
-        site = Site.main
+        self.loading_plugins()
 
-        # Install new plugins
-        pkgname = self.__class__.__module__
-        pkgname = pkgname[:pkgname.find(".")] + ".plugins"
-
-        try:
-            plugins_path = os.path.abspath(
-                os.path.dirname(import_object(pkgname + ".__file__"))
-            )
-        
-            installed_plugin_types = \
-                set(plugin.__class__ for plugin in Site.main.plugins)
-
-            for name in os.listdir(plugins_path):
-                path = os.path.join(plugins_path, name)
-                if os.path.isdir(path):
-                    try:
-                        module = import_object(pkgname + "." + name)
-                    except (IOError, ImportError):
-                        pass
-                    else:
-                        for item in module.__dict__.itervalues():
-                            if issubclass(item, PlugIn) \
-                            and item not in installed_plugin_types:
-                                new_plugin = item()
-                                site.plugins.append(new_plugin)
-
-        except (IOError, ImportError):
-            pass
+        # Load plugin types
+        for epoint in pkg_resources.iter_entry_points("sitebasis.plugins"):
+            epoint.load()
 
         # Execute plugin initialization
-        for plugin in site.plugins:
+        for plugin in Site.main.plugins:
             if plugin.enabled:
                 plugin.initialize(self)
 
-    def run(self):
-        cherrypy.quickstart(self, self.virtual_path)
+        self.plugins_loaded()
 
-    def add_module(self, module, concept = None):
-
-        if concept:
-            previous_module = getattr(self, concept, None)
-            setattr(self, concept, module)
-            
-            if previous_module:
-                previous_module.release()
-                pos = self.__modules.find(previous_module)
-                self.__modules[pos] = module
-            else:
-                self.__modules.append(module)
-        else:
-            self.__modules.append(module)
-
-        module.attach(self)
-
-    @cherrypy.expose
-    def default(self, *args, **kwargs):
-
-        request = Request()
+    def resolve(self, path):
+        
+        request = cherrypy.request
         request.cms = self
-        request.path = list(args)
-        request.params = kwargs
-        _thread_data.request = request
+        request.document, document_path = self.find_document(path)
+        
+        self.validate_document(document)
 
-        try:
-            datastore.sync()
+        for component in document_path:
+            path.pop(0)
 
-            for module in self.__modules:
-                module.process_request(request)
-            
-        except Exception, error:
-            
-            if isinstance(error, cherrypy.HTTPRedirect):
-                raise
-            elif isinstance(error, HTTPPostRedirect):
-                return cherrypy.response.body
+        return request.document.handler \
+            or request.document \
+            or cherrypy.NotFound()
+
+    def find_document(self, path):
+        
+        path = list(path)
+                
+        while path:
+            document = Document.full_path.index.get("/".join(path))
+            if document:
+                break
             else:
-                handled = False
-                for module in self.__modules:
-                    handled = handled \
-                            or module.handle_error(request, error, handled)
+                path.pop()
+        else:
+            document = self.root_document
+        
+        return document, path
 
-                if not handled:
-                    raise
+    @getter
+    def root_document(self):
+        return Site.main.home
 
-        finally:
-            datastore.abort() # Drop any uncommitted change
-            datastore.close()
-            _thread_data.request = None
+    def validate_document(self, document):
+        
+        if document is None \
+        or not document.is_published():
+            raise cherrypy.NotFound()
 
-        return request.output
+        self.authorization.restrict_access(
+            action = "read",
+            target_instance = document)
+    
+    @classmethod
+    def handle_exception_raised(self, event):
 
-    @cherrypy.expose
-    def user_styles(self):
-        cherrypy.response.headers["Content-Type"] = "text/css"
-        for style in Style.index.itervalues():
-            declarations = style.admin_declarations or style.declarations  
-            yield ".%s{\n%s\n}\n" % (style.class_name, declarations)            
+        error = event.exception
+        site = Site.main
+        error_page = None
+
+        # Page not found
+        if isinstance(error, cherrypy.NotFound):
+            status = 404
+            error_page = site.not_found_error_page
+        
+        # Access forbidden
+        elif isinstance(error, (AccessDeniedError, AuthenticationFailedError)):
+            status = 403
+            error_page = site.forbidden_error_page
+        
+        # Generic error
+        if error_page is None:
+            status = 500
+            error_page = site.generic_error_page
+
+        if error_page:
+            event.handled = True
+            request = cherrypy.request
+            request.original_document = request.document
+            request.original_handler_chain = request.handler_chain
+            request.status = status 
+            request.dispatch("/", error_page)
+            request.body = request.handler()
+            
+    @classmethod
+    def handle_after_request(self):
+        # Drop any uncommitted change
+        datastore.abort()
+        datastore.close()
 
     def uri(self, *args):
         
@@ -186,29 +195,22 @@ class CMS(object):
 
             return arg
 
-        path = [clean(self.virtual_path)]
-        path.extend(clean(arg) for arg in args)
-
-        return "/" + "/".join(
-            arg.path if isinstance(arg, Document) else arg
+        path = [self.virtual_path.strip("/")]
+        path.extend([
+            (arg.path
+                if isinstance(arg, Document)
+                else unicode(arg).strip("/")
+            )
             for arg in args if arg
-        )
+        ])
+        
+        return u"/" + u"/".join(path)
 
-
-class Request(object):
-
-    cms = None
-    path = None
-    params = None
-    output = ""
-
-    @classgetter
-    def current(self):
-        """Obtains the current request.
-        @type: L{Request}
-        """
-        return getattr(_thread_data, "request", None)
-
-    def uri(self, *args):
-        return self.cms.uri(self.document, *args)      
+    @cherrypy.expose
+    def user_styles(self):
+        # TODO: Move to a plugin
+        cherrypy.response.headers["Content-Type"] = "text/css"
+        for style in Style.index.itervalues():
+            declarations = style.admin_declarations or style.declarations
+            yield ".%s{\n%s\n}\n" % (style.class_name, declarations)
 
