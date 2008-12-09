@@ -6,42 +6,51 @@
 @organization:	Whads/Accent SL
 @since:			July 2008
 """
-from os.path import join
-from genshi.template import TemplateLoader
-from cocktail.translations import translate
-from cocktail.controllers import view_state, view_state_form
+import cherrypy
 from sitebasis.models import Site
 from sitebasis.controllers.module import Module
 
 
 class RenderingModule(Module):
 
-    loader_options = {"auto_reload": True}
-    format = "html"
-    doctype = "html"
+    default_engine = "cocktail"      
+    default_format = "html"
+    
+    def __init__(self, *args, **kwargs):
+        Module.__init__(self, *args, **kwargs)
+        self.__engines = {}
 
-    def attach(self, application):
+    def render(self, template_name, template_format = None, **values):
         
-        Module.attach(self, application)
-        
-        self.template_loader = TemplateLoader(
-            join(self.application.views_path, "templates"),
-            **self.loader_options
-        )
+        # Rendering engine
+        engine_name = cherrypy.config.get(
+            "rendering.engine",
+            self.default_engine)
 
-    def render(self, template_name, **values):
-        
-        template = self.template_loader.load(template_name + ".html")
-                
-        values.setdefault("translate", translate)
-        values.setdefault("user", self.application.authentication.user)
+        engine = self.__engines.get(engine_name)
+
+        if engine is None:
+            engine_type = buffet.available_engines[template_engine]
+            engine = \
+                engine_type(None, self.engine_options.get(template_engine))
+            self.__engines[engine_type] = engine
+ 
+        # Rendering format
+        if template_format is None:
+            template_format = \
+                cherrypy.config.get("format", self.default_format)
+
+        # Pass the request context to the template
+        request = cherrypy.request
+        cms = request.cms
+        values.setdefault("cms", cms)
         values.setdefault("site", Site.main)
-        values.setdefault("cms", self.application)
-        values.setdefault("view_state", view_state)
-        values.setdefault("view_state_form", view_state_form)
+        values.setdefault("user", cms.authentication.user)
+        values.setdefault("document", request.document)
 
-        return template.generate(**values).render(
-            self.format,
-            doctype = self.doctype)
-
+        # Output the result
+        return engine.render(
+                        values,
+                        format = template_format,
+                        template = template_name)
 
