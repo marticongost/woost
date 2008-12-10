@@ -24,7 +24,8 @@ from sitebasis.models import (
     Resource,
     Template
 )
-from sitebasis.controllers.backoffice import BackOfficeController
+from sitebasis.controllers.backoffice.backofficecontroller \
+    import BackOfficeController
 
 def init_site(
     admin_email = "admin@localhost",
@@ -104,14 +105,14 @@ def init_site(
     
         # Create the back office interface
         back_office = Document()
-        back_office.handler = BackOfficeController
+        back_office.handler = BackOfficeController            
         back_office.critical = True
         back_office.path = "cms"
         set_translations(back_office, "title", "Back office title")
      
         # Create standard templates
         empty_template = Template()
-        empty_template.identifier = "empty_page"
+        empty_template.identifier = "sitebasis.views.EmptyPage"
         set_translations(empty_template, "title", "Empty template title")
 
         # Create standard resources

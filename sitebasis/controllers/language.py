@@ -20,29 +20,27 @@ class LanguageModule(Module):
 
     def __init__(self, *args, **kwargs):
         Module.__init__(self, *args, **kwargs)
-        self.application.before_request.append(self.process_request_language)
+        
+    def process_request_language(self, path):
 
-    def process_request_language(self, event):
-
-        path = request.path
-        language = path[0] if path and path[0] in Language.codes else None
+        language = path.pop(0) if path and path[0] in Language.codes else None
 
         if language is None:
             language = self.infer_language()
             location = Location.get_current()
             location.path_info = "/" + language + location.path_info
-            location.go()
-        else:
-            cherrypy.response.cookie["language"] = language
-            cookie = cherrypy.response.cookie["language"]
-            cookie["path"] = "/"
-            cookie["max-age"] = self.cookie_duration
+            location.go()            
+        
+        cherrypy.response.cookie["language"] = language
+        cookie = cherrypy.response.cookie["language"]
+        cookie["path"] = "/"
+        cookie["max-age"] = self.cookie_duration
 
-        language = path.pop(0)
         set_language(language)
         set_content_language(language)
-        
+    
     def infer_language(self):
+        # TODO: Parse language headers
         cookie = cherrypy.request.cookie.get("language")
         return cookie.value if cookie else Site.main.default_language
 
