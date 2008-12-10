@@ -6,6 +6,7 @@
 @organization:	Whads/Accent SL
 @since:			June 2008
 """
+import buffet
 from cocktail import schema
 from sitebasis.models import Item
 
@@ -27,7 +28,11 @@ class Template(Item):
         unique = True,
         max = 255
     )
-    
+
+    engine = schema.String(
+        enumeration = buffet.available_engines.keys()
+    )
+
     items = schema.Collection(
         items = "sitebasis.models.Document",
         bidirectional = True,

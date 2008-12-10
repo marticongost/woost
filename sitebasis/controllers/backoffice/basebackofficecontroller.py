@@ -11,46 +11,25 @@ from copy import copy
 from itertools import chain
 from threading import Lock
 import cherrypy
-from cocktail.modeling import cached_getter, ListWrapper
+from cocktail.modeling import ListWrapper
 from cocktail.schema import (
     DictAccessor, Collection, String, Integer, add, remove
 )
 from cocktail.language import get_content_language
-from cocktail.controllers import \
-    get_parameter, get_persistent_param, BaseController
+from cocktail.controllers import get_persistent_param, request_property
 from sitebasis.models import Item
-from sitebasis.controllers import Request
+from sitebasis.controllers import BaseCMSController
 
 
-class BaseBackOfficeController(BaseController):
+class BaseBackOfficeController(BaseCMSController):
 
     section = None
     persistent_content_type_choice = False
     settings_duration = 60 * 60 * 24 * 30 # ~= 1 month
 
-    def __init__(self):
-        BaseController.__init__(self)
+    def __init__(self, *args, **kwargs):
+        BaseCMSController.__init__(self, *args, **kwargs)
         self.__edit_stacks_lock = Lock()
-
-    @cached_getter
-    def backoffice(self):
-        return Request.current.document
-
-    @cached_getter
-    def cms(self):
-        return Request.current.cms
-
-    @cached_getter
-    def user(self):
-        return self.cms.authentication.user
-
-    def _init_view(self, view):
-        BaseController._init_view(self, view)
-        view.backoffice = self.backoffice
-        view.cms = self.cms
-        view.user = self.user
-        view.section = self.section
-        view.edit_stack = self.edit_stack
 
     def get_content_type(self, default = None):
 
@@ -85,7 +64,7 @@ class BaseBackOfficeController(BaseController):
         else:
             return [get_content_language()]
 
-    @cached_getter
+    @request_property
     def edit_stacks(self):
         """A mapping containing all the edit stacks for the current HTTP
         session.
@@ -106,7 +85,7 @@ class BaseBackOfficeController(BaseController):
 
         return edit_stacks
 
-    @cached_getter
+    @request_property
     def edit_stack(self):
         """Obtains the stack of edit operations that applies to the current
         context. The active stack is usually selected through an HTTP
@@ -119,7 +98,7 @@ class BaseBackOfficeController(BaseController):
         """
         return self.requested_edit_stack
 
-    @cached_getter
+    @request_property
     def requested_edit_stack(self):
         """
         Obtains the stack of edit operations for the current HTTP request, as
@@ -155,11 +134,21 @@ class BaseBackOfficeController(BaseController):
         self.edit_stacks[edit_stack.id] = edit_stack
         return edit_stack
 
-    @cached_getter
+    @request_property
     def edit_node(self):
         return self.edit_stack[-1]
 
-    def end(self):
+    @request_property
+    def output(self):
+        output = BaseCMSController.output(self)
+        output.update(
+            section = self.section,
+            edit_stack = self.edit_stack
+        )
+        return output
+
+    @classmethod
+    def handle_after_request(self):
         # Preserve the edit session
         self.edit_stack
         cherrypy.session["edit_stacks"] = self.edit_stacks

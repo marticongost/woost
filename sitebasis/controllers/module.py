@@ -10,5 +10,5 @@
 class Module(object):
 
     def __init__(self, application):
-        self.application = None
+        self.application = application
 

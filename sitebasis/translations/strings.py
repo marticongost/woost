@@ -1144,6 +1144,12 @@ translations.define("Template.identifier",
     en = u"Identifier"
 )
 
+translations.define("Template.engine",
+    ca = u"Motor de pintat",
+    es = u"Motor de pintado",
+    en = u"Rendering engine"
+)
+
 translations.define("Template.items",
     ca = u"Elements",
     es = u"Elementos",

@@ -15,8 +15,10 @@ from sitebasis.models import Item
 
 
 class Document(Item):
-
-    default_handler = "sitebasis.controllers.defaulthandler.DefaultHandler"
+    """
+    @ivar handler: An object that specifies the manner in which the
+        document handles incoming HTTP requests.
+    """
 
     members_order = (
         "title",
@@ -31,11 +33,6 @@ class Document(Item):
         "template",
         "description"        
     )
-
-    def __init__(self, **values):
-        Item.__init__(self, **values)
-        self.__handler_name = self.default_handler
-        self._v_handler = None
 
     # Title and description
     #------------------------------------------------------------------------------
@@ -160,37 +157,8 @@ class Document(Item):
         bidirectional = True,
         listed_by_default = False
     )
-    
-    def _get_handler(self):
-        
-        handler = getattr(self, "_v_handler", None)
 
-        if handler is None and self.__handler_name:
-            handler = import_object(self.__handler_name)
-
-            if isinstance(handler, type):
-                handler = handler()
-
-            self._v_handler = handler
-        
-        return handler
-
-    def _set_handler(self, value):
-        
-        if isinstance(value, basestring):
-            self.__handler_name = value
-            self._v_handler = import_object(value)
-        else:
-            self.__handler_name = get_full_name(value)
-            self._v_handler = value
-
-    handler = property(_get_handler, _set_handler, doc = """
-        Gets or sets the callable that handles requests for the item. The
-        callable can be specified using a reference or its fully qualified
-        name. In either case, the callable must be bound to a fully qualified
-        name, so that it can be persisted.
-        @type: callable or str
-        """)   
+    handler = None
 
     # Resources and attachments
     #------------------------------------------------------------------------------    

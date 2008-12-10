@@ -6,21 +6,23 @@
 @organization:	Whads/Accent SL
 @since:			July 2008
 """
-from pkg_resources import resource_filename
+from pkg_resources import resource_filename, iter_entry_points
 import cherrypy
+from cocktail.modeling import getter
 from cocktail.events import Event
-from cocktail.persistence import datastore
 from cocktail.controllers import Dispatcher
+from cocktail.translations import set_language
+from cocktail.language import set_content_language
 from sitebasis.models import Site, Document, Style, AccessDeniedError
+from sitebasis.controllers.basecmscontroller import BaseCMSController
 from sitebasis.controllers.language import LanguageModule
 from sitebasis.controllers.authentication import (
     AuthenticationModule, AuthenticationFailedError
 )
 from sitebasis.controllers.authorization import AuthorizationModule
-from sitebasis.controllers.rendering import RenderingModule
 
 
-class CMSController(Controller):
+class CMS(BaseCMSController):
 
     # Application events
     application_starting = Event(doc = """
@@ -37,28 +39,20 @@ class CMSController(Controller):
 
     plugins_loaded = Event(doc = """
         An event triggered after loading plugins.
-        """
+        """)
 
     # Application modules
     LanguageModule = LanguageModule
     AuthenticationModule = AuthenticationModule
     AuthorizationModule = AuthorizationModule
-    RenderingModule = RenderingModule
-
-    def __init__(self):
-        
-        # Instantiate modules
-        self.language = self.LanguageModule(self)
-        self.authentication = self.AuthenticationModule(self)
-        self.authorization = self.AuthorizationModule(self)
-        self.rendering = self.RenderingModule(self)
 
     # Webserver configuration
     virtual_path = "/"
     
-    _cp_config = {
+    _cp_config = BaseCMSController._cp_config.copy()
+    _cp_config.update({
         "tools.sessions.on": True
-    }
+    })
 
     # Static resources    
     resources = cherrypy.tools.staticdir.handler(
@@ -71,28 +65,23 @@ class CMSController(Controller):
         dir = resource_filename("cocktail.html", "resources")
     )
 
-    def __init__(self):                
+    def __init__(self, *args, **kwargs):
+     
+        BaseCMSController.__init__(self, *args, **kwargs)
+
+        self.language = self.LanguageModule(self)
+        self.authentication = self.AuthenticationModule(self)
+        self.authorization = self.AuthorizationModule(self)
+
         self.load_plugins()
-
-    def run(self):
-
-        cherrypy.config.update(
-            "global": {
-                "request.dispatch": Dispatcher()
-            }
-        )
-
-        self.application_starting()
-        cherrypy.quickstart(self, self.virtual_path)
-        self.application_ending()
 
     def load_plugins(self):
 
         self.loading_plugins()
 
         # Load plugin types
-        for epoint in pkg_resources.iter_entry_points("sitebasis.plugins"):
-            epoint.load()
+        for entry_point in iter_entry_points("sitebasis.plugins"):
+            entry_point.load()
 
         # Execute plugin initialization
         for plugin in Site.main.plugins:
@@ -101,25 +90,36 @@ class CMSController(Controller):
 
         self.plugins_loaded()
 
-    def resolve(self, path):
-        
-        request = cherrypy.request
-        request.cms = self
-        request.document, document_path = self.find_document(path)
-        
-        self.validate_document(document)
+    def run(self):
+        self.application_starting()
+        cherrypy.quickstart(self, self.virtual_path, config = {
+            "/": {
+                "request.dispatch": Dispatcher()
+            }   
+        })
+        self.application_ending()
 
+    def resolve(self, path):
+
+        # Invoke the language module (this may trigger a redirection to a
+        # canonical URI, set cookies, etc)
+        self.language.process_request_language(path)
+
+        request = cherrypy.request
+        request.document, document_path = self.find_document(path)
+
+        if request.document is None:
+            raise cherrypy.NotFound()
+            
         for component in document_path:
             path.pop(0)
-
-        return request.document.handler \
-            or request.document \
-            or cherrypy.NotFound()
+        
+        return request.document.handler or request.document
 
     def find_document(self, path):
         
         path = list(path)
-                
+        
         while path:
             document = Document.full_path.index.get("/".join(path))
             if document:
@@ -137,14 +137,33 @@ class CMSController(Controller):
 
     def validate_document(self, document):
         
-        if document is None \
-        or not document.is_published():
+        if not document.is_published():
             raise cherrypy.NotFound()
 
         self.authorization.restrict_access(
             action = "read",
             target_instance = document)
-    
+
+    @classmethod
+    def handle_traversed(cls, event):
+
+        cms = event.source
+        
+        cherrypy.request.cms = cms
+
+        # Set the default language as soon as possible
+        language = cms.language.infer_language()
+        set_language(language)
+        set_content_language(language)
+
+    @classmethod
+    def handle_before_request(cls, event):
+        
+        document = getattr(cherrypy.request, "document", None)
+
+        if document:
+            event.source.validate_document(cherrypy.request.document)
+
     @classmethod
     def handle_exception_raised(self, event):
 
@@ -152,36 +171,37 @@ class CMSController(Controller):
         site = Site.main
         error_page = None
 
+        def is_http_error(code):
+            return isinstance(error, cherrypy.HTTPError) \
+                and error.status == code
+
         # Page not found
-        if isinstance(error, cherrypy.NotFound):
+        if is_http_error(404) or isinstance(error, cherrypy.NotFound):
             status = 404
             error_page = site.not_found_error_page
         
         # Access forbidden
-        elif isinstance(error, (AccessDeniedError, AuthenticationFailedError)):
+        elif is_http_error(403) \
+        or isinstance(error, (AccessDeniedError, AuthenticationFailedError)):
             status = 403
             error_page = site.forbidden_error_page
         
         # Generic error
-        if error_page is None:
+        else:
             status = 500
             error_page = site.generic_error_page
 
         if error_page:
             event.handled = True
-            request = cherrypy.request
-            request.original_document = request.document
-            request.original_handler_chain = request.handler_chain
-            request.status = status 
-            request.dispatch("/", error_page)
-            request.body = request.handler()
             
-    @classmethod
-    def handle_after_request(self):
-        # Drop any uncommitted change
-        datastore.abort()
-        datastore.close()
-
+            request = cherrypy.request
+            request.original_document = getattr(request, "document", None)
+            request.document = error_page
+            
+            response = cherrypy.response
+            response.status = status 
+            response.body = error_page.handler()
+            
     def uri(self, *args):
         
         def clean(arg):
