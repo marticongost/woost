@@ -7,7 +7,7 @@
 @since:			July 2008
 """
 import cherrypy
-from cocktail.translations import set_language
+from cocktail.translations import get_language, set_language
 from cocktail.language import set_content_language
 from cocktail.controllers import Location
 from sitebasis.models import Site, Language
@@ -21,12 +21,12 @@ class LanguageModule(Module):
     def __init__(self, *args, **kwargs):
         Module.__init__(self, *args, **kwargs)
         
-    def process_request_language(self, path):
+    def process_request(self, path):
 
         language = path.pop(0) if path and path[0] in Language.codes else None
 
         if language is None:
-            language = self.infer_language()
+            language = get_language() or self.infer_language()
             location = Location.get_current()
             location.path_info = "/" + language + location.path_info
             location.go()            

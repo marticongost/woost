@@ -9,12 +9,14 @@
 from threading import Lock
 import cherrypy
 from cocktail.modeling import cached_getter
+from cocktail.events import event_handler
 from cocktail.schema import Collection
 from cocktail.controllers import view_state, Location
-from sitebasis.controllers import Request
 
 from sitebasis.controllers.backoffice.basebackofficecontroller \
-    import BaseBackOfficeController, EditNode
+    import BaseBackOfficeController
+
+from sitebasis.controllers.backoffice.editstack import EditNode
 
 from sitebasis.controllers.backoffice.itemfieldscontroller \
     import ItemFieldsController
@@ -27,64 +29,35 @@ class ItemController(BaseBackOfficeController):
 
     default_section = "fields"
 
-    def __init__(self, item = None):
-        BaseBackOfficeController.__init__(self)        
-        self.item = item
-
     fields = ItemFieldsController
     differences = DifferencesController
 
-    def resolve(self, extra_path):
+    @cached_getter
+    def edited_item(self):
+        return self.context["cms_item"]
 
-        collection_name = extra_path.pop(0)
+    def resolve(self, path):
 
-        try:
-            member = self.edited_content_type[collection_name]
-        except KeyError:
-            return None
-        else:
-            return self._get_collection_controller(member) \
-                if member in self.collections \
-                else None
+        if path:
+            collection_name = path.pop(0)
+
+            try:
+                member = self.edited_content_type[collection_name]
+            except KeyError:
+                pass
+            else:
+                if member in self.collections:
+                    return self._get_collection_controller(member)
 
     def _get_collection_controller(self, member):
-        from sitebasis.controllers.backoffice import CollectionController
-        controller = CollectionController(member)
-        controller.parent = self
-        return controller
-
-    @cached_getter
-    def edit_stack(self):
-
-        edit_stack = self.requested_edit_stack
-
-        # If necessary, create a new stack
-        if edit_stack is None:
-            edit_stack = self._new_edit_stack()
-
-        # If necessary, add a new node to the stack
-        if not edit_stack or not isinstance(edit_stack[-1], EditNode):
-            edit_state = EditNode()
-            edit_state.item = self.item
-            edit_state.content_type = self.edited_content_type
-            edit_stack.push(edit_state)
-            
-            location = Location.get_current()
-            location.params["edit_stack"] = edit_stack.to_param()
-            location.go()
-
-        return edit_stack
+        from sitebasis.controllers.backoffice.collectioncontroller \
+            import CollectionController
+        return CollectionController(member)
 
     @cached_getter
     def edited_content_type(self):
-        requested_edit_stack = self.requested_edit_stack
-        return (
-            (requested_edit_stack
-                and isinstance(requested_edit_stack[-1], EditNode)
-                and requested_edit_stack[-1].content_type)
-            or (self.item and self.item.__class__)
-            or self.get_content_type()
-        )
+        return self.edited_item and self.edited_item.__class__ \
+                or self.get_content_type()
 
     @cached_getter
     def collections(self):
@@ -94,29 +67,58 @@ class ItemController(BaseBackOfficeController):
             if isinstance(member, Collection)
             and member.editable
         ]
+    
+    @cached_getter
+    def edit_stack(self):
+
+        edit_stack = self.requested_edit_stack
+        redirect = False
+
+        # Spawn a new edit stack
+        if edit_stack is None:
+            edit_stack = self._new_edit_stack()
+            redirect = True
+
+        # Make sure the top node of the stack is an edit node
+        if not edit_stack or not isinstance(edit_stack[-1], EditNode):
+            edit_state = EditNode()
+            edit_state.item = self.edited_item
+            edit_state.content_type = self.edited_content_type
+            edit_stack.push(edit_state)
+            redirect = True
+        
+        # If the stack is modified a redirection is triggered so that any
+        # further request mentions the new stack position in its parameters.
+        # However, the redirection won't occur if the controller itself is the
+        # final target of the current request - if that is the case, submit()
+        # will end up redirecting the user to the default section anyway
+        if redirect and self is not cherrypy.request.handler:
+            location = Location.get_current()
+            location.method = "GET"
+            location.params["edit_stack"] = edit_stack.to_param()
+            location.go()
+
+        return edit_stack
+
+    @event_handler
+    def handle_before_request(cls, event):
+        
+        # Require an edit stack
+        event.source.edit_stack
+
+    def submit(self):
+        self.section_redirection(self.default_section)
 
     def section_redirection(self, default = None):
-
         section = cherrypy.request.params.get("section", default)
-
         if section:
             self.switch_section(section)
 
     def switch_section(self, section):
-
-        uri = Request.current.uri(
-            "content",
-            str(self.item.id) if self.item else "new",
-            section
-        ) + "?" + view_state(
-            edit_stack = self.edit_stack.to_param(),
-            section = None
+        raise cherrypy.HTTPRedirect(
+            self.get_edit_uri(
+                self.edited_item or self.edited_content_type,
+                section
+            )
         )
-
-        raise cherrypy.HTTPRedirect(uri)
-
-    def end(self):
-        BaseBackOfficeController.end(self)
-        if not self.redirecting:
-            self.section_redirection(self.default_section)
 

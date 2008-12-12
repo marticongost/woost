@@ -2,7 +2,6 @@
 
 <?py
 from cocktail.schema import Collection
-from sitebasis.controllers import Request
 ?>
 
 <py:sitebasis.views.BackOfficeLayout
@@ -99,16 +98,13 @@ from sitebasis.controllers import Request
                 class="draft">
                 <py:ready py:if="self.draft_box.visible">
                     <?py
-                    if self.edited_item.draft_source:
-                        source_uri = self.cms.uri(
-                            self.backoffice.path,
-                            'content',
-                            str(self.edited_item.draft_source.id)
-                        )
+                    if self.edited_item.draft_source:                        
                         element.append(
                             translate(
                                 "Editing draft copy",
-                                location = source_uri
+                                location = self.backoffice.get_edit_uri(
+                                    self.edited_item.draft_source
+                                )
                             )
                         )
                     else:
@@ -164,7 +160,7 @@ from sitebasis.controllers import Request
                     <py:ready>
                         <?py
                         if self.edited_item:
-                            element["href"] = self.cms.uri(self.backoffice, "delete") \
+                            element["href"] = self.cms.document_uri("delete") \
                                 + "?selection=" + str(self.edited_item.id)
                         else:
                             element.visible = False
@@ -176,7 +172,7 @@ from sitebasis.controllers import Request
                     <py:ready>
                         <?py
                         if self.edited_item:
-                            element["href"] = self.cms.uri(self.backoffice, "history") \
+                            element["href"] = self.cms.document_uri("history") \
                                 + "?item=" + str(self.edited_item.id)
                         else:
                             element.visible = False

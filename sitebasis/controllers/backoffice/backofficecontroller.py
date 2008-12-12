@@ -12,36 +12,25 @@ from cocktail.controllers import view_state
 from sitebasis.controllers.backoffice.basebackofficecontroller \
     import BaseBackOfficeController
 
-#from sitebasis.controllers.backoffice.contentcontroller \
-#    import ContentController
+from sitebasis.controllers.backoffice.contentcontroller \
+    import ContentController
 
 #from sitebasis.controllers.backoffice.historycontroller \
 #    import HistoryController
 
-#from sitebasis.controllers.backoffice.ordercontroller import OrderController
-#from sitebasis.controllers.backoffice.movecontroller import MoveController
+from sitebasis.controllers.backoffice.ordercontroller import OrderController
+from sitebasis.controllers.backoffice.movecontroller import MoveController
 
 class BackOfficeController(BaseBackOfficeController):
 
     default_section = "content"
 
-#    content = ContentController
+    content = ContentController
 #    history = HistoryController
-#    order = OrderController
-#    move = MoveController
+    order = OrderController
+    move = MoveController
 
     def submit(self):
-        
-        section = self.params.read(
-            String("section", default = self.default_section)
-        )
-                
-        if section == "edit":
-            selection = self.params.read(String("selection"))
-            section = "content/" + (selection or "")
-            qs = ""
-        else:
-            qs = "?" + view_state(section = None)
-
-        raise cherrypy.HTTPRedirect(self.document_uri(section) + qs)
+        raise cherrypy.HTTPRedirect(
+            self.document_uri(self.default_section) + "?" + view_state())
 

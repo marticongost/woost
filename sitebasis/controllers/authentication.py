@@ -19,7 +19,7 @@ class AuthenticationModule(Module):
 
     identifier_field = User.email
 
-    def process_request(self, request):
+    def process_request(self):
 
         params = cherrypy.request.params
 

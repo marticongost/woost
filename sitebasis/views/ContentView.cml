@@ -37,13 +37,7 @@ from sitebasis.models import Item
         if action == "new":
             return self.create_new_toolbar_button()
         else:
-            button = CollectionView.create_toolbar_button(self, action)
-            
-            if action == "delete":
-                button["name"] = "action"
-
-            button["value"] = action
-            return button
+            return CollectionView.create_toolbar_button(self, action)
     ?>
 
     <!-- Content type path -->
@@ -82,14 +76,14 @@ from sitebasis.models import Item
             element.set_client_param("shortcut", shortcut)
         ?>
         <span class="label">
-            <img src="${self.cms.uri('resources', 'images', 'new.png')}"/>
+            <img src="${self.cms.application_uri('resources', 'images', 'new.png')}"/>
             ${translate("new")}
         </span>
         <div class="selector_content">
             <py:sitebasis.views.ContentTypeTree
                 py:id="new_item_selector"
                 py:root="@{self.user_collection.type}"
-                py:base_url="@{self.cms.uri(self.backoffice.path, 'content', 'new')}">
+                py:base_url="@{self.cms.document_uri('content', 'new')}">
         
                 <?py
                 @extend(element)

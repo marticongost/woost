@@ -7,7 +7,8 @@
 @since:			December 2008
 """
 import cherrypy
-from cocktail.persistence import datastore
+from cocktail.modeling import getter
+from cocktail.events import event_handler
 from cocktail.controllers import Controller
 from sitebasis.models import Site
 
@@ -17,25 +18,28 @@ class BaseCMSController(Controller):
     def _render_template(self):
 
         # Pass the request context to the template
-        request = cherrypy.request
-        cms = request.cms
+        cms = self.context["cms"]
         
         self.output.update(
             cms = cms,
             site = Site.main,
             user = cms.authentication.user,
-            document = request.document
+            document = self.context.get("document")
         )
 
         return Controller._render_template(self)
+  
+    @getter
+    def user(self):
+        return self.context["cms"].authentication.user
+
+    def application_uri(self, *args):
+        path = (unicode(arg).strip("/") for arg in args)
+        return (
+            self.context["cms"].virtual_path
+            + u"/".join(component for component in path if component)
+        )
 
     def document_uri(self, *args):
-        request = cherrypy.request
-        return request.cms.uri(request.document.fullpath, *args)
-
-    @classmethod
-    def handle_after_request(cls, event):
-        # Drop any uncommitted change
-        datastore.abort()
-        datastore.close()
+        return self.application_uri(self.context["document"].full_path, *args)
 
