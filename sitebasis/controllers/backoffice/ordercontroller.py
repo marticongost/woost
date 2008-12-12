@@ -9,7 +9,7 @@
 import cherrypy
 from simplejson import dumps
 from cocktail.modeling import cached_getter
-from cocktail.iteration import first
+from cocktail.events import event_handler
 from cocktail.translations import translate
 from cocktail.schema import Reference, String, Integer, Collection, Reference
 from sitebasis.models import Item
@@ -20,8 +20,8 @@ from sitebasis.controllers.backoffice.basebackofficecontroller \
 class OrderController(BaseBackOfficeController):
 
     @cached_getter
-    def is_ajax(self):
-        return self.params.read(String("format")) == "json"
+    def handling_ajax_request(self):
+        return self.rendering_format == "json"
 
     @cached_getter
     def edited_content_type(self):
@@ -35,12 +35,6 @@ class OrderController(BaseBackOfficeController):
     def member(self):
         key = self.params.read(String("member"))
         return self.edited_content_type[key] if key else None
-
-    @cached_getter
-    def edit_node(self):
-        return first(node
-            for node in reversed(self.edit_stack)
-            if isinstance(node, EditNode))
 
     @cached_getter
     def item(self):
@@ -71,7 +65,8 @@ class OrderController(BaseBackOfficeController):
     def action(self):
         return self.params.read(String("action"))
 
-    def is_ready(self):
+    @cached_getter
+    def ready(self):
         return self.action == "order" \
             and self.selection \
             and self.position is not None
@@ -96,43 +91,39 @@ class OrderController(BaseBackOfficeController):
             
             return collection                   
                    
-        rearrange(self.collection, self.selection, self.position)                
-    
+        rearrange(self.collection, self.selection, self.position)
+
     def handle_error(self, error):
-	    if not self.is_ajax:
-		    BaseBackOfficeController.handle_error(self, error) 
+        if self.handling_ajax_request:
+            self.output["error"] = translate(error)
+        else:
+            BaseBackOfficeController.handle_error(self, error)
     
-    def end(self):
-        if not self.redirecting and not self.is_ajax:
-            if self.action == "cancel" \
-            or (self.action == "order" and self.successful):
-                if self.edit_stack:
-                    self.edit_stack.go(-2)
+    @event_handler
+    def handle_after_request(cls, event):
+        
+        controller = event.source
+
+        if not controller.handling_ajax_request:
+            if controller.action == "cancel" \
+            or (controller.action == "order" and controller.successful):
+                if controller.edit_stack:
+                    controller.edit_stack.go(-2)
                 else:
-                    raise cherrypy.HTTPRedirect(
-                        self.cms.uri(self.backoffice)
-                    )
+                    raise cherrypy.HTTPRedirect(controller.document_uri())
 
     view_class = "sitebasis.views.BackOfficeOrderView"
 
-    def _init_view(self, view):
-        BaseBackOfficeController._init_view(self, view)
-        view.content_type = self.content_type
-        view.collection = self.collection
-        view.selection = self.selection
-
-    def render(self):
-        if self.is_ajax:
-            cherrypy.response.headers["Content-Type"] = "text/plain"
-            desc = None
-            if(self.error):
-                try:
-                    desc = translate(self.error)
-                except KeyError:
-                    desc = translate("cocktail.unexpected_error", error = str(self.error))
-                
-            return dumps({
-                "error": desc
-            })
+    @cached_getter
+    def output(self):
+        if self.handling_ajax_request:
+            return {}
         else:
-            return BaseBackOfficeController.render(self)
+            output = BaseBackOfficeController.output(self)
+            output.update(
+                content_type = self.content_type,
+                collection = self.collection,
+                selection = self.selection
+            )
+            return output
+

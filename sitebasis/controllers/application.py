@@ -9,10 +9,11 @@
 from pkg_resources import resource_filename, iter_entry_points
 import cherrypy
 from cocktail.modeling import getter
-from cocktail.events import Event
+from cocktail.events import Event, event_handler
 from cocktail.controllers import Dispatcher
 from cocktail.translations import set_language
 from cocktail.language import set_content_language
+from cocktail.persistence import datastore
 from sitebasis.models import Site, Document, Style, AccessDeniedError
 from sitebasis.controllers.basecmscontroller import BaseCMSController
 from sitebasis.controllers.language import LanguageModule
@@ -100,21 +101,22 @@ class CMS(BaseCMSController):
         self.application_ending()
 
     def resolve(self, path):
-
+                
         # Invoke the language module (this may trigger a redirection to a
         # canonical URI, set cookies, etc)
-        self.language.process_request_language(path)
+        self.language.process_request(path)
 
         request = cherrypy.request
-        request.document, document_path = self.find_document(path)
+        document, document_path = self.find_document(path)
+        self.context["document"] = document
 
-        if request.document is None:
+        if document is None:
             raise cherrypy.NotFound()
             
         for component in document_path:
             path.pop(0)
         
-        return request.document.handler or request.document
+        return document.handler
 
     def find_document(self, path):
         
@@ -144,27 +146,35 @@ class CMS(BaseCMSController):
             action = "read",
             target_instance = document)
 
-    @classmethod
+    @event_handler
     def handle_traversed(cls, event):
 
         cms = event.source
         
-        cherrypy.request.cms = cms
+        cms.context.update(
+            cms = cms,
+            document = None
+        )
 
         # Set the default language as soon as possible
         language = cms.language.infer_language()
         set_language(language)
         set_content_language(language)
 
-    @classmethod
+    @event_handler
     def handle_before_request(cls, event):
         
-        document = getattr(cherrypy.request, "document", None)
+        cms = event.source
 
-        if document:
-            event.source.validate_document(cherrypy.request.document)
+        # Invoke the authentication module
+        cms.authentication.process_request()
 
-    @classmethod
+        # Validate access to the requested document
+        document = cms.context["document"]
+        if document is not None:
+            cms.validate_document(document)
+
+    @event_handler
     def handle_exception_raised(self, event):
 
         error = event.exception
@@ -195,36 +205,22 @@ class CMS(BaseCMSController):
             event.handled = True
             
             request = cherrypy.request
-            request.original_document = getattr(request, "document", None)
-            request.document = error_page
+            self.context.update(
+                original_document = self.context["document"],
+                document = error_page
+            )
             
             response = cherrypy.response
             response.status = status 
-            response.body = error_page.handler()
             
-    def uri(self, *args):
-        
-        def clean(arg):
-            arg = str(arg)
-            
-            if arg and arg[0] == "/":
-                arg = arg[1:]
+            error_controller = error_page.handler()
+            response.body = error_controller()
 
-            if arg and arg[-1] == "/":
-                arg = arg[:-1]
-
-            return arg
-
-        path = [self.virtual_path.strip("/")]
-        path.extend([
-            (arg.path
-                if isinstance(arg, Document)
-                else unicode(arg).strip("/")
-            )
-            for arg in args if arg
-        ])
-        
-        return u"/" + u"/".join(path)
+    @event_handler
+    def handle_after_request(cls, event):
+        # Drop any uncommitted change
+        datastore.abort()
+        datastore.close()
 
     @cherrypy.expose
     def user_styles(self):

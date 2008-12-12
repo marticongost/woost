@@ -10,6 +10,7 @@ from __future__ import with_statement
 import cherrypy
 from simplejson import dumps
 from cocktail.modeling import cached_getter
+from cocktail.events import event_handler
 from cocktail.iteration import first
 from cocktail.translations import translate
 from cocktail.schema import Reference, String, Integer, Collection, Reference
@@ -22,8 +23,8 @@ from sitebasis.controllers.backoffice.basebackofficecontroller \
 class MoveController(BaseBackOfficeController):
 
     @cached_getter
-    def is_ajax(self):
-        return self.params.read(String("format")) == "json"
+    def handling_ajax_request(self):
+        return self.rendering_format == "json"
 
     @cached_getter
     def root(self):
@@ -61,10 +62,9 @@ class MoveController(BaseBackOfficeController):
     def action(self):
         return self.params.read(String("action"))
 
-    def is_ready(self):
-        return self.member \
-            and self.slot \
-            and self.selection
+    @cached_getter
+    def ready(self):
+        return self.member and self.slot and self.selection
 
     def submit(self):
 
@@ -96,31 +96,35 @@ class MoveController(BaseBackOfficeController):
         datastore.commit()
 
     def handle_error(self, error):
-        if not self.is_ajax:
+        if self.handling_ajax_request:
+            self.output["error"] = translate(error)
+        else:
             BaseBackOfficeController.handle_error(self, error)
 
-    def end(self):
-        if not self.redirecting and not self.is_ajax:
-            if self.action == "cancel" or self.successful:
-                raise cherrypy.HTTPRedirect(self.cms.uri(self.backoffice))
+    @event_handler
+    def handle_after_request(cls, event):
+        
+        controller = event.source
+
+        if not controller.handling_ajax_request:
+            if controller.action == "cancel" or controller.successful:
+                raise cherrypy.HTTPRedirect(controller.document_uri())
 
     view_class = "sitebasis.views.BackOfficeMoveView"
 
-    def _init_view(self, view):
-        BaseBackOfficeController._init_view(self, view)
-        view.root = self.root
-        view.item = self.item
-        view.position = self.position
-        view.selection = self.selection
-
-    def render(self):
-        if self.is_ajax:
-            cherrypy.response.headers["Content-Type"] = "text/plain"
-            return dumps({
-                "error": self.error and translate(self.error) or None
-            })
+    @cached_getter
+    def output(self):
+        if self.handling_ajax_request:
+            return {}
         else:
-            return BaseBackOfficeController.render(self)
+            output = BaseBackOfficeController.output(self)
+            output.update(
+                root = self.root,
+                item = self.item,
+                position = self.position,
+                selection = self.selection
+            )
+            return output
 
 
 class TreeCycleError(Exception):

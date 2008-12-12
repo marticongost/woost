@@ -7,24 +7,23 @@
 @since:			October 2008
 """
 import cherrypy
-from cocktail.controllers import request_property
-from sitebasis.models import Document
+from cocktail.modeling import cached_getter
 from sitebasis.controllers import BaseCMSController
 
 
 class DefaultHandler(BaseCMSController):
     """Default controller for published documents."""
 
-    @request_property
+    @cached_getter
     def document_template(self):
-        template = cherrypy.request.document.template
+        template = self.context["document"].template
 
         if template is None:
             raise cherrypy.NotFound()
 
         return template
 
-    @request_property
+    @cached_getter
     def rendering_engine(self):
         engine_name = self.document_template.engine
 
@@ -33,11 +32,7 @@ class DefaultHandler(BaseCMSController):
         else:
             return BaseCMSController.rendering_engine(self)
 
-    @request_property
+    @cached_getter
     def view_class(self):
         return self.document_template.identifier
-
-
-# Set as the default document handler
-Document.handler = DefaultHandler()
 

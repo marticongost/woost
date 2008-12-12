@@ -8,6 +8,7 @@
 """
 from datetime import datetime
 import cherrypy
+from cocktail.events import event_handler
 from cocktail import schema
 from cocktail.persistence import PersistentObject
 from cocktail.pkgutils import get_full_name, import_object
@@ -15,10 +16,8 @@ from sitebasis.models import Item
 
 
 class Document(Item):
-    """
-    @ivar handler: An object that specifies the manner in which the
-        document handles incoming HTTP requests.
-    """
+
+    default_handler = "sitebasis.controllers.defaulthandler.DefaultHandler"
 
     members_order = (
         "title",
@@ -34,8 +33,13 @@ class Document(Item):
         "description"        
     )
 
+    def __init__(self, **values):
+        Item.__init__(self, **values)
+        self.__handler_name = self.default_handler
+        self._v_handler = None
+
     # Title and description
-    #------------------------------------------------------------------------------
+    #--------------------------------------------------------------------------
     title = schema.String(
         required = True,
         unique = True,
@@ -59,7 +63,7 @@ class Document(Item):
             or PersistentObject.__translate__(self, language, **kwargs)
 
     # Publication state
-    #--------------------------------------------------------------------------    
+    #--------------------------------------------------------------------------
     enabled = schema.Boolean(
         required = True,
         default = True,
@@ -95,8 +99,8 @@ class Document(Item):
         editable = False
     )
 
-    @classmethod
-    def _handle_changed(cls, event):
+    @event_handler
+    def handle_changed(cls, event):
 
         member = event.member
         document = event.source
@@ -158,10 +162,34 @@ class Document(Item):
         listed_by_default = False
     )
 
-    handler = None
+    def _get_handler(self):
+        
+        handler = getattr(self, "_v_handler", None)
+
+        if handler is None and self.__handler_name:
+            handler = import_object(self.__handler_name)
+            self._v_handler = handler
+ 
+        return handler
+
+    def _set_handler(self, value):
+        
+        if isinstance(value, basestring):
+            self.__handler_name = value
+            self._v_handler = import_object(value)
+        else:
+            self.__handler_name = get_full_name(value)
+            self._v_handler = value
+
+    handler = property(_get_handler, _set_handler, doc = """
+        An object that specifies the manner in which the document handles
+        incoming HTTP requests. See the documentation for the L{cocktail
+        dispatcher<cocktail.controllers.dispatcher.Dispatcher>} class for
+        details on accepted objects.
+        """)
 
     # Resources and attachments
-    #------------------------------------------------------------------------------    
+    #--------------------------------------------------------------------------
     resources = schema.Collection(
         items = "sitebasis.models.Resource",
         bidirectional = True
@@ -173,7 +201,7 @@ class Document(Item):
     )
 
     # Hierarchy
-    #------------------------------------------------------------------------------    
+    #--------------------------------------------------------------------------
     parent = schema.Reference(
         type = "sitebasis.models.Document",
         bidirectional = True,
@@ -191,6 +219,4 @@ class Document(Item):
         required = True,
         default = False
     )
-
-Document.changed.append(Document._handle_changed)
 

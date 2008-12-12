@@ -6,6 +6,7 @@
 @organization:	Whads/Accent SL
 @since:			November 2008
 """
+from cocktail.modeling import cached_getter
 from cocktail.schema import Collection, String, DictAccessor
 from sitebasis.controllers.backoffice.editcontroller import EditController
 
@@ -14,7 +15,8 @@ class DifferencesController(EditController):
 
     view_class = "sitebasis.views.BackOfficeDiffView"
 
-    def is_ready(self):
+    @cached_getter
+    def ready(self):
         return self.action is not None
 
     def submit(self):        
@@ -52,11 +54,15 @@ class DifferencesController(EditController):
                     source.get(member.name)
                 )
         
-        self.parent.switch_section("fields")
+        self.context["parent_handler"].switch_section("fields")
 
-    def _init_view(self, view):
-        EditController._init_view(self, view)
-        view.submitted = False
-        view.source = self.differences_source
-        view.target = self.form_data
+    @cached_getter
+    def output(self):
+        output = EditController.output(self)
+        output.update(
+            submitted = False,
+            source = self.differences_source,
+            target = self.form_data
+        )
+        return output
 

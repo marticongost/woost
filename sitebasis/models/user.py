@@ -7,6 +7,7 @@
 @since:			July 2008
 """
 import sha
+from cocktail.events import event_handler
 from cocktail import schema
 from sitebasis.models import Item
 
@@ -29,8 +30,8 @@ class User(Item):
     def __translate__(self, language, **kwargs):
         return self.email or Item.__translate__(self, language, **kwargs)
 
-    @classmethod
-    def _handle_changing(cls, event):
+    @event_handler
+    def handle_changing(cls, event):
 
         encryption = event.source.encryption
 
@@ -54,6 +55,4 @@ class User(Item):
                 return password == self.password
         else:
             return not self.password
-
-User.changing.append(User._handle_changing)
 

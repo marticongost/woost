@@ -9,70 +9,76 @@
 from __future__ import with_statement
 import cherrypy
 from cocktail.modeling import cached_getter
-from cocktail.schema import (
-    Member, Adapter, Collection, Reference, String, DictAccessor
-)
+from cocktail.schema import Member, Adapter, Reference, String
 from cocktail.schema.expressions import CustomExpression
-from cocktail.language import get_content_language
 from cocktail.persistence import datastore
-from cocktail.html import templates
 from cocktail.html.datadisplay import SINGLE_SELECTION, MULTIPLE_SELECTION
-from cocktail.controllers import get_persistent_param
-from cocktail.controllers.usercollection import UserCollection
-from sitebasis.models import (
-    Language, Item, Document, AccessRule, changeset_context
+from cocktail.controllers import (
+    get_persistent_param,
+    view_state,
+    UserCollection
 )
+from sitebasis.models import Language, Item, changeset_context
 from sitebasis.controllers.contentviews import global_content_views
-
 from sitebasis.controllers.backoffice.basebackofficecontroller \
-    import BaseBackOfficeController, EditNode, RelationNode
-
-from sitebasis.controllers.backoffice.itemcontroller \
-    import ItemController
+    import BaseBackOfficeController
+from sitebasis.controllers.backoffice.editstack import EditNode, RelationNode
+from sitebasis.controllers.backoffice.itemcontroller import ItemController
 
 
 class ContentController(BaseBackOfficeController):
 
     section = "content"
-    default_content_type = Item
+    root_content_type = Item
+    default_content_type = root_content_type
     _item_controller_class = ItemController
-    
+
     @cached_getter
     def new(self):
-        return self._item_controller_class
+        self.context["cms_item"] = None
+        return self._item_controller_class()
 
-    def resolve(self, extra_path):
-        try:
-            item_id = int(extra_path.pop(0))
-        except ValueError:
-            return None
+    def resolve(self, path):
+        
+        if not path:
+            return self
         else:
+            component = path.pop(0)
             try:
-                item = self.content_type.index[item_id]
-            except KeyError:
+                item_id = int(component)
+            except ValueError:
                 return None
+            else:
+                try:
+                    item = self.root_content_type.index[item_id]
+                except KeyError:
+                    return None
 
-            return self._item_controller_class(item)
+                self.context["cms_item"] = item
+                return self._item_controller_class()
 
     @cached_getter
     def action(self):
         return self.params.read(String("action"))
 
-    def is_ready(self):
+    @cached_getter
+    def ready(self):
         return self.action is not None
 
     def submit(self):
 
-        if self.action in ("select", "cancel") and self.edit_stack:
+        action = self.action
 
-            if self.action == "select":
+        if action in ("select", "cancel") and self.edit_stack:
+
+            if action == "select":
                 edit_state = self.edit_stack[-2]
-                member = self.edit_node.member
+                member = self.stack_node.member
 
                 if isinstance(member, Reference):
                     edit_state.relate(member, self.user_collection.selection)
                 else:
-                    if self.edit_node.action == "add":
+                    if self.stack_node.action == "add":
                         modify_relation = edit_state.relate 
                     else:
                         modify_relation = edit_state.unrelate 
@@ -82,8 +88,30 @@ class ContentController(BaseBackOfficeController):
             
             self.edit_stack.go(-2)
 
-        elif self.action == "delete":
-            with changeset_context(self.cms.authentication.user):
+        elif action == "edit":
+
+            selection = self.user_collection.selection
+
+            if len(selection) != 1:
+                # TODO: Use a controlled error with a proper translation
+                raise ValueError("Wrong selection")
+
+            raise cherrypy.HTTPRedirect(self.get_edit_uri(selection[0]))
+
+        elif action == "move":
+
+            selection = self.user_collection.selection
+
+            if not selection:
+                # TODO: Use a controlled error with a proper translation
+                raise ValueError("Selection required")
+
+            raise cherrypy.HTTPRedirect(
+                self.document_uri("move") + "?" + view_state()
+            )
+
+        elif action == "delete":
+            with changeset_context(self.user):
                 for item in self.user_collection.selection:
                     item.delete()
 
@@ -92,10 +120,10 @@ class ContentController(BaseBackOfficeController):
     @cached_getter
     def content_type(self):
 
-        if self.edit_stack is None or isinstance(self.edit_node, EditNode):
+        if self.edit_stack is None or isinstance(self.stack_node, EditNode):
             return self.get_content_type(self.default_content_type)
         else:
-            root_content_type = self.edit_node.member.related_end.schema
+            root_content_type = self.stack_node.member.related_end.schema
             content_type = self.get_content_type()
             
             if content_type is None \
@@ -199,12 +227,12 @@ class ContentController(BaseBackOfficeController):
         user_collection.add_base_filter(self.content_type.draft_source == None)
         
         # Exclude forbidden items
-        is_allowed = self.cms.authorization.allows
+        is_allowed = self.context["cms"].authorization.allows
         user_collection.add_base_filter(CustomExpression(
             lambda item: is_allowed(action = "read", target_instance = item)
         ))
         
-        user_collection.base_collection = self.base_collection        
+        user_collection.base_collection = self.base_collection
         user_collection.persistence_prefix = self.content_type.name
         user_collection.persistence_duration = self.settings_duration
         user_collection.persistent_params = set(("members", "order"))
@@ -230,8 +258,8 @@ class ContentController(BaseBackOfficeController):
     @cached_getter
     def selection_mode(self):
         if self.edit_stack \
-        and isinstance(self.edit_node, RelationNode) \
-        and isinstance(self.edit_node.member, Reference):
+        and isinstance(self.stack_node, RelationNode) \
+        and isinstance(self.stack_node.member, Reference):
             return SINGLE_SELECTION
         else:
             return MULTIPLE_SELECTION
@@ -240,15 +268,16 @@ class ContentController(BaseBackOfficeController):
     def persistent_content_type_choice(self):
         return self.edit_stack is None
 
-    def _init_view(self, view):
-
-        BaseBackOfficeController._init_view(self, view)
-
-        view.edit_stack = self.edit_stack
-        view.user_collection = self.user_collection
-        view.available_languages = self.available_languages
-        view.visible_languages = self.visible_languages
-        view.available_content_views = self.available_content_views
-        view.content_view = self.content_view
-        view.selection_mode = self.selection_mode
+    @cached_getter
+    def output(self):
+        output = BaseBackOfficeController.output(self)
+        output.update(        
+            user_collection = self.user_collection,
+            available_languages = self.available_languages,
+            visible_languages = self.visible_languages,
+            available_content_views = self.available_content_views,
+            content_view = self.content_view,
+            selection_mode = self.selection_mode
+        )
+        return output
 

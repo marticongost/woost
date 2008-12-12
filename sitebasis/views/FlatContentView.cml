@@ -16,7 +16,7 @@ from cocktail.schema import SchemaObjectAccessor
 
     <py:sitebasis.views.ContentTable
         py:def="collection_display"
-        py:base_url="@{self.cms.uri(self.backoffice.path)}"
+        py:base_url="@{self.cms.document_uri()}"
         py:accessor="${SchemaObjectAccessor}"
         py:translations="@{self.visible_languages}"/>
 

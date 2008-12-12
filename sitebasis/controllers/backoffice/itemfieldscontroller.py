@@ -8,40 +8,19 @@
 """
 import cherrypy
 from cocktail.modeling import cached_getter
+from cocktail.events import event_handler
 from cocktail.pkgutils import import_object
 from cocktail.schema import \
     Adapter, Collection, String, ErrorList, DictAccessor
 from cocktail.controllers import get_parameter, view_state
 from sitebasis.models import Site
-
-from sitebasis.controllers.backoffice.basebackofficecontroller \
-        import RelationNode
-
+from sitebasis.controllers.backoffice.editstack import RelationNode
 from sitebasis.controllers.backoffice.editcontroller import EditController
 
 
 class ItemFieldsController(EditController):
 
     view_class = "sitebasis.views.BackOfficeEditView"
-
-    def __init__(self):
-        EditController.__init__(self)
-        self.__member_display = {}
-
-    def set_member_display(self, member_ref, display):
-
-        pos = member_ref.rfind(".")
-        cls_name = member_ref[:pos]
-        member_name = member_ref[pos + 1:]
-
-        cls = import_object(cls_name)
-        cls_displays = self.__member_display.get(cls)
-
-        if cls_displays is None:
-            cls_displays = {}
-            self.__member_display[cls] = cls_displays
-
-        cls_displays[member_name] = display
 
     @cached_getter
     def form_data(self):
@@ -85,52 +64,44 @@ class ItemFieldsController(EditController):
 
         return form_data
     
-    def _init_view(self, view):
-        
-        EditController._init_view(self, view)
-
-        view.section = "fields"
-        view.submitted = self.submitted
-        view.available_languages = self.available_languages
-        
-        # Set form displays
-        for cls in self.edited_content_type.descend_inheritance(True):
-            cls_displays = self.__member_display.get(cls)    
-            if cls_displays:
-                for key, display in cls_displays.iteritems():
-                    view.edit_form.set_member_display(key, display)
+    @cached_getter
+    def output(self):
+        output = EditController.output(self)
+        output.update(
+            section = "fields",
+            submitted = self.submitted,
+            available_languages = self.available_languages
+        )
+        return output
 
     def _save_edit_state(self):
-        edit_state = self.edit_node
+        edit_state = self.stack_node
         edit_state.form_data = self.form_data
         edit_state.translations = self.translations
 
-    def end(self):
+    @event_handler
+    def handle_after_request(cls, event):
 
-        if not self.error or self.redirecting:
-            self._save_edit_state()
+        controller = event.source
+        controller._save_edit_state()
 
-        rel = self.params.read(String("rel"))
+        rel = controller.params.read(String("rel"))
 
         # Open the item selector
-        if rel:     
-            # Freeze the reference to the current node
-            self.edit_node
+        if rel:
 
             # Push the relation as a new edit node
-            member = self.edited_content_type[rel]
+            member = controller.edited_content_type[rel]
             node = RelationNode()
             node.member = member
-            self.edit_stack.push(node)
-            value = DictAccessor.get(self.form_data, rel)
+            controller.edit_stack.push(node)
+            value = DictAccessor.get(controller.form_data, rel)
 
             raise cherrypy.HTTPRedirect(
-                self.cms.uri(self.backoffice, "content")
+                controller.context["cms"].document_uri("content")
                 + "?" + view_state(
                     selection = value.id if value is not None else None,
-                    edit_stack = self.edit_stack.to_param()
+                    edit_stack = controller.edit_stack.to_param()
                 )
             )
-
-        EditController.end(self)
 

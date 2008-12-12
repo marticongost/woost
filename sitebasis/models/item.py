@@ -7,6 +7,7 @@
 @since:			June 2008
 """
 from datetime import datetime
+from cocktail.events import event_handler
 from cocktail import schema
 from cocktail.persistence import (
     PersistentObject, PersistentClass, datastore, PersistentMapping
@@ -290,8 +291,8 @@ class Item(PersistentObject):
                 self.owner = changeset.author
     
     # Extend item modification to make it versioning aware
-    @classmethod
-    def _handle_changed(cls, event):
+    @event_handler
+    def handle_changed(cls, event):
 
         item = event.source
 
@@ -330,8 +331,8 @@ class Item(PersistentObject):
                     change.item_state[member_name] = event.value
 
     # Extend item removal to make it versioning aware
-    @classmethod
-    def _handle_deleted(cls, event):
+    @event_handler
+    def handle_deleted(cls, event):
                 
         changeset = ChangeSet.current
         
@@ -384,10 +385,6 @@ class Item(PersistentObject):
         
         roles.extend(self.groups)
         return roles 
-
-
-Item.changed.append(Item._handle_changed)
-Item.deleted.append(Item._handle_deleted)
 
 Item.id.editable = False
 Item.id.listed_by_default = False

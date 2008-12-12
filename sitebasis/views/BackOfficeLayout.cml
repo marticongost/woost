@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <?py
-from cocktail.translations import get_language
-from sitebasis.controllers.backoffice import EditNode
+from cocktail.translations import get_language, translations
+from sitebasis.controllers.backoffice.editstack import EditNode
 ?>
 
 <div
@@ -28,7 +28,7 @@ from sitebasis.controllers.backoffice import EditNode
         return translate(section + "_section")
 
     def get_section_url(self, section):
-        return self.cms.uri(self.backoffice, section)
+        return self.cms.document_uri(section)
     ?>
 
     <?py
@@ -92,24 +92,24 @@ from sitebasis.controllers.backoffice import EditNode
     <ul py:id="edit_path" py:visible="@{self.edit_stack}">
         <py:ready py:if="self.edit_stack">
             <li>
-                <a href="${self.cms.uri(self.backoffice)}">${translate(self.backoffice)}</a>
+                <a href="${self.cms.document_uri()}">${translate(self.backoffice)}</a>
             </li>
-            <li py:for="step, edit_node in enumerate(self.edit_stack)">
+            <li py:for="step, stack_node in enumerate(self.edit_stack)">
                 <img class="separator" src="/resources/images/path_separator.png"/>
                 <a>
                     <?py
-                    if isinstance(edit_node, EditNode):
-                        if edit_node.item:
-                            node_desc = translate(edit_node.item)
-                            item_id = str(edit_node.item.id)
+                    if isinstance(stack_node, EditNode):
+                        if stack_node.item:
+                            node_desc = translate(stack_node.item)
+                            item_id = str(stack_node.item.id)
                         else:
-                            node_desc = translate("creating", content_type = edit_node.content_type)
+                            node_desc = translate("creating", content_type = stack_node.content_type)
                             item_id = "new"
 
-                        node_uri = self.cms.uri(self.backoffice, "content", item_id)
+                        node_uri = self.cms.document_uri("content", item_id)
                     else:
-                        node_desc = translate(edit_node.member)
-                        node_uri = self.cms.uri(self.backoffice, "content")
+                        node_desc = translate(stack_node.member)
+                        node_uri = self.cms.document_uri("content")
 
                     element["href"] = node_uri + "?edit_stack=" + self.edit_stack.to_param(step)
                     element.append(node_desc)

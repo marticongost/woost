@@ -7,18 +7,19 @@
 @since:			October 2008
 """
 from __future__ import with_statement
-from copy import copy
 from itertools import chain
 from threading import Lock
+from urllib import urlencode
 import cherrypy
-from cocktail.modeling import ListWrapper
-from cocktail.schema import (
-    DictAccessor, Collection, String, Integer, add, remove
-)
+from cocktail.modeling import getter, cached_getter
+from cocktail.iteration import first
+from cocktail.events import event_handler
+from cocktail.schema import String
 from cocktail.language import get_content_language
-from cocktail.controllers import get_persistent_param, request_property
+from cocktail.controllers import get_persistent_param
 from sitebasis.models import Item
 from sitebasis.controllers import BaseCMSController
+from sitebasis.controllers.backoffice.editstack import EditStack, EditNode
 
 
 class BaseBackOfficeController(BaseCMSController):
@@ -30,6 +31,43 @@ class BaseBackOfficeController(BaseCMSController):
     def __init__(self, *args, **kwargs):
         BaseCMSController.__init__(self, *args, **kwargs)
         self.__edit_stacks_lock = Lock()
+
+    def get_edit_uri(self, target, *args, **kwargs):
+        
+        params = kwargs or {}
+        edit_stack = self.edit_stack
+
+        if edit_stack:
+            params["edit_stack"] = edit_stack.to_param()
+
+        # URI for new items
+        if isinstance(target, type):
+            target_id = "new"
+            # TODO: Use full names to identify types
+            params["type"] = target.type
+
+        # URI for existing items
+        else:
+            primary_member = target.__class__.primary_member
+            
+            if primary_member is None:
+                raise TypeError("Can't edit types without a primary member")
+
+            target_id = target.get(primary_member)
+
+            if target_id is None:
+                raise ValueError("Can't edit objects without an identifier")
+        
+        uri = self.document_uri(
+            "content",
+            target_id,
+            *args
+        )
+
+        if params:
+            uri += "?" + urlencode(params, True)
+
+        return uri
 
     def get_content_type(self, default = None):
 
@@ -64,7 +102,7 @@ class BaseBackOfficeController(BaseCMSController):
         else:
             return [get_content_language()]
 
-    @request_property
+    @cached_getter
     def edit_stacks(self):
         """A mapping containing all the edit stacks for the current HTTP
         session.
@@ -85,20 +123,18 @@ class BaseBackOfficeController(BaseCMSController):
 
         return edit_stacks
 
-    @request_property
+    @cached_getter
     def edit_stack(self):
         """Obtains the stack of edit operations that applies to the current
         context. The active stack is usually selected through an HTTP
-        parameter (see the L{requested_edit_stack} property), but some
-        subclasses override this property in order to create a new stack if
-        none is selected.
+        parameter.
         
         @return: The current edit stack.
         @rtype: L{EditStack}
         """
         return self.requested_edit_stack
 
-    @request_property
+    @cached_getter
     def requested_edit_stack(self):
         """
         Obtains the stack of edit operations for the current HTTP request, as
@@ -134,225 +170,29 @@ class BaseBackOfficeController(BaseCMSController):
         self.edit_stacks[edit_stack.id] = edit_stack
         return edit_stack
 
-    @request_property
-    def edit_node(self):
+    @getter
+    def stack_node(self):
         return self.edit_stack[-1]
 
-    @request_property
+    @getter
+    def edit_node(self):
+        return first(node
+            for node in reversed(list(self.edit_stack))
+            if isinstance(node, EditNode))
+
+    @cached_getter
     def output(self):
         output = BaseCMSController.output(self)
         output.update(
+            backoffice = self.context["document"],
             section = self.section,
             edit_stack = self.edit_stack
         )
         return output
 
-    @classmethod
-    def handle_after_request(self):
+    @event_handler
+    def handle_after_request(cls, event):
         # Preserve the edit session
-        self.edit_stack
-        cherrypy.session["edit_stacks"] = self.edit_stacks
-        
-
-class EditStack(ListWrapper):
-    """A stack describing the context of an edit session. Allows to keep track
-    of nested edit operations when dealing with related elements.
-
-    The stack can contain two kind of nodes:
-
-        * L{edit nodes<EditNode>} are associated with a single
-          L{item<sitebasis.models.items.Item>}, and store all the changes
-          performed on it before they are finally saved.
-
-        * L{relation nodes<RelationNode>} indicate a nested edit operation on a
-          related item or set of items.
-
-    The first node of a stack is always an edit node. All further nodes
-    alternate their kind in succession (so the first node will be followed by a
-    relation node, then another edit node, and so on).
-
-    @ivar id: A numerical identifier for the stack. It is guaranteed to be
-        unique throughout the current browser session.
-    """
-    id = None
-
-    def push(self, node):
-        """Adds a new node to the edit stack.
-
-        @param node: The node to add.
-        @type node: L{EditNode},
-            L{collection<cocktail.schema.schemacollections.Collection>}
-            or L{relation<cocktail.schema.schemarelations.Relation>}
-        """
-        self._items.append(node)
-
-    def pop(self):
-        """Removes the last node from the stack and returns it.
-
-        @return: The last node of the stack.
-        @rtype: L{EditNode},
-            L{collection<cocktail.schema.schemacollections.Collection>}
-            or L{relation<cocktail.schema.schemarelations.Relation>}
-
-        @raise IndexError: Raised when trying to pop a node from an empty
-            stack.
-        """
-        return self._items.pop()
-
-    def go(self, index = -1):
-        """Redirects the user to the indicated node of the edit stack.
-
-        @param index: The position of the stack to move to.
-        @type index: int
-        """
-        if index < 0:
-            index = len(self) + index
-
-        node = self[index]
-        
-        if isinstance(node, EditNode):
-            next_node = self[index + 1] if index + 1 < len(self) else None
-            uri = Request.current.uri(
-                "content",
-                str(node.item.id) if node.item else "new",
-                next_node.member.name
-                    if next_node and isinstance(next_node, RelationNode)
-                        and isinstance(next_node.member, Collection)
-                    else None
-            )
-        else:
-            uri = Request.current.uri("content")
-
-        uri += "?edit_stack=" + self.to_param(index)
-        raise cherrypy.HTTPRedirect(uri)
-
-    def to_param(self, index = -1):
-        if index < 0:
-            index = len(self) + index
-
-        return "%d-%d" % (self.id, index)
-
-
-class EditNode(object):
-    """An L{edit stack<EditStack>} node, used to maintain a set of changes for
-    an edited item before they are finally committed.
-
-    @ivar item: A reference to the item being edited. It will be None when
-        creating a new item.
-    @type item: L{Item<sitebasis.models.item.Item>}
-
-    @ivar content_type: The type of the edited item.
-    @type content_type: L{Item<sitebasis.models.item.Item>} subclass
-
-    @ivar form_data: The complete modified state of the edited item.
-    
-    @ivar translations: The list of translations defined by the item (note that
-        these can change during the course of an edit operation, so that's why
-        they are stored in here).
-    @type translations: str list 
-    """
-
-    def __init__(self):
-        self.item = None
-        self.content_type = None
-        self.form_data = None
-        self.translations = None
-        self.__collections = {}
-
-    def get_collection(self, member, require_copy = False):
-        """Obtains the requested collection from the edited item.
-
-        @param member: The member matching the collection to retrieve.
-        @type member: L{Collection<cocktail.schema.schemacollections.Collection>}
-
-        @param require_copy: When set to True, the method will produce a copy
-            of the item's collection, and store it for further requests. This
-            should be set to True by any call that plans to alter the requested
-            collection.
-        @type require_copy: bool
-
-        @return: The requested collection.
-        """
-
-        key = member.name
-        collection = self.__collections.get(key)
-
-        if collection is None:
-            if self.item:
-                collection = self.item.get(key)
-
-                if require_copy:
-                    collection = copy(collection)
-                    self.__collections[key] = collection
-            else:
-                collection = member.produce_default()
-                self.__collections[key] = collection
-
-        return collection
-
-    def collection_has_changes(self, member):
-        """Indicates if the given collection has been changed.
-
-        @param member: The collection to evaluate.
-        @type member: L{Collection<cocktail.schema.schemacollections.Collection>}
-
-        @return: True if the edit state contains changes for the given
-            collection, False if the collection remains unchanged.
-        @rtype: bool
-        """
-        key = member.name
-        collection_state = self.__collections.get(key)
-
-        return collection_state is not None \
-            and (self.item is None or collection_state != self.item.get(key))
-
-    def relate(self, member, item):
-        """Adds a relation between the edited item and another item.
-        
-        @param member: The member describing the relation between the two
-            items. It should be the end nearer to the edited item.
-        @type member: L{Collection<cocktail.schema.schemacollections.Collection>}
-            or L{Reference<cocktail.schema.schemareference.Reference>}
-
-        @param item: The item to relate.
-        @type item: L{Item<sitebasis.models.item.Item>}
-        """
-        if isinstance(member, Collection):
-            collection = self.get_collection(member, True)
-            add(collection, item)
-        else:
-            DictAccessor.set(self.form_data, member.name, item)
-
-    def unrelate(self, member, item):
-        """Breaks the relation between the edited item and one of its related
-        items.
-        
-        @param member: The member describing the relation between the two
-            items. It should be the end nearer to the edited item.
-        @type member: L{Collection<cocktail.schema.schemacollections.Collection>}
-            or L{Reference<cocktail.schema.schemareference.Reference>}
-
-        @param item: The item to unrelate.
-        @type item: L{Item<sitebasis.models.item.Item>}
-        """
-        if isinstance(member, Collection):
-            collection = self.get_collection(member, True)
-            remove(collection, item)
-        else:
-            DictAccessor.set(self.form_data, member.name, None)
-
-
-class RelationNode(object):
-    """An L{edit stack<EditStack>} node, used to maintain data about an action
-    affecting a relation.
-    
-    @var member: The member describing the relation that is being modified.
-    @type member: L{Collection<cocktail.schema.schemacollections.Collection>}
-        or L{Reference<cocktail.schema.schemareference.Reference>}
-
-    @var action: Can be one of 'add' or 'remove'.
-    @type action: str
-    """
-    member = None
-    action = None
+        event.source.edit_stack
+        cherrypy.session["edit_stacks"] = event.source.edit_stacks
 

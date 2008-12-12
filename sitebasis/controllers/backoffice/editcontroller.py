@@ -8,7 +8,8 @@
 """
 from __future__ import with_statement
 import cherrypy
-from cocktail.modeling import cached_getter, getter
+from cocktail.modeling import cached_getter
+from cocktail.events import event_handler
 from cocktail.schema import (
     Adapter, Reference, Collection, String, ErrorList, DictAccessor
 )
@@ -20,17 +21,13 @@ from sitebasis.controllers.backoffice.basebackofficecontroller \
 
 class EditController(BaseBackOfficeController):
 
-    @getter
-    def edit_stack(self):
-        return self.parent.edit_stack
-
     @cached_getter
-    def item(self):
-        return self.parent.item
+    def edited_item(self):
+        return self.context["cms_item"]
 
     @cached_getter
     def edited_content_type(self):
-        return self.parent.edited_content_type
+        return self.stack_node.content_type
 
     @cached_getter
     def form_adapter(self):
@@ -53,7 +50,7 @@ class EditController(BaseBackOfficeController):
     @cached_getter
     def form_data(self):
         
-        form_data = self.edit_node.form_data
+        form_data = self.stack_node.form_data
         
         # Load model data into the form
         if form_data is None:
@@ -61,7 +58,7 @@ class EditController(BaseBackOfficeController):
             form_data = {}
 
             # Item data
-            form_source = self.item
+            form_source = self.edited_item
             source_schema = self.edited_content_type
 
             # Default data
@@ -76,7 +73,7 @@ class EditController(BaseBackOfficeController):
                 self.form_schema
             )
 
-            self.edit_node.form_data = form_data
+            self.stack_node.form_data = form_data
 
         return form_data
 
@@ -85,8 +82,8 @@ class EditController(BaseBackOfficeController):
         return ErrorList(
             self.form_schema.get_errors(
                 self.form_data,
-                languages = self.edit_node.translations,
-                persistent_object = self.item
+                languages = self.stack_node.translations,
+                persistent_object = self.edited_item
             )
         )
 
@@ -111,8 +108,8 @@ class EditController(BaseBackOfficeController):
 
     @cached_getter
     def differences_source(self):
-        item = self.item
-        return item and self.item.draft_source or item
+        item = self.edited_item
+        return item and self.edited_item.draft_source or item
 
     @cached_getter
     def available_languages(self):
@@ -121,12 +118,12 @@ class EditController(BaseBackOfficeController):
     @cached_getter
     def translations(self):
 
-        edit_state = self.edit_node
+        edit_state = self.stack_node
 
         # Determine active translations
         if edit_state.translations is None:
-            if self.item and self.item.__class__.translated:
-                edit_state.translations = self.item.translations.keys()
+            if self.edited_item and self.edited_item.__class__.translated:
+                edit_state.translations = self.edited_item.translations.keys()
             else:
                 edit_state.translations = list(self.get_visible_languages())
         
@@ -140,13 +137,14 @@ class EditController(BaseBackOfficeController):
     def submitted(self):
         return self.action in ("save", "make_draft")
 
-    def is_ready(self):
+    @cached_getter
+    def ready(self):
         return self.submitted and not self.form_errors
 
     def submit(self):
 
         redirect = False
-        item = self.item
+        item = self.edited_item
         user = self.user
 
         # Create a draft
@@ -199,6 +197,10 @@ class EditController(BaseBackOfficeController):
                 parent_edit_state.relate(relation, item)
                 self.edit_stack.go(-3)
 
+    @event_handler
+    def handle_after_request(cls, event):
+        event.source.context["parent_handler"].section_redirection()
+
     def _apply_changes(self, item):
 
         # Save changed fields
@@ -214,7 +216,7 @@ class EditController(BaseBackOfficeController):
                 del item.translations[language]
 
         # Save changes to collections
-        edit_state = self.edit_node
+        edit_state = self.stack_node
 
         for member in self.edited_content_type.members().itervalues():
             if member.editable \
@@ -222,21 +224,18 @@ class EditController(BaseBackOfficeController):
             and edit_state.collection_has_changes(member):
                 item.set(member.name, edit_state.get_collection(member))
 
-    def _init_view(self, view):
-        BaseBackOfficeController._init_view(self, view)
-        view.collections = self.parent.collections
-        view.edited_item = self.item
-        view.edited_content_type = self.edited_content_type
-        view.form_errors = self.form_errors
-        view.form_schema = self.form_schema
-        view.form_data = self.form_data
-        view.differences = self.differences
-        view.translations = self.translations
-
-    def end(self):
-        
-        BaseBackOfficeController.end(self)
-
-        if not self.redirecting:
-            self.parent.section_redirection()
+    @cached_getter
+    def output(self):
+        output = BaseBackOfficeController.output(self)
+        output.update(
+            collections = self.context["parent_handler"].collections,
+            edited_item = self.edited_item,
+            edited_content_type = self.edited_content_type,
+            form_errors = self.form_errors,
+            form_schema = self.form_schema,
+            form_data = self.form_data,
+            differences = self.differences,
+            translations = self.translations
+        )
+        return output
 
