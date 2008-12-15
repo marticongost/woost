@@ -76,7 +76,7 @@ class ContentTable(Table):
             display = Element("a")
             display["href"] = self.base_url + "/content/%d" % value.id
         
-        display.append(self.repr_value(item, member, value))
+        display.append(self.translate_value(item, member, value))
 
         return display
 
