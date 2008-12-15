@@ -1,3 +1,4 @@
 syntax: glob
 data
 views/resources/scripts/tinymce
+sitebasis.egg-info
