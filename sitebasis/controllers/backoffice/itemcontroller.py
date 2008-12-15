@@ -61,11 +61,14 @@ class ItemController(BaseBackOfficeController):
 
     @cached_getter
     def collections(self):
+        relation_node = self.relation_node
+        stack_relation = relation_node and relation_node.member.related_end
         return [
             member
             for member in self.edited_content_type.ordered_members()
             if isinstance(member, Collection)
             and member.editable
+            and member is not stack_relation
         ]
     
     @cached_getter
