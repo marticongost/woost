@@ -19,7 +19,9 @@ from cocktail.language import get_content_language
 from cocktail.controllers import get_persistent_param
 from sitebasis.models import Item
 from sitebasis.controllers import BaseCMSController
-from sitebasis.controllers.backoffice.editstack import EditStack, EditNode
+from sitebasis.controllers.backoffice.editstack import (
+    EditStack, EditNode, RelationNode
+)
 
 
 class BaseBackOfficeController(BaseCMSController):
@@ -44,7 +46,7 @@ class BaseBackOfficeController(BaseCMSController):
         if isinstance(target, type):
             target_id = "new"
             # TODO: Use full names to identify types
-            params["type"] = target.type
+            params["type"] = target.name
 
         # URI for existing items
         else:
@@ -176,9 +178,17 @@ class BaseBackOfficeController(BaseCMSController):
 
     @getter
     def edit_node(self):
-        return first(node
-            for node in reversed(list(self.edit_stack))
+        stack = self.edit_stack
+        return stack and first(node
+            for node in reversed(list(stack))
             if isinstance(node, EditNode))
+
+    @getter
+    def relation_node(self):
+        stack = self.edit_stack
+        return stack and first(node
+            for node in reversed(list(stack))
+            if isinstance(node, RelationNode))
 
     @cached_getter
     def output(self):
@@ -189,10 +199,4 @@ class BaseBackOfficeController(BaseCMSController):
             edit_stack = self.edit_stack
         )
         return output
-
-    @event_handler
-    def handle_after_request(cls, event):
-        # Preserve the edit session
-        event.source.edit_stack
-        cherrypy.session["edit_stacks"] = event.source.edit_stacks
 
