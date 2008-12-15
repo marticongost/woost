@@ -92,7 +92,7 @@ class ContentController(BaseBackOfficeController):
 
             selection = self.user_collection.selection
 
-            if len(selection) != 1:
+            if not selection or len(selection) > 1:
                 # TODO: Use a controlled error with a proper translation
                 raise ValueError("Wrong selection")
 
@@ -102,7 +102,7 @@ class ContentController(BaseBackOfficeController):
 
             selection = self.user_collection.selection
 
-            if not selection:
+            if not selection or len(selection) > 1:
                 # TODO: Use a controlled error with a proper translation
                 raise ValueError("Selection required")
 
@@ -235,7 +235,7 @@ class ContentController(BaseBackOfficeController):
         user_collection.base_collection = self.base_collection
         user_collection.persistence_prefix = self.content_type.name
         user_collection.persistence_duration = self.settings_duration
-        user_collection.persistent_params = set(("members", "order"))
+        user_collection.persistent_params = set(("members", "order", "filter"))
         user_collection.available_languages = self.available_languages
         user_collection.selection_mode = self.selection_mode
         user_collection.selection_parser = \
