@@ -42,7 +42,7 @@ html, body {
 
 .BackOfficeLayout .header .ui_language_selector .label {
     padding-right: 1.5em;
-    background-position: center right;
+    background-position: center right;    
 }
 
 .BackOfficeLayout .header .ui_language_selector .selector_content {
@@ -596,6 +596,7 @@ html, body {
     border: 1px solid transparent;
     z-index: 2;
     cursor: pointer;
+    color: black;
 }
 
 .BackOfficeLayout .selector:hover .label,
