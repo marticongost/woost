@@ -31,6 +31,10 @@ class EditController(BaseBackOfficeController):
 
     @cached_getter
     def form_adapter(self):
+
+        relation_node = self.relation_node
+        stack_relation = relation_node and relation_node.member.related_end
+
         adapter = Adapter()
         adapter.exclude([
             member.name
@@ -38,6 +42,7 @@ class EditController(BaseBackOfficeController):
             if not member.editable
             or not member.visible
             or isinstance(member, Collection)
+            or member is stack_relation
         ])
         return adapter
 
