@@ -229,8 +229,13 @@ class Item(PersistentObject):
     @classmethod
     def _create_translation_schema(cls, members):
         members["versioned"] = False
-        members["editable"] = False
         PersistentClass._create_translation_schema(cls, members)
+        
+    @classmethod
+    def _add_member(cls, member):
+        if member.name == "translations":
+            member.editable = False
+        PersistentClass._add_member(cls, member)
 
     def _get_revision_state(self):
         """Produces a dictionary with the values for the item's versioned
