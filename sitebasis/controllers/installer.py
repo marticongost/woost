@@ -139,7 +139,7 @@ class Installer(object):
         form_data = {}
 
         if submitted:
-            get_parameter(form_schema, target = form_data)
+            get_parameter(form_schema, target = form_data, strict = False)
             errors = list(form_schema.get_errors(form_data))
 
             if not errors:
