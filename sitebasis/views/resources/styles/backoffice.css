@@ -1245,6 +1245,7 @@ html, body {
 
 .BackOfficeLayout .CollectionView .filters.scripted.expanded .FilterBox {
     display: block;
+    padding-left: 1.75em;
 }
 
 .BackOfficeLayout .FilterBox .filter_entry {
@@ -1311,6 +1312,7 @@ html, body {
     padding-left: 1.5em !important;
     background-position: 0.2em center;
     background-image: url(../images/add_small.png);
+    color: rgb(50,80,110);
 }
 
 .BackOfficeLayout .CollectionView .filters .new_filter_selector .selector_content {
