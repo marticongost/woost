@@ -24,7 +24,7 @@ from sitebasis.controllers.authorization import AuthorizationModule
 
 
 class CMS(BaseCMSController):
-
+    
     # Application events
     application_starting = Event(doc = """
         An event triggered before the application's web server starts.
@@ -49,13 +49,27 @@ class CMS(BaseCMSController):
 
     # Webserver configuration
     virtual_path = "/"
-    
-    _cp_config = BaseCMSController._cp_config.copy()
-    _cp_config.update({
-        "tools.sessions.on": True
-    })
 
-    # Static resources    
+    # A dummy controller for CherryPy, that triggers the cocktail dispatcher.
+    # This is done so dynamic dispatching (using the resolve() method of
+    # request handlers) can depend on session setup and other requirements
+    # being available beforehand.
+    class ApplicationWrapper(object):
+
+        _cp_config = {
+            "tools.sessions.on": True
+        }
+
+        def __init__(self, cms):
+            self.__cms = cms
+            self.__dispatcher = Dispatcher()
+
+        @cherrypy.expose
+        def default(self, *args, **kwargs):
+            # All requests are forwarded to the nested dispatcher:
+            return self.__dispatcher.respond(args, self.__cms)
+
+    # Static resources
     resources = cherrypy.tools.staticdir.handler(
         section = "resources",
         dir = resource_filename("sitebasis.views", "resources")
@@ -93,11 +107,8 @@ class CMS(BaseCMSController):
 
     def run(self):
         self.application_starting()
-        cherrypy.quickstart(self, self.virtual_path, config = {
-            "/": {
-                "request.dispatch": Dispatcher()
-            }   
-        })
+        app_wrapper = self.ApplicationWrapper(self)
+        cherrypy.quickstart(app_wrapper, self.virtual_path)
         self.application_ending()
 
     def resolve(self, path):
