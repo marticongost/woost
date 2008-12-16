@@ -1,0 +1,1335 @@
+
+html, body {
+    margin: 0;
+    padding: 0;
+}
+
+* {
+    box-sizing: content-box;
+    -moz-box-sizing: content-box;
+}
+
+.BackOfficeLayout {
+    font-family: Bitstream Vera Sans, Arial;
+    font-size: 11pt;
+}
+
+.BackOfficeLayout .header {
+    padding: 0.6em;
+    height: 1.5em;
+    background-color: rgb(245,245,245);
+    background-color: #eceeef;
+    background-repeat:repeat-y;
+    background-image: url(../images/header_background.png);
+    border-bottom: 1px solid rgb(200,210,220);
+    border-bottom: 1px solid rgb(180,190,200);
+}
+
+.BackOfficeLayout .header h1 {
+    float: left;
+    font-size: 120%;
+    padding: 0;
+    margin: 0;
+    color: rgb(75,85,95);
+}
+
+.BackOfficeLayout .header .ui_language_selector {
+    float: right;
+    font-size: 0.7em;
+    margin-top: 0.4em;
+    margin-right: 3em;
+}
+
+.BackOfficeLayout .header .ui_language_selector .label {
+    padding-right: 1.5em;
+    background-position: center right;    
+}
+
+.BackOfficeLayout .header .ui_language_selector .selector_content {
+    top: 1.4em;
+}
+
+.BackOfficeLayout .header .ui_language_selector .selector_content div + div {
+    margin-top: 0.4em;
+}
+
+.BackOfficeLayout ul.edit_path {
+    margin: 0;
+    padding: 0.3em 0.8em;
+    font-size: 90%;
+    color: rgb(75,85,95);
+    background-color: rgb(245,245,245);
+    border-bottom: 1px solid rgb(230,230,230);
+    overflow: hidden;
+}
+
+.BackOfficeLayout ul.edit_path li {
+    float: left;
+    display: block;
+    list-style-type: none;
+}
+
+.BackOfficeLayout ul.edit_path li:last-child {
+    font-weight: bold;
+}
+
+.BackOfficeLayout ul.edit_path .separator {
+    margin-left: 0.8em;
+    margin-right: 0.4em;
+}
+
+.BackOfficeLayout .identity {
+    float: right;
+    margin-top: 0.4em;
+    font-size: 0.7em;
+}
+
+.BackOfficeLayout .identity strong {
+    color: rgb(75,75,75);
+    font-weight: bold;
+}
+
+.BackOfficeLayout .identity form {
+    display: inline;
+    margin: 0;
+    padding: 0;
+}
+
+.BackOfficeLayout .identity button {
+    margin-left: 0.7em !important;
+}
+
+.BackOfficeLayout a,
+.BackOfficeLayout .identity button,
+.BackOfficeEditView .clear_button,
+.BackOfficeItemView .more_actions button,
+.BackOfficeLayout .new_filter_selector .label {
+    font-size: inherit;
+    background: none;
+    border: none;
+    text-decoration: none;
+    color: rgb(50,80,110);
+    margin: 0;
+    padding: 0;
+    cursor: pointer;
+}
+
+.BackOfficeLayout a img {
+    border: none;
+}
+
+.BackOfficeLayout .CheckList div {
+    white-space: nowrap;
+}
+
+.BackOfficeLayout .navigation {
+    clear: both;
+    overflow: visible;
+    border-bottom: 1px solid rgb(200,210,220);
+    border-left: none;
+    border-right: none;
+    margin-top: 0.75em;
+    height: 2.1em;
+}
+
+.BackOfficeLayout .navigation .section_entry {
+    color: rgb(75,75,75);
+    position: relative;
+    top: -1px;
+    height: 1.3em;
+    float: left;
+    display: block;
+    background-color: rgb(240,240,240);
+    padding-left: 0.8em;
+    padding-top: 0.4em;
+    padding-bottom: 0.4em;
+    padding-right: 0.8em;
+    margin-left: 0.2em;
+    border: 1px solid rgb(200,210,220);
+    -moz-border-radius-topleft: 5px;
+    -moz-border-radius-topright: 5px;
+    border-radius-topleft: 5px;
+    border-radius-topright: 5px;
+    font-size: inherit;
+    cursor: pointer;
+}
+
+.BackOfficeLayout .navigation .section_entry.selected {
+    border-bottom-color: white;
+    background-color: white;
+}
+
+.BackOfficeLayout .go_back {
+    float: right;
+    margin-right: 1.1em;
+    margin-top: 0.1em;
+    background-image: url(../images/previous.png);
+    background-repeat: no-repeat;
+    padding-left: 1.8em;
+    font-size: 85%;
+}
+
+.BackOfficeLayout .body {
+    clear: both;
+    padding: 1em;
+}
+
+.BackOfficeLayout .selection_options {
+    font-size: 85%;
+    margin: 1em;
+    margin-bottom: 0.6em;
+}
+
+.BackOfficeLayout .ItemLabel {
+    background-repeat: no-repeat;
+}
+
+.BackOfficeLayout input[type=text],
+.BackOfficeLayout input[type=password],
+.BackOfficeLayout input[type=textarea] {
+    border: 1px solid rgb(200,200,200);
+    padding: 0.2em;
+}
+
+/* Forms
+-----------------------------------------------------------------------------*/
+.BackOfficeLayout fieldset {
+    border: none;
+    margin: 0;
+    padding: 0;
+    padding-left: 1.5em;
+    padding-top: 0.5em;
+    margin-bottom: 1.5em;
+}
+
+.BackOfficeLayout fieldset legend {
+    position: relative;
+    font-weight: bold;
+    margin: 0;
+    padding: 0;
+    margin-left: -1.5em;
+}
+
+.BackOfficeLayout .field input.control,
+.BackOfficeLayout .field textarea.control,
+.BackOfficeLayout .field select.control {
+    width: 18em;
+}
+
+.BackOfficeLayout .field button.control {
+    width: 12em;
+}
+
+.BackOfficeLayout .field .mceEditor .mceLayout {
+    width: 16.85em !important;
+}
+
+.BackOfficeLayout .buttons {
+    clear: both;
+    padding: 1em;
+    text-align: right;
+}
+
+.BackOfficeLayout .buttons button {
+    margin-left: 0.8em;
+    width: 11em;
+}
+
+.BackOfficeLayout .Form .fields > table > tbody > tr > td,
+.BackOfficeLayout .Form fieldset > table > tbody > tr > td {
+    padding-right: 1.5em;
+    padding-bottom: 0.5em;
+}
+
+.BackOfficeLayout .Form div.field {
+    overflow: hidden;
+    clear: left;
+    margin-bottom: 0.7em;
+}
+
+.BackOfficeLayout .Form tr.field {
+    clear: none;    
+}
+
+.BackOfficeLayout .Form div.field_instance {
+    float: left;
+    padding-right: 1.5em;
+}
+
+.BackOfficeLayout .Form td.field_instance {
+    padding: 0.4em;
+}
+
+.BackOfficeLayout .Form label {
+    display: block;
+    padding-bottom: 0.2em;
+    white-space: nowrap;
+}
+
+.BackOfficeLayout .Form label .language {
+    color: rgb(75,75,75);
+    font-style: italic;
+    font-size: 75%;
+    margin-left: 0.5em;
+}
+
+.BackOfficeLayout .Form .required_mark {
+    font-weight: bold;
+    color: rgb(100,125,150);
+    padding-left: 0.3em;
+}
+
+.BackOfficeLayout .Form .field_instance-CheckBox label {
+    display: inline;
+}
+
+.BackOfficeLayout .Form .control {
+    font-size: 90%;
+}
+
+.BackOfficeLayout .Form td .control,
+.BackOfficeLayout .Form td .mceEditor .mceLayout,
+.BackOfficeLayout .Form td .ItemSelector button {
+    width: 100%;
+}
+
+.BackOfficeLayout .Form td .DatePicker {
+    width: 8em;
+    margin-right: 0.5em;
+}
+
+.BackOfficeLayout .ui-datepicker-trigger {
+    margin-left: 0.3em;
+    vertical-align: middle;
+}
+
+/* Tables
+-----------------------------------------------------------------------------*/
+
+.BackOfficeLayout .Table {
+	clear: both;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.BackOfficeLayout .Table th span.label {
+    color: rgb(75,75,75);
+}
+
+.BackOfficeLayout .Table th, .Table td {
+    vertical-align: top;
+	text-align: left;
+	padding: 0.5em;
+	padding-right: 1em;
+    font-size: 85%;
+}
+
+/*.Table tr.translations th {*/
+.BackOfficeLayout .Table th .translation {
+    margin-left: 0.5em;
+    font-size: 80%;
+    font-weight: normal;
+    font-style: italic;
+    color: rgb(75,75,75);
+    padding-top: 0;
+}
+
+.BackOfficeLayout .Table .selection {
+    width: 1.5em;
+    padding-right: 0;
+}
+
+.BackOfficeLayout .Table .even {
+	background-color: rgb(235,240,247);
+}
+
+.BackOfficeLayout .Table .odd {
+    background-color: white;
+}
+
+.BackOfficeLayout .Table .even td.sorted {
+    background-color: rgb(225,230,237);
+    background-color: rgb(220,225,232);
+    background-color: rgb(220,225,227);
+}
+
+.BackOfficeLayout .Table .odd td.sorted {
+    background-color: rgb(235,240,247);
+}
+
+.BackOfficeLayout .Table tr.draft td {
+    background-color: rgb(250,242,190) !important;
+}
+
+.BackOfficeLayout .Table tr.selected td,
+.BackOfficeLayout .Table tr.selected td * {
+    background-color: rgb(200,205,207) !important;
+    background-color: rgb(75,75,75) !important;
+    color: white !important;
+}
+
+.BackOfficeLayout .Table .element_column label {
+    white-space: nowrap;
+    background-repeat: no-repeat;
+    padding-left: 1.5em;
+}
+
+.BackOfficeLayout .draft,
+.BackOfficeLayout .changed,
+.BackOfficeItemView .navigation .section_entry.changed {
+    background-color: rgb(250,242,190);
+}
+
+.BackOfficeLayout .changed {
+    border:1px solid #EBE3AF;
+}
+
+.BackOfficeLayout .Table .nested_draft td.element_column {
+    padding-left: 2em;
+}
+
+.BackOfficeLayout .Table .nested_draft td.element_column label {
+    background-image: url(../images/edit_small.png);
+}
+
+.BackOfficeLayout .Table td a {
+    text-decoration: underline;
+}
+
+.BackOfficeLayout .Table th.sorted .label {
+    padding-right: 1em;
+    background-repeat: no-repeat;
+    background-position: center right;
+}
+
+.BackOfficeLayout .Table td.element_column label {
+    padding-top: 0.1em;
+    padding-bottom: 0.1em;
+    background-position: center left;
+}
+
+.BackOfficeLayout .Table th.ascending .label {
+    background-image: url(../images/ascending.png);
+}
+
+.BackOfficeLayout .Table th.descending .label {
+    background-image: url(../images/descending.png);
+}
+
+.BackOfficeLayout .row_selector {
+    clear: both;
+    margin-top: 0.5em;
+    padding-top: 0.3em;
+    padding-bottom: 1em;
+    padding-left: 1em;
+    font-size: 85%;
+}
+
+.BackOfficeLayout .row_selector span {
+    padding-right: 1em;
+}
+
+.BackOfficeLayout .row_selector a {
+    text-decoration: underline;
+}
+
+.BackOfficeLayout .Table .position_mark button {
+    font-size: 85%;
+}
+
+.BackOfficeLayout .Table .List {
+    margin: 0;
+    padding: 0;
+    list-style-position: inside;
+}
+
+/* Content type icons
+-----------------------------------------------------------------------------*/
+.BackOfficeLayout .Item {
+    background-image: url(../images/types/Item.png);
+}
+
+.BackOfficeLayout .Site {
+    background-image: url(../images/types/Site.png);
+}
+
+.BackOfficeLayout .AccessRule {
+    background-image: url(../images/types/AccessRule.png);
+}
+
+.BackOfficeLayout .DynamicGroup {
+    background-image: url(../images/types/DynamicGroup.png);
+}
+
+.BackOfficeLayout .Group {
+    background-image: url(../images/types/Group.png);
+}
+
+.BackOfficeLayout .Document {
+    background-image: url(../images/types/Document.png);
+}
+
+.BackOfficeLayout .Event {
+    background-image: url(../images/types/Event.png);
+}
+
+.BackOfficeLayout .File {
+    background-image: url(../images/types/File.png);
+}
+
+.BackOfficeLayout .Language {
+    background-image: url(../images/types/Language.png);
+}
+
+.BackOfficeLayout .News {
+    background-image: url(../images/types/News.png);
+}
+
+.BackOfficeLayout .Resource {
+    background-image: url(../images/types/Resource.png);
+}
+
+.BackOfficeLayout .Style {
+    background-image: url(../images/types/Style.png);
+}
+
+.BackOfficeLayout .Template {
+    background-image: url(../images/types/Template.png);
+}
+
+.BackOfficeLayout .User {
+    background-image: url(../images/types/User.png);
+}
+
+.BackOfficeLayout .Role {
+    background-image: url(../images/types/Role.png);
+}
+
+.BackOfficeLayout .PlugIn {
+    background-image: url(../images/types/PlugIn.png);
+}
+
+/* Toolbar
+-----------------------------------------------------------------------------*/
+
+.BackOfficeLayout .toolbar {
+	clear: both;
+    margin-top: 1em;	
+	background-color: rgb(242,240,235);
+	border: 1px solid rgb(232,230,225);
+    height: 2.1em;
+}
+
+.BackOfficeLayout .toolbar .toolbar_button {    
+    float: left;
+	font-size: 85%;
+    margin: 0;
+    padding: 0;
+    margin-right: 1em;
+}
+
+.BackOfficeLayout .toolbar .toolbar_button .label {
+    height: 2.1em;
+    padding-top: 0.2em;
+}
+
+.BackOfficeLayout .toolbar button.toolbar_button {
+    border: none;
+    background: none;
+    padding-top: 0.2em;
+}
+
+.BackOfficeLayout .toolbar .toolbar_button img {
+	vertical-align: middle;
+}
+
+.BackOfficeLayout .toolbar .toolbar_button .label {
+    display: block;
+}
+
+.BackOfficeLayout .toolbar .content_view,
+.BackOfficeLayout .toolbar .visible_languages,
+.BackOfficeLayout .toolbar .visible_members {
+    float: right;
+}
+
+.BackOfficeLayout .toolbar .content_type .label,
+.BackOfficeLayout .toolbar .visible_languages .label,
+.BackOfficeLayout .toolbar .visible_members .label,
+.BackOfficeLayout .toolbar .content_view .label,
+.BackOfficeItemView .translations_selector .label {
+    height: 1.9em;
+    padding-top: 0.4em;
+    padding-left: 0.5em !important;
+    background-position: right 0.8em;
+}
+
+.BackOfficeLayout .toolbar .visible_members .selector_content {
+    right: 0;
+}
+
+.content_view_selector > div {
+    margin-top: 0.1em;
+    float: left;
+    padding: 0.4em;
+}
+
+.content_view_selector > div.selected {
+    border: 1px solid rgb(195,190,160);
+    background-color: rgb(215,210,180);
+    -moz-border-radius: 3px;
+}
+
+/* Dropdown selector
+-----------------------------------------------------------------------------*/
+.BackOfficeLayout .selector {
+    position: relative;
+    overflow: visible;
+    cursor: default;
+}
+
+.BackOfficeLayout .selector .label {
+    position: relative;
+    padding-left: 0.2em !important;
+    padding-right: 1em;
+    background: url(../images/dropdown_arrow.png) no-repeat right 0.9em;
+    border: 1px solid transparent;
+    z-index: 2;
+    cursor: pointer;
+    color: black;
+}
+
+.BackOfficeLayout .selector:hover .label,
+.BackOfficeLayout .selector.scripted.unfolded .label,
+.BackOfficeLayout .selector.scripted.unfolded:hover .label {
+    background-color: white;
+    border: 1px solid rgb(190,200,210);
+    border-bottom-color: white;
+    z-index: 1001;
+}
+
+.BackOfficeLayout .selector.scripted:hover .label {
+    border-color: transparent;
+    background-color: transparent;
+}
+
+.BackOfficeLayout .selector_content {
+    display: none;
+    min-width: 8em;
+    position: absolute;
+    top: 2.3em;
+    border: 1px solid rgb(190,200,210);
+    background-color: rgb(250,250,250);
+    padding: 0.4em 0.6em;
+    margin: 0;
+    z-index: 1;
+    padding: 0.6em;
+}
+
+.BackOfficeLayout .selector:hover .selector_content,
+.BackOfficeLayout .selector.scripted.unfolded .selector_content,
+.BackOfficeLayout .selector.scripted.unfolded:hover .selector_content {
+    display: block;
+    z-index: 1000;
+}
+
+.BackOfficeLayout .selector.scripted:hover .selector_content {
+    display: none;
+}
+
+/* Visible members dropdown
+-----------------------------------------------------------------------------*/
+.BackOfficeLayout .visible_members .CheckList {
+    margin-bottom: 0.4em;
+}
+
+/* Content languages dropdown
+-----------------------------------------------------------------------------*/
+.BackOfficeLayout .visible_languages .CheckList {
+    margin-bottom: 0.4em;
+}
+
+/* Link selectors
+-----------------------------------------------------------------------------*/
+.BackOfficeLayout .LinkSelector .selected {
+    font-weight: bold;
+}
+
+/* Content type dropdown
+-----------------------------------------------------------------------------*/
+.BackOfficeLayout .ContentTypeTree,
+.BackOfficeLayout .ContentTypeTree ul,
+.BackOfficeLayout .ContentTypeTree li {
+    padding-left: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    margin: 0;
+    list-style-type: none;
+}
+
+.BackOfficeLayout .ContentTypeTree li {
+    padding-top: 0.8em;
+    white-space: nowrap;
+}
+
+.BackOfficeLayout .ContentTypeTree li li {
+    padding-left: 2em;
+}
+
+.BackOfficeLayout .ContentTypeTree .entry_label {
+    background-repeat: no-repeat;
+    padding-left: 1.75em;
+    padding-bottom: 0.2em;
+    color: black;
+}
+
+.BackOfficeLayout .toolbar .content_type {
+    background-repeat: no-repeat;
+    padding-bottom: 0.2em;
+    color: black;
+}
+
+/* Content type path
+-----------------------------------------------------------------------------*/
+.BackOfficeLayout .ContentTypePath {
+    margin: 0;
+    padding: 0;
+    margin-top: 0.5em;
+    height: 1.5em;
+}
+
+.BackOfficeLayout .ContentTypePath .selector_content {
+    top: 1.4em;
+    z-index: 3;
+    padding: 0.4em;
+    min-width: 16em;
+}
+
+.BackOfficeLayout .ContentTypePath .selector_content > li {
+    font-size: 85%;
+}
+
+.BackOfficeLayout .ContentTypePath > li {
+    display: block;
+    float: left;
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+    padding-left: 2.4em;
+    background-image: url(../images/path_separator.png);
+    background-repeat: no-repeat;
+    background-position: 1em 0.3em;
+}
+
+.BackOfficeLayout .ContentTypePath > li:first-child {
+    background-image: none;
+    padding-left: 0;
+}
+
+.BackOfficeLayout .ContentTypePath .selector {
+    height: 1.5em;
+}
+
+.BackOfficeLayout .ContentTypePath .selector .label {
+    padding-top: 0.2em;
+    padding-bottom: 0.2em;
+    padding-left: 0.2em;
+    z-index: 4;
+    background-position: right 0.6em;
+}
+
+.BackOfficeLayout .ContentTypePath > li:last-child .label {
+    color: black;
+    font-weight: bold;
+}
+
+.BackOfficeLayout .ContentTypePath .leaf .label {
+    background: none;
+}
+
+.BackOfficeLayout .ContentTypePath .leaf .label {
+    border-color: transparent;
+}
+
+/* Content type picker
+-----------------------------------------------------------------------------*/
+.BackOfficeLayout .ContentTypePicker .label {
+    display: block;
+    padding: 0.5em 0.2em;
+}
+
+.BackOfficeLayout .ContentTypePicker .label .empty_option {
+    padding-left: 0;
+}
+
+.BackOfficeLayout .ContentTypePicker .selector_content {
+    max-height: 20em;
+    min-width: 16em;
+    overflow: auto;
+}
+
+.BackOfficeLayout .ContentTypePicker .entry_label {
+    display: inline;
+    margin-left: 0.3em;
+}
+
+/* Paging
+-----------------------------------------------------------------------------*/
+
+.BackOfficeLayout .item_count,
+.BackOfficeLayout .page_size,
+.BackOfficeLayout .Pager {
+    float: right;
+    font-size: 85%;
+    margin-bottom: 0.75em;
+    margin-left: 2em;
+}
+
+.BackOfficeLayout .item_count, .Pager {
+    padding-top: 0.3em;
+}
+
+.BackOfficeLayout .page_size input {
+    font-size: inherit;
+    width: 2.5em;
+    margin-left: 0.4em;
+}
+
+.BackOfficeLayout .Pager * {
+    float: left;
+    display: block;
+}
+
+.BackOfficeLayout .Pager .previous {
+    margin-left: 0.3em;
+}
+
+.BackOfficeLayout .Pager .next {
+    margin-right: 0.3em;
+}
+
+.BackOfficeLayout .Pager .page_links {
+    margin-left: 0.8em;
+    margin-right: 0.8em;
+}
+
+.BackOfficeLayout .Pager .page_links a + a {
+    margin-left: 0.5em;
+}
+
+.BackOfficeLayout .Pager .page_links a.selected {
+    font-weight: bold;
+}
+
+.BackOfficeLayout .no_results {
+    margin-top: 2em;
+    border: 1px dotted rgb(200,160,120);
+    padding: 0.5em;
+}
+
+/* Tree content view
+-----------------------------------------------------------------------------*/
+
+.BackOfficeLayout .TreeContentView .expander {
+    margin-left: -0.1em;
+}
+
+.BackOfficeLayout .TreeContentView .expander img {
+    vertical-align: middle;
+}
+
+.BackOfficeLayout .TreeContentView .depth_level {
+    padding-left: 1.8em;
+}
+
+.BackOfficeLayout .TreeContentView .leaf label {
+    margin-left: 1.5em;
+}
+
+/* History
+-----------------------------------------------------------------------------*/
+
+.BackOfficeHistoryView td.changes ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.BackOfficeHistoryView td.changes li {
+    background-position: left center;
+    background-repeat: no-repeat;
+    padding-top: 0.2em;
+    padding-bottom: 0.2em;
+    padding-left: 1.6em;
+}
+
+.BackOfficeHistoryView td.changes li + li {
+    margin-top: 0.3em;
+}
+
+.BackOfficeHistoryView td.changes li.create {
+    background-image: url(../images/new_small.png);
+}
+
+.BackOfficeHistoryView td.changes li.modify {
+    background-image: url(../images/edit_small.png);
+}
+
+.BackOfficeHistoryView td.changes li.delete {
+    background-image: url(../images/delete_small.png);
+}
+
+/* Errors and success
+-----------------------------------------------------------------------------*/
+.BackOfficeLayout .success {
+    padding: 0.5em;
+    border: 1px solid rgb(200,220,200);
+    background-color: rgb(220,240,220);
+}
+
+.BackOfficeLayout .error_box {
+    border: 1px dotted rgb(200,160,120);
+    background-color: rgb(245,230,215);
+    padding: 0.5em;
+    margin: 1em;
+}
+
+.BackOfficeLayout .error_box li {
+    list-style-type: none;
+}
+
+.BackOfficeLayout .error_box li + li {
+    margin-top: 0.2em;
+}
+
+.BackOfficeLayout .error_box li em {
+    font-style: normal;
+    font-weight: bold;
+    color: rgb(135,35,10);
+}
+
+.BackOfficeLayout .field .error {
+    border: 1px solid rgb(200,160,120) !important;
+    background-color: rgb(245,230,215) !important;
+}
+
+/* Edit form
+-----------------------------------------------------------------------------*/
+
+.BackOfficeItemView .body {
+    position: absolute;
+    left: 0.7em;
+    right: 0.7em;
+    top: 4.5em;
+    bottom: 0;
+}
+
+.BackOfficeItemView .navigation {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+}
+
+.BackOfficeItemView .navigation .section_entry {
+    z-index: 1;
+    margin-left: 0;
+    margin-right: 0.2em;
+}
+
+.BackOfficeItemView .edit_form_frame {
+    border: 1px solid rgb(200,210,220);
+    border-top: none;
+    z-index: 0;
+    clear: both;
+    position: absolute;    
+    top: 2.8em;
+    bottom: 4em;
+    left: 0;
+    right: 0;
+    overflow: auto;
+}
+
+.BackOfficeItemView .buttons {
+    position: absolute;
+    bottom: 0em;
+    left: 0;
+    right: 0;
+}
+
+.BackOfficeItemView .edit_form {
+    padding: 0;
+    position: absolute;
+    top: 2.3em;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    overflow: auto;
+}
+
+.BackOfficeItemView .draft_box {
+    padding: 0.5em;
+    margin-bottom: 1.5em;
+    border: 1px solid rgb(235,227,175);
+    font-size: 85%;
+}
+
+.BackOfficeItemView .draft_box strong {
+    color: rgb(75,50,25);
+}
+
+.BackOfficeItemView .draft_box .draft_actions {
+    text-align: right;
+}
+
+.BackOfficeItemView .draft_box .draft_actions button {
+    margin-left: 0.3em;
+}
+
+.BackOfficeEditView .edit_form .fields {
+    clear: both;
+}
+
+.BackOfficeItemView .edit_form_toolbar {
+    border-bottom: 1px solid rgb(230,235,240);
+    height: 2em;
+    padding-top: 0.3em;
+    padding-right: 0.3em;
+}
+
+.BackOfficeItemView .translations_selector {
+    font-size: 85%;
+    float: right;
+}
+
+.BackOfficeItemView .translations_selector .label {
+    display: block;
+}
+
+.BackOfficeEditView .translations_selector .selector_content {
+    list-style-type: none;
+    padding-right: 0.1;
+    right: 0;
+}
+
+.BackOfficeEditView .translations_selector .selector_content li {
+    clear: both;
+    margin: 0;
+    padding: 0;
+}
+
+.BackOfficeEditView .translations_selector .language {
+    float: left;
+    height: 2em;
+}
+
+.BackOfficeEditView .translations_selector button {
+    float: right;
+    margin: 0;
+    padding: 0;
+    cursor: pointer;
+    border: none;
+    background: none;
+}
+
+.BackOfficeEditView .translations_selector.scripted .selector_content {
+    list-style-type: none;
+    padding-right: 0.1;
+}
+
+.BackOfficeEditView .translations_selector.scripted .selector_content li {
+    clear: both;
+    margin: 0;
+    padding: 0;
+}
+
+.BackOfficeEditView .translations_selector.scripted .selector_content li input {
+    float: left;
+}
+
+.BackOfficeEditView .ItemSelector {
+    padding: 0.1em;
+}
+
+.BackOfficeEditView .ItemSelector button {
+    width: 18.5em;
+}
+
+.BackOfficeEditView .ItemSelector .selection_label {
+    background-repeat: no-repeat;
+    padding-left: 1.4em;
+    color: rgb(75,75,75);
+}
+
+.BackOfficeEditView .Reference .empty_selection {
+    padding-left: 0;
+    font-style: italic;
+}
+
+.BackOfficeItemView .more_actions {
+    position: absolute;
+    left: 1.3em;
+    bottom: 1.2em;
+}
+
+.BackOfficeItemView .more_actions .label {
+    background-image: url(../images/dropup_arrow.png);
+    background-position: right 0.5em;
+    padding-left: 0.3em;
+}
+
+.BackOfficeLayout .more_actions:hover .label,
+.BackOfficeLayout .more_actions.scripted.unfolded .label,
+.BackOfficeLayout .more_actions.scripted.unfolded:hover .label {
+    border-top-color: white;
+    border-bottom-color: rgb(190,200,210);
+}
+
+.BackOfficeItemView .more_actions .selector_content {
+    position: static;
+    padding-left: 0.5em;
+}
+
+.BackOfficeItemView .more_actions .selector_content > * {
+    display: block;
+    border: none;
+    background-color: white;
+    background-repeat: no-repeat;
+    padding: 0;
+    padding-left: 20px;
+    margin: 0;
+}
+
+.BackOfficeItemView .more_actions .selector_content > button {
+    position: relative;
+    left: -2px;
+}
+
+.BackOfficeItemView .more_actions .selector_content > * + * {
+    margin-top: 0.5em;
+}
+
+.BackOfficeItemView .more_actions .selector_content > button + * {
+    margin-top: 0.3em;
+}
+
+.BackOfficeItemView .more_actions .delete_button {
+    background-image: url(../images/delete_small.png);
+}
+
+.BackOfficeItemView .more_actions .differences_button {
+    background-image: url(../images/differences_small.png);
+}
+
+.BackOfficeItemView .more_actions .preview_button {
+    background-image: url(../images/preview_small.png);
+}
+
+.BackOfficeItemView .more_actions .history_button {
+    background-image: url(../images/history_small.png);
+}
+
+.BackOfficeItemView .edit_form_frame,
+.BackOfficeEditView .edit_form {
+    padding: 1em;
+}
+
+.BackOfficeEditView .edit_form_frame {
+    padding: 0;
+}
+
+/* Order view
+-----------------------------------------------------------------------------*/
+.BackOfficeOrderView tr.original_position td.element_column {
+    font-style: italic;
+    color: rgb(75,75,75);
+}
+
+/* Move view
+-----------------------------------------------------------------------------*/
+.BackOfficeMoveView .tree li {
+    list-style-type: none;
+    margin-top: 0.7em;
+}
+
+.BackOfficeMoveView .tree .ItemLabel {
+    padding-left: 1.3em;
+}
+
+.BackOfficeMoveView .tree .slot button {
+    cursor: pointer;
+    border: none;
+    background: none;
+    position: relative;
+    left: -0.2em;
+    display: block;
+    margin: 0;
+    padding: 0.1em 0;
+    text-align: left;
+}
+
+.BackOfficeMoveView .tree .slot .label {
+    font-size: 80%;
+    color: rgb(50,80,110);
+}
+
+.BackOfficeMoveView .tree .slot_content {
+    display: none;
+}
+
+.BackOfficeMoveView .tree .slot button:hover {
+    border: 1px solid rgb(170,185,200);
+    background-color: rgb(230,235,240);
+    left: -0.3em;
+    padding-bottom: 0;
+}
+
+.BackOfficeMoveView .tree .slot button:hover .label {
+    display: none;
+}
+
+.BackOfficeMoveView .tree .slot .ItemLabel + .ItemLabel {
+    margin-top: 0.8em;
+}
+
+.BackOfficeMoveView .tree .slot button:hover .ItemLabel {
+    padding-left: 1.5em;
+}
+
+.BackOfficeMoveView .tree .slot button:hover .slot_content {
+    display: block;
+}
+
+.BackOfficeMoveView .original_position {
+    color: rgb(100,100,100);
+}
+
+/* Filter box
+-----------------------------------------------------------------------------*/
+.BackOfficeLayout .CollectionView .filters {
+    font-size: 85%;
+    margin-top: 0.3em;
+    border: 1px solid rgb(210,210,210);
+    background-color: rgb(245,245,245);
+}
+
+.BackOfficeLayout .CollectionView .filters:not(.empty) > .label {
+    font-weight: bold;
+}
+
+.BackOfficeLayout .CollectionView .filters.scripted > .label {
+    cursor: pointer;
+    padding: 0.5em;
+    padding-left: 1.2em;
+    background-repeat: no-repeat;
+    background-position: 0.4em center;
+    background-image: url(../images/collapsed_block.png);
+}
+
+.BackOfficeLayout .CollectionView .filters.scripted.expanded > .label {
+    background-image: url(../images/expanded_block.png);
+    border-bottom: 1px dotted rgb(210,210,210);
+    padding-left: 1.6em;
+}
+
+
+.BackOfficeLayout .CollectionView .filters .FilterBox {
+    padding: 0.5em;
+    padding-top: 1em;
+    background-color: rgb(240,240,240);
+}
+
+.BackOfficeLayout .CollectionView .filters.scripted .FilterBox {
+    display: none;
+}
+
+.BackOfficeLayout .CollectionView .filters.scripted.expanded .FilterBox {
+    display: block;
+    padding-left: 1.75em;
+}
+
+.BackOfficeLayout .FilterBox .filter_entry {
+    clear: left;
+}
+
+.BackOfficeLayout .FilterBox .filter_entry .filter_desc,
+.BackOfficeLayout .FilterBox .filter_entry .filter_ui,
+.BackOfficeLayout .FilterBox .filter_entry .fields,
+.BackOfficeLayout .FilterBox .filter_entry .field,
+.BackOfficeLayout .FilterBox .filter_entry .field_instance {
+    clear: none !important;
+    float: left !important;
+}
+
+.BackOfficeLayout .FilterBox .filter_entry fieldset {
+    margin: 0;
+    padding: 0;
+}
+
+.BackOfficeLayout .CollectionView .filters .filter_desc {
+    min-width: 10em;
+    margin-top: 0.3em;
+}
+
+.BackOfficeLayout .FilterBox .filter_entry .language_field .control,
+.BackOfficeLayout .FilterBox .operator_field .control {
+    width: 10em;
+}
+
+.BackOfficeLayout .CollectionView .filters .buttons {
+    padding: 0;
+}
+
+.BackOfficeLayout .CollectionView .filters:not(.empty) .buttons {
+    margin-top: 2em;
+}
+
+.BackOfficeLayout .CollectionView .filters .buttons button {
+    width: auto;
+}
+
+.BackOfficeLayout .CollectionView .filters .clear_button {
+    padding-left: 1.6em;
+    background-repeat: no-repeat;
+    background-position: left center;
+    background-image: url(../images/clear_small.png);
+}
+
+.BackOfficeLayout .CollectionView .filters .clear_button,
+.BackOfficeLayout .CollectionView .filters .new_filter_selector {
+    float: left;
+    margin-top: 0.5em;
+}
+
+.BackOfficeLayout .CollectionView .filters .new_filter_selector {
+    margin-right: 1em;
+}
+
+.BackOfficeLayout .CollectionView .filters .new_filter_selector .label {
+    padding-right: 0.3m;
+    padding-top: 0.3em;
+    padding-bottom: 0.3em;
+    padding-left: 1.5em !important;
+    background-position: 0.2em center;
+    background-image: url(../images/add_small.png);
+    color: rgb(50,80,110);
+}
+
+.BackOfficeLayout .CollectionView .filters .new_filter_selector .selector_content {
+    overflow: auto;
+    max-height: 15em;
+    min-width: 12em;
+    top: 1.5em;
+}
+
+.BackOfficeLayout .CollectionView .filters .new_filter_selector .selector_content a {    
+    border: none;
+    background: none;
+    display: block;
+    cursor: pointer;
+    color: rgb(50,80,110);
+    text-align: left;
+    padding: 0;
+    margin: 0.3em 0;
+}
+
