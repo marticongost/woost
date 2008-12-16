@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<?py
+from sitebasis.models import Site
+?>
+
+<py:sitebasis.views.ContentView
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:py="http://www.whads.com/ns/cocktail/templates">
+
+    <?py-class
+    content_view_id = "tree"
+    actions = "new", "edit", "delete", "move", "history"
+    root = None
+    children_collection = None
+
+    def _attach(self, controller):
+        ContentView._attach(self, controller)
+        expanded_param = controller.get_content_type_param("expanded")
+
+        if expanded_param:
+            if isinstance(expanded_param, basestring):
+                expanded = set(int(id) for id in expanded_param.split(","))
+            else:
+                expanded = set(int(id) for id in expanded_param)
+
+            self.expanded = expanded
+        else:
+            self.expanded = set()
+
+    def _init_user_collection(self, user_collection):
+        ContentView._init_user_collection(self, user_collection)
+        user_collection.allow_sorting = False
+        user_collection.allow_filters = False
+        user_collection.allow_paging = False
+        user_collection.page_size = None
+
+    ?>
+    <input type="hidden" name="root" value="@{self.root.id if self.root else None}"/>
+    <input type="hidden" name="member" value="@{self.children_collection}"/>
+
+    <py:sitebasis.views.ContentTree
+        py:def="collection_display"
+        py:cms="@{self.cms}"
+        py:base_url="@{self.cms.document_uri()}"
+        py:translations="@{self.visible_languages}"
+        py:children_collection="@{self.children_collection}"
+        py:expanded="@{self.expanded}">
+        
+        <py:binding>
+            <?py
+            element.data = (
+                [self.root]
+                if self.root and self.cms.authorization.allows(
+                    action = "read",
+                    target_instance = self.root
+                )
+                else []
+            )
+            ?>
+        </py:binding>
+
+    </py:sitebasis.views.ContentTree>
+
+</py:sitebasis.views.ContentView>

@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<?py
+from cocktail.modeling import extend, call_base
+from cocktail.iteration import is_empty
+from sitebasis.models import Item
+?>
+
+<py:cocktail.html.CollectionView
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:py="http://www.whads.com/ns/cocktail/templates">
+
+    <?py-class
+    collection_params = None
+    available_content_views = ()
+    visible_languages = ()
+    root_content_type = Item
+
+    @classmethod
+    def get_collection(cls, content_type, item = None, relation = None):
+        if item:
+            return item.get(relation)
+        else:
+            return None # default
+
+    @classmethod
+    def compatible_with(cls, content_type, item = None, relation = None):
+        return True
+    
+    def _attach(self, controller):
+        pass
+
+    def _init_user_collection(self, user_collection):
+        pass
+
+    def create_toolbar_button(self, action):
+        if action == "new":
+            return self.create_new_toolbar_button()
+        else:
+            return CollectionView.create_toolbar_button(self, action)
+    ?>
+
+    <!-- Content type path -->
+    <py:sitebasis.views.ContentTypePath
+        py:id="content_type_path"
+        py:value="@{self.user_collection.type}"
+        py:index="0"
+        py:root="@{self.root_content_type}">
+
+        <py:ready>
+            <?py
+            content_type = self.user_collection.type
+
+            if content_type is self.root_content_type \
+            and is_empty(content_type.derived_schemas()):
+                element.visible = False
+            ?>
+        </py:ready>
+
+        <py:with py:def="selector">
+            <py:with py:def="tree" py:plural_labels="${True}">
+                <py:with py:def="label" py:args="item"
+                    py:tag="a"
+                    href="?type=${item.__name__}"/>
+            </py:with>
+        </py:with>
+
+    </py:sitebasis.views.ContentTypePath>
+
+    <!-- New item selector -->
+    <div py:def="new_toolbar_button"
+        class="selector toolbar_button new">
+        <?py
+        shortcut = translate("CollectionView new shortcut", default = "")
+        if shortcut:
+            element.set_client_param("shortcut", shortcut)
+        ?>
+        <span class="label">
+            <img src="${self.cms.application_uri('resources', 'images', 'new.png')}"/>
+            ${translate("new")}
+        </span>
+        <div class="selector_content">
+            <py:sitebasis.views.ContentTypeTree
+                py:id="new_item_selector"
+                py:root="@{self.user_collection.type}"
+                py:base_url="@{self.cms.document_uri('content', 'new')}">
+        
+                <?py
+                @extend(element)
+                def get_child_items(self, content_type):
+                    return [child
+                            for child in call_base(content_type)
+                            if child.instantiable]
+                ?>
+                
+                <py:with py:def="label" py:args="content_type"
+                    py:tag="a"
+                    href="${self.base_url + '?type=' + content_type.__name__}"/>
+
+            </py:sitebasis.views.ContentTypeTree>
+        </div>
+    </div>
+
+    <!-- Content view selector -->
+    <py:with
+        py:element="self.settings_box">
+
+        <div py:id="content_view" class="toolbar_button">
+
+            <py:cocktail.html.LinkSelector
+                py:id="content_view_selector"
+                py:name="content_view">
+
+                <?py
+                @refine(element)
+                def get_item_label(self, content_view):                    
+                    return translate(content_view.content_view_id + " content view")
+                
+                @refine(element)
+                def get_item_value(self, content_view):
+                    return content_view.content_view_id
+                ?>
+
+                <py:with
+                    py:def="entry_link" py:args="value, label"
+                    title="${label}">
+                    <?py element.empty() ?>
+                    <img src="/resources/images/${value.lower()}contentview.png"/>
+                </py:with>
+
+            </py:cocktail.html.LinkSelector>
+
+            <py:ready>
+                <?py
+                if self.available_content_views \
+                and len(self.available_content_views) > 1:                    
+                    self.content_view_selector.items = self.available_content_views
+                    self.content_view_selector.value = self
+                else:
+                    self.content_view.visible = False
+                ?>
+            </py:ready>
+        </div>
+
+    </py:with>
+
+</py:cocktail.html.CollectionView>
