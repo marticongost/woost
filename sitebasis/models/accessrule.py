@@ -6,15 +6,23 @@
 @organization:	Whads/Accent SL
 @since:			July 2008
 """
-from cocktail.modeling import classgetter
 from cocktail.language import get_content_language
 from cocktail.translations import translate
 from cocktail import schema
 from sitebasis.models.site import Site
 from sitebasis.models.item import Item
+from sitebasis.models.document import Document
 from sitebasis.models.group import Group
 from sitebasis.models.role import Role
 from sitebasis.models.action import Action
+
+debug = False
+
+try:
+    from styled import styled
+except ImportError:
+    def styled(string, *args, **kwargs):
+        return string
 
 
 class AccessRule(Item):
@@ -51,11 +59,22 @@ class AccessRule(Item):
         "target_instance",
         "target_type",
         "target_ancestor",
+        "target_member",
         "action",
         "language",
         "allowed"
     )
-    
+ 
+    criteria = (
+        "role",
+        "target_instance",
+        "target_type",
+        "target_ancestor",
+        "target_member",
+        "action",
+        "language"
+    )
+
     role = schema.Reference(
         type = "sitebasis.models.Item",
         listed_by_default = False        
@@ -76,6 +95,10 @@ class AccessRule(Item):
         listed_by_default = False
     )
 
+    target_member = schema.String(
+        listed_by_default = False
+    )
+
     action = schema.Reference(
         type = "sitebasis.models.Action",
         listed_by_default = False
@@ -92,6 +115,12 @@ class AccessRule(Item):
         listed_by_default = False
     )
     
+    def criteria_is_relevant(self, key, partial_match):
+        return (self.get(key) is not None) \
+            or (partial_match
+                and key == "target_type"
+                and self.target_instance is not None)
+
     def matches(self, context):
         """Determines if the rule is applicable to the indicated access
         context.
@@ -107,40 +136,90 @@ class AccessRule(Item):
         """       
         # TODO: Document the matches_*** protocol
 
-        for key, context_value in context.iteritems():
+        partial_match = context.get("partial_match", False) and self.allowed
 
-            test = getattr(self, "matches_" + key, None)
+        for key in self.criteria:
 
-            if test:
-                if not test(context_value):
-                    return False
+            if self.criteria_is_relevant(key, partial_match):
+
+                # Search for a custom implementation
+                test = getattr(self, "matches_" + key, None)
+
+                if test:
+                    if not test(context, partial_match):
+                        break
+            
+                # Use the default test
+                else:
+                    rule_value = self.get(key)
+                    context_value = context.get(key)
+
+                    if rule_value != context_value \
+                    and not (partial_match and context_value is None):
+                        break
+        else:
+            if debug:
+                print styled(translate(self), style = "underline"),
+                print styled(
+                    ("allowed" if self.allowed else "forbidden"),
+                    "white", ("green" if self.allowed else "red")
+                )
+
+            return True
+ 
+        if debug:
+            print translate(self), "(%s doesn't match)" \
+                % styled(key, "light_gray")
+
+        return False
+
+    def matches_role(self, context, partial_match):
+        context_roles = context.get("roles")
+        if context_roles is None:
+            return partial_match
+        else:
+            return self.role in context_roles
+
+    def matches_target_type(self, context, partial_match):
+        context_type = context.get("target_type")
+        if context_type is None:
+            return partial_match
+        else:
+            if self.target_type:
+                return issubclass(context_type, self.target_type)
+
+            # This should only be reached on a partial match
             else:
-                rule_value = getattr(self, key, None)
-                if rule_value is not None and rule_value != context_value:
-                    return False
-           
-        return True
+                return isinstance(self.target_instance, context_type)
 
-    def matches_roles(self, context_role):
-        return self.role is None or self.role in context_role
-
-    def matches_target_type(self, target_type):
-        return self.target_type is None \
-            or issubclass(target_type, self.target_type)
-
-    def matches_page(self, page):
-        return self.target_ancestor is None \
-            or page.descends_from(self.target_ancestor)  
+    def matches_target_ancestor(self, context, partial_match):
+        context_instance = context.get("target_instance")
+        if context_instance is None:
+            return partial_match
+        else:
+            return context_instance \
+                and isinstance(context_instance, Document) \
+                and context_instance.descends_from(self.target_ancestor)
 
     def __translate__(self, language, **kwargs):
 
         trans = []
 
+        if self.target_member:
+            if self.target_type:
+                member = self.target_type[self.target_member]
+                member_desc = translate(member, language, **kwargs)
+            elif self.target_instance:
+                member = self.target_instance.__class__[self.target_member]
+                member_desc = translate(member, language, **kwargs)
+            else:
+                member_desc = self.target_member
+
         if language == "en":
             
             if self.role is None:
                 if self.allowed:
-                    trans.append(u"Anybody can ")
+                    trans.append(u"Anybody can")
                 else:
                     trans.append(u"Nobody can")
             else:
@@ -151,6 +230,9 @@ class AccessRule(Item):
                 translate(self.action, language).lower()
                           if self.action
                           else u"access")
+            
+            if self.target_member:
+                trans.append("the " + member_desc + " field of")
 
             if self.target_instance:
                 trans.append(translate(self.target_instance, language))
@@ -187,8 +269,9 @@ class AccessRule(Item):
                 
             trans.append(
                 translate(self.action, language).lower()
-                          if self.action
-                          else u"accedir a")
+                if self.action
+                else u"accedir a"
+            )
 
             if self.target_instance:
                 trans.append(translate(self.target_instance, language))
@@ -225,8 +308,9 @@ class AccessRule(Item):
                 
             trans.append(
                 translate(self.action, language).lower()
-                          if self.action
-                          else u"acceder a")
+                if self.action
+                else u"acceder a"
+            )
 
             if self.target_instance:
                 trans.append(translate(self.target_instance, language))
@@ -249,7 +333,14 @@ class AccessRule(Item):
 
 
 def allowed(**context):
-    
+ 
+    # Normalize target members to member names
+    target_member = context.get("target_member", None)
+
+    if target_member is not None:
+        if isinstance(target_member, schema.Member):
+            context["target_member"] = target_member.name
+
     # Implicit language
     if context.get("language") is None:
         context["language"] = get_content_language()
@@ -265,6 +356,21 @@ def allowed(**context):
 
     if action is not None and isinstance(action, basestring):
         context["action"] = Action.identifier.index[action]
+
+    if debug:
+        print styled(u"-" * 80, "brown")
+        print styled("Access context:", "white", "brown")
+        for key, value in context.iteritems():
+            print "\t", (key + ":").ljust(16),
+            
+            try:
+                value = translate(value)
+            except:
+                pass
+
+            print styled(value, style = "bold")
+
+        print styled("Rules:", "white", "brown")
 
     # Test the security context against the access rules registry
     for rule in Site.main.access_rules_by_priority:
