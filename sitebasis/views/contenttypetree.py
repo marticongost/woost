@@ -21,14 +21,11 @@ class ContentTypeTree(TreeView):
 
     def create_label(self, content_type):
         
-        label = Element()
-
-        label.add_class("entry_label")
+        label = TreeView.create_label(self, content_type)
 
         for schema in content_type.descend_inheritance(True):
             label.add_class(schema.name)
 
-        label.append(self.get_item_label(content_type))
         return label
 
     def get_item_label(self, content_type):
@@ -40,5 +37,6 @@ class ContentTypeTree(TreeView):
     def get_child_items(self, content_type):
         return sorted(
             content_type.derived_schemas(recursive = False),
-            key = lambda ct: translate(ct.__name__))
+            key = lambda ct: translate(ct.__name__)
+        )
 
