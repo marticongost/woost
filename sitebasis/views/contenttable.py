@@ -7,6 +7,7 @@
 @since:			September 2008
 """
 from datetime import datetime
+from cocktail.language import get_content_language
 from cocktail.translations import translate
 from cocktail.schema import Reference
 from cocktail.html import Element, templates
@@ -17,6 +18,7 @@ Table = templates.get_class("cocktail.html.Table")
 class ContentTable(Table):
     
     base_url = None
+    authorization_check = None
 
     def __init__(self, *args, **kwargs):
         Table.__init__(self, *args, **kwargs)
@@ -35,7 +37,7 @@ class ContentTable(Table):
                 self._draft_index += 1
                 row = self.create_row(index, draft)
                 self.append(row)
-
+        
     def create_row(self, index, item):
         
         row = Table.create_row(self, index, item)
@@ -47,6 +49,21 @@ class ContentTable(Table):
             row.add_class("nested_draft")
 
         return row
+
+    def get_member_display(self, item, column):
+        if self.authorization_check is not None \
+        and not self.authorization_check(
+            target_instance = item,
+            target_member = column,
+            language = get_content_language() if column.translated else None,
+            action = "read"
+        ):
+            sign = Element()
+            sign.add_class("forbidden")
+            sign.append(translate("forbidden value"))
+            return sign
+        else:
+            return Table.get_member_display(self, item, column)
 
     def display_element(self, item, member):
         

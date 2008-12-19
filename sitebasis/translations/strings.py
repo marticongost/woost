@@ -434,6 +434,13 @@ translations.define(
     en = u"Can't insert an element into itself."
 )
 
+translations.define(
+    "forbidden value",
+    ca = u"Camp restringit",
+    es = u"Campo restringido",
+    en = u"Restricted field"
+)
+
 # Initialization content
 #------------------------------------------------------------------------------
 translations.define("Create action title",
@@ -862,6 +869,12 @@ translations.define("AccessRule.target_ancestor",
     ca = u"Ancestre",
     es = u"Ancestro",
     en = u"Ancestor"
+)
+
+translations.define("AccessRule.target_member",
+    ca = u"Camp",
+    es = u"Campo",
+    en = u"Field"
 )
 
 translations.define("AccessRule.allowed",

@@ -191,6 +191,10 @@ html, body {
     padding: 0.2em;
 }
 
+.BackOfficeLayout .TreeView .filtered {
+    opacity: 0.5;
+}
+
 /* Forms
 -----------------------------------------------------------------------------*/
 .BackOfficeLayout fieldset {
@@ -441,6 +445,10 @@ html, body {
     margin: 0;
     padding: 0;
     list-style-position: inside;
+}
+
+.BackOfficeLayout .Table .forbidden {
+    color: rgb(135,35,10);
 }
 
 /* Content type icons
