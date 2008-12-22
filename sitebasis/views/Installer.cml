@@ -53,6 +53,7 @@ PasswordBox = loader.get_class("cocktail.html.PasswordBox")
                 element.add_group("project", [
                     "project_name",
                     "project_path",
+                    "languages",
                     "admin_email",
                     "admin_password"
                 ])
