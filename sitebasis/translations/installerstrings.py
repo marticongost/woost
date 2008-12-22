@@ -32,6 +32,10 @@ translations.define("Installer.admin_password",
     en = u"Administrator password"
 )
 
+translations.define("Installer.languages",
+    en = u"Languages"
+)
+
 translations.define("Installer.webserver",
     en = u"Web server"
 )

@@ -55,7 +55,7 @@ class Installer(object):
                 schema.String(
                     name = "project_name",
                     required = True,
-                    format = r"^[A-Za-z][A-Za-z_0-9]*$"
+                    format = r"^[A-Z][A-Za-z_0-9]*$"
                 ),
                 schema.String(
                     name = "project_path",
@@ -70,6 +70,12 @@ class Installer(object):
                     name = "admin_password",
                     required = True,
                     min = 8
+                ),
+                schema.String(
+                    name = "languages",
+                    required = True,
+                    default = "en",
+                    format = r"^[a-zA-Z]{2}(\W+[a-zA-Z]{2})*$"
                 ),
                 schema.String(
                     name = "webserver_host",
@@ -149,7 +155,7 @@ class Installer(object):
 
                     self.install(form_data)
 
-                except Exception, ex:
+                except Exception, ex:                    
                     errors.append(ex)
                     try:
                         rmtree(form_data["project_path"])
@@ -231,7 +237,8 @@ class Installer(object):
         __import__(params["project_module"])
         init_site(
             admin_email = params["admin_email"],
-            admin_password = params["admin_password"]
+            admin_password = params["admin_password"],
+            languages = params["languages"].split()
         )
 
     def _is_valid_local_address(self, host, port):
