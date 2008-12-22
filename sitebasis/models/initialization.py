@@ -70,6 +70,7 @@ def init_site(
         
         changeset.author = admin
         site.author = site.owner = admin
+        site.default_language = languages[0]
     
         # Create languages
         for code in languages:
