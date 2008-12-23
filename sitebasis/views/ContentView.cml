@@ -15,6 +15,7 @@ from sitebasis.models import Item
     available_content_views = ()
     visible_languages = ()
     root_content_type = Item
+    edit_stack = None
 
     @classmethod
     def get_collection(cls, content_type, item = None, relation = None):
@@ -75,7 +76,10 @@ from sitebasis.models import Item
                 
                 @refine(tree)
                 def get_item_url(tree, content_type):
-                    return "?type=" + content_type.__name__
+                    url = "?type=" + content_type.__name__
+                    if self.edit_stack:
+                        url += "&edit_stack=" + self.edit_stack.to_param()
+                    return url
                 ?>
             </py:with>
         </py:with>
