@@ -25,7 +25,10 @@ class User(Item):
         # TODO: format
     )
     
-    password = schema.String()
+    password = schema.String(
+        listable = False,
+        listed_by_default = False
+    )
 
     def __translate__(self, language, **kwargs):
         return self.email or Item.__translate__(self, language, **kwargs)
