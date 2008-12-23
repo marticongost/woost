@@ -561,6 +561,10 @@ html, body {
     float: right;
 }
 
+.BackOfficeLayout .selector_content label {
+    display: inline;
+}
+
 .BackOfficeLayout .toolbar .content_type .label,
 .BackOfficeLayout .toolbar .visible_languages .label,
 .BackOfficeLayout .toolbar .visible_members .label,
@@ -1061,6 +1065,7 @@ html, body {
 
 .BackOfficeEditView .ItemSelector button {
     width: 18.5em;
+    text-align: left;
 }
 
 .BackOfficeEditView .ItemSelector .selection_label {
