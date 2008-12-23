@@ -20,8 +20,6 @@ from sitebasis.controllers.backoffice.editcontroller import EditController
 
 class ItemFieldsController(EditController):
 
-    view_class = "sitebasis.views.BackOfficeEditView"
-
     @cached_getter
     def form_data(self):
 
@@ -54,6 +52,7 @@ class ItemFieldsController(EditController):
                 target = form_data,
                 languages = translations,
                 enable_defaults = False,
+                prefix = "item_",
                 strict = False)
 
             if added_translation and added_translation not in translations:
@@ -73,6 +72,10 @@ class ItemFieldsController(EditController):
             available_languages = self.available_languages
         )
         return output
+
+    @cached_getter
+    def view_class(self):
+        return self.edited_content_type.edit_view
 
     def _save_edit_state(self):
         edit_state = self.stack_node
