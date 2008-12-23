@@ -3,7 +3,6 @@
 <?py
 from cocktail.modeling import extend, call_base
 from cocktail.language import get_content_language
-from sitebasis.models import AccessRule
 ?>
 
 <py:sitebasis.views.BackOfficeItemView
@@ -68,63 +67,54 @@ from sitebasis.models import AccessRule
             </div>
         </div>
 
-        <py:sitebasis.views.ContentForm
-            py:embeded="${True}"
-            py:tag="div"
-            py:id="edit_form"
-            py:data="@{self.form_data}"
-            py:schema="@{self.form_schema}"
-            py:errors="@{self.submitted and self.form_errors}"
-            py:translations="@{self.translations}"
-            py:table_layout="${True}"
-            py:edited_content_type="@{self.edited_content_type}"
-            method="post">
-            
-            <!-- Small tweaks for access rules -->
-            <py:with py:def="control" py:args="obj, member">
-                <?py                                      
-                if issubclass(self.edited_content_type, AccessRule) \
-                and hasattr(element, "empty_label"):
-                    element.empty_label = translate("Any")
-
-                return element
-                ?>
-            </py:with>
-
-            <!-- Highlight changed members -->
-            <py:binding>
+        <py:ready>
+            <py:new py:element="loader.new(self.edited_content_type.edit_form)"
+                py:id="edit_form"
+                py:embeded="${True}"
+                py:tag="div"
+                py:data="@{self.form_data}"
+                py:schema="@{self.form_schema}"
+                py:errors="@{self.submitted and self.form_errors}"
+                py:translations="@{self.translations}"
+                py:table_layout="${True}"
+                py:edited_content_type="@{self.edited_content_type}"
+                py:name_prefix="item_"
+                method="post">
+                                
+                <!-- Highlight changed members -->
                 <?py
-                element.differences = set(
-                    (member.name, language)                    
+                differences = set(
+                    (member.name, language)
                     for member, language in self.differences
                 )
                 ?>
-            </py:binding>
 
-            <py:with py:def="field_instance" py:args="member">
-                <?py
-                key = (
-                    member.name,
-                    get_content_language()
-                        if member.translated
-                        else None
-                )
+                <py:with py:def="field_instance" py:args="member">
+                    <?py
+                    key = (
+                        member.name,
+                        get_content_language()
+                            if member.translated
+                            else None
+                    )
+                    
+                    if key in differences:
+                        element.add_class("changed")
+                    ?>
+                </py:with>
+                
+            </py:new>
 
-                if key in self.differences:
-                    element.add_class("changed")
-                ?>
-            </py:with>
-            
-        </py:sitebasis.views.ContentForm>
+            <py:with
+                py:element="self.draft_box"
+                py:before="self.edit_form.fields"/>
+
+            <py:with
+                py:element="self.error_box"
+                py:before="self.edit_form.fields"/>
+
+        </py:ready>
 
     </py:with>
-
-    <py:with
-        py:element="self.draft_box"
-        py:before="self.edit_form.fields"/>
-
-    <py:with
-        py:element="self.error_box"
-        py:before="self.edit_form.fields"/>
 
 </py:sitebasis.views.BackOfficeItemView>

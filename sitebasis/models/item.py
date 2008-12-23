@@ -23,6 +23,11 @@ class Item(PersistentObject):
 
     members_order = "id", "author", "owner", "groups"
 
+    # Presentation
+    #------------------------------------------------------------------------------
+    edit_view = "sitebasis.views.BackOfficeEditView"
+    edit_form = "sitebasis.views.ContentForm"
+
     # Indexing
     #------------------------------------------------------------------------------    
     indexed = True
