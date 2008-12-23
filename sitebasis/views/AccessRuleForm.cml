@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<py:sitebasis.views.ContentForm
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:py="http://www.whads.com/ns/cocktail/templates">
+    
+    <py:with py:def="control" py:args="obj, member">
+        <?py                                      
+        if hasattr(element, "empty_label"):
+            element.empty_label = translate("Irrelevant access rule criteria")
+
+        return element
+        ?>
+    </py:with>
+
+</py:sitebasis.views.ContentForm>
