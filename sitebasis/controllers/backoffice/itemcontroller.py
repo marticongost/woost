@@ -56,19 +56,35 @@ class ItemController(BaseBackOfficeController):
 
     @cached_getter
     def edited_content_type(self):
-        return self.edited_item and self.edited_item.__class__ \
-                or self.get_content_type()
+        return (
+            self.edited_item and self.edited_item.__class__
+            or self.stack_node.content_type
+            or self.get_content_type()
+        )
 
     @cached_getter
     def collections(self):
+        access_granted = self.context["cms"].authorization.allows
         relation_node = self.relation_node
         stack_relation = relation_node and relation_node.member.related_end
+
         return [
             member
             for member in self.edited_content_type.ordered_members()
             if isinstance(member, Collection)
             and member.editable
             and member is not stack_relation
+            and access_granted(
+                target_instance = self.edited_item,
+                target_type = self.edited_content_type,
+                action = "read",
+                member = member
+            )
+            and access_granted(
+                target_type = member.items.type,
+                action = "read",
+                partial_match = True
+            )
         ]
     
     @cached_getter
@@ -86,7 +102,10 @@ class ItemController(BaseBackOfficeController):
         if not edit_stack or not isinstance(edit_stack[-1], EditNode):
             edit_state = EditNode()
             edit_state.item = self.edited_item
-            edit_state.content_type = self.edited_content_type
+            edit_state.content_type = (
+                self.edited_item and self.edited_item.__class__                
+                or self.get_content_type()
+            )
             edit_stack.push(edit_state)
             redirect = True
         
@@ -106,8 +125,16 @@ class ItemController(BaseBackOfficeController):
     @event_handler
     def handle_before_request(cls, event):
         
+        controller = event.source
+
         # Require an edit stack
-        event.source.edit_stack
+        controller.edit_stack
+
+        # Restrict access
+        controller.context["cms"].authorization.restrict_access(
+            target_instance = controller.edited_item,
+            action = "read"
+        )
 
     def submit(self):
         self.section_redirection(self.default_section)
