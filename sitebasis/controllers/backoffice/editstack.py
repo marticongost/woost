@@ -77,7 +77,7 @@ class EditStack(ListWrapper):
                 next_node.member.name
                     if next_node and isinstance(next_node, RelationNode)
                         and isinstance(next_node.member, Collection)
-                    else None
+                    else "fields"
             )
         else:
             uri = context["cms"].document_uri("content")
