@@ -45,8 +45,10 @@ class BaseBackOfficeController(BaseCMSController):
         # URI for new items
         if isinstance(target, type):
             target_id = "new"
+            
             # TODO: Use full names to identify types
-            params["type"] = target.name
+            if not edit_stack:
+                params["type"] = target.name
 
         # URI for existing items
         else:
