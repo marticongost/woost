@@ -224,7 +224,8 @@ class ContentController(BaseBackOfficeController):
     def _init_user_collection(self, user_collection):
 
         # Exclude edit drafts
-        user_collection.add_base_filter(self.content_type.draft_source == None)
+        user_collection.add_base_filter(
+            self.content_type.draft_source.equal(None))
         
         # Exclude forbidden items
         is_allowed = self.context["cms"].authorization.allows
