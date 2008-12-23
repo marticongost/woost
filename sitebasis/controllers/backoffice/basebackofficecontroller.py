@@ -176,7 +176,8 @@ class BaseBackOfficeController(BaseCMSController):
 
     @getter
     def stack_node(self):
-        return self.edit_stack[-1]
+        stack = self.edit_stack
+        return stack and stack[-1]
 
     @getter
     def edit_node(self):
