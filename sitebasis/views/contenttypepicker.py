@@ -7,10 +7,11 @@
 @since:			November 2008
 """
 from cocktail.html import Element
+from cocktail.html.databoundcontrol import DataBoundControl
 from sitebasis.views.contenttypetree import ContentTypeTree
 
 
-class ContentTypePicker(ContentTypeTree):
+class ContentTypePicker(ContentTypeTree, DataBoundControl):
     
     name = None
     value = None
@@ -18,6 +19,10 @@ class ContentTypePicker(ContentTypeTree):
     empty_option_displayed = True
     empty_label = "---"
     empty_value = ""
+
+    def __init__(self, *args, **kwargs):
+        Element.__init__(self, *args, **kwargs)
+        DataBoundControl.__init__(self)
 
     def _build(self):
         ContentTypeTree._build(self)
@@ -41,36 +46,35 @@ class ContentTypePicker(ContentTypeTree):
         entry.option = Element("input",
             type = "radio",
             name = self.name,
-            id = option_id,
             value = self.empty_value,
             checked = self.value is None
         )
-        option_id = entry.option.require_id()
+        self._bind_member(entry.option)
         entry.append(entry.option)
 
         entry.label = Element("label")
         entry.label.add_class("entry_label")
         entry.label.add_class("empty_option")
-        entry.label["for"] = option_id
         entry.label.append(self.empty_label)
         entry.append(entry.label)
+
+        entry.label["for"] = entry.option.require_id()
 
         return entry
 
     def create_entry(self, content_type):
         
         entry = ContentTypeTree.create_entry(self, content_type)        
-        option_id = AutoID()
-        entry.label["for"] = option_id
 
         entry.option = Element("input",
             type = "radio",
             name = self.name,
-            id = option_id,
             value = content_type.__name__,
             checked = content_type is self.value)
 
+        self._bind_member(entry.option)
         entry.insert(0, entry.option)
+        entry.label["for"] = entry.option.require_id()
         return entry
 
     def create_label(self, content_type):

@@ -25,19 +25,20 @@ jQuery(function () {
         while (this.firstChild != label) {        
             panel.appendChild(this.firstChild);
         }
-                
-        function applySelection(picker) {            
+        
+        function applySelection(picker) {
             jQuery(picker).find("li").removeClass("selected");
             var entry = jQuery(picker).find(":checked").parents("li");
             jQuery(entry.get(0)).addClass("selected");
             var selectedLabel = entry.find(".entry_label").get(0);
             
-            jQuery(label).empty();
+            var label = jQuery(picker).find(".label");
+            label.empty();
 
             var labelContent = document.createElement("span");
             labelContent.className = selectedLabel.className;
             labelContent.innerHTML = selectedLabel.innerHTML;
-            label.appendChild(labelContent);
+            label.append(labelContent);
         }
 
         jQuery("input[type=radio]", this)
