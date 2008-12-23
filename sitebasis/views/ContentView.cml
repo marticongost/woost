@@ -4,6 +4,7 @@
 from cocktail.modeling import extend, call_base
 from cocktail.iteration import is_empty
 from sitebasis.models import Item
+from sitebasis.views.contenttypetree import ContentTypeTree
 ?>
 
 <py:cocktail.html.CollectionView
@@ -68,10 +69,13 @@ from sitebasis.models import Item
                 <?py
                 @refine(tree)
                 def filter_item(tree, content_type):
-                    return self.cms.authorization.allows(
-                        target_type = content_type,
-                        action = "read",
-                        partial_match = True
+                    return (
+                        ContentTypeTree.filter_item(tree, content_type)
+                        and self.cms.authorization.allows(
+                                target_type = content_type,
+                                action = "read",
+                                partial_match = True
+                            )
                     )
                 
                 @refine(tree)
@@ -107,12 +111,15 @@ from sitebasis.models import Item
                 <?py
                 @refine(element)
                 def filter_item(new_item_selector, content_type):
-                    return content_type.instantiable \
+                    return (
+                        ContentTypeTree.filter_item(new_item_selector, content_type)
+                        and content_type.instantiable
                         and self.cms.authorization.allows(
-                            target_type = content_type,
-                            action = "create",
-                            partial_match = True
-                        )
+                                target_type = content_type,
+                                action = "create",
+                                partial_match = True
+                            )
+                    )
 
                 @refine(element)
                 def get_item_url(new_item_selector, content_type):

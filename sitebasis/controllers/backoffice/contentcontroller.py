@@ -124,6 +124,7 @@ class ContentController(BaseBackOfficeController):
         root_content_type = self.root_content_type
 
         if content_type is None \
+        or not content_type.visible \
         or not issubclass(content_type, root_content_type):
             content_type = root_content_type
                 
@@ -238,6 +239,11 @@ class ContentController(BaseBackOfficeController):
         return self.content_view.get_collection(self.content_type)
 
     def _init_user_collection(self, user_collection):
+
+        # Exclude instances of invisible types
+        user_collection.add_base_filter(CustomExpression(
+            lambda item: item.__class__.visible
+        ))
 
         # Exclude edit drafts
         user_collection.add_base_filter(

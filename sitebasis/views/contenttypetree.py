@@ -40,3 +40,7 @@ class ContentTypeTree(TreeView):
             key = lambda ct: translate(ct.__name__)
         )
 
+    def filter_item(self, content_type):
+        return content_type.visible
+
+

@@ -127,6 +127,10 @@ class ItemController(BaseBackOfficeController):
         
         controller = event.source
 
+        # Disable access to invisible content types
+        if not controller.edited_content_type.visible:
+            raise cherrypy.NotFound()
+
         # Require an edit stack
         controller.edit_stack
 
