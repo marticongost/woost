@@ -22,7 +22,7 @@ from cocktail.html.datadisplay import MULTIPLE_SELECTION
     self.add_resource("/cocktail/resources/jquery.js")
     self.set_client_param("dblclick_target", ".buttons .select_button")
     ?>
-
+    
     <py:ready>
         <py:with py:element="self.content_view"
             py:parent="self.body"
@@ -47,6 +47,22 @@ from cocktail.html.datadisplay import MULTIPLE_SELECTION
                     py:def="label"
                     py:args="content_type"
                     href="${element['href'] + '&amp;edit_stack=' + edit_stack_param}"/>
+            </py:with>
+
+            <!-- Propagate the edit stack when changing the active type -->            
+            <py:with py:element="element.content_type_path">
+                <py:with py:def="selector">
+                    <py:with py:def="tree">
+                        <?py
+                        @refine(tree)
+                        def get_item_url(tree, content_type):
+                            url = "?type=" + content_type.__name__
+                            if self.edit_stack:
+                                url += "&edit_stack=" + self.edit_stack.to_param()
+                            return url
+                        ?>
+                    </py:with>
+                </py:with>
             </py:with>
 
             <!-- Add buttons to confirm or cancel the selection -->
