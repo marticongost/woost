@@ -211,7 +211,7 @@ class EditController(BaseBackOfficeController):
                 self.edit_stack.go(-3)
 
     @event_handler
-    def handle_after_request(cls, event):
+    def handle_processed(cls, event):
         event.source.context["parent_handler"].section_redirection()
 
     def _apply_changes(self, item):

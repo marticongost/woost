@@ -83,7 +83,7 @@ class ItemFieldsController(EditController):
         edit_state.translations = self.translations
 
     @event_handler
-    def handle_after_request(cls, event):
+    def handle_processed(cls, event):
 
         controller = event.source
         controller._save_edit_state()
