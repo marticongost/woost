@@ -1,18 +1,27 @@
-<?xml version="1.0" encoding="utf-8"?>
+#-*- coding: utf-8 -*-
+"""
 
-<?py
-from sitebasis.models import Item
+@author:		Martí Congost
+@contact:		marti.congost@whads.com
+@organization:	Whads/Accent SL
+@since:			December 2008
+"""
 import cherrypy
-?>
+from cocktail.translations import translate
+from cocktail.html import Element, templates
+from cocktail.html.databoundcontrol import DataBoundControl
+from sitebasis.models import Item
 
-<div
-    xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:py="http://www.whads.com/ns/cocktail/templates">
 
-    <?py-class
+class ItemSelector(Element, DataBoundControl):
+
     value = None
     _empty_label = None
     
+    def __init__(self, *args, **kwargs):
+        Element.__init__(self, *args, **kwargs)
+        DataBoundControl.__init__(self)
+
     def _get_empty_label(self):
 
         if self._empty_label is None:
@@ -33,20 +42,28 @@ import cherrypy
         self._empty_label = value
 
     empty_label = property(_get_empty_label, _set_empty_label)
-    ?>
 
-    <input py:id="input" type="hidden"/>
+    def _build(self):
+    
+        Element._build(self)
 
-    <button py:id="button" name="rel">
-        <span py:id="selection_label"/>
-    </button>
+        self.input = templates.new("cocktail.html.HiddenInput")
+        self.append(self.input)
+        self.binding_delegate = self.input
 
-    <py:ready>
-        <?py
+        self.button = Element("button", name = "rel")
+        self.append(self.button)
+
+        self.selection_label = Element("span")
+        self.selection_label.add_class("selection_label")
+        self.button.append(self.selection_label)
+
+    def _ready(self):
+
+        Element._ready(self)
+
         if self.member:
-
-            self.input["name"] = self.member.name
-
+            
             rel = cherrypy.request.params.get("rel")
             
             if rel:
@@ -65,8 +82,5 @@ import cherrypy
             self.selection_label.append(translate(self.value))
             
             for schema in self.value.__class__.descend_inheritance(True):
-                self.selection_label.add_class(schema.name)        
-        ?>
-    </py:ready>
+                self.selection_label.add_class(schema.name)
 
-</div>
