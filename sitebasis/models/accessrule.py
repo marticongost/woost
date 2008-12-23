@@ -54,10 +54,14 @@ class AccessRule(Item):
         except ValueError:
             pass
 
+    edit_form = "sitebasis.views.AccessRuleForm"
+
     members_order = (
         "role",
         "target_instance",
         "target_type",
+        "target_is_draft",
+        "target_draft_source",
         "target_ancestor",
         "target_member",
         "action",
@@ -72,7 +76,9 @@ class AccessRule(Item):
         "target_ancestor",
         "target_member",
         "action",
-        "language"
+        "language",
+        "target_is_draft",
+        "target_draft_source"
     )
 
     role = schema.Reference(
@@ -106,6 +112,18 @@ class AccessRule(Item):
 
     language = schema.Reference(
         type = "sitebasis.models.Language",
+        listed_by_default = False
+    )
+
+    target_is_draft = schema.Boolean(
+        edit_control = "cocktail.html.DropdownSelector",
+        listed_by_default = False,
+        required = False,
+        default = None
+    )
+
+    target_draft_source = schema.Reference(
+        type = "sitebasis.models.Item",
         listed_by_default = False
     )
 
@@ -234,14 +252,22 @@ class AccessRule(Item):
             if self.target_member:
                 trans.append("the " + member_desc + " field of")
 
+            if self.target_draft_source:
+                trans.append("drafts of " +
+                        translate(self.target_draft_source))
+            elif self.target_is_draft is not None:
+                trans.append("drafts of"
+                        if self.target_is_draft
+                        else "the master copy of")
+
             if self.target_instance:
                 trans.append(translate(self.target_instance, language))
             elif self.target_type:
                 trans.append(
                     translate(self.target_type.name + "-plural", language))
-            else:
+            elif not self.target_draft_source:
                 trans.append(u"any item")
-            
+                        
             if self.target_ancestor:
                 trans.append(
                     u"descending from "
@@ -273,12 +299,25 @@ class AccessRule(Item):
                 else u"accedir a"
             )
 
+            if self.member:
+                if not self.action:
+                    trans[-1] += "l"
+                trans.append("camp %s de" % member_desc)
+
+            if self.target_draft_source:
+                trans.append("borradors de "
+                        + translate(self.target_draft_source))
+            elif self.target_is_draft is not None:
+                trans.append("borradors de"
+                        if self.target_is_draft
+                        else "la còpia original de")
+
             if self.target_instance:
                 trans.append(translate(self.target_instance, language))
             elif self.target_type:
                 trans.append(
                     translate(self.target_type.name + "-plural", language))
-            else:
+            elif not self.draft_source:
                 trans.append(u"qualsevol element")
             
             if self.target_ancestor:
@@ -312,12 +351,23 @@ class AccessRule(Item):
                 else u"acceder a"
             )
 
+            if self.member:
+                trans.append("el campo %s de" % member_desc)
+
+            if self.target_draft_source:
+                trans.append("borradores de "
+                        + translate(self.target_draft_source))
+            elif self.target_is_draft is not None:
+                trans.append("borradores de"
+                        if self.target_is_draft
+                        else "la copia original de")
+
             if self.target_instance:
                 trans.append(translate(self.target_instance, language))
             elif self.target_type:
                 trans.append(
                     translate(self.target_type.name + "-plural", language))
-            else:
+            elif not self.draft_source:
                 trans.append(u"cualquier elemento")
             
             if self.target_ancestor:
@@ -345,11 +395,17 @@ def allowed(**context):
     if context.get("language") is None:
         context["language"] = get_content_language()
 
-    # Implicit target type
-    if "target_type" not in context:
-        target_instance = context.get("target_instance")
-        if target_instance:
-            context["target_type"] = type(target_instance)
+    # Set implicit parameters based on the target instance
+    target_instance = context.get("target_instance")
+
+    if target_instance:
+        
+        # Implicit target type
+        context.setdefault("target_type", type(target_instance))
+
+        # Implicit draft parameters
+        context.setdefault("target_is_draft", target_instance.is_draft)
+        context.setdefault("target_draft_source", target_instance.draft_source)
 
     # Normalize action references
     action = context.get("action")
