@@ -9,7 +9,7 @@
 from __future__ import with_statement
 import cherrypy
 from cocktail.modeling import cached_getter
-from cocktail.events import event_handler
+from cocktail.events import event_handler, when
 from cocktail.schema import (
     Adapter, Reference, Collection, String, ErrorList, DictAccessor
 )
@@ -55,11 +55,13 @@ class EditController(BaseBackOfficeController):
     @cached_getter
     def form_data(self):
         
-        form_data = self.stack_node.form_data
+        # This is overriden by ItemFieldsController to fill the form data
+        # dictionary with data from request parameters
+        if self.is_postback:
+            form_data = self.stack_node.form_data
         
         # Load model data into the form
-        if form_data is None:
-
+        else:
             form_data = {}
 
             # Item data
@@ -76,11 +78,15 @@ class EditController(BaseBackOfficeController):
                 form_data,
                 source_schema,
                 self.form_schema
-            )
+            )           
 
             self.stack_node.form_data = form_data
-
+        
         return form_data
+
+    @cached_getter
+    def is_postback(self):
+        return self.stack_node.form_data is not None
 
     @cached_getter
     def form_errors(self):
@@ -90,6 +96,8 @@ class EditController(BaseBackOfficeController):
                 languages = self.stack_node.translations,
                 persistent_object = self.edited_item
             )
+            if self.is_postback
+            else []
         )
 
     @cached_getter
@@ -191,7 +199,7 @@ class EditController(BaseBackOfficeController):
             # browser to the new item
             if len(self.edit_stack) == 1:
                 raise cherrypy.HTTPRedirect(
-                    self.cms.uri(self.backoffice, "content", str(item.id))
+                    self.get_edit_uri(item)
                 )
 
             # The edit operation was nested; relate the created item to its
@@ -208,26 +216,86 @@ class EditController(BaseBackOfficeController):
 
     def _apply_changes(self, item):
 
-        # Save changed fields
-        self.form_adapter.import_object(
-            self.form_data,
-            item,
-            self.form_schema)
+        is_new = self.edited_item is None
+        restrict_access = self.context["cms"].authorization.restrict_access
+        action = "create" if is_new else "modify"
+        
+        # Restrict access *before* the object is modified. This is only done on
+        # existing objects, to make sure the current user is allowed to modify
+        # them, taking into account constraints that may derive from the
+        # object's present state. New objects, by definition, have no present
+        # state, so the test is skipped.
+        if not is_new:
+            restrict_access(
+                target_instance = item,
+                action = action
+            )
+ 
+        # Add event listeners to the edited item, to restrict changes to its
+        # members and relations
+        @when(item.changed)
+        def restrict_members(event):
+            restrict_access(
+                target_instance = item,
+                target_member = event.member,
+                language = event.language,
+                action = action
+            )
 
-        if self.edited_content_type.translated:
+        @when(item.related)
+        @when(item.unrelated)
+        def restrict_relations(event):
+            member = event.member
+            if member.bidirectional and member.name != "changes":
+                restrict_access(
+                    target_instance = event.related_object,
+                    target_member = member,
+                    action = action
+                )
+            
+        try:
+            # Save changed fields
+            self.form_adapter.import_object(
+                self.form_data,
+                item,
+                self.form_schema)
 
-            # Drop deleted translations
-            for language in (set(item.translations) - set(self.translations)):
-                del item.translations[language]
+            if self.edited_content_type.translated:
 
-        # Save changes to collections
-        edit_state = self.stack_node
+                # Drop deleted translations
+                deleted_translations = \
+                    set(item.translations) - set(self.translations)
 
-        for member in self.edited_content_type.members().itervalues():
-            if member.editable \
-            and isinstance(member, Collection) \
-            and edit_state.collection_has_changes(member):
-                item.set(member.name, edit_state.get_collection(member))
+                for language in deleted_translations:
+                    del item.translations[language]
+                    restrict(
+                        target_instance = item,
+                        language = language,
+                        action = action
+                    )
+            
+            # Save changes to collections
+            edit_state = self.stack_node
+
+            for member in self.edited_content_type.members().itervalues():
+                if member.editable \
+                and isinstance(member, Collection) \
+                and edit_state.collection_has_changes(member):
+                    item.set(member.name, edit_state.get_collection(member))
+           
+        # Remove the added event listeners
+        finally:
+            item.changed.remove(restrict_members)
+            item.related.remove(restrict_relations)
+            item.unrelated.remove(restrict_relations)
+
+        # Restrict access *after* the object is modified, both for new and old
+        # objects, to make sure the user is leaving the object in a state that
+        # complies with all existing restrictions.
+        restrict_access(
+            target_instance = self.edited_item,
+            action = is_new and "create" or "modify"
+        )
 
     @cached_getter
     def output(self):
