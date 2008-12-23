@@ -441,6 +441,12 @@ translations.define(
     en = u"Restricted field"
 )
 
+translations.define("Irrelevant access rule criteria",
+    ca = u"Indiferent",
+    es = u"Indifirente",
+    en = u"Irrelevant"
+)
+
 # Initialization content
 #------------------------------------------------------------------------------
 translations.define("Create action title",
@@ -803,6 +809,12 @@ translations.define("User.email",
     en = u"E-mail address"
 )
 
+translations.define("User.password",
+    ca = u"Contrasenya",
+    es = u"Contraseña",
+    en = u"Password"
+)
+
 translations.define("User.authored_items",
     ca = u"Contingut creat per l'usuari",
     es = u"Contingut creado por el usuario",
@@ -875,6 +887,18 @@ translations.define("AccessRule.target_member",
     ca = u"Camp",
     es = u"Campo",
     en = u"Field"
+)
+
+translations.define("AccessRule.target_is_draft",
+    ca = u"L'element destí és un borrador",
+    es = u"El elemento destino es un borrador",
+    en = u"Target is a draft"
+)
+
+translations.define("AccessRule.target_draft_source",
+    ca = u"Original de l'element destí",
+    es = u"Original del elemento destino",
+    en = u"Target's master item"
 )
 
 translations.define("AccessRule.allowed",
