@@ -8,7 +8,7 @@
 """
 from __future__ import with_statement
 import cherrypy
-from cocktail.modeling import cached_getter
+from cocktail.modeling import getter, cached_getter
 from cocktail.schema import Member, Adapter, Reference, String
 from cocktail.schema.expressions import CustomExpression
 from cocktail.persistence import datastore
@@ -120,17 +120,33 @@ class ContentController(BaseBackOfficeController):
     @cached_getter
     def content_type(self):
 
-        if self.edit_stack is None or isinstance(self.stack_node, EditNode):
-            return self.get_content_type(self.default_content_type)
-        else:
-            root_content_type = self.stack_node.member.related_end.schema
-            content_type = self.get_content_type()
-            
-            if content_type is None \
-            or not issubclass(content_type, root_content_type):
-                content_type = root_content_type
+        content_type = self.get_content_type(self.default_content_type)
+        root_content_type = self.root_content_type
+
+        if content_type is None \
+        or not issubclass(content_type, root_content_type):
+            content_type = root_content_type
                 
-            return content_type
+        return content_type
+
+    @cached_getter
+    def root_content_type(self):
+        return self.stack_content_type or Item
+
+    @cached_getter
+    def stack_content_type(self):
+        node = self.stack_node
+        return node \
+            and isinstance(node, RelationNode) \
+            and node.member.related_end.schema
+
+    @getter
+    def default_content_type(self):
+        return self.root_content_type
+
+    @cached_getter
+    def persistent_content_type_choice(self):
+        return self.edit_stack is None
 
     def get_content_type_param(self, param_name):
         return get_persistent_param(
@@ -264,10 +280,6 @@ class ContentController(BaseBackOfficeController):
             return SINGLE_SELECTION
         else:
             return MULTIPLE_SELECTION
-
-    @cached_getter
-    def persistent_content_type_choice(self):
-        return self.edit_stack is None
 
     @cached_getter
     def output(self):
