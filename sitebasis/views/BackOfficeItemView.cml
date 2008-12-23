@@ -7,33 +7,33 @@ from cocktail.schema import Collection
 <py:sitebasis.views.BackOfficeLayout
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:py="http://www.whads.com/ns/cocktail/templates">
-    
+
     <py:ready>
         <?py
             self.set_client_param("edit_stack", self.edit_stack.to_param())
         ?>
     </py:ready>
-    
+
     <?py
     self.add_resource("/cocktail/scripts/jquery.js")
     self.add_resource("/cocktail/scripts/jquery.cookie.js")
     self.add_resource("/resources/scripts/backoffice_item.js")
-    ?>        
-    
+    ?>
+
     <?py-class
     sections = ["fields"]
     edited_item = None
     edited_content_type = None
     collections = ()
     edit_stack = None
-    
+
     def get_page_title(self):
         if self.edited_item \
         and not (self.edited_item.is_draft and self.edited_item.draft_source is None):
             return translate("editing", item = self.edited_item)
         else:
             return translate("creating", content_type = self.edited_content_type)
-            
+
     def get_section_id(self, section):
         if isinstance(section, Collection):
             return section.name
@@ -68,7 +68,7 @@ from cocktail.schema import Collection
 
         if self.edited_item and (
             (section_id == "fields" and self.differences)
-            (isinstance(section, Collection) and self.edit_stack[-1].collection_has_changes(section))
+            or (isinstance(section, Collection) and self.edit_stack[-1].collection_has_changes(section))
         ):
             element.add_class("changed")
         ?>
@@ -100,7 +100,7 @@ from cocktail.schema import Collection
                 class="draft">
                 <py:ready py:if="self.draft_box.visible">
                     <?py
-                    if self.edited_item.draft_source:                        
+                    if self.edited_item.draft_source:
                         element.append(
                             translate(
                                 "Editing draft copy",
@@ -124,10 +124,10 @@ from cocktail.schema import Collection
                 for member in self.form_schema.members().itervalues():
                     if isinstance(member, Collection):
                         element.set_field_displayed(member, False)
-                ?>                
+                ?>                    
                 <button
                     py:id="save_draft_button"
-                    py:visible="@{not (self.edited_item and self.edited_item.is_draft)}"
+                    py:visible="${not (self.edited_item and self.edited_item.is_draft)}"
                     name="action"
                     value="make_draft">
                     ${translate("Save draft")}
@@ -142,12 +142,11 @@ from cocktail.schema import Collection
 
                 <button
                     py:id="confirm_draft_button"
-                    py:visible="@{self.edited_item and self.edited_item.is_draft}"
+                    py:visible="${self.edited_item and self.edited_item.is_draft}"
                     name="action"
                     value="confirm_draft">
                     ${translate("Confirm draft")}
                 </button>
-
             </py:ready>
         </div>
 
@@ -157,7 +156,7 @@ from cocktail.schema import Collection
 
             <div class="selector_content">
                 <a
-                    py:id="delete_button"               
+                    py:id="delete_button"
                     py:visible="@{self.edited_item is not None}">
                     <py:ready>
                         <?py
@@ -199,7 +198,7 @@ from cocktail.schema import Collection
             <span class="label">${translate("More actions")}</span>
         </div>
     </py:with>
-    
+
     <py:ready>
 
         <!-- Add a dedicated section for each collection -->
