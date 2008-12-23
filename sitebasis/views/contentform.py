@@ -16,7 +16,7 @@ DropdownSelector = templates.get_class("cocktail.html.DropdownSelector")
 
 class ContentForm(Form):
 
-    item_selector_threshold = 1
+    item_selector_threshold = 10
 
     def _resolve_member_display(self, obj, member):
 
