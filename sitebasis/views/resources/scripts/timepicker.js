@@ -4,7 +4,7 @@ jQuery(document).ready( function () {
          jQuery(".timepickr").each( function () {
             var timebox = document.createElement('input');            
             var class_name = "timepickr" + jQuery(this).attr('id');
-            var name = "timepickr_" + jQuery(this).attr('name');            
+            var name = "timepickr_" + jQuery(this).attr('name');                      
             var datevalue = jQuery(this).val() != "" ? jQuery(this).val().split(" ")[0] : "";
             var timevalue = jQuery(this).val() != "" ? jQuery(this).val().split(" ")[1] : "";
             timebox.className = class_name + " time";
