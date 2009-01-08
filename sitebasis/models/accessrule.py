@@ -299,7 +299,7 @@ class AccessRule(Item):
                 else u"accedir a"
             )
 
-            if self.member:
+            if self.target_member:
                 if not self.action:
                     trans[-1] += "l"
                 trans.append("camp %s de" % member_desc)
@@ -351,7 +351,7 @@ class AccessRule(Item):
                 else u"acceder a"
             )
 
-            if self.member:
+            if self.target_member:
                 trans.append("el campo %s de" % member_desc)
 
             if self.target_draft_source:
