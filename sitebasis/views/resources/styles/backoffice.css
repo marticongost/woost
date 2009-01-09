@@ -556,8 +556,8 @@ html, body {
 }
 
 .BackOfficeLayout .toolbar .content_view,
-.BackOfficeLayout .toolbar .visible_languages,
-.BackOfficeLayout .toolbar .visible_members {
+.BackOfficeLayout .toolbar .languages_box,
+.BackOfficeLayout .toolbar .members_box {
     float: right;
 }
 
@@ -566,8 +566,8 @@ html, body {
 }
 
 .BackOfficeLayout .toolbar .content_type .label,
-.BackOfficeLayout .toolbar .visible_languages .label,
-.BackOfficeLayout .toolbar .visible_members .label,
+.BackOfficeLayout .toolbar .languages_box .label,
+.BackOfficeLayout .toolbar .members_box .label,
 .BackOfficeLayout .toolbar .content_view .label,
 .BackOfficeItemView .translations_selector .label {
     height: 1.9em;
@@ -576,7 +576,7 @@ html, body {
     background-position: right 0.8em;
 }
 
-.BackOfficeLayout .toolbar .visible_members .selector_content {
+.BackOfficeLayout .toolbar .members_box .selector_content {
     right: 0;
 }
 
@@ -651,13 +651,13 @@ html, body {
 
 /* Visible members dropdown
 -----------------------------------------------------------------------------*/
-.BackOfficeLayout .visible_members .CheckList {
+.BackOfficeLayout .members_box .CheckList {
     margin-bottom: 0.4em;
 }
 
 /* Content languages dropdown
 -----------------------------------------------------------------------------*/
-.BackOfficeLayout .visible_languages .CheckList {
+.BackOfficeLayout .languages_box .CheckList {
     margin-bottom: 0.4em;
 }
 
