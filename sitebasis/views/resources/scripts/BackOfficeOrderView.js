@@ -29,9 +29,7 @@ jQuery(document).ready( function () {
           });
       }
       
-      var edit_stack, member, position      
-      
-      // http://marti.whads.com:8080/en/cms/order?member=access_rules_by_priority&item=6&edit_stack=0-1&selection=40
+      var edit_stack, member, position            
       
       jQuery("*", document.body).each( function() {               
          if (this.edit_stack && typeof(this.edit_stack) == "string") edit_stack = this.edit_stack;                         

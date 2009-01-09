@@ -1,6 +1,6 @@
 cocktail.translate("BackOfficeLayout unchanged_message");
 
-jQuery(document).ready( function () {
+jQuery(document).ready( function () {                
              
          jQuery("*", document.body).each( function() {  
              
