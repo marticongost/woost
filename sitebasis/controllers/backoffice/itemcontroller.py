@@ -10,6 +10,7 @@ from threading import Lock
 import cherrypy
 from cocktail.modeling import cached_getter
 from cocktail.events import event_handler
+from cocktail.pkgutils import resolve
 from cocktail.schema import Collection
 from cocktail.controllers import view_state, Location
 
@@ -18,9 +19,6 @@ from sitebasis.controllers.backoffice.basebackofficecontroller \
 
 from sitebasis.controllers.backoffice.editstack import EditNode
 
-from sitebasis.controllers.backoffice.itemfieldscontroller \
-    import ItemFieldsController
-
 from sitebasis.controllers.backoffice.differencescontroller \
     import DifferencesController
 
@@ -28,9 +26,13 @@ from sitebasis.controllers.backoffice.differencescontroller \
 class ItemController(BaseBackOfficeController):
 
     default_section = "fields"
-
-    fields = ItemFieldsController
+    
     differences = DifferencesController
+
+    @cached_getter
+    def fields(self):
+        controller_class = resolve(self.edited_item.edit_controller)
+        return controller_class()
 
     @cached_getter
     def edited_item(self):
@@ -50,9 +52,8 @@ class ItemController(BaseBackOfficeController):
                     return self._get_collection_controller(member)
 
     def _get_collection_controller(self, member):
-        from sitebasis.controllers.backoffice.collectioncontroller \
-            import CollectionController
-        return CollectionController(member)
+        controller_class = resolve(member.edit_controller)
+        return controller_class(member)
 
     @cached_getter
     def edited_content_type(self):

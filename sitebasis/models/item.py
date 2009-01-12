@@ -15,6 +15,12 @@ from cocktail.persistence import (
 from sitebasis.models.changesets import ChangeSet, Change
 from sitebasis.models.action import Action
 
+# Extension property that allows to change the controller that handles a
+# collection in the backoffice
+schema.Collection.edit_controller = \
+    "sitebasis.controllers.backoffice.collectioncontroller." \
+    "CollectionController"
+
 
 class Item(PersistentObject):
     """Base class for all CMS items. Provides basic functionality such as
@@ -23,13 +29,16 @@ class Item(PersistentObject):
 
     members_order = "id", "author", "owner", "groups"
 
-    # Presentation
-    #------------------------------------------------------------------------------
+    # Backoffice customization
+    #--------------------------------------------------------------------------
     edit_view = "sitebasis.views.BackOfficeEditView"
     edit_form = "sitebasis.views.ContentForm"
+    edit_controller = \
+        "sitebasis.controllers.backoffice.itemfieldscontroller." \
+        "ItemFieldsController"
 
     # Indexing
-    #------------------------------------------------------------------------------    
+    #--------------------------------------------------------------------------
     indexed = True
  
      # When validating unique members, ignore conflicts with the draft source
@@ -50,7 +59,7 @@ class Item(PersistentObject):
             )
 
     # Versioning
-    #------------------------------------------------------------------------------    
+    #--------------------------------------------------------------------------
     is_deleted = schema.Boolean(
         required = True,
         editable = False,
@@ -363,7 +372,7 @@ class Item(PersistentObject):
                 item.is_deleted = True
 
     # Users and permissions
-    #------------------------------------------------------------------------------    
+    #--------------------------------------------------------------------------
     author = schema.Reference(
         indexed = True,
         editable = False,
