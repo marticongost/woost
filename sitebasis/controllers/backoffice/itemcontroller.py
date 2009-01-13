@@ -8,7 +8,7 @@
 """
 from threading import Lock
 import cherrypy
-from cocktail.modeling import cached_getter
+from cocktail.modeling import cached_getter, getter
 from cocktail.events import event_handler
 from cocktail.pkgutils import resolve
 from cocktail.schema import Collection
@@ -31,8 +31,9 @@ class ItemController(BaseBackOfficeController):
 
     @cached_getter
     def fields(self):
-        controller_class = resolve(self.edited_item.edit_controller)
-        return controller_class()
+        return resolve(
+            (self.edited_item or self.edited_content_type).edit_controller
+        )
 
     @cached_getter
     def edited_item(self):
