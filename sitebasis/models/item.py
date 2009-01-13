@@ -15,7 +15,7 @@ from cocktail.persistence import (
 from sitebasis.models.changesets import ChangeSet, Change
 from sitebasis.models.action import Action
 
-# Extension property that allows to change the controller that handles a
+# Extension property that allows changing the controller that handles a
 # collection in the backoffice
 schema.Collection.edit_controller = \
     "sitebasis.controllers.backoffice.collectioncontroller." \
