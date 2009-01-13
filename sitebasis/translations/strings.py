@@ -519,6 +519,26 @@ translations.define("BackOfficeEditForm.relations",
     en = u"Relations"
 )
 
+translations.define("BackOfficeEditForm.change_password",
+    ca = u"Canviar la contrasenya",
+    es = u"Cambiar la contraseña",
+    en = u"Change password"
+)
+
+translations.define("BackOfficeEditForm.password_confirmation",
+    ca = u"Confirmar la contrasenya",
+    es = u"Confirmar la contraseña",
+    en = u"Confirm password"
+)
+
+translations.define(
+    "sitebasis.controllers.backoffice.userfieldscontroller."
+    "PasswordConfirmationError-instance",
+    ca = u"Les contrasenyes no coincideixen",
+    es = u"Las contraseñas no coinciden",
+    en = u"Passwords don't match"
+)
+
 # Item
 #------------------------------------------------------------------------------
 translations.define("Item",

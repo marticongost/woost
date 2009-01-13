@@ -13,6 +13,11 @@ from sitebasis.models import Item
 
 class User(Item):
  
+    edit_form = "sitebasis.views.UserForm"
+    edit_controller = \
+        "sitebasis.controllers.backoffice.userfieldscontroller." \
+        "UserFieldsController"
+
     encryption = sha
 
     anonymous = False
@@ -27,7 +32,9 @@ class User(Item):
     
     password = schema.String(
         listable = False,
-        listed_by_default = False
+        listed_by_default = False,
+        min = 8,
+        edit_control = "cocktail.html.PasswordBox"
     )
 
     def __translate__(self, language, **kwargs):
