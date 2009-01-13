@@ -17,7 +17,7 @@ jQuery(document).ready( function () {
          });
          
          
-         jQuery(".time").mask("99:99:99");
+         jQuery(".time").mask("99:99:99", {fullfilled: true, maskedtype: "time"});
          
          jQuery("form").submit( function () {
              jQuery(".timepickr").each( function () {
