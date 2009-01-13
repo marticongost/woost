@@ -76,7 +76,7 @@ class Document(Item):
     )
 
     end_date = schema.DateTime(
-        min = lambda ctx: schema.get(ctx.validable, "pub_start", None),
+        min = start_date,
         listed_by_default = False
     )
 
