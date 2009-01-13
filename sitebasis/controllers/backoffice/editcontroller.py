@@ -107,7 +107,7 @@ class EditController(BaseBackOfficeController):
 
         if source:
             form_keys = set(self.form_schema.members().iterkeys())
-            return [
+            return set(
                 (member, language)
                 for member, language in self.edited_content_type.differences(
                     source,
@@ -115,7 +115,7 @@ class EditController(BaseBackOfficeController):
                 )
                 if member.name in form_keys
                     and not isinstance(member, Collection)
-            ]
+            )
         else:
             return set()
 
