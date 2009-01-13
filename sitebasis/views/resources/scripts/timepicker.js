@@ -26,7 +26,7 @@ jQuery(document).ready( function () {
                     jQuery(this).val() + " " +
                     timecontrol.val()
                 )
-                jQuery(timecontrol).remove();
+                jQuery(timecontrol).removeAttr('name');
              });         
          });
          
