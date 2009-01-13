@@ -4,6 +4,11 @@
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:py="http://www.whads.com/ns/cocktail/templates">
 
+    <?py
+    self.add_resource("/resources/scripts/jquery.js")
+    self.add_resource("/resources/scripts/UserForm.js")
+    ?>
+
     <py:with py:def="control" py:args="obj, member">
         <?py
         if member.name == "password":
