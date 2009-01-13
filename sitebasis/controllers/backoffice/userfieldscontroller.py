@@ -71,6 +71,15 @@ class UserFieldsController(ItemFieldsController):
 
         return form_schema
 
+    @cached_getter
+    def differences(self):
+        differences = ItemFieldsController.differences(self)
+
+        # Discard differences in the password field
+        differences.discard((self.edited_content_type.password, None))
+
+        return differences
+
 
 class PasswordConfirmationError(schema.exceptions.ValidationError):
     """A validation error produced when the password and its confirmation field
