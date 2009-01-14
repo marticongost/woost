@@ -56,6 +56,7 @@ from cocktail.schema import Collection
     <button
         py:def="section_entry"
         py:args="section"
+        type="submit"
         name="section">
         <?py
         section_id = self.get_section_id(section)
@@ -129,6 +130,7 @@ from cocktail.schema import Collection
                     py:id="save_draft_button"
                     py:visible="${not (self.edited_item and self.edited_item.is_draft)}"
                     name="action"
+                    type="submit"
                     value="make_draft">
                     ${translate("Save draft")}
                 </button>
@@ -136,6 +138,7 @@ from cocktail.schema import Collection
                 <button
                     py:id="save_button"
                     name="action"
+                    type="submit"
                     value="save">
                     ${translate("Save")}
                 </button>
@@ -144,6 +147,7 @@ from cocktail.schema import Collection
                     py:id="confirm_draft_button"
                     py:visible="${self.edited_item and self.edited_item.is_draft}"
                     name="action"
+                    type="submit"
                     value="confirm_draft">
                     ${translate("Confirm draft")}
                 </button>
@@ -185,12 +189,14 @@ from cocktail.schema import Collection
                     py:id="differences_button"
                     py:visible="@{self.edited_item}"
                     name="section"
+                    type="submit"
                     value="differences">
                     ${translate("Show differences")}
                 </button>
                 <button
                     py:id="preview_button"
                     name="section"
+                    type="submit"
                     value="preview">
                     ${translate("Preview")}
                 </button>
