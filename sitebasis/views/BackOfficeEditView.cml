@@ -115,6 +115,10 @@ from cocktail.language import get_content_language
                 py:element="self.error_box"
                 py:before="self.edit_form.fields"/>
 
+            <py:with
+                py:element="self.success"
+                py:before="self.edit_form.fields"/>
+
         </py:ready>
 
     </py:with>

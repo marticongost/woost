@@ -998,6 +998,10 @@ html, body {
     margin-left: 0.3em;
 }
 
+.BackOfficeEditView .success {
+    margin-bottom: 1em;
+}
+
 .BackOfficeEditView .edit_form .fields {
     clear: both;
 }
