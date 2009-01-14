@@ -1,0 +1,110 @@
+/* Login data and logout button alignment */
+
+.BackOfficeLayout .identity {
+	vertical-align: middle;
+}
+
+.BackOfficeLayout .identity * {
+	vertical-align: middle;
+}
+	
+.BackOfficeLayout .identity form button {
+	padding-top: 1px;						
+}
+
+
+
+/* Paging elements alignment */
+
+.PagingControls div * {
+	vertical-align: middle;
+}
+
+.BackOfficeLayout .item_count, .BackOfficeLayout .Pager {
+  	padding-top: 0.5em;
+}
+
+
+
+/* 'Results per page' selector alignment */
+
+.PagingControls .page_size {
+	float: right;		
+}
+
+
+
+/* Button corrections */
+
+.actions_box button {
+	width: 85px;
+	text-align: left;
+	vertical-align: middle;
+}
+
+.actions_box button img {
+	float: left;
+	display: inline !important;
+	margin-right: 5px;
+}
+
+.actions_box button label {
+	padding-top: 5px;
+}
+
+
+
+/* Alignment correction for breadcrumb and filter dropdowns */
+
+.BackOfficeLayout .ContentTypePath .selector_content,
+.BackOfficeLayout .new_filter_selector .selector_content {
+	left: 0;
+	top: 20px;
+}
+
+
+
+/* Breadcrumb and dropdown selection overlay correction */
+
+.ContentTypePath {
+	position: relative;
+	z-index: 2;				
+}
+
+.actions_box .new_toolbar_button {	
+	z-index: 1;
+}
+
+
+
+/* Dropdown image alignment */
+
+.ContentTypeTree li a {
+	display: block;
+}
+
+
+
+/* Tab height correction */
+
+.navigation button {
+	height: 2.5em !important;
+}
+
+
+
+/* Font size and alignment correction for 'more actions' dropdown */
+
+.more_actions .selector_content button {
+	font-size: 1em;
+	text-align: left;
+}
+
+
+
+/* Button width correction */
+
+.BackOfficeItemView .navigation .section_entry {
+	padding-left: 0.4em;
+  padding-right: 0.4em;
+}
