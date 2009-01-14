@@ -11,6 +11,11 @@ import cherrypy
 from cocktail.modeling import ListWrapper
 from cocktail.schema import Collection, add, remove, DictAccessor
 from cocktail.controllers import context
+from cocktail.persistence import (
+    PersistentList, PersistentRelationList,
+    PersistentSet, PersistentRelationSet,
+    PersistentMapping, PersistentRelationMapping
+)
 
 
 class EditStack(ListWrapper):
@@ -118,6 +123,9 @@ class EditNode(object):
         self.translations = None
         self.__collections = {}
 
+    def forget_edited_collections(self):
+        self.__collections = {}
+
     def get_collection(self, member, require_copy = False):
         """Obtains the requested collection from the edited item.
 
@@ -132,20 +140,42 @@ class EditNode(object):
 
         @return: The requested collection.
         """
-
         key = member.name
         collection = self.__collections.get(key)
 
         if collection is None:
+            
+            # Retrieve the collection of an existing item
             if self.item:
                 collection = self.item.get(key)
 
                 if require_copy:
                     collection = copy(collection)
+                    collection = self._normalize_collection(collection)
                     self.__collections[key] = collection
+            
+            # Create a new collection for a new item. Will be kept for further
+            # requests.
             else:
                 collection = member.produce_default()
+                collection = self._normalize_collection(collection)
                 self.__collections[key] = collection
+
+        return collection
+
+    def _normalize_collection(self, collection):
+
+        # Transform persistent collections into plain collections,
+        # which make it easier to look for changes
+        if isinstance(collection,
+        (PersistentList, PersistentRelationList)):
+            collection = list(collection)
+        elif isinstance(collection,
+        (PersistentMapping, PersistentRelationMapping)):
+            collection = dict(collection.iteritems())
+        elif isinstance(collection,
+        (PersistentSet, PersistentRelationSet)):
+            collection = set(collection)
 
         return collection
 
@@ -161,7 +191,6 @@ class EditNode(object):
         """
         key = member.name
         collection_state = self.__collections.get(key)
-
         return collection_state is not None \
             and (self.item is None or collection_state != self.item.get(key))
 
