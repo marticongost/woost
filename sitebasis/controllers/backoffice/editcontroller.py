@@ -191,12 +191,14 @@ class EditController(BaseBackOfficeController):
                 self._apply_changes(item)
 
         datastore.commit()
+        
+        self.edit_node.forget_edited_collections()
 
         # A new item or draft was created
         if redirect:
      
             self.edit_node.item = item
-
+            
             # The edit operation was the root of the edit stack; redirect the
             # browser to the new item
             if len(self.edit_stack) == 1:
@@ -284,7 +286,7 @@ class EditController(BaseBackOfficeController):
                 and isinstance(member, Collection) \
                 and edit_state.collection_has_changes(member):
                     item.set(member.name, edit_state.get_collection(member))
-           
+                       
         # Remove the added event listeners
         finally:
             item.changed.remove(restrict_members)
