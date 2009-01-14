@@ -539,6 +539,13 @@ translations.define(
     en = u"Passwords don't match"
 )
 
+translations.define(
+    "sitebasis.views.BackOfficeItemView Changes saved",
+    ca = u"S'han desat els canvis",
+    es = u"Se han guardado los cambios",
+    en = u"Changes saved"
+)
+
 # Item
 #------------------------------------------------------------------------------
 translations.define("Item",

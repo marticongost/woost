@@ -10,7 +10,7 @@ from cocktail.schema import Collection
 
     <py:ready>
         <?py
-            self.set_client_param("edit_stack", self.edit_stack.to_param())
+        self.set_client_param("edit_stack", self.edit_stack.to_param())
         ?>
     </py:ready>
 
@@ -84,6 +84,10 @@ from cocktail.schema import Collection
         method="post">
 
         <div py:id="edit_form_frame">
+
+            <div py:id="success" py:visible="@{self.saved}">
+                ${translate("sitebasis.views.BackOfficeItemView Changes saved")}
+            </div>
 
             <ul py:id="error_box"
                 py:visible="@{self.submitted and self.form_errors}">

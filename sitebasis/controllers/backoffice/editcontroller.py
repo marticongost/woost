@@ -21,6 +21,8 @@ from sitebasis.controllers.backoffice.basebackofficecontroller \
 
 class EditController(BaseBackOfficeController):
 
+    saved = False
+
     @cached_getter
     def edited_item(self):
         return self.context["cms_item"]
@@ -193,6 +195,7 @@ class EditController(BaseBackOfficeController):
         datastore.commit()
         
         self.edit_node.forget_edited_collections()
+        self.saved = True
 
         # A new item or draft was created
         if redirect:
@@ -312,7 +315,8 @@ class EditController(BaseBackOfficeController):
             form_schema = self.form_schema,
             form_data = self.form_data,
             differences = self.differences,
-            translations = self.translations
+            translations = self.translations,
+            saved = self.saved
         )
         return output
 
