@@ -14,6 +14,10 @@ html, body {
     font-size: 11pt;
 }
 
+.BackOfficeLayout button {
+		font-family: Bitstream Vera Sans, Arial;
+}
+
 .BackOfficeLayout .header {
     padding: 0.6em;
     height: 1.5em;
@@ -80,8 +84,8 @@ html, body {
 
 .BackOfficeLayout .identity {
     float: right;
-    margin-top: 0.4em;
-    font-size: 0.7em;
+    margin-top: 0.2em;
+    font-size: 0.8em;
 }
 
 .BackOfficeLayout .identity strong {
@@ -96,7 +100,7 @@ html, body {
 }
 
 .BackOfficeLayout .identity button {
-    margin-left: 0.7em !important;
+    margin-left: 0.7em !important;    
 }
 
 .BackOfficeLayout a,
@@ -285,6 +289,10 @@ html, body {
 
 .BackOfficeLayout .Form .field_instance-CheckBox label {
     display: inline;
+}
+
+.BackOfficeLayout .Form .field_instance-CheckBox input {
+    width: 20px !important;
 }
 
 .BackOfficeLayout .Form .control {
@@ -478,7 +486,7 @@ html, body {
 }
 
 .BackOfficeLayout .Event {
-    background-image: url(../images/types/Event.png);
+    background-image: url(../images/types/Event.png);    
 }
 
 .BackOfficeLayout .File {
@@ -614,9 +622,9 @@ html, body {
 .BackOfficeLayout .selector:hover .label,
 .BackOfficeLayout .selector.scripted.unfolded .label,
 .BackOfficeLayout .selector.scripted.unfolded:hover .label {
-    background-color: white;
+    background-color: rgb(250,250,250);
     border: 1px solid rgb(190,200,210);
-    border-bottom-color: white;
+    border-bottom-color: rgb(250,250,250);
     z-index: 1001;
 }
 
@@ -690,6 +698,7 @@ html, body {
 
 .BackOfficeLayout .ContentTypeTree .entry_label {
     background-repeat: no-repeat;
+    background-position: left center;
     padding-left: 1.75em;
     padding-bottom: 0.2em;
     color: black;
@@ -788,17 +797,21 @@ html, body {
 /* Paging
 -----------------------------------------------------------------------------*/
 
+.BackOfficeLayout .PagingControls {
+	width: 100%;
+	overflow: hidden;
+}
+
 .BackOfficeLayout .item_count,
 .BackOfficeLayout .page_size,
 .BackOfficeLayout .Pager {
     float: right;
     font-size: 85%;
-    margin-bottom: 0.75em;
     margin-left: 2em;
 }
 
 .BackOfficeLayout .item_count, .Pager {
-    padding-top: 0.3em;
+    padding-top: 0.35em;
 }
 
 .BackOfficeLayout .page_size input {
@@ -1098,7 +1111,7 @@ html, body {
 .BackOfficeLayout .more_actions:hover .label,
 .BackOfficeLayout .more_actions.scripted.unfolded .label,
 .BackOfficeLayout .more_actions.scripted.unfolded:hover .label {
-    border-top-color: white;
+    border-top-color: rgb(250,250,250);
     border-bottom-color: rgb(190,200,210);
 }
 
@@ -1109,8 +1122,7 @@ html, body {
 
 .BackOfficeItemView .more_actions .selector_content > * {
     display: block;
-    border: none;
-    background-color: white;
+    border: none;    
     background-repeat: no-repeat;
     padding: 0;
     padding-left: 20px;
@@ -1349,4 +1361,3 @@ html, body {
     padding: 0;
     margin: 0.3em 0;
 }
-
