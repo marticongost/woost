@@ -134,10 +134,11 @@ def unescape(text):
                 py:id="revert_button"
                 py:visible="@{self.differences}"
                 name="action"
+                type="submit"
                 value="revert">
                 ${translate("Discard changes")}
             </button>
-            <button py:id="close_button" name="section" value="fields">${translate("Close")}</button>
+            <button py:id="close_button" name="section" type="submit" value="fields">${translate("Close")}</button>
         </div>
 
     </form>

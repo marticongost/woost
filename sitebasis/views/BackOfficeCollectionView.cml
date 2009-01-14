@@ -38,7 +38,7 @@
 
             <py:with
                 py:def="toolbar_button"
-                py:args="action" name="action"/>
+                py:args="action" name="action" type="submits"/>
         </py:with>
     </py:ready>
 
