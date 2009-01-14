@@ -207,6 +207,11 @@ class EditNode(object):
         """
         if isinstance(member, Collection):
             collection = self.get_collection(member, True)
+            
+            if item in collection:
+                raise ValueError(
+                    "Collections with duplicate entries are not allowed")
+
             add(collection, item)
         else:
             DictAccessor.set(self.form_data, member.name, item)
