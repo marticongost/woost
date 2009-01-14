@@ -16,8 +16,6 @@ DropdownSelector = templates.get_class("cocktail.html.DropdownSelector")
 
 class ContentForm(Form):
 
-    item_selector_threshold = 10
-
     def _resolve_member_display(self, obj, member):
 
         display = getattr(member, "edit_control", None)
@@ -28,19 +26,11 @@ class ContentForm(Form):
                 if member.class_family is not None:
                     display = \
                         templates.new("sitebasis.views.ContentTypePicker")
-                    display.root = member.class_family
-                elif len(member.type.index) <= self.item_selector_threshold:
-                    display = ItemDropdownSelector
+                    display.root = member.class_family                
                 else:
                     display = "sitebasis.views.ItemSelector"
             else:
                 display = Form._resolve_member_display(self, obj, member)
 
         return display
-
-
-class ItemDropdownSelector(DropdownSelector):
-
-    def get_item_value(self, item):
-        return item.id
 
