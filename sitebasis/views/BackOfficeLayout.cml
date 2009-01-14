@@ -2,6 +2,7 @@
 
 <?py
 from cocktail.translations import get_language, translations
+from cocktail.html.ieconditionalcomment import IEConditionalComment
 from sitebasis.controllers.backoffice.editstack import EditNode
 ?>
 
@@ -32,12 +33,21 @@ from sitebasis.controllers.backoffice.editstack import EditNode
     ?>
 
     <?py
-    self.add_resource("/cocktail/scripts/jquery.js")
     self.add_resource("/resources/styles/backoffice.css")
+    
+    # TODO: Implement conditional comments for IE more generally
+    self.add_head_element(IEConditionalComment(condition = "IE", children = [
+        Element("link",
+            rel = "Stylesheet",
+            type = "text/css",
+            href = "/resources/styles/backoffice_ie.css")
+    ]))
+    
+    self.add_resource("/cocktail/scripts/jquery.js")    
     self.add_resource("/cocktail/scripts/jquery.hotkeys.js")
     self.add_resource("/cocktail/scripts/jquery.query.js")
     self.add_resource("/resources/scripts/BackOfficeLayout.js")
-    self.add_resource("/cocktail/scripts/selectors.js")       
+    self.add_resource("/cocktail/scripts/selectors.js")
     self.add_client_translation("BackOfficeLayout unchanged_message")
     ?>
 
