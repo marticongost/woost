@@ -194,7 +194,9 @@ class EditController(BaseBackOfficeController):
 
         # A new item or draft was created
         if redirect:
-            
+     
+            self.edit_node.item = item
+
             # The edit operation was the root of the edit stack; redirect the
             # browser to the new item
             if len(self.edit_stack) == 1:
