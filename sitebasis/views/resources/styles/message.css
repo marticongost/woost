@@ -1,6 +1,10 @@
 
+html,
 body {
     background-color: rgb(190,200,215);
+}
+
+body {
     margin: 0;
     padding: 15px;
     text-align: center;    
