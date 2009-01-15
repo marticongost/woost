@@ -13,6 +13,9 @@ jQuery(document).ready( function () {
             jQuery("." + class_name).attr({
                 "name": name,
                 "value": timevalue                                      
+            });
+            jQuery(this).bind("blur", function () {
+                jQuery("." + class_name).focus();    
             });            
          });
          
@@ -21,7 +24,7 @@ jQuery(document).ready( function () {
          
          jQuery("form").submit( function () {
              jQuery(".timepickr").each( function () {
-                var timecontrol = jQuery("input[name*='timepickr_" + jQuery(this).attr('name') + "']");
+                var timecontrol = jQuery("input[name*='timepickr_" + jQuery(this).attr('name') + "']");              
                 jQuery(this).val(
                     jQuery(this).val() + " " +
                     timecontrol.val()
