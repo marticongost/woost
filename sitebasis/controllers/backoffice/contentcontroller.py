@@ -9,7 +9,7 @@
 from __future__ import with_statement
 import cherrypy
 from cocktail.modeling import getter, cached_getter
-from cocktail.schema import Member, Adapter, Reference, String
+from cocktail.schema import Member, Adapter, Reference, String, Collection
 from cocktail.schema.expressions import CustomExpression
 from cocktail.persistence import datastore
 from cocktail.html.datadisplay import SINGLE_SELECTION, MULTIPLE_SELECTION
@@ -249,6 +249,15 @@ class ContentController(BaseBackOfficeController):
         user_collection.add_base_filter(
             self.content_type.draft_source.equal(None))
         
+        # Exclude items that are already contained on an edited collection
+        node = self.stack_node
+        if node and isinstance(node, RelationNode) \
+        and isinstance(node.member, Collection):
+            related_items = self.edit_stack[-2].get_collection(node.member)
+            user_collection.add_base_filter(CustomExpression(
+                lambda item: item not in related_items
+            ))
+
         # Exclude forbidden items
         is_allowed = self.context["cms"].authorization.allows
         user_collection.add_base_filter(CustomExpression(
