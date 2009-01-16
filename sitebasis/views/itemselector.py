@@ -51,7 +51,7 @@ class ItemSelector(Element, DataBoundControl):
         self.append(self.input)
         self.binding_delegate = self.input
 
-        self.button = Element("button", name = "rel")
+        self.button = Element("button", name = "rel", type="submit")
         self.append(self.button)
 
         self.selection_label = Element("span")
