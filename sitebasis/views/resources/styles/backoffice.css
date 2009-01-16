@@ -190,7 +190,7 @@ html, body {
 
 .BackOfficeLayout input[type=text],
 .BackOfficeLayout input[type=password],
-.BackOfficeLayout input[type=textarea] {
+.BackOfficeLayout textarea {
     border: 1px solid rgb(200,200,200);
     padding: 0.2em;
 }
@@ -313,6 +313,11 @@ html, body {
 .BackOfficeLayout .ui-datepicker-trigger {
     margin-left: 0.3em;
     vertical-align: middle;
+}
+
+.field_instance-DatePicker .time {
+    margin-left: 0.9em;
+    width: 6em;
 }
 
 /* Tables
