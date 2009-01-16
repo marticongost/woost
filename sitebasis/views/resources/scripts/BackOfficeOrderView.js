@@ -31,7 +31,7 @@ jQuery(document).ready( function () {
       
       var edit_stack, member, position            
       
-      jQuery("*", document.body).each( function() {               
+      jQuery("*", document.body).each( function() {                         
          if (this.edit_stack && typeof(this.edit_stack) == "string") edit_stack = this.edit_stack;                         
          if (this.member) member = this.member;
       }); 
