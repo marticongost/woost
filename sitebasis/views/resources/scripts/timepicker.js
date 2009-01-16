@@ -13,9 +13,6 @@ jQuery(document).ready( function () {
             jQuery("." + class_name).attr({
                 "name": name,
                 "value": timevalue                                      
-            });
-            jQuery(this).bind("blur", function () {
-                jQuery("." + class_name).focus();    
             });            
          });
          
