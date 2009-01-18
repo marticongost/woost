@@ -163,38 +163,39 @@ def init_site(
         site.forbidden_error_page = login_page  
 
         # Add standard access rules:
+        rules = site.access_rules_by_priority
 
         # - by default, all content can be viewed by anybody
-        AccessRule(
+        rules.insert(0, AccessRule(
             action = read,
             allowed = True,
             author = admin,
             owner = admin
-        )
+        ))
 
         # - access to the back office requires special privileges
-        AccessRule(
+        rules.insert(0, AccessRule(
             target_instance = back_office,
             allowed = False,
             author = admin,
             owner = admin
-        )
+        ))
 
         # - administrators have full control
-        AccessRule(
+        rules.insert(0, AccessRule(
             role = administrators,
             allowed = True,
             author = admin,
             owner = admin
-        )
+        ))
 
         # - content owners have full control
-        AccessRule(
+        rules.insert(0, AccessRule(
             role = owner_role,
             allowed = True,
             author = admin,
             owner = admin
-        )
+        ))
 
     datastore.commit()
 
