@@ -3,9 +3,13 @@
 <py:sitebasis.views.ContentForm
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:py="http://www.whads.com/ns/cocktail/templates">
-    
+
+    <?py
+    self.set_member_display("action", "cocktail.html.DropdownSelector")
+    ?>
+
     <py:with py:def="control" py:args="obj, member">
-        <?py                                      
+        <?py
         if hasattr(element, "empty_label"):
             element.empty_label = translate("Irrelevant access rule criteria")
 
