@@ -129,7 +129,15 @@ from cocktail.schema import Collection
                 for member in self.form_schema.members().itervalues():
                     if isinstance(member, Collection):
                         element.set_field_displayed(member, False)
-                ?>                    
+                ?>
+                <button
+                    py:id="close_button"
+                    name="action"
+                    type="submit"
+                    value="close">
+                    ${translate("Close")}
+                </button>
+
                 <button
                     py:id="save_draft_button"
                     py:visible="${not (self.edited_item and self.edited_item.is_draft)}"

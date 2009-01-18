@@ -150,13 +150,22 @@ class EditController(BaseBackOfficeController):
 
     @cached_getter
     def submitted(self):
-        return self.action in ("save", "make_draft")
+        return self.action in ("save", "make_draft", "close")
 
     @cached_getter
     def ready(self):
-        return self.submitted and not self.form_errors
+        return self.submitted \
+            and (self.action == "close" or not self.form_errors)
 
     def submit(self):
+
+        # Cancel the edit operation and go to the parent edit node, or to the
+        # application root
+        if self.action == "close":
+            if len(self.edit_stack) > 1:
+                self.edit_stack.go(-3)
+            else:
+                raise cherrypy.HTTPRedirect(self.document_uri())
 
         redirect = False
         item = self.edited_item

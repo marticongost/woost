@@ -162,9 +162,18 @@ translations.define("move_down",
 )
 
 translations.define("editing",
-    ca = lambda item: u"Editant <em>'%s'</em>" % translate(item, "ca"),
-    es = lambda item: u"Editando <em>'%s'</em>" % translate(item, "es"),
-    en = lambda item: u"Editing <em>'%s'</em>" %  translate(item, "en")
+    ca = lambda item:
+        u"Editant %s <em>'%s'</em>"
+        % (translate(item.__class__.name, "ca").lower(),
+           translate(item, "ca")),
+    es = lambda item:
+        u"Editando %s <em>'%s'</em>"
+        % (translate(item.__class__.name, "es").lower(),
+           translate(item, "es")),
+    en = lambda item:
+        u"Editing %s <em>'%s'</em>"
+        % (translate(item.__class__.name, "es").lower(),
+           translate(item, "es"))
 )
 
 translations.define("creating",
