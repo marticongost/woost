@@ -83,6 +83,13 @@ from cocktail.schema import Collection
         py:tag="form"
         method="post">
 
+        <!-- Default button (hidden) -->
+        <button
+            py:index="0"
+            type="submit"
+            name="action" value="save"
+            style="display: none"/>
+
         <div py:id="edit_form_frame">
 
             <div py:id="success" py:visible="@{self.saved}">
