@@ -19,9 +19,9 @@ class AuthorizationModule(Module):
             user = self.application.authentication.user
             roles = user.get_roles(context)
 
-            if user.anonymous:
+            if not user.anonymous:
                 roles.append(datastore.root["authenticated_role"])
-                
+            
             context["roles"] = roles
 
         return allowed(**context)
