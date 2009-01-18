@@ -34,7 +34,7 @@ from cocktail.html.datadisplay import MULTIPLE_SELECTION
             py:visible_languages="${self.visible_languages}"
             py:available_content_views="${self.available_content_views}"
             py:actions="${['new']}"
-            py:root_content_type="${self.edit_stack[-1].member.related_end.schema}"
+            py:root_content_type="${self.root_content_type}"
             py:selection_mode="${self.selection_mode}">
 
             <?py

@@ -127,7 +127,7 @@ class ContentController(BaseBackOfficeController):
         or not content_type.visible \
         or not issubclass(content_type, root_content_type):
             content_type = root_content_type
-                
+        
         return content_type
 
     @cached_getter
@@ -137,9 +137,16 @@ class ContentController(BaseBackOfficeController):
     @cached_getter
     def stack_content_type(self):
         node = self.stack_node
-        return node \
-            and isinstance(node, RelationNode) \
-            and node.member.related_end.schema
+
+        if node and isinstance(node, RelationNode):
+            member = node.member
+
+            if isinstance(member, Reference):
+                return member.type
+            else:
+                return member.items.type
+
+        return None
 
     @getter
     def default_content_type(self):
@@ -305,7 +312,8 @@ class ContentController(BaseBackOfficeController):
             visible_languages = self.visible_languages,
             available_content_views = self.available_content_views,
             content_view = self.content_view,
-            selection_mode = self.selection_mode
+            selection_mode = self.selection_mode,
+            root_content_type = self.root_content_type
         )
         return output
 
