@@ -42,7 +42,6 @@ class AccessRule(Item):
 
     def __init__(self, *args, **kwargs):
         Item.__init__(self, *args, **kwargs)
-        Site.main.access_rules_by_priority.insert(0, self)
 
     def delete(self):
         Item.delete(self)
