@@ -44,7 +44,7 @@ from cocktail.schema import Collection
         if isinstance(section, Collection):
             return translate(section)
         else:
-            return BackOfficeLayout.get_section_label(self, section)
+            return translate(self.edited_content_type.name)
     ?>
 
     <!-- Move the navigation bar inside the central content -->
