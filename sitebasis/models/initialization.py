@@ -35,7 +35,12 @@ def init_site(
 
     def set_translations(item, member, key, **kwargs):
         for language in languages:
-            item.set(member, translate(key, language, **kwargs), language)
+            try:
+                value = translate(key, language, **kwargs)
+            except KeyError:
+                pass
+            else:
+                item.set(member, value, language)
 
     # Create standard actions
     create = Action()
