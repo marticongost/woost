@@ -43,3 +43,9 @@ class BaseCMSController(Controller):
     def document_uri(self, *args):
         return self.application_uri(self.context["document"].full_path, *args)
 
+    def allows(self, **context):
+        return self.context["cms"].authorization.allows(**context)
+
+    def restrict_access(self, **context):
+        self.context["cms"].authorization.restrict_access(**context)
+
