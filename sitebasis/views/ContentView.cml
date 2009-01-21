@@ -47,48 +47,92 @@ from sitebasis.views.contenttypetree import ContentTypeTree
             py:authorization_check="${self.cms.authorization.allows}" />
     </py:ready>
 
-    <!-- Content type path -->
-    <py:sitebasis.views.ContentTypePath
-        py:id="content_type_path"
-        py:value="@{self.user_collection.type}"
-        py:index="0"
-        py:root="@{self.root_content_type}">
+    <py:block
+        py:index="0">
 
-        <py:ready>
-            <?py
-            content_type = self.user_collection.type
+        <!-- Content type path -->
+        <py:sitebasis.views.ContentTypePath
+            py:id="content_type_path"
+            py:value="@{self.user_collection.type}"
+            py:index="0"
+            py:root="@{self.root_content_type}">
 
-            if content_type is self.root_content_type \
-            and is_empty(content_type.derived_schemas()):
-                element.visible = False
-            ?>
-        </py:ready>
-
-        <py:with py:def="selector">
-            <py:with py:def="tree" py:plural_labels="${True}">
+            <py:ready>
                 <?py
-                @refine(tree)
-                def filter_item(tree, content_type):
-                    return (
-                        ContentTypeTree.filter_item(tree, content_type)
-                        and self.cms.authorization.allows(
-                                target_type = content_type,
-                                action = "read",
-                                partial_match = True
-                            )
-                    )
-                
-                @refine(tree)
-                def get_item_url(tree, content_type):
-                    url = "?type=" + content_type.__name__
-                    if self.edit_stack:
-                        url += "&edit_stack=" + self.edit_stack.to_param()
-                    return url
-                ?>
-            </py:with>
-        </py:with>
+                content_type = self.user_collection.type
 
-    </py:sitebasis.views.ContentTypePath>
+                if content_type is self.root_content_type \
+                and is_empty(content_type.derived_schemas()):
+                    element.visible = False
+                ?>
+            </py:ready>
+
+            <py:with py:def="selector">
+                <py:with py:def="tree" py:plural_labels="${True}">
+                    <?py
+                    @refine(tree)
+                    def filter_item(tree, content_type):
+                        return (
+                            ContentTypeTree.filter_item(tree, content_type)
+                            and self.cms.authorization.allows(
+                                    target_type = content_type,
+                                    action = "read",
+                                    partial_match = True
+                                )
+                        )
+                    
+                    @refine(tree)
+                    def get_item_url(tree, content_type):
+                        url = "?type=" + content_type.__name__
+                        if self.edit_stack:
+                            url += "&edit_stack=" + self.edit_stack.to_param()
+                        return url
+                    ?>
+                </py:with>
+            </py:with>
+
+        </py:sitebasis.views.ContentTypePath>
+
+        <!-- Content view selector -->
+        <div py:id="content_view"
+            class="toolbar_button">
+
+            <py:cocktail.html.LinkSelector
+                py:id="content_view_selector"
+                py:name="content_view">
+
+                <?py
+                @refine(element)
+                def get_item_label(self, content_view):                    
+                    return translate(content_view.content_view_id + " content view")
+                
+                @refine(element)
+                def get_item_value(self, content_view):
+                    return content_view.content_view_id
+                ?>
+
+                <py:with
+                    py:def="entry_link" py:args="value, label"
+                    title="${label}">
+                    <?py element.empty() ?>
+                    <img src="/resources/images/${value.lower()}contentview.png"/>
+                </py:with>
+
+            </py:cocktail.html.LinkSelector>
+
+            <py:ready>
+                <?py
+                if self.available_content_views \
+                and len(self.available_content_views) > 1:                    
+                    self.content_view_selector.items = self.available_content_views
+                    self.content_view_selector.value = self
+                else:
+                    self.content_view.visible = False
+                ?>
+            </py:ready>
+        </div>
+
+    </py:block>
 
     <!-- New item selector -->
     <div py:def="new_toolbar_button"
@@ -128,48 +172,5 @@ from sitebasis.views.contenttypetree import ContentTypeTree
             </py:sitebasis.views.ContentTypeTree>
         </div>
     </div>
-
-    <!-- Content view selector -->
-    <py:with
-        py:element="self.settings_box">
-
-        <div py:id="content_view" class="toolbar_button">
-
-            <py:cocktail.html.LinkSelector
-                py:id="content_view_selector"
-                py:name="content_view">
-
-                <?py
-                @refine(element)
-                def get_item_label(self, content_view):                    
-                    return translate(content_view.content_view_id + " content view")
-                
-                @refine(element)
-                def get_item_value(self, content_view):
-                    return content_view.content_view_id
-                ?>
-
-                <py:with
-                    py:def="entry_link" py:args="value, label"
-                    title="${label}">
-                    <?py element.empty() ?>
-                    <img src="/resources/images/${value.lower()}contentview.png"/>
-                </py:with>
-
-            </py:cocktail.html.LinkSelector>
-
-            <py:ready>
-                <?py
-                if self.available_content_views \
-                and len(self.available_content_views) > 1:                    
-                    self.content_view_selector.items = self.available_content_views
-                    self.content_view_selector.value = self
-                else:
-                    self.content_view.visible = False
-                ?>
-            </py:ready>
-        </div>
-
-    </py:with>
 
 </py:cocktail.html.CollectionView>

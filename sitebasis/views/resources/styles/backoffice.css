@@ -326,7 +326,27 @@ html, body {
 .BackOfficeLayout .Table {
 	clear: both;
     border-collapse: collapse;
-    width: 100%;
+    width: 100%;    
+}
+
+.BackOfficeLayout .Table,
+.BackOfficeLayout .Table th {
+    border: 1px solid rgb(200,205,212);
+}
+
+.BackOfficeLayout .Table th {
+    background-repeat: repeat-x;
+    background-image: url(../images/header.png);
+    background-color: rgb(210,215,220);
+}
+
+.BackOfficeLayout .Table td {
+    border: 1px solid rgb(215,220,227);
+}
+
+.BackOfficeLayout .Table th, .BackOfficeLayout .Table th * {
+    font-weight: normal;
+    color: black;
 }
 
 .BackOfficeLayout .Table th span.label {
@@ -337,7 +357,6 @@ html, body {
     vertical-align: top;
 	text-align: left;
 	padding: 0.5em;
-	padding-right: 1em;
     font-size: 85%;
 }
 
@@ -378,10 +397,13 @@ html, body {
     background-color: rgb(250,242,190) !important;
 }
 
+.BackOfficeLayout .Table tr.selected td {
+    background-color: rgb(75,75,75) !important;
+    border: 1px solid rgb(75,75,75) !important;
+}
+
 .BackOfficeLayout .Table tr.selected td,
 .BackOfficeLayout .Table tr.selected td * {
-    background-color: rgb(200,205,207) !important;
-    background-color: rgb(75,75,75) !important;
     color: white !important;
 }
 
@@ -434,7 +456,7 @@ html, body {
 }
 
 .BackOfficeLayout .row_selector {
-    clear: both;
+    float: left;
     margin-top: 0.5em;
     padding-top: 0.3em;
     padding-bottom: 1em;
@@ -808,8 +830,9 @@ html, body {
 -----------------------------------------------------------------------------*/
 
 .BackOfficeLayout .PagingControls {
-	width: 100%;
-	overflow: hidden;
+    float: right;
+    padding-top: 0.4em;
+    padding-right: 0.5em;
 }
 
 .BackOfficeLayout .item_count,
@@ -1310,7 +1333,10 @@ html, body {
     margin-top: 0.3em;
 }
 
-.BackOfficeLayout .FilterBox .filter_entry .language_field .control,
+.BackOfficeLayout .FilterBox .filter_entry .language_field .control {
+    width: 12em;
+}
+
 .BackOfficeLayout .FilterBox .operator_field .control {
     width: 10em;
 }
@@ -1371,3 +1397,70 @@ html, body {
     padding: 0;
     margin: 0.3em 0;
 }
+
+.BackOfficeLayout .CollectionView .settings_box {
+    position: absolute;
+    top: 0;
+    right: 3px;
+    background-position: right center;
+    font-size: 80%;
+}
+
+.BackOfficeLayout .CollectionView .settings_box .label {
+    padding: 4px;
+    padding-right: 8px;
+    padding-bottom: 0;
+    display: block;
+    height: 19px;
+    width: 20px;
+}
+
+.BackOfficeLayout .CollectionView .settings_box .selector_content {
+    right: 0;
+    top: 23px;
+    width: 22em;
+}
+
+.BackOfficeLayout .CollectionView .settings_box .box_label {
+    display: block;
+    margin-bottom: 0.3em;
+    color: rgb(75,75,75);
+    font-weight: bold;
+}
+
+.BackOfficeLayout .CollectionView .settings_box .box_items {
+    padding-left: 0.4em;
+}
+
+.BackOfficeLayout .CollectionView .settings_box .languages_box,
+.BackOfficeLayout .CollectionView .settings_box .members_box {
+    float: left;
+}
+
+.BackOfficeLayout .CollectionView .settings_box .languages_box {
+    border-right: 1px solid rgb(225,225,225);
+    padding-right: 1em;
+}
+
+.BackOfficeLayout .CollectionView .settings_box .members_box {
+    position: relative;
+    left: -1px;
+    border-left: 1px solid rgb(225,225,225);
+    padding-left: 1em;    
+}
+
+.BackOfficeLayout .CollectionView .settings_box .selector_content .box_buttons {
+    clear: left;
+    text-align: right;
+    padding-top: 0.8em;
+}
+
+.BackOfficeLayout .CollectionView .collection_display_container {
+    clear: both;
+    position: relative;
+}
+
+.BackOfficeLayout .CollectionView .Table th:last-child {
+    padding-right: 1em;
+}
+
