@@ -3,13 +3,24 @@
 <?py
 from cocktail.modeling import extend, call_base
 from cocktail.iteration import is_empty
+from cocktail.controllers.viewstate import view_state
 from sitebasis.models import Item
 from sitebasis.views.contenttypetree import ContentTypeTree
+from sitebasis.controllers.backoffice.useractions import get_view_actions
 ?>
 
 <py:cocktail.html.CollectionView
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:py="http://www.whads.com/ns/cocktail/templates">
+
+    <?py
+    self.add_resource("/cocktail/scripts/jquery.js")
+    self.add_resource("/resources/scripts/ContentView.js")    
+    self.add_client_translation("sitebasis.views.ContentView advanced search title")
+    self.add_client_translation("sitebasis.views.ContentView show advanced search")
+    self.add_client_translation("sitebasis.views.ContentView close advanced search")
+    self.add_client_translation("sitebasis.views.ContentView search button")
+    ?>
 
     <?py-class
     collection_params = None
@@ -36,23 +47,64 @@ from sitebasis.views.contenttypetree import ContentTypeTree
         pass
 
     def create_toolbar_button(self, action):
-        if action == "new":
-            return self.create_new_toolbar_button()
+        if action.id == "new":
+            button = self.create_new_toolbar_button(action)
         else:
-            return CollectionView.create_toolbar_button(self, action)
+            button = CollectionView.create_toolbar_button(self, action.id)
+            if action.frequent:
+                button.insert(0, self.create_toolbar_button_image(action))
+
+        button.set_client_param("minSelection", action.min)
+        button.set_client_param("maxSelection", action.max)
+        return button
+
+    def create_toolbar_button_image(self, action):
+        return Element("img",
+        src = "/resources/images/"
+                + action.id + "_small"
+                #+ (action.id if action.frequent else action.id + "_small")
+                + ".png")
+
+    def fill_toolbar(self):
+
+        has_additional_actions = False
+
+        for action in get_view_actions(self, "toolbar", self.user_collection.type):
+            if not action.min or self.visible_results:
+                button = self.create_toolbar_button(action)
+                
+                if action.frequent:
+                    container = self.frequent_actions_box
+                else:
+                    container = self.additional_actions_box
+                    has_additional_actions = True
+
+                container.append(button)
+
+        if not has_additional_actions:
+            self.additional_actions_selector.visible = False
     ?>
 
     <py:ready>
         <py:with py:element="self.collection_display"
             py:authorization_check="${self.cms.authorization.allows}" />
-    </py:ready>
 
+        <?py
+        self.set_client_param("contentTypeFullName", self.user_collection.type.full_name)
+
+        if self.user_collection.user_filters:
+            user_filter = self.user_collection.user_filters[0]
+            if user_filter.id == "global_search":                
+                self.set_client_param("searchQuery", user_filter.value)
+        ?>
+    </py:ready>
+    
     <py:block
         py:index="0">
 
-        <!-- Content type path -->
-        <py:sitebasis.views.ContentTypePath
-            py:id="content_type_path"
+        <!-- Content type selector -->
+        <py:sitebasis.views.ContentTypeSelector
+            py:id="content_type_selector"
             py:value="@{self.user_collection.type}"
             py:index="0"
             py:root="@{self.root_content_type}">
@@ -63,39 +115,51 @@ from sitebasis.views.contenttypetree import ContentTypeTree
 
                 if content_type is self.root_content_type \
                 and is_empty(content_type.derived_schemas()):
-                    element.visible = False
+                    element.add_class("empty_selector")
+                    #element.visible = False
                 ?>
             </py:ready>
 
-            <py:with py:def="selector">
-                <py:with py:def="tree" py:plural_labels="${True}">
-                    <?py
-                    @refine(tree)
-                    def filter_item(tree, content_type):
-                        return (
-                            ContentTypeTree.filter_item(tree, content_type)
-                            and self.cms.authorization.allows(
-                                    target_type = content_type,
-                                    action = "read",
-                                    partial_match = True
-                                )
-                        )
-                    
-                    @refine(tree)
-                    def get_item_url(tree, content_type):
-                        url = "?type=" + content_type.__name__
-                        if self.edit_stack:
-                            url += "&edit_stack=" + self.edit_stack.to_param()
-                        return url
-                    ?>
-                </py:with>
+            <py:with py:def="tree"
+                py:plural_labels="${True}"
+                py:selection="${self.user_collection.type}">
+                <?py
+                @extend(tree)
+                def create_entry(tree, content_type):
+                    entry = call_base(content_type)
+                    if content_type is self.user_collection.type:
+                        entry.add_class("selected")
+                    return entry
+
+                @refine(tree)
+                def filter_item(tree, content_type):
+                    return (
+                        ContentTypeTree.filter_item(tree, content_type)
+                        and self.cms.authorization.allows(
+                                target_type = content_type,
+                                action = "read",
+                                partial_match = True
+                            )
+                    )
+                
+                @refine(tree)
+                def get_item_url(tree, content_type):
+                    url = "?type=" + content_type.__name__
+                    if self.edit_stack:
+                        url += "&edit_stack=" + self.edit_stack.to_param()
+                    return url
+                ?>
             </py:with>
 
-        </py:sitebasis.views.ContentTypePath>
+        </py:sitebasis.views.ContentTypeSelector>
 
         <!-- Content view selector -->
         <div py:id="content_view"
             class="toolbar_button">
+
+            <span py:id="content_view_label">
+                ${translate("sitebasis.views.ContentView label")}
+            </span>
 
             <py:cocktail.html.LinkSelector
                 py:id="content_view_selector"
@@ -136,6 +200,7 @@ from sitebasis.views.contenttypetree import ContentTypeTree
 
     <!-- New item selector -->
     <div py:def="new_toolbar_button"
+        py:args="action"
         class="selector toolbar_button new">
         <?py
         shortcut = translate("CollectionView new shortcut", default = "")
@@ -143,8 +208,10 @@ from sitebasis.views.contenttypetree import ContentTypeTree
             element.set_client_param("shortcut", shortcut)
         ?>
         <span class="label">
-            <img src="${self.cms.application_uri('resources', 'images', 'new.png')}"/>
-            ${translate("new")}
+            <py:new
+                py:element="self.create_toolbar_button_image(action)"
+                py:if="action.frequent"/>
+            ${translate("Action new")}
         </span>
         <div class="selector_content">
             <py:sitebasis.views.ContentTypeTree
@@ -172,5 +239,13 @@ from sitebasis.views.contenttypetree import ContentTypeTree
             </py:sitebasis.views.ContentTypeTree>
         </div>
     </div>
+
+    <py:with py:element="self.toolbar">
+        <div py:id="frequent_actions_box"/>
+        <div py:id="additional_actions_selector" class="selector toolbar_button">
+            <span class="label">${translate("More actions")}</span>
+            <div py:id="additional_actions_box" class="selector_content"/>
+        </div>
+    </py:with>
 
 </py:cocktail.html.CollectionView>

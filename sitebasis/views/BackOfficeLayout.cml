@@ -15,21 +15,10 @@ from sitebasis.controllers.backoffice.editstack import EditNode
     cms = None
     backoffice = None
     user = None
-    sections = ()
-    section = None
     edit_stack = None
 
     def get_page_title(self):
         return self.backoffice and self.backoffice.title
-
-    def get_section_id(self, section):
-        return section
-
-    def get_section_label(self, section):
-        return translate(section + "_section")
-
-    def get_section_url(self, section):
-        return self.cms.document_uri(section)
     ?>
 
     <?py
@@ -128,33 +117,6 @@ from sitebasis.controllers.backoffice.editstack import EditNode
             </li>            
         </py:ready>
     </ul>
-
-    <div py:id="navigation" py:visible="@{len(self.sections) > 1}">
-
-        <a py:def="section_entry"
-            py:args="section"
-            href="${self.get_section_url(section)}">
-            <?py
-            section_id = self.get_section_id(section)
-            element.section_id = section_id
-            element.add_class(section_id + "_section")
-
-            if section_id == self.get_section_id(self.section):
-                element.add_class("selected")
-            ?>
-            ${self.get_section_label(section)}
-        </a>
-
-        <py:ready>
-            <py:new py:element="self.create_section_entry(section)"
-                py:for="section in self.sections">
-                <?py
-                setattr(self, "section_" + element.section_id, element)
-                ?>
-            </py:new>
-        </py:ready>
-
-    </div>
 
     <div py:id="body"/>
 

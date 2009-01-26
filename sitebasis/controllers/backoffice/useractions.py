@@ -7,8 +7,10 @@
 @since:			December 2008
 """
 import cherrypy
-from cocktail.modeling import getter
-from cocktail.html import templates
+from cocktail.modeling import getter, ListWrapper
+from cocktail.pkgutils import get_full_name
+from sitebasis.models import Document
+
 
 # User action model declaration
 #------------------------------------------------------------------------------
@@ -38,7 +40,7 @@ def get_user_actions(**kwargs):
     """
     return _action_list  
 
-def get_view_actions(view, container):
+def get_view_actions(view, container, content_type):
     """Obtains the list of actions that can be displayed on a given view.
 
     @param view: The view where the action will be displayed.
@@ -48,13 +50,17 @@ def get_view_actions(view, container):
         inserted. This should be a string identifier, such as "context_menu",
         "toolbar", etc. Different views can make use of as many different
         identifiers as they require.
+    @type container: str
+
+    @param content_type: The content type affected by the action.
+    @type content_type: L{Item<sitebasis.models.item.Item>} class
 
     @return: The list of user actions available under the specified context.
     @rtype: iterable L{UserAction} sequence
     """
     return (action
             for action in _action_list
-            if action.is_available(**kwargs))
+            if action.is_available(view, container, content_type))
 
 class UserAction(object):
     """An action that is made available to users at the backoffice
@@ -135,6 +141,9 @@ class UserAction(object):
             many different identifiers as they require.
         @type container: str
 
+        @param content_type: The content type affected by the action.
+        @type content_type: L{Item<sitebasis.models.item.Item>} class
+
         @return: True if the action can be shown in the given context, False
             otherwise.
         @rtype: bool
@@ -209,7 +218,7 @@ class SelectionError(Exception):
     
     def __init__(self, action, selection_size):
         Exception.__init__("Can't execute action '%s' on %d item(s)."
-            % (action.id, selection_size)
+            % (action.id, selection_size))
         self.action = action
         self.selection_size = selection_size
 
@@ -217,16 +226,28 @@ class SelectionError(Exception):
 # Implementation of concrete actions
 #------------------------------------------------------------------------------
 
-def _match_view(view, *args):
-    return isinstance(view, [templates.get_class(arg) for arg in args])
+def _match_view(view, *args):    
+ 
+    names = []
 
+    for arg in args:
+        pos = arg.rfind(".")
+        name = arg[pos + 1:]
+        full_name = arg[:pos] + "." + name.lower() + "." + name
+        names.append(full_name)
+
+    for cls in view.__class__._classes:
+        if get_full_name(cls) in names:
+            return True
+    
+    return False
+    
 def _match_view_ancestor(view, class_name):
 
-    ancestor_class = templates.get_class(class_name)
     parent = view.parent
 
     while parent:
-        if isinstance(parent, ancestor_class):
+        if _match_view(parent, class_name):
             return True
         parent = parent.parent
 
@@ -307,11 +328,11 @@ class OrderAction(UserAction):
         return _match_view(view, "sitebasis.views.OrderContentView")
 
 
-class ShowAction(UserAction):
+class ViewDetailAction(UserAction):
     frequent = True
     
     def is_available(self, view, container, content_type):
-        return not _match_view("sitebasis.views.BackOfficeDetailView")
+        return not _match_view(view, "sitebasis.views.BackOfficeDetailView")
 
 
 class EditAction(UserAction):
@@ -339,14 +360,14 @@ class DeleteAction(UserAction):
         )
 
 
+class HistoryAction(UserAction):
+    min = None
+
+
 class DiffAction(UserAction):
     
     def is_available(self, view, container, content_type):
         return not _match_view(view, "sitebasis.views.BackOfficeDiffView")
-
-
-class HistoryAction(UserAction):
-    min = None
 
 
 class PreviewAction(UserAction):
@@ -365,12 +386,12 @@ class ExportAction(UserAction):
         return _match_view(view, "sitebasis.views.ContentView")
 
 
-CreateAction("create").register()
+CreateAction("new").register()
 MoveAction("move").register()
 AddAction("add").register()
 RemoveAction("remove").register()
 OrderAction("order").register()
-ShowAction("show").register()
+ViewDetailAction("view").register()
 EditAction("edit").register()
 DeleteAction("delete").register()
 DiffAction("diff").register()
