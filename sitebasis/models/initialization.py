@@ -112,13 +112,13 @@ def init_site(
         back_office.handler = "sitebasis.controllers.backoffice" \
                               ".backofficecontroller.BackOfficeController"
         back_office.critical = True
-        back_office.path = "cms"
+        back_office.path = u"cms"
         set_translations(back_office, "title", "Back office title")
      
         # Create standard templates
         empty_template = Template()
         empty_template.identifier = "sitebasis.views.EmptyPage"
-        empty_template.engine = "genshi"
+        empty_template.engine = u"genshi"
         set_translations(empty_template, "title", "Empty template title")
 
         # Create standard resources
