@@ -33,6 +33,7 @@ class User(Item):
     password = schema.String(
         listable = False,
         listed_by_default = False,
+        searchable = False,
         min = 8,
         edit_control = "cocktail.html.PasswordBox"
     )

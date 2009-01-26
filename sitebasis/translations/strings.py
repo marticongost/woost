@@ -65,7 +65,7 @@ translations.define("Type",
     en = u"Type"
 )
 
-translations.define("new",
+translations.define("Action new",
     ca = u"Nou",
     es = u"Nuevo",
     en = u"New"
@@ -77,7 +77,13 @@ translations.define("CollectionView new shortcut",
     en = u"n"
 )
 
-translations.define("edit",
+translations.define("Action view",
+    ca = u"Veure",
+    es = u"Ver",
+    en = u"View"
+)
+
+translations.define("Action edit",
     ca = u"Editar",
     es = u"Editar",
     en = u"Edit"
@@ -89,7 +95,7 @@ translations.define("CollectionView edit shortcut",
     en = u"e"
 )
 
-translations.define("order",
+translations.define("Action order",
     ca = u"Ordenar",
     es = u"Ordenar",
     en = u"Order"
@@ -101,7 +107,7 @@ translations.define("CollectionView order shortcut",
     en = u"o"
 )
 
-translations.define("move",
+translations.define("Action move",
     ca = u"Moure",
     es = u"Mover",
     en = u"Move"
@@ -113,7 +119,7 @@ translations.define("CollectionView move shortcut",
     en = u"m"
 )
 
-translations.define("delete",
+translations.define("Action delete",
     ca = u"Eliminar",
     es = u"Eliminar",
     en = u"Delete"
@@ -125,7 +131,7 @@ translations.define("CollectionView delete shortcut",
     en = u"d"
 )
 
-translations.define("history",
+translations.define("Action history",
     ca = u"Històric",
     es = u"Histórico",
     en = u"History"
@@ -137,28 +143,40 @@ translations.define("CollectionView history shortcut",
     en = u"h"
 )
 
-translations.define("add",
+translations.define("Action add",
     ca = u"Afegir",
     es = u"Añadir",
     en = u"Add"
 )
 
-translations.define("remove",
+translations.define("Action remove",
     ca = u"Treure",
     es = u"Quitar",
     en = u"Remove"
 )
 
-translations.define("move_up",
-    ca = u"Moure amunt",
-    es = u"Mover arriba",
-    en = u"Move up"
+translations.define("Action diff",
+    ca = u"Veure canvis",
+    es = u"Ver cambios",
+    en = u"Show changes"
 )
 
-translations.define("move_down",
-    ca = u"Moure avall",
-    es = u"Mover abajo",
-    en = u"Move down"
+translations.define("Action preview",
+    ca = u"Vista prèvia",
+    es = u"Vista previa",
+    en = u"Preview"
+)
+
+translations.define("Action export_xls",
+    ca = u"Exportar a MS Excel",
+    es = u"Exportar a MS Excel",
+    en = u"Export to MS Excel"
+)
+
+translations.define("Action export_csv",
+    ca = u"Exportar a CSV",
+    es = u"Exportar a CSV",
+    en = u"Export to CSV"
 )
 
 translations.define("editing",
@@ -215,6 +233,48 @@ translations.define("BackOfficeContentView.element",
     en = u"Item"
 )
 
+translations.define("ContentView search",
+    ca = u"Cercar",
+    es = u"Buscar",
+    en = u"Search"
+)
+
+translations.define("sitebasis.views.ContentView label",
+    ca = u"Veure com:",
+    es = u"Ver como:",
+    en = u"See as:"
+)
+
+translations.define("sitebasis.views.ContentView advanced search title",
+    ca = u"Cerca avançada",
+    es = u"Búsqueda avanzada",
+    en = u"Advanced search"
+)
+
+translations.define("sitebasis.views.ContentView show advanced search",
+    ca = u"Cerca avançada",
+    es = u"Búsqueda avanzada",
+    en = u"Advanced search"
+)
+
+translations.define("sitebasis.views.ContentView close advanced search",
+    ca = u"Descartar la cerca",
+    es = u"Descartar la búsqueda",
+    en = u"Discard search"
+)
+
+translations.define("sitebasis.views.ContentView search button",
+    ca = u"Cercar",
+    es = u"Buscar",
+    en = u"Search"
+)
+
+translations.define("Advanced search",
+    ca = u"Cerca avançada",
+    es = u"Búsqueda avanzada",
+    en = u"Advanced search"
+)
+
 translations.define("draft_seq_name",
     ca = u"Esborrany %(index)s",
     es = u"Borrador %(index)s",
@@ -237,12 +297,6 @@ translations.define("Save draft",
     ca = u"Desar esborrany",
     es = u"Guardar borrador",
     en = u"Save draft"
-)
-
-translations.define("Show differences",
-    ca = u"Veure diferències",
-    es = u"Ver diferencias",
-    en = u"Show differences"
 )
 
 translations.define("Preview",
