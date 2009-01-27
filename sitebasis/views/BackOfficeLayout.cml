@@ -99,7 +99,14 @@ from sitebasis.controllers.backoffice.editstack import EditNode
                     <?py
                     if isinstance(stack_node, EditNode):
                         if stack_node.item:
-                            node_desc = translate(stack_node.item)
+                            node_desc = Element(None, children = [
+                                Element("span", class_name = "item_desc",
+                                    children = [translate(stack_node.item)]
+                                ),
+                                Element("span", class_name = "item_type",
+                                    children = [" (" + translate(stack_node.item.__class__.name) + ")"]
+                                )
+                            ])
                             item_id = str(stack_node.item.id)
                         else:
                             node_desc = translate("creating", content_type = stack_node.content_type)

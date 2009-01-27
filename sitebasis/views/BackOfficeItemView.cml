@@ -2,6 +2,7 @@
 
 <?py
 from cocktail.schema import Collection
+from sitebasis.controllers.backoffice.useractions import get_view_actions
 ?>
 
 <py:sitebasis.views.BackOfficeLayout
@@ -27,13 +28,6 @@ from cocktail.schema import Collection
     collections = ()
     edit_stack = None
 
-    def get_page_title(self):
-        if self.edited_item \
-        and not (self.edited_item.is_draft and self.edited_item.draft_source is None):
-            return translate("editing", item = self.edited_item)
-        else:
-            return translate("creating", content_type = self.edited_content_type)
-
     def get_section_id(self, section):
         if isinstance(section, Collection):
             return section.name
@@ -47,36 +41,57 @@ from cocktail.schema import Collection
             return translate(self.edited_content_type.name)
     ?>
 
-    <!-- Move the navigation bar inside the central content -->
-    <py:with
-        py:element="self.navigation"
+    <!--<h2 py:parent="self.body" py:position="0">
+        <py:ready>
+            <?py
+            if self.edited_item \
+            and not (self.edited_item.is_draft and self.edited_item.draft_source is None):
+                context_desc = translate("editing", item = self.edited_item)
+            else:
+                context_desc = translate("creating", content_type = self.edited_content_type)
+            ?>
+            ${context_desc}
+        </py:ready>
+    </h2>-->
+
+    <!-- Tabs -->
+    <div py:id="navigation"
         py:parent="self.body"
-        py:position="0"/>
+        py:position="0">
+        
+        <button
+            py:def="section_entry"
+            py:args="section"
+            type="submit"
+            name="section">
+            <?py
+            section_id = self.get_section_id(section)
+            element.section_id = section_id
+            element["value"] = section_id
+            element.add_class(section_id + "_section")
 
-    <button
-        py:def="section_entry"
-        py:args="section"
-        type="submit"
-        name="section">
-        <?py
-        section_id = self.get_section_id(section)
-        element.section_id = section_id
-        element["value"] = section_id
-        element.add_class(section_id + "_section")
+            if section_id == self.get_section_id(self.section):
+                element.add_class("selected")
 
-        if section_id == self.get_section_id(self.section):
-            element.add_class("selected")
+            if self.edited_item and (
+                (section_id == "fields" and self.differences)
+                or (isinstance(section, Collection) and self.edit_stack[-1].collection_has_changes(section))
+            ):
+                element.add_class("changed")
+            ?>
+            ${self.get_section_label(section)}
+        </button>
 
-        if self.edited_item and (
-            (section_id == "fields" and self.differences)
-            or (isinstance(section, Collection) and self.edit_stack[-1].collection_has_changes(section))
-        ):
-            element.add_class("changed")
-        ?>
-        ${self.get_section_label(section)}
-    </button>
-
-
+        <py:ready>
+             <py:new py:element="self.create_section_entry(section)"
+                 py:for="section in self.sections">
+                 <?py
+                 setattr(self, "section_" + element.section_id, element)
+                 ?>
+             </py:new>
+         </py:ready>
+    </div>
+    
     <!-- Turn the central content into a form -->
     <py:with
         py:element="self.body"
@@ -129,98 +144,31 @@ from cocktail.schema import Collection
         </div>
 
         <div py:id="buttons">
-
-            <py:ready>
-                <?py
-                # Hide collections
-                for member in self.form_schema.members().itervalues():
-                    if isinstance(member, Collection):
-                        element.set_field_displayed(member, False)
-                ?>
-                <button
-                    py:id="close_button"
-                    name="action"
-                    type="submit"
-                    value="close">
-                    ${translate("Close")}
-                </button>
-
-                <button
-                    py:id="save_draft_button"
-                    py:visible="${not (self.edited_item and self.edited_item.is_draft)}"
-                    name="action"
-                    type="submit"
-                    value="make_draft">
-                    ${translate("Save draft")}
-                </button>
-
-                <button
-                    py:id="save_button"
-                    name="action"
-                    type="submit"
-                    value="save">
-                    ${translate("Save")}
-                </button>
-
-                <button
-                    py:id="confirm_draft_button"
-                    py:visible="${self.edited_item and self.edited_item.is_draft}"
-                    name="action"
-                    type="submit"
-                    value="confirm_draft">
-                    ${translate("Confirm draft")}
-                </button>
-            </py:ready>
-        </div>
-
-        <div
-            py:id="more_actions"
-            class="selector">
-
-            <div class="selector_content">
-                <a
-                    py:id="delete_button"
-                    py:visible="@{self.edited_item is not None}">
-                    <py:ready>
-                        <?py
-                        if self.edited_item:
-                            element["href"] = self.cms.document_uri("delete") \
-                                + "?selection=" + str(self.edited_item.id)
-                        else:
-                            element.visible = False
-                        ?>
-                    </py:ready>
-                    ${translate("delete")}
-                </a>
-                <a py:id="history_button">
-                    <py:ready>
-                        <?py
-                        if self.edited_item:
-                            element["href"] = self.cms.document_uri("history") \
-                                + "?item=" + str(self.edited_item.id)
-                        else:
-                            element.visible = False
-                        ?>
-                    </py:ready>
-                    ${translate("history")}
-                </a>
-                <button
-                    py:id="differences_button"
-                    py:visible="@{self.edited_item}"
-                    name="section"
-                    type="submit"
-                    value="differences">
-                    ${translate("Show differences")}
-                </button>
-                <button
-                    py:id="preview_button"
-                    name="section"
-                    type="submit"
-                    value="preview">
-                    ${translate("Preview")}
-                </button>
+            <button
+                py:def="button"
+                py:args="action"
+                type="submit"
+                name="action"
+                value="${action.id}">
+                ${translate("Action " + action.id)}
+            </button>
+            <div py:id="frequent_actions_box">
+                <py:ready>
+                    <py:new
+                        py:element="self.create_button(action)"
+                        py:for="action in get_view_actions(self, 'item_buttons', self.edited_content_type)"/>
+                </py:ready>
             </div>
-            <span class="label">${translate("More actions")}</span>
+            <div py:id="additional_actions_selector" class="selector">
+                <span class="label">${translate("More actions")}</span>
+                <div py:id="additional_actions_box" class="selector_content">
+                    <py:ready>
+                        <py:new
+                            py:element="self.create_button(action)"
+                            py:for="action in get_view_actions(self, 'item_buttons_extra', self.edited_content_type)"/>
+                    </py:ready>
+                </div>
+            </div>
         </div>
     </py:with>
 

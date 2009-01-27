@@ -58,9 +58,12 @@ def get_view_actions(view, container, content_type):
     @return: The list of user actions available under the specified context.
     @rtype: iterable L{UserAction} sequence
     """
-    return (action
-            for action in _action_list
-            if action.is_available(view, container, content_type))
+    return (
+        action
+        for action in _action_list
+        if action.enabled
+            and action.is_available(view, container, content_type)
+    )
 
 class UserAction(object):
     """An action that is made available to users at the backoffice
@@ -70,11 +73,6 @@ class UserAction(object):
 
     @ivar enabled: Controls the site-wide availavility of the action.
     @type enabled: bool
-
-    @ivar frequent: Indicates if the action is frequently accessed by users,
-        and should therefore be promoted to a more visible space on the user
-        interface.
-    @type frequent: bool
 
     @ivar min: The minimum number of content items that the action can be
         invoked on. Setting it to 0 or None disables the constraint.
@@ -86,7 +84,7 @@ class UserAction(object):
     """
 
     enabled = True
-    frequent = False
+    containers = frozenset(["toolbar_extra", "item_buttons_extra"])
     authorization_context = None
     ignores_selection = False
     min = 1
@@ -148,7 +146,7 @@ class UserAction(object):
             otherwise.
         @rtype: bool
         """
-        return True
+        return container in self.containers
 
     def get_errors(self, controller, selection):
         """Validates the context of an action before it is invoked.
@@ -255,7 +253,7 @@ def _match_view_ancestor(view, class_name):
 
 
 class CreateAction(UserAction):
-    frequent = True
+    containers = frozenset(["toolbar"])
     ignores_selection = True
     min = None
     max = None
@@ -265,7 +263,8 @@ class CreateAction(UserAction):
 
     def is_available(self, view, container, content_type):
         return (
-            _match_view(view, "sitebasis.views.ContentView")
+            container in self.containers
+            and _match_view(view, "sitebasis.views.ContentView")
             and not _match_view_ancestor(
                 view,
                 "sitebasis.views.BackOfficeCollectionView")
@@ -285,96 +284,117 @@ class CreateAction(UserAction):
 
 
 class MoveAction(UserAction):
-    frequent = True
+    containers = frozenset(["toolbar"])
     max = None
 
     def is_available(self, view, container, content_type):
-        return _match_view(view, "sitebasis.views.TreeContentView")
+        return (
+            container in self.containers
+            and _match_view(view, "sitebasis.views.TreeContentView")
+        )
 
 
 class AddAction(UserAction):
-    frequent = True
+    containers = frozenset(["toolbar"])
     ignores_selection = True
 
     # TODO: def invoke()
 
     def is_available(self, view, container, content_type):        
         return (
-            _match_view(view, "sitebasis.views.ContentView")
+            container in self.containers
+            and _match_view(view, "sitebasis.views.ContentView")
             and _match_view_ancestor(view,
                 "sitebasis.views.BackOfficeCollectionView")
         )
 
 
 class RemoveAction(UserAction):
-    frequent = True
+    containers = frozenset(["toolbar"])
     max = None
 
     # TODO: def invoke()
 
     def is_available(self, view, container, content_type):
         return (
-            _match_view(view, "sitebasis.views.ContentView")
+            container in self.containers
+            and _match_view(view, "sitebasis.views.ContentView")
             and _match_view_ancestor(view,
                 "sitebasis.views.BackOfficeCollectionView")
         )
 
 
 class OrderAction(UserAction):
-    frequent = True
+    containers = frozenset(["toolbar"])
     max = None
 
     def is_available(self, view, container, content_type):
-        return _match_view(view, "sitebasis.views.OrderContentView")
+        return (
+            container in self.containers
+            and _match_view(view, "sitebasis.views.OrderContentView")
+        )
 
 
 class ViewDetailAction(UserAction):
-    frequent = True
+    containers = frozenset(["toolbar", "item_buttons_extra"])
     
     def is_available(self, view, container, content_type):
-        return not _match_view(view, "sitebasis.views.BackOfficeDetailView")
+        return (
+            container in self.containers
+            and not _match_view(view, "sitebasis.views.BackOfficeDetailView")
+        )
 
 
 class EditAction(UserAction):
-    frequent = True
+    containers = frozenset(["toolbar", "item_buttons_extra"])
 
     def get_url(self, controller, selection):
         return controller.get_edit_uri(selection[0])
 
     def is_available(self, view, container, content_type):
-        return not _match_view(
-            view,
-            "sitebasis.views.BackOfficeEditView",
-            "sitebasis.views.BackOfficeCollectionView"
+        return (
+            container in self.containers
+            and not _match_view(
+                view,
+                "sitebasis.views.BackOfficeEditView",
+                "sitebasis.views.BackOfficeCollectionView"
+            )
         )
 
 
 class DeleteAction(UserAction):
-    frequent = True
+    containers = frozenset(["toolbar", "item_buttons_extra"])
     max = None
 
     def is_available(self, view, container, content_type):
-        return not _match_view_ancestor(
-            view,
-            "sitebasis.views.BackOfficeCollectionView"
+        return (
+            container in self.containers
+            and not _match_view_ancestor(
+                view,
+                "sitebasis.views.BackOfficeCollectionView"
+            )
         )
 
 
-class HistoryAction(UserAction):
+class HistoryAction(UserAction):    
     min = None
 
 
 class DiffAction(UserAction):
     
     def is_available(self, view, container, content_type):
-        return not _match_view(view, "sitebasis.views.BackOfficeDiffView")
+        return (
+            container in self.containers
+            and not _match_view(view, "sitebasis.views.BackOfficeDiffView")
+        )
 
 
 class PreviewAction(UserAction):
 
     def is_available(self, view, container, content_type):
         return (
-            issubclass(content_type, Document)
+            container in self.containers
+            and issubclass(content_type, Document)
             and not _match_view(view, "sitebasis.views.BackOfficePreview")
         )
 
@@ -383,7 +403,100 @@ class ExportAction(UserAction):
     max = None
 
     def is_available(self, view, container, content_type):
-        return _match_view(view, "sitebasis.views.ContentView")
+        return (
+            container in self.containers
+            and _match_view(view, "sitebasis.views.ContentView")
+        )
+
+
+class SelectAction(UserAction):
+    min = None
+    max = None
+    containers = "list_buttons",
+
+    def is_available(self, view, container, content_type):
+        return (
+            container in self.containers
+            and _match_view(view, "sitebasis.views.ContentView")            
+            and view.edit_stack
+        )
+
+    def invoke(self, controller, selection):
+
+        edit_state = controller.edit_stack[-2]
+        member = controller.stack_node.member
+
+        if isinstance(member, Reference):
+            edit_state.relate(member, selection)
+        else:
+            if controller.stack_node.action == "add":
+                modify_relation = edit_state.relate 
+            else:
+                modify_relation = edit_state.unrelate 
+
+            for item in selection:
+                modify_relation(member, item)
+            
+        controller.edit_stack.go(-2)
+
+
+class CloseAction(UserAction):
+    ignores_selection = True
+    min = None
+    max = None
+    containers = frozenset(["list_buttons", "item_buttons"])
+
+    def is_available(self, view, container, content_type):
+        return (
+            container in self.containers
+            and view.edit_stack
+        )
+
+    def invoke(self, controller, selection):
+        if len(controller.edit_stack) > 1:
+            controller.edit_stack.go(-2)
+        else:
+            raise cherrypy.HTTPRedirect(controller.document_uri())
+
+
+class SaveAction(UserAction):
+    containers = frozenset(["item_buttons"])
+
+    def is_available(self, view, container, content_type):
+        return container in self.containers
+
+    def invoke(self, controller, selection):
+        pass
+
+
+class SaveDraftAction(UserAction):
+    containers = frozenset(["item_buttons"])
+
+    def is_available(self, view, container, content_type):
+        return container in self.containers
+
+    def invoke(self, controller, selection):
+        pass
+
+
+class ConfirmDraftAction(UserAction):
+    containers = frozenset(["item_buttons"])
+
+    def is_available(self, view, container, content_type):
+        return container in self.containers
+
+    def invoke(self, controller, selection):
+        pass
+
+
+class DiscardDraftAction(UserAction):
+    containers = frozenset(["item_buttons"])
+
+    def is_available(self, view, container, content_type):
+        return container in self.containers
+
+    def invoke(self, controller, selection):
+        pass
 
 
 CreateAction("new").register()
@@ -399,4 +512,9 @@ HistoryAction("history").register()
 PreviewAction("preview").register()
 ExportAction("export_xls").register()
 ExportAction("export_csv").register()
+SaveAction("save").register()
+SaveDraftAction("save_draft").register()
+ConfirmDraftAction("confirm_draft").register()
+SelectAction("select").register()
+CloseAction("close").register()
 

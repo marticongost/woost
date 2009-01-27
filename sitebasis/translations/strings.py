@@ -78,9 +78,9 @@ translations.define("CollectionView new shortcut",
 )
 
 translations.define("Action view",
-    ca = u"Veure",
-    es = u"Ver",
-    en = u"View"
+    ca = u"Veure resum",
+    es = u"Ver resumen",
+    en = u"Show detail"
 )
 
 translations.define("Action edit",
@@ -177,6 +177,42 @@ translations.define("Action export_csv",
     ca = u"Exportar a CSV",
     es = u"Exportar a CSV",
     en = u"Export to CSV"
+)
+
+translations.define("Action save",
+    ca = u"Desar",
+    es = u"Guardar",
+    en = u"Save"
+)
+
+translations.define("Action save_draft",
+    ca = u"Desar esborrany",
+    es = u"Guardar borrador",
+    en = u"Save draft"
+)
+
+translations.define("Action confirm_draft",
+    ca = u"Confirmar esborrany",
+    es = u"Confirmar borrador",
+    en = u"Confirm draft"
+)
+
+translations.define("Action preview",
+    ca = u"Vista prèvia",
+    es = u"Vista previa",
+    en = u"Preview"
+)
+
+translations.define("Action select",
+    ca = u"Seleccionar",
+    es = u"Seleccionar",
+    en = u"Select"
+)
+
+translations.define("Action close",
+    ca = u"Tancar",
+    es = u"Cerrar",
+    en = u"Close"
 )
 
 translations.define("editing",
@@ -281,36 +317,6 @@ translations.define("draft_seq_name",
     en = u"Draft %(index)s"
 )
 
-translations.define("Go back",
-    ca = u"Tornar enrera",
-    es = u"Volver atrás",
-    en = u"Go back"
-)
-
-translations.define("Save",
-    ca = u"Desar",
-    es = u"Guardar",
-    en = u"Save"
-)
-
-translations.define("Save draft",
-    ca = u"Desar esborrany",
-    es = u"Guardar borrador",
-    en = u"Save draft"
-)
-
-translations.define("Preview",
-    ca = u"Vista prèvia",
-    es = u"Vista previa",
-    en = u"Preview"
-)
-
-translations.define("Close",
-    ca = u"Tancar",
-    es = u"Cerrar",
-    en = u"Close"
-)
-
 translations.define("Differences for",
     ca = lambda item: u"Canvis a <em>'%s'</em>" % translate(item, "ca"),
     es = lambda item: u"Cambios en <em>'%s'</em>" % translate(item, "es"),
@@ -327,12 +333,6 @@ translations.define("EditView translations shortcut",
     ca = u"r",
     es = u"r",
     en = u"r"
-)
-
-translations.define("Confirm draft",
-    ca = u"Confirmar esborrany",
-    es = u"Confirmar borrador",
-    en = u"Confirm draft"
 )
 
 translations.define("Editing draft",
