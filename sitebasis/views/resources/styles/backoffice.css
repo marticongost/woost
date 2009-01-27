@@ -71,10 +71,15 @@ html, body {
     float: left;
     display: block;
     list-style-type: none;
+    white-space: nowrap;
 }
 
 .BackOfficeLayout ul.edit_path li:last-child {
     font-weight: bold;
+}
+
+.BackOfficeLayout ul.edit_path li .item_type {
+    font-weight: normal;    
 }
 
 .BackOfficeLayout ul.edit_path .separator {
@@ -106,7 +111,6 @@ html, body {
 .BackOfficeLayout a,
 .BackOfficeLayout .identity button,
 .BackOfficeEditView .discard_button,
-.BackOfficeItemView .more_actions button,
 .BackOfficeLayout .new_filter_selector .label {
     font-size: inherit;
     background: none;
@@ -133,28 +137,28 @@ html, body {
     border-left: none;
     border-right: none;
     margin-top: 0.75em;
-    height: 2.1em;
+    height: 1.7em;
 }
 
 .BackOfficeLayout .navigation .section_entry {
     color: rgb(75,75,75);
     position: relative;
-    top: -1px;
-    height: 1.3em;
+    top: 0px;
+    height: 1.1em;
     float: left;
     display: block;
     background-color: rgb(240,240,240);
-    padding-left: 0.8em;
-    padding-top: 0.4em;
-    padding-bottom: 0.4em;
-    padding-right: 0.8em;
+    padding-left: 0.4em;
+    padding-top: 0.2em;
+    padding-bottom: 0.5em;
+    padding-right: 0.4em;
     margin-left: 0.2em;
     border: 1px solid rgb(200,210,220);
     -moz-border-radius-topleft: 5px;
     -moz-border-radius-topright: 5px;
     border-radius-topleft: 5px;
     border-radius-topright: 5px;
-    font-size: inherit;
+    font-size: 90%;
     cursor: pointer;
 }
 
@@ -628,6 +632,12 @@ html, body {
     font-size: 85%;
 }
 
+.BackOfficeCollectionView .content_view {
+    display: inline;
+    top: 1.5em;
+    left: 75%;
+}
+
 .BackOfficeLayout .content_view * {
     display: inline;
     float: none;
@@ -988,7 +998,7 @@ html, body {
     z-index: 0;
     clear: both;
     position: absolute;    
-    top: 2.8em;
+    top: 2.5em;
     bottom: 4em;
     left: 0;
     right: 0;
@@ -1120,66 +1130,33 @@ html, body {
     font-style: italic;
 }
 
-.BackOfficeItemView .more_actions {
+.BackOfficeItemView .additional_actions_selector {
     position: absolute;
     left: 1.3em;
     bottom: 1.2em;
 }
 
-.BackOfficeItemView .more_actions .label {
+.BackOfficeItemView .additional_actions_selector .label {
     background-image: url(../images/dropup_arrow.png);
     background-position: right 0.5em;
     padding-left: 0.3em;
 }
 
-.BackOfficeLayout .more_actions:hover .label,
-.BackOfficeLayout .more_actions.scripted.unfolded .label,
-.BackOfficeLayout .more_actions.scripted.unfolded:hover .label {
-    border-top-color: rgb(250,250,250);
-    border-bottom-color: rgb(190,200,210);
-}
-
-.BackOfficeItemView .more_actions .selector_content {
+.BackOfficeItemView .additional_actions_selector .selector_content {
     position: static;
-    padding-left: 0.5em;
+    padding: 0.3em;
 }
 
-.BackOfficeItemView .more_actions .selector_content > * {
+.BackOfficeItemView .additional_actions_selector .selector_content button {
     display: block;
-    border: none;    
-    background-repeat: no-repeat;
+    border: none;
     padding: 0;
-    padding-left: 20px;
     margin: 0;
+    text-align: left;
 }
 
-.BackOfficeItemView .more_actions .selector_content > button {
-    position: relative;
-    left: -2px;
-}
-
-.BackOfficeItemView .more_actions .selector_content > * + * {
-    margin-top: 0.5em;
-}
-
-.BackOfficeItemView .more_actions .selector_content > button + * {
+.BackOfficeItemView .additional_actions_selector .selector_content button + button {
     margin-top: 0.3em;
-}
-
-.BackOfficeItemView .more_actions .delete_button {
-    background-image: url(../images/delete_small.png);
-}
-
-.BackOfficeItemView .more_actions .differences_button {
-    background-image: url(../images/differences_small.png);
-}
-
-.BackOfficeItemView .more_actions .preview_button {
-    background-image: url(../images/preview_small.png);
-}
-
-.BackOfficeItemView .more_actions .history_button {
-    background-image: url(../images/history_small.png);
 }
 
 .BackOfficeItemView .edit_form_frame,

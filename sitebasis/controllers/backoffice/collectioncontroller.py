@@ -31,15 +31,8 @@ class CollectionController(EditController, ContentController):
         self.section = member
 
     @cached_getter
-    def content_type(self):
-        root_content_type = self.member.items.type
-        content_type = self.get_content_type()
-        
-        if content_type is None \
-        or not issubclass(content_type, root_content_type):
-            content_type = root_content_type
-            
-        return content_type
+    def root_content_type(self):
+        return self.member.items.type
 
     def content_view_is_compatible(self, content_view):
         return content_view.compatible_with(

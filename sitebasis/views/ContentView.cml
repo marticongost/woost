@@ -46,14 +46,14 @@ from sitebasis.controllers.backoffice.useractions import get_view_actions
     def _init_user_collection(self, user_collection):
         pass
 
-    def create_toolbar_button(self, action):
+    def create_toolbar_button(self, action, frequent = True):
         if action.id == "new":
-            button = self.create_new_toolbar_button(action)
-        else:
+            button = self.create_new_toolbar_button(action, frequent)
+        else:        
             button = CollectionView.create_toolbar_button(self, action.id)
-            if action.frequent:
-                button.insert(0, self.create_toolbar_button_image(action))
-
+            if frequent:
+                button.insert(0, self.create_toolbar_button_image(action))    
+        
         button.set_client_param("minSelection", action.min)
         button.set_client_param("maxSelection", action.max)
         return button
@@ -67,19 +67,23 @@ from sitebasis.controllers.backoffice.useractions import get_view_actions
 
     def fill_toolbar(self):
 
+        has_frequent_actions = False
         has_additional_actions = False
 
         for action in get_view_actions(self, "toolbar", self.user_collection.type):
             if not action.min or self.visible_results:
-                button = self.create_toolbar_button(action)
-                
-                if action.frequent:
-                    container = self.frequent_actions_box
-                else:
-                    container = self.additional_actions_box
-                    has_additional_actions = True
+                button = self.create_toolbar_button(action, True)
+                self.frequent_actions_box.append(button)
+                has_frequent_actions = True
+        
+        for action in get_view_actions(self, "toolbar_extra", self.user_collection.type):
+            if not action.min or self.visible_results:
+                button = self.create_toolbar_button(action, False)
+                self.additional_actions_box.append(button)
+                has_additional_actions = True
 
-                container.append(button)
+        if not has_frequent_actions and not has_additional_actions:
+            self.toolbar.visible = False
 
         if not has_additional_actions:
             self.additional_actions_selector.visible = False
@@ -115,8 +119,7 @@ from sitebasis.controllers.backoffice.useractions import get_view_actions
 
                 if content_type is self.root_content_type \
                 and is_empty(content_type.derived_schemas()):
-                    element.add_class("empty_selector")
-                    #element.visible = False
+                    element.visible = False
                 ?>
             </py:ready>
 
@@ -200,7 +203,7 @@ from sitebasis.controllers.backoffice.useractions import get_view_actions
 
     <!-- New item selector -->
     <div py:def="new_toolbar_button"
-        py:args="action"
+        py:args="action, frequent"
         class="selector toolbar_button new">
         <?py
         shortcut = translate("CollectionView new shortcut", default = "")
@@ -210,7 +213,7 @@ from sitebasis.controllers.backoffice.useractions import get_view_actions
         <span class="label">
             <py:new
                 py:element="self.create_toolbar_button_image(action)"
-                py:if="action.frequent"/>
+                py:if="frequent"/>
             ${translate("Action new")}
         </span>
         <div class="selector_content">
@@ -247,5 +250,27 @@ from sitebasis.controllers.backoffice.useractions import get_view_actions
             <div py:id="additional_actions_box" class="selector_content"/>
         </div>
     </py:with>
+
+    <!-- Add buttons -->
+    <div py:id="list_buttons">
+        <button
+            py:def="button"
+            py:args="action"
+            name="action"
+            type="submit"
+            value="${action.id}">
+            ${translate("Action " + action.id)}
+        </button>
+        <py:ready>
+            <?py
+            button_actions = list(get_view_actions(self, 'list_buttons', self.user_collection.type))
+            if not button_actions:
+                element.visible = False
+            ?>
+            <py:new
+                py:element="self.create_button(action.id)"
+                py:for="action in button_actions"/>
+        </py:ready>
+    </div>
 
 </py:cocktail.html.CollectionView>
