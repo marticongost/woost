@@ -83,17 +83,24 @@ jQuery(function () {
             jQuery(".filters_label", this).html(
                 cocktail.translate("sitebasis.views.ContentView advanced search title")
             );
-
-            var closeButton = document.createElement("button");
-            closeButton.type = "button";
-            jQuery(closeButton).click(function () {
-                jQuery.cookie(ADVANCED_SEARCH_COOKIE_PREFIX + contentTypeFullName, "false");
-                location.href = discardButton.get(0).href;
-            });
-            closeButton.appendChild(document.createTextNode(
-                    cocktail.translate("sitebasis.views.ContentView close advanced search")
-            ));
+            
+            
+            if(jQuery.browser.msie){                
+                var closeButton = document.createElement("<input type='button'>");
+            }else{
+                var closeButton = document.createElement("input");
+                closeButton.type = "button";
+            }
+            
             var discardButton = jQuery(".discard_button", filtersBox);
+            
+            var closeHref = discardButton.get(0).href;
+            
+            jQuery(closeButton).val(cocktail.translate("sitebasis.views.ContentView close advanced search")).click(function () {                
+                jQuery.cookie(ADVANCED_SEARCH_COOKIE_PREFIX + contentTypeFullName, "false");                
+                location.href = closeHref;
+            });
+                        
             discardButton.replaceWith(closeButton);
         }
     }
