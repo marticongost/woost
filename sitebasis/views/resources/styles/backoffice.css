@@ -489,6 +489,10 @@ html, body {
     color: rgb(135,35,10);
 }
 
+.BackOfficeLayout .Table a.target-focus {
+    position: absolute;    
+}
+
 /* Content type icons
 -----------------------------------------------------------------------------*/
 .BackOfficeLayout .Item {
