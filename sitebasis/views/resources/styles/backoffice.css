@@ -335,9 +335,10 @@ html, body {
 }
 
 .BackOfficeLayout .Table th {
+    background-position: bottom left;
     background-repeat: repeat-x;
     background-image: url(../images/header.png);
-    background-color: rgb(210,215,220);
+    background-color: rgb(220,223,227);
 }
 
 .BackOfficeLayout .Table td {
@@ -1440,5 +1441,5 @@ html, body {
 }
 
 .BackOfficeLayout .CollectionView .Table th:last-child {
-    padding-right: 1em;
+    padding-right: 3em;
 }
