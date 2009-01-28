@@ -10,6 +10,7 @@ import cherrypy
 from cocktail.modeling import getter, ListWrapper
 from cocktail.pkgutils import get_full_name
 from sitebasis.models import Document
+from sitebasis.controllers.backoffice.editstack import RelationNode
 
 
 # User action model declaration
@@ -199,15 +200,38 @@ class UserAction(object):
         @return: The URL where the user should be redirected.
         @rtype: str
         """
+        params = self.get_url_params(controller, selection)
+
+        if controller.edit_stack:
+            params["edit_stack"] = controller.edit_stack.to_param()
+
         if self.min == self.max == 1:
             # Single selection
             return controller.get_edit_uri(
                     selection[0],
-                    self.id)     
+                    self.id,
+                    **params)
         else:
             return controller.document_uri(
                     self.id,
-                    selection = [item.id for item in selection])
+                    selection = [item.id for item in selection],
+                    **params)
+
+    def get_url_params(self, controller, selection):
+        """Produces extra URL parameters for the L{get_url} method.
+        
+        @param controller: The controller that invokes the action.
+        @type controller: L{Controller<cocktail.controllers.controller.Controller>}
+
+        @param selection: The collection of items that the action is invoked
+            on.
+        @type selection: L{Item<sitebasis.models.item.Item>} collection
+
+        @return: A mapping containing additional parameters to include on the
+            URL associated to the action.
+        @rtype: dict
+        """
+        return {}
 
 
 class SelectionError(Exception):
@@ -239,7 +263,7 @@ def _match_view(view, *args):
             return True
     
     return False
-    
+
 def _match_view_ancestor(view, class_name):
 
     parent = view.parent
@@ -297,23 +321,8 @@ class MoveAction(UserAction):
 class AddAction(UserAction):
     containers = frozenset(["toolbar"])
     ignores_selection = True
-
-    # TODO: def invoke()
-
-    def is_available(self, view, container, content_type):        
-        return (
-            container in self.containers
-            and _match_view(view, "sitebasis.views.ContentView")
-            and _match_view_ancestor(view,
-                "sitebasis.views.BackOfficeCollectionView")
-        )
-
-
-class RemoveAction(UserAction):
-    containers = frozenset(["toolbar"])
+    min = None
     max = None
-
-    # TODO: def invoke()
 
     def is_available(self, view, container, content_type):
         return (
@@ -322,6 +331,37 @@ class RemoveAction(UserAction):
             and _match_view_ancestor(view,
                 "sitebasis.views.BackOfficeCollectionView")
         )
+
+    def invoke(self, controller, selection):
+        
+        # Add a relation node to the edit stack, and redirect the user
+        # there
+        node = RelationNode()
+        node.member = controller.member
+        node.action = "add"
+        controller.edit_stack.push(node)
+        controller.edit_stack.go()
+
+
+class RemoveAction(UserAction):
+    containers = frozenset(["toolbar"])
+    max = None
+
+    def is_available(self, view, container, content_type):
+        return (
+            container in self.containers
+            and _match_view(view, "sitebasis.views.ContentView")
+            and _match_view_ancestor(view,
+                "sitebasis.views.BackOfficeCollectionView")
+        )
+
+    def invoke(self, controller, selection):
+
+        for item in selection:
+            self.stack_node.unrelate(self.member, item)
+
+        controller.user_collection.base_collection = \
+            controller.stack_node.get_collection(controller.member)
 
 
 class OrderAction(UserAction):
@@ -333,6 +373,16 @@ class OrderAction(UserAction):
             container in self.containers
             and _match_view(view, "sitebasis.views.OrderContentView")
         )
+
+    def invoke(self, controller, selection):
+        node = RelationNode()
+        node.member = controller.member
+        node.action = "order"
+        controller.edit_stack.push(node)
+        UserAction.invoke(self, controller, selection)
+
+    def get_url_params(self, controller, selection):
+        return {"member": self.member.name}
 
 
 class ViewDetailAction(UserAction):
@@ -454,29 +504,31 @@ class CloseAction(UserAction):
 
     def invoke(self, controller, selection):
         if len(controller.edit_stack) > 1:
-            controller.edit_stack.go(-2)
+            controller.edit_stack.go(-3)
         else:
             raise cherrypy.HTTPRedirect(controller.document_uri())
 
 
 class SaveAction(UserAction):
     containers = frozenset(["item_buttons"])
+    ignores_selection = True
+    max = None
+    min = None
+    make_draft = False
 
-    def is_available(self, view, container, content_type):
-        return container in self.containers
+    def get_errors(self, controller, selection):
+        for error in UserAction.get_errors(self, controller, selection):
+            yield error
 
-    def invoke(self, controller, selection):
-        pass
-
-
-class SaveDraftAction(UserAction):
-    containers = frozenset(["item_buttons"])
-
-    def is_available(self, view, container, content_type):
-        return container in self.containers
+        for error in controller.form_errors:
+            yield error
 
     def invoke(self, controller, selection):
-        pass
+        controller.save_item(make_draft = self.make_draft)
+
+
+class SaveDraftAction(SaveAction):
+    make_draft = True
 
 
 class ConfirmDraftAction(UserAction):

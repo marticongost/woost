@@ -19,6 +19,7 @@ from cocktail.language import get_content_language
 from cocktail.controllers import get_persistent_param
 from sitebasis.models import Item
 from sitebasis.controllers import BaseCMSController
+from sitebasis.controllers.backoffice.useractions import get_user_action
 from sitebasis.controllers.backoffice.editstack import (
     EditStack, EditNode, RelationNode
 )
@@ -202,4 +203,21 @@ class BaseBackOfficeController(BaseCMSController):
             edit_stack = self.edit_stack
         )
         return output
+
+    def _invoke_user_action(self, action, selection):
+        for error in action.get_errors(self, selection):
+            raise error
+
+        action.invoke(self, selection)
+
+    def _get_user_action(self, param_key = "action"):
+        action = None
+        action_id = self.params.read(String(param_key))
+        
+        if action_id:
+            action = get_user_action(action_id)
+            if action and not action.enabled:
+                action = None
+
+        return action
 
