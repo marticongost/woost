@@ -22,7 +22,6 @@
         <?py
             self.set_client_param("member", self.member.name)
         ?>
-    
         <py:with py:element="self.content_view"
             py:parent="self.edit_form_frame"
             py:cms="${self.cms}"
@@ -36,9 +35,13 @@
             py:available_content_views="${self.available_content_views}"
             py:root_content_type="${self.root_content_type}">
 
-            <py:with
-                py:def="toolbar_button"
-                py:args="action" name="action" type="submit"/>
+            <py:with py:def="toolbar_button">
+                <?py
+                if element.tag == "button":
+                    element["name"] = "collection_action"
+                ?>
+            </py:with>               
+
         </py:with>
     </py:ready>
 
