@@ -186,12 +186,6 @@ class UserAction(object):
                     return True
             return False
 
-        if self.id == "add":
-            from styled import styled
-            print styled(context, "light_gray")
-            print styled(self.included, "green")
-            print styled(self.excluded, "red")
-
         if self.included and not match(self.included):
             return False
 
