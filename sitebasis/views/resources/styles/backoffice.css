@@ -79,7 +79,8 @@ html, body {
 }
 
 .BackOfficeLayout ul.edit_path li .item_type {
-    font-weight: normal;    
+    font-weight: normal;
+    font-style: italic;
 }
 
 .BackOfficeLayout ul.edit_path .separator {
