@@ -2,7 +2,9 @@
 
 <?py
 from cocktail.schema import Collection
-from sitebasis.controllers.backoffice.useractions import get_view_actions
+from sitebasis.controllers.backoffice.useractions import (
+    get_view_actions, get_view_actions_context, add_view_action_context
+)
 ?>
 
 <py:sitebasis.views.BackOfficeLayout
@@ -12,6 +14,16 @@ from sitebasis.controllers.backoffice.useractions import get_view_actions
     <py:ready>
         <?py
         self.set_client_param("edit_stack", self.edit_stack.to_param())
+        
+        if self.edited_item:
+            add_view_action_context(self, "existing_item")
+
+            if self.edited_item.is_draft:
+                add_view_action_context(self, "draft")
+        else:
+            add_view_action_context(self, "new_item")
+
+        self._actions_context = get_view_actions_context(self)
         ?>
     </py:ready>
 
@@ -155,18 +167,30 @@ from sitebasis.controllers.backoffice.useractions import get_view_actions
             </button>
             <div py:id="frequent_actions_box">
                 <py:ready>
+                    <?py
+                    frequent_actions = get_view_actions(
+                        self._actions_context | set(["item_buttons"]),
+                        self.edited_content_type
+                    )
+                    ?>
                     <py:new
                         py:element="self.create_button(action)"
-                        py:for="action in get_view_actions(self, 'item_buttons', self.edited_content_type)"/>
+                        py:for="action in frequent_actions"/>
                 </py:ready>
             </div>
             <div py:id="additional_actions_selector" class="selector">
                 <span class="label">${translate("More actions")}</span>
                 <div py:id="additional_actions_box" class="selector_content">
                     <py:ready>
+                        <?py
+                        additional_actions = get_view_actions(
+                            self._actions_context | set(["item_buttons_extra"]),
+                            self.edited_content_type
+                        )
+                        ?>
                         <py:new
                             py:element="self.create_button(action)"
-                            py:for="action in get_view_actions(self, 'item_buttons_extra', self.edited_content_type)"/>
+                            py:for="action in additional_actions"/>
                     </py:ready>
                 </div>
             </div>

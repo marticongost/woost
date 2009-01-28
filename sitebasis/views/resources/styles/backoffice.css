@@ -1130,24 +1130,24 @@ html, body {
     font-style: italic;
 }
 
-.BackOfficeItemView .additional_actions_selector {
+.BackOfficeItemView .buttons .additional_actions_selector {
     position: absolute;
     left: 1.3em;
     bottom: 1.2em;
 }
 
-.BackOfficeItemView .additional_actions_selector .label {
+.BackOfficeItemView .buttons .additional_actions_selector .label {
     background-image: url(../images/dropup_arrow.png);
     background-position: right 0.5em;
     padding-left: 0.3em;
 }
 
-.BackOfficeItemView .additional_actions_selector .selector_content {
+.BackOfficeItemView .buttons .additional_actions_selector .selector_content {
     position: static;
     padding: 0.3em;
 }
 
-.BackOfficeItemView .additional_actions_selector .selector_content button {
+.BackOfficeItemView .buttons .additional_actions_selector .selector_content button {
     display: block;
     border: none;
     padding: 0;
@@ -1155,7 +1155,7 @@ html, body {
     text-align: left;
 }
 
-.BackOfficeItemView .additional_actions_selector .selector_content button + button {
+.BackOfficeItemView .buttons .additional_actions_selector .selector_content button + button {
     margin-top: 0.3em;
 }
 
