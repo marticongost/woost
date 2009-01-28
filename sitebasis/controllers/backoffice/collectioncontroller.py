@@ -34,29 +34,36 @@ class CollectionController(EditController, ContentController):
     def root_content_type(self):
         return self.member.items.type
 
-    def content_view_is_compatible(self, content_view):
-        return content_view.compatible_with(
-            self.content_type, self.edited_item, self.member)
-
     @cached_getter
     def base_collection(self):
         return self.edit_node.get_collection(self.member)
+
+    def content_view_is_compatible(self, content_view):
+        return content_view.compatible_with(
+            self.content_type, self.edited_item, self.member)
 
     @cached_getter
     def content_views_registry(self):
         return relation_content_views
 
     @cached_getter
-    def content_view(self):
-        content_view = ContentController.content_view(self)
-        content_view.actions = \
-            ["add", "remove"] + [action
-                                 for action in content_view.actions
-                                 if action not in ("new",
-                                                   "edit",
-                                                   "delete",
-                                                   "history")]
-        return content_view
+    def action(self):
+        return self.edited_item_action or self.collection_action
+
+    @cached_getter
+    def edited_item_action(self):
+        return EditController.action(self)
+    
+    @cached_getter
+    def collection_action(self):
+        return self._get_user_action("collection_action")
+
+    @cached_getter
+    def action_content(self):
+        if self.collection_action:
+            return self.user_collection.selection
+        else:
+            return EditController.action_content(self)
 
     @cached_getter
     def output(self):
@@ -64,53 +71,4 @@ class CollectionController(EditController, ContentController):
         output.update(EditController.output(self))
         output["member"] = self.member
         return output
-    
-    @cached_getter
-    def ready(self):
-        return self.action is not None
-
-    def submit(self):
-
-        action = self.action
-        
-        if action == "order":
-
-            node = RelationNode()
-            node.member = self.member
-            node.action = "order"
-            self.edit_stack.push(node)
-
-            raise cherrypy.HTTPRedirect(
-                self.document_uri("order")
-                + "?" + view_state(
-                    edit_stack = self.edit_stack.to_param(),
-                    selection = ",".join(
-                        str(item.id)
-                        for item in self.user_collection.selection
-                    ),
-                    member = self.member.name
-                )
-            )
-
-        elif action == "add":
-            
-            # Add a relation node to the edit stack, and redirect the user
-            # there
-            node = RelationNode()
-            node.member = self.member
-            node.action = "add"
-            self.edit_stack.push(node)
-            self.edit_stack.go()
-
-        elif action == "remove":
-            user_collection = self.user_collection
-
-            for item in user_collection.selection:
-                self.stack_node.unrelate(self.member, item)
-
-            user_collection.base_collection = \
-                self.stack_node.get_collection(self.member)      
-
-        elif EditController.ready(self):
-            EditController.submit(self)
 

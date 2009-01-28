@@ -76,7 +76,7 @@ from cocktail.language import get_content_language
                 py:tag="div"
                 py:data="@{self.form_data}"
                 py:schema="@{self.form_schema}"
-                py:errors="@{self.submitted and self.form_errors}"
+                py:errors="@{self.submitted and self.errors}"
                 py:translations="@{self.translations}"
                 py:table_layout="${True}"
                 py:edited_content_type="@{self.edited_content_type}"

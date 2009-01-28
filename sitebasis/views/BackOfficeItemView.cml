@@ -27,6 +27,7 @@ from sitebasis.controllers.backoffice.useractions import get_view_actions
     edited_content_type = None
     collections = ()
     edit_stack = None
+    errors = ()
 
     def get_section_id(self, section):
         if isinstance(section, Collection):
@@ -102,7 +103,7 @@ from sitebasis.controllers.backoffice.useractions import get_view_actions
         <button
             py:index="0"
             type="submit"
-            name="action" value="save"
+            name="item_action" value="save"
             style="display: none"/>
 
         <div py:id="edit_form_frame">
@@ -112,9 +113,9 @@ from sitebasis.controllers.backoffice.useractions import get_view_actions
             </div>
 
             <ul py:id="error_box"
-                py:visible="@{self.submitted and self.form_errors}">
+                py:visible="@{self.submitted and self.errors}">
                 <py:ready py:if="element.visible">
-                    <li py:for="error in self.form_errors">
+                    <li py:for="error in self.errors">
                         ${translate(error)}
                     </li>
                 </py:ready>
@@ -148,7 +149,7 @@ from sitebasis.controllers.backoffice.useractions import get_view_actions
                 py:def="button"
                 py:args="action"
                 type="submit"
-                name="action"
+                name="item_action"
                 value="${action.id}">
                 ${translate("Action " + action.id)}
             </button>

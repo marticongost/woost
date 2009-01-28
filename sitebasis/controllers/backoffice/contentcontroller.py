@@ -60,22 +60,14 @@ class ContentController(BaseBackOfficeController):
 
     @cached_getter
     def action(self):
-        action_id = self.params.read(String("action"))
-        return get_user_action(action_id) if action_id else None
+        return self._get_user_action()
 
     @cached_getter
     def ready(self):
         return self.action is not None
 
     def submit(self):
-
-        action = self.action
-
-        for error \
-        in action.get_errors(self, self.user_collection.selection):
-            raise error
-
-        action.invoke(self, self.user_collection.selection)
+        self._invoke_user_action(self.action, self.user_collection.selection)
         
     @cached_getter
     def content_type(self):
