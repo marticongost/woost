@@ -460,10 +460,19 @@ html, body {
     background-image: url(../images/descending.png);
 }
 
+.BackOfficeLayout .search_results_message {
+    font-size: 85%;
+    font-weight: bold;
+    float: left;
+    margin-left: 0.5em;
+    margin-bottom: 0.5em;
+}
+
 .BackOfficeLayout .row_selector {
     clear: both;
     float: left;
     padding-left: 0.6em;
+    padding-bottom: 0.5em;
     font-size: 75%;
 }
 
@@ -490,7 +499,8 @@ html, body {
 }
 
 .BackOfficeLayout .Table a.target-focus {
-    position: absolute;    
+    position: absolute;
+    left: -100px;
 }
 
 /* Content type icons
@@ -1140,23 +1150,34 @@ html, body {
     bottom: 1.2em;
 }
 
-.BackOfficeItemView .additional_actions_selector .label {
+.BackOfficeItemView .additional_actions_selector .label {    
     background-image: url(../images/dropup_arrow.png);
     background-position: right 0.5em;
     padding-left: 0.3em;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    white-space: nowrap;
+}
+
+.BackOfficeItemView .additional_actions_selector.scripted.unfolded .label {    
+    border-bottom-color: rgb(190,200,210) !important;
+    border-top-color: rgb(250,250,250) !important;
 }
 
 .BackOfficeItemView .additional_actions_selector .selector_content {
     position: static;
     padding: 0.3em;
+    margin-bottom: 1.25em;
 }
 
 .BackOfficeItemView .additional_actions_selector .selector_content button {
     display: block;
-    border: none;
     padding: 0;
     margin: 0;
     text-align: left;
+    border: none;
+    background-color: rgb(250, 250, 250);
 }
 
 .BackOfficeItemView .additional_actions_selector .selector_content button + button {
@@ -1423,4 +1444,26 @@ html, body {
 
 .BackOfficeLayout .CollectionView .Table th:last-child {
     padding-right: 3em;
+}
+
+/* Datepicker styles */
+
+#ui-datepicker-div {
+	background-color: rgb(255, 255, 255);
+	border: 1px solid rgb(197, 203, 212);
+}
+
+#ui-datepicker-div .ui-datepicker-links a,
+#ui-datepicker-div .ui-datepicker-header select {
+	color: rgb(0, 0, 0);
+	background-color: rgb(255, 255, 255);
+}
+
+.ui-datepicker .ui-datepicker-days-cell a {
+	color: rgb(0, 0, 0);
+	background-color: rgb(240, 240, 240);
+}
+
+.ui-datepicker .ui-datepicker-current-day a {
+	background-color: rgb(225, 225, 225);
 }
