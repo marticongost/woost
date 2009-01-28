@@ -6,7 +6,9 @@ from cocktail.iteration import is_empty
 from cocktail.controllers.viewstate import view_state
 from sitebasis.models import Item
 from sitebasis.views.contenttypetree import ContentTypeTree
-from sitebasis.controllers.backoffice.useractions import get_view_actions
+from sitebasis.controllers.backoffice.useractions import (
+    get_view_actions, get_view_actions_context, add_view_action_context
+)
 ?>
 
 <py:cocktail.html.CollectionView
@@ -20,6 +22,8 @@ from sitebasis.controllers.backoffice.useractions import get_view_actions
     self.add_client_translation("sitebasis.views.ContentView show advanced search")
     self.add_client_translation("sitebasis.views.ContentView close advanced search")
     self.add_client_translation("sitebasis.views.ContentView search button")
+
+    add_view_action_context(self, "content_view")
     ?>
 
     <?py-class
@@ -28,7 +32,7 @@ from sitebasis.controllers.backoffice.useractions import get_view_actions
     visible_languages = ()
     root_content_type = Item
     edit_stack = None
-
+    
     @classmethod
     def get_collection(cls, content_type, item = None, relation = None):
         if item:
@@ -67,16 +71,26 @@ from sitebasis.controllers.backoffice.useractions import get_view_actions
 
     def fill_toolbar(self):
 
+        self._actions_context = get_view_actions_context(self)
+
         has_frequent_actions = False
         has_additional_actions = False
 
-        for action in get_view_actions(self, "toolbar", self.user_collection.type):
+        frequent_actions = get_view_actions(
+            self._actions_context | set(["toolbar"]),
+            self.user_collection.type)
+
+        for action in frequent_actions:
             if not action.min or self.visible_results:
                 button = self.create_toolbar_button(action, True)
                 self.frequent_actions_box.append(button)
                 has_frequent_actions = True
-        
-        for action in get_view_actions(self, "toolbar_extra", self.user_collection.type):
+
+        additional_actions = get_view_actions(
+            self._actions_context | set(["toolbar_extra"]),
+            self.user_collection.type)
+
+        for action in additional_actions:
             if not action.min or self.visible_results:
                 button = self.create_toolbar_button(action, False)
                 self.additional_actions_box.append(button)
@@ -251,8 +265,7 @@ from sitebasis.controllers.backoffice.useractions import get_view_actions
         </div>
     </py:with>
 
-    <!-- Add buttons -->
-    <div py:id="list_buttons">
+    <div py:id="list_buttons" class="buttons">
         <button
             py:def="button"
             py:args="action"
@@ -263,12 +276,15 @@ from sitebasis.controllers.backoffice.useractions import get_view_actions
         </button>
         <py:ready>
             <?py
-            button_actions = list(get_view_actions(self, 'list_buttons', self.user_collection.type))
+            button_actions = list(get_view_actions(
+                self._actions_context | set(["list_buttons"]),
+                self.user_collection.type
+            ))
             if not button_actions:
                 element.visible = False
             ?>
             <py:new
-                py:element="self.create_button(action.id)"
+                py:element="self.create_button(action)"
                 py:for="action in button_actions"/>
         </py:ready>
     </div>

@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 
+<?py
+from sitebasis.controllers.backoffice.useractions import \
+    add_view_action_context
+?>
+
 <py:sitebasis.views.BackOfficeItemView
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:py="http://www.whads.com/ns/cocktail/templates">
@@ -16,6 +21,7 @@
     <?py
     self.add_resource("/cocktail/resources/jquery.js")
     self.add_resource("/resources/scripts/backoffice_content.js")
+    add_view_action_context(self, "collection")
     ?>
 
     <py:ready>

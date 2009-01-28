@@ -9,8 +9,9 @@
 import cherrypy
 from cocktail.modeling import getter, ListWrapper
 from cocktail.pkgutils import get_full_name
+from cocktail.schema import Reference
 from sitebasis.models import Document
-from sitebasis.controllers.backoffice.editstack import RelationNode
+from sitebasis.controllers.backoffice.editstack import EditNode, RelationNode
 
 
 # User action model declaration
@@ -41,17 +42,13 @@ def get_user_actions(**kwargs):
     """
     return _action_list  
 
-def get_view_actions(view, container, content_type):
+def get_view_actions(context, content_type):
     """Obtains the list of actions that can be displayed on a given view.
 
-    @param view: The view where the action will be displayed.
-    @type view: L{Element<cocktail.html.element.Element>}
-    
-    @param container: A user interface container where the action will be
-        inserted. This should be a string identifier, such as "context_menu",
+    @param context: A set of string identifiers, such as "context_menu",
         "toolbar", etc. Different views can make use of as many different
         identifiers as they require.
-    @type container: str
+    @type container: str set
 
     @param content_type: The content type affected by the action.
     @type content_type: L{Item<sitebasis.models.item.Item>} class
@@ -63,8 +60,45 @@ def get_view_actions(view, container, content_type):
         action
         for action in _action_list
         if action.enabled
-            and action.is_available(view, container, content_type)
+            and action.is_available(context, content_type)
     )
+
+def add_view_action_context(view, clue):
+    """Adds contextual information to the given view, to be gathered by
+    L{get_view_actions_context} and passed to L{get_view_actions}.
+    
+    @param view: The view that gains the context clue.
+    @type view: L{Element<cocktail.html.element.Element>}
+
+    @param clue: The context identifier added to the view.
+    @type clue: str
+    """
+    view_context = getattr(view, "actions_context", None)
+    if view_context is None:
+        view_context = set()
+        view.actions_context = view_context
+    view_context.add(clue)
+
+def get_view_actions_context(view):
+    """Extracts clues on the context that applies to a given view and its
+    ancestors, to supply to the L{get_view_actions} function.
+    
+    @param view: The view to inspect.
+    @type view: L{Element<cocktail.html.element.Element>}
+
+    @return: The set of context identifiers for the view and its ancestors.
+    @rtype: str set
+    """
+    context = set()
+
+    while view:
+        view_context = getattr(view, "actions_context", None)
+        if view_context:
+            context.update(view_context)
+        view = view.parent
+     
+    return context
+
 
 class UserAction(object):
     """An action that is made available to users at the backoffice
@@ -83,9 +117,9 @@ class UserAction(object):
         invoked on. A value of None disables the constraint.
     @type max: int
     """
-
     enabled = True
-    containers = frozenset(["toolbar_extra", "item_buttons_extra"])
+    included = frozenset(["toolbar_extra", "item_buttons_extra"])
+    excluded = frozenset(["selector"])
     authorization_context = None
     ignores_selection = False
     min = 1
@@ -125,20 +159,16 @@ class UserAction(object):
 
         _action_map[self._id] = self
 
-    def is_available(self, view, container, content_type):
+    def is_available(self, context, content_type):
         """Indicates if the user action is available under a certain context.
 
         By default, actions are available under any context. Subclasses that
         want to change this behavior should override this method as required.
         
-        @param view: The view where the action will be inserted.
-        @type view: L{Element<cocktail.html.element.Element>}
-        
-        @param container: A user interface container where the action will be
-            inserted. This should be a string identifier, such as
-            "context_menu", "toolbar", etc. Different views can make use of as
-            many different identifiers as they require.
-        @type container: str
+        @param context: A set of string identifiers, such as "context_menu",
+            "toolbar", etc. Different views can make use of as many different
+            identifiers as they require.
+        @type container: str set
 
         @param content_type: The content type affected by the action.
         @type content_type: L{Item<sitebasis.models.item.Item>} class
@@ -147,7 +177,28 @@ class UserAction(object):
             otherwise.
         @rtype: bool
         """
-        return container in self.containers
+        def match(tokens):
+            for token in tokens:
+                if isinstance(token, str):
+                    if token in context:
+                        return True
+                elif context.issuperset(token):
+                    return True
+            return False
+
+        if self.id == "add":
+            from styled import styled
+            print styled(context, "light_gray")
+            print styled(self.included, "green")
+            print styled(self.excluded, "red")
+
+        if self.included and not match(self.included):
+            return False
+
+        if self.excluded and match(self.excluded):
+            return False
+        
+        return True
 
     def get_errors(self, controller, selection):
         """Validates the context of an action before it is invoked.
@@ -248,52 +299,15 @@ class SelectionError(Exception):
 # Implementation of concrete actions
 #------------------------------------------------------------------------------
 
-def _match_view(view, *args):    
- 
-    names = []
-
-    for arg in args:
-        pos = arg.rfind(".")
-        name = arg[pos + 1:]
-        full_name = arg[:pos] + "." + name.lower() + "." + name
-        names.append(full_name)
-
-    for cls in view.__class__._classes:
-        if get_full_name(cls) in names:
-            return True
-    
-    return False
-
-def _match_view_ancestor(view, class_name):
-
-    parent = view.parent
-
-    while parent:
-        if _match_view(parent, class_name):
-            return True
-        parent = parent.parent
-
-    return False
-
-
 class CreateAction(UserAction):
-    containers = frozenset(["toolbar"])
+    included = frozenset(["toolbar"])
+    excluded = frozenset(["collection"])
     ignores_selection = True
     min = None
     max = None
     
     def get_url(self, controller, selection):
         return controller.get_edit_uri(controller.edited_content_type)
-
-    def is_available(self, view, container, content_type):
-        return (
-            container in self.containers
-            and _match_view(view, "sitebasis.views.ContentView")
-            and not _match_view_ancestor(
-                view,
-                "sitebasis.views.BackOfficeCollectionView")
-        )
-
 
 #class CreateBeforeAction(CreateAction):
 #   ignores_selection = False
@@ -308,29 +322,15 @@ class CreateAction(UserAction):
 
 
 class MoveAction(UserAction):
-    containers = frozenset(["toolbar"])
+    included = frozenset([("toolbar", "tree")])
     max = None
-
-    def is_available(self, view, container, content_type):
-        return (
-            container in self.containers
-            and _match_view(view, "sitebasis.views.TreeContentView")
-        )
 
 
 class AddAction(UserAction):
-    containers = frozenset(["toolbar"])
+    included = frozenset([("toolbar", "collection")])
     ignores_selection = True
     min = None
     max = None
-
-    def is_available(self, view, container, content_type):
-        return (
-            container in self.containers
-            and _match_view(view, "sitebasis.views.ContentView")
-            and _match_view_ancestor(view,
-                "sitebasis.views.BackOfficeCollectionView")
-        )
 
     def invoke(self, controller, selection):
         
@@ -344,16 +344,8 @@ class AddAction(UserAction):
 
 
 class RemoveAction(UserAction):
-    containers = frozenset(["toolbar"])
+    included = frozenset([("toolbar", "collection")])
     max = None
-
-    def is_available(self, view, container, content_type):
-        return (
-            container in self.containers
-            and _match_view(view, "sitebasis.views.ContentView")
-            and _match_view_ancestor(view,
-                "sitebasis.views.BackOfficeCollectionView")
-        )
 
     def invoke(self, controller, selection):
 
@@ -365,14 +357,8 @@ class RemoveAction(UserAction):
 
 
 class OrderAction(UserAction):
-    containers = frozenset(["toolbar"])
+    included = frozenset([("toolbar", "order")])
     max = None
-
-    def is_available(self, view, container, content_type):
-        return (
-            container in self.containers
-            and _match_view(view, "sitebasis.views.OrderContentView")
-        )
 
     def invoke(self, controller, selection):
         node = RelationNode()
@@ -386,91 +372,53 @@ class OrderAction(UserAction):
 
 
 class ViewDetailAction(UserAction):
-    containers = frozenset(["toolbar", "item_buttons_extra"])
-    
-    def is_available(self, view, container, content_type):
-        return (
-            container in self.containers
-            and not _match_view(view, "sitebasis.views.BackOfficeDetailView")
-        )
+    included = frozenset(["toolbar", "item_buttons_extra"])
+    excluded = frozenset(["selector", "detail"])
 
 
 class EditAction(UserAction):
-    containers = frozenset(["toolbar", "item_buttons_extra"])
+    included = frozenset(["toolbar", "item_buttons_extra"])
+    excluded = frozenset(["selector", "edit"])
 
     def get_url(self, controller, selection):
         return controller.get_edit_uri(selection[0])
 
-    def is_available(self, view, container, content_type):
-        return (
-            container in self.containers
-            and not _match_view(
-                view,
-                "sitebasis.views.BackOfficeEditView",
-                "sitebasis.views.BackOfficeCollectionView"
-            )
-        )
-
 
 class DeleteAction(UserAction):
-    containers = frozenset(["toolbar", "item_buttons_extra"])
+    included = frozenset(["toolbar", "item_buttons_extra"])
+    excluded = frozenset(["selector", "collection"])
     max = None
 
-    def is_available(self, view, container, content_type):
-        return (
-            container in self.containers
-            and not _match_view_ancestor(
-                view,
-                "sitebasis.views.BackOfficeCollectionView"
-            )
-        )
 
-
-class HistoryAction(UserAction):    
+class HistoryAction(UserAction):
     min = None
 
 
 class DiffAction(UserAction):
-    
-    def is_available(self, view, container, content_type):
-        return (
-            container in self.containers
-            and not _match_view(view, "sitebasis.views.BackOfficeDiffView")
-        )
+    included = frozenset(["item_buttons_extra"])
+    excluded = frozenset(["selector", "diff"])
 
 
 class PreviewAction(UserAction):
+    included = frozenset(["toolbar_extra", "item_buttons_extra"])
+    excluded = frozenset(["selector", "preview"])
 
-    def is_available(self, view, container, content_type):
-        return (
-            container in self.containers
+    def is_available(self, context, content_type):
+        return UserAction.is_available(self, context, content_type) \
             and issubclass(content_type, Document)
-            and not _match_view(view, "sitebasis.views.BackOfficePreview")
-        )
 
 
 class ExportAction(UserAction):
+    included = frozenset(["toolbar_extra"])
     max = None
-
-    def is_available(self, view, container, content_type):
-        return (
-            container in self.containers
-            and _match_view(view, "sitebasis.views.ContentView")
-        )
 
 
 class SelectAction(UserAction):
+    included = frozenset([("list_buttons", "selector")])
+    excluded = frozenset()
     min = None
     max = None
-    containers = "list_buttons",
-
-    def is_available(self, view, container, content_type):
-        return (
-            container in self.containers
-            and _match_view(view, "sitebasis.views.ContentView")            
-            and view.edit_stack
-        )
-
+    
     def invoke(self, controller, selection):
 
         edit_state = controller.edit_stack[-2]
@@ -491,26 +439,26 @@ class SelectAction(UserAction):
 
 
 class CloseAction(UserAction):
+    included = frozenset([("list_buttons", "selector"), "item_buttons"])
+    excluded = frozenset()
     ignores_selection = True
     min = None
     max = None
-    containers = frozenset(["list_buttons", "item_buttons"])
-
-    def is_available(self, view, container, content_type):
-        return (
-            container in self.containers
-            and view.edit_stack
-        )
 
     def invoke(self, controller, selection):
-        if len(controller.edit_stack) > 1:
-            controller.edit_stack.go(-3)
+
+        # Go back to the parent edit state
+        for i, node in enumerate(reversed(controller.edit_stack[:-1])):
+            if isinstance(node, EditNode):
+                controller.edit_stack.go(-(i + 1))
+
+        # Go back to the root of the backoffice
         else:
             raise cherrypy.HTTPRedirect(controller.document_uri())
 
 
 class SaveAction(UserAction):
-    containers = frozenset(["item_buttons"])
+    included = frozenset(["item_buttons"])
     ignores_selection = True
     max = None
     min = None
@@ -529,26 +477,22 @@ class SaveAction(UserAction):
 
 class SaveDraftAction(SaveAction):
     make_draft = True
+    included = frozenset(["item_buttons"])
+    excluded = frozenset(["draft"])
 
 
 class ConfirmDraftAction(UserAction):
-    containers = frozenset(["item_buttons"])
-
-    def is_available(self, view, container, content_type):
-        return container in self.containers
-
+    included = frozenset([("item_buttons", "draft")])
+    
     def invoke(self, controller, selection):
-        pass
+        raise ValueError("Not implemented")
 
 
 class DiscardDraftAction(UserAction):
-    containers = frozenset(["item_buttons"])
-
-    def is_available(self, view, container, content_type):
-        return container in self.containers
+    included = frozenset([("item_buttons", "draft")])
 
     def invoke(self, controller, selection):
-        pass
+        raise ValueError("Not implemented")
 
 
 CreateAction("new").register()
