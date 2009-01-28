@@ -495,6 +495,7 @@ class DiscardDraftAction(UserAction):
         raise ValueError("Not implemented")
 
 
+CloseAction("close").register()
 CreateAction("new").register()
 MoveAction("move").register()
 AddAction("add").register()
@@ -512,5 +513,4 @@ SaveAction("save").register()
 SaveDraftAction("save_draft").register()
 ConfirmDraftAction("confirm_draft").register()
 SelectAction("select").register()
-CloseAction("close").register()
 
