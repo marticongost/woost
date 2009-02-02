@@ -78,6 +78,7 @@ class ItemController(BaseBackOfficeController):
             member
             for member in self.edited_content_type.ordered_members()
             if isinstance(member, Collection)
+            and member.visible
             and member.editable
             and member is not stack_relation
             and access_granted(
