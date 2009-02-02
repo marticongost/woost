@@ -322,14 +322,18 @@ html, body {
 /* Tables
 -----------------------------------------------------------------------------*/
 
-.BackOfficeLayout .Table {
+.BackOfficeLayout .Table,
+.BackOfficeLayout .PropertyTable {
 	clear: both;
     border-collapse: collapse;
     width: 100%;    
 }
 
 .BackOfficeLayout .Table,
-.BackOfficeLayout .Table th {
+.BackOfficeLayout .Table th,
+.BackOfficeLayout .PropertyTable,
+.BackOfficeLayout .PropertyTable td,
+.BackOfficeLayout .PropertyTable th {
     border: 1px solid rgb(200,205,212);
 }
 
@@ -338,6 +342,11 @@ html, body {
     background-repeat: repeat-x;
     background-image: url(../images/header.png);
     background-color: rgb(220,223,227);
+}
+
+.BackOfficeLayout .PropertyTable th {
+    text-align: left;
+    font-weight: normal;
 }
 
 .BackOfficeLayout .Table td {
@@ -375,11 +384,11 @@ html, body {
     padding-right: 0;
 }
 
-.BackOfficeLayout .Table .even {
+.BackOfficeLayout .even {
 	background-color: rgb(235,240,247);
 }
 
-.BackOfficeLayout .Table .odd {
+.BackOfficeLayout .odd {
     background-color: white;
 }
 
