@@ -19,6 +19,9 @@ from sitebasis.controllers.backoffice.basebackofficecontroller \
 
 from sitebasis.controllers.backoffice.editstack import EditNode
 
+from sitebasis.controllers.backoffice.showdetailcontroller \
+    import ShowDetailController
+
 from sitebasis.controllers.backoffice.differencescontroller \
     import DifferencesController
 
@@ -27,6 +30,7 @@ class ItemController(BaseBackOfficeController):
 
     default_section = "fields"
     
+    show_detail = ShowDetailController
     differences = DifferencesController
 
     @cached_getter

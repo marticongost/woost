@@ -131,7 +131,7 @@ html, body {
     white-space: nowrap;
 }
 
-.BackOfficeLayout .navigation {
+.BackOfficeLayout .tabs {
     clear: both;
     overflow: visible;
     border-bottom: 1px solid rgb(200,210,220);
@@ -141,7 +141,7 @@ html, body {
     height: 1.7em;
 }
 
-.BackOfficeLayout .navigation .section_entry {
+.BackOfficeLayout .tab {
     color: rgb(75,75,75);
     position: relative;
     top: 0px;
@@ -163,19 +163,9 @@ html, body {
     cursor: pointer;
 }
 
-.BackOfficeLayout .navigation .section_entry.selected {
+.BackOfficeLayout .tab.selected {
     border-bottom-color: white;
     background-color: white;
-}
-
-.BackOfficeLayout .go_back {
-    float: right;
-    margin-right: 1.1em;
-    margin-top: 0.1em;
-    background-image: url(../images/previous.png);
-    background-repeat: no-repeat;
-    padding-left: 1.8em;
-    font-size: 85%;
 }
 
 .BackOfficeLayout .body {
@@ -202,6 +192,10 @@ html, body {
 
 .BackOfficeLayout .TreeView .filtered {
     opacity: 0.5;
+}
+
+.BackOfficeLayout .shortcut {
+    text-decoration: underline;
 }
 
 /* Forms
@@ -426,7 +420,7 @@ html, body {
 }
 
 .BackOfficeLayout .changed {
-    border:1px solid #EBE3AF;
+    border: 1px solid #EBE3AF;
 }
 
 .BackOfficeLayout .Table .nested_draft td.element_column {
@@ -464,9 +458,9 @@ html, body {
 .BackOfficeLayout .search_results_message {
     font-size: 85%;
     font-weight: bold;
-    float: left;
-    margin-left: 0.5em;
-    margin-bottom: 0.5em;
+    color: rgb(50,50,50);
+    margin-top: 0.75em;
+    margin-bottom: 0.75em;
 }
 
 .BackOfficeLayout .row_selector {
@@ -574,16 +568,37 @@ html, body {
 -----------------------------------------------------------------------------*/
 
 .BackOfficeLayout .toolbar {
-	clear: both;
-    margin-top: 1em;	
-	background-color: rgb(242,240,235);
-	border: 1px solid rgb(232,230,225);
     height: 1.8em;
     padding-top: 0.2em;
     margin-bottom: 0.5em;
 }
 
-.BackOfficeLayout .toolbar .toolbar_button {    
+.BackOfficeLayout .toolbar_box {
+    margin-bottom: 0.1em;    
+}
+
+.BackOfficeLayout .data_controls {
+    overflow: hidden;
+    width: 100%;
+}
+
+.BackOfficeLayout .toolbar,
+.BackOfficeLayout .toolbar_box {
+	clear: both;
+    margin-top: 1em;    
+	background-color: rgb(242,240,235);
+	border: 1px solid rgb(232,230,225);    
+}
+
+.BackOfficeLayout .toolbar_box .toolbar {
+    padding: 0;
+    margin: 0.2em;
+    border: none;
+    background-color: transparent;
+}
+
+.BackOfficeLayout .toolbar .action_button,
+.BackOfficeLayout .toolbar .additional_actions_selector {
     float: left;
 	font-size: 85%;
     margin: 0;
@@ -591,12 +606,14 @@ html, body {
     margin-right: 1em;    
 }
 
-.BackOfficeLayout .toolbar .toolbar_button .label {
+.BackOfficeLayout .toolbar .action_button .label,
+.BackOfficeLayout .toolbar .additional_actions_selector .label {
+    display: block;
     height: 1.8em;
     padding-top: 0.2em;
 }
 
-.BackOfficeLayout .toolbar button.toolbar_button {
+.BackOfficeLayout .toolbar button.action_button {
     border: none;
     background: none;
     padding-top: 0.2em;
@@ -604,12 +621,8 @@ html, body {
     color: black;
 }
 
-.BackOfficeLayout .toolbar .toolbar_button img {
+.BackOfficeLayout .toolbar .action_button img {
 	vertical-align: middle;
-}
-
-.BackOfficeLayout .toolbar .toolbar_button .label {
-    display: block;
 }
 
 .BackOfficeLayout .toolbar .content_view,
@@ -622,14 +635,14 @@ html, body {
     width: 16em;
 }
 
-.BackOfficeLayout .toolbar .additional_actions_selector .selector_content .toolbar_button {
+.BackOfficeLayout .toolbar .additional_actions_selector .selector_content .action_button {
     display: block;
     float: none;
     font-size: 100%;
     margin-bottom: 0.1em;
 }
 
-.BackOfficeLayout .toolbar_button[disabled] {
+.BackOfficeLayout .action_button[disabled] {
     opacity: 0.3;
 }
 
@@ -989,19 +1002,16 @@ html, body {
 /* Edit form
 -----------------------------------------------------------------------------*/
 
-.BackOfficeItemView .body {
-    position: absolute;
-    left: 0.7em;
-    right: 0.7em;
-    top: 4.5em;
-    bottom: 0;
+.BackOfficeItemView h2 {
+    font-size: inherit;
+    margin-top: 0;
 }
 
-.BackOfficeItemView .navigation {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
+.BackOfficeItemView .toolbar .save_action,
+.BackOfficeItemView .toolbar .save_draft_action,
+.BackOfficeItemView .toolbar .confirm_draft_action,
+.BackOfficeItemView .toolbar .close_action {
+    float: right;
 }
 
 .BackOfficeItemView .navigation .section_entry {
@@ -1023,21 +1033,8 @@ html, body {
     overflow: auto;
 }
 
-.BackOfficeItemView .buttons {
-    position: absolute;
-    bottom: 0em;
-    left: 0;
-    right: 0;
-}
-
 .BackOfficeItemView .edit_form {
     padding: 0;
-    position: absolute;
-    top: 2.3em;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    overflow: auto;
 }
 
 .BackOfficeItemView .draft_box {
@@ -1146,33 +1143,6 @@ html, body {
 .BackOfficeEditView .Reference .empty_selection {
     padding-left: 0;
     font-style: italic;
-}
-
-.BackOfficeItemView .buttons .additional_actions_selector {
-    position: absolute;
-    left: 1.3em;
-    bottom: 1.2em;
-}
-
-.BackOfficeItemView .buttons .additional_actions_selector .label {
-    background-image: url(../images/dropup_arrow.png);
-    background-position: right 0.5em;
-    padding-left: 0.3em;
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    white-space: nowrap;
-}
-
-.BackOfficeItemView .buttons .additional_actions_selector.scripted.unfolded .label {    
-    border-bottom-color: rgb(190,200,210) !important;
-    border-top-color: rgb(250,250,250) !important;
-}
-
-.BackOfficeItemView .buttons .additional_actions_selector .selector_content {
-    position: static;
-    padding: 0.3em;
-    margin-bottom: 1.25em;
 }
 
 .BackOfficeItemView .buttons .additional_actions_selector .selector_content button {
@@ -1451,7 +1421,6 @@ html, body {
 .BackOfficeLayout .CollectionView .collection_display_container {
     clear: both;
     position: relative;
-    margin-top: 2em;
 }
 
 .BackOfficeLayout .CollectionView .Table th:last-child {
@@ -1479,3 +1448,4 @@ html, body {
 .ui-datepicker .ui-datepicker-current-day a {
 	background-color: rgb(225, 225, 225);
 }
+
