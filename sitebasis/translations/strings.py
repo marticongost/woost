@@ -59,7 +59,7 @@ translations.define("Action new",
     en = u"New"
 )
 
-translations.define("cocktail.html.shortcut action new",
+translations.define("cocktail.html.shortcuts action new",
     ca = u"n",
     es = u"n",
     en = u"n"
@@ -71,7 +71,7 @@ translations.define("Action show_detail",
     en = u"Show detail"
 )
 
-translations.define("cocktail.html.shortcut action show_detail",
+translations.define("cocktail.html.shortcuts action show_detail",
     ca = u"v",
     es = u"v",
     en = u"w"
@@ -83,7 +83,7 @@ translations.define("Action edit",
     en = u"Edit"
 )
 
-translations.define("cocktail.html.shortcut action edit",
+translations.define("cocktail.html.shortcuts action edit",
     ca = u"e",
     es = u"e",
     en = u"e"
@@ -95,7 +95,7 @@ translations.define("Action order",
     en = u"Order"
 )
 
-translations.define("cocktail.html.shortcut action order",
+translations.define("cocktail.html.shortcuts action order",
     ca = u"o",
     es = u"o",
     en = u"o"
@@ -107,7 +107,7 @@ translations.define("Action move",
     en = u"Move"
 )
 
-translations.define("cocktail.html.shortcut action move",
+translations.define("cocktail.html.shortcuts action move",
     ca = u"m",
     es = u"m",
     en = u"m"
@@ -119,7 +119,7 @@ translations.define("Action delete",
     en = u"Delete"
 )
 
-translations.define("cocktail.html.shortcut action delete",
+translations.define("cocktail.html.shortcuts action delete",
     ca = u"i",
     es = u"i",
     en = u"d"
@@ -131,7 +131,7 @@ translations.define("Action history",
     en = u"History"
 )
 
-translations.define("cocktail.html.shortcut action history",
+translations.define("cocktail.html.shortcuts action history",
     ca = u"h",
     es = u"h",
     en = u"h"
@@ -143,7 +143,7 @@ translations.define("Action add",
     en = u"Add"
 )
 
-translations.define("cocktail.html.shortcut action add",
+translations.define("cocktail.html.shortcuts action add",
     ca = u"a",
     es = u"a",
     en = u"a"
@@ -155,7 +155,7 @@ translations.define("Action remove",
     en = u"Remove"
 )
 
-translations.define("cocktail.html.shortcut action remove",
+translations.define("cocktail.html.shortcuts action remove",
     ca = u"r",
     es = u"r",
     en = u"r"
@@ -167,7 +167,7 @@ translations.define("Action diff",
     en = u"Show changes"
 )
 
-translations.define("cocktail.html.shortcut action diff",
+translations.define("cocktail.html.shortcuts action diff",
     ca = u"c",
     es = u"c",
     en = u"c"
@@ -179,7 +179,7 @@ translations.define("Action preview",
     en = u"Preview"
 )
 
-translations.define("cocktail.html.shortcut action preview",
+translations.define("cocktail.html.shortcuts action preview",
     ca = u"p",
     es = u"p",
     en = u"p"
@@ -203,7 +203,7 @@ translations.define("Action save",
     en = u"Save"
 )
 
-translations.define("cocktail.html.shortcut action save",
+translations.define("cocktail.html.shortcuts action save",
     ca = u"s",
     es = u"g",
     en = u"s"
@@ -227,7 +227,7 @@ translations.define("Action select",
     en = u"Select"
 )
 
-translations.define("cocktail.html.shortcut action select",
+translations.define("cocktail.html.shortcuts action select",
     ca = u"s",
     es = u"s",
     en = u"s"
@@ -239,7 +239,7 @@ translations.define("Action close",
     en = u"Close"
 )
 
-translations.define("cocktail.html.shortcut action close",
+translations.define("cocktail.html.shortcuts action close",
     ca = u"c",
     es = u"c",
     en = u"c"

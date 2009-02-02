@@ -186,10 +186,10 @@ from sitebasis.controllers.backoffice.useractions import \
     <div py:def="new_toolbar_button"
         py:args="action, extra"
         class="selector action_button new">
-        <?py
-        set_translated_shortcut(element, "action new")
-        ?>
         <span class="label">
+            <?py
+            set_translated_shortcut(element, "action new")
+            ?>
             <py:new
                 py:element="self.toolbar.create_action_image(action, extra)"
                 py:if="self.toolbar.button_images and not extra"/>
