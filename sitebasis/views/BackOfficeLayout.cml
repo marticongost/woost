@@ -35,7 +35,6 @@ from sitebasis.controllers.backoffice.editstack import EditNode
     self.add_resource("/cocktail/scripts/jquery.js")    
     self.add_resource("/cocktail/scripts/jquery.hotkeys.js")
     self.add_resource("/cocktail/scripts/jquery.query.js")
-    self.add_resource("/resources/scripts/BackOfficeLayout.js")
     self.add_resource("/cocktail/scripts/selectors.js")
     self.add_client_translation("BackOfficeLayout unchanged_message")
     ?>

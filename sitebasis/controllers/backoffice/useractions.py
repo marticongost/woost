@@ -365,13 +365,13 @@ class OrderAction(UserAction):
         return {"member": self.member.name}
 
 
-class ViewDetailAction(UserAction):
-    included = frozenset(["toolbar", "item_buttons_extra"])
-    excluded = frozenset(["selector", "detail"])
+class ShowDetailAction(UserAction):
+    included = frozenset(["toolbar", "item_buttons"])
+    excluded = frozenset(["selector", "show_detail"])
 
 
 class EditAction(UserAction):
-    included = frozenset(["toolbar", "item_buttons_extra"])
+    included = frozenset(["toolbar", "item_buttons"])
     excluded = frozenset(["selector", "edit"])
 
     def get_url(self, controller, selection):
@@ -379,7 +379,7 @@ class EditAction(UserAction):
 
 
 class DeleteAction(UserAction):
-    included = frozenset(["toolbar", "item_buttons_extra"])
+    included = frozenset(["toolbar", "item_buttons"])
     excluded = frozenset(["selector", "collection"])
     max = None
 
@@ -389,12 +389,15 @@ class HistoryAction(UserAction):
 
 
 class DiffAction(UserAction):
-    included = frozenset(["item_buttons_extra"])
+    included = frozenset([
+        ("item_buttons_extra", "draft"),
+        ("item_buttons_extra", "edit")
+    ])
     excluded = frozenset(["selector", "diff"])
 
 
 class PreviewAction(UserAction):
-    included = frozenset(["toolbar_extra", "item_buttons_extra"])
+    included = frozenset(["toolbar_extra", "item_buttons"])
     excluded = frozenset(["selector", "preview"])
 
     def is_available(self, context, content_type):
@@ -452,7 +455,7 @@ class CloseAction(UserAction):
 
 
 class SaveAction(UserAction):
-    included = frozenset(["item_buttons"])
+    included = frozenset([("item_buttons", "edit")])
     ignores_selection = True
     max = None
     min = None
@@ -471,7 +474,7 @@ class SaveAction(UserAction):
 
 class SaveDraftAction(SaveAction):
     make_draft = True
-    included = frozenset(["item_buttons"])
+    included = frozenset([("item_buttons", "edit")])
     excluded = frozenset(["draft"])
 
 
@@ -489,22 +492,21 @@ class DiscardDraftAction(UserAction):
         raise ValueError("Not implemented")
 
 
-CloseAction("close").register()
 CreateAction("new").register()
 MoveAction("move").register()
 AddAction("add").register()
 RemoveAction("remove").register()
 OrderAction("order").register()
-ViewDetailAction("view").register()
+ShowDetailAction("show_detail").register()
+PreviewAction("preview").register()
 EditAction("edit").register()
 DeleteAction("delete").register()
 DiffAction("diff").register()
 HistoryAction("history").register()
-PreviewAction("preview").register()
 ExportAction("export_xls").register()
 ExportAction("export_csv").register()
+CloseAction("close").register()
 SaveAction("save").register()
 SaveDraftAction("save_draft").register()
 ConfirmDraftAction("confirm_draft").register()
 SelectAction("select").register()
-

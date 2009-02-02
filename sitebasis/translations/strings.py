@@ -26,18 +26,6 @@ translations.define("fields_section",
     en = u"Fields"
 )
 
-translations.define("CollectionView visible members shortcut",
-    ca = u"c",
-    es = u"c",
-    en = u"f"
-)
-
-translations.define("CollectionView visible languages shortcut",
-    ca = u"i",
-    es = u"i",
-    en = u"l"
-)
-
 translations.define("history_section",
     ca = u"Històric",
     es = u"Histórico",
@@ -71,16 +59,22 @@ translations.define("Action new",
     en = u"New"
 )
 
-translations.define("CollectionView new shortcut",
+translations.define("cocktail.html.shortcut action new",
     ca = u"n",
     es = u"n",
     en = u"n"
 )
 
-translations.define("Action view",
+translations.define("Action show_detail",
     ca = u"Veure resum",
     es = u"Ver resumen",
     en = u"Show detail"
+)
+
+translations.define("cocktail.html.shortcut action show_detail",
+    ca = u"v",
+    es = u"v",
+    en = u"w"
 )
 
 translations.define("Action edit",
@@ -89,7 +83,7 @@ translations.define("Action edit",
     en = u"Edit"
 )
 
-translations.define("CollectionView edit shortcut",
+translations.define("cocktail.html.shortcut action edit",
     ca = u"e",
     es = u"e",
     en = u"e"
@@ -101,7 +95,7 @@ translations.define("Action order",
     en = u"Order"
 )
 
-translations.define("CollectionView order shortcut",
+translations.define("cocktail.html.shortcut action order",
     ca = u"o",
     es = u"o",
     en = u"o"
@@ -113,7 +107,7 @@ translations.define("Action move",
     en = u"Move"
 )
 
-translations.define("CollectionView move shortcut",
+translations.define("cocktail.html.shortcut action move",
     ca = u"m",
     es = u"m",
     en = u"m"
@@ -125,7 +119,7 @@ translations.define("Action delete",
     en = u"Delete"
 )
 
-translations.define("CollectionView delete shortcut",
+translations.define("cocktail.html.shortcut action delete",
     ca = u"i",
     es = u"i",
     en = u"d"
@@ -137,7 +131,7 @@ translations.define("Action history",
     en = u"History"
 )
 
-translations.define("CollectionView history shortcut",
+translations.define("cocktail.html.shortcut action history",
     ca = u"h",
     es = u"h",
     en = u"h"
@@ -149,10 +143,22 @@ translations.define("Action add",
     en = u"Add"
 )
 
+translations.define("cocktail.html.shortcut action add",
+    ca = u"a",
+    es = u"a",
+    en = u"a"
+)
+
 translations.define("Action remove",
     ca = u"Treure",
     es = u"Quitar",
     en = u"Remove"
+)
+
+translations.define("cocktail.html.shortcut action remove",
+    ca = u"r",
+    es = u"r",
+    en = u"r"
 )
 
 translations.define("Action diff",
@@ -161,10 +167,22 @@ translations.define("Action diff",
     en = u"Show changes"
 )
 
+translations.define("cocktail.html.shortcut action diff",
+    ca = u"c",
+    es = u"c",
+    en = u"c"
+)
+
 translations.define("Action preview",
     ca = u"Vista prèvia",
     es = u"Vista previa",
     en = u"Preview"
+)
+
+translations.define("cocktail.html.shortcut action preview",
+    ca = u"p",
+    es = u"p",
+    en = u"p"
 )
 
 translations.define("Action export_xls",
@@ -185,6 +203,12 @@ translations.define("Action save",
     en = u"Save"
 )
 
+translations.define("cocktail.html.shortcut action save",
+    ca = u"s",
+    es = u"g",
+    en = u"s"
+)
+
 translations.define("Action save_draft",
     ca = u"Desar esborrany",
     es = u"Guardar borrador",
@@ -197,22 +221,28 @@ translations.define("Action confirm_draft",
     en = u"Confirm draft"
 )
 
-translations.define("Action preview",
-    ca = u"Vista prèvia",
-    es = u"Vista previa",
-    en = u"Preview"
-)
-
 translations.define("Action select",
     ca = u"Seleccionar",
     es = u"Seleccionar",
     en = u"Select"
 )
 
+translations.define("cocktail.html.shortcut action select",
+    ca = u"s",
+    es = u"s",
+    en = u"s"
+)
+
 translations.define("Action close",
     ca = u"Tancar",
     es = u"Cerrar",
     en = u"Close"
+)
+
+translations.define("cocktail.html.shortcut action close",
+    ca = u"c",
+    es = u"c",
+    en = u"c"
 )
 
 translations.define("editing",
@@ -329,7 +359,7 @@ translations.define("No differences",
     en = u"The item has no changes."
 )
 
-translations.define("EditView translations shortcut",
+translations.define("cocktail.html.shortcuts BackOfficeEditView shortcut",
     ca = u"r",
     es = u"r",
     en = u"r"
@@ -364,7 +394,7 @@ translations.define("Draft source reference",
          u"<a href='%(location)s'>here</a>."
 )
 
-translations.define("More actions",
+translations.define("sitebasis.views.ActionBar Additional actions",
     ca = u"Més accions",
     es = u"Más acciones",
     en = u"More actions"
@@ -603,7 +633,7 @@ translations.define(
 )
 
 translations.define(
-    "sitebasis.views.BackOfficeItemView Changes saved",
+    "sitebasis.views.BackOfficeEditView Changes saved",
     ca = u"S'han desat els canvis",
     es = u"Se han guardado los cambios",
     en = u"Changes saved"

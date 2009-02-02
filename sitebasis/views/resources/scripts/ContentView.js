@@ -7,14 +7,14 @@
 @since:			January 2009
 -----------------------------------------------------------------------------*/
 
-jQuery(function () {
+cocktail.init(function () {
     
     var ADVANCED_SEARCH_COOKIE_PREFIX = "ContentView.advancedSearch-";
 
     // Enable/disable buttons depending on the selected content
     function updateToolbar() {
         var selectionSize = jQuery(".selection input:checked", this).length;
-        jQuery(".toolbar_button", this).each(function () {
+        jQuery(".action_button", this).each(function () {
             this.disabled = (
                 (this.minSelection && selectionSize < this.minSelection)
                 || (this.maxSelection && selectionSize > this.maxSelection)

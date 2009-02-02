@@ -7,7 +7,7 @@
 @since:			November 2008
 -----------------------------------------------------------------------------*/
 
-jQuery(function () {
+cocktail.init(function () {
 
     jQuery(".ContentTypePicker").each(function () {
 

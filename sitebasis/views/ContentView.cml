@@ -4,11 +4,11 @@
 from cocktail.modeling import extend, call_base
 from cocktail.iteration import is_empty
 from cocktail.controllers.viewstate import view_state
+from cocktail.html.shortcuts import set_translated_shortcut
 from sitebasis.models import Item
 from sitebasis.views.contenttypetree import ContentTypeTree
-from sitebasis.controllers.backoffice.useractions import (
-    get_view_actions, get_view_actions_context, add_view_action_context
-)
+from sitebasis.controllers.backoffice.useractions import \
+    add_view_action_context
 ?>
 
 <py:cocktail.html.CollectionView
@@ -49,58 +49,6 @@ from sitebasis.controllers.backoffice.useractions import (
 
     def _init_user_collection(self, user_collection):
         pass
-
-    def create_toolbar_button(self, action, frequent = True):
-        if action.id == "new":
-            button = self.create_new_toolbar_button(action, frequent)
-        else:        
-            button = CollectionView.create_toolbar_button(self, action.id)
-            if frequent:
-                button.insert(0, self.create_toolbar_button_image(action))    
-        
-        button.set_client_param("minSelection", action.min)
-        button.set_client_param("maxSelection", action.max)
-        return button
-
-    def create_toolbar_button_image(self, action):
-        return Element("img",
-        src = "/resources/images/"
-                + action.id + "_small"
-                #+ (action.id if action.frequent else action.id + "_small")
-                + ".png")
-
-    def fill_toolbar(self):
-
-        self._actions_context = get_view_actions_context(self)
-
-        has_frequent_actions = False
-        has_additional_actions = False
-
-        frequent_actions = get_view_actions(
-            self._actions_context | set(["toolbar"]),
-            self.user_collection.type)
-
-        for action in frequent_actions:
-            if not action.min or self.visible_results:
-                button = self.create_toolbar_button(action, True)
-                self.frequent_actions_box.append(button)
-                has_frequent_actions = True
-
-        additional_actions = get_view_actions(
-            self._actions_context | set(["toolbar_extra"]),
-            self.user_collection.type)
-
-        for action in additional_actions:
-            if not action.min or self.visible_results:
-                button = self.create_toolbar_button(action, False)
-                self.additional_actions_box.append(button)
-                has_additional_actions = True
-
-        if not has_frequent_actions and not has_additional_actions:
-            self.toolbar.visible = False
-
-        if not has_additional_actions:
-            self.additional_actions_selector.visible = False
     ?>
 
     <py:ready>
@@ -172,7 +120,7 @@ from sitebasis.controllers.backoffice.useractions import (
 
         <!-- Content view selector -->
         <div py:id="content_view"
-            class="toolbar_button">
+            class="action_button">
 
             <span py:id="content_view_label">
                 ${translate("sitebasis.views.ContentView label")}
@@ -215,19 +163,36 @@ from sitebasis.controllers.backoffice.useractions import (
 
     </py:block>
 
+    <!-- Toolbar -->
+    <py:sitebasis.views.ActionBar
+        py:def="toolbar"
+        py:action_context="toolbar"
+        py:content_type="@{self.user_collection.type}">
+        <?py
+        @extend(toolbar)
+        def create_action_button(toolbar, action, extra):
+            if action.id == "new":
+                button = self.create_new_toolbar_button(action, extra)
+            else:
+                button = call_base(action, extra)
+            
+            button.set_client_param("minSelection", action.min)
+            button.set_client_param("maxSelection", action.max)
+            return button
+        ?>
+    </py:sitebasis.views.ActionBar>
+
     <!-- New item selector -->
     <div py:def="new_toolbar_button"
-        py:args="action, frequent"
-        class="selector toolbar_button new">
+        py:args="action, extra"
+        class="selector action_button new">
         <?py
-        shortcut = translate("CollectionView new shortcut", default = "")
-        if shortcut:
-            element.set_client_param("shortcut", shortcut)
+        set_translated_shortcut(element, "action new")
         ?>
         <span class="label">
             <py:new
-                py:element="self.create_toolbar_button_image(action)"
-                py:if="frequent"/>
+                py:element="self.toolbar.create_action_image(action, extra)"
+                py:if="self.toolbar.button_images and not extra"/>
             ${translate("Action new")}
         </span>
         <div class="selector_content">
@@ -257,36 +222,10 @@ from sitebasis.controllers.backoffice.useractions import (
         </div>
     </div>
 
-    <py:with py:element="self.toolbar">
-        <div py:id="frequent_actions_box"/>
-        <div py:id="additional_actions_selector" class="selector toolbar_button">
-            <span class="label">${translate("More actions")}</span>
-            <div py:id="additional_actions_box" class="selector_content"/>
-        </div>
-    </py:with>
-
-    <div py:id="list_buttons" class="buttons">
-        <button
-            py:def="button"
-            py:args="action"
-            name="action"
-            type="submit"
-            value="${action.id}">
-            ${translate("Action " + action.id)}
-        </button>
-        <py:ready>
-            <?py
-            button_actions = list(get_view_actions(
-                self._actions_context | set(["list_buttons"]),
-                self.user_collection.type
-            ))
-            if not button_actions:
-                element.visible = False
-            ?>
-            <py:new
-                py:element="self.create_button(action)"
-                py:for="action in button_actions"/>
-        </py:ready>
-    </div>
+    <py:sitebasis.views.ActionBar
+        py:id="list_buttons"
+        py:action_context="list_buttons"
+        py:content_type="@{self.user_collection.type}"
+        class="buttons"/>
 
 </py:cocktail.html.CollectionView>
