@@ -167,7 +167,8 @@ from sitebasis.controllers.backoffice.useractions import \
     <py:sitebasis.views.ActionBar
         py:def="toolbar"
         py:action_context="toolbar"
-        py:content_type="@{self.user_collection.type}">
+        py:content_type="@{self.user_collection.type}"
+        py:empty_result_set="@{not self.visible_results}">
         <?py
         @extend(toolbar)
         def create_action_button(toolbar, action, extra):
