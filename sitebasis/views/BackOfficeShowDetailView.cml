@@ -8,13 +8,17 @@ from sitebasis.controllers.backoffice.useractions import \
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:py="http://www.whads.com/ns/cocktail/templates">
 
+    <?py-class
+    translations = ()
+    ?>
+
     <?py
     add_view_action_context(self, "show_detail")
     ?>
 
     <py:cocktail.html.PropertyTable
         py:parent="self.item_body"
-        py:translations="@{('ca', 'es', 'en')}"
+        py:translations="@{self.translations}"
         py:translated_values="${True}"
         py:schema="@{self.form_schema}"
         py:data="@{self.form_data}"/>
