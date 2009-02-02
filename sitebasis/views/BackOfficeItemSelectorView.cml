@@ -47,8 +47,13 @@ from cocktail.html.datadisplay import MULTIPLE_SELECTION
             <py:with py:def="new_item_selector">
                 <py:with
                     py:def="label"
-                    py:args="content_type"
-                    href="${element['href'] + '&amp;edit_stack=' + edit_stack_param}"/>
+                    py:args="content_type">
+                    <?py
+                    href = element['href']
+                    if href:
+                        element["href"] += '&edit_stack=' + edit_stack_param
+                    ?>
+                </py:with>
             </py:with>
 
             <!-- Propagate the edit stack when changing the active type -->
