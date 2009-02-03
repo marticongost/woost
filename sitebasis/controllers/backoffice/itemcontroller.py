@@ -106,7 +106,9 @@ class ItemController(BaseBackOfficeController):
             redirect = True
 
         # Make sure the top node of the stack is an edit node
-        if not edit_stack or not isinstance(edit_stack[-1], EditNode):
+        if not edit_stack \
+        or not isinstance(edit_stack[-1], EditNode) \
+        or edit_stack[-1].item is not self.edited_item:
             edit_state = EditNode()
             edit_state.item = self.edited_item
             edit_state.content_type = (
