@@ -188,8 +188,15 @@ from sitebasis.controllers.backoffice.useractions import \
         <?py
         @extend(toolbar)
         def create_action_button(toolbar, action, extra):
-            if action.id == "new" and len(self._instantiable_content_types) > 1:
-                button = self.create_new_toolbar_button(action, extra)
+            if action.id == "new":
+                if len(self._instantiable_content_types) > 1:
+                    button = self.create_new_toolbar_button(action, extra)
+                else:
+                    button = call_base(action, extra)
+                    button.tag = "a"
+                    del button["name"]
+                    button["href"] = self.cms.document_uri('content', 'new') \
+                        + '?type=' + list(self._instantiable_content_types)[0].name
             else:
                 button = call_base(action, extra)
             

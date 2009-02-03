@@ -615,6 +615,11 @@ html, body {
     margin-right: 1em;    
 }
 
+.BackOfficeLayout .toolbar a.action_button {
+    padding: 0.25em 0;
+    color: black;
+}
+
 .BackOfficeLayout .toolbar .action_button .label,
 .BackOfficeLayout .toolbar .additional_actions_selector .label {
     display: block;
