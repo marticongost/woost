@@ -1417,8 +1417,16 @@ html, body {
 .BackOfficeLayout .CollectionView .settings_box .members_box {
     position: relative;
     left: -1px;
-    border-left: 1px solid rgb(225,225,225);
     padding-left: 1em;    
+    border-left: 1px solid rgb(225,225,225);
+}
+
+.BackOfficeLayout .CollectionView .settings_box .selector_content > div:first-child {
+    border-left: none;
+}
+
+.BackOfficeLayout .CollectionView .settings_box .selector_content > div:last-child {
+    border-right: none;
 }
 
 .BackOfficeLayout .CollectionView .settings_box .selector_content .box_buttons {
