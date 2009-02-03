@@ -54,7 +54,7 @@ class CMS(BaseCMSController):
     # This is done so dynamic dispatching (using the resolve() method of
     # request handlers) can depend on session setup and other requirements
     # being available beforehand.
-    class ApplicationWrapper(object):
+    class ApplicationContainer(object):
 
         _cp_config = {
             "tools.sessions.on": True
@@ -69,16 +69,16 @@ class CMS(BaseCMSController):
             # All requests are forwarded to the nested dispatcher:
             return self.__dispatcher.respond(args, self.__cms)
 
-    # Static resources
-    resources = cherrypy.tools.staticdir.handler(
-        section = "resources",
-        dir = resource_filename("sitebasis.views", "resources")
-    )
+        # Static resources
+        resources = cherrypy.tools.staticdir.handler(
+            section = "resources",
+            dir = resource_filename("sitebasis.views", "resources")
+        )
         
-    cocktail = cherrypy.tools.staticdir.handler(
-        section = "cocktail",
-        dir = resource_filename("cocktail.html", "resources")
-    )
+        cocktail = cherrypy.tools.staticdir.handler(
+            section = "cocktail",
+            dir = resource_filename("cocktail.html", "resources")
+        )
 
     def __init__(self, *args, **kwargs):
      
@@ -107,12 +107,12 @@ class CMS(BaseCMSController):
 
     def run(self):
         self.application_starting()
-        app_wrapper = self.ApplicationWrapper(self)
-        cherrypy.quickstart(app_wrapper, self.virtual_path)
+        app_container = self.ApplicationContainer(self)
+        cherrypy.quickstart(app_container, self.virtual_path)
         self.application_ending()
 
     def resolve(self, path):
-                
+        
         # Invoke the language module (this may trigger a redirection to a
         # canonical URI, set cookies, etc)
         self.language.process_request(path)
