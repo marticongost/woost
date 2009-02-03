@@ -52,8 +52,6 @@ from sitebasis.controllers.backoffice.useractions import \
         pass
         
     def get_new_content_uri(self, content_type):
-        from styled import styled
-        print styled(self.edit_stack, "red")
         return self.cms.document_uri('content', 'new',
             type = content_type.name,
             edit_stack = self.edit_stack.to_param() if self.edit_stack else None
