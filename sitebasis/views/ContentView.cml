@@ -50,6 +50,14 @@ from sitebasis.controllers.backoffice.useractions import \
 
     def _init_user_collection(self, user_collection):
         pass
+        
+    def get_new_content_uri(self, content_type):
+        from styled import styled
+        print styled(self.edit_stack, "red")
+        return self.cms.document_uri('content', 'new',
+            type = content_type.name,
+            edit_stack = self.edit_stack.to_param() if self.edit_stack else None
+        )
     ?>
 
     <py:ready>
@@ -195,8 +203,7 @@ from sitebasis.controllers.backoffice.useractions import \
                     button = call_base(action, extra)
                     button.tag = "a"
                     del button["name"]
-                    button["href"] = self.cms.document_uri('content', 'new') \
-                        + '?type=' + list(self._instantiable_content_types)[0].name
+                    button["href"] = self.get_new_content_uri(list(self._instantiable_content_types)[0])
             else:
                 button = call_base(action, extra)
             
@@ -232,7 +239,7 @@ from sitebasis.controllers.backoffice.useractions import \
 
                 @refine(element)
                 def get_item_url(new_item_selector, content_type):
-                    return new_item_selector.base_url + '?type=' + content_type.__name__
+                    return self.get_new_content_uri(content_type)
                 ?>
             </py:sitebasis.views.ContentTypeTree>
         </div>

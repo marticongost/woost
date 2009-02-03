@@ -31,7 +31,8 @@ from cocktail.html.datadisplay import MULTIPLE_SELECTION
             py:available_languages="${self.available_languages}"
             py:visible_languages="${self.visible_languages}"
             py:available_content_views="${self.available_content_views}"
-            py:selection_mode="${self.selection_mode}"/>
+            py:selection_mode="${self.selection_mode}"
+            py:edit_stack="${self.edit_stack}"/>
     </py:ready>
 
 </py:sitebasis.views.BackOfficeLayout>
