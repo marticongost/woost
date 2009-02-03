@@ -240,6 +240,7 @@ from sitebasis.controllers.backoffice.useractions import \
 
     <py:sitebasis.views.ActionBar
         py:id="list_buttons"
+        py:button_images="${False}"
         py:action_context="list_buttons"
         py:content_type="@{self.user_collection.type}"
         class="buttons"/>
