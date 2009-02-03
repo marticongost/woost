@@ -67,7 +67,12 @@ class ContentController(BaseBackOfficeController):
         return self.action is not None
 
     def submit(self):
-        self._invoke_user_action(self.action, self.user_collection.selection)
+        if self.user_collection.selection_mode == SINGLE_SELECTION:
+            selection = [self.user_collection.selection]
+        else:
+            selection = self.user_collection.selection
+
+        self._invoke_user_action(self.action, selection)
         
     @cached_getter
     def content_type(self):

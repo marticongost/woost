@@ -42,11 +42,13 @@ from sitebasis.controllers.backoffice.useractions import \
             py:available_content_views="${self.available_content_views}"
             py:root_content_type="${self.root_content_type}">
 
-            <py:with py:def="toolbar_button">
-                <?py
-                if element.tag == "button":
-                    element["name"] = "collection_action"
-                ?>
+            <py:with py:element="element.toolbar">
+                <py:with py:def="action_button">
+                    <?py
+                    if element.tag == "button":
+                        element["name"] = "collection_action"
+                    ?>
+                </py:with>
             </py:with>
 
         </py:with>

@@ -372,7 +372,7 @@ class ShowDetailAction(UserAction):
 
 class EditAction(UserAction):
     included = frozenset(["toolbar", "item_buttons"])
-    excluded = frozenset(["selector", "edit"])
+    excluded = frozenset(["selector", ("item_buttons", "edit")])
 
     def get_url(self, controller, selection):
         return controller.get_edit_uri(selection[0])
@@ -422,7 +422,7 @@ class SelectAction(UserAction):
         member = controller.stack_node.member
 
         if isinstance(member, Reference):
-            edit_state.relate(member, selection)
+            edit_state.relate(member, None if not selection else selection[0])
         else:
             if controller.stack_node.action == "add":
                 modify_relation = edit_state.relate 
