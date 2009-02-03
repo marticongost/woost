@@ -79,7 +79,7 @@ from cocktail.language import get_content_language
                 py:translations="@{self.translations}"
                 py:table_layout="${True}"
                 py:edited_content_type="@{self.edited_content_type}"
-                py:name_prefix="item_"
+                py:name_prefix="edited_item_"
                 method="post">
                                 
                 <!-- Highlight changed members -->

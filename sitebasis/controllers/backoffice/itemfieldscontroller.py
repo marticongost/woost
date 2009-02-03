@@ -52,7 +52,7 @@ class ItemFieldsController(EditController):
                 target = form_data,
                 languages = translations,
                 enable_defaults = False,
-                prefix = "item_",
+                prefix = "edited_item_",
                 strict = False)
 
             if added_translation and added_translation not in translations:
