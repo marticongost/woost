@@ -445,10 +445,9 @@ class CloseAction(UserAction):
     def invoke(self, controller, selection):
 
         # Go back to the parent edit state
-        for i, node in enumerate(reversed(controller.edit_stack[:-1])):
-            if isinstance(node, EditNode):
-                controller.edit_stack.go(-(i + 1))
-
+        if len(controller.edit_stack) > 1:
+            controller.edit_stack.go(-2)
+        
         # Go back to the root of the backoffice
         else:
             raise cherrypy.HTTPRedirect(controller.document_uri())
