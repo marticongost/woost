@@ -424,7 +424,7 @@ html, body {
 
 .BackOfficeLayout .draft,
 .BackOfficeLayout .changed,
-.BackOfficeItemView .navigation .section_entry.changed {
+.BackOfficeItemView .tab.changed {
     background-color: rgb(250,242,190);
 }
 
