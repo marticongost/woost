@@ -28,7 +28,7 @@ class CollectionController(EditController, ContentController):
         ContentController.__init__(self)
         EditController.__init__(self)
         self.member = member
-        self.section = member
+        self.section = member.name
 
     @cached_getter
     def root_content_type(self):
