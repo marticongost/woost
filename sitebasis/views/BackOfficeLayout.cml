@@ -94,7 +94,7 @@ from sitebasis.controllers.backoffice.editstack import EditNode
             </li>
             <li py:for="step, stack_node in enumerate(self.edit_stack)">
                 <img class="separator" src="/resources/images/path_separator.png"/>
-                <a>
+                <a href="${self.edit_stack.uri(step)}">
                     <?py
                     if isinstance(stack_node, EditNode):
                         if stack_node.item:
@@ -106,17 +106,12 @@ from sitebasis.controllers.backoffice.editstack import EditNode
                                     children = [" (" + translate(stack_node.item.__class__.name) + ")"]
                                 )
                             ])
-                            item_id = str(stack_node.item.id)
                         else:
                             node_desc = translate("creating", content_type = stack_node.content_type)
-                            item_id = "new"
-
-                        node_uri = self.cms.document_uri("content", item_id)
                     else:
                         node_desc = translate(stack_node.member)
                         node_uri = self.cms.document_uri("content")
 
-                    element["href"] = node_uri + "?edit_stack=" + self.edit_stack.to_param(step)
                     element.append(node_desc)
                     ?>
                 </a>
