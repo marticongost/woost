@@ -90,7 +90,9 @@ from sitebasis.controllers.backoffice.editstack import EditNode
     <ul py:id="edit_path" py:visible="@{self.edit_stack}">
         <py:ready py:if="self.edit_stack">
             <li>
-                <a href="${self.cms.document_uri()}">${translate(self.backoffice)}</a>
+                <a href="${self.cms.document_uri()}">
+                    ${translate("sitebasis.views.BackOfficeLayout stack root")}
+                </a>
             </li>
             <li py:for="step, stack_node in enumerate(self.edit_stack)">
                 <img class="separator" src="/resources/images/path_separator.png"/>
