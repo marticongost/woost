@@ -14,6 +14,7 @@ from sitebasis.controllers.backoffice.editcontroller import EditController
 class ShowDetailController(EditController):
 
     view_class = "sitebasis.views.BackOfficeShowDetailView"
+    section = "show_detail"
 
     @cached_getter
     def output(self):

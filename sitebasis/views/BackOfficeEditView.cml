@@ -81,8 +81,8 @@ from sitebasis.controllers.backoffice.useractions import \
 
                 if self.edited_item and (
                     (is_collection and self.edit_stack[-1].collection_has_changes(member))
-                    or self.differences
-                ):              
+                    or (not is_collection and self.differences)
+                ):
                     element.add_class("changed")
                 ?>
                 ${translate(member if is_collection else member.name)}

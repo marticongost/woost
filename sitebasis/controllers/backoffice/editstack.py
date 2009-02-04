@@ -69,26 +69,33 @@ class EditStack(ListWrapper):
         @param index: The position of the stack to move to.
         @type index: int
         """
+        raise cherrypy.HTTPRedirect(self.uri(index))
+
+    def uri(self, index = -1):
+        """Gets the location of the given position in the stack.
+        
+        @param index: The position of the stack to get the location for.
+        @type index: int
+
+        @return: The URI for the indicated position.
+        @rtype: str
+        """
         if index < 0:
             index = len(self) + index
 
         node = self[index]
         
         if isinstance(node, EditNode):
-            next_node = self[index + 1] if index + 1 < len(self) else None
             uri = context["cms"].document_uri(
                 "content",
                 str(node.item.id) if node.item else "new",
-                next_node.member.name
-                    if next_node and isinstance(next_node, RelationNode)
-                        and isinstance(next_node.member, Collection)
-                    else "fields"
+                node.section
             )
         else:
             uri = context["cms"].document_uri("content")
 
         uri += "?edit_stack=" + self.to_param(index)
-        raise cherrypy.HTTPRedirect(uri)
+        return uri
 
     def to_param(self, index = -1):
         if index < 0:
@@ -115,12 +122,13 @@ class EditNode(object):
         they are stored in here).
     @type translations: str list 
     """
+    item = None
+    content_type = None
+    form_data = None
+    translations = None
+    section = "fields"
 
     def __init__(self):
-        self.item = None
-        self.content_type = None
-        self.form_data = None
-        self.translations = None
         self.__collections = {}
 
     def forget_edited_collections(self):
