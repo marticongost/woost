@@ -22,10 +22,13 @@ from sitebasis.controllers.backoffice.basebackofficecontroller \
 class EditController(BaseBackOfficeController):
 
     saved = False
+    section = None
 
     @event_handler
     def handle_processed(cls, event):
-        event.source.context["parent_handler"].section_redirection()
+        controller = event.source
+        controller.context["parent_handler"].section_redirection()
+        controller.stack_node.section = controller.section
 
     @cached_getter
     def edited_item(self):
@@ -330,7 +333,8 @@ class EditController(BaseBackOfficeController):
             form_data = self.form_data,
             differences = self.differences,
             translations = self.translations,
-            saved = self.saved
+            saved = self.saved,
+            section = self.section
         )
         return output
 
