@@ -46,18 +46,22 @@ def init_site(
     create = Action()
     create.identifier = "create"
     set_translations(create, "title", "Create action title")
+    create.insert()
 
     read = Action()
     read.identifier = "read"
     set_translations(read, "title", "Read action title")
+    read.insert()
 
     modify = Action()
     modify.identifier = "modify"
     set_translations(modify, "title", "Modify action title")
+    modify.insert()
 
     delete = Action()
     delete.identifier = "delete"
     set_translations(delete, "title", "Delete action title")
+    delete.insert()
 
     with changeset_context() as changeset:
         
@@ -72,6 +76,7 @@ def init_site(
         admin.critical = True
         admin.email = admin_email
         admin.password = admin_password
+        admin.insert()
         
         changeset.author = admin
         site.author = site.owner = admin
@@ -81,31 +86,37 @@ def init_site(
         for code in languages:
             language = Language(iso_code = code)
             language.iso_code = code
+            language.insert()
  
         # Create the administrators group
         administrators = Group()
         administrators.critical = True
         set_translations(administrators, "title", "Administrators group title")
         administrators.group_members.append(admin)
+        administrators.insert()
 
         # Create standard users and roles
         anonymous_role = datastore.root["anonymous_role"] = Role()
         anonymous_role.anonymous = True
         anonymous_role.critical = True
         set_translations(anonymous_role, "title", "Anonymous role title")
+        anonymous_role.insert()
 
         authenticated_role = datastore.root["authenticated_role"] = Role()
         authenticated_role.critical = True
         set_translations(authenticated_role, "title",
             "Authenticated role title")
+        authenticated_role.insert()
 
         author_role = datastore.root["author_role"] = Role()
         author_role.critical = True
         set_translations(author_role, "title", "Author role title")
+        author_role.insert()
 
         owner_role = datastore.root["owner_role"] = Role()
         owner_role.critical = True
         set_translations(owner_role, "title", "Owner role title")
+        owner_role.insert()
     
         # Create the back office interface
         back_office = Document()
@@ -114,18 +125,21 @@ def init_site(
         back_office.critical = True
         back_office.path = u"cms"
         set_translations(back_office, "title", "Back office title")
+        back_office.insert()
      
         # Create standard templates
         empty_template = Template()
         empty_template.identifier = "sitebasis.views.EmptyPage"
         empty_template.engine = u"genshi"
         set_translations(empty_template, "title", "Empty template title")
+        empty_template.insert()
 
         # Create standard resources
         message_stylesheet = Resource()
         message_stylesheet.uri = uri + "resources/styles/message.css"
         set_translations(message_stylesheet, "title",
-            "Message style sheet title")        
+            "Message style sheet title")
+        message_stylesheet.insert()
 
         # Create the temporary home page
         site.home = StandardPage()
@@ -136,6 +150,7 @@ def init_site(
             uri = uri + back_office.path
         )
         site.home.resources.append(message_stylesheet)
+        site.home.insert()
 
         # Create the 'content not found' page
         site.not_found_error_page = StandardPage()
@@ -145,6 +160,7 @@ def init_site(
         set_translations(site.not_found_error_page, "body",
             "Not found error page body")            
         site.not_found_error_page.resources.append(message_stylesheet)
+        site.not_found_error_page.insert()
 
         # Create the authentication form
         login_form = u"""
@@ -166,41 +182,46 @@ def init_site(
 
         login_page.resources.append(message_stylesheet)
         site.forbidden_error_page = login_page  
+        site.forbidden_error_page.insert()
 
         # Add standard access rules:
-        rules = site.access_rules_by_priority
+        site.access_rules_by_priority = [
 
-        # - by default, all content can be viewed by anybody
-        rules.insert(0, AccessRule(
-            action = read,
-            allowed = True,
-            author = admin,
-            owner = admin
-        ))
+            # - by default, all content can be viewed by anybody
+            rules.insert(0, AccessRule(
+                action = read,
+                allowed = True,
+                author = admin,
+                owner = admin
+            ))
 
-        # - access to the back office requires special privileges
-        rules.insert(0, AccessRule(
-            target_instance = back_office,
-            allowed = False,
-            author = admin,
-            owner = admin
-        ))
+            # - access to the back office requires special privileges
+            rules.insert(0, AccessRule(
+                target_instance = back_office,
+                allowed = False,
+                author = admin,
+                owner = admin
+            ))
 
-        # - administrators have full control
-        rules.insert(0, AccessRule(
-            role = administrators,
-            allowed = True,
-            author = admin,
-            owner = admin
-        ))
+            # - administrators have full control
+            rules.insert(0, AccessRule(
+                role = administrators,
+                allowed = True,
+                author = admin,
+                owner = admin
+            ))
 
-        # - content owners have full control
-        rules.insert(0, AccessRule(
-            role = owner_role,
-            allowed = True,
-            author = admin,
-            owner = admin
-        ))
+            # - content owners have full control
+            rules.insert(0, AccessRule(
+                role = owner_role,
+                allowed = True,
+                author = admin,
+                owner = admin
+            ))
+        ]
+
+        for rule in site.access_rules_by_priority:
+            rule.insert()
 
     datastore.commit()
 
