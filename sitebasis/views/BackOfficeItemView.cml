@@ -11,6 +11,7 @@ from cocktail.schema import Collection
     <py:ready>
         <?py
         self.set_client_param("edit_stack", self.edit_stack.to_param())
+        self.add_class(self.edited_content_type.name)
         ?>
     </py:ready>
 
