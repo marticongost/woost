@@ -7,7 +7,7 @@
 @since:			January 2009
 -----------------------------------------------------------------------------*/
 
-jQuery(function () {
+cocktail.init(function () {
 
     function togglePasswords() {
         var form = jQuery(this).parents(".UserForm");        

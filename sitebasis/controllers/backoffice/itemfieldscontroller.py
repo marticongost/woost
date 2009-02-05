@@ -20,6 +20,8 @@ from sitebasis.controllers.backoffice.editcontroller import EditController
 
 class ItemFieldsController(EditController):
 
+    section = "fields"
+
     @cached_getter
     def form_data(self):
 
@@ -43,7 +45,7 @@ class ItemFieldsController(EditController):
 
         # Load form data from the request
         if self.submitted \
-        or section != "fields" \
+        or section != self.section \
         or added_translation \
         or deleted_translation \
         or rel:
@@ -52,7 +54,7 @@ class ItemFieldsController(EditController):
                 target = form_data,
                 languages = translations,
                 enable_defaults = False,
-                prefix = "item_",
+                prefix = "edited_item_",
                 strict = False)
 
             if added_translation and added_translation not in translations:
@@ -67,7 +69,6 @@ class ItemFieldsController(EditController):
     def output(self):
         output = EditController.output(self)
         output.update(
-            section = "fields",
             submitted = self.submitted,
             available_languages = self.available_languages
         )

@@ -6,6 +6,7 @@
 @organization:	Whads/Accent SL
 @since:			December 2008
 """
+from urllib import urlencode
 import cherrypy
 from cocktail.modeling import getter
 from cocktail.events import event_handler
@@ -33,13 +34,34 @@ class BaseCMSController(Controller):
     def user(self):
         return self.context["cms"].authentication.user
 
-    def application_uri(self, *args):
+    def application_uri(self, *args, **kwargs):
         path = (unicode(arg).strip("/") for arg in args)
-        return (
+        uri = (
             self.context["cms"].virtual_path
             + u"/".join(component for component in path if component)
         )
 
-    def document_uri(self, *args):
-        return self.application_uri(self.context["document"].full_path, *args)
+        if kwargs:
+            uri += "?" + urlencode(
+                dict(
+                    (key, value)
+                    for key, value in kwargs.iteritems()
+                    if not value is None
+                ),
+                True
+            )   
+        return uri
+
+    def document_uri(self, *args, **kwargs):
+        return self.application_uri(
+            self.context["document"].full_path,
+            *args,
+            **kwargs
+        )
+
+    def allows(self, **context):
+        return self.context["cms"].authorization.allows(**context)
+
+    def restrict_access(self, **context):
+        self.context["cms"].authorization.restrict_access(**context)
 

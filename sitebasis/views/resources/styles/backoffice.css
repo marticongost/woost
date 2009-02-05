@@ -71,10 +71,16 @@ html, body {
     float: left;
     display: block;
     list-style-type: none;
+    white-space: nowrap;
 }
 
 .BackOfficeLayout ul.edit_path li:last-child {
     font-weight: bold;
+}
+
+.BackOfficeLayout ul.edit_path li .item_type {
+    font-weight: normal;
+    font-style: italic;
 }
 
 .BackOfficeLayout ul.edit_path .separator {
@@ -105,8 +111,7 @@ html, body {
 
 .BackOfficeLayout a,
 .BackOfficeLayout .identity button,
-.BackOfficeEditView .clear_button,
-.BackOfficeItemView .more_actions button,
+.BackOfficeEditView .discard_button,
 .BackOfficeLayout .new_filter_selector .label {
     font-size: inherit;
     background: none;
@@ -126,51 +131,42 @@ html, body {
     white-space: nowrap;
 }
 
-.BackOfficeLayout .navigation {
+.BackOfficeLayout .tabs {
     clear: both;
     overflow: visible;
     border-bottom: 1px solid rgb(200,210,220);
     border-left: none;
     border-right: none;
     margin-top: 0.75em;
-    height: 2.1em;
+    margin-bottom: 0.5em;
+    height: 1.7em;
 }
 
-.BackOfficeLayout .navigation .section_entry {
+.BackOfficeLayout .tab {
     color: rgb(75,75,75);
     position: relative;
-    top: -1px;
-    height: 1.3em;
+    top: 0px;
+    height: 1.1em;
     float: left;
     display: block;
     background-color: rgb(240,240,240);
-    padding-left: 0.8em;
-    padding-top: 0.4em;
-    padding-bottom: 0.4em;
-    padding-right: 0.8em;
+    padding-left: 0.4em;
+    padding-top: 0.2em;
+    padding-bottom: 0.5em;
+    padding-right: 0.4em;
     margin-left: 0.2em;
     border: 1px solid rgb(200,210,220);
     -moz-border-radius-topleft: 5px;
     -moz-border-radius-topright: 5px;
     border-radius-topleft: 5px;
     border-radius-topright: 5px;
-    font-size: inherit;
+    font-size: 90%;
     cursor: pointer;
 }
 
-.BackOfficeLayout .navigation .section_entry.selected {
+.BackOfficeLayout .tab.selected {
     border-bottom-color: white;
     background-color: white;
-}
-
-.BackOfficeLayout .go_back {
-    float: right;
-    margin-right: 1.1em;
-    margin-top: 0.1em;
-    background-image: url(../images/previous.png);
-    background-repeat: no-repeat;
-    padding-left: 1.8em;
-    font-size: 85%;
 }
 
 .BackOfficeLayout .body {
@@ -197,6 +193,10 @@ html, body {
 
 .BackOfficeLayout .TreeView .filtered {
     opacity: 0.5;
+}
+
+.BackOfficeLayout .shortcut {
+    text-decoration: underline;
 }
 
 /* Forms
@@ -323,10 +323,40 @@ html, body {
 /* Tables
 -----------------------------------------------------------------------------*/
 
-.BackOfficeLayout .Table {
+.BackOfficeLayout .Table,
+.BackOfficeLayout .PropertyTable {
 	clear: both;
     border-collapse: collapse;
-    width: 100%;
+    width: 100%;    
+}
+
+.BackOfficeLayout .Table,
+.BackOfficeLayout .Table th,
+.BackOfficeLayout .PropertyTable,
+.BackOfficeLayout .PropertyTable td,
+.BackOfficeLayout .PropertyTable th {
+    border: 1px solid rgb(200,205,212);
+}
+
+.BackOfficeLayout .Table th {
+    background-position: bottom left;
+    background-repeat: repeat-x;
+    background-image: url(../images/header.png);
+    background-color: rgb(220,223,227);
+}
+
+.BackOfficeLayout .PropertyTable th {
+    text-align: left;
+    font-weight: normal;
+}
+
+.BackOfficeLayout .Table td {
+    border: 1px solid rgb(215,220,227);
+}
+
+.BackOfficeLayout .Table th, .BackOfficeLayout .Table th * {
+    font-weight: normal;
+    color: black;
 }
 
 .BackOfficeLayout .Table th span.label {
@@ -337,7 +367,6 @@ html, body {
     vertical-align: top;
 	text-align: left;
 	padding: 0.5em;
-	padding-right: 1em;
     font-size: 85%;
 }
 
@@ -356,11 +385,11 @@ html, body {
     padding-right: 0;
 }
 
-.BackOfficeLayout .Table .even {
+.BackOfficeLayout .even {
 	background-color: rgb(235,240,247);
 }
 
-.BackOfficeLayout .Table .odd {
+.BackOfficeLayout .odd {
     background-color: white;
 }
 
@@ -378,10 +407,13 @@ html, body {
     background-color: rgb(250,242,190) !important;
 }
 
+.BackOfficeLayout .Table tr.selected td {
+    background-color: rgb(75,75,75) !important;
+    border: 1px solid rgb(75,75,75) !important;
+}
+
 .BackOfficeLayout .Table tr.selected td,
 .BackOfficeLayout .Table tr.selected td * {
-    background-color: rgb(200,205,207) !important;
-    background-color: rgb(75,75,75) !important;
     color: white !important;
 }
 
@@ -393,12 +425,12 @@ html, body {
 
 .BackOfficeLayout .draft,
 .BackOfficeLayout .changed,
-.BackOfficeItemView .navigation .section_entry.changed {
+.BackOfficeItemView .tab.changed {
     background-color: rgb(250,242,190);
 }
 
 .BackOfficeLayout .changed {
-    border:1px solid #EBE3AF;
+    border: 1px solid #EBE3AF;
 }
 
 .BackOfficeLayout .Table .nested_draft td.element_column {
@@ -433,13 +465,20 @@ html, body {
     background-image: url(../images/descending.png);
 }
 
+.BackOfficeLayout .search_results_message {
+    font-size: 85%;
+    font-weight: bold;
+    color: rgb(50,50,50);
+    margin-top: 0.75em;
+    margin-bottom: 0.75em;
+}
+
 .BackOfficeLayout .row_selector {
     clear: both;
-    margin-top: 0.5em;
-    padding-top: 0.3em;
-    padding-bottom: 1em;
-    padding-left: 1em;
-    font-size: 85%;
+    float: left;
+    padding-left: 0.6em;
+    padding-bottom: 0.5em;
+    font-size: 75%;
 }
 
 .BackOfficeLayout .row_selector span {
@@ -462,6 +501,11 @@ html, body {
 
 .BackOfficeLayout .Table .forbidden {
     color: rgb(135,35,10);
+}
+
+.BackOfficeLayout .Table a.target-focus {
+    position: absolute;
+    left: -100px;
 }
 
 /* Content type icons
@@ -534,38 +578,66 @@ html, body {
 -----------------------------------------------------------------------------*/
 
 .BackOfficeLayout .toolbar {
-	clear: both;
-    margin-top: 1em;	
-	background-color: rgb(242,240,235);
-	border: 1px solid rgb(232,230,225);
-    height: 2.1em;
+    height: 1.8em;
+    padding-top: 0.2em;
+    margin-bottom: 0.5em;
 }
 
-.BackOfficeLayout .toolbar .toolbar_button {    
+.BackOfficeLayout .toolbar_box {
+    margin-bottom: 0.1em;    
+}
+
+.BackOfficeLayout .data_controls {
+    overflow: hidden;
+    width: 100%;
+}
+
+.BackOfficeLayout .toolbar,
+.BackOfficeLayout .toolbar_box {
+	clear: both;
+    margin-top: 1em;    
+	background-color: rgb(242,240,235);
+	border: 1px solid rgb(232,230,225);    
+}
+
+.BackOfficeLayout .toolbar_box .toolbar {
+    padding: 0;
+    margin: 0.2em;
+    border: none;
+    background-color: transparent;
+}
+
+.BackOfficeLayout .toolbar .action_button,
+.BackOfficeLayout .toolbar .additional_actions_selector {
     float: left;
 	font-size: 85%;
     margin: 0;
     padding: 0;
-    margin-right: 1em;
+    margin-right: 1em;    
 }
 
-.BackOfficeLayout .toolbar .toolbar_button .label {
-    height: 2.1em;
+.BackOfficeLayout .toolbar a.action_button {
+    padding: 0.25em 0;
+    color: black;
+}
+
+.BackOfficeLayout .toolbar .action_button .label,
+.BackOfficeLayout .toolbar .additional_actions_selector .label {
+    display: block;
+    height: 1.8em;
     padding-top: 0.2em;
 }
 
-.BackOfficeLayout .toolbar button.toolbar_button {
+.BackOfficeLayout .toolbar button.action_button {
     border: none;
     background: none;
     padding-top: 0.2em;
+    cursor: pointer;
+    color: black;
 }
 
-.BackOfficeLayout .toolbar .toolbar_button img {
+.BackOfficeLayout .toolbar .action_button img {
 	vertical-align: middle;
-}
-
-.BackOfficeLayout .toolbar .toolbar_button .label {
-    display: block;
 }
 
 .BackOfficeLayout .toolbar .content_view,
@@ -574,35 +646,56 @@ html, body {
     float: right;
 }
 
+.BackOfficeLayout .toolbar .additional_actions_selector .selector_content {
+    width: 16em;
+}
+
+.BackOfficeLayout .toolbar .additional_actions_selector .selector_content .action_button {
+    display: block;
+    float: none;
+    font-size: 100%;
+    margin-bottom: 0.1em;
+}
+
+.BackOfficeLayout .action_button[disabled] {
+    opacity: 0.3;
+}
+
 .BackOfficeLayout .selector_content label {
     display: inline;
 }
 
-.BackOfficeLayout .toolbar .content_type .label,
-.BackOfficeLayout .toolbar .languages_box .label,
-.BackOfficeLayout .toolbar .members_box .label,
-.BackOfficeLayout .toolbar .content_view .label,
-.BackOfficeItemView .translations_selector .label {
-    height: 1.9em;
-    padding-top: 0.4em;
-    padding-left: 0.5em !important;
-    background-position: right 0.8em;
-}
-
-.BackOfficeLayout .toolbar .members_box .selector_content {
-    right: 0;
-}
-
-.content_view_selector > div {
-    margin-top: 0.1em;
+/* Content type selector
+-----------------------------------------------------------------------------*/
+.BackOfficeLayout .content_type_selector {
     float: left;
-    padding: 0.4em;
 }
 
-.content_view_selector > div.selected {
-    border: 1px solid rgb(195,190,160);
-    background-color: rgb(215,210,180);
-    -moz-border-radius: 3px;
+/* Content view selector
+-----------------------------------------------------------------------------*/
+.BackOfficeLayout .content_view {
+    float: right;
+    white-space: nowrap;
+    text-align: right;
+    font-size: 85%;
+}
+
+.BackOfficeLayout .content_view * {
+    display: inline;
+    float: none;
+}
+
+.BackOfficeLayout .content_view img {
+    vertical-align: middle;
+}
+
+.BackOfficeLayout .content_view_selector div {
+    padding: 0.2em 0.3em;
+}
+
+.BackOfficeLayout .content_view_selector > div.selected {
+    border: 1px solid rgb(220,225,232);
+    background-color: rgb(235,240,247);
 }
 
 /* Dropdown selector
@@ -615,9 +708,9 @@ html, body {
 
 .BackOfficeLayout .selector .label {
     position: relative;
-    padding-left: 0.2em !important;
+    padding-left: 0.2em;
     padding-right: 1em;
-    background: url(../images/dropdown_arrow.png) no-repeat right 0.9em;
+    background: url(../images/dropdown_arrow.png) no-repeat right 0.7em;
     border: 1px solid transparent;
     z-index: 2;
     cursor: pointer;
@@ -642,7 +735,7 @@ html, body {
     display: none;
     min-width: 8em;
     position: absolute;
-    top: 2.3em;
+    top: 2.1em;
     border: 1px solid rgb(190,200,210);
     background-color: rgb(250,250,250);
     padding: 0.4em 0.6em;
@@ -709,72 +802,33 @@ html, body {
     color: black;
 }
 
-.BackOfficeLayout .toolbar .content_type {
-    background-repeat: no-repeat;
-    padding-bottom: 0.2em;
-    color: black;
-}
-
-/* Content type path
+/* Content type selector
 -----------------------------------------------------------------------------*/
-.BackOfficeLayout .ContentTypePath {
-    margin: 0;
-    padding: 0;
-    margin-top: 0.5em;
-    height: 1.5em;
+.BackOfficeLayout .ContentTypeSelector {
+    margin-left: -0.5em;
+    margin-bottom: 1.5em;
 }
 
-.BackOfficeLayout .ContentTypePath .selector_content {
+.BackOfficeLayout .ContentTypeSelector > .entry_label {
+    color: black;
+    font-weight: bold;
+    padding: 0.2em 0.5em;
+    padding-right: 1em;
+}
+
+.BackOfficeLayout .ContentTypeSelector .selector_content {
     top: 1.4em;
     z-index: 3;
     padding: 0.4em;
     min-width: 16em;
 }
 
-.BackOfficeLayout .ContentTypePath .selector_content > li {
+.BackOfficeLayout .ContentTypeSelector .selector_content > li {
     font-size: 85%;
 }
 
-.BackOfficeLayout .ContentTypePath > li {
-    display: block;
-    float: left;
-    margin: 0;
-    padding: 0;
-    list-style-type: none;
-    padding-left: 2.4em;
-    background-image: url(../images/path_separator.png);
-    background-repeat: no-repeat;
-    background-position: 1em 0.3em;
-}
-
-.BackOfficeLayout .ContentTypePath > li:first-child {
-    background-image: none;
-    padding-left: 0;
-}
-
-.BackOfficeLayout .ContentTypePath .selector {
-    height: 1.5em;
-}
-
-.BackOfficeLayout .ContentTypePath .selector .label {
-    padding-top: 0.2em;
-    padding-bottom: 0.2em;
-    padding-left: 0.2em;
-    z-index: 4;
-    background-position: right 0.6em;
-}
-
-.BackOfficeLayout .ContentTypePath > li:last-child .label {
-    color: black;
+.BackOfficeLayout .ContentTypeSelector .selected > .entry_label {
     font-weight: bold;
-}
-
-.BackOfficeLayout .ContentTypePath .leaf .label {
-    background: none;
-}
-
-.BackOfficeLayout .ContentTypePath .leaf .label {
-    border-color: transparent;
 }
 
 /* Content type picker
@@ -808,8 +862,8 @@ html, body {
 -----------------------------------------------------------------------------*/
 
 .BackOfficeLayout .PagingControls {
-	width: 100%;
-	overflow: hidden;
+    float: right;
+    padding-right: 0.5em;
 }
 
 .BackOfficeLayout .item_count,
@@ -818,10 +872,6 @@ html, body {
     float: right;
     font-size: 85%;
     margin-left: 2em;
-}
-
-.BackOfficeLayout .item_count, .Pager {
-    padding-top: 0.35em;
 }
 
 .BackOfficeLayout .page_size input {
@@ -867,6 +917,12 @@ html, body {
 
 .BackOfficeLayout .TreeContentView .expander {
     margin-left: -0.1em;
+    float: left;
+}
+
+.BackOfficeLayout .TreeContentView .expander + label {
+    float: left;
+    margin-left: 0.3em;
 }
 
 .BackOfficeLayout .TreeContentView .expander img {
@@ -926,7 +982,8 @@ html, body {
     border: 1px dotted rgb(200,160,120);
     background-color: rgb(245,230,215);
     padding: 0.5em;
-    margin: 1em;
+    margin: 0;
+    margin-bottom: 1em;
 }
 
 .BackOfficeLayout .error_box li {
@@ -951,19 +1008,16 @@ html, body {
 /* Edit form
 -----------------------------------------------------------------------------*/
 
-.BackOfficeItemView .body {
-    position: absolute;
-    left: 0.7em;
-    right: 0.7em;
-    top: 4.5em;
-    bottom: 0;
+.BackOfficeItemView h2 {
+    font-size: inherit;
+    margin-top: 0;
 }
 
-.BackOfficeItemView .navigation {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
+.BackOfficeItemView .toolbar .save_action,
+.BackOfficeItemView .toolbar .save_draft_action,
+.BackOfficeItemView .toolbar .confirm_draft_action,
+.BackOfficeItemView .toolbar .close_action {
+    float: right;
 }
 
 .BackOfficeItemView .navigation .section_entry {
@@ -978,28 +1032,15 @@ html, body {
     z-index: 0;
     clear: both;
     position: absolute;    
-    top: 2.8em;
+    top: 2.5em;
     bottom: 4em;
     left: 0;
     right: 0;
     overflow: auto;
 }
 
-.BackOfficeItemView .buttons {
-    position: absolute;
-    bottom: 0em;
-    left: 0;
-    right: 0;
-}
-
 .BackOfficeItemView .edit_form {
     padding: 0;
-    position: absolute;
-    top: 2.3em;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    overflow: auto;
 }
 
 .BackOfficeItemView .draft_box {
@@ -1042,6 +1083,10 @@ html, body {
 }
 
 .BackOfficeItemView .translations_selector .label {
+    height: 1.9em;
+    padding-top: 0.4em;
+    padding-left: 0.5em !important;
+    background-position: right 0.8em;
     display: block;
 }
 
@@ -1106,66 +1151,17 @@ html, body {
     font-style: italic;
 }
 
-.BackOfficeItemView .more_actions {
-    position: absolute;
-    left: 1.3em;
-    bottom: 1.2em;
-}
-
-.BackOfficeItemView .more_actions .label {
-    background-image: url(../images/dropup_arrow.png);
-    background-position: right 0.5em;
-    padding-left: 0.3em;
-}
-
-.BackOfficeLayout .more_actions:hover .label,
-.BackOfficeLayout .more_actions.scripted.unfolded .label,
-.BackOfficeLayout .more_actions.scripted.unfolded:hover .label {
-    border-top-color: rgb(250,250,250);
-    border-bottom-color: rgb(190,200,210);
-}
-
-.BackOfficeItemView .more_actions .selector_content {
-    position: static;
-    padding-left: 0.5em;
-}
-
-.BackOfficeItemView .more_actions .selector_content > * {
+.BackOfficeItemView .buttons .additional_actions_selector .selector_content button {
     display: block;
-    border: none;    
-    background-repeat: no-repeat;
     padding: 0;
-    padding-left: 20px;
     margin: 0;
+    text-align: left;
+    border: none;
+    background-color: rgb(250, 250, 250);
 }
 
-.BackOfficeItemView .more_actions .selector_content > button {
-    position: relative;
-    left: -2px;
-}
-
-.BackOfficeItemView .more_actions .selector_content > * + * {
-    margin-top: 0.5em;
-}
-
-.BackOfficeItemView .more_actions .selector_content > button + * {
+.BackOfficeItemView .additional_actions_selector .selector_content button + button {
     margin-top: 0.3em;
-}
-
-.BackOfficeItemView .more_actions .delete_button {
-    background-image: url(../images/delete_small.png);
-}
-
-.BackOfficeItemView .more_actions .differences_button {
-    background-image: url(../images/differences_small.png);
-}
-
-.BackOfficeItemView .more_actions .preview_button {
-    background-image: url(../images/preview_small.png);
-}
-
-.BackOfficeItemView .more_actions .history_button {
-    background-image: url(../images/history_small.png);
 }
 
 .BackOfficeItemView .edit_form_frame,
@@ -1245,6 +1241,24 @@ html, body {
 
 /* Filter box
 -----------------------------------------------------------------------------*/
+.BackOfficeLayout .simple_search {
+    clear: both;
+}
+
+.BackOfficeLayout .filters {
+    clear: both;
+}
+
+.BackOfficeLayout .ContentView .search_input {
+    margin-right: 0.3em;
+}
+
+.BackOfficeLayout .ContentView .advanced_search {
+    margin-left: 1.2em;
+    text-decoration: underline;
+    font-size: 70%;
+}
+
 .BackOfficeLayout .CollectionView .filters {
     font-size: 85%;
     margin-top: 0.3em;
@@ -1252,39 +1266,15 @@ html, body {
     background-color: rgb(245,245,245);
 }
 
-.BackOfficeLayout .CollectionView .filters:not(.empty) > .label {
-    font-weight: bold;
+.BackOfficeLayout .CollectionView .filters .filters_label {
+    padding: 0.4em 0.6em;
+    border-bottom: 1px solid rgb(230,230,230);
 }
-
-.BackOfficeLayout .CollectionView .filters.scripted > .label {
-    cursor: pointer;
-    padding: 0.5em;
-    padding-left: 1.2em;
-    background-repeat: no-repeat;
-    background-position: 0.4em center;
-    background-image: url(../images/collapsed_block.png);
-}
-
-.BackOfficeLayout .CollectionView .filters.scripted.expanded > .label {
-    background-image: url(../images/expanded_block.png);
-    border-bottom: 1px dotted rgb(210,210,210);
-    padding-left: 1.6em;
-}
-
 
 .BackOfficeLayout .CollectionView .filters .FilterBox {
     padding: 0.5em;
     padding-top: 1em;
     background-color: rgb(240,240,240);
-}
-
-.BackOfficeLayout .CollectionView .filters.scripted .FilterBox {
-    display: none;
-}
-
-.BackOfficeLayout .CollectionView .filters.scripted.expanded .FilterBox {
-    display: block;
-    padding-left: 1.75em;
 }
 
 .BackOfficeLayout .FilterBox .filter_entry {
@@ -1310,7 +1300,10 @@ html, body {
     margin-top: 0.3em;
 }
 
-.BackOfficeLayout .FilterBox .filter_entry .language_field .control,
+.BackOfficeLayout .FilterBox .filter_entry .language_field .control {
+    width: 12em;
+}
+
 .BackOfficeLayout .FilterBox .operator_field .control {
     width: 10em;
 }
@@ -1327,14 +1320,14 @@ html, body {
     width: auto;
 }
 
-.BackOfficeLayout .CollectionView .filters .clear_button {
+.BackOfficeLayout .CollectionView .filters .discard_button {
     padding-left: 1.6em;
     background-repeat: no-repeat;
     background-position: left center;
     background-image: url(../images/clear_small.png);
 }
 
-.BackOfficeLayout .CollectionView .filters .clear_button,
+.BackOfficeLayout .CollectionView .filters .discard_button,
 .BackOfficeLayout .CollectionView .filters .new_filter_selector {
     float: left;
     margin-top: 0.5em;
@@ -1371,3 +1364,102 @@ html, body {
     padding: 0;
     margin: 0.3em 0;
 }
+
+/* Collection settings 
+-----------------------------------------------------------------------------*/
+.BackOfficeLayout .CollectionView .settings_box {
+    position: absolute;
+    top: 0;
+    right: 3px;
+    background-position: right center;
+    font-size: 80%;
+}
+
+.BackOfficeLayout .CollectionView .settings_box .label {
+    padding: 4px;
+    padding-right: 8px;
+    padding-bottom: 0;
+    display: block;
+    height: 19px;
+    width: 20px;
+}
+
+.BackOfficeLayout .CollectionView .settings_box .selector_content {
+    right: 0;
+    top: 23px;
+    width: 22em;
+}
+
+.BackOfficeLayout .CollectionView .settings_box .box_label {
+    display: block;
+    margin-bottom: 0.3em;
+    color: rgb(75,75,75);
+    font-weight: bold;
+}
+
+.BackOfficeLayout .CollectionView .settings_box .box_items {
+    padding-left: 0.4em;
+}
+
+.BackOfficeLayout .CollectionView .settings_box .languages_box,
+.BackOfficeLayout .CollectionView .settings_box .members_box {
+    float: left;
+}
+
+.BackOfficeLayout .CollectionView .settings_box .languages_box {
+    border-right: 1px solid rgb(225,225,225);
+    padding-right: 1em;
+}
+
+.BackOfficeLayout .CollectionView .settings_box .members_box {
+    position: relative;
+    left: -1px;
+    padding-left: 1em;    
+    border-left: 1px solid rgb(225,225,225);
+}
+
+.BackOfficeLayout .CollectionView .settings_box .selector_content > div:first-child {
+    border-left: none;
+}
+
+.BackOfficeLayout .CollectionView .settings_box .selector_content > div:last-child {
+    border-right: none;
+}
+
+.BackOfficeLayout .CollectionView .settings_box .selector_content .box_buttons {
+    clear: left;
+    text-align: right;
+    padding-top: 0.8em;
+}
+
+.BackOfficeLayout .CollectionView .collection_display_container {
+    clear: both;
+    position: relative;
+}
+
+.BackOfficeLayout .CollectionView .Table th:last-child {
+    padding-right: 3em;
+}
+
+/* Datepicker styles */
+
+#ui-datepicker-div {
+	background-color: rgb(255, 255, 255);
+	border: 1px solid rgb(197, 203, 212);
+}
+
+#ui-datepicker-div .ui-datepicker-links a,
+#ui-datepicker-div .ui-datepicker-header select {
+	color: rgb(0, 0, 0);
+	background-color: rgb(255, 255, 255);
+}
+
+.ui-datepicker .ui-datepicker-days-cell a {
+	color: rgb(0, 0, 0);
+	background-color: rgb(240, 240, 240);
+}
+
+.ui-datepicker .ui-datepicker-current-day a {
+	background-color: rgb(225, 225, 225);
+}
+

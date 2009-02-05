@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<py:sitebasis.views.BackOfficeItemView
+<?py
+from sitebasis.controllers.backoffice.useractions import \
+    add_view_action_context
+?>
+
+<py:sitebasis.views.BackOfficeEditView
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:py="http://www.whads.com/ns/cocktail/templates">
 
@@ -16,15 +21,16 @@
     <?py
     self.add_resource("/cocktail/resources/jquery.js")
     self.add_resource("/resources/scripts/backoffice_content.js")
+    add_view_action_context(self, "collection")
     ?>
 
     <py:ready>
         <?py
+            self.section = self.member.name
             self.set_client_param("member", self.member.name)
         ?>
-    
         <py:with py:element="self.content_view"
-            py:parent="self.edit_form_frame"
+            py:parent="self.item_body"
             py:cms="${self.cms}"
             py:backoffice="${self.backoffice}"
             py:tag="div"
@@ -36,10 +42,16 @@
             py:available_content_views="${self.available_content_views}"
             py:root_content_type="${self.root_content_type}">
 
-            <py:with
-                py:def="toolbar_button"
-                py:args="action" name="action" type="submit"/>
+            <py:with py:element="element.toolbar">
+                <py:with py:def="action_button">
+                    <?py
+                    if element.tag == "button":
+                        element["name"] = "collection_action"
+                    ?>
+                </py:with>
+            </py:with>
+
         </py:with>
     </py:ready>
 
-</py:sitebasis.views.BackOfficeItemView>
+</py:sitebasis.views.BackOfficeEditView>

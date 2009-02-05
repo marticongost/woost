@@ -19,6 +19,9 @@ from sitebasis.controllers.backoffice.basebackofficecontroller \
 
 from sitebasis.controllers.backoffice.editstack import EditNode
 
+from sitebasis.controllers.backoffice.showdetailcontroller \
+    import ShowDetailController
+
 from sitebasis.controllers.backoffice.differencescontroller \
     import DifferencesController
 
@@ -27,6 +30,7 @@ class ItemController(BaseBackOfficeController):
 
     default_section = "fields"
     
+    show_detail = ShowDetailController
     differences = DifferencesController
 
     @cached_getter
@@ -74,6 +78,7 @@ class ItemController(BaseBackOfficeController):
             member
             for member in self.edited_content_type.ordered_members()
             if isinstance(member, Collection)
+            and member.visible
             and member.editable
             and member is not stack_relation
             and access_granted(
@@ -101,7 +106,9 @@ class ItemController(BaseBackOfficeController):
             redirect = True
 
         # Make sure the top node of the stack is an edit node
-        if not edit_stack or not isinstance(edit_stack[-1], EditNode):
+        if not edit_stack \
+        or not isinstance(edit_stack[-1], EditNode) \
+        or edit_stack[-1].item is not self.edited_item:
             edit_state = EditNode()
             edit_state.item = self.edited_item
             edit_state.content_type = (

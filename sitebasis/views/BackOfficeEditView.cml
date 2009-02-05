@@ -1,125 +1,102 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <?py
-from cocktail.modeling import extend, call_base
-from cocktail.language import get_content_language
+from cocktail.schema import Collection
+from sitebasis.controllers.backoffice.useractions import \
+    add_view_action_context
 ?>
 
 <py:sitebasis.views.BackOfficeItemView
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:py="http://www.whads.com/ns/cocktail/templates">
 
-    <?py-class
-    form_schema = None
-    form_data = None
-    saved = None 
-    submitted = False
-    differences = None
-    available_languages = ()
-    translations = ()
+    <?py
+    self.add_resource("/cocktail/scripts/jquery.js")
+    self.add_resource("/cocktail/scripts/jquery.cookie.js")
+    self.add_resource("/resources/scripts/backoffice_item.js")
+    
+    add_view_action_context(self, "edit")
     ?>
 
-    <py:with py:element="self.edit_form_frame">
+    <?py-class
+    collections = ()
+    errors = ()
+    ?>
+   
+    <py:with py:element="self.item_body">
 
-        <div py:id="edit_form_toolbar">
-
-            <!-- Translations selector -->
-            <div
-                py:id="translations_selector"
-                py:index="0"
-                py:visible="@{self.edited_content_type.translated}"
-                class="selector">
-
-                <py:ready py:if="self.translations_selector.visible">
-                    <?py
-                    shortcut = translate("EditView translations shortcut", default = "")
-                    if shortcut:
-                        element.set_client_param("shortcut", shortcut)
-                    ?>
-                    <span class="label">${translate("Translations")}</span>                
-                    <ul class="selector_content">
-                        <li py:for="language in self.available_languages">
-                            <?py
-                            has_translation = language in self.translations
-                            ?>
-                            <div class="language">
-                                <?py
-                                if has_translation:
-                                    element.add_class("selected")
-                                ?>
-                                ${translate(language)}
-                            </div>
-                            <button
-                                py:if="not has_translation"
-                                name="add_translation"
-                                type="submit"
-                                value="${language}">
-                                <img src="/resources/images/add_small.png"/>
-                            </button>
-                            <button
-                                py:if="has_translation and len(self.translations) > 1"
-                                name="delete_translation"
-                                type="submit"
-                                value="${language}">
-                                <img src="/resources/images/delete_small.png"/>
-                            </button>
-                        </li>
-                    </ul>
-                </py:ready>
-            </div>
+        <!-- Success message -->
+        <div py:id="success" py:visible="@{self.saved}">
+            ${translate("sitebasis.views.BackOfficeEditView Changes saved")}
         </div>
 
-        <py:ready>
-            <py:new py:element="loader.new(self.edited_content_type.edit_form)"
-                py:id="edit_form"
-                py:embeded="${True}"
-                py:tag="div"
-                py:data="@{self.form_data}"
-                py:schema="@{self.form_schema}"
-                py:errors="@{self.submitted and self.form_errors}"
-                py:translations="@{self.translations}"
-                py:table_layout="${True}"
-                py:edited_content_type="@{self.edited_content_type}"
-                py:name_prefix="item_"
-                method="post">
-                                
-                <!-- Highlight changed members -->
+        <!-- Draft remark -->
+        <div
+            py:id="draft_box"
+            py:visible="@{self.edited_item and self.edited_item.is_draft}"
+            class="draft">
+            <py:ready py:if="self.draft_box.visible">
                 <?py
-                differences = set(
-                    (member.name, language)
-                    for member, language in self.differences
-                )
-                ?>
-
-                <py:with py:def="field_instance" py:args="member">
-                    <?py
-                    key = (
-                        member.name,
-                        get_content_language()
-                            if member.translated
-                            else None
+                if self.edited_item.draft_source:
+                    element.append(
+                        translate(
+                            "Editing draft copy",
+                            location = self.backoffice.get_edit_uri(
+                                self.edited_item.draft_source
+                            )
+                        )
                     )
-                    
-                    if key in differences:
-                        element.add_class("changed")
-                    ?>
-                </py:with>
-                
-            </py:new>
+                else:
+                    element.append(translate("Editing draft"))
+                ?>
+            </py:ready>
+        </div>
 
-            <py:with
-                py:element="self.draft_box"
-                py:before="self.edit_form.fields"/>
+        <!-- Errors -->
+        <ul py:id="error_box"
+            py:visible="@{self.submitted and self.errors}">
+            <py:ready py:if="element.visible">
+                <li py:for="error in self.errors">
+                    ${translate(error)}
+                </li>
+            </py:ready>
+        </ul>
 
-            <py:with
-                py:element="self.error_box"
-                py:before="self.edit_form.fields"/>
+        <!-- Tabs -->
+        <div py:id="tabs">
+            
+            <button
+                py:def="tab"
+                py:args="member"
+                type="submit"
+                name="section">
+                <?py
+                is_collection = isinstance(member, Collection)
+                section_id = member.name if is_collection else "fields"
+                element["value"] = section_id
+                element.add_class(member.name + "_tab")
 
-            <py:with
-                py:element="self.success"
-                py:before="self.edit_form.fields"/>
+                if section_id == self.section:
+                    element.add_class("selected")
 
-        </py:ready>
+                if self.edited_item and (
+                    (is_collection and self.edit_stack[-1].collection_has_changes(member))
+                    or (not is_collection and self.differences)
+                ):
+                    element.add_class("changed")
+                ?>
+                ${translate(member if is_collection else member.name)}
+            </button>
+
+            <py:ready>
+                 <py:new py:element="self.create_tab(member)"
+                     py:for="member in [self.edited_content_type] + list(self.collections)">
+                     <?py
+                     setattr(self, member.name + "_tab", element)
+                     ?>
+                 </py:new>
+             </py:ready>
+         </div>
 
     </py:with>
 

@@ -24,6 +24,7 @@ from sitebasis.controllers.backoffice.basebackofficecontroller \
     import BaseBackOfficeController
 from sitebasis.controllers.backoffice.editstack import EditNode, RelationNode
 from sitebasis.controllers.backoffice.itemcontroller import ItemController
+from sitebasis.controllers.backoffice.useractions import get_user_action
 
 
 class ContentController(BaseBackOfficeController):
@@ -59,64 +60,20 @@ class ContentController(BaseBackOfficeController):
 
     @cached_getter
     def action(self):
-        return self.params.read(String("action"))
+        return self._get_user_action()
 
     @cached_getter
     def ready(self):
         return self.action is not None
 
     def submit(self):
-
-        action = self.action
-
-        if action in ("select", "cancel") and self.edit_stack:
-
-            if action == "select":
-                edit_state = self.edit_stack[-2]
-                member = self.stack_node.member
-
-                if isinstance(member, Reference):
-                    edit_state.relate(member, self.user_collection.selection)
-                else:
-                    if self.stack_node.action == "add":
-                        modify_relation = edit_state.relate 
-                    else:
-                        modify_relation = edit_state.unrelate 
-
-                    for item in self.user_collection.selection:
-                        modify_relation(member, item)
-            
-            self.edit_stack.go(-2)
-
-        elif action == "edit":
-
+        if self.user_collection.selection_mode == SINGLE_SELECTION:
+            selection = [self.user_collection.selection]
+        else:
             selection = self.user_collection.selection
 
-            if not selection or len(selection) > 1:
-                # TODO: Use a controlled error with a proper translation
-                raise ValueError("Wrong selection")
-
-            raise cherrypy.HTTPRedirect(self.get_edit_uri(selection[0]))
-
-        elif action == "move":
-
-            selection = self.user_collection.selection
-
-            if not selection or len(selection) > 1:
-                # TODO: Use a controlled error with a proper translation
-                raise ValueError("Selection required")
-
-            raise cherrypy.HTTPRedirect(
-                self.document_uri("move") + "?" + view_state()
-            )
-
-        elif action == "delete":
-            with changeset_context(self.user):
-                for item in self.user_collection.selection:
-                    item.delete()
-
-            datastore.commit()
-
+        self._invoke_user_action(self.action, selection)
+        
     @cached_getter
     def content_type(self):
 
@@ -256,14 +213,80 @@ class ContentController(BaseBackOfficeController):
         user_collection.add_base_filter(
             self.content_type.draft_source.equal(None))
         
-        # Exclude items that are already contained on an edited collection
         node = self.stack_node
-        if node and isinstance(node, RelationNode) \
-        and isinstance(node.member, Collection):
-            related_items = self.edit_stack[-2].get_collection(node.member)
-            user_collection.add_base_filter(CustomExpression(
-                lambda item: item not in related_items
-            ))
+
+        if node and isinstance(node, RelationNode):
+            
+            relation = node.member
+            is_collection = isinstance(relation, Collection)
+            edit_node = self.edit_stack[-2]
+            excluded_items = set()
+
+            # Exclude items that are already contained on an edited collection
+            if is_collection:
+                excluded_items.update(edit_node.get_collection(relation))
+
+            # Prevent cycles in recursive relations. This only makes sense in
+            # existing items, new items don't yet exist on the database and
+            # therefore can't produce cycles.
+            if edit_node.item:
+
+                # References: exclude the edited item and its descendants
+                if isinstance(relation, Reference):
+                    if not relation.cycles_allowed:
+                        
+                        if relation.bidirectional:
+
+                            # 1-n
+                            if isinstance(relation.related_end, Collection):
+
+                                def recursive_exclusion(item):
+                                    excluded_items.add(item)
+                                    children = item.get(relation.related_end)
+                                    if children:
+                                        for child in children:
+                                            recursive_exclusion(child)
+
+                                recursive_exclusion(edit_node.item)
+
+                            # 1-1
+                            else:
+                                item = edit_node.item
+
+                                while item:
+                                    excluded_items.add(item)
+                                    item = item.get(relation.related_end)
+                        # 1-?
+                        else:
+                            excluded_items.add(edit_node.item)
+
+                            def forms_cycle(item):
+                                related_item = item.get(relation)
+                                return (
+                                    related_item is edit_node.item
+                                    or (related_item
+                                        and forms_cycle(related_item))
+                                )
+
+                            user_collection.add_base_filter(CustomExpression(
+                                lambda item: not forms_cycle(item)
+                            ))
+
+                # Collections: exclude the edited item and its ancestors
+                elif relation.bidirectional \
+                and isinstance(relation.related_end, Reference) \
+                and not relation.related_end.cycles_allowed:
+
+                    item = edit_node.item
+
+                    while item:
+                        excluded_items.add(item)
+                        item = item.get(relation)
+                    
+            if excluded_items:
+                user_collection.add_base_filter(CustomExpression(
+                    lambda item: item not in excluded_items
+                ))
 
         # Exclude forbidden items
         is_allowed = self.context["cms"].authorization.allows
