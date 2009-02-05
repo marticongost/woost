@@ -22,6 +22,13 @@ from sitebasis.controllers.backoffice.basebackofficecontroller \
 class EditController(BaseBackOfficeController):
 
     saved = False
+    section = None
+
+    @event_handler
+    def handle_processed(cls, event):
+        controller = event.source
+        controller.context["parent_handler"].section_redirection()
+        controller.stack_node.section = controller.section
 
     @cached_getter
     def edited_item(self):
@@ -91,6 +98,13 @@ class EditController(BaseBackOfficeController):
         return self.stack_node.form_data is not None
 
     @cached_getter
+    def errors(self):
+        if self.action:
+            return ErrorList(self.action.get_errors(self, self.action_content))
+        else:
+            return []
+
+    @cached_getter
     def form_errors(self):
         return ErrorList(
             self.form_schema.get_errors(
@@ -146,33 +160,31 @@ class EditController(BaseBackOfficeController):
 
     @cached_getter
     def action(self):
-        return self.params.read(String("action"))
+        return self._get_user_action("item_action")
+
+    @cached_getter
+    def action_content(self):
+        return [self.edited_item] if self.edited_item else []
 
     @cached_getter
     def submitted(self):
-        return self.action in ("save", "make_draft", "close")
+        return self.action is not None
 
     @cached_getter
     def ready(self):
-        return self.submitted \
-            and (self.action == "close" or not self.form_errors)
+        return self.submitted and not self.errors
 
     def submit(self):
+        self._invoke_user_action(self.action, self.action_content)
 
-        # Cancel the edit operation and go to the parent edit node, or to the
-        # application root
-        if self.action == "close":
-            if len(self.edit_stack) > 1:
-                self.edit_stack.go(-3)
-            else:
-                raise cherrypy.HTTPRedirect(self.document_uri())
+    def save_item(self, make_draft = False):
 
         redirect = False
         item = self.edited_item
         user = self.user
 
         # Create a draft
-        if self.action == "make_draft":
+        if make_draft:
 
             # From an existing element
             if item:
@@ -225,10 +237,6 @@ class EditController(BaseBackOfficeController):
                 parent_edit_state = self.edit_stack[-3]
                 parent_edit_state.relate(relation, item)
                 self.edit_stack.go(-3)
-
-    @event_handler
-    def handle_processed(cls, event):
-        event.source.context["parent_handler"].section_redirection()
 
     def _apply_changes(self, item):
 
@@ -320,12 +328,13 @@ class EditController(BaseBackOfficeController):
             collections = self.context["parent_handler"].collections,
             edited_item = self.edited_item,
             edited_content_type = self.edited_content_type,
-            form_errors = self.form_errors,
+            errors = self.errors,
             form_schema = self.form_schema,
             form_data = self.form_data,
             differences = self.differences,
             translations = self.translations,
-            saved = self.saved
+            saved = self.saved,
+            section = self.section
         )
         return output
 

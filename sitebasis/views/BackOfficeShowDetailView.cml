@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?py
+from sitebasis.controllers.backoffice.useractions import \
+    add_view_action_context
+?>
+
+<py:sitebasis.views.BackOfficeItemView
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:py="http://www.whads.com/ns/cocktail/templates">
+
+    <?py-class
+    translations = ()
+    ?>
+
+    <?py
+    add_view_action_context(self, "show_detail")
+    ?>
+
+    <py:cocktail.html.PropertyTable
+        py:parent="self.item_body"
+        py:translations="@{self.translations}"
+        py:translated_values="${True}"
+        py:schema="@{self.form_schema}"
+        py:data="@{self.form_data}"/>
+
+</py:sitebasis.views.BackOfficeItemView>

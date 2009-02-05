@@ -1,44 +1,47 @@
-jQuery(document).ready( function () {
+cocktail.init(function () {
     
-    if(jQuery(".OrderContentView .Table tbody tr").length > 1){
-        
-      jQuery(".OrderContentView .Table tbody tr").hover(function() {
-            jQuery(this.cells[0]).addClass('showDragHandle');
-      }, function() {
-            jQuery(this.cells[0]).removeClass('showDragHandle');
-      });
-  
-        
-      jQuery(".OrderContentView .Table tr").each( function (i) {            
+    if (jQuery(".OrderContentView .Table tbody tr").length > 1) {
+    
+        jQuery(".OrderContentView .Table tbody tr").hover(
+            function() { jQuery(this.cells[0]).addClass('showDragHandle'); },
+            function() { jQuery(this.cells[0]).removeClass('showDragHandle'); }
+        );
+          
+        jQuery(".OrderContentView .Table tr").each(function (i) {
             var td = document.createElement('td');
-            if(i>0) td.className = 'dragHandle';
+            if (i > 0) {
+                td.className = 'dragHandle';
+            }
             jQuery(this).prepend(td);
-            
             jQuery(this).attr('id', jQuery(this).find(":checkbox").val());
-                   
-      });  
+        });
     
-      function renderEvenOdd() {
-          jQuery(".OrderContentView .Table tbody tr").each( function (i) {
+        function renderEvenOdd() {
+            jQuery(".OrderContentView .Table tbody tr").each(function (i) {
                 jQuery(this).removeClass();
-                if(i%2) {
+                if (i % 2) {
                     jQuery(this).addClass("odd");
-                }else{
+                }
+                else {
                     jQuery(this).addClass("even");
                 }
-          });
-      }
+            });
+        }
       
-      var edit_stack, member, position            
+        var edit_stack, member, position            
       
-      jQuery("*", document.body).each( function() {                         
-         if (this.edit_stack && typeof(this.edit_stack) == "string") edit_stack = this.edit_stack;                         
-         if (this.member) member = this.member;
-      }); 
+        jQuery("*", document.body).each(function() {
+            if (this.edit_stack && typeof(this.edit_stack) == "string") {
+                edit_stack = this.edit_stack;
+            }
+            if (this.member) {
+                member = this.member;
+            }
+        }); 
       
-      jQuery(".OrderContentView").append("<div class=\"error\" style=\"display:none;\"></div>"); 
+        jQuery(".OrderContentView").append("<div class=\"error\" style=\"display:none;\"></div>"); 
     
-      jQuery(".OrderContentView .Table").tableDnD({
+        jQuery(".OrderContentView .Table").tableDnD({
             onDrop: function(table, row) {
                 renderEvenOdd();                
                 
@@ -74,6 +77,6 @@ jQuery(document).ready( function () {
             },
             dragHandle: "dragHandle",
             onDragClass: "mydragClass"
-       });
+        });
     }
 });
