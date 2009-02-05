@@ -298,6 +298,7 @@ class Item(PersistentObject):
             )
             change.item_state = self._get_revision_state()
             change.changeset = changeset
+            change.insert()
             changeset.changes[self.id] = change
             
             self.creation_time = datetime.now()
@@ -335,6 +336,7 @@ class Item(PersistentObject):
                 change.changed_members = set()
                 change.item_state = item._get_revision_state()
                 change.changeset = changeset
+                change.insert()
                 changeset.changes[item.id] = change
                 item.last_update_time = datetime.now()
             else:
@@ -368,6 +370,7 @@ class Item(PersistentObject):
                 change.action = Action.identifier.index["delete"]
                 change.target = item
                 change.changeset = changeset
+                change.insert()
                 changeset.changes[item.id] = change
                 item.is_deleted = True
 
