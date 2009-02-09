@@ -188,36 +188,36 @@ def init_site(
         site.access_rules_by_priority = [
 
             # - by default, all content can be viewed by anybody
-            rules.insert(0, AccessRule(
+            AccessRule(
                 action = read,
                 allowed = True,
                 author = admin,
                 owner = admin
-            ))
+            ),
 
             # - access to the back office requires special privileges
-            rules.insert(0, AccessRule(
+            AccessRule(
                 target_instance = back_office,
                 allowed = False,
                 author = admin,
                 owner = admin
-            ))
+            ),
 
             # - administrators have full control
-            rules.insert(0, AccessRule(
+            AccessRule(
                 role = administrators,
                 allowed = True,
                 author = admin,
                 owner = admin
-            ))
+            ),
 
             # - content owners have full control
-            rules.insert(0, AccessRule(
+            AccessRule(
                 role = owner_role,
                 allowed = True,
                 author = admin,
                 owner = admin
-            ))
+            )
         ]
 
         for rule in site.access_rules_by_priority:
