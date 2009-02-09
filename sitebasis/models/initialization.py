@@ -187,36 +187,46 @@ def init_site(
         # Add standard access rules:
         site.access_rules_by_priority = [
 
-            # - by default, all content can be viewed by anybody
-            AccessRule(
-                action = read,
-                allowed = True,
-                author = admin,
-                owner = admin
-            ),
-
-            # - access to the back office requires special privileges
-            AccessRule(
-                target_instance = back_office,
-                allowed = False,
-                author = admin,
-                owner = admin
-            ),
-
             # - administrators have full control
             AccessRule(
                 role = administrators,
-                allowed = True,
-                author = admin,
-                owner = admin
+                allowed = True
             ),
 
             # - content owners have full control
             AccessRule(
                 role = owner_role,
-                allowed = True,
-                author = admin,
-                owner = admin
+                allowed = True
+            ),
+
+            # - access to the back office requires special privileges
+            AccessRule(
+                target_instance = back_office,
+                allowed = False
+            ),
+
+            # - global site configuration can't be accessed by regular users
+            AccessRule(
+                target_type = AccessRule,
+                allowed = False
+            ),
+
+            # - access rules can't be accessed by regular users
+            AccessRule(
+                target_type = AccessRule,
+                allowed = False
+            ),
+
+            # - the administrators group can't be accessed by regular users
+            AccessRule(
+                target_instance = administrators,
+                allowed = False
+            ),
+
+            # - by default, all content can be viewed by anybody
+            AccessRule(
+                action = read,
+                allowed = True
             )
         ]
 
