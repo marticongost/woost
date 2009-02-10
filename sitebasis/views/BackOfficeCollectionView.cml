@@ -28,6 +28,9 @@ from sitebasis.controllers.backoffice.useractions import \
         <?py
             self.section = self.member.name
             self.set_client_param("member", self.member.name)
+
+            if self.member.integral:
+                add_view_action_context(self, "integral")
         ?>
         <py:with py:element="self.content_view"
             py:parent="self.item_body"
@@ -40,7 +43,9 @@ from sitebasis.controllers.backoffice.useractions import \
             py:available_languages="${self.available_languages}"
             py:visible_languages="${self.visible_languages}"
             py:available_content_views="${self.available_content_views}"
-            py:root_content_type="${self.root_content_type}">
+            py:root_content_type="${self.root_content_type}"
+            py:edit_stack="${self.edit_stack}"
+            py:member="${self.member}">
 
             <py:with py:element="element.toolbar">
                 <py:with py:def="action_button">
