@@ -94,10 +94,15 @@ from sitebasis.controllers.backoffice.editstack import EditNode, RelationNode
                     ${translate("sitebasis.views.BackOfficeLayout stack root")}
                 </a>
             </li>
-            <li py:for="step, stack_node in enumerate(self.edit_stack)">
+            <?py
+            stack_nodes = (stack_node
+                for stack_node in self.edit_stack
+                if not (isinstance(stack_node, RelationNode) and stack_node.member.integral)
+            )
+            ?>
+            <li py:for="step, stack_node in enumerate(stack_nodes)">
                 <img class="separator" src="/resources/images/path_separator.png"/>
-                <a href="${self.edit_stack.uri(step)}"
-                    py:if="not (isinstance(stack_node, RelationNode) and stack_node.member.integral)">
+                <a href="${self.edit_stack.uri(step)}">
                     <?py
                     if isinstance(stack_node, EditNode):
                         if stack_node.item:
