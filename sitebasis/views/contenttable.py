@@ -6,7 +6,6 @@
 @organization:	Whads/Accent SL
 @since:			September 2008
 """
-from datetime import datetime
 from cocktail.language import get_content_language
 from cocktail.translations import translate
 from cocktail.schema import Reference
