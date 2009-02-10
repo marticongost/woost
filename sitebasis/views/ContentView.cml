@@ -33,6 +33,7 @@ from sitebasis.controllers.backoffice.useractions import \
     visible_languages = ()
     root_content_type = Item
     edit_stack = None
+    member = None
     
     @classmethod
     def get_collection(cls, content_type, item = None, relation = None):
@@ -52,10 +53,15 @@ from sitebasis.controllers.backoffice.useractions import \
         pass
         
     def get_new_content_uri(self, content_type):
-        return self.cms.document_uri('content', 'new',
-            type = content_type.name,
-            edit_stack = self.edit_stack.to_param() if self.edit_stack else None
-        )
+        params = {
+            "type": content_type.name,
+            "edit_stack": self.edit_stack.to_param() if self.edit_stack else None
+        }
+        
+        if self.member:
+            params["member"] = self.member.name
+
+        return self.cms.document_uri('content', 'new', **params)
     ?>
 
     <py:ready>
@@ -196,12 +202,12 @@ from sitebasis.controllers.backoffice.useractions import \
         def get_actions(toolbar, context):
             actions = call_base(context)
             if not self._instantiable_content_types:
-                actions = [action for action in actions if action.id != "new"]
+                actions = [action for action in actions if action.id not in ("new", "add_integral")]
             return actions
 
         @extend(toolbar)
         def create_action_button(toolbar, action, extra):
-            if action.id == "new":
+            if action.id in ("new", "add_integral"):
                 if len(self._instantiable_content_types) > 1:
                     button = self.create_new_toolbar_button(action, extra)
                 else:
@@ -224,18 +230,17 @@ from sitebasis.controllers.backoffice.useractions import \
         class="selector action_button new">
         <span class="label">
             <?py
-            set_translated_shortcut(element, "action new")
+            set_translated_shortcut(element, "action " + action.id)
             ?>
             <py:new
                 py:element="self.toolbar.create_action_image(action, extra)"
                 py:if="self.toolbar.button_images and not extra"/>
-            ${translate("Action new")}
+            ${translate("Action " + action.id)}
         </span>
         <div class="selector_content">
             <py:sitebasis.views.ContentTypeTree
                 py:id="new_item_selector"
-                py:root="@{self.user_collection.type}"
-                py:base_url="@{self.cms.document_uri('content', 'new')}">
+                py:root="@{self.user_collection.type}">
         
                 <?py
                 @refine(element)

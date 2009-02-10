@@ -322,6 +322,7 @@ class MoveAction(UserAction):
 
 class AddAction(UserAction):
     included = frozenset([("toolbar", "collection")])
+    excluded = frozenset(["integral"])
     ignores_selection = True
     min = None
     max = None
@@ -337,8 +338,20 @@ class AddAction(UserAction):
         controller.edit_stack.go()
 
 
+class AddIntegralAction(UserAction):
+
+    included = frozenset([("collection", "toolbar", "integral")])
+    ignores_selection = True
+    min = None
+    max = None
+    
+    def get_url(self, controller, selection):        
+        return controller.get_edit_uri(controller.root_content_type)
+
+
 class RemoveAction(UserAction):
     included = frozenset([("toolbar", "collection")])
+    excluded = frozenset(["integral"])
     max = None
 
     def invoke(self, controller, selection):
@@ -379,8 +392,12 @@ class EditAction(UserAction):
 
 
 class DeleteAction(UserAction):
-    included = frozenset(["toolbar", "item_buttons"])
-    excluded = frozenset(["selector", "collection"])
+    included = frozenset([
+        ("content_view", "toolbar"),
+        ("collection", "toolbar", "integral"),
+        "item_buttons"
+    ])
+    excluded = frozenset(["selector"])
     max = None
 
 
@@ -497,6 +514,7 @@ class DiscardDraftAction(UserAction):
 CreateAction("new").register()
 MoveAction("move").register()
 AddAction("add").register()
+AddIntegralAction("add_integral").register()
 RemoveAction("remove").register()
 OrderAction("order").register()
 ShowDetailAction("show_detail").register()

@@ -3,7 +3,7 @@
 <?py
 from cocktail.translations import get_language, translations
 from cocktail.html.ieconditionalcomment import IEConditionalComment
-from sitebasis.controllers.backoffice.editstack import EditNode
+from sitebasis.controllers.backoffice.editstack import EditNode, RelationNode
 ?>
 
 <div
@@ -96,7 +96,8 @@ from sitebasis.controllers.backoffice.editstack import EditNode
             </li>
             <li py:for="step, stack_node in enumerate(self.edit_stack)">
                 <img class="separator" src="/resources/images/path_separator.png"/>
-                <a href="${self.edit_stack.uri(step)}">
+                <a href="${self.edit_stack.uri(step)}"
+                    py:if="not (isinstance(stack_node, RelationNode) and stack_node.member.integral)">
                     <?py
                     if isinstance(stack_node, EditNode):
                         if stack_node.item:
@@ -112,8 +113,7 @@ from sitebasis.controllers.backoffice.editstack import EditNode
                             node_desc = translate("creating", content_type = stack_node.content_type)
                     else:
                         node_desc = translate(stack_node.member)
-                        node_uri = self.cms.document_uri("content")
-
+                        
                     element.append(node_desc)
                     ?>
                 </a>
