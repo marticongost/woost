@@ -11,8 +11,7 @@ import cherrypy
 from cocktail.modeling import cached_getter
 from cocktail.events import event_handler, when
 from cocktail.schema import (
-    Adapter, ErrorList, DictAccessor,
-    RelationMember, Reference, Collection, String
+    Adapter, ErrorList, DictAccessor, Collection
 )
 from cocktail.persistence import datastore
 from sitebasis.models import Language, changeset_context
@@ -53,10 +52,6 @@ class EditController(BaseBackOfficeController):
             or not member.visible
             or isinstance(member, Collection)
             or member is stack_relation
-            or (
-                isinstance(member, RelationMember)
-                and member.bidirectional and member.related_end.integral
-            )
         ])
         return adapter
 

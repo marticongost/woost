@@ -460,18 +460,8 @@ class CloseAction(UserAction):
     max = None
 
     def invoke(self, controller, selection):
-
-        # Go back to the parent edit state
-        if len(controller.edit_stack) > 1:            
-            if isinstance(controller.edit_stack[-2], RelationNode):
-                controller.edit_stack.go(-3)
-            else:
-                controller.edit_stack.go(-2)
-        
-        # Go back to the root of the backoffice
-        else:
-            raise cherrypy.HTTPRedirect(controller.document_uri())
-
+        controller.edit_stack.go_back()
+       
 
 class SaveAction(UserAction):
     included = frozenset([("item_buttons", "edit")])
