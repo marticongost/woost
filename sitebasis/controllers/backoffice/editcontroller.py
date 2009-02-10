@@ -213,6 +213,7 @@ class EditController(BaseBackOfficeController):
 
                 self._apply_changes(item)
 
+        item.insert()
         datastore.commit()
         
         self.edit_node.forget_edited_collections()
