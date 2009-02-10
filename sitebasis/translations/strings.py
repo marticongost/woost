@@ -155,6 +155,18 @@ translations.define("cocktail.html.shortcuts action add",
     en = u"a"
 )
 
+translations.define("Action add_integral",
+    ca = u"Afegir",
+    es = u"Añadir",
+    en = u"Add"
+)
+
+translations.define("cocktail.html.shortcuts action add_integral",
+    ca = u"a",
+    es = u"a",
+    en = u"a"
+)
+
 translations.define("Action remove",
     ca = u"Treure",
     es = u"Quitar",

@@ -11,13 +11,13 @@ import cherrypy
 from cocktail.modeling import cached_getter, getter
 from cocktail.events import event_handler
 from cocktail.pkgutils import resolve
-from cocktail.schema import Collection
+from cocktail.schema import Collection, String
 from cocktail.controllers import view_state, Location
 
 from sitebasis.controllers.backoffice.basebackofficecontroller \
     import BaseBackOfficeController
 
-from sitebasis.controllers.backoffice.editstack import EditNode
+from sitebasis.controllers.backoffice.editstack import EditNode, RelationNode
 
 from sitebasis.controllers.backoffice.showdetailcontroller \
     import ShowDetailController
@@ -104,6 +104,16 @@ class ItemController(BaseBackOfficeController):
         if edit_stack is None:
             edit_stack = self._new_edit_stack()
             redirect = True
+        else:
+            # Integral part; add a new relation node (won't be shown to the
+            # user)
+            member_name = self.params.read(String("member"))
+
+            if member_name:
+                node = RelationNode()
+                node.member = edit_stack[-1].content_type[member_name]
+                edit_stack.push(node)
+                redirect = True
 
         # Make sure the top node of the stack is an edit node
         if not edit_stack \
@@ -127,6 +137,7 @@ class ItemController(BaseBackOfficeController):
             location = Location.get_current()
             location.method = "GET"
             location.params["edit_stack"] = edit_stack.to_param()
+            location.params.pop("member", None)
             location.go()
 
         return edit_stack
