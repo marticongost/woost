@@ -122,6 +122,7 @@ class EditNode(object):
         they are stored in here).
     @type translations: str list 
     """
+    __item_id = None
     item = None
     content_type = None
     form_data = None
@@ -130,6 +131,23 @@ class EditNode(object):
 
     def __init__(self):
         self.__collections = {}
+
+    def _get_item(self):
+        if self.__item_id is None:
+            return None
+
+        return self.content_type.index[self.__item_id]
+
+    def _set_item(self, item):
+        if item is None:
+            self.__item_id = None
+        else:
+            self.__item_id = item.id
+
+            if self.content_type is None:
+                self.content_type = item.__class__
+
+    item = property(_get_item, _set_item)
 
     def forget_edited_collections(self):
         self.__collections = {}
