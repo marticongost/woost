@@ -15,15 +15,9 @@ class AuthorizationModule(Module):
 
     def allows(self, **context):
 
-        if "roles" not in context:
-            user = self.application.authentication.user
-            roles = user.get_roles(context)
-
-            if not user.anonymous:
-                roles.append(datastore.root["authenticated_role"])
-            
-            context["roles"] = roles
-
+        if "user" not in context:
+            context["user"] = self.application.authentication.user
+        
         return allowed(**context)
 
     def restrict_access(self, **context):
