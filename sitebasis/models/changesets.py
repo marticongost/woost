@@ -54,6 +54,7 @@ def changeset_context(author = None):
         changeset = ChangeSet()
         changeset.author = author
         changeset.begin()
+        changeset.insert()
 
         try:
             yield changeset

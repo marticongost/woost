@@ -82,7 +82,7 @@ from sitebasis.controllers.backoffice.useractions import \
                     target_type = content_type,
                     action = "create",
                     partial_match = True
-                )            
+                )
         )
         ?>
     </py:ready>
@@ -192,6 +192,13 @@ from sitebasis.controllers.backoffice.useractions import \
         py:content_type="@{self.user_collection.type}"
         py:empty_result_set="@{not self.visible_results}">
         <?py
+        @extend(toolbar)
+        def get_actions(toolbar, context):
+            actions = call_base(context)
+            if not self._instantiable_content_types:
+                actions = [action for action in actions if action.id != "new"]
+            return actions
+
         @extend(toolbar)
         def create_action_button(toolbar, action, extra):
             if action.id == "new":
