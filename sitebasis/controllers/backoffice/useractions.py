@@ -380,7 +380,7 @@ class OrderAction(UserAction):
 
 class ShowDetailAction(UserAction):
     included = frozenset(["toolbar", "item_buttons"])
-    excluded = frozenset(["selector", "show_detail"])
+    excluded = frozenset(["selector", "show_detail", "new_item"])
 
 
 class EditAction(UserAction):
@@ -397,7 +397,7 @@ class DeleteAction(UserAction):
         ("collection", "toolbar", "integral"),
         "item_buttons"
     ])
-    excluded = frozenset(["selector"])
+    excluded = frozenset(["selector", "new_item"])
     max = None
 
 
