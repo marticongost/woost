@@ -8,13 +8,14 @@
 """
 from pkg_resources import resource_filename, iter_entry_points
 import cherrypy
+from cherrypy.lib.static import serve_file
 from cocktail.modeling import getter
 from cocktail.events import Event, event_handler
 from cocktail.controllers import Dispatcher
 from cocktail.translations import set_language
 from cocktail.language import set_content_language
 from cocktail.persistence import datastore
-from sitebasis.models import Site, Document, Style, AccessDeniedError
+from sitebasis.models import Site, Document, File, Style, AccessDeniedError
 from sitebasis.controllers.basecmscontroller import BaseCMSController
 from sitebasis.controllers.language import LanguageModule
 from sitebasis.controllers.authentication import (
@@ -232,6 +233,31 @@ class CMS(BaseCMSController):
         # Drop any uncommitted change
         datastore.abort()
         datastore.close()
+
+    @cherrypy.expose
+    def files(self, id, **kwargs):
+        
+        try:
+            id = int(id)
+        except:
+            raise cherrypy.NotFound()
+        
+        file = File.index.get(id)
+        
+        if file is None or not file.is_published():
+            raise cherrypy.NotFound()
+
+        if file.external:
+            raise cherrypy.HTTPRedirect(file.location)
+
+        self.authentication.process_request()
+
+        self.authorization.restrict_access(
+            action = "read",
+            target_instance = file
+        )
+
+        return serve_file(file.location, content_type = file.mime_type)
 
     @cherrypy.expose
     def user_styles(self):

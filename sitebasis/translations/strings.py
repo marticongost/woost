@@ -709,6 +709,14 @@ translations.define(
     en = u"Changes saved"
 )
 
+translations.define(
+    "sitebasis.controllers.backoffice.basebackofficecontroller."
+    "EditStateLostError",
+    ca = u"La sessió d'edició en que estaves treballant s'ha perdut.",
+    es = u"La sesión de edición en que estabas trabajando se ha perdido.",
+    en = u"The edit session you were working on has been lost."
+)
+
 # Item
 #------------------------------------------------------------------------------
 translations.define("Item",
@@ -1241,16 +1249,46 @@ translations.define("File-plural",
     en = u"Files"
 )
 
-translations.define("File.file_path",
-    ca = u"Ruta del fitxer",
-    es = u"Ruta del fichero",
-    en = u"File path"
+translations.define("File.title",
+    ca = u"Títol",
+    es = u"Título",
+    en = u"Title"
 )
 
-translations.define("File.file_language",
-    ca = u"Idioma del fitxer",
-    es = u"Idioma del fichero",
-    en = u"File language"
+translations.define("File.description",
+    ca = u"Descripció",
+    es = u"Descripción",
+    en = u"Description"
+)
+
+translations.define("File.enabled",
+    ca = u"Actiu",
+    es = u"Activo",
+    en = u"Enabled"
+)
+
+translations.define("File.start_date",
+    ca = u"Data d'inici",
+    es = u"Fecha de inicio",
+    en = u"Start date"
+)
+
+translations.define("File.end_date",
+    ca = u"Data de fí",
+    es = u"Fecha de fín",
+    en = u"End date"
+)
+
+translations.define("File.external",
+    ca = u"Recurs extern",
+    es = u"Recurso externo",
+    en = u"External resource"
+)
+
+translations.define("File.location",
+    ca = u"Localització",
+    es = u"Localización",
+    en = u"Location"
 )
 
 translations.define("File.mime_type",
