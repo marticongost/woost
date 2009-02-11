@@ -35,7 +35,7 @@ class Document(Item):
 
     def __init__(self, **values):
         Item.__init__(self, **values)
-        self.__handler_name = self.default_handler
+        self.__handler_name = None
         self._v_handler = None
 
     # Title and description
@@ -166,15 +166,20 @@ class Document(Item):
         
         handler = getattr(self, "_v_handler", None)
 
-        if handler is None and self.__handler_name:
-            handler = import_object(self.__handler_name)
+        if handler is None:
+            handler_name = self.__handler_name or self.default_handler
+            if handler_name:
+                handler = import_object(handler_name)
             self._v_handler = handler
  
         return handler
 
     def _set_handler(self, value):
         
-        if isinstance(value, basestring):
+        if value is None:
+            self.__handler_name = None
+            self._v_handler = None
+        elif isinstance(value, basestring):
             self.__handler_name = value
             self._v_handler = import_object(value)
         else:
