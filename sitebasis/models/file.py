@@ -11,14 +11,23 @@ from sitebasis.models.document import Document
 
 class File(Document):
  
-    members_order = "file_path", "translation_file_path"
+    default_handler = "sitebasis.controllers.filehandler.FileHandler"
 
-    file_path = schema.String()
+    members_order = "file_path", "file_language", "mime_type", "documents"
 
-    translation_file_path = schema.String(translated = True)
+    file_path = schema.String(required = True)
+
+    file_language = schema.Reference(
+        type = "sitebasis.models.Language"
+    )
+    
+    mime_type = schema.String(
+        required = True
+    )
 
     documents = schema.Collection(
         items = "sitebasis.models.Document",
         bidirectional = True
     )
+  
 
