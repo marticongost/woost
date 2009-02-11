@@ -1247,10 +1247,22 @@ translations.define("File.file_path",
     en = u"File path"
 )
 
-translations.define("File.translation_file_path",
-    ca = u"Ruta del fitxer traduït",
-    es = u"Ruta del fichero traducido",
-    en = u"File translation path"
+translations.define("File.file_language",
+    ca = u"Idioma del fitxer",
+    es = u"Idioma del fichero",
+    en = u"File language"
+)
+
+translations.define("File.mime_type",
+    ca = u"Tipus MIME",
+    es = u"Tipo MIME",
+    en = u"MIME type"
+)
+
+translations.define("File.documents",
+    ca = u"Referències",
+    es = u"Referencias",
+    en = u"Referers"
 )
 
 # News
