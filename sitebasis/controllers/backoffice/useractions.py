@@ -357,7 +357,7 @@ class RemoveAction(UserAction):
     def invoke(self, controller, selection):
 
         for item in selection:
-            self.stack_node.unrelate(self.member, item)
+            controller.stack_node.unrelate(self.member, item)
 
         controller.user_collection.base_collection = \
             controller.stack_node.get_collection(controller.member)

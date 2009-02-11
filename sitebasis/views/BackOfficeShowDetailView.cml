@@ -16,11 +16,14 @@ from sitebasis.controllers.backoffice.useractions import \
     add_view_action_context(self, "show_detail")
     ?>
 
-    <py:cocktail.html.PropertyTable
+    <py:sitebasis.views.ContentPropertyTable
+        py:id="property_table"
         py:parent="self.item_body"
         py:translations="@{self.translations}"
         py:translated_values="${True}"
-        py:schema="@{self.form_schema}"
-        py:data="@{self.form_data}"/>
-
+        py:schema="@{self.detail_schema}"
+        py:data="@{self.edited_item}"
+        py:base_url="@{self.cms.document_uri()}"
+        py:authorization_check="@{self.cms.allows}"/>
+        
 </py:sitebasis.views.BackOfficeItemView>
