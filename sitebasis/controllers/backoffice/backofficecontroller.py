@@ -18,6 +18,7 @@ from sitebasis.controllers.backoffice.contentcontroller \
 #from sitebasis.controllers.backoffice.historycontroller \
 #    import HistoryController
 
+from sitebasis.controllers.backoffice.deletecontroller import DeleteController
 from sitebasis.controllers.backoffice.ordercontroller import OrderController
 from sitebasis.controllers.backoffice.movecontroller import MoveController
 
@@ -25,8 +26,9 @@ class BackOfficeController(BaseBackOfficeController):
 
     default_section = "content"
 
-    content = ContentController
+    content = ContentController    
 #    history = HistoryController
+    delete = DeleteController
     order = OrderController
     move = MoveController
 
