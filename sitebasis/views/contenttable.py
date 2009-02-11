@@ -10,20 +10,19 @@ from cocktail.language import get_content_language
 from cocktail.translations import translate
 from cocktail.schema import Reference
 from cocktail.html import Element, templates
+from sitebasis.views.contentdisplaymixin import ContentDisplayMixin
 
 Table = templates.get_class("cocktail.html.Table")
 
 
-class ContentTable(Table):
+class ContentTable(ContentDisplayMixin, Table):
     
     base_url = None
-    authorization_check = None
 
     def __init__(self, *args, **kwargs):
         Table.__init__(self, *args, **kwargs)
+        ContentDisplayMixin.__init__(self)
         self.set_member_sortable("element", False)
-        self.set_member_type_display(
-            Reference, self.__class__.display_reference)
 
     def _fill_body(self):
 
@@ -49,21 +48,6 @@ class ContentTable(Table):
 
         return row
 
-    def get_member_display(self, item, column):
-        if self.authorization_check is not None \
-        and not self.authorization_check(
-            target_instance = item,
-            target_member = column,
-            language = get_content_language() if column.translated else None,
-            action = "read"
-        ):
-            sign = Element()
-            sign.add_class("forbidden")
-            sign.append(translate("forbidden value"))
-            return sign
-        else:
-            return Table.get_member_display(self, item, column)
-
     def display_element(self, item, member):
         
         display = Element("label")
@@ -79,20 +63,6 @@ class ContentTable(Table):
 
         for schema in item.__class__.descend_inheritance(True):
             display.add_class(schema.name)
-
-        return display
-
-    def display_reference(self, item, member):
-
-        value = self.get_member_value(item, member)
-        
-        if value is None:
-            display = Element()
-        else:
-            display = Element("a")
-            display["href"] = self.base_url + "/content/%d" % value.id
-        
-        display.append(self.translate_value(item, member, value))
 
         return display
 

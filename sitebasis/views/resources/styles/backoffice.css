@@ -363,11 +363,21 @@ html, body {
     color: rgb(75,75,75);
 }
 
-.BackOfficeLayout .Table th, .Table td {
+.BackOfficeLayout .Table th,
+.BackOfficeLayout .Table td,
+.BackOfficeLayout .PropertyTable th,
+.BackOfficeLayout .PropertyTable td {
     vertical-align: top;
 	text-align: left;
 	padding: 0.5em;
     font-size: 85%;
+}
+
+.BackOfficeLayout .PropertyTable ul,
+.BackOfficeLayout .PropertyTable li {
+    list-style-position: inside;
+    padding: 0;
+    margin: 0;
 }
 
 /*.Table tr.translations th {*/
@@ -499,8 +509,8 @@ html, body {
     list-style-position: inside;
 }
 
-.BackOfficeLayout .Table .forbidden {
-    color: rgb(135,35,10);
+.BackOfficeLayout .forbidden {
+    color: rgb(135,35,10) !important;
 }
 
 .BackOfficeLayout .Table a.target-focus {
