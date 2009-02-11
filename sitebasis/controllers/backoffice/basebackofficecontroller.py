@@ -148,6 +148,9 @@ class BaseBackOfficeController(BaseCMSController):
         @return: The current edit stack, or None if the "edit_stack" parameter
             is missing or the indicated id doesn't match an active stack.
         @rtype: L{EditStack}
+
+        @raise EditStateLostError: Raised if the user requests an edit stack
+            that is no longer available.
         """
         edit_stack = None
         edit_stack_param = self.params.read(
@@ -156,9 +159,13 @@ class BaseBackOfficeController(BaseCMSController):
         if edit_stack_param:
             id, step = map(int, edit_stack_param.split("-"))
             edit_stack = self.edit_stacks.get(id)
-            
+    
+            # Edit state lost
+            if edit_stack is None:
+                raise EditStateLostError()
+
             # Prune the stack
-            if edit_stack is not None:
+            else:
                 while len(edit_stack) > step + 1:
                     edit_stack.pop()                    
         
@@ -236,4 +243,9 @@ class BaseBackOfficeController(BaseCMSController):
         # Go back to the root of the backoffice
         else:
             raise cherrypy.HTTPRedirect(self.document_uri())
+
+
+class EditStateLostError(Exception):
+    """An exception raised when a user requests an edit state that is no longer
+    available."""
 
