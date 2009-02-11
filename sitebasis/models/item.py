@@ -31,12 +31,13 @@ class Item(PersistentObject):
 
     # Backoffice customization
     #--------------------------------------------------------------------------
+    show_detail_view = "sitebasis.views.BackOfficeShowDetailView"
     edit_view = "sitebasis.views.BackOfficeFieldsView"
     edit_form = "sitebasis.views.ContentForm"
     edit_controller = \
         "sitebasis.controllers.backoffice.itemfieldscontroller." \
         "ItemFieldsController"
-
+    
     # Indexing
     #--------------------------------------------------------------------------
     indexed = True

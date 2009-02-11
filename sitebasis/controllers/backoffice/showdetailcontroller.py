@@ -13,8 +13,11 @@ from sitebasis.controllers.backoffice.editcontroller import EditController
 
 class ShowDetailController(EditController):
 
-    view_class = "sitebasis.views.BackOfficeShowDetailView"
     section = "show_detail"
+
+    @cached_getter
+    def view_class(self):
+        return (self.edited_item or self.edited_content_type).show_detail_view
 
     @cached_getter
     def output(self):
