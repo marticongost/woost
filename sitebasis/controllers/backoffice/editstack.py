@@ -70,21 +70,7 @@ class EditStack(ListWrapper):
         @type index: int
         """
         raise cherrypy.HTTPRedirect(self.uri(index))
-
-    def go_back(self):
-        """Redirects the user to its previous significant location."""
-
-        # Go back to the parent edit state
-        if len(self._items) > 1:
-            if isinstance(self._items[-2], RelationNode):
-                self.go(-3)
-            else:
-                self.go(-2)
-        
-        # Go back to the root of the backoffice
-        else:
-            raise cherrypy.HTTPRedirect(context["cms"].document_uri())
-
+    
     def uri(self, index = -1):
         """Gets the location of the given position in the stack.
         

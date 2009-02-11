@@ -460,7 +460,7 @@ class CloseAction(UserAction):
     max = None
 
     def invoke(self, controller, selection):
-        controller.edit_stack.go_back()
+        controller.go_back()
        
 
 class SaveAction(UserAction):
