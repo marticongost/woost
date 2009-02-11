@@ -558,6 +558,51 @@ translations.define("Irrelevant access rule criteria",
     en = u"Irrelevant"
 )
 
+def sitebasis_views_backofficedelete_view_warning_ca(selection):
+    count = len(selection)
+    if count == 1:
+        return u"S'eliminarà l'element <strong>%s</strong>." \
+            % translate(selection[0], "ca")
+    else:
+        return u"S'eliminaran els <strong>%d</strong> elements seleccionats." \
+            % count
+
+def sitebasis_views_backofficedelete_view_warning_es(selection):
+    count = len(selection)
+    if count == 1:
+        return u"Se eliminará el elemento <strong>%s</strong>." \
+            % translate(selection[0], "es")
+    else:
+        return u"Se eliminarán los <strong>%d</strong> elementos " \
+            u"seleccionados." % count
+
+def sitebasis_views_backofficedelete_view_warning_en(selection):
+    count = len(selection)
+    if count == 1:
+        return u"The element <strong>%s</strong> will be deleted." \
+            % translate(selection[0], "en")
+    else:
+        return u"All <strong>%d</strong> selected elements will be deleted." \
+            % count
+
+translations.define("sitebasis.views.BackOfficeDeleteView warning",
+    ca = sitebasis_views_backofficedelete_view_warning_ca,
+    es = sitebasis_views_backofficedelete_view_warning_es,
+    en = sitebasis_views_backofficedelete_view_warning_en
+)
+
+translations.define("sitebasis.views.BackOfficeDeleteView delete",
+    ca = u"Eliminar",
+    es = u"Eliminar",
+    en = u"Delete"
+)
+
+translations.define("sitebasis.views.BackOfficeDeleteView cancel",
+    ca = u"Cancel·lar",
+    es = u"Cancelar",
+    en = u"Cancel"
+)
+
 # Initialization content
 #------------------------------------------------------------------------------
 translations.define("Create action title",

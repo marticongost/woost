@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<py:sitebasis.views.BackOfficeLayout
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:py="http://www.whads.com/ns/cocktail/templates">
+
+    <?py-class
+    selection = None
+    ?>
+
+    <py:with py:element="self.body">
+        <p py:id="warning_box">
+            @{translate("sitebasis.views.BackOfficeDeleteView warning", selection = self.selection)}        
+        </p>
+
+        <form py:id="buttons" method="post">
+            <button type="submit" name="action" value="cancel">
+                ${translate("sitebasis.views.BackOfficeDeleteView cancel")}
+            </button>
+            <button type="submit" name="action" value="confirm_delete">
+                ${translate("sitebasis.views.BackOfficeDeleteView delete")}
+            </button>
+        </form>
+    </py:with>
+
+</py:sitebasis.views.BackOfficeLayout>
