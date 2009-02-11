@@ -221,3 +221,19 @@ class BaseBackOfficeController(BaseCMSController):
 
         return action
 
+    def go_back(self):
+        """Redirects the user to its previous significant location."""
+
+        edit_stack = self.edit_stack
+
+        # Go back to the parent edit state
+        if edit_stack and len(edit_stack) > 1:
+            if isinstance(edit_stack[-2], RelationNode):
+                edit_stack.go(-3)
+            else:
+                edit_stack.go(-2)
+        
+        # Go back to the root of the backoffice
+        else:
+            raise cherrypy.HTTPRedirect(self.document_uri())
+
