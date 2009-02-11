@@ -284,7 +284,7 @@ class SelectionError(Exception):
     action is attempted against an invalid number of items."""
     
     def __init__(self, action, selection_size):
-        Exception.__init__("Can't execute action '%s' on %d item(s)."
+        Exception.__init__(self, "Can't execute action '%s' on %d item(s)."
             % (action.id, selection_size))
         self.action = action
         self.selection_size = selection_size
