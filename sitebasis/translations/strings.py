@@ -546,6 +546,13 @@ translations.define(
 )
 
 translations.define(
+    "sitebasis.controllers.backoffice.useractions.SelectionError-instance",
+    ca = lambda instance: u"Acció no disponible en el context actual",
+    es = lambda instance: u"Acción no disponible en el contexto actual",
+    en = lambda instance: u"Action not available in the current context"
+)
+
+translations.define(
     "forbidden value",
     ca = u"Camp restringit",
     es = u"Campo restringido",
