@@ -193,15 +193,15 @@ class Document(Item):
         details on accepted objects.
         """)
 
-    # Resources and attachments
+    # Page resources and attachments
     #--------------------------------------------------------------------------
-    resources = schema.Collection(
+    page_resources = schema.Collection(
         items = "sitebasis.models.Resource",
         bidirectional = True
     )
 
     attachments = schema.Collection(
-        items = "sitebasis.models.File",
+        items = "sitebasis.models.Resource",
         bidirectional = True
     )
 

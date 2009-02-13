@@ -934,15 +934,15 @@ translations.define("Document.enabled",
 )
 
 translations.define("Document.attachments",
-    ca = u"Fitxers adjunts",
-    es = u"Ficheros adjuntos",
+    ca = u"Adjunts",
+    es = u"Adjuntos",
     en = u"Attachments"
 )
 
-translations.define("Document.resources",
+translations.define("Document.page_resources",
     ca = u"Recursos HTML",
     es = u"Recursos HTML",
-    en = u"HTML Resources"
+    en = u"HTML resources"
 )
 
 translations.define("Document.parent",
@@ -1125,16 +1125,102 @@ translations.define("Resource.title",
     en = u"Name"
 )
 
-translations.define("Resource.uri",
-    ca = u"URI",
-    es = u"URI",
-    en = u"URI"
+translations.define("Resource.description",
+    ca = u"Descripció",
+    es = u"Descripción",
+    en = u"Description"
+)
+
+translations.define("Resource.enabled",
+    ca = u"Actiu",
+    es = u"Activo",
+    en = u"Enabled"
+)
+
+translations.define("Resource.start_date",
+    ca = u"Data d'inici",
+    es = u"Fecha de inicio",
+    en = u"Start date"
+)
+
+translations.define("Resource.end_date",
+    ca = u"Data de fi",
+    es = u"Fecha de fin",
+    en = u"End date"
+)
+
+translations.define("Resource.category",
+    ca = u"Tipus de recurs",
+    es = u"Tipo de recurso",
+    en = u"Resource type"
 )
 
 translations.define("Resource.documents",
-    ca = u"Documents",
-    es = u"Documentos",
-    en = u"Documents"
+    ca = u"Referències",
+    es = u"Referencias",
+    en = u"Referers"
+)
+
+translations.define("Resource.category-text",
+    ca = u"Text",
+    es = u"Texto",
+    en = u"Text"
+)
+
+translations.define("Resource.category-image",
+    ca = u"Imatge",
+    es = u"Imagen",
+    en = u"Image"
+)
+
+translations.define("Resource.category-audio",
+    ca = u"Audio",
+    es = u"Audio",
+    en = u"Audio"
+)
+
+translations.define("Resource.category-video",
+    ca = u"Video",
+    es = u"Video",
+    en = u"Video"
+)
+
+translations.define("Resource.category-document",
+    ca = u"Document",
+    es = u"Documento",
+    en = u"Document"
+)
+
+translations.define("Resource.category-html_resource",
+    ca = u"Recurs HTML",
+    es = u"Recurso HTML",
+    en = u"HTML resource"
+)
+
+translations.define("Resource.category-other",
+    ca = u"Altre",
+    es = u"Otro",
+    en = u"Other"
+)
+
+# URI
+#------------------------------------------------------------------------------
+translations.define("URI",
+    ca = u"Adreça web",
+    es = u"Dirección web",
+    en = u"Web address"
+)
+
+translations.define("URI-plural",
+    ca = u"Adreces web",
+    es = u"Direcciones web",
+    en = u"Web addresses"
+)
+
+translations.define("URI.uri",
+    ca = u"Adreça",
+    es = u"Dirección",
+    en = u"Address"
 )
 
 # Style
@@ -1249,58 +1335,16 @@ translations.define("File-plural",
     en = u"Files"
 )
 
-translations.define("File.title",
-    ca = u"Títol",
-    es = u"Título",
-    en = u"Title"
-)
-
-translations.define("File.description",
-    ca = u"Descripció",
-    es = u"Descripción",
-    en = u"Description"
-)
-
-translations.define("File.enabled",
-    ca = u"Actiu",
-    es = u"Activo",
-    en = u"Enabled"
-)
-
-translations.define("File.start_date",
-    ca = u"Data d'inici",
-    es = u"Fecha de inicio",
-    en = u"Start date"
-)
-
-translations.define("File.end_date",
-    ca = u"Data de fí",
-    es = u"Fecha de fín",
-    en = u"End date"
-)
-
-translations.define("File.external",
-    ca = u"Recurs extern",
-    es = u"Recurso externo",
-    en = u"External resource"
-)
-
-translations.define("File.location",
-    ca = u"Localització",
-    es = u"Localización",
-    en = u"Location"
+translations.define("File.file_name",
+    ca = u"Nom del fitxer",
+    es = u"Nombre del fichero",
+    en = u"File name"
 )
 
 translations.define("File.mime_type",
     ca = u"Tipus MIME",
     es = u"Tipo MIME",
     en = u"MIME type"
-)
-
-translations.define("File.documents",
-    ca = u"Referències",
-    es = u"Referencias",
-    en = u"Referers"
 )
 
 # News
