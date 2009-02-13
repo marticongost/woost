@@ -94,7 +94,7 @@ from cocktail.html.datadisplay import MULTIPLE_SELECTION
                 href="?${view_state(expanded = expanded_param)}">
                 <img src="${self.cms.application_uri('resources', 'images', state + '.png')}"/>
             </a>
-            <py:new py:element="ContentTable.display_element(self, item, member)"/>
+            <py:new py:element="ContentTable.create_element_display(self, item, member)"/>
         </py:with>
 
     </div>
