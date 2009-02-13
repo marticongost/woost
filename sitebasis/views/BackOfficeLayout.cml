@@ -46,7 +46,7 @@ from sitebasis.controllers.backoffice.editstack import EditNode, RelationNode
         self.page_title = self.get_page_title()
 
         if self.backoffice:
-            for resource in self.backoffice.resources:
+            for resource in self.backoffice.page_resources:
                 self.add_resource(resource.uri)
         ?>
     </py:ready>

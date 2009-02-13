@@ -7,67 +7,109 @@
 @since:			July 2008
 """
 from datetime import datetime
+from cocktail.modeling import getter
+from cocktail.events import event_handler
 from cocktail import schema
-from sitebasis.models.document import Item
+from sitebasis.models.resource import Resource
 
-class File(Item):
+mime_type_categories = {}
+
+for category, mime_types in (
+    ("text/plain", ("text",)),
+    ("html_resource", (
+        "text/css",
+        "text/javascript",
+        "text/ecmascript",
+        "application/javascript",
+        "application/ecmascript"
+    )),
+    ("document", (
+        "application/vnd.oasis.opendocument.text",
+        "application/vnd.oasis.opendocument.spreadsheet",
+        "application/vnd.oasis.opendocument.presentation",
+        "application/msword",
+        "application/msaccess",
+        "application/mspowerpoint",
+        "application/mswrite",
+        "application/vnd.ms-excel",
+        "application/vnd.ms-powerpoint",
+        "application/vnd.ms-project",
+        "application/vnd.ms-works",
+        "application/vnd.ms-xpsdocument",
+        "application/rtf",
+        "application/pdf",
+        "application/postscript",
+        "application/x-latex",
+        "application/vnd.oasis.opendocument.database",
+        "application/msaccess"
+    )),
+    ("package", (
+        "application/zip",
+        "application/x-rar-compressed",
+        "application/x-tar",
+        "application/x-gtar",
+        "application/x-gzip",
+        "application/x-bzip",
+        "application/x-stuffit",
+        "vnd.ms-cab-compressed"
+    ))
+):
+    for mime_type in mime_types:
+        mime_type_categories[mime_type] = category
+
+
+class File(Resource):
  
-    #edit_form = "sitebasis.views.FileForm"
+    instantiable = True
 
     members_order = [
-        "title",
-        "description",
-        "enabled",
-        "start_date",
-        "end_date",
-        "external",
-        "location",
-        "mime_type",
-        "documents"
+        "file_name",
+        "mime_type"
     ]
-    
-    title = schema.String(
+
+    file_name = schema.String(
         required = True,
-        translated = True
+        editable = False
     )
-
-    description = schema.String(
-        translated = True,
-        edit_control = "cocktail.html.TextArea"
-    )
-
-    enabled = schema.Boolean(
-        required = True,
-        translated = True,
-        default = True
-    )
-
-    start_date = schema.DateTime(
-        indexed = True
-    )
-
-    end_date = schema.DateTime(
-        indexed = True,
-        min = start_date
-    )
-
-    external = schema.Boolean(required = True)
-    
-    location = schema.String(required = True)
 
     mime_type = schema.String(
-        required = external.not_()
+        required = True,
+        editable = False
     )
 
-    documents = schema.Collection(
-        items = "sitebasis.models.Document",
-        bidirectional = True
-    )
+    @getter
+    def uri(self):
+        return context["cms"].application_uri("files", self.id)
 
-    def is_published(self, language = None):
-        return (
-            self.get("enabled", language)
-            and (self.start_date is None or self.start_date <= datetime.now())
-            and (self.end_date is None or self.end_date > datetime.now())
-        )
+    @event_handler
+    def handle_changed(cls, event):
+        # Update the 'file_category' member when 'mime_type' is set
+
+        file = event.source
+
+        if event.member.name == "mime_type":
+            file.resource_type = \
+                file.get_category_from_mime_type(file.mime_type)
+
+    @classmethod
+    def get_category_from_mime_type(cls, mime_type):
+        """Obtains the file category that best matches the indicated MIME type.
+        
+        @param mime_type: The MIME type to get the category for.
+        @type mime_type: str
+
+        @return: A string identifier with the category matching the indicated
+            MIME type (one of 'document', 'image', 'audio', 'video', 'package',
+            'html_resource' or 'other').
+        @rtype: str
+        """
+        pos = mime_type.find("/")
+
+        if pos != -1:
+            prefix = mime_type[:pos]
+
+            if prefix in ("image", "audio", "video"):
+                return prefix
+        
+        return mime_type_categories.get(mime_type, "other")
 
