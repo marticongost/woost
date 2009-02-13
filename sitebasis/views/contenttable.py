@@ -48,7 +48,7 @@ class ContentTable(ContentDisplayMixin, Table):
 
         return row
 
-    def display_element(self, item, member):
+    def create_element_display(self, item, member):
         
         display = Element("label")
         display["for"] = "selection_" + str(item.id)
