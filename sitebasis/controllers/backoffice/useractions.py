@@ -403,6 +403,7 @@ class DeleteAction(UserAction):
 
 class HistoryAction(UserAction):
     min = None
+    excluded = frozenset(["selector", "new_item"])
 
 
 class DiffAction(UserAction):
