@@ -24,6 +24,9 @@ from sitebasis.controllers.backoffice.movecontroller import MoveController
 
 class BackOfficeController(BaseBackOfficeController):
 
+    _cp_config = BaseBackOfficeController.copy_config()
+    _cp_config["rendering.engine"] = "cocktail"
+
     default_section = "content"
 
     content = ContentController    
