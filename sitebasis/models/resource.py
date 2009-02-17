@@ -20,7 +20,7 @@ class Resource(Item):
         "enabled",
         "start_date",
         "end_date",
-        "file_category",
+        "resource_type",
         "documents"
     )
 

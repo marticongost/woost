@@ -1108,9 +1108,9 @@ translations.define("AccessRule.allowed",
 # Resource
 #------------------------------------------------------------------------------
 translations.define("Resource",
-    ca = u"Recurs HTML",
-    es = u"Recurso HTML",
-    en = u"HTML Resource"
+    ca = u"Recurs",
+    es = u"Recurso",
+    en = u"Resource"
 )
 
 translations.define("Resource-plural",
@@ -1149,7 +1149,7 @@ translations.define("Resource.end_date",
     en = u"End date"
 )
 
-translations.define("Resource.category",
+translations.define("Resource.resource_type",
     ca = u"Tipus de recurs",
     es = u"Tipo de recurso",
     en = u"Resource type"
@@ -1161,43 +1161,43 @@ translations.define("Resource.documents",
     en = u"Referers"
 )
 
-translations.define("Resource.category-text",
+translations.define("Resource.resource_type-text",
     ca = u"Text",
     es = u"Texto",
     en = u"Text"
 )
 
-translations.define("Resource.category-image",
+translations.define("Resource.resource_type-image",
     ca = u"Imatge",
     es = u"Imagen",
     en = u"Image"
 )
 
-translations.define("Resource.category-audio",
+translations.define("Resource.resource_type-audio",
     ca = u"Audio",
     es = u"Audio",
     en = u"Audio"
 )
 
-translations.define("Resource.category-video",
+translations.define("Resource.resource_type-video",
     ca = u"Video",
     es = u"Video",
     en = u"Video"
 )
 
-translations.define("Resource.category-document",
+translations.define("Resource.resource_type-document",
     ca = u"Document",
     es = u"Documento",
     en = u"Document"
 )
 
-translations.define("Resource.category-html_resource",
+translations.define("Resource.resource_type-html_resource",
     ca = u"Recurs HTML",
     es = u"Recurso HTML",
     en = u"HTML resource"
 )
 
-translations.define("Resource.category-other",
+translations.define("Resource.resource_type-other",
     ca = u"Altre",
     es = u"Otro",
     en = u"Other"
