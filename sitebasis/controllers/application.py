@@ -50,6 +50,8 @@ class CMS(BaseCMSController):
 
     # Webserver configuration
     virtual_path = "/"
+    
+    upload_path = None
 
     # A dummy controller for CherryPy, that triggers the cocktail dispatcher.
     # This is done so dynamic dispatching (using the resolve() method of
@@ -241,14 +243,17 @@ class CMS(BaseCMSController):
             id = int(id)
         except:
             raise cherrypy.NotFound()
-        
-        file = File.index.get(id)
+
+        disposition = kwargs.get("disposition")
+
+        if disposition not in ("inline", "attachment"):
+            disposition = "inline"
+
+        file = File.get_instance(id)
+        print id, list(File.index.keys()), file
         
         if file is None or not file.is_published():
             raise cherrypy.NotFound()
-
-        if file.external:
-            raise cherrypy.HTTPRedirect(file.location)
 
         self.authentication.process_request()
 
@@ -257,7 +262,11 @@ class CMS(BaseCMSController):
             target_instance = file
         )
 
-        return serve_file(file.location, content_type = file.mime_type)
+        return serve_file(
+                file.file_path,
+                name = file.file_name,
+                disposition = disposition,
+                content_type = file.mime_type)
 
     @cherrypy.expose
     def user_styles(self):

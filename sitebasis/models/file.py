@@ -6,10 +6,12 @@
 @organization:	Whads/Accent SL
 @since:			July 2008
 """
+import os.path
 from datetime import datetime
 from cocktail.modeling import getter
 from cocktail.events import event_handler
 from cocktail import schema
+from cocktail.controllers import context
 from sitebasis.models.resource import Resource
 
 mime_type_categories = {}
@@ -80,6 +82,10 @@ class File(Resource):
     @getter
     def uri(self):
         return context["cms"].application_uri("files", self.id)
+
+    @getter
+    def file_path(self):
+        return os.path.join(context["cms"].upload_path, str(self.id))
 
     @event_handler
     def handle_changed(cls, event):
