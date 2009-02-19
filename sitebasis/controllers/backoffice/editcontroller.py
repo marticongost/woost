@@ -182,6 +182,14 @@ class EditController(BaseBackOfficeController):
         redirect = False
         item = self.edited_item
         user = self.user
+        
+        def create_instance():
+            instance = self.edited_content_type()
+            instance.set(
+                self.edited_content_type.primary_member,
+                self.stack_node.generated_id
+            )
+            return instance
 
         # Create a draft
         if make_draft:
@@ -192,7 +200,7 @@ class EditController(BaseBackOfficeController):
 
             # From scratch
             else:
-                item = self.edited_content_type()
+                item = create_instance()
                 item.is_draft = True
 
             item.author = user
@@ -208,7 +216,7 @@ class EditController(BaseBackOfficeController):
             with changeset_context(author = user):
 
                 if item is None:
-                    item = self.edited_content_type()
+                    item = create_instance()
                     redirect = True
 
                 self._apply_changes(item)
