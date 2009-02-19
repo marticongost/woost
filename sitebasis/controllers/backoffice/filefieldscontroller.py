@@ -6,11 +6,14 @@
 @organization:	Whads/Accent SL
 @since:			February 2009
 """
+import os
+from shutil import move
 from cocktail.modeling import cached_getter
 from cocktail import schema
 from cocktail.controllers.fileupload import FileUpload
 from sitebasis.controllers.backoffice.itemfieldscontroller \
     import ItemFieldsController
+from sitebasis.controllers import CMS
 
 
 class FileFieldsController(ItemFieldsController):
@@ -19,7 +22,8 @@ class FileFieldsController(ItemFieldsController):
     def form_adapter(self):
         adapter = ItemFieldsController.form_adapter(self)
         adapter.exclude(["resource_type"])
-        adapter.import_rules.add_rule(ExtractUploadInfo())
+        adapter.export_rules.add_rule(ExportUploadInfo())
+        adapter.import_rules.add_rule(ImportUploadInfo())
         return adapter
 
     @cached_getter
@@ -28,10 +32,7 @@ class FileFieldsController(ItemFieldsController):
         form_schema.add_member(
             FileUpload("upload",
                 required = True,
-                get_file_destination = lambda upload:
-                    self.context["cms"].get_file_upload_path(
-                        self.stack_node.generated_id
-                    )
+                get_file_destination = lambda upload: self.temp_file_path                    
             )
         )
         return form_schema
@@ -44,18 +45,34 @@ class FileFieldsController(ItemFieldsController):
 
         form_data = ItemFieldsController.form_data(self)
 
-        from styled import styled
-        print styled(form_data, "brown")
-        print styled(stack_upload_data, "violet")
-
         if not form_data.get("upload") and stack_upload_data:
             form_data["upload"] = stack_upload_data
-            print styled(form_data, "turquoise")
 
         return form_data
 
+    @cached_getter
+    def temp_file_path(self):
+        return os.path.join(
+            self.context["cms"].upload_path,
+            "temp",
+            str(self.stack_node.generated_id)
+        )
 
-class ExtractUploadInfo(schema.Rule):
+
+class ExportUploadInfo(schema.Rule):
+
+    def adapt_object(self, context):
+        file_name = context.get("file_name")
+        
+        if file_name:
+            context.set("upload", {
+                "file_name": file_name,
+                "mime_type": context.get("mime_type"),
+                "file_size": context.get("file_size")
+            })
+
+
+class ImportUploadInfo(schema.Rule):
 
     def adapt_object(self, context):
 
@@ -65,4 +82,17 @@ class ExtractUploadInfo(schema.Rule):
         if upload:
             context.set("file_name", schema.get(upload, "file_name"))
             context.set("mime_type", schema.get(upload, "mime_type"))
+            context.set("file_size", schema.get(upload, "file_size"))
+
+
+@CMS.saving_item.append
+def move_temp_file(event):
+    # Move the uploaded file to its permanent location
+    src = event.controller.temp_file_path
+    dest = event.item.file_path
+
+    if os.path.exists(dest):
+        os.remove(dest)
+
+    move(src, dest)
 
