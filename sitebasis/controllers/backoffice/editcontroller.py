@@ -223,7 +223,7 @@ class EditController(BaseBackOfficeController):
 
         item.insert()
         datastore.commit()
-        
+
         self.edit_node.forget_edited_collections()
         self.saved = True
 
@@ -328,6 +328,12 @@ class EditController(BaseBackOfficeController):
         restrict_access(
             target_instance = self.edited_item,
             action = is_new and "create" or "modify"
+        )
+
+        self.context["cms"].saving_item(
+            item = item,
+            is_new = is_new,
+            controller = self
         )
 
     @cached_getter
