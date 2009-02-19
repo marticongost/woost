@@ -1473,3 +1473,68 @@ html, body {
 	background-color: rgb(225, 225, 225);
 }
 
+/* File form
+-----------------------------------------------------------------------------*/
+.FileFieldsView .upload_info {
+    font-size: 90%;
+    margin: 0;
+    margin-top: 0.5em;
+    margin-bottom: 0.4em;
+    padding: 0;
+    padding-bottom: 0.4em;
+    padding-left: 2em;
+    padding-top: 0.2em;
+    background-repeat: no-repeat;
+}
+
+.FileFieldsView .upload_info .file_name {
+    font-style: italic;
+}
+
+.FileFieldsView .upload_info .file_size {
+    margin-left: 0.5em;
+    color: rgb(100,100,100);
+}
+
+/* Mime types and file categories
+-----------------------------------------------------------------------------*/
+.BackOfficeLayout .resource_type_text {
+    background-image: url(../images/mime_types/text.png);
+}
+
+.BackOfficeLayout .resource_type_document {
+    background-image: url(../images/mime_types/document.png);
+}
+
+.BackOfficeLayout .resource_type_image {
+    background-image: url(../images/mime_types/image.png);
+}
+
+.BackOfficeLayout .resource_type_audio {
+    background-image: url(../images/mime_types/audio.png);
+}
+
+.BackOfficeLayout .resource_type_video {
+    background-image: url(../images/mime_types/video.png);
+}
+
+.BackOfficeLayout .resource_type_package {
+    background-image: url(../images/mime_types/package.png);
+}
+
+.BackOfficeLayout .resource_type_web {
+    background-image: url(../images/mime_types/web.png);
+}
+
+.BackOfficeLayout .mime_type_application_msexcel,
+.BackOfficeLayout .mime_type_application_vnd_ms_excel,
+.BackOfficeLayout .mime_type_application_vnd_oasis_opendocument_spreadsheet {
+    background-image: url(../images/mime_types/spreadsheet.png);
+}
+
+.BackOfficeLayout .mime_type_application_msexcel,
+.BackOfficeLayout .mime_type_application_vnd_ms_excel,
+.BackOfficeLayout .mime_type_application_vnd_oasis_opendocument_presentation {
+    background-image: url(../images/mime_types/presentation.png);
+}
+

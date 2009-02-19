@@ -28,6 +28,7 @@ for category, mime_types in (
         "application/vnd.oasis.opendocument.spreadsheet",
         "application/vnd.oasis.opendocument.presentation",
         "application/msword",
+        "application/msexcel",
         "application/msaccess",
         "application/mspowerpoint",
         "application/mswrite",
@@ -83,6 +84,12 @@ class File(Resource):
         editable = False
     )
 
+    file_size = schema.Integer(
+        required = True,
+        editable = False,
+        min = 0
+    )
+
     @getter
     def uri(self):
         return context["cms"].application_uri("files", self.id)
@@ -122,4 +129,23 @@ class File(Resource):
                 return prefix
         
         return mime_type_categories.get(mime_type, "other")
+
+
+# Adapted from a script by Martin Pool, original found at
+# http://mail.python.org/pipermail/python-list/1999-December/018519.html
+_size_suffixes = [
+    (1<<50L, 'Pb'),
+    (1<<40L, 'Tb'), 
+    (1<<30L, 'Gb'), 
+    (1<<20L, 'Mb'), 
+    (1<<10L, 'kb'),
+    (1, 'bytes')
+]
+
+def get_human_readable_file_size(size):
+    """Return a string representing the greek/metric suffix of a file size."""
+    for factor, suffix in _size_suffixes:
+        if size > factor:
+            break
+    return str(int(size/factor)) + suffix
 
