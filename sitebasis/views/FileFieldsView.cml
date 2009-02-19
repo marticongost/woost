@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<py:sitebasis.views.BackOfficeFieldsView
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:py="http://www.whads.com/ns/cocktail/templates">
+
+    <py:with py:element="self.body" enctype="multipart/form-data"/>
+
+    <py:with py:element="self.item_body">
+        <py:ready>
+            <py:with py:element="self.edit_form">
+                <py:with py:def="label" py:args="member">
+                    <?py                    
+                    if member.name == "upload":
+                        form = self.edit_form
+                        upload_data = form.get_member_value(
+                            form.data,
+                            member
+                        )
+                        if upload_data:
+                            element.append("Fitxer pujat")
+                    ?>
+                </py:with>
+            </py:with>
+        </py:ready>
+    </py:with>
+
+</py:sitebasis.views.BackOfficeFieldsView>

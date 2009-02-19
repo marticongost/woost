@@ -6,8 +6,6 @@
 @organization:	Whads/Accent SL
 @since:			July 2008
 """
-import os.path
-from datetime import datetime
 from cocktail.modeling import getter
 from cocktail.events import event_handler
 from cocktail import schema
@@ -64,6 +62,12 @@ class File(Resource):
  
     instantiable = True
 
+    edit_view = "sitebasis.views.FileFieldsView"
+
+    edit_controller = \
+        "sitebasis.controllers.backoffice.filefieldscontroller." \
+        "FileFieldsController"
+
     members_order = [
         "file_name",
         "mime_type"
@@ -85,7 +89,7 @@ class File(Resource):
 
     @getter
     def file_path(self):
-        return os.path.join(context["cms"].upload_path, str(self.id))
+        return context["cms"].get_file_upload_path(self.id)
 
     @event_handler
     def handle_changed(cls, event):
