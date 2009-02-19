@@ -90,6 +90,10 @@ class File(Resource):
         min = 0
     )
 
+    file_hash = schema.String(
+        visible = False
+    )
+
     @getter
     def uri(self):
         return context["cms"].application_uri("files", self.id)

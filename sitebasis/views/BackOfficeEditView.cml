@@ -78,6 +78,10 @@ from sitebasis.controllers.backoffice.useractions import \
 
                 if section_id == self.section:
                     element.add_class("selected")
+                
+                from styled import styled
+                print styled(member, "slate_blue")
+                print styled(self.differences, "magenta")
 
                 if self.edited_item and (
                     (is_collection and self.edit_stack[-1].collection_has_changes(member))
