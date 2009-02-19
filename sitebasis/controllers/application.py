@@ -6,8 +6,9 @@
 @organization:	Whads/Accent SL
 @since:			July 2008
 """
-from pkg_resources import resource_filename, iter_entry_points
+import os.path
 import cherrypy
+from pkg_resources import resource_filename, iter_entry_points
 from cherrypy.lib.static import serve_file
 from cocktail.modeling import getter
 from cocktail.events import Event, event_handler
@@ -235,6 +236,9 @@ class CMS(BaseCMSController):
         # Drop any uncommitted change
         datastore.abort()
         datastore.close()
+
+    def get_file_upload_path(self, id):
+        return os.path.join(self.upload_path, str(id))
 
     @cherrypy.expose
     def files(self, id, **kwargs):
