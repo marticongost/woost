@@ -8,6 +8,7 @@
 """
 import os
 from shutil import move
+import cherrypy
 from cocktail.modeling import cached_getter
 from cocktail import schema
 from cocktail.controllers.fileupload import FileUpload
@@ -32,6 +33,7 @@ class FileFieldsController(ItemFieldsController):
         form_schema.add_member(
             FileUpload("upload",
                 required = True,
+                hash_algorithm = "md5",
                 get_file_destination = lambda upload: self.temp_file_path                    
             )
         )
@@ -55,7 +57,11 @@ class FileFieldsController(ItemFieldsController):
         return os.path.join(
             self.context["cms"].upload_path,
             "temp",
-            str(self.stack_node.generated_id)
+            "%s-%s-%s" % (
+                self.stack_node.generated_id,
+                cherrypy.session.id,
+                self.edit_stack.to_param()
+            )
         )
 
 
@@ -68,7 +74,8 @@ class ExportUploadInfo(schema.Rule):
             context.set("upload", {
                 "file_name": file_name,
                 "mime_type": context.get("mime_type"),
-                "file_size": context.get("file_size")
+                "file_size": context.get("file_size"),
+                "file_hash": context.get("file_hash")
             })
 
 
@@ -83,6 +90,7 @@ class ImportUploadInfo(schema.Rule):
             context.set("file_name", schema.get(upload, "file_name"))
             context.set("mime_type", schema.get(upload, "mime_type"))
             context.set("file_size", schema.get(upload, "file_size"))
+            context.set("file_hash", schema.get(upload, "file_hash"))
 
 
 @CMS.saving_item.append
