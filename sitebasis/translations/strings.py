@@ -1347,6 +1347,18 @@ translations.define("File.mime_type",
     en = u"MIME type"
 )
 
+translations.define("File.file_size",
+    ca = u"Mida del fitxer",
+    es = u"Tamaño de fichero",
+    en = u"File size"
+)
+
+translations.define("BackOfficeEditForm.upload",
+    ca = u"Càrrega de fitxer",
+    es = u"Carga de fichero",
+    en = u"File upload"
+)
+
 # News
 #------------------------------------------------------------------------------
 translations.define("News",

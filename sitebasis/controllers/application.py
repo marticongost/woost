@@ -6,8 +6,9 @@
 @organization:	Whads/Accent SL
 @since:			July 2008
 """
-from pkg_resources import resource_filename, iter_entry_points
+import os.path
 import cherrypy
+from pkg_resources import resource_filename, iter_entry_points
 from cherrypy.lib.static import serve_file
 from cocktail.modeling import getter
 from cocktail.events import Event, event_handler
@@ -43,6 +44,20 @@ class CMS(BaseCMSController):
         An event triggered after loading plugins.
         """)
 
+    saving_item = Event(doc = """
+        An event triggered when executing a save operation.
+
+        @ivar item: The item that is being saved.
+        @type item: L{Item<sitebasis.models.Item>}
+        
+        @ivar is_new: A flag indicating if the element is being created (True)
+            or modified (False).
+        @type is_new: bool
+
+        @ivar controller: The controller that handles the save operation.
+        @type controller: L{EditController<sitebasis.controllers.backoffice.editcontroller.EditController>}
+        """)
+
     # Application modules
     LanguageModule = LanguageModule
     AuthenticationModule = AuthenticationModule
@@ -50,6 +65,8 @@ class CMS(BaseCMSController):
 
     # Webserver configuration
     virtual_path = "/"
+    
+    upload_path = None
 
     # A dummy controller for CherryPy, that triggers the cocktail dispatcher.
     # This is done so dynamic dispatching (using the resolve() method of
@@ -234,6 +251,9 @@ class CMS(BaseCMSController):
         datastore.abort()
         datastore.close()
 
+    def get_file_upload_path(self, id):
+        return os.path.join(self.upload_path, str(id))
+
     @cherrypy.expose
     def files(self, id, **kwargs):
         
@@ -241,14 +261,17 @@ class CMS(BaseCMSController):
             id = int(id)
         except:
             raise cherrypy.NotFound()
-        
-        file = File.index.get(id)
+
+        disposition = kwargs.get("disposition")
+
+        if disposition not in ("inline", "attachment"):
+            disposition = "inline"
+
+        file = File.get_instance(id)
+        print id, list(File.index.keys()), file
         
         if file is None or not file.is_published():
             raise cherrypy.NotFound()
-
-        if file.external:
-            raise cherrypy.HTTPRedirect(file.location)
 
         self.authentication.process_request()
 
@@ -257,7 +280,11 @@ class CMS(BaseCMSController):
             target_instance = file
         )
 
-        return serve_file(file.location, content_type = file.mime_type)
+        return serve_file(
+                file.file_path,
+                name = file.file_name,
+                disposition = disposition,
+                content_type = file.mime_type)
 
     @cherrypy.expose
     def user_styles(self):

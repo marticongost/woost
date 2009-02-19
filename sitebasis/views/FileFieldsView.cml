@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?py
+from cocktail.html import Element
+from sitebasis.models.file import get_human_readable_file_size
+?>
+
+<py:sitebasis.views.BackOfficeFieldsView
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:py="http://www.whads.com/ns/cocktail/templates">
+
+    <py:with py:element="self.body" enctype="multipart/form-data"/>
+
+    <py:with py:element="self.item_body">
+        <py:ready>
+            <py:with py:element="self.edit_form">
+                <py:with py:def="label" py:args="member">
+                    <py:block py:if="member.name == 'upload'">
+                        <?py
+                        form = self.edit_form
+                        upload = form.get_member_value(form.data, member)
+                        ?>
+                        <py:new py:element="self.create_upload_info(upload)" py:if="upload"/>
+                    </py:block>
+                </py:with>
+            </py:with>
+        </py:ready>
+    </py:with>
+
+    <p py:def="upload_info" py:args="upload">
+        <?py
+        mime_type = upload["mime_type"]
+        element.add_class("resource_type_"
+            + self.edited_content_type.get_category_from_mime_type(mime_type)
+        )
+        element.add_class("mime_type_" + mime_type.replace("/", "_").replace(".", "_"))
+        ?>
+        <span class="file_name">${upload["file_name"]}</span>
+        <span class="file_size">
+            ${get_human_readable_file_size(upload["file_size"])}
+        </span>
+    </p>
+
+</py:sitebasis.views.BackOfficeFieldsView>

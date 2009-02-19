@@ -11,7 +11,7 @@ import cherrypy
 from cocktail.modeling import cached_getter
 from cocktail.events import event_handler, when
 from cocktail.schema import (
-    Adapter, ErrorList, DictAccessor, Collection
+    Adapter, ErrorList, DictAccessor, Collection, diff
 )
 from cocktail.persistence import datastore
 from sitebasis.models import Language, changeset_context
@@ -120,17 +120,22 @@ class EditController(BaseBackOfficeController):
     def differences(self):
 
         source = self.differences_source
-
+        
         if source:
-            form_keys = set(self.form_schema.members().iterkeys())
+            source_form_data = {}
+            self.form_adapter.export_object(
+                source,
+                source_form_data,
+                self.edited_content_type,
+                self.form_schema
+            )
+
             return set(
-                (member, language)
-                for member, language in self.edited_content_type.differences(
-                    source,
-                    self.form_data
+                diff(
+                    source_form_data,
+                    self.form_data,
+                    self.form_schema
                 )
-                if member.name in form_keys
-                    and not isinstance(member, Collection)
             )
         else:
             return set()
@@ -182,6 +187,14 @@ class EditController(BaseBackOfficeController):
         redirect = False
         item = self.edited_item
         user = self.user
+        
+        def create_instance():
+            instance = self.edited_content_type()
+            instance.set(
+                self.edited_content_type.primary_member,
+                self.stack_node.generated_id
+            )
+            return instance
 
         # Create a draft
         if make_draft:
@@ -192,7 +205,7 @@ class EditController(BaseBackOfficeController):
 
             # From scratch
             else:
-                item = self.edited_content_type()
+                item = create_instance()
                 item.is_draft = True
 
             item.author = user
@@ -208,14 +221,14 @@ class EditController(BaseBackOfficeController):
             with changeset_context(author = user):
 
                 if item is None:
-                    item = self.edited_content_type()
+                    item = create_instance()
                     redirect = True
 
                 self._apply_changes(item)
 
         item.insert()
         datastore.commit()
-        
+
         self.edit_node.forget_edited_collections()
         self.saved = True
 
@@ -320,6 +333,12 @@ class EditController(BaseBackOfficeController):
         restrict_access(
             target_instance = self.edited_item,
             action = is_new and "create" or "modify"
+        )
+
+        self.context["cms"].saving_item(
+            item = item,
+            is_new = is_new,
+            controller = self
         )
 
     @cached_getter

@@ -24,6 +24,7 @@ class ShowDetailController(EditController):
             for member in self.edited_content_type.members().itervalues()
             if not member.visible
         ])
+        adapter.exclude(["translations"])
         return adapter
 
     @cached_getter
