@@ -8,13 +8,14 @@
 """
 from copy import copy
 import cherrypy
-from cocktail.modeling import ListWrapper
+from cocktail.modeling import ListWrapper, cached_getter
 from cocktail.schema import Collection, add, remove, DictAccessor
 from cocktail.controllers import context
 from cocktail.persistence import (
     PersistentList, PersistentRelationList,
     PersistentSet, PersistentRelationSet,
-    PersistentMapping, PersistentRelationMapping
+    PersistentMapping, PersistentRelationMapping,
+    incremental_id
 )
 
 
@@ -123,7 +124,6 @@ class EditNode(object):
     @type translations: str list 
     """
     __item_id = None
-    item = None
     content_type = None
     form_data = None
     translations = None
@@ -131,6 +131,10 @@ class EditNode(object):
 
     def __init__(self):
         self.__collections = {}
+
+    @cached_getter
+    def generated_id(self):
+        return self.__item_id or incremental_id()
 
     def _get_item(self):
         if self.__item_id is None:
