@@ -17,6 +17,8 @@ from sitebasis.models.language import Language
 class Site(Item):
 
     indexed = True
+    instantiable = False
+
     members_order = [
         "default_language",
         "home",
@@ -31,7 +33,8 @@ class Site(Item):
 
     default_language = schema.String(
         required = True,
-        default = "en"
+        default = "en",
+        enumeration = lambda ctx: Language.codes
     )
     
     home = schema.Reference(
