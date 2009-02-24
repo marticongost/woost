@@ -327,14 +327,19 @@ html, body {
 .BackOfficeLayout .PropertyTable {
 	clear: both;
     border-collapse: collapse;
-    width: 100%;    
+    width: 100%;
 }
 
-.BackOfficeLayout .Table,
-.BackOfficeLayout .Table th,
-.BackOfficeLayout .PropertyTable,
-.BackOfficeLayout .PropertyTable td,
-.BackOfficeLayout .PropertyTable th {
+.BackOfficeLayout .PropertyTable .type_group {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.BackOfficeLayout .PropertyTable .type_group + .type_group {
+    margin-top: 1em;
+}
+
+.BackOfficeLayout .Table th {
     border: 1px solid rgb(200,205,212);
 }
 
@@ -350,8 +355,32 @@ html, body {
     font-weight: normal;
 }
 
+.BackOfficeLayout .PropertyTable .type_header th {
+    font-weight: bold;
+    background-image: url(../images/expanded_block.png);
+    background-repeat: no-repeat;
+    background-position: 0.3em center;
+    padding-left: 1.5em;
+    cursor: pointer;
+}
+
+.BackOfficeLayout .PropertyTable .type_group.collapsed .type_header th {
+    background-image: url(../images/collapsed_block.png);
+    background-position: 0.6em center;
+}
+
+.BackOfficeLayout .PropertyTable .type_group.collapsed tbody {
+    display: none;
+}
+
+.BackOfficeLayout .PropertyTable .member_entry th {
+    width: 18em;
+    padding-left: 2.4em;
+}
+
 .BackOfficeLayout .Table td {
     border: 1px solid rgb(215,220,227);
+    border: 1px solid rgb(225,225,225);
 }
 
 .BackOfficeLayout .Table th, .BackOfficeLayout .Table th * {
@@ -396,7 +425,7 @@ html, body {
 }
 
 .BackOfficeLayout .even {
-	background-color: rgb(235,240,247);
+	background-color: rgb(245,245,245);
 }
 
 .BackOfficeLayout .odd {
