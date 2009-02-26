@@ -62,13 +62,6 @@ class Item(PersistentObject):
 
     # Versioning
     #--------------------------------------------------------------------------
-    is_deleted = schema.Boolean(
-        required = True,
-        editable = False,
-        default = False,
-        visible = False
-    )
-    
     changes = schema.Collection(
         required = True,
         versioned = False,
@@ -107,6 +100,7 @@ class Item(PersistentObject):
         items = "sitebasis.models.Item",
         related_key = "draft_source",
         bidirectional = True,
+        delete_cascade = True,
         editable = False
     )
 
@@ -292,7 +286,7 @@ class Item(PersistentObject):
 
     # Extend item removal to make it versioning aware
     @event_handler
-    def handle_deleted(cls, event):
+    def handle_deleting(cls, event):
                 
         changeset = ChangeSet.current
         item = event.source
@@ -307,13 +301,18 @@ class Item(PersistentObject):
             if change is None \
             or change.action.identifier not in ("create", "delete"):
                 change = Change()
+                change.insert()
                 change.action = Action.identifier.index["delete"]
                 change.target = item
                 change.changeset = changeset
-                change.insert()
                 changeset.changes[item.id] = change
-                item.is_deleted = True
-        
+    
+    _preserved_members = frozenset([changes])
+
+    def _should_erase_member(self, member):
+        return PersistentObject._should_erase_member(self, member) \
+            and member not in self._preserved_members
+
     # Users and permissions
     #--------------------------------------------------------------------------
     author = schema.Reference(
