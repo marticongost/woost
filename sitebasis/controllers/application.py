@@ -66,6 +66,8 @@ class CMS(BaseCMSController):
     # Webserver configuration
     virtual_path = "/"
     
+    # Paths
+    application_path = None
     upload_path = None
 
     # A dummy controller for CherryPy, that triggers the cocktail dispatcher.
@@ -75,12 +77,28 @@ class CMS(BaseCMSController):
     class ApplicationContainer(object):
 
         _cp_config = {
-            "tools.sessions.on": True
+            "tools.sessions.on": True,
+            "tools.sessions.storage_type": "file"
         }
 
         def __init__(self, cms):
             self.__cms = cms
             self.__dispatcher = Dispatcher()
+            app_path = cms.application_path
+
+            if app_path:
+
+                # Set the default location for file-based sessions
+                if self._cp_config and \
+                self._cp_config.get("tools.sessions.storage_type") == "file":
+                    self._cp_config.setdefault(
+                        "tools.sessions.storage_path",
+                        os.path.join(app_path, "sessions")
+                    )
+
+                # Set the default location for uploaded files
+                if not cms.upload_path:
+                    cms.upload_path = os.path.join(app_path, "upload")
 
         @cherrypy.expose
         def default(self, *args, **kwargs):
