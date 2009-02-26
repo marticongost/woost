@@ -10,14 +10,21 @@
 cocktail.init(function () {
 
     function togglePasswords() {
-        var form = jQuery(this).parents(".UserForm");        
+        
+        var form = jQuery(this).parents(".UserForm");
+        var passwordField = jQuery(".password_field", form);
+        var passwordConfirmationField = jQuery(".password_confirmation_field", form);
+        
+        passwordField.find(".control").val("");
+        passwordConfirmationField.find(".control").val("");
+
         if (this.checked) {
-            jQuery(".password_field", form).show();
-            jQuery(".password_confirmation_field", form).show();
+            passwordField.show();
+            passwordConfirmationField.show();
         }
         else {
-            jQuery(".password_field", form).hide();
-            jQuery(".password_confirmation_field", form).hide();
+            passwordField.hide();
+            passwordConfirmationField.hide();
         }
     }
 
