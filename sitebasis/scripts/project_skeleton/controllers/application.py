@@ -9,8 +9,8 @@ from sitebasis.controllers.application import CMS
 
 class _PROJECT_NAME_CMS(CMS):
 
-    upload_path = resource_filename("_PROJECT_MODULE_", "upload")
-    
+    application_path = resource_filename("_PROJECT_MODULE_", None)
+        
     class ApplicationContainer(CMS.ApplicationContainer):        
         _PROJECT_MODULE__resources = cherrypy.tools.staticdir.handler(
             section = "_PROJECT_MODULE_",
