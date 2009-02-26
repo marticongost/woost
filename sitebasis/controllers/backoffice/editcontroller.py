@@ -170,17 +170,7 @@ class EditController(BaseBackOfficeController):
                         language = language,
                         action = action
                     )
-            
-            # Save changes to collections
-            for member in stack_node.content_type.members().itervalues():
-                if member.editable \
-                and isinstance(member, Collection) \
-                and stack_node.member_has_changes(member):
-                    item.set(
-                        member.name,
-                        schema.get(stack_node.form_data, member)
-                    )
-                       
+        
         # Remove the added event listeners
         finally:
             item.changed.remove(restrict_members)
