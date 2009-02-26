@@ -382,12 +382,10 @@ class OrderAction(UserAction):
 
 class ShowDetailAction(UserAction):
     included = frozenset(["toolbar", "item_buttons"])
-    excluded = frozenset(["selector", "show_detail", "new_item"])
 
 
 class EditAction(UserAction):
     included = frozenset(["toolbar", "item_buttons"])
-    excluded = frozenset(["selector", ("item_buttons", "edit")])
 
     def get_url(self, controller, selection):
         return controller.get_edit_uri(selection[0])
@@ -409,16 +407,11 @@ class HistoryAction(UserAction):
 
 
 class DiffAction(UserAction):
-    included = frozenset([
-        ("item_buttons_extra", "draft"),
-        ("item_buttons_extra", "edit")
-    ])
-    excluded = frozenset(["selector", "diff"])
+    included = frozenset(["item_buttons"])
 
 
 class PreviewAction(UserAction):
     included = frozenset(["toolbar_extra", "item_buttons"])
-    excluded = frozenset(["selector", "preview"])
 
     def is_available(self, context, content_type):
         return UserAction.is_available(self, context, content_type) \
@@ -513,9 +506,9 @@ OrderAction("order").register()
 ShowDetailAction("show_detail").register()
 PreviewAction("preview").register()
 EditAction("edit").register()
-DeleteAction("delete").register()
 DiffAction("diff").register()
 HistoryAction("history").register()
+DeleteAction("delete").register()
 ExportAction("export_xls").register()
 ExportAction("export_csv").register()
 CloseAction("close").register()

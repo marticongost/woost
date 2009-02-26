@@ -29,35 +29,29 @@ def unescape(text):
     return re.sub("&#?\w+;", fixup, text)
 ?>
 
-<py:sitebasis.views.BackOfficeLayout
+<py:sitebasis.views.BackOfficeItemView
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:py="http://www.whads.com/ns/cocktail/templates">
-
+    
     <?py-class
     source = None
     source_accessor = None
     target = None
     target_accessor = None
-    differences = None
-    form_data = None
-    form_schema = None
-    translations = None
-
-    def get_page_title(self):
-        return translate("Differences for", item = self.edited_item)
+    changes = None
     ?>
 
     <?py
     self.add_resource("/resources/styles/backoffice_diff.css")
     ?>
 
-    <form py:id="differences_form" method="post" py:parent="self.body">
-       
-        <p py:id="no_differences" py:visible="@{not self.differences}">
+    <py:with py:element="self.item_body">
+              
+        <p py:id="no_differences" py:visible="@{not self.changes}">
             ${translate("No differences")}
         </p>
 
-        <table py:id="differences" py:visible="@{self.differences}">
+        <table py:id="differences" py:visible="@{self.changes}">
             <tr>
                 <th class="check"/>
                 <th class="member">Member</th>
@@ -120,7 +114,7 @@ def unescape(text):
                 if self.target_accessor is None:
                     self.target_accessor = get_accessor(self.target)
 
-                diffs = sorted(self.differences, key = lambda diff: (diff[0].name, diff[1]))
+                diffs = sorted(self.changes, key = lambda diff: (diff[0].name, diff[1]))
                 ?>
                 <py:new
                     py:element="self.create_difference_row(member, language)"
@@ -128,19 +122,17 @@ def unescape(text):
             </py:ready>
 
         </table>
+        
+        <!-- Actions -->
+        <py:sitebasis.views.ActionBar
+            py:id="item_body_buttons"
+            py:action_context="item_body_buttons"
+            py:content_type="@{self.edited_content_type}"
+            py:button_images="${False}"
+            class="buttons">
+            <py:with py:def="action_button" name="item_action"/>
+        </py:sitebasis.views.ActionBar>
 
-        <div py:id="buttons">
-            <button
-                py:id="revert_button"
-                py:visible="@{self.differences}"
-                name="action"
-                type="submit"
-                value="revert">
-                ${translate("Discard changes")}
-            </button>
-            <button py:id="close_button" name="section" type="submit" value="fields">${translate("Close")}</button>
-        </div>
+    </py:with>
 
-    </form>
-
-</py:sitebasis.views.BackOfficeLayout>
+</py:sitebasis.views.BackOfficeItemView>

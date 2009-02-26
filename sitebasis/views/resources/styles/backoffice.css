@@ -72,6 +72,7 @@ html, body {
     display: block;
     list-style-type: none;
     white-space: nowrap;
+    font-size: 90%;
 }
 
 .BackOfficeLayout ul.edit_path li:last-child {
@@ -169,8 +170,14 @@ html, body {
     background-color: white;
 }
 
+.BackOfficeLayout h2 {
+    font-size: inherit;
+    margin-top: 0;
+}
+
 .BackOfficeLayout .body {
     clear: both;
+    margin-top: 1em;
     padding: 1em;
 }
 
@@ -197,6 +204,13 @@ html, body {
 
 .BackOfficeLayout .shortcut {
     text-decoration: underline;
+}
+
+/* Item selector
+-----------------------------------------------------------------------------*/
+.BackOfficeItemSelectorView .content_type_selector > .entry_label {
+    font-size: 85% !important;
+    color: rgb(50,50,50) !important;
 }
 
 /* Forms
@@ -357,6 +371,7 @@ html, body {
 
 .BackOfficeLayout .PropertyTable .type_header th {
     font-weight: bold;
+    color: rgb(50,50,50);
     background-image: url(../images/expanded_block.png);
     background-repeat: no-repeat;
     background-position: 0.3em center;
@@ -710,6 +725,10 @@ html, body {
     float: left;
 }
 
+.BackOfficeLayout .content_type_selector > .entry_label {
+    font-size: inherit;
+}
+
 /* Content view selector
 -----------------------------------------------------------------------------*/
 .BackOfficeLayout .content_view {
@@ -1044,12 +1063,18 @@ html, body {
     background-color: rgb(245,230,215) !important;
 }
 
+/* Detail view
+-----------------------------------------------------------------------------*/
+.BackOfficeShowDetailView .PropertyTable {
+    margin-top: 1.5em;
+}
+
+
 /* Edit form
 -----------------------------------------------------------------------------*/
-
-.BackOfficeItemView h2 {
-    font-size: inherit;
-    margin-top: 0;
+.BackOfficeItemView .toolbar .action_button.selected {
+    font-weight: bold;
+    color: rgb(50,50,50);
 }
 
 .BackOfficeItemView .toolbar .save_action,

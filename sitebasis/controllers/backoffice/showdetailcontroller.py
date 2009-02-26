@@ -10,6 +10,7 @@ from cocktail.modeling import cached_getter
 from cocktail.schema import Adapter
 from sitebasis.models import Language
 from sitebasis.controllers.backoffice.editcontroller import EditController
+from sitebasis.controllers.backoffice.useractions import get_user_action
 
 
 class ShowDetailController(EditController):
@@ -41,12 +42,17 @@ class ShowDetailController(EditController):
     
     @cached_getter
     def output(self):
+        
+        # TODO: Add a translation selector
         node = self.stack_node
         node.import_form_data(node.form_data, node.item)
 
         output = EditController.output(self)
-        # TODO: Add a translation selector
-        output["translations"] = Language.codes
-        output["detail_schema"] = self.detail_schema
+        output.update(
+            translations = Language.codes,
+            detail_schema = self.detail_schema,
+            selected_action = get_user_action("show_detail")
+        )
+
         return output
 
