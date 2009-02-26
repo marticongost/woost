@@ -32,6 +32,7 @@ class Item(PersistentObject):
     # Backoffice customization
     #--------------------------------------------------------------------------
     show_detail_view = "sitebasis.views.BackOfficeShowDetailView"
+    edit_node_class = "sitebasis.controllers.backoffice.editstack.EditNode"
     edit_view = "sitebasis.views.BackOfficeFieldsView"
     edit_form = "sitebasis.views.ContentForm"
     edit_controller = \
@@ -215,35 +216,36 @@ class Item(PersistentObject):
 
         return state
 
-    # Item instantiation overriden to make it versioning aware
-    def __init__(self, **values):
+    # Item insertion overriden to make it versioning aware
+    @event_handler
+    def handle_inserted(cls, event):
 
-        PersistentObject.__init__(self, **values)
-        
+        item = event.source
+        now = datetime.now()
+        item.creation_time = now
+        item.last_update_time = now
+
         changeset = ChangeSet.current
 
         if changeset:
             change = Change()
             change.action = Action.identifier.index["create"]
-            change.target = self
+            change.target = item
             change.changed_members = set(
                 member.name
-                for member in self.__class__.members().itervalues()
+                for member in item.__class__.members().itervalues()
                 if member.versioned
             )
-            change.item_state = self._get_revision_state()
+            change.item_state = item._get_revision_state()
             change.changeset = changeset
             change.insert()
-            changeset.changes[self.id] = change
+            changeset.changes[item.id] = change
             
-            self.creation_time = datetime.now()
-            self.last_update_time = datetime.now()
+            if item.author is None:
+                item.author = changeset.author
 
-            if "author" not in values:
-                self.author = changeset.author
-
-            if "owner" not in values:
-                self.owner = changeset.author
+            if item.owner is None:
+                item.owner = changeset.author
     
     # Extend item modification to make it versioning aware
     @event_handler
@@ -285,15 +287,18 @@ class Item(PersistentObject):
                     change.item_state[member_name][language] = event.value
                 else:
                     change.item_state[member_name] = event.value
+        else:
+            item.last_update_time = datetime.now()
 
     # Extend item removal to make it versioning aware
     @event_handler
     def handle_deleted(cls, event):
                 
         changeset = ChangeSet.current
-        
+        item = event.source
+        item.last_update_time = datetime.now()
+
         if changeset:
-            item = event.source
             change = changeset.changes.get(item.id)
 
             if change and change.action.identifier != "delete":
@@ -308,7 +313,7 @@ class Item(PersistentObject):
                 change.insert()
                 changeset.changes[item.id] = change
                 item.is_deleted = True
-
+        
     # Users and permissions
     #--------------------------------------------------------------------------
     author = schema.Reference(

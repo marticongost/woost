@@ -22,18 +22,25 @@ from sitebasis.controllers.backoffice.useractions import \
     collections = ()
     errors = ()
     ?>
+
+    <py:ready>
+        <?py
+        self.changed_keys = set((member.name, language)
+                                for member, language in self.changes)
+        ?>
+    </py:ready>
    
     <py:with py:element="self.item_body">
 
         <!-- Success message -->
-        <div py:id="success" py:visible="@{self.saved}">
+        <!--<div py:id="success" py:visible="@{self.saved}">
             ${translate("sitebasis.views.BackOfficeEditView Changes saved")}
-        </div>
+        </div>-->
 
         <!-- Draft remark -->
         <div
             py:id="draft_box"
-            py:visible="@{self.edited_item and self.edited_item.is_draft}"
+            py:visible="@{self.edited_item.is_draft}"
             class="draft">
             <py:ready py:if="self.draft_box.visible">
                 <?py
@@ -78,14 +85,15 @@ from sitebasis.controllers.backoffice.useractions import \
 
                 if section_id == self.section:
                     element.add_class("selected")
-                
-                from styled import styled
-                print styled(member, "slate_blue")
-                print styled(self.differences, "magenta")
 
-                if self.edited_item and (
-                    (is_collection and self.edit_stack[-1].collection_has_changes(member))
-                    or (not is_collection and self.differences)
+                if self.edited_item.is_inserted and (
+                    (is_collection and (member.name, None) in self.changed_keys)
+                    or (not is_collection
+                        and any(
+                            not isinstance(changed_member, Collection)
+                            for changed_member, language in self.changes
+                        )
+                    )
                 ):
                     element.add_class("changed")
                 ?>

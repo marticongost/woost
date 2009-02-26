@@ -9,7 +9,7 @@
 import cherrypy
 from cocktail.modeling import getter, ListWrapper
 from cocktail.pkgutils import get_full_name
-from cocktail.schema import Reference
+from cocktail import schema
 from sitebasis.models import Document
 from sitebasis.controllers.backoffice.editstack import EditNode, RelationNode
 
@@ -356,11 +356,13 @@ class RemoveAction(UserAction):
 
     def invoke(self, controller, selection):
 
+        stack_node = controller.stack_node
+
         for item in selection:
-            controller.stack_node.unrelate(self.member, item)
+            stack_node.unrelate(controller.member, item)
 
         controller.user_collection.base_collection = \
-            controller.stack_node.get_collection(controller.member)
+            schema.get(stack_node.form_data, controller.member)
 
 
 class OrderAction(UserAction):
@@ -439,7 +441,7 @@ class SelectAction(UserAction):
         edit_state = controller.edit_stack[-2]
         member = controller.stack_node.member
 
-        if isinstance(member, Reference):
+        if isinstance(member, schema.Reference):
             edit_state.relate(member, None if not selection else selection[0])
         else:
             if controller.stack_node.action == "add":
@@ -475,7 +477,7 @@ class SaveAction(UserAction):
         for error in UserAction.get_errors(self, controller, selection):
             yield error
 
-        for error in controller.form_errors:
+        for error in controller.stack_node.iter_errors():
             yield error
 
     def invoke(self, controller, selection):

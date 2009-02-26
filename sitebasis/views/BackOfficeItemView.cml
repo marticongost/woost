@@ -16,7 +16,7 @@ from sitebasis.controllers.backoffice.useractions import (
         self.set_client_param("edit_stack", self.edit_stack.to_param())
         self.add_class(self.edited_content_type.name)
         
-        if self.edited_item:
+        if self.edited_item.is_inserted:
             add_view_action_context(self, "existing_item")
             if self.edited_item.is_draft:
                 add_view_action_context(self, "draft")
@@ -44,7 +44,7 @@ from sitebasis.controllers.backoffice.useractions import (
         <h2 py:parent="self.body" py:position="0">
             <py:ready>
                 <?py
-                if self.edited_item \
+                if self.edited_item.is_inserted \
                 and not (self.edited_item.is_draft and self.edited_item.draft_source is None):
                     context_desc = translate(self.edited_item)
                 else:

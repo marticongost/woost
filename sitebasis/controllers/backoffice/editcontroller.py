@@ -11,17 +11,17 @@ import cherrypy
 from cocktail.modeling import cached_getter
 from cocktail.events import event_handler, when
 from cocktail.schema import (
-    Adapter, ErrorList, DictAccessor, Collection, diff
+    Adapter, ErrorList, DictAccessor, Collection
 )
 from cocktail.persistence import datastore
 from sitebasis.models import Language, changeset_context
+from sitebasis.controllers.backoffice.editstack import RelationNode, EditNode
 from sitebasis.controllers.backoffice.basebackofficecontroller \
         import BaseBackOfficeController
 
 
 class EditController(BaseBackOfficeController):
 
-    saved = False
     section = None
 
     @event_handler
@@ -31,73 +31,6 @@ class EditController(BaseBackOfficeController):
         controller.stack_node.section = controller.section
 
     @cached_getter
-    def edited_item(self):
-        return self.context["cms_item"]
-
-    @cached_getter
-    def edited_content_type(self):
-        return self.stack_node.content_type
-
-    @cached_getter
-    def form_adapter(self):
-
-        relation_node = self.relation_node
-        stack_relation = relation_node and relation_node.member.related_end
-
-        adapter = Adapter()
-        adapter.exclude([
-            member.name
-            for member in self.edited_content_type.members().itervalues()
-            if not member.editable
-            or not member.visible
-            or isinstance(member, Collection)
-            or member is stack_relation
-        ])
-        return adapter
-
-    @cached_getter
-    def form_schema(self):
-        form_schema = self.form_adapter.export_schema(self.edited_content_type)
-        form_schema.name = "BackOfficeEditForm"
-        return form_schema
-
-    @cached_getter
-    def form_data(self):
-        
-        # This is overriden by ItemFieldsController to fill the form data
-        # dictionary with data from request parameters
-        if self.is_postback:
-            form_data = self.stack_node.form_data
-        
-        # Load model data into the form
-        else:
-            form_data = {}
-
-            # Item data
-            form_source = self.edited_item
-            source_schema = self.edited_content_type
-
-            # Default data
-            if not form_source:
-                form_source = {}
-                source_schema.init_instance(form_source)
-
-            self.form_adapter.export_object(
-                form_source,
-                form_data,
-                source_schema,
-                self.form_schema
-            )           
-
-            self.stack_node.form_data = form_data
-        
-        return form_data
-
-    @cached_getter
-    def is_postback(self):
-        return self.stack_node.form_data is not None
-
-    @cached_getter
     def errors(self):
         if self.action:
             return ErrorList(self.action.get_errors(self, self.action_content))
@@ -105,63 +38,8 @@ class EditController(BaseBackOfficeController):
             return []
 
     @cached_getter
-    def form_errors(self):
-        return ErrorList(
-            self.form_schema.get_errors(
-                self.form_data,
-                languages = self.stack_node.translations,
-                persistent_object = self.edited_item
-            )
-            if self.is_postback
-            else []
-        )
-
-    @cached_getter
-    def differences(self):
-
-        source = self.differences_source
-        
-        if source:
-            source_form_data = {}
-            self.form_adapter.export_object(
-                source,
-                source_form_data,
-                self.edited_content_type,
-                self.form_schema
-            )
-
-            return set(
-                diff(
-                    source_form_data,
-                    self.form_data,
-                    self.form_schema
-                )
-            )
-        else:
-            return set()
-
-    @cached_getter
-    def differences_source(self):
-        item = self.edited_item
-        return item and self.edited_item.draft_source or item
-
-    @cached_getter
     def available_languages(self):
         return Language.codes
-
-    @cached_getter
-    def translations(self):
-
-        edit_state = self.stack_node
-
-        # Determine active translations
-        if edit_state.translations is None:
-            if self.edited_item and self.edited_item.__class__.translated:
-                edit_state.translations = self.edited_item.translations.keys()
-            else:
-                edit_state.translations = list(self.get_visible_languages())
-        
-        return edit_state.translations
 
     @cached_getter
     def action(self):
@@ -169,7 +47,7 @@ class EditController(BaseBackOfficeController):
 
     @cached_getter
     def action_content(self):
-        return [self.edited_item] if self.edited_item else []
+        return [self.stack_node.item]
 
     @cached_getter
     def submitted(self):
@@ -184,59 +62,42 @@ class EditController(BaseBackOfficeController):
 
     def save_item(self, make_draft = False):
 
-        redirect = False
-        item = self.edited_item
         user = self.user
+        stack_node = self.stack_node
+        item = stack_node.item        
         
-        def create_instance():
-            instance = self.edited_content_type()
-            instance.set(
-                self.edited_content_type.primary_member,
-                self.stack_node.generated_id
-            )
-            return instance
-
-        # Create a draft
+         # Create a draft
         if make_draft:
 
             # From an existing element
-            if item:
+            if item.is_inserted:
                 item = item.make_draft()
 
             # From scratch
-            else:
-                item = create_instance()
+            else:                
                 item.is_draft = True
 
             item.author = user
             item.owner = user
-            redirect = True
 
-        # Store the changes on a draft
-        if item and item.is_draft:
+        redirect = not item.is_inserted
+
+        # Store the changes on a draft; this skips revision control
+        if item.is_draft:
             self._apply_changes(item)
 
         # Operate directly on a production item
         else:
             with changeset_context(author = user):
-
-                if item is None:
-                    item = create_instance()
-                    redirect = True
-
                 self._apply_changes(item)
-
-        item.insert()
+        
+        stack_node.saving()
         datastore.commit()
-
-        self.edit_node.forget_edited_collections()
-        self.saved = True
+        stack_node.committed()
 
         # A new item or draft was created
         if redirect:
-     
-            self.edit_node.item = item
-            
+                            
             # The edit operation was the root of the edit stack; redirect the
             # browser to the new item
             if len(self.edit_stack) == 1:
@@ -246,15 +107,16 @@ class EditController(BaseBackOfficeController):
 
             # The edit operation was nested; relate the created item to its
             # owner, and redirect the browser to the owner
-            else:
-                relation = self.edit_stack[-2].member
-                parent_edit_state = self.edit_stack[-3]
-                parent_edit_state.relate(relation, item)
+            elif isinstance(stack_node.parent_node, RelationNode):
+                member = stack_node.parent_node.member
+                parent_edit_node = stack_node.get_ancestor_node(EditNode)
+                parent_edit_node.relate(member, item)
                 self.edit_stack.go(-3)
 
     def _apply_changes(self, item):
 
-        is_new = self.edited_item is None
+        stack_node = self.stack_node
+        is_new = not item.is_inserted
         restrict_access = self.context["cms"].authorization.restrict_access
         action = "create" if is_new else "modify"
         
@@ -293,16 +155,13 @@ class EditController(BaseBackOfficeController):
             
         try:
             # Save changed fields
-            self.form_adapter.import_object(
-                self.form_data,
-                item,
-                self.form_schema)
-
-            if self.edited_content_type.translated:
+            stack_node.import_form_data(stack_node.form_data, item)
+            
+            if stack_node.content_type.translated:
 
                 # Drop deleted translations
                 deleted_translations = \
-                    set(item.translations) - set(self.translations)
+                    set(item.translations) - set(stack_node.translations)
 
                 for language in deleted_translations:
                     del item.translations[language]
@@ -313,13 +172,14 @@ class EditController(BaseBackOfficeController):
                     )
             
             # Save changes to collections
-            edit_state = self.stack_node
-
-            for member in self.edited_content_type.members().itervalues():
+            for member in stack_node.content_type.members().itervalues():
                 if member.editable \
                 and isinstance(member, Collection) \
-                and edit_state.collection_has_changes(member):
-                    item.set(member.name, edit_state.get_collection(member))
+                and stack_node.member_has_changes(member):
+                    item.set(
+                        member.name,
+                        schema.get(stack_node.form_data, member)
+                    )
                        
         # Remove the added event listeners
         finally:
@@ -331,29 +191,25 @@ class EditController(BaseBackOfficeController):
         # objects, to make sure the user is leaving the object in a state that
         # complies with all existing restrictions.
         restrict_access(
-            target_instance = self.edited_item,
+            target_instance = stack_node.item,
             action = is_new and "create" or "modify"
         )
 
-        self.context["cms"].saving_item(
-            item = item,
-            is_new = is_new,
-            controller = self
-        )
+        item.insert()
 
     @cached_getter
     def output(self):
         output = BaseBackOfficeController.output(self)
+        stack_node = self.stack_node 
         output.update(
             collections = self.context["parent_handler"].collections,
-            edited_item = self.edited_item,
-            edited_content_type = self.edited_content_type,
+            edited_item = stack_node.item,
+            edited_content_type = stack_node.content_type,
             errors = self.errors,
-            form_schema = self.form_schema,
-            form_data = self.form_data,
-            differences = self.differences,
-            translations = self.translations,
-            saved = self.saved,
+            form_schema = stack_node.form_schema,
+            form_data = stack_node.form_data,
+            changes = set(stack_node.iter_changes()),
+            translations = stack_node.translations,
             section = self.section
         )
         return output
