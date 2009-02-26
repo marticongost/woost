@@ -31,7 +31,7 @@ class ItemController(BaseBackOfficeController):
     default_section = "fields"
     
     show_detail = ShowDetailController
-    differences = DifferencesController
+    diff = DifferencesController
 
     @cached_getter
     def fields(self):

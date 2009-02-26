@@ -12,6 +12,7 @@ from sitebasis.controllers.contentviews import relation_content_views
 from sitebasis.controllers.backoffice.contentcontroller \
     import ContentController
 from sitebasis.controllers.backoffice.editcontroller import EditController
+from sitebasis.controllers.backoffice.useractions import get_user_action
 
 
 class CollectionController(EditController, ContentController):
@@ -64,6 +65,9 @@ class CollectionController(EditController, ContentController):
     def output(self):
         output = ContentController.output(self)
         output.update(EditController.output(self))
-        output["member"] = self.member
+        output.update(
+            member = self.member,
+            selected_action = get_user_action("edit")
+        )
         return output
 

@@ -13,6 +13,7 @@ from cocktail.pkgutils import import_object
 from cocktail import schema
 from cocktail.controllers import get_parameter, view_state
 from sitebasis.models import Site
+from sitebasis.controllers.backoffice.useractions import get_user_action
 from sitebasis.controllers.backoffice.editstack import RelationNode
 from sitebasis.controllers.backoffice.editcontroller import EditController
 
@@ -94,7 +95,8 @@ class ItemFieldsController(EditController):
         output.update(
             submitted = self.submitted,
             available_languages = self.available_languages,
-            fields_schema = self.fields_schema
+            fields_schema = self.fields_schema,
+            selected_action = get_user_action("edit")
         )
         return output
 
