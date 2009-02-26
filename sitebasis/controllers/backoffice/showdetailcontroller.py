@@ -21,7 +21,7 @@ class ShowDetailController(EditController):
         adapter = Adapter()
         adapter.exclude([
             member.name
-            for member in self.edited_content_type.members().itervalues()
+            for member in self.stack_node.content_type.members().itervalues()
             if not member.visible
         ])
         adapter.exclude(["translations"])
@@ -29,17 +29,21 @@ class ShowDetailController(EditController):
 
     @cached_getter
     def detail_schema(self):
+        content_type = self.stack_node.content_type
         adapter = self.detail_schema_adapter
-        schema = adapter.export_schema(self.edited_content_type)
-        schema.name = self.edited_content_type.name + "Detail"
+        schema = adapter.export_schema(content_type)
+        schema.name = content_type.name + "Detail"
         return schema
 
     @cached_getter
     def view_class(self):
-        return (self.edited_item or self.edited_content_type).show_detail_view
+        return self.stack_node.item.show_detail_view
     
     @cached_getter
     def output(self):
+        node = self.stack_node
+        node.import_form_data(node.form_data, node.item)
+
         output = EditController.output(self)
         # TODO: Add a translation selector
         output["translations"] = Language.codes
