@@ -44,20 +44,6 @@ class CMS(BaseCMSController):
         An event triggered after loading plugins.
         """)
 
-    saving_item = Event(doc = """
-        An event triggered when executing a save operation.
-
-        @ivar item: The item that is being saved.
-        @type item: L{Item<sitebasis.models.Item>}
-        
-        @ivar is_new: A flag indicating if the element is being created (True)
-            or modified (False).
-        @type is_new: bool
-
-        @ivar controller: The controller that handles the save operation.
-        @type controller: L{EditController<sitebasis.controllers.backoffice.editcontroller.EditController>}
-        """)
-
     # Application modules
     LanguageModule = LanguageModule
     AuthenticationModule = AuthenticationModule

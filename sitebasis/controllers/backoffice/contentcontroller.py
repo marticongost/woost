@@ -9,7 +9,7 @@
 from __future__ import with_statement
 import cherrypy
 from cocktail.modeling import getter, cached_getter
-from cocktail.schema import Member, Adapter, Reference, String, Collection
+from cocktail.schema import get, Member, Adapter, Reference, String, Collection
 from cocktail.schema.expressions import (
     CustomExpression, ExclusionExpression, Self
 )
@@ -52,9 +52,9 @@ class ContentController(BaseBackOfficeController):
             except ValueError:
                 return None
             else:
-                try:
-                    item = self.root_content_type.index[item_id]
-                except KeyError:
+                item = self.root_content_type.get_instance(item_id)                
+
+                if item is None:
                     return None
 
                 self.context["cms_item"] = item
@@ -234,7 +234,7 @@ class ContentController(BaseBackOfficeController):
 
             # Exclude items that are already contained on an edited collection
             if is_collection:
-                excluded_items.update(edit_node.get_collection(relation))
+                excluded_items.update(get(edit_node.form_data, relation))
 
             # Prevent cycles in recursive relations. This only makes sense in
             # existing items, new items don't yet exist on the database and

@@ -8,16 +8,15 @@
 """
 from cocktail.modeling import cached_getter
 from cocktail import schema
-from sitebasis.controllers.backoffice.itemfieldscontroller import \
-    ItemFieldsController
+from sitebasis.controllers.backoffice.editstack import EditNode
 
 
-class UserFieldsController(ItemFieldsController):
+class UserEditNode(EditNode):
 
     @cached_getter
     def form_adapter(self):
 
-        form_adapter = ItemFieldsController.form_adapter(self)
+        form_adapter = EditNode.form_adapter(self)
         
         form_adapter.exclude([
             "change_password",
@@ -35,7 +34,7 @@ class UserFieldsController(ItemFieldsController):
     @cached_getter
     def form_schema(self):
         
-        form_schema = ItemFieldsController.form_schema(self)
+        form_schema = EditNode.form_schema(self)
         form_schema.members_order = [
             "email",
             "change_password",
@@ -71,14 +70,14 @@ class UserFieldsController(ItemFieldsController):
 
         return form_schema
 
-    @cached_getter
-    def differences(self):
-        differences = ItemFieldsController.differences(self)
-
+    def iter_changes(self):
+        
         # Discard differences in the password field
-        differences.discard((self.edited_content_type.password, None))
-
-        return differences
+        for member, language in EditNode.iter_changes(self):
+            if member.name not in (
+                "change_password", "password", "password_confirmation"
+            ):
+                yield (member, language)
 
 
 class PasswordConfirmationError(schema.exceptions.ValidationError):

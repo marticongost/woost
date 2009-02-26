@@ -695,7 +695,7 @@ translations.define("BackOfficeEditForm.password_confirmation",
 )
 
 translations.define(
-    "sitebasis.controllers.backoffice.userfieldscontroller."
+    "sitebasis.controllers.backoffice.usereditnode."
     "PasswordConfirmationError-instance",
     ca = u"Les contrasenyes no coincideixen",
     es = u"Las contraseñas no coinciden",

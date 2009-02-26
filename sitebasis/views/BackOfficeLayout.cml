@@ -105,7 +105,7 @@ from sitebasis.controllers.backoffice.editstack import EditNode, RelationNode
                 <a href="${self.edit_stack.uri(step)}">
                     <?py
                     if isinstance(stack_node, EditNode):
-                        if stack_node.item:
+                        if stack_node.item.is_inserted:
                             node_desc = Element(None, children = [
                                 Element("span", class_name = "item_desc",
                                     children = [translate(stack_node.item)]

@@ -8,7 +8,6 @@
 """
 from __future__ import with_statement
 from itertools import chain
-from threading import Lock
 from urllib import urlencode
 import cherrypy
 from cocktail.modeling import getter, cached_getter
@@ -20,9 +19,7 @@ from cocktail.controllers import get_persistent_param
 from sitebasis.models import Item
 from sitebasis.controllers import BaseCMSController
 from sitebasis.controllers.backoffice.useractions import get_user_action
-from sitebasis.controllers.backoffice.editstack import (
-    EditStack, EditNode, RelationNode
-)
+from sitebasis.controllers.backoffice.editstack import EditNode, RelationNode
 
 
 class BaseBackOfficeController(BaseCMSController):
@@ -30,10 +27,6 @@ class BaseBackOfficeController(BaseCMSController):
     section = None
     persistent_content_type_choice = False
     settings_duration = 60 * 60 * 24 * 30 # ~= 1 month
-
-    def __init__(self, *args, **kwargs):
-        BaseCMSController.__init__(self, *args, **kwargs)
-        self.__edit_stacks_lock = Lock()
 
     def get_edit_uri(self, target, *args, **kwargs):
         
@@ -44,7 +37,7 @@ class BaseBackOfficeController(BaseCMSController):
             params["edit_stack"] = edit_stack.to_param()
 
         # URI for new items
-        if isinstance(target, type):
+        if isinstance(target, type) or not target.is_inserted:
             target_id = "new"
             
             # TODO: Use full names to identify types
@@ -107,80 +100,9 @@ class BaseBackOfficeController(BaseCMSController):
         else:
             return [get_content_language()]
 
-    @cached_getter
-    def edit_stacks(self):
-        """A mapping containing all the edit stacks for the current HTTP
-        session.
-
-        @return: The mapping of stacks, indexed by their numerical id.
-        @rtype: mapping of int => L{EditStack}
-        """
-        edit_stacks = cherrypy.session.get("edit_stacks")
-        
-        if edit_stacks is None:
-
-            with self.__edit_stacks_lock:
-                edit_stacks = cherrypy.session.get("edit_stacks")
-
-                if edit_stacks is None:
-                    edit_stacks = {}
-                    cherrypy.session["edit_stacks"] = edit_stacks
-
-        return edit_stacks
-
-    @cached_getter
+    @getter
     def edit_stack(self):
-        """Obtains the stack of edit operations that applies to the current
-        context. The active stack is usually selected through an HTTP
-        parameter.
-        
-        @return: The current edit stack.
-        @rtype: L{EditStack}
-        """
-        return self.requested_edit_stack
-
-    @cached_getter
-    def requested_edit_stack(self):
-        """
-        Obtains the stack of edit operations for the current HTTP request, as
-        indicated by an HTTP parameter ("edit_stack").
-
-        @return: The current edit stack, or None if the "edit_stack" parameter
-            is missing or the indicated id doesn't match an active stack.
-        @rtype: L{EditStack}
-
-        @raise EditStateLostError: Raised if the user requests an edit stack
-            that is no longer available.
-        """
-        edit_stack = None
-        edit_stack_param = self.params.read(
-            String("edit_stack", format = r"\d+-\d+"))
-
-        if edit_stack_param:
-            id, step = map(int, edit_stack_param.split("-"))
-            edit_stack = self.edit_stacks.get(id)
-    
-            # Edit state lost
-            if edit_stack is None:
-                raise EditStateLostError()
-
-            # Prune the stack
-            else:
-                while len(edit_stack) > step + 1:
-                    edit_stack.pop()                    
-        
-        return edit_stack
-
-    def _new_edit_stack(self):
-        
-        edit_stack = EditStack()
-
-        with self.__edit_stacks_lock:
-            edit_stack.id = cherrypy.session.get("edit_stacks_id", 0)
-            cherrypy.session["edit_stacks_id"] = edit_stack.id + 1
-
-        self.edit_stacks[edit_stack.id] = edit_stack
-        return edit_stack
+        return self.context["edit_stacks_manager"].current_edit_stack
 
     @getter
     def stack_node(self):
@@ -190,16 +112,16 @@ class BaseBackOfficeController(BaseCMSController):
     @getter
     def edit_node(self):
         stack = self.edit_stack
-        return stack and first(node
-            for node in reversed(list(stack))
-            if isinstance(node, EditNode))
+        if stack:
+            return stack[-1].get_ancestor_node(EditNode)
+        return None
 
     @getter
     def relation_node(self):
         stack = self.edit_stack
-        return stack and first(node
-            for node in reversed(list(stack))
-            if isinstance(node, RelationNode))
+        if stack:
+            return stack[-1].get_ancestor_node(RelationNode)
+        return None
 
     @cached_getter
     def output(self):

@@ -6,14 +6,9 @@
 @organization:	Whads/Accent SL
 @since:			October 2008
 """
-import cherrypy
-
-from cocktail.modeling import cached_getter, ListWrapper
-from cocktail.html import templates
-from cocktail.controllers import view_state
-from sitebasis.models import Item
+from cocktail.modeling import cached_getter
+from cocktail import schema
 from sitebasis.controllers.contentviews import relation_content_views
-from sitebasis.controllers.backoffice.editstack import RelationNode
 from sitebasis.controllers.backoffice.contentcontroller \
     import ContentController
 from sitebasis.controllers.backoffice.editcontroller import EditController
@@ -36,11 +31,11 @@ class CollectionController(EditController, ContentController):
 
     @cached_getter
     def base_collection(self):
-        return self.edit_node.get_collection(self.member)
+        return schema.get(self.stack_node.form_data, self.member)
 
     def content_view_is_compatible(self, content_view):
         return content_view.compatible_with(
-            self.content_type, self.edited_item, self.member)
+            self.content_type, self.stack_node.item, self.member)
 
     @cached_getter
     def content_views_registry(self):

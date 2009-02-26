@@ -35,13 +35,7 @@ class ItemController(BaseBackOfficeController):
 
     @cached_getter
     def fields(self):
-        return resolve(
-            (self.edited_item or self.edited_content_type).edit_controller
-        )
-
-    @cached_getter
-    def edited_item(self):
-        return self.context["cms_item"]
+        return resolve(self.stack_node.item.edit_controller)
 
     def resolve(self, path):
 
@@ -49,7 +43,7 @@ class ItemController(BaseBackOfficeController):
             collection_name = path.pop(0)
 
             try:
-                member = self.edited_content_type[collection_name]
+                member = self.stack_node.content_type[collection_name]
             except KeyError:
                 pass
             else:
@@ -61,48 +55,59 @@ class ItemController(BaseBackOfficeController):
         return controller_class(member)
 
     @cached_getter
-    def edited_content_type(self):
-        return (
-            self.edited_item and self.edited_item.__class__
-            or self.stack_node.content_type
-            or self.get_content_type()
-        )
-
-    @cached_getter
     def collections(self):
-        access_granted = self.context["cms"].authorization.allows
+        
         relation_node = self.relation_node
         stack_relation = relation_node and relation_node.member.related_end
 
         return [
             member
-            for member in self.edited_content_type.ordered_members()
+            for member in self.stack_node.content_type.ordered_members()
             if isinstance(member, Collection)
             and member.visible
             and member.editable
             and member is not stack_relation
-            and access_granted(
-                target_instance = self.edited_item,
-                target_type = self.edited_content_type,
+            and self.allows(
+                target_instance = self.stack_node.item,
                 action = "read",
                 member = member
             )
-            and access_granted(
+            and self.allows(
                 target_type = member.items.type,
                 action = "read",
                 partial_match = True
             )
         ]
     
-    @cached_getter
-    def edit_stack(self):
+    @event_handler
+    def handle_traversed(cls, event):
+        
+        controller = event.source
 
-        edit_stack = self.requested_edit_stack
+        # Require an edit stack with an edit node on top
+        controller._require_edit_node()
+
+        # Disable access to invisible content types
+        if not controller.stack_node.content_type.visible:
+            raise cherrypy.NotFound()
+
+        # Restrict access
+        controller.restrict_access(
+            target_instance = controller.stack_node.item,
+            action = "read"
+        )
+    
+    def _require_edit_node(self):
+
         redirect = False
+        context_item = self.context["cms_item"]
+        edit_stacks_manager = self.context["edit_stacks_manager"]
+        edit_stack = edit_stacks_manager.current_edit_stack
 
         # Spawn a new edit stack
         if edit_stack is None:
-            edit_stack = self._new_edit_stack()
+            edit_stack = edit_stacks_manager.create_edit_stack()
+            edit_stacks_manager.current_edit_stack = edit_stack
             redirect = True
         else:
             # Integral part; add a new relation node (won't be shown to the
@@ -118,14 +123,20 @@ class ItemController(BaseBackOfficeController):
         # Make sure the top node of the stack is an edit node
         if not edit_stack \
         or not isinstance(edit_stack[-1], EditNode) \
-        or edit_stack[-1].item is not self.edited_item:
-            edit_state = EditNode()
-            edit_state.item = self.edited_item
-            edit_state.content_type = (
-                self.edited_item and self.edited_item.__class__                
-                or self.get_content_type()
-            )
-            edit_stack.push(edit_state)
+        or (context_item and context_item.id != edit_stack[-1].item.id):
+            
+            # New item
+            if context_item is None:
+                content_type = self.get_content_type()
+                item = content_type()
+
+            # Existing item
+            else:
+                item = context_item
+            
+            node_class = resolve(item.edit_node_class)
+            node = node_class(item)
+            edit_stack.push(node)
             redirect = True
         
         # If the stack is modified a redirection is triggered so that any
@@ -142,24 +153,6 @@ class ItemController(BaseBackOfficeController):
 
         return edit_stack
 
-    @event_handler
-    def handle_before_request(cls, event):
-        
-        controller = event.source
-
-        # Disable access to invisible content types
-        if not controller.edited_content_type.visible:
-            raise cherrypy.NotFound()
-
-        # Require an edit stack
-        controller.edit_stack
-
-        # Restrict access
-        controller.context["cms"].authorization.restrict_access(
-            target_instance = controller.edited_item,
-            action = "read"
-        )
-
     def submit(self):
         self.section_redirection(self.default_section)
 
@@ -169,9 +162,10 @@ class ItemController(BaseBackOfficeController):
             self.switch_section(section)
 
     def switch_section(self, section):
+        item = self.stack_node.item
         raise cherrypy.HTTPRedirect(
             self.get_edit_uri(
-                self.edited_item or self.edited_content_type,
+                item if item.is_inserted else item.__class__,
                 section
             )
         )
