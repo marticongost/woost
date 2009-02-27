@@ -44,15 +44,16 @@ class ShowDetailController(EditController):
     def output(self):
         
         # TODO: Add a translation selector
-        node = self.stack_node
-        node.import_form_data(node.form_data, node.item)
-
+        
         output = EditController.output(self)
         output.update(
             translations = Language.codes,
             detail_schema = self.detail_schema,
             selected_action = get_user_action("show_detail")
         )
+
+        node = self.stack_node
+        node.import_form_data(node.form_data, node.item)
 
         return output
 

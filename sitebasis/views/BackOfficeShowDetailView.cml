@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <?py
+from cocktail.language import get_content_language
 from sitebasis.controllers.backoffice.useractions import \
     add_view_action_context
 ?>
@@ -16,6 +17,13 @@ from sitebasis.controllers.backoffice.useractions import \
     add_view_action_context(self, "show_detail")
     ?>
 
+    <py:ready>
+        <?py
+        self.changed_keys = set((member.name, language)
+                                for member, language in self.changes)
+        ?>
+    </py:ready>
+
     <py:sitebasis.views.ContentPropertyTable
         py:id="property_table"
         py:parent="self.item_body"
@@ -24,6 +32,23 @@ from sitebasis.controllers.backoffice.useractions import \
         py:schema="@{self.detail_schema}"
         py:data="@{self.edited_item}"
         py:base_url="@{self.cms.document_uri()}"
-        py:authorization_check="@{self.cms.allows}"/>
+        py:authorization_check="@{self.cms.allows}">
         
+        <!-- Highlight changed members -->
+        <py:with py:def="value" py:args="member">
+            <?py
+            key = (
+                member.name,
+                get_content_language()
+                    if member.translated
+                    else None
+            )
+            
+            if key in self.changed_keys:
+                element.add_class("changed")
+            ?>
+        </py:with>
+
+    </py:sitebasis.views.ContentPropertyTable>
+    
 </py:sitebasis.views.BackOfficeItemView>
