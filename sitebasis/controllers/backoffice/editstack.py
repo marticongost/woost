@@ -122,9 +122,8 @@ class EditStacksManager(object):
 
                 if self.expiration is not None \
                 and (current_time - last_update).seconds >= self.expiration:
-                    raise EditStackExpiredError(stack_id)
+                    raise EditStackExpiredError()
                             
-
                 edit_stack = self._loads(stack_data)
                 self.__stack_map[stack_id] = edit_stack
             
@@ -161,7 +160,7 @@ class EditStacksManager(object):
             is missing.
         @rtype: L{EditStack}
 
-        @raise EditStateLostError: Raised if the requested edit stack can't be
+        @raise WrongEditStackError: Raised if the requested edit stack can't be
             found on the session.
         """
         edit_stack = None
@@ -359,7 +358,7 @@ class EditNode(StackNode):
     """
     _persistent_keys = frozenset([
         "_stack", "_parent_node",
-        "_item", "_form_data", "_content_type",
+        "_item", "_form_data", "_content_type", "translations",
         "section"
     ])
     _item = None
@@ -631,4 +630,23 @@ class RelationNode(StackNode):
 
         content_type = self.get_ancestor_node(EditNode).content_type
         self.member = content_type[member_name]
+
+
+class EditStackExpiredError(Exception):
+    """An exception raised to signal that an edit stack stored on the session
+    has expired.
+    """
+
+
+class WrongEditStackError(Exception):
+    """An exception raised when requesting an edit stack that is not stored on
+    the current session.
+
+    @ivar stack_id: The unique identifier for the requested stack.
+    @type stack_id: int
+    """
+
+    def __init__(self, stack_id):
+        Exception.__init__(self, "Can't find edit stack %s" % stack_id)
+        self.stack_id = stack_id
 
