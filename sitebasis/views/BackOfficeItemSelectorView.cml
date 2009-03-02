@@ -43,7 +43,8 @@ from cocktail.html.datadisplay import MULTIPLE_SELECTION
             py:actions="${['new']}"
             py:root_content_type="${self.root_content_type}"
             py:selection_mode="${self.selection_mode}"
-            py:edit_stack="${self.edit_stack}">
+            py:edit_stack="${self.edit_stack}"
+            py:activation_control=".select_action">
 
             <?py
             edit_stack_param = self.edit_stack.to_param(len(self.edit_stack))
