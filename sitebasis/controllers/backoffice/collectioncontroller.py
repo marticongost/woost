@@ -62,6 +62,10 @@ class CollectionController(EditController, ContentController):
             return EditController.action_content(self)
 
     @cached_getter
+    def view_class(self):
+        return self.stack_node.item.collection_view
+
+    @cached_getter
     def output(self):
         output = ContentController.output(self)
         output.update(EditController.output(self))

@@ -32,6 +32,7 @@ class Item(PersistentObject):
     # Backoffice customization
     #--------------------------------------------------------------------------
     show_detail_view = "sitebasis.views.BackOfficeShowDetailView"
+    collection_view = "sitebasis.views.BackOfficeCollectionView"
     edit_node_class = "sitebasis.controllers.backoffice.editstack.EditNode"
     edit_view = "sitebasis.views.BackOfficeFieldsView"
     edit_form = "sitebasis.views.ContentForm"
