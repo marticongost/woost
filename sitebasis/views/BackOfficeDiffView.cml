@@ -27,6 +27,45 @@ from sitebasis.controllers.backoffice.useractions import \
     add_view_action_context(self, "diff")
     ?>
 
+    <tr py:def="difference_row" py:args="member, language">
+        <?py
+        key = member.name
+        revert_key = key
+
+        if language:
+            revert_key += "-" + language
+
+        a = self.source_accessor.get(self.source, key, language = language)
+        b = self.target_accessor.get(self.target, key, language = language)
+        diffs = None
+
+        if isinstance(member, String):
+            a = a.split("\n") if a else []
+            b = b.split("\n") if b else []
+            diffs = html_diff(a, b, charjunk = IS_CHARACTER_JUNK)
+        elif isinstance(member, Collection):
+            a = [translate(x) for x in a] if a else []
+            b = [translate(x) for x in b] if b else []
+            diffs = html_diff(a, b)
+        else:
+            a = [translate(a, default = a)]
+            b = [translate(b, default = b)]
+            diffs = a, b
+        ?>
+        <td class="check">
+            <input type="checkbox" name="reverted_members" value="${revert_key}"/>
+        </td>
+        <td class="member">${translate(member)}
+            <span class="language" py:if="member.translated">(${translate(language)})</span>
+        </td>
+        <td class="previous_value">
+            <div class="diff_unit" py:for="unit in diffs[0]">${unit}</div>
+        </td>
+        <td class="new_value">
+            <div class="diff_unit" py:for="unit in diffs[1]">${unit}</div>
+        </td>            
+    </tr>
+
     <py:with py:element="self.item_body">
               
         <p py:id="no_differences" py:visible="@{not self.changes}">
@@ -39,46 +78,7 @@ from sitebasis.controllers.backoffice.useractions import \
                 <th class="member">${translate("sitebasis.views.BackOfficeDiffView member")}</th>
                 <th class="previous_value">${translate("sitebasis.views.BackOfficeDiffView previous value")}</th>
                 <th class="new_value">${translate("sitebasis.views.BackOfficeDiffView new value")}</th>
-            </tr>
-            <tr py:def="difference_row" py:args="member, language">
-                <?py
-                key = member.name
-                revert_key = key
-
-                if language:
-                    revert_key += "-" + language
-
-                a = self.source_accessor.get(self.source, key, language = language)
-                b = self.target_accessor.get(self.target, key, language = language)
-                diffs = None
-
-                if isinstance(member, String):
-                    a = a.split("\n") if a else []
-                    b = b.split("\n") if b else []
-                    diffs = html_diff(a, b, charjunk = IS_CHARACTER_JUNK)
-                elif isinstance(member, Collection):
-                    a = [translate(x) for x in a] if a else []
-                    b = [translate(x) for x in b] if b else []
-                    diffs = html_diff(a, b)
-                else:
-                    a = [translate(a, default = a)]
-                    b = [translate(b, default = b)]
-                    diffs = a, b
-                ?>
-                <td class="check">
-                    <input type="checkbox" name="reverted_members" value="${revert_key}"/>
-                </td>
-                <td class="member">${translate(member)}
-                    <span class="language" py:if="member.translated">(${translate(language)})</span>
-                </td>
-                <td class="previous_value">
-                    <div class="diff_unit" py:for="unit in diffs[0]">${unit}</div>
-                </td>
-                <td class="new_value">
-                    <div class="diff_unit" py:for="unit in diffs[1]">${unit}</div>
-                </td>            
-            </tr>
-
+            </tr>            
             <py:ready>
                 <?py
                 if self.source_accessor is None:
@@ -93,7 +93,6 @@ from sitebasis.controllers.backoffice.useractions import \
                     py:element="self.create_difference_row(member, language)"
                     py:for="member, language in diffs"/>
             </py:ready>
-
         </table>
         
         <!-- Actions -->

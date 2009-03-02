@@ -70,36 +70,7 @@ from sitebasis.controllers.backoffice.useractions import \
         </ul>
 
         <!-- Tabs -->
-        <div py:id="tabs">
-            
-            <button
-                py:def="tab"
-                py:args="member"
-                type="submit"
-                name="section">
-                <?py
-                is_collection = isinstance(member, Collection)
-                section_id = member.name if is_collection else "fields"
-                element["value"] = section_id
-                element.add_class(member.name + "_tab")
-
-                if section_id == self.section:
-                    element.add_class("selected")
-
-                if self.edited_item.is_inserted and (
-                    (is_collection and (member.name, None) in self.changed_keys)
-                    or (not is_collection
-                        and any(
-                            not isinstance(changed_member, Collection)
-                            for changed_member, language in self.changes
-                        )
-                    )
-                ):
-                    element.add_class("changed")
-                ?>
-                ${translate(member if is_collection else member.name)}
-            </button>
-
+        <div py:id="tabs">                        
             <py:ready>
                  <py:new py:element="self.create_tab(member)"
                      py:for="member in [self.edited_content_type] + list(self.collections)">
@@ -111,5 +82,33 @@ from sitebasis.controllers.backoffice.useractions import \
          </div>
 
     </py:with>
+
+    <button
+        py:def="tab"
+        py:args="member"
+        type="submit"
+        name="section">
+        <?py
+        is_collection = isinstance(member, Collection)
+        section_id = member.name if is_collection else "fields"
+        element["value"] = section_id
+        element.add_class(member.name + "_tab")
+
+        if section_id == self.section:
+            element.add_class("selected")
+
+        if self.edited_item.is_inserted and (
+            (is_collection and (member.name, None) in self.changed_keys)
+            or (not is_collection
+                and any(
+                    not isinstance(changed_member, Collection)
+                    for changed_member, language in self.changes
+                )
+            )
+        ):
+            element.add_class("changed")
+        ?>
+        ${translate(member if is_collection else member.name)}
+    </button>
 
 </py:sitebasis.views.BackOfficeItemView>
