@@ -16,6 +16,10 @@ class ContentLink(Element):
     base_url = None
     edit_stack = None
 
+    def __init__(self, item = None, **kwargs):
+        Element.__init__(self, **kwargs)
+        self.item = item
+
     def _ready(self):
 
         Element._ready(self)
@@ -26,7 +30,10 @@ class ContentLink(Element):
                 self.base_url + "/content/%s/show_detail" % self.item.id
             if self.edit_stack:
                 self["href"] += "?edit_stack=" + self.edit_stack.to_param()
-            self.append(translate(self.item))
+            self.append(self.get_label())
         else:
             self.append(u"-")
+
+    def get_label(self):
+        return translate(self.item)
 
