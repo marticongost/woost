@@ -7,7 +7,7 @@
 @since:			January 2009
 """
 from cocktail.modeling import cached_getter
-from cocktail.schema import Adapter
+from cocktail.schema import Adapter, RelationMember
 from sitebasis.models import Language
 from sitebasis.controllers.backoffice.editcontroller import EditController
 from sitebasis.controllers.backoffice.useractions import get_user_action
@@ -24,6 +24,11 @@ class ShowDetailController(EditController):
             member.name
             for member in self.stack_node.content_type.members().itervalues()
             if not member.visible
+            or (
+                isinstance(member, RelationMember)
+                and member.related_type
+                and not member.related_type.visible
+            )
         ])
         adapter.exclude(["translations"])
         return adapter

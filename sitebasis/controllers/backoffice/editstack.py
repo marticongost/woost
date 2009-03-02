@@ -446,6 +446,11 @@ class EditNode(StackNode):
             if not member.editable
             or not member.visible                
             or member is stack_relation
+            or (
+                isinstance(member, schema.RelationMember)
+                and member.related_type
+                and not member.related_type.visible
+            )
         ])
         return adapter
 
