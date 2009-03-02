@@ -747,6 +747,7 @@ body.scripted .BackOfficeLayout .Table .selection {
 
 .BackOfficeLayout .content_type_selector > .entry_label {
     font-size: inherit;
+    text-decoration: none;
 }
 
 /* Content view selector
