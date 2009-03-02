@@ -253,8 +253,11 @@ html, body {
 }
 
 .BackOfficeLayout .buttons button {
-    margin-left: 0.8em;
     width: 11em;
+}
+
+.BackOfficeLayout .buttons button + button {
+    margin-left: 0.8em;
 }
 
 .BackOfficeLayout .Form .fields > table > tbody > tr > td,
