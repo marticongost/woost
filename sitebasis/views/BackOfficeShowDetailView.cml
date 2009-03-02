@@ -52,8 +52,4 @@ from sitebasis.controllers.backoffice.useractions import \
 
     </py:sitebasis.views.ContentPropertyTable>
     
-    <button py:id="revert_button" type="submit" name="revert">
-        ${translate("sitebasis.views.BackOfficeShowDetailView revert")}
-    </button>
-    
 </py:sitebasis.views.BackOfficeItemView>
