@@ -373,6 +373,10 @@ body.scripted .BackOfficeLayout .Table .selection {
     border: 1px solid rgb(200,205,212);
 }
 
+.BackOfficeLayout .Table th a {
+    text-decoration: none;
+}
+
 .BackOfficeLayout .Table th {
     background-position: bottom left;
     background-repeat: repeat-x;
