@@ -23,7 +23,7 @@ from sitebasis.controllers.backoffice.useractions import \
     self.add_client_translation("sitebasis.views.ContentView show advanced search")
     self.add_client_translation("sitebasis.views.ContentView close advanced search")
     self.add_client_translation("sitebasis.views.ContentView search button")
-
+    
     add_view_action_context(self, "content_view")
     ?>
 
@@ -34,6 +34,7 @@ from sitebasis.controllers.backoffice.useractions import \
     root_content_type = Item
     edit_stack = None
     member = None
+    activation_control = ".show_detail_action"
     
     @classmethod
     def get_collection(cls, content_type, item = None, relation = None):
