@@ -15,6 +15,7 @@ class ContentList(List):
 
     base_url = None
     authorization_check = None
+    edit_stack = None
 
     def _fill_entries(self):
         items = self.items
@@ -38,5 +39,6 @@ class ContentList(List):
         link = templates.new("sitebasis.views.ContentLink")
         link.item = item
         link.base_url = self.base_url
+        link.edit_stack = self.edit_stack
         return link
 
