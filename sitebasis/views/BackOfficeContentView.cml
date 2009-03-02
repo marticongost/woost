@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <?py
 from cocktail.html.datadisplay import MULTIPLE_SELECTION
+from sitebasis.controllers.backoffice.useractions import \
+    add_view_action_context
 ?>
 
 <py:sitebasis.views.BackOfficeLayout
@@ -17,8 +19,10 @@ from cocktail.html.datadisplay import MULTIPLE_SELECTION
     selection_mode = MULTIPLE_SELECTION
     ?>
 
-    <?py    
+    <?py
     self.add_resource("/resources/scripts/backoffice_content.js")
+
+    add_view_action_context(self, "content")
     ?>
 
     <py:ready>

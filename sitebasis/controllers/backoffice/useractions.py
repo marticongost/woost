@@ -393,7 +393,7 @@ class EditAction(UserAction):
 
 class DeleteAction(UserAction):
     included = frozenset([
-        ("content_view", "toolbar"),
+        ("content", "toolbar"),
         ("collection", "toolbar", "integral"),
         "item_buttons"
     ])
