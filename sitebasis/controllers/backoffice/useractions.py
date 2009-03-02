@@ -410,6 +410,49 @@ class DiffAction(UserAction):
     included = frozenset(["item_buttons"])
 
 
+class RevertAction(UserAction):
+    included = frozenset([("diff", "item_body_buttons")])
+
+    def invoke(self, controller, selection):
+
+        reverted_members = controller.params.read(
+            schema.Collection("reverted_members",
+                type = set,
+                items = schema.String
+            )
+        )
+
+        stack_node = controller.stack_node
+
+        form_data = stack_node.form_data
+        form_schema = stack_node.form_schema
+        languages = set(
+            list(stack_node.translations)
+            + list(stack_node.item.translations.keys())
+        )
+
+        source = {}
+        stack_node.export_form_data(stack_node.item, source)
+        
+        for member in form_schema.members().itervalues():
+                      
+            if member.translated:
+                for lang in languages:
+                    if (member.name + "-" + lang) in reverted_members:
+                        schema.set(
+                            form_data,
+                            member.name,
+                            schema.get(source, member.name, language = lang),
+                            language = lang
+                        )
+            elif member.name in reverted_members:
+                schema.set(
+                    form_data,
+                    member.name,
+                    schema.get(source, member.name)
+                )
+
+
 class PreviewAction(UserAction):
     included = frozenset(["toolbar_extra", "item_buttons"])
 
@@ -507,6 +550,7 @@ ShowDetailAction("show_detail").register()
 PreviewAction("preview").register()
 EditAction("edit").register()
 DiffAction("diff").register()
+RevertAction("revert").register()
 HistoryAction("history").register()
 DeleteAction("delete").register()
 ExportAction("export_xls").register()

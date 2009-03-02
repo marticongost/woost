@@ -17,39 +17,6 @@ class DifferencesController(EditController):
     view_class = "sitebasis.views.BackOfficeDiffView"
     section = "diff"
 
-    def _revert(self):
-
-        reverted_members = self.params.read(
-            Collection("reverted_members", type = set, items = String))
-
-        form_data = self.form_data
-        form_schema = self.form_schema
-        source = self.differences_source
-        languages = self.translations
-
-        for member in form_schema.members().itervalues():
-         
-            if isinstance(member, Collection):
-                continue
-             
-            if member.translated:
-                for language in languages:
-                    if (member.name + "-" + language) in reverted_members:
-                        DictAccessor.set(
-                            form_data,
-                            member.name,
-                            source.get(member.name, language),
-                            language = language
-                        )
-            elif member.name in reverted_members:
-                DictAccessor.set(
-                    form_data,
-                    member.name,
-                    source.get(member.name)
-                )
-        
-        self.context["parent_handler"].switch_section("fields")
-
     @cached_getter
     def output(self):
         output = EditController.output(self)

@@ -1,32 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <?py
-import re
-import htmlentitydefs
 import cherrypy
-from difflib import HtmlDiff
-from cocktail.schema import String, get_accessor
-
-def unescape(text):
-    def fixup(m):
-        text = m.group(0)
-        if text[:2] == "&#":
-            # character reference
-            try:
-                if text[:3] == "&#x":
-                    return unichr(int(text[3:-1], 16))
-                else:
-                    return unichr(int(text[2:-1]))
-            except ValueError:
-                pass
-        else:
-            # named entity
-            try:
-                text = unichr(htmlentitydefs.name2codepoint[text[1:-1]])
-            except KeyError:
-                pass
-        return text # leave as is
-    return re.sub("&#?\w+;", fixup, text)
+from difflib import IS_CHARACTER_JUNK
+from cocktail.schema import String, Collection, get_accessor
+from sitebasis.views.htmldiff import html_diff
+from sitebasis.controllers.backoffice.useractions import \
+    add_view_action_context
 ?>
 
 <py:sitebasis.views.BackOfficeItemView
@@ -43,6 +23,8 @@ def unescape(text):
 
     <?py
     self.add_resource("/resources/styles/backoffice_diff.css")
+    
+    add_view_action_context(self, "diff")
     ?>
 
     <py:with py:element="self.item_body">
@@ -54,11 +36,10 @@ def unescape(text):
         <table py:id="differences" py:visible="@{self.changes}">
             <tr>
                 <th class="check"/>
-                <th class="member">Member</th>
-                <th class="language">Language</th>
-                <th class="values">Differences</th>
+                <th class="member">${translate("sitebasis.views.BackOfficeDiffView member")}</th>
+                <th class="previous_value">${translate("sitebasis.views.BackOfficeDiffView previous value")}</th>
+                <th class="new_value">${translate("sitebasis.views.BackOfficeDiffView new value")}</th>
             </tr>
-                    
             <tr py:def="difference_row" py:args="member, language">
                 <?py
                 key = member.name
@@ -69,41 +50,33 @@ def unescape(text):
 
                 a = self.source_accessor.get(self.source, key, language = language)
                 b = self.target_accessor.get(self.target, key, language = language)
-                is_string = isinstance(member, String)
+                diffs = None
+
+                if isinstance(member, String):
+                    a = a.split("\n") if a else []
+                    b = b.split("\n") if b else []
+                    diffs = html_diff(a, b, charjunk = IS_CHARACTER_JUNK)
+                elif isinstance(member, Collection):
+                    a = [translate(x) for x in a] if a else []
+                    b = [translate(x) for x in b] if b else []
+                    diffs = html_diff(a, b)
+                else:
+                    a = [translate(a, default = a)]
+                    b = [translate(b, default = b)]
+                    diffs = a, b
                 ?>
                 <td class="check">
                     <input type="checkbox" name="reverted_members" value="${revert_key}"/>
                 </td>
-                <td class="member">${translate(member)}</td>
-                <td class="language">${language and translate(language) or "-"}</td>
-                <td class="values">
-                    <?py
-                    headers = "<tr><th>Previous</th><th>New</th></tr>"
-                    ?>
-                    <table class="diff" py:if="not is_string">
-                        ${headers}
-                        <tr>
-                            <td>${a}</td>
-                            <td>${b}</td>
-                        </tr>
-                    </table>
-                    <?py
-                    if is_string:
-                        hd = HtmlDiff()
-                        element.append(
-                            re.compile("<table[^>]*>").sub(
-                                lambda match: match.group(0) + headers,
-                                hd.make_table(
-                                    a and unescape(a).split("\n") or "",
-                                    b and unescape(b).split("\n") or ""
-                                )
-                                .replace("<colgroup></colgroup>", "")
-                                .replace('nowrap="nowrap"', "")
-                                .replace("&nbsp;", " ")
-                            )
-                        )
-                    ?>
+                <td class="member">${translate(member)}
+                    <span class="language" py:if="member.translated">(${translate(language)})</span>
                 </td>
+                <td class="previous_value">
+                    <div class="diff_unit" py:for="unit in diffs[0]">${unit}</div>
+                </td>
+                <td class="new_value">
+                    <div class="diff_unit" py:for="unit in diffs[1]">${unit}</div>
+                </td>            
             </tr>
 
             <py:ready>

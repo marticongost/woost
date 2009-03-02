@@ -293,10 +293,10 @@ translations.define("Backout",
     en = u"Backout"
 )
 
-translations.define("Revert",
-    ca = u"Tornar enrera",
-    es = u"Volver atrás",
-    en = u"Revert"
+translations.define("sitebasis.views.BackOfficeShowDetailView revert",
+    ca = u"Desfer",
+    es = u"Deshacer",
+    en = u"Undo"
 )
 
 translations.define("Discard changes",
@@ -377,10 +377,28 @@ translations.define("No differences",
     en = u"The item has no changes."
 )
 
-translations.define("cocktail.html.shortcuts BackOfficeEditView shortcut",
-    ca = u"r",
-    es = u"r",
-    en = u"r"
+translations.define("sitebasis.views.BackOfficeDiffView member",
+    ca = u"Membre",
+    es = u"Miembro",
+    en = u"Member"
+)
+
+translations.define("sitebasis.views.BackOfficeDiffView previous value",
+    ca = u"Valor anterior",
+    es = u"Valor anterior",
+    en = u"Previous value"
+)
+
+translations.define("sitebasis.views.BackOfficeDiffView new value",
+    ca = u"Valor nou",
+    es = u"Valor nuevo",
+    en = u"New value"
+)
+
+translations.define("Action revert",
+    ca = u"Desfer",
+    es = u"Deshacer",
+    en = u"Undo"
 )
 
 translations.define("Editing draft",
