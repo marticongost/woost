@@ -117,7 +117,6 @@ html, body {
     font-size: inherit;
     background: none;
     border: none;
-    text-decoration: none;
     color: rgb(50,80,110);
     margin: 0;
     padding: 0;
@@ -440,6 +439,10 @@ body.scripted .BackOfficeLayout .Table .selection {
     margin: 0;
 }
 
+.BackOfficeLayout .PropertyTable ul ul {
+    padding-left: 2em;
+}
+
 .BackOfficeLayout .PropertyTable li {
     margin-top: 0.4em;
 }
@@ -515,10 +518,6 @@ body.scripted .BackOfficeLayout .Table .selection {
     background-image: url(../images/edit_small.png);
 }
 
-.BackOfficeLayout .Table td a {
-    text-decoration: underline;
-}
-
 .BackOfficeLayout .Table th.sorted .label {
     padding-right: 1em;
     background-repeat: no-repeat;
@@ -557,10 +556,6 @@ body.scripted .BackOfficeLayout .Table .selection {
 
 .BackOfficeLayout .selection_controls * {
     padding-right: 1em;
-}
-
-.BackOfficeLayout .selection_controls a {
-    text-decoration: underline;
 }
 
 .BackOfficeLayout .Table .position_mark button {
@@ -693,6 +688,11 @@ body.scripted .BackOfficeLayout .Table .selection {
 .BackOfficeLayout .toolbar a.action_button {
     padding: 0.25em 0;
     color: black;
+    text-decoration: none;
+}
+
+.BackOfficeLayout .toolbar .additional_actions_selector .label {
+    text-decoration: none;
 }
 
 .BackOfficeLayout .toolbar .action_button .label,
