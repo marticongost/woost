@@ -337,11 +337,25 @@ html, body {
 /* Tables
 -----------------------------------------------------------------------------*/
 
+body.scripted .BackOfficeLayout .Table .selection {
+    position: absolute;
+    left: -1000px;
+}
+
+.BackOfficeLayout .Table .target_focus {
+    position: absolute;
+    left: -1000px;
+}
+
 .BackOfficeLayout .Table,
 .BackOfficeLayout .PropertyTable {
 	clear: both;
     border-collapse: collapse;
     width: 100%;
+}
+
+.BackOfficeLayout .Table {
+    border-bottom: 1px solid rgb(225,225,225);
 }
 
 .BackOfficeLayout .PropertyTable .type_group {
@@ -394,7 +408,6 @@ html, body {
 }
 
 .BackOfficeLayout .Table td {
-    border: 1px solid rgb(215,220,227);
     border: 1px solid rgb(225,225,225);
 }
 
@@ -422,6 +435,10 @@ html, body {
     list-style-position: inside;
     padding: 0;
     margin: 0;
+}
+
+.BackOfficeLayout .PropertyTable li {
+    margin-top: 0.4em;
 }
 
 /*.Table tr.translations th {*/
@@ -527,7 +544,7 @@ html, body {
     margin-bottom: 0.75em;
 }
 
-.BackOfficeLayout .row_selector {
+.BackOfficeLayout .selection_controls {
     clear: both;
     float: left;
     padding-left: 0.6em;
@@ -535,11 +552,11 @@ html, body {
     font-size: 75%;
 }
 
-.BackOfficeLayout .row_selector span {
+.BackOfficeLayout .selection_controls * {
     padding-right: 1em;
 }
 
-.BackOfficeLayout .row_selector a {
+.BackOfficeLayout .selection_controls a {
     text-decoration: underline;
 }
 
