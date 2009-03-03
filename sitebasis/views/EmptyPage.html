@@ -5,7 +5,7 @@
 	<head>
 		<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
         <title>$document.title</title>
-        <py:for each="resource in document.resources">            
+        <py:for each="resource in document.page_resources">
             <link py:if="resource.uri.endswith('.css')"
                 rel="Stylesheet" type="text/css" href="${resource.uri}"/>
             <script py:if="resource.uri.endswith('.js')"

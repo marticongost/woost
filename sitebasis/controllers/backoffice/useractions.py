@@ -9,7 +9,7 @@
 import cherrypy
 from cocktail.modeling import getter, ListWrapper
 from cocktail.pkgutils import get_full_name
-from cocktail.schema import Reference
+from cocktail import schema
 from sitebasis.models import Document
 from sitebasis.controllers.backoffice.editstack import EditNode, RelationNode
 
@@ -284,7 +284,7 @@ class SelectionError(Exception):
     action is attempted against an invalid number of items."""
     
     def __init__(self, action, selection_size):
-        Exception.__init__("Can't execute action '%s' on %d item(s)."
+        Exception.__init__(self, "Can't execute action '%s' on %d item(s)."
             % (action.id, selection_size))
         self.action = action
         self.selection_size = selection_size
@@ -356,11 +356,13 @@ class RemoveAction(UserAction):
 
     def invoke(self, controller, selection):
 
+        stack_node = controller.stack_node
+
         for item in selection:
-            self.stack_node.unrelate(self.member, item)
+            stack_node.unrelate(controller.member, item)
 
         controller.user_collection.base_collection = \
-            controller.stack_node.get_collection(controller.member)
+            schema.get(stack_node.form_data, controller.member)
 
 
 class OrderAction(UserAction):
@@ -380,12 +382,10 @@ class OrderAction(UserAction):
 
 class ShowDetailAction(UserAction):
     included = frozenset(["toolbar", "item_buttons"])
-    excluded = frozenset(["selector", "show_detail"])
 
 
 class EditAction(UserAction):
     included = frozenset(["toolbar", "item_buttons"])
-    excluded = frozenset(["selector", ("item_buttons", "edit")])
 
     def get_url(self, controller, selection):
         return controller.get_edit_uri(selection[0])
@@ -393,29 +393,68 @@ class EditAction(UserAction):
 
 class DeleteAction(UserAction):
     included = frozenset([
-        ("content_view", "toolbar"),
+        ("content", "toolbar"),
         ("collection", "toolbar", "integral"),
         "item_buttons"
     ])
-    excluded = frozenset(["selector"])
+    excluded = frozenset(["selector", "new_item"])
     max = None
 
 
 class HistoryAction(UserAction):
     min = None
+    excluded = frozenset(["selector", "new_item"])
 
 
 class DiffAction(UserAction):
-    included = frozenset([
-        ("item_buttons_extra", "draft"),
-        ("item_buttons_extra", "edit")
-    ])
-    excluded = frozenset(["selector", "diff"])
+    included = frozenset(["item_buttons"])
+
+
+class RevertAction(UserAction):
+    included = frozenset([("diff", "item_body_buttons")])
+
+    def invoke(self, controller, selection):
+
+        reverted_members = controller.params.read(
+            schema.Collection("reverted_members",
+                type = set,
+                items = schema.String
+            )
+        )
+
+        stack_node = controller.stack_node
+
+        form_data = stack_node.form_data
+        form_schema = stack_node.form_schema
+        languages = set(
+            list(stack_node.translations)
+            + list(stack_node.item.translations.keys())
+        )
+
+        source = {}
+        stack_node.export_form_data(stack_node.item, source)
+        
+        for member in form_schema.members().itervalues():
+                      
+            if member.translated:
+                for lang in languages:
+                    if (member.name + "-" + lang) in reverted_members:
+                        schema.set(
+                            form_data,
+                            member.name,
+                            schema.get(source, member.name, language = lang),
+                            language = lang
+                        )
+            elif member.name in reverted_members:
+                schema.set(
+                    form_data,
+                    member.name,
+                    schema.get(source, member.name)
+                )
 
 
 class PreviewAction(UserAction):
     included = frozenset(["toolbar_extra", "item_buttons"])
-    excluded = frozenset(["selector", "preview"])
 
     def is_available(self, context, content_type):
         return UserAction.is_available(self, context, content_type) \
@@ -438,7 +477,7 @@ class SelectAction(UserAction):
         edit_state = controller.edit_stack[-2]
         member = controller.stack_node.member
 
-        if isinstance(member, Reference):
+        if isinstance(member, schema.Reference):
             edit_state.relate(member, None if not selection else selection[0])
         else:
             if controller.stack_node.action == "add":
@@ -460,18 +499,8 @@ class CloseAction(UserAction):
     max = None
 
     def invoke(self, controller, selection):
-
-        # Go back to the parent edit state
-        if len(controller.edit_stack) > 1:            
-            if isinstance(controller.edit_stack[-2], RelationNode):
-                controller.edit_stack.go(-3)
-            else:
-                controller.edit_stack.go(-2)
-        
-        # Go back to the root of the backoffice
-        else:
-            raise cherrypy.HTTPRedirect(controller.document_uri())
-
+        controller.go_back()
+       
 
 class SaveAction(UserAction):
     included = frozenset([("item_buttons", "edit")])
@@ -484,7 +513,7 @@ class SaveAction(UserAction):
         for error in UserAction.get_errors(self, controller, selection):
             yield error
 
-        for error in controller.form_errors:
+        for error in controller.stack_node.iter_errors():
             yield error
 
     def invoke(self, controller, selection):
@@ -520,9 +549,10 @@ OrderAction("order").register()
 ShowDetailAction("show_detail").register()
 PreviewAction("preview").register()
 EditAction("edit").register()
-DeleteAction("delete").register()
 DiffAction("diff").register()
+RevertAction("revert").register()
 HistoryAction("history").register()
+DeleteAction("delete").register()
 ExportAction("export_xls").register()
 ExportAction("export_csv").register()
 CloseAction("close").register()

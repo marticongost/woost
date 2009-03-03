@@ -9,8 +9,10 @@
 from __future__ import with_statement
 import cherrypy
 from cocktail.modeling import getter, cached_getter
-from cocktail.schema import Member, Adapter, Reference, String, Collection
-from cocktail.schema.expressions import CustomExpression
+from cocktail.schema import get, Member, Adapter, Reference, String, Collection
+from cocktail.schema.expressions import (
+    CustomExpression, ExclusionExpression, Self
+)
 from cocktail.persistence import datastore
 from cocktail.html.datadisplay import SINGLE_SELECTION, MULTIPLE_SELECTION
 from cocktail.controllers import (
@@ -50,9 +52,9 @@ class ContentController(BaseBackOfficeController):
             except ValueError:
                 return None
             else:
-                try:
-                    item = self.root_content_type.index[item_id]
-                except KeyError:
+                item = self.root_content_type.get_instance(item_id)                
+
+                if item is None:
                     return None
 
                 self.context["cms_item"] = item
@@ -205,9 +207,17 @@ class ContentController(BaseBackOfficeController):
     def _init_user_collection(self, user_collection):
 
         # Exclude instances of invisible types
-        user_collection.add_base_filter(CustomExpression(
-            lambda item: item.__class__.visible
-        ))
+        def hide_invisible_types(content_type):
+            if not content_type.visible:
+                user_collection.add_base_filter(
+                    ExclusionExpression(Self, set(content_type.index.values()))
+                )
+            else:
+                for descendant_type \
+                in content_type.derived_schemas(recursive = False):
+                    hide_invisible_types(descendant_type)
+
+        hide_invisible_types(user_collection.type)
 
         # Exclude edit drafts
         user_collection.add_base_filter(
@@ -224,7 +234,7 @@ class ContentController(BaseBackOfficeController):
 
             # Exclude items that are already contained on an edited collection
             if is_collection:
-                excluded_items.update(edit_node.get_collection(relation))
+                excluded_items.update(get(edit_node.form_data, relation))
 
             # Prevent cycles in recursive relations. This only makes sense in
             # existing items, new items don't yet exist on the database and
@@ -284,9 +294,9 @@ class ContentController(BaseBackOfficeController):
                         item = item.get(relation)
                     
             if excluded_items:
-                user_collection.add_base_filter(CustomExpression(
-                    lambda item: item not in excluded_items
-                ))
+                user_collection.add_base_filter(
+                    ExclusionExpression(Self, excluded_items)
+                )
 
         # Exclude forbidden items
         is_allowed = self.context["cms"].authorization.allows

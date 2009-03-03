@@ -72,6 +72,7 @@ html, body {
     display: block;
     list-style-type: none;
     white-space: nowrap;
+    font-size: 90%;
 }
 
 .BackOfficeLayout ul.edit_path li:last-child {
@@ -116,7 +117,6 @@ html, body {
     font-size: inherit;
     background: none;
     border: none;
-    text-decoration: none;
     color: rgb(50,80,110);
     margin: 0;
     padding: 0;
@@ -169,8 +169,14 @@ html, body {
     background-color: white;
 }
 
+.BackOfficeLayout h2 {
+    font-size: inherit;
+    margin-top: 0;
+}
+
 .BackOfficeLayout .body {
     clear: both;
+    margin-top: 1em;
     padding: 1em;
 }
 
@@ -197,6 +203,13 @@ html, body {
 
 .BackOfficeLayout .shortcut {
     text-decoration: underline;
+}
+
+/* Item selector
+-----------------------------------------------------------------------------*/
+.BackOfficeItemSelectorView .content_type_selector > .entry_label {
+    font-size: 85% !important;
+    color: rgb(50,50,50) !important;
 }
 
 /* Forms
@@ -239,8 +252,11 @@ html, body {
 }
 
 .BackOfficeLayout .buttons button {
-    margin-left: 0.8em;
     width: 11em;
+}
+
+.BackOfficeLayout .buttons button + button {
+    margin-left: 0.8em;
 }
 
 .BackOfficeLayout .Form .fields > table > tbody > tr > td,
@@ -323,19 +339,42 @@ html, body {
 /* Tables
 -----------------------------------------------------------------------------*/
 
+body.scripted .BackOfficeLayout .Table .selection {
+    position: absolute;
+    left: -1000px;
+}
+
+.BackOfficeLayout .Table .target_focus {
+    position: absolute;
+    left: -1000px;
+}
+
 .BackOfficeLayout .Table,
 .BackOfficeLayout .PropertyTable {
 	clear: both;
     border-collapse: collapse;
-    width: 100%;    
+    width: 100%;
 }
 
-.BackOfficeLayout .Table,
-.BackOfficeLayout .Table th,
-.BackOfficeLayout .PropertyTable,
-.BackOfficeLayout .PropertyTable td,
-.BackOfficeLayout .PropertyTable th {
+.BackOfficeLayout .Table {
+    border-bottom: 1px solid rgb(225,225,225);
+}
+
+.BackOfficeLayout .PropertyTable .type_group {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.BackOfficeLayout .PropertyTable .type_group + .type_group {
+    margin-top: 1em;
+}
+
+.BackOfficeLayout .Table th {
     border: 1px solid rgb(200,205,212);
+}
+
+.BackOfficeLayout .Table th a {
+    text-decoration: none;
 }
 
 .BackOfficeLayout .Table th {
@@ -350,8 +389,32 @@ html, body {
     font-weight: normal;
 }
 
+.BackOfficeLayout .PropertyTable .type_header th {
+    font-weight: bold;
+    color: rgb(50,50,50);
+    background-image: url(../images/expanded_block.png);
+    background-repeat: no-repeat;
+    background-position: 0.3em center;
+    padding-left: 1.5em;
+    cursor: pointer;
+}
+
+.BackOfficeLayout .PropertyTable .type_group.collapsed .type_header th {
+    background-image: url(../images/collapsed_block.png);
+    background-position: 0.6em center;
+}
+
+.BackOfficeLayout .PropertyTable .type_group.collapsed tbody {
+    display: none;
+}
+
+.BackOfficeLayout .PropertyTable .member_entry th {
+    width: 18em;
+    padding-left: 2.4em;
+}
+
 .BackOfficeLayout .Table td {
-    border: 1px solid rgb(215,220,227);
+    border: 1px solid rgb(225,225,225);
 }
 
 .BackOfficeLayout .Table th, .BackOfficeLayout .Table th * {
@@ -363,11 +426,29 @@ html, body {
     color: rgb(75,75,75);
 }
 
-.BackOfficeLayout .Table th, .Table td {
+.BackOfficeLayout .Table th,
+.BackOfficeLayout .Table td,
+.BackOfficeLayout .PropertyTable th,
+.BackOfficeLayout .PropertyTable td {
     vertical-align: top;
 	text-align: left;
 	padding: 0.5em;
     font-size: 85%;
+}
+
+.BackOfficeLayout .PropertyTable ul,
+.BackOfficeLayout .PropertyTable li {
+    list-style-position: inside;
+    padding: 0;
+    margin: 0;
+}
+
+.BackOfficeLayout .PropertyTable ul ul {
+    padding-left: 2em;
+}
+
+.BackOfficeLayout .PropertyTable li {
+    margin-top: 0.4em;
 }
 
 /*.Table tr.translations th {*/
@@ -386,7 +467,7 @@ html, body {
 }
 
 .BackOfficeLayout .even {
-	background-color: rgb(235,240,247);
+	background-color: rgb(245,245,245);
 }
 
 .BackOfficeLayout .odd {
@@ -441,10 +522,6 @@ html, body {
     background-image: url(../images/edit_small.png);
 }
 
-.BackOfficeLayout .Table td a {
-    text-decoration: underline;
-}
-
 .BackOfficeLayout .Table th.sorted .label {
     padding-right: 1em;
     background-repeat: no-repeat;
@@ -473,7 +550,7 @@ html, body {
     margin-bottom: 0.75em;
 }
 
-.BackOfficeLayout .row_selector {
+.BackOfficeLayout .selection_controls {
     clear: both;
     float: left;
     padding-left: 0.6em;
@@ -481,12 +558,8 @@ html, body {
     font-size: 75%;
 }
 
-.BackOfficeLayout .row_selector span {
+.BackOfficeLayout .selection_controls * {
     padding-right: 1em;
-}
-
-.BackOfficeLayout .row_selector a {
-    text-decoration: underline;
 }
 
 .BackOfficeLayout .Table .position_mark button {
@@ -499,8 +572,8 @@ html, body {
     list-style-position: inside;
 }
 
-.BackOfficeLayout .Table .forbidden {
-    color: rgb(135,35,10);
+.BackOfficeLayout .forbidden {
+    color: rgb(135,35,10) !important;
 }
 
 .BackOfficeLayout .Table a.target-focus {
@@ -616,6 +689,10 @@ html, body {
     margin-right: 1em;    
 }
 
+.BackOfficeLayout .toolbar a {
+    text-decoration: none;
+}
+
 .BackOfficeLayout .toolbar a.action_button {
     padding: 0.25em 0;
     color: black;
@@ -669,6 +746,11 @@ html, body {
 -----------------------------------------------------------------------------*/
 .BackOfficeLayout .content_type_selector {
     float: left;
+}
+
+.BackOfficeLayout .content_type_selector > .entry_label {
+    font-size: inherit;
+    text-decoration: none;
 }
 
 /* Content view selector
@@ -1005,12 +1087,18 @@ html, body {
     background-color: rgb(245,230,215) !important;
 }
 
+/* Detail view
+-----------------------------------------------------------------------------*/
+.BackOfficeShowDetailView .PropertyTable {
+    margin-top: 1.5em;
+}
+
+
 /* Edit form
 -----------------------------------------------------------------------------*/
-
-.BackOfficeItemView h2 {
-    font-size: inherit;
-    margin-top: 0;
+.BackOfficeItemView .toolbar .action_button.selected {
+    font-weight: bold;
+    color: rgb(50,50,50);
 }
 
 .BackOfficeItemView .toolbar .save_action,
@@ -1362,7 +1450,7 @@ html, body {
     color: rgb(50,80,110);
     text-align: left;
     padding: 0;
-    margin: 0.3em 0;
+    margin: 0.8em 0;
 }
 
 /* Collection settings 
@@ -1461,5 +1549,70 @@ html, body {
 
 .ui-datepicker .ui-datepicker-current-day a {
 	background-color: rgb(225, 225, 225);
+}
+
+/* File form
+-----------------------------------------------------------------------------*/
+.FileFieldsView .upload_info {
+    font-size: 90%;
+    margin: 0;
+    margin-top: 0.5em;
+    margin-bottom: 0.4em;
+    padding: 0;
+    padding-bottom: 0.4em;
+    padding-left: 2em;
+    padding-top: 0.2em;
+    background-repeat: no-repeat;
+}
+
+.FileFieldsView .upload_info .file_name {
+    font-style: italic;
+}
+
+.FileFieldsView .upload_info .file_size {
+    margin-left: 0.5em;
+    color: rgb(100,100,100);
+}
+
+/* Mime types and file categories
+-----------------------------------------------------------------------------*/
+.BackOfficeLayout .resource_type_text {
+    background-image: url(../images/mime_types/text.png);
+}
+
+.BackOfficeLayout .resource_type_document {
+    background-image: url(../images/mime_types/document.png);
+}
+
+.BackOfficeLayout .resource_type_image {
+    background-image: url(../images/mime_types/image.png);
+}
+
+.BackOfficeLayout .resource_type_audio {
+    background-image: url(../images/mime_types/audio.png);
+}
+
+.BackOfficeLayout .resource_type_video {
+    background-image: url(../images/mime_types/video.png);
+}
+
+.BackOfficeLayout .resource_type_package {
+    background-image: url(../images/mime_types/package.png);
+}
+
+.BackOfficeLayout .resource_type_web {
+    background-image: url(../images/mime_types/web.png);
+}
+
+.BackOfficeLayout .mime_type_application_msexcel,
+.BackOfficeLayout .mime_type_application_vnd_ms_excel,
+.BackOfficeLayout .mime_type_application_vnd_oasis_opendocument_spreadsheet {
+    background-image: url(../images/mime_types/spreadsheet.png);
+}
+
+.BackOfficeLayout .mime_type_application_msexcel,
+.BackOfficeLayout .mime_type_application_vnd_ms_excel,
+.BackOfficeLayout .mime_type_application_vnd_oasis_opendocument_presentation {
+    background-image: url(../images/mime_types/presentation.png);
 }
 

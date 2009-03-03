@@ -293,10 +293,10 @@ translations.define("Backout",
     en = u"Backout"
 )
 
-translations.define("Revert",
-    ca = u"Tornar enrera",
-    es = u"Volver atrás",
-    en = u"Revert"
+translations.define("sitebasis.views.BackOfficeShowDetailView revert",
+    ca = u"Desfer",
+    es = u"Deshacer",
+    en = u"Undo"
 )
 
 translations.define("Discard changes",
@@ -377,10 +377,28 @@ translations.define("No differences",
     en = u"The item has no changes."
 )
 
-translations.define("cocktail.html.shortcuts BackOfficeEditView shortcut",
-    ca = u"r",
-    es = u"r",
-    en = u"r"
+translations.define("sitebasis.views.BackOfficeDiffView member",
+    ca = u"Membre",
+    es = u"Miembro",
+    en = u"Member"
+)
+
+translations.define("sitebasis.views.BackOfficeDiffView previous value",
+    ca = u"Valor anterior",
+    es = u"Valor anterior",
+    en = u"Previous value"
+)
+
+translations.define("sitebasis.views.BackOfficeDiffView new value",
+    ca = u"Valor nou",
+    es = u"Valor nuevo",
+    en = u"New value"
+)
+
+translations.define("Action revert",
+    ca = u"Desfer",
+    es = u"Deshacer",
+    en = u"Undo"
 )
 
 translations.define("Editing draft",
@@ -546,6 +564,13 @@ translations.define(
 )
 
 translations.define(
+    "sitebasis.controllers.backoffice.useractions.SelectionError-instance",
+    ca = lambda instance: u"Acció no disponible en el context actual",
+    es = lambda instance: u"Acción no disponible en el contexto actual",
+    en = lambda instance: u"Action not available in the current context"
+)
+
+translations.define(
     "forbidden value",
     ca = u"Camp restringit",
     es = u"Campo restringido",
@@ -556,6 +581,51 @@ translations.define("Irrelevant access rule criteria",
     ca = u"Indiferent",
     es = u"Indifirente",
     en = u"Irrelevant"
+)
+
+def sitebasis_views_backofficedelete_view_warning_ca(selection):
+    count = len(selection)
+    if count == 1:
+        return u"S'eliminarà l'element <strong>%s</strong>." \
+            % translate(selection[0], "ca")
+    else:
+        return u"S'eliminaran els <strong>%d</strong> elements seleccionats." \
+            % count
+
+def sitebasis_views_backofficedelete_view_warning_es(selection):
+    count = len(selection)
+    if count == 1:
+        return u"Se eliminará el elemento <strong>%s</strong>." \
+            % translate(selection[0], "es")
+    else:
+        return u"Se eliminarán los <strong>%d</strong> elementos " \
+            u"seleccionados." % count
+
+def sitebasis_views_backofficedelete_view_warning_en(selection):
+    count = len(selection)
+    if count == 1:
+        return u"The element <strong>%s</strong> will be deleted." \
+            % translate(selection[0], "en")
+    else:
+        return u"All <strong>%d</strong> selected elements will be deleted." \
+            % count
+
+translations.define("sitebasis.views.BackOfficeDeleteView warning",
+    ca = sitebasis_views_backofficedelete_view_warning_ca,
+    es = sitebasis_views_backofficedelete_view_warning_es,
+    en = sitebasis_views_backofficedelete_view_warning_en
+)
+
+translations.define("sitebasis.views.BackOfficeDeleteView delete",
+    ca = u"Eliminar",
+    es = u"Eliminar",
+    en = u"Delete"
+)
+
+translations.define("sitebasis.views.BackOfficeDeleteView cancel",
+    ca = u"Cancel·lar",
+    es = u"Cancelar",
+    en = u"Cancel"
 )
 
 # Initialization content
@@ -643,7 +713,7 @@ translations.define("BackOfficeEditForm.password_confirmation",
 )
 
 translations.define(
-    "sitebasis.controllers.backoffice.userfieldscontroller."
+    "sitebasis.controllers.backoffice.usereditnode."
     "PasswordConfirmationError-instance",
     ca = u"Les contrasenyes no coincideixen",
     es = u"Las contraseñas no coinciden",
@@ -655,6 +725,14 @@ translations.define(
     ca = u"S'han desat els canvis",
     es = u"Se han guardado los cambios",
     en = u"Changes saved"
+)
+
+translations.define(
+    "sitebasis.controllers.backoffice.basebackofficecontroller."
+    "EditStateLostError",
+    ca = u"La sessió d'edició en que estaves treballant s'ha perdut.",
+    es = u"La sesión de edición en que estabas trabajando se ha perdido.",
+    en = u"The edit session you were working on has been lost."
 )
 
 # Item
@@ -874,15 +952,15 @@ translations.define("Document.enabled",
 )
 
 translations.define("Document.attachments",
-    ca = u"Fitxers adjunts",
-    es = u"Ficheros adjuntos",
+    ca = u"Adjunts",
+    es = u"Adjuntos",
     en = u"Attachments"
 )
 
-translations.define("Document.resources",
+translations.define("Document.page_resources",
     ca = u"Recursos HTML",
     es = u"Recursos HTML",
-    en = u"HTML Resources"
+    en = u"HTML resources"
 )
 
 translations.define("Document.parent",
@@ -1048,9 +1126,9 @@ translations.define("AccessRule.allowed",
 # Resource
 #------------------------------------------------------------------------------
 translations.define("Resource",
-    ca = u"Recurs HTML",
-    es = u"Recurso HTML",
-    en = u"HTML Resource"
+    ca = u"Recurs",
+    es = u"Recurso",
+    en = u"Resource"
 )
 
 translations.define("Resource-plural",
@@ -1065,16 +1143,102 @@ translations.define("Resource.title",
     en = u"Name"
 )
 
-translations.define("Resource.uri",
-    ca = u"URI",
-    es = u"URI",
-    en = u"URI"
+translations.define("Resource.description",
+    ca = u"Descripció",
+    es = u"Descripción",
+    en = u"Description"
+)
+
+translations.define("Resource.enabled",
+    ca = u"Actiu",
+    es = u"Activo",
+    en = u"Enabled"
+)
+
+translations.define("Resource.start_date",
+    ca = u"Data d'inici",
+    es = u"Fecha de inicio",
+    en = u"Start date"
+)
+
+translations.define("Resource.end_date",
+    ca = u"Data de fi",
+    es = u"Fecha de fin",
+    en = u"End date"
+)
+
+translations.define("Resource.resource_type",
+    ca = u"Tipus de recurs",
+    es = u"Tipo de recurso",
+    en = u"Resource type"
 )
 
 translations.define("Resource.documents",
-    ca = u"Documents",
-    es = u"Documentos",
-    en = u"Documents"
+    ca = u"Referències",
+    es = u"Referencias",
+    en = u"Referers"
+)
+
+translations.define("Resource.resource_type-text",
+    ca = u"Text",
+    es = u"Texto",
+    en = u"Text"
+)
+
+translations.define("Resource.resource_type-image",
+    ca = u"Imatge",
+    es = u"Imagen",
+    en = u"Image"
+)
+
+translations.define("Resource.resource_type-audio",
+    ca = u"Audio",
+    es = u"Audio",
+    en = u"Audio"
+)
+
+translations.define("Resource.resource_type-video",
+    ca = u"Video",
+    es = u"Video",
+    en = u"Video"
+)
+
+translations.define("Resource.resource_type-document",
+    ca = u"Document",
+    es = u"Documento",
+    en = u"Document"
+)
+
+translations.define("Resource.resource_type-html_resource",
+    ca = u"Recurs HTML",
+    es = u"Recurso HTML",
+    en = u"HTML resource"
+)
+
+translations.define("Resource.resource_type-other",
+    ca = u"Altre",
+    es = u"Otro",
+    en = u"Other"
+)
+
+# URI
+#------------------------------------------------------------------------------
+translations.define("URI",
+    ca = u"Adreça web",
+    es = u"Dirección web",
+    en = u"Web address"
+)
+
+translations.define("URI-plural",
+    ca = u"Adreces web",
+    es = u"Direcciones web",
+    en = u"Web addresses"
+)
+
+translations.define("URI.uri",
+    ca = u"Adreça",
+    es = u"Dirección",
+    en = u"Address"
 )
 
 # Style
@@ -1189,16 +1353,28 @@ translations.define("File-plural",
     en = u"Files"
 )
 
-translations.define("File.file_path",
-    ca = u"Ruta del fitxer",
-    es = u"Ruta del fichero",
-    en = u"File path"
+translations.define("File.file_name",
+    ca = u"Nom del fitxer",
+    es = u"Nombre del fichero",
+    en = u"File name"
 )
 
-translations.define("File.translation_file_path",
-    ca = u"Ruta del fitxer traduït",
-    es = u"Ruta del fichero traducido",
-    en = u"File translation path"
+translations.define("File.mime_type",
+    ca = u"Tipus MIME",
+    es = u"Tipo MIME",
+    en = u"MIME type"
+)
+
+translations.define("File.file_size",
+    ca = u"Mida del fitxer",
+    es = u"Tamaño de fichero",
+    en = u"File size"
+)
+
+translations.define("BackOfficeEditForm.upload",
+    ca = u"Càrrega de fitxer",
+    es = u"Carga de fichero",
+    en = u"File upload"
 )
 
 # News

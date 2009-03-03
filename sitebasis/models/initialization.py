@@ -21,7 +21,7 @@ from sitebasis.models import (
     Role,
     Group,
     StandardPage,
-    Resource,
+    URI,
     Template
 )
 
@@ -135,7 +135,7 @@ def init_site(
         empty_template.insert()
 
         # Create standard resources
-        message_stylesheet = Resource()
+        message_stylesheet = URI()
         message_stylesheet.uri = uri + "resources/styles/message.css"
         set_translations(message_stylesheet, "title",
             "Message style sheet title")
@@ -149,7 +149,7 @@ def init_site(
             site.home, "body", "Home page body",
             uri = uri + back_office.path
         )
-        site.home.resources.append(message_stylesheet)
+        site.home.page_resources.append(message_stylesheet)
         site.home.insert()
 
         # Create the 'content not found' page
@@ -159,7 +159,7 @@ def init_site(
             "Not found error page title")
         set_translations(site.not_found_error_page, "body",
             "Not found error page body")            
-        site.not_found_error_page.resources.append(message_stylesheet)
+        site.not_found_error_page.page_resources.append(message_stylesheet)
         site.not_found_error_page.insert()
 
         # Create the authentication form
@@ -180,7 +180,7 @@ def init_site(
         set_translations(login_page, "body", "Login page body",
             form = login_form)
 
-        login_page.resources.append(message_stylesheet)
+        login_page.page_resources.append(message_stylesheet)
         site.forbidden_error_page = login_page  
         site.forbidden_error_page.insert()
 

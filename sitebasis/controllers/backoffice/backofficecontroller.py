@@ -7,30 +7,49 @@
 @since:			October 2008
 """
 import cherrypy
+from cocktail.pkgutils import resolve
+from cocktail.events import event_handler
 from cocktail.controllers import view_state
-
 from sitebasis.controllers.backoffice.basebackofficecontroller \
     import BaseBackOfficeController
-
 from sitebasis.controllers.backoffice.contentcontroller \
     import ContentController
-
-#from sitebasis.controllers.backoffice.historycontroller \
-#    import HistoryController
-
+from sitebasis.controllers.backoffice.deletecontroller import DeleteController
 from sitebasis.controllers.backoffice.ordercontroller import OrderController
 from sitebasis.controllers.backoffice.movecontroller import MoveController
 
 class BackOfficeController(BaseBackOfficeController):
 
+    _cp_config = BaseBackOfficeController.copy_config()
+    _cp_config["rendering.engine"] = "cocktail"
+    
+    _edit_stacks_manager_class = \
+        "sitebasis.controllers.backoffice.editstack.EditStacksManager"
+
     default_section = "content"
 
-    content = ContentController
-#    history = HistoryController
+    content = ContentController    
+    delete = DeleteController
     order = OrderController
     move = MoveController
 
     def submit(self):
         raise cherrypy.HTTPRedirect(
             self.document_uri(self.default_section) + "?" + view_state())
+
+    @event_handler
+    def handle_traversed(cls, event):
+        controller = event.source
+        controller.context["edit_stacks_manager"] = \
+            resolve(controller._edit_stacks_manager_class)()
+
+    @event_handler
+    def handle_after_request(cls, event):
+        
+        controller = event.source
+        edit_stacks_manager = controller.context["edit_stacks_manager"]
+        edit_stack = edit_stacks_manager.current_edit_stack
+        
+        if edit_stack is not None:
+            edit_stacks_manager.preserve_edit_stack(edit_stack)
 

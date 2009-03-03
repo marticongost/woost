@@ -11,12 +11,16 @@ from sitebasis.controllers.backoffice.useractions import (
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:py="http://www.whads.com/ns/cocktail/templates">
 
+    <?py-class
+    selected_action = None
+    ?>
+
     <py:ready>
         <?py
         self.set_client_param("edit_stack", self.edit_stack.to_param())
         self.add_class(self.edited_content_type.name)
         
-        if self.edited_item:
+        if self.edited_item.is_inserted:
             add_view_action_context(self, "existing_item")
             if self.edited_item.is_draft:
                 add_view_action_context(self, "draft")
@@ -44,7 +48,7 @@ from sitebasis.controllers.backoffice.useractions import (
         <h2 py:parent="self.body" py:position="0">
             <py:ready>
                 <?py
-                if self.edited_item \
+                if self.edited_item.is_inserted \
                 and not (self.edited_item.is_draft and self.edited_item.draft_source is None):
                     context_desc = translate(self.edited_item)
                 else:
@@ -60,7 +64,15 @@ from sitebasis.controllers.backoffice.useractions import (
             py:action_context="item_buttons"
             py:content_type="@{self.edited_content_type}"
             class="toolbar">
-            <py:with py:def="action_button" name="item_action"/>
+            <py:with
+                py:def="action_button"
+                py:args="action, extra"
+                name="item_action">
+                <?py
+                if action is self.selected_action:
+                    element.add_class("selected")
+                ?>
+            </py:with>
         </py:sitebasis.views.ActionBar>
         
         <div py:id="item_body"/>
