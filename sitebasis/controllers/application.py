@@ -204,7 +204,7 @@ class CMS(BaseCMSController):
         # Access forbidden
         elif is_http_error(403) \
         or isinstance(error, (AccessDeniedError, AuthenticationFailedError)):
-            status = 403
+            status = 200
             error_page = site.forbidden_error_page
         
         # Generic error
