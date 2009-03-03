@@ -22,18 +22,25 @@ from sitebasis.controllers.backoffice.useractions import \
     collections = ()
     errors = ()
     ?>
+
+    <py:ready>
+        <?py
+        self.changed_keys = set((member.name, language)
+                                for member, language in self.changes)
+        ?>
+    </py:ready>
    
     <py:with py:element="self.item_body">
 
         <!-- Success message -->
-        <div py:id="success" py:visible="@{self.saved}">
+        <!--<div py:id="success" py:visible="@{self.saved}">
             ${translate("sitebasis.views.BackOfficeEditView Changes saved")}
-        </div>
+        </div>-->
 
         <!-- Draft remark -->
         <div
             py:id="draft_box"
-            py:visible="@{self.edited_item and self.edited_item.is_draft}"
+            py:visible="@{self.edited_item.is_draft}"
             class="draft">
             <py:ready py:if="self.draft_box.visible">
                 <?py
@@ -63,31 +70,7 @@ from sitebasis.controllers.backoffice.useractions import \
         </ul>
 
         <!-- Tabs -->
-        <div py:id="tabs">
-            
-            <button
-                py:def="tab"
-                py:args="member"
-                type="submit"
-                name="section">
-                <?py
-                is_collection = isinstance(member, Collection)
-                section_id = member.name if is_collection else "fields"
-                element["value"] = section_id
-                element.add_class(member.name + "_tab")
-
-                if section_id == self.section:
-                    element.add_class("selected")
-
-                if self.edited_item and (
-                    (is_collection and self.edit_stack[-1].collection_has_changes(member))
-                    or (not is_collection and self.differences)
-                ):
-                    element.add_class("changed")
-                ?>
-                ${translate(member if is_collection else member.name)}
-            </button>
-
+        <div py:id="tabs">                        
             <py:ready>
                  <py:new py:element="self.create_tab(member)"
                      py:for="member in [self.edited_content_type] + list(self.collections)">
@@ -99,5 +82,33 @@ from sitebasis.controllers.backoffice.useractions import \
          </div>
 
     </py:with>
+
+    <button
+        py:def="tab"
+        py:args="member"
+        type="submit"
+        name="section">
+        <?py
+        is_collection = isinstance(member, Collection)
+        section_id = member.name if is_collection else "fields"
+        element["value"] = section_id
+        element.add_class(member.name + "_tab")
+
+        if section_id == self.section:
+            element.add_class("selected")
+
+        if self.edited_item.is_inserted and (
+            (is_collection and (member.name, None) in self.changed_keys)
+            or (not is_collection
+                and any(
+                    not isinstance(changed_member, Collection)
+                    for changed_member, language in self.changes
+                )
+            )
+        ):
+            element.add_class("changed")
+        ?>
+        ${translate(member if is_collection else member.name)}
+    </button>
 
 </py:sitebasis.views.BackOfficeItemView>

@@ -14,9 +14,8 @@ from sitebasis.models import Item
 class User(Item):
  
     edit_form = "sitebasis.views.UserForm"
-    edit_controller = \
-        "sitebasis.controllers.backoffice.userfieldscontroller." \
-        "UserFieldsController"
+    edit_node_class = \
+        "sitebasis.controllers.backoffice.usereditnode.UserEditNode"
 
     encryption = sha
 

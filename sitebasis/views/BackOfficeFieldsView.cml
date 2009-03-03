@@ -10,11 +10,11 @@ from cocktail.language import get_content_language
     xmlns:py="http://www.whads.com/ns/cocktail/templates">
 
     <?py-class
-    form_schema = None
+    fields_schema = None
     form_data = None
     saved = None 
     submitted = False
-    differences = None
+    changes = None
     available_languages = ()
     translations = ()
     ?>
@@ -69,12 +69,12 @@ from cocktail.language import get_content_language
 
         <!-- Form -->
         <py:ready>
-            <py:new py:element="loader.new(self.edited_content_type.edit_form)"
+            <py:new py:element="loader.new(self.edited_item.edit_form)"
                 py:id="edit_form"
                 py:embeded="${True}"
                 py:tag="div"
                 py:data="@{self.form_data}"
-                py:schema="@{self.form_schema}"
+                py:schema="@{self.fields_schema}"
                 py:errors="@{self.submitted and self.errors}"
                 py:translations="@{self.translations}"
                 py:table_layout="${True}"
@@ -83,13 +83,6 @@ from cocktail.language import get_content_language
                 method="post">
                                 
                 <!-- Highlight changed members -->
-                <?py
-                differences = set(
-                    (member.name, language)
-                    for member, language in self.differences
-                )
-                ?>
-
                 <py:with py:def="field_instance" py:args="member">
                     <?py
                     key = (
@@ -99,7 +92,7 @@ from cocktail.language import get_content_language
                             else None
                     )
                     
-                    if key in differences:
+                    if key in self.changed_keys:
                         element.add_class("changed")
                     ?>
                 </py:with>

@@ -6,15 +6,17 @@
 @organization:	Whads/Accent SL
 @since:			July 2008
 """
-from pkg_resources import resource_filename, iter_entry_points
+import os.path
 import cherrypy
+from pkg_resources import resource_filename, iter_entry_points
+from cherrypy.lib.static import serve_file
 from cocktail.modeling import getter
 from cocktail.events import Event, event_handler
 from cocktail.controllers import Dispatcher
 from cocktail.translations import set_language
 from cocktail.language import set_content_language
 from cocktail.persistence import datastore
-from sitebasis.models import Site, Document, Style, AccessDeniedError
+from sitebasis.models import Site, Document, File, Style, AccessDeniedError
 from sitebasis.controllers.basecmscontroller import BaseCMSController
 from sitebasis.controllers.language import LanguageModule
 from sitebasis.controllers.authentication import (
@@ -49,6 +51,10 @@ class CMS(BaseCMSController):
 
     # Webserver configuration
     virtual_path = "/"
+    
+    # Paths
+    application_path = None
+    upload_path = None
 
     # A dummy controller for CherryPy, that triggers the cocktail dispatcher.
     # This is done so dynamic dispatching (using the resolve() method of
@@ -57,12 +63,28 @@ class CMS(BaseCMSController):
     class ApplicationContainer(object):
 
         _cp_config = {
-            "tools.sessions.on": True
+            "tools.sessions.on": True,
+            "tools.sessions.storage_type": "file"
         }
 
         def __init__(self, cms):
             self.__cms = cms
             self.__dispatcher = Dispatcher()
+            app_path = cms.application_path
+
+            if app_path:
+
+                # Set the default location for file-based sessions
+                if self._cp_config and \
+                self._cp_config.get("tools.sessions.storage_type") == "file":
+                    self._cp_config.setdefault(
+                        "tools.sessions.storage_path",
+                        os.path.join(app_path, "sessions")
+                    )
+
+                # Set the default location for uploaded files
+                if not cms.upload_path:
+                    cms.upload_path = os.path.join(app_path, "upload")
 
         @cherrypy.expose
         def default(self, *args, **kwargs):
@@ -232,6 +254,41 @@ class CMS(BaseCMSController):
         # Drop any uncommitted change
         datastore.abort()
         datastore.close()
+
+    def get_file_upload_path(self, id):
+        return os.path.join(self.upload_path, str(id))
+
+    @cherrypy.expose
+    def files(self, id, **kwargs):
+        
+        try:
+            id = int(id)
+        except:
+            raise cherrypy.NotFound()
+
+        disposition = kwargs.get("disposition")
+
+        if disposition not in ("inline", "attachment"):
+            disposition = "inline"
+
+        file = File.get_instance(id)
+        print id, list(File.index.keys()), file
+        
+        if file is None or not file.is_published():
+            raise cherrypy.NotFound()
+
+        self.authentication.process_request()
+
+        self.authorization.restrict_access(
+            action = "read",
+            target_instance = file
+        )
+
+        return serve_file(
+                file.file_path,
+                name = file.file_name,
+                disposition = disposition,
+                content_type = file.mime_type)
 
     @cherrypy.expose
     def user_styles(self):

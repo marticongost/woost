@@ -1,6 +1,11 @@
 
 .BackOfficeDiffView .differences {
-    width: 100%;
+    margin: 1em 0;
+    font-size: 85%;
+}
+
+.BackOfficeDiffView .differences .check {
+    width: 1em;
 }
 
 .BackOfficeDiffView .differences th {
@@ -19,24 +24,16 @@
     background-color: rgb(255,230,210);
 }
 
-.BackOfficeDiffView .diff_chg {
+.BackOfficeDiffView .diff_change {
     color: rgb(25,25,175);
     font-weight: bold;
     background-color: rgb(215,255,215);
 }
 
-.BackOfficeDiffView .diff_next,
-.BackOfficeDiffView .diff_header {
-    display: none;
-}
-
-.BackOfficeDiffView .difference {
-    width: 100%;
-}
-
-.BackOfficeDiffView td.language {
+.BackOfficeDiffView .language {
     color: rgb(75,75,75);
     font-style: italic;
+    font-size: 85%;
 }
 
 .BackOfficeDiffView .difference_row + .difference_row > td {
@@ -54,31 +51,12 @@
     padding-left: 1em;
 }
 
-.BackOfficeDiffView .diff {
-    border: none;
-    border-collapse: collapse;
-    table-layout: fixed;
-    width: 100%;
-    border: 1px solid rgb(190,190,190);
-}
-
-.BackOfficeDiffView .diff th,
-.BackOfficeDiffView .diff td {
-    width: 50%;
-    padding: 0.2em !important;
-    font-family: Bitstream Vera Sans Mono, Lucida Console, Courier New;
-    font-size: 85%;
-}
-
-.BackOfficeDiffView .diff td {
-    border: 1px dashed rgb(200,200,200);
-}
-
-.BackOfficeDiffView .diff th {
-    font-weight: normal;
-    background-color: rgb(240,240,240);
+.BackOfficeDiffView .diff_unit {
+    height: 1.5em;
 }
 
 .BackOfficeDiffView .buttons {
-    padding-right: 0;
+    text-align: left;
+    padding: 0;
+    margin: 1em 0;
 }

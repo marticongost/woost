@@ -1,0 +1,22 @@
+#-*- coding: utf-8 -*-
+"""
+
+@author:		Martí Congost
+@contact:		marti.congost@whads.com
+@organization:	Whads/Accent SL
+@since:			February 2009
+"""
+from cocktail.html import templates
+from sitebasis.views.contentdisplaymixin import ContentDisplayMixin
+
+PropertyTable = templates.get_class("cocktail.html.PropertyTable")
+
+
+class ContentPropertyTable(ContentDisplayMixin, PropertyTable):
+
+    authorization_check = None
+
+    def __init__(self, *args, **kwargs):
+        PropertyTable.__init__(self, *args, **kwargs)
+        ContentDisplayMixin.__init__(self)
+

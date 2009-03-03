@@ -111,7 +111,7 @@ cocktail.init(function () {
         .each(function () {
 
             // Enabled/disabled toolbar buttons
-            jQuery(".selection input", this).bind("selectionChanged", function () {
+            jQuery(".collection_display", this).bind("selectionChanged", function () {
                 jQuery(this).parents(".ContentView").each(updateToolbar);
             });
             updateToolbar.call(this);

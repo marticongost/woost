@@ -8,6 +8,7 @@
 """
 from cocktail.language import get_content_language
 from cocktail.translations import translate
+from cocktail.persistence import datastore
 from cocktail import schema
 from sitebasis.models.site import Site
 from sitebasis.models.item import Item
@@ -411,6 +412,17 @@ def allowed(**context):
 
     if action is not None and isinstance(action, basestring):
         context["action"] = Action.identifier.index[action]
+
+    # Obtain user roles
+    user = context.pop("user", None)
+
+    if user is not None:
+        roles = user.get_roles(context)
+
+        if not user.anonymous:
+            roles.append(datastore.root["authenticated_role"])
+            
+        context["roles"] = roles
 
     if debug:
         print styled(u"-" * 80, "brown")
