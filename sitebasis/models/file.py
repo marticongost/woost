@@ -64,10 +64,8 @@ class File(Resource):
     instantiable = True
 
     edit_view = "sitebasis.views.FileFieldsView"
-
-    edit_controller = \
-        "sitebasis.controllers.backoffice.filefieldscontroller." \
-        "FileFieldsController"
+    edit_node_class = \
+        "sitebasis.controllers.backoffice.fileeditnode.FileEditNode"
 
     members_order = [
         "file_name",

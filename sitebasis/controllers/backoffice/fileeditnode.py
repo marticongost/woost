@@ -9,9 +9,10 @@
 import os
 from shutil import move
 import cherrypy
-from cocktail.modeling import cached_getter
+from cocktail.modeling import getter, cached_getter
 from cocktail.events import event_handler
 from cocktail import schema
+from cocktail.controllers import context
 from cocktail.controllers.fileupload import FileUpload
 from sitebasis.controllers.backoffice.editstack import EditNode
 
@@ -41,10 +42,10 @@ class FileEditNode(EditNode):
     @getter
     def temp_file_path(self):
         return os.path.join(
-            self.context["cms"].upload_path,
+            context["cms"].upload_path,
             "temp",
             "%s-%s-%s" % (
-                self.item.id
+                self.item.id,
                 cherrypy.session.id,
                 self.stack.to_param()
             )
