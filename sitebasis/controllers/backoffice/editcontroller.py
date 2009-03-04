@@ -14,7 +14,7 @@ from cocktail.schema import (
     Adapter, ErrorList, DictAccessor, Collection
 )
 from cocktail.persistence import datastore
-from sitebasis.models import Language, changeset_context
+from sitebasis.models import Language, changeset_context, ChangeSet
 from sitebasis.controllers.backoffice.editstack import RelationNode, EditNode
 from sitebasis.controllers.backoffice.basebackofficecontroller \
         import BaseBackOfficeController
@@ -81,6 +81,7 @@ class EditController(BaseBackOfficeController):
             item.owner = user
 
         redirect = not item.is_inserted
+        changeset = None
 
         # Store the changes on a draft; this skips revision control
         if item.is_draft:
@@ -88,12 +89,14 @@ class EditController(BaseBackOfficeController):
 
         # Operate directly on a production item
         else:
-            with changeset_context(author = user):
-                self._apply_changes(item)
-        
-        stack_node.saving()
+            with changeset_context(author = user) as changeset:
+                self._apply_changes(item)       
+
         datastore.commit()
-        stack_node.committed()
+        stack_node.committed(
+            user = user,
+            changeset = changeset
+        )
 
         # A new item or draft was created
         if redirect:
@@ -186,7 +189,11 @@ class EditController(BaseBackOfficeController):
         )
 
         item.insert()
-        stack_node.saving()
+
+        stack_node.saving(
+            user = self.user,
+            changeset = ChangeSet.current
+        )
 
     @cached_getter
     def output(self):
