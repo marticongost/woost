@@ -131,8 +131,9 @@ class ItemController(BaseBackOfficeController):
                 item = content_type()
 
                 # Start with a translation object for each visible language
-                for language in self.get_visible_languages():
-                    item._new_translation(language)
+                if content_type.translated:
+                    for language in self.get_visible_languages():
+                        item._new_translation(language)
 
             # Existing item
             else:
