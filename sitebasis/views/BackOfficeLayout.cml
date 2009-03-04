@@ -32,6 +32,14 @@ from sitebasis.controllers.backoffice.editstack import EditNode, RelationNode
             href = "/resources/styles/backoffice_ie.css")
     ]))
     
+    self.add_head_element(
+        Element("link",
+            rel = "Stylesheet",
+            type = "text/css",
+            media = "print",
+            href = "/resources/styles/print.css")
+    )
+    
     self.add_resource("/cocktail/scripts/jquery.js")    
     self.add_resource("/cocktail/scripts/jquery.hotkeys.js")
     self.add_resource("/cocktail/scripts/jquery.query.js")
