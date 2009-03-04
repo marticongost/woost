@@ -165,7 +165,7 @@ class EditController(BaseBackOfficeController):
 
                 for language in deleted_translations:
                     del item.translations[language]
-                    restrict(
+                    restrict_access(
                         target_instance = item,
                         language = language,
                         action = action
@@ -186,6 +186,7 @@ class EditController(BaseBackOfficeController):
         )
 
         item.insert()
+        stack_node.saving()
 
     @cached_getter
     def output(self):
