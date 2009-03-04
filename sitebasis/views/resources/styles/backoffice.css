@@ -205,6 +205,10 @@ html, body {
     text-decoration: underline;
 }
 
+.BackOfficeLayout .selector a {
+    text-decoration: none;
+}
+
 /* Item selector
 -----------------------------------------------------------------------------*/
 .BackOfficeItemSelectorView .content_type_selector > .entry_label {
