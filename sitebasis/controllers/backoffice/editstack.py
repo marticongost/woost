@@ -368,12 +368,25 @@ class EditNode(StackNode):
 
     saving = Event("""
         An event triggered when saving the changes contained within the node,
-        just before the transaction is committed.
+        after loading form data to the modified item and before the transaction
+        is committed.
+
+        @ivar user: The user that makes the changes.
+        @type user: L{User<sitebasis.models.User>}
+
+        @ivar changeset: The change set describing the changes.
+        @type changeset: L{ChangeSet<sitebasis.models.ChangeSet>}
         """)
 
     committed = Event("""
         An event triggered after the changes contained within the node have
         been successfully committed to the data store.
+        
+        @ivar user: The user that makes the changes.
+        @type user: L{User<sitebasis.models.User>}
+
+        @ivar changeset: The change set describing the changes.
+        @type changeset: L{ChangeSet<sitebasis.models.ChangeSet>}
         """)
     
     def __init__(self, item):        
