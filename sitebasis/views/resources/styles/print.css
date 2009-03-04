@@ -1,0 +1,17 @@
+
+.BackOfficeLayout .header,
+.BackOfficeLayout .simple_search,
+.BackOfficeLayout .search_results_message,
+.BackOfficeLayout .toolbar_box,
+.BackOfficeLayout .item_buttons,
+.BackOfficeLayout .collapsed {
+    display: none;
+}
+
+.BackOfficeLayout ul.edit_path {
+    padding: .5em 0;
+}
+
+.BackOfficeLayout form.body {
+    padding: 1em 0;
+}
