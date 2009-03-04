@@ -12,7 +12,7 @@ from cPickle import Pickler, Unpickler
 from cStringIO import StringIO
 import cherrypy
 from cocktail.modeling import ListWrapper, getter, cached_getter
-from cocktail.events import Event
+from cocktail.events import Event, EventHub
 from cocktail.pkgutils import resolve
 from cocktail import schema
 from cocktail.controllers import context, get_parameter
@@ -310,6 +310,7 @@ class StackNode(object):
     """Base (abstract) class for the different kinds of nodes that form an
     L{edit stack<EditStack>}.
     """
+    __metaclass__ = EventHub
     _stack = None
     _parent_node = None
 
