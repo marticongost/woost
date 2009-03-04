@@ -66,6 +66,7 @@ class ItemController(BaseBackOfficeController):
             if isinstance(member, Collection)
             and member.visible
             and member.editable
+            and not member.edit_inline
             and member is not stack_relation
             and self.allows(
                 target_instance = self.stack_node.item,
@@ -131,8 +132,9 @@ class ItemController(BaseBackOfficeController):
                 item = content_type()
 
                 # Start with a translation object for each visible language
-                for language in self.get_visible_languages():
-                    item._new_translation(language)
+                if content_type.translated:
+                    for language in self.get_visible_languages():
+                        item._new_translation(language)
 
             # Existing item
             else:

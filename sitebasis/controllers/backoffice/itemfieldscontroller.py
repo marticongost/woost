@@ -77,7 +77,7 @@ class ItemFieldsController(EditController):
         adapter.exclude([
             member.name
             for member in self.stack_node.content_type.members().itervalues()
-            if isinstance(member, schema.Collection)
+            if isinstance(member, schema.Collection) and not member.edit_inline
         ])
         return adapter
 
