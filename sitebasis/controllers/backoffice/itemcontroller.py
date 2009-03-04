@@ -66,6 +66,7 @@ class ItemController(BaseBackOfficeController):
             if isinstance(member, Collection)
             and member.visible
             and member.editable
+            and not member.edit_inline
             and member is not stack_relation
             and self.allows(
                 target_instance = self.stack_node.item,
