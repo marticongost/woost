@@ -29,13 +29,14 @@ class Item(PersistentObject):
 
     members_order = "id", "author", "owner", "groups"
 
-    # Unique identifier
+    # Unique qname
     #--------------------------------------------------------------------------
-    identifier = schema.String(
+    qname = schema.String(
         max = 10,
         required = True,
         unique = True,
-        indexed = True
+        indexed = True,
+        visible = False
     )
 
     # Backoffice customization
