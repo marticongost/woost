@@ -767,6 +767,12 @@ translations.define("Item.title",
     en = u"Title"
 )
 
+translations.define("Item.identifier",
+    ca = u"Identificador",
+    es = u"Identificador",
+    en = u"Identifier"
+)
+
 translations.define("Item.description",
     ca = u"Descripció",
     es = u"Descripción",

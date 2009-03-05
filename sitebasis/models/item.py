@@ -29,6 +29,15 @@ class Item(PersistentObject):
 
     members_order = "id", "author", "owner", "groups"
 
+    # Unique identifier
+    #--------------------------------------------------------------------------
+    identifier = schema.String(
+        max = 10,
+        required = True,
+        unique = True,
+        indexed = True
+    )
+
     # Backoffice customization
     #--------------------------------------------------------------------------
     show_detail_view = "sitebasis.views.BackOfficeShowDetailView"
