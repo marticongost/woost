@@ -90,7 +90,7 @@ def init_site(
  
         # Create the administrators group
         administrators = Group()
-        administrator.qname = "sitebasis.administrators"
+        administrators.qname = "sitebasis.administrators"
         administrators.critical = True
         set_translations(administrators, "title", "Administrators group title")
         administrators.group_members.append(admin)
