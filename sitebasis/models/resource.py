@@ -73,13 +73,6 @@ class Resource(Item):
         bidirectional = True
     )
 
-    @getter
-    @abstractmethod
-    def uri(self):
-        """Gets the publication URI for the resource.
-        @type: unicode
-        """
-
     def __translate__(self, language, **kwargs):
         return self.get("title", language) \
             or Item.__translate__(self, language, **kwargs)
