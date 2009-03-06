@@ -90,6 +90,7 @@ def init_site(
  
         # Create the administrators group
         administrators = Group()
+        administrators.qname = "sitebasis.administrators"
         administrators.critical = True
         set_translations(administrators, "title", "Administrators group title")
         administrators.group_members.append(admin)
@@ -99,22 +100,26 @@ def init_site(
         anonymous_role = datastore.root["anonymous_role"] = Role()
         anonymous_role.anonymous = True
         anonymous_role.critical = True
+        anonymous_role.qname = "sitebasis.anonymous"
         set_translations(anonymous_role, "title", "Anonymous role title")
         anonymous_role.insert()
 
         authenticated_role = datastore.root["authenticated_role"] = Role()
         authenticated_role.critical = True
+        authenticated_role.qname = "sitebasis.authenticated"
         set_translations(authenticated_role, "title",
             "Authenticated role title")
         authenticated_role.insert()
 
         author_role = datastore.root["author_role"] = Role()
         author_role.critical = True
+        author_role.qname = "sitebasis.author"
         set_translations(author_role, "title", "Author role title")
         author_role.insert()
 
         owner_role = datastore.root["owner_role"] = Role()
         owner_role.critical = True
+        owner_role.qname = "sitebasis.owner"
         set_translations(owner_role, "title", "Owner role title")
         owner_role.insert()
     
@@ -123,6 +128,7 @@ def init_site(
         back_office.handler = "sitebasis.controllers.backoffice" \
                               ".backofficecontroller.BackOfficeController"
         back_office.critical = True
+        back_office.qname = "sitebasis.backoffice"
         back_office.path = u"cms"
         set_translations(back_office, "title", "Back office title")
         back_office.insert()
@@ -137,6 +143,7 @@ def init_site(
         # Create standard resources
         message_stylesheet = URI()
         message_stylesheet.uri = uri + "resources/styles/message.css"
+        message_stylesheet.qname = "sitebasis.message_stylesheet"
         set_translations(message_stylesheet, "title",
             "Message style sheet title")
         message_stylesheet.insert()
@@ -144,6 +151,7 @@ def init_site(
         # Create the temporary home page
         site.home = StandardPage()
         site.home.template = empty_template
+        site.qname = "sitebasis.home"
         set_translations(site.home, "title", "Home page title")            
         set_translations(
             site.home, "body", "Home page body",
@@ -155,6 +163,7 @@ def init_site(
         # Create the 'content not found' page
         site.not_found_error_page = StandardPage()
         site.not_found_error_page.template = empty_template
+        site.not_found_error_page.qname = "sitebasis.notfounderrorpage"
         set_translations(site.not_found_error_page, "title",
             "Not found error page title")
         set_translations(site.not_found_error_page, "body",
@@ -176,6 +185,7 @@ def init_site(
         """
         login_page = StandardPage()
         login_page.template = empty_template
+        login_page.qname = "sitebasis.loginpage"
         set_translations(login_page, "title", "Login page title")
         set_translations(login_page, "body", "Login page body",
             form = login_form)
