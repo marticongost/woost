@@ -28,6 +28,7 @@ class Resource(Item):
         required = True,
         unique = True,
         indexed = True,
+        normalized_index = True,
         translated = True
     )
 

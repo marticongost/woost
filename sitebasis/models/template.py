@@ -20,12 +20,14 @@ class Template(Item):
         required = True,
         unique = True,
         indexed = True,
+        normalized_index = True,
         translated = True
     )
 
     identifier = schema.String(
         required = True,
         unique = True,
+        indexed = True,
         max = 255
     )
 
