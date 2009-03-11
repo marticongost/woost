@@ -250,7 +250,12 @@ class UserAction(object):
         if controller.edit_stack:
             params["edit_stack"] = controller.edit_stack.to_param()
 
-        if self.min == self.max == 1:
+        if self.ignores_selection:
+            return controller.document_uri(
+                self.id,
+                **params)
+
+        elif self.min == self.max == 1:
             # Single selection
             return controller.get_edit_uri(
                     selection[0],
@@ -503,7 +508,7 @@ class CloseAction(UserAction):
        
 
 class SaveAction(UserAction):
-    included = frozenset([("item_buttons", "edit")])
+    included = frozenset(["item_buttons"])
     ignores_selection = True
     max = None
     min = None
@@ -522,7 +527,7 @@ class SaveAction(UserAction):
 
 class SaveDraftAction(SaveAction):
     make_draft = True
-    included = frozenset([("item_buttons", "edit")])
+    included = frozenset(["item_buttons"])
     excluded = frozenset(["draft"])
 
 
