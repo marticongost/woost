@@ -503,7 +503,7 @@ class CloseAction(UserAction):
        
 
 class SaveAction(UserAction):
-    included = frozenset([("item_buttons", "edit")])
+    included = frozenset(["item_buttons"])
     ignores_selection = True
     max = None
     min = None
@@ -522,7 +522,7 @@ class SaveAction(UserAction):
 
 class SaveDraftAction(SaveAction):
     make_draft = True
-    included = frozenset([("item_buttons", "edit")])
+    included = frozenset(["item_buttons"])
     excluded = frozenset(["draft"])
 
 
