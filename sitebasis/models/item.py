@@ -184,7 +184,7 @@ class Item(PersistentObject):
     @classmethod
     def _create_translation_schema(cls, members):
         members["versioned"] = False
-        PersistentClass._create_translation_schema(cls, members)
+        PersistentObject._create_translation_schema.im_func(cls, members)
         
     @classmethod
     def _add_member(cls, member):
@@ -234,7 +234,7 @@ class Item(PersistentObject):
 
         if changeset:
             change = Change()
-            change.action = Action.identifier.index["create"]
+            change.action = Action.get_instance(identifier = "create")
             change.target = item
             change.changed_members = set(
                 member.name
@@ -273,7 +273,7 @@ class Item(PersistentObject):
             if change is None:
                 action_type = "modify"
                 change = Change()
-                change.action = Action.identifier.index[action_type]
+                change.action = Action.get_instance(identifier = action_type)
                 change.target = item
                 change.changed_members = set()
                 change.item_state = item._get_revision_state()
@@ -313,7 +313,7 @@ class Item(PersistentObject):
             or change.action.identifier not in ("create", "delete"):
                 change = Change()
                 change.insert()
-                change.action = Action.identifier.index["delete"]
+                change.action = Action.get_instance(identifier = "delete")
                 change.target = item
                 change.changeset = changeset
                 changeset.changes[item.id] = change
