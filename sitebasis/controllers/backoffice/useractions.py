@@ -250,7 +250,12 @@ class UserAction(object):
         if controller.edit_stack:
             params["edit_stack"] = controller.edit_stack.to_param()
 
-        if self.min == self.max == 1:
+        if self.ignores_selection:
+            return controller.document_uri(
+                self.id,
+                **params)
+
+        elif self.min == self.max == 1:
             # Single selection
             return controller.get_edit_uri(
                     selection[0],
