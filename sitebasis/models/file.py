@@ -33,6 +33,7 @@ for category, mime_types in (
         "application/mspowerpoint",
         "application/mswrite",
         "application/vnd.ms-excel",
+        "application/vnd.ms-access",
         "application/vnd.ms-powerpoint",
         "application/vnd.ms-project",
         "application/vnd.ms-works",
@@ -41,8 +42,7 @@ for category, mime_types in (
         "application/pdf",
         "application/postscript",
         "application/x-latex",
-        "application/vnd.oasis.opendocument.database",
-        "application/msaccess"
+        "application/vnd.oasis.opendocument.database"
     )),
     ("package", (
         "application/zip",
