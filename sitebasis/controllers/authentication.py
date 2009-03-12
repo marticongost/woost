@@ -33,7 +33,7 @@ class AuthenticationModule(Module):
 
     def _get_user(self):
         user_id = cherrypy.session.get(self.SESSION_KEY)
-        return user_id and User.index[user_id] or self.anonymous_user
+        return user_id and User.get_instance(user_id) or self.anonymous_user
 
     def _set_user(self, user):
         cherrypy.session[self.SESSION_KEY] = user and user.id
@@ -63,7 +63,8 @@ class AuthenticationModule(Module):
         identifier = identifier.strip()
 
         if identifier and password:
-            user = self.identifier_field.index.get(identifier)
+            params = {self.identifier_field.name: identifer}
+            user = User.get_instance(**params)
 
             if user and user.test_password(password):            
                 self.user = user
