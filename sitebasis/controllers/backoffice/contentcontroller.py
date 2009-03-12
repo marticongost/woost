@@ -311,7 +311,7 @@ class ContentController(BaseBackOfficeController):
         user_collection.available_languages = self.available_languages
         user_collection.selection_mode = self.selection_mode
         user_collection.selection_parser = \
-            lambda param: Item.index.get(int(param))
+            lambda param: Item.get_instance(int(param))
 
         # Initialize the content collection with the parameters set by the
         # current content view (this allows views to disable sorting, filters,

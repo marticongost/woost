@@ -156,7 +156,7 @@ class CMS(BaseCMSController):
         path = list(path)
         
         while path:
-            document = Document.full_path.index.get("/".join(path))
+            document = Document.get_instance(full_path = "/".join(path))
             if document:
                 break
             else:
