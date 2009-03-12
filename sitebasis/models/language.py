@@ -27,7 +27,7 @@ class Language(Item):
 
     @classgetter
     def codes(cls):
-        return [language.iso_code for language in cls.index.itervalues()]
+        return [language.iso_code for language in cls.select()]
 
     def __translate__(self, language, **kwargs):
         return self.iso_code and translate(self.iso_code) \
