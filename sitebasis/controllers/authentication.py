@@ -63,7 +63,7 @@ class AuthenticationModule(Module):
         identifier = identifier.strip()
 
         if identifier and password:
-            params = {self.identifier_field.name: identifer}
+            params = {self.identifier_field.name: identifier}
             user = User.get_instance(**params)
 
             if user and user.test_password(password):            
