@@ -226,3 +226,19 @@ class Document(Item):
         default = False
     )
 
+    def ascend_documents(self, include_self = False):
+        """Iterate over the document's ancestors, moving towards the root of
+        the tree.
+
+        @param include_self: Indicates if the document itself should be
+            included in the iteration.
+        @type include_self: bool
+
+        @return: An iterable sequence of documents.
+        @rtype: L{Document} iterable sequence
+        """
+        document = self if include_self else self.parent
+        while document is not None:
+            yield document
+            document = document.parent
+
