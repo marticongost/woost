@@ -411,7 +411,7 @@ def allowed(**context):
     action = context.get("action")
 
     if action is not None and isinstance(action, basestring):
-        context["action"] = Action.identifier.index[action]
+        context["action"] = Action.get_instance(identifier = action)
 
     # Obtain user roles
     user = context.pop("user", None)
