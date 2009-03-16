@@ -24,7 +24,7 @@ class RichTextEditor(TinyMCE):
 
         styles = [
             "%s=%s" % (translate(style), style.class_name)
-            for style in Style.index.itervalues()
+            for style in Style.select()
         ]
 
         self.tinymce_params.update(
