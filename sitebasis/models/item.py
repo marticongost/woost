@@ -104,7 +104,8 @@ class Item(PersistentObject):
         related_key = "drafts",
         bidirectional = True,
         editable = False,
-        listed_by_default = False
+        listed_by_default = False,
+        indexed = True
     )
 
     drafts = schema.Collection(
