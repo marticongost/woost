@@ -11,7 +11,7 @@ import cherrypy
 from cocktail.modeling import getter, cached_getter
 from cocktail.schema import get, Member, Adapter, Reference, String, Collection
 from cocktail.schema.expressions import (
-    CustomExpression, ExclusionExpression, Self
+    Expression, CustomExpression, ExclusionExpression, Self
 )
 from cocktail.persistence import datastore
 from cocktail.html.datadisplay import SINGLE_SELECTION, MULTIPLE_SELECTION
@@ -235,6 +235,15 @@ class ContentController(BaseBackOfficeController):
             # Exclude items that are already contained on an edited collection
             if is_collection:
                 excluded_items.update(get(edit_node.form_data, relation))
+
+            # Add relation constraints
+            rel_constraints = relation.relation_constraints
+
+            if rel_constraints is not None:
+                for constraint in rel_constraints:
+                    if not isinstance(constraint, Expression):
+                        constraint = CustomExpression(constraint)
+                    user_collection.add_base_filter(constraint)
 
             # Prevent cycles in recursive relations. This only makes sense in
             # existing items, new items don't yet exist on the database and
