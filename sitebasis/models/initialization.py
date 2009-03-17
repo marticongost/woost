@@ -17,6 +17,7 @@ from sitebasis.models import (
     Action,
     Document,
     AccessRule,
+    Agent,
     User,
     Role,
     Group,
@@ -69,7 +70,7 @@ def init_site(
         
         # Create the site
         site = Site()
-        datastore.root["main_site"] = site
+        site.qname = "sitebasis.main_site"
         
         # Create the administrator user
         admin = User()
@@ -99,27 +100,27 @@ def init_site(
         administrators.insert()
 
         # Create standard users and roles
-        anonymous_role = datastore.root["anonymous_role"] = Role()
+        anonymous_role = Role()
         anonymous_role.anonymous = True
         anonymous_role.critical = True
         anonymous_role.qname = "sitebasis.anonymous"
         set_translations(anonymous_role, "title", "Anonymous role title")
         anonymous_role.insert()
 
-        authenticated_role = datastore.root["authenticated_role"] = Role()
+        authenticated_role = Role()
         authenticated_role.critical = True
         authenticated_role.qname = "sitebasis.authenticated"
         set_translations(authenticated_role, "title",
             "Authenticated role title")
         authenticated_role.insert()
 
-        author_role = datastore.root["author_role"] = Role()
+        author_role = Role()
         author_role.critical = True
         author_role.qname = "sitebasis.author"
         set_translations(author_role, "title", "Author role title")
         author_role.insert()
 
-        owner_role = datastore.root["owner_role"] = Role()
+        owner_role = Role()
         owner_role.critical = True
         owner_role.qname = "sitebasis.owner"
         set_translations(owner_role, "title", "Owner role title")

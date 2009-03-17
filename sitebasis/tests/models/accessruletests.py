@@ -20,11 +20,18 @@ class BaseAuthorizationTestCase(TempStorageMixin, TestCase):
         from cocktail.persistence import datastore
         from sitebasis.models import Site, Action, Role
 
-        self.site = datastore.root["main_site"] = Site()
+        self.site = Site(qname = "sitebasis.main_site")
+        self.site.insert()
         self.rules = self.site.access_rules_by_priority
-        self.authenticated_role = datastore.root["authenticated_role"] = Role()
-        self.author_role = datastore.root["author_role"] = Role()
-        self.owner_role = datastore.root["owner_role"] = Role()
+
+        self.authenticated_role = Role(qname = "sitebasis.authenticated")
+        self.authenticated_role.insert()
+
+        self.author_role = Role(qname = "sitebasis.author")
+        self.author_role.insert()
+
+        self.owner_role = Role(qname = "sitebasis.owner")
+        self.owner_role.insert()
         
         Action(identifier = "create").insert()
         Action(identifier = "read").insert()
@@ -33,7 +40,7 @@ class BaseAuthorizationTestCase(TempStorageMixin, TestCase):
 
 
 class RuleConstraintsTestCase(BaseAuthorizationTestCase):
-    
+
     def test_target_instance(self):
 
         from sitebasis.models import AccessRule, Document, allowed
@@ -89,7 +96,7 @@ class RuleConstraintsTestCase(BaseAuthorizationTestCase):
         b = User()
 
         self.rules.append(AccessRule(role = a, allowed = True))
-
+        
         self.assertTrue(allowed(user = a))
         self.assertFalse(allowed(user = b))
 

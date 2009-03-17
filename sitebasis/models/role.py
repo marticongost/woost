@@ -7,9 +7,10 @@
 @since:			August 2008
 """
 from cocktail import schema
-from sitebasis.models import Item
+from sitebasis.models.agent import Agent
 
-class Role(Item):
+
+class Role(Agent):
 
     title = schema.String(
         required = True,
@@ -23,5 +24,5 @@ class Role(Item):
 
     def __translate__(self, language, **kwargs):
         return self.get("title", language) \
-            or Item.__translate__(self, language, **kwargs)
+            or Agent.__translate__(self, language, **kwargs)
 

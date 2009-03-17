@@ -27,7 +27,7 @@ class Item(PersistentObject):
     authorship, group membership, draft copies and versioning.
     """
 
-    members_order = "id", "author", "owner", "groups"
+    members_order = "id", "author", "owner"
 
     # Unique qname
     #--------------------------------------------------------------------------
@@ -325,7 +325,7 @@ class Item(PersistentObject):
         return PersistentObject._should_erase_member(self, member) \
             and member not in self._preserved_members
 
-    # Users and permissions
+    # Access control
     #--------------------------------------------------------------------------
     author = schema.Reference(
         indexed = True,
@@ -340,24 +340,11 @@ class Item(PersistentObject):
         type = "sitebasis.models.User"
     )
 
-    groups = schema.Collection(
-        items = "sitebasis.models.Group",
-        bidirectional = True
+    item_rules = schema.Collection(
+        items = "sitebasis.models.AccessRule",
+        bidirectional = True,
+        delete_cascade = True
     )
-
-    def get_roles(self, context):
-        
-        roles = [self]
-        target_instance = context.get("target_instance")
-
-        if target_instance and target_instance.owner is self:
-            roles.append(datastore.root["owner_role"])
-
-        if target_instance and target_instance.author is self:
-            roles.append(datastore.root["author_role"])
-        
-        roles.extend(self.groups)
-        return roles 
 
 Item.id.editable = False
 Item.id.listed_by_default = False

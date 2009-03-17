@@ -791,12 +791,6 @@ translations.define("Item.owner",
     en = u"Owner"
 )
 
-translations.define("Item.groups",
-    ca = u"Grups",
-    es = u"Grupos",
-    en = u"Groups"
-)
-
 translations.define("Item.changes",
     ca = u"Canvis",
     es = u"Cambios",
@@ -831,6 +825,12 @@ translations.define("Item.last_update_time",
     ca = u"Última modificació",
     es = u"Última modificación",
     en = u"Last updated"
+)
+
+translations.define("Item.item_rules",
+    ca = u"Regles (objecte)",
+    es = u"Reglas (objeto)",
+    en = u"Rules (object)"
 )
 
 # Site
@@ -1047,6 +1047,12 @@ translations.define("User.owned_items",
     ca = u"Contingut propietat de l'usuari",
     es = u"Contingut propiedad del usuario",
     en = u"Content owned by the user"
+)
+
+translations.define("User.groups",
+    ca = u"Grups",
+    es = u"Grupos",
+    en = u"Groups"
 )
 
 # Access rule
@@ -1279,6 +1285,26 @@ translations.define("Style.admin_declarations",
     en = u"Admin CSS declarations"
 )
 
+# Agent
+#------------------------------------------------------------------------------
+translations.define("Agent",
+    ca = u"Agent",
+    es = u"Agente",
+    en = u"Agent"
+)
+
+translations.define("Agent-plural",
+    ca = u"Agents",
+    es = u"Agentes",
+    en = u"Agents"
+)
+
+translations.define("Agent.agent_rules",
+    ca = u"Regles (subjecte)",
+    es = u"Reglas (sujeto)",
+    en = u"Rules (subject)"
+)
+
 # Group
 #------------------------------------------------------------------------------
 translations.define("Group",
@@ -1454,15 +1480,15 @@ translations.define("Event.body",
 # Role
 #------------------------------------------------------------------------------
 translations.define("Role",
-    ca = u"Rol d'usuari",
-    es = u"Rol de usuario",
-    en = u"User role"
+    ca = u"Rol",
+    es = u"Rol",
+    en = u"Role"
 )
 
 translations.define("Role-plural",
-    ca = u"Rols d'usuari",
-    es = u"Rols de usuario",
-    en = u"User roles"
+    ca = u"Rols",
+    es = u"Roles",
+    en = u"Roles"
 )
 
 translations.define("Role.title",

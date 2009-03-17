@@ -29,7 +29,7 @@ class Site(Item):
 
     @classgetter
     def main(cls):
-        return datastore.root["main_site"]
+        return cls.get_instance(qname = "sitebasis.main_site")
 
     default_language = schema.String(
         required = True,
