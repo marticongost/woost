@@ -82,12 +82,15 @@ class AccessRule(Item):
     )
 
     role = schema.Reference(
-        type = "sitebasis.models.Item",
-        listed_by_default = False        
+        type = "sitebasis.models.Agent",
+        bidirectional = True,
+        listed_by_default = False,
+        related_key = "agent_rules"
     )
 
     target_instance = schema.Reference(
         type = "sitebasis.models.Item",
+        bidirectional = True,
         listed_by_default = False
     )
 
@@ -420,7 +423,7 @@ def allowed(**context):
         roles = user.get_roles(context)
 
         if not user.anonymous:
-            roles.append(datastore.root["authenticated_role"])
+            roles.append(Role.get_instance(qname = "sitebasis.authenticated"))
             
         context["roles"] = roles
 

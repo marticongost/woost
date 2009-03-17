@@ -7,9 +7,10 @@
 @since:			June 2008
 """
 from cocktail import schema
-from sitebasis.models import Item
+from sitebasis.models.agent import Agent
 
-class Group(Item):
+
+class Group(Agent):
  
     title = schema.String(
         required = True,
@@ -20,11 +21,11 @@ class Group(Item):
     )
 
     group_members = schema.Collection(
-        items = "sitebasis.models.Item",
+        items = "sitebasis.models.User",
         bidirectional = True
     )
 
     def __translate__(self, language, **kwargs):
         return self.get("title", language) \
-            or Item.__translate__(self, language, **kwargs)
+            or Agent.__translate__(self, language, **kwargs)
 

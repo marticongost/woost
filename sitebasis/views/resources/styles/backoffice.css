@@ -612,10 +612,6 @@ body.scripted .BackOfficeLayout .Table .selection {
     background-image: url(../images/types/DynamicGroup.png);
 }
 
-.BackOfficeLayout .Group {
-    background-image: url(../images/types/Group.png);
-}
-
 .BackOfficeLayout .Document {
     background-image: url(../images/types/Document.png);
 }
@@ -648,12 +644,16 @@ body.scripted .BackOfficeLayout .Table .selection {
     background-image: url(../images/types/Template.png);
 }
 
-.BackOfficeLayout .User {
+.BackOfficeLayout .Agent {
     background-image: url(../images/types/User.png);
 }
 
 .BackOfficeLayout .Role {
     background-image: url(../images/types/Role.png);
+}
+
+.BackOfficeLayout .Group {
+    background-image: url(../images/types/Group.png);
 }
 
 .BackOfficeLayout .PlugIn {

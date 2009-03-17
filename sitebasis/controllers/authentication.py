@@ -9,7 +9,7 @@
 import cherrypy
 from cocktail.modeling import getter
 from cocktail.persistence import datastore
-from sitebasis.models import User
+from sitebasis.models import User, Role
 from sitebasis.controllers.module import Module
 
 
@@ -45,7 +45,7 @@ class AuthenticationModule(Module):
 
     @getter
     def anonymous_user(self):
-        return datastore.root["anonymous_role"]
+        return Role.get_instance(qname = "sitebasis.anonymous")
 
     def login(self, identifier, password):
         """
