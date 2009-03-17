@@ -987,6 +987,26 @@ translations.define("Document.hidden",
     en = u"Hidden"
 )
 
+# Redirection
+#------------------------------------------------------------------------------
+translations.define("Redirection",
+    ca = u"Redirecció",
+    es = u"Redirección",
+    en = u"Redirection"
+)
+
+translations.define("Redirection-plural",
+    ca = u"Redireccions",
+    es = u"Redirecciones",
+    en = u"Redirections"
+)
+
+translations.define("Redirection.uri",
+    ca = u"URL",
+    es = u"URL",
+    en = u"URL"
+)
+
 # StandardPage
 #------------------------------------------------------------------------------
 translations.define("StandardPage",
