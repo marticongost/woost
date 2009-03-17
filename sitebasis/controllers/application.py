@@ -272,7 +272,6 @@ class CMS(BaseCMSController):
             disposition = "inline"
 
         file = File.get_instance(id)
-        print id, list(File.index.keys()), file
         
         if file is None or not file.is_published():
             raise cherrypy.NotFound()
@@ -294,7 +293,7 @@ class CMS(BaseCMSController):
     def user_styles(self):
         # TODO: Move to a plugin
         cherrypy.response.headers["Content-Type"] = "text/css"
-        for style in Style.index.itervalues():
+        for style in Style.select():
             declarations = style.admin_declarations or style.declarations
             yield ".%s{\n%s\n}\n" % (style.class_name, declarations)
 
