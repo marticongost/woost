@@ -15,7 +15,8 @@ class Agent(Item):
     agent_rules = schema.Collection(
         items = "sitebasis.models.AccessRule",
         bidirectional = True,
-        related_key = "role"
+        related_key = "role",
+        visible = False
     )
 
     def get_roles(self, context):

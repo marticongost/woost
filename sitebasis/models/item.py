@@ -344,7 +344,8 @@ class Item(PersistentObject):
     item_rules = schema.Collection(
         items = "sitebasis.models.AccessRule",
         bidirectional = True,
-        delete_cascade = True
+        delete_cascade = True,
+        visible = False
     )
 
 Item.id.editable = False
