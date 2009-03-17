@@ -18,6 +18,6 @@ class Agent(Item):
         related_key = "role"
     )
 
-    def get_roles(self):
+    def get_roles(self, context):
         return [self]
 
