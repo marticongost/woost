@@ -616,6 +616,10 @@ body.scripted .BackOfficeLayout .Table .selection {
     background-image: url(../images/types/Document.png);
 }
 
+.BackOfficeLayout .Redirection {
+    background-image: url(../images/types/Redirection.png);
+}
+
 .BackOfficeLayout .Event {
     background-image: url(../images/types/Event.png);    
 }

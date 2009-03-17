@@ -46,6 +46,7 @@ from sitebasis.models.agent import Agent
 from sitebasis.models.group import Group
 from sitebasis.models.dynamicgroup import DynamicGroup
 from sitebasis.models.document import Document
+from sitebasis.models.redirection import Redirection
 from sitebasis.models.template import Template
 from sitebasis.models.user import User
 from sitebasis.models.role import Role
