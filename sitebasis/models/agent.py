@@ -18,3 +18,6 @@ class Agent(Item):
         related_key = "role"
     )
 
+    def get_roles(self):
+        return [self]
+
