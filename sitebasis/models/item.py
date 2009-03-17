@@ -36,7 +36,8 @@ class Item(PersistentObject):
         required = True,
         unique = True,
         indexed = True,
-        visible = False
+        visible = False,
+        searchable = False
     )
 
     # Backoffice customization

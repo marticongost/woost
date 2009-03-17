@@ -79,7 +79,8 @@ class File(Resource):
 
     mime_type = schema.String(
         required = True,
-        editable = False
+        editable = False,
+        text_search = False
     )
 
     file_size = schema.Integer(
@@ -89,7 +90,8 @@ class File(Resource):
     )
 
     file_hash = schema.String(
-        visible = False
+        visible = False,
+        searchable = False
     )
 
     @getter
