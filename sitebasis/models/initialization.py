@@ -32,7 +32,9 @@ def init_site(
     uri = "/"):
  
     datastore.root.clear()
-
+    datastore.commit()
+    datastore.close()
+    
     def set_translations(item, member, key, **kwargs):
         for language in languages:
             try:
