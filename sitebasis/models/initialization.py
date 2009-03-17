@@ -8,6 +8,7 @@
 """
 from __future__ import with_statement
 import sha
+from optparse import OptionParser
 from cocktail.translations import translate
 from cocktail.persistence import datastore
 from sitebasis.models import (
@@ -71,7 +72,8 @@ def init_site(
         # Create the site
         site = Site()
         site.qname = "sitebasis.main_site"
-        
+        site.insert()
+
         # Create the administrator user
         admin = User()
         admin.author = admin
@@ -84,7 +86,7 @@ def init_site(
         changeset.author = admin
         site.author = site.owner = admin
         site.default_language = languages[0]
-    
+
         # Create languages
         for code in languages:
             language = Language(iso_code = code)
@@ -154,7 +156,7 @@ def init_site(
         # Create the temporary home page
         site.home = StandardPage()
         site.home.template = empty_template
-        site.qname = "sitebasis.home"
+        site.home.qname = "sitebasis.home"
         set_translations(site.home, "title", "Home page title")            
         set_translations(
             site.home, "body", "Home page body",
@@ -253,12 +255,30 @@ def main():
     from string import letters, digits
     from random import choice
  
-    def random_string(length, source = letters + digits + "!?.-$#&@*"):
-        return "".join(choice(source) for i in range(length))
+    parser = OptionParser()
+    parser.add_option("-u", "--user", help = "Administrator email")
+    parser.add_option("-p", "--password", help = "Administrator password")
+    parser.add_option("-l", "--languages",
+        help = "Comma separated list of languages")
+    
+    options, args = parser.parse_args()
 
-    admin_email = raw_input("Administrator email: ") or "admin@localhost"
-    admin_password = raw_input("Administrator password: ") or random_string(8)
-    languages = raw_input("Languages: ") or "en"
+    def random_string(length, source = letters + digits + "!?.-$#&@*"):
+        return "".join(choice(source) for i in range(length))  
+
+    admin_email = options.user
+    admin_password = options.password
+    
+    if admin_email is None:
+        admin_email = raw_input("Administrator email: ") or "admin@localhost"
+
+    if admin_password is None:
+        admin_password = raw_input("Administrator password: ") \
+            or random_string(8)
+
+    languages = options.languages \
+        and options.languages.replace(",", " ") \
+        or raw_input("Languages: ") or "en"
 
     init_site(admin_email, admin_password, languages.split())
     
