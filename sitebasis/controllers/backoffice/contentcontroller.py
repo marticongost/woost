@@ -209,9 +209,9 @@ class ContentController(BaseBackOfficeController):
         # Exclude instances of invisible types
         def hide_invisible_types(content_type):
             if not content_type.visible:
-                user_collection.add_base_filter(
-                    ExclusionExpression(Self, set(content_type.index.values()))
-                )
+                exclusion = ExclusionExpression(Self, content_type.keys)
+                exclusion.by_key = True
+                user_collection.add_base_filter(exclusion)
             else:
                 for descendant_type \
                 in content_type.derived_schemas(recursive = False):
