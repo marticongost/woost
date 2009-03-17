@@ -8,6 +8,7 @@
 """
 from cocktail.language import get_content_language
 from cocktail.translations import translate
+from cocktail.html.element import Element
 from cocktail.html import templates
 from cocktail.controllers import context
 from sitebasis.models import Language
@@ -18,6 +19,21 @@ LinkSelector = templates.get_class("cocktail.html.LinkSelector")
 class LanguageSelector(LinkSelector):
 
     translated_labels = True
+    tag = "ul"
+
+    def create_entry(self, value, label, selected):        
+        
+        entry = Element("li")
+        link = self.create_entry_link(value, label)
+
+        if selected:
+            strong = Element("strong")
+            strong.append(link)
+            entry.append(strong)
+        else:
+            entry.append(link)
+
+        return entry
 
     def _ready(self):
         
