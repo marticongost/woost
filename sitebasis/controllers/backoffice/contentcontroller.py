@@ -237,13 +237,8 @@ class ContentController(BaseBackOfficeController):
                 excluded_items.update(get(edit_node.form_data, relation))
 
             # Add relation constraints
-            rel_constraints = relation.relation_constraints
-
-            if rel_constraints is not None:
-                for constraint in rel_constraints:
-                    if not isinstance(constraint, Expression):
-                        constraint = CustomExpression(constraint)
-                    user_collection.add_base_filter(constraint)
+            for constraint in relation.get_constraint_filters(edit_node.item):
+                user_collection.add_base_filter(constraint)
 
             # Prevent cycles in recursive relations. This only makes sense in
             # existing items, new items don't yet exist on the database and
