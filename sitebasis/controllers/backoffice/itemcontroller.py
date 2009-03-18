@@ -134,25 +134,14 @@ class ItemController(BaseBackOfficeController):
                 # Start with a translation object for each visible language
                 if content_type.translated:
                     for language in self.get_visible_languages():
-                        item._new_translation(language)                   
+                        item._new_translation(language)
 
             # Existing item
             else:
                 item = context_item
-
+            
             node_class = resolve(item.edit_node_class)
             node = node_class(item)
-            
-            # Relate the object to the referer for the current stack
-            if context_item is None \
-            and len(edit_stack) >= 2 \
-            and isinstance(edit_stack[-1], RelationNode) \
-            and isinstance(edit_stack[-2], EditNode):
-                node.relate(
-                    edit_stack[-1].member.related_end,
-                    edit_stack[-2].item
-                )
-            
             edit_stack.push(node)
             redirect = True
         
