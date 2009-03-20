@@ -209,12 +209,6 @@ translations.define("Action export_xls",
     en = u"Export to MS Excel"
 )
 
-translations.define("Action export_csv",
-    ca = u"Exportar a CSV",
-    es = u"Exportar a CSV",
-    en = u"Export to CSV"
-)
-
 translations.define("Action save",
     ca = u"Desar",
     es = u"Guardar",
