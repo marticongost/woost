@@ -7,8 +7,12 @@
 @since:			October 2008
 """
 from __future__ import with_statement
+from os.path import join
+from tempfile import mkdtemp
 import cherrypy
+import pyExcelerator
 from cocktail.modeling import getter, cached_getter
+from cocktail.translations import translate
 from cocktail.schema import get, Member, Adapter, Reference, String, Collection
 from cocktail.schema.expressions import (
     Expression, CustomExpression, ExclusionExpression, Self
@@ -353,4 +357,57 @@ class ContentController(BaseBackOfficeController):
             root_content_type = self.root_content_type
         )
         return output
+
+    allowed_rendering_formats = (
+        BaseBackOfficeController.allowed_rendering_formats
+        | frozenset(["msexcel"])
+    )
+
+    def render_msexcel(self):
+        
+        collection = self.user_collection
+        content_type = collection.type
+        filename = translate(content_type.name + "-plural") + ".xls"
+        members = [member
+                for member in self.content_schema.ordered_members()
+                if member.name in collection.members]
+     
+        book = pyExcelerator.Workbook()
+        sheet = book.add_sheet('0')
+
+        # Column headers
+        header_style = pyExcelerator.XFStyle()
+        header_style.font = pyExcelerator.Font()
+        header_style.font.bold = True
+
+        for col, member in enumerate(members):
+            label = translate(member)
+            sheet.write(0, col, label, header_style)
+
+        # Sheet content
+        for row, item in enumerate(collection.subset()):                            
+            for col, member in enumerate(members):
+
+                if member.name == "element":
+                    value = translate(item)
+                else:
+                    value = item.get(member.name)
+
+                    if not member.translated:
+                        value = translate(value, default = unicode(value))
+                    else:
+                        value = unicode(value)
+                    
+                sheet.write(row + 1, col, value)
+
+        # Sadly, pyExcelerator needs to write its output to a file
+        path = join(mkdtemp(), "items.xls")
+        book.save(path)
+
+        return cherrypy.lib.static.serve_file(
+            path,
+            "application/vnd.ms-excel",
+            "attachment",
+            filename
+        )
 
