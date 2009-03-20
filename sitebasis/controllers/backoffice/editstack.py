@@ -341,6 +341,8 @@ class StackNode(object):
         """
         node = self._parent_node
         while node is not None:
+            print node
+            print "-" * 40
             if isinstance(node, node_type):
                 break
             node = node._parent_node
