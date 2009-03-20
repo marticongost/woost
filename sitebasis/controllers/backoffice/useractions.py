@@ -468,7 +468,17 @@ class PreviewAction(UserAction):
 
 class ExportAction(UserAction):
     included = frozenset(["toolbar_extra"])
+    min = None
     max = None
+    ignores_selection = True
+    format = None
+
+    def __init__(self, id, format):
+        UserAction.__init__(self, id)
+        self.format = format
+
+    def get_url(self, controller, selection):
+        return controller.document_uri(format = self.format)
 
 
 class SelectAction(UserAction):
@@ -558,8 +568,8 @@ DiffAction("diff").register()
 RevertAction("revert").register()
 HistoryAction("history").register()
 DeleteAction("delete").register()
-ExportAction("export_xls").register()
-ExportAction("export_csv").register()
+ExportAction("export_xls", "msexcel").register()
+ExportAction("export_csv", "csv").register()
 CloseAction("close").register()
 SaveAction("save").register()
 SaveDraftAction("save_draft").register()
