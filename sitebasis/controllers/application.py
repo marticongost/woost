@@ -27,6 +27,8 @@ from sitebasis.controllers.authorization import AuthorizationModule
 
 class CMS(BaseCMSController):
     
+    application_settings = None
+
     # Application events
     application_starting = Event(doc = """
         An event triggered before the application's web server starts.
@@ -130,7 +132,11 @@ class CMS(BaseCMSController):
     def run(self):
         self.application_starting()
         app_container = self.ApplicationContainer(self)
-        cherrypy.quickstart(app_container, self.virtual_path)
+        cherrypy.quickstart(
+            app_container,
+            self.virtual_path,
+            config = self.application_settings
+        )
         self.application_ending()
 
     def resolve(self, path):
@@ -260,7 +266,7 @@ class CMS(BaseCMSController):
 
     @cherrypy.expose
     def files(self, id, **kwargs):
-        
+
         try:
             id = int(id)
         except:
