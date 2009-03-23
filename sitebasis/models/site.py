@@ -55,7 +55,8 @@ class Site(Item):
     )
 
     access_rules_by_priority = schema.Collection(
-        items = "sitebasis.models.AccessRule"
+        items = "sitebasis.models.AccessRule",
+        bidirectional = True
     )
 
     plugins = schema.Collection(

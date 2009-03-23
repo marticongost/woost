@@ -20,7 +20,9 @@ from cocktail.controllers import (
     view_state,
     UserCollection
 )
-from sitebasis.models import Language, Item, changeset_context
+from sitebasis.models import (
+    Language, Item, changeset_context, AccessAllowedExpression
+)
 from sitebasis.controllers.contentviews import global_content_views
 from sitebasis.controllers.backoffice.basebackofficecontroller \
     import BaseBackOfficeController
@@ -303,10 +305,7 @@ class ContentController(BaseBackOfficeController):
                 )
 
         # Exclude forbidden items
-        is_allowed = self.context["cms"].authorization.allows
-        user_collection.add_base_filter(CustomExpression(
-            lambda item: is_allowed(action = "read", target_instance = item)
-        ))
+        user_collection.add_base_filter(AccessAllowedExpression(self.user))
         
         user_collection.base_collection = self.base_collection
         user_collection.persistence_prefix = self.content_type.name
