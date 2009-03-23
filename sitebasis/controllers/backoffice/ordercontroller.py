@@ -11,7 +11,8 @@ from simplejson import dumps
 from cocktail.modeling import cached_getter
 from cocktail.events import event_handler
 from cocktail.translations import translate
-from cocktail.schema import Reference, String, Integer, Collection, Reference
+from cocktail import schema
+from cocktail.schema import Reference, String, Integer, Collection
 from sitebasis.models import Item
 from sitebasis.controllers.backoffice.basebackofficecontroller \
     import BaseBackOfficeController, EditNode
@@ -30,7 +31,11 @@ class OrderController(BaseBackOfficeController):
     @cached_getter
     def content_type(self):
         return self.member.items.type
-
+    
+    @cached_getter
+    def collection(self):
+        return schema.get(self.stack_node.form_data, self.member)
+    
     @cached_getter
     def member(self):
         key = self.params.read(String("member"))
@@ -38,11 +43,7 @@ class OrderController(BaseBackOfficeController):
 
     @cached_getter
     def item(self):
-        return self.edit_node.item
-
-    @cached_getter
-    def collection(self):
-        return self.edit_node.get_collection(self.member, True)
+        return self.stack_node.item
 
     @cached_getter
     def selection(self):
