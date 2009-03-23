@@ -28,6 +28,10 @@ cocktail.init(function () {
         var filtersBox = jQuery(".filters", this);
         var contentTypeFullName = this.contentTypeFullName;
 
+        if (!filtersBox.length) {
+            return;
+        }
+
         // TODO: Do the createElement(...html...) hack to satisfy IE
 
         if (jQuery.cookie(ADVANCED_SEARCH_COOKIE_PREFIX + this.contentTypeFullName) != "true") {
