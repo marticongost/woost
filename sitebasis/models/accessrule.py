@@ -81,6 +81,12 @@ class AccessRule(Item):
         "target_draft_source"
     )
 
+    site = schema.Reference(
+        type = "sitebasis.models.Site",
+        bidirectional = True,
+        visible = False
+    )
+
     role = schema.Reference(
         type = "sitebasis.models.Agent",
         bidirectional = True,
@@ -422,7 +428,7 @@ def allowed(**context):
     if user is not None:
         roles = user.get_roles(context)
 
-        if not user.anonymous:
+        if user.qname != "sitebasis.anonymous":
             roles.append(Role.get_instance(qname = "sitebasis.authenticated"))
             
         context["roles"] = roles
@@ -452,6 +458,22 @@ def allowed(**context):
 def restrict_access(**context):
     if not allowed(**context):
         raise AccessDeniedError(context)
+
+
+class AccessAllowedExpression(schema.expressions.Expression):
+    """An expression that filters queried items according to the active access
+    rules.
+    """
+
+    def __init__(self, user):
+        self.user = user
+
+    def eval(self, context, accessor = None):
+        return allowed(
+            user = user,
+            target_instance = context,
+            action = Action.get_instance(identifier = "read")
+        )
 
 
 class AccessDeniedError(Exception):

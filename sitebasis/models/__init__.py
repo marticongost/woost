@@ -54,8 +54,10 @@ from sitebasis.models.accessrule import (
     AccessRule,
     allowed,
     restrict_access,
+    AccessAllowedExpression,
     AccessDeniedError
 )
+import sitebasis.models.accessruleindexing
 from sitebasis.models.standardpage import StandardPage
 from sitebasis.models.file import File
 from sitebasis.models.news import News
