@@ -22,6 +22,8 @@ class User(Agent):
 
     anonymous = False
 
+    instantiable = True
+
     email = schema.String(
         required = True,
         unique = True,
