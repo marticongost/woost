@@ -130,6 +130,7 @@ class ItemController(BaseBackOfficeController):
             if context_item is None:
                 content_type = self.get_content_type()
                 item = content_type()
+                item.owner = self.user
 
                 # Start with a translation object for each visible language
                 if content_type.translated:
