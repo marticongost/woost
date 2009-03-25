@@ -17,8 +17,10 @@ class ChangeSetTests(TempStorageMixin, TestCase):
 
         from datetime import datetime
         from sitebasis.models import (
-            Item, User, Action, ChangeSet, changeset_context
+            Site, Item, User, Action, ChangeSet, changeset_context
         )
+
+        Site(qname = "sitebasis.main_site").insert()
 
         create = Action(identifier = "create")
         create.insert()
@@ -51,8 +53,10 @@ class ChangeSetTests(TempStorageMixin, TestCase):
 
         from datetime import datetime
         from sitebasis.models import (
-            Item, User, Action, ChangeSet, changeset_context
+            Site, Item, User, Action, ChangeSet, changeset_context
         )
+
+        Site(qname = "sitebasis.main_site").insert()
 
         delete = Action(identifier = "delete")
         delete.insert()
