@@ -337,7 +337,6 @@ class Item(PersistentObject):
     
     owner = schema.Reference(
         indexed = True,
-        editable = False,
         type = "sitebasis.models.User"
     )
 
