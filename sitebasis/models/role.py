@@ -12,6 +12,8 @@ from sitebasis.models.agent import Agent
 
 class Role(Agent):
 
+    instantiable = True
+
     title = schema.String(
         required = True,
         unique = True,
