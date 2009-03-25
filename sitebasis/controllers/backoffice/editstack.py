@@ -454,6 +454,8 @@ class EditNode(StackNode):
         relation_node = self.get_ancestor_node(RelationNode)
         stack_relation = relation_node and relation_node.member.related_end
 
+        access_granted = context["cms"].allows
+
         adapter = schema.Adapter()
         adapter.collection_copy_mode = self._adapt_collection
         adapter.exclude([
@@ -466,6 +468,11 @@ class EditNode(StackNode):
                 isinstance(member, schema.RelationMember)
                 and member.related_type
                 and not member.related_type.visible
+            )
+            or not access_granted (
+                target_instance = self.item,
+                target_type = self.content_type,
+                target_member = member.name
             )
         ])
         return adapter
