@@ -67,6 +67,11 @@ def init_site(
     set_translations(delete, "title", "Delete action title")
     delete.insert()
 
+    visible = Action()
+    visible.identifier = "visible"
+    set_translations(visible, "title", "Visible action title")
+    visible.insert()
+
     with changeset_context() as changeset:
         
         # Create the site
@@ -77,6 +82,7 @@ def init_site(
         # Create the administrator user
         admin = User()
         admin.author = admin
+        admin.qname = "sitebasis.initadmin"
         admin.owner = admin
         admin.critical = True
         admin.email = admin_email
