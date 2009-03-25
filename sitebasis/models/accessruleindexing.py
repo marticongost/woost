@@ -18,7 +18,6 @@ from sitebasis.models.group import Group
 from sitebasis.models.accessrule import (
     AccessRule, allowed, AccessAllowedExpression
 )
-from styled import styled
 
 # Indexing functions
 #------------------------------------------------------------------------------
@@ -212,7 +211,7 @@ def _handle_item_deleted(event):
 
     for agent in Agent.select():
         index = agent._rules_index
-        if index is not None:
+        if index is not None and item_id in index:
             index.remove(item_id)
 
 @when(Item.changed)
