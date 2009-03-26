@@ -40,20 +40,7 @@ class AccessRule(Item):
     for more than one constraint, all of them will be taken into account to
     further reduce the reach of the rule.
     """
-
-    def __init__(self, *args, **kwargs):
-        Item.__init__(self, *args, **kwargs)
-
-    def delete(self):
-        Item.delete(self)
-        rules = Site.main.access_rules_by_priority
-
-        try:
-            while True:
-                rules.remove(self)
-        except ValueError:
-            pass
-
+    
     edit_form = "sitebasis.views.AccessRuleForm"
 
     members_order = (
