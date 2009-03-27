@@ -29,10 +29,11 @@ class RichTextEditor(TinyMCE):
 
         self.tinymce_params.update(
             init_instance_callback = "initRichTextEditor",
-            plugins = "fullscreen",
+            plugins = "fullscreen, paste",
             entity_encoding = "raw",
             theme = "advanced",
             theme_advanced_buttons1_add = "fullscreen",
+            theme_advanced_buttons2_add = "pastetext,pasteword,selectall",
             theme_advanced_buttons3 = "",
             theme_advanced_toolbar_location = "top",
             theme_advanced_resizing = True,

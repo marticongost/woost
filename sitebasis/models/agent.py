@@ -11,6 +11,8 @@ from sitebasis.models import Item
 
 
 class Agent(Item):
+    
+    instantiable = False
 
     agent_rules = schema.Collection(
         items = "sitebasis.models.AccessRule",

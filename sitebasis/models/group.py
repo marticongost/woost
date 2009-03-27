@@ -11,6 +11,8 @@ from sitebasis.models.agent import Agent
 
 
 class Group(Agent):
+
+    instantiable = True
  
     title = schema.String(
         required = True,
