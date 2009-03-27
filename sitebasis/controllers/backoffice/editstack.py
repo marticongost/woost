@@ -467,6 +467,11 @@ class EditNode(StackNode):
                 and member.related_type
                 and not member.related_type.visible
             )
+            or (
+                isinstance(member, schema.Collection)
+                and member.exclude_when_empty
+                and not member.select_constraint_instances(parent = self.item)
+            )
         ])
         return adapter
 
