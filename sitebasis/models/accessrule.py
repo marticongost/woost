@@ -457,7 +457,7 @@ class AccessAllowedExpression(schema.expressions.Expression):
 
     def eval(self, context, accessor = None):
         return allowed(
-            user = user,
+            user = self.user,
             target_instance = context,
             action = Action.get_instance(identifier = "read")
         )
