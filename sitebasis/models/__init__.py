@@ -31,6 +31,10 @@ schema.Schema.instantiable = True
 # Add an extension property to indicate if members should be editable by users
 schema.Member.editable = True
 
+# Add an extension property to indicate if relations should be excluded if no
+# relatable elements exist
+schema.Collection.exclude_when_empty = False
+
 # Add an extension property to determine if members should participate in item
 # revisions
 schema.Member.versioned = True
