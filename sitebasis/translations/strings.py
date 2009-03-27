@@ -1158,9 +1158,9 @@ translations.define("Resource",
 )
 
 translations.define("Resource-plural",
-    ca = u"Recursos HTML",
-    es = u"Recursos HTML",
-    en = u"HTML Resources"
+    ca = u"Recursos",
+    es = u"Recursos",
+    en = u"Resources"
 )
 
 translations.define("Resource.title",
