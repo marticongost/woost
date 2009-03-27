@@ -67,7 +67,11 @@ from sitebasis.controllers.backoffice.useractions import \
 
     <py:ready>
         <py:with py:element="self.collection_display"
-            py:authorization_check="${self.cms.authorization.allows}" />
+            py:authorization_check="${self.cms.authorization.allows}">
+            <?py
+            element.set_member_label("element", translate(self.user_collection.type.name))
+            ?>
+        </py:with>
 
         <?py
         self.set_client_param("contentTypeFullName", self.user_collection.type.full_name)
