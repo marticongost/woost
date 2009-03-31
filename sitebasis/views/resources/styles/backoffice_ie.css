@@ -108,4 +108,13 @@
 
     .BackOfficeLayout h2 {
         font-size: 100%;
-    }
+    }   
+    
+    
+/* Fixed selector width */
+    
+    .new_toolbar_button,
+    .additional_actions_selector {
+        _width: 100px !important;
+    }    
+    
