@@ -181,6 +181,11 @@ class ContentController(BaseBackOfficeController):
         content_schema.name = "BackOfficeContentView"
         content_schema.add_member(Member(name = "element"))
         content_schema.members_order.insert(0, "element")
+        
+        if any(cls.visible for cls in self.content_type.derived_schemas()):
+            content_schema.add_member(Member(name = "class"))
+            content_schema.members_order.insert(1, "class")
+
         return content_schema
         
     @cached_getter
@@ -389,6 +394,8 @@ class ContentController(BaseBackOfficeController):
 
                 if member.name == "element":
                     value = translate(item)
+                elif member.name == "class":
+                    value = translate(item.__class__.name)
                 else:
                     value = item.get(member.name)
 
