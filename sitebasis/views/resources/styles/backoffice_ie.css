@@ -1,110 +1,111 @@
-/* Login data and logout button alignment */
+/* Margin form */
 
-.BackOfficeLayout .identity {
-	vertical-align: middle;
-}
+    form {
+        margin: 0;
+    }
+    
 
-.BackOfficeLayout .identity * {
-	vertical-align: middle;
-}
-	
-.BackOfficeLayout .identity form button {
-	padding-top: 1px;						
-}
+/* Login data and logout button alignment (6 & 7) */
 
-
-
-/* Paging elements alignment */
-
-.PagingControls div * {
-	vertical-align: middle;
-}
-
-.BackOfficeLayout .item_count, .BackOfficeLayout .Pager {
-  	padding-top: 0.5em;
-}
+    .BackOfficeLayout .identity {
+    	vertical-align: middle;
+    }
+    
+    .BackOfficeLayout .identity * {
+    	vertical-align: middle;
+    }
+    
+    .BackOfficeLayout .identity form button {
+    	padding-top: 1px;
+    }
+    
+    .translations_selector { display: none; }
 
 
+/* No results module width fix (6 & 7) */
+    
+    .no_results {
+        height: 1%;
+    }
+    
+    
+/* Main type selector margin correction (6 & 7) */
+    
+    .BackOfficeLayout .ContentTypeSelector {
+        _margin-left: 0;
+    }
+    
+    
+/* Tab height correction (6 & 7) */
 
-/* 'Results per page' selector alignment */
+    .tabs button {
+    	height: 2em !important;
+    	_margin-bottom: -1px;
+    }
+    
+    
+/* Edit path height (6) */
 
-.PagingControls .page_size {
-	float: right;		
-}
+    .BackOfficeLayout ul.edit_path {
+        _height: 1.2em;
+    }
+    
+    
+    
+/* Item count alignment */
 
-
-
-/* Button corrections */
-
-.actions_box button {
-	width: 85px;
-	text-align: left;
-	vertical-align: middle;
-}
-
-.actions_box button img {
-	float: left;
-	display: inline !important;
-	margin-right: 5px;
-}
-
-.actions_box button label {
-	padding-top: 5px;
-}
-
-
-
+    .BackOfficeLayout .item_count {
+        float: right;
+    }
+    
+    
 /* Alignment correction for breadcrumb and filter dropdowns */
 
-.BackOfficeLayout .ContentTypePath .selector_content,
-.BackOfficeLayout .new_filter_selector .selector_content {
-	left: 0;
-	top: 20px;
-}
-
-
-
+    .BackOfficeLayout .ContentTypePath .selector_content,
+    .BackOfficeLayout .new_filter_selector .selector_content {
+    	left: 0;
+    	top: 20px;    	
+    }
+    
+    .BackOfficeLayout .ContentTypeSelector .selector_content {
+        left: 0 !important;
+        top: 21px !important;
+    }
+    
+    .collection_display_container {
+        position: relative;
+        z-index: 1 !important;
+    }
+    
+    
 /* Breadcrumb and dropdown selection overlay correction */
 
-.ContentTypePath {
-	position: relative;
-	z-index: 2;				
-}
-
-.actions_box .new_toolbar_button {	
-	z-index: 1;
-}
-
-
-
+    .ContentTypeSelector {
+    	position: relative;
+    	z-index: 12;
+    }
+    
+    .new_toolbar_button,
+    .additional_actions_selector {
+        position: relative;
+    	z-index: 10;
+    }
+    
+    .new_toolbar_button .selector_content,
+    .additional_actions_selector .selector_content {
+        margin-top: -1px;
+    }
+    
+    
 /* Dropdown image alignment */
 
-.ContentTypeTree li a {
-	display: block;
-}
+    .ContentTypeTree li a {
+    	display: block;
+    }
 
 
+/* Title font correction */
 
-/* Tab height correction */
-
-.navigation button {
-	height: 2.5em !important;
-}
-
-
-
-/* Font size and alignment correction for 'more actions' dropdown */
-
-.more_actions .selector_content button {
-	font-size: 1em;
-	text-align: left;
-}
-
-
-
-/* Button width correction */
-
-.BackOfficeItemView .navigation .section_entry {
-	padding-left: 0.4em;
-  padding-right: 0.4em;
-}
+    .BackOfficeLayout h2 {
+        font-size: 100%;
+    }
