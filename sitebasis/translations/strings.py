@@ -311,6 +311,12 @@ translations.define("BackOfficeContentView.element",
     en = u"Item"
 )
 
+translations.define("BackOfficeContentView.class",
+    ca = u"Tipus",
+    es = u"Tipo",
+    en = u"Type"
+)
+
 translations.define("ContentView search",
     ca = u"Cercar",
     es = u"Buscar",
