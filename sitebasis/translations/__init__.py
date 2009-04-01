@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-"""
+u"""
 Translated strings for the SiteBasis CMS.
 
 @author:		Martí Congost

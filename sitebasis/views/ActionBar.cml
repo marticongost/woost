@@ -3,6 +3,7 @@
 <?py
 from itertools import chain
 from cocktail.html.shortcuts import set_translated_shortcut
+from cocktail.controllers import context
 from sitebasis.controllers.backoffice.useractions import (
     get_view_actions, get_view_actions_context
 )
@@ -30,21 +31,27 @@ from sitebasis.controllers.backoffice.useractions import (
         ]
     ?>
 
-    <button
+    <py:cocktail.html.Element
         py:def="action_button"
-        type="submit"
-        py:args="action, extra"
-        name="action"
-        value="${action.id}"
+        py:args="action, extra"        
         class="${action.id}_action">
+        <?py
+        if action.direct_link:
+            element.tag = "a"
+            element["href"] = action.get_url(context["cms"], None)
+        else:
+            element.tag = "button"
+            element["type"] = "submit"
+            element["name"] = "action"
+            element["value"] = action.id
+
+        set_translated_shortcut(element, "action " + action.id)
+        ?>
         <py:new
             py:element="self.create_action_image(action, extra)"
             py:if="self.button_images and not extra"/>
         ${translate("Action " + action.id)}
-        <?py
-        set_translated_shortcut(element, "action " + action.id)
-        ?>
-    </button>
+    </py:cocktail.html.Element>
 
     <img
         py:def="action_image"

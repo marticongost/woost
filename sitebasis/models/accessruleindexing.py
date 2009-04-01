@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-"""
+u"""
 
 @author:		Martí Congost
 @contact:		marti.congost@whads.com
@@ -22,7 +22,7 @@ from sitebasis.models.accessrule import (
 # Indexing functions
 #------------------------------------------------------------------------------
 
-def rebuild_indexes(agents = None, items = None, verbose = False):
+def rebuild_indexes(agents = None, items = None, verbosity = 0):
     
     if agents is None:
         agents = Agent.select()
@@ -36,7 +36,8 @@ def rebuild_indexes(agents = None, items = None, verbose = False):
     read = Action.get_instance(identifier = "read")
 
     for item in items:
-        print "Indexing item", item
+        if verbosity:
+            print "Indexing rules for", item
         item_id = item.id
         for agent in agents:
             index = agent.rules_index
@@ -46,10 +47,12 @@ def rebuild_indexes(agents = None, items = None, verbose = False):
                 user = agent
             )
             if access_granted:
-                print "\t%s: granted"  % agent
+                if verbosity > 1:
+                    print ("+%s" % agent.id),
                 index.insert(item_id)
             elif item_id in index:
-                print "\t%s: denied"  % agent
+                if verbosity > 1:
+                    print ("-%s" % agent.id),
                 index.remove(item_id)
 
 def rebuild_access_rule_index(

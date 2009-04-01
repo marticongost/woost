@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-"""
+u"""
 
 @author:		Martí Congost
 @contact:		marti.congost@whads.com
@@ -185,7 +185,7 @@ class EditController(BaseBackOfficeController):
         # complies with all existing restrictions.
         restrict_access(
             target_instance = stack_node.item,
-            action = is_new and "create" or "modify"
+            action = action
         )
 
         item.insert()
