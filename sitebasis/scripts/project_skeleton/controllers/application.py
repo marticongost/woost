@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-"""
+u"""
 Provides the CMS subclass used to customize the behavior of the site.
 """
 import cherrypy

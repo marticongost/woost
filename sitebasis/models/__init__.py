@@ -1,8 +1,8 @@
 #-*- coding: utf-8 -*-
-"""
+u"""
 Provides base and default content types for the sitebasis CMS.
 
-@author:		Martí Congost
+@author:		MartÃ­ Congost
 @contact:		marti.congost@whads.com
 @organization:	Whads/Accent SL
 @since:			June 2008
