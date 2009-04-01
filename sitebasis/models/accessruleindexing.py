@@ -16,7 +16,7 @@ from sitebasis.models.site import Site
 from sitebasis.models.agent import Agent
 from sitebasis.models.group import Group
 from sitebasis.models.accessrule import (
-    AccessRule, allowed, AccessAllowedExpression
+    AccessRule, allowed, AccessAllowedExpression, reduce_ruleset
 )
 
 # Indexing functions
@@ -27,24 +27,39 @@ def rebuild_indexes(agents = None, items = None, verbosity = 0):
     if agents is None:
         agents = Agent.select()
 
-    agents = list(agents)
-
+    read = Action.get_instance(identifier = "read")
+    agents_with_rulesets = [
+        (
+            agent,
+            reduce_ruleset(
+                Site.main.access_rules_by_priority,
+                {"user": agent, "action": read}
+            )
+        )
+        for agent in agents
+    ]
+    
     if items is None:
         items = Item.select()
     
     # Update the rules index
-    read = Action.get_instance(identifier = "read")
-
     for item in items:
-        if verbosity:
-            print "Indexing rules for", item
+        
         item_id = item.id
-        for agent in agents:
+
+        if verbosity:
+            print "Indexing rules for %s #%s" % (
+                item.__class__.__name__,
+                item_id
+            )
+
+        for agent, ruleset in agents_with_rulesets:
             index = agent.rules_index
             access_granted = allowed(
+                ruleset = ruleset,
                 action = read,
-                target_instance = item,
-                user = agent
+                user = agent,
+                target_instance = item
             )
             if access_granted:
                 if verbosity > 1:
