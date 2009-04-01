@@ -11,7 +11,7 @@ from os.path import join
 from tempfile import mkdtemp
 import cherrypy
 import pyExcelerator
-from cocktail.modeling import getter, cached_getter
+from cocktail.modeling import getter, cached_getter, ListWrapper, SetWrapper
 from cocktail.translations import translate
 from cocktail.schema import get, Member, Adapter, Reference, String, Collection
 from cocktail.schema.expressions import (
@@ -389,6 +389,17 @@ class ContentController(BaseBackOfficeController):
             sheet.write(0, col, label, header_style)
 
         # Sheet content
+        def get_cell_content(member, value):            
+            if value is None:
+                return ""
+            elif isinstance(value, (list, set, ListWrapper, SetWrapper)):
+                return "\n".join(get_cell_content(member, item)
+                                 for item in value)
+            elif not member.translated:
+                return translate(value, default = unicode(value))
+            else:
+                return unicode(value)
+
         for row, item in enumerate(collection.subset()):                            
             for col, member in enumerate(members):
 
@@ -399,12 +410,8 @@ class ContentController(BaseBackOfficeController):
                 else:
                     value = item.get(member.name)
 
-                    if not member.translated:
-                        value = translate(value, default = unicode(value))
-                    else:
-                        value = unicode(value)
-                    
-                sheet.write(row + 1, col, value)
+                cell_content = get_cell_content(member, value)                   
+                sheet.write(row + 1, col, cell_content)
 
         # Sadly, pyExcelerator needs to write its output to a file
         path = join(mkdtemp(), "items.xls")
