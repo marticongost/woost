@@ -58,6 +58,7 @@ from sitebasis.models.accessrule import (
     AccessRule,
     allowed,
     restrict_access,
+    reduce_ruleset,
     AccessAllowedExpression,
     AccessDeniedError
 )

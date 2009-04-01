@@ -56,18 +56,6 @@ class AccessRule(Item):
         "allowed"
     )
  
-    criteria = (
-        "role",
-        "target_instance",
-        "target_type",
-        "target_ancestor",
-        "target_member",
-        "action",
-        "language",
-        "target_is_draft",
-        "target_draft_source"
-    )
-
     site = schema.Reference(
         type = "sitebasis.models.Site",
         bidirectional = True,
@@ -129,12 +117,6 @@ class AccessRule(Item):
         listed_by_default = False
     )
     
-    def criteria_is_relevant(self, key, partial_match):
-        return (self.get(key) is not None) \
-            or (partial_match
-                and key == "target_type"
-                and self.target_instance is not None)
-
     def matches(self, context):
         """Determines if the rule is applicable to the indicated access
         context.
@@ -148,72 +130,140 @@ class AccessRule(Item):
         @return: True if the rule matches the context, False otherwise.
         @rtype: bool
         """       
-        # TODO: Document the matches_*** protocol
+        match = True
+        partial_match = context.get("partial_match", False) \
+            and (self.allowed or context.get("partial_negative", False))
+        
+        context_target_instance = context.get("target_instance")
 
-        partial_match = context.get("partial_match", False) and self.allowed
+        # Role
+        role = self.role
 
-        for key in self.criteria:
+        if role is not None:
+            context_roles = context.get("roles")
+            if context_roles is None:
+                match = partial_match
+            else:
+                match = role in context_roles
+        
+        # Target instance
+        if match:
+            target_instance = self.target_instance
 
-            if self.criteria_is_relevant(key, partial_match):
-
-                # Search for a custom implementation
-                test = getattr(self, "matches_" + key, None)
-
-                if test:
-                    if not test(context, partial_match):
-                        break
-            
-                # Use the default test
+            if target_instance is not None:
+                if context_target_instance is None:
+                    match = partial_match
                 else:
-                    rule_value = self.get(key)
-                    context_value = context.get(key)
+                    match = target_instance is context_target_instance
 
-                    if rule_value != context_value \
-                    and not (partial_match and context_value is None):
-                        break
-        else:
-            if debug:
+        # Target type
+        if match:
+
+            target_type = self.target_type
+
+            if target_type is not None:
+                context_target_type = context.get("target_type")
+                if context_target_type is None:
+                    match = partial_match
+                else:
+                    match = issubclass(context_target_type, target_type)
+                       
+                if match and context_target_instance is not None:
+                    match = isinstance(
+                        context_target_instance,
+                        target_type
+                    )
+
+        # Document ancestor
+        if match:
+
+            target_ancestor = self.target_ancestor
+
+            if target_ancestor is not None:
+                context_target_ancestor = context.get("target_ancestor")
+                if context_target_ancestor is None \
+                or context_target_instance is None:
+                    match = partial_match
+                else:
+                    match = isinstance(context_target_instance, Document) \
+                        and context_target_instance.descends_from(
+                            context_target_ancestor
+                        )
+
+        # Target is draft
+        if match:
+
+            target_is_draft = self.target_is_draft
+
+            if target_is_draft is not None:
+                context_target_is_draft = context.get("target_is_draft")
+                if context_target_is_draft is None:
+                    match = partial_match
+                else:
+                    match = (target_is_draft == context_target_is_draft)
+
+        # Target draft source
+        if match:
+
+            target_draft_source = self.target_draft_source
+
+            if target_draft_source is not None:
+                context_target_draft_source = \
+                    context.get("target_draft_source")
+                if context_target_draft_source is None:
+                    match = partial_match
+                else:
+                    match = \
+                        (target_draft_source == context_target_draft_source)
+
+        # Target member
+        if match:
+
+            target_member = self.target_member
+
+            if target_member is not None:
+                context_target_member = context.get("target_member")
+                if context_target_member is None:
+                    match = partial_match
+                else:
+                    match = (target_member == context_target_member)
+
+        # Action
+        if match:
+
+            action = self.action
+
+            if action is not None:
+                context_action = context.get("action")
+                if context_action is None:
+                    match = partial_match
+                else:
+                    match = (action == context_action)
+
+        # Language
+        if match:
+
+            language = self.language
+            
+            if language is not None:
+                context_language = context.get("language")
+                if context_language is None:
+                    match = partial_match
+                else:
+                    match = (language == context_language)
+
+        # Outcome
+        if debug:
+            if match:
                 print styled(translate(self), style = "underline"),
                 print styled(
                     ("allowed" if self.allowed else "forbidden"),
                     "white", ("green" if self.allowed else "red")
                 )
-
-            return True
- 
-        if debug:
-            print translate(self), "(%s doesn't match)" \
-                % styled(key, "light_gray")
-
-        return False
-
-    def matches_role(self, context, partial_match):
-        context_roles = context.get("roles")
-        if context_roles is None:
-            return partial_match
-        else:
-            return self.role in context_roles
-
-    def matches_target_type(self, context, partial_match):
-        context_type = context.get("target_type")
-        if context_type is None:
-            return partial_match
-        else:
-            if self.target_type:
-                return issubclass(context_type, self.target_type)
-
-            # This should only be reached on a partial match
             else:
-                return isinstance(self.target_instance, context_type)
+                print translate(self), "doesn't match"
 
-    def matches_target_ancestor(self, context, partial_match):
-        context_instance = context.get("target_instance")
-        if context_instance is None:
-            return partial_match
-        else:
-            return context_instance \
-                and isinstance(context_instance, Document) \
-                and context_instance.descends_from(self.target_ancestor)
+        return match
 
     def __translate__(self, language, **kwargs):
 
@@ -378,14 +428,14 @@ class AccessRule(Item):
         return u" ".join(trans)
 
 
-def allowed(**context):
- 
+def resolve_context(context):
+
     # Normalize target members to member names
     target_member = context.get("target_member", None)
 
-    if target_member is not None:
-        if isinstance(target_member, schema.Member):
-            context["target_member"] = target_member.name
+    if target_member is not None \
+    and isinstance(target_member, schema.Member):
+        context["target_member"] = target_member.name
 
     # Implicit language
     if context.get("language") is None:
@@ -394,7 +444,7 @@ def allowed(**context):
     # Set implicit parameters based on the target instance
     target_instance = context.get("target_instance")
 
-    if target_instance:
+    if target_instance is not None:
         
         # Implicit target type
         context.setdefault("target_type", type(target_instance))
@@ -410,15 +460,62 @@ def allowed(**context):
         context["action"] = Action.get_instance(identifier = action)
 
     # Obtain user roles
+    roles = context.get("roles")
+
+    if roles and not isinstance(roles, set):
+        roles = set(roles)
+
     user = context.pop("user", None)
 
-    if user is not None:
-        roles = user.get_roles(context)
+    if user is not None:     
+        if roles is None:
+            roles = set()
+            context["roles"] = roles
+        roles.update(user.get_roles(context))
 
-        if user.qname != "sitebasis.anonymous":
-            roles.append(Role.get_instance(qname = "sitebasis.authenticated"))
-            
+def reduce_ruleset(ruleset, context):
+    """Reduces a ruleset, removing all rules that will never apply to the given
+    authorization context. This can be used to considerably speed up a series
+    of similar authorization tests.
+
+    @param ruleset: The set of rules to reduce.
+    @type ruleset: L{AccessRule} sequence
+
+    @param context: The authorization context to evaluate.
+    @type context: mapping
+
+    @return: The reduced ruleset. Rule order is preserved.
+    @rtype: L{AccessRule} sequence
+    """
+    if ruleset is None:
+        ruleset = Site.main.access_rules_by_priority
+
+    context = context.copy()
+    context["partial_match"] = True
+    context["partial_negative"] = True
+    resolve_context(context)
+
+    roles = context.get("roles")
+
+    if roles is None:
+        roles = set()
         context["roles"] = roles
+
+    roles.add(Role.get_instance(qname = "sitebasis.owner"))
+    roles.add(Role.get_instance(qname = "sitebasis.author"))
+    roles.add(Role.get_instance(qname = "sitebasis.anonymous"))
+    roles.add(Role.get_instance(qname = "sitebasis.authenticated"))
+
+    return [rule for rule in ruleset if rule.matches(context)]
+
+def allowed(**context):
+
+    ruleset = context.pop("ruleset", None)
+
+    if ruleset is None:
+        ruleset = Site.main.access_rules_by_priority
+
+    resolve_context(context)
 
     if debug:
         print styled(u"-" * 80, "brown")
@@ -436,7 +533,7 @@ def allowed(**context):
         print styled("Rules:", "white", "brown")
 
     # Test the security context against the access rules registry
-    for rule in Site.main.access_rules_by_priority:
+    for rule in ruleset:
         if rule.matches(context):
             return rule.allowed
 
