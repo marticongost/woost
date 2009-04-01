@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-"""
+u"""
 Tests for standard CMS models.
 
 @author:		Martí Congost

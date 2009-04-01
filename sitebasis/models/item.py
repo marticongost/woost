@@ -1,7 +1,7 @@
 #-*- coding: utf-8 -*-
-"""
+u"""
 
-@author:		Martí Congost
+@author:		MartÃ­ Congost
 @contact:		marti.congost@whads.com
 @organization:	Whads/Accent SL
 @since:			June 2008
@@ -261,7 +261,8 @@ class Item(PersistentObject):
         item = event.source
 
         if getattr(item, "_v_initializing", False) \
-        or not event.member.versioned:
+        or not event.member.versioned \
+        or not item.is_inserted:
             return
 
         changeset = ChangeSet.current
@@ -347,6 +348,7 @@ class Item(PersistentObject):
         visible = False
     )
 
+Item.id.versioned = False
 Item.id.editable = False
 Item.id.listed_by_default = False
 Item.changes.visible = False

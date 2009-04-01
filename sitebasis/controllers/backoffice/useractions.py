@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-"""
+u"""
 
 @author:		Martí Congost
 @contact:		marti.congost@whads.com
@@ -124,6 +124,7 @@ class UserAction(object):
     ignores_selection = False
     min = 1
     max = 1
+    direct_link = False
 
     def __init__(self, id):
 
@@ -472,6 +473,7 @@ class ExportAction(UserAction):
     max = None
     ignores_selection = True
     format = None
+    direct_link = True
 
     def __init__(self, id, format):
         UserAction.__init__(self, id)

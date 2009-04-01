@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-"""
+u"""
 (X)HTML templates for the CMS backend application.
 
 @author:		Martí Congost
