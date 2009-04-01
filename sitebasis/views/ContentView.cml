@@ -6,7 +6,7 @@ from cocktail.modeling import extend, call_base
 from cocktail.iteration import is_empty
 from cocktail.controllers.viewstate import view_state
 from cocktail.html.shortcuts import set_translated_shortcut
-from sitebasis.models import Item
+from sitebasis.models import Item, Site, reduce_ruleset
 from sitebasis.views.contenttypetree import ContentTypeTree
 from sitebasis.controllers.backoffice.useractions import \
     add_view_action_context
@@ -66,9 +66,20 @@ from sitebasis.controllers.backoffice.useractions import \
     ?>
 
     <py:ready>
-        <py:with py:element="self.collection_display"
-            py:authorization_check="${self.cms.authorization.allows}">
+
+        <py:with py:element="self.collection_display">
             <?py
+            ruleset = reduce_ruleset(
+                Site.main.access_rules_by_priority,
+                {
+                    "user": self.cms.user,
+                    "action": "read",
+                    "target_type": self.user_collection.type
+                }
+            )
+            cms_allows = self.cms.allows
+            element.authorization_check = lambda **ctx: cms_allows(ruleset = ruleset, **ctx)
+
             element.set_member_label("element", translate(self.user_collection.type.name))
             ?>
         </py:with>
