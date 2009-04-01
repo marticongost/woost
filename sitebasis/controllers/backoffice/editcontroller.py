@@ -14,7 +14,9 @@ from cocktail.schema import (
     Adapter, ErrorList, DictAccessor, Collection
 )
 from cocktail.persistence import datastore
-from sitebasis.models import Language, changeset_context, ChangeSet
+from sitebasis.models import (
+    Site, Language, changeset_context, ChangeSet, reduce_ruleset
+)
 from sitebasis.controllers.backoffice.editstack import RelationNode, EditNode
 from sitebasis.controllers.backoffice.basebackofficecontroller \
         import BaseBackOfficeController
@@ -123,6 +125,15 @@ class EditController(BaseBackOfficeController):
         restrict_access = self.context["cms"].authorization.restrict_access
         action = "create" if is_new else "modify"
         
+        ruleset = reduce_ruleset(
+            Site.main.access_rules_by_priority,
+            {
+                "user": self.user,
+                "action": action,
+                "target_instance": item
+            }
+        )
+
         # Restrict access *before* the object is modified. This is only done on
         # existing objects, to make sure the current user is allowed to modify
         # them, taking into account constraints that may derive from the
@@ -130,8 +141,9 @@ class EditController(BaseBackOfficeController):
         # state, so the test is skipped.
         if not is_new:
             restrict_access(
-                target_instance = item,
-                action = action
+                ruleset = ruleset,
+                action = action,
+                target_instance = item
             )
  
         # Add event listeners to the edited item, to restrict changes to its
@@ -139,23 +151,13 @@ class EditController(BaseBackOfficeController):
         @when(item.changed)
         def restrict_members(event):
             restrict_access(
+                ruleset = ruleset,
+                action = action,
                 target_instance = item,
                 target_member = event.member,
-                language = event.language,
-                action = action
+                language = event.language
             )
-
-        @when(item.related)
-        @when(item.unrelated)
-        def restrict_relations(event):
-            member = event.member
-            if member.bidirectional and member.name != "changes":
-                restrict_access(
-                    target_instance = event.related_object,
-                    target_member = member,
-                    action = action
-                )
-            
+           
         try:
             # Save changed fields
             stack_node.import_form_data(stack_node.form_data, item)
@@ -169,23 +171,23 @@ class EditController(BaseBackOfficeController):
                 for language in deleted_translations:
                     del item.translations[language]
                     restrict_access(
+                        ruleset = ruleset,
+                        action = action,
                         target_instance = item,
-                        language = language,
-                        action = action
+                        language = language
                     )
         
         # Remove the added event listeners
         finally:
             item.changed.remove(restrict_members)
-            item.related.remove(restrict_relations)
-            item.unrelated.remove(restrict_relations)
 
         # Restrict access *after* the object is modified, both for new and old
         # objects, to make sure the user is leaving the object in a state that
         # complies with all existing restrictions.
         restrict_access(
-            target_instance = stack_node.item,
-            action = action
+            ruleset = ruleset,
+            action = action,
+            target_instance = stack_node.item
         )
 
         item.insert()
