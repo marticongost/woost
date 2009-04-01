@@ -60,6 +60,16 @@ def rebuild_access_rule_index(
     changed_member = None,
     previous_value = None):
     
+    # Rules that don't affect read operations aren't indexed
+    read = Action.get_instance(identifier = "read")
+
+    if rule.action not in (None, read) \
+    and not (
+        changed_member is AccessRule.action
+        and previous_value in (None, read)
+    ):
+        return
+
     # Narrow down updated items
     items = ItemSelection()
 
