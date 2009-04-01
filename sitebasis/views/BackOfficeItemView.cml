@@ -28,6 +28,11 @@ from sitebasis.controllers.backoffice.useractions import (
             add_view_action_context(self, "new_item")
 
         self._actions_context = get_view_actions_context(self)
+                                
+        # Pending changes warning
+        self.add_resource("/resources/scripts/BackOfficeItemView.js")
+        self.set_client_param("hasPendingChanges", bool(self.changes))
+        self.add_client_translation("sitebasis.views.BackOfficeItemView pending changes warning")
         ?>
     </py:ready>
     
