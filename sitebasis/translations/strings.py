@@ -728,6 +728,16 @@ translations.define(
 )
 
 translations.define(
+    "sitebasis.views.BackOfficeItemView pending changes warning",
+    ca = u"Hi ha canvis pendents de desar. Si abandones el formulari d'edició "
+        u"els canvis es perdran.",
+    es = u"Hay cambios pendientes de guardar. Si abandonas el formulario de "
+        u"edición los cambios se perderán.",
+    en = u"There are unsaved changes. If you navigate away from the edit form "
+        u"your modifications will be lost."
+)
+
+translations.define(
     "sitebasis.controllers.backoffice.basebackofficecontroller."
     "EditStateLostError",
     ca = u"La sessió d'edició en que estaves treballant s'ha perdut.",
