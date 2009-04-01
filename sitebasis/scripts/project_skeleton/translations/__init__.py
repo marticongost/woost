@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-"""
+u"""
 Site specific translation strings.
 
 @author:		Martí Congost

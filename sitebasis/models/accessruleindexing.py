@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-"""
+u"""
 
 @author:		Martí Congost
 @contact:		marti.congost@whads.com
@@ -16,7 +16,7 @@ from sitebasis.models.site import Site
 from sitebasis.models.agent import Agent
 from sitebasis.models.group import Group
 from sitebasis.models.accessrule import (
-    AccessRule, allowed, reduce_ruleset, AccessAllowedExpression
+    AccessRule, allowed, AccessAllowedExpression
 )
 
 # Indexing functions
@@ -27,50 +27,33 @@ def rebuild_indexes(agents = None, items = None, verbosity = 0):
     if agents is None:
         agents = Agent.select()
 
-    rules = Site.main.access_rules_by_priority
-    read = Action.get_instance(identifier = "read")
-
-    rules_by_agent = [
-        (
-            agent,
-            reduce_ruleset(rules, {
-                "action": read,
-                "user": agent
-            })
-        )
-        for agent in agents
-    ]
+    agents = list(agents)
 
     if items is None:
         items = Item.select()
     
     # Update the rules index
-    for item in items:
-        
-        if verbosity:
-            print "Indexing %s #%d" % (item.__class__.__name__, item.id)
+    read = Action.get_instance(identifier = "read")
 
+    for item in items:
+        if verbosity:
+            print "Indexing rules for", item
         item_id = item.id
-        
-        for agent, ruleset in rules_by_agent:
+        for agent in agents:
             index = agent.rules_index
-            access_granted = allowed(                
-                ruleset = ruleset,
+            access_granted = allowed(
                 action = read,
                 target_instance = item,
                 user = agent
-            )            
+            )
             if access_granted:
                 if verbosity > 1:
-                    print "+%s" % agent.id,
+                    print ("+%s" % agent.id),
                 index.insert(item_id)
             elif item_id in index:
                 if verbosity > 1:
-                    print "-%s" % agent.id,
+                    print ("-%s" % agent.id),
                 index.remove(item_id)
-
-        if verbosity > 1:
-            print
 
 def rebuild_access_rule_index(
     rule,

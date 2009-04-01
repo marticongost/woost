@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-"""
+u"""
 
 @author:		Martí Congost
 @contact:		marti.congost@whads.com
@@ -309,6 +309,12 @@ translations.define("BackOfficeContentView.element",
     ca = u"Element",
     es = u"Elemento",
     en = u"Item"
+)
+
+translations.define("BackOfficeContentView.class",
+    ca = u"Tipus",
+    es = u"Tipo",
+    en = u"Type"
 )
 
 translations.define("ContentView search",
