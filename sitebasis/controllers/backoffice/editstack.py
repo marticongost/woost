@@ -22,7 +22,7 @@ from cocktail.persistence import (
     PersistentSet, PersistentRelationSet,
     PersistentMapping, PersistentRelationMapping
 )
-from sitebasis.models import Site
+from sitebasis.models import Site, allowed, reduce_ruleset
 
 
 class EditStacksManager(object):
@@ -450,11 +450,20 @@ class EditNode(StackNode):
         """The data adapter used to pass data between the edited item and the
         edit form.
         @type: L{Adapter<cocktail.schema.Adapter>}
-        """        
+        """
         relation_node = self.get_ancestor_node(RelationNode)
         stack_relation = relation_node and relation_node.member.related_end
 
-        access_granted = context["cms"].allows
+        user = context["cms"].user
+        action = "modify" if self.item.is_inserted else "create"
+        ruleset = reduce_ruleset(
+            Site.main.access_rules_by_priority,
+            {
+                "user": user,
+                "target_instance": self.item,
+                "action": action
+            }
+        )
 
         adapter = schema.Adapter()
         adapter.collection_copy_mode = self._adapt_collection
@@ -469,9 +478,11 @@ class EditNode(StackNode):
                 and member.related_type
                 and not member.related_type.visible
             )
-            or not access_granted (
+            or not allowed(
+                ruleset = ruleset,
+                user = user,
+                action = action,
                 target_instance = self.item,
-                target_type = self.content_type,
                 target_member = member.name
             )
             or (
