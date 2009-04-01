@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-"""
+u"""
 
 @author:		Martí Congost
 @contact:		marti.congost@whads.com
@@ -10,6 +10,7 @@ import sha
 from cocktail.events import event_handler
 from cocktail import schema
 from sitebasis.models.agent import Agent
+from sitebasis.models.role import Role
 
 
 class User(Agent):
@@ -76,7 +77,8 @@ class User(Agent):
 
     def get_roles(self, context):
         
-        roles = [self]
+        roles = [self, Role.get_instance(qname = "sitebasis.authenticated")]
+
         target_instance = context.get("target_instance")
 
         if target_instance and target_instance.owner is self:

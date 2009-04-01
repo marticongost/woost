@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-"""
+u"""
 
 @author:		Martí Congost
 @contact:		marti.congost@whads.com
@@ -23,6 +23,7 @@ class ContentTable(ContentDisplayMixin, Table):
         Table.__init__(self, *args, **kwargs)
         ContentDisplayMixin.__init__(self)
         self.set_member_sortable("element", False)
+        self.set_member_sortable("class", False)
 
     def _fill_body(self):
 
@@ -65,4 +66,7 @@ class ContentTable(ContentDisplayMixin, Table):
             display.add_class(schema.name)
 
         return display
+
+    def create_class_display(self, item, member):
+        return Element(tag = None, children = [translate(item.__class__.name)])
 

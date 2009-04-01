@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-"""
+u"""
 Launches the site's application server.
 """
 import _PROJECT_MODULE_.models

@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-"""
+u"""
 SiteBasis is an object oriented, web based Content Management System, written
 in python.
 

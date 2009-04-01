@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-"""
+u"""
 Test suite for the SiteBasis CMS.
 
 @author:		Martí Congost

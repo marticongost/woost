@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-"""
+u"""
 Controllers for the CMS backend and frontend applications.
 
 @author:		Martí Congost
