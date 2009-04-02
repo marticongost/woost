@@ -21,6 +21,14 @@ from sitebasis.models.accessrule import (
 
 # Indexing functions
 #------------------------------------------------------------------------------
+_enabled = True
+
+def get_enabled():
+    return _enabled
+
+def set_enabled(enabled):
+    global _enabled
+    _enabled = enabled
 
 def rebuild_indexes(agents = None, items = None, verbosity = 0):
     
@@ -193,69 +201,78 @@ Agent.rules_index = getter(_get_rules_index)
 
 @when(Site.changed)
 def _handle_site_changed(event):
-    if event.member is Site.access_rules_by_priority \
+    if _enabled \
+    and event.member is Site.access_rules_by_priority \
     and set(event.previous_value or []) == set(event.value or []):
         rebuild_indexes()
 
 @when(Site.related)
 def _handle_site_related(event):
-    if event.member is Site.access_rules_by_priority:
+    if _enabled \
+    and event.member is Site.access_rules_by_priority:
         rebuild_access_rule_index(event.related_object)
 
 @when(Site.unrelated)
 def _handle_site_unrelated(event):
-    if event.member is Site.access_rules_by_priority:
+    if _enabled \
+    and event.member is Site.access_rules_by_priority:
         rebuild_access_rule_index(event.related_object)
 
 @when(AccessRule.changed)
 def _handle_access_rule_changed(event):
-    rule = event.source
-    if rule.is_inserted and rule in Site.main.access_rules_by_priority:
-        rebuild_access_rule_index(
-            event.source,
-            event.member,
-            event.previous_value
-        )
+    if _enabled:
+        rule = event.source
+        if rule.is_inserted and rule in Site.main.access_rules_by_priority:
+            rebuild_access_rule_index(
+                event.source,
+                event.member,
+                event.previous_value
+            )
 
 @when(Agent.inserted)
 def _handle_agent_inserted(event):
-    rebuild_indexes(agents = [event.source])
+    if _enabled:
+        rebuild_indexes(agents = [event.source])
 
 @when(Group.related)
 def _handle_group_related(event):
-    if event.member is Group.group_members:
+    if _enabled \
+    and event.member is Group.group_members:
         rebuild_indexes(agents = [event.related_object])
 
 @when(Group.unrelated)
 def _handle_group_unrelated(event):
-    if event.member is Group.group_members:
+    if _enabled \
+    and event.member is Group.group_members:
         rebuild_indexes(agents = [event.related_object])
 
 @when(Item.inserted)
 def _handle_item_inserted(event):
-    rebuild_indexes(items = [event.source])
+    if _enabled:
+        rebuild_indexes(items = [event.source])
 
 @when(Item.deleted)
-def _handle_item_deleted(event):
-    
-    item_id = event.source.id
+def _handle_item_deleted(event):    
+    if _enabled:
+        item_id = event.source.id
 
-    for agent in Agent.select():
-        index = agent._rules_index
-        if index is not None and item_id in index:
-            index.remove(item_id)
+        for agent in Agent.select():
+            index = agent._rules_index
+            if index is not None and item_id in index:
+                index.remove(item_id)
 
 @when(Item.changed)
 def _handle_item_changed(event):
-    item = event.source
-    if item.is_inserted \
-    and event.member in (
-        Item.author,
-        Item.owner,
-        Item.is_draft,
-        Item.draft_source
-    ):
-        rebuild_indexes(items = [item])
+    if _enabled:
+        item = event.source
+        if item.is_inserted \
+        and event.member in (
+            Item.author,
+            Item.owner,
+            Item.is_draft,
+            Item.draft_source
+        ):
+            rebuild_indexes(items = [item])
 
 # Filter resolution
 #------------------------------------------------------------------------------
