@@ -18,17 +18,44 @@ from sitebasis.models.group import Group
 from sitebasis.models.accessrule import (
     AccessRule, allowed, AccessAllowedExpression, reduce_ruleset
 )
+from threading import local
+
+_thread_data = local()
 
 # Indexing functions
 #------------------------------------------------------------------------------
-_enabled = True
-
 def get_enabled():
-    return _enabled
+    """Determines if automatic indexing of access rules is enabled.
+
+    Indexing is enabled or disabled on a per-thread basis, so it is safe to
+    invoke this function from multithreaded code.
+
+    @return: True if indexing is enabled, False otherwise.
+    @rtype: bool
+    """
+    return getattr(_thread_data, "enabled", True)
 
 def set_enabled(enabled):
-    global _enabled
-    _enabled = enabled
+    """Enables or disables automatic indexing of access rules.
+
+    When access rule indexing is enabled (it is by default), creating,
+    modifying or deleting agents, rules and items will automatically keep a
+    series of indexes up to date. Depending on the amount of items to index,
+    this can be really slow. Using this function, client code can turn
+    automatic indexing on or off.
+    
+    The tipical use for this function is to disable automatic indexing, execute
+    a heavy weight modification process, and explicitly invoke
+    L{rebuild_indexes} after all the processing is done.
+        
+    Indexing is enabled or disabled on a per-thread basis, so it is safe to
+    invoke this function from multithreaded code.
+
+    @param enabled: Indicates if automatic indexing should be enabled (True) or
+        disabled (False).
+    @type enabled: bool
+    """
+    _thread_data.enabled = enabled
 
 def rebuild_indexes(agents = None, items = None, verbosity = 0):
     
@@ -201,26 +228,26 @@ Agent.rules_index = getter(_get_rules_index)
 
 @when(Site.changed)
 def _handle_site_changed(event):
-    if _enabled \
+    if get_enabled() \
     and event.member is Site.access_rules_by_priority \
     and set(event.previous_value or []) == set(event.value or []):
         rebuild_indexes()
 
 @when(Site.related)
 def _handle_site_related(event):
-    if _enabled \
+    if get_enabled() \
     and event.member is Site.access_rules_by_priority:
         rebuild_access_rule_index(event.related_object)
 
 @when(Site.unrelated)
 def _handle_site_unrelated(event):
-    if _enabled \
+    if get_enabled() \
     and event.member is Site.access_rules_by_priority:
         rebuild_access_rule_index(event.related_object)
 
 @when(AccessRule.changed)
 def _handle_access_rule_changed(event):
-    if _enabled:
+    if get_enabled():
         rule = event.source
         if rule in Site.main.access_rules_by_priority:
             rebuild_access_rule_index(
@@ -231,29 +258,29 @@ def _handle_access_rule_changed(event):
 
 @when(Agent.inserted)
 def _handle_agent_inserted(event):
-    if _enabled:
+    if get_enabled():
         rebuild_indexes(agents = [event.source])
 
 @when(Group.related)
 def _handle_group_related(event):
-    if _enabled \
+    if get_enabled() \
     and event.member is Group.group_members:
         rebuild_indexes(agents = [event.related_object])
 
 @when(Group.unrelated)
 def _handle_group_unrelated(event):
-    if _enabled \
+    if get_enabled() \
     and event.member is Group.group_members:
         rebuild_indexes(agents = [event.related_object])
 
 @when(Item.inserted)
 def _handle_item_inserted(event):
-    if _enabled:
+    if get_enabled():
         rebuild_indexes(items = [event.source])
 
 @when(Item.deleted)
 def _handle_item_deleted(event):    
-    if _enabled:
+    if get_enabled():
         item_id = event.source.id
 
         for agent in Agent.select():
@@ -263,7 +290,7 @@ def _handle_item_deleted(event):
 
 @when(Item.changed)
 def _handle_item_changed(event):
-    if _enabled:
+    if get_enabled():
         item = event.source
         if item.is_inserted \
         and event.member in (
