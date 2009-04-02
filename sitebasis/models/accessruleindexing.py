@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-u"""
+u"""Indexing of read permissions on a per-user basis.
 
 @author:		Martí Congost
 @contact:		marti.congost@whads.com
@@ -58,7 +58,23 @@ def set_enabled(enabled):
     _thread_data.enabled = enabled
 
 def rebuild_indexes(agents = None, items = None, verbosity = 0):
+    """Rebuild access rule indexes for the indicated agents and items.
     
+    @param agents: The agents to rebuild the indexes for.
+    @type agents: L{Agent<sitebasis.models.Agent>} collection
+
+    @param items: The items to index.
+    @type items: L{Item<sitebasis.models.Item>} collection
+
+    @param verbosity: Sets the verbosity level for the indexing operation. It
+        can take the following values:
+
+        0: Default. Disable all debug messages.
+        1: Print a line for each indexed item.
+        2: Print a line for each indexed item, as well as information on
+           index insertion or removal for each agent
+    @type verbosity: int
+    """
     if agents is None:
         agents = Agent.select()
 
@@ -109,7 +125,27 @@ def rebuild_access_rule_index(
     rule,
     changed_member = None,
     previous_value = None):
+    """Rebuild the indexes for the given access rule.
     
+    This function modifies indexes incrementally, attempting to index as few
+    items as possible (only agents and items that may be affected by the rule
+    will be indexed).
+
+    The function can also take X{changed_member} and X{previous_value}
+    parameters, to react to a modification to one of the rules constraints and
+    update indexes accordingly.
+
+    @param rule: The rule to index.
+    @type rule: L{AccessRule<sitebasis.models.AccessRule>}
+
+    @param changed_member: A reference to a member of the rule, whose
+        modification has triggered the indexing operation.
+    @type changed_member: L{Member<cocktail.schema.Member>}
+
+    @param previous_value: The value that the rule's modified member (as
+        specified by the X{changed_member} parameter) held before it was
+        modified.
+    """    
     # Rules that don't affect read operations aren't indexed
     read = Action.get_instance(identifier = "read")
 
@@ -214,7 +250,11 @@ class ItemSelection(object):
 #------------------------------------------------------------------------------
 
 def _get_rules_index(self):
+    """An index listing the primary keys of all items that can be read by the
+    agent.
     
+    @type: IOTreeSet<BTrees.IOTreeSet.IOTreeSet>
+    """    
     if self._rules_index is None:
         self._rules_index = IOTreeSet()
     
