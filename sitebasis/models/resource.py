@@ -24,6 +24,8 @@ class Resource(Item):
         "documents"
     )
 
+    show_detail_view = "sitebasis.views.ResourceShowDetailView"
+
     title = schema.String(
         required = True,
         unique = True,
