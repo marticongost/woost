@@ -341,7 +341,8 @@ class Item(PersistentObject):
     
     owner = schema.Reference(
         indexed = True,
-        type = "sitebasis.models.User"
+        type = "sitebasis.models.User",
+        listed_by_default = False
     )
 
     item_rules = schema.Collection(
