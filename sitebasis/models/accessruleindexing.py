@@ -222,7 +222,7 @@ def _handle_site_unrelated(event):
 def _handle_access_rule_changed(event):
     if _enabled:
         rule = event.source
-        if rule.is_inserted and rule in Site.main.access_rules_by_priority:
+        if rule in Site.main.access_rules_by_priority:
             rebuild_access_rule_index(
                 event.source,
                 event.member,
