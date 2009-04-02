@@ -43,6 +43,9 @@ class Item(PersistentObject):
     # Backoffice customization
     #--------------------------------------------------------------------------
     show_detail_view = "sitebasis.views.BackOfficeShowDetailView"
+    show_detail_controller = \
+        "sitebasis.controllers.backoffice.showdetailcontroller." \
+        "ShowDetailController"
     collection_view = "sitebasis.views.BackOfficeCollectionView"
     edit_node_class = "sitebasis.controllers.backoffice.editstack.EditNode"
     edit_view = "sitebasis.views.BackOfficeFieldsView"
@@ -50,7 +53,7 @@ class Item(PersistentObject):
     edit_controller = \
         "sitebasis.controllers.backoffice.itemfieldscontroller." \
         "ItemFieldsController"
-    
+
     # Indexing
     #--------------------------------------------------------------------------
     indexed = True
