@@ -30,8 +30,11 @@ class ItemController(BaseBackOfficeController):
 
     default_section = "fields"
     
-    show_detail = ShowDetailController
     diff = DifferencesController
+
+    @cached_getter
+    def show_detail(self):
+        return resolve(self.stack_node.item.show_detail_controller)
 
     @cached_getter
     def fields(self):
