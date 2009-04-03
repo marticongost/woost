@@ -14,6 +14,7 @@ from sitebasis.models.action import Action
 from sitebasis.models.item import Item
 from sitebasis.models.site import Site
 from sitebasis.models.agent import Agent
+from sitebasis.models.user import User
 from sitebasis.models.group import Group
 from sitebasis.models.accessrule import (
     AccessRule, allowed, AccessAllowedExpression, reduce_ruleset
@@ -179,11 +180,21 @@ def rebuild_access_rule_index(
         items.add_filter(Item.is_draft)
 
     # Narrow down updated agents
-    agents = ItemSelection()
+    agents = ItemSelection()    
+    authenticated_role = Agent.get_instance(qname = "sitebasis.authenticated")
     owner_role = Agent.get_instance(qname = "sitebasis.owner")
     author_role = Agent.get_instance(qname = "sitebasis.author")
-    normalize_agent = lambda agent: \
-        Agent if agent in (author_role, owner_role) else agent
+
+    def normalize_agent(agent):
+        # Rules affecting the special 'authenticated' role apply to any user
+        if agent is authenticated_role:
+            return User
+        # Rules affecting the special 'author' and 'owner' roles are even more
+        # general and may apply to any agent
+        elif agent in (author_role, authenticated_role):
+            return Agent
+        else:
+            return agent
 
     if changed_member is AccessRule.role:
         agents.add(
