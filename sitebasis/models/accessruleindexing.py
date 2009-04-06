@@ -156,6 +156,23 @@ def rebuild_access_rule_index(
         and previous_value in (None, read)
     ):
         return
+    
+    # Rules involving the 'target_member' and/or 'language' constraints are
+    # ignored by the indexing machinery
+    if (
+        rule.target_member
+        and (
+            changed_member is not AccessRule.target_member
+            or previous_value is not None
+        )
+    ) or (
+        rule.language
+        and (
+            changed_member is not AccessRule.language
+            or previous_value is not None
+        )
+    ):
+        return
 
     # Narrow down updated items
     items = ItemSelection()
