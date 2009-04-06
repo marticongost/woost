@@ -183,7 +183,9 @@ class ContentController(BaseBackOfficeController):
         content_schema.members_order.insert(0, "element")
         
         if any(cls.visible for cls in self.content_type.derived_schemas()):
-            content_schema.add_member(Member(name = "class"))
+            content_schema.add_member(
+                Member(name = "class", searchable = False)
+            )
             content_schema.members_order.insert(1, "class")
 
         return content_schema
