@@ -179,7 +179,7 @@ class ContentController(BaseBackOfficeController):
     def content_schema(self):
         content_schema = self.content_adapter.export_schema(self.content_type)
         content_schema.name = "BackOfficeContentView"
-        content_schema.add_member(Member(name = "element"))
+        content_schema.add_member(Member(name = "element", searchable = False))
         content_schema.members_order.insert(0, "element")
         
         if any(cls.visible for cls in self.content_type.derived_schemas()):

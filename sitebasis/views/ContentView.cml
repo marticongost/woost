@@ -67,7 +67,8 @@ from sitebasis.controllers.backoffice.useractions import \
 
     <py:ready>
 
-        <py:with py:element="self.collection_display">
+        <py:with py:element="self.collection_display"
+            py:filters="${self.user_collection.user_filters}">
             <?py
             ruleset = reduce_ruleset(
                 Site.main.access_rules_by_priority,

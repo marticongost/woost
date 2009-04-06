@@ -397,6 +397,51 @@ body.scripted .BackOfficeLayout .Table .selection {
     background-color: rgb(220,223,227);
 }
 
+.BackOfficeLayout .ContentTable th .selector > .label {
+    background-position: right 0.5em;
+}
+
+.BackOfficeLayout .ContentTable th .selector_content > div + div {
+    border-top: 1px solid rgb(200,210,220);
+    margin-top: 0.6em;
+    padding-top: 0.6em;
+}
+
+.BackOfficeLayout .ContentTable th .selector_content > div > a + a {
+    margin-top: 0.4em;
+}
+
+.BackOfficeLayout .ContentTable th .selector_content > div > a {
+    display: block;
+    background-repeat: no-repeat;
+    background-position: 0 -2px;
+    padding-left: 18px;
+}
+
+.BackOfficeLayout .ContentTable th .selector_content {
+    top: 1.3em;
+    font-size: 85%;
+    padding-right: 1em;
+    padding-top: 1em;
+    min-width: 12em;
+}
+
+.BackOfficeLayout .ContentTable .sorting_options a.selected {
+    font-weight: bold;
+}
+
+.BackOfficeLayout .ContentTable .sorting_options .ascending {
+    background-image: url(../images/ascending.png);
+}
+
+.BackOfficeLayout .ContentTable .sorting_options .descending {
+    background-image: url(../images/descending.png);
+}
+
+.BackOfficeLayout .ContentTable .search_options .add_filter {
+    background-image: url(../images/add_small.png);
+}
+
 .BackOfficeLayout .PropertyTable th {
     text-align: left;
     font-weight: normal;
@@ -535,24 +580,10 @@ body.scripted .BackOfficeLayout .Table .selection {
     background-image: url(../images/edit_small.png);
 }
 
-.BackOfficeLayout .Table th.sorted .label {
-    padding-right: 1em;
-    background-repeat: no-repeat;
-    background-position: center right;
-}
-
 .BackOfficeLayout .Table td.element_column label {
     padding-top: 0.1em;
     padding-bottom: 0.1em;
     background-position: center left;
-}
-
-.BackOfficeLayout .Table th.ascending .label {
-    background-image: url(../images/ascending.png);
-}
-
-.BackOfficeLayout .Table th.descending .label {
-    background-image: url(../images/descending.png);
 }
 
 .BackOfficeLayout .search_results_message {
@@ -805,7 +836,7 @@ body.scripted .BackOfficeLayout .Table .selection {
     cursor: default;
 }
 
-.BackOfficeLayout .selector .label {
+.BackOfficeLayout .selector > .label {
     position: relative;
     padding-left: 0.2em;
     padding-right: 1em;
@@ -816,16 +847,16 @@ body.scripted .BackOfficeLayout .Table .selection {
     color: black;
 }
 
-.BackOfficeLayout .selector:hover .label,
-.BackOfficeLayout .selector.scripted.unfolded .label,
-.BackOfficeLayout .selector.scripted.unfolded:hover .label {
+.BackOfficeLayout .selector:hover > .label,
+.BackOfficeLayout .selector.scripted.unfolded > .label,
+.BackOfficeLayout .selector.scripted.unfolded:hover > .label {
     background-color: rgb(250,250,250);
     border: 1px solid rgb(190,200,210);
     border-bottom-color: rgb(250,250,250);
     z-index: 1001;
 }
 
-.BackOfficeLayout .selector.scripted:hover .label {
+.BackOfficeLayout .selector.scripted:hover > .label {
     border-color: transparent;
     background-color: transparent;
 }
