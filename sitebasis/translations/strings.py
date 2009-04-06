@@ -305,6 +305,24 @@ translations.define("Forget",
     en = u"Forget"
 )
 
+translations.define("sitebasis.views.ContentTable sort ascending",
+    ca = u"Ordre ascendent",
+    es = u"Orden ascendente",
+    en = u"Ascending order"
+)
+
+translations.define("sitebasis.views.ContentTable sort descending",
+    ca = u"Ordre descendent",
+    es = u"Orden descendente",
+    en = u"Descending order"
+)
+
+translations.define("sitebasis.views.ContentTable add column filter",
+    ca = u"Afegir un filtre",
+    es = u"Añadir un filtro",
+    en = u"Add a filter"
+)
+
 translations.define("BackOfficeContentView.element",
     ca = u"Element",
     es = u"Elemento",

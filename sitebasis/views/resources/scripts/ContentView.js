@@ -122,6 +122,12 @@ cocktail.init(function () {
 
             // Simple search mode
             simplifySearch.call(this);            
+        })
+        // Enable the advanced search panel when adding filters using the links
+        // on table headers
+        .find("th .search_options .add_filter").click(function () {
+            var contentTypeFullName = jQuery(this).parents(".ContentView").get(0).contentTypeFullName;
+            jQuery.cookie(ADVANCED_SEARCH_COOKIE_PREFIX + contentTypeFullName, "true");
         });
 });
 
