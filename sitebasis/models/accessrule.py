@@ -25,6 +25,8 @@ except ImportError:
     def styled(string, *args, **kwargs):
         return string
 
+undefined = object()
+
 
 class AccessRule(Item):
     """Access rules are the fundamental pieces of the CMS authorization system.
@@ -209,8 +211,8 @@ class AccessRule(Item):
 
             if target_draft_source is not None:
                 context_target_draft_source = \
-                    context.get("target_draft_source")
-                if context_target_draft_source is None:
+                    context.get("target_draft_source", undefined)
+                if context_target_draft_source is undefined:
                     match = partial_match
                 else:
                     match = \
