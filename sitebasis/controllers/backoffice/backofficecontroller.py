@@ -56,7 +56,7 @@ class BackOfficeController(BaseBackOfficeController):
             edit_stacks_manager.preserve_edit_stack(edit_stack)
 
     @cherrypy.expose
-    def document_resources(self, **kwargs):
+    def document_images(self, **kwargs):
         cherrypy.response.headers["Content-Type"] = "text/javascript"
         node = self.stack_node
         resources = schema.get(node.form_data, "attachments")
@@ -66,4 +66,16 @@ class BackOfficeController(BaseBackOfficeController):
                 output.append([resource.title, resource.uri])
 
         return "var tinyMCEImageList = %s" % (dumps(output))
+
+    @cherrypy.expose
+    def document_files(self, **kwargs):
+        cherrypy.response.headers["Content-Type"] = "text/javascript"
+        node = self.stack_node
+        resources = schema.get(node.form_data, "attachments")
+        output = []
+        for resource in resources:
+            if resource.resource_type == "document":
+                output.append([resource.title, resource.uri])
+
+        return "var tinyMCELinkList = %s" % (dumps(output))
                 
