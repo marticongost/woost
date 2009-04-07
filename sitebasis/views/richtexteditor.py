@@ -9,11 +9,12 @@ u"""
 from os.path import abspath, dirname, join
 from cocktail.html import templates
 from cocktail.translations import translate
+from cocktail.controllers import context
 from sitebasis.models import Style
 
 TinyMCE = templates.get_class("cocktail.html.TinyMCE")
 
-
+#Required Version: 3.2.2.3 TinyMCE
 class RichTextEditor(TinyMCE):
     
     
@@ -29,9 +30,10 @@ class RichTextEditor(TinyMCE):
 
         self.tinymce_params.update(
             init_instance_callback = "initRichTextEditor",
-            plugins = "fullscreen, paste",
+            plugins = "fullscreen, paste, inlinepopups, advimage",
             entity_encoding = "raw",
             theme = "advanced",
+            dialog_type = "modal",            
             theme_advanced_buttons1_add = "fullscreen",
             theme_advanced_buttons2_add = "pastetext,pasteword,selectall",
             theme_advanced_buttons3 = "",
@@ -41,7 +43,9 @@ class RichTextEditor(TinyMCE):
             theme_advanced_toolbar_align = "left",
             theme_advanced_path = False,
             theme_advanced_resize_horizontal = False,
+            external_image_list_url = "/cms/document_resources?edit_stack=%s" % (context["edit_stacks_manager"].current_edit_stack.to_param()),
             theme_advanced_styles = ";".join(styles),
+            document_base_url = "/",
             content_css = "/user_styles/",
 #            fullscreen_new_window = True
             fullscreen_settings = {

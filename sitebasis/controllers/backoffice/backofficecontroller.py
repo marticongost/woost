@@ -7,9 +7,11 @@ u"""
 @since:			October 2008
 """
 import cherrypy
+from simplejson import dumps
 from cocktail.pkgutils import resolve
 from cocktail.events import event_handler
 from cocktail.controllers import view_state
+from cocktail import schema
 from sitebasis.controllers.backoffice.basebackofficecontroller \
     import BaseBackOfficeController
 from sitebasis.controllers.backoffice.contentcontroller \
@@ -53,3 +55,15 @@ class BackOfficeController(BaseBackOfficeController):
         if edit_stack is not None:
             edit_stacks_manager.preserve_edit_stack(edit_stack)
 
+    @cherrypy.expose
+    def document_resources(self, **kwargs):
+        cherrypy.response.headers["Content-Type"] = "text/javascript"
+        node = self.stack_node
+        resources = schema.get(node.form_data, "attachments")
+        output = []
+        for resource in resources:
+            if resource.resource_type == "image":
+                output.append([resource.title, resource.uri])
+
+        return "var tinyMCEImageList = %s" % (dumps(output))
+                
