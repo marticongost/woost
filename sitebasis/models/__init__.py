@@ -15,7 +15,18 @@ schema.Member.edit_control = None
 # Add an extension property to determine wether collections should be edited on
 # the main tab of the object editor (True) or if they should be promoted to
 # their own tab (False, default)
-schema.Collection.edit_inline = False
+def _get_edit_inline(self):
+
+    if self._edit_inline is None:
+        return not self.is_persistent_relation
+
+    return self._edit_inline
+
+def _set_edit_inline(self, value):
+    self._edit_inline = value
+
+schema.Collection._edit_inline = None
+schema.Collection.edit_inline = property(_get_edit_inline, _set_edit_inline)
 
 # Add an extension property to control the default member visibility on item listings
 schema.Member.listed_by_default = True

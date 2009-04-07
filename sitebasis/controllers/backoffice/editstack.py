@@ -341,8 +341,6 @@ class StackNode(object):
         """
         node = self._parent_node
         while node is not None:
-            print node
-            print "-" * 40
             if isinstance(node, node_type):
                 break
             node = node._parent_node
@@ -475,7 +473,7 @@ class EditNode(StackNode):
             or member is stack_relation
             or (
                 isinstance(member, schema.RelationMember)
-                and member.related_type
+                and member.is_persistent_relation
                 and not member.related_type.visible
             )
             or not allowed(
