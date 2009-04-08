@@ -47,6 +47,7 @@ class RichTextEditor(TinyMCE):
             external_link_list_url = "/cms/document_files?edit_stack=%s" % (context["edit_stacks_manager"].current_edit_stack.to_param()),
             theme_advanced_styles = ";".join(styles),
             document_base_url = "/",
+            relative_urls = False,
             content_css = "/user_styles/",
 #            fullscreen_new_window = True
             fullscreen_settings = {
