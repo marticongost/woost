@@ -13,6 +13,7 @@ from cherrypy.lib.static import serve_file
 from cocktail.modeling import getter
 from cocktail.events import Event, event_handler
 from cocktail.controllers import Dispatcher
+from cocktail.controllers.percentencode import percent_encode
 from cocktail.translations import set_language
 from cocktail.language import set_content_language
 from cocktail.persistence import datastore
@@ -152,11 +153,15 @@ class CMS(BaseCMSController):
         self.language.process_request(path)
 
         request = cherrypy.request
-        document = self.document_resolver.get_document(
-            path,
-            consume_path = True,
-            canonical_redirection = True
-        )
+        try:
+            document = self.document_resolver.get_document(
+                path,
+                consume_path = True,
+                canonical_redirection = True
+            )
+        except CanonicalURIRedirection, error:
+            self._canonical_redirection(error.path)
+
         self.context["document"] = document
 
         if document is None:
@@ -169,6 +174,17 @@ class CMS(BaseCMSController):
         uri = self.application_uri(path, *args, **kwargs)
         uri = self.language.translate_uri(uri)
         return uri
+
+    def _canonical_redirection(self, path):
+        from styled import styled
+        print styled(path, "brown")
+        path = "".join(percent_encode(c) for c in path)
+        print styled(path, "red")
+        path = self.application_uri(path)
+        print styled(path, "green")
+        path = str(self.language.translate_uri(path))
+        print styled(path, "blue")
+        raise cherrypy.HTTPRedirect(path)
 
     def validate_document(self, document):
         
@@ -217,10 +233,8 @@ class CMS(BaseCMSController):
 
         # URI normalization
         if isinstance(error, CanonicalURIRedirection):
-            path = self.application_uri(error.path)
-            path = self.language.translate_uri(path)
-            raise cherrypy.HTTPRedirect(path)
-
+            self._canonical_redirection(error.path)
+        
         # Page not found
         if is_http_error and error.status == 404:
             status = 404

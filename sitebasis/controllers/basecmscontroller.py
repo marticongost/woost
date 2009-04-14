@@ -53,9 +53,10 @@ class BaseCMSController(Controller):
         return uri
 
     def document_uri(self, *args, **kwargs):
-        from styled import styled
+        resolver = self.context["cms"].document_resolver
+        document = self.context["document"]
         return self.application_uri(
-            self.document_resolver.get_path(self.context["document"]),
+            resolver.get_path(document),
             *args,
             **kwargs
         )
