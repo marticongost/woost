@@ -17,7 +17,6 @@ from sitebasis.models import Item
 class ContentDisplayMixin(object):
 
     base_url = None
-    edit_stack = None
     authorization_check = None
 
     def __init__(self):
@@ -58,7 +57,6 @@ class ContentDisplayMixin(object):
         display = templates.new("sitebasis.views.ContentLink")
         display.item = self.get_member_value(obj, member)
         display.base_url = self.base_url
-        display.edit_stack = self.edit_stack
         return display
     
     def display_item_collection(self, obj, member):
@@ -66,6 +64,5 @@ class ContentDisplayMixin(object):
         display.authorization_check = self.authorization_check
         display.items = self.get_member_value(obj, member)
         display.base_url = self.base_url
-        display.edit_stack = self.edit_stack
         return display
 

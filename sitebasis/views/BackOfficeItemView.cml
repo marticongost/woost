@@ -21,9 +21,16 @@ from sitebasis.controllers.backoffice.useractions import (
         self.add_class(self.edited_content_type.name)
         
         if self.edited_item.is_inserted:
+        
             add_view_action_context(self, "existing_item")
+
             if self.edited_item.is_draft:
                 add_view_action_context(self, "draft")
+
+            if self.changes:
+                add_view_action_context(self, "changed")
+            else:
+                add_view_action_context(self, "unchanged")                
         else:
             add_view_action_context(self, "new_item")
 

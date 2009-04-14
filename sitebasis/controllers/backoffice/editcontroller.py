@@ -13,6 +13,7 @@ from cocktail.events import event_handler, when
 from cocktail.schema import (
     Adapter, ErrorList, DictAccessor, Collection
 )
+from cocktail.translations import translate
 from cocktail.persistence import datastore
 from sitebasis.models import (
     Site, Language, changeset_context, ChangeSet, reduce_ruleset
@@ -100,9 +101,14 @@ class EditController(BaseBackOfficeController):
             changeset = changeset
         )
 
+        self.notify_user(
+            translate("sitebasis.views.BackOfficeEditView Changes saved"),
+            "success"
+        )
+
         # A new item or draft was created
         if redirect:
-                            
+            
             # The edit operation was the root of the edit stack; redirect the
             # browser to the new item
             if len(self.edit_stack) == 1:
