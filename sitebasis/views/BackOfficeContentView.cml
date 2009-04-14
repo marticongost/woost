@@ -25,6 +25,8 @@ from sitebasis.controllers.backoffice.useractions import \
     add_view_action_context(self, "content")
     ?>
 
+    <py:with py:element="self.back_link" py:visible="${False}"/>
+
     <py:ready>
         <py:with py:element="self.content_view"
             py:parent="self.body"

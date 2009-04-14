@@ -129,7 +129,8 @@ class BaseBackOfficeController(BaseCMSController):
         output.update(
             backoffice = self.context["document"],
             section = self.section,
-            edit_stack = self.edit_stack
+            edit_stack = self.edit_stack,
+            notifications = self.pop_user_notifications()
         )
         return output
 
@@ -165,6 +166,17 @@ class BaseBackOfficeController(BaseCMSController):
         # Go back to the root of the backoffice
         else:
             raise cherrypy.HTTPRedirect(self.document_uri())
+
+    def notify_user(self, message, category = None):
+        notifications = cherrypy.session.get("notifications")
+        if notifications is None:
+            cherrypy.session["notifications"] = notifications = []
+        notifications.append((message, category))
+
+    def pop_user_notifications(self):
+        notifications = cherrypy.session.get("notifications")
+        cherrypy.session["notifications"] = []
+        return notifications
 
 
 class EditStateLostError(Exception):

@@ -57,38 +57,6 @@ html, body {
     margin-top: 0.4em;
 }
 
-.BackOfficeLayout ul.edit_path {
-    margin: 0;
-    padding: 0.3em 0.8em;
-    font-size: 90%;
-    color: rgb(75,85,95);
-    background-color: rgb(245,245,245);
-    border-bottom: 1px solid rgb(230,230,230);
-    overflow: hidden;
-}
-
-.BackOfficeLayout ul.edit_path li {
-    float: left;
-    display: block;
-    list-style-type: none;
-    white-space: nowrap;
-    font-size: 90%;
-}
-
-.BackOfficeLayout ul.edit_path li:last-child {
-    font-weight: bold;
-}
-
-.BackOfficeLayout ul.edit_path li .item_type {
-    font-weight: normal;
-    font-style: italic;
-}
-
-.BackOfficeLayout ul.edit_path .separator {
-    margin-left: 0.8em;
-    margin-right: 0.4em;
-}
-
 .BackOfficeLayout .identity {
     float: right;
     margin-top: 0.2em;
@@ -108,6 +76,17 @@ html, body {
 
 .BackOfficeLayout .identity button {
     margin-left: 0.7em !important;    
+}
+
+.BackOfficeLayout .navigation_bar {
+    padding: 0.3em 0.8em;
+    font-size: 90%;
+    background-color: rgb(245,245,245);
+    border-bottom: 1px solid rgb(230,230,230);
+}
+
+.BackOfficeLayout .navigation_bar a {
+    color: rgb(75,85,95);
 }
 
 .BackOfficeLayout a,
@@ -792,13 +771,25 @@ body.scripted .BackOfficeLayout .Table .selection {
 
 /* Content type selector
 -----------------------------------------------------------------------------*/
-.BackOfficeLayout .content_type_selector {
-    float: left;
+.BackOfficeLayout .content_type_box > .label,
+.BackOfficeLayout .content_type_selector > .label {
+    font-size: 85%;
 }
 
-.BackOfficeLayout .content_type_selector > .entry_label {
-    font-size: inherit;
-    text-decoration: none;
+.BackOfficeLayout .content_type_box > .label {
+    float: left;
+    padding: 0.2em 0;
+    margin-right: 0.6em;
+    font-weight: bold;
+    position: relative;
+}
+
+.BackOfficeLayout .content_type_selector > .label {
+    font-weight: normal !important;
+}
+
+.BackOfficeLayout .content_type_selector {
+    float: left;
 }
 
 /* Content view selector
@@ -1100,10 +1091,21 @@ body.scripted .BackOfficeLayout .Table .selection {
     background-image: url(../images/delete_small.png);
 }
 
-/* Errors and success
+/* Notifications
 -----------------------------------------------------------------------------*/
+.BackOfficeLayout .notification_box {
+    margin: 0.8em;
+}
+
+.BackOfficeLayout .notification {
+    padding: 0.4em;
+}
+
+.BackOfficeLayout .notification + .notification {
+    margin-top: 0.4em;
+}
+
 .BackOfficeLayout .success {
-    padding: 0.5em;
     border: 1px solid rgb(200,220,200);
     background-color: rgb(220,240,220);
 }
@@ -1662,5 +1664,57 @@ body.scripted .BackOfficeLayout .Table .selection {
 .BackOfficeLayout .mime_type_application_vnd_ms_excel,
 .BackOfficeLayout .mime_type_application_vnd_oasis_opendocument_presentation {
     background-image: url(../images/mime_types/presentation.png);
+}
+
+/* Edit stack
+-----------------------------------------------------------------------------*/
+.BackOfficeLayout .stack_node {
+    border: 1px solid rgb(210,210,210);
+    background-color: rgb(245,245,245);
+    padding: 0.4em;
+    padding-bottom: 0;
+    padding-right: 0;
+    margin-left: 0.8em;
+}
+
+.BackOfficeLayout .stack_node .stack_node {
+    border-right: none;
+    border-bottom: none;
+}
+
+.BackOfficeLayout .stack_node.root {
+    margin: 0.8em;
+}
+
+.BackOfficeLayout .stack_node > .label {
+    font-weight: bold;
+    margin-bottom: 0.8em;
+    color: rgb(120,120,120);
+    font-size: 85%;
+}
+
+.BackOfficeLayout .stack_node > .label > .relation {
+    color: rgb(95,90,85);
+}
+
+.BackOfficeLayout .stack_node.top {
+    border: 2px solid rgb(200,210,220);
+    background-color: white;
+    padding-bottom: 0.8em;
+}
+
+.BackOfficeLayout .stack_node.top > .label {
+    color: rgb(50,50,50);
+    font-size: 100%;
+}
+
+.BackOfficeLayout .stack_node h2 {
+    display: none;
+}
+
+.BackOfficeLayout .stack_node .body {
+    margin: 0;
+    padding: 0;
+    padding: 0 0.4em;
 }
 

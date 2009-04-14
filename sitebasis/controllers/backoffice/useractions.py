@@ -417,7 +417,7 @@ class DiffAction(UserAction):
 
 
 class RevertAction(UserAction):
-    included = frozenset([("diff", "item_body_buttons")])
+    included = frozenset([("diff", "item_body_buttons", "changed")])
 
     def invoke(self, controller, selection):
 
@@ -520,7 +520,11 @@ class CloseAction(UserAction):
        
 
 class SaveAction(UserAction):
-    included = frozenset(["item_buttons"])
+    included = frozenset([
+        ("item_buttons", "new"),
+        ("item_buttons", "edit"),
+        ("item_buttons", "changed")
+    ])
     ignores_selection = True
     max = None
     min = None
@@ -539,7 +543,11 @@ class SaveAction(UserAction):
 
 class SaveDraftAction(SaveAction):
     make_draft = True
-    included = frozenset(["item_buttons"])
+    included = frozenset([
+        ("item_buttons", "new"),
+        ("item_buttons", "edit"),
+        ("item_buttons", "changed")
+    ])
     excluded = frozenset(["draft"])
 
 
