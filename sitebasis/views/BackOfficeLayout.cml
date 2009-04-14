@@ -90,7 +90,9 @@ from sitebasis.controllers.backoffice.editstack import EditNode, RelationNode
 
     <div py:id="notification_box" py:collapsible="${True}">
         <py:ready>
-            <div class="notification" py:for="message, category in self.notifications">
+            <div class="notification"
+                py:if="self.notifications"
+                py:for="message, category in self.notifications">
                 <?py
                 if category:
                     element.add_class(category)
