@@ -329,6 +329,12 @@ translations.define("BackOfficeContentView.element",
     en = u"Item"
 )
 
+translations.define("sitebasis.views.ContentView content type",
+    ca = u"Tipus d'element:",
+    es = u"Tipo de elemento:",
+    en = u"Item type:"
+)
+
 translations.define("BackOfficeContentView.class",
     ca = u"Tipus",
     es = u"Tipo",

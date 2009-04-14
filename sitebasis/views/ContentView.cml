@@ -128,8 +128,8 @@ from sitebasis.controllers.backoffice.useractions import \
                 ?>
             </py:ready>
 
-            <div class="label">Tipus d'element:</div>
-        
+            <div class="label">${translate("sitebasis.views.ContentView content type")}</div>
+            
             <!-- Content type selector -->
             <py:sitebasis.views.ContentTypeSelector
                 py:id="content_type_selector"
