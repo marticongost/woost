@@ -53,7 +53,7 @@ class Menu(TreeView):
         return is_accessible(item) and not item.hidden
 
     def get_item_uri(self, item):
-        return self._cms.application_uri(item.full_path or "")
+        return self._cms.canonical_uri(item)
 
     def create_entry(self, item):
         entry = TreeView.create_entry(self, item)
