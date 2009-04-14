@@ -49,11 +49,10 @@ class LanguageModule(Module):
         if language is None:
             language = get_content_language()
 
-        if uri is None:
-            location = Location.get_current()
-        else:
-            location = Location()
-            location.path_info = path
+        location = Location.get_current()
+
+        if path is not None:
+           location.path_info = path
         
         path_components = location.path_info.strip("/").split("/")
         if path_components and path_components[0] in Language.codes:

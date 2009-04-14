@@ -11,6 +11,7 @@ import re
 from cocktail.modeling import abstractmethod
 from sitebasis.models import Site, Document
 
+
 class DocumentResolver(object):
     """Base class for all document resolvers.
     
@@ -56,6 +57,12 @@ class DocumentResolver(object):
         @param document: The document to get the path for.
         @type document: L{Document<sitebasis.models.document.Document>}
 
+        @param language: The language that the produced URI will be translated
+            into. If omitted, the active language will be used instead. This
+            parameter only makes sense on certain implementations, and should
+            be ignored by implementations that can't make use of it.
+        @type language: str
+
         @return: The relative path for the document.
         @rtype: str
         """
@@ -92,7 +99,7 @@ class HierarchicalPathResolver(DocumentResolver):
 
         return document
 
-    def get_path(self, document):
+    def get_path(self, document, language = None):
         return document.full_path or ""
 
 
@@ -119,7 +126,7 @@ class IdResolver(DocumentResolver):
         else:
             return Site.main.home
 
-    def get_path(self, document):
+    def get_path(self, document, language = None):
         return str(document.id)
 
 
@@ -155,6 +162,9 @@ class DescriptiveIdResolver(DocumentResolver):
 
             ref = path.pop(0) if consume_path else path[0]
             
+            if not isinstance(ref, unicode):
+                ref = ref.decode("utf-8")
+
             # Discard descriptive text
             match = self.id_regexp.match(ref)
 
@@ -171,7 +181,7 @@ class DescriptiveIdResolver(DocumentResolver):
             document = Document.get_instance(id)
             
             if canonical_redirection \
-            and document is not None:
+            and document is not None:                
                 canonical_ref = self.get_path(document)
                 if ref != canonical_ref:
                     raise CanonicalURIRedirection(canonical_ref)
@@ -180,19 +190,27 @@ class DescriptiveIdResolver(DocumentResolver):
         else:
             return Site.main.home
 
-    def get_path(self, document):
-        title = document.title
-
-        if title:
-            ref = self.format % {
-                "title": self._title_regexp.sub(self.word_separator, title),
-                "id": document.id
-            }
+    def get_path(self, document, language = None):
+        
+        if document is Site.main.home:
+            return ""
         else:
-            ref = str(document.id)
+            title = document.get("title", language)
 
-        # TODO: utf-8 % encoding
-        return ref
+            if title:
+                title = self._title_regexp.sub(
+                    self.word_separator,
+                    title
+                )
+                title = title.lower()            
+                ref = self.format % {
+                    "title": title,
+                    "id": document.id
+                }
+            else:
+                ref = str(document.id)
+
+            return ref
 
 
 class CanonicalURIRedirection(Exception):
