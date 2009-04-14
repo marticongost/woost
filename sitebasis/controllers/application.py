@@ -22,6 +22,10 @@ from sitebasis.controllers.language import LanguageModule
 from sitebasis.controllers.authentication import (
     AuthenticationModule, AuthenticationFailedError
 )
+from sitebasis.controllers.documentresolver import (
+    HierarchicalPathResolver,
+    CanonicalURIRedirection
+)
 from sitebasis.controllers.authorization import AuthorizationModule
 
 
@@ -50,6 +54,7 @@ class CMS(BaseCMSController):
     LanguageModule = LanguageModule
     AuthenticationModule = AuthenticationModule
     AuthorizationModule = AuthorizationModule
+    DocumentResolver = HierarchicalPathResolver
 
     # Webserver configuration
     virtual_path = "/"
@@ -105,12 +110,13 @@ class CMS(BaseCMSController):
         )
 
     def __init__(self, *args, **kwargs):
-     
+    
         BaseCMSController.__init__(self, *args, **kwargs)
 
         self.language = self.LanguageModule(self)
         self.authentication = self.AuthenticationModule(self)
         self.authorization = self.AuthorizationModule(self)
+        self.document_resolver = self.DocumentResolver()
 
         self.load_plugins()
 
@@ -146,35 +152,23 @@ class CMS(BaseCMSController):
         self.language.process_request(path)
 
         request = cherrypy.request
-        document, document_path = self.find_document(path)
+        document = self.document_resolver.get_document(
+            path,
+            consume_path = True,
+            canonical_redirection = True
+        )
         self.context["document"] = document
 
         if document is None:
             raise cherrypy.NotFound()
-            
-        for component in document_path:
-            path.pop(0)
         
         return document.handler
 
-    def find_document(self, path):
-        
-        path = list(path)
-        
-        while path:
-            document = Document.get_instance(full_path = "/".join(path))
-            if document:
-                break
-            else:
-                path.pop()
-        else:
-            document = self.root_document
-        
-        return document, path
-
-    @getter
-    def root_document(self):
-        return Site.main.home
+    def canonical_uri(self, document, *args, **kwargs):
+        path = self.document_resolver.get_path(document)
+        uri = self.application_uri(path, *args, **kwargs)
+        uri = self.language.translate_uri(uri)
+        return uri
 
     def validate_document(self, document):
         
@@ -219,18 +213,21 @@ class CMS(BaseCMSController):
         error = event.exception
         site = Site.main
         error_page = None
+        is_http_error = isinstance(error, cherrypy.HTTPError)
 
-        def is_http_error(code):
-            return isinstance(error, cherrypy.HTTPError) \
-                and error.status == code
+        # URI normalization
+        if isinstance(error, CanonicalURIRedirection):
+            path = self.application_uri(error.path)
+            path = self.language.translate_uri(path)
+            raise cherrypy.HTTPRedirect(path)
 
         # Page not found
-        if is_http_error(404) or isinstance(error, cherrypy.NotFound):
+        if is_http_error and error.status == 404:
             status = 404
             error_page = site.not_found_error_page
         
         # Access forbidden
-        elif is_http_error(403) \
+        elif is_http_error and error.status == 403 \
         or isinstance(error, (AccessDeniedError, AuthenticationFailedError)):
             status = 200
             error_page = site.forbidden_error_page

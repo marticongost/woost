@@ -53,8 +53,9 @@ class BaseCMSController(Controller):
         return uri
 
     def document_uri(self, *args, **kwargs):
+        from styled import styled
         return self.application_uri(
-            self.context["document"].full_path,
+            self.document_resolver.get_path(self.context["document"]),
             *args,
             **kwargs
         )
