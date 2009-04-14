@@ -146,7 +146,7 @@ def rebuild_access_rule_index(
     @param previous_value: The value that the rule's modified member (as
         specified by the X{changed_member} parameter) held before it was
         modified.
-    """    
+    """
     # Rules that don't affect read operations aren't indexed
     read = Action.get_instance(identifier = "read")
 
@@ -190,8 +190,9 @@ def rebuild_access_rule_index(
 
     if rule.target_draft_source is not None \
     and changed_member is not AccessRule.draft_source:
-        items.add_filter(Item.draft_source.equal(rule.draft_source))
+        items.add_filter(Item.draft_source.equal(rule.target_draft_source))
 
+    # TODO: Booleans can have three states! testing changed_member is not enough
     elif rule.target_is_draft is not None \
     and changed_member is not AccessRule.is_draft:
         items.add_filter(Item.is_draft)
@@ -223,9 +224,11 @@ def rebuild_access_rule_index(
     if rule.role:
         if isinstance(rule.role, Group):
             for group_member in rule.role.group_members:
-                agents.add(normalize_agent(group_member))
+                agent = normalize_agent(group_member)
+                agents.add(agent)
         else:
-            agents.add(normalize_agent(rule.role))
+            agent = normalize_agent(rule.role)
+            agents.add(agent)
     
     if not agents:
         agents.add(Agent)
