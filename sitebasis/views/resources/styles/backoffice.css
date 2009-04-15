@@ -1396,11 +1396,8 @@ body.scripted .BackOfficeLayout .Table .selection {
     font-size: 85%;
 }
 
-.BackOfficeLayout .simple_search input[type=submit] {
-}
-
 .BackOfficeLayout * + .simple_search {
-    margin-left: 1.5em;
+    margin-left: 2em;
 }
 
 .BackOfficeLayout .filters {
