@@ -8,6 +8,16 @@
     selection = None
     ?>
 
+    <?py        
+        self.add_resource("/cocktail/scripts/buttons_replacement.js")
+        script_tag = Element("script")
+        script_tag["type"] = "text/javascript"
+        script_tag.append("jQuery(function () {\n")
+        script_tag.append("\tcocktail.init();\n")
+        script_tag.append("});\n")
+        self.add_head_element(script_tag)        
+    ?>
+
     <py:with py:element="self.body">
         <p py:id="warning_box">
             @{translate("sitebasis.views.BackOfficeDeleteView warning", selection = self.selection)}        
