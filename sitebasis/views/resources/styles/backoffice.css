@@ -1171,7 +1171,8 @@ body.scripted .BackOfficeLayout .Table .selection {
 .BackOfficeItemView .toolbar .save_action,
 .BackOfficeItemView .toolbar .save_draft_action,
 .BackOfficeItemView .toolbar .confirm_draft_action,
-.BackOfficeItemView .toolbar .close_action {
+.BackOfficeItemView .toolbar .close_action,
+.BackOfficeItemView .toolbar .cancel_action {
     float: right;
 }
 

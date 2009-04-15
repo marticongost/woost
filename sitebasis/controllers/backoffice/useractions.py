@@ -508,16 +508,29 @@ class SelectAction(UserAction):
         controller.edit_stack.go(-2)
 
 
-class CloseAction(UserAction):
-    included = frozenset([("list_buttons", "selector"), "item_buttons"])
-    excluded = frozenset()
+class GoBackAction(UserAction):
     ignores_selection = True
     min = None
     max = None
 
     def invoke(self, controller, selection):
         controller.go_back()
-       
+
+
+class CloseAction(GoBackAction):
+    included = frozenset(["item_buttons"])
+    excluded = frozenset(["changed", "new", "edit"])
+
+
+class CancelAction(GoBackAction):
+    included = frozenset([
+        ("list_buttons", "selector"),
+        ("item_buttons", "edit"),
+        ("item_buttons", "changed"),
+        ("item_buttons", "new")
+    ])
+    excluded = frozenset()
+
 
 class SaveAction(UserAction):
     included = frozenset([
@@ -580,6 +593,7 @@ HistoryAction("history").register()
 DeleteAction("delete").register()
 ExportAction("export_xls", "msexcel").register()
 CloseAction("close").register()
+CancelAction("cancel").register()
 SaveAction("save").register()
 SaveDraftAction("save_draft").register()
 ConfirmDraftAction("confirm_draft").register()
