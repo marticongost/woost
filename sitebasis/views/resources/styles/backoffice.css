@@ -148,6 +148,14 @@ html, body {
     background-color: white;
 }
 
+.BackOfficeLayout .tab .count {
+    position: relative;
+    top: -0.05em;
+    margin-left: 0.3em;
+    font-weight: bold;
+    font-size: 85%;
+}
+
 .BackOfficeLayout h2 {
     font-size: inherit;
     margin-top: 0;
