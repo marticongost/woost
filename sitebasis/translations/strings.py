@@ -595,6 +595,21 @@ translations.define(
 )
 
 translations.define(
+    "sitebasis.controllers.backoffice.editstack.WrongEditStackError-instance",
+    ca = u"La sessió d'edició indicada no existeix o s'ha perdut.",
+    es = u"La sesión de edición indicada no existe o se ha perdido.",
+    en = u"The indicated edit session doesn't exist, or it has been lost."
+)
+
+
+translations.define(
+    "sitebasis.controllers.backoffice.editstack.EditStackExpiredError-instance",
+    ca = u"La sessió d'edició ha expirat.",
+    es = u"La sesión de edición ha expirado.",
+    en = u"The indicated edit session has expired."
+)
+
+translations.define(
     "forbidden value",
     ca = u"Camp restringit",
     es = u"Campo restringido",
@@ -1689,10 +1704,3 @@ translations.define("ChangeSet.changes",
     en = u"Changes"
 )
 
-# ClientParams
-#------------------------------------------------------------------------------
-translations.define("BackOfficeLayout unchanged_message",
-    ca = u"Segur que vols sortir sense guardar els canvis?",
-    es = u"¿Estás seguro que quieres salir sin guardar los cambios?",
-    en = u"Do you want to save your changes?"
-)
