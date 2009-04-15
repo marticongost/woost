@@ -37,7 +37,7 @@ class DocumentResolver(object):
         
         @param canonical_redirection: If set to True, implementations should
             trigger a redirection to a document's canonical location when the
-            given path  matches a document using one of its non canonical
+            given path matches a document using one of its non canonical
             paths.
             
             What constitutes a canonical path is for implementations to decide.
@@ -52,7 +52,8 @@ class DocumentResolver(object):
 
     @abstractmethod
     def get_path(self, document):
-        """Obtains the relative path for the indicated document.
+        """Obtains the canonical path for the indicated document, relative to
+        the application's root.
         
         @param document: The document to get the path for.
         @type document: L{Document<sitebasis.models.document.Document>}
@@ -131,8 +132,8 @@ class IdResolver(DocumentResolver):
 
 
 class DescriptiveIdResolver(DocumentResolver):
-    """A document resolver that combines a unique identifier and descriptive
-    title.
+    """A document resolver that combines a unique identifier and a descriptive
+    text fragment.
 
     @ivar word_separator: The character used for separating words on a
         document's title to conform the descriptive fragment of its URI.
