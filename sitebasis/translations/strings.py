@@ -773,9 +773,27 @@ translations.define(
 
 translations.define(
     "sitebasis.views.BackOfficeEditView Changes saved",
-    ca = u"S'han desat els canvis",
-    es = u"Se han guardado los cambios",
-    en = u"Changes saved"
+    ca = lambda item, is_new:
+        (
+            u"S'ha creat l'element <strong>%s</strong>"
+            if is_new
+            else u"Canvis a <strong>%s</strong> desats"
+        )
+        % translate(item, "ca"),
+    es = lambda item, is_new:
+        (
+            u"Se ha creado el elemento <strong>%s</strong>"
+            if is_new
+            else u"Cambios en <strong>%s</strong> guardados"
+        )
+        % translate(item, "es"),
+    en = lambda item, is_new:
+        (
+            u"New item <strong>%s</strong> stored"
+            if is_new
+            else u"Saved changes to <strong>%s</strong>"
+        )
+        % translate(item, "es")
 )
 
 translations.define(
