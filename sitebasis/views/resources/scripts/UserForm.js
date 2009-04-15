@@ -17,7 +17,7 @@ cocktail.init(function () {
         
         passwordField.find(".control").val("");
         passwordConfirmationField.find(".control").val("");
-        alert("asdfasdf");
+
         if (this.checked) {
             passwordField.show();
             passwordConfirmationField.show();
