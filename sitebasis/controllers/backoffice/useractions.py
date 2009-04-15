@@ -469,7 +469,7 @@ class PreviewAction(UserAction):
 
 class ExportAction(UserAction):
     included = frozenset(["toolbar_extra"])
-    min = None
+    min = 1
     max = None
     ignores_selection = True
     format = None
