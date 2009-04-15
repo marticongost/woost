@@ -1687,6 +1687,7 @@ body.scripted .BackOfficeLayout .Table .selection {
 
 .BackOfficeLayout .stack_node.root {
     margin: 0.8em;
+    margin-top: 1.8em;
 }
 
 .BackOfficeLayout .stack_node > .label {
@@ -1697,7 +1698,6 @@ body.scripted .BackOfficeLayout .Table .selection {
 }
 
 .BackOfficeLayout .stack_node > .label > .relation {
-    color: rgb(95,90,85);
 }
 
 .BackOfficeLayout .stack_node.top {
