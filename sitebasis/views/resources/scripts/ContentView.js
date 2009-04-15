@@ -46,7 +46,7 @@ cocktail.init(function () {
                 typeSelector.after(simpleSearchBox);
             }
             else {
-                this.prepend(simpleSearchBox);
+                jQuery(this).prepend(simpleSearchBox);
             }
 
             jQuery(simpleSearchBox).parents("form").submit(function () {
