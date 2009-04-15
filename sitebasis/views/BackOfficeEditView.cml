@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <?py
-from cocktail.schema import Collection
+from cocktail import schema
 from sitebasis.controllers.backoffice.useractions import \
     add_view_action_context
 ?>
@@ -89,7 +89,7 @@ from sitebasis.controllers.backoffice.useractions import \
         type="submit"
         name="section">
         <?py
-        is_collection = isinstance(member, Collection)
+        is_collection = isinstance(member, schema.Collection)
         section_id = member.name if is_collection else "fields"
         element["value"] = section_id
         element.add_class(member.name + "_tab")
@@ -101,7 +101,7 @@ from sitebasis.controllers.backoffice.useractions import \
             (is_collection and (member.name, None) in self.changed_keys)
             or (not is_collection
                 and any(
-                    not isinstance(changed_member, Collection)
+                    not isinstance(changed_member, schema.Collection)
                     for changed_member, language in self.changes
                 )
             )
@@ -109,6 +109,14 @@ from sitebasis.controllers.backoffice.useractions import \
             element.add_class("changed")
         ?>
         ${translate(member if is_collection else member.name)}
+        <?py
+        if is_collection:
+            items = schema.get(self.form_data, member.name)
+            if items:
+                count = Element("span", class_name = "count")
+                count.append("(" + str(len(items)) + ")")
+                element.append(count)
+        ?>
     </button>
 
 </py:sitebasis.views.BackOfficeItemView>
