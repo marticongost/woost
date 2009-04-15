@@ -23,6 +23,7 @@ from sitebasis.controllers.backoffice.useractions import \
 
     <?py
     self.add_resource("/resources/styles/backoffice_diff.css")
+    self.add_resource("/cocktail/scripts/buttons_replacement.js")
     
     add_view_action_context(self, "diff")
     ?>
