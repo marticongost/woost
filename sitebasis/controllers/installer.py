@@ -157,10 +157,11 @@ class Installer(object):
 
                 except Exception, ex:                    
                     errors.append(ex)
-                    try:
-                        rmtree(form_data["project_path"])
-                    except Exception, rmex:
-                        errors.append(rmex)
+                    if not isinstance(ex, InstallFolderExists):
+                        try:
+                            rmtree(form_data["project_path"])
+                        except Exception, rmex:
+                            errors.append(rmex)
                 else:
                     successful = True
         else:
