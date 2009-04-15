@@ -12,6 +12,7 @@ from urllib import urlencode
 import cherrypy
 from cocktail.modeling import getter, cached_getter
 from cocktail.iteration import first
+from cocktail.translations import translate
 from cocktail.events import event_handler
 from cocktail.schema import String
 from cocktail.language import get_content_language
@@ -19,7 +20,12 @@ from cocktail.controllers import get_persistent_param
 from sitebasis.models import Item
 from sitebasis.controllers import BaseCMSController
 from sitebasis.controllers.backoffice.useractions import get_user_action
-from sitebasis.controllers.backoffice.editstack import EditNode, RelationNode
+from sitebasis.controllers.backoffice.editstack import (
+    EditNode,
+    RelationNode,
+    WrongEditStackError,
+    EditStackExpiredError
+)
 
 
 class BaseBackOfficeController(BaseCMSController):
@@ -177,6 +183,18 @@ class BaseBackOfficeController(BaseCMSController):
         notifications = cherrypy.session.get("notifications")
         cherrypy.session["notifications"] = []
         return notifications
+
+    @event_handler
+    def handle_exception_raised(cls, event):
+
+        # Redirect the user to the backoffice root when failing to load an edit
+        # stack node
+        if isinstance(
+            event.exception,
+            (EditStackExpiredError, WrongEditStackError)
+        ):
+            event.source.notify_user(translate(event.exception), "error")
+            raise cherrypy.HTTPRedirect(event.source.document_uri())
 
 
 class EditStateLostError(Exception):

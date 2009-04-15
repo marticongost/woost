@@ -1110,7 +1110,9 @@ body.scripted .BackOfficeLayout .Table .selection {
     background-color: rgb(220,240,220);
 }
 
-.BackOfficeLayout .error_box {
+.BackOfficeLayout .error_box,
+.BackOfficeLayout .notification_box .error {
+    color: black;
     border: 1px dotted rgb(200,160,120);
     background-color: rgb(245,230,215);
     padding: 0.5em;
