@@ -378,6 +378,7 @@ body.scripted .BackOfficeLayout .Table .selection {
 
 .BackOfficeLayout .ContentTable th .selector > .label {
     background-position: right 0.5em;
+    white-space: nowrap;
 }
 
 .BackOfficeLayout .ContentTable th .selector_content > div + div {
