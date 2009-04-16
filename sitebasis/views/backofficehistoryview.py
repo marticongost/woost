@@ -6,7 +6,7 @@ u"""
 @organization:	Whads/Accent SL
 @since:			September 2008
 """
-from cocktail.translations import translate
+from cocktail.translations import translations
 from cocktail.html import Element
 from cocktail.html.table import MULTIPLE_SELECTION
 from sitebasis.views.backofficelayout import BackOfficeLayout
@@ -47,7 +47,7 @@ class BackOfficeHistoryView(BackOfficeLayout):
                 changes = self.get_member_value(obj, member)
 
                 sorted_changes = sorted([
-                    (change.action.identifier, translate(change.target))
+                    (change.action.identifier, translations(change.target))
                     for change in changes.itervalues()
                 ])
                    

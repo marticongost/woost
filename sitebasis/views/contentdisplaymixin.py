@@ -8,7 +8,7 @@ u"""
 """
 from cocktail.modeling import extend, call_base
 from cocktail.language import get_content_language
-from cocktail.translations import translate
+from cocktail.translations import translations
 from cocktail.schema import Reference, Collection
 from cocktail.html import templates, Element
 from sitebasis.models import Item
@@ -33,7 +33,7 @@ class ContentDisplayMixin(object):
             ):
                 sign = Element()
                 sign.add_class("forbidden")
-                sign.append(translate("forbidden value"))
+                sign.append(translations("forbidden value"))
                 return sign
             else:
                 return call_base(item, member)

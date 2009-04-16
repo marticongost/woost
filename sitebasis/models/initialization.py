@@ -9,7 +9,7 @@ u"""
 from __future__ import with_statement
 import sha
 from optparse import OptionParser
-from cocktail.translations import translate
+from cocktail.translations import translations
 from cocktail.persistence import datastore
 from sitebasis.models import (
     changeset_context,
@@ -40,7 +40,7 @@ def init_site(
     def set_translations(item, member, key, **kwargs):
         for language in languages:
             try:
-                value = translate(key, language, **kwargs)
+                value = translations(key, language, **kwargs)
             except KeyError:
                 pass
             else:

@@ -7,7 +7,7 @@ u"""
 @since:			July 2008
 """
 from cocktail.language import get_content_language
-from cocktail.translations import translate
+from cocktail.translations import translations
 from cocktail.persistence import datastore
 from cocktail import schema
 from sitebasis.models.site import Site
@@ -257,13 +257,13 @@ class AccessRule(Item):
         # Outcome
         if debug:
             if match:
-                print styled(translate(self), style = "underline"),
+                print styled(translations(self), style = "underline"),
                 print styled(
                     ("allowed" if self.allowed else "forbidden"),
                     "white", ("green" if self.allowed else "red")
                 )
             else:
-                print translate(self), "doesn't match"
+                print translations(self), "doesn't match"
 
         return match
 
@@ -274,10 +274,10 @@ class AccessRule(Item):
         if self.target_member:
             if self.target_type:
                 member = self.target_type[self.target_member]
-                member_desc = translate(member, language, **kwargs)
+                member_desc = translations(member, language, **kwargs)
             elif self.target_instance:
                 member = self.target_instance.__class__[self.target_member]
-                member_desc = translate(member, language, **kwargs)
+                member_desc = translations(member, language, **kwargs)
             else:
                 member_desc = self.target_member
 
@@ -289,11 +289,11 @@ class AccessRule(Item):
                 else:
                     trans.append(u"Nobody can")
             else:
-                trans.append(translate(self.role, language))
+                trans.append(translations(self.role, language))
                 trans.append(self.allowed and u"can" or u"can't")
             
             trans.append(
-                translate(self.action, language).lower()
+                translations(self.action, language).lower()
                           if self.action
                           else u"access")
             
@@ -302,28 +302,28 @@ class AccessRule(Item):
 
             if self.target_draft_source:
                 trans.append("drafts of " +
-                        translate(self.target_draft_source))
+                        translations(self.target_draft_source))
             elif self.target_is_draft is not None:
                 trans.append("drafts of"
                         if self.target_is_draft
                         else "the master copy of")
 
             if self.target_instance:
-                trans.append(translate(self.target_instance, language))
+                trans.append(translations(self.target_instance, language))
             elif self.target_type:
                 trans.append(
-                    translate(self.target_type.name + "-plural", language))
+                    translations(self.target_type.name + "-plural", language))
             elif not self.target_draft_source:
                 trans.append(u"any item")
                         
             if self.target_ancestor:
                 trans.append(
                     u"descending from "
-                    + translate(self.target_ancestor, language))
+                    + translations(self.target_ancestor, language))
 
             if self.language:
                 trans.append(
-                    u"in " + translate(self.language, language))
+                    u"in " + translations(self.language, language))
 
         elif language == "ca":
             
@@ -338,11 +338,11 @@ class AccessRule(Item):
                 elif isinstance(self.role, Role):
                     trans.append("El rol")
 
-                trans.append(translate(self.role, language))
+                trans.append(translations(self.role, language))
                 trans.append(self.allowed and u"pot" or u"no pot")
                 
             trans.append(
-                translate(self.action, language).lower()
+                translations(self.action, language).lower()
                 if self.action
                 else u"accedir a"
             )
@@ -354,28 +354,28 @@ class AccessRule(Item):
 
             if self.target_draft_source:
                 trans.append("borradors de "
-                        + translate(self.target_draft_source))
+                        + translations(self.target_draft_source))
             elif self.target_is_draft is not None:
                 trans.append("borradors de"
                         if self.target_is_draft
                         else "la còpia original de")
 
             if self.target_instance:
-                trans.append(translate(self.target_instance, language))
+                trans.append(translations(self.target_instance, language))
             elif self.target_type:
                 trans.append(
-                    translate(self.target_type.name + "-plural", language))
+                    translations(self.target_type.name + "-plural", language))
             elif not self.draft_source:
                 trans.append(u"qualsevol element")
             
             if self.target_ancestor:
                 trans.append(
                     u"dins de "
-                    + translate(self.target_ancestor, language))
+                    + translations(self.target_ancestor, language))
 
             if self.language:
                 trans.append(
-                    u"en " + translate(self.language, language))
+                    u"en " + translations(self.language, language))
             
         elif language == "es":
 
@@ -390,11 +390,11 @@ class AccessRule(Item):
                 elif isinstance(self.role, Role):
                     trans.append("El rol")
 
-                trans.append(translate(self.role, language))            
+                trans.append(translations(self.role, language))            
                 trans.append(self.allowed and u"puede" or u"no puede")
                 
             trans.append(
-                translate(self.action, language).lower()
+                translations(self.action, language).lower()
                 if self.action
                 else u"acceder a"
             )
@@ -404,28 +404,28 @@ class AccessRule(Item):
 
             if self.target_draft_source:
                 trans.append("borradores de "
-                        + translate(self.target_draft_source))
+                        + translations(self.target_draft_source))
             elif self.target_is_draft is not None:
                 trans.append("borradores de"
                         if self.target_is_draft
                         else "la copia original de")
 
             if self.target_instance:
-                trans.append(translate(self.target_instance, language))
+                trans.append(translations(self.target_instance, language))
             elif self.target_type:
                 trans.append(
-                    translate(self.target_type.name + "-plural", language))
+                    translations(self.target_type.name + "-plural", language))
             elif not self.draft_source:
                 trans.append(u"cualquier elemento")
             
             if self.target_ancestor:
                 trans.append(
                     u"dentro de "
-                    + translate(self.target_ancestor, language))
+                    + translations(self.target_ancestor, language))
 
             if self.language:
                 trans.append(
-                    u"en " + translate(self.language, language))
+                    u"en " + translations(self.language, language))
 
         return u" ".join(trans)
 
@@ -526,7 +526,7 @@ def allowed(**context):
             print "\t", (key + ":").ljust(16),
             
             try:
-                value = translate(value)
+                value = translations(value)
             except:
                 pass
 

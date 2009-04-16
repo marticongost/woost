@@ -62,9 +62,9 @@ from sitebasis.controllers.backoffice.useractions import (
                 <?py
                 if self.edited_item.is_inserted \
                 and not (self.edited_item.is_draft and self.edited_item.draft_source is None):
-                    context_desc = translate(self.edited_item)
+                    context_desc = translations(self.edited_item)
                 else:
-                    context_desc = translate("creating", content_type = self.edited_content_type)
+                    context_desc = translations("creating", content_type = self.edited_content_type)
                 ?>
                 ${context_desc}
             </py:ready>

@@ -13,7 +13,7 @@ from cocktail.events import event_handler, when
 from cocktail.schema import (
     Adapter, ErrorList, DictAccessor, Collection
 )
-from cocktail.translations import translate
+from cocktail.translations import translations
 from cocktail.persistence import datastore
 from sitebasis.models import (
     Site, Language, changeset_context, ChangeSet, reduce_ruleset
@@ -102,7 +102,7 @@ class EditController(BaseBackOfficeController):
         )
 
         self.notify_user(
-            translate(
+            translations(
                 "sitebasis.views.BackOfficeEditView Changes saved",
                 item = item,
                 is_new = is_new

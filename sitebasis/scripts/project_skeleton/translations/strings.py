@@ -6,5 +6,5 @@ u"""
 @organization:	Whads/Accent SL
 @since:			December 2008
 """
-from cocktail.translations import translations, translate
+from cocktail.translations import translations
 

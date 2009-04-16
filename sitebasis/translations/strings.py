@@ -6,7 +6,7 @@ u"""
 @organization:	Whads/Accent SL
 @since:			July 2008
 """
-from cocktail.translations import translations, translate
+from cocktail.translations import translations
 
 translations.define("site_section",
     ca = u"Lloc web",
@@ -34,11 +34,11 @@ translations.define("history_section",
 
 translations.define("logged in as",
     ca = lambda user: u"Estàs identificat com a " \
-            "<strong>%s</strong>" % translate(user, "ca"),
+            "<strong>%s</strong>" % translations(user, "ca"),
     es = lambda user: u"Estás identificado como " \
-            "<strong>%s</strong>" % translate(user, "es"),
+            "<strong>%s</strong>" % translations(user, "es"),
     en = lambda user: u"Logged in as "
-            "<strong>%s</strong>" % translate(user, "en")
+            "<strong>%s</strong>" % translations(user, "en")
 )
 
 translations.define("Logout",
@@ -272,25 +272,25 @@ translations.define("cocktail.html.shortcuts action cancel",
 translations.define("editing",
     ca = lambda item:
         u"Editant %s <em>'%s'</em>"
-        % (translate(item.__class__.name, "ca").lower(),
-           translate(item, "ca")),
+        % (translations(item.__class__.name, "ca").lower(),
+           translations(item, "ca")),
     es = lambda item:
         u"Editando %s <em>'%s'</em>"
-        % (translate(item.__class__.name, "es").lower(),
-           translate(item, "es")),
+        % (translations(item.__class__.name, "es").lower(),
+           translations(item, "es")),
     en = lambda item:
         u"Editing %s <em>'%s'</em>"
-        % (translate(item.__class__.name, "es").lower(),
-           translate(item, "es"))
+        % (translations(item.__class__.name, "es").lower(),
+           translations(item, "es"))
 )
 
 translations.define("creating",
     ca = lambda content_type:
-        u"Creant %s" % translate(content_type.__name__, "ca").lower(),
+        u"Creant %s" % translations(content_type.__name__, "ca").lower(),
     es = lambda content_type:
-        u"Creando %s" % translate(content_type.__name__, "es").lower(),
+        u"Creando %s" % translations(content_type.__name__, "es").lower(),
     en = lambda content_type:
-        u"Creating new %s" % translate(content_type.__name__, "en").lower()
+        u"Creating new %s" % translations(content_type.__name__, "en").lower()
 )
 
 translations.define("Backout",
@@ -402,9 +402,9 @@ translations.define("draft_seq_name",
 )
 
 translations.define("Differences for",
-    ca = lambda item: u"Canvis a <em>'%s'</em>" % translate(item, "ca"),
-    es = lambda item: u"Cambios en <em>'%s'</em>" % translate(item, "es"),
-    en = lambda item: u"Changes in <em>'%s'</em>" % translate(item, "en")
+    ca = lambda item: u"Canvis a <em>'%s'</em>" % translations(item, "ca"),
+    es = lambda item: u"Cambios en <em>'%s'</em>" % translations(item, "es"),
+    en = lambda item: u"Changes in <em>'%s'</em>" % translations(item, "en")
 )
 
 translations.define("No differences",
@@ -650,7 +650,7 @@ def sitebasis_views_backofficedelete_view_warning_ca(selection):
     count = len(selection)
     if count == 1:
         return u"S'eliminarà l'element <strong>%s</strong>." \
-            % translate(selection[0], "ca")
+            % translations(selection[0], "ca")
     else:
         return u"S'eliminaran els <strong>%d</strong> elements seleccionats." \
             % count
@@ -659,7 +659,7 @@ def sitebasis_views_backofficedelete_view_warning_es(selection):
     count = len(selection)
     if count == 1:
         return u"Se eliminará el elemento <strong>%s</strong>." \
-            % translate(selection[0], "es")
+            % translations(selection[0], "es")
     else:
         return u"Se eliminarán los <strong>%d</strong> elementos " \
             u"seleccionados." % count
@@ -668,7 +668,7 @@ def sitebasis_views_backofficedelete_view_warning_en(selection):
     count = len(selection)
     if count == 1:
         return u"The element <strong>%s</strong> will be deleted." \
-            % translate(selection[0], "en")
+            % translations(selection[0], "en")
     else:
         return u"All <strong>%d</strong> selected elements will be deleted." \
             % count
@@ -791,21 +791,21 @@ translations.define(
             if is_new
             else u"Canvis a <strong>%s</strong> desats"
         )
-        % translate(item, "ca"),
+        % translations(item, "ca"),
     es = lambda item, is_new:
         (
             u"Se ha creado el elemento <strong>%s</strong>"
             if is_new
             else u"Cambios en <strong>%s</strong> guardados"
         )
-        % translate(item, "es"),
+        % translations(item, "es"),
     en = lambda item, is_new:
         (
             u"New item <strong>%s</strong> stored"
             if is_new
             else u"Saved changes to <strong>%s</strong>"
         )
-        % translate(item, "es")
+        % translations(item, "es")
 )
 
 translations.define(

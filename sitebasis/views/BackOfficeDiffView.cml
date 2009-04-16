@@ -45,19 +45,19 @@ from sitebasis.controllers.backoffice.useractions import \
             b = b.split("\n") if b else []
             diffs = html_diff(a, b, charjunk = IS_CHARACTER_JUNK)
         elif isinstance(member, Collection):
-            a = [translate(x) for x in a] if a else []
-            b = [translate(x) for x in b] if b else []
+            a = [translations(x) for x in a] if a else []
+            b = [translations(x) for x in b] if b else []
             diffs = html_diff(a, b)
         else:
-            a = [translate(a, default = a)]
-            b = [translate(b, default = b)]
+            a = [translations(a, default = a)]
+            b = [translations(b, default = b)]
             diffs = a, b
         ?>
         <td class="check">
             <input type="checkbox" name="reverted_members" value="${revert_key}"/>
         </td>
-        <td class="member">${translate(member)}
-            <span class="language" py:if="member.translated">(${translate(language)})</span>
+        <td class="member">${translations(member)}
+            <span class="language" py:if="member.translated">(${translations(language)})</span>
         </td>
         <td class="previous_value">
             <div class="diff_unit" py:for="unit in diffs[0]">${unit}</div>
@@ -70,15 +70,15 @@ from sitebasis.controllers.backoffice.useractions import \
     <py:with py:element="self.item_body">
               
         <p py:id="no_differences" py:visible="@{not self.changes}">
-            ${translate("No differences")}
+            ${translations("No differences")}
         </p>
 
         <table py:id="differences" py:visible="@{self.changes}">
             <tr>
                 <th class="check"/>
-                <th class="member">${translate("sitebasis.views.BackOfficeDiffView member")}</th>
-                <th class="previous_value">${translate("sitebasis.views.BackOfficeDiffView previous value")}</th>
-                <th class="new_value">${translate("sitebasis.views.BackOfficeDiffView new value")}</th>
+                <th class="member">${translations("sitebasis.views.BackOfficeDiffView member")}</th>
+                <th class="previous_value">${translations("sitebasis.views.BackOfficeDiffView previous value")}</th>
+                <th class="new_value">${translations("sitebasis.views.BackOfficeDiffView new value")}</th>
             </tr>            
             <py:ready>
                 <?py

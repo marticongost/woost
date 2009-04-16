@@ -7,7 +7,7 @@ u"""
 @since:			November 2008
 """
 from cocktail.html import Element
-from cocktail.translations import translate
+from cocktail.translations import translations
 
 
 class ItemLabel(Element):
@@ -22,5 +22,5 @@ class ItemLabel(Element):
             for schema in self.item.__class__.descend_inheritance(True):
                 self.add_class(schema.name)
 
-            self.append(translate(self.item))
+            self.append(translations(self.item))
 

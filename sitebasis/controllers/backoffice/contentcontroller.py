@@ -12,7 +12,7 @@ from tempfile import mkdtemp
 import cherrypy
 import pyExcelerator
 from cocktail.modeling import getter, cached_getter, ListWrapper, SetWrapper
-from cocktail.translations import translate
+from cocktail.translations import translations
 from cocktail.schema import get, Member, Adapter, Reference, String, Collection
 from cocktail.schema.expressions import (
     Expression, CustomExpression, ExclusionExpression, Self
@@ -373,7 +373,7 @@ class ContentController(BaseBackOfficeController):
         
         collection = self.user_collection
         content_type = collection.type
-        filename = translate(content_type.name + "-plural") + ".xls"
+        filename = translations(content_type.name + "-plural") + ".xls"
         members = [member
                 for member in self.content_schema.ordered_members()
                 if member.name in collection.members]
@@ -387,7 +387,7 @@ class ContentController(BaseBackOfficeController):
         header_style.font.bold = True
 
         for col, member in enumerate(members):
-            label = translate(member)
+            label = translations(member)
             sheet.write(0, col, label, header_style)
 
         # Sheet content
@@ -398,7 +398,7 @@ class ContentController(BaseBackOfficeController):
                 return "\n".join(get_cell_content(member, item)
                                  for item in value)
             elif not member.translated:
-                return translate(value, default = unicode(value))
+                return translations(value, default = unicode(value))
             else:
                 return unicode(value)
 
@@ -406,9 +406,9 @@ class ContentController(BaseBackOfficeController):
             for col, member in enumerate(members):
 
                 if member.name == "element":
-                    value = translate(item)
+                    value = translations(item)
                 elif member.name == "class":
-                    value = translate(item.__class__.name)
+                    value = translations(item.__class__.name)
                 else:
                     value = item.get(member.name)
 
