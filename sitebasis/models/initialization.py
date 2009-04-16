@@ -82,7 +82,7 @@ def init_site(
         # Create the administrator user
         admin = User()
         admin.author = admin
-        admin.qname = "sitebasis.initadmin"
+        admin.qname = "sitebasis.administrator"
         admin.owner = admin
         admin.critical = True
         admin.email = admin_email
@@ -163,7 +163,7 @@ def init_site(
         site.home = StandardPage()
         site.home.template = empty_template
         site.home.qname = "sitebasis.home"
-        set_translations(site.home, "title", "Home page title")            
+        set_translations(site.home, "title", "Home page title")
         set_translations(
             site.home, "body", "Home page body",
             uri = uri + back_office.path
@@ -174,7 +174,7 @@ def init_site(
         # Create the 'content not found' page
         site.not_found_error_page = StandardPage()
         site.not_found_error_page.template = empty_template
-        site.not_found_error_page.qname = "sitebasis.notfounderrorpage"
+        site.not_found_error_page.qname = "sitebasis.not_found_error_page"
         set_translations(site.not_found_error_page, "title",
             "Not found error page title")
         set_translations(site.not_found_error_page, "body",
@@ -196,7 +196,7 @@ def init_site(
         """
         login_page = StandardPage()
         login_page.template = empty_template
-        login_page.qname = "sitebasis.loginpage"
+        login_page.qname = "sitebasis.login_page"
         set_translations(login_page, "title", "Login page title")
         set_translations(login_page, "body", "Login page body",
             form = login_form)
