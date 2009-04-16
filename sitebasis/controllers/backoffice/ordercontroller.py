@@ -10,7 +10,7 @@ import cherrypy
 from simplejson import dumps
 from cocktail.modeling import cached_getter
 from cocktail.events import event_handler
-from cocktail.translations import translate
+from cocktail.translations import translations
 from cocktail import schema
 from cocktail.schema import Reference, String, Integer, Collection
 from sitebasis.models import Item
@@ -96,7 +96,7 @@ class OrderController(BaseBackOfficeController):
 
     def handle_error(self, error):
         if self.handling_ajax_request:
-            self.output["error"] = translate(error)
+            self.output["error"] = translations(error)
         else:
             BaseBackOfficeController.handle_error(self, error)
     

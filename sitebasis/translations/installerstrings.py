@@ -6,7 +6,7 @@ u"""
 @organization:	Whads/Accent SL
 @since:			October 2008
 """
-from cocktail.translations import translations, translate
+from cocktail.translations import translations
 
 translations.define("SiteBasis installation",
     en = u"SiteBasis installation"
@@ -89,8 +89,8 @@ translations.define(
         u"The indicated <em>%s</em> and <em>%s</em> combination is not "
         u"available on this server"
         % (
-            translate(instance.host_member, "en"),
-            translate(instance.port_member, "en")
+            translations(instance.host_member, "en"),
+            translations(instance.port_member, "en")
         )
 )
 

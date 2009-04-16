@@ -19,15 +19,19 @@ class UserEditNode(EditNode):
         form_adapter = EditNode.form_adapter(self)
         
         form_adapter.exclude([
-            "change_password",
             "password_confirmation"
         ])
+        
+        if self.item.is_inserted:
+            form_adapter.exclude([
+                "change_password"
+            ])
 
-        form_adapter.copy("password",
-            export_condition = False,
-            import_condition =
-                lambda context: context.get("change_password")
-        )
+            form_adapter.copy("password",
+                export_condition = False,
+                import_condition =
+                    lambda context: context.get("change_password")
+            )
 
         return form_adapter
 
@@ -40,33 +44,38 @@ class UserEditNode(EditNode):
             "change_password",
             "password",
             "password_confirmation"
+        ] if self.item.is_inserted else [
+            "email",
+            "password",
+            "password_confirmation"
         ]
-        
-        form_schema.add_member(schema.Boolean(
-            name = "change_password",
-            required = True,
-            default = False
-        ))
-                
-        form_schema["password"].exclusive = form_schema["change_password"]
 
         form_schema.add_member(schema.String(
-            name = "password_confirmation",
-            exclusive = form_schema["change_password"],
+            name = "password_confirmation",            
             edit_control = "cocktail.html.PasswordBox"
         ))
+        
+        if self.item.is_inserted:
+            form_schema.add_member(schema.Boolean(
+                name = "change_password",
+                required = True,
+                default = False
+            ))
+                
+            form_schema["password"].exclusive = form_schema["change_password"]
+
+            form_schema["password_confirmation"].exclusive = form_schema["change_password"]
         
         @form_schema.add_validation
         def validate_password_confirmation(form_schema, value, ctx):
 
-            if ctx.get_value("change_password"):
-                password = ctx.get_value("password")               
-                password_confirmation = ctx.get_value("password_confirmation")
+            password = ctx.get_value("password")               
+            password_confirmation = ctx.get_value("password_confirmation")
 
-                if password and password_confirmation \
-                and password != password_confirmation:
-                    yield PasswordConfirmationError(
-                            form_schema, value, ctx)
+            if password and password_confirmation \
+            and password != password_confirmation:
+                yield PasswordConfirmationError(
+                        form_schema, value, ctx)
 
         return form_schema
 

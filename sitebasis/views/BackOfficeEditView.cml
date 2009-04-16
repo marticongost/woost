@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <?py
-from cocktail.schema import Collection
+from cocktail import schema
 from sitebasis.controllers.backoffice.useractions import \
     add_view_action_context
 ?>
@@ -32,11 +32,6 @@ from sitebasis.controllers.backoffice.useractions import \
    
     <py:with py:element="self.item_body">
 
-        <!-- Success message -->
-        <!--<div py:id="success" py:visible="@{self.saved}">
-            ${translate("sitebasis.views.BackOfficeEditView Changes saved")}
-        </div>-->
-
         <!-- Draft remark -->
         <div
             py:id="draft_box"
@@ -46,7 +41,7 @@ from sitebasis.controllers.backoffice.useractions import \
                 <?py
                 if self.edited_item.draft_source:
                     element.append(
-                        translate(
+                        translations(
                             "Editing draft copy",
                             location = self.backoffice.get_edit_uri(
                                 self.edited_item.draft_source
@@ -54,7 +49,7 @@ from sitebasis.controllers.backoffice.useractions import \
                         )
                     )
                 else:
-                    element.append(translate("Editing draft"))
+                    element.append(translations("Editing draft"))
                 ?>
             </py:ready>
         </div>
@@ -64,7 +59,7 @@ from sitebasis.controllers.backoffice.useractions import \
             py:visible="@{self.submitted and self.errors}">
             <py:ready py:if="element.visible">
                 <li py:for="error in self.errors">
-                    ${translate(error)}
+                    ${translations(error)}
                 </li>
             </py:ready>
         </ul>
@@ -89,7 +84,7 @@ from sitebasis.controllers.backoffice.useractions import \
         type="submit"
         name="section">
         <?py
-        is_collection = isinstance(member, Collection)
+        is_collection = isinstance(member, schema.Collection)
         section_id = member.name if is_collection else "fields"
         element["value"] = section_id
         element.add_class(member.name + "_tab")
@@ -101,14 +96,22 @@ from sitebasis.controllers.backoffice.useractions import \
             (is_collection and (member.name, None) in self.changed_keys)
             or (not is_collection
                 and any(
-                    not isinstance(changed_member, Collection)
+                    not isinstance(changed_member, schema.Collection)
                     for changed_member, language in self.changes
                 )
             )
         ):
             element.add_class("changed")
         ?>
-        ${translate(member if is_collection else member.name)}
+        ${translations(member if is_collection else member.name)}
+        <?py
+        if is_collection:
+            items = schema.get(self.form_data, member.name)
+            if items:
+                count = Element("span", class_name = "count")
+                count.append("(" + str(len(items)) + ")")
+                element.append(count)
+        ?>
     </button>
 
 </py:sitebasis.views.BackOfficeItemView>

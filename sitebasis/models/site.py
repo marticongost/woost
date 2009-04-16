@@ -7,7 +7,7 @@ u"""
 @since:			July 2008
 """
 from cocktail.modeling import classgetter
-from cocktail.translations import translate
+from cocktail.translations import translations
 from cocktail import schema
 from cocktail.persistence import datastore
 from sitebasis.models.item import Item
@@ -42,6 +42,10 @@ class Site(Item):
         required = True
     )
 
+    login_page = schema.Reference(
+        type = "sitebasis.models.Document"
+    )
+
     not_found_error_page = schema.Reference(
         type = "sitebasis.models.Document"
     )
@@ -64,5 +68,5 @@ class Site(Item):
     )
 
     def __translate__(self, language, **kwargs):
-        return translate(self.__class__.__name__, language, **kwargs)
+        return translations(self.__class__.__name__, language, **kwargs)
 

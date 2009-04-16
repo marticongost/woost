@@ -9,7 +9,7 @@ u"""
 from __future__ import with_statement
 import sha
 from optparse import OptionParser
-from cocktail.translations import translate
+from cocktail.translations import translations
 from cocktail.persistence import datastore
 from sitebasis.models import (
     changeset_context,
@@ -39,11 +39,8 @@ def init_site(
     
     def set_translations(item, member, key, **kwargs):
         for language in languages:
-            try:
-                value = translate(key, language, **kwargs)
-            except KeyError:
-                pass
-            else:
+            value = translations(key, language, **kwargs)
+            if value:
                 item.set(member, value, language)
 
     # Create standard actions
@@ -82,7 +79,7 @@ def init_site(
         # Create the administrator user
         admin = User()
         admin.author = admin
-        admin.qname = "sitebasis.initadmin"
+        admin.qname = "sitebasis.administrator"
         admin.owner = admin
         admin.critical = True
         admin.email = admin_email
@@ -163,7 +160,7 @@ def init_site(
         site.home = StandardPage()
         site.home.template = empty_template
         site.home.qname = "sitebasis.home"
-        set_translations(site.home, "title", "Home page title")            
+        set_translations(site.home, "title", "Home page title")
         set_translations(
             site.home, "body", "Home page body",
             uri = uri + back_office.path
@@ -174,13 +171,24 @@ def init_site(
         # Create the 'content not found' page
         site.not_found_error_page = StandardPage()
         site.not_found_error_page.template = empty_template
-        site.not_found_error_page.qname = "sitebasis.notfounderrorpage"
+        site.not_found_error_page.qname = "sitebasis.not_found_error_page"
         set_translations(site.not_found_error_page, "title",
             "Not found error page title")
         set_translations(site.not_found_error_page, "body",
             "Not found error page body")            
         site.not_found_error_page.page_resources.append(message_stylesheet)
         site.not_found_error_page.insert()
+
+        # Create the login page
+        site.forbidden_error_page = StandardPage()
+        site.forbidden_error_page.template = empty_template
+        site.forbidden_error_page.qname = "sitebasis.forbidden_error_page"
+        set_translations(site.forbidden_error_page, "title",
+            "Forbidden error page title")
+        set_translations(site.forbidden_error_page, "body",
+            "Forbidden error page body")
+        site.forbidden_error_page.page_resources.append(message_stylesheet)
+        site.forbidden_error_page.insert()
 
         # Create the authentication form
         login_form = u"""
@@ -194,16 +202,15 @@ def init_site(
             </div>
         </form>
         """
-        login_page = StandardPage()
-        login_page.template = empty_template
-        login_page.qname = "sitebasis.loginpage"
-        set_translations(login_page, "title", "Login page title")
-        set_translations(login_page, "body", "Login page body",
-            form = login_form)
-
-        login_page.page_resources.append(message_stylesheet)
-        site.forbidden_error_page = login_page  
-        site.forbidden_error_page.insert()
+        site.login_page = StandardPage()
+        site.login_page.template = empty_template
+        site.login_page.qname = "sitebasis.login_page"
+        set_translations(site.login_page, "title", "Login page title")
+        set_translations(site.login_page, "body", "Login page body",
+            form = login_form
+        )
+        site.login_page.page_resources.append(message_stylesheet)
+        site.login_page.insert()
 
         # Add standard access rules:
         site.access_rules_by_priority = [
@@ -212,6 +219,13 @@ def init_site(
             AccessRule(
                 role = administrators,
                 allowed = True
+            ),
+
+            # - the 'owner' field can't be set by no one
+            AccessRule(
+                target_member = "owner",
+                action = modify,
+                allowed = False
             ),
 
             # - content owners have full control
@@ -228,7 +242,7 @@ def init_site(
 
             # - global site configuration can't be accessed by regular users
             AccessRule(
-                target_type = AccessRule,
+                target_type = Site,
                 allowed = False
             ),
 
@@ -238,9 +252,16 @@ def init_site(
                 allowed = False
             ),
 
-            # - the administrators group can't be accessed by regular users
+            # - users can be read...
             AccessRule(
-                target_instance = administrators,
+                target_type = User,
+                action = read,
+                allowed = True
+            ),
+
+            # - ...but otherwise, agents can't be accessed by any body
+            AccessRule(
+                target_type = Agent,
                 allowed = False
             ),
 

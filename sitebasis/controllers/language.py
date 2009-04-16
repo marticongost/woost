@@ -8,7 +8,7 @@ u"""
 """
 import cherrypy
 from cocktail.translations import get_language, set_language
-from cocktail.language import set_content_language
+from cocktail.language import get_content_language, set_content_language
 from cocktail.controllers import Location
 from sitebasis.models import Site, Language
 from sitebasis.controllers.module import Module
@@ -44,9 +44,15 @@ class LanguageModule(Module):
         cookie = cherrypy.request.cookie.get("language")
         return cookie.value if cookie else Site.main.default_language
 
-    def translate_uri(self, language):
+    def translate_uri(self, path = None, language = None):
         
+        if language is None:
+            language = get_content_language()
+
         location = Location.get_current()
+
+        if path is not None:
+           location.path_info = path
         
         path_components = location.path_info.strip("/").split("/")
         if path_components and path_components[0] in Language.codes:

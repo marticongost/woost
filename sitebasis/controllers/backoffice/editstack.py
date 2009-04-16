@@ -116,7 +116,7 @@ class EditStacksManager(object):
                 entry = preserved_stacks.get(stack_id)
 
                 if entry is None:
-                    raise KeyError("Edit stack %s not found" % stack_id)
+                    raise WrongEditStackError(stack_id)
 
                 last_update, stack_data = entry
 

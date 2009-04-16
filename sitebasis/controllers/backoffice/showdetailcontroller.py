@@ -26,6 +26,7 @@ class ShowDetailController(EditController):
             if not member.visible
             or (
                 isinstance(member, RelationMember)
+                and member.is_persistent_relation
                 and member.related_type
                 and not member.related_type.visible
             )

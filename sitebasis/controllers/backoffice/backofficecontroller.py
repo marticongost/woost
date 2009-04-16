@@ -48,12 +48,13 @@ class BackOfficeController(BaseBackOfficeController):
     @event_handler
     def handle_after_request(cls, event):
         
-        controller = event.source
-        edit_stacks_manager = controller.context["edit_stacks_manager"]
-        edit_stack = edit_stacks_manager.current_edit_stack
-        
-        if edit_stack is not None:
-            edit_stacks_manager.preserve_edit_stack(edit_stack)
+        if event.error is None:
+            controller = event.source
+            edit_stacks_manager = controller.context["edit_stacks_manager"]
+            edit_stack = edit_stacks_manager.current_edit_stack
+            
+            if edit_stack is not None:
+                edit_stacks_manager.preserve_edit_stack(edit_stack)
 
     @cherrypy.expose
     def document_images(self, **kwargs):
