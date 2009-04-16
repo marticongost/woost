@@ -459,7 +459,10 @@ def resolve_context(context):
     action = context.get("action")
 
     if action is not None and isinstance(action, basestring):
-        context["action"] = Action.get_instance(identifier = action)
+        action_ref = Action.get_instance(identifier = action)
+        if action_ref is None:
+            raise ValueError("No action named %s" % action)
+        context["action"] = action_ref
 
     # Obtain user roles
     roles = context.get("roles")
