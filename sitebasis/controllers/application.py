@@ -240,11 +240,17 @@ class CMS(BaseCMSController):
             status = 404
             error_page = site.not_found_error_page
         
-        # Access forbidden
+        # Access forbidden:
+        # The default behavior is to show a login page for anonymous users, and
+        # a 403 error message for authenticated users.
         elif is_http_error and error.status == 403 \
         or isinstance(error, (AccessDeniedError, AuthenticationFailedError)):
-            status = 200
-            error_page = site.forbidden_error_page
+            if event.source.user.anonymous:
+                status = 200
+                error_page = site.login_page
+            else:
+                status = 403
+                error_page = site.forbidden_error_page
         
         # Generic error
         else:

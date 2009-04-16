@@ -42,6 +42,10 @@ class Site(Item):
         required = True
     )
 
+    login_page = schema.Reference(
+        type = "sitebasis.models.Document"
+    )
+
     not_found_error_page = schema.Reference(
         type = "sitebasis.models.Document"
     )

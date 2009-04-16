@@ -182,6 +182,17 @@ def init_site(
         site.not_found_error_page.page_resources.append(message_stylesheet)
         site.not_found_error_page.insert()
 
+        # Create the login page
+        site.forbidden_error_page = StandardPage()
+        site.forbidden_error_page.template = empty_template
+        site.forbidden_error_page.qname = "sitebasis.forbidden_error_page"
+        set_translations(site.forbidden_error_page, "title",
+            "Forbidden error page title")
+        set_translations(site.forbidden_error_page, "body",
+            "Forbidden error page body")
+        site.forbidden_error_page.page_resources.append(message_stylesheet)
+        site.forbidden_error_page.insert()
+
         # Create the authentication form
         login_form = u"""
         <form method="post">
@@ -194,16 +205,15 @@ def init_site(
             </div>
         </form>
         """
-        login_page = StandardPage()
-        login_page.template = empty_template
-        login_page.qname = "sitebasis.login_page"
-        set_translations(login_page, "title", "Login page title")
-        set_translations(login_page, "body", "Login page body",
-            form = login_form)
-
-        login_page.page_resources.append(message_stylesheet)
-        site.forbidden_error_page = login_page  
-        site.forbidden_error_page.insert()
+        site.login_page = StandardPage()
+        site.login_page.template = empty_template
+        site.login_page.qname = "sitebasis.login_page"
+        set_translations(site.login_page, "title", "Login page title")
+        set_translations(site.login_page, "body", "Login page body",
+            form = login_form
+        )
+        site.login_page.page_resources.append(message_stylesheet)
+        site.login_page.insert()
 
         # Add standard access rules:
         site.access_rules_by_priority = [

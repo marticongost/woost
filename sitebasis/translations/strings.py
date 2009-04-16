@@ -586,6 +586,18 @@ translations.define("Login page body",
     """ + (form % (u"User", u"Password", u"Enter"))
 )
 
+translations.define("Forbidden error page title",
+    ca = u"Accés denegat",
+    es = u"Acceso denegado",
+    en = u"Forbidden"
+)
+
+translations.define("Forbidden error page body",
+    ca = u"<p>No es permet l'accés a aquesta secció del web.</p>",
+    es = u"<p>No se permite el acceso a esta sección del sitio.</p>",
+    en = u"<p>Access denied.</p>"
+)
+
 translations.define("BackOfficeOrderView last position",
     ca = u"Final de la llista",
     es = u"Final de la lista",
@@ -936,6 +948,12 @@ translations.define("Site.home",
     ca = u"Document d'inici",
     es = u"Documento de inicio",
     en = u"Home"
+)
+
+translations.define("Site.login_page",
+    ca = u"Formulari d'autenticació",
+    es = u"Formulario de autenticación",
+    en = u"Authentication form"
 )
 
 translations.define("Site.not_found_error_page",
