@@ -6,7 +6,7 @@ u"""
 @organization:	Whads/Accent SL
 @since:			July 2008
 """
-from cocktail.translations import translations, translate
+from cocktail.translations import translations
 
 translations.define("site_section",
     ca = u"Lloc web",
@@ -34,11 +34,11 @@ translations.define("history_section",
 
 translations.define("logged in as",
     ca = lambda user: u"Estàs identificat com a " \
-            "<strong>%s</strong>" % translate(user, "ca"),
+            "<strong>%s</strong>" % translations(user, "ca"),
     es = lambda user: u"Estás identificado como " \
-            "<strong>%s</strong>" % translate(user, "es"),
+            "<strong>%s</strong>" % translations(user, "es"),
     en = lambda user: u"Logged in as "
-            "<strong>%s</strong>" % translate(user, "en")
+            "<strong>%s</strong>" % translations(user, "en")
 )
 
 translations.define("Logout",
@@ -257,28 +257,40 @@ translations.define("cocktail.html.shortcuts action close",
     en = u"c"
 )
 
+translations.define("Action cancel",
+    ca = u"Cancelar",
+    es = u"Cancelar",
+    en = u"Cancel"
+)
+
+translations.define("cocktail.html.shortcuts action cancel",
+    ca = u"c",
+    es = u"c",
+    en = u"c"
+)
+
 translations.define("editing",
     ca = lambda item:
         u"Editant %s <em>'%s'</em>"
-        % (translate(item.__class__.name, "ca").lower(),
-           translate(item, "ca")),
+        % (translations(item.__class__.name, "ca").lower(),
+           translations(item, "ca")),
     es = lambda item:
         u"Editando %s <em>'%s'</em>"
-        % (translate(item.__class__.name, "es").lower(),
-           translate(item, "es")),
+        % (translations(item.__class__.name, "es").lower(),
+           translations(item, "es")),
     en = lambda item:
         u"Editing %s <em>'%s'</em>"
-        % (translate(item.__class__.name, "es").lower(),
-           translate(item, "es"))
+        % (translations(item.__class__.name, "es").lower(),
+           translations(item, "es"))
 )
 
 translations.define("creating",
     ca = lambda content_type:
-        u"Creant %s" % translate(content_type.__name__, "ca").lower(),
+        u"Creant %s" % translations(content_type.__name__, "ca").lower(),
     es = lambda content_type:
-        u"Creando %s" % translate(content_type.__name__, "es").lower(),
+        u"Creando %s" % translations(content_type.__name__, "es").lower(),
     en = lambda content_type:
-        u"Creating new %s" % translate(content_type.__name__, "en").lower()
+        u"Creating new %s" % translations(content_type.__name__, "en").lower()
 )
 
 translations.define("Backout",
@@ -327,6 +339,12 @@ translations.define("BackOfficeContentView.element",
     ca = u"Element",
     es = u"Elemento",
     en = u"Item"
+)
+
+translations.define("sitebasis.views.ContentView content type",
+    ca = u"Tipus:",
+    es = u"Tipo:",
+    en = u"Type:"
 )
 
 translations.define("BackOfficeContentView.class",
@@ -384,9 +402,9 @@ translations.define("draft_seq_name",
 )
 
 translations.define("Differences for",
-    ca = lambda item: u"Canvis a <em>'%s'</em>" % translate(item, "ca"),
-    es = lambda item: u"Cambios en <em>'%s'</em>" % translate(item, "es"),
-    en = lambda item: u"Changes in <em>'%s'</em>" % translate(item, "en")
+    ca = lambda item: u"Canvis a <em>'%s'</em>" % translations(item, "ca"),
+    es = lambda item: u"Cambios en <em>'%s'</em>" % translations(item, "es"),
+    en = lambda item: u"Changes in <em>'%s'</em>" % translations(item, "en")
 )
 
 translations.define("No differences",
@@ -568,6 +586,18 @@ translations.define("Login page body",
     """ + (form % (u"User", u"Password", u"Enter"))
 )
 
+translations.define("Forbidden error page title",
+    ca = u"Accés denegat",
+    es = u"Acceso denegado",
+    en = u"Forbidden"
+)
+
+translations.define("Forbidden error page body",
+    ca = u"<p>No es permet l'accés a aquesta secció del web.</p>",
+    es = u"<p>No se permite el acceso a esta sección del sitio.</p>",
+    en = u"<p>Access denied.</p>"
+)
+
 translations.define("BackOfficeOrderView last position",
     ca = u"Final de la llista",
     es = u"Final de la lista",
@@ -589,6 +619,21 @@ translations.define(
 )
 
 translations.define(
+    "sitebasis.controllers.backoffice.editstack.WrongEditStackError-instance",
+    ca = u"La sessió d'edició indicada no existeix o s'ha perdut.",
+    es = u"La sesión de edición indicada no existe o se ha perdido.",
+    en = u"The indicated edit session doesn't exist, or it has been lost."
+)
+
+
+translations.define(
+    "sitebasis.controllers.backoffice.editstack.EditStackExpiredError-instance",
+    ca = u"La sessió d'edició ha expirat.",
+    es = u"La sesión de edición ha expirado.",
+    en = u"The indicated edit session has expired."
+)
+
+translations.define(
     "forbidden value",
     ca = u"Camp restringit",
     es = u"Campo restringido",
@@ -605,7 +650,7 @@ def sitebasis_views_backofficedelete_view_warning_ca(selection):
     count = len(selection)
     if count == 1:
         return u"S'eliminarà l'element <strong>%s</strong>." \
-            % translate(selection[0], "ca")
+            % translations(selection[0], "ca")
     else:
         return u"S'eliminaran els <strong>%d</strong> elements seleccionats." \
             % count
@@ -614,7 +659,7 @@ def sitebasis_views_backofficedelete_view_warning_es(selection):
     count = len(selection)
     if count == 1:
         return u"Se eliminará el elemento <strong>%s</strong>." \
-            % translate(selection[0], "es")
+            % translations(selection[0], "es")
     else:
         return u"Se eliminarán los <strong>%d</strong> elementos " \
             u"seleccionados." % count
@@ -623,7 +668,7 @@ def sitebasis_views_backofficedelete_view_warning_en(selection):
     count = len(selection)
     if count == 1:
         return u"The element <strong>%s</strong> will be deleted." \
-            % translate(selection[0], "en")
+            % translations(selection[0], "en")
     else:
         return u"All <strong>%d</strong> selected elements will be deleted." \
             % count
@@ -740,9 +785,27 @@ translations.define(
 
 translations.define(
     "sitebasis.views.BackOfficeEditView Changes saved",
-    ca = u"S'han desat els canvis",
-    es = u"Se han guardado los cambios",
-    en = u"Changes saved"
+    ca = lambda item, is_new:
+        (
+            u"S'ha creat l'element <strong>%s</strong>"
+            if is_new
+            else u"Canvis a <strong>%s</strong> desats"
+        )
+        % translations(item, "ca"),
+    es = lambda item, is_new:
+        (
+            u"Se ha creado el elemento <strong>%s</strong>"
+            if is_new
+            else u"Cambios en <strong>%s</strong> guardados"
+        )
+        % translations(item, "es"),
+    en = lambda item, is_new:
+        (
+            u"New item <strong>%s</strong> stored"
+            if is_new
+            else u"Saved changes to <strong>%s</strong>"
+        )
+        % translations(item, "es")
 )
 
 translations.define(
@@ -885,6 +948,12 @@ translations.define("Site.home",
     ca = u"Document d'inici",
     es = u"Documento de inicio",
     en = u"Home"
+)
+
+translations.define("Site.login_page",
+    ca = u"Formulari d'autenticació",
+    es = u"Formulario de autenticación",
+    en = u"Authentication form"
 )
 
 translations.define("Site.not_found_error_page",
@@ -1683,10 +1752,3 @@ translations.define("ChangeSet.changes",
     en = u"Changes"
 )
 
-# ClientParams
-#------------------------------------------------------------------------------
-translations.define("BackOfficeLayout unchanged_message",
-    ca = u"Segur que vols sortir sense guardar els canvis?",
-    es = u"¿Estás seguro que quieres salir sin guardar los cambios?",
-    en = u"Do you want to save your changes?"
-)

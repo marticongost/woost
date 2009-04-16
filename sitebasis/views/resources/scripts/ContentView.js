@@ -38,7 +38,16 @@ cocktail.init(function () {
 
             var simpleSearchBox = document.createElement("div");
             simpleSearchBox.className = "simple_search";
-            filtersBox.replaceWith(simpleSearchBox);
+            
+            filtersBox.remove();
+
+            var typeSelector = jQuery(".content_type_box", this);
+            if (typeSelector.length) {
+                typeSelector.after(simpleSearchBox);
+            }
+            else {
+                jQuery(this).prepend(simpleSearchBox);
+            }
 
             jQuery(simpleSearchBox).parents("form").submit(function () {
                 if (searchInput.value == "") {

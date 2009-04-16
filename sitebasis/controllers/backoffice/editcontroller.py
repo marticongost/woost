@@ -13,7 +13,7 @@ from cocktail.events import event_handler, when
 from cocktail.schema import (
     Adapter, ErrorList, DictAccessor, Collection
 )
-from cocktail.translations import translate
+from cocktail.translations import translations
 from cocktail.persistence import datastore
 from sitebasis.models import (
     Site, Language, changeset_context, ChangeSet, reduce_ruleset
@@ -67,23 +67,23 @@ class EditController(BaseBackOfficeController):
 
         user = self.user
         stack_node = self.stack_node
-        item = stack_node.item        
+        item = stack_node.item
+        is_new = not item.is_inserted
         
          # Create a draft
         if make_draft:
 
-            # From an existing element
-            if item.is_inserted:
-                item = item.make_draft()
-
             # From scratch
-            else:                
+            if is_new:
                 item.is_draft = True
+
+            # From an existing element
+            else:
+                item = item.make_draft()
 
             item.author = user
             item.owner = user
 
-        redirect = not item.is_inserted
         changeset = None
 
         # Store the changes on a draft; this skips revision control
@@ -102,12 +102,16 @@ class EditController(BaseBackOfficeController):
         )
 
         self.notify_user(
-            translate("sitebasis.views.BackOfficeEditView Changes saved"),
+            translations(
+                "sitebasis.views.BackOfficeEditView Changes saved",
+                item = item,
+                is_new = is_new
+            ),
             "success"
         )
 
         # A new item or draft was created
-        if redirect:
+        if is_new:
             
             # The edit operation was the root of the edit stack; redirect the
             # browser to the new item

@@ -1,4 +1,4 @@
-/*-----------------------------------------------------------------------------
+    /*-----------------------------------------------------------------------------
 
 
 @author:		Martí Congost
@@ -30,6 +30,7 @@ cocktail.init(function () {
 
     jQuery(".UserForm .change_password_field .control")
         .each(togglePasswords)
+        .click(togglePasswords)
         .change(togglePasswords);
 });
 

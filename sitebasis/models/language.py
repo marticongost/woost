@@ -7,7 +7,7 @@ u"""
 @since:			July 2008
 """
 from cocktail.modeling import classgetter
-from cocktail.translations import translate
+from cocktail.translations import translations
 from cocktail import schema
 from sitebasis.models.item import Item
 
@@ -30,6 +30,6 @@ class Language(Item):
         return [language.iso_code for language in cls.select()]
 
     def __translate__(self, language, **kwargs):
-        return self.iso_code and translate(self.iso_code) \
+        return self.iso_code and translations(self.iso_code) \
             or Item.__translate__(self, language, **kwargs)
 

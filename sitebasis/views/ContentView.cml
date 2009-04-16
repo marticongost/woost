@@ -81,7 +81,7 @@ from sitebasis.controllers.backoffice.useractions import \
             cms_allows = self.cms.allows
             element.authorization_check = lambda **ctx: cms_allows(ruleset = ruleset, **ctx)
 
-            element.set_member_label("element", translate(self.user_collection.type.name))
+            element.set_member_label("element", translations(self.user_collection.type.name))
             ?>
         </py:with>
 
@@ -128,8 +128,8 @@ from sitebasis.controllers.backoffice.useractions import \
                 ?>
             </py:ready>
 
-            <div class="label">Tipus d'element:</div>
-        
+            <div class="label">${translations("sitebasis.views.ContentView content type")}</div>
+            
             <!-- Content type selector -->
             <py:sitebasis.views.ContentTypeSelector
                 py:id="content_type_selector"
@@ -175,7 +175,7 @@ from sitebasis.controllers.backoffice.useractions import \
             class="action_button">
 
             <span py:id="content_view_label">
-                ${translate("sitebasis.views.ContentView label")}
+                ${translations("sitebasis.views.ContentView label")}
             </span>
 
             <py:cocktail.html.LinkSelector
@@ -185,7 +185,7 @@ from sitebasis.controllers.backoffice.useractions import \
                 <?py
                 @refine(element)
                 def get_item_label(self, content_view):                    
-                    return translate(content_view.content_view_id + " content view")
+                    return translations(content_view.content_view_id + " content view")
                 
                 @refine(element)
                 def get_item_value(self, content_view):
@@ -259,7 +259,7 @@ from sitebasis.controllers.backoffice.useractions import \
             <py:new
                 py:element="self.toolbar.create_action_image(action, extra)"
                 py:if="self.toolbar.button_images and not extra"/>
-            ${translate("Action " + action.id)}
+            ${translations("Action " + action.id)}
         </span>
         <div class="selector_content">
             <py:sitebasis.views.ContentTypeTree

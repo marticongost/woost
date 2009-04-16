@@ -50,7 +50,7 @@ from sitebasis.controllers.backoffice.useractions import (
         <py:new
             py:element="self.create_action_image(action, extra)"
             py:if="self.button_images and not extra"/>
-        ${translate("Action " + action.id)}
+        ${translations("Action " + action.id)}
     </py:cocktail.html.Element>
 
     <img
@@ -59,7 +59,7 @@ from sitebasis.controllers.backoffice.useractions import (
         src="/resources/images/${action.id}_small.png"/>
 
     <div py:def="additional_actions_selector" class="selector">
-        <span class="label">${translate("sitebasis.views.ActionBar Additional actions")}</span>
+        <span class="label">${translations("sitebasis.views.ActionBar Additional actions")}</span>
         <div py:id="additional_actions_box" class="selector_content"/>
     </div>
 

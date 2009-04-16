@@ -148,6 +148,14 @@ html, body {
     background-color: white;
 }
 
+.BackOfficeLayout .tab .count {
+    position: relative;
+    top: -0.05em;
+    margin-left: 0.3em;
+    font-weight: bold;
+    font-size: 85%;
+}
+
 .BackOfficeLayout h2 {
     font-size: inherit;
     margin-top: 0;
@@ -378,6 +386,7 @@ body.scripted .BackOfficeLayout .Table .selection {
 
 .BackOfficeLayout .ContentTable th .selector > .label {
     background-position: right 0.5em;
+    white-space: nowrap;
 }
 
 .BackOfficeLayout .ContentTable th .selector_content > div + div {
@@ -771,6 +780,11 @@ body.scripted .BackOfficeLayout .Table .selection {
 
 /* Content type selector
 -----------------------------------------------------------------------------*/
+.BackOfficeLayout .content_type_box {
+    margin-top: 0.15em;
+    float: left;
+}
+
 .BackOfficeLayout .content_type_box > .label,
 .BackOfficeLayout .content_type_selector > .label {
     font-size: 85%;
@@ -778,7 +792,7 @@ body.scripted .BackOfficeLayout .Table .selection {
 
 .BackOfficeLayout .content_type_box > .label {
     float: left;
-    padding: 0.2em 0;
+    padding: 0.15em 0;
     margin-right: 0.6em;
     font-weight: bold;
     position: relative;
@@ -799,6 +813,7 @@ body.scripted .BackOfficeLayout .Table .selection {
     white-space: nowrap;
     text-align: right;
     font-size: 85%;
+    margin-top: 0.3em;
 }
 
 .BackOfficeLayout .content_view * {
@@ -1110,7 +1125,9 @@ body.scripted .BackOfficeLayout .Table .selection {
     background-color: rgb(220,240,220);
 }
 
-.BackOfficeLayout .error_box {
+.BackOfficeLayout .error_box,
+.BackOfficeLayout .notification_box .error {
+    color: black;
     border: 1px dotted rgb(200,160,120);
     background-color: rgb(245,230,215);
     padding: 0.5em;
@@ -1154,7 +1171,8 @@ body.scripted .BackOfficeLayout .Table .selection {
 .BackOfficeItemView .toolbar .save_action,
 .BackOfficeItemView .toolbar .save_draft_action,
 .BackOfficeItemView .toolbar .confirm_draft_action,
-.BackOfficeItemView .toolbar .close_action {
+.BackOfficeItemView .toolbar .close_action,
+.BackOfficeItemView .toolbar .cancel_action {
     float: right;
 }
 
@@ -1380,7 +1398,15 @@ body.scripted .BackOfficeLayout .Table .selection {
 /* Filter box
 -----------------------------------------------------------------------------*/
 .BackOfficeLayout .simple_search {
-    clear: both;
+    float: left;
+}
+
+.BackOfficeLayout .simple_search input {
+    font-size: 85%;
+}
+
+.BackOfficeLayout * + .simple_search {
+    margin-left: 2em;
 }
 
 .BackOfficeLayout .filters {
@@ -1684,6 +1710,7 @@ body.scripted .BackOfficeLayout .Table .selection {
 
 .BackOfficeLayout .stack_node.root {
     margin: 0.8em;
+    margin-top: 1.8em;
 }
 
 .BackOfficeLayout .stack_node > .label {
@@ -1694,7 +1721,6 @@ body.scripted .BackOfficeLayout .Table .selection {
 }
 
 .BackOfficeLayout .stack_node > .label > .relation {
-    color: rgb(95,90,85);
 }
 
 .BackOfficeLayout .stack_node.top {

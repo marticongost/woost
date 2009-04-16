@@ -2,7 +2,7 @@
 
 <?py 
 from cocktail.schema import DictAccessor
-from cocktail.translations import translate
+from cocktail.translations import translations
 PasswordBox = loader.get_class("cocktail.html.PasswordBox")
 ?>
 
@@ -12,17 +12,19 @@ PasswordBox = loader.get_class("cocktail.html.PasswordBox")
 
     <?py-class
     def get_page_title(self):
-        return translate("SiteBasis installation")
+        return translations("SiteBasis installation")
     ?>
 
     <?py
     self.add_resource("/resources/styles/installer.css")
     ?>
 
+    <py:block py:def="navigation_bar" py:visible="${False}"/>
+
     <py:with py:element="self.body">
         
         <div class="success" py:visible="@{self.successful}">
-            ${translate("Installation successful")}
+            ${translations("Installation successful")}
         </div>
 
         <py:block py:visible="@{not self.successful}">
@@ -32,13 +34,7 @@ PasswordBox = loader.get_class("cocktail.html.PasswordBox")
                     element.visible = bool(self.errors)
                     ?>
 					<li py:for="error in self.errors">
-						<?py
-						try:
-							error_desc = translate(error)
-						except:
-							error_desc = translate("Unknown error", error = error)
-						?>
-						${error_desc}
+						${translations(error)}
 					</li>
                 </py:ready>
             </ul>
@@ -70,7 +66,7 @@ PasswordBox = loader.get_class("cocktail.html.PasswordBox")
 
                 element.set_member_display("admin_password", PasswordBox)
                 element.submit_button.empty()
-                element.submit_button.append(translate("Install"))
+                element.submit_button.append(translations("Install"))
                 ?>
             </py:cocktail.html.Form>
         </py:block>

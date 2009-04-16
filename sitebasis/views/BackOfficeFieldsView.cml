@@ -31,11 +31,11 @@ from cocktail.language import get_content_language
 
             <py:ready py:if="self.translations_selector.visible">
                 <?py
-                shortcut = translate("EditView translations shortcut", default = "")
+                shortcut = translations("EditView translations shortcut")
                 if shortcut:
                     element.set_client_param("shortcut", shortcut)
                 ?>
-                <span class="label">${translate("Translations")}</span>                
+                <span class="label">${translations("Translations")}</span>                
                 <ul class="selector_content">
                     <li py:for="language in self.available_languages">
                         <?py
@@ -46,7 +46,7 @@ from cocktail.language import get_content_language
                             if has_translation:
                                 element.add_class("selected")
                             ?>
-                            ${translate(language)}
+                            ${translations(language)}
                         </div>
                         <button
                             py:if="not has_translation"

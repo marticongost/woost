@@ -8,7 +8,7 @@ u"""
 """
 from os.path import abspath, dirname, join
 from cocktail.html import templates
-from cocktail.translations import translate
+from cocktail.translations import translations
 from cocktail.controllers import context
 from sitebasis.models import Style
 
@@ -24,7 +24,7 @@ class RichTextEditor(TinyMCE):
         self.add_resource("/resources/scripts/RichTextEditor.js")                        
 
         styles = [
-            "%s=%s" % (translate(style), style.class_name)
+            "%s=%s" % (translations(style), style.class_name)
             for style in Style.select()
         ]
 
