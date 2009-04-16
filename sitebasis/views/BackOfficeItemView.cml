@@ -74,7 +74,7 @@ from sitebasis.controllers.backoffice.useractions import (
         <py:sitebasis.views.ActionBar
             py:id="item_buttons"
             py:action_context="item_buttons"
-            py:content_type="@{self.edited_content_type}"
+            py:action_target="@{self.edited_item}"
             class="toolbar">
             <py:with
                 py:def="action_button"

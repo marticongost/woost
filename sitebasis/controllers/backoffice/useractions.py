@@ -10,7 +10,8 @@ import cherrypy
 from cocktail.modeling import getter, ListWrapper
 from cocktail.pkgutils import get_full_name
 from cocktail import schema
-from sitebasis.models import Document
+from cocktail.controllers import context as controller_context
+from sitebasis.models import Item, Document
 from sitebasis.controllers.backoffice.editstack import EditNode, RelationNode
 
 
@@ -42,7 +43,7 @@ def get_user_actions(**kwargs):
     """
     return _action_list  
 
-def get_view_actions(context, content_type):
+def get_view_actions(context, target = None):
     """Obtains the list of actions that can be displayed on a given view.
 
     @param context: A set of string identifiers, such as "context_menu",
@@ -50,8 +51,8 @@ def get_view_actions(context, content_type):
         identifiers as they require.
     @type container: str set
 
-    @param content_type: The content type affected by the action.
-    @type content_type: L{Item<sitebasis.models.item.Item>} class
+    @param target: The item or content type affected by the action.
+    @type target: L{Item<sitebasis.models.item.Item>} instance or class
 
     @return: The list of user actions available under the specified context.
     @rtype: iterable L{UserAction} sequence
@@ -60,7 +61,7 @@ def get_view_actions(context, content_type):
         action
         for action in _action_list
         if action.enabled
-            and action.is_available(context, content_type)
+            and action.is_available(context, target)
     )
 
 def add_view_action_context(view, clue):
@@ -125,6 +126,7 @@ class UserAction(object):
     min = 1
     max = 1
     direct_link = False
+    content_type = None
 
     def __init__(self, id):
 
@@ -160,24 +162,23 @@ class UserAction(object):
 
         _action_map[self._id] = self
 
-    def is_available(self, context, content_type):
+    def is_available(self, context, target):
         """Indicates if the user action is available under a certain context.
-
-        By default, actions are available under any context. Subclasses that
-        want to change this behavior should override this method as required.
         
         @param context: A set of string identifiers, such as "context_menu",
             "toolbar", etc. Different views can make use of as many different
             identifiers as they require.
         @type container: str set
 
-        @param content_type: The content type affected by the action.
-        @type content_type: L{Item<sitebasis.models.item.Item>} class
+        @param target: The item or content type affected by the action.
+        @type target: L{Item<sitebasis.models.item.Item>} instance or class
 
         @return: True if the action can be shown in the given context, False
             otherwise.
         @rtype: bool
         """
+        
+        # Context filters
         def match(tokens):
             for token in tokens:
                 if isinstance(token, str):
@@ -192,7 +193,28 @@ class UserAction(object):
 
         if self.excluded and match(self.excluded):
             return False
+ 
+        # Content type filter
+        if self.content_type is not None:
+            if isinstance(target, type):
+                if not issubclass(target, self.content_type):
+                    return False
+            else:
+                if not isinstance(target, self.content_type):
+                    return False
         
+        # Authorization check
+        if self.authorization_context is not None:
+            auth_context = self.authorization_context.copy()
+
+            if isinstance(target, type):
+                auth_context["target_type"] = target
+            else:
+                auth_context["target_instance"] = target
+
+            if not controller_context["cms"].allows(**auth_context):
+                return False
+
         return True
 
     def get_errors(self, controller, selection):
@@ -392,6 +414,7 @@ class ShowDetailAction(UserAction):
 
 class EditAction(UserAction):
     included = frozenset(["toolbar", "item_buttons"])
+    authorization_context = {"action": "modify", "partial_match": True}
 
     def get_url(self, controller, selection):
         return controller.get_edit_uri(selection[0])
@@ -405,6 +428,7 @@ class DeleteAction(UserAction):
     ])
     excluded = frozenset(["selector", "new_item"])
     max = None
+    authorization_context = {"action": "delete", "partial_match": True}
 
 
 class HistoryAction(UserAction):
@@ -414,10 +438,12 @@ class HistoryAction(UserAction):
 
 class DiffAction(UserAction):
     included = frozenset(["item_buttons"])
+    authorization_context = {"action": "modify", "partial_match": True}
 
 
 class RevertAction(UserAction):
     included = frozenset([("diff", "item_body_buttons", "changed")])
+    authorization_context = {"action": "modify", "partial_match": True}
 
     def invoke(self, controller, selection):
 
@@ -461,10 +487,7 @@ class RevertAction(UserAction):
 
 class PreviewAction(UserAction):
     included = frozenset(["toolbar_extra", "item_buttons"])
-
-    def is_available(self, context, content_type):
-        return UserAction.is_available(self, context, content_type) \
-            and issubclass(content_type, Document)
+    content_type = Document
 
 
 class ExportAction(UserAction):
