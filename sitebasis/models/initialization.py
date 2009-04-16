@@ -214,6 +214,13 @@ def init_site(
                 allowed = True
             ),
 
+            # - the 'owner' field can't be set by no one
+            AccessRule(
+                target_member = "owner",
+                action = modify,
+                allowed = False
+            ),
+
             # - content owners have full control
             AccessRule(
                 role = owner_role,
@@ -228,7 +235,7 @@ def init_site(
 
             # - global site configuration can't be accessed by regular users
             AccessRule(
-                target_type = AccessRule,
+                target_type = Site,
                 allowed = False
             ),
 
@@ -238,9 +245,16 @@ def init_site(
                 allowed = False
             ),
 
-            # - the administrators group can't be accessed by regular users
+            # - users can be read...
             AccessRule(
-                target_instance = administrators,
+                target_type = User,
+                action = read,
+                allowed = True
+            ),
+
+            # - ...but otherwise, agents can't be accessed by any body
+            AccessRule(
+                target_type = Agent,
                 allowed = False
             ),
 
