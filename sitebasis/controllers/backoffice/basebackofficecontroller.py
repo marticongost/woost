@@ -12,7 +12,7 @@ from urllib import urlencode
 import cherrypy
 from cocktail.modeling import getter, cached_getter
 from cocktail.iteration import first
-from cocktail.translations import translate
+from cocktail.translations import translations
 from cocktail.events import event_handler
 from cocktail.schema import String
 from cocktail.language import get_content_language
@@ -193,7 +193,7 @@ class BaseBackOfficeController(BaseCMSController):
             event.exception,
             (EditStackExpiredError, WrongEditStackError)
         ):
-            event.source.notify_user(translate(event.exception), "error")
+            event.source.notify_user(translations(event.exception), "error")
             raise cherrypy.HTTPRedirect(event.source.document_uri())
 
 

@@ -32,11 +32,6 @@ from sitebasis.controllers.backoffice.useractions import \
    
     <py:with py:element="self.item_body">
 
-        <!-- Success message -->
-        <!--<div py:id="success" py:visible="@{self.saved}">
-            ${translate("sitebasis.views.BackOfficeEditView Changes saved")}
-        </div>-->
-
         <!-- Draft remark -->
         <div
             py:id="draft_box"
@@ -46,7 +41,7 @@ from sitebasis.controllers.backoffice.useractions import \
                 <?py
                 if self.edited_item.draft_source:
                     element.append(
-                        translate(
+                        translations(
                             "Editing draft copy",
                             location = self.backoffice.get_edit_uri(
                                 self.edited_item.draft_source
@@ -54,7 +49,7 @@ from sitebasis.controllers.backoffice.useractions import \
                         )
                     )
                 else:
-                    element.append(translate("Editing draft"))
+                    element.append(translations("Editing draft"))
                 ?>
             </py:ready>
         </div>
@@ -64,7 +59,7 @@ from sitebasis.controllers.backoffice.useractions import \
             py:visible="@{self.submitted and self.errors}">
             <py:ready py:if="element.visible">
                 <li py:for="error in self.errors">
-                    ${translate(error)}
+                    ${translations(error)}
                 </li>
             </py:ready>
         </ul>
@@ -108,7 +103,7 @@ from sitebasis.controllers.backoffice.useractions import \
         ):
             element.add_class("changed")
         ?>
-        ${translate(member if is_collection else member.name)}
+        ${translations(member if is_collection else member.name)}
         <?py
         if is_collection:
             items = schema.get(self.form_data, member.name)

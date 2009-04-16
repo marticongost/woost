@@ -7,7 +7,7 @@ u"""
 @since:			February 2009
 """
 from cocktail.language import get_content_language
-from cocktail.translations import translate
+from cocktail.translations import translations
 from cocktail.html.element import Element
 from cocktail.html import templates
 from cocktail.controllers import context
@@ -47,9 +47,9 @@ class LanguageSelector(LinkSelector):
 
     def get_item_label(self, language):
         if self.translated_labels:
-            return translate(language, language)
+            return translations(language, language)
         else:
-            return translate(language)
+            return translations(language)
 
     def get_entry_url(self, language):
         cms = context["cms"]

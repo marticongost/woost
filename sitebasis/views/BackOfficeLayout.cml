@@ -71,10 +71,10 @@ from sitebasis.controllers.backoffice.editstack import EditNode, RelationNode
         <!-- Identity and logout -->
         <div py:id="identity" py:visible="@{self.user and not self.user.anonymous}">
             <py:ready py:if="element.visible">
-                <strong>${translate(self.user)}</strong>
+                <strong>${translations(self.user)}</strong>
                 <form method="post">
                     <button name="logout" type="submit">
-                        ${translate("Logout")}
+                        ${translations("Logout")}
                     </button>
                 </form>
             </py:ready>
@@ -83,7 +83,7 @@ from sitebasis.controllers.backoffice.editstack import EditNode, RelationNode
 
     <div py:id="navigation_bar" py:collapsible="${True}">
         <a py:id="back_link" href="@{self.cms.document_uri()}">
-            ${translate("sitebasis.views.BackOfficeLayout stack root")}
+            ${translations("sitebasis.views.BackOfficeLayout stack root")}
         </a>
     </div>
 
@@ -141,7 +141,7 @@ from sitebasis.controllers.backoffice.editstack import EditNode, RelationNode
                     node_label.append(
                         Element("span",
                             class_name = "relation",
-                            children = [translate(relation)]
+                            children = [translations(relation)]
                         )
                     )
                     node_label.append(": ")
@@ -154,9 +154,9 @@ from sitebasis.controllers.backoffice.editstack import EditNode, RelationNode
                         node_desc = "seleccionar"
                 else:
                     if node.item.is_inserted:
-                        node_desc = translate(node.item)
+                        node_desc = translations(node.item)
                     else:
-                        node_desc = translate("creating",
+                        node_desc = translations("creating",
                             content_type = node.content_type
                         )
                 

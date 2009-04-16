@@ -6,7 +6,6 @@ u"""
 @organization:	Whads/Accent SL
 @since:			September 2008
 """
-from cocktail.translations import translate
 from cocktail.schema import Collection, Reference
 from cocktail.html import Element, templates
 

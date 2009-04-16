@@ -26,7 +26,7 @@ from cocktail.html.datadisplay import MULTIPLE_SELECTION
 
     <py:with py:element="self.body">
         <py:ready>
-            <h2 py:index="0">${translate(self.edit_stack[-1].member)}</h2>
+            <h2 py:index="0">${translations(self.edit_stack[-1].member)}</h2>
         </py:ready>
     </py:with>
 

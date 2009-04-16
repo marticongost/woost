@@ -7,7 +7,7 @@ u"""
 @since:			February 2009
 """
 from cocktail.html import Element
-from cocktail.translations import translate
+from cocktail.translations import translations
 
 
 class ContentLink(Element):
@@ -32,5 +32,5 @@ class ContentLink(Element):
             self.append(u"-")
 
     def get_label(self):
-        return translate(self.item)
+        return translations(self.item)
 

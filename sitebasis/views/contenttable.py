@@ -7,7 +7,7 @@ u"""
 @since:			September 2008
 """
 from cocktail.language import get_content_language
-from cocktail.translations import translate
+from cocktail.translations import translations
 from cocktail.schema import Reference
 from cocktail.schema.expressions import PositiveExpression, NegativeExpression
 from cocktail.html import Element, templates
@@ -57,10 +57,10 @@ class ContentTable(ContentDisplayMixin, Table):
         display["for"] = "selection_" + str(item.id)
 
         if item.draft_source:
-            desc = translate("draft_seq_name",
+            desc = translations("draft_seq_name",
                 index = self._draft_index)
         else:
-            desc = translate(item)
+            desc = translations(item)
         
         display.append(desc)
 
@@ -70,7 +70,9 @@ class ContentTable(ContentDisplayMixin, Table):
         return display
 
     def create_class_display(self, item, member):
-        return Element(tag = None, children = [translate(item.__class__.name)])
+        return Element(
+                    tag = None,
+                    children = [translations(item.__class__.name)])
 
     def add_header_ui(self, header, column, language):
         
@@ -145,7 +147,7 @@ class ContentTable(ContentDisplayMixin, Table):
         asc = options.ascending = Element("a")
         asc.add_class("ascending")
         asc["href"] = "?" + view_state(order = order_param)
-        asc.append(translate("sitebasis.views.ContentTable sort ascending"))
+        asc.append(translations("sitebasis.views.ContentTable sort ascending"))
         options.append(asc)
 
         if direction is PositiveExpression:
@@ -154,7 +156,7 @@ class ContentTable(ContentDisplayMixin, Table):
         desc = options.ascending = Element("a")
         desc.add_class("descending")
         desc["href"] = "?" + view_state(order = "-" + order_param)
-        desc.append(translate("sitebasis.views.ContentTable sort descending"))
+        desc.append(translations("sitebasis.views.ContentTable sort descending"))
         options.append(desc)
 
         if direction is NegativeExpression:
@@ -177,7 +179,7 @@ class ContentTable(ContentDisplayMixin, Table):
         add_filter.add_class("add_filter")
         add_filter["href"] = "?" + view_state(page = 0, filter = filters)
         add_filter.append(
-            translate("sitebasis.views.ContentTable add column filter")
+            translations("sitebasis.views.ContentTable add column filter")
         )
         options.append(add_filter)
 

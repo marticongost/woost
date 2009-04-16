@@ -7,7 +7,7 @@ u"""
 @since:			December 2008
 """
 import cherrypy
-from cocktail.translations import translate
+from cocktail.translations import translations
 from cocktail.html import Element, templates
 from cocktail.html.databoundcontrol import DataBoundControl
 from sitebasis.models import Item
@@ -32,7 +32,7 @@ class ItemSelector(Element, DataBoundControl):
                 content_type = Item
 
             for content_type in content_type.descend_inheritance(True):
-                desc = translate(content_type.name + "-none", default = None)
+                desc = translations(content_type.name + "-none")
                 if desc:
                     return desc
         
@@ -79,7 +79,7 @@ class ItemSelector(Element, DataBoundControl):
         else:        
             self.input["value"] = self.value.id
 
-            self.selection_label.append(translate(self.value))
+            self.selection_label.append(translations(self.value))
             
             for schema in self.value.__class__.descend_inheritance(True):
                 self.selection_label.add_class(schema.name)

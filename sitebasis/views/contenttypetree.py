@@ -6,7 +6,7 @@ u"""
 @organization:	Whads/Accent SL
 @since:			August 2008
 """
-from cocktail.translations import translate
+from cocktail.translations import translations
 from cocktail.html import Element, templates
 from sitebasis.models import Item
 
@@ -30,14 +30,14 @@ class ContentTypeTree(TreeView):
 
     def get_item_label(self, content_type):
         if self.plural_labels:
-            return translate(content_type.__name__ + "-plural")
+            return translations(content_type.__name__ + "-plural")
         else:
-            return translate(content_type.__name__)
+            return translations(content_type.__name__)
 
     def get_child_items(self, content_type):
         return sorted(
             content_type.derived_schemas(recursive = False),
-            key = lambda ct: translate(ct.__name__)
+            key = lambda ct: translations(ct.__name__)
         )
 
     def filter_item(self, content_type):

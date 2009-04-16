@@ -11,7 +11,7 @@
     <py:with py:def="control" py:args="obj, member">
         <?py
         if hasattr(element, "empty_label"):
-            element.empty_label = translate("Irrelevant access rule criteria")
+            element.empty_label = translations("Irrelevant access rule criteria")
 
         return element
         ?>
