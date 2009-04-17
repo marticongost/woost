@@ -227,40 +227,19 @@ class CMS(BaseCMSController):
     def handle_exception_raised(self, event):
 
         error = event.exception
-        site = Site.main
-        error_page = None
-        is_http_error = isinstance(error, cherrypy.HTTPError)
 
         # URI normalization
         if isinstance(error, CanonicalURIRedirection):
             self._canonical_redirection(error.path)
         
-        # Page not found
-        if is_http_error and error.status == 404:
-            status = 404
-            error_page = site.not_found_error_page
+        error_page, status = event.source.get_error_page(error)
         
-        # Access forbidden:
-        # The default behavior is to show a login page for anonymous users, and
-        # a 403 error message for authenticated users.
-        elif is_http_error and error.status == 403 \
-        or isinstance(error, (AccessDeniedError, AuthenticationFailedError)):
-            if event.source.user.anonymous:
-                status = 200
-                error_page = site.login_page
-            else:
-                status = 403
-                error_page = site.forbidden_error_page
-        
-        # Generic error
-        else:
-            status = 500
-            error_page = site.generic_error_page
+        if status:
+            cherrypy.request.status = status
 
-        if error_page:
+        if error_page:        
             event.handled = True
             
-            request = cherrypy.request
             self.context.update(
                 original_document = self.context["document"],
                 document = error_page
@@ -271,6 +250,41 @@ class CMS(BaseCMSController):
             
             error_controller = error_page.handler()
             response.body = error_controller()
+        
+    def get_error_page(self, error):
+        """Produces a custom error page for the indicated exception.
+
+        @param error: The exception to describe.
+        @type error: Exception
+
+        @return: A tuple comprised of a document to invoke and an HTTP status
+            to set on the response. Either component can be None, so that no
+            custom error page is shown, or that the status is not changed,
+            respectively.
+        @rtype: (L{Document<sitebasis.models.Document>}, int)
+        """
+        site = Site.main
+        is_http_error = isinstance(error, cherrypy.HTTPError)
+
+        # Page not found
+        if is_http_error and error.status == 404:
+            return site.not_found_error_page, 404
+        
+        # Access forbidden:
+        # The default behavior is to show a login page for anonymous users, and
+        # a 403 error message for authenticated users.
+        elif is_http_error and error.status == 403 \
+        or isinstance(error, (AccessDeniedError, AuthenticationFailedError)):
+            if self.user.anonymous:
+                return site.login_page, 200
+            else:
+                return site.forbidden_error_page, 403
+        
+        # Generic error
+        else:
+            return site.generic_error_page, 500
+
+        return None, None
 
     @event_handler
     def handle_after_request(cls, event):
