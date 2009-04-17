@@ -8,7 +8,8 @@ u"""
 """
 from cocktail.modeling import cached_getter
 from cocktail import schema
-from sitebasis.controllers.contentviews import relation_content_views
+from sitebasis.controllers.backoffice.contentviews \
+    import relation_content_views
 from sitebasis.controllers.backoffice.contentcontroller \
     import ContentController
 from sitebasis.controllers.backoffice.editcontroller import EditController

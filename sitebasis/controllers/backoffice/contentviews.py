@@ -8,22 +8,24 @@ u"""
 """
 from itertools import chain
 from inspect import getmro
-from persistent import Persistent
-from cocktail.persistence import PersistentMapping
+from cocktail.pkgutils import get_full_name
+from cocktail.typemapping import TypeMapping
 from cocktail.html import templates
 from sitebasis.models import Item, Document
 
 
-class ContentViewsRegistry(Persistent):
+class ContentViewsRegistry(object):
 
     def __init__(self):
         self.__views = {}
         self.__default_views = {}
         self.__inheritance = {}
+        self.__params = {}
 
     def add(self,
         item_type,
         content_view,
+        params = None,
         is_default = False,
         inherited = True):
 
@@ -35,11 +37,12 @@ class ContentViewsRegistry(Persistent):
         
         type_views.add(content_view)
         self.__inheritance[(item_type, content_view)] = inherited
+        
+        if params:
+            self.set_params(item_type, content_view, params)
 
         if is_default:
             self.set_default(item_type, content_view)
-
-        self._p_changed = True
 
     def get(self, item_type):
         
@@ -75,6 +78,36 @@ class ContentViewsRegistry(Persistent):
 
     def set_inherited(self, item_type, content_view, inherited):
         self.__inheritance[(item_type, content_view)] = inherited
+
+    def get_params(self, item_type, content_view):
+
+        if isinstance(content_view, basestring):
+            content_view = templates.get_class(content_view)
+
+        content_view = get_full_name(content_view)
+
+        params = None
+        cv_params = self.__params.get(content_view)
+        
+        if cv_params is not None:
+            params = cv_params.get(item_type)
+
+        return params if params is not None else {}
+
+    def set_params(self, item_type, content_view, params):
+
+        if isinstance(content_view, basestring):
+            content_view = templates.get_class(content_view)
+
+        content_view = get_full_name(content_view)
+        
+        cv_params = self.__params.get(content_view)
+
+        if cv_params is None:
+            cv_params = TypeMapping()
+            self.__params[content_view] = cv_params
+        
+        cv_params[item_type] = params
 
 
 # Global content views

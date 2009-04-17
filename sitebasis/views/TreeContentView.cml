@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <?py
+from cocktail import schema
 from sitebasis.models import Site
 ?>
 
 <py:sitebasis.views.ContentView
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:py="http://www.whads.com/ns/cocktail/templates">
-    
-    
+        
     <?py
         self.add_resource("/cocktail/styles/jquery.tablednd.css")
         self.add_resource("/cocktail/scripts/jquery.tablednd.js")
@@ -17,8 +17,7 @@ from sitebasis.models import Site
 
     <?py-class
     content_view_id = "tree"
-    actions = "new", "edit", "delete", "move", "history"
-    root = None
+    multiple_roots = True
     children_collection = None
 
     def _attach(self, controller):
@@ -37,14 +36,19 @@ from sitebasis.models import Site
 
     def _init_user_collection(self, user_collection):
         ContentView._init_user_collection(self, user_collection)
-        user_collection.allow_sorting = False
-        user_collection.allow_filters = False
-        user_collection.allow_paging = False
-        user_collection.page_size = None
+        user_collection.allow_sorting = self.multiple_roots
+        user_collection.allow_filters = self.multiple_roots
+        user_collection.allow_paging = self.multiple_roots
 
+        if self.children_collection.bidirectional \
+        and isinstance(self.children_collection.related_end, schema.Reference):
+            user_collection.add_base_filter(
+                self.children_collection.related_end.equal(None)
+            )
+
+        if not self.multiple_roots:
+            user_collection.page_size = None
     ?>
-    <input type="hidden" name="root" value="@{self.root.id if self.root else None}"/>
-    <input type="hidden" name="member" value="@{self.children_collection}"/>
 
     <py:sitebasis.views.ContentTree
         py:def="collection_display"
@@ -52,21 +56,6 @@ from sitebasis.models import Site
         py:base_url="@{self.cms.document_uri()}"
         py:translations="@{self.visible_languages}"
         py:children_collection="@{self.children_collection}"
-        py:expanded="@{self.expanded}">
-        
-        <py:binding>
-            <?py
-            element.data = (
-                [self.root]
-                if self.root and self.cms.authorization.allows(
-                    action = "read",
-                    target_instance = self.root
-                )
-                else []
-            )
-            ?>
-        </py:binding>
-
-    </py:sitebasis.views.ContentTree>
+        py:expanded="@{self.expanded}"/>
 
 </py:sitebasis.views.ContentView>
