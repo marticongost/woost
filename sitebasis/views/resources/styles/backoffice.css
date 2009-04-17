@@ -575,6 +575,7 @@ body.scripted .BackOfficeLayout .Table .selection {
 }
 
 .BackOfficeLayout .search_results_message {
+    clear: both;
     font-size: 85%;
     font-weight: bold;
     color: rgb(50,50,50);
