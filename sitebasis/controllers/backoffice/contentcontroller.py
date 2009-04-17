@@ -27,7 +27,7 @@ from cocktail.controllers import (
 from sitebasis.models import (
     Language, Item, changeset_context, AccessAllowedExpression
 )
-from sitebasis.controllers.contentviews import global_content_views
+from sitebasis.controllers.backoffice.contentviews import global_content_views
 from sitebasis.controllers.backoffice.basebackofficecontroller \
     import BaseBackOfficeController
 from sitebasis.controllers.backoffice.editstack import EditNode, RelationNode
@@ -142,27 +142,38 @@ class ContentController(BaseBackOfficeController):
     @cached_getter
     def content_view(self):
 
-        content_view = None
+        available_content_views = self.available_content_views
+        content_view_type = None
         content_view_param = self.get_content_type_param("content_view")
-        default = None
         
-        if content_view_param is not None:            
-            for content_view_type in self.available_content_views:
+        # Explicitly chosen content view
+        if content_view_param is not None:
+            for content_view_type in available_content_views:
                 if content_view_type.content_view_id == content_view_param:
-                    content_view = content_view_type()
                     break
+            else:
+                content_view_type = None
 
-                if default is None:
-                    default = content_view_type
-        
-        if content_view is None:
-            default = (
+        # Default content view
+        if content_view_type is None:
+            content_view_type = (
                 self.content_views_registry.get_default(self.content_type)
-                or default
+                or available_content_views[0]
             )
-            content_view = default()
+        
+        # Instantiate and initialize the content view
+        content_view = content_view_type()
+
+        params = self.content_views_registry.get_params(
+            self.content_type,
+            content_view_type
+        )
+
+        for key, value in params.iteritems():
+            setattr(content_view, key, value)
 
         content_view._attach(self)
+
         return content_view
 
     @cached_getter
