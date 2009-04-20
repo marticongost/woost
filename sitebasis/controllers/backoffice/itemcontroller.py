@@ -50,7 +50,10 @@ class ItemController(BaseBackOfficeController):
             except KeyError:
                 pass
             else:
-                if member in self.collections:
+                if any(
+                    collection.name == member.name
+                    for collection in self.collections
+                ):
                     return self._get_collection_controller(member)
 
     def _get_collection_controller(self, member):
