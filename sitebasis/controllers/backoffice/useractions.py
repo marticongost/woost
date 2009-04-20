@@ -11,7 +11,7 @@ from cocktail.modeling import getter, ListWrapper
 from cocktail.pkgutils import get_full_name
 from cocktail import schema
 from cocktail.controllers import context as controller_context
-from sitebasis.models import Item, Document
+from sitebasis.models import Item, Document, Role, allowed
 from sitebasis.controllers.backoffice.editstack import EditNode, RelationNode
 
 
@@ -209,10 +209,16 @@ class UserAction(object):
 
             if isinstance(target, type):
                 auth_context["target_type"] = target
+                auth_context["roles"] = [
+                controller_context["cms"].authentication.user,
+                    Role.get_instance(qname = "sitebasis.authenticated"),
+                    Role.get_instance(qname = "sitebasis.owner"),
+                    Role.get_instance(qname = "sitebasis.author")
+                ]
             else:
                 auth_context["target_instance"] = target
 
-            if not controller_context["cms"].allows(**auth_context):
+            if not allowed(**auth_context):
                 return False
 
         return True

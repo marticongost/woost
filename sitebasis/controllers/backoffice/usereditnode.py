@@ -30,7 +30,7 @@ class UserEditNode(EditNode):
             form_adapter.copy("password",
                 export_condition = False,
                 import_condition =
-                    lambda context: context.get("change_password")
+                lambda context: context.get("change_password", default = None)
             )
 
         return form_adapter
@@ -52,14 +52,16 @@ class UserEditNode(EditNode):
 
         form_schema.add_member(schema.String(
             name = "password_confirmation",            
-            edit_control = "cocktail.html.PasswordBox"
+            edit_control = "cocktail.html.PasswordBox",
+            visible_in_detail_view = False
         ))
         
         if self.item.is_inserted:
             form_schema.add_member(schema.Boolean(
                 name = "change_password",
                 required = True,
-                default = False
+                default = False,
+                visible_in_detail_view = False
             ))
                 
             form_schema["password"].exclusive = form_schema["change_password"]
@@ -68,7 +70,6 @@ class UserEditNode(EditNode):
         
         @form_schema.add_validation
         def validate_password_confirmation(form_schema, value, ctx):
-
             password = ctx.get_value("password")               
             password_confirmation = ctx.get_value("password_confirmation")
 
