@@ -10,6 +10,7 @@ from datetime import datetime
 from copy import copy
 from cPickle import Pickler, Unpickler
 from cStringIO import StringIO
+from itertools import chain
 import cherrypy
 from cocktail.modeling import ListWrapper, getter, cached_getter
 from cocktail.events import Event, EventHub
@@ -22,7 +23,7 @@ from cocktail.persistence import (
     PersistentSet, PersistentRelationSet,
     PersistentMapping, PersistentRelationMapping
 )
-from sitebasis.models import Site, allowed, reduce_ruleset
+from sitebasis.models import Site, Role, allowed, reduce_ruleset
 
 
 class EditStacksManager(object):
@@ -433,7 +434,7 @@ class EditNode(StackNode):
             self.content_type,
             self.form_schema
         )
-
+        
         # Default translations
         if self.content_type.translated:
             if not self._item.translations:
@@ -463,6 +464,10 @@ class EditNode(StackNode):
             }
         )
 
+        collection_roles = user.get_roles({})
+        collection_roles.append(Role.get_instance(qname = "sitebasis.owner"))
+        collection_roles.append(Role.get_instance(qname = "sitebasis.author"))
+
         adapter = schema.Adapter()
         adapter.collection_copy_mode = self._adapt_collection
         adapter.exclude([
@@ -471,11 +476,6 @@ class EditNode(StackNode):
             if not member.editable
             or not member.visible                
             or member is stack_relation
-            or (
-                isinstance(member, schema.RelationMember)
-                and member.is_persistent_relation
-                and not member.related_type.visible
-            )
             or not allowed(
                 ruleset = ruleset,
                 user = user,
@@ -484,9 +484,31 @@ class EditNode(StackNode):
                 target_member = member.name
             )
             or (
-                isinstance(member, schema.Collection)
-                and member.exclude_when_empty
-                and not member.select_constraint_instances(parent = self.item)
+                isinstance(member, schema.RelationMember)
+                and member.is_persistent_relation
+                and (
+                    not member.related_type.visible
+                    or (
+                        isinstance(member, schema.Collection)
+                        and member.exclude_when_empty
+                        and not member.select_constraint_instances(
+                            parent = self.item
+                        )
+                    )
+                    or not any(
+                        allowed(
+                            debug = True,
+                            roles = collection_roles,
+                            action = "read",
+                            target_type = cls,
+                            partial_match = True
+                        )
+                        for cls in chain(
+                            [member.related_type],
+                            member.related_type.derived_schemas(True)
+                        )
+                    )
+                )
             )
         ])
         return adapter

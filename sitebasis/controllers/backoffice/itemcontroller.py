@@ -65,22 +65,9 @@ class ItemController(BaseBackOfficeController):
 
         return [
             member
-            for member in self.stack_node.content_type.ordered_members()
+            for member in self.stack_node.form_schema.ordered_members()
             if isinstance(member, Collection)
-            and member.visible
-            and member.editable
             and not member.edit_inline
-            and member is not stack_relation
-            and self.allows(
-                target_instance = self.stack_node.item,
-                action = "read",
-                member = member
-            )
-            and self.allows(
-                target_type = member.items.type,
-                action = "read",
-                partial_match = True
-            )
         ]
     
     @event_handler
