@@ -255,7 +255,7 @@ class AccessRule(Item):
                     match = (language == context_language)
 
         # Outcome
-        if debug:
+        if context.get("debug", debug):
             if match:
                 print styled(translations(self), style = "underline"),
                 print styled(
@@ -522,7 +522,7 @@ def allowed(**context):
 
     resolve_context(context)
 
-    if debug:
+    if context.get("debug", debug):
         print styled(u"-" * 80, "brown")
         print styled("Access context:", "white", "brown")
         for key, value in context.iteritems():
