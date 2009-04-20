@@ -527,7 +527,11 @@ def allowed(**context):
         print styled("Access context:", "white", "brown")
         for key, value in context.iteritems():
             print "\t", (key + ":").ljust(16),
-            print styled(translations(value, default = value), style = "bold")
+            try:
+                value = translations(value, default = value)
+            except TypeError:
+                pass
+            print styled(value, style = "bold")
 
         print styled("Rules:", "white", "brown")
 
