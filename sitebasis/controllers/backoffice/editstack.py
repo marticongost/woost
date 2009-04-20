@@ -497,7 +497,6 @@ class EditNode(StackNode):
                     )
                     or not any(
                         allowed(
-                            debug = True,
                             roles = collection_roles,
                             action = "read",
                             target_type = cls,
