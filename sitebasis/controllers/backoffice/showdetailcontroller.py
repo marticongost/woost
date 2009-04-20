@@ -24,11 +24,13 @@ class ShowDetailController(EditController):
             member.name
             for member in self.stack_node.content_type.members().itervalues()
             if not member.visible
+            or not member.visible_in_detail_view
             or (
                 isinstance(member, RelationMember)
                 and member.is_persistent_relation
                 and member.related_type
                 and not member.related_type.visible
+                and not member.related_type.visible_in_detail_view
             )
         ])
         adapter.exclude(["translations"])

@@ -38,6 +38,7 @@ class User(Agent):
         listed_by_default = False,
         searchable = False,
         min = 8,
+        visible_in_detail_view = False,
         edit_control = "cocktail.html.PasswordBox"
     )
 
