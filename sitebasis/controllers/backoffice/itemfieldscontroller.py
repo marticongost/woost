@@ -105,6 +105,20 @@ class ItemFieldsController(EditController):
         return self.stack_node.item.edit_view
 
     @event_handler
+    def handle_traversed(cls, event):
+
+        # Restrict access to the edited item. Note the use of partial_match,
+        # which makes it possible to be granted incomplete access to the item
+        # (ie. only edit a subset of fields, or using a certain language, etc)
+        controller = event.source
+        item = controller.stack_node.item
+        controller.restrict_access(
+            action = "modify" if item.is_inserted else "create",
+            target_instance = item,
+            partial_match = True
+        )
+
+    @event_handler
     def handle_processed(cls, event):
 
         controller = event.source
