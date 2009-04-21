@@ -34,6 +34,7 @@ class User(Agent):
     )   
 
     password = schema.String(
+        required = True,
         listable = False,
         listed_by_default = False,
         searchable = False,
