@@ -206,19 +206,19 @@ class UserAction(object):
         # Authorization check
         if self.authorization_context is not None:
             auth_context = self.authorization_context.copy()
+            user = controller_context["cms"].authentication.user
 
             if isinstance(target, type):
                 auth_context["target_type"] = target
-                auth_context["roles"] = [
-                controller_context["cms"].authentication.user,
-                    Role.get_instance(qname = "sitebasis.authenticated"),
-                    Role.get_instance(qname = "sitebasis.owner"),
-                    Role.get_instance(qname = "sitebasis.author")
-                ]
+                roles = user.get_roles({})
+                roles.append(Role.get_instance(qname = "sitebasis.owner"))
+                roles.append(Role.get_instance(qname = "sitebasis.author"))
+                auth_context["roles"] = roles
             else:
+                auth_context["user"] = user
                 auth_context["target_instance"] = target
 
-            if not allowed(**auth_context):
+            if not allowed(debug = True, **auth_context):
                 return False
 
         return True
