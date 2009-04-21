@@ -218,7 +218,7 @@ class UserAction(object):
                 auth_context["user"] = user
                 auth_context["target_instance"] = target
 
-            if not allowed(debug = True, **auth_context):
+            if not allowed(**auth_context):
                 return False
 
         return True
