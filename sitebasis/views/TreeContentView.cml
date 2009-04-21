@@ -17,7 +17,6 @@ from sitebasis.models import Site
 
     <?py-class
     content_view_id = "tree"
-    multiple_roots = True
     children_collection = None
 
     def _attach(self, controller):
@@ -36,18 +35,16 @@ from sitebasis.models import Site
 
     def _init_user_collection(self, user_collection):
         ContentView._init_user_collection(self, user_collection)
-        user_collection.allow_sorting = self.multiple_roots
-        user_collection.allow_filters = self.multiple_roots
-        user_collection.allow_paging = self.multiple_roots
+        user_collection.allow_sorting = False
+        user_collection.allow_filters = False
+        user_collection.allow_paging = False
+        user_collection.page_size = None
 
         if self.children_collection.bidirectional \
         and isinstance(self.children_collection.related_end, schema.Reference):
             user_collection.add_base_filter(
                 self.children_collection.related_end.equal(None)
             )
-
-        if not self.multiple_roots:
-            user_collection.page_size = None
     ?>
 
     <py:sitebasis.views.ContentTree
