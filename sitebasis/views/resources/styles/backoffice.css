@@ -1058,8 +1058,7 @@ body.scripted .BackOfficeLayout .Table .selection {
 }
 
 .BackOfficeLayout .TreeContentView .expander + label {
-    float: left;
-    margin-left: 0.3em;
+    margin-left: 1.5em;
 }
 
 .BackOfficeLayout .TreeContentView .expander img {
