@@ -53,6 +53,14 @@ from sitebasis.models import Site
         py:base_url="@{self.cms.document_uri()}"
         py:translations="@{self.visible_languages}"
         py:children_collection="@{self.children_collection}"
-        py:expanded="@{self.expanded}"/>
+        py:expanded="@{self.expanded}">
+        <py:binding>
+            <?py
+            element.set_member_displayed(self.children_collection, False)
+            if self.children_collection.bidirectional:
+                element.set_member_displayed(self.children_collection.related_end, False)
+            ?>
+        </py:binding>
+    </py:sitebasis.views.ContentTree>
 
 </py:sitebasis.views.ContentView>
