@@ -1463,6 +1463,7 @@ body.scripted .BackOfficeLayout .Table .selection {
 .BackOfficeLayout .CollectionView .filters .filter_desc {
     min-width: 10em;
     margin-top: 0.3em;
+    margin-right: 1em;
 }
 
 .BackOfficeLayout .FilterBox .filter_entry .language_field .control {
