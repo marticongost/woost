@@ -78,7 +78,7 @@ class ContentTable(ContentDisplayMixin, Table):
         
         # Add visual cues for sorted columns
         sortable = self.get_member_sortable(column)
-
+        
         if sortable and self.order:
             current_direction = self._sorted_columns.get(
                 (column.name, language)
@@ -95,7 +95,7 @@ class ContentTable(ContentDisplayMixin, Table):
                     header.add_class("descending")
 
         # Column options
-        if sortable or column.searchable:
+        if sortable or self.get_member_searchable(column):
 
             menu = header.menu = Element()
             header.append(menu)
@@ -124,7 +124,7 @@ class ContentTable(ContentDisplayMixin, Table):
             sorting_options = self.create_sorting_options(column, language)
             options.append(sorting_options)
 
-        if column.searchable and column.user_filter:
+        if self.get_member_searchable(column):
             search_options = self.create_search_options(column, language)
             options.append(search_options)
 
