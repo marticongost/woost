@@ -176,14 +176,9 @@ class CMS(BaseCMSController):
         return uri
 
     def _canonical_redirection(self, path):
-        from styled import styled
-        print styled(path, "brown")
         path = "".join(percent_encode(c) for c in path)
-        print styled(path, "red")
         path = self.application_uri(path)
-        print styled(path, "green")
         path = str(self.language.translate_uri(path))
-        print styled(path, "blue")
         raise cherrypy.HTTPRedirect(path)
 
     def validate_document(self, document):
