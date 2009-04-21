@@ -17,20 +17,13 @@ class UserEditNode(EditNode):
     def form_adapter(self):
 
         form_adapter = EditNode.form_adapter(self)
-        
-        form_adapter.exclude([
-            "password_confirmation"
-        ])
-        
+        form_adapter.exclude("password_confirmation")
+                
         if self.item.is_inserted:
-            form_adapter.exclude([
-                "change_password"
-            ])
-
             form_adapter.copy("password",
                 export_condition = False,
-                import_condition =
-                lambda context: context.get("change_password", default = None)
+                import_condition = lambda context:
+                    context.get("change_password", default = None)
             )
 
         return form_adapter
@@ -39,44 +32,44 @@ class UserEditNode(EditNode):
     def form_schema(self):
         
         form_schema = EditNode.form_schema(self)
-        form_schema.members_order = [
-            "email",
-            "change_password",
-            "password",
-            "password_confirmation"
-        ] if self.item.is_inserted else [
-            "email",
-            "password",
-            "password_confirmation"
-        ]
-
-        form_schema.add_member(schema.String(
-            name = "password_confirmation",            
-            edit_control = "cocktail.html.PasswordBox",
-            visible_in_detail_view = False
-        ))
+        password_member = form_schema.get_member("password")
         
-        if self.item.is_inserted:
-            form_schema.add_member(schema.Boolean(
-                name = "change_password",
-                required = True,
-                default = False,
+        if password_member:
+
+            order = form_schema.members_order = list(form_schema.members_order)
+            pos = order.index("password")
+
+            password_conf_member = schema.String(
+                name = "password_confirmation",            
+                edit_control = "cocktail.html.PasswordBox",
                 visible_in_detail_view = False
-            ))
+            )
+            form_schema.add_member(password_conf_member)
+            order.insert(pos + 1, "password_confirmation")
+
+            if self.item.is_inserted:
+
+                change_password_member = schema.Boolean(
+                    name = "change_password",
+                    required = True,
+                    default = False,
+                    visible_in_detail_view = False
+                )
+                form_schema.add_member(change_password_member)
+                order.insert(pos, "change_password")
                 
-            form_schema["password"].exclusive = form_schema["change_password"]
-
-            form_schema["password_confirmation"].exclusive = form_schema["change_password"]
+                password_member.exclusive = change_password_member
+                password_conf_member.exclusive = change_password_member
         
-        @form_schema.add_validation
-        def validate_password_confirmation(form_schema, value, ctx):
-            password = ctx.get_value("password")               
-            password_confirmation = ctx.get_value("password_confirmation")
+            @form_schema.add_validation
+            def validate_password_confirmation(form_schema, value, ctx):
+                password = ctx.get_value("password")               
+                password_confirmation = ctx.get_value("password_confirmation")
 
-            if password and password_confirmation \
-            and password != password_confirmation:
-                yield PasswordConfirmationError(
-                        form_schema, value, ctx)
+                if password and password_confirmation \
+                and password != password_confirmation:
+                    yield PasswordConfirmationError(
+                            form_schema, value, ctx)
 
         return form_schema
 
