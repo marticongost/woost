@@ -234,9 +234,15 @@ class AccessRule(Item):
         if match:
 
             action = self.action
+            context_action = context.get("action")
 
-            if action is not None:
-                context_action = context.get("action")
+            if action is None:
+                match = role is None or not (
+                    role.qname == "sitebasis.owner"
+                    and context_action is not None
+                    and context_action.identifier == "create"
+                )
+            else:
                 if context_action is None:
                     match = partial_match
                 else:

@@ -130,6 +130,12 @@ class RuleConstraintsTestCase(BaseAuthorizationTestCase):
         self.assertTrue(allowed(user = a, target_instance = doc))
         self.assertFalse(allowed(user = b, target_instance = doc))
 
+        # Access rules granted to the owner role dont't include the create
+        # privilege
+        self.assertFalse(
+            allowed(user = a, action = "create", target_instance = doc)
+        )
+
     def test_author(self):
         from sitebasis.models import AccessRule, User, Document, allowed
 
