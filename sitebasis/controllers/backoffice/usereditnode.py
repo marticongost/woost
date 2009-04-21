@@ -18,8 +18,9 @@ class UserEditNode(EditNode):
 
         form_adapter = EditNode.form_adapter(self)
         form_adapter.exclude("password_confirmation")
-                
+        
         if self.item.is_inserted:
+            form_adapter.exclude("change_password")
             form_adapter.copy("password",
                 export_condition = False,
                 import_condition = lambda context:
@@ -42,7 +43,8 @@ class UserEditNode(EditNode):
             password_conf_member = schema.String(
                 name = "password_confirmation",            
                 edit_control = "cocktail.html.PasswordBox",
-                visible_in_detail_view = False
+                visible_in_detail_view = False,
+                required = password_member.required
             )
             form_schema.add_member(password_conf_member)
             order.insert(pos + 1, "password_confirmation")
