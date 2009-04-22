@@ -4,6 +4,7 @@
 from itertools import chain
 from cocktail.modeling import extend, call_base
 from cocktail.iteration import is_empty
+from cocktail.schema import Reference
 from cocktail.controllers.viewstate import view_state
 from cocktail.html.shortcuts import set_translated_shortcut
 from sitebasis.models import Item, Site, reduce_ruleset
@@ -62,8 +63,33 @@ from sitebasis.controllers.backoffice.useractions import \
         if self.member:
             params["member"] = self.member.name
 
-        return self.cms.document_uri('content', 'new', **params)
+        return self.cms.document_uri('content', 'new', **params)        
+
+    excluded_view_state_params = \
+        CollectionView.excluded_view_state_params | frozenset(["rel"])
     ?>
+
+    <py:with py:element="self.filters">
+        <py:ready>
+            <py:with py:element="self.filters_selector"
+                py:if="hasattr(self, 'filters_selector')">
+                <py:with py:def="filter_ui">
+                    <?py
+                    def get_filter_reference_display(filter_ui, obj, member):
+                        if member.class_family is not None:
+                            display = templates.new("sitebasis.views.ContentTypePicker")
+                            display.root = member.class_family
+                        else:
+                            display = "sitebasis.views.ItemSelector"
+                    
+                        return display
+
+                    element.set_member_type_display(Reference, get_filter_reference_display)
+                    ?>
+                </py:with>
+            </py:with>
+        </py:ready>
+    </py:with>
 
     <py:ready>
 
@@ -86,7 +112,7 @@ from sitebasis.controllers.backoffice.useractions import \
         </py:with>
 
         <?py
-        self.set_client_param("contentTypeFullName", self.user_collection.type.full_name)
+        self.set_client_param("persistencePrefix", self.user_collection.persistence_prefix)
 
         if self.user_collection.user_filters:
             user_filter = self.user_collection.user_filters[0]

@@ -26,7 +26,9 @@ cocktail.init(function () {
     function simplifySearch() {
     
         var filtersBox = jQuery(".filters", this);
-        var contentTypeFullName = this.contentTypeFullName;
+        var persistencePrefix = this.persistencePrefix;
+        
+        var cookieKey = ADVANCED_SEARCH_COOKIE_PREFIX + persistencePrefix
 
         if (!filtersBox.length) {
             return;
@@ -34,7 +36,7 @@ cocktail.init(function () {
 
         // TODO: Do the createElement(...html...) hack to satisfy IE
 
-        if (jQuery.cookie(ADVANCED_SEARCH_COOKIE_PREFIX + this.contentTypeFullName) != "true") {
+        if (jQuery.cookie(ADVANCED_SEARCH_COOKIE_PREFIX + this.persistencePrefix) != "true") {
 
             var simpleSearchBox = document.createElement("div");
             simpleSearchBox.className = "simple_search";
@@ -87,7 +89,7 @@ cocktail.init(function () {
                 cocktail.translate("sitebasis.views.ContentView show advanced search")
             ));
             jQuery(advSearchButton).click(function () {
-                jQuery.cookie(ADVANCED_SEARCH_COOKIE_PREFIX + contentTypeFullName, "true");
+                jQuery.cookie(ADVANCED_SEARCH_COOKIE_PREFIX + persistencePrefix, "true");
                 location.href = location.href;
             });
             simpleSearchBox.appendChild(advSearchButton);
@@ -110,7 +112,7 @@ cocktail.init(function () {
             var closeHref = discardButton.get(0).href;
             
             jQuery(closeButton).val(cocktail.translate("sitebasis.views.ContentView close advanced search")).click(function () {                
-                jQuery.cookie(ADVANCED_SEARCH_COOKIE_PREFIX + contentTypeFullName, "false");                
+                jQuery.cookie(ADVANCED_SEARCH_COOKIE_PREFIX + persistencePrefix, "false");                
                 location.href = closeHref;
             });
                         
@@ -135,8 +137,8 @@ cocktail.init(function () {
         // Enable the advanced search panel when adding filters using the links
         // on table headers
         .find("th .search_options .add_filter").click(function () {
-            var contentTypeFullName = jQuery(this).parents(".ContentView").get(0).contentTypeFullName;
-            jQuery.cookie(ADVANCED_SEARCH_COOKIE_PREFIX + contentTypeFullName, "true");
+            var persistencePrefix = jQuery(this).parents(".ContentView").get(0).persistencePrefix;
+            jQuery.cookie(ADVANCED_SEARCH_COOKIE_PREFIX + persistencePrefix, "true");
         });
 });
 

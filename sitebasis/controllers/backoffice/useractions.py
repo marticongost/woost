@@ -329,7 +329,7 @@ class SelectionError(Exception):
 
 class CreateAction(UserAction):
     included = frozenset(["toolbar"])
-    excluded = frozenset(["collection"])
+    excluded = frozenset(["collection", ("selector", "root")])
     ignores_selection = True
     min = None
     max = None
@@ -520,21 +520,28 @@ class SelectAction(UserAction):
     
     def invoke(self, controller, selection):
 
-        edit_state = controller.edit_stack[-2]
-        member = controller.stack_node.member
+        if controller.edit_stack:
+            edit_state = controller.edit_stack[-2]
+            member = controller.stack_node.member
 
-        if isinstance(member, schema.Reference):
-            edit_state.relate(member, None if not selection else selection[0])
-        else:
-            if controller.stack_node.action == "add":
-                modify_relation = edit_state.relate 
+            if isinstance(member, schema.Reference):
+                edit_state.relate(
+                    member,
+                    None if not selection else selection[0]
+                )
             else:
-                modify_relation = edit_state.unrelate 
+                if controller.stack_node.action == "add":
+                    modify_relation = edit_state.relate 
+                else:
+                    modify_relation = edit_state.unrelate 
 
-            for item in selection:
-                modify_relation(member, item)
-            
-        controller.edit_stack.go(-2)
+                for item in selection:
+                    modify_relation(member, item)
+                
+            controller.edit_stack.go(-2)
+        else:
+            params = {str(controller.selection_parameter): selection[0].id}
+            raise cherrypy.HTTPRedirect(controller.document_uri(**params))
 
 
 class GoBackAction(UserAction):

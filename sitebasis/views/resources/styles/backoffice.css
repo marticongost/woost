@@ -699,6 +699,7 @@ body.scripted .BackOfficeLayout .Table .selection {
 .BackOfficeLayout .data_controls {
     overflow: hidden;
     width: 100%;
+    margin-top: 0.3em;
 }
 
 .BackOfficeLayout .toolbar,
@@ -1286,22 +1287,22 @@ body.scripted .BackOfficeLayout .Table .selection {
     float: left;
 }
 
-.BackOfficeEditView .ItemSelector {
+.BackOfficeLayout .ItemSelector {
     padding: 0.1em;
 }
 
-.BackOfficeEditView .ItemSelector button {
+.BackOfficeLayout .ItemSelector button {
     width: 18.5em;
     text-align: left;
 }
 
-.BackOfficeEditView .ItemSelector .selection_label {
+.BackOfficeLayout .ItemSelector .selection_label {
     background-repeat: no-repeat;
     padding-left: 1.4em;
     color: rgb(75,75,75);
 }
 
-.BackOfficeEditView .Reference .empty_selection {
+.BackOfficeLayout .ItemSelector .empty_selection {
     padding-left: 0;
     font-style: italic;
 }
@@ -1398,6 +1399,7 @@ body.scripted .BackOfficeLayout .Table .selection {
 -----------------------------------------------------------------------------*/
 .BackOfficeLayout .simple_search {
     float: left;
+    height: 3em;
 }
 
 .BackOfficeLayout .simple_search input {

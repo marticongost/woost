@@ -21,6 +21,7 @@ from sitebasis.controllers.backoffice.editcontroller import EditController
 class ItemFieldsController(EditController):
 
     section = "fields"
+    form_prefix = "edited_item_"
 
     def __call__(self, *args, **kwargs):
         self._handle_form_data()
@@ -60,7 +61,7 @@ class ItemFieldsController(EditController):
                 target = form_data,
                 languages = translations,
                 enable_defaults = False,
-                prefix = "edited_item_",
+                prefix = self.form_prefix,
                 strict = False)
 
             if added_translation and added_translation not in translations:
@@ -127,13 +128,18 @@ class ItemFieldsController(EditController):
         # Open the item selector
         if rel:
 
+            pos = rel.find("-")
+            root_content_type_name = rel[:pos]
+            selection_parameter = rel[pos + 1:]
+            key = selection_parameter[len(controller.form_prefix):]
+
             # Push the relation as a new stack node
             current_node = controller.stack_node
             rel_node = RelationNode()
-            rel_node.member = current_node.content_type[rel]
+            rel_node.member = current_node.content_type[key]
             controller.edit_stack.push(rel_node)
 
-            value = schema.get(current_node.form_data, rel)
+            value = schema.get(current_node.form_data, key)
 
             raise cherrypy.HTTPRedirect(
                 controller.context["cms"].document_uri("content")

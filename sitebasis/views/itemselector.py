@@ -62,7 +62,17 @@ class ItemSelector(Element, DataBoundControl):
         Element._ready(self)
 
         if self.member:            
-            self.button["value"] = self.member.name
+
+            if self.data_display:
+                param_name = self.data_display.get_member_name(
+                    self.member,
+                    self.language
+                )
+            else:
+                param_name = self.member.name
+            
+            self.button["value"] = \
+                self.member.type.full_name + "-" + param_name
 
         if self.value is None:
             self.selection_label.add_class("empty_selection")

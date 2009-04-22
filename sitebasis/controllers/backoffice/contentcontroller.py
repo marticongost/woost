@@ -12,7 +12,9 @@ from tempfile import mkdtemp
 import cherrypy
 import pyExcelerator
 from cocktail.modeling import getter, cached_getter, ListWrapper, SetWrapper
+from cocktail.events import event_handler
 from cocktail.translations import translations
+from cocktail.pkgutils import resolve
 from cocktail.schema import get, Member, Adapter, Reference, String, Collection
 from cocktail.schema.expressions import (
     Expression, CustomExpression, ExclusionExpression, Self
@@ -66,6 +68,31 @@ class ContentController(BaseBackOfficeController):
                 self.context["cms_item"] = item
                 return self._item_controller_class()
 
+    def __call__(self, *args, **kwargs):
+
+        rel = self.params.read(String("rel"))
+
+        # Open the item selector
+        if rel:
+            # Load persistent collection parameters before redirecting
+            self.user_collection
+
+            pos = rel.find("-")
+            root_content_type_name = rel[:pos]
+            selection_parameter = rel[pos + 1:]
+
+            raise cherrypy.HTTPRedirect(
+                self.document_uri(
+                    root_content_type = root_content_type_name,
+                    selection_parameter = selection_parameter,
+                    selection = self.params.read(
+                        String(selection_parameter)
+                    )
+                )
+            )
+        
+        return BaseBackOfficeController.__call__(self, *args, **kwargs)
+
     @cached_getter
     def action(self):
         return self._get_user_action()
@@ -97,7 +124,16 @@ class ContentController(BaseBackOfficeController):
 
     @cached_getter
     def root_content_type(self):
-        return self.stack_content_type or Item
+        
+        root_content_type = self.stack_content_type
+
+        if root_content_type is None:
+            root_content_type_param = self.params.read(
+                String("root_content_type")
+            )
+            root_content_type = resolve(root_content_type_param)
+    
+        return root_content_type or Item
 
     @cached_getter
     def stack_content_type(self):
@@ -119,7 +155,14 @@ class ContentController(BaseBackOfficeController):
 
     @cached_getter
     def persistent_content_type_choice(self):
-        return self.edit_stack is None
+        return self.edit_stack is None and self.selection_parameter is None
+
+    @cached_getter
+    def persistence_prefix(self):
+        if self.selection_parameter:
+            return self.content_type.name + "-selector"
+        else:
+            return self.content_type.name
 
     def get_content_type_param(self, param_name):
         return get_persistent_param(
@@ -330,7 +373,7 @@ class ContentController(BaseBackOfficeController):
         user_collection.add_base_filter(AccessAllowedExpression(self.user))
         
         user_collection.base_collection = self.base_collection
-        user_collection.persistence_prefix = self.content_type.name
+        user_collection.persistence_prefix = self.persistence_prefix
         user_collection.persistence_duration = self.settings_duration
         user_collection.persistent_params = set(("members", "order", "filter"))
         user_collection.available_languages = self.available_languages
@@ -347,10 +390,14 @@ class ContentController(BaseBackOfficeController):
 
     @cached_getter
     def view_class(self):
-        if self.edit_stack:
+        if self.edit_stack or self.selection_parameter:
             return "sitebasis.views.BackOfficeItemSelectorView"
         else:
             return "sitebasis.views.BackOfficeContentView"
+
+    @cached_getter
+    def selection_parameter(self):
+        return self.params.read(String("selection_parameter"))
 
     @cached_getter
     def selection_mode(self):
@@ -371,6 +418,7 @@ class ContentController(BaseBackOfficeController):
             available_content_views = self.available_content_views,
             content_view = self.content_view,
             selection_mode = self.selection_mode,
+            selection_parameter = self.selection_parameter,
             root_content_type = self.root_content_type
         )
         return output
