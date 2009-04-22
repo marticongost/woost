@@ -1728,6 +1728,18 @@ translations.define("PlugIn.enabled",
 
 # ChangeSet
 #------------------------------------------------------------------------------
+translations.define("ChangeSet",
+    ca = u"Revisió",
+    es = u"Revisión",
+    en = u"Revision"
+)
+
+translations.define("ChangeSet-plural",
+    ca = u"Revisions",
+    es = u"Revisiones",
+    en = u"Revisions"
+)
+
 translations.define("ChangeSet.id",
     ca = u"ID",
     es = u"ID",
@@ -1750,5 +1762,138 @@ translations.define("ChangeSet.changes",
     ca = u"Canvis",
     es = u"Cambios",
     en = u"Changes"
+)
+
+# Change
+#------------------------------------------------------------------------------
+translations.define("Change",
+    ca = u"Canvi",
+    es = u"Cambio",
+    en = u"Change"
+)
+
+translations.define("ChangeSet-plural",
+    ca = u"Canvis",
+    es = u"Cambios",
+    en = u"Changes"
+)
+
+translations.define("Change.id",
+    ca = u"ID",
+    es = u"ID",
+    en = u"ID"
+)
+
+translations.define("Change.changeset",
+    ca = u"Revisió",
+    es = u"Revisión",
+    en = u"Revision"
+)
+
+translations.define("Change.action",
+    ca = u"Acció",
+    es = u"Acción",
+    en = u"Action"
+)
+
+translations.define("Change.target",
+    ca = u"Element",
+    es = u"Elemento",
+    en = u"Item"
+)
+
+translations.define("Change.changed_members",
+    ca = u"Membres modificats",
+    es = u"Miembros modificados",
+    en = u"Modified members"
+)
+
+translations.define("Change.item_state",
+    ca = u"Estat",
+    es = u"Estado",
+    en = u"State"
+)
+
+def _translate_sitebasis_models_change_instance_ca(action, target):
+    
+    if isinstance(target, int):
+        target_desc = "%d elements" % target
+        apostrophe = False
+    else:
+        target_desc = translations(target, "ca")
+
+        if not target_desc:
+            return ""
+
+        apostrophe = target_desc[0].lower() in u"haeiouàèéíòóú"
+        target_desc = u"<em>" + target_desc + u"</em>"
+    
+    action_id = action.identifier
+
+    if action_id == "edit":
+        action_desc = u"Edició"
+    elif action_id == "create":
+        action_desc = u"Creació"
+    elif action_id == "delete":
+        action_desc = u"Eliminació"
+    else:
+        return ""
+    
+    return action_desc + (" d'" if apostrophe else " de ") + target_desc
+
+def _translate_sitebasis_models_change_instance_es(action, target):
+    
+    if isinstance(target, int):
+        target_desc = "%d elementos" % target
+    else:
+        target_desc = translations(target, "es")
+
+        if not target_desc:
+            return ""
+
+        target_desc = u"<em>" + target_desc + u"</em>"
+    
+    action_id = action.identifier
+
+    if action_id == "edit":
+        action_desc = u"Edición"
+    elif action_id == "create":
+        action_desc = u"Creación"
+    elif action_id == "delete":
+        action_desc = u"Eliminación"
+    else:
+        return ""
+    
+    return action_desc + u" de " + target_desc
+
+def _translate_sitebasis_models_change_instance_en(action, target):
+    
+    if isinstance(target, int):
+        target_desc = "%d items" % target
+    else:
+        target_desc = translations(target, "ca")
+
+        if not target_desc:
+            return ""
+        
+        target_desc = u"<em>" + target_desc + u"</em>"
+    
+    action_id = action.identifier
+
+    if action_id == "edit":
+        action_desc = u"modified"
+    elif action_id == "create":
+        action_desc = u"created"
+    elif action_id == "delete":
+        action_desc = u"deleted"
+    else:
+        return ""
+    
+    return target_desc + u" " + action_desc
+
+translations.define("sitebasis.models.changesets.Change description",
+    ca = _translate_sitebasis_models_change_instance_ca,
+    es = _translate_sitebasis_models_change_instance_es,
+    en = _translate_sitebasis_models_change_instance_en
 )
 
