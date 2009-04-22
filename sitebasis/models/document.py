@@ -32,6 +32,12 @@ class Document(Item):
         "template",
         "description"        
     )
+    
+    # Backoffice customization
+    #--------------------------------------------------------------------------
+    preview_view = "sitebasis.views.BackOfficePreviewView"
+    preview_controller = "sitebasis.controllers.backoffice." \
+        "previewcontroller.PreviewController"
 
     def __init__(self, **values):
         Item.__init__(self, **values)
