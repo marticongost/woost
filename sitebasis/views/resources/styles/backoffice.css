@@ -340,8 +340,7 @@ html, body {
 -----------------------------------------------------------------------------*/
 
 body.scripted .BackOfficeLayout .Table .selection {
-    position: absolute;
-    left: -1000px;
+    display: none;
 }
 
 .BackOfficeLayout .Table .target_focus {

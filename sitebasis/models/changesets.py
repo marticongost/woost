@@ -11,6 +11,7 @@ from threading import local
 from contextlib import contextmanager
 from cocktail.modeling import classgetter
 from cocktail import schema
+from cocktail.translations import translations
 from cocktail.persistence import PersistentObject
 
 @contextmanager
@@ -138,4 +139,11 @@ class Change(PersistentObject):
     item_state = schema.Mapping(
         required = False
     )
+
+    def __translate__(self, language, **kwargs):
+        return translations(
+            "sitebasis.models.changesets.Change description",
+            action = self.action,
+            target = self.target
+        ) or PersistentObject.__translate__(self, language, **kwargs)
 
