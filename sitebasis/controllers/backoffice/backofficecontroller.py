@@ -57,6 +57,24 @@ class BackOfficeController(BaseBackOfficeController):
                 edit_stacks_manager.preserve_edit_stack(edit_stack)
 
     @cherrypy.expose
+    def render_preview(self, **kwargs):
+        node = self.stack_node
+        self.restrict_access(
+            action = "read",
+            target_instance = node.item
+        )
+        
+        node.import_form_data(node.form_data, node.item)
+        
+        self.context.update(
+            original_document = self.context["document"],
+            document = node.item
+        )
+        
+        document_controller = node.item.handler()
+        return document_controller()
+
+    @cherrypy.expose
     def document_images(self, **kwargs):
         cherrypy.response.headers["Content-Type"] = "text/javascript"
         node = self.stack_node
