@@ -5,6 +5,7 @@ from cocktail.translations import get_language, translations
 from cocktail.html.ieconditionalcomment import IEConditionalComment
 from cocktail.schema import Collection
 from sitebasis.controllers.backoffice.editstack import EditNode, RelationNode
+from sitebasis.controllers.backoffice.useractions import add_view_action_context
 ?>
 
 <div
@@ -58,6 +59,8 @@ from sitebasis.controllers.backoffice.editstack import EditNode, RelationNode
         if self.backoffice:
             for resource in self.backoffice.page_resources:
                 self.add_resource(resource.uri)
+                
+        add_view_action_context(element, "nested" if self.edit_stack else "root")
         ?>
     </py:ready>
 
