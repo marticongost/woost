@@ -100,7 +100,7 @@ from sitebasis.controllers.backoffice.useractions import \
         <py:sitebasis.views.ActionBar
             py:id="item_body_buttons"
             py:action_context="item_body_buttons"
-            py:content_type="@{self.edited_content_type}"
+            py:action_target="@{self.edited_item}"
             py:button_images="${False}"
             class="buttons">
             <py:with py:def="action_button" name="item_action"/>
