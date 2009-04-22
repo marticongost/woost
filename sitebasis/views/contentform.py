@@ -10,7 +10,6 @@ from cocktail.schema import Collection, Reference
 from cocktail.html import Element, templates
 
 Form = templates.get_class("cocktail.html.Form")
-DropdownSelector = templates.get_class("cocktail.html.DropdownSelector")
 
 
 class ContentForm(Form):

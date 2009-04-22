@@ -16,6 +16,7 @@ from cocktail.html.datadisplay import MULTIPLE_SELECTION
     content_view = None
     member = None
     selection_mode = MULTIPLE_SELECTION
+    selection_parameter = None
     ?>
 
     <?py
@@ -25,7 +26,7 @@ from cocktail.html.datadisplay import MULTIPLE_SELECTION
     ?>
 
     <py:with py:element="self.body">
-        <py:ready>
+        <py:ready py:if="self.edit_stack">
             <h2 py:index="0">${translations(self.edit_stack[-1].member)}</h2>
         </py:ready>
     </py:with>
@@ -47,12 +48,13 @@ from cocktail.html.datadisplay import MULTIPLE_SELECTION
             py:activation_control=".select_action">
 
             <?py
-            edit_stack_param = self.edit_stack.to_param(len(self.edit_stack))
             self.set_client_param("dblclick_target", ".buttons .select_button")
             ?>
-            
-            <!-- Propagate the edit stack when changing the active type -->
-            <py:with py:element="element.content_type_selector">
+
+            <!-- Propagate the selection context when changing the active type -->
+            <py:with
+                py:element="element.content_type_selector">
+
                 <py:with py:def="tree">
                     <?py
                     @refine(tree)
@@ -60,9 +62,13 @@ from cocktail.html.datadisplay import MULTIPLE_SELECTION
                         url = "?type=" + content_type.__name__
                         if self.edit_stack:
                             url += "&edit_stack=" + self.edit_stack.to_param()
+                        elif self.selection_parameter:
+                            url += "&selection_parameter=" + self.selection_parameter
+                            url += "&root_content_type=" + self.root_content_type.full_name
                         return url
                     ?>
                 </py:with>
+
             </py:with>
         </py:with>
     </py:ready>
