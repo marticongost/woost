@@ -6,7 +6,6 @@ u"""
 @organization:	Whads/Accent SL
 @since:			December 2008
 """
-import cherrypy
 from cocktail.translations import translations
 from cocktail.html import Element, templates
 from cocktail.html.databoundcontrol import DataBoundControl
@@ -62,16 +61,8 @@ class ItemSelector(Element, DataBoundControl):
 
         Element._ready(self)
 
-        if self.member:
-            
-            rel = cherrypy.request.params.get("rel")
-            
-            if rel:
-                rel += "." + self.member.name
-            else:
-                rel = self.member.name
-
-            self.button["value"] = rel
+        if self.member:            
+            self.button["value"] = self.member.name
 
         if self.value is None:
             self.selection_label.add_class("empty_selection")
