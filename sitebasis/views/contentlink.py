@@ -32,5 +32,5 @@ class ContentLink(Element):
             self.append(u"-")
 
     def get_label(self):
-        return translations(self.item)
+        return translations(self.item, referer = self.referer)
 
