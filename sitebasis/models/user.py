@@ -56,7 +56,8 @@ class User(Agent):
 
         encryption = event.source.encryption
 
-        if encryption and event.member is cls.password:
+        if encryption and event.member is cls.password \
+        and event.value is not None:
             event.value = encryption.new(event.value).digest()
 
     def test_password(self, password):
