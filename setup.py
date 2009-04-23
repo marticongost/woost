@@ -14,7 +14,13 @@ setup(
     author = "Whads/Accent SL",
     author_email = "tech@whads.com",
     description = "An object oriented, web based Content Management System.",
-    install_requires = ["simplejson", "cocktail", "genshi", "pyExcelerator"],
+    install_requires = [
+        "simplejson",
+        "cocktail",
+        "genshi",
+        "pyExcelerator",
+        "PIL"
+    ],
     include_package_data = True,
     packages = find_packages(),
     
