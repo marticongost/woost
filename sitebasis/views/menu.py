@@ -66,7 +66,7 @@ class Menu(TreeView):
     def create_label(self, item):
 
         item_uri = self.get_item_uri(item)
-        item_content = TreeView.create_label(self, item)
+        item_content = self.get_item_label(item)
         
         if item is self.selection \
         and (self.emphasized_selection or not self.linked_selection):

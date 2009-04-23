@@ -14,10 +14,12 @@ class News(Document):
     members_order = "summary", "body"
 
     summary = schema.String(
-        edit_control = "sitebasis.views.RichTextEditor"
+        edit_control = "sitebasis.views.RichTextEditor",
+        listed_by_default = False
     )
 
     body = schema.String(
-        edit_control = "sitebasis.views.RichTextEditor"
+        edit_control = "sitebasis.views.RichTextEditor",
+        listed_by_default = False
     )
 
