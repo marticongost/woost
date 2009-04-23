@@ -540,7 +540,8 @@ class SelectAction(UserAction):
                 
             controller.edit_stack.go(-2)
         else:
-            params = {str(controller.selection_parameter): selection[0].id}
+            selection_id = selection[0].id if selection else None
+            params = {str(controller.selection_parameter): selection_id}
             raise cherrypy.HTTPRedirect(controller.document_uri(**params))
 
 
