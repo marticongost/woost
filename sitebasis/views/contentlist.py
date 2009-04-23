@@ -15,6 +15,7 @@ class ContentList(List):
 
     base_url = None
     authorization_check = None
+    referer = None
 
     def _fill_entries(self):
         items = self.items
@@ -38,5 +39,7 @@ class ContentList(List):
         link = templates.new("sitebasis.views.ContentLink")
         link.item = item
         link.base_url = self.base_url
+        link.referer = self.referer
+        link.member = self.member
         return link
 
