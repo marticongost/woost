@@ -45,6 +45,10 @@ class LanguageSelector(LinkSelector):
 
         LinkSelector._ready(self)
 
+        # Hack for IE <= 6
+        if self.children:
+            self.children[-1].add_class("last")
+
     def get_item_label(self, language):
         if self.translated_labels:
             return translations(language, language)
