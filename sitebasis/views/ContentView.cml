@@ -66,14 +66,13 @@ from sitebasis.controllers.backoffice.useractions import \
         return self.cms.document_uri('content', 'new', **params)        
 
     def content_type_is_instantiable(self, content_type):
-        return content_type.visible
-            and content_type.instantiable
+        return content_type.visible \
+            and content_type.instantiable \
             and self.cms.authorization.allows(
                 target_type = content_type,
                 action = "create",
                 partial_match = True
             )
-        )
 
     excluded_view_state_params = \
         CollectionView.excluded_view_state_params | frozenset(["rel"])
