@@ -239,7 +239,7 @@ class UserAction(object):
         if not self.ignores_selection:
 
             # Validate selection size
-            selection_size = len(selection)
+            selection_size = len(selection) if selection is not None else 0
 
             if (self.min and selection_size < self.min) \
             or (self.max is not None and selection_size > self.max):
