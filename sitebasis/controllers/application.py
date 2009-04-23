@@ -7,6 +7,12 @@ u"""
 @since:			July 2008
 """
 import os.path
+
+try:
+    from cStringIO import StringIO
+except ImportError:
+    from StringIO import StringIO
+
 import cherrypy
 from pkg_resources import resource_filename, iter_entry_points
 from cherrypy.lib.static import serve_file
@@ -17,7 +23,7 @@ from cocktail.controllers.percentencode import percent_encode
 from cocktail.translations import set_language
 from cocktail.language import set_content_language
 from cocktail.persistence import datastore
-from sitebasis.models import Site, Document, File, Style, AccessDeniedError
+from sitebasis.models import Site, Document, Item, Style, AccessDeniedError
 from sitebasis.controllers.basecmscontroller import BaseCMSController
 from sitebasis.controllers.language import LanguageModule
 from sitebasis.controllers.authentication import (
@@ -28,6 +34,9 @@ from sitebasis.controllers.documentresolver import (
     CanonicalURIRedirection
 )
 from sitebasis.controllers.authorization import AuthorizationModule
+from sitebasis.models.thumbnails import (
+    ThumbnailLoader, ImageThumbnailer, ThumbnailParameterError
+)
 
 
 class CMS(BaseCMSController):
@@ -63,6 +72,13 @@ class CMS(BaseCMSController):
     # Paths
     application_path = None
     upload_path = None
+
+    # Map image formats to MIME types (used by the item thumbnailer)
+    image_format_mime_types = {
+        "jpeg": "image/jpeg",
+        "png": "image/png",
+        "gif": "image/gif"
+    }
 
     # A dummy controller for CherryPy, that triggers the cocktail dispatcher.
     # This is done so dynamic dispatching (using the resolve() method of
@@ -118,6 +134,7 @@ class CMS(BaseCMSController):
         self.authentication = self.AuthenticationModule(self)
         self.authorization = self.AuthorizationModule(self)
         self.document_resolver = self.DocumentResolver()
+        self.thumbnail_loader = self._create_thumbnail_loader()
 
         self.load_plugins()
 
@@ -292,34 +309,90 @@ class CMS(BaseCMSController):
 
     @cherrypy.expose
     def files(self, id, **kwargs):
-
-        try:
-            id = int(id)
-        except:
-            raise cherrypy.NotFound()
-
+        
+        file = self._get_requested_item(id, **kwargs)
+        
         disposition = kwargs.get("disposition")
-
         if disposition not in ("inline", "attachment"):
             disposition = "inline"
-
-        file = File.get_instance(id)
-        
-        if file is None or not file.is_published():
-            raise cherrypy.NotFound()
-
-        self.authentication.process_request()
-
-        self.authorization.restrict_access(
-            action = "read",
-            target_instance = file
-        )
 
         return serve_file(
                 file.file_path,
                 name = file.file_name,
                 disposition = disposition,
                 content_type = file.mime_type)
+
+    def _create_thumbnail_loader(self):
+        loader = ThumbnailLoader()
+        loader.thumbnailers.append(ImageThumbnailer())
+        return loader
+
+    @cherrypy.expose
+    def thumbnails(self, id, width = None, height = None, **kwargs):
+
+        # Sanitize input
+        item = self._get_requested_item(id, **kwargs)
+        
+        if width is not None:
+            width = int(width)
+
+        if height is not None:
+            height = int(height)
+            
+        format = kwargs.get("format", self.thumbnail_loader.default_format)
+
+        if format is None:
+            raise cherrypy.NotFound()
+
+        # TODO: Filter accepted keys in kwargs?
+
+        # Obtain the thumbnail
+        try:
+            image = self.thumbnail_loader.get_thumbnail(
+                item,
+                width,
+                height,
+                **kwargs
+            )
+        except ThumbnailParameterError:
+            raise cherrypy.NotFound()
+
+        if image is None:
+            raise cherrypy.NotFound()
+        
+        # Determine the MIME type for the thumbnail
+        try:
+            mime_type = self.image_format_mime_types[format]
+        except KeyError:
+            pass
+        else:
+            cherrypy.response.headers["Content-Type"] = mime_type
+        
+        # Write the thumbnail to the HTTP response
+        buffer = StringIO()
+        image.save(buffer, format, **kwargs)
+        return buffer.getvalue()
+
+    def _get_requested_item(self, id, **kwargs):
+
+        try:
+            id = int(id)
+        except:
+            raise cherrypy.NotFound()
+        
+        item = Item.get_instance(id)
+        
+        if item is None or not item.is_published():
+            raise cherrypy.NotFound()
+
+        self.authentication.process_request()
+
+        self.authorization.restrict_access(
+            action = "read",
+            target_instance = item
+        )
+
+        return item
 
     @cherrypy.expose
     def user_styles(self):
