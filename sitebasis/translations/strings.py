@@ -269,6 +269,18 @@ translations.define("cocktail.html.shortcuts action cancel",
     en = u"c"
 )
 
+translations.define("Action print",
+    ca = u"Imprimir",
+    es = u"Imprimir",
+    en = u"Print"
+)
+
+translations.define("cocktail.html.shortcuts action print",
+    ca = u"i",
+    es = u"i",
+    en = u"i"
+)
+
 translations.define("editing",
     ca = lambda item:
         u"Editant %s <em>'%s'</em>"
