@@ -39,7 +39,7 @@ class ContentDisplayMixin(object):
                 return call_base(item, member)
 
         @extend(self)
-        def _resolve_member_display(self, obj, member):
+        def get_default_member_display(self, obj, member):
 
             if isinstance(member, Reference):
                 if member.is_persistent_relation \
