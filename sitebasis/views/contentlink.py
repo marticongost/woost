@@ -14,6 +14,7 @@ class ContentLink(Element):
 
     item = None
     base_url = None
+    referer = None
 
     def __init__(self, item = None, **kwargs):
         Element.__init__(self, **kwargs)
