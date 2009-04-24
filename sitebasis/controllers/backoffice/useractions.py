@@ -276,9 +276,6 @@ class UserAction(object):
         """
         params = self.get_url_params(controller, selection)
 
-        if controller.edit_stack:
-            params["edit_stack"] = controller.edit_stack.to_param()
-
         if self.ignores_selection:
             return controller.document_uri(
                 self.id,
@@ -310,7 +307,12 @@ class UserAction(object):
             URL associated to the action.
         @rtype: dict
         """
-        return {}
+        params = {}
+
+        if controller.edit_stack:
+            params["edit_stack"] = controller.edit_stack.to_param()
+        
+        return params
 
 
 class SelectionError(Exception):
@@ -411,7 +413,9 @@ class OrderAction(UserAction):
         UserAction.invoke(self, controller, selection)
 
     def get_url_params(self, controller, selection):
-        return {"member": self.member.name}
+        params = UserAction.get_url_params(self, controller, selection)
+        params["member"] = self.member.name
+        return params
 
 
 class ShowDetailAction(UserAction):
