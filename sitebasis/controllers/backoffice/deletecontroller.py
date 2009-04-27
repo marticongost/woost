@@ -49,13 +49,23 @@ class DeleteController(BaseBackOfficeController):
                         target_instance = item
                     )
             
+            user = self.user
             deleted_set = ValidatingDeletedSet()
 
-            with changeset_context(author = self.user):
+            with changeset_context(author = user):
                 for item in self.selection:
                     item.delete(deleted_set)
             
             datastore.commit()
+        
+            cms = self.context["cms"]
+            for item in deleted_set:
+                cms.item_deleted(
+                    item = item,
+                    user = user,
+                    change = item.changes[-1]
+                )
+
             self.go_back()
             
         elif self.action == "cancel":

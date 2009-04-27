@@ -60,6 +60,35 @@ class CMS(BaseCMSController):
         An event triggered after loading plugins.
         """)
 
+    item_saved = Event(doc = """
+        An event triggered after an item is inserted or modified.
+
+        @ivar item: The saved item.
+        @type item: L{Item<sitebasis.models.Item>}
+
+        @ivar user: The user who saved the item.
+        @type user: L{Agent<sitebasis.models.Agent>}
+
+        @ivar is_new: True for an insertion, False for a modification.
+        @type is_new: bool
+
+        @ivar change: The revision describing the changes to the item.
+        @type change: L{Change<sitebasis.models.Change>}
+        """)
+
+    item_deleted = Event(doc = """
+        An event triggered after an item is deleted.
+
+        @ivar item: The deleted item.
+        @type item: L{Item<sitebasis.models.Item>}
+
+        @ivar user: The user who deleted the item.
+        @type user: L{Agent<sitebasis.models.Agent>}
+
+        @ivar change: The revision describing the changes to the item.
+        @type change: L{Change<sitebasis.models.Change>}
+        """)
+
     # Application modules
     LanguageModule = LanguageModule
     AuthenticationModule = AuthenticationModule
