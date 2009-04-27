@@ -399,7 +399,7 @@ class CMS(BaseCMSController):
         
         # Write the thumbnail to the HTTP response
         buffer = StringIO()
-        image.save(buffer, format, **kwargs)
+        self.thumbnail_loader.save_thumbnail(image, buffer, **kwargs)
         return buffer.getvalue()
 
     def _get_requested_item(self, id, **kwargs):
