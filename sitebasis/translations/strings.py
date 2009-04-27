@@ -703,6 +703,12 @@ translations.define("sitebasis.views.BackOfficeDeleteView cancel",
     en = u"Cancel"
 )
 
+translations.define("sitebasis.views.ItemSelector select",
+    ca = u"Seleccionar...",
+    es = u"Seleccionar...",
+    en = u"Select..."
+)
+
 # Initialization content
 #------------------------------------------------------------------------------
 translations.define("Create action title",

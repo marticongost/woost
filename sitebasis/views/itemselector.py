@@ -26,7 +26,10 @@ class ItemSelector(Element, DataBoundControl):
         if self._empty_label is None:
 
             if self.member:
-                content_type = self.member.type
+                if self.member.required == True:
+                    return translations("sitebasis.views.ItemSelector select")
+                else:
+                    content_type = self.member.type
             else:
                 content_type = Item
 
