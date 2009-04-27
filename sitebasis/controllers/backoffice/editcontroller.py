@@ -100,14 +100,16 @@ class EditController(BaseBackOfficeController):
             user = user,
             changeset = changeset
         )
-        
+
         cms = self.context["cms"]
-        cms.item_saved(
-            item = stack_node.item,
-            user = user,
-            is_new = is_new,
-            change = changeset.changes[item.id]
-        )
+        change = change = changeset.changes.get(item.id)
+        if change is not None:
+            cms.item_saved(
+                item = stack_node.item,
+                user = user,
+                is_new = is_new,
+                change = change
+            )
 
         self.notify_user(
             translations(
