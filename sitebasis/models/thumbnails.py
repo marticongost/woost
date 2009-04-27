@@ -199,10 +199,36 @@ class ThumbnailLoader(object):
             # If caching is enabled, store the generated thumbnail for further
             # requestss
             if self.cache_path:
-                format = params.get("format", self.default_format)
-                image.save(thumbnail_path, format, **params)
+                self.save_thumbnail(image, thumbnail_path, **params)
 
         return image
+
+    def save_thumbnail(self, image, dest, **params):
+        """Writes the given thumbnail image to a file.
+        
+        @param image: The thumbnail to store.
+        @type image: L{Image<Image.Image>}
+
+        @param dest: The file-like object or file path to write the thumbnail
+            to.
+        @type dest: str or file object
+        
+        @param params: A set of formatting options that should be observed by
+            the thumbnailer.
+        """
+        format = params.pop("format", self.default_format)
+        
+        if format is None:
+            raise ValueError("Image format not specified")
+
+        format = format.upper()
+
+        # PIL requires an explicit conversion before saving fixed palette
+        # images to RGB formats
+        if format == "JPEG" and image.mode != "RGB":
+            image = image.convert("RGB")
+        
+        image.save(dest, format, **params)
 
 
 class ThumbnailParameterError(ValueError):
