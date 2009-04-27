@@ -618,6 +618,13 @@ class DiscardDraftAction(UserAction):
     def invoke(self, controller, selection):
         raise ValueError("Not implemented")
 
+class PrintAction(UserAction):
+    direct_link = True
+    ignore_selection = True
+
+    def get_url(self, controller, selection):
+        return "javascript: print();"
+
 
 CreateAction("new").register()
 MoveAction("move").register()
@@ -639,3 +646,4 @@ SaveAction("save").register()
 SaveDraftAction("save_draft").register()
 ConfirmDraftAction("confirm_draft").register()
 SelectAction("select").register()
+PrintAction("print").register()
