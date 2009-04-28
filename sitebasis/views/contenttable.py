@@ -20,6 +20,7 @@ Table = templates.get_class("cocktail.html.Table")
 class ContentTable(ContentDisplayMixin, Table):
     
     base_url = None
+    inline_draft_copies = True
 
     def __init__(self, *args, **kwargs):
         Table.__init__(self, *args, **kwargs)
@@ -29,15 +30,16 @@ class ContentTable(ContentDisplayMixin, Table):
 
     def _fill_body(self):
 
-        for index, item in enumerate(self.data):
-            row = self.create_row(index, item)
-            self.append(row)
-            self._draft_index = 0
+        if not self.inline_draft_copies:
+            Table._fill_body(self)
+        else:
+            for index, item in enumerate(self.data):
+                row = self.create_row(index, item)
+                self.append(row)            
 
-            for draft in item.drafts:
-                self._draft_index += 1
-                row = self.create_row(index, draft)
-                self.append(row)
+                for draft in item.drafts:
+                    row = self.create_row(index, draft)
+                    self.append(row)
         
     def create_row(self, index, item):
         
@@ -55,10 +57,12 @@ class ContentTable(ContentDisplayMixin, Table):
         
         display = Element("label")
         display["for"] = "selection_" + str(item.id)
-
-        if item.draft_source:
-            desc = translations("draft_seq_name",
-                index = self._draft_index)
+        
+        if self.inline_draft_copies and item.draft_source:
+            desc = translations(
+                "sitebasis.views.ContentTable draft label",
+                draft_id = item.draft_id
+            )
         else:
             desc = translations(item)
         

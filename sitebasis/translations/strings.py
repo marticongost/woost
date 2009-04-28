@@ -6,7 +6,7 @@ u"""
 @organization:	Whads/Accent SL
 @since:			July 2008
 """
-from cocktail.translations import translations
+from cocktail.translations import translations, ca_possessive
 
 translations.define("site_section",
     ca = u"Lloc web",
@@ -233,6 +233,12 @@ translations.define("Action confirm_draft",
     en = u"Confirm draft"
 )
 
+translations.define("Action discard_draft",
+    ca = u"Descartar esborrany",
+    es = u"Descartar borrador",
+    en = u"Discard draft"
+)
+
 translations.define("Action select",
     ca = u"Seleccionar",
     es = u"Seleccionar",
@@ -407,10 +413,19 @@ translations.define("Advanced search",
     en = u"Advanced search"
 )
 
-translations.define("draft_seq_name",
-    ca = u"Esborrany %(index)s",
-    es = u"Borrador %(index)s",
-    en = u"Draft %(index)s"
+translations.define("sitebasis.models.Item draft copy",
+    ca = lambda item, draft_id: u"Borrador %d %s"
+        % (draft_id, ca_possessive(translations(item, "ca"))),
+    es = lambda item, draft_id: u"Borrador %d de %s"
+        % (draft_id, translations(item, "es")),
+    en = lambda item, draft_id: u"Draft %d for %s"
+        % (draft_id, translations(item, "en"))
+)
+
+translations.define("sitebasis.views.ContentTable draft label",
+    ca = "Esborrany %(draft_id)d",
+    es = "Borrador %(draft_id)d",
+    en = "Draft %(draft_id)d"
 )
 
 translations.define("Differences for",
@@ -817,7 +832,35 @@ translations.define(
             if is_new
             else u"Saved changes to <strong>%s</strong>"
         )
-        % translations(item, "es")
+        % translations(item, "en")
+)
+
+translations.define(
+    "sitebasis.views.BackOfficeEditView Draft confirmed",
+    ca = lambda item, is_new:
+        (
+            u"S'ha creat l'element <strong>%s</strong> a partir de l'esborrany"
+            if is_new
+            else u"Els canvis de l'esborrany s'han aplicat a "
+                 u"<strong>%s</strong>"
+        )
+        % translations(item, "ca"),
+    es = lambda item, is_new:
+        (
+            u"Se ha creado el elemento <strong>%s</strong> a partir del "
+            u"borrador"
+            if is_new
+            else u"Se ha actualizado <strong>%s</strong> con los cambios del "
+                 u"borrador"
+        )
+        % translations(item, "es"),
+    en = lambda item, is_new:
+        (
+            u"Draft stored as new item <strong>%s</strong>"
+            if is_new
+            else u"Saved changes from draft to <strong>%s</strong>"
+        )
+        % translations(item, "en")
 )
 
 translations.define(

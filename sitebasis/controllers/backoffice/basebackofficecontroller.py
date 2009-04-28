@@ -39,7 +39,7 @@ class BaseBackOfficeController(BaseCMSController):
         params = kwargs or {}
         edit_stack = self.edit_stack
 
-        if edit_stack:
+        if edit_stack and "edit_stack" not in params:
             params["edit_stack"] = edit_stack.to_param()
 
         # URI for new items
@@ -136,7 +136,8 @@ class BaseBackOfficeController(BaseCMSController):
             backoffice = self.context["document"],
             section = self.section,
             edit_stack = self.edit_stack,
-            notifications = self.pop_user_notifications()
+            notifications = self.pop_user_notifications(),
+            get_edit_uri = self.get_edit_uri
         )
         return output
 

@@ -7,6 +7,7 @@ u"""
 @since:			November 2008
 """
 from __future__ import with_statement
+from contextlib import contextmanager
 import cherrypy
 from cocktail.modeling import cached_getter
 from cocktail.events import event_handler, when
@@ -70,7 +71,7 @@ class EditController(BaseBackOfficeController):
         item = stack_node.item
         is_new = not item.is_inserted
         
-         # Create a draft
+        # Create a draft
         if make_draft:
 
             # From scratch
@@ -80,35 +81,43 @@ class EditController(BaseBackOfficeController):
             # From an existing element
             else:
                 item = item.make_draft()
-
+            
             item.author = user
             item.owner = user
 
         changeset = None
 
         # Store the changes on a draft; this skips revision control
-        if item.is_draft:
-            self._apply_changes(item)
+        if item.is_draft:       
+            with self.authorization_context(item):
+                self._apply_changes(item)
 
         # Operate directly on a production item
         else:
             with changeset_context(author = user) as changeset:
-                self._apply_changes(item)       
+                with self.authorization_context(item):
+                    self._apply_changes(item)
 
         datastore.commit()
+
+        # Edit stack event
         stack_node.committed(
             user = user,
             changeset = changeset
         )
-        
-        cms = self.context["cms"]
-        cms.item_saved(
-            item = stack_node.item,
-            user = user,
-            is_new = is_new,
-            change = changeset.changes[item.id]
-        )
 
+        # Application-wide event
+        if not item.is_draft:
+            change = changeset.changes.get(item.id)
+            if change is not None:
+                self.context["cms"].item_saved(
+                    item = item,
+                    user = user,
+                    is_new = is_new,
+                    change = change
+                )
+
+        # User notification
         self.notify_user(
             translations(
                 "sitebasis.views.BackOfficeEditView Changes saved",
@@ -119,13 +128,14 @@ class EditController(BaseBackOfficeController):
         )
 
         # A new item or draft was created
-        if is_new:
-            
+        if is_new or make_draft:
+
             # The edit operation was the root of the edit stack; redirect the
             # browser to the new item
             if len(self.edit_stack) == 1:
+                params = {"edit_stack": None} if make_draft else {}
                 raise cherrypy.HTTPRedirect(
-                    self.get_edit_uri(item)
+                    self.get_edit_uri(item, **params)
                 )
 
             # The edit operation was nested; relate the created item to its
@@ -136,13 +146,67 @@ class EditController(BaseBackOfficeController):
                 parent_edit_node.relate(member, item)
                 self.edit_stack.go(-3)
 
+    def confirm_draft(self):
+
+        item = self.stack_node.item
+        target_item = item.draft_source or item
+        is_new = item is target_item
+        user = self.user
+
+        with changeset_context(author = user) as changeset:
+            with self.authorization_context(target_item):
+                self._apply_changes(item)
+                item.confirm_draft()
+
+        datastore.commit()
+
+        # Edit stack event
+        self.stack_node.committed(
+            user = user,
+            changeset = changeset
+        )
+        
+        # Application-wide event
+        self.context["cms"].item_saved(
+            item = target_item,
+            user = user,
+            is_new = is_new,
+            change = changeset.changes[target_item.id]
+        )
+
+        # User notification
+        self.notify_user(
+            translations(
+                "sitebasis.views.BackOfficeEditView Draft confirmed",
+                item = target_item,
+                is_new = is_new
+            ),
+            "success"
+        )
+
+        # Redirect back to the source item
+        if not is_new:
+            raise cherrypy.HTTPRedirect(
+                self.get_edit_uri(target_item, edit_stack = None)
+            )
+
     def _apply_changes(self, item):
+        stack_node = self.stack_node
+        stack_node.import_form_data(stack_node.form_data, item)
+        item.insert()
+        stack_node.saving(
+            user = self.user,
+            changeset = ChangeSet.current
+        )
+
+    @contextmanager
+    def authorization_context(self, item):
 
         stack_node = self.stack_node
         is_new = not item.is_inserted
         restrict_access = self.context["cms"].authorization.restrict_access
         action = "create" if is_new else "modify"
-        
+
         ruleset = reduce_ruleset(
             Site.main.access_rules_by_priority,
             {
@@ -163,9 +227,9 @@ class EditController(BaseBackOfficeController):
                 action = action,
                 target_instance = item
             )
- 
-        # Add event listeners to the edited item, to restrict changes to its
-        # members and relations
+
+        # Add event listeners to the edited item, to restrict changes to
+        # its members and relations
         @when(item.changed)
         def restrict_members(event):
             restrict_access(
@@ -175,26 +239,11 @@ class EditController(BaseBackOfficeController):
                 target_member = event.member,
                 language = event.language
             )
-           
+
+        # Try to modify the item
         try:
-            # Save changed fields
-            stack_node.import_form_data(stack_node.form_data, item)
-            
-            if stack_node.content_type.translated:
+            yield None
 
-                # Drop deleted translations
-                deleted_translations = \
-                    set(item.translations) - set(stack_node.translations)
-
-                for language in deleted_translations:
-                    del item.translations[language]
-                    restrict_access(
-                        ruleset = ruleset,
-                        action = action,
-                        target_instance = item,
-                        language = language
-                    )
-        
         # Remove the added event listeners
         finally:
             item.changed.remove(restrict_members)
@@ -206,13 +255,6 @@ class EditController(BaseBackOfficeController):
             ruleset = ruleset,
             action = action,
             target_instance = stack_node.item
-        )
-
-        item.insert()
-
-        stack_node.saving(
-            user = self.user,
-            changeset = ChangeSet.current
         )
 
     @cached_getter
