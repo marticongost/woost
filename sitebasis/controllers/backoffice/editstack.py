@@ -424,6 +424,15 @@ class EditNode(StackNode):
             self.form_schema,
             self.content_type
         )
+
+        # Drop deleted translations
+        if item.__class__.translated:
+
+            deleted_translations = \
+                set(item.translations) - set(self.translations)
+
+            for language in deleted_translations:
+                del item.translations[language]
     
     def export_form_data(self, item, form_data):
         """Update the edit form with the data contained on the edited item."""
@@ -578,40 +587,6 @@ class EditNode(StackNode):
             self.form_data,
             self.form_schema
         )
-
-    def member_has_changes(self, member, language = None):
-        """Indicates if the node contains changes for the specified member.
-        
-        @param member: The member to consult.
-        @type member: L{Member<cocktail.schema.Member>} or str
- 
-        @param language: The language for which the comparision is made.
-            Only used on translated members; if not provided, the contextual
-            language will be used instead.
-
-        @return: True if the specified member has been changed, False
-            otherwise.
-        @rtype: bool
-        """
-        if isinstance(member, basestring):
-            member = self.content_type[member]
-
-        excluded = object()
-
-        form_value = schema.get(self.form_data, member,
-            default = excluded,
-            language = language
-        )
-
-        if form_value is excluded:
-            return False
-
-        base_value = self._item.get(member, language)
-        
-        if base_value is not None and isinstance(member, schema.Collection):
-            base_value = self._copy_collection(base_value)
-
-        return form_value != base_value
 
     def relate(self, member, item):
         """Adds a relation between the edited item and another item.

@@ -11,7 +11,8 @@ from cocktail.html.datadisplay import MULTIPLE_SELECTION
 
 <py:sitebasis.views.ContentTable
     xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:py="http://www.whads.com/ns/cocktail/templates">
+    xmlns:py="http://www.whads.com/ns/cocktail/templates"
+    py:inline_draft_copies="${False}">
 
     <?py-class
     accessor = SchemaObjectAccessor
