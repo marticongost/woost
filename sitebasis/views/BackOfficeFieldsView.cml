@@ -22,7 +22,7 @@ from cocktail.language import get_content_language
     <py:with py:element="self.item_body">
 
         <!-- Translations selector -->
-        <!-- TODO: Moure a una vista independent -->
+        <!-- TODO: Promote this to its own view -->
         <div
             py:id="translations_selector"
             py:index="0"

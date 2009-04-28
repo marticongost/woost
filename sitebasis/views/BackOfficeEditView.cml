@@ -29,8 +29,8 @@ from sitebasis.controllers.backoffice.useractions import \
                                 for member, language in self.changes)
         ?>
     </py:ready>
-   
-    <py:with py:element="self.item_body">
+
+    <div py:id="messages" py:before="self.item_body" py:collapsible="${True}">
 
         <!-- Draft remark -->
         <div
@@ -43,9 +43,7 @@ from sitebasis.controllers.backoffice.useractions import \
                     element.append(
                         translations(
                             "Editing draft copy",
-                            location = self.backoffice.get_edit_uri(
-                                self.edited_item.draft_source
-                            )
+                            location = self.get_edit_uri(self.edited_item.draft_source)
                         )
                     )
                 else:
@@ -63,6 +61,10 @@ from sitebasis.controllers.backoffice.useractions import \
                 </li>
             </py:ready>
         </ul>
+
+    </div>
+
+    <py:with py:element="self.item_body">
 
         <!-- Tabs -->
         <div py:id="tabs">                        

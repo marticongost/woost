@@ -605,18 +605,14 @@ class SaveDraftAction(SaveAction):
     excluded = frozenset(["draft"])
 
 
-class ConfirmDraftAction(UserAction):
+class ConfirmDraftAction(SaveAction):
+    confirm_draft = True
     included = frozenset([("item_buttons", "draft")])
-    
-    def invoke(self, controller, selection):
-        raise ValueError("Not implemented")
-
-
-class DiscardDraftAction(UserAction):
-    included = frozenset([("item_buttons", "draft")])
+    excluded = frozenset()
 
     def invoke(self, controller, selection):
-        raise ValueError("Not implemented")
+        controller.confirm_draft()
+
 
 class PrintAction(UserAction):
     direct_link = True

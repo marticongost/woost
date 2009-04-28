@@ -182,6 +182,7 @@ html, body {
 .BackOfficeLayout textarea {
     border: 1px solid rgb(200,200,200);
     padding: 0.2em;
+    -moz-box-sizing: border-box;
 }
 
 .BackOfficeLayout .TreeView .filtered {
@@ -559,11 +560,11 @@ body.scripted .BackOfficeLayout .Table .selection {
     border: 1px solid #EBE3AF;
 }
 
-.BackOfficeLayout .Table .nested_draft td.element_column {
+.BackOfficeLayout .FlatContentView .nested_draft td.element_column {
     padding-left: 2em;
 }
 
-.BackOfficeLayout .Table .nested_draft td.element_column label {
+.BackOfficeLayout .FlatContentView .nested_draft td.element_column label {
     background-image: url(../images/edit_small.png);
 }
 
@@ -1125,6 +1126,10 @@ body.scripted .BackOfficeLayout .Table .selection {
     background-color: rgb(220,240,220);
 }
 
+.BackOfficeLayout .success strong {
+    color: rgb(20,80,20);
+}
+
 .BackOfficeLayout .error_box,
 .BackOfficeLayout .notification_box .error {
     color: black;
@@ -1182,6 +1187,10 @@ body.scripted .BackOfficeLayout .Table .selection {
     margin-right: 0.2em;
 }
 
+.BackOfficeItemView .messages {
+    margin-bottom: 0.3em;
+}
+
 .BackOfficeItemView .edit_form_frame {
     border: 1px solid rgb(200,210,220);
     border-top: none;
@@ -1200,8 +1209,8 @@ body.scripted .BackOfficeLayout .Table .selection {
 }
 
 .BackOfficeItemView .draft_box {
+    clear: both;
     padding: 0.5em;
-    margin-bottom: 1.5em;
     border: 1px solid rgb(235,227,175);
     font-size: 85%;
 }
