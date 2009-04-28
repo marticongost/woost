@@ -7,8 +7,10 @@ u"""
 @since:			June 2008
 """
 from datetime import datetime
+from cocktail.modeling import getter
 from cocktail.events import event_handler
 from cocktail import schema
+from cocktail.translations import translations
 from cocktail.persistence import (
     PersistentObject, PersistentClass, datastore, PersistentMapping
 )
@@ -28,6 +30,18 @@ class Item(PersistentObject):
     """
 
     members_order = "id", "author", "owner"
+
+    def __translate__(self, language, **kwargs):
+        if self.draft_source is not None:
+            return translations(
+                "sitebasis.models.Item draft copy",
+                language,
+                item = self.draft_source,
+                draft_id = self._draft_id,
+                **kwargs
+            )
+        else:
+            return PersistentObject.__translate__(self, language, **kwargs)
 
     # Unique qname
     #--------------------------------------------------------------------------
@@ -120,9 +134,20 @@ class Item(PersistentObject):
         editable = False
     )
 
+    _draft_count = 0
+    _draft_id = None
+
+    @getter
+    def draft_id(self):
+        """A numerical identifier for draft copies, guaranteed to be unique
+        among their source item.
+        @type: int
+        """
+        return self._draft_id
+
     def make_draft(self):
         """Creates a new draft copy of the item. Subclasses can tweak the copy
-        process by overriding either this method or L{_get_draft_adapter} (for
+        process by overriding either this method or L{get_draft_adapter} (for
         example, to exclude one or more members).
 
         @return: The draft copy of the item.
@@ -131,6 +156,10 @@ class Item(PersistentObject):
         draft = self.__class__()
         draft.draft_source = self
         draft.is_draft = True
+        draft.bidirectional = False
+        
+        self._draft_count += 1
+        draft._draft_id = self._draft_count        
 
         adapter = self.get_draft_adapter()
         adapter.export_object(
@@ -155,22 +184,23 @@ class Item(PersistentObject):
         if not self.is_draft:
             raise ValueError("confirm_draft() must be called on a draft")
 
-        # TODO: Collections!
         if self.draft_source is None:
+            self.bidirectional = True
             self.is_draft = None
         else:
             adapter = self.get_draft_adapter()
             adapter.import_object(
                 self,
                 self.draft_source,
-                source_scema = self.__class__,
+                source_schema = self.__class__,
                 source_accessor = schema.SchemaObjectAccessor,
                 target_accessor = schema.SchemaObjectAccessor,
                 collection_copy_mode = schema.shallow
-            )
+            )            
             self.delete()
 
-    def get_draft_adapter(self):
+    @classmethod
+    def get_draft_adapter(cls):
         """Produces an adapter that defines the copy process used by the
         L{make_draft} method in order to produce draft copies of the item.
 
@@ -181,7 +211,7 @@ class Item(PersistentObject):
         adapter = schema.Adapter()
         adapter.exclude([
             member.name
-            for member in self.members().itervalues()
+            for member in cls.members().itervalues()
             if not member.editable or not member.visible
         ])
         return adapter
@@ -301,14 +331,24 @@ class Item(PersistentObject):
         else:
             item.last_update_time = datetime.now()
 
-    # Extend item removal to make it versioning aware
     @event_handler
     def handle_deleting(cls, event):
-                
-        changeset = ChangeSet.current
+        
         item = event.source
+
+        # Update the last time of modification for the item
         item.last_update_time = datetime.now()
 
+        # Break the relation to the draft's source. This needs to be done
+        # explicitly, because drafts are flagged as non bidirectional (to keep
+        # their changes in isolation), which prevents automatic management of
+        # referential integrity
+        if item.draft_source is not None:
+            item.draft_source.drafts.remove(item)
+
+        changeset = ChangeSet.current
+
+        # Add a revision for the delete operation
         if changeset:
             change = changeset.changes.get(item.id)
 
