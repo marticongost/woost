@@ -1758,3 +1758,44 @@ body.scripted .BackOfficeLayout .Table .selection {
     padding: 0 0.4em;
 }
 
+/* Overwrite tiny styles to cutomize toolbar buttons */
+
+/* External */
+.defaultSkin .mceExternalClose {
+    background:url(../images/icons_tiny.gif) -820px 0; !important
+}
+
+/* Layout */
+.defaultSkin .mceStatusbar a.mceResize {
+    background:url(../images/icons_tiny.gif) -800px 0; !important
+}
+
+.defaultSkin .mceIcon {
+    background:url(../images/icons_tiny.gif) no-repeat 20px 20px; !important
+}
+
+/* Separator */
+.defaultSkin .mceSeparator {
+    background:url(../images/icons_tiny.gif) -180px 0; !important
+}
+
+/* ListBox */
+.defaultSkin .mceListBox .mceOpen {
+    background:url(../images/icons_tiny.gif) -741px 0; !important
+}
+
+/* SplitButton */
+.defaultSkin .mceSplitButton span.mceAction {
+    background:url(../images/icons_tiny.gif) 20px 20px; !important
+}
+.defaultSkin .mceSplitButton a.mceOpen {
+    background:url(../images/icons_tiny.gif) -741px 0; !important
+}
+
+/* Browse */
+a.browse span {
+    background:url(../images/icons_tiny.gif) -860px 0; !important
+}
+a.pickcolor span {
+    background:url(../images/icons_tiny.gif) -840px 0; !important
+}

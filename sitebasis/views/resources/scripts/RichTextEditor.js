@@ -93,16 +93,13 @@ function initRichTextEditor(instance) {
             if (r.dx === null) {
                 return;
             }
-
-            var tmp = ed.id.split("-");
+            
             var Cookie = tinymce.util.Cookie;
 
-            jQuery(".language.selected").each(function () {
+            jQuery(".field_instance-RichTextEditor:visible textarea").each(function () {
 
-                var langcode = jQuery(this).next("button").val();
-
-                var areaid = tmp[0] + '-' + langcode + '_editor-' + langcode;
-
+                var areaid = jQuery(this).attr('id');
+                alert(areaid);
                 var c = DOM.get(areaid + '_tbl');
 
                 var ifr = DOM.get(areaid + '_ifr');
