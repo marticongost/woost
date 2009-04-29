@@ -367,13 +367,25 @@ class CMS(BaseCMSController):
 
         if height is not None:
             height = int(height)
-            
-        format = kwargs.get("format", self.thumbnail_loader.default_format)
-
-        if format is None:
+        
+	format = kwargs.get("format", self.thumbnail_loader.default_format)
+        
+	if format is None:
             raise cherrypy.NotFound()
+	
+	params = {"format": format}
 
-        # TODO: Filter accepted keys in kwargs?
+	quality = kwargs.get("quality")
+	if quality is not None:	    
+	    params["quality"] = int(quality)
+
+	optimize = kwargs.get("optimize")
+	if optimize is not None:
+	    params["optimize"] = (optimize == "true")
+
+	progressive = kwargs.get("progressive")
+	if progressive is not None:
+	    params["progressive"] = (progressive == "progressive")
 
         # Obtain the thumbnail
         try:
@@ -381,7 +393,7 @@ class CMS(BaseCMSController):
                 item,
                 width,
                 height,
-                **kwargs
+                **params
             )
         except ThumbnailParameterError:
             raise cherrypy.NotFound()
@@ -399,7 +411,7 @@ class CMS(BaseCMSController):
         
         # Write the thumbnail to the HTTP response
         buffer = StringIO()
-        self.thumbnail_loader.save_thumbnail(image, buffer, **kwargs)
+        self.thumbnail_loader.save_thumbnail(image, buffer, **params)
         return buffer.getvalue()
 
     def _get_requested_item(self, id, **kwargs):
