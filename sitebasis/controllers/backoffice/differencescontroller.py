@@ -18,11 +18,16 @@ class DifferencesController(EditController):
     section = "diff"
 
     @cached_getter
+    def source_item(self):
+        item = self.stack_node.item
+        return item.draft_source or item
+
+    @cached_getter
     def output(self):
         output = EditController.output(self)
         output.update(
             submitted = False,
-            source = self.stack_node.item,
+            source = self.source_item,
             target = self.stack_node.form_data,
             selected_action = get_user_action("diff")
         )

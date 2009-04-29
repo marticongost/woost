@@ -6,6 +6,7 @@ from cocktail.modeling import extend, call_base
 from cocktail.iteration import is_empty
 from cocktail.schema import Reference
 from cocktail.controllers.viewstate import view_state
+from cocktail.controllers.userfilter import CollectionFilter
 from cocktail.html.shortcuts import set_translated_shortcut
 from sitebasis.models import Item, Site, reduce_ruleset
 from sitebasis.views.contenttypetree import ContentTypeTree
@@ -82,18 +83,22 @@ from sitebasis.controllers.backoffice.useractions import \
         <py:ready>
             <py:with py:element="self.filters_selector"
                 py:if="hasattr(self, 'filters_selector')">
-                <py:with py:def="filter_ui">
+                <py:with py:def="filter_ui" py:args="filter">
                     <?py
-                    def get_filter_reference_display(filter_ui, obj, member):
-                        if member.class_family is not None:
-                            display = templates.new("sitebasis.views.ContentTypePicker")
-                            display.root = member.class_family
-                        else:
-                            display = "sitebasis.views.ItemSelector"
+                    @extend(element)
+                    def get_default_member_display(element, obj, member):
+                        if isinstance(member, Reference):
+                            if member.class_family is not None:
+                                display = templates.new("sitebasis.views.ContentTypePicker")
+                                display.root = member.class_family
+                                return display
+                            elif not (
+                                isinstance(filter, CollectionFilter)
+                                and filter.member.edit_inline
+                            ):
+                                return "sitebasis.views.ItemSelector"
                     
-                        return display
-
-                    element.set_member_type_display(Reference, get_filter_reference_display)
+                        return call_base(obj, member)
                     ?>
                 </py:with>
             </py:with>
@@ -121,8 +126,6 @@ from sitebasis.controllers.backoffice.useractions import \
         </py:with>
 
         <?py
-        self.set_client_param("persistencePrefix", self.user_collection.persistence_prefix)
-
         if self.user_collection.user_filters:
             user_filter = self.user_collection.user_filters[0]
             if user_filter.id == "global_search":                

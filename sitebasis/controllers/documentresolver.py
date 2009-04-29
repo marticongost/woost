@@ -117,7 +117,7 @@ class IdResolver(DocumentResolver):
 
             try:
                 id = int(id)
-            except TypeError:
+            except:
                 return None
 
             if canonical_redirection and id == Site.main.home.id:
@@ -176,7 +176,7 @@ class DescriptiveIdResolver(DocumentResolver):
 
             try:
                 id = int(id)
-            except TypeError:
+            except:
                 return None
 
             document = Document.get_instance(id)

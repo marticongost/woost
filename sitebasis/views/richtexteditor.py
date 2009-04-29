@@ -30,7 +30,7 @@ class RichTextEditor(TinyMCE):
 
         self.tinymce_params.update(
             init_instance_callback = "initRichTextEditor",
-            plugins = "fullscreen, paste, inlinepopups, advimage",
+            plugins = "fullscreen, paste, inlinepopups, advimage, contextmenu",            
             entity_encoding = "raw",
             theme = "advanced",
             dialog_type = "modal",            

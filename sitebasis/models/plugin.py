@@ -45,8 +45,8 @@ class PlugIn(Item):
     )
  
     def __translate__(self, language, **kwargs):
-        return self.get("title", language) \
-            or Item.__translate(self, language, **kwargs)
+        return (self.draft_source is None and self.get("title", language)) \
+            or Item.__translate__(self, language, **kwargs)
 
     @abstractmethod
     def initialize(self, cms):
