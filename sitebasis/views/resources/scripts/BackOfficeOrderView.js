@@ -49,7 +49,7 @@ cocktail.init(function () {
                     if(jQuery(row).attr('id') == jQuery(this).attr('id')) position = i;                                          
                 });
                 
-                var url = '/' + cocktail.getLanguage() + '/cms/order?';                           
+                var url = '/' + cocktail.getLanguage() + cms_uri + '/order?';                           
                 url += "selection=" + jQuery(row).attr('id') + "&";
                 url += "member=" + member + "&";
                 url += "edit_stack=" + edit_stack + "&";

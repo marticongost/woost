@@ -61,6 +61,7 @@ from sitebasis.controllers.backoffice.useractions import add_view_action_context
                 self.add_resource(resource.uri)
                 
         add_view_action_context(element, "nested" if self.edit_stack else "root")
+        self.set_client_variable("cms_uri", self.cms.document_uri())
         ?>
     </py:ready>
 
