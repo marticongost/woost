@@ -35,6 +35,6 @@ class Action(PersistentObject):
         return base_repr
 
     def __translate__(self, language, **kwargs):
-        return (self.draft_source is None and self.get("title", language)) \
+        return self.get("title", language) \
             or Item.__translate__(self, language, **kwargs)
 
