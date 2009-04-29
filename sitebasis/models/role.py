@@ -25,6 +25,6 @@ class Role(Agent):
     anonymous = False
 
     def __translate__(self, language, **kwargs):
-        return self.get("title", language) \
+        return (self.draft_source is None and self.get("title", language)) \
             or Agent.__translate__(self, language, **kwargs)
 

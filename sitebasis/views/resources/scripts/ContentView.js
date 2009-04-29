@@ -12,8 +12,9 @@ cocktail.init(function () {
     var ADVANCED_SEARCH_COOKIE_PREFIX = "ContentView.advancedSearch-";
 
     // Enable/disable buttons depending on the selected content
-    function updateToolbar() {
-        var selectionSize = jQuery(".selection input:checked", this).length;
+    function updateToolbar() {    
+        var display = jQuery(".collection_display", this).get(0);
+        var selectionSize = display.getSelection().length;
         jQuery(".action_button", this).each(function () {
             this.disabled = (
                 (this.minSelection && selectionSize < this.minSelection)
@@ -125,14 +126,18 @@ cocktail.init(function () {
         .addClass("scripted")
         .each(function () {
 
+            var contentView = this;
+
             // Enabled/disabled toolbar buttons
-            jQuery(".collection_display", this).bind("selectionChanged", function () {
-                jQuery(this).parents(".ContentView").each(updateToolbar);
-            });
-            updateToolbar.call(this);
+            jQuery(".collection_display", this)
+                .bind("selectionChanged", function () {
+                    updateToolbar.call(contentView);
+                });
+
+            updateToolbar.call(contentView);
 
             // Simple search mode
-            simplifySearch.call(this);            
+            simplifySearch.call(contentView);
         })
         // Enable the advanced search panel when adding filters using the links
         // on table headers

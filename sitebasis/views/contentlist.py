@@ -20,7 +20,7 @@ class ContentList(List):
     def _fill_entries(self):
         items = self.items
 
-        if self.authorization_check:
+        if items is not None and self.authorization_check:
             items = [
                 item
                 for item in self.items
