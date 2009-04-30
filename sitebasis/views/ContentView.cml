@@ -7,6 +7,7 @@ from cocktail.iteration import is_empty
 from cocktail.schema import Reference
 from cocktail.controllers.viewstate import view_state
 from cocktail.controllers.userfilter import CollectionFilter
+from cocktail.html.datadisplay import DataDisplay
 from cocktail.html.shortcuts import set_translated_shortcut
 from sitebasis.models import Item, Site, reduce_ruleset
 from sitebasis.views.contenttypetree import ContentTypeTree
@@ -121,7 +122,8 @@ from sitebasis.controllers.backoffice.useractions import \
             cms_allows = self.cms.allows
             element.authorization_check = lambda **ctx: cms_allows(ruleset = ruleset, **ctx)
 
-            element.set_member_label("element", translations(self.user_collection.type.name))
+            if isinstance(element, DataDisplay):
+                element.set_member_label("element", translations(self.user_collection.type.name))
             ?>
         </py:with>
 

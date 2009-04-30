@@ -121,6 +121,11 @@ global_content_views.add(
 )
 
 global_content_views.add(
+    Item,
+    "sitebasis.views.ThumbnailsContentView"
+)
+
+global_content_views.add(
     Document,
     "sitebasis.views.DocumentTreeContentView",
     is_default = True,

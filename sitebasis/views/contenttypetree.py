@@ -8,6 +8,7 @@ u"""
 """
 from cocktail.translations import translations
 from cocktail.html import Element, templates
+from cocktail.controllers import context
 from sitebasis.models import Item
 
 TreeView = templates.get_class("cocktail.html.TreeView")
@@ -18,6 +19,7 @@ class ContentTypeTree(TreeView):
     root = Item
     root_visible = True
     plural_labels = False
+    icon_size = 16
 
     def create_label(self, content_type):
         
@@ -25,6 +27,15 @@ class ContentTypeTree(TreeView):
 
         for schema in content_type.descend_inheritance(True):
             label.add_class(schema.name)
+
+        img = Element("img")
+        img["src"] = context["cms"].document_uri(
+            "icons",
+            content_type.full_name,
+            icon_size = str(self.icon_size)
+        )
+        img.add_class("icon")
+        label.insert(0, img)
 
         return label
 

@@ -546,8 +546,6 @@ body.scripted .BackOfficeLayout .Table .selection {
 
 .BackOfficeLayout .Table .element_column label {
     white-space: nowrap;
-    background-repeat: no-repeat;
-    padding-left: 1.5em;
 }
 
 .BackOfficeLayout .draft,
@@ -571,7 +569,6 @@ body.scripted .BackOfficeLayout .Table .selection {
 .BackOfficeLayout .Table td.element_column label {
     padding-top: 0.1em;
     padding-bottom: 0.1em;
-    background-position: center left;
 }
 
 .BackOfficeLayout .search_results_message {
@@ -612,76 +609,6 @@ body.scripted .BackOfficeLayout .Table .selection {
 .BackOfficeLayout .Table a.target-focus {
     position: absolute;
     left: -100px;
-}
-
-/* Content type icons
------------------------------------------------------------------------------*/
-.BackOfficeLayout .Item {
-    background-image: url(../images/types/Item.png);
-}
-
-.BackOfficeLayout .Site {
-    background-image: url(../images/types/Site.png);
-}
-
-.BackOfficeLayout .AccessRule {
-    background-image: url(../images/types/AccessRule.png);
-}
-
-.BackOfficeLayout .DynamicGroup {
-    background-image: url(../images/types/DynamicGroup.png);
-}
-
-.BackOfficeLayout .Document {
-    background-image: url(../images/types/Document.png);
-}
-
-.BackOfficeLayout .Redirection {
-    background-image: url(../images/types/Redirection.png);
-}
-
-.BackOfficeLayout .Event {
-    background-image: url(../images/types/Event.png);    
-}
-
-.BackOfficeLayout .File {
-    background-image: url(../images/types/File.png);
-}
-
-.BackOfficeLayout .Language {
-    background-image: url(../images/types/Language.png);
-}
-
-.BackOfficeLayout .News {
-    background-image: url(../images/types/News.png);
-}
-
-.BackOfficeLayout .Resource {
-    background-image: url(../images/types/Resource.png);
-}
-
-.BackOfficeLayout .Style {
-    background-image: url(../images/types/Style.png);
-}
-
-.BackOfficeLayout .Template {
-    background-image: url(../images/types/Template.png);
-}
-
-.BackOfficeLayout .Agent {
-    background-image: url(../images/types/User.png);
-}
-
-.BackOfficeLayout .Role {
-    background-image: url(../images/types/Role.png);
-}
-
-.BackOfficeLayout .Group {
-    background-image: url(../images/types/Group.png);
-}
-
-.BackOfficeLayout .PlugIn {
-    background-image: url(../images/types/PlugIn.png);
 }
 
 /* Toolbar
@@ -933,11 +860,17 @@ body.scripted .BackOfficeLayout .Table .selection {
 }
 
 .BackOfficeLayout .ContentTypeTree .entry_label {
-    background-repeat: no-repeat;
-    background-position: left center;
-    padding-left: 1.75em;
     padding-bottom: 0.2em;
     color: black;
+}
+
+.BackOfficeLayout .ContentTypeTree .icon,
+.BackOfficeLayout .ContentTypeSelector .icon,
+.BackOfficeLayout .ItemLabel .icon {
+    position: relative;
+    top: -0.1em;
+    vertical-align: middle;
+    margin-right: 0.4em;
 }
 
 /* Content type selector
@@ -1072,6 +1005,55 @@ body.scripted .BackOfficeLayout .Table .selection {
 
 .BackOfficeLayout .TreeContentView .leaf label {
     margin-left: 1.5em;
+}
+
+/* Thumbnails content view
+-----------------------------------------------------------------------------*/
+.BackOfficeLayout .ThumbnailsContentView .collection_display .entry {
+    display: block;
+    float: left;
+    margin: 0.5em;
+    width: 8em;
+    height: 9em;
+    text-align: center;
+    position: relative;
+}
+
+.BackOfficeLayout .ThumbnailsContentView .entry.selected {
+    /*background-color: rgb(75,75,75);
+    border: 1px solid rgb(75,75,75);
+    color: white;
+    -moz-border-radius: 5px;*/
+}
+
+body.scripted .BackOfficeLayout .ThumbnailsContentView .collection_display input[type=checkbox] {
+    display: none;
+}
+
+.BackOfficeLayout .ThumbnailsContentView .collection_display .icon_frame {
+    position: absolute;
+    bottom: 2.5em;
+    left: 0;
+    right: 0;
+    text-align: center;
+}
+
+.BackOfficeLayout .ThumbnailsContentView .collection_display .label {
+    display: block;
+    text-align: center;
+    margin-top: 6.75em;
+}
+
+.BackOfficeLayout .ThumbnailsContentView .collection_display label {
+    white-space: normal;
+}
+
+.BackOfficeLayout .ThumbnailsContentView .collection_display .selected .label {
+    background-color: rgb(75,75,75);
+    border: 1px solid rgb(75,75,75);
+    color: white;
+    -moz-border-radius: 5px;
+    padding: 0.2em;
 }
 
 /* History
