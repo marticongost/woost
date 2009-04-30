@@ -55,22 +55,17 @@ class ContentTable(ContentDisplayMixin, Table):
 
     def create_element_display(self, item, member):
         
-        display = Element("label")
+        display = templates.new("sitebasis.views.ItemLabel")
+        display.tag = "label"
         display["for"] = "selection_" + str(item.id)
-        
+        display.item = item
+                
         if self.inline_draft_copies and item.draft_source:
-            desc = translations(
+            display.get_label = lambda: translations(
                 "sitebasis.views.ContentTable draft label",
                 draft_id = item.draft_id
             )
-        else:
-            desc = translations(item)
         
-        display.append(desc)
-
-        for schema in item.__class__.descend_inheritance(True):
-            display.add_class(schema.name)
-
         return display
 
     def create_class_display(self, item, member):
