@@ -128,8 +128,6 @@ from sitebasis.controllers.backoffice.useractions import \
         </py:with>
 
         <?py
-        self.set_client_param("persistencePrefix", self.user_collection.persistence_prefix)
-
         if self.user_collection.user_filters:
             user_filter = self.user_collection.user_filters[0]
             if user_filter.id == "global_search":                
