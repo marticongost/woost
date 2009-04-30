@@ -24,6 +24,10 @@ from cocktail.translations import set_language
 from cocktail.language import set_content_language
 from cocktail.persistence import datastore
 from sitebasis.models import Site, Document, Item, Style, AccessDeniedError
+from sitebasis.models.icons import IconResolver
+from sitebasis.models.thumbnails import (
+    ThumbnailLoader, ImageThumbnailer, ThumbnailParameterError
+)
 from sitebasis.controllers.basecmscontroller import BaseCMSController
 from sitebasis.controllers.language import LanguageModule
 from sitebasis.controllers.authentication import (
@@ -34,9 +38,6 @@ from sitebasis.controllers.documentresolver import (
     CanonicalURIRedirection
 )
 from sitebasis.controllers.authorization import AuthorizationModule
-from sitebasis.models.thumbnails import (
-    ThumbnailLoader, ImageThumbnailer, ThumbnailParameterError
-)
 
 
 class CMS(BaseCMSController):
@@ -122,7 +123,7 @@ class CMS(BaseCMSController):
 
         def __init__(self, cms):
             self.__cms = cms
-            self.__dispatcher = Dispatcher()
+            self.__dispatcher = Dispatcher()            
             app_path = cms.application_path
 
             if app_path:
@@ -164,6 +165,16 @@ class CMS(BaseCMSController):
         self.authorization = self.AuthorizationModule(self)
         self.document_resolver = self.DocumentResolver()
         self.thumbnail_loader = self._create_thumbnail_loader()
+        self.icon_resolver = IconResolver()
+
+        if self.application_path:
+
+            # Add an application specific icon repository
+            app_icon_path = os.path.join(
+                self.application_path,
+                "views", "resources", "images", "icons"
+            )
+            self.icon_resolver.icon_repositories.insert(0, app_icon_path)
 
         self.load_plugins()
 
