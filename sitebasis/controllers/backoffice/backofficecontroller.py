@@ -19,6 +19,8 @@ from sitebasis.controllers.backoffice.contentcontroller \
 from sitebasis.controllers.backoffice.deletecontroller import DeleteController
 from sitebasis.controllers.backoffice.ordercontroller import OrderController
 from sitebasis.controllers.backoffice.movecontroller import MoveController
+from sitebasis.controllers.backoffice.iconcontroller import IconController
+
 
 class BackOfficeController(BaseBackOfficeController):
 
@@ -34,6 +36,7 @@ class BackOfficeController(BaseBackOfficeController):
     delete = DeleteController
     order = OrderController
     move = MoveController
+    icons = IconController
 
     def submit(self):
         raise cherrypy.HTTPRedirect(
@@ -97,4 +100,4 @@ class BackOfficeController(BaseBackOfficeController):
                 output.append([resource.title, resource.uri])
 
         return "var tinyMCELinkList = %s" % (dumps(output))
-                
+

@@ -770,6 +770,12 @@ translations.define("tree content view",
     en = u"Show as tree"
 )
 
+translations.define("thumbnails content view",
+    ca = u"Veure com a miniatures",
+    es = u"Ver como miniaturas",
+    en = u"Show as thumbnails grid"
+)
+
 translations.define("order content view",
     ca = u"Veure com a llista ordenable",
     es = u"Ver como lista ordenadable",
