@@ -8,6 +8,7 @@ Provides base and default content types for the sitebasis CMS.
 @since:			June 2008
 """
 from cocktail import schema
+from cocktail.events import when
 
 # Add an extension property to set the default HTML control for the member
 schema.Member.edit_control = None
@@ -52,6 +53,12 @@ schema.Collection.exclude_when_empty = False
 # Add an extension property to determine if members should participate in item
 # revisions
 schema.Member.versioned = True
+
+@when(schema.RelationMember.attached_as_orphan)
+def _hide_self_contained_relations(event):
+    if event.anonymous:
+        event.source.visible = False
+
 
 # Base content types
 #------------------------------------------------------------------------------
