@@ -43,10 +43,16 @@ class RichTextEditor(TinyMCE):
             theme_advanced_toolbar_align = "left",
             theme_advanced_path = False,
             theme_advanced_resize_horizontal = False,
-            external_image_list_url = "/cms/document_images?edit_stack=%s" % \
-                    (context["edit_stacks_manager"].current_edit_stack.to_param()),
-            external_link_list_url = "/cms/document_files?edit_stack=%s" % \
-                    (context["edit_stacks_manager"].current_edit_stack.to_param()),
+            external_image_list_url = "%s/document_images?edit_stack=%s" % \
+                    (
+                        context["cms"].document_uri(), 
+                        context["edit_stacks_manager"].current_edit_stack.to_param()
+                    ),
+            external_link_list_url = "%s/document_files?edit_stack=%s" % \
+                    (
+                        context["cms"].document_uri(),
+                        context["edit_stacks_manager"].current_edit_stack.to_param()
+                    ),
             theme_advanced_styles = ";".join(styles),
             document_base_url = "/",
             relative_urls = False,
