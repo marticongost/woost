@@ -64,7 +64,7 @@
     .BackOfficeLayout .ContentTypePath .selector_content,
     .BackOfficeLayout .new_filter_selector .selector_content {
     	left: 0;
-    	top: 20px;    	
+    	top: 20px;
     }
     
     .BackOfficeLayout .ContentTypeSelector .selector_content {
@@ -72,11 +72,47 @@
         top: 21px !important;
     }
     
+    .content_type_box {
+        margin-bottom: 1em;
+    }
+    
+    .content_type_box .label {
+        width: auto;
+        float: left;
+        _font-size: 12px;
+    }
+    
+    .content_type_box div.label {
+        _font-weight: bold;
+        _margin-right: .5em;
+    }
+    
+    .ActionBar {
+        border: 1px solid red;        
+        margin: 0;
+    }
+        
+    .BackOfficeLayout .toolbar_box {
+        display: block;
+        width: 100%;
+        overflow: hidden;
+        border-left: none;
+        border-right: none;
+    }
+    
+    table th div {
+        width: auto !important;
+    }
+        
     .collection_display_container {
         position: relative;
         z-index: 1 !important;
     }
     
+    .entry_label {
+        display: block;
+    }
+           
     
 /* Breadcrumb and dropdown selection overlay correction */
 
@@ -84,9 +120,14 @@
     	position: relative;
     	z-index: 12;
     }
+        
+    .additional_actions_selector,
+    .new_filter_selector {
+        position: relative;
+    	z-index: 11;
+    }
     
-    .new_toolbar_button,
-    .additional_actions_selector {
+    .new_toolbar_button {
         position: relative;
     	z-index: 10;
     }
@@ -97,10 +138,30 @@
     }
     
     
+/* Content view selector */
+    
+    .content_view {
+        line-height: 3em;
+    }
+    
+    
+    
+    .BackOfficeLayout .CollectionView .filters {        
+        width: 100%;
+        overflow: hidden;
+        float: left;
+    }
+    
+    .BackOfficeLayout .CollectionView .filters .new_filter_selector .label {
+        background-repeat: no-repeat !important;
+    }
+    
+    
 /* Dropdown image alignment */
 
     .ContentTypeTree li a {
     	display: block;
+    	_font-size: 12px;
     }
 
 
