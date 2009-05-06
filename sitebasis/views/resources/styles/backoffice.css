@@ -888,7 +888,7 @@ body.scripted .BackOfficeLayout .Table .selection {
 }
 
 .BackOfficeLayout .ContentTypeSelector .selector_content {
-    top: 1.4em;
+    top: 1.3em;
     z-index: 3;
     padding: 0.4em;
     min-width: 16em;
