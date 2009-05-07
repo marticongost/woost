@@ -99,7 +99,7 @@ function initRichTextEditor(instance) {
             jQuery(".field_instance-RichTextEditor:visible textarea").each(function () {
 
                 var areaid = jQuery(this).attr('id');
-                alert(areaid);
+
                 var c = DOM.get(areaid + '_tbl');
 
                 var ifr = DOM.get(areaid + '_ifr');
