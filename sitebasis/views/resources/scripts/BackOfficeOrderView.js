@@ -55,7 +55,9 @@ cocktail.init(function () {
                 url += "edit_stack=" + edit_stack + "&";
                 url += "action=order&";
                 url += "format=json&";
-                url += "position=" + position;          
+                url += "position=" + position;
+                
+                if(table.entrySelector) table._entries = jQuery(table).find(table.entrySelector);
                                                 
                                                             
                 jQuery.ajax({
