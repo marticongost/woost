@@ -12,7 +12,7 @@ from cPickle import Pickler, Unpickler
 from cStringIO import StringIO
 from itertools import chain
 import cherrypy
-from cocktail.modeling import ListWrapper, getter, cached_getter
+from cocktail.modeling import ListWrapper, getter, cached_getter, OrderedSet
 from cocktail.events import Event, EventHub
 from cocktail.pkgutils import resolve
 from cocktail import schema
@@ -21,7 +21,8 @@ from cocktail.persistence import (
     PersistentObject,
     PersistentList, PersistentRelationList,
     PersistentSet, PersistentRelationSet,
-    PersistentMapping, PersistentRelationMapping
+    PersistentMapping, PersistentRelationMapping,
+    PersistentOrderedSet, PersistentRelationOrderedSet
 )
 from sitebasis.models import Site, Role, allowed, reduce_ruleset
 
@@ -533,6 +534,9 @@ class EditNode(StackNode):
         (PersistentMapping, PersistentRelationMapping)):
             return dict(collection.iteritems())
         elif isinstance(collection,
+        (PersistentOrderedSet, PersistentRelationOrderedSet)):
+            return OrderedSet(collection)
+        elif isinstance(collection,
         (PersistentSet, PersistentRelationSet)):
             return set(collection)
         else:
@@ -581,7 +585,6 @@ class EditNode(StackNode):
             self.content_type,
             self.form_schema
         )
-
         return schema.diff(
             source_form_data,
             self.form_data,
