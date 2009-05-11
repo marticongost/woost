@@ -85,10 +85,10 @@ class OrderController(BaseBackOfficeController):
                 position = size - len(items)
 
             for item in items:
-                collection.remove(item)            
+                collection.remove(item)
             
             for item in reversed(list(items)):
-                collection.insert(position, item)                       
+                collection.insert(position, item)
             
             return collection                   
                    
