@@ -284,25 +284,29 @@ class CMS(BaseCMSController):
         if isinstance(error, CanonicalURIRedirection):
             self._canonical_redirection(error.path)
         
-        error_page, status = event.source.get_error_page(error)
-        
-        if status:
-            cherrypy.request.status = status
+        if cherrypy.response.headers.get("Content-Type") in (
+            "text/html",
+            "text/xhtml"
+        ):
+            error_page, status = event.source.get_error_page(error)
+            
+            if status:
+                cherrypy.request.status = status
 
-        if error_page:        
-            event.handled = True
-            
-            self.context.update(
-                original_document = self.context["document"],
-                document = error_page
-            )
-            
-            response = cherrypy.response
-            response.status = status 
-            
-            error_controller = error_page.handler()
-            response.body = error_controller()
-        
+            if error_page:        
+                event.handled = True
+                
+                self.context.update(
+                    original_document = self.context["document"],
+                    document = error_page
+                )
+                
+                response = cherrypy.response
+                response.status = status 
+                
+                error_controller = error_page.handler()
+                response.body = error_controller()
+    
     def get_error_page(self, error):
         """Produces a custom error page for the indicated exception.
 
@@ -346,7 +350,7 @@ class CMS(BaseCMSController):
 
     def get_file_upload_path(self, id):
         return os.path.join(self.upload_path, str(id))
-
+        
     @cherrypy.expose
     def files(self, id, **kwargs):
         
