@@ -69,7 +69,7 @@ class ContentTypePicker(ContentTypeTree, DataBoundControl):
         entry.option = Element("input",
             type = "radio",
             name = self.name,
-            value = content_type.__name__,
+            value = content_type.full_name,
             checked = content_type is self.value)
 
         self._bind_member(entry.option)
