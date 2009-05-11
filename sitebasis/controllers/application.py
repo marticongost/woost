@@ -379,24 +379,24 @@ class CMS(BaseCMSController):
         if height is not None:
             height = int(height)
         
-	format = kwargs.get("format", self.thumbnail_loader.default_format)
+        format = kwargs.get("format", self.thumbnail_loader.default_format)
+            
+        if format is None:
+                raise cherrypy.NotFound()
         
-	if format is None:
-            raise cherrypy.NotFound()
-	
-	params = {"format": format}
+        params = {"format": format}
 
-	quality = kwargs.get("quality")
-	if quality is not None:	    
-	    params["quality"] = int(quality)
+        quality = kwargs.get("quality")
+        if quality is not None:	    
+            params["quality"] = int(quality)
 
-	optimize = kwargs.get("optimize")
-	if optimize is not None:
-	    params["optimize"] = (optimize == "true")
+        optimize = kwargs.get("optimize")
+        if optimize is not None:
+            params["optimize"] = (optimize == "true")
 
-	progressive = kwargs.get("progressive")
-	if progressive is not None:
-	    params["progressive"] = (progressive == "progressive")
+        progressive = kwargs.get("progressive")
+        if progressive is not None:
+            params["progressive"] = (progressive == "progressive")
 
         # Obtain the thumbnail
         try:
