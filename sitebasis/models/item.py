@@ -74,7 +74,7 @@ class Item(PersistentObject):
     @classmethod
     def _get_unique_validable(cls, context):
         validable = PersistentClass._get_unique_validable(cls, context)
-        return getattr(validable, "draft_source", validable)
+        return getattr(validable, "draft_source", None) or validable
 
     # Make sure draft copies' members don't get indexed
     def _update_index(self, member, language, previous_value, new_value):
