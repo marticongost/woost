@@ -234,6 +234,12 @@ def init_site(
                 allowed = True
             ),
 
+            AccessRule(
+                target_type = User,
+                target_member = "password",
+                allowed = False,
+            ),
+
             # - access to the back office requires special privileges
             AccessRule(
                 target_instance = back_office,
