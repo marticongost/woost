@@ -38,6 +38,7 @@ from sitebasis.controllers.documentresolver import (
     CanonicalURIRedirection
 )
 from sitebasis.controllers.authorization import AuthorizationModule
+from sitebasis.controllers.webservices import CMSWebServicesController
 
 
 class CMS(BaseCMSController):
@@ -202,6 +203,8 @@ class CMS(BaseCMSController):
             config = self.application_settings
         )
         self.application_ending()
+
+    services = CMSWebServicesController
 
     def resolve(self, path):
         
