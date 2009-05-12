@@ -7,7 +7,6 @@ u"""
 @since:			November 2008
 """
 from __future__ import with_statement
-from contextlib import contextmanager
 import cherrypy
 from cocktail.modeling import cached_getter
 from cocktail.events import event_handler, when
@@ -17,7 +16,12 @@ from cocktail.schema import (
 from cocktail.translations import translations
 from cocktail.persistence import datastore
 from sitebasis.models import (
-    Site, Language, changeset_context, ChangeSet, reduce_ruleset
+    Site,
+    Language,
+    changeset_context,
+    ChangeSet,
+    reduce_ruleset,
+    restricted_modification_context
 )
 from sitebasis.controllers.backoffice.editstack import RelationNode, EditNode
 from sitebasis.controllers.backoffice.basebackofficecontroller \
@@ -87,15 +91,15 @@ class EditController(BaseBackOfficeController):
 
         changeset = None
 
-        # Store the changes on a draft; this skips revision control
-        if item.is_draft:       
-            with self.authorization_context(item):
+        with restricted_modification_context(item, user):
+            
+            # Store the changes on a draft; this skips revision control
+            if item.is_draft:       
                 self._apply_changes(item)
 
-        # Operate directly on a production item
-        else:
-            with changeset_context(author = user) as changeset:
-                with self.authorization_context(item):
+            # Operate directly on a production item
+            else:
+                with changeset_context(author = user) as changeset:                
                     self._apply_changes(item)
 
         datastore.commit()
@@ -154,7 +158,7 @@ class EditController(BaseBackOfficeController):
         user = self.user
 
         with changeset_context(author = user) as changeset:
-            with self.authorization_context(target_item):
+            with restricted_modification_context(target_item, user):
                 self._apply_changes(item)
                 item.confirm_draft()
 
@@ -197,64 +201,6 @@ class EditController(BaseBackOfficeController):
         stack_node.saving(
             user = self.user,
             changeset = ChangeSet.current
-        )
-
-    @contextmanager
-    def authorization_context(self, item):
-
-        stack_node = self.stack_node
-        is_new = not item.is_inserted
-        restrict_access = self.context["cms"].authorization.restrict_access
-        action = "create" if is_new else "modify"
-
-        ruleset = reduce_ruleset(
-            Site.main.access_rules_by_priority,
-            {
-                "user": self.user,
-                "action": action,
-                "target_instance": item
-            }
-        )
-
-        # Restrict access *before* the object is modified. This is only done on
-        # existing objects, to make sure the current user is allowed to modify
-        # them, taking into account constraints that may derive from the
-        # object's present state. New objects, by definition, have no present
-        # state, so the test is skipped.
-        if not is_new:
-            restrict_access(
-                ruleset = ruleset,
-                action = action,
-                target_instance = item
-            )
-
-        # Add event listeners to the edited item, to restrict changes to
-        # its members and relations
-        @when(item.changed)
-        def restrict_members(event):
-            restrict_access(
-                ruleset = ruleset,
-                action = action,
-                target_instance = item,
-                target_member = event.member,
-                language = event.language
-            )
-
-        # Try to modify the item
-        try:
-            yield None
-
-        # Remove the added event listeners
-        finally:
-            item.changed.remove(restrict_members)
-
-        # Restrict access *after* the object is modified, both for new and old
-        # objects, to make sure the user is leaving the object in a state that
-        # complies with all existing restrictions.
-        restrict_access(
-            ruleset = ruleset,
-            action = action,
-            target_instance = stack_node.item
         )
 
     @cached_getter

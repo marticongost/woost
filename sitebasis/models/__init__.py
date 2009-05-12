@@ -80,6 +80,7 @@ from sitebasis.models.accessrule import (
     allowed,
     restrict_access,
     reduce_ruleset,
+    restricted_modification_context,
     AccessAllowedExpression,
     AccessDeniedError
 )
