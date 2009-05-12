@@ -21,10 +21,13 @@ cocktail.init(function () {
 
     if(jQuery.cookie('visible_languages')){
         var loop = jQuery.cookie('visible_languages').replace(/"/g,"").split(',');
-        for(i=0;i<loop.length;i++){
-            jQuery("input[value='" + loop[i] + "']").attr('checked','checked');
-        }
+     }else{
+        var loop = cocktail.getLanguages();
      }
+
+    for(i=0;i<loop.length;i++){
+        jQuery("input[value='" + loop[i] + "']").attr('checked','checked');
+    }
 
     function switchVisibleLang() {
         jQuery(".translations_check").not(":checked").each( function () {
