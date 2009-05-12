@@ -43,11 +43,9 @@ class Item(PersistentObject):
         else:
             return PersistentObject.__translate__(self, language, **kwargs)
 
-    # Unique qname
+    # Unique qualified name
     #--------------------------------------------------------------------------
     qname = schema.String(
-        max = 10,
-        required = True,
         unique = True,
         indexed = True,
         visible = False,
