@@ -6,6 +6,8 @@ u"""
 @organization:	Whads/Accent SL
 @since:			July 2008
 """
+from contextlib import contextmanager
+from cocktail.events import when
 from cocktail.language import get_content_language
 from cocktail.translations import translations
 from cocktail.persistence import datastore
@@ -551,6 +553,53 @@ def allowed(**context):
 def restrict_access(**context):
     if not allowed(**context):
         raise AccessDeniedError(context)
+
+@contextmanager
+def restricted_modification_context(item, user):
+    
+    is_new = not item.is_inserted
+    action = "create" if is_new else "modify"
+
+    authz_context = {
+        "user": user,
+        "action": action,
+        "target_instance": item
+    }
+    authz_context["ruleset"] = reduce_ruleset(
+        Site.main.access_rules_by_priority,
+        authz_context
+    )
+
+    # Restrict access *before* the object is modified. This is only done on
+    # existing objects, to make sure the current user is allowed to modify
+    # them, taking into account constraints that may derive from the
+    # object's present state. New objects, by definition, have no present
+    # state, so the test is skipped.
+    if not is_new:
+        restrict_access(**authz_context)
+
+    # Add event listeners to the edited item, to restrict changes to
+    # its members and relations
+    @when(item.changed)
+    def restrict_members(event):
+        restrict_access(
+            target_member = event.member,
+            language = event.language,
+            **authz_context
+        )
+
+    # Try to modify the item
+    try:
+        yield None
+
+    # Remove the added event listeners
+    finally:
+        item.changed.remove(restrict_members)
+
+    # Restrict access *after* the object is modified, both for new and old
+    # objects, to make sure the user is leaving the object in a state that
+    # complies with all existing restrictions.
+    restrict_access(**authz_context)
 
 
 class AccessAllowedExpression(schema.expressions.Expression):
