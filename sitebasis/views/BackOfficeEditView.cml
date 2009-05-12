@@ -4,6 +4,7 @@
 from cocktail import schema
 from sitebasis.controllers.backoffice.useractions import \
     add_view_action_context
+from simplejson import dumps
 ?>
 
 <py:sitebasis.views.BackOfficeItemView
@@ -21,12 +22,14 @@ from sitebasis.controllers.backoffice.useractions import \
     <?py-class
     collections = ()
     errors = ()
+    available_languages = ()
     ?>
 
     <py:ready>
         <?py
         self.changed_keys = set((member.name, language)
-                                for member, language in self.changes)
+            for member, language in self.changes)
+        self.add_client_code("cocktail.setLanguages(%s)" % dumps(self.available_languages))
         ?>
     </py:ready>
 
