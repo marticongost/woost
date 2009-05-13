@@ -18,8 +18,7 @@ setup(
         "simplejson",
         "cocktail",
         "genshi",
-        "pyExcelerator",
-        "PIL"
+        "pyExcelerator"
     ],
     include_package_data = True,
     packages = find_packages(),
