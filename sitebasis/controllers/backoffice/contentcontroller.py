@@ -15,7 +15,7 @@ from cocktail.modeling import getter, cached_getter, ListWrapper, SetWrapper
 from cocktail.events import event_handler
 from cocktail.translations import translations
 from cocktail.pkgutils import resolve
-from cocktail.schema import get, Member, Adapter, Reference, String, Collection
+from cocktail import schema
 from cocktail.schema.expressions import (
     Expression, CustomExpression, ExclusionExpression, Self
 )
@@ -70,7 +70,7 @@ class ContentController(BaseBackOfficeController):
 
     def __call__(self, *args, **kwargs):
 
-        rel = self.params.read(String("rel"))
+        rel = self.params.read(schema.String("rel"))
 
         # Open the item selector
         if rel:
@@ -86,7 +86,7 @@ class ContentController(BaseBackOfficeController):
                     root_content_type = root_content_type_name,
                     selection_parameter = selection_parameter,
                     selection = self.params.read(
-                        String(selection_parameter)
+                        schema.String(selection_parameter)
                     )
                 )
             )
@@ -129,7 +129,7 @@ class ContentController(BaseBackOfficeController):
 
         if root_content_type is None:
             root_content_type_param = self.params.read(
-                String("root_content_type")
+                schema.String("root_content_type")
             )
             root_content_type = resolve(root_content_type_param)
     
@@ -142,7 +142,7 @@ class ContentController(BaseBackOfficeController):
         if node and isinstance(node, RelationNode):
             member = node.member
 
-            if isinstance(member, Reference):
+            if isinstance(member, schema.Reference):
                 return member.type
             else:
                 return member.items.type
@@ -221,7 +221,7 @@ class ContentController(BaseBackOfficeController):
 
     @cached_getter
     def content_adapter(self):
-        adapter = Adapter()
+        adapter = schema.Adapter()
         adapter.exclude([
             member.name
             for member in self.content_type.members().itervalues()
@@ -233,12 +233,14 @@ class ContentController(BaseBackOfficeController):
     def content_schema(self):
         content_schema = self.content_adapter.export_schema(self.content_type)
         content_schema.name = "BackOfficeContentView"
-        content_schema.add_member(Member(name = "element", searchable = False))
+        content_schema.add_member(
+            schema.Member(name = "element", searchable = False)
+        )
         content_schema.members_order.insert(0, "element")
         
         if any(cls.visible for cls in self.content_type.derived_schemas()):
             content_schema.add_member(
-                Member(name = "class", searchable = False)
+                schema.Member(name = "class", searchable = False)
             )
             content_schema.members_order.insert(1, "class")
 
@@ -295,13 +297,15 @@ class ContentController(BaseBackOfficeController):
         if node and isinstance(node, RelationNode):
             
             relation = node.member
-            is_collection = isinstance(relation, Collection)
+            is_collection = isinstance(relation, schema.Collection)
             edit_node = self.edit_stack[-2]
             excluded_items = set()
 
             # Exclude items that are already contained on an edited collection
             if is_collection:
-                excluded_items.update(get(edit_node.form_data, relation))
+                excluded_items.update(
+                    schema.get(edit_node.form_data, relation)
+                )
 
             # Add relation constraints
             for constraint in relation.get_constraint_filters(edit_node.item):
@@ -313,13 +317,16 @@ class ContentController(BaseBackOfficeController):
             if edit_node.item:
 
                 # References: exclude the edited item and its descendants
-                if isinstance(relation, Reference):
+                if isinstance(relation, schema.Reference):
                     if not relation.cycles_allowed:
                         
                         if relation.bidirectional:
 
                             # 1-n
-                            if isinstance(relation.related_end, Collection):
+                            if isinstance(
+                                relation.related_end,
+                                schema.Collection
+                            ):
 
                                 def recursive_exclusion(item):
                                     excluded_items.add(item)
@@ -355,7 +362,7 @@ class ContentController(BaseBackOfficeController):
 
                 # Collections: exclude the edited item and its ancestors
                 elif relation.bidirectional \
-                and isinstance(relation.related_end, Reference) \
+                and isinstance(relation.related_end, schema.Reference) \
                 and not relation.related_end.cycles_allowed:
 
                     item = edit_node.item
@@ -397,21 +404,28 @@ class ContentController(BaseBackOfficeController):
 
     @cached_getter
     def selection_parameter(self):
-        return self.params.read(String("selection_parameter"))
+        return self.params.read(schema.String("selection_parameter"))
 
     @cached_getter
     def selection_mode(self):
         if self.edit_stack \
         and isinstance(self.stack_node, RelationNode) \
-        and isinstance(self.stack_node.member, Reference):
+        and isinstance(self.stack_node.member, schema.Reference):
             return SINGLE_SELECTION
         else:
             return MULTIPLE_SELECTION
 
     @cached_getter
+    def search_expanded(self):
+        return bool(
+            self.user_collection.user_filters
+            or self.params.read(schema.Boolean("search_expanded"))
+        )
+
+    @cached_getter
     def output(self):
         output = BaseBackOfficeController.output(self)
-        output.update(        
+        output.update(
             user_collection = self.user_collection,
             available_languages = self.available_languages,
             visible_languages = self.visible_languages,
@@ -419,7 +433,8 @@ class ContentController(BaseBackOfficeController):
             content_view = self.content_view,
             selection_mode = self.selection_mode,
             selection_parameter = self.selection_parameter,
-            root_content_type = self.root_content_type
+            root_content_type = self.root_content_type,
+            search_expanded = self.search_expanded
         )
         return output
 

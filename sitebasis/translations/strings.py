@@ -383,16 +383,10 @@ translations.define("sitebasis.views.ContentView label",
     en = u"See as:"
 )
 
-translations.define("sitebasis.views.ContentView advanced search title",
-    ca = u"Cerca avançada",
-    es = u"Búsqueda avanzada",
-    en = u"Advanced search"
-)
-
 translations.define("sitebasis.views.ContentView show advanced search",
-    ca = u"Cerca avançada",
-    es = u"Búsqueda avanzada",
-    en = u"Advanced search"
+    ca = u"Més opcions de cerca",
+    es = u"Mas opciones de búsqueda",
+    en = u"More search options"
 )
 
 translations.define("sitebasis.views.ContentView close advanced search",

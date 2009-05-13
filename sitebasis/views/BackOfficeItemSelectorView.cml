@@ -17,6 +17,7 @@ from cocktail.html.datadisplay import MULTIPLE_SELECTION
     member = None
     selection_mode = MULTIPLE_SELECTION
     selection_parameter = None
+    search_expanded = False
     ?>
 
     <?py
@@ -45,6 +46,7 @@ from cocktail.html.datadisplay import MULTIPLE_SELECTION
             py:root_content_type="${self.root_content_type}"
             py:selection_mode="${self.selection_mode}"
             py:edit_stack="${self.edit_stack}"
+            py:search_expanded="${self.search_expanded}"
             py:activation_control=".select_action">
 
             <?py

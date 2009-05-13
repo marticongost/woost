@@ -14,110 +14,14 @@ cocktail.init(function () {
     // Enable/disable buttons depending on the selected content
     function updateToolbar() {    
         var display = jQuery(".collection_display", this).get(0);
-        var selectionSize = display.getSelection().length;
-        jQuery(".action_button", this).each(function () {
-            this.disabled = (
-                (this.minSelection && selectionSize < this.minSelection)
-                || (this.maxSelection && selectionSize > this.maxSelection)
-            );
-        });
-    }
-
-    // Enable simple search mode
-    function simplifySearch() {
-    
-        var filtersBox = jQuery(".filters", this);
-        var persistencePrefix = this.persistencePrefix;
-        
-        var cookieKey = ADVANCED_SEARCH_COOKIE_PREFIX + persistencePrefix
-
-        if (!filtersBox.length) {
-            return;
-        }
-
-        // TODO: Do the createElement(...html...) hack to satisfy IE
-
-        if (jQuery.cookie(ADVANCED_SEARCH_COOKIE_PREFIX + this.persistencePrefix) != "true") {
-
-            var simpleSearchBox = document.createElement("div");
-            simpleSearchBox.className = "simple_search";
-            
-            filtersBox.remove();
-
-            var typeSelector = jQuery(".content_type_box", this);
-            if (typeSelector.length) {
-                typeSelector.after(simpleSearchBox);
-            }
-            else {
-                jQuery(this).prepend(simpleSearchBox);
-            }
-
-            jQuery(simpleSearchBox).parents("form").submit(function () {
-                if (searchInput.value == "") {
-                    searchFilter.value = " ";
-                }
+        if (display) {
+            var selectionSize = display.getSelection().length;
+            jQuery(".action_button", this).each(function () {
+                this.disabled = (
+                    (this.minSelection && selectionSize < this.minSelection)
+                    || (this.maxSelection && selectionSize > this.maxSelection)
+                );
             });
-
-            var searchFilter = document.createElement("input");
-            searchFilter.type = "hidden";
-            searchFilter.name = "filter";
-            searchFilter.value = "global_search";
-            simpleSearchBox.appendChild(searchFilter);
-
-            var searchLanguage = document.createElement("input");
-            searchLanguage.type = "hidden";
-            searchLanguage.name = "filter_language0";
-            searchLanguage.value = "";
-            simpleSearchBox.appendChild(searchLanguage);
-
-            var searchInput = document.createElement("input");
-            searchInput.className = "search_input";
-            searchInput.type = "text";
-            searchInput.name = "filter_value0";
-            searchInput.value = this.searchQuery || "";
-            simpleSearchBox.appendChild(searchInput);
-            
-            var searchButton = document.createElement("input");
-            searchButton.type = "submit";
-            searchButton.className = "search_button"
-            searchButton.value = cocktail.translate("sitebasis.views.ContentView search button");
-            simpleSearchBox.appendChild(searchButton);
-
-            var advSearchButton = document.createElement("a");
-            advSearchButton.className = "advanced_search";
-            advSearchButton.href = "#";
-            advSearchButton.appendChild(document.createTextNode(
-                cocktail.translate("sitebasis.views.ContentView show advanced search")
-            ));
-            jQuery(advSearchButton).click(function () {
-                jQuery.cookie(ADVANCED_SEARCH_COOKIE_PREFIX + persistencePrefix, "true");
-                location.href = location.href;
-            });
-            simpleSearchBox.appendChild(advSearchButton);
-        }
-        else {
-            jQuery(".filters_label", this).html(
-                cocktail.translate("sitebasis.views.ContentView advanced search title")
-            );
-            
-            
-            if(jQuery.browser.msie){                
-                var closeButton = document.createElement("<input type='button'>");
-            }else{
-                var closeButton = document.createElement("input");
-                closeButton.type = "button";
-            }
-            
-            var discardButton = jQuery(".discard_button", filtersBox);
-            
-            var closeHref = discardButton.get(0).href;
-            
-            jQuery(closeButton).val(cocktail.translate("sitebasis.views.ContentView close advanced search")).click(function () {                
-                jQuery.cookie(ADVANCED_SEARCH_COOKIE_PREFIX + persistencePrefix, "false");                
-                location.href = closeHref;
-            });
-                        
-            discardButton.replaceWith(closeButton);
         }
     }
 
@@ -135,15 +39,27 @@ cocktail.init(function () {
                 });
 
             updateToolbar.call(contentView);
-
-            // Simple search mode
-            simplifySearch.call(contentView);
         })
-        // Enable the advanced search panel when adding filters using the links
-        // on table headers
-        .find("th .search_options .add_filter").click(function () {
-            var persistencePrefix = jQuery(this).parents(".ContentView").get(0).persistencePrefix;
-            jQuery.cookie(ADVANCED_SEARCH_COOKIE_PREFIX + persistencePrefix, "true");
+
+        // Replace the 'clear filters' link with a 'discard search' button
+        .find(".filters").each(function () {
+        
+            if (jQuery.browser.msie) {
+                var closeButton = document.createElement("<input type='button'>");
+            }
+            else {
+                var closeButton = document.createElement("input");
+                closeButton.type = "button";
+            }
+            
+            var discardButton = jQuery(".discard_button", this);
+            var closeHref = discardButton.get(0).href;
+            
+            jQuery(closeButton).val(cocktail.translate("sitebasis.views.ContentView close advanced search")).click(function () {
+                location.href = closeHref;
+            });
+                        
+            discardButton.replaceWith(closeButton);
         });
 });
 

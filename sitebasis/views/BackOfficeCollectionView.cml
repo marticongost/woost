@@ -16,6 +16,7 @@ from sitebasis.controllers.backoffice.useractions import \
     available_content_views = ()
     content_view = None
     member = None
+    search_expanded = False
     ?>
 
     <?py
@@ -45,7 +46,8 @@ from sitebasis.controllers.backoffice.useractions import \
             py:available_content_views="${self.available_content_views}"
             py:root_content_type="${self.root_content_type}"
             py:edit_stack="${self.edit_stack}"
-            py:member="${self.member}">
+            py:member="${self.member}"
+            py:search_expanded="${self.search_expanded}">
 
             <py:with py:element="element.toolbar">
                 <py:with py:def="action_button">
