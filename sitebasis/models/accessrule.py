@@ -134,9 +134,25 @@ class AccessRule(Item):
         @return: True if the rule matches the context, False otherwise.
         @rtype: bool
         """       
-        match = True
         partial_match = context.get("partial_match", False) \
             and (self.allowed or context.get("partial_negative", False))
+
+        debugging_enabled = context.get("debug", debug)
+
+        if self._matches(context, partial_match):
+            if debugging_enabled:
+                print styled(translations(self), style = "underline"),
+                print styled(
+                    ("allowed" if self.allowed else "forbidden"),
+                    "white", ("green" if self.allowed else "red")
+                )            
+            return True
+        else:
+            if debugging_enabled:
+                print translations(self), "doesn't match"
+            return False
+
+    def _matches(self, context, partial_match):
         
         context_target_instance = context.get("target_instance")
 
@@ -146,134 +162,115 @@ class AccessRule(Item):
         if role is not None:
             context_roles = context.get("roles")
             if context_roles is None:
-                match = partial_match
-            else:
-                match = role in context_roles
+                if not partial_match:
+                    return False
+            elif role not in context_roles:
+                return False
         
         # Target instance
-        if match:
-            target_instance = self.target_instance
+        target_instance = self.target_instance
 
-            if target_instance is not None:
-                if context_target_instance is None:
-                    match = partial_match
-                else:
-                    match = target_instance is context_target_instance
+        if target_instance is not None:
+            if context_target_instance is None:
+                if not partial_match:
+                    return False
+            elif target_instance is not context_target_instance:
+                return False
 
         # Target type
-        if match:
+        target_type = self.target_type
 
-            target_type = self.target_type
-
-            if target_type is not None:
-                context_target_type = context.get("target_type")
-                if context_target_type is None:
-                    match = partial_match
-                else:
-                    match = issubclass(context_target_type, target_type)
-                       
-                if match and context_target_instance is not None:
-                    match = isinstance(
-                        context_target_instance,
-                        target_type
-                    )
+        if target_type is not None:
+            context_target_type = context.get("target_type")
+            
+            if context_target_type is None:
+                if not partial_match:
+                    return False
+            elif not issubclass(context_target_type, target_type):
+                return False
 
         # Document ancestor
-        if match:
+        target_ancestor = self.target_ancestor
 
-            target_ancestor = self.target_ancestor
-
-            if target_ancestor is not None:
-                context_target_ancestor = context.get("target_ancestor")
-                if context_target_ancestor is None \
-                or context_target_instance is None:
-                    match = partial_match
-                else:
-                    match = isinstance(context_target_instance, Document) \
-                        and context_target_instance.descends_from(
-                            context_target_ancestor
-                        )
+        if target_ancestor is not None:
+            context_target_ancestor = context.get("target_ancestor")
+            
+            if context_target_ancestor is None \
+            or context_target_instance is None:
+                if not partial_match:
+                    return False
+            elif not isinstance(context_target_instance, Document) \
+            or not context_target_instance.descends_from(
+                context_target_ancestor
+            ):
+                return False
 
         # Target is draft
-        if match:
+        target_is_draft = self.target_is_draft
 
-            target_is_draft = self.target_is_draft
-
-            if target_is_draft is not None:
-                context_target_is_draft = context.get("target_is_draft")
-                if context_target_is_draft is None:
-                    match = partial_match
-                else:
-                    match = (target_is_draft == context_target_is_draft)
+        if target_is_draft is not None:
+            context_target_is_draft = context.get("target_is_draft")
+            if context_target_is_draft is None:
+                if not partial_match:
+                    return False
+            elif target_is_draft != context_target_is_draft:
+                return False
 
         # Target draft source
-        if match:
+        target_draft_source = self.target_draft_source
 
-            target_draft_source = self.target_draft_source
-
-            if target_draft_source is not None:
-                context_target_draft_source = \
-                    context.get("target_draft_source", undefined)
-                if context_target_draft_source is undefined:
-                    match = partial_match
-                else:
-                    match = \
-                        (target_draft_source == context_target_draft_source)
+        if target_draft_source is not None:
+            context_target_draft_source = \
+                context.get("target_draft_source", undefined)
+            if context_target_draft_source is undefined:
+                if not partial_match:
+                    return False
+            elif target_draft_source is not context_target_draft_source:
+                return False
 
         # Target member
-        if match:
+        target_member = self.target_member
 
-            target_member = self.target_member
-
-            if target_member is not None:
-                context_target_member = context.get("target_member")
-                if context_target_member is None:
-                    match = partial_match
-                else:
-                    match = (target_member == context_target_member)
+        if target_member is not None:
+            context_target_member = context.get("target_member")
+            if context_target_member is None:
+                if not partial_match:
+                    return False
+            elif target_member != context_target_member:
+                return False
 
         # Action
-        if match:
+        action = self.action
+        context_action = context.get("action")
 
-            action = self.action
-            context_action = context.get("action")
+        if action is None:
 
-            if action is None:
-                match = role is None or not (
-                    role.qname == "sitebasis.owner"
-                    and context_action is not None
-                    and context_action.identifier == "create"
-                )
-            else:
-                if context_action is None:
-                    match = partial_match
-                else:
-                    match = (action == context_action)
+            # Special case: a blank 'action' restriction doesn't grant the
+            # 'create' permission to the owner role
+            if role is not None \
+            and role.qname == "sitebasis.owner" \
+            and context_action is not None \
+            and context_action.identifier == "create":
+                return False
+        else:
+            if context_action is None:
+                if not partial_match:
+                    return False
+            elif action != context_action:
+                return False
 
         # Language
-        if match:
-
-            language = self.language
+        language = self.language
             
-            if language is not None:
-                context_language = context.get("language")
-                if context_language is None:
-                    match = partial_match
-                else:
-                    match = (language == context_language)
-
-        # Outcome
-        if context.get("debug", debug):
-            if match:
-                print styled(translations(self), style = "underline"),
-                print styled(
-                    ("allowed" if self.allowed else "forbidden"),
-                    "white", ("green" if self.allowed else "red")
-                )
-            else:
-                print translations(self), "doesn't match"
-
-        return match
+        if language is not None:
+            context_language = context.get("language")
+            if context_language is None:
+                if not partial_match:
+                    return False
+            elif language != context_language:
+                return False
+        
+        return True
 
     def __translate__(self, language, **kwargs):
 
