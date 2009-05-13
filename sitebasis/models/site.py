@@ -63,8 +63,9 @@ class Site(Item):
         bidirectional = True
     )
 
-    plugins = schema.Collection(
-        items = "sitebasis.models.PlugIn"
+    extensions = schema.Collection(
+        items = "sitebasis.models.Extension",
+        bidirectional = True
     )
 
     def __translate__(self, language, **kwargs):

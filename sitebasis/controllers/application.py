@@ -54,14 +54,6 @@ class CMS(BaseCMSController):
         An event triggered after the application's web server is shutdown.
         """)
 
-    loading_plugins = Event(doc = """
-        An event triggered before loading plug-ins.
-        """)
-
-    plugins_loaded = Event(doc = """
-        An event triggered after loading plugins.
-        """)
-
     item_saved = Event(doc = """
         An event triggered after an item is inserted or modified.
 
@@ -176,23 +168,6 @@ class CMS(BaseCMSController):
                 "views", "resources", "images", "icons"
             )
             self.icon_resolver.icon_repositories.insert(0, app_icon_path)
-
-        self.load_plugins()
-
-    def load_plugins(self):
-
-        self.loading_plugins()
-
-        # Load plugin types
-        for entry_point in iter_entry_points("sitebasis.plugins"):
-            entry_point.load()
-
-        # Execute plugin initialization
-        for plugin in Site.main.plugins:
-            if plugin.enabled:
-                plugin.initialize(self)
-
-        self.plugins_loaded()
 
     def run(self):
         self.application_starting()
@@ -455,7 +430,6 @@ class CMS(BaseCMSController):
 
     @cherrypy.expose
     def user_styles(self):
-        # TODO: Move to a plugin
         cherrypy.response.headers["Content-Type"] = "text/css"
         for style in Style.select():
             declarations = style.admin_declarations or style.declarations

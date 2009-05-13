@@ -93,5 +93,5 @@ from sitebasis.models.resource import Resource
 from sitebasis.models.uri import URI
 from sitebasis.models.file import File
 from sitebasis.models.style import Style
-from sitebasis.models.plugin import PlugIn
+from sitebasis.models.extension import Extension
 
