@@ -16,7 +16,8 @@ from sitebasis.controllers.backoffice.useractions import \
     visible_languages = ()
     available_content_views = ()
     content_view = None
-    selection_mode = MULTIPLE_SELECTION    
+    selection_mode = MULTIPLE_SELECTION
+    search_expanded = False
     ?>
 
     <?py
@@ -38,7 +39,8 @@ from sitebasis.controllers.backoffice.useractions import \
             py:visible_languages="${self.visible_languages}"
             py:available_content_views="${self.available_content_views}"
             py:selection_mode="${self.selection_mode}"
-            py:edit_stack="${self.edit_stack}">
+            py:edit_stack="${self.edit_stack}"
+            py:search_expanded="${self.search_expanded}">
             <?py
             @extend(element)
             def content_type_is_instantiable(content_view, content_type):

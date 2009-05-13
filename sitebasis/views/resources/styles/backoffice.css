@@ -91,6 +91,7 @@ html, body {
 
 .BackOfficeLayout a,
 .BackOfficeLayout .identity button,
+.BackOfficeLayout .advanced_search,
 .BackOfficeEditView .discard_button,
 .BackOfficeLayout .new_filter_selector .label {
     font-size: inherit;

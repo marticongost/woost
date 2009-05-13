@@ -22,7 +22,6 @@ from sitebasis.controllers.backoffice.useractions import \
     <?py
     self.add_resource("/cocktail/scripts/jquery.js")
     self.add_resource("/resources/scripts/ContentView.js")    
-    self.add_client_translation("sitebasis.views.ContentView advanced search title")
     self.add_client_translation("sitebasis.views.ContentView show advanced search")
     self.add_client_translation("sitebasis.views.ContentView close advanced search")
     self.add_client_translation("sitebasis.views.ContentView search button")
@@ -38,6 +37,7 @@ from sitebasis.controllers.backoffice.useractions import \
     edit_stack = None
     member = None
     activation_control = ".show_detail_action"
+    search_expanded = False
     
     @classmethod
     def get_collection(cls, content_type, item = None, relation = None):
@@ -80,10 +80,17 @@ from sitebasis.controllers.backoffice.useractions import \
         CollectionView.excluded_view_state_params | frozenset(["rel"])
     ?>
 
-    <py:with py:element="self.filters">
-        <py:ready>
+    <py:with py:element="self.filters" py:visible="@{self.search_expanded}">
+        <py:ready>            
             <py:with py:element="self.filters_selector"
                 py:if="hasattr(self, 'filters_selector')">
+                <?py
+                @extend(element)
+                def get_discard_filters_state(self):
+                    state = call_base()
+                    state["search_expanded"] = "false"
+                    return state
+                ?>
                 <py:with py:def="filter_ui" py:args="filter">
                     <?py
                     @extend(element)
@@ -107,6 +114,8 @@ from sitebasis.controllers.backoffice.useractions import \
     </py:with>
 
     <py:ready>
+
+        <py:with py:element="self.search_results_message" py:visible="${False}"/>
 
         <py:with py:element="self.collection_display"
             py:filters="${self.user_collection.user_filters}">
@@ -202,6 +211,20 @@ from sitebasis.controllers.backoffice.useractions import \
                 </py:with>
 
             </py:sitebasis.views.ContentTypeSelector>
+        </div>
+
+        <!-- Simple search -->
+        <div py:id="simple_search" py:visible="@{not self.search_expanded}">
+
+            <input type="hidden" name="filter" value="global_search"/>
+            <input type="hidden" name="filter_language0" value=""/>
+            
+            <input type="text" name="filter_value0"/>
+            <input type="submit" class="search_button" value="${translations('sitebasis.views.ContentView search button')}"/>
+
+            <button class="advanced_search" name="search_expanded" value="true">
+                ${translations("sitebasis.views.ContentView show advanced search")}
+            </button>
         </div>
 
         <!-- Content view selector -->
