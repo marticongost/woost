@@ -1041,10 +1041,10 @@ translations.define("Site.access_rules_by_priority",
     en = u"Access rules"
 )
 
-translations.define("Site.plugins",
+translations.define("Site.extensions",
     ca = u"Extensions",
     es = u"Extensiones",
-    en = u"Plug-ins"
+    en = u"extensions"
 )
 
 # Document
@@ -1743,47 +1743,53 @@ translations.define("Language.fallback_languages",
     en = u"Fallback languages"
 )
 
-# PlugIn
+# Extension
 #------------------------------------------------------------------------------
-translations.define("PlugIn",
+translations.define("Extension",
     ca = u"Extensió",
     es = u"Extensión",
-    en = u"Plug-in"
+    en = u"Extension"
 )
 
-translations.define("PlugIn-plural",
+translations.define("Extension-plural",
     ca = u"Extensions",
     es = u"Extensiones",
-    en = u"Plug-ins"
+    en = u"Extensions"
 )
 
-translations.define("PlugIn.title",
+translations.define("Extension.title",
     ca = u"Nom",
     es = u"Nombre",
     en = u"Name"
 )
 
-translations.define("PlugIn.description",
+translations.define("Extension.description",
     ca = u"Descripció",
     es = u"Descripción",
     en = u"Description"
 )
 
-translations.define("PlugIn.plugin_author",
+translations.define("Extension.extension_author",
     ca = u"Autor de l'extensió",
     es = u"Autor de la extensión",
-    en = u"Plug-in author"
+    en = u"Extension author"
 )
 
-translations.define("PlugIn.license",
+translations.define("Extension.license",
     ca = u"Llicència",
     es = u"Licencia",
     en = u"License"
 )
 
-translations.define("PlugIn.enabled",
-    ca = u"Activat",
-    es = u"Activado",
+translations.define("Extension.web_page",
+    ca = u"Pàgina web",
+    es = u"Página web",
+    en = u"Web page"
+)
+
+translations.define("Extension.enabled",
+    ca = u"Activada",
+    es = u"Activada",
     en = u"Enabled"
 )
 
