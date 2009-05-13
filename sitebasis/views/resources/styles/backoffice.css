@@ -1417,13 +1417,14 @@ body.scripted .BackOfficeLayout .ThumbnailsContentView .collection_display input
 .BackOfficeLayout .CollectionView .filters {
     font-size: 85%;
     margin-top: 0.3em;
-    border: 1px solid rgb(210,210,210);
+    border: 1px solid rgb(185,205,145);
     background-color: rgb(245,245,245);
 }
 
 .BackOfficeLayout .CollectionView .filters .filters_label {
     padding: 0.4em 0.6em;
-    border-bottom: 1px solid rgb(230,230,230);
+    border-bottom: 1px solid rgb(185,205,145);
+    background-image: url(../images/search_header.png);
 }
 
 .BackOfficeLayout .CollectionView .filters .FilterBox {
