@@ -12,7 +12,7 @@ from sitebasis.models.agent import Agent
 
 class Role(Agent):
 
-    instantiable = True
+    instantiable = False
 
     title = schema.String(
         required = True,
