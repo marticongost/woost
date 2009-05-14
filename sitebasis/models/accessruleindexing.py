@@ -174,9 +174,28 @@ def rebuild_access_rule_index(
     ):
         return
 
-    # Narrow down updated items
+    # Narrow down updated items and agents
     items = ItemSelection()
+    agents = ItemSelection()
+    
+    get_rule_scope(rule, items, agents, changed_member, previous_value)
 
+    if not items:
+        items.add(Item)
+
+    if not agents:
+        agents.add(Agent)
+
+    rebuild_indexes(agents, items)
+
+def get_rule_scope(
+    rule,
+    items,
+    agents,
+    changed_member = None,
+    previous_value = None):
+
+    # Narrow down updated items
     if changed_member in (AccessRule.target_instance, AccessRule.target_type):
         items.add(previous_value if previous_value is not None else Item)
 
@@ -185,9 +204,6 @@ def rebuild_access_rule_index(
     elif rule.target_type:
         items.add(rule.target_type)
     
-    if not items:
-        items.add(Item)
-
     if rule.target_draft_source is not None \
     and changed_member is not AccessRule.draft_source:
         items.add_filter(Item.draft_source.equal(rule.target_draft_source))
@@ -198,7 +214,6 @@ def rebuild_access_rule_index(
         items.add_filter(Item.is_draft)
 
     # Narrow down updated agents
-    agents = ItemSelection()    
     authenticated_role = Agent.get_instance(qname = "sitebasis.authenticated")
     owner_role = Agent.get_instance(qname = "sitebasis.owner")
     author_role = Agent.get_instance(qname = "sitebasis.author")
@@ -229,11 +244,6 @@ def rebuild_access_rule_index(
         else:
             agent = normalize_agent(rule.role)
             agents.add(agent)
-    
-    if not agents:
-        agents.add(Agent)
-
-    rebuild_indexes(agents, items)
 
 
 class ItemSelection(object):
