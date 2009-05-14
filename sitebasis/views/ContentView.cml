@@ -77,7 +77,7 @@ from sitebasis.controllers.backoffice.useractions import \
             )
 
     excluded_view_state_params = \
-        CollectionView.excluded_view_state_params | frozenset(["rel"])
+        CollectionView.excluded_view_state_params | frozenset(["rel", "simple_search_query"])
     ?>
 
     <py:with py:element="self.filters" py:visible="@{self.search_expanded}">
@@ -89,6 +89,7 @@ from sitebasis.controllers.backoffice.useractions import \
                 def get_discard_filters_state(self):
                     state = call_base()
                     state["search_expanded"] = "false"
+                    state["simple_search_query"] = None
                     return state
                 ?>
                 <py:with py:def="filter_ui" py:args="filter">
@@ -216,10 +217,7 @@ from sitebasis.controllers.backoffice.useractions import \
         <!-- Simple search -->
         <div py:id="simple_search" py:visible="@{not self.search_expanded}">
 
-            <input type="hidden" name="filter" value="global_search"/>
-            <input type="hidden" name="filter_language0" value=""/>
-            
-            <input type="text" name="filter_value0"/>
+            <input type="text" name="simple_search_query"/>
             <input type="submit" class="search_button" value="${translations('sitebasis.views.ContentView search button')}"/>
 
             <button class="advanced_search" name="search_expanded" value="true">
