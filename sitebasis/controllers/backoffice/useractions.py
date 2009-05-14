@@ -1,5 +1,6 @@
 #-*- coding: utf-8 -*-
 u"""
+Declaration of back office actions.
 
 @author:		Martí Congost
 @contact:		marti.congost@whads.com
@@ -8,11 +9,11 @@ u"""
 """
 import cherrypy
 from cocktail.modeling import getter, ListWrapper
-from cocktail.pkgutils import get_full_name
+from cocktail.translations import translations
 from cocktail import schema
 from cocktail.controllers import context as controller_context
-from sitebasis.models import Item, Document, Role, allowed
-from sitebasis.controllers.backoffice.editstack import EditNode, RelationNode
+from sitebasis.models import Document, Role, allowed
+from sitebasis.controllers.backoffice.editstack import RelationNode
 
 
 # User action model declaration
@@ -110,6 +111,32 @@ class UserAction(object):
     @ivar enabled: Controls the site-wide availavility of the action.
     @type enabled: bool
 
+    @ivar included: A set of context identifiers under which the action is
+        made available. Entries on the sequence are joined using a logical OR.
+        Entries can also consist of a tuple of identifiers, which will be
+        joined using a logical AND operation.
+    @type included: set(str or tuple(str))
+
+    @ivar excluded: A set of context identifiers under which the action won't
+        be made available. Identifiers are specified using the same format used
+        by the L{included} parameter. If both X{included} and X{excluded} are
+        specified, both conditions will be tested, with X{excluded} carrying
+        more weight.
+    @type excluded: set(str or tuple(str))
+
+    @ivar content_type: When set, the action will only be made available to the
+        indicated content type or its subclasses.
+    @type content_type: L{Item<sitebasis.models.Item>} subclass
+
+    @ivar authorization_context: A dictionary containing the authorization
+        parameters to use when testing the availability of the action. Takes
+        the same keys as the L{allowed<sitebasis.models.allowed>} function.
+    @type authorization_context: dict
+
+    @ivar ignores_selection: Set to True for actions that don't operate on a
+        selection of content.
+    @type ignores_selection: bool
+
     @ivar min: The minimum number of content items that the action can be
         invoked on. Setting it to 0 or None disables the constraint.
     @type min: int
@@ -117,16 +144,26 @@ class UserAction(object):
     @ivar max: The maximum number of content items that the action can be
         invoked on. A value of None disables the constraint.
     @type max: int
+
+    @ivar direct_link: Set to True for actions that can provide a direct URL
+        for their execution, without requiring a form submit and redirection.
+    @type direct_link: bool
+
+    @ivar parameters: A schema describing user supplied parameters required by
+        the action. When set to None, the action requires no additional input
+        from the user.
+    @type parameters: L{Schema<cocktail.schema.schema.Schema>}
     """
     enabled = True
     included = frozenset(["toolbar_extra", "item_buttons_extra"])
     excluded = frozenset(["selector"])
+    content_type = None
     authorization_context = None
     ignores_selection = False
     min = 1
     max = 1
     direct_link = False
-    content_type = None
+    parameters = None
 
     def __init__(self, id):
 
@@ -222,6 +259,19 @@ class UserAction(object):
                 return False
 
         return True
+
+    def get_dropdown_panel(self, target):
+        """Produces the user interface fragment that should be shown as the
+        content for the action's dropdown panel. Returning None indicates the
+        action doesn't have a dropdown panel available.
+
+        @param target: The item or content type affected by the action.
+        @type target: L{Item<sitebasis.models.item.Item>} instance or class
+
+        @return: The user interface for the action's dropdown panel.
+        @rtype: L{Element<cocktail.html.Element>}
+        """
+        return None
 
     def get_errors(self, controller, selection):
         """Validates the context of an action before it is invoked.
@@ -338,6 +388,7 @@ class CreateAction(UserAction):
     
     def get_url(self, controller, selection):
         return controller.get_edit_uri(controller.edited_content_type)
+
 
 #class CreateBeforeAction(CreateAction):
 #   ignores_selection = False
@@ -622,6 +673,8 @@ class PrintAction(UserAction):
         return "javascript: print();"
 
 
+# Action registration
+#------------------------------------------------------------------------------ 
 CreateAction("new").register()
 MoveAction("move").register()
 AddAction("add").register()
@@ -636,10 +689,11 @@ RevertAction("revert").register()
 HistoryAction("history").register()
 DeleteAction("delete").register()
 ExportAction("export_xls", "msexcel").register()
+PrintAction("print").register()
 CloseAction("close").register()
 CancelAction("cancel").register()
 SaveAction("save").register()
 SaveDraftAction("save_draft").register()
 ConfirmDraftAction("confirm_draft").register()
 SelectAction("select").register()
-PrintAction("print").register()
+
