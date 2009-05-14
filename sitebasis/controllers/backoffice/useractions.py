@@ -182,17 +182,46 @@ class UserAction(object):
         """
         return self._id
 
-    def register(self):
+    def register(self, before = None, after = None):
         """Registers the action with the site, so that it can appear on action
         containers and be handled by controllers.
 
         Registering an action with an identifier already in use is allowed, and
         will override the previously registered action.
+
+        @param before: Indicates the position for the registered action. Should
+            match the identifier of an already registered action. The new
+            action will be inserted immediately before the indicated action.
+        @type before: str
+
+        @param after: Indicates the position for the registered action. Should
+            match the identifier of an already registered action. The new
+            action will be inserted immediately after the indicated action.
+        @type after: str
+
+        @raise ValueError: Raised if both L{before} and L{after} are set.
+        @raise ValueError: Raised if the position indicated by L{after} or
+            L{before} can't be found.
         """
+        if after and before:
+            raise ValueError("Can't combine 'after' and 'before' parameters")
+
         prev_action = get_user_action(self._id)
 
-        if prev_action:
-            pos = _action_list.find(prev_action)
+        if after or before:
+            if prev_action:
+                _action_list._items.remove(prev_action)
+            
+            ref_action = _action_map[after or before]
+            pos = _action_list.index(ref_action)
+            
+            if before:
+                _action_list._items.insert(pos, self)
+            else:
+                _action_list._items.insert(pos + 1, self)
+
+        elif prev_action:
+            pos = _action_list.index(prev_action)
             _action_list._items[pos] = self
         else:
             _action_list._items.append(self)
