@@ -14,7 +14,6 @@ from cocktail.translations import translations
 from cocktail import schema
 from cocktail.persistence import datastore
 from sitebasis.models.item import Item
-from sitebasis.models.site import Site
 
 def load_extensions():
     """Load all available extensions.
@@ -70,16 +69,15 @@ def load_extensions():
         
         return state is LOADED
 
-    for extension in Site.main.extensions:
+    for extension in Extension.select():
         load(extension)
 
 def install_new_extensions():
     """Finds new available extensions and registers them with the site."""
-    extensions = Site.main.extensions
 
     # Create an instance of each new extension
     installed_extension_types = \
-        set(extension.__class__ for extension in extensions)
+        set(extension.__class__ for extension in Extension.select())
 
     extensions_installed = False
 
@@ -88,7 +86,6 @@ def install_new_extensions():
         if extension_type not in installed_extension_types:
             extension = extension_type()
             extension.insert()
-            extensions.append(extension)
             extension.installed()
             extensions_installed = True
         
@@ -120,12 +117,6 @@ class Extension(Item):
         "web_page",
         "description",
         "enabled"
-    )
-
-    site = schema.Reference(
-        type = "sitebasis.models.Site",
-        bidirectional = True,
-        visible = False
     )
 
     extension_author = schema.String(
