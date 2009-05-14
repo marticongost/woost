@@ -49,7 +49,7 @@ class AuthenticationModule(Module):
 
     def login(self, identifier, password):
         """
-        Attemps to establish a new user session, using the given user
+        Attempts to establish a new user session, using the given user
         credentials.
 
         @param identifier: An identifier matching a single user in the
