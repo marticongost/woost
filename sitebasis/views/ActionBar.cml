@@ -36,21 +36,35 @@ from sitebasis.controllers.backoffice.useractions import (
         py:args="action, extra"        
         class="${action.id}_action">
         <?py
-        if action.direct_link:
-            element.tag = "a"
-            element["href"] = action.get_url(context["cms"], None)
+        panel = action.get_dropdown_panel(self.action_target)
+        
+        if panel:
+            element.add_class("selector")
+            label = Element("span", class_name = "label")
+            element.append(label)
         else:
-            element.tag = "button"
-            element["type"] = "submit"
-            element["name"] = "action"
-            element["value"] = action.id
+            label = element
+        
+            if action.direct_link:
+                element.tag = "a"
+                element["href"] = action.get_url(context["cms"], None)
+            else:
+                element.tag = "button"
+                element["type"] = "submit"
+                element["name"] = "action"
+                element["value"] = action.id
 
-        set_translated_shortcut(element, "action " + action.id)
+        set_translated_shortcut(label, "action " + action.id)
         ?>
-        <py:new
-            py:element="self.create_action_image(action, extra)"
-            py:if="self.button_images and not extra"/>
-        ${translations("Action " + action.id)}
+        <py:with py:element="label">
+            <py:new
+                py:element="self.create_action_image(action, extra)"
+                py:if="self.button_images and not extra"/>
+            ${translations("Action " + action.id)}
+        </py:with>
+        <py:new py:element="panel" py:if="panel">
+            <?py element.add_class("selector_content") ?>
+        </py:new>
     </py:cocktail.html.Element>
 
     <img
