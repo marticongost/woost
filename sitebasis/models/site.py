@@ -63,11 +63,6 @@ class Site(Item):
         bidirectional = True
     )
 
-    extensions = schema.Collection(
-        items = "sitebasis.models.Extension",
-        bidirectional = True
-    )
-
     def __translate__(self, language, **kwargs):
         return translations(self.__class__.__name__, language, **kwargs)
 
