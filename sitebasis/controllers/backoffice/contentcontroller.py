@@ -160,14 +160,14 @@ class ContentController(BaseBackOfficeController):
     @cached_getter
     def persistence_prefix(self):
         if self.selection_parameter:
-            return self.content_type.name + "-selector"
+            return self.content_type.full_name + "-selector"
         else:
-            return self.content_type.name
+            return self.content_type.full_name
 
     def get_content_type_param(self, param_name):
         return get_persistent_param(
             param_name,
-            cookie_name = self.content_type.__name__ + "-" + param_name,
+            cookie_name = self.content_type.full_name + "-" + param_name,
             cookie_duration = self.settings_duration
         )
 

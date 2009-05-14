@@ -58,7 +58,7 @@ from sitebasis.controllers.backoffice.useractions import \
         
     def get_new_content_uri(self, content_type):
         params = {
-            "type": content_type.name,
+            "type": content_type.full_name,
             "edit_stack": self.edit_stack.to_param() if self.edit_stack else None
         }
         
@@ -203,7 +203,7 @@ from sitebasis.controllers.backoffice.useractions import \
                     
                     @refine(tree)
                     def get_item_url(tree, content_type):
-                        url = "?type=" + content_type.__name__
+                        url = "?type=" + content_type.full_name
                         if self.edit_stack:
                             url += "&edit_stack=" + self.edit_stack.to_param()
                         return url
