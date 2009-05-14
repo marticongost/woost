@@ -23,6 +23,13 @@ from threading import local
 
 _thread_data = local()
 
+relevant_item_members = set([
+    Item.author,
+    Item.owner,
+    Item.is_draft,
+    Item.draft_source
+])
+
 # Indexing functions
 #------------------------------------------------------------------------------
 def get_enabled():
@@ -373,13 +380,7 @@ def _handle_item_deleted(event):
 def _handle_item_changed(event):
     if get_enabled():
         item = event.source
-        if item.is_inserted \
-        and event.member in (
-            Item.author,
-            Item.owner,
-            Item.is_draft,
-            Item.draft_source
-        ):
+        if item.is_inserted and event.member in relevant_item_members:
             rebuild_indexes(items = [item])
 
 # Filter resolution
