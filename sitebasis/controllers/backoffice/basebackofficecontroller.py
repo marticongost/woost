@@ -87,7 +87,7 @@ class BaseBackOfficeController(BaseCMSController):
             return default
         else:
             for content_type in chain([Item], Item.derived_schemas()):
-                if content_type.__name__ == type_param:
+                if content_type.full_name == type_param:
                     return content_type
 
     def get_visible_languages(self):
