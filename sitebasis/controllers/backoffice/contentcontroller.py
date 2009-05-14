@@ -26,6 +26,7 @@ from cocktail.controllers import (
     view_state,
     UserCollection
 )
+from cocktail.controllers.userfilter import GlobalSearchFilter
 from sitebasis.models import (
     Language, Item, changeset_context, AccessAllowedExpression
 )
@@ -392,6 +393,19 @@ class ContentController(BaseBackOfficeController):
         # current content view (this allows views to disable sorting, filters,
         # etc, depending on the nature of their user interface)        
         self.content_view._init_user_collection(user_collection)
+
+        # Transform search queries from the simple search interface into
+        # filters
+        if user_collection.allow_filters:
+            simple_search_query = \
+                self.params.read(schema.String("simple_search_query"))
+            if simple_search_query:
+                simple_search_filter = GlobalSearchFilter()
+                simple_search_filter.content_type = user_collection.type
+                simple_search_filter.available_languages = \
+                    user_collection.available_languages
+                simple_search_filter.value = simple_search_query
+                user_collection.user_filters.append(simple_search_filter)
 
         return user_collection
 
