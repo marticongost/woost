@@ -276,7 +276,6 @@ class Item(PersistentObject):
             )
             change.item_state = item._get_revision_state()
             change.changeset = changeset
-            change.insert()
             changeset.changes[item.id] = change
             
             if item.author is None:
@@ -284,6 +283,8 @@ class Item(PersistentObject):
 
             if item.owner is None:
                 item.owner = changeset.author
+            
+            change.insert()
     
     # Extend item modification to make it versioning aware
     @event_handler
@@ -312,9 +313,9 @@ class Item(PersistentObject):
                 change.changed_members = set()
                 change.item_state = item._get_revision_state()
                 change.changeset = changeset
-                change.insert()
                 changeset.changes[item.id] = change
                 item.last_update_time = datetime.now()
+                change.insert()
             else:
                 action_type = change.action.identifier
 
@@ -356,11 +357,11 @@ class Item(PersistentObject):
             if change is None \
             or change.action.identifier not in ("create", "delete"):
                 change = Change()
-                change.insert()
                 change.action = Action.get_instance(identifier = "delete")
                 change.target = item
                 change.changeset = changeset
                 changeset.changes[item.id] = change
+                change.insert()
     
     _preserved_members = frozenset([changes])
 
