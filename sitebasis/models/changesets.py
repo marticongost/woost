@@ -95,6 +95,11 @@ class ChangeSet(PersistentObject):
     def current(cls):
         return getattr(cls._thread_data, "current", None)
 
+    @classgetter
+    def current_author(cls):
+        cs = cls.current
+        return cs and cs.author
+
     def begin(self):
 
         if self.current:
