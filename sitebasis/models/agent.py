@@ -7,7 +7,7 @@ u"""
 @since:			March 2009
 """
 from cocktail import schema
-from sitebasis.models import Item
+from sitebasis.models.item import Item
 
 
 class Agent(Item):
