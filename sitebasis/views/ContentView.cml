@@ -81,7 +81,7 @@ from sitebasis.controllers.backoffice.useractions import \
     ?>
 
     <py:with py:element="self.filters" py:visible="@{self.search_expanded}">
-        <py:ready>            
+        <py:ready>
             <py:with py:element="self.filters_selector"
                 py:if="hasattr(self, 'filters_selector')">
                 <?py
@@ -221,7 +221,7 @@ from sitebasis.controllers.backoffice.useractions import \
         </div>
 
         <!-- Simple search -->
-        <div py:id="simple_search" py:visible="@{not self.search_expanded}">
+        <div py:id="simple_search" py:visible="@{not self.search_expanded and self.user_collection.allow_filters}">
 
             <input type="text" name="simple_search_query"/>
             <input type="submit" class="search_button" value="${translations('sitebasis.views.ContentView search button')}"/>
