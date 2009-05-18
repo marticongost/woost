@@ -29,13 +29,28 @@ from sitebasis.controllers.backoffice.editstack import (
 
 
 class BaseBackOfficeController(BaseCMSController):
+    """Base class for all backoffice controllers."""
 
     section = None
     persistent_content_type_choice = False
     settings_duration = 60 * 60 * 24 * 30 # ~= 1 month
 
     def get_edit_uri(self, target, *args, **kwargs):
+        """Get the URI of the edit page of the specified item.
         
+        @param target: The item to get the URI for.
+        @type target: L{Item<sitebasis.models.Item>} instance or class
+
+        @param args: Additional path components that will be appended to the
+            produced URI.
+        @type args: unicode
+
+        @param kwargs: Additional query string parameters that will be added
+            to the produced URI.
+
+        @return: The produced URI.
+        @rtype: unicode
+        """        
         params = kwargs or {}
         edit_stack = self.edit_stack
 
@@ -74,7 +89,15 @@ class BaseBackOfficeController(BaseCMSController):
         return uri
 
     def get_content_type(self, default = None):
+        """Gets the content type that is selected by the current HTTP request.
+        
+        @param default: If specified, this value will be used as the return
+            value if no content type is explicitly specified by the request.
+        @type default: L{Item<sitebasis.models.Item>} class
 
+        @return: The selected content type.
+        @rtype: L{Item<sitebasis.models.Item>}
+        """
         if self.persistent_content_type_choice:
             type_param = get_persistent_param(
                 "type",
@@ -91,7 +114,14 @@ class BaseBackOfficeController(BaseCMSController):
                     return content_type
 
     def get_visible_languages(self):
-
+        """Obtains the list of languages in which data will be displayed for
+        the current HTTP request.
+        
+        @return: A set containing all the languages enabled by the present
+            request. Each language is represented using its two letter ISO
+            code.
+        @rtype: set of str
+        """
         param = get_persistent_param(
             "language",
             cookie_name = "visible_languages",
@@ -104,19 +134,28 @@ class BaseBackOfficeController(BaseCMSController):
             else:
                 return set(param.split(","))
         else:
-            return [get_content_language()]
+            return set([get_content_language()])
 
     @getter
     def edit_stack(self):
+        """The edit stack for the current request.
+        @type: L{EditStack<sitebasis.controllers.backoffice.editstack.EditStack>}
+        """
         return self.context["edit_stacks_manager"].current_edit_stack
 
     @getter
     def stack_node(self):
+        """The top node of the edit stack for the current request.
+        @type: L{StackNode<sitebasis.controllers.backoffice.editstack.StackNode>}
+        """
         stack = self.edit_stack
         return stack and stack[-1]
 
     @getter
     def edit_node(self):
+        """The topmost edit node of the edit stack for the current request.
+        @type: L{EditNode<sitebasis.controllers.backoffice.editstack.EditNode>}
+        """
         stack = self.edit_stack
         if stack:
             return stack[-1].get_ancestor_node(EditNode)
@@ -124,6 +163,9 @@ class BaseBackOfficeController(BaseCMSController):
 
     @getter
     def relation_node(self):
+        """The topmost relation node of the edit stack for the current request.
+        @type: L{RelationNode<sitebasis.controllers.backoffice.editstack.RelationNode>}
+        """
         stack = self.edit_stack
         if stack:
             return stack[-1].get_ancestor_node(RelationNode)
@@ -175,12 +217,34 @@ class BaseBackOfficeController(BaseCMSController):
             raise cherrypy.HTTPRedirect(self.document_uri())
 
     def notify_user(self, message, category = None):
+        """Creates a new notification for the current user.
+        
+        Notifications are stored until a proper page is served to the user. It
+        is up to the views to decide how these messages should be displayed.
+
+        @param message: The message that will be shown to the user.
+        @type message: unicode
+
+        @param category: An optional free form string identifier that qualifies
+            the message. Standard values include 'success' and 'error'.
+        @type category: unicode
+        """
         notifications = cherrypy.session.get("notifications")
         if notifications is None:
             cherrypy.session["notifications"] = notifications = []
         notifications.append((message, category))
 
     def pop_user_notifications(self):
+        """Retrieves pending notification messages that were stored through the
+        L{notify_user} method.
+
+        Retrieved messages are considered to be consumed, and therefore they
+        are removed from the list of pending notifications.
+
+        @return: The sequence of pending notification messages. Each message
+            consists of a tuple with the message text and its category.
+        @rtype: sequence of (tuple of (unicode, unicode or None))
+        """
         notifications = cherrypy.session.get("notifications")
         cherrypy.session["notifications"] = []
         return notifications
