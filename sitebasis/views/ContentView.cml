@@ -91,6 +91,12 @@ from sitebasis.controllers.backoffice.useractions import \
                     state["search_expanded"] = "false"
                     state["simple_search_query"] = None
                     return state
+                    
+                @extend(element)
+                def get_add_filter_state(self, filter):
+                    state = call_base(filter)
+                    state["simple_search_query"] = None
+                    return state
                 ?>
                 <py:with py:def="filter_ui" py:args="filter">
                     <?py

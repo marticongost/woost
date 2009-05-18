@@ -401,6 +401,7 @@ class ContentController(BaseBackOfficeController):
                 self.params.read(schema.String("simple_search_query"))
             if simple_search_query:
                 simple_search_filter = GlobalSearchFilter()
+                simple_search_filter.id = "global_search"
                 simple_search_filter.content_type = user_collection.type
                 simple_search_filter.available_languages = \
                     user_collection.available_languages
