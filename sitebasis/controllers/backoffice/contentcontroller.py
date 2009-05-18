@@ -39,10 +39,9 @@ from sitebasis.controllers.backoffice.useractions import get_user_action
 
 
 class ContentController(BaseBackOfficeController):
+    """A controller that handles listings of persistent items."""
 
     section = "content"
-    root_content_type = Item
-    default_content_type = root_content_type
     _item_controller_class = ItemController
 
     @cached_getter
@@ -61,7 +60,7 @@ class ContentController(BaseBackOfficeController):
             except ValueError:
                 return None
             else:
-                item = self.root_content_type.get_instance(item_id)                
+                item = self.root_content_type.get_instance(item_id)
 
                 if item is None:
                     return None
@@ -96,6 +95,9 @@ class ContentController(BaseBackOfficeController):
 
     @cached_getter
     def action(self):
+        """The user action selected by the current HTTP request.
+        @type: L{UserAction<sitebasis.controllers.backoffice.useractions.UserAction>}
+        """
         return self._get_user_action()
 
     @cached_getter
@@ -112,7 +114,9 @@ class ContentController(BaseBackOfficeController):
         
     @cached_getter
     def content_type(self):
-
+        """The content type of listed items.
+        @type: L{Item<sitebasis.models.Item>} subclass
+        """
         content_type = self.get_content_type(self.default_content_type)
         root_content_type = self.root_content_type
 
@@ -125,7 +129,13 @@ class ContentController(BaseBackOfficeController):
 
     @cached_getter
     def root_content_type(self):
+        """The most basic possible content type for listed items.
         
+        This property is used to constrain the set of eligible content types to
+        all types that descend from the indicated type (inclusive).
+
+        @type: L{Item<sitebasis.models.Item>} subclass
+        """        
         root_content_type = self.stack_content_type
 
         if root_content_type is None:
@@ -138,6 +148,9 @@ class ContentController(BaseBackOfficeController):
 
     @cached_getter
     def stack_content_type(self):
+        """The content type of listed items indicated by the active edit stack.        
+        @type: L{Item<sitebasis.models.Item>} subclass
+        """
         node = self.stack_node
 
         if node and isinstance(node, RelationNode):
@@ -152,6 +165,13 @@ class ContentController(BaseBackOfficeController):
 
     @getter
     def default_content_type(self):
+        """The default content type for listed items, used if none is
+        explicitly specified.
+
+        This property tipically matches the value of L{root_content_type}.
+
+        @type: L{Item<sitebasis.models.Item>} subclass
+        """
         return self.root_content_type
 
     @cached_getter
@@ -160,12 +180,24 @@ class ContentController(BaseBackOfficeController):
 
     @cached_getter
     def persistence_prefix(self):
+        """A string identifier used to qualify cookies created by the
+        controller's L{user collection<user_collection>}.
+        @type: unicode
+        """
         if self.selection_parameter:
             return self.content_type.full_name + "-selector"
         else:
             return self.content_type.full_name
 
     def get_content_type_param(self, param_name):
+        """Retrieve a request parameter that is persisted separately for each
+        content type.
+
+        @param param_name: The name of the parameter to obtain.
+        @type param_name: str
+
+        @return: The value for the indicated parameter.
+        """
         return get_persistent_param(
             param_name,
             cookie_name = self.content_type.full_name + "-" + param_name,
@@ -174,10 +206,17 @@ class ContentController(BaseBackOfficeController):
 
     @cached_getter
     def content_views_registry(self):
+        """A registry listing all available content views for listings.
+        @type: L{ContentViewsRegistry<sitebasis.controllers.contentviews.ContentViewsRegistry>}
+        """
         return global_content_views
 
     @cached_getter
     def available_content_views(self):
+        """The list of all content view classes available to the selected
+        content type.
+        @type: sequence of L{Element<cocktail.html.element.Element>} subclasses
+        """
         return [content_view
                 for content_view
                     in self.content_views_registry.get(self.content_type)
@@ -185,7 +224,9 @@ class ContentController(BaseBackOfficeController):
     
     @cached_getter
     def content_view(self):
-
+        """The content view selected by the current request.
+        @type: L{Element<cocktail.html.element.Element>}
+        """
         available_content_views = self.available_content_views
         content_view_type = None
         content_view_param = self.get_content_type_param("content_view")
@@ -222,6 +263,9 @@ class ContentController(BaseBackOfficeController):
 
     @cached_getter
     def content_adapter(self):
+        """The schema adapter used to produce data suitable for listing.
+        @type: L{SchemaAdapter<cocktail.schema.adapter.SchemaAdapter>}
+        """
         adapter = schema.Adapter()
         adapter.exclude([
             member.name
@@ -232,6 +276,9 @@ class ContentController(BaseBackOfficeController):
 
     @cached_getter
     def content_schema(self):
+        """The schema used by the produced listing of persistent items.
+        @type: L{Schema<cocktail.schema.schema.Schema>}
+        """
         content_schema = self.content_adapter.export_schema(self.content_type)
         content_schema.name = "BackOfficeContentView"
         content_schema.add_member(
@@ -249,6 +296,12 @@ class ContentController(BaseBackOfficeController):
         
     @cached_getter
     def available_languages(self):
+        """The list of languages that items in the listing can be displayed in.
+
+        Each language is represented using its two letter ISO code.
+
+        @type: sequence of unicode
+        """
         return Language.codes
 
     @cached_getter
