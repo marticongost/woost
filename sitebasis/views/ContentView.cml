@@ -221,7 +221,7 @@ from sitebasis.controllers.backoffice.useractions import \
         </div>
 
         <!-- Simple search -->
-        <div py:id="simple_search" py:visible="@{not self.search_expanded and self.user_collection.allow_filters}">
+        <div py:id="simple_search" py:visible="@{not self.search_expanded and self.user_collection.allow_filters and self.visible_results}">
 
             <input type="text" name="simple_search_query"/>
             <input type="submit" class="search_button" value="${translations('sitebasis.views.ContentView search button')}"/>
@@ -281,7 +281,8 @@ from sitebasis.controllers.backoffice.useractions import \
         py:def="toolbar"
         py:action_context="toolbar"
         py:action_target="@{self.user_collection.type}"
-        py:empty_result_set="@{not self.visible_results}">
+        py:empty_result_set="@{not self.visible_results}"
+        py:collapsible="${True}">
         <?py
         @extend(toolbar)
         def get_actions(toolbar, context):
