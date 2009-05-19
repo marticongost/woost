@@ -77,7 +77,7 @@ from sitebasis.controllers.backoffice.useractions import \
             )
 
     excluded_view_state_params = \
-        CollectionView.excluded_view_state_params | frozenset(["rel", "simple_search_query"])
+        CollectionView.excluded_view_state_params | frozenset(["rel", "simple_search_query", "search_expanded"])
     ?>
 
     <py:with py:element="self.filters" py:visible="@{self.search_expanded}">
