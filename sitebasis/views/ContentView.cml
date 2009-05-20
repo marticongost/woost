@@ -226,7 +226,7 @@ from sitebasis.controllers.backoffice.useractions import \
             <input type="text" name="simple_search_query"/>
             <input type="submit" class="search_button" value="${translations('sitebasis.views.ContentView search button')}"/>
 
-            <button class="advanced_search" name="search_expanded" value="true">
+            <button type="submit" class="advanced_search" name="search_expanded" value="true">
                 ${translations("sitebasis.views.ContentView show advanced search")}
             </button>
         </div>
