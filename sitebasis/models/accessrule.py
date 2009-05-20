@@ -175,6 +175,11 @@ class AccessRule(Item):
             if context_target_instance is None:
                 if not partial_match:
                     return False
+                else:
+                    context_target_type = context.get("target_type")
+                    if context_target_type \
+                    and not isinstance(target_instance, context_target_type):
+                        return False
             elif target_instance is not context_target_instance:
                 return False
 
