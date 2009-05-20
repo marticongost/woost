@@ -63,7 +63,8 @@ class AccessRule(Item):
     site = schema.Reference(
         type = "sitebasis.models.Site",
         bidirectional = True,
-        visible = False
+        visible = False,
+        related_key = "access_rules_by_priority"
     )
 
     role = schema.Reference(
