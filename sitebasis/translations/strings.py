@@ -841,6 +841,12 @@ translations.define(
         % translations(item, "en")
 )
 
+translations.define("sitebasis.views.BackOfficeEditView Create another",
+    ca = u"Crear un altre element",
+    es = u"Crear otro elemento",
+    en = u"Create another item"
+)
+
 translations.define(
     "sitebasis.views.BackOfficeEditView Draft confirmed",
     ca = lambda item, is_new:
