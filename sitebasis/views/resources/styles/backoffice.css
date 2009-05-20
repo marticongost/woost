@@ -1413,6 +1413,10 @@ body.scripted .BackOfficeLayout .ThumbnailsContentView .collection_display input
     margin-left: 1.2em;
     text-decoration: underline;
     font-size: 70%;
+    background-image: url(/resources/images/collapsed_block.png);
+    background-repeat: no-repeat;
+    background-position: 0 center;
+    padding-left: 0.6em;
 }
 
 .BackOfficeLayout .CollectionView .filters {
