@@ -18,11 +18,13 @@ setup(
         "simplejson",
         "cocktail",
         "genshi",
-        "pyExcelerator"
+        "pyExcelerator",
+        "PIL"
     ],
     include_package_data = True,
     packages = find_packages(),
-    
+    dependency_links = ["http://www.pythonware.com/products/pil/"],
+   
     # SiteBasis can't yet access view resources (images, style sheets, client
     # side scripts, etc) that are packed inside a zipped egg, so distribution
     # in zipped form is disabled
