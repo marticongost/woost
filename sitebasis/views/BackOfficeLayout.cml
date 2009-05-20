@@ -95,10 +95,12 @@ from sitebasis.controllers.backoffice.useractions import add_view_action_context
         <py:ready>
             <div class="notification"
                 py:if="self.notifications"
-                py:for="message, category in self.notifications">
+                py:for="message, category, transient in self.notifications">
                 <?py
                 if category:
                     element.add_class(category)
+                if transient:
+                    element.add_class("transient")
                 ?>
                 ${message}
             </div>

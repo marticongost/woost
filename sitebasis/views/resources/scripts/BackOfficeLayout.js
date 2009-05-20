@@ -12,6 +12,20 @@ cocktail.init(function () {
     NOTIFICATION_TIMEOUT = 2000;
 
     // Hide notifications
-    setTimeout("jQuery('.notification').hide('slow')", NOTIFICATION_TIMEOUT);
+    setTimeout("jQuery('.notification.transient').hide('slow')", NOTIFICATION_TIMEOUT);
+
+    jQuery(".notification:not(.transient)").each(function () {
+        
+        var notification = this;
+
+        var closeButton = document.createElement("img");
+        closeButton.className = "close_button";
+        closeButton.src = "/resources/images/close_small.png";
+        jQuery(notification).prepend(closeButton);
+
+        jQuery(closeButton).click(function () {
+            jQuery(notification).hide("slow");
+        });
+    });
 });
 
