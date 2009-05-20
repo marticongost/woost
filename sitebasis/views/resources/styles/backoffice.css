@@ -1100,6 +1100,11 @@ body.scripted .BackOfficeLayout .ThumbnailsContentView .collection_display input
     padding: 0.4em;
 }
 
+.BackOfficeLayout .notification .close_button {
+    float: right;
+    cursor: pointer;
+}
+
 .BackOfficeLayout .notification + .notification {
     margin-top: 0.4em;
 }

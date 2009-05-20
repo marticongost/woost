@@ -122,13 +122,26 @@ class EditController(BaseBackOfficeController):
                 )
 
         # User notification
+        msg = translations(
+            "sitebasis.views.BackOfficeEditView Changes saved",
+            item = item,
+            is_new = is_new
+        )
+        transient = True
+
+        if is_new and len(self.edit_stack) == 1:
+            msg += '. <a href="%s">%s</a>.' % (
+                self.get_edit_uri(item.__class__, edit_stack = None),
+                translations(
+                    "sitebasis.views.BackOfficeEditView Create another"
+                )
+            )
+            transient = False
+
         self.notify_user(
-            translations(
-                "sitebasis.views.BackOfficeEditView Changes saved",
-                item = item,
-                is_new = is_new
-            ),
-            "success"
+            msg,
+            "success",
+            transient
         )
 
         # A new item or draft was created
