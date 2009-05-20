@@ -266,7 +266,7 @@ from sitebasis.controllers.backoffice.useractions import \
                 <?py
                 if self.available_content_views \
                 and len(self.available_content_views) > 1:                    
-                    self.content_view_selector.items = self.available_content_views
+                    self.content_view_selector.items = sorted(self.available_content_views, key = lambda cv: cv.content_view_id)
                     self.content_view_selector.value = self
                 else:
                     self.content_view.visible = False
