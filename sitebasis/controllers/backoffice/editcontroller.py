@@ -179,9 +179,14 @@ class EditController(BaseBackOfficeController):
         user = self.user
 
         for i in range(self.MAX_TRANSACTION_ATTEMPTS):
+
+            # Update the draft
+            with restricted_modification_context(item, user):
+                self._apply_changes(item)
+
+            # Confirm the draft
             with changeset_context(author = user) as changeset:
                 with restricted_modification_context(target_item, user):
-                    self._apply_changes(item)
                     item.confirm_draft()
             try:
                 datastore.commit()
@@ -196,13 +201,13 @@ class EditController(BaseBackOfficeController):
             user = user,
             changeset = changeset
         )
-        
+
         # Application-wide event
         self.context["cms"].item_saved(
             item = target_item,
             user = user,
             is_new = is_new,
-            change = changeset.changes[target_item.id]
+            change = changeset.changes.get(target_item.id)
         )
 
         # User notification
