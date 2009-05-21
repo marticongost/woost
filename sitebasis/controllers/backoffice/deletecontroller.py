@@ -7,6 +7,7 @@ u"""
 @since:			February 2009
 """
 from __future__ import with_statement
+from ZODB.POSException import ConflictError
 from cocktail.modeling import cached_getter, InstrumentedSet
 from cocktail.schema import String, Collection
 from cocktail.persistence import datastore
@@ -16,7 +17,9 @@ from sitebasis.controllers.backoffice.basebackofficecontroller \
 
 
 class DeleteController(BaseBackOfficeController):
-        
+    
+    MAX_TRANSACTION_ATTEMPTS = 3
+
     @cached_getter
     def selection(self):
         """The selected subset of items that should be deleted.
@@ -50,13 +53,21 @@ class DeleteController(BaseBackOfficeController):
                     )
             
             user = self.user
-            deleted_set = ValidatingDeletedSet()
-
-            with changeset_context(author = user):
-                for item in self.selection:
-                    item.delete(deleted_set)
             
-            datastore.commit()
+            for i in range(self.MAX_TRANSACTION_ATTEMPTS):
+                deleted_set = ValidatingDeletedSet()
+
+                with changeset_context(author = user):
+                    for item in self.selection:
+                        item.delete(deleted_set)
+
+                try:
+                    datastore.commit()
+                except ConflictError:
+                    datastore.abort()
+                    datastore.sync()
+                else:
+                    break
         
             cms = self.context["cms"]
             for item in deleted_set:
