@@ -106,7 +106,8 @@ class Item(PersistentObject):
         required = True,
         default = False,
         listed_by_default = False,
-        editable = False
+        editable = False,
+        versioned = False
     )
 
     draft_source = schema.Reference(
@@ -115,7 +116,8 @@ class Item(PersistentObject):
         bidirectional = True,
         editable = False,
         listed_by_default = False,
-        indexed = True
+        indexed = True,
+        versioned = False
     )
 
     drafts = schema.Collection(
@@ -123,7 +125,8 @@ class Item(PersistentObject):
         related_key = "draft_source",
         bidirectional = True,
         delete_cascade = True,
-        editable = False
+        editable = False,
+        versioned = False
     )
 
     _draft_count = 0
@@ -188,7 +191,7 @@ class Item(PersistentObject):
                 source_accessor = schema.SchemaObjectAccessor,
                 target_accessor = schema.SchemaObjectAccessor,
                 collection_copy_mode = schema.shallow
-            )            
+            )
             self.delete()
 
     @classmethod
@@ -257,29 +260,30 @@ class Item(PersistentObject):
         item.creation_time = now
         item.last_update_time = now
 
-        changeset = ChangeSet.current
+        if not item.is_draft:
+            changeset = ChangeSet.current
 
-        if changeset:
-            change = Change()
-            change.action = Action.get_instance(identifier = "create")
-            change.target = item
-            change.changed_members = set(
-                member.name
-                for member in item.__class__.members().itervalues()
-                if member.versioned
-            )
-            change.item_state = item._get_revision_state()
-            change.changeset = changeset
-            changeset.changes[item.id] = change
-            
-            if item.author is None:
-                item.author = changeset.author
+            if changeset:
+                change = Change()
+                change.action = Action.get_instance(identifier = "create")
+                change.target = item
+                change.changed_members = set(
+                    member.name
+                    for member in item.__class__.members().itervalues()
+                    if member.versioned
+                )
+                change.item_state = item._get_revision_state()
+                change.changeset = changeset
+                changeset.changes[item.id] = change
+                
+                if item.author is None:
+                    item.author = changeset.author
 
-            if item.owner is None:
-                item.owner = changeset.author
-            
-            change.insert()
-    
+                if item.owner is None:
+                    item.owner = changeset.author
+                
+                change.insert()
+        
     # Extend item modification to make it versioning aware
     @event_handler
     def handle_changed(cls, event):
@@ -288,9 +292,10 @@ class Item(PersistentObject):
 
         if getattr(item, "_v_initializing", False) \
         or not event.member.versioned \
-        or not item.is_inserted:
+        or not item.is_inserted \
+        or item.is_draft:
             return
-
+        
         changeset = ChangeSet.current
 
         if changeset:
@@ -339,23 +344,24 @@ class Item(PersistentObject):
         if item.draft_source is not None:
             item.draft_source.drafts.remove(item)
 
-        changeset = ChangeSet.current
+        if not item.is_draft:
+            changeset = ChangeSet.current
 
-        # Add a revision for the delete operation
-        if changeset:
-            change = changeset.changes.get(item.id)
+            # Add a revision for the delete operation
+            if changeset:
+                change = changeset.changes.get(item.id)
 
-            if change and change.action.identifier != "delete":
-                del changeset.changes[item.id]
+                if change and change.action.identifier != "delete":
+                    del changeset.changes[item.id]
 
-            if change is None \
-            or change.action.identifier not in ("create", "delete"):
-                change = Change()
-                change.action = Action.get_instance(identifier = "delete")
-                change.target = item
-                change.changeset = changeset
-                changeset.changes[item.id] = change
-                change.insert()
+                if change is None \
+                or change.action.identifier not in ("create", "delete"):
+                    change = Change()
+                    change.action = Action.get_instance(identifier = "delete")
+                    change.target = item
+                    change.changeset = changeset
+                    changeset.changes[item.id] = change
+                    change.insert()
     
     _preserved_members = frozenset([changes])
 
