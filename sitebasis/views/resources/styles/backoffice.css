@@ -565,6 +565,7 @@ body.scripted .BackOfficeLayout .Table .selection {
 
 .BackOfficeLayout .FlatContentView .nested_draft td.element_column label {
     background-image: url(../images/edit_small.png);
+    padding-left: 1.8em;
 }
 
 .BackOfficeLayout .Table td.element_column label {
