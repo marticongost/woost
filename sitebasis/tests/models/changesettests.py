@@ -151,6 +151,7 @@ class ChangeSetTests(TempStorageMixin, TestCase):
         self.assertTrue(change.target is document)
         self.assertTrue(change.action is modify)
         self.assertTrue(change.changeset is modification)
+        self.assertEqual(change.changed_members, set(["title", "inner_title"]))
         self.assertEqual(
             document.changes,
             [creation.changes[document.id], change]
