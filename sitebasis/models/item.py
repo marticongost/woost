@@ -68,24 +68,18 @@ class Item(PersistentObject):
 
     # Indexing
     #--------------------------------------------------------------------------
-    indexed = True
  
+    # Make sure draft copies' members don't get indexed
+    def _should_index_member(self, member):
+        return PersistentObject._should_index_member(self, member) and (
+            member.primary or self.draft_source is None
+        )
+
      # When validating unique members, ignore conflicts with the draft source
     @classmethod
     def _get_unique_validable(cls, context):
         validable = PersistentClass._get_unique_validable(cls, context)
         return getattr(validable, "draft_source", None) or validable
-
-    # Make sure draft copies' members don't get indexed
-    def _update_index(self, member, language, previous_value, new_value):
-        if self.draft_source is None:
-            PersistentObject._update_index(
-                self,
-                member,
-                language,
-                previous_value,
-                new_value
-            )
 
     # Versioning
     #--------------------------------------------------------------------------
