@@ -6,6 +6,7 @@
 @organization:	Whads/Accent SL
 @since:			May 2009
 """
+from __future__ import with_statement
 from unittest import TestCase
 from cocktail.tests.persistence.tempstoragemixin import TempStorageMixin
 
@@ -48,6 +49,27 @@ class DraftTestCase(TempStorageMixin, TestCase):
         
         foo.spam = 2
         self.assertEqual(set(Foo.spam.index.items()), set([(4, source.id)]))
+
+    def test_versioning_disabled_for_drafts(self):
+
+        from sitebasis.models import Document, changeset_context
+
+        with changeset_context() as insertion_cs:
+            doc = Document()
+            doc.is_draft = True
+            doc.insert()
+        
+        self.assertFalse(insertion_cs.changes)
+
+        with changeset_context() as modification_cs:
+            doc.set("title", "Hello, world!", "en")
+        
+        self.assertFalse(modification_cs.changes)
+
+        with changeset_context() as deletion_cs:
+            doc.delete()
+        
+        self.assertFalse(deletion_cs.changes)
 
     def test_copy_draft(self):
 
