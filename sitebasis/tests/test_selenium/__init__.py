@@ -73,5 +73,10 @@ def teardown_package():
     cherrypy.engine.exit()
 
     # Remove temporary site files
-    rmtree(_site_temp_path)
+    try:
+        rmtree(_site_temp_path)
+    except Exception:
+        # TODO: removal of the temporary directory fails on windows, find a
+        # way to make it work
+        pass
 
