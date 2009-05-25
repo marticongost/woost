@@ -22,14 +22,6 @@ from sitebasis.tests.test_selenium.sitedefaults import (
     site_languages
 )
 
-# Tests
-from sitebasis.tests.test_selenium.test_authentication import (
-    AuthenticationTestCase
-)
-from sitebasis.tests.test_selenium.test_flatcontentview import (
-    FlatContentViewTestCase
-)
-
 # Path for site temporary files
 _site_temp_path = None
 
