@@ -13,17 +13,27 @@ from tempfile import mkdtemp
 from ZODB.FileStorage import FileStorage
 import cherrypy
 from cocktail.persistence import datastore
-from cocktail.tests.seleniumtester import get_selenium_site_address
+from cocktail.tests.seleniumtester import get_selenium_site_address, browser
 from sitebasis.models.initialization import init_site
 from sitebasis.controllers.application import CMS
-from sitebasis.tests.test_selenium.sitedefaults import (
-    admin_email,
-    admin_password,
-    site_languages
-)
+
+# Site defaults
+admin_email = "admin@localhost"
+admin_password = "topsecret"
+site_languages = ("en",)
 
 # Path for site temporary files
 _site_temp_path = None
+
+def login(user, password):
+    browser.type("user", user)
+    browser.type("password", password)
+    browser.click("authenticate")
+    browser.wait_for_page_to_load(10000)
+
+def admin_login():
+    login(admin_email, admin_password)
+
 
 def setup_package():
 
