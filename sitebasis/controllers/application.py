@@ -46,14 +46,6 @@ class CMS(BaseCMSController):
     application_settings = None
 
     # Application events
-    application_starting = Event(doc = """
-        An event triggered before the application's web server starts.
-        """)
-
-    application_ending = Event(doc = """
-        An event triggered after the application's web server is shutdown.
-        """)
-
     item_saved = Event(doc = """
         An event triggered after an item is inserted or modified.
 
@@ -169,15 +161,26 @@ class CMS(BaseCMSController):
             )
             self.icon_resolver.icon_repositories.insert(0, app_icon_path)
 
-    def run(self):
-        self.application_starting()
-        app_container = self.ApplicationContainer(self)
-        cherrypy.quickstart(
-            app_container,
+    def run(self, block = True):
+                
+        cherrypy.tree.mount(
+            self.ApplicationContainer(self),
             self.virtual_path,
-            config = self.application_settings
+            self.application_settings
         )
-        self.application_ending()
+    
+        if hasattr(cherrypy.engine, "signal_handler"):
+            cherrypy.engine.signal_handler.subscribe()
+
+        if hasattr(cherrypy.engine, "console_control_handler"):
+            cherrypy.engine.console_control_handler.subscribe()
+    
+        cherrypy.engine.start()
+        
+        if block:
+            cherrypy.engine.block()
+        else:
+            cherrypy.engine.wait(cherrypy.engine.states.STARTED)            
 
     services = CMSWebServicesController
 
