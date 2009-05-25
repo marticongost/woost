@@ -16,7 +16,7 @@ from sitebasis.tests.test_selenium.sitedefaults import (
 
 class FlatContentViewTestCase(object):
 
-    def load_view(self, url = "/en/cms/?content_view=flat"):
+    def load_view(self, url = "/en/cms/content/?content_view=flat"):
         browser.open(url)
         browser.type("user", admin_email)
         browser.type("password", admin_password)
@@ -29,7 +29,7 @@ class FlatContentViewTestCase(object):
         all = len(Item.select())
 
         self.load_view(
-            "/en/cms/"
+            "/en/cms/content/"
             "?content_view=flat"
             "&page_size=" + str(all)
         )
