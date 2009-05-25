@@ -77,7 +77,7 @@ from sitebasis.controllers.backoffice.useractions import add_view_action_context
             <py:ready py:if="element.visible">
                 <strong>${translations(self.user)}</strong>
                 <form method="post">
-                    <button name="logout" type="submit">
+                    <button py:id="logout_button" name="logout" type="submit">
                         ${translations("Logout")}
                     </button>
                 </form>

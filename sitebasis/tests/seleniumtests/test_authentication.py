@@ -55,13 +55,13 @@ class AuthenticationTestCase(object):
         browser.open("/en/cms")
         self.login(admin_email, admin_password)
         assert browser.is_text_present(admin_email)
-        assert browser.is_element_present("logout")
+        assert browser.is_element_present("css=.logout_button")
     
     @selenium_test
     def test_logout(self):
         browser.open("/en/cms")
         self.login(admin_email, admin_password)
-        browser.click("logout")
+        browser.click("css=.logout_button")
         browser.wait_for_page_to_load(5000)
         self.assert_login_form_visible()
 
