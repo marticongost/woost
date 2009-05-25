@@ -116,14 +116,26 @@ class CMS(BaseCMSController):
                 # Set the default location for file-based sessions
                 if self._cp_config and \
                 self._cp_config.get("tools.sessions.storage_type") == "file":
+                    
+                    # If the directory doesn't exist, create it
+                    session_path = os.path.join(app_path, "sessions")
+                    if not os.path.exists(session_path):
+                        os.mkdir(session_path)
+
                     self._cp_config.setdefault(
                         "tools.sessions.storage_path",
-                        os.path.join(app_path, "sessions")
+                        session_path
                     )
 
                 # Set the default location for uploaded files
                 if not cms.upload_path:
-                    cms.upload_path = os.path.join(app_path, "upload")
+                    
+                    # If the directory doesn't exist, create it
+                    upload_path = os.path.join(app_path, "upload")
+                    if not os.path.exists(upload_path):
+                        os.mkdir(upload_path)
+
+                    cms.upload_path = upload_path
 
         @cherrypy.expose
         def default(self, *args, **kwargs):

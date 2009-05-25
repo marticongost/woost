@@ -15,34 +15,32 @@ import cherrypy
 from cocktail.persistence import datastore
 from cocktail.tests.seleniumtester import get_selenium_site_address
 from sitebasis.models.initialization import init_site
-from sitebasis.tests.seleniumtests.sitedefaults import (
+from sitebasis.controllers.application import CMS
+from sitebasis.tests.test_selenium.sitedefaults import (
     admin_email,
     admin_password,
     site_languages
 )
-from sitebasis.tests.seleniumtests.test_authentication import (
+
+# Tests
+from sitebasis.tests.test_selenium.test_authentication import (
     AuthenticationTestCase
 )
+from sitebasis.tests.test_selenium.test_flatcontentview import (
+    FlatContentViewTestCase
+)
 
-_db_path = None
-
-# To be set by the invoking test suite
-_site_launcher = None
-_site_launcher_args = ()
-_site_launcher_kwargs = {}
-
-def set_site_launcher(launcher, *args, **kwargs):
-    global _site_launcher, _site_launcher_args, _site_launcher_kwargs
-    _site_launcher = launcher
-    _site_launcher_args = args
-    _site_launcher_kwargs = kwargs
+# Path for site temporary files
+_site_temp_path = None
 
 def setup_package():
 
+    # Create a temporary folder to hold site files
+    global _site_temp_path
+    _site_temp_path = mkdtemp()
+
     # Set up a temporary database
-    global _dp_path
-    _dp_path = mkdtemp()
-    datastore.storage = FileStorage(join(_dp_path, "testdb.fs"))
+    datastore.storage = FileStorage(join(_site_temp_path, "testdb.fs"))
 
     # Initialize site content before testing
     init_site(
@@ -62,7 +60,9 @@ def setup_package():
     })
 
     # Launch the site's webserver on another thread
-    _site_launcher(*_site_launcher_args, **_site_launcher_kwargs)
+    cms = CMS()
+    cms.application_path = _site_temp_path
+    cms.run(block = False)
 
 def teardown_package():
     
@@ -70,8 +70,6 @@ def teardown_package():
     cherrypy.server.stop()
     cherrypy.engine.exit()
 
-    # Discard the temporary database
-    datastore.abort()
-    datastore.close()
-    rmtree(_dp_path)
+    # Remove temporary site files
+    rmtree(_site_temp_path)
 
