@@ -7,7 +7,7 @@
 @since:			May 2009
 """
 from cocktail.tests.seleniumtester import selenium_test, browser
-from sitebasis.tests.test_selenium.sitedefaults import (
+from sitebasis.tests.test_selenium import (
     admin_email,
     admin_password
 )
