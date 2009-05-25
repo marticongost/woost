@@ -23,5 +23,6 @@ cherrypy.config.update({
 # Object store provider
 from cocktail.persistence import datastore
 from ZEO.ClientStorage import ClientStorage
-datastore.storage = ClientStorage(("_DATABASE_HOST_", _DATABASE_PORT_))
-
+db_host = "_DATABASE_HOST_"
+db_port = _DATABASE_PORT_
+datastore.storage = lambda: ClientStorage((db_host, db_port))
