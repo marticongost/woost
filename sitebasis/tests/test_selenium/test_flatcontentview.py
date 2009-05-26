@@ -129,3 +129,27 @@ class FlatContentViewTestCase(object):
                     assert not browser.is_checked(check_locator)
                     assert not browser.is_element_present(column_locator)
 
+    @selenium_test
+    def test_simple_search(self):
+
+        browser.open("/en/cms/content/?content_view")
+        admin_login()
+
+        # Fill in and submit the simple search box
+        query = "administrators"
+        browser.type("simple_search_query", query)
+        browser.click("css=.search_button")
+        browser.wait_for_page_to_load(10000)
+
+        # Make sure this turns on the advanced search panel
+        assert not browser.is_element_present(
+            ".css=input[type=text,name=simple_search_query]"
+        )
+        assert not browser.is_element_present("css=.advanced_search")
+        assert browser.is_element_present("css=.filters")
+        assert browser.is_element_present("filter_value0")
+        assert browser.get_value("filter_value0") == query
+
+        # Test returned results
+        assert browser.jquery_count(".collection_display tbody tr") == 1
+
