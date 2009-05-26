@@ -81,3 +81,51 @@ class FlatContentViewTestCase(object):
         sel = browser.jquery_count(".collection_display tbody tr.selected")
         assert sel == 0
 
+    @selenium_test
+    def test_member_selection(self):
+
+        browser.open("/en/cms/content/?content_view")
+        admin_login()
+
+        # Unfold the collection settings panel
+        browser.click("css=.settings_box a.label")
+
+        all_columns = ["element", "class"] + [
+            member.name
+            for member in Item.members().itervalues()
+            if member.visible
+        ]
+
+        for visible_members in (
+            set(["element"]),
+            set(["element", "class"]),
+            set(["element", "class", "id"]),
+            set(["id", "author", "owner", "is_draft", "drafts"]),
+            set(["element", "translations"])
+        ):
+            # Check / uncheck columns
+            for key in all_columns:
+                locator = \
+                    "css=.settings_box .members_selector input[value=%s]" % key
+                if key in visible_members:
+                    browser.check(locator)
+                else:
+                    browser.uncheck(locator)
+            
+            # Apply the member selection
+            browser.click("css=.settings_box button[type=submit]")
+            browser.wait_for_page_to_load(10000)
+
+            # Assert the browser shows the required columns
+            for key in all_columns:
+                check_locator = \
+                    "css=.settings_box .members_selector input[value=%s]" % key
+                column_locator = \
+                    "css=.collection_display th.%s_column" % key
+                if key in visible_members:
+                    assert browser.is_checked(check_locator)
+                    assert browser.is_visible(column_locator)
+                else:
+                    assert not browser.is_checked(check_locator)
+                    assert not browser.is_element_present(column_locator)
+
