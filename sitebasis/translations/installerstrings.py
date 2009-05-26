@@ -84,6 +84,15 @@ translations.define(
 )
 
 translations.define(
+    "sitebasis.controllers.installer.PythonPathError-instance",
+    ca = u"El <em>directori d'instal·lació</em> ha d'estar dins del "
+         u"<i>PYTHONPATH</i>",
+    es = u"El <em>directorio de instalación</em> debe estar dentro del "
+         u"<i>PYTHONPATH</i>",
+    en = u"The <em>project path</em> must be within the <i>PYTHONPATH</i>"
+)
+
+translations.define(
     "sitebasis.controllers.installer.WrongAddressError-instance",
     en = lambda instance:
         u"The indicated <em>%s</em> and <em>%s</em> combination is not "
