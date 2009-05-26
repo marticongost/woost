@@ -9,7 +9,7 @@ u"""
 import socket
 import re
 from os import listdir, mkdir
-from os.path import join, dirname, abspath, exists, isdir, isfile
+from os.path import join, dirname, abspath, exists, isdir, isfile, splitext
 from shutil import rmtree
 from subprocess import Popen, PIPE
 import cherrypy
@@ -202,17 +202,18 @@ class Installer(object):
                     copy(join(source, name), join(target, expand_vars(name)))
 
             elif isfile(source):
-                source_file = file(source, "r")
-                try:
-                    source_data = source_file.read().decode("utf-8")
-                    target_data = expand_vars(source_data).encode("utf-8")
-                    target_file = file(target, "w")
+                if splitext(source)[1] != ".pyc":
+                    source_file = file(source, "r")
                     try:
-                        target_file.write(target_data)
+                        source_data = source_file.read().decode("utf-8")
+                        target_data = expand_vars(source_data).encode("utf-8")
+                        target_file = file(target, "w")
+                        try:
+                            target_file.write(target_data)
+                        finally:
+                            target_file.close()
                     finally:
-                        target_file.close()
-                finally:
-                    source_file.close()
+                        source_file.close()
 
         copy(self.skeleton_path, params["project_path"])
 
