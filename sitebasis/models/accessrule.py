@@ -442,7 +442,16 @@ class AccessRule(Item):
 
 
 def resolve_context(context):
-
+    """Normalizes and extends the supplied access context.
+    
+    Values defined by the context are coerced to its expected types. The
+    context can also be extended with new keys, derived from the existing ones
+    (ie. the X{target_type} key will be automatically implied if the
+    X{target_instance} key has been supplied).
+    
+    @param context: The access context to process.
+    @type context: mapping
+    """
     # Normalize target members to member names
     target_member = context.get("target_member", None)
 
@@ -525,7 +534,13 @@ def reduce_ruleset(ruleset, context):
     return [rule for rule in ruleset if rule.matches(context)]
 
 def allowed(**context):
+    """Indicates if the specified action is allowed by the active ruleset.
 
+    @param context: The access context to evaluate.
+    
+    @return: True if the action is allowed, False otherwise.
+    @rtype: bool
+    """
     ruleset = context.pop("ruleset", None)
 
     if ruleset is None:
