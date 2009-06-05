@@ -63,6 +63,11 @@ class Site(Item):
         bidirectional = True
     )
 
+    triggers = schema.Collection(
+        items = "sitebasis.models.Trigger",
+        bidirectional = True
+    )
+
     def __translate__(self, language, **kwargs):
         return translations(self.__class__.__name__, language, **kwargs)
 
