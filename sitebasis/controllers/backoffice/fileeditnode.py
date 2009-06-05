@@ -32,12 +32,24 @@ class FileEditNode(EditNode):
         form_schema = EditNode.form_schema(self)
         form_schema.add_member(
             FileUpload("upload",
-                required = True,
+                required = not self.item.is_inserted,
                 hash_algorithm = "md5",
                 get_file_destination = lambda upload: self.temp_file_path
             )
         )
         return form_schema
+
+    def iter_changes(self, source = None):
+        
+        for member, language in EditNode.iter_changes(self, source):
+
+            # Ignore differences on the upload field if no file has been
+            # uploaded
+            if member.name == "upload" \
+            and schema.get(self.form_data, "upload") is None:
+                continue
+
+            yield (member, language)
 
     @getter
     def temp_file_path(self):
