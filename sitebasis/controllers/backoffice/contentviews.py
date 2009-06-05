@@ -44,6 +44,9 @@ class ContentViewsRegistry(object):
         if is_default:
             self.set_default(item_type, content_view)
 
+    def remove(self, item_type, content_view):
+        self.__views[item_type].remove(content_view)
+
     def get(self, item_type):
         
         views = set()

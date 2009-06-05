@@ -61,7 +61,8 @@ from sitebasis.controllers.backoffice.useractions import add_view_action_context
                 self.add_resource(resource.uri)
                 
         add_view_action_context(element, "nested" if self.edit_stack else "root")
-        self.set_client_variable("cms_uri", self.cms.document_uri())
+        if self.cms:
+            self.set_client_variable("cms_uri", self.cms.document_uri())
         ?>
     </py:ready>
 
@@ -77,7 +78,7 @@ from sitebasis.controllers.backoffice.useractions import add_view_action_context
             <py:ready py:if="element.visible">
                 <strong>${translations(self.user)}</strong>
                 <form method="post">
-                    <button name="logout" type="submit">
+                    <button py:id="logout_button" name="logout" type="submit">
                         ${translations("Logout")}
                     </button>
                 </form>
@@ -86,7 +87,15 @@ from sitebasis.controllers.backoffice.useractions import add_view_action_context
     </div>
 
     <div py:id="navigation_bar" py:collapsible="${True}">
-        <a py:id="back_link" href="@{self.cms.document_uri()}">
+        <a py:id="back_link">
+            <py:ready>
+                <?py
+                if self.cms:
+                    element["href"] = self.cms.document_uri()
+                else:
+                    element.visible = False
+                ?>
+            </py:ready>
             ${translations("sitebasis.views.BackOfficeLayout stack root")}
         </a>
     </div>
@@ -95,10 +104,12 @@ from sitebasis.controllers.backoffice.useractions import add_view_action_context
         <py:ready>
             <div class="notification"
                 py:if="self.notifications"
-                py:for="message, category in self.notifications">
+                py:for="message, category, transient in self.notifications">
                 <?py
                 if category:
                     element.add_class(category)
+                if transient:
+                    element.add_class("transient")
                 ?>
                 ${message}
             </div>

@@ -38,7 +38,7 @@ class BaseBackOfficeController(BaseCMSController):
     def get_edit_uri(self, target, *args, **kwargs):
         """Get the URI of the edit page of the specified item.
         
-        @param target: The item to get the URI for.
+        @param target: The item or content type to get the URI for.
         @type target: L{Item<sitebasis.models.Item>} instance or class
 
         @param args: Additional path components that will be appended to the
@@ -60,10 +60,9 @@ class BaseBackOfficeController(BaseCMSController):
         # URI for new items
         if isinstance(target, type) or not target.is_inserted:
             target_id = "new"
-            
-            # TODO: Use full names to identify types
-            if not edit_stack:
-                params["type"] = target.name
+            if edit_stack is None \
+            or ("edit_stack" in params and params["edit_stack"] is None):
+                params["type"] = target.full_name
 
         # URI for existing items
         else:
@@ -84,7 +83,10 @@ class BaseBackOfficeController(BaseCMSController):
         )
 
         if params:
-            uri += "?" + urlencode(params, True)
+            uri += "?" + urlencode(
+                dict((k, v) for k, v in params.iteritems() if v is not None),
+                True
+            )
 
         return uri
 
@@ -216,7 +218,7 @@ class BaseBackOfficeController(BaseCMSController):
         else:
             raise cherrypy.HTTPRedirect(self.document_uri())
 
-    def notify_user(self, message, category = None):
+    def notify_user(self, message, category = None, transient = True):
         """Creates a new notification for the current user.
         
         Notifications are stored until a proper page is served to the user. It
@@ -228,11 +230,16 @@ class BaseBackOfficeController(BaseCMSController):
         @param category: An optional free form string identifier that qualifies
             the message. Standard values include 'success' and 'error'.
         @type category: unicode
+
+        @param transient: Indicates if the message should be hidden after a
+            short lapse (True), or if it should remain visible until explicitly
+            closed by the user (False).
+        @type transient: bool
         """
         notifications = cherrypy.session.get("notifications")
         if notifications is None:
             cherrypy.session["notifications"] = notifications = []
-        notifications.append((message, category))
+        notifications.append((message, category, transient))
 
     def pop_user_notifications(self):
         """Retrieves pending notification messages that were stored through the
@@ -242,8 +249,9 @@ class BaseBackOfficeController(BaseCMSController):
         are removed from the list of pending notifications.
 
         @return: The sequence of pending notification messages. Each message
-            consists of a tuple with the message text and its category.
-        @rtype: sequence of (tuple of (unicode, unicode or None))
+            consists of a tuple with the message text, its category and wether
+            or not it should be treated as a transient message.
+        @rtype: sequence of (tuple of (unicode, unicode or None, bool))
         """
         notifications = cherrypy.session.get("notifications")
         cherrypy.session["notifications"] = []

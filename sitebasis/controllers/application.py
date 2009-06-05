@@ -46,14 +46,6 @@ class CMS(BaseCMSController):
     application_settings = None
 
     # Application events
-    application_starting = Event(doc = """
-        An event triggered before the application's web server starts.
-        """)
-
-    application_ending = Event(doc = """
-        An event triggered after the application's web server is shutdown.
-        """)
-
     item_saved = Event(doc = """
         An event triggered after an item is inserted or modified.
 
@@ -81,6 +73,19 @@ class CMS(BaseCMSController):
 
         @ivar change: The revision describing the changes to the item.
         @type change: L{Change<sitebasis.models.Change>}
+        """)
+
+    producing_output = Event(doc = """
+        An event triggered to allow setting site-wide output for controllers.
+
+        @ivar controller: The controller that is producing the output.
+        @type controller: L{BaseCMSController
+                            <sitebasis.controllers.basecmscontroller
+                            .BaseCMSController>}
+
+        @ivar output: The output for the controller. Event handlers can modify
+            it as required.
+        @type output: dict
         """)
 
     # Application modules
@@ -124,14 +129,26 @@ class CMS(BaseCMSController):
                 # Set the default location for file-based sessions
                 if self._cp_config and \
                 self._cp_config.get("tools.sessions.storage_type") == "file":
+                    
+                    # If the directory doesn't exist, create it
+                    session_path = os.path.join(app_path, "sessions")
+                    if not os.path.exists(session_path):
+                        os.mkdir(session_path)
+
                     self._cp_config.setdefault(
                         "tools.sessions.storage_path",
-                        os.path.join(app_path, "sessions")
+                        session_path
                     )
 
                 # Set the default location for uploaded files
                 if not cms.upload_path:
-                    cms.upload_path = os.path.join(app_path, "upload")
+                    
+                    # If the directory doesn't exist, create it
+                    upload_path = os.path.join(app_path, "upload")
+                    if not os.path.exists(upload_path):
+                        os.mkdir(upload_path)
+
+                    cms.upload_path = upload_path
 
         @cherrypy.expose
         def default(self, *args, **kwargs):
@@ -169,15 +186,26 @@ class CMS(BaseCMSController):
             )
             self.icon_resolver.icon_repositories.insert(0, app_icon_path)
 
-    def run(self):
-        self.application_starting()
-        app_container = self.ApplicationContainer(self)
-        cherrypy.quickstart(
-            app_container,
+    def run(self, block = True):
+                
+        cherrypy.tree.mount(
+            self.ApplicationContainer(self),
             self.virtual_path,
-            config = self.application_settings
+            self.application_settings
         )
-        self.application_ending()
+    
+        if hasattr(cherrypy.engine, "signal_handler"):
+            cherrypy.engine.signal_handler.subscribe()
+
+        if hasattr(cherrypy.engine, "console_control_handler"):
+            cherrypy.engine.console_control_handler.subscribe()
+    
+        cherrypy.engine.start()
+        
+        if block:
+            cherrypy.engine.block()
+        else:
+            cherrypy.engine.wait(cherrypy.engine.states.STARTED)            
 
     services = CMSWebServicesController
 
@@ -252,6 +280,17 @@ class CMS(BaseCMSController):
         document = cms.context["document"]
         if document is not None:
             cms.validate_document(document)
+
+    @event_handler
+    def handle_producing_output(cls, event):
+        # Set application wide output parameters
+        cms = event.source
+        event.output.update(
+            cms = cms,
+            site = Site.main,
+            user = cms.authentication.user,
+            document = event.controller.context.get("document")
+        )
 
     @event_handler
     def handle_exception_raised(self, event):
@@ -345,8 +384,17 @@ class CMS(BaseCMSController):
                 content_type = file.mime_type)
 
     def _create_thumbnail_loader(self):
+        
         loader = ThumbnailLoader()
+        
+        # Cache path
+        loader.cache_path = os.path.join(self.application_path, "thumbnails")
+        if not os.path.exists(loader.cache_path):
+            os.mkdir(loader.cache_path)
+
+        # Image thumbnails
         loader.thumbnailers.append(ImageThumbnailer())
+
         return loader
 
     @cherrypy.expose

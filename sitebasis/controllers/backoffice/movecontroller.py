@@ -7,6 +7,7 @@ u"""
 @since:			November 2008
 """
 from __future__ import with_statement
+from ZODB.POSException import ConflictError
 import cherrypy
 from simplejson import dumps
 from cocktail.modeling import cached_getter
@@ -21,6 +22,8 @@ from sitebasis.controllers.backoffice.basebackofficecontroller \
 
 
 class MoveController(BaseBackOfficeController):
+
+    MAX_TRANSACTION_ATTEMPTS = 3
 
     @cached_getter
     def handling_ajax_request(self):
@@ -84,16 +87,22 @@ class MoveController(BaseBackOfficeController):
         if any(parent.descends_from(item) for item in selection):
             raise TreeCycleError()
 
-        with changeset_context(author = self.user):
-            for item in reversed(selection):
+        for i in range(self.MAX_TRANSACTION_ATTEMPTS):
+            with changeset_context(author = self.user):
+                for item in reversed(selection):
 
-                if isinstance(related_end, Reference) \
-                and item.get(related_end) is parent:
-                    collection.remove(item)
+                    if isinstance(related_end, Reference) \
+                    and item.get(related_end) is parent:
+                        collection.remove(item)
 
-                collection.insert(position, item)
-        
-        datastore.commit()
+                    collection.insert(position, item)            
+            try:
+                datastore.commit()
+            except ConflictError:
+                datastore.abort()
+                datastore.sync()
+            else:
+                break
 
     def handle_error(self, error):
         if self.handling_ajax_request:

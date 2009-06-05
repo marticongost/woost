@@ -565,6 +565,7 @@ body.scripted .BackOfficeLayout .Table .selection {
 
 .BackOfficeLayout .FlatContentView .nested_draft td.element_column label {
     background-image: url(../images/edit_small.png);
+    padding-left: 1.8em;
 }
 
 .BackOfficeLayout .Table td.element_column label {
@@ -1100,6 +1101,11 @@ body.scripted .BackOfficeLayout .ThumbnailsContentView .collection_display input
     padding: 0.4em;
 }
 
+.BackOfficeLayout .notification .close_button {
+    float: right;
+    cursor: pointer;
+}
+
 .BackOfficeLayout .notification + .notification {
     margin-top: 0.4em;
 }
@@ -1413,6 +1419,10 @@ body.scripted .BackOfficeLayout .ThumbnailsContentView .collection_display input
     margin-left: 1.2em;
     text-decoration: underline;
     font-size: 70%;
+    background-image: url(/resources/images/collapsed_block.png);
+    background-repeat: no-repeat;
+    background-position: 0 center;
+    padding-left: 0.6em;
 }
 
 .BackOfficeLayout .CollectionView .filters {

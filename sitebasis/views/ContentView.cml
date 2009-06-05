@@ -221,12 +221,12 @@ from sitebasis.controllers.backoffice.useractions import \
         </div>
 
         <!-- Simple search -->
-        <div py:id="simple_search" py:visible="@{not self.search_expanded and self.user_collection.allow_filters}">
+        <div py:id="simple_search" py:visible="@{not self.search_expanded and self.user_collection.allow_filters and self.visible_results}">
 
             <input type="text" name="simple_search_query"/>
             <input type="submit" class="search_button" value="${translations('sitebasis.views.ContentView search button')}"/>
 
-            <button class="advanced_search" name="search_expanded" value="true">
+            <button type="submit" class="advanced_search" name="search_expanded" value="true">
                 ${translations("sitebasis.views.ContentView show advanced search")}
             </button>
         </div>
@@ -266,7 +266,7 @@ from sitebasis.controllers.backoffice.useractions import \
                 <?py
                 if self.available_content_views \
                 and len(self.available_content_views) > 1:                    
-                    self.content_view_selector.items = self.available_content_views
+                    self.content_view_selector.items = sorted(self.available_content_views, key = lambda cv: cv.content_view_id)
                     self.content_view_selector.value = self
                 else:
                     self.content_view.visible = False
@@ -281,7 +281,8 @@ from sitebasis.controllers.backoffice.useractions import \
         py:def="toolbar"
         py:action_context="toolbar"
         py:action_target="@{self.user_collection.type}"
-        py:empty_result_set="@{not self.visible_results}">
+        py:empty_result_set="@{not self.visible_results}"
+        py:collapsible="${True}">
         <?py
         @extend(toolbar)
         def get_actions(toolbar, context):
