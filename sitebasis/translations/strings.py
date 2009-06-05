@@ -999,6 +999,12 @@ translations.define("Site-plural",
     en = u"Sites"
 )
 
+translations.define("Site.triggers",
+    ca = u"Disparadors",
+    es = u"Disparadores",
+    en = u"Triggers"
+)
+
 translations.define("Site.default_language",
     ca = u"Idioma per defecte",
     es = u"Idioma por defecto",
@@ -1962,5 +1968,119 @@ translations.define("sitebasis.models.changesets.Change description",
     ca = _translate_sitebasis_models_change_instance_ca,
     es = _translate_sitebasis_models_change_instance_es,
     en = _translate_sitebasis_models_change_instance_en
+)
+
+# Trigger
+#------------------------------------------------------------------------------
+translations.define("Trigger",
+    ca = u"Disparador",
+    es = u"Disparador",
+    en = u"Trigger"
+)
+
+translations.define("Trigger-plural",
+    ca = u"Disparadors",
+    es = u"Disparadores",
+    en = u"Triggers"
+)
+
+translations.define("Trigger.execution_point",
+    ca = u"Moment d'execució",
+    es = u"Momento de ejecución",
+    en = u"Execution point"
+)
+
+translations.define("Trigger.batch_execution",
+    ca = u"Execució agrupada",
+    es = u"Ejecución agrupada",
+    en = u"Batch execution"
+)
+
+translations.define("Trigger.items",
+    ca = u"Elements a observar",
+    es = u"Elementos a observar",
+    en = u"Watched items"
+)
+
+translations.define("Trigger.types",
+    ca = u"Tipus a observar",
+    es = u"Tipos a observar",
+    en = u"Watched types"
+)
+
+translations.define("Trigger.agents",
+    ca = u"Agents a observar",
+    es = u"Agentes a observar",
+    en = u"Watched agents"
+)
+
+translations.define("Trigger.actions",
+    ca = u"Accions",
+    es = u"Acciones",
+    en = u"Actions"
+)
+
+translations.define("Trigger.modified_members",
+    ca = u"Membres modificats",
+    es = u"Miembros modificados",
+    en = u"Modified members"
+)
+
+translations.define("Trigger.modified_languages",
+    ca = u"Idiomes modificats",
+    es = u"Idiomas modificados",
+    en = u"Modified languages"
+)
+
+translations.define("Trigger.responses",
+    ca = u"Respostes",
+    es = u"Respuestas",
+    en = u"Responses"
+)
+
+translations.define("sitebasis.models.Trigger.execution_point before",
+    ca = u"Abans",
+    es = u"Antes",
+    en = u"Before"
+)
+
+translations.define("sitebasis.models.Trigger.execution_point after",
+    ca = u"Després",
+    es = u"Después",
+    en = u"After"
+)
+
+# TriggerResponse
+#------------------------------------------------------------------------------
+translations.define("TriggerResponse",
+    ca = u"Resposta",
+    es = u"Respuesta",
+    en = u"Trigger response"
+)
+
+translations.define("TriggerResponse-plural",
+    ca = u"Respostes",
+    es = u"Respuestas",
+    en = u"Trigger responses"
+)
+
+# CustomTriggerResponse
+#------------------------------------------------------------------------------
+translations.define("CustomTriggerResponse",
+    ca = u"Resposta personalitzada",
+    es = u"Respuesta personalizada",
+    en = u"Custom response"
+)
+
+translations.define("CustomTriggerResponse-plural",
+    ca = u"Respostes personalitzades",
+    es = u"Respuestas personalizadas",
+    en = u"Custom responses"
+)
+
+translations.define("CustomTriggerResponse.code",
+    ca = u"Codi de resposta",
+    es = u"Código de respuesta",
+    en = u"Response code"
 )
 
