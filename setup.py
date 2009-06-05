@@ -22,7 +22,10 @@ setup(
     ],
     include_package_data = True,
     packages = find_packages(),
-    
+    entry_points = {
+        "sitebasis.extensions":
+        ["workflow=sitebasis.extensions.workflow:WorkflowExtension"]
+    },
     # SiteBasis can't yet access view resources (images, style sheets, client
     # side scripts, etc) that are packed inside a zipped egg, so distribution
     # in zipped form is disabled
