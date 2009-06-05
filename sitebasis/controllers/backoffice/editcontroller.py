@@ -152,15 +152,20 @@ class EditController(BaseBackOfficeController):
 
     def confirm_draft(self):
 
-        item = self.stack_node.item
-        target_item = item.draft_source or item
-        is_new = item is target_item
+        draft = self.stack_node.item
+        target_item = draft.draft_source or draft
+        is_new = draft is target_item
         user = self.user
 
+        self.restrict_access(
+            target_instance = draft,
+            action = "confirm_draft"
+        )
+
         with changeset_context(author = user) as changeset:
-            with restricted_modification_context(target_item, user):
-                self._apply_changes(item)
-                item.confirm_draft()
+            with restricted_modification_context(draft, user):
+                self._apply_changes(draft)
+            draft.confirm_draft()
 
         datastore.commit()
 

@@ -64,6 +64,12 @@ def init_site(
     set_translations(delete, "title", "Delete action title")
     delete.insert()
 
+    confirm_draft = Action()
+    confirm_draft.identifier = "confirm_draft"
+    set_translations(confirm_draft, "title", "Confirm draft title")
+    confirm_draft.insert()
+
+    # ???
     visible = Action()
     visible.identifier = "visible"
     set_translations(visible, "title", "Visible action title")

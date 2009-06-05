@@ -744,6 +744,12 @@ translations.define("Delete action title",
     en = u"Delete"
 )
 
+translations.define("Confirm draft action title",
+    ca = u"Confirmar esborrany",
+    es = u"Confirmar borrador",
+    en = u"Confirm draft"
+)
+
 # Content views
 #------------------------------------------------------------------------------
 translations.define("View as",
