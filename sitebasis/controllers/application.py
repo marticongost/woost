@@ -360,8 +360,17 @@ class CMS(BaseCMSController):
                 content_type = file.mime_type)
 
     def _create_thumbnail_loader(self):
+        
         loader = ThumbnailLoader()
+        
+        # Cache path
+        loader.cache_path = os.path.join(self.application_path, "thumbnails")
+        if not os.path.exists(loader.cache_path):
+            os.mkdir(loader.cache_path)
+
+        # Image thumbnails
         loader.thumbnailers.append(ImageThumbnailer())
+
         return loader
 
     @cherrypy.expose
