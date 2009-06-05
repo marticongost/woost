@@ -1783,3 +1783,15 @@ a.browse span {
 a.pickcolor span {
     background:url(../images/icons_tiny.gif) -840px 0 !important;
 }
+
+/* workflow extension
+-----------------------------------------------------------------------------*/
+.BackOfficeLayout .toolbar .transition_action .selector_content a {
+    white-space: nowrap;
+    display: block;
+}
+
+.BackOfficeLayout .toolbar .transition_action .selector_content a + a {
+    margin-top: 0.5em;
+}
+
