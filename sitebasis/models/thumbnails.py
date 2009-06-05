@@ -126,7 +126,7 @@ class ThumbnailLoader(object):
         item, width, height = self._sanitize_request(item, width, height)
 
         # Base name
-        file_name = "%s-%dx%d" % (item.id, width, height)
+        file_name = "%s-%sx%s" % (item.id, width or "auto", height or "auto")
 
         # Parameters
         param_list = "-".join(
@@ -182,9 +182,9 @@ class ThumbnailLoader(object):
 
             # Make sure cached thumbnails are current
             if os.path.exists(cached_thumbnail_path):
-                thumbnail_date = os.stat(cached_thumbnail_path).m_time
+                thumbnail_date = os.stat(cached_thumbnail_path).st_mtime
                 if not thumbnailer.thumbnail_changed(item, thumbnail_date):
-                    image = Image.open(thumbnail_path)
+                    image = Image.open(cached_thumbnail_path)
 
         # No usable cached copy available, or cache disabled:
         # generate a new thumbnail
@@ -197,9 +197,9 @@ class ThumbnailLoader(object):
             )
 
             # If caching is enabled, store the generated thumbnail for further
-            # requestss
+            # requests
             if self.cache_path:
-                self.save_thumbnail(image, thumbnail_path, **params)
+                self.save_thumbnail(image, cached_thumbnail_path, **params)
 
         return image
 
@@ -301,6 +301,8 @@ class Thumbnailer(object):
 class ImageThumbnailer(Thumbnailer):
     """Generates thumbnails for image files."""
 
+    resize_filter = Image.ANTIALIAS
+
     # TODO: Extend it to all resources, including URI instances
     # (Rename it to ResourceThumbnailer, load remote resources using an HTTP
     # client and a If-Not-Modified-Since header, etc)
@@ -309,7 +311,7 @@ class ImageThumbnailer(Thumbnailer):
         return isinstance(item, File) and item.resource_type == "image"
     
     def thumbnail_changed(self, item, date):
-        return date < os.stat(item.file_path).m_time
+        return date < os.stat(item.file_path).st_mtime
     
     def create_thumbnail(self, item, width, height, **params):
 
@@ -323,5 +325,5 @@ class ImageThumbnailer(Thumbnailer):
             w, h = image.size
             height = int(h * width / float(w))
 
-        return image.resize((width, height))
+        return image.resize((width, height), self.resize_filter)
 
