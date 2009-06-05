@@ -45,20 +45,20 @@ class LanguageModule(Module):
         return cookie.value if cookie else Site.main.default_language
 
     def translate_uri(self, path = None, language = None):
-        
+
+        qs = ""
+
+        if path is None:
+            path = cherrypy.request.path_info
+            qs = cherrypy.request.query_string
+
         if language is None:
             language = get_content_language()
 
-        location = Location.get_current()
-
-        if path is not None:
-           location.path_info = path
-        
-        path_components = location.path_info.strip("/").split("/")
+        path_components = path.strip("/").split("/")
         if path_components and path_components[0] in Language.codes:
             path_components.pop(0)
 
         path_components.insert(0, language)
-        location.path_info = "/" + "/".join(path_components)
-        return location
+        return "/" + "/".join(path_components) + ("?" + qs if qs else "")
 

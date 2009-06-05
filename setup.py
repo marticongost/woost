@@ -18,10 +18,12 @@ setup(
         "simplejson",
         "cocktail",
         "genshi",
-        "pyExcelerator"
+        "pyExcelerator",
+        "PIL"
     ],
     include_package_data = True,
     packages = find_packages(),
+    dependency_links = ["http://www.pythonware.com/products/pil/"],   
     entry_points = {
         "sitebasis.extensions":
         ["workflow=sitebasis.extensions.workflow:WorkflowExtension"]

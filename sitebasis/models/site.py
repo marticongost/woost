@@ -60,7 +60,8 @@ class Site(Item):
 
     access_rules_by_priority = schema.Collection(
         items = "sitebasis.models.AccessRule",
-        bidirectional = True
+        bidirectional = True,
+        related_key = "site"
     )
 
     triggers = schema.Collection(

@@ -8,6 +8,7 @@ u"""
 """
 from __future__ import with_statement
 import cherrypy
+from ZODB.POSException import ConflictError
 from cocktail.modeling import cached_getter
 from cocktail.events import event_handler, when
 from cocktail.schema import (
@@ -30,6 +31,7 @@ from sitebasis.controllers.backoffice.basebackofficecontroller \
 
 class EditController(BaseBackOfficeController):
 
+    MAX_TRANSACTION_ATTEMPTS = 3
     section = None
 
     @event_handler
@@ -69,40 +71,46 @@ class EditController(BaseBackOfficeController):
         self._invoke_user_action(self.action, self.action_content)
 
     def save_item(self, make_draft = False):
-
-        user = self.user
-        stack_node = self.stack_node
-        item = stack_node.item
-        is_new = not item.is_inserted
         
-        # Create a draft
-        if make_draft:
-
-            # From scratch
-            if is_new:
-                item.is_draft = True
-
-            # From an existing element
-            else:
-                item = item.make_draft()
+        for i in range(self.MAX_TRANSACTION_ATTEMPTS):
+            user = self.user
+            stack_node = self.stack_node
+            item = stack_node.item
+            is_new = not item.is_inserted
             
-            item.author = user
-            item.owner = user
+            # Create a draft
+            if make_draft:
 
-        changeset = None
+                # From scratch
+                if is_new:
+                    item.is_draft = True
 
-        with restricted_modification_context(item, user):
-            
-            # Store the changes on a draft; this skips revision control
-            if item.is_draft:       
-                self._apply_changes(item)
+                # From an existing element
+                else:
+                    item = item.make_draft()
+                
+                item.author = user
+                item.owner = user
 
-            # Operate directly on a production item
-            else:
-                with changeset_context(author = user) as changeset:                
+            changeset = None
+
+            with restricted_modification_context(item, user):
+                
+                # Store the changes on a draft; this skips revision control
+                if item.is_draft:       
                     self._apply_changes(item)
 
-        datastore.commit()
+                # Operate directly on a production item
+                else:
+                    with changeset_context(author = user) as changeset:
+                        self._apply_changes(item)
+            try:
+                datastore.commit()
+            except ConflictError:
+                datastore.abort()
+                datastore.sync()
+            else:
+                break
 
         # Edit stack event
         stack_node.committed(
@@ -122,13 +130,26 @@ class EditController(BaseBackOfficeController):
                 )
 
         # User notification
+        msg = translations(
+            "sitebasis.views.BackOfficeEditView Changes saved",
+            item = item,
+            is_new = is_new
+        )
+        transient = True
+
+        if is_new and len(self.edit_stack) == 1:
+            msg += '. <a href="%s">%s</a>.' % (
+                self.get_edit_uri(item.__class__, edit_stack = None),
+                translations(
+                    "sitebasis.views.BackOfficeEditView Create another"
+                )
+            )
+            transient = False
+
         self.notify_user(
-            translations(
-                "sitebasis.views.BackOfficeEditView Changes saved",
-                item = item,
-                is_new = is_new
-            ),
-            "success"
+            msg,
+            "success",
+            transient
         )
 
         # A new item or draft was created
@@ -162,12 +183,23 @@ class EditController(BaseBackOfficeController):
             action = "confirm_draft"
         )
 
-        with changeset_context(author = user) as changeset:
+        for i in range(self.MAX_TRANSACTION_ATTEMPTS):
+
+            # Update the draft
             with restricted_modification_context(draft, user):
                 self._apply_changes(draft)
-            draft.confirm_draft()
 
-        datastore.commit()
+            # Confirm the draft
+            with changeset_context(author = user) as changeset:
+                with restricted_modification_context(target_item, user):
+                    draft.confirm_draft()
+            try:
+                datastore.commit()
+            except ConflictError:
+                datastore.abort()
+                datastore.sync()
+            else:
+                break
 
         # Edit stack event
         self.stack_node.committed(
@@ -180,7 +212,7 @@ class EditController(BaseBackOfficeController):
             item = target_item,
             user = user,
             is_new = is_new,
-            change = changeset.changes[target_item.id]
+            change = changeset.changes.get(target_item.id)
         )
 
         # User notification

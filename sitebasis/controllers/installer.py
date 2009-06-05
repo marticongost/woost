@@ -6,10 +6,10 @@ u"""
 @organization:	Whads/Accent SL
 @since:			October 2008
 """
+import sys
 import socket
 import re
-from os import listdir, mkdir
-from os.path import join, dirname, abspath, exists, isdir, isfile
+import os
 from shutil import rmtree
 from subprocess import Popen, PIPE
 import cherrypy
@@ -24,13 +24,13 @@ from sitebasis.models.initialization import init_site
 
 class Installer(object):
 
-    base_path = dirname(sitebasis_file)
+    base_path = os.path.dirname(sitebasis_file)
 
-    skeleton_path = abspath(
-        join(base_path, "scripts","project_skeleton")
+    skeleton_path = os.path.abspath(
+        os.path.join(base_path, "scripts","project_skeleton")
     )
     
-    views_path = join(base_path, "views")
+    views_path = os.path.join(base_path, "views")
 
     resources = cherrypy.tools.staticdir.handler(
         section = "resources",
@@ -142,6 +142,12 @@ class Installer(object):
             "validate_database_address"
         ))
 
+        def validate_python_path(member, value, context):
+            if value and os.path.split(value)[0] not in sys.path:
+                yield PythonPathError(member, value, context)
+
+        form_schema["project_path"].add_validation(validate_python_path)
+
         form_data = {}
 
         if submitted:
@@ -150,7 +156,7 @@ class Installer(object):
 
             if not errors:
                 try:
-                    if exists(form_data["project_path"]):
+                    if os.path.exists(form_data["project_path"]):
                         raise InstallFolderExists()
 
                     self.install(form_data)
@@ -196,28 +202,32 @@ class Installer(object):
 
         def copy(source, target):
 
-            if isdir(source):
-                mkdir(target)
-                for name in listdir(source):
-                    copy(join(source, name), join(target, expand_vars(name)))
+            if os.path.isdir(source):
+                os.mkdir(target)
+                for name in os.listdir(source):
+                    copy(
+                        os.path.join(source, name),
+                        os.path.join(target, expand_vars(name))
+                    )
 
-            elif isfile(source):
-                source_file = file(source, "r")
-                try:
-                    source_data = source_file.read().decode("utf-8")
-                    target_data = expand_vars(source_data).encode("utf-8")
-                    target_file = file(target, "w")
+            elif os.path.isfile(source):
+                if os.path.splitext(source)[1] != ".pyc":
+                    source_file = file(source, "r")
                     try:
-                        target_file.write(target_data)
+                        source_data = source_file.read().decode("utf-8")
+                        target_data = expand_vars(source_data).encode("utf-8")
+                        target_file = file(target, "w")
+                        try:
+                            target_file.write(target_data)
+                        finally:
+                            target_file.close()
                     finally:
-                        target_file.close()
-                finally:
-                    source_file.close()
+                        source_file.close()
 
         copy(self.skeleton_path, params["project_path"])
 
         # Create the folder for the database
-        mkdir(join(params["project_path"], "data"))
+        os.mkdir(os.path.join(params["project_path"], "data"))
 
     def _subprocess(self, cmd):
         # - Not used -
@@ -229,7 +239,7 @@ class Installer(object):
 
         # Start the database
         cmd = "runzeo -f %s -a %s:%d" % (
-            join(params["project_path"], "data", "database.fs"),
+            os.path.join(params["project_path"], "data", "database.fs"),
             params["database_host"],
             params["database_port"]
         )
@@ -284,6 +294,11 @@ class WrongAddressError(schema.exceptions.ValidationError):
 
         self.host_member = host_member
         self.port_member = port_member
+
+
+class PythonPathError(schema.exceptions.ValidationError):
+    """A validation error produced when trying to install a project on a path
+    that lies outside the python path."""
 
 
 class SubprocessError(Exception):

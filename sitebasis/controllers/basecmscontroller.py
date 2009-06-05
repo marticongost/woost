@@ -21,16 +21,13 @@ class BaseCMSController(Controller):
 
         # Pass the request context to the template
         cms = self.context["cms"]
-        
-        self.output.update(
-            cms = cms,
-            site = Site.main,
-            user = cms.authentication.user,
-            document = self.context.get("document")
+        cms.producing_output(
+            controller = self,
+            output = self.output
         )
 
         return Controller._render_template(self)
-  
+ 
     @getter
     def user(self):
         """Obtains the currently logged in user.
