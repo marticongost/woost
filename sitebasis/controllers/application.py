@@ -75,6 +75,19 @@ class CMS(BaseCMSController):
         @type change: L{Change<sitebasis.models.Change>}
         """)
 
+    producing_output = Event(doc = """
+        An event triggered to allow setting site-wide output for controllers.
+
+        @ivar controller: The controller that is producing the output.
+        @type controller: L{BaseCMSController
+                            <sitebasis.controllers.basecmscontroller
+                            .BaseCMSController>}
+
+        @ivar output: The output for the controller. Event handlers can modify
+            it as required.
+        @type output: dict
+        """)
+
     # Application modules
     LanguageModule = LanguageModule
     AuthenticationModule = AuthenticationModule
@@ -267,6 +280,17 @@ class CMS(BaseCMSController):
         document = cms.context["document"]
         if document is not None:
             cms.validate_document(document)
+
+    @event_handler
+    def handle_producing_output(cls, event):
+        # Set application wide output parameters
+        cms = event.source
+        event.output.update(
+            cms = cms,
+            site = Site.main,
+            user = cms.authentication.user,
+            document = event.controller.context.get("document")
+        )
 
     @event_handler
     def handle_exception_raised(self, event):
