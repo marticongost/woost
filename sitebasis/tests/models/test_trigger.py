@@ -7,25 +7,10 @@
 @since:			May 2009
 """
 from __future__ import with_statement
-from unittest import TestCase
-from cocktail.tests.persistence.tempstoragemixin import TempStorageMixin
+from sitebasis.tests.models.basetestcase import BaseTestCase
 
 
-class TriggerMatchTestCase(TempStorageMixin, TestCase):
-
-    def setUp(self):
-        TempStorageMixin.setUp(self)
-        
-        from sitebasis.models import Action
-        
-        self.create = Action(identifier = "create")
-        self.create.insert()
-
-        self.modify = Action(identifier = "modify")
-        self.modify.insert()
-
-        self.delete = Action(identifier = "delete")
-        self.delete.insert()
+class TriggerMatchTestCase(BaseTestCase):
 
     def assert_matches(self, trigger, *tests):
         for item, action, agent, ctx, should_match in tests:
@@ -48,10 +33,10 @@ class TriggerMatchTestCase(TempStorageMixin, TestCase):
         from sitebasis.models import Trigger, Item, Agent
         self.assert_matches(
             Trigger(),
-            (Item(), self.create, None, {}, True),
-            (Item(), self.create, Agent(), {}, True),
-            (Item(), self.delete, None, {}, True),
-            (Agent(), self.delete, None, {}, True)
+            (Item(), self.create_action, None, {}, True),
+            (Item(), self.create_action, Agent(), {}, True),
+            (Item(), self.delete_action, None, {}, True),
+            (Agent(), self.delete_action, None, {}, True)
         )
 
     def test_agent(self):
@@ -63,10 +48,10 @@ class TriggerMatchTestCase(TempStorageMixin, TestCase):
         
         self.assert_matches(
             Trigger(agents = [a1, a2]),
-            (Item(), self.create, a1, {}, True),
-            (Item(), self.create, a2, {}, True),
-            (Item(), self.create, None, {}, False),
-            (Item(), self.create, Agent(), {}, False)
+            (Item(), self.create_action, a1, {}, True),
+            (Item(), self.create_action, a2, {}, True),
+            (Item(), self.create_action, None, {}, False),
+            (Item(), self.create_action, Agent(), {}, False)
         )
 
     def test_action(self):
@@ -74,10 +59,10 @@ class TriggerMatchTestCase(TempStorageMixin, TestCase):
         from sitebasis.models import Trigger, Item
         
         self.assert_matches(
-            Trigger(actions = [self.create, self.modify]),
-            (Item(), self.create, None, {}, True),
-            (Item(), self.modify, None, {}, True),
-            (Item(), self.delete, None, {}, False)
+            Trigger(actions = [self.create_action, self.modify_action]),
+            (Item(), self.create_action, None, {}, True),
+            (Item(), self.modify_action, None, {}, True),
+            (Item(), self.delete_action, None, {}, False)
         )
 
     def test_item(self):
@@ -89,9 +74,9 @@ class TriggerMatchTestCase(TempStorageMixin, TestCase):
         
         self.assert_matches(
             Trigger(items = [i1, i2]),
-            (i1, self.create, None, {}, True),
-            (i2, self.create, None, {}, True),
-            (Item(), self.create, None, {}, False)
+            (i1, self.create_action, None, {}, True),
+            (i2, self.create_action, None, {}, True),
+            (Item(), self.create_action, None, {}, False)
         )
 
     def test_content_type(self):
@@ -100,10 +85,10 @@ class TriggerMatchTestCase(TempStorageMixin, TestCase):
         
         self.assert_matches(
             Trigger(types = [Document, Agent]),
-            (Document(), self.create, None, {}, True),
-            (Agent(), self.create, None, {}, True),
-            (StandardPage(), self.create, None, {}, True),
-            (Trigger(), self.create, None, {}, False)
+            (Document(), self.create_action, None, {}, True),
+            (Agent(), self.create_action, None, {}, True),
+            (StandardPage(), self.create_action, None, {}, True),
+            (Trigger(), self.create_action, None, {}, False)
         )
 
     def test_member(self):
@@ -112,10 +97,10 @@ class TriggerMatchTestCase(TempStorageMixin, TestCase):
 
         self.assert_matches(
             Trigger(modified_members = [Item.is_draft, Item.draft_source]),
-            (Item(), self.modify, None, {"member": Item.is_draft}, True),
-            (Item(), self.modify, None, {"member": Item.draft_source}, True),
-            (Item(), self.modify, None, {"member": None}, False),
-            (Item(), self.modify, None, {"member": Item.owner}, False)
+            (Item(), self.modify_action, None, {"member": Item.is_draft}, True),
+            (Item(), self.modify_action, None, {"member": Item.draft_source}, True),
+            (Item(), self.modify_action, None, {"member": None}, False),
+            (Item(), self.modify_action, None, {"member": Item.owner}, False)
         )
 
     def test_language(self):
@@ -124,14 +109,14 @@ class TriggerMatchTestCase(TempStorageMixin, TestCase):
 
         self.assert_matches(
             Trigger(modified_languages = ["en", "fr"]),
-            (Item(), self.modify, None, {"language": "en"}, True),
-            (Item(), self.modify, None, {"language": "fr"}, True),
-            (Item(), self.modify, None, {"language": None}, False),
-            (Item(), self.modify, None, {"language": "ru"}, False)
+            (Item(), self.modify_action, None, {"language": "en"}, True),
+            (Item(), self.modify_action, None, {"language": "fr"}, True),
+            (Item(), self.modify_action, None, {"language": None}, False),
+            (Item(), self.modify_action, None, {"language": "ru"}, False)
         )
 
 
-class TriggerInvocationTestsCase(TempStorageMixin, TestCase):
+class TriggerInvocationTestsCase(BaseTestCase):
 
     def test_foo(self):
         pass
