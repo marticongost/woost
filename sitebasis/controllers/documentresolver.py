@@ -153,6 +153,7 @@ class DescriptiveIdResolver(DocumentResolver):
     id_regexp = re.compile(r"([^_]+_)?(?P<id>\d+)$")
     format = "%(title)s_%(id)d"
     _title_regexp = re.compile(r"\W+", re.UNICODE)
+    _uri_encodings = ["utf-8", "iso-8859-1"]
 
     def get_document(self,
         path,
@@ -163,8 +164,18 @@ class DescriptiveIdResolver(DocumentResolver):
 
             ref = path.pop(0) if consume_path else path[0]
             
+            # Try to decode the supplied URI using a selection of different
+            # string encodings
             if not isinstance(ref, unicode):
-                ref = ref.decode("utf-8")
+                for encoding in self._uri_encodings:
+                    try:
+                        ref = ref.decode(encoding)
+                    except UnicodeDecodeError, ex:
+                        pass
+                    else:
+                        break
+                else:
+                    raise ex
 
             # Discard descriptive text
             match = self.id_regexp.match(ref)
