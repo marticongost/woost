@@ -256,6 +256,8 @@ class CMS(BaseCMSController):
     @event_handler
     def handle_traversed(cls, event):
 
+        datastore.sync()
+
         cms = event.source
         
         cms.context.update(
@@ -361,9 +363,7 @@ class CMS(BaseCMSController):
 
     @event_handler
     def handle_after_request(cls, event):
-        # Drop any uncommitted change
         datastore.abort()
-        datastore.close()
 
     def get_file_upload_path(self, id):
         return os.path.join(self.upload_path, str(id))
