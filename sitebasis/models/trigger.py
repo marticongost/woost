@@ -245,13 +245,12 @@ def trigger_responses(item, action, agent, **context):
                                     except Exception, ex:
                                         warn(str(ex))
 
-                            addAfterCommitHook(batched_response)
+                            trans.addAfterCommitHook(batched_response)
+                            trans_data["triggers"].add(trigger)
 
                     # Schedule the trigger to be executed when the current
                     # transaction is successfully committed.
                     else:
-                        from styled import styled
-                        print styled((item, action, context), "violet")
                         responses = list(trigger.responses)
 
                         def delayed_response(transaction_successful):
@@ -284,7 +283,8 @@ def _trigger_insertion_responses(event):
 
 @when(Item.changed)
 def _trigger_modification_responses(event):
-    if event.source.is_inserted:
+    if event.source.is_inserted \
+    and event.member.name not in ("last_update_time", "creation_time"):
         trigger_responses(
             event.source,
             Action.get_instance(identifier = "modify"),
