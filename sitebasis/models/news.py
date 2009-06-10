@@ -15,11 +15,13 @@ class News(Document):
 
     summary = schema.String(
         edit_control = "sitebasis.views.RichTextEditor",
-        listed_by_default = False
+        listed_by_default = False,
+        translated = True
     )
 
     body = schema.String(
         edit_control = "sitebasis.views.RichTextEditor",
-        listed_by_default = False
+        listed_by_default = False,
+        translated = True
     )
 
