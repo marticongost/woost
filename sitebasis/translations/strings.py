@@ -1011,6 +1011,12 @@ translations.define("Site-plural",
     en = u"Sites"
 )
 
+translations.define("Site.smtp_host",
+    ca = u"Servidor SMTP",
+    es = u"Servidor SMTP",
+    en = u"SMTP host"
+)
+
 translations.define("Site.triggers",
     ca = u"Disparadors",
     es = u"Disparadores",
@@ -2094,5 +2100,49 @@ translations.define("CustomTriggerResponse.code",
     ca = u"Codi de resposta",
     es = u"Código de respuesta",
     en = u"Response code"
+)
+
+# SendEmailTriggerResponse
+#------------------------------------------------------------------------------
+translations.define("SendEmailTriggerResponse",
+    ca = u"Resposta per correu electrònic",
+    es = u"Respuesta po correo electrónico",
+    en = u"E-mail response"
+)
+
+translations.define("SendEmailTriggerResponse-plural",
+    ca = u"Respostes per correu electrònic",
+    es = u"Respuestas por correo electrónico",
+    en = u"E-mail responses"
+)
+
+translations.define("SendEmailTriggerResponse.sender",
+    ca = u"Remitent",
+    es = u"Remitente",
+    en = u"Sender"
+)
+
+translations.define("SendEmailTriggerResponse.receivers",
+    ca = u"Destinataris",
+    es = u"Destinatarios",
+    en = u"Receivers"
+)
+
+translations.define("SendEmailTriggerResponse.subject",
+    ca = u"Assumpte",
+    es = u"Asunto",
+    en = u"Subject"
+)
+
+translations.define("SendEmailTriggerResponse.body",
+    ca = u"Cos del missatge",
+    es = u"Cuerpo del mensaje",
+    en = u"Message body"
+)
+
+translations.define("SendEmailTriggerResponse.engine",
+    ca = u"Motor de pintat",
+    es = u"Motor de pintado",
+    en = u"Rendering engine"
 )
 

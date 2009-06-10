@@ -7,6 +7,7 @@
 @since:			May 2009
 """
 import re
+import buffet
 from cocktail.modeling import abstractmethod
 from cocktail import schema
 from sitebasis.models.item import Item
@@ -74,14 +75,93 @@ class CustomTriggerResponse(TriggerResponse):
             batch = batch
         )
         code = line_separator_expr.sub("\n", self.code)
-        code = "raise ValueError('Foo')"
         exec code in context
 
+class SendEmailTriggerResponse(TriggerResponse):
+    """A trigger response that allows to send an email."""
+    instantiable = True
+
+    members_order = "engine", "sender", "receivers", "subject", "body"
+
+    engine = schema.String(
+        required = True,
+        enumeration = buffet.available_engines.keys()
+    )
+
+    sender = schema.String(
+        required = True,
+        edit_control = "cocktail.html.TextBox"
+    )
+
+    receivers = schema.String(
+        required = True,
+        edit_control = "cocktail.html.TextBox"
+    )
+
+    subject = schema.String(
+        required = True,
+        edit_control = "cocktail.html.TextArea"
+    )
+
+    body = schema.String(
+        required = True,
+        edit_control = "cocktail.html.TextArea"
+    )
+
+    def execute(self, item, action, agent, batch = False, **context):
+        import smtplib
+        from sitebasis.models import Site
+        from email.mime.text import MIMEText
+        from email.Utils import formatdate
+
+        smtp_host = Site.main.smtp_host or "localhost"
+        smtp_port = smtplib.SMTP_PORT
+        mime_type = "html"
+
+        context.update(
+            item = item,
+            action = action,
+            agent = agent,
+            batch = batch
+        )
+
+        template_engine = buffet.available_engines[self.engine]
+        engine = template_engine()
+
+        subject_template = engine.load_template(
+            "subject_template",
+            self.subject
+        )
+        body_template = engine.load_template(
+            "body_template",
+            self.body
+        )
+
+        try:
+            subject = engine.render(context, template = subject_template)
+        except NameError:
+            raise NameError, "Error in subject template"
+
+        try:
+            body = engine.render(context, template = body_template)
+        except NameError:
+            raise NameError, "Error in body template"
+
+        receivers = self.receivers.split()
+
+        message = MIMEText(body, mime_type)
+        message["Subject"] = subject
+        message["From"] = self.sender
+        message["To"] = str(receivers)
+        message["Date"] = formatdate()
+
+        smtp = smtplib.SMTP(smtp_host, smtp_port)
+        smtp.sendmail(self.sender, receivers, message.as_string())
+        smtp.quit()
 
 # TODO: Implement other response types:
 # NotifyUserTriggerResponse
 # SendXMPPTriggerResponse (as an extension?)
-# SendEmailTriggerResponse (as an extension?)
 # SendSMSTriggerResponse (as an extension?)
 # WriteLogTriggerResponse (as an extension?)
 # SetStateTriggerResponse (as part of the workflow extension)
