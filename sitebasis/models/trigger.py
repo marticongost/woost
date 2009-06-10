@@ -230,31 +230,32 @@ def trigger_responses(item, action, agent, **context):
                         # transaction is successfully committed. Each batched
                         # trigger executes only once per transaction.
                         if trigger not in trans_data["triggers"]:
-                            responses = list(trigger.responses)
-                                    
-                            def batched_response(transaction_successful):
-                                if transaction_successful:
+
+                            def batched_response(successful, responses):
+                                if successful:
                                     try:
                                         for response in responses:
                                             response.execute(
                                                 trans_data["items"],
                                                 action,
                                                 agent,
-                                                batch = True
+                                                batch = True,
+                                                modified_members = trans_data["modified_members"]
                                             )
                                     except Exception, ex:
                                         warn(str(ex))
 
-                            trans.addAfterCommitHook(batched_response)
+                            trans.addAfterCommitHook(
+                                batched_response,
+                                (list(trigger.responses),)
+                            )
                             trans_data["triggers"].add(trigger)
 
                     # Schedule the trigger to be executed when the current
                     # transaction is successfully committed.
                     else:
-                        responses = list(trigger.responses)
-
-                        def delayed_response(transaction_successful):
-                            if transaction_successful:
+                        def delayed_response(successful, responses):
+                            if successful:
                                 try:
                                     for response in responses:
                                         response.execute(
@@ -266,7 +267,10 @@ def trigger_responses(item, action, agent, **context):
                                 except Exception, ex:
                                     warn(str(ex))
 
-                        trans.addAfterCommitHook(delayed_response)
+                        trans.addAfterCommitHook(
+                            delayed_response,
+                            (list(trigger.responses),)
+                        )
 
                 # Execute immediately, within the transaction
                 else:
@@ -284,7 +288,7 @@ def _trigger_insertion_responses(event):
 @when(Item.changed)
 def _trigger_modification_responses(event):
     if event.source.is_inserted \
-    and event.member.name not in ("last_update_time", "creation_time"):
+    and event.member.name not in ("last_update_time"):
         trigger_responses(
             event.source,
             Action.get_instance(identifier = "modify"),
