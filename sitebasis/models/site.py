@@ -69,6 +69,10 @@ class Site(Item):
         bidirectional = True
     )
 
+    smtp_host = schema.String(
+        default = "localhost"
+    )
+
     def __translate__(self, language, **kwargs):
         return translations(self.__class__.__name__, language, **kwargs)
 
