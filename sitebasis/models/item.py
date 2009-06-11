@@ -31,6 +31,10 @@ class Item(PersistentObject):
 
     members_order = "id", "author", "owner"
 
+    # Extension property that indicates if content types should be visible from
+    # the backoffice root view
+    visible_from_root = True
+
     def __translate__(self, language, **kwargs):
         if self.draft_source is not None:
             return translations(

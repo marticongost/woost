@@ -67,6 +67,13 @@ from sitebasis.controllers.backoffice.useractions import \
 
         return self.cms.document_uri('content', 'new', **params)        
 
+    def content_type_is_selectable(self, content_type):
+        return self.cms.authorization.allows(
+            target_type = content_type,
+            action = "read",
+            partial_match = True
+        )
+
     def content_type_is_instantiable(self, content_type):
         return content_type.visible \
             and content_type.instantiable \
@@ -201,11 +208,7 @@ from sitebasis.controllers.backoffice.useractions import \
                     def filter_item(tree, content_type):
                         return (
                             ContentTypeTree.filter_item(tree, content_type)
-                            and self.cms.authorization.allows(
-                                    target_type = content_type,
-                                    action = "read",
-                                    partial_match = True
-                                )
+                            and self.content_type_is_selectable(content_type)
                         )
                     
                     @refine(tree)
