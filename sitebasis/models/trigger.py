@@ -242,8 +242,12 @@ def trigger_responses(item, action, agent, **context):
                                                 batch = True,
                                                 modified_members = trans_data["modified_members"]
                                             )
+
+                                        datastore.commit()
+
                                     except Exception, ex:
                                         warn(str(ex))
+                                        datastore.abort()
 
                             trans.addAfterCommitHook(
                                 batched_response,
@@ -264,8 +268,12 @@ def trigger_responses(item, action, agent, **context):
                                             agent,
                                             **context
                                         )
+
+                                    datastore.commit()
+
                                 except Exception, ex:
                                     warn(str(ex))
+                                    datastore.abort()
 
                         trans.addAfterCommitHook(
                             delayed_response,
