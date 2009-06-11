@@ -6,27 +6,18 @@ u"""
 @organization:	Whads/Accent SL
 @since:			March 2009
 """
-from unittest import TestCase
-from cocktail.tests.persistence.tempstoragemixin import TempStorageMixin
+from sitebasis.tests.models.basetestcase import BaseTestCase
 
 
-class AccessRuleIndexingTestCase(TempStorageMixin, TestCase):
+class AccessRuleIndexingTestCase(BaseTestCase):
 
     def setUp(self):
 
-        TempStorageMixin.setUp(self)
+        BaseTestCase.setUp(self)
 
-        from sitebasis.models import Site, Item, Role
+        from sitebasis.models import Item
 
-        self.site = Site(qname = "sitebasis.main_site")
-        self.site.insert()
         self.rules = self.site.access_rules_by_priority
-
-        self.owner_role = Role(qname = "sitebasis.owner")
-        self.owner_role.insert()
-
-        self.author_role = Role(qname = "sitebasis.author")
-        self.author_role.insert()
 
         class TestItem(Item):
             pass

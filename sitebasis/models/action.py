@@ -36,5 +36,5 @@ class Action(PersistentObject):
 
     def __translate__(self, language, **kwargs):
         return self.get("title", language) \
-            or Item.__translate__(self, language, **kwargs)
+            or PersistentObject.__translate__(self, language, **kwargs)
 
