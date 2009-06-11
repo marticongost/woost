@@ -173,21 +173,26 @@ class EditController(BaseBackOfficeController):
 
     def confirm_draft(self):
 
-        item = self.stack_node.item
-        target_item = item.draft_source or item
-        is_new = item is target_item
+        draft = self.stack_node.item
+        target_item = draft.draft_source or draft
+        is_new = draft is target_item
         user = self.user
+
+        self.restrict_access(
+            target_instance = draft,
+            action = "confirm_draft"
+        )
 
         for i in range(self.MAX_TRANSACTION_ATTEMPTS):
 
             # Update the draft
-            with restricted_modification_context(item, user):
-                self._apply_changes(item)
+            with restricted_modification_context(draft, user):
+                self._apply_changes(draft)
 
             # Confirm the draft
             with changeset_context(author = user) as changeset:
                 with restricted_modification_context(target_item, user):
-                    item.confirm_draft()
+                    draft.confirm_draft()
             try:
                 datastore.commit()
             except ConflictError:
@@ -201,7 +206,7 @@ class EditController(BaseBackOfficeController):
             user = user,
             changeset = changeset
         )
-
+        
         # Application-wide event
         self.context["cms"].item_saved(
             item = target_item,

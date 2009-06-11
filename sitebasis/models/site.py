@@ -65,6 +65,15 @@ class Site(Item):
         related_key = "site"
     )
 
+    triggers = schema.Collection(
+        items = "sitebasis.models.Trigger",
+        bidirectional = True
+    )
+
+    smtp_host = schema.String(
+        default = "localhost"
+    )
+
     def __translate__(self, language, **kwargs):
         return translations(self.__class__.__name__, language, **kwargs)
 

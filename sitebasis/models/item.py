@@ -257,7 +257,7 @@ class Item(PersistentObject):
 
     # Item insertion overriden to make it versioning aware
     @event_handler
-    def handle_inserted(cls, event):
+    def handle_inserting(cls, event):
 
         item = event.source
         now = datetime.now()
@@ -286,7 +286,7 @@ class Item(PersistentObject):
                 if item.owner is None:
                     item.owner = changeset.author
                 
-                change.insert()
+                change.insert(event.inserted_objects)
         
     # Extend item modification to make it versioning aware
     @event_handler

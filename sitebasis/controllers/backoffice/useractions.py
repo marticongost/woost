@@ -689,6 +689,7 @@ class ConfirmDraftAction(SaveAction):
     confirm_draft = True
     included = frozenset([("item_buttons", "draft")])
     excluded = frozenset()
+    authorization_context = {"action": "confirm_draft"}
 
     def invoke(self, controller, selection):
         controller.confirm_draft()

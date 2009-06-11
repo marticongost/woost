@@ -7,11 +7,10 @@
 @since:			May 2009
 """
 from __future__ import with_statement
-from unittest import TestCase
-from cocktail.tests.persistence.tempstoragemixin import TempStorageMixin
+from sitebasis.tests.models.basetestcase import BaseTestCase
 
 
-class DraftTestCase(TempStorageMixin, TestCase):
+class DraftTestCase(BaseTestCase):
 
     def test_indexing_enabled_for_new_drafts(self):
 
@@ -25,7 +24,7 @@ class DraftTestCase(TempStorageMixin, TestCase):
         foo.is_draft = True
         foo.spam = 4
         foo.insert()
-        self.assertEqual(set(Foo.spam.index.items()), set([(4, foo.id)]))
+        assert set(Foo.spam.index.items()) == set([(4, foo.id)])
 
     def test_indexing_disabled_for_draft_copies(self):
         
@@ -38,17 +37,17 @@ class DraftTestCase(TempStorageMixin, TestCase):
         source = Foo()
         source.spam = 4
         source.insert()
-        self.assertEqual(set(Foo.spam.index.items()), set([(4, source.id)]))
+        assert set(Foo.spam.index.items()) == set([(4, source.id)])
 
         foo = Foo()
         foo.draft_source = source
         foo.spam = 3
         foo.insert()
 
-        self.assertEqual(set(Foo.spam.index.items()), set([(4, source.id)]))
+        assert set(Foo.spam.index.items()) == set([(4, source.id)])
         
         foo.spam = 2
-        self.assertEqual(set(Foo.spam.index.items()), set([(4, source.id)]))
+        assert set(Foo.spam.index.items()) == set([(4, source.id)])
 
     def test_versioning_disabled_for_drafts(self):
 
@@ -59,17 +58,17 @@ class DraftTestCase(TempStorageMixin, TestCase):
             doc.is_draft = True
             doc.insert()
         
-        self.assertFalse(insertion_cs.changes)
+        assert not insertion_cs.changes
 
         with changeset_context() as modification_cs:
             doc.set("title", "Hello, world!", "en")
         
-        self.assertFalse(modification_cs.changes)
+        assert not modification_cs.changes
 
         with changeset_context() as deletion_cs:
             doc.delete()
         
-        self.assertFalse(deletion_cs.changes)
+        assert not deletion_cs.changes
 
     def test_copy_draft(self):
 
@@ -83,19 +82,19 @@ class DraftTestCase(TempStorageMixin, TestCase):
         # Create a draft for the document
         draft = doc.make_draft()
         draft.insert()
-        self.assertTrue(draft.is_draft)
-        self.assertTrue(draft.draft_source is doc)
-        self.assertTrue(draft in doc.drafts)
-        self.assertNotEqual(doc.id, draft.id)
-        self.assertEqual(doc.get("title", "en"), draft.get("title", "en"))
+        assert draft.is_draft
+        assert draft.draft_source is doc
+        assert draft in doc.drafts
+        assert not doc.id == draft.id
+        assert doc.get("title", "en") == draft.get("title", "en")
  
         # Modify the draft
         draft.set("title", "Modified test document", "en")
-        self.assertNotEqual(doc.get("title", "en"), draft.get("title", "en"))
+        assert not doc.get("title", "en") == draft.get("title", "en")
         draft.confirm_draft()
         
         # Confirm it
-        self.assertTrue(draft.id not in Document.index)
-        self.assertFalse(draft in doc.drafts)
-        self.assertEqual(doc.get("title", "en"), "Modified test document")
+        assert draft.id not in Document.index
+        assert not draft in doc.drafts
+        assert doc.get("title", "en") == "Modified test document"
 
