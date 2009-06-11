@@ -26,7 +26,7 @@ cocktail.init(function () {
      }
 
     for(i=0;i<loop.length;i++){
-        jQuery("input[value='" + loop[i] + "']").attr('checked','checked');
+        if(jQuery("input[value='" + loop[i] + "']").next(".language").hasClass('selected'))  jQuery("input[value='" + loop[i] + "']").attr('checked','checked');
     }
 
     function switchVisibleLang() {

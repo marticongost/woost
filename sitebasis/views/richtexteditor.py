@@ -16,49 +16,48 @@ TinyMCE = templates.get_class("cocktail.html.TinyMCE")
 
 #Required Version: 3.2.2.3 TinyMCE
 class RichTextEditor(TinyMCE):
-    
-    
+
+    default_tinymce_params = {
+        "plugins": "fullscreen, paste, inlinepopups, advimage, contextmenu",
+        "entity_encoding": "raw",
+        "dialog_type": "modal",
+        "theme": "advanced",
+        "theme_advanced_buttons1_add": "fullscreen",
+        "theme_advanced_buttons2_add": "pastetext,pasteword,selectall",
+        "theme_advanced_buttons3": "",
+        "theme_advanced_toolbar_location": "top",
+        "theme_advanced_resizing": True,
+        "theme_advanced_statusbar_location": "bottom",
+        "theme_advanced_toolbar_align": "left",
+        "theme_advanced_path": False,
+        "theme_advanced_resize_horizontal": False,
+        "document_base_url": "/",
+        "relative_urls": False,
+        "content_css": "/user_styles/",
+        "fullscreen_settings": {
+            "theme_advanced_toolbar_location": "bottom"
+        }
+    }
 
     def __init__(self, *args, **kwargs):
         TinyMCE.__init__(self, *args, **kwargs)
         self.add_resource("/resources/scripts/RichTextEditor.js")                        
 
+        document_uri = context["cms"].document_uri()
+        edit_stack_param = \
+            context["edit_stacks_manager"].current_edit_stack.to_param()
+        
         styles = [
             "%s=%s" % (translations(style), style.class_name)
             for style in Style.select()
         ]
 
+        self.tinymce_params.update(self.default_tinymce_params)
         self.tinymce_params.update(
             init_instance_callback = "initRichTextEditor",
-            plugins = "fullscreen, paste, inlinepopups, advimage, contextmenu",            
-            entity_encoding = "raw",
-            theme = "advanced",
-            dialog_type = "modal",            
-            theme_advanced_buttons1_add = "fullscreen",
-            theme_advanced_buttons2_add = "pastetext,pasteword,selectall",
-            theme_advanced_buttons3 = "",
-            theme_advanced_toolbar_location = "top",
-            theme_advanced_resizing = True,
-            theme_advanced_statusbar_location = "bottom",
-            theme_advanced_toolbar_align = "left",
-            theme_advanced_path = False,
-            theme_advanced_resize_horizontal = False,
-            external_image_list_url = "%s/document_images?edit_stack=%s" % \
-                    (
-                        context["cms"].document_uri(), 
-                        context["edit_stacks_manager"].current_edit_stack.to_param()
-                    ),
-            external_link_list_url = "%s/document_files?edit_stack=%s" % \
-                    (
-                        context["cms"].document_uri(),
-                        context["edit_stacks_manager"].current_edit_stack.to_param()
-                    ),
-            theme_advanced_styles = ";".join(styles),
-            document_base_url = "/",
-            relative_urls = False,
-            content_css = "/user_styles/",
-#            fullscreen_new_window = True
-            fullscreen_settings = {
-                "theme_advanced_toolbar_location": "bottom"
-            }
+            external_image_list_url = "%s/document_images?edit_stack=%s"
+                % (document_uri, edit_stack_param),
+            external_link_list_url = "%s/document_files?edit_stack=%s"
+                % (document_uri, edit_stack_param),
+            theme_advanced_styles = ";".join(styles)
         )
