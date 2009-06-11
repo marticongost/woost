@@ -24,7 +24,8 @@ class Site(Item):
         "home",
         "generic_error_page",
         "not_found_error_page",
-        "forbidden_error_page"
+        "forbidden_error_page",
+        "login_page"
     ]
 
     @classgetter
