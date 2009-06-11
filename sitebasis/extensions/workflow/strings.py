@@ -92,3 +92,23 @@ translations.define("State.incomming",
     en = u"Source states"
 )
 
+# SetStateTriggerResponse
+#------------------------------------------------------------------------------
+translations.define("SetStateTriggerResponse",
+    ca = u"Resposta amb canvi d'estat",
+    es = u"Respuesta con cambio de estado",
+    en = u"Response with state change"
+)
+
+translations.define("SetStateTriggerResponse-plural",
+    ca = u"Respostes amb canvi d'estat",
+    es = u"Respuestas con cambio de estado",
+    en = u"Responses with state change"
+)
+
+translations.define("SetStateTriggerResponse.target_state",
+    ca = u"Estat de destí",
+    es = u"Estado de destino",
+    en = u"Destination state"
+)
+

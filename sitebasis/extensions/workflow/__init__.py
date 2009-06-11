@@ -53,7 +53,8 @@ class WorkflowExtension(Extension):
             state,
             accessrule,
             trigger,
-            useractions
+            useractions,
+            triggerresponse
         )
 
         # Create the transition action
