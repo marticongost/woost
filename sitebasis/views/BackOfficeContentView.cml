@@ -41,10 +41,17 @@ from sitebasis.controllers.backoffice.useractions import \
             py:selection_mode="${self.selection_mode}"
             py:edit_stack="${self.edit_stack}"
             py:search_expanded="${self.search_expanded}">
-            <?py
+            <?py            
+            @extend(element)
+            def content_type_is_selectable(self, content_type):
+                return content_type.visible_from_root \
+                    and call_base(content_type)
+
             @extend(element)
             def content_type_is_instantiable(content_view, content_type):
-                return call_base(content_type) and not content_type.integral
+                return content_type.visible_from_root \
+                    and not content_type.integral \
+                    and call_base(content_type)
             ?>
         </py:with>
     </py:ready>
