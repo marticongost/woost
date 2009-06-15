@@ -43,8 +43,14 @@ def load_extensions():
         # Avoid loading an extension twice
         if state is NOT_YET_LOADED:
             
-            # Ignore disabled extensions
-            if not extension.enabled:
+            # Ignore disabled extensions, and those where its implementation is
+            # no longer available
+            try:
+                enabled = extension.enabled
+            except AttributeError:
+                enabled = False
+
+            if not enabled:
                 state = DISABLED
             else:
                 # Load dependencies first
