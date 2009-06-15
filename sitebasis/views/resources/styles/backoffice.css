@@ -436,6 +436,12 @@ body.scripted .BackOfficeLayout .Table .selection {
     font-weight: normal;
 }
 
+.BackOfficeLayout .PropertyTable table.translated_values th {
+    padding-left: 0;
+    width: 8em;
+    color: rgb(70,70,70);
+}
+
 .BackOfficeLayout .PropertyTable .type_header th {
     font-weight: bold;
     color: rgb(50,50,50);
@@ -1154,6 +1160,57 @@ body.scripted .BackOfficeLayout .ThumbnailsContentView .collection_display input
     margin-top: 1.5em;
 }
 
+.BackOfficeShowDetailView .PropertyTable .thumbnail_list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.BackOfficeShowDetailView .PropertyTable .thumbnail_list li {
+    padding: 0;
+    margin-left: 0;
+    margin-top: 1em;
+    margin-bottom: 1em;
+    margin-right: 2em;
+    display: block;
+    float: left;
+}
+
+.BackOfficeShowDetailView .PropertyTable .resource_thumbnail {
+    text-align: center;
+    width: 10em;
+}
+
+.BackOfficeShowDetailView .PropertyTable .resource_thumbnail a {
+    text-decoration: none;
+}
+
+.BackOfficeShowDetailView .PropertyTable .resource_thumbnail a.thumbnail_link {
+    display: block;
+    text-align: center;
+    margin-bottom: 0.8em;
+}
+
+.BackOfficeShowDetailView .PropertyTable .resource_thumbnail a.thumbnail_link .thumbnail {
+    display: block;
+    margin: auto;
+    margin-bottom: 0.4em;
+}
+
+.BackOfficeShowDetailView .PropertyTable .resource_thumbnail a.thumbnail_link .label {
+    text-decoration: underline;
+}
+
+.BackOfficeShowDetailView .PropertyTable .resource_thumbnail a.open_resource_link {
+    color: rgb(70,70,70);
+    font-size: 90%;
+    background-repeat: no-repeat;
+    background-image: url(../images/open_resource.png);
+    background-position: left center;
+    padding-left: 0.7em;
+    padding-top: 0.2em;
+    padding-bottom: 0.2em;
+}
 
 /* Edit form
 -----------------------------------------------------------------------------*/

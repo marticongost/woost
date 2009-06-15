@@ -718,6 +718,12 @@ translations.define("sitebasis.views.ItemSelector select",
     en = u"Select..."
 )
 
+translations.define("sitebasis.views.BackOfficeShowDetailView open resource",
+    ca = u"Obrir el fitxer",
+    es = u"Abrir el fichero",
+    en = u"Show file"
+)
+
 # Initialization content
 #------------------------------------------------------------------------------
 translations.define("Create action title",
