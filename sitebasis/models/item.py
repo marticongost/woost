@@ -128,7 +128,7 @@ class Item(PersistentObject):
         items = "sitebasis.models.Item",
         related_key = "draft_source",
         bidirectional = True,
-        delete_cascade = True,
+        cascade_delete = True,
         editable = False,
         versioned = False
     )
@@ -391,7 +391,7 @@ class Item(PersistentObject):
     item_rules = schema.Collection(
         items = "sitebasis.models.AccessRule",
         bidirectional = True,
-        delete_cascade = True,
+        cascade_delete = True,
         visible = False
     )
 

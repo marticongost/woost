@@ -667,37 +667,40 @@ translations.define("Irrelevant access rule criteria",
     en = u"Irrelevant"
 )
 
-def sitebasis_views_backofficedelete_view_warning_ca(selection):
-    count = len(selection)
-    if count == 1:
-        return u"S'eliminarà l'element <strong>%s</strong>." \
-            % translations(selection[0], "ca")
-    else:
-        return u"S'eliminaran els <strong>%d</strong> elements seleccionats." \
-            % count
-
-def sitebasis_views_backofficedelete_view_warning_es(selection):
-    count = len(selection)
-    if count == 1:
-        return u"Se eliminará el elemento <strong>%s</strong>." \
-            % translations(selection[0], "es")
-    else:
-        return u"Se eliminarán los <strong>%d</strong> elementos " \
-            u"seleccionados." % count
-
-def sitebasis_views_backofficedelete_view_warning_en(selection):
-    count = len(selection)
-    if count == 1:
-        return u"The element <strong>%s</strong> will be deleted." \
-            % translations(selection[0], "en")
-    else:
-        return u"All <strong>%d</strong> selected elements will be deleted." \
-            % count
-
 translations.define("sitebasis.views.BackOfficeDeleteView warning",
-    ca = sitebasis_views_backofficedelete_view_warning_ca,
-    es = sitebasis_views_backofficedelete_view_warning_es,
-    en = sitebasis_views_backofficedelete_view_warning_en
+    ca = u"S'eliminarà els elements llistats:",
+    es = u"Se eliminará los elementos listados:",
+    en = u"The listed elements will be deleted:"
+)
+
+translations.define("sitebasis.views.BackOfficeDeleteView blocked_delete",
+    ca = u"No es pot realitzar l'eliminació ja que els elements llistats no \
+        estan buits:",
+    es = u"No se puede realizar la eliminación ya que los elementos listados \
+        no están vacios:",
+    en = u"The deletion couldn't be performed because the listed elements \
+        doesn't be empty:"
+)
+
+translations.define("sitebasis.views.BackOfficeDeleteView blocked_delete_item",
+    ca = lambda blocked_item, blocked_member: u"<em>%s</em> de l'element \
+        <strong>%s</strong>" \
+        % (
+            translations(blocked_member, "ca"),
+            translations(blocked_item, "ca")
+        ),
+    es = lambda blocked_item, blocked_member: u"<em>%s</em> de l'elemento \
+        <strong>%s</strong>" \
+        % (
+            translations(blocked_member, "es"),
+            translations(blocked_item, "es")
+        ),
+    en = lambda blocked_item, blocked_member: u"<em>%s</em> from the \
+        <strong>%s</strong> element" \
+        % (
+            translations(blocked_member, "en"),
+            translations(blocked_item, "en")
+        ),
 )
 
 translations.define("sitebasis.views.BackOfficeDeleteView delete",

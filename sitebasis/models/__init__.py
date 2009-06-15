@@ -54,6 +54,10 @@ schema.Collection.exclude_when_empty = False
 # revisions
 schema.Member.versioned = True
 
+# Add an extension property to allow relations to block a delete operation if
+# the relation is not empty
+schema.RelationMember.block_delete = False
+
 @when(schema.RelationMember.attached_as_orphan)
 def _hide_self_contained_relations(event):
     if event.anonymous:
