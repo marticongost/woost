@@ -56,7 +56,8 @@ class ItemSelector(Element, DataBoundControl):
         self.button = Element("button", name = "rel", type="submit")
         self.append(self.button)
 
-        self.selection_label = Element("span")
+        self.selection_label = templates.new("sitebasis.views.ItemLabel")
+        self.selection_label.tag = "span"
         self.selection_label.add_class("selection_label")
         self.button.append(self.selection_label)
 
@@ -82,9 +83,5 @@ class ItemSelector(Element, DataBoundControl):
             self.selection_label.append(self.empty_label)
         else:        
             self.input["value"] = self.value.id
-
-            self.selection_label.append(translations(self.value))
-            
-            for schema in self.value.__class__.descend_inheritance(True):
-                self.selection_label.add_class(schema.name)
+            self.selection_label.item = self.value
 
