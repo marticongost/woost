@@ -8,6 +8,7 @@ Controllers for the CMS backend and frontend applications.
 @since:			July 2008
 """
 from cocktail.controllers import context
+from sitebasis.models import Document, DocumentIsAccessibleExpression
 from sitebasis.controllers.application import CMS
 from sitebasis.controllers.module import Module
 from sitebasis.controllers.basecmscontroller import BaseCMSController
@@ -16,4 +17,10 @@ from sitebasis.controllers.defaulthandler import DefaultHandler
 def is_accessible(document):
     return document.is_published() \
         and context["cms"].allows(action = "read", target_instance = document)
+
+
+def select_published(cls, *args, **kwargs):
+    return cls.select(filters = [
+        DocumentIsAccessibleExpression(context["cms"].user)
+    ]).select(*args, **kwargs)
 
