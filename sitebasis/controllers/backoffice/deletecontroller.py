@@ -47,7 +47,7 @@ class DeleteController(BaseBackOfficeController):
 
             if item in visited:
                 return
-
+            
             visited.add(item)
             deleted_descendants = list()
             container.append((item, deleted_descendants))
@@ -58,7 +58,7 @@ class DeleteController(BaseBackOfficeController):
                 and member.related_type \
                 and isinstance(member.related_type, PersistentClass):
                     
-                    if member.block_delete:
+                    if member.block_delete and item.get(member):
                         self._blocking_members.append((item, member))
 
                     if member.cascade_delete:
