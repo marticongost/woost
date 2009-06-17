@@ -86,6 +86,7 @@ from sitebasis.models.accessrule import (
     reduce_ruleset,
     restricted_modification_context,
     AccessAllowedExpression,
+    DocumentIsAccessibleExpression,
     AccessDeniedError
 )
 import sitebasis.models.accessruleindexing
