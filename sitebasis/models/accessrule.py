@@ -6,12 +6,14 @@ u"""
 @organization:	Whads/Accent SL
 @since:			July 2008
 """
+from datetime import datetime
 from contextlib import contextmanager
 from cocktail.events import when
 from cocktail.language import get_content_language
 from cocktail.translations import translations
 from cocktail.persistence import datastore
 from cocktail import schema
+from cocktail.schema.expressions import Expression
 from sitebasis.models.site import Site
 from sitebasis.models.item import Item
 from sitebasis.models.document import Document
@@ -620,7 +622,7 @@ def restricted_modification_context(item, user):
     restrict_access(**authz_context)
 
 
-class AccessAllowedExpression(schema.expressions.Expression):
+class AccessAllowedExpression(Expression):
     """An expression that filters queried items according to the active access
     rules.
     """
@@ -634,6 +636,57 @@ class AccessAllowedExpression(schema.expressions.Expression):
             target_instance = context,
             action = Action.get_instance(identifier = "read")
         )
+
+
+class DocumentIsAccessibleExpression(Expression):
+    """An expression that tests that adocuments can be accessed by an agent.
+    
+    The expression checks both the publication state of the document and the
+    read privileges for the specified agent.
+
+    @ivar agent: The agent to test the 
+    """
+
+    def __init__(self, agent):
+        Expression.__init__(self)
+        self.agent = agent
+
+    def eval(self, context, accessor = None):        
+        return context.is_published() \
+            and allowed(
+                user = agent,
+                action = "read",
+                target_instance = context
+            )
+
+    def resolve_filter(self):
+
+        def impl(dataset):
+
+            enabled_expr = Document.enabled.equal(True)
+            access_expr = AccessAllowedExpression(self.agent)
+
+            dataset = enabled_expr.resolve_filter()[1](dataset)
+            dataset = access_expr.resolve_filter()[1](dataset)
+
+            now = datetime.now()
+
+            s = Document.start_date.index
+            e = Document.end_date.index
+
+            # No start date set, or the start date has been reached
+            dataset.intersection_update(
+                s[None] | set(s.values(max = now))
+            )
+            
+            # No end date set, or the end date hasn't been reached yet
+            dataset.intersection_update(
+                e[None] | set(e.values(min = now, excludemin = True))
+            )
+
+            return dataset
+        
+        return ((-1, 1), impl)
 
 
 class AccessDeniedError(Exception):

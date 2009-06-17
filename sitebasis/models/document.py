@@ -75,14 +75,17 @@ class Document(Item):
         required = True,
         default = True,
         translated = True,
+        indexed = True,
         listed_by_default = False
     )
 
     start_date = schema.DateTime(
+        indexed = True,
         listed_by_default = False        
     )
 
     end_date = schema.DateTime(
+        indexed = True,
         min = start_date,
         listed_by_default = False
     )
@@ -91,7 +94,7 @@ class Document(Item):
         now = datetime.now()
         return (self.start_date is None or self.start_date <= now) \
             and (self.end_date is None or self.end_date > now)
-
+    
     def is_published(self):
         return self.enabled and self.is_current()
 
