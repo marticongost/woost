@@ -90,6 +90,10 @@ from sitebasis.controllers.backoffice.useractions import \
             </a>
         </div>
 
+        <py:ready>
+            <?py element.reverse() ?>
+        </py:ready>
+
     </py:sitebasis.views.ContentPropertyTable>
     
 </py:sitebasis.views.BackOfficeItemView>
