@@ -79,23 +79,23 @@ class CustomTriggerResponse(TriggerResponse):
 
 class SendEmailTriggerResponse(TriggerResponse):
     """A trigger response that allows to send an email."""
+
     instantiable = True
+    members_order = "template_engine", "sender", "receivers", "subject", "body"
 
-    members_order = "engine", "sender", "receivers", "subject", "body"
-
-    engine = schema.String(
+    template_engine = schema.String(
         required = True,
         enumeration = buffet.available_engines.keys()
     )
 
     sender = schema.String(
         required = True,
-        edit_control = "cocktail.html.TextBox"
+        edit_control = "cocktail.html.TextArea"
     )
 
     receivers = schema.String(
         required = True,
-        edit_control = "cocktail.html.TextBox"
+        edit_control = "cocktail.html.TextArea"
     )
 
     subject = schema.String(
@@ -109,6 +109,7 @@ class SendEmailTriggerResponse(TriggerResponse):
     )
 
     def execute(self, item, action, agent, batch = False, **context):
+
         import smtplib
         from sitebasis.models import Site
         from email.mime.text import MIMEText
@@ -128,35 +129,26 @@ class SendEmailTriggerResponse(TriggerResponse):
         template_engine = buffet.available_engines[self.engine]
         engine = template_engine()
 
-        subject_template = engine.load_template(
-            "subject_template",
-            self.subject
-        )
-        body_template = engine.load_template(
-            "body_template",
-            self.body
-        )
+        def render(field_name):
+            template = engine.load_template(field_name, self.get(field_name))
+            try:
+                return engine.render(context, template = template)
+            except NameError:
+                raise NameError("Error in %s template" % field_name)
 
-        try:
-            subject = engine.render(context, template = subject_template)
-        except NameError:
-            raise NameError, "Error in subject template"
-
-        try:
-            body = engine.render(context, template = body_template)
-        except NameError:
-            raise NameError, "Error in body template"
-
-        receivers = self.receivers.split()
+        subject = render("subject")
+        sender = render("sender")
+        receivers = render("receivers").split()
+        body = render("body")
 
         message = MIMEText(body, mime_type)
         message["Subject"] = subject
-        message["From"] = self.sender
-        message["To"] = str(receivers)
+        message["From"] = sender
+        message["To"] = receivers
         message["Date"] = formatdate()
 
         smtp = smtplib.SMTP(smtp_host, smtp_port)
-        smtp.sendmail(self.sender, receivers, message.as_string())
+        smtp.sendmail(sender, receivers, message.as_string())
         smtp.quit()
 
 # TODO: Implement other response types:

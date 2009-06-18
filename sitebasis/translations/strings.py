@@ -2149,7 +2149,7 @@ translations.define("SendEmailTriggerResponse.body",
     en = u"Message body"
 )
 
-translations.define("SendEmailTriggerResponse.engine",
+translations.define("SendEmailTriggerResponse.template_engine",
     ca = u"Motor de pintat",
     es = u"Motor de pintado",
     en = u"Rendering engine"
