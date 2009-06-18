@@ -17,11 +17,25 @@ TreeView = templates.get_class("cocktail.html.TreeView")
 class Menu(TreeView):
     """A visual component used to render navigation menus and site maps."""
 
+    # To Show/Hide Root Node
     root_visible = False
+
+    # To specify the selected item, document by default
     selection = None
+
+    # To Add strong tag on selected item
     emphasized_selection = True
+
+    # To enable/disable link for selected item
     linked_selection = True
+
+    # To enable/disable link for each container node
+    linked_containers = True
+
+    # To set a max depth for the menu, no limit by default
     max_depth = None
+
+    # To enable/disable auto expand each container node
     expanded = False
 
     def _ready(self):
@@ -64,28 +78,26 @@ class Menu(TreeView):
         return entry
 
     def create_label(self, item):
-
-        item_uri = self.get_item_uri(item)
-        item_content = self.get_item_label(item)
         
-        if item is self.selection \
-        and (self.emphasized_selection or not self.linked_selection):
-            
-            label = Element("strong" if self.emphasized_selection else "span")
-            
-            if self.linked_selection:
-                link = Element("a")
-                link["href"] = item_uri
-                link.append(item_content)
-                label.append(link)
-            else:
-                label.append(item_content)
-        else:
+        if self.should_link(item):
             label = Element("a")
-            label["href"] = item_uri
-            label.append(item_content)
+            label["href"] = self.get_item_uri(item)
+        else:
+            label = Element("span")
+        
+        label.append(self.get_item_label(item))
+
+        if self.emphasized_selection and item is self.selection:
+            if label.tag == "a":
+                label = Element("strong", children = [label])
+            else:
+                label.tag = "strong"
 
         return label
+
+    def should_link(self, item):
+        return (self.linked_selection or item is not self.selection) \
+            and (self.linked_containers or not item.children)
 
     def get_child_items(self, parent):
 
