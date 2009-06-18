@@ -66,7 +66,7 @@ class DeleteController(BaseBackOfficeController):
 
                         if value is not None:
                             if isinstance(member, Reference):
-                                value = (member,)
+                                value = (value,)
 
                             member_container = list()
                             for descendant in value:
