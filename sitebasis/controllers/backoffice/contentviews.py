@@ -150,3 +150,8 @@ relation_content_views.add(
     "sitebasis.views.FlatContentView"
 )
 
+relation_content_views.add(
+    Item,
+    "sitebasis.views.ThumbnailsContentView"
+)
+
