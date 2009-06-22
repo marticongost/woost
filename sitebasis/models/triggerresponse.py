@@ -30,16 +30,16 @@ class TriggerResponse(Item):
     )
 
     @abstractmethod
-    def execute(self, item, action, agent, batch = False, **context):
+    def execute(self, items, action, agent, batch = False, **context):
         """Executes the response with the supplied context.
         
         This method will be called when the response's trigger conditions are
         met. Subclasses of trigger response are expected to override this
         method in order to implement their particular logic.
 
-        @param item: The item that received the condition that triggered the
-            response.
-        @type item: L{Item<sitebasis.models.item.Item>}
+        @param items: The list of items that received the condition that
+            triggered the response.
+        @type items: L{Item<sitebasis.models.item.Item>} list
 
         @param action: The kind of the action that triggered the response.
         @type action: L{Action<sitebasis.models.Action>}
@@ -67,9 +67,9 @@ class CustomTriggerResponse(TriggerResponse):
         edit_control = "cocktail.html.TextArea"
     )
 
-    def execute(self, item, action, agent, batch = False, **context):
+    def execute(self, items, action, agent, batch = False, **context):
         context.update(
-            item = item,
+            items = items,
             action = action,
             agent = agent,
             batch = batch
@@ -84,7 +84,6 @@ class SendEmailTriggerResponse(TriggerResponse):
     members_order = "template_engine", "sender", "receivers", "subject", "body"
 
     template_engine = schema.String(
-        required = True,
         enumeration = buffet.available_engines.keys()
     )
 
@@ -108,7 +107,7 @@ class SendEmailTriggerResponse(TriggerResponse):
         edit_control = "cocktail.html.TextArea"
     )
 
-    def execute(self, item, action, agent, batch = False, **context):
+    def execute(self, items, action, agent, batch = False, **context):
 
         import smtplib
         from sitebasis.models import Site
@@ -120,36 +119,50 @@ class SendEmailTriggerResponse(TriggerResponse):
         mime_type = "html"
 
         context.update(
-            item = item,
+            items = items,
             action = action,
             agent = agent,
             batch = batch
         )
 
-        template_engine = buffet.available_engines[self.engine]
-        engine = template_engine()
+        if self.template_engine:
+            template_engine = buffet.available_engines[self.template_engine]
+            engine = template_engine(
+                options = {"mako.output_encoding": "utf-8"}
+            )
 
-        def render(field_name):
-            template = engine.load_template(field_name, self.get(field_name))
-            try:
-                return engine.render(context, template = template)
-            except NameError:
-                raise NameError("Error in %s template" % field_name)
+            def render(field_name):
+                template = engine.load_template(
+                    field_name,
+                    self.get(field_name)
+                )
+                try:
+                    return engine.render(context, template = template)
+                except NameError:
+                    raise NameError("Error in %s template" % field_name)
+           
+            subject = render("subject").strip()
+            sender = render("sender").strip()
+            receivers = render("receivers").strip()
+            body = render("body")
+        else:
+            subject = self.subject
+            sender = self.sender
+            receivers = self.receivers.split()
+            body = self.body
 
-        subject = render("subject")
-        sender = render("sender")
-        receivers = render("receivers").split()
-        body = render("body")
+        receiver_list = [r.strip() for r in receivers.split()]
 
-        message = MIMEText(body, mime_type)
-        message["Subject"] = subject
-        message["From"] = sender
-        message["To"] = receivers
-        message["Date"] = formatdate()
+        if receiver_list:
+            message = MIMEText(body, mime_type)
+            message["Subject"] = subject
+            message["From"] = sender
+            message["To"] = receivers
+            message["Date"] = formatdate()
 
-        smtp = smtplib.SMTP(smtp_host, smtp_port)
-        smtp.sendmail(sender, receivers, message.as_string())
-        smtp.quit()
+            smtp = smtplib.SMTP(smtp_host, smtp_port)
+            smtp.sendmail(sender, receiver_list, message.as_string())
+            smtp.quit()
 
 # TODO: Implement other response types:
 # NotifyUserTriggerResponse

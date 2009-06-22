@@ -551,8 +551,12 @@ body.scripted .BackOfficeLayout .Table .selection {
     color: white !important;
 }
 
+.BackOfficeLayout .Table .element_column img.icon {
+    float: left;
+}
+
 .BackOfficeLayout .Table .element_column label {
-    white-space: nowrap;
+    white-space: normal;
 }
 
 .BackOfficeLayout .draft,
@@ -1459,7 +1463,7 @@ body.scripted .BackOfficeLayout .ThumbnailsContentView .collection_display input
     font-size: 85%;
 }
 
-.BackOfficeLayout * + .simple_search {
+.BackOfficeLayout .content_type_box + .simple_search {
     margin-left: 2em;
 }
 

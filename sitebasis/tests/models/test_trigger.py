@@ -134,10 +134,10 @@ class TestTriggerResponse(TriggerResponse):
 
         self.responses = responses
 
-    def execute(self, item, action, agent, batch = False, **context):
+    def execute(self, items, action, agent, batch = False, **context):
         self.responses.append({
             "trigger": self.trigger,
-            "item": item,
+            "items": items,
             "action": action,
             "agent": agent,
             "batch": batch,
@@ -208,7 +208,7 @@ class TriggerInvocationTestCase(BaseTestCase):
 
         assert len(self.create_responses) == 1
         assert self.create_responses[0]["trigger"] is create_trigger
-        assert self.create_responses[0]["item"] is a
+        assert self.create_responses[0]["items"] == [a]
         assert self.create_responses[0]["agent"] is author
         assert self.create_responses[0]["action"] is self.create_action
         assert self.create_responses[0]["batch"] == \
@@ -256,9 +256,12 @@ class TriggerInvocationTestCase(BaseTestCase):
 
         datastore.commit()
 
+        from pprint import pprint
+        print pprint(self.modify_responses)
+
         assert len(self.modify_responses) == 1
         assert self.modify_responses[0]["trigger"] is modify_trigger
-        assert self.modify_responses[0]["item"] is a
+        assert self.modify_responses[0]["items"] == [a]
         assert self.modify_responses[0]["context"]["member"] == "qname"
         assert self.modify_responses[0]["agent"] is author
         assert self.modify_responses[0]["action"] is self.modify_action
@@ -308,7 +311,7 @@ class TriggerInvocationTestCase(BaseTestCase):
 
         assert len(self.delete_responses) == 1
         assert self.delete_responses[0]["trigger"] is delete_trigger
-        assert self.delete_responses[0]["item"] is a
+        assert self.delete_responses[0]["items"] == [a]
         assert self.delete_responses[0]["agent"] is author
         assert self.delete_responses[0]["action"] is self.delete_action
         assert self.delete_responses[0]["batch"] == \
@@ -357,7 +360,7 @@ class TriggerInvocationTestCase(BaseTestCase):
 
         assert len(self.create_responses) == 1
         assert self.create_responses[0]["trigger"] is create_trigger
-        assert self.create_responses[0]["item"] is a
+        assert self.create_responses[0]["items"] == [a]
         assert self.create_responses[0]["agent"] is author
         assert self.create_responses[0]["action"] is self.create_action
         assert self.create_responses[0]["batch"] == \
@@ -410,7 +413,7 @@ class TriggerInvocationTestCase(BaseTestCase):
 
         assert len(self.modify_responses) == 1
         assert self.modify_responses[0]["trigger"] is modify_trigger
-        assert self.modify_responses[0]["item"] is a
+        assert self.modify_responses[0]["items"] == [a]
         assert self.modify_responses[0]["context"]["member"] == "qname"
         assert self.modify_responses[0]["agent"] is author
         assert self.modify_responses[0]["action"] is self.modify_action
@@ -461,7 +464,7 @@ class TriggerInvocationTestCase(BaseTestCase):
 
         assert len(self.delete_responses) == 1
         assert self.delete_responses[0]["trigger"] is delete_trigger
-        assert self.delete_responses[0]["item"] is a
+        assert self.delete_responses[0]["items"] == [a]
         assert self.delete_responses[0]["agent"] is author
         assert self.delete_responses[0]["action"] is self.delete_action
         assert self.delete_responses[0]["batch"] == \
@@ -511,7 +514,7 @@ class TriggerInvocationTestCase(BaseTestCase):
 
         assert len(self.create_responses) == 1
         assert self.create_responses[0]["trigger"] is create_trigger
-        assert self.create_responses[0]["item"] == set([a1, a2])
+        assert self.create_responses[0]["items"] == set([a1, a2])
         assert self.create_responses[0]["agent"] is author
         assert self.create_responses[0]["action"] is self.create_action
         assert self.create_responses[0]["batch"] == \
@@ -564,7 +567,7 @@ class TriggerInvocationTestCase(BaseTestCase):
 
         assert len(self.modify_responses) == 1
         assert self.modify_responses[0]["trigger"] is modify_trigger
-        assert self.modify_responses[0]["item"] == set([a1, a2])
+        assert self.modify_responses[0]["items"] == set([a1, a2])
         assert self.modify_responses[0]["context"]["modified_members"][a1] == \
             set([("qname", None)])
         assert self.modify_responses[0]["context"]["modified_members"][a2] == \
@@ -618,7 +621,7 @@ class TriggerInvocationTestCase(BaseTestCase):
 
         assert len(self.delete_responses) == 1
         assert self.delete_responses[0]["trigger"] is delete_trigger
-        assert self.delete_responses[0]["item"] == set([a1, a2])
+        assert self.delete_responses[0]["items"] == set([a1, a2])
         assert self.delete_responses[0]["agent"] is author
         assert self.delete_responses[0]["action"] is self.delete_action
         assert self.delete_responses[0]["batch"] == \
@@ -700,7 +703,7 @@ class TriggerInvocationTestCase(BaseTestCase):
         assert len(self.modify_responses) == 0
         assert len(self.delete_responses) == 0
         assert self.create_responses[0]["trigger"] is create_trigger
-        assert self.create_responses[0]["item"] is a
+        assert self.create_responses[0]["items"] == [a]
         assert self.create_responses[0]["agent"] is author
         assert self.create_responses[0]["action"] is self.create_action
         assert self.create_responses[0]["batch"] == \
@@ -737,7 +740,7 @@ class TriggerInvocationTestCase(BaseTestCase):
         assert len(self.modify_responses) == 1
         assert len(self.delete_responses) == 0
         assert self.modify_responses[0]["trigger"] is modify_trigger
-        assert self.modify_responses[0]["item"] is a
+        assert self.modify_responses[0]["items"] == [a]
         assert self.modify_responses[0]["context"]["member"] == "qname"
         assert self.modify_responses[0]["agent"] is author
         assert self.modify_responses[0]["action"] is self.modify_action
@@ -775,7 +778,7 @@ class TriggerInvocationTestCase(BaseTestCase):
         assert len(self.modify_responses) == 0
         assert len(self.delete_responses) == 1
         assert self.delete_responses[0]["trigger"] is delete_trigger
-        assert self.delete_responses[0]["item"] is a
+        assert self.delete_responses[0]["items"] == [a]
         assert self.delete_responses[0]["agent"] is author
         assert self.delete_responses[0]["action"] is self.delete_action
         assert self.delete_responses[0]["batch"] == \
@@ -860,7 +863,7 @@ class TriggerInvocationTestCase(BaseTestCase):
         assert len(self.modify_responses) == 0
         assert len(self.delete_responses) == 0
         assert self.create_responses[0]["trigger"] is create_trigger
-        assert self.create_responses[0]["item"] is a
+        assert self.create_responses[0]["items"] == [a]
         assert self.create_responses[0]["agent"] is author
         assert self.create_responses[0]["action"] is self.create_action
         assert self.create_responses[0]["batch"] == \
@@ -900,7 +903,7 @@ class TriggerInvocationTestCase(BaseTestCase):
         assert len(self.modify_responses) == 1
         assert len(self.delete_responses) == 0
         assert self.modify_responses[0]["trigger"] is modify_trigger
-        assert self.modify_responses[0]["item"] is a
+        assert self.modify_responses[0]["items"] == [a]
         assert self.modify_responses[0]["context"]["member"] == "qname"
         assert self.modify_responses[0]["agent"] is author
         assert self.modify_responses[0]["action"] is self.modify_action
@@ -941,7 +944,7 @@ class TriggerInvocationTestCase(BaseTestCase):
         assert len(self.modify_responses) == 0
         assert len(self.delete_responses) == 1
         assert self.delete_responses[0]["trigger"] is delete_trigger
-        assert self.delete_responses[0]["item"] is a
+        assert self.delete_responses[0]["items"] == [a]
         assert self.delete_responses[0]["agent"] is author
         assert self.delete_responses[0]["action"] is self.delete_action
         assert self.delete_responses[0]["batch"] == \
