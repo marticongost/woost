@@ -7,6 +7,7 @@ u"""
 @since:			April 2009
 """
 from warnings import warn
+from traceback import format_exc
 from threading import local
 from weakref import WeakKeyDictionary
 from cocktail import schema
@@ -180,7 +181,6 @@ def trigger_responses(item, action, agent, **context):
     if get_triggers_enabled():
 
         # Create a structure to hold per-transaction data
-        trans = datastore.connection.transaction_manager.get()
         trans_dict = getattr(
             _thread_data,
             "trans_dict",
@@ -191,69 +191,82 @@ def trigger_responses(item, action, agent, **context):
             trans_dict = WeakKeyDictionary()
             _thread_data.trans_dict = trans_dict
 
+        # Get the data for the current transaction
+        trans = datastore.connection.transaction_manager.get()
         trans_data = trans_dict.get(trans)
         
         if trans_data is None:
+            trans_triggers = {}
+            modified_members = {}
             trans_data = {
-                "triggers": set(),
-                "items": set(),
-                "modified_members": {}
+                "triggers": trans_triggers,
+                "modified_members": modified_members
             }
             trans_dict[trans] = trans_data
-        
-        # Track modified / deleted items
-        trans_data["items"].add(item)
+        else:
+            trans_triggers = trans_data["triggers"]
+            modified_members = trans_data["modified_members"]
 
         # Track modified members
         if action.identifier == "modify":
-            item_modified_members = \
-                trans_data["modified_members"].get(item)
+            item_modified_members = modified_members.get(item)
 
             if item_modified_members is None:
                 item_modified_members = set()
-                trans_data["modified_members"][item] = \
-                    item_modified_members
+                modified_members[item] = item_modified_members
             
             item_modified_members.add(
                 (context["member"], context["language"])
             )
-        
+
+        # Execute or schedule matching triggers
         for trigger in Site.main.triggers:
             if trigger.matches(item, action, agent, **context):
+
+                # Track modified / deleted items
+                trigger_items = trans_triggers.get(trigger)
+
+                if trigger_items is None:
+                    new_trans_trigger = True
+                    trigger_items = set()
+                    trans_triggers[trigger] = trigger_items
+                else:
+                    new_trans_trigger = False
+
+                trigger_items.add(item)
 
                 # Execute after the transaction is committed
                 if trigger.execution_point == "after":
                     
-                    if trigger.batch_execution:                      
+                    if trigger.batch_execution:
 
                         # Schedule the trigger to be executed when the current
                         # transaction is successfully committed. Each batched
                         # trigger executes only once per transaction.
-                        if trigger not in trans_data["triggers"]:
+                        if new_trans_trigger:
 
                             def batched_response(successful, responses):
                                 if successful:
                                     try:
                                         for response in responses:
                                             response.execute(
-                                                trans_data["items"],
+                                                trigger_items,
                                                 action,
                                                 agent,
                                                 batch = True,
-                                                modified_members = trans_data["modified_members"]
+                                                modified_members = modified_members
                                             )
 
                                         datastore.commit()
 
                                     except Exception, ex:
-                                        warn(str(ex))
+                                        warn(format_exc(ex))
                                         datastore.abort()
 
                             trans.addAfterCommitHook(
                                 batched_response,
                                 (list(trigger.responses),)
                             )
-                            trans_data["triggers"].add(trigger)
 
                     # Schedule the trigger to be executed when the current
                     # transaction is successfully committed.
@@ -263,7 +276,7 @@ def trigger_responses(item, action, agent, **context):
                                 try:
                                     for response in responses:
                                         response.execute(
-                                            item,
+                                            [item],
                                             action,
                                             agent,
                                             **context
@@ -283,7 +296,7 @@ def trigger_responses(item, action, agent, **context):
                 # Execute immediately, within the transaction
                 else:
                     for response in trigger.responses:
-                        response.execute(item, action, agent, **context)
+                        response.execute([item], action, agent, **context)
 
 @when(Item.inserted)
 def _trigger_insertion_responses(event):
@@ -296,13 +309,27 @@ def _trigger_insertion_responses(event):
 @when(Item.changed)
 def _trigger_modification_responses(event):
     if event.source.is_inserted \
-    and event.member.name not in ("last_update_time"):
+    and event.member not in (Item.last_update_time, Item.changes) \
+    and not isinstance(event.member, schema.Collection):
         trigger_responses(
             event.source,
             Action.get_instance(identifier = "modify"),
             ChangeSet.current_author,
             member = event.member.name,
             language = event.language
+        )
+
+@when(Item.related)
+@when(Item.unrelated)
+def _trigger_relation_responses(event):
+    if not isinstance(event.member, schema.Reference) \
+    and event.member is not Item.changes:
+        trigger_responses(
+            event.source,
+            Action.get_instance(identifier = "modify"),
+            ChangeSet.current_author,
+            member = event.member.name,
+            language = None
         )
 
 @when(Item.deleted)
