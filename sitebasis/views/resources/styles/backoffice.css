@@ -551,8 +551,12 @@ body.scripted .BackOfficeLayout .Table .selection {
     color: white !important;
 }
 
+.BackOfficeLayout .Table .element_column img.icon {
+    float: left;
+}
+
 .BackOfficeLayout .Table .element_column label {
-    white-space: nowrap;
+    white-space: normal;
 }
 
 .BackOfficeLayout .draft,
