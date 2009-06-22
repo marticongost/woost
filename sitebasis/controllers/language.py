@@ -49,7 +49,7 @@ class LanguageModule(Module):
         qs = ""
 
         if path is None:
-            path = cherrypy.request.path_info
+            path = unicode(cherrypy.request.path_info, "utf-8")
             qs = cherrypy.request.query_string
 
         if language is None:
@@ -60,5 +60,5 @@ class LanguageModule(Module):
             path_components.pop(0)
 
         path_components.insert(0, language)
-        return "/" + "/".join(path_components) + ("?" + qs if qs else "")
+        return u"/" + u"/".join(path_components) + (u"?" + qs if qs else u"")
 
