@@ -654,7 +654,7 @@ class DocumentIsAccessibleExpression(Expression):
     def eval(self, context, accessor = None):        
         return context.is_published() \
             and allowed(
-                user = agent,
+                user = self.agent,
                 action = "read",
                 target_instance = context
             )
