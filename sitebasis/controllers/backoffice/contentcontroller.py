@@ -184,7 +184,9 @@ class ContentController(BaseBackOfficeController):
         controller's L{user collection<user_collection>}.
         @type: unicode
         """
-        if self.selection_parameter:
+        node = self.stack_node        
+        if node and isinstance(node, RelationNode) \
+        or self.selection_parameter:
             return self.content_type.full_name + "-selector"
         else:
             return self.content_type.full_name

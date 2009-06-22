@@ -28,6 +28,15 @@ class CollectionController(EditController, ContentController):
         self.section = member.name
 
     @cached_getter
+    def persistence_prefix(self):
+        item = self.stack_node.item
+        return "%s-%s-%s" % (
+            item.__class__.full_name,
+            self.member.name,
+            item.id
+        )
+
+    @cached_getter
     def root_content_type(self):
         return self.member.items.type
 
