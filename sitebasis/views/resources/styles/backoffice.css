@@ -1463,7 +1463,7 @@ body.scripted .BackOfficeLayout .ThumbnailsContentView .collection_display input
     font-size: 85%;
 }
 
-.BackOfficeLayout .ContentTypeSelector + .simple_search {
+.BackOfficeLayout .content_type_box + .simple_search {
     margin-left: 2em;
 }
 
