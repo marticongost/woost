@@ -127,13 +127,6 @@ class ItemController(BaseBackOfficeController):
             if context_item is None:
                 content_type = self.get_content_type()
                 item = content_type()
-                item.owner = self.user
-
-                # Start with a translation object for each visible language
-                if content_type.translated:
-                    for language in self.get_visible_languages():
-                        item._new_translation(language)
-
             # Existing item
             else:
                 item = context_item
@@ -142,6 +135,13 @@ class ItemController(BaseBackOfficeController):
             node = node_class(item)
             edit_stack.push(node)
             redirect = True
+            
+            if not item.is_inserted:
+                node.initialize_new_item(
+                    item,
+                    self.user,
+                    self.get_visible_languages()
+                )
         
         # If the stack is modified a redirection is triggered so that any
         # further request mentions the new stack position in its parameters.
