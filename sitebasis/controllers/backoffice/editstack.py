@@ -360,8 +360,11 @@ class EditNode(StackNode):
     @type translations: str list 
     """
     _persistent_keys = frozenset([
-        "_stack", "_parent_node",
-        "_item", "_form_data", "_content_type", "translations",
+        "_stack",
+        "_parent_node",
+        "_item",
+        "_form_data",
+        "translations",
         "section"
     ])
     _item = None
@@ -396,11 +399,43 @@ class EditNode(StackNode):
         self._item = item
 
     def __getstate__(self):
-        state = dict(
-            (key, value) for key, value in self.__dict__.iteritems()
-            if key in self._persistent_keys
-        )
+
+        state = {}
+
+        for key, value in self.__dict__.iteritems():
+            if key in self._persistent_keys:
+                if key == "_item" and not value.is_inserted:
+                    value = None
+                state[key] = value
+        
+        state["content_type"] = self._item.__class__
+        state["item_owner"] = self._item.owner
+
+        if self._item.__class__.translated:
+            state["item_translations"] = self._item.translations.keys()
+
         return state
+
+    def __setstate__(self, state):
+
+        content_type = state.pop("content_type", None)
+        item_translations = state.pop("item_translations", None)
+        item_owner = state.pop("item_owner", None)
+
+        for key, value in state.iteritems():
+            if key in self._persistent_keys:
+                if key == "_item":
+                    if content_type is None:
+                        value = None
+                    elif value is None:
+                        value = content_type()
+                        self.initialize_new_item(
+                            value,
+                            item_owner,
+                            item_translations
+                        )
+
+                setattr(self, key, value)
 
     @getter
     def content_type(self):
@@ -416,16 +451,23 @@ class EditNode(StackNode):
         """
         return self._item
 
+    def initialize_new_item(self, item, owner = None, languages = None):        
+       
+        item.owner = owner
+                
+        if item.__class__.translated:
+            for language in (languages or [Site.main.default_language]):
+                item._new_translation(language)
+
     def import_form_data(self, form_data, item):
         """Update the edited item with data gathered from the form."""
-
         self.form_adapter.import_object(
             form_data,
             item,
             self.form_schema,
             self.content_type
         )
-
+        
         # Drop deleted translations
         if item.__class__.translated:
 
