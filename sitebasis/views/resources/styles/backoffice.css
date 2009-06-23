@@ -887,9 +887,13 @@ body.scripted .BackOfficeLayout .Table .selection {
 
 /* Content type selector
 -----------------------------------------------------------------------------*/
-.BackOfficeLayout .ContentTypeSelector {
-    margin-left: -0.5em;
+.BackOfficeLayout .content_type_box,
+.BackOfficeLayout .content_view {
     margin-bottom: 1.5em;
+}
+
+.BackOfficeLayout .ContentTypeSelector {
+    margin-left: -0.5em;    
 }
 
 .BackOfficeLayout .ContentTypeSelector > .entry_label {
