@@ -6,6 +6,7 @@ from cocktail.modeling import extend, call_base
 from cocktail.iteration import is_empty
 from cocktail.schema import Reference
 from cocktail.controllers.viewstate import view_state
+from cocktail.controllers.usercollection import UserCollection
 from cocktail.controllers.userfilter import CollectionFilter
 from cocktail.html.datadisplay import DataDisplay
 from cocktail.html.shortcuts import set_translated_shortcut
@@ -39,6 +40,13 @@ from sitebasis.controllers.backoffice.useractions import \
     activation_control = ".show_detail_action"
     search_expanded = False
     
+    # User collection settings
+    allow_sorting = UserCollection.allow_sorting
+    allow_filters = UserCollection.allow_filters
+    allow_paging = UserCollection.allow_paging
+    allow_member_selection = UserCollection.allow_member_selection
+    page_size = UserCollection.page_size
+
     @classmethod
     def get_collection(cls, content_type, item = None, relation = None):
         if item:
@@ -54,8 +62,12 @@ from sitebasis.controllers.backoffice.useractions import \
         pass
 
     def _init_user_collection(self, user_collection):
-        pass
-        
+        user_collection.allow_sorting = self.allow_sorting
+        user_collection.allow_filters = self.allow_filters
+        user_collection.allow_paging = self.allow_paging
+        user_collection.allow_member_selection = self.allow_member_selection
+        user_collection.page_size = self.page_size
+    
     def get_new_content_uri(self, content_type):
         params = {
             "type": content_type.full_name,
@@ -82,6 +94,9 @@ from sitebasis.controllers.backoffice.useractions import \
                 action = "create",
                 partial_match = True
             )
+
+    def get_visible_content_views(self):
+        return sorted(self.available_content_views or [], key = lambda cv: cv.content_view_id)
 
     excluded_view_state_params = \
         CollectionView.excluded_view_state_params | frozenset(["rel", "simple_search_query", "search_expanded"])
@@ -238,45 +253,40 @@ from sitebasis.controllers.backoffice.useractions import \
         <div py:id="content_view"
             class="action_button">
 
-            <span py:id="content_view_label">
-                ${translations("sitebasis.views.ContentView label")}
-            </span>
-
-            <py:cocktail.html.LinkSelector
-                py:id="content_view_selector"
-                py:name="content_view">
-
-                <?py
-                @refine(element)
-                def get_item_label(self, content_view):                    
-                    return translations(content_view.content_view_id + " content view")
-                
-                @refine(element)
-                def get_item_value(self, content_view):
-                    return content_view.content_view_id
-                ?>
-
-                <py:with
-                    py:def="entry_link" py:args="value, label"
-                    title="${label}">
-                    <?py element.empty() ?>
-                    <img src="/resources/images/${value.lower()}contentview.png"/>
-                </py:with>
-
-            </py:cocktail.html.LinkSelector>
-
             <py:ready>
                 <?py
-                if self.available_content_views \
-                and len(self.available_content_views) > 1:                    
-                    self.content_view_selector.items = sorted(self.available_content_views, key = lambda cv: cv.content_view_id)
-                    self.content_view_selector.value = self
-                else:
-                    self.content_view.visible = False
+                self._visible_content_views = self.get_visible_content_views()
+                element.visible = len(self._visible_content_views) > 1
                 ?>
+                <py:block py:if="element.visible">
+
+                    <span py:id="content_view_label">
+                        ${translations("sitebasis.views.ContentView label")}
+                    </span>
+
+                    <div py:id="content_view_selector">
+                        <div py:for="content_view in self._visible_content_views">
+                            <?py
+                            if self.__class__ is content_view:
+                                element.add_class("selected")
+                            ?>
+                            <a>
+                                <?py
+                                params = {"content_view": content_view.content_view_id}
+                                if not content_view.allow_paging:
+                                    params["page"] = "0"
+
+                                element["href"] = "?" + view_state(**params)                            
+                                element["title"] = translations(content_view.content_view_id + " content view")
+                                ?>
+                                <img src="/resources/images/${content_view.content_view_id.lower()}contentview.png"/>                            
+                            </a>
+                        </div>
+                    </div>
+
+                </py:block>
             </py:ready>
         </div>
-
     </py:block>
 
     <!-- Toolbar -->

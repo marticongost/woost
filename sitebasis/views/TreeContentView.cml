@@ -18,7 +18,11 @@ from sitebasis.models import Site
     <?py-class
     content_view_id = "tree"
     children_collection = None
-
+    allow_sorting = False
+    allow_filters = False
+    allow_paging = False
+    page_size = None
+    
     def _attach(self, controller):
         ContentView._attach(self, controller)
         expanded_param = controller.get_content_type_param("expanded")
@@ -35,10 +39,6 @@ from sitebasis.models import Site
 
     def _init_user_collection(self, user_collection):
         ContentView._init_user_collection(self, user_collection)
-        user_collection.allow_sorting = False
-        user_collection.allow_filters = False
-        user_collection.allow_paging = False
-        user_collection.page_size = None
 
         if self.children_collection.bidirectional \
         and isinstance(self.children_collection.related_end, schema.Reference):
