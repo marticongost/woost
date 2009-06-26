@@ -614,13 +614,11 @@ class SelectAction(UserAction):
             params = {}
 
             if isinstance(node, SelectionNode):
-                from styled import styled
                 params[node.selection_parameter] = (
                     selection[0].id
                     if selection
                     else ""
                 )
-                print styled(params, "slate_blue")
 
             elif isinstance(node, RelationNode):
                 edit_state = node.parent_node
