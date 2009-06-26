@@ -99,9 +99,6 @@ class ContentController(BaseBackOfficeController):
                     node = SelectionNode()                    
                     node.content_type = content_type
                     node.selection_parameter = selection_parameter
-                    from styled import styled
-                    print styled(node.content_type, "bright_green")
-                    print styled(node.selection_parameter, "yellow")
                     edit_stack.push(node)
                     raise cherrypy.HTTPRedirect(node.uri(
                         selection = self.params.read(
@@ -448,9 +445,6 @@ class ContentController(BaseBackOfficeController):
             self.content_type_persistence_prefix
         user_collection.persistent_params = set(("members", "order", "filter"))
         user_collection.persistence_duration = self.persistence_duration
-        from styled import styled
-        print styled(user_collection.persistence_prefix, "yellow")
-        print styled(user_collection.persistence_duration, "brown")
 
         user_collection.available_languages = self.available_languages
         user_collection.selection_mode = self.selection_mode
