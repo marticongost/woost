@@ -13,8 +13,10 @@ from cocktail.translations import translations
 from cocktail import schema
 from cocktail.controllers import context as controller_context
 from sitebasis.models import Document, Role, allowed
-from sitebasis.controllers.backoffice.editstack import RelationNode
-
+from sitebasis.controllers.backoffice.editstack import (
+    SelectionNode,
+    RelationNode
+)
 
 # User action model declaration
 #------------------------------------------------------------------------------
@@ -604,29 +606,41 @@ class SelectAction(UserAction):
     
     def invoke(self, controller, selection):
 
-        if controller.edit_stack:
-            edit_state = controller.edit_stack[-2]
-            member = controller.stack_node.member
+        stack = controller.edit_stack
 
-            if isinstance(member, schema.Reference):
-                edit_state.relate(
-                    member,
-                    None if not selection else selection[0]
+        if stack:
+            
+            node = stack[-1]
+            params = {}
+
+            if isinstance(node, SelectionNode):
+                from styled import styled
+                params[node.selection_parameter] = (
+                    selection[0].id
+                    if selection
+                    else ""
                 )
-            else:
-                if controller.stack_node.action == "add":
-                    modify_relation = edit_state.relate 
-                else:
-                    modify_relation = edit_state.unrelate 
+                print styled(params, "slate_blue")
 
-                for item in selection:
-                    modify_relation(member, item)
-                
-            controller.edit_stack.go(-2)
-        else:
-            selection_id = selection[0].id if selection else None
-            params = {str(controller.selection_parameter): selection_id}
-            raise cherrypy.HTTPRedirect(controller.document_uri(**params))
+            elif isinstance(node, RelationNode):
+                edit_state = node.parent_node
+                member = controller.stack_node.member
+
+                if isinstance(member, schema.Reference):
+                    edit_state.relate(
+                        member,
+                        None if not selection else selection[0]
+                    )
+                else:
+                    if controller.stack_node.action == "add":
+                        modify_relation = edit_state.relate 
+                    else:
+                        modify_relation = edit_state.unrelate 
+
+                    for item in selection:
+                        modify_relation(member, item)
+            
+            stack.go_back(**params)
 
 
 class GoBackAction(UserAction):

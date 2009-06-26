@@ -4,7 +4,11 @@
 from cocktail.translations import get_language, translations
 from cocktail.html.ieconditionalcomment import IEConditionalComment
 from cocktail.schema import Collection
-from sitebasis.controllers.backoffice.editstack import EditNode, RelationNode
+from sitebasis.controllers.backoffice.editstack import (
+    EditNode,
+    SelectionNode,
+    RelationNode
+)
 from sitebasis.controllers.backoffice.useractions import add_view_action_context
 ?>
 
@@ -130,9 +134,9 @@ from sitebasis.controllers.backoffice.useractions import add_view_action_context
                 # Only show relation nodes when they are at the top of the
                 # stack (ie. when selecting related items)
                 if is_relation_node:
-                    relation = node.member
                     if node is not self.edit_stack[-1]:
                         continue
+                    relation = node.member
                 
                 # Nesting
                 parent_container = node_container
@@ -162,18 +166,21 @@ from sitebasis.controllers.backoffice.useractions import add_view_action_context
                     node_label.append(": ")
                     relation = None
 
-                if is_relation_node:                
+                if is_relation_node:
                     if isinstance(node.member, Collection):
-                        node_desc = "afegir"
+                        node_desc = translations("sitebasis.views.BackOfficeLayout edit stack add")
                     else:
-                        node_desc = "seleccionar"
-                else:
+                        node_desc = translations("sitebasis.views.BackOfficeLayout edit stack select")
+                elif isinstance(node, SelectionNode):
+                    node_desc = translations(
+                        "sitebasis.views.BackOfficeLayout edit stack select",
+                        type = node.content_type
+                    )
+                elif isinstance(node, EditNode):
                     if node.item.is_inserted:
                         node_desc = translations(node.item)
                     else:
-                        node_desc = translations("creating",
-                            content_type = node.content_type
-                        )
+                        node_desc = translations("creating", content_type = node.content_type)
                 
                 node_label.append(
                     Element("span", class_name = "description", children = [node_desc])

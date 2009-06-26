@@ -311,6 +311,27 @@ translations.define("creating",
         u"Creating new %s" % translations(content_type.__name__, "en").lower()
 )
 
+translations.define("sitebasis.views.BackOfficeLayout edit stack select",
+    ca = lambda type = None:
+        u"Seleccionar " + translations(type.name, "ca").lower()
+        if type
+        else u"seleccionar",
+    es = lambda type = None:
+        u"Seleccionar " + translations(type.name, "es").lower()
+        if type
+        else u"seleccionar",
+    en = lambda type = None:
+        u"Select " + translations(type.name, "en").lower()
+        if type
+        else u"select",
+)
+
+translations.define("sitebasis.views.BackOfficeLayout edit stack add",
+    ca = u"afegir",
+    es = u"añadir",
+    en = u"add"
+)
+
 translations.define("Backout",
     ca = u"Desfer",
     es = u"Deshacer",

@@ -22,6 +22,7 @@ from sitebasis.controllers import BaseCMSController
 from sitebasis.controllers.backoffice.useractions import get_user_action
 from sitebasis.controllers.backoffice.editstack import (
     EditNode,
+    SelectionNode,
     RelationNode,
     WrongEditStackError,
     EditStackExpiredError
@@ -32,7 +33,6 @@ class BaseBackOfficeController(BaseCMSController):
     """Base class for all backoffice controllers."""
 
     section = None
-    persistent_content_type_choice = False
     settings_duration = 60 * 60 * 24 * 30 # ~= 1 month
 
     def get_edit_uri(self, target, *args, **kwargs):
@@ -90,6 +90,28 @@ class BaseBackOfficeController(BaseCMSController):
 
         return uri
 
+    @cached_getter
+    def persistence_prefix(self):
+        stack = self.edit_stack
+        return stack.to_param() if stack else ""
+
+    @cached_getter
+    def content_type_persistence_prefix(self):
+        full_prefix = self.content_type.full_name
+        prefix = self.persistence_prefix
+        if prefix:
+            full_prefix += "-" + prefix
+        return full_prefix        
+
+    @cached_getter
+    def persistence_duration(self):
+        node = self.stack_node
+        return (
+            None
+            if node and isinstance(node, (RelationNode, SelectionNode))
+            else self.settings_duration
+        )
+
     def get_content_type(self, default = None):
         """Gets the content type that is selected by the current HTTP request.
         
@@ -100,13 +122,16 @@ class BaseBackOfficeController(BaseCMSController):
         @return: The selected content type.
         @rtype: L{Item<sitebasis.models.Item>}
         """
-        if self.persistent_content_type_choice:
-            type_param = get_persistent_param(
-                "type",
-                cookie_duration = self.settings_duration
-            )
-        else:
-            type_param = cherrypy.request.params.get("type")
+        cookie_name = "type"
+        prefix = self.persistence_prefix
+        if prefix:
+            cookie_name = prefix + "-" + cookie_name
+
+        type_param = get_persistent_param(
+            "type",
+            cookie_name = cookie_name,
+            cookie_duration = self.persistence_duration
+        )
 
         if type_param is None:
             return default
