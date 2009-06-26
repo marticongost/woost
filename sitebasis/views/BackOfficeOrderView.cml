@@ -20,8 +20,7 @@ from cocktail.html.datadisplay import SINGLE_SELECTION
             py:base_url="@{self.cms.document_uri()}"
             py:accessor="${SchemaObjectAccessor}"
             py:selection_mode="${SINGLE_SELECTION}"
-            py:data="@{self.collection}"
-            py:selection_parameter="position">
+            py:data="@{self.collection}">
             <?py
             element.schema = Schema(members = [Member("element")])
             element.schema.name = "BackOfficeContentView"

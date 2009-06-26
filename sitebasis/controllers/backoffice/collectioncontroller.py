@@ -19,22 +19,12 @@ from sitebasis.controllers.backoffice.useractions import get_user_action
 class CollectionController(EditController, ContentController):
  
     view_class = "sitebasis.views.BackOfficeCollectionView"
-    persistent_content_type_choice = False
 
     def __init__(self, member):
         ContentController.__init__(self)
         EditController.__init__(self)
         self.member = member
         self.section = member.name
-
-    @cached_getter
-    def persistence_prefix(self):
-        item = self.stack_node.item
-        return "%s-%s-%s" % (
-            item.__class__.full_name,
-            self.member.name,
-            item.id
-        )
 
     @cached_getter
     def root_content_type(self):

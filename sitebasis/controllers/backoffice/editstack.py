@@ -6,13 +6,20 @@ u"""
 @organization:	Whads/Accent SL
 @since:			December 2008
 """
+from warnings import warn
 from datetime import datetime
 from copy import copy
 from cPickle import Pickler, Unpickler
 from cStringIO import StringIO
 from itertools import chain
 import cherrypy
-from cocktail.modeling import ListWrapper, getter, cached_getter, OrderedSet
+from cocktail.modeling import (    
+    getter,
+    cached_getter,
+    abstractmethod,
+    ListWrapper,
+    OrderedSet
+)
 from cocktail.events import Event, EventHub
 from cocktail.pkgutils import resolve
 from cocktail import schema
@@ -250,6 +257,7 @@ class EditStack(ListWrapper):
         """
         node._parent_node = self._items[-1] if self._items else None
         node._stack = self
+        node._index = len(self._items)
         self._items.append(node)
 
     def pop(self):
@@ -265,7 +273,22 @@ class EditStack(ListWrapper):
         """
         node = self._items.pop()
         node._stack = None
+        node._index = None
         node._parent_node = None
+
+    def go_back(self, **params):
+        """Redirects the user to the parent of the topmost node in the stack.
+        
+        If the root of the stack is reached or surpassed, the user will be
+        redirected to the application's root.
+        
+        @param params: Additional query string parameters to pass to the
+            destination URI.
+        """
+        if len(self._items) > 1:
+            raise cherrypy.HTTPRedirect(self._items[-2].uri(**params))
+        else:
+            raise cherrypy.HTTPRedirect(context["cms"].document_uri(**params))
 
     def go(self, index = -1):
         """Redirects the user to the indicated node of the edit stack.
@@ -284,23 +307,17 @@ class EditStack(ListWrapper):
         @return: The URI for the indicated position.
         @rtype: str
         """
+        warn(
+            "edit_stack.uri(n) is deprecated, use edit_stack[n].uri() instead",
+            DeprecationWarning,
+            stacklevel = 2,
+        )
+
         if index < 0:
             index = len(self) + index
 
-        node = self[index]
+        return self[index].uri()
         
-        if isinstance(node, EditNode):
-            uri = context["cms"].document_uri(
-                "content",
-                str(node.item.id) if node.item.is_inserted else "new",
-                node.section
-            )
-        else:
-            uri = context["cms"].document_uri("content")
-
-        uri += "?edit_stack=" + self.to_param(index)
-        return uri
-
     def to_param(self, index = -1):
         if index < 0:
             index = len(self) + index
@@ -315,6 +332,7 @@ class StackNode(object):
     __metaclass__ = EventHub
     _stack = None
     _parent_node = None
+    _index = None
 
     @getter
     def stack(self):
@@ -329,6 +347,13 @@ class StackNode(object):
         @type: L{StackNode}
         """
         return self._parent_node
+
+    @getter
+    def index(self):
+        """Gets the position of the node in its stack.
+        @type: int
+        """
+        return self._index
 
     def get_ancestor_node(self, node_type):
         """Walks up the edit stack towards its root, looking for the first node
@@ -349,6 +374,17 @@ class StackNode(object):
         
         return node
 
+    @abstractmethod
+    def uri(self, **params):
+        """Gets the URI for the stack node.
+        
+        @param params: Additional query string parameters to include in the
+            produced URI.
+
+        @return: The URI for the node.
+        @rtype: unicode
+        """ 
+
 
 class EditNode(StackNode):
     """An L{edit stack<EditStack>} node, used to maintain a set of changes for
@@ -362,6 +398,7 @@ class EditNode(StackNode):
     _persistent_keys = frozenset([
         "_stack",
         "_parent_node",
+        "_index",
         "_item",
         "_form_data",
         "translations",
@@ -397,6 +434,18 @@ class EditNode(StackNode):
     def __init__(self, item):        
         assert item is not None
         self._item = item
+
+    def uri(self, **params):
+        
+        if "edit_stack" not in params:
+            params["edit_stack"] = self.stack.to_param(self.index)
+
+        return context["cms"].document_uri(
+            "content",
+            str(self.item.id) if self.item.is_inserted else "new",
+            self.section,
+            **params
+        )
 
     def __getstate__(self):
 
@@ -674,14 +723,27 @@ class EditNode(StackNode):
             schema.set(self.form_data, member, None)
 
 
-class PersistentReference(object):
-    """A small utility class, used by L{EditNode} to serialize and unserialize
-    references to persistent objects.
-    """
+class SelectionNode(StackNode):
+    """An L{edit stack<EditStack>} node representing an item selection dialog.
 
-    def __init__(self, item):
-        self.type = item.__class__
-        self.id = item.id
+    @var content_type: The type of item to select.
+    @type content_type: L{Item<sitebasis.models.item.Item>} subclass
+
+    @var selection_parameter: The name of the HTTP parameter used to forward
+        the selected item to the stack's parent node once the user confirms its
+        choice.
+    @type selection_parameter: str
+    """
+    content_type = None
+    selection_parameter = None
+
+    def uri(self, **params):
+                
+        if "edit_stack" not in params:
+            params["edit_stack"] = self.stack.to_param(self.index)
+
+        params.setdefault("type", self.content_type.full_name)
+        return context["cms"].document_uri("content", **params)
 
 
 class RelationNode(StackNode):
@@ -693,6 +755,13 @@ class RelationNode(StackNode):
         or L{Reference<cocktail.schema.schemareference.Reference>}
     """
     member = None
+
+    def uri(self, **params):
+                
+        if "edit_stack" not in params:
+            params["edit_stack"] = self.stack.to_param(self.index)
+
+        return context["cms"].document_uri("content", **params)
 
     def __getstate__(self):
 

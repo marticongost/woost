@@ -7,6 +7,7 @@ u"""
 @since:			October 2008
 """
 from __future__ import with_statement
+from itertools import chain
 from os.path import join
 from tempfile import mkdtemp
 import cherrypy
@@ -33,7 +34,11 @@ from sitebasis.models import (
 from sitebasis.controllers.backoffice.contentviews import global_content_views
 from sitebasis.controllers.backoffice.basebackofficecontroller \
     import BaseBackOfficeController
-from sitebasis.controllers.backoffice.editstack import EditNode, RelationNode
+from sitebasis.controllers.backoffice.editstack import (
+    EditNode,
+    RelationNode,
+    SelectionNode
+)
 from sitebasis.controllers.backoffice.itemcontroller import ItemController
 from sitebasis.controllers.backoffice.useractions import get_user_action
 
@@ -79,17 +84,30 @@ class ContentController(BaseBackOfficeController):
 
             pos = rel.find("-")
             root_content_type_name = rel[:pos]
-            selection_parameter = rel[pos + 1:]
+            selection_parameter = str(rel[pos + 1:])
 
-            raise cherrypy.HTTPRedirect(
-                self.document_uri(
-                    root_content_type = root_content_type_name,
-                    selection_parameter = selection_parameter,
-                    selection = self.params.read(
-                        schema.String(selection_parameter)
-                    )
-                )
-            )
+            for content_type in chain([Item], Item.derived_schemas()):
+                if content_type.full_name == root_content_type_name:
+
+                    edit_stacks_manager = self.context["edit_stacks_manager"]
+                    edit_stack = edit_stacks_manager.current_edit_stack
+
+                    if edit_stack is None:
+                        edit_stack = edit_stacks_manager.create_edit_stack()
+                        edit_stacks_manager.current_edit_stack = edit_stack
+                    
+                    node = SelectionNode()                    
+                    node.content_type = content_type
+                    node.selection_parameter = selection_parameter
+                    from styled import styled
+                    print styled(node.content_type, "bright_green")
+                    print styled(node.selection_parameter, "yellow")
+                    edit_stack.push(node)
+                    raise cherrypy.HTTPRedirect(node.uri(
+                        selection = self.params.read(
+                            schema.String(selection_parameter)
+                        )
+                    ))
         
         return BaseBackOfficeController.__call__(self, *args, **kwargs)
 
@@ -153,13 +171,17 @@ class ContentController(BaseBackOfficeController):
         """
         node = self.stack_node
 
-        if node and isinstance(node, RelationNode):
-            member = node.member
+        if node:
+            if isinstance(node, SelectionNode):
+                return node.content_type
 
-            if isinstance(member, schema.Reference):
-                return member.type
-            else:
-                return member.items.type
+            elif isinstance(node, RelationNode):
+                member = node.member
+
+                if isinstance(member, schema.Reference):
+                    return member.type
+                else:
+                    return member.items.type
 
         return None
 
@@ -174,23 +196,6 @@ class ContentController(BaseBackOfficeController):
         """
         return self.root_content_type
 
-    @cached_getter
-    def persistent_content_type_choice(self):
-        return self.edit_stack is None and self.selection_parameter is None
-
-    @cached_getter
-    def persistence_prefix(self):
-        """A string identifier used to qualify cookies created by the
-        controller's L{user collection<user_collection>}.
-        @type: unicode
-        """
-        node = self.stack_node        
-        if node and isinstance(node, RelationNode) \
-        or self.selection_parameter:
-            return self.content_type.full_name + "-selector"
-        else:
-            return self.content_type.full_name
-
     def get_content_type_param(self, param_name):
         """Retrieve a request parameter that is persisted separately for each
         content type.
@@ -203,7 +208,7 @@ class ContentController(BaseBackOfficeController):
         return get_persistent_param(
             param_name,
             cookie_name = self.content_type.full_name + "-" + param_name,
-            cookie_duration = self.settings_duration
+            cookie_duration = self.persistence_duration
         )
 
     @cached_getter
@@ -432,13 +437,21 @@ class ContentController(BaseBackOfficeController):
                     ExclusionExpression(Self, excluded_items)
                 )
 
-        # Exclude forbidden items
-        user_collection.add_base_filter(AccessAllowedExpression(self.user))
-        
+        # Filter base items
+        user_collection.add_base_filter(AccessAllowedExpression(self.user))        
         user_collection.base_collection = self.base_collection
-        user_collection.persistence_prefix = self.persistence_prefix
-        user_collection.persistence_duration = self.settings_duration
+        
+        # Settings persistence (settings for the item selector expire when the
+        # browser is closed, while on other listings they are persisted for
+        # longer periods)
+        user_collection.persistence_prefix = \
+            self.content_type_persistence_prefix
         user_collection.persistent_params = set(("members", "order", "filter"))
+        user_collection.persistence_duration = self.persistence_duration
+        from styled import styled
+        print styled(user_collection.persistence_prefix, "yellow")
+        print styled(user_collection.persistence_duration, "brown")
+
         user_collection.available_languages = self.available_languages
         user_collection.selection_mode = self.selection_mode
         user_collection.selection_parser = \
@@ -467,14 +480,10 @@ class ContentController(BaseBackOfficeController):
 
     @cached_getter
     def view_class(self):
-        if self.edit_stack or self.selection_parameter:
+        if self.edit_stack:
             return "sitebasis.views.BackOfficeItemSelectorView"
         else:
             return "sitebasis.views.BackOfficeContentView"
-
-    @cached_getter
-    def selection_parameter(self):
-        return self.params.read(schema.String("selection_parameter"))
 
     @cached_getter
     def selection_mode(self):
@@ -502,7 +511,6 @@ class ContentController(BaseBackOfficeController):
             available_content_views = self.available_content_views,
             content_view = self.content_view,
             selection_mode = self.selection_mode,
-            selection_parameter = self.selection_parameter,
             root_content_type = self.root_content_type,
             search_expanded = self.search_expanded
         )
