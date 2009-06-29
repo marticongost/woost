@@ -12,7 +12,8 @@ from cocktail.events import event_handler
 from cocktail import schema
 from cocktail.persistence import PersistentObject
 from cocktail.pkgutils import get_full_name, import_object
-from sitebasis.models import Item
+from sitebasis.models.item import Item
+from sitebasis.models.resource import Resource
 
 
 class Document(Item):
@@ -30,7 +31,12 @@ class Document(Item):
         "full_path",
         "parent",
         "template",
-        "description"        
+        "description",
+        "keywords",
+        "attachments",
+        "page_resources",
+        "branch_resources",
+        "children"
     )
     
     # Backoffice customization
@@ -63,6 +69,12 @@ class Document(Item):
         translated = True,
         listed_by_default = False,
         edit_control = "cocktail.html.TextArea"        
+    )
+
+    keywords = schema.String(
+        translated = True,
+        listed_by_default = False,
+        edit_control = "cocktail.html.TextArea"
     )
 
     def __translate__(self, language, **kwargs):
@@ -203,16 +215,30 @@ class Document(Item):
         details on accepted objects.
         """)
 
-    # Page resources and attachments
+    # Resources
     #--------------------------------------------------------------------------
+    branch_resources = schema.Collection(
+        items = schema.Reference(
+            type = Resource,
+            required = True
+        ),
+        related_end = schema.Collection()
+    )
+
     page_resources = schema.Collection(
-        items = "sitebasis.models.Resource",
-        bidirectional = True
+        items = schema.Reference(
+            type = Resource,
+            required = True
+        ),
+        related_end = schema.Collection()
     )
 
     attachments = schema.Collection(
-        items = "sitebasis.models.Resource",
-        bidirectional = True
+        items = schema.Reference(
+            type = Resource,
+            required = True
+        ),
+        related_end = schema.Collection()
     )
 
     # Hierarchy
@@ -227,7 +253,8 @@ class Document(Item):
     children = schema.Collection(
         items = "sitebasis.models.Document",
         bidirectional = True,
-        related_key = "parent"
+        related_key = "parent",
+        cascade_delete = True
     )
 
     hidden = schema.Boolean(

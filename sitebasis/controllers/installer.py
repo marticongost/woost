@@ -12,6 +12,7 @@ import re
 import os
 from shutil import rmtree
 from subprocess import Popen, PIPE
+import buffet
 import cherrypy
 from cocktail import schema
 from cocktail.translations import set_language
@@ -76,6 +77,12 @@ class Installer(object):
                     required = True,
                     default = "en",
                     format = r"^[a-zA-Z]{2}(\W+[a-zA-Z]{2})*$"
+                ),
+                schema.String(
+                    name = "template_engine",
+                    required = True,
+                    default = "cocktail",
+                    enumeration = buffet.available_engines.keys()
                 ),
                 schema.String(
                     name = "webserver_host",
@@ -249,7 +256,8 @@ class Installer(object):
         init_site(
             admin_email = params["admin_email"],
             admin_password = params["admin_password"],
-            languages = params["languages"].split()
+            languages = params["languages"].split(),
+            template_engine = params["template_engine"]
         )
 
     def _is_valid_local_address(self, host, port):

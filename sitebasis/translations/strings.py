@@ -556,19 +556,25 @@ translations.define("Back office title",
     en = u"Content Manager"
 )
 
-translations.define("Empty template title",
-    ca = u"Plantilla buida",
-    es = u"Plantilla vacía",
-    en = u"Empty template"
+translations.define("Standard template title",
+    ca = u"Plantilla estàndard",
+    es = u"Plantilla estándar",
+    en = u"Standard template"
 )
 
-translations.define("Message style sheet title",
-    ca = u"Full d'estils per missatges",
-    es = u"Hoja de estilos para mensajes",
-    en = u"Application messages stylesheet"
+translations.define("Site style sheet title",
+    ca = u"Full d'estils global",
+    es = u"Hoja de estilos global",
+    en = u"Global stylesheet"
 )
 
 translations.define("Home page title",
+    ca = u"Lloc web",
+    es = u"Sitio web",
+    en = u"Web site"
+)
+
+translations.define("Home page inner title",
     ca = u"Benvingut!",
     es = u"Bienvenido!",
     en = u"Welcome!"
@@ -929,6 +935,18 @@ translations.define(
     en = u"The edit session you were working on has been lost."
 )
 
+translations.define("sitebasis.views.BaseView alternate language link",
+    ca = lambda lang: u"Versió en " + translations(lang, "ca"),
+    es = lambda lang: u"Versión en " + translations(lang, "es"),
+    en = lambda lang: translations(lang, "en") + " version"
+)
+
+translations.define("sitebasis.views.StandardView attachment icon description",
+    ca = u"Icona",
+    es = u"Icono",
+    en = u"Icon"
+)
+
 # Item
 #------------------------------------------------------------------------------
 translations.define("Item",
@@ -1041,6 +1059,18 @@ translations.define("Site-plural",
     en = u"Sites"
 )
 
+translations.define("Site.keywords",
+    ca = u"Paraules clau",
+    es = u"Palabras clave",
+    en = u"Keywords"
+)
+
+translations.define("Site.icon",
+    ca = u"Icona",
+    es = u"Icono",
+    en = u"Icon"
+)
+
 translations.define("Site.smtp_host",
     ca = u"Servidor SMTP",
     es = u"Servidor SMTP",
@@ -1133,16 +1163,22 @@ translations.define("Document.description",
     en = u"Description"
 )
 
+translations.define("Document.keywords",
+    ca = u"Paraules clau",
+    es = u"Palabras clave",
+    en = u"Keywords"
+)
+
 translations.define("Document.start_date",
-    ca = u"Data d'inici",
-    es = u"Fecha de inicio",
-    en = u"Start date"
+    ca = u"Data de publicació",
+    es = u"Fecha de publicación",
+    en = u"Publication date"
 )
 
 translations.define("Document.end_date",
-    ca = u"Data de fí",
-    es = u"Fecha de fín",
-    en = u"End date"
+    ca = u"Data de caducitat",
+    es = u"Fecha de caducidad",
+    en = u"Expiration date"
 )
 
 translations.define("Document.path",
@@ -1176,9 +1212,15 @@ translations.define("Document.attachments",
 )
 
 translations.define("Document.page_resources",
-    ca = u"Recursos HTML",
-    es = u"Recursos HTML",
-    en = u"HTML resources"
+    ca = u"Recursos de pàgina",
+    es = u"Recursos de pàgina",
+    en = u"Page resources"
+)
+
+translations.define("Document.branch_resources",
+    ca = u"Recursos de branca",
+    es = u"Recursos de rama",
+    en = u"Branch resources"
 )
 
 translations.define("Document.parent",
@@ -1400,15 +1442,15 @@ translations.define("Resource.enabled",
 )
 
 translations.define("Resource.start_date",
-    ca = u"Data d'inici",
-    es = u"Fecha de inicio",
-    en = u"Start date"
+    ca = u"Data de publicació",
+    es = u"Fecha de publicación",
+    en = u"Publication date"
 )
 
 translations.define("Resource.end_date",
-    ca = u"Data de fi",
-    es = u"Fecha de fin",
-    en = u"End date"
+    ca = u"Data de caducitat",
+    es = u"Fecha de caducidad",
+    en = u"Expiration date"
 )
 
 translations.define("Resource.resource_type",
