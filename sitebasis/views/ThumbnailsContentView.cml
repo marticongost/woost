@@ -43,7 +43,7 @@ from cocktail.html.selectable import selectable
             ?>
             <div class="icon_frame">
                 <img class="icon"
-                    src="${self.cms.document_uri('icons', value, width = self.thumbnail_width)}"/>
+                    src="${self.cms.icon_uri(value, width = self.thumbnail_width)}"/>
             </div>
             <div class="label">
                 <?py
