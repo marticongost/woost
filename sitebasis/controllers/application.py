@@ -149,6 +149,10 @@ class CMS(BaseCMSController):
                     if not os.path.exists(upload_path):
                         os.mkdir(upload_path)
 
+                    temp_path = os.path.join(upload_path, "temp")
+                    if not os.path.exists(temp_path):
+                        os.mkdir(temp_path)
+
                     cms.upload_path = upload_path
 
         @cherrypy.expose
