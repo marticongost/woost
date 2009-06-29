@@ -20,11 +20,10 @@ from cocktail.modeling import cached_getter
 from cocktail.pkgutils import import_object
 from sitebasis.models import Item
 from sitebasis.models.thumbnails import ThumbnailParameterError
-from sitebasis.controllers.backoffice.basebackofficecontroller \
-    import BaseBackOfficeController
+from sitebasis.controllers.basecmscontroller import BaseCMSController
 
 
-class IconController(BaseBackOfficeController):
+class IconController(BaseCMSController):
     """A controller tasked with publishing icons and thumbnails for CMS items.
     """
     icon_format = "png"

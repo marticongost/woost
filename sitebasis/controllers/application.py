@@ -39,6 +39,7 @@ from sitebasis.controllers.documentresolver import (
 )
 from sitebasis.controllers.authorization import AuthorizationModule
 from sitebasis.controllers.webservices import CMSWebServicesController
+from sitebasis.controllers.iconcontroller import IconController
 
 
 class CMS(BaseCMSController):
@@ -208,6 +209,7 @@ class CMS(BaseCMSController):
             cherrypy.engine.wait(cherrypy.engine.states.STARTED)            
 
     services = CMSWebServicesController
+    icons = IconController
 
     def resolve(self, path):
         
@@ -237,6 +239,15 @@ class CMS(BaseCMSController):
         uri = self.application_uri(path, *args, **kwargs)
         uri = self.language.translate_uri(uri)
         return uri
+
+    def icon_uri(self, element, **kwargs):
+        
+        if isinstance(element, type):
+            element = element.full_name
+        elif hasattr(element, "id"):
+            element = element.id
+
+        return self.application_uri("icons", element, **kwargs)
 
     def _canonical_redirection(self, path):
         path = "".join(percent_encode(c) for c in path)

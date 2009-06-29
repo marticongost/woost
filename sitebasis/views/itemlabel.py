@@ -30,9 +30,8 @@ class ItemLabel(Element):
     def create_icon(self):
         img = Element("img")
         img.add_class("icon")
-        img["src"] = context["cms"].document_uri(
-            "icons",
-            self.item.id,
+        img["src"] = context["cms"].icon_uri(
+            self.item,
             icon_size = str(self.icon_size),
             thumbnail = "false"
         )

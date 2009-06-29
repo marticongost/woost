@@ -19,7 +19,6 @@ from sitebasis.controllers.backoffice.contentcontroller \
 from sitebasis.controllers.backoffice.deletecontroller import DeleteController
 from sitebasis.controllers.backoffice.ordercontroller import OrderController
 from sitebasis.controllers.backoffice.movecontroller import MoveController
-from sitebasis.controllers.backoffice.iconcontroller import IconController
 
 
 class BackOfficeController(BaseBackOfficeController):
@@ -36,8 +35,7 @@ class BackOfficeController(BaseBackOfficeController):
     delete = DeleteController
     order = OrderController
     move = MoveController
-    icons = IconController
-
+    
     def submit(self):
         raise cherrypy.HTTPRedirect(
             self.document_uri(self.default_section) + "?" + view_state())
