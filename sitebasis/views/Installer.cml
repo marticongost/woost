@@ -50,6 +50,7 @@ PasswordBox = loader.get_class("cocktail.html.PasswordBox")
                     "project_name",
                     "project_path",
                     "languages",
+                    "template_engine",
                     "admin_email",
                     "admin_password"
                 ])

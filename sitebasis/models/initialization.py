@@ -27,11 +27,17 @@ from sitebasis.models import (
     Template
 )
 
+standard_template_identifiers = {
+    "cocktail": "sitebasis.views.StandardView",
+    "genshi": "sitebasis.views.StandardView"
+}
+
 def init_site(
     admin_email = "admin@localhost",
     admin_password = "",
     languages = ("en",),
-    uri = "/"):
+    uri = "/",
+    template_engine = "cocktail"):
  
     datastore.root.clear()
     datastore.commit()
@@ -136,6 +142,36 @@ def init_site(
         owner_role.qname = "sitebasis.owner"
         set_translations(owner_role, "title", "Owner role title")
         owner_role.insert()
+     
+        # Create standard templates
+        std_template = Template()
+        std_template.identifier = standard_template_identifiers.get(
+            template_engine, "StandardView"
+        )
+        std_template.engine = template_engine
+        set_translations(std_template, "title", "Standard template title")
+        std_template.insert()
+
+        # Create standard resources
+        site_stylesheet = URI()
+        site_stylesheet.uri = uri + "resources/styles/site.css"
+        site_stylesheet.qname = "sitebasis.site_stylesheet"
+        site_stylesheet.resource_type = "html_resource"
+        set_translations(site_stylesheet, "title", "Site style sheet title")
+        site_stylesheet.insert()
+
+        # Create the temporary home page
+        site.home = StandardPage()
+        site.home.template = std_template
+        site.home.qname = "sitebasis.home"
+        set_translations(site.home, "title", "Home page title")
+        set_translations(site.home, "inner_title", "Home page inner title")
+        set_translations(
+            site.home, "body", "Home page body",
+            uri = uri + "cms"
+        )
+        site.home.branch_resources.append(site_stylesheet)
+        site.home.insert()
     
         # Create the back office interface
         back_office = Document()
@@ -143,62 +179,39 @@ def init_site(
                               ".backofficecontroller.BackOfficeController"
         back_office.critical = True
         back_office.qname = "sitebasis.backoffice"
+        back_office.parent = site.home
+        back_office.hidden = True
         back_office.path = u"cms"
         set_translations(back_office, "title", "Back office title")
         back_office.insert()
-     
-        # Create standard templates
-        empty_template = Template()
-        empty_template.identifier = "sitebasis.views.EmptyPage"
-        empty_template.engine = u"genshi"
-        set_translations(empty_template, "title", "Empty template title")
-        empty_template.insert()
-
-        # Create standard resources
-        message_stylesheet = URI()
-        message_stylesheet.uri = uri + "resources/styles/message.css"
-        message_stylesheet.qname = "sitebasis.message_stylesheet"
-        set_translations(message_stylesheet, "title",
-            "Message style sheet title")
-        message_stylesheet.insert()
-
-        # Create the temporary home page
-        site.home = StandardPage()
-        site.home.template = empty_template
-        site.home.qname = "sitebasis.home"
-        set_translations(site.home, "title", "Home page title")
-        set_translations(
-            site.home, "body", "Home page body",
-            uri = uri + back_office.path
-        )
-        site.home.page_resources.append(message_stylesheet)
-        site.home.insert()
 
         # Create the 'content not found' page
         site.not_found_error_page = StandardPage()
-        site.not_found_error_page.template = empty_template
+        site.not_found_error_page.parent = site.home
+        site.not_found_error_page.hidden = True
+        site.not_found_error_page.template = std_template
         site.not_found_error_page.qname = "sitebasis.not_found_error_page"
         set_translations(site.not_found_error_page, "title",
             "Not found error page title")
         set_translations(site.not_found_error_page, "body",
             "Not found error page body")            
-        site.not_found_error_page.page_resources.append(message_stylesheet)
         site.not_found_error_page.insert()
 
         # Create the login page
         site.forbidden_error_page = StandardPage()
-        site.forbidden_error_page.template = empty_template
+        site.forbidden_error_page.parent = site.home
+        site.forbidden_error_page.hidden = True
+        site.forbidden_error_page.template = std_template
         site.forbidden_error_page.qname = "sitebasis.forbidden_error_page"
         set_translations(site.forbidden_error_page, "title",
             "Forbidden error page title")
         set_translations(site.forbidden_error_page, "body",
             "Forbidden error page body")
-        site.forbidden_error_page.page_resources.append(message_stylesheet)
         site.forbidden_error_page.insert()
 
         # Create the authentication form
         login_form = u"""
-        <form method="post">
+        <form method="post" class="login_form">
             <label for="user">%s:</label>
             <input type="text" name="user" value=""/>
             <label for="password">%s:</label>
@@ -209,13 +222,14 @@ def init_site(
         </form>
         """
         site.login_page = StandardPage()
-        site.login_page.template = empty_template
+        site.login_page.parent = site.home
+        site.login_page.hidden = True
+        site.login_page.template = std_template
         site.login_page.qname = "sitebasis.login_page"
         set_translations(site.login_page, "title", "Login page title")
         set_translations(site.login_page, "body", "Login page body",
             form = login_form
         )
-        site.login_page.page_resources.append(message_stylesheet)
         site.login_page.insert()
 
         # Add standard access rules:
@@ -299,6 +313,9 @@ def main():
     parser.add_option("-p", "--password", help = "Administrator password")
     parser.add_option("-l", "--languages",
         help = "Comma separated list of languages")
+    parser.add_option("-t", "--template-engine",
+        default = "cocktail",
+        help = "The buffet templating engine to use by default")
     
     options, args = parser.parse_args()
 
@@ -319,7 +336,12 @@ def main():
         and options.languages.replace(",", " ") \
         or raw_input("Languages: ") or "en"
 
-    init_site(admin_email, admin_password, languages.split())
+    init_site(
+        admin_email,
+        admin_password,
+        languages.split(),
+        options.template_engine
+    )
     
     print u"Your site has been successfully created. You can start it by " \
           u"executing the 'run.py' script. An administrator account for the " \

@@ -36,6 +36,10 @@ translations.define("Installer.languages",
     en = u"Languages"
 )
 
+translations.define("Installer.template_engine",
+    en = u"Template engine"
+)
+
 translations.define("Installer.webserver",
     en = u"Web server"
 )

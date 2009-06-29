@@ -8,7 +8,7 @@ u"""
 """
 from cocktail.modeling import getter, abstractmethod
 from cocktail import schema
-from sitebasis.models import Item
+from sitebasis.models.item import Item
 
 class Resource(Item):
 
@@ -20,8 +20,7 @@ class Resource(Item):
         "enabled",
         "start_date",
         "end_date",
-        "resource_type",
-        "documents"
+        "resource_type"
     )
 
     show_detail_view = "sitebasis.views.ResourceShowDetailView"
@@ -69,11 +68,6 @@ class Resource(Item):
             "html_resource",
             "other"
         )
-    )
-
-    documents = schema.Collection(
-        items = "sitebasis.models.Document",
-        bidirectional = True
     )
 
     def __translate__(self, language, **kwargs):
