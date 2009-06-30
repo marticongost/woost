@@ -17,7 +17,6 @@ setup(
     install_requires = [
         "simplejson",
         "cocktail",
-        "genshi",
         "pyExcelerator",
         "PIL"
     ],
