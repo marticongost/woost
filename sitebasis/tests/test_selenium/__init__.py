@@ -13,7 +13,11 @@ from tempfile import mkdtemp
 from ZODB.FileStorage import FileStorage
 import cherrypy
 from cocktail.persistence import datastore
-from cocktail.tests.seleniumtester import get_selenium_site_address, browser
+from cocktail.tests.seleniumtester import (
+    get_selenium_enabled,
+    get_selenium_site_address,
+    browser
+)
 from sitebasis.models.initialization import init_site
 from sitebasis.controllers.application import CMS
 
@@ -36,6 +40,9 @@ def admin_login():
 
 
 def setup_package():
+    
+    if not get_selenium_enabled():
+        return
 
     # Create a temporary folder to hold site files
     global _site_temp_path
@@ -67,7 +74,10 @@ def setup_package():
     cms.run(block = False)
 
 def teardown_package():
-    
+
+    if not get_selenium_enabled():
+        return
+
     # Stop the site's webserver
     cherrypy.server.stop()
     cherrypy.engine.exit()
