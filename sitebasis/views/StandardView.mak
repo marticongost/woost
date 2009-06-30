@@ -27,9 +27,29 @@ container_classes = "BaseView StandardView"
 
 </%def>
 
-<%def name="header()">
-    <h1><a href="/">${Site.main.home.title}</a></h1>
+<%def name="header()">    
+    ${self.site_title()}
+    ${self.identity()}
+    ${self.language_selector()}
+</%def>
 
+<%def name="site_title()">
+    <h1><a href="/">${Site.main.home.title}</a></h1>
+</%def>
+
+<%def name="language_selector()">
+    ${self.create_language_selector().render()}
+</%def>
+
+<%def name="create_language_selector()">
+    <%
+    selector = templates.new("sitebasis.views.LanguageSelector")
+    selector.add_class("language_selector")
+    return selector
+    %>
+</%def>
+
+<%def name="identity()">
     % if user and not user.anonymous:
         <div class="identity">        
             <strong>${translations(user)}</strong>

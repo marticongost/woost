@@ -37,6 +37,29 @@ a img {
     text-decoration: none;
 }
 
+/* Language selector
+-----------------------------------------------------------------------------*/
+.header .LanguageSelector {
+    float: right;
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    margin-top: 0.2em;
+    margin-right: 4em;
+    font-size: 9pt;
+}
+
+.header .LanguageSelector li {
+    display: inline;
+    padding: 0;
+    margin: 0;
+    margin-right: 0.5em;
+}
+
+.header .LanguageSelector a {
+    text-decoration: none;
+}
+
 /* Active user session
 -----------------------------------------------------------------------------*/
 .header .identity {
@@ -74,6 +97,7 @@ a,
 /* Site menu
 -----------------------------------------------------------------------------*/
 .menu {
+    clear: left;
     float: left;
     padding: 1em;
     padding-right: 2em;

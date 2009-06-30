@@ -21,6 +21,8 @@ from sitebasis.models import Site, Document
                 </form>
             </py:ready>
         </div>
+
+        <py:sitebasis.views.LanguageSelector py:id="language_selector"/>
     </div>
 
     <py:sitebasis.views.Menu
