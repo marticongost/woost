@@ -76,10 +76,11 @@ container_classes = "BaseView StandardView"
     ${self.create_menu().render()}
 </%def>
 
-<%def name="main()">
-   
+<%def name="document_title()">
     <h2>${document.inner_title or document.title}</h2>
+</%def>
 
+<%def name="toolbar()">
     % if cms.allows(target_instance = document, action = "modify"):
         <div class="toolbar">
             <% backoffice = Document.get_instance(qname = "sitebasis.backoffice") %>
@@ -89,6 +90,13 @@ container_classes = "BaseView StandardView"
             </a>            
         </div>
     % endif
+</%def>
+
+<%def name="main()">
+   
+    ${self.document_title()}
+
+    ${self.toolbar()}
 
     <div class="content">
         ${self.content()}
