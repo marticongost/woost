@@ -340,7 +340,7 @@ def main():
         admin_email,
         admin_password,
         languages.split(),
-        options.template_engine
+        template_engine = options.template_engine
     )
     
     print u"Your site has been successfully created. You can start it by " \
