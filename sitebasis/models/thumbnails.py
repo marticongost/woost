@@ -325,5 +325,8 @@ class ImageThumbnailer(Thumbnailer):
             w, h = image.size
             height = int(h * width / float(w))
 
-        return image.resize((width, height), self.resize_filter)
+        image.thumbnail((width, height), self.resize_filter)
+
+        return image
+
 
