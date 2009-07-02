@@ -39,7 +39,7 @@ content_language = get_content_language()
     keywords = ((site.keywords or "") + " " + (document.keywords or "")).strip()
     %>
     % if keywords:
-        <meta name="keywords" content="${document.description}">
+        <meta name="keywords" content="${keywords}">
     % endif
     
     <link rel="start" title="${site.home.title}" href="/">
