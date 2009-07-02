@@ -36,7 +36,7 @@ content_language = get_content_language()
     % endif
     
     <%            
-    keywords = ((site.keywords or "") + " " + (document.keywords or "")).strip()
+    keywords = ((site.keywords or "") + ", " + (document.keywords or "")).strip(", ")
     %>
     % if keywords:
         <meta name="keywords" content="${keywords}">
