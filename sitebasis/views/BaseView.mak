@@ -5,12 +5,23 @@ from cocktail.translations import translations
 from cocktail.html import StyleSheet
 from sitebasis.models import Site
 
+output_format = "html4"
 container_classes = "BaseView"
 site = Site.main
 content_language = get_content_language()
 %>
 
+<%def name="closure()" filter="trim">
+    ${"/" if self.attr.output_format == "xhtml" else ""}
+</%def>
+
+${self.dtd()}
+
+% if self.attr.output_format == "xhtml":
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="${content_language}" lang="${content_language}">
+% else:
 <html lang="${content_language}">
+% endif
     
     <head>        
         ${self.meta()}      
@@ -25,24 +36,32 @@ content_language = get_content_language()
 
 </html>
 
+<%def name="dtd()">
+    % if self.attr.output_format == "xhtml":
+        <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+    % else:
+        <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd"> 
+    % endif
+</%def>
+
 <%def name="meta()">
     
-    <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
-    <meta name="Content-Language" content="${content_language}">
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"${closure()}>
+    <meta name="Content-Language" content="${content_language}"${closure()}>
     <title>${document.title}</title>
 
     % if document.description:
-        <meta name="description" content="${document.description}">
+        <meta name="description" content="${document.description}"${closure()}>
     % endif
     
     <%            
-    keywords = ((site.keywords or "") + ", " + (document.keywords or "")).strip(", ")
+    keywords = ((site.keywords or "") + " " + (document.keywords or "")).strip()
     %>
     % if keywords:
-        <meta name="keywords" content="${keywords}">
+        <meta name="keywords" content="${keywords}"${closure()}>
     % endif
     
-    <link rel="start" title="${site.home.title}" href="/">
+    <link rel="start" title="${site.home.title}" href="/"${closure()}>
     
     ## Alternate languages
     % for language in document.translations:
@@ -51,7 +70,7 @@ content_language = get_content_language()
                   title="${translations('sitebasis.views.BaseView alternate language link', lang = language)}"
                   href="${cms.language.translate_uri(language = language)}"
                   lang="${language}",
-                  hreflang="${language}">
+                  hreflang="${language}"${closure()}>
         % endif
     % endfor
 
@@ -60,13 +79,13 @@ content_language = get_content_language()
     icon = site.icon
     %>
     % if icon:                
-        <link rel="Shortcut Icon" type="${icon.mime_type}" href="${icon.uri}">
+        <link rel="Shortcut Icon" type="${icon.mime_type}" href="${icon.uri}"${closure()}>
     % endif
 </%def>
 
 <%def name="resource_markup(uri)">
     % if uri.endswith(".css"):
-        <link rel="Stylesheet" type="text/css" href="${uri}">
+        <link rel="Stylesheet" type="text/css" href="${uri}"${closure()}>
     % elif uri.endswith(".js"):
         <script type="text/javascript" src="${uri}"></script>
     % endif
@@ -89,7 +108,7 @@ content_language = get_content_language()
     % endfor
     
     ## User defined styles for user content
-    <link rel="Stylesheet" type="text/css" href="/user_styles/">
+    <link rel="Stylesheet" type="text/css" href="/user_styles/"${closure()}>
 </%def>
 
 <%def name="container()">
