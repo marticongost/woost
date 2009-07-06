@@ -46,7 +46,7 @@ from simplejson import dumps
                     element.append(
                         translations(
                             "Editing draft copy",
-                            location = self.get_edit_uri(self.edited_item.draft_source)
+                            location = self.edit_uri(self.edited_item.draft_source)
                         )
                     )
                 else:

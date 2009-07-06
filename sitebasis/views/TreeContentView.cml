@@ -2,7 +2,6 @@
 
 <?py
 from cocktail import schema
-from sitebasis.models import Site
 ?>
 
 <py:sitebasis.views.ContentView
@@ -10,9 +9,9 @@ from sitebasis.models import Site
     xmlns:py="http://www.whads.com/ns/cocktail/templates">
         
     <?py
-        self.add_resource("/cocktail/styles/jquery.tablednd.css")
-        self.add_resource("/cocktail/scripts/jquery.tablednd.js")
-        self.add_resource("/resources/scripts/TreeContentView.js")
+    self.add_resource("/cocktail/styles/jquery.tablednd.css")
+    self.add_resource("/cocktail/scripts/jquery.tablednd.js")
+    self.add_resource("/resources/scripts/TreeContentView.js")
     ?>
 
     <?py-class
@@ -21,21 +20,6 @@ from sitebasis.models import Site
     allow_sorting = False
     allow_filters = False
     allow_paging = False
-    page_size = None
-    
-    def _attach(self, controller):
-        ContentView._attach(self, controller)
-        expanded_param = controller.get_content_type_param("expanded")
-
-        if expanded_param:
-            if isinstance(expanded_param, basestring):
-                expanded = set(int(id) for id in expanded_param.split(","))
-            else:
-                expanded = set(int(id) for id in expanded_param)
-
-            self.expanded = expanded
-        else:
-            self.expanded = set()
 
     def _init_user_collection(self, user_collection):
         ContentView._init_user_collection(self, user_collection)
@@ -51,9 +35,9 @@ from sitebasis.models import Site
         py:def="collection_display"
         py:cms="@{self.cms}"
         py:base_url="@{self.cms.document_uri()}"
-        py:translations="@{self.visible_languages}"
+        py:translations="@{self.user_collection.languages}"
         py:children_collection="@{self.children_collection}"
-        py:expanded="@{self.expanded}">
+        py:expanded="@{self.user_collection.expanded_items}">
         <py:binding>
             <?py
             element.set_member_displayed(self.children_collection, False)

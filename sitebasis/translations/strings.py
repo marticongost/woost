@@ -392,6 +392,18 @@ translations.define("BackOfficeContentView.class",
     en = u"Type"
 )
 
+translations.define("sitebasis.views.BackOfficeContentView user views",
+    ca = u"Vistes freqüents:",
+    es = u"Vistas frecuentes:",
+    en = u"Bookmarks:"
+)
+
+translations.define("sitebasis.views.BackOfficeContentView add user view",
+    ca = u"Nova",
+    es = u"Nueva",
+    en = u"New"
+)
+
 translations.define("ContentView search",
     ca = u"Cercar",
     es = u"Buscar",
@@ -520,132 +532,6 @@ translations.define("datetime format",
     en = "%Y-%m-%d %H:%M"
 )
 
-translations.define("Administrators group title",
-    ca = u"Administradors",
-    es = u"Administradores",
-    en = u"Administrators"
-)
-
-translations.define("Anonymous role title",
-    ca = u"Anònim",
-    es = u"Anónimo",
-    en = u"Anonymous"
-)
-
-translations.define("Authenticated role title",
-    ca = u"Autenticat",
-    es = u"Autenticado",
-    en = u"Authenticated"
-)
-
-translations.define("Author role title",
-    ca = u"Autor",
-    es = u"Autor",
-    en = u"Author"
-)
-
-translations.define("Owner role title",
-    ca = u"Propietari",
-    es = u"Propietario",
-    en = u"Owner"
-)
-
-translations.define("Back office title",
-    ca = u"Gestor de continguts",
-    es = u"Gestor de contenidos",
-    en = u"Content Manager"
-)
-
-translations.define("Standard template title",
-    ca = u"Plantilla estàndard",
-    es = u"Plantilla estándar",
-    en = u"Standard template"
-)
-
-translations.define("Site style sheet title",
-    ca = u"Full d'estils global",
-    es = u"Hoja de estilos global",
-    en = u"Global stylesheet"
-)
-
-translations.define("Home page title",
-    ca = u"Lloc web",
-    es = u"Sitio web",
-    en = u"Web site"
-)
-
-translations.define("Home page inner title",
-    ca = u"Benvingut!",
-    es = u"Bienvenido!",
-    en = u"Welcome!"
-)
-
-translations.define("Home page body",
-    ca = u"El teu lloc web s'ha creat correctament. Ja pots començar "
-        u"a <a href='%(uri)s'>treballar-hi</a> i substituir aquesta pàgina "
-        u"amb els teus propis continguts.",
-    es = u"Tu sitio web se ha creado correctamente. Ya puedes empezar "
-        u"a <a href='%(uri)s'>trabajar</a> en él y sustituir esta página "
-        u"con tus propios contenidos.",
-    en = u"Your web site has been created successfully. You can start "
-        u"<a href='%(uri)s'>working on it</a> and replace this page with "
-        u"your own content."
-)
-
-translations.define("Not found error page title",
-    ca = u"Pàgina no trobada",
-    es = u"Página no encontrada",
-    en = u"Page not found"
-)
-
-translations.define("Not found error page body",
-    ca = u"La direcció indicada no coincideix amb cap dels continguts "
-         u"del web. Si us plau, revísa-la i torna-ho a provar.",
-    es = u"La dirección indicada no coincide con ninguno de los "
-         u"contenidos del web. Por favor, revísala y intentalo de nuevo.",
-    en = u"Couldn't find the indicated address. Please, verify it and try "
-         u"again."
-)
-
-translations.define("Login page title",
-    ca = u"Autenticació d'usuari",
-    es = u"Autenticación de usuario",
-    en = u"User authentication"
-)
-
-translations.define("Login page body",
-    ca = lambda form: u"""
-    <p>
-        L'accés a aquesta secció del web està restringit. Per favor,
-        introdueix les teves credencials d'usuari per continuar.
-    </p>
-    """ + (form % (u"Usuari", u"Contrasenya", u"Entrar")),    
-    es = lambda form: u"""
-    <p>
-    El acceso a esta sección del sitio está restringido. Por favor,
-    introduce tus credenciales de usuario para continuar.
-    </p>
-    """ + (form % (u"Usuario", u"Contraseña", u"Entrar")),    
-    en = lambda form: u"""
-    <p>
-        Access to this part of the website is restricted. Please, introduce
-        your user credentials to proceed.
-    </p>
-    """ + (form % (u"User", u"Password", u"Enter"))
-)
-
-translations.define("Forbidden error page title",
-    ca = u"Accés denegat",
-    es = u"Acceso denegado",
-    en = u"Forbidden"
-)
-
-translations.define("Forbidden error page body",
-    ca = u"<p>No es permet l'accés a aquesta secció del web.</p>",
-    es = u"<p>No se permite el acceso a esta sección del sitio.</p>",
-    en = u"<p>Access denied.</p>"
-)
-
 translations.define("BackOfficeOrderView last position",
     ca = u"Final de la llista",
     es = u"Final de la lista",
@@ -754,36 +640,212 @@ translations.define("sitebasis.views.BackOfficeShowDetailView open resource",
     en = u"Show file"
 )
 
+translations.define(
+    "sitebasis.controllers.backoffice.userfilter.OwnItemsFilter-instance",
+    ca = u"Elements propis",
+    es = u"Elementos propios",
+    en = u"Owned items"
+)
+
 # Initialization content
 #------------------------------------------------------------------------------
-translations.define("Create action title",
+translations.define(
+    "sitebasis.models.initialization Administrators group title",
+    ca = u"Administradors",
+    es = u"Administradores",
+    en = u"Administrators"
+)
+
+translations.define(
+    "sitebasis.models.initialization Anonymous role title",
+    ca = u"Anònim",
+    es = u"Anónimo",
+    en = u"Anonymous"
+)
+
+translations.define(
+    "sitebasis.models.initialization Authenticated role title",
+    ca = u"Autenticat",
+    es = u"Autenticado",
+    en = u"Authenticated"
+)
+
+translations.define(
+    "sitebasis.models.initialization Author role title",
+    ca = u"Autor",
+    es = u"Autor",
+    en = u"Author"
+)
+
+translations.define(
+    "sitebasis.models.initialization Owner role title",
+    ca = u"Propietari",
+    es = u"Propietario",
+    en = u"Owner"
+)
+
+translations.define(
+    "sitebasis.models.initialization Back office title",
+    ca = u"Gestor de continguts",
+    es = u"Gestor de contenidos",
+    en = u"Content Manager"
+)
+
+translations.define(
+    "sitebasis.models.initialization Standard template title",
+    ca = u"Plantilla estàndard",
+    es = u"Plantilla estándar",
+    en = u"Standard template"
+)
+
+translations.define(
+    "sitebasis.models.initialization Site style sheet title",
+    ca = u"Full d'estils global",
+    es = u"Hoja de estilos global",
+    en = u"Global stylesheet"
+)
+
+translations.define(
+    "sitebasis.models.initialization Home page title",
+    ca = u"Lloc web",
+    es = u"Sitio web",
+    en = u"Web site"
+)
+
+translations.define(
+    "sitebasis.models.initialization Home page inner title",
+    ca = u"Benvingut!",
+    es = u"Bienvenido!",
+    en = u"Welcome!"
+)
+
+translations.define(
+    "sitebasis.models.initialization Home page body",
+    ca = u"El teu lloc web s'ha creat correctament. Ja pots començar "
+        u"a <a href='%(uri)s'>treballar-hi</a> i substituir aquesta pàgina "
+        u"amb els teus propis continguts.",
+    es = u"Tu sitio web se ha creado correctamente. Ya puedes empezar "
+        u"a <a href='%(uri)s'>trabajar</a> en él y sustituir esta página "
+        u"con tus propios contenidos.",
+    en = u"Your web site has been created successfully. You can start "
+        u"<a href='%(uri)s'>working on it</a> and replace this page with "
+        u"your own content."
+)
+
+translations.define(
+    "sitebasis.models.initialization Not found error page title",
+    ca = u"Pàgina no trobada",
+    es = u"Página no encontrada",
+    en = u"Page not found"
+)
+
+translations.define(
+    "sitebasis.models.initialization Not found error page body",
+    ca = u"La direcció indicada no coincideix amb cap dels continguts "
+         u"del web. Si us plau, revísa-la i torna-ho a provar.",
+    es = u"La dirección indicada no coincide con ninguno de los "
+         u"contenidos del web. Por favor, revísala y intentalo de nuevo.",
+    en = u"Couldn't find the indicated address. Please, verify it and try "
+         u"again."
+)
+
+translations.define(
+    "sitebasis.models.initialization Login page title",
+    ca = u"Autenticació d'usuari",
+    es = u"Autenticación de usuario",
+    en = u"User authentication"
+)
+
+translations.define(
+    "sitebasis.models.initialization Login page body",
+    ca = lambda form: u"""
+    <p>
+        L'accés a aquesta secció del web està restringit. Per favor,
+        introdueix les teves credencials d'usuari per continuar.
+    </p>
+    """ + (form % (u"Usuari", u"Contrasenya", u"Entrar")),    
+    es = lambda form: u"""
+    <p>
+    El acceso a esta sección del sitio está restringido. Por favor,
+    introduce tus credenciales de usuario para continuar.
+    </p>
+    """ + (form % (u"Usuario", u"Contraseña", u"Entrar")),    
+    en = lambda form: u"""
+    <p>
+        Access to this part of the website is restricted. Please, introduce
+        your user credentials to proceed.
+    </p>
+    """ + (form % (u"User", u"Password", u"Enter"))
+)
+
+translations.define(
+    "sitebasis.models.initialization Forbidden error page title",
+    ca = u"Accés denegat",
+    es = u"Acceso denegado",
+    en = u"Forbidden"
+)
+
+translations.define(
+    "sitebasis.models.initialization Forbidden error page body",
+    ca = u"<p>No es permet l'accés a aquesta secció del web.</p>",
+    es = u"<p>No se permite el acceso a esta sección del sitio.</p>",
+    en = u"<p>Access denied.</p>"
+)
+
+translations.define(
+    "sitebasis.models.initialization Create action title",
     ca = u"Crear",
     es = u"Crear",
     en = u"Create"
 )
 
-translations.define("Read action title",
+translations.define(
+    "sitebasis.models.initialization Read action title",
     ca = u"Veure",
     es = u"Ver",
     en = u"Read"
 )
 
-translations.define("Modify action title",
+translations.define(
+    "sitebasis.models.initialization Modify action title",
     ca = u"Modificar",
     es = u"Modificar",
     en = u"Modify"
 )
 
-translations.define("Delete action title",
+translations.define(
+    "sitebasis.models.initialization Delete action title",
     ca = u"Eliminar",
     es = u"Eliminar",
     en = u"Delete"
 )
 
-translations.define("Confirm draft action title",
+translations.define(
+    "sitebasis.models.initialization Confirm draft action title",
     ca = u"Confirmar esborrany",
     es = u"Confirmar borrador",
     en = u"Confirm draft"
+)
+
+translations.define(
+    "sitebasis.models.initialization Document tree user view",
+    ca = u"Arbre de documents",
+    es = u"Árbol de documentos",
+    en = u"Document tree"
+)
+
+translations.define(
+    "sitebasis.models.initialization Own items user view",
+    ca = u"Els meus elements",
+    es = u"Mis elementos",
+    en = u"My items"
+)
+
+translations.define(
+    "sitebasis.models.initialization Resource gallery user view",
+    ca = u"Galeria de recursos",
+    es = u"Galería de recursos",
+    en = u"Resource gallery"
 )
 
 # Content views
@@ -1629,6 +1691,44 @@ translations.define("DynamicGroup.query",
     ca = u"Selecció",
     es = u"Selección",
     en = u"Selection"
+)
+
+# UserView
+#------------------------------------------------------------------------------
+translations.define("UserView",
+    ca = u"Vista d'usuari",
+    es = u"Vista de usuario",
+    en = u"User view"
+)
+
+translations.define("UserView-plural",
+    ca = u"Vistes d'usuari",
+    es = u"Vistas de usuario",
+    en = u"User views"
+)
+
+translations.define("UserView.title",
+    ca = u"Títol",
+    es = u"Título",
+    en = u"Title"
+)
+
+translations.define("UserView.parameters",
+    ca = u"Vista",
+    es = u"Vista",
+    en = u"View"
+)
+
+translations.define("UserView.sites",
+    ca = u"Llocs web",
+    es = u"Sitios web",
+    en = u"Sites"
+)
+
+translations.define("UserView.agents",
+    ca = u"Agents",
+    es = u"Agentes",
+    en = u"Agents"
 )
 
 # Back office

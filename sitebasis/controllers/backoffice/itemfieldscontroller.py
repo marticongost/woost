@@ -52,6 +52,7 @@ class ItemFieldsController(EditController):
 
         # Load form data from the request
         if self.submitted \
+        or cherrypy.request.method.upper() == "POST" \
         or section != self.section \
         or added_translation \
         or deleted_translation \

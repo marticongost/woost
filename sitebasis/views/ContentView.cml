@@ -32,8 +32,6 @@ from sitebasis.controllers.backoffice.useractions import \
 
     <?py-class
     collection_params = None
-    available_content_views = ()
-    visible_languages = ()
     root_content_type = Item
     edit_stack = None
     member = None
@@ -41,36 +39,22 @@ from sitebasis.controllers.backoffice.useractions import \
     search_expanded = False
     
     # User collection settings
+    allow_language_selection = UserCollection.allow_language_selection
     allow_sorting = UserCollection.allow_sorting
     allow_filters = UserCollection.allow_filters
     allow_paging = UserCollection.allow_paging
     allow_member_selection = UserCollection.allow_member_selection
-    page_size = UserCollection.page_size
-
-    @classmethod
-    def get_collection(cls, content_type, item = None, relation = None):
-        if item:
-            return item.get(relation)
-        else:
-            return None # default
-
-    @classmethod
-    def compatible_with(cls, content_type, item = None, relation = None):
-        return True
     
-    def _attach(self, controller):
-        pass
+    @classmethod
+    def compatible_with(cls, user_collection):
+        return True
 
     def _init_user_collection(self, user_collection):
-        user_collection.allow_sorting = self.allow_sorting
-        user_collection.allow_filters = self.allow_filters
-        user_collection.allow_paging = self.allow_paging
-        user_collection.allow_member_selection = self.allow_member_selection
-        user_collection.page_size = self.page_size
-    
+        pass
+
     def get_new_content_uri(self, content_type):
         params = {
-            "type": content_type.full_name,
+            "item_type": content_type.full_name,
             "edit_stack": self.edit_stack.to_param() if self.edit_stack else None
         }
         
@@ -96,7 +80,10 @@ from sitebasis.controllers.backoffice.useractions import \
             )
 
     def get_visible_content_views(self):
-        return sorted(self.available_content_views or [], key = lambda cv: cv.content_view_id)
+        return sorted(
+            self.user_collection.available_content_views or [],
+            key = lambda cv: cv.content_view_id
+        )
 
     excluded_view_state_params = \
         CollectionView.excluded_view_state_params | frozenset(["rel", "simple_search_query", "search_expanded"])
@@ -267,7 +254,7 @@ from sitebasis.controllers.backoffice.useractions import \
                     <div py:id="content_view_selector">
                         <div py:for="content_view in self._visible_content_views">
                             <?py
-                            if self.__class__ is content_view:
+                            if self.content_view_id == content_view.content_view_id:
                                 element.add_class("selected")
                             ?>
                             <a>
