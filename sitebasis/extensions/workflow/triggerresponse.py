@@ -22,6 +22,7 @@ class SetStateTriggerResponse(TriggerResponse):
         edit_control = "cocktail.html.DropdownSelector"
     )
 
-    def execute(self, item, action, agent, batch = False, **context):
-        item.state = self.target_state
+    def execute(self, items, action, agent, batch = False, **context):
+        for item in items:
+            item.state = self.target_state
 
