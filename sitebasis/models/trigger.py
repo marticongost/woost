@@ -63,9 +63,7 @@ class Trigger(Item):
     )
 
     batch_execution = schema.Boolean(
-        required = True,
-        exclusive = execution_point.equal("after")
-                    .and_(_handles_action("modify", "delete"))
+        required = True
     )
 
     site = schema.Reference(
