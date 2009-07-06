@@ -12,7 +12,13 @@ from os.path import join
 from tempfile import mkdtemp
 import cherrypy
 import pyExcelerator
-from cocktail.modeling import getter, cached_getter, ListWrapper, SetWrapper
+from cocktail.modeling import (
+    getter,
+    cached_getter,
+    ListWrapper,
+    SetWrapper,
+    OrderedSet
+)
 from cocktail.events import event_handler
 from cocktail.translations import translations
 from cocktail.pkgutils import resolve
@@ -23,15 +29,14 @@ from cocktail.schema.expressions import (
 from cocktail.persistence import datastore
 from cocktail.html.datadisplay import SINGLE_SELECTION, MULTIPLE_SELECTION
 from cocktail.controllers import (
-    get_persistent_param,
     view_state,
-    UserCollection
+    get_parameter,
+    CookieParameterSource
 )
 from cocktail.controllers.userfilter import GlobalSearchFilter
 from sitebasis.models import (
-    Language, Item, changeset_context, AccessAllowedExpression
+    Site, Language, Item, changeset_context, AccessAllowedExpression
 )
-from sitebasis.controllers.backoffice.contentviews import global_content_views
 from sitebasis.controllers.backoffice.basebackofficecontroller \
     import BaseBackOfficeController
 from sitebasis.controllers.backoffice.editstack import (
@@ -41,6 +46,8 @@ from sitebasis.controllers.backoffice.editstack import (
 )
 from sitebasis.controllers.backoffice.itemcontroller import ItemController
 from sitebasis.controllers.backoffice.useractions import get_user_action
+from sitebasis.controllers.backoffice.usercollection \
+    import BackOfficeUserCollection
 
 
 class ContentController(BaseBackOfficeController):
@@ -126,22 +133,9 @@ class ContentController(BaseBackOfficeController):
             selection = self.user_collection.selection
 
         self._invoke_user_action(self.action, selection)
-        
-    @cached_getter
-    def content_type(self):
-        """The content type of listed items.
-        @type: L{Item<sitebasis.models.Item>} subclass
-        """
-        content_type = self.get_content_type(self.default_content_type)
-        root_content_type = self.root_content_type
-
-        if content_type is None \
-        or not content_type.visible \
-        or not issubclass(content_type, root_content_type):
-            content_type = root_content_type
-        
-        return content_type
-
+    
+    # Content
+    #--------------------------------------------------------------------------    
     @cached_getter
     def root_content_type(self):
         """The most basic possible content type for listed items.
@@ -181,122 +175,6 @@ class ContentController(BaseBackOfficeController):
                     return member.items.type
 
         return None
-
-    @getter
-    def default_content_type(self):
-        """The default content type for listed items, used if none is
-        explicitly specified.
-
-        This property tipically matches the value of L{root_content_type}.
-
-        @type: L{Item<sitebasis.models.Item>} subclass
-        """
-        return self.root_content_type
-
-    def get_content_type_param(self, param_name):
-        """Retrieve a request parameter that is persisted separately for each
-        content type.
-
-        @param param_name: The name of the parameter to obtain.
-        @type param_name: str
-
-        @return: The value for the indicated parameter.
-        """
-        return get_persistent_param(
-            param_name,
-            cookie_name = self.content_type.full_name + "-" + param_name,
-            cookie_duration = self.persistence_duration
-        )
-
-    @cached_getter
-    def content_views_registry(self):
-        """A registry listing all available content views for listings.
-        @type: L{ContentViewsRegistry<sitebasis.controllers.contentviews.ContentViewsRegistry>}
-        """
-        return global_content_views
-
-    @cached_getter
-    def available_content_views(self):
-        """The list of all content view classes available to the selected
-        content type.
-        @type: sequence of L{Element<cocktail.html.element.Element>} subclasses
-        """
-        return [content_view
-                for content_view
-                    in self.content_views_registry.get(self.content_type)
-                if self.content_view_is_compatible(content_view)]
-    
-    @cached_getter
-    def content_view(self):
-        """The content view selected by the current request.
-        @type: L{Element<cocktail.html.element.Element>}
-        """
-        available_content_views = self.available_content_views
-        content_view_type = None
-        content_view_param = self.get_content_type_param("content_view")
-        
-        # Explicitly chosen content view
-        if content_view_param is not None:
-            for content_view_type in available_content_views:
-                if content_view_type.content_view_id == content_view_param:
-                    break
-            else:
-                content_view_type = None
-
-        # Default content view
-        if content_view_type is None:
-            content_view_type = (
-                self.content_views_registry.get_default(self.content_type)
-                or available_content_views[0]
-            )
-        
-        # Instantiate and initialize the content view
-        content_view = content_view_type()
-
-        params = self.content_views_registry.get_params(
-            self.content_type,
-            content_view_type
-        )
-
-        for key, value in params.iteritems():
-            setattr(content_view, key, value)
-
-        content_view._attach(self)
-
-        return content_view
-
-    @cached_getter
-    def content_adapter(self):
-        """The schema adapter used to produce data suitable for listing.
-        @type: L{SchemaAdapter<cocktail.schema.adapter.SchemaAdapter>}
-        """
-        adapter = schema.Adapter()
-        adapter.exclude([
-            member.name
-            for member in self.content_type.members().itervalues()
-            if not member.visible
-        ])
-        return adapter
-
-    @cached_getter
-    def content_schema(self):
-        """The schema used by the produced listing of persistent items.
-        @type: L{Schema<cocktail.schema.schema.Schema>}
-        """
-        content_schema = self.content_adapter.export_schema(self.content_type)
-        content_schema.name = "BackOfficeContentView"
-        content_schema.add_member(
-            schema.Member(name = "element", searchable = False)
-        )
-        content_schema.members_order.insert(0, "element")
-        
-        if any(cls.visible for cls in self.content_type.derived_schemas()):
-            content_schema.add_member(
-                schema.Member(name = "class", searchable = False)
-            )
-            content_schema.members_order.insert(1, "class")
-
-        return content_schema
         
     @cached_getter
     def available_languages(self):
@@ -307,31 +185,49 @@ class ContentController(BaseBackOfficeController):
         @type: sequence of unicode
         """
         return Language.codes
-
-    @cached_getter
-    def visible_languages(self):
-        return self.get_visible_languages()
     
     @cached_getter
     def user_collection(self):
 
-        user_collection = UserCollection(
-            self.content_type,
-            self.content_schema
+        user_collection = BackOfficeUserCollection(self.root_content_type)
+        user_collection.available_languages = self.available_languages
+        user_collection.selection_mode = self.selection_mode
+
+        # Parameter persistence
+        prefix = self.persistence_prefix
+        duration = self.persistence_duration
+
+        user_collection.set_parameter_source("type",
+            CookieParameterSource(
+                cookie_prefix = prefix,
+                cookie_duration = duration
+            )
         )
 
-        self._init_user_collection(user_collection)
-        user_collection.read()
-        return user_collection
+        type_prefix = user_collection.type.full_name
+        if prefix:
+            type_prefix += "-" + prefix
+        
+        user_collection.persistence_prefix = type_prefix
 
-    def content_view_is_compatible(self, content_view):
-        return content_view.compatible_with(self.content_type)
+        persistent_source = CookieParameterSource(
+            cookie_prefix = type_prefix,
+            cookie_duration = duration
+        )
 
-    @cached_getter
-    def base_collection(self):
-        return self.content_view.get_collection(self.content_type)
-
-    def _init_user_collection(self, user_collection):
+        user_collection.set_parameter_source("content_view", persistent_source)
+        user_collection.set_parameter_source("members", persistent_source)
+        user_collection.set_parameter_source("order", persistent_source)
+        user_collection.set_parameter_source("filter", persistent_source)
+        user_collection.set_parameter_source("page", persistent_source)
+        user_collection.set_parameter_source("page_size", persistent_source)
+        user_collection.set_parameter_source("expanded", persistent_source)
+        user_collection.set_parameter_source("language",
+            CookieParameterSource(
+                cookie_naming = "visible_languages",
+                cookie_duration = duration
+            )
+        )
 
         # Exclude instances of invisible types
         def hide_invisible_types(content_type):
@@ -347,8 +243,7 @@ class ContentController(BaseBackOfficeController):
         hide_invisible_types(user_collection.type)
 
         # Exclude edit drafts
-        user_collection.add_base_filter(
-            self.content_type.draft_source.equal(None))
+        user_collection.add_base_filter(Item.draft_source.equal(None))
         
         node = self.stack_node
 
@@ -385,7 +280,6 @@ class ContentController(BaseBackOfficeController):
                                 relation.related_end,
                                 schema.Collection
                             ):
-
                                 def recursive_exclusion(item):
                                     excluded_items.add(item)
                                     children = item.get(relation.related_end)
@@ -422,9 +316,7 @@ class ContentController(BaseBackOfficeController):
                 elif relation.bidirectional \
                 and isinstance(relation.related_end, schema.Reference) \
                 and not relation.related_end.cycles_allowed:
-
                     item = edit_node.item
-
                     while item:
                         excluded_items.add(item)
                         item = item.get(relation)
@@ -434,50 +326,10 @@ class ContentController(BaseBackOfficeController):
                     ExclusionExpression(Self, excluded_items)
                 )
 
-        # Filter base items
-        user_collection.add_base_filter(AccessAllowedExpression(self.user))        
-        user_collection.base_collection = self.base_collection
-        
-        # Settings persistence (settings for the item selector expire when the
-        # browser is closed, while on other listings they are persisted for
-        # longer periods)
-        user_collection.persistence_prefix = \
-            self.content_type_persistence_prefix
-        user_collection.persistent_params = set(("members", "order", "filter"))
-        user_collection.persistence_duration = self.persistence_duration
-
-        user_collection.available_languages = self.available_languages
-        user_collection.selection_mode = self.selection_mode
-        user_collection.selection_parser = \
-            lambda param: Item.get_instance(int(param))
-
-        # Initialize the content collection with the parameters set by the
-        # current content view (this allows views to disable sorting, filters,
-        # etc, depending on the nature of their user interface)        
-        self.content_view._init_user_collection(user_collection)
-
-        # Transform search queries from the simple search interface into
-        # filters
-        if user_collection.allow_filters:
-            simple_search_query = \
-                self.params.read(schema.String("simple_search_query"))
-            if simple_search_query:
-                simple_search_filter = GlobalSearchFilter()
-                simple_search_filter.id = "global_search"
-                simple_search_filter.content_type = user_collection.type
-                simple_search_filter.available_languages = \
-                    user_collection.available_languages
-                simple_search_filter.value = simple_search_query
-                user_collection.user_filters.append(simple_search_filter)
-
+        # Filter unauthorized items
+        user_collection.add_base_filter(AccessAllowedExpression(self.user))
+       
         return user_collection
-
-    @cached_getter
-    def view_class(self):
-        if self.edit_stack:
-            return "sitebasis.views.BackOfficeItemSelectorView"
-        else:
-            return "sitebasis.views.BackOfficeContentView"
 
     @cached_getter
     def selection_mode(self):
@@ -496,20 +348,62 @@ class ContentController(BaseBackOfficeController):
         )
 
     @cached_getter
+    def user_views(self):
+        
+        user = self.user
+        views = OrderedSet()
+        
+        # Site wide views
+        views.extend(Site.main.user_views)
+        
+        # Group views
+        for group in self.user.groups:
+            views.extend(group.user_views)
+
+        # User views
+        views.extend(user.user_views)
+
+        return views
+
+    # Parameter persistence
+    #--------------------------------------------------------------------------    
+    @cached_getter
+    def persistence_prefix(self):
+        stack = self.edit_stack
+        return stack.to_param() if stack else ""
+
+    @cached_getter
+    def persistence_duration(self):
+        node = self.stack_node
+        return (
+            None
+            if node and isinstance(node, (RelationNode, SelectionNode))
+            else self.settings_duration
+        )
+
+    # Rendering
+    #--------------------------------------------------------------------------
+    @cached_getter
+    def view_class(self):
+        if self.edit_stack:
+            return "sitebasis.views.BackOfficeItemSelectorView"
+        else:
+            return "sitebasis.views.BackOfficeContentView"
+
+    @cached_getter
     def output(self):
         output = BaseBackOfficeController.output(self)
         output.update(
             user_collection = self.user_collection,
             available_languages = self.available_languages,
-            visible_languages = self.visible_languages,
-            available_content_views = self.available_content_views,
-            content_view = self.content_view,
             selection_mode = self.selection_mode,
             root_content_type = self.root_content_type,
-            search_expanded = self.search_expanded
+            search_expanded = self.search_expanded,
+            user_views = self.user_views
         )
         return output
 
+    # TODO: Move MS Excel rendering to an extension
     allowed_rendering_formats = (
         BaseBackOfficeController.allowed_rendering_formats
         | frozenset(["msexcel"])
@@ -548,7 +442,7 @@ class ContentController(BaseBackOfficeController):
             else:
                 return unicode(value)
 
-        for row, item in enumerate(collection.subset()):                            
+        for row, item in enumerate(collection.subset):                            
             for col, member in enumerate(members):
 
                 if member.name == "element":

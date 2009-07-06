@@ -24,7 +24,8 @@ from sitebasis.models import (
     Group,
     StandardPage,
     URI,
-    Template
+    Template,
+    UserView
 )
 
 standard_template_identifiers = {
@@ -45,7 +46,11 @@ def init_site(
     
     def set_translations(item, member, key, **kwargs):
         for language in languages:
-            value = translations(key, language, **kwargs)
+            value = translations(
+                "sitebasis.models.initialization " + key,
+                language,
+                **kwargs
+            )
             if value:
                 item.set(member, value, language)
 
@@ -231,6 +236,54 @@ def init_site(
             form = login_form
         )
         site.login_page.insert()
+
+        # Create site-wide user views
+        own_items_view = UserView()
+        own_items_view.sites.append(site)
+        own_items_view.parameters = {
+            "type": "sitebasis.models.item.Item",
+            "content_view": "flat",
+            "filter": "own-items",
+            "order": "-last_update_time",
+            "members": None
+        }
+        set_translations(
+            own_items_view,
+            "title",
+            "Own items user view"
+        )
+        own_items_view.insert()
+        
+        document_tree_view = UserView()
+        document_tree_view.sites.append(site)
+        document_tree_view.parameters = {
+            "type": "sitebasis.models.document.Document",
+            "content_view": "tree",
+            "filter": None,
+            "members": None
+        }
+        set_translations(
+            document_tree_view,
+            "title",
+            "Document tree user view"
+        )
+        document_tree_view.insert()
+
+        resource_gallery_view = UserView()
+        resource_gallery_view.sites.append(site)
+        resource_gallery_view.parameters = {
+            "type": "sitebasis.models.resource.Resource",
+            "content_view": "thumbnails",
+            "filter": None,
+            "order": None,
+            "members": None
+        }
+        set_translations(
+            resource_gallery_view,
+            "title",
+            "Resource gallery user view"
+        )
+        resource_gallery_view.insert()
 
         # Add standard access rules:
         site.access_rules_by_priority = [

@@ -11,8 +11,9 @@ import cherrypy
 from cocktail.modeling import cached_getter, getter
 from cocktail.events import event_handler
 from cocktail.pkgutils import resolve
-from cocktail.schema import Collection, String
-from cocktail.controllers import view_state, Location
+from cocktail import schema
+from cocktail.controllers import view_state, Location, get_parameter
+from sitebasis.models import Item
 
 from sitebasis.controllers.backoffice.basebackofficecontroller \
     import BaseBackOfficeController
@@ -73,7 +74,7 @@ class ItemController(BaseBackOfficeController):
         return [
             member
             for member in self.stack_node.form_schema.ordered_members()
-            if isinstance(member, Collection)
+            if isinstance(member, schema.Collection)
             and not member.edit_inline
         ]
     
@@ -110,7 +111,7 @@ class ItemController(BaseBackOfficeController):
         else:
             # Integral part; add a new relation node (won't be shown to the
             # user)
-            member_name = self.params.read(String("member"))
+            member_name = self.params.read(schema.String("member"))
 
             if member_name:
                 node = RelationNode()
@@ -125,7 +126,9 @@ class ItemController(BaseBackOfficeController):
             
             # New item
             if context_item is None:
-                content_type = self.get_content_type()
+                content_type = get_parameter(
+                    schema.Reference("item_type", class_family = Item)
+                )
                 item = content_type()
             # Existing item
             else:
@@ -140,7 +143,7 @@ class ItemController(BaseBackOfficeController):
                 node.initialize_new_item(
                     item,
                     self.user,
-                    self.get_visible_languages()
+                    self.visible_languages
                 )
         
         # If the stack is modified a redirection is triggered so that any
@@ -168,7 +171,7 @@ class ItemController(BaseBackOfficeController):
     def switch_section(self, section):
         item = self.stack_node.item
         raise cherrypy.HTTPRedirect(
-            self.get_edit_uri(
+            self.edit_uri(
                 item if item.is_inserted else item.__class__,
                 section
             )

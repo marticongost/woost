@@ -21,6 +21,12 @@ class Agent(Item):
         visible = False
     )
 
+    user_views = schema.Collection(
+        items = "sitebasis.models.UserView",
+        bidirectional = True,
+        related_key = "agents"
+    )
+
     def get_roles(self, context):
         return [self]
 

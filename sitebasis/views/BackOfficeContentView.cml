@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <?py
+from cocktail.schema.expressions import NegativeExpression, TranslationExpression
 from cocktail.html.datadisplay import MULTIPLE_SELECTION
+from sitebasis.models import UserView
 from sitebasis.controllers.backoffice.useractions import \
     add_view_action_context
 ?>
@@ -18,6 +20,7 @@ from sitebasis.controllers.backoffice.useractions import \
     content_view = None
     selection_mode = MULTIPLE_SELECTION
     search_expanded = False
+    user_views = ()
     ?>
 
     <?py
@@ -28,16 +31,57 @@ from sitebasis.controllers.backoffice.useractions import \
 
     <py:with py:element="self.back_link" py:visible="${False}"/>
 
+    <form py:id="user_views_box" py:after="self.header">
+        <span py:id="user_views_label">
+            ${translations("sitebasis.views.BackOfficeContentView user views")}
+        </span>
+        <ul py:id="user_views_list" py:collapsible="${True}">
+            <py:ready>
+                <li py:for="user_view in self.user_views">
+                    <a href="${user_view.uri()}">${translations(user_view)}</a>
+                </li>
+            </py:ready>
+        </ul>
+        <a py:id="add_user_view_button" href="@{self.edit_uri(UserView)}">
+            <py:ready>
+                <?py
+                add_user_view_params = {
+                    "type": self.user_collection.type.full_name,
+                    "content_view": self.user_collection.content_view.content_view_id,
+                    "order": [
+                          ("-" if isinstance(criteria, NegativeExpression) else "")
+                        + (
+                            criteria.operands[0].operands[0].name
+                            if isinstance(criteria, TranslationExpression)
+                            else criteria.operands[0].name
+                        )
+                        for criteria in self.user_collection.order
+                    ],
+                    "members": self.user_collection.members,
+                    "page_size": self.user_collection.page_size
+                }
+                filters = add_user_view_params["filters"] = []
+                for i, filter in enumerate(self.user_collection.user_filters):
+                    filters.append(filter.id)
+                    for key in filter.schema.members():
+                        add_user_view_params["filter_%s%d" % (key, i)] = getattr(filter, key)
+
+                element["href"] = self.edit_uri(UserView, "fields", **add_user_view_params)
+                ?>
+            </py:ready>
+            <img src="/resources/images/add_user_view.png"/>
+            <span>${translations('sitebasis.views.BackOfficeContentView add user view')}</span>
+        </a>
+    </form>
+
     <py:ready>
-        <py:with py:element="self.content_view"
+        <py:with py:element="self.user_collection.content_view"
             py:parent="self.body"
             action="${self.cms.document_uri('content')}"
             py:cms="${self.cms}"
             py:backoffice="${self.backoffice}"
             py:user_collection="${self.user_collection}"
             py:available_languages="${self.available_languages}"
-            py:visible_languages="${self.visible_languages}"
-            py:available_content_views="${self.available_content_views}"
             py:selection_mode="${self.selection_mode}"
             py:edit_stack="${self.edit_stack}"
             py:search_expanded="${self.search_expanded}">
