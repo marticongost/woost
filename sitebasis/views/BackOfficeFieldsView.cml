@@ -74,6 +74,7 @@ from cocktail.language import get_content_language
                 py:embeded="${True}"
                 py:tag="div"
                 py:data="@{self.form_data}"
+                py:persistent_object="@{self.edited_item}"
                 py:schema="@{self.fields_schema}"
                 py:errors="@{self.submitted and self.errors}"
                 py:translations="@{self.translations}"
