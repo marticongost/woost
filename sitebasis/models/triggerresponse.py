@@ -21,6 +21,7 @@ class TriggerResponse(Item):
     
     integral = True
     instantiable = False
+    visible_from_root = False
 
     trigger = schema.Reference(   
         type = "sitebasis.models.Trigger",
