@@ -20,19 +20,15 @@ from cocktail.schema import SchemaObjectAccessor
     actions = "new", "edit", "delete", "history", "order"
     cms = None
 
-    @classmethod
-    def compatible_with(cls, content_type, item = None, relation = None):
-        return isinstance(
-            cls.get_collection(content_type, item, relation),
-            (list, ListWrapper)
-        )
+    allow_sorting = False
+    allow_filters = False
+    allow_paging = False
 
-    def _init_user_collection(self, user_collection):
-        ContentView._init_user_collection(self, user_collection)
-        user_collection.allow_sorting = False
-        user_collection.allow_filters = False
-        user_collection.allow_paging = False
-        user_collection.page_size = None
+    @classmethod
+    def compatible_with(cls, user_collection):
+        item_collection = user_collection.base_collection
+        return item_collection is not None \
+            and isinstance(item_collection, (list, ListWrapper))
     ?>
 
     <py:with py:element="self.content_type_box" py:visible="${False}"/>
@@ -41,6 +37,6 @@ from cocktail.schema import SchemaObjectAccessor
         py:def="collection_display"
         py:base_url="@{self.cms.document_uri()}"
         py:accessor="${SchemaObjectAccessor}"
-        py:translations="@{self.visible_languages}"/>
+        py:translations="@{self.user_collection.languages}"/>
 
 </py:sitebasis.views.ContentView>

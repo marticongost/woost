@@ -26,16 +26,13 @@ from cocktail.html.datadisplay import MULTIPLE_SELECTION
     ?>
 
     <py:ready>
-        <py:with py:element="self.content_view"
+        <py:with py:element="self.user_collection.content_view"
             py:parent="self.body"
             action="${self.cms.document_uri()}"
             py:cms="${self.cms}"
             py:backoffice="${self.backoffice}"
             py:user_collection="${self.user_collection}"
             py:available_languages="${self.available_languages}"
-            py:visible_languages="${self.visible_languages}"
-            py:available_content_views="${self.available_content_views}"
-            py:actions="${['new']}"
             py:root_content_type="${self.root_content_type}"
             py:selection_mode="${self.selection_mode}"
             py:edit_stack="${self.edit_stack}"

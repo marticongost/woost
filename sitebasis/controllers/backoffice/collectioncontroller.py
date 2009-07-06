@@ -31,18 +31,6 @@ class CollectionController(EditController, ContentController):
         return self.member.items.type
 
     @cached_getter
-    def base_collection(self):
-        return schema.get(self.stack_node.form_data, self.member)
-
-    def content_view_is_compatible(self, content_view):
-        return content_view.compatible_with(
-            self.content_type, self.stack_node.item, self.member)
-
-    @cached_getter
-    def content_views_registry(self):
-        return relation_content_views
-
-    @cached_getter
     def action(self):
         return self.edited_item_action or self.collection_action
 
@@ -60,6 +48,14 @@ class CollectionController(EditController, ContentController):
             return self.user_collection.selection
         else:
             return EditController.action_content(self)
+
+    @cached_getter
+    def user_collection(self):
+        user_collection = ContentController.user_collection(self)
+        user_collection.content_views_registry = relation_content_views
+        user_collection.base_collection = \
+            schema.get(self.stack_node.form_data, self.member)
+        return user_collection
 
     @cached_getter
     def view_class(self):

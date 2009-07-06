@@ -81,7 +81,7 @@ from cocktail.language import get_content_language
                 py:edited_content_type="@{self.edited_content_type}"
                 py:name_prefix="edited_item_"
                 method="post">
-                                
+
                 <!-- Highlight changed members -->
                 <py:with py:def="field_instance" py:args="member">
                     <?py

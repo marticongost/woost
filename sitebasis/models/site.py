@@ -31,7 +31,8 @@ class Site(Item):
         "keywords",
         "smtp_host",
         "access_rules_by_priority",
-        "triggers"
+        "triggers",
+        "user_views"
     ]
 
     @classgetter
@@ -70,17 +71,6 @@ class Site(Item):
         type = "sitebasis.models.Document",
         listed_by_default = False
     )
-    
-    access_rules_by_priority = schema.Collection(
-        items = "sitebasis.models.AccessRule",
-        bidirectional = True,
-        related_key = "site"
-    )
-
-    triggers = schema.Collection(
-        items = "sitebasis.models.Trigger",
-        bidirectional = True
-    )
 
     icon = schema.Reference(
         type = File,
@@ -98,6 +88,22 @@ class Site(Item):
     smtp_host = schema.String(
         default = "localhost",
         listed_by_default = False
+    )
+
+    access_rules_by_priority = schema.Collection(
+        items = "sitebasis.models.AccessRule",
+        bidirectional = True,
+        related_key = "site"
+    )
+
+    triggers = schema.Collection(
+        items = "sitebasis.models.Trigger",
+        bidirectional = True
+    )
+
+    user_views = schema.Collection(
+        items = "sitebasis.models.UserView",
+        bidirectional = True
     )
 
     def __translate__(self, language, **kwargs):

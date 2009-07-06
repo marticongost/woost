@@ -10,14 +10,12 @@ from cocktail.schema import SchemaObjectAccessor
 
     <?py-class
     content_view_id = "flat"
-    actions = "new", "edit", "delete", "history"   
-    cms = None
     ?>
 
     <py:sitebasis.views.ContentTable
         py:def="collection_display"
         py:base_url="@{self.cms.document_uri()}"
         py:accessor="${SchemaObjectAccessor}"
-        py:translations="@{self.visible_languages}"/>
+        py:translations="@{self.user_collection.languages}"/>
 
 </py:sitebasis.views.ContentView>
