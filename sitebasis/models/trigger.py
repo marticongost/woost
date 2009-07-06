@@ -118,7 +118,8 @@ class Trigger(Item):
     )
     
     modified_members = schema.Collection(
-        items = schema.String(required = True)
+        items = schema.String(required = True),
+        edit_control = "cocktail.html.TextArea"
         #exclusive = _handles_action("modify")
     )
 
