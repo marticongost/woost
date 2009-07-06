@@ -23,7 +23,8 @@ class UserViewFieldsController(ItemFieldsController, ContentController):
     def persistence_prefix(self):
         return "UserView%s" % self.stack_node.item.id
     
-    def _handle_form_data(self):        
+    def _handle_form_data(self):
+        ItemFieldsController._handle_form_data(self)
         form_data = self.stack_node.form_data
         form_data["parameters"] = self.get_user_view_parameters()
  
