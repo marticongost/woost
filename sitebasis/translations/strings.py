@@ -399,9 +399,9 @@ translations.define("sitebasis.views.BackOfficeContentView user views",
 )
 
 translations.define("sitebasis.views.BackOfficeContentView add user view",
-    ca = u"Nova",
-    es = u"Nueva",
-    en = u"New"
+    ca = u"Crear vista",
+    es = u"Crear vista",
+    en = u"New view"
 )
 
 translations.define("ContentView search",
