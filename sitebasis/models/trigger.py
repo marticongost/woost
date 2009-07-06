@@ -53,6 +53,7 @@ class Trigger(Item):
     """Describes an event."""
 
     integral = True
+    visible_from_root = False
     edit_form = "sitebasis.views.TriggerForm"
     
     execution_point = schema.String(
