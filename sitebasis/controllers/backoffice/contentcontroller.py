@@ -264,68 +264,6 @@ class ContentController(BaseBackOfficeController):
             for constraint in relation.get_constraint_filters(edit_node.item):
                 user_collection.add_base_filter(constraint)
 
-            # Prevent cycles in recursive relations. This only makes sense in
-            # existing items, new items don't yet exist on the database and
-            # therefore can't produce cycles.
-            if edit_node.item:
-
-                # References: exclude the edited item and its descendants
-                if isinstance(relation, schema.Reference):
-                    if not relation.cycles_allowed:
-                        
-                        if relation.bidirectional:
-
-                            # 1-n
-                            if isinstance(
-                                relation.related_end,
-                                schema.Collection
-                            ):
-                                def recursive_exclusion(item):
-                                    excluded_items.add(item)
-                                    children = item.get(relation.related_end)
-                                    if children:
-                                        for child in children:
-                                            recursive_exclusion(child)
-
-                                recursive_exclusion(edit_node.item)
-
-                            # 1-1
-                            else:
-                                item = edit_node.item
-
-                                while item:
-                                    excluded_items.add(item)
-                                    item = item.get(relation.related_end)
-                        # 1-?
-                        else:
-                            excluded_items.add(edit_node.item)
-
-                            def forms_cycle(item):
-                                related_item = item.get(relation)
-                                return (
-                                    related_item is edit_node.item
-                                    or (related_item
-                                        and forms_cycle(related_item))
-                                )
-
-                            user_collection.add_base_filter(CustomExpression(
-                                lambda item: not forms_cycle(item)
-                            ))
-
-                # Collections: exclude the edited item and its ancestors
-                elif relation.bidirectional \
-                and isinstance(relation.related_end, schema.Reference) \
-                and not relation.related_end.cycles_allowed:
-                    item = edit_node.item
-                    while item:
-                        excluded_items.add(item)
-                        item = item.get(relation)
-                    
-            if excluded_items:
-                user_collection.add_base_filter(
-                    ExclusionExpression(Self, excluded_items)
-                )
-
         # Filter unauthorized items
         user_collection.add_base_filter(AccessAllowedExpression(self.user))
        
