@@ -102,6 +102,8 @@ def uninstall_missing_extensions():
     """Removes installed extensions that are no longer available."""
     # TODO: implement this!
 
+# Class stub, required by the metaclass
+Extension = None
 
 class Extension(Item):
     """Base model for all application extensions.
@@ -113,6 +115,16 @@ class Extension(Item):
     @type dependencies: sequence of (L{Extension}, L{Extension} subclass or
         str)
     """
+
+    # Add a custom metaclass to hide all subclasses of Extension by default
+    class __metaclass__(Item.__metaclass__):
+
+        def __init__(cls, name, bases, members):
+
+            if Extension is not None and "visible_from_root" not in members:
+                cls.visible_from_root = False
+
+            Item.__metaclass__.__init__(cls, name, bases, members)
 
     instantiable = False
     integral = True
