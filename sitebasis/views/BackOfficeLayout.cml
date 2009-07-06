@@ -74,7 +74,7 @@ from sitebasis.controllers.backoffice.useractions import add_view_action_context
 
         <!-- Page title -->
         <h1>
-            <py:ready>${self.page_title}</py:ready>
+            <a href="@{self.cms.document_uri()}"><py:ready>${self.page_title}</py:ready></a>
         </h1>
 
         <!-- Identity and logout -->
@@ -88,20 +88,6 @@ from sitebasis.controllers.backoffice.useractions import add_view_action_context
                 </form>
             </py:ready>
         </div>
-    </div>
-
-    <div py:id="navigation_bar" py:collapsible="${True}">
-        <a py:id="back_link">
-            <py:ready>
-                <?py
-                if self.cms:
-                    element["href"] = self.cms.document_uri()
-                else:
-                    element.visible = False
-                ?>
-            </py:ready>
-            ${translations("sitebasis.views.BackOfficeLayout stack root")}
-        </a>
     </div>
 
     <div py:id="notification_box" py:collapsible="${True}">

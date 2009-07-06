@@ -29,19 +29,11 @@ from sitebasis.controllers.backoffice.useractions import \
     add_view_action_context(self, "content")
     ?>
 
-    <py:with py:element="self.back_link" py:visible="${False}"/>
-
-    <form py:id="user_views_box" py:after="self.header">
-        <span py:id="user_views_label">
-            ${translations("sitebasis.views.BackOfficeContentView user views")}
-        </span>
-        <ul py:id="user_views_list" py:collapsible="${True}">
-            <py:ready>
-                <li py:for="user_view in self.user_views">
-                    <a href="${user_view.uri()}">${translations(user_view)}</a>
-                </li>
-            </py:ready>
-        </ul>
+    <py:sitebasis.views.UserViewsBar
+        py:id="user_views_bar"
+        py:after="self.header"
+        py:user_views="@{self.user_views}">
+    
         <a py:id="add_user_view_button" href="@{self.edit_uri(UserView)}">
             <py:ready>
                 <?py
@@ -72,7 +64,7 @@ from sitebasis.controllers.backoffice.useractions import \
             <img src="/resources/images/add_user_view.png"/>
             <span>${translations('sitebasis.views.BackOfficeContentView add user view')}</span>
         </a>
-    </form>
+    </py:sitebasis.views.UserViewsBar>
 
     <py:ready>
         <py:with py:element="self.user_collection.content_view"

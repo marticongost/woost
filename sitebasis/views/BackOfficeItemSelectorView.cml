@@ -25,6 +25,11 @@ from cocktail.html.datadisplay import MULTIPLE_SELECTION
     self.actions_context = set(["selector"])
     ?>
 
+    <py:sitebasis.views.UserViewsBar
+        py:id="user_views_bar"
+        py:after="self.header"
+        py:user_views="@{self.user_views}"/>
+
     <py:ready>
         <py:with py:element="self.user_collection.content_view"
             py:parent="self.body"
