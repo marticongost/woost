@@ -2216,6 +2216,12 @@ translations.define("Trigger.actions",
     en = u"Actions"
 )
 
+translations.define("Trigger.item_is_draft",
+    ca = u"L'element és un esborrany",
+    es = u"El elemento es un borrador",
+    en = u"Item is draft"
+)
+
 translations.define("Trigger.modified_members",
     ca = u"Membres modificats",
     es = u"Miembros modificados",

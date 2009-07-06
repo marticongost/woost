@@ -55,6 +55,18 @@ class Trigger(Item):
     integral = True
     visible_from_root = False
     edit_form = "sitebasis.views.TriggerForm"
+    members_order = [
+        "execution_point",
+        "batch_execution",
+        "items",
+        "types",
+        "agents",
+        "actions",
+        "item_is_draft",
+        "modified_members",
+        "modified_languages",
+        "responses"
+    ]
     
     execution_point = schema.String(
         required = True,
@@ -117,6 +129,10 @@ class Trigger(Item):
         edit_inline = True
     )
     
+    item_is_draft = schema.Boolean(
+        edit_control = "cocktail.html.DropdownSelector"
+    )
+
     modified_members = schema.Collection(
         items = schema.String(required = True),
         edit_control = "cocktail.html.TextArea"
@@ -159,6 +175,11 @@ class Trigger(Item):
 
         # Check action
         if self.actions and action not in self.actions:
+            return False
+
+        # Check draft
+        if self.item_is_draft is not None \
+        and item.is_draft != self.item_is_draft:
             return False
 
         # Check modified member

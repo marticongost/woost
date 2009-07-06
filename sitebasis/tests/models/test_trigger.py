@@ -20,7 +20,6 @@ from sitebasis.models import (
 )
 
 
-
 class TriggerMatchTestCase(BaseTestCase):
 
     def assert_matches(self, trigger, *tests):
@@ -100,6 +99,16 @@ class TriggerMatchTestCase(BaseTestCase):
             (Agent(), self.create_action, None, {}, True),
             (StandardPage(), self.create_action, None, {}, True),
             (Trigger(), self.create_action, None, {}, False)
+        )
+
+    def test_trigger(self):
+
+        from sitebasis.models import Trigger, Item
+
+        self.assert_matches(            
+            Trigger(item_is_draft = True),
+            (Item(is_draft = True), self.create_action, None, {}, True),
+            (Item(is_draft = False), self.create_action, None, {}, False)
         )
 
     def test_member(self):
