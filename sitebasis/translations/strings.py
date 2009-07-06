@@ -721,15 +721,15 @@ translations.define(
 
 translations.define(
     "sitebasis.models.initialization Home page body",
-    ca = u"El teu lloc web s'ha creat correctament. Ja pots començar "
+    ca = u"<p>El teu lloc web s'ha creat correctament. Ja pots començar "
         u"a <a href='%(uri)s'>treballar-hi</a> i substituir aquesta pàgina "
-        u"amb els teus propis continguts.",
-    es = u"Tu sitio web se ha creado correctamente. Ya puedes empezar "
+        u"amb els teus propis continguts.</p>",
+    es = u"<p>Tu sitio web se ha creado correctamente. Ya puedes empezar "
         u"a <a href='%(uri)s'>trabajar</a> en él y sustituir esta página "
-        u"con tus propios contenidos.",
-    en = u"Your web site has been created successfully. You can start "
+        u"con tus propios contenidos.</p>",
+    en = u"<p>Your web site has been created successfully. You can start "
         u"<a href='%(uri)s'>working on it</a> and replace this page with "
-        u"your own content."
+        u"your own content.</p>"
 )
 
 translations.define(
@@ -741,12 +741,12 @@ translations.define(
 
 translations.define(
     "sitebasis.models.initialization Not found error page body",
-    ca = u"La direcció indicada no coincideix amb cap dels continguts "
-         u"del web. Si us plau, revísa-la i torna-ho a provar.",
-    es = u"La dirección indicada no coincide con ninguno de los "
-         u"contenidos del web. Por favor, revísala y intentalo de nuevo.",
-    en = u"Couldn't find the indicated address. Please, verify it and try "
-         u"again."
+    ca = u"<p>La direcció indicada no coincideix amb cap dels continguts "
+         u"del web. Si us plau, revísa-la i torna-ho a provar.</p>",
+    es = u"<p>La dirección indicada no coincide con ninguno de los "
+         u"contenidos del web. Por favor, revísala y intentalo de nuevo.</p>",
+    en = u"<p>Couldn't find the indicated address. Please, verify it and try "
+         u"again.</p>"
 )
 
 translations.define(
