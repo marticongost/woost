@@ -1193,6 +1193,12 @@ translations.define("Site.extensions",
     en = u"extensions"
 )
 
+translations.define("Site.user_views",
+    ca = u"Vistes d'usuari",
+    es = u"Vistas de usuario",
+    en = u"User views"
+)
+
 # Document
 #------------------------------------------------------------------------------
 translations.define("Document",
