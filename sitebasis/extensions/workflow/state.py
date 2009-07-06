@@ -7,6 +7,7 @@
 @since:			May 2009
 """
 from cocktail import schema
+from cocktail.schema.expressions import Self, ExclusionExpression
 from sitebasis.models.item import Item
 
 
@@ -27,17 +28,23 @@ class State(Item):
         related_key = "state",
         visible = False
     )
-
+    
     outgoing = schema.Collection(
         items = "sitebasis.extensions.workflow.state.State",
         related_key = "incomming",
-        bidirectional = True
+        bidirectional = True,
+        edit_inline = True,
+        relation_constraints = lambda ctx:
+            [ExclusionExpression(Self, [ctx["relation_parent"]])]
     )
-
+    
     incomming = schema.Collection(
         items = "sitebasis.extensions.workflow.state.State",
         related_key = "outgoing",
-        bidirectional = True
+        bidirectional = True,
+        editable = False,
+        relation_constraints = lambda ctx:
+            [ExclusionExpression(Self, [ctx["relation_parent"]])]
     )
 
     def __translate__(self, language, **kwargs):
