@@ -139,7 +139,7 @@ class EditController(BaseBackOfficeController):
 
         if is_new and len(self.edit_stack) == 1:
             msg += '. <a href="%s">%s</a>.' % (
-                self.get_edit_uri(item.__class__, edit_stack = None),
+                self.edit_uri(item.__class__, edit_stack = None),
                 translations(
                     "sitebasis.views.BackOfficeEditView Create another"
                 )
@@ -160,7 +160,7 @@ class EditController(BaseBackOfficeController):
             if len(self.edit_stack) == 1:
                 params = {"edit_stack": None} if make_draft else {}
                 raise cherrypy.HTTPRedirect(
-                    self.get_edit_uri(item, **params)
+                    self.edit_uri(item, **params)
                 )
 
             # The edit operation was nested; relate the created item to its
@@ -228,7 +228,7 @@ class EditController(BaseBackOfficeController):
         # Redirect back to the source item
         if not is_new:
             raise cherrypy.HTTPRedirect(
-                self.get_edit_uri(target_item, edit_stack = None)
+                self.edit_uri(target_item, edit_stack = None)
             )
 
     def _apply_changes(self, item):

@@ -12,7 +12,6 @@ from sitebasis.controllers.backoffice.useractions import \
     <?py-class
     user_collection = None
     available_languages = ()
-    visible_languages = ()
     available_content_views = ()
     content_view = None
     member = None
@@ -33,7 +32,7 @@ from sitebasis.controllers.backoffice.useractions import \
             if self.member.integral:
                 add_view_action_context(self, "integral")
         ?>
-        <py:with py:element="self.content_view"
+        <py:with py:element="self.user_collection.content_view"
             py:parent="self.item_body"
             py:cms="${self.cms}"
             py:backoffice="${self.backoffice}"
@@ -42,8 +41,6 @@ from sitebasis.controllers.backoffice.useractions import \
             action="${None}"
             py:user_collection="${self.user_collection}"
             py:available_languages="${self.available_languages}"
-            py:visible_languages="${self.visible_languages}"
-            py:available_content_views="${self.available_content_views}"
             py:root_content_type="${self.root_content_type}"
             py:edit_stack="${self.edit_stack}"
             py:member="${self.member}"

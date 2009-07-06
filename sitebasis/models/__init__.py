@@ -74,6 +74,7 @@ from sitebasis.models.language import Language
 from sitebasis.models.agent import Agent
 from sitebasis.models.group import Group
 from sitebasis.models.dynamicgroup import DynamicGroup
+from sitebasis.models.userview import UserView
 from sitebasis.models.document import Document
 from sitebasis.models.redirection import Redirection
 from sitebasis.models.template import Template

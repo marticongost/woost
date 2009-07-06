@@ -23,7 +23,7 @@ class _PROJECT_NAME_CMS(CMS):
 
     class ApplicationContainer(CMS.ApplicationContainer):        
         _PROJECT_MODULE__resources = cherrypy.tools.staticdir.handler(
-            section = "_PROJECT_MODULE_",
+            section = "_PROJECT_MODULE__resources",
             dir = resource_filename("_PROJECT_MODULE_.views", "resources")
         )
 

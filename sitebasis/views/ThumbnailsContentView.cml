@@ -10,13 +10,16 @@ from cocktail.html.selectable import selectable
 
     <?py-class
     content_view_id = "thumbnails"
-    thumbnail_width = 100
+    thumbnail_params = {
+        "width": 100,
+        "height": 100
+    }
     ?>
 
     <py:with py:element="self.settings_box" py:visible="${False}"/>
 
     <py:cocktail.html.CheckList py:def="collection_display"
-        py:items="@{self.user_collection.page_subset()}"
+        py:items="@{self.user_collection.page_subset}"
         py:value="@{self.user_collection.selection}"
         py:name="selection">
 
@@ -43,7 +46,7 @@ from cocktail.html.selectable import selectable
             ?>
             <div class="icon_frame">
                 <img class="icon"
-                    src="${self.cms.icon_uri(value, width = self.thumbnail_width)}"/>
+                    src="${self.cms.icon_uri(value, **(self.thumbnail_params))}"/>
             </div>
             <div class="label">
                 <?py

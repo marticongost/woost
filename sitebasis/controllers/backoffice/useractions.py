@@ -364,7 +364,7 @@ class UserAction(object):
 
         elif self.min == self.max == 1:
             # Single selection
-            return controller.get_edit_uri(
+            return controller.edit_uri(
                     selection[0],
                     self.id,
                     **params)
@@ -418,7 +418,7 @@ class CreateAction(UserAction):
     max = None
     
     def get_url(self, controller, selection):
-        return controller.get_edit_uri(controller.edited_content_type)
+        return controller.edit_uri(controller.edited_content_type)
 
 
 #class CreateBeforeAction(CreateAction):
@@ -464,7 +464,7 @@ class AddIntegralAction(UserAction):
     max = None
     
     def get_url(self, controller, selection):        
-        return controller.get_edit_uri(controller.root_content_type)
+        return controller.edit_uri(controller.root_content_type)
 
 
 class RemoveAction(UserAction):
@@ -509,7 +509,7 @@ class EditAction(UserAction):
     authorization_context = {"action": "modify", "partial_match": True}
 
     def get_url(self, controller, selection):
-        return controller.get_edit_uri(selection[0])
+        return controller.edit_uri(selection[0])
 
 
 class DeleteAction(UserAction):
