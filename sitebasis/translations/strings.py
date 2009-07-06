@@ -53,12 +53,6 @@ translations.define("Type",
     en = u"Type"
 )
 
-translations.define("sitebasis.views.BackOfficeLayout stack root",
-    ca = u"Inici",
-    es = u"Inicio",
-    en = u"Root"
-)
-
 translations.define("Action new",
     ca = u"Nou",
     es = u"Nuevo",
