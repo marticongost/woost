@@ -16,7 +16,6 @@ except ImportError:
 import cherrypy
 from pkg_resources import resource_filename, iter_entry_points
 from cherrypy.lib.static import serve_file
-from cocktail.modeling import getter
 from cocktail.events import Event, event_handler
 from cocktail.controllers import Dispatcher
 from cocktail.controllers.percentencode import percent_encode
