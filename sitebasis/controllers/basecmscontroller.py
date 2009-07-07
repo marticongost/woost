@@ -87,8 +87,13 @@ class BaseCMSController(Controller):
         """
         resolver = self.context["cms"].document_resolver
         document = self.context["document"]
+        uri = resolver.get_path(document)
+
+        if uri is None:
+            return None
+        
         return self.application_uri(
-            resolver.get_path(document),
+            uri,
             *args,
             **kwargs
         )

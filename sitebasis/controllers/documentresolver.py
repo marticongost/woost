@@ -102,7 +102,7 @@ class HierarchicalPathResolver(DocumentResolver):
         return document
 
     def get_path(self, document, language = None):
-        return document.full_path or ""
+        return document.full_path
 
 
 class IdResolver(DocumentResolver):
