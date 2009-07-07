@@ -18,7 +18,8 @@ class DocumentResolver(object):
     Document resolvers are used by the L{CMS<sitebasis.controllers.application.CMS>}
     class to map documents to application paths, and viceversa.
     """
-    
+    permanent_links = False
+
     @abstractmethod
     def get_document(self,
         path,
@@ -106,6 +107,8 @@ class HierarchicalPathResolver(DocumentResolver):
 
 class IdResolver(DocumentResolver):
     """A document resolver based on document ids."""
+    
+    permanent_links = True
 
     def get_document(self,
         path,
@@ -148,6 +151,8 @@ class DescriptiveIdResolver(DocumentResolver):
         URI from its unique identifier and flattened title.
     @type format: str
     """
+    permanent_links = True
+
     id_separator = "_"
     word_separator = "-"
     id_regexp = re.compile(r"([^_]+_)?(?P<id>\d+)$")
