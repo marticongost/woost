@@ -102,4 +102,5 @@ from sitebasis.models.style import Style
 from sitebasis.models.extension import Extension
 from sitebasis.models.trigger import Trigger
 from sitebasis.models.triggerresponse import TriggerResponse
+from sitebasis.models.feed import Feed
 

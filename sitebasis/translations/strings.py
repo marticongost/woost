@@ -2324,3 +2324,83 @@ translations.define("SendEmailTriggerResponse.template_engine",
     en = u"Rendering engine"
 )
 
+# Feed
+#------------------------------------------------------------------------------
+translations.define("Feed",
+    ca = u"Canal de sindicació",
+    es = u"Canal de sindicación",
+    en = u"Syndication feed"
+)
+
+translations.define("Feed-plural",
+    ca = u"Canals de sindicació",
+    es = u"Canals de sindicación",
+    en = u"Syndication feeds"
+)
+
+translations.define("Feed.title",
+    ca = u"Títol",
+    es = u"Título",
+    en = u"Title"
+)
+
+translations.define("Feed.enabled",
+    ca = u"Actiu",
+    es = u"Activo",
+    en = u"Enabled"
+)
+
+translations.define("Feed.ttl",
+    ca = u"Temps d'expiració (TTL)",
+    es = u"Tiempo de expiración (TTL)",
+    en = u"TTL"
+)
+
+translations.define("Feed.image",
+    ca = u"Imatge",
+    es = u"Imagen",
+    en = u"Image"
+)
+
+translations.define("Feed.description",
+    ca = u"Descripció",
+    es = u"Descripción",
+    en = u"Description"
+)
+
+translations.define("Feed.limit",
+    ca = u"Límit d'elements publicats",
+    es = u"Límite de elementos publicados",
+    en = u"Published items limit"
+)
+
+translations.define("Feed.query_parameters",
+    ca = u"Elements publicats",
+    es = u"Elementos publicados",
+    en = u"Published items"
+)
+
+translations.define("Feed.item_title_expression",
+    ca = u"Expressió pel títol dels elements",
+    es = u"Expresión para el título de los elementos",
+    en = u"Item title expression"
+)
+
+translations.define("Feed.item_link_expression",
+    ca = u"Expressió per l'enllaç dels elements",
+    es = u"Expresión para el enlace de los elementos",
+    en = u"Item link expression"
+)
+
+translations.define("Feed.item_publication_date_expression",
+    ca = u"Expressió per la data de publicació dels elements",
+    es = u"Expresión para la fecha de publicación de los elementos",
+    en = u"Item publication date expression"
+)
+
+translations.define("Feed.item_description_expression",
+    ca = u"Expressió per la descripció dels elements",
+    es = u"Expresión para la descripción de los elementos",
+    en = u"Item description expression"
+)
+
