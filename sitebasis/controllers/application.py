@@ -238,9 +238,12 @@ class CMS(BaseCMSController):
         return document.handler
 
     def canonical_uri(self, document, *args, **kwargs):
-        path = self.document_resolver.get_path(document)
-        uri = self.application_uri(path, *args, **kwargs)
-        uri = self.language.translate_uri(uri)
+        uri = self.document_resolver.get_path(document)
+        
+        if uri is not None:
+            uri = self.application_uri(uri, *args, **kwargs)
+            uri = self.language.translate_uri(uri)
+
         return uri
 
     def icon_uri(self, element, **kwargs):
