@@ -39,6 +39,7 @@ from sitebasis.controllers.documentresolver import (
 from sitebasis.controllers.authorization import AuthorizationModule
 from sitebasis.controllers.webservices import CMSWebServicesController
 from sitebasis.controllers.iconcontroller import IconController
+from sitebasis.controllers.feedscontroller import FeedsController
 
 
 class CMS(BaseCMSController):
@@ -499,4 +500,6 @@ class CMS(BaseCMSController):
         for style in Style.select():
             declarations = style.admin_declarations or style.declarations
             yield ".%s{\n%s\n}\n" % (style.class_name, declarations)
+
+    feeds = FeedsController
 

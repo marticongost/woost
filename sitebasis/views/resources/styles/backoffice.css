@@ -1438,6 +1438,12 @@ body.scripted .BackOfficeLayout .ThumbnailsContentView .collection_display input
     padding: 0;
 }
 
+.BackOfficeFieldsView .ContentView {
+    border: 1px solid rgb(210,210,210);
+    background-color: white;
+    padding: 0.6em;
+}
+
 /* Order view
 -----------------------------------------------------------------------------*/
 .BackOfficeOrderView tr.original_position td.element_column {
@@ -1755,14 +1761,6 @@ body.scripted .BackOfficeLayout .ThumbnailsContentView .collection_display input
 	background-color: rgb(225, 225, 225);
 }
 
-/* UserView form
------------------------------------------------------------------------------*/
-.BackOfficeFieldsView.UserView .parameters_display {
-    border: 1px solid rgb(210,210,210);
-    background-color: white;
-    padding: 0.6em;
-}
-
 /* File form
 -----------------------------------------------------------------------------*/
 .FileFieldsView .upload_info {
@@ -1957,3 +1955,11 @@ a.pickcolor span {
     padding-top: 0.5em;
     margin: 0;
 }
+
+/* Feed edit form
+-----------------------------------------------------------------------------*/
+.FeedFields .edit_form .ttl_field input.control,
+.FeedFields .edit_form .limit_field input.control {
+    width: 4em;
+}
+
