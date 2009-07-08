@@ -16,9 +16,8 @@ from sitebasis.models.site import Site
 from sitebasis.models.agent import Agent
 from sitebasis.models.user import User
 from sitebasis.models.group import Group
-from sitebasis.models.accessrule import (
-    AccessRule, allowed, AccessAllowedExpression, reduce_ruleset
-)
+from sitebasis.models.accessrule import AccessRule, allowed, reduce_ruleset
+from sitebasis.models.expressions import AccessAllowedExpression
 from threading import local
 
 _thread_data = local()
