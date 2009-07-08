@@ -641,6 +641,14 @@ translations.define(
     en = u"Owned items"
 )
 
+translations.define(
+    "sitebasis.controllers.backoffice.userfilter."
+    "PublishedDocumentsFilter-instance",
+    ca = u"Documents publicats",
+    es = u"Documentos publicados",
+    en = u"Published documents"
+)
+
 # Initialization content
 #------------------------------------------------------------------------------
 translations.define(
