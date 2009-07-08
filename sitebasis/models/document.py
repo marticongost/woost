@@ -108,7 +108,7 @@ class Document(Item):
             and (self.end_date is None or self.end_date > now)
     
     def is_published(self):
-        return self.enabled and self.is_current()
+        return not self.is_draft and self.enabled and self.is_current()
 
     path = schema.String(
         max = 1024,
