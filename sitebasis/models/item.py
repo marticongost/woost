@@ -109,6 +109,7 @@ class Item(PersistentObject):
     is_draft = schema.Boolean(
         required = True,
         default = False,
+        indexed = True,
         listed_by_default = False,
         editable = False,
         versioned = False
