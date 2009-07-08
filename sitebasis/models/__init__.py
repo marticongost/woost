@@ -85,9 +85,7 @@ from sitebasis.models.accessrule import (
     allowed,
     restrict_access,
     reduce_ruleset,
-    restricted_modification_context,
-    AccessAllowedExpression,
-    DocumentIsAccessibleExpression,
+    restricted_modification_context,    
     AccessDeniedError
 )
 import sitebasis.models.accessruleindexing
@@ -103,4 +101,8 @@ from sitebasis.models.extension import Extension
 from sitebasis.models.trigger import Trigger
 from sitebasis.models.triggerresponse import TriggerResponse
 from sitebasis.models.feed import Feed
-
+from sitebasis.models.expressions import (
+    AccessAllowedExpression,
+    DocumentIsPublishedExpression,
+    DocumentIsAccessibleExpression
+)
