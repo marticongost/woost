@@ -102,7 +102,6 @@ class FeedsController(BaseCMSController):
         }
 
         items = feed.select_items()
-        items.add_filter(DocumentIsAccessibleExpression(self.user))
        
         for item in items:
             context["item"] = item
