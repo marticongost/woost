@@ -663,9 +663,11 @@ class DocumentIsAccessibleExpression(Expression):
 
         def impl(dataset):
 
+            is_draft_expr = Item.is_draft.equal(False)
             enabled_expr = Document.enabled.equal(True)
             access_expr = AccessAllowedExpression(self.agent)
 
+            dataset = is_draft_expr.resolve_filter()[1](dataset)
             dataset = enabled_expr.resolve_filter()[1](dataset)
             dataset = access_expr.resolve_filter()[1](dataset)
 
