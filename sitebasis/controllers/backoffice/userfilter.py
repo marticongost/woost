@@ -10,7 +10,7 @@ from cocktail.modeling import cached_getter
 from cocktail import schema
 from cocktail.controllers import context
 from cocktail.controllers.userfilter import UserFilter
-from sitebasis.models import Item
+from sitebasis.models import Item, Document, DocumentIsAccessibleExpression
 
 
 class OwnItemsFilter(UserFilter):
@@ -27,4 +27,20 @@ class OwnItemsFilter(UserFilter):
 
 
 Item.custom_user_filters = [OwnItemsFilter]
+
+
+class PublishedDocumentsFilter(UserFilter):
+
+    id = "published"
+
+    @cached_getter
+    def schema(self):
+        return schema.Schema()
+
+    @cached_getter
+    def expression(self):
+        return DocumentIsAccessibleExpression(context["cms"].user)
+
+Document.custom_user_filters = [PublishedDocumentsFilter]
+
 
