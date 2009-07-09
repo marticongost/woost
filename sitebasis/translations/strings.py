@@ -2342,7 +2342,7 @@ translations.define("Feed",
 
 translations.define("Feed-plural",
     ca = u"Canals de sindicació",
-    es = u"Canals de sindicación",
+    es = u"Canales de sindicación",
     en = u"Syndication feeds"
 )
 
