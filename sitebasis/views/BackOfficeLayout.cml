@@ -74,7 +74,18 @@ from sitebasis.controllers.backoffice.useractions import add_view_action_context
 
         <!-- Page title -->
         <h1>
-            <a href="@{self.cms.document_uri()}"><py:ready>${self.page_title}</py:ready></a>
+            <a>
+                <py:ready>
+                    <?py
+                    if self.cms:
+                        element["href"] = self.cms.document_uri()
+                    else:
+                        element.tag = None
+                        
+                    element.append(self.page_title)
+                    ?>
+                </py:ready>
+            </a>
         </h1>
 
         <!-- Identity and logout -->
