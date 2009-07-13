@@ -8,6 +8,7 @@ u"""
 """
 from datetime import datetime
 from contextlib import contextmanager
+from cocktail.styled import styled
 from cocktail.events import when
 from cocktail.language import get_content_language
 from cocktail.translations import translations
@@ -22,13 +23,6 @@ from sitebasis.models.role import Role
 from sitebasis.models.action import Action
 
 debug = False
-
-try:
-    from styled import styled
-except ImportError:
-    def styled(string, *args, **kwargs):
-        return string
-
 undefined = object()
 
 
