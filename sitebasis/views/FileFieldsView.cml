@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <?py
 from cocktail.html import Element
-from sitebasis.models.file import get_human_readable_file_size
+from sitebasis.models.file import (
+    get_human_readable_file_size,
+    get_category_from_mime_type
+)
 ?>
 
 <py:sitebasis.views.BackOfficeFieldsView
@@ -29,9 +32,7 @@ from sitebasis.models.file import get_human_readable_file_size
     <p py:def="upload_info" py:args="upload">
         <?py
         mime_type = upload["mime_type"]
-        element.add_class("resource_type_"
-            + self.edited_content_type.get_category_from_mime_type(mime_type)
-        )
+        element.add_class("resource_type_" + get_category_from_mime_type(mime_type))
         element.add_class("mime_type_" + mime_type.replace("/", "_").replace(".", "_"))
         ?>
         <span class="file_name">${upload["file_name"]}</span>
