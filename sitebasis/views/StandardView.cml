@@ -53,9 +53,14 @@ from sitebasis.models import Site, Document
 
         <ul py:id="attachments" py:collapsible="${True}">
             <py:ready>
+                <?py
+                attachments = (attachment
+                               for attachment in self.document.attachments
+                               if attachment.is_published())
+                ?>
                 <py:new
                     py:element="self.create_attachment(resource)"
-                    py:for="resource in self.document.attachments"/>
+                    py:for="resource in attachments"/>
             </py:ready>
         </ul>
     </div>

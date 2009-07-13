@@ -106,9 +106,14 @@ container_classes = "BaseView StandardView"
 </%def>
 
 <%def name="attachments()">
-    % if document.attachments:
+    <%
+    attachments = [attachment
+                   for attachment in document.attachments
+                   if attachment.is_published()]
+    %>
+    % if attachments:
         <ul class="attachments">
-            % for resource in document.attachments:
+            % for resource in attachments:
                 <li>
                     <a href="${resource.uri}" title="${resource.description}">
                         <img
