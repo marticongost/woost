@@ -13,7 +13,7 @@ from sitebasis.models import Item
 
 class Style(Item):
 
-    members_order = "title", "declarations"
+    members_order = "title", "declarations", "admin_declarations"
 
     title = schema.String(
         required = True,
