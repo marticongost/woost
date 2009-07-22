@@ -18,10 +18,12 @@ class Event(Document):
     event_end = schema.DateTime()
 
     event_location = schema.String(
-        edit_control = "cocktail.html.TextArea"
+        edit_control = "cocktail.html.TextArea",
+        translated = True
     )
 
     body = schema.String(
-        edit_control = "sitebasis.views.RichTextEditor"
+        edit_control = "sitebasis.views.RichTextEditor",
+        translated = True
     )
 
