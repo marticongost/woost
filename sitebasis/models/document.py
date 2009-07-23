@@ -107,8 +107,9 @@ class Document(Item):
         return (self.start_date is None or self.start_date <= now) \
             and (self.end_date is None or self.end_date > now)
     
-    def is_published(self):
-        return not self.is_draft and self.enabled and self.is_current()
+
+    def is_published(self, language = None):
+        return not self.is_draft and self.get("enabled", language) and self.is_current()
 
     path = schema.String(
         max = 1024,
