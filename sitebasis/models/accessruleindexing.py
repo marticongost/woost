@@ -385,7 +385,7 @@ def _handle_item_changed(event):
 # Filter resolution
 #------------------------------------------------------------------------------
 
-def _access_allowed_resolution(self):
+def _access_allowed_resolution(self, query):
 
     def impl(dataset):
         dataset.intersection_update(self.user.rules_index)
