@@ -189,13 +189,13 @@ class Item(PersistentObject):
             self.is_draft = None
         else:
             adapter = self.get_draft_adapter()
+            adapter.source_accessor = schema.SchemaObjectAccessor
+            adapter.target_accessor = schema.SchemaObjectAccessor
+            adapter.collection_copy_mode = schema.shallow
             adapter.import_object(
                 self,
                 self.draft_source,
-                source_schema = self.__class__,
-                source_accessor = schema.SchemaObjectAccessor,
-                target_accessor = schema.SchemaObjectAccessor,
-                collection_copy_mode = schema.shallow
+                source_schema = self.__class__
             )
             self.delete()
 
