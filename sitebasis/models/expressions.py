@@ -36,15 +36,15 @@ class DocumentIsPublishedExpression(Expression):
     def eval(self, context, accessor = None):
         return context.is_published()
 
-    def resolve_filter(self):
+    def resolve_filter(self, query):
 
         def impl(dataset):
 
             is_draft_expr = Item.is_draft.equal(False)
             enabled_expr = Document.enabled.equal(True)
 
-            dataset = is_draft_expr.resolve_filter()[1](dataset)
-            dataset = enabled_expr.resolve_filter()[1](dataset)
+            dataset = is_draft_expr.resolve_filter(query)[1](dataset)
+            dataset = enabled_expr.resolve_filter(query)[1](dataset)
 
             now = datetime.now()
 
@@ -88,13 +88,13 @@ class DocumentIsAccessibleExpression(Expression):
                 target_instance = context
             )
 
-    def resolve_filter(self):
+    def resolve_filter(self, query):
 
         def impl(dataset):
             access_expr = AccessAllowedExpression(self.agent)
             published_expr = DocumentIsPublishedExpression()            
-            dataset = access_expr.resolve_filter()[1](dataset)
-            dataset = published_expr.resolve_filter()[1](dataset)
+            dataset = access_expr.resolve_filter(query)[1](dataset)
+            dataset = published_expr.resolve_filter(query)[1](dataset)
             return dataset
         
         return ((-1, 1), impl)
