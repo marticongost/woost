@@ -54,7 +54,6 @@ class Document(Item):
     #--------------------------------------------------------------------------
     title = schema.String(
         required = True,
-        unique = True,
         indexed = True,
         normalized_index = True,
         translated = True
