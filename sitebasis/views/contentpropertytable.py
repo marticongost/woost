@@ -14,8 +14,6 @@ PropertyTable = templates.get_class("cocktail.html.PropertyTable")
 
 class ContentPropertyTable(ContentDisplayMixin, PropertyTable):
 
-    authorization_check = None
-
     def __init__(self, *args, **kwargs):
         PropertyTable.__init__(self, *args, **kwargs)
         ContentDisplayMixin.__init__(self)

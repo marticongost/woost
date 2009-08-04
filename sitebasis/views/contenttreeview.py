@@ -7,19 +7,18 @@ u"""
 @since:			March 2009
 """
 from cocktail.html import templates
+from sitebasis.models import get_current_user, ReadPermission
 
 TreeView = templates.get_class("cocktail.html.TreeView")
 
 
 class ContentTreeView(TreeView):
 
-    authorization_check = None
     base_url = None
     edit_stack = None
 
     def filter(self, item):
-        if self.authorization_check:
-            return self.authorization_check(target_instance = item)
+        return get_current_user().has_permission(ReadPermission, target = item)
 
     def create_label(self, item):
         label = templates.new("sitebasis.views.ContentLink")

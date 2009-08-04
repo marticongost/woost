@@ -8,13 +8,13 @@
 """
 from unittest import TestCase
 from cocktail.tests.persistence.tempstoragemixin import TempStorageMixin
-from sitebasis.models import Site, Action, Role
-from sitebasis.models.trigger import set_triggers_enabled
-
 
 class BaseTestCase(TempStorageMixin, TestCase):
 
     def setUp(self):
+
+        from sitebasis.models import Site, Action, User, Role
+        from sitebasis.models.trigger import set_triggers_enabled
 
         set_triggers_enabled(False)
         
@@ -40,17 +40,14 @@ class BaseTestCase(TempStorageMixin, TestCase):
         self.site = Site(qname = "sitebasis.main_site")
         self.site.insert()
 
-        # Roles
-        self.author_role = Role(qname = "sitebasis.author")
-        self.author_role.insert()
+        # Roles and users
+        self.anonymous_user = User(qname = "sitebasis.anonymous")
+        self.anonymous_user.insert()
 
-        self.owner_role = Role(qname = "sitebasis.owner")
-        self.owner_role.insert()
+        self.everybody_role = Role(qname = "sitebasis.everybody_role")
+        self.everybody_role.insert()
 
-        self.anonymous_role = Role(qname = "sitebasis.anonymous")
-        self.anonymous_role.insert()
-
-        self.authenticated_role = Role(qname = "sitebasis.authenticated")
+        self.authenticated_role = Role(qname = "sitebasis.authenticated_role")
         self.authenticated_role.insert()
        
         set_triggers_enabled(True)

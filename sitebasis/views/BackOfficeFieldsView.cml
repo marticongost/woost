@@ -3,6 +3,11 @@
 <?py
 from cocktail.modeling import extend, call_base
 from cocktail.language import get_content_language
+from sitebasis.models import (
+    get_current_user,
+    CreateTranslationPermission,
+    DeleteTranslationPermission
+)
 ?>
 
 <py:sitebasis.views.BackOfficeEditView
@@ -48,15 +53,26 @@ from cocktail.language import get_content_language
                             ?>
                             ${translations(language)}
                         </div>
+                        <?py
+                        user = get_current_user()
+                        can_add = (
+                            not has_translation
+                            and user.has_permission(CreateTranslationPermission, language = language)
+                        )
+                        can_delete = (
+                            has_translation
+                            and user.has_permission(DeleteTranslationPermission, language = language)
+                        )
+                        ?>
                         <button
-                            py:if="not has_translation"
+                            py:if="can_add"
                             name="add_translation"
                             type="submit"
                             value="${language}">
                             <img src="/resources/images/add_small.png"/>
                         </button>
                         <button
-                            py:if="has_translation and len(self.translations) > 1"
+                            py:if="can_delete"
                             name="delete_translation"
                             type="submit"
                             value="${language}">

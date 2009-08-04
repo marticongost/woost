@@ -14,6 +14,8 @@ from cocktail.persistence import PersistentObject
 from cocktail.pkgutils import get_full_name, import_object
 from sitebasis.models.item import Item
 from sitebasis.models.resource import Resource
+from sitebasis.models.usersession import get_current_user
+from sitebasis.models.permission import ReadPermission
 
 
 class Document(Item):
@@ -107,8 +109,23 @@ class Document(Item):
         return (self.start_date is None or self.start_date <= now) \
             and (self.end_date is None or self.end_date > now)
     
-    def is_published(self):
-        return not self.is_draft and self.enabled and self.is_current()
+    def is_published(self, language = None):
+        return not self.is_draft \
+            and self.get("enabled", language) \
+            and self.is_current()
+
+    def is_accessible(self, user = None, language = None):
+        return self.is_published(language) \
+            and (user or get_current_user()).has_permission(
+                ReadPermission,
+                target = self
+            )
+
+    @classmethod
+    def select_accessible(cls, *args, **kwargs):
+        return cls.select(filters = [
+            DocumentIsAccessibleExpression(get_current_user())
+        ]).select(*args, **kwargs)
 
     path = schema.String(
         max = 1024,

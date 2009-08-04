@@ -13,7 +13,11 @@ from cocktail.events import event_handler
 from cocktail.pkgutils import resolve
 from cocktail import schema
 from cocktail.controllers import view_state, Location, get_parameter
-from sitebasis.models import Item
+from sitebasis.models import (
+    Item,
+    ReadPermission,
+    get_current_user
+)
 
 from sitebasis.controllers.backoffice.basebackofficecontroller \
     import BaseBackOfficeController
@@ -91,9 +95,9 @@ class ItemController(BaseBackOfficeController):
             raise cherrypy.NotFound()
 
         # Restrict access
-        controller.restrict_access(
-            target_instance = controller.stack_node.item,
-            action = "read"
+        get_current_user().require_permission(
+            ReadPermission,
+            target = controller.stack_node.item
         )
     
     def _require_edit_node(self):
@@ -142,7 +146,7 @@ class ItemController(BaseBackOfficeController):
             if not item.is_inserted:
                 node.initialize_new_item(
                     item,
-                    self.user,
+                    get_current_user(),
                     self.visible_languages
                 )
         

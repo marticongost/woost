@@ -374,7 +374,7 @@ class Item(PersistentObject):
         return PersistentObject._should_erase_member(self, member) \
             and member not in self._preserved_members
 
-    # Access control
+    # Ownership and authorship
     #--------------------------------------------------------------------------
     author = schema.Reference(
         indexed = True,
@@ -389,12 +389,6 @@ class Item(PersistentObject):
         listed_by_default = False
     )
 
-    item_rules = schema.Collection(
-        items = "sitebasis.models.AccessRule",
-        bidirectional = True,
-        cascade_delete = True,
-        visible = False
-    )
 
 Item.id.versioned = False
 Item.id.editable = False

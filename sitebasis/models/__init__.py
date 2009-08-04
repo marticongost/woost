@@ -71,24 +71,34 @@ from sitebasis.models.changesets import ChangeSet, Change, changeset_context
 from sitebasis.models.item import Item
 from sitebasis.models.action import Action
 from sitebasis.models.language import Language
-from sitebasis.models.agent import Agent
-from sitebasis.models.group import Group
-from sitebasis.models.dynamicgroup import DynamicGroup
 from sitebasis.models.userview import UserView
 from sitebasis.models.document import Document
 from sitebasis.models.redirection import Redirection
 from sitebasis.models.template import Template
-from sitebasis.models.user import User
-from sitebasis.models.role import Role
-from sitebasis.models.accessrule import (
-    AccessRule,
-    allowed,
-    restrict_access,
-    reduce_ruleset,
-    restricted_modification_context,    
-    AccessDeniedError
+from sitebasis.models.user import (
+    User,
+    AuthorizationError
 )
-import sitebasis.models.accessruleindexing
+from sitebasis.models.usersession import (
+    get_current_user,
+    set_current_user
+)
+from sitebasis.models.role import Role
+from sitebasis.models.permission import (
+    Permission,
+    CreatePermission,
+    ReadPermission,
+    ModifyPermission,
+    DeletePermission,
+    ConfirmDraftPermission,
+    ReadMemberPermission,
+    ModifyMemberPermission,
+    CreateTranslationPermission,
+    ReadTranslationPermission,
+    ModifyTranslationPermission,
+    DeleteTranslationPermission,
+    restricted_modification_context
+)
 from sitebasis.models.standardpage import StandardPage
 from sitebasis.models.file import File
 from sitebasis.models.news import News
@@ -102,7 +112,12 @@ from sitebasis.models.trigger import Trigger
 from sitebasis.models.triggerresponse import TriggerResponse
 from sitebasis.models.feed import Feed
 from sitebasis.models.expressions import (
-    AccessAllowedExpression,
+    PermissionExpression,
     DocumentIsPublishedExpression,
     DocumentIsAccessibleExpression
 )
+from sitebasis.models.userfilter import (
+    OwnItemsFilter,
+    PublishedDocumentsFilter
+)
+

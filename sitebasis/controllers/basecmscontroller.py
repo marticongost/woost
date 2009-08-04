@@ -28,21 +28,6 @@ class BaseCMSController(Controller):
 
         return Controller._render_template(self)
  
-    @getter
-    def user(self):
-        """Obtains the currently logged in user.
-        
-        This is just a convenience property that provides quick access to the
-        analogous property in the 
-        L{authentication<sitebasis.controllers.authentication.AuthenticationModule>}
-        module from any controller.
-                
-        If no user is logged in, the 'sitebasis.anonymous' role is returned.
-
-        @rtype: L{Agent<sitebasis.models.Agent>}
-        """
-        return self.context["cms"].authentication.user
-
     def application_uri(self, *args, **kwargs):
         """Builds an absolute URI from a set of path components and parameters.
         
@@ -97,30 +82,4 @@ class BaseCMSController(Controller):
             *args,
             **kwargs
         )
-
-    def allows(self, **context):
-        """Requests validation of a security context.
-
-        This is just a convenience method to quickly access the analogous
-        method on the
-        L{authorization<sitebasis.controllers.authorization.AuthorizationModule>}
-        module from any controller.
-
-        @return: True if access is granted, False otherwise.
-        @rtype: bool
-        """
-        return self.context["cms"].authorization.allows(**context)
-
-    def restrict_access(self, **context):
-        """Raises an exception if a security context fails to validate.
-
-        This is just a convenience method to quickly access the analogous
-        method on the
-        L{authorization<sitebasis.controllers.authorization.AuthorizationModule>}
-        module from any controller.
-
-        @raise L{AccessDeniedError<sitebasis.models.AccessDeniedError>}: Raised
-            if access can't be granted for the requested security context.
-        """
-        self.context["cms"].authorization.restrict_access(**context)
 

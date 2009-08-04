@@ -20,23 +20,37 @@ from cocktail.events import Event, event_handler
 from cocktail.controllers import Dispatcher
 from cocktail.controllers.percentencode import percent_encode
 from cocktail.translations import set_language
-from cocktail.language import set_content_language
+from cocktail.language import (
+    get_content_language,
+    set_content_language
+)
 from cocktail.persistence import datastore
-from sitebasis.models import Site, Document, Item, Style, AccessDeniedError
+from sitebasis.models import (
+    Item,
+    Document,
+    Site,
+    Style,
+    ReadPermission,
+    ReadTranslationPermission,
+    AuthorizationError,
+    get_current_user
+)
 from sitebasis.models.icons import IconResolver
 from sitebasis.models.thumbnails import (
-    ThumbnailLoader, ImageThumbnailer, ThumbnailParameterError
+    ThumbnailLoader,
+    ImageThumbnailer,
+    ThumbnailParameterError
 )
 from sitebasis.controllers.basecmscontroller import BaseCMSController
 from sitebasis.controllers.language import LanguageModule
 from sitebasis.controllers.authentication import (
-    AuthenticationModule, AuthenticationFailedError
+    AuthenticationModule,
+    AuthenticationFailedError
 )
 from sitebasis.controllers.documentresolver import (
     HierarchicalPathResolver,
     CanonicalURIRedirection
 )
-from sitebasis.controllers.authorization import AuthorizationModule
 from sitebasis.controllers.webservices import CMSWebServicesController
 from sitebasis.controllers.iconcontroller import IconController
 from sitebasis.controllers.feedscontroller import FeedsController
@@ -54,7 +68,7 @@ class CMS(BaseCMSController):
         @type item: L{Item<sitebasis.models.Item>}
 
         @ivar user: The user who saved the item.
-        @type user: L{Agent<sitebasis.models.Agent>}
+        @type user: L{User<sitebasis.models.user.User>}
 
         @ivar is_new: True for an insertion, False for a modification.
         @type is_new: bool
@@ -70,7 +84,7 @@ class CMS(BaseCMSController):
         @type item: L{Item<sitebasis.models.Item>}
 
         @ivar user: The user who deleted the item.
-        @type user: L{Agent<sitebasis.models.Agent>}
+        @type user: L{User<sitebasis.models.user.User>}
 
         @ivar change: The revision describing the changes to the item.
         @type change: L{Change<sitebasis.models.Change>}
@@ -92,7 +106,6 @@ class CMS(BaseCMSController):
     # Application modules
     LanguageModule = LanguageModule
     AuthenticationModule = AuthenticationModule
-    AuthorizationModule = AuthorizationModule
     DocumentResolver = HierarchicalPathResolver
 
     # Webserver configuration
@@ -177,7 +190,6 @@ class CMS(BaseCMSController):
 
         self.language = self.LanguageModule(self)
         self.authentication = self.AuthenticationModule(self)
-        self.authorization = self.AuthorizationModule(self)
         self.document_resolver = self.DocumentResolver()
         self.thumbnail_loader = self._create_thumbnail_loader()
         self.icon_resolver = IconResolver()
@@ -263,14 +275,18 @@ class CMS(BaseCMSController):
         raise cherrypy.HTTPRedirect(path)
 
     def validate_document(self, document):
-        
+
         if not document.is_published():
             raise cherrypy.NotFound()
 
-        self.authorization.restrict_access(
-            action = "read",
-            target_instance = document)
-
+        user = get_current_user()
+        
+        user.require_permission(ReadPermission, target = document)
+        user.require_permission(
+            ReadTranslationPermission,
+            language = get_content_language()
+        )
+        
     @event_handler
     def handle_traversed(cls, event):
 
@@ -288,13 +304,13 @@ class CMS(BaseCMSController):
         set_language(language)
         set_content_language(language)
 
+        # Invoke the authentication module
+        cms.authentication.process_request()
+
     @event_handler
     def handle_before_request(cls, event):
         
         cms = event.source
-
-        # Invoke the authentication module
-        cms.authentication.process_request()
 
         # Validate access to the requested document
         document = cms.context["document"]
@@ -308,7 +324,7 @@ class CMS(BaseCMSController):
         event.output.update(
             cms = cms,
             site = Site.main,
-            user = cms.authentication.user,
+            user = get_current_user(),
             document = event.controller.context.get("document")
         )
 
@@ -367,8 +383,8 @@ class CMS(BaseCMSController):
         # The default behavior is to show a login page for anonymous users, and
         # a 403 error message for authenticated users.
         elif is_http_error and error.status == 403 \
-        or isinstance(error, (AccessDeniedError, AuthenticationFailedError)):
-            if self.user.anonymous:
+        or isinstance(error, (AuthorizationError, AuthenticationFailedError)):
+            if get_current_user().anonymous:
                 return site.login_page, 200
             else:
                 return site.forbidden_error_page, 403
@@ -486,12 +502,8 @@ class CMS(BaseCMSController):
             raise cherrypy.NotFound()
 
         self.authentication.process_request()
-
-        self.authorization.restrict_access(
-            action = "read",
-            target_instance = item
-        )
-
+        get_current_user().require_permission(ReadPermission, target = item)
+        
         return item
 
     @cherrypy.expose

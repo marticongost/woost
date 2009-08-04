@@ -64,7 +64,7 @@ class Menu(TreeView):
         TreeView._ready(self)
     
     def filter_item(self, item):
-        return is_accessible(item) and not item.hidden
+        return not item.hidden and item.is_accessible()
 
     def get_item_uri(self, item):
         return self._cms.canonical_uri(item)

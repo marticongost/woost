@@ -9,7 +9,7 @@ u"""
 import cherrypy
 from cocktail.modeling import getter
 from cocktail.persistence import datastore
-from sitebasis.models import User, Role
+from sitebasis.models import User, set_current_user
 from sitebasis.controllers.module import Module
 
 
@@ -22,6 +22,12 @@ class AuthenticationModule(Module):
     def process_request(self):
 
         params = cherrypy.request.params
+    
+        session_user_id = cherrypy.session.get(self.SESSION_KEY)
+        set_current_user(
+            session_user_id and User.get_instance(session_user_id)
+            or self.anonymous_user
+        )
 
         if "authenticate" in params:
             self.login(
@@ -29,27 +35,14 @@ class AuthenticationModule(Module):
                 params.get("password")
             )
         elif "logout" in params:
-            cherrypy.session.clear()
-
-    def _get_user(self):
-        user_id = cherrypy.session.get(self.SESSION_KEY)
-        return user_id and User.get_instance(user_id) or self.anonymous_user
-
-    def _set_user(self, user):
-        cherrypy.session[self.SESSION_KEY] = user and user.id
-
-    user = property(_get_user, _set_user, doc = """
-        Gets or sets the user for the current session.
-        @type: L{User<sitebasis.models.user.User>}
-        """)
+            self.logout()
 
     @getter
     def anonymous_user(self):
-        return Role.get_instance(qname = "sitebasis.anonymous")
+        return User.get_instance(qname = "sitebasis.anonymous_user")
 
     def login(self, identifier, password):
-        """
-        Attempts to establish a new user session, using the given user
+        """Attempts to establish a new user session, using the given user
         credentials.
 
         @param identifier: An identifier matching a single user in the
@@ -59,6 +52,12 @@ class AuthenticationModule(Module):
 
         @param password: The unencrypted password for the user.
         @type: str
+
+        @return: The authenticated user.
+        @rtype: L{User<sitebasis.models.user.User>}
+
+        @raise L{AuthenticationFailedError}: Raised if the provided user
+            credentials are invalid.
         """
         identifier = identifier.strip()
 
@@ -67,10 +66,16 @@ class AuthenticationModule(Module):
             user = User.get_instance(**params)
 
             if user and user.test_password(password):            
-                self.user = user
+                cherrypy.session[self.SESSION_KEY] = user.id
+                set_current_user(user)
                 return user
 
         raise AuthenticationFailedError(identifier)
+
+    def logout(self):
+        """Ends the current user session."""
+        cherrypy.session.clear()
+        set_current_user(self.anonymous_user)
 
 
 class AuthenticationFailedError(Exception):

@@ -26,11 +26,12 @@ class DocumentIsAccessibleExpressionTestCase(BaseTestCase):
 
     def test_enabled(self):
         
-        from sitebasis.models import Document, AccessRule
+        from sitebasis.models import Document, ReadPermission
         
-        self.site.access_rules_by_priority.insert(
-            0,
-            AccessRule(allowed = True)
+        self.everybody_role.permissions.append(
+            ReadPermission(
+                matching_items = {"type": "sitebasis.models.document.Document"}
+            )
         )
 
         a = Document()
@@ -53,12 +54,13 @@ class DocumentIsAccessibleExpressionTestCase(BaseTestCase):
 
     def test_current(self):
 
-        from sitebasis.models import Document, AccessRule
+        from sitebasis.models import Document, ReadPermission
         from datetime import datetime, timedelta
         
-        self.site.access_rules_by_priority.insert(
-            0,
-            AccessRule(allowed = True)
+        self.everybody_role.permissions.append(
+            ReadPermission(
+                matching_items = {"type": "sitebasis.models.document.Document"}
+            )
         )
 
         now = datetime.now()
@@ -87,7 +89,7 @@ class DocumentIsAccessibleExpressionTestCase(BaseTestCase):
 
     def test_allowed(self):
         
-        from sitebasis.models import Document, AccessRule
+        from sitebasis.models import Document, ReadPermission
 
         a = Document()
         a.enabled = True
@@ -97,15 +99,16 @@ class DocumentIsAccessibleExpressionTestCase(BaseTestCase):
         b.enabled = True
         b.insert()
 
-        self.site.access_rules_by_priority.insert(
-            0,
-            AccessRule(target_instance = a, allowed = True)
+        self.everybody_role.permissions.append(
+            ReadPermission(
+                matching_items = {
+                    "type": "sitebasis.models.document.Document",
+                    "filter": "member-id",
+                    "filter_operator0": "ne",
+                    "filter_value0": str(b.id)
+                }
+            )
         )
-
-        self.site.access_rules_by_priority.insert(
-            0,
-            AccessRule(target_instance = b, allowed = False)
-        )
-
+        
         assert self.get_visible_documents() == [a]
 

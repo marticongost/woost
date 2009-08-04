@@ -11,8 +11,14 @@ import cherrypy
 from cocktail.modeling import getter, ListWrapper
 from cocktail.translations import translations
 from cocktail import schema
-from cocktail.controllers import context as controller_context
-from sitebasis.models import Document, Role, allowed
+from sitebasis.models import (
+    Document,
+    get_current_user,
+    CreatePermission,
+    ModifyPermission,
+    DeletePermission,
+    ConfirmDraftPermission
+)
 from sitebasis.controllers.backoffice.editstack import (
     SelectionNode,
     RelationNode
@@ -130,11 +136,6 @@ class UserAction(object):
         indicated content type or its subclasses.
     @type content_type: L{Item<sitebasis.models.Item>} subclass
 
-    @ivar authorization_context: A dictionary containing the authorization
-        parameters to use when testing the availability of the action. Takes
-        the same keys as the L{allowed<sitebasis.models.allowed>} function.
-    @type authorization_context: dict
-
     @ivar ignores_selection: Set to True for actions that don't operate on a
         selection of content.
     @type ignores_selection: bool
@@ -160,7 +161,6 @@ class UserAction(object):
     included = frozenset(["toolbar_extra", "item_buttons_extra"])
     excluded = frozenset(["selector"])
     content_type = None
-    authorization_context = None
     ignores_selection = False
     min = 1
     max = 1
@@ -272,23 +272,23 @@ class UserAction(object):
                     return False
         
         # Authorization check
-        if self.authorization_context is not None:
-            auth_context = self.authorization_context.copy()
-            user = controller_context["cms"].authentication.user
+        return self.is_permitted(get_current_user(), target)
 
-            if isinstance(target, type):
-                auth_context["target_type"] = target
-                roles = user.get_roles({})
-                roles.append(Role.get_instance(qname = "sitebasis.owner"))
-                roles.append(Role.get_instance(qname = "sitebasis.author"))
-                auth_context["roles"] = roles
-            else:
-                auth_context["user"] = user
-                auth_context["target_instance"] = target
+    def is_permitted(self, user, target):
+        """Determines if the given user is allowed to execute the action.
 
-            if not allowed(**auth_context):
-                return False
+        Subclasses should override this method in order to implement their
+        access restrictions.
 
+        @param user: The user to authorize.
+        @type user: L{User<sitebasis.models.user.User>}
+    
+        @param target: The item or content type affected by the action.
+        @type target: L{Item<sitebasis.models.item.Item>} instance or class
+
+        @return: True if the user is granted permission, False otherwise.
+        @rtype: bool
+        """
         return True
 
     def get_dropdown_panel(self, target):
@@ -506,7 +506,9 @@ class ShowDetailAction(UserAction):
 
 class EditAction(UserAction):
     included = frozenset(["toolbar", "item_buttons"])
-    authorization_context = {"action": "modify", "partial_match": True}
+
+    def is_permitted(self, user, target):
+        return user.has_permission(ModifyPermission, target = target)
 
     def get_url(self, controller, selection):
         return controller.edit_uri(selection[0])
@@ -520,7 +522,9 @@ class DeleteAction(UserAction):
     ])
     excluded = frozenset(["selector", "new_item"])
     max = None
-    authorization_context = {"action": "delete", "partial_match": True}
+    
+    def is_permitted(self, user, target):
+        return user.has_permission(DeletePermission, target = target)
 
 
 class HistoryAction(UserAction):
@@ -530,12 +534,16 @@ class HistoryAction(UserAction):
 
 class DiffAction(UserAction):
     included = frozenset(["item_buttons"])
-    authorization_context = {"action": "modify", "partial_match": True}
+    
+    def is_permitted(self, user, target):
+        return user.has_permission(ModifyPermission, target = target)
 
 
 class RevertAction(UserAction):
     included = frozenset([("diff", "item_body_buttons", "changed")])
-    authorization_context = {"action": "modify", "partial_match": True}
+    
+    def is_permitted(self, user, target):
+        return user.has_permission(ModifyPermission, target = target)
 
     def invoke(self, controller, selection):
 
@@ -676,6 +684,18 @@ class SaveAction(UserAction):
     min = None
     make_draft = False
 
+    def is_permitted(self, user, target):
+        if target.is_inserted:
+            return user.has_permission(
+                ModifyPermission,
+                target = target
+            )
+        else:
+            return user.has_permission(
+                CreatePermission,
+                target = target.__class__
+            )
+
     def get_errors(self, controller, selection):
         for error in UserAction.get_errors(self, controller, selection):
             yield error
@@ -701,7 +721,9 @@ class ConfirmDraftAction(SaveAction):
     confirm_draft = True
     included = frozenset([("item_buttons", "draft")])
     excluded = frozenset()
-    authorization_context = {"action": "confirm_draft"}
+    
+    def is_permitted(self, user, target):
+        return user.has_permission(ConfirmDraftPermission, target = target)
 
     def invoke(self, controller, selection):
         controller.confirm_draft()

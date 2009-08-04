@@ -6,31 +6,57 @@ u"""
 @organization:	Whads/Accent SL
 @since:			July 2008
 """
-import sha
+from hashlib import sha1
 from cocktail.events import event_handler
+from cocktail.translations import translations
 from cocktail import schema
-from sitebasis.models.agent import Agent
+from sitebasis.models.item import Item
 from sitebasis.models.role import Role
+from sitebasis.models.messagestyles import (
+    role_style,
+    permission_style,
+    permission_check_style,
+    permission_param_style,
+    authorized_style,
+    unauthorized_style
+)
+
+verbose = False
 
 
-class User(Agent):
- 
+class User(Item):
+    """An application user.
+
+    @ivar anonymous: Indicates if this is the user that represents
+        anonymous users.
+
+        To handle anonymous access to the application, an instance of the
+        User class is designated to represent anonymous users. This allows
+        uniform treatment of both anonymous and authenticated access (ie.
+        authorization checks).
+        
+        This property indicates if the user it is invoked on is the
+        instance used to represent anonymous users.
+
+    @type anonymous: bool
+
+    @ivar encryption: The hashing algorithm used to encrypt user passwords.
+        Should be a reference to one of the algorithms provided by the
+        L{hashlib} module.
+    """
     edit_form = "sitebasis.views.UserForm"
     edit_node_class = \
         "sitebasis.controllers.backoffice.usereditnode.UserEditNode"
 
-    encryption = sha
-
+    encryption = sha1
     anonymous = False
-
-    instantiable = True
 
     email = schema.String(
         required = True,
         unique = True,
         max = 255,
-        indexed = True
-        # TODO: format
+        indexed = True,
+        format = "^.+@.+$"
     )   
 
     password = schema.String(
@@ -42,14 +68,15 @@ class User(Agent):
         visible_in_detail_view = False,
         edit_control = "cocktail.html.PasswordBox"
     )
-
-    groups = schema.Collection(
-        items = "sitebasis.models.Group",
+    
+    roles = schema.Collection(
+        items = "sitebasis.models.Role",
         bidirectional = True
     )
 
     def __translate__(self, language, **kwargs):
-        return self.email or Agent.__translate__(self, language, **kwargs)
+        return (self.draft_source is None and self.email) \
+            or Item.__translate__(self, language, **kwargs)
 
     @event_handler
     def handle_changing(cls, event):
@@ -58,7 +85,7 @@ class User(Agent):
 
         if encryption and event.member is cls.password \
         and event.value is not None:
-            event.value = encryption.new(event.value).digest()
+            event.value = encryption(event.value).digest()
 
     def test_password(self, password):
         """Indicates if the user's password matches the given string.
@@ -72,28 +99,191 @@ class User(Agent):
         """
         if password:
             if self.encryption:
-                return self.encryption.new(password).digest() == self.password
+                return self.encryption(password).digest() == self.password
             else:
                 return password == self.password
         else:
             return not self.password
 
-    def get_roles(self, context):
-        
-        roles = [self, Role.get_instance(qname = "sitebasis.authenticated")]
+    def iter_roles(self, recursive = True):
+        """Obtains all the roles that apply to the user.
 
-        target_instance = context.get("target_instance")
+        The following roles can be yielded:
+        
+            * The user's L{explicit roles<roles>} will be yielded if defined
+            * An 'authenticated' role will be yielded if the user is not
+              L{anonymous}
+            * An 'everybody' role that applies to all users will always be
+              yielded
 
-        if target_instance and target_instance.owner is self:
-            roles.append(
-                Agent.get_instance(qname = u"sitebasis.owner")
+        Roles are sorted in descending relevancy order.
+
+        @return: An iterable sequence of roles that apply to the user.
+        @rtype: L{Role}
+        """
+        explicit_roles = self.roles        
+        if explicit_roles:
+            if recursive:
+                for role in explicit_roles:
+                    for ancestor_role in role.iter_roles():
+                        yield ancestor_role
+            else:
+                for role in explicit_roles:
+                    yield role
+
+        if not self.anonymous:
+            yield Role.require_instance(qname = "sitebasis.authenticated")
+
+        yield Role.require_instance(qname = "sitebasis.everybody")
+
+    def iter_permissions(self, permission_type = None):
+        """Iterates over the permissions granted to the user's roles.
+
+        This method yields all permissions that are granted to any of the
+        user's roles.
+
+        @param permission_type: If given, restricts the list of returned
+            permissions to those of the given type (or a subclass of that
+            type). By default, all permissions are yielded, regardless of their
+            type.
+        @type permission_type: L{Permission} subclass
+
+        @return: An iterable sequence of permissions granted to any of the
+            user's roles.
+        @rtype: L{Permission} sequence
+        """
+        for role in self.iter_roles(False):
+            for permission in role.iter_permissions(permission_type):
+                yield permission
+
+    def has_permission(self, permission_type, verbose = None, **context):
+        """Determines if the user is given permission to perform an action.
+
+        @param permission_type: The kind of permission to assert.
+        @type permission_type: L{Permission} subclass
+
+        @param verbose: A boolean flag that enables or disables on screen
+            reporting of the checks executed by this method. Can help debugging
+            authorization issues. When set, overrides the value of the module
+            L{verbose} flag.
+        @type verbose: bool
+
+        @param context: Keyword parameters to supply to each tested permission.
+            Each parameter will be forwarded to the permission's
+            L{match<sitebasis.models.permission.Permission.match>} method. Each
+            subclass or L{Permission<sitebasis.models.permission.Permission>}
+            can define its set of required parameters, and all of its
+            subclasses must implement exactly that set.
+
+        @return: True if the user is granted permission, else False.
+        @rtype: bool
+        """
+        if verbose is None:
+            verbose = globals()["verbose"]
+            
+        if verbose:
+            role = None
+            print permission_check_style(translations(permission_type.name))
+            print permission_param_style("user", translations(self))
+
+            for key, value in context.iteritems():
+                if isinstance(value, type):
+                    value = translations(value.name)
+                else:
+                    trans = translations(value)
+                    if trans and isinstance(value, Item):
+                        value = u"%s (%s)" % (unicode(value), trans)
+                    else:
+                        value = trans or unicode(value)
+
+                print permission_param_style(key, value)
+
+        permissions = self.iter_permissions(permission_type)
+
+        for permission in permissions:
+            
+            if verbose:
+                new_role = permission.role
+                if new_role is not role:
+                    role = new_role
+                    print role_style(translations(role))
+
+                print permission_style(
+                    "%s #%s" % (permission.__class__.name, permission.id)
+                ),
+
+            if permission.match(verbose = verbose, **context):
+
+                if permission.authorized:
+                    if verbose:
+                        print authorized_style("authorized")
+                    return True
+                else:
+                    break                
+
+        if verbose:
+            print unauthorized_style("unauthorized")
+
+        return False
+
+    def require_permission(self, permission_type, verbose = None, **context):
+        """Asserts the user has permission to perform an action.
+
+        This method is similar to L{has_permission}, but instead of returning a
+        boolean value, it will raise an exception if the permission is not
+        granted.
+
+        @param permission_type: The kind of permission to assert.
+        @type permission_type: L{Permission} subclass
+
+        @param verbose: A boolean flag that enables or disables on screen
+            reporting of the checks executed by this method. Can help debugging
+            authorization issues. When set, overrides the value of the module
+            L{verbose} flag.
+        @type verbose: bool
+
+        @param context: Keyword parameters to supply to each tested permission.
+            Each parameter will be forwarded to the permission's
+            L{match<sitebasis.models.permission.Permission.match>} method. Each
+            subclass or L{Permission<sitebasis.models.permission.Permission>}
+            can define its set of required parameters, and all of its
+            subclasses must implement exactly that set.
+
+        @raise L{AuthorizationError}: Raised if the user doesn't have the
+            specified permission.
+        """
+        if not self.has_permission(
+            permission_type,
+            verbose = verbose,
+            **context
+        ):
+            raise AuthorizationError(
+                user = self,
+                permission_type = permission_type,
+                context = context
             )
-        
-        if target_instance and target_instance.author is self:
-            roles.append(
-                Agent.get_instance(qname = u"sitebasis.author")
-            )
-        
-        roles.extend(self.groups)
-        return roles
+
+
+class AuthorizationError(Exception):
+    """An exception raised when a user attempts an unauthorized action.
+
+    @ivar user: The user that attempted the action.
+    @type user: L{User}
+
+    @ivar permission_type: The kind of permission lacked by the user.
+    @type permission_type:
+        L{Permission<sitebasis.models.permission.Permission>} subclass
+
+    @ivar context: A mapping with additional parameters providing context to
+        the attempted action.
+    @type context: dict
+    """
+    user = None
+    permission_type = None
+    context = None
+
+    def __init__(self, user = None, permission_type = None, context = None):
+        self.user = user
+        self.permission_type = permission_type
+        self.context = context
 

@@ -12,7 +12,6 @@ from sitebasis.models.extension import load_extensions
 from _PROJECT_MODULE_.models import *
 
 site = Site.main
-rules = site.access_rules_by_priority
 
 DEFAULT_LANGUAGE = site.default_language
 set_language(DEFAULT_LANGUAGE)

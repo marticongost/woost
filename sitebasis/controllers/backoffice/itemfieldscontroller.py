@@ -12,7 +12,12 @@ from cocktail.events import event_handler
 from cocktail.pkgutils import import_object
 from cocktail import schema
 from cocktail.controllers import get_parameter, view_state
-from sitebasis.models import Site
+from sitebasis.models import (
+    get_current_user,
+    Site,
+    ModifyPermission,
+    CreatePermission
+)
 from sitebasis.controllers.backoffice.useractions import get_user_action
 from sitebasis.controllers.backoffice.editstack import RelationNode
 from sitebasis.controllers.backoffice.editcontroller import EditController
@@ -70,7 +75,12 @@ class ItemFieldsController(EditController):
 
             if deleted_translation:
                 translations.remove(deleted_translation)
-
+                for key, member in self.fields_schema.members().iteritems():
+                    if member.translated:
+                        values = form_data.get(key)
+                        if values:
+                            values.pop(deleted_translation, None)
+        
         return form_data
 
     @cached_getter
@@ -109,16 +119,15 @@ class ItemFieldsController(EditController):
     @event_handler
     def handle_traversed(cls, event):
 
-        # Restrict access to the edited item. Note the use of partial_match,
-        # which makes it possible to be granted incomplete access to the item
-        # (ie. only edit a subset of fields, or using a certain language, etc)
+        # Restrict access to the edited item
         controller = event.source
         item = controller.stack_node.item
-        controller.restrict_access(
-            action = "modify" if item.is_inserted else "create",
-            target_instance = item,
-            partial_match = True
-        )
+        user = get_current_user()
+        
+        if item.is_inserted:
+            user.require_permission(ModifyPermission, target = item)
+        else:
+            user.require_permission(CreatePermission, target = item.__class__)
 
     @event_handler
     def handle_processed(cls, event):

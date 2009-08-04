@@ -4,23 +4,21 @@
 @author:		Martí Congost
 @contact:		marti.congost@whads.com
 @organization:	Whads/Accent SL
-@since:			July 2009
+@since:			August 2009
 """
 from cocktail.modeling import cached_getter
 from cocktail import schema
-from cocktail.controllers import context
-from cocktail.controllers.userfilter import UserFilter
-from sitebasis.models import (
-    Item,
-    Document,
-    DocumentIsPublishedExpression,
-    get_current_user
-)
+from cocktail.controllers.userfilter import UserFilter, user_filters_registry
+from sitebasis.models.item import Item
+from sitebasis.models.document import Document
+from sitebasis.models.resource import Resource
+from sitebasis.models.expressions import DocumentIsPublishedExpression
+from sitebasis.models.usersession import get_current_user
 
 
 class OwnItemsFilter(UserFilter):
 
-    id = "own-items"
+    id = "owned-items"
 
     @cached_getter
     def schema(self):
@@ -30,7 +28,7 @@ class OwnItemsFilter(UserFilter):
     def expression(self):
         return Item.owner.equal(get_current_user())
 
-Item.custom_user_filters = [OwnItemsFilter]
+user_filters_registry.add(Item, OwnItemsFilter)
 
 
 class PublishedDocumentsFilter(UserFilter):
@@ -45,5 +43,6 @@ class PublishedDocumentsFilter(UserFilter):
     def expression(self):
         return DocumentIsPublishedExpression(get_current_user())
 
-Document.custom_user_filters = [PublishedDocumentsFilter]
+user_filters_registry.add(Document, PublishedDocumentsFilter)
+user_filters_registry.add(Resource, PublishedDocumentsFilter)
 

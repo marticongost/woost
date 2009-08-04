@@ -10,7 +10,14 @@ from cocktail.controllers.usercollection import UserCollection
 from cocktail.controllers.userfilter import CollectionFilter
 from cocktail.html.datadisplay import DataDisplay
 from cocktail.html.shortcuts import set_translated_shortcut
-from sitebasis.models import Item, Site, reduce_ruleset
+from sitebasis.models import (
+    get_current_user,
+    Item,
+    Site,
+    ReadPermission,
+    CreatePermission,
+    ReadMemberPermission
+)
 from sitebasis.views.contenttypetree import ContentTypeTree
 from sitebasis.controllers.backoffice.useractions import \
     add_view_action_context
@@ -64,19 +71,17 @@ from sitebasis.controllers.backoffice.useractions import \
         return self.cms.document_uri('content', 'new', **params)        
 
     def content_type_is_selectable(self, content_type):
-        return self.cms.authorization.allows(
-            target_type = content_type,
-            action = "read",
-            partial_match = True
+        return get_current_user().has_permission(
+            ReadPermission,
+            target = content_type
         )
 
     def content_type_is_instantiable(self, content_type):
         return content_type.visible \
             and content_type.instantiable \
-            and self.cms.authorization.allows(
-                target_type = content_type,
-                action = "create",
-                partial_match = True
+            and get_current_user().has_permission(
+                CreatePermission,
+                target = content_type
             )
 
     def get_visible_content_views(self):
@@ -136,17 +141,6 @@ from sitebasis.controllers.backoffice.useractions import \
         <py:with py:element="self.collection_display"
             py:filters="${self.user_collection.user_filters}">
             <?py
-            ruleset = reduce_ruleset(
-                Site.main.access_rules_by_priority,
-                {
-                    "user": self.cms.user,
-                    "action": "read",
-                    "target_type": self.user_collection.type
-                }
-            )
-            cms_allows = self.cms.allows
-            element.authorization_check = lambda **ctx: cms_allows(ruleset = ruleset, **ctx)
-
             if isinstance(element, DataDisplay):
                 element.set_member_label("element", translations(self.user_collection.type.name))
             ?>
@@ -226,7 +220,8 @@ from sitebasis.controllers.backoffice.useractions import \
         </div>
 
         <!-- Simple search -->
-        <div py:id="simple_search" py:visible="@{not self.search_expanded and self.user_collection.allow_filters and self.visible_results}">
+        <div py:id="simple_search"
+             py:visible="@{not self.search_expanded and self.user_collection.allow_filters and (self.visible_results or self.allow_empty_search)}">
 
             <input type="text" name="simple_search_query"/>
             <input type="submit" class="search_button" value="${translations('sitebasis.views.ContentView search button')}"/>

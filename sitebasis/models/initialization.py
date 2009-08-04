@@ -17,15 +17,22 @@ from sitebasis.models import (
     Language,
     Action,
     Document,
-    AccessRule,
-    Agent,
     User,
     Role,
-    Group,
     StandardPage,
     URI,
     Template,
-    UserView
+    UserView,
+    ReadPermission,
+    CreatePermission,
+    ModifyPermission,
+    DeletePermission,
+    ReadMemberPermission,
+    ModifyMemberPermission,
+    CreateTranslationPermission,
+    ReadTranslationPermission,
+    ModifyTranslationPermission,
+    DeleteTranslationPermission
 )
 
 standard_template_identifiers = {
@@ -106,6 +113,21 @@ def init_site(
         changeset.author = admin
         site.author = site.owner = admin
         site.default_language = languages[0]
+        
+        # Create the anonymous user and role
+        anonymous_role = Role()
+        anonymous_role.critical = True
+        anonymous_role.qname = "sitebasis.anonymous"
+        set_translations(anonymous_role, "title", "Anonymous role title")
+        anonymous_role.insert()
+
+        anonymous_user = User()
+        anonymous_user.email = "anonymous@localhost"
+        anonymous_user.qname = "sitebasis.anonymous_user"
+        anonymous_user.anonymous = True
+        anonymous_user.critical = True
+        anonymous_user.roles.append(anonymous_role)
+        anonymous_user.insert()
 
         # Create languages
         for code in languages:
@@ -113,22 +135,68 @@ def init_site(
             language.iso_code = code
             language.insert()
  
-        # Create the administrators group
-        administrators = Group()
+        # Create the administrators role        
+        administrators = Role()
         administrators.qname = "sitebasis.administrators"
         administrators.critical = True
-        set_translations(administrators, "title", "Administrators group title")
-        administrators.group_members.append(admin)
+        set_translations(administrators, "title", "Administrators role title")
+        administrators.users.append(admin)
+        everything = lambda: {"type": "sitebasis.models.item.Item"}
+        administrators.permissions = [
+            # Administrators have full control
+            ReadPermission(matching_items = everything()),
+            CreatePermission(matching_items = everything()),
+            ModifyPermission(matching_items = everything()),
+            DeletePermission(matching_items = everything())
+        ]
         administrators.insert()
 
-        # Create standard users and roles
-        anonymous_role = Role()
-        anonymous_role.anonymous = True
-        anonymous_role.critical = True
-        anonymous_role.qname = "sitebasis.anonymous"
-        set_translations(anonymous_role, "title", "Anonymous role title")
-        anonymous_role.insert()
+        # Create the 'everybody' role
+        everybody_role = Role()
+        everybody_role.critical = True
+        everybody_role.qname = "sitebasis.everybody"
+        set_translations(everybody_role, "title", "Everybody role title")
+        owned_items = lambda: {
+            "type": "sitebasis.models.item.Item",
+            "filter": "owned-items"
+        }
+        everybody_role.permissions = [
+            
+            # Everybody can read published documents and resources
+            ReadPermission(
+                matching_items = {
+                    "type": "sitebasis.models.document.Document",
+                    "filter": "published"
+                }
+            ),
+            ReadPermission(
+                matching_items = {
+                    "type": "sitebasis.models.resource.Resource",
+                    "filter": "published"
+                }
+            ),
+            
+            # Content owners have full control
+            ModifyPermission(matching_items = owned_items()),
+            DeletePermission(matching_items = owned_items()),
+            
+            # All members allowed, except for 'owner'
+            ReadMemberPermission(),
+            ModifyMemberPermission(
+                matching_members = ["sitebasis.models.item.Item.owner"],
+                authorized = False
+            ),
+            ModifyMemberPermission(),
 
+            # All languages allowed
+            CreateTranslationPermission(),
+            ReadTranslationPermission(),
+            ModifyTranslationPermission(),
+            DeleteTranslationPermission()
+        ]
+        everybody_role.insert()
+
+        # Create the 'authenticated' role
         authenticated_role = Role()
         authenticated_role.critical = True
         authenticated_role.qname = "sitebasis.authenticated"
@@ -136,18 +204,6 @@ def init_site(
             "Authenticated role title")
         authenticated_role.insert()
 
-        author_role = Role()
-        author_role.critical = True
-        author_role.qname = "sitebasis.author"
-        set_translations(author_role, "title", "Author role title")
-        author_role.insert()
-
-        owner_role = Role()
-        owner_role.critical = True
-        owner_role.qname = "sitebasis.owner"
-        set_translations(owner_role, "title", "Owner role title")
-        owner_role.insert()
-     
         # Create standard templates
         std_template = Template()
         std_template.identifier = standard_template_identifiers.get(
@@ -188,6 +244,18 @@ def init_site(
         back_office.hidden = True
         back_office.path = u"cms"
         set_translations(back_office, "title", "Back office title")
+        anonymous_role.permissions = [
+            # Prevent anonymous access to the backoffice
+            ReadPermission(
+                matching_items = {
+                    "type": "sitebasis.models.document.Document",
+                    "filter": "member-id",
+                    "filter_operator0": "eq",
+                    "filter_value0": str(back_office.id)
+                },
+                authorized = False
+            )
+        ]
         back_office.insert()
 
         # Create the 'content not found' page
@@ -239,7 +307,7 @@ def init_site(
 
         # Create site-wide user views
         own_items_view = UserView()
-        own_items_view.sites.append(site)
+        own_items_view.roles.append(everybody_role)
         own_items_view.parameters = {
             "type": "sitebasis.models.item.Item",
             "content_view": "flat",
@@ -255,7 +323,7 @@ def init_site(
         own_items_view.insert()
         
         document_tree_view = UserView()
-        document_tree_view.sites.append(site)
+        document_tree_view.roles.append(everybody_role)
         document_tree_view.parameters = {
             "type": "sitebasis.models.document.Document",
             "content_view": "tree",
@@ -270,7 +338,7 @@ def init_site(
         document_tree_view.insert()
 
         resource_gallery_view = UserView()
-        resource_gallery_view.sites.append(site)
+        resource_gallery_view.roles.append(everybody_role)
         resource_gallery_view.parameters = {
             "type": "sitebasis.models.resource.Resource",
             "content_view": "thumbnails",
@@ -284,76 +352,7 @@ def init_site(
             "Resource gallery user view"
         )
         resource_gallery_view.insert()
-
-        # Add standard access rules:
-        site.access_rules_by_priority = [
-
-            # - administrators have full control
-            AccessRule(
-                role = administrators,
-                allowed = True
-            ),
-
-            # - the 'owner' field can't be set by no one
-            AccessRule(
-                target_member = "owner",
-                action = modify,
-                allowed = False
-            ),
-
-            # - content owners have full control
-            AccessRule(
-                role = owner_role,
-                allowed = True
-            ),
-
-            AccessRule(
-                target_type = User,
-                target_member = "password",
-                allowed = False
-            ),
-
-            # - access to the back office requires special privileges
-            AccessRule(
-                target_instance = back_office,
-                allowed = False
-            ),
-
-            # - global site configuration can't be accessed by regular users
-            AccessRule(
-                target_type = Site,
-                allowed = False
-            ),
-
-            # - access rules can't be accessed by regular users
-            AccessRule(
-                target_type = AccessRule,
-                allowed = False
-            ),
-
-            # - users can be read...
-            AccessRule(
-                target_type = User,
-                action = read,
-                allowed = True
-            ),
-
-            # - ...but otherwise, agents can't be accessed by any body
-            AccessRule(
-                target_type = Agent,
-                allowed = False
-            ),
-
-            # - by default, all content can be viewed by anybody
-            AccessRule(
-                action = read,
-                allowed = True
-            )
-        ]
-
-        for rule in site.access_rules_by_priority:
-            rule.insert()
-
+                        
     datastore.commit()
 
 def main():

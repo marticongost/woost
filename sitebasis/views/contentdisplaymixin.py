@@ -11,32 +11,18 @@ from cocktail.language import get_content_language
 from cocktail.translations import translations
 from cocktail.schema import Reference, Collection
 from cocktail.html import templates, Element
-from sitebasis.models import Item
+from sitebasis.models import (
+    get_current_user,
+    Item,
+    ReadMemberPermission
+)
 
 
 class ContentDisplayMixin(object):
 
     base_url = None
-    authorization_check = None
 
     def __init__(self):
-
-        @extend(self)
-        def get_member_display(self, item, member):
-            if self.authorization_check is not None \
-            and not self.authorization_check(
-                target_instance = item,
-                target_member = member,
-                language = get_content_language()
-                    if member.translated else None,
-                action = "read"
-            ):
-                sign = Element()
-                sign.add_class("forbidden")
-                sign.append(translations("forbidden value"))
-                return sign
-            else:
-                return call_base(item, member)
 
         @extend(self)
         def get_default_member_display(self, obj, member):
@@ -63,7 +49,6 @@ class ContentDisplayMixin(object):
     
     def display_item_collection(self, obj, member):
         display = templates.new("sitebasis.views.ContentList")
-        display.authorization_check = self.authorization_check
         display.items = self.get_member_value(obj, member)
         display.base_url = self.base_url
         display.referer = obj

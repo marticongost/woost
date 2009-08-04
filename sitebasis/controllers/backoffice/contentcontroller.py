@@ -24,10 +24,16 @@ from cocktail.translations import translations
 from cocktail.pkgutils import resolve
 from cocktail import schema
 from cocktail.schema.expressions import (
-    Expression, CustomExpression, ExclusionExpression, Self
+    Expression,
+    CustomExpression,
+    ExclusionExpression,
+    Self
 )
 from cocktail.persistence import datastore
-from cocktail.html.datadisplay import SINGLE_SELECTION, MULTIPLE_SELECTION
+from cocktail.html.datadisplay import (
+    SINGLE_SELECTION,
+    MULTIPLE_SELECTION
+)
 from cocktail.controllers import (
     view_state,
     get_parameter,
@@ -35,7 +41,15 @@ from cocktail.controllers import (
 )
 from cocktail.controllers.userfilter import GlobalSearchFilter
 from sitebasis.models import (
-    Site, Language, Item, changeset_context, AccessAllowedExpression
+    Site,
+    Language,
+    Item,
+    UserView,
+    changeset_context,
+    get_current_user,
+    PermissionExpression,
+    ReadPermission,
+    ReadTranslationPermission
 )
 from sitebasis.controllers.backoffice.basebackofficecontroller \
     import BaseBackOfficeController
@@ -184,7 +198,15 @@ class ContentController(BaseBackOfficeController):
 
         @type: sequence of unicode
         """
-        return Language.codes
+        user = get_current_user()
+        return [
+            language
+            for language in Language.codes
+            if user.has_permission(
+                ReadTranslationPermission,
+                language = language
+            )
+        ]
     
     @cached_getter
     def user_collection(self):
@@ -265,7 +287,9 @@ class ContentController(BaseBackOfficeController):
                 user_collection.add_base_filter(constraint)
 
         # Filter unauthorized items
-        user_collection.add_base_filter(AccessAllowedExpression(self.user))
+        user_collection.add_base_filter(
+            PermissionExpression(get_current_user(), ReadPermission)
+        )
        
         return user_collection
 
@@ -288,18 +312,17 @@ class ContentController(BaseBackOfficeController):
     @cached_getter
     def user_views(self):
         
-        user = self.user
+        user = get_current_user()
         views = OrderedSet()
         
-        # Site wide views
-        views.extend(Site.main.user_views)
-        
-        # Group views
-        for group in self.user.groups:
-            views.extend(group.user_views)
+        # Role views
+        for role in user.iter_roles():
+            views.extend(role.user_views)
 
         # User views
-        views.extend(user.user_views)
+        views.extend(UserView.select(filters = [
+            UserView.owner.equal(user)
+        ]))
 
         return views
 

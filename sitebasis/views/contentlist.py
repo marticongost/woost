@@ -7,6 +7,7 @@ u"""
 @since:			February 2009
 """
 from cocktail.html import templates
+from sitebasis.models import get_current_user, ReadPermission
 
 List = templates.get_class("cocktail.html.List")
 
@@ -14,20 +15,18 @@ List = templates.get_class("cocktail.html.List")
 class ContentList(List):
 
     base_url = None
-    authorization_check = None
     referer = None
 
     def _fill_entries(self):
+        
+        user = get_current_user()
         items = self.items
 
-        if items is not None and self.authorization_check:
+        if items is not None:
             items = [
                 item
                 for item in self.items
-                if self.authorization_check(
-                    target_instance = item,
-                    action = "read"
-                )
+                if user.has_permission(ReadPermission, target = item)
             ]
 
         if items:            

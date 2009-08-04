@@ -31,7 +31,14 @@ from cocktail.persistence import (
     PersistentMapping, PersistentRelationMapping,
     PersistentOrderedSet, PersistentRelationOrderedSet
 )
-from sitebasis.models import Site, Role, allowed, reduce_ruleset
+from sitebasis.models import (
+    Site,
+    get_current_user,
+    ReadPermission,
+    ReadMemberPermission,
+    ModifyMemberPermission,
+    ReadTranslationPermission
+)
 
 
 class EditStacksManager(object):
@@ -310,7 +317,7 @@ class EditStack(ListWrapper):
         warn(
             "edit_stack.uri(n) is deprecated, use edit_stack[n].uri() instead",
             DeprecationWarning,
-            stacklevel = 2,
+            stacklevel = 2
         )
 
         if index < 0:
@@ -519,9 +526,19 @@ class EditNode(StackNode):
         
         # Drop deleted translations
         if item.__class__.translated:
+            user = get_current_user()
 
-            deleted_translations = \
-                set(item.translations) - set(self.translations)
+            deleted_translations = (
+                set(
+                    language
+                    for language in item.translations
+                    if user.has_permission(
+                        ReadTranslationPermission,
+                        language = language
+                    )
+                )
+                - set(self.translations)
+            )
 
             for language in deleted_translations:
                 del item.translations[language]
@@ -538,10 +555,27 @@ class EditNode(StackNode):
         
         # Default translations
         if self.content_type.translated:
-            if not self._item.translations:
-                self._item._new_translation(Site.main.default_language)
 
-            self.translations = self._item.translations.keys()
+            user = get_current_user()
+            available_languages = set(
+                language
+                for language in item.translations
+                if user.has_permission(
+                    ReadTranslationPermission,
+                    language = language
+                )
+            )
+
+            if not self._item.translations:
+                default_language = Site.main.default_language
+                if default_language in available_languages:
+                    self._item._new_translation(Site.main.default_language)
+
+            self.translations = [
+                language
+                for language in self._item.translations.keys()
+                if language in available_languages
+            ]
         else:
             self.translations = []
 
@@ -551,23 +585,9 @@ class EditNode(StackNode):
         edit form.
         @type: L{Adapter<cocktail.schema.Adapter>}
         """
+        user = get_current_user()
         relation_node = self.get_ancestor_node(RelationNode)
         stack_relation = relation_node and relation_node.member.related_end
-
-        user = context["cms"].user
-        action = "modify" if self.item.is_inserted else "create"
-        ruleset = reduce_ruleset(
-            Site.main.access_rules_by_priority,
-            {
-                "user": user,
-                "target_instance": self.item,
-                "action": action
-            }
-        )
-
-        collection_roles = user.get_roles({})
-        collection_roles.append(Role.get_instance(qname = "sitebasis.owner"))
-        collection_roles.append(Role.get_instance(qname = "sitebasis.author"))
 
         adapter = schema.Adapter()
         adapter.collection_copy_mode = self._adapt_collection
@@ -577,13 +597,8 @@ class EditNode(StackNode):
             if not member.editable
             or not member.visible                
             or member is stack_relation
-            or not allowed(
-                ruleset = ruleset,
-                user = user,
-                action = action,
-                target_instance = self.item,
-                target_member = member.name
-            )
+            or not user.has_permission(ReadMemberPermission, member = member)
+            or not user.has_permission(ModifyMemberPermission, member = member)
             or (
                 isinstance(member, schema.RelationMember)
                 and member.is_persistent_relation
@@ -597,12 +612,7 @@ class EditNode(StackNode):
                         )
                     )
                     or not any(
-                        allowed(
-                            roles = collection_roles,
-                            action = "read",
-                            target_type = cls,
-                            partial_match = True
-                        )
+                        user.has_permission(ReadPermission, target = cls)                        
                         for cls in chain(
                             [member.related_type],
                             member.related_type.derived_schemas(True)
