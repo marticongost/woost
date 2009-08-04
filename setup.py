@@ -10,13 +10,13 @@ from setuptools import setup, find_packages
 
 setup(
     name = "sitebasis",
-    version = "0.1a",
+    version = "0.2",
     author = "Whads/Accent SL",
     author_email = "tech@whads.com",
     description = "An object oriented, web based Content Management System.",
     install_requires = [
         "simplejson",
-        "cocktail",
+        "cocktail==0.2",
         "pyExcelerator",
         "PIL"
     ],
