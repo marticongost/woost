@@ -20,11 +20,13 @@ from sitebasis.models import (
     User,
     Site,
     Language,
-    allowed,
-    restrict_access,
-    reduce_ruleset,
+    get_current_user,
     restricted_modification_context,
-    AccessAllowedExpression
+    PermissionExpression,
+    ReadPermission,
+    DeletePermission,
+    ReadMemberPermission,
+    ReadTranslationPermission
 )
 from sitebasis.controllers.basecmscontroller import BaseCMSController
 
@@ -34,18 +36,16 @@ class ItemWebService(PersistentClassWebService):
 
     def _init_user_collection(self, user_collection):
         PersistentClassWebService._init_user_collection(self, user_collection)
-        user_collection.add_base_filter(AccessAllowedExpression(self.user))
+        user_collection.add_base_filter(
+            PermissionExpression(get_current_user(), ReadPermission)
+        )
 
     @cached_getter
     def languages(self):
         return Language.codes
 
-    @cached_getter
-    def user(self):
-        return context["cms"].authentication.user
-
     class JSONEncoder(PersistentClassWebService.JSONEncoder):
-        
+                
         def get_member_value(self, obj, member, language = None):
 
             # Exclude the 'changes' member
@@ -53,13 +53,15 @@ class ItemWebService(PersistentClassWebService):
                 value = excluded_member
 
             # Exclude restricted members
-            elif not allowed(
-                ruleset = self.ruleset,
-                user = self.user,
-                action = "read",
-                target_instance = obj,
-                target_member = member.name,
-                language = language
+            elif not (
+                self.user.has_permission(
+                    ReadMemberPermission,
+                    member = member
+                )
+                and self.user.has_permission(
+                    ReadTranslationPermission,
+                    language = language
+                )
             ):
                 value = excluded_member
  
@@ -79,65 +81,41 @@ class ItemWebService(PersistentClassWebService):
             return value
 
     @cached_getter
-    def json_encoder(self):
+    def json_encoder(self):        
         encoder = PersistentClassWebService.json_encoder(self)
-        encoder.user = self.user
-        encoder.ruleset = reduce_ruleset(
-            Site.main.access_rules_by_priority,
-            {
-                "user": self.user,
-                "action": "read",
-                "target_type": self.type
-            }
-        )
+        encoder.user = get_current_user()
         return encoder
     
     def _init_new_instance(self, instance):
-        with restricted_modification_context(instance, self.user):
+        with restricted_modification_context(instance):
             PersistentClassWebService._init_new_instance(self, instance)
 
     def _store_new_instance(self, instance):
         if instance.is_draft:
             instance.insert()
         else:
-            with changeset_context(author = self.user):
+            with changeset_context(get_current_user()):
                 instance.insert()
 
     def _update_instance(self, instance):
-
-        user = self.user
-
-        with restricted_modification_context(instance, user):
+        with restricted_modification_context(instance):
             if instance.is_draft:
                 PersistentClassWebService._update_instance(self, instance)
             else:
-                with changeset_context(author = user):
+                with changeset_context(get_current_user()):
                     PersistentClassWebService._update_instance(self, instance)
 
     def _delete_instances(self, query):
 
-        user = self.user
-
-        authz_context = {
-            "user": user,
-            "action": "delete",
-            "target_type": self.type
-        }
-        authz_context["ruleset"] = reduce_ruleset(
-            Site.main.access_rules_by_priority,
-            authz_context
-        )
+        user = get_current_user()
         
         class ValidatingDeletedSet(InstrumentedSet):
             def item_added(self, item):
-                restrict_access(
-                    target_instance = item,
-                    **authz_context
-                )
+                user.require_permission(DeletePermission, target = item)
 
         deleted_set = ValidatingDeletedSet()
 
-        with changeset_context(author = user):
+        with changeset_context(user):
             for item in list(query):
                 item.delete(deleted_set)
 

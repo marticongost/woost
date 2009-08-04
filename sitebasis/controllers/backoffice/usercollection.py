@@ -10,6 +10,10 @@ from cocktail.modeling import cached_getter, ListWrapper
 from cocktail import schema
 from cocktail.controllers import UserCollection
 from cocktail.controllers.userfilter import GlobalSearchFilter
+from sitebasis.models import (
+    ReadMemberPermission,
+    get_current_user
+)
 from sitebasis.controllers.backoffice.contentviews import global_content_views
 
 
@@ -62,11 +66,16 @@ class BackOfficeUserCollection(UserCollection):
         """The schema adapter used to produce data suitable for listing.
         @type: L{SchemaAdapter<cocktail.schema.adapter.SchemaAdapter>}
         """
+        user = get_current_user()
         adapter = schema.Adapter()
         adapter.exclude([
             member.name
             for member in self.type.members().itervalues()
             if not member.visible
+            or not user.has_permission(
+                ReadMemberPermission,
+                member = member
+            )
         ])
         return adapter
 

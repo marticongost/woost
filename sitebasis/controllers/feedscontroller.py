@@ -12,7 +12,12 @@ import cherrypy
 from cocktail.controllers.location import Location
 from cocktail.translations import translations, set_language
 from cocktail.language import set_content_language
-from sitebasis.models import Feed, AccessAllowedExpression
+from sitebasis.models import (
+    Feed,
+    PermissionExpression,
+    ReadPermission,
+    get_current_user
+)
 from sitebasis.controllers.basecmscontroller import BaseCMSController
 
 
@@ -102,7 +107,7 @@ class FeedsController(BaseCMSController):
         }
 
         items = feed.select_items()
-        items.add_filter(AccessAllowedExpression(self.user))
+        items.add_filter(PermissionExpression(get_current_user()))
        
         for item in items:
             context["item"] = item

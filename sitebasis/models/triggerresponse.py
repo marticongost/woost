@@ -31,7 +31,7 @@ class TriggerResponse(Item):
     )
 
     @abstractmethod
-    def execute(self, items, action, agent, batch = False, **context):
+    def execute(self, items, action, user, batch = False, **context):
         """Executes the response with the supplied context.
         
         This method will be called when the response's trigger conditions are
@@ -45,8 +45,8 @@ class TriggerResponse(Item):
         @param action: The kind of the action that triggered the response.
         @type action: L{Action<sitebasis.models.Action>}
 
-        @param agent: The agent (user) that triggered the response.
-        @type agent: L{Agent<sitebasis.models.Agent>}
+        @param user: The user that triggered the response.
+        @type user: L{User<sitebasis.models.user.User>}
 
         @param batch: Indicates if the response is being executed by a trigger
             that is set to operate in L{batch mode
@@ -68,11 +68,11 @@ class CustomTriggerResponse(TriggerResponse):
         edit_control = "cocktail.html.TextArea"
     )
 
-    def execute(self, items, action, agent, batch = False, **context):
+    def execute(self, items, action, user, batch = False, **context):
         context.update(
             items = items,
             action = action,
-            agent = agent,
+            user = user,
             batch = batch
         )
         code = line_separator_expr.sub("\n", self.code)
@@ -108,7 +108,7 @@ class SendEmailTriggerResponse(TriggerResponse):
         edit_control = "cocktail.html.TextArea"
     )
 
-    def execute(self, items, action, agent, batch = False, **context):
+    def execute(self, items, action, user, batch = False, **context):
 
         import smtplib
         from sitebasis.models import Site
@@ -122,7 +122,7 @@ class SendEmailTriggerResponse(TriggerResponse):
         context.update(
             items = items,
             action = action,
-            agent = agent,
+            user = user,
             batch = batch
         )
 

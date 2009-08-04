@@ -8,12 +8,13 @@
 """
 from cocktail import schema
 from cocktail.controllers.viewstate import view_state
-from sitebasis.models import Item
+from sitebasis.models.item import Item
+from sitebasis.models.role import Role
 
 
 class UserView(Item):
 
-    members_order = ["title", "parameters", "sites", "agents"]
+    members_order = ["title", "parameters", "roles"]
     edit_controller = \
         "sitebasis.controllers.backoffice.userviewfieldscontroller." \
         "UserViewFieldsController"
@@ -69,15 +70,9 @@ class UserView(Item):
     del _parse_parameters
     del _serialize_parameters
 
-    sites = schema.Collection(
-        items = "sitebasis.models.Site",
+    roles = schema.Collection(
+        items = "sitebasis.models.Role",
         bidirectional = True
-    )
-
-    agents = schema.Collection(
-        items = "sitebasis.models.Agent",
-        bidirectional = True,
-        related_key = "user_views"
     )
 
     def __translate__(self, language, **kwargs):

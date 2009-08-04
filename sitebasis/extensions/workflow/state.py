@@ -14,7 +14,11 @@ from sitebasis.models.item import Item
 class State(Item):
     """An item state, used to define workflows."""
 
-    members_order = "title", "outgoing", "incomming"
+    members_order = [
+        "title",
+        "outgoing_transitions",
+        "incoming_transitions"
+    ]
 
     title = schema.String(
         unique = True,
@@ -29,22 +33,17 @@ class State(Item):
         visible = False
     )
     
-    outgoing = schema.Collection(
-        items = "sitebasis.extensions.workflow.state.State",
-        related_key = "incomming",
-        bidirectional = True,
-        edit_inline = True,
-        relation_constraints = lambda ctx:
-            [ExclusionExpression(Self, [ctx["relation_parent"]])]
+    outgoing_transitions = schema.Collection(
+        items = "sitebasis.extensions.workflow.transition.Transition",
+        related_key = "source_state",
+        bidirectional = True
     )
-    
-    incomming = schema.Collection(
-        items = "sitebasis.extensions.workflow.state.State",
-        related_key = "outgoing",
+
+    incoming_transitions = schema.Collection(
+        items = "sitebasis.extensions.workflow.transition.Transition",
+        related_key = "target_state",
         bidirectional = True,
-        editable = False,
-        relation_constraints = lambda ctx:
-            [ExclusionExpression(Self, [ctx["relation_parent"]])]
+        editable = False
     )
 
     def __translate__(self, language, **kwargs):

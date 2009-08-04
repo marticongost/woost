@@ -30,9 +30,7 @@ class Site(Item):
         "icon",
         "keywords",
         "smtp_host",
-        "access_rules_by_priority",
-        "triggers",
-        "user_views"
+        "triggers"
     ]
 
     @classgetter
@@ -90,19 +88,8 @@ class Site(Item):
         listed_by_default = False
     )
 
-    access_rules_by_priority = schema.Collection(
-        items = "sitebasis.models.AccessRule",
-        bidirectional = True,
-        related_key = "site"
-    )
-
     triggers = schema.Collection(
         items = "sitebasis.models.Trigger",
-        bidirectional = True
-    )
-
-    user_views = schema.Collection(
-        items = "sitebasis.models.UserView",
         bidirectional = True
     )
 

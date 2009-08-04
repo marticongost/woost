@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <?py
-from sitebasis.models import Site, Document
+from sitebasis.models import Site, Document, ModifyPermission
 ?>
 
 <py:sitebasis.views.BaseView
@@ -37,7 +37,7 @@ from sitebasis.models import Site, Document
             <a py:id="edit_link">${translations("Action edit")}</a>
             <py:ready>
                 <?py
-                if self.cms.allows(target_instance = self.document, action = 'modify'):
+                if self.user.has_permission(ModifyPermission, target = self.document):
                     backoffice = Document.get_instance(qname = "sitebasis.backoffice")
                     self.edit_link["href"] = self.cms.canonical_uri(backoffice, "content", self.document.id, "fields")
                 else:

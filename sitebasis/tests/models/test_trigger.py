@@ -13,7 +13,6 @@ from sitebasis.models import (
     Trigger, 
     TriggerResponse,
     User, 
-    Agent,
     Item, 
     ChangeSet, 
     changeset_context
@@ -23,45 +22,50 @@ from sitebasis.models import (
 class TriggerMatchTestCase(BaseTestCase):
 
     def assert_matches(self, trigger, *tests):
-        for item, action, agent, ctx, should_match in tests:
+        for item, action, user, ctx, should_match in tests:
             self.assertEqual(
-                trigger.matches(item, action, agent, **ctx),
+                trigger.matches(item, action, user, **ctx),
                 should_match,
-                "Trigger %s %s match item=%s action=%s agent=%s ctx=%s"
+                "Trigger %s %s match item=%s action=%s user=%s ctx=%s"
                 % (
                     trigger,
                     "should" if should_match else "should not",
                     item,
                     action,
-                    agent,
+                    user,
                     ctx
                 )
             )
 
     def test_wildcard(self):
 
-        from sitebasis.models import Trigger, Item, Agent
+        from sitebasis.models import Trigger, Item, User
         self.assert_matches(
             Trigger(),
             (Item(), self.create_action, None, {}, True),
-            (Item(), self.create_action, Agent(), {}, True),
+            (Item(), self.create_action, User(), {}, True),
             (Item(), self.delete_action, None, {}, True),
-            (Agent(), self.delete_action, None, {}, True)
+            (User(), self.delete_action, None, {}, True)
         )
 
-    def test_agent(self):
+    def test_user(self):
 
-        from sitebasis.models import Trigger, Item, Agent
+        from sitebasis.models import Trigger, Item, Role, User
         
-        a1 = Agent()
-        a2 = Agent()
+        r1 = Role()
+        r2 = Role()
+        r3 = Role(base_roles = [r2])
+
+        u1 = User(roles = [r1])
+        u2 = User(roles = [r2])
+        u3 = User(roles = [r3])
         
         self.assert_matches(
-            Trigger(agents = [a1, a2]),
-            (Item(), self.create_action, a1, {}, True),
-            (Item(), self.create_action, a2, {}, True),
+            Trigger(roles = [r2]),
+            (Item(), self.create_action, u2, {}, True),
+            (Item(), self.create_action, u3, {}, True),
             (Item(), self.create_action, None, {}, False),
-            (Item(), self.create_action, Agent(), {}, False)
+            (Item(), self.create_action, u1, {}, False)
         )
 
     def test_action(self):
@@ -77,7 +81,7 @@ class TriggerMatchTestCase(BaseTestCase):
 
     def test_item(self):
 
-        from sitebasis.models import Trigger, Item, Agent
+        from sitebasis.models import Trigger, Item
                 
         i1 = Item()
         i2 = Item()
@@ -91,12 +95,12 @@ class TriggerMatchTestCase(BaseTestCase):
 
     def test_content_type(self):
 
-        from sitebasis.models import Trigger, Document, StandardPage, Agent
+        from sitebasis.models import Trigger, Document, StandardPage, User
         
         self.assert_matches(
-            Trigger(types = [Document, Agent]),
+            Trigger(types = [Document, User]),
             (Document(), self.create_action, None, {}, True),
-            (Agent(), self.create_action, None, {}, True),
+            (User(), self.create_action, None, {}, True),
             (StandardPage(), self.create_action, None, {}, True),
             (Trigger(), self.create_action, None, {}, False)
         )
@@ -128,12 +132,13 @@ class TriggerMatchTestCase(BaseTestCase):
         from sitebasis.models import Trigger, Item
 
         self.assert_matches(
-            Trigger(modified_languages = ["en", "fr"]),
+            Trigger(modified_languages = [en, fr]),
             (Item(), self.modify_action, None, {"language": "en"}, True),
             (Item(), self.modify_action, None, {"language": "fr"}, True),
             (Item(), self.modify_action, None, {"language": None}, False),
             (Item(), self.modify_action, None, {"language": "ru"}, False)
         )
+
 
 class TestTriggerResponse(TriggerResponse):
 
@@ -143,12 +148,12 @@ class TestTriggerResponse(TriggerResponse):
 
         self.responses = responses
 
-    def execute(self, items, action, agent, batch = False, **context):
+    def execute(self, items, action, user, batch = False, **context):
         self.responses.append({
             "trigger": self.trigger,
             "items": items,
             "action": action,
-            "agent": agent,
+            "user": user,
             "batch": batch,
             "context": context
         })
@@ -197,8 +202,8 @@ class TriggerInvocationTestCase(BaseTestCase):
 
         # Create action - Abort
         with changeset_context(author) as changeset:
-            a = Agent()
-            a.insert()
+            u = User()
+            u.insert()
 
         assert len(self.create_responses) == 0
 
@@ -208,8 +213,8 @@ class TriggerInvocationTestCase(BaseTestCase):
 
         # Create action - Commit
         with changeset_context(author) as changeset:
-            a = Agent()
-            a.insert()
+            u = User()
+            u.insert()
 
         assert len(self.create_responses) == 0
 
@@ -217,8 +222,8 @@ class TriggerInvocationTestCase(BaseTestCase):
 
         assert len(self.create_responses) == 1
         assert self.create_responses[0]["trigger"] is create_trigger
-        assert self.create_responses[0]["items"] == [a]
-        assert self.create_responses[0]["agent"] is author
+        assert self.create_responses[0]["items"] == [u]
+        assert self.create_responses[0]["user"] is author
         assert self.create_responses[0]["action"] is self.create_action
         assert self.create_responses[0]["batch"] == \
             create_trigger.batch_execution
@@ -239,8 +244,8 @@ class TriggerInvocationTestCase(BaseTestCase):
 
         self.site.triggers.append(modify_trigger)
 
-        a = Agent()
-        a.insert()
+        u = User()
+        u.insert()
 
         datastore.commit()
 
@@ -249,7 +254,7 @@ class TriggerInvocationTestCase(BaseTestCase):
 
         # Modify action - Abort
         with changeset_context(author) as changeset:
-            a.qname = "Tester"
+            u.qname = "Tester"
 
         assert len(self.modify_responses) == 0
 
@@ -259,7 +264,7 @@ class TriggerInvocationTestCase(BaseTestCase):
 
         # Modify action - Commit
         with changeset_context(author) as changeset:
-            a.qname = "Beta Tester"
+            u.qname = "Beta Tester"
 
         assert len(self.modify_responses) == 0
 
@@ -270,9 +275,9 @@ class TriggerInvocationTestCase(BaseTestCase):
 
         assert len(self.modify_responses) == 1
         assert self.modify_responses[0]["trigger"] is modify_trigger
-        assert self.modify_responses[0]["items"] == [a]
+        assert self.modify_responses[0]["items"] == [u]
         assert self.modify_responses[0]["context"]["member"] == "qname"
-        assert self.modify_responses[0]["agent"] is author
+        assert self.modify_responses[0]["user"] is author
         assert self.modify_responses[0]["action"] is self.modify_action
         assert self.modify_responses[0]["batch"] == \
             modify_trigger.batch_execution
@@ -293,15 +298,15 @@ class TriggerInvocationTestCase(BaseTestCase):
         
         self.site.triggers.append(delete_trigger)
 
-        a = Agent()
-        a.insert()
+        u = User()
+        u.insert()
 
         datastore.commit()
 
         # Delete action - Abort
         with changeset_context(author) as changeset:
-            a = list(Agent().select())[0]
-            a.delete()
+            u = list(User().select())[0]
+            u.delete()
 
         assert len(self.delete_responses) == 0
 
@@ -311,8 +316,8 @@ class TriggerInvocationTestCase(BaseTestCase):
 
         # Delete action - Commit
         with changeset_context(author) as changeset:
-            a = list(Agent().select())[0]
-            a.delete()
+            u = list(User().select())[0]
+            u.delete()
 
         assert len(self.delete_responses) == 0
 
@@ -320,8 +325,8 @@ class TriggerInvocationTestCase(BaseTestCase):
 
         assert len(self.delete_responses) == 1
         assert self.delete_responses[0]["trigger"] is delete_trigger
-        assert self.delete_responses[0]["items"] == [a]
-        assert self.delete_responses[0]["agent"] is author
+        assert self.delete_responses[0]["items"] == [u]
+        assert self.delete_responses[0]["user"] is author
         assert self.delete_responses[0]["action"] is self.delete_action
         assert self.delete_responses[0]["batch"] == \
             delete_trigger.batch_execution
@@ -346,8 +351,8 @@ class TriggerInvocationTestCase(BaseTestCase):
 
         # Create action - Abort
         with changeset_context(author) as changeset:
-            a = Agent()
-            a.insert()
+            u = User()
+            u.insert()
 
         assert len(self.create_responses) == 1
 
@@ -360,8 +365,8 @@ class TriggerInvocationTestCase(BaseTestCase):
 
         # Create action - Commit
         with changeset_context(author) as changeset:
-            a = Agent()
-            a.insert()
+            u = User()
+            u.insert()
 
         assert len(self.create_responses) == 1
 
@@ -369,8 +374,8 @@ class TriggerInvocationTestCase(BaseTestCase):
 
         assert len(self.create_responses) == 1
         assert self.create_responses[0]["trigger"] is create_trigger
-        assert self.create_responses[0]["items"] == [a]
-        assert self.create_responses[0]["agent"] is author
+        assert self.create_responses[0]["items"] == [u]
+        assert self.create_responses[0]["user"] is author
         assert self.create_responses[0]["action"] is self.create_action
         assert self.create_responses[0]["batch"] == \
             create_trigger.batch_execution
@@ -391,8 +396,8 @@ class TriggerInvocationTestCase(BaseTestCase):
 
         self.site.triggers.append(modify_trigger)
 
-        a = Agent()
-        a.insert()
+        u = User()
+        u.insert()
 
         datastore.commit()
 
@@ -401,7 +406,7 @@ class TriggerInvocationTestCase(BaseTestCase):
 
         # Modify action - Abort
         with changeset_context(author) as changeset:
-            a.qname = "Tester"
+            u.qname = "Tester"
 
         assert len(self.modify_responses) == 1
 
@@ -414,7 +419,7 @@ class TriggerInvocationTestCase(BaseTestCase):
 
         # Modify action - Commit
         with changeset_context(author) as changeset:
-            a.qname = "Beta Tester"
+            u.qname = "Beta Tester"
 
         assert len(self.modify_responses) == 1
 
@@ -422,9 +427,9 @@ class TriggerInvocationTestCase(BaseTestCase):
 
         assert len(self.modify_responses) == 1
         assert self.modify_responses[0]["trigger"] is modify_trigger
-        assert self.modify_responses[0]["items"] == [a]
+        assert self.modify_responses[0]["items"] == [u]
         assert self.modify_responses[0]["context"]["member"] == "qname"
-        assert self.modify_responses[0]["agent"] is author
+        assert self.modify_responses[0]["user"] is author
         assert self.modify_responses[0]["action"] is self.modify_action
         assert self.modify_responses[0]["batch"] == \
             modify_trigger.batch_execution
@@ -445,14 +450,14 @@ class TriggerInvocationTestCase(BaseTestCase):
 
         self.site.triggers.append(delete_trigger)
 
-        a = Agent()
-        a.insert()
+        u = User()
+        u.insert()
 
         datastore.commit()
 
         # Delete action - Abort
         with changeset_context(author) as changeset:
-            a.delete()
+            u.delete()
 
         assert len(self.delete_responses) == 1
 
@@ -465,7 +470,7 @@ class TriggerInvocationTestCase(BaseTestCase):
 
         # Delete action - Commit
         with changeset_context(author) as changeset:
-            a.delete()
+            u.delete()
 
         assert len(self.delete_responses) == 1
 
@@ -473,8 +478,8 @@ class TriggerInvocationTestCase(BaseTestCase):
 
         assert len(self.delete_responses) == 1
         assert self.delete_responses[0]["trigger"] is delete_trigger
-        assert self.delete_responses[0]["items"] == [a]
-        assert self.delete_responses[0]["agent"] is author
+        assert self.delete_responses[0]["items"] == [u]
+        assert self.delete_responses[0]["user"] is author
         assert self.delete_responses[0]["action"] is self.delete_action
         assert self.delete_responses[0]["batch"] == \
             delete_trigger.batch_execution
@@ -496,12 +501,12 @@ class TriggerInvocationTestCase(BaseTestCase):
         datastore.commit()
 
         # Create Action - Abort
-        with changeset_context(author) as changeset:
-            a1 = Agent()
-            a1.insert()
+        with changeset_context(author):
+            u1 = User()
+            u1.insert()
 
-            a2 = Agent()
-            a2.insert()
+            u2 = User()
+            u2.insert()
 
         assert len(self.create_responses) == 0
 
@@ -510,12 +515,12 @@ class TriggerInvocationTestCase(BaseTestCase):
         assert len(self.create_responses) == 0
 
         # Create Action - Commit
-        with changeset_context(author) as changeset:
-            a1 = Agent()
-            a1.insert()
+        with changeset_context(author):
+            u1 = User()
+            u1.insert()
 
-            a2 = Agent()
-            a2.insert()
+            u2 = User()
+            u2.insert()
 
         assert len(self.create_responses) == 0
 
@@ -523,8 +528,8 @@ class TriggerInvocationTestCase(BaseTestCase):
 
         assert len(self.create_responses) == 1
         assert self.create_responses[0]["trigger"] is create_trigger
-        assert self.create_responses[0]["items"] == set([a1, a2])
-        assert self.create_responses[0]["agent"] is author
+        assert self.create_responses[0]["items"] == set([u1, u2])
+        assert self.create_responses[0]["user"] is author
         assert self.create_responses[0]["action"] is self.create_action
         assert self.create_responses[0]["batch"] == \
             create_trigger.batch_execution
@@ -543,11 +548,11 @@ class TriggerInvocationTestCase(BaseTestCase):
         
         self.site.triggers.append(modify_trigger)
 
-        a1 = Agent()
-        a1.insert()
+        u1 = User()
+        u1.insert()
 
-        a2 = Agent()
-        a2.insert()
+        u2 = User()
+        u2.insert()
 
         datastore.commit()
 
@@ -555,9 +560,9 @@ class TriggerInvocationTestCase(BaseTestCase):
             self.modify_responses.pop()
 
         # Modify Action - Abort
-        with changeset_context(author) as changeset:
-            a1.qname = "Tester1"
-            a2.is_draft = True
+        with changeset_context(author):
+            u1.qname = "Tester1"
+            u2.is_draft = True
 
         assert len(self.modify_responses) == 0
 
@@ -566,9 +571,9 @@ class TriggerInvocationTestCase(BaseTestCase):
         assert len(self.modify_responses) == 0
 
         # Modify Action - Commit
-        with changeset_context(author) as changeset:
-            a1.qname = "Beta Tester1"
-            a2.is_draft = True
+        with changeset_context(author):
+            u1.qname = "Beta Tester1"
+            u2.is_draft = True
 
         assert len(self.modify_responses) == 0
 
@@ -576,12 +581,12 @@ class TriggerInvocationTestCase(BaseTestCase):
 
         assert len(self.modify_responses) == 1
         assert self.modify_responses[0]["trigger"] is modify_trigger
-        assert self.modify_responses[0]["items"] == set([a1, a2])
-        assert self.modify_responses[0]["context"]["modified_members"][a1] == \
+        assert self.modify_responses[0]["items"] == set([u1, u2])
+        assert self.modify_responses[0]["context"]["modified_members"][u1] == \
             set([("qname", None)])
-        assert self.modify_responses[0]["context"]["modified_members"][a2] == \
+        assert self.modify_responses[0]["context"]["modified_members"][u2] == \
             set([("is_draft", None)])
-        assert self.modify_responses[0]["agent"] is author
+        assert self.modify_responses[0]["user"] is author
         assert self.modify_responses[0]["action"] is self.modify_action
         assert self.modify_responses[0]["batch"] == \
             modify_trigger.batch_execution
@@ -600,18 +605,18 @@ class TriggerInvocationTestCase(BaseTestCase):
         
         self.site.triggers.append(delete_trigger)
 
-        a1 = Agent()
-        a1.insert()
+        u1 = User()
+        u1.insert()
 
-        a2 = Agent()
-        a2.insert()
+        u2 = User()
+        u2.insert()
 
         datastore.commit()
 
         # Delete Action - Abort
-        with changeset_context(author) as changeset:
-            a1.delete()
-            a2.delete()
+        with changeset_context(author):
+            u1.delete()
+            u2.delete()
 
         assert len(self.delete_responses) == 0
 
@@ -620,9 +625,9 @@ class TriggerInvocationTestCase(BaseTestCase):
         assert len(self.delete_responses) == 0
 
         # Delete Action - Commit
-        with changeset_context(author) as changeset:
-            a1.delete()
-            a2.delete()
+        with changeset_context(author):
+            u1.delete()
+            u2.delete()
 
         assert len(self.delete_responses) == 0
 
@@ -630,8 +635,8 @@ class TriggerInvocationTestCase(BaseTestCase):
 
         assert len(self.delete_responses) == 1
         assert self.delete_responses[0]["trigger"] is delete_trigger
-        assert self.delete_responses[0]["items"] == set([a1, a2])
-        assert self.delete_responses[0]["agent"] is author
+        assert self.delete_responses[0]["items"] == set([u1, u2])
+        assert self.delete_responses[0]["user"] is author
         assert self.delete_responses[0]["action"] is self.delete_action
         assert self.delete_responses[0]["batch"] == \
             delete_trigger.batch_execution
@@ -683,9 +688,9 @@ class TriggerInvocationTestCase(BaseTestCase):
             self.delete_responses.pop()
 
         # Create action - Abort
-        with changeset_context(author) as changeset:
-            a = Agent()
-            a.insert()
+        with changeset_context(author):
+            u = User()
+            u.insert()
 
         assert len(self.create_responses) == 0
         assert len(self.modify_responses) == 0
@@ -698,9 +703,9 @@ class TriggerInvocationTestCase(BaseTestCase):
         assert len(self.delete_responses) == 0
 
         # Create action - Commit
-        with changeset_context(author) as changeset:
-            a = Agent()
-            a.insert()
+        with changeset_context(author):
+            u = User()
+            u.insert()
 
         assert len(self.create_responses) == 0
         assert len(self.modify_responses) == 0
@@ -712,8 +717,8 @@ class TriggerInvocationTestCase(BaseTestCase):
         assert len(self.modify_responses) == 0
         assert len(self.delete_responses) == 0
         assert self.create_responses[0]["trigger"] is create_trigger
-        assert self.create_responses[0]["items"] == [a]
-        assert self.create_responses[0]["agent"] is author
+        assert self.create_responses[0]["items"] == [u]
+        assert self.create_responses[0]["user"] is author
         assert self.create_responses[0]["action"] is self.create_action
         assert self.create_responses[0]["batch"] == \
             create_trigger.batch_execution
@@ -722,8 +727,8 @@ class TriggerInvocationTestCase(BaseTestCase):
             self.create_responses.pop()
 
         # Modify action - Abort
-        with changeset_context(author) as changeset:
-            a.qname = "Tester"
+        with changeset_context(author):
+            u.qname = "Tester"
 
         assert len(self.create_responses) == 0
         assert len(self.modify_responses) == 0
@@ -736,8 +741,8 @@ class TriggerInvocationTestCase(BaseTestCase):
         assert len(self.delete_responses) == 0
 
         # Modify action - Commit
-        with changeset_context(author) as changeset:
-            a.qname = "Beta Tester"
+        with changeset_context(author):
+            u.qname = "Beta Tester"
 
         assert len(self.create_responses) == 0
         assert len(self.modify_responses) == 0
@@ -749,9 +754,9 @@ class TriggerInvocationTestCase(BaseTestCase):
         assert len(self.modify_responses) == 1
         assert len(self.delete_responses) == 0
         assert self.modify_responses[0]["trigger"] is modify_trigger
-        assert self.modify_responses[0]["items"] == [a]
+        assert self.modify_responses[0]["items"] == [u]
         assert self.modify_responses[0]["context"]["member"] == "qname"
-        assert self.modify_responses[0]["agent"] is author
+        assert self.modify_responses[0]["user"] is author
         assert self.modify_responses[0]["action"] is self.modify_action
         assert self.modify_responses[0]["batch"] == \
             modify_trigger.batch_execution
@@ -760,8 +765,8 @@ class TriggerInvocationTestCase(BaseTestCase):
             self.modify_responses.pop()
 
         # Delete Action - Abort
-        with changeset_context(author) as changeset:
-            a.delete()
+        with changeset_context(author):
+            u.delete()
 
         assert len(self.create_responses) == 0
         assert len(self.modify_responses) == 0
@@ -774,8 +779,8 @@ class TriggerInvocationTestCase(BaseTestCase):
         assert len(self.delete_responses) == 0
 
         # Delete Action - Commit
-        with changeset_context(author) as changeset:
-            a.delete()
+        with changeset_context(author):
+            u.delete()
 
         assert len(self.create_responses) == 0
         assert len(self.modify_responses) == 0
@@ -787,8 +792,8 @@ class TriggerInvocationTestCase(BaseTestCase):
         assert len(self.modify_responses) == 0
         assert len(self.delete_responses) == 1
         assert self.delete_responses[0]["trigger"] is delete_trigger
-        assert self.delete_responses[0]["items"] == [a]
-        assert self.delete_responses[0]["agent"] is author
+        assert self.delete_responses[0]["items"] == [u]
+        assert self.delete_responses[0]["user"] is author
         assert self.delete_responses[0]["action"] is self.delete_action
         assert self.delete_responses[0]["batch"] == \
             delete_trigger.batch_execution
@@ -839,9 +844,9 @@ class TriggerInvocationTestCase(BaseTestCase):
             self.delete_responses.pop()
 
         # Create action - Abort
-        with changeset_context(author) as changeset:
-            a = Agent()
-            a.insert()
+        with changeset_context(author):
+            u = User()
+            u.insert()
 
         assert len(self.create_responses) == 1
         print self.modify_responses
@@ -858,9 +863,9 @@ class TriggerInvocationTestCase(BaseTestCase):
             self.create_responses.pop()
 
         # Create action - Commit
-        with changeset_context(author) as changeset:
-            a = Agent()
-            a.insert()
+        with changeset_context(author):
+            u = User()
+            u.insert()
 
         assert len(self.create_responses) == 1
         assert len(self.modify_responses) == 0
@@ -872,8 +877,8 @@ class TriggerInvocationTestCase(BaseTestCase):
         assert len(self.modify_responses) == 0
         assert len(self.delete_responses) == 0
         assert self.create_responses[0]["trigger"] is create_trigger
-        assert self.create_responses[0]["items"] == [a]
-        assert self.create_responses[0]["agent"] is author
+        assert self.create_responses[0]["items"] == [u]
+        assert self.create_responses[0]["user"] is author
         assert self.create_responses[0]["action"] is self.create_action
         assert self.create_responses[0]["batch"] == \
             create_trigger.batch_execution
@@ -882,8 +887,8 @@ class TriggerInvocationTestCase(BaseTestCase):
             self.create_responses.pop()
 
         # Modify action - Abort
-        with changeset_context(author) as changeset:
-            a.qname = "Tester"
+        with changeset_context(author):
+            u.qname = "Tester"
 
         assert len(self.create_responses) == 0
         assert len(self.modify_responses) == 1
@@ -899,8 +904,8 @@ class TriggerInvocationTestCase(BaseTestCase):
             self.modify_responses.pop()
 
         # Modify action - Commit
-        with changeset_context(author) as changeset:
-            a.qname = "Beta Tester"
+        with changeset_context(author):
+            u.qname = "Beta Tester"
 
         assert len(self.create_responses) == 0
         assert len(self.modify_responses) == 1
@@ -912,9 +917,9 @@ class TriggerInvocationTestCase(BaseTestCase):
         assert len(self.modify_responses) == 1
         assert len(self.delete_responses) == 0
         assert self.modify_responses[0]["trigger"] is modify_trigger
-        assert self.modify_responses[0]["items"] == [a]
+        assert self.modify_responses[0]["items"] == [u]
         assert self.modify_responses[0]["context"]["member"] == "qname"
-        assert self.modify_responses[0]["agent"] is author
+        assert self.modify_responses[0]["user"] is author
         assert self.modify_responses[0]["action"] is self.modify_action
         assert self.modify_responses[0]["batch"] == \
             modify_trigger.batch_execution
@@ -923,8 +928,8 @@ class TriggerInvocationTestCase(BaseTestCase):
             self.modify_responses.pop()
 
         # Delete Action - Abort
-        with changeset_context(author) as changeset:
-            a.delete()
+        with changeset_context(author):
+            u.delete()
 
         assert len(self.create_responses) == 0
         assert len(self.modify_responses) == 0
@@ -940,8 +945,8 @@ class TriggerInvocationTestCase(BaseTestCase):
             self.delete_responses.pop()
 
         # Delete Action - Commit
-        with changeset_context(author) as changeset:
-            a.delete()
+        with changeset_context(author):
+            u.delete()
 
         assert len(self.create_responses) == 0
         assert len(self.modify_responses) == 0
@@ -953,8 +958,8 @@ class TriggerInvocationTestCase(BaseTestCase):
         assert len(self.modify_responses) == 0
         assert len(self.delete_responses) == 1
         assert self.delete_responses[0]["trigger"] is delete_trigger
-        assert self.delete_responses[0]["items"] == [a]
-        assert self.delete_responses[0]["agent"] is author
+        assert self.delete_responses[0]["items"] == [u]
+        assert self.delete_responses[0]["user"] is author
         assert self.delete_responses[0]["action"] is self.delete_action
         assert self.delete_responses[0]["batch"] == \
             delete_trigger.batch_execution
@@ -983,7 +988,7 @@ class TriggerInvocationTestCase(BaseTestCase):
         r = Role()
         r.insert()
 
-        # Modify action - The object whatched for the trigger is modified first
+        # Modify action - The object whatched by the trigger is modified first
         r.set("title", "Foo", "en")
         r.set("title", "Bar", "ca")
         r.qname = "Tester"
@@ -995,8 +1000,8 @@ class TriggerInvocationTestCase(BaseTestCase):
         while self.modify_responses:
             self.modify_responses.pop()
         
-        # Modify action - The object whatched for the trigger is the last one
-        # modified
+        # Modify action - The object whatched by the trigger is the last one
+        # to be modified
         r.set("title", "Bar2", "ca")
         r.qname = "Tester2"
         r.set("title", "Foo2", "en")
@@ -1006,5 +1011,5 @@ class TriggerInvocationTestCase(BaseTestCase):
         response2 = self.modify_responses[0]
 
         assert response1["context"]["modified_members"][r] == \
-            response2["context"]["modified_members"][r]
+               response2["context"]["modified_members"][r]
 

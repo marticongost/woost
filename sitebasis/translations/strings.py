@@ -568,12 +568,6 @@ translations.define(
     en = u"Restricted field"
 )
 
-translations.define("Irrelevant access rule criteria",
-    ca = u"Indiferent",
-    es = u"Indifirente",
-    en = u"Irrelevant"
-)
-
 translations.define("sitebasis.views.BackOfficeDeleteView warning",
     ca = u"S'eliminarà els elements llistats:",
     es = u"Se eliminará los elementos listados:",
@@ -652,7 +646,7 @@ translations.define(
 # Initialization content
 #------------------------------------------------------------------------------
 translations.define(
-    "sitebasis.models.initialization Administrators group title",
+    "sitebasis.models.initialization Administrators role title",
     ca = u"Administradors",
     es = u"Administradores",
     en = u"Administrators"
@@ -666,24 +660,17 @@ translations.define(
 )
 
 translations.define(
+    "sitebasis.models.initialization Everybody role title",
+    ca = u"Tothom",
+    es = u"Todos los usuarios",
+    en = u"Everybody"
+)
+
+translations.define(
     "sitebasis.models.initialization Authenticated role title",
     ca = u"Autenticat",
     es = u"Autenticado",
     en = u"Authenticated"
-)
-
-translations.define(
-    "sitebasis.models.initialization Author role title",
-    ca = u"Autor",
-    es = u"Autor",
-    en = u"Author"
-)
-
-translations.define(
-    "sitebasis.models.initialization Owner role title",
-    ca = u"Propietari",
-    es = u"Propietario",
-    en = u"Owner"
 )
 
 translations.define(
@@ -1103,12 +1090,6 @@ translations.define("Item.last_update_time",
     en = u"Last updated"
 )
 
-translations.define("Item.item_rules",
-    ca = u"Regles (objecte)",
-    es = u"Reglas (objeto)",
-    en = u"Rules (object)"
-)
-
 # Site
 #------------------------------------------------------------------------------
 translations.define("Site",
@@ -1183,22 +1164,10 @@ translations.define("Site.generic_error_page",
     en = u"Generic error page"
 )
 
-translations.define("Site.access_rules_by_priority",
-    ca = u"Regles d'accés",
-    es = u"Reglas de acceso",
-    en = u"Access rules"
-)
-
 translations.define("Site.extensions",
     ca = u"Extensions",
     es = u"Extensiones",
     en = u"extensions"
-)
-
-translations.define("Site.user_views",
-    ca = u"Vistes d'usuari",
-    es = u"Vistas de usuario",
-    en = u"User views"
 )
 
 # Document
@@ -1393,90 +1362,250 @@ translations.define("User.owned_items",
     en = u"Content owned by the user"
 )
 
-translations.define("User.groups",
-    ca = u"Grups",
-    es = u"Grupos",
-    en = u"Groups"
+translations.define("User.roles",
+    ca = u"Rols",
+    es = u"Roles",
+    en = u"Roles"
 )
 
-# Access rule
+# Permission
 #------------------------------------------------------------------------------
-translations.define("AccessRule",
-    ca = u"Regla d'accés",
-    es = u"Regla de acceso",
-    en = u"Access rule"
+translations.define("Permission",
+    ca = u"Permís",
+    es = u"Permiso",
+    en = u"Permission"
 )
 
-translations.define("AccessRule-plural",
-    ca = u"Regles d'accés",
-    es = u"Reglas de acceso",
-    en = u"Access rules"
+translations.define("Permission-plural",
+    ca = u"Permisos",
+    es = u"Permisos",
+    en = u"Permissions"
 )
 
-translations.define("Action-none",
-    ca = u"Cap",
-    es = u"Ninguna",
-    en = u"None"
+translations.define("Permission.role",
+    ca = u"Rol",
+    es = u"Rol",
+    en = u"Role"
 )
 
-translations.define("AccessRule.action",
-    ca = u"Acció",
-    es = u"Acción",
-    en = u"Action"
+translations.define("Permission.authorized",
+    ca = u"Autoritzat",
+    es = u"Autorizado",
+    en = u"Authorized"
 )
 
-translations.define("AccessRule.language",
-    ca = u"Idioma",
-    es = u"Idioma",
-    en = u"Language"
+# ContentPermission
+#------------------------------------------------------------------------------
+translations.define("ContentPermission",
+    ca = u"Permís de contingut",
+    es = u"Permiso de contenido",
+    en = u"Content permission"
 )
 
-translations.define("AccessRule.role",
-    ca = u"Rol d'usuari",
-    es = u"Rol de usuario",
-    en = u"User role"
+translations.define("ContentPermission-plural",
+    ca = u"Permisos de contingut",
+    es = u"Permisos de contenido",
+    en = u"Content permissions"
 )
 
-translations.define("AccessRule.target_instance",
-    ca = u"Element afectat",
-    es = u"Elemento afectado",
-    en = u"Target element"
+translations.define("ContentPermission.matching_items",
+    ca = u"Elements inclosos",
+    es = u"Elementos incluidos",
+    en = u"Included items"
 )
 
-translations.define("AccessRule.target_type",
-    ca = u"Tipus d'element afectat",
-    es = u"Tipo de elemento afectado",
-    en = u"Target type"
+# ReadPermission
+#------------------------------------------------------------------------------
+translations.define("ReadPermission",
+    ca = u"Permís de lectura",
+    es = u"Permiso de lectura",
+    en = u"Read content permission"
 )
 
-translations.define("AccessRule.target_ancestor",
-    ca = u"Ancestre",
-    es = u"Ancestro",
-    en = u"Ancestor"
+translations.define("ReadPermission-plural",
+    ca = u"Permisos de lectura",
+    es = u"Permisos de lectura",
+    en = u"Read content permissions"
 )
 
-translations.define("AccessRule.target_member",
-    ca = u"Camp",
-    es = u"Campo",
-    en = u"Field"
+# CreatePermission
+#------------------------------------------------------------------------------
+translations.define("CreatePermission",
+    ca = u"Permís de creació",
+    es = u"Permiso de creación",
+    en = u"Create content permission"
 )
 
-translations.define("AccessRule.target_is_draft",
-    ca = u"L'element destí és un borrador",
-    es = u"El elemento destino es un borrador",
-    en = u"Target is a draft"
+translations.define("CreatePermission-plural",
+    ca = u"Permisos de creació",
+    es = u"Permisos de creación",
+    en = u"Create content permissions"
 )
 
-translations.define("AccessRule.target_draft_source",
-    ca = u"Original de l'element destí",
-    es = u"Original del elemento destino",
-    en = u"Target's master item"
+# ModifyPermission
+#------------------------------------------------------------------------------
+translations.define("ModifyPermission",
+    ca = u"Permís de modificació",
+    es = u"Permiso de modificación",
+    en = u"Modify content permission"
 )
 
-translations.define("AccessRule.allowed",
-    ca = u"Permès",
-    es = u"Permitido",
-    en = u"Allowed"
+translations.define("ModifyPermission-plural",
+    ca = u"Permisos de modificació",
+    es = u"Permisos de modificación",
+    en = u"Modify content permissions"
+)
+
+# DeletePermission
+#------------------------------------------------------------------------------
+translations.define("DeletePermission",
+    ca = u"Permís d'eliminació",
+    es = u"Permiso de eliminación",
+    en = u"Delete content permission"
+)
+
+translations.define("ModifyPermission-plural",
+    ca = u"Permisos d'eliminació",
+    es = u"Permisos de eliminación",
+    en = u"Delete content permissions"
+)
+
+# ConfirmDraftPermission
+#------------------------------------------------------------------------------
+translations.define("ConfirmDraftPermission",
+    ca = u"Permís de confirmació d'esborranys",
+    es = u"Permiso de confirmación de borradores",
+    en = u"Confirm draft permission"
+)
+
+translations.define("ConfirmDraftPermission-plural",
+    ca = u"Permisos de confirmació d'esborranys",
+    es = u"Permisos de confirmación de borradores",
+    en = u"Confirm draft permissions"
+)
+
+# MemberPermission
+#------------------------------------------------------------------------------
+translations.define("MemberPermission",
+    ca = u"Permís de membre",
+    es = u"Permiso de miembro",
+    en = u"Member permission"
+)
+
+translations.define("MemberPermission-plural",
+    ca = u"Permisos sobre els membres",
+    es = u"Permisos sobre los miembros",
+    en = u"Member permissions"
+)
+
+translations.define("MemberPermission.matching_members",
+    ca = u"Membres inclosos",
+    es = u"Miembros incluidos",
+    en = u"Included members"
+)
+
+# ReadMemberPermission
+#------------------------------------------------------------------------------
+translations.define("ReadMemberPermission",
+    ca = u"Permís de lectura de membres",
+    es = u"Permiso de lectura de miembros",
+    en = u"Read members permission"
+)
+
+translations.define("ReadMemberPermission-plural",
+    ca = u"Permisos de lectura de membres",
+    es = u"Permisos de lectura de miembros",
+    en = u"Read members permissions"
+)
+
+# ModifyMemberPermission
+#------------------------------------------------------------------------------
+translations.define("ModifyMemberPermission",
+    ca = u"Permís de modificació de membres",
+    es = u"Permiso de modificación de miembros",
+    en = u"Modify members permission"
+)
+
+translations.define("ModifyMemberPermission-plural",
+    ca = u"Permisos de lectura de membres",
+    es = u"Permisos de lectura de miembros",
+    en = u"Read members permissions"
+)
+
+# TranslationPermission
+#------------------------------------------------------------------------------
+translations.define("TranslationPermission",
+    ca = u"Permís de traducció",
+    es = u"Permiso de traducción",
+    en = u"Translation permission"
+)
+
+translations.define("TranslationPermission-plural",
+    ca = u"Permisos de traducció",
+    es = u"Permisos de traducción",
+    en = u"Translation permissions"
+)
+
+translations.define("TranslationPermission.matching_languages",
+    ca = u"Idiomes inclosos",
+    es = u"Idiomas incluidos",
+    en = u"Included languages"
+)
+
+# ReadTranslationPermission
+#------------------------------------------------------------------------------
+translations.define("ReadTranslationPermission",
+    ca = u"Permís de lectura de traducció",
+    es = u"Permiso de lectura de traducción",
+    en = u"Read translation permission"
+)
+
+translations.define("ReadTranslationPermission-plural",
+    ca = u"Permisos de lectura de traducció",
+    es = u"Permisos de lectura de traducción",
+    en = u"Read translation permissions"
+)
+
+# CreateTranslationPermission
+#------------------------------------------------------------------------------
+translations.define("CreateTranslationPermission",
+    ca = u"Permís de creació de traducció",
+    es = u"Permiso de creación de traducción",
+    en = u"Create translation permission"
+)
+
+translations.define("CreateTranslationPermission-plural",
+    ca = u"Permisos de creació de traducció",
+    es = u"Permisos de creación de traducción",
+    en = u"Create translation permissions"
+)
+
+# ModifyTranslationPermission
+#------------------------------------------------------------------------------
+translations.define("ModifyTranslationPermission",
+    ca = u"Permís de modificació de traducció",
+    es = u"Permiso de modificación de traducción",
+    en = u"Modify translation permission"
+)
+
+translations.define("ModifyTranslationPermission-plural",
+    ca = u"Permisos de modificació de traducció",
+    es = u"Permisos de modificación de traducción",
+    en = u"Modify translation permissions"
+)
+
+# DeleteTranslationPermission
+#------------------------------------------------------------------------------
+translations.define("DeleteTranslationPermission",
+    ca = u"Permís d'eliminació de traducció",
+    es = u"Permiso de eliminación de traducción",
+    en = u"Delete translation permission"
+)
+
+translations.define("DeleteTranslationPermission-plural",
+    ca = u"Permisos d'eliminació de traducció",
+    es = u"Permisos de eliminación de traducción",
+    en = u"Delete translation permissions"
 )
 
 # Resource
@@ -1629,78 +1758,6 @@ translations.define("Style.admin_declarations",
     en = u"Admin CSS declarations"
 )
 
-# Agent
-#------------------------------------------------------------------------------
-translations.define("Agent",
-    ca = u"Agent",
-    es = u"Agente",
-    en = u"Agent"
-)
-
-translations.define("Agent-plural",
-    ca = u"Agents",
-    es = u"Agentes",
-    en = u"Agents"
-)
-
-translations.define("Agent.agent_rules",
-    ca = u"Regles (subjecte)",
-    es = u"Reglas (sujeto)",
-    en = u"Rules (subject)"
-)
-
-# Group
-#------------------------------------------------------------------------------
-translations.define("Group",
-    ca = u"Grup",
-    es = u"Grupo",
-    en = u"Group"
-)
-
-translations.define("Group-plural",
-    ca = u"Grups",
-    es = u"Grupos",
-    en = u"Groups"
-)
-
-translations.define("Group.title",
-    ca = u"Nom",
-    es = u"Nombre",
-    en = u"Name"
-)
-
-translations.define("Group.group_members",
-    ca = u"Membres",
-    es = u"Miembros",
-    en = u"Members"
-)
-
-# Dynamic group
-#------------------------------------------------------------------------------
-translations.define("DynamicGroup",
-    ca = u"Grup dinàmic",
-    es = u"Grupo dinámico",
-    en = u"Dynamic group"
-)
-
-translations.define("DynamicGroup-plural",
-    ca = u"Grups dinàmics",
-    es = u"Grupos dinámicos",
-    en = u"Dynamic groups"
-)
-
-translations.define("DynamicGroup.title",
-    ca = u"Nom",
-    es = u"Nombre",
-    en = u"Name"
-)
-
-translations.define("DynamicGroup.query",
-    ca = u"Selecció",
-    es = u"Selección",
-    en = u"Selection"
-)
-
 # UserView
 #------------------------------------------------------------------------------
 translations.define("UserView",
@@ -1727,16 +1784,10 @@ translations.define("UserView.parameters",
     en = u"View"
 )
 
-translations.define("UserView.sites",
-    ca = u"Llocs web",
-    es = u"Sitios web",
-    en = u"Sites"
-)
-
-translations.define("UserView.agents",
-    ca = u"Agents",
-    es = u"Agentes",
-    en = u"Agents"
+translations.define("UserView.roles",
+    ca = u"Rols",
+    es = u"Roles",
+    en = u"Roles"
 )
 
 # Back office
@@ -1877,6 +1928,36 @@ translations.define("Role.title",
     ca = u"Nom",
     es = u"Nombre",
     en = u"Name"
+)
+
+translations.define("Role.users",
+    ca = u"Usuaris",
+    es = u"Usuarios",
+    en = u"Users"
+)
+
+translations.define("Role.user_views",
+    ca = u"Vistes d'usuari",
+    es = u"Vistas de usuario",
+    en = u"User views"
+)
+
+translations.define("Role.permissions",
+    ca = u"Permisos",
+    es = u"Permisos",
+    en = u"Permissions"
+)
+
+translations.define("Role.base_roles",
+    ca = u"Rols base",
+    es = u"Roles base",
+    en = u"Base roles"
+)
+
+translations.define("Role.child_roles",
+    ca = u"Rols derivats",
+    es = u"Roles derivados",
+    en = u"Derived roles"
 )
 
 # Template
@@ -2206,10 +2287,10 @@ translations.define("Trigger.types",
     en = u"Watched types"
 )
 
-translations.define("Trigger.agents",
-    ca = u"Agents a observar",
-    es = u"Agentes a observar",
-    en = u"Watched agents"
+translations.define("Trigger.roles",
+    ca = u"Rols a observar",
+    es = u"Roles a observar",
+    en = u"Watched roles"
 )
 
 translations.define("Trigger.actions",

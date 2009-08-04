@@ -18,7 +18,11 @@ import Image
 from pkg_resources import resource_filename
 from cocktail.modeling import cached_getter
 from cocktail.pkgutils import import_object
-from sitebasis.models import Item
+from sitebasis.models import (
+    Item,
+    ReadPermission,
+    get_current_user
+)
 from sitebasis.models.thumbnails import ThumbnailParameterError
 from sitebasis.controllers.basecmscontroller import BaseCMSController
 
@@ -73,9 +77,9 @@ class IconController(BaseCMSController):
                 
                 if item:
                     # Validate access
-                    self.restrict_access(
-                        action = "read",
-                        target_instance = item
+                    get_current_user().require_permission(
+                        ReadPermission,
+                        target = item
                     )
         
         if item is None:

@@ -16,7 +16,7 @@ from cocktail.iteration import first
 from cocktail.translations import translations
 from cocktail.schema import Reference, String, Integer, Collection, Reference
 from cocktail.persistence import datastore
-from sitebasis.models import Item, changeset_context
+from sitebasis.models import Item, changeset_context, get_current_user
 from sitebasis.controllers.backoffice.basebackofficecontroller \
     import BaseBackOfficeController
 
@@ -88,7 +88,7 @@ class MoveController(BaseBackOfficeController):
             raise TreeCycleError()
 
         for i in range(self.MAX_TRANSACTION_ATTEMPTS):
-            with changeset_context(author = self.user):
+            with changeset_context(get_current_user()):
                 for item in reversed(selection):
 
                     if isinstance(related_end, Reference) \

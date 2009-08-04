@@ -21,8 +21,10 @@ from sitebasis.models import (
     Language,
     changeset_context,
     ChangeSet,
-    reduce_ruleset,
-    restricted_modification_context
+    get_current_user,
+    restricted_modification_context,
+    ReadTranslationPermission,
+    ConfirmDraftPermission
 )
 from sitebasis.controllers.backoffice.editstack import RelationNode, EditNode
 from sitebasis.controllers.backoffice.basebackofficecontroller \
@@ -49,7 +51,13 @@ class EditController(BaseBackOfficeController):
 
     @cached_getter
     def available_languages(self):
-        return Language.codes
+        user = get_current_user()
+        return [language
+                for language in Language.codes
+                if user.has_permission(
+                    ReadTranslationPermission,
+                    language = language
+                )]
 
     @cached_getter
     def action(self):
@@ -73,7 +81,7 @@ class EditController(BaseBackOfficeController):
     def save_item(self, make_draft = False):
         
         for i in range(self.MAX_TRANSACTION_ATTEMPTS):
-            user = self.user
+            user = get_current_user()
             stack_node = self.stack_node
             item = stack_node.item
             is_new = not item.is_inserted
@@ -176,12 +184,9 @@ class EditController(BaseBackOfficeController):
         draft = self.stack_node.item
         target_item = draft.draft_source or draft
         is_new = draft is target_item
-        user = self.user
+        user = get_current_user()
 
-        self.restrict_access(
-            target_instance = draft,
-            action = "confirm_draft"
-        )
+        user.require_permission(ConfirmDraftPermission, target = draft)
 
         for i in range(self.MAX_TRANSACTION_ATTEMPTS):
 
@@ -236,7 +241,7 @@ class EditController(BaseBackOfficeController):
         stack_node.import_form_data(stack_node.form_data, item)
         item.insert()
         stack_node.saving(
-            user = self.user,
+            user = get_current_user(),
             changeset = ChangeSet.current
         )
 

@@ -35,7 +35,6 @@ from sitebasis.controllers.backoffice.useractions import \
         py:schema="@{self.detail_schema}"
         py:data="@{self.edited_item}"
         py:base_url="@{self.cms.document_uri()}"
-        py:authorization_check="@{self.cms.allows}"
         py:edit_stack="@{self.edit_stack}">
         
         <!-- Highlight changed members -->

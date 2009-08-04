@@ -4,7 +4,7 @@
 <%!
 from cocktail.translations import translations
 from cocktail.html import templates
-from sitebasis.models import Site, Document
+from sitebasis.models import Site, Document, ModifyPermission
 
 container_classes = "BaseView StandardView"
 %>
@@ -81,7 +81,7 @@ container_classes = "BaseView StandardView"
 </%def>
 
 <%def name="toolbar()">
-    % if cms.allows(target_instance = document, action = "modify"):
+    % if user.has_permission(ModifyPermission, target = document):
         <div class="toolbar">
             <% backoffice = Document.get_instance(qname = "sitebasis.backoffice") %>
             <a class="edit_link"

@@ -60,10 +60,8 @@ class BackOfficeController(BaseBackOfficeController):
     @cherrypy.expose
     def render_preview(self, **kwargs):
         node = self.stack_node
-        self.restrict_access(
-            action = "read",
-            target_instance = node.item
-        )
+        
+        get_current_user().require_permission(ReadPermission, target = node.item)
         
         node.import_form_data(node.form_data, node.item)
         

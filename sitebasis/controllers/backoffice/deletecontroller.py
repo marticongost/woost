@@ -11,7 +11,11 @@ from ZODB.POSException import ConflictError
 from cocktail.modeling import getter, cached_getter, InstrumentedSet
 from cocktail.schema import String, Collection, Reference, RelationMember
 from cocktail.persistence import datastore, PersistentClass
-from sitebasis.models import changeset_context
+from sitebasis.models import (
+    changeset_context,
+    get_current_user,
+    DeletePermission
+)
 from sitebasis.controllers.backoffice.basebackofficecontroller \
     import BaseBackOfficeController
 
@@ -108,16 +112,11 @@ class DeleteController(BaseBackOfficeController):
     def submit(self):
         if self.action == "confirm_delete":
 
-            restrict_access = self.restrict_access
+            user = get_current_user()
 
             class ValidatingDeletedSet(InstrumentedSet):
                 def item_added(self, item):
-                    restrict_access(
-                        action = "delete",
-                        target_instance = item
-                    )
-            
-            user = self.user
+                    user.require_permission(DeletePermission, target = item)
             
             for i in range(self.MAX_TRANSACTION_ATTEMPTS):
                 deleted_set = ValidatingDeletedSet()

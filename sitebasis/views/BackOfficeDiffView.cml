@@ -36,8 +36,8 @@ from sitebasis.controllers.backoffice.useractions import \
         if language:
             revert_key += "-" + language
 
-        a = self.source_accessor.get(self.source, key, language = language)
-        b = self.target_accessor.get(self.target, key, language = language)
+        a = self.source_accessor.get(self.source, key, default = None, language = language)
+        b = self.target_accessor.get(self.target, key, default = None, language = language)
         diffs = None
 
         if isinstance(member, String):

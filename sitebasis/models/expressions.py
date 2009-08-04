@@ -9,25 +9,52 @@
 from datetime import datetime
 from cocktail.schema.expressions import Expression
 from sitebasis.models.action import Action
+from sitebasis.models.usersession import get_current_user
 from sitebasis.models.item import Item
 from sitebasis.models.document import Document
-from sitebasis.models.accessrule import allowed
+from sitebasis.models.permission import ReadPermission
 
 
-class AccessAllowedExpression(Expression):
-    """An expression that filters queried items according to the active access
-    rules.
+class PermissionExpression(Expression):
+    """An schema expression that indicates if the specified user has permission
+    over an element.
     """
+    user = None
+    permission_type = None
 
-    def __init__(self, user):
+    def __init__(self, user, permission_type):
         self.user = user
+        self.permission_type = permission_type
 
     def eval(self, context, accessor = None):
-        return allowed(
-            user = self.user,
-            target_instance = context,
-            action = Action.get_instance(identifier = "read")
-        )
+        return self.user.has_permission(self.permission_type, target = context)
+
+    def resolve_filter(self, query):
+
+        def impl(dataset):
+
+            authorized_subset = set()
+            queried_type = query.type
+
+            for permission in reversed(list(
+                self.user.iter_permissions(self.permission_type)
+            )):
+                permission_query = permission.select_items()
+
+                if issubclass(queried_type, permission_query.type) \
+                or issubclass(permission_query.type, queried_type):
+
+                    permission_subset = permission_query.execute()
+
+                    if permission.authorized:
+                        authorized_subset.update(permission_subset)
+                    else:
+                        authorized_subset.difference_update(permission_subset)
+
+            dataset.intersection_update(authorized_subset)
+            return dataset
+
+        return ((0, 0), impl)
 
 
 class DocumentIsPublishedExpression(Expression):
@@ -36,15 +63,15 @@ class DocumentIsPublishedExpression(Expression):
     def eval(self, context, accessor = None):
         return context.is_published()
 
-    def resolve_filter(self):
+    def resolve_filter(self, query):
 
         def impl(dataset):
 
             is_draft_expr = Item.is_draft.equal(False)
             enabled_expr = Document.enabled.equal(True)
 
-            dataset = is_draft_expr.resolve_filter()[1](dataset)
-            dataset = enabled_expr.resolve_filter()[1](dataset)
+            dataset = is_draft_expr.resolve_filter(query)[1](dataset)
+            dataset = enabled_expr.resolve_filter(query)[1](dataset)
 
             now = datetime.now()
 
@@ -67,34 +94,32 @@ class DocumentIsPublishedExpression(Expression):
 
 
 class DocumentIsAccessibleExpression(Expression):
-    """An expression that tests that documents can be accessed by an agent.
+    """An expression that tests that documents can be accessed by a user.
     
     The expression checks both the publication state of the document and the
-    read privileges for the specified agent.
+    read permissions for the specified user.
 
-    @ivar agent: The agent that accesses the documents.
-    @type agent: L{Agent<sitebasis.models.agent.Agent>}
+    @ivar user: The user that accesses the documents.
+    @type user: L{User<sitebasis.models.user.User>}
     """
 
-    def __init__(self, agent):
+    def __init__(self, user = None):
         Expression.__init__(self)
-        self.agent = agent
+        self.user = user
 
     def eval(self, context, accessor = None):
-        return context.is_published() \
-            and allowed(
-                user = self.agent,
-                action = "read",
-                target_instance = context
-            )
+        return context.is_accessible(user = self.user)
 
-    def resolve_filter(self):
+    def resolve_filter(self, query):
 
         def impl(dataset):
-            access_expr = AccessAllowedExpression(self.agent)
+            access_expr = PermissionExpression(
+                self.user or get_current_user(),
+                ReadPermission
+            )
             published_expr = DocumentIsPublishedExpression()            
-            dataset = access_expr.resolve_filter()[1](dataset)
-            dataset = published_expr.resolve_filter()[1](dataset)
+            dataset = access_expr.resolve_filter(query)[1](dataset)
+            dataset = published_expr.resolve_filter(query)[1](dataset)
             return dataset
         
         return ((-1, 1), impl)

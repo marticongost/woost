@@ -8,12 +8,6 @@
 """
 from cocktail.translations import translations
 
-translations.define("Action transition",
-    ca = u"Establir estat",
-    es = u"Establecer estado",
-    en = u"Set state"
-)
-
 translations.define(
     "sitebasis.controllers.backoffice.useractions.TransitionAction state set",
     ca = lambda item: u"S'ha canviat l'estat de <em>%s</em> a <em>%s</em>"
@@ -32,18 +26,24 @@ translations.define("Item.state",
     en = u"State"
 )
 
-# AccessRule
+# TransitionPermission
 #------------------------------------------------------------------------------
-translations.define("AccessRule.target_state",
-    ca = u"Estat de l'element",
-    es = u"Estado del elemento",
-    en = u"Target's state"
+translations.define("TransitionPermission",
+    ca = u"Permís de transició",
+    es = u"Permiso de transición",
+    en = u"Transition permission"
 )
 
-translations.define("AccessRule.target_new_state",
-    ca = u"Estat destí de l'element",
-    es = u"Estado destino del elemento",
-    en = u"Target's destination state"
+translations.define("TransitionPermission-plural",
+    ca = u"Permisos de transició",
+    es = u"Permisos de transición",
+    en = u"Transition permissions"
+)
+
+translations.define("TransitionPermission.transition",
+    ca = u"Transició",
+    es = u"Transición",
+    en = u"Transition"
 )
 
 # Trigger
@@ -80,16 +80,60 @@ translations.define("State.title",
     en = u"Name"
 )
 
-translations.define("State.outgoing",
-    ca = u"Estats destí",
-    es = u"Estados destino",
-    en = u"Target states"
+translations.define("State.outgoing_transitions",
+    ca = u"Transicions de sortida",
+    es = u"Transiciones de salida",
+    en = u"Outgoing transitions"
 )
 
-translations.define("State.incomming",
-    ca = u"Estats origen",
-    es = u"Estados origen",
-    en = u"Source states"
+translations.define("State.incoming_transitions",
+    ca = u"Transicions d'entrada",
+    es = u"Transiciones de salida",
+    en = u"Incoming transitions"
+)
+
+# Transition
+#------------------------------------------------------------------------------
+translations.define("Transition",
+    ca = u"Transició",
+    es = u"Transición",
+    en = u"Transition"
+)
+
+translations.define("Transition-plural",
+    ca = u"Transicions",
+    es = u"Transiciones",
+    en = u"Transitions"
+)
+
+translations.define("Transition.title",
+    ca = u"Nom",
+    es = u"Nombre",
+    en = u"Title"
+)
+
+translations.define("Transition.source_state",
+    ca = u"Estat origen",
+    es = u"Estado origen",
+    en = u"Source state"
+)
+
+translations.define("Transition.target_state",
+    ca = u"Estat destí",
+    es = u"Estado destino",
+    en = u"Target state"
+)
+
+translations.define("Transition.transition_form",
+    ca = u"Formulari de transició",
+    es = u"Formulario de transición",
+    en = u"Transition form"
+)
+
+translations.define("Transition.transition_permissions",
+    ca = u"Permisos",
+    es = u"Permisos",
+    en = u"Permissions"
 )
 
 # SetStateTriggerResponse

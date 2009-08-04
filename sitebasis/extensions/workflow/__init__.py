@@ -51,7 +51,7 @@ class WorkflowExtension(Extension):
         from sitebasis.extensions.workflow import (
             strings,
             state,
-            accessrule,
+            transitionpermission,
             trigger,
             useractions,
             triggerresponse
@@ -61,14 +61,14 @@ class WorkflowExtension(Extension):
         from sitebasis.models import Action
             
         if Action.get_instance(identifier = "transition") is None:
-            trans_action = Action()
-            trans_action.identifier = "transition"
+            transition_action = Action()
+            transition_action.identifier = "transition"
             for language in translations:
-                trans_action.set(
+                transition_action.set(
                     "title",
                     translations("Action transition", language),
                     language
                 )
-            trans_action.insert()
+            transition_action.insert()
             datastore.commit()
 

@@ -17,7 +17,7 @@ from sitebasis.models.action import Action
 from sitebasis.models.changesets import ChangeSet
 from sitebasis.models.site import Site
 from sitebasis.models.item import Item
-from sitebasis.models.agent import Agent
+from sitebasis.models.role import Role
 from sitebasis.models.language import Language
 
 _thread_data = local()
@@ -60,7 +60,7 @@ class Trigger(Item):
         "batch_execution",
         "items",
         "types",
-        "agents",
+        "roles",
         "actions",
         "item_is_draft",
         "modified_members",
@@ -107,10 +107,10 @@ class Trigger(Item):
         )
     )
 
-    agents = schema.Collection(
+    roles = schema.Collection(
         items = schema.Reference(
-            required = True,
-            type = Agent
+            type = Role,
+            required = True
         ),
         related_end = schema.Collection()
     )
@@ -140,16 +140,11 @@ class Trigger(Item):
     )
 
     modified_languages = schema.Collection(
-        items = schema.Reference(
-            required = True,
-            type = Language
-        ),
-        related_end = schema.Collection(),
-        #exclusive = _handles_action("modify"),
-        edit_inline = True
+        items = schema.String(),
+        enumeration = lambda ctx: Language.codes
     )
   
-    def matches(self, item, action, agent, **context):
+    def matches(self, item, action, user, **context):
         
         # Check specific items
         if self.items and item not in self.items:
@@ -159,18 +154,11 @@ class Trigger(Item):
         if self.types and not isinstance(item, tuple(self.types)):
             return False
 
-        # Check agents
-        if self.agents:
+        # Check user
+        if self.roles:
 
-            if agent is None:
-                return False
-
-            roles = agent.get_roles({
-                "target_instance": item,
-                "target_type": item.__class__
-            })
-            
-            if not any(a in self.agents for a in roles):
+            if user is None \
+            or not any((role in self.roles) for role in user.iter_roles()):
                 return False
 
         # Check action
@@ -197,7 +185,7 @@ class Trigger(Item):
         return True
 
 
-def trigger_responses(item, action, agent, **context):
+def trigger_responses(item, action, user, **context):
 
     if get_triggers_enabled():
 
@@ -242,7 +230,7 @@ def trigger_responses(item, action, agent, **context):
 
         # Execute or schedule matching triggers
         for trigger in Site.main.triggers:
-            if trigger.matches(item, action, agent, **context):
+            if trigger.matches(item, action, user, **context):
 
                 # Track modified / deleted items
                 trigger_items = trans_triggers.get(trigger)
@@ -273,7 +261,7 @@ def trigger_responses(item, action, agent, **context):
                                             response.execute(
                                                 trigger_items,
                                                 action,
-                                                agent,
+                                                user,
                                                 batch = True,
                                                 modified_members = modified_members
                                             )
@@ -299,7 +287,7 @@ def trigger_responses(item, action, agent, **context):
                                         response.execute(
                                             [item],
                                             action,
-                                            agent,
+                                            user,
                                             **context
                                         )
 
@@ -317,7 +305,7 @@ def trigger_responses(item, action, agent, **context):
                 # Execute immediately, within the transaction
                 else:
                     for response in trigger.responses:
-                        response.execute([item], action, agent, **context)
+                        response.execute([item], action, user, **context)
 
 @when(Item.inserted)
 def _trigger_insertion_responses(event):
