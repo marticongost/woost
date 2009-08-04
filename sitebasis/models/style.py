@@ -24,11 +24,12 @@ class Style(Item):
     )
 
     declarations = schema.String(
-        required = True
+        required = True,
+        edit_control = "cocktail.html.TextArea"
     )
     
     admin_declarations = schema.String(
-        required = False
+        edit_control = "cocktail.html.TextArea"
     )
     
     @getter
