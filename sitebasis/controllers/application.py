@@ -507,10 +507,10 @@ class CMS(BaseCMSController):
         return item
 
     @cherrypy.expose
-    def user_styles(self):
+    def user_styles(self, backoffice = 0):
         cherrypy.response.headers["Content-Type"] = "text/css"
         for style in Style.select():
-            declarations = style.admin_declarations or style.declarations
+            declarations = style.admin_declarations if backoffice else style.declarations
             yield ".%s{\n%s\n}\n" % (style.class_name, declarations)
 
     feeds = FeedsController
