@@ -33,7 +33,7 @@ class RichTextEditor(TinyMCE):
         "theme_advanced_resize_horizontal": False,
         "document_base_url": "/",
         "relative_urls": False,
-        "content_css": "/user_styles/",
+        "content_css": "/user_styles/?backoffice=1",
         "fullscreen_settings": {
             "theme_advanced_toolbar_location": "bottom"
         }
