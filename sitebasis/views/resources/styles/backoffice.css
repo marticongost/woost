@@ -246,6 +246,7 @@ html, body {
     vertical-align: bottom;
 }
 
+.BackOfficeLayout .RadioSelector input + label,
 .BackOfficeLayout .CheckList input + label,
 .BackOfficeLayout .MemberList input + label {
     display: inline;
