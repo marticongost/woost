@@ -41,13 +41,17 @@ class BaseTestCase(TempStorageMixin, TestCase):
         self.site.insert()
 
         # Roles and users
-        self.anonymous_user = User(qname = "sitebasis.anonymous")
+        self.anonymous_role = Role(qname = "sitebasis.anonymous")
+        self.anonymous_role.insert()
+
+        self.anonymous_user = User(qname = "sitebasis.anonymous_user")
+        self.anonymous_user.roles.append(self.anonymous_role)
         self.anonymous_user.insert()
 
-        self.everybody_role = Role(qname = "sitebasis.everybody_role")
+        self.everybody_role = Role(qname = "sitebasis.everybody")
         self.everybody_role.insert()
 
-        self.authenticated_role = Role(qname = "sitebasis.authenticated_role")
+        self.authenticated_role = Role(qname = "sitebasis.authenticated")
         self.authenticated_role.insert()
        
         set_triggers_enabled(True)
