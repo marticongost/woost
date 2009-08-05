@@ -31,7 +31,7 @@ class TriggerResponse(Item):
     )
 
     @abstractmethod
-    def execute(self, items, action, user, batch = False, **context):
+    def execute(self, items, user, batch = False, **context):
         """Executes the response with the supplied context.
         
         This method will be called when the response's trigger conditions are
@@ -42,9 +42,6 @@ class TriggerResponse(Item):
             triggered the response.
         @type items: L{Item<sitebasis.models.item.Item>} list
 
-        @param action: The kind of the action that triggered the response.
-        @type action: L{Action<sitebasis.models.Action>}
-
         @param user: The user that triggered the response.
         @type user: L{User<sitebasis.models.user.User>}
 
@@ -54,9 +51,9 @@ class TriggerResponse(Item):
         @type batch: bool
 
         @param context: Additional context. Available keys depend on the kind
-            of action that triggered the response.        
+            of action that triggered the response.
         """
-        
+
 
 class CustomTriggerResponse(TriggerResponse):
     """A trigger response that allows the execution of arbitrary python
@@ -68,10 +65,9 @@ class CustomTriggerResponse(TriggerResponse):
         edit_control = "cocktail.html.TextArea"
     )
 
-    def execute(self, items, action, user, batch = False, **context):
+    def execute(self, items, user, batch = False, **context):
         context.update(
             items = items,
-            action = action,
             user = user,
             batch = batch
         )
@@ -108,7 +104,7 @@ class SendEmailTriggerResponse(TriggerResponse):
         edit_control = "cocktail.html.TextArea"
     )
 
-    def execute(self, items, action, user, batch = False, **context):
+    def execute(self, items, user, batch = False, **context):
 
         import smtplib
         from sitebasis.models import Site
@@ -121,7 +117,6 @@ class SendEmailTriggerResponse(TriggerResponse):
 
         context.update(
             items = items,
-            action = action,
             user = user,
             batch = batch
         )

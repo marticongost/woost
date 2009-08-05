@@ -8,45 +8,27 @@
 """
 from __future__ import with_statement
 from sitebasis.tests.models.basetestcase import BaseTestCase
-from cocktail.persistence import datastore
-from sitebasis.models import (
-    Trigger, 
-    TriggerResponse,
-    User, 
-    Item, 
-    ChangeSet, 
-    changeset_context
-)
 
 
 class TriggerMatchTestCase(BaseTestCase):
 
-    def assert_matches(self, trigger, *tests):
-        for item, action, user, ctx, should_match in tests:
+    def assert_match(self, trigger, *tests):
+        test = 1
+        for target, user, context, should_match in tests:
             self.assertEqual(
-                trigger.matches(item, action, user, **ctx),
+                trigger.match(target, user, verbose = True, **context),
                 should_match,
-                "Trigger %s %s match item=%s action=%s user=%s ctx=%s"
+                "Trigger %s %s match test %d (target=%s user=%s context=%s)"
                 % (
                     trigger,
                     "should" if should_match else "should not",
-                    item,
-                    action,
+                    test,
+                    target,
                     user,
-                    ctx
+                    context
                 )
             )
-
-    def test_wildcard(self):
-
-        from sitebasis.models import Trigger, Item, User
-        self.assert_matches(
-            Trigger(),
-            (Item(), self.create_action, None, {}, True),
-            (Item(), self.create_action, User(), {}, True),
-            (Item(), self.delete_action, None, {}, True),
-            (User(), self.delete_action, None, {}, True)
-        )
+            test += 1
 
     def test_user(self):
 
@@ -60,956 +42,653 @@ class TriggerMatchTestCase(BaseTestCase):
         u2 = User(roles = [r2])
         u3 = User(roles = [r3])
         
-        self.assert_matches(
-            Trigger(roles = [r2]),
-            (Item(), self.create_action, u2, {}, True),
-            (Item(), self.create_action, u3, {}, True),
-            (Item(), self.create_action, None, {}, False),
-            (Item(), self.create_action, u1, {}, False)
+        self.assert_match(
+            Trigger(matching_roles = [r2]),
+            (Item(), u2, {}, True),
+            (Item(), u3, {}, True),
+            (Item(), None, {}, False),
+            (Item(), u1, {}, False)
         )
 
-    def test_action(self):
+    def test_target(self):
 
-        from sitebasis.models import Trigger, Item
-        
-        self.assert_matches(
-            Trigger(actions = [self.create_action, self.modify_action]),
-            (Item(), self.create_action, None, {}, True),
-            (Item(), self.modify_action, None, {}, True),
-            (Item(), self.delete_action, None, {}, False)
+        from sitebasis.models import (
+            Trigger,
+            Item,
+            Document,
+            StandardPage,
+            User,
+            set_current_user
         )
-
-    def test_item(self):
-
-        from sitebasis.models import Trigger, Item
                 
-        i1 = Item()
-        i2 = Item()
-        
-        self.assert_matches(
-            Trigger(items = [i1, i2]),
-            (i1, self.create_action, None, {}, True),
-            (i2, self.create_action, None, {}, True),
-            (Item(), self.create_action, None, {}, False)
+        self.assert_match(
+            Trigger(matching_items = {
+                "type": "sitebasis.models.document.Document"
+            }),
+            (Document(), None, {}, True),
+            (StandardPage(), None, {}, True),
+            (Item(), None, {}, False),
+            (Trigger(), None, {}, False)
         )
 
-    def test_content_type(self):
+        user = User()
+        set_current_user(user)
 
-        from sitebasis.models import Trigger, Document, StandardPage, User
-        
-        self.assert_matches(
-            Trigger(types = [Document, User]),
-            (Document(), self.create_action, None, {}, True),
-            (User(), self.create_action, None, {}, True),
-            (StandardPage(), self.create_action, None, {}, True),
-            (Trigger(), self.create_action, None, {}, False)
+        self.assert_match(
+            Trigger(matching_items = {
+                "type": "sitebasis.models.document.Document",
+                "filter": "owned-items"
+            }),
+            (Document(), user, {}, False),
+            (Document(owner = user), user, {}, True)
         )
 
-    def test_trigger(self):
+    def test_modified_member(self):
 
-        from sitebasis.models import Trigger, Item
+        from sitebasis.models import ModifyTrigger, Item, Document
 
-        self.assert_matches(            
-            Trigger(item_is_draft = True),
-            (Item(is_draft = True), self.create_action, None, {}, True),
-            (Item(is_draft = False), self.create_action, None, {}, False)
-        )
-
-    def test_member(self):
-
-        from sitebasis.models import Trigger, Item
-
-        self.assert_matches(
-            Trigger(modified_members = [Item.is_draft, Item.draft_source]),
-            (Item(), self.modify_action, None, {"member": Item.is_draft}, True),
-            (Item(), self.modify_action, None, {"member": Item.draft_source}, True),
-            (Item(), self.modify_action, None, {"member": None}, False),
-            (Item(), self.modify_action, None, {"member": Item.owner}, False)
+        self.assert_match(
+            ModifyTrigger(matching_members = [
+                "sitebasis.models.item.Item.owner",
+                "sitebasis.models.document.Document.title"
+            ]),               
+            (Item(), None, {"member": Item.owner}, True),
+            (Item(), None, {"member": Item.draft_source}, False),
+            (Document(), None, {"member": Document.title}, True),
+            (Document(), None, {"member": Document.description}, False)
         )
 
     def test_language(self):
 
-        from sitebasis.models import Trigger, Item
+        from sitebasis.models import ModifyTrigger, Item
 
-        self.assert_matches(
-            Trigger(modified_languages = [en, fr]),
-            (Item(), self.modify_action, None, {"language": "en"}, True),
-            (Item(), self.modify_action, None, {"language": "fr"}, True),
-            (Item(), self.modify_action, None, {"language": None}, False),
-            (Item(), self.modify_action, None, {"language": "ru"}, False)
+        self.assert_match(
+            ModifyTrigger(matching_languages = ["en", "fr"]),
+            (Item(), None, {"language": "en"}, True),
+            (Item(), None, {"language": "fr"}, True),
+            (Item(), None, {"language": None}, False),
+            (Item(), None, {"language": "ru"}, False)
         )
 
-
-class TestTriggerResponse(TriggerResponse):
-
-    def __init__(self, responses, *args, **kwargs):
-
-        TriggerResponse.__init__(self, *args, **kwargs)
-
-        self.responses = responses
-
-    def execute(self, items, action, user, batch = False, **context):
-        self.responses.append({
-            "trigger": self.trigger,
-            "items": items,
-            "action": action,
-            "user": user,
-            "batch": batch,
-            "context": context
-        })
 
 class TriggerInvocationTestCase(BaseTestCase):
 
     def setUp(self):
 
-        import sys
+        from cocktail.persistence import datastore
+        from sitebasis.models import (
+            triggerresponse,
+            TriggerResponse,
+            User,
+            set_current_user
+        )
 
         BaseTestCase.setUp(self)
+        
+        class TestTriggerResponse(TriggerResponse):
 
-        self.create_responses = []
-        self.modify_responses = []
-        self.delete_responses = []
+            def __init__(self, response_log, *args, **kwargs):
+                TriggerResponse.__init__(self, *args, **kwargs)
+                self.response_log = response_log
 
-        sys.modules[TriggerResponse.__module__].TestTriggerResponse = \
-            TestTriggerResponse
+            def execute(self, items, user, batch = False, **context):
+                self.response_log.append({
+                    "trigger": self.trigger,
+                    "items": items,
+                    "user": user,
+                    "batch": batch,
+                    "context": context
+                })
+
+        self.TestTriggerResponse = TestTriggerResponse
+
+        # ZODB requires classes to be accessible, so TestTriggerResponse is
+        # added to the same module of its base class:
+        triggerresponse.TestTriggerResponse = TestTriggerResponse
         TestTriggerResponse.__module__ = TriggerResponse.__module__
 
-    def tearDown(self):
-        
-        import sys
-
-        BaseTestCase.tearDown(self)
-
-        del sys.modules[TriggerResponse.__module__].TestTriggerResponse
-
-    def test_after_create(self):
-        
-        author = User()
-        author.insert()
-
-        create_trigger = Trigger(
-            execution_point = "after",
-            actions = [self.create_action],
-            responses = [TestTriggerResponse(self.create_responses)],
-            batch_execution = False
-        )
-
-        create_trigger.insert()
-
-        self.site.triggers.append(create_trigger)
+        self.user = User()
+        set_current_user(self.user)
 
         datastore.commit()
 
-        # Create action - Abort
-        with changeset_context(author) as changeset:
-            u = User()
-            u.insert()
-
-        assert len(self.create_responses) == 0
-
-        datastore.abort()
-
-        assert len(self.create_responses) == 0
-
-        # Create action - Commit
-        with changeset_context(author) as changeset:
-            u = User()
-            u.insert()
-
-        assert len(self.create_responses) == 0
-
-        datastore.commit()
-
-        assert len(self.create_responses) == 1
-        assert self.create_responses[0]["trigger"] is create_trigger
-        assert self.create_responses[0]["items"] == [u]
-        assert self.create_responses[0]["user"] is author
-        assert self.create_responses[0]["action"] is self.create_action
-        assert self.create_responses[0]["batch"] == \
-            create_trigger.batch_execution
-
-    def test_after_modify(self):
+    def make_trigger(self, trigger_type, response_log = None, **kwargs):
         
-        author = User()
-        author.insert()
+        from cocktail.persistence import datastore
+        from sitebasis.models.trigger import set_triggers_enabled
 
-        modify_trigger = Trigger(
-            execution_point = "after",
-            actions = [self.modify_action],
-            responses = [TestTriggerResponse(self.modify_responses)],
-            batch_execution = False
-        )
+        if response_log is None:
+            new_response_log = True
+            response_log = []
+        else:
+            new_response_log = False
 
-        modify_trigger.insert()
+        set_triggers_enabled(False)
 
-        self.site.triggers.append(modify_trigger)
+        try:
+            trigger = trigger_type(**kwargs)
+            trigger.responses = [self.TestTriggerResponse(response_log)]
+            trigger.insert()
+            self.site.triggers.append(trigger)
+            datastore.commit()
+            if new_response_log:
+                return trigger, response_log
+            else:
+                return trigger
+        finally:
+            set_triggers_enabled(True)
 
-        u = User()
-        u.insert()
 
-        datastore.commit()
-
-        while self.modify_responses:
-            self.modify_responses.pop()
-
-        # Modify action - Abort
-        with changeset_context(author) as changeset:
-            u.qname = "Tester"
-
-        assert len(self.modify_responses) == 0
-
-        datastore.abort()
-
-        assert len(self.modify_responses) == 0
-
-        # Modify action - Commit
-        with changeset_context(author) as changeset:
-            u.qname = "Beta Tester"
-
-        assert len(self.modify_responses) == 0
-
-        datastore.commit()
-
-        from pprint import pprint
-        print pprint(self.modify_responses)
-
-        assert len(self.modify_responses) == 1
-        assert self.modify_responses[0]["trigger"] is modify_trigger
-        assert self.modify_responses[0]["items"] == [u]
-        assert self.modify_responses[0]["context"]["member"] == "qname"
-        assert self.modify_responses[0]["user"] is author
-        assert self.modify_responses[0]["action"] is self.modify_action
-        assert self.modify_responses[0]["batch"] == \
-            modify_trigger.batch_execution
-
-    def test_after_delete(self):
-        
-        author = User()
-        author.insert()
-
-        delete_trigger = Trigger(
-            execution_point = "after",
-            actions = [self.delete_action],
-            responses = [TestTriggerResponse(self.delete_responses)],
-            batch_execution = False
-        )
-        
-        delete_trigger.insert()
-        
-        self.site.triggers.append(delete_trigger)
-
-        u = User()
-        u.insert()
-
-        datastore.commit()
-
-        # Delete action - Abort
-        with changeset_context(author) as changeset:
-            u = list(User().select())[0]
-            u.delete()
-
-        assert len(self.delete_responses) == 0
-
-        datastore.abort()
-
-        assert len(self.delete_responses) == 0
-
-        # Delete action - Commit
-        with changeset_context(author) as changeset:
-            u = list(User().select())[0]
-            u.delete()
-
-        assert len(self.delete_responses) == 0
-
-        datastore.commit()
-
-        assert len(self.delete_responses) == 1
-        assert self.delete_responses[0]["trigger"] is delete_trigger
-        assert self.delete_responses[0]["items"] == [u]
-        assert self.delete_responses[0]["user"] is author
-        assert self.delete_responses[0]["action"] is self.delete_action
-        assert self.delete_responses[0]["batch"] == \
-            delete_trigger.batch_execution
+class BeforeTestCase(TriggerInvocationTestCase):
 
     def test_before_create(self):
         
-        author = User()
-        author.insert()
+        from sitebasis.models import CreateTrigger, Item
 
-        create_trigger = Trigger(
+        # Declare the trigger
+        trigger, response_log = self.make_trigger(
+            CreateTrigger,
             execution_point = "before",
-            actions = [self.create_action],
-            responses = [TestTriggerResponse(self.create_responses)],
             batch_execution = False
         )
 
-        create_trigger.insert()
+        # Create two items. This should trigger the response twice.
+        item1 = Item()
+        item1.insert()
+        assert len(response_log) == 1
 
-        self.site.triggers.append(create_trigger)
+        item2 = Item()
+        item2.insert()
+        assert len(response_log) == 2
 
-        datastore.commit()
+        response = response_log[0]
+        assert response["trigger"] is trigger
+        assert response["items"] == [item1]
+        assert response["user"] is self.user
+        assert not response["batch"]
 
-        # Create action - Abort
-        with changeset_context(author) as changeset:
-            u = User()
-            u.insert()
-
-        assert len(self.create_responses) == 1
-
-        datastore.abort()
-
-        assert len(self.create_responses) == 1
-
-        while self.create_responses:
-            self.create_responses.pop()
-
-        # Create action - Commit
-        with changeset_context(author) as changeset:
-            u = User()
-            u.insert()
-
-        assert len(self.create_responses) == 1
-
-        datastore.commit()
-
-        assert len(self.create_responses) == 1
-        assert self.create_responses[0]["trigger"] is create_trigger
-        assert self.create_responses[0]["items"] == [u]
-        assert self.create_responses[0]["user"] is author
-        assert self.create_responses[0]["action"] is self.create_action
-        assert self.create_responses[0]["batch"] == \
-            create_trigger.batch_execution
+        response = response_log[1]
+        assert response["trigger"] is trigger
+        assert response["items"] == [item2]
+        assert response["user"] is self.user
+        assert not response["batch"]
 
     def test_before_modify(self):
-        
-        author = User()
-        author.insert()
 
-        modify_trigger = Trigger(
+        from sitebasis.models import ModifyTrigger, Item, User
+
+        # Declare the trigger
+        trigger, response_log = self.make_trigger(
+            ModifyTrigger,
             execution_point = "before",
-            actions = [self.modify_action],
-            responses = [TestTriggerResponse(self.modify_responses)],
             batch_execution = False
         )
 
-        modify_trigger.insert()
+        # Create an item and initialize it. This shouldn't trigger any
+        # response, since modifications happen before the item is inserted.
+        item = Item()
+        item.qname = "foo"
+        item.insert()
+        assert not response_log
+        
+        # Modify the inserted item two times. This should trigger the response
+        # twice.
+        item.qname = "bar"
+        assert len(response_log) == 1
 
-        self.site.triggers.append(modify_trigger)
+        item.owner = User()
+        assert len(response_log) == 2
 
-        u = User()
-        u.insert()
+        response = response_log[0]
+        assert response["trigger"] is trigger
+        assert response["items"] == [item]
+        assert response["context"]["member"] is Item.qname
+        assert response["user"] is self.user
+        assert not response["batch"]
 
-        datastore.commit()
-
-        while self.modify_responses:
-            self.modify_responses.pop()
-
-        # Modify action - Abort
-        with changeset_context(author) as changeset:
-            u.qname = "Tester"
-
-        assert len(self.modify_responses) == 1
-
-        datastore.abort()
-
-        assert len(self.modify_responses) == 1
-
-        while self.modify_responses:
-            self.modify_responses.pop()
-
-        # Modify action - Commit
-        with changeset_context(author) as changeset:
-            u.qname = "Beta Tester"
-
-        assert len(self.modify_responses) == 1
-
-        datastore.commit()
-
-        assert len(self.modify_responses) == 1
-        assert self.modify_responses[0]["trigger"] is modify_trigger
-        assert self.modify_responses[0]["items"] == [u]
-        assert self.modify_responses[0]["context"]["member"] == "qname"
-        assert self.modify_responses[0]["user"] is author
-        assert self.modify_responses[0]["action"] is self.modify_action
-        assert self.modify_responses[0]["batch"] == \
-            modify_trigger.batch_execution
+        response = response_log[1]
+        assert response["trigger"] is trigger
+        assert response["items"] == [item]
+        assert response["context"]["member"] is Item.owner
+        assert response["user"] is self.user
+        assert not response["batch"]
 
     def test_before_delete(self):
-        
-        author = User()
-        author.insert()
+         
+        from sitebasis.models import DeleteTrigger, Item
 
-        delete_trigger = Trigger(
+        # Declare the trigger
+        trigger, response_log = self.make_trigger(
+            DeleteTrigger,
             execution_point = "before",
-            actions = [self.delete_action],
-            responses = [TestTriggerResponse(self.delete_responses)],
             batch_execution = False
         )
 
-        delete_trigger.insert()
+        # Create and insert two items
+        item1 = Item()
+        item1.insert()
+        
+        item2 = Item()
+        item2.insert()        
+        
+        # Delete the items. This should trigger the response twice.
+        item1.delete()
+        assert len(response_log) == 1
 
-        self.site.triggers.append(delete_trigger)
+        item2.delete()
+        assert len(response_log) == 2
+         
+        response = response_log[0]
+        assert response["trigger"] is trigger
+        assert response["items"] == [item1]
+        assert response["user"] is self.user
+        assert not response["batch"]
 
-        u = User()
-        u.insert()
+        response = response_log[1]
+        assert response["trigger"] is trigger
+        assert response["items"] == [item2]
+        assert response["user"] is self.user
+        assert not response["batch"]
 
-        datastore.commit()
+    def test_before_create_modify_delete(self):
 
-        # Delete action - Abort
-        with changeset_context(author) as changeset:
-            u.delete()
+        from sitebasis.models import (
+            Item,
+            CreateTrigger,
+            ModifyTrigger,
+            DeleteTrigger
+        )
 
-        assert len(self.delete_responses) == 1
+        response_log = []
 
+        create_trigger = self.make_trigger(
+            CreateTrigger,
+            response_log,            
+            execution_point = "before",
+            batch_execution = False
+        )
+
+        modify_trigger = self.make_trigger(
+            ModifyTrigger,
+            response_log,            
+            execution_point = "before",
+            batch_execution = False
+        )
+
+        delete_trigger = self.make_trigger(
+            DeleteTrigger,
+            response_log,            
+            execution_point = "before",
+            batch_execution = False
+        )
+
+        # Create and insert an item
+        item = Item()
+        item.qname = "foo"
+        item.insert()
+
+        assert len(response_log) == 1
+        response = response_log.pop()
+        assert response["trigger"] is create_trigger
+        assert response["items"] == [item]
+        assert response["user"] is self.user
+        assert not response["batch"]
+
+        # Modify the item
+        item.qname = "bar"
+
+        assert len(response_log) == 1
+        response = response_log.pop()
+        assert response["trigger"] is modify_trigger
+        assert response["items"] == [item]
+        assert response["context"]["member"] is Item.qname
+        assert response["user"] is self.user
+        assert not response["batch"]
+
+        # Delete the item
+        item.delete()
+
+        assert len(response_log) == 1
+        response = response_log.pop()
+        assert response["trigger"] is delete_trigger
+        assert response["items"] == [item]
+        assert response["user"] is self.user
+        assert not response["batch"]
+
+
+class AfterTestCase(TriggerInvocationTestCase):
+
+    def test_after_create(self):
+        
+        from cocktail.persistence import datastore
+        from sitebasis.models import CreateTrigger, Item
+                
+        # Declare the trigger
+        trigger, response_log = self.make_trigger(
+            CreateTrigger,
+            execution_point = "after",
+            batch_execution = False
+        )
+
+        # Insert a new item, but abort the transaction
+        # (the trigger shouldn't be called)
+        item = Item()
+        item.insert()
+        assert not response_log
         datastore.abort()
+        assert not response_log
 
-        assert len(self.delete_responses) == 1
-
-        while self.delete_responses:
-            self.delete_responses.pop()
-
-        # Delete action - Commit
-        with changeset_context(author) as changeset:
-            u.delete()
-
-        assert len(self.delete_responses) == 1
-
+        # Insert a new item, and commit the transaction
+        # (the trigger should be executed)
+        item = Item()
+        item.insert()
         datastore.commit()
 
-        assert len(self.delete_responses) == 1
-        assert self.delete_responses[0]["trigger"] is delete_trigger
-        assert self.delete_responses[0]["items"] == [u]
-        assert self.delete_responses[0]["user"] is author
-        assert self.delete_responses[0]["action"] is self.delete_action
-        assert self.delete_responses[0]["batch"] == \
-            delete_trigger.batch_execution
+        assert len(response_log) == 1
+        response = response_log[0]
+        assert response["trigger"] is trigger
+        assert response["items"] == [item]
+        assert response["user"] is self.user
+        assert not response["batch"]
+
+    def test_after_modify(self):
+        
+        from cocktail.persistence import datastore
+        from sitebasis.models import ModifyTrigger, Item
+
+        # Declare the trigger
+        trigger, response_log = self.make_trigger(
+            ModifyTrigger,
+            execution_point = "after",
+            batch_execution = False
+        )
+
+        # Create an item and initialize it. This shouldn't trigger any
+        # response, since modifications happen before the item is inserted.
+        item = Item()
+        item.qname = "foo"
+        item.insert()
+        datastore.commit()
+        assert not response_log
+        
+        # Modify the inserted item, but abort the transaction. Again, this
+        # shouldn't trigger any response.
+        item.qname = "bar"
+        datastore.abort()
+        assert not response_log
+
+        # Modify the inserted item and commit the transaction. This should
+        # trigger the response.
+        item.qname = "spam"
+        datastore.commit()
+
+        assert len(response_log) == 1
+        response = response_log[0]
+        assert response["trigger"] is trigger
+        assert response["items"] == [item]
+        assert response["context"]["member"] is Item.qname
+        assert response["user"] is self.user
+        assert not response["batch"]
+
+    def test_after_delete(self):
+        
+        from cocktail.persistence import datastore
+        from sitebasis.models import DeleteTrigger, Item
+
+        # Declare the trigger
+        trigger, response_log = self.make_trigger(
+            DeleteTrigger,
+            execution_point = "after",
+            batch_execution = False
+        )
+
+        # Create and insert an item
+        item = Item()
+        item.insert()
+        datastore.commit()
+        
+        # Delete the item, but abort the transaction. This shouldn't trigger
+        # the response.
+        item.delete()
+        datastore.abort()
+        assert not response_log
+
+        # Delete the inserted item and commit the transaction. This should
+        # trigger the response.
+        item.delete()
+        datastore.commit()
+
+        assert len(response_log) == 1
+        response = response_log[0]
+        assert response["trigger"] is trigger
+        assert response["items"] == [item]
+        assert response["user"] is self.user
+        assert not response["batch"]
+
+    def test_after_create_modify_delete(self):
+
+        from cocktail.persistence import datastore
+        from sitebasis.models import (
+            Item,
+            User,
+            CreateTrigger,
+            ModifyTrigger,
+            DeleteTrigger
+        )
+
+        response_log = []
+
+        create_trigger = self.make_trigger(
+            CreateTrigger,
+            response_log,            
+            execution_point = "after",
+            batch_execution = False
+        )
+
+        modify_trigger = self.make_trigger(
+            ModifyTrigger,
+            response_log,            
+            execution_point = "after",
+            batch_execution = False
+        )
+
+        delete_trigger = self.make_trigger(
+            DeleteTrigger,
+            response_log,            
+            execution_point = "after",
+            batch_execution = False
+        )
+
+        # Create and insert an item
+        item = Item()
+        item.qname = "foo"
+        item.insert()
+
+        # Modify it
+        item.qname = "bar"
+        item.owner = User()
+
+        # Delete it
+        item.delete()
+
+        # Commit the transaction; this should execute all the scheduled
+        # responses
+        datastore.commit()
+        assert len(response_log) == 4
+
+        response = response_log.pop(0)
+        assert response["trigger"] is create_trigger
+        assert response["items"] == [item]
+        assert response["user"] is self.user
+        assert not response["batch"]
+
+        for member in (Item.qname, Item.owner):
+            response = response_log.pop(0)
+            assert response["trigger"] is modify_trigger
+            assert response["items"] == [item]
+            assert response["context"]["member"] is member
+            assert response["user"] is self.user
+            assert not response["batch"]
+
+        response = response_log[0]
+        assert response["trigger"] is delete_trigger
+        assert response["items"] == [item]
+        assert response["user"] is self.user
+        assert not response["batch"]
+
+
+class BatchTestCase(TriggerInvocationTestCase):
 
     def test_after_create_batched(self):
 
-        author = User()
-        author.insert()
-
-        create_trigger = Trigger(
-            actions = [self.create_action],
-            responses = [TestTriggerResponse(self.create_responses)],
+        from cocktail.persistence import datastore
+        from sitebasis.models import CreateTrigger, Item
+                
+        # Declare the trigger
+        trigger, response_log = self.make_trigger(
+            CreateTrigger,
+            execution_point = "after",
             batch_execution = True
         )
-        create_trigger.insert()
+
+        # Insert new items, but abort the transaction
+        # (the trigger shouldn't be called)
+        item1 = Item()
+        item1.insert()
+        assert not response_log
         
-        self.site.triggers.append(create_trigger)
-
-        datastore.commit()
-
-        # Create Action - Abort
-        with changeset_context(author):
-            u1 = User()
-            u1.insert()
-
-            u2 = User()
-            u2.insert()
-
-        assert len(self.create_responses) == 0
+        item2 = Item()
+        item2.insert()
+        assert not response_log
 
         datastore.abort()
+        assert not response_log
 
-        assert len(self.create_responses) == 0
-
-        # Create Action - Commit
-        with changeset_context(author):
-            u1 = User()
-            u1.insert()
-
-            u2 = User()
-            u2.insert()
-
-        assert len(self.create_responses) == 0
-
+        # Create and insert two items, and commit the transaction. The response
+        # should be triggered just once.
+        item1 = Item()
+        item1.insert()        
+        item2 = Item()
+        item2.insert()
         datastore.commit()
 
-        assert len(self.create_responses) == 1
-        assert self.create_responses[0]["trigger"] is create_trigger
-        assert self.create_responses[0]["items"] == set([u1, u2])
-        assert self.create_responses[0]["user"] is author
-        assert self.create_responses[0]["action"] is self.create_action
-        assert self.create_responses[0]["batch"] == \
-            create_trigger.batch_execution
+        assert len(response_log) == 1
+
+        response = response_log[0]
+        assert response["trigger"] is trigger
+        assert response["items"] == set([item1, item2])
+        assert response["user"] is self.user
+        assert response["batch"]
 
     def test_after_modify_batched(self):
 
-        author = User()
-        author.insert()
+        from cocktail.persistence import datastore
+        from sitebasis.models import ModifyTrigger, Item, User
 
-        modify_trigger = Trigger(
-            actions = [self.modify_action],
-            responses = [TestTriggerResponse(self.modify_responses)],
+        # Declare the trigger
+        trigger, response_log = self.make_trigger(
+            ModifyTrigger,
+            execution_point = "after",
             batch_execution = True
         )
-        modify_trigger.insert()
+
+        # Create two items and initialize them. This shouldn't trigger any
+        # response, since modifications happen before items are inserted.
+        item1 = Item()
+        item1.qname = "foo"
+        item1.insert()
+        item2 = Item()
+        item2.owner = User()
+        item2.insert()
+        datastore.commit()
+        assert not response_log
         
-        self.site.triggers.append(modify_trigger)
-
-        u1 = User()
-        u1.insert()
-
-        u2 = User()
-        u2.insert()
-
-        datastore.commit()
-
-        while self.modify_responses:
-            self.modify_responses.pop()
-
-        # Modify Action - Abort
-        with changeset_context(author):
-            u1.qname = "Tester1"
-            u2.is_draft = True
-
-        assert len(self.modify_responses) == 0
-
+        # Modify the inserted items, but abort the transaction. Again, this
+        # shouldn't trigger any response.
+        item1.qname = "bar"
+        item2.owner = User()
         datastore.abort()
+        assert not response_log
 
-        assert len(self.modify_responses) == 0
-
-        # Modify Action - Commit
-        with changeset_context(author):
-            u1.qname = "Beta Tester1"
-            u2.is_draft = True
-
-        assert len(self.modify_responses) == 0
-
+        # Modify the inserted items and commit the transaction. This should
+        # trigger the response just once.
+        item1.qname = "spam"
+        item2.owner = User()
         datastore.commit()
 
-        assert len(self.modify_responses) == 1
-        assert self.modify_responses[0]["trigger"] is modify_trigger
-        assert self.modify_responses[0]["items"] == set([u1, u2])
-        assert self.modify_responses[0]["context"]["modified_members"][u1] == \
-            set([("qname", None)])
-        assert self.modify_responses[0]["context"]["modified_members"][u2] == \
-            set([("is_draft", None)])
-        assert self.modify_responses[0]["user"] is author
-        assert self.modify_responses[0]["action"] is self.modify_action
-        assert self.modify_responses[0]["batch"] == \
-            modify_trigger.batch_execution
+        assert len(response_log) == 1
+        response = response_log[0]
+        assert response["trigger"] is trigger
+        assert response["items"] == set([item1, item2])
+        assert response["context"]["modified_members"] == {
+            item1: set([(Item.qname, None)]),
+            item2: set([(Item.owner, None)])
+        }
+        assert response["user"] is self.user
+        assert response["batch"]
 
     def test_after_delete_batched(self):
 
-        author = User()
-        author.insert()
+        from cocktail.persistence import datastore
+        from sitebasis.models import DeleteTrigger, Item
 
-        delete_trigger = Trigger(
-            actions = [self.delete_action],
-            responses = [TestTriggerResponse(self.delete_responses)],
+        # Declare the trigger
+        trigger, response_log = self.make_trigger(
+            DeleteTrigger,
+            execution_point = "after",
             batch_execution = True
         )
-        delete_trigger.insert()
-        
-        self.site.triggers.append(delete_trigger)
 
-        u1 = User()
-        u1.insert()
-
-        u2 = User()
-        u2.insert()
-
-        datastore.commit()
-
-        # Delete Action - Abort
-        with changeset_context(author):
-            u1.delete()
-            u2.delete()
-
-        assert len(self.delete_responses) == 0
-
-        datastore.abort()
-
-        assert len(self.delete_responses) == 0
-
-        # Delete Action - Commit
-        with changeset_context(author):
-            u1.delete()
-            u2.delete()
-
-        assert len(self.delete_responses) == 0
-
-        datastore.commit()
-
-        assert len(self.delete_responses) == 1
-        assert self.delete_responses[0]["trigger"] is delete_trigger
-        assert self.delete_responses[0]["items"] == set([u1, u2])
-        assert self.delete_responses[0]["user"] is author
-        assert self.delete_responses[0]["action"] is self.delete_action
-        assert self.delete_responses[0]["batch"] == \
-            delete_trigger.batch_execution
-
-    def test_mixed_after(self):
-        
-        author = User()
-        author.insert()
-
-        create_trigger = Trigger(
-            execution_point = "after",
-            actions = [self.create_action],
-            responses = [TestTriggerResponse(self.create_responses)],
-            batch_execution = False
-        )
-
-        modify_trigger = Trigger(
-            execution_point = "after",
-            actions = [self.modify_action],
-            responses = [TestTriggerResponse(self.modify_responses)],
-            batch_execution = False
-        )
-
-        delete_trigger = Trigger(
-            execution_point = "after",
-            actions = [self.delete_action],
-            responses = [TestTriggerResponse(self.delete_responses)],
-            batch_execution = False
-        )
-
-        create_trigger.insert()
-        modify_trigger.insert()
-        delete_trigger.insert()
-
-        self.site.triggers.append(create_trigger)
-        self.site.triggers.append(modify_trigger)
-        self.site.triggers.append(delete_trigger)
-
-        datastore.commit()
-
-        
-        while self.create_responses:
-            self.create_responses.pop()
-
-        while self.modify_responses:
-            self.modify_responses.pop()
-
-        while self.delete_responses:
-            self.delete_responses.pop()
-
-        # Create action - Abort
-        with changeset_context(author):
-            u = User()
-            u.insert()
-
-        assert len(self.create_responses) == 0
-        assert len(self.modify_responses) == 0
-        assert len(self.delete_responses) == 0
-
-        datastore.abort()
-
-        assert len(self.create_responses) == 0
-        assert len(self.modify_responses) == 0
-        assert len(self.delete_responses) == 0
-
-        # Create action - Commit
-        with changeset_context(author):
-            u = User()
-            u.insert()
-
-        assert len(self.create_responses) == 0
-        assert len(self.modify_responses) == 0
-        assert len(self.delete_responses) == 0
-
-        datastore.commit()
-
-        assert len(self.create_responses) == 1
-        assert len(self.modify_responses) == 0
-        assert len(self.delete_responses) == 0
-        assert self.create_responses[0]["trigger"] is create_trigger
-        assert self.create_responses[0]["items"] == [u]
-        assert self.create_responses[0]["user"] is author
-        assert self.create_responses[0]["action"] is self.create_action
-        assert self.create_responses[0]["batch"] == \
-            create_trigger.batch_execution
-
-        while self.create_responses:
-            self.create_responses.pop()
-
-        # Modify action - Abort
-        with changeset_context(author):
-            u.qname = "Tester"
-
-        assert len(self.create_responses) == 0
-        assert len(self.modify_responses) == 0
-        assert len(self.delete_responses) == 0
-
-        datastore.abort()
-
-        assert len(self.create_responses) == 0
-        assert len(self.modify_responses) == 0
-        assert len(self.delete_responses) == 0
-
-        # Modify action - Commit
-        with changeset_context(author):
-            u.qname = "Beta Tester"
-
-        assert len(self.create_responses) == 0
-        assert len(self.modify_responses) == 0
-        assert len(self.delete_responses) == 0
-
-        datastore.commit()
-
-        assert len(self.create_responses) == 0
-        assert len(self.modify_responses) == 1
-        assert len(self.delete_responses) == 0
-        assert self.modify_responses[0]["trigger"] is modify_trigger
-        assert self.modify_responses[0]["items"] == [u]
-        assert self.modify_responses[0]["context"]["member"] == "qname"
-        assert self.modify_responses[0]["user"] is author
-        assert self.modify_responses[0]["action"] is self.modify_action
-        assert self.modify_responses[0]["batch"] == \
-            modify_trigger.batch_execution
-
-        while self.modify_responses:
-            self.modify_responses.pop()
-
-        # Delete Action - Abort
-        with changeset_context(author):
-            u.delete()
-
-        assert len(self.create_responses) == 0
-        assert len(self.modify_responses) == 0
-        assert len(self.delete_responses) == 0
-
-        datastore.abort()
-
-        assert len(self.create_responses) == 0
-        assert len(self.modify_responses) == 0
-        assert len(self.delete_responses) == 0
-
-        # Delete Action - Commit
-        with changeset_context(author):
-            u.delete()
-
-        assert len(self.create_responses) == 0
-        assert len(self.modify_responses) == 0
-        assert len(self.delete_responses) == 0
-
-        datastore.commit()
-
-        assert len(self.create_responses) == 0
-        assert len(self.modify_responses) == 0
-        assert len(self.delete_responses) == 1
-        assert self.delete_responses[0]["trigger"] is delete_trigger
-        assert self.delete_responses[0]["items"] == [u]
-        assert self.delete_responses[0]["user"] is author
-        assert self.delete_responses[0]["action"] is self.delete_action
-        assert self.delete_responses[0]["batch"] == \
-            delete_trigger.batch_execution
-
-    def test_mixed_before(self):
-
-        author = User()
-        author.insert()
-        
-        create_trigger = Trigger(
-            execution_point = "before",
-            actions = [self.create_action],
-            responses = [TestTriggerResponse(self.create_responses)],
-            batch_execution = False
-        )
-
-        modify_trigger = Trigger(
-            execution_point = "before",
-            actions = [self.modify_action],
-            responses = [TestTriggerResponse(self.modify_responses)],
-            batch_execution = False
-        )
-
-        delete_trigger = Trigger(
-            execution_point = "before",
-            actions = [self.delete_action],
-            responses = [TestTriggerResponse(self.delete_responses)],
-            batch_execution = False
-        )
-
-        create_trigger.insert()
-        modify_trigger.insert()
-        delete_trigger.insert()
-
-        self.site.triggers.append(create_trigger)
-        self.site.triggers.append(modify_trigger)
-        self.site.triggers.append(delete_trigger)
-
+        # Create and insert two items
+        item1 = Item()
+        item1.insert()
+        item2 = Item()
+        item2.insert()
         datastore.commit()
         
-        while self.create_responses:
-            self.create_responses.pop()
-
-        while self.modify_responses:
-            self.modify_responses.pop()
-
-        while self.delete_responses:
-            self.delete_responses.pop()
-
-        # Create action - Abort
-        with changeset_context(author):
-            u = User()
-            u.insert()
-
-        assert len(self.create_responses) == 1
-        print self.modify_responses
-        assert len(self.modify_responses) == 0
-        assert len(self.delete_responses) == 0
-
+        # Delete the items, but abort the transaction. This shouldn't trigger
+        # the response.
+        item1.delete()
+        item2.delete()
         datastore.abort()
+        assert not response_log
 
-        assert len(self.create_responses) == 1
-        assert len(self.modify_responses) == 0
-        assert len(self.delete_responses) == 0
-
-        while self.create_responses:
-            self.create_responses.pop()
-
-        # Create action - Commit
-        with changeset_context(author):
-            u = User()
-            u.insert()
-
-        assert len(self.create_responses) == 1
-        assert len(self.modify_responses) == 0
-        assert len(self.delete_responses) == 0
-
+        # Delete the inserted items and commit the transaction. This should
+        # trigger the response just once.
+        item1.delete()
+        item2.delete()
         datastore.commit()
 
-        assert len(self.create_responses) == 1
-        assert len(self.modify_responses) == 0
-        assert len(self.delete_responses) == 0
-        assert self.create_responses[0]["trigger"] is create_trigger
-        assert self.create_responses[0]["items"] == [u]
-        assert self.create_responses[0]["user"] is author
-        assert self.create_responses[0]["action"] is self.create_action
-        assert self.create_responses[0]["batch"] == \
-            create_trigger.batch_execution
-
-        while self.create_responses:
-            self.create_responses.pop()
-
-        # Modify action - Abort
-        with changeset_context(author):
-            u.qname = "Tester"
-
-        assert len(self.create_responses) == 0
-        assert len(self.modify_responses) == 1
-        assert len(self.delete_responses) == 0
-
-        datastore.abort()
-
-        assert len(self.create_responses) == 0
-        assert len(self.modify_responses) == 1
-        assert len(self.delete_responses) == 0
-
-        while self.modify_responses:
-            self.modify_responses.pop()
-
-        # Modify action - Commit
-        with changeset_context(author):
-            u.qname = "Beta Tester"
-
-        assert len(self.create_responses) == 0
-        assert len(self.modify_responses) == 1
-        assert len(self.delete_responses) == 0
-
-        datastore.commit()
-
-        assert len(self.create_responses) == 0
-        assert len(self.modify_responses) == 1
-        assert len(self.delete_responses) == 0
-        assert self.modify_responses[0]["trigger"] is modify_trigger
-        assert self.modify_responses[0]["items"] == [u]
-        assert self.modify_responses[0]["context"]["member"] == "qname"
-        assert self.modify_responses[0]["user"] is author
-        assert self.modify_responses[0]["action"] is self.modify_action
-        assert self.modify_responses[0]["batch"] == \
-            modify_trigger.batch_execution
-
-        while self.modify_responses:
-            self.modify_responses.pop()
-
-        # Delete Action - Abort
-        with changeset_context(author):
-            u.delete()
-
-        assert len(self.create_responses) == 0
-        assert len(self.modify_responses) == 0
-        assert len(self.delete_responses) == 1
-
-        datastore.abort()
-
-        assert len(self.create_responses) == 0
-        assert len(self.modify_responses) == 0
-        assert len(self.delete_responses) == 1
-
-        while self.delete_responses:
-            self.delete_responses.pop()
-
-        # Delete Action - Commit
-        with changeset_context(author):
-            u.delete()
-
-        assert len(self.create_responses) == 0
-        assert len(self.modify_responses) == 0
-        assert len(self.delete_responses) == 1
-
-        datastore.commit()
-
-        assert len(self.create_responses) == 0
-        assert len(self.modify_responses) == 0
-        assert len(self.delete_responses) == 1
-        assert self.delete_responses[0]["trigger"] is delete_trigger
-        assert self.delete_responses[0]["items"] == [u]
-        assert self.delete_responses[0]["user"] is author
-        assert self.delete_responses[0]["action"] is self.delete_action
-        assert self.delete_responses[0]["batch"] == \
-            delete_trigger.batch_execution
+        assert len(response_log) == 1
+        response = response_log[0]
+        assert response["trigger"] is trigger
+        assert response["items"] == set([item1, item2])
+        assert response["user"] is self.user
+        assert response["batch"]
 
     def test_modify_batched_order(self):
-        
-        from sitebasis.models import Role
 
-        modify_trigger = Trigger(
+        from cocktail.persistence import datastore
+        from sitebasis.models import ModifyTrigger, Item, User
+
+        trigger, response_log = self.make_trigger(
+            ModifyTrigger,
             execution_point = "after",
-            actions = [self.modify_action],
-            modified_languages = ["en"],
-            responses = [TestTriggerResponse(self.modify_responses)],
-            batch_execution = True
+            batch_execution = True,
+            matching_members = ["sitebasis.models.item.Item.owner"]
         )
 
-        modify_trigger.insert()
-
-        self.site.triggers.append(modify_trigger)
-
-        datastore.commit()
-        
-        while self.modify_responses:
-            self.modify_responses.pop()
-
-        r = Role()
-        r.insert()
-
-        # Modify action - The object whatched by the trigger is modified first
-        r.set("title", "Foo", "en")
-        r.set("title", "Bar", "ca")
-        r.qname = "Tester"
-
+        # Modifying a member that is not covered by the trigger should alter
+        # the context passed to responses, even if it is modified before the
+        # member that actions the response
+        item = Item()
+        item.insert()
+        item.qname = "foo"
+        item.owner = User()
         datastore.commit()
 
-        response1 = self.modify_responses[0]
-
-        while self.modify_responses:
-            self.modify_responses.pop()
-        
-        # Modify action - The object whatched by the trigger is the last one
-        # to be modified
-        r.set("title", "Bar2", "ca")
-        r.qname = "Tester2"
-        r.set("title", "Foo2", "en")
-
-        datastore.commit()
-
-        response2 = self.modify_responses[0]
-
-        assert response1["context"]["modified_members"][r] == \
-               response2["context"]["modified_members"][r]
+        response = response_log[0]
+        assert response["context"]["modified_members"] == {
+            item: set([(Item.qname, None), (Item.owner, None)])
+        }
 

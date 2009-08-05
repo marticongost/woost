@@ -33,3 +33,16 @@ def unauthorized_style(t):
 def permission_doesnt_match_style(t):
     return styled(t, "yellow") + u"\n" + u" " * 4 
 
+def trigger_style(t):
+    return styled(t.ljust(80), "white", "brown")
+
+def trigger_context_style(k, v):
+    return styled(" " * 4 + (k + ":").ljust(15), style = "bold") \
+        + " " + unicode(v)
+
+def trigger_doesnt_match_style(t):
+    return styled(" " * 4 + t, "yellow")
+
+def trigger_match_style(t):
+    return " " * 4 + styled(t.upper(), "white", "green")
+
