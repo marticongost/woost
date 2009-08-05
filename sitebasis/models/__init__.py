@@ -108,7 +108,12 @@ from sitebasis.models.uri import URI
 from sitebasis.models.file import File
 from sitebasis.models.style import Style
 from sitebasis.models.extension import Extension
-from sitebasis.models.trigger import Trigger
+from sitebasis.models.trigger import (
+    Trigger,
+    CreateTrigger,
+    ModifyTrigger,
+    DeleteTrigger
+)
 from sitebasis.models.triggerresponse import TriggerResponse
 from sitebasis.models.feed import Feed
 from sitebasis.models.expressions import (

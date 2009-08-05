@@ -2275,46 +2275,16 @@ translations.define("Trigger.batch_execution",
     en = u"Batch execution"
 )
 
-translations.define("Trigger.items",
+translations.define("Trigger.matching_items",
     ca = u"Elements a observar",
     es = u"Elementos a observar",
     en = u"Watched items"
 )
 
-translations.define("Trigger.types",
-    ca = u"Tipus a observar",
-    es = u"Tipos a observar",
-    en = u"Watched types"
-)
-
-translations.define("Trigger.roles",
+translations.define("Trigger.matching_roles",
     ca = u"Rols a observar",
     es = u"Roles a observar",
     en = u"Watched roles"
-)
-
-translations.define("Trigger.actions",
-    ca = u"Accions",
-    es = u"Acciones",
-    en = u"Actions"
-)
-
-translations.define("Trigger.item_is_draft",
-    ca = u"L'element és un esborrany",
-    es = u"El elemento es un borrador",
-    en = u"Item is draft"
-)
-
-translations.define("Trigger.modified_members",
-    ca = u"Membres modificats",
-    es = u"Miembros modificados",
-    en = u"Modified members"
-)
-
-translations.define("Trigger.modified_languages",
-    ca = u"Idiomes modificats",
-    es = u"Idiomas modificados",
-    en = u"Modified languages"
 )
 
 translations.define("Trigger.responses",
@@ -2324,15 +2294,69 @@ translations.define("Trigger.responses",
 )
 
 translations.define("sitebasis.models.Trigger.execution_point before",
-    ca = u"Abans",
-    es = u"Antes",
-    en = u"Before"
+    ca = u"Immediatament",
+    es = u"Inmediatamente",
+    en = u"Immediately"
 )
 
 translations.define("sitebasis.models.Trigger.execution_point after",
-    ca = u"Després",
-    es = u"Después",
-    en = u"After"
+    ca = u"En confirmar la transacció",
+    es = u"Tras confirmar la transacción",
+    en = u"After committing the transaction"
+)
+
+# CreateTrigger
+#------------------------------------------------------------------------------
+translations.define("CreateTrigger",
+    ca = u"Disparador de creació",
+    es = u"Disparador de creación",
+    en = u"Create trigger"
+)
+
+translations.define("CreateTrigger-language",
+    ca = u"Disparadors de creació",
+    es = u"Disparadores de creación",
+    en = u"Create triggers"
+)
+
+# ModifyTrigger
+#------------------------------------------------------------------------------
+translations.define("ModifyTrigger",
+    ca = u"Disparador de modificació",
+    es = u"Disparador de modificación",
+    en = u"Modify trigger"
+)
+
+translations.define("ModifyTrigger-language",
+    ca = u"Disparadors de modificació",
+    es = u"Disparadores de modificación",
+    en = u"Modify triggers"
+)
+
+translations.define("ModifyTrigger.matching_members",
+    ca = u"Membres a observar",
+    es = u"Miembros a observar",
+    en = u"Watched members"
+)
+
+translations.define("ModifyTrigger.matching_languages",
+    ca = u"Idiomes a observar",
+    es = u"Idiomas a observar",
+    en = u"Watched languages"
+)
+
+# DeleteTrigger
+#------------------------------------------------------------------------------
+translations.define("DeleteTrigger",
+    ca = u"Disparador d'eliminació",
+    es = u"Disparador de eliminación",
+    en = u"Delete trigger"
+)
+
+translations.define("DeleteTrigger-language",
+    ca = u"Disparadors d'eliminació",
+    es = u"Disparadores de eliminación",
+    en = u"Delete triggers"
 )
 
 # TriggerResponse

@@ -10,29 +10,35 @@ from warnings import warn
 from traceback import format_exc
 from threading import local
 from weakref import WeakKeyDictionary
+from cocktail.styled import styled
 from cocktail import schema
+from cocktail.translations import translations
 from cocktail.events import when
 from cocktail.persistence import datastore
+from cocktail.controllers import UserCollection
 from sitebasis.models.action import Action
 from sitebasis.models.changesets import ChangeSet
 from sitebasis.models.site import Site
 from sitebasis.models.item import Item
 from sitebasis.models.role import Role
 from sitebasis.models.language import Language
+from sitebasis.models.usersession import get_current_user
+from sitebasis.models.messagestyles import (
+    trigger_style,
+    trigger_context_style,
+    trigger_doesnt_match_style,
+    trigger_match_style
+)
 
 _thread_data = local()
 
-actions_with_triggers = set(["create", "modify", "delete"])
+members_without_triggers = set([
+    Item.changes,
+    Item.last_update_time
+])
 
-def _handles_action(*handled_actions):
-    def eval_context(ctx):
-        actions = ctx.get("actions")
-        return (
-            any(action.id in handled_actions for action in actions)
-            if actions
-            else False
-        )
-    return eval_context
+verbose = False
+
 
 def get_triggers_enabled():
     """Indicates if trigger activation is enabled for the current thread.    
@@ -53,24 +59,25 @@ class Trigger(Item):
     """Describes an event."""
 
     integral = True
+    instantiable = False
     visible_from_root = False
-    edit_form = "sitebasis.views.TriggerForm"
     members_order = [
         "execution_point",
         "batch_execution",
-        "items",
-        "types",
-        "roles",
-        "actions",
-        "item_is_draft",
-        "modified_members",
-        "modified_languages",
+        "matching_roles",
+        "matching_items",
         "responses"
     ]
+
+    edit_controller = \
+        "sitebasis.controllers.backoffice.triggerfieldscontroller." \
+        "TriggerFieldsController"
+
+    edit_view = "sitebasis.views.TriggerFields"
     
     execution_point = schema.String(
         required = True,
-        enumeration = ("after", "before"),
+        enumeration = ("before", "after"),
         default = "after"
     )
 
@@ -92,100 +99,133 @@ class Trigger(Item):
 
     # Event criteria
     #--------------------------------------------------------------------------
-    items = schema.Collection(
-        items = schema.Reference(
-            required = True,
-            type = Item
-        ),
-        related_end = schema.Collection()
-    )
-
-    types = schema.Collection(
-        items = schema.Reference(
-            required = True,
-            class_family = Item
-        )
-    )
-
-    roles = schema.Collection(
+    matching_items = schema.Mapping()
+    
+    matching_roles = schema.Collection(
         items = schema.Reference(
             type = Role,
             required = True
         ),
-        related_end = schema.Collection()
-    )
-
-    actions = schema.Collection(
-        items = schema.Reference(
-            required = True,
-            type = Action,
-            enumeration = lambda ctx: [
-                action
-                for action in Action.select()
-                if action.identifier in actions_with_triggers
-            ]
-        ),
         related_end = schema.Collection(),
         edit_inline = True
-    )
-    
-    item_is_draft = schema.Boolean(
-        edit_control = "cocktail.html.DropdownSelector"
-    )
+    )        
+ 
+    def select_items(self, *args, **kwargs):
+        user_collection = UserCollection(Item)
+        user_collection.allow_paging = False
+        user_collection.allow_member_selection = False
+        user_collection.allow_language_selection = False
+        user_collection.params.source = self.matching_items.get
+        user_collection.available_languages = Language.codes
+        return user_collection.subset
 
-    modified_members = schema.Collection(
-        items = schema.String(required = True),
-        edit_control = "cocktail.html.TextArea"
-        #exclusive = _handles_action("modify")
-    )
-
-    modified_languages = schema.Collection(
-        items = schema.String(),
-        enumeration = lambda ctx: Language.codes
-    )
-  
-    def matches(self, item, action, user, **context):
+    def match(self, target, user, verbose = False):
         
-        # Check specific items
-        if self.items and item not in self.items:
+        # Check the target
+        query = self.select_items()
+
+        if not isinstance(target, query.type):
+            if verbose:
+                print trigger_doesnt_match_style("type doesn't match")
             return False
+        else:
+            for filter in query.filters:
+                if not filter.eval(target):
+                    print trigger_doesnt_match_style(
+                        "filter %s doesn't match" % filter
+                    )
+                    return False
 
-        # Check content types
-        if self.types and not isinstance(item, tuple(self.types)):
-            return False
+        # Check the user
+        trigger_roles = self.matching_roles
 
-        # Check user
-        if self.roles:
-
-            if user is None \
-            or not any((role in self.roles) for role in user.iter_roles()):
+        if trigger_roles:
+            if user is None:
+                print trigger_doesnt_match_style("user not specified")
                 return False
 
-        # Check action
-        if self.actions and action not in self.actions:
-            return False
-
-        # Check draft
-        if self.item_is_draft is not None \
-        and item.is_draft != self.item_is_draft:
-            return False
-
-        # Check modified member
-        if self.modified_members:
-            member = context.get("member")
-            if member is None or member not in self.modified_members:
-                return False
-
-        # Check modified language
-        if self.modified_languages:
-            language = context.get("language")
-            if language is None or language not in self.modified_languages:
+            for role in user.iter_roles():
+                if role in trigger_roles:
+                    break
+            else:
+                print trigger_doesnt_match_style("user doesn't match")
                 return False
 
         return True
 
 
-def trigger_responses(item, action, user, **context):
+class CreateTrigger(Trigger):
+    """A trigger executed when an item is created."""
+    instantiable = True
+
+
+class ModifyTrigger(Trigger):
+    """A trigger executed when an item is modified."""
+    
+    instantiable = True
+    members_order = ["matching_members", "matching_languages"]
+
+    matching_members = schema.Collection(
+        items = schema.String(required = True),
+        edit_control = "sitebasis.views.MemberList"
+    )
+
+    matching_languages = schema.Collection(
+        items = schema.String(
+            enumeration = lambda ctx: Language.codes
+        )
+    )
+
+    def match(self, target, user,
+        member = None,
+        language = None,
+        verbose = False):
+        
+        if not Trigger.match(self, target, user, verbose = verbose):
+            return False
+
+        if self.matching_members:
+            if member is None:
+                if verbose:
+                    print trigger_doesnt_match_style("member not specified")
+                return False
+
+            if (member.schema.full_name + "." + member.name) \
+            not in self.matching_members:
+                if verbose:
+                    print trigger_doesnt_match_style("member doesn't match")
+                return False
+
+        if self.matching_languages:
+            if language is None:
+                if verbose:
+                    print trigger_doesnt_match_style("language not specified")
+                return False
+            if language not in self.matching_languages:
+                if verbose:
+                    print trigger_doesnt_match_style("language doesn't match")
+                return False
+
+        return True
+
+
+class DeleteTrigger(Trigger):
+    """A trigger executed when an item is deleted."""
+    instantiable = True
+
+
+def trigger_responses(
+    trigger_type,
+    target,
+    user = None,
+    verbose = None,
+    **context):
+
+    if user is None:
+        user = get_current_user()
+
+    if verbose is None:
+        verbose = globals()["verbose"]
 
     if get_triggers_enabled():
 
@@ -217,114 +257,129 @@ def trigger_responses(item, action, user, **context):
             modified_members = trans_data["modified_members"]
 
         # Track modified members
-        if action.identifier == "modify":
-            item_modified_members = modified_members.get(item)
+        if issubclass(trigger_type, ModifyTrigger):
+            target_modified_members = modified_members.get(target)
 
-            if item_modified_members is None:
-                item_modified_members = set()
-                modified_members[item] = item_modified_members
+            if target_modified_members is None:
+                target_modified_members = set()
+                modified_members[target] = target_modified_members
             
-            item_modified_members.add(
+            target_modified_members.add(
                 (context["member"], context["language"])
             )
 
         # Execute or schedule matching triggers
         for trigger in Site.main.triggers:
-            if trigger.matches(item, action, user, **context):
 
-                # Track modified / deleted items
-                trigger_items = trans_triggers.get(trigger)
+            if not isinstance(trigger, trigger_type):
+                continue
 
-                if trigger_items is None:
-                    new_trans_trigger = True
-                    trigger_items = set()
-                    trans_triggers[trigger] = trigger_items
-                else:
-                    new_trans_trigger = False
+            if verbose:
+                print trigger_style(translations(trigger))
+                print trigger_context_style("target", translations(target))
+                print trigger_context_style("user", translations(user))
+                for k, v in context.iteritems():
+                    try:
+                        v = translations(v) or unicode(v)
+                    except:
+                        pass
+                    print trigger_context_style(k, v)
 
-                trigger_items.add(item)
+            if not trigger.match(
+                target = target,
+                user = user,
+                verbose = verbose,
+                **context
+            ):
+                continue
 
-                # Execute after the transaction is committed
-                if trigger.execution_point == "after":
-                    
-                    if trigger.batch_execution:
+            print trigger_match_style("match")
 
-                        # Schedule the trigger to be executed when the current
-                        # transaction is successfully committed. Each batched
-                        # trigger executes only once per transaction.
-                        if new_trans_trigger:
+            # Track modified / deleted items
+            trigger_targets = trans_triggers.get(trigger)
 
-                            def batched_response(successful, responses):
-                                if successful:
-                                    try:
-                                        for response in responses:
-                                            response.execute(
-                                                trigger_items,
-                                                action,
-                                                user,
-                                                batch = True,
-                                                modified_members = modified_members
-                                            )
+            if trigger_targets is None:
+                new_trans_trigger = True
+                trigger_targets = set()
+                trans_triggers[trigger] = trigger_targets
+            else:
+                new_trans_trigger = False
 
-                                        datastore.commit()
+            trigger_targets.add(target)
 
-                                    except Exception, ex:
-                                        warn(format_exc(ex))
-                                        datastore.abort()
-
-                            trans.addAfterCommitHook(
-                                batched_response,
-                                (list(trigger.responses),)
-                            )
+            # Execute after the transaction is committed
+            if trigger.execution_point == "after":
+                
+                if trigger.batch_execution:
 
                     # Schedule the trigger to be executed when the current
-                    # transaction is successfully committed.
-                    else:
-                        def delayed_response(successful, responses):
+                    # transaction is successfully committed. Each batched
+                    # trigger executes only once per transaction.
+                    if new_trans_trigger:
+
+                        def batched_response(successful, responses):
                             if successful:
                                 try:
                                     for response in responses:
                                         response.execute(
-                                            [item],
-                                            action,
+                                            trigger_targets,
                                             user,
-                                            **context
+                                            batch = True,
+                                            modified_members = modified_members
                                         )
 
                                     datastore.commit()
 
                                 except Exception, ex:
-                                    warn(str(ex))
+                                    warn(format_exc(ex))
                                     datastore.abort()
 
                         trans.addAfterCommitHook(
-                            delayed_response,
+                            batched_response,
                             (list(trigger.responses),)
                         )
 
-                # Execute immediately, within the transaction
+                # Schedule the trigger to be executed when the current
+                # transaction is successfully committed.
                 else:
-                    for response in trigger.responses:
-                        response.execute([item], action, user, **context)
+                    def delayed_response(successful, responses):
+                        if successful:
+                            try:
+                                for response in responses:
+                                    response.execute([target], user, **context)
+
+                                datastore.commit()
+
+                            except Exception, ex:
+                                warn(str(ex))
+                                datastore.abort()
+
+                    trans.addAfterCommitHook(
+                        delayed_response,
+                        (list(trigger.responses),)
+                    )
+
+            # Execute immediately, within the transaction
+            else:
+                for response in trigger.responses:
+                    response.execute([target], user, **context)
 
 @when(Item.inserted)
 def _trigger_insertion_responses(event):
     trigger_responses(
-        event.source,
-        Action.get_instance(identifier = "create"),
-        ChangeSet.current_author
+        CreateTrigger,
+        event.source
     )
 
 @when(Item.changed)
 def _trigger_modification_responses(event):
     if event.source.is_inserted \
-    and event.member not in (Item.last_update_time, Item.changes) \
+    and event.member not in members_without_triggers \
     and not isinstance(event.member, schema.Collection):
         trigger_responses(
+            ModifyTrigger,
             event.source,
-            Action.get_instance(identifier = "modify"),
-            ChangeSet.current_author,
-            member = event.member.name,
+            member = event.member,
             language = event.language
         )
 
@@ -332,20 +387,15 @@ def _trigger_modification_responses(event):
 @when(Item.unrelated)
 def _trigger_relation_responses(event):
     if not isinstance(event.member, schema.Reference) \
-    and event.member is not Item.changes:
+    and event.member not in members_without_triggers:
         trigger_responses(
+            ModifyTrigger,
             event.source,
-            Action.get_instance(identifier = "modify"),
-            ChangeSet.current_author,
-            member = event.member.name,
+            member = event.member,
             language = None
         )
 
 @when(Item.deleted)
 def _trigger_deletion_responses(event):
-    trigger_responses(
-        event.source,
-        Action.get_instance(identifier = "delete"),
-        ChangeSet.current_author
-    )
+    trigger_responses(DeleteTrigger, event.source)
 
