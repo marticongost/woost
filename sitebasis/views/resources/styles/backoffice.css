@@ -348,6 +348,13 @@ html, body {
     padding: 0.4em;
 }
 
+.BackOfficeLayout .Form .explanation_row .explanation {
+    padding-left: 1em;
+    padding-bottom: 1.4em;
+    color: rgb(75,75,75);
+    font-size: 0.8em;
+}
+
 .BackOfficeLayout .Form label {
     display: block;
     padding-bottom: 0.2em;
