@@ -2275,6 +2275,18 @@ translations.define("Trigger.batch_execution",
     en = u"Batch execution"
 )
 
+translations.define("Trigger.batch_execution-explanation",
+    ca = u"Si s'agrupa l'execució, el disparador només s'activarà un cop per "
+         u"transacció, independentment de quantes accions d'aquest tipus "
+         u"s'hagin realitzat.",
+    es = u"Si se agrupa la ejecución, el disparador solo se activará una vez "
+         u"por transacción, sin importar cuantas acciones de este tipo "
+         u"se hayan realizado.",
+    en = u"If checked, the trigger will be activated only once per "
+         u"transaction, regardless of how many times its activation "
+         u"conditions are met."
+)
+
 translations.define("Trigger.matching_items",
     ca = u"Elements a observar",
     es = u"Elementos a observar",
@@ -2285,6 +2297,15 @@ translations.define("Trigger.matching_roles",
     ca = u"Rols a observar",
     es = u"Roles a observar",
     en = u"Watched roles"
+)
+
+translations.define("Trigger.matching_roles-explanation",
+    ca = u"Si no es selecciona cap rol, el disparador s'activarà "
+         u"independentment de l'usuari que inicii l'acció.",
+    es = u"Si no se selecciona ningún rol, el disparador se activará "
+         u"independientemente del usuario que inicie la acción.",
+    en = u"If no role is checked, the trigger will execute regardless "
+         u"of which user started the action."
 )
 
 translations.define("Trigger.responses",
@@ -2339,10 +2360,28 @@ translations.define("ModifyTrigger.matching_members",
     en = u"Watched members"
 )
 
+translations.define("ModifyTrigger.matching_members-explanation",
+    ca = u"Si no es selecciona cap membre, el disparador s'activarà "
+         u"sigui quin sigui el membre modificat.",
+    es = u"Si no se selecciona ningún miembro, el disparador se activará "
+         u"sea cual sea el miembro modificado.",
+    en = u"If no member is checked, the trigger will execute regardless "
+         u"of which member is modified."
+)
+
 translations.define("ModifyTrigger.matching_languages",
     ca = u"Idiomes a observar",
     es = u"Idiomas a observar",
     en = u"Watched languages"
+)
+
+translations.define("ModifyTrigger.matching_languages-explanation",
+    ca = u"Si no es selecciona cap idioma, el disparador s'activarà "
+         u"sigui quin sigui l'idioma dels valors modificats.",
+    es = u"Si no se selecciona ningún idioma, el disparador se activará "
+         u"independientemente del idioma de los valores modificados.",
+    en = u"If no language is checked, the trigger will execute regardless "
+         u"of which language modified values are translated into."
 )
 
 # DeleteTrigger
