@@ -1471,6 +1471,40 @@ body.scripted .BackOfficeLayout .ThumbnailsContentView .collection_display input
     padding: 0.6em;
 }
 
+.BackOfficeLayout .autocomplete_results_container {
+    overflow: visible;
+    position: relative;
+}
+
+.BackOfficeLayout .autocomplete_dropdown {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    border: 1px solid rgb(190,200,210);
+    background-color: rgb(250,250,250);
+    font-size: 0.8em;
+    width: auto;
+    max-height: 24em;
+    overflow: auto;
+}
+
+.BackOfficeLayout .autocomplete_dropdown.unfolded {
+    display: block;
+}
+
+.BackOfficeLayout .autocomplete_dropdown div {    
+    padding: 0.4em;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+.BackOfficeLayout .autocomplete_dropdown .highlighted,
+.BackOfficeLayout .autocomplete_dropdown div:hover {
+	background-color: Highlight;
+	color: HighlightText;
+}
+
 /* Order view
 -----------------------------------------------------------------------------*/
 .BackOfficeOrderView tr.original_position td.element_column {
@@ -1989,5 +2023,36 @@ a.pickcolor span {
 .FeedFields .edit_form .ttl_field input.control,
 .FeedFields .edit_form .limit_field input.control {
     width: 4em;
+}
+
+/* Member list
+-----------------------------------------------------------------------------*/
+.BackOfficeFieldsView .MemberList-autocomplete {
+    width: 24em;
+}
+
+.BackOfficeFieldsView .MemberList-selection {
+    padding: 0;
+    margin: 0;
+    list-style-type: none;
+    font-size: 0.8em;
+}
+
+.BackOfficeFieldsView .MemberList-selection li {
+    margin-left: 0.4em;
+    margin-top: 0.4em;
+    padding: 0;
+}
+
+.BackOfficeFieldsView .autocomplete_dropdown .content_type,
+.BackOfficeFieldsView .MemberList-selection .content_type {
+    color: rgb(75,75,75);
+    font-weight: bold;
+}
+
+.BackOfficeFieldsView .MemberList-selection .remove_button {
+    margin-left: 0.8em;
+    vertical-align: pointer;
+    cursor: pointer;
 }
 
