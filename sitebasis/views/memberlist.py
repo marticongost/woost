@@ -18,6 +18,10 @@ class MemberList(Element):
     name = None
     value = ()
 
+    def _build(self):
+        self.add_resource("/cocktail/scripts/autocomplete.js")
+        self.add_resource("/resources/scripts/MemberList.js")
+
     def _ready(self):
 
         if not self.name and self.data_display:
