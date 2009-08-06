@@ -8,9 +8,9 @@
 -----------------------------------------------------------------------------*/
 
 cocktail.init(function () {
-    
+
     jQuery(".MemberList").each(function () {
-    
+
         var members = [];
         var selectedMembers = [];
         var name = jQuery("input", this).get(0).name;
@@ -31,29 +31,29 @@ cocktail.init(function () {
             });
         });
 
-        var inputBox = document.createElement("input");
-        var $inputBox = jQuery(inputBox);
-        inputBox.type = "text";
-        $inputBox.addClass("MemberList-autocomplete");
-        jQuery(this).replaceWith(inputBox);
-
         var memberList = document.createElement("ul");
-        memberList.className = "MemberList-selection";        
-        $inputBox.after(memberList);
+        memberList.className = "MemberList-selection";
+        jQuery(this).replaceWith(memberList);
+
+        var inputBox = document.createElement("input");
+        inputBox.type = "text";
+        jQuery(memberList).after(inputBox);
 
         cocktail.autocomplete(inputBox, {
             options: members
         });
 
-        $inputBox.bind("optionSelected", function (e, option) {            
-            this.value = "";
-            selectMember(option);            
-        });
+        jQuery(inputBox)
+            .addClass("MemberList-autocomplete")
+            .bind("optionSelected", function (e, option) {
+                this.value = "";
+                selectMember(option);
+            });
 
         function selectMember(option) {
             var entry = document.createElement("li");
             entry.innerHTML = option.label;
-            
+
             var removeButton = document.createElement("img");
             removeButton.className = "remove_button";
             removeButton.src = "/resources/images/delete_small.png";
@@ -65,7 +65,7 @@ cocktail.init(function () {
             input.name = name;
             input.value = option.value;
             entry.appendChild(input);
-            
+
             memberList.appendChild(entry);
         }
 
