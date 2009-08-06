@@ -1394,6 +1394,12 @@ translations.define("Permission.authorized",
     en = u"Authorized"
 )
 
+translations.define("Permission.authorized-explanation",
+    ca = u"Si es desmarca, el permís passa a actuar com una prohibició",
+    es = u"Si se desmarca, el permiso pasa a actuar como una prohibición",
+    en = u"If unchecked, the permission is treated as a prohibition"
+)
+
 # ContentPermission
 #------------------------------------------------------------------------------
 translations.define("ContentPermission",
