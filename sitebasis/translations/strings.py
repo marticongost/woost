@@ -1464,7 +1464,7 @@ translations.define("DeletePermission",
     en = u"Delete content permission"
 )
 
-translations.define("ModifyPermission-plural",
+translations.define("DeletePermission-plural",
     ca = u"Permisos d'eliminació",
     es = u"Permisos de eliminación",
     en = u"Delete content permissions"
@@ -2334,7 +2334,7 @@ translations.define("CreateTrigger",
     en = u"Create trigger"
 )
 
-translations.define("CreateTrigger-language",
+translations.define("CreateTrigger-plural",
     ca = u"Disparadors de creació",
     es = u"Disparadores de creación",
     en = u"Create triggers"
@@ -2348,7 +2348,7 @@ translations.define("ModifyTrigger",
     en = u"Modify trigger"
 )
 
-translations.define("ModifyTrigger-language",
+translations.define("ModifyTrigger-plural",
     ca = u"Disparadors de modificació",
     es = u"Disparadores de modificación",
     en = u"Modify triggers"
@@ -2392,7 +2392,7 @@ translations.define("DeleteTrigger",
     en = u"Delete trigger"
 )
 
-translations.define("DeleteTrigger-language",
+translations.define("DeleteTrigger-plural",
     ca = u"Disparadors d'eliminació",
     es = u"Disparadores de eliminación",
     en = u"Delete triggers"
