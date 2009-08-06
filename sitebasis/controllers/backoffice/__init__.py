@@ -7,5 +7,4 @@ Controllers for the CMS administration interface.
 @organization:	Whads/Accent SL
 @since:			October 2008
 """
-from sitebasis.controllers.backoffice.userfilter import OwnItemsFilter
 
