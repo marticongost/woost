@@ -311,7 +311,7 @@ def init_site(
         own_items_view.parameters = {
             "type": "sitebasis.models.item.Item",
             "content_view": "flat",
-            "filter": "own-items",
+            "filter": "owned-items",
             "order": "-last_update_time",
             "members": None
         }
