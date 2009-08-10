@@ -629,7 +629,7 @@ translations.define("sitebasis.views.BackOfficeShowDetailView open resource",
 )
 
 translations.define(
-    "sitebasis.models.OwnItemsFilter-instance",
+    "sitebasis.models.userfilter.OwnItemsFilter-instance",
     ca = u"Elements propis",
     es = u"Elementos propios",
     en = u"Owned items"
