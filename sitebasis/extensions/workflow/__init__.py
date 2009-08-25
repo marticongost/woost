@@ -51,24 +51,10 @@ class WorkflowExtension(Extension):
         from sitebasis.extensions.workflow import (
             strings,
             state,
+            transition,
             transitionpermission,
-            trigger,
-            useractions,
-            triggerresponse
+            transitiontrigger,
+            setstatetriggerresponse,
+            useractions
         )
-
-        # Create the transition action
-        from sitebasis.models import Action
-            
-        if Action.get_instance(identifier = "transition") is None:
-            transition_action = Action()
-            transition_action.identifier = "transition"
-            for language in translations:
-                transition_action.set(
-                    "title",
-                    translations("Action transition", language),
-                    language
-                )
-            transition_action.insert()
-            datastore.commit()
 

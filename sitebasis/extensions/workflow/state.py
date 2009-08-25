@@ -29,21 +29,23 @@ class State(Item):
     items = schema.Collection(
         items = "sitebasis.models.Item",
         bidirectional = True,
-        related_key = "state",
+        related_key = "workflow_state",
         visible = False
     )
     
     outgoing_transitions = schema.Collection(
         items = "sitebasis.extensions.workflow.transition.Transition",
         related_key = "source_state",
-        bidirectional = True
+        bidirectional = True,
+        integral = True
     )
 
     incoming_transitions = schema.Collection(
         items = "sitebasis.extensions.workflow.transition.Transition",
         related_key = "target_state",
         bidirectional = True,
-        editable = False
+        editable = False,
+        integral = True
     )
 
     def __translate__(self, language, **kwargs):
@@ -53,7 +55,7 @@ class State(Item):
 
 Item.add_member(
     schema.Reference(
-        "state",
+        "workflow_state",
         type = "sitebasis.extensions.workflow.state.State",
         related_key = "items",
         bidirectional = True,

@@ -6,6 +6,7 @@
 @organization:	Whads/Accent SL
 @since:			July 2009
 """
+from cocktail import schema
 from sitebasis.models.messagestyles import permission_doesnt_match_style
 from sitebasis.models.permission import ContentPermission
 
@@ -23,5 +24,5 @@ class TransitionPermission(ContentPermission):
             print permission_doesnt_match_style("transition doesn't match")
             return False
 
-        return ContentPermission.match(target, verbose):
+        return ContentPermission.match(target, verbose)
 

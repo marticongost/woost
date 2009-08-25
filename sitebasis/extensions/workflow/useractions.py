@@ -10,14 +10,14 @@ import cherrypy
 from cocktail.translations import translations
 from cocktail import schema
 from cocktail.persistence import datastore
-from cocktail.controllers import context as controller_context, get_parameter
+from cocktail.controllers import get_parameter
 from cocktail.controllers.viewstate import view_state
 from cocktail.html import Element
 from sitebasis.models import get_current_user
 from sitebasis.controllers.backoffice.useractions import UserAction
 from sitebasis.extensions.workflow.transitionpermission import \
     TransitionPermission
-from sitebasis.extensions.workflow.state import State
+from sitebasis.extensions.workflow.transition import Transition
 
 
 class TransitionAction(UserAction):
@@ -30,78 +30,78 @@ class TransitionAction(UserAction):
         # Hide the transition action unless there are one or more available
         # outgoing states for the item's current condition
         return UserAction.is_available(self, context, target) \
-            and bool(self._get_outgoing_states(target))
+            and bool(self._get_outgoing_transitions(target))
     
-    def get_dropdown_panel(self, target):
+    def get_dropdown_panel(self, item):
         
         panel = Element()
 
-        for state in self._get_outgoing_states(target):
+        for transition in self._get_outgoing_transitions(item):
             # This should really be a POST operation, but HTML doesn't provide
             # multi-value buttons, so regular links and GET requests are all
             # that is left :(
             button = Element("a")
             button["href"] = u"?" + view_state(
-                new_state = state.id,
+                transition = transition.id,
                 item_action = "transition"
             )
-            button.append(translations(state))            
+            button.append(translations(translation))            
             panel.append(button)
 
         return panel
 
-    def _get_outgoing_states(self, item, restricted = True):
+    def _get_outgoing_transitions(self, item, restricted = True):
 
-        if item.state is None:
-            states = []
+        if item.workflow_state is None:
+            transitions = []
         else:
-            states = item.state.outgoing
+            transitions = item.state.outgoing_transitions
 
         if restricted:
             user = get_current_user()
-            states = [
-                state
-                for state in states
+            transitions = [
+                transition
+                for transition in transitions
                 if user.has_permission(
                     TransitionPermission,
                     target = item,
-                    source_state = item.state,
-                    target_state = state
+                    transition = transition
                 )
             ]
 
-        return states
+        return transitions
 
     def invoke(self, controller, selection):
         
         item = selection[0]
 
-        # Retrieve and validate the desired state for the item
-        new_state = get_parameter(
+        # Retrieve and validate the desired transition for the item
+        transition = get_parameter(
             schema.Reference(
-                "new_state",
-                type = State,
-                enumeration = self._get_outgoing_states(
+                "transition",
+                type = Transition,
+                enumeration = self._get_outgoing_transitions(
                     item,
+                    # This allows to discriminate between invalid ids and authz
+                    # errors:
                     restricted = False
                 )
             ),
             strict = True
         )
 
-        if new_state is None:
-            raise ValueError("Wrong state identifier")
+        if transition is None:
+            raise ValueError("Wrong transition identifier")
 
         # Authorization check
         get_current_user().require_permission(
             TransitionPermission,
             target = item,
-            source_state = item.state,
-            target_state = new_state
+            transition = transition
         )
 
         # Transition the item to its new state
-        item.state = new_state
+        transition.execute(item)
         controller.notify_user(
             translations(
                 "sitebasis.controllers.backoffice.useractions.TransitionAction"
@@ -113,7 +113,7 @@ class TransitionAction(UserAction):
         datastore.commit()
 
         raise cherrypy.HTTPRedirect(
-            "?" + view_state(item_state = None, new_state = None)
+            "?" + view_state(transition = None)
         )
 
 TransitionAction("transition").register(before = "close")
