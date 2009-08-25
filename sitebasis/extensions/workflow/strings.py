@@ -20,7 +20,7 @@ translations.define(
 
 # Item
 #------------------------------------------------------------------------------
-translations.define("Item.state",
+translations.define("Item.workflow_state",
     ca = u"Estat",
     es = u"Estado",
     en = u"State"
@@ -46,18 +46,24 @@ translations.define("TransitionPermission.transition",
     en = u"Transition"
 )
 
-# Trigger
+# TransitionTrigger
 #------------------------------------------------------------------------------
-translations.define("Trigger.item_states",
-    ca = u"Estats",
-    es = u"Estados",
-    en = u"States"
+translations.define("TransitionTrigger",
+    ca = u"Disparador de transició",
+    es = u"Disparador de transición",
+    en = u"Transition trigger"
 )
 
-translations.define("Trigger.item_previous_states",
-    ca = u"Estats d'origen",
-    es = u"Estados de origen",
-    en = u"Source states"
+translations.define("TransitionTrigger-plural",
+    ca = u"Disparadors de transició",
+    es = u"Disparadores de transición",
+    en = u"Transition triggers"
+)
+
+translations.define("Trigger.transition",
+    ca = u"Transició a observar",
+    es = u"Transición a observar",
+    en = u"Watched transition"
 )
 
 # State
@@ -88,7 +94,7 @@ translations.define("State.outgoing_transitions",
 
 translations.define("State.incoming_transitions",
     ca = u"Transicions d'entrada",
-    es = u"Transiciones de salida",
+    es = u"Transiciones de entrada",
     en = u"Incoming transitions"
 )
 
