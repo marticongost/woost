@@ -147,7 +147,8 @@ def init_site(
             ReadPermission(matching_items = everything()),
             CreatePermission(matching_items = everything()),
             ModifyPermission(matching_items = everything()),
-            DeletePermission(matching_items = everything())
+            DeletePermission(matching_items = everything()),
+            ModifyMemberPermission()
         ]
         administrators.insert()
 
