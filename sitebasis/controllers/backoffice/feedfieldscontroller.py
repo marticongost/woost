@@ -28,10 +28,6 @@ class FeedFieldsController(ItemFieldsController, ContentController):
     
     def _handle_form_data(self):
 
-        from styled import styled
-        print styled("\n".join("%s: %s" % item for item in sorted(cherrypy.request.params.iteritems())), "red")
-        print styled("\n".join("%s: %s" % item for item in sorted(self.stack_node.item.query_parameters.iteritems())), "brown")
-
         form_data = self.stack_node.form_data
         query_parameters = form_data["query_parameters"]        
         ItemFieldsController._handle_form_data(self)                
@@ -47,15 +43,10 @@ class FeedFieldsController(ItemFieldsController, ContentController):
             if key.startswith("filter_"):
                 query_parameters[key] = value
         
-        from styled import styled
-        print styled("\n".join("%s: %s" % item for item in sorted(query_parameters.iteritems())), "yellow")
- 
     @cached_getter
     def query_parameters_source(self):
         source = self.stack_node.form_data["query_parameters"].copy()
         source.update(cherrypy.request.params)
-        from styled import styled
-        print styled("\n".join("%s: %s" % item for item in sorted(source.iteritems())), "bright_green")
         return source
 
     @cached_getter
