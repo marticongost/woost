@@ -376,7 +376,7 @@ class ContentController(BaseBackOfficeController):
         content_type = collection.type
         filename = translations(content_type.name + "-plural") + ".xls"
         members = [member
-                for member in self.content_schema.ordered_members()
+                for member in self.user_collection.schema.ordered_members()
                 if member.name in collection.members]
      
         book = pyExcelerator.Workbook()
