@@ -272,6 +272,10 @@ class CMS(BaseCMSController):
         path = "".join(percent_encode(c) for c in path)
         path = self.application_uri(path)
         path = str(self.language.translate_uri(path))
+
+        if cherrypy.request.query_string:
+            path += "?" + cherrypy.request.query_string
+
         raise cherrypy.HTTPRedirect(path)
 
     def validate_document(self, document):
