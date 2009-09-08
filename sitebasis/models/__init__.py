@@ -72,7 +72,11 @@ from sitebasis.models.item import Item
 from sitebasis.models.action import Action
 from sitebasis.models.language import Language
 from sitebasis.models.userview import UserView
-from sitebasis.models.document import Document
+from sitebasis.models.document import (
+    Document,
+    DocumentIsPublishedExpression,
+    DocumentIsAccessibleExpression
+)
 from sitebasis.models.redirection import Redirection
 from sitebasis.models.template import Template
 from sitebasis.models.user import (
@@ -97,7 +101,8 @@ from sitebasis.models.permission import (
     ReadTranslationPermission,
     ModifyTranslationPermission,
     DeleteTranslationPermission,
-    restricted_modification_context
+    restricted_modification_context,
+    PermissionExpression
 )
 from sitebasis.models.standardpage import StandardPage
 from sitebasis.models.file import File
@@ -116,11 +121,7 @@ from sitebasis.models.trigger import (
 )
 from sitebasis.models.triggerresponse import TriggerResponse
 from sitebasis.models.feed import Feed
-from sitebasis.models.expressions import (
-    PermissionExpression,
-    DocumentIsPublishedExpression,
-    DocumentIsAccessibleExpression
-)
+
 from sitebasis.models.userfilter import (
     OwnItemsFilter,
     PublishedDocumentsFilter
