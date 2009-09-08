@@ -24,7 +24,7 @@ ${self.dtd()}
 % endif
     
     <head>        
-        ${self.meta()}      
+        ${self.meta()}
         ${self.resources()}
     </head>
 
@@ -35,6 +35,10 @@ ${self.dtd()}
     </body>
 
 </html>
+
+<%def name="getTitle()">
+    ${document.title}
+</%def>
 
 <%def name="dtd()">
     % if self.attr.output_format == "xhtml":
@@ -48,7 +52,7 @@ ${self.dtd()}
     
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8"${closure()}>
     <meta name="Content-Language" content="${content_language}"${closure()}>
-    <title>${document.title}</title>
+    <title>${self.getTitle()}</title>
 
     % if document.description:
         <meta name="description" content="${document.description}"${closure()}>
