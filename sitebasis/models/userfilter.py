@@ -10,9 +10,8 @@ from cocktail.modeling import cached_getter
 from cocktail import schema
 from cocktail.controllers.userfilter import UserFilter, user_filters_registry
 from sitebasis.models.item import Item
-from sitebasis.models.document import Document
+from sitebasis.models.document import Document, DocumentIsPublishedExpression
 from sitebasis.models.resource import Resource
-from sitebasis.models.expressions import DocumentIsPublishedExpression
 from sitebasis.models.usersession import get_current_user
 
 

@@ -10,6 +10,7 @@ from contextlib import contextmanager
 from cocktail.events import when
 from cocktail import schema
 from cocktail.controllers.usercollection import UserCollection
+from cocktail.schema.expressions import Expression
 from sitebasis.models.item import Item
 from sitebasis.models.language import Language
 from sitebasis.models.messagestyles import permission_doesnt_match_style
@@ -292,4 +293,46 @@ def restricted_modification_context(item, user = None):
     # objects, to make sure the user is leaving the object in a state that
     # complies with all existing restrictions.
     user.require_permission(permission_type, target = item)
+
+
+class PermissionExpression(Expression):
+    """An schema expression that indicates if the specified user has permission
+    over an element.
+    """
+    user = None
+    permission_type = None
+
+    def __init__(self, user, permission_type):
+        self.user = user
+        self.permission_type = permission_type
+
+    def eval(self, context, accessor = None):
+        return self.user.has_permission(self.permission_type, target = context)
+
+    def resolve_filter(self, query):
+
+        def impl(dataset):
+
+            authorized_subset = set()
+            queried_type = query.type
+
+            for permission in reversed(list(
+                self.user.iter_permissions(self.permission_type)
+            )):
+                permission_query = permission.select_items()
+
+                if issubclass(queried_type, permission_query.type) \
+                or issubclass(permission_query.type, queried_type):
+
+                    permission_subset = permission_query.execute()
+
+                    if permission.authorized:
+                        authorized_subset.update(permission_subset)
+                    else:
+                        authorized_subset.difference_update(permission_subset)
+
+            dataset.intersection_update(authorized_subset)
+            return dataset
+
+        return ((0, 0), impl)
 
