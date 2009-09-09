@@ -39,11 +39,14 @@ cocktail.init(function () {
                 });
 
             updateToolbar.call(contentView);
+
+            // Automatically focus the simple search box
+            jQuery("[name=simple_search_query]", this).focus();
         })
 
-        // Replace the 'clear filters' link with a 'discard search' button
         .find(".filters").each(function () {
         
+            // Replace the 'clear filters' link with a 'discard search' button
             if (jQuery.browser.msie) {
                 var closeButton = document.createElement("<input type='button'>");
             }
@@ -58,7 +61,7 @@ cocktail.init(function () {
             jQuery(closeButton).val(cocktail.translate("sitebasis.views.ContentView close advanced search")).click(function () {
                 location.href = closeHref;
             });
-                        
+            
             discardButton.replaceWith(closeButton);
         });
 });
