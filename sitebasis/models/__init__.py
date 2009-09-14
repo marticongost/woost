@@ -10,9 +10,6 @@ Provides base and default content types for the sitebasis CMS.
 from cocktail import schema
 from cocktail.events import when
 
-# Add an extension property to set the default HTML control for the member
-schema.Member.edit_control = None
-
 # Add an extension property to determine wether collections should be edited on
 # the main tab of the object editor (True) or if they should be promoted to
 # their own tab (False, default)
