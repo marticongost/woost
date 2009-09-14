@@ -558,19 +558,28 @@ body.scripted .BackOfficeLayout .Table .selection {
     font-size: 85%;
 }
 
-.BackOfficeLayout .PropertyTable ul,
-.BackOfficeLayout .PropertyTable li {
+.BackOfficeLayout .ContentTable ul,
+.BackOfficeLayout .PropertyTable ul {
+    padding: 0;
+    margin: 0;
+    list-style-type: none;
     list-style-position: inside;
+}
+
+.BackOfficeLayout .ContentTable li,
+.BackOfficeLayout .PropertyTable li {
     padding: 0;
     margin: 0;
 }
 
+.BackOfficeLayout .ContentTable ul ul,
 .BackOfficeLayout .PropertyTable ul ul {
     padding-left: 2em;
 }
 
+.BackOfficeLayout .ContentTable li,
 .BackOfficeLayout .PropertyTable li {
-    margin-top: 0.4em;
+    margin-bottom: 0.5em;
 }
 
 /*.Table tr.translations th {*/
