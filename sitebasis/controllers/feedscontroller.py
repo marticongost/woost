@@ -107,7 +107,10 @@ class FeedsController(BaseCMSController):
         }
 
         items = feed.select_items()
-        items.add_filter(PermissionExpression(get_current_user()))
+        items.add_filter(PermissionExpression(
+            get_current_user(),
+            ReadPermission)
+        )
        
         for item in items:
             context["item"] = item
