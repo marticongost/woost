@@ -17,26 +17,12 @@ from sitebasis.models import (
     ReadMemberPermission
 )
 
-# Extension property that allows members to define their appearence in several
-# points of the application (listings, detail views, etc) from just one place
-Member.display = None
-
 
 class ContentDisplayMixin(object):
 
     base_url = None
 
     def __init__(self):
-
-        @extend(self)
-        def _resolve_member_display(self, obj, member):
-
-            display = getattr(member, "display", None)
-            
-            if display is None:
-                display = call_base(obj, member)
-
-            return display
 
         @extend(self)
         def get_default_member_display(self, obj, member):
