@@ -8,12 +8,12 @@ u"""
 """
 from cocktail.html import Element
 from cocktail.translations import translations
+from cocktail.controllers import context
 
 
 class ContentLink(Element):
 
     item = None
-    base_url = None
     referer = None
 
     def __init__(self, item = None, **kwargs):
@@ -24,10 +24,11 @@ class ContentLink(Element):
 
         Element._ready(self)
 
-        if self.item and self.base_url:
+        if self.item:
             self.tag = "a"
-            self["href"] = \
-                self.base_url + "/content/%s/show_detail" % self.item.id
+            self["href"] = context["cms"].document_uri(
+                "content", self.item.id, "show_detail"
+            )                
             self.append(self.get_label())
         else:
             self.append(u"-")

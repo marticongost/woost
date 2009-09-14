@@ -14,7 +14,6 @@ List = templates.get_class("cocktail.html.List")
 
 class ContentList(List):
 
-    base_url = None
     referer = None
 
     def _fill_entries(self):
@@ -32,12 +31,12 @@ class ContentList(List):
         if items:            
             List._fill_entries(self)
         else:
+            self.tag = "div"
             self.append(u"-")
 
     def create_entry_content(self, item):
         link = templates.new("sitebasis.views.ContentLink")
         link.item = item
-        link.base_url = self.base_url
         link.referer = self.referer
         link.member = self.member
         return link
