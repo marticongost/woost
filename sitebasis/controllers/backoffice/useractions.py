@@ -668,7 +668,10 @@ class CancelAction(GoBackAction):
         ("list_buttons", "selector"),
         ("item_buttons", "edit"),
         ("item_buttons", "changed"),
-        ("item_buttons", "new")
+        ("item_buttons", "new"),
+        ("item_bottom_buttons", "edit"),
+        ("item_bottom_buttons", "changed"),
+        ("item_bottom_buttons", "new")
     ])
     excluded = frozenset()
 
@@ -677,7 +680,10 @@ class SaveAction(UserAction):
     included = frozenset([
         ("item_buttons", "new"),
         ("item_buttons", "edit"),
-        ("item_buttons", "changed")
+        ("item_buttons", "changed"),
+        ("item_bottom_buttons", "new"),
+        ("item_bottom_buttons", "edit"),
+        ("item_bottom_buttons", "changed")
     ])
     ignores_selection = True
     max = None
@@ -712,14 +718,20 @@ class SaveDraftAction(SaveAction):
     included = frozenset([
         ("item_buttons", "new"),
         ("item_buttons", "edit"),
-        ("item_buttons", "changed")
+        ("item_buttons", "changed"),
+        ("item_bottom_buttons", "new"),
+        ("item_bottom_buttons", "edit"),
+        ("item_bottom_buttons", "changed")
     ])
     excluded = frozenset(["draft"])
 
 
 class ConfirmDraftAction(SaveAction):
     confirm_draft = True
-    included = frozenset([("item_buttons", "draft")])
+    included = frozenset([
+        ("item_buttons", "draft"),
+        ("item_bottom_buttons", "draft")
+    ])
     excluded = frozenset()
     
     def is_permitted(self, user, target):
