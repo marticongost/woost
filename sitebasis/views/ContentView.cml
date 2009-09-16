@@ -35,6 +35,7 @@ from sitebasis.controllers.backoffice.useractions import \
     self.add_client_translation("sitebasis.views.ContentView search button")
     
     add_view_action_context(self, "content_view")
+    add_view_action_context(self, self.content_view_id + "_content_view")
     ?>
 
     <?py-class
