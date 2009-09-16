@@ -12,6 +12,7 @@ from cocktail.pkgutils import resolve
 from cocktail.events import event_handler
 from cocktail.controllers import view_state
 from cocktail import schema
+from sitebasis.models import get_current_user, ReadPermission
 from sitebasis.controllers.backoffice.basebackofficecontroller \
     import BaseBackOfficeController
 from sitebasis.controllers.backoffice.contentcontroller \
