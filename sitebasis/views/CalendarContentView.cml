@@ -135,6 +135,7 @@ from cocktail.controllers import get_parameter, view_state
     </div>
 
     <div py:def="collection_display">
+        <h1><py:ready>${translations("month %d" % self.month)} ${self.year}</py:ready></h1>
         <table py:id="calendar">
             <thead>
                 <tr>
