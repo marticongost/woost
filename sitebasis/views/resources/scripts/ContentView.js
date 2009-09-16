@@ -14,7 +14,7 @@ cocktail.init(function () {
     // Enable/disable buttons depending on the selected content
     function updateToolbar() {    
         var display = jQuery(".collection_display", this).get(0);
-        if (display) {
+        if (display && display.getSelection) {
             var selectionSize = display.getSelection().length;
             jQuery(".action_button", this).each(function () {
                 this.disabled = (
