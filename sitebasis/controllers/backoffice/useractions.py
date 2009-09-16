@@ -159,7 +159,7 @@ class UserAction(object):
     """
     enabled = True
     included = frozenset(["toolbar_extra", "item_buttons_extra"])
-    excluded = frozenset(["selector"])
+    excluded = frozenset(["selector", "calendar_content_view"])
     content_type = None
     ignores_selection = False
     min = 1
@@ -520,7 +520,7 @@ class DeleteAction(UserAction):
         ("collection", "toolbar", "integral"),
         "item_buttons"
     ])
-    excluded = frozenset(["selector", "new_item"])
+    excluded = frozenset(["selector", "new_item", "calendar_content_view"])
     max = None
     
     def is_permitted(self, user, target):
@@ -529,7 +529,7 @@ class DeleteAction(UserAction):
 
 class HistoryAction(UserAction):
     min = None
-    excluded = frozenset(["selector", "new_item"])
+    excluded = frozenset(["selector", "new_item", "calendar_content_view"])
 
 
 class DiffAction(UserAction):
@@ -744,6 +744,7 @@ class ConfirmDraftAction(SaveAction):
 class PrintAction(UserAction):
     direct_link = True
     ignore_selection = True
+    excluded = frozenset(["selector"])
 
     def get_url(self, controller, selection):
         return "javascript: print();"

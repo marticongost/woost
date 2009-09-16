@@ -11,7 +11,7 @@ from inspect import getmro
 from cocktail.pkgutils import get_full_name
 from cocktail.typemapping import TypeMapping
 from cocktail.html import templates
-from sitebasis.models import Item, Document
+from sitebasis.models import Item, Document, Event
 
 
 class ContentViewsRegistry(object):
@@ -133,6 +133,14 @@ global_content_views.add(
     "sitebasis.views.DocumentTreeContentView",
     is_default = True,
     inherited = False
+)
+
+global_content_views.add(
+    Event,
+    "sitebasis.views.CalendarContentView",
+    params = {
+        "date_members": (Event.event_start, Event.event_end)
+    }
 )
 
 # Relation content views
