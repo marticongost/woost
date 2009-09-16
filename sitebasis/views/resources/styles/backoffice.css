@@ -2068,6 +2068,11 @@ a.pickcolor span {
 /* Calendar content view
 -----------------------------------------------------------------------------*/
 
+.BackOfficeLayout .CalendarContentView h1 {
+    display: none;
+    font-size: 110%;
+}
+
 .BackOfficeLayout .CalendarContentView .toolbar_box {
     height: 2em;
 }
