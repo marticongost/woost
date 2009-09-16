@@ -875,19 +875,19 @@ translations.define("order content view",
 )
 
 translations.define("sitebasis.views.CalendarContentView current month",
-    ca = u"Més actual",
+    ca = u"Mes actual",
     es = u"Mes actual",
     en = u"Current month"
 )
 
 translations.define("sitebasis.views.CalendarContentView previous month",
-    ca = u"Més anterior",
+    ca = u"Mes anterior",
     es = u"Mes anterior",
     en = u"Previous month"
 )
 
 translations.define("sitebasis.views.CalendarContentView next month",
-    ca = u"Més següent",
+    ca = u"Mes següent",
     es = u"Mes siguiente",
     en = u"Next month"
 )
