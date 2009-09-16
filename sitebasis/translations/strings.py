@@ -862,10 +862,34 @@ translations.define("thumbnails content view",
     en = u"Show as thumbnails grid"
 )
 
+translations.define("calendar content view",
+    ca = u"Veure com a calendari",
+    es = u"Ver como calendario",
+    en = u"Show as calendar"
+)
+
 translations.define("order content view",
     ca = u"Veure com a llista ordenable",
     es = u"Ver como lista ordenadable",
     en = u"Show as ordered listing"
+)
+
+translations.define("sitebasis.views.CalendarContentView current month",
+    ca = u"Més actual",
+    es = u"Mes actual",
+    en = u"Current month"
+)
+
+translations.define("sitebasis.views.CalendarContentView previous month",
+    ca = u"Més anterior",
+    es = u"Mes anterior",
+    en = u"Previous month"
+)
+
+translations.define("sitebasis.views.CalendarContentView next month",
+    ca = u"Més següent",
+    es = u"Mes siguiente",
+    en = u"Next month"
 )
 
 # Edit form

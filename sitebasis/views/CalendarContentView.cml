@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<?py
+from calendar import monthcalendar
+from datetime import date, datetime
+from cocktail import schema
+from cocktail.schema.expressions import Self
+from cocktail.controllers import get_parameter, view_state
+?>
+
+<py:sitebasis.views.ContentView
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:py="http://www.whads.com/ns/cocktail/templates">
+        
+    <?py-class
+    content_view_id = "calendar"
+    allow_sorting = False
+    allow_paging = False
+    allow_member_selection = False
+    allow_language_selection = False
+    allow_empty_search = True
+    date_members = ()
+
+    excluded_view_state_params = \
+        ContentView.excluded_view_state_params | frozenset(["month", "year"])
+
+    def _init_user_collection(self, user_collection):
+        
+        ContentView._init_user_collection(self, user_collection)
+
+        # Find the selected month/year
+        self.today = date.today()
+        self.month = get_parameter(
+            schema.Integer("month", min = 1, max = 12, default = self.today.month)
+        )
+        self.year = get_parameter(
+            schema.Integer("year", default = self.today.year)
+        )
+        self.is_current_month = (self.month == self.today.month) \
+                            and (self.year == self.today.year)
+
+        # Add filters to the user collection for the selected month/year
+        ids = set()
+        content_type = user_collection.type
+        from cocktail.styled import styled
+
+        for member in self.date_members:
+
+            beginning_of_month = member.type(self.year, self.month, 1)
+            
+            q, r = divmod(self.month, 12)
+            end_of_month = member.type(self.year + q, r + 1, 1)
+
+            ids.update(content_type.select(filters = [
+                member.greater_equal(beginning_of_month),
+                member.lower(end_of_month)
+            ]).execute(_sorted = False))
+
+
+        expr = Self.one_of(ids)
+        expr.by_key = True
+        user_collection.add_base_filter(expr)
+    ?>
+
+    <?py
+    self.add_resource("/resources/scripts/CalendarContentView.js")
+    ?>
+
+    <py:ready>
+        <?py        
+        # Sort items by each date member displayed in the calendar
+        self._entries = {}
+
+        for item in self.user_collection.subset:
+            for member in self.date_members:
+                value = item.get(member)
+                if value is not None:
+                    member_entries = self._entries.get(member)
+                    if member_entries is None:
+                        member_entries = []
+                        self._entries[member] = member_entries
+                    member_entries.append((value, item))
+
+        for member_entries in self._entries.itervalues():
+            member_entries.sort()
+        
+        # Don't hide the calendar if there are no results
+        self.collection_display.visible = True
+        self.data_controls.visible = True
+        self.no_results.visible = False
+        ?>
+    </py:ready>
+
+    <div py:id="date_controls" py:parent="self.data_controls">
+        <div py:id="month_links">
+            <py:ready>
+                <?py
+                if self.month == 1:
+                    prev_year = self.year - 1
+                    prev_month = 12
+                else:
+                    prev_year = self.year
+                    prev_month = self.month - 1
+
+                if self.month == 12:
+                    next_year = self.year + 1
+                    next_month = 1
+                else:
+                    next_year = self.year
+                    next_month = self.month + 1
+                ?>
+                <a href="?${view_state(year = self.today.year, month = self.today.month)}">
+                    ${translations("sitebasis.views.CalendarContentView current month")}
+                </a>
+                <a href="?${view_state(year = prev_year, month = prev_month)}">
+                    ${translations("sitebasis.views.CalendarContentView previous month")}
+                </a>
+                <a href="?${view_state(year = next_year, month = next_month)}">
+                    ${translations("sitebasis.views.CalendarContentView next month")}
+                </a>
+            </py:ready>
+        </div>
+        <select py:id="month_control" name="month">
+            <py:ready>
+                <option
+                    py:for="i in range(1, 13)"
+                    value="${i}"
+                    selected="${i == self.month}">
+                    ${translations("month %d" % i)}
+                </option>
+            </py:ready>
+        </select>
+        <input py:id="year_control" type="text" name="year" value="@{self.year}"/>
+        <input type="submit" value="${translations('Submit')}"/>
+    </div>
+
+    <div py:def="collection_display">
+        <table py:id="calendar">
+            <thead>
+                <tr>
+                    <th py:for="i in range(7)">${translations("weekday %d" % i)}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <py:ready>
+                    <tr py:for="days in monthcalendar(self.year, self.month)">
+                        <td py:for="day_of_week, day_of_month in enumerate(days)">
+                            <?py
+                            element.add_class("active" if day_of_month else "inactive")
+                            element.add_class("dayofweek%d" % day_of_week)
+
+                            if self.is_current_month and day_of_month == self.today.day:
+                                element.add_class("today")
+                            ?>
+                            <div class="cell">
+                                <div class="day" py:if="day_of_month">${day_of_month}</div>
+                                <div class="entries">
+                                    <?py
+                                    for member in self.date_members:
+                                        member_entries = self._entries.get(member)
+                                        while member_entries and member_entries[0][0].day == day_of_month:
+                                            entry_date, item = member_entries.pop(0)
+                                            element.append(self.collection_display.create_calendar_entry(member, entry_date, item))
+                                    ?>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </py:ready>
+            </tbody>
+        </table>
+
+        <div py:def="calendar_entry" py:args="member, entry_date, item">
+            <?py
+            element.add_class(member.name + "_entry")
+            ?>
+            <span class="time" py:if="isinstance(entry_date, datetime)">${entry_date.strftime("%H:%M")}</span>
+            <py:sitebasis.views.ContentLink py:item="${item}"/>
+            <span class="member" py:if="len(self.date_members) &gt; 1">(${translations(member)})</span>
+        </div>
+
+    </div>
+
+</py:sitebasis.views.ContentView>

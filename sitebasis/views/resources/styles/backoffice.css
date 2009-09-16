@@ -2065,3 +2065,101 @@ a.pickcolor span {
     cursor: pointer;
 }
 
+/* Calendar content view
+-----------------------------------------------------------------------------*/
+
+.BackOfficeLayout .CalendarContentView .toolbar_box {
+    height: 2em;
+}
+
+.BackOfficeLayout .CalendarContentView .toolbar {
+    float: left;
+}
+
+.BackOfficeLayout .CalendarContentView .data_controls {
+    float: right;
+    width: auto;
+    margin: 0.2em;
+}
+
+.BackOfficeLayout .CalendarContentView .date_controls * {
+    font-size: 85%;
+}
+
+.BackOfficeLayout .CalendarContentView .month_links {
+    display: inline;
+}
+
+.BackOfficeLayout .CalendarContentView .month_links a {
+    margin-right: 0.4em;
+}
+
+.BackOfficeLayout .CalendarContentView .year_control {
+    width: 3.4em;
+}
+
+.BackOfficeLayout .CalendarContentView .collection_display .calendar {
+    clear: both;
+    border-collapse: collapse;
+    width: 100%;
+    border: 1px solid rgb(200,205,212);
+}
+
+.BackOfficeLayout .CalendarContentView .collection_display .calendar th {
+    color: rgb(75,75,75);
+    padding: 0.4em;
+    font-size: 85%;
+    text-align: left;
+    background-position: bottom left;
+    background-repeat: repeat-x;
+    background-image: url(../images/header.png);
+    background-color: rgb(220,223,227);
+    border: 1px solid rgb(200,205,212);
+}
+
+.BackOfficeLayout .CalendarContentView .collection_display .calendar td {
+    border: 1px solid rgb(215,215,215);
+    width: 14%;
+    padding: 0.4em;
+    vertical-align: top;
+}
+
+.BackOfficeLayout .CalendarContentView .collection_display .calendar td.inactive {
+    background-color: rgb(235,235,235);
+}
+
+.BackOfficeLayout .CalendarContentView .collection_display .calendar td.today {
+    outline: 1px solid rgb(220,180,140);
+    background-color: rgb(255,245,230);
+}
+
+.BackOfficeLayout .CalendarContentView .collection_display .calendar td .cell {
+    min-height: 4em;
+}
+
+.BackOfficeLayout .CalendarContentView .collection_display .calendar td .day {
+    color: rgb(110,110,110);
+    font-weight: bold;
+}
+
+.BackOfficeLayout .CalendarContentView .collection_display .calendar td.dayofweek6 .day {
+    color: rgb(130,60,30);
+}
+
+.BackOfficeLayout .CalendarContentView .collection_display .calendar td .entries {
+    font-size: 75%;
+}
+
+.BackOfficeLayout .CalendarContentView .collection_display .calendar td .calendar_entry {
+    margin-top: 0.8em;
+}
+
+.BackOfficeLayout .CalendarContentView .collection_display .calendar td .calendar_entry .time {
+    font-weight: bold;
+    color: rgb(50,50,50);
+    font-size: 85%;
+}
+
+.BackOfficeLayout .CalendarContentView .collection_display .calendar td .calendar_entry a {
+    text-decoration: none;
+}
