@@ -2093,10 +2093,15 @@ a.pickcolor span {
 
 .BackOfficeLayout .CalendarContentView .month_links {
     display: inline;
+    margin-right: 1em;
 }
 
 .BackOfficeLayout .CalendarContentView .month_links a {
     margin-right: 0.4em;
+}
+
+.BackOfficeLayout .CalendarContentView .month_links a.current_month_link {
+    margin-right: 1em;
 }
 
 .BackOfficeLayout .CalendarContentView .year_control {

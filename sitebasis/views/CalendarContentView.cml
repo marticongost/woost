@@ -109,14 +109,14 @@ from cocktail.controllers import get_parameter, view_state
                     next_year = self.year
                     next_month = self.month + 1
                 ?>
-                <a href="?${view_state(year = self.today.year, month = self.today.month)}">
+                <a class="current_month_link" href="?${view_state(year = self.today.year, month = self.today.month)}">
                     ${translations("sitebasis.views.CalendarContentView current month")}
                 </a>
-                <a href="?${view_state(year = prev_year, month = prev_month)}">
-                    ${translations("sitebasis.views.CalendarContentView previous month")}
+                <a class="previous_month_link" href="?${view_state(year = prev_year, month = prev_month)}">
+                    <?py element.append("&laquo; " + translations("sitebasis.views.CalendarContentView previous month")) ?>
                 </a>
-                <a href="?${view_state(year = next_year, month = next_month)}">
-                    ${translations("sitebasis.views.CalendarContentView next month")}
+                <a class="next_month_link" href="?${view_state(year = next_year, month = next_month)}">
+                    <?py element.append(translations("sitebasis.views.CalendarContentView next month") + " &raquo;") ?>
                 </a>
             </py:ready>
         </div>
