@@ -160,7 +160,9 @@ from sitebasis.controllers.backoffice.useractions import \
                 self.user_collection.type.derived_schemas()
             )
             if self.content_type_is_instantiable(content_type)
-        )            
+        )
+        
+        self.set_client_param("contentType", self.user_collection.type.full_name)
         ?>
     </py:ready>
     
