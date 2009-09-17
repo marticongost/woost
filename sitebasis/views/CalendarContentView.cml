@@ -67,7 +67,9 @@ from cocktail.controllers import get_parameter, view_state
     ?>
 
     <py:ready>
-        <?py        
+        <?py
+        self.set_client_param("dateMembers", [member.name for member in self.date_members])
+
         # Sort items by each date member displayed in the calendar
         self._entries = {}
 
@@ -149,9 +151,13 @@ from cocktail.controllers import get_parameter, view_state
                             <?py
                             element.add_class("active" if day_of_month else "inactive")
                             element.add_class("dayofweek%d" % day_of_week)
+                            
+                            if day_of_month:
+                                cell_date = date(self.year, self.month, day_of_month)
+                                element.set_client_param("date", self.date_members[0].serialize_request_value(cell_date))
 
-                            if self.is_current_month and day_of_month == self.today.day:
-                                element.add_class("today")
+                                if self.is_current_month and day_of_month == self.today.day:
+                                    element.add_class("today")
                             ?>
                             <div class="cell">
                                 <div class="day" py:if="day_of_month">${day_of_month}</div>
