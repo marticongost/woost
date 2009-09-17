@@ -56,30 +56,26 @@ class ItemFieldsController(EditController):
         )
 
         # Load form data from the request
-        if self.submitted \
-        or cherrypy.request.method.upper() == "POST" \
-        or section != self.section \
-        or added_translation \
-        or deleted_translation \
-        or rel:
-            get_parameter(
-                self.fields_schema,
-                target = form_data,
-                languages = translations,
-                enable_defaults = False,
-                prefix = self.form_prefix,
-                strict = False)
+        get_parameter(
+            self.fields_schema,
+            target = form_data,
+            languages = translations,
+            enable_defaults = False,
+            prefix = self.form_prefix,
+            strict = False,
+            skip_undefined = cherrypy.request.method.upper() == "GET"
+        )
 
-            if added_translation and added_translation not in translations:
-                translations.append(added_translation)
+        if added_translation and added_translation not in translations:
+            translations.append(added_translation)
 
-            if deleted_translation:
-                translations.remove(deleted_translation)
-                for key, member in self.fields_schema.members().iteritems():
-                    if member.translated:
-                        values = form_data.get(key)
-                        if values:
-                            values.pop(deleted_translation, None)
+        if deleted_translation:
+            translations.remove(deleted_translation)
+            for key, member in self.fields_schema.members().iteritems():
+                if member.translated:
+                    values = form_data.get(key)
+                    if values:
+                        values.pop(deleted_translation, None)
         
         return form_data
 
