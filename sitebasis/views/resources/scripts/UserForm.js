@@ -7,7 +7,7 @@
 @since:			January 2009
 -----------------------------------------------------------------------------*/
 
-cocktail.init(function () {
+cocktail.init(function (root) {
 
     function togglePasswords() {
         
@@ -28,7 +28,7 @@ cocktail.init(function () {
         }
     }
 
-    jQuery(".UserForm .change_password_field .control")
+    jQuery(".UserForm .change_password_field .control", root)
         .each(togglePasswords)
         .click(togglePasswords)
         .change(togglePasswords);

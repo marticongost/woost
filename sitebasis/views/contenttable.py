@@ -169,7 +169,8 @@ class ContentTable(ContentDisplayMixin, Table):
             if self.filters \
             else []
 
-        filters.append("member-" + column.name)
+        filter_id = "member-" + column.name
+        filters.append(filter_id)
 
         options = Element()
         options.add_class("search_options")
@@ -180,6 +181,7 @@ class ContentTable(ContentDisplayMixin, Table):
         add_filter.append(
             translations("sitebasis.views.ContentTable add column filter")
         )
+        add_filter.set_client_param("filterId", filter_id)
         options.append(add_filter)
 
         return options

@@ -7,9 +7,9 @@
 @since:			November 2008
 -----------------------------------------------------------------------------*/
 
-cocktail.init(function () {
+cocktail.init(function (root) {
 
-    jQuery(".ContentTypePicker").each(function () {
+    jQuery(".ContentTypePicker", root).each(function () {
 
         this.tag = "div";
         jQuery(this).addClass("selector");
