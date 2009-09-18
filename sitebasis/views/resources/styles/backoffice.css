@@ -382,7 +382,8 @@ html, body {
     width: 20px !important;
 }
 
-.BackOfficeLayout .Form .control {
+.BackOfficeLayout .Form .control,
+.BackOfficeLayout .Form .field_instance-DatePicker .time  {
     font-size: 90%;
 }
 
@@ -400,6 +401,11 @@ html, body {
 .BackOfficeLayout .ui-datepicker-trigger {
     margin-left: 0.3em;
     vertical-align: middle;
+}
+
+.BackOfficeLayout .DatePicker,
+.BackOfficeLayout .field_instance .DatePicker.control {
+    width: 8em;
 }
 
 .field_instance-DatePicker .time {

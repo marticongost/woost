@@ -11,13 +11,7 @@
     ?>
 
     <?py        
-        self.add_resource("/cocktail/scripts/buttons_replacement.js")
-        script_tag = Element("script")
-        script_tag["type"] = "text/javascript"
-        script_tag.append("jQuery(function () {\n")
-        script_tag.append("\tcocktail.init();\n")
-        script_tag.append("});\n")
-        self.add_head_element(script_tag)        
+    self.add_resource("/cocktail/scripts/buttons_replacement.js")
     ?>
 
     <ul py:def="deleted_item_block" py:args="deleted_items">
