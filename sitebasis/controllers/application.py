@@ -39,6 +39,7 @@ from sitebasis.models.icons import IconResolver
 from sitebasis.models.thumbnails import (
     ThumbnailLoader,
     ImageThumbnailer,
+    VideoThumbnailer,
     ThumbnailParameterError
 )
 from sitebasis.controllers.basecmscontroller import BaseCMSController
@@ -432,6 +433,7 @@ class CMS(BaseCMSController):
 
         # Image thumbnails
         loader.thumbnailers.append(ImageThumbnailer())
+        loader.thumbnailers.append(VideoThumbnailer())
 
         return loader
 
@@ -440,31 +442,22 @@ class CMS(BaseCMSController):
 
         # Sanitize input
         item = self._get_requested_item(id, **kwargs)
-        
-        if width is not None:
-            width = int(width)
 
-        if height is not None:
-            height = int(height)
+        thumbnailer = self.thumbnail_loader.get_thumbnailer(item)
+
+        if thumbnailer is None:
+            raise cherrypy.NotFound()
+        
+        width, height, params = thumbnailer.get_request_parameters(
+            width, height, **kwargs
+        )
         
         format = kwargs.get("format", self.thumbnail_loader.default_format)
-            
+
         if format is None:
                 raise cherrypy.NotFound()
         
-        params = {"format": format}
-
-        quality = kwargs.get("quality")
-        if quality is not None:	    
-            params["quality"] = int(quality)
-
-        optimize = kwargs.get("optimize")
-        if optimize is not None:
-            params["optimize"] = (optimize == "true")
-
-        progressive = kwargs.get("progressive")
-        if progressive is not None:
-            params["progressive"] = (progressive == "progressive")
+        params["format"] = format
 
         # Obtain the thumbnail
         try:
@@ -472,6 +465,7 @@ class CMS(BaseCMSController):
                 item,
                 width,
                 height,
+                thumbnailer,
                 **params
             )
         except ThumbnailParameterError:
