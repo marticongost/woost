@@ -7,7 +7,7 @@
 @since:			April 2009
 -----------------------------------------------------------------------------*/
 
-cocktail.init(function () {
+cocktail.init(function (root) {
     
     // Pending changes control
     var hasPendingChanges = jQuery(".BackOfficeItemView").get(0).hasPendingChanges;
@@ -16,13 +16,13 @@ cocktail.init(function () {
     var SUBMIT_PRESERVING = 2;
     var departureManner = NAVIGATE_AWAY;
 
-    jQuery("form").submit(function () {
+    jQuery("form", root).submit(function () {
         if (departureManner != SUBMIT_CLOSING) {
             departureManner = SUBMIT_PRESERVING;
         }
     });
 
-    jQuery(".action_button").click(function () {
+    jQuery(".action_button", root).click(function () {
         if (this.value == "close") {
             departureManner = SUBMIT_CLOSING;
         }

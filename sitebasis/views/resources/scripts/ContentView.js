@@ -7,7 +7,7 @@
 @since:			January 2009
 -----------------------------------------------------------------------------*/
 
-cocktail.init(function () {
+cocktail.init(function (root) {
     
     var ADVANCED_SEARCH_COOKIE_PREFIX = "ContentView.advancedSearch-";
 
@@ -26,7 +26,7 @@ cocktail.init(function () {
     }
 
     // Initialization and handlers
-    jQuery(".ContentView")
+    jQuery(".ContentView", root)
         .addClass("scripted")
         .each(function () {
 
@@ -44,25 +44,37 @@ cocktail.init(function () {
             jQuery("[name=simple_search_query]", this).focus();
         })
 
-        .find(".filters").each(function () {
+        .find(".filters")
+            .each(function () {
         
-            // Replace the 'clear filters' link with a 'discard search' button
-            if (jQuery.browser.msie) {
-                var closeButton = document.createElement("<input type='button'>");
-            }
-            else {
-                var closeButton = document.createElement("input");
-                closeButton.type = "button";
-            }
-            
-            var discardButton = jQuery(".discard_button", this);
-            var closeHref = discardButton.get(0).href;
-            
-            jQuery(closeButton).val(cocktail.translate("sitebasis.views.ContentView close advanced search")).click(function () {
-                location.href = closeHref;
-            });
-            
-            discardButton.replaceWith(closeButton);
-        });
+                // Replace the 'clear filters' link with a 'discard search' button
+                if (jQuery.browser.msie) {
+                    var closeButton = document.createElement("<input type='button'>");
+                }
+                else {
+                    var closeButton = document.createElement("input");
+                    closeButton.type = "button";
+                }
+                
+                var discardButton = jQuery(".discard_button", this);
+                var closeHref = discardButton.get(0).href;
+                
+                jQuery(closeButton).val(cocktail.translate("sitebasis.views.ContentView close advanced search")).click(function () {
+                    location.href = closeHref;
+                });
+                
+                discardButton.replaceWith(closeButton);
+            })
+            .end()
+        
+        // Client side implementation for the addition of filters from table
+        // column headers
+        .find("th .add_filter")
+            .attr("href", "javascript:")
+            .click(function () {
+                cocktail.foldSelectors();
+                var filterBox = jQuery(this).parents(".ContentView").find(".FilterBox").get(0);
+                filterBox.addFilter(this.filterId);
+            });        
 });
 

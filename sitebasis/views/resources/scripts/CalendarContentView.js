@@ -7,8 +7,8 @@
 @since:			September 2009
 -----------------------------------------------------------------------------*/
 
-cocktail.init(function () {
-    jQuery(".CalendarContentView").each(function () {
+cocktail.init(function (root) {
+    jQuery(".CalendarContentView", root).each(function () {
         
         var contentView = this;
 
