@@ -437,7 +437,7 @@ class VideoThumbnailer(Thumbnailer):
     def create_thumbnail(self, item, width, height, **params):
 
         duration = commands.getoutput(
-            "%s -i %s 2>&1 | grep \"Duration\" | cut -d ' ' -f 4 | sed s/,//" % (
+            u"%s -i %s 2>&1 | grep \"Duration\" | cut -d ' ' -f 4 | sed s/,//" % (
                 self.ffmpeg_path, 
                 item.file_path
             )
@@ -461,8 +461,8 @@ class VideoThumbnailer(Thumbnailer):
             )
     
         temp_dir = mkdtemp()
-        temp_image = os.path.join(temp_dir, item.file_name)
-        grabimage = "%s -y -i %s -vframes 1 -ss %s -an -vcodec png -f rawvideo %s " % (
+        temp_image = os.path.join(temp_dir, unicode(item.id))
+        grabimage = u"%s -y -i %s -vframes 1 -ss %s -an -vcodec png -f rawvideo %s " % (
             self.ffmpeg_path, item.file_path, time.strftime("%H:%M:%S"), temp_image
         )
     
