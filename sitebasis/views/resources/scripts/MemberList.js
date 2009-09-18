@@ -7,9 +7,9 @@
 @since:			August 2009
 -----------------------------------------------------------------------------*/
 
-cocktail.init(function () {
+cocktail.init(function (root) {
 
-    jQuery(".MemberList").each(function () {
+    jQuery(".MemberList", root).each(function () {
 
         var members = [];
         var selectedMembers = [];

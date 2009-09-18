@@ -7,14 +7,14 @@
 @since:			April 2009
 -----------------------------------------------------------------------------*/
 
-cocktail.init(function () {
+cocktail.init(function (root) {
     
     NOTIFICATION_TIMEOUT = 2000;
 
     // Hide notifications
     setTimeout("jQuery('.notification.transient').hide('slow')", NOTIFICATION_TIMEOUT);
 
-    jQuery(".notification:not(.transient)").each(function () {
+    jQuery(".notification:not(.transient)", root).each(function () {
         
         var notification = this;
 
