@@ -1133,6 +1133,12 @@ translations.define("Site.keywords",
     en = u"Keywords"
 )
 
+translations.define("Site.description",
+    ca = u"Descripció",
+    es = u"Descripción",
+    en = u"Description"
+)
+
 translations.define("Site.icon",
     ca = u"Icona",
     es = u"Icono",

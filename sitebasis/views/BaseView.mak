@@ -54,8 +54,11 @@ ${self.dtd()}
     <meta name="Content-Language" content="${content_language}"${closure()}>
     <title>${self.getTitle()}</title>
 
-    % if document.description:
-        <meta name="description" content="${document.description}"${closure()}>
+    <% 
+    description = document.description or site.description
+    %>
+    % if description:
+        <meta name="description" content="${description}"${closure()}>
     % endif
     
     <%            

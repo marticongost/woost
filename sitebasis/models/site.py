@@ -29,6 +29,7 @@ class Site(Item):
         "forbidden_error_page",
         "icon",
         "keywords",
+        "description",
         "smtp_host",
         "triggers"
     ]
@@ -78,6 +79,12 @@ class Site(Item):
     )
 
     keywords = schema.String(
+        translated = True,
+        listed_by_default = False,
+        edit_control = "cocktail.html.TextArea"
+    )
+
+    description = schema.String(
         translated = True,
         listed_by_default = False,
         edit_control = "cocktail.html.TextArea"
