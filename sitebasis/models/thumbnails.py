@@ -8,7 +8,13 @@ Provides classes that generate thumbnail images for CMS items.
 @since:			April 2009
 """
 import os
+import re
+import datetime
+import commands
 import Image
+from subprocess import Popen, PIPE
+from shutil import rmtree
+from tempfile import mkdtemp
 from cocktail.modeling import abstractmethod
 from sitebasis.models import File
 
@@ -20,11 +26,6 @@ class ThumbnailLoader(object):
         thumbnails, to speed up further thumbnail requests for the same item.
         Clearing this attribute disables thumbnail caching.
     @type cache_path: str
-
-    @param relevant_cache_parameters: A set listing which thumbnail parameters
-        to take into account when deciding the file name for cached copies of
-        generated thumbnails.
-    @type relevant_cache_parameters: str set
 
     @var default_width: The default width for generated thumbnails.
     @type default_width: int
@@ -42,7 +43,6 @@ class ThumbnailLoader(object):
     @type thumbnailers: L{Thumbnailer} list
     """
     cache_path = None
-    relevant_cache_parameters = frozenset()
     default_width = None
     default_height = None
     default_format = "jpeg"
@@ -104,6 +104,7 @@ class ThumbnailLoader(object):
         item,
         width = None,
         height = None,
+        thumbnailer = None,
         **params):
         """Gets the path to the file where thumbnails for the given request
         will be stored.
@@ -117,6 +118,10 @@ class ThumbnailLoader(object):
         @param height: The height (in pixels) of the generated thumbnail.
         @type height: int
 
+        @param thumbnailer: The thumbnailer used by the loader to generate the 
+            thumbnails. 
+        @type thumbnailer: L{thumbnailer<Thumbnailer>}
+
         @param params: A set of formatting options that should be observed by
             the thumbnailer.
         
@@ -125,6 +130,12 @@ class ThumbnailLoader(object):
         """
         item, width, height = self._sanitize_request(item, width, height)
 
+        if thumbnailer is None:
+            thumbnailer = self.get_thumbnailer(item, **params)
+
+        if thumbnailer is None:
+            return None
+
         # Base name
         file_name = "%s-%sx%s" % (item.id, width or "auto", height or "auto")
 
@@ -132,10 +143,10 @@ class ThumbnailLoader(object):
         param_list = "-".join(
             "%s:%s" % (key, value)
             for key, value in params.iteritems()
-            if key in self.relevant_cache_parameters
+            if key in thumbnailer.relevant_cache_parameters
         )    
         if param_list:
-            file_name += param_list
+            file_name += "-" + param_list
 
         # File format
         file_format = params.get("format", self.default_format)
@@ -144,7 +155,7 @@ class ThumbnailLoader(object):
 
         return os.path.join(self.cache_path, file_name)
 
-    def get_thumbnail(self, item, width = None, height = None, **params):
+    def get_thumbnail(self, item, width = None, height = None, thumbnailer = None, **params):
         """Gets a thumbnail image for the given item.
 
         @param item: The item to create the thumbnail for.
@@ -156,6 +167,10 @@ class ThumbnailLoader(object):
         @param height: The height (in pixels) of the generated thumbnail.
         @type height: int
 
+        @param thumbnailer: The thumbnailer used by the loader to generate the 
+            thumbnails. 
+        @type thumbnailer: L{thumbnailer<Thumbnailer>}
+
         @param params: A set of formatting options that should be observed by
             the thumbnailer.
 
@@ -164,7 +179,8 @@ class ThumbnailLoader(object):
         """
         item, width, height = self._sanitize_request(item, width, height)
         
-        thumbnailer = self.get_thumbnailer(item, **params)
+        if thumbnailer is None:
+            thumbnailer = self.get_thumbnailer(item, **params)
 
         if thumbnailer is None:
             return None
@@ -177,11 +193,12 @@ class ThumbnailLoader(object):
                 item,
                 width,
                 height,
+                thumbnailer,
                 **params
             )
 
             # Make sure cached thumbnails are current
-            if os.path.exists(cached_thumbnail_path):
+            if cached_thumbnail_path and os.path.exists(cached_thumbnail_path):
                 thumbnail_date = os.stat(cached_thumbnail_path).st_mtime
                 if not thumbnailer.thumbnail_changed(item, thumbnail_date):
                     image = Image.open(cached_thumbnail_path)
@@ -238,7 +255,16 @@ class ThumbnailParameterError(ValueError):
 
 
 class Thumbnailer(object):
-    """Thumbnailers generate thumbnail images for certain kinds of items."""
+    """Thumbnailers generate thumbnail images for certain kinds of items.
+
+    @param relevant_cache_parameters: A set listing which thumbnail parameters
+        to take into account when deciding the file name for cached copies of
+        generated thumbnails.
+    @type relevant_cache_parameters: str set
+
+    """
+    resize_filter = Image.ANTIALIAS
+    relevant_cache_parameters = frozenset()
 
     @abstractmethod
     def can_handle(self, item, **params):
@@ -256,6 +282,42 @@ class Thumbnailer(object):
             False otherwise.
         @rtype: bool
         """
+
+    def get_request_parameters(self, width, height, **kwargs):
+        """Gets the parameters passed to the thumbnailer
+        
+        @param width: The width (in pixels) of the generated thumbnail.
+        @type width: int
+
+        @param height: The height (in pixels) of the generated thumbnail.
+        @type height: int
+
+        @param params: A set of formatting options that should be observed by
+            the thumbnailer.
+        """
+
+        if width is not None:
+            width = int(width)
+
+        if height is not None:
+            height = int(height)
+        
+        params = {}
+
+        quality = kwargs.get("quality")
+        if quality is not None:	    
+            params["quality"] = int(quality)
+
+        optimize = kwargs.get("optimize")
+        if optimize is not None:
+            params["optimize"] = (optimize == "true")
+
+        progressive = kwargs.get("progressive")
+        if progressive is not None:
+            params["progressive"] = (progressive == "progressive")
+
+        return width, height, params
+
     
     def thumbnail_changed(self, item, date):
         """Indicates if an item has been changed in a manner that would alter
@@ -301,8 +363,6 @@ class Thumbnailer(object):
 class ImageThumbnailer(Thumbnailer):
     """Generates thumbnails for image files."""
 
-    resize_filter = Image.ANTIALIAS
-
     # TODO: Extend it to all resources, including URI instances
     # (Rename it to ResourceThumbnailer, load remote resources using an HTTP
     # client and a If-Not-Modified-Since header, etc)
@@ -329,4 +389,97 @@ class ImageThumbnailer(Thumbnailer):
 
         return image
 
+class VideoThumbnailer(Thumbnailer):
+    """Generates thumbnails for video files."""
 
+    relevant_cache_parameters = frozenset(["position"])
+    try:
+        p = Popen(["which", "ffmpeg"], stdout=PIPE)
+        ffmpeg_path = p.communicate()[0].replace("\n", "") or None
+    except:
+        ffmpeg_path = None
+
+
+    def _secs2time(self, s):
+        ms = int((s - int(s)) * 1000000)
+        s = int(s)
+        # Get rid of this line if s will never exceed 86400
+        while s >= 24*60*60: s -= 24*60*60
+        h = s / (60*60)
+        s -= h*60*60
+        m = s / 60
+        s -= m*60
+        return datetime.time(h, m, s, ms)
+    
+    def _time2secs(self, d):
+        return d.hour*60*60 + d.minute*60 + d.second + \
+            (float(d.microsecond) / 1000000)
+
+    def can_handle(self, item, **params):
+        return self.ffmpeg_path and isinstance(item, File) \
+            and item.resource_type == "video"
+    
+    def get_request_parameters(self, width, height, **kwargs):
+        
+        width, height, params = Thumbnailer.get_request_parameters(
+            self, width, height, **kwargs
+        )
+
+        position = kwargs.get("position")
+        if position is not None:
+            params["position"] = int(position)
+
+        return width, height, params
+
+    def thumbnail_changed(self, item, date):
+        return date < os.stat(item.file_path).st_mtime
+    
+    def create_thumbnail(self, item, width, height, **params):
+
+        duration = commands.getoutput(
+            "%s -i %s 2>&1 | grep \"Duration\" | cut -d ' ' -f 4 | sed s/,//" % (
+                self.ffmpeg_path, 
+                item.file_path
+            )
+        )
+        duration_list = re.split("[\.:]", duration)
+        video_length = datetime.time(
+            int(duration_list[0]), int(duration_list[1]),
+            int(duration_list[2]), int(duration_list[3])
+        )
+    
+        if "position" in params:
+            position = params.get("position")
+            time = self._secs2time(position)
+        else:
+            seconds = self._time2secs(video_length)
+            time = self._secs2time(seconds / 2)
+    
+        if time > video_length:
+            raise ThumbnailParameterError(
+                "Must specify a smaller position than the video duration."
+            )
+    
+        temp_dir = mkdtemp()
+        temp_image = os.path.join(temp_dir, item.file_name)
+        grabimage = "%s -y -i %s -vframes 1 -ss %s -an -vcodec png -f rawvideo %s " % (
+            self.ffmpeg_path, item.file_path, time.strftime("%H:%M:%S"), temp_image
+        )
+    
+        grab = commands.getoutput(grabimage)
+    
+        image = Image.open(temp_image)
+
+        rmtree(temp_dir)
+    
+        if width is None:
+                w, h = image.size
+                width = int(w * height / float(h))
+    
+        elif height is None:
+            w, h = image.size
+            height = int(h * width / float(w))
+    
+        image.thumbnail((width, height), self.resize_filter)
+    
+        return image
