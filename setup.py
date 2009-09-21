@@ -24,8 +24,10 @@ setup(
     packages = find_packages(),
     dependency_links = ["http://www.pythonware.com/products/pil/"],   
     entry_points = {
-        "sitebasis.extensions":
-        ["workflow=sitebasis.extensions.workflow:WorkflowExtension"]
+        "sitebasis.extensions": [
+            "workflow = sitebasis.extensions.workflow:WorkflowExtension",
+            "shop = sitebasis.extensions.shop:ShopExtension"
+        ]
     },
     # SiteBasis can't yet access view resources (images, style sheets, client
     # side scripts, etc) that are packed inside a zipped egg, so distribution
