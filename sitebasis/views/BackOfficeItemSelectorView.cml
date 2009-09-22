@@ -25,6 +25,13 @@ from cocktail.html.datadisplay import MULTIPLE_SELECTION
     self.actions_context = set(["selector"])
     ?>
 
+    <py:ready>
+        <?py
+        if self.is_client_side_selector:
+            self.page_title = translations("sitebasis.views.BackOfficeItemSelectorView title", type = self.user_collection.type)
+        ?>
+    </py:ready>
+
     <py:sitebasis.views.UserViewsBar
         py:id="user_views_bar"
         py:after="self.header"

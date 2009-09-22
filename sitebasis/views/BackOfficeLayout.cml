@@ -23,6 +23,7 @@ from sitebasis.controllers.backoffice.useractions import add_view_action_context
     user = None
     edit_stack = None
     notifications = ()
+    client_side_scripting = False
 
     def get_page_title(self):
         return self.backoffice and self.backoffice.title
@@ -58,6 +59,11 @@ from sitebasis.controllers.backoffice.useractions import add_view_action_context
 
     <py:ready>
         <?py
+        self.is_client_side_selector = (
+            self.client_side_scripting
+            and isinstance(self.edit_stack[-1], (SelectionNode, RelationNode))
+        )
+
         self.page_title = self.get_page_title()
 
         if self.backoffice:
@@ -76,12 +82,12 @@ from sitebasis.controllers.backoffice.useractions import add_view_action_context
         <h1>
             <a>
                 <py:ready>
-                    <?py
-                    if self.cms:
+                    <?py                    
+                    if self.cms and not self.is_client_side_selector:
                         element["href"] = self.cms.document_uri()
                     else:
                         element.tag = None
-                        
+
                     element.append(self.page_title)
                     ?>
                 </py:ready>
@@ -119,8 +125,7 @@ from sitebasis.controllers.backoffice.useractions import add_view_action_context
 
     <py:ready>
         <?py
-        if self.edit_stack and len(self.edit_stack) > 1:
-
+        if self.edit_stack and len(self.edit_stack) > 1 and not self.is_client_side_selector:
             node_container = None
             relation = None
 
