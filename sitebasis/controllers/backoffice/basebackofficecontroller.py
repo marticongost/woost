@@ -232,6 +232,10 @@ class BaseBackOfficeController(BaseCMSController):
         return action
 
     @cached_getter
+    def client_side_scripting(self):
+        return get_parameter(schema.Boolean("client_side_scripting"))
+
+    @cached_getter
     def output(self):
         output = BaseCMSController.output(self)
         output.update(
@@ -239,7 +243,8 @@ class BaseBackOfficeController(BaseCMSController):
             section = self.section,
             edit_stack = self.edit_stack,
             notifications = self.pop_user_notifications(),
-            edit_uri = self.edit_uri
+            edit_uri = self.edit_uri,
+            client_side_scripting = self.client_side_scripting
         )
         return output
 

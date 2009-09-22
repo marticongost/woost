@@ -49,6 +49,9 @@ class ItemSelector(Element, DataBoundControl):
     
         Element._build(self)
 
+        self.add_resource("/resources/scripts/ItemSelector.js")        
+        self.set_client_param("emptyLabel", self.empty_label)
+
         self.input = templates.new("cocktail.html.HiddenInput")
         self.append(self.input)
         self.binding_delegate = self.input

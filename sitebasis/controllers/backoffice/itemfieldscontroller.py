@@ -41,7 +41,6 @@ class ItemFieldsController(EditController):
         section = self.params.read(
             schema.String("section", default = "fields")
         )
-        rel = self.params.read(schema.String("rel"))
 
         added_translation = self.params.read(
             schema.String("add_translation",
@@ -151,7 +150,8 @@ class ItemFieldsController(EditController):
                 controller.context["cms"].document_uri("content")
                 + "?" + view_state(
                     selection = value.id if value is not None else None,
-                    edit_stack = controller.edit_stack.to_param()
+                    edit_stack = controller.edit_stack.to_param(),
+                    client_side_scripting = controller.client_side_scripting
                 )
             )
 

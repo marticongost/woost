@@ -622,6 +622,12 @@ translations.define("sitebasis.views.ItemSelector select",
     en = u"Select..."
 )
 
+translations.define("sitebasis.views.BackOfficeItemSelectorView title", 
+    ca = lambda type: "Seleccionar " + translations(type.name, "ca").lower(),
+    es = lambda type: "Seleccionar " + translations(type.name, "es").lower(),
+    en = lambda type: "Select " + translations(type.name, "en").lower()
+)
+
 translations.define("sitebasis.views.BackOfficeShowDetailView open resource",
     ca = u"Obrir el fitxer",
     es = u"Abrir el fichero",
