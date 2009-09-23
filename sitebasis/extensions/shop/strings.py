@@ -139,7 +139,7 @@ translations.define("ShippingAddress-plural",
 translations.define("ShippingAddress.receiver",
     ca = u"Destinatari",
     es = u"Destinatario",
-    es = u"Receiver"
+    en = u"Receiver"
 )       
 
 translations.define("ShippingAddress.address",
