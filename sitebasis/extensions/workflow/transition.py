@@ -14,6 +14,9 @@ from sitebasis.models import Item
 class Transition(Item):
     """A transition between two item states."""
 
+    integral = True
+    visible_from_root = False
+
     executed = Event("""An event triggered when the transition is executed.
         
         @var item: The item that the transition is executed on.
