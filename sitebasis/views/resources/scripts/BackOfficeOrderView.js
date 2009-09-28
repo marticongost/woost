@@ -1,10 +1,16 @@
+
 cocktail.init(function (root) {
     
     jQuery(".OrderContentView", root).each(function () {
 
         var orderContentView = this;
 
-        if ($rows.length > 1) {
+        if (jQuery(".Table tbody tr", this).length > 1) {
+
+            var th = document.createElement('th');
+            jQuery(".Table thead tr", orderContentView).prepend(th);
+
+            
             jQuery(".Table tbody tr", this)
                 .hover(
                     function() { jQuery(this.cells[0]).addClass('showDragHandle'); },
@@ -31,54 +37,58 @@ cocktail.init(function (root) {
                 });
             }
       
-        var position;
-        var member = jQuery(this).closest(".BackOfficeCollectionView").get(0).member;
-        var edit_stack = jQuery(this).closest(".BackOfficeItemView").get(0).member;
-     
-        this.append("<div class=\"error\" style=\"display:none;\"></div>"); 
+            var position;
+            var member = jQuery(this).closest(".BackOfficeCollectionView").get(0).member;
+            var edit_stack = jQuery(this).closest(".BackOfficeItemView").get(0).member;
+         
+            jQuery(this).append("<div class=\"error\" style=\"display:none;\"></div>"); 
     
-        jQuery(".Table", this).tableDnD({
-            onDrop: function(table, row) {
-                renderEvenOdd();                
-                
-                jQuery(".Table tbody tr", orderContentView).each( function (i) {
-                    if(jQuery(row).attr('id') == jQuery(this).attr('id')) position = i;                                          
-                });
-                
-                var url = '/' + cocktail.getLanguage() + cms_uri + '/order?';                           
-                url += "selection=" + jQuery(row).attr('id') + "&";
-                url += "member=" + member + "&";
-                url += "edit_stack=" + edit_stack + "&";
-                url += "action=order&";
-                url += "format=json&";
-                url += "position=" + position;
-                
-                if (table.entrySelector) {
-                    table._entries = jQuery(table).find(table.entrySelector);
-                }
+            jQuery(".Table", this).tableDnD({
+                onDrop: function(table, row) {
+                    
+                    renderEvenOdd();                
+                    
+                    jQuery(".Table tbody tr", orderContentView).each( function (i) {
+                        if(jQuery(row).attr('id') == jQuery(this).attr('id')) position = i;                                          
+                    });
+                    
+                    var url = '/' + cocktail.getLanguage() + cms_uri + '/order?';                           
+                    url += "selection=" + jQuery(row).attr('id') + "&";
+                    url += "member=" + member + "&";
+                    url += "edit_stack=" + edit_stack + "&";
+                    url += "action=order&";
+                    url += "format=json&";
+                    url += "position=" + position;
+                    
+                    if (table.entrySelector) {
+                        table._entries = jQuery(table).find(table.entrySelector);
+                    }
 
-                jQuery.ajax({
-        			url: url,
-        			type: "GET",
-        			data: {},
-        			dataType: "json",
-        			contentType: "application/json; charset=utf-8",
-        			success: function(json){
-        			    jQuery(".error", orderContentView).hide();
-                        if (json.error) {
-                            jQuery(".error", orderContentView).html(json.error).show("slow");
+                    jQuery.ajax({
+                        url: url,
+                        type: "GET",
+                        data: {},
+                        dataType: "json",
+                        contentType: "application/json; charset=utf-8",
+                        success: function(json){
+                            jQuery(".error").hide();
+                            if (json.error) {
+                                jQuery(".error").html(json.error).show("slow");
+                            }
+                        },
+                        error: function (XMLHttpRequest, textStatus, errorThrown) {
+                            jQuery(".error")
+                                .hide()
+                                .html(textStatus).show("slow");
                         }
-        			},
-        			error: function (XMLHttpRequest, textStatus, errorThrown) {
-        			    jQuery(".error", orderContentView)
-                            .hide();
-        			        .html(textStatus).show("slow");
-        			}
-        		});        		        		
-                                
-            },
-            dragHandle: "dragHandle",
-            onDragClass: "mydragClass"
-        });
-    }
+                    });        		        		
+                                    
+                },
+                dragHandle: "dragHandle",
+                onDragClass: "mydragClass"
+            });
+
+        }
+    });
+
 });
