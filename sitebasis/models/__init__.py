@@ -121,6 +121,7 @@ from sitebasis.models.feed import Feed
 
 from sitebasis.models.userfilter import (
     OwnItemsFilter,
-    PublishedDocumentsFilter
+    PublishedDocumentsFilter,
+    TypeFilter
 )
 

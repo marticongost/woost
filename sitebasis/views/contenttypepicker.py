@@ -8,6 +8,11 @@ u"""
 """
 from cocktail.html import Element
 from cocktail.html.databoundcontrol import DataBoundControl
+from cocktail.html.datadisplay import (
+    NO_SELECTION,
+    SINGLE_SELECTION,
+    MULTIPLE_SELECTION
+)
 from sitebasis.views.contenttypetree import ContentTypeTree
 
 
@@ -15,6 +20,8 @@ class ContentTypePicker(ContentTypeTree, DataBoundControl):
     
     name = None
     value = None
+
+    selection_mode = SINGLE_SELECTION
 
     empty_option_displayed = True
     empty_label = "---"
@@ -31,6 +38,21 @@ class ContentTypePicker(ContentTypeTree, DataBoundControl):
 
     def _ready(self):
         
+        self.set_client_param("selectionMode", self.selection_mode)
+
+        self.set_client_variable(
+            "cocktail.NO_SELECTION", NO_SELECTION)
+        self.set_client_variable(
+            "cocktail.SINGLE_SELECTION", SINGLE_SELECTION)
+        self.set_client_variable(
+            "cocktail.MULTIPLE_SELECTION", MULTIPLE_SELECTION)
+
+        if self.selection_mode == SINGLE_SELECTION:
+            self._control_type = "radio"
+        elif self.selection_mode == MULTIPLE_SELECTION:
+            self._control_type = "checkbox"
+            self.empty_option_displayed = False
+
         if self.member and self.name is None and self.member.name:
             self.name = self.member.name
 
@@ -43,14 +65,14 @@ class ContentTypePicker(ContentTypeTree, DataBoundControl):
         
         entry = Element("li")
 
-        entry.option = Element("input",
-            type = "radio",
+        entry.control = Element("input",
+            type = self._control_type,
             name = self.name,
             value = self.empty_value,
             checked = self.value is None
         )
-        self._bind_member(entry.option)
-        entry.append(entry.option)
+        self._bind_member(entry.control)
+        entry.append(entry.control)
 
         entry.label = Element("label")
         entry.label.add_class("entry_label")
@@ -58,23 +80,28 @@ class ContentTypePicker(ContentTypeTree, DataBoundControl):
         entry.label.append(self.empty_label)
         entry.append(entry.label)
 
-        entry.label["for"] = entry.option.require_id()
+        entry.label["for"] = entry.control.require_id()
 
         return entry
 
     def create_entry(self, content_type):
         
-        entry = ContentTypeTree.create_entry(self, content_type)        
+        entry = ContentTypeTree.create_entry(self, content_type)
 
-        entry.option = Element("input",
-            type = "radio",
+        entry.control = Element("input",
+            type = self._control_type,
             name = self.name,
             value = content_type.full_name,
-            checked = content_type is self.value)
+            checked = self.value and (
+                content_type is self.value
+                if self.selection_mode == SINGLE_SELECTION
+                else content_type in self.value
+            )
+        )
 
-        self._bind_member(entry.option)
-        entry.insert(0, entry.option)
-        entry.label["for"] = entry.option.require_id()
+        self._bind_member(entry.control)
+        entry.insert(0, entry.control)
+        entry.label["for"] = entry.control.require_id()
         return entry
 
     def create_label(self, content_type):
