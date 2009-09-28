@@ -27,12 +27,12 @@ class ProductCategory(Item):
     )
 
     parent = schema.Reference(
-        type = "sitebasis.extensions.shop.category.Category",
+        type = "sitebasis.extensions.shop.productcategory.ProductCategory",
         bidirectional = True
     )
 
     children = schema.Collection(
-        items = "sitebasis.extensions.shop.category.Category",
+        items = "sitebasis.extensions.shop.productcategory.ProductCategory",
         bidirectional = True
     )
 

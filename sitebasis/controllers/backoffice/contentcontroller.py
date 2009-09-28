@@ -124,7 +124,8 @@ class ContentController(BaseBackOfficeController):
                     raise cherrypy.HTTPRedirect(node.uri(
                         selection = self.params.read(
                             schema.String(selection_parameter)
-                        )
+                        ),
+                        client_side_scripting = self.client_side_scripting
                     ))
         
         return BaseBackOfficeController.__call__(self, *args, **kwargs)
@@ -360,10 +361,10 @@ class ContentController(BaseBackOfficeController):
             selection_mode = self.selection_mode,
             root_content_type = self.root_content_type,
             search_expanded = self.search_expanded,
-            user_views = self.user_views
+            user_views = self.user_views            
         )
         return output
-
+    
     # TODO: Move MS Excel rendering to an extension
     allowed_rendering_formats = (
         BaseBackOfficeController.allowed_rendering_formats

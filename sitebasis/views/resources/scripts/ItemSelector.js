@@ -1,0 +1,102 @@
+/*-----------------------------------------------------------------------------
+
+
+@author:		Martí Congost
+@contact:		marti.congost@whads.com
+@organization:	Whads/Accent SL
+@since:			September 2009
+-----------------------------------------------------------------------------*/
+
+// The client side implementation for the filter box breaks with item
+// selectors. This makes the two work together, and uses a modal dialog
+// approach which clarifies the selection process a bit.
+cocktail.init(function (root) {
+
+    var selectorBackground, selectorIframe;
+    
+    jQuery(".UserFilterEntry .ItemSelector", root).each(function () {
+
+        var itemSelector = this;
+        var param;
+
+        this.clear = function () {
+            jQuery(".ItemLabel", this).html(this.emptyLabel);
+            jQuery("input[type=hidden]", this).val("");
+        }
+
+        this.setItem = function (itemId, label) {
+            
+            var itemLabel = jQuery(".ItemLabel", this).get(0);
+            jQuery(itemLabel).empty();
+
+            var icon = document.createElement("img");
+            icon.className = "icon";
+            icon.src = "/icons/" + itemId + "?icon_size=16&width=24";
+            itemLabel.appendChild(icon);
+
+            itemLabel.appendChild(document.createTextNode(label));
+
+            jQuery("input[type=hidden]", this).val(itemId);
+        }
+
+        jQuery("button", this).click(function () {
+ 
+            jQuery(document.body).addClass("modal");
+
+            selectorBackground = document.createElement("div");
+            selectorBackground.className = "ItemSelector-background";
+            document.body.appendChild(selectorBackground);
+            
+            var win = window;
+            var depth = 0;
+            while (win != window.top) {
+                depth++;
+                win = win.parent;
+            }
+
+            selectorIframe = document.createElement("iframe");
+            selectorIframe.className = "ItemSelector-frame";
+            selectorIframe.name = "ItemSelector-frame" + depth;
+            document.body.appendChild(selectorIframe);
+
+            function closeDialog() {
+                jQuery(document.body).removeClass("modal");
+                jQuery(selectorIframe).remove();
+                jQuery(selectorBackground).remove();
+                jQuery(param).remove();
+                form.target = prevTarget;
+            }
+
+            selectorIframe.onload = function () {
+                var iframeJQuery = this.contentWindow.jQuery;
+                iframeJQuery(".select_action").click(function () {
+                    var sel = iframeJQuery(".collection_display").get(0).getSelection();
+                    if (sel.length) {
+                        var id = sel[0].id;
+                        var label = iframeJQuery("label", sel[0]).text();
+                        itemSelector.setItem(id, label);
+                    }
+                    else {
+                        itemSelector.clear();
+                    }
+                    closeDialog();
+                    return false;
+                });
+                iframeJQuery(".cancel_action").click(function () {
+                    closeDialog();
+                    return false;
+                });
+            }
+            
+            var form = jQuery(this).parents("form").get(0);
+            var prevTarget = form.target;
+            param = document.createElement("input");
+            param.type = "hidden";
+            param.name = "client_side_scripting";
+            param.value = "true";
+            form.appendChild(param);
+            form.target = selectorIframe.name;
+        });
+    });
+});
+

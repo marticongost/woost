@@ -269,6 +269,32 @@ html, body {
     color: rgb(50,50,50) !important;
 }
 
+body.modal {
+    overflow: hidden;
+}
+
+.ItemSelector-background {
+    z-index: 10000;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: black;
+    opacity: 0.7;
+}
+
+.ItemSelector-frame {
+    z-index: 10001;
+    border: none;
+    position: fixed;
+    top: 4%;
+    left: 4%;
+    width: 92%;
+    height: 92%;
+    background-color: white;
+}
+
 /* Forms
 -----------------------------------------------------------------------------*/
 .BackOfficeLayout fieldset {
