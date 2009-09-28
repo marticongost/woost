@@ -54,6 +54,7 @@ class ShopExtension(Extension):
             shoporder,
             shoporderentry,
             shippingaddress,
-            customer
+            customer,
+            pricing
         )
 
