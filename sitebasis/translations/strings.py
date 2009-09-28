@@ -642,6 +642,18 @@ translations.define(
     en = u"Published documents"
 )
 
+translations.define("sitebasis.models.userfilter.TypeFilter-instance",
+    ca = u"Tipus",
+    es = u"Tipo",
+    en = u"Type"
+)
+
+translations.define("UserFilter.is_inherited",
+    ca = u"Inclou fills",
+    es = u"Incluye hijos",
+    en = u"Children included"
+)
+
 # Initialization content
 #------------------------------------------------------------------------------
 translations.define(

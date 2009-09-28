@@ -1024,6 +1024,14 @@ body.scripted .BackOfficeLayout .Table .selection {
     overflow: auto;
 }
 
+body.scripted .BackOfficeLayout .ContentTypePicker {
+    display: none;
+}
+
+body.scripted .BackOfficeLayout .ContentTypePicker.selector {
+    display: block;
+}
+
 .BackOfficeLayout .ContentTypePicker .entry_label {
     display: inline;
     margin-left: 0.3em;

@@ -225,6 +225,7 @@ class Item(PersistentObject):
     def _add_member(cls, member):
         if member.name == "translations":
             member.editable = False
+            member.searchable = False
         PersistentClass._add_member(cls, member)
 
     def _get_revision_state(self):
