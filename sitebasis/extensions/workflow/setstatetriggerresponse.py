@@ -24,5 +24,5 @@ class SetStateTriggerResponse(TriggerResponse):
 
     def execute(self, items, user, batch = False, **context):
         for item in items:
-            item.state = self.target_state
+            item.workflow_state = self.target_state
 
