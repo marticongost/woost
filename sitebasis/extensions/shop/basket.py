@@ -16,7 +16,7 @@ class Basket(object):
     session_key = "sitebasis.extensions.shop basket"
 
     @classmethod
-    def get(self):
+    def get(cls):
         """Returns the shop order for the current user session.
 
         If the user had not started an order yet, a new one is created.
@@ -26,29 +26,36 @@ class Basket(object):
         order = getattr(cherrypy.request, "sitebasis_shop_basket", None)
 
         if order is None:
-            order = self.restore()            
+            order = cls.restore()            
             cherrypy.request.sitebasis_shop_basket = order
 
         return order
     
     @classmethod
-    def drop(self):
+    def drop(cls):
         """Drops the current shop order."""
-        cherrypy.session.pop(self.session_key, None)
+        cherrypy.session.pop(cls.session_key, None)
 
     @classmethod
-    def store(self, order):
-        session_data = [(entry.quantity, entry.product)
+    def store(cls):
+        order = cls.get()
+        session_data = [(entry.quantity, entry.product.id)
                         for entry in order.entries]
-        cherrypy.session[self.session_key] = session_data
+        cherrypy.session[cls.session_key] = session_data
 
     @classmethod
-    def restore(self):
-        session_data = cherrypy.session.get(self.session_key)
+    def restore(cls):
+        session_data = cherrypy.session.get(cls.session_key)
         if session_data is None:
             return None
         else:
             order = ShopOrder()
-            order.
+            order.entries = [
+                ShopOrderEntry(
+                    quantity = quantity,
+                    product = Product.get_instance(product_id)
+                )
+                for quantity, product_id in session_data
+            ]
             return order
 

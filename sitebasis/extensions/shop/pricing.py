@@ -9,6 +9,7 @@ other specialized pricing policies for a shop.
 @since:			September 2009
 """
 from cocktail import schema
+from cocktail.controllers.usercollection import UserCollection
 from sitebasis.models import Item, Site
 from sitebasis.extensions.shop.shoporder import ShopOrder
 from sitebasis.extensions.shop.shoporderentry import ShopOrderEntry
@@ -77,12 +78,6 @@ class PricingPolicy(Item):
 
 
 class Discount(PricingPolicy):
-    
-    site = schema.Reference(
-        visible = False,
-        type = Site,
-        related_end = schema.Collection("shop_price_modifiers")
-    )
 
     highlighted = schema.Boolean(
         required = True,
@@ -157,15 +152,13 @@ class FreeUnitsDiscount(Discount):
         paid = self.paid_units
         free = self.free_units
         quantity = costs["paid_quantity"]
-
-        quantity, r = divmod(quantity, paid + free)
         
         if self.repeated:
-            quantity -= (q * free + max(0, r - paid))
+            quantity -= (quantity / (paid + free)) * free
         elif quantity > paid:
             quantity = max(paid, quantity - free)
 
-        costs["paid_quantity"] = max(0, quantity)
+        costs["paid_quantity"] = quantity
 
 
 class ShippingCost(PricingPolicy):
