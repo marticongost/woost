@@ -122,98 +122,52 @@ translations.define("ShopOrder.entries",
     en = u"Order entries"
 )
     
-translations.define("ShopOrder.shipping_address",
-    ca = u"Adreça d'enviament",
-    es = u"Dirección de envío",
-    en = u"Shipping address"
-)
-
 translations.define("ShopOrder.cost",
     ca = u"Cost",
     es = u"Coste",
     en = u"Cost"
 )
 
-# ShippingAddress
-#------------------------------------------------------------------------------
-translations.define("ShippingAddress",
-    ca = u"Adreça d'enviament",
-    es = u"Dirección de envío",
+translations.define("ShopOrder.shipping_info",
+    ca = u"Informació d'enviament",
+    es = u"Información de envío",
     en = u"Shipping address"
 )
 
-translations.define("ShippingAddress-plural",
-    ca = u"Adreces d'enviament",
-    es = u"Direcciones de envío",
-    en = u"Shipping addresses"
-)
-
-translations.define("ShippingAddress.receiver",
-    ca = u"Destinatari",
-    es = u"Destinatario",
-    en = u"Receiver"
-)       
-
-translations.define("ShippingAddress.address",
+translations.define("ShopOrder.address",
     ca = u"Adreça",
     es = u"Dirección",
     en = u"Address"
 )
 
-translations.define("ShippingAddress.town",
+translations.define("ShopOrder.address",
+    ca = u"Adreça d'enviament",
+    es = u"Dirección de envío",
+    en = u"Shipping address"
+)
+
+translations.define("ShopOrder.town",
     ca = u"Pobaclió",
     es = u"Población",
     en = u"Town"
 )
 
-translations.define("ShippingAddress.region",
-    ca = u"Regió",
-    es = u"Región",
-    en = u"Region"
+translations.define("ShopOrder.region",
+    ca = u"Regió/Estat/Província",
+    es = u"Región/Estado/Provincia",
+    en = u"Region/Estado/Provincia"
 )
 
-translations.define("ShippingAddress.country",
+translations.define("ShopOrder.country",
     ca = u"País",
     es = u"País",
     en = u"Country"
 )
 
-translations.define("ShippingAddress.postal_code",
+translations.define("ShopOrder.postal_code",
     ca = u"Codi postal",
     es = u"Código postal",
     en = u"Postal code"
-)
-
-# Customer
-#------------------------------------------------------------------------------
-translations.define("Customer",
-    ca = u"Client",
-    es = u"Cliente",
-    en = u"Customer"
-)
-
-translations.define("Customer-plural",
-    ca = u"Clients",
-    es = u"Clientes",
-    en = u"Customers"
-)
-
-translations.define("Customer.first_name",
-    ca = u"Nom",
-    es = u"Nombre",
-    en = u"First name"
-)
-
-translations.define("Customer.last_name",
-    ca = u"Cognoms",
-    es = u"Apellidos",
-    en = u"Last name"
-)
-
-translations.define("Customer.phone_number",
-    ca = u"Telèfon",
-    es = u"Teléfono",
-    en = u"Phone number"
 )
 
 # ShopOrderEntry

@@ -9,16 +9,47 @@
 from decimal import Decimal
 from cocktail import schema
 from sitebasis.models import Item, Site
+from sitebasis.extensions.countries.country import Country
 
 
 class ShopOrder(Item):
 
     members_order = [
-        "customer",
-        "entries",
-        "shipping_address",
-        "cost"
+        "address",
+        "town",
+        "region",
+        "country",
+        "postal_code",
+        "cost",
+        "entries"
     ]
+
+    address = schema.String(
+        group = "shipping_info",
+        required = True
+    )
+
+    town = schema.String(
+        group = "shipping_info",
+        required = True
+    )
+
+    region = schema.String(
+        group = "shipping_info",
+        required = True
+    )
+
+    country = schema.Reference(        
+        group = "shipping_info",
+        type = Country,
+        related_end = schema.Collection(),
+        required = True
+    )
+
+    postal_code = schema.String(
+        group = "shipping_info",
+        required = True
+    )
 
     entries = schema.Collection(
         items = "sitebasis.extensions.shop.shoporderentry.ShopOrderEntry",
@@ -26,15 +57,10 @@ class ShopOrder(Item):
         min = 1
     )
 
-    shipping_address = schema.Reference(
-        type = "sitebasis.extensions.shop.shippingaddress.ShippingAddress",
-        bidirectional = True,
-        required = True
-    )
-
     cost = schema.Decimal(
         required = True,
-        default = Decimal("0")
+        default = Decimal("0"),
+        editable = False
     )
 
     def calculate_cost(self):
@@ -86,11 +112,11 @@ class ShopOrder(Item):
                 if issubclass(matching_items.type, ShopOrder):
                     if pricing_policy.applies_to(self):
                         pricing_policy.apply(self, costs)
-                        costs["pricing_policies"].append(pricing_policies)
+                        costs["pricing_policies"].append(pricing_policy)
                 else:
                     for entry, entry_costs in zip(self.entries, costs["entries"]):
                         if pricing_policy.applies_to(entry):
-                            pricing_policy.apply(entry, costs, entry_costs)
+                            pricing_policy.apply(entry, entry_costs)
                             entry_costs["pricing_policies"].append(pricing_policy)
         
         # Total price
@@ -112,11 +138,12 @@ class ShopOrder(Item):
 
         # Total taxes
         total_taxes = costs["tax"]["cost"] \
-                    + total_price * cost["tax"]["percentage"] / 100
+                    + total_price * costs["tax"]["percentage"] / 100
         
         for entry_costs in costs["entries"]:
-            entry_price = entry_costs["total"] * entry_costs["paid_quantity"]
-            entry_taxes = entry_costs["tax"]["cost"] \
+            quantity = entry_costs["paid_quantity"]
+            entry_price = entry_costs["price"]["total"] * quantity
+            entry_taxes = entry_costs["tax"]["cost"] * quantity \
                         + entry_price * entry_costs["tax"]["percentage"] / 100
             total_taxes += entry_taxes
             entry_costs["tax"]["total"] = entry_taxes
@@ -125,7 +152,8 @@ class ShopOrder(Item):
 
         # Total shipping costs
         total_shipping_costs = costs["shipping"] \
-                             + sum(entry_cost["shipping"] * entry["quantity"])
+                             + sum(entry_costs["shipping"] * entry_costs["quantity"]
+                                   for entry_costs in costs["entries"])
         costs["total_shipping_costs"] = total_shipping_costs
 
         # Grand total
