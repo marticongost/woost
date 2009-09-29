@@ -113,6 +113,7 @@ from sitebasis.models.extension import Extension
 from sitebasis.models.trigger import (
     Trigger,
     CreateTrigger,
+    InsertTrigger,
     ModifyTrigger,
     DeleteTrigger
 )
