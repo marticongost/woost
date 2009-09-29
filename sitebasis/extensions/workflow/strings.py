@@ -11,11 +11,11 @@ from cocktail.translations import translations
 translations.define(
     "sitebasis.controllers.backoffice.useractions.TransitionAction state set",
     ca = lambda item: u"S'ha canviat l'estat de <em>%s</em> a <em>%s</em>"
-        % (translations(item, "ca"), translations(item.state, "ca")),
+        % (translations(item, "ca"), translations(item.workflow_state, "ca")),
     es = lambda item: u"Se ha cambiado el estado de <em>%s</em> a <em>%s</em>"
-        % (translations(item, "es"), translations(item.state, "es")),
+        % (translations(item, "es"), translations(item.workflow_state, "es")),
     en = lambda item: u"State of <em>%s</em> changed to <em>%s</em>"
-        % (translations(item, "en"), translations(item.state, "en"))
+        % (translations(item, "en"), translations(item.workflow_state, "en"))
 )
 
 # Item
