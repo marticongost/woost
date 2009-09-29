@@ -36,14 +36,16 @@ class State(Item):
     outgoing_transitions = schema.Collection(
         items = "sitebasis.extensions.workflow.transition.Transition",
         related_key = "source_state",
-        bidirectional = True
+        bidirectional = True,
+        integral = True
     )
 
     incoming_transitions = schema.Collection(
         items = "sitebasis.extensions.workflow.transition.Transition",
         related_key = "target_state",
         bidirectional = True,
-        editable = False
+        editable = False,
+        integral = True
     )
 
     def __translate__(self, language, **kwargs):

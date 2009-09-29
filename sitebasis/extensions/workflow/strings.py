@@ -162,3 +162,11 @@ translations.define("SetStateTriggerResponse.target_state",
     en = u"Destination state"
 )
 
+# TransitionAction
+#------------------------------------------------------------------------------
+translations.define("Action transition",
+    ca = u"Transició",                                                                                                                                                                                    
+    es = u"Transición",
+    en = u"Transition"
+)
+

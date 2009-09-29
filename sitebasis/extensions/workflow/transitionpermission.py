@@ -14,8 +14,12 @@ from sitebasis.models.permission import ContentPermission
 class TransitionPermission(ContentPermission):
     """Permission to apply a state transition to an item."""
 
+    instantiable = True
+
     transition = schema.Reference(
-        type = "sitebasis.extensions.workflow.transition.Transition"
+        type = "sitebasis.extensions.workflow.transition.Transition",
+        related_key = "transition_permissions",
+        bidirectional = True
     )
 
     def match(self, target, transition, verbose = False):
@@ -24,5 +28,5 @@ class TransitionPermission(ContentPermission):
             print permission_doesnt_match_style("transition doesn't match")
             return False
 
-        return ContentPermission.match(target, verbose)
+        return ContentPermission.match(self, target, verbose)
 

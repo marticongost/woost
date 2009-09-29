@@ -14,7 +14,6 @@ from sitebasis.models import Item
 class Transition(Item):
     """A transition between two item states."""
 
-    integral = True
     visible_from_root = False
 
     executed = Event("""An event triggered when the transition is executed.
@@ -59,6 +58,7 @@ class Transition(Item):
     transition_permissions = schema.Collection(
         items = "sitebasis.extensions.workflow.transitionpermission."
                 "TransitionPermission",
+        related_key = "transition",
         bidirectional = True
     )
     
