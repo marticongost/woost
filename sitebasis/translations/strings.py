@@ -179,12 +179,6 @@ translations.define("Action diff",
     en = u"Show changes"
 )
 
-translations.define("cocktail.html.shortcuts action diff",
-    ca = u"c",
-    es = u"c",
-    en = u"c"
-)
-
 translations.define("Action preview",
     ca = u"Vista prèvia",
     es = u"Vista previa",
