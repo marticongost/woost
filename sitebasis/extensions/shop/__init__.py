@@ -8,6 +8,7 @@
 """
 from cocktail.events import event_handler
 from cocktail.translations import translations
+from cocktail import schema
 from sitebasis.models import Extension
 
 translations.define("ShopExtension",
@@ -56,5 +57,26 @@ class ShopExtension(Extension):
             shippingaddress,
             customer,
             pricing
+        )
+
+        ShopExtension.add_member(
+            schema.Collection("discounts",
+                items = schema.Reference(type = pricing.Discount),
+                related_end = schema.Reference()
+            )
+        )
+
+        ShopExtension.add_member(
+            schema.Collection("shipping_costs",
+                items = schema.Reference(type = pricing.ShippingCost),
+                related_end = schema.Reference()
+            )
+        )
+
+        ShopExtension.add_member(
+            schema.Collection("taxes",
+                items = schema.Reference(type = pricing.Tax),
+                related_end = schema.Reference()
+            )
         )
 

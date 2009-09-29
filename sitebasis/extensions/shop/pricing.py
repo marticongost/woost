@@ -14,7 +14,7 @@ from sitebasis.extensions.shop.shoporder import ShopOrder
 from sitebasis.extensions.shop.shoporderentry import ShopOrderEntry
 
 
-class Pricing(Item):
+class PricingPolicy(Item):
 
     visible_from_root = False
     integral = True
@@ -24,17 +24,8 @@ class Pricing(Item):
         "title",
         "enabled",
         "start_date",
-        "end_date",
-        "highlighted"
+        "end_date"
     ]
-
-    concept = None
-
-    site = schema.Reference(
-        visible = False,
-        type = Site,
-        related_end = schema.Collection("pricing_policies")
-    )
 
     title = schema.String()
     
@@ -51,59 +42,17 @@ class Pricing(Item):
         indexed = True,
         min = start_date
     )
+     
+    matching_items = schema.Mapping()
 
-    highlighted = schema.Boolean(
-        required = True
-    )
- 
+    # TODO: Validate that issubclass(matching_items["type"], (ShopOrder, ShopOrderEntry))
+
     def is_current(self):
         return (self.start_date is None or self.start_date <= datetime.now()) \
            and (self.end_date is None or self.end_date > datetime.now())
 
-
-def _display_tax_scope(parent, obj, member):
-    value = schema.get(obj, member)
-    if value is None:
-        return None
-    else:
-        return translations(
-            "sitebasis.extensions.shop tax_scope "
-            + schema.get(obj, member)
-        )
-
-def _display_modifier_type(parent, obj, member):
-    value = schema.get(obj, member)
-    if value is None:
-        return None
-    else:
-        return translations(
-            "sitebasis.extensions.shop price_modifier_type "
-            + schema.get(obj, member)
-        )
-
-def _apply_modifier(modifier, modifier_type, values):
-    if modifier_type == "absolute":
-        values["cost"] = modifier
-    elif modifier_type == "relative":
-        values["cost"] += modifier
-    elif modifier_type == "percentage":
-        values["percentage"] += modifier
-
-# Order pricing
-#------------------------------------------------------------------------------
-
-class OrderPricing(Pricing):
-
-    instantiable = False
-
-    matching_orders = schema.Mapping()
-
-    def is_available(self, order):
-        return Pricing.is_available(self, order) \
-           and self.match_order(order)
-
-    def select_matching_orders(self, *args, **kwargs):
-        user_collection = UserCollection(ShopOrder)
+    def select_matching_items(self, *args, **kwargs):
+        user_collection = UserCollection(Item)
         user_collection.allow_paging = False
         user_collection.allow_member_selection = False
         user_collection.allow_language_selection = False
@@ -111,155 +60,73 @@ class OrderPricing(Pricing):
         #user_collection.available_languages = Language.codes # <- required?
         return user_collection.subset
     
-    def match_order(self, order):
+    def match_item(self, item):
 
-        if self.matching_orders:
-            for filter in self.select_matching_orders().filters:
-                if not filter.eval(order):
+        if self.matching_items:
+            for filter in self.select_matching_items().filters:
+                if not filter.eval(item):
                     return False
         
         return True
 
-    def apply(self, order, values):
+    def applies_to(self, item):
+        return self.enabled and self.is_current() and self.match_item(item)
+
+    def apply(self, item, costs):
         pass
 
 
-class OrderPrice(OrderPricing):
+class Discount(PricingPolicy):
     
-    concept = "price"
+    site = schema.Reference(
+        visible = False,
+        type = Site,
+        related_end = schema.Collection("shop_price_modifiers")
+    )
+
+    highlighted = schema.Boolean(
+        required = True,
+        default = True
+    )
+
+
+class PriceOverride(Discount):
 
     instantiable = True
-    members_order = ["modifier", "modifier_type"]
 
-    modifier = schema.Decimal(
+    price = schema.Decimal(
         required = True
     )
 
-    modifier_type = schema.String(
-        enumeration = ["absolute", "relative", "percentage"],
-        required = True,
-        default = "absolute",
-        display = _display_modifier_type            
-    )
-
-    def apply(self, order, values):
-        _apply_modifier(self.modifier, self.modifier_type, values)
+    def apply(self, item, costs):
+        costs["price"]["cost"] = self.price
 
 
-class OrderShippingCost(OrderPricing):
-
-    concept = "shipping"
+class RelativeDiscount(Discount):
 
     instantiable = True
-    members_order = ["modifier", "modifier_type"]
-
-    modifier = schema.Decimal(
-        required = True
-    )
-
-    modifier_type = schema.String(
-        enumeration = ["absolute", "relative", "percentage"],
-        required = True,
-        default = "absolute",
-        display = _display_modifier_type
-    )
-
-    def apply(self, order, values):
-        _apply_modifier(self.modifier, self.modifier_type, values)
-
-
-class OrderTax(OrderPricing):
-
-    concept = "tax"
-
-    instantiable = True
-    members_order = [
-        "tax_scope",
-        "modifier",
-        "modifier_type"
-    ]
-
-    tax_scope = schema.String(
-        enumeration = ["price", "shipping", "total"],
-        required = True,
-        default = "total",
-        display = _display_tax_scope
-    )
-
-    modifier = schema.Decimal(
-        required = True
-    )
-
-    modifier_type = schema.String(
-        enumeration = ["relative", "percentage"],
-        required = True,
-        default = "percentage",
-        display = _display_modifier_type
-    )
-
-    def apply(self, order, values):
-        _apply_modifier(self.modifier, self.modifier_type, values)
-
-
-# Entry pricing
-#------------------------------------------------------------------------------
-
-class EntryPricing(Pricing):
-
-    instantiable = False
-
-    matching_entries = schema.Mapping()
-   
-    def is_available(self, entry):
-        return Pricing.is_available(self) and self.match_entry(entry)
-
-    def select_matching_entries(self, *args, **kwargs):
-        user_collection = UserCollection(ShopOrderEntry)
-        user_collection.allow_paging = False
-        user_collection.allow_member_selection = False
-        user_collection.allow_language_selection = False
-        user_collection.params.source = self.matching_items.get
-        #user_collection.available_languages = Language.codes # <- required?
-        return user_collection.subset
     
-    def match_entry(self, entry):
-
-        if self.matching_entries:
-            for filter in self.select_matching_entries().filters:
-                if not filter.eval(entry):
-                    return False
-        
-        return True
-
-    def apply(self, entry, values):
-        pass 
-
-
-class EntryPrice(EntryPricing):
-    
-    concept = "price"
-
-    instantiable = True
-    members_order = ["modifier", "modifier_type"]
-
-    modifier = schema.Decimal(
+    amount = schema.Decimal(
         required = True
     )
     
-    modifier_type = schema.String(
-        enumeration = ["absolute", "relative", "percentage"],
-        required = True,
-        default = "absolute",
-        display = _display_modifier_type
+    def apply(self, item, costs):
+        costs["price"]["cost"] -= self.amount
+
+
+class PercentageDiscount(Discount):
+
+    instantiable = True
+
+    percentage = schema.Decimal(
+        required = True
     )
 
-    def apply(self, entry, values):
-        _apply_modifier(self.modifier, self.modifier_type, values)
+    def apply(self, item, costs):
+        costs["price"]["percentage"] -= self.percentage
 
 
-class EntryFreeUnits(EntryPricing):
-
-    concept = "price"
+class FreeUnitsDiscount(Discount):
 
     instantiable = True
     members_order = ["paid_units", "free_units", "repeated"]
@@ -285,11 +152,11 @@ class EntryFreeUnits(EntryPricing):
         default = True
     )
 
-    def apply(self, entry, values):
-                
+    def apply(self, item, costs):
+
         paid = self.paid_units
         free = self.free_units
-        quantity = values["paid_quantity"]
+        quantity = costs["paid_quantity"]
 
         quantity, r = divmod(quantity, paid + free)
         
@@ -298,60 +165,61 @@ class EntryFreeUnits(EntryPricing):
         elif quantity > paid:
             quantity = max(paid, quantity - free)
 
-        values["paid_quantity"] = max(0, quantity)
+        costs["paid_quantity"] = max(0, quantity)
 
 
-class EntryShippingCost(EntryPricing):
+class ShippingCost(PricingPolicy):
+    pass   
 
-    concept = "shipping"
+
+class ShippingCostOverride(ShippingCost):
+    
+    instantiable = True
+    
+    cost = schema.Decimal(
+        required = True
+    )
+    
+    def apply(self, item, costs):
+        costs["shipping"] = self.cost
+
+
+class CumulativeShippingCost(ShippingCost):
 
     instantiable = True
-    members_order = ["modifier", "modifier_type"]
 
-    modifier = schema.Decimal(
+    cost = schema.Decimal(
         required = True
     )
 
-    modifier_type = schema.String(
-        enumeration = ["absolute", "relative", "percentage"],
-        required = True,
-        default = "absolute",
-        display = _display_modifier_type
-    )
-
-    def apply(self, entry, values):
-        _apply_modifier(self.modifier, self.modifier_type, values)
+    def apply(self, item, costs):
+        costs["shipping"] += self.cost
 
 
-class EntryTax(EntryPricing):
+class Tax(PricingPolicy):
+    pass
 
-    concept = "tax"
+
+class CumulativeTax(Tax):
 
     instantiable = True
-    members_order = [
-        "tax_scope",
-        "modifier",
-        "modifier_type"
-    ]
 
-    tax_scope = schema.String(
-        enumeration = ["price", "shipping", "total"],
-        required = True,
-        default = "total",
-        display = _display_tax_scope
-    )
-
-    modifier = schema.Decimal(
+    cost = schema.Decimal(
         required = True
     )
 
-    modifier_type = schema.String(
-        enumeration = ["relative", "percentage"],
-        required = True,
-        default = "percentage",
-        display = _display_modifier_type
+    def apply(self, item, costs):
+        costs["tax"]["cost"] += self.cost
+
+
+class PercentageTax(Tax):
+
+    instantiable = True
+        
+    percentage = schema.Decimal(
+        required = True
     )
 
-    def apply(self, entry, values):
-        _apply_modifier(self.modifier, self.modifier_type, values)
+    def apply(self, item, costs):
+        costs["tax"]["percentage"] += self.percentage
 
