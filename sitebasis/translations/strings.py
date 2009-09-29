@@ -191,7 +191,7 @@ translations.define("Action preview",
     en = u"Preview"
 )
 
-translations.define("cocktail.html.shortcuts action preview",
+translations.define("cocktail.html.shortcuts action review",
     ca = u"p",
     es = u"p",
     en = u"p"
@@ -2611,3 +2611,13 @@ translations.define("Feed.item_description_expression",
     en = u"Item description expression"
 )
 
+# Preview
+#------------------------------------------------------------------------------
+translations.define("sitebasis.backoffice invalid item preview",
+    ca = u"Algun camp del formulari no té un format correcte. "
+         u"No es pot realitzar la vista prèvia.",
+    es = u"Algún campo del formulario no tiene un formato correcto. "
+         u"No se puede realizar la vista previa.",
+    en = u"Some form field has no correct format. "
+         u"Impossible to render preview."
+)
