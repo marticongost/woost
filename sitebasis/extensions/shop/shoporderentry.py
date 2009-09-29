@@ -20,8 +20,7 @@ class ShopOrderEntry(Item):
     members_order = [
         "shop_order",
         "product",
-        "quantity",
-        "product_price"
+        "quantity"
     ]
 
     shop_order = schema.Reference(
@@ -39,11 +38,6 @@ class ShopOrderEntry(Item):
     quantity = schema.Integer(
         required = True,
         min = 1
-    )
-
-    product_price = schema.Decimal(
-        required = True,
-        default = Decimal("0")
     )
 
     def __translate__(self, language, **kwargs):

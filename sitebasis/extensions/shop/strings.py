@@ -8,6 +8,24 @@
 """
 from cocktail.translations import translations
 
+translations.define("ShopExtension.discounts",
+    ca = u"Descomptes",
+    es = u"Descuentos",
+    en = u"Discounts"
+)
+
+translations.define("ShopExtension.shipping_costs",
+    ca = u"Costos d'enviament",
+    es = u"Costes de envío",
+    en = u"Shipping costs"
+)
+
+translations.define("ShopExtension.taxes",
+    ca = u"Impostos",
+    es = u"Impuestos",
+    en = u"Taxes"
+)
+
 # Product
 #------------------------------------------------------------------------------
 translations.define("Product",
@@ -96,12 +114,6 @@ translations.define("ShopOrder-plural",
     ca = u"Comandes",
     es = u"Pedidos",
     en = u"Shop orders"
-)
-
-translations.define("ShopOrder.customer",
-    ca = u"Client",
-    es = u"Cliente",
-    en = u"Client"
 )
 
 translations.define("ShopOrder.entries",
@@ -204,12 +216,6 @@ translations.define("Customer.phone_number",
     en = u"Phone number"
 )
 
-translations.define("Customer.shop_orders",
-    ca = u"Comandes",
-    es = u"Pedidos",
-    en = u"Shop orders"
-)
-
 # ShopOrderEntry
 #------------------------------------------------------------------------------
 translations.define("ShopOrderEntry",
@@ -242,9 +248,261 @@ translations.define("ShopOrderEntry.quantity",
     en = u"Quantity"
 )
 
-translations.define("ShopOrderEntry.product_price",
-    ca = u"Preu del producte",
-    es = u"Precio del producto",
-    en = u"Product price"
+# PricingPolicy
+#------------------------------------------------------------------------------
+translations.define("PricingPolicy",
+    ca = u"Política de preus",
+    es = u"Política de precios",
+    en = u"Pricing policy"
+)
+
+translations.define("PricingPolicy-plural",
+    ca = u"Polítiques de preus",
+    es = u"Políticas de precios",
+    en = u"Pricing policies"
+)
+
+translations.define("PricingPolicy.title",
+    ca = u"Títol",
+    es = u"Título",
+    en = u"Title"
+)
+
+translations.define("PricingPolicy.enabled",
+    ca = u"Activa",
+    es = u"Activa",
+    en = u"Enabled"
+)
+
+translations.define("PricingPolicy.start_date",
+    ca = u"Data d'inici",
+    es = u"Fecha de inicio",
+    en = u"Start date"
+)
+
+translations.define("PricingPolicy.end_date",
+    ca = u"Data de fi",
+    es = u"Fecha de fin",
+    en = u"End date"
+)
+
+# Discount
+#------------------------------------------------------------------------------
+translations.define("Discount",
+    ca = u"Descompte",
+    es = u"Descuento",
+    en = u"Discount"
+)
+
+translations.define("Discount-plural",
+    ca = u"Descomptes",
+    es = u"Descuentos",
+    en = u"Discounts"
+)
+
+translations.define("Discount.highlighted",
+    ca = u"Destacat",
+    es = u"Destacado",
+    en = u"Highlighted"
+)
+
+# AbsoluteDiscount
+#------------------------------------------------------------------------------
+translations.define("PriceOverride",
+    ca = u"Preu ajustat",
+    es = u"Precio ajustado",
+    en = u"Price override"
+)
+
+translations.define("PriceOverride-plural",
+    ca = u"Preus ajustats",
+    es = u"Precios ajustados",
+    en = u"Price overrides"
+)
+
+translations.define("PriceOverride.price",
+    ca = u"Preu",
+    es = u"Precio",
+    en = u"Price"
+)
+
+# RelativeDiscount
+#------------------------------------------------------------------------------
+translations.define("RelativeDiscount",
+    ca = u"Descompte relatiu",
+    es = u"Descuento relativo",
+    en = u"Relative discount"
+)
+
+translations.define("RelativeDiscount-plural",
+    ca = u"Descomptes relatius",
+    es = u"Descuentos relativos",
+    en = u"Relative discounts"
+)
+
+translations.define("RelativeDiscount.amount",
+    ca = u"Descompte",
+    es = u"Descuento",
+    en = u"Discount"
+)
+
+# PercentageDiscount
+#------------------------------------------------------------------------------
+translations.define("PercentageDiscount",
+    ca = u"Descompte percentual",
+    es = u"Descuento porcentual",
+    en = u"Percentage discount"
+)
+
+translations.define("PercentageDiscount-plural",
+    ca = u"Descomptes percentuals",
+    es = u"Descuentos porcentuales",
+    en = u"Percentage discounts"
+)
+
+translations.define("PercentageDiscount.percentage",
+    ca = u"Percentatge",
+    es = u"Porcentaje",
+    en = u"Percentage"
+)
+
+# FreeUnitsDiscount
+#------------------------------------------------------------------------------
+translations.define("FreeUnitsDiscount",
+    ca = u"Unitats gratuïtes",
+    es = u"Unidades gratuitas",
+    en = u"Free units"
+)
+
+translations.define("FreeUnitsDiscount-plural",
+    ca = u"Unitats gratuïtes",
+    es = u"Unidades gratuitas",
+    en = u"Free units"
+)
+
+translations.define("FreeUnitsDiscount.paid_units",
+    ca = u"Unitats pagades",
+    es = u"Unidades pagadas",
+    en = u"Paid units"
+)
+
+translations.define("FreeUnitsDiscount.free_units",
+    ca = u"Unitats de regal",
+    es = u"Unidades de regalo",
+    en = u"Free units"
+)
+
+translations.define("FreeUnitsDiscount.repeated",
+    ca = u"Admet múltiples",
+    es = u"Admite múltiples",
+    en = u"Repeated"
+)
+
+# ShippingCost
+#------------------------------------------------------------------------------
+translations.define("ShippingCost",
+    ca = u"Cost d'enviament",
+    es = u"Coste de envío",
+    en = u"Shipping cost"
+)
+
+translations.define("ShippingCost-plural",
+    ca = u"Costos d'enviament",
+    es = u"Costes de envío",
+    en = u"Shipping costs"
+)
+
+# ShippingCostOverride
+#------------------------------------------------------------------------------
+translations.define("ShippingCostOverride",
+    ca = u"Cost d'enviament absolut",
+    es = u"Coste de envío absoluto",
+    en = u"Shipping cost override"
+) 
+
+translations.define("ShippingCostOverride-plural",
+    ca = u"Costos d'enviament absoluts",
+    es = u"Costes de envío absolutos",
+    en = u"Shipping cost overrides"
+)
+
+translations.define("ShippingCostOverride.cost",
+    ca = u"Cost",
+    es = u"Coste",
+    en = u"Cost"
+)
+
+# CumulativeShippingCost
+#------------------------------------------------------------------------------
+translations.define("CumulativeShippingCost",
+    ca = u"Cost d'enviament acomulatiu",
+    es = u"Coste de envío acomulativo",
+    en = u"Cumulative shipping cost"
+)
+
+translations.define("CumulativeShippingCost-plural",
+    ca = u"Costos d'enviament acomulatius",
+    es = u"Costes de envío acomulativos",
+    en = u"Cumulative shipping costs"
+)
+
+translations.define("CumulativeShippingCost.cost",
+    ca = u"Cost",
+    es = u"Coste",
+    en = u"Cost"
+)
+
+# Tax
+#------------------------------------------------------------------------------
+translations.define("Tax",
+    ca = u"Impost",
+    es = u"Impuesto",
+    en = u"Tax"
+)
+
+translations.define("Tax-plural",
+    ca = u"Impostos",
+    es = u"Impuestos",
+    en = u"Taxes"
+)
+
+# CumulativeTax
+#------------------------------------------------------------------------------
+translations.define("CumulativeTax",
+    ca = u"Impost acumulatiu",
+    es = u"Impuesto acumulativo",
+    en = u"Cumulative tax"
+)
+
+translations.define("CumulativeTax-plural",
+    ca = u"Impostos acumulatius",
+    es = u"Impuestos acumulativos",
+    en = u"Cumulative taxes"
+)
+
+translations.define("CumulativeTax.cost",
+    ca = u"Import",
+    es = u"Importe",
+    en = u"Cost"
+)
+
+# PercentageTax
+#------------------------------------------------------------------------------
+translations.define("PercentageTax",
+    ca = u"Impost percentual",
+    es = u"Impuesto porcentual",
+    en = u"Percentage tax"
+)
+
+translations.define("PercentageTax-plural",
+    ca = u"Impostos percentuals",
+    es = u"Impuestos porcentuales",
+    en = u"Percentage taxes"
+)
+
+translations.define("PercentageTax.percentage",
+    ca = u"Percentatge",
+    es = u"Porcentaje",
+    en = u"Percentage"
 )
 
