@@ -15,8 +15,7 @@ class Customer(User):
     members_order = [
         "first_name",
         "last_name",
-        "phone_number",
-        "shop_orders"
+        "phone_number"
     ]
 
     first_name = schema.String(
@@ -32,10 +31,4 @@ class Customer(User):
     )
 
     phone_number = schema.String()
-
-    shop_orders = schema.Collection(
-        items = "sitebasis.extensions.shop.shoporder.ShopOrder",
-        bidirectional = True,
-        block_delete = True
-    )
 
