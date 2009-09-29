@@ -2367,6 +2367,20 @@ translations.define("sitebasis.models.Trigger.execution_point after",
     en = u"After committing the transaction"
 )
 
+# InsertTrigger
+#------------------------------------------------------------------------------
+translations.define("InsertTrigger",
+    ca = u"Disparador de inserció",
+    es = u"Disparador de inserción",
+    en = u"Insert trigger"
+)
+
+translations.define("InsertTrigger-plural",
+    ca = u"Disparadors de inserció",
+    es = u"Disparadores de inserción",
+    en = u"Insert triggers"
+)
+
 # CreateTrigger
 #------------------------------------------------------------------------------
 translations.define("CreateTrigger",
