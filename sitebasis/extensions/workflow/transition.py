@@ -74,5 +74,4 @@ class Transition(Item):
             )
 
         item.workflow_state = self.target_state
-        self.execute(item = item, data = data)
 
