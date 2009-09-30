@@ -78,11 +78,7 @@ class PricingPolicy(Item):
 
 
 class Discount(PricingPolicy):
-
-    highlighted = schema.Boolean(
-        required = True,
-        default = True
-    )
+    pass
 
 
 class PriceOverride(Discount):
