@@ -8,6 +8,7 @@
 """
 from cocktail.events import event_handler
 from cocktail.translations import translations
+from cocktail import schema
 from sitebasis.models import Extension
 
 translations.define("ShopExtension",
@@ -46,15 +47,60 @@ class ShopExtension(Extension):
 
     @event_handler
     def handle_loading(cls, event):
-        
+
+        from sitebasis.extensions import shop
         from sitebasis.extensions.shop import (
             strings,
             product,
             productcategory,
             shoporder,
             shoporderentry,
-            shippingaddress,
-            customer,
-            pricing
+            pricing,
+            basket
+        )
+
+        for module, keys in (
+            (shop.product, ("Product",)),
+            (shop.productcategory, ("ProductCategory",)),
+            (shop.shoporder, ("ShopOrder",)),
+            (shop.shoporderentry, ("ShopOrderEntry",)),
+            (shop.pricing, (
+                "PricingPolicy",
+                "Discount",
+                "PriceOverride",
+                "RelativeDiscount",
+                "PercentageDiscount",
+                "FreeUnitsDiscount",
+                "ShippingCost",
+                "ShippingCostOverride",
+                "CumulativeShippingCost",
+                "Tax",
+                "CumulativeTax",
+                "PercentageTax"
+            )),
+            (shop.basket, ("Basket",))
+        ):
+            for key in keys:
+                setattr(shop, key, getattr(module, key))
+
+        ShopExtension.add_member(
+            schema.Collection("discounts",
+                items = schema.Reference(type = pricing.Discount),
+                related_end = schema.Reference()
+            )
+        )
+
+        ShopExtension.add_member(
+            schema.Collection("shipping_costs",
+                items = schema.Reference(type = pricing.ShippingCost),
+                related_end = schema.Reference()
+            )
+        )
+
+        ShopExtension.add_member(
+            schema.Collection("taxes",
+                items = schema.Reference(type = pricing.Tax),
+                related_end = schema.Reference()
+            )
         )
 

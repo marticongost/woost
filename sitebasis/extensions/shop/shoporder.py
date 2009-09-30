@@ -8,21 +8,46 @@
 """
 from decimal import Decimal
 from cocktail import schema
-from sitebasis.models import Item
+from sitebasis.models import Item, Site
+from sitebasis.extensions.countries.country import Country
 
 
 class ShopOrder(Item):
 
     members_order = [
-        "customer",
-        "entries",
-        "shipping_address",
-        "cost"
+        "address",
+        "town",
+        "region",
+        "country",
+        "postal_code",
+        "cost",
+        "entries"
     ]
 
-    customer = schema.Reference(
-        type = "sitebasis.extensions.shop.customer.Customer",
-        bidirectional = True,
+    address = schema.String(
+        group = "shipping_info",
+        required = True
+    )
+
+    town = schema.String(
+        group = "shipping_info",
+        required = True
+    )
+
+    region = schema.String(
+        group = "shipping_info",
+        required = True
+    )
+
+    country = schema.Reference(        
+        group = "shipping_info",
+        type = Country,
+        related_end = schema.Collection(),
+        required = True
+    )
+
+    postal_code = schema.String(
+        group = "shipping_info",
         required = True
     )
 
@@ -32,23 +57,113 @@ class ShopOrder(Item):
         min = 1
     )
 
-    shipping_address = schema.Reference(
-        type = "sitebasis.extensions.shop.shippingaddress.ShippingAddress",
-        bidirectional = True,
-        required = True
-    )
-
     cost = schema.Decimal(
         required = True,
-        default = Decimal("0")
+        default = Decimal("0"),
+        editable = False
     )
 
     def calculate_cost(self):
-        """Gets the total cost for the order.
-        @rtype: decimal.Decimal
+        """Calculates the costs for the order.
+        @rtype: dict
         """
-        return sum(
-            entry.quantity * entry.product_price
-            for entry in self.entries
-        )
+        costs = {
+            "pricing_policies": [],
+            "price": {
+                "cost": 0,
+                "percentage": 0,
+                "total": None
+            },
+            "shipping": 0,
+            "tax": {
+                "cost": 0,
+                "percentage": 0
+            },
+            "entries": [
+                {
+                    "pricing_policies": [],
+                    "quantity": entry.quantity,
+                    "paid_quantity": entry.quantity,
+                    "price": {
+                        "cost": entry.product.price,
+                        "percentage": 0
+                    },
+                    "shipping": 0,
+                    "tax": {
+                        "cost": 0,
+                        "percentage": 0
+                    }
+                }
+                for entry in self.entries
+            ]
+        }
+
+        from sitebasis.extensions.shop import ShopExtension
+        shop_ext = ShopExtension.instance
+
+        for policies in (
+            shop_ext.discounts,
+            shop_ext.shipping_costs,
+            shop_ext.taxes
+        ):
+            for pricing_policy in policies:
+                matching_items = pricing_policy.select_matching_items()
+
+                if issubclass(matching_items.type, ShopOrder):
+                    if pricing_policy.applies_to(self):
+                        pricing_policy.apply(self, costs)
+                        costs["pricing_policies"].append(pricing_policy)
+                else:
+                    for entry, entry_costs in zip(self.entries, costs["entries"]):
+                        if pricing_policy.applies_to(entry):
+                            pricing_policy.apply(entry, entry_costs)
+                            entry_costs["pricing_policies"].append(pricing_policy)
+        
+        # Total price
+        def apply_percentage(costs):
+            cost = costs["cost"]
+            percentage = costs["percentage"]
+            if percentage:
+                cost += cost * percentage / 100
+            costs["total"] = cost
+            return cost
+        
+        total_price = apply_percentage(costs["price"])
+
+        for entry_costs in costs["entries"]:
+            entry_price = apply_percentage(entry_costs["price"])
+            total_price += entry_price * entry_costs["paid_quantity"]
+
+        costs["total_price"] = total_price
+
+        # Total taxes
+        total_taxes = costs["tax"]["cost"] \
+                    + total_price * costs["tax"]["percentage"] / 100
+        
+        for entry_costs in costs["entries"]:
+            quantity = entry_costs["paid_quantity"]
+            entry_price = entry_costs["price"]["total"] * quantity
+            entry_taxes = entry_costs["tax"]["cost"] * quantity \
+                        + entry_price * entry_costs["tax"]["percentage"] / 100
+            total_taxes += entry_taxes
+            entry_costs["tax"]["total"] = entry_taxes
+
+        costs["total_taxes"] = total_taxes
+
+        # Total shipping costs
+        total_shipping_costs = costs["shipping"] \
+                             + sum(entry_costs["shipping"] * entry_costs["quantity"]
+                                   for entry_costs in costs["entries"])
+        costs["total_shipping_costs"] = total_shipping_costs
+
+        # Grand total
+        costs["total"] = total_price + total_taxes + total_shipping_costs
+
+        return costs
+
+    def count_items(self):
+        """Gets the number of purchased product units in the order.
+        @rtype: int
+        """
+        return sum(entry.quantity for entry in self.entries)
 

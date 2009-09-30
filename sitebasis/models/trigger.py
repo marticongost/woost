@@ -158,6 +158,17 @@ class CreateTrigger(Trigger):
     """A trigger executed when an item is created."""
     instantiable = True
 
+    def match(self, target, user,
+        values = None,
+        verbose = False):
+        
+        return Trigger.match(self, target, user, verbose = verbose)
+
+
+class InsertTrigger(Trigger):
+    """A trigger executed when an item is inserted."""
+    instantiable = True
+
 
 class ModifyTrigger(Trigger):
     """A trigger executed when an item is modified."""
@@ -268,6 +279,9 @@ def trigger_responses(
                 (context["member"], context["language"])
             )
 
+        if not Site.main:
+            return None
+
         # Execute or schedule matching triggers
         for trigger in Site.main.triggers:
 
@@ -364,10 +378,18 @@ def trigger_responses(
                 for response in trigger.responses:
                     response.execute([target], user, **context)
 
+@when(Item.instantiated)
+def _trigger_instantiation_responses(event):
+    trigger_responses(
+        CreateTrigger,
+        event.instance,
+        values = event.values
+    )
+
 @when(Item.inserted)
 def _trigger_insertion_responses(event):
     trigger_responses(
-        CreateTrigger,
+        InsertTrigger,
         event.source
     )
 
