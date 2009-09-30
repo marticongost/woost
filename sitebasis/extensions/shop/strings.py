@@ -244,12 +244,6 @@ translations.define("Discount-plural",
     en = u"Discounts"
 )
 
-translations.define("Discount.highlighted",
-    ca = u"Destacat",
-    es = u"Destacado",
-    en = u"Highlighted"
-)
-
 # AbsoluteDiscount
 #------------------------------------------------------------------------------
 translations.define("PriceOverride",
