@@ -452,25 +452,43 @@ translations.define("PercentageTax.percentage",
 
 # Views
 #------------------------------------------------------------------------------
-translations.define("sitebasis.extensions.shop.Basket product header",
+translations.define("sitebasis.extensions.shop.ShopOrderTable product header",
     ca = u"Producte",
     es = u"Producto",
     en = u"Product"
 )
 
-translations.define("sitebasis.extensions.shop.Basket quantity header",
+translations.define("sitebasis.extensions.shop.ShopOrderTable quantity header",
     ca = u"Unitats",
     es = u"Unidades",
     en = u"Units"
 )
 
-translations.define("sitebasis.extensions.shop.Basket price header",
+translations.define("sitebasis.extensions.shop.ShopOrderTable price header",
     ca = u"Preu",
     es = u"Precio",
     en = u"Price"
 )
 
-translations.define("sitebasis.extensions.shop.Basket total header",
+translations.define("sitebasis.extensions.shop.ShopOrderTable total header",
+    ca = u"Total",
+    es = u"Total",
+    en = u"Total"
+)
+
+translations.define("sitebasis.extensions.shop.ShopOrderTable shipping costs",
+    ca = u"Costos d'enviament",
+    es = u"Costes de envío",
+    en = u"Shipping costs"
+)
+
+translations.define("sitebasis.extensions.shop.ShopOrderTable taxes",
+    ca = u"Impostos",
+    es = u"Impuestos",
+    en = u"Taxes"
+)
+
+translations.define("sitebasis.extensions.shop.ShopOrderTable total",
     ca = u"Total",
     es = u"Total",
     en = u"Total"
