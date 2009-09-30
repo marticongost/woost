@@ -10,6 +10,7 @@ from decimal import Decimal
 from cocktail import schema
 from sitebasis.models import Item, Site
 from sitebasis.extensions.countries.country import Country
+from sitebasis.extensions.shop.shoporderentry import ShopOrderEntry
 
 
 class ShopOrder(Item):
@@ -132,7 +133,9 @@ class ShopOrder(Item):
 
         for entry_costs in costs["entries"]:
             entry_price = apply_percentage(entry_costs["price"])
-            total_price += entry_price * entry_costs["paid_quantity"]
+            entry_total_price = entry_price * entry_costs["paid_quantity"]
+            entry_costs["total_price"] = entry_total_price
+            total_price += entry_total_price
 
         costs["total_price"] = total_price
 
@@ -205,6 +208,7 @@ class ShopOrder(Item):
                     product = product,
                     quantity = quantity
                 )
+                self.entries.append(entry)
                 if self.is_inserted:
                     entry.insert()
         else:
