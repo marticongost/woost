@@ -46,7 +46,7 @@ class PricingPolicy(Item):
      
     matching_items = schema.Mapping()
 
-    # TODO: Validate that issubclass(matching_items["type"], (ShopOrder, ShopOrderEntry))
+    # TODO: Validate issubclass(matching_items["type"], (ShopOrder, Product))
 
     def is_current(self):
         return (self.start_date is None or self.start_date <= datetime.now()) \
