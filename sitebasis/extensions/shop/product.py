@@ -38,3 +38,12 @@ class Product(Item):
         block_delete = True
     )
 
+    def discounts(self):
+        """Returns the discounts that can be applied to the product.        
+        @rtype: L{Product<sitebasis.extensions.shop.product.Product>}
+        """
+        from sitebasis.extensions.shop import ShopExtension
+        return [discount
+                for discount in ShopExtension.instance.discounts
+                if discount.applies_to(self)]
+
