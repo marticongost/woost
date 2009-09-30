@@ -40,22 +40,10 @@ translations.define("Product-plural",
     en = u"Products"
 )
 
-translations.define("Product.product_name",
-    ca = u"Nom",
-    es = u"Nombre",
-    en = u"Name"
-)
-
 translations.define("Product.price",
     ca = u"Preu",
     es = u"Precio",
     en = u"Price"
-)
-
-translations.define("Product.description",
-    ca = u"Descripció",
-    es = u"Descripción",
-    en = u"Description"
 )
 
 translations.define("Product.categories",

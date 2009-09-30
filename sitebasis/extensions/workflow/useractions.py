@@ -113,7 +113,7 @@ class TransitionAction(UserAction):
         datastore.commit()
 
         raise cherrypy.HTTPRedirect(
-            "?" + view_state(transition = None)
+            "?" + view_state(item_action = None, transition = None)
         )
 
 TransitionAction("transition").register(before = "close")
