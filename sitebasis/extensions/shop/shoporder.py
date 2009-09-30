@@ -167,3 +167,52 @@ class ShopOrder(Item):
         """
         return sum(entry.quantity for entry in self.entries)
 
+    def get_product_entry(self, product):
+        """Gets the entry in the order for the given product.
+
+        @param product: The product to obtain the entry for.
+        @type product: L{Product<sitebasis.extensions.shop.product.Product>}
+
+        @return: The matching entry, or None if the order doesn't contain an
+            entry for the indicated product.
+        @rtype: L{ShopOrderEntry
+                  <sitebasis.extensions.shop.shoporderentry.ShopOrderEntry>}
+        """
+        for entry in self.entries:
+            if entry.product is product:
+                return entry
+
+    def set_product_quantity(self, product, quantity):
+        """Updates the quantity of ordered units for the indicated product.
+
+        If an entry for the given product already exists, its quantity will be
+        updated to the indicated value. If the indicated quantity is zero, the
+        entry will be removed from the order. If no matching entry exists, a
+        new entry for the product will be created with the specified amount of
+        units.
+
+        @param product: The product to set the quantity for.
+        @type product: L{Product<sitebasis.extensions.shop.product.Product>}
+
+        @param quantity: The number of units of the product to order.
+        @type quantity: int
+        """
+        entry = self.get_product_entry(product)
+
+        if entry is None:
+            if quantity:
+                entry = ShopOrderEntry(
+                    product = product,
+                    quantity = quantity
+                )
+                if self.is_inserted:
+                    entry.insert()
+        else:
+            if quantity:
+                entry.quantity = quantity
+            else:
+                if entry.is_inserted:
+                    entry.delete()
+                else:
+                    self.entries.remove(entry)
+
