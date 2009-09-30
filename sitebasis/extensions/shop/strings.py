@@ -8,10 +8,22 @@
 """
 from cocktail.translations import translations
 
-translations.define("Site.pricing_policies",
-    ca = u"Polítiques de preus",
-    es = u"Políticas de precios",
-    en = u"Pricing policies"
+translations.define("ShopExtension.discounts",
+    ca = u"Descomptes",
+    es = u"Descuentos",
+    en = u"Discounts"
+)
+
+translations.define("ShopExtension.shipping_costs",
+    ca = u"Costos d'enviament",
+    es = u"Costes de envío",
+    en = u"Shipping costs"
+)
+
+translations.define("ShopExtension.taxes",
+    ca = u"Impostos",
+    es = u"Impuestos",
+    en = u"Taxes"
 )
 
 # Product
@@ -92,116 +104,58 @@ translations.define("ShopOrder-plural",
     en = u"Shop orders"
 )
 
-translations.define("ShopOrder.customer",
-    ca = u"Client",
-    es = u"Cliente",
-    en = u"Client"
-)
-
 translations.define("ShopOrder.entries",
     ca = u"Contingut de la comanda",
     es = u"Contenido del pedido",
     en = u"Order entries"
 )
     
-translations.define("ShopOrder.shipping_address",
-    ca = u"Adreça d'enviament",
-    es = u"Dirección de envío",
-    en = u"Shipping address"
-)
-
 translations.define("ShopOrder.cost",
     ca = u"Cost",
     es = u"Coste",
     en = u"Cost"
 )
 
-# ShippingAddress
-#------------------------------------------------------------------------------
-translations.define("ShippingAddress",
-    ca = u"Adreça d'enviament",
-    es = u"Dirección de envío",
+translations.define("ShopOrder.shipping_info",
+    ca = u"Informació d'enviament",
+    es = u"Información de envío",
     en = u"Shipping address"
 )
 
-translations.define("ShippingAddress-plural",
-    ca = u"Adreces d'enviament",
-    es = u"Direcciones de envío",
-    en = u"Shipping addresses"
-)
-
-translations.define("ShippingAddress.receiver",
-    ca = u"Destinatari",
-    es = u"Destinatario",
-    en = u"Receiver"
-)       
-
-translations.define("ShippingAddress.address",
+translations.define("ShopOrder.address",
     ca = u"Adreça",
     es = u"Dirección",
     en = u"Address"
 )
 
-translations.define("ShippingAddress.town",
+translations.define("ShopOrder.address",
+    ca = u"Adreça d'enviament",
+    es = u"Dirección de envío",
+    en = u"Shipping address"
+)
+
+translations.define("ShopOrder.town",
     ca = u"Pobaclió",
     es = u"Población",
     en = u"Town"
 )
 
-translations.define("ShippingAddress.region",
-    ca = u"Regió",
-    es = u"Región",
-    en = u"Region"
+translations.define("ShopOrder.region",
+    ca = u"Regió/Estat/Província",
+    es = u"Región/Estado/Provincia",
+    en = u"Region/Estado/Provincia"
 )
 
-translations.define("ShippingAddress.country",
+translations.define("ShopOrder.country",
     ca = u"País",
     es = u"País",
     en = u"Country"
 )
 
-translations.define("ShippingAddress.postal_code",
+translations.define("ShopOrder.postal_code",
     ca = u"Codi postal",
     es = u"Código postal",
     en = u"Postal code"
-)
-
-# Customer
-#------------------------------------------------------------------------------
-translations.define("Customer",
-    ca = u"Client",
-    es = u"Cliente",
-    en = u"Customer"
-)
-
-translations.define("Customer-plural",
-    ca = u"Clients",
-    es = u"Clientes",
-    en = u"Customers"
-)
-
-translations.define("Customer.first_name",
-    ca = u"Nom",
-    es = u"Nombre",
-    en = u"First name"
-)
-
-translations.define("Customer.last_name",
-    ca = u"Cognoms",
-    es = u"Apellidos",
-    en = u"Last name"
-)
-
-translations.define("Customer.phone_number",
-    ca = u"Telèfon",
-    es = u"Teléfono",
-    en = u"Phone number"
-)
-
-translations.define("Customer.shop_orders",
-    ca = u"Comandes",
-    es = u"Pedidos",
-    en = u"Shop orders"
 )
 
 # ShopOrderEntry
@@ -236,334 +190,261 @@ translations.define("ShopOrderEntry.quantity",
     en = u"Quantity"
 )
 
-translations.define("ShopOrderEntry.product_price",
-    ca = u"Preu del producte",
-    es = u"Precio del producto",
-    en = u"Product price"
-)
-
-# Pricing
+# PricingPolicy
 #------------------------------------------------------------------------------
-translations.define("Pricing",
+translations.define("PricingPolicy",
     ca = u"Política de preus",
     es = u"Política de precios",
     en = u"Pricing policy"
 )
 
-translations.define("Pricing-plural",
+translations.define("PricingPolicy-plural",
     ca = u"Polítiques de preus",
     es = u"Políticas de precios",
     en = u"Pricing policies"
 )
 
-translations.define("Pricing.title",
+translations.define("PricingPolicy.title",
     ca = u"Títol",
     es = u"Título",
     en = u"Title"
 )
 
-translations.define("Pricing.enabled",
+translations.define("PricingPolicy.enabled",
     ca = u"Activa",
     es = u"Activa",
     en = u"Enabled"
 )
 
-translations.define("Pricing.start_date",
+translations.define("PricingPolicy.start_date",
     ca = u"Data d'inici",
     es = u"Fecha de inicio",
     en = u"Start date"
 )
 
-translations.define("Pricing.end_date",
+translations.define("PricingPolicy.end_date",
     ca = u"Data de fi",
     es = u"Fecha de fin",
     en = u"End date"
 )
 
-translations.define("Pricing.highlighted",
-    ca = u"Destacada",
-    es = u"Destacada",
+# Discount
+#------------------------------------------------------------------------------
+translations.define("Discount",
+    ca = u"Descompte",
+    es = u"Descuento",
+    en = u"Discount"
+)
+
+translations.define("Discount-plural",
+    ca = u"Descomptes",
+    es = u"Descuentos",
+    en = u"Discounts"
+)
+
+translations.define("Discount.highlighted",
+    ca = u"Destacat",
+    es = u"Destacado",
     en = u"Highlighted"
 )
 
-# Order pricing
+# AbsoluteDiscount
 #------------------------------------------------------------------------------
-translations.define("OrderPricing",
-    ca = u"Política de preus de comanda",
-    es = u"Política de precios de pedido",
-    en = u"Order pricing policy"
+translations.define("PriceOverride",
+    ca = u"Preu ajustat",
+    es = u"Precio ajustado",
+    en = u"Price override"
 )
 
-translations.define("OrderPricing-plural",
-    ca = u"Polítiques de preus de comanda",
-    es = u"Políticas de precios de pedido",
-    en = u"Order pricing policies"
+translations.define("PriceOverride-plural",
+    ca = u"Preus ajustats",
+    es = u"Precios ajustados",
+    en = u"Price overrides"
 )
 
-translations.define("OrderPricing.matching_orders",
-    ca = u"Comandes afectades",
-    es = u"Pedidos afectados",
-    en = u"Matching orders"
-)
-
-# Order price
-#------------------------------------------------------------------------------
-translations.define("OrderPrice",
-    ca = u"Preu de comanda",
-    es = u"Precio de pedido",
-    en = u"Order price"
-)
-
-translations.define("OrderPrice-plural",
-    ca = u"Preus de comanda",
-    es = u"Precios de pedido",
-    en = u"Order prices"
-)
-
-translations.define("OrderPrice.modifier",
-    ca = u"Modificació",
-    es = u"Modificación",
-    en = u"Modifier"
-)
-
-translations.define("OrderPrice.modifier_type",
-    ca = u"Tipus de modificació",
-    es = u"Tipo de modificación",
-    en = u"Modifier type"
-)
-
-# OrderShippingCost
-#------------------------------------------------------------------------------
-translations.define("OrderShippingCost",
-    ca = u"Cost d'enviament de comanda",
-    es = u"Coste de envío de pedido",
-    en = u"Order shipping cost"
-)
-
-translations.define("OrderShippingCost-plural",
-    ca = u"Costos d'enviament de comanda",
-    es = u"Costes de envío de pedido",
-    en = u"Order shipping costs"
-)
-
-translations.define("OrderShippingCost.modifier",
-    ca = u"Modificació",
-    es = u"Modificación",
-    en = u"Modifier"
-)
-
-translations.define("OrderShippingCost.modifier_type",
-    ca = u"Tipus de modificació",
-    es = u"Tipo de modificación",
-    en = u"Modifier type"
-)
-
-# OrderTax
-#------------------------------------------------------------------------------
-translations.define("OrderTax",
-    ca = u"Impost sobre comanda",
-    es = u"Impuesto sobre pedido",
-    en = u"Order tax"
-)
-
-translations.define("OrderTax-plural",
-    ca = u"Impostos sobre comandes",
-    es = u"Impuestos sobre pedidos",
-    en = u"Order taxes"
-)
-
-translations.define("OrderTax.tax_scope",
-    ca = u"Àmbit de l'impost",
-    es = u"Ámbito del impuesto",
-    en = u"Tax scope"
-)
-
-translations.define("OrderTax.modifier",
-    ca = u"Modificació",
-    es = u"Modificación",
-    en = u"Modifier"
-)
-
-translations.define("OrderTax.modifier_type",
-    ca = u"Tipus de modificació",
-    es = u"Tipo de modificación",
-    en = u"Modifier type"
-)
-
-# EntryPricing
-#------------------------------------------------------------------------------
-translations.define("EntryPricing",
-    ca = u"Política de preus de línia de comanda",
-    es = u"Política de precios de linia de pedido",
-    en = u"Order entry pricing policy"
-)
-
-translations.define("EntryPricing-plural",
-    ca = u"Polítiques de preus de línia de comanda",
-    es = u"Políticas de precios de linea de pedido",
-    en = u"Order entry pricing policies"
-)
-
-translations.define("EntryPricing.matching_entries",
-    ca = u"Línies de comanda afectades",
-    es = u"Lineas de pedido afectadas",
-    en = u"Matching order entries"
-)
-
-# ProductPrice
-#------------------------------------------------------------------------------
-translations.define("EntryPrice",
-    ca = u"Preu de línia de comanda",
-    es = u"Precio de linea de pedido",
-    en = u"Order entry price"
-)
-
-translations.define("EntryPrice-plural",
-    ca = u"Preus de línia de comanda",
-    es = u"Precios de linea de pedido",
-    en = u"Order entry prices"
-)
-
-translations.define("EntryPrice.modifier",
-    ca = u"Modificació",
-    es = u"Modificación",
-    en = u"Modifier"
-)
-
-translations.define("EntryPrice.modifier_type",
-    ca = u"Tipus de modificació",
-    es = u"Tipo de modificación",
-    en = u"Modifier type"
-)
-
-# EntrtyFreeUnits
-#------------------------------------------------------------------------------
-translations.define("EntryFreeUnits",
-    ca = u"Unitats gratuïtes",
-    es = u"Unidades gratuitas",
-    en = u"Free units"
-)
-
-translations.define("EntryFreeUnits-plural",
-    ca = u"Unitats gratuïtes",
-    es = u"Unidades gratuitas",
-    en = u"Free units"
-)
-
-translations.define("EntryFreeUnits.paid_units",
-    ca = u"Unitats pagades",
-    es = u"Unidades pagadas",
-    en = u"Paid units"
-)
-
-translations.define("EntryFreeUnits.free_units",
-    ca = u"Unitats de regal",
-    es = u"Unidades de regalo",
-    en = u"Free units"
-)
-
-translations.define("EntryFreeUnits.repeated",
-    ca = u"Admet múltiples",
-    es = u"Admite múltiples",
-    en = u"Repeated"
-)
-
-# EntryShippingCost
-#------------------------------------------------------------------------------
-translations.define("EntryShippingCost",
-    ca = u"Cost d'enviament de línia de comanda",
-    es = u"Coste de envío de pedido",
-    en = u"Order entry shipping cost"
-)
-
-translations.define("EntryShippingCost-plural",
-    ca = u"Costos d'enviament de línia de comanda",
-    es = u"Costes de envío de pedido",
-    en = u"Order entry shipping costs"
-)
-
-translations.define("EntryShippingCost.modifier",
-    ca = u"Modificació",
-    es = u"Modificación",
-    en = u"Modifier"
-)
-
-translations.define("EntryShippingCost.modifier_type",
-    ca = u"Tipus de modificació",
-    es = u"Tipo de modificación",
-    en = u"Modifier type"
-)
-
-# EntryTax
-#------------------------------------------------------------------------------
-translations.define("EntryTax",
-    ca = u"Impost sobre línia de comanda",
-    es = u"Impuesto sobre linea de pedido",
-    en = u"Order entry tax"
-)
-
-translations.define("EntryTax-plural",
-    ca = u"Impostos sobre línia de comanda",
-    es = u"Impuestos sobre linea de pedido",
-    en = u"Order entry taxes"
-)
-
-translations.define("EntryTax.tax_scope",
-    ca = u"Àmbit de l'impost",
-    es = u"Ámbito del impuesto",
-    en = u"Tax scope"
-)
-
-translations.define("EntryTax.modifier",
-    ca = u"Modificació",
-    es = u"Modificación",
-    en = u"Modifier"
-)
-
-translations.define("EntryTax.modifier_type",
-    ca = u"Tipus de modificació",
-    es = u"Tipo de modificación",
-    en = u"Modifier type"
-)
-
-# Modifier types
-#------------------------------------------------------------------------------
-translations.define("sitebasis.extensions.shop price_modifier_type absolute",
-    ca = u"Absoluta",
-    es = u"Absoluta",
-    en = u"Absolute"
-)
-
-translations.define("sitebasis.extensions.shop price_modifier_type relative",
-    ca = u"Relativa",
-    es = u"Relativa",
-    en = u"Relative"
-)
-
-translations.define("sitebasis.extensions.shop price_modifier_type percentage",
-    ca = u"Percentual",
-    es = u"Percentual",
-    en = u"Percentage"
-)
-
-# Tax scopes
-#------------------------------------------------------------------------------
-translations.define("sitebasis.extensions.shop tax_scope price",
+translations.define("PriceOverride.price",
     ca = u"Preu",
     es = u"Precio",
     en = u"Price"
 )
 
-translations.define("sitebasis.extensions.shop tax_scope shipping",
+# RelativeDiscount
+#------------------------------------------------------------------------------
+translations.define("RelativeDiscount",
+    ca = u"Descompte relatiu",
+    es = u"Descuento relativo",
+    en = u"Relative discount"
+)
+
+translations.define("RelativeDiscount-plural",
+    ca = u"Descomptes relatius",
+    es = u"Descuentos relativos",
+    en = u"Relative discounts"
+)
+
+translations.define("RelativeDiscount.amount",
+    ca = u"Descompte",
+    es = u"Descuento",
+    en = u"Discount"
+)
+
+# PercentageDiscount
+#------------------------------------------------------------------------------
+translations.define("PercentageDiscount",
+    ca = u"Descompte percentual",
+    es = u"Descuento porcentual",
+    en = u"Percentage discount"
+)
+
+translations.define("PercentageDiscount-plural",
+    ca = u"Descomptes percentuals",
+    es = u"Descuentos porcentuales",
+    en = u"Percentage discounts"
+)
+
+translations.define("PercentageDiscount.percentage",
+    ca = u"Percentatge",
+    es = u"Porcentaje",
+    en = u"Percentage"
+)
+
+# FreeUnitsDiscount
+#------------------------------------------------------------------------------
+translations.define("FreeUnitsDiscount",
+    ca = u"Unitats gratuïtes",
+    es = u"Unidades gratuitas",
+    en = u"Free units"
+)
+
+translations.define("FreeUnitsDiscount-plural",
+    ca = u"Unitats gratuïtes",
+    es = u"Unidades gratuitas",
+    en = u"Free units"
+)
+
+translations.define("FreeUnitsDiscount.paid_units",
+    ca = u"Unitats pagades",
+    es = u"Unidades pagadas",
+    en = u"Paid units"
+)
+
+translations.define("FreeUnitsDiscount.free_units",
+    ca = u"Unitats de regal",
+    es = u"Unidades de regalo",
+    en = u"Free units"
+)
+
+translations.define("FreeUnitsDiscount.repeated",
+    ca = u"Admet múltiples",
+    es = u"Admite múltiples",
+    en = u"Repeated"
+)
+
+# ShippingCost
+#------------------------------------------------------------------------------
+translations.define("ShippingCost",
+    ca = u"Cost d'enviament",
+    es = u"Coste de envío",
+    en = u"Shipping cost"
+)
+
+translations.define("ShippingCost-plural",
     ca = u"Costos d'enviament",
     es = u"Costes de envío",
-    en = u"Shipping"
+    en = u"Shipping costs"
 )
 
-translations.define("sitebasis.extensions.shop tax_scope total",
-    ca = u"Total",
-    es = u"Total",
-    en = u"Total"
+# ShippingCostOverride
+#------------------------------------------------------------------------------
+translations.define("ShippingCostOverride",
+    ca = u"Cost d'enviament absolut",
+    es = u"Coste de envío absoluto",
+    en = u"Shipping cost override"
+) 
+
+translations.define("ShippingCostOverride-plural",
+    ca = u"Costos d'enviament absoluts",
+    es = u"Costes de envío absolutos",
+    en = u"Shipping cost overrides"
 )
 
+translations.define("ShippingCostOverride.cost",
+    ca = u"Cost",
+    es = u"Coste",
+    en = u"Cost"
+)
+
+# CumulativeShippingCost
+#------------------------------------------------------------------------------
+translations.define("CumulativeShippingCost",
+    ca = u"Cost d'enviament acomulatiu",
+    es = u"Coste de envío acomulativo",
+    en = u"Cumulative shipping cost"
+)
+
+translations.define("CumulativeShippingCost-plural",
+    ca = u"Costos d'enviament acomulatius",
+    es = u"Costes de envío acomulativos",
+    en = u"Cumulative shipping costs"
+)
+
+translations.define("CumulativeShippingCost.cost",
+    ca = u"Cost",
+    es = u"Coste",
+    en = u"Cost"
+)
+
+# Tax
+#------------------------------------------------------------------------------
+translations.define("Tax",
+    ca = u"Impost",
+    es = u"Impuesto",
+    en = u"Tax"
+)
+
+translations.define("Tax-plural",
+    ca = u"Impostos",
+    es = u"Impuestos",
+    en = u"Taxes"
+)
+
+# CumulativeTax
+#------------------------------------------------------------------------------
+translations.define("CumulativeTax",
+    ca = u"Impost acumulatiu",
+    es = u"Impuesto acumulativo",
+    en = u"Cumulative tax"
+)
+
+translations.define("CumulativeTax-plural",
+    ca = u"Impostos acumulatius",
+    es = u"Impuestos acumulativos",
+    en = u"Cumulative taxes"
+)
+
+translations.define("CumulativeTax.cost",
+    ca = u"Import",
+    es = u"Importe",
+    en = u"Cost"
+)
+
+# PercentageTax
+#------------------------------------------------------------------------------
+translations.define("PercentageTax",
+    ca = u"Impost percentual",
+    es = u"Impuesto porcentual",
+    en = u"Percentage tax"
+)
+
+translations.define("PercentageTax-plural",
+    ca = u"Impostos percentuals",
+    es = u"Impuestos porcentuales",
+    en = u"Percentage taxes"
+)
+
+translations.define("PercentageTax.percentage",
+    ca = u"Percentatge",
+    es = u"Porcentaje",
+    en = u"Percentage"
+)
 

@@ -7,7 +7,7 @@ u"""
 @since:			December 2008
 """
 from pkg_resources import iter_entry_points
-from cocktail.modeling import abstractmethod
+from cocktail.modeling import classgetter
 from cocktail.events import Event
 from cocktail.pkgutils import resolve
 from cocktail.translations import translations
@@ -170,6 +170,10 @@ class Extension(Item):
         the site.""")
 
     loading = Event("""An event triggered during application start up.""")
+
+    @classgetter
+    def instance(cls):
+        return iter(cls.select()).next()
 
     def __translate__(self, language, **kwargs):
         return translations(self.__class__.name)
