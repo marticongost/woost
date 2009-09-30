@@ -116,8 +116,8 @@ class ShopOrder(Item):
                         costs["pricing_policies"].append(pricing_policy)
                 else:
                     for entry, entry_costs in zip(self.entries, costs["entries"]):
-                        if pricing_policy.applies_to(entry):
-                            pricing_policy.apply(entry, entry_costs)
+                        if pricing_policy.applies_to(entry.product):
+                            pricing_policy.apply(entry.product, entry_costs)
                             entry_costs["pricing_policies"].append(pricing_policy)
         
         # Total price
