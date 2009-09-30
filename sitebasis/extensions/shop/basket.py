@@ -9,6 +9,7 @@
 import cherrypy
 from sitebasis.extensions.shop.shoporder import ShopOrder
 from sitebasis.extensions.shop.shoporderentry import ShopOrderEntry
+from sitebasis.extensions.shop.product import Product
 
 
 class Basket(object):
@@ -26,7 +27,11 @@ class Basket(object):
         order = getattr(cherrypy.request, "sitebasis_shop_basket", None)
 
         if order is None:
-            order = cls.restore()            
+            order = cls.restore()
+
+            if order is None:
+                order = ShopOrder()
+            
             cherrypy.request.sitebasis_shop_basket = order
 
         return order
@@ -46,6 +51,7 @@ class Basket(object):
     @classmethod
     def restore(cls):
         session_data = cherrypy.session.get(cls.session_key)
+
         if session_data is None:
             return None
         else:

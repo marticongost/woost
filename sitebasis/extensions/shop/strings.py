@@ -8,6 +8,8 @@
 """
 from cocktail.translations import translations
 
+# ShopExtension
+#------------------------------------------------------------------------------
 translations.define("ShopExtension.discounts",
     ca = u"Descomptes",
     es = u"Descuentos",
@@ -446,5 +448,31 @@ translations.define("PercentageTax.percentage",
     ca = u"Percentatge",
     es = u"Porcentaje",
     en = u"Percentage"
+)
+
+# Views
+#------------------------------------------------------------------------------
+translations.define("sitebasis.extensions.shop.Basket product header",
+    ca = u"Producte",
+    es = u"Producto",
+    en = u"Product"
+)
+
+translations.define("sitebasis.extensions.shop.Basket quantity header",
+    ca = u"Unitats",
+    es = u"Unidades",
+    en = u"Units"
+)
+
+translations.define("sitebasis.extensions.shop.Basket price header",
+    ca = u"Preu",
+    es = u"Precio",
+    en = u"Price"
+)
+
+translations.define("sitebasis.extensions.shop.Basket total header",
+    ca = u"Total",
+    es = u"Total",
+    en = u"Total"
 )
 
