@@ -26,29 +26,29 @@ class ShopOrder(Item):
     ]
 
     address = schema.String(
-        group = "shipping_info",
+        member_group = "shipping_info",
         required = True
     )
 
     town = schema.String(
-        group = "shipping_info",
+        member_group = "shipping_info",
         required = True
     )
 
     region = schema.String(
-        group = "shipping_info",
+        member_group = "shipping_info",
         required = True
     )
 
     country = schema.Reference(        
-        group = "shipping_info",
+        member_group = "shipping_info",
         type = Country,
         related_end = schema.Collection(),
         required = True
     )
 
     postal_code = schema.String(
-        group = "shipping_info",
+        member_group = "shipping_info",
         required = True
     )
 
