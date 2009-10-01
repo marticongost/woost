@@ -13,31 +13,19 @@ from sitebasis.models import Item
 
 class Product(Item):
 
+    instantiable = False
+
     members_order = [
-        "product_name",
         "price",
-        "description",
         "categories",
         "entries"
     ]
-
-    product_name = schema.String(
-        required = True,
-        unique = True,
-        indexed = True,
-        normalized_index = True,
-        translated = True
-    )
 
     price = schema.Decimal(
         required = True,
         default = Decimal("0")
     )
     
-    description = schema.String(
-        edit_control = "sitebasis.views.RichTextEditor"
-    )
-
     categories = schema.Collection(
         items = "sitebasis.extensions.shop.productcategory.ProductCategory",
         bidirectional = True
@@ -50,9 +38,12 @@ class Product(Item):
         block_delete = True
     )
 
-    def __translate__(self, language, **kwargs):
-        return (
-            self.draft_source is None
-            and self.get("product_name", language)
-        ) or Item.__translate__(self, language, **kwargs)
+    def discounts(self):
+        """Returns the discounts that can be applied to the product.        
+        @rtype: L{Product<sitebasis.extensions.shop.product.Product>}
+        """
+        from sitebasis.extensions.shop import ShopExtension
+        return [discount
+                for discount in ShopExtension.instance.discounts
+                if discount.applies_to(self)]
 

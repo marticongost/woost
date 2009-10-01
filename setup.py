@@ -26,7 +26,8 @@ setup(
     entry_points = {
         "sitebasis.extensions": [
             "workflow = sitebasis.extensions.workflow:WorkflowExtension",
-            "shop = sitebasis.extensions.shop:ShopExtension"
+            "shop = sitebasis.extensions.shop:ShopExtension",
+            "countries = sitebasis.extensions.countries:CountriesExtension"
         ]
     },
     # SiteBasis can't yet access view resources (images, style sheets, client

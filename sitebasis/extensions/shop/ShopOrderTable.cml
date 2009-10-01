@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<div
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:py="http://www.whads.com/ns/cocktail/templates">
+    
+    <?py-class
+    shop_order = None
+    
+    def display_amount(self, amount):
+        return translations(amount) + u" €"
+    ?>
+
+    <py:ready>
+        <?py
+        self.costs = self.shop_order.calculate_cost()
+        ?>
+    </py:ready>
+
+    <tr py:def="row" py:args="entry, costs">
+        <td class="product">${translations(entry.product)}</td>
+        <td class="quantity">${entry.quantity}</td>
+        <td class="price">${self.display_amount(costs["price"]["total"])}</td>
+        <td class="total">${self.display_amount(costs["total_price"])}</td>
+    </tr>
+
+    <table py:id="entries_table">
+        <thead>
+            <tr>
+                <th class="product">${translations("sitebasis.extensions.shop.ShopOrderTable product header")}</th>
+                <th class="quantity">${translations("sitebasis.extensions.shop.ShopOrderTable quantity header")}</th>
+                <th class="price">${translations("sitebasis.extensions.shop.ShopOrderTable price header")}</th>
+                <th class="total">${translations("sitebasis.extensions.shop.ShopOrderTable total header")}</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <py:ready py:if="self.shop_order">
+                <py:new py:element="self.create_row(entry, entry_costs)"
+                        py:for="entry, entry_costs in zip(self.shop_order.entries, self.costs['entries'])"/>
+            </py:ready>
+        </tbody>
+    </table>
+
+    <div py:id="shipping_costs" py:visible="@{self.costs['total_shipping_costs']}">
+        <div class="label">${translations("sitebasis.extensions.shop.ShopOrderTable shipping costs")}</div>
+        <div class="cost">@{self.costs["total_shipping_costs"]}</div>
+    </div>
+
+    <div py:id="taxes" py:visible="@{self.costs['total_taxes']}">
+        <div class="label">${translations("sitebasis.extensions.shop.ShopOrderTable taxes")}</div>
+        <div class="cost">@{self.costs["total_taxes"]}</div>
+    </div>
+
+    <div py:id="total">
+        <div class="label">${translations("sitebasis.extensions.shop.ShopOrderTable total")}</div>
+        <div class="cost">@{self.costs["total"]}</div>
+    </div>
+
+</div>

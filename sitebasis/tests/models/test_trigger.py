@@ -182,12 +182,45 @@ class TriggerInvocationTestCase(BaseTestCase):
 class BeforeTestCase(TriggerInvocationTestCase):
 
     def test_before_create(self):
-        
+
         from sitebasis.models import CreateTrigger, Item
 
         # Declare the trigger
         trigger, response_log = self.make_trigger(
             CreateTrigger,
+            execution_point = "before",
+            batch_execution = False
+        )
+
+        qname = "item1"
+        item1 = Item(qname = qname)
+        assert len(response_log) == 1
+
+        id = 234
+        item2 = Item(id = id)
+        assert len(response_log) == 2
+
+        response = response_log[0]
+        assert response["trigger"] is trigger
+        assert response["items"] == [item1]
+        assert response["user"] is self.user
+        assert not response["batch"]
+        assert response["context"]["values"]["qname"] == qname
+
+        response = response_log[1]
+        assert response["trigger"] is trigger
+        assert response["items"] == [item2]
+        assert response["user"] is self.user
+        assert not response["batch"]
+        assert response["context"]["values"]["id"] == id
+
+    def test_before_insert(self):
+        
+        from sitebasis.models import InsertTrigger, Item
+
+        # Declare the trigger
+        trigger, response_log = self.make_trigger(
+            InsertTrigger,
             execution_point = "before",
             batch_execution = False
         )
@@ -290,11 +323,12 @@ class BeforeTestCase(TriggerInvocationTestCase):
         assert response["user"] is self.user
         assert not response["batch"]
 
-    def test_before_create_modify_delete(self):
+    def test_before_create_insert_modify_delete(self):
 
         from sitebasis.models import (
             Item,
             CreateTrigger,
+            InsertTrigger,
             ModifyTrigger,
             DeleteTrigger
         )
@@ -303,6 +337,13 @@ class BeforeTestCase(TriggerInvocationTestCase):
 
         create_trigger = self.make_trigger(
             CreateTrigger,
+            response_log,            
+            execution_point = "before",
+            batch_execution = False
+        )
+
+        insert_trigger = self.make_trigger(
+            InsertTrigger,
             response_log,            
             execution_point = "before",
             batch_execution = False
@@ -323,15 +364,21 @@ class BeforeTestCase(TriggerInvocationTestCase):
         )
 
         # Create and insert an item
-        item = Item()
-        item.qname = "foo"
+        item = Item(qname = "foo")
         item.insert()
 
-        assert len(response_log) == 1
+        assert len(response_log) == 2
+        response = response_log.pop()
+        assert response["trigger"] is insert_trigger
+        assert response["items"] == [item]
+        assert response["user"] is self.user
+        assert not response["batch"]
+
         response = response_log.pop()
         assert response["trigger"] is create_trigger
         assert response["items"] == [item]
         assert response["user"] is self.user
+        assert response["context"]["values"]["qname"] == "foo"
         assert not response["batch"]
 
         # Modify the item
@@ -358,14 +405,14 @@ class BeforeTestCase(TriggerInvocationTestCase):
 
 class AfterTestCase(TriggerInvocationTestCase):
 
-    def test_after_create(self):
+    def test_after_insert(self):
         
         from cocktail.persistence import datastore
-        from sitebasis.models import CreateTrigger, Item
+        from sitebasis.models import InsertTrigger, Item
                 
         # Declare the trigger
         trigger, response_log = self.make_trigger(
-            CreateTrigger,
+            InsertTrigger,
             execution_point = "after",
             batch_execution = False
         )
@@ -465,21 +512,21 @@ class AfterTestCase(TriggerInvocationTestCase):
         assert response["user"] is self.user
         assert not response["batch"]
 
-    def test_after_create_modify_delete(self):
+    def test_after_insert_modify_delete(self):
 
         from cocktail.persistence import datastore
         from sitebasis.models import (
             Item,
             User,
-            CreateTrigger,
+            InsertTrigger,
             ModifyTrigger,
             DeleteTrigger
         )
 
         response_log = []
 
-        create_trigger = self.make_trigger(
-            CreateTrigger,
+        insert_trigger = self.make_trigger(
+            InsertTrigger,
             response_log,            
             execution_point = "after",
             batch_execution = False
@@ -517,7 +564,7 @@ class AfterTestCase(TriggerInvocationTestCase):
         assert len(response_log) == 4
 
         response = response_log.pop(0)
-        assert response["trigger"] is create_trigger
+        assert response["trigger"] is insert_trigger
         assert response["items"] == [item]
         assert response["user"] is self.user
         assert not response["batch"]
@@ -539,14 +586,14 @@ class AfterTestCase(TriggerInvocationTestCase):
 
 class BatchTestCase(TriggerInvocationTestCase):
 
-    def test_after_create_batched(self):
+    def test_after_insert_batched(self):
 
         from cocktail.persistence import datastore
-        from sitebasis.models import CreateTrigger, Item
+        from sitebasis.models import InsertTrigger, Item
                 
         # Declare the trigger
         trigger, response_log = self.make_trigger(
-            CreateTrigger,
+            InsertTrigger,
             execution_point = "after",
             batch_execution = True
         )
