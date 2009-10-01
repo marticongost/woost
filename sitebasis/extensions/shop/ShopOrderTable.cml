@@ -18,15 +18,20 @@
     </py:ready>
 
     <tr py:def="row" py:args="entry, costs">
-        <td class="product">${translations(entry.product)}</td>
-        <td class="quantity">${entry.quantity}</td>
-        <td class="price">${self.display_amount(costs["price"]["total"])}</td>
-        <td class="total">${self.display_amount(costs["total_price"])}</td>
+        <py:new py:element="self.create_product_cell(entry, costs)"/>
+        <py:new py:element="self.create_quantity_cell(entry, costs)"/>
+        <py:new py:element="self.create_price_cell(entry, costs)"/>
+        <py:new py:element="self.create_total_cell(entry, costs)"/>
     </tr>
+
+    <td py:def="product_cell" py:args="entry, costs">${translations(entry.product)}</td>    
+    <td py:def="quantity_cell" py:args="entry, costs">${entry.quantity}</td>
+    <td py:def="price_cell" py:args="entry, costs">${self.display_amount(costs["price"]["total"])}</td>
+    <td py:def="total_cell" py:args="entry, costs">${self.display_amount(costs["total_price"])}</td>
 
     <table py:id="entries_table">
         <thead>
-            <tr>
+            <tr py:id="headers_row">
                 <th class="product">${translations("sitebasis.extensions.shop.ShopOrderTable product header")}</th>
                 <th class="quantity">${translations("sitebasis.extensions.shop.ShopOrderTable quantity header")}</th>
                 <th class="price">${translations("sitebasis.extensions.shop.ShopOrderTable price header")}</th>

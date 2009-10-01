@@ -488,3 +488,15 @@ translations.define("sitebasis.extensions.shop.ShopOrderTable total",
     en = u"Total"
 )
 
+translations.define("sitebasis.extensions.shop.ShoppingBasket remove entry",
+    ca = u"Eliminar",
+    es = u"Eliminar",
+    en = u"Delete"
+)
+
+translations.define("sitebasis.extensions.shop.ShoppingBasket update button",
+    ca = u"Establir quantitats",
+    es = u"Establecer cantidades",
+    en = u"Set units"
+)
+

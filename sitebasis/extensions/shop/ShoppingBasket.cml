@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?py
+from cocktail.controllers import context
+?>
+
+<py:sitebasis.extensions.shop.ShopOrderTable
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:py="http://www.whads.com/ns/cocktail/templates">
+
+    <?py
+    self.tag = "form"
+    ?>
+
+    <py:ready>
+        <?py
+        self._uri = context["cms"].document_uri
+
+        if self.tag == "form":
+            self["action"] = self._uri("update")
+        ?>
+    </py:ready>
+
+    <py:with py:def="row" py:args="entry, costs">
+        <td class="remove">
+            <a href="${self._uri('update', product = entry.product.id, quantity = 0)}">
+                ${translations('sitebasis.extensions.shop.ShoppingBasket remove entry')}
+            </a>
+        </td>
+    </py:with>
+
+    <td py:def="quantity_cell" py:args="entry, costs">
+        <input type="text" name="quantity" value="${entry.quantity}"/>
+    </td>
+
+    <input type="submit" value="${translations('sitebasis.extensions.shop.ShoppingBasket update button')}"/>
+
+</py:sitebasis.extensions.shop.ShopOrderTable>
