@@ -11,6 +11,9 @@ from simplejson import dumps
 from cocktail.pkgutils import resolve
 from cocktail.events import event_handler
 from cocktail.controllers import view_state
+from cocktail.translations import translations
+from cocktail.language import get_content_language
+from cocktail.html import Element
 from cocktail import schema
 from sitebasis.models import get_current_user, ReadPermission
 from sitebasis.controllers.backoffice.basebackofficecontroller \
@@ -60,19 +63,46 @@ class BackOfficeController(BaseBackOfficeController):
 
     @cherrypy.expose
     def render_preview(self, **kwargs):
+        
         node = self.stack_node
         
-        get_current_user().require_permission(ReadPermission, target = node.item)
-        
-        node.import_form_data(node.form_data, node.item)
-        
-        self.context.update(
-            original_document = self.context["document"],
-            document = node.item
+        get_current_user().require_permission(
+            ReadPermission,
+            target = node.item
         )
         
-        document_controller = node.item.handler()
-        return document_controller()
+        node.import_form_data(
+            node.form_data,
+            node.item
+        )
+        
+        errors = list(node.item.__class__.get_errors(node.item))
+
+        if errors:
+            message = Element("div",
+                class_name = "preview-error-box",
+                children = [
+                    translations(
+                        "sitebasis.backoffice invalid item preview", 
+                        get_content_language()
+                    ),
+                    Element("ul", children = [
+                        Element("li", children = [translations(error)])
+                        for error in errors
+                    ])
+                ]
+            )
+            message.add_resource("/resources/styles/backoffice.css")           
+            return message.render_page()        
+        else:
+
+            self.context.update(
+                original_document = self.context["document"],
+                document = node.item
+            )
+            
+            document_controller = node.item.handler()
+            return document_controller()
 
     @cherrypy.expose
     def document_images(self, **kwargs):

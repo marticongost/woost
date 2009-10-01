@@ -45,7 +45,7 @@ class TransitionAction(UserAction):
                 transition = transition.id,
                 item_action = "transition"
             )
-            button.append(translations(translation))            
+            button.append(translations(transition))            
             panel.append(button)
 
         return panel
@@ -55,7 +55,7 @@ class TransitionAction(UserAction):
         if item.workflow_state is None:
             transitions = []
         else:
-            transitions = item.state.outgoing_transitions
+            transitions = item.workflow_state.outgoing_transitions
 
         if restricted:
             user = get_current_user()
@@ -113,7 +113,7 @@ class TransitionAction(UserAction):
         datastore.commit()
 
         raise cherrypy.HTTPRedirect(
-            "?" + view_state(transition = None)
+            "?" + view_state(item_action = None, transition = None)
         )
 
 TransitionAction("transition").register(before = "close")

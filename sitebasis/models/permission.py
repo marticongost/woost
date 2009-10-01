@@ -30,7 +30,8 @@ class Permission(Item):
 
     role = schema.Reference(
         type = "sitebasis.models.Role",
-        bidirectional = True
+        bidirectional = True,
+        min = 1
     )
 
     def match(self, verbose = False):
