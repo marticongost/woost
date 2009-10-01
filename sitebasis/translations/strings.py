@@ -179,13 +179,19 @@ translations.define("Action diff",
     en = u"Show changes"
 )
 
+translations.define("cocktail.html.shortcuts action diff",
+    ca = u"c",
+    es = u"c",
+    en = u"c"
+)
+
 translations.define("Action preview",
     ca = u"Vista prèvia",
     es = u"Vista previa",
     en = u"Preview"
 )
 
-translations.define("cocktail.html.shortcuts action review",
+translations.define("cocktail.html.shortcuts action preview",
     ca = u"p",
     es = u"p",
     en = u"p"
@@ -640,6 +646,18 @@ translations.define(
     ca = u"Documents publicats",
     es = u"Documentos publicados",
     en = u"Published documents"
+)
+
+translations.define("sitebasis.models.userfilter.TypeFilter-instance",
+    ca = u"Tipus",
+    es = u"Tipo",
+    en = u"Type"
+)
+
+translations.define("UserFilter.is_inherited",
+    ca = u"Inclou fills",
+    es = u"Incluye hijos",
+    en = u"Children included"
 )
 
 # Initialization content
@@ -2361,20 +2379,6 @@ translations.define("sitebasis.models.Trigger.execution_point after",
     en = u"After committing the transaction"
 )
 
-# InsertTrigger
-#------------------------------------------------------------------------------
-translations.define("InsertTrigger",
-    ca = u"Disparador de inserció",
-    es = u"Disparador de inserción",
-    en = u"Insert trigger"
-)
-
-translations.define("InsertTrigger-plural",
-    ca = u"Disparadors de inserció",
-    es = u"Disparadores de inserción",
-    en = u"Insert triggers"
-)
-
 # CreateTrigger
 #------------------------------------------------------------------------------
 translations.define("CreateTrigger",
@@ -2605,6 +2609,26 @@ translations.define("Feed.item_description_expression",
     en = u"Item description expression"
 )
 
+# ContentTypePicker
+#------------------------------------------------------------------------------
+translations.define("sitebasis.views.ContentTypePicker select",
+    ca = u"Seleccionar...",
+    es = u"Seleccionar...",
+    en = u"Select..."
+)
+
+translations.define("sitebasis.views.ContentTypePicker accept",
+    ca = u"Acceptar",
+    es = u"Aceptar",
+    en = u"Accept"
+)
+
+translations.define("sitebasis.views.ContentTypePicker cancel",
+    ca = u"Cancel·lar",
+    es = u"Cancelar",
+    en = u"Cancel"
+)
+
 # Preview
 #------------------------------------------------------------------------------
 translations.define("sitebasis.backoffice invalid item preview",
@@ -2615,3 +2639,4 @@ translations.define("sitebasis.backoffice invalid item preview",
     en = u"Some form field has no correct format. "
          u"Impossible to render preview."
 )
+

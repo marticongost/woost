@@ -12,43 +12,105 @@ cocktail.init(function (root) {
     jQuery(".ContentTypePicker", root).each(function () {
 
         this.tag = "div";
-        jQuery(this).addClass("selector");
-        
-        var label = document.createElement("div");
-        label.className = "label";
-        this.appendChild(label);
-        
-        var panel = document.createElement("ul");
-        panel.className = "selector_content";
+                
+        if (this.selectionMode == cocktail.SINGLE_SELECTION) {
+            var selector = document.createElement("div");
+            selector.className = "label";
+        } else {
+            var selector = document.createElement("button");
+            selector.type = "submit";
+            selector.className = "TypeSelectorButton";
+            var text = document.createElement("span");
+            jQuery(text).text(cocktail.translate("sitebasis.views.ContentTypePicker select"));
+            selector.appendChild(text);
+        }
+        this.appendChild(selector);
+
+        var panel = document.createElement("div");
+        panel.className = "panel";
+        var selector_content = document.createElement("ul");
+        selector_content.className = "selector_content";
+        panel.appendChild(selector_content);
         this.appendChild(panel);
         
-        while (this.firstChild != label) {        
-            panel.appendChild(this.firstChild);
+        while (this.firstChild != selector) {        
+            selector_content.appendChild(this.firstChild);
+        }
+        
+        if (this.selectionMode == cocktail.MULTIPLE_SELECTION) {
+            var selection = document.createElement("div");
+            selection.className = "selection";
+            this.appendChild(selection);
         }
         
         function applySelection(picker) {
-            jQuery(picker).find("li").removeClass("selected");
-            var entry = jQuery(picker).find(":checked").parents("li");
-            jQuery(entry.get(0)).addClass("selected");
-            var selectedLabel = entry.find(".entry_label").get(0);
-            
-            var label = jQuery(picker).find(".label");
-            label.empty();
 
-            var labelContent = document.createElement("span");
-            labelContent.className = selectedLabel.className;
-            labelContent.innerHTML = selectedLabel.innerHTML;
-            label.append(labelContent);
+            jQuery("li", picker).removeClass("selected");
+
+            var content = [];
+
+            jQuery(":checked", picker).each(function () {
+                var li = jQuery(this).parents("li").get(0);
+                jQuery(li).addClass("selected");
+                content.push(jQuery(".entry_label", li).html());
+            });
+            
+            if (picker.selectionMode == cocktail.SINGLE_SELECTION) {
+                jQuery(".label", picker)
+                    .empty()
+                    .html(content.length ? content[0] : cocktail.translate("sitebasis.views.ContentTypePicker select"));
+            } else {
+                jQuery(".selection", picker)
+                    .empty()
+                    .html(content.join(", "));
+                jQuery(".TypeSelectorButton", picker).click(function() {
+                    var dialogContent = jQuery(".dialog").get(0);
+                    if (!dialogContent) {
+                        dialogContent = document.createElement("div");
+                        dialogContent.appendChild(jQuery(".selector_content", picker).get(0));
+
+                        var cancel = document.createElement("button");
+                        jQuery(cancel).addClass("cancel").text(cocktail.translate("sitebasis.views.ContentTypePicker cancel"));
+                        jQuery(cancel).click(function() {
+                            cocktail.closeDialog();
+                        });
+
+                        var accept = document.createElement("button");
+                        jQuery(accept).addClass("accept").text(cocktail.translate("sitebasis.views.ContentTypePicker accept"));
+                        jQuery(accept).click(function() {
+                            cocktail.closeDialog();
+                            var panel = jQuery(".panel", picker).get(0);
+                            jQuery(panel).children().remove();
+
+                            jQuery(".dialog :checked").each(function() {
+                                var node = jQuery(this).parents("li").clone().hide();
+                                panel.appendChild(node.get(0));
+                            });
+                            applySelection(picker);
+                        });
+
+                        dialogContent.appendChild(cancel);
+                        dialogContent.appendChild(accept);
+                    }
+                    else {
+                        jQuery(dialogContent).show();
+                    }
+                    cocktail.showDialog(dialogContent);
+                    return false;
+                });
+            }
         }
 
-        jQuery("input[type=radio]", this)
-            .hide()
+        jQuery("input", this)
             .click(function () {
                 applySelection(jQuery(this).parents(".ContentTypePicker").get(0));
                 jQuery(this).parents(".selector").removeClass("unfolded");
-            });
-        
+            })
+            .filter("[type=radio]").hide();
+
         applySelection(this);
+        jQuery(this).addClass("selector");
+        cocktail.init(this);
     });
 });
 
