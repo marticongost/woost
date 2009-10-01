@@ -2609,3 +2609,23 @@ translations.define("Feed.item_description_expression",
     en = u"Item description expression"
 )
 
+# ContentTypePicker
+#------------------------------------------------------------------------------
+translations.define("sitebasis.views.ContentTypePicker select",
+    ca = u"Seleccionar...",
+    es = u"Seleccionar...",
+    en = u"Select..."
+)
+
+translations.define("sitebasis.views.ContentTypePicker accept",
+    ca = u"Acceptar",
+    es = u"Aceptar",
+    en = u"Accept"
+)
+
+translations.define("sitebasis.views.ContentTypePicker cancel",
+    ca = u"Cancel·lar",
+    es = u"Cancelar",
+    en = u"Cancel"
+)
+
