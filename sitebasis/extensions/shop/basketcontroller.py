@@ -22,10 +22,6 @@ class BasketController(ShopController):
         product = get_parameter(schema.Reference("product", type = Product))
         quantity = get_parameter(schema.Integer("quantity", min = 0))
 
-        from cocktail.styled import styled
-        print styled(product, "violet")
-        print styled(quantity, "slate_blue")
-
         if product is not None and quantity is not None:
             shop_order = Basket.get()
             shop_order.set_product_quantity(product, quantity)
