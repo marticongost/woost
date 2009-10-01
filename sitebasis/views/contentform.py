@@ -14,6 +14,8 @@ Form = templates.get_class("cocktail.html.Form")
 
 class ContentForm(Form):
 
+    table_layout = False
+
     def __init__(self, *args, **kwargs):
         Form.__init__(self, *args, **kwargs)
         self.set_member_type_display(Reference, self._get_reference_display)
