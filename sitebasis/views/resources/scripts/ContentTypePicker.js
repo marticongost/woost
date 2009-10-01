@@ -13,16 +13,28 @@ cocktail.init(function (root) {
 
         this.tag = "div";
                 
-        var label = document.createElement("div");
-        label.className = "label";
-        this.appendChild(label);
+        if (this.selectionMode == cocktail.SINGLE_SELECTION) {
+            var selector = document.createElement("div");
+            selector.className = "label";
+        } else {
+            var selector = document.createElement("button");
+            selector.type = "submit";
+            selector.className = "TypeSelectorButton";
+            var text = document.createElement("span");
+            jQuery(text).text(cocktail.translate("sitebasis.views.ContentTypePicker select"));
+            selector.appendChild(text);
+        }
+        this.appendChild(selector);
 
-        var panel = document.createElement("ul");
-        panel.className = "selector_content";
+        var panel = document.createElement("div");
+        panel.className = "panel";
+        var selector_content = document.createElement("ul");
+        selector_content.className = "selector_content";
+        panel.appendChild(selector_content);
         this.appendChild(panel);
         
-        while (this.firstChild != label) {        
-            panel.appendChild(this.firstChild);
+        while (this.firstChild != selector) {        
+            selector_content.appendChild(this.firstChild);
         }
         
         if (this.selectionMode == cocktail.MULTIPLE_SELECTION) {
@@ -46,12 +58,46 @@ cocktail.init(function (root) {
             if (picker.selectionMode == cocktail.SINGLE_SELECTION) {
                 jQuery(".label", picker)
                     .empty()
-                    .html(content.length ? content[0] : "Seleccionar...");
+                    .html(content.length ? content[0] : cocktail.translate("sitebasis.views.ContentTypePicker select"));
             } else {
-                jQuery(".label", picker).empty().html("Seleccionar...");
                 jQuery(".selection", picker)
                     .empty()
                     .html(content.join(", "));
+                jQuery(".TypeSelectorButton", picker).click(function() {
+                    var dialogContent = jQuery(".dialog").get(0);
+                    if (!dialogContent) {
+                        dialogContent = document.createElement("div");
+                        dialogContent.appendChild(jQuery(".selector_content", picker).get(0));
+
+                        var cancel = document.createElement("button");
+                        jQuery(cancel).addClass("cancel").text(cocktail.translate("sitebasis.views.ContentTypePicker cancel"));
+                        jQuery(cancel).click(function() {
+                            cocktail.closeDialog();
+                        });
+
+                        var accept = document.createElement("button");
+                        jQuery(accept).addClass("accept").text(cocktail.translate("sitebasis.views.ContentTypePicker accept"));
+                        jQuery(accept).click(function() {
+                            cocktail.closeDialog();
+                            var panel = jQuery(".panel", picker).get(0);
+                            jQuery(panel).children().remove();
+
+                            jQuery(".dialog :checked").each(function() {
+                                var node = jQuery(this).parents("li").clone().hide();
+                                panel.appendChild(node.get(0));
+                            });
+                            applySelection(picker);
+                        });
+
+                        dialogContent.appendChild(cancel);
+                        dialogContent.appendChild(accept);
+                    }
+                    else {
+                        jQuery(dialogContent).show();
+                    }
+                    cocktail.showDialog(dialogContent);
+                    return false;
+                });
             }
         }
 

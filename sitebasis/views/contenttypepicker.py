@@ -39,6 +39,9 @@ class ContentTypePicker(ContentTypeTree, DataBoundControl):
     def _ready(self):
         
         self.set_client_param("selectionMode", self.selection_mode)
+        self.add_client_translation("sitebasis.views.ContentTypePicker select")
+        self.add_client_translation("sitebasis.views.ContentTypePicker accept")
+        self.add_client_translation("sitebasis.views.ContentTypePicker cancel")
 
         self.set_client_variable(
             "cocktail.NO_SELECTION", NO_SELECTION)

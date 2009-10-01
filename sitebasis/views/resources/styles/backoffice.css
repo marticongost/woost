@@ -273,7 +273,8 @@ body.modal {
     overflow: hidden;
 }
 
-.ItemSelector-background {
+.ItemSelector-background,
+.dialog-background {
     z-index: 10000;
     position: fixed;
     top: 0;
@@ -284,7 +285,8 @@ body.modal {
     opacity: 0.7;
 }
 
-.ItemSelector-frame {
+.ItemSelector-frame,
+.dialog {
     z-index: 10001;
     border: none;
     position: fixed;
@@ -293,6 +295,10 @@ body.modal {
     width: 92%;
     height: 92%;
     background-color: white;
+}
+
+.dialog {
+    overflow: auto;
 }
 
 /* Forms
@@ -1478,7 +1484,8 @@ body.scripted .BackOfficeLayout .ThumbnailsContentView .collection_display input
     padding: 0.1em;
 }
 
-.BackOfficeLayout .ItemSelector button {
+.BackOfficeLayout .ItemSelector button,
+button.TypeSelectorButton {
     text-align: left;
 }
 
@@ -1487,7 +1494,8 @@ body.scripted .BackOfficeLayout .ThumbnailsContentView .collection_display input
     color: rgb(75,75,75);
 }
 
-.BackOfficeLayout .ItemSelector .empty_selection {
+.BackOfficeLayout .ItemSelector .empty_selection,
+button.TypeSelectorButton span {
     padding-left: 0;
     font-style: italic;
 }
@@ -1717,7 +1725,8 @@ body.scripted .BackOfficeLayout .ThumbnailsContentView .collection_display input
     width: auto;
 }
 
-.BackOfficeLayout .CollectionView .filters .ItemSelector button {
+.BackOfficeLayout .CollectionView .filters .ItemSelector button,
+button.TypeSelectorButton {
     font-size: 95%;
 }
 
