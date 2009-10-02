@@ -39,7 +39,7 @@ cocktail.init(function (root) {
       
             var position;
             var member = jQuery(this).closest(".BackOfficeCollectionView").get(0).member;
-            var edit_stack = jQuery(this).closest(".BackOfficeItemView").get(0).member;
+            var edit_stack = jQuery(this).closest(".BackOfficeItemView").get(0).edit_stack;
          
             jQuery(this).append("<div class=\"error\" style=\"display:none;\"></div>"); 
     
