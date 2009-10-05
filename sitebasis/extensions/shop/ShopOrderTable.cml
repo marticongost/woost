@@ -49,17 +49,17 @@
 
     <div py:id="shipping_costs" py:visible="@{self.costs['total_shipping_costs']}">
         <div class="label">${translations("sitebasis.extensions.shop.ShopOrderTable shipping costs")}</div>
-        <div class="cost">@{self.costs["total_shipping_costs"]}</div>
+        <div class="cost">@{self.display_amount(self.costs["total_shipping_costs"])}</div>
     </div>
 
     <div py:id="taxes" py:visible="@{self.costs['total_taxes']}">
         <div class="label">${translations("sitebasis.extensions.shop.ShopOrderTable taxes")}</div>
-        <div class="cost">@{self.costs["total_taxes"]}</div>
+        <div class="cost">@{self.display_amount(self.costs["total_taxes"])}</div>
     </div>
 
     <div py:id="total">
         <div class="label">${translations("sitebasis.extensions.shop.ShopOrderTable total")}</div>
-        <div class="cost">@{self.costs["total"]}</div>
+        <div class="cost">@{self.display_amount(self.costs["total"])}</div>
     </div>
 
 </div>

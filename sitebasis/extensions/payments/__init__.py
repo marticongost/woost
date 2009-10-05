@@ -61,7 +61,7 @@ class PaymentsExtension(Extension):
         
         CMS.payment_handshake = PaymentHandshakeController
         CMS.payment_notification = PaymentNotificationController
-
+        
         # Append additional members to the extension
         PaymentsExtension.members_order = [
             "payment_gateway",
