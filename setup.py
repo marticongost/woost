@@ -27,7 +27,8 @@ setup(
         "sitebasis.extensions": [
             "workflow = sitebasis.extensions.workflow:WorkflowExtension",
             "shop = sitebasis.extensions.shop:ShopExtension",
-            "countries = sitebasis.extensions.countries:CountriesExtension"
+            "countries = sitebasis.extensions.countries:CountriesExtension",
+            "payments = sitebasis.extensions.payments:PaymentsExtension"
         ]
     },
     # SiteBasis can't yet access view resources (images, style sheets, client
