@@ -165,7 +165,10 @@ from cocktail.controllers import get_parameter, view_state
                                     <?py
                                     for member in self.date_members:
                                         member_entries = self._entries.get(member)
-                                        while member_entries and member_entries[0][0].day == day_of_month:
+                                        while member_entries \
+                                        and member_entries[0][0].year == self.year \
+                                        and member_entries[0][0].month == self.month \
+                                        and member_entries[0][0].day == day_of_month:
                                             entry_date, item = member_entries.pop(0)
                                             element.append(self.collection_display.create_calendar_entry(member, entry_date, item))
                                     ?>

@@ -60,11 +60,11 @@ class ShopExtension(Extension):
         )
 
         for module, keys in (
-            (shop.product, ("Product",)),
-            (shop.productcategory, ("ProductCategory",)),
-            (shop.shoporder, ("ShopOrder",)),
-            (shop.shoporderentry, ("ShopOrderEntry",)),
-            (shop.pricing, (
+            (product, ("Product",)),
+            (productcategory, ("ProductCategory",)),
+            (shoporder, ("ShopOrder",)),
+            (shoporderentry, ("ShopOrderEntry",)),
+            (pricing, (
                 "PricingPolicy",
                 "Discount",
                 "PriceOverride",
@@ -78,7 +78,7 @@ class ShopExtension(Extension):
                 "CumulativeTax",
                 "PercentageTax"
             )),
-            (shop.basket, ("Basket",))
+            (basket, ("Basket",))
         ):
             for key in keys:
                 setattr(shop, key, getattr(module, key))
@@ -103,4 +103,41 @@ class ShopExtension(Extension):
                 related_end = schema.Reference()
             )
         )
+
+        from tpv import (
+            Currency,
+            Payment,
+            PaymentItem,
+            PaymentGateway,
+            PaymentNotFoundError
+        )
+        from sitebasis.extensions.payments import PaymentsExtension
+
+        payments_ext = PaymentsExtension.instance
+            
+        def get_payment(payment_id):
+
+            order = shoporder.ShopOrder.get_instance(int(payment_id))
+
+            if order is None:
+                raise PaymentNotFoundError(payment_id)
+            
+            costs = order.calculate_cost()
+            payment = Payment()
+            payment.id = order.id
+            payment.amount = costs["total"]
+            payment.shop_order = order
+            payment.currency = Currency(payments_ext.payment_gateway.currency)
+            
+            for entry, entry_costs in zip(order.entries, costs["entries"]):
+                payment.add(PaymentItem(
+                    reference = str(entry.product.id),
+                    description = translations(entry.product),
+                    quantity = entry.quantity,
+                    price = entry_costs["price"]["total"]
+                ))
+
+            return payment
+
+        PaymentGateway.get_payment = get_payment
 
