@@ -107,12 +107,6 @@ translations.define("Action move",
     en = u"Move"
 )
 
-translations.define("cocktail.html.shortcuts action move",
-    ca = u"m",
-    es = u"m",
-    en = u"m"
-)
-
 translations.define("Action delete",
     ca = u"Eliminar",
     es = u"Eliminar",
@@ -129,12 +123,6 @@ translations.define("Action history",
     ca = u"Històric",
     es = u"Histórico",
     en = u"History"
-)
-
-translations.define("cocktail.html.shortcuts action history",
-    ca = u"h",
-    es = u"h",
-    en = u"h"
 )
 
 translations.define("Action add",
@@ -195,6 +183,18 @@ translations.define("cocktail.html.shortcuts action preview",
     ca = u"p",
     es = u"p",
     en = u"p"
+)
+
+translations.define("Action download",
+    ca = u"Mostrar",
+    es = u"Mostrar",
+    en = u"Show"
+)
+
+translations.define("cocktail.html.shortcuts action download",
+    ca = u"m",
+    es = u"m",
+    en = u"h"
 )
 
 translations.define("Action export_xls",
