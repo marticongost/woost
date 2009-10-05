@@ -78,6 +78,9 @@ class PricingPolicy(Item):
     def apply(self, item, costs):
         pass
 
+    def __translate__(self, language, **kwargs):
+        return (self.draft_source is None and self.title) \
+            or Item.__translate__(self, language, **kwargs)
 
 class Discount(PricingPolicy):
     pass
@@ -213,4 +216,3 @@ class PercentageTax(Tax):
 
     def apply(self, item, costs):
         costs["tax"]["percentage"] += self.percentage
-
