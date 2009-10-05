@@ -13,6 +13,7 @@ from cocktail.translations import translations
 from cocktail import schema
 from sitebasis.models import (
     Document,
+    Resource,
     get_current_user,
     CreatePermission,
     ModifyPermission,
@@ -590,6 +591,13 @@ class PreviewAction(UserAction):
     content_type = Document
 
 
+class DownloadAction(UserAction):
+    min = 1
+    max = 1
+    content_type = Resource
+    included = frozenset(["toolbar", "item_buttons"])
+
+
 class ExportAction(UserAction):
     included = frozenset(["toolbar_extra"])
     min = 1
@@ -760,6 +768,7 @@ RemoveAction("remove").register()
 OrderAction("order").register()
 ShowDetailAction("show_detail").register()
 PreviewAction("preview").register()
+DownloadAction("download").register()
 EditAction("edit").register()
 DiffAction("diff").register()
 RevertAction("revert").register()
