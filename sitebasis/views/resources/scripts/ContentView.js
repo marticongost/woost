@@ -75,6 +75,20 @@ cocktail.init(function (root) {
                 cocktail.foldSelectors();
                 var filterBox = jQuery(this).parents(".ContentView").find(".FilterBox").get(0);
                 filterBox.addFilter(this.filterId);
-            });        
+            })
+            .end()
+        
+        // Open files in a new window
+        .find(".action_button")
+            .click(function() {
+                var form = jQuery(this).closest("form").get(0);
+                
+                if (jQuery(this).hasClass(".download_action")) {
+                    form.target = "_new";
+                }
+                else {
+                    form.target = "_self";
+                }
+            });
 });
 
