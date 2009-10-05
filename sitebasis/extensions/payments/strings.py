@@ -22,7 +22,7 @@ translations.define("PaymentsExtension.payment_successful_page",
     en = u"Payment successful page"
 )
 
-translations.define("PaymentExtension.payment_failed_page",
+translations.define("PaymentsExtension.payment_failed_page",
     ca = u"Pàgina de pagament fallit",
     es = u"Página de pago fallido",
     en = u"Payment failed page"
