@@ -28,7 +28,9 @@ class PricingPolicy(Item):
         "end_date"
     ]
 
-    title = schema.String()
+    title = schema.String(
+        translated = True
+    )
     
     enabled = schema.Boolean(
         required = True,
