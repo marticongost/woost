@@ -9,6 +9,7 @@
 from cocktail.events import event_handler
 from cocktail.translations import translations
 from cocktail import schema
+from cocktail.controllers.location import Location
 from sitebasis.models import Extension, Document
 
 translations.define("PaymentsExtension",
@@ -89,4 +90,17 @@ class PaymentsExtension(Extension):
                 related_end = schema.Reference()
             )
         )
+
+    def payment_request(self, payment_id):
+        """Begin a payment transaction, redirecting the user to the payment
+        gateway.
+        
+        @param payment_id: The identifier of the payment to execute.
+        """
+        url, params = self.payment_gateway.get_payment_form_data(payment_id)
+
+        location = Location(url)
+        location.method = "POST"
+        location.form_data = params
+        location.go()
 
