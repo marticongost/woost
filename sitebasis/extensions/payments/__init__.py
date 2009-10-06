@@ -6,6 +6,7 @@
 @organization:	Whads/Accent SL
 @since:			October 2009
 """
+from cocktail.modeling import OrderedDict
 from cocktail.events import event_handler
 from cocktail.translations import translations
 from cocktail import schema
@@ -101,6 +102,6 @@ class PaymentsExtension(Extension):
 
         location = Location(url)
         location.method = "POST"
-        location.form_data = params
+        location.form_data = OrderedDict(params)
         location.go()
 
