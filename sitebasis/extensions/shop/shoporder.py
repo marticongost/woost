@@ -63,6 +63,13 @@ class ShopOrder(Item):
         editable = False
     )
 
+    status = schema.String(
+        required = True,
+        indexed = True,
+        enumeration = ["pending", "accepted", "failed"],
+        default = "pending"
+    )
+
     entries = schema.Collection(
         items = "sitebasis.extensions.shop.shoporderentry.ShopOrderEntry",
         bidirectional = True,
