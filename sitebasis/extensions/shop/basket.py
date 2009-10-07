@@ -7,6 +7,7 @@
 @since:			September 2009
 """
 import cherrypy
+from cocktail.persistence import datastore
 from sitebasis.extensions.shop.shoporder import ShopOrder
 from sitebasis.extensions.shop.shoporderentry import ShopOrderEntry
 from sitebasis.extensions.shop.product import Product
@@ -15,7 +16,7 @@ from sitebasis.extensions.shop.product import Product
 class Basket(object):
 
     session_key = "sitebasis.extensions.shop basket"
-
+    
     @classmethod
     def get(cls):
         """Returns the shop order for the current user session.
@@ -31,7 +32,7 @@ class Basket(object):
 
             if order is None:
                 order = ShopOrder()
-            
+
             cherrypy.request.sitebasis_shop_basket = order
 
         return order
@@ -44,9 +45,9 @@ class Basket(object):
     @classmethod
     def store(cls):
         order = cls.get()
-        session_data = [(entry.quantity, entry.product.id)
-                        for entry in order.entries]
-        cherrypy.session[cls.session_key] = session_data
+        order.insert()
+        datastore.commit()
+        cherrypy.session[cls.session_key] = order.id
 
     @classmethod
     def restore(cls):
@@ -55,13 +56,5 @@ class Basket(object):
         if session_data is None:
             return None
         else:
-            order = ShopOrder()
-            order.entries = [
-                ShopOrderEntry(
-                    quantity = quantity,
-                    product = Product.get_instance(product_id)
-                )
-                for quantity, product_id in session_data
-            ]
-            return order
+            return ShopOrder.get_instance(session_data)
 
