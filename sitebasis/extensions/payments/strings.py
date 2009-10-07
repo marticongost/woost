@@ -16,18 +16,6 @@ translations.define("PaymentsExtension.payment_gateway",
     en = u"Payment gateway"
 )
 
-translations.define("PaymentsExtension.payment_successful_page",
-    ca = u"Pàgina de confirmació de pagament",
-    es = u"Página de confirmación de pago",
-    en = u"Payment successful page"
-)
-
-translations.define("PaymentsExtension.payment_failed_page",
-    ca = u"Pàgina de pagament fallit",
-    es = u"Página de pago fallido",
-    en = u"Payment failed page"
-)
-
 # PaymentGateway
 #------------------------------------------------------------------------------
 translations.define("PaymentGateway",
@@ -72,5 +60,55 @@ translations.define("Pasat4bPaymentGateway.merchant_code",
     ca = u"Codi de comerç",
     es = u"Código de comercio",
     en = u"Merchant code"
+)
+
+# SISPaymentGateway
+#------------------------------------------------------------------------------
+translations.define("SISPaymentGateway",
+    ca = u"SIS/Sermepa",
+    es = u"SIS/Sermepa",
+    en = u"SIS/Sermepa"
+)
+
+translations.define("SISPaymentGateway-plural",
+    ca = u"SIS/Sermepa",
+    es = u"SIS/Sermepa",
+    en = u"SIS/Sermepa"
+)
+
+translations.define("SISPaymentGateway.merchant_code",
+    ca = u"Codi de comerç",
+    es = u"Código de comercio",
+    en = u"Merchant code"
+)
+
+translations.define("SISPaymentGateway.merchant_name",
+    ca = u"Nom del comerç",
+    es = u"Nombre del comercio",
+    en = u"Merchant name"
+)
+
+translations.define("SISPaymentGateway.merchant_terminal",
+    ca = u"Número de terminal",
+    es = u"Número de terminal",
+    en = u"Terminal number"
+)
+
+translations.define("SISPaymentGateway.merchant_secret_key",
+    ca = u"Clau secreta",
+    es = u"Clave secreta",
+    en = u"Secret key"
+)
+
+translations.define("SISPaymentGateway.payment_successful_page",
+    ca = u"Pàgina de confirmació de pagament",
+    es = u"Página de confirmación de pago",
+    en = u"Payment successful page"
+)
+
+translations.define("SISPaymentGateway.payment_failed_page",
+    ca = u"Pàgina de pagament fallit",
+    es = u"Página de pago fallido",
+    en = u"Payment failed page"
 )
 
