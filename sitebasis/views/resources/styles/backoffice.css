@@ -1778,6 +1778,7 @@ button.TypeSelectorButton {
 .MultipleChoiceSelector-dialog {
     padding: 1em;
     height: auto;
+    max-height: 92%;
     font-size: 90%;
 }
 
