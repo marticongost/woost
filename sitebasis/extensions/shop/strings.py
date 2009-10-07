@@ -118,16 +118,16 @@ translations.define("ShopOrder.cost",
     en = u"Cost"
 )
 
+translations.define("ShopOrder.status",
+    ca = u"Estat",
+    es = u"Estado",
+    en = u"State"
+)
+
 translations.define("ShopOrder.shipping_info",
     ca = u"Informació d'enviament",
     es = u"Información de envío",
     en = u"Shipping address"
-)
-
-translations.define("ShopOrder.address",
-    ca = u"Adreça",
-    es = u"Dirección",
-    en = u"Address"
 )
 
 translations.define("ShopOrder.address",
