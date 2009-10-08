@@ -51,7 +51,6 @@ from cocktail.controllers import get_parameter, view_state
         # Add filters to the user collection for the selected month/year
         ids = set()
         content_type = user_collection.type
-        from cocktail.styled import styled
 
         for member in self.date_members:
 
