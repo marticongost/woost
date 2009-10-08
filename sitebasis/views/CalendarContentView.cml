@@ -28,6 +28,15 @@ from cocktail.controllers import get_parameter, view_state
         
         ContentView._init_user_collection(self, user_collection)
 
+        # Hide filters based on the calendar's date members
+        available_filters = []
+        for filter in user_collection.available_user_filters:
+            member = getattr(filter, "member", None)
+            if member is None or member not in self.date_members:
+                available_filters.append(filter)
+
+        user_collection._available_user_filters = available_filters
+
         # Find the selected month/year
         self.today = date.today()
         self.month = get_parameter(
