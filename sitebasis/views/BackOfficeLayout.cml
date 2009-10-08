@@ -95,7 +95,8 @@ from sitebasis.controllers.backoffice.useractions import add_view_action_context
         </h1>
 
         <!-- Identity and logout -->
-        <div py:id="identity" py:visible="@{self.user and not self.user.anonymous}">
+        <div py:id="identity"
+            py:visible="@{self.user and not self.user.anonymous and not self.is_client_side_selector}">
             <py:ready py:if="element.visible">
                 <strong>${translations(self.user)}</strong>
                 <form method="post">
