@@ -1771,6 +1771,42 @@ button.TypeSelectorButton {
     margin: 0.8em 0;
 }
 
+.MultipleChoiceSelector-dialog {
+    padding: 1em;
+    height: auto;
+    max-height: 92%;
+    font-size: 85%;
+}
+
+.MultipleChoiceSelector-dialog .container {
+    height: 80%;
+    -moz-column-width: 25em;
+    -webkit-column-width: 25em;
+}
+
+.MultipleChoiceSelector-dialog .buttons {
+    margin-top: 2em;
+    text-align: right;
+}
+
+.MultipleChoiceSelector-dialog .buttons input {
+    margin-left: 0.8em;
+}
+
+.BackOfficeLayout .MultipleChoiceSelector .select {
+    vertical-align: middle;
+    font-size: 90%;
+}
+
+.BackOfficeLayout .MultipleChoiceSelector .container {
+    display: inline;
+    margin-right: 1em;
+}
+
+.BackOfficeLayout .MultipleChoiceSelector .container:empty {
+    display: hidden;
+}
+
 /* Collection settings 
 -----------------------------------------------------------------------------*/
 .BackOfficeLayout .CollectionView .settings_box {

@@ -6,9 +6,10 @@
 @organization:	Whads/Accent SL
 @since:			September 2009
 """
-from cocktail.events import event_handler
+from cocktail.events import event_handler, when
 from cocktail.translations import translations
 from cocktail import schema
+from cocktail.persistence import datastore
 from sitebasis.models import Extension
 
 translations.define("ShopExtension",
@@ -108,14 +109,14 @@ class ShopExtension(Extension):
             Currency,
             Payment,
             PaymentItem,
-            PaymentGateway,
             PaymentNotFoundError
         )
         from sitebasis.extensions.payments import PaymentsExtension
+        from sitebasis.extensions.payments.paymentgateway import PaymentGateway
 
         payments_ext = PaymentsExtension.instance
             
-        def get_payment(payment_id):
+        def get_payment(self, payment_id):
 
             order = shoporder.ShopOrder.get_instance(int(payment_id))
 
@@ -133,11 +134,18 @@ class ShopExtension(Extension):
                 payment.add(PaymentItem(
                     reference = str(entry.product.id),
                     description = translations(entry.product),
-                    quantity = entry.quantity,
+                    units = entry.quantity,
                     price = entry_costs["price"]["total"]
                 ))
 
             return payment
 
         PaymentGateway.get_payment = get_payment
+
+        @when(PaymentGateway.transaction_notified)
+        def update_order_status(event):
+            payment = event.payment
+            payment.shop_order.status = payment.status
+            payment.shop_order.gateway_parameters = payment.gateway_parameters
+            datastore.commit()
 

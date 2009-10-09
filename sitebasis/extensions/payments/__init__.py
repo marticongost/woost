@@ -6,10 +6,13 @@
 @organization:	Whads/Accent SL
 @since:			October 2009
 """
+from cocktail.modeling import OrderedDict
 from cocktail.events import event_handler
 from cocktail.translations import translations
+from cocktail.language import get_content_language
 from cocktail import schema
-from sitebasis.models import Extension, Document
+from cocktail.controllers.location import Location
+from sitebasis.models import Extension
 
 translations.define("PaymentsExtension",
     ca = u"Pagaments",
@@ -49,7 +52,8 @@ class PaymentsExtension(Extension):
         from sitebasis.extensions.payments.paymentgateway import PaymentGateway
         from sitebasis.extensions.payments import (
             strings,
-            pasat4b
+            pasat4b,
+            sis
         )
 
         # Setup payment controllers
@@ -61,13 +65,9 @@ class PaymentsExtension(Extension):
         
         CMS.payment_handshake = PaymentHandshakeController
         CMS.payment_notification = PaymentNotificationController
-
+        
         # Append additional members to the extension
-        PaymentsExtension.members_order = [
-            "payment_gateway",
-            "payment_successful_page",
-            "payment_failed_page"
-        ]
+        PaymentsExtension.members_order = ["payment_gateway"]
 
         PaymentsExtension.add_member(
             schema.Reference("payment_gateway",
@@ -76,17 +76,19 @@ class PaymentsExtension(Extension):
             )
         )
 
-        PaymentsExtension.add_member(
-            schema.Reference("payment_successful_page",
-                type = Document,
-                related_end = schema.Reference()
-            )
+    def payment_request(self, payment_id):
+        """Begin a payment transaction, redirecting the user to the payment
+        gateway.
+        
+        @param payment_id: The identifier of the payment to execute.
+        """
+        url, params = self.payment_gateway.get_payment_form_data(
+            payment_id,
+            get_content_language()
         )
 
-        PaymentsExtension.add_member(
-            schema.Reference("payment_failed_page",
-                type = Document,
-                related_end = schema.Reference()
-            )
-        )
+        location = Location(url)
+        location.method = "POST"
+        location.form_data = OrderedDict(params)
+        location.go()
 
