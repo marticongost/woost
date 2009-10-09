@@ -396,6 +396,10 @@ class UserAction(object):
         
         return params
 
+    @getter
+    def icon_uri(self):
+        return "/resources/images/%s_small.png" % self.id
+
 
 class SelectionError(Exception):
     """An exception produced by the L{UserAction.get_errors} method when an

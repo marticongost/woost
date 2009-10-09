@@ -97,7 +97,6 @@ class TypeFilter(UserFilter):
                     children_ids.update(child.keys)
                 ids.update(set(cls.keys).difference(children_ids))
 
-        print ids
         if self.operator == "eq":
             expr = InclusionExpression(Self, ids)
         elif self.operator == "ne":

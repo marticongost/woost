@@ -27,41 +27,53 @@ class ShopOrder(Item):
 
     address = schema.String(
         member_group = "shipping_info",
-        required = True
+        required = True,
+        listed_by_default = False
     )
 
     town = schema.String(
         member_group = "shipping_info",
-        required = True
+        required = True,
+        listed_by_default = False
     )
 
     region = schema.String(
         member_group = "shipping_info",
-        required = True
+        required = True,
+        listed_by_default = False
     )
 
     country = schema.Reference(        
         member_group = "shipping_info",
         type = Country,
         related_end = schema.Collection(),
-        required = True
+        required = True,
+        listed_by_default = False
     )
 
     postal_code = schema.String(
         member_group = "shipping_info",
-        required = True
-    )
-
-    entries = schema.Collection(
-        items = "sitebasis.extensions.shop.shoporderentry.ShopOrderEntry",
-        bidirectional = True,
-        min = 1
+        required = True,
+        listed_by_default = False
     )
 
     cost = schema.Decimal(
         required = True,
         default = Decimal("0"),
         editable = False
+    )
+
+    status = schema.String(
+        required = True,
+        indexed = True,
+        enumeration = ["pending", "accepted", "failed"],
+        default = "pending"
+    )
+
+    entries = schema.Collection(
+        items = "sitebasis.extensions.shop.shoporderentry.ShopOrderEntry",
+        bidirectional = True,
+        min = 1
     )
 
     def calculate_cost(self):

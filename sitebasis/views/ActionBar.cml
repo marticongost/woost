@@ -70,7 +70,7 @@ from sitebasis.controllers.backoffice.useractions import (
     <img
         py:def="action_image"
         py:args="action, extra"
-        src="/resources/images/${action.id}_small.png"/>
+        src="${action.icon_uri}"/>
 
     <div py:def="additional_actions_selector" class="selector">
         <span class="label">${translations("sitebasis.views.ActionBar Additional actions")}</span>
