@@ -22,6 +22,12 @@ class PricingPolicy(Item):
     integral = True
     instantiable = False
 
+    edit_controller = \
+        "sitebasis.extensions.shop.pricingpolicyfieldscontroller." \
+        "PricingPolicyFieldsController"
+
+    edit_view = "sitebasis.extensions.shop.PricingPolicyFields"
+
     members_order = [
         "title",
         "enabled",
