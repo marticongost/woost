@@ -8,6 +8,7 @@ other specialized pricing policies for a shop.
 @organization:	Whads/Accent SL
 @since:			September 2009
 """
+from datetime import datetime
 from cocktail import schema
 from cocktail.controllers.usercollection import UserCollection
 from sitebasis.models import Item, Site
