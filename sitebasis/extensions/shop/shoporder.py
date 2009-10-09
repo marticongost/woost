@@ -48,7 +48,8 @@ class ShopOrder(Item):
         type = Country,
         related_end = schema.Collection(),
         required = True,
-        listed_by_default = False
+        listed_by_default = False,
+        user_filter = "cocktail.controllers.userfilter.MultipleChoiceFilter"
     )
 
     postal_code = schema.String(
