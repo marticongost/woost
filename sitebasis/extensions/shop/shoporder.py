@@ -76,7 +76,7 @@ class ShopOrder(Item):
         min = 1
     )
 
-    def calculate_cost(self):
+    def calculate_cost(self, include_shipping = True, include_taxes = True):
         """Calculates the costs for the order.
         @rtype: dict
         """
@@ -113,24 +113,27 @@ class ShopOrder(Item):
 
         from sitebasis.extensions.shop import ShopExtension
         shop_ext = ShopExtension.instance
+        
+        policies = list(shop_ext.discounts)
+        
+        if include_shipping:
+            policies.extend(shop_ext.shipping_costs)
 
-        for policies in (
-            shop_ext.discounts,
-            shop_ext.shipping_costs,
-            shop_ext.taxes
-        ):
-            for pricing_policy in policies:
-                matching_items = pricing_policy.select_matching_items()
+        if include_taxes:
+            policies.extend(shop_ext.taxes)
 
-                if issubclass(matching_items.type, ShopOrder):
-                    if pricing_policy.applies_to(self):
-                        pricing_policy.apply(self, costs)
-                        costs["pricing_policies"].append(pricing_policy)
-                else:
-                    for entry, entry_costs in zip(self.entries, costs["entries"]):
-                        if pricing_policy.applies_to(entry.product):
-                            pricing_policy.apply(entry.product, entry_costs)
-                            entry_costs["pricing_policies"].append(pricing_policy)
+        for pricing_policy in policies:
+            matching_items = pricing_policy.select_matching_items()
+
+            if issubclass(matching_items.type, ShopOrder):
+                if pricing_policy.applies_to(self):
+                    pricing_policy.apply(self, costs)
+                    costs["pricing_policies"].append(pricing_policy)
+            else:
+                for entry, entry_costs in zip(self.entries, costs["entries"]):
+                    if pricing_policy.applies_to(entry.product):
+                        pricing_policy.apply(entry.product, entry_costs)
+                        entry_costs["pricing_policies"].append(pricing_policy)
         
         # Total price
         def apply_percentage(costs):
