@@ -232,19 +232,18 @@ class ContentController(BaseBackOfficeController):
             type_prefix += "-" + prefix
         
         user_collection.persistence_prefix = type_prefix
-
-        persistent_source = CookieParameterSource(
+        user_collection.persistent_source = psource = CookieParameterSource(
             cookie_prefix = type_prefix,
             cookie_duration = duration
         )
 
-        user_collection.set_parameter_source("content_view", persistent_source)
-        user_collection.set_parameter_source("members", persistent_source)
-        user_collection.set_parameter_source("order", persistent_source)
-        user_collection.set_parameter_source("filter", persistent_source)
-        user_collection.set_parameter_source("page", persistent_source)
-        user_collection.set_parameter_source("page_size", persistent_source)
-        user_collection.set_parameter_source("expanded", persistent_source)
+        user_collection.set_parameter_source("content_view", psource)
+        user_collection.set_parameter_source("members", psource)
+        user_collection.set_parameter_source("order", psource)
+        user_collection.set_parameter_source("filter", psource)
+        user_collection.set_parameter_source("page", psource)
+        user_collection.set_parameter_source("page_size", psource)
+        user_collection.set_parameter_source("expanded", psource)
         user_collection.set_parameter_source("language",
             CookieParameterSource(
                 cookie_naming = "visible_languages",
