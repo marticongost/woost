@@ -2179,16 +2179,26 @@ a.pickcolor span {
     font-size: 85%;
 }
 
-.BackOfficeLayout .CalendarContentView .month_links {
+.BackOfficeLayout .CalendarContentView .layout_controls,
+.BackOfficeLayout .CalendarContentView .navigation_links,
+.BackOfficeLayout .CalendarContentView .navigation_controls {
     display: inline;
-    margin-right: 1em;
 }
 
-.BackOfficeLayout .CalendarContentView .month_links a {
-    margin-right: 0.4em;
+.BackOfficeLayout .CalendarContentView .navigation_links {
+    margin-left: 3.6em;
 }
 
-.BackOfficeLayout .CalendarContentView .month_links a.current_month_link {
+.BackOfficeLayout .CalendarContentView .navigation_controls {
+    margin-left: 1.8em;
+}
+
+.BackOfficeLayout .CalendarContentView .layout_controls a,
+.BackOfficeLayout .CalendarContentView .navigation_links a {
+    margin-right: 0.5em;
+}
+
+.BackOfficeLayout .CalendarContentView .navigation_links a.current_link {
     margin-right: 1em;
 }
 
@@ -2196,14 +2206,18 @@ a.pickcolor span {
     width: 3.4em;
 }
 
-.BackOfficeLayout .CalendarContentView .collection_display .calendar {
+.BackOfficeLayout .CalendarContentView .day_control {
+    width: 2.2em;
+}
+
+.BackOfficeLayout .CalendarContentView .collection_display .month_calendar {
     clear: both;
     border-collapse: collapse;
     width: 100%;
     border: 1px solid rgb(200,205,212);
 }
 
-.BackOfficeLayout .CalendarContentView .collection_display .calendar th {
+.BackOfficeLayout .CalendarContentView .collection_display .month_calendar th {
     color: rgb(75,75,75);
     padding: 0.4em;
     font-size: 85%;
@@ -2215,49 +2229,118 @@ a.pickcolor span {
     border: 1px solid rgb(200,205,212);
 }
 
-.BackOfficeLayout .CalendarContentView .collection_display .calendar td {
+.BackOfficeLayout .CalendarContentView .collection_display .month_calendar td {
     border: 1px solid rgb(215,215,215);
     width: 14%;
     padding: 0.4em;
     vertical-align: top;
 }
 
-.BackOfficeLayout .CalendarContentView .collection_display .calendar td.inactive {
+.BackOfficeLayout .CalendarContentView .collection_display .month_calendar td.inactive {
     background-color: rgb(235,235,235);
 }
 
-.BackOfficeLayout .CalendarContentView .collection_display .calendar td.today {
+.BackOfficeLayout .CalendarContentView .collection_display .month_calendar td.today {
     outline: 1px solid rgb(220,180,140);
     background-color: rgb(255,245,230);
 }
 
-.BackOfficeLayout .CalendarContentView .collection_display .calendar td .cell {
+.BackOfficeLayout .CalendarContentView .collection_display .month_calendar td .cell {
     min-height: 4em;
 }
 
-.BackOfficeLayout .CalendarContentView .collection_display .calendar td .day {
+.BackOfficeLayout .CalendarContentView .collection_display .month_calendar td .day {
     color: rgb(110,110,110);
     font-weight: bold;
 }
 
-.BackOfficeLayout .CalendarContentView .collection_display .calendar td.dayofweek6 .day {
+.BackOfficeLayout .CalendarContentView .collection_display .month_calendar td.weekday6 .day {
     color: rgb(130,60,30);
 }
 
-.BackOfficeLayout .CalendarContentView .collection_display .calendar td .entries {
+.BackOfficeLayout .CalendarContentView .collection_display .month_calendar td .entries {
     font-size: 75%;
 }
 
-.BackOfficeLayout .CalendarContentView .collection_display .calendar td .calendar_entry {
+.BackOfficeLayout .CalendarContentView .collection_display .month_calendar td .calendar_entry {
     margin-top: 0.8em;
 }
 
-.BackOfficeLayout .CalendarContentView .collection_display .calendar td .calendar_entry .time {
+.BackOfficeLayout .CalendarContentView .collection_display .month_calendar td .calendar_entry .time {
     font-weight: bold;
     color: rgb(50,50,50);
     font-size: 85%;
 }
 
-.BackOfficeLayout .CalendarContentView .collection_display .calendar td .calendar_entry a {
+.BackOfficeLayout .CalendarContentView .collection_display .month_calendar td .calendar_entry a {
     text-decoration: none;
 }
+
+.BackOfficeLayout .CalendarContentView .collection_display .year_calendar .month_header a {
+    color: inherit;
+    font-weight: bold;
+    font-size: 110%;
+    text-decoration: none;
+}
+
+.BackOfficeLayout .CalendarContentView .collection_display .year_calendar {
+    font-size: 85%;
+}
+
+.BackOfficeLayout .CalendarContentView .collection_display .year_calendar .month_calendar {
+    width: auto;
+    float: left;
+    clear: none;
+    margin-top: 0.8em;
+    margin-right: 0.8em;
+}
+
+.BackOfficeLayout .CalendarContentView .collection_display .year_calendar .month_calendar th {
+    font-weight: normal;
+}
+
+.BackOfficeLayout .CalendarContentView .collection_display .year_calendar .month_calendar td .cell {
+    position: relative;
+    overflow: visible;
+    min-height: 0;
+    height: 1em;
+    width: 1.2em;
+    text-align: center;
+}
+
+.BackOfficeLayout .CalendarContentView .collection_display .year_calendar .month_calendar td .has_entries .day {
+    font-weight: bold;
+    color: black;
+    cursor: pointer;
+}
+
+.BackOfficeLayout .CalendarContentView .collection_display .year_calendar .month_calendar .day {
+    font-weight: normal;
+}
+
+.BackOfficeLayout .CalendarContentView .collection_display .year_calendar .month_calendar .entries {
+    text-align: left;
+    display: none;
+    position: absolute;
+    top: 1.1em;
+    border: 1px solid rgb(190,200,210);
+    background-color: rgb(250,250,250);
+    margin: 0;
+    padding: 0.6em;    
+    z-index: 1;
+    font-size: 100%;
+    white-space: nowrap;
+}
+
+.BackOfficeLayout .CalendarContentView .collection_display .time_table {
+    border-collapse: collapse;
+}
+
+.BackOfficeLayout .CalendarContentView .collection_display .time_table td {
+    border: 1px solid rgb(215,215,215);
+}
+
+.BackOfficeLayout .CalendarContentView .collection_display .time_table th {
+    text-align: right;
+}
+

@@ -892,6 +892,24 @@ translations.define("order content view",
     en = u"Show as ordered listing"
 )
 
+translations.define("sitebasis.views.CalendarContentView current year",
+    ca = u"Any actual",
+    es = u"Año actual",
+    en = u"Current year"
+)
+
+translations.define("sitebasis.views.CalendarContentView previous year",
+    ca = u"Any anterior",
+    es = u"Año anterior",
+    en = u"Previous year"
+)
+
+translations.define("sitebasis.views.CalendarContentView next year",
+    ca = u"Any següent",
+    es = u"Año siguiente",
+    en = u"Next year"
+)
+
 translations.define("sitebasis.views.CalendarContentView current month",
     ca = u"Mes actual",
     es = u"Mes actual",
@@ -908,6 +926,12 @@ translations.define("sitebasis.views.CalendarContentView next month",
     ca = u"Mes següent",
     es = u"Mes siguiente",
     en = u"Next month"
+)
+
+translations.define("sitebasis.views.CalendarContentView select year layout",
+    ca = u"Vista de l'any",
+    es = u"Vista del año",
+    en = u"Year view"
 )
 
 # Edit form
