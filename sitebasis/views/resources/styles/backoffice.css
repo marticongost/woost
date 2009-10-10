@@ -1701,6 +1701,13 @@ button.TypeSelectorButton span {
     -moz-column-width: 8em;
 }
 
+.BackOfficeLayout .FilterBox .filter_entry .field label {
+    float: left;
+    margin-right: 0.4em;
+    margin-top: 0.3em;
+    vertical-align: middle;
+}
+
 .BackOfficeLayout .FilterBox .filter_entry .language_field .control {
     width: 12em;
 }
