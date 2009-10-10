@@ -31,8 +31,8 @@ from cocktail.controllers import get_parameter, view_state
         # Hide filters based on the calendar's date members
         available_filters = []
         for filter in user_collection.available_user_filters:
-            member = getattr(filter, "member", None)
-            if member is None or member not in self.date_members:
+            filter_members = filter.members
+            if not any(member in filter_members for member in self.date_members):
                 available_filters.append(filter)
 
         user_collection._available_user_filters = available_filters
