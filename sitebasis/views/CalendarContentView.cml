@@ -58,16 +58,22 @@ from cocktail.controllers import get_parameter, view_state
             
             q, r = divmod(self.month, 12)
             end_of_month = member.type(self.year + q, r + 1, 1)
+        
+            range_expr = self.get_date_range_expression(
+                member,
+                beginning_of_month,
+                end_of_month
+            )
 
-            ids.update(content_type.select(filters = [
-                member.greater_equal(beginning_of_month),
-                member.lower(end_of_month)
-            ]).execute(_sorted = False))
-
+            query = content_type.select(filters = [range_expr])
+            ids.update(query.execute(_sorted = False))
 
         expr = Self.one_of(ids)
         expr.by_key = True
         user_collection.add_base_filter(expr)
+
+    def get_date_range_expression(self, member, start_date, end_date):
+        return member.greater_equal(start_date).and_(member.lower(end_date))
     ?>
 
     <?py
