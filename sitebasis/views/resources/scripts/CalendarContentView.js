@@ -16,12 +16,27 @@ cocktail.init(function (root) {
             jQuery(this).parents("form").submit();
         });
         
-        jQuery(".calendar td", this).dblclick(function () {
-            location.href = "/content/new/fields"
+        jQuery(".month_calendar td", this).dblclick(function () {
+            location.href = cms_uri + "/content/new/fields"
                 + "?item_type=" + contentView.contentType
                 + "&edited_item_" + contentView.dateMembers[0]
                 + "=" + this.date;
         });
+
+        jQuery(".year_calendar .month_calendar .has_entries").each(function () {
+            var $entries = jQuery(".entries", this);
+            jQuery(".day", this).click(function () {
+                $entries.toggle();
+                return false;
+            });
+        });
     });
+
+    if (!cocktail.__CalendarContentView_initialized) {
+        cocktail.__CalendarContentView_initialized = true;
+        jQuery(document).click(function () {
+            jQuery(".year_calendar .month_calendar .entries").hide();
+        });
+    }
 });
 

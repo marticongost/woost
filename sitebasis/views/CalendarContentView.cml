@@ -20,6 +20,8 @@ from cocktail.controllers import view_state
     allow_language_selection = False
     allow_empty_search = True
     date_members = ()
+    months = range(1, 13)
+    week_days = range(7)
 
     excluded_view_state_params = \
         ContentView.excluded_view_state_params | frozenset(["month", "year"])
@@ -37,40 +39,56 @@ from cocktail.controllers import view_state
 
         user_collection._available_user_filters = available_filters
 
-        # Find the selected month/year
-        self.today = date.today()
-
+        # Setup parameter persistence
         psource = user_collection.persistent_source
-        user_collection.set_parameter_source("month", psource)
+        user_collection.set_parameter_source("calendar_layout", psource)
         user_collection.set_parameter_source("year", psource)
+        user_collection.set_parameter_source("month", psource)
 
-        self.month = user_collection.params.read(
-            schema.Integer("month", min = 1, max = 12, default = self.today.month)
-        )
+        # Find the selected layout: year or month
+        self.calendar_layout = layout = user_collection.params.read(
+            schema.String("calendar_layout",
+                enumeration = set(["year", "month"])
+            )
+        ) or "month"
+
+        # Find the selected date range
+        self.today = date.today()
+        
         self.year = user_collection.params.read(
             schema.Integer("year", default = self.today.year)
         )
-        self.is_current_month = (self.month == self.today.month) \
-                            and (self.year == self.today.year)
 
-        # Add filters to the user collection for the selected month/year
+        if layout == "month":
+            self.month = user_collection.params.read(
+                schema.Integer("month", min = 1, max = 12, default = self.today.month)
+            )
+
+        # Add filters to the user collection for the selected date range
         ids = set()
         content_type = user_collection.type
 
         for member in self.date_members:
-
-            beginning_of_month = member.type(self.year, self.month, 1)
             
-            q, r = divmod(self.month, 12)
-            end_of_month = member.type(self.year + q, r + 1, 1)
-        
-            range_expr = self.get_date_range_expression(
-                member,
-                beginning_of_month,
-                end_of_month
-            )
+            if layout == "year":
+                date_expr = self.get_date_range_expression(
+                    member,
+                    member.type(self.year, 1, 1),
+                    member.type(self.year + 1, 1, 1)
+                )
+            elif layout == "month":
+                beginning_of_month = member.type(self.year, self.month, 1)
+                
+                q, r = divmod(self.month, 12)
+                end_of_month = member.type(self.year + q, r + 1, 1)
+            
+                date_expr = self.get_date_range_expression(
+                    member,
+                    beginning_of_month,
+                    end_of_month
+                )
 
-            query = content_type.select(filters = [range_expr])
+            query = content_type.select(filters = [date_expr])
             ids.update(query.execute(_sorted = False))
 
         expr = Self.one_of(ids)
@@ -79,6 +97,19 @@ from cocktail.controllers import view_state
 
     def get_date_range_expression(self, member, start_date, end_date):
         return member.greater_equal(start_date).and_(member.lower(end_date))
+    
+    def get_item_date(self, item, member):
+        return item.get(member)
+
+    def _consume_entries(self, cell_date):
+        for member in self.date_members:
+            member_entries = self._entries.get(member)
+            while member_entries \
+            and member_entries[0][0].year == cell_date.year \
+            and member_entries[0][0].month == cell_date.month \
+            and member_entries[0][0].day == cell_date.day:
+                entry_date, item = member_entries.pop(0)
+                yield (member, entry_date, item)
     ?>
 
     <?py
@@ -94,8 +125,8 @@ from cocktail.controllers import view_state
 
         for item in self.user_collection.subset:
             for member in self.date_members:
-                value = item.get(member)
-                if value is not None:
+                value = self.get_item_date(item, member)
+                if value is not None:                    
                     member_entries = self._entries.get(member)
                     if member_entries is None:
                         member_entries = []
@@ -113,101 +144,172 @@ from cocktail.controllers import view_state
     </py:ready>
 
     <div py:id="date_controls" py:parent="self.data_controls">
-        <div py:id="month_links">
-            <py:ready>
-                <?py
-                if self.month == 1:
-                    prev_year = self.year - 1
-                    prev_month = 12
-                else:
-                    prev_year = self.year
-                    prev_month = self.month - 1
+        <py:ready>
 
-                if self.month == 12:
-                    next_year = self.year + 1
-                    next_month = 1
-                else:
-                    next_year = self.year
-                    next_month = self.month + 1
+            <div py:id="layout_controls">
+                <a py:id="year_layout_link" href="?${view_state(calendar_layout = 'year', month = None)}"
+                   py:visible="${self.calendar_layout != 'year'}">
+                    ${translations("sitebasis.views.CalendarContentView select year layout")}
+                </a>
+            </div>
+
+            <div py:id="navigation_links">
+
+                <?py
+                current = {"year": self.today.year, "month": None}
+                prev = {"year": None, "month": None}
+                next = {"year": None, "month": None}
+
+                if self.calendar_layout == "year":
+                    next["year"] = self.today.year + 1
+                    prev["year"] = self.today.year - 1
+                
+                elif self.calendar_layout == "month":
+                    current["month"] = self.today.month
+                    
+                    if self.month == 1:
+                        prev["year"] = self.year - 1
+                        prev["month"] = 12
+                    else:
+                        prev["year"] = self.year
+                        prev["month"] = self.month - 1
+                        
+                    if self.month == 12:
+                        next["year"] = self.year + 1
+                        next["month"] = 1
+                    else:
+                        next["year"] = self.year
+                        next["month"] = self.month + 1
                 ?>
-                <a class="current_month_link" href="?${view_state(year = self.today.year, month = self.today.month)}">
-                    ${translations("sitebasis.views.CalendarContentView current month")}
+
+                <a class="current_link" href="?${view_state(**current)}">
+                    ${translations("sitebasis.views.CalendarContentView current " + self.calendar_layout)}
                 </a>
-                <a class="previous_month_link" href="?${view_state(year = prev_year, month = prev_month)}">
-                    <?py element.append("&laquo; " + translations("sitebasis.views.CalendarContentView previous month")) ?>
+                <a class="previous_link" href="?${view_state(**prev)}">
+                    <?py element.append("&laquo; " + translations("sitebasis.views.CalendarContentView previous " + self.calendar_layout)) ?>
                 </a>
-                <a class="next_month_link" href="?${view_state(year = next_year, month = next_month)}">
-                    <?py element.append(translations("sitebasis.views.CalendarContentView next month") + " &raquo;") ?>
+                <a class="next_link" href="?${view_state(**next)}">
+                    <?py element.append(translations("sitebasis.views.CalendarContentView next " + self.calendar_layout) + " &raquo;") ?>
                 </a>
-            </py:ready>
-        </div>
-        <select py:id="month_control" name="month">
-            <py:ready>
-                <option
-                    py:for="i in range(1, 13)"
-                    value="${i}"
-                    selected="${i == self.month}">
-                    ${translations("month %d" % i)}
-                </option>
-            </py:ready>
-        </select>
-        <input py:id="year_control" type="text" name="year" value="@{self.year}"/>
-        <input type="submit" value="${translations('Submit')}"/>
+            </div>
+
+            <div py:id="navigation_controls">
+                
+                <select
+                    py:id="month_control"
+                    name="month"
+                    py:if="self.calendar_layout == 'month'">
+                    <option
+                        py:for="i in range(1, 13)"
+                        value="${i}"
+                        selected="${i == self.month}">
+                        ${translations("month %d" % i)}
+                    </option>
+                </select>
+
+                <input
+                    py:id="year_control"
+                    type="text"
+                    name="year"
+                    value="${self.year}"/>
+
+                <input type="submit" value="${translations('Submit')}"/>
+            </div>
+
+        </py:ready>
     </div>
 
     <div py:def="collection_display">
-        <h1><py:ready>${translations("month %d" % self.month)} ${self.year}</py:ready></h1>
-        <table py:id="calendar">
-            <thead>
-                <tr>
-                    <th py:for="i in range(7)">${translations("weekday %d" % i)}</th>
-                </tr>
-            </thead>
-            <tbody>
-                <py:ready>
-                    <tr py:for="days in monthcalendar(self.year, self.month)">
-                        <td py:for="day_of_week, day_of_month in enumerate(days)">
-                            <?py
-                            element.add_class("active" if day_of_month else "inactive")
-                            element.add_class("dayofweek%d" % day_of_week)
-                            
-                            if day_of_month:
-                                cell_date = date(self.year, self.month, day_of_month)
-                                element.set_client_param("date", self.date_members[0].serialize_request_value(cell_date))
+        <py:ready>
+    
+            <!-- Year layout -->
+            <py:block py:if="self.calendar_layout == 'year'">
+                <h1><py:ready>${self.year}</py:ready></h1>
+                <py:new py:element="self.create_year_calendar(self.year)"/>
+            </py:block>
 
-                                if self.is_current_month and day_of_month == self.today.day:
-                                    element.add_class("today")
-                            ?>
-                            <div class="cell">
-                                <div class="day" py:if="day_of_month">${day_of_month}</div>
-                                <div class="entries">
-                                    <?py
-                                    for member in self.date_members:
-                                        member_entries = self._entries.get(member)
-                                        while member_entries \
-                                        and member_entries[0][0].year == self.year \
-                                        and member_entries[0][0].month == self.month \
-                                        and member_entries[0][0].day == day_of_month:
-                                            entry_date, item = member_entries.pop(0)
-                                            element.append(self.collection_display.create_calendar_entry(member, entry_date, item))
-                                    ?>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                </py:ready>
-            </tbody>
-        </table>
+            <!-- Month layout -->
+            <py:block py:if="self.calendar_layout == 'month'">
+                <h1><py:ready>${translations("month %d" % self.month)} ${self.year}</py:ready></h1>
+                <py:new py:element="self.create_month_calendar(self.year, self.month)"/>
+            </py:block>
 
-        <div py:def="calendar_entry" py:args="member, entry_date, item">
-            <?py
-            element.add_class(member.name + "_entry")
-            ?>
-            <span class="time" py:if="isinstance(entry_date, datetime)">${entry_date.strftime("%H:%M")}</span>
-            <py:sitebasis.views.ContentLink py:item="${item}"/>
-            <span class="member" py:if="len(self.date_members) &gt; 1">(${translations(member)})</span>
-        </div>
-
+        </py:ready>
     </div>
+
+    <div py:def="year_calendar" py:args="year">
+        <py:new
+            py:element="self.create_month_calendar(year, month, abbr = True, padding_rows = True)"
+            py:for="month in self.months">
+            <?py
+            element.add_class("month%d" % month)
+            thead = element.children[0]
+            ?>
+            <tr py:parent="thead" py:index="0">
+                <th colspan="7" class="month_header">
+                    <a href="?${view_state(year = year, month = month, calendar_layout = 'month')}">
+                        ${translations("month %d" % month)}
+                    </a>
+                </th>
+            </tr>
+        </py:new>
+    </div>
+
+    <table py:def="month_calendar" py:args="year, month, abbr = False, padding_rows = False">
+        <thead>
+            <tr>
+                <th py:for="i in self.week_days">
+                    ${translations(("weekday %d" % i) + (abbr and " abbr" or ""))}
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <py:ready>
+                <?py
+                weeks = monthcalendar(year, month)
+                if padding_rows:
+                    while len(weeks) < 6:
+                        weeks.append([0 for i in range(7)])
+                ?>
+                <tr py:for="week in weeks">
+                    <td py:for="week_day, day in enumerate(week)">
+                        <?py
+                        element.add_class("active" if day else "inactive")
+                        element.add_class("weekday%d" % week_day)
+                        cell_date = None
+                        
+                        if day:
+                            cell_date = date(year, month, day)
+                            element.set_client_param("date", self.date_members[0].serialize_request_value(cell_date))
+
+                            if year == self.today.year and month == self.today.month and day == self.today.day:
+                                element.add_class("today")
+                        ?>
+                        <py:new py:element="month_calendar.create_cell(cell_date)"/>
+                    </td>
+                </tr>
+            </py:ready>
+        </tbody>
+        <div py:def="cell" py:args="cell_date">            
+            <div class="day" py:if="cell_date">${cell_date.day}</div>
+            <?py
+            entries = None
+            if cell_date:
+                entries = list(self._consume_entries(cell_date))
+                if entries:
+                    element.add_class("has_entries")
+            ?>
+            <div class="entries" py:if="entries">
+                <div py:for="member, entry_date, item in entries">
+                    <?py
+                    element.add_class(member.name + "_entry")
+                    ?>
+                    <span class="time" py:if="isinstance(entry_date, datetime)">${entry_date.strftime("%H:%M")}</span>
+                    <py:sitebasis.views.ContentLink py:item="${item}"/>
+                    <span class="member" py:if="len(self.date_members) &gt; 1">(${translations(member)})</span>
+                </div>
+            </div>
+        </div>
+    </table>
 
 </py:sitebasis.views.ContentView>
