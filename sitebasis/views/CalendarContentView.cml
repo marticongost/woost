@@ -5,7 +5,7 @@ from calendar import monthcalendar
 from datetime import date, datetime
 from cocktail import schema
 from cocktail.schema.expressions import Self
-from cocktail.controllers import get_parameter, view_state
+from cocktail.controllers import view_state
 ?>
 
 <py:sitebasis.views.ContentView
@@ -39,10 +39,15 @@ from cocktail.controllers import get_parameter, view_state
 
         # Find the selected month/year
         self.today = date.today()
-        self.month = get_parameter(
+
+        psource = user_collection.persistent_source
+        user_collection.set_parameter_source("month", psource)
+        user_collection.set_parameter_source("year", psource)
+
+        self.month = user_collection.params.read(
             schema.Integer("month", min = 1, max = 12, default = self.today.month)
         )
-        self.year = get_parameter(
+        self.year = user_collection.params.read(
             schema.Integer("year", default = self.today.year)
         )
         self.is_current_month = (self.month == self.today.month) \
