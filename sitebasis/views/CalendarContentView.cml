@@ -310,7 +310,7 @@ from cocktail.controllers import view_state
                     element.add_class("has_entries")
             ?>
             <div class="entries" py:if="entries">
-                <div py:for="member, entry_date, item in entries">
+                <div py:for="member, entry_date, item in entries" class="calendar_entry">
                     <?py
                     element.add_class(member.name + "_entry")
                     ?>

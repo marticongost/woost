@@ -2272,6 +2272,12 @@ a.pickcolor span {
     font-size: 85%;
 }
 
+.BackOfficeLayout .CalendarContentView .collection_display .month_calendar td .calendar_entry .member {
+    color: rgb(75,75,75);
+    font-style: italic;
+    font-size: 85%;
+}
+
 .BackOfficeLayout .CalendarContentView .collection_display .month_calendar td .calendar_entry a {
     text-decoration: none;
 }
@@ -2330,6 +2336,10 @@ a.pickcolor span {
     z-index: 1;
     font-size: 100%;
     white-space: nowrap;
+}
+
+.BackOfficeLayout .CalendarContentView .collection_display .year_calendar .month_calendar .entries div {
+    margin: 0.4em 0;
 }
 
 .BackOfficeLayout .CalendarContentView .collection_display .time_table {
