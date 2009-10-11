@@ -934,6 +934,13 @@ translations.define("sitebasis.views.CalendarContentView select year layout",
     en = u"Year view"
 )
 
+translations.define(
+    "sitebasis.views.CalendarContentView ongoing items message",
+    ca = u"Elements en curs:",
+    es = u"Elementos en curso:",
+    en = u"Ongoing items:"
+)
+
 # Edit form
 #------------------------------------------------------------------------------
 translations.define("BackOfficeEditForm.translations",

@@ -20,10 +20,11 @@ from cocktail.controllers import view_state
     allow_language_selection = False
     allow_empty_search = True
     date_members = ()
+    members_paired = False
     months = range(1, 13)
     week_days = range(7)
     first_month = 1
-
+    
     excluded_view_state_params = \
         ContentView.excluded_view_state_params | frozenset(["month", "year"])
 
@@ -55,48 +56,28 @@ from cocktail.controllers import view_state
 
         # Find the selected date range
         self.today = date.today()
+        date_type = self.date_members[0].type
         
         self.year = user_collection.params.read(
             schema.Integer("year", default = self.today.year)
         )
 
-        if layout == "month":
+        if layout == "year":
+            dates = self.get_year_dates(self.year, self.first_month)
+            start_date = date_type(dates[0][0], dates[0][1], 1)
+            end_date = date_type(dates[-1][0], dates[-1][1], 1)
+
+        elif layout == "month":
             self.month = user_collection.params.read(
                 schema.Integer("month", min = 1, max = 12, default = self.today.month)
             )
+            start_date = date_type(self.year, self.month, 1)            
+            q, r = divmod(self.month, 12)
+            end_date = date_type(self.year + q, r + 1, 1)
 
-        # Add filters to the user collection for the selected date range
-        ids = set()
-        content_type = user_collection.type
-
-        for member in self.date_members:
-            
-            if layout == "year":
-                dates = self.get_year_dates(self.year, self.first_month)
-                date_expr = self.get_date_range_expression(
-                    member,
-                    member.type(dates[0][0], dates[0][1], 1),
-                    member.type(dates[-1][0], dates[-1][1], 1)
-                )
-            elif layout == "month":
-                beginning_of_month = member.type(self.year, self.month, 1)
-                
-                q, r = divmod(self.month, 12)
-                end_of_month = member.type(self.year + q, r + 1, 1)
-            
-                date_expr = self.get_date_range_expression(
-                    member,
-                    beginning_of_month,
-                    end_of_month
-                )
-
-            query = content_type.select(filters = [date_expr])
-            ids.update(query.execute(_sorted = False))
-
-        expr = Self.one_of(ids)
-        expr.by_key = True
-        user_collection.add_base_filter(expr)
-
+        self._start_date = start_date
+        self._end_date = end_date
+        
     def get_year_dates(self, year, first_month):
         dates = []
         for i in range(first_month, first_month + 12):
@@ -106,7 +87,37 @@ from cocktail.controllers import view_state
 
     def get_date_range_expression(self, member, start_date, end_date):
         return member.greater_equal(start_date).and_(member.lower(end_date))
+
+    def get_calendar_matches(self):
     
+        # Add filters to the user collection for the selected date range
+        subset = self.user_collection.subset.select()
+        content_type = self.user_collection.type
+        ids = set()
+
+        for member in self.date_members:                        
+            date_expr = self.get_date_range_expression(
+                member,
+                self._start_date,
+                self._end_date
+            )
+            query = content_type.select(filters = [date_expr])
+            ids.update(query.execute(_sorted = False))
+
+        expr = Self.one_of(ids)
+        expr.by_key = True
+        subset.add_filter(expr)
+        return subset
+
+    def get_ongoing_items(self):
+        return self.user_collection.subset.select(
+            filters = [
+                self.date_members[0].lower(self._start_date)
+                .and_(self.date_members[1].greater_equal(self._end_date))
+            ],
+            order = self.date_members[0]
+        )
+
     def get_item_date(self, item, member):
         return item.get(member)
 
@@ -132,7 +143,7 @@ from cocktail.controllers import view_state
         # Sort items by each date member displayed in the calendar
         self._entries = {}
 
-        for item in self.user_collection.subset:
+        for item in self.get_calendar_matches():
             for member in self.date_members:
                 value = self.get_item_date(item, member)
                 if value is not None:                    
@@ -242,6 +253,19 @@ from cocktail.controllers import view_state
                 <h1><py:ready>${translations("month %d" % self.month)} ${self.year}</py:ready></h1>
                 <py:new py:element="self.create_month_calendar(self.year, self.month)"/>
             </py:block>
+
+            <!-- Ongoing matches -->
+            <?py
+            self._ongoing_items = self.members_paired and list(self.get_ongoing_items())
+            ?>
+            <div py:id="ongoing_items_box" py:if="self._ongoing_items">
+                ${translations("sitebasis.views.CalendarContentView ongoing items message")}
+                <ul>
+                    <li py:for="item in self._ongoing_items">
+                        <py:sitebasis.views.ContentLink py:item="${item}"/>
+                    </li>
+                </ul>
+            </div>
 
         </py:ready>
     </div>
