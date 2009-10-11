@@ -22,6 +22,7 @@ from cocktail.controllers import view_state
     date_members = ()
     months = range(1, 13)
     week_days = range(7)
+    first_month = 1
 
     excluded_view_state_params = \
         ContentView.excluded_view_state_params | frozenset(["month", "year"])
@@ -71,10 +72,11 @@ from cocktail.controllers import view_state
         for member in self.date_members:
             
             if layout == "year":
+                dates = self.get_year_dates(self.year, self.first_month)
                 date_expr = self.get_date_range_expression(
                     member,
-                    member.type(self.year, 1, 1),
-                    member.type(self.year + 1, 1, 1)
+                    member.type(dates[0][0], dates[0][1], 1),
+                    member.type(dates[-1][0], dates[-1][1], 1)
                 )
             elif layout == "month":
                 beginning_of_month = member.type(self.year, self.month, 1)
@@ -94,6 +96,13 @@ from cocktail.controllers import view_state
         expr = Self.one_of(ids)
         expr.by_key = True
         user_collection.add_base_filter(expr)
+
+    def get_year_dates(self, year, first_month):
+        dates = []
+        for i in range(first_month, first_month + 12):
+            q, r = divmod(i, 13)
+            dates.append((year + q, r + 1 if q else r))
+        return dates
 
     def get_date_range_expression(self, member, start_date, end_date):
         return member.greater_equal(start_date).and_(member.lower(end_date))
@@ -225,7 +234,7 @@ from cocktail.controllers import view_state
             <!-- Year layout -->
             <py:block py:if="self.calendar_layout == 'year'">
                 <h1><py:ready>${self.year}</py:ready></h1>
-                <py:new py:element="self.create_year_calendar(self.year)"/>
+                <py:new py:element="self.create_year_calendar(self.year, self.first_month)"/>
             </py:block>
 
             <!-- Month layout -->
@@ -237,10 +246,10 @@ from cocktail.controllers import view_state
         </py:ready>
     </div>
 
-    <div py:def="year_calendar" py:args="year">
+    <div py:def="year_calendar" py:args="year, first_month = 1">
         <py:new
             py:element="self.create_month_calendar(year, month, abbr = True, padding_rows = True)"
-            py:for="month in self.months">
+            py:for="year, month in self.get_year_dates(year, first_month)">
             <?py
             element.add_class("month%d" % month)
             thead = element.children[0]
@@ -248,7 +257,8 @@ from cocktail.controllers import view_state
             <tr py:parent="thead" py:index="0">
                 <th colspan="7" class="month_header">
                     <a href="?${view_state(year = year, month = month, calendar_layout = 'month')}">
-                        ${translations("month %d" % month)}
+                        <span class="month">${translations("month %d" % month)}</span>
+                        <span class="year" py:if="first_month != 1">${year}</span>
                     </a>
                 </th>
             </tr>
