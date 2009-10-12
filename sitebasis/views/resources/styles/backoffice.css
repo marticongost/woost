@@ -1778,39 +1778,39 @@ button.TypeSelectorButton {
     margin: 0.8em 0;
 }
 
-.MultipleChoiceSelector-dialog {
+.modal_selector_dialog {
     padding: 1em;
     height: auto;
     max-height: 92%;
     font-size: 85%;
 }
 
-.MultipleChoiceSelector-dialog .container {
+.modal_selector_dialog .container {
     height: 80%;
     -moz-column-width: 25em;
     -webkit-column-width: 25em;
 }
 
-.MultipleChoiceSelector-dialog .buttons {
+.modal_selector_dialog .buttons {
     margin-top: 2em;
     text-align: right;
 }
 
-.MultipleChoiceSelector-dialog .buttons input {
+.modal_selector_dialog .buttons input {
     margin-left: 0.8em;
 }
 
-.BackOfficeLayout .MultipleChoiceSelector .select {
+.BackOfficeLayout .modal_selector_control .select {
     vertical-align: middle;
     font-size: 90%;
 }
 
-.BackOfficeLayout .MultipleChoiceSelector .container {
+.BackOfficeLayout .modal_selector_control .container {
     display: inline;
     margin-right: 1em;
 }
 
-.BackOfficeLayout .MultipleChoiceSelector .container:empty {
+.BackOfficeLayout .modal_selector_control .container:empty {
     display: hidden;
 }
 
@@ -2373,5 +2373,23 @@ a.pickcolor span {
 
 .BackOfficeLayout .CalendarContentView .ongoing_items_box li + li:before {
     content: ', ';
+}
+
+/* TagCloudSelector
+-----------------------------------------------------------------------------*/
+.TagCloudSelector div {
+    display: inline;
+    margin-right: 0.4em;
+}
+
+.TagCloudSelector div label {
+    display: inline;
+    float: none !important;
+    padding: 0.2em;
+}
+
+.TagCloudSelector div.selected label {    
+    color: white;
+    background-color: rgb(40,80,150);
 }
 
