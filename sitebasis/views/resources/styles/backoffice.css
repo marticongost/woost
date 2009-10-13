@@ -2408,6 +2408,7 @@ a.pickcolor span {
 
 .SendEmailTriggerResponse .sender_field .control,
 .SendEmailTriggerResponse .receivers_field .control,
+.SendEmailTriggerResponse .bcc_field .control,
 .SendEmailTriggerResponse .subject_field .control,
 .SendEmailTriggerResponse .body_field .control {
     width: 100% !important;
