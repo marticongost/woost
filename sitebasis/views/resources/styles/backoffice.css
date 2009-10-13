@@ -2400,3 +2400,21 @@ a.pickcolor span {
     background-color: rgb(40,80,150);
 }
 
+/* Tweaks for email trigger responses
+-----------------------------------------------------------------------------*/
+.SendEmailTriggerResponse .field_instance {
+    width: 90%;
+}
+
+.SendEmailTriggerResponse .sender_field .control,
+.SendEmailTriggerResponse .receivers_field .control,
+.SendEmailTriggerResponse .subject_field .control,
+.SendEmailTriggerResponse .body_field .control {
+    width: 100% !important;
+    height: 12em !important;
+}
+
+.SendEmailTriggerResponse .body_field .control {
+    height: 35em !important;
+}
+
