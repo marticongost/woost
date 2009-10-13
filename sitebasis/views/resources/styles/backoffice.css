@@ -9,7 +9,7 @@ html, body {
     -moz-box-sizing: content-box;
 }
 
-.BackOfficeLayout {
+body {
     font-family: Bitstream Vera Sans, Arial;
     font-size: 11pt;
 }
@@ -1787,6 +1787,9 @@ button.TypeSelectorButton {
 
 .modal_selector_dialog .container {
     height: 80%;
+}
+
+.modal_selector_dialog .container .CheckList {
     -moz-column-width: 25em;
     -webkit-column-width: 25em;
 }
@@ -1805,13 +1808,12 @@ button.TypeSelectorButton {
     font-size: 90%;
 }
 
-.BackOfficeLayout .modal_selector_control .container {
-    display: inline;
-    margin-right: 1em;
-}
-
 .BackOfficeLayout .modal_selector_control .container:empty {
     display: hidden;
+}
+
+.BackOfficeLayout .modal_selector_control .container .entry {
+    margin-bottom: 0.5em;
 }
 
 /* Collection settings 
@@ -2377,6 +2379,10 @@ a.pickcolor span {
 
 /* TagCloudSelector
 -----------------------------------------------------------------------------*/
+.TagCloudSelector {
+    line-height: 2em;
+}
+
 .TagCloudSelector div {
     display: inline;
     margin-right: 0.4em;
@@ -2385,7 +2391,7 @@ a.pickcolor span {
 .TagCloudSelector div label {
     display: inline;
     float: none !important;
-    padding: 0.2em;
+    padding: 0.1em;
 }
 
 .TagCloudSelector div.selected label {    
