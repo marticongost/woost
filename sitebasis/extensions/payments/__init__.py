@@ -53,7 +53,8 @@ class PaymentsExtension(Extension):
         from sitebasis.extensions.payments import (
             strings,
             pasat4b,
-            sis
+            sis,
+            transactionnotifiedtrigger
         )
 
         # Setup payment controllers
