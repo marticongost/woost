@@ -78,7 +78,14 @@ class SendEmailTriggerResponse(TriggerResponse):
     """A trigger response that allows to send an email."""
 
     instantiable = True
-    members_order = "template_engine", "sender", "receivers", "subject", "body"
+    members_order = [
+        "template_engine",
+        "sender",
+        "receivers",
+        "bcc",
+        "subject",
+        "body"
+    ]
 
     template_engine = schema.String(
         enumeration = buffet.available_engines.keys()
@@ -91,6 +98,10 @@ class SendEmailTriggerResponse(TriggerResponse):
 
     receivers = schema.String(
         required = True,
+        edit_control = "cocktail.html.TextArea"
+    )
+    
+    bcc = schema.String(
         edit_control = "cocktail.html.TextArea"
     )
 
@@ -139,11 +150,13 @@ class SendEmailTriggerResponse(TriggerResponse):
            
             subject = render("subject").strip()
             sender = render("sender").strip()
+            bcc = render("bcc").strip()
             receivers = render("receivers").strip()
             body = render("body")
         else:
             subject = self.subject
             sender = self.sender
+            bcc = self.bcc
             receivers = self.receivers.split()
             body = self.body
 
@@ -154,6 +167,8 @@ class SendEmailTriggerResponse(TriggerResponse):
             message["Subject"] = subject
             message["From"] = sender
             message["To"] = receivers
+            if bcc:
+                message["Bcc"] = bcc
             message["Date"] = formatdate()
 
             smtp = smtplib.SMTP(smtp_host, smtp_port)

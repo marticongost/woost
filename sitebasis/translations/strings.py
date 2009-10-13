@@ -2570,6 +2570,12 @@ translations.define("SendEmailTriggerResponse.receivers",
     en = u"Receivers"
 )
 
+translations.define("SendEmailTriggerResponse.bcc",
+    ca = u"Còpia oculta",
+    es = u"Copia oculta",
+    en = u"Blind carbon copy"
+)
+
 translations.define("SendEmailTriggerResponse.subject",
     ca = u"Assumpte",
     es = u"Asunto",
