@@ -2293,7 +2293,6 @@ a.pickcolor span {
 
 .BackOfficeLayout .CalendarContentView .collection_display .year_calendar {
     font-size: 85%;
-    overflow: hidden;
 }
 
 .BackOfficeLayout .CalendarContentView .collection_display .year_calendar .month_calendar {
@@ -2359,7 +2358,7 @@ a.pickcolor span {
 
 .BackOfficeLayout .CalendarContentView .ongoing_items_box {
     clear: both;
-    margin-top: 1.4em;
+    padding-top: 1.4em;
 }
 
 .BackOfficeLayout .CalendarContentView .ongoing_items_box ul {
