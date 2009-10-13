@@ -16,6 +16,20 @@ translations.define("PaymentsExtension.payment_gateway",
     en = u"Payment gateway"
 )
 
+# TransactionNotifiedTrigger
+#------------------------------------------------------------------------------
+translations.define("TransactionNotifiedTrigger",
+    ca = u"Disparador de notificació de pagament",
+    es = u"Disparador de notificación de pago",
+    en = u"Payment notification trigger"
+)
+
+translations.define("TransactionNotifiedTrigger",
+    ca = u"Disparadors de notificació de pagament",
+    es = u"Disparadores de notificación de pago",
+    en = u"Payment notification triggers"
+)
+
 # PaymentGateway
 #------------------------------------------------------------------------------
 translations.define("PaymentGateway",
