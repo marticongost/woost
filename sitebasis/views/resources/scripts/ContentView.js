@@ -74,7 +74,7 @@ cocktail.init(function (root) {
             .click(function () {
                 cocktail.foldSelectors();
                 var filterBox = jQuery(this).parents(".ContentView").find(".FilterBox").get(0);
-                filterBox.addFilter(this.filterId);
+                filterBox.addUserFilter(this.filterId);
             })
             .end()
         
