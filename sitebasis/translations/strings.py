@@ -2371,12 +2371,6 @@ translations.define("Trigger.batch_execution-explanation",
          u"conditions are met."
 )
 
-translations.define("Trigger.matching_items",
-    ca = u"Elements a observar",
-    es = u"Elementos a observar",
-    en = u"Watched items"
-)
-
 translations.define("Trigger.matching_roles",
     ca = u"Rols a observar",
     es = u"Roles a observar",
@@ -2410,6 +2404,26 @@ translations.define("sitebasis.models.Trigger.execution_point after",
     en = u"After committing the transaction"
 )
 
+# ContentTrigger
+#------------------------------------------------------------------------------
+translations.define("ContentTrigger",
+    ca = u"Disparador per elements",
+    es = u"Disparador para elementos",
+    en = u"Content trigger"
+)
+
+translations.define("ContentTrigger-plural",
+    ca = u"Disparadors per contingut",
+    es = u"Disparadores para contenido",
+    en = u"Content triggers"
+)
+
+translations.define("ContentTrigger.matching_items",
+    ca = u"Elements a observar",
+    es = u"Elementos a observar",
+    en = u"Watched items"
+)
+
 # CreateTrigger
 #------------------------------------------------------------------------------
 translations.define("CreateTrigger",
@@ -2422,6 +2436,20 @@ translations.define("CreateTrigger-plural",
     ca = u"Disparadors de creació",
     es = u"Disparadores de creación",
     en = u"Create triggers"
+)
+
+# InsertTrigger
+#------------------------------------------------------------------------------
+translations.define("InsertTrigger",
+    ca = u"Disparador d'inserció",
+    es = u"Disparador de inserción",
+    en = u"Insert trigger"
+)
+
+translations.define("InsertTrigger-plural",
+    ca = u"Disparadors d'inserció",
+    es = u"Disparadores de inserción",
+    en = u"Insert triggers"
 )
 
 # ModifyTrigger

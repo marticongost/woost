@@ -16,7 +16,7 @@ class TriggerMatchTestCase(BaseTestCase):
         test = 1
         for target, user, context, should_match in tests:
             self.assertEqual(
-                trigger.match(target, user, verbose = True, **context),
+                trigger.match(user, target = target, verbose = True, **context),
                 should_match,
                 "Trigger %s %s match test %d (target=%s user=%s context=%s)"
                 % (
@@ -32,7 +32,7 @@ class TriggerMatchTestCase(BaseTestCase):
 
     def test_user(self):
 
-        from sitebasis.models import Trigger, Item, Role, User
+        from sitebasis.models import ContentTrigger, Item, Role, User
         
         r1 = Role()
         r2 = Role()
@@ -43,7 +43,7 @@ class TriggerMatchTestCase(BaseTestCase):
         u3 = User(roles = [r3])
         
         self.assert_match(
-            Trigger(matching_roles = [r2]),
+            ContentTrigger(matching_roles = [r2]),
             (Item(), u2, {}, True),
             (Item(), u3, {}, True),
             (Item(), None, {}, False),
@@ -53,7 +53,7 @@ class TriggerMatchTestCase(BaseTestCase):
     def test_target(self):
 
         from sitebasis.models import (
-            Trigger,
+            ContentTrigger,
             Item,
             Document,
             StandardPage,
@@ -62,20 +62,20 @@ class TriggerMatchTestCase(BaseTestCase):
         )
                 
         self.assert_match(
-            Trigger(matching_items = {
+            ContentTrigger(matching_items = {
                 "type": "sitebasis.models.document.Document"
             }),
             (Document(), None, {}, True),
             (StandardPage(), None, {}, True),
             (Item(), None, {}, False),
-            (Trigger(), None, {}, False)
+            (ContentTrigger(), None, {}, False)
         )
 
         user = User()
         set_current_user(user)
 
         self.assert_match(
-            Trigger(matching_items = {
+            ContentTrigger(matching_items = {
                 "type": "sitebasis.models.document.Document",
                 "filter": "owned-items"
             }),
