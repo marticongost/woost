@@ -39,11 +39,7 @@ from cocktail.controllers import context
     <td py:def="price_cell" py:args="entry, costs">${self.display_amount(costs["price"]["total"])}</td>
     <td py:def="quantity_cell" py:args="entry, costs">${entry.quantity}</td>
     <td py:def="remove_cell" py:args="entry, costs" class="remove">
-        <form action="${self._uri('update')}">
-            <input type="hidden" name="quantity" value="0"/>
-            <input type="hidden" name="product" value="${entry.product.id}"/>
-            <input class="button delete" type="submit" value="${translations('sitebasis.extensions.shop.ShoppingBasket remove entry')}"/>
-        </form>
+        <a href="${self._uri('update')}?quantity=0&amp;product=${str(entry.product.id)}">${translations('sitebasis.extensions.shop.ShoppingBasket remove entry')}</a>        
     </td>
     <td py:def="total_cell" py:args="entry, costs">${self.display_amount(costs["total_price"])}</td>
 
