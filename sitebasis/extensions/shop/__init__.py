@@ -123,19 +123,18 @@ class ShopExtension(Extension):
             if order is None:
                 raise PaymentNotFoundError(payment_id)
             
-            costs = order.calculate_cost()
             payment = Payment()
             payment.id = order.id
-            payment.amount = costs["total"]
+            payment.amount = order.cost
             payment.shop_order = order
             payment.currency = Currency(payments_ext.payment_gateway.currency)
             
-            for entry, entry_costs in zip(order.entries, costs["entries"]):
+            for entry in order.entries:
                 payment.add(PaymentItem(
                     reference = str(entry.product.id),
                     description = translations(entry.product),
                     units = entry.quantity,
-                    price = entry_costs["price"]["total"]
+                    price = entry.cost
                 ))
 
             return payment

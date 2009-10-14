@@ -2562,15 +2562,15 @@ translations.define("CustomTriggerResponse.code",
 # SendEmailTriggerResponse
 #------------------------------------------------------------------------------
 translations.define("SendEmailTriggerResponse",
-    ca = u"Resposta per correu electrònic",
-    es = u"Respuesta po correo electrónico",
-    en = u"E-mail response"
+    ca = u"Enviament de correu electrònic",
+    es = u"Envío de correo electrónico",
+    en = u"Send E-mail"
 )
 
 translations.define("SendEmailTriggerResponse-plural",
-    ca = u"Respostes per correu electrònic",
-    es = u"Respuestas por correo electrónico",
-    en = u"E-mail responses"
+    ca = u"Enviaments de correu electrònic",
+    es = u"Envíos de correo electrónico",
+    en = u"Send E-mail"
 )
 
 translations.define("SendEmailTriggerResponse.sender",
@@ -2583,6 +2583,12 @@ translations.define("SendEmailTriggerResponse.receivers",
     ca = u"Destinataris",
     es = u"Destinatarios",
     en = u"Receivers"
+)
+
+translations.define("SendEmailTriggerResponse.bcc",
+    ca = u"Còpia oculta",
+    es = u"Copia oculta",
+    en = u"Blind carbon copy"
 )
 
 translations.define("SendEmailTriggerResponse.subject",
