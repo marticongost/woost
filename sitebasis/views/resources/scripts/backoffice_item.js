@@ -42,7 +42,6 @@ cocktail.init(function (root) {
 
     jQuery(".translations_check", root).click( function () {
         var language = jQuery(this).attr("title");
-        alert(language);
         jQuery(".field_instance." + language, root).toggle();
         jQuery(".field_instance-RichTextEditor." + language, root).each(function () {
             jQuery(this).find('textarea').each( function () {
