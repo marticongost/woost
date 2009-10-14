@@ -68,6 +68,7 @@ from sitebasis.models import (
                             py:if="can_add"
                             name="add_translation"
                             type="submit"
+                            title="${language}"
                             value="${language}">
                             <img src="/resources/images/add_small.png"/>
                         </button>
@@ -75,6 +76,7 @@ from sitebasis.models import (
                             py:if="can_delete"
                             name="delete_translation"
                             type="submit"
+                            title="${language}"
                             value="${language}">
                             <img src="/resources/images/delete_small.png"/>
                         </button>
