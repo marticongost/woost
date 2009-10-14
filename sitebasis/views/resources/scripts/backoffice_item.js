@@ -56,6 +56,5 @@ cocktail.init(function (root) {
         jQuery.cookie('visible_languages','"' + ids.join(',') + '"')
     });
 
-    alert("ei");
 });
 
