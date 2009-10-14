@@ -12,16 +12,6 @@ from cocktail.controllers import context
         self._uri = context["cms"].document_uri        
         ?>
     </py:ready>
-
-    <py:with py:def="row" py:args="entry, costs">
-        <td class="remove">
-            <form action="${self._uri('update')}">
-                <input type="hidden" name="quantity" value="0"/>
-                <input type="hidden" name="product" value="${entry.product.id}"/>
-                <input class="button delete" type="submit" value="${translations('sitebasis.extensions.shop.ShoppingBasket remove entry')}"/>
-            </form>
-        </td>
-    </py:with>
     
     <td py:def="quantity_cell" py:args="entry, costs">
         <form action="${self._uri('update')}">

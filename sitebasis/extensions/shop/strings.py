@@ -192,6 +192,12 @@ translations.define("ShopOrderEntry.quantity",
     en = u"Quantity"
 )
 
+translations.define("ShopOrderEntry.cost",
+    ca = u"Cost",
+    es = u"Coste",
+    en = u"Cost"
+)
+
 # PricingPolicy
 #------------------------------------------------------------------------------
 translations.define("PricingPolicy",
