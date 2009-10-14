@@ -34,7 +34,7 @@ from sitebasis.controllers.backoffice.useractions import add_view_action_context
     self.add_resource("/resources/scripts/BackOfficeLayout.js")
     
     # TODO: Implement conditional comments for IE more generally
-    self.add_head_element(IEConditionalComment(condition = "IE", children = [
+    self.add_head_element(IEConditionalComment(condition = "lt IE 8", children = [
         Element("link",
             rel = "Stylesheet",
             type = "text/css",

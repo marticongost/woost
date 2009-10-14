@@ -513,7 +513,7 @@ body.scripted .BackOfficeLayout .Table .selection {
 }
 
 .BackOfficeLayout .ContentTable th .selector_content {
-    top: 1.3em;
+    top: 1.4em;
     font-size: 85%;
     padding-right: 1em;
     padding-top: 1em;
@@ -526,14 +526,26 @@ body.scripted .BackOfficeLayout .Table .selection {
 
 .BackOfficeLayout .ContentTable .sorting_options .ascending {
     background-image: url(../images/ascending.png);
+    _background-position:0 -2px;
+    _background-repeat:no-repeat;
+    _display:block;
+    _padding-left:18px; 
 }
 
 .BackOfficeLayout .ContentTable .sorting_options .descending {
     background-image: url(../images/descending.png);
+    _background-position:0 -2px;
+    _background-repeat:no-repeat;
+    _display:block;
+    _padding-left:18px; 
 }
 
 .BackOfficeLayout .ContentTable .search_options .add_filter {
     background-image: url(../images/add_small.png);
+    _background-position:0 -2px;
+    _background-repeat:no-repeat;
+    _display:block;
+    _padding-left:18px;    
 }
 
 .BackOfficeLayout .PropertyTable th {
@@ -1018,8 +1030,9 @@ body.scripted .BackOfficeLayout .Table .selection {
 }
 
 .BackOfficeLayout .ContentTypeSelector .selector_content {
-    top: 1.3em;
+    top: 1.4em;
     z-index: 3;
+	margin-top: -1px;
     padding: 0.4em;
     min-width: 16em;
 }
@@ -1261,6 +1274,7 @@ body.scripted .BackOfficeLayout .ThumbnailsContentView .collection_display input
     color: rgb(20,80,20);
 }
 
+.preview-error-box,
 .BackOfficeLayout .error_box,
 .BackOfficeLayout .notification_box .error {
     color: black;
@@ -1269,6 +1283,14 @@ body.scripted .BackOfficeLayout .ThumbnailsContentView .collection_display input
     padding: 0.5em;
     margin: 0;
     margin-bottom: 1em;
+}
+
+.preview-error-box {
+    color: black;
+    border: 1px dotted rgb(200,160,120);
+    background-color: rgb(245,230,215);
+    padding: 0.5em;
+    margin: 0 1em 1em 1em;
 }
 
 .BackOfficeLayout .error_box li {
@@ -1441,6 +1463,7 @@ body.scripted .BackOfficeLayout .ThumbnailsContentView .collection_display input
     list-style-type: none;
     padding-right: 0.1;
     right: 0;
+	top:2.4em;
 }
 
 .BackOfficeEditView .translations_selector .selector_content li {

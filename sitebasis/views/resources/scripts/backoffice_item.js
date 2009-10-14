@@ -13,7 +13,7 @@ cocktail.init(function (root) {
         if(jQuery(this).find('.language').hasClass('selected')) {
             var check = document.createElement('input');
             check.className = 'translations_check';
-            check.setAttribute('value',jQuery(this).find("button").val());
+            check.setAttribute('title',jQuery(this).find("button").attr('title'));
             check.setAttribute('type','checkbox');
             jQuery(this).prepend(check);
          }
@@ -34,15 +34,16 @@ cocktail.init(function (root) {
 
     function switchVisibleLang() {
         jQuery(".translations_check", root).not(":checked").each( function () {
-            jQuery("td." + jQuery(this).val()).toggle();
+            jQuery(".field_instance." + jQuery(this).attr("title")).toggle();
         });
     }
 
     switchVisibleLang();
 
     jQuery(".translations_check", root).click( function () {
-        jQuery("td." + jQuery(this).val(), root).toggle();
-        jQuery("td." + jQuery(this).val() + ".field_instance-RichTextEditor", root).each(function () {
+        var language = jQuery(this).attr("title");
+        jQuery(".field_instance." + language, root).toggle();
+        jQuery(".field_instance-RichTextEditor." + language, root).each(function () {
             jQuery(this).find('textarea').each( function () {
                 resizeOne(jQuery(this).attr('id'));
             });
@@ -53,5 +54,6 @@ cocktail.init(function (root) {
         });
         jQuery.cookie('visible_languages','"' + ids.join(',') + '"')
     });
+
 });
 
