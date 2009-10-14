@@ -44,6 +44,8 @@ class TransitionTrigger(ContentTrigger):
         return ContentTrigger.match(self,
             user,
             target = target,
+            transition = transition,
+            transition_date = transition_data,
             verbose = verbose,
             **context
         )

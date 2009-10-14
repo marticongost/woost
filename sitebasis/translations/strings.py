@@ -2386,6 +2386,21 @@ translations.define("Trigger.matching_roles-explanation",
          u"of which user started the action."
 )
 
+translations.define("Trigger.condition",
+    ca = u"Condició",
+    es = u"Condición",
+    en = u"Condition"
+)
+
+translations.define("Trigger.condition-explanation",
+    ca = u"Una expressió en python que determina si s'executa o no el "
+         u"disparador.",
+    es = u"Una expresión en python que determina si se ejecuta o no el "
+         u"disparador.",
+    en = u"A python expression that enables or disables the execution of "
+         u"the trigger depending on its context."
+)
+
 translations.define("Trigger.responses",
     ca = u"Respostes",
     es = u"Respuestas",

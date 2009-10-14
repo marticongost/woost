@@ -65,6 +65,7 @@ class Trigger(Item):
         "execution_point",
         "batch_execution",
         "matching_roles",
+        "condition",
         "responses"
     ]
     
@@ -97,7 +98,11 @@ class Trigger(Item):
         ),
         related_end = schema.Collection(),
         edit_inline = True
-    )        
+    )
+
+    condition = schema.String(
+        edit_control = "cocktail.html.TextArea"
+    )
      
     def match(self, user, verbose = False, **context):
 
@@ -115,6 +120,13 @@ class Trigger(Item):
             else:
                 print trigger_doesnt_match_style("user doesn't match")
                 return False
+
+        # Check the condition
+        condition = self.condition
+
+        if condition and not eval(condition, context):
+            print trigger_doesnt_match_style("condition doesn't match")
+            return False
 
         return True
 
@@ -139,10 +151,7 @@ class ContentTrigger(Trigger):
         user_collection.available_languages = Language.codes
         return user_collection.subset
 
-    def match(self, user, target = None, verbose = False, **context):       
-
-        if not Trigger.match(self, user, verbose = verbose, **context):
-            return False
+    def match(self, user, target = None, verbose = False, **context):
 
         # Check the target
         query = self.select_items()
@@ -158,6 +167,15 @@ class ContentTrigger(Trigger):
                         "filter %s doesn't match" % filter
                     )
                     return False
+
+        if not Trigger.match(
+            self,
+            user,
+            target = target,
+            verbose = verbose,
+            **context
+        ):
+            return False
 
         return True
 
@@ -196,14 +214,6 @@ class ModifyTrigger(ContentTrigger):
         verbose = False,
         **context):
         
-        if not ContentTrigger.match(self,
-            user,
-            target = target,
-            verbose = verbose,
-            **context
-        ):
-            return False
-
         if self.matching_members:
             if member is None:
                 if verbose:
@@ -225,6 +235,17 @@ class ModifyTrigger(ContentTrigger):
                 if verbose:
                     print trigger_doesnt_match_style("language doesn't match")
                 return False
+
+        if not ContentTrigger.match(
+            self,
+            user,
+            target = target,
+            member = member,
+            language = language,
+            verbose = verbose,
+            **context
+        ):
+            return False
 
         return True
 

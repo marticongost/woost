@@ -2398,3 +2398,10 @@ a.pickcolor span {
     background-color: rgb(40,80,150);
 }
 
+/* Trigger edit styles
+-----------------------------------------------------------------------------*/
+.Trigger .condition_field .control {
+    width: 30em !important;
+}
+
+
