@@ -124,6 +124,12 @@ translations.define("ShopOrder.status",
     en = u"State"
 )
 
+translations.define("ShopOrder.language",
+    ca = u"Idioma",
+    es = u"Idioma",
+    en = u"Language"
+)
+
 translations.define("ShopOrder.shipping_info",
     ca = u"Informació d'enviament",
     es = u"Información de envío",

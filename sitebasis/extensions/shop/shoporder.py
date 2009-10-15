@@ -7,6 +7,7 @@
 @since:			September 2009
 """
 from decimal import Decimal
+from cocktail.translations import get_language
 from cocktail import schema
 from sitebasis.models import Item, Site
 from sitebasis.extensions.countries.country import Country
@@ -64,13 +65,20 @@ class ShopOrder(Item):
         editable = False
     )
 
+    language = schema.String(
+        required = True,
+        format = "^[a-z]{2}$",
+        editable = False,
+        default = schema.DynamicDefault(get_language)
+    )
+
     status = schema.String(
         required = True,
         indexed = True,
         enumeration = ["pending", "accepted", "failed"],
         default = "pending"
     )
-
+    
     entries = schema.Collection(
         items = "sitebasis.extensions.shop.shoporderentry.ShopOrderEntry",
         bidirectional = True,
