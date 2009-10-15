@@ -13,7 +13,7 @@ cocktail.init(function (root) {
         if(jQuery(this).find('.language').hasClass('selected')) {
             var check = document.createElement('input');
             check.className = 'translations_check';
-            check.setAttribute('title',jQuery(this).find("button").attr('title'));
+            check.id = jQuery(this).find("button").get(0).attributes.getNamedItem("value").nodeValue;
             check.setAttribute('type','checkbox');
             jQuery(this).prepend(check);
          }
@@ -27,21 +27,21 @@ cocktail.init(function (root) {
     }
 
     for (i = 0; i < loop.length; i++) {
-        if (jQuery("input[value='" + loop[i] + "']", root).next(".language").hasClass('selected')) {
-            jQuery("input[value='" + loop[i] + "']", root).attr('checked','checked');
+        if (jQuery(".translations_selector input[value='" + loop[i] + "']", root).next(".language").hasClass('selected')) {
+            jQuery(".translations_selector input[value='" + loop[i] + "']", root).attr('checked','checked');
         }
     }
 
     function switchVisibleLang() {
         jQuery(".translations_check", root).not(":checked").each( function () {
-            jQuery(".field_instance." + jQuery(this).attr("title")).toggle();
+            jQuery(".field_instance." + this.id).toggle();
         });
     }
 
     switchVisibleLang();
 
     jQuery(".translations_check", root).click( function () {
-        var language = jQuery(this).attr("title");
+        var language = this.id;
         jQuery(".field_instance." + language, root).toggle();
         jQuery(".field_instance-RichTextEditor." + language, root).each(function () {
             jQuery(this).find('textarea').each( function () {
@@ -50,10 +50,9 @@ cocktail.init(function (root) {
         });
         var ids = [];
         jQuery(".translations_check:checked", root).each( function () {
-            ids.push(jQuery(this).val());
+            ids.push(this.id);
         });
-        jQuery.cookie('visible_languages','"' + ids.join(',') + '"')
+        jQuery.cookie('visible_languages','"' + ids.join(',') + '"');
     });
-
 });
 
