@@ -24,7 +24,7 @@ translations.define("TransactionNotifiedTrigger",
     en = u"Payment notification trigger"
 )
 
-translations.define("TransactionNotifiedTrigger",
+translations.define("TransactionNotifiedTrigger-plural",
     ca = u"Disparadors de notificació de pagament",
     es = u"Disparadores de notificación de pago",
     en = u"Payment notification triggers"
