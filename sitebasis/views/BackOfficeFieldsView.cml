@@ -50,6 +50,7 @@ from sitebasis.models import (
                             <?py
                             if has_translation:
                                 element.add_class("selected")
+                                element.set_client_param("language" ,language)
                             ?>
                             ${translations(language)}
                         </div>
