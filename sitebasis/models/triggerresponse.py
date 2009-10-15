@@ -139,14 +139,18 @@ class SendEmailTriggerResponse(TriggerResponse):
             )
 
             def render(field_name):
-                template = engine.load_template(
-                    field_name,
-                    self.get(field_name)
-                )
-                try:
-                    return engine.render(context, template = template)
-                except NameError:
-                    raise NameError("Error in %s template" % field_name)
+                markup = self.get(field_name)
+                if markup:
+                    template = engine.load_template(
+                        field_name,
+                        self.get(field_name)
+                    )
+                    try:
+                        return engine.render(context, template = template)
+                    except NameError:
+                        raise NameError("Error in %s template" % field_name)
+                else:
+                    return u""
            
             subject = render("subject").strip()
             sender = render("sender").strip()
@@ -157,22 +161,23 @@ class SendEmailTriggerResponse(TriggerResponse):
             subject = self.subject
             sender = self.sender
             bcc = self.bcc
-            receivers = self.receivers.split()
+            receivers = self.receivers
             body = self.body
 
-        receiver_list = [r.strip() for r in receivers.split()]
+        receivers_set = set(r.strip() for r in receivers.split())
+        
+        if bcc:
+            receivers_set.update(r.strip() for r in bcc.split())
 
-        if receiver_list:
+        if receivers_set:
             message = MIMEText(body, mime_type)
             message["Subject"] = subject
             message["From"] = sender
             message["To"] = receivers
-            if bcc:
-                message["Bcc"] = bcc
             message["Date"] = formatdate()
 
             smtp = smtplib.SMTP(smtp_host, smtp_port)
-            smtp.sendmail(sender, receiver_list, message.as_string())
+            smtp.sendmail(sender, list(receivers_set), message.as_string())
             smtp.quit()
 
 # TODO: Implement other response types:
