@@ -7,7 +7,11 @@
 @since:			September 2009
 """
 from cocktail.events import event_handler, when
-from cocktail.translations import translations
+from cocktail.language import set_content_language
+from cocktail.translations import (
+    translations,
+    set_language
+)
 from cocktail import schema
 from cocktail.persistence import datastore
 from sitebasis.models import Extension
@@ -113,6 +117,8 @@ class ShopExtension(Extension):
         )
         from sitebasis.extensions.payments import PaymentsExtension
         from sitebasis.extensions.payments.paymentgateway import PaymentGateway
+        from sitebasis.extensions.payments.transactionnotifiedtrigger \
+            import launch_transaction_notification_triggers
 
         payments_ext = PaymentsExtension.instance
             
@@ -141,10 +147,22 @@ class ShopExtension(Extension):
 
         PaymentGateway.get_payment = get_payment
 
-        @when(PaymentGateway.transaction_notified)
-        def update_order_status(event):
+        def receive_order_payment(event):
+            
             payment = event.payment
-            payment.shop_order.status = payment.status
-            payment.shop_order.gateway_parameters = payment.gateway_parameters
+            shop_order = payment.shop_order
+            
+            set_language(shop_order.language)
+            set_content_language(shop_order.language)
+            
+            shop_order.status = payment.status
+            shop_order.gateway_parameters = payment.gateway_parameters
+        
+        def commit_order_payment(event):
             datastore.commit()
+        
+        events = PaymentGateway.transaction_notified
+        pos = events.index(launch_transaction_notification_triggers)
+        events.insert(pos, receive_order_payment)
+        events.insert(pos + 2, commit_order_payment)
 

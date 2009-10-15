@@ -7,6 +7,7 @@
 @since:			October 2009
 """
 from cocktail import schema
+from cocktail.events import when
 from sitebasis.models.trigger import (
     Trigger,
     trigger_responses
@@ -18,14 +19,10 @@ class TransactionNotifiedTrigger(Trigger):
     instantiable = True
 
 
+@when(PaymentGateway.transaction_notified)
 def launch_transaction_notification_triggers(event):
     trigger_responses(
         TransactionNotifiedTrigger,
         payment = event.payment
     )
-
-PaymentGateway.transaction_notified.insert(
-    0,
-    launch_transaction_notification_triggers        
-)
 
