@@ -1723,7 +1723,6 @@ button.TypeSelectorButton span {
     min-width: 10em;
     margin-top: 0.3em;
     margin-right: 1em;
-    -moz-column-width: 8em;
 }
 
 .BackOfficeLayout .FilterBox .filter_entry .field label {
