@@ -1547,6 +1547,7 @@ button.TypeSelectorButton span {
     border: 1px solid rgb(210,210,210);
     background-color: white;
     padding: 0.6em;
+    overflow: auto;
 }
 
 .BackOfficeLayout .autocomplete_results_container {
