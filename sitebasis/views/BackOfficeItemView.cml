@@ -21,7 +21,7 @@ from sitebasis.controllers.backoffice.useractions import (
         self.set_client_param("edit_stack", self.edit_stack.to_param())
 
         # Add CSS classes matching the item's content types
-        for cls in self.edited_content_type.ascend_inheritance():
+        for cls in self.edited_content_type.descend_inheritance(include_self = True):
             if cls is not Item:
                 self.add_class(cls.name)
         
