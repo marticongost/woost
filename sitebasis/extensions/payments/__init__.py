@@ -52,6 +52,7 @@ class PaymentsExtension(Extension):
         from sitebasis.extensions.payments.paymentgateway import PaymentGateway
         from sitebasis.extensions.payments import (
             strings,
+            dummypaymentgateway,
             pasat4b,
             sis,
             transactionnotifiedtrigger
@@ -63,9 +64,12 @@ class PaymentsExtension(Extension):
             import PaymentHandshakeController
         from sitebasis.extensions.payments.paymentnotificationcontroller \
             import PaymentNotificationController
-        
+        from sitebasis.extensions.payments.dummycontroller \
+            import DummyPaymentGatewayController
+
         CMS.payment_handshake = PaymentHandshakeController
         CMS.payment_notification = PaymentNotificationController
+        CMS.dummy_payment_gateway = DummyPaymentGatewayController      
         
         # Append additional members to the extension
         PaymentsExtension.members_order = ["payment_gateway"]
