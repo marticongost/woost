@@ -55,9 +55,9 @@ class RichTextEditor(TinyMCE):
         self.tinymce_params.update(self.default_tinymce_params)
         self.tinymce_params.update(
             init_instance_callback = "initRichTextEditor",
-            external_image_list_url = "%s/document_images?edit_stack=%s"
+            external_image_list_url = "%s/document_resources?edit_stack=%s&resource_type=image"
                 % (document_uri, edit_stack_param),
-            external_link_list_url = "%s/document_files?edit_stack=%s"
+            external_link_list_url = "%s/document_resources?edit_stack=%s&resource_type=document"
                 % (document_uri, edit_stack_param),
             theme_advanced_styles = ";".join(styles)
         )
