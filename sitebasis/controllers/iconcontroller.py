@@ -33,7 +33,6 @@ class IconController(BaseCMSController):
     icon_format = "png"
     icon_size = 32
 
-
     @cherrypy.expose
     def __call__(self,
         id,
@@ -42,7 +41,7 @@ class IconController(BaseCMSController):
         format = None,
         icon_size = None,
         thumbnail = "true"):
-        
+
         response_body = None
         item = self.get_item(id)
 
@@ -52,17 +51,11 @@ class IconController(BaseCMSController):
         
         # If a thumbnail is not available, fall back to an icon
         if response_body is None:
-            print "<" * 40 
-            print format
-            print ">" * 40
-            response_body = self._serve_icon(item, icon_size, format)
+            response_body = self._serve_icon(item, icon_size)
  
         # If neither a thumbnail or an icon are available, return a 404 HTTP
         # error
         if response_body is None:
-            print "<" * 40
-            print self.icon_format
-            print ">" * 40
             raise cherrypy.NotFound()
         
         return response_body
@@ -90,9 +83,6 @@ class IconController(BaseCMSController):
                     )
         
         if item is None:
-            print "<" * 40
-            print self.icon_format
-            print ">" * 40
             raise cherrypy.NotFound()
         
         return item
@@ -110,8 +100,6 @@ class IconController(BaseCMSController):
         items for which a thumbnail can't be generated.
         @type: str sequence
         """
-        print "<" * 40
-        print ">" * 40
         return self.context["cms"].icon_resolver
 
     def _serve_thumbnail(self, item, width, height, format):
@@ -142,9 +130,6 @@ class IconController(BaseCMSController):
                     format = format
                 )
             except ThumbnailParameterError:
-                print "<" * 40
-                print format
-                print ">" * 40
                 raise cherrypy.NotFound()
             
             if image:
@@ -161,17 +146,12 @@ class IconController(BaseCMSController):
 
         return response_body
 
-    def _serve_icon(self, item, icon_size, icon_format):
+    def _serve_icon(self, item, icon_size):
         
         response_body = None
         icon_resolver = self.icon_resolver
-        icon_format = icon_format if icon_format else self.icon_format
         icon_size = int(icon_size) if icon_size else self.icon_size
-        icon_file = icon_resolver.find_icon(item, icon_size, icon_format)
-
-        print "<" * 40
-        print icon_format
-        print ">" * 40
+        icon_file = icon_resolver.find_icon(item, icon_size)
 
         if icon_file:
             response_body = cherrypy.lib.static.serve_file(                

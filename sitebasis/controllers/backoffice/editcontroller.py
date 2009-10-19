@@ -237,7 +237,8 @@ class EditController(BaseBackOfficeController):
             )
 
     def _apply_changes(self, item):
-        stack_node = self.stack_node        
+        stack_node = self.stack_node
+        stack_node.import_form_data(stack_node.form_data, item)
         item.insert()
         stack_node.saving(
             user = get_current_user(),
