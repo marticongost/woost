@@ -68,7 +68,7 @@ class IconResolver(object):
         @type: str
         """)
 
-    def find_icon(self, item, size):
+    def find_icon(self, item, size, format):
         """Obtains the path to the icon file that best represents the indicated
         CMS item or content type.
 
@@ -99,6 +99,8 @@ class IconResolver(object):
         if file_resolver is not None:
             file_names = file_resolver(content_type, item)
             if file_names:
+                if format:
+                    self._icon_extension = format
                 key = (size, tuple(file_names))
                 return self.name_resolution_cache.request(key)
 
@@ -119,6 +121,9 @@ class IconResolver(object):
                     size_str,
                     file_name + icon_ext
                 )
+                print "<" * 40                
+                print icon_path
+                print ">" * 40
                 if os.path.exists(icon_path):
                     return icon_path
 
