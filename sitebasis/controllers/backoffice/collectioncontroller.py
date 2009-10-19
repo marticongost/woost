@@ -59,7 +59,7 @@ class CollectionController(EditController, ContentController):
 
     @cached_getter
     def view_class(self):
-        return self.stack_node.item.collection_view
+        return self.member.edit_view or self.stack_node.item.collection_view
 
     @cached_getter
     def output(self):

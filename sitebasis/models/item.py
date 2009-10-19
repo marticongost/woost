@@ -23,6 +23,10 @@ schema.Collection.edit_controller = \
     "sitebasis.controllers.backoffice.collectioncontroller." \
     "CollectionController"
 
+# Extension property that makes it easier to customize the edit view for a
+# collection in the backoffice
+schema.Collection.edit_view = None
+
 
 class Item(PersistentObject):
     """Base class for all CMS items. Provides basic functionality such as
