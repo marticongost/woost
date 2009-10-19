@@ -108,11 +108,12 @@ class BackOfficeController(BaseBackOfficeController):
     def document_images(self, **kwargs):
         cherrypy.response.headers["Content-Type"] = "text/javascript"
         node = self.stack_node
-        resources = schema.get(node.form_data, "attachments")
+        resources = schema.get(node.form_data, "attachments", default = None)
         output = []
-        for resource in resources:
-            if resource.resource_type == "image":
-                output.append([resource.title, resource.uri])
+        if resources:
+            for resource in resources:
+                if resource.resource_type == "image":
+                    output.append([resource.title, resource.uri])
 
         return "var tinyMCEImageList = %s" % (dumps(output))
 
@@ -120,11 +121,12 @@ class BackOfficeController(BaseBackOfficeController):
     def document_files(self, **kwargs):
         cherrypy.response.headers["Content-Type"] = "text/javascript"
         node = self.stack_node
-        resources = schema.get(node.form_data, "attachments")
+        resources = schema.get(node.form_data, "attachments", default = None)
         output = []
-        for resource in resources:
-            if resource.resource_type == "document":
-                output.append([resource.title, resource.uri])
+        if resources:
+            for resource in resources:
+                if resource.resource_type == "document":
+                    output.append([resource.title, resource.uri])
 
         return "var tinyMCELinkList = %s" % (dumps(output))
 
