@@ -49,6 +49,9 @@ from sitebasis.controllers.backoffice.useractions import \
                         )
                         for criteria in self.user_collection.order
                     ],
+                    "grouping": self.user_collection.grouping
+                        and self.user_collection.grouping.request_value
+                        or "",
                     "members": self.user_collection.members,
                     "page_size": self.user_collection.page_size
                 }
