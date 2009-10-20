@@ -494,9 +494,7 @@ body.scripted .BackOfficeLayout .Table .selection {
 }
 
 .BackOfficeLayout .ContentTable th .selector_content > div + div {
-    border-top: 1px solid rgb(200,210,220);
-    margin-top: 0.6em;
-    padding-top: 0.6em;
+    margin-top: 1.2em;
 }
 
 .BackOfficeLayout .ContentTable th .selector_content > div > a + a {
@@ -639,9 +637,53 @@ body.scripted .BackOfficeLayout .Table .selection {
     background-color: white;
 }
 
+.BackOfficeLayout .Table tr.group td {
+    color: rgb(70,70,70);
+    background-color: rgb(230,230,230);
+    text-align: right;
+}
+
+.BackOfficeLayout .Table tr.group .grouping_value {
+    float: left;
+    font-weight: bold;
+    margin-right: 0.5em;
+}
+
+.BackOfficeLayout .Table tr.group .grouping_member {
+    float: left;
+    font-style: italic;
+    font-size: 90%;
+}
+
+.BackOfficeLayout .Table tr.group .remove_grouping {
+    font-size: 85%;
+}
+
+.BackOfficeLayout .Table th .grouping_options table {
+    border-collapse: collapse;
+}
+
+.BackOfficeLayout .Table th .grouping_options table * {
+    font-size: 100%;
+}
+
+.BackOfficeLayout .Table th .grouping_options table td {
+    border: none;
+}
+
+.BackOfficeLayout .Table th .grouping_options td.variant {
+    white-space: nowrap;
+}
+
+.BackOfficeLayout .Table th .grouping_options .sign a {
+    text-decoration: underline;
+}
+
+.BackOfficeLayout .Table th .selector_content {
+    min-width: 19em;
+}
+
 .BackOfficeLayout .Table .even td.sorted {
-    background-color: rgb(225,230,237);
-    background-color: rgb(220,225,232);
     background-color: rgb(220,225,227);
 }
 
@@ -1841,7 +1883,8 @@ button.TypeSelectorButton {
     width: 22em;
 }
 
-.BackOfficeLayout .CollectionView .settings_box .box_label {
+.BackOfficeLayout .CollectionView .settings_box .box_label,
+.BackOfficeLayout .Table th .selector_content .options_header {
     display: block;
     margin-bottom: 0.3em;
     color: rgb(75,75,75);

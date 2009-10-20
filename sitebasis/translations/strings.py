@@ -854,6 +854,30 @@ translations.define(
     en = u"Resource gallery"
 )
 
+translations.define("sitebasis.views.ContentTable sorting header",
+    ca = u"Ordenació",
+    es = u"Ordenación",
+    en = u"Order"
+)
+
+translations.define("sitebasis.views.ContentTable grouping header",
+    ca = u"Agrupació",
+    es = u"Agrupación",
+    en = u"Grouping"
+)
+
+translations.define("sitebasis.views.ContentTable search header",
+    ca = u"Filtres",
+    es = u"Filtros",
+    en = u"Filters"
+)
+
+translations.define("sitebasis.views.ContentTable remove grouping",
+    ca = u"Treure agrupació",
+    es = u"Quitar agrupación",
+    en = u"Remove grouping"
+)
+
 # Content views
 #------------------------------------------------------------------------------
 translations.define("View as",

@@ -42,7 +42,8 @@ class UserViewFieldsController(ItemFieldsController, ContentController):
             "order": source.get("order"),
             "members": source.get("members"),
             "page_size": source.get("page_size"),
-            "filter": source.get("filter")
+            "filter": source.get("filter"),
+            "grouping": source.get("grouping")
         }
         for key, value in source.iteritems():
             if key.startswith("filter_"):
