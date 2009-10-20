@@ -2395,12 +2395,6 @@ translations.define("Trigger.batch_execution-explanation",
          u"conditions are met."
 )
 
-translations.define("Trigger.matching_items",
-    ca = u"Elements a observar",
-    es = u"Elementos a observar",
-    en = u"Watched items"
-)
-
 translations.define("Trigger.matching_roles",
     ca = u"Rols a observar",
     es = u"Roles a observar",
@@ -2414,6 +2408,21 @@ translations.define("Trigger.matching_roles-explanation",
          u"independientemente del usuario que inicie la acción.",
     en = u"If no role is checked, the trigger will execute regardless "
          u"of which user started the action."
+)
+
+translations.define("Trigger.condition",
+    ca = u"Condició",
+    es = u"Condición",
+    en = u"Condition"
+)
+
+translations.define("Trigger.condition-explanation",
+    ca = u"Una expressió en python que determina si s'executa o no el "
+         u"disparador.",
+    es = u"Una expresión en python que determina si se ejecuta o no el "
+         u"disparador.",
+    en = u"A python expression that enables or disables the execution of "
+         u"the trigger depending on its context."
 )
 
 translations.define("Trigger.responses",
@@ -2434,6 +2443,26 @@ translations.define("sitebasis.models.Trigger.execution_point after",
     en = u"After committing the transaction"
 )
 
+# ContentTrigger
+#------------------------------------------------------------------------------
+translations.define("ContentTrigger",
+    ca = u"Disparador per elements",
+    es = u"Disparador para elementos",
+    en = u"Content trigger"
+)
+
+translations.define("ContentTrigger-plural",
+    ca = u"Disparadors per contingut",
+    es = u"Disparadores para contenido",
+    en = u"Content triggers"
+)
+
+translations.define("ContentTrigger.matching_items",
+    ca = u"Elements a observar",
+    es = u"Elementos a observar",
+    en = u"Watched items"
+)
+
 # CreateTrigger
 #------------------------------------------------------------------------------
 translations.define("CreateTrigger",
@@ -2446,6 +2475,20 @@ translations.define("CreateTrigger-plural",
     ca = u"Disparadors de creació",
     es = u"Disparadores de creación",
     en = u"Create triggers"
+)
+
+# InsertTrigger
+#------------------------------------------------------------------------------
+translations.define("InsertTrigger",
+    ca = u"Disparador d'inserció",
+    es = u"Disparador de inserción",
+    en = u"Insert trigger"
+)
+
+translations.define("InsertTrigger-plural",
+    ca = u"Disparadors d'inserció",
+    es = u"Disparadores de inserción",
+    en = u"Insert triggers"
 )
 
 # ModifyTrigger
@@ -2543,15 +2586,15 @@ translations.define("CustomTriggerResponse.code",
 # SendEmailTriggerResponse
 #------------------------------------------------------------------------------
 translations.define("SendEmailTriggerResponse",
-    ca = u"Resposta per correu electrònic",
-    es = u"Respuesta po correo electrónico",
-    en = u"E-mail response"
+    ca = u"Enviament de correu electrònic",
+    es = u"Envío de correo electrónico",
+    en = u"Send E-mail"
 )
 
 translations.define("SendEmailTriggerResponse-plural",
-    ca = u"Respostes per correu electrònic",
-    es = u"Respuestas por correo electrónico",
-    en = u"E-mail responses"
+    ca = u"Enviaments de correu electrònic",
+    es = u"Envíos de correo electrónico",
+    en = u"Send E-mail"
 )
 
 translations.define("SendEmailTriggerResponse.sender",
@@ -2564,6 +2607,12 @@ translations.define("SendEmailTriggerResponse.receivers",
     ca = u"Destinataris",
     es = u"Destinatarios",
     en = u"Receivers"
+)
+
+translations.define("SendEmailTriggerResponse.bcc",
+    ca = u"Còpia oculta",
+    es = u"Copia oculta",
+    en = u"Blind carbon copy"
 )
 
 translations.define("SendEmailTriggerResponse.subject",

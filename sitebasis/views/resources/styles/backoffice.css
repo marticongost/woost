@@ -376,8 +376,10 @@ body.modal {
     padding: 0.4em;
 }
 
-.BackOfficeLayout .Form .explanation_row .explanation {
-    padding-left: 1em;
+.BackOfficeLayout .Form .explanation {
+    clear: both;
+    padding-top: 0.5em;
+    padding-left: 0;
     padding-bottom: 1.4em;
     color: rgb(75,75,75);
     font-size: 0.8em;
@@ -509,7 +511,7 @@ body.scripted .BackOfficeLayout .Table .selection {
 }
 
 .BackOfficeLayout .ContentTable th .selector_content {
-    top: 1.3em;
+    top: 1.4em;
     font-size: 85%;
     padding-right: 1em;
     padding-top: 1em;
@@ -522,14 +524,26 @@ body.scripted .BackOfficeLayout .Table .selection {
 
 .BackOfficeLayout .ContentTable .sorting_options .ascending {
     background-image: url(../images/ascending.png);
+    _background-position:0 -2px;
+    _background-repeat:no-repeat;
+    _display:block;
+    _padding-left:18px; 
 }
 
 .BackOfficeLayout .ContentTable .sorting_options .descending {
     background-image: url(../images/descending.png);
+    _background-position:0 -2px;
+    _background-repeat:no-repeat;
+    _display:block;
+    _padding-left:18px; 
 }
 
 .BackOfficeLayout .ContentTable .search_options .add_filter {
     background-image: url(../images/add_small.png);
+    _background-position:0 -2px;
+    _background-repeat:no-repeat;
+    _display:block;
+    _padding-left:18px;    
 }
 
 .BackOfficeLayout .PropertyTable th {
@@ -1058,8 +1072,9 @@ body.scripted .BackOfficeLayout .Table .selection {
 }
 
 .BackOfficeLayout .ContentTypeSelector .selector_content {
-    top: 1.3em;
+    top: 1.4em;
     z-index: 3;
+	margin-top: -1px;
     padding: 0.4em;
     min-width: 16em;
 }
@@ -1301,6 +1316,7 @@ body.scripted .BackOfficeLayout .ThumbnailsContentView .collection_display input
     color: rgb(20,80,20);
 }
 
+.preview-error-box,
 .BackOfficeLayout .error_box,
 .BackOfficeLayout .notification_box .error {
     color: black;
@@ -1309,6 +1325,14 @@ body.scripted .BackOfficeLayout .ThumbnailsContentView .collection_display input
     padding: 0.5em;
     margin: 0;
     margin-bottom: 1em;
+}
+
+.preview-error-box {
+    color: black;
+    border: 1px dotted rgb(200,160,120);
+    background-color: rgb(245,230,215);
+    padding: 0.5em;
+    margin: 0 1em 1em 1em;
 }
 
 .BackOfficeLayout .error_box li {
@@ -1481,6 +1505,7 @@ body.scripted .BackOfficeLayout .ThumbnailsContentView .collection_display input
     list-style-type: none;
     padding-right: 0.1;
     right: 0;
+	top:2.4em;
 }
 
 .BackOfficeEditView .translations_selector .selector_content li {
@@ -1564,6 +1589,7 @@ button.TypeSelectorButton span {
     border: 1px solid rgb(210,210,210);
     background-color: white;
     padding: 0.6em;
+    overflow: auto;
 }
 
 .BackOfficeLayout .autocomplete_results_container {
@@ -1740,7 +1766,6 @@ button.TypeSelectorButton span {
     min-width: 10em;
     margin-top: 0.3em;
     margin-right: 1em;
-    -moz-column-width: 8em;
 }
 
 .BackOfficeLayout .FilterBox .filter_entry .field label {
@@ -2439,5 +2464,30 @@ a.pickcolor span {
 .TagCloudSelector div.selected label {    
     color: white;
     background-color: rgb(40,80,150);
+}
+
+/* Trigger edit styles
+-----------------------------------------------------------------------------*/
+.Trigger .condition_field .control {
+    width: 30em !important;
+}
+
+/* Tweaks for email trigger responses
+-----------------------------------------------------------------------------*/
+.SendEmailTriggerResponse .field_instance {
+    width: 90%;
+}
+
+.SendEmailTriggerResponse .sender_field .control,
+.SendEmailTriggerResponse .receivers_field .control,
+.SendEmailTriggerResponse .bcc_field .control,
+.SendEmailTriggerResponse .subject_field .control,
+.SendEmailTriggerResponse .body_field .control {
+    width: 100% !important;
+    height: 12em !important;
+}
+
+.SendEmailTriggerResponse .body_field .control {
+    height: 35em !important;
 }
 

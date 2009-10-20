@@ -40,6 +40,12 @@ class ShopOrderEntry(Item):
         min = 1
     )
 
+    cost = schema.Decimal(
+        required = True,
+        default = Decimal("0"),
+        editable = False
+    )
+
     def __translate__(self, language, **kwargs):
         if self.draft_source is not None:
             return Item.__translate__(self, language, **kwargs)

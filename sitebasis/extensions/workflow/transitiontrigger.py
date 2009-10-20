@@ -13,7 +13,7 @@ from sitebasis.extensions.workflow.state import State
 from sitebasis.extensions.workflow.transition import Transition
 from sitebasis.models.messagestyles import trigger_doesnt_match_style
 from sitebasis.models.trigger import (
-    Trigger,
+    ContentTrigger,
     members_without_triggers,
     trigger_responses
 )
@@ -21,7 +21,7 @@ from sitebasis.models.trigger import (
 members_without_triggers.add(Item.workflow_state)
 
 
-class TransitionTrigger(Trigger):
+class TransitionTrigger(ContentTrigger):
 
     transition = schema.Reference(
         type = "sitebasis.extensions.workflow.transition.Transition"
@@ -29,25 +29,33 @@ class TransitionTrigger(Trigger):
 
     def match(
         self,
-        target,
         user,
+        target,
         transition,
         transition_data,
-        verbose = False):
+        verbose = False,
+        **context):
 
         if transition is not self.transition:
             if verbose:
                 print trigger_doesnt_match_style("transition doesn't match")
             return False
         
-        return Trigger.match(self, target, user, verbose)
+        return ContentTrigger.match(self,
+            user,
+            target = target,
+            transition = transition,
+            transition_date = transition_data,
+            verbose = verbose,
+            **context
+        )
 
 
 @when(Transition.executed)
 def _trigger_transition_responses(event):
     trigger_responses(
         TransitionTrigger,
-        event.item,
+        target = event.item,
         transition = event.source,
         transition_data = event.data
     )

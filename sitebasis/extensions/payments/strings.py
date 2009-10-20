@@ -16,6 +16,20 @@ translations.define("PaymentsExtension.payment_gateway",
     en = u"Payment gateway"
 )
 
+# TransactionNotifiedTrigger
+#------------------------------------------------------------------------------
+translations.define("TransactionNotifiedTrigger",
+    ca = u"Disparador de notificació de pagament",
+    es = u"Disparador de notificación de pago",
+    en = u"Payment notification trigger"
+)
+
+translations.define("TransactionNotifiedTrigger-plural",
+    ca = u"Disparadors de notificació de pagament",
+    es = u"Disparadores de notificación de pago",
+    en = u"Payment notification triggers"
+)
+
 # PaymentGateway
 #------------------------------------------------------------------------------
 translations.define("PaymentGateway",
@@ -112,3 +126,34 @@ translations.define("SISPaymentGateway.payment_failed_page",
     en = u"Payment failed page"
 )
 
+# DummyPaymentGateway
+#------------------------------------------------------------------------------
+translations.define("DummyPaymentGateway",
+    ca = u"Passarel·la de pagaments fictícia",
+    es = u"Pasarela de pagos ficticia",
+    en = u"Dummy payment gateway"
+)
+
+translations.define("DummyPaymentGateway-plural",
+    ca = u"Passarel·les de pagaments fictícies",
+    es = u"Pasarelas de pagos ficticias",
+    en = u"Dummy payment gateways"
+)
+
+translations.define("DummyPaymentGateway.payment_status",
+    ca = u"Resultat dels pagaments",
+    es = u"Resultado de los pagos",
+    en = u"Payment outcome"
+)
+
+translations.define("DummyPaymentGateway.payment_successful_page",
+    ca = u"Pàgina de confirmació de pagament",
+    es = u"Página de confirmación de pago",
+    en = u"Payment successful page"
+)
+
+translations.define("DummyPaymentGateway.payment_failed_page",
+    ca = u"Pàgina de pagament fallit",
+    es = u"Página de pago fallido",
+    en = u"Payment failed page"
+)
