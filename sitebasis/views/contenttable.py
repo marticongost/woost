@@ -6,10 +6,14 @@ u"""
 @organization:	Whads/Accent SL
 @since:			September 2008
 """
+from cocktail.pkgutils import resolve
 from cocktail.language import get_content_language
 from cocktail.translations import translations
 from cocktail.schema import Reference
-from cocktail.schema.expressions import PositiveExpression, NegativeExpression
+from cocktail.schema.expressions import (
+    PositiveExpression,
+    NegativeExpression
+)
 from cocktail.html import Element, templates
 from cocktail.controllers import view_state
 from sitebasis.views.contentdisplaymixin import ContentDisplayMixin
@@ -21,6 +25,8 @@ class ContentTable(ContentDisplayMixin, Table):
     
     base_url = None
     inline_draft_copies = True
+    entry_selector = "tbody tr.item_row"
+    resizable_rows_selector = "tbody tr.item_row"
 
     def __init__(self, *args, **kwargs):
         Table.__init__(self, *args, **kwargs)
@@ -28,22 +34,16 @@ class ContentTable(ContentDisplayMixin, Table):
         self.set_member_sortable("element", False)
         self.set_member_sortable("class", False)
 
-    def _fill_body(self):
+    def _row_added(self, index, item, row):
+        if self.inline_draft_copies:
+            for draft in item.drafts:
+                draft_row = self.create_row(index, draft)
+                self.append(draft_row)
 
-        if not self.inline_draft_copies:
-            Table._fill_body(self)
-        else:
-            for index, item in enumerate(self.data):
-                row = self.create_row(index, item)
-                self.append(row)            
-
-                for draft in item.drafts:
-                    row = self.create_row(index, draft)
-                    self.append(row)
-        
     def create_row(self, index, item):
         
         row = Table.create_row(self, index, item)
+        row.add_class("item_row")
 
         if item.is_draft:
             row.add_class("draft")
@@ -123,10 +123,17 @@ class ContentTable(ContentDisplayMixin, Table):
             sorting_options = self.create_sorting_options(column, language)
             options.append(sorting_options)
 
-        if self.get_member_searchable(column):
+            if column.grouping:
+                grouping_options = self.create_grouping_options(
+                    column,
+                    language
+                )
+                options.append(grouping_options)
+
+        if self.get_member_searchable(column):            
             search_options = self.create_search_options(column, language)
             options.append(search_options)
-
+            
         return options
 
     def create_sorting_options(self, column, language):
@@ -142,6 +149,11 @@ class ContentTable(ContentDisplayMixin, Table):
 
         options = Element()
         options.add_class("sorting_options")
+
+        title = Element("div")
+        title.add_class("options_header")
+        title.append(translations("sitebasis.views.ContentTable sorting header"))
+        options.append(title)
 
         asc = options.ascending = Element("a")
         asc.add_class("ascending")
@@ -175,6 +187,11 @@ class ContentTable(ContentDisplayMixin, Table):
         options = Element()
         options.add_class("search_options")
 
+        title = Element("div")
+        title.add_class("options_header")
+        title.append(translations("sitebasis.views.ContentTable search header"))
+        options.append(title)
+
         add_filter = Element("a")
         add_filter.add_class("add_filter")
         add_filter["href"] = "?" + view_state(page = 0, filter = filters)
@@ -183,6 +200,59 @@ class ContentTable(ContentDisplayMixin, Table):
         )
         add_filter.set_client_param("filterId", filter_id)
         options.append(add_filter)
+
+        return options
+
+    def create_grouping_options(self, column, language):
+
+        options = Element()
+        options.add_class("grouping_options")
+
+        title = Element("div")
+        title.add_class("options_header")
+        title.append(translations("sitebasis.views.ContentTable grouping header"))
+        options.append(title)
+
+        grouping_class = resolve(column.grouping)
+        variants = (None,) + grouping_class.variants
+
+        table = Element("table")
+        options.append(table)
+
+        for variant in variants:
+
+            tr = Element("tr")
+            table.append(tr)                
+
+            td = Element("td")
+            td.add_class("variant")
+            td.append(grouping_class.translate_grouping_variant(variant))
+            tr.append(td)
+
+            for sign in (PositiveExpression, NegativeExpression):
+                grouping = grouping_class()
+                grouping.member = column
+                grouping.language = language
+                grouping.sign = sign
+                grouping.variant = variant
+
+                td = Element("td")
+                td.add_class("sign")
+                tr.append(td)
+
+                grouping_link = Element("a")
+                grouping_link.add_class("grouping")
+                grouping_link["href"] = \
+                    "?" + view_state(grouping = grouping.request_value)
+                grouping_link.append(
+                    translations(
+                        "cocktail.controllers.grouping.MemberGrouping-"
+                        + ("ascending"
+                            if sign is PositiveExpression
+                            else "descending")
+                    )
+                )
+                td.append(grouping_link)
 
         return options
 
