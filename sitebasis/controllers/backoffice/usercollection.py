@@ -47,6 +47,10 @@ class BackOfficeUserCollection(UserCollection):
         return self.content_view.allow_sorting
 
     @cached_getter
+    def allow_grouping(self):
+        return self.content_view.allow_grouping
+
+    @cached_getter
     def allow_paging(self):
         return self.content_view.allow_paging
 

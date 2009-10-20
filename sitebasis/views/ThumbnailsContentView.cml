@@ -14,6 +14,7 @@ from cocktail.html.selectable import selectable
         "width": 100,
         "height": 100
     }
+    allow_grouping = False
     ?>
 
     <py:with py:element="self.settings_box" py:visible="${False}"/>

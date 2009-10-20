@@ -52,6 +52,7 @@ from sitebasis.controllers.backoffice.useractions import \
     allow_filters = UserCollection.allow_filters
     allow_paging = UserCollection.allow_paging
     allow_member_selection = UserCollection.allow_member_selection
+    allow_grouping = UserCollection.allow_grouping
     
     @classmethod
     def compatible_with(cls, user_collection):
