@@ -2,6 +2,7 @@
 
 <?py
 from cocktail.schema import Collection
+from sitebasis.models import Item
 from sitebasis.controllers.backoffice.useractions import (
     get_view_actions, get_view_actions_context, add_view_action_context
 )
@@ -18,7 +19,11 @@ from sitebasis.controllers.backoffice.useractions import (
     <py:ready>
         <?py
         self.set_client_param("edit_stack", self.edit_stack.to_param())
-        self.add_class(self.edited_content_type.name)
+
+        # Add CSS classes matching the item's content types
+        for cls in self.edited_content_type.descend_inheritance(include_self = True):
+            if cls is not Item:
+                self.add_class(cls.name)
         
         if self.edited_item.is_inserted:
         

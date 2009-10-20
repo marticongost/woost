@@ -105,26 +105,20 @@ class BackOfficeController(BaseBackOfficeController):
             return document_controller()
 
     @cherrypy.expose
-    def document_images(self, **kwargs):
+    def document_resources(self, **kwargs):
         cherrypy.response.headers["Content-Type"] = "text/javascript"
         node = self.stack_node
-        resources = schema.get(node.form_data, "attachments")
-        output = []
-        for resource in resources:
-            if resource.resource_type == "image":
-                output.append([resource.title, resource.uri])
+        resource_type = self.params.read(schema.String("resource_type"))
+        resources = schema.get(node.form_data, "attachments", default = None)
+        output = []        
+        if resources:
+            for resource in resources:
+                if resource.resource_type == resource_type:
+                    output.append([resource.title, resource.uri])
 
-        return "var tinyMCEImageList = %s" % (dumps(output))
-
-    @cherrypy.expose
-    def document_files(self, **kwargs):
-        cherrypy.response.headers["Content-Type"] = "text/javascript"
-        node = self.stack_node
-        resources = schema.get(node.form_data, "attachments")
-        output = []
-        for resource in resources:
-            if resource.resource_type == "document":
-                output.append([resource.title, resource.uri])
-
-        return "var tinyMCELinkList = %s" % (dumps(output))
+        if resource_type == "image":
+            return "var tinyMCEImageList = %s" % (dumps(output))
+        else:
+            return "var tinyMCELinkList = %s" % (dumps(output))
+        
 

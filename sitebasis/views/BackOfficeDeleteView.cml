@@ -11,7 +11,12 @@
     ?>
 
     <?py        
-    self.add_resource("/cocktail/scripts/buttons_replacement.js")
+        self.add_resource("/cocktail/scripts/buttons_replacement.js")
+        
+        self.add_head_element(
+            Element("script",
+            children = ["jQuery(function() {cocktail.init();})"])
+        )
     ?>
 
     <ul py:def="deleted_item_block" py:args="deleted_items">

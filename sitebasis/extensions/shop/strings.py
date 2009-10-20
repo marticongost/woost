@@ -124,6 +124,12 @@ translations.define("ShopOrder.status",
     en = u"State"
 )
 
+translations.define("ShopOrder.language",
+    ca = u"Idioma",
+    es = u"Idioma",
+    en = u"Language"
+)
+
 translations.define("ShopOrder.shipping_info",
     ca = u"Informació d'enviament",
     es = u"Información de envío",
@@ -190,6 +196,12 @@ translations.define("ShopOrderEntry.quantity",
     ca = u"Quantitat",
     es = u"Cantidad",
     en = u"Quantity"
+)
+
+translations.define("ShopOrderEntry.cost",
+    ca = u"Cost",
+    es = u"Coste",
+    en = u"Cost"
 )
 
 # PricingPolicy

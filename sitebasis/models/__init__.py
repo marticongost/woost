@@ -112,6 +112,7 @@ from sitebasis.models.style import Style
 from sitebasis.models.extension import Extension
 from sitebasis.models.trigger import (
     Trigger,
+    ContentTrigger,
     CreateTrigger,
     InsertTrigger,
     ModifyTrigger,

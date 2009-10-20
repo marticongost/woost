@@ -65,15 +65,9 @@ class Trigger(Item):
         "execution_point",
         "batch_execution",
         "matching_roles",
-        "matching_items",
+        "condition",
         "responses"
     ]
-
-    edit_controller = \
-        "sitebasis.controllers.backoffice.triggerfieldscontroller." \
-        "TriggerFieldsController"
-
-    edit_view = "sitebasis.views.TriggerFields"
     
     execution_point = schema.String(
         required = True,
@@ -97,10 +91,6 @@ class Trigger(Item):
         related_key = "trigger"
     )
 
-    # Event criteria
-    #--------------------------------------------------------------------------
-    matching_items = schema.Mapping()
-    
     matching_roles = schema.Collection(
         items = schema.Reference(
             type = Role,
@@ -108,33 +98,13 @@ class Trigger(Item):
         ),
         related_end = schema.Collection(),
         edit_inline = True
-    )        
- 
-    def select_items(self, *args, **kwargs):
-        user_collection = UserCollection(Item)
-        user_collection.allow_paging = False
-        user_collection.allow_member_selection = False
-        user_collection.allow_language_selection = False
-        user_collection.params.source = self.matching_items.get
-        user_collection.available_languages = Language.codes
-        return user_collection.subset
+    )
 
-    def match(self, target, user, verbose = False):
-        
-        # Check the target
-        query = self.select_items()
-
-        if not isinstance(target, query.type):
-            if verbose:
-                print trigger_doesnt_match_style("type doesn't match")
-            return False
-        else:
-            for filter in query.filters:
-                if not filter.eval(target):
-                    print trigger_doesnt_match_style(
-                        "filter %s doesn't match" % filter
-                    )
-                    return False
+    condition = schema.String(
+        edit_control = "cocktail.html.TextArea"
+    )
+     
+    def match(self, user, verbose = False, **context):
 
         # Check the user
         trigger_roles = self.matching_roles
@@ -151,26 +121,76 @@ class Trigger(Item):
                 print trigger_doesnt_match_style("user doesn't match")
                 return False
 
+        # Check the condition
+        condition = self.condition
+
+        if condition and not eval(condition, context):
+            print trigger_doesnt_match_style("condition doesn't match")
+            return False
+
         return True
 
 
-class CreateTrigger(Trigger):
+class ContentTrigger(Trigger):
+    """Base class for triggers based on content type instances."""
+
+    edit_controller = \
+        "sitebasis.controllers.backoffice.triggerfieldscontroller." \
+        "TriggerFieldsController"
+
+    edit_view = "sitebasis.views.TriggerFields"
+
+    matching_items = schema.Mapping()
+
+    def select_items(self, *args, **kwargs):
+        user_collection = UserCollection(Item)
+        user_collection.allow_paging = False
+        user_collection.allow_member_selection = False
+        user_collection.allow_language_selection = False
+        user_collection.params.source = self.matching_items.get
+        user_collection.available_languages = Language.codes
+        return user_collection.subset
+
+    def match(self, user, target = None, verbose = False, **context):
+
+        # Check the target
+        query = self.select_items()
+
+        if not isinstance(target, query.type):
+            if verbose:
+                print trigger_doesnt_match_style("type doesn't match")
+            return False
+        else:
+            for filter in query.filters:
+                if not filter.eval(target):
+                    print trigger_doesnt_match_style(
+                        "filter %s doesn't match" % filter
+                    )
+                    return False
+
+        if not Trigger.match(
+            self,
+            user,
+            target = target,
+            verbose = verbose,
+            **context
+        ):
+            return False
+
+        return True
+
+
+class CreateTrigger(ContentTrigger):
     """A trigger executed when an item is created."""
     instantiable = True
 
-    def match(self, target, user,
-        values = None,
-        verbose = False):
-        
-        return Trigger.match(self, target, user, verbose = verbose)
 
-
-class InsertTrigger(Trigger):
+class InsertTrigger(ContentTrigger):
     """A trigger executed when an item is inserted."""
     instantiable = True
 
 
-class ModifyTrigger(Trigger):
+class ModifyTrigger(ContentTrigger):
     """A trigger executed when an item is modified."""
     
     instantiable = True
@@ -187,14 +207,13 @@ class ModifyTrigger(Trigger):
         )
     )
 
-    def match(self, target, user,
+    def match(self, user,
+        target = None,
         member = None,
         language = None,
-        verbose = False):
+        verbose = False,
+        **context):
         
-        if not Trigger.match(self, target, user, verbose = verbose):
-            return False
-
         if self.matching_members:
             if member is None:
                 if verbose:
@@ -217,20 +236,32 @@ class ModifyTrigger(Trigger):
                     print trigger_doesnt_match_style("language doesn't match")
                 return False
 
+        if not ContentTrigger.match(
+            self,
+            user,
+            target = target,
+            member = member,
+            language = language,
+            verbose = verbose,
+            **context
+        ):
+            return False
+
         return True
 
 
-class DeleteTrigger(Trigger):
+class DeleteTrigger(ContentTrigger):
     """A trigger executed when an item is deleted."""
     instantiable = True
 
 
 def trigger_responses(
     trigger_type,
-    target,
     user = None,
     verbose = None,
     **context):
+
+    target = context.get("target")
 
     if user is None:
         user = get_current_user()
@@ -290,7 +321,6 @@ def trigger_responses(
 
             if verbose:
                 print trigger_style(translations(trigger))
-                print trigger_context_style("target", translations(target))
                 print trigger_context_style("user", translations(user))
                 for k, v in context.iteritems():
                     try:
@@ -300,7 +330,6 @@ def trigger_responses(
                     print trigger_context_style(k, v)
 
             if not trigger.match(
-                target = target,
                 user = user,
                 verbose = verbose,
                 **context
@@ -319,7 +348,8 @@ def trigger_responses(
             else:
                 new_trans_trigger = False
 
-            trigger_targets.add(target)
+            if target is not None:
+                trigger_targets.add(target)
 
             # Execute after the transaction is committed
             if trigger.execution_point == "after":
@@ -382,7 +412,7 @@ def trigger_responses(
 def _trigger_instantiation_responses(event):
     trigger_responses(
         CreateTrigger,
-        event.instance,
+        target = event.instance,
         values = event.values
     )
 
@@ -390,7 +420,7 @@ def _trigger_instantiation_responses(event):
 def _trigger_insertion_responses(event):
     trigger_responses(
         InsertTrigger,
-        event.source
+        target = event.source
     )
 
 @when(Item.changed)
@@ -400,7 +430,7 @@ def _trigger_modification_responses(event):
     and not isinstance(event.member, schema.Collection):
         trigger_responses(
             ModifyTrigger,
-            event.source,
+            target = event.source,
             member = event.member,
             language = event.language
         )
@@ -412,12 +442,12 @@ def _trigger_relation_responses(event):
     and event.member not in members_without_triggers:
         trigger_responses(
             ModifyTrigger,
-            event.source,
+            target = event.source,
             member = event.member,
             language = None
         )
 
 @when(Item.deleted)
 def _trigger_deletion_responses(event):
-    trigger_responses(DeleteTrigger, event.source)
+    trigger_responses(DeleteTrigger, target = event.source)
 
