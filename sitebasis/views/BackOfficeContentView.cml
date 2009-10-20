@@ -44,7 +44,7 @@ from sitebasis.controllers.backoffice.useractions import \
                           ("-" if isinstance(criteria, NegativeExpression) else "")
                         + (
                             criteria.operands[0].operands[0].name
-                            if isinstance(criteria, TranslationExpression)
+                            if isinstance(criteria.operands[0], TranslationExpression)
                             else criteria.operands[0].name
                         )
                         for criteria in self.user_collection.order
