@@ -157,7 +157,7 @@ class ContentTable(ContentDisplayMixin, Table):
 
         asc = options.ascending = Element("a")
         asc.add_class("ascending")
-        asc["href"] = "?" + view_state(order = order_param)
+        asc["href"] = "?" + view_state(order = order_param, page = 0)
         asc.append(translations("sitebasis.views.ContentTable sort ascending"))
         options.append(asc)
 
@@ -166,7 +166,7 @@ class ContentTable(ContentDisplayMixin, Table):
 
         desc = options.ascending = Element("a")
         desc.add_class("descending")
-        desc["href"] = "?" + view_state(order = "-" + order_param)
+        desc["href"] = "?" + view_state(order = "-" + order_param, page = 0)
         desc.append(translations("sitebasis.views.ContentTable sort descending"))
         options.append(desc)
 
@@ -194,7 +194,7 @@ class ContentTable(ContentDisplayMixin, Table):
 
         add_filter = Element("a")
         add_filter.add_class("add_filter")
-        add_filter["href"] = "?" + view_state(page = 0, filter = filters)
+        add_filter["href"] = "?" + view_state(filter = filters, page = 0)
         add_filter.append(
             translations("sitebasis.views.ContentTable add column filter")
         )
@@ -243,7 +243,7 @@ class ContentTable(ContentDisplayMixin, Table):
                 grouping_link = Element("a")
                 grouping_link.add_class("grouping")
                 grouping_link["href"] = \
-                    "?" + view_state(grouping = grouping.request_value)
+                    "?" + view_state(grouping = grouping.request_value, page = 0)
                 grouping_link.append(
                     translations(
                         "cocktail.controllers.grouping.MemberGrouping-"
