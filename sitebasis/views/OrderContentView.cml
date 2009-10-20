@@ -23,6 +23,7 @@ from cocktail.schema import SchemaObjectAccessor
     allow_sorting = False
     allow_filters = False
     allow_paging = False
+    allow_grouping = False
 
     @classmethod
     def compatible_with(cls, user_collection):

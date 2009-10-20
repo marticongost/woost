@@ -19,6 +19,7 @@ from cocktail.controllers import view_state
     allow_member_selection = False
     allow_language_selection = False
     allow_empty_search = True
+    allow_grouping = False
     date_members = ()
     members_paired = False
     months = range(1, 13)
