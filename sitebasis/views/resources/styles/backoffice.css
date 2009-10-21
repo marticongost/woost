@@ -1875,6 +1875,20 @@ button.TypeSelectorButton {
     font-size: 90%;
 }
 
+.BackOfficeEditView .modal_selector_control {
+    margin-bottom: 0.7em;
+}
+
+.BackOfficeEditView .modal_selector_control .container {
+    padding-left: 1.5em;
+}
+
+.BackOfficeEditView .modal_selector_control .container > div {
+    display: list-item;
+    list-style-type: disc;
+    font-size: 85%;
+}
+
 .BackOfficeLayout .modal_selector_control .container:empty {
     display: hidden;
 }
