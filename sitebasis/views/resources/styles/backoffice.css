@@ -2486,6 +2486,17 @@ a.pickcolor span {
     width: 30em !important;
 }
 
+/* Tweaks for custom trigger responses
+-----------------------------------------------------------------------------*/
+.CustomTriggerResponse .field_instance {
+    width: 90%;
+}
+
+.CustomTriggerResponse .code_field .control {
+    width: 100% !important;
+    height: 35em !important;
+}
+
 /* Tweaks for email trigger responses
 -----------------------------------------------------------------------------*/
 .SendEmailTriggerResponse .field_instance {
