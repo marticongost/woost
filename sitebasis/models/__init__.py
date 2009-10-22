@@ -118,7 +118,11 @@ from sitebasis.models.trigger import (
     ModifyTrigger,
     DeleteTrigger
 )
-from sitebasis.models.triggerresponse import TriggerResponse
+from sitebasis.models.triggerresponse import (
+    TriggerResponse,
+    CustomTriggerResponse,
+    SendEmailTriggerResponse
+)
 from sitebasis.models.feed import Feed
 
 from sitebasis.models.userfilter import (
