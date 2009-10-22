@@ -32,7 +32,9 @@ from sitebasis.models import (
     CreateTranslationPermission,
     ReadTranslationPermission,
     ModifyTranslationPermission,
-    DeleteTranslationPermission
+    DeleteTranslationPermission,
+    DeleteTrigger,
+    CustomTriggerResponse
 )
 
 standard_template_identifiers = {
@@ -204,6 +206,22 @@ def init_site(
         set_translations(authenticated_role, "title",
             "Authenticated role title")
         authenticated_role.insert()
+
+        # Create a trigger to purge deleted files from the filesystem
+        delete_files_trigger = DeleteTrigger(
+            execution_point = "after",
+            batch_execution = True,
+            matching_items = {"type": "sitebasis.models.file.File"},
+            responses = [
+                CustomTriggerResponse(
+                    code = u"from os import remove\n"
+                           u"for item in items:\n"
+                           u"    remove(item.file_path)"
+                )
+            ]
+        )
+        site.triggers.append(delete_files_trigger)
+        delete_files_trigger.insert()
 
         # Create standard templates
         std_template = Template()
