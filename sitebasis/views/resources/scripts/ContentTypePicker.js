@@ -78,15 +78,10 @@ cocktail.init(function (root) {
                         var accept = document.createElement("button");
                         jQuery(accept).addClass("accept").text(cocktail.translate("sitebasis.views.ContentTypePicker accept"));
                         jQuery(accept).click(function() {
-                            cocktail.closeDialog();
                             var panel = jQuery(".panel", picker).get(0);
-                            jQuery(panel).children().remove();
-
-                            jQuery(".dialog :checked").each(function() {
-                                var node = jQuery(this).parents("li").clone().hide();
-                                panel.appendChild(node.get(0));
-                            });
+                            panel.appendChild(jQuery(".selector_content", dialogContent).get(0));
                             applySelection(picker);
+                            cocktail.closeDialog();
                         });
 
                         dialogContent.appendChild(cancel);
@@ -103,8 +98,8 @@ cocktail.init(function (root) {
 
         jQuery("input", this)
             .click(function () {
-                applySelection(jQuery(this).parents(".ContentTypePicker").get(0));
-                jQuery(this).parents(".selector").removeClass("unfolded");
+                applySelection(jQuery(".ContentTypePicker").get(0));
+                jQuery(".ContentTypePicker .selector").removeClass("unfolded");
             })
             .filter("[type=radio]").hide();
 
