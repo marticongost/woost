@@ -157,3 +157,20 @@ translations.define("DummyPaymentGateway.payment_failed_page",
     es = u"Página de pago fallido",
     en = u"Payment failed page"
 )
+
+translations.define(
+    "sitebasis.extensions.payments.DummyPaymentGateway.payment_status "
+    "accepted",
+    ca = u"Acceptat",
+    es = u"Aceptado",
+    en = u"Accepted"
+)
+
+translations.define(
+    "sitebasis.extensions.payments.DummyPaymentGateway.payment_status "
+    "failed",
+    ca = u"Cancel·lat",
+    es = u"Cancelado",
+    en = u"Canceled"
+)
+

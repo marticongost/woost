@@ -8,6 +8,7 @@
 """
 from contextlib import contextmanager
 from cocktail.events import when
+from cocktail.translations import translations
 from cocktail import schema
 from cocktail.controllers.usercollection import UserCollection
 from cocktail.schema.expressions import Expression
@@ -122,7 +123,9 @@ class TranslationPermission(Permission):
     
     matching_languages = schema.Collection(
         items = schema.String(
-            enumeration = lambda ctx: Language.codes
+            enumeration = lambda ctx: Language.codes,
+            translate_value = lambda value, **kwargs:
+                u"" if not value else translations(value, **kwargs)
         )
     )
 

@@ -6,14 +6,7 @@
 
     <py:with py:element="self.item_body">
         <py:ready>
-            <py:with py:element="self.edit_form">
-                <py:cocktail.html.RadioSelector py:def="execution_point_display">
-                    <?py
-                    @extend(execution_point_display)
-                    def get_item_label(control, item):
-                        return translations("sitebasis.models.Trigger.execution_point " + item)
-                    ?>
-                </py:cocktail.html.RadioSelector>
+            <py:with py:element="self.edit_form">                
                 <div py:def="matching_items_display">
                     <py:new py:element="self.user_collection.content_view"
                         py:tag="div"

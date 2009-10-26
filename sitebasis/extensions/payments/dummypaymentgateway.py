@@ -7,6 +7,7 @@
 @since:			October 2009
 """
 from tpv.paymentgateway import PaymentGateway
+from cocktail.translations import translations
 from cocktail import schema
 from cocktail.controllers import context
 from sitebasis.models import Document
@@ -27,7 +28,13 @@ class DummyPaymentGateway(CMSPaymentGateway, PaymentGateway):
     payment_status = schema.String(
         required = True,
         enumeration = ("accepted", "failed"),
-        default = "accepted"
+        default = "accepted",
+        translate_value = lambda value, **kwargs:
+            u"" if not value else translations(
+                "sitebasis.extensions.payments."
+                "DummyPaymentGateway.payment_status " + value,
+                **kwargs
+            )        
     )
 
     payment_successful_page = schema.Reference(
