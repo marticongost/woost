@@ -1760,55 +1760,55 @@ translations.define("Resource.end_date",
     en = u"Expiration date"
 )
 
-translations.define("Resource.resource_type",
+translations.define("sitebasis.models.Resource.resource_type",
     ca = u"Tipus de recurs",
     es = u"Tipo de recurso",
     en = u"Resource type"
 )
 
-translations.define("Resource.documents",
+translations.define("sitebasis.models.Resource.documents",
     ca = u"Referències",
     es = u"Referencias",
     en = u"Referers"
 )
 
-translations.define("Resource.resource_type-text",
+translations.define("sitebasis.models.Resource.resource_type text",
     ca = u"Text",
     es = u"Texto",
     en = u"Text"
 )
 
-translations.define("Resource.resource_type-image",
+translations.define("sitebasis.models.Resource.resource_type image",
     ca = u"Imatge",
     es = u"Imagen",
     en = u"Image"
 )
 
-translations.define("Resource.resource_type-audio",
+translations.define("sitebasis.models.Resource.resource_type audio",
     ca = u"Audio",
     es = u"Audio",
     en = u"Audio"
 )
 
-translations.define("Resource.resource_type-video",
+translations.define("sitebasis.models.Resource.resource_type video",
     ca = u"Video",
     es = u"Video",
     en = u"Video"
 )
 
-translations.define("Resource.resource_type-document",
+translations.define("sitebasis.models.Resource.resource_type document",
     ca = u"Document",
     es = u"Documento",
     en = u"Document"
 )
 
-translations.define("Resource.resource_type-html_resource",
+translations.define("sitebasis.models.Resource.resource_type html_resource",
     ca = u"Recurs HTML",
     es = u"Recurso HTML",
     en = u"HTML resource"
 )
 
-translations.define("Resource.resource_type-other",
+translations.define("sitebasis.models.Resource.resource_type other",
     ca = u"Altre",
     es = u"Otro",
     en = u"Other"

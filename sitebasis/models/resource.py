@@ -7,6 +7,7 @@ u"""
 @since:			June 2008
 """
 from cocktail.modeling import getter, abstractmethod
+from cocktail.translations import translations
 from cocktail import schema
 from sitebasis.models.item import Item
 
@@ -66,7 +67,12 @@ class Resource(Item):
             "package",
             "html_resource",
             "other"
-        )
+        ),
+        translate_value = lambda value, **kwargs:
+            u"" if not value else translations(
+                "sitebasis.models.Resource.resource_type " + value,
+                **kwargs
+            )
     )
 
     def __translate__(self, language, **kwargs):

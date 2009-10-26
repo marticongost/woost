@@ -72,7 +72,13 @@ class Trigger(Item):
     execution_point = schema.String(
         required = True,
         enumeration = ("before", "after"),
-        default = "after"
+        default = "after",
+        edit_control = "cocktail.html.RadioSelector",
+        translate_value = lambda value, **kwargs:
+            u"" if not value else translations(
+                "sitebasis.models.Trigger.execution_point " + value,
+                **kwargs
+            )
     )
 
     batch_execution = schema.Boolean(
@@ -203,7 +209,9 @@ class ModifyTrigger(ContentTrigger):
 
     matching_languages = schema.Collection(
         items = schema.String(
-            enumeration = lambda ctx: Language.codes
+            enumeration = lambda ctx: Language.codes,
+            translate_value = lambda value, **kwargs:
+                u"" if not value else translations(value, **kwargs)
         )
     )
 

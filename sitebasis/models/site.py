@@ -42,7 +42,9 @@ class Site(Item):
         required = True,
         default = "en",
         enumeration = lambda ctx: Language.codes,
-        listed_by_default = False
+        listed_by_default = False,
+        translate_value = lambda value, **kwargs:
+            u"" if not value else translations(value, **kwargs)
     )
     
     home = schema.Reference(

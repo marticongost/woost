@@ -124,6 +124,24 @@ translations.define("ShopOrder.status",
     en = u"State"
 )
 
+translations.define("sitebasis.extensions.shop.ShopOrder.status pending",
+    ca = u"Pendent",
+    es = u"Pendiente",
+    en = u"Pending"
+)
+
+translations.define("sitebasis.extensions.shop.ShopOrder.status accepted",
+    ca = u"Acceptada",
+    es = u"Aceptada",
+    en = u"Accepted"
+)
+
+translations.define("sitebasis.extensions.shop.ShopOrder.status failed",
+    ca = u"Cancel·lada",
+    es = u"Cancelada",
+    en = u"Cancelled"
+)
+
 translations.define("ShopOrder.language",
     ca = u"Idioma",
     es = u"Idioma",
