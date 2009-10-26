@@ -40,7 +40,6 @@ from sitebasis.controllers.backoffice.useractions import add_view_action_context
             type = "text/css",
             href = "/resources/styles/backoffice_ie.css")
     ]))
-
     
     self.add_head_element(
         Element("link",
