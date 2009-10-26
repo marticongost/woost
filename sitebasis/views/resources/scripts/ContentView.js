@@ -25,70 +25,68 @@ cocktail.init(function (root) {
         }
     }
 
-    // Initialization and handlers
-    jQuery(".ContentView", root)
-        .addClass("scripted")
-        .each(function () {
+    jQuery(".ContentView", root).each(function () {
 
-            var contentView = this;
+        var contentView = this;
+        var $contentView = jQuery(this);
 
-            // Enabled/disabled toolbar buttons
-            jQuery(".collection_display", this)
-                .bind("selectionChanged", function () {
-                    updateToolbar.call(contentView);
-                });
-
-            updateToolbar.call(contentView);
-
-            // Automatically focus the simple search box
-            jQuery("[name=simple_search_query]", this).focus();
-        })
-
-        .find(".filters")
-            .each(function () {
+        $contentView.addClass("scripted");
         
-                // Replace the 'clear filters' link with a 'discard search' button
-                if (jQuery.browser.msie) {
-                    var closeButton = document.createElement("<input type='button'>");
-                }
-                else {
-                    var closeButton = document.createElement("input");
-                    closeButton.type = "button";
-                }
+        // Enabled/disabled toolbar buttons
+        jQuery(".collection_display", this)
+            .bind("selectionChanged", function () {
+                updateToolbar.call(contentView);
+            });
+
+        updateToolbar.call(this);
+
+        // Automatically focus the simple search box
+        jQuery("[name=simple_search_query]", this).focus();
+
+        // Replace the 'clear filters' link with a 'discard search' button
+        jQuery(".filters", this).each(function () {
+    
+            if (jQuery.browser.msie) {
+                var closeButton = document.createElement("<input type='button'>");
+            }
+            else {
+                var closeButton = document.createElement("input");
+                closeButton.type = "button";
+            }
+            
+            var discardButton = jQuery(".discard_button", this);
+            var closeHref = discardButton.get(0).href;
+            
+            jQuery(closeButton).val(cocktail.translate("sitebasis.views.ContentView close advanced search")).click(function () {
+                location.href = closeHref;
+            });
+            
+            discardButton.replaceWith(closeButton);
+        });
                 
-                var discardButton = jQuery(".discard_button", this);
-                var closeHref = discardButton.get(0).href;
-                
-                jQuery(closeButton).val(cocktail.translate("sitebasis.views.ContentView close advanced search")).click(function () {
-                    location.href = closeHref;
-                });
-                
-                discardButton.replaceWith(closeButton);
-            })
-            .end()
-        
+        // Open files in a new window
+        jQuery(".action_button", this).click(function() {
+            var form = jQuery(this).closest("form").get(0);
+            
+            if (jQuery(this).hasClass(".download_action")) {
+                form.target = "_new";
+            }
+            else {
+                form.target = "_self";
+            }
+        });
+
         // Client side implementation for the addition of filters from table
         // column headers
-        .find("th .add_filter")
-            .attr("href", "javascript:")
-            .click(function () {
-                cocktail.foldSelectors();
-                var filterBox = jQuery(this).parents(".ContentView").find(".FilterBox").get(0);
-                filterBox.addUserFilter(this.filterId);
-            })
-            .end()
-        
-        // Open files in a new window
-        .find(".action_button")
-            .click(function() {
-                var form = jQuery(this).closest("form").get(0);
-                
-                if (jQuery(this).hasClass(".download_action")) {
-                    form.target = "_new";
-                }
-                else {
-                    form.target = "_self";
-                }
-            });
+        if (this.searchExpanded) {
+            jQuery("th .add_filter", this)
+                .attr("href", "javascript:")
+                .click(function () {
+                    cocktail.foldSelectors();
+                    var filterBox = $contentView.find(".FilterBox").get(0);
+                    filterBox.addUserFilter(this.filterId);
+                });
+        }
+    });
 });
 
