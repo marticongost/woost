@@ -163,7 +163,7 @@ class Item(PersistentObject):
         draft.bidirectional = False
         
         self._draft_count += 1
-        draft._draft_id = self._draft_count        
+        draft._draft_id = self._draft_count
 
         adapter = self.get_draft_adapter()
         adapter.export_object(
@@ -171,8 +171,7 @@ class Item(PersistentObject):
             draft,
             source_schema = self.__class__,
             source_accessor = schema.SchemaObjectAccessor,
-            target_accessor = schema.SchemaObjectAccessor,
-            collection_copy_mode = schema.shallow
+            target_accessor = schema.SchemaObjectAccessor
         )
         
         return draft
@@ -195,7 +194,6 @@ class Item(PersistentObject):
             adapter = self.get_draft_adapter()
             adapter.source_accessor = schema.SchemaObjectAccessor
             adapter.target_accessor = schema.SchemaObjectAccessor
-            adapter.collection_copy_mode = schema.shallow
             adapter.import_object(
                 self,
                 self.draft_source,
@@ -213,6 +211,7 @@ class Item(PersistentObject):
         @rtype: L{Adapter<cocktail.schema.adapter.Adapter>}
         """
         adapter = schema.Adapter()
+        adapter.collection_copy_mode = schema.shallow
         adapter.exclude([
             member.name
             for member in cls.members().itervalues()
