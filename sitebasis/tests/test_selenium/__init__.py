@@ -69,8 +69,7 @@ def setup_package():
     })
 
     # Launch the site's webserver on another thread
-    cms = CMS()
-    cms.application_path = _site_temp_path
+    cms = CMS(application_path = _site_temp_path)
     cms.run(block = False)
 
 def teardown_package():

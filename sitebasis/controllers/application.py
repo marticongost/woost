@@ -189,6 +189,10 @@ class CMS(BaseCMSController):
     
         BaseCMSController.__init__(self, *args, **kwargs)
 
+        app_path = kwargs.get("application_path")
+        if app_path:
+            self.application_path = app_path
+
         self.language = self.LanguageModule(self)
         self.authentication = self.AuthenticationModule(self)
         self.document_resolver = self.DocumentResolver()
