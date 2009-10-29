@@ -18,7 +18,7 @@ class FlatContentViewTestCase(object):
         all = len(Item.select())
         browser.open("/en/cms/content/?content_view=flat&page_size=%d" % all)
         admin_login() 
-        assert browser.jquery_count(".collection_display tbody tr") == all
+        assert browser.jquery_count(".collection_display tr.item_row") == all
 
     @selenium_test
     def test_sort_by_id(self):
@@ -49,8 +49,6 @@ class FlatContentViewTestCase(object):
         )
         browser.wait_for_page_to_load(10000)
         sorted_ids = " ".join(str(x.id) for x in Item.select(order = "id"))
-        print sorted_ids
-        print get_browser_ids()
         assert get_browser_ids() == sorted_ids
 
         # Show the column dropdown panel and click the descending order button
@@ -73,12 +71,12 @@ class FlatContentViewTestCase(object):
         assert browser.is_element_present("css=.clear_selection")
 
         browser.click("css=.select_all")
-        all = browser.jquery_count(".collection_display tbody tr")
-        sel = browser.jquery_count(".collection_display tbody tr.selected")
+        all = browser.jquery_count(".collection_display tr.item_row")
+        sel = browser.jquery_count(".collection_display tr.item_row.selected")
         assert all == sel
 
         browser.click("css=.clear_selection")
-        sel = browser.jquery_count(".collection_display tbody tr.selected")
+        sel = browser.jquery_count(".collection_display tr.item_row.selected")
         assert sel == 0
 
     @selenium_test
@@ -151,5 +149,5 @@ class FlatContentViewTestCase(object):
         assert browser.get_value("filter_value0") == query
 
         # Test returned results
-        assert browser.jquery_count(".collection_display tbody tr") == 1
+        assert browser.jquery_count(".collection_display tr.item_row") == 1
 
