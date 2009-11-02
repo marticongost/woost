@@ -14,6 +14,7 @@ from cocktail.translations import translations, set_language
 from cocktail.language import set_content_language
 from sitebasis.models import (
     Feed,
+    Site,
     PermissionExpression,
     ReadPermission,
     get_current_user
@@ -45,12 +46,13 @@ class FeedsController(BaseCMSController):
         cms = self.context["cms"]
         location = Location.get_current()
         location.relative = False
-
+        site = Site.get_instance(qname="sitebasis.main_site")
         def rfc822_date(date):
-            return date.strftime("%d %%s %Y %H:%M:%S %Z") % [
+            tz = "Z" if site.timezone is None else site.timezone
+            return date.strftime("%d %%s %Y %H:%M:%S %%s") % ([
                 "Jan", "Feb", "Mar", "Apr", "May", "Jun",
                 "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
-            ][date.month]
+            ][date.month],tz)
 
         params = {
             "title": feed.title,
