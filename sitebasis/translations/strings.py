@@ -1272,6 +1272,12 @@ translations.define("Site.extensions",
     en = u"extensions"
 )
 
+translations.define("Site.timezone",
+    ca = u"Zona horària",
+    es = u"Zona horaria",
+    en = u"Timezone"
+)
+
 # Document
 #------------------------------------------------------------------------------
 translations.define("Document",

@@ -6,6 +6,7 @@ u"""
 @organization:	Whads/Accent SL
 @since:			July 2008
 """
+import re
 from cocktail.modeling import classgetter
 from cocktail.translations import translations
 from cocktail import schema
@@ -100,6 +101,11 @@ class Site(Item):
     triggers = schema.Collection(
         items = "sitebasis.models.Trigger",
         bidirectional = True
+    )
+
+    timezone = schema.String(
+        required = False,
+        format = re.compile(r'^["GMT"|"UTC"|"PST"|"MST"|"CST"|"EST"]{3}$|^[+-]\d{4}$')
     )
 
     def __translate__(self, language, **kwargs):
