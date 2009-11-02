@@ -7,6 +7,7 @@
 @since:			October 2009
 """
 import cherrypy
+from __future__ import with_statement
 from cocktail import schema
 from cocktail.events import event_handler, when
 from cocktail.translations import translations
