@@ -89,3 +89,67 @@ class SearchTestCase(object):
         assert browser.get_value("filter_value0") == "15"
         assert browser.get_value("filter_value1") == "@localhost"
 
+    @selenium_test
+    def test_multiple_options(self):
+
+        from sitebasis.models import User, Role
+        from cocktail.controllers.userfilter import MultipleChoiceFilter
+
+        administrators = Role.require_instance(
+            qname = "sitebasis.administrators"
+        )
+
+        anonymous = Role.require_instance(
+            qname = "sitebasis.anonymous"
+        )
+
+        with override(User.roles, user_filter = MultipleChoiceFilter):           
+            
+            browser.open("/en/cms/content/?content_view=flat&type=sitebasis.models.user.User&search_expanded=true")
+            admin_login()
+
+            # Select the filter
+            browser.fire_event("css=.new_filter_selector", "click")
+            browser.fire_event("css=.new_filter-member-roles", "click")            
+            
+            # Select options
+            browser.fire_event("css=.filters .values_field .select", "click")
+            assert browser.is_visible("css=.modal_selector_dialog")
+
+            for role in (administrators, anonymous):
+                browser.click(
+                    "css=.modal_selector_dialog input[value=%d]"
+                    % role.id
+                )
+    
+            browser.fire_event("css=.modal_selector_dialog .accept", "click")                
+            
+            for role in (administrators, anonymous):
+                assert browser.is_element_present(
+                    "css=.filters .values_field input[value=%d]"
+                    % role.id
+                )
+
+            browser.click("css=.filters .search_button")
+            browser.wait_for_page_to_load(10000)
+            
+            # Validate results
+            results_count = len(administrators.users) + len(anonymous.users)
+            rows_count = browser.jquery_count(".collection_display .item_row")
+            assert rows_count == results_count
+
+            # Make sure the search control preserves its state
+            for role in (administrators, anonymous):
+                assert browser.is_element_present(
+                    "css=.filters .values_field input[value=%d]"
+                    % role.id
+                )
+
+            browser.fire_event("css=.filters .values_field .select", "click")
+
+            for role in (administrators, anonymous):
+                assert browser.is_checked(
+                    "css=.modal_selector_dialog input[value=%d]"
+                    % role.id
+                )            
+
