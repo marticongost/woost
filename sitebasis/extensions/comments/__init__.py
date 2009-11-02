@@ -6,8 +6,8 @@
 @organization:	Whads/Accent SL
 @since:			October 2009
 """
-import cherrypy
 from __future__ import with_statement
+import cherrypy
 from cocktail import schema
 from cocktail.events import event_handler, when
 from cocktail.translations import translations
