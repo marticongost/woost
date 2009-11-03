@@ -12,7 +12,7 @@ from ZODB.POSException import ConflictError
 from cocktail.modeling import cached_getter
 from cocktail.events import event_handler, when
 from cocktail.schema import (
-    Adapter, ErrorList, DictAccessor, Collection
+    Adapter, ErrorList, DictAccessor, Collection, Reference
 )
 from cocktail.translations import translations
 from cocktail.persistence import datastore
@@ -23,6 +23,7 @@ from sitebasis.models import (
     ChangeSet,
     get_current_user,
     restricted_modification_context,
+    delete_validating,
     ReadTranslationPermission,
     ConfirmDraftPermission
 )
@@ -237,13 +238,26 @@ class EditController(BaseBackOfficeController):
             )
 
     def _apply_changes(self, item):
-        stack_node = self.stack_node
-        stack_node.import_form_data(stack_node.form_data, item)
-        item.insert()
-        stack_node.saving(
-            user = get_current_user(),
-            changeset = ChangeSet.current
-        )
+        
+        # Remove those instances that have been dettached from an integral
+        # reference
+        @when(item.changed)
+        def delete_replaced_integral_children(event):
+            if isinstance(event.member, Reference) \
+            and event.member.integral \
+            and event.previous_value is not None:
+                delete_validating(event.previous_value)
+            
+        try:
+            stack_node = self.stack_node
+            stack_node.import_form_data(stack_node.form_data, item)
+            item.insert()
+            stack_node.saving(
+                user = get_current_user(),
+                changeset = ChangeSet.current
+            )
+        finally:
+            item.changed.remove(delete_replaced_integral_children)
 
     @cached_getter
     def output(self):
