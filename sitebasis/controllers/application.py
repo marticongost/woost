@@ -123,6 +123,10 @@ class CMS(BaseCMSController):
         "gif": "image/gif"
     }
 
+    # Enable / disable confirmation dialogs when closing an edit session. This
+    # setting exists mainly to disable the dialogs on selenium test runs.
+    closing_item_requires_confirmation = True
+
     # A dummy controller for CherryPy, that triggers the cocktail dispatcher.
     # This is done so dynamic dispatching (using the resolve() method of
     # request handlers) can depend on session setup and other requirements

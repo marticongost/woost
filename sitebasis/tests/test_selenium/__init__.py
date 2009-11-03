@@ -68,8 +68,11 @@ def setup_package():
         "engine.autoreload.on": False
     })
 
-    # Launch the site's webserver on another thread
+    # Configure the application
     cms = CMS(application_path = _site_temp_path)
+    cms.closing_item_requires_confirmation = False
+
+    # Launch the site's webserver on another thread
     cms.run(block = False)
 
 def teardown_package():
