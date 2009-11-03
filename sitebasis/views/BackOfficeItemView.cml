@@ -19,6 +19,7 @@ from sitebasis.controllers.backoffice.useractions import (
     <py:ready>
         <?py
         self.set_client_param("edit_stack", self.edit_stack.to_param())
+        self.set_client_param("closingItemRequiresConfirmation", self.cms.closing_item_requires_confirmation)
 
         # Add CSS classes matching the item's content types
         for cls in self.edited_content_type.descend_inheritance(include_self = True):
