@@ -99,6 +99,7 @@ from sitebasis.models.permission import (
     ModifyTranslationPermission,
     DeleteTranslationPermission,
     restricted_modification_context,
+    delete_validating,
     PermissionExpression
 )
 from sitebasis.models.standardpage import StandardPage

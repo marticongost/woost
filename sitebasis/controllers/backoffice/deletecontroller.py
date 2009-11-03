@@ -13,6 +13,7 @@ from cocktail.schema import String, Collection, Reference, RelationMember
 from cocktail.persistence import datastore, PersistentClass
 from sitebasis.models import (
     changeset_context,
+    delete_validating,
     get_current_user,
     DeletePermission
 )
@@ -111,19 +112,11 @@ class DeleteController(BaseBackOfficeController):
     
     def submit(self):
         if self.action == "confirm_delete":
-
-            user = get_current_user()
-
-            class ValidatingDeletedSet(InstrumentedSet):
-                def item_added(self, item):
-                    user.require_permission(DeletePermission, target = item)
-            
+                        
             for i in range(self.MAX_TRANSACTION_ATTEMPTS):
-                deleted_set = ValidatingDeletedSet()
 
                 with changeset_context(author = user):
-                    for item in self.selection:
-                        item.delete(deleted_set)
+                    deleted_set = delete_validating(item)
 
                 try:
                     datastore.commit()
