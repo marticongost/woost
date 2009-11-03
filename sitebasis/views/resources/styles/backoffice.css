@@ -358,7 +358,6 @@ body.modal {
 }
 
 .BackOfficeLayout .Form div.field {
-    overflow: hidden;
     clear: left;
     margin-bottom: 0.7em;
 }
