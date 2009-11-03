@@ -7,6 +7,7 @@
 @since:			July 2009
 """
 from contextlib import contextmanager
+from cocktail.modeling import InstrumentedSet
 from cocktail.events import when
 from cocktail.translations import translations
 from cocktail import schema
@@ -297,6 +298,19 @@ def restricted_modification_context(item, user = None):
     # objects, to make sure the user is leaving the object in a state that
     # complies with all existing restrictions.
     user.require_permission(permission_type, target = item)
+
+def delete_validating(item, user = None):
+
+    if user is None:
+        user = get_current_user()
+
+    class ValidatingDeletedSet(InstrumentedSet):
+        def item_added(self, item):
+            user.require_permission(DeletePermission, target = item)
+
+    deleted_set = ValidatingDeletedSet()
+    item.delete(deleted_set)
+    return deleted_set
 
 
 class PermissionExpression(Expression):
