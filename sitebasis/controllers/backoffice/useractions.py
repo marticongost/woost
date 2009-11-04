@@ -417,7 +417,7 @@ class SelectionError(Exception):
 
 class CreateAction(UserAction):
     included = frozenset(["toolbar"])
-    excluded = frozenset(["collection", ("selector", "root")])
+    excluded = frozenset(["collection", ("selector", "existing_only")])
     ignores_selection = True
     min = None
     max = None
