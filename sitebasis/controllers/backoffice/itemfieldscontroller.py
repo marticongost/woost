@@ -11,7 +11,7 @@ from cocktail.modeling import cached_getter
 from cocktail.events import event_handler
 from cocktail.pkgutils import import_object
 from cocktail import schema
-from cocktail.controllers import get_parameter, view_state
+from cocktail.controllers import get_parameter, view_state, Location
 from sitebasis.models import (
     get_current_user,
     Site,
@@ -65,6 +65,13 @@ class ItemFieldsController(EditController):
             skip_undefined = cherrypy.request.method.upper() == "GET"
         )
 
+        # Drop references
+        unlink = cherrypy.request.params.get("ItemSelector-unlink")
+
+        if unlink:
+            form_data[unlink] = None
+
+        # Add/remove translations
         if added_translation and added_translation not in translations:
             translations.append(added_translation)
 
@@ -128,11 +135,10 @@ class ItemFieldsController(EditController):
     def handle_processed(cls, event):
 
         controller = event.source
-        rel = controller.params.read(schema.String("rel"))
+        rel = cherrypy.request.params.get("ItemSelector-select")
 
         # Open the item selector
         if rel:
-
             pos = rel.find("-")
             root_content_type_name = rel[:pos]
             selection_parameter = rel[pos + 1:]
@@ -153,5 +159,36 @@ class ItemFieldsController(EditController):
                     edit_stack = controller.edit_stack.to_param(),
                     client_side_scripting = controller.client_side_scripting
                 )
+            )
+
+        # Open an editor for a new nested item
+        new = cherrypy.request.params.get("ItemSelector-new")
+
+        if new:
+            pos = new.find("-")
+            member_name = new[:pos]
+            content_type_name = new[pos + 1:]
+
+            # Push the relation as a new stack node
+            current_node = controller.stack_node
+            rel_node = RelationNode()
+            rel_node.member = current_node.content_type[member_name]
+            controller.edit_stack.push(rel_node)
+
+            raise cherrypy.HTTPRedirect(
+                controller.context["cms"].document_uri(
+                    "content",
+                    "new",
+                    item_type = content_type_name,
+                    edit_stack = controller.edit_stack.to_param()
+                )
+            )
+
+        # Open an editor for an existing nested item
+        edit = cherrypy.request.params.get("ItemSelector-edit")
+
+        if edit:
+            raise cherrypy.HTTPRedirect(
+                controller.edit_uri(controller.stack_node.form_data[edit])
             )
 

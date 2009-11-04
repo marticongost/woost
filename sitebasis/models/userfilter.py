@@ -107,3 +107,11 @@ class TypeFilter(UserFilter):
 
 user_filters_registry.add(Item, TypeFilter)
 
+
+def _reference_search_control(self, parent, obj, member):
+    control = templates.new("sitebasis.views.ItemSelector")
+    control.existing_items_only = True
+    return control
+
+schema.Reference.search_control = _reference_search_control
+

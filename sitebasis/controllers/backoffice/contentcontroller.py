@@ -96,10 +96,11 @@ class ContentController(BaseBackOfficeController):
 
     def __call__(self, *args, **kwargs):
 
-        rel = self.params.read(schema.String("rel"))
+        rel = cherrypy.request.params.get("ItemSelector-select")
 
         # Open the item selector
         if rel:
+
             # Load persistent collection parameters before redirecting
             self.user_collection
 
@@ -127,7 +128,7 @@ class ContentController(BaseBackOfficeController):
                         ),
                         client_side_scripting = self.client_side_scripting
                     ))
-        
+                
         return BaseBackOfficeController.__call__(self, *args, **kwargs)
 
     @cached_getter
