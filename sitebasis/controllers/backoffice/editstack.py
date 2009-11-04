@@ -34,7 +34,10 @@ from cocktail.persistence import (
 from sitebasis.models import (
     Site,
     get_current_user,
+    CreatePermission,
     ReadPermission,
+    ModifyPermission,
+    DeletePermission,
     ReadMemberPermission,
     ModifyMemberPermission,
     ReadTranslationPermission
@@ -585,9 +588,15 @@ class EditNode(StackNode):
         edit form.
         @type: L{Adapter<cocktail.schema.Adapter>}
         """
-        user = get_current_user()
+        user = get_current_user()    
         relation_node = self.get_ancestor_node(RelationNode)
         stack_relation = relation_node and relation_node.member.related_end
+
+        def class_family_permission(root, permission_type):
+            return any(
+                user.has_permission(permission_type, target = cls)
+                for cls in root.schema_tree()
+            )
 
         adapter = schema.Adapter()
         adapter.collection_copy_mode = self._adapt_collection
@@ -603,7 +612,11 @@ class EditNode(StackNode):
                 isinstance(member, schema.RelationMember)
                 and member.is_persistent_relation
                 and (
+                    # Hide relations to invisible types
                     not member.related_type.visible
+
+                    # Hide empty collections with the exclude_when_empty flag
+                    # set
                     or (
                         isinstance(member, schema.Collection)
                         and member.exclude_when_empty
@@ -611,11 +624,30 @@ class EditNode(StackNode):
                             parent = self.item
                         )
                     )
-                    or not any(
-                        user.has_permission(ReadPermission, target = cls)                        
-                        for cls in chain(
-                            [member.related_type],
-                            member.related_type.derived_schemas(True)
+                    # Require read permission for related types
+                    or not class_family_permission(
+                        member.related_type, ReadPermission
+                    )
+                    # Integral relation
+                    or (
+                        isinstance(member, schema.Reference)
+                        and member.integral
+                        and self.item
+                        and not (
+                            # Empty: require create permission
+                            # Has an item: require edit or delete permission
+                            class_family_permission(
+                                member.type, CreatePermission
+                            )
+                            if self.item.get(member) is None
+                            else (
+                                class_family_permission(
+                                    member.type, ModifyPermission
+                                )
+                                or class_family_permission(
+                                    member.type, DeletePermission
+                                )
+                            )
                         )
                     )
                 )

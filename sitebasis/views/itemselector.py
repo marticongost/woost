@@ -6,44 +6,30 @@ u"""
 @organization:	Whads/Accent SL
 @since:			December 2008
 """
+from cocktail.modeling import extend, call_base
 from cocktail.translations import translations
 from cocktail.html import Element, templates
 from cocktail.html.databoundcontrol import DataBoundControl
-from sitebasis.models import Item
+from sitebasis.models import (
+    Item,
+    CreatePermission,
+    ModifyPermission,
+    DeletePermission,
+    get_current_user
+)
 
 
 class ItemSelector(Element, DataBoundControl):
 
     value = None
-    _empty_label = None
-    
+    _empty_label = None    
+    existing_items_only = False
+
     def __init__(self, *args, **kwargs):
         Element.__init__(self, *args, **kwargs)
         DataBoundControl.__init__(self)
 
-    def _get_empty_label(self):
-
-        if self._empty_label is None:
-
-            if self.member:
-                if self.member.required == True:
-                    return translations("sitebasis.views.ItemSelector select")
-                else:
-                    content_type = self.member.type
-            else:
-                content_type = Item
-
-            for content_type in content_type.descend_inheritance(True):
-                desc = translations(content_type.name + "-none")
-                if desc:
-                    return desc
-        
-        return self._empty_label
-
-    def _set_empty_label(self, value):
-        self._empty_label = value
-
-    empty_label = property(_get_empty_label, _set_empty_label)
+    empty_label = ""
 
     def _build(self):
     
@@ -55,36 +41,198 @@ class ItemSelector(Element, DataBoundControl):
         self.input = templates.new("cocktail.html.HiddenInput")
         self.append(self.input)
         self.binding_delegate = self.input
-
-        self.button = Element("button", name = "rel", type="submit")
-        self.append(self.button)
-
+        
         self.selection_label = templates.new("sitebasis.views.ItemLabel")
         self.selection_label.tag = "span"
         self.selection_label.add_class("selection_label")
-        self.button.append(self.selection_label)
+        self.append(self.selection_label)
+    
+        self.buttons = self.create_buttons()
+        self.append(self.buttons)
 
     def _ready(self):
 
         Element._ready(self)
 
-        if self.member:            
-
+        if self.member:
+ 
             if self.data_display:
-                param_name = self.data_display.get_member_name(
+                self._param_name = self.data_display.get_member_name(
                     self.member,
                     self.language
                 )
             else:
-                param_name = self.member.name
+                self._param_name = self.member.name
+
+            if self.existing_items_only or not self.member.integral:
+                # Select
+                self.select_button = self.create_select_button()
+                self.buttons.append(self.select_button)
             
-            self.button["value"] = \
-                self.member.type.full_name + "-" + param_name
+            if not self.existing_items_only:
+                
+                user = get_current_user()
+
+                if self.member.integral:
+
+                    if self.value is None:
+                        # New
+                        if any(
+                            user.has_permission(CreatePermission, target = cls)
+                            for cls in self.member.type.schema_tree()
+                        ):
+                            self.new_button = self.create_new_button()
+                            self.buttons.append(self.new_button)
+                    else:
+                        # Edit
+                        if any(
+                            user.has_permission(ModifyPermission, target = cls)
+                            for cls in self.member.type.schema_tree()
+                        ):
+                            self.edit_button = self.create_edit_button()
+                            self.buttons.append(self.edit_button)
+
+                        # Delete
+                        if any(
+                            user.has_permission(DeletePermission, target = cls)
+                            for cls in self.member.type.schema_tree()
+                        ):
+                            self.delete_button = self.create_delete_button()
+                            self.buttons.append(self.delete_button)
+
+                elif self.value is not None:
+                    # Unlink
+                    self.unlink_button = self.create_unlink_button()
+                    self.buttons.append(self.unlink_button)
 
         if self.value is None:
             self.selection_label.add_class("empty_selection")
             self.selection_label.append(self.empty_label)
-        else:        
+        else:
             self.input["value"] = self.value.id
             self.selection_label.item = self.value
+
+    def create_buttons(self):
+        buttons = Element()
+        buttons.add_class("ItemSelector-buttons")
+        return buttons
+
+    def create_select_button(self):
+
+        select_button = Element("button",
+            name = "ItemSelector-select",
+            class_name = "ItemSelector-button select",
+            value = self.member.type.full_name + "-" + self._param_name
+        )
+        select_button.append(Element("img",
+            class_name = "icon",
+            src = "/resources/images/select_small.png"
+        ))
+        select_button.append(
+            translations("sitebasis.views.ItemSelector select")
+        )
+        return select_button
+
+    def create_unlink_button(self):
+        
+        unlink_button = Element("button",
+            name = "ItemSelector-unlink",
+            class_name = "ItemSelector-button unlink",
+            value = self.member.name
+        )
+        unlink_button.append(Element("img",
+            class_name = "icon",
+            src = "/resources/images/clear_small.png"
+        ))
+        unlink_button.append(
+            translations("sitebasis.views.ItemSelector unlink")
+        )
+        return unlink_button
+
+    def create_new_button(self):
+
+        new_button = Element(class_name = "ItemSelector-button new")
+        
+        instantiable_types = set(
+            content_type
+            for content_type in (
+                [self.member.type] + list(self.member.type.derived_schemas())
+            )
+            if content_type.visible
+            and content_type.instantiable
+            and get_current_user().has_permission(
+                CreatePermission,
+                target = content_type
+            )
+        )
+
+        if len(instantiable_types) > 1:
+            
+            new_button.add_class("selector")
+            label = Element("span", class_name = "label")
+            new_button.append(label)
+
+            container = Element(class_name = "selector_content")
+            new_button.append(container)
+                        
+            content_type_tree = templates.new("sitebasis.views.ContentTypeTree")
+            content_type_tree.root = self.member.type
+            content_type_tree.filter_item = instantiable_types.__contains__
+
+            @extend(content_type_tree)
+            def create_label(tree, content_type):
+                label = call_base(content_type)
+                label.tag = "button"
+                label["name"] = "ItemSelector-new"
+                label["value"] = self.member.name + "-" + content_type.full_name
+                return label
+            
+            container.append(content_type_tree)
+        else:
+            new_button.tag = "button"
+            new_button["name"] = "ItemSelector-new"
+            new_button["value"] = \
+                self.member.name + "-" + self.member.type.full_name
+            label = new_button
+
+        label.append(Element("img",
+            class_name = "icon",
+            src = "/resources/images/new_small.png"
+        ))
+
+        label.append(translations("sitebasis.views.ItemSelector new"))
+
+        return new_button
+
+    def create_edit_button(self):
+
+        edit_button = Element("button",
+            name = "ItemSelector-edit",
+            class_name = "ItemSelector-button edit",
+            value = self.member.name
+        )
+        edit_button.append(Element("img",
+            class_name = "icon",
+            src = "/resources/images/edit_small.png"
+        ))
+        edit_button.append(
+            translations("sitebasis.views.ItemSelector edit")
+        )
+        return edit_button
+
+    def create_delete_button(self):
+
+        delete_button = Element("button",
+            name = "ItemSelector-unlink",
+            class_name = "ItemSelector-button delete",
+            value = self.member.name
+        )
+        delete_button.append(Element("img",
+            class_name = "icon",
+            src = "/resources/images/clear_small.png"
+        ))
+        delete_button.append(
+            translations("sitebasis.views.ItemSelector delete")
+        )
+        return delete_button
 

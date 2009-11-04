@@ -8,6 +8,7 @@
 """
 from __future__ import with_statement
 from contextlib import contextmanager
+from cocktail.translations import translations
 from cocktail.tests.seleniumtester import selenium_test, browser
 from sitebasis.models import Item
 from sitebasis.tests.test_selenium import admin_login
@@ -69,9 +70,6 @@ class SearchTestCase(object):
             browser.fire_event("css=.new_filter-%s" % filter_id, "click")
 
         assert browser.jquery_count(".filters .filter_list .filter_entry") == 2
-        print "-" * 80
-        print browser.jquery_count(".collection_display .item_row")
-        print "-" * 80
 
         # Set values on filters
         browser.type("filter_operator0", "gt")
@@ -110,7 +108,7 @@ class SearchTestCase(object):
 
             # Select the filter
             browser.fire_event("css=.new_filter_selector", "click")
-            browser.fire_event("css=.new_filter-member-roles", "click")            
+            browser.fire_event("css=.new_filter-member-roles", "click")
             
             # Select options
             browser.fire_event("css=.filters .values_field .select", "click")
@@ -152,4 +150,41 @@ class SearchTestCase(object):
                     "css=.modal_selector_dialog input[value=%d]"
                     % role.id
                 )            
+
+    @selenium_test
+    def test_item_selector(self):
+
+        from sitebasis.models import Document, Template
+        template = list(Template.select())[0]
+        
+        browser.open("/en/cms/content/?content_view=flat&type=sitebasis.models.document.Document&search_expanded=true")
+        admin_login()
+
+        browser.fire_event("css=.new_filter_selector", "click")
+        browser.fire_event("css=.new_filter-member-template", "click")
+        assert not browser.is_element_present("css=.filters .value_field .new")
+        assert not browser.is_element_present("css=.filters .value_field .edit")
+        assert not browser.is_element_present("css=.filters .value_field .delete")
+        assert not browser.is_element_present("css=.filters .value_field .unlink")
+        browser.click("css=.filters .value_field .select")
+
+        browser.select_frame("dom=selenium.browserbot.getCurrentWindow().frames[0]")
+        browser.wait_for_element_present("css=.collection_display", 10000)
+        assert not browser.is_element_present("css=.new_action")
+        browser.click("css=.collection_display #%d" % template.id)
+        browser.click("css=.select_action")
+
+        browser.select_frame("relative=parent")
+        browser.wait_for_element_present("css=.collection_display", 10000)
+
+        assert translations(template, "en") \
+            in browser.jquery_html(".filters .value_field")
+
+        assert browser.get_value("filter_value0") == str(template.id)
+
+        browser.click("css=.filters .search_button")
+        browser.wait_for_page_to_load(10000)
+        
+        rows_count = browser.jquery_count(".collection_display .item_row")
+        assert rows_count == len(template.items)
 

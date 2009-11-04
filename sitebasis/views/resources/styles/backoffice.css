@@ -123,7 +123,8 @@ body {
 .BackOfficeLayout .user_views_bar .add_user_view_button,
 .BackOfficeLayout .advanced_search,
 .BackOfficeEditView .discard_button,
-.BackOfficeLayout .new_filter_selector .label {
+.BackOfficeLayout .new_filter_selector .label,
+.BackOfficeFieldsView .ItemSelector-button {
     font-size: inherit;
     background: none;
     border: none;
@@ -359,7 +360,15 @@ body.modal {
 
 .BackOfficeLayout .Form div.field {
     clear: left;
-    margin-bottom: 0.7em;
+    margin-bottom: 1.5em;
+}
+
+.BackOfficeLayout .Form div.field:after {
+    content: ".";
+    display: block;
+    height: 0;
+    clear: both;
+    visibility: hidden;
 }
 
 .BackOfficeLayout .Form tr.field {
@@ -1553,7 +1562,64 @@ body.scripted .BackOfficeLayout .ThumbnailsContentView .collection_display input
     padding: 0.1em;
 }
 
-.BackOfficeLayout .ItemSelector button,
+.BackOfficeLayout .ItemSelector .selection_label,
+.BackOfficeLayout .ItemSelector-buttons {
+    float: left;
+}
+
+.BackOfficeLayout .ItemSelector .selection_label {
+    margin-top: 0.05em;
+    margin-right: 1.4em;
+}
+
+.BackOfficeLayout .ItemSelector .selection_label:empty {
+    margin-right: 0;
+}
+
+.BackOfficeFieldsView .ItemSelector-button {
+    margin-right: 0.6em;
+}
+
+.BackOfficeFieldsView button.ItemSelector-button,
+.BackOfficeFieldsView .ItemSelector .new .label {
+    font-size: 90%;
+}
+
+.BackOfficeFieldsView .ItemSelector-button .icon {
+    vertical-align: middle;
+    margin-right: 0.3em;
+}
+
+.BackOfficeFieldsView .ItemSelector .new {
+    margin-left: -0.4em;
+}
+
+.BackOfficeFieldsView .ItemSelector .new .label {
+    color: rgb(50,80,110);
+    padding-left: 0.4em;
+    padding-top: 0.2em;
+}
+
+.BackOfficeFieldsView .ItemSelector .new .selector_content {
+    top: 1.2em;
+}
+
+.BackOfficeFieldsView .ItemSelector .new .selector_content .entry_label {
+    border: none;
+    background: none;
+    font-size: 95%;
+    cursor: pointer;
+}
+
+.BackOfficeLayout .filters .ItemSelector .selection_label {
+    margin-top: 0.3em;
+}
+
+.BackOfficeLayout .filters .ItemSelector .select .icon {
+    display: none;
+}
+
+.BackOfficeFieldsView .ItemSelector button,
 button.TypeSelectorButton {
     text-align: left;
 }
@@ -1595,7 +1661,6 @@ button.TypeSelectorButton span {
     border: 1px solid rgb(210,210,210);
     background-color: white;
     padding: 0.6em;
-    overflow: auto;
 }
 
 .BackOfficeLayout .autocomplete_results_container {

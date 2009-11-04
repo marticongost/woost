@@ -617,9 +617,33 @@ translations.define("sitebasis.views.BackOfficeDeleteView cancel",
 )
 
 translations.define("sitebasis.views.ItemSelector select",
-    ca = u"Seleccionar...",
-    es = u"Seleccionar...",
-    en = u"Select..."
+    ca = u"Seleccionar",
+    es = u"Seleccionar",
+    en = u"Select"
+)
+
+translations.define("sitebasis.views.ItemSelector unlink",
+    ca = u"Desvincular",
+    es = u"Desvincular",
+    en = u"Unlink"
+)
+
+translations.define("sitebasis.views.ItemSelector new",
+    ca = u"Nou",
+    es = u"Nuevo",
+    en = u"New"
+)
+
+translations.define("sitebasis.views.ItemSelector edit",
+    ca = u"Editar",
+    es = u"Editar",
+    en = u"Edit"
+)
+
+translations.define("sitebasis.views.ItemSelector delete",
+    ca = u"Eliminar",
+    es = u"Eliminar",
+    en = u"Delete"
 )
 
 translations.define("sitebasis.views.BackOfficeItemSelectorView title", 
@@ -2722,9 +2746,9 @@ translations.define("Feed.item_description_expression",
 # ContentTypePicker
 #------------------------------------------------------------------------------
 translations.define("sitebasis.views.ContentTypePicker select",
-    ca = u"Seleccionar...",
-    es = u"Seleccionar...",
-    en = u"Select..."
+    ca = u"Seleccionar",
+    es = u"Seleccionar",
+    en = u"Select"
 )
 
 translations.define("sitebasis.views.ContentTypePicker accept",
