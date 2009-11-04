@@ -21,6 +21,7 @@ from sitebasis.models import (
 from sitebasis.views.contenttypetree import ContentTypeTree
 from sitebasis.controllers.backoffice.useractions import \
     add_view_action_context
+from sitebasis.controllers.backoffice.editstack import SelectionNode
 ?>
 
 <py:cocktail.html.CollectionView
@@ -99,6 +100,9 @@ from sitebasis.controllers.backoffice.useractions import \
     <py:ready>
         <?py
         self.set_client_param("searchExpanded", self.search_expanded)
+
+        if self.edit_stack and isinstance(self.edit_stack[-1], SelectionNode):
+            add_view_action_context(self, "existing_only")
         ?>
     </py:ready>
 
@@ -318,7 +322,7 @@ from sitebasis.controllers.backoffice.useractions import \
     <!-- New item selector -->
     <div py:def="new_toolbar_button"
         py:args="action, extra"
-        class="selector action_button new">
+        class="selector action_button action_new">
         <span class="label">
             <?py
             set_translated_shortcut(element, "action " + action.id)
