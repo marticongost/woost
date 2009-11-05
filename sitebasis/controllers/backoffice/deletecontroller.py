@@ -117,8 +117,11 @@ class DeleteController(BaseBackOfficeController):
 
             for i in range(self.MAX_TRANSACTION_ATTEMPTS):
 
+                deleted_set = None
+
                 with changeset_context(author = user):
-                    deleted_set = delete_validating(item)
+                    for item in self.selection:
+                        deleted_set = delete_validating(item, deleted_set)
 
                 try:
                     datastore.commit()
