@@ -412,6 +412,10 @@ body.modal {
     padding-left: 0.3em;
 }
 
+.BackOfficeLayout .Form .field_instance-HiddenInput {
+    display: none;
+}
+
 .BackOfficeLayout .Form .field_instance-CheckBox label {
     display: inline;
 }
