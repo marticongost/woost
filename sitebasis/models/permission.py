@@ -299,16 +299,18 @@ def restricted_modification_context(item, user = None):
     # complies with all existing restrictions.
     user.require_permission(permission_type, target = item)
 
-def delete_validating(item, user = None):
+def delete_validating(item, user = None, deleted_set = None):
 
     if user is None:
         user = get_current_user()
 
-    class ValidatingDeletedSet(InstrumentedSet):
-        def item_added(self, item):
-            user.require_permission(DeletePermission, target = item)
+    if deleted_set is None:
+        class ValidatingDeletedSet(InstrumentedSet):
+            def item_added(self, item):
+                user.require_permission(DeletePermission, target = item)
 
-    deleted_set = ValidatingDeletedSet()
+        deleted_set = ValidatingDeletedSet()
+
     item.delete(deleted_set)
     return deleted_set
 
