@@ -95,7 +95,7 @@ class BaseBackOfficeController(BaseCMSController):
         uri = self.document_uri(
             "content",
             target_id,
-            *args
+            *(args or ["fields"])
         )
 
         if params:
