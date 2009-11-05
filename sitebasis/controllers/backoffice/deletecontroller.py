@@ -112,7 +112,9 @@ class DeleteController(BaseBackOfficeController):
     
     def submit(self):
         if self.action == "confirm_delete":
-                        
+            
+            user = get_current_user()
+
             for i in range(self.MAX_TRANSACTION_ATTEMPTS):
 
                 with changeset_context(author = user):
