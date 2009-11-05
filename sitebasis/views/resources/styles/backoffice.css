@@ -151,6 +151,10 @@ body {
     white-space: nowrap;
 }
 
+.TreeSelector li {
+    list-style-type: none;
+}
+
 .BackOfficeLayout .tabs {
     clear: both;
     overflow: visible;
