@@ -6,7 +6,9 @@
 @organization:	Whads/Accent SL
 @since:			July 2009
 """
+from cocktail.translations import translations
 from cocktail import schema
+from cocktail.html import templates
 from sitebasis.models.messagestyles import permission_doesnt_match_style
 from sitebasis.models.permission import ContentPermission
 
@@ -16,11 +18,21 @@ class TransitionPermission(ContentPermission):
 
     instantiable = True
 
+    def _transition_edit_control(parent, obj, member):
+        display = templates.new("cocktail.html.DropdownSelector")
+        display.empty_label = translations(
+            "sitebasis.extensions.workflow any transition"
+        )
+        return display
+
     transition = schema.Reference(
         type = "sitebasis.extensions.workflow.transition.Transition",
         related_key = "transition_permissions",
-        bidirectional = True
+        bidirectional = True,
+        edit_control = _transition_edit_control
     )
+
+    del _transition_edit_control
 
     def match(self, target, transition, verbose = False):
         

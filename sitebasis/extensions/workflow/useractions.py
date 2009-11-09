@@ -10,11 +10,19 @@ import cherrypy
 from cocktail.translations import translations
 from cocktail import schema
 from cocktail.persistence import datastore
-from cocktail.controllers import get_parameter
+from cocktail.controllers import get_parameter, context as controller_context
 from cocktail.controllers.viewstate import view_state
 from cocktail.html import Element
-from sitebasis.models import get_current_user
+from sitebasis.models import (
+    get_current_user,
+    ReadPermission,
+    ModifyPermission
+)
 from sitebasis.controllers.backoffice.useractions import UserAction
+from sitebasis.controllers.backoffice.itemfieldscontroller \
+    import ItemFieldsController
+from sitebasis.controllers.backoffice.collectioncontroller \
+    import CollectionController
 from sitebasis.extensions.workflow.transitionpermission import \
     TransitionPermission
 from sitebasis.extensions.workflow.transition import Transition
@@ -23,7 +31,7 @@ from sitebasis.extensions.workflow.transition import Transition
 class TransitionAction(UserAction):
  
     included = frozenset(["item_buttons"])
-    excluded = frozenset()
+    excluded = frozenset(["new_item"])
 
     def is_available(self, context, target):
  
@@ -37,14 +45,26 @@ class TransitionAction(UserAction):
         panel = Element()
 
         for transition in self._get_outgoing_transitions(item):
+            
+            button = Element("a")
+
+            # Transitions with parameters: redirect to the transition form
+            if transition.transition_form:
+                button["href"] = controller_context["cms"].document_uri(
+                    "workflow_transition",
+                    item = item.id,
+                    transition = transition.id
+                )
+
             # This should really be a POST operation, but HTML doesn't provide
             # multi-value buttons, so regular links and GET requests are all
             # that is left :(
-            button = Element("a")
-            button["href"] = u"?" + view_state(
-                transition = transition.id,
-                item_action = "transition"
-            )
+            else:
+                button["href"] = u"?" + view_state(
+                    transition = transition.id,
+                    item_action = "transition"
+                )
+
             button.append(translations(transition))            
             panel.append(button)
 
@@ -94,7 +114,8 @@ class TransitionAction(UserAction):
             raise ValueError("Wrong transition identifier")
 
         # Authorization check
-        get_current_user().require_permission(
+        user = get_current_user()
+        user.require_permission(
             TransitionPermission,
             target = item,
             transition = transition
@@ -112,8 +133,29 @@ class TransitionAction(UserAction):
         )
         datastore.commit()
 
+        # GET redirection, to avoid duplicate POST requests. Also, permissions
+        # that allowed the user to edit or view the transitioned item may no
+        # longer apply (as they may have been granted by the item's previous
+        # state). If that is the case, redirect the user to the best available
+        # view
+        cms = controller.context["cms"]
+        url = None
+
+        if isinstance(
+            controller,
+            (ItemFieldsController, CollectionController)
+        ):
+            if not user.has_permission(ModifyPermission, target = item):
+                if user.has_permission(ReadPermission, target = item):
+                    url = controller.edit_uri(item, "show_detail")
+                else:
+                    url = cms.document_uri()
+
+        elif not user.has_permission(ReadPermission, target = item):
+            url = cms.document_uri()
+
         raise cherrypy.HTTPRedirect(
-            "?" + view_state(item_action = None, transition = None)
+            url or "?" + view_state(item_action = None, transition = None)
         )
 
 TransitionAction("transition").register(before = "close")

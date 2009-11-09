@@ -59,7 +59,8 @@ Item.add_member(
         type = "sitebasis.extensions.workflow.state.State",
         related_key = "items",
         bidirectional = True,
-        editable = False
+        editable = False,
+        search_control = "cocktail.html.DropdownSelector"
     )
 )
 
