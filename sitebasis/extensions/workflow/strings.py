@@ -170,3 +170,12 @@ translations.define("Action transition",
     en = u"Transition"
 )
 
+# Views
+#------------------------------------------------------------------------------
+translations.define(
+    "sitebasis.extensions.workflow any transition",
+    ca = u"Qualsevol",
+    es = u"Cualquiera",
+    en = u"Any"
+)
+
