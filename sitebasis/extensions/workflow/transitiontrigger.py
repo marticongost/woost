@@ -8,6 +8,8 @@
 """
 from cocktail.events import when
 from cocktail import schema
+from cocktail.translations import translations
+from cocktail.html import templates
 from sitebasis.models import Item
 from sitebasis.extensions.workflow.state import State
 from sitebasis.extensions.workflow.transition import Transition
@@ -25,9 +27,19 @@ class TransitionTrigger(ContentTrigger):
 
     instantiable = True
 
+    def _transition_edit_control(parent, obj, member):
+        display = templates.new("cocktail.html.DropdownSelector")
+        display.empty_label = translations(
+            "sitebasis.extensions.workflow.TransitionTrigger any transition"
+        )
+        return display
+
     transition = schema.Reference(
-        type = "sitebasis.extensions.workflow.transition.Transition"
+        type = "sitebasis.extensions.workflow.transition.Transition",
+        edit_control = _transition_edit_control
     )
+
+    del _transition_edit_control
 
     def match(
         self,
