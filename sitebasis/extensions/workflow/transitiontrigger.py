@@ -36,7 +36,7 @@ class TransitionTrigger(ContentTrigger):
         verbose = False,
         **context):
 
-        if transition is not self.transition:
+        if self.transition is not None and transition is not self.transition:
             if verbose:
                 print trigger_doesnt_match_style("transition doesn't match")
             return False
