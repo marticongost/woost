@@ -60,7 +60,7 @@ translations.define("TransitionTrigger-plural",
     en = u"Transition triggers"
 )
 
-translations.define("Trigger.transition",
+translations.define("TransitionTrigger.transition",
     ca = u"Transició a observar",
     es = u"Transición a observar",
     en = u"Watched transition"
@@ -145,15 +145,15 @@ translations.define("Transition.transition_permissions",
 # SetStateTriggerResponse
 #------------------------------------------------------------------------------
 translations.define("SetStateTriggerResponse",
-    ca = u"Resposta amb canvi d'estat",
-    es = u"Respuesta con cambio de estado",
-    en = u"Response with state change"
+    ca = u"Canvi d'estat",
+    es = u"Cambio de estado",
+    en = u"State change"
 )
 
 translations.define("SetStateTriggerResponse-plural",
-    ca = u"Respostes amb canvi d'estat",
-    es = u"Respuestas con cambio de estado",
-    en = u"Responses with state change"
+    ca = u"Canvis d'estat",
+    es = u"Cambios de estado",
+    en = u"State changes"
 )
 
 translations.define("SetStateTriggerResponse.target_state",
@@ -168,5 +168,14 @@ translations.define("Action transition",
     ca = u"Transició",                                                                                                                                                                                    
     es = u"Transición",
     en = u"Transition"
+)
+
+# Views
+#------------------------------------------------------------------------------
+translations.define(
+    "sitebasis.extensions.workflow any transition",
+    ca = u"Qualsevol",
+    es = u"Cualquiera",
+    en = u"Any"
 )
 

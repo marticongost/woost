@@ -58,3 +58,11 @@ class WorkflowExtension(Extension):
             useractions
         )
 
+        # Add a controller to handle transition schemas
+        from sitebasis.controllers.backoffice.backofficecontroller \
+            import BackOfficeController
+        from sitebasis.extensions.workflow.transitioncontroller \
+            import TransitionController
+        
+        BackOfficeController.workflow_transition = TransitionController
+
