@@ -23,6 +23,8 @@ members_without_triggers.add(Item.workflow_state)
 
 class TransitionTrigger(ContentTrigger):
 
+    instantiable = True
+
     transition = schema.Reference(
         type = "sitebasis.extensions.workflow.transition.Transition"
     )
