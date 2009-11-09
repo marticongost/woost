@@ -60,7 +60,7 @@ translations.define("TransitionTrigger-plural",
     en = u"Transition triggers"
 )
 
-translations.define("Trigger.transition",
+translations.define("TransitionTrigger.transition",
     ca = u"Transició a observar",
     es = u"Transición a observar",
     en = u"Watched transition"
