@@ -7,10 +7,17 @@ u"""
 @since:			October 2008
 """
 from __future__ import with_statement
+
+try:
+    from cStringIO import StringIO
+except ImportError:
+    from StringIO import StringIO
+
 from itertools import chain
 from os.path import join
 from tempfile import mkdtemp
 import cherrypy
+import mimetypes
 import pyExcelerator
 from cocktail.modeling import (
     getter,
@@ -374,58 +381,15 @@ class ContentController(BaseBackOfficeController):
 
     def render_msexcel(self):
         
-        collection = self.user_collection
-        content_type = collection.type
-        filename = translations(content_type.name + "-plural") + ".xls"
-        members = [member
-                for member in self.user_collection.schema.ordered_members()
-                if member.name in collection.members]
-     
-        book = pyExcelerator.Workbook()
-        sheet = book.add_sheet('0')
-
-        # Column headers
-        header_style = pyExcelerator.XFStyle()
-        header_style.font = pyExcelerator.Font()
-        header_style.font.bold = True
-
-        for col, member in enumerate(members):
-            label = translations(member)
-            sheet.write(0, col, label, header_style)
-
-        # Sheet content
-        def get_cell_content(member, value):            
-            if value is None:
-                return ""
-            elif isinstance(value, (list, set, ListWrapper, SetWrapper)):
-                return "\n".join(get_cell_content(member, item)
-                                 for item in value)
-            elif not member.translated:
-                return translations(value, default = unicode(value))
-            else:
-                return unicode(value)
-
-        for row, item in enumerate(collection.subset):                            
-            for col, member in enumerate(members):
-
-                if member.name == "element":
-                    value = translations(item)
-                elif member.name == "class":
-                    value = translations(item.__class__.name)
-                else:
-                    value = item.get(member.name)
-
-                cell_content = get_cell_content(member, value)                   
-                sheet.write(row + 1, col, cell_content)
-
-        # Sadly, pyExcelerator needs to write its output to a file
-        path = join(mkdtemp(), "items.xls")
-        book.save(path)
-
-        return cherrypy.lib.static.serve_file(
-            path,
-            "application/vnd.ms-excel",
-            "attachment",
-            filename
+        content_type = mimetypes.types_map.get(".xls")
+        cd = 'attachment; filename="%s"' % (
+            translations(self.user_collection.type.name + "-plural") + ".xls"
         )
+
+        cherrypy.response.headers['Content-Type'] = content_type
+        cherrypy.response.headers["Content-Disposition"] = cd
+
+        buffer = StringIO()
+        self.user_collection.export_file(buffer, mime_type = content_type)
+        return buffer.getvalue()
 
