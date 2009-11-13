@@ -192,7 +192,7 @@ class ItemSelector(Element, DataBoundControl):
             new_button.tag = "button"
             new_button["name"] = "ItemSelector-new"
             new_button["value"] = \
-                self.member.name + "-" + self.member.type.full_name
+                self.member.name + "-" + list(instantiable_types)[0].full_name
             label = new_button
 
         label.append(Element("img",
