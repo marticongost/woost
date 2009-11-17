@@ -12,8 +12,8 @@
 // approach which clarifies the selection process a bit.
 cocktail.init(function (root) {
 
-    var selectorBackground, selectorIframe;
-    
+    var selectorIframe;
+
     jQuery(".UserFilterEntry .ItemSelector", root).each(function () {
 
         var itemSelector = this;
@@ -39,35 +39,28 @@ cocktail.init(function (root) {
             jQuery("input[type=hidden]", this).val(itemId);
         }
 
-        jQuery("button", this).click(function () {
- 
-            jQuery(document.body).addClass("modal");
+        jQuery(".ItemSelector-button.select", this).click(function (e) {
 
-            selectorBackground = document.createElement("div");
-            selectorBackground.className = "ItemSelector-background";
-            document.body.appendChild(selectorBackground);
-            
+            button = this;
+
             var win = window;
             var depth = 0;
             while (win != window.top) {
                 depth++;
                 win = win.parent;
             }
-
-            selectorIframe = document.createElement("iframe");
-            selectorIframe.className = "ItemSelector-frame";
-            selectorIframe.name = "ItemSelector-frame" + depth;
-            document.body.appendChild(selectorIframe);
+            
+			selectorIframe = cocktail.createElement("iframe", "ItemSelector-frame" + depth);
+			selectorIframe.className = "ItemSelector-frame";
+            cocktail.showDialog(selectorIframe);
 
             function closeDialog() {
-                jQuery(document.body).removeClass("modal");
-                jQuery(selectorIframe).remove();
-                jQuery(selectorBackground).remove();
-                jQuery(param).remove();
+	            cocktail.closeDialog();
                 form.target = prevTarget;
+				form.removeChild(param);
             }
 
-            selectorIframe.onload = function () {
+            jQuery(selectorIframe).load(function () {
                 var iframeJQuery = this.contentWindow.jQuery;
                 iframeJQuery(".select_action").click(function () {
                     var sel = iframeJQuery(".collection_display").get(0).getSelection();
@@ -86,14 +79,12 @@ cocktail.init(function (root) {
                     closeDialog();
                     return false;
                 });
-            }
+            });
             
             var form = jQuery(this).parents("form").get(0);
             var prevTarget = form.target;
-            param = document.createElement("input");
-            param.type = "hidden";
-            param.name = "client_side_scripting";
-            param.value = "true";
+			param = cocktail.createElement("input", "client_side_scripting", "hidden");
+			param.value = "true";
             form.appendChild(param);
             form.target = selectorIframe.name;
         });
