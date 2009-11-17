@@ -61,6 +61,7 @@ from sitebasis.controllers.backoffice.useractions import add_view_action_context
         <?py
         self.is_client_side_selector = (
             self.client_side_scripting
+            and self.edit_stack
             and isinstance(self.edit_stack[-1], (SelectionNode, RelationNode))
         )
 
