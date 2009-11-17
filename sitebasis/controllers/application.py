@@ -372,6 +372,7 @@ class CMS(BaseCMSController):
                 response.status = status 
                 
                 error_controller = error_page.handler()
+                error_controller._rendering_format = "html"
                 response.body = error_controller()
     
     def get_error_page(self, error):
