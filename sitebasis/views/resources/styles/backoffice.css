@@ -224,7 +224,8 @@ body {
 
 .BackOfficeLayout input[type=text],
 .BackOfficeLayout input[type=password],
-.BackOfficeLayout textarea {
+.BackOfficeLayout textarea,
+.BackOfficeLayout .CodeMirror-wrapping {
     border: 1px solid rgb(200,200,200);
     padding: 0.2em;
     -moz-box-sizing: border-box;
@@ -2562,6 +2563,21 @@ a.pickcolor span {
 -----------------------------------------------------------------------------*/
 .Trigger .condition_field .control {
     width: 30em !important;
+}
+
+.Trigger .condition_field .CodeMirror-wrapping {
+    width: 30em !important;
+    height: 2.5em !important;
+}
+
+/* Syndication feed styles
+-----------------------------------------------------------------------------*/
+.Feed .item_title_expression_field .CodeMirror-wrapping,
+.Feed .item_link_expression_field .CodeMirror-wrapping, 
+.Feed .item_publication_date_expression_field .CodeMirror-wrapping,
+.Feed .item_description_expression_field .CodeMirror-wrapping {
+    width: 30em !important;
+    height: 2.5em !important;
 }
 
 /* Tweaks for custom trigger responses

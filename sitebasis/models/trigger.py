@@ -16,6 +16,7 @@ from cocktail.translations import translations
 from cocktail.events import when
 from cocktail.persistence import datastore
 from cocktail.controllers import UserCollection
+from cocktail.html.datadisplay import display_factory
 from sitebasis.models.action import Action
 from sitebasis.models.changesets import ChangeSet
 from sitebasis.models.site import Site
@@ -107,7 +108,11 @@ class Trigger(Item):
     )
 
     condition = schema.String(
-        edit_control = "cocktail.html.TextArea"
+        edit_control = display_factory(
+            "cocktail.html.CodeEditor",
+            syntax = "python",
+            cols = 80
+        )
     )
      
     def match(self, user, verbose = False, **context):
