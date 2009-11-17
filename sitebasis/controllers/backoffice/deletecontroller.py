@@ -9,7 +9,13 @@ u"""
 from __future__ import with_statement
 from ZODB.POSException import ConflictError
 from cocktail.modeling import getter, cached_getter, InstrumentedSet
-from cocktail.schema import String, Collection, Reference, RelationMember
+from cocktail.schema import (
+    String,
+    Collection,
+    Reference,
+    RelationMember,
+    remove
+)
 from cocktail.persistence import datastore, PersistentClass
 from sitebasis.models import (
     changeset_context,
@@ -17,6 +23,7 @@ from sitebasis.models import (
     get_current_user,
     DeletePermission
 )
+from sitebasis.controllers.backoffice.editstack import EditNode
 from sitebasis.controllers.backoffice.basebackofficecontroller \
     import BaseBackOfficeController
 
@@ -113,6 +120,10 @@ class DeleteController(BaseBackOfficeController):
     def submit(self):
         if self.action == "confirm_delete":
             
+            # Load the edit stack before deleting any item, to ensure its
+            # loaded properly
+            stack = self.edit_stack
+
             user = get_current_user()
 
             for i in range(self.MAX_TRANSACTION_ATTEMPTS):
@@ -132,21 +143,27 @@ class DeleteController(BaseBackOfficeController):
                     datastore.abort()
                     datastore.sync()
                 else:
-                    break
-        
+                    break       
+          
+            # Purge the edit stack of references to deleted items
+            if stack:
+                stack.remove_references(deleted_set)
+            
+            # Launch CMS.item_deleted events
             cms = self.context["cms"]
+
             for item in deleted_set:
                 cms.item_deleted(
                     item = item,
                     user = user,
                     change = item.changes[-1]
-                )
-
+                )               
+            
             self.go_back()
             
         elif self.action == "cancel":
             self.go_back()
-    
+
     view_class = "sitebasis.views.BackOfficeDeleteView"
 
     @cached_getter
