@@ -35,7 +35,8 @@ class ItemSelector(Element, DataBoundControl):
     
         Element._build(self)
 
-        self.add_resource("/resources/scripts/ItemSelector.js")        
+        self.add_resource("/cocktail/scripts/buttons_replacement.js")
+        self.add_resource("/resources/scripts/ItemSelector.js")
         self.set_client_param("emptyLabel", self.empty_label)
 
         self.input = templates.new("cocktail.html.HiddenInput")
@@ -121,6 +122,7 @@ class ItemSelector(Element, DataBoundControl):
 
         select_button = Element("button",
             name = "ItemSelector-select",
+            type = "submit",
             class_name = "ItemSelector-button select",
             value = self.member.type.full_name + "-" + self._param_name
         )
@@ -137,6 +139,7 @@ class ItemSelector(Element, DataBoundControl):
         
         unlink_button = Element("button",
             name = "ItemSelector-unlink",
+            type = "submit",
             class_name = "ItemSelector-button unlink",
             value = self.member.name
         )
@@ -183,6 +186,7 @@ class ItemSelector(Element, DataBoundControl):
             def create_label(tree, content_type):
                 label = call_base(content_type)
                 label.tag = "button"
+                label["type"] = "submit"
                 label["name"] = "ItemSelector-new"
                 label["value"] = self.member.name + "-" + content_type.full_name
                 return label
@@ -190,6 +194,7 @@ class ItemSelector(Element, DataBoundControl):
             container.append(content_type_tree)
         else:
             new_button.tag = "button"
+            new_button["type"] = "submit"
             new_button["name"] = "ItemSelector-new"
             new_button["value"] = \
                 self.member.name + "-" + self.member.type.full_name
@@ -208,6 +213,7 @@ class ItemSelector(Element, DataBoundControl):
 
         edit_button = Element("button",
             name = "ItemSelector-edit",
+            type = "submit",
             class_name = "ItemSelector-button edit",
             value = self.member.name
         )
@@ -224,6 +230,7 @@ class ItemSelector(Element, DataBoundControl):
 
         delete_button = Element("button",
             name = "ItemSelector-unlink",
+            type = "submit",
             class_name = "ItemSelector-button delete",
             value = self.member.name
         )
