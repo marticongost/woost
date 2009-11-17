@@ -723,9 +723,12 @@ class EditNode(StackNode):
     def form_data(self):
         """The data entered into the edit form."""
  
-        # First load: fill the form with data from the edited item
         form_data = {}
-        self.export_form_data(self.item, form_data)
+
+        # First load: fill the form with data from the edited item
+        if self is self.stack[-1]:
+            self.export_form_data(self.item, form_data)
+
         return form_data
 
     def iter_errors(self):
