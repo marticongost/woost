@@ -334,6 +334,41 @@ class EditStack(ListWrapper):
 
         return "%d-%d" % (self.id, index)
 
+    def remove_references(self, removed_items):
+        """Removes all references to the indicated items from the edit stack.
+
+        @param removed_items: The items to remove from the stack.
+        @type removed_items: L{Item<sitebasis.models.item.Item>} sequence
+        """
+        # For each edit node in the stack
+        for node in self:
+            if isinstance(node, EditNode):
+                
+                # Find all relations to persistent items
+                form_data = node.form_data
+
+                for key, member in node.item.__class__.members().iteritems():
+                    if isinstance(member, schema.RelationMember) \
+                    and member.is_persistent_relation:
+                        
+                        # Clean up references (set to None)
+                        if isinstance(member, schema.Reference) \
+                        and form_data.get(key) in removed_items:
+                            form_data[key] = None
+
+                        # Clean up collections (completely remove the indicated
+                        # items)
+                        elif isinstance(member, schema.Collection):
+                        
+                            items = form_data.get(key)
+                            if items:
+                                for item in removed_items:
+                                    while True:
+                                        try:
+                                            schema.remove(items, item)
+                                        except:
+                                            break
+
 
 class StackNode(object):
     """Base (abstract) class for the different kinds of nodes that form an
@@ -688,9 +723,12 @@ class EditNode(StackNode):
     def form_data(self):
         """The data entered into the edit form."""
  
-        # First load: fill the form with data from the edited item
         form_data = {}
-        self.export_form_data(self.item, form_data)
+
+        # First load: fill the form with data from the edited item
+        if self is self.stack[-1]:
+            self.export_form_data(self.item, form_data)
+
         return form_data
 
     def iter_errors(self):

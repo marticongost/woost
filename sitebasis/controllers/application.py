@@ -342,13 +342,14 @@ class CMS(BaseCMSController):
         )
 
     @event_handler
-    def handle_exception_raised(self, event):
+    def handle_exception_raised(cls, event):
 
         error = event.exception
+        controller = event.source
 
         # URI normalization
         if isinstance(error, CanonicalURIRedirection):
-            self._canonical_redirection(error.path)
+            controller._canonical_redirection(error.path)
         
         if cherrypy.response.headers.get("Content-Type") in (
             "text/html",
@@ -359,11 +360,11 @@ class CMS(BaseCMSController):
             if status:
                 cherrypy.request.status = status
 
-            if error_page:        
+            if error_page:
                 event.handled = True
                 
-                self.context.update(
-                    original_document = self.context["document"],
+                controller.context.update(
+                    original_document = controller.context["document"],
                     document = error_page
                 )
                 
@@ -371,6 +372,7 @@ class CMS(BaseCMSController):
                 response.status = status 
                 
                 error_controller = error_page.handler()
+                error_controller._rendering_format = "html"
                 response.body = error_controller()
     
     def get_error_page(self, error):

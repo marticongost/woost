@@ -8,6 +8,7 @@
 """
 from cocktail import schema
 from cocktail.controllers.usercollection import UserCollection
+from cocktail.html.datadisplay import display_factory
 from sitebasis.models.item import Item
 from sitebasis.models.language import Language
 from sitebasis.models.resource import Resource
@@ -74,25 +75,37 @@ class Feed(Item):
     item_title_expression = schema.String(
         required = True,
         default = "translations(item)",
-        listed_by_default = False
+        listed_by_default = False,
+        edit_control = display_factory(
+            "cocktail.html.CodeEditor", syntax = "python"
+        )
     )
 
     item_link_expression = schema.String(
         required = True,
         default = "canonical_uri(item)",
-        listed_by_default = False
+        listed_by_default = False,
+        edit_control = display_factory(
+            "cocktail.html.CodeEditor", syntax = "python"
+        )
     )
 
     item_publication_date_expression = schema.String(
         required = True,
         default = "item.start_date or item.creation_time",
-        listed_by_default = False
+        listed_by_default = False,
+        edit_control = display_factory(
+            "cocktail.html.CodeEditor", syntax = "python"
+        )
     )
 
     item_description_expression = schema.String(
         required = True,
         default = "item.description",
-        listed_by_default = False
+        listed_by_default = False,
+        edit_control = display_factory(
+            "cocktail.html.CodeEditor", syntax = "python"
+        )
     )
 
     def select_items(self):

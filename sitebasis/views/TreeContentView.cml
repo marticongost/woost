@@ -24,7 +24,9 @@ from cocktail import schema
 
     def _init_user_collection(self, user_collection):
         ContentView._init_user_collection(self, user_collection)
-
+        self._constraint_root(user_collection)
+    
+    def _constraint_root(self, user_collection):
         if self.children_collection.bidirectional \
         and isinstance(self.children_collection.related_end, schema.Reference):
             user_collection.add_base_filter(
