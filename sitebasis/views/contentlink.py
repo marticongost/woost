@@ -9,27 +9,28 @@ u"""
 from cocktail.html import Element
 from cocktail.translations import translations
 from cocktail.controllers import context
+from sitebasis.views.itemlabel import ItemLabel
 
 
-class ContentLink(Element):
+class ContentLink(ItemLabel):
 
-    item = None
     referer = None
+    icon_visible = False
 
-    def __init__(self, item = None, **kwargs):
+    def __init__(self, item = None, referer = None, **kwargs):
         Element.__init__(self, **kwargs)
         self.item = item
+        self.referer = referer
 
     def _ready(self):
 
-        Element._ready(self)
+        ItemLabel._ready(self)
 
         if self.item:
             self.tag = "a"
             self["href"] = context["cms"].document_uri(
                 "content", self.item.id, "show_detail"
-            )                
-            self.append(self.get_label())
+            )
         else:
             self.append(u"-")
 
