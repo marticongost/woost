@@ -15,7 +15,7 @@ class ItemLabel(Element):
 
     item = None
     icon_size = 16
-    icon_visible = False
+    icon_visible = True
 
     def _ready(self):
         Element._ready(self)
