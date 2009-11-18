@@ -17,7 +17,6 @@ setup(
     install_requires = [
         "simplejson",
         "cocktail==0.2",
-        "pyExcelerator",
         "PIL"
     ],
     include_package_data = True,
