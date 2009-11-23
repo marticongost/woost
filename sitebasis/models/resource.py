@@ -6,6 +6,7 @@ u"""
 @organization:	Whads/Accent SL
 @since:			June 2008
 """
+from datetime import datetime
 from cocktail.modeling import getter, abstractmethod
 from cocktail.translations import translations
 from cocktail import schema
