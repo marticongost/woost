@@ -10,6 +10,7 @@ import re
 import buffet
 from cocktail.modeling import abstractmethod
 from cocktail import schema
+from cocktail.html.datadisplay import display_factory
 from sitebasis.models.item import Item
 
 line_separator_expr = re.compile("[\r\n]+")
@@ -62,7 +63,9 @@ class CustomTriggerResponse(TriggerResponse):
 
     code = schema.String(
         required = True,
-        edit_control = "cocktail.html.TextArea"
+        edit_control = display_factory(
+            "cocktail.html.CodeEditor", syntax = "python"
+        )
     )
 
     def execute(self, items, user, batch = False, **context):
@@ -73,6 +76,7 @@ class CustomTriggerResponse(TriggerResponse):
         )
         code = line_separator_expr.sub("\n", self.code)
         exec code in context
+
 
 class SendEmailTriggerResponse(TriggerResponse):
     """A trigger response that allows to send an email."""
