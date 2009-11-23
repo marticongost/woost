@@ -35,7 +35,6 @@ class ItemSelector(Element, DataBoundControl):
     
         Element._build(self)
 
-        self.add_resource("/cocktail/scripts/buttons_replacement.js")
         self.add_resource("/resources/scripts/ItemSelector.js")
         self.set_client_param("emptyLabel", self.empty_label)
 

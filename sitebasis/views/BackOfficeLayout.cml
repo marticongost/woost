@@ -31,6 +31,7 @@ from sitebasis.controllers.backoffice.useractions import add_view_action_context
 
     <?py
     self.add_resource("/resources/styles/backoffice.css")
+    self.add_resource("/cocktail/scripts/form.js")
     self.add_resource("/resources/scripts/BackOfficeLayout.js")
     
     # TODO: Implement conditional comments for IE more generally
@@ -49,7 +50,6 @@ from sitebasis.controllers.backoffice.useractions import add_view_action_context
             href = "/resources/styles/print.css")
     )
     
-    self.add_resource("/cocktail/scripts/jquery.js")    
     self.add_resource("/cocktail/scripts/jquery.hotkeys.js")
     self.add_resource("/cocktail/scripts/jquery.query.js")
     self.add_resource("/cocktail/scripts/selectors.js")

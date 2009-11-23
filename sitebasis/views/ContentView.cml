@@ -29,7 +29,6 @@ from sitebasis.controllers.backoffice.editstack import SelectionNode
     xmlns:py="http://www.whads.com/ns/cocktail/templates">
 
     <?py
-    self.add_resource("/cocktail/scripts/jquery.js")
     self.add_resource("/resources/scripts/ContentView.js")    
     self.add_client_translation("sitebasis.views.ContentView show advanced search")
     self.add_client_translation("sitebasis.views.ContentView close advanced search")
