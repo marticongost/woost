@@ -85,25 +85,10 @@ class TypeFilter(UserFilter):
     @cached_getter
     def expression(self):
 
-        ids = set()
-
-        for cls in self.types:
-            if self.is_inherited:
-                ids.update(cls.keys)
-            else:
-                children = cls.derived_schemas(recursive = False)
-                children_ids = set()
-                for child in children:
-                    children_ids.update(child.keys)
-                ids.update(set(cls.keys).difference(children_ids))
-
         if self.operator == "eq":
-            expr = InclusionExpression(Self, ids)
+            return IsInstanceExpression(Self, self.types, self.is_inherited)
         elif self.operator == "ne":
-            expr = ExclusionExpression(Self, ids)
-
-        expr.by_key = True
-        return expr
+            return NotIsInstanceExpression(Self, self.types, self.is_inherited)
 
 user_filters_registry.add(Item, TypeFilter)
 
