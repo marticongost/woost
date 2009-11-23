@@ -33,7 +33,6 @@ class ContentTypePicker(ContentTypeTree, DataBoundControl):
 
     def _build(self):
         ContentTypeTree._build(self)
-        self.add_resource("/cocktail/scripts/jquery.js")
         self.add_resource("/resources/scripts/ContentTypePicker.js")
 
     def _ready(self):

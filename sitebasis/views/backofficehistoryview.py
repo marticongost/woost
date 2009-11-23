@@ -19,7 +19,6 @@ class BackOfficeHistoryView(BackOfficeLayout):
         
         BackOfficeLayout._build(self)
 
-        self.add_resource("/cocktail/resources/jquery.js")
         self.add_resource("/resources/scripts/backoffice_content.js")
 
         self.collection_view = self.create_collection_view()

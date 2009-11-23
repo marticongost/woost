@@ -5,7 +5,6 @@
     xmlns:py="http://www.whads.com/ns/cocktail/templates">
 
     <?py
-    self.add_resource("/resources/scripts/jquery.js")
     self.add_resource("/resources/scripts/UserForm.js")
     ?>
 

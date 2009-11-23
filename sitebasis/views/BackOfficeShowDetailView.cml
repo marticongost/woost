@@ -16,8 +16,7 @@ from sitebasis.controllers.backoffice.useractions import \
     ?>
 
     <?py
-        self.add_resource("/cocktail/scripts/buttons_replacement.js")
-        add_view_action_context(self, "show_detail")
+    add_view_action_context(self, "show_detail")
     ?>
 
     <py:ready>
