@@ -34,7 +34,8 @@ from sitebasis.models import (
     ModifyTranslationPermission,
     DeleteTranslationPermission,
     DeleteTrigger,
-    CustomTriggerResponse
+    CustomTriggerResponse,
+    ConfirmDraftPermission
 )
 
 standard_template_identifiers = {
@@ -150,6 +151,7 @@ def init_site(
             CreatePermission(matching_items = everything()),
             ModifyPermission(matching_items = everything()),
             DeletePermission(matching_items = everything()),
+            ConfirmDraftPermission(matching_items = everything()),
             ModifyMemberPermission()
         ]
         administrators.insert()
@@ -182,6 +184,7 @@ def init_site(
             # Content owners have full control
             ModifyPermission(matching_items = owned_items()),
             DeletePermission(matching_items = owned_items()),
+            ConfirmDraftPermission(matching_items = owned_items()),
             
             # All members allowed, except for 'owner'
             ReadMemberPermission(),

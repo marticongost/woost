@@ -15,6 +15,7 @@ class ItemLabel(Element):
 
     item = None
     icon_size = 16
+    icon_visible = True
 
     def _ready(self):
         Element._ready(self)
@@ -24,7 +25,9 @@ class ItemLabel(Element):
             for schema in self.item.__class__.descend_inheritance(True):
                 self.add_class(schema.name)
 
-            self.append(self.create_icon())
+            if self.icon_visible:
+                self.append(self.create_icon())
+
             self.append(self.get_label())
 
     def create_icon(self):
