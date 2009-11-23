@@ -14,9 +14,9 @@ TreeContentView = templates.get_class("sitebasis.views.TreeContentView")
 class DocumentTreeContentView(TreeContentView):
  
     children_collection = Document.children
-    multiple_roots = False
 
-    def _init_user_collection(self, user_collection):
+    def __init__(self, *args, **kwargs):
+        TreeContentView.__init__(self, *args, **kwargs)
         home = Site.main.home
-        user_collection.base_collection = [home] if home is not None else []
+        self.root = [home] if home is not None else []
 

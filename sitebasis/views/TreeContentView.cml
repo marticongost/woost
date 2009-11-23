@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <?py
+from cocktail.modeling import OrderedSet
 from cocktail import schema
 ?>
 
@@ -18,34 +19,57 @@ from cocktail import schema
     content_view_id = "tree"
     children_collection = None
     allow_sorting = False
-    allow_filters = False
-    allow_paging = False
     allow_grouping = False
-
-    def _init_user_collection(self, user_collection):
-        ContentView._init_user_collection(self, user_collection)
-        self._constraint_root(user_collection)
-    
-    def _constraint_root(self, user_collection):
-        if self.children_collection.bidirectional \
-        and isinstance(self.children_collection.related_end, schema.Reference):
-            user_collection.add_base_filter(
-                self.children_collection.related_end.equal(None)
-            )
+    allow_paging = False
+    root = None
     ?>
+
+    <div py:id="expansion_controls" py:parent="self.data_controls">
+        <span>${translations("sitebasis.views.TreeContentView expansion controls")}</span>
+        <a href="?expanded=">${translations("sitebasis.views.TreeContentView collapse all")}</a>
+        <a href="?expanded=all">${translations("sitebasis.views.TreeContentView expand all")}</a>
+    </div>
 
     <py:sitebasis.views.ContentTree
         py:def="collection_display"
         py:cms="@{self.cms}"
         py:base_url="@{self.cms.document_uri()}"
         py:translations="@{self.user_collection.languages}"
-        py:children_collection="@{self.children_collection}"
-        py:expanded="@{self.user_collection.expanded_items}">
+        py:children_collection="@{self.children_collection}">
         <py:binding>
             <?py
+            # Branch expansion
+            if self.user_collection.expanded_items == "all":
+                element.fully_expanded = True
+            else:
+                element.expanded = self.user_collection.expanded_items
+
+            # Hide parent/children columns
+            parent_member = self.children_collection.related_end
+            element.set_member_displayed(parent_member, False)
             element.set_member_displayed(self.children_collection, False)
-            if self.children_collection.bidirectional:
-                element.set_member_displayed(self.children_collection.related_end, False)
+
+            # Set the root of the tree to any item that satisfies the query, or
+            # that has one or more descendants that do. If self.root is set,
+            # use it to further constraint the root of the tree.
+            items = OrderedSet(self.user_collection.subset)
+            element.filter_item = items.__contains__
+            
+            if self.root is not None and not self.root:
+                # Empty root, no point in evaluating descending nodes
+                element.data = []
+            else:
+                element.data = root = OrderedSet()
+                
+                for item in items:
+                    while True:
+                        parent = item.get(parent_member)
+                        if parent is None:
+                            if self.root is None or item in self.root:
+                                root.append(item)
+                            break
+                        else:
+                            item = parent
             ?>
         </py:binding>
     </py:sitebasis.views.ContentTree>

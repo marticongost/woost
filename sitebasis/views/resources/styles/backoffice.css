@@ -778,14 +778,21 @@ body.scripted .BackOfficeLayout .Table .selection {
 
 .BackOfficeLayout .selection_controls {
     clear: both;
+    margin-right: 1.4em;
+}
+
+.BackOfficeLayout .selection_controls,
+.BackOfficeLayout .expansion_controls {
     float: left;
     padding-left: 0.6em;
     padding-bottom: 0.5em;
     font-size: 75%;
 }
 
-.BackOfficeLayout .selection_controls * {
+.BackOfficeLayout .selection_controls *,
+.BackOfficeLayout .expansion_controls * {
     padding-right: 1em;
+    text-decoration: none;
 }
 
 .BackOfficeLayout .Table .position_mark button {
@@ -1214,6 +1221,11 @@ body.scripted .BackOfficeLayout .ContentTypePicker.selector {
 
 .BackOfficeLayout .TreeContentView .leaf label {
     margin-left: 1.5em;
+}
+
+.BackOfficeLayout .TreeContentView tr.filtered .element_column {
+    color: rgb(70,70,70);
+    font-style: italic;
 }
 
 /* Thumbnails content view

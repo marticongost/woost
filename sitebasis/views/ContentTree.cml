@@ -7,6 +7,10 @@ from cocktail.iteration import is_empty
 from cocktail.schema import SchemaObjectAccessor
 from cocktail.controllers import view_state
 from cocktail.html.datadisplay import MULTIPLE_SELECTION
+
+NOT_ACCESSIBLE = 0
+ACCESSIBLE = 1
+ACCESSIBLE_DESCENDANTS = 2
 ?>
 
 <py:sitebasis.views.ContentTable
@@ -19,9 +23,36 @@ from cocktail.html.datadisplay import MULTIPLE_SELECTION
     selection_mode = MULTIPLE_SELECTION
     children_collection = "children"
     expanded = ()
+    filter_item = None
+    fully_expanded = False
 
     def get_children(self, item):
         return item.get(self.children_collection)
+
+    __item_access = None
+
+    def _is_accessible(self, item):
+        
+        if self.__item_access is None:
+            self.__item_access = {}
+        
+        accessibility = self.__item_access.get(item)
+
+        if accessibility is None:
+
+            if self.filter_item(item):
+                accessibility = ACCESSIBLE
+            elif any(
+                self._is_accessible(child)
+                for child in self.get_children(item)
+            ):
+                accessibility = ACCESSIBLE_DESCENDANTS
+            else:
+                accessibility = NOT_ACCESSIBLE
+
+            self.__item_access[item] = accessibility
+
+        return accessibility
 
     def _fill_body(self):
         
@@ -33,15 +64,28 @@ from cocktail.html.datadisplay import MULTIPLE_SELECTION
 
     def _fill_branch(self, item):
 
-        row = self.create_row(self.__index, item)
-        self.append(row)
-        self.__index += 1
+        if not self.filter_item:
+            access_level = ACCESSIBLE
+        else:
+            access_level = self._is_accessible(item)
 
-        if item.id in self.expanded:
-            self.__depth += 1
-            for item in self.get_children(item):
-                self._fill_branch(item)
-            self.__depth -= 1
+        if access_level != NOT_ACCESSIBLE:
+            row = self.create_row(self.__index, item)
+            self.append(row)
+
+            if access_level == ACCESSIBLE_DESCENDANTS:
+                row.add_class("filtered")
+
+            self.__index += 1
+
+            if self.is_expanded(item):
+                self.__depth += 1
+                for item in self.get_children(item):
+                    self._fill_branch(item)
+                self.__depth -= 1
+
+    def is_expanded(self, item):
+        return self.fully_expanded or item.id in self.expanded
 
     def create_element_display(self, item, member):
         return self.create_element_cell(item, member)
@@ -72,9 +116,7 @@ from cocktail.html.datadisplay import MULTIPLE_SELECTION
         if empty:
             element.add_class("leaf")        
         else:
-            is_expanded = item.id in self.expanded
-            
-            if is_expanded:
+            if self.is_expanded(item):
                 state = "expanded"
                 expander_ids = (id
                                 for id in self.expanded

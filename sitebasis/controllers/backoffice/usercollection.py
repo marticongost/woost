@@ -199,12 +199,15 @@ class BackOfficeUserCollection(UserCollection):
     #--------------------------------------------------------------------------
     @cached_getter
     def expanded_items(self):
-        return self.params.read(
-            schema.Collection(
-                "expanded",
-                type = set,
-                items = schema.Integer(),
-                default = set()
+        if self.params.read(schema.String("expanded")) == "all":
+            return "all"
+        else:
+            return self.params.read(
+                schema.Collection(
+                    "expanded",
+                    type = set,
+                    items = schema.Integer(),
+                    default = set()
+                )
             )
-        )
 
