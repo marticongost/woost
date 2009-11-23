@@ -434,6 +434,24 @@ translations.define("Advanced search",
     en = u"Advanced search"
 )
 
+translations.define("sitebasis.views.TreeContentView expansion controls",
+    ca = u"Arbre:",
+    es = u"Árbol:",
+    en = u"Tree:"
+)
+
+translations.define("sitebasis.views.TreeContentView expand all",
+    ca = u"Desplegar",
+    es = u"Expandir",
+    en = u"Unfold"
+)
+
+translations.define("sitebasis.views.TreeContentView collapse all",
+    ca = u"Plegar",
+    es = u"Contraer",
+    en = u"Fold"
+)
+
 translations.define("sitebasis.models.Item draft copy",
     ca = lambda item, draft_id: u"Borrador %d %s"
         % (draft_id, ca_possessive(translations(item, "ca"))),
