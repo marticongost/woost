@@ -10,7 +10,9 @@ from cocktail.modeling import cached_getter
 from cocktail.schema.expressions import (
     Self,
     InclusionExpression,
-    ExclusionExpression
+    ExclusionExpression,
+    IsInstanceExpression,
+    IsNotInstanceExpression
 )
 from cocktail import schema
 from cocktail.html import templates
@@ -88,7 +90,7 @@ class TypeFilter(UserFilter):
         if self.operator == "eq":
             return IsInstanceExpression(Self, self.types, self.is_inherited)
         elif self.operator == "ne":
-            return NotIsInstanceExpression(Self, self.types, self.is_inherited)
+            return IsNotInstanceExpression(Self, self.types, self.is_inherited)
 
 user_filters_registry.add(Item, TypeFilter)
 
