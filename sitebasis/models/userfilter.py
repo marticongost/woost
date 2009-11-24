@@ -88,9 +88,9 @@ class TypeFilter(UserFilter):
     def expression(self):
 
         if self.operator == "eq":
-            return IsInstanceExpression(Self, self.types, self.is_inherited)
+            return IsInstanceExpression(Self, tuple(self.types), self.is_inherited)
         elif self.operator == "ne":
-            return IsNotInstanceExpression(Self, self.types, self.is_inherited)
+            return IsNotInstanceExpression(Self, tuple(self.types), self.is_inherited)
 
 user_filters_registry.add(Item, TypeFilter)
 
