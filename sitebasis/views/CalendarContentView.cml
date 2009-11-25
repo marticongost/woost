@@ -328,22 +328,21 @@ from cocktail.controllers import view_state
 
                             if year == self.today.year and month == self.today.month and day == self.today.day:
                                 element.add_class("today")
+                        
+                        cell_entries = list(self._consume_entries(cell_date)) if cell_date else None
                         ?>
-                        <py:new py:element="month_calendar.create_cell(cell_date)"/>
+                        <py:new py:element="month_calendar.create_cell(cell_date, cell_entries)"/>
                     </td>
                 </tr>
             </py:ready>
         </tbody>
-        <div py:def="cell" py:args="cell_date">            
-            <div class="day" py:if="cell_date">${cell_date.day}</div>
+        <div py:def="cell" py:args="cell_date, entries">
+            <div py:local_id="day" py:if="cell_date">${cell_date.day}</div>
             <?py
-            entries = None
-            if cell_date:
-                entries = list(self._consume_entries(cell_date))
-                if entries:
-                    element.add_class("has_entries")
+            if entries:
+                element.add_class("has_entries")
             ?>
-            <div class="entries" py:if="entries">
+            <div py:local_id="entries" py:if="entries">
                 <div py:for="member, entry_date, item in entries" class="calendar_entry">
                     <?py
                     element.add_class(member.name + "_entry")
