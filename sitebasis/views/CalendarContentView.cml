@@ -123,14 +123,23 @@ from cocktail.controllers import view_state
         return item.get(member)
 
     def _consume_entries(self, cell_date):
+        
         for member in self.date_members:
             member_entries = self._entries.get(member)
-            while member_entries \
-            and member_entries[0][0].year == cell_date.year \
-            and member_entries[0][0].month == cell_date.month \
-            and member_entries[0][0].day == cell_date.day:
+            
+            while member_entries:
+                comp = self._compare_dates(member_entries[0][0], cell_date)
+
+                if comp == 1:
+                    break
+
                 entry_date, item = member_entries.pop(0)
-                yield (member, entry_date, item)
+
+                if comp == 0:
+                    yield (member, entry_date, item)
+
+    def _compare_dates(self, a, b):
+        return cmp((a.year, a.month, a.day), (b.year, b.month, b.day))
     ?>
 
     <?py
