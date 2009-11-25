@@ -52,7 +52,7 @@ class FeedsController(BaseCMSController):
             return date.strftime("%d %%s %Y %H:%M:%S %%s") % ([
                 "Jan", "Feb", "Mar", "Apr", "May", "Jun",
                 "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
-            ][date.month],tz)
+            ][date.month-1],tz)
 
         params = {
             "title": feed.title,
