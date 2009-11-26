@@ -14,13 +14,16 @@ cocktail.init(function (root) {
 
         var form = this;
 
-        jQuery(".filters .search_button", this).click(function () {
+        function expand() {
+            jQuery("input[name=expanded]", form).remove();
             form.setParameter("expanded", "all", true);
-        });
+        }
+
+        jQuery(".filters .search_button", this).click(expand);
 
         jQuery(".filters", this).keypress(function (e) {
             if (e.keyCode == 13) {
-                form.setParameter("expanded", "all", true);                
+                expand();
             }
         });
     });
