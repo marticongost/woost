@@ -174,9 +174,10 @@ class ContentTrigger(Trigger):
         else:
             for filter in query.filters:
                 if not filter.eval(target):
-                    print trigger_doesnt_match_style(
-                        "filter %s doesn't match" % filter
-                    )
+                    if verbose:
+                        print trigger_doesnt_match_style(
+                            "filter doesn't match"
+                        )
                     return False
 
         if not Trigger.match(
