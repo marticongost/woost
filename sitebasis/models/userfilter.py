@@ -17,7 +17,11 @@ from cocktail.schema.expressions import (
 from cocktail import schema
 from cocktail.html import templates
 from cocktail.html.datadisplay import MULTIPLE_SELECTION
-from cocktail.controllers.userfilter import UserFilter, user_filters_registry
+from cocktail.controllers.userfilter import (
+    UserFilter,
+    CollectionFilter,
+    user_filters_registry
+)
 from sitebasis.models.item import Item
 from sitebasis.models.document import Document, DocumentIsPublishedExpression
 from sitebasis.models.resource import Resource
@@ -94,10 +98,7 @@ class TypeFilter(UserFilter):
 
 user_filters_registry.add(Item, TypeFilter)
 
-
-_reference_filter_base = schema.Reference.user_filter
-
-class ItemSelectorFilter(_reference_filter_base):
+class ItemSelectorFilter(schema.Reference.user_filter):
     
     def search_control(self, parent, obj, member):
         control = templates.new("sitebasis.views.ItemSelector")
@@ -105,4 +106,11 @@ class ItemSelectorFilter(_reference_filter_base):
         return control
 
 schema.Reference.user_filter = ItemSelectorFilter
+
+def _collection_search_control(self, parent, obj, member):
+    control = templates.new("sitebasis.views.ItemSelector")
+    control.existing_items_only = True
+    return control
+
+CollectionFilter.search_control = _collection_search_control
 
