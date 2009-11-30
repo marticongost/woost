@@ -1224,7 +1224,7 @@ body.scripted .BackOfficeLayout .ContentTypePicker.selector {
 }
 
 .BackOfficeLayout .TreeContentView tr.filtered .element_column {
-    color: rgb(70,70,70);
+    color: rgb(120,120,120);
     font-style: italic;
 }
 
