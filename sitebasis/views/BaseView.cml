@@ -12,6 +12,9 @@ from sitebasis.models import Site
     <?py-class
     document = None
     user = None
+    
+    def get_keywords(self):
+        return ((Site.main.keywords or "") + ", " + (self.document.keywords or "")).strip(", ")
     ?>
 
     <py:ready>
@@ -30,7 +33,7 @@ from sitebasis.models import Site
             self.set_meta("Content-Language", content_language)
             self.set_meta("description", document.description or site.description)
             
-            keywords = ((site.keywords or "") + ", " + (document.keywords or "")).strip(", ")
+            keywords = self.get_keywords()
             if keywords:
                 self.set_meta("keywords", keywords)
             
