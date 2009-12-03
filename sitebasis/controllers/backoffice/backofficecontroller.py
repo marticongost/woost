@@ -109,12 +109,18 @@ class BackOfficeController(BaseBackOfficeController):
         cherrypy.response.headers["Content-Type"] = "text/javascript"
         node = self.stack_node
         resource_type = self.params.read(schema.String("resource_type"))
+        language = self.params.read(schema.String("language"))
         resources = schema.get(node.form_data, "attachments", default = None)
         output = []        
         if resources:
             for resource in resources:
                 if resource.resource_type == resource_type:
-                    output.append([resource.title, resource.uri])
+                    output.append(
+                            [
+                                resource.get("title", language),
+                                resource.uri
+                            ]
+                        )
 
         if resource_type == "image":
             return "var tinyMCEImageList = %s" % (dumps(output))
