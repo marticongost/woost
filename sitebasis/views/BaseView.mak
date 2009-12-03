@@ -40,6 +40,10 @@ ${self.dtd()}
     ${document.title}
 </%def>
 
+<%def name="get_keywords()">
+    <% return ((site.keywords or "") + " " + (document.keywords or "")).strip() %>
+</%def>
+
 <%def name="dtd()">
     % if self.attr.output_format == "xhtml":
         <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -62,7 +66,7 @@ ${self.dtd()}
     % endif
     
     <%            
-    keywords = ((site.keywords or "") + " " + (document.keywords or "")).strip()
+    keywords = self.get_keywords()
     %>
     % if keywords:
         <meta name="keywords" content="${keywords}"${closure()}>
@@ -76,7 +80,7 @@ ${self.dtd()}
             <link rel="alternate"
                   title="${translations('sitebasis.views.BaseView alternate language link', lang = language)}"
                   href="${cms.language.translate_uri(language = language)}"
-                  lang="${language}",
+                  lang="${language}"
                   hreflang="${language}"${closure()}>
         % endif
     % endfor
