@@ -57,7 +57,7 @@ class ReCaptchaExtension(Extension):
         Extension.__init__(self, **values)
         self.extension_author = u"Whads/Accent SL"
         self.set("description",
-            u"""Afageix suport pel servei anti-bots reCAPTCHA.""",
+            u"""Afegeix suport pel servei anti-bots reCAPTCHA.""",
             "ca"
         )
         self.set("description",            
