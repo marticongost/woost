@@ -31,6 +31,12 @@ translations.define("CommentsExtension-plural",
     en = u"Comments"
 )
 
+translations.define("CommentsExtension.captcha_enabled",
+    ca = u"Captcha activat",
+    es = u"Captcha activado",
+    en = u"Captcha enabled"
+)
+
 
 class CommentsExtension(Extension):
 
@@ -56,6 +62,18 @@ class CommentsExtension(Extension):
         # Import the extension's models
         from sitebasis.extensions.comments import strings
         from sitebasis.extensions.comments.comment import Comment
+
+        # Captcha
+        #------------------------------------------------------------------------------
+        try:
+            from sitebasis.extensions.recaptcha import ReCaptchaExtension
+
+            if ReCaptchaExtension.instance.enabled:
+                CommentsExtension.add_member(
+                    schema.Boolean("captcha_enabled", default = False)
+                )
+        except ImportError:
+            pass
 
         # Permissions
         #--------------------------------------------------------------------------
@@ -128,8 +146,17 @@ class CommentsExtension(Extension):
                     or not issubclass(member.schema, comment_model)
                 )
                 adapter.exclude(("document",))
-    
+
                 comments_schema = schema.Schema(comment_model.name + "Form")
+
+                if hasattr(CommentsExtension.instance, "captcha_enabled") and \
+                    CommentsExtension.instance.captcha_enabled and \
+                    ReCaptchaExtension.instance.enabled and user.anonymous:
+                    from sitebasis.extensions.recaptcha.schemarecaptchas import ReCaptcha
+                    comments_schema.add_member(
+                        ReCaptcha("captcha")
+                    )
+    
                 adapter.export_schema(comment_model, comments_schema)
 
                 # Insert a new comment
