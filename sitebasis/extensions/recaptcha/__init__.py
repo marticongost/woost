@@ -6,12 +6,9 @@
 @organization:	Whads/Accent SL
 @since:			December 2009
 """
-from cocktail.modeling import OrderedDict
 from cocktail.events import event_handler
 from cocktail.translations import translations
-from cocktail.language import get_content_language
 from cocktail import schema
-from cocktail.controllers.location import Location
 from sitebasis.models import Extension
 
 translations.define("ReCaptchaExtension",
@@ -73,9 +70,9 @@ class ReCaptchaExtension(Extension):
     def handle_loading(cls, event):
 
         # Import the extension's models
-        from sitebasis.extensions.recaptcha.schemarecaptchas import ReCaptcha
         from sitebasis.extensions.recaptcha import (
-            strings
+            strings,
+            schemarecaptchas
         )
 
         # Append additional members to the extension                            
