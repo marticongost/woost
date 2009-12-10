@@ -136,6 +136,17 @@ class CommentsExtension(Extension):
                 comments_user_collection.allow_member_selection = False
                 comments_user_collection.params.prefix = "comments_"
                 comments_user_collection.base_collection = document.comments
+
+                # Show the last comments page if not specified
+                if "comments_page" not in cherrypy.request.params:
+                    div, mod = divmod(
+                        len(comments_user_collection.subset),
+                        comments_user_collection.page_size
+                    )
+                    comments_page = div if mod else div - 1
+                    cherrypy.request.params.update(
+                        comments_page = str(comments_page)
+                    )
                 
                 # Adapting the comments model
                 adapter = schema.Adapter()
