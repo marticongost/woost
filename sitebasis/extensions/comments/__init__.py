@@ -67,13 +67,14 @@ class CommentsExtension(Extension):
         #------------------------------------------------------------------------------
         try:
             from sitebasis.extensions.recaptcha import ReCaptchaExtension
-
+        except ImportError:
+            pass
+        else:
+            from sitebasis.extensions.recaptcha.schemarecaptchas import ReCaptcha
             if ReCaptchaExtension.instance.enabled:
                 CommentsExtension.add_member(
                     schema.Boolean("captcha_enabled", default = False)
                 )
-        except ImportError:
-            pass
 
         # Permissions
         #--------------------------------------------------------------------------
@@ -145,37 +146,45 @@ class CommentsExtension(Extension):
                     or not member.editable
                     or not issubclass(member.schema, comment_model)
                 )
-                adapter.exclude(("document",))
+                adapter.exclude("document")
 
                 comments_schema = schema.Schema(comment_model.name + "Form")
+                adapter.export_schema(comment_model, comments_schema)
 
-                if hasattr(CommentsExtension.instance, "captcha_enabled") and \
-                    CommentsExtension.instance.captcha_enabled and \
-                    ReCaptchaExtension.instance.enabled and user.anonymous:
-                    from sitebasis.extensions.recaptcha.schemarecaptchas import ReCaptcha
+                if user.anonymous \
+                and getattr(CommentsExtension.instance, "captcha_enabled", False):
                     comments_schema.add_member(
                         ReCaptcha("captcha")
                     )
     
-                adapter.export_schema(comment_model, comments_schema)
-
                 # Insert a new comment
                 if cherrypy.request.method == "POST" \
                 and "post_comment" in cherrypy.request.params:
 
                     with changeset_context(user):
-                        comment = comment_model()
+                        comment_data = {}
+
                         get_parameter(
                             comments_schema, 
-                            target = comment, 
+                            target = comment_data, 
                             strict = False
                         )
 
                         comment_errors = schema.ErrorList(
-                            comments_schema.get_errors(comment)
+                            comments_schema.get_errors(comment_data)
                         )
 
                         if not comment_errors:
+                            comment = comment_model()
+                            comment_id = comment.id
+
+                            adapter.import_object(                                                                                                                                                                       
+                                comment_data,
+                                comment,
+                                source_schema = comment_model
+                            )
+
+                            comment.id = comment_id
                             comment.document = document
                             comment.insert()
                             datastore.commit()
