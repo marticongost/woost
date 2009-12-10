@@ -72,14 +72,3 @@ class ReCaptchaBox(Element):
         self.append(init_options)
         self.append(init_script)
     
-    def _get_value(self):
-        return self.textarea.value
-
-    def _set_value(self, value):
-        self.textarea.value = value
-
-    value = property(_get_value, _set_value, doc = """
-        Gets or sets the content of the rich text editor.
-        @type: str
-        """)
-
