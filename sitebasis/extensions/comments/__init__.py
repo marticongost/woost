@@ -143,10 +143,11 @@ class CommentsExtension(Extension):
                         len(comments_user_collection.subset),
                         comments_user_collection.page_size
                     )
-                    comments_page = div if mod else div - 1
+                    comments_page = div - 1 if not mod and div != 0 else div
                     cherrypy.request.params.update(
                         comments_page = str(comments_page)
                     )
+                    print cherrypy.request.params
                 
                 # Adapting the comments model
                 adapter = schema.Adapter()

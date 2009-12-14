@@ -35,12 +35,21 @@ class ReCaptchaBox(Element):
 
         options = self.recaptcha_options.copy()
 
-        # TODO: There's no Catalan translation available. Add the Catalan
-        # translations with the custom_translations option
         language = get_language()
         
         if language == "ca":
             options["lang"] = "es"
+            options["custom_translations"] = {
+                "instructions_visual": "Escriu les 2 paraules:",
+                "instructions_audio": "Escriu el que sentis:",
+                "play_again": "Tornar a escoltar",
+                "cant_hear_this": "Descarregar so en MP3",
+                "visual_challenge": "Obtindre un repte visual",
+                "audio_challenge": "Obtindre un repte audible",
+                "refresh_btn": "Obtindre un nou repte",
+                "help_btn": "Ajuda",
+                "incorrect_try_again": "Incorrecte. Torna a provar-ho."
+            }
         elif language not in ("en", "nl", "fr", "de", "pt", "ru", "es", "tr"):
             options["lang"] = "en"
 
@@ -63,14 +72,3 @@ class ReCaptchaBox(Element):
         self.append(init_options)
         self.append(init_script)
     
-    def _get_value(self):
-        return self.textarea.value
-
-    def _set_value(self, value):
-        self.textarea.value = value
-
-    value = property(_get_value, _set_value, doc = """
-        Gets or sets the content of the rich text editor.
-        @type: str
-        """)
-
