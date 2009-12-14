@@ -335,8 +335,29 @@
     padding-bottom: 0.5em;
 }
 
+
+.BackOfficeLayout .Form .fields table.mceLayout tbody tr td,
+.BackOfficeLayout .Form fieldset table.mceLayout tbody tr td {
+    padding-right: 0;
+    padding-bottom: 0;
+}
+
 .BackOfficeItemView .translations_selector {
     _width: 7.3em;
     display: block;
 }
+
+/*
+
+.BackOfficeLayout .field .mceEditor .mceLayout {
+	width: auto !important;
+	border: 1px solid red;
+}
+
+.BackOfficeLayout .field .mceEditor .mceLayout a {
+	margin: 0 !important;
+	padding: 0 !important;
+}
+
+*/
 
