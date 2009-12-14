@@ -525,8 +525,8 @@ translations.define("sitebasis.extensions.shop.ShoppingBasket remove entry",
 )
 
 translations.define("sitebasis.extensions.shop.ShoppingBasket update button",
-    ca = u"Establir quantitats",
-    es = u"Establecer cantidades",
-    en = u"Set units"
+    ca = u"Actualitzar preu",
+    es = u"Actualizar precio",
+    en = u"Update"
 )
 

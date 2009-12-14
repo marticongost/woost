@@ -26,6 +26,8 @@ class ShopOrder(Item):
         "entries"
     ]
 
+    groups_order = ["shipping_info"]
+
     address = schema.String(
         member_group = "shipping_info",
         required = True,
