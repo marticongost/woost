@@ -106,7 +106,11 @@ from sitebasis.models.standardpage import StandardPage
 from sitebasis.models.file import File
 from sitebasis.models.news import News
 from sitebasis.models.event import Event
-from sitebasis.models.resource import Resource
+from sitebasis.models.resource import (
+    Resource,
+    ResourceIsPublishedExpression,
+    ResourceIsAccessibleExpression
+)
 from sitebasis.models.uri import URI
 from sitebasis.models.file import File
 from sitebasis.models.style import Style
