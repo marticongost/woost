@@ -7,16 +7,14 @@ u"""
 @since:			July 2008
 """
 from datetime import datetime
-import cherrypy
 from cocktail.events import event_handler
 from cocktail import schema
-from cocktail.schema.expressions import Expression
-from cocktail.persistence import PersistentObject
 from cocktail.pkgutils import get_full_name, import_object
 from sitebasis.models.item import Item
 from sitebasis.models.resource import Resource
 from sitebasis.models.usersession import get_current_user
-from sitebasis.models.permission import ReadPermission, PermissionExpression
+from sitebasis.models.permission import ReadPermission
+from sitebasis.models.expressions import IsPublishedExpression, IsAccessibleExpression
 
 
 class Document(Item):
@@ -297,70 +295,12 @@ class Document(Item):
             document = document.parent
 
 
-class DocumentIsPublishedExpression(Expression):
+class DocumentIsPublishedExpression(IsPublishedExpression):
     """An expression that tests if documents are published."""
-
-    def eval(self, context, accessor = None):
-        return context.is_published()
-
-    def resolve_filter(self, query):
-
-        def impl(dataset):
-
-            is_draft_expr = Item.is_draft.equal(False)
-            enabled_expr = Document.enabled.equal(True)
-
-            dataset = is_draft_expr.resolve_filter(query)[1](dataset)
-            dataset = enabled_expr.resolve_filter(query)[1](dataset)
-
-            now = datetime.now()
-
-            s = Document.start_date.index
-            e = Document.end_date.index
-
-            # No start date set, or the start date has been reached
-            dataset.intersection_update(
-                s[None] | set(s.values(max = now))
-            )
-            
-            # No end date set, or the end date hasn't been reached yet
-            dataset.intersection_update(
-                e[None] | set(e.values(min = now, excludemin = True))
-            )
-
-            return dataset
-        
-        return ((-1, 1), impl)
+    content_type = Document
 
 
-class DocumentIsAccessibleExpression(Expression):
-    """An expression that tests that documents can be accessed by a user.
-    
-    The expression checks both the publication state of the document and the
-    read permissions for the specified user.
-
-    @ivar user: The user that accesses the documents.
-    @type user: L{User<sitebasis.models.user.User>}
-    """
-
-    def __init__(self, user = None):
-        Expression.__init__(self)
-        self.user = user
-
-    def eval(self, context, accessor = None):
-        return context.is_accessible(user = self.user)
-
-    def resolve_filter(self, query):
-
-        def impl(dataset):
-            access_expr = PermissionExpression(
-                self.user or get_current_user(),
-                ReadPermission
-            )
-            published_expr = DocumentIsPublishedExpression()
-            dataset = access_expr.resolve_filter(query)[1](dataset)
-            dataset = published_expr.resolve_filter(query)[1](dataset)
-            return dataset
-        
-        return ((-1, 1), impl)
+class DocumentIsAccessibleExpression(IsAccessibleExpression):
+    """An expression that tests that documents can be accessed by a user."""
+    content_type = Document
 
