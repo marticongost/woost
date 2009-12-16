@@ -12,25 +12,23 @@ import re
 import os
 from shutil import rmtree
 from subprocess import Popen, PIPE
+from pkg_resources import resource_filename
 import buffet
 import cherrypy
 from cocktail import schema
 from cocktail.translations import set_language
 from cocktail.html import templates
 from cocktail.controllers import get_parameter
-from woost import __file__ as woost_file
 from woost.translations import installerstrings
 from woost.models.initialization import init_site
 
 
 class Installer(object):
 
-    base_path = os.path.dirname(woost_file)
-
-    skeleton_path = os.path.abspath(
-        os.path.join(base_path, "scripts","project_skeleton")
-    )
-    
+    base_path = os.path.abspath(resource_filename("woost", ""))
+    from cocktail.styled import styled
+    print styled(base_path, "red")
+    skeleton_path = os.path.join(base_path, "scripts","project_skeleton")
     views_path = os.path.join(base_path, "views")
 
     resources = cherrypy.tools.staticdir.handler(
