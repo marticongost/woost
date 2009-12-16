@@ -9,7 +9,7 @@ u"""
 from setuptools import setup, find_packages
 
 setup(
-    name = "sitebasis",
+    name = "woost",
     version = "0.2",
     author = "Whads/Accent SL",
     author_email = "tech@whads.com",
@@ -23,13 +23,13 @@ setup(
     packages = find_packages(),
     dependency_links = ["http://www.pythonware.com/products/pil/"],   
     entry_points = {
-        "sitebasis.extensions": [
-            "workflow = sitebasis.extensions.workflow:WorkflowExtension",
-            "shop = sitebasis.extensions.shop:ShopExtension",
-            "countries = sitebasis.extensions.countries:CountriesExtension",
-            "payments = sitebasis.extensions.payments:PaymentsExtension",
-            "comments = sitebasis.extensions.comments:CommentsExtension",
-            "recaptcha = sitebasis.extensions.recaptcha:ReCaptchaExtension"
+        "woost.extensions": [
+            "workflow = woost.extensions.workflow:WorkflowExtension",
+            "shop = woost.extensions.shop:ShopExtension",
+            "countries = woost.extensions.countries:CountriesExtension",
+            "payments = woost.extensions.payments:PaymentsExtension",
+            "comments = woost.extensions.comments:CommentsExtension",
+            "recaptcha = woost.extensions.recaptcha:ReCaptchaExtension"
         ]
     },
     # SiteBasis can't yet access view resources (images, style sheets, client
