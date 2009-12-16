@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<?py 
+from cocktail.schema import DictAccessor
+from cocktail.translations import translations
+PasswordBox = loader.get_class("cocktail.html.PasswordBox")
+?>
+
+<py:woost.views.BackOfficeLayout
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:py="http://www.whads.com/ns/cocktail/templates">
+
+    <?py-class
+    def get_page_title(self):
+        return translations("Woost installation")
+    ?>
+
+    <?py
+    self.add_resource("/resources/styles/installer.css")
+    ?>
+
+    <py:with py:element="self.body">
+        
+        <div class="success" py:visible="@{self.successful}">
+            ${translations("Installation successful")}
+        </div>
+
+        <py:block py:visible="@{not self.successful}">
+            <ul py:id="error_box">
+                <py:ready>
+                    <?py                
+                    element.visible = bool(self.errors)
+                    ?>
+					<li py:for="error in self.errors">
+						${translations(error)}
+					</li>
+                </py:ready>
+            </ul>
+
+            <py:cocktail.html.Form
+                py:id="installer_form"
+                py:data="@{self.data}"
+                py:schema="@{self.schema}"
+                py:accessor="${DictAccessor}"
+                method="post">
+                <?py
+                element.add_group("project", [
+                    "project_name",
+                    "project_path",
+                    "languages",
+                    "template_engine",
+                    "admin_email",
+                    "admin_password"
+                ])
+                element.add_group("webserver", [
+                    "webserver_host",
+                    "webserver_port",
+                    "validate_webserver_address"
+                ])
+                element.add_group("database", [
+                    "database_host",
+                    "database_port",
+                    "validate_database_address"
+                ])
+
+                element.set_member_display("admin_password", PasswordBox)
+                element.submit_button.empty()
+                element.submit_button.append(translations("Install"))
+                ?>
+            </py:cocktail.html.Form>
+        </py:block>
+
+    </py:with>
+    
+</py:woost.views.BackOfficeLayout>
+

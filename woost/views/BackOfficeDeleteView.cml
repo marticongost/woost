@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<py:woost.views.BackOfficeLayout
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:py="http://www.whads.com/ns/cocktail/templates">
+
+    <?py-class
+    selection = None
+    blocking_members = None
+    delete_tree = None
+    ?>
+
+    <ul py:def="deleted_item_block" py:args="deleted_items">
+        <li py:for="deleted_item, delete_tree_fragment in deleted_items">
+            <div class="deleted_item">${translations(deleted_item)}</div>
+                <py:new py:for="member, descendants in delete_tree_fragment" py:element="self.create_deleted_item_block(descendants)"/>
+        </li>
+    </ul>
+
+    <py:with py:element="self.body">
+        <py:ready>
+            <p py:id="blocking_members_box" py:if="len(self.blocking_members) > 0">
+                @{translations("woost.views.BackOfficeDeleteView blocked_delete")}        
+                <ul class="blocked_item_block">
+                    <li py:for="item, blocked_member in self.blocking_members">
+                        <div class="blocked_item">
+                            ${translations("woost.views.BackOfficeDeleteView blocked_delete_item", blocked_item = item, blocked_member = blocked_member)}
+                        </div>
+                    </li>
+                </ul>
+            </p>
+            <p py:id="warning_box" py:if="not len(self.blocking_members) > 0">
+                @{translations("woost.views.BackOfficeDeleteView warning")}        
+                <py:new py:element="self.create_deleted_item_block(self.delete_tree)"/>
+            </p>
+    
+            <form py:id="buttons" method="post">
+                <button type="submit" name="action" value="cancel">
+                    ${translations("woost.views.BackOfficeDeleteView cancel")}
+                </button>
+                <button py:if="not len(self.blocking_members) > 0" type="submit" name="action" value="confirm_delete">
+                    ${translations("woost.views.BackOfficeDeleteView delete")}
+                </button>
+            </form>
+        </py:ready>
+    </py:with>
+
+</py:woost.views.BackOfficeLayout>
