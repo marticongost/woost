@@ -10,6 +10,7 @@ from datetime import datetime
 from cocktail.modeling import getter, abstractmethod
 from cocktail.translations import translations
 from cocktail import schema
+from cocktail.controllers import context
 from woost.models.item import Item
 from woost.models.usersession import get_current_user
 from woost.models.permission import ReadPermission
@@ -107,6 +108,9 @@ class Resource(Item):
         return cls.select(filters = [
             ResourceIsAccessibleExpression(get_current_user())
         ]).select(*args, **kwargs)
+
+    def thumbnail_uri(self, **kwargs):
+        return context["cms"].application_uri("thumbnails", self.id, **kwargs)
 
 
 class ResourceIsPublishedExpression(IsPublishedExpression):
