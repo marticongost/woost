@@ -16,8 +16,7 @@ setup(
     description = "An object oriented, web based Content Management System.",
     install_requires = [
         "simplejson",
-        "cocktail==0.2",
-        "PIL"
+        "cocktail==0.2"
     ],
     include_package_data = True,
     packages = find_packages(),
