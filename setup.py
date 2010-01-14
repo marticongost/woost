@@ -28,7 +28,8 @@ setup(
             "countries = woost.extensions.countries:CountriesExtension",
             "payments = woost.extensions.payments:PaymentsExtension",
             "comments = woost.extensions.comments:CommentsExtension",
-            "recaptcha = woost.extensions.recaptcha:ReCaptchaExtension"
+            "recaptcha = woost.extensions.recaptcha:ReCaptchaExtension",
+            "googlesearch = woost.extensions.googlesearch:GoogleSearchExtension"
         ]
     },
     # SiteBasis can't yet access view resources (images, style sheets, client
