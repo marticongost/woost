@@ -120,7 +120,7 @@ class GoogleSearchExtension(Extension):
 
         cse_url = self.url_template % {
             "search_engine_id": self.search_engine_id,
-            "query": quote_plus(query),
+            "query": quote_plus(query.encode("utf-8")),
             "page": page * page_size,
             "page_size": page_size,
             "language": language or get_content_language(),
