@@ -727,16 +727,11 @@ class SaveAction(UserAction):
 
 class SaveDraftAction(SaveAction):
     make_draft = True
-    included = frozenset([
-        ("item_buttons", "new"),
-        ("item_buttons", "edit"),
-        ("item_buttons", "changed"),
-        ("item_bottom_buttons", "new"),
-        ("item_bottom_buttons", "edit"),
-        ("item_bottom_buttons", "changed")
-    ])
+    included = frozenset(["item_buttons", "item_bottom_buttons"])
     excluded = frozenset(["draft"])
 
+    def is_permitted(self, user, target):
+        return True
 
 class ConfirmDraftAction(SaveAction):
     confirm_draft = True
