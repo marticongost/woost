@@ -156,7 +156,7 @@ class DeleteController(BaseBackOfficeController):
                 cms.item_deleted(
                     item = item,
                     user = user,
-                    change = item.changes[-1]
+                    change = item.changes[-1] if item.changes else None
                 )               
             
             self.go_back()
