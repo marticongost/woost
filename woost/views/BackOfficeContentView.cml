@@ -72,7 +72,7 @@ from woost.controllers.backoffice.useractions import \
     <py:ready>
         <py:with py:element="self.user_collection.content_view"
             py:parent="self.body"
-            action="${self.cms.document_uri('content')}"
+            action="${self.cms.contextual_uri('content')}"
             py:cms="${self.cms}"
             py:backoffice="${self.backoffice}"
             py:user_collection="${self.user_collection}"

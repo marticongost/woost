@@ -28,7 +28,7 @@ class ContentLink(ItemLabel):
 
         if self.item:
             self.tag = "a"
-            self["href"] = context["cms"].document_uri(
+            self["href"] = context["cms"].contextual_uri(
                 "content", self.item.id, "show_detail"
             )
         else:

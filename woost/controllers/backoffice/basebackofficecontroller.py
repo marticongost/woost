@@ -92,7 +92,7 @@ class BaseBackOfficeController(BaseCMSController):
             if target_id is None:
                 raise ValueError("Can't edit objects without an identifier")
         
-        uri = self.document_uri(
+        uri = self.contextual_uri(
             "content",
             target_id,
             *(args or ["fields"])
@@ -120,7 +120,7 @@ class BaseBackOfficeController(BaseCMSController):
         
         # Go back to the root of the backoffice
         else:
-            raise cherrypy.HTTPRedirect(self.document_uri())
+            raise cherrypy.HTTPRedirect(self.contextual_uri())
 
     # Edit stack
     #--------------------------------------------------------------------------    
@@ -212,7 +212,7 @@ class BaseBackOfficeController(BaseCMSController):
             (EditStackExpiredError, WrongEditStackError)
         ):
             event.source.notify_user(translations(event.exception), "error")
-            raise cherrypy.HTTPRedirect(event.source.document_uri())
+            raise cherrypy.HTTPRedirect(event.source.contextual_uri())
 
     def _invoke_user_action(self, action, selection):
         for error in action.get_errors(self, selection):
@@ -239,7 +239,7 @@ class BaseBackOfficeController(BaseCMSController):
     def output(self):
         output = BaseCMSController.output(self)
         output.update(
-            backoffice = self.context["document"],
+            backoffice = self.context["publishable"],
             section = self.section,
             edit_stack = self.edit_stack,
             notifications = self.pop_user_notifications(),

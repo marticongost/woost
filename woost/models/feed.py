@@ -9,16 +9,13 @@
 from cocktail import schema
 from cocktail.controllers.usercollection import UserCollection
 from cocktail.html.datadisplay import display_factory
-from woost.models.item import Item
+from woost.models.publishable import Publishable
 from woost.models.language import Language
-from woost.models.resource import Resource
 
 
-class Feed(Item):
+class Feed(Publishable):
 
     members_order = [
-        "title",        
-        "enabled",
         "ttl",
         "image",
         "description",
@@ -30,29 +27,23 @@ class Feed(Item):
         "item_description_expression"
     ]
 
+    default_controller = schema.DynamicDefault(
+        lambda: Controller.get_instance(qname = "woost.feed_controller")
+    )
+
     edit_controller = \
         "woost.controllers.backoffice.feedfieldscontroller." \
         "FeedFieldsController"
     edit_view = "woost.views.FeedFields"
-
-    title = schema.String(
-        required = True,
-        unique = True,
-        translated = True        
-    )
-
-    enabled = schema.Boolean(
-        required = True,
-        default = True
-    )
 
     ttl = schema.Integer(
         listed_by_default = False        
     )
 
     image = schema.Reference(
-        type = Resource,
-        related_end = schema.Collection()
+        type = Publishable,
+        related_end = schema.Collection(),
+        relation_constraints = Publishable.resource_type.equal("image")
     )
 
     description = schema.String(
@@ -83,7 +74,7 @@ class Feed(Item):
 
     item_link_expression = schema.String(
         required = True,
-        default = "canonical_uri(item)",
+        default = "cms.uri(item)",
         listed_by_default = False,
         edit_control = display_factory(
             "cocktail.html.CodeEditor", syntax = "python"

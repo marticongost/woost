@@ -298,7 +298,9 @@ class EditStack(ListWrapper):
         if len(self._items) > 1:
             raise cherrypy.HTTPRedirect(self._items[-2].uri(**params))
         else:
-            raise cherrypy.HTTPRedirect(context["cms"].document_uri(**params))
+            raise cherrypy.HTTPRedirect(
+                context["cms"].contextual_uri(**params)
+            )
 
     def go(self, index = -1):
         """Redirects the user to the indicated node of the edit stack.
@@ -485,7 +487,7 @@ class EditNode(StackNode):
         if "edit_stack" not in params:
             params["edit_stack"] = self.stack.to_param(self.index)
 
-        return context["cms"].document_uri(
+        return context["cms"].contextual_uri(
             "content",
             str(self.item.id) if self.item.is_inserted else "new",
             self.section,
@@ -823,7 +825,7 @@ class SelectionNode(StackNode):
             params["edit_stack"] = self.stack.to_param(self.index)
 
         params.setdefault("type", self.content_type.full_name)
-        return context["cms"].document_uri("content", **params)
+        return context["cms"].contextual_uri("content", **params)
 
 
 class RelationNode(StackNode):
@@ -841,7 +843,7 @@ class RelationNode(StackNode):
         if "edit_stack" not in params:
             params["edit_stack"] = self.stack.to_param(self.index)
 
-        return context["cms"].document_uri("content", **params)
+        return context["cms"].contextual_uri("content", **params)
 
     def __getstate__(self):
 

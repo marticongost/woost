@@ -55,7 +55,7 @@ class DummyPaymentGatewayController(BaseCMSController):
             redirection = gateway.payment_failed_page            
 
         raise cherrypy.HTTPRedirect(
-            (redirection and cms.canonical_uri(redirection)
+            (redirection and cms.uri(redirection)
             or cms.application_uri()).encode("utf-8")
         )
 

@@ -22,10 +22,10 @@ translations.define("Comment-plural",
     en = u"Comments"
 )
 
-translations.define("Comment.document",
-    ca = u"Document",
-    es = u"Documento",
-    en = u"Document"
+translations.define("Comment.publishable",
+    ca = u"Element comentat",
+    es = u"Elemento comentado",
+    en = u"Commented element"
 )
 
 translations.define("Comment.user_name",

@@ -12,7 +12,7 @@ from pkg_resources import resource_filename
 from cocktail.typemapping import TypeMapping
 from cocktail.cache import Cache
 from woost.models.item import Item
-from woost.models.resource import Resource
+from woost.models.publishable import Publishable
 from woost.models.file import File
 
 
@@ -52,7 +52,7 @@ class IconResolver(object):
         ]
         self.file_resolvers = TypeMapping()
         self.file_resolvers[Item] = self._resolve_item
-        self.file_resolvers[Resource] = self._resolve_resource
+        self.file_resolvers[Publishable] = self._resolve_publishable
         self.file_resolvers[File] = self._resolve_file
         self.name_resolution_cache = Cache(load = self._find_icon)
         
@@ -75,8 +75,8 @@ class IconResolver(object):
         The default implementation searches for icons in the directories
         specified by the L{icon_repositories} property, in order, returning the
         first icon whose name matches the name of one of the item's classes.
-        Also, resources and files are special cased, to take their MIME type
-        into account.
+        Also, publishable items and files are special cased, to take their
+        resource and MIME types into account.
 
         @param item: The item or content type to obtain the icon for.
         @type item: L{Item<woost.models.Item>} instance or class
@@ -130,7 +130,7 @@ class IconResolver(object):
             for cls in content_type.ascend_inheritance(True)
         ]
 
-    def _resolve_resource(self, content_type, item):
+    def _resolve_publishable(self, content_type, item):
         file_names = self._resolve_item(content_type, item)
 
         if item is not None and item.resource_type:
@@ -139,7 +139,7 @@ class IconResolver(object):
         return file_names
 
     def _resolve_file(self, content_type, item):
-        file_names = self._resolve_resource(content_type, item)
+        file_names = self._resolve_publishable(content_type, item)
 
         if item is not None and item.mime_type:
             mime = item.mime_type.replace("/", "-").replace(".", "-")

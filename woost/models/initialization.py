@@ -14,13 +14,16 @@ from cocktail.persistence import datastore
 from woost.models import (
     changeset_context,
     Site,
+    HierarchicalPublicationScheme,
+    DescriptiveIdPublicationScheme,
     Language,
     Action,
-    Document,
+    Publishable,
     User,
     Role,
     StandardPage,
     URI,
+    Controller,
     Template,
     UserView,
     ReadPermission,
@@ -90,12 +93,6 @@ def init_site(
     set_translations(confirm_draft, "title", "Confirm draft title")
     confirm_draft.insert()
 
-    # ???
-    visible = Action()
-    visible.identifier = "visible"
-    set_translations(visible, "title", "Visible action title")
-    visible.insert()
-
     with changeset_context() as changeset:
         
         # Create the site
@@ -121,7 +118,7 @@ def init_site(
         anonymous_role = Role()
         anonymous_role.critical = True
         anonymous_role.qname = "woost.anonymous"
-        set_translations(anonymous_role, "title", "Anonymous role title")
+        set_translations(anonymous_role, "title", "Anonymous role title")        
         anonymous_role.insert()
 
         anonymous_user = User()
@@ -152,6 +149,7 @@ def init_site(
             ModifyPermission(matching_items = everything()),
             DeletePermission(matching_items = everything()),
             ConfirmDraftPermission(matching_items = everything()),
+            ReadMemberPermission(),
             ModifyMemberPermission()
         ]
         administrators.insert()
@@ -167,16 +165,10 @@ def init_site(
         }
         everybody_role.permissions = [
             
-            # Everybody can read published documents and resources
+            # Everybody can read published items
             ReadPermission(
                 matching_items = {
-                    "type": "woost.models.document.Document",
-                    "filter": "published"
-                }
-            ),
-            ReadPermission(
-                matching_items = {
-                    "type": "woost.models.resource.Resource",
+                    "type": "woost.models.publishable.Publishable",
                     "filter": "published"
                 }
             ),
@@ -186,7 +178,14 @@ def init_site(
             DeletePermission(matching_items = owned_items()),
             ConfirmDraftPermission(matching_items = owned_items()),
             
-            # All members allowed, except for 'owner'
+            # All members allowed, except for 'owner', 'controller' and 'qname'
+            ReadMemberPermission(
+                matching_members = [
+                    "woost.models.item.Item.qname",
+                    "woost.models.publishable.Publishable.controller"
+                ],
+                authorized = False
+            ),
             ReadMemberPermission(),
             ModifyMemberPermission(
                 matching_members = ["woost.models.item.Item.owner"],
@@ -210,6 +209,14 @@ def init_site(
             "Authenticated role title")
         authenticated_role.insert()
 
+        # Create publication schemes
+        for pub_scheme in (
+            HierarchicalPublicationScheme(),
+            DescriptiveIdPublicationScheme()
+        ):
+            site.publication_schemes.append(pub_scheme)
+            pub_scheme.insert()
+
         # Create a trigger to purge deleted files from the filesystem
         delete_files_trigger = DeleteTrigger(
             execution_point = "after",
@@ -226,6 +233,49 @@ def init_site(
         site.triggers.append(delete_files_trigger)
         delete_files_trigger.insert()
 
+        # Create standard controllers
+        for controller_name in (
+            "Document",
+            "File",
+            "URI",
+            "Styles",
+            "Feed",
+            "WebServices",
+            "BackOffice"
+        ):
+            controller = Controller()
+            controller.qname = "woost.%s_controller" % controller_name.lower()          
+            set_translations(
+                controller,
+                "title",
+                controller_name + " controller title"
+            )
+            controller.python_name = \
+                "woost.controllers.%scontroller.%sController" % (
+                    controller_name.lower(),
+                    controller_name
+                )
+            controller.insert()
+
+        # The backoffice controller is placed at an irregular location
+        back_office_controller = \
+            Controller.get_instance(qname = "woost.backoffice_controller")
+        back_office_controller.python_name = \
+            "woost.controllers.backoffice.backofficecontroller." \
+            "BackOfficeController"
+
+        # Prevent anonymous access to the backoffice controller
+        ReadPermission(
+            role = anonymous_role,
+            matching_items = {
+                "type": "woost.models.publishable.Publishable",
+                "filter": "member-controller",
+                "filter_operator0": "eq",
+                "filter_value0": str(back_office_controller.id)
+            },
+            authorized = False
+        ).insert()
+
         # Create standard templates
         std_template = Template()
         std_template.identifier = standard_template_identifiers.get(
@@ -239,7 +289,6 @@ def init_site(
         site_stylesheet = URI()
         site_stylesheet.uri = uri + "resources/styles/site.css"
         site_stylesheet.qname = "woost.site_stylesheet"
-        site_stylesheet.resource_type = "html_resource"
         set_translations(site_stylesheet, "title", "Site style sheet title")
         site_stylesheet.insert()
 
@@ -257,28 +306,40 @@ def init_site(
         site.home.insert()
     
         # Create the back office interface
-        back_office = Document()
-        back_office.handler = "woost.controllers.backoffice" \
-                              ".backofficecontroller.BackOfficeController"
+        back_office = Publishable()
+        back_office.controller = back_office_controller
         back_office.critical = True
         back_office.qname = "woost.backoffice"
         back_office.parent = site.home
         back_office.hidden = True
         back_office.path = u"cms"
         set_translations(back_office, "title", "Back office title")
-        anonymous_role.permissions = [
-            # Prevent anonymous access to the backoffice
-            ReadPermission(
-                matching_items = {
-                    "type": "woost.models.document.Document",
-                    "filter": "member-id",
-                    "filter_operator0": "eq",
-                    "filter_value0": str(back_office.id)
-                },
-                authorized = False
-            )
-        ]
         back_office.insert()
+        
+        # Create the user styles dynamic style sheet
+        user_styles = Publishable()
+        user_styles.critical = True
+        user_styles.qname = "woost.user_styles"
+        user_styles.parent = site.home
+        user_styles.controller = \
+            Controller.get_instance(qname = "woost.styles_controller")
+        user_styles.hidden = True
+        user_styles.path = u"user_styles"
+        user_styles.mime_type = "text/css"
+        set_translations(user_styles, "title", "User styles title")
+        user_styles.insert()
+
+        # Create the web services page
+        webservices = Publishable()
+        webservices.critical = True
+        webservices.qname = "woost.webservices"
+        webservices.parent = site.home
+        webservices.controller = \
+            Controller.get_instance(qname = "woost.webservices_controller")
+        webservices.hidden = True
+        webservices.path = u"services"
+        set_translations(webservices, "title", "Web services title")
+        webservices.insert()
 
         # Create the 'content not found' page
         site.not_found_error_page = StandardPage()
@@ -344,36 +405,36 @@ def init_site(
         )
         own_items_view.insert()
         
-        document_tree_view = UserView()
-        document_tree_view.roles.append(everybody_role)
-        document_tree_view.parameters = {
-            "type": "woost.models.document.Document",
+        page_tree_view = UserView()
+        page_tree_view.roles.append(everybody_role)
+        page_tree_view.parameters = {
+            "type": "woost.models.publishable.Publishable",
             "content_view": "tree",
             "filter": None,
             "members": None
         }
         set_translations(
-            document_tree_view,
+            page_tree_view,
             "title",
-            "Document tree user view"
+            "Page tree user view"
         )
-        document_tree_view.insert()
+        page_tree_view.insert()
 
-        resource_gallery_view = UserView()
-        resource_gallery_view.roles.append(everybody_role)
-        resource_gallery_view.parameters = {
-            "type": "woost.models.resource.Resource",
+        file_gallery_view = UserView()
+        file_gallery_view.roles.append(everybody_role)
+        file_gallery_view.parameters = {
+            "type": "woost.models.file.File",
             "content_view": "thumbnails",
             "filter": None,
             "order": None,
             "members": None
         }
         set_translations(
-            resource_gallery_view,
+            file_gallery_view,
             "title",
-            "Resource gallery user view"
+            "File gallery user view"
         )
-        resource_gallery_view.insert()
+        file_gallery_view.insert()
                         
     datastore.commit()
 

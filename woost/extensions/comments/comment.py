@@ -12,11 +12,11 @@ from woost.models import Item
 
 class Comment(Item):
 
-    members_order = ["document", "user_name", "user_email", "content"]
+    members_order = ["publishable", "user_name", "user_email", "content"]
 
-    document = schema.Reference(
+    publishable = schema.Reference(
         required = True,
-        type = "woost.models.Document",
+        type = "woost.models.Publishable",
         bidirectional = True,
         related_key = "comments"
     )

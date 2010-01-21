@@ -363,9 +363,9 @@ class Thumbnailer(object):
 class ImageThumbnailer(Thumbnailer):
     """Generates thumbnails for image files."""
 
-    # TODO: Extend it to all resources, including URI instances
-    # (Rename it to ResourceThumbnailer, load remote resources using an HTTP
-    # client and a If-Not-Modified-Since header, etc)
+    # TODO: Extend it to URI instances
+    # Load remote resources using an HTTP client and an
+    # If-Not-Modified-Since header, etc)
 
     def can_handle(self, item, **params):
         return isinstance(item, File) and item.resource_type == "image"

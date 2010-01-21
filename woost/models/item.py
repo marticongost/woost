@@ -33,7 +33,12 @@ class Item(PersistentObject):
     authorship, group membership, draft copies and versioning.
     """
 
-    members_order = "id", "author", "owner"
+    members_order = [
+        "id",
+        "qname",
+        "author",
+        "owner"
+    ]
 
     # Extension property that indicates if content types should be visible from
     # the backoffice root view
@@ -56,8 +61,8 @@ class Item(PersistentObject):
     qname = schema.String(
         unique = True,
         indexed = True,
-        visible = False,
-        searchable = False
+        searchable = False,
+        listed_by_default = False
     )
 
     # Backoffice customization

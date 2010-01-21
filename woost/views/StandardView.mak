@@ -4,7 +4,7 @@
 <%!
 from cocktail.translations import translations
 from cocktail.html import templates
-from woost.models import Site, Document, ModifyPermission
+from woost.models import Site, Publishable, ModifyPermission
 
 container_classes = "BaseView StandardView"
 %>
@@ -76,16 +76,16 @@ container_classes = "BaseView StandardView"
     ${self.create_menu().render()}
 </%def>
 
-<%def name="document_title()">
-    <h2>${document.inner_title or document.title}</h2>
+<%def name="publishable_title()">
+    <h2>${publishable.inner_title or publishable.title}</h2>
 </%def>
 
 <%def name="toolbar()">
-    % if user.has_permission(ModifyPermission, target = document):
+    % if user.has_permission(ModifyPermission, target = publishable):
         <div class="toolbar">
-            <% backoffice = Document.get_instance(qname = "woost.backoffice") %>
+            <% backoffice = Publishable.get_instance(qname = "woost.backoffice") %>
             <a class="edit_link"
-               href="${cms.canonical_uri(backoffice, 'content', document.id, 'fields')}">
+               href="${cms.uri(backoffice, 'content', publishable.id, 'fields')}">
                 ${translations("Action edit")}
             </a>            
         </div>
@@ -94,7 +94,7 @@ container_classes = "BaseView StandardView"
 
 <%def name="main()">
    
-    ${self.document_title()}
+    ${self.publishable_title()}
 
     ${self.toolbar()}
 
@@ -108,18 +108,18 @@ container_classes = "BaseView StandardView"
 <%def name="attachments()">
     <%
     attachments = [attachment
-                   for attachment in document.attachments
+                   for attachment in publishable.attachments
                    if attachment.is_published()]
     %>
     % if attachments:
         <ul class="attachments">
-            % for resource in attachments:
+            % for attachment in attachments:
                 <li>
-                    <a href="${resource.uri}" title="${resource.description}">
+                    <a href="${cms.uri(attachment)}">
                         <img
-                            src="${cms.icon_uri(resource, icon_size = 16)}"
+                            src="${cms.icon_uri(attachment, icon_size = 16)}"
                             alt="${translations('woost.views.StandardView attachment icon description')}"/>
-                        <span>${translations(resource)}</span>
+                        <span>${translations(attachment)}</span>
                     </a>
                 </li>
             % endfor

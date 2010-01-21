@@ -2,7 +2,7 @@
 <?py
 from cocktail.language import get_content_language
 from cocktail import schema
-from woost.models import Resource
+from woost.models import File
 from woost.controllers.backoffice.useractions import \
     add_view_action_context
 ?>
@@ -33,7 +33,7 @@ from woost.controllers.backoffice.useractions import \
         py:translated_values="${True}"
         py:schema="@{self.detail_schema}"
         py:data="@{self.edited_item}"
-        py:base_url="@{self.cms.document_uri()}"
+        py:base_url="@{self.cms.contextual_uri()}"
         py:edit_stack="@{self.edit_stack}">
         
         <!-- Highlight changed members -->
@@ -57,11 +57,11 @@ from woost.controllers.backoffice.useractions import \
         
             if isinstance(member, schema.Collection):
                 if member.related_type \
-                and issubclass(member.related_type, Resource):
+                and issubclass(member.related_type, File):
                     return property_table.create_thumbnail_list
             elif isinstance(member, schema.Reference):
                 if member.related_type \
-                and issubclass(member.related_type, Resource):
+                and issubclass(member.related_type, File):
                     resource = schema.get(obj, member)
                     if resource:
                         return property_table.create_resource_thumbnail(resource)

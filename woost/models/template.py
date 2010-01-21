@@ -14,8 +14,6 @@ class Template(Item):
 
     members_order = "title", "identifier", "items"
 
-    # TODO: Allowed types
-
     title = schema.String(
         required = True,
         unique = True,
@@ -35,7 +33,7 @@ class Template(Item):
         enumeration = buffet.available_engines.keys()
     )
 
-    items = schema.Collection(
+    documents = schema.Collection(
         items = "woost.models.Document",
         bidirectional = True,
         editable = False

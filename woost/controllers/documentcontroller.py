@@ -8,15 +8,16 @@ u"""
 """
 import cherrypy
 from cocktail.modeling import cached_getter
+from cocktail.controllers.renderingengines import get_rendering_engine
 from woost.controllers import BaseCMSController
 
 
-class DefaultHandler(BaseCMSController):
-    """Default controller for published documents."""
+class DocumentController(BaseCMSController):
+    """A controller that serves rendered pages."""
 
     @cached_getter
-    def document_template(self):
-        template = self.context["document"].template
+    def page_template(self):
+        template = self.context["publishable"].template
 
         if template is None:
             raise cherrypy.NotFound()
@@ -25,14 +26,14 @@ class DefaultHandler(BaseCMSController):
 
     @cached_getter
     def rendering_engine(self):
-        engine_name = self.document_template.engine
+        engine_name = self.page_template.engine
 
         if engine_name:
-            return self._get_rendering_engine(engine_name)
+            return get_rendering_engine(engine_name)
         else:
             return BaseCMSController.rendering_engine(self)
 
     @cached_getter
     def view_class(self):
-        return self.document_template.identifier
+        return self.page_template.identifier
 

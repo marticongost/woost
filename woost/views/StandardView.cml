@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <?py
-from woost.models import Site, Document, ModifyPermission
+from woost.models import Site, Publishable, ModifyPermission
 ?>
 
 <py:woost.views.BaseView
@@ -31,15 +31,15 @@ from woost.models import Site, Document, ModifyPermission
         py:collapsible="${True}"/>
 
     <div py:id="main">
-        <h2 py:collapsible="${True}">@{self.document.inner_title or self.document.title}</h2>
+        <h2 py:collapsible="${True}">@{self.publishable.inner_title or self.publishable.title}</h2>
 
         <div py:id="toolbar">
             <a py:id="edit_link">${translations("Action edit")}</a>
             <py:ready>
                 <?py
-                if self.user.has_permission(ModifyPermission, target = self.document):
-                    backoffice = Document.get_instance(qname = "woost.backoffice")
-                    self.edit_link["href"] = self.cms.canonical_uri(backoffice, "content", self.document.id, "fields")
+                if self.user.has_permission(ModifyPermission, target = self.publishable):
+                    backoffice = Publishable.get_instance(qname = "woost.backoffice")
+                    self.edit_link["href"] = self.cms.uri(backoffice, "content", self.publishable.id, "fields")
                 else:
                     element.visible = False
                 ?>
@@ -55,22 +55,22 @@ from woost.models import Site, Document, ModifyPermission
             <py:ready>
                 <?py
                 published_attachments = (attachment
-                               for attachment in self.document.attachments
+                               for attachment in self.publishable.attachments
                                if attachment.is_published())
                 ?>
                 <py:new
-                    py:element="self.create_attachment(resource)"
-                    py:for="resource in published_attachments"/>
+                    py:element="self.create_attachment(attachment)"
+                    py:for="attachment in published_attachments"/>
             </py:ready>
         </ul>
     </div>
 
-    <li py:def="attachment" py:args="resource">
-        <a href="${resource.uri}" title="${resource.description}">
+    <li py:def="attachment" py:args="attachment">
+        <a href="${cms.uri(attachment)}" title="${attachment.description}">
             <img
-                src="${self.cms.icon_uri(resource, icon_size = 16)}"
+                src="${self.cms.icon_uri(attachment, icon_size = 16)}"
                 alt="${translations('woost.views.StandardView attachment icon description')}"/>
-            <span>${translations(resource)}</span>
+            <span>${translations(attachment)}</span>
         </a>
     </li>
 

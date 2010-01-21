@@ -41,7 +41,7 @@ class RichTextEditor(TinyMCE):
 
     def _ready(self):
 
-        document_uri = context["cms"].document_uri()
+        ctx_uri = context["cms"].contextual_uri()
         edit_stack_param = \
             context["edit_stacks_manager"].current_edit_stack.to_param()
         
@@ -53,10 +53,10 @@ class RichTextEditor(TinyMCE):
         self.tinymce_params.update(self.default_tinymce_params)
         self.tinymce_params.update(
             init_instance_callback = "initRichTextEditor",
-            external_image_list_url = "%s/document_resources?edit_stack=%s&resource_type=image&language=%s"
-                % (document_uri, edit_stack_param, self.language),
-            external_link_list_url = "%s/document_resources?edit_stack=%s&resource_type=document&language=%s"
-                % (document_uri, edit_stack_param, self.language),
+            external_image_list_url = "%s/editor_attachments?edit_stack=%s&resource_type=image&language=%s"
+                % (ctx_uri, edit_stack_param, self.language),
+            external_link_list_url = "%s/editor_attachments?edit_stack=%s&resource_type=document&language=%s"
+                % (ctx_uri, edit_stack_param, self.language),
             theme_advanced_styles = ";".join(styles)
         )
 
@@ -65,3 +65,4 @@ class RichTextEditor(TinyMCE):
     def __init__(self, *args, **kwargs):
         TinyMCE.__init__(self, *args, **kwargs)
         self.add_resource("/resources/scripts/RichTextEditor.js")
+

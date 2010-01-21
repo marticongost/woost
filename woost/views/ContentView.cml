@@ -70,7 +70,7 @@ from woost.controllers.backoffice.editstack import SelectionNode
         if self.member:
             params["member"] = self.member.name
 
-        return self.cms.document_uri('content', 'new', **params)        
+        return self.cms.contextual_uri('content', 'new', **params)        
 
     def content_type_is_selectable(self, content_type):
         return get_current_user().has_permission(

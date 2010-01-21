@@ -69,13 +69,20 @@ from woost.models.item import Item
 from woost.models.action import Action
 from woost.models.language import Language
 from woost.models.userview import UserView
-from woost.models.document import (
-    Document,
-    DocumentIsPublishedExpression,
-    DocumentIsAccessibleExpression
+from woost.models.publicationschemes import (
+    PublicationScheme,
+    HierarchicalPublicationScheme,
+    IdPublicationScheme,
+    DescriptiveIdPublicationScheme
 )
-from woost.models.redirection import Redirection
+from woost.models.publishable import (
+    Publishable,
+    IsPublishedExpression,
+    IsAccessibleExpression
+)
+from woost.models.document import Document
 from woost.models.template import Template
+from woost.models.controller import Controller
 from woost.models.user import (
     User,
     AuthorizationError
@@ -106,11 +113,6 @@ from woost.models.standardpage import StandardPage
 from woost.models.file import File
 from woost.models.news import News
 from woost.models.event import Event
-from woost.models.resource import (
-    Resource,
-    ResourceIsPublishedExpression,
-    ResourceIsAccessibleExpression
-)
 from woost.models.uri import URI
 from woost.models.file import File
 from woost.models.style import Style
@@ -132,7 +134,7 @@ from woost.models.feed import Feed
 
 from woost.models.userfilter import (
     OwnItemsFilter,
-    PublishedDocumentsFilter,
+    IsPublishedFilter,
     TypeFilter
 )
 

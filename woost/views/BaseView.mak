@@ -37,11 +37,11 @@ ${self.dtd()}
 </html>
 
 <%def name="getTitle()">
-    ${document.title}
+    ${publishable.title}
 </%def>
 
 <%def name="get_keywords()">
-    <% return ((site.keywords or "") + " " + (document.keywords or "")).strip() %>
+    <% return ((site.keywords or "") + " " + (publishable.keywords or "")).strip() %>
 </%def>
 
 <%def name="dtd()">
@@ -59,7 +59,7 @@ ${self.dtd()}
     <title>${self.getTitle()}</title>
 
     <% 
-    description = document.description or site.description
+    description = publishable.description or site.description
     %>
     % if description:
         <meta name="description" content="${description}"${closure()}>
@@ -75,8 +75,8 @@ ${self.dtd()}
     <link rel="start" title="${site.home.title}" href="/"${closure()}>
     
     ## Alternate languages
-    % for language in document.translations:
-        % if language != content_language and document.get("enabled", language):
+    % for language in publishable.translations:
+        % if language != content_language and publishable.get("enabled", language):
             <link rel="alternate"
                   title="${translations('woost.views.BaseView alternate language link', lang = language)}"
                   href="${cms.language.translate_uri(language = language)}"
@@ -94,27 +94,18 @@ ${self.dtd()}
     % endif
 </%def>
 
-<%def name="resource_markup(uri)">
-    % if uri.endswith(".css"):
-        <link rel="Stylesheet" type="text/css" href="${uri}"${closure()}>
-    % elif uri.endswith(".js"):
-        <script type="text/javascript" src="${uri}"></script>
+<%def name="resource_markup(uri, mime_type = None)">
+    % if mime_type == "text/css" or uri.endswith(".css"):
+        <link rel="Stylesheet" type="${mime_type or 'text/css'}" href="${uri}"${closure()}>
+    % elif mime_type in ("text/javascript", "application/javascript", "text/ecmascript", "application/jscript") or uri.endswith(".js"):
+        <script type="${mime_type or 'text/javascript'}" src="${uri}"></script>
     % endif
 </%def>
 
 <%def name="resources()">
-    ## Inherited resources
-    <%
-    ancestry = reversed(list(document.ascend_documents(include_self = True)))        
-    %>
-    % for ancestor in ancestry:
-        % for resource in ancestor.branch_resources:
-            ${resource_markup(resource.uri)}
-        % endfor
-    % endfor
-            
-    ## Page resources
-    % for resource in document.page_resources:
+
+    ## Resources
+    % for resource in publishable.resources:
         ${resource_markup(resource.uri)}
     % endfor
     
@@ -127,6 +118,6 @@ ${self.dtd()}
 </%def>
 
 <%def name="content()">
-    ${document.body}
+    ${publishable.body}
 </%def>
 

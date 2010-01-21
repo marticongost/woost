@@ -68,12 +68,12 @@ from woost.controllers.backoffice.useractions import add_view_action_context
         self.page_title = self.get_page_title()
 
         if self.backoffice:
-            for resource in self.backoffice.page_resources:
-                self.add_resource(resource.uri)
+            for resource in self.backoffice.resources:
+                self.add_resource(self.cms.uri(resource), mime_type = resource.mime_type)
                 
         add_view_action_context(element, "nested" if self.edit_stack else "root")
         if self.cms:
-            self.set_client_variable("cms_uri", self.cms.document_uri())
+            self.set_client_variable("cms_uri", self.cms.contextual_uri())
         ?>
     </py:ready>
 
@@ -85,7 +85,7 @@ from woost.controllers.backoffice.useractions import add_view_action_context
                 <py:ready>
                     <?py                    
                     if self.cms and not self.is_client_side_selector:
-                        element["href"] = self.cms.document_uri()
+                        element["href"] = self.cms.contextual_uri()
                     else:
                         element.tag = None
 
