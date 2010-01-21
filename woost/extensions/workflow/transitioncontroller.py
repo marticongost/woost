@@ -68,6 +68,15 @@ class TransitionController(FormControllerMixin, BaseBackOfficeController):
     def form_model(self):
         return import_object(self.transition.transition_form)
 
+    @cached_getter
+    def form_errors(self):
+
+        if "cancel" in cherrypy.request.params \
+        and "submit" not in cherrypy.request.params:
+           return schema.ErrorList([])
+        else:
+            return FormControllerMixin.form_errors(self)
+
     def submit(self):
         
         item = self.item
