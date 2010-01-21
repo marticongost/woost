@@ -36,7 +36,7 @@ from cocktail.schema import SchemaObjectAccessor
 
     <py:woost.views.ContentTable
         py:def="collection_display"
-        py:base_url="@{self.cms.document_uri()}"
+        py:base_url="@{self.cms.contextual_uri()}"
         py:accessor="${SchemaObjectAccessor}"
         py:translations="@{self.user_collection.languages}"/>
 

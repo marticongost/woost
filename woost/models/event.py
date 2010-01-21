@@ -9,9 +9,15 @@ u"""
 from cocktail import schema
 from woost.models.document import Document
 
+
 class Event(Document):
 
-    members_order = "event_start", "event_end", "event_location", "body"
+    members_order = [
+        "event_start",
+        "event_end",
+        "event_location",
+        "body"
+    ]
 
     event_start = schema.DateTime()
 

@@ -10,28 +10,28 @@ from woost.models import Site
     xmlns:py="http://www.whads.com/ns/cocktail/templates">
 
     <?py-class
-    document = None
+    publishable = None
     user = None
     
     def get_keywords(self):
-        return ((Site.main.keywords or "") + ", " + (self.document.keywords or "")).strip(", ")
+        return ((Site.main.keywords or "") + ", " + (self.publishable.keywords or "")).strip(", ")
     ?>
 
     <py:ready>
         <?py
-        document = self.document
+        publishable = self.publishable
 
-        if document:
+        if publishable:
 
             site = Site.main
             content_language = get_content_language()
 
             # Page title
-            self.page_title = document.title
+            self.page_title = publishable.title
 
             # Meta tags
             self.set_meta("Content-Language", content_language)
-            self.set_meta("description", document.description or site.description)
+            self.set_meta("description", publishable.description or site.description)
             
             keywords = self.get_keywords()
             if keywords:
@@ -43,8 +43,8 @@ from woost.models import Site
             )
 
             # Alternate languages
-            for language in document.translations:
-                if language != content_language and document.get("enabled", language):
+            for language in publishable.translations:
+                if language != content_language and publishable.get("enabled", language):
                     self.add_head_element(
                         Element("link",
                             rel = "alternate",
@@ -66,24 +66,18 @@ from woost.models import Site
                     )
                 )
 
-            # Inherited resources
-            ancestry = reversed(list(document.ascend_documents(include_self = True)))
-            for ancestor in ancestry:
-                for resource in ancestor.branch_resources:
-                    self.add_resource(resource.uri)
+            # Resources
+            for resource in publishable.resources:
+                self.add_resource(cms.uri(resource), mime_type = resource.mime_type)
 
-            # Page resources
-            for resource in document.page_resources:
-                self.add_resource(resource.uri)
-        
             # User defined styles for user content
             self.add_resource(StyleSheet("/user_styles/"))
         ?>
     </py:ready>
 
     <py:block py:id="content">
-        <py:ready py:if="self.document">
-            ${self.document.body}
+        <py:ready py:if="self.publishable">
+            ${self.publishable.body}
         </py:ready>
     </py:block>
 

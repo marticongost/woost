@@ -64,7 +64,7 @@ class PermissionTestCase(BaseTestCase):
 
         from woost.models import (
             Item,
-            Document,
+            Publishable,
             User,
             Role,
             Permission,
@@ -78,7 +78,7 @@ class PermissionTestCase(BaseTestCase):
             pass
 
         item = Item()
-        doc = Document()
+        doc = Publishable()
 
         for permission_type in [
             CreatePermission,
@@ -96,7 +96,7 @@ class PermissionTestCase(BaseTestCase):
             role.permissions.append(
                 permission_type(
                     matching_items = {
-                        "type": "woost.models.document.Document"
+                        "type": "woost.models.publishable.Publishable"
                     },
                     authorized = True
                 )
@@ -127,7 +127,7 @@ class PermissionTestCase(BaseTestCase):
 
         from woost.models import (
             Item,
-            Document,
+            Publishable,
             User,
             Role,
             Permission,
@@ -138,10 +138,10 @@ class PermissionTestCase(BaseTestCase):
         class TestPermission(Permission):
             pass
 
-        prefix = "woost.models.document.Document."
-        m1 = Document.title
-        m2 = Document.parent
-        m3 = Document.children
+        prefix = "woost.models.publishable.Publishable."
+        m1 = Publishable.title
+        m2 = Publishable.parent
+        m3 = Publishable.controller
 
         for permission_type in [ReadMemberPermission, ModifyMemberPermission]:
             
@@ -188,7 +188,7 @@ class PermissionTestCase(BaseTestCase):
 
         from woost.models import (
             Item,
-            Document,
+            Publishable,
             User,
             Role,
             Permission,
@@ -251,7 +251,7 @@ class PermissionTestCase(BaseTestCase):
 
         from woost.models import (
             Item,
-            Document,
+            Publishable,
             User,
             ReadPermission,
             PermissionExpression
@@ -260,7 +260,7 @@ class PermissionTestCase(BaseTestCase):
         self.everybody_role.permissions.append(
             ReadPermission(
                 matching_items = {
-                    "type": "woost.models.document.Document"
+                    "type": "woost.models.publishable.Publishable"
                 },
                 authorized = True
             )
@@ -268,8 +268,8 @@ class PermissionTestCase(BaseTestCase):
 
         i1 = Item()
         i2 = Item()
-        d1 = Document()
-        d2 = Document()
+        d1 = Publishable()
+        d2 = Publishable()
         
         i1.insert()
         i2.insert()

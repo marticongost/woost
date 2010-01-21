@@ -42,7 +42,7 @@ class BackOfficeController(BaseBackOfficeController):
     
     def submit(self):
         raise cherrypy.HTTPRedirect(
-            self.document_uri(self.default_section) + "?" + view_state())
+            self.contextual_uri(self.default_section) + "?" + view_state())
 
     @event_handler
     def handle_traversed(cls, event):
@@ -95,36 +95,43 @@ class BackOfficeController(BaseBackOfficeController):
             message.add_resource("/resources/styles/backoffice.css")           
             return message.render_page()        
         else:
-
             self.context.update(
-                original_document = self.context["document"],
-                document = node.item
+                original_publishable = self.context["publishable"],
+                publishable = node.item
             )
             
-            document_controller = node.item.handler()
-            return document_controller()
+            controller = node.item.resolve_controller()
+
+            if controller is None:
+                raise cherrypy.NotFound()
+
+            return publishable_controller()
 
     @cherrypy.expose
-    def document_resources(self, **kwargs):
-        cherrypy.response.headers["Content-Type"] = "text/javascript"
+    def editor_attachments(self, **kwargs):
+        
+        cms = self.context["cms"]
         node = self.stack_node
+        attachments = schema.get(node.form_data, "attachments", default = None)
+
         resource_type = self.params.read(schema.String("resource_type"))
         language = self.params.read(schema.String("language"))
-        resources = schema.get(node.form_data, "attachments", default = None)
-        output = []        
-        if resources:
-            for resource in resources:
-                if resource.resource_type == resource_type:
+        
+        output = []
+        cherrypy.response.headers["Content-Type"] = "text/javascript"
+
+        if attachments:
+            for attachment in attachments:
+                if attachment.resource_type == resource_type:
                     output.append(
-                            [
-                                resource.get("title", language),
-                                resource.uri
-                            ]
-                        )
+                        [
+                            attachment.get("title", language),
+                            cms.uri(attachment)
+                        ]
+                    )
 
         if resource_type == "image":
             return "var tinyMCEImageList = %s" % (dumps(output))
         else:
             return "var tinyMCELinkList = %s" % (dumps(output))
-        
 

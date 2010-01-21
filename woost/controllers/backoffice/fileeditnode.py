@@ -14,22 +14,23 @@ from cocktail.events import event_handler
 from cocktail import schema
 from cocktail.controllers import context
 from cocktail.controllers.fileupload import FileUpload
-from woost.controllers.backoffice.editstack import EditNode
+from woost.controllers.backoffice.publishableeditnode \
+    import PublishableEditNode
 
 
-class FileEditNode(EditNode):
+class FileEditNode(PublishableEditNode):
 
     @cached_getter
     def form_adapter(self):
-        adapter = EditNode.form_adapter(self)
-        adapter.exclude(["resource_type"])
+        adapter = PublishableEditNode.form_adapter(self)
+        adapter.exclude(["mime_type"])
         adapter.export_rules.add_rule(ExportUploadInfo())
         adapter.import_rules.add_rule(ImportUploadInfo())
         return adapter
 
     @cached_getter
     def form_schema(self):
-        form_schema = EditNode.form_schema(self)
+        form_schema = PublishableEditNode.form_schema(self)
         form_schema.add_member(
             FileUpload("upload",
                 required = not self.item.is_inserted,
@@ -41,7 +42,7 @@ class FileEditNode(EditNode):
 
     def iter_changes(self, source = None):
         
-        for member, language in EditNode.iter_changes(self, source):
+        for member, language in PublishableEditNode.iter_changes(self, source):
 
             # Ignore differences on the upload field if no file has been
             # uploaded

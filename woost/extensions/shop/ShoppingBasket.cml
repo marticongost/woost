@@ -9,7 +9,7 @@ from cocktail.controllers import context
 
     <py:ready>
         <?py
-        self._uri = context["cms"].document_uri        
+        self._uri = context["cms"].contextual_uri
         ?>
     </py:ready>
     

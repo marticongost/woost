@@ -10,7 +10,7 @@ from cocktail import schema
 from cocktail.persistence import datastore
 from cocktail.translations import translations
 from cocktail.tests.seleniumtester import selenium_test, browser
-from woost.models import Item, Document, Template
+from woost.models import Item, Publishable, Template
 from woost.tests.test_selenium import admin_login
 
 
@@ -40,7 +40,7 @@ class ItemSelectorTestCase(object):
 
         template = list(Template.select())[0]
 
-        browser.open("/en/cms/content/new/?item_type=woost.models.document.Document")
+        browser.open("/en/cms/content/new/?item_type=woost.models.publishable.Publishable")
         admin_login()
         
         assert not browser.is_element_present(
@@ -73,13 +73,13 @@ class ItemSelectorTestCase(object):
 
         template = list(Template.select())[0]
 
-        document = Document()
-        document.set("enabled", True, "en")
-        document.template = template
-        document.insert()
+        publishable = Publishable()
+        publishable.set("enabled", True, "en")
+        publishable.template = template
+        publishable.insert()
         datastore.commit()
 
-        browser.open("/en/cms/content/%d/fields" % document.id)
+        browser.open("/en/cms/content/%d/fields" % publishable.id)
         admin_login()
 
         assert not browser.is_element_present(

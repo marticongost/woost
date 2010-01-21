@@ -33,7 +33,7 @@ from cocktail import schema
     <py:woost.views.ContentTree
         py:def="collection_display"
         py:cms="@{self.cms}"
-        py:base_url="@{self.cms.document_uri()}"
+        py:base_url="@{self.cms.contextual_uri()}"
         py:translations="@{self.user_collection.languages}"
         py:children_collection="@{self.children_collection}">
         <py:binding>

@@ -9,7 +9,6 @@ u"""
 import cherrypy
 from cocktail.translations import get_language, set_language
 from cocktail.language import get_content_language, set_content_language
-from cocktail.controllers import Location
 from woost.models import Site, Language
 from woost.controllers.module import Module
 
@@ -24,12 +23,10 @@ class LanguageModule(Module):
     def process_request(self, path):
 
         language = path.pop(0) if path and path[0] in Language.codes else None
+        cherrypy.request.language_specified = (language is not None)
 
         if language is None:
             language = get_language() or self.infer_language()
-            location = Location.get_current()
-            location.path_info = "/" + language + location.path_info
-            location.go()            
         
         cherrypy.response.cookie["language"] = language
         cookie = cherrypy.response.cookie["language"]

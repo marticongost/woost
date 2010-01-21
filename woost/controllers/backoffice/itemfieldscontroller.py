@@ -153,7 +153,7 @@ class ItemFieldsController(EditController):
             value = schema.get(current_node.form_data, key)
 
             raise cherrypy.HTTPRedirect(
-                controller.context["cms"].document_uri("content")
+                controller.context["cms"].contextual_uri("content")
                 + "?" + view_state(
                     selection = value.id if value is not None else None,
                     edit_stack = controller.edit_stack.to_param(),
@@ -176,7 +176,7 @@ class ItemFieldsController(EditController):
             controller.edit_stack.push(rel_node)
 
             raise cherrypy.HTTPRedirect(
-                controller.context["cms"].document_uri(
+                controller.context["cms"].contextual_uri(
                     "content",
                     "new",
                     item_type = content_type_name,

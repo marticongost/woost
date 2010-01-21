@@ -6,13 +6,13 @@
 @organization:	Whads/Accent SL
 @since:			December 2009
 """
-
 import cherrypy
 from cocktail.modeling import cached_getter
-from woost.controllers import DefaultHandler
+from woost.controllers.documentcontroller import DocumentController
 from woost.extensions.googlesearch import GoogleSearchExtension
 
-class GoogleSearchController(DefaultHandler):
+
+class GoogleSearchController(DocumentController):
 
     @cached_getter
     def output(self):
@@ -20,7 +20,7 @@ class GoogleSearchController(DefaultHandler):
         page = cherrypy.request.params.get("page") or 0
         results = GoogleSearchExtension.instance.search(query, int(page))
 
-        output = DefaultHandler.output(self)
+        output = DocumentController.output(self)
         output["query"] = query
         output["results"] = results
         return output

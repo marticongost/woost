@@ -23,7 +23,7 @@ from cocktail.controllers import context
             include_taxes = self.include_taxes    
         )
     
-        self._uri = context["cms"].document_uri
+        self._uri = context["cms"].contextual_uri
         ?>
     </py:ready>
 

@@ -23,8 +23,7 @@ from cocktail.controllers.userfilter import (
     user_filters_registry
 )
 from woost.models.item import Item
-from woost.models.document import Document, DocumentIsPublishedExpression
-from woost.models.resource import Resource
+from woost.models.publishable import Publishable, IsPublishedExpression
 from woost.models.usersession import get_current_user
 
 
@@ -43,7 +42,7 @@ class OwnItemsFilter(UserFilter):
 user_filters_registry.add(Item, OwnItemsFilter)
 
 
-class PublishedDocumentsFilter(UserFilter):
+class IsPublishedFilter(UserFilter):
 
     id = "published"
 
@@ -53,10 +52,9 @@ class PublishedDocumentsFilter(UserFilter):
 
     @cached_getter
     def expression(self):
-        return DocumentIsPublishedExpression(get_current_user())
+        return IsPublishedExpression(get_current_user())
 
-user_filters_registry.add(Document, PublishedDocumentsFilter)
-user_filters_registry.add(Resource, PublishedDocumentsFilter)
+user_filters_registry.add(Publishable, IsPublishedFilter)
 
 
 class TypeFilter(UserFilter):

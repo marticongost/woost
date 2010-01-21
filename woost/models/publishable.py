@@ -1,0 +1,399 @@
+#-*- coding: utf-8 -*-
+"""
+
+@author:		Martí Congost
+@contact:		marti.congost@whads.com
+@organization:	Whads/Accent SL
+@since:			January 2010
+"""
+from datetime import datetime
+from cocktail.modeling import getter
+from cocktail.events import event_handler
+from cocktail.pkgutils import import_object
+from cocktail.translations import translations
+from cocktail import schema
+from cocktail.schema.expressions import Expression
+from cocktail.language import get_content_language
+from woost.models.item import Item
+from woost.models.usersession import get_current_user
+from woost.models.permission import ReadPermission
+from woost.models.permission import ReadPermission, PermissionExpression
+
+
+class Publishable(Item):
+    """Base class for all site elements suitable for publication."""
+    
+    # Backoffice customization
+    preview_view = "woost.views.BackOfficePreviewView"
+    preview_controller = "woost.controllers.backoffice." \
+        "previewcontroller.PreviewController"
+    edit_node_class = "woost.controllers.backoffice.publishableeditnode." \
+        "PublishableEditNode"
+    
+    members_order = [
+        "title",
+        "mime_type",
+        "resource_type",
+        "parent",
+        "path",
+        "full_path",
+        "enabled",
+        "translation_enabled",
+        "hidden",
+        "start_date",
+        "end_date",
+        "controller"
+    ]
+
+    title = schema.String(
+        indexed = True,
+        normalized_index = True,
+        translated = True
+    )
+
+    mime_type = schema.String(
+        text_search = False,
+        format = r"^[^/]+/[^/]+$",
+        listed_by_default = False
+    )
+
+    resource_type = schema.String(
+        indexed = True,
+        editable = False,
+        enumeration = (
+            "document",
+            "image",
+            "audio",
+            "video",
+            "package",
+            "html_resource",
+            "other"
+        ),
+        translate_value = lambda value, **kwargs:
+            u"" if not value else translations(
+                "woost.models.Publishable.resource_type " + value,
+                **kwargs
+            ),
+        listed_by_default = False
+    )
+
+    parent = schema.Reference(
+        type = "woost.models.Document",
+        bidirectional = True,
+        related_key = "children",
+        listed_by_default = False
+    )
+
+    path = schema.String(
+        max = 1024,
+        indexed = True,
+        listed_by_default = False
+    )
+
+    full_path = schema.String(
+        indexed = True,
+        unique = True,
+        editable = False
+    )
+
+    per_language_publication = schema.Boolean(
+        required = True,
+        default = False,
+        indexed = True,
+        visible = False
+    )
+
+    enabled = schema.Boolean(
+        required = True,
+        default = True,
+        indexed = True,
+        listed_by_default = False
+    )
+
+    translation_enabled = schema.Boolean(
+        required = True,
+        default = True,
+        translated = True,
+        indexed = True,
+        listed_by_default = False
+    )
+
+    hidden = schema.Boolean(
+        required = True,
+        default = False,
+        listed_by_default = False
+    )
+
+    start_date = schema.DateTime(
+        indexed = True,
+        listed_by_default = False
+    )
+
+    end_date = schema.DateTime(
+        indexed = True,
+        min = start_date,
+        listed_by_default = False
+    )
+
+    controller = schema.Reference(
+        type = "woost.models.Controller",
+        bidirectional = True,
+        listed_by_default = False
+    )
+
+    def resolve_controller(self):
+        if self.controller and self.controller.python_name:
+            return import_object(self.controller.python_name)
+
+    def __translate__(self, language, **kwargs):
+        return (self.draft_source is None and self.get("title", language)) \
+            or Item.__translate__(self, language, **kwargs)
+
+    @event_handler
+    def handle_changed(cls, event):
+
+        member = event.member
+        publishable = event.source
+
+        if member.name == "path":
+            publishable._update_path(publishable.parent, event.value)
+
+        elif member.name == "parent":
+            publishable._update_path(event.value, publishable.path)
+
+        elif member.name == "mime_type":
+            publishable.resource_type = get_category_from_mime_type(event.value)
+
+    def _update_path(self, parent, path):
+
+        parent_path = parent and parent.full_path
+
+        if parent_path and path:
+            self.full_path = parent_path + "/" + path
+        else:
+            self.full_path = path
+
+    def ascend_tree(self, include_self = False):
+        """Iterate over the item's ancestors, moving towards the root of the
+        document tree.
+
+        @param include_self: Indicates if the object itself should be included
+            in the iteration.
+        @type include_self: bool
+
+        @return: An iterable sequence of pages.
+        @rtype: L{Document} iterable sequence
+        """
+        publishable = self if include_self else self.parent
+        while publishable is not None:
+            yield publishable
+            publishable = publishable.parent
+
+    def descends_from(self, page):
+        """Indicates if the object descends from the given document.
+
+        @param page: The hypothetical ancestor of the page.
+        @type page: L{Document<woost.models.document.Document>}
+
+        @return: True if the object is contained inside the given document or
+            one of its descendants, or if it *is* the given document. False in
+            any other case.
+        @rtype: bool
+        """
+        ancestor = self
+
+        while ancestor is not None:
+            if ancestor is page:
+                return True
+            ancestor = ancestor.parent
+
+        return False
+
+    @getter
+    def resources(self):
+        """Iterates over all the resources that apply to the item.        
+        @type: L{Publishable}
+        """
+        ancestry = list(self.ascend_tree(include_self = False))
+        ancestry.reverse()
+
+        for document in ancestry:
+            for resource in document.branch_resources:
+                yield resource
+
+    def is_current(self):
+        now = datetime.now()
+        return (self.start_date is None or self.start_date <= now) \
+            and (self.end_date is None or self.end_date > now)
+    
+    def is_published(self, language = None):
+        return (
+            not self.is_draft
+            and (
+                self.get("translation_enabled", language)                
+                if self.per_language_publication
+                else self.enabled
+            )
+            and self.is_current()
+        )
+
+    def is_accessible(self, user = None, language = None):
+        return self.is_published(language) \
+            and (user or get_current_user()).has_permission(
+                ReadPermission,
+                target = self
+            )
+
+    @classmethod
+    def select_accessible(cls, *args, **kwargs):
+        return cls.select(filters = [
+            IsAccessibleExpression(get_current_user())
+        ]).select(*args, **kwargs)
+
+
+class IsPublishedExpression(Expression):
+    """An expression that tests if items are published."""
+
+    def eval(self, context, accessor = None):
+        return context.is_published()
+
+    def resolve_filter(self, query):
+
+        def impl(dataset):
+
+            # Exclude disabled items
+            simple_pub = (
+                Publishable.per_language_publication.index[False]
+                .intersection(Publishable.enabled.index[True])
+            )
+            per_language_pub = (
+                Publishable.per_language_publication.index[True]
+                .intersection(Publishable.translation_enabled.index[
+                    (get_content_language(), True)
+                ])
+            )
+            dataset.intersection_update(simple_pub | per_language_pub)
+
+            # Exclude drafts
+            is_draft_expr = Item.is_draft.equal(False)
+            dataset = is_draft_expr.resolve_filter(query)[1](dataset)
+            
+            # Publication min/max date
+            now = datetime.now()
+                
+            s = Publishable.start_date.index
+            e = Publishable.end_date.index
+
+            # No start date set, or the start date has been reached
+            dataset.intersection_update(
+                s[None] | set(s.values(max = now))
+            )
+            
+            # No end date set, or the end date hasn't been reached yet
+            dataset.intersection_update(
+                e[None] | set(e.values(min = now, excludemin = True))
+            )
+
+            return dataset
+        
+        return ((-1, 1), impl)
+
+
+class IsAccessibleExpression(Expression):
+    """An expression that tests that items can be accessed by a user.
+    
+    The expression checks both the publication state of the item and the
+    read permissions for the specified user.
+
+    @ivar user: The user that accesses the items.
+    @type user: L{User<woost.models.user.User>}
+    """
+    def __init__(self, user = None):
+        Expression.__init__(self)
+        self.user = user
+
+    def eval(self, context, accessor = None):
+        return context.is_accessible(user = self.user)
+
+    def resolve_filter(self, query):
+
+        def impl(dataset):
+            access_expr = PermissionExpression(
+                self.user or get_current_user(),
+                ReadPermission
+            )
+            published_expr = IsPublishedExpression()
+            dataset = access_expr.resolve_filter(query)[1](dataset)
+            dataset = published_expr.resolve_filter(query)[1](dataset)
+            return dataset
+        
+        return ((-1, 1), impl)
+
+
+mime_type_categories = {}
+
+for category, mime_types in (
+    ("text/plain", ("text",)),
+    ("html_resource", (
+        "text/css",
+        "text/javascript",
+        "text/ecmascript",
+        "application/javascript",
+        "application/ecmascript"
+    )),
+    ("document", (
+        "application/vnd.oasis.opendocument.text",
+        "application/vnd.oasis.opendocument.spreadsheet",
+        "application/vnd.oasis.opendocument.presentation",
+        "application/msword",
+        "application/msexcel",
+        "application/msaccess",
+        "application/mspowerpoint",
+        "application/mswrite",
+        "application/vnd.ms-excel",
+        "application/vnd.ms-access",
+        "application/vnd.ms-powerpoint",
+        "application/vnd.ms-project",
+        "application/vnd.ms-works",
+        "application/vnd.ms-xpsdocument",
+        "application/rtf",
+        "application/pdf",
+        "application/postscript",
+        "application/x-latex",
+        "application/vnd.oasis.opendocument.database"
+    )),
+    ("package", (
+        "application/zip",
+        "application/x-rar-compressed",
+        "application/x-tar",
+        "application/x-gtar",
+        "application/x-gzip",
+        "application/x-bzip",
+        "application/x-stuffit",
+        "vnd.ms-cab-compressed"
+    ))
+):
+    for mime_type in mime_types:
+        mime_type_categories[mime_type] = category
+
+def get_category_from_mime_type(mime_type):
+    """Obtains the file category that best matches the indicated MIME type.
+    
+    @param mime_type: The MIME type to get the category for.
+    @type mime_type: str
+
+    @return: A string identifier with the category matching the indicated
+        MIME type (one of 'document', 'image', 'audio', 'video', 'package',
+        'html_resource' or 'other').
+    @rtype: str
+    """
+    pos = mime_type.find("/")
+
+    if pos != -1:
+        prefix = mime_type[:pos]
+
+        if prefix in ("image", "audio", "video"):
+            return prefix
+    
+    return mime_type_categories.get(mime_type, "other")
+

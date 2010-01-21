@@ -10,7 +10,6 @@ from warnings import warn
 from traceback import format_exc
 from threading import local
 from weakref import WeakKeyDictionary
-from cocktail.styled import styled
 from cocktail import schema
 from cocktail.translations import translations
 from cocktail.events import when

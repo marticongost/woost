@@ -10,7 +10,7 @@ from setuptools import setup, find_packages
 
 setup(
     name = "woost",
-    version = "0.2",
+    version = "0.3",
     author = "Whads/Accent SL",
     author_email = "tech@whads.com",
     description = "An object oriented, web based Content Management System.",

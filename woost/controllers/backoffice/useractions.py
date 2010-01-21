@@ -12,8 +12,9 @@ from cocktail.modeling import getter, ListWrapper
 from cocktail.translations import translations
 from cocktail import schema
 from woost.models import (
-    Document,
-    Resource,
+    Publishable,
+    URI,
+    File,
     get_current_user,
     CreatePermission,
     ModifyPermission,
@@ -359,9 +360,7 @@ class UserAction(object):
         params = self.get_url_params(controller, selection)
 
         if self.ignores_selection:
-            return controller.document_uri(
-                self.id,
-                **params)
+            return controller.contextual_uri(self.id, **params)
 
         elif self.min == self.max == 1:
             # Single selection
@@ -370,7 +369,7 @@ class UserAction(object):
                     self.id,
                     **params)
         else:
-            return controller.document_uri(
+            return controller.contextual_uri(
                     self.id,
                     selection = [item.id for item in selection],
                     **params)
@@ -592,13 +591,13 @@ class RevertAction(UserAction):
 
 class PreviewAction(UserAction):
     included = frozenset(["toolbar_extra", "item_buttons"])
-    content_type = Document
+    content_type = Publishable
 
 
 class DownloadAction(UserAction):
     min = 1
     max = 1
-    content_type = Resource
+    content_type = (URI, File)
     included = frozenset(["toolbar", "item_buttons"])
 
 
@@ -615,7 +614,7 @@ class ExportAction(UserAction):
         self.format = format
 
     def get_url(self, controller, selection):
-        return controller.document_uri(format = self.format)
+        return controller.contextual_uri(format = self.format)
 
 
 class SelectAction(UserAction):

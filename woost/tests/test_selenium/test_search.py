@@ -154,10 +154,10 @@ class SearchTestCase(object):
     @selenium_test
     def test_item_selector(self):
 
-        from woost.models import Document, Template
+        from woost.models import Publishable, Template
         template = list(Template.select())[0]
         
-        browser.open("/en/cms/content/?content_view=flat&type=woost.models.document.Document&search_expanded=true")
+        browser.open("/en/cms/content/?content_view=flat&type=woost.models.publishable.Publishable&search_expanded=true")
         admin_login()
 
         browser.fire_event("css=.new_filter_selector", "click")

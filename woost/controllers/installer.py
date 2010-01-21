@@ -26,8 +26,6 @@ from woost.models.initialization import init_site
 class Installer(object):
 
     base_path = os.path.abspath(resource_filename("woost", ""))
-    from cocktail.styled import styled
-    print styled(base_path, "red")
     skeleton_path = os.path.join(base_path, "scripts","project_skeleton")
     views_path = os.path.join(base_path, "views")
 

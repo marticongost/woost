@@ -684,10 +684,10 @@ translations.define(
 )
 
 translations.define(
-    "woost.models.userfilter.PublishedDocumentsFilter-instance",
-    ca = u"Documents publicats",
-    es = u"Documentos publicados",
-    en = u"Published documents"
+    "woost.models.userfilter.IsPublishedFilter-instance",
+    ca = u"Elements publicats",
+    es = u"Elementos publicados",
+    en = u"Published elements"
 )
 
 translations.define("woost.models.userfilter.TypeFilter-instance",
@@ -876,10 +876,10 @@ translations.define(
 )
 
 translations.define(
-    "woost.models.initialization Document tree user view",
-    ca = u"Arbre de documents",
-    es = u"Árbol de documentos",
-    en = u"Document tree"
+    "woost.models.initialization Page tree user view",
+    ca = u"Arbre de pàgines",
+    es = u"Árbol de páginas",
+    en = u"Page tree"
 )
 
 translations.define(
@@ -890,10 +890,64 @@ translations.define(
 )
 
 translations.define(
-    "woost.models.initialization Resource gallery user view",
-    ca = u"Galeria de recursos",
-    es = u"Galería de recursos",
-    en = u"Resource gallery"
+    "woost.models.initialization File gallery user view",
+    ca = u"Galeria de fitxers",
+    es = u"Galería de ficheros",
+    en = u"File gallery"
+)
+
+translations.define("woost.models.initialization Document controller title",
+    ca = u"Controlador de document",
+    es = u"Controlador de documento",
+    en = u"Document controller"
+)
+
+translations.define("woost.models.initialization File controller title",
+    ca = u"Controlador de fitxer",
+    es = u"Controlador de fichero",
+    en = u"File controller"
+)
+
+translations.define("woost.models.initialization URI controller title",
+    ca = u"Controlador de redirecció",
+    es = u"Controlador de redirección",
+    en = u"Redirection controller"
+)
+
+translations.define("woost.models.initialization Styles controller title",
+    ca = u"Controlador d'estils d'usuari",
+    es = u"Controlador de estilos de usuario",
+    en = u"User styles controller"
+)
+
+translations.define("woost.models.initialization Feed controller title",
+    ca = u"Controlador de sindicació de continguts",
+    es = u"Controlador de sindicación de contenidos",
+    en = u"Feed controller"
+)
+
+translations.define("woost.models.initialization BackOffice controller title",
+    ca = u"Controlador de panell administratiu",
+    es = u"Controlador de panel administrativo",
+    en = u"Backoffice controller"
+)
+
+translations.define("woost.models.initialization WebServices controller title",
+    ca = u"Controlador de serveis web",
+    es = u"Controlador de servicios web",
+    en = u"Web services controller"
+)
+
+translations.define("woost.models.initialization User styles title",
+    ca = u"Estils d'usuari",
+    es = u"Estilos de usuario",
+    en = u"User styles"
+)
+
+translations.define("woost.models.initialization Web services title",
+    ca = u"Serveis web",
+    es = u"Servicios web",
+    en = u"Web services"
 )
 
 translations.define("woost.views.ContentTable sorting header",
@@ -1162,22 +1216,10 @@ translations.define("Item.id",
     en = u"ID"
 )
 
-translations.define("Item.title",
-    ca = u"Títol",
-    es = u"Título",
-    en = u"Title"
-)
-
-translations.define("Item.identifier",
-    ca = u"Identificador",
-    es = u"Identificador",
-    en = u"Identifier"
-)
-
-translations.define("Item.description",
-    ca = u"Descripció",
-    es = u"Descripción",
-    en = u"Description"
+translations.define("Item.qname",
+    ca = u"Nom qualificat",
+    es = u"Nombre cualificado",
+    en = u"Qualified name"
 )
 
 translations.define("Item.author",
@@ -1320,24 +1362,290 @@ translations.define("Site.timezone",
     en = u"Timezone"
 )
 
-# Document
+translations.define("Site.publication_schemes",
+    ca = u"Esquemes de publicació",
+    es = u"Esquemas de publicación",
+    en = u"Publication schemes"
+)
+
+# PublicationScheme
+#------------------------------------------------------------------------------
+translations.define("PublicationScheme",
+    ca = u"Esquema de publicació",
+    es = u"Esquema de publicación",
+    en = u"Publication scheme"
+)
+
+translations.define("PublicationScheme-plural",
+    ca = u"Esquemes de publicació",
+    es = u"Esquemas de publicación",
+    en = u"Publication schemes"
+)
+
+# HierarchicalPublicationScheme
+#------------------------------------------------------------------------------
+translations.define("HierarchicalPublicationScheme",
+    ca = u"Esquema de publicació jeràrquica",
+    es = u"Esquema de publicación jerárquica",
+    en = u"Hierarchical publication scheme"
+)
+
+translations.define("HierarchicalPublicationScheme-plural",
+    ca = u"Esquemes de publicació jeràrquica",
+    es = u"Esquemas de publicación jerárquica",
+    en = u"Hierarchical publication schemes"
+)
+
+# IdPublicationScheme
+#------------------------------------------------------------------------------
+translations.define("IdPublicationScheme",
+    ca = u"Esquema de publicació per ID",
+    es = u"Esquema de publicación por ID",
+    en = u"ID publication scheme"
+)
+
+translations.define("IdPublicationScheme-plural",
+    ca = u"Esquemes de publicació per ID",
+    es = u"Esquemas de publicación por ID",
+    en = u"ID publication schemes"
+)
+
+# DescriptiveIdPublicationScheme
+#------------------------------------------------------------------------------
+translations.define("DescriptiveIdPublicationScheme",
+    ca = u"Esquema de publicació per ID i descripció",
+    es = u"Esquema de publicación por ID y descripción",
+    en = u"ID plus description publication scheme"
+)
+
+translations.define("DescriptiveIdPublicationScheme-plural",
+    ca = u"Esquemes de publicació per ID i descripció",
+    es = u"Esquemas de publicación por ID y descripción",
+    en = u"ID plus description publication schemes"
+)
+
+translations.define("DescriptiveIdPublicationScheme.id_separator",
+    ca = u"Separador de l'ID",
+    es = u"Separador de ID",
+    en = u"ID separator"
+)
+
+translations.define("DescriptiveIdPublicationScheme.id_separator-explanation",
+    ca = u"Fragment utilitzat per separar l'identificador de la descripció a "
+         u"les URLs",
+    en = u"Fragmento utilizado para separar el identificador de la "
+         u"descripción en las URLs",
+    en = u"Token used to separate identifiers from descriptive text in URLs"
+)
+
+translations.define("DescriptiveIdPublicationScheme.word_separator",
+    ca = u"Separador de paraules",
+    es = u"Separador de palabras",
+    en = u"Word separator"
+)
+
+translations.define("DescriptiveIdPublicationScheme.word_separator-explanation",
+    ca = u"Fragment utilitzat per separar les paraules del títol a les URLs",
+    es = u"Fragmento utilizado para separar las palabras del título en las "
+         u"URLs",
+    en = u"A token used as a word separator for titles in URLs"
+)
+
+translations.define("DescriptiveIdPublicationScheme.id_regexp",
+    ca = u"Expressió d'extracció de l'ID",
+    es = u"Expresión de extracción del ID",
+    en = u"ID extraction expression"
+)
+
+translations.define("DescriptiveIdPublicationScheme.id_regexp-explanation",
+    ca = u"L'expressió regular utilitzada per obtenir l'identificador d'un "
+         u"element a partir de la seva URL. Ha de contenir un grup anomenat "
+         u"<em>id</em>.",
+    es = u"La expresión regular utilizada para obtener el identificador de un "
+         u"elemento a partir de su URL. Debe contener un grupo llamado "
+         u"<em>id</em>.",
+    en = u"The regular expression used to extract the identifier of a "
+         u"publishable item from its URL. Must define an <em>id</em> named "
+         u"group."
+)
+
+translations.define("DescriptiveIdPublicationScheme.title_splitter_regexp",
+    ca = u"Expressió de divisió del títol",
+    es = u"Expresión de separación del título",
+    en = u"Title splitter expression"
+)
+
+translations.define(
+    "DescriptiveIdPublicationScheme.title_splitter_regexp-explanation",
+    ca = u"L'expressió regular utilitzada per desestimar les parts "
+         u"irrellevants d'un títol",
+    es = u"La expresión regular utilizada para desestimar las partes "
+         u"irrelevantes de un título",
+    en = u"The regular expression used to discard irrelevant parts from a "
+         u"title"
+)
+
+translations.define("DescriptiveIdPublicationScheme.format",
+    ca = u"Format de les URLs",
+    es = u"Formato de las URLs",
+    en = u"URL format"
+)
+
+translations.define("DescriptiveIdPublicationScheme.format-explanation",
+    ca = u"Una cadena de formatat de text python. Rep <em>title</em>, "
+         u"<em>id</em> i <em>separator</em> com a paràmetres.",
+    es = u"Una cadena de formatado de texto python. Recibe <em>title</em>, "
+         u"<em>id</em> y <em>separator</em> como parámetros.",
+    en = u"A python text formatting string that takes <em>title</em>, "
+         u"<em>id</em> and <em>separator</em> parameters."
+)
+
+# Publishable
+#------------------------------------------------------------------------------
+translations.define("Publishable",
+    ca = u"Element publicable",
+    es = u"Elemento publicable",
+    en = u"Publishable element"
+)
+
+translations.define("Publishable-plural",
+    ca = u"Elements publicables",
+    es = u"Elementos publicables",
+    en = u"Publishable elements"
+)
+
+translations.define("Publishable.title",
+    ca = u"Títol",
+    es = u"Título",
+    en = u"Title"
+)
+
+translations.define("Publishable.resource_type",
+    ca = u"Tipus de recurs",
+    es = u"Tipo de recurso",
+    en = u"Resource type"
+)
+
+translations.define("woost.models.Publishable.resource_type text",
+    ca = u"Text",
+    es = u"Texto",
+    en = u"Text"
+)
+
+translations.define("woost.models.Publishable.resource_type image",
+    ca = u"Imatge",
+    es = u"Imagen",
+    en = u"Image"
+)
+
+translations.define("woost.models.Publishable.resource_type audio",
+    ca = u"Audio",
+    es = u"Audio",
+    en = u"Audio"
+)
+
+translations.define("woost.models.Publishable.resource_type video",
+    ca = u"Video",
+    es = u"Video",
+    en = u"Video"
+)
+
+translations.define("woost.models.Publishable.resource_type package",
+    ca = u"Paquet",
+    es = u"Paquete",
+    en = u"Package"
+)
+
+translations.define("woost.models.Publishable.resource_type document",
+    ca = u"Document",
+    es = u"Documento",
+    en = u"Document"
+)
+
+translations.define("woost.models.Publishable.resource_type html_resource",
+    ca = u"Recurs HTML",
+    es = u"Recurso HTML",
+    en = u"HTML resource"
+)
+
+translations.define("woost.models.Publishable.resource_type other",
+    ca = u"Altre",
+    es = u"Otro",
+    en = u"Other"
+)
+
+translations.define("Publishable.mime_type",
+    ca = u"Tipus MIME",
+    es = u"Tipo MIME",
+    en = u"MIME type"
+)
+
+translations.define("Publishable.enabled",
+    ca = u"Actiu",
+    es = u"Activo",
+    en = u"Enabled"
+)
+
+translations.define("Publishable.translation_enabled",
+    ca = u"Traducció activa",
+    es = u"Traducción activa",
+    en = u"Translation is enabled"
+)
+
+translations.define("Publishable.hidden",
+    ca = u"Ocult",
+    es = u"Oculto",
+    en = u"Hidden"
+)
+
+translations.define("Publishable.start_date",
+    ca = u"Data de publicació",
+    es = u"Fecha de publicación",
+    en = u"Publication date"
+)
+
+translations.define("Publishable.end_date",
+    ca = u"Data de caducitat",
+    es = u"Fecha de caducidad",
+    en = u"Expiration date"
+)
+
+translations.define("Publishable.controller",
+    ca = u"Controlador",
+    es = u"Controlador",
+    en = u"Controller"
+)
+
+translations.define("Publishable.parent",
+    ca = u"Pare",
+    es = u"Padre",
+    en = u"Parent"
+)
+
+translations.define("Publishable.path",
+    ca = u"Ruta",
+    es = u"Ruta",
+    en = u"Path"
+)
+
+translations.define("Publishable.full_path",
+    ca = u"Ruta completa",
+    es = u"Ruta completa",
+    en = u"Full path"
+)
+
+# Page
 #------------------------------------------------------------------------------
 translations.define("Document",
     ca = u"Document",
     es = u"Documento",
-    en = u"Document"
+    en = u"Documentos"
 )
 
 translations.define("Document-plural",
     ca = u"Documents",
     es = u"Documentos",
     en = u"Documents"
-)
-
-translations.define("Document.title",
-    ca = u"Títol",
-    es = u"Título",
-    en = u"Title"
 )
 
 translations.define("Document.inner_title",
@@ -1358,40 +1666,10 @@ translations.define("Document.keywords",
     en = u"Keywords"
 )
 
-translations.define("Document.start_date",
-    ca = u"Data de publicació",
-    es = u"Fecha de publicación",
-    en = u"Publication date"
-)
-
-translations.define("Document.end_date",
-    ca = u"Data de caducitat",
-    es = u"Fecha de caducidad",
-    en = u"Expiration date"
-)
-
-translations.define("Document.path",
-    ca = u"Ruta",
-    es = u"Ruta",
-    en = u"Path"
-)
-
-translations.define("Document.full_path",
-    ca = u"Ruta completa",
-    es = u"Ruta completa",
-    en = u"Full path"
-)
-
 translations.define("Document.template",
     ca = u"Plantilla",
     es = u"Plantilla",
     en = u"Template"
-)
-
-translations.define("Document.enabled",
-    ca = u"Actiu",
-    es = u"Activo",
-    en = u"Enabled"
 )
 
 translations.define("Document.attachments",
@@ -1412,22 +1690,10 @@ translations.define("Document.branch_resources",
     en = u"Branch resources"
 )
 
-translations.define("Document.parent",
-    ca = u"Pare",
-    es = u"Padre",
-    en = u"Parent"
-)
-
 translations.define("Document.children",
     ca = u"Pàgines filles",
     es = u"Páginas hijas",
     en = u"Child pages"
-)
-
-translations.define("Document.hidden",
-    ca = u"Ocult",
-    es = u"Oculto",
-    en = u"Hidden"
 )
 
 # Redirection
@@ -1764,104 +2030,6 @@ translations.define("DeleteTranslationPermission-plural",
     en = u"Delete translation permissions"
 )
 
-# Resource
-#------------------------------------------------------------------------------
-translations.define("Resource",
-    ca = u"Recurs",
-    es = u"Recurso",
-    en = u"Resource"
-)
-
-translations.define("Resource-plural",
-    ca = u"Recursos",
-    es = u"Recursos",
-    en = u"Resources"
-)
-
-translations.define("Resource.title",
-    ca = u"Nom",
-    es = u"Nombre",
-    en = u"Name"
-)
-
-translations.define("Resource.description",
-    ca = u"Descripció",
-    es = u"Descripción",
-    en = u"Description"
-)
-
-translations.define("Resource.enabled",
-    ca = u"Actiu",
-    es = u"Activo",
-    en = u"Enabled"
-)
-
-translations.define("Resource.start_date",
-    ca = u"Data de publicació",
-    es = u"Fecha de publicación",
-    en = u"Publication date"
-)
-
-translations.define("Resource.end_date",
-    ca = u"Data de caducitat",
-    es = u"Fecha de caducidad",
-    en = u"Expiration date"
-)
-
-translations.define("woost.models.Resource.resource_type",
-    ca = u"Tipus de recurs",
-    es = u"Tipo de recurso",
-    en = u"Resource type"
-)
-
-translations.define("woost.models.Resource.documents",
-    ca = u"Referències",
-    es = u"Referencias",
-    en = u"Referers"
-)
-
-translations.define("woost.models.Resource.resource_type text",
-    ca = u"Text",
-    es = u"Texto",
-    en = u"Text"
-)
-
-translations.define("woost.models.Resource.resource_type image",
-    ca = u"Imatge",
-    es = u"Imagen",
-    en = u"Image"
-)
-
-translations.define("woost.models.Resource.resource_type audio",
-    ca = u"Audio",
-    es = u"Audio",
-    en = u"Audio"
-)
-
-translations.define("woost.models.Resource.resource_type video",
-    ca = u"Video",
-    es = u"Video",
-    en = u"Video"
-)
-
-translations.define("woost.models.Resource.resource_type document",
-    ca = u"Document",
-    es = u"Documento",
-    en = u"Document"
-)
-
-translations.define("woost.models.Resource.resource_type html_resource",
-    ca = u"Recurs HTML",
-    es = u"Recurso HTML",
-    en = u"HTML resource"
-)
-
-translations.define("woost.models.Resource.resource_type other",
-    ca = u"Altre",
-    es = u"Otro",
-    en = u"Other"
-)
-
 # URI
 #------------------------------------------------------------------------------
 translations.define("URI",
@@ -1978,12 +2146,6 @@ translations.define("File.file_name",
     ca = u"Nom del fitxer",
     es = u"Nombre del fichero",
     en = u"File name"
-)
-
-translations.define("File.mime_type",
-    ca = u"Tipus MIME",
-    es = u"Tipo MIME",
-    en = u"MIME type"
 )
 
 translations.define("File.file_size",
@@ -2152,10 +2314,42 @@ translations.define("Template.engine",
     en = u"Rendering engine"
 )
 
-translations.define("Template.items",
-    ca = u"Elements",
-    es = u"Elementos",
-    en = u"Items"
+translations.define("Template.documents",
+    ca = u"Documents",
+    es = u"Documentos",
+    en = u"Documents"
+)
+
+# Controller
+#------------------------------------------------------------------------------
+translations.define("Controller",
+    ca = u"Controlador",
+    es = u"Controlador",
+    en = u"Controller"
+)
+
+translations.define("Controller-plural",
+    ca = u"Controladors",
+    es = u"Controladores",
+    en = u"Controllers"
+)
+
+translations.define("Controller.title",
+    ca = u"Nom",
+    es = u"Nombre",
+    en = u"Name"
+)
+
+translations.define("Controller.python_name",
+    ca = u"Implementació",
+    es = u"Implementación",
+    en = u"Implementation"
+)
+
+translations.define("Controller.python_name-explanation",
+    ca = u"Nom qualificat de la implementació del controlador en Python",
+    es = u"Nombre cualificado de la implementación del controlador en Python",
+    en = u"Qualified name of the Python implementation for the controller"
 )
 
 # Language

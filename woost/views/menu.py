@@ -9,46 +9,58 @@ u"""
 from cocktail.html import templates, Element
 from cocktail.controllers import context
 from woost.models import Site
-from woost.controllers import is_accessible
 
 TreeView = templates.get_class("cocktail.html.TreeView")
 
 
 class Menu(TreeView):
-    """A visual component used to render navigation menus and site maps."""
+    """A visual component used to render navigation menus and site maps.
+    
+    @var root_visible: If set to True, the produced tree has a single root.
+        Otherwise, the root element is hidden and the tree appears to have
+        multiple roots instead.
+    @type root_visible: bool
 
-    # To Show/Hide Root Node
+    @var selection: Indicates the selected item.
+    @type selection: L{Publishable<woost.models.publishable.Publishable>}
+
+    @var emphasized_selection: When set to True, adds a <strong> tag to
+        highlight the selected item.
+    @type emphasized_selection: bool
+
+    @var linked_selection: Indicates if the entry for the selected item should
+        behave as a link or not.
+    @type linked_selection: bool
+    
+    @var linked_containers: Indicates if entries that contain other entries
+        should behave as links.
+    @type linked_containers: bool
+
+    @var max_depth: The maximum depth for the menu.
+    @type max_depth: int
+
+    @var expanded: When set to True, the menu will be completely expanded. When
+        False, entries will only be expanded if they contain the selected
+        entry.
+    @type expanded: bool
+    """
     root_visible = False
-
-    # To specify the selected item, document by default
     selection = None
-
-    # To Add strong tag on selected item
     emphasized_selection = True
-
-    # To enable/disable link for selected item
     linked_selection = True
-
-    # To enable/disable link for each container node
     linked_containers = True
-
-    # To set a max depth for the menu, no limit by default
     max_depth = None
-
-    # To enable/disable auto expand each container node
     expanded = False
 
     def _ready(self):
 
         self._cms = context["cms"]
 
-        # Set the menu root to the site's home page
         if self.root is None:
             self.root = Site.main.home
 
-        # Set the selected document from the current context
         if self.selection is None:
-            self.selection = context["document"]
+            self.selection = context["publishable"]
         
         # Find the selected path
         self._expanded = set()
@@ -67,7 +79,7 @@ class Menu(TreeView):
         return not item.hidden and item.is_accessible()
 
     def get_item_uri(self, item):
-        return self._cms.canonical_uri(item)
+        return self._cms.uri(item)
 
     def create_entry(self, item):
         entry = TreeView.create_entry(self, item)

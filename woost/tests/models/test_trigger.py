@@ -55,7 +55,7 @@ class TriggerMatchTestCase(BaseTestCase):
         from woost.models import (
             ContentTrigger,
             Item,
-            Document,
+            Publishable,
             StandardPage,
             User,
             set_current_user
@@ -63,9 +63,9 @@ class TriggerMatchTestCase(BaseTestCase):
                 
         self.assert_match(
             ContentTrigger(matching_items = {
-                "type": "woost.models.document.Document"
+                "type": "woost.models.publishable.Publishable"
             }),
-            (Document(), None, {}, True),
+            (Publishable(), None, {}, True),
             (StandardPage(), None, {}, True),
             (Item(), None, {}, False),
             (ContentTrigger(), None, {}, False)
@@ -76,26 +76,26 @@ class TriggerMatchTestCase(BaseTestCase):
 
         self.assert_match(
             ContentTrigger(matching_items = {
-                "type": "woost.models.document.Document",
+                "type": "woost.models.publishable.Publishable",
                 "filter": "owned-items"
             }),
-            (Document(), user, {}, False),
-            (Document(owner = user), user, {}, True)
+            (Publishable(), user, {}, False),
+            (Publishable(owner = user), user, {}, True)
         )
 
     def test_modified_member(self):
 
-        from woost.models import ModifyTrigger, Item, Document
+        from woost.models import ModifyTrigger, Item, Publishable
 
         self.assert_match(
             ModifyTrigger(matching_members = [
                 "woost.models.item.Item.owner",
-                "woost.models.document.Document.title"
+                "woost.models.publishable.Publishable.title"
             ]),               
             (Item(), None, {"member": Item.owner}, True),
             (Item(), None, {"member": Item.draft_source}, False),
-            (Document(), None, {"member": Document.title}, True),
-            (Document(), None, {"member": Document.description}, False)
+            (Publishable(), None, {"member": Publishable.title}, True),
+            (Publishable(), None, {"member": Publishable.hidden}, False)
         )
 
     def test_language(self):

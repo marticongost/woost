@@ -11,7 +11,10 @@ from woost.models.document import Document
 
 class News(Document):
 
-    members_order = "summary", "body"
+    members_order = [
+        "summary",
+        "body"
+    ]
 
     summary = schema.String(
         edit_control = "woost.views.RichTextEditor",

@@ -11,7 +11,7 @@ from inspect import getmro
 from cocktail.pkgutils import get_full_name
 from cocktail.typemapping import TypeMapping
 from cocktail.html import templates
-from woost.models import Item, Document, Event
+from woost.models import Item, Publishable, Event
 
 
 class ContentViewsRegistry(object):
@@ -129,8 +129,8 @@ global_content_views.add(
 )
 
 global_content_views.add(
-    Document,
-    "woost.views.DocumentTreeContentView",
+    Publishable,
+    "woost.views.PublishableTreeContentView",
     is_default = True,
     inherited = False
 )

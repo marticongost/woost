@@ -11,7 +11,7 @@ from cocktail.language import set_content_language
 from woost.tests.models.basetestcase import BaseTestCase
 
 
-class DocumentIsAccessibleExpressionTestCase(BaseTestCase):
+class IsAccessibleExpressionTestCase(BaseTestCase):
 
     def setUp(self):
         from woost.models import User
@@ -20,89 +20,93 @@ class DocumentIsAccessibleExpressionTestCase(BaseTestCase):
         self.user = User()
         self.user.insert()
 
-    def get_visible_documents(self):
-        from woost.models import Document, DocumentIsAccessibleExpression
-        return list(Document.select(DocumentIsAccessibleExpression(self.user)))
+    def list_accessible_items(self):
+        from woost.models import Publishable, IsAccessibleExpression
+        return list(Publishable.select(IsAccessibleExpression(self.user)))
 
     def test_enabled(self):
         
-        from woost.models import Document, ReadPermission
+        from woost.models import Publishable, ReadPermission
         
         self.everybody_role.permissions.append(
             ReadPermission(
-                matching_items = {"type": "woost.models.document.Document"}
+                matching_items = {
+                    "type": "woost.models.publishable.Publishable"
+                }
             )
         )
 
-        a = Document()
+        a = Publishable()
         a.enabled = True
         a.insert()
 
-        b = Document()
+        b = Publishable()
         b.enabled = False
         b.insert()
 
-        c = Document()
+        c = Publishable()
         c.enabled = True
         c.insert()
 
-        d = Document()
+        d = Publishable()
         d.enabled = False
         d.insert()
         
-        assert self.get_visible_documents() == [a, c]
+        assert self.list_accessible_items() == [a, c]
 
     def test_current(self):
 
-        from woost.models import Document, ReadPermission
+        from woost.models import Publishable, ReadPermission
         from datetime import datetime, timedelta
         
         self.everybody_role.permissions.append(
             ReadPermission(
-                matching_items = {"type": "woost.models.document.Document"}
+                matching_items = {
+                    "type": "woost.models.publishable.Publishable"
+                }
             )
         )
 
         now = datetime.now()
         
-        a = Document()
+        a = Publishable()
         a.enabled = True
         a.insert()
 
-        b = Document()
+        b = Publishable()
         b.enabled = True
         b.start_date = now
         b.end_date = now + timedelta(days = 1)
         b.insert()
 
-        c = Document()
+        c = Publishable()
         c.enabled = True
         c.start_date = now + timedelta(days = 1)
         c.insert()
 
-        d = Document()
+        d = Publishable()
         d.enabled = True
         d.end_date = now - timedelta(days = 1)
         d.insert()
 
-        assert self.get_visible_documents() == [a, b]
+        assert self.list_accessible_items() == [a, b]
 
     def test_allowed(self):
         
-        from woost.models import Document, ReadPermission
+        from woost.models import Publishable, ReadPermission
 
-        a = Document()
+        a = Publishable()
         a.enabled = True
         a.insert()
 
-        b = Document()
+        b = Publishable()
         b.enabled = True
         b.insert()
 
         self.everybody_role.permissions.append(
             ReadPermission(
                 matching_items = {
-                    "type": "woost.models.document.Document",
+                    "type": "woost.models.publishable.Publishable",
                     "filter": "member-id",
                     "filter_operator0": "ne",
                     "filter_value0": str(b.id)
@@ -110,5 +114,5 @@ class DocumentIsAccessibleExpressionTestCase(BaseTestCase):
             )
         )
         
-        assert self.get_visible_documents() == [a]
+        assert self.list_accessible_items() == [a]
 

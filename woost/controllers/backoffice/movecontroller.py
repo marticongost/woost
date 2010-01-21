@@ -117,7 +117,7 @@ class MoveController(BaseBackOfficeController):
 
         if not controller.handling_ajax_request:
             if controller.action == "cancel" or controller.successful:
-                raise cherrypy.HTTPRedirect(controller.document_uri())
+                raise cherrypy.HTTPRedirect(controller.contextual_uri())
 
     view_class = "woost.views.BackOfficeMoveView"
 

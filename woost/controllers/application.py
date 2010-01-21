@@ -15,11 +15,14 @@ except ImportError:
 
 import cherrypy
 from pkg_resources import resource_filename, iter_entry_points
-from cherrypy.lib.static import serve_file
 from cocktail.events import Event, event_handler
 from cocktail.controllers import Dispatcher
+from cocktail.controllers import Location
 from cocktail.controllers.percentencode import percent_encode
-from cocktail.translations import set_language
+from cocktail.translations import (
+    get_language,
+    set_language
+)
 from cocktail.language import (
     get_content_language,
     set_content_language
@@ -27,9 +30,9 @@ from cocktail.language import (
 from cocktail.persistence import datastore
 from woost.models import (
     Item,
-    Document,
+    Publishable,
+    URI,
     Site,
-    Style,
     ReadPermission,
     ReadTranslationPermission,
     AuthorizationError,
@@ -48,13 +51,7 @@ from woost.controllers.authentication import (
     AuthenticationModule,
     AuthenticationFailedError
 )
-from woost.controllers.documentresolver import (
-    HierarchicalPathResolver,
-    CanonicalURIRedirection
-)
-from woost.controllers.webservices import CMSWebServicesController
 from woost.controllers.iconcontroller import IconController
-from woost.controllers.feedscontroller import FeedsController
 
 
 class CMS(BaseCMSController):
@@ -107,7 +104,6 @@ class CMS(BaseCMSController):
     # Application modules
     LanguageModule = LanguageModule
     AuthenticationModule = AuthenticationModule
-    DocumentResolver = HierarchicalPathResolver
 
     # Webserver configuration
     virtual_path = "/"
@@ -199,7 +195,6 @@ class CMS(BaseCMSController):
 
         self.language = self.LanguageModule(self)
         self.authentication = self.AuthenticationModule(self)
-        self.document_resolver = self.DocumentResolver()
         self.thumbnail_loader = self._create_thumbnail_loader()
         self.icon_resolver = IconResolver()
 
@@ -232,41 +227,103 @@ class CMS(BaseCMSController):
             cherrypy.engine.block()
         else:
             cherrypy.engine.wait(cherrypy.engine.states.STARTED)            
-
-    services = CMSWebServicesController
+    
     icons = IconController
 
     def resolve(self, path):
         
-        # Invoke the language module (this may trigger a redirection to a
-        # canonical URI, set cookies, etc)
+        # Invoke the language module to set the active language
         self.language.process_request(path)
-
+    
+        site = Site.main
         request = cherrypy.request
-        try:
-            document = self.document_resolver.get_document(
-                path,
-                consume_path = True,
-                canonical_redirection = True
-            )
-        except CanonicalURIRedirection, error:
-            self._canonical_redirection(error.path)
+        unicode_path = [step.decode("utf8") for step in path]
 
-        self.context["document"] = document
+        # Item resolution
+        path_resolution = site.resolve_path(unicode_path)
 
-        if document is None:
+        if path_resolution:
+            publishable = path_resolution.item
+
+            for step in path_resolution.matching_path:
+                path.pop(0)
+
+            # Redirection to the item's canonical path
+            canonical_path = site.get_path(publishable)
+            if canonical_path is not None:
+                canonical_path = canonical_path.strip("/")
+                canonical_path = (
+                    canonical_path.split("/")
+                    if canonical_path
+                    else []
+                )
+                if canonical_path != path_resolution.matching_path:
+                    canonical_uri = "".join(
+                        percent_encode(c) for c in "/" + "/".join(
+                            step for step in canonical_path
+                        )
+                    )
+                    if publishable.per_language_publication:
+                        canonical_uri = \
+                            self.language.translate_uri(canonical_uri)
+                    raise cherrypy.HTTPRedirect(canonical_uri)
+        else:
+            publishable = site.home
+        
+        self.context["publishable"] = publishable
+
+        # Controller resolution
+        controller = publishable.resolve_controller()
+
+        if controller is None:
             raise cherrypy.NotFound()
-        
-        return document.handler
 
-    def canonical_uri(self, document, *args, **kwargs):
-        uri = self.document_resolver.get_path(document)
-        
-        if uri is not None:
-            uri = self.application_uri(uri, *args, **kwargs)
-            uri = self.language.translate_uri(uri)
+        # Add the selected language to the current URI
+        if publishable.per_language_publication:
+            if not request.language_specified:
+                location = Location.get_current()
+                location.path_info = "/" + get_language() + location.path_info
+                location.go()
 
-        return uri
+        # Remove the language selection from the current URI
+        elif request.language_specified:
+            location = Location.get_current()
+            location.path_info = \
+                "/" + "/".join(location.path_info.strip("/").split("/")[1:])
+            location.go()
+
+        return controller
+
+    def uri(self, publishable, *args, **kwargs):
+        """Obtains the canonical absolute URI for the given item.
+
+        @param publishable: The item to obtain the canonical URI for.
+        @type publishable: L{Publishable<woost.models.publishable.Publishable>}
+
+        @param args: Additional path components to append to the produced URI.
+        @type args: unicode
+
+        @param kwargs: Key/value pairs to append to the produced URI as query
+            string parameters.
+        @type kwargs: (unicode, unicode)
+
+        @return: The item's canonical URI, or None if no matching URI can be
+            constructed.
+        @rtype: unicode
+        """
+        # User defined URIs
+        if isinstance(publishable, URI):
+            return publishable.uri
+
+        # Regular elements
+        else:
+            uri = Site.main.get_path(publishable)
+            
+            if uri is not None:
+                uri = self.application_uri(uri, *args, **kwargs)
+                uri = self.language.translate_uri(uri)
+
+            return uri
 
     def icon_uri(self, element, **kwargs):
         
@@ -277,29 +334,19 @@ class CMS(BaseCMSController):
 
         return self.application_uri("icons", element, **kwargs)
 
-    def _canonical_redirection(self, path):
-        path = "".join(percent_encode(c) for c in path)
-        path = self.application_uri(path)
-        path = str(self.language.translate_uri(path))
+    def validate_publishable(self, publishable):
 
-        if cherrypy.request.query_string:
-            path += "?" + cherrypy.request.query_string
-
-        raise cherrypy.HTTPRedirect(path)
-
-    def validate_document(self, document):
-
-        if not document.is_published():
+        if not publishable.is_published():
             raise cherrypy.NotFound()
 
         user = get_current_user()
         
-        user.require_permission(ReadPermission, target = document)
+        user.require_permission(ReadPermission, target = publishable)
         user.require_permission(
             ReadTranslationPermission,
             language = get_content_language()
         )
-        
+
     @event_handler
     def handle_traversed(cls, event):
 
@@ -309,7 +356,7 @@ class CMS(BaseCMSController):
         
         cms.context.update(
             cms = cms,
-            document = None
+            publishable = None
         )
 
         # Set the default language as soon as possible
@@ -325,10 +372,10 @@ class CMS(BaseCMSController):
         
         cms = event.source
 
-        # Validate access to the requested document
-        document = cms.context["document"]
-        if document is not None:
-            cms.validate_document(document)
+        # Validate access to the requested item
+        publishable = cms.context["publishable"]
+        if publishable is not None:
+            cms.validate_publishable(publishable)
 
     @event_handler
     def handle_producing_output(cls, event):
@@ -338,7 +385,7 @@ class CMS(BaseCMSController):
             cms = cms,
             site = Site.main,
             user = get_current_user(),
-            document = event.controller.context.get("document")
+            publishable = event.controller.context.get("publishable")
         )
 
     @event_handler
@@ -347,10 +394,6 @@ class CMS(BaseCMSController):
         error = event.exception
         controller = event.source
 
-        # URI normalization
-        if isinstance(error, CanonicalURIRedirection):
-            controller._canonical_redirection(error.path)
-        
         if cherrypy.response.headers.get("Content-Type") in (
             "text/html",
             "text/xhtml"
@@ -364,15 +407,20 @@ class CMS(BaseCMSController):
                 event.handled = True
                 
                 controller.context.update(
-                    original_document = controller.context["document"],
-                    document = error_page
+                    original_publishable = controller.context["publishable"],
+                    publishable = error_page
                 )
                 
                 response = cherrypy.response
                 response.status = status 
                 
-                error_controller = error_page.handler()
-                error_controller._rendering_format = "html"
+                error_controller = error_page.resolve_controller()
+
+                # Instantiate class based controllers
+                if isinstance(error_controller, type):
+                    error_controller = error_controller()
+                    error_controller._rendering_format = "html"
+
                 response.body = error_controller()
     
     def get_error_page(self, error):
@@ -381,10 +429,10 @@ class CMS(BaseCMSController):
         @param error: The exception to describe.
         @type error: Exception
 
-        @return: A tuple comprised of a document to invoke and an HTTP status
-            to set on the response. Either component can be None, so that no
-            custom error page is shown, or that the status is not changed,
-            respectively.
+        @return: A tuple comprised of a publishable item to delegate to and an
+            HTTP status to set on the response. Either component can be None,
+            so that no custom error page is shown, or that the status is not
+            changed, respectively.
         @rtype: (L{Document<woost.models.Document>}, int)
         """
         site = Site.main
@@ -416,21 +464,6 @@ class CMS(BaseCMSController):
 
     def get_file_upload_path(self, id):
         return os.path.join(self.upload_path, str(id))
-        
-    @cherrypy.expose
-    def files(self, id, **kwargs):
-        
-        file = self._get_requested_item(id, **kwargs)
-        
-        disposition = kwargs.get("disposition")
-        if disposition not in ("inline", "attachment"):
-            disposition = "inline"
-
-        return serve_file(
-                file.file_path,
-                name = file.file_name,
-                disposition = disposition,
-                content_type = file.mime_type)
 
     def _create_thumbnail_loader(self):
         
@@ -513,13 +546,4 @@ class CMS(BaseCMSController):
         get_current_user().require_permission(ReadPermission, target = item)
         
         return item
-
-    @cherrypy.expose
-    def user_styles(self, backoffice = 0):
-        cherrypy.response.headers["Content-Type"] = "text/css"
-        for style in Style.select():
-            declarations = style.admin_declarations if backoffice else style.declarations
-            yield ".%s{\n%s\n}\n" % (style.class_name, declarations)
-
-    feeds = FeedsController
 

@@ -50,7 +50,7 @@ class TransitionAction(UserAction):
 
             # Transitions with parameters: redirect to the transition form
             if transition.transition_form:
-                button["href"] = controller_context["cms"].document_uri(
+                button["href"] = controller_context["cms"].contextual_uri(
                     "workflow_transition",
                     item = item.id,
                     transition = transition.id
@@ -149,10 +149,10 @@ class TransitionAction(UserAction):
                 if user.has_permission(ReadPermission, target = item):
                     url = controller.edit_uri(item, "show_detail")
                 else:
-                    url = cms.document_uri()
+                    url = cms.contextual_uri()
 
         elif not user.has_permission(ReadPermission, target = item):
-            url = cms.document_uri()
+            url = cms.contextual_uri()
 
         raise cherrypy.HTTPRedirect(
             url or "?" + view_state(item_action = None, transition = None)

@@ -57,6 +57,5 @@ class LanguageSelector(LinkSelector):
 
     def get_entry_url(self, language):
         cms = context["cms"]
-        document = context["document"]
         return cms.language.translate_uri(language = language)
 

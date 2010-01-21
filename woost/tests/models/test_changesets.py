@@ -16,49 +16,45 @@ class ChangeSetTests(BaseTestCase):
 
         from datetime import datetime
         from woost.models import (
-            Document, User, ChangeSet, changeset_context
+            Publishable, User, ChangeSet, changeset_context
         )
 
         author = User()
         author.insert()
 
         with changeset_context(author) as changeset:
-            document = Document()
-            document.set("title", u"Test document title", "en")
-            document.set("inner_title", u"Test document inner title", "en")
-            document.hidden = True
+            item = Publishable()
+            item.set("title", u"Foo!", "en")
+            item.resource_type = u"text/foo"
+            item.hidden = True
             assert not changeset.changes
-            document.insert()
+            item.insert()
         
         assert list(ChangeSet.select()) == [changeset]
         assert changeset.author is author
         assert isinstance(changeset.date, datetime)
         
-        assert changeset.changes.keys() == [document.id]
-        change = changeset.changes[document.id]
-        assert change.target is document
+        assert changeset.changes.keys() == [item.id]
+        change = changeset.changes[item.id]
+        assert change.target is item
         assert change.action is self.create_action
         assert change.changeset is changeset
-        assert document.changes == [change]
+        assert item.changes == [change]
 
         for key in "id", "changes", "creation_time", "last_update_time":
             assert not key in change.item_state
 
-        assert change.item_state["title"] == {"en": u"Test document title"}
+        assert change.item_state["title"] == {"en": u"Foo!"}
+        assert change.item_state["resource_type"] == u"text/foo"
+        assert change.item_state["hidden"] == True
+        assert change.item_state["translation_enabled"] == \
+            {"en": item.get("translation_enabled", "en")}
 
-        assert change.item_state["inner_title"] == \
-            {"en": u"Test document inner title"}
-
-        assert change.item_state["hidden"]
-
-        assert change.item_state["enabled"] == \
-            {"en": document.get("enabled", "en")}
-
-        assert document.author is author
-        assert document.owner is author
-        assert document.creation_time
-        assert document.last_update_time
-        assert document.creation_time == document.last_update_time
+        assert item.author is author
+        assert item.owner is author
+        assert item.creation_time
+        assert item.last_update_time
+        assert item.creation_time == item.last_update_time
 
     def test_delete(self):
 
@@ -95,55 +91,51 @@ class ChangeSetTests(BaseTestCase):
         from time import sleep
         from datetime import datetime
         from woost.models import (
-            Document, User, ChangeSet, changeset_context
+            Publishable, User, ChangeSet, changeset_context
         )
 
         author = User()
         author.insert()
 
         with changeset_context(author) as creation:
-            document = Document()
-            document.set("title", u"Test document title", "en")
-            document.set("inner_title", u"Test document inner title", "en")
-            document.hidden = True
-            document.insert()
+            item = Publishable()
+            item.set("title", u"Foo!", "en")
+            item.resource_type = u"text/foo"
+            item.hidden = True
+            item.insert()
         
         # Make sure creation_time and last_update_time don't match
         sleep(0.1)
 
         with changeset_context(author) as modification:
-            document.set("title", u"Test document new title", "en")
-            document.set("inner_title", u"Test document new inner title", "en")
-            document.hidden = True
+            item.set("title", u"Bar!", "en")
+            item.resource_type = u"text/bar"
+            item.hidden = True
 
         assert list(ChangeSet.select()) == [creation, modification]
         assert modification.author is author
         assert isinstance(modification.date, datetime)
         
-        assert modification.changes.keys() == [document.id]
-        change = modification.changes[document.id]
-        assert change.target is document
+        assert modification.changes.keys() == [item.id]
+        change = modification.changes[item.id]
+        assert change.target is item
         assert change.action is self.modify_action
         assert change.changeset is modification
-        assert change.changed_members == set(["title", "inner_title"])
-        assert document.changes == [creation.changes[document.id], change]
+        assert change.changed_members == set(["title", "resource_type"])
+        assert item.changes == [creation.changes[item.id], change]
 
         for key in "id", "changes", "creation_time", "last_update_time":
             assert not key in change.item_state
 
-        assert change.item_state["title"] == {"en": u"Test document new title"}
+        assert change.item_state["title"] == {"en": u"Bar!"}
+        assert change.item_state["resource_type"] == u"text/bar"
+        assert change.item_state["hidden"] == True
+        assert change.item_state["translation_enabled"] == \
+            {"en": item.get("translation_enabled", "en")}
 
-        assert change.item_state["inner_title"] == \
-            {"en": u"Test document new inner title"}
-
-        assert change.item_state["hidden"]
-
-        assert change.item_state["enabled"] == \
-            {"en": document.get("enabled", "en")}
-
-        assert document.author is author
-        assert document.owner is author
-        assert document.creation_time
-        assert document.last_update_time
-        assert not document.creation_time == document.last_update_time
+        assert item.author is author
+        assert item.owner is author
+        assert item.creation_time
+        assert item.last_update_time
+        assert not item.creation_time == item.last_update_time
 

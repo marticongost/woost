@@ -57,11 +57,11 @@ class BaseCMSController(Controller):
             )   
         return uri
 
-    def document_uri(self, *args, **kwargs):
-        """Builds an URI relative to the location of the current document.
+    def contextual_uri(self, *args, **kwargs):
+        """Builds an URI relative to the currently requested publishable item.
         
         @param args: A set of path components that will be appended to the
-            document's URI. Takes any object that can be expressed as an
+            publishable's URI. Accepts any object that can be expressed as an
             unicode string.
 
         @param kwargs: A set of query string parameters to be included on the
@@ -70,9 +70,8 @@ class BaseCMSController(Controller):
         @return: The generated absolute URI.
         @rtype: unicode
         """
-        resolver = self.context["cms"].document_resolver
-        document = self.context["document"]
-        uri = resolver.get_path(document)
+        publishable = self.context["publishable"]
+        uri = Site.main.get_path(publishable)
 
         if uri is None:
             return None

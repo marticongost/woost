@@ -69,7 +69,7 @@ class SISPaymentGateway(PaymentGateway, Implementation):
     def payment_successful_url(self):
 
         if self.payment_successful_page:
-            return self._base_url() + context["cms"].canonical_uri(self.payment_successful_page)
+            return self._base_url() + context["cms"].uri(self.payment_successful_page)
 
         return None
 
@@ -77,7 +77,7 @@ class SISPaymentGateway(PaymentGateway, Implementation):
     def payment_failed_url(self):
 
         if self.payment_failed_page:
-            return self._base_url() + context["cms"].canonical_uri(self.payment_failed_page)
+            return self._base_url() + context["cms"].uri(self.payment_failed_page)
 
         return None
 

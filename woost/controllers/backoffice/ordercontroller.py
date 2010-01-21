@@ -111,7 +111,7 @@ class OrderController(BaseBackOfficeController):
                 if controller.edit_stack:
                     controller.edit_stack.go(-2)
                 else:
-                    raise cherrypy.HTTPRedirect(controller.document_uri())
+                    raise cherrypy.HTTPRedirect(controller.relative_uri())
 
     view_class = "woost.views.BackOfficeOrderView"
 

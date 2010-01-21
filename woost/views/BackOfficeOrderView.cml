@@ -17,7 +17,7 @@ from cocktail.html.datadisplay import SINGLE_SELECTION
     <py:with py:element="self.body" py:tag="form" method="post">
 
         <py:woost.views.ContentTable
-            py:base_url="@{self.cms.document_uri()}"
+            py:base_url="@{self.cms.contextual_uri()}"
             py:accessor="${SchemaObjectAccessor}"
             py:selection_mode="${SINGLE_SELECTION}"
             py:data="@{self.collection}">

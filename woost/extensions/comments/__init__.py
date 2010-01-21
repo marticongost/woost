@@ -14,7 +14,7 @@ from cocktail.translations import translations
 from cocktail.persistence import datastore
 from cocktail.controllers import UserCollection, get_parameter
 from cocktail.pkgutils import resolve
-from woost.models import Extension, Document, Role, get_current_user
+from woost.models import Extension, Publishable, Role, get_current_user
 from woost.models.changesets import changeset_context
 from woost.models.permission import CreatePermission
 from woost.controllers.basecmscontroller import BaseCMSController
@@ -106,12 +106,12 @@ class CommentsExtension(Extension):
             )
         )
 
-        Document.add_member(
+        Publishable.add_member(
             schema.Collection(
                 "comments",
                 items = schema.Reference(type = Comment),
                 bidirectional = True,
-                related_key = "document",
+                related_key = "publishable",
                 integral = True
             )
         )
@@ -120,12 +120,13 @@ class CommentsExtension(Extension):
         def _process_comments(event):
 
             controller = event.source
-            comment_model = resolve(getattr(controller, "comment_model", Comment))
-            document = controller.context["document"]
+            comment_model = \
+                resolve(getattr(controller, "comment_model", Comment))
+            publishable = controller.context["publishable"]
             user = get_current_user()
 
-            if document is not None and \
-            document.allow_comments and \
+            if publishable is not None and \
+            publishable.allow_comments and \
             user.has_permission(CreatePermission, target = comment_model):
 
                 # Comments collection
@@ -135,7 +136,7 @@ class CommentsExtension(Extension):
                 comments_user_collection.allow_language_selection = False
                 comments_user_collection.allow_member_selection = False
                 comments_user_collection.params.prefix = "comments_"
-                comments_user_collection.base_collection = document.comments
+                comments_user_collection.base_collection = publishable.comments
 
                 # Show the last comments page if not specified
                 if "comments_page" not in cherrypy.request.params:
@@ -158,7 +159,7 @@ class CommentsExtension(Extension):
                     or not member.editable
                     or not issubclass(member.schema, comment_model)
                 )
-                adapter.exclude("document")
+                adapter.exclude("publishable")
 
                 comments_schema = schema.Schema(comment_model.name + "Form")
                 adapter.export_schema(comment_model, comments_schema)
@@ -197,7 +198,7 @@ class CommentsExtension(Extension):
                             )
 
                             comment.id = comment_id
-                            comment.document = document
+                            comment.publishable = publishable
                             comment.insert()
                             datastore.commit()
                 else:
