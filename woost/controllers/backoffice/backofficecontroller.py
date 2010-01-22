@@ -105,7 +105,10 @@ class BackOfficeController(BaseBackOfficeController):
             if controller is None:
                 raise cherrypy.NotFound()
 
-            return publishable_controller()
+            if isinstance(controller, type):
+                controller = controller()
+
+            return controller()
 
     @cherrypy.expose
     def editor_attachments(self, **kwargs):
