@@ -113,6 +113,7 @@ class Site(Item):
     publication_schemes = schema.Collection(
         items = "woost.models.PublicationScheme",
         bidirectional = True,
+        integral = True,
         min = 1
     )
 
