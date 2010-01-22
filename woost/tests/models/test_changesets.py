@@ -16,14 +16,14 @@ class ChangeSetTests(BaseTestCase):
 
         from datetime import datetime
         from woost.models import (
-            Publishable, User, ChangeSet, changeset_context
+            Document, User, ChangeSet, changeset_context
         )
 
         author = User()
         author.insert()
 
         with changeset_context(author) as changeset:
-            item = Publishable()
+            item = Document()
             item.set("title", u"Foo!", "en")
             item.resource_type = u"text/foo"
             item.hidden = True
@@ -91,14 +91,14 @@ class ChangeSetTests(BaseTestCase):
         from time import sleep
         from datetime import datetime
         from woost.models import (
-            Publishable, User, ChangeSet, changeset_context
+            Document, User, ChangeSet, changeset_context
         )
 
         author = User()
         author.insert()
 
         with changeset_context(author) as creation:
-            item = Publishable()
+            item = Document()
             item.set("title", u"Foo!", "en")
             item.resource_type = u"text/foo"
             item.hidden = True

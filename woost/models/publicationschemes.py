@@ -9,6 +9,7 @@
 import re
 from cocktail.modeling import abstractmethod
 from cocktail import schema
+from cocktail.translations import translations
 from woost.models.item import Item
 from woost.models.publishable import Publishable
 
@@ -267,7 +268,7 @@ class DescriptiveIdPublicationScheme(PublicationScheme):
         
     def get_path(self, publishable, language):
         
-        title = publishable.get("title", language)
+        title = translations(publishable, language)
 
         if title:
             title = self.title_splitter_regexp.sub(

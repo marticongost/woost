@@ -1514,12 +1514,6 @@ translations.define("Publishable-plural",
     en = u"Publishable elements"
 )
 
-translations.define("Publishable.title",
-    ca = u"Títol",
-    es = u"Título",
-    en = u"Title"
-)
-
 translations.define("Publishable.resource_type",
     ca = u"Tipus de recurs",
     es = u"Tipo de recurso",
@@ -1646,6 +1640,12 @@ translations.define("Document-plural",
     ca = u"Documents",
     es = u"Documentos",
     en = u"Documents"
+)
+
+translations.define("Document.title",
+    ca = u"Títol",
+    es = u"Título",
+    en = u"Title"
 )
 
 translations.define("Document.inner_title",
@@ -2044,6 +2044,12 @@ translations.define("URI-plural",
     en = u"Web addresses"
 )
 
+translations.define("URI.title",
+    ca = u"Títol",
+    es = u"Título",
+    en = u"Title"
+)
+
 translations.define("URI.uri",
     ca = u"Adreça",
     es = u"Dirección",
@@ -2140,6 +2146,12 @@ translations.define("File-plural",
     ca = u"Fitxers",
     es = u"Ficheros",
     en = u"Files"
+)
+
+translations.define("File.title",
+    ca = u"Títol",
+    es = u"Título",
+    en = u"Title"
 )
 
 translations.define("File.file_name",
@@ -2893,12 +2905,6 @@ translations.define("Feed.title",
     ca = u"Títol",
     es = u"Título",
     en = u"Title"
-)
-
-translations.define("Feed.enabled",
-    ca = u"Actiu",
-    es = u"Activo",
-    en = u"Enabled"
 )
 
 translations.define("Feed.ttl",

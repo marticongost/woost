@@ -19,6 +19,7 @@ from woost.models import (
     Language,
     Action,
     Publishable,
+    Document,
     User,
     Role,
     StandardPage,
@@ -306,7 +307,7 @@ def init_site(
         site.home.insert()
     
         # Create the back office interface
-        back_office = Publishable()
+        back_office = Document()
         back_office.controller = back_office_controller
         back_office.critical = True
         back_office.qname = "woost.backoffice"
@@ -317,7 +318,7 @@ def init_site(
         back_office.insert()
         
         # Create the user styles dynamic style sheet
-        user_styles = Publishable()
+        user_styles = Document()
         user_styles.critical = True
         user_styles.qname = "woost.user_styles"
         user_styles.parent = site.home
@@ -330,7 +331,7 @@ def init_site(
         user_styles.insert()
 
         # Create the web services page
-        webservices = Publishable()
+        webservices = Document()
         webservices.critical = True
         webservices.qname = "woost.webservices"
         webservices.parent = site.home

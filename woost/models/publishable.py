@@ -23,6 +23,8 @@ from woost.models.permission import ReadPermission, PermissionExpression
 class Publishable(Item):
     """Base class for all site elements suitable for publication."""
     
+    instantiable = False
+
     # Backoffice customization
     preview_view = "woost.views.BackOfficePreviewView"
     preview_controller = "woost.controllers.backoffice." \
@@ -31,7 +33,6 @@ class Publishable(Item):
         "PublishableEditNode"
     
     members_order = [
-        "title",
         "mime_type",
         "resource_type",
         "parent",
@@ -44,12 +45,6 @@ class Publishable(Item):
         "end_date",
         "controller"
     ]
-
-    title = schema.String(
-        indexed = True,
-        normalized_index = True,
-        translated = True
-    )
 
     mime_type = schema.String(
         text_search = False,
@@ -144,10 +139,6 @@ class Publishable(Item):
     def resolve_controller(self):
         if self.controller and self.controller.python_name:
             return import_object(self.controller.python_name)
-
-    def __translate__(self, language, **kwargs):
-        return (self.draft_source is None and self.get("title", language)) \
-            or Item.__translate__(self, language, **kwargs)
 
     @event_handler
     def handle_changed(cls, event):

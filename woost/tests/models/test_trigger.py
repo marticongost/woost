@@ -85,17 +85,17 @@ class TriggerMatchTestCase(BaseTestCase):
 
     def test_modified_member(self):
 
-        from woost.models import ModifyTrigger, Item, Publishable
+        from woost.models import ModifyTrigger, Item, Document
 
         self.assert_match(
             ModifyTrigger(matching_members = [
                 "woost.models.item.Item.owner",
-                "woost.models.publishable.Publishable.title"
+                "woost.models.document.Document.title"
             ]),               
             (Item(), None, {"member": Item.owner}, True),
             (Item(), None, {"member": Item.draft_source}, False),
-            (Publishable(), None, {"member": Publishable.title}, True),
-            (Publishable(), None, {"member": Publishable.hidden}, False)
+            (Document(), None, {"member": Document.title}, True),
+            (Document(), None, {"member": Document.hidden}, False)
         )
 
     def test_language(self):

@@ -51,10 +51,10 @@ class DraftTestCase(BaseTestCase):
 
     def test_versioning_disabled_for_drafts(self):
 
-        from woost.models import Publishable, changeset_context
+        from woost.models import Document, changeset_context
 
         with changeset_context() as insertion_cs:
-            doc = Publishable()
+            doc = Document()
             doc.is_draft = True
             doc.insert()
         
@@ -72,10 +72,10 @@ class DraftTestCase(BaseTestCase):
 
     def test_copy_draft(self):
 
-        from woost.models import Publishable
+        from woost.models import Document
 
         # Create a source item
-        doc = Publishable()
+        doc = Document()
         doc.set("title", "Test item", "en") 
         doc.insert()
 
@@ -94,7 +94,7 @@ class DraftTestCase(BaseTestCase):
         draft.confirm_draft()
         
         # Confirm it
-        assert draft.id not in Publishable.index
+        assert draft.id not in Document.index
         assert not draft in doc.drafts
         assert doc.get("title", "en") == "Modified test item"
 
