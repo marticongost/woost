@@ -6,26 +6,21 @@
 @organization:	Whads/Accent SL
 @since:			May 2009
 """
-import cherrypy
+from __future__ import with_statement
 from cocktail.translations import translations
 from cocktail import schema
 from cocktail.persistence import datastore
 from cocktail.controllers import get_parameter, context as controller_context
 from cocktail.controllers.viewstate import view_state
 from cocktail.html import Element
-from woost.models import (
-    get_current_user,
-    ReadPermission,
-    ModifyPermission
-)
+from woost.models import get_current_user
+from woost.models.changesets import changeset_context
 from woost.controllers.backoffice.useractions import UserAction
-from woost.controllers.backoffice.itemfieldscontroller \
-    import ItemFieldsController
-from woost.controllers.backoffice.collectioncontroller \
-    import CollectionController
 from woost.extensions.workflow.transitionpermission import \
     TransitionPermission
 from woost.extensions.workflow.transition import Transition
+from woost.extensions.workflow.transitioncontroller import \
+    redirect_transition
 
 
 class TransitionAction(UserAction):
@@ -94,6 +89,7 @@ class TransitionAction(UserAction):
     def invoke(self, controller, selection):
         
         item = selection[0]
+        draft_source = item.draft_source
 
         # Retrieve and validate the desired transition for the item
         transition = get_parameter(
@@ -122,7 +118,11 @@ class TransitionAction(UserAction):
         )
 
         # Transition the item to its new state
-        transition.execute(item)
+        with changeset_context(user):
+            transition.execute(item)
+            datastore.commit()
+
+        # Inform the user of the result
         controller.notify_user(
             translations(
                 "woost.controllers.backoffice.useractions.TransitionAction"
@@ -131,32 +131,8 @@ class TransitionAction(UserAction):
             ),
             "success"
         )
-        datastore.commit()
 
-        # GET redirection, to avoid duplicate POST requests. Also, permissions
-        # that allowed the user to edit or view the transitioned item may no
-        # longer apply (as they may have been granted by the item's previous
-        # state). If that is the case, redirect the user to the best available
-        # view
-        cms = controller.context["cms"]
-        url = None
-
-        if isinstance(
-            controller,
-            (ItemFieldsController, CollectionController)
-        ):
-            if not user.has_permission(ModifyPermission, target = item):
-                if user.has_permission(ReadPermission, target = item):
-                    url = controller.edit_uri(item, "show_detail")
-                else:
-                    url = cms.document_uri()
-
-        elif not user.has_permission(ReadPermission, target = item):
-            url = cms.document_uri()
-
-        raise cherrypy.HTTPRedirect(
-            url or "?" + view_state(item_action = None, transition = None)
-        )
+        redirect_transition(item if item.is_inserted else draft_source)
 
 TransitionAction("transition").register(before = "close")
 
