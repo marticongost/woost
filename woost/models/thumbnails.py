@@ -11,6 +11,7 @@ import os
 import re
 import datetime
 import commands
+from time import mktime
 import Image
 from subprocess import Popen, PIPE
 from shutil import rmtree
@@ -155,7 +156,11 @@ class ThumbnailLoader(object):
 
         return os.path.join(self.cache_path, file_name)
 
-    def get_thumbnail(self, item, width = None, height = None, thumbnailer = None, **params):
+    def get_thumbnail(self, item,
+        width = None,
+        height = None,
+        thumbnailer = None,
+        **params):
         """Gets a thumbnail image for the given item.
 
         @param item: The item to create the thumbnail for.
@@ -200,7 +205,7 @@ class ThumbnailLoader(object):
             # Make sure cached thumbnails are current
             if cached_thumbnail_path and os.path.exists(cached_thumbnail_path):
                 thumbnail_date = os.stat(cached_thumbnail_path).st_mtime
-                if not thumbnailer.thumbnail_changed(item, thumbnail_date):
+                if thumbnailer.get_last_change_in_source(item) > thumbnail_date:
                     image = Image.open(cached_thumbnail_path)
 
         # No usable cached copy available, or cache disabled:
@@ -317,11 +322,10 @@ class Thumbnailer(object):
             params["progressive"] = (progressive == "progressive")
 
         return width, height, params
-
     
-    def thumbnail_changed(self, item, date):
-        """Indicates if an item has been changed in a manner that would alter
-        its thumbnail from the indicated date.
+    def get_last_change_in_source(self, item):
+        """Indicates the last time the item was modified in a way that may
+        alter its resulting thumbnail.
         
         This method is used by L{thumbnail loaders<ThumbnailLoader>} to
         decide which cached thumbnails should be ditched and created anew.
@@ -329,15 +333,11 @@ class Thumbnailer(object):
         @param item: The item to test.
         @type item: L{Item<woost.models.Item>}
 
-        @param date: The point in time from which changes to the item should be
-            examined.
-        @type: datetime
-
-        @return: True if the item has had changes that would alter its
-            thumbnail, False otherwise.
-        @rtype: bool
+        @return: A timestamp indicating the last known change to the item's
+            state that can affect its resulting thumbnail.
+        @rtype: float
         """
-        return item.last_update_time <= date
+        return item.last_update_time
 
     @abstractmethod
     def create_thumbnail(self, item, width, height, **params):
@@ -363,15 +363,14 @@ class Thumbnailer(object):
 class ImageThumbnailer(Thumbnailer):
     """Generates thumbnails for image files."""
 
-    # TODO: Extend it to URI instances
-    # Load remote resources using an HTTP client and an
-    # If-Not-Modified-Since header, etc)
+    # TODO: Extend it to any publishable with resource_type == "image", loading
+    # their produced image using an HTTP client
 
     def can_handle(self, item, **params):
         return isinstance(item, File) and item.resource_type == "image"
     
-    def thumbnail_changed(self, item, date):
-        return date < os.stat(item.file_path).st_mtime
+    def get_last_change_in_source(self, item):
+        return os.stat(item.file_path).st_mtime
     
     def create_thumbnail(self, item, width, height, **params):
 
@@ -431,8 +430,8 @@ class VideoThumbnailer(Thumbnailer):
 
         return width, height, params
 
-    def thumbnail_changed(self, item, date):
-        return date < os.stat(item.file_path).st_mtime
+    def get_last_change_in_source(self, item):
+        return os.stat(item.file_path).st_mtime
     
     def create_thumbnail(self, item, width, height, **params):
 
