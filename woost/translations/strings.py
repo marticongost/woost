@@ -1433,7 +1433,7 @@ translations.define("DescriptiveIdPublicationScheme.id_separator",
 translations.define("DescriptiveIdPublicationScheme.id_separator-explanation",
     ca = u"Fragment utilitzat per separar l'identificador de la descripció a "
          u"les URLs",
-    en = u"Fragmento utilizado para separar el identificador de la "
+    es = u"Fragmento utilizado para separar el identificador de la "
          u"descripción en las URLs",
     en = u"Token used to separate identifiers from descriptive text in URLs"
 )
