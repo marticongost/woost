@@ -60,6 +60,11 @@ def _hide_self_contained_relations(event):
     if event.anonymous:
         event.source.visible = False
 
+# Register the 'text/javascript' MIME type
+import mimetypes
+if not mimetypes.guess_extension("text/javascript"):
+    mimetypes.add_type("text/javascript", ".js")
+del mimetypes
 
 # Base content types
 #------------------------------------------------------------------------------
@@ -71,6 +76,7 @@ from woost.models.language import Language
 from woost.models.userview import UserView
 from woost.models.publicationschemes import (
     PublicationScheme,
+    PathResolution,
     HierarchicalPublicationScheme,
     IdPublicationScheme,
     DescriptiveIdPublicationScheme
