@@ -15,7 +15,10 @@ from woost.models.language import Language
 
 class Feed(Publishable):
 
+    instantiable = True
+
     members_order = [
+        "title",
         "ttl",
         "image",
         "description",
@@ -35,6 +38,12 @@ class Feed(Publishable):
         "woost.controllers.backoffice.feedfieldscontroller." \
         "FeedFieldsController"
     edit_view = "woost.views.FeedFields"
+
+    title = schema.String(
+        indexed = True,
+        normalized_index = True,
+        translated = True
+    )           
 
     ttl = schema.Integer(
         listed_by_default = False        
@@ -99,6 +108,10 @@ class Feed(Publishable):
         )
     )
 
+    def __translate__(self, language, **kwargs):
+        return (self.draft_source is None and self.get("title", language)) \
+            or Publishable.__translate__(self, language, **kwargs)
+
     def select_items(self):
          
         user_collection = UserCollection(Item)
@@ -113,8 +126,4 @@ class Feed(Publishable):
             items.range = (0, self.limit)
 
         return items
-
-    def __translate__(self, language, **kwargs):
-        return (self.draft_source is None and self.get("title", language)) \
-            or Item.__translate__(self, language, **kwargs)
 

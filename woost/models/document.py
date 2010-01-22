@@ -15,9 +15,11 @@ from woost.models.controller import Controller
 
 class Document(Publishable):
 
+    instantiable = True
     default_per_language_publication = True
 
     members_order = (
+        "title",
         "inner_title",        
         "template",
         "description",
@@ -32,6 +34,12 @@ class Document(Publishable):
 
     default_controller = schema.DynamicDefault(
         lambda: Controller.get_instance(qname = "woost.document_controller")
+    )
+
+    title = schema.String(
+        indexed = True,
+        normalized_index = True,
+        translated = True
     )
 
     inner_title = schema.String(
@@ -92,6 +100,10 @@ class Document(Publishable):
         cascade_delete = True
     )
  
+    def __translate__(self, language, **kwargs):
+        return (self.draft_source is None and self.get("title", language)) \
+            or Publishable.__translate__(self, language, **kwargs)
+
     def _update_path(self, parent, path):
 
         Publishable._update_path(self, parent, path)

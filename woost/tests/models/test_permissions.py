@@ -139,7 +139,7 @@ class PermissionTestCase(BaseTestCase):
             pass
 
         prefix = "woost.models.publishable.Publishable."
-        m1 = Publishable.title
+        m1 = Publishable.resource_type
         m2 = Publishable.parent
         m3 = Publishable.controller
 

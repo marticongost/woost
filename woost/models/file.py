@@ -24,6 +24,8 @@ from woost.models.language import Language
 
 class File(Publishable):
  
+    instantiable = True
+
     edit_view = "woost.views.FileFieldsView"
     edit_node_class = \
         "woost.controllers.backoffice.fileeditnode.FileEditNode"
@@ -33,11 +35,18 @@ class File(Publishable):
     )
 
     members_order = [
+        "title",
         "file_name",
         "file_size",
         "file_hash"
     ]
 
+    title = schema.String(
+        indexed = True,
+        normalized_index = True,
+        translated = True
+    )
+    
     file_name = schema.String(
         required = True,
         editable = False
@@ -55,6 +64,10 @@ class File(Publishable):
         visible = False,
         searchable = False
     )
+
+    def __translate__(self, language, **kwargs):
+        return (self.draft_source is None and self.get("title", language)) \
+            or Publishable.__translate__(self, language, **kwargs)
 
     @getter
     def file_path(self):
