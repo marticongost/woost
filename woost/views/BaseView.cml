@@ -68,7 +68,7 @@ from woost.models import Site
 
             # Resources
             for resource in publishable.resources:
-                self.add_resource(cms.uri(resource), mime_type = resource.mime_type)
+                self.add_resource(self.cms.uri(resource), mime_type = resource.mime_type)
 
             # User defined styles for user content
             self.add_resource(StyleSheet("/user_styles/"))
