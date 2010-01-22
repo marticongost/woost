@@ -12,7 +12,12 @@ from woost.models import Item
 
 class Template(Item):
 
-    members_order = "title", "identifier", "items"
+    members_order = [
+        "title",
+        "identifier",
+        "engine",
+        "documents"
+    ]
 
     title = schema.String(
         required = True,
