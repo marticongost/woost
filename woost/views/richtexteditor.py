@@ -42,8 +42,7 @@ class RichTextEditor(TinyMCE):
     def _ready(self):
 
         document_uri = context["cms"].document_uri()
-        edit_stack_param = \
-            context["edit_stacks_manager"].current_edit_stack.to_param()
+        current_edit_stack = context["edit_stacks_manager"].current_edit_stack
         
         styles = [
             "%s=%s" % (translations(style), style.class_name)
@@ -53,12 +52,17 @@ class RichTextEditor(TinyMCE):
         self.tinymce_params.update(self.default_tinymce_params)
         self.tinymce_params.update(
             init_instance_callback = "initRichTextEditor",
-            external_image_list_url = "%s/document_resources?edit_stack=%s&resource_type=image&language=%s"
-                % (document_uri, edit_stack_param, self.language),
-            external_link_list_url = "%s/document_resources?edit_stack=%s&resource_type=document&language=%s"
-                % (document_uri, edit_stack_param, self.language),
             theme_advanced_styles = ";".join(styles)
         )
+
+        if current_edit_stack:
+            edit_stack_param = current_edit_stack.to_param()
+            self.tinymce_params.update(
+                external_image_list_url = "%s/document_resources?edit_stack=%s&resource_type=image&language=%s"
+                    % (document_uri, edit_stack_param, self.language),
+                external_link_list_url = "%s/document_resources?edit_stack=%s&resource_type=document&language=%s"
+                    % (document_uri, edit_stack_param, self.language),
+            )
 
         TinyMCE._ready(self)
         
