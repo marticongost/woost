@@ -55,7 +55,7 @@ from woost.controllers.backoffice.useractions import add_view_action_context
     self.add_resource("/cocktail/scripts/selectors.js")
     ?>
 
-    <link rel="icon" type="image/png" href="/resources/images/favicon.png"/>
+    <link rel="icon" type="image/png" href="/resources/images/favicon.ico"/>
 
     <py:ready>
         <?py
