@@ -337,6 +337,16 @@ class CMS(BaseCMSController):
 
         return self.application_uri("icons", element, **kwargs)
 
+
+    def thumbnail_uri(self, element, **kwargs):
+        
+        if isinstance(element, type):
+            element = element.full_name
+        elif hasattr(element, "id"):
+            element = element.id
+
+        return self.application_uri("thumbnails", element, **kwargs)
+
     def validate_publishable(self, publishable):
 
         if not publishable.is_published():
