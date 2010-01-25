@@ -11,11 +11,21 @@ from simplejson import dumps
 from cocktail.pkgutils import resolve
 from cocktail.events import event_handler
 from cocktail.controllers import view_state
-from cocktail.translations import translations
-from cocktail.language import get_content_language
+from cocktail.translations import (
+    translations,
+    set_language
+)
+from cocktail.language import (
+    get_content_language,
+    set_content_language
+)
 from cocktail.html import Element
 from cocktail import schema
-from woost.models import get_current_user, ReadPermission
+from woost.models import (
+    get_current_user,
+    ReadPermission,
+    Site
+)
 from woost.controllers.backoffice.basebackofficecontroller \
     import BaseBackOfficeController
 from woost.controllers.backoffice.contentcontroller \
@@ -49,6 +59,14 @@ class BackOfficeController(BaseBackOfficeController):
         controller = event.source
         controller.context["edit_stacks_manager"] = \
             resolve(controller._edit_stacks_manager_class)()
+
+    @event_handler
+    def handle_before_request(cls, event):
+        user = get_current_user()
+        language = \
+            user and user.prefered_language or Site.main.backoffice_language
+        set_language(language)
+        set_content_language(language)
 
     @event_handler
     def handle_after_request(cls, event):

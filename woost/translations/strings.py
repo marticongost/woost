@@ -1320,6 +1320,12 @@ translations.define("Site.default_language",
     en = u"Default language"
 )
 
+translations.define("Site.backoffice_language",
+    ca = u"Idioma per defecte pel gestor de continguts",
+    es = u"Idioma por defecto para el gestor de contenidos",
+    en = u"Backoffice default language"
+)
+
 translations.define("Site.home",
     ca = u"Document d'inici",
     es = u"Documento de inicio",
@@ -1764,6 +1770,12 @@ translations.define("User.password",
     ca = u"Contrasenya",
     es = u"Contraseña",
     en = u"Password"
+)
+
+translations.define("User.prefered_language",
+    ca = u"Idioma del gestor de continguts",
+    es = u"Idioma del gestor de contenidos",
+    en = u"Back office language"
 )
 
 translations.define("User.authored_items",

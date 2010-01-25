@@ -10,6 +10,7 @@ from hashlib import sha1
 from cocktail.events import event_handler
 from cocktail.translations import translations
 from cocktail import schema
+from woost.models.site import Site
 from woost.models.item import Item
 from woost.models.role import Role
 from woost.models.messagestyles import (
@@ -22,6 +23,8 @@ from woost.models.messagestyles import (
 )
 
 verbose = False
+
+CMS_TRANSLATIONS = "en", "es", "ca"
 
 
 class User(Item):
@@ -43,13 +46,19 @@ class User(Item):
     @ivar encryption: The hashing algorithm used to encrypt user passwords.
         Should be a reference to one of the algorithms provided by the
         L{hashlib} module.
-    """
+    """    
     edit_form = "woost.views.UserForm"
     edit_node_class = \
         "woost.controllers.backoffice.usereditnode.UserEditNode"
 
     encryption = sha1
     anonymous = False
+    
+    members_order = [
+        "email",
+        "password",
+        "prefered_language"
+    ]
 
     email = schema.String(
         required = True,
@@ -68,7 +77,17 @@ class User(Item):
         visible_in_detail_view = False,
         edit_control = "cocktail.html.PasswordBox"
     )
-    
+
+    prefered_language = schema.String(
+        required = True,
+        default = schema.DynamicDefault(
+            lambda: Site.main.backoffice_language
+        ),
+        enumeration = lambda ctx: Site.backoffice_language.enumeration,
+        translate_value = lambda value:
+            "" if value is None else translations(value)
+    )
+
     roles = schema.Collection(
         items = "woost.models.Role",
         bidirectional = True
