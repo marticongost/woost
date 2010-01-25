@@ -24,6 +24,7 @@ class Site(Item):
 
     members_order = [
         "default_language",
+        "backoffice_language",
         "home",
         "login_page",
         "generic_error_page",
@@ -46,6 +47,13 @@ class Site(Item):
         default = "en",
         enumeration = lambda ctx: Language.codes,
         listed_by_default = False,
+        translate_value = lambda value, **kwargs:
+            u"" if not value else translations(value, **kwargs)
+    )
+
+    backoffice_language = schema.String(
+        enumeration = ["en", "es", "ca"],
+        default = "en",
         translate_value = lambda value, **kwargs:
             u"" if not value else translations(value, **kwargs)
     )
