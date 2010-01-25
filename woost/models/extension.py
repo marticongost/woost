@@ -128,6 +128,8 @@ class Extension(Item):
 
     instantiable = False
     integral = True
+    edit_node_class = "woost.controllers.backoffice.extensioneditnode." \
+                      "ExtensionEditNode"
 
     member_order = (
         "extension_author",

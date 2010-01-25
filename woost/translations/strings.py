@@ -1356,12 +1356,6 @@ translations.define("Site.generic_error_page",
     en = u"Generic error page"
 )
 
-translations.define("Site.extensions",
-    ca = u"Extensions",
-    es = u"Extensiones",
-    en = u"extensions"
-)
-
 translations.define("Site.timezone",
     ca = u"Zona horària",
     es = u"Zona horaria",
@@ -2450,6 +2444,40 @@ translations.define("Extension.enabled",
     ca = u"Activada",
     es = u"Activada",
     en = u"Enabled"
+)
+
+translations.define(
+    "woost.controllers.backoffice.ExtensionEditNode "
+    "enabled extension needs reloading",
+    ca = lambda extension:
+        u"L'extensió <strong>%s</strong> s'activarà quan es torni a iniciar "
+        u"l'aplicació"
+        % translations(extension, "ca"),
+    es = lambda extension:
+        u"La extensión <strong>%s</strong> se activará cuando se reinicie la "
+        u"aplicación"
+        % translations(extension, "es"),
+    en = lambda extension:
+        u"The <strong>%s</strong> will be loaded the next time the "
+        u"application starts"
+        % translations(extension, "en")
+)
+
+translations.define(
+    "woost.controllers.backoffice.ExtensionEditNode "
+    "disabled extension needs reloading",
+    ca = lambda extension:
+        u"L'extensió <strong>%s</strong> es desactivarà quan es torni "
+        u"a iniciar l'aplicació"
+        % translations(extension, "ca"),
+    es = lambda extension:
+        u"La extensión <strong>%s</strong> se desactivará cuando se reinicie "
+        u"la aplicación"
+        % translations(extension, "es"),
+    en = lambda extension:
+        u"The <strong>%s</strong> will be unloaded the next time the "
+        u"application restarts"
+        % translations(extension, "en")
 )
 
 # ChangeSet
