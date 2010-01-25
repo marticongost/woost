@@ -7,7 +7,7 @@ u"""
 @since:			October 2008
 """
 from os.path import abspath, dirname, join
-from cocktail.html import templates
+from cocktail.html import templates, Element
 from cocktail.translations import translations
 from cocktail.controllers import context
 from woost.models import Style
@@ -18,7 +18,7 @@ TinyMCE = templates.get_class("cocktail.html.TinyMCE")
 class RichTextEditor(TinyMCE):
 
     default_tinymce_params = {
-        "plugins": "fullscreen, paste, inlinepopups, advimage, contextmenu",
+        "plugins": "fullscreen, paste, inlinepopups, advimage, contextmenu, -advimagescale",
         "entity_encoding": "raw",
         "dialog_type": "modal",
         "theme": "advanced",
@@ -42,7 +42,8 @@ class RichTextEditor(TinyMCE):
     def _ready(self):
 
         ctx_uri = context["cms"].contextual_uri()
-        current_edit_stack = context["edit_stacks_manager"].current_edit_stack
+        current_edit_stack = \
+            context["edit_stacks_manager"].current_edit_stack
         
         styles = [
             "%s=%s" % (translations(style), style.class_name)
@@ -50,10 +51,6 @@ class RichTextEditor(TinyMCE):
         ]
 
         self.tinymce_params.update(self.default_tinymce_params)
-        self.tinymce_params.update(
-            init_instance_callback = "initRichTextEditor",
-            theme_advanced_styles = ";".join(styles)
-        )
 
         if current_edit_stack:
             edit_stack_param = current_edit_stack.to_param()
@@ -63,7 +60,13 @@ class RichTextEditor(TinyMCE):
                 external_link_list_url = "%s/editor_attachments?edit_stack=%s&resource_type=document&language=%s"
                     % (ctx_uri, edit_stack_param, self.language),
             )
+        
 
+        load_plugin = Element("script")
+        load_plugin["type"] = "text/javascript"
+        load_plugin.append("tinymce.PluginManager.load('advimagescale', '/resources/scripts/advimagescale/editor_plugin.js');")
+        self.append(load_plugin)
+        
         TinyMCE._ready(self)
         
     def __init__(self, *args, **kwargs):
