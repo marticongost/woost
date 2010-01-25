@@ -311,6 +311,7 @@ def init_site(
         back_office.controller = back_office_controller
         back_office.critical = True
         back_office.qname = "woost.backoffice"
+        back_office.per_language_publication = False
         back_office.parent = site.home
         back_office.hidden = True
         back_office.path = u"cms"
@@ -321,6 +322,7 @@ def init_site(
         user_styles = Document()
         user_styles.critical = True
         user_styles.qname = "woost.user_styles"
+        user_styles.per_language_publication = False
         user_styles.parent = site.home
         user_styles.controller = \
             Controller.get_instance(qname = "woost.styles_controller")
