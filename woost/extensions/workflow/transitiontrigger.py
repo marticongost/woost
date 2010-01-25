@@ -59,7 +59,7 @@ class TransitionTrigger(ContentTrigger):
             user,
             target = target,
             transition = transition,
-            transition_date = transition_data,
+            transition_data = transition_data,
             verbose = verbose,
             **context
         )
