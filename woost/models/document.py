@@ -39,7 +39,8 @@ class Document(Publishable):
     title = schema.String(
         indexed = True,
         normalized_index = True,
-        translated = True
+        translated = True,
+        required = True
     )
 
     inner_title = schema.String(
