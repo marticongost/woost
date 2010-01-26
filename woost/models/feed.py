@@ -59,7 +59,8 @@ class Feed(Publishable):
     description = schema.String(
         required = True,
         translated = True,
-        listed_by_default = False
+        listed_by_default = False,
+        edit_control = "cocktail.html.TextArea"
     )
 
     limit = schema.Integer(
