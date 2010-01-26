@@ -2,8 +2,7 @@
 <%!
 from cocktail.language import get_content_language
 from cocktail.translations import translations
-from cocktail.html import StyleSheet
-from woost.models import Site
+from woost.models import Site, Publishable
 
 output_format = "html4"
 container_classes = "BaseView"
@@ -119,7 +118,12 @@ ${self.dtd()}
     % endfor
     
     ## User defined styles for user content
-    <link rel="Stylesheet" type="text/css" href="/user_styles/"${closure()}>
+    <%
+    user_styles = Publishable.get_instance(qname = "woost.user_styles")
+    %>
+    % if user_styles:
+        <link rel="Stylesheet" type="${user_styles.mime_type}" href="${cms.uri(user_styles)}"${closure()}>
+    % endif
 </%def>
 
 <%def name="container()">

@@ -19,12 +19,14 @@ class News(Document):
     summary = schema.String(
         edit_control = "woost.views.RichTextEditor",
         listed_by_default = False,
-        translated = True
+        translated = True,
+        member_group = "content"
     )
 
     body = schema.String(
         edit_control = "woost.views.RichTextEditor",
         listed_by_default = False,
-        translated = True
+        translated = True,
+        member_group = "content"
     )
 

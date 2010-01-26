@@ -29,6 +29,7 @@ setup(
             "payments = woost.extensions.payments:PaymentsExtension",
             "comments = woost.extensions.comments:CommentsExtension",
             "recaptcha = woost.extensions.recaptcha:ReCaptchaExtension",
+            "staticsite = woost.extensions.staticsite:StaticSiteExtension",
             "googlesearch = woost.extensions.googlesearch:GoogleSearchExtension"
         ]
     },

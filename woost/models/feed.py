@@ -11,11 +11,14 @@ from cocktail.controllers.usercollection import UserCollection
 from cocktail.html.datadisplay import display_factory
 from woost.models.publishable import Publishable
 from woost.models.language import Language
+from woost.models.controller import Controller
 
 
 class Feed(Publishable):
 
     instantiable = True
+
+    groups_order = ["meta", "feed_items"] + Publishable.groups_order
 
     members_order = [
         "title",
@@ -42,34 +45,41 @@ class Feed(Publishable):
     title = schema.String(
         indexed = True,
         normalized_index = True,
-        translated = True
+        translated = True,
+        member_group = "meta"
     )           
 
     ttl = schema.Integer(
-        listed_by_default = False        
+        listed_by_default = False,
+        member_group = "meta"
     )
 
     image = schema.Reference(
         type = Publishable,
         related_end = schema.Collection(),
-        relation_constraints = Publishable.resource_type.equal("image")
+        relation_constraints = Publishable.resource_type.equal("image"),
+        member_group = "meta"
     )
 
     description = schema.String(
         required = True,
         translated = True,
-        listed_by_default = False
+        listed_by_default = False,
+        edit_control = "cocktail.html.TextArea",
+        member_group = "meta"
     )
 
     limit = schema.Integer(
         min = 1,
-        listed_by_default = False
+        listed_by_default = False,
+        member_group = "feed_items"
     )
 
     query_parameters = schema.Mapping(
         keys = schema.String(),
         required = True,
-        listed_by_default = False
+        listed_by_default = False,
+        member_group = "feed_items"
     )
 
     item_title_expression = schema.String(
@@ -78,7 +88,8 @@ class Feed(Publishable):
         listed_by_default = False,
         edit_control = display_factory(
             "cocktail.html.CodeEditor", syntax = "python"
-        )
+        ),
+        member_group = "feed_items"
     )
 
     item_link_expression = schema.String(
@@ -87,7 +98,8 @@ class Feed(Publishable):
         listed_by_default = False,
         edit_control = display_factory(
             "cocktail.html.CodeEditor", syntax = "python"
-        )
+        ),
+        member_group = "feed_items"
     )
 
     item_publication_date_expression = schema.String(
@@ -96,7 +108,8 @@ class Feed(Publishable):
         listed_by_default = False,
         edit_control = display_factory(
             "cocktail.html.CodeEditor", syntax = "python"
-        )
+        ),
+        member_group = "feed_items"
     )
 
     item_description_expression = schema.String(
@@ -105,7 +118,8 @@ class Feed(Publishable):
         listed_by_default = False,
         edit_control = display_factory(
             "cocktail.html.CodeEditor", syntax = "python"
-        )
+        ),
+        member_group = "feed_items"
     )
 
     def __translate__(self, language, **kwargs):

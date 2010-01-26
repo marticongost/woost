@@ -35,7 +35,8 @@ class FileEditNode(PublishableEditNode):
             FileUpload("upload",
                 required = not self.item.is_inserted,
                 hash_algorithm = "md5",
-                get_file_destination = lambda upload: self.temp_file_path
+                get_file_destination = lambda upload: self.temp_file_path,
+                member_group = "content"
             )
         )
         return form_schema
