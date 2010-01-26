@@ -32,6 +32,7 @@ class Item(PersistentObject):
     """Base class for all CMS items. Provides basic functionality such as
     authorship, group membership, draft copies and versioning.
     """
+    groups_order = ["administration"]
 
     members_order = [
         "id",
@@ -62,7 +63,8 @@ class Item(PersistentObject):
         unique = True,
         indexed = True,
         searchable = False,
-        listed_by_default = False
+        listed_by_default = False,
+        member_group = "administration"
     )
 
     # Backoffice customization
@@ -107,12 +109,14 @@ class Item(PersistentObject):
 
     creation_time = schema.DateTime(
         versioned = False,
-        editable = False
+        editable = False,
+        member_group = "administration"
     )
 
     last_update_time = schema.DateTime(
         versioned = False,
-        editable = False
+        editable = False,
+        member_group = "administration"
     )
 
     is_draft = schema.Boolean(
@@ -121,7 +125,8 @@ class Item(PersistentObject):
         indexed = True,
         listed_by_default = False,
         editable = False,
-        versioned = False
+        versioned = False,
+        member_group = "administration"
     )
 
     draft_source = schema.Reference(
@@ -131,7 +136,8 @@ class Item(PersistentObject):
         editable = False,
         listed_by_default = False,
         indexed = True,
-        versioned = False
+        versioned = False,
+        member_group = "administration"
     )
 
     drafts = schema.Collection(
@@ -389,13 +395,15 @@ class Item(PersistentObject):
         indexed = True,
         editable = False,
         type = "woost.models.User",
-        listed_by_default = False
+        listed_by_default = False,
+        member_group = "administration"
     )
     
     owner = schema.Reference(
         indexed = True,
         type = "woost.models.User",
-        listed_by_default = False
+        listed_by_default = False,
+        member_group = "administration"
     )
 
 
