@@ -6,6 +6,7 @@
 @organization:	Whads/Accent SL
 @since:			September 2009
 """
+import re
 from cocktail import schema
 from woost.models import Item
 
@@ -26,7 +27,7 @@ class Country(Item):
         unique = True,
         required = True,
         indexed = True,
-        format = "a-z{2}"
+        format = re.compile(r"^[a-z]{2}$")
     )
 
     def __translate__(self, language, **kwargs):
