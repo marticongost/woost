@@ -41,7 +41,16 @@ ${self.dtd()}
 </%def>
 
 <%def name="get_keywords()">
-    <% return ((site.keywords or "") + " " + (publishable.keywords or "")).strip() %>
+    <%
+        keywords = []
+        site_keywords = site.keywords
+        if site_keywords:
+            keywords.append(site_keywords)
+        item_keywords = getattr(publishable, "keywords", None)
+        if item_keywords:
+            keywords.append(item_keywords)
+        return " ".join(keywords) if keywords else None
+    %>
 </%def>
 
 <%def name="dtd()">
@@ -58,8 +67,8 @@ ${self.dtd()}
     <meta name="Content-Language" content="${content_language}"${closure()}>
     <title>${self.getTitle()}</title>
 
-    <% 
-    description = publishable.description or site.description
+    <%
+        description = getattr(publishable, "description", None) or site.description
     %>
     % if description:
         <meta name="description" content="${description}"${closure()}>

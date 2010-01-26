@@ -31,7 +31,10 @@ from woost.models import Site, Publishable, ModifyPermission
         py:collapsible="${True}"/>
 
     <div py:id="main">
-        <h2 py:collapsible="${True}">@{self.publishable.inner_title or self.publishable.title}</h2>
+        <?py
+           inner_title = getattr(self.publishable, "inner_title", None) or translations(self.publishable) 
+        ?>
+        <h2 py:if="inner_title" py:collapsible="${True}">@{inner_title}</h2>
 
         <div py:id="toolbar">
             <a py:id="edit_link">${translations("Action edit")}</a>

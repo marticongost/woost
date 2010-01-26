@@ -14,7 +14,14 @@ from woost.models import Site
     user = None
     
     def get_keywords(self):
-        return ((Site.main.keywords or "") + ", " + (self.publishable.keywords or "")).strip(", ")
+        keywords = []
+        site_keywords = Site.main.keywords
+        if site_keywords:
+            keywords.append(site_keywords)
+        item_keywords = getattr(self.publishable, "keywords", None)
+        if item_keywords:
+            keywords.append(item_keywords)        
+        return " ".join(keywords) if keywords else None
     ?>
 
     <py:ready>
@@ -31,7 +38,11 @@ from woost.models import Site
 
             # Meta tags
             self.set_meta("Content-Language", content_language)
-            self.set_meta("description", publishable.description or site.description)
+            
+            description = getattr(publishable, "description", None) or site.description
+
+            if description:
+                self.set_meta("description", description)
             
             keywords = self.get_keywords()
             if keywords:
