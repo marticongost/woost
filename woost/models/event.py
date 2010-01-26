@@ -21,7 +21,9 @@ class Event(Document):
 
     event_start = schema.DateTime()
 
-    event_end = schema.DateTime()
+    event_end = schema.DateTime(
+        min = event_start
+    )
 
     event_location = schema.String(
         edit_control = "cocktail.html.TextArea",
