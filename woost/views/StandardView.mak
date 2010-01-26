@@ -77,7 +77,12 @@ container_classes = "BaseView StandardView"
 </%def>
 
 <%def name="publishable_title()">
-    <h2>${publishable.inner_title or publishable.title}</h2>
+    <%
+        inner_title = getattr(publishable, "inner_title", None) or translations(publishable)
+    %>
+    %if inner_title:
+        <h2>${inner_title}</h2>
+    %endif
 </%def>
 
 <%def name="toolbar()">
