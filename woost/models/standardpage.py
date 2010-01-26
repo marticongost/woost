@@ -20,6 +20,7 @@ class StandardPage(Document):
     body = schema.String(
         translated = True,
         listed_by_default = False,        
-        edit_control = "woost.views.RichTextEditor"
+        edit_control = "woost.views.RichTextEditor",
+        member_group = "content"
     )
 
