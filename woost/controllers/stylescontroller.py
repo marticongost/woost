@@ -14,8 +14,6 @@ from woost.controllers import BaseCMSController
 class StylesController(BaseCMSController):
 
     def __call__(self, backoffice = False):
-         
-        cherrypy.response.headers["Content-Type"] = "text/css"
         
         for style in Style.select():
             declarations = style.admin_declarations if backoffice else style.declarations

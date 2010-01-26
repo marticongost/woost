@@ -54,9 +54,6 @@ class FeedController(BaseCMSController):
         base_url = unicode(location)
         params["base_url"] = base_url
         
-        cherrypy.response.headers["Content-Type"] = \
-            "application/rss+xml;charset=utf-8"
-
         output = []
         output.append(u"""<?xml version='1.0' encoding='utf-8'?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">

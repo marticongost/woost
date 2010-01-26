@@ -390,6 +390,16 @@ class CMS(BaseCMSController):
         if publishable is not None:
             cms.validate_publishable(publishable)
 
+            # Set the content type and encoding
+            content_type = publishable.mime_type
+            if content_type:
+                encoding = publishable.encoding
+                if encoding:
+                    content_type += ";charset=" + encoding
+                cherrypy.response.headers["Content-Type"] = content_type
+
+            # TODO: encode / decode the request based on the 'encoding' member?
+
     @event_handler
     def handle_producing_output(cls, event):
         # Set application wide output parameters

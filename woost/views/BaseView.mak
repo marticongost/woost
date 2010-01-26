@@ -62,7 +62,7 @@ ${self.dtd()}
 
 <%def name="meta()">
     
-    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"${closure()}>
+    <meta http-equiv="Content-Type" content="${publishable.mime_type};charset=${publishable.encoding}"${closure()}>
     <meta name="Content-Language" content="${content_language}"${closure()}>
     <title>${self.getTitle()}</title>
 

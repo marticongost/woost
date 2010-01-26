@@ -30,6 +30,10 @@ class File(Publishable):
     edit_node_class = \
         "woost.controllers.backoffice.fileeditnode.FileEditNode"
 
+    default_mime_type = None
+
+    default_encoding = None
+
     default_controller = schema.DynamicDefault(
         lambda: Controller.get_instance(qname = "woost.file_controller")
     )

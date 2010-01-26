@@ -33,6 +33,8 @@ class Feed(Publishable):
         "item_description_expression"
     ]
 
+    default_mime_type = u"application/rss+xml"
+
     default_controller = schema.DynamicDefault(
         lambda: Controller.get_instance(qname = "woost.feed_controller")
     )

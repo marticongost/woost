@@ -32,6 +32,10 @@ from woost.models import Site, Publishable
             site = Site.main
             content_language = get_content_language()
 
+            # Content type / charset
+            self.page_content_type = publishable.mime_type
+            self.page_charset = publishable.encoding
+
             # Page title
             self.page_title = publishable.title
 
