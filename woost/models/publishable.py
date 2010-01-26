@@ -37,6 +37,7 @@ class Publishable(Item):
     members_order = [
         "mime_type",
         "resource_type",
+        "encoding",
         "controller",
         "parent",
         "path",
@@ -49,6 +50,8 @@ class Publishable(Item):
     ]
 
     mime_type = schema.String(
+        required = True,
+        default = "text/html",
         text_search = False,
         format = r"^[^/]+/[^/]+$",
         listed_by_default = False,
@@ -74,6 +77,12 @@ class Publishable(Item):
             ),
         listed_by_default = False,
         member_group = "presentation"
+    )
+
+    encoding = schema.String(
+        listed_by_default = False,
+        member_group = "presentation",
+        default = "utf-8"
     )
 
     controller = schema.Reference(

@@ -1568,6 +1568,12 @@ translations.define("Publishable.resource_type",
     en = u"Resource type"
 )
 
+translations.define("Publishable.encoding",
+    ca = u"Codificació de text",
+    es = u"Codificación del texto",
+    en = u"Text encoding"
+)
+
 translations.define("woost.models.Publishable.resource_type text",
     ca = u"Text",
     es = u"Texto",

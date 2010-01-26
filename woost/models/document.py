@@ -32,8 +32,6 @@ class Document(Publishable):
         "children"
     )
 
-    default_mime_type = u"text/html"
-
     default_controller = schema.DynamicDefault(
         lambda: Controller.get_instance(qname = "woost.document_controller")
     )
