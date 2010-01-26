@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <?py
 from cocktail.language import get_content_language
-from cocktail.html import StyleSheet
-from woost.models import Site
+from woost.models import Site, Publishable
 ?>
 
 <py:block
@@ -82,7 +81,9 @@ from woost.models import Site
                 self.add_resource(self.cms.uri(resource), mime_type = resource.mime_type)
 
             # User defined styles for user content
-            self.add_resource(StyleSheet("/user_styles/"))
+            user_styles = Publishable.get_instance(qname = "woost.user_styles")
+            if user_styles:
+                self.add_resource(self.cms.uri(user_styles), mime_type = user_styles.mime_type)
         ?>
     </py:ready>
 

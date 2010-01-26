@@ -2622,3 +2622,39 @@ a.pickcolor span {
     height: 35em !important;
 }
 
+/* Static site extension
+-----------------------------------------------------------------------------*/
+.ExportStaticSiteView .body p {
+    margin-bottom: 0.6em;
+}
+
+.ExportStaticSiteView .Form div.field {
+    margin-bottom: 0.8em;
+}
+
+.ExportStaticSiteView .body ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.ExportStaticSiteView .body li {
+    padding: 0;
+    margin: 0;
+    margin-bottom: 0.2em;
+    margin-left: 0.2em;
+}
+
+.ExportStaticSiteView .exported_content_list li {
+    margin-bottom: 0.4em;
+}
+
+.ExportStaticSiteView .body li a {
+    text-decoration: none;
+}
+
+.ExportStaticSiteView .language_field input {
+    vertical-align: middle;
+}
+
+

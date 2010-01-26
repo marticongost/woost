@@ -16,6 +16,7 @@ class ItemLabel(Element):
     item = None
     icon_size = 16
     icon_visible = True
+    thumbnail = True
 
     def _ready(self):
         Element._ready(self)
@@ -36,7 +37,8 @@ class ItemLabel(Element):
         img["src"] = context["cms"].icon_uri(
             self.item,
             icon_size = str(self.icon_size),
-            width = "24"
+            width = "24",
+            thumbnail = self.thumbnail and "true" or "false"
         )
         return img
     

@@ -15,6 +15,8 @@ class URI(Publishable):
 
     instantiable = True
 
+    groups_order = ["content"] + Publishable.groups_order
+
     members_order = [
         "title",
         "uri"
@@ -27,12 +29,14 @@ class URI(Publishable):
     title = schema.String(
         indexed = True,
         normalized_index = True,
-        translated = True
+        translated = True,
+        member_group = "content"
     )
 
     uri = schema.String(
         required = True,
-        indexed = True
+        indexed = True,
+        member_group = "content"
     )
 
     def __translate__(self, language, **kwargs):
