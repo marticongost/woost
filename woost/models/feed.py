@@ -11,6 +11,7 @@ from cocktail.controllers.usercollection import UserCollection
 from cocktail.html.datadisplay import display_factory
 from woost.models.publishable import Publishable
 from woost.models.language import Language
+from woost.models.controller import Controller
 
 
 class Feed(Publishable):
