@@ -34,6 +34,8 @@ class File(Publishable):
         lambda: Controller.get_instance(qname = "woost.file_controller")
     )
 
+    groups_order = ["content"] + Publishable.groups_order
+
     members_order = [
         "title",
         "file_name",
@@ -44,12 +46,14 @@ class File(Publishable):
     title = schema.String(
         indexed = True,
         normalized_index = True,
-        translated = True
+        translated = True,
+        member_group = "content"
     )
     
     file_name = schema.String(
         required = True,
-        editable = False
+        editable = False,
+        member_group = "content"
     )
 
     file_size = schema.Integer(
@@ -57,12 +61,14 @@ class File(Publishable):
         editable = False,
         translate_value = lambda size:
             "" if size in (None, "") else get_human_readable_file_size(size),
-        min = 0
+        min = 0,
+        member_group = "content"
     )
 
     file_hash = schema.String(
         visible = False,
-        searchable = False
+        searchable = False,
+        member_group = "content"
     )
 
     def __translate__(self, language, **kwargs):

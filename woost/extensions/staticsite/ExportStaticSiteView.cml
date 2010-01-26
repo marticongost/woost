@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?py
+from woost.models import Language
+?>
+
+<py:woost.views.BackOfficeLayout
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:py="http://www.whads.com/ns/cocktail/templates">
+
+    <?py-class
+    form_schema = None
+    form_data = None
+    form_errors = None
+    ?>
+
+    <py:with py:element="self.body">
+
+        <py:cocktail.html.Form
+            py:id="export_form"
+            py:schema="@{self.form_schema}"
+            py:data="@{self.form_data}"
+            py:errors="@{self.form_errors}"
+            method="post">
+
+            <ul py:def="selection_display" py:args="obj, member">
+                <?py
+                selection = export_form.get_member_value(obj, member)
+                ?>
+                <li py:for="item in selection">
+                    <input type="hidden" name="selection" value="${item.id}"/>
+                    <py:woost.views.ContentLink
+                        py:item="${item}"
+                        py:icon_visible="${True}"
+                        py:icon_size="${16}"
+                        py:thumbnail="${False}"/>
+                </li>
+            </ul>
+
+            <py:with py:element="export_form.submit_button">
+                <?py element.empty() ?>
+                Exportar
+            </py:with>
+
+        </py:cocktail.html.Form>
+
+    </py:with>
+
+</py:woost.views.BackOfficeLayout>

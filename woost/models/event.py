@@ -19,17 +19,24 @@ class Event(Document):
         "body"
     ]
 
-    event_start = schema.DateTime()
+    event_start = schema.DateTime(
+        member_group = "content"
+    )
 
-    event_end = schema.DateTime()
+    event_end = schema.DateTime(
+        member_group = "content",
+        min = event_start
+    )
 
     event_location = schema.String(
         edit_control = "cocktail.html.TextArea",
-        translated = True
+        translated = True,
+        member_group = "content"
     )
 
     body = schema.String(
         edit_control = "woost.views.RichTextEditor",
-        translated = True
+        translated = True,
+        member_group = "content"
     )
 
