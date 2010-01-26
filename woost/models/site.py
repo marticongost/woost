@@ -22,17 +22,19 @@ class Site(Item):
     indexed = True
     instantiable = False
 
+    groups_order = ["language", "meta", "pages", "system"] + Item.groups_order
+
     members_order = [
         "default_language",
         "backoffice_language",
+        "icon",
+        "keywords",
+        "description",
         "home",
         "login_page",
         "generic_error_page",
         "not_found_error_page",
         "forbidden_error_page",
-        "icon",
-        "keywords",
-        "description",
         "smtp_host",
         "publication_schemes",
         "triggers"
@@ -48,74 +50,87 @@ class Site(Item):
         enumeration = lambda ctx: Language.codes,
         listed_by_default = False,
         translate_value = lambda value, **kwargs:
-            u"" if not value else translations(value, **kwargs)
+            u"" if not value else translations(value, **kwargs),
+        member_group = "language"
     )
 
     backoffice_language = schema.String(
-        enumeration = ["en", "es", "ca"],
+        required = True,
+        enumeration = ["en", "es", "ca"],        
         default = "en",
         translate_value = lambda value, **kwargs:
-            u"" if not value else translations(value, **kwargs)
+            u"" if not value else translations(value, **kwargs),
+        member_group = "language"
     )
     
     home = schema.Reference(
         type = "woost.models.Publishable",
         required = True,
-        listed_by_default = False
+        listed_by_default = False,
+        member_group = "pages"
     )
 
     login_page = schema.Reference(
         type = "woost.models.Publishable",
-        listed_by_default = False
+        listed_by_default = False,
+        member_group = "pages"
     )
 
     generic_error_page = schema.Reference(
         type = "woost.models.Publishable",
-        listed_by_default = False
+        listed_by_default = False,
+        member_group = "pages"
     )
 
     not_found_error_page = schema.Reference(
         type = "woost.models.Publishable",
-        listed_by_default = False
+        listed_by_default = False,
+        member_group = "pages"
     )
 
     forbidden_error_page = schema.Reference(
         type = "woost.models.Publishable",
-        listed_by_default = False
+        listed_by_default = False,
+        member_group = "pages"
     )
 
     icon = schema.Reference(
         type = File,
         relation_constraints = [File.resource_type.equal("image")],
         related_end = schema.Collection(),
-        listed_by_default = False
+        listed_by_default = False,
+        member_group = "meta"
     )
 
     keywords = schema.String(
         translated = True,
         listed_by_default = False,
-        edit_control = "cocktail.html.TextArea"
+        edit_control = "cocktail.html.TextArea",
+        member_group = "meta"
     )
 
     description = schema.String(
         translated = True,
         listed_by_default = False,
-        edit_control = "cocktail.html.TextArea"
+        edit_control = "cocktail.html.TextArea",
+        member_group = "meta"
     )
 
     smtp_host = schema.String(
         default = "localhost",
-        listed_by_default = False
+        listed_by_default = False,
+        member_group = "system"
+    )
+
+    timezone = schema.String(
+        required = False,
+        format = re.compile(r'^["GMT"|"UTC"|"PST"|"MST"|"CST"|"EST"]{3}$|^[+-]\d{4}$'),
+        member_group = "system"
     )
 
     triggers = schema.Collection(
         items = "woost.models.Trigger",
         bidirectional = True
-    )
-
-    timezone = schema.String(
-        required = False,
-        format = re.compile(r'^["GMT"|"UTC"|"PST"|"MST"|"CST"|"EST"]{3}$|^[+-]\d{4}$')
     )
 
     publication_schemes = schema.Collection(

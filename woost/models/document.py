@@ -18,6 +18,8 @@ class Document(Publishable):
     instantiable = True
     default_per_language_publication = True
 
+    groups_order = ["content"] + Publishable.groups_order
+
     members_order = (
         "title",
         "inner_title",        
@@ -40,30 +42,35 @@ class Document(Publishable):
         indexed = True,
         normalized_index = True,
         translated = True,
-        required = True
+        required = True,
+        member_group = "content"
     )
 
     inner_title = schema.String(
         translated = True,
-        listed_by_default = False
+        listed_by_default = False,
+        member_group = "content"
     )
 
     description = schema.String(
         translated = True,
         listed_by_default = False,
-        edit_control = "cocktail.html.TextArea"
+        edit_control = "cocktail.html.TextArea",
+        member_group = "content"
     )
 
     keywords = schema.String(
         translated = True,
         listed_by_default = False,
-        edit_control = "cocktail.html.TextArea"
+        edit_control = "cocktail.html.TextArea",
+        member_group = "content"
     )
 
     template = schema.Reference(
         type = "woost.models.Template",
         bidirectional = True,
-        listed_by_default = False
+        listed_by_default = False,
+        member_group = "presentation"
     )
 
     branch_resources = schema.Collection(

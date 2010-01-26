@@ -1210,6 +1210,12 @@ translations.define("Item-none",
     en = u"None"
 )
 
+translations.define("Item.administration",
+    ca = u"Administració",
+    es = u"Administración",
+    en = u"Administration"
+)
+
 translations.define("Item.id",
     ca = u"ID",
     es = u"ID",
@@ -1282,6 +1288,30 @@ translations.define("Site-plural",
     ca = u"Llocs web",
     es = u"Sitios web",
     en = u"Sites"
+)
+
+translations.define("Site.language",
+    ca = u"Idioma",
+    es = u"Idioma",
+    en = u"Language"
+)
+
+translations.define("Site.meta",
+    ca = u"Metadades",
+    es = u"Metadatos",
+    en = u"Metadata"
+)
+
+translations.define("Site.pages",
+    ca = u"Pàgines",
+    es = u"Páginas",
+    en = u"Pages"
+)
+
+translations.define("Site.system",
+    ca = u"Configuració del sistema",
+    es = u"Configuración del sistema",
+    en = u"System configuration"
 )
 
 translations.define("Site.keywords",
@@ -1514,6 +1544,24 @@ translations.define("Publishable-plural",
     en = u"Publishable elements"
 )
 
+translations.define("Publishable.presentation",
+    ca = u"Presentació",
+    es = u"Presentación",
+    en = u"Presentation"
+)
+
+translations.define("Publishable.navigation",
+    ca = u"Navegació",
+    es = u"Navegación",
+    en = u"Navigation"
+)
+
+translations.define("Publishable.publication",
+    ca = u"Publicació",
+    es = u"Publicación",
+    en = u"Publication"
+)
+
 translations.define("Publishable.resource_type",
     ca = u"Tipus de recurs",
     es = u"Tipo de recurso",
@@ -1640,6 +1688,12 @@ translations.define("Document-plural",
     ca = u"Documents",
     es = u"Documentos",
     en = u"Documents"
+)
+
+translations.define("Document.content",
+    ca = u"Contingut",
+    es = u"Contenido",
+    en = u"Content"
 )
 
 translations.define("Document.title",
@@ -2050,6 +2104,12 @@ translations.define("URI-plural",
     en = u"Web addresses"
 )
 
+translations.define("URI.content",
+    ca = u"Contingut",
+    es = u"Contenido",
+    en = u"Content"
+)
+
 translations.define("URI.title",
     ca = u"Títol",
     es = u"Título",
@@ -2152,6 +2212,12 @@ translations.define("File-plural",
     ca = u"Fitxers",
     es = u"Ficheros",
     en = u"Files"
+)
+
+translations.define("File.content",
+    ca = u"Contingut",
+    es = u"Contenido",
+    en = u"Content"
 )
 
 translations.define("File.title",
@@ -2939,6 +3005,18 @@ translations.define("Feed-plural",
     ca = u"Canals de sindicació",
     es = u"Canales de sindicación",
     en = u"Syndication feeds"
+)
+
+translations.define("Feed.meta",
+    ca = u"Metadades",
+    es = u"Metadatos",
+    en = u"Metadata"
+)
+
+translations.define("Feed.feed_items",
+    ca = u"Elements llistats",
+    es = u"Elementos listados",
+    en = u"Listed elements"
 )
 
 translations.define("Feed.title",

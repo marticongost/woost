@@ -31,25 +31,28 @@ class Publishable(Item):
         "previewcontroller.PreviewController"
     edit_node_class = "woost.controllers.backoffice.publishableeditnode." \
         "PublishableEditNode"
-    
+ 
+    groups_order = ["navigation", "presentation", "publication"] + Item.groups_order
+
     members_order = [
         "mime_type",
         "resource_type",
+        "controller",
         "parent",
         "path",
         "full_path",
+        "hidden",
         "enabled",
         "translation_enabled",
-        "hidden",
         "start_date",
-        "end_date",
-        "controller"
+        "end_date"
     ]
 
     mime_type = schema.String(
         text_search = False,
         format = r"^[^/]+/[^/]+$",
-        listed_by_default = False
+        listed_by_default = False,
+        member_group = "presentation"
     )
 
     resource_type = schema.String(
@@ -69,40 +72,64 @@ class Publishable(Item):
                 "woost.models.Publishable.resource_type " + value,
                 **kwargs
             ),
-        listed_by_default = False
+        listed_by_default = False,
+        member_group = "presentation"
     )
+
+    controller = schema.Reference(
+        type = "woost.models.Controller",
+        bidirectional = True,
+        listed_by_default = False,
+        member_group = "presentation"
+    )
+
+    def resolve_controller(self):
+        if self.controller and self.controller.python_name:
+            return import_object(self.controller.python_name)
 
     parent = schema.Reference(
         type = "woost.models.Document",
         bidirectional = True,
         related_key = "children",
-        listed_by_default = False
+        listed_by_default = False,
+        member_group = "navigation"
     )
 
     path = schema.String(
         max = 1024,
         indexed = True,
-        listed_by_default = False
+        listed_by_default = False,
+        member_group = "navigation"
     )
 
     full_path = schema.String(
         indexed = True,
         unique = True,
-        editable = False
+        editable = False,
+        member_group = "navigation"
+    )
+    
+    hidden = schema.Boolean(
+        required = True,
+        default = False,
+        listed_by_default = False,
+        member_group = "navigation"
     )
 
     per_language_publication = schema.Boolean(
         required = True,
         default = False,
         indexed = True,
-        visible = False
+        visible = False,
+        member_group = "publication"
     )
 
     enabled = schema.Boolean(
         required = True,
         default = True,
         indexed = True,
-        listed_by_default = False
+        listed_by_default = False,
+        member_group = "publication"
     )
 
     translation_enabled = schema.Boolean(
@@ -110,35 +137,22 @@ class Publishable(Item):
         default = True,
         translated = True,
         indexed = True,
-        listed_by_default = False
-    )
-
-    hidden = schema.Boolean(
-        required = True,
-        default = False,
-        listed_by_default = False
+        listed_by_default = False,
+        member_group = "publication"
     )
 
     start_date = schema.DateTime(
         indexed = True,
-        listed_by_default = False
+        listed_by_default = False,
+        member_group = "publication"
     )
 
     end_date = schema.DateTime(
         indexed = True,
         min = start_date,
-        listed_by_default = False
+        listed_by_default = False,
+        member_group = "publication"
     )
-
-    controller = schema.Reference(
-        type = "woost.models.Controller",
-        bidirectional = True,
-        listed_by_default = False
-    )
-
-    def resolve_controller(self):
-        if self.controller and self.controller.python_name:
-            return import_object(self.controller.python_name)
 
     @event_handler
     def handle_changed(cls, event):
