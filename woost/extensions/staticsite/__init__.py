@@ -7,7 +7,7 @@
 @since:			December 2009
 """
 from cocktail.modeling import getter
-from cocktail.events import event_handler
+from cocktail.events import event_handler, when
 from cocktail import schema
 from cocktail.translations import translations
 from cocktail.persistence import datastore
@@ -198,4 +198,13 @@ class StaticSiteExtension(Extension):
 
         base_get_path = Site.get_path
         Site.get_path = get_path
+
+        # Disable interactive features from rendered pages when rendering
+        # static content
+        from woost.controllers.application import CMS
+    
+        @when(CMS.producing_output)
+        def disable_user_controls(event):
+            if context.get("exporting_static_site", False):
+                event.output["show_user_controls"] = False
 
