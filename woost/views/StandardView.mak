@@ -10,7 +10,7 @@ container_classes = "BaseView StandardView"
 %>
 
 <%def name="container()">
-
+    
     <div class="header">
         ${self.header()}
     </div>
@@ -78,10 +78,10 @@ container_classes = "BaseView StandardView"
 
 <%def name="publishable_title()">
     <%
-        inner_title = getattr(publishable, "inner_title", None) or translations(publishable)
+    title = getattr(publishable, "inner_title", None) or translations(publishable)
     %>
-    %if inner_title:
-        <h2>${inner_title}</h2>
+    %if title:
+        <h2>${title}</h2>
     %endif
 </%def>
 
