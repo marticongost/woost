@@ -247,63 +247,87 @@ class StaticSiteExporter(Item):
         @return: The item's contents, and their hash. The contents can be
             specified using a file-like object, or a filesystem path.
         @rtype: (file-like or str, str)
-        """
-        headers = cherrypy.response.headers
-        prev_headers = dict(headers.items())
-        
-        try:
-                    
-            # Fast path for files
-            if isinstance(publishable, File) \
-            and publishable.controller \
-            and publishable.controller.python_name \
-            == "woost.controllers.filecontroller.FileController":
-                return publishable.file_path, publishable.file_hash
-            else:
-                # Override the current context
-                prev_context = controller_context.copy()
-                controller_context.clear()
-                controller_context["publishable"] = publishable
-                controller_context["cms"] = prev_context["cms"]
-                controller_context["exporting_static_site"] = True
-                
-                try:
-                    # Produce the item's content using its controller
-                    controller = publishable.resolve_controller()
-                    
-                    if isinstance(controller, type):
-                        controller = controller()
-                    
-                    output = controller()
-                finally:
-                    controller_context.clear()
-                    controller_context.update(prev_context)
+        """         
+        # Fast path for files
+        if isinstance(publishable, File) \
+        and publishable.controller \
+        and publishable.controller.python_name \
+        == "woost.controllers.filecontroller.FileController":
+            return publishable.file_path, publishable.file_hash
+        else:
+            # Override the current context
+            cms = controller_context["cms"]
+            prev_context = controller_context.copy()
+            controller_context.clear()
+            controller_context["publishable"] = publishable
+            controller_context["cms"] = cms
+            controller_context["exporting_static_site"] = True
 
-                # Wrap the produced content in a buffer, and calculate its hash
-                buffer = StringIO()
-                hash = md5()
-
-                if isinstance(output, basestring):
-                    buffer.write(output)
-                    hash.update(output)
-                else:
-                    for chunk in output:
-                        buffer.write(chunk)
-                        hash.update(chunk)
-
-                buffer.seek(0)
+            # Preserve response and request data
+            req = cherrypy.request
+            prev_req_headers = dict(req.headers.items())
+            req.headers.clear()
+            prev_req_query_string = req.query_string
+            req.query_string = ""
+            prev_req_path_info = req.path_info
+            req.path_info = cms.uri(publishable).encode("utf-8")
+            prev_req_params = dict(req.params.items())
             
-            return buffer, hash.digest()
+            res = cherrypy.response
+            prev_res_headers = dict(res.headers.items())
+            res.headers.clear()
+            prev_res_status = res.status
 
-        except (cherrypy.HTTPRedirect, cherrypy.HTTPError), ex:
-            raise RuntimeError(
-                "Raised error %r while invoking the controller for %s"
-                % (ex, publishable)
-            )
+            # Use relative URIs on all rendered markup
+            if publishable.per_language_publication:
+                controller_context["uri_prefix"] = "../"
+            else:
+                controller_context["uri_prefix"] = "./"
 
-        finally:
-            headers.clear()
-            headers.update(prev_headers)
+            # Produce the item's content using its controller
+            try:
+                controller = publishable.resolve_controller()
+                
+                if isinstance(controller, type):
+                    controller = controller()
+                
+                output = controller()
+
+            # Any kind of redirection or HTTP error must be wrapped and
+            # propagated to the user as an exception
+            except (cherrypy.HTTPRedirect, cherrypy.HTTPError), ex:
+                raise RuntimeError(
+                    "Raised error %r while invoking the controller for %s"
+                    % (ex, publishable)
+                )
+            # Restore the preserved context and request/response data
+            finally:
+                controller_context.clear()
+                controller_context.update(prev_context)
+
+                req.headers.update(prev_req_headers)
+                req.query_string = prev_req_query_string
+                req.path_info = prev_req_path_info
+                req.params = prev_req_params
+
+                res.headers.update(prev_res_headers)
+                res.status = prev_res_status
+
+            # Wrap the produced content in a buffer, and calculate its hash
+            buffer = StringIO()
+            hash = md5()
+
+            if isinstance(output, basestring):
+                buffer.write(output)
+                hash.update(output)
+            else:
+                for chunk in output:
+                    buffer.write(chunk)
+                    hash.update(chunk)
+
+            buffer.seek(0)
+        
+        return buffer, hash.digest()
 
     @abstractmethod
     def write_file(self, file, path, context):
