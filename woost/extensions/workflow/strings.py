@@ -180,7 +180,7 @@ translations.define(
 )
 
 translations.define(
-    "sitebasis.extensions.workflow.TransitionView cancel",                                                                                                                                                     
+    "woost.extensions.workflow.TransitionView cancel",                                                                                                                                                     
     ca = u"Cancel·lar",
     es = u"Cancelar",
     en = u"Cancel"
