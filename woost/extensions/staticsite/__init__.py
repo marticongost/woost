@@ -6,7 +6,6 @@
 @organization:	Whads/Accent SL
 @since:			December 2009
 """
-from threading import local
 from cocktail.modeling import getter
 from cocktail.events import event_handler
 from cocktail import schema
@@ -69,7 +68,6 @@ class StaticSiteExtension(Extension):
             u"""Exports the site using static HTML pages.""",
             "en"
         )
-        self._v_thread_data = local()
 
     members_order = [
         "encoding",
@@ -95,17 +93,6 @@ class StaticSiteExtension(Extension):
 </html>
 """
 
-    @getter
-    def currently_exporting(self):
-        """Indicates if the site is currently generating a static snapshot of
-        its content.
-        
-        @return: True if the current thread is presently exporting the site's
-            content, False otherwise.
-        @rtype: bool
-        """
-        return getattr(self._v_thread_data, "currently_exporting", False)
-    
     @event_handler
     def handle_loading(cls, event):
  
