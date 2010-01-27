@@ -83,15 +83,17 @@ ${self.dtd()}
     <link rel="start" title="${site.home.title}" href="/"${closure()}>
     
     ## Alternate languages
-    % for language in publishable.translations:
-        % if language != content_language and publishable.get("enabled", language):
-            <link rel="alternate"
-                  title="${translations('woost.views.BaseView alternate language link', lang = language)}"
-                  href="${cms.language.translate_uri(language = language)}"
-                  lang="${language}"
-                  hreflang="${language}"${closure()}>
-        % endif
-    % endfor
+    % if publishable.per_language_publication:
+        % for language in publishable.translations:
+            % if language != content_language and publishable.get("translation_enabled", language):
+                <link rel="alternate"
+                      title="${translations('woost.views.BaseView alternate language link', lang = language)}"
+                      href="${cms.translate_uri(language = language)}"
+                      lang="${language}"
+                      hreflang="${language}"${closure()}>
+            % endif
+        % endfor
+    % endif
 
     ## Shortcut icon
     <%
