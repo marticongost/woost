@@ -323,8 +323,13 @@ class CMS(BaseCMSController):
             uri = Site.main.get_path(publishable)
             
             if uri is not None:
+                
+                if publishable.per_language_publication:
+                    uri = self.language.translate_uri(uri)
+
                 uri = self.application_uri(uri, *args, **kwargs)
-                uri = self.language.translate_uri(uri)
+                
+            return uri
 
             return uri
 
@@ -336,7 +341,6 @@ class CMS(BaseCMSController):
             element = element.id
 
         return self.application_uri("icons", element, **kwargs)
-
 
     def thumbnail_uri(self, element, **kwargs):
         
