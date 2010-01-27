@@ -54,7 +54,17 @@ class BaseCMSController(Controller):
                     if not value is None
                 ),
                 True
-            )   
+            )
+
+        # Contextual URI prefix
+        context_prefix = self.context.get("uri_prefix")
+
+        if context_prefix:
+            uri = context_prefix.rstrip("/") + "/" + uri.lstrip("/")
+
+        if uri.startswith("./"):
+            uri = uri[2:]
+
         return uri
 
     def contextual_uri(self, *args, **kwargs):
