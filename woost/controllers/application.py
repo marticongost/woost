@@ -331,7 +331,10 @@ class CMS(BaseCMSController):
                 
             return uri
 
-            return uri
+    def translate_uri(self, path = None, language = None):
+        return self.application_uri(
+            self.language.translate_uri(path = path, language = language)
+        )
 
     def icon_uri(self, element, **kwargs):
         
