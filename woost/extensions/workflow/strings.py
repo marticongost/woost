@@ -186,3 +186,16 @@ translations.define(
     en = u"Cancel"
 )
 
+translations.define(
+    "woost.extensions.workflow.TransitionView title",
+    ca = lambda item, transition: u"%s l'element %s" % (
+        transition.title, translations(item)
+    ),
+    es = lambda item, transition: u"%s el elemento %s" % (
+        transition.title, translations(item)
+    ),
+    en = lambda item, transition: u"%s the %s item" % (
+        transition.title, translations(item)
+    )
+)
+
