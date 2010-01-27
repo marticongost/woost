@@ -289,6 +289,7 @@ def init_site(
         # Create standard resources
         site_stylesheet = URI()
         site_stylesheet.uri = uri + "resources/styles/site.css"
+        site_stylesheet.mime_type = "text/css"
         site_stylesheet.qname = "woost.site_stylesheet"
         set_translations(site_stylesheet, "title", "Site style sheet title")
         site_stylesheet.insert()
