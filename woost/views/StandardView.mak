@@ -50,7 +50,7 @@ container_classes = "BaseView StandardView"
 </%def>
 
 <%def name="identity()">
-    % if user and not user.anonymous:
+    % if (show_user_controls is UNDEFINED or show_user_controls) and user and not user.anonymous:
         <div class="identity">        
             <strong>${translations(user)}</strong>
             <form method="post">
@@ -86,7 +86,7 @@ container_classes = "BaseView StandardView"
 </%def>
 
 <%def name="toolbar()">
-    % if user.has_permission(ModifyPermission, target = publishable):
+    % if (show_user_controls is UNDEFINED or show_user_controls) and user.has_permission(ModifyPermission, target = publishable):
         <div class="toolbar">
             <% backoffice = Publishable.get_instance(qname = "woost.backoffice") %>
             <a class="edit_link"

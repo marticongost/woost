@@ -8,10 +8,14 @@ from woost.models import Site, Publishable, ModifyPermission
     xmlns:py="http://www.whads.com/ns/cocktail/templates"
     py:tag="div">
 
+    <?py-class
+    show_user_controls = True
+    ?>
+
     <div py:id="header">
         <h1><a href="/">${Site.main.home.title}</a></h1>
 
-        <div py:id="identity" py:visible="@{self.user and not self.user.anonymous}">
+        <div py:id="identity" py:visible="@{self.show_user_controls and self.user and not self.user.anonymous}">
             <py:ready py:if="element.visible">
                 <strong>${translations(self.user)}</strong>
                 <form method="post">
@@ -45,7 +49,8 @@ from woost.models import Site, Publishable, ModifyPermission
             <a py:id="edit_link">${translations("Action edit")}</a>
             <py:ready>
                 <?py
-                if self.user.has_permission(ModifyPermission, target = self.publishable):
+                if self.show_user_controls \
+                and self.user.has_permission(ModifyPermission, target = self.publishable):
                     backoffice = Publishable.get_instance(qname = "woost.backoffice")
                     self.edit_link["href"] = self.cms.uri(backoffice, "content", self.publishable.id, "fields")
                 else:
