@@ -125,10 +125,6 @@ class ItemSelector(Element, DataBoundControl):
             class_name = "ItemSelector-button select",
             value = self.member.type.full_name + "-" + self._param_name
         )
-        select_button.append(Element("img",
-            class_name = "icon",
-            src = "/resources/images/select_small.png"
-        ))
         select_button.append(
             translations("woost.views.ItemSelector select")
         )
@@ -142,10 +138,6 @@ class ItemSelector(Element, DataBoundControl):
             class_name = "ItemSelector-button unlink",
             value = self.member.name
         )
-        unlink_button.append(Element("img",
-            class_name = "icon",
-            src = "/resources/images/clear_small.png"
-        ))
         unlink_button.append(
             translations("woost.views.ItemSelector unlink")
         )
