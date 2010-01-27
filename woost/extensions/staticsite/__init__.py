@@ -145,7 +145,7 @@ class StaticSiteExtension(Extension):
                 listed_by_default = False,
                 member_group = "publication"
             ),
-            after = "hidden"
+            after = "translation_enabled"
         )
 
         Document.default_exportable_as_static_content = True
