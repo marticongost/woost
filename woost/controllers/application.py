@@ -13,7 +13,10 @@ try:
 except ImportError:
     from StringIO import StringIO
 
+import rfc822
 import cherrypy
+from time import mktime
+from cherrypy.lib.cptools import validate_since
 from pkg_resources import resource_filename, iter_entry_points
 from cherrypy.lib.static import serve_file
 from cocktail.events import Event, event_handler
@@ -453,11 +456,18 @@ class CMS(BaseCMSController):
         # Sanitize input
         item = self._get_requested_item(id, **kwargs)
 
+        # Determine the thumbnailer that best handles the requested item
         thumbnailer = self.thumbnail_loader.get_thumbnailer(item)
-
+        
         if thumbnailer is None:
             raise cherrypy.NotFound()
         
+        # Handle client side caching
+        cherrypy.response.headers["Last-Modified"] = \
+            rfc822.formatdate(thumbnailer.get_last_change_in_source(item))
+        validate_since()
+
+        # Get size and format
         width, height, params = thumbnailer.get_request_parameters(
             width, height, **kwargs
         )
@@ -465,7 +475,7 @@ class CMS(BaseCMSController):
         format = kwargs.get("format", self.thumbnail_loader.default_format)
 
         if format is None:
-                raise cherrypy.NotFound()
+            raise cherrypy.NotFound()
         
         params["format"] = format
 
