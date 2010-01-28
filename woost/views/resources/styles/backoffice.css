@@ -2657,4 +2657,48 @@ a.pickcolor span {
     vertical-align: middle;
 }
 
+.ExportStaticSiteView .export_log table {
+    border-collapse: collapse;
+    margin-left: 1em;
+    margin-top: 0.5em;
+}
+
+.ExportStaticSiteView .export_log td {
+    padding-top: 0.4em;
+    padding-bottom: 0.4em;
+    padding-right: 2em;
+    vertical-align: top;
+    border-bottom: 1px solid rgb(225,225,225);
+}
+
+.ExportStaticSiteView .export_log .ContentLink {
+    text-decoration: none;
+}
+
+.ExportStaticSiteView .export_log .outcome_cell {
+    padding-left: 1.4em;
+    background-repeat: no-repeat;
+    background-position: 0 0.4em;
+}
+
+.ExportStaticSiteView .export_log .exported .outcome_cell {
+    color: rgb(20,80,20);
+    background-image: url(../images/staticsite-status-exported.png);
+/*    background-color: rgb(220,240,220);    */
+}
+
+.ExportStaticSiteView .export_log .failed .outcome_cell {
+    color: rgb(135,35,10);
+    background-image: url(../images/staticsite-status-failed.png);
+/*    background-color: rgb(245,230,215);*/
+}
+
+.ExportStaticSiteView .export_log .not_modified .outcome_cell {
+/*    background-color: rgb(240,240,210);*/
+}
+
+.ExportStaticSiteView .export_log .error_cell {
+    color: rgb(75,75,75);
+    text-decoration: italic;
+}
 

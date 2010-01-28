@@ -16,6 +16,30 @@ translations.define("Action export_static",
     en = u"Export static content"
 )
 
+translations.define("woost.extensions.staticsite.export_status-ignored",
+    ca = u"Ignorat (no exportable)",
+    es = u"Ignorado (no exportable)",
+    en = u"Ignored (not exportable))"
+)
+
+translations.define("woost.extensions.staticsite.export_status-not_modified",
+    ca = u"Ignorat (no modificat)",
+    es = u"Ignorado (no modificado)",
+    en = u"Ignored (not modified)"
+)
+
+translations.define("woost.extensions.staticsite.export_status-exported",
+    ca = u"Exportat",
+    es = u"Exportado",
+    en = u"Exported"
+)
+
+translations.define("woost.extensions.staticsite.export_status-failed",
+    ca = u"Fallit",
+    es = u"Fallido",
+    en = u"Failed"
+)
+
 # Export form
 #------------------------------------------------------------------------------
 translations.define("ExportStaticSite.selection",

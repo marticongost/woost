@@ -10,6 +10,7 @@ from datetime import datetime
 from cStringIO import StringIO
 import cherrypy
 from cocktail.modeling import cached_getter
+from cocktail.events import when
 from cocktail.translations import translations
 from cocktail import schema
 from cocktail.controllers import StopRequest
@@ -20,6 +21,7 @@ from woost.models import (
 )
 from woost.controllers.backoffice.basebackofficecontroller \
     import BaseBackOfficeController
+from woost.extensions.staticsite.staticsiteexporter import StatusTracker
 
 
 class ExportStaticSiteController(
@@ -69,6 +71,10 @@ class ExportStaticSiteController(
                     enumeration = site_languages,
                     translate_value = translations
                 ),
+                edit_control = 
+                    "cocktail.html.CheckList"
+                    if len(site_languages) > 1
+                    else "cocktail.html.HiddenInput",
                 default = site_languages
             ),
             schema.Boolean(
@@ -85,10 +91,23 @@ class ExportStaticSiteController(
 
     def submit(self): 
         FormControllerMixin.submit(self)
-        form = self.form_instance        
+        
+        export_events = []
+        tracker = StatusTracker()
+
+        @when(tracker.item_processed)
+        def handle_item_processed(event):
+            if event.status == "failed":
+                event.error_handled = True
+            export_events.append(event)
+
+        form = self.form_instance
         form["exporter"].export(
             form["selection"],
             languages = form["language"],
-            update_only = form["update_only"]
+            update_only = form["update_only"],
+            status_tracker = tracker
         )
+        
+        self.output["export_events"] = export_events
 

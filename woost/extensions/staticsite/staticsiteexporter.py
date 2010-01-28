@@ -13,6 +13,7 @@ from shutil import copy
 from hashlib import md5
 from cStringIO import StringIO
 import cherrypy
+from cocktail.events import EventHub, Event
 from cocktail import schema
 from cocktail.modeling import abstractmethod, SetWrapper
 from cocktail.language import content_language_context
@@ -68,7 +69,11 @@ class StaticSiteExporter(Item):
         file, hash = self._get_item_contents(publishable)
         return hash != self.__last_export_hashes.get(publishable.id)
 
-    def export(self, selection = None, languages = None, update_only = False):
+    def export(self,
+        selection = None,
+        languages = None,
+        update_only = False,
+        status_tracker = None):
         """Exports site content to this destination.
 
         @param selection: If specified, only the given subset of publishable
@@ -87,8 +92,9 @@ class StaticSiteExporter(Item):
             destination yet.
         @type update_only: bool
 
-        @return: The collection of items that were actually exported.
-        @rtype: L{Publishable<woost.models.publishable.Publishable>} list
+        @param status_tracker: An object to report events to during the export
+            process.
+        @type status_tracker: L{StatusTracker}
         """
         controller_context["exporting_static_site"] = True
 
@@ -98,49 +104,79 @@ class StaticSiteExporter(Item):
 
             if selection is None:
                 selection = Publishable.select()
-
-            exported_items = []
             
             if languages is not None \
             and not isinstance(languages, (set, frozenset, SetWrapper)):
                 languages = set(languages)
 
+            if status_tracker:
+                status_tracker.beginning(
+                    selection = selection,
+                    languages = languages,
+                    context = context
+                )
+
             for item in selection:
-                if item.exportable_as_static_content and item.is_published():
-                    
-                    # Export multiple translations
-                    if item.per_language_publication:
-                        exported = False
-                        
+
+                # Ignored items
+                if not item.exportable_as_static_content \
+                or not item.is_published():
+                    if status_tracker:
+                        status_tracker.item_processed(
+                            publishable = item,
+                            language = None,
+                            status = "ignored",
+                            context = context,
+                            error = None,
+                            error_handled = False
+                        )
+                else:
+                    # Determine the languages to export
+                    if item.per_language_publication:                        
                         if languages:
                             item_languages = \
                                 languages.intersection(item.translations)
                         else:
                             item_languages = item.translations
-
-                        for language in item_languages:
-                            exported = exported \
-                                    or self.export_item(
-                                        item,
-                                        context,
-                                        language = language,
-                                        update_only = update_only
-                                    )
-                    
-                    # Items that don't change their publication based on the
-                    # language
                     else:
-                        exported = self.export_item(
-                            item,
-                            context,
-                            update_only = update_only
-                        )
+                        item_languages = (None,)
+                    
+                    for language in item_languages:
+                        try:
+                            self.export_item(
+                                item,
+                                context,
+                                language = language,
+                                update_only = update_only
+                            )
+                        except Exception, error:
 
-                    if exported:
-                        exported_items.append(item)
+                            handled = False
 
-            return exported_items
-        
+                            if status_tracker:
+                                e = status_tracker.item_processed(
+                                    publishable = item,
+                                    language = language,
+                                    status = "failed",
+                                    context = context,
+                                    error = error,
+                                    error_handled = False
+                                )
+                                handled = e.error_handled
+
+                            if not handled:
+                                raise
+
+                        else:
+                            if status_tracker:
+                                status_tracker.item_processed(
+                                    publishable = item,
+                                    language = language,
+                                    status = "exported",
+                                    context = context,
+                                    error = None,
+                                    error_handled = False
+                                )
         finally:
             del controller_context["exporting_static_site"]
 
@@ -316,12 +352,17 @@ class StaticSiteExporter(Item):
             # Wrap the produced content in a buffer, and calculate its hash
             buffer = StringIO()
             hash = md5()
+            encoding = publishable.encoding
 
             if isinstance(output, basestring):
+                if encoding and isinstance(output, unicode):
+                    output = output.encode(encoding)
                 buffer.write(output)
                 hash.update(output)
             else:
                 for chunk in output:
+                    if encoding and isinstance(chunk, unicode):
+                        chunk = chunk.encode(encoding)
                     buffer.write(chunk)
                     hash.update(chunk)
 
@@ -347,6 +388,74 @@ class StaticSiteExporter(Item):
             connection to an FTP server, an instance of a ZipFile class, etc).
         @type context: dict
         """
+
+
+class StatusTracker(object):
+    """An object that allows clients to be kept up to date of the progress of
+    an L{export operation<StaticSiteExporter.export>}.
+    """
+    __metaclass__ = EventHub
+
+    beginning = Event(
+        """An event triggered after an exporter has finished its preparations
+        and is ready to start the export operation.
+        
+        @ivar selection: The list of publishable items to be exported. Note
+            that some of these items may end up being ignored, if they are not
+            published or if they have their X{exportable_as_static_content}
+            member set to False.
+        @type selection: L{Publishable<woost.models.publishable.Publishable>}
+            sequence
+
+        @ivar languages: The list of languages to export the content in.
+        @type languages: str sequence
+
+        @ivar context: The L{context<StaticSiteExporter.setup.context>}
+            used by the export operation to maintain its state.
+        @type context: dict
+        """)
+
+    item_processed = Event(
+        """An event triggered after an item has been processed.
+
+        This event will be triggered at least once for each item in the
+        selection of items to be exported. Items with more than one exported
+        translation will invoke the event multiple times (one per language).
+
+        The event will be triggered regardless of the outcome of the exporting
+        process, and even if the item is discarded and not exported. Clients
+        can differentiate between these cases using the L{status} attribute.
+
+        @ivar publishable: The processed item.
+        @type publishable: L{Publishable<woost.models.publishable.Publishable>}
+
+        @ivar status: The status for the processed item. Will be one of the
+            following:
+                - ignored: The item is not published or marked as not able
+                  to be exported, and has been skipped.
+                - not-modified: The item hasn't been modified since the last
+                  time it was exported, and the operation has been flagged as
+                  "L{update only<StaticSiteExporter.export.update_only>}".
+                - exported: The item has been correctly exported.
+                - failed: The export attempt raised an exception.
+        @type status: str
+
+        @ivar language: The language that the item has been processed in.
+        @type language: str
+
+        @ivar error: Only relevant if L{status} is 'failed'. A reference
+            to the exception raised while trying to export the item.
+        @type error: L{Exception}
+
+        @ivar error_handled: Only relevant if L{status} is 'failed'. Allows
+            the event response code to capture an export error. If set to True,
+            the exporter will continue 
+        @type error_handled: bool
+
+        @ivar context: The L{context<StaticSiteExporter.setup.context>}
+            used by the export operation to maintain its state.
+        @type context: dict
+        """)
 
 
 class FolderStaticSiteExporter(StaticSiteExporter):
