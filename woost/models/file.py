@@ -63,7 +63,7 @@ class File(Publishable):
     file_size = schema.Integer(
         required = True,
         editable = False,
-        translate_value = lambda size:
+        translate_value = lambda size, language = None, **kwargs:
             "" if size in (None, "") else get_human_readable_file_size(size),
         min = 0,
         member_group = "content"

@@ -84,8 +84,8 @@ class User(Item):
             lambda: Site.main.backoffice_language
         ),
         enumeration = lambda ctx: Site.backoffice_language.enumeration,
-        translate_value = lambda value:
-            "" if value is None else translations(value)
+        translate_value = lambda value, language = None, **kwargs:
+            "" if value is None else translations(value, language, **kwargs)
     )
 
     roles = schema.Collection(
