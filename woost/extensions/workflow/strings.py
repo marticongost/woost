@@ -180,9 +180,22 @@ translations.define(
 )
 
 translations.define(
-    "sitebasis.extensions.workflow.TransitionView cancel",                                                                                                                                                     
+    "woost.extensions.workflow.TransitionView cancel",                                                                                                                                                     
     ca = u"Cancel·lar",
     es = u"Cancelar",
     en = u"Cancel"
+)
+
+translations.define(
+    "woost.extensions.workflow.TransitionView title",
+    ca = lambda item, transition: u"%s l'element %s" % (
+        transition.title, translations(item)
+    ),
+    es = lambda item, transition: u"%s el elemento %s" % (
+        transition.title, translations(item)
+    ),
+    en = lambda item, transition: u"%s the %s item" % (
+        transition.title, translations(item)
+    )
 )
 

@@ -16,6 +16,16 @@
         
         <h2>@{translations("woost.extensions.workflow.TransitionView title", item = self.item, transition = self.transition)}</h2>
 
+        <!-- Errors -->
+        <ul py:id="error_box"
+            py:visible="@{self.submitted and self.form_errors}">
+            <py:ready py:if="element.visible">
+                <li py:for="error in self.form_errors">
+                    ${translations(error)}
+                </li>
+            </py:ready>
+        </ul>
+
         <py:woost.views.ContentForm
             py:id="transition_form"
             method="POST"

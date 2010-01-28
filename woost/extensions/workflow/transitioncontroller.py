@@ -84,7 +84,14 @@ class TransitionController(FormControllerMixin, BaseBackOfficeController):
         and "submit" not in cherrypy.request.params:
            return schema.ErrorList([])
         else:
-            return FormControllerMixin.form_errors(self)
+            return schema.ErrorList(
+                self.form_schema.get_errors(self.form_data, **{
+                    "workflow_item": self.item,
+                    "workflow_transition": self.transition
+                })
+                if self.submitted
+                else ()
+            ) 
 
     def submit(self):
         
