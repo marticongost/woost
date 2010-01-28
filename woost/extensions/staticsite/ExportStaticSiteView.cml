@@ -41,14 +41,14 @@ from woost.models import Language
 
             <py:with py:element="export_form.submit_button">
                 <?py element.empty() ?>
-                Exportar
+                ${translations("woost.extensions.staticsite Export button")}
             </py:with>
 
         </py:cocktail.html.Form>
 
         <div py:id="export_log" py:visible="@{self.successful}">
 
-            <p>S'ha finalitzat l'exportació.</p>
+            <p>${translations("woost.extensions.staticsite export done")}</p>
 
             <py:ready>
                 <table py:collapsible="${True}">

@@ -16,6 +16,18 @@ translations.define("Action export_static",
     en = u"Export static content"
 )
 
+translations.define("woost.extensions.staticsite Export button",
+    ca = u"Exportar",
+    es = u"Exportar",
+    en = u"Export"
+)
+
+translations.define("woost.extensions.staticsite export done",
+    ca = u"Exportació completada",
+    es = u"Exportación completada",
+    en = u"Content exported"
+)
+
 translations.define("woost.extensions.staticsite.export_status-ignored",
     ca = u"Ignorat (no exportable)",
     es = u"Ignorado (no exportable)",
