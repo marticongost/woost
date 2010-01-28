@@ -75,9 +75,10 @@ class Trigger(Item):
         enumeration = ("before", "after"),
         default = "after",
         edit_control = "cocktail.html.RadioSelector",
-        translate_value = lambda value, **kwargs:
+        translate_value = lambda value, language = None, **kwargs:
             u"" if not value else translations(
                 "woost.models.Trigger.execution_point " + value,
+                language,
                 **kwargs
             )
     )
@@ -216,8 +217,8 @@ class ModifyTrigger(ContentTrigger):
     matching_languages = schema.Collection(
         items = schema.String(
             enumeration = lambda ctx: Language.codes,
-            translate_value = lambda value, **kwargs:
-                u"" if not value else translations(value, **kwargs)
+            translate_value = lambda value, language = None, **kwargs:
+                u"" if not value else translations(value, language, **kwargs)
         )
     )
 
