@@ -24,8 +24,6 @@ from woost.controllers.backoffice.useractions import \
     ?>
 
     <?py
-    self.add_resource("/resources/scripts/backoffice_content.js")
-
     add_view_action_context(self, "content")
     ?>
 
