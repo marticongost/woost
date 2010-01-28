@@ -11,6 +11,8 @@ from woost.models import Language
     form_schema = None
     form_data = None
     form_errors = None
+    successful = False
+    export_events = ()
     ?>
 
     <py:with py:element="self.body">
@@ -20,7 +22,8 @@ from woost.models import Language
             py:schema="@{self.form_schema}"
             py:data="@{self.form_data}"
             py:errors="@{self.form_errors}"
-            method="post">
+            method="post"
+            py:visible="@{not self.successful}">
 
             <ul py:def="selection_display" py:args="obj, member">
                 <?py
@@ -42,6 +45,34 @@ from woost.models import Language
             </py:with>
 
         </py:cocktail.html.Form>
+
+        <div py:id="export_log" py:visible="@{self.successful}">
+
+            <p>S'ha finalitzat l'exportació.</p>
+
+            <py:ready>
+                <table py:collapsible="${True}">
+                    <tr py:for="event in self.export_events">
+                        <?py
+                        element.add_class(event.status)
+                        ?>
+                        <td class="item_cell">
+                            <py:woost.views.ContentLink
+                                py:item="${event.publishable}"
+                                py:icon_visible="${True}"
+                                py:icon_size="${16}"
+                                py:thumbnail="${False}"/>
+                        </td>
+                        <td class="outcome_cell">
+                            ${translations("woost.extensions.staticsite.export_status-" + event.status)}
+                        </td>
+                        <td class="error_cell">
+                            ${translations(event.error) if event.error else ""}
+                        </td>
+                    </tr>
+                </table>
+            </py:ready>
+        </div>
 
     </py:with>
 
