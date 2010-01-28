@@ -2667,12 +2667,17 @@ a.pickcolor span {
     padding-top: 0.4em;
     padding-bottom: 0.4em;
     padding-right: 2em;
-    vertical-align: top;
+    vertical-align: middle;
     border-bottom: 1px solid rgb(225,225,225);
 }
 
 .ExportStaticSiteView .export_log .ContentLink {
     text-decoration: none;
+}
+
+.ExportStaticSiteView .export_log .language {
+    color: rgb(100,100,100);
+    font-size: 80%;
 }
 
 .ExportStaticSiteView .export_log .outcome_cell {

@@ -62,6 +62,7 @@ from woost.models import Language
                                 py:icon_visible="${True}"
                                 py:icon_size="${16}"
                                 py:thumbnail="${False}"/>
+                            <span class="language" py:if="event.language">(${translations(event.language)})</span>
                         </td>
                         <td class="outcome_cell">
                             ${translations("woost.extensions.staticsite.export_status-" + event.status)}
