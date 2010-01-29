@@ -12,6 +12,7 @@ from time import mktime
 from shutil import copy
 from hashlib import md5
 from cStringIO import StringIO
+import ftplib
 import cherrypy
 from cocktail.events import EventHub, Event
 from cocktail import schema
@@ -527,6 +528,13 @@ class FTPStaticSiteExporter(StaticSiteExporter):
     """
     instantiable = True
 
+    members_order = [
+        "ftp_host",
+        "ftp_user",
+        "ftp_password",
+        "ftp_path"
+    ]
+
     ftp_host = schema.String(required = True)
 
     ftp_user = schema.String()
@@ -557,6 +565,77 @@ class FTPStaticSiteExporter(StaticSiteExporter):
                 return "ftp://" + desc
                 
         return StaticSiteExporter.__translate__(self, language, **kwargs)
+
+    def setup(self, context):
+        context["ftp"] = ftplib.FTP(
+            self.ftp_host,
+            self.ftp_user,
+            self.ftp_password
+        )
+
+    def cleanup(self, context):
+        context["ftp"].quit()
+
+    def write_file(self, file, path, context):
+        
+        ftp = context["ftp"]
+        path = self._get_ftp_path(path)
+
+        # Remove existing files
+        try:
+            ftp.delete(path)
+        except ftplib.error_perm:
+            pass
+        
+        # Handle both local files and file-like objects
+        if isinstance(file, str):
+            file = open(file, "r")
+            should_close = True
+        else:
+            should_close = False
+            
+        try:
+            ftp.storbinary("STOR " + path, file, self.chunk_size)
+        finally:
+            if should_close:
+                file.close()
+        
+    def create_folder(self, folder, context):
+        
+        ftp = context["ftp"]
+        path = self._get_ftp_path(folder)
+
+        if not self._path_exists(ftp, path):
+            ftp.mkd(path)
+
+    def _get_ftp_path(self, *args):
+
+        path = self.ftp_path
+
+        if not path:
+            path = "/"
+        elif path[-1] != "/":
+            path += "/"
+
+        return path + "/".join(arg.strip("/") for arg in args)
+
+    def _path_exists(self, ftp, path):
+
+        path = path.rstrip("/")
+
+        if not path:
+            return True        
+        
+        pos = path.rfind("/")
+        
+        if pos == -1:
+            parent = "."
+            name = path
+        else:
+            parent = path[:pos]
+            name = path[pos + 1:]
+
+        return name in ftp.nlst(parent)
 
 
 class ZipStaticSiteExporter(StaticSiteExporter):
