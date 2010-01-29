@@ -234,7 +234,7 @@ class StaticSiteExporter(Item):
             if not filename:
                 relative_path += "index.html"
 
-            self.create_path(folder, context["existing_folders"])
+            self.create_path(folder, context)
             self.write_file(file, relative_path, context)
             self.__last_export_hashes[publishable.id] = hash
             return True
@@ -245,8 +245,8 @@ class StaticSiteExporter(Item):
                     return export()
         else:
             return export()
-    
-    def create_path(self, relative_path, existing_folders = None):
+
+    def create_path(self, relative_path, context):
         """Recursively creates all folders in the given path.
 
         The method will invoke L{create_folder} for each folder in the provided
@@ -256,30 +256,40 @@ class StaticSiteExporter(Item):
             root.
         @type relative_path: unicode
 
-        @param existing_folders: A set of folders that are known to be present
-            at the destination. If given, folders in the set will be skipped,
-            and those that are created will be added to the set. This parameter
-            can be useful when calling this method repeatedly, to avoid
-            unnecessary calls to L{create_folder}.
+        @param context: The dictionary used by the exporter to maintain any
+            contextual information it many need throgout the export process.
+        
+            If a context is provided and it contains an 'existing_folders' key,
+            it should be a set of strings representing paths that are known to
+            be present at the destination. If given, folders in the set will be
+            skipped, and those that are created will be added to the set. This
+            mechanism can be useful when calling this method repeatedly, to
+            avoid unnecessary calls to L{create_folder}.
         @type existing_folders: unicode set
         """
+        existing_folders = context.get("existing_folders")
+
         def ascend(folder):
             if folder and \
             (existing_folders is None or folder not in existing_folders):
                 ascend(os.path.dirname(folder))
-                created = self.create_folder(folder)
+                created = self.create_folder(folder, context)
                 if existing_folders and created:
                     existing_folders.add(folder)
 
         ascend(relative_path)
 
     @abstractmethod
-    def create_folder(self, relative_path):
+    def create_folder(self, relative_path, context):
         """Creates a folder on the destination, if it doesn't exist yet.
 
         @param relative_path: The path of the folder to create, relative to the
             destination's root.
         @type relative_path: unicode
+
+        @param context: The dictionary used by the exporter to maintain any
+            contextual information it many need throgout the export process.
+        @type context: dict
 
         @return: True if the folder didn't exist, and was created, False if it
             already existed.
@@ -485,7 +495,7 @@ class FolderStaticSiteExporter(StaticSiteExporter):
         return (self.draft_source is None and self.target_folder) \
             or StaticSiteExporter.__translate__(self, language, **kwargs)
 
-    def create_folder(self, folder):
+    def create_folder(self, folder, context):
         full_path = os.path.join(self.target_folder, folder)
         if not os.path.exists(full_path):
             os.mkdir(full_path)
