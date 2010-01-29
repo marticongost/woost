@@ -13,7 +13,6 @@ from cocktail.modeling import cached_getter
 from cocktail.events import when
 from cocktail.translations import translations
 from cocktail import schema
-from cocktail.controllers import StopRequest
 from cocktail.controllers.formcontrollermixin import FormControllerMixin
 from woost.models import (
     Publishable,
