@@ -29,10 +29,11 @@ class DummyPaymentGateway(CMSPaymentGateway, PaymentGateway):
         required = True,
         enumeration = ("accepted", "failed"),
         default = "accepted",
-        translate_value = lambda value, **kwargs:
+        translate_value = lambda value, language = None, **kwargs:
             u"" if not value else translations(
                 "woost.extensions.payments."
                 "DummyPaymentGateway.payment_status " + value,
+                language,
                 **kwargs
             )        
     )
