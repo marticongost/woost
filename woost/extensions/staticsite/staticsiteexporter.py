@@ -54,6 +54,17 @@ class StaticSiteExporter(Item):
             will be made available to all L{write_file} calls.
         @type context: dict
         """
+    
+    def cleanup(self, context):
+        """Frees resources after an export operation.
+
+        This method is guaranteed to be called after the export operation is
+        over, even if an exception was raised during its execution.
+
+        @param context: The dictionary used by the exporter during the export
+            process to maintain its contextual information.
+        @type context: dict
+        """
 
     def has_changes(self, publishable):
         """Indicates if the given item has pending changes that haven't been
@@ -179,6 +190,7 @@ class StaticSiteExporter(Item):
                                 )
         finally:
             del controller_context["exporting_static_site"]
+            self.cleanup(context)
 
     def export_item(self,
         publishable,
