@@ -38,8 +38,6 @@ class File(Publishable):
         lambda: Controller.get_instance(qname = "woost.file_controller")
     )
 
-    groups_order = ["content"] + Publishable.groups_order
-
     members_order = [
         "title",
         "file_name",

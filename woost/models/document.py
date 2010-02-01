@@ -18,7 +18,7 @@ class Document(Publishable):
     instantiable = True
     default_per_language_publication = True
 
-    groups_order = ["content"] + Publishable.groups_order
+    groups_order = ["content"]
 
     members_order = (
         "title",
