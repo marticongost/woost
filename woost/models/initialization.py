@@ -114,6 +114,10 @@ def init_site(
         changeset.author = admin
         site.author = site.owner = admin
         site.default_language = languages[0]
+
+        if site.default_language in Site.backoffice_language.enumeration:
+            site.backoffice_language = site.default_language
+            admin.prefered_language = site.default_language
         
         # Create the anonymous user and role
         anonymous_role = Role()
