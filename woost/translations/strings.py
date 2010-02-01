@@ -453,11 +453,11 @@ translations.define("woost.views.TreeContentView collapse all",
 )
 
 translations.define("woost.models.Item draft copy",
-    ca = lambda item, draft_id: u"Borrador %d %s"
+    ca = lambda item, draft_id, **kwargs: u"Borrador %d %s"
         % (draft_id, ca_possessive(translations(item, "ca"))),
-    es = lambda item, draft_id: u"Borrador %d de %s"
+    es = lambda item, draft_id, **kwargs: u"Borrador %d de %s"
         % (draft_id, translations(item, "es")),
-    en = lambda item, draft_id: u"Draft %d for %s"
+    en = lambda item, draft_id, **kwargs: u"Draft %d for %s"
         % (draft_id, translations(item, "en"))
 )
 
