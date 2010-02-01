@@ -146,8 +146,16 @@ class Installer(object):
         ))
 
         def validate_python_path(member, value, context):
-            if value and os.path.split(value)[0] not in sys.path:
-                yield PythonPathError(member, value, context)
+
+            if value:
+                p = os.path
+                value = p.normcase(p.split(value.rstrip(p.sep))[0])
+
+                for python_path in sys.path:
+                    if value == p.normcase(python_path.rstrip(os.path.sep)):
+                        break
+                else:
+                    yield PythonPathError(member, value, context)
 
         form_schema["project_path"].add_validation(validate_python_path)
 
