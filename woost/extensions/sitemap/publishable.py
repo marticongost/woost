@@ -9,7 +9,7 @@
 from decimal import Decimal
 from cocktail.translations import translations
 from cocktail import schema
-from woost.models import Publishable
+from woost.models import Publishable, URI
 
 Publishable.add_member(
     schema.Boolean(
@@ -20,6 +20,8 @@ Publishable.add_member(
     ),
     append = True
 )
+
+URI.default_sitemap_indexable = False
 
 Publishable.add_member(
     schema.String("sitemap_change_frequency",
