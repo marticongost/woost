@@ -15,7 +15,7 @@ class URI(Publishable):
 
     instantiable = True
 
-    groups_order = ["content"] + Publishable.groups_order
+    groups_order = ["content"]
 
     members_order = [
         "title",

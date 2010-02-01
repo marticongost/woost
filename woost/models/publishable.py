@@ -32,7 +32,7 @@ class Publishable(Item):
     edit_node_class = "woost.controllers.backoffice.publishableeditnode." \
         "PublishableEditNode"
  
-    groups_order = ["navigation", "presentation", "publication"] + Item.groups_order
+    groups_order = ["navigation", "presentation", "publication"]
 
     members_order = [
         "mime_type",
