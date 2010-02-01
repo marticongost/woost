@@ -30,6 +30,7 @@ setup(
             "comments = woost.extensions.comments:CommentsExtension",
             "recaptcha = woost.extensions.recaptcha:ReCaptchaExtension",
             "staticsite = woost.extensions.staticsite:StaticSiteExtension",
+            "sitemap = woost.extensions.sitemap:SitemapExtension",
             "googlesearch = woost.extensions.googlesearch:GoogleSearchExtension"
         ]
     },
