@@ -84,6 +84,7 @@ class SitemapExtension(Extension):
             sitemap_doc.per_language_publication = False
             sitemap_doc.mime_type = "text/xml"
             sitemap_doc.hidden = True
+            sitemap_doc.sitemap_indexable = False
             sitemap_doc.qname = \
                 "woost.extensions.sitemap.sitemap_document"
             sitemap_doc.controller = sitemap_controller
@@ -93,7 +94,9 @@ class SitemapExtension(Extension):
         # (can't rely on defaults when executing queries)
         for item in Publishable.select():
             if not hasattr(item, "_sitemap_indexable"):
-                item.sitemap_indexable = not item.hidden
+                item.sitemap_indexable = \
+                    item.sitemap_indexable \
+                    and not item.hidden
 
         datastore.commit()
 
