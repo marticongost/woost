@@ -22,7 +22,7 @@ class Site(Item):
     indexed = True
     instantiable = False
 
-    groups_order = ["language", "meta", "pages", "system"] + Item.groups_order
+    groups_order = ["language", "meta", "pages", "system"]
 
     members_order = [
         "default_language",
