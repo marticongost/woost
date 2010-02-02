@@ -1850,6 +1850,12 @@ translations.define("User.roles",
     en = u"Roles"
 )
 
+translations.define("User.enabled",
+    ca = u"Activat",
+    es = u"Activado",
+    en = u"Enabled"
+)
+
 # Permission
 #------------------------------------------------------------------------------
 translations.define("Permission",
