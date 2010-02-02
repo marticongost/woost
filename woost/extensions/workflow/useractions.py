@@ -15,6 +15,7 @@ from cocktail.controllers.viewstate import view_state
 from cocktail.html import Element
 from woost.models import get_current_user
 from woost.models.changesets import changeset_context
+from woost.controllers import notify_user
 from woost.controllers.backoffice.useractions import UserAction
 from woost.extensions.workflow.transitionpermission import \
     TransitionPermission
@@ -123,7 +124,7 @@ class TransitionAction(UserAction):
             datastore.commit()
 
         # Inform the user of the result
-        controller.notify_user(
+        notify_user(
             translations(
                 "woost.controllers.backoffice.useractions.TransitionAction"
                 " state set",

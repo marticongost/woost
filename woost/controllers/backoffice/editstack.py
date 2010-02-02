@@ -23,6 +23,7 @@ from cocktail.modeling import (
 from cocktail.events import Event, EventHub
 from cocktail.pkgutils import resolve
 from cocktail import schema
+from cocktail.translations import translations
 from cocktail.controllers import context, get_parameter
 from cocktail.persistence import (
     PersistentObject,
@@ -42,6 +43,7 @@ from woost.models import (
     ModifyMemberPermission,
     ReadTranslationPermission
 )
+from woost.controllers.notifications import notify_user
 
 
 class EditStacksManager(object):
@@ -803,6 +805,36 @@ class EditNode(StackNode):
             schema.remove(collection, item)
         else:
             schema.set(self.form_data, member, None)
+
+    def item_saved_notification(self, is_new, change):
+        """Notifies the user that the node's item has been saved.
+
+        @param is_new: Indicates if the save operation consisted of an
+            insertion (True) or an update of an existing item (False).
+        @type is_new: bool
+
+        @param change: A change object describing the save operation. Will be
+            set to None when saving a draft.
+        @type change: L{Change<woost.models.changeset.Change>}            
+        """
+        item = self.item
+        msg = translations(
+            "woost.views.BackOfficeEditView Changes saved",
+            item = item,
+            is_new = is_new
+        )        
+        transient = True
+
+        if is_new and self.parent_node is None:
+            msg += '. <a href="%s">%s</a>.' % (
+                context["cms"].edit_uri(item.__class__, edit_stack = None),
+                translations(
+                    "woost.views.BackOfficeEditView Create another"
+                )
+            )
+            transient = False
+
+        notify_user(msg, "success", transient)
 
 
 class SelectionNode(StackNode):
