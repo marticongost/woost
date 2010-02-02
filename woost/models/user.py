@@ -96,7 +96,7 @@ class User(Item):
 
     enabled = schema.Boolean(
         required = True,
-        default_value = True
+        default = True
     )
 
     def __translate__(self, language, **kwargs):
