@@ -55,6 +55,7 @@ class User(Item):
     anonymous = False
     
     members_order = [
+        "enabled",
         "email",
         "password",
         "prefered_language"
@@ -91,6 +92,11 @@ class User(Item):
     roles = schema.Collection(
         items = "woost.models.Role",
         bidirectional = True
+    )
+
+    enabled = schema.Boolean(
+        required = True,
+        default_value = True
     )
 
     def __translate__(self, language, **kwargs):
