@@ -26,6 +26,7 @@ from woost.models import (
     ModifyPermission
 )
 from woost.models.changesets import changeset_context
+from woost.controllers import notify_user
 from woost.controllers.backoffice.basebackofficecontroller \
     import BaseBackOfficeController
 from woost.controllers.backoffice.itemfieldscontroller \
@@ -121,7 +122,7 @@ class TransitionController(FormControllerMixin, BaseBackOfficeController):
                 datastore.commit()
 
             # Inform the user of the result
-            self.notify_user(
+            notify_user(
                 translations(
                     "woost.controllers.backoffice.useractions.TransitionAction"
                     " state set",

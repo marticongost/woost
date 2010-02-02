@@ -27,6 +27,7 @@ from woost.models import (
     ReadTranslationPermission,
     ConfirmDraftPermission
 )
+from woost.controllers.notifications import notify_user
 from woost.controllers.backoffice.editstack import RelationNode, EditNode
 from woost.controllers.backoffice.basebackofficecontroller \
         import BaseBackOfficeController
@@ -121,6 +122,8 @@ class EditController(BaseBackOfficeController):
             else:
                 break
 
+        change = changeset.changes.get(item.id) if changeset else None
+
         # Edit stack event
         stack_node.committed(
             user = user,
@@ -129,7 +132,6 @@ class EditController(BaseBackOfficeController):
 
         # Application-wide event
         if not item.is_draft:
-            change = changeset.changes.get(item.id)
             if change is not None:
                 self.context["cms"].item_saved(
                     item = item,
@@ -139,27 +141,7 @@ class EditController(BaseBackOfficeController):
                 )
 
         # User notification
-        msg = translations(
-            "woost.views.BackOfficeEditView Changes saved",
-            item = item,
-            is_new = is_new
-        )
-        transient = True
-
-        if is_new and len(self.edit_stack) == 1:
-            msg += '. <a href="%s">%s</a>.' % (
-                self.edit_uri(item.__class__, edit_stack = None),
-                translations(
-                    "woost.views.BackOfficeEditView Create another"
-                )
-            )
-            transient = False
-
-        self.notify_user(
-            msg,
-            "success",
-            transient
-        )
+        stack_node.item_saved_notification(is_new, change)
 
         # A new item or draft was created
         if is_new or make_draft:
@@ -222,7 +204,7 @@ class EditController(BaseBackOfficeController):
         )
 
         # User notification
-        self.notify_user(
+        notify_user(
             translations(
                 "woost.views.BackOfficeEditView Draft confirmed",
                 item = target_item,
