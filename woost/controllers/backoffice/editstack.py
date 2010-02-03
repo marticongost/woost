@@ -826,8 +826,9 @@ class EditNode(StackNode):
         transient = True
 
         if is_new and self.parent_node is None:
+            controller = cherrypy.request.handler_chain[-1]
             msg += '. <a href="%s">%s</a>.' % (
-                context["cms"].edit_uri(item.__class__, edit_stack = None),
+                controller.edit_uri(item.__class__, edit_stack = None),
                 translations(
                     "woost.views.BackOfficeEditView Create another"
                 )
