@@ -65,7 +65,7 @@ class AuthenticationModule(Module):
             params = {self.identifier_field.name: identifier}
             user = User.get_instance(**params)
 
-            if user and user.test_password(password):            
+            if user and user.enabled and user.test_password(password):            
                 cherrypy.session[self.SESSION_KEY] = user.id
                 set_current_user(user)
                 return user
