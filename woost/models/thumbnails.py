@@ -337,7 +337,7 @@ class Thumbnailer(object):
             state that can affect its resulting thumbnail.
         @rtype: float
         """
-        return item.last_update_time
+        return mktime(item.last_update_time.timetuple())
 
     @abstractmethod
     def create_thumbnail(self, item, width, height, **params):
