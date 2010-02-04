@@ -316,7 +316,7 @@ class CMS(BaseCMSController):
         """
         # User defined URIs
         if isinstance(publishable, URI):
-            return publishable.uri
+            uri = publishable.uri
 
         # Regular elements
         else:
@@ -328,8 +328,11 @@ class CMS(BaseCMSController):
                     uri = self.language.translate_uri(uri)
 
                 uri = self.application_uri(uri, *args, **kwargs)
-                
-            return uri
+ 
+        if uri:
+            uri = "".join(percent_encode(c) for c in uri)
+
+        return uri
 
     def translate_uri(self, path = None, language = None):
         return self.application_uri(
