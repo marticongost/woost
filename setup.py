@@ -31,6 +31,7 @@ setup(
             "recaptcha = woost.extensions.recaptcha:ReCaptchaExtension",
             "staticsite = woost.extensions.staticsite:StaticSiteExtension",
             "sitemap = woost.extensions.sitemap:SitemapExtension",
+            "pdf = woost.extensions.pdf:PDFExtension",
             "googlesearch = woost.extensions.googlesearch:GoogleSearchExtension"
         ]
     },
