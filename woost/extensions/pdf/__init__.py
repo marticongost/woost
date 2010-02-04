@@ -87,7 +87,9 @@ class PDFExtension(Extension):
                 stdout, stderr = proc.communicate()
 
                 if proc.returncode:
-                    raise OSError("Error generating PDF: " + stderr)
+                    raise OSError("Error generating PDF"
+                        + (": " + stderr) if stderr else ""
+                    )
  
                 # Serve the file
                 cherrypy.response.headers["Content-Type"] = "application/x-pdf"
