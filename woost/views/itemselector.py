@@ -101,6 +101,15 @@ class ItemSelector(Element, DataBoundControl):
                             self.buttons.append(self.delete_button)
 
                 elif self.value is not None:
+
+                    # Edit
+                    if any(
+                        user.has_permission(ModifyPermission, target = cls)
+                        for cls in self.member.type.schema_tree()
+                    ):
+                        self.edit_button = self.create_edit_button()
+                        self.buttons.append(self.edit_button)
+
                     # Unlink
                     self.unlink_button = self.create_unlink_button()
                     self.buttons.append(self.unlink_button)
@@ -191,11 +200,6 @@ class ItemSelector(Element, DataBoundControl):
                 self.member.name + "-" + list(instantiable_types)[0].full_name
             label = new_button
 
-        label.append(Element("img",
-            class_name = "icon",
-            src = "/resources/images/new_small.png"
-        ))
-
         label.append(translations("woost.views.ItemSelector new"))
 
         return new_button
@@ -208,10 +212,6 @@ class ItemSelector(Element, DataBoundControl):
             class_name = "ItemSelector-button edit",
             value = self.member.name
         )
-        edit_button.append(Element("img",
-            class_name = "icon",
-            src = "/resources/images/edit_small.png"
-        ))
         edit_button.append(
             translations("woost.views.ItemSelector edit")
         )
@@ -225,10 +225,6 @@ class ItemSelector(Element, DataBoundControl):
             class_name = "ItemSelector-button delete",
             value = self.member.name
         )
-        delete_button.append(Element("img",
-            class_name = "icon",
-            src = "/resources/images/clear_small.png"
-        ))
         delete_button.append(
             translations("woost.views.ItemSelector delete")
         )
