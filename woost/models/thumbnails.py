@@ -17,7 +17,8 @@ from subprocess import Popen, PIPE
 from shutil import rmtree
 from tempfile import mkdtemp
 from cocktail.modeling import abstractmethod
-from woost.models import File
+from cocktail.controllers import context, Location
+from woost.models import File, Publishable, User
 
 
 class ThumbnailLoader(object):
@@ -205,8 +206,11 @@ class ThumbnailLoader(object):
             # Make sure cached thumbnails are current
             if cached_thumbnail_path and os.path.exists(cached_thumbnail_path):
                 thumbnail_date = os.stat(cached_thumbnail_path).st_mtime
-                if thumbnailer.get_last_change_in_source(item) > thumbnail_date:
+                source_date = thumbnailer.get_last_change_in_source(item)
+
+                if source_date < thumbnail_date:
                     image = Image.open(cached_thumbnail_path)
+
 
         # No usable cached copy available, or cache disabled:
         # generate a new thumbnail
@@ -337,7 +341,7 @@ class Thumbnailer(object):
             state that can affect its resulting thumbnail.
         @rtype: float
         """
-        return item.last_update_time
+        return mktime(item.last_update_time.timetuple())
 
     @abstractmethod
     def create_thumbnail(self, item, width, height, **params):
@@ -392,12 +396,12 @@ class VideoThumbnailer(Thumbnailer):
     """Generates thumbnails for video files."""
 
     relevant_cache_parameters = frozenset(["position"])
+
     try:
         p = Popen(["which", "ffmpeg"], stdout=PIPE)
         ffmpeg_path = p.communicate()[0].replace("\n", "") or None
     except:
         ffmpeg_path = None
-
 
     def _secs2time(self, s):
         ms = int((s - int(s)) * 1000000)
@@ -482,3 +486,82 @@ class VideoThumbnailer(Thumbnailer):
         image.thumbnail((width, height), self.resize_filter)
     
         return image
+
+
+class HTMLThumbnailer(Thumbnailer):
+
+    relevant_cache_parameters = frozenset(["min_width", "min_height"])
+
+    # Attempt to import the Qt/Webkit library
+    try:
+        import PyQt4.QtWebKit
+    except ImportError:
+        _qt_available = False
+    else:
+        _qt_available = True
+        del PyQt4
+   
+    def can_handle(self, item, **params):
+        return self._qt_available \
+            and isinstance(item, Publishable) \
+            and item.mime_type in (
+                "text/html",
+                "text/xhtml",
+                "application/xhtml"
+            ) \
+            and item.is_accessible(
+                user = User.get_instance(qname = "woost.anonymous_user")
+            )
+
+    def get_request_parameters(self, width, height, **kwargs):
+        width, height, params = \
+            Thumbnailer.get_request_parameters(self, width, height, **kwargs)
+
+        min_viewport_width = kwargs.get("min_viewport_width")
+        if min_viewport_width:
+            params["min_viewport_width"] = int(min_viewport_width)
+
+        min_viewport_height = kwargs.get("min_viewport_height")
+        if min_viewport_height:
+            params["min_viewport_height"] = int(min_viewport_height)
+
+        return width, height, params
+
+    def create_thumbnail(self, item, width, height, **params):
+        
+        temp_path = mkdtemp()
+
+        try:
+            temp_image_file = os.path.join(temp_path, "thumbnail.png")
+            
+            location = Location.get_current_host()
+            location.path_info = context["cms"].uri(item)
+            
+            command = "python -m woost.models.renderurl %s %s" \
+                % (unicode(location), temp_image_file)
+
+            min_width = params.get("min_viewport_width")
+            if min_width is not None:
+                command += " --min-width %d" % min_width
+
+            min_height = params.get("min_viewport_height")
+            if min_height is not None:
+                command += " --min-width %d" % min_height
+
+            Popen(command, shell = True).wait()
+
+            image = Image.open(temp_image_file)
+
+            if width is None:
+                w, h = image.size
+                width = int(w * height / float(h))
+
+            elif height is None:
+                w, h = image.size
+                height = int(h * width / float(w))
+
+            image.thumbnail((width, height), self.resize_filter)
+            return image
+        finally:
+            rmtree(temp_path)
+

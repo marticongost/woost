@@ -8,7 +8,6 @@
 """
 from __future__ import with_statement
 import os
-from time import mktime
 from shutil import copy
 from hashlib import md5
 from cStringIO import StringIO
