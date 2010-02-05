@@ -2095,6 +2095,26 @@ button.TypeSelectorButton {
 	background-color: rgb(225, 225, 225);
 }
 
+.ui-datepicker-next a,
+.ui-datepicker-prev a {
+    border: none;
+}
+
+.ui-datepicker-prev a,
+.ui-datepicker-prev a:hover {
+    background: url(/resources/images/date_arrow_left.gif) 50% 50% no-repeat;
+}
+
+.ui-datepicker-next a,
+.ui-datepicker-next a:hover {
+    background: url(/resources/images/date_arrow_right.gif) 50% 50% no-repeat;
+}
+
+.ui-datepicker-prev a:active,
+.ui-datepicker-next a:active {
+    background: none;
+}
+
 /* File form
 -----------------------------------------------------------------------------*/
 .FileFieldsView .upload_info {
