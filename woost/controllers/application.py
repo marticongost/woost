@@ -15,7 +15,6 @@ except ImportError:
 
 import rfc822
 import cherrypy
-from time import mktime
 from cherrypy.lib.cptools import validate_since
 from pkg_resources import resource_filename, iter_entry_points
 from cocktail.events import Event, event_handler
@@ -46,6 +45,7 @@ from woost.models.thumbnails import (
     ThumbnailLoader,
     ImageThumbnailer,
     VideoThumbnailer,
+    HTMLThumbnailer,
     ThumbnailParameterError
 )
 from woost.controllers.basecmscontroller import BaseCMSController
@@ -316,7 +316,7 @@ class CMS(BaseCMSController):
         """
         # User defined URIs
         if isinstance(publishable, URI):
-            return publishable.uri
+            uri = publishable.uri
 
         # Regular elements
         else:
@@ -328,8 +328,11 @@ class CMS(BaseCMSController):
                     uri = self.language.translate_uri(uri)
 
                 uri = self.application_uri(uri, *args, **kwargs)
-                
-            return uri
+ 
+        if uri:
+            uri = "".join(percent_encode(c) for c in uri)
+
+        return uri
 
     def translate_uri(self, path = None, language = None):
         return self.application_uri(
@@ -504,7 +507,8 @@ class CMS(BaseCMSController):
         if not os.path.exists(loader.cache_path):
             os.mkdir(loader.cache_path)
 
-        # Image thumbnails
+        # Thumbnailers
+        loader.thumbnailers.append(HTMLThumbnailer())
         loader.thumbnailers.append(ImageThumbnailer())
         loader.thumbnailers.append(VideoThumbnailer())
 
@@ -516,9 +520,11 @@ class CMS(BaseCMSController):
         # Sanitize input
         item = self._get_requested_item(id, **kwargs)
 
+        from cocktail.styled import styled
+        
         # Determine the thumbnailer that best handles the requested item
         thumbnailer = self.thumbnail_loader.get_thumbnailer(item)
-        
+                
         if thumbnailer is None:
             raise cherrypy.NotFound()
         
