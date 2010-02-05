@@ -17,7 +17,7 @@ from woost.models import Site
 class BaseCMSController(Controller):
     """Base class for all CMS controllers."""
 
-    def _render_template(self, format):
+    def _render_template(self):
 
         # Pass the request context to the template
         cms = self.context["cms"]
@@ -26,7 +26,7 @@ class BaseCMSController(Controller):
             output = self.output
         )
 
-        return Controller._render_template(self, format)
+        return Controller._render_template(self)
  
     def application_uri(self, *args, **kwargs):
         """Builds an absolute URI from a set of path components and parameters.
