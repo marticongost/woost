@@ -132,7 +132,7 @@ class EmailTemplate(Item):
                 markup = self.get(field_name)
                 if markup:
                     template = engine.load_template(
-                        field_name,
+                        "EmailTemplate." + field_name,
                         self.get(field_name)
                     )
                     return engine.render(context, template = template)                    
