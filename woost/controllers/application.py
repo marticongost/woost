@@ -41,20 +41,13 @@ from woost.models import (
     get_current_user
 )
 from woost.models.icons import IconResolver
-from woost.models.thumbnails import (
-    ThumbnailLoader,
-    ImageThumbnailer,
-    VideoThumbnailer,
-    HTMLThumbnailer,
-    ThumbnailParameterError
-)
 from woost.controllers.basecmscontroller import BaseCMSController
 from woost.controllers.language import LanguageModule
 from woost.controllers.authentication import (
     AuthenticationModule,
     AuthenticationFailedError
 )
-from woost.controllers.iconcontroller import IconController
+from woost.controllers.imagescontroller import ImagesController
 
 
 class CMS(BaseCMSController):
@@ -114,13 +107,6 @@ class CMS(BaseCMSController):
     # Paths
     application_path = None
     upload_path = None
-
-    # Map image formats to MIME types (used by the item thumbnailer)
-    image_format_mime_types = {
-        "jpeg": "image/jpeg",
-        "png": "image/png",
-        "gif": "image/gif"
-    }
 
     # Enable / disable confirmation dialogs when closing an edit session. This
     # setting exists mainly to disable the dialogs on selenium test runs.
@@ -198,7 +184,6 @@ class CMS(BaseCMSController):
 
         self.language = self.LanguageModule(self)
         self.authentication = self.AuthenticationModule(self)
-        self.thumbnail_loader = self._create_thumbnail_loader()
         self.icon_resolver = IconResolver()
 
         if self.application_path:
@@ -230,8 +215,6 @@ class CMS(BaseCMSController):
             cherrypy.engine.block()
         else:
             cherrypy.engine.wait(cherrypy.engine.states.STARTED)            
-    
-    icons = IconController
 
     def resolve(self, path):
         
@@ -339,23 +322,36 @@ class CMS(BaseCMSController):
             self.language.translate_uri(path = path, language = language)
         )
 
-    def icon_uri(self, element, **kwargs):
-        
+    def image_uri(self, element, *args, **kwargs):
+
         if isinstance(element, type):
             element = element.full_name
         elif hasattr(element, "id"):
             element = element.id
-
-        return self.application_uri("icons", element, **kwargs)
-
-    def thumbnail_uri(self, element, **kwargs):
         
-        if isinstance(element, type):
-            element = element.full_name
-        elif hasattr(element, "id"):
-            element = element.id
+        return self.application_uri("images", element, *args, **kwargs)
 
-        return self.application_uri("thumbnails", element, **kwargs)
+    def icon_uri(self, element, icon_size, thumbnail_size = None):
+        
+        if thumbnail_size:
+            w, h = thumbnail_size
+            if w and h:
+                args = ["thumbnail(%s,%s)" % thumbnail_size] 
+            elif w:
+                args = ["thumbnail(width=%s)" % w]
+            else:
+                args = ["thumbnail(height=%s)" % h]
+        else:
+            args = []
+
+        kwargs = {"icon.size": str(icon_size)}
+
+        if thumbnail_size:
+            kwargs["kind"] = "image,icon"
+        elif not isinstance(element, type):
+            kwargs["kind"] = "icon"
+
+        return self.image_uri(element, *args, **kwargs)
 
     def validate_publishable(self, publishable):
 
@@ -498,95 +494,5 @@ class CMS(BaseCMSController):
     def get_file_upload_path(self, id):
         return os.path.join(self.upload_path, str(id))
 
-    def _create_thumbnail_loader(self):
-        
-        loader = ThumbnailLoader()
-        
-        # Cache path
-        loader.cache_path = os.path.join(self.application_path, "thumbnails")
-        if not os.path.exists(loader.cache_path):
-            os.mkdir(loader.cache_path)
-
-        # Thumbnailers
-        loader.thumbnailers.append(HTMLThumbnailer())
-        loader.thumbnailers.append(ImageThumbnailer())
-        loader.thumbnailers.append(VideoThumbnailer())
-
-        return loader
-
-    @cherrypy.expose
-    def thumbnails(self, id, width = None, height = None, **kwargs):
-
-        # Sanitize input
-        item = self._get_requested_item(id, **kwargs)
-
-        from cocktail.styled import styled
-        
-        # Determine the thumbnailer that best handles the requested item
-        thumbnailer = self.thumbnail_loader.get_thumbnailer(item)
-                
-        if thumbnailer is None:
-            raise cherrypy.NotFound()
-        
-        # Handle client side caching
-        cherrypy.response.headers["Last-Modified"] = \
-            rfc822.formatdate(thumbnailer.get_last_change_in_source(item))
-        validate_since()
-
-        # Get size and format
-        width, height, params = thumbnailer.get_request_parameters(
-            width, height, **kwargs
-        )
-        
-        format = kwargs.get("format", self.thumbnail_loader.default_format)
-
-        if format is None:
-            raise cherrypy.NotFound()
-        
-        params["format"] = format
-
-        # Obtain the thumbnail
-        try:
-            image = self.thumbnail_loader.get_thumbnail(
-                item,
-                width,
-                height,
-                thumbnailer,
-                **params
-            )
-        except ThumbnailParameterError:
-            raise cherrypy.NotFound()
-
-        if image is None:
-            raise cherrypy.NotFound()
-        
-        # Determine the MIME type for the thumbnail
-        try:
-            mime_type = self.image_format_mime_types[format]
-        except KeyError:
-            pass
-        else:
-            cherrypy.response.headers["Content-Type"] = mime_type
-        
-        # Write the thumbnail to the HTTP response
-        buffer = StringIO()
-        self.thumbnail_loader.save_thumbnail(image, buffer, **params)
-        return buffer.getvalue()
-
-    def _get_requested_item(self, id, **kwargs):
-
-        try:
-            id = int(id)
-        except:
-            raise cherrypy.NotFound()
-        
-        item = Item.get_instance(id)
-        
-        if item is None or not item.is_published():
-            raise cherrypy.NotFound()
-
-        self.authentication.process_request()
-        get_current_user().require_permission(ReadPermission, target = item)
-        
-        return item
+    images = ImagesController
 

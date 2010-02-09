@@ -31,7 +31,7 @@ cocktail.init(function (root) {
 
             var icon = document.createElement("img");
             icon.className = "icon";
-            icon.src = "/icons/" + itemId + "?icon_size=16&width=24";
+            icon.src = "/images/" + itemId + "/thumbnail(24)/?icon.size=16";
             itemLabel.appendChild(icon);
 
             itemLabel.appendChild(document.createTextNode(label));
