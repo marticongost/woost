@@ -81,7 +81,7 @@ from woost.models import Site, Publishable, ModifyPermission
     <li py:def="attachment" py:args="attachment">
         <a href="${cms.uri(attachment)}" title="${attachment.description}">
             <img
-                src="${self.cms.icon_uri(attachment, icon_size = 16)}"
+                src="${self.cms.icon_uri(attachment, 16)}"
                 alt="${translations('woost.views.StandardView attachment icon description')}"/>
             <span>${translations(attachment)}</span>
         </a>

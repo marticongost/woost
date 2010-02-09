@@ -29,10 +29,7 @@ class ContentTypeTree(TreeView):
             label.add_class(schema.name)
 
         img = Element("img")
-        img["src"] = context["cms"].icon_uri(
-            content_type,
-            icon_size = str(self.icon_size)
-        )
+        img["src"] = context["cms"].icon_uri(content_type, self.icon_size)
         img.add_class("icon")
         label.insert(0, img)
 

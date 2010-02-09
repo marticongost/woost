@@ -10,10 +10,6 @@ from cocktail.html.selectable import selectable
 
     <?py-class
     content_view_id = "thumbnails"
-    thumbnail_params = {
-        "width": 100,
-        "height": 100
-    }
     allow_grouping = False
     ?>
 
@@ -46,8 +42,7 @@ from cocktail.html.selectable import selectable
             element.add_class("entry")
             ?>
             <div class="icon_frame">
-                <img class="icon"
-                    src="${self.cms.icon_uri(value, **(self.thumbnail_params))}"/>
+                <img class="icon" src="${self.cms.icon_uri(value, 32, (100, 100))}"/>
             </div>
             <div class="label">
                 <?py

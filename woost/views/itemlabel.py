@@ -35,10 +35,7 @@ class ItemLabel(Element):
         img = Element("img")
         img.add_class("icon")
         img["src"] = context["cms"].icon_uri(
-            self.item,
-            icon_size = str(self.icon_size),
-            width = "24",
-            thumbnail = self.thumbnail and "true" or "false"
+            self.item, self.icon_size, (24, None) if self.thumbnail else None
         )
         return img
     
