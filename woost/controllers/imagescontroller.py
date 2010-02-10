@@ -264,7 +264,7 @@ class ImagesController(BaseCMSController):
     def _parse_value(self, value):
 
         if len(value) >= 2 and value[0] == value[-1] and value[0] in ("'\""):
-            return value[1:-2]
+            return value[1:-1]
 
         if value in ("True", "False"):
             return bool(value)
