@@ -98,8 +98,8 @@ class CommentsExtension(Extension):
             anonymous_comments_permission.insert()
             datastore.commit()
 
-        # Extend Document model
-        Document.add_member(
+        # Extend Publishable model
+        Publishable.add_member(
             schema.Boolean(
                 "allow_comments",
                 default = False
