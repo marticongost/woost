@@ -53,7 +53,8 @@ from woost.controllers.backoffice.useractions import (
     <py:with
         py:element="self.body"
         py:tag="form"
-        method="post">
+        method="post"
+        autocomplete="off">
 
         <!-- Default button (hidden) -->
         <button
