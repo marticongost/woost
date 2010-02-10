@@ -21,6 +21,7 @@ from cherrypy.lib.cptools import validate_since
 from cherrypy.lib.static import serve_file
 import Image
 import ImageEnhance
+import ImageFilter
 from cocktail.modeling import (
     cached_getter,
     abstractmethod,
@@ -513,6 +514,23 @@ def resolve_px(value, size):
         value = size + value
     return value
 
+def resolve_color(value):
+
+    if isinstance(value, basestring):
+
+        if len(value) == 3:
+            value = tuple(int(d * 2, 16) for d in value)
+        elif len(value) == 6:
+            value = (
+                int(value[0:2], 16),
+                int(value[2:4], 16),
+                int(value[4:6], 16)
+            )
+        else:
+            raise ValueError("Invalid color: " + value)
+
+    return value
+
 image_processors = OrderedDict()
 
 def image_processor(func):
@@ -598,4 +616,83 @@ def contrast(image, level):
 @image_processor
 def sharpness(image, level):
     return ImageEnhance.Sharpness(image).enhance(level)
+
+@image_processor
+def frame(
+    image,
+    edge = 1,
+    edge_color = (0,0,0),
+    padding = 0,
+    padding_color = (255,255,255)
+):
+    edge_color = resolve_color(edge_color)
+    padding_color = resolve_color(padding_color)
+
+    # Create the canvas
+    width, height = image.size
+    offset = edge + padding
+    canvas = Image.new("RGBA", (width + offset * 2, height + offset * 2))    
+
+    # Paint the border
+    if edge:
+        canvas.paste(edge_color, None)
+
+    # Paint the padding color
+    canvas.paste(
+        padding_color,
+        (edge,
+         edge,
+         width + offset * 2 - edge,
+         height + offset * 2 - edge)
+    )
+    
+    # Paste the original image over the frame
+    canvas.paste(
+        image,
+        (offset, offset),
+        image if image.mode in ("1", "L", "RGBA") else None
+    )
+
+    return canvas
+
+@image_processor
+def shadow(
+    image,
+    offset = 5,
+    color = (70,70,70),
+    padding = 8,
+    iterations = 3):   
+    
+    # Create the backdrop image -- a box in the background colour with a 
+    # shadow on it.
+    total_width = image.size[0] + abs(offset) + 2 * padding
+    total_height = image.size[1] + abs(offset) + 2 * padding
+    back = Image.new("RGBA", (total_width, total_height))
+
+    # Place the shadow, taking into account the offset from the image
+    shadow_left = padding + max(offset, 0)
+    shadow_top = padding + max(offset, 0)
+    color = resolve_color(color)
+    back.paste(color, [
+        shadow_left,
+        shadow_top,
+        shadow_left + image.size[0], 
+        shadow_top + image.size[1]
+    ])
+
+    # Apply the filter to blur the edges of the shadow.  Since a small kernel
+    # is used, the filter must be applied repeatedly to get a decent blur.
+    for n in range(iterations):
+        back = back.filter(ImageFilter.BLUR)
+
+    # Paste the input image onto the shadow backdrop
+    image_left = padding - min(offset, 0)
+    image_top = padding - min(offset, 0)
+    back.paste(
+        image,
+        (image_left, image_top),
+        image if image.mode in ("1", "L", "RGBA") else None
+    )
+
+    return back
 
