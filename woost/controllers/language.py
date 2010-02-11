@@ -6,7 +6,9 @@ u"""
 @organization:	Whads/Accent SL
 @since:			July 2008
 """
+import time
 import cherrypy
+from cherrypy.lib import http
 from cocktail.translations import get_language, set_language
 from cocktail.language import get_content_language, set_content_language
 from cocktail.controllers import Location
@@ -35,6 +37,7 @@ class LanguageModule(Module):
         cookie = cherrypy.response.cookie["language"]
         cookie["path"] = "/"
         cookie["max-age"] = self.cookie_duration
+        cookie["expires"] = http.HTTPDate(time.time() + self.cookie_duration)
 
         set_language(language)
         set_content_language(language)
