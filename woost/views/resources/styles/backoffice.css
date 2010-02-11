@@ -1241,7 +1241,7 @@ body.scripted .BackOfficeLayout .ContentTypePicker.selector {
     float: left;
     margin: 0.5em;
     width: 8em;
-    height: 9em;
+    height: 10em;
     text-align: center;
     position: relative;
 }
@@ -1268,7 +1268,7 @@ body.scripted .BackOfficeLayout .ThumbnailsContentView .collection_display input
 .BackOfficeLayout .ThumbnailsContentView .collection_display .label {
     display: block;
     text-align: center;
-    margin-top: 6.75em;
+    margin-top: 7.75em;
 }
 
 .BackOfficeLayout .ThumbnailsContentView .collection_display label {
