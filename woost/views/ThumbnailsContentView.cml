@@ -42,7 +42,19 @@ from cocktail.html.selectable import selectable
             element.add_class("entry")
             ?>
             <div class="icon_frame">
-                <img class="icon" src="${self.cms.icon_uri(value, 32, (100, 100))}"/>
+                <?py
+                image_uri = self.cms.image_uri(
+                    value,
+                    "thumbnail(100,100)",
+                    "frame(1,'ddd',4,'eee')",
+                    **{
+                        "format": "png",
+                        "kind": "image,icon",
+                        "icon.size": "32"
+                    }
+                )
+                ?>
+                <img class="icon" src="${image_uri}"/>
             </div>
             <div class="label">
                 <?py
