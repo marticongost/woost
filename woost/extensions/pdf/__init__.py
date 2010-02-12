@@ -80,7 +80,7 @@ class PDFExtension(Extension):
 
                 # Create the file
                 command = extension.command % {
-                    "url": str(location),
+                    "url": unicode(location),
                     "output_file": pdf_file_path
                 }
                 proc = Popen(command, shell = True)
