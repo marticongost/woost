@@ -11,9 +11,9 @@ import cherrypy
 from woost.controllers import BaseCMSController
 
 
-class Redirection(BaseCMSController):
+class URIController(BaseCMSController):
 
     def __call__(self, *args, **kwargs):
-        uri = self.context["document"].uri
+        uri = self.context["publishable"].uri
         raise cherrypy.HTTPRedirect(uri)
 
