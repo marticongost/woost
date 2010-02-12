@@ -32,6 +32,7 @@ setup(
             "staticsite = woost.extensions.staticsite:StaticSiteExtension",
             "sitemap = woost.extensions.sitemap:SitemapExtension",
             "pdf = woost.extensions.pdf:PDFExtension",
+            "vimeo = woost.extensions.vimeo:VimeoExtension",
             "googlesearch = woost.extensions.googlesearch:GoogleSearchExtension"
         ]
     },

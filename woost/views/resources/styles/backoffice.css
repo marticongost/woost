@@ -2727,3 +2727,53 @@ a.pickcolor span {
     text-decoration: italic;
 }
 
+/* Vimeo video extension
+-----------------------------------------------------------------------------*/
+.VimeoSynchronizationView .buttons {
+    text-align: left;
+    padding-left: 0;
+}
+
+.VimeoSynchronizationView .back_form {
+    margin-top: 2em;
+}
+
+.VimeoSynchronizationView .result_block {
+    margin-top: 1.4em;
+    clear: left;
+}
+
+.VimeoSynchronizationView .result_block .title {
+    font-weight: bold;
+}
+
+.VimeoSynchronizationView .result_block .videos {
+    margin: 0.4em;
+}
+
+.VimeoSynchronizationView .result_block .video {
+    margin-top: 1em;
+    clear: left;
+    overflow: hidden;
+}
+
+.VimeoSynchronizationView .result_block .video_title {
+    color: rgb(75,75,75);
+    font-weight: bold;
+}
+
+.VimeoSynchronizationView .result_block .thumbnail {
+    float: left;
+    margin-right: 0.8em;
+}
+
+.VimeoSynchronizationView .result_block .ContentLink {
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.VimeoSynchronizationView .result_block .description {
+    font-size: 85%;
+    padding: 0.2;
+}
+
