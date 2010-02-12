@@ -27,7 +27,9 @@ from woost.controllers.backoffice.useractions import (
         return [
             action
             for action in get_view_actions(context, self.action_target)
-            if not self.empty_result_set or not action.min
+            if not self.empty_result_set
+            or not action.min 
+            or action.ignores_selection
         ]
     ?>
 
