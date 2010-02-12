@@ -23,7 +23,7 @@ class URI(Publishable):
     ]
 
     default_controller = schema.DynamicDefault(
-        lambda: Controller.get_instance(qname = "woost.uri_handler")
+        lambda: Controller.get_instance(qname = "woost.uri_controller")
     )
 
     title = schema.String(
