@@ -46,15 +46,15 @@ translations.define("Comment.content",
     en = u"Comment"
 )
 
-# Document
+# Publishable
 #------------------------------------------------------------------------------
-translations.define("Document.allow_comments",
+translations.define("Publishable.allow_comments",
     ca = u"Accepta comentaris",
     es = u"Acepta comentarios",
     en = u"Comments allowed"
 )
 
-translations.define("Document.comments",
+translations.define("Publishable.comments",
     ca = u"Comentaris",
     es = u"Comentarios",
     en = u"Comments"
