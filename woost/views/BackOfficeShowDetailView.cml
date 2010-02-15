@@ -88,10 +88,6 @@ from woost.controllers.backoffice.useractions import \
             </a>
         </div>
 
-        <py:ready>
-            <?py element.reverse() ?>
-        </py:ready>
-
     </py:woost.views.ContentPropertyTable>
     
 </py:woost.views.BackOfficeItemView>

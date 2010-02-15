@@ -482,13 +482,20 @@ body.scripted .BackOfficeLayout .Table .selection {
     border-bottom: 1px solid rgb(225,225,225);
 }
 
-.BackOfficeLayout .PropertyTable .type_group {
-    border-collapse: collapse;
-    width: 100%;
+.BackOfficeLayout .PropertyTable th {
+    width: 25%;
 }
 
-.BackOfficeLayout .PropertyTable .type_group + .type_group {
-    margin-top: 1em;
+.BackOfficeLayout .PropertyTable tr.group_header th {
+    font-weight: bold;
+}
+
+.BackOfficeLayout .PropertyTable tbody + tbody tr.group_header th {
+    padding-top: 2em;
+}
+
+.BackOfficeLayout .PropertyTable tr.member_row th {
+    padding-left: 2em;
 }
 
 .BackOfficeLayout .Table th {
