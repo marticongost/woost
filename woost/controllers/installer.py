@@ -41,7 +41,7 @@ class Installer(object):
     def index(self, **params):
 
         set_language("en")
-        submitted = params.pop("submit", False)
+        submitted = cherrypy.request.method == "POST"
         successful = False
         errors = []
  
