@@ -36,7 +36,7 @@
             <input type="hidden" name="item" value="@{self.item.id}"/>
             <input type="hidden" name="transition" value="@{self.transition.id}"/>
 
-            <button name = "cancel" py:before="transition_form.submit_button">
+            <button name = "cancel" type="submit" py:before="transition_form.submit_button">
                 ${translations('woost.extensions.workflow.TransitionView cancel')}
             </button>
 
