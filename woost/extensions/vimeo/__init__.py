@@ -64,7 +64,12 @@ class VimeoExtension(Extension):
     def handle_loading(cls, event):
         
         # Load extension models, translations and UI extensions
-        from woost.extensions.vimeo import video, strings, useraction
+        from woost.extensions.vimeo import (
+            video,
+            strings,
+            useraction,
+            vimeovideorenderer
+        )
 
         # Setup the synchronization view
         from woost.controllers.backoffice.backofficecontroller \
