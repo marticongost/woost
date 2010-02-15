@@ -1239,18 +1239,18 @@ body.scripted .BackOfficeLayout .ContentTypePicker.selector {
 -----------------------------------------------------------------------------*/
 .BackOfficeLayout .ThumbnailsContentView .collection_display {
     width: 100%;
-    overflow: hidden;
     padding-bottom: 0.5em;
+}
+
+.BackOfficeLayout .ThumbnailsContentView .collection_display td {
+    vertical-align: top;
 }
 
 .BackOfficeLayout .ThumbnailsContentView .collection_display .entry {
     display: block;
-    float: left;
     margin: 0.5em;
-    width: 8em;
-    height: 10em;
+    width: 10em;
     text-align: center;
-    position: relative;
 }
 
 .BackOfficeLayout .ThumbnailsContentView .entry.selected {
@@ -1265,29 +1265,31 @@ body.scripted .BackOfficeLayout .ThumbnailsContentView .collection_display input
 }
 
 .BackOfficeLayout .ThumbnailsContentView .collection_display .icon_frame {
-    position: absolute;
-    bottom: 2.5em;
-    left: 0;
-    right: 0;
+    height: 6em;
+    width: 10em;
     text-align: center;
+    display: table-cell;
+    vertical-align: bottom;
 }
 
 .BackOfficeLayout .ThumbnailsContentView .collection_display .label {
     display: block;
     text-align: center;
-    margin-top: 7.75em;
+    margin-top: 0.2em;
+    padding: 0.2em;
 }
 
 .BackOfficeLayout .ThumbnailsContentView .collection_display label {
     white-space: normal;
+    font-size: 85%;
+    margin: 0;
+    padding: 0;
 }
 
 .BackOfficeLayout .ThumbnailsContentView .collection_display .selected .label {
     background-color: rgb(75,75,75);
-    border: 1px solid rgb(75,75,75);
     color: white;
     -moz-border-radius: 5px;
-    padding: 0.2em;
 }
 
 /* History
