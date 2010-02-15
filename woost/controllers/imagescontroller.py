@@ -14,7 +14,10 @@ from shutil import rmtree
 from threading import Lock
 from cStringIO import StringIO
 from mimetypes import guess_type
-from time import mktime
+from time import mktime, strptime
+from httplib import HTTPConnection
+from urlparse import urlsplit
+from urllib import urlopen
 import rfc822
 import cherrypy
 from cherrypy.lib.cptools import validate_since
@@ -38,6 +41,7 @@ from woost.models import (
     Item,
     Publishable,
     File,
+    URI,
     User,
     get_current_user,
     ReadPermission
@@ -425,6 +429,41 @@ class ImageFileRenderer(ContentRenderer):
         return os.stat(item.file_path).st_mtime
 
 
+class ImageURIRenderer(ContentRenderer):
+
+    def can_render(self, item):
+        return isinstance(item, URI) and item.resource_type == "image"
+
+    def get_item_uri(self, item):
+        return item.uri
+
+    def render(self, item):
+        
+        # Open the remote resource
+        uri = self.get_item_uri(item)
+        http_resource = urlopen(uri)
+
+        # Wrap image data in a buffer
+        # (the object returned by urlopen() doesn't support seek(), which is
+        # required by PIL)
+        buffer = StringIO()
+        buffer.write(http_resource.read())
+        buffer.seek(0)
+
+        return Image.open(buffer)
+
+    def last_change_in_appearence(self, item):
+        uri = self.get_item_uri(item)
+        urlparts = urlsplit(uri)
+        host = urlparts[1]
+        path = urlparts[2] + urlparts[3] + urlparts[4]
+        http_conn = HTTPConnection(host)
+        http_conn.request("HEAD", path)
+        http_date = http_conn.getresponse().getheader("last-modified")
+        http_conn.close()
+        return mktime(strptime(http_date, "%a, %d %b %Y %H:%M:%S %Z"))
+
+
 class HTMLRenderer(ContentRenderer):
     """A content renderer that handles XHTML/HTML pages."""
 
@@ -494,6 +533,7 @@ class IconRenderer(ContentRenderer):
 
 content_renderers = ContentRenderersRegistry()
 content_renderers.register(ImageFileRenderer())
+content_renderers.register(ImageURIRenderer())
 
 try:
     import PyQt4.QtWebKit
