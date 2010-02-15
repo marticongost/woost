@@ -11,11 +11,13 @@ from cocktail.html.selectable import selectable
     <?py-class
     content_view_id = "thumbnails"
     allow_grouping = False
+    row_width = 5
     ?>
 
     <py:with py:element="self.settings_box" py:visible="${False}"/>
 
     <py:cocktail.html.CheckList py:def="collection_display"
+        py:tag="table"
         py:items="@{self.user_collection.page_subset}"
         py:value="@{self.user_collection.selection}"
         py:name="selection">
@@ -27,14 +29,30 @@ from cocktail.html.selectable import selectable
         </py:ready>
 
         <?py
-        splitter = re.compile(r"(\W+)")
-
         @extend(element)
-        def get_item_label(element, item):
-            return splitter.sub(
-                lambda m: m.group(1) + "&#8203;",
-                translations(item)
-            )
+        def _fill_entries(check_list):
+
+            i = 0
+            row = None
+
+            for item in check_list.items:
+
+                if i % self.row_width == 0:
+                    row = Element("tr")
+                    check_list.append(row)
+                
+                i += 1
+
+                value = check_list.get_item_value(item)
+                label = check_list.get_item_label(item)
+                entry = check_list.create_entry(
+                    value,
+                    label,
+                    check_list._is_selected(value)
+                )
+                cell = Element("td")
+                cell.append(entry)
+                row.append(cell)
         ?>
 
         <py:with py:def="entry" py:args="value, label, selected">
