@@ -144,7 +144,8 @@ class Item(PersistentObject):
         bidirectional = True,
         cascade_delete = True,
         editable = False,
-        versioned = False
+        versioned = False,
+        member_group = "administration"
     )
 
     _draft_count = 0
@@ -408,5 +409,6 @@ class Item(PersistentObject):
 Item.id.versioned = False
 Item.id.editable = False
 Item.id.listed_by_default = False
+Item.id.member_group = "administration"
 Item.changes.visible = False
 
