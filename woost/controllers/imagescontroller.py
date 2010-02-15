@@ -349,7 +349,7 @@ class ContentRenderersRegistry(ListWrapper):
                         % (renderer, "after" if after else "before", marker)
                     )
 
-                if after:
+                if before:
                     self._items.insert(pos, renderer)
                 else:
                     self._items.insert(pos + 1, renderer)  
