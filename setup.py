@@ -7,6 +7,17 @@ u"""
 @since:			December 2008
 """
 from setuptools import setup, find_packages
+from os import listdir
+from os.path import join, isdir
+
+def rglob(base, path, patterns):
+    composite = []
+    for pattern in patterns:
+        composite.append(join(path, pattern))
+    for name in listdir(join(base, path)):
+        if isdir(join(base, path, name)):
+            composite.extend(rglob(base, join(path, name), patterns))
+    return composite
 
 setup(
     name = "woost",
@@ -17,10 +28,14 @@ setup(
     install_requires = [
         "simplejson",
         "cocktail==0.2"
-    ],
-    include_package_data = True,
+    ],    
     packages = find_packages(),
-    dependency_links = ["http://www.pythonware.com/products/pil/"],   
+    package_data = {
+        "woost.scripts": rglob("woost/scripts", "project_skeleton", ["*.*"]),
+        "woost.views":
+            ["*.cml", "*.mak"]
+            + rglob("woost/views", "resources", ["*.*"])
+    },
     entry_points = {
         "woost.extensions": [
             "workflow = woost.extensions.workflow:WorkflowExtension",
@@ -36,7 +51,7 @@ setup(
             "googlesearch = woost.extensions.googlesearch:GoogleSearchExtension"
         ]
     },
-    # SiteBasis can't yet access view resources (images, style sheets, client
+    # Woost can't yet access view resources (images, style sheets, client
     # side scripts, etc) that are packed inside a zipped egg, so distribution
     # in zipped form is disabled
     zip_safe = False
