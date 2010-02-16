@@ -24,7 +24,42 @@ setup(
     version = "0.3",
     author = "Whads/Accent SL",
     author_email = "tech@whads.com",
-    description = "An object oriented, web based Content Management System.",
+    maintainer = "Marti Congost",
+    maintainer_email = "marti.congost@whads.com",
+    url = "http://woost.info",
+    description = "Model driven multilanguage CMS.",
+    long_description = 
+"""Woost is a Content Management System designed from the ground up  to be able
+to publish arbitrary data models, including content in multiple languages. Some
+of its features include:\n"
+
+    * Use inheritance, relations and validations to define complex models
+    
+    * Automatically generate forms and listings for your models from a schema
+      description
+
+    * Translate your content into multiple languages, edit translations side by
+      side
+
+    * Compatible with lots of popular Python templating engines
+
+    * Place arbitrarily complex access restrictions
+
+    * Extension framework, with several built-in extensions (comments,
+      workflow, integration with online services, and many others)
+""",
+    classifiers = [
+        "Development Status :: 3 - Alpha",
+        "Environment :: Web Environment",
+        "Framework :: ZODB",
+        "Intended Audience :: Developers",
+        "Intended Audience :: Information Technology",
+        "License :: OSI Approved :: GNU Affero General Public License v3",
+        "Natural Language :: Catalan",
+        "Natural Language :: Spanish",
+        "Programming Language :: Python :: 2",
+        "Topic :: Internet :: WWW/HTTP :: Site Management"
+    ],
     install_requires = [
         "simplejson",
         "cocktail==0.2"
