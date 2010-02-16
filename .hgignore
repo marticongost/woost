@@ -1,6 +1,5 @@
 syntax: glob
-data
 views/resources/scripts/tinymce
-sitebasis.egg-info
-*.orig
 woost.egg-info
+build
+dist
