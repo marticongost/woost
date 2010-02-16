@@ -31,6 +31,7 @@ setup(
     ],    
     packages = find_packages(),
     package_data = {
+        "": ["COPYRIGHT", "LICENSE"],
         "woost.scripts": rglob("woost/scripts", "project_skeleton", ["*.*"]),
         "woost.views":
             ["*.cml", "*.mak"]
