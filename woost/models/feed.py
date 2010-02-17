@@ -130,7 +130,7 @@ class Feed(Publishable):
 
     def select_items(self):
          
-        user_collection = UserCollection(Item)
+        user_collection = UserCollection(Publishable)
         user_collection.allow_paging = False
         user_collection.allow_member_selection = False
         user_collection.allow_language_selection = False
