@@ -7,20 +7,71 @@ u"""
 @since:			December 2008
 """
 from setuptools import setup, find_packages
+from os import listdir
+from os.path import join, isdir
+
+def rglob(base, path, patterns):
+    composite = []
+    for pattern in patterns:
+        composite.append(join(path, pattern))
+    for name in listdir(join(base, path)):
+        if isdir(join(base, path, name)):
+            composite.extend(rglob(base, join(path, name), patterns))
+    return composite
 
 setup(
     name = "woost",
     version = "0.3",
     author = "Whads/Accent SL",
     author_email = "tech@whads.com",
-    description = "An object oriented, web based Content Management System.",
+    maintainer = "Marti Congost",
+    maintainer_email = "marti.congost@whads.com",
+    url = "http://woost.info",
+    description = "Model driven multilanguage CMS.",
+    long_description = 
+"""Woost is a Content Management System designed from the ground up  to be able
+to publish arbitrary data models, including content in multiple languages. Some
+of its features include:\n"
+
+    * Use inheritance, relations and validations to define complex models
+    
+    * Automatically generate forms and listings for your models from a schema
+      description
+
+    * Translate your content into multiple languages, edit translations side by
+      side
+
+    * Compatible with lots of popular Python templating engines
+
+    * Place arbitrarily complex access restrictions
+
+    * Extension framework, with several built-in extensions (comments,
+      workflow, integration with online services, and many others)
+""",
+    classifiers = [
+        "Development Status :: 3 - Alpha",
+        "Environment :: Web Environment",
+        "Framework :: ZODB",
+        "Intended Audience :: Developers",
+        "Intended Audience :: Information Technology",
+        "License :: OSI Approved :: GNU Affero General Public License v3",
+        "Natural Language :: Catalan",
+        "Natural Language :: Spanish",
+        "Programming Language :: Python :: 2",
+        "Topic :: Internet :: WWW/HTTP :: Site Management"
+    ],
     install_requires = [
         "simplejson",
         "cocktail==0.2"
-    ],
-    include_package_data = True,
+    ],    
     packages = find_packages(),
-    dependency_links = ["http://www.pythonware.com/products/pil/"],   
+    package_data = {
+        "": ["COPYRIGHT", "LICENSE"],
+        "woost.scripts": rglob("woost/scripts", "project_skeleton", ["*.*"]),
+        "woost.views":
+            ["*.cml", "*.mak"]
+            + rglob("woost/views", "resources", ["*.*"])
+    },
     entry_points = {
         "woost.extensions": [
             "workflow = woost.extensions.workflow:WorkflowExtension",
@@ -36,7 +87,7 @@ setup(
             "googlesearch = woost.extensions.googlesearch:GoogleSearchExtension"
         ]
     },
-    # SiteBasis can't yet access view resources (images, style sheets, client
+    # Woost can't yet access view resources (images, style sheets, client
     # side scripts, etc) that are packed inside a zipped egg, so distribution
     # in zipped form is disabled
     zip_safe = False
