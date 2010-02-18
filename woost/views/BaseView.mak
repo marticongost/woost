@@ -100,7 +100,7 @@ ${self.dtd()}
     icon = site.icon
     %>
     % if icon:                
-        <link rel="Shortcut Icon" type="${icon.mime_type}" href="${icon.uri}"${closure()}>
+        <link rel="Shortcut Icon" type="${icon.mime_type}" href="${cms.uri(icon)}"${closure()}>
     % endif
 </%def>
 
