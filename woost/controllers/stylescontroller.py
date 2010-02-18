@@ -16,6 +16,6 @@ class StylesController(BaseCMSController):
     def __call__(self, backoffice = False):
         
         for style in Style.select():
-            declarations = style.admin_declarations if backoffice else style.declarations
+            declarations = (backoffice and style.admin_declarations) or style.declarations
             yield ".%s{\n%s\n}\n" % (style.class_name, declarations)
 
