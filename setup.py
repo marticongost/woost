@@ -10,15 +10,6 @@ from setuptools import setup, find_packages
 from os import listdir
 from os.path import join, isdir
 
-def rglob(base, path, patterns):
-    composite = []
-    for pattern in patterns:
-        composite.append(join(path, pattern))
-    for name in listdir(join(base, path)):
-        if isdir(join(base, path, name)):
-            composite.extend(rglob(base, join(path, name), patterns))
-    return composite
-
 setup(
     name = "woost",
     version = "0.3",
@@ -65,13 +56,7 @@ of its features include:\n"
         "cocktail==0.2"
     ],    
     packages = find_packages(),
-    package_data = {
-        "": ["COPYRIGHT", "LICENSE"],
-        "woost.scripts": rglob("woost/scripts", "project_skeleton", ["*.*"]),
-        "woost.views":
-            ["*.cml", "*.mak"]
-            + rglob("woost/views", "resources", ["*.*"])
-    },
+    include_package_data = True,
     entry_points = {
         "woost.extensions": [
             "workflow = woost.extensions.workflow:WorkflowExtension",

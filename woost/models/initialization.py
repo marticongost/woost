@@ -346,6 +346,7 @@ def init_site(
             Controller.get_instance(qname = "woost.webservices_controller")
         webservices.hidden = True
         webservices.path = u"services"
+        webservices.mime_type = "application/json"
         set_translations(webservices, "title", "Web services title")
         webservices.insert()
 
