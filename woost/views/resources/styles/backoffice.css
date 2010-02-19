@@ -2786,3 +2786,8 @@ a.pickcolor span {
     padding: 0.2;
 }
 
+.BackOfficePreviewView iframe {
+    width: 100%;
+    height: 600px;
+}
+
