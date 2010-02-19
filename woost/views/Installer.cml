@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <?py 
-from cocktail.schema import DictAccessor
 from cocktail.translations import translations
 PasswordBox = loader.get_class("cocktail.html.PasswordBox")
 ?>
@@ -20,7 +19,14 @@ PasswordBox = loader.get_class("cocktail.html.PasswordBox")
     ?>
 
     <py:with py:element="self.body">
-        
+
+        <py:ready py:if="not self.schema['python_package_repository'].enumeration">
+            <?py element.empty() ?>
+            <div class="error_box">
+                ${translations("woost.controllers.installer no installation paths available")}
+            </div>
+        </py:ready>
+
         <div class="success" py:visible="@{self.successful}">
             ${translations("Installation successful")}
         </div>
@@ -41,29 +47,8 @@ PasswordBox = loader.get_class("cocktail.html.PasswordBox")
                 py:id="installer_form"
                 py:data="@{self.data}"
                 py:schema="@{self.schema}"
-                py:accessor="${DictAccessor}"
                 method="post">
                 <?py
-                element.add_group("project", [
-                    "project_name",
-                    "project_path",
-                    "languages",
-                    "template_engine",
-                    "admin_email",
-                    "admin_password"
-                ])
-                element.add_group("webserver", [
-                    "webserver_host",
-                    "webserver_port",
-                    "validate_webserver_address"
-                ])
-                element.add_group("database", [
-                    "database_host",
-                    "database_port",
-                    "validate_database_address"
-                ])
-
-                element.set_member_display("admin_password", PasswordBox)
                 element.submit_button.empty()
                 element.submit_button.append(translations("Install"))
                 ?>
