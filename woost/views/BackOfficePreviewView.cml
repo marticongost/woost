@@ -4,6 +4,10 @@
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:py="http://www.whads.com/ns/cocktail/templates">
 
-    <iframe src="@{self.cms.contextual_uri()}/render_preview/?edit_stack=@{self.edit_stack.to_param()}" width="100%" height="800" frameborder="0" class="iframe"></iframe>
+    <iframe
+        py:parent="self.item_body"
+        src="@{self.cms.contextual_uri()}/render_preview/?edit_stack=@{self.edit_stack.to_param()}"
+        frameborder="0">
+    </iframe>
 
 </py:woost.views.BackOfficeItemView>
