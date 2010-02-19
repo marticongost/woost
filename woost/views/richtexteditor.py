@@ -35,7 +35,7 @@ class RichTextEditor(TinyMCE):
         "relative_urls": False,
         "content_css": "/user_styles/?backoffice=1",
         "fullscreen_settings": {
-            "theme_advanced_toolbar_location": "bottom"
+            "theme_advanced_toolbar_location": "top"
         }
     }
 
@@ -55,6 +55,7 @@ class RichTextEditor(TinyMCE):
         if current_edit_stack:
             edit_stack_param = current_edit_stack.to_param()
             self.tinymce_params.update(
+                theme_advanced_styles = ";".join(styles),
                 external_image_list_url = "%s/editor_attachments?edit_stack=%s&resource_type=image&language=%s"
                     % (ctx_uri, edit_stack_param, self.language),
                 external_link_list_url = "%s/editor_attachments?edit_stack=%s&resource_type=document&language=%s"
