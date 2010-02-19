@@ -249,6 +249,15 @@ class Installer(object):
         # Create the folder for the database
         os.mkdir(os.path.join(params["project_path"], "data"))
 
+        # Grant execution permission for project scripts
+        scripts_path = os.path.join(params["project_path"], "scripts")
+
+        for fname in os.listdir(scripts_path):            
+            if fname != "__init__.py":   
+                script = os.path.join(scripts_path, fname)
+                if os.path.isfile(script):
+                    os.chmod(script, 744)
+
     def _subprocess(self, cmd):
         # - Not used -
         proc = Popen(cmd, shell = True, stderr = PIPE)
