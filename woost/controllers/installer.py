@@ -46,69 +46,86 @@ class Installer(object):
         HOST_FORMAT = \
             re.compile(r"^([a-z]+(\.[a-z]+)*)|(\d{1,3}(\.\d{1,3}){3})$")
 
+        paths = sorted([p for p in sys.path if os.access(p, os.W_OK)])
+
         form_schema = schema.Schema(
             name = "Installer",
             members = [
                 schema.String(
                     name = "project_name",
                     required = True,
-                    format = r"^[A-Z][A-Za-z_0-9]*$"
+                    format = r"^[A-Z][A-Za-z_0-9]*$",
+                    member_group = "project"
                 ),
                 schema.String(
-                    name = "project_path",
-                    required = True
+                    name = "python_package_repository",
+                    required = True,
+                    enumeration = paths,
+                    default = paths and paths[0] or None,
+                    member_group = "project"
                 ),
                 schema.String(
                     name = "admin_email",
                     required = True,
-                    default = "admin@localhost"
+                    default = "admin@localhost",
+                    member_group = "project"
                 ),
                 schema.String(
                     name = "admin_password",
                     required = True,
-                    min = 8
+                    min = 8,
+                    edit_control = "cocktail.html.PasswordBox",
+                    member_group = "project"
                 ),
                 schema.String(
                     name = "languages",
                     required = True,
                     default = "en",
-                    format = r"^[a-zA-Z]{2}(\W+[a-zA-Z]{2})*$"
+                    format = r"^[a-zA-Z]{2}(\W+[a-zA-Z]{2})*$",
+                    member_group = "project"
                 ),
                 schema.String(
                     name = "template_engine",
                     required = True,
                     default = "cocktail",
-                    enumeration = buffet.available_engines.keys()
+                    enumeration = buffet.available_engines.keys(),
+                    member_group = "project"
                 ),
                 schema.String(
                     name = "webserver_host",
                     required = True,
                     format = HOST_FORMAT,
-                    default = "127.0.0.1"
+                    default = "127.0.0.1",
+                    member_group = "webserver"
                 ),
                 schema.Integer(
                     name = "webserver_port",
                     required = True,
-                    default = 8080
+                    default = 8080,
+                    member_group = "webserver"
                 ),
                 schema.Boolean(
                     name = "validate_webserver_address",
-                    default = True
+                    default = True,
+                    member_group = "webserver"
                 ),
                 schema.String(
                     name = "database_host",
                     required = True,
                     format = HOST_FORMAT,
-                    default = "127.0.0.1"
+                    default = "127.0.0.1",
+                    member_group = "database"
                 ),
                 schema.Integer(
                     name = "database_port",
                     required = True,
-                    default = 8081
+                    default = 8081,
+                    member_group = "database"
                 ),
                 schema.Boolean(
                     name = "validate_database_address",
-                    default = True
+                    default = True,
+                    member_group = "database"
                 )
             ]
         )
@@ -145,20 +162,6 @@ class Installer(object):
             "validate_database_address"
         ))
 
-        def validate_python_path(member, value, context):
-
-            if value:
-                p = os.path
-                value = p.normcase(p.split(value.rstrip(p.sep))[0])
-
-                for python_path in sys.path:
-                    if value == p.normcase(python_path.rstrip(os.path.sep)):
-                        break
-                else:
-                    yield PythonPathError(member, value, context)
-
-        form_schema["project_path"].add_validation(validate_python_path)
-
         form_data = {}
 
         if submitted:
@@ -166,6 +169,12 @@ class Installer(object):
             errors = list(form_schema.get_errors(form_data))
 
             if not errors:
+
+                form_data["project_path"] = os.path.join(
+                    form_data["python_package_repository"],
+                    form_data["project_name"].lower()
+                )
+
                 try:
                     if os.path.exists(form_data["project_path"]):
                         raise InstallFolderExists()

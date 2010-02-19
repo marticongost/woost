@@ -20,8 +20,20 @@ translations.define("Installer.project_name",
     en = u"Project name"
 )
 
-translations.define("Installer.project_path",
-    en = u"Project path"
+translations.define("Installer.project_name-explanation",
+    en = u"""Should be in CamelCase form. Will be used as a prefix for Python
+    class names, and transformed to lowercase to determine the name of the
+    Python package assigned to the project.
+    """
+)
+
+translations.define("Installer.python_package_repository",
+    en = u"Package installation path"
+)
+
+translations.define("Installer.python_package_repository-explanation",
+    en = u"""Location were the project's Python package and data files will be
+    installed."""
 )
 
 translations.define("Installer.admin_email",
@@ -36,8 +48,12 @@ translations.define("Installer.languages",
     en = u"Languages"
 )
 
+translations.define("Installer.languages-explanation",
+    en = u"A list of ISO language codes, separated by whitespace."
+)
+
 translations.define("Installer.template_engine",
-    en = u"Template engine"
+    en = u"Default template engine"
 )
 
 translations.define("Installer.webserver",
@@ -88,12 +104,11 @@ translations.define(
 )
 
 translations.define(
-    "woost.controllers.installer.PythonPathError-instance",
-    ca = u"El <em>directori d'instal·lació</em> ha d'estar dins del "
-         u"<i>PYTHONPATH</i>",
-    es = u"El <em>directorio de instalación</em> debe estar dentro del "
-         u"<i>PYTHONPATH</i>",
-    en = u"The <em>project path</em> must be within the <i>PYTHONPATH</i>"
+    "woost.controllers.installer no installation paths available",
+    en = u"""The installer needs to create and import a Python package for the
+    project, but currently there's no location available where the package
+    could reside. Please, set up a PYTHONPATH environment variable and restart
+    the installation process."""
 )
 
 translations.define(
