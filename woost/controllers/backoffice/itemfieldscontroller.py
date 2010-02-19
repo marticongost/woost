@@ -75,6 +75,18 @@ class ItemFieldsController(EditController):
         if added_translation and added_translation not in translations:
             translations.append(added_translation)
 
+            # Modify the 'visible_languages' cookie, to make sure the
+            # translation is not hidden by client side scripts
+            visible_languages = \
+                cherrypy.request.cookie.get("visible_languages")
+
+            if not visible_languages:
+                visible_languages = [added_translation]
+            elif added_translation not in visible_languages:
+                visible_languages.append(added_translation)
+
+            cherrypy.request.cookie["visible_languages"] = visible_languages
+
         if deleted_translation:
             translations.remove(deleted_translation)
             for key, member in self.fields_schema.members().iteritems():
