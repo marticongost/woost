@@ -6,7 +6,8 @@ from cocktail.language import get_content_language
 from woost.models import (
     get_current_user,
     CreateTranslationPermission,
-    DeleteTranslationPermission
+    DeleteTranslationPermission,
+    Language
 )
 ?>
 
@@ -94,7 +95,7 @@ from woost.models import (
                 py:persistent_object="@{self.edited_item}"
                 py:schema="@{self.fields_schema}"
                 py:errors="@{self.submitted and self.errors}"
-                py:translations="@{self.translations}"
+                py:translations="@{sorted(self.translations, key = Language.codes.index)}"
                 py:edited_content_type="@{self.edited_content_type}"
                 py:name_prefix="edited_item_"
                 method="post">
