@@ -535,12 +535,15 @@ content_renderers = ContentRenderersRegistry()
 content_renderers.register(ImageFileRenderer())
 content_renderers.register(ImageURIRenderer())
 
-try:
-    import PyQt4.QtWebKit
-except ImportError:
-    pass
-else:
-    content_renderers.register(HTMLRenderer())
+# Disabled for performance reasons
+# TODO: Provide preferences to enable/disable content renderers?
+if False:
+    try:
+        import PyQt4.QtWebKit
+    except ImportError:
+        pass
+    else:
+        content_renderers.register(HTMLRenderer())
 
 icon_renderers = ContentRenderersRegistry()
 icon_renderers.register(IconRenderer())
