@@ -32,13 +32,13 @@ from woost.controllers.backoffice.useractions import (
 
             if self.edited_item.is_draft:
                 add_view_action_context(self, "draft")
-
-            if self.changes:
-                add_view_action_context(self, "changed")
-            else:
-                add_view_action_context(self, "unchanged")                
         else:
             add_view_action_context(self, "new_item")
+
+        if self.changes:
+            add_view_action_context(self, "changed")
+        else:
+            add_view_action_context(self, "unchanged")
 
         self._actions_context = get_view_actions_context(self)
                                 
