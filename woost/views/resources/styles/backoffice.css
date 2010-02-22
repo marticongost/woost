@@ -1017,6 +1017,9 @@ body.scripted .BackOfficeLayout .Table .selection {
     margin: 0;
     z-index: 1;
     padding: 0.6em;
+    -moz-box-shadow: 3px 3px 7px #bbb;
+    -webkit-box-shadow: 3px 3px 7px #bbb;
+    box-shadow: 3px 3px 7px #bbb;
 }
 
 .BackOfficeLayout .selector:hover .selector_content,
