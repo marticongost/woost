@@ -9,6 +9,15 @@
 
 cocktail.init(function (root) {
 
+    function getVisibleLanguages() {
+        var languages = jQuery.cookie('visible_languages');
+        return languages ? languages.replace(/"/g,"").split(',') : cocktail.getLanguages();
+    }
+
+    function setVisibleLanguages(languages) {
+        jQuery.cookie("visible_languages", '"' + languages.join(',') + '"');
+    }
+
     jQuery(".translations_selector .selector_content li", root).each( function () {
         if(jQuery(this).find('.language').hasClass('selected')) {
             var check = document.createElement('input');
@@ -18,18 +27,13 @@ cocktail.init(function (root) {
          }
     });
 
-    if (jQuery.cookie('visible_languages')) {
-        var loop = jQuery.cookie('visible_languages').replace(/"/g,"").split(',');
-    }
-    else {
-        var loop = cocktail.getLanguages();
-    }
+    var languages = getVisibleLanguages();
 
-    for (i = 0; i < loop.length; i++) {
+    for (i = 0; i < languages.length; i++) {
         jQuery(".translations_check", root).each(function () {
             var language = jQuery(this).next(".language").get(0).language;
-            if(language && language == loop[i]) jQuery(this).attr('checked','checked');
-        })
+            if (language && language == languages[i]) jQuery(this).attr('checked', 'checked');
+        });
     }
 
     function switchVisibleLang() {
@@ -49,12 +53,29 @@ cocktail.init(function (root) {
                 resizeOne(jQuery(this).attr('id'));
             });
         });
-        var ids = [];
+        var languages = [];
         jQuery(".translations_check:checked", root).each( function () {
             var language = jQuery(this).next(".language").get(0).language;
-            ids.push(language);
+            languages.push(language);
         });
-        jQuery.cookie('visible_languages','"' + ids.join(',') + '"');
+        setVisibleLanguages(languages);
+    });
+
+    jQuery(".add_translation", root).click(function () {
+        var language = jQuery(this).val();
+        var languages = getVisibleLanguages();
+        var visible = false;
+
+        for (var i = 0; !visible && i < languages.length; i++) {
+            if (languages[i] == language) {
+                visible = true;
+            }
+        }
+
+        if (!visible) {
+            languages.push(language);
+            setVisibleLanguages(languages);
+        }
     });
 });
 
