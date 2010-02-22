@@ -7,7 +7,6 @@ u"""
 @since:			October 2008
 """
 import cherrypy
-from urlparse import unquote
 from cocktail.modeling import cached_getter
 from cocktail.events import event_handler
 from cocktail.pkgutils import import_object
@@ -73,28 +72,9 @@ class ItemFieldsController(EditController):
             form_data[unlink] = None
 
         # Add/remove translations
-        if added_translation and added_translation not in translations:
-            added_translation = str(added_translation)
+        if added_translation and added_translation not in translations:        
             translations.append(added_translation)
-
-            # Modify the 'visible_languages' cookie, to make sure the
-            # translation is not hidden by client side scripts
-            cookie = cherrypy.request.cookie.get("visible_languages")
-
-            if not cookie:
-                visible_languages = [added_translation]
-            else:
-                visible_languages = (
-                    unquote(cookie.value)
-                    .replace('"', "")
-                    .split(",")
-                )
-                if added_translation not in visible_languages:
-                    visible_languages.append(added_translation)
-
-            cherrypy.response.cookie["visible_languages"] = \
-                ",".join(visible_languages)
-
+        
         if deleted_translation:
             translations.remove(deleted_translation)
             for key, member in self.fields_schema.members().iteritems():
