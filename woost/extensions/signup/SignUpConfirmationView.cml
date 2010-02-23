@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<py:woost.views.StandardView
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:py="http://www.whads.com/ns/cocktail/templates">
+
+    <div py:def="content">
+
+        <py:ready py:if="True">
+            ${self.confirmation_message}
+        </py:ready>
+
+    </div>
+
+</py:woost.views.StandardView>
