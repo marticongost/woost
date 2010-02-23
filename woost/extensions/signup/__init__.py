@@ -33,29 +33,6 @@ translations.define("SignUpExtension-plural",
     en = u"Signs Up"
 )
 
-translations.define("SignUpExtension.hash_secret_key",
-    ca = u"Clau secreta",
-    es = u"Clave secreta",
-    en = u"Secret Key"
-)
-
-translations.define("SignUpExtension.hash_secret_key-explanation",
-    ca = u"""
-        Paraula secreta del sistema que servirà per a la generació 
-        dels codis de confirmació que s'envien als usuaris que 
-        sol·liciten l'alta.
-    """,
-    es = u"""
-        Palabra secreta del sistema que servirá para la generación de
-        los códigos de confirmación que se envían a los usuarios que
-        solicitan el alta.
-    """,
-    en = u"""
-        Secret word that will be used for the generation of confirmation
-        codes.
-    """
-)
-
 class SignUpExtension(Extension):
 
     def __init__(self, **values):
