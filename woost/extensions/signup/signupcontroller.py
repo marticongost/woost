@@ -59,7 +59,6 @@ class SignUpConfirmationController(DocumentController):
 
 class SignUpController(FormControllerMixin, DocumentController):
 
-    view_class = "woost.extensions.signup.SignUpView"
     confirm_email = SignUpConfirmationController
 
     def __init__(self, *args, **kwargs):
