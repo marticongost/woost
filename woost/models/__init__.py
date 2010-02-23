@@ -136,6 +136,7 @@ from woost.models.triggerresponse import (
     CustomTriggerResponse,
     SendEmailTriggerResponse
 )
+from woost.models.emailtemplate import EmailTemplate
 from woost.models.feed import Feed
 
 from woost.models.userfilter import (

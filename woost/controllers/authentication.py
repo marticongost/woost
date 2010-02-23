@@ -41,6 +41,10 @@ class AuthenticationModule(Module):
     def anonymous_user(self):
         return User.get_instance(qname = "woost.anonymous_user")
 
+    def set_user_session(self, user):
+        cherrypy.session[self.SESSION_KEY] = user.id
+        set_current_user(user)
+
     def login(self, identifier, password):
         """Attempts to establish a new user session, using the given user
         credentials.
@@ -66,8 +70,7 @@ class AuthenticationModule(Module):
             user = User.get_instance(**params)
 
             if user and user.enabled and user.test_password(password):            
-                cherrypy.session[self.SESSION_KEY] = user.id
-                set_current_user(user)
+                self.set_user_session(user)
                 return user
 
         raise AuthenticationFailedError(identifier)
