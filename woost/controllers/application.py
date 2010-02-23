@@ -252,6 +252,9 @@ class CMS(BaseCMSController):
                     if publishable.per_language_publication:
                         canonical_uri = \
                             self.language.translate_uri(canonical_uri)
+                    if cherrypy.request.query_string:
+                        canonical_uri = canonical_uri + \
+                            "?" + cherrypy.request.query_string
                     raise cherrypy.HTTPRedirect(canonical_uri)
         else:
             publishable = site.home
