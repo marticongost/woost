@@ -2969,40 +2969,72 @@ translations.define("SendEmailTriggerResponse-plural",
     en = u"Send E-mail"
 )
 
-translations.define("SendEmailTriggerResponse.sender",
+translations.define("SendEmailTriggerResponse.email_template",
+    ca = u"Plantilla de correu electrònic",
+    es = u"Plantilla de correo electrónico",
+    en = u"E-mail template"
+)
+
+# EmailTemplate
+#------------------------------------------------------------------------------ 
+translations.define("EmailTemplate",
+    ca = u"Plantilla de correu electrònic",
+    es = u"Plantilla de correo electrónico",
+    en = u"E-mail template"
+)
+
+translations.define("EmailTemplate-plural",
+    ca = u"Plantilles de correu electrònic",
+    es = u"Plantillas de correo electrónico",
+    en = u"E-mail templates"
+)
+
+translations.define("EmailTemplate.title",
+    ca = u"Títol",
+    es = u"Título",
+    en = u"Title"
+)
+
+translations.define("EmailTemplate.mime_type",
+    ca = u"Tipus MIME",
+    es = u"Tipo MIME",
+    en = u"MIME type"
+)
+
+translations.define("EmailTemplate.sender",
     ca = u"Remitent",
     es = u"Remitente",
     en = u"Sender"
 )
 
-translations.define("SendEmailTriggerResponse.receivers",
+translations.define("EmailTemplate.receivers",
     ca = u"Destinataris",
     es = u"Destinatarios",
     en = u"Receivers"
 )
 
-translations.define("SendEmailTriggerResponse.bcc",
+translations.define("EmailTemplate.bcc",
     ca = u"Còpia oculta",
     es = u"Copia oculta",
     en = u"Blind carbon copy"
 )
 
-translations.define("SendEmailTriggerResponse.subject",
+translations.define("EmailTemplate.template_engine",
+    ca = u"Motor de pintat",
+    es = u"Motor de pintado",
+    en = u"Rendering engine"
+)
+
+translations.define("EmailTemplate.subject",
     ca = u"Assumpte",
     es = u"Asunto",
     en = u"Subject"
 )
 
-translations.define("SendEmailTriggerResponse.body",
+translations.define("EmailTemplate.body",
     ca = u"Cos del missatge",
     es = u"Cuerpo del mensaje",
     en = u"Message body"
-)
-
-translations.define("SendEmailTriggerResponse.template_engine",
-    ca = u"Motor de pintat",
-    es = u"Motor de pintado",
-    en = u"Rendering engine"
 )
 
 # Feed

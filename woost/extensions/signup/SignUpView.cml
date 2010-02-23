@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?py
+from cocktail.translations import translations
+from cocktail.persistence import UniqueValueError
+?>
+
+<py:woost.views.StandardView
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:py="http://www.whads.com/ns/cocktail/templates">
+
+    <?py self.add_resource("/resources/styles/SignUpView.css") ?>
+
+    <div py:def="content">
+
+        <ul py:id="error_box" py:collapsible="${True}">
+            <py:ready py:if="self.form_errors">
+                <li py:for="error in self.form_errors">
+                    ${translations(error)}
+                </li>
+            </py:ready>
+        </ul>
+
+        <py:ready py:if="not self.submitted or self.form_errors">
+            <py:cocktail.html.Form
+                py:id="signup_form"
+                py:data="@{self.form_data}"
+                py:schema="@{self.form_schema}"
+                py:errors="@{self.form_errors}"
+                method="post" />
+        </py:ready>
+
+        <py:ready py:if="self.submitted and not self.form_errors">
+            ${translations("woost.extensions.signup.SignupSuccessfulMessage")}
+
+            <py:ready py:if="self.publishable.confirmation_email_template">
+                <p>${translations("woost.extensions.signup.SignupConfirmationMessageNotice")}</p>
+            </py:ready>
+
+        </py:ready>
+
+
+
+    </div>
+
+</py:woost.views.StandardView>
