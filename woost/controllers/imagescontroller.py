@@ -85,9 +85,6 @@ class ImagesController(BaseCMSController):
         if item is None:
             raise cherrypy.NotFound()
 
-        if not is_type:
-            get_current_user().require_permission(ReadPermission, target = item)
-
         # Determine the rendering format
         format = kwargs.pop("format", None)
         if format:
@@ -121,6 +118,9 @@ class ImagesController(BaseCMSController):
 
         if renderer is None:
             raise RuntimeError("No content renderer can render %s" % item)
+
+        if not is_type and not is_icon:
+            get_current_user().require_permission(ReadPermission, target = item)
 
         # Caching:
         cache_enabled_param = kwargs.pop("cache", "on")
