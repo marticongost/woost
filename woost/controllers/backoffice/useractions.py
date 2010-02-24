@@ -20,7 +20,8 @@ from woost.models import (
     CreatePermission,
     ModifyPermission,
     DeletePermission,
-    ConfirmDraftPermission
+    ConfirmDraftPermission,
+    ReadHistoryPermission
 )
 from woost.controllers.backoffice.editstack import (
     SelectionNode,
@@ -571,6 +572,9 @@ class ShowChangelogAction(UserAction):
             "changelog",                
             **params
         )
+
+    def is_permitted(self, user, target):
+        return user.has_permission(ReadHistoryPermission)
 
 
 class DiffAction(UserAction):
