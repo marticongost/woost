@@ -2654,23 +2654,21 @@ a.pickcolor span {
     height: 35em !important;
 }
 
-/* Tweaks for email trigger responses
+/* Tweaks for email templates
 -----------------------------------------------------------------------------*/
-.SendEmailTriggerResponse .field_instance {
-    width: 90%;
+.EmailTemplate .sender_field .CodeMirror-wrapping,
+.EmailTemplate .receivers_field .CodeMirror-wrapping,
+.EmailTemplate .bcc_field .CodeMirror-wrapping {
+    height: 5em;
 }
 
-.SendEmailTriggerResponse .sender_field .control,
-.SendEmailTriggerResponse .receivers_field .control,
-.SendEmailTriggerResponse .bcc_field .control,
-.SendEmailTriggerResponse .subject_field .control,
-.SendEmailTriggerResponse .body_field .control {
-    width: 100% !important;
-    height: 12em !important;
+.EmailTemplate .subject_field .control,
+.EmailTemplate .body_field .control {
+    width: 30em !important;
 }
 
-.SendEmailTriggerResponse .body_field .control {
-    height: 35em !important;
+.EmailTemplate .body_field .control {
+    height: 25em;
 }
 
 /* Static site extension
