@@ -6,31 +6,7 @@ u"""
 @organization:	Whads/Accent SL
 @since:			July 2008
 """
-from cocktail.translations import translations, ca_possessive
-
-translations.define("site_section",
-    ca = u"Lloc web",
-    es = u"Sitio web",
-    en = u"Web site"
-)
-
-translations.define("content_section",
-    ca = u"Contingut",
-    es = u"Contenido",
-    en = u"Content"
-)
-
-translations.define("fields_section",
-    ca = u"Camps",
-    es = u"Campos",
-    en = u"Fields"
-)
-
-translations.define("history_section",
-    ca = u"Històric",
-    es = u"Histórico",
-    en = u"History"
-)
+from cocktail.translations import translations, ca_possessive, plural2
 
 translations.define("logged in as",
     ca = lambda user: u"Estàs identificat com a " \
@@ -119,10 +95,10 @@ translations.define("cocktail.html.shortcuts action delete",
     en = u"d"
 )
 
-translations.define("Action history",
+translations.define("Action changelog",
     ca = u"Històric",
     es = u"Histórico",
-    en = u"History"
+    en = u"Changelog"
 )
 
 translations.define("Action add",
@@ -700,6 +676,36 @@ translations.define("UserFilter.is_inherited",
     ca = u"Inclou fills",
     es = u"Incluye hijos",
     en = u"Children included"
+)
+
+translations.define("Changelog.action",
+    ca = u"Acció",
+    es = u"Acción",
+    en = u"Action"
+)
+
+translations.define("Changelog.changes",
+    ca = u"Elements",
+    es = u"Elementos",
+    en = u"Items"
+)
+
+translations.define("woost.views.BackOfficeChangeLogView title",
+    ca = u"Històric",
+    es = u"Histórico",
+    en = u"Changelog"
+)
+
+translations.define("woost.views.BackOfficeChangeLogView collapsed",
+    ca = u"%(count)s elements",
+    es = u"%(count)s elementos",
+    en = u"%(count)s items"
+)
+
+translations.define("woost.views.BackOfficeChangeLogView expanded",
+    ca = u"Tornar a ocultar",
+    es = u"Volver a ocultar",
+    en = u"Fold"
 )
 
 # Initialization content

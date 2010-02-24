@@ -33,6 +33,8 @@ from woost.controllers.backoffice.contentcontroller \
 from woost.controllers.backoffice.deletecontroller import DeleteController
 from woost.controllers.backoffice.ordercontroller import OrderController
 from woost.controllers.backoffice.movecontroller import MoveController
+from woost.controllers.backoffice.changelogcontroller \
+    import ChangeLogController
 
 
 class BackOfficeController(BaseBackOfficeController):
@@ -49,6 +51,7 @@ class BackOfficeController(BaseBackOfficeController):
     delete = DeleteController
     order = OrderController
     move = MoveController
+    changelog = ChangeLogController
     
     def submit(self):
         raise cherrypy.HTTPRedirect(
