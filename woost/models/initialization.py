@@ -37,6 +37,7 @@ from woost.models import (
     ReadTranslationPermission,
     ModifyTranslationPermission,
     DeleteTranslationPermission,
+    ReadHistoryPermission,
     DeleteTrigger,
     CustomTriggerResponse,
     ConfirmDraftPermission
@@ -212,6 +213,9 @@ def init_site(
         authenticated_role.qname = "woost.authenticated"
         set_translations(authenticated_role, "title",
             "Authenticated role title")
+        authenticated_role.permissions = [
+            ReadHistoryPermission()
+        ]
         authenticated_role.insert()
 
         # Create publication schemes
