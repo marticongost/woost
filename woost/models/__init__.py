@@ -111,9 +111,11 @@ from woost.models.permission import (
     ReadTranslationPermission,
     ModifyTranslationPermission,
     DeleteTranslationPermission,
+    ReadHistoryPermission,
     restricted_modification_context,
     delete_validating,
-    PermissionExpression
+    PermissionExpression,
+    ChangeSetPermissionExpression
 )
 from woost.models.standardpage import StandardPage
 from woost.models.file import File

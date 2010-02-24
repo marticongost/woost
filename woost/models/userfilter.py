@@ -6,15 +6,17 @@
 @organization:	Whads/Accent SL
 @since:			August 2009
 """
-from cocktail.modeling import cached_getter
+from cocktail.modeling import getter, cached_getter
 from cocktail.schema.expressions import (
     Self,
+    Constant,
     InclusionExpression,
     ExclusionExpression,
     IsInstanceExpression,
     IsNotInstanceExpression
 )
 from cocktail import schema
+from cocktail.translations import translations
 from cocktail.html import templates
 from cocktail.html.datadisplay import MULTIPLE_SELECTION
 from cocktail.controllers.userfilter import (
@@ -23,6 +25,13 @@ from cocktail.controllers.userfilter import (
     user_filters_registry
 )
 from woost.models.item import Item
+from woost.models.action import Action
+from woost.models.changesets import (
+    ChangeSet,
+    ChangeSetHasActionExpression,
+    ChangeSetHasTargetExpression,
+    ChangeSetHasTargetTypeExpression
+)
 from woost.models.publishable import Publishable, IsPublishedExpression
 from woost.models.usersession import get_current_user
 
@@ -111,4 +120,70 @@ def _collection_search_control(self, parent, obj, member):
     return control
 
 CollectionFilter.search_control = _collection_search_control
+
+
+class ChangeSetActionFilter(UserFilter):
+
+    @cached_getter
+    def schema(self):
+        return schema.Schema("UserFilter", members = [
+            schema.String(
+                "value",
+                required = True,
+                enumeration = ["create", "modify", "delete"],
+                translate_value = lambda value:
+                    "" if not value
+                    else translations("woost %s action" % value)
+            )
+        ])
+
+    @getter
+    def expression(self):
+        return ChangeSetHasActionExpression(
+            Self,
+            Action.get_instance(identifier = self.value)
+        )
+
+
+class ChangeSetTargetFilter(UserFilter):
+
+    @cached_getter
+    def schema(self):
+        return schema.Schema("UserFilter", members = [
+            schema.Reference(
+                "value",
+                type = Item,
+                required = True
+            )
+        ])
+
+    def search_control(self, parent, obj, member):
+        control = templates.new("woost.views.ItemSelector")
+        control.existing_items_only = True
+        return control
+
+    @getter
+    def expression(self):
+        return ChangeSetHasTargetExpression(Self, self.value)
+
+
+class ChangeSetTargetTypeFilter(UserFilter):
+
+    id = "target-type"
+
+    @cached_getter
+    def schema(self):
+        return schema.Schema("UserFilter", members = [
+            schema.Reference(
+                "value",
+                class_family = Item,
+                required = True
+            )
+        ])
+
+    @getter
+    def expression(self):
+        return ChangeSetHasTargetTypeExpression(Self, Constant(self.value))
+
+user_filters_registry.add(ChangeSet, ChangeSetTargetTypeFilter)
 
