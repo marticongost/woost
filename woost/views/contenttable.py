@@ -16,6 +16,7 @@ from cocktail.schema.expressions import (
 )
 from cocktail.html import Element, templates
 from cocktail.controllers import view_state
+from woost.models import Item
 from woost.views.contentdisplaymixin import ContentDisplayMixin
 
 Table = templates.get_class("cocktail.html.Table")
@@ -35,7 +36,7 @@ class ContentTable(ContentDisplayMixin, Table):
         self.set_member_sortable("class", False)
 
     def _row_added(self, index, item, row):
-        if self.inline_draft_copies:
+        if self.inline_draft_copies and isinstance(item, Item):
             for draft in item.drafts:
                 draft_row = self.create_row(index, draft)
                 self.append(draft_row)
@@ -45,10 +46,10 @@ class ContentTable(ContentDisplayMixin, Table):
         row = Table.create_row(self, index, item)
         row.add_class("item_row")
 
-        if item.is_draft:
+        if getattr(item, "is_draft", False):
             row.add_class("draft")
 
-        if item.draft_source:
+        if getattr(item, "draft_source", None):
             row.add_class("nested_draft")
 
         return row
