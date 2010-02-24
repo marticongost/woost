@@ -2108,6 +2108,20 @@ translations.define("DeleteTranslationPermission-plural",
     en = u"Delete translation permissions"
 )
 
+# ReadHistoryPermission
+#------------------------------------------------------------------------------
+translations.define("ReadHistoryPermission",
+    ca = u"Permís de lectura d'històric",
+    es = u"Permiso de lectura de histórico",
+    en = u"Read past revisions permission"
+)
+
+translations.define("ReadMemberPermission-plural",
+    ca = u"Permisos de lectura d'històric",
+    es = u"Permisos de lectura de histórico",
+    en = u"Read past revisions permissions"
+)
+
 # URI
 #------------------------------------------------------------------------------
 translations.define("URI",
