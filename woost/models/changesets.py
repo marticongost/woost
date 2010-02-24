@@ -70,6 +70,7 @@ def changeset_context(author = None):
 
         yield changeset
 
+
 class ChangeSet(PersistentObject):
     """A persistent record of a set of L{changes<Change>} performed on one or
     more CMS items."""
@@ -77,7 +78,7 @@ class ChangeSet(PersistentObject):
     members_order = "id", "author", "date", "changes"
     indexed = True
 
-    changes = schema.Mapping()
+    changes = schema.Mapping(searchable = False)
     
     author = schema.Reference(
         required = True,
@@ -115,6 +116,22 @@ class ChangeSet(PersistentObject):
             raise TypeError("Can't finalize the current changeset, there's no "
                 "changeset in place")
 
+    def get_searchable_text(self, languages, visited_objects = None):
+
+        if visited_objects is None:
+            visited_objects = set()
+        elif self in visited_objects:
+            return
+        
+        visited_objects.add(self)
+
+        # Concatenate the descriptions of change authors and targets
+        for language in languages:
+            if self.author:
+                yield translations(self.author, language)
+            for change in self.changes.itervalues():
+                yield translations(change.target, language)
+
 
 class Change(PersistentObject):
     """A persistent record of an action performed on a CMS item."""
@@ -151,4 +168,35 @@ class Change(PersistentObject):
             action = self.action,
             target = self.target
         ) or PersistentObject.__translate__(self, language, **kwargs)
+
+
+class ChangeSetHasActionExpression(schema.expressions.Expression):
+
+    def op(self, changeset, action):
+        return any(
+            change.action is action
+            for change in changeset.changes.itervalues()
+        )
+
+
+class ChangeSetHasTargetExpression(schema.expressions.Expression):
+
+    def op(self, changeset, target):
+        return any(
+            change.target is target
+            for change in changeset.changes.itervalues()
+        )
+
+    # TODO: optimize queries
+
+
+class ChangeSetHasTargetTypeExpression(schema.expressions.Expression):
+
+    def op(self, changeset, cls):
+        return any(
+            isinstance(change.target, cls)
+            for change in changeset.changes.itervalues()
+        )
+
+    # TODO: optimize queries
 

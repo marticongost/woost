@@ -203,6 +203,10 @@ class ModifyMemberPermission(MemberPermission):
     instantiable = True
 
 
+class ReadHistoryPermission(Permission):
+    """Permission to view item revisions."""
+
+
 @contextmanager
 def restricted_modification_context(item, user = None):
     """A context manager that restricts modifications to an item.
@@ -350,6 +354,40 @@ class PermissionExpression(Expression):
                         authorized_subset.update(permission_subset)
                     else:
                         authorized_subset.difference_update(permission_subset)
+
+            dataset.intersection_update(authorized_subset)
+            return dataset
+
+        return ((0, 0), impl)
+
+
+class ChangeSetPermissionExpression(Expression):
+
+    user = None    
+
+    def __init__(self, user):
+        self.user = user
+
+    def eval(self, context, accessor = None):
+        return any(
+            self.user.has_permission(
+                ReadPermission,
+                target = change.target
+            )
+            for change in context.changes.itervalues()
+        )
+
+    def resolve_filter(self, query):
+
+        def impl(dataset):
+
+            authorized_subset = set()
+            
+            for item in Item.select([
+                PermissionExpression(self.user, ReadPermission)
+            ]):
+                for change in item.changes:
+                    authorized_subset.add(change.changeset.id)
 
             dataset.intersection_update(authorized_subset)
             return dataset

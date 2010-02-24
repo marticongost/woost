@@ -2729,6 +2729,45 @@ translations.define("woost.models.changesets.Change description",
     en = _translate_woost_models_change_instance_en
 )
 
+translations.define("woost create action",
+    ca = u"Creació",    
+    es = u"Creación",
+    en = u"Creation"
+)
+
+translations.define("woost modify action",
+    ca = u"Modificació",
+    es = u"Modificación",
+    en = u"Modification"
+)
+
+translations.define("woost delete action",
+    ca = u"Eliminació",
+    es = u"Eliminación",
+    en = u"Eliminació"
+)
+
+translations.define(
+    "woost.models.userfilter.ChangeSetActionFilter-instance",
+    ca = u"Acció",
+    es = u"Acción",
+    en = u"Action"
+)
+
+translations.define(
+    "woost.models.userfilter.ChangeSetTargetFilter-instance",
+    ca = u"Element",
+    es = u"Elemento",
+    en = u"Item"
+)
+
+translations.define(
+    "woost.models.userfilter.ChangeSetTargetTypeFilter-instance",
+    ca = u"Tipus d'element",
+    es = u"Tipo de elemento",
+    en = u"Item type"
+)
+
 # Trigger
 #------------------------------------------------------------------------------
 translations.define("Trigger",
