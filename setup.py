@@ -69,7 +69,8 @@ of its features include:\n"
             "sitemap = woost.extensions.sitemap:SitemapExtension",
             "pdf = woost.extensions.pdf:PDFExtension",
             "vimeo = woost.extensions.vimeo:VimeoExtension",
-            "googlesearch = woost.extensions.googlesearch:GoogleSearchExtension"
+			"signup = woost.extensions.signup:SignUpExtension",
+            "googlesearch = woost.extensions.googlesearch:GoogleSearchExtension"			
         ]
     },
     # Woost can't yet access view resources (images, style sheets, client
