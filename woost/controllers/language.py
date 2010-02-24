@@ -6,12 +6,11 @@ u"""
 @organization:	Whads/Accent SL
 @since:			July 2008
 """
-import time
 import cherrypy
-from cherrypy.lib import http
 from cocktail.translations import get_language, set_language
 from cocktail.language import get_content_language, set_content_language
 from cocktail.controllers import Location
+from cocktail.controllers.parameters import set_cookie_expiration
 from woost.models import Site, Language
 from woost.controllers.module import Module
 
@@ -36,8 +35,7 @@ class LanguageModule(Module):
         cherrypy.response.cookie["language"] = language
         cookie = cherrypy.response.cookie["language"]
         cookie["path"] = "/"
-        cookie["max-age"] = self.cookie_duration
-        cookie["expires"] = http.HTTPDate(time.time() + self.cookie_duration)
+        set_cookie_expiration(cookie, seconds = self.cookie_duration)
 
         set_language(language)
         set_content_language(language)
