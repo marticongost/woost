@@ -1295,37 +1295,63 @@ body.scripted .BackOfficeLayout .ThumbnailsContentView .collection_display input
     -moz-border-radius: 5px;
 }
 
-/* History
+/* Changelog
 -----------------------------------------------------------------------------*/
+.BackOfficeChangeLogView .id_column {
+    width: 5em;
+}
 
-.BackOfficeHistoryView td.changes ul {
-    list-style-type: none;
+.BackOfficeChangeLogView .author_column {
+/*    width: 24em;*/
+}
+
+.BackOfficeChangeLogView .date_column {
+    width: 12em;
+}
+
+.BackOfficeChangeLogView .action_column {
+    width: 8em;
+}
+
+.BackOfficeChangeLogView .changes_column li {
     padding: 0;
     margin: 0;
 }
 
-.BackOfficeHistoryView td.changes li {
-    background-position: left center;
-    background-repeat: no-repeat;
-    padding-top: 0.2em;
-    padding-bottom: 0.2em;
-    padding-left: 1.6em;
+.BackOfficeChangeLogView .changes_column li + li {
+    margin-top: 0.4em;
 }
 
-.BackOfficeHistoryView td.changes li + li {
-    margin-top: 0.3em;
+.BackOfficeChangeLogView td.changes_column.collapsed ul {
+    display: none;
 }
 
-.BackOfficeHistoryView td.changes li.create {
-    background-image: url(../images/new_small.png);
+.BackOfficeChangeLogView td.changes_column.expanded ul {
+    margin-bottom: 0.4em;
 }
 
-.BackOfficeHistoryView td.changes li.modify {
-    background-image: url(../images/edit_small.png);
+.BackOfficeChangeLogView td.action_column.create_action {
+    color: rgb(15,125,15);
 }
 
-.BackOfficeHistoryView td.changes li.delete {
-    background-image: url(../images/delete_small.png);
+.BackOfficeChangeLogView td.action_column.modify_action {
+    color: rgb(145,110,15);
+}
+
+.BackOfficeChangeLogView td.action_column.delete_action {
+    color: rgb(150,0,0);
+}
+
+.BackOfficeChangeLogView td.create_action {
+    background-color: rgb(230,245,230);
+}
+
+.BackOfficeChangeLogView td.modify_action {
+    background-color: rgb(250,245,205);
+}
+
+.BackOfficeChangeLogView td.delete_action {
+    background-color: rgb(240,220,200);
 }
 
 /* Notifications
@@ -1871,13 +1897,6 @@ button.TypeSelectorButton span {
     margin-right: 1em;
 }
 
-.BackOfficeLayout .FilterBox .filter_entry .field label {
-    float: left;
-    margin-right: 0.4em;
-    margin-top: 0.3em;
-    vertical-align: middle;
-}
-
 .BackOfficeLayout .FilterBox .filter_entry .language_field .control {
     width: 12em;
 }
@@ -1932,7 +1951,7 @@ button.TypeSelectorButton {
 
 .BackOfficeLayout .CollectionView .filters .new_filter_selector .selector_content {
     overflow: auto;
-    max-height: 15em;
+    max-height: 30em;
     min-width: 12em;
     top: 1.5em;
 }

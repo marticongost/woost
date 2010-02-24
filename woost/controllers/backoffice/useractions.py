@@ -12,6 +12,7 @@ from cocktail.modeling import getter, ListWrapper
 from cocktail.translations import translations
 from cocktail import schema
 from woost.models import (
+    Item,
     Publishable,
     URI,
     File,
@@ -161,7 +162,7 @@ class UserAction(object):
     """
     enabled = True
     included = frozenset(["toolbar_extra", "item_buttons_extra"])
-    excluded = frozenset(["selector", "calendar_content_view"])
+    excluded = frozenset(["selector", "calendar_content_view", "changelog"])
     content_type = None
     ignores_selection = False
     min = 1
@@ -416,7 +417,11 @@ class SelectionError(Exception):
 
 class CreateAction(UserAction):
     included = frozenset(["toolbar"])
-    excluded = frozenset(["collection", ("selector", "existing_only")])
+    excluded = frozenset([
+        "collection",
+        ("selector", "existing_only"),
+        "changelog"
+    ])
     ignores_selection = True
     min = None
     max = None
@@ -524,16 +529,48 @@ class DeleteAction(UserAction):
         ("collection", "toolbar", "integral"),
         "item_buttons"
     ])
-    excluded = frozenset(["selector", "new_item", "calendar_content_view"])
+    excluded = frozenset([
+        "selector",
+        "new_item",
+        "calendar_content_view",
+        "changelog"
+    ])
     max = None
     
     def is_permitted(self, user, target):
         return user.has_permission(DeletePermission, target = target)
 
 
-class HistoryAction(UserAction):
+class ShowChangelogAction(UserAction):
     min = None
-    excluded = frozenset(["selector", "new_item", "calendar_content_view"])
+    max = 1
+    excluded = frozenset([
+        "selector",
+        "new_item",
+        "calendar_content_view",
+        "changelog"
+    ])
+
+    def get_url(self, controller, selection):
+
+        params = self.get_url_params(controller, selection)
+
+        # Filter by target element
+        if selection:
+            params["filter"] = "member-changes"
+            params["filter_value0"] = str(selection[0].id)
+
+        # Filter by target type
+        else:
+            user_collection = getattr(controller, "user_collection", None)
+            if user_collection and user_collection.type is not Item:
+                params["filter"] = "target-type"
+                params["filter_value0"] = user_collection.type.full_name
+
+        return controller.contextual_uri(
+            "changelog",                
+            **params
+        )
 
 
 class DiffAction(UserAction):
@@ -670,7 +707,7 @@ class GoBackAction(UserAction):
 
 
 class CloseAction(GoBackAction):
-    included = frozenset(["item_buttons"])
+    included = frozenset(["item_buttons", ("changelog", "bottom_buttons")])
     excluded = frozenset(["changed", "new", "edit"])
 
 
@@ -770,7 +807,7 @@ DownloadAction("download").register()
 EditAction("edit").register()
 DiffAction("diff").register()
 RevertAction("revert").register()
-HistoryAction("history").register()
+ShowChangelogAction("changelog").register()
 DeleteAction("delete").register()
 ExportAction("export_xls", "msexcel").register()
 PrintAction("print").register()

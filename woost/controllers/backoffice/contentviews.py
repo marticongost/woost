@@ -11,7 +11,12 @@ from inspect import getmro
 from cocktail.pkgutils import get_full_name
 from cocktail.typemapping import TypeMapping
 from cocktail.html import templates
-from woost.models import Item, Publishable, Event
+from woost.models import (
+    Item,
+    Publishable,
+    Event,
+    ChangeSet
+)
 
 
 class ContentViewsRegistry(object):
@@ -141,6 +146,12 @@ global_content_views.add(
     params = {
         "date_members": (Event.event_start, Event.event_end)
     }
+)
+
+global_content_views.add(
+    ChangeSet,
+    "woost.views.ChangeSetFlatContentView",
+    is_default = True
 )
 
 # Relation content views
