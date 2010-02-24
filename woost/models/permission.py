@@ -205,6 +205,7 @@ class ModifyMemberPermission(MemberPermission):
 
 class ReadHistoryPermission(Permission):
     """Permission to view item revisions."""
+    instantiable = True
 
 
 @contextmanager
