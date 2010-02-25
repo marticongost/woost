@@ -7,60 +7,19 @@
 @since:			January 2010
 """
 import cherrypy
-import hashlib
-import smtplib
-from email.mime.text import MIMEText
 from cocktail import schema
 from cocktail.persistence import datastore
-from cocktail.translations import translations
 from cocktail.modeling import cached_getter
 from cocktail.controllers.location import Location
-from cocktail.controllers import get_parameter
 from cocktail.controllers.formcontrollermixin import FormControllerMixin
-from woost.controllers.application import CMS
 from woost.controllers.documentcontroller import DocumentController
 from woost.controllers.backoffice.usereditnode import PasswordConfirmationError
-from woost.extensions.signup import SignUpExtension
+from woost.extensions.signup.signupconfirmationcontroller import generate_confirmation_hash
 from woost.extensions.signup.signuppage import SignUpPage
+
 from woost.models import Item, Site, Language, User
 
-def generate_confirmation_hash(email):
-    hash = hashlib.sha1()
-    hash.update(email)
-    hash.update(SignUpExtension.instance.secret_key)
-    return hash.hexdigest()
-
-class SignUpConfirmationController(DocumentController):
-
-    def __init__(self, *args, **kwargs):
-        self.email = self.params.read(schema.String("email"))
-        self.hash = self.params.read(schema.String("hash"))
-    
-    view_class = "woost.extensions.signup.SignUpConfirmationView"
-
-    @cached_getter
-    def output(self):
-        output = DocumentController.output(self)
-        # Checking hash code
-        if generate_confirmation_hash(self.email) == self.hash:
-            instance = User.get_instance(email=self.email)
-            if instance:
-                # Confirming and enabling user instance
-                instance.set("confirmed_email",True)
-                instance.set("enabled",True)
-                datastore.commit()
-                # Autologin after confirmation
-                self.context["cms"].authentication.set_user_session(instance)
-                output["confirmation_message"] = translations("woost.extensions.signup.SignupSuccessfulConfirmationMessage")
-            else:
-                output["confirmation_message"] = translations("woost.extensions.signup.SignupFailConfirmationMessage")
-
-        return output
-
 class SignUpController(FormControllerMixin, DocumentController):
-
-    view_class = "woost.extensions.signup.SignUpView"
-    confirm_email = SignUpConfirmationController
 
     def __init__(self, *args, **kwargs):
         DocumentController.__init__(self, *args, **kwargs)
@@ -109,15 +68,15 @@ class SignUpController(FormControllerMixin, DocumentController):
 
         # Add validation to compare password_confirmation and
         # password fields
-        @form_schema.add_validation
-        def validate_password_confirmation(form_schema, value, ctx):
+        @password_confirmation_member.add_validation
+        def validate_password_confirmation(member, value, ctx):
             password = ctx.get_value("password")
-            password_confirmation = ctx.get_value("password_confirmation")
+            password_confirmation = value
 
             if password and password_confirmation \
             and password != password_confirmation:
                 yield PasswordConfirmationError(
-                        form_schema, value, ctx)
+                        member, value, ctx)
 
         return form_schema
 
@@ -139,19 +98,29 @@ class SignUpController(FormControllerMixin, DocumentController):
                 "user": instance,
                 "confirmation_url": self.confirmation_url
             })
-
-        # Storing instance
-        instance.insert()
-        datastore.commit()
+            # Storing instance
+            instance.insert()
+            datastore.commit()
+        else:
+            # Storing instance
+            instance.insert()
+            datastore.commit()
+            # Getting confirmation target uri
+            confirmation_target = self.context["publishable"].confirmation_target
+            uri = self.context["cms"].uri(confirmation_target)
+            # Enabling user and autologin
+            instance.enabled = True
+            self.context["cms"].authentication.set_user_session(instance)
+            # Redirecting to confirmation target
+            raise cherrypy.HTTPRedirect(uri)
 
     @cached_getter
     def confirmation_url(self): 
         instance = self.form_instance
+        confirmation_target = self.context["publishable"].confirmation_target
+        canonical_uri = self.context["cms"].uri(confirmation_target)
         location = Location.get_current(relative=False)
-        location.path_info = (
-            (location.path_info and location.path_info.rstrip("/") or "")
-            + "/confirm_email/"
-        )
+        location.path_info = canonical_uri
         location.query_string = {
             "email": instance.email,
             "hash": generate_confirmation_hash(instance.email)

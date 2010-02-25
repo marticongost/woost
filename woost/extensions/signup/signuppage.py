@@ -11,6 +11,7 @@ from woost.models import (
     Controller,
     Document,
     EmailTemplate,
+    Publishable,
     Role,
     Template,
     User
@@ -28,6 +29,7 @@ class SignUpPage(Document):
     members_order = [
         "user_type",
         "roles",
+        "confirmation_target",
         "confirmation_email_template"
     ]
 
@@ -61,6 +63,13 @@ class SignUpPage(Document):
         member_group = "signup_process"
     )
 
+    confirmation_target = schema.Reference(
+        type = "woost.models.Publishable",
+        related_end = schema.Collection(),
+        member_group = "signup_process",
+        required = True
+    )
+
     default_template = schema.DynamicDefault(
         lambda: Template.get_instance(qname = u"woost.extensions.signup.signup_template")
     )
@@ -71,4 +80,8 @@ class SignUpPage(Document):
 
     default_confirmation_email_template = schema.DynamicDefault(
         lambda: EmailTemplate.get_instance(qname = u"woost.extensions.signup.signup_confirmation_email_template")
+    )
+
+    default_confirmation_target = schema.DynamicDefault(
+        lambda: Publishable.get_instance(qname = u"woost.extensions.signup.signup_confirmation_target")
     )

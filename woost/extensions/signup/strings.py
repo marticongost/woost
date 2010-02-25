@@ -45,6 +45,18 @@ translations.define("SignUpPage.roles-explanation",
     en = u"Roles that will be assigned after sign up"
 )
 
+translations.define("SignUpPage.confirmation_target",
+    ca = u"Document de confirmació",
+    es = u"Documento de confirmación",
+    en = u"Confirmation document"
+)
+
+translations.define("SignUpPage.confirmation_target-explanation",
+    ca = u"Document on finalitza el procés d'alta i es gestiona la confirmació si correspon",
+    es = u"Documento donde finaliza el proceso de alta y se gestiona la confirmación si corresponde",
+    en = u"Document where ends the sign up process and will be take place the sign up confirmation process if is required"
+)
+
 translations.define("SignUpPage.confirmation_email_template",
     ca = u"Plantilla de correu electrònic de confirmació",
     es = u"Plantilla de correo electrónico de confirmación",
@@ -97,9 +109,9 @@ translations.define("woost.extensions.signup.SignupSuccessfulConfirmationMessage
 )
 
 translations.define("woost.extensions.signup.SignupFailConfirmationMessage",
-    ca = u"FAIL",
-    es = u"FAIL",
-    en = u"FAIL"
+    ca = u"Confirmació fallida",
+    es = u"Fallo en proceso de confirmación.",
+    en = u"Confirmation failure"
 )
 
 # User

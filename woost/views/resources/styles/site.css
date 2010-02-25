@@ -105,6 +105,7 @@ a,
     margin: 0;
     border-top: none;
     border-right: 1px solid rgb(230,230,230);
+    width: 10em;
 }
 
 .menu, .menu ul {
@@ -131,7 +132,7 @@ a,
 }
 
 .menu + .main {
-    margin-left: -1px;
+    margin-left: 13em !important;
     border-left: 1px solid rgb(230,230,230);
 }
 
@@ -139,7 +140,6 @@ a,
 -----------------------------------------------------------------------------*/
 .main {
     padding: 1.4em;
-    float: left;
 }
 
 .main h2 {
