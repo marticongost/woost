@@ -95,7 +95,7 @@ from woost.models import (
                 py:persistent_object="@{self.edited_item}"
                 py:schema="@{self.fields_schema}"
                 py:errors="@{self.submitted and self.errors}"
-                py:translations="@{sorted(self.translations, key = Language.codes.index)}"
+                py:translations="@{[lang for lang in Language.codes if lang in self.translations]}"
                 py:edited_content_type="@{self.edited_content_type}"
                 py:name_prefix="edited_item_"
                 method="post">
