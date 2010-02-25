@@ -31,6 +31,7 @@ class EmailTemplate(Item):
     ]
 
     title = schema.String(
+        listed_by_default = False,
         required = True,
         unique = True,
         indexed = True,
@@ -41,6 +42,7 @@ class EmailTemplate(Item):
     mime_type = schema.String(
         required = True,
         default = "text/html",
+        listed_by_default = False,
         enumeration = [
             "text/plain",
             "text/html"
@@ -61,6 +63,7 @@ class EmailTemplate(Item):
     )
     
     bcc = schema.String(
+        listed_by_default = False,
         edit_control = display_factory(
             "cocktail.html.CodeEditor", syntax = "python"
         )
@@ -77,6 +80,7 @@ class EmailTemplate(Item):
 
     body = schema.String(    
         translated = True,
+        listed_by_default = False,
         edit_control = "cocktail.html.TextArea"
     )
 
