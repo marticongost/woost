@@ -30,15 +30,11 @@ from cocktail.persistence import UniqueValueError
         </py:ready>
 
         <py:ready py:if="self.submitted and not self.form_errors">
-            ${translations("woost.extensions.signup.SignupSuccessfulMessage")}
-
+            <p>${translations("woost.extensions.signup.SignupSuccessfulMessage")}</p>
             <py:ready py:if="self.publishable.confirmation_email_template">
                 <p>${translations("woost.extensions.signup.SignupConfirmationMessageNotice")}</p>
             </py:ready>
-
         </py:ready>
-
-
 
     </div>
 
