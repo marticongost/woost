@@ -6,8 +6,22 @@
 
     <div py:def="content">
 
-        <py:ready py:if="True">
-            ${self.confirmation_message}
+        <py:ready py:if="self.confirmation_enabled">
+            <py:ready py:if="self.confirmed">
+                ${translations("woost.extensions.signup.SignupSuccessfulConfirmationMessage")}
+            </py:ready>
+            <py:ready py:if="self.publishable and self.publishable.body">
+                ${self.publishable.body}
+            </py:ready>
+            <py:ready py:if="not self.confirmed">
+                ${translations("woost.extensions.signup.SignupFailConfirmationMessage")}
+            </py:ready>
+        </py:ready>
+        
+        <py:ready py:if="not self.confirmation_enabled">
+            <py:ready py:if="self.publishable and self.publishable.body">
+                ${self.publishable.body}
+            </py:ready>
         </py:ready>
 
     </div>
