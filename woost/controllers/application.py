@@ -426,10 +426,14 @@ class CMS(BaseCMSController):
         error = event.exception
         controller = event.source
 
-        if cherrypy.response.headers.get("Content-Type") in (
-            "text/html",
-            "text/xhtml"
-        ):
+        content_type = cherrypy.response.headers.get("Content-Type")
+        pos = content_type.find(";")
+
+        if pos != -1:
+            content_type = content_type[:pos]
+
+        if content_type in ("text/html", "text/xhtml"):
+
             error_page, status = event.source.get_error_page(error)
             
             if status:
