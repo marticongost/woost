@@ -88,6 +88,8 @@ class EmailTemplate(Item):
 
         smtp_host = Site.main.smtp_host or "localhost"
         smtp_port = smtplib.SMTP_PORT
+        smtp_user = Site.main.smtp_user
+        smtp_password = Site.main.smtp_password
 
         if context is None:
             context = {}
@@ -157,6 +159,8 @@ class EmailTemplate(Item):
 
         # Send the message
         smtp = smtplib.SMTP(smtp_host, smtp_port)
+        if smtp_user and smtp_password:
+            smtp.login(smtp_user, smtp_password)
         smtp.sendmail(sender, list(receivers), message.as_string())
         smtp.quit()
 

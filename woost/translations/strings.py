@@ -1344,6 +1344,18 @@ translations.define("Site.smtp_host",
     en = u"SMTP host"
 )
 
+translations.define("Site.smtp_user",
+    ca = u"Usuari SMTP",
+    es = u"Usuario SMTP",
+    en = u"SMTP user"
+)
+
+translations.define("Site.smtp_password",
+    ca = u"Contrasenya SMTP",
+    es = u"Contraseña SMTP",
+    en = u"SMTP password"
+)
+
 translations.define("Site.triggers",
     ca = u"Disparadors",
     es = u"Disparadores",
