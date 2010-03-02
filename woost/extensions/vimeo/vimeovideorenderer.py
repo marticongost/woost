@@ -8,7 +8,6 @@
 """
 from woost.controllers.imagescontroller import (
     ImageURIRenderer,
-    HTMLRenderer,
     content_renderers
 )
 from woost.extensions.vimeo.video import VimeoVideo
@@ -22,5 +21,5 @@ class VimeoVideoRenderer(ImageURIRenderer):
     def get_item_uri(self, item):
         return item.large_thumbnail_uri
 
-content_renderers.register(VimeoVideoRenderer(), before = HTMLRenderer)
+content_renderers.register(VimeoVideoRenderer())
 
