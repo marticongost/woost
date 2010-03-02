@@ -36,6 +36,8 @@ class Site(Item):
         "not_found_error_page",
         "forbidden_error_page",
         "smtp_host",
+        "smtp_user",
+        "smtp_password",
         "publication_schemes",
         "triggers"
     ]
@@ -118,6 +120,16 @@ class Site(Item):
 
     smtp_host = schema.String(
         default = "localhost",
+        listed_by_default = False,
+        member_group = "system"
+    )
+
+    smtp_user = schema.String(
+        listed_by_default = False,
+        member_group = "system"
+    )
+
+    smtp_password = schema.String(
         listed_by_default = False,
         member_group = "system"
     )
