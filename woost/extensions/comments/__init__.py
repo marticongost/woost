@@ -102,7 +102,8 @@ class CommentsExtension(Extension):
         Publishable.add_member(
             schema.Boolean(
                 "allow_comments",
-                default = False
+                default = False,
+                member_group = "administration"
             )
         )
 
