@@ -8,7 +8,10 @@
 """
 from __future__ import with_statement
 import os
-from subprocess import Popen
+import re
+import datetime
+from time import time, sleep
+from subprocess import Popen, PIPE
 from tempfile import mkdtemp
 from shutil import rmtree
 from threading import Lock
@@ -531,9 +534,175 @@ class IconRenderer(ContentRenderer):
         return (icon_file, guess_type(icon_file)[0])
 
 
+class VideoRenderer(ContentRenderer):
+    """A content renderer that handles video files."""
+
+    try:                                                                                                                                                                                                       
+        p = Popen(["which", "ffmpeg"], stdout=PIPE)
+        ffmpeg_path = p.communicate()[0].replace("\n", "") or None
+    except:
+        ffmpeg_path = None
+    try:
+        p = Popen(["which", "grep"], stdout=PIPE)
+        grep_path = p.communicate()[0].replace("\n", "") or None
+    except:
+        grep_path = None
+    try:
+        p = Popen(["which", "cut"], stdout=PIPE)
+        cut_path = p.communicate()[0].replace("\n", "") or None
+    except:
+        cut_path = None
+    try:
+        p = Popen(["which", "sed"], stdout=PIPE)
+        sed_path = p.communicate()[0].replace("\n", "") or None
+    except:
+        sed_path = None
+
+    def _secs2time(self, s):
+        ms = int((s - int(s)) * 1000000)
+        s = int(s)
+        # Get rid of this line if s will never exceed 86400
+        while s >= 24*60*60: s -= 24*60*60
+        h = s / (60*60)
+        s -= h*60*60
+        m = s / 60
+        s -= m*60
+        return datetime.time(h, m, s, ms)
+    
+    def _time2secs(self, d):
+        return d.hour*60*60 + d.minute*60 + d.second + \
+            (float(d.microsecond) / 1000000)
+
+    @cached_getter
+    def rendering_schema(self):
+        return schema.Schema("video", members = [
+            schema.Integer("position")
+        ])
+
+    def can_render(self, item):
+        return (
+            self.ffmpeg_path 
+            and self.grep_path 
+            and self.cut_path
+            and self.sed_path 
+            and isinstance(item, File) 
+            and item.resource_type == "video"
+        )
+
+    def render(self, item, position = None):
+        
+        temp_path = mkdtemp()
+
+        try:
+
+            temp_image_file = os.path.join(temp_path, "thumbnail.png")
+            
+            command1 = "%s -i %s" % (self.ffmpeg_path, item.file_path)
+            command2 = "%s Duration | %s -d ' ' -f 4 | %s 's/,//'" % (
+                self.grep_path,
+                self.cut_path,
+                self.sed_path
+            )
+            p1 = Popen(command1, shell=True, stderr=PIPE)
+            p2 = Popen(command2, shell=True, stdin=p1.stderr, stdout=PIPE)
+            duration = p2.communicate()[0]
+
+            duration_list = re.split("[.:]", duration)
+            video_length = datetime.time(
+                int(duration_list[0]), int(duration_list[1]),
+                int(duration_list[2]), int(duration_list[3])
+            )   
+
+            if position:
+                time = self._secs2time(position)
+            else:
+                seconds = self._time2secs(video_length)
+                time = self._secs2time(seconds / 2)
+    
+            if time > video_length:
+                raise ValueError(
+                    "Must specify a smaller position than the video duration."
+                )
+    
+            command = u"%s -y -i %s -vframes 1 -ss %s -an -vcodec png -f rawvideo %s " % (
+                self.ffmpeg_path, 
+                item.file_path, 
+                time.strftime("%H:%M:%S"),
+                temp_image_file
+            )
+    
+            p = Popen(command.split(), stdout=PIPE)
+            p.communicate()
+    
+            return Image.open(temp_image_file)
+
+        finally:
+            rmtree(temp_path)
+
+
+    def last_change_in_appearence(self, item):
+        return os.stat(item.file_path).st_mtime
+
+
+class PDFRenderer(ContentRenderer):
+    """A content renderer that handles pdf files."""
+
+    try:
+        p = Popen(["which", "convert"], stdout=PIPE)
+        convert_path = p.communicate()[0].replace("\n", "") or None
+    except:
+        convert_path = None
+
+    @cached_getter
+    def rendering_schema(self):
+        return schema.Schema("pdf", members = [
+            schema.Integer("page", default = 0)
+        ])
+
+    def can_render(self, item):
+        return (
+            self.convert_path 
+            and isinstance(item, File) 
+            and item.resource_type == "document"
+            and item.file_name.split(".")[-1].lower() == "pdf"
+        )
+
+    def render(self, item, page):
+        
+        TIMEOUT = 10
+        RESOLUTION = 0.25
+        temp_path = mkdtemp()
+
+        try:
+
+            temp_image_file = os.path.join(temp_path, "thumbnail.png")
+
+            command = u"%s %s[%d] %s" % ( 
+                self.convert_path, item.file_path, page, temp_image_file
+            )   
+            p = Popen(command, shell=True, stdout=PIPE)
+            start = time()
+
+            while p.poll() is None:
+                if time() - start > TIMEOUT:
+                    p.terminate()
+                    raise IOError("Timeout was reached")
+                sleep(RESOLUTION)
+
+            return Image.open(temp_image_file)
+
+        finally:
+            rmtree(temp_path)
+
+    def last_change_in_appearence(self, item):
+        return os.stat(item.file_path).st_mtime
+
+
 content_renderers = ContentRenderersRegistry()
 content_renderers.register(ImageFileRenderer())
 content_renderers.register(ImageURIRenderer())
+content_renderers.register(VideoRenderer())
+content_renderers.register(PDFRenderer())
 
 # Disabled for performance reasons
 # TODO: Provide preferences to enable/disable content renderers?
