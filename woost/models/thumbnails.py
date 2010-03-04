@@ -205,7 +205,9 @@ class ThumbnailLoader(object):
             # Make sure cached thumbnails are current
             if cached_thumbnail_path and os.path.exists(cached_thumbnail_path):
                 thumbnail_date = os.stat(cached_thumbnail_path).st_mtime
-                if thumbnailer.get_last_change_in_source(item) > thumbnail_date:
+                source_date = thumbnailer.get_last_change_in_source(item)
+
+                if source_date < thumbnail_date:
                     image = Image.open(cached_thumbnail_path)
 
         # No usable cached copy available, or cache disabled:
