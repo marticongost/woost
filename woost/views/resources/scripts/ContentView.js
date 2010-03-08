@@ -41,7 +41,7 @@ cocktail.init(function (root) {
         updateToolbar.call(this);
 
         // Automatically focus the simple search box
-        jQuery("[name=simple_search_query]", this).focus();
+        jQuery("[name=filter_value0]", this).focus();
 
         // Replace the 'clear filters' link with a 'discard search' button
         jQuery(".filters", this).each(function () {
