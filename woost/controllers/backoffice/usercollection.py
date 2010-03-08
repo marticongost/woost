@@ -174,26 +174,8 @@ class BackOfficeUserCollection(UserCollection):
 
     # Filters
     #--------------------------------------------------------------------------    
-    @cached_getter
-    def user_filters(self):
-
-        user_filters = UserCollection.user_filters(self)
-
-        if self.allow_filters:
-            
-            # Transform search queries from the simple search interface into
-            # proper filters
-            query = self.params.read(schema.String("simple_search_query"))
-
-            if query:
-                filter = GlobalSearchFilter()
-                filter.id = "global_search"
-                filter.content_type = self.type
-                filter.available_languages = self.available_languages
-                filter.value = query
-                user_filters._items.append(filter)
-
-        return user_filters
+    def should_ignore_filter(self, filter):
+        return isinstance(filter, GlobalSearchFilter) and not filter.value
     
     # Tree expansion
     #--------------------------------------------------------------------------

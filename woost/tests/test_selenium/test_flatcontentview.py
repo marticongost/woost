@@ -135,14 +135,11 @@ class FlatContentViewTestCase(object):
 
         # Fill in and submit the simple search box
         query = "administrators"
-        browser.type("simple_search_query", query)
+        browser.type("filter_value0", query)
         browser.click("css=.search_button")
         browser.wait_for_page_to_load(10000)
 
         # Make sure this turns on the advanced search panel
-        assert not browser.is_element_present(
-            ".css=input[type=text,name=simple_search_query]"
-        )
         assert not browser.is_element_present("css=.advanced_search")
         assert browser.is_element_present("css=.filters")
         assert browser.is_element_present("filter_value0")
@@ -150,4 +147,17 @@ class FlatContentViewTestCase(object):
 
         # Test returned results
         assert browser.jquery_count(".collection_display tr.item_row") == 1
+
+    @selenium_test
+    def test_simple_search_without_query(self):
+
+        browser.open("/en/cms/content/?content_view")
+        admin_login()
+
+        # Perform a search without query
+        browser.click("css=.search_button")
+        browser.wait_for_page_to_load(10000)
+
+        # Make sure this doesn't turn on the advanced search panel
+        assert browser.is_element_present("css=.advanced_search")
 

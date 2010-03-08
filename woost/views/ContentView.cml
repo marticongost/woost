@@ -93,7 +93,7 @@ from woost.controllers.backoffice.editstack import SelectionNode
         )
 
     excluded_view_state_params = \
-        CollectionView.excluded_view_state_params | frozenset(["ItemSelector-select", "simple_search_query", "search_expanded"])
+        CollectionView.excluded_view_state_params | frozenset(["ItemSelector-select", "search_expanded"])
     ?>
     
     <py:ready>
@@ -114,13 +114,6 @@ from woost.controllers.backoffice.editstack import SelectionNode
                 def get_discard_filters_state(self):
                     state = call_base()
                     state["search_expanded"] = "false"
-                    state["simple_search_query"] = None
-                    return state
-                    
-                @extend(element)
-                def get_add_filter_state(self, filter):
-                    state = call_base(filter)
-                    state["simple_search_query"] = None
                     return state
                 ?>
                 <py:with py:def="filter_ui" py:args="filter">
@@ -236,7 +229,8 @@ from woost.controllers.backoffice.editstack import SelectionNode
         <div py:id="simple_search"
              py:visible="@{not self.search_expanded and self.user_collection.allow_filters and (self.visible_results or self.allow_empty_search)}">
 
-            <input type="text" name="simple_search_query"/>
+            <input type="hidden" name="filter" value="global_search"/>
+            <input type="text" name="filter_value0"/>
             <input type="submit" class="search_button" value="${translations('woost.views.ContentView search button')}"/>
 
             <button type="submit" class="advanced_search" name="search_expanded" value="true">
