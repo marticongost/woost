@@ -73,7 +73,7 @@ class DeleteController(BaseBackOfficeController):
                     if member.block_delete and item.get(member):
                         self._blocking_members.append((item, member))
 
-                    if member.cascade_delete:
+                    if item._should_cascade_delete(member):
                         value = item.get(member)
 
                         if value is not None:
