@@ -7,15 +7,15 @@
 @since:			September 2009
 """
 from cocktail.modeling import cached_getter
-from woost.controllers import PageHandler
+from woost.controllers.documentcontroller import DocumentController
 from woost.extensions.shop.basket import Basket
 
 
-class ShopController(PageHandler):
+class ShopController(DocumentController):
 
     @cached_getter
     def output(self):
-        output = PageHandler.output(self)
+        output = DocumentController.output(self)
         output["shop_order"] = Basket.get()
         return output
 
