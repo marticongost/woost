@@ -384,6 +384,9 @@ class Item(PersistentObject):
     
     _preserved_members = frozenset([changes])
 
+    def _should_cascade_delete(self, member):
+        return member.cascade_delete and not self.is_draft
+
     def _should_erase_member(self, member):
         return PersistentObject._should_erase_member(self, member) \
             and member not in self._preserved_members
