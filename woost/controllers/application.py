@@ -246,7 +246,10 @@ class CMS(BaseCMSController):
                 if canonical_path != path_resolution.matching_path:
                     canonical_uri = "".join(
                         percent_encode(c) for c in "/" + "/".join(
-                            step for step in canonical_path
+                            step for step in (
+                                canonical_path
+                                + path_resolution.extra_path
+                            )
                         )
                     )
                     if publishable.per_language_publication:
