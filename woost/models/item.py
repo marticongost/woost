@@ -84,10 +84,9 @@ class Item(PersistentObject):
         )
 
      # When validating unique members, ignore conflicts with the draft source
-    @classmethod
-    def _get_unique_validable(cls, context):
-        validable = PersistentClass._get_unique_validable(cls, context)
-        return getattr(validable, "draft_source", None) or validable
+    def _counts_as_duplicate(self, other):
+        return PersistentObject._counts_as_duplicate(self, other) \
+            and other is not self.draft_source
 
     # Versioning
     #--------------------------------------------------------------------------
