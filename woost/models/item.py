@@ -189,7 +189,7 @@ class Item(PersistentObject):
 
         if self.draft_source is None:
             self.bidirectional = True
-            self.is_draft = None
+            self.is_draft = False
         else:
             adapter = self.get_draft_adapter()
             adapter.source_accessor = schema.SchemaObjectAccessor
