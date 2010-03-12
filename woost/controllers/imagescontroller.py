@@ -58,6 +58,7 @@ class ImagesController(BaseCMSController):
 
     formats_by_mime_type = {
         "image/jpeg": "JPEG",
+        "image/pjpeg": "JPEG",
         "image/png": "PNG",
         "image/x-png": "PNG",
         "image/gif": "GIF",
