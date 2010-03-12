@@ -141,6 +141,7 @@ class FeedController(BaseCMSController):
 u"""        <item>
             <title><![CDATA[%(title)s]]></title>
             <url><![CDATA[%(url)s]]></url>
+            <guid isPermaLink="true"><![CDATA[%(url)s]]></guid>
         """ % {
                 "title": title,
                 "url": link
