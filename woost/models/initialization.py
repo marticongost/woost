@@ -291,6 +291,7 @@ def init_site(
             template_engine, "StandardView"
         )
         std_template.engine = template_engine
+        std_template.qname = "woost.standard_template"
         set_translations(std_template, "title", "Standard template title")
         std_template.insert()
 
