@@ -93,9 +93,7 @@ from woost.models import Site, Publishable
     </py:ready>
 
     <py:block py:id="content">
-        <py:ready py:if="self.publishable">
-            ${self.publishable.body or ""}
-        </py:ready>
+        @{self.publishable and self.publishable.body or ""}
     </py:block>
 
 </py:block>
