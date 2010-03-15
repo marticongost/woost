@@ -215,7 +215,7 @@ class Item(PersistentObject):
             member.name
             for member in cls.members().itervalues()
             if not member.editable or not member.visible
-        ])
+        ] + ["owner"])
         return adapter
 
     @classmethod
