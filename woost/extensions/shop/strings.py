@@ -260,6 +260,12 @@ translations.define("PricingPolicy.end_date",
     en = u"End date"
 )
 
+translations.define("PricingPolicy.matching_items",
+    ca = u"Elements afectats",
+    es = u"Elementos afectados",
+    en = u"Matching items"
+)
+
 # Discount
 #------------------------------------------------------------------------------
 translations.define("Discount",
