@@ -361,3 +361,8 @@
 
 */
 
+/* Frame titles correction while editing inner elements of an item */
+
+.BackOfficeLayout .stack_node > .label {
+    height: 1%;
+}
