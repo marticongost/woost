@@ -55,20 +55,18 @@ class MemberList(Element):
                     self.create_member_entry(member)
                 )
 
-        if not has_visible_members:
-            entry.visible = False
-        else:
+        if has_visible_members:
             entry.append(entry.members_container)
 
-            entry.derived_classes_container = Element()
-            entry.derived_classes_container.add_class("derived_classes")
-            entry.append(entry.derived_classes_container)
+        entry.derived_classes_container = Element()
+        entry.derived_classes_container.add_class("derived_classes")
+        entry.append(entry.derived_classes_container)
 
-            for derived_schema in cls.derived_schemas(recursive = False):
-                if derived_schema.visible:
-                    entry.derived_classes_container.append(
-                        self.create_class_entry(derived_schema)
-                    )
+        for derived_schema in cls.derived_schemas(recursive = False):
+            if derived_schema.visible:
+                entry.derived_classes_container.append(
+                    self.create_class_entry(derived_schema)
+                )
 
         return entry
 
