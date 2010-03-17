@@ -34,6 +34,12 @@ class RenderPreviewController(BaseBackOfficeController):
         
     def __call__(self, *args, **kwargs):
 
+        preview_language = self.params.read(                                                                                                                                                                            
+            schema.String("preview_language", default = get_content_language())
+        )
+        if preview_language:
+            set_content_language(preview_language)
+
         node = self.stack_node
         
         get_current_user().require_permission(
