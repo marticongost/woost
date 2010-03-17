@@ -6,7 +6,9 @@ u"""
 @organization:	Whads/Accent SL
 @since:			January 2009
 """
+from cocktail import schema
 from cocktail.modeling import cached_getter
+from cocktail.language import get_content_language
 from woost.controllers.backoffice.editcontroller import EditController
 from woost.controllers.backoffice.useractions import get_user_action
 
@@ -14,6 +16,12 @@ from woost.controllers.backoffice.useractions import get_user_action
 class PreviewController(EditController):
 
     section = "preview" 
+
+    def __init__(self, *args, **kwargs):
+        EditController.__init__(self, *args, **kwargs)
+        self.preview_language = self.params.read(                                                                                                                                                                            
+            schema.String("preview_language", default = get_content_language())
+        )
 
     @cached_getter
     def view_class(self):
@@ -26,7 +34,8 @@ class PreviewController(EditController):
         
         output = EditController.output(self)
         output.update(
-            selected_action = get_user_action("preview")
+            selected_action = get_user_action("preview"),
+            preview_language = self.preview_language
         )
 
         return output

@@ -3225,3 +3225,9 @@ translations.define("woost.backoffice invalid item preview",
          u"Impossible to render preview."
 )
 
+translations.define("woost.views.BackOfficePreviewView preview language",
+    ca = u"Idioma de la visualització:",
+    es = u"Idioma de la visualización:",
+    en = u"Visualization language:"
+)
+

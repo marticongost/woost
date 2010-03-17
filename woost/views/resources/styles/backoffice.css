@@ -1574,20 +1574,28 @@ body.scripted .BackOfficeLayout .ThumbnailsContentView .collection_display input
     display: block;
 }
 
-.BackOfficeEditView .translations_selector .selector_content {
+.BackOfficeEditView .translations_selector .selector_content,
+.BackOfficePreviewView .translations_selector .selector_content {
     list-style-type: none;
     padding-right: 0.1;
     right: 0;
 	top:2.4em;
 }
 
-.BackOfficeEditView .translations_selector .selector_content li {
+.BackOfficePreviewView .translations_selector .selector_content {
+	min-width: inherit;
+    padding-left: .9em !important;
+}
+
+.BackOfficeEditView .translations_selector .selector_content li,
+.BackOfficePreviewView .translations_selector .selector_content li {
     clear: both;
     margin: 0;
     padding: 0;
 }
 
-.BackOfficeEditView .translations_selector .language {
+.BackOfficeEditView .translations_selector .language,
+.BackOfficePreviewView .translations_selector .language {
     float: left;
     height: 2em;
 }
@@ -1601,12 +1609,14 @@ body.scripted .BackOfficeLayout .ThumbnailsContentView .collection_display input
     background: none;
 }
 
-.BackOfficeEditView .translations_selector.scripted .selector_content {
+.BackOfficeEditView .translations_selector.scripted .selector_content,
+.BackOfficePreviewView .translations_selector.scripted .selector_content {
     list-style-type: none;
     padding-right: 0.1;
 }
 
-.BackOfficeEditView .translations_selector.scripted .selector_content li {
+.BackOfficeEditView .translations_selector.scripted .selector_content li,
+.BackOfficePreviewView .translations_selector.scripted .selector_content li{
     clear: both;
     margin: 0;
     padding: 0;
@@ -2811,3 +2821,18 @@ a.pickcolor span {
     height: 600px;
 }
 
+.BackOfficePreviewView .preview_language_selector {
+    float: right;
+}
+
+.BackOfficePreviewView .preview_language_selector span {
+    display: inline;
+    float: left;
+    font-size: 85%;
+    margin-top: .45em;
+}
+
+.BackOfficePreviewView .preview_language_selector .translations_selector {
+    display: inline;
+    float: left;
+}
