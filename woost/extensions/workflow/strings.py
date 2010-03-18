@@ -6,7 +6,8 @@
 @organization:	Whads/Accent SL
 @since:			May 2009
 """
-from cocktail.translations import translations
+from cocktail.translations import translations, ca_possessive
+from woost.translations.strings import content_permission_translation_factory
 
 translations.define(
     "woost.controllers.backoffice.useractions.TransitionAction state set",
@@ -44,6 +45,38 @@ translations.define("TransitionPermission.transition",
     ca = u"Transició",
     es = u"Transición",
     en = u"Transition"
+)
+
+translations.define(
+    "woost.extensions.workflow.transitionpermission."
+    "TransitionPermission-instance",
+    ca = content_permission_translation_factory("ca",
+        lambda permission, subject, **kwargs:
+            "%s %s" % (    
+                translations(permission.transition, "ca", **kwargs),
+                subject
+            )            
+            if permission.transition
+            else "canviar l'estat " + ca_possessive(subject),
+    ),
+    es = content_permission_translation_factory("es",
+        lambda permission, subject, **kwargs:
+            "%s %s" % (    
+                translations(permission.transition, "es", **kwargs),
+                subject
+            )            
+            if permission.transition
+            else "cambiar el estado de " + subject,
+    ),
+    en = content_permission_translation_factory("en",
+        lambda permission, subject, **kwargs:
+            "%s %s" % (
+                translations(permission.transition, "en", **kwargs),
+                subject
+            )            
+            if permission.transition
+            else "change the state of " + subject
+    )
 )
 
 # TransitionTrigger
