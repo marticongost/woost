@@ -39,6 +39,7 @@ class RenderPreviewController(BaseBackOfficeController):
         )
         if preview_language:
             set_content_language(preview_language)
+            set_language(preview_language)
 
         node = self.stack_node
         
@@ -60,7 +61,7 @@ class RenderPreviewController(BaseBackOfficeController):
                 children = [
                     translations(
                         "woost.backoffice invalid item preview", 
-                        get_content_language()
+                        preview_language
                     ),
                     Element("ul", children = [
                         Element("li", children = [translations(error)])
