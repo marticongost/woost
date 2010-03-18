@@ -34,6 +34,7 @@ from woost.models.changesets import (
 )
 from woost.models.publishable import Publishable, IsPublishedExpression
 from woost.models.usersession import get_current_user
+from woost.models.expressions import OwnershipExpression
 
 
 class OwnItemsFilter(UserFilter):
@@ -46,7 +47,7 @@ class OwnItemsFilter(UserFilter):
 
     @cached_getter
     def expression(self):
-        return Item.owner.equal(get_current_user())
+        return OwnershipExpression()
 
 user_filters_registry.add(Item, OwnItemsFilter)
 
