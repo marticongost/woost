@@ -9,6 +9,7 @@
 from contextlib import contextmanager
 from cocktail.modeling import InstrumentedSet
 from cocktail.events import when
+from cocktail.pkgutils import import_object
 from cocktail.translations import translations
 from cocktail import schema
 from cocktail.controllers.usercollection import UserCollection
@@ -44,6 +45,14 @@ class Permission(Item):
         """
         return True
 
+    def __translate__(self, language, **kwargs):
+        return translations(
+            self.__class__.full_name + "-instance",
+            language,
+            instance = self,
+            **kwargs
+        ) or Item.__translate__(self, language, **kwargs)
+
 
 class ContentPermission(Permission):
     """Base class for permissions restricted to a subset of a content type."""
@@ -53,7 +62,14 @@ class ContentPermission(Permission):
         "ContentPermissionFieldsController"
     edit_view = "woost.views.ContentPermissionFields"
 
-    matching_items = schema.Mapping()
+    matching_items = schema.Mapping(
+        translate_value = lambda value, language = None, **kwargs:
+            ""
+            if not value
+            else translations(
+                ContentPermission._get_user_collection(value).subset
+            )
+    )
 
     def match(self, target, verbose = False):
         
@@ -85,13 +101,23 @@ class ContentPermission(Permission):
         return True
     
     def select_items(self, *args, **kwargs):
+        
+        subset = self._get_user_collection(self.matching_items).subset
+
+        if args or kwargs:
+            subset = subset.select(*args, **kwargs)
+
+        return subset
+
+    @classmethod
+    def _get_user_collection(self, matching_items):
         user_collection = UserCollection(Item)
         user_collection.allow_paging = False
         user_collection.allow_member_selection = False
         user_collection.allow_language_selection = False
-        user_collection.params.source = self.matching_items.get
+        user_collection.params.source = matching_items.get
         user_collection.available_languages = Language.codes
-        return user_collection.subset
+        return user_collection
 
 
 class ReadPermission(ContentPermission):
@@ -161,6 +187,12 @@ class DeleteTranslationPermission(TranslationPermission):
     """Permission to delete translations."""
     instantiable = True
 
+def _resolve_matching_member_reference(compound_name):
+    pos = compound_name.rfind(".")
+    type_full_name = compound_name[:pos]
+    member_name = compound_name[pos+1:]
+    cls = import_object(type_full_name)
+    return cls[member_name]
 
 def _eligible_members():
     for cls in [Item] + list(Item.derived_schemas()):
@@ -175,7 +207,15 @@ class MemberPermission(Permission):
     matching_members = schema.Collection(
         default_type = set,
         items = schema.String(
-            enumeration = lambda ctx: set(_eligible_members())
+            enumeration = lambda ctx: set(_eligible_members()),
+            translate_value = lambda value, language = None, **kwargs:
+                ""
+                if not value
+                else translations(
+                    _resolve_matching_member_reference(value),
+                    language,
+                    qualified = True
+                )
         ),
         edit_control = "woost.views.MemberList"
     )
@@ -191,6 +231,10 @@ class MemberPermission(Permission):
             return False
 
         return True
+
+    def iter_members(self):
+        for compound_name in self.matching_members:
+            yield _resolve_matching_member_reference(compound_name)
 
 
 class ReadMemberPermission(MemberPermission):
