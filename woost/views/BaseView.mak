@@ -7,8 +7,8 @@ from woost.models import Site, Publishable
 output_format = "html4"
 container_classes = "BaseView"
 site = Site.main
-content_language = get_content_language()
 %>
+<% self.content_language = get_content_language() %>
 
 <%def name="closure()" filter="trim">
     ${"/" if self.attr.output_format == "xhtml" else ""}
@@ -17,9 +17,9 @@ content_language = get_content_language()
 ${self.dtd()}
 
 % if self.attr.output_format == "xhtml":
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="${content_language}" lang="${content_language}">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="${self.content_language}" lang="${self.content_language}">
 % else:
-<html lang="${content_language}">
+<html lang="${self.content_language}">
 % endif
     
     <head>        
@@ -63,7 +63,7 @@ ${self.dtd()}
 <%def name="meta()">
     
     <meta http-equiv="Content-Type" content="${publishable.mime_type};charset=${publishable.encoding}"${closure()}>
-    <meta name="Content-Language" content="${content_language}"${closure()}>
+    <meta name="Content-Language" content="${self.content_language}"${closure()}>
     <title>${self.getTitle()}</title>
 
     <%
@@ -85,7 +85,7 @@ ${self.dtd()}
     ## Alternate languages
     % if publishable.per_language_publication:
         % for language in publishable.translations:
-            % if language != content_language and publishable.get("translation_enabled", language):
+            % if language != self.content_language and publishable.get("translation_enabled", language):
                 <link rel="alternate"
                       title="${translations('woost.views.BaseView alternate language link', lang = language)}"
                       href="${cms.translate_uri(language = language)}"
