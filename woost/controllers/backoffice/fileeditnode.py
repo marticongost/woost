@@ -48,7 +48,7 @@ class FileEditNode(PublishableEditNode):
             # Ignore differences on the upload field if no file has been
             # uploaded
             if member.name == "upload" \
-            and schema.get(self.form_data, "upload") is None:
+            and schema.get(self.form_data, "upload", None) is None:
                 continue
 
             yield (member, language)
