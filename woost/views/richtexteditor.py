@@ -55,6 +55,7 @@ class RichTextEditor(TinyMCE):
         if current_edit_stack:
             edit_stack_param = current_edit_stack.to_param()
             self.tinymce_params.update(
+                init_instance_callback = "initRichTextEditor",
                 theme_advanced_styles = ";".join(styles),
                 external_image_list_url = "%s/editor_attachments?edit_stack=%s&resource_type=image&language=%s"
                     % (ctx_uri, edit_stack_param, self.language),
