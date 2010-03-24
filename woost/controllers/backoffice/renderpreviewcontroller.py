@@ -12,11 +12,8 @@ from cocktail.pkgutils import resolve
 from cocktail.modeling import cached_getter
 from cocktail.translations import (
     translations,
+    get_language,
     set_language
-)
-from cocktail.language import (
-    get_content_language,
-    set_content_language
 )
 from cocktail.html import Element
 from cocktail import schema
@@ -35,10 +32,10 @@ class RenderPreviewController(BaseBackOfficeController):
     def __call__(self, *args, **kwargs):
 
         preview_language = self.params.read(                                                                                                                                                                            
-            schema.String("preview_language", default = get_content_language())
+            schema.String("preview_language", default = get_language())
         )
         if preview_language:
-            set_content_language(preview_language)
+            set_language(preview_language)
 
         node = self.stack_node
         
@@ -60,7 +57,7 @@ class RenderPreviewController(BaseBackOfficeController):
                 children = [
                     translations(
                         "woost.backoffice invalid item preview", 
-                        get_content_language()
+                        get_language()
                     ),
                     Element("ul", children = [
                         Element("li", children = [translations(error)])

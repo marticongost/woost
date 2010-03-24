@@ -8,8 +8,7 @@
 """
 from cocktail.modeling import OrderedDict
 from cocktail.events import event_handler
-from cocktail.translations import translations
-from cocktail.language import get_content_language
+from cocktail.translations import translations, get_language
 from cocktail import schema
 from cocktail.controllers.location import Location
 from woost.models import Extension
@@ -89,7 +88,7 @@ class PaymentsExtension(Extension):
         """
         url, params = self.payment_gateway.get_payment_form_data(
             payment_id,
-            get_content_language()
+            get_language()
         )
 
         location = Location(url)

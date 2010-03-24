@@ -7,8 +7,10 @@ u"""
 @since:			July 2008
 """
 import cherrypy
-from cocktail.translations import get_language, set_language
-from cocktail.language import get_content_language, set_content_language
+from cocktail.translations import (
+    get_language,
+    set_language
+)
 from cocktail.controllers.parameters import set_cookie_expiration
 from woost.models import Site, Language
 from woost.controllers.module import Module
@@ -35,7 +37,6 @@ class LanguageModule(Module):
         set_cookie_expiration(cookie, seconds = self.cookie_duration)
 
         set_language(language)
-        set_content_language(language)
     
     def infer_language(self):
         # TODO: Parse language headers
@@ -51,7 +52,7 @@ class LanguageModule(Module):
             qs = cherrypy.request.query_string
 
         if language is None:
-            language = get_content_language()
+            language = get_language()
 
         path_components = path.strip("/").split("/")
         if path_components and path_components[0] in Language.codes:

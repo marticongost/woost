@@ -7,7 +7,7 @@
 @since:			June 2009
 """
 from __future__ import with_statement
-from cocktail.language import set_content_language
+from cocktail.translations import set_language
 from woost.tests.models.basetestcase import BaseTestCase
 
 
@@ -16,7 +16,7 @@ class IsAccessibleExpressionTestCase(BaseTestCase):
     def setUp(self):
         from woost.models import User
         BaseTestCase.setUp(self)
-        set_content_language("en")
+        set_language("en")
         self.user = User()
         self.user.insert()
 

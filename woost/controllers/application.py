@@ -18,17 +18,10 @@ import cherrypy
 from cherrypy.lib.cptools import validate_since
 from pkg_resources import resource_filename, iter_entry_points
 from cocktail.events import Event, event_handler
+from cocktail.translations import get_language, set_language
 from cocktail.controllers import Dispatcher
 from cocktail.controllers import Location
 from cocktail.controllers.percentencode import percent_encode
-from cocktail.translations import (
-    get_language,
-    set_language
-)
-from cocktail.language import (
-    get_content_language,
-    set_content_language
-)
 from cocktail.persistence import datastore
 from woost.models import (
     Item,
@@ -369,7 +362,7 @@ class CMS(BaseCMSController):
         user.require_permission(ReadPermission, target = publishable)
         user.require_permission(
             ReadTranslationPermission,
-            language = get_content_language()
+            language = get_language()
         )
 
     @event_handler
@@ -387,7 +380,6 @@ class CMS(BaseCMSController):
         # Set the default language as soon as possible
         language = cms.language.infer_language()
         set_language(language)
-        set_content_language(language)
 
         # Invoke the authentication module
         cms.authentication.process_request()

@@ -12,10 +12,9 @@ from urllib import urlencode
 import cherrypy
 from cocktail.modeling import getter, cached_getter
 from cocktail.iteration import first
-from cocktail.translations import translations
+from cocktail.translations import translations, get_language
 from cocktail.events import event_handler
 from cocktail import schema
-from cocktail.language import get_content_language
 from cocktail.controllers import get_parameter, CookieParameterSource
 from woost.models import Item
 from woost.controllers import BaseCMSController
@@ -45,7 +44,7 @@ class BaseBackOfficeController(BaseCMSController):
             schema.Collection(
                 "language",
                 items = schema.String(),
-                default = [get_content_language()]
+                default = [get_language()]
             ),
             source = CookieParameterSource(
                 cookie_naming = "visible_languages",

@@ -19,6 +19,7 @@ from woost.models import Site, Publishable, ModifyPermission
     ?>
 
     <div py:id="header">
+        
         <h1 py:id="title_label" py:collapsible="${True}">
             <py:ready>
                 <?py title = self.get_title() ?>
@@ -46,6 +47,7 @@ from woost.models import Site, Publishable, ModifyPermission
         py:collapsible="${True}"/>
 
     <div py:id="main">
+
         <h2 py:id="content_title_label" py:collapsible="${True}">
             <py:ready>
                 <?py
@@ -55,6 +57,10 @@ from woost.models import Site, Publishable, ModifyPermission
                 ?>
             </py:ready>
         </h2>
+
+        <div py:id="fallback_language_notice" class="notice" py:visible="@{not self.fully_translated}">
+            @{"" if self.fully_translated else translations("woost.views.StandardView fallback language notice", fallback = self.content_language)}
+        </div>
 
         <div py:id="toolbar">
             <a py:id="edit_link">${translations("Action edit")}</a>
@@ -71,7 +77,6 @@ from woost.models import Site, Publishable, ModifyPermission
         </div>
 
         <?py
-        self.content.tag = "div"
         element.append(self.content)
         ?>
 

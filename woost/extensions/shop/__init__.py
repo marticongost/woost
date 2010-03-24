@@ -7,7 +7,6 @@
 @since:			September 2009
 """
 from cocktail.events import event_handler, when
-from cocktail.language import set_content_language
 from cocktail.translations import (
     translations,
     set_language
@@ -147,14 +146,10 @@ class ShopExtension(Extension):
 
         PaymentGateway.get_payment = get_payment
 
-        def receive_order_payment(event):
-            
+        def receive_order_payment(event):            
             payment = event.payment
-            shop_order = payment.shop_order
-            
-            set_language(shop_order.language)
-            set_content_language(shop_order.language)
-            
+            shop_order = payment.shop_order            
+            set_language(shop_order.language)           
             shop_order.status = payment.status
             shop_order.gateway_parameters = payment.gateway_parameters
         
