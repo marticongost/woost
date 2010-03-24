@@ -1,12 +1,51 @@
 # -*- coding: utf-8 -*-
 <%!
-from cocktail.translations import translations
+from cocktail.translations import (
+    translations,
+    get_language,
+    require_language
+)
 from woost.models import Site, Publishable
 
 output_format = "html4"
 container_classes = "BaseView"
 site = Site.main
+translation_members = ("body",)
 %>
+
+<%
+self.language = get_language()
+self.content_language = self.get_content_language(publishable)
+self.fully_translated = (self.content_language == self.language)
+%>
+
+<%def name="get_content_language(item, language = None)">
+    <%
+    return item.get_common_language(self.attr.translation_members, language)
+    %>
+</%def>
+
+<%def name="is_fully_translated(item, language = None)">
+    <%
+    language = require_language(language)
+    return self.get_content_language(item, language) == language
+    %>
+</%def>
+
+<%def name="member_slot(key, use_fallback_language = True)">
+    <%
+    member = publishable.__class__[key]
+    language = (
+        member.translated
+        and not self.fully_translated
+        and use_fallback_language
+        and self.content_language
+    )    
+    %>
+    <div name="${key}_slot"${' lang="%s"' % language if language else ""}>
+        ${publishable.get(key, language)}
+    </div>
+</%def>
 
 <%def name="closure()" filter="trim">
     ${"/" if self.attr.output_format == "xhtml" else ""}
@@ -15,9 +54,9 @@ site = Site.main
 ${self.dtd()}
 
 % if self.attr.output_format == "xhtml":
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="${get_language()}" lang="${get_language()}">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="${self.language}" lang="${self.language}">
 % else:
-<html lang="${get_language()}">
+<html lang="${self.language}">
 % endif
     
     <head>        
@@ -61,7 +100,7 @@ ${self.dtd()}
 <%def name="meta()">
     
     <meta http-equiv="Content-Type" content="${publishable.mime_type};charset=${publishable.encoding}"${closure()}>
-    <meta name="Content-Language" content="${get_language()}"${closure()}>
+    <meta name="Content-Language" content="${self.language}"${closure()}>
     <title>${self.getTitle()}</title>
 
     <%
@@ -82,13 +121,13 @@ ${self.dtd()}
     
     ## Alternate languages
     % if publishable.per_language_publication:
-        % for language in publishable.translations:
-            % if language != get_language() and publishable.get("translation_enabled", language):
+        % for trans_lang in publishable.translations:
+            % if trans_lang != language and publishable.get("translation_enabled", trans_lang) and self.is_fully_translated(publishable, trans_lang):
                 <link rel="alternate"
-                      title="${translations('woost.views.BaseView alternate language link', lang = language)}"
-                      href="${cms.translate_uri(language = language)}"
-                      lang="${language}"
-                      hreflang="${language}"${closure()}>
+                      title="${translations('woost.views.BaseView alternate language link', lang = trans_lang)}"
+                      href="${cms.translate_uri(language = trans_lang)}"
+                      lang="${trans_lang}"
+                      hreflang="${trans_lang}"${closure()}>
             % endif
         % endfor
     % endif
@@ -131,6 +170,6 @@ ${self.dtd()}
 </%def>
 
 <%def name="content()">
-    ${publishable.body}
+    ${member_slot("body")}
 </%def>
 

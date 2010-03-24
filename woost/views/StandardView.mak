@@ -85,6 +85,12 @@ container_classes = "BaseView StandardView"
     %endif
 </%def>
 
+<%def name="fallback_language_notice()">
+    <div class="fallback_language_notice notice">
+        ${translations("woost.views.StandardView fallback language notice", fallback = self.content_language)}
+    </div>
+</%def>
+
 <%def name="toolbar()">
     % if (show_user_controls is UNDEFINED or show_user_controls) and user.has_permission(ModifyPermission, target = publishable):
         <div class="toolbar">
@@ -100,7 +106,11 @@ container_classes = "BaseView StandardView"
 <%def name="main()">
    
     ${self.publishable_title()}
-
+    
+    % if not self.fully_translated:
+        ${self.fallback_language_notice()}
+    % endif
+        
     ${self.toolbar()}
 
     <div class="content">
