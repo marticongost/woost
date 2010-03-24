@@ -17,6 +17,7 @@ from cocktail.modeling import getter
 from cocktail.events import event_handler
 from cocktail import schema
 from cocktail.controllers import context
+from cocktail.persistence import datastore
 from woost.models.publishable import Publishable
 from woost.models.controller import Controller
 from woost.models.language import Language
@@ -132,6 +133,41 @@ class File(Publishable):
 
         return file
 
+    def make_draft(self):
+        draft = Publishable.make_draft(self)
+
+        trans = datastore.connection.transaction_manager.get()
+
+        def copy_file(successful, source, destination):
+            if successful:
+                copy(source, destination)
+
+        trans.addAfterCommitHook(
+            copy_file,
+            (self.file_path, draft.file_path)
+        )
+
+        return draft
+
+    def confirm_draft(self):
+        trans = datastore.connection.transaction_manager.get()
+
+        def copy_file(successful, source, destination):
+            if successful:
+                copy(source, destination)
+
+        trans.addAfterCommitHook(
+            copy_file,
+            (self.file_path, self.draft_source.file_path)
+        )
+
+        Publishable.confirm_draft(self)
+
+    @classmethod
+    def _should_exclude_in_draft(cls, member):
+        return member.name not in (
+            "file_name", "file_size", "file_hash", "mime_type"
+        ) and (not member.editable or not member.visible)
 
 def file_hash(source, algorithm = "md5", chunk_size = 1024):
     """Obtains a hash for the contents of the given file.

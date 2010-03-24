@@ -224,9 +224,13 @@ class Item(PersistentObject):
         adapter.exclude([
             member.name
             for member in cls.members().itervalues()
-            if not member.editable or not member.visible
+            if cls._should_exclude_in_draft(member)
         ] + ["owner"])
         return adapter
+
+    @classmethod
+    def _should_exclude_in_draft(cls, member):
+        return not member.editable or not member.visible
 
     @classmethod
     def _create_translation_schema(cls, members):

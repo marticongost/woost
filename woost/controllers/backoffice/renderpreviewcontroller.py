@@ -57,7 +57,7 @@ class RenderPreviewController(BaseBackOfficeController):
                 children = [
                     translations(
                         "woost.backoffice invalid item preview", 
-                        get_language()
+                        preview_language
                     ),
                     Element("ul", children = [
                         Element("li", children = [translations(error)])
