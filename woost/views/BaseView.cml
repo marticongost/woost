@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <?py
-from cocktail.language import get_content_language
+from cocktail.translations import require_language
 from woost.models import Site, Publishable
 ?>
 
@@ -11,6 +11,9 @@ from woost.models import Site, Publishable
     <?py-class
     publishable = None
     user = None
+    translation_members = ("body",)
+    content_language = None
+    fully_translated = True
     
     def get_keywords(self):
         keywords = []
@@ -21,6 +24,41 @@ from woost.models import Site, Publishable
         if item_keywords:
             keywords.append(item_keywords)        
         return " ".join(keywords) if keywords else None
+
+    def get_content_language(self, item, language = None):
+        return item.get_common_language(self.translation_members, language)
+    
+    def is_fully_translated(self, item, language = None):
+        language = require_language(language)
+        return self.get_content_language(item, language) == language
+
+    def member_slot(self, key, use_fallback_language = True):
+        
+        slot = Element()
+        slot.add_class(key + "_slot")
+        setattr(self, key + "_slot", slot)
+
+        def _fill_slot():
+
+            item = self.publishable
+            member = item.__class__[key]
+
+            # Set the 'lang' HTML attribute
+            if use_fallback_language and not self.fully_translated:
+                slot["lang"] = self.content_language
+            
+            value = item.get(
+                member,
+                self.content_language
+                    if member.translated and use_fallback_language
+                    else None
+            )
+
+            if value is not None:
+                slot.append(value)
+
+        slot.when_ready(_fill_slot)
+        return slot
     ?>
 
     <py:ready>
@@ -30,7 +68,7 @@ from woost.models import Site, Publishable
         if publishable:
 
             site = Site.main
-            content_language = get_content_language()
+            language = get_language()
 
             # Content type / charset
             self.page_content_type = publishable.mime_type
@@ -40,7 +78,7 @@ from woost.models import Site, Publishable
             self.page_title = publishable.title
 
             # Meta tags
-            self.set_meta("Content-Language", content_language)
+            self.set_meta("Content-Language", language)
             
             description = getattr(publishable, "description", None) or site.description
 
@@ -58,8 +96,13 @@ from woost.models import Site, Publishable
 
             # Alternate languages
             if publishable.per_language_publication:
-                for language in publishable.translations:
-                    if language != content_language and publishable.get("translation_enabled", language):
+                self.content_language = self.get_content_language(self.publishable)
+                self.fully_translated = (self.content_language == language)
+
+                for trans_lang in publishable.translations:
+                    if trans_lang != language \
+                    and publishable.get("translation_enabled", language) \
+                    and self.is_fully_translated(self.publishable, trans_lang):
                         self.add_head_element(
                             Element("link",
                                 rel = "alternate",
@@ -92,8 +135,8 @@ from woost.models import Site, Publishable
         ?>
     </py:ready>
 
-    <py:block py:id="content">
-        @{self.publishable and self.publishable.body or ""}
-    </py:block>
+    <div py:id="content">
+        ${self.member_slot("body")}
+    </div>
 
 </py:block>

@@ -8,8 +8,7 @@
 """
 from cocktail.events import event_handler
 from cocktail.modeling import ListWrapper
-from cocktail.language import get_content_language
-from cocktail.translations import translations
+from cocktail.translations import translations, get_language
 from cocktail import schema
 from woost.models import Extension, Language
 
@@ -123,7 +122,7 @@ class GoogleSearchExtension(Extension):
             "query": quote_plus(query.encode("utf-8")),
             "page": page * page_size,
             "page_size": page_size,
-            "language": language or get_content_language(),
+            "language": language or get_language(),
             "filter": int(bool(filter))
         }
 

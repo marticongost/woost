@@ -7,7 +7,6 @@ u"""
 @since:			February 2009
 """
 from cocktail.modeling import extend, call_base
-from cocktail.language import get_content_language
 from cocktail.translations import translations
 from cocktail.schema import Member, Reference, Collection
 from cocktail.html import templates, Element

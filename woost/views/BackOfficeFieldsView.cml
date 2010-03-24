@@ -2,7 +2,6 @@
 
 <?py
 from cocktail.modeling import extend, call_base
-from cocktail.language import get_content_language
 from woost.models import (
     get_current_user,
     CreateTranslationPermission,
@@ -105,7 +104,7 @@ from woost.models import (
                     <?py
                     key = (
                         member.name,
-                        get_content_language()
+                        get_language()
                             if member.translated
                             else None
                     )

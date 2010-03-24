@@ -6,8 +6,7 @@ u"""
 @organization:	Whads/Accent SL
 @since:			February 2009
 """
-from cocktail.language import get_content_language
-from cocktail.translations import translations
+from cocktail.translations import translations, get_language
 from cocktail.html.element import Element
 from cocktail.html import templates
 from cocktail.controllers import context
@@ -41,7 +40,7 @@ class LanguageSelector(LinkSelector):
             self.items = Language.codes
 
         if self.value is None:
-            self.value = get_content_language()
+            self.value = get_language()
 
         LinkSelector._ready(self)
 

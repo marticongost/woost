@@ -13,11 +13,8 @@ from cocktail.events import event_handler
 from cocktail.controllers import view_state
 from cocktail.translations import (
     translations,
+    get_language,
     set_language
-)
-from cocktail.language import (
-    get_content_language,
-    set_content_language
 )
 from cocktail.html import Element
 from cocktail import schema
@@ -72,7 +69,6 @@ class BackOfficeController(BaseBackOfficeController):
         language = \
             user and user.prefered_language or Site.main.backoffice_language
         set_language(language)
-        set_content_language(language)
 
     @event_handler
     def handle_after_request(cls, event):

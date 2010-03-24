@@ -6,7 +6,8 @@ u"""
 @organization:	Whads/Accent SL
 @since:			July 2008
 """
-from cocktail.translations import translations, ca_possessive, plural2
+from cocktail.translations import translations
+from cocktail.translations.helpers import ca_possessive, plural2
 
 translations.define("logged in as",
     ca = lambda user: u"Estàs identificat com a " \
@@ -1194,6 +1195,18 @@ translations.define("woost.views.StandardView attachment icon description",
     ca = u"Icona",
     es = u"Icono",
     en = u"Icon"
+)
+
+translations.define("woost.views.StandardView fallback language notice",
+    ca = lambda fallback:
+        u"Aquesta pàgina no es troba disponible en català. Et mostrem"
+        u"la seva versió en %s." % translations(fallback).lower(),
+    es = lambda fallback:
+        u"Esta página no se encuentra disponible en español. Te "
+        u"mostramos su versión en %s." % translations(fallback).lower(),
+    en = lambda fallback:
+        u"This page is not available in english. Its %s version is "
+        u"shown instead." % translations(fallback).lower()
 )
 
 # Item
@@ -2744,10 +2757,10 @@ translations.define("Language.iso_code",
     en = u"ISO code"
 )
 
-translations.define("Language.fallback_languages",
-    ca = u"Idiomes substitutius",
-    es = u"Idiomas sustitutivos",
-    en = u"Fallback languages"
+translations.define("Language.fallback",
+    ca = u"Idioma substitutiu",
+    es = u"Idioma sustitutivo",
+    en = u"Fallback language"
 )
 
 # Extension

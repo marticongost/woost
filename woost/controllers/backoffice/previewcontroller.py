@@ -8,7 +8,7 @@ u"""
 """
 from cocktail import schema
 from cocktail.modeling import cached_getter
-from cocktail.language import get_content_language
+from cocktail.translations import get_language
 from woost.controllers.backoffice.editcontroller import EditController
 from woost.controllers.backoffice.useractions import get_user_action
 
@@ -20,7 +20,7 @@ class PreviewController(EditController):
     def __init__(self, *args, **kwargs):
         EditController.__init__(self, *args, **kwargs)
         self.preview_language = self.params.read(                                                                                                                                                                            
-            schema.String("preview_language", default = get_content_language())
+            schema.String("preview_language", default = get_language())
         )
 
     @cached_getter

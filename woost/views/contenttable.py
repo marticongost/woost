@@ -7,7 +7,6 @@ u"""
 @since:			September 2008
 """
 from cocktail.pkgutils import resolve
-from cocktail.language import get_content_language
 from cocktail.translations import translations
 from cocktail.schema import Reference
 from cocktail.schema.expressions import (

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <?py
-from cocktail.language import get_content_language
 from cocktail import schema
 from woost.models import File
 from woost.controllers.backoffice.useractions import \
@@ -41,7 +40,7 @@ from woost.controllers.backoffice.useractions import \
             <?py
             key = (
                 member.name,
-                get_content_language()
+                get_language()
                     if member.translated
                     else None
             )

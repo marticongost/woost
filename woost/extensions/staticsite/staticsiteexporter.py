@@ -16,7 +16,6 @@ import cherrypy
 from cocktail.events import EventHub, Event
 from cocktail import schema
 from cocktail.modeling import abstractmethod, SetWrapper
-from cocktail.language import content_language_context
 from cocktail.translations import translations, language_context
 from cocktail.persistence import PersistentMapping
 from cocktail.controllers import context as controller_context
@@ -241,8 +240,7 @@ class StaticSiteExporter(Item):
 
         if language:
             with language_context(language):
-                with content_language_context(language):
-                    return export()
+                return export()
         else:
             return export()
 

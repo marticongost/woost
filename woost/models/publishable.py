@@ -10,10 +10,9 @@ from datetime import datetime
 from cocktail.modeling import getter
 from cocktail.events import event_handler
 from cocktail.pkgutils import import_object
-from cocktail.translations import translations
+from cocktail.translations import translations, get_language
 from cocktail import schema
 from cocktail.schema.expressions import Expression
-from cocktail.language import get_content_language
 from woost.models.item import Item
 from woost.models.usersession import get_current_user
 from woost.models.permission import ReadPermission
@@ -284,7 +283,7 @@ class IsPublishedExpression(Expression):
             per_language_pub = (
                 Publishable.per_language_publication.index[True]
                 .intersection(Publishable.translation_enabled.index[
-                    (get_content_language(), True)
+                    (get_language(), True)
                 ])
             )
             dataset.intersection_update(simple_pub | per_language_pub)
