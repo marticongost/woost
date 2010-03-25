@@ -234,8 +234,8 @@ class User(Item):
                     print role_style(translations(role))
 
                 print permission_style(
-                    "%s #%s" % (permission.__class__.name, permission.id)
-                ),
+                    "#%d. %s" % (permission.id, translations(permission))
+                )
 
             if permission.match(verbose = verbose, **context):
 

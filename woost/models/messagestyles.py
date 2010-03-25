@@ -25,13 +25,13 @@ def permission_style(t):
     return u" " * 4 + styled(t, "light_gray")
 
 def authorized_style(t):
-    return styled(t.upper(), "white", "green") + u"\n"
+    return u" " * 4 + styled(t.upper(), "white", "green") + u"\n"
 
 def unauthorized_style(t):
-    return styled(t.upper(), "white", "red") + u"\n"
+    return u" " * 4 + styled(t.upper(), "white", "red") + u"\n"
 
 def permission_doesnt_match_style(t):
-    return styled(t, "yellow") + u"\n" + u" " * 4 
+    return u" " * 4 + styled(t, "yellow") + u"\n"
 
 def trigger_style(t):
     return styled(t.ljust(80), "white", "brown")
