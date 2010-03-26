@@ -44,7 +44,9 @@ from woost.models import Site, Publishable
             member = item.__class__[key]
 
             # Set the 'lang' HTML attribute
-            if use_fallback_language and not self.fully_translated:
+            if member.translated \
+            and not self.fully_translated \
+            and use_fallback_language:
                 slot["lang"] = self.content_language
             
             value = item.get(
@@ -101,15 +103,15 @@ from woost.models import Site, Publishable
 
                 for trans_lang in publishable.translations:
                     if trans_lang != language \
-                    and publishable.get("translation_enabled", language) \
-                    and self.is_fully_translated(self.publishable, trans_lang):
+                    and publishable.get("translation_enabled", trans_lang) \
+                    and self.is_fully_translated(publishable, trans_lang):
                         self.add_head_element(
                             Element("link",
                                 rel = "alternate",
-                                title = translations("woost.views.BaseView alternate language link", lang = language),
-                                href = self.cms.translate_uri(language = language),
-                                lang = language,
-                                hreflang = language
+                                title = translations("woost.views.BaseView alternate language link", lang = trans_lang),
+                                href = self.cms.translate_uri(language = trans_lang),
+                                lang = trans_lang,
+                                hreflang = trans_lang
                             )
                         )
 
