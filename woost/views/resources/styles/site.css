@@ -165,15 +165,16 @@ a,
 }
 
 .fallback_language_notice {
-    padding: 0.6em;
+    clear: both;
+    padding: 0.4em;
     border: 1px solid #ed7;
-    font-size: 1.1em;
+    font-size: 0.9em;
     margin-bottom: 2em;
     background-color: #fe8;
     background-repeat: no-repeat;
     background-image: url(../images/fallback_language.png);
     background-position: 0.6em 0.4em;
-    padding-left: 2.6em;
+    padding-left: 2.4em;
 }
 
 .footer {
