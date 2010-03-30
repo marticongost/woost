@@ -25,20 +25,6 @@ from woost.models import Language
             method="post"
             py:visible="@{not self.successful}">
 
-            <ul py:def="selection_display" py:args="obj, member">
-                <?py
-                selection = export_form.get_member_value(obj, member)
-                ?>
-                <li py:for="item in selection">
-                    <input type="hidden" name="selection" value="${item.id}"/>
-                    <py:woost.views.ContentLink
-                        py:item="${item}"
-                        py:icon_visible="${True}"
-                        py:icon_size="${16}"
-                        py:thumbnail="${False}"/>
-                </li>
-            </ul>
-
             <py:with py:element="export_form.submit_button">
                 <?py element.empty() ?>
                 ${translations("woost.extensions.staticsite Export button")}
@@ -57,12 +43,7 @@ from woost.models import Language
                         element.add_class(event.status)
                         ?>
                         <td class="item_cell">
-                            <py:woost.views.ContentLink
-                                py:item="${event.publishable}"
-                                py:icon_visible="${True}"
-                                py:icon_size="${16}"
-                                py:thumbnail="${False}"/>
-                            <span class="language" py:if="event.language">(${translations(event.language)})</span>
+                            ${event.file}
                         </td>
                         <td class="outcome_cell">
                             ${translations("woost.extensions.staticsite.export_status-" + event.status)}

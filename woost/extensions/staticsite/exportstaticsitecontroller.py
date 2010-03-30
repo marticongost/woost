@@ -14,13 +14,17 @@ from cocktail.events import when
 from cocktail.translations import translations
 from cocktail import schema
 from cocktail.controllers.formcontrollermixin import FormControllerMixin
+from cocktail.persistence import datastore
 from woost.models import (
     Publishable,
-    Language
+    Language,
+    get_current_user
 )
 from woost.controllers.backoffice.basebackofficecontroller \
     import BaseBackOfficeController
-from woost.extensions.staticsite.staticsiteexporter import StatusTracker
+from woost.extensions.staticsite.staticsitedestination import StatusTracker
+from woost.extensions.staticsite.exportationpermission import \
+    ExportationPermission
 
 
 class ExportStaticSiteController(
@@ -37,54 +41,34 @@ class ExportStaticSiteController(
         
         site_languages = Language.codes
 
+        def allowed_destinations():
+            return [
+                destination 
+                for destination in extension.destinations 
+                if get_current_user().has_permission(
+                    ExportationPermission,
+                    destination = destination
+                )
+            ]
+
         return schema.Schema("ExportStaticSite", members = [
             schema.Reference(
-                "exporter",
+                "destination",
                 type =
-                    "woost.extensions.staticsite.staticsiteexporter."
-                    "StaticSiteExporter",
+                    "woost.extensions.staticsite.staticsitedestination."
+                    "StaticSiteDestination",
                 required = True,
-                enumeration = extension.exporters,
+                enumeration = lambda ctx: allowed_destinations(),
                 edit_control =
                     "cocktail.html.RadioSelector"
-                    if len(extension.exporters) > 1
+                    if len(allowed_destinations()) > 1
                     else "cocktail.html.HiddenInput",
-                default = extension.exporters[0]
-            ),
-            schema.Collection(
-                "selection",
-                items = schema.Reference(
-                    type = Publishable,
-                    relation_constraints = 
-                        [Publishable.exportable_as_static_content.equal(True)]
-                ),
-                default = schema.DynamicDefault(lambda:
-                    list(Publishable.select(
-                        Publishable.exportable_as_static_content.equal(True)
-                    ))
-                )
-            ),
-            schema.Collection(
-                "language",
-                items = schema.String(
-                    enumeration = site_languages,
-                    translate_value = translations
-                ),
-                edit_control = 
-                    "cocktail.html.CheckList"
-                    if len(site_languages) > 1
-                    else "cocktail.html.HiddenInput",
-                default = site_languages
+                default = schema.DynamicDefault(lambda: allowed_destinations()[0])
             ),
             schema.Boolean(
                 "update_only",
                 required = True,
                 default = True
-            ),
-            schema.Boolean(
-                "include_resources",
-                default = False,
-                required = True
             )            
         ])
 
@@ -94,19 +78,25 @@ class ExportStaticSiteController(
         export_events = []
         tracker = StatusTracker()
 
-        @when(tracker.item_processed)
-        def handle_item_processed(event):
+        @when(tracker.file_processed)
+        def handle_file_processed(event):
             if event.status == "failed":
                 event.error_handled = True
             export_events.append(event)
 
         form = self.form_instance
-        form["exporter"].export(
-            form["selection"],
-            languages = form["language"],
+
+        user = get_current_user()
+        user.require_permission(
+            ExportationPermission,
+            destination = form["destination"]
+        )
+        form["destination"].export(
             update_only = form["update_only"],
             status_tracker = tracker
         )
         
         self.output["export_events"] = export_events
+
+        datastore.commit()
 
