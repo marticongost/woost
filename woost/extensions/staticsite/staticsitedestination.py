@@ -448,9 +448,7 @@ class FTPDestination(StaticSiteDestination):
         path = self._get_ftp_path(folder)
 
         if not self._path_exists(ftp, path):
-            print "Exists?", path
             ftp.mkd(path)
-            print "Created"
 
     def _get_ftp_path(self, *args):
 
