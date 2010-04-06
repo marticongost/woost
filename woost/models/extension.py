@@ -127,7 +127,6 @@ class Extension(Item):
             Item.__metaclass__.__init__(cls, name, bases, members)
 
     instantiable = False
-    integral = True
     edit_node_class = "woost.controllers.backoffice.extensioneditnode." \
                       "ExtensionEditNode"
 
