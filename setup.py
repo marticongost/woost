@@ -70,7 +70,8 @@ of its features include:\n"
             "pdf = woost.extensions.pdf:PDFExtension",
             "vimeo = woost.extensions.vimeo:VimeoExtension",
 			"signup = woost.extensions.signup:SignUpExtension",
-            "googlesearch = woost.extensions.googlesearch:GoogleSearchExtension"			
+            "googlesearch = woost.extensions.googlesearch:GoogleSearchExtension",
+            "campaignmonitor = woost.extensions.campaignmonitor:CampaignMonitorExtension"
         ]
     },
     # Woost can't yet access view resources (images, style sheets, client

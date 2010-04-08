@@ -8,6 +8,10 @@
 """
 from woost.models import Publishable
 from woost.controllers.backoffice.useractions import UserAction
+from woost.extensions.staticsite.staticsitedestination import \
+    StaticSiteDestination
+from woost.extensions.staticsite.exportationpermission import \
+    ExportationPermission
 
 
 class ExportStaticAction(UserAction):
@@ -15,6 +19,15 @@ class ExportStaticAction(UserAction):
     max = None
     included = frozenset(["toolbar"])
     content_type = Publishable
+
+    def is_permitted(self, user, target):
+        return any([
+            user.has_permission(
+                ExportationPermission, 
+                destination = destination
+            )
+            for destination in StaticSiteDestination.select()
+        ])
 
 ExportStaticAction("export_static").register()
 
