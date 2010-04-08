@@ -152,14 +152,15 @@ class File(Publishable):
     def confirm_draft(self):
         trans = datastore.connection.transaction_manager.get()
 
-        def copy_file(successful, source, destination):
-            if successful:
-                copy(source, destination)
+        if self.draft_source:
+            def copy_file(successful, source, destination):
+                if successful:
+                    copy(source, destination)
 
-        trans.addAfterCommitHook(
-            copy_file,
-            (self.file_path, self.draft_source.file_path)
-        )
+            trans.addAfterCommitHook(
+                copy_file,
+                (self.file_path, self.draft_source.file_path)
+            )
 
         Publishable.confirm_draft(self)
 

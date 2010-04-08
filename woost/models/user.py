@@ -43,15 +43,16 @@ class User(Item):
 
     @type anonymous: bool
 
-    @ivar encryption: The hashing algorithm used to encrypt user passwords.
-        Should be a reference to one of the algorithms provided by the
-        L{hashlib} module.
+    @ivar encryption_method: The hashing algorithm used to encrypt user
+        passwords. Should be a reference to one of the algorithms provided
+        by the L{hashlib} module.
     """    
     edit_form = "woost.views.UserForm"
     edit_node_class = \
         "woost.controllers.backoffice.usereditnode.UserEditNode"
 
-    encryption = sha1
+    encryption_method = sha1
+
     anonymous = False
     
     members_order = [
@@ -98,6 +99,12 @@ class User(Item):
         required = True,
         default = True
     )
+
+    def encryption(self, data):
+        if isinstance(data,unicode):
+            return self.encryption_method(data.encode("utf-8"))
+        else:
+            return self.encryption_method(data)
 
     def __translate__(self, language, **kwargs):
         return (self.draft_source is None and self.email) \
