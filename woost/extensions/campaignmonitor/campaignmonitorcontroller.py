@@ -36,10 +36,6 @@ class CampaignMonitorController(FormControllerMixin, DocumentController):
                 "CampaignMonitorList",
             required = True,
             enumeration = publishable.lists,
-            edit_control =
-                "cocktail.html.DropdownSelector"
-                if len(publishable.lists) > 1 
-                else "cocktail.html.HiddenInput",
             default = publishable.lists[0]
         ))
         form_schema.members_order = "name", "email", "list"
