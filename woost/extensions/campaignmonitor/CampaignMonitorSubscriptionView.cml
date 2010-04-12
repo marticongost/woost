@@ -13,24 +13,13 @@ from cocktail.translations import translations
 
     <div py:def="content">
 
-        <ul py:id="error_box" py:collapsible="${True}">
-            <py:ready py:if="self.campaign_monitor_errors">
-                <li>${translations("woost.extensions.campaignmonitor.CampaignMonitorSubscriptionView api error")}</li>
-            </py:ready>
-            <py:ready py:if="self.form_errors">
-                <li py:for="error in self.form_errors">
-                    ${translations(error)}
-                </li>
-            </py:ready>
-        </ul>
-
-        <py:ready py:if="not self.submitted or self.form_errors">
-            <py:cocktail.html.Form
-                py:id="subscription_form"
+        <py:ready>
+            <py:woost.extensions.campaignmonitor.CampaignMonitorSubscriptionForm
+                py:if="not self.submitted or self.form_errors"
                 py:data="@{self.form_data}"
                 py:schema="@{self.form_schema}"
                 py:errors="@{self.form_errors}"
-                method="post" />
+                py:campaign_monitor_errors="@{self.campaign_monitor_errors}" />
         </py:ready>
 
         <py:ready py:if="self.publishable.body">
