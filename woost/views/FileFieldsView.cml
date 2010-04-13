@@ -14,7 +14,7 @@ from woost.models.file import get_human_readable_file_size
     <py:with py:element="self.item_body">
         <py:ready>
             <py:with py:element="self.edit_form">
-                <py:with py:def="label" py:args="member">
+                <py:with py:def="label" py:args="member, language = None" py:baseargs="member, language">
                     <py:block py:if="member.name == 'upload'">
                         <?py
                         form = self.edit_form
