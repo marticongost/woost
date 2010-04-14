@@ -86,7 +86,8 @@ class File(Publishable):
     def from_path(cls,
         path,
         dest,
-        languages = None):
+        languages = None,
+        encoding = "utf-8"):
         """Imports a file into the site.
         
         @param path: The path to the file that should be imported.
@@ -111,6 +112,10 @@ class File(Publishable):
 
         file_name = os.path.split(path)[1]
         title, ext = os.path.splitext(file_name)
+        
+        if encoding:
+            title = title.decode(encoding)
+
         title = title.replace("_", " ").replace("-", " ")
         title = title[0].upper() + title[1:]
 
