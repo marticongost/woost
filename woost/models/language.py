@@ -49,6 +49,8 @@ def get_common_language(self, members, language = None):
 
     if not all(self.get(m, language) for m in members):
         lang = Language.get_instance(iso_code = language)
+        if lang is None:
+            return lang
         if lang.fallback:
             fallback = lang.fallback.iso_code
             if all(self.get(m, fallback) for m in members):

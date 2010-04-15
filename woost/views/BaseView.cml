@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <?py
 from cocktail.translations import require_language
-from woost.models import Site, Publishable
+from woost.models import Site, Publishable, Language
 ?>
 
 <py:block
@@ -102,7 +102,8 @@ from woost.models import Site, Publishable
                 self.fully_translated = (self.content_language == language)
 
                 for trans_lang in publishable.translations:
-                    if trans_lang != language \
+                    if trans_lang in Language.codes \
+                    and trans_lang != language \
                     and publishable.get("translation_enabled", trans_lang) \
                     and self.is_fully_translated(publishable, trans_lang):
                         self.add_head_element(
@@ -122,7 +123,7 @@ from woost.models import Site, Publishable
                     Element("link",
                         rel = "Shortcut Icon",
                         type = icon.mime_type,
-                        href = icon.uri
+                        href = self.cms.uri(icon)
                     )
                 )
 
