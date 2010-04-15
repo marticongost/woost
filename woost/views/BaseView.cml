@@ -122,7 +122,7 @@ from woost.models import Site, Publishable
                     Element("link",
                         rel = "Shortcut Icon",
                         type = icon.mime_type,
-                        href = icon.uri
+                        href = self.cms.uri(icon)
                     )
                 )
 
