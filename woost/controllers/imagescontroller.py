@@ -26,6 +26,8 @@ import cherrypy
 from cherrypy.lib.cptools import validate_since
 from cherrypy.lib.static import serve_file
 import Image
+import ImageDraw
+import ImageFont
 import ImageEnhance
 import ImageFilter
 from cocktail.modeling import (
@@ -244,6 +246,11 @@ class ImagesController(BaseCMSController):
         func = image_processors[proc_name]
         args = []
         kwargs = {}
+        
+        print "<" * 40
+        print processor_string
+        print proc_name
+        print ">" * 40
 
         if pos != -1:
             if processor_string[-1] != ")":
@@ -909,4 +916,72 @@ def shadow(
     )
 
     return back
+
+def reduce_opacity(image, opacity):
+    # Returns an image with reduced opacity.
+    assert opacity >= 0 and opacity <= 1
+    if image.mode != 'RGBA':
+        image = image.convert('RGBA')
+    else:
+        image = image.copy()
+    alpha = image.split()[3]
+    alpha = ImageEnhance.Brightness(alpha).enhance(opacity)
+    image.putalpha(alpha)
+    return image
+
+@image_processor
+def watermark(image, markid, position = "middle", opacity=1):
+    
+    mark = File.require_instance(int(markid))
+
+    mark_image = Image.open(mark.file_path)
+
+    # Adds a watermark to an image.
+    if opacity < 1:
+        mark_image = reduce_opacity(mark_image, opacity)
+    if image.mode != 'RGBA':
+        image = image.convert('RGBA')
+    
+    # create a transparent layer the size of the image and draw the
+    # watermark in that layer.
+    layer = Image.new('RGBA', image.size, (0,0,0,0))
+    if position == 'tile':
+        for y in range(0, image.size[1], mark_image.size[1]):
+            for x in range(0, image.size[0], mark_image.size[0]):
+                layer.paste(mark_image, (x, y), mark_image)
+    elif position == 'scale':
+        # scale, but preserve the aspect ratio
+        ratio = min(
+            float(image.size[0]) / mark_image.size[0],
+            float(image.size[1]) / mark_image.size[1]
+        )
+        w = int(mark_image.size[0] * ratio)
+        h = int(mark_image.size[1] * ratio)
+        mark_image = mark_image.resize((w, h))
+        layer.paste(
+            mark_image,
+            ((image.size[0] - w) / 2, (image.size[1] - h) / 2),
+            mark_image
+        )
+    elif position == 'middle':        
+        layer.paste(
+            mark_image,
+            (
+                (image.size[0] - mark_image.size[0]) / 2,
+                (image.size[1] - mark_image.size[1]) / 2
+            ),
+            mark_image
+        )
+    else:
+        raise ValueError(
+            "Must specify position parameter [tile,scale,middle]."
+        )
+    #TODO
+    # top-left      top         top-right
+    # left          middle      right
+    # bottom-left   bottom      bottom-right
+    # margin
+
+    # composite the watermark with the layer
+    return Image.composite(layer, image, layer)
 
