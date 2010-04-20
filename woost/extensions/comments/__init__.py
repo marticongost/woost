@@ -12,7 +12,7 @@ from cocktail import schema
 from cocktail.events import event_handler, when
 from cocktail.translations import translations
 from cocktail.persistence import datastore
-from cocktail.controllers import UserCollection, get_parameter
+from cocktail.controllers import UserCollection, get_parameter, Location
 from cocktail.pkgutils import resolve
 from woost.models import Extension, Publishable, Role, get_current_user
 from woost.models.changesets import changeset_context
@@ -149,7 +149,6 @@ class CommentsExtension(Extension):
                     cherrypy.request.params.update(
                         comments_page = str(comments_page)
                     )
-                    print cherrypy.request.params
                 
                 # Adapting the comments model
                 adapter = schema.Adapter()
@@ -202,6 +201,7 @@ class CommentsExtension(Extension):
                             comment.publishable = publishable
                             comment.insert()
                             datastore.commit()
+                            raise cherrypy.HTTPRedirect(unicode(Location.get_current()))
                 else:
                     comment_errors = schema.ErrorList([])
                 
