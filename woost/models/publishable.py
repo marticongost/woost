@@ -372,6 +372,7 @@ for category, mime_types in (
         "application/vnd.ms-xpsdocument",
         "application/rtf",
         "application/pdf",
+        "application/x-pdf",
         "application/postscript",
         "application/x-latex",
         "application/vnd.oasis.opendocument.database"
