@@ -161,7 +161,7 @@ translations.define("ShopOrder.address",
 )
 
 translations.define("ShopOrder.town",
-    ca = u"Pobaclió",
+    ca = u"Població",
     es = u"Población",
     en = u"Town"
 )
