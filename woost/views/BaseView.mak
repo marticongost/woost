@@ -5,7 +5,7 @@ from cocktail.translations import (
     get_language,
     require_language
 )
-from woost.models import Site, Publishable
+from woost.models import Site, Publishable, Language
 
 output_format = "html4"
 container_classes = "BaseView"
@@ -122,7 +122,7 @@ ${self.dtd()}
     ## Alternate languages
     % if publishable.per_language_publication:
         % for trans_lang in publishable.translations:
-            % if trans_lang != language and publishable.get("translation_enabled", trans_lang) and self.is_fully_translated(publishable, trans_lang):
+            % if trans_lang in Language.codes and trans_lang != language and publishable.get("translation_enabled", trans_lang) and self.is_fully_translated(publishable, trans_lang):
                 <link rel="alternate"
                       title="${translations('woost.views.BaseView alternate language link', lang = trans_lang)}"
                       href="${cms.translate_uri(language = trans_lang)}"
