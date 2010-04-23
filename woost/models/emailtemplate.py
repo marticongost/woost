@@ -160,7 +160,10 @@ class EmailTemplate(Item):
         # Send the message
         smtp = smtplib.SMTP(smtp_host, smtp_port)
         if smtp_user and smtp_password:
-            smtp.login(smtp_user, smtp_password)
+            smtp.login(
+                smtp_user.encode('utf-8'), 
+                smtp_password.encode('utf-8')
+            )
         smtp.sendmail(sender, list(receivers), message.as_string())
         smtp.quit()
 
