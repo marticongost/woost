@@ -199,7 +199,7 @@ class DescriptiveIdPublicationScheme(PublicationScheme):
 
     id_regexp = schema.Member(
         required = True,
-        default = re.compile(r"([^_]+_)?(?P<id>\d+)$"),
+        default = re.compile(r"(.+_)?(?P<id>\d+)$"),
         normalization = lambda value:
             re.compile(value) if isinstance(value, basestring) else value,
         serialize_request_value = lambda value:

@@ -100,13 +100,11 @@ from woost.models import (
                 method="post">
 
                 <!-- Highlight changed members -->
-                <py:with py:def="field_instance" py:args="member">
+                <py:with py:def="field_instance" py:args="member, language = None" py:baseargs="member, language">
                     <?py
                     key = (
                         member.name,
-                        get_language()
-                            if member.translated
-                            else None
+                        language
                     )
                     
                     if key in self.changed_keys:

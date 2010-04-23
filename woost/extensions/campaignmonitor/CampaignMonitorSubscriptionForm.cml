@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?py
+from cocktail.translations import translations
+?>
+
+<div
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:py="http://www.whads.com/ns/cocktail/templates">
+
+    <?py-class
+    data = None
+    schema = None
+    errors = None
+    campaign_monitor_errors = None
+    ?>
+
+    <py:ready>
+        <div class="list-errors" py:if="self.errors or self.campaign_monitor_errors" py:collapsible="${True}">            
+            <ul>
+                <li py:if="self.campaign_monitor_errors">${translations("woost.extensions.campaignmonitor.CampaignMonitorSubscriptionView api error")}</li>
+                <py:block py:if="not self.campaign_monitor_errors">
+                    <py:block py:for="member in self.schema.ordered_members()">
+                        <li py:for="error in self.errors.in_member(member)">${translations(error)}</li>
+                    </py:block>
+                    <py:block py:for="error in self.errors">                    
+                        <li py:if="error.member not in self.schema.ordered_members()">${translations(error)}</li>
+                    </py:block> 
+                </py:block>
+            </ul> 
+        </div>
+
+        <py:cocktail.html.Form
+            py:id="subscription_form"
+            py:data="@{self.data}"
+            py:schema="@{self.schema}"
+            py:errors="@{self.errors}"
+            method="post">
+
+            <py:ready>
+                <?py
+                member = self.schema.get_member("list")
+                lists = member.resolve_constraint(member.enumeration, None)
+                if len(lists) <= 1:
+                    element.list_field.visible = False
+                ?>
+            </py:ready>
+
+        </py:cocktail.html.Form>
+
+    </py:ready>
+
+</div>
