@@ -106,6 +106,8 @@ class BackOfficeController(BaseBackOfficeController):
 
         if resource_type == "image":
             return "var tinyMCEImageList = %s" % (dumps(output))
+        elif resource_type == "video":
+            return "var tinyMCEMediaList = %s" % (dumps(output))
         else:
             return "var tinyMCELinkList = %s" % (dumps(output))
 
