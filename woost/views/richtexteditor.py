@@ -61,6 +61,8 @@ class RichTextEditor(TinyMCE):
                     % (ctx_uri, edit_stack_param, self.language),
                 external_link_list_url = "%s/editor_attachments?edit_stack=%s&resource_type=document&language=%s"
                     % (ctx_uri, edit_stack_param, self.language),
+                media_external_list_url = "%s/editor_attachments?edit_stack=%s&resource_type=video&language=%s"
+                    % (ctx_uri, edit_stack_param, self.language),
             )
         
 
