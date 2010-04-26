@@ -4,6 +4,10 @@
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:py="http://www.whads.com/ns/cocktail/templates">
 
+    <?py-class
+    translation_members = ()
+    ?>
+
     <div py:def="content">
 
         <py:ready py:if="self.confirmation_enabled">

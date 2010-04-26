@@ -8,6 +8,10 @@ from cocktail.persistence import UniqueValueError
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:py="http://www.whads.com/ns/cocktail/templates">
 
+    <?py-class
+    translation_members = ()
+    ?>
+
     <?py self.add_resource("/resources/styles/SignUpView.css") ?>
 
     <div py:def="content">
