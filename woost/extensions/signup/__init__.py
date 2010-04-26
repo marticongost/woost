@@ -125,8 +125,8 @@ class SignUpExtension(Extension):
             signup_view.engine = u"cocktail"
             signup_view.qname = u"woost.extensions.signup.signup_template"
             signup_view.set("title", u"Sign up view", "en")
-            signup_view.set("title", u"Vista de alta de usuarios", "es")
-            signup_view.set("title", u"Vista d'alta d'usuaris", "ca")
+            signup_view.set("title", u"Plantilla de alta de usuarios", "es")
+            signup_view.set("title", u"Plantilla d'alta d'usuaris", "ca")
             signup_view.insert()
 
         # Make sure the sign up confirmation template exists
