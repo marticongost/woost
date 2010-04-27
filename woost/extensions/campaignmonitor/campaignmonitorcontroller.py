@@ -83,16 +83,22 @@ class CampaignMonitorController(FormControllerMixin, DocumentController):
         custom_fields.update(**new_custom_fields)
 
         # Encode custom fields
+        encoded_custom_fields = {}
         for key, value in custom_fields.items():
-            if isinstance(value, unicode):
-                custom_fields[key] = value.encode("utf-8")
+            encoded_key = (
+                key.encode("utf-8") if isinstance(key, unicode) else key
+            )
+            encoded_value = (
+                value.encode("utf-8") if isinstance(value, unicode) else value
+            )
+            custom_fields[encoded_key] = encoded_value
 
         try:
             api.subscriber_add_and_resubscribe(
                 cmlist.list_id,
                 email,
                 name,
-                custom_fields
+                encoded_custom_fields
             )
         except CampaignMonitorApi.CampaignMonitorApiException:
             # TODO: Capture the error code and show the correct message
