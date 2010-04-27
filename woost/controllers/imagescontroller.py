@@ -247,11 +247,6 @@ class ImagesController(BaseCMSController):
         args = []
         kwargs = {}
         
-        print "<" * 40
-        print processor_string
-        print proc_name
-        print ">" * 40
-
         if pos != -1:
             if processor_string[-1] != ")":
                 raise ValueError(
