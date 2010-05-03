@@ -42,11 +42,11 @@ class EmailTemplate(Item):
 
     mime_type = schema.String(
         required = True,
-        default = "text/html",
+        default = "html",
         listed_by_default = False,
         enumeration = [
-            "text/plain",
-            "text/html"
+            "plain",
+            "html"
         ]
     )
 
