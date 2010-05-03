@@ -9,6 +9,7 @@
 import buffet
 import smtplib
 from email.mime.text import MIMEText
+from email.Header import Header
 from email.Utils import formatdate
 from cocktail import schema
 from cocktail.html.datadisplay import display_factory
@@ -105,7 +106,7 @@ class EmailTemplate(Item):
         if pos != -1:
             mime_type = mime_type[pos + 1:]
 
-        message = MIMEText("", mime_type)
+        message = MIMEText("", _subtype = mime_type, _charset = "utf-8")
 
          # Receivers (python expression)
         receivers = eval_member("receivers")
@@ -152,7 +153,7 @@ class EmailTemplate(Item):
             body = self.body
             
         if subject:
-            message["Subject"] = subject
+            message["Subject"] = Header(subject, "utf-8")
 
         message["Date"] = formatdate()
         message.set_payload(body)
