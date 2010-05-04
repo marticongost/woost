@@ -427,7 +427,9 @@ class ImageFileRenderer(ContentRenderer):
     """A content renderer that handles image files."""
 
     def can_render(self, item):
-        return isinstance(item, File) and item.resource_type == "image"
+        return isinstance(item, File) \
+        and item.resource_type == "image" \
+        and item.mime_type in ImagesController.formats_by_mime_type
 
     def render(self, item):
         return (item.file_path, item.mime_type)
