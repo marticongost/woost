@@ -291,6 +291,11 @@ class ContentController(BaseBackOfficeController):
                     schema.get(edit_node.form_data, relation)
                 )
 
+            if excluded_items:
+                user_collection.add_base_filter(
+                    ExclusionExpression(Self, excluded_items)
+                )
+
             # Add relation constraints
             for constraint in relation.get_constraint_filters(edit_node.item):
                 user_collection.add_base_filter(constraint)
