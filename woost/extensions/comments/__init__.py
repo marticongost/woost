@@ -151,7 +151,7 @@ class CommentsExtension(Extension):
                     )
                 
                 # Adapting the comments model
-                adapter = schema.Adapter()
+                adapter = schema.Adapter()                
                 adapter.exclude(
                     member.name
                     for member in comment_model.members().itervalues()
@@ -159,7 +159,7 @@ class CommentsExtension(Extension):
                     or not member.editable
                     or not issubclass(member.schema, comment_model)
                 )
-                adapter.exclude("publishable")
+                adapter.exclude(["publishable","captcha"])
 
                 comments_schema = schema.Schema(comment_model.name + "Form")
                 adapter.export_schema(comment_model, comments_schema)
@@ -178,7 +178,7 @@ class CommentsExtension(Extension):
                         comment_data = {}
 
                         get_parameter(
-                            comments_schema, 
+                            comments_schema,
                             target = comment_data, 
                             strict = False
                         )
@@ -189,19 +189,20 @@ class CommentsExtension(Extension):
 
                         if not comment_errors:
                             comment = comment_model()
-                            comment_id = comment.id
 
-                            adapter.import_object(                                                                                                                                                                       
+                            adapter.import_object(
                                 comment_data,
                                 comment,
-                                source_schema = comment_model
+                                source_schema = comments_schema,
+                                target_schema = comment_model
                             )
 
-                            comment.id = comment_id
                             comment.publishable = publishable
                             comment.insert()
                             datastore.commit()
-                            raise cherrypy.HTTPRedirect(unicode(Location.get_current()))
+                            raise cherrypy.HTTPRedirect(
+                                unicode(Location.get_current()).encode('utf-8')
+                            )
                 else:
                     comment_errors = schema.ErrorList([])
                 
