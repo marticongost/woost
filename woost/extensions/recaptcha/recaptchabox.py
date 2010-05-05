@@ -37,6 +37,7 @@ class ReCaptchaBox(Element):
 
         language = get_language()
         
+        options["lang"] = language
         if language == "ca":
             options["lang"] = "es"
             options["custom_translations"] = {
