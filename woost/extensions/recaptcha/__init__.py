@@ -7,9 +7,11 @@
 @since:			December 2009
 """
 from cocktail.events import event_handler
+from cocktail.persistence import datastore
 from cocktail.translations import translations
 from cocktail import schema
-from woost.models import Extension
+from cocktail.html import templates
+from woost.models import Extension, Template
 
 translations.define("ReCaptchaExtension",
     ca = u"ReCaptcha",
@@ -47,6 +49,24 @@ translations.define("ReCaptchaExtension.ssl",
     en = u"SSL"
 )
 
+translations.define("ReCaptchaExtension.custom_theme_widget",
+    ca = u"Id de l'element DOM (només pel tema custom)",
+    es = u"Id del elemento DOM (sólo para el tema custom)",
+    en = u"DOM element Id (only for custom theme)"
+)
+
+translations.define("ReCaptchaExtension.custom_template",
+    ca = u"Plantilla",
+    es = u"Plantilla",
+    en = u"Template"
+)
+
+translations.define("ReCaptchaExtension.custom_group",
+    ca = u"Tema personalitzat",
+    es = u"Tema personalizado",
+    en = u"Custom Theme"
+)
+
 
 class ReCaptchaExtension(Extension):
 
@@ -75,9 +95,14 @@ class ReCaptchaExtension(Extension):
             schemarecaptchas
         )
 
-        # Append additional members to the extension                            
+        # Append additional members to the extension
         ReCaptchaExtension.members_order = [
-            "public_key", "private_key", "theme", "ssl"
+            "public_key",
+            "private_key",
+            "theme",
+            "custom_theme_widget",
+            "custom_template",
+            "ssl"
         ]
 
         ReCaptchaExtension.add_member(
@@ -102,6 +127,23 @@ class ReCaptchaExtension(Extension):
                     "red", "white", "blackglass", "clean", "custom"
                 ),
                 default = "red"
+            )   
+        )
+
+        ReCaptchaExtension.add_member(
+            schema.String(
+                "custom_theme_widget",
+                exclusive = ReCaptchaExtension.theme.equal("custom"),
+                member_group = "custom_group"
+            )   
+        )  
+
+        ReCaptchaExtension.add_member(
+            schema.String(
+                "custom_template",
+                exclusive = ReCaptchaExtension.theme.equal("custom"),
+                member_group = "custom_group",
+                default = "woost.extensions.recaptcha.RecaptchaCustomView"
             )   
         )
 
