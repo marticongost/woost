@@ -60,7 +60,8 @@ class ShopExtension(Extension):
             shoporder,
             shoporderentry,
             pricing,
-            basket
+            basket,
+            userfilter
         )
 
         for module, keys in (
