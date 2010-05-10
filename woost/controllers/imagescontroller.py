@@ -683,9 +683,9 @@ class PDFRenderer(ContentRenderer):
 
             temp_image_file = os.path.join(temp_path, "thumbnail.png")
 
-            command = u"%s %s[%d] %s" % ( 
+            command = u"%s -type TrueColor %s[%d] %s" % ( 
                 self.convert_path, item.file_path, page, temp_image_file
-            )   
+            )
             p = Popen(command, shell=True, stdout=PIPE)
             start = time()
 
