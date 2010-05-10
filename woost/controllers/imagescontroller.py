@@ -726,9 +726,9 @@ icon_renderers.register(IconRenderer())
 # Image processors
 #------------------------------------------------------------------------------
 def resolve_px(value, size):
-    if isinstance(value, float):
+    if isinstance(value, float):        
         value = int(size * value)
-    elif value < 0:
+    if value < 0:
         value = size + value
     return value
 
