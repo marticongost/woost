@@ -19,6 +19,7 @@ from woost.models import Item, Site
 class EmailTemplate(Item):
 
     visible_from_root = False
+    encoding = "utf-8"
 
     members_order = [
         "title",
@@ -106,7 +107,31 @@ class EmailTemplate(Item):
         if pos != -1:
             mime_type = mime_type[pos + 1:]
 
-        message = MIMEText("", _subtype = mime_type, _charset = "utf-8")
+        # Subject and body (templates)
+        if self.template_engine:
+            template_engine = buffet.available_engines[self.template_engine]
+            engine = template_engine(
+                options = {"mako.output_encoding": self.encoding}
+            )
+
+            def render(field_name):
+                markup = self.get(field_name)
+                if markup:
+                    template = engine.load_template(
+                        "EmailTemplate." + field_name,
+                        self.get(field_name)
+                    )
+                    return engine.render(context, template = template)                    
+                else:
+                    return u""
+           
+            subject = render("subject").strip()
+            body = render("body")
+        else:
+            subject = self.subject.encode(self.encoding)
+            body = self.body.encode(self.encoding)
+            
+        message = MIMEText(body, _subtype = mime_type, _charset = self.encoding)
 
          # Receivers (python expression)
         receivers = eval_member("receivers")
@@ -128,42 +153,17 @@ class EmailTemplate(Item):
         if bcc:
             receivers.update(r.strip() for r in bcc)
 
-        # Subject and body (templates)
-        if self.template_engine:
-            template_engine = buffet.available_engines[self.template_engine]
-            engine = template_engine(
-                options = {"mako.output_encoding": "utf-8"}
-            )
-
-            def render(field_name):
-                markup = self.get(field_name)
-                if markup:
-                    template = engine.load_template(
-                        "EmailTemplate." + field_name,
-                        self.get(field_name)
-                    )
-                    return engine.render(context, template = template)                    
-                else:
-                    return u""
-           
-            subject = render("subject").strip()
-            body = render("body")
-        else:
-            subject = self.subject
-            body = self.body
-            
         if subject:
-            message["Subject"] = Header(subject, "utf-8")
+            message["Subject"] = Header(subject, self.encoding)
 
         message["Date"] = formatdate()
-        message.set_payload(body)
 
         # Send the message
         smtp = smtplib.SMTP(smtp_host, smtp_port)
         if smtp_user and smtp_password:
             smtp.login(
-                smtp_user.encode('utf-8'), 
-                smtp_password.encode('utf-8')
+                smtp_user.encode(self.encoding), 
+                smtp_password.encode(self.encoding)
             )
         smtp.sendmail(sender, list(receivers), message.as_string())
         smtp.quit()

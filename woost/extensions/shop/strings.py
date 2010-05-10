@@ -536,3 +536,30 @@ translations.define("woost.extensions.shop.ShoppingBasket update button",
     en = u"Update"
 )
 
+# UserFilter
+#------------------------------------------------------------------------------
+translations.define(
+    "woost.extensions.shop.userfilter.ShopOrderCostFilter-instance",
+    ca = u"Cost de la comanda",
+    es = u"Coste del pedido ",
+    en = u"Shop order cost"
+)
+
+translations.define("ShopOrderCostFilter.include_shipping",
+    ca = u"Costos d'enviament inclosos",
+    es = u"Costes de envío incluidos",
+    en = u"Shipping costs included"
+)
+
+translations.define("ShopOrderCostFilter.include_discounts",
+    ca = u"Descomptes inclosos",
+    es = u"Descuentos incluidos",
+    en = u"Discounts included"
+)
+
+translations.define("ShopOrderCostFilter.include_taxes",
+    ca = u"Impostos inclosos",
+    es = u"Impuestos incluidos",
+    en = u"Taxes included"
+)
+
