@@ -30,16 +30,12 @@ from woost.controllers.backoffice.showdetailcontroller \
 from woost.controllers.backoffice.differencescontroller \
     import DifferencesController
 
-from woost.controllers.backoffice.downloadcontroller \
-    import DownloadController
-
 
 class ItemController(BaseBackOfficeController):
 
     default_section = "fields"
     
     diff = DifferencesController
-    download = DownloadController
 
     @cached_getter
     def preview(self):
