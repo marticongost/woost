@@ -87,6 +87,7 @@ class File(Publishable):
         path,
         dest,
         languages = None,
+        hash = None,
         encoding = "utf-8"):
         """Imports a file into the site.
         
@@ -122,7 +123,7 @@ class File(Publishable):
         file = cls()
         
         file.file_size = os.stat(path).st_size
-        file.file_hash = file_hash(path)
+        file.file_hash = hash or file_hash(path)
         file.file_name = file_name
 
         # Infer the file's MIME type
