@@ -93,7 +93,12 @@ class ShopOrder(Item):
         min = 1
     )
 
-    def calculate_cost(self, include_shipping = True, include_taxes = True):
+    def calculate_cost(
+        self, 
+        include_shipping = True, 
+        include_taxes = True, 
+        include_discounts = True
+    ):
         """Calculates the costs for the order.
         @rtype: dict
         """
@@ -131,7 +136,10 @@ class ShopOrder(Item):
         from woost.extensions.shop import ShopExtension
         shop_ext = ShopExtension.instance
         
-        policies = list(shop_ext.discounts)
+        policies = list()
+
+        if include_discounts:
+            policies.extend(shop_ext.discounts)
         
         if include_shipping:
             policies.extend(shop_ext.shipping_costs)
