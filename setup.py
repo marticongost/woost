@@ -12,7 +12,7 @@ from os.path import join, isdir
 
 setup(
     name = "woost",
-    version = "0.4",
+    version = "0.4.1",
     author = "Whads/Accent SL",
     author_email = "tech@whads.com",
     maintainer = "Marti Congost",
@@ -53,7 +53,7 @@ of its features include:\n"
     ],
     install_requires = [
         "simplejson",
-        "cocktail==0.3"
+        "cocktail==0.3.1"
     ],    
     packages = find_packages(),
     include_package_data = True,
