@@ -43,7 +43,7 @@ self.fully_translated = (self.content_language == self.language)
     )    
     %>
     <div class="${key}_slot"${' lang="%s"' % language if language else ""}>
-        ${publishable.get(key, language)}
+        ${publishable.get(key, language) or ""}
     </div>
 </%def>
 
