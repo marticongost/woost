@@ -162,16 +162,16 @@ translations.define("cocktail.html.shortcuts action preview",
     en = u"p"
 )
 
-translations.define("Action download",
-    ca = u"Mostrar",
-    es = u"Mostrar",
-    en = u"Show"
+translations.define("Action open_resource",
+    ca = u"Veure publicat",
+    es = u"Ver publicado",
+    en = u"Show published"
 )
 
-translations.define("cocktail.html.shortcuts action download",
-    ca = u"m",
-    es = u"m",
-    en = u"h"
+translations.define("cocktail.html.shortcuts action open_resource",
+    ca = u"b",
+    es = u"b",
+    en = u"b"
 )
 
 translations.define("Action export_xls",

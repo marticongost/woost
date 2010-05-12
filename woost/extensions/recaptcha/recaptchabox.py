@@ -9,6 +9,7 @@ u"""
 from simplejson import dumps
 from cocktail.translations import get_language
 from cocktail.html import Element, templates
+from woost.models import Template
 from woost.extensions.recaptcha import ReCaptchaExtension
 
 
@@ -16,7 +17,7 @@ class ReCaptchaBox(Element):
     
     API_SSL_SERVER = "https://api-secure.recaptcha.net"
     API_SERVER = "http://api.recaptcha.net"
-
+    
     tag = None
 
     def __init__(self, *args, **kwargs):
@@ -37,6 +38,7 @@ class ReCaptchaBox(Element):
 
         language = get_language()
         
+        options["lang"] = language
         if language == "ca":
             options["lang"] = "es"
             options["custom_translations"] = {
@@ -53,6 +55,12 @@ class ReCaptchaBox(Element):
         elif language not in ("en", "nl", "fr", "de", "pt", "ru", "es", "tr"):
             options["lang"] = "en"
 
+        if ReCaptchaExtension.instance.theme == "custom":
+            options.setdefault(
+                    "custom_theme_widget",
+                    ReCaptchaExtension.instance.custom_theme_widget
+            )
+            
         options.setdefault("theme", ReCaptchaExtension.instance.theme)
 
         init_options = Element("script")
@@ -62,13 +70,21 @@ class ReCaptchaBox(Element):
         init_script = Element()
         init_script.append("""<script type="text/javascript" src="%(api_server)s/challenge?k=%(public_key)s%(error_param)s"></script>
 
-<noscript>
-  <iframe src="%(api_server)s/noscript?k=%(public_key)s%(error_param)s" height="300" width="500" frameborder="0"></iframe><br />
-  <textarea name="recaptcha_challenge_field" rows="3" cols="40"></textarea>
-  <input type='hidden' name='recaptcha_response_field' value='manual_challenge' />
-</noscript>
-""" % self.recaptcha_params)
+        <noscript>
+          <iframe src="%(api_server)s/noscript?k=%(public_key)s%(error_param)s" height="300" width="500" frameborder="0"></iframe><br />
+          <textarea name="recaptcha_challenge_field" rows="3" cols="40"></textarea>
+          <input type='hidden' name='recaptcha_response_field' value='manual_challenge' />
+        </noscript>
+        """ % self.recaptcha_params)
 
         self.append(init_options)
+
+        if ReCaptchaExtension.instance.theme == "custom":
+            custom_container = templates.new(
+                ReCaptchaExtension.instance.custom_template
+            )
+            custom_container.widgetid = ReCaptchaExtension.instance.custom_theme_widget
+            self.append(custom_container.render())
+
         self.append(init_script)
     

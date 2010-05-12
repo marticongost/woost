@@ -635,11 +635,21 @@ class PreviewAction(UserAction):
     content_type = Publishable
 
 
-class DownloadAction(UserAction):
+class OpenResourceAction(UserAction):
     min = 1
     max = 1
-    content_type = (URI, File)
+    content_type = Publishable
     included = frozenset(["toolbar", "item_buttons"])
+    excluded = frozenset([
+        "new",
+        "draft",
+        "selector",
+        "calendar_content_view",
+        "changelog"
+    ])
+
+    def get_url(self, controller, selection):
+        return controller.context["cms"].uri(selection[0])
 
 
 class ExportAction(UserAction):
@@ -807,7 +817,7 @@ RemoveAction("remove").register()
 OrderAction("order").register()
 ShowDetailAction("show_detail").register()
 PreviewAction("preview").register()
-DownloadAction("download").register()
+OpenResourceAction("open_resource").register()
 EditAction("edit").register()
 DiffAction("diff").register()
 RevertAction("revert").register()
