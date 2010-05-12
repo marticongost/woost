@@ -683,9 +683,9 @@ class PDFRenderer(ContentRenderer):
 
             temp_image_file = os.path.join(temp_path, "thumbnail.png")
 
-            command = u"%s %s[%d] %s" % ( 
+            command = u"%s -type TrueColor %s[%d] %s" % ( 
                 self.convert_path, item.file_path, page, temp_image_file
-            )   
+            )
             p = Popen(command, shell=True, stdout=PIPE)
             start = time()
 
@@ -726,9 +726,9 @@ icon_renderers.register(IconRenderer())
 # Image processors
 #------------------------------------------------------------------------------
 def resolve_px(value, size):
-    if isinstance(value, float):
+    if isinstance(value, float):        
         value = int(size * value)
-    elif value < 0:
+    if value < 0:
         value = size + value
     return value
 
