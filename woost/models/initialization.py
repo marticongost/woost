@@ -250,7 +250,8 @@ def init_site(
             "Styles",
             "Feed",
             "WebServices",
-            "BackOffice"
+            "BackOffice",
+            "FirstChildRedirection"
         ):
             controller = Controller()
             controller.qname = "woost.%s_controller" % controller_name.lower()          

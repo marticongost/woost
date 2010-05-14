@@ -945,6 +945,12 @@ translations.define("woost.models.initialization WebServices controller title",
     en = u"Web services controller"
 )
 
+translations.define("woost.models.initialization FirstChildRedirection controller title",
+    ca = u"Controlador de redirecció automàtica al primer fill",
+    es = u"Controlador de redirección automática al primer hijo",
+    en = u"First child redirection controller"
+)
+
 translations.define("woost.models.initialization User styles title",
     ca = u"Estils d'usuari",
     es = u"Estilos de usuario",
