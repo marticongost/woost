@@ -10,7 +10,7 @@ from cocktail.translations import translations, get_language
 from cocktail.html.element import Element
 from cocktail.html import templates
 from cocktail.controllers import context
-from woost.models import Language
+from woost.models import Language, Site
 
 LinkSelector = templates.get_class("cocktail.html.LinkSelector")
 
@@ -56,5 +56,11 @@ class LanguageSelector(LinkSelector):
 
     def get_entry_url(self, language):
         cms = context["cms"]
-        return cms.translate_uri(language = language)
+        publishable = context["publishable"]
+        return cms.translate_uri(
+            path = (None
+                    if publishable.is_accessible(language = language)
+                    else "/"),
+            language = language
+        )
 
