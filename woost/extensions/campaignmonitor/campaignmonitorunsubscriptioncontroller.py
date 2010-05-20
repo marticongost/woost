@@ -81,7 +81,7 @@ class CampaignMonitorUnsubscriptionController(DocumentController):
                             encoded_value = (
                                 value.encode("utf-8") if isinstance(value, unicode) else value
                             )           
-                            custom_fields[encoded_key] = encoded_value
+                            encoded_custom_fields[encoded_key] = encoded_value
 
                         try:
                             # Resubscribe

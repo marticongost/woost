@@ -91,7 +91,7 @@ class CampaignMonitorController(FormControllerMixin, DocumentController):
             encoded_value = (
                 value.encode("utf-8") if isinstance(value, unicode) else value
             )
-            custom_fields[encoded_key] = encoded_value
+            encoded_custom_fields[encoded_key] = encoded_value
 
         try:
             api.subscriber_add_and_resubscribe(
