@@ -28,31 +28,30 @@ from cocktail.translations import translations
                 </py:block>
             </ul> 
         </div>
-
-        <py:cocktail.html.Form
-            py:id="subscription_form"
-            py:data="@{self.data}"
-            py:schema="@{self.schema}"
-            py:errors="@{self.errors}"
-            method="post">
-
-            <py:ready>
-                <?py
-                member = self.schema.get_member("list")
-                lists = member.resolve_constraint(member.enumeration, None)
-                if len(lists) <= 1:
-                    element.list_field.release()
-                if len(lists) == 1:
-                    list_field = Element("input")
-                    list_field["name"] = "list"
-                    list_field["type"] = "hidden"
-                    list_field["value"] = lists[0].id
-                    element.fields.append(list_field)
-                ?>
-            </py:ready>
-
-        </py:cocktail.html.Form>
-
     </py:ready>
+    
+    <py:cocktail.html.Form
+        py:id="subscription_form"
+        py:data="@{self.data}"
+        py:schema="@{self.schema}"
+        py:errors="@{self.errors}"
+        method="post">
+
+        <py:ready>
+            <?py
+            member = self.schema.get_member("list")
+            lists = member.resolve_constraint(member.enumeration, None)
+            if len(lists) <= 1:
+                element.list_field.release()
+            if len(lists) == 1:
+                list_field = Element("input")
+                list_field["name"] = "list"
+                list_field["type"] = "hidden"
+                list_field["value"] = lists[0].id
+                element.fields.append(list_field)
+            ?>
+        </py:ready>
+
+    </py:cocktail.html.Form>
 
 </div>
