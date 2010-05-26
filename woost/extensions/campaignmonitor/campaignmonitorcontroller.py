@@ -52,7 +52,8 @@ class CampaignMonitorController(FormControllerMixin, DocumentController):
         extension = CampaignMonitorExtension.instance
         cmlist = self.form_data["list"]
         email = self.form_data["email"].encode("utf-8")
-        name = self.form_data["name"].encode("utf-8")
+        name = self.form_data.get("name")
+        name = name.encode("utf-8") if name else ""
  
         api = CampaignMonitorApi(
             extension.api_key,
