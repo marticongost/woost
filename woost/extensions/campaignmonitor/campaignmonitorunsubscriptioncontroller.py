@@ -49,7 +49,11 @@ class CampaignMonitorUnsubscriptionController(DocumentController):
         lists = api.client_get_lists()
 
         resubscribed_lists = 0
-        for list in lists:
+        cm_context = {
+            "email": email,
+            "lists": []
+        }
+        for i, list in enumerate(lists):
             try:
                 response = api.subscribers_get_single_subscriber(
                     list.get("ListID"),
@@ -62,6 +66,13 @@ class CampaignMonitorUnsubscriptionController(DocumentController):
                 name = subscriber[0].get("Name")
                 date = subscriber[0].get("Date")
                 state = subscriber[0].get("State")
+                
+                cm_context["lists"].append({
+                    "list_id": list.get("ListID"),
+                    "name": name,
+                    "state": state,
+                    "date": date
+                })
 
                 if state == "Unsubscribed":
                     date = datetime.strptime(date, '%Y-%m-%d %H:%M:%S')
@@ -82,6 +93,8 @@ class CampaignMonitorUnsubscriptionController(DocumentController):
                                 value.encode("utf-8") if isinstance(value, unicode) else value
                             )           
                             encoded_custom_fields[encoded_key] = encoded_value
+                            
+                            cm_context["lists"][i].update(**encoded_custom_fields)
 
                         try:
                             # Resubscribe
@@ -98,9 +111,9 @@ class CampaignMonitorUnsubscriptionController(DocumentController):
         uri = None
 
         if resubscribed_lists == 0:
-            uri = self.subscription_uri()
+            uri = self.get_subscription_uri(**cm_context)
         else:
-            uri = self.pending_uri()
+            uri = self.get_pending_uri(**cm_context)
 
         if uri is None:
             uri = context["cms"].uri(
@@ -109,14 +122,14 @@ class CampaignMonitorUnsubscriptionController(DocumentController):
             
         raise cherrypy.HTTPRedirect(uri.encode("utf-8"))
 
-    def subscription_uri(self):
+    def get_subscription_uri(self, **kwargs):
         subscription_page = CampaignMonitorSubscriptionPage.get_instance(
             qname = u"woost.extensions.campaignmonitor.subscription_page"
         )
         if subscription_page:
             return context["cms"].uri(subscription_page)
 
-    def pending_uri(self):
+    def get_pending_uri(self, **kwargs):
         pending_page = StandardPage.get_instance(
             qname = u"woost.extensions.campaignmonitor.pending_page"
         )
