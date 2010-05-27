@@ -107,13 +107,22 @@ class CampaignMonitorController(FormControllerMixin, DocumentController):
         else:
 
             if user_subscribed and cmlist.confirmation_success_page:
-                uri = context["cms"].uri(cmlist.confirmation_success_page)
-            elif not user_subscribed and cmlist.pending_page:
-                uri = context["cms"].uri(cmlist.pending_page)
+                uri = self.get_confirmation_uri(cmlist, email = email, name = name, **custom_fields)
+            elif not user_subscribed and cmlist.pending_page:                
+                uri = self.get_pending_uri(cmlist, email = email, name = name, **custom_fields)
             else:
-                uri = context["cms"].uri(context["publishable"])
+                uri = self.get_default_uri(cmlist, email = email, name = name, **custom_fields)
 
             raise cherrypy.HTTPRedirect(uri.encode("utf-8"))
+            
+    def get_confirmation_uri(self, cmlist, **kwargs):
+        return context["cms"].uri(cmlist.confirmation_success_page)
+        
+    def get_pending_uri(self, cmlist, **kwargs):        
+        return context["cms"].uri(cmlist.pending_page)
+        
+    def get_default_uri(self, cmlist, **kwargs):
+        return context["cms"].uri(context["publishable"])
 
     @cached_getter
     def output(self):
