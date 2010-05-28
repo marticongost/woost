@@ -107,11 +107,11 @@ class CampaignMonitorController(FormControllerMixin, DocumentController):
         else:
 
             if user_subscribed and cmlist.confirmation_success_page:
-                uri = self.get_confirmation_uri(cmlist, email = email, name = name, **custom_fields)
+                uri = self.get_confirmation_uri(cmlist, email = email, name = name, **encoded_custom_fields)
             elif not user_subscribed and cmlist.pending_page:                
-                uri = self.get_pending_uri(cmlist, email = email, name = name, **custom_fields)
+                uri = self.get_pending_uri(cmlist, email = email, name = name, **encoded_custom_fields)
             else:
-                uri = self.get_default_uri(cmlist, email = email, name = name, **custom_fields)
+                uri = self.get_default_uri(cmlist, email = email, name = name, **encoded_custom_fields)
 
             raise cherrypy.HTTPRedirect(uri.encode("utf-8"))
             
