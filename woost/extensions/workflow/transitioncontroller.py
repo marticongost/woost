@@ -76,7 +76,16 @@ class TransitionController(FormControllerMixin, BaseBackOfficeController):
 
     @cached_getter
     def form_model(self):
-        return import_object(self.transition.transition_form)
+        form_model =  import_object(self.transition.transition_form)
+
+        if isinstance(form_model, schema.Schema):
+            return form_model
+        elif callable(form_model):
+            form_model = form_model(self.item, self.transition)
+            if isinstance(form_model, schema.Schema):
+                return form_model
+
+        raise ValueError("Invalid transition form")
 
     @cached_getter
     def form_errors(self):
