@@ -95,6 +95,8 @@ class Item(PersistentObject):
 
     # Versioning
     #--------------------------------------------------------------------------
+    versioned = True
+
     changes = schema.Collection(
         required = True,
         versioned = False,
@@ -282,7 +284,7 @@ class Item(PersistentObject):
         item.creation_time = now
         item.last_update_time = now
 
-        if not item.is_draft:
+        if not item.is_draft and item.__class__.versioned:
             changeset = ChangeSet.current
 
             if changeset:
@@ -315,7 +317,8 @@ class Item(PersistentObject):
         if getattr(item, "_v_initializing", False) \
         or not event.member.versioned \
         or not item.is_inserted \
-        or item.is_draft:
+        or item.is_draft \
+        or not item.__class__.versioned:
             return
         
         changeset = ChangeSet.current
@@ -366,7 +369,7 @@ class Item(PersistentObject):
         if item.draft_source is not None:
             item.draft_source.drafts.remove(item)
 
-        if not item.is_draft:
+        if not item.is_draft and item.__class__.versioned:
             changeset = ChangeSet.current
 
             # Add a revision for the delete operation
