@@ -754,6 +754,67 @@ translations.define(
 )
 
 translations.define(
+    "woost.models.initialization Login Form template title",
+    ca = u"Plantilla formulario de autenticació d'usuari",
+    es = u"Plantilla formulario de autenticación de usuario",
+    en = u"Login form template"
+)
+
+translations.define(
+    "woost.models.initialization Password Change Request view title",
+    ca = u"Plantilla sol·licitud de canvi de contrasenya",
+    es = u"Plantilla solicitud de cambio de contraseña",
+    en = u"Password change request template"
+)
+
+translations.define(
+    "woost.models.initialization Password Change Confirmation Email template title",
+    ca = u"Plantilla de correo electrònic para sol·licitud de canvi de contrasenya",
+    es = u"Plantilla de correo electrónico para solicitud de cambio de contraseña",
+    en = u"Password change confirmation email template"
+)
+
+translations.define(
+    "woost.models.initialization Password Change Confirmation Email subject",
+    ca = u"Canvi de contrasenya",
+    es = u"Cambio de contraseña",
+    en = u"Password change"
+)
+
+translations.define(
+    "woost.models.initialization Password Change Confirmation Email body",
+    ca = u"""Hola ${user.email}. Fes clic en el següent enllaç per a establir
+        la teva nova contrasenya.<br/>
+        <a href='${confirmation_url}'>${confirmation_url}</a>""",
+    es = u"""Hola ${user.email}. Haz clic en el siguiente enlace para
+        establecer tu nueva contraseña.<br/>
+        <a href='${confirmation_url}'>${confirmation_url}</a>""",
+    en = u"""Hello ${user.email}. Click on the following link to set your new
+        password.<br/><a href='${confirmation_url}'> ${confirmation_url}</a>"""
+)
+
+translations.define(
+    "woost.models.initialization Password Change Confirmation view title",
+    ca = u"Plantilla formulari de canvi de contrasenya",
+    es = u"Plantilla formulario de cambio de contraseña",
+    en = u"Password change form template"
+)
+
+translations.define(
+    "woost.models.initialization Password Change Confirmation page title",
+    ca = u"Pàgina de confirmació de canvi de contrasenya",
+    es = u"Página de confirmación de cambio de contraseña",
+    en = u"Password change confirmation page"
+)
+
+translations.define(
+    "woost.models.initialization Password Change Confirmation page body",
+    ca = u"Introduïx la nova contrasenya per la teva compte d'usuari",
+    es = u"Introduce tu nueva contraseña para tu cuenta de usuario",
+    en = u"Enter the new password for your user account"
+)
+
+translations.define(
     "woost.models.initialization Site style sheet title",
     ca = u"Full d'estils global",
     es = u"Hoja de estilos global",
@@ -812,25 +873,27 @@ translations.define(
 )
 
 translations.define(
-    "woost.models.initialization Login page body",
-    ca = lambda form: u"""
-    <p>
-        L'accés a aquesta secció del web està restringit. Per favor,
-        introdueix les teves credencials d'usuari per continuar.
-    </p>
-    """ + (form % (u"Usuari", u"Contrasenya", u"Entrar")),    
-    es = lambda form: u"""
-    <p>
-    El acceso a esta sección del sitio está restringido. Por favor,
-    introduce tus credenciales de usuario para continuar.
-    </p>
-    """ + (form % (u"Usuario", u"Contraseña", u"Entrar")),    
-    en = lambda form: u"""
-    <p>
-        Access to this part of the website is restricted. Please, introduce
-        your user credentials to proceed.
-    </p>
-    """ + (form % (u"User", u"Password", u"Enter"))
+    "woost.controllers.authentication.AuthenticationFailedError-instance",
+    ca = u"Usuari o contrasenya incorrectes",
+    es = u"Usuario o contraseña incorrectos",
+    en = u"Incorrect user or password"
+)
+
+translations.define(
+    "woost.models.initialization Password Change page title",
+    ca = u"Canvi de contrasenya d'usuari",
+    es = u"Cambio de contraseña de usuario",
+    en = u"Password change"
+)
+
+translations.define(
+    "woost.models.initialization Password Change page body",
+    ca = u"""<p>Introduïx a continuació la teva adreça de correu electrònic per
+        a iniciar el procés de canvi de contrasenya</p>""",
+    es = u"""<p>Introduce a continuación tu dirección de correo electrónico
+        para iniciar el proceso de cambio de contraseña</p>""",
+    en = u"""<p>Enter your email address below to initiate the password change
+        process</p>"""
 )
 
 translations.define(
@@ -949,6 +1012,24 @@ translations.define("woost.models.initialization FirstChildRedirection controlle
     ca = u"Controlador de redirecció automàtica al primer fill",
     es = u"Controlador de redirección automática al primer hijo",
     en = u"First child redirection controller"
+)
+
+translations.define("woost.models.initialization Login controller title",
+    ca = u"Controlador de autenticació d'usuari",
+    es = u"Controlador de autenticación de usuario",
+    en = u"User authentication controller"
+)
+
+translations.define("woost.models.initialization PasswordChange controller title",
+    ca = u"Controlador de canvi de contrasenya",
+    es = u"Controlador de cambio de contraseña",
+    en = u"Password change controller"
+)
+
+translations.define("woost.models.initialization PasswordChangeConfirmation controller title",
+    ca = u"Controlador de confirmació de canvi de contrasenya",
+    es = u"Controlador de confirmación de cambio de contraseña",
+    en = u"Password change confirmation controller"
 )
 
 translations.define("woost.models.initialization User styles title",
@@ -1403,6 +1484,27 @@ translations.define("Site.login_page",
     ca = u"Formulari d'autenticació",
     es = u"Formulario de autenticación",
     en = u"Authentication form"
+)
+
+translations.define("Site.login_page body",
+    ca = u"""L'accés a aquesta secció del web està restringit. Per favor,
+            introdueix les teves credencials d'usuari per continuar.""",
+    es = u"""El acceso a esta sección del sitio está restringido. Por favor,
+            introduce tus credenciales de usuario para continuar.""",
+    en = u"""Access to this part of the website is restricted. Please, introduce
+            your user credentials to proceed."""
+)
+
+translations.define("Site.login_page password_forgot",
+    ca = u"He oblidat la contrasenya",
+    es = u"He olvidado la contraseña",
+    en = u"I forgot my password"
+)
+
+translations.define("Site.login_page enter",
+    ca = u"Entrar",
+    es = u"Entrar",
+    en = u"Enter"
 )
 
 translations.define("Site.not_found_error_page",
@@ -3515,5 +3617,38 @@ translations.define(
     ca = u"propietat de l'usuari actiu",
     es = u"propiedad del usuario activo",
     en = u"owned by the active user"
+)
+
+# PasswordChange
+#------------------------------------------------------------------------------
+translations.define(
+    "woost.controllers.passwordchangecontroller.request_sended_notification_message",
+    ca = u"""Hem enviat un correu electrònic a l'adreça indicada amb les
+        instruccions per reestablir la contrasenya.""",        
+    es = u"""Hemos enviado un correo electrónico a la dirección indicada con
+        las instrucciones para reestablecer tu contraseña.""",
+    en = u"""We have sent and e-mail message to the indicated account 
+        containing further instructions to reset your password."""
+)
+
+translations.define(
+    "woost.controllers.passwordchangecontroller.confirmation_message",
+    ca = u"Canvi de contrasenya realitzat correctament.",
+    es = u"Cambio de contraseña realizado correctamente.",
+    en = u"Password correctly changed."
+)
+
+translations.define(
+    "woost.controllers.passwordchangecontroller.UserIdentifierNotRegisteredError-instance",
+    ca = u"No existeix cap usuari amb aquest identificador",
+    es = u"No existe ningún usuario registrado con este identificador",
+    en = u"There is no user with the indicated identifier"
+)
+
+translations.define(
+    "PasswordChangeConfirmationForm.password_confirmation",
+    ca = u"Confirmar la contrasenya",
+    es = u"Confirmar la contraseña",
+    en = u"Confirm password"
 )
 

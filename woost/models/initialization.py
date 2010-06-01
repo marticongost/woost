@@ -8,6 +8,8 @@ u"""
 """
 from __future__ import with_statement
 import sha
+from string import letters, digits
+from random import choice
 from optparse import OptionParser
 from cocktail.translations import translations
 from cocktail.persistence import datastore
@@ -40,7 +42,8 @@ from woost.models import (
     ReadHistoryPermission,
     DeleteTrigger,
     CustomTriggerResponse,
-    ConfirmDraftPermission
+    ConfirmDraftPermission,
+    EmailTemplate
 )
 
 standard_template_identifiers = {
@@ -101,6 +104,7 @@ def init_site(
         site = Site()
         site.qname = "woost.main_site"
         site.insert()
+        site.secret_key = random_string(10)
 
         # Create the administrator user
         admin = User()
@@ -251,7 +255,10 @@ def init_site(
             "Feed",
             "WebServices",
             "BackOffice",
-            "FirstChildRedirection"
+            "FirstChildRedirection",
+            "Login",
+            "PasswordChange",
+            "PasswordChangeConfirmation"
         ):
             controller = Controller()
             controller.qname = "woost.%s_controller" % controller_name.lower()          
@@ -295,6 +302,65 @@ def init_site(
         std_template.qname = "woost.standard_template"
         set_translations(std_template, "title", "Standard template title")
         std_template.insert()
+
+        # Create Login Form view
+        login_form_template = Template()
+        login_form_template.identifier = u"woost.views.LoginFormView"
+        login_form_template.engine = u"cocktail"
+        set_translations(
+            login_form_template,
+            "title", "Login Form template title"
+        )
+        login_form_template.insert()
+
+        # Create Password Change Request view
+        password_change_request_view = Template()
+        password_change_request_view.identifier = \
+            u"woost.views.PasswordChangeRequestView"
+        password_change_request_view.engine = u"cocktail"
+        set_translations(
+            password_change_request_view,
+            "title", "Password Change Request template title"
+        )
+        password_change_request_view.insert()
+
+        # Create Password Change Email template
+        password_change_confirmation_email_template = EmailTemplate()
+        password_change_confirmation_email_template.template_engine = u"mako"
+        password_change_confirmation_email_template.qname = \
+            u"woost.views.password_change_confirmation_email_template"
+        set_translations(
+            password_change_confirmation_email_template,
+            "title", "Password Change Confirmation Email template title"
+        )
+        set_translations(
+            password_change_confirmation_email_template,
+            "subject", "Password Change Confirmation Email subject"
+        )
+        set_translations(
+            password_change_confirmation_email_template,
+            "body", "Password Change Confirmation Email body"
+        )
+        password_change_confirmation_email_template.set(
+            "sender",
+            admin.email
+        )
+        password_change_confirmation_email_template.set(
+            "receivers",
+            u"[user.email]"
+        )
+        password_change_confirmation_email_template.insert()
+
+        # Create Password Change Confirmation view
+        password_change_confirmation_view = Template()
+        password_change_confirmation_view.identifier = \
+            u"woost.views.PasswordChangeConfirmationView"
+        password_change_confirmation_view.engine = u"cocktail"
+        set_translations(
+            password_change_confirmation_view,
+            "title", "Password Change Confirmation view title"
+        )
+        password_change_confirmation_view.insert()
 
         # Create standard resources
         site_stylesheet = URI()
@@ -368,7 +434,7 @@ def init_site(
             "Not found error page body")            
         site.not_found_error_page.insert()
 
-        # Create the login page
+        # Create forbidden error page
         site.forbidden_error_page = StandardPage()
         site.forbidden_error_page.parent = site.home
         site.forbidden_error_page.hidden = True
@@ -380,27 +446,49 @@ def init_site(
             "Forbidden error page body")
         site.forbidden_error_page.insert()
 
-        # Create the authentication form
-        login_form = u"""
-        <form method="post" class="login_form">
-            <label for="user">%s:</label>
-            <input type="text" name="user" value=""/>
-            <label for="password">%s:</label>
-            <input type="password" name="password"/>
-            <div class="buttons">
-                <input type="submit" name="authenticate" value="%s"/>
-            </div>
-        </form>
-        """
+        # Create the password change request page
+        site.password_change_page = StandardPage()
+        site.password_change_page.parent = site.home
+        site.password_change_page.hidden = True
+        site.password_change_page.template = password_change_request_view
+        site.password_change_page.controller = \
+            Controller.get_instance(qname='woost.passwordchange_controller')
+        site.password_change_page.qname = "woost.password_change_page"
+        site.password_change_page.per_language_publication = False
+        set_translations(site.password_change_page, "title",
+            "Password Change page title")
+        set_translations(site.password_change_page, "body",
+            "Password Change page body")
+        site.password_change_page.insert()
+
+        # Create the password change confirmation page
+        site.password_change_confirmation_page = StandardPage()
+        site.password_change_confirmation_page.parent = site.home
+        site.password_change_confirmation_page.hidden = True
+        site.password_change_confirmation_page.per_language_publication = False
+        site.password_change_confirmation_page.template = \
+            password_change_confirmation_view
+        site.password_change_confirmation_page.controller = \
+            Controller.get_instance(
+                qname='woost.passwordchangeconfirmation_controller'
+            )
+        site.password_change_confirmation_page.qname = \
+            "woost.password_change_confirmation_page"
+        set_translations(site.password_change_confirmation_page, "title",
+            "Password Change Confirmation page title")
+        set_translations(site.password_change_confirmation_page, "body",
+            "Password Change Confirmation page body")
+        site.password_change_confirmation_page.insert()
+
+        # Create the login page
         site.login_page = StandardPage()
         site.login_page.parent = site.home
         site.login_page.hidden = True
-        site.login_page.template = std_template
+        site.login_page.template = login_form_template 
+        site.login_page.controller = \
+            Controller.get_instance(qname='woost.login_controller')
         site.login_page.qname = "woost.login_page"
         set_translations(site.login_page, "title", "Login page title")
-        set_translations(site.login_page, "body", "Login page body",
-            form = login_form
-        )
         site.login_page.insert()
 
         # Create site-wide user views
@@ -453,10 +541,10 @@ def init_site(
                         
     datastore.commit()
 
-def main():
+def random_string(length, source = letters + digits + "!?.-$#&@*"):
+    return "".join(choice(source) for i in range(length))
 
-    from string import letters, digits
-    from random import choice
+def main():
  
     parser = OptionParser()
     parser.add_option("-u", "--user", help = "Administrator email")
@@ -468,9 +556,6 @@ def main():
         help = "The buffet templating engine to use by default")
     
     options, args = parser.parse_args()
-
-    def random_string(length, source = letters + digits + "!?.-$#&@*"):
-        return "".join(choice(source) for i in range(length))  
 
     admin_email = options.user
     admin_password = options.password

@@ -2836,3 +2836,18 @@ a.pickcolor span {
     display: inline;
     float: left;
 }
+
+/* Tweaks for password change process
+-----------------------------------------------------------------------------*/
+div.success_label {
+    border: 1px solid rgb(200,220,200);
+    background-color: rgb(220,240,220);
+    text-align: left;
+    float: left;
+    padding: 0.4em;
+    margin: 0.8em;
+    clear: both;
+    width: 90%
+}
+
+
