@@ -343,7 +343,7 @@ def init_site(
         )
         password_change_confirmation_email_template.set(
             "sender",
-            admin.email
+            u'u"'+admin.email+'"'
         )
         password_change_confirmation_email_template.set(
             "receivers",
