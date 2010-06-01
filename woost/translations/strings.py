@@ -761,7 +761,7 @@ translations.define(
 )
 
 translations.define(
-    "woost.models.initialization Password Change Request view title",
+    "woost.models.initialization Password Change Request template title",
     ca = u"Plantilla sol·licitud de canvi de contrasenya",
     es = u"Plantilla solicitud de cambio de contraseña",
     en = u"Password change request template"
