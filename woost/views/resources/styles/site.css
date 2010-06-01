@@ -181,6 +181,25 @@ a,
     clear: left;
 }
 
+.error_box {
+    color: black;
+    border: 1px dotted rgb(200,160,120);
+    background-color: rgb(245,230,215);
+    padding: 0.5em;
+    margin: 0;
+    margin-bottom: 1em;
+}
+
+.error_box li {
+    list-style-type: none;
+}
+
+.error_box li em {
+    font-style: normal;
+    font-weight: bold;
+    color: rgb(135,35,10);
+}
+
 /* Attachments list
 -----------------------------------------------------------------------------*/
 .attachments {
@@ -206,7 +225,7 @@ a,
 -----------------------------------------------------------------------------*/ 
 .login_form {
     margin-top: 1.4em;
-    width: 20em;
+    width: 21em;
     background-color: rgb(240,240,240);
     border: 1px solid rgb(220,220,220);
     padding: 1em;
@@ -227,7 +246,7 @@ a,
 
 .login_form input {
 	margin-bottom: 0.6em;
-    width: 19.5em;
+    width: 20.5em;
 }
 
 .login_form .buttons {
@@ -237,5 +256,9 @@ a,
 
 .login_form .buttons input {
     width: auto;
+}
+
+.login_form a.forgot_password_link {
+    margin-right: 0.5em;
 }
 
