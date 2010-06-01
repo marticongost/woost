@@ -177,7 +177,8 @@ class SignUpExtension(Extension):
                 <br/> <a href='${confirmation_url}'>${confirmation_url}</a>
             """, "ca")
             # sender
-            confirmation_email_template.set("sender", u"'no-reply@woost.info'")
+            admin = User.get_instance(qname="woost.administrator")
+            confirmation_email_template.set("sender", admin.email)
             # receivers
             confirmation_email_template.set("receivers", u"[user.email]")
 
