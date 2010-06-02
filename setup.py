@@ -55,6 +55,9 @@ of its features include:\n"
         "simplejson",
         "cocktail==0.3.1"
     ],    
+    extras_require = {
+        'campaign_monitor_api':  ["campaign_monitor_api"]
+    },
     packages = find_packages(),
     include_package_data = True,
     entry_points = {
