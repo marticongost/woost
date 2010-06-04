@@ -14,54 +14,14 @@ from woost.models.standardpage import StandardPage
     translation_members = ()
     ?>
 
-    <?py
-    self.add_resource("/resources/scripts/LoginFormView.js")
-    ?>
-
     <py:with py:element="self.main">
 
         <p>${translations("Site.login_page body")}</p>
 
-        <ul py:id="error_box" py:collapsible="${True}">
-            <py:ready py:if="self.form_errors">
-                <li py:for="error in self.form_errors">
-                    ${translations(error)}
-                </li>
-            </py:ready>
-        </ul>
-
-        <py:cocktail.html.Form
-            py:id="request_form"
+        <py:woost.views.LoginForm
             py:data="@{self.form_data}"
             py:schema="@{self.form_schema}"
-            py:errors="@{self.form_errors}"
-            class="login_form"
-            method="post">
-                        
-            <?py
-            # Setting submit button name
-            element.submit_button["name"] = "authenticate"
-            element.submit_button.empty()
-            element.submit_button.append(translations("Site.login_page enter"))            
-            ?>
-        
-        </py:cocktail.html.Form>
-
-        <a py:id="forgot_password_link" py:before="self.request_form.submit_button">
-            <py:ready>
-                <?py
-                password_change_page = StandardPage.get_instance(
-                    qname="woost.password_change_page"
-                )
-                if password_change_page \
-                and password_change_page.is_accessible():
-                    element["href"] = self.cms.uri(password_change_page)
-                else:
-                    element.visible = False
-                ?>
-            </py:ready>
-            ${translations("Site.login_page password_forgot")}
-        </a>
+            py:errors="@{self.form_errors}" />
 
     </py:with>
 
