@@ -2,6 +2,7 @@
 
 <?py
 from cocktail.translations import translations
+from cocktail.controllers import context
 from woost.models.standardpage import StandardPage
 ?>
 
@@ -13,20 +14,24 @@ from woost.models.standardpage import StandardPage
 
     <?py
     self.add_resource("/resources/scripts/LoginFormView.js")
-
-    # Setting submit button name
-    element.submit_button["name"] = "authenticate"
-    element.submit_button.empty()
-    element.submit_button.append(translations("Site.login_page enter"))            
     ?>
 
-    ?>
+    <py:ready>
+        <?py
+        # Setting submit button name
+        element.submit_button["name"] = "authenticate"
+        element.submit_button.empty()
+        element.submit_button.append(translations("Site.login_page enter"))            
+        ?>
 
-    <py:cocktail.html.List
-        py:id="error_box"
-        py:before="self.fields"
-        py:collapsible="${True}"
-        py:items="@{[translations(error) for error in self.errors]}"/>
+        <py:cocktail.html.List
+            py:id="error_box"
+            py:before="self.fields"
+            py:collapsible="${True}"
+            py:if="self.errors"
+            py:items="@{[translations(error) for error in self.errors]}"/>
+
+    </py:ready>
 
     <a py:id="forgot_password_link" py:before="self.submit_button">
         <py:ready>
@@ -36,7 +41,7 @@ from woost.models.standardpage import StandardPage
             )
             if password_change_page \
             and password_change_page.is_accessible():
-                element["href"] = self.cms.uri(password_change_page)
+                element["href"] = context["cms"].uri(password_change_page)
             else:
                 element.visible = False
             ?>
