@@ -37,7 +37,6 @@ class CampaignMonitorController(FormControllerMixin, DocumentController):
             enumeration = publishable.lists,
             default = publishable.lists[0]
         ))
-        form_schema.members_order = "name", "email", "list"
 
         return form_schema
 
