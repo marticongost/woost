@@ -8,6 +8,7 @@
 """
 import cherrypy
 from datetime import datetime
+from campaign_monitor_api import CampaignMonitorApi
 from cocktail import schema
 from cocktail.modeling import cached_getter
 from cocktail.controllers import context
@@ -16,8 +17,6 @@ from woost.controllers.documentcontroller import DocumentController
 from woost.extensions.campaignmonitor import CampaignMonitorExtension
 from woost.extensions.campaignmonitor.campaignmonitorsubscriptionpage \
     import CampaignMonitorSubscriptionPage
-from woost.extensions.campaignmonitor.campaign_monitor_api import \
-    CampaignMonitorApi
 
 
 class CampaignMonitorUnsubscriptionController(DocumentController):

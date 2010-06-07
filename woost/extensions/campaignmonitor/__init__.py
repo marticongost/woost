@@ -335,12 +335,11 @@ nuestras.""", "es")
             operations performed by the method.
         @type restricted: bool
         """
+        from campaign_monitor_api import CampaignMonitorApi
         from cocktail.controllers import context
         from cocktail.controllers.location import Location
         from woost.extensions.campaignmonitor.campaignmonitorlist import \
             CampaignMonitorList
-        from woost.extensions.campaignmonitor.campaign_monitor_api import \
-            CampaignMonitorApi
 
         if restricted:
             user = get_current_user()
