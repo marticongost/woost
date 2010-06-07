@@ -14,8 +14,8 @@ from cocktail.translations import translations
     campaign_monitor_errors = None
     ?>
 
-    <py:ready>
-        <div class="list-errors" py:if="self.errors or self.campaign_monitor_errors" py:collapsible="${True}">            
+    <div class="list-errors" py:collapsible="${True}">            
+        <py:ready py:if="self.errors or self.campaign_monitor_errors">
             <ul>
                 <li py:if="self.campaign_monitor_errors">${translations("woost.extensions.campaignmonitor.CampaignMonitorSubscriptionView api error")}</li>
                 <py:block py:if="not self.campaign_monitor_errors">
@@ -27,8 +27,8 @@ from cocktail.translations import translations
                     </py:block> 
                 </py:block>
             </ul> 
-        </div>
-    </py:ready>
+        </py:ready>
+    </div>
     
     <py:cocktail.html.Form
         py:id="subscription_form"
