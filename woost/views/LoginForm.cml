@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<?py
+from cocktail.translations import translations
+from cocktail.controllers import context
+from woost.models.standardpage import StandardPage
+?>
+
+<py:cocktail.html.Form
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:py="http://www.whads.com/ns/cocktail/templates"
+    class="login_form"
+    method="post">
+
+    <?py
+    self.add_resource("/resources/scripts/LoginFormView.js")
+    ?>
+
+    <py:ready>
+        <?py
+        # Setting submit button name
+        element.submit_button["name"] = "authenticate"
+        element.submit_button.empty()
+        element.submit_button.append(translations("Site.login_page enter"))            
+        ?>
+
+        <py:cocktail.html.List
+            py:id="error_box"
+            py:before="self.fields"
+            py:collapsible="${True}"
+            py:if="self.errors"
+            py:items="@{[translations(error) for error in self.errors]}"/>
+
+    </py:ready>
+
+    <a py:id="forgot_password_link" py:before="self.submit_button">
+        <py:ready>
+            <?py
+            password_change_page = StandardPage.get_instance(
+                qname="woost.password_change_page"
+            )
+            if password_change_page \
+            and password_change_page.is_accessible():
+                element["href"] = context["cms"].uri(password_change_page)
+            else:
+                element.visible = False
+            ?>
+        </py:ready>
+        ${translations("Site.login_page password_forgot")}
+    </a>
+
+</py:cocktail.html.Form>

@@ -7,14 +7,13 @@
 @since:			March 2010
 """
 import cherrypy
+from campaign_monitor_api import CampaignMonitorApi
 from cocktail import schema
 from cocktail.modeling import cached_getter
 from cocktail.pkgutils import import_object
 from cocktail.controllers import FormControllerMixin, context
 from woost.controllers.documentcontroller import DocumentController
 from woost.extensions.campaignmonitor import CampaignMonitorExtension
-from woost.extensions.campaignmonitor.campaign_monitor_api import \
-    CampaignMonitorApi
 
 
 class CampaignMonitorController(FormControllerMixin, DocumentController):
@@ -38,7 +37,6 @@ class CampaignMonitorController(FormControllerMixin, DocumentController):
             enumeration = publishable.lists,
             default = publishable.lists[0]
         ))
-        form_schema.members_order = "name", "email", "list"
 
         return form_schema
 
