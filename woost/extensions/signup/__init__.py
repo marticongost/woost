@@ -169,7 +169,7 @@ class SignUpExtension(Extension):
                 <br/> <a href='${confirmation_url}'>${confirmation_url}</a>
             """, "en")
             confirmation_email_template.set("body", u"""
-                Hola ${user.email}. Has clic para confirmar tu cuenta de usuario.
+                Hola ${user.email}. Haz clic para confirmar tu cuenta de usuario.
                 <br/> <a href='${confirmation_url}'>${confirmation_url}</a>
             """, "es")
             confirmation_email_template.set("body", u"""
