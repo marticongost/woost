@@ -53,30 +53,32 @@ class SignUpController(FormControllerMixin, DocumentController):
         form_schema.name = u"SignUpForm"
 
         # Adding extra field for password confirmation
-        password_confirmation_member = schema.String(
-            name = "password_confirmation",
-            edit_control = "cocktail.html.PasswordBox",
-            required = form_schema.get_member("password")
-        )
-        form_schema.add_member(password_confirmation_member)
+        if form_schema.get_member("password"):
 
-        # Set password_confirmation position just after
-        # password member position
-        order_list = form_schema.members_order
-        pos = order_list.index("password")
-        order_list.insert(pos + 1, "password_confirmation")
+            password_confirmation_member = schema.String(
+                name = "password_confirmation",
+                edit_control = "cocktail.html.PasswordBox",
+                required = form_schema.get_member("password")
+            )
+            form_schema.add_member(password_confirmation_member)
 
-        # Add validation to compare password_confirmation and
-        # password fields
-        @password_confirmation_member.add_validation
-        def validate_password_confirmation(member, value, ctx):
-            password = ctx.get_value("password")
-            password_confirmation = value
+            # Set password_confirmation position just after
+            # password member position
+            order_list = form_schema.members_order
+            pos = order_list.index("password")
+            order_list.insert(pos + 1, "password_confirmation")
 
-            if password and password_confirmation \
-            and password != password_confirmation:
-                yield PasswordConfirmationError(
-                        member, value, ctx)
+            # Add validation to compare password_confirmation and
+            # password fields
+            @password_confirmation_member.add_validation
+            def validate_password_confirmation(member, value, ctx):
+                password = ctx.get_value("password")
+                password_confirmation = value
+
+                if password and password_confirmation \
+                and password != password_confirmation:
+                    yield PasswordConfirmationError(
+                            member, value, ctx)
 
         return form_schema
 
