@@ -1,6 +1,6 @@
 
 cocktail.init(function () {
-    jQuery(".LoginFormView [name=user]")
+    jQuery(".LoginForm [name=user]")
         .focus()
         .select();
 });
