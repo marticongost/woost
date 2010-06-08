@@ -6,34 +6,38 @@ from cocktail.controllers import context
 from woost.models.standardpage import StandardPage
 ?>
 
-<py:cocktail.html.Form
+<div
     xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:py="http://www.whads.com/ns/cocktail/templates"
-    class="login_form"
-    method="post">
+    xmlns:py="http://www.whads.com/ns/cocktail/templates">
+
+    <?py-class
+    schema = None
+    errors = ()
+    data = None
+    ?>
 
     <?py
     self.add_resource("/resources/scripts/LoginFormView.js")
     ?>
 
-    <py:ready>
-        <?py
-        # Setting submit button name
-        element.submit_button["name"] = "authenticate"
-        element.submit_button.empty()
-        element.submit_button.append(translations("Site.login_page enter"))            
-        ?>
+    <py:cocktail.html.List
+        py:id="error_box"        
+        py:collapsible="${True}"
+        py:items="@{[translations(error) for error in self.errors]}"/>
 
-        <py:cocktail.html.List
-            py:id="error_box"
-            py:before="self.fields"
-            py:collapsible="${True}"
-            py:if="self.errors"
-            py:items="@{[translations(error) for error in self.errors]}"/>
-
-    </py:ready>
-
-    <a py:id="forgot_password_link" py:before="self.submit_button">
+    <py:cocktail.html.Form
+        py:id="login_form"
+        method="post"
+        py:schema="@{self.schema}"
+        py:errors="@{self.errors}"
+        py:data="@{self.data}"/>
+        
+    <py:with py:element="self.login_form.submit_button" name="authenticate">
+        <?py element.empty() ?>
+        ${translations("Site.login_page enter")}
+    </py:with>
+    
+    <a py:id="forgot_password_link" py:before="self.login_form.submit_button">
         <py:ready>
             <?py
             password_change_page = StandardPage.get_instance(
@@ -48,5 +52,5 @@ from woost.models.standardpage import StandardPage
         </py:ready>
         ${translations("Site.login_page password_forgot")}
     </a>
+</div>
 
-</py:cocktail.html.Form>
