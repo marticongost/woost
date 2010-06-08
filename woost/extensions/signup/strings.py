@@ -77,7 +77,8 @@ translations.define("SignUpPage.confirmation_email_template-explanation",
 translations.define("SignUpForm.password_confirmation",
     ca = u"Confirmar la contrasenya",
     es = u"Confirmar la contraseña",
-    en = u"Confirm password"
+    en = u"Confirm password",
+    pt = u"Confirmar Palavra-passe"
 )
 
 translations.define("woost.extensions.signup.SignupSuccessfulMessage",

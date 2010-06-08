@@ -1956,13 +1956,15 @@ translations.define("User-plural",
 translations.define("User.email",
     ca = u"Correu electrònic",
     es = u"Correo electrónico",
-    en = u"E-mail address"
+    en = u"E-mail address",
+    pt = u"Email"
 )
 
 translations.define("User.password",
     ca = u"Contrasenya",
     es = u"Contraseña",
-    en = u"Password"
+    en = u"Password",
+    pt = u"Palavra-passe",
 )
 
 translations.define("User.prefered_language",
