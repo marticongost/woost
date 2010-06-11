@@ -50,8 +50,6 @@ class RichTextEditor(TinyMCE):
             for style in Style.select()
         ]
 
-        self.tinymce_params.update(self.default_tinymce_params)
-
         if current_edit_stack:
             edit_stack_param = current_edit_stack.to_param()
             self.tinymce_params.update(
@@ -64,7 +62,6 @@ class RichTextEditor(TinyMCE):
                 media_external_list_url = "%s/editor_attachments?edit_stack=%s&resource_type=video&language=%s"
                     % (ctx_uri, edit_stack_param, self.language),
             )
-        
 
         load_plugin = Element("script")
         load_plugin["type"] = "text/javascript"
