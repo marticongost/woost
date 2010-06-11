@@ -62,6 +62,7 @@ class Trigger(Item):
     instantiable = False
     visible_from_root = False
     members_order = [
+        "title",
         "execution_point",
         "batch_execution",
         "matching_roles",
@@ -69,6 +70,10 @@ class Trigger(Item):
         "responses"
     ]
     
+    title = schema.String(
+        translated = True
+    )
+
     execution_point = schema.String(
         required = True,
         enumeration = ("before", "after"),
@@ -140,6 +145,10 @@ class Trigger(Item):
             return False
 
         return True
+
+    def __translate__(self, language, **kwargs):
+        return (self.draft_source is None and self.get("title", language)) \
+            or Item.__translate__(self, language, **kwargs)
 
 
 class ContentTrigger(Trigger):

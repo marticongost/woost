@@ -1044,6 +1044,12 @@ translations.define("woost.models.initialization Web services title",
     en = u"Web services"
 )
 
+translations.define("woost.models.initialization delete_files_trigger",
+    ca = u"Esborrar fitxers del disc quan s'elimini el seu element",
+    es = u"Borrar ficheros del disco cuando se elimine su elemento",
+    en = u"Erase files from disc when their item is deleted"
+)
+
 translations.define("woost.views.ContentTable sorting header",
     ca = u"Ordenació",
     es = u"Ordenación",
@@ -3179,6 +3185,12 @@ translations.define("Trigger-plural",
     ca = u"Disparadors",
     es = u"Disparadores",
     en = u"Triggers"
+)
+
+translations.define("Trigger.title",
+    ca = u"Títol",
+    es = u"Título",
+    en = u"Title"
 )
 
 translations.define("Trigger.execution_point",

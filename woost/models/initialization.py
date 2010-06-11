@@ -243,6 +243,9 @@ def init_site(
                 )
             ]
         )
+        set_translations(delete_files_trigger, "title",
+            "delete_files_trigger"
+        )
         site.triggers.append(delete_files_trigger)
         delete_files_trigger.insert()
 
