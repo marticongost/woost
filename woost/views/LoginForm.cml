@@ -11,55 +11,46 @@ from woost.models.standardpage import StandardPage
     xmlns:py="http://www.whads.com/ns/cocktail/templates">
 
     <?py-class
-    data = None
     schema = None
-    errors = None
-    submitted = None
+    errors = ()
+    data = None
     ?>
 
     <?py
     self.add_resource("/resources/scripts/LoginFormView.js")
     ?>
 
-    <py:ready>
-        <py:cocktail.html.List
-            py:id="error_box"
-            py:collapsible="${True}"
-            py:if="self.errors"
-            py:items="@{[translations(error) for error in self.errors]}"/>
+    <py:cocktail.html.List
+        py:id="error_box"        
+        py:collapsible="${True}"
+        py:items="@{[translations(error) for error in self.errors]}"/>
 
-        <py:cocktail.html.Form
-            py:id="login_form"
-            py:data="@{self.data}"
-            py:schema="@{self.schema}"
-            py:errors="@{self.errors}"
-            class="login_form"
-            method="post">
-
+    <py:cocktail.html.Form
+        py:id="login_form"
+        method="post"
+        py:schema="@{self.schema}"
+        py:errors="@{self.errors}"
+        py:data="@{self.data}"/>
+        
+    <py:with py:element="self.login_form.submit_button" name="authenticate">
+        <?py element.empty() ?>
+        ${translations("Site.login_page enter")}
+    </py:with>
+    
+    <a py:id="forgot_password_link" py:before="self.login_form.submit_button">
+        <py:ready>
             <?py
-            # Setting submit button name
-            element.submit_button["name"] = "authenticate"
-            element.submit_button.empty()
-            element.submit_button.append(translations("Site.login_page enter"))            
+            password_change_page = StandardPage.get_instance(
+                qname="woost.password_change_page"
+            )
+            if password_change_page \
+            and password_change_page.is_accessible():
+                element["href"] = context["cms"].uri(password_change_page)
+            else:
+                element.visible = False
             ?>
-
-            <py:ready>
-                <a py:id="forgot_password_link" py:before="self.login_form.submit_button">
-                    <?py
-                    password_change_page = StandardPage.get_instance(
-                        qname="woost.password_change_page"
-                    )
-                    if password_change_page \
-                    and password_change_page.is_accessible():
-                        element["href"] = context["cms"].uri(password_change_page)
-                    else:
-                        element.visible = False
-                    ?>
-                    ${translations("Site.login_page password_forgot")}
-                </a>
-            </py:ready>
-
-        </py:cocktail.html.Form>
-    </py:ready>
-
+        </py:ready>
+        ${translations("Site.login_page password_forgot")}
+    </a>
 </div>
+
