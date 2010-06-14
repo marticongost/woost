@@ -12,34 +12,19 @@ from cocktail.persistence import UniqueValueError
     translation_members = ()
     ?>
 
-    <?py self.add_resource("/resources/styles/SignUpView.css") ?>
+    <?py
+    self.content.visible = False
+    ?>
 
-    <div py:def="content">
+    <py:with py:element="self.main">
 
-        <ul py:id="error_box" py:collapsible="${True}">
-            <py:ready py:if="self.form_errors">
-                <li py:for="error in self.form_errors">
-                    ${translations(error)}
-                </li>
-            </py:ready>
-        </ul>
+        <py:woost.extensions.signup.SignUpForm
+            py:data="@{self.form_data}"
+            py:schema="@{self.form_schema}"
+            py:errors="@{self.form_errors}"
+            py:submitted="@{self.submitted}"
+            py:publishable="@{self.publishable}" />
 
-        <py:ready py:if="not self.submitted or self.form_errors">
-            <py:cocktail.html.Form
-                py:id="signup_form"
-                py:data="@{self.form_data}"
-                py:schema="@{self.form_schema}"
-                py:errors="@{self.form_errors}"
-                method="post" />
-        </py:ready>
-
-        <py:ready py:if="self.submitted and not self.form_errors">
-            <p>${translations("woost.extensions.signup.SignupSuccessfulMessage")}</p>
-            <py:ready py:if="self.publishable.confirmation_email_template">
-                <p>${translations("woost.extensions.signup.SignupConfirmationMessageNotice")}</p>
-            </py:ready>
-        </py:ready>
-
-    </div>
+    </py:with>
 
 </py:woost.views.StandardView>
