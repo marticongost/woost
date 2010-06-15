@@ -22,7 +22,8 @@ from cocktail.html.datadisplay import MULTIPLE_SELECTION
 from cocktail.controllers.userfilter import (
     UserFilter,
     CollectionFilter,
-    user_filters_registry
+    user_filters_registry,
+    DescendsFromFilter
 )
 from woost.models.item import Item
 from woost.models.action import Action
@@ -33,6 +34,7 @@ from woost.models.changesets import (
     ChangeSetHasTargetTypeExpression
 )
 from woost.models.publishable import Publishable, IsPublishedExpression
+from woost.models.document import Document
 from woost.models.usersession import get_current_user
 from woost.models.expressions import OwnershipExpression
 
@@ -187,4 +189,11 @@ class ChangeSetTargetTypeFilter(UserFilter):
         return ChangeSetHasTargetTypeExpression(Self, Constant(self.value))
 
 user_filters_registry.add(ChangeSet, ChangeSetTargetTypeFilter)
+
+user_filters_registry.add(Publishable, DescendsFromFilter)
+user_filters_registry.set_filter_parameter(
+    Publishable, 
+    DescendsFromFilter,
+    "relation", Document.children
+)
 
