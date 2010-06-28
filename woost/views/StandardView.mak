@@ -54,9 +54,11 @@ container_classes = "BaseView StandardView"
         <div class="identity">        
             <strong>${translations(user)}</strong>
             <form method="post">
-                <button class="logout_button" name="logout" type="submit">
-                    ${translations("Logout")}
-                </button>
+                <div>
+                    <button class="logout_button" name="logout" type="submit">
+                        ${translations("Logout")}
+                    </button>
+                </div>
             </form>
         </div>
     % endif

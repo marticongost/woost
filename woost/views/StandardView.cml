@@ -31,9 +31,11 @@ from woost.models import Site, Publishable, ModifyPermission
             <py:ready py:if="element.visible">
                 <strong>${translations(self.user)}</strong>
                 <form py:id="logout_form" method="post">
-                    <button py:id="logout_button" name="logout" type="submit">
-                        ${translations("Logout")}
-                    </button>
+                    <div>
+                        <button py:id="logout_button" name="logout" type="submit">
+                            ${translations("Logout")}
+                        </button>
+                    </div>
                 </form>
             </py:ready>
         </div>
