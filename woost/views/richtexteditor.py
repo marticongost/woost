@@ -18,7 +18,8 @@ TinyMCE = templates.get_class("cocktail.html.TinyMCE")
 class RichTextEditor(TinyMCE):
 
     default_tinymce_params = {
-        "plugins": "fullscreen, paste, inlinepopups, advimage, contextmenu, -advimagescale",
+        "plugins": "fullscreen, paste, inlinepopups, advimage, "
+                   "contextmenu, tabfocus, -advimagescale",
         "entity_encoding": "raw",
         "dialog_type": "modal",
         "theme": "advanced",
