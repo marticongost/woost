@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <?py
+from cocktail.html import html5_tag, html5_attr
 from woost.models import Site, Publishable, ModifyPermission
 ?>
 
@@ -19,7 +20,8 @@ from woost.models import Site, Publishable, ModifyPermission
     ?>
 
     <div py:id="header">
-        
+        <?py html5_tag(element, "header") ?>
+
         <h1 py:id="title_label" py:collapsible="${True}">
             <py:ready>
                 <?py title = self.get_title() ?>
@@ -43,12 +45,19 @@ from woost.models import Site, Publishable, ModifyPermission
         <py:woost.views.LanguageSelector py:id="language_selector"/>
     </div>
 
-    <py:woost.views.Menu
-        py:id="menu"
-        py:root_visible="${False}"
-        py:collapsible="${True}"/>
+    <div py:id="navigation">
+        <?py html5_tag(element, "nav") ?>
+        <py:woost.views.Menu
+            py:id="menu"
+            py:root_visible="${False}"
+            py:collapsible="${True}"/>
+    </div>
 
     <div py:id="main">
+        <?py
+        html5_tag(element, "section")
+        html5_attr(element, "role", "main")
+        ?>
 
         <h2 py:id="content_title_label" py:collapsible="${True}">
             <py:ready>
@@ -105,7 +114,9 @@ from woost.models import Site, Publishable, ModifyPermission
         </a>
     </li>
 
-    <div py:id="footer"/>
+    <div py:id="footer">
+        <?py html5_tag(element, "footer") ?>
+    </div>
 
 </py:woost.views.BaseView>
 
