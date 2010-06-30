@@ -8,26 +8,15 @@
     translation_members = ()
     ?>
 
-    <div py:def="content">
-
-        <py:ready py:if="self.confirmation_enabled">
-            <py:ready py:if="self.confirmed">
-                ${translations("woost.extensions.signup.SignupSuccessfulConfirmationMessage")}
+    <div py:with="self.content">
+        <span py:id="outcome_label" py:index="0">
+            <py:ready>
+                <?py
+                element.add_class("success" if self.confirmed else "failed")
+                ?>
             </py:ready>
-            <py:ready py:if="self.publishable and self.publishable.body">
-                ${self.publishable.body}
-            </py:ready>
-            <py:ready py:if="not self.confirmed">
-                ${translations("woost.extensions.signup.SignupFailConfirmationMessage")}
-            </py:ready>
-        </py:ready>
-        
-        <py:ready py:if="not self.confirmation_enabled">
-            <py:ready py:if="self.publishable and self.publishable.body">
-                ${self.publishable.body}
-            </py:ready>
-        </py:ready>
-
+            @{translations("woost.extensions.signup.Signup%sConfirmationMessage" % ("Successful" if self.confirmed else "Fail"))}
+        </span>
     </div>
 
 </py:woost.views.StandardView>
