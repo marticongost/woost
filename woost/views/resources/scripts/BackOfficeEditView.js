@@ -7,7 +7,7 @@
 @since:			September 2008
 -----------------------------------------------------------------------------*/
 
-cocktail.init(function (root) {
+cocktail.bind(".BackOfficeEditView", function ($editView) {
 
     function getVisibleLanguages() {
         var languages = jQuery.cookie('visible_languages');
@@ -18,8 +18,8 @@ cocktail.init(function (root) {
         jQuery.cookie("visible_languages", '"' + languages.join(',') + '"');
     }
 
-    jQuery(".translations_selector .selector_content li", root).each( function () {
-        if(jQuery(this).find('.language').hasClass('selected')) {
+    $editView.find(".translations_selector .selector_content li").each( function () {
+        if (jQuery(this).find('.language').hasClass('selected')) {
             var check = document.createElement('input');
             check.className = 'translations_check';
             check.setAttribute('type','checkbox');
@@ -30,14 +30,16 @@ cocktail.init(function (root) {
     var languages = getVisibleLanguages();
 
     for (i = 0; i < languages.length; i++) {
-        jQuery(".translations_check", root).each(function () {
+        $editView.find(".translations_check").each(function () {
             var language = jQuery(this).next(".language").get(0).language;
-            if (language && language == languages[i]) jQuery(this).attr('checked', 'checked');
+            if (language && language == languages[i]) {
+                jQuery(this).attr('checked', 'checked');
+            }
         });
     }
 
     function switchVisibleLang() {
-        jQuery(".translations_check", root).not(":checked").each( function () {
+        $editView.find(".translations_check").not(":checked").each(function () {
             var language = jQuery(this).next(".language").get(0).language;
             jQuery(".field_instance." + language).toggle();
         });
@@ -45,23 +47,23 @@ cocktail.init(function (root) {
 
     switchVisibleLang();
 
-    jQuery(".translations_check", root).click( function () {
+    $editView.find(".translations_check").click( function () {
         var language = jQuery(this).next(".language").get(0).language;
-        jQuery(".field_instance." + language, root).toggle();
-        jQuery(".field_instance-RichTextEditor." + language, root).each(function () {
+        $editView.find(".field_instance." + language).toggle();
+        $editView.find(".field_instance-RichTextEditor." + language).each(function () {
             jQuery(this).find('textarea').each( function () {
                 resizeOne(jQuery(this).attr('id'));
             });
         });
         var languages = [];
-        jQuery(".translations_check:checked", root).each( function () {
+        $editView.find(".translations_check:checked").each( function () {
             var language = jQuery(this).next(".language").get(0).language;
             languages.push(language);
         });
         setVisibleLanguages(languages);
     });
 
-    jQuery(".add_translation", root).click(function () {
+    $editView.find(".add_translation").click(function () {
         var language = jQuery(this).val();
         var languages = getVisibleLanguages();
         var visible = false;

@@ -1,6 +1,6 @@
 
-cocktail.init(function () {
-    jQuery(".password_change_confirmation_form [name=password]")
+cocktail.bind(".PasswordChangeConfirmationView [name=password]", function ($password) {
+    $password
         .focus()
         .select();
 });

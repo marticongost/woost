@@ -7,28 +7,27 @@
 @since:			January 2009
 -----------------------------------------------------------------------------*/
 
-cocktail.init(function (root) {
+cocktail.bind(".UserForm", function ($form) {
 
     function togglePasswords() {
+                
+        var $passwordField = $form.find(".password_field");
+        var $passwordConfirmationField = $form.find(".password_confirmation_field");
         
-        var form = jQuery(this).parents(".UserForm");
-        var passwordField = jQuery(".password_field", form);
-        var passwordConfirmationField = jQuery(".password_confirmation_field", form);
-        
-        passwordField.find(".control").val("");
-        passwordConfirmationField.find(".control").val("");
+        $passwordField.find(".control").val("");
+        $passwordConfirmationField.find(".control").val("");
 
         if (this.checked) {
-            passwordField.show();
-            passwordConfirmationField.show();
+            $passwordField.show();
+            $passwordConfirmationField.show();
         }
         else {
-            passwordField.hide();
-            passwordConfirmationField.hide();
+            $passwordField.hide();
+            $passwordConfirmationField.hide();
         }
     }
 
-    jQuery(".UserForm .change_password_field .control", root)
+    $form.find(".change_password_field .control")
         .each(togglePasswords)
         .click(togglePasswords)
         .change(togglePasswords);

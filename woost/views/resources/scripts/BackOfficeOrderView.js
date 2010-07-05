@@ -1,54 +1,49 @@
 
-cocktail.init(function (root) {
-    
-    jQuery(".OrderContentView", root).each(function () {
+cocktail.bind(".OrderContentView", function ($contentView) {
 
-        var orderContentView = this;
+    if ($contentView.find(".Table tbody tr").length > 1) {
 
-        if (jQuery(".Table tbody tr", this).length > 1) {
+        var th = document.createElement('th');
+        $contentView.find(".Table thead tr").prepend(th);
+        
+        $contentView.find(".Table tbody tr")
+            .hover(
+                function() { jQuery(this.cells[0]).addClass('showDragHandle'); },
+                function() { jQuery(this.cells[0]).removeClass('showDragHandle'); }
+            )          
+            .each(function (i) {
+                var td = document.createElement('td');
+                if (i > 0) {
+                    td.className = 'dragHandle';
+                }
+                jQuery(this).prepend(td);
+                jQuery(this).attr('id', jQuery(this).find(":checkbox").val());
+            });
 
-            var th = document.createElement('th');
-            jQuery(".Table thead tr", orderContentView).prepend(th);
-
-            
-            jQuery(".Table tbody tr", this)
-                .hover(
-                    function() { jQuery(this.cells[0]).addClass('showDragHandle'); },
-                    function() { jQuery(this.cells[0]).removeClass('showDragHandle'); }
-                )          
-                .each(function (i) {
-                    var td = document.createElement('td');
-                    if (i > 0) {
-                        td.className = 'dragHandle';
-                    }
-                    jQuery(this).prepend(td);
-                    jQuery(this).attr('id', jQuery(this).find(":checkbox").val());
-                });
-    
-            function renderEvenOdd() {
-                jQuery(".Table tbody tr", orderContentView).each(function (i) {
-                    jQuery(this).removeClass();
-                    if (i % 2) {
-                        jQuery(this).addClass("odd");
-                    }
-                    else {
-                        jQuery(this).addClass("even");
-                    }
-                });
-            }
-      
-            var position;
-            var member = jQuery(this).closest(".BackOfficeCollectionView").get(0).member;
-            var edit_stack = jQuery(this).closest(".BackOfficeItemView").get(0).edit_stack;
-         
-            jQuery(this).append("<div class=\"error\" style=\"display:none;\"></div>"); 
-    
-            jQuery(".Table", this).tableDnD({
+        function renderEvenOdd() {
+            $contentView.find(".Table tbody tr").each(function (i) {
+                jQuery(this).removeClass();
+                if (i % 2) {
+                    jQuery(this).addClass("odd");
+                }
+                else {
+                    jQuery(this).addClass("even");
+                }
+            });
+        }
+  
+        var position;
+        var member = jQuery(this).closest(".BackOfficeCollectionView").get(0).member;
+        var edit_stack = jQuery(this).closest(".BackOfficeItemView").get(0).edit_stack;
+     
+        $contentView
+            .append("<div class=\"error\" style=\"display:none;\"></div>"); 
+            .find(".Table").tableDnD({
                 onDrop: function(table, row) {
                     
                     renderEvenOdd();                
                     
-                    jQuery(".Table tbody tr", orderContentView).each( function (i) {
+                    $contentView.find(".Table tbody tr").each( function (i) {
                         if(jQuery(row).attr('id') == jQuery(this).attr('id')) position = i;                                          
                     });
                     
@@ -87,8 +82,6 @@ cocktail.init(function (root) {
                 dragHandle: "dragHandle",
                 onDragClass: "mydragClass"
             });
-
-        }
-    });
-
+    }
 });
+
