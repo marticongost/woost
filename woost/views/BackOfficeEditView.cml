@@ -13,7 +13,7 @@ from simplejson import dumps
 
     <?py
     self.add_resource("/cocktail/scripts/jquery.cookie.js")
-    self.add_resource("/resources/scripts/backoffice_item.js")
+    self.add_resource("/resources/scripts/BackOfficeEditView.js")
     
     add_view_action_context(self, "edit")
     ?>

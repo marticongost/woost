@@ -7,50 +7,49 @@
 @since:			February 2010
 -----------------------------------------------------------------------------*/
 
-cocktail.init(function (root) {
+cocktail.bind(".BackOfficeChangeLogView", function ($changelogView) {
 
     var THRESHOLD = 6;
 
-    jQuery(".BackOfficeChangeLogView", root).each(function () {
-        jQuery("td.changes_column ul", this).each(function () {
+    $changelogView.find("td.changes_column ul").each(function () {
+        
+        var count = jQuery(this).find("li").length;
+
+        if (count > THRESHOLD) {
             
-            var count = jQuery("li", this).length;
+            var list = this;
+            var collapsed;
+            
+            var toggle = document.createElement("a");
+            toggle.href = "javascript:";
+            toggle.className = "toggle";
+            jQuery(this).after(toggle);
 
-            if (count > THRESHOLD) {
-                
-                var list = this;
-                var collapsed;
-                
-                var toggle = document.createElement("a");
-                toggle.href = "javascript:";
-                toggle.className = "toggle";
-                jQuery(this).after(toggle);
-
-                function setCollapsed(value) {
-                    collapsed = value;
-                    toggle.innerHTML = cocktail.translate(
-                        "woost.views.BackOfficeChangeLogView "
-                        + (value ? "collapsed" : "expanded"),
-                        {"count": count}
-                    )
-                    if (value) {
-                        jQuery(list.parentNode)
-                            .addClass("collapsed")
-                            .removeClass("expanded");
-                    }
-                    else {
-                        jQuery(list.parentNode)
-                            .addClass("expanded")
-                            .removeClass("collapsed");
-                    }
+            function setCollapsed(value) {
+                collapsed = value;
+                toggle.innerHTML = cocktail.translate(
+                    "woost.views.BackOfficeChangeLogView "
+                    + (value ? "collapsed" : "expanded"),
+                    {"count": count}
+                )
+                if (value) {
+                    jQuery(list.parentNode)
+                        .addClass("collapsed")
+                        .removeClass("expanded");
                 }
-
-                jQuery(toggle).click(function () {
-                    setCollapsed(!collapsed);
-                });
-
-                setCollapsed(true);
+                else {
+                    jQuery(list.parentNode)
+                        .addClass("expanded")
+                        .removeClass("collapsed");
+                }
             }
-        });
+
+            jQuery(toggle).click(function () {
+                setCollapsed(!collapsed);
+            });
+
+            setCollapsed(true);
+        }
     });
 });
+

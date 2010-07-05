@@ -9,23 +9,21 @@
 
 // Submitting the search form in a tree view automatically expands the tree to
 // show all results
-cocktail.init(function (root) {
-    jQuery(".TreeContentView", root).each(function () {
+cocktail.bind(".TreeContentView", function ($contentView) {
 
-        var form = this;
+    var form = this;
 
-        function expand() {
-            jQuery("input[name=expanded]", form).remove();
-            form.setParameter("expanded", "all", true);
+    function expand() {
+        $contentView.find("input[name=expanded]").remove();
+        form.setParameter("expanded", "all", true);
+    }
+
+    $contentView.find(".filters .search_button").click(expand);
+
+    $contentView.find(".filters").keypress(function (e) {
+        if (e.keyCode == 13) {
+            expand();
         }
-
-        jQuery(".filters .search_button", this).click(expand);
-
-        jQuery(".filters", this).keypress(function (e) {
-            if (e.keyCode == 13) {
-                expand();
-            }
-        });
     });
 });
 

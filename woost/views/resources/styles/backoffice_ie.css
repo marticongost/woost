@@ -193,21 +193,21 @@
     _z-index: 1001;
 }
 
-.BackOfficeLayout .selector.scripted:hover a.label {
+body.scripted .BackOfficeLayout .selector:hover a.label {
     _border-color: transparent;
     _background-color: transparent;
 }
 
 .BackOfficeLayout .selector:hover .selector_content,
-.BackOfficeLayout .selector.scripted.unfolded .selector_content,
-.BackOfficeLayout .selector.scripted.unfolded:hover .selector_content {
+body.scripted .BackOfficeLayout .selector.unfolded .selector_content,
+body.scripted .BackOfficeLayout .selector.unfolded:hover .selector_content {
     display:block;
     z-index:1000;
 }
 
 .BackOfficeLayout .selector:hover a.label, 
-.BackOfficeLayout .selector.scripted.unfolded a.label, 
-.BackOfficeLayout .selector.scripted.unfolded:hover a.label {
+body.scripted .BackOfficeLayout .selector.unfolded a.label, 
+body.scripted .BackOfficeLayout .selector.unfolded:hover a.label {
     _background-color:#FAFAFA !important;
     _border-color:#BEC8D2 #BEC8D2 #FAFAFA !important;
     _border-style:solid !important;
@@ -234,7 +234,7 @@
     _padding: .5em;
 }
 
-.BackOfficeLayout .selector.scripted:hover .label {
+body.scripted .BackOfficeLayout .selector:hover .label {
 	_background-color:transparent;
 	_border-color:transparent;
 }
