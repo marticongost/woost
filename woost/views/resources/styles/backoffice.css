@@ -993,15 +993,15 @@ body.scripted .BackOfficeLayout .Table .selection {
 }
 
 .BackOfficeLayout .selector:hover > .label,
-.BackOfficeLayout .selector.scripted.unfolded > .label,
-.BackOfficeLayout .selector.scripted.unfolded:hover > .label {
+body.scripted .BackOfficeLayout .selector.unfolded > .label,
+body.scripted .BackOfficeLayout .selector.unfolded:hover > .label {
     background-color: rgb(250,250,250);
     border: 1px solid rgb(190,200,210);
     border-bottom-color: rgb(250,250,250);
     z-index: 1001;
 }
 
-.BackOfficeLayout .selector.scripted:hover > .label {
+body.scripted .BackOfficeLayout .selector:hover > .label {
     border-color: transparent;
     background-color: transparent;
 }
@@ -1023,13 +1023,13 @@ body.scripted .BackOfficeLayout .Table .selection {
 }
 
 .BackOfficeLayout .selector:hover .selector_content,
-.BackOfficeLayout .selector.scripted.unfolded .selector_content,
-.BackOfficeLayout .selector.scripted.unfolded:hover .selector_content {
+body.scripted .BackOfficeLayout .selector.unfolded .selector_content,
+body.scripted .BackOfficeLayout .selector.unfolded:hover .selector_content {
     display: block;
     z-index: 1000;
 }
 
-.BackOfficeLayout .selector.scripted:hover .selector_content {
+body.scripted .BackOfficeLayout .selector:hover .selector_content {
     display: none;
 }
 
@@ -1609,20 +1609,20 @@ body.scripted .BackOfficeLayout .ThumbnailsContentView .collection_display input
     background: none;
 }
 
-.BackOfficeEditView .translations_selector.scripted .selector_content,
-.BackOfficePreviewView .translations_selector.scripted .selector_content {
+body.scripted .BackOfficeEditView .translations_selector .selector_content,
+body.scripted .BackOfficePreviewView .translations_selector .selector_content {
     list-style-type: none;
     padding-right: 0.1;
 }
 
-.BackOfficeEditView .translations_selector.scripted .selector_content li,
-.BackOfficePreviewView .translations_selector.scripted .selector_content li{
+body.scripted .BackOfficeEditView .translations_selector .selector_content li,
+body.scripted .BackOfficePreviewView .translations_selector .selector_content li{
     clear: both;
     margin: 0;
     padding: 0;
 }
 
-.BackOfficeEditView .translations_selector.scripted .selector_content li input {
+body.scripted .BackOfficeEditView .translations_selector .selector_content li input {
     float: left;
 }
 
