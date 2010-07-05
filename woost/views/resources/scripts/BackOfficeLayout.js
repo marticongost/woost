@@ -7,25 +7,28 @@
 @since:			April 2009
 -----------------------------------------------------------------------------*/
 
-cocktail.init(function (root) {
-    
-    NOTIFICATION_TIMEOUT = 2000;
+cocktail.bind({
+    selector: ".BackOfficeLayout",
+    behavior: function ($layout) {
 
-    // Hide notifications
-    setTimeout("jQuery('.notification.transient').hide('slow')", NOTIFICATION_TIMEOUT);
+        // Hide transient notifications
+        setTimeout(
+            function () { $layout.find(".notification.transient").hide("slow"); },
+            this.notificationTimeout || 2000
+        );
+    },
+    parts: {
+        ".notification:not(.transient)": function ($notification) {
 
-    jQuery(".notification:not(.transient)", root).each(function () {
-        
-        var notification = this;
+            var closeButton = document.createElement("img");
+            closeButton.className = "close_button";
+            closeButton.src = "/resources/images/close_small.png";
+            $notification.prepend(closeButton);
 
-        var closeButton = document.createElement("img");
-        closeButton.className = "close_button";
-        closeButton.src = "/resources/images/close_small.png";
-        jQuery(notification).prepend(closeButton);
-
-        jQuery(closeButton).click(function () {
-            jQuery(notification).hide("slow");
-        });
-    });
+            jQuery(closeButton).click(function () {
+                $notification.hide("slow");
+            });
+        }
+    }
 });
 

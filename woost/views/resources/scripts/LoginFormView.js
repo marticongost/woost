@@ -1,6 +1,6 @@
 
-cocktail.init(function () {
-    jQuery(".LoginForm [name=user]")
+cocktail.bind(".LoginFormView [name=user]", function ($userField) {
+    $userField
         .focus()
         .select();
 });

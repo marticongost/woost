@@ -1,6 +1,7 @@
 
-cocktail.init(function () {
-    jQuery(".password_change_request_form [name=email]")
+cocktail.bind(".PasswordChangeRequestView [name=email]", function ($control) {
+    $control
         .focus()
         .select();
 });
+
