@@ -37,7 +37,7 @@ cocktail.bind(".OrderContentView", function ($contentView) {
         var edit_stack = jQuery(this).closest(".BackOfficeItemView").get(0).edit_stack;
      
         $contentView
-            .append("<div class=\"error\" style=\"display:none;\"></div>"); 
+            .append("<div class=\"error\" style=\"display:none;\"></div>")
             .find(".Table").tableDnD({
                 onDrop: function(table, row) {
                     
