@@ -43,15 +43,16 @@ class UploadForm(Form):
 
             if context.consume(self.key):
                 source_member = context.source_schema[self.key]
-                context.target_schema.add_member(
-                    FileUpload(self.key,
-                        required = source_member.required,
-                        member_group = source_member.member_group,
-                        hash_algorithm = "md5",
-                        get_file_destination = lambda upload:
-                            self.form.get_temp_upload_filename(source_member)
-                    )
+                target_member = FileUpload(self.key,
+                    required = source_member.required,
+                    member_group = source_member.member_group,
+                    hash_algorithm = "md5",
+                    get_file_destination = lambda upload:
+                        self.form.get_temp_upload_filename(source_member)
                 )
+                target_member.adaptation_source = source_member
+                target_member.copy_source = source_member
+                context.target_schema.add_member(target_member)
 
         def adapt_object(self, context):            
             if context.consume(self.key):
