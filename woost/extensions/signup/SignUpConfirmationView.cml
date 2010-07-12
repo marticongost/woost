@@ -8,7 +8,7 @@
     translation_members = ()
     ?>
 
-    <div py:with="self.content">
+    <py:with py:element="self.content">
         <span py:id="outcome_label" py:index="0">
             <py:ready>
                 <?py
@@ -17,6 +17,6 @@
             </py:ready>
             @{translations("woost.extensions.signup.Signup%sConfirmationMessage" % ("Successful" if self.confirmed else "Fail"))}
         </span>
-    </div>
+    </py:with>
 
 </py:woost.views.StandardView>
