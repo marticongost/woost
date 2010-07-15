@@ -6,18 +6,12 @@
 @organization:	Whads/Accent SL
 @since:			December 2009
 """
-from cocktail.modeling import getter
 from cocktail.events import event_handler, when
 from cocktail import schema
 from cocktail.translations import translations
-from cocktail.persistence import datastore
 from cocktail.controllers import context
-from woost.models import (
-    Publishable,
-    Extension,
-    Document,
-    File
-)
+from woost.models import Extension
+
 
 translations.define("StaticSiteExtension",
     ca = u"Lloc web estàtic",
@@ -68,17 +62,32 @@ class StaticSiteExtension(Extension):
         from woost.extensions.staticsite import (
             useraction,
             strings,
-            staticsitesnapshooter,
+            staticsitesnapshoter,
             exportationpermission,
             exportstaticsitecontroller 
         )
 
+        from woost.extensions.staticsite.staticsitesnapshoter \
+            import StaticSiteSnapShoter
         from woost.extensions.staticsite.staticsitedestination \
             import StaticSiteDestination
 
         BackOfficeController.export_static = \
             exportstaticsitecontroller.ExportStaticSiteController
     
+        StaticSiteExtension.add_member(
+            schema.Collection(
+                "snapshoters",
+                items = schema.Reference(
+                    type = StaticSiteSnapShoter,                    
+                ),
+                bidirectional = True,
+                integral = True,
+                related_end = schema.Reference(),
+                min = 1
+            )
+        )
+
         StaticSiteExtension.add_member(
             schema.Collection(
                 "destinations",
