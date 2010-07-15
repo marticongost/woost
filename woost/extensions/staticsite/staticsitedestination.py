@@ -8,19 +8,20 @@ u"""
 """
 from __future__ import with_statement
 import os
-from shutil import copy
-from hashlib import md5
-from cStringIO import StringIO
 import ftplib
-import cherrypy
-from cocktail.events import EventHub, Event
+from shutil import copy
+from datetime import date
+from tempfile import mkstemp
+from zipfile import ZipFile
 from cocktail import schema
-from cocktail.modeling import abstractmethod, SetWrapper
-from cocktail.translations import translations, language_context
+from cocktail.events import EventHub, Event
+from cocktail.modeling import abstractmethod
+from cocktail.translations import get_language
 from cocktail.persistence import PersistentMapping
 from cocktail.controllers import context as controller_context
-from woost.models import Item, Publishable, File, Site
+from woost.models import Item, File, get_current_user
 from woost.models.file import file_hash
+from woost.models.changesets import changeset_context
 
 
 class StaticSiteDestination(Item):
@@ -38,13 +39,6 @@ class StaticSiteDestination(Item):
     instantiable = False
     visible_from_root = False
     chunk_size = 1024 * 8
-
-    snapshooter = schema.Reference(
-        type = "woost.extensions.staticsite.staticsitesnapshooter.StaticSiteSnapShooter",
-        bidirectional = True,
-        required = True,
-        related_key = "destination"
-    )
 
     destination_permissions = schema.Collection(
         items = "woost.extensions.staticsite.exportationpermission."
@@ -86,10 +80,66 @@ class StaticSiteDestination(Item):
         @type context: dict
         """
 
-    def export(self,
+    def _export(
+        self,
+        snapshoter,
+        context,
         update_only = False,
-        status_tracker = None):
-        """Exports site snapshoot to this destination.
+        status_tracker = None
+    ):
+        if status_tracker:
+            status_tracker.beginning(
+                context = context
+            )
+
+        for file, file_path in snapshoter.files():
+            exported = None
+
+            try:
+                exported = self.export_file(
+                    file, 
+                    file_path, 
+                    context, 
+                    update_only = update_only
+                )
+            except Exception, error:
+
+                handled = False
+
+                if status_tracker:
+                    e = status_tracker.file_processed(
+                        file = file_path,
+                        status = "failed",
+                        context = context,
+                        error = error,
+                        error_handled = False
+                    )
+                    handled = e.error_handled
+
+                if not handled:
+                    raise
+
+            else:
+                if status_tracker:
+                    status_tracker.file_processed(
+                        file = file_path,
+                        status = "exported" if exported else "not_modified",
+                        context = context,
+                        error = None,
+                        error_handled = False
+                    )
+
+    def export(
+        self,
+        snapshoter,
+        update_only = False,
+        status_tracker = None
+    ):
+        """Exports site snapshot to this destination.
+
+        @param snapshoter: The snapshoter used by the exporter during the export
+            process.
+        @type snapshoter: StaticSiteSnapShoter
 
         @param update_only: When set to True, items will only be exported if
             they have pending changes that have not been exported to this
@@ -99,6 +149,10 @@ class StaticSiteDestination(Item):
         @param status_tracker: An object to report events to during the export
             process.
         @type status_tracker: L{StatusTracker}
+
+        @return: The dictionary used by the exporter during the export
+            process to maintain its contextual information.
+        @rtype: dict
         """
 
         controller_context["exporting_static_site"] = True
@@ -108,53 +162,17 @@ class StaticSiteDestination(Item):
         self.setup(context)
 
         try:
-
-            if status_tracker:
-                status_tracker.beginning(
-                    context = context
-                )
-
-            for file, file_path in self.snapshooter.snapshoot():
-                exported = None
-
-                try:
-                    exported = self.export_file(
-                        file, 
-                        file_path, 
-                        context, 
-                        update_only = update_only
-                    )
-                except Exception, error:
-
-                    handled = False
-
-                    if status_tracker:
-                        e = status_tracker.file_processed(
-                            file = file_path,
-                            status = "failed",
-                            context = context,
-                            error = error,
-                            error_handled = False
-                        )
-                        handled = e.error_handled
-
-                    if not handled:
-                        raise
-
-                else:
-                    if status_tracker:
-                        status_tracker.file_processed(
-                            file = file_path,
-                            status = "exported" if exported else "not_modified",
-                            context = context,
-                            error = None,
-                            error_handled = False
-                        )
-
+            self._export(
+                snapshoter,
+                context,
+                update_only = update_only,
+                status_tracker = status_tracker
+            )
         finally:
             del controller_context["exporting_static_site"]
             self.cleanup(context)
 
+        return context
 
     def export_file(self,
         file,
@@ -268,6 +286,12 @@ class StaticSiteDestination(Item):
         @type context: dict
         """
 
+    def view_class(self):
+        return "woost.extensions.staticsite.ExportStaticSiteView"
+
+    def output(self):
+        return {}
+
 
 class StatusTracker(object):
     """An object that allows clients to be kept up to date of the progress of
@@ -342,6 +366,9 @@ class FolderDestination(StaticSiteDestination):
         full_path = os.path.join(self.target_folder, folder)
         if not os.path.exists(full_path):
             os.mkdir(full_path)
+            return True
+
+        return False
 
     def write_file(self, file, path, context):
 
@@ -449,6 +476,9 @@ class FTPDestination(StaticSiteDestination):
 
         if not self._path_exists(ftp, path):
             ftp.mkd(path)
+            return True
+
+        return False
 
     def _get_ftp_path(self, *args):
 
@@ -494,15 +524,66 @@ class ZipDestination(StaticSiteDestination):
     """
     instantiable = True
 
-    def __translate__(self, language, **kwargs):
-        return translations(
-            "woost.extensions.staticsite.staticsiteexporter."
-            "ZipStaticSiteDestination-instance",
-            language,
-            **kwargs
+
+    def setup(self, context):
+        handle, context["temp_file"] = mkstemp('.zip')
+        os.close(handle)
+        context["zip_file"] = ZipFile(context["temp_file"], 'w')
+
+    def cleanup(self, context):
+        os.unlink(context["temp_file"])
+
+    def _export(
+        self,
+        snapshoter,
+        context,
+        update_only = False,
+        status_tracker = None
+    ):
+        StaticSiteDestination._export(
+            self,
+            snapshoter,
+            context,
+            update_only = update_only,
+            status_tracker = status_tracker
         )
 
-    def create_folder(self, folder):
-        pass
+        # Close the zip file before export it to the CMS
+        context["zip_file"].close()
 
+        upload_path = os.path.join(
+            controller_context["cms"].application_path,
+            u"upload"
+        )
+
+        with changeset_context(get_current_user()):
+            file = File.from_path(
+                context["temp_file"], 
+                upload_path, 
+                languages = [get_language()]
+            )
+            file.title = "export-%s" % date.today().strftime("%Y%m%d")
+            file.file_name = file.title + ".zip"
+            file.insert()
+            context.update(file = file)
+
+    def create_folder(self, folder, context):
+        return True
+
+    def write_file(self, file, path, context):
+
+        if isinstance(file, basestring):
+            context["zip_file"].write(file, path)
+        else:
+            context["zip_file"].writestr(path, file.read())
+
+    def view_class(self, context):
+        return "woost.extensions.staticsite.ExportStaticSiteZipView"
+
+    def output(self, context):
+        output = StaticSiteDestination.output(self)
+        output.update(
+            file = context["file"]
+        )
+        return output
 
