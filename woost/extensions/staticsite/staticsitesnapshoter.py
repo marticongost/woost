@@ -9,7 +9,7 @@
 import os
 from subprocess import Popen, PIPE
 from cocktail import schema
-from cocktail.controllers import context
+from cocktail.controllers import context as controller_context
 from cocktail.modeling import abstractmethod
 from cocktail.translations import translations
 from cocktail.controllers.location import Location
@@ -28,7 +28,7 @@ class StaticSiteSnapShoter(Item):
     integral = True
 
     @abstractmethod
-    def snapshot(self, root, follow_links = True):
+    def snapshot(self, root, follow_links = True, context = {}):
         """ Generates the snapshot of a site's content 
 
         @param root: The item which the exportation will statrt.
@@ -36,6 +36,10 @@ class StaticSiteSnapShoter(Item):
 
         @param follow_links: Indicates if the exportantion will follow links.
         @type follow_links: bool
+
+        @param context: A dictionary used to share any contextual information
+            with the snapshoter.
+        @type context: dict
         """
 
     @abstractmethod
@@ -63,9 +67,9 @@ class WgetSnapShoter(StaticSiteSnapShoter):
             )
     )
 
-    def snapshot(self, root, follow_links = True):
+    def snapshot(self, root, follow_links = True, context = {}):
         snapshot_path = os.path.join(
-            context["cms"].application_path,
+            controller_context["cms"].application_path,
             u"snapshots",
             str(self.id)
         )
@@ -79,20 +83,26 @@ class WgetSnapShoter(StaticSiteSnapShoter):
                 --convert-links --no-parent --no-host-directories \
                 --directory-prefix=%s --restrict-file-names=%s %s"
 
-        location = Location.get_current_host()                              
-        location.path_info = context["cms"].uri(root)
+        uri = self._get_uri(root, context)
+
         cmd = cmd % (
             snapshot_path, 
             self.file_names_mode, 
-            unicode(location).encode("utf-8")
+            uri
         )
 
         p = Popen(cmd, shell=True, stdout=PIPE)
         p.communicate()
 
+    def _get_uri(self, item, context):
+        location = Location.get_current_host()                              
+        location.path_info = controller_context["cms"].uri(item)
+        
+        return unicode(location).encode("utf-8")
+
     def files(self):
         snapshot_path = os.path.join(
-            context["cms"].application_path,
+            controller_context["cms"].application_path,
             u"snapshots",
             str(self.id)
         )

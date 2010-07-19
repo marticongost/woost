@@ -133,7 +133,8 @@ class StaticSiteDestination(Item):
         self,
         snapshoter,
         update_only = False,
-        status_tracker = None
+        status_tracker = None,
+        context = {}
     ):
         """Exports site snapshot to this destination.
 
@@ -150,15 +151,17 @@ class StaticSiteDestination(Item):
             process.
         @type status_tracker: L{StatusTracker}
 
+        @param context: A dictionary used to share any contextual information
+            with the exporter.
+        @type context: dict
+        
         @return: The dictionary used by the exporter during the export
             process to maintain its contextual information.
         @rtype: dict
         """
 
         controller_context["exporting_static_site"] = True
-        context = {
-            "existing_folders": set()
-        }
+        context["existing_folders"] = set()
         self.setup(context)
 
         try:
