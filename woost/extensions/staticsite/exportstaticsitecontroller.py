@@ -117,16 +117,17 @@ class ExportStaticSiteController(
             schema.Collection("selection", items = schema.Reference(type = Publishable))
         )
 
+        context = self.form_data
+
         for item in selection:
-            snapshoter.snapshot(item, form["follow_links"])
+            snapshoter.snapshot(item, form["follow_links"], context = context)
             
         exporter_context = destination.export(
             snapshoter,
             update_only = form["update_only"],
-            status_tracker = tracker
+            status_tracker = tracker,
+            context = context
         )
-        print "*" * 80
-        print exporter_context
 
         # View class
         self.view_class = destination.view_class(exporter_context)
