@@ -35,6 +35,12 @@ translations.define("woost.extensions.staticsite export done",
     en = u"Content exported"
 )
 
+translations.define("woost.extensions.staticsite download",
+    ca = u"Pots descarregar el contingut <a href='%s'>aquí</a>",
+    es = u"Puedes descargar el contenido <a href='%s'>aquí</a>",
+    en = u"Download the content <a href='%s'>here</a>"
+)
+
 translations.define("woost.extensions.staticsite.export_status-ignored",
     ca = u"Ignorat (no exportable)",
     es = u"Ignorado (no exportable)",
@@ -73,67 +79,73 @@ translations.define("ExportStaticSite.exporter",
     en = u"Destination"
 )
 
+translations.define("ExportStaticSite.snapshoter",
+    ca = u"Exportador",
+    es = u"Exportador",
+    en = u"Exporter"
+)
+
+translations.define("ExportStaticSite.follow_links",
+    ca = u"Seguir els enllaços",
+    es = u"Seguir los enlaces",
+    en = u"Follow links"
+)
+
 # StaticSiteExtension
 #------------------------------------------------------------------------------
+translations.define("StaticSiteExtension.snapshoters",
+    ca = u"Exportadors",
+    es = u"Exportadores",
+    en = u"Exporters"
+)
+
 translations.define("StaticSiteExtension.destinations",
     ca = u"Destins",
     es = u"Destinos",
     en = u"Destinations"
 )
 
-# StaticSiteSnapShooter
+# StaticSiteSnapShoter
 #------------------------------------------------------------------------------
-translations.define("StaticSiteSnapShooter",
+translations.define("StaticSiteSnapShoter",
     ca = u"Exportador de contingut estàtic",
     es = u"Exportador de contenido estático",
     en = u"Static content exporter"
 )
 
-translations.define("StaticSiteSnapShooter-plural",
+translations.define("StaticSiteSnapShoter-plural",
     ca = u"Exportadors de contingut estàtic",
     es = u"Exportadores de contenido estático",
     en = u"Static content exporters"
 )
 
-translations.define("StaticSiteSnapShooter.destination",
-    ca = u"Destí",
-    es = u"Destino",
-    en = u"Destination"
-)
-
-translations.define("StaticSiteSnapShooter.url",
-    ca = u"Adreça web",
-    es = u"Dirección web",
-    en = u"Web address"
-)
-
-# WgetSnapShooter
+# WgetSnapShoter
 #------------------------------------------------------------------------------
-translations.define("WgetSnapShooter",
+translations.define("WgetSnapShoter",
     ca = u"Exportador Wget",
     es = u"Exportador Wget",
     en = u"Wget exporter"
 )
 
-translations.define("WgetSnapShooter-plural",
+translations.define("WgetSnapShoter-plural",
     ca = u"Exportadors Wget",
     es = u"Exportadores Wget",
     en = u"Wget exporters"
 )
 
-translations.define("WgetSnapShooter.file_names_mode",
+translations.define("WgetSnapShoter.file_names_mode",
     ca = u"Mode dels noms de fitxers",
     es = u"Modo de los nombres de ficheros",
     en = u"File names mode"
 )
 
-translations.define("woost.extensions.staticsite.staticsitesnapshooter.WgetSnapShooter.file_names_mode unix",
+translations.define("woost.extensions.staticsite.staticsitesnapshoter.WgetSnapShoter.file_names_mode unix",
     ca = u"Unix",
     es = u"Unix",
     en = u"Unix"
 )
 
-translations.define("woost.extensions.staticsite.staticsitesnapshooter.WgetSnapShooter.file_names_mode windows",
+translations.define("woost.extensions.staticsite.staticsitesnapshoter.WgetSnapShoter.file_names_mode windows",
     ca = u"Windows",
     es = u"Windows",
     en = u"Windows"
@@ -151,12 +163,6 @@ translations.define("StaticSiteDestination-plural",
     ca = u"Destins de contingut estàtic",
     es = u"Destinos de contenido estático",
     en = u"Static content destinations"
-)
-
-translations.define("StaticSiteDestination.snapshooter",
-    ca = u"Exportador",
-    es = u"Exportador",
-    en = u"Exporter"
 )
 
 translations.define("StaticSiteDestination.destination_permissions",
