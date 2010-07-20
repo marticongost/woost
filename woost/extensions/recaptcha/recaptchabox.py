@@ -26,7 +26,7 @@ class ReCaptchaBox(Element):
             "public_key": ReCaptchaExtension.instance.public_key,
             "api_server": self.API_SSL_SERVER if ReCaptchaExtension.instance.ssl 
                           else self.API_SERVER,
-            "error_param": "&error=%s" % ("",)
+            "error_param": "&amp;error=%s" % ("",)
         }
         self.recaptcha_options = {}
 
@@ -71,7 +71,7 @@ class ReCaptchaBox(Element):
         init_script.append("""<script type="text/javascript" src="%(api_server)s/challenge?k=%(public_key)s%(error_param)s"></script>
 
         <noscript>
-          <iframe src="%(api_server)s/noscript?k=%(public_key)s%(error_param)s" height="300" width="500" frameborder="0"></iframe><br />
+          <iframe src="%(api_server)s/noscript?k=%(public_key)s%(error_param)s" style="height: 300px; width: 500px; border: 0;" ></iframe><br />
           <textarea name="recaptcha_challenge_field" rows="3" cols="40"></textarea>
           <input type='hidden' name='recaptcha_response_field' value='manual_challenge' />
         </noscript>
