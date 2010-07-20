@@ -53,6 +53,19 @@ class ExportStaticSiteController(
 
         return schema.Schema("ExportStaticSite", members = [
             schema.Reference(
+                "snapshoter",
+                type =
+                    "woost.extensions.staticsite.staticsitesnapshoter."
+                    "StaticSiteSnapShoter",
+                required = True,
+                enumeration = lambda ctx: extension.snapshoters,
+                edit_control =
+                    "cocktail.html.RadioSelector"
+                    if len(allowed_destinations()) > 1
+                    else "cocktail.html.HiddenInput",
+                default = schema.DynamicDefault(lambda: extension.snapshoters[0])
+            ),
+            schema.Reference(
                 "destination",
                 type =
                     "woost.extensions.staticsite.staticsitedestination."
@@ -67,6 +80,11 @@ class ExportStaticSiteController(
             ),
             schema.Boolean(
                 "update_only",
+                required = True,
+                default = True
+            ),            
+            schema.Boolean(
+                "follow_links",
                 required = True,
                 default = True
             )            
@@ -91,12 +109,33 @@ class ExportStaticSiteController(
             ExportationPermission,
             destination = form["destination"]
         )
-        form["destination"].export(
-            update_only = form["update_only"],
-            status_tracker = tracker
+        
+        destination = form["destination"]
+        snapshoter = form["snapshoter"]
+
+        selection = self.params.read(
+            schema.Collection("selection", items = schema.Reference(type = Publishable))
         )
+
+        context = self.form_data
+
+        for item in selection:
+            snapshoter.snapshot(item, form["follow_links"], context = context)
+            
+        exporter_context = destination.export(
+            snapshoter,
+            update_only = form["update_only"],
+            status_tracker = tracker,
+            context = context
+        )
+
+        # View class
+        self.view_class = destination.view_class(exporter_context)
         
         self.output["export_events"] = export_events
+        self.output.update(
+            **destination.output(exporter_context)
+        )
 
         datastore.commit()
 
