@@ -7,10 +7,11 @@
 @since:			March 2010
 """
 import os
+from shutil import rmtree
 from subprocess import Popen, PIPE
 from cocktail import schema
 from cocktail.controllers import context as controller_context
-from cocktail.modeling import abstractmethod
+from cocktail.modeling import abstractmethod, getter
 from cocktail.translations import translations
 from cocktail.controllers.location import Location
 from woost.models import Item
@@ -27,30 +28,62 @@ class StaticSiteSnapShoter(Item):
     visible_from_root = False
     integral = True
 
-    @abstractmethod
-    def snapshot(self, root, follow_links = True, context = {}):
+    def setup(self, context):
+        """Prepares the exporter for an export process.
+
+        The object of this method is to allow exporters to perform any
+        initialization they require before writing files to their destination.
+
+        @param context: A dictionary where the exporter can place any
+            contextual information it many need throgout the export process. It
+            will be made available to all L{write_file} calls.
+        @type context: dict
+        """
+
+    def cleanup(self, context):
+        """Frees resources after an export operation.
+
+        This method is guaranteed to be called after the export operation is
+        over, even if an exception was raised during its execution.
+
+        @param context: The dictionary used by the exporter during the export
+            process to maintain its contextual information.
+        @type context: dict
+        """
+
+    def snapshot(self, items, context = {}):
         """ Generates the snapshot of a site's content 
 
-        @param root: The item which the exportation will statrt.
-        @type root: Publishable
-
-        @param follow_links: Indicates if the exportantion will follow links.
-        @type follow_links: bool
+        @param items: The list of items which the exportation will start.
+        @type items: L{Publishable}
 
         @param context: A dictionary used to share any contextual information
             with the snapshoter.
         @type context: dict
         """
+        self.setup(context)
+
+        try:
+            for item in items:
+                for file_data in self._snapshot(
+                    item,
+                    context = context
+                ):
+                    yield file_data
+        finally:
+            self.cleanup(context)
 
     @abstractmethod
-    def files(self):
-        """ Walks the static snapshot of a site's content 
+    def _snapshot(self, root, context = {}):
+        """ Generates the snapshot of a site's content 
 
-        @return: The file's contents, and their snapshot's relative path. The contents can be                                                                                                                                      
-        specified using a file-like object, or a filesystem path.
-        @rtype: (file-like or str, str) generator
+        @param root: The item which the exportation will statrt.
+        @type root: Publishable
+
+        @param context: A dictionary used to share any contextual information
+            with the snapshoter.
+        @type context: dict
         """
-    
 
 class WgetSnapShoter(StaticSiteSnapShoter):
     """ A class that creates a static snapshot of a site's content using wget """
@@ -67,16 +100,20 @@ class WgetSnapShoter(StaticSiteSnapShoter):
             )
     )
 
-    def snapshot(self, root, follow_links = True, context = {}):
-        snapshot_path = os.path.join(
+    @getter
+    def snapshot_path(self):
+        return os.path.join(
             controller_context["cms"].application_path,
             u"snapshots",
             str(self.id)
         )
 
+
+    def _snapshot(self, root, context = {}):
+
         cmd = "wget --mirror"
 
-        if not follow_links:
+        if not context.get("follow_links"):
             cmd += " --level 1"
 
         cmd += " --page-requisites --html-extension \
@@ -86,7 +123,7 @@ class WgetSnapShoter(StaticSiteSnapShoter):
         uri = self._get_uri(root, context)
 
         cmd = cmd % (
-            snapshot_path, 
+            self.snapshot_path, 
             self.file_names_mode, 
             uri
         )
@@ -94,22 +131,20 @@ class WgetSnapShoter(StaticSiteSnapShoter):
         p = Popen(cmd, shell=True, stdout=PIPE)
         p.communicate()
 
+        for root, dirs, files in os.walk(self.snapshot_path):
+            for file in files:
+                file_path = os.path.join(root, file)
+                relative_path = os.path.relpath(file_path, self.snapshot_path)
+                yield (file_path, relative_path)
+
     def _get_uri(self, item, context):
         location = Location.get_current_host()                              
         location.path_info = controller_context["cms"].uri(item)
         
         return unicode(location).encode("utf-8")
 
-    def files(self):
-        snapshot_path = os.path.join(
-            controller_context["cms"].application_path,
-            u"snapshots",
-            str(self.id)
-        )
+    def cleanup(self, context):
+        rmtree(self.snapshot_path)
 
-        for root, dirs, files in os.walk(snapshot_path):
-            for file in files:
-                file_path = os.path.join(root, file)
-                relative_path = os.path.relpath(file_path, snapshot_path)
-                yield (file_path, relative_path)
-    
+
+
