@@ -9,12 +9,16 @@ u"""
 
 import cherrypy
 from cocktail.controllers.erroremail import error_email
-from woost.controllers import DocumentController
+from woost.controllers.documentcontroller import DocumentController
 
 class ErrorDocumentController(DocumentController):
 
     def submit(self):
-        error_email(
-            sender = cherrypy.config['tools.error_email.sender'],
-            receivers = cherrypy.config['tools.error_email.receivers']
-        )
+
+        if cherrypy.config.has_key('tools.error_email.on') and \
+            cherrypy.config['tools.error_email.on']:
+
+            error_email(
+                sender = cherrypy.config['tools.error_email.sender'],
+                receivers = cherrypy.config['tools.error_email.receivers']
+            )
