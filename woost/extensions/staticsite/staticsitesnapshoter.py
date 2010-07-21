@@ -109,8 +109,7 @@ class WgetSnapShoter(StaticSiteSnapShoter):
         )
 
 
-    def _snapshot(self, root, context = {}):
-
+    def _get_cmd(self, context):
         cmd = "wget --mirror"
 
         if not context.get("follow_links"):
@@ -119,6 +118,12 @@ class WgetSnapShoter(StaticSiteSnapShoter):
         cmd += " --page-requisites --html-extension \
                 --convert-links --no-parent --no-host-directories \
                 --directory-prefix=%s --restrict-file-names=%s %s"
+
+        return cmd
+
+    def _snapshot(self, root, context = {}):
+
+        cmd = self._get_cmd(context)
 
         uri = self._get_uri(root, context)
 
