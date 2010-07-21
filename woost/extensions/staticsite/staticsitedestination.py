@@ -82,9 +82,7 @@ class StaticSiteDestination(Item):
 
     def _export(
         self,
-        snapshoter,
         context,
-        update_only = False,
         status_tracker = None
     ):
         if status_tracker:
@@ -92,15 +90,17 @@ class StaticSiteDestination(Item):
                 context = context
             )
 
-        for file, file_path in snapshoter.files():
+        for file, file_path in context["snapshoter"].snapshot(
+            context["selection"], 
+            context = context
+        ):
             exported = None
 
             try:
                 exported = self.export_file(
                     file, 
                     file_path, 
-                    context, 
-                    update_only = update_only
+                    context
                 )
             except Exception, error:
 
@@ -132,6 +132,7 @@ class StaticSiteDestination(Item):
     def export(
         self,
         snapshoter,
+        selection,
         update_only = False,
         status_tracker = None,
         context = {}
@@ -162,13 +163,16 @@ class StaticSiteDestination(Item):
 
         controller_context["exporting_static_site"] = True
         context["existing_folders"] = set()
+        context.update(
+            snapshoter = snapshoter,
+            selection = selection,
+            update_only = update_only
+        )
         self.setup(context)
 
         try:
             self._export(
-                snapshoter,
                 context,
-                update_only = update_only,
                 status_tracker = status_tracker
             )
         finally:
@@ -180,8 +184,7 @@ class StaticSiteDestination(Item):
     def export_file(self,
         file,
         file_path,
-        context,
-        update_only = False):
+        context):
         """Exports a file.
         
         @param file: The file's contents file to export. Can be specified using 
@@ -196,16 +199,12 @@ class StaticSiteDestination(Item):
             will be made available to all L{write_file} calls.
         @type context: dict
 
-        @param update_only: When set to True, the file will only be exported if
-            it has pending changes that have not been exported to this
-            destination yet.
-        @type update_only: bool
-        
         @return: True if the item is exported, False if L{update_only} is set
             to True and the item has no changes to export.
         @rtype: bool
         """
 
+        update_only = context.get("update_only")
         hash = file_hash(file)
 
         if update_only \
@@ -538,16 +537,12 @@ class ZipDestination(StaticSiteDestination):
 
     def _export(
         self,
-        snapshoter,
         context,
-        update_only = False,
         status_tracker = None
     ):
         StaticSiteDestination._export(
             self,
-            snapshoter,
             context,
-            update_only = update_only,
             status_tracker = status_tracker
         )
 
