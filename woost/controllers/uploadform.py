@@ -97,7 +97,7 @@ class UploadForm(Form):
 
     def get_file(self, member):
         instance = self.instance
-        file = schema.get(instance, member.name)
+        file = schema.get(instance, member.name, default = None)
 
         if file is None:
             file = self.create_file(member)
