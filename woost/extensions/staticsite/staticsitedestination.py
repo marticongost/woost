@@ -573,7 +573,10 @@ class ZipDestination(StaticSiteDestination):
         if isinstance(file, basestring):
             context["zip_file"].write(file, path)
         else:
-            context["zip_file"].writestr(path, file.read())
+            try:
+                context["zip_file"].writestr(path, file.read())
+            finally:
+                file.close()
 
     def view_class(self, context):
         return "woost.extensions.staticsite.ExportStaticSiteZipView"
