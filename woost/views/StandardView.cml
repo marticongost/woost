@@ -99,14 +99,18 @@ from woost.models import Site, Publishable, ModifyPermission
                                if attachment.is_published())
                 ?>
                 <py:new
-                    py:element="self.create_attachment(attachment)"
+                    py:element="self.create_attachment_entry(attachment)"
                     py:for="attachment in published_attachments"/>
             </py:ready>
         </ul>
     </div>
 
-    <li py:def="attachment" py:args="attachment">
-        <a href="${cms.uri(attachment)}" title="${attachment.description}">
+    <li py:def="attachment_entry" py:args="attachment">
+        <?py
+            print attachment
+            print "*" * 40
+        ?>
+        <a href="${self.cms.uri(attachment)}" title="${getattr(attachment, 'description', None)}">
             <img
                 src="${self.cms.icon_uri(attachment, 16)}"
                 alt="${translations('woost.views.StandardView attachment icon description')}"/>
