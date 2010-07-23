@@ -123,6 +123,11 @@ class CommentsExtension(Extension):
         @when(BaseCMSController.processed)
         def _process_comments(event):
 
+            # Comments variables initialization
+            comments_user_collection = None
+            comments_schema = None
+            comment_error = None
+
             controller = event.source
             comment_model = \
                 resolve(getattr(controller, "comment_model", Comment))
@@ -207,7 +212,8 @@ class CommentsExtension(Extension):
                 else:
                     comment_errors = schema.ErrorList([])
                 
-                # Update the output
+            # Update the output
+            if publishable is not None and publishable.allow_comments:
                 controller.output.update(
                     comments_user_collection = comments_user_collection,
                     comments_schema = comments_schema,
