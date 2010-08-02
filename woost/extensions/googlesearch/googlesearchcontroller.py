@@ -16,7 +16,7 @@ class GoogleSearchController(DocumentController):
 
     @cached_getter
     def output(self):
-        query = cherrypy.request.params.get("query")
+        query = cherrypy.request.params.get("query") or u""
         page = cherrypy.request.params.get("page") or 0
         results = GoogleSearchExtension.instance.search(query, int(page))
 
