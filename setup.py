@@ -74,6 +74,7 @@ of its features include:\n"
             "vimeo = woost.extensions.vimeo:VimeoExtension",
 			"signup = woost.extensions.signup:SignUpExtension",
             "googlesearch = woost.extensions.googlesearch:GoogleSearchExtension",
+            "googleanalytics = woost.extensions.googleanalytics:GoogleAnalyticsExtension",
             "campaignmonitor = woost.extensions.campaignmonitor:CampaignMonitorExtension"
         ]
     },

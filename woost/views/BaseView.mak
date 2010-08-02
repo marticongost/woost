@@ -62,6 +62,7 @@ ${self.dtd()}
     <head>        
         ${self.meta()}
         ${self.resources()}
+        ${injected_head_html or ""}
     </head>
 
     <body>
