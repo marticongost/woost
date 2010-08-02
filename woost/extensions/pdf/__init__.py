@@ -83,7 +83,7 @@ class PDFExtension(Extension):
                     "url": unicode(location),
                     "output_file": pdf_file_path
                 }
-                proc = Popen(command, shell = True)
+                proc = Popen(command.encode("utf-8"), shell = True)
                 stdout, stderr = proc.communicate()
 
                 if proc.returncode:
