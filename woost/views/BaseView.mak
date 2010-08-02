@@ -61,14 +61,14 @@ ${self.dtd()}
     
     <head>        
         ${self.meta()}
-        ${self.resources()}
-        ${injected_head_html or ""}
+        ${self.resources()}        
     </head>
 
     <body>
         <div class="${self.attr.container_classes}">
             ${self.container()}
         </div>
+        ${body_end_html or ""}
     </body>
 
 </html>
