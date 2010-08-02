@@ -61,11 +61,11 @@ class GoogleAnalyticsExtension(Extension):
 
         @when(CMS.producing_output)
         def handle_producing_output(e):
-            html = e.output.get("injected_head_html", "")
+            html = e.output.get("body_end_html", "")
             if html:
                 html += " "
             html += event.source.get_analytics_script()
-            e.output["injected_head_html"] = html
+            e.output["body_end_html"] = html
 
     def get_analytics_script(self):
         return """

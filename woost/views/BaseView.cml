@@ -15,7 +15,7 @@ from woost.models import Site, Publishable, Language
     translation_members = ("body",)
     content_language = None
     fully_translated = True
-    injected_head_html = ""
+    body_end_html = ""
     
     def get_keywords(self):
         keywords = []
@@ -67,8 +67,8 @@ from woost.models import Site, Publishable, Language
 
     <py:ready>
         <?py
-        if self.injected_head_html:
-            self.add_head_element(Content(self.injected_head_html))
+        if self.body_end_html:
+            self.add_body_end_element(Content(self.body_end_html))
 
         publishable = self.publishable
 
