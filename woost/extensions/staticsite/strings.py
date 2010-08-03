@@ -65,6 +65,12 @@ translations.define("woost.extensions.staticsite.export_status-failed",
     en = u"Failed"
 )
 
+translations.define("woost.extensions.staticsite export info",
+    ca = u"S'exportarà els següents elements:",
+    es = u"Se exportará los siguientes elementos:",
+    en = u"The following items will be exported:"
+)
+
 # Export form
 #------------------------------------------------------------------------------
 translations.define("ExportStaticSite.update_only",

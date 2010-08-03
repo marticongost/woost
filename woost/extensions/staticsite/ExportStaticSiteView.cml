@@ -8,6 +8,7 @@ from woost.models import Language
     xmlns:py="http://www.whads.com/ns/cocktail/templates">
 
     <?py-class
+    selection = None
     form_schema = None
     form_data = None
     form_errors = None
@@ -16,6 +17,16 @@ from woost.models import Language
     ?>
 
     <py:with py:element="self.body">
+
+        <div class="exportation-info" py:visible="@{not self.successful}">
+            <p>${translations("woost.extensions.staticsite export info")}</p>
+
+            <py:ready>
+            <ul py:if="self.selection" py:collapsible="${True}">
+                <li py:for="item in self.selection"><strong>${translations(item)}</strong></li>
+            </ul>
+            </py:ready>
+        </div>
 
         <py:cocktail.html.Form
             py:id="export_form"
