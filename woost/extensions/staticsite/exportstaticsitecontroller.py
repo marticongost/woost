@@ -32,6 +32,15 @@ class ExportStaticSiteController(
     BaseBackOfficeController
 ):
     view_class = "woost.extensions.staticsite.ExportStaticSiteView"
+    selection = None
+
+    def __init__(self, *args, **kwargs):
+        BaseBackOfficeController.__init__(self, *args, **kwargs)
+        FormControllerMixin.__init__(self, *args, **kwargs)
+        self.selection = self.params.read(
+            schema.Collection("selection", items = schema.Reference(type = Publishable))
+        )
+
 
     @cached_getter
     def form_model(self):
@@ -113,15 +122,11 @@ class ExportStaticSiteController(
         destination = form["destination"]
         snapshoter = form["snapshoter"]
 
-        selection = self.params.read(
-            schema.Collection("selection", items = schema.Reference(type = Publishable))
-        )
-
         context = self.form_data.copy()
 
         exporter_context = destination.export(
             snapshoter,
-            selection,
+            self.selection,
             update_only = form["update_only"],
             status_tracker = tracker,
             context = context
@@ -136,4 +141,12 @@ class ExportStaticSiteController(
         )
 
         datastore.commit()
+
+    @cached_getter
+    def output(self):
+        output = BaseBackOfficeController.output(self)
+        output.update(
+            selection = self.selection
+        )
+        return output
 
