@@ -16,13 +16,13 @@ translations.define("SignUpPage",
 )
 
 translations.define("SignUpPage-plural",
-    ca = u"Pàginas d'alta d'usuari",
+    ca = u"Pàgines d'alta d'usuari",
     es = u"Páginas de alta de usuario",
     en = u"Sign up pages"
 )
 
 translations.define("SignUpPage.signup_process",
-    ca = u"Process d'alta",
+    ca = u"Procés d'alta",
     es = u"Proceso de alta",
     en = u"Sign up process"
 )
@@ -104,7 +104,7 @@ translations.define("woost.extensions.signup.SignupConfirmationMessageNotice",
 )
 
 translations.define("woost.extensions.signup.SignupSuccessfulConfirmationMessage",
-    ca = u"Alta d'usuari confirmat correctament!",
+    ca = u"Alta d'usuari confirmada correctament!",
     es = u"Alta de usuario confirmada correctamente!",
     en = u"Sign up correctly confirmed"
 )
