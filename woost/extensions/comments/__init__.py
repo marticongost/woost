@@ -56,7 +56,7 @@ class CommentsExtension(Extension):
             "en"
         )
 
-    def _after_process_comments(self):
+    def _after_process_comments(self, comment):
         raise cherrypy.HTTPRedirect(unicode(Location.get_current()).encode('utf-8'))
 
     @event_handler
@@ -208,7 +208,7 @@ class CommentsExtension(Extension):
                             comment.publishable = publishable
                             comment.insert()
                             datastore.commit()
-                            CommentsExtension.instance._after_process_comments()
+                            CommentsExtension.instance._after_process_comments(comment)
                 else:
                     comment_errors = schema.ErrorList([])
                 
