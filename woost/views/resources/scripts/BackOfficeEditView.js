@@ -63,7 +63,7 @@ cocktail.bind(".BackOfficeEditView", function ($editView) {
         setVisibleLanguages(languages);
     });
 
-    $editView.find(".add_translation").click(function () {
+    $editView.find("button[name=add_translation]").click(function () {
         var language = jQuery(this).val();
         var languages = getVisibleLanguages();
         var visible = false;
