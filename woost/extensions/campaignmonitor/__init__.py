@@ -387,10 +387,15 @@ nuestras.""", "es")
                 )
                 return str(location)
 
-            unsubscribe_page = cmlist.unsubscribe_page and \
-                "%s?user=[email]" % absolute_uri(cmlist.unsubscribe_page) or ""
-            confirmation_success_page = cmlist.confirmation_success_page and \
-                absolute_uri(cmlist.confirmation_success_page) or ""
+            if cmlist.unsubscribe_page:
+                unsubscribe_page = "%s?user=[email]" % absolute_uri(cmlist.unsubscribe_page)
+            else:
+                unsubscribe_page = list_detail_data.get("UnsubscribePage")
+
+            if cmlist.confirmation_success_page:
+                confirmation_success_page = absolute_uri(cmlist.confirmation_success_page)
+            else:
+                confirmation_success_page = list_detail_data.get("ConfirmationSuccessPage")
 
             api.list_update(
                 list_id,
