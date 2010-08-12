@@ -22,21 +22,9 @@ class CampaignMonitorList(Item):
         "unsubscribe_page",
     ]   
 
-    default_unsubscribe_page = schema.DynamicDefault(
-        lambda: StandardPage.get_instance(
-            qname = u"woost.extensions.campaignmonitor.unsubscribe_page"
-        )
-    )   
-
     default_pending_page = schema.DynamicDefault(
         lambda: StandardPage.get_instance(
             qname = u"woost.extensions.campaignmonitor.pending_page"
-        )
-    )   
-
-    default_confirmation_success_page = schema.DynamicDefault(
-        lambda: StandardPage.get_instance(
-            qname = u"woost.extensions.campaignmonitor.confirmation_success_page"
         )
     )   
 
@@ -51,7 +39,6 @@ class CampaignMonitorList(Item):
     )
 
     unsubscribe_page = schema.Reference(
-        required = True,
         type = "woost.models.Publishable",
         related_end = schema.Collection()
     )
@@ -63,7 +50,6 @@ class CampaignMonitorList(Item):
     )
 
     confirmation_success_page = schema.Reference(
-        required = True,
         type = "woost.models.Publishable",
         related_end = schema.Collection()
     )
