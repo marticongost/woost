@@ -47,7 +47,7 @@
             </py:ready>
         </div>
 
-        <form py:id="back_form" action="@{self.cms.contextual_uri()}" py:visible="@{self.successful}">
+        <form py:id="back_form" action="" py:visible="@{self.successful}">
             <div class="buttons">
                 <button type="submit" py:id="cancel_button" name="cancel">
                     ${translations("woost.extensions.campaignmonitor.CampaignMonitorListsSynchronizationView cancel button")}            
