@@ -26,3 +26,23 @@ from ZEO.ClientStorage import ClientStorage
 db_host = "_DATABASE_HOST_"
 db_port = _DATABASE_PORT_
 datastore.storage = lambda: ClientStorage((db_host, db_port))
+
+# Uncomment the code below to enable the interactive debugger
+# WARNING: *THE CODE BELOW MUST BE COMMENTED ON A PRODUCTION ENVIRONMENT*
+#from paste import evalexception
+#from _PROJECT_MODULE_.controllers import _PROJECT_NAME_CMS
+#
+#cherrypy.config.update({
+#    "global": {
+#        "request.throw_errors": True,
+#    }   
+#})  
+#
+#_PROJECT_NAME_CMS.application_settings = { 
+#    "/": {
+#        "wsgi.pipeline": (('evalexc', evalexception.EvalException),),
+#        "wsgi.evalexc.global_conf": {}, 
+#        "wsgi.evalexc.xmlhttp_key": "_xml",
+#    }   
+#}   
+
