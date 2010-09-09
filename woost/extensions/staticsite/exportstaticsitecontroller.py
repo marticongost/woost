@@ -111,7 +111,7 @@ class ExportStaticSiteController(
                 event.error_handled = True
             export_events.append(event)
 
-        form = self.form_instance
+        form = self.form_data
 
         user = get_current_user()
         user.require_permission(
