@@ -59,10 +59,11 @@ class ItemFieldsController(EditController):
             self.fields_schema,
             target = form_data,
             languages = translations,
-            enable_defaults = False,
             prefix = self.form_prefix,
-            strict = False,
-            skip_undefined = cherrypy.request.method.upper() == "GET"
+            errors = "ignore",
+            undefined = "skip" 
+                        if cherrypy.request.method.upper() == "GET" 
+                        else "set_none"
         )
 
         # Drop references

@@ -186,8 +186,7 @@ class EditStacksManager(object):
         """
         edit_stack = None
         edit_stack_param = get_parameter(
-            schema.String(self._request_param, format = r"\d+-\d+"),
-            strict = True
+            schema.String(self._request_param, format = r"\d+-\d+")
         )
 
         if edit_stack_param:
