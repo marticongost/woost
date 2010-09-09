@@ -101,10 +101,15 @@ class User(Item):
     )
 
     def encryption(self, data):
-        if isinstance(data,unicode):
-            return self.encryption_method(data.encode("utf-8"))
-        else:
-            return self.encryption_method(data)
+
+        if self.encryption_method:
+
+            if isinstance(data, unicode):
+                data = data.encode("utf-8")
+
+            data = self.encryption_method(data).digest()
+
+        return data
 
     def __translate__(self, language, **kwargs):
         return (self.draft_source is None and self.email) \
@@ -113,11 +118,9 @@ class User(Item):
     @event_handler
     def handle_changing(cls, event):
 
-        encryption = event.source.encryption
-
-        if encryption and event.member is cls.password \
+        if event.member is cls.password \
         and event.value is not None:
-            event.value = encryption(event.value).digest()
+            event.value = event.source.encryption(event.value)
 
     def test_password(self, password):
         """Indicates if the user's password matches the given string.
@@ -130,10 +133,7 @@ class User(Item):
         @rtype: bool
         """
         if password:
-            if self.encryption:
-                return self.encryption(password).digest() == self.password
-            else:
-                return password == self.password
+            return self.encryption(password) == self.password
         else:
             return not self.password
 

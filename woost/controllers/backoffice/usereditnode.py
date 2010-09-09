@@ -21,11 +21,17 @@ class UserEditNode(EditNode):
         
         if self.item.is_inserted:
             form_adapter.exclude("change_password")
-            form_adapter.copy("password",
-                export_condition = False,
-                import_condition = lambda context:
-                    context.get("change_password", default = None)
-            )
+
+            if self.item.encryption_method:
+                kwargs = {
+                    "export_condition": False,
+                    "import_condition": lambda context:
+                        context.get("change_password", default = None)
+                }
+            else:
+                kwargs = {}
+
+            form_adapter.copy("password", **kwargs)
 
         return form_adapter
 
@@ -36,42 +42,48 @@ class UserEditNode(EditNode):
         password_member = form_schema.get_member("password")
         
         if password_member:
+            
+            if self.item.encryption_method:
 
-            order = form_schema.members_order = list(form_schema.members_order)
-            pos = order.index("password")
+                order = form_schema.members_order = list(form_schema.members_order)
+                pos = order.index("password")
 
-            password_conf_member = schema.String(
-                name = "password_confirmation",            
-                edit_control = "cocktail.html.PasswordBox",
-                visible_in_detail_view = False,
-                required = password_member.required
-            )
-            form_schema.add_member(password_conf_member)
-            order.insert(pos + 1, "password_confirmation")
-
-            if self.item.is_inserted:
-
-                change_password_member = schema.Boolean(
-                    name = "change_password",
-                    required = True,
-                    default = False,
-                    visible_in_detail_view = False
+                password_conf_member = schema.String(
+                    name = "password_confirmation",            
+                    edit_control = "cocktail.html.PasswordBox",
+                    visible_in_detail_view = False,
+                    required = password_member.required
                 )
-                form_schema.add_member(change_password_member)
-                order.insert(pos, "change_password")
-                
-                password_member.exclusive = change_password_member
-                password_conf_member.exclusive = change_password_member
-        
-            @form_schema.add_validation
-            def validate_password_confirmation(form_schema, value, ctx):
-                password = ctx.get_value("password")               
-                password_confirmation = ctx.get_value("password_confirmation")
+                form_schema.add_member(password_conf_member)
+                order.insert(pos + 1, "password_confirmation")
 
-                if password and password_confirmation \
-                and password != password_confirmation:
-                    yield PasswordConfirmationError(
-                            form_schema, value, ctx)
+                if self.item.is_inserted:
+
+                    change_password_member = schema.Boolean(
+                        name = "change_password",
+                        required = True,
+                        default = False,
+                        visible_in_detail_view = False
+                    )
+                    form_schema.add_member(change_password_member)
+                    order.insert(pos, "change_password")
+                    
+                    password_member.exclusive = change_password_member
+                    password_conf_member.exclusive = change_password_member
+            
+                @form_schema.add_validation
+                def validate_password_confirmation(form_schema, value, ctx):
+                    password = ctx.get_value("password")               
+                    password_confirmation = ctx.get_value("password_confirmation")
+
+                    if password and password_confirmation \
+                    and password != password_confirmation:
+                        yield PasswordConfirmationError(
+                                form_schema, value, ctx)
+
+            # No encryption: edit passwords in plain sight
+            else:
+                password_member.edit_control = "cocktail.html.TextBox"
 
         return form_schema
 
@@ -79,7 +91,7 @@ class UserEditNode(EditNode):
         
         # Discard differences in the password field
         for member, language in EditNode.iter_changes(self):
-            if member.name not in (
+            if not self.item.encryption_method or member.name not in (
                 "change_password", "password", "password_confirmation"
             ):
                 yield (member, language)
