@@ -188,7 +188,7 @@ class CommentsExtension(Extension):
                         get_parameter(
                             comments_schema, 
                             target = comment_data, 
-                            strict = False
+                            errors = "ignore"
                         )
 
                         comment_errors = schema.ErrorList(
