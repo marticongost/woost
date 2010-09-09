@@ -12,6 +12,11 @@
         <?py
         if (member.name == "password" and control["type"] == "password"):
             control.value = None
+        elif member.name == "change_password" and not (
+            self.errors.in_member("password")
+            or self.errors.in_member("password_confirmation")
+        ):
+            control.value = False
         ?>
     </py:with>
 
