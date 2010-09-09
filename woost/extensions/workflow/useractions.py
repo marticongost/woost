@@ -103,8 +103,7 @@ class TransitionAction(UserAction):
                     # errors:
                     restricted = False
                 )
-            ),
-            strict = True
+            )            
         )
 
         if transition is None:
