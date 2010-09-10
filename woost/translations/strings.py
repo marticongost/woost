@@ -1292,7 +1292,7 @@ translations.define("woost.views.StandardView attachment icon description",
 
 translations.define("woost.views.StandardView fallback language notice",
     ca = lambda fallback:
-        u"Aquesta pàgina no es troba disponible en català. Et mostrem"
+        u"Aquesta pàgina no es troba disponible en català. Et mostrem "
         u"la seva versió en %s." % translations(fallback).lower(),
     es = lambda fallback:
         u"Esta página no se encuentra disponible en español. Te "
