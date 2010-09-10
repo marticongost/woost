@@ -124,8 +124,8 @@ ${self.dtd()}
     % if publishable.per_language_publication:
         % for trans_lang in publishable.translations:
             % if trans_lang in Language.codes and trans_lang != language and publishable.get("translation_enabled", trans_lang) and self.is_fully_translated(publishable, trans_lang):
-                <link rel="alternate"
-                      title="${translations('woost.views.BaseView alternate language link', lang = trans_lang)}"
+                <link rel="${'canonical' if not self.fully_translated and trans_lang == self.content_language else 'alternate'}"
+                      title="${translations('woost.views.BaseView alternate language link', language = trans_lang, lang = trans_lang)}"
                       href="${cms.translate_uri(language = trans_lang)}"
                       lang="${trans_lang}"
                       hreflang="${trans_lang}"${closure()}>
