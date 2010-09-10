@@ -113,8 +113,8 @@ from woost.models import Site, Publishable, Language
                     and self.is_fully_translated(publishable, trans_lang):
                         self.add_head_element(
                             Element("link",
-                                rel = "alternate",
-                                title = translations("woost.views.BaseView alternate language link", lang = trans_lang),
+                                rel = "canonical" if not self.fully_translated and trans_lang == self.content_language else "alternate",
+                                title = translations("woost.views.BaseView alternate language link", language = trans_lang, lang = trans_lang),
                                 href = self.cms.translate_uri(language = trans_lang),
                                 lang = trans_lang,
                                 hreflang = trans_lang
