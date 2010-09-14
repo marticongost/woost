@@ -20,7 +20,7 @@ class UploadForm(Form):
         return [member
                 for member in self.model.members().itervalues()
                 if isinstance(member, schema.Reference)
-                and member.type is File]
+                and issubclass(member.type, File)]
 
     @cached_getter
     def adapter(self):
