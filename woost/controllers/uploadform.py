@@ -106,7 +106,7 @@ class UploadForm(Form):
         return file
 
     def create_file(self, member):
-        return File()
+        return member.type()
 
     def upload(self):
 
