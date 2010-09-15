@@ -192,7 +192,8 @@ def init_site(
             ReadMemberPermission(
                 matching_members = [
                     "woost.models.item.Item.qname",
-                    "woost.models.publishable.Publishable.controller"
+                    "woost.models.publishable.Publishable.controller",
+                    "woost.models.file.File.local_path"
                 ],
                 authorized = False
             ),
