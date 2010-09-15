@@ -43,7 +43,8 @@ class File(Publishable):
         "title",
         "file_name",
         "file_size",
-        "file_hash"
+        "file_hash",
+        "local_path"
     ]
 
     title = schema.String(
@@ -60,7 +61,6 @@ class File(Publishable):
     )
 
     file_size = schema.Integer(
-        required = True,
         editable = False,
         translate_value = lambda size, language = None, **kwargs:
             "" if size in (None, "") else get_human_readable_file_size(size),
@@ -74,13 +74,36 @@ class File(Publishable):
         member_group = "content"
     )
 
+    local_path = schema.String(
+        listed_by_default = False,
+        member_group = "content"
+    )
+
+    @event_handler
+    def handle_changed(cls, e):
+        if e.member is cls.local_path and e.value:
+            e.source.file_name = os.path.basename(e.value)
+            e.source.mime_type = guess_type(e.value, strict = True)[0]
+            e.source.file_hash = None
+            e.source.file_size = None
+
     def __translate__(self, language, **kwargs):
         return (self.draft_source is None and self.get("title", language)) \
             or Publishable.__translate__(self, language, **kwargs)
 
     @getter
     def file_path(self):
-        return context["cms"].get_file_upload_path(self.id)
+        
+        cms = context["cms"]
+        file_path = self.local_path
+
+        if file_path:
+            if not os.path.isabs(file_path):
+                file_path = os.path.join(cms.application_path, file_path)            
+        else:
+            file_path = cms.get_file_upload_path(self.id)
+
+        return file_path
 
     @classmethod
     def from_path(cls,
@@ -127,7 +150,7 @@ class File(Publishable):
         file.file_name = file_name
 
         # Infer the file's MIME type
-        mime_type = guess_type(file_name)
+        mime_type = guess_type(file_name, strict = False)
         if mime_type:
             file.mime_type = mime_type[0]
         
