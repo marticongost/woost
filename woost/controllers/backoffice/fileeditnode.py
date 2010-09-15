@@ -12,6 +12,7 @@ import cherrypy
 from cocktail.modeling import getter, cached_getter
 from cocktail.events import event_handler
 from cocktail import schema
+from cocktail.schema.exceptions import ValidationError
 from cocktail.controllers import context
 from cocktail.controllers.fileupload import FileUpload
 from woost.controllers.backoffice.publishableeditnode \
@@ -30,15 +31,28 @@ class FileEditNode(PublishableEditNode):
 
     @cached_getter
     def form_schema(self):
+
         form_schema = PublishableEditNode.form_schema(self)
+        
         form_schema.add_member(
             FileUpload("upload",
-                required = not self.item.is_inserted,
                 hash_algorithm = "md5",
                 get_file_destination = lambda upload: self.temp_file_path,
                 member_group = "content"
             )
         )
+        
+        if form_schema.get_member("local_path") \
+        and not (self.item.is_inserted and not self.item.local_path):
+            @form_schema.add_validation
+            def validate_only_one_file_source(member, validable, ctx):
+                if bool(ctx.get_value("upload")) \
+                 + bool(ctx.get_value("local_path")) != 1:
+                    yield FileRequiredError(member, validable, ctx)
+        else:
+            form_schema["upload"].required = \
+                not (self.item.is_inserted and self.item.file_name)
+
         return form_schema
 
     def iter_changes(self, source = None):
@@ -88,7 +102,7 @@ class ExportUploadInfo(schema.Rule):
 
         file_name = context.get("file_name")
         
-        if file_name:
+        if file_name and not context.get("local_path", None):
             context.set("upload", {
                 "file_name": file_name,
                 "mime_type": context.get("mime_type"),
@@ -104,9 +118,16 @@ class ImportUploadInfo(schema.Rule):
         context.consume("upload")
         upload = context.get("upload", None)
 
-        if upload:
+        if upload and not context.get("local_path", None):
             context.set("file_name", schema.get(upload, "file_name"))
             context.set("mime_type", schema.get(upload, "mime_type"))
             context.set("file_size", schema.get(upload, "file_size"))
             context.set("file_hash", schema.get(upload, "file_hash"))
+
+
+class FileRequiredError(ValidationError):
+
+    @getter
+    def invalid_members(self):
+        return self.member["upload"], self.member["local_path"]
 
