@@ -7,6 +7,7 @@ u"""
 @since:			October 2008
 """
 from os.path import abspath, dirname, join
+from urlparse import urljoin
 from cocktail.html import templates, Element
 from cocktail.translations import translations
 from cocktail.controllers import context
@@ -53,15 +54,16 @@ class RichTextEditor(TinyMCE):
 
         if current_edit_stack:
             edit_stack_param = current_edit_stack.to_param()
+            attachments_uri = ctx_uri.rstrip("/") + \
+                "/editor_attachments?edit_stack=%s&language=%s&resource_type=" % (
+                    edit_stack_param, self.language
+                )
             self.tinymce_params.update(
                 init_instance_callback = "initRichTextEditor",
                 theme_advanced_styles = ";".join(styles),
-                external_image_list_url = "%s/editor_attachments?edit_stack=%s&resource_type=image&language=%s"
-                    % (ctx_uri, edit_stack_param, self.language),
-                external_link_list_url = "%s/editor_attachments?edit_stack=%s&resource_type=document&language=%s"
-                    % (ctx_uri, edit_stack_param, self.language),
-                media_external_list_url = "%s/editor_attachments?edit_stack=%s&resource_type=video&language=%s"
-                    % (ctx_uri, edit_stack_param, self.language),
+                external_image_list_url = attachments_uri + "image",
+                external_link_list_url = attachments_uri + "document",
+                media_external_list_url = attachments_uri + "video"
             )
 
         load_plugin = Element("script")
