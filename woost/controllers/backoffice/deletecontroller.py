@@ -118,12 +118,12 @@ class DeleteController(BaseBackOfficeController):
         return self.action is not None
     
     def submit(self):
+        # Load the edit stack before deleting any item, to ensure its
+        # loaded properly
+        stack = self.edit_stack
+
         if self.action == "confirm_delete":
             
-            # Load the edit stack before deleting any item, to ensure its
-            # loaded properly
-            stack = self.edit_stack
-
             user = get_current_user()
 
             for i in range(self.MAX_TRANSACTION_ATTEMPTS):
@@ -159,10 +159,11 @@ class DeleteController(BaseBackOfficeController):
                     change = item.changes[-1] if item.changes else None
                 )               
             
+        if stack:
+            stack.go()
+        else:
             self.go_back()
             
-        elif self.action == "cancel":
-            self.go_back()
 
     view_class = "woost.views.BackOfficeDeleteView"
 
