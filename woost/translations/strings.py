@@ -548,12 +548,18 @@ translations.define(
     en = u"The indicated edit session doesn't exist, or it has been lost."
 )
 
-
 translations.define(
     "woost.controllers.backoffice.editstack.EditStackExpiredError-instance",
     ca = u"La sessió d'edició ha expirat.",
     es = u"La sesión de edición ha expirado.",
     en = u"The indicated edit session has expired."
+)
+
+translations.define(
+    "woost.controllers.backoffice.fileeditnode.FileRequiredError-instance",
+    ca = u"S'ha de carregar un fitxer o seleccionar un fitxer local",
+    es = u"Debe subirse un fichero o seleccionar un fichero local",
+    en = u"Must upload a file, or select a local file"
 )
 
 translations.define(
@@ -2653,6 +2659,12 @@ translations.define("File.file_size",
     ca = u"Mida del fitxer",
     es = u"Tamaño de fichero",
     en = u"File size"
+)
+
+translations.define("File.local_path",
+    ca = u"Fitxer local",
+    es = u"Fichero local",
+    en = u"Local file"
 )
 
 translations.define("BackOfficeEditForm.upload",
