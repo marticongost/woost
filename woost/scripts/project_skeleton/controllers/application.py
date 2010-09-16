@@ -2,7 +2,6 @@
 u"""
 Provides the CMS subclass used to customize the behavior of the site.
 """
-import cherrypy
 from pkg_resources import resource_filename
 from cocktail.controllers import folder_publisher
 from woost.controllers.application import CMS
