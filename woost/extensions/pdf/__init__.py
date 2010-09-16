@@ -11,10 +11,10 @@ from shutil import rmtree
 from tempfile import mkdtemp
 from subprocess import Popen
 import cherrypy
-from cherrypy.lib.static import serve_file
 from cocktail.events import event_handler
 from cocktail.translations import translations
 from cocktail import schema
+from cocktail.controllers import serve_file
 from cocktail.controllers.location import Location
 from woost.models import Extension
 from woost.controllers import BaseCMSController
