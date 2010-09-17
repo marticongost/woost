@@ -160,7 +160,7 @@ class DeleteController(BaseBackOfficeController):
                 )               
             
         if stack:
-            stack.go()
+            stack.go(0 if len(stack) == 1 else len(stack) - 2)
         else:
             self.go_back()
             
