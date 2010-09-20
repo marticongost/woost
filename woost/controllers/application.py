@@ -19,8 +19,7 @@ from cherrypy.lib.cptools import validate_since
 from pkg_resources import resource_filename, iter_entry_points
 from cocktail.events import Event, event_handler
 from cocktail.translations import get_language, set_language
-from cocktail.controllers import Dispatcher
-from cocktail.controllers import Location
+from cocktail.controllers import Dispatcher, Location, folder_publisher
 from cocktail.controllers.percentencode import percent_encode
 from cocktail.persistence import datastore
 from woost.models import (
@@ -157,14 +156,12 @@ class CMS(BaseCMSController):
             return self.__dispatcher.respond(args, self.__cms)
 
         # Static resources
-        resources = cherrypy.tools.staticdir.handler(
-            section = "resources",
-            dir = resource_filename("woost.views", "resources")
+        resources = folder_publisher(
+            resource_filename("woost.views", "resources")
         )
         
-        cocktail = cherrypy.tools.staticdir.handler(
-            section = "cocktail",
-            dir = resource_filename("cocktail.html", "resources")
+        cocktail = folder_publisher(
+            resource_filename("cocktail.html", "resources")
         )
 
     def __init__(self, *args, **kwargs):
