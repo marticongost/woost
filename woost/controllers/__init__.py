@@ -12,5 +12,4 @@ from cocktail.controllers import context
 from woost.controllers.application import CMS
 from woost.controllers.module import Module
 from woost.controllers.basecmscontroller import BaseCMSController
-import woost.controllers.switchcsshandler
 

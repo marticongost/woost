@@ -24,7 +24,6 @@ from urllib import urlopen
 import rfc822
 import cherrypy
 from cherrypy.lib.cptools import validate_since
-from cherrypy.lib.static import serve_file
 import Image
 import ImageDraw
 import ImageFont
@@ -40,7 +39,8 @@ from cocktail import schema
 from cocktail.controllers import (
     context,
     get_parameter,
-    Location
+    Location,
+    serve_file
 )
 from woost.models import (
     Item,
