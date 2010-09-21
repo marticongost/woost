@@ -3369,6 +3369,12 @@ translations.define("ModifyTrigger.matching_languages-explanation",
          u"of which language modified values are translated into."
 )
 
+translations.define("woost.controllers.DeleteController.node_deleted_notice",
+    ca = u"L'element que estaves editant ha estat eliminat.",
+    es = u"El elemento que estabas editando ha sido eliminado.",
+    en = u"The item you were editing has been deleted"
+)
+
 # DeleteTrigger
 #------------------------------------------------------------------------------
 translations.define("DeleteTrigger",
