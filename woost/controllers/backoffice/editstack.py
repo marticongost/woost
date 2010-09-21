@@ -107,7 +107,7 @@ class EditStacksManager(object):
         if preserved_stacks:
             for id, entry in preserved_stacks.iteritems():
                 try:
-                    stack = self_get_edit_stack(id)
+                    stack = self._get_edit_stack(id)
                 except EditStackExpiredError:
                     pass
                 else:
