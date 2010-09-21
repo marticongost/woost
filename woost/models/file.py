@@ -61,6 +61,7 @@ class File(Publishable):
     )
 
     file_size = schema.Integer(
+        required = True,
         editable = False,
         translate_value = lambda size, language = None, **kwargs:
             "" if size in (None, "") else get_human_readable_file_size(size),
@@ -86,6 +87,13 @@ class File(Publishable):
             e.source.mime_type = guess_type(e.value, strict = True)[0]
             e.source.file_hash = None
             e.source.file_size = None
+
+    image_effects = schema.String(
+        visible = True,
+        listed_by_default = False,
+        searchable = False,
+        member_group = "content"
+    )
 
     def __translate__(self, language, **kwargs):
         return (self.draft_source is None and self.get("title", language)) \
