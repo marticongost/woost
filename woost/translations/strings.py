@@ -548,6 +548,7 @@ translations.define(
     en = u"The indicated edit session doesn't exist, or it has been lost."
 )
 
+
 translations.define(
     "woost.controllers.backoffice.editstack.EditStackExpiredError-instance",
     ca = u"La sessió d'edició ha expirat.",
@@ -2665,6 +2666,12 @@ translations.define("File.local_path",
     ca = u"Fitxer local",
     es = u"Fichero local",
     en = u"Local file"
+)
+
+translations.define("File.image_effects",
+    ca = u"Efectes",
+    es = u"Efectos",
+    en = u"Effects"
 )
 
 translations.define("BackOfficeEditForm.upload",

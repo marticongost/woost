@@ -8,17 +8,14 @@ from cocktail.translations import translations
     xmlns:py="http://www.whads.com/ns/cocktail/templates">
 
     <?py-class
-    data = None
-    schema = None
-    errors = None
-    campaign_monitor_errors = None
+    form = None
     ?>
 
     <div class="list-errors" py:collapsible="${True}">            
-        <py:ready py:if="self.errors or self.campaign_monitor_errors">
+        <py:ready py:if="self.form.errors or self.form.campaign_monitor_errors">
             <ul>
-                <li py:if="self.campaign_monitor_errors">${translations("woost.extensions.campaignmonitor.CampaignMonitorSubscriptionView api error")}</li>
-                <py:block py:if="not self.campaign_monitor_errors">
+                <li py:if="self.form.campaign_monitor_errors">${translations("woost.extensions.campaignmonitor.CampaignMonitorSubscriptionView api error")}</li>
+                <py:block py:if="not self.form.campaign_monitor_errors">
                     <py:block py:for="member in self.schema.ordered_members()">
                         <li py:for="error in self.errors.in_member(member)">${translations(error)}</li>
                     </py:block>

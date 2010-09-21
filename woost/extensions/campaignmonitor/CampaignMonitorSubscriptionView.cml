@@ -15,11 +15,8 @@ from cocktail.translations import translations
 
         <py:ready>
             <py:woost.extensions.campaignmonitor.CampaignMonitorSubscriptionForm
-                py:if="not self.submitted or self.form_errors"
-                py:data="@{self.form_data}"
-                py:schema="@{self.form_schema}"
-                py:errors="@{self.form_errors}"
-                py:campaign_monitor_errors="@{self.campaign_monitor_errors}" />
+                py:if="not self.submitted or self.forms['subscription_form'].errors"
+                py:form="@{self.forms['subscription_form']}"/>
         </py:ready>
 
         <py:ready py:if="self.publishable.body">
