@@ -344,9 +344,17 @@ class EditStack(ListWrapper):
         @type removed_items: L{Item<woost.models.item.Item>} sequence
         """
         # For each edit node in the stack
-        for node in self:
+        for i, node in enumerate(self):
             if isinstance(node, EditNode):
-                
+             
+                # Truncate the node and the rest of the stack if the node was
+                # editing a deleted item
+                if node.item in removed_items:
+                    while self[-1] is not node:
+                        self.pop()
+                    self.pop()
+                    break
+
                 # Find all relations to persistent items
                 form_data = node.form_data
 
@@ -490,7 +498,7 @@ class EditNode(StackNode):
 
         return context["cms"].contextual_uri(
             "content",
-            str(self.item.id) if self.item.is_inserted else "new",
+            str(self.item.id) if self.item.is_inserted or self.item.is_deleted else "new",
             self.section,
             **params
         )

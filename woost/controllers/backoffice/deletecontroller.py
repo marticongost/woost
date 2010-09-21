@@ -9,6 +9,7 @@ u"""
 from __future__ import with_statement
 from ZODB.POSException import ConflictError
 from cocktail.modeling import getter, cached_getter, InstrumentedSet
+from cocktail.translations import translations
 from cocktail.schema import (
     String,
     Collection,
@@ -23,6 +24,7 @@ from woost.models import (
     get_current_user,
     DeletePermission
 )
+from woost.controllers.notifications import notify_user
 from woost.controllers.backoffice.editstack import EditNode
 from woost.controllers.backoffice.basebackofficecontroller \
     import BaseBackOfficeController
@@ -147,6 +149,7 @@ class DeleteController(BaseBackOfficeController):
           
             # Purge the edit stack of references to deleted items
             if stack:
+                prev_stack_size = len(stack)
                 stack.remove_references(deleted_set)
             
             # Launch CMS.item_deleted events
@@ -157,8 +160,26 @@ class DeleteController(BaseBackOfficeController):
                     item = item,
                     user = user,
                     change = item.changes[-1] if item.changes else None
-                )               
-            
+                )
+
+            # If the edit stack has been modified as a result of the delete
+            # operation (an edited item has been deleted), redirect the user
+            # to the topmost edit node, or to the application root
+            if stack is not None and len(stack) < prev_stack_size:
+
+                while len(stack) > 0 \
+                and not isinstance(stack[-1], EditNode):
+                    stack.pop()
+                
+                notify_user(
+                    translations(
+                        "woost.controllers.DeleteController."
+                        "node_deleted_notice"
+                    ),
+                    category = "error",
+                    transient = True
+                )
+
         if stack:
             stack.go()
         else:
