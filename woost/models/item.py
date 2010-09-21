@@ -79,6 +79,12 @@ class Item(PersistentObject):
         "woost.controllers.backoffice.itemfieldscontroller." \
         "ItemFieldsController"
 
+    __deleted = False
+
+    @getter
+    def is_deleted(self):
+        return self.__deleted
+
     # Indexing
     #--------------------------------------------------------------------------
  
@@ -387,6 +393,8 @@ class Item(PersistentObject):
                     change.changeset = changeset
                     changeset.changes[item.id] = change
                     change.insert()
+
+        item.__deleted = True
     
     _preserved_members = frozenset([changes])
 
