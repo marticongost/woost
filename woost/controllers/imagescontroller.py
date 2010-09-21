@@ -750,10 +750,19 @@ def resolve_color(value):
     return value
 
 image_processors = OrderedDict()
+editable_processors = OrderedDict()
+
+def get_processors():
+    return editable_processors
 
 def image_processor(func):
     image_processors[func.func_name] = func
     return image_processors
+
+def editable_processor(func):
+    editable_processors[func.func_name] = func
+    image_processors[func.func_name] = func
+    return editable_processors
 
 @image_processor
 def thumbnail(image, width = None, height = None, filter = Image.ANTIALIAS):
@@ -773,7 +782,7 @@ def thumbnail(image, width = None, height = None, filter = Image.ANTIALIAS):
     )
     return image
 
-@image_processor
+@editable_processor
 def crop(image, x1, y1, x2, y2):
 
     width, height = image.size
@@ -815,7 +824,7 @@ def fill(image, width, height, crop = "center", filter = Image.ANTIALIAS):
 
     return image
 
-@image_processor
+@editable_processor
 def rotate(image, angle, expand = True, filter = Image.BICUBIC):
     return image.rotate(angle, filter, expand)
 
@@ -823,7 +832,7 @@ def rotate(image, angle, expand = True, filter = Image.BICUBIC):
 def color(image, level):
     return ImageEnhance.Color(image).enhance(level)
 
-@image_processor
+@editable_processor
 def brightness(image, level):
     return ImageEnhance.Brightness(image).enhance(level)
 
