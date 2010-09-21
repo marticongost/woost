@@ -136,7 +136,7 @@ class ContentController(BaseBackOfficeController):
                         client_side_scripting = self.client_side_scripting
                     ))
                 
-        return BaseBackOfficeController.__call__(self, *args, **kwargs)
+        return BaseBackOfficeController.__call__(self, **kwargs)
 
     @cached_getter
     def action(self):
