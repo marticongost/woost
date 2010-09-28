@@ -10,6 +10,7 @@ Declaration of back office actions.
 import cherrypy
 from cocktail.modeling import getter, ListWrapper
 from cocktail.translations import translations
+from cocktail.controllers import view_state
 from cocktail import schema
 from woost.models import (
     Item,
@@ -665,7 +666,9 @@ class ExportAction(UserAction):
         self.format = format
 
     def get_url(self, controller, selection):
-        return controller.contextual_uri(format = self.format)
+        return "?" + view_state(
+            format = self.format
+        )
 
 
 class SelectAction(UserAction):
