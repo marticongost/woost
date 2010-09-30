@@ -9,7 +9,7 @@ u"""
 from warnings import warn
 from datetime import datetime
 from copy import copy
-from cPickle import Pickler, Unpickler
+from pickle import Pickler, Unpickler
 from cStringIO import StringIO
 from itertools import chain
 import cherrypy
