@@ -433,7 +433,9 @@ body.modal {
 }
 
 .BackOfficeLayout .Form .field_instance-CheckBox input {
-    width: 20px !important;
+    width: auto !important;
+    margin-left: 0;
+    margin-right: 0.4em;
 }
 
 .BackOfficeLayout .Form .control,
