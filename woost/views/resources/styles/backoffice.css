@@ -309,8 +309,6 @@ body.modal {
     border: none;
     margin: 0;
     padding: 0;
-    padding-left: 1em;
-    padding-top: 0.5em;
     margin-top: 0.75em;
     margin-bottom: 0.75em;
 }
@@ -325,8 +323,18 @@ body.modal {
     font-weight: bold;
     margin: 0;
     padding: 0;
-    margin-left: -1em;
-    color: rgb(50,50,50);
+    padding-bottom: 0.2em;
+    color: #545f75;
+}
+
+.BackOfficeLayout fieldset legend + .field {
+    border-top: 1px solid #adb2bc;
+    padding-top: 1em;
+    margin-top: 0;
+}
+
+.BackOfficeLayout fieldset > .field > * {
+    margin-left: 0.75em;
 }
 
 .BackOfficeLayout .field input.control,
