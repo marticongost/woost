@@ -87,6 +87,7 @@ class Publishable(Item):
 
     controller = schema.Reference(
         type = "woost.models.Controller",
+        indexed = True,
         bidirectional = True,
         listed_by_default = False,
         member_group = "presentation"
