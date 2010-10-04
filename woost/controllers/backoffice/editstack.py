@@ -9,7 +9,7 @@ u"""
 from warnings import warn
 from datetime import datetime
 from copy import copy
-from pickle import Pickler, Unpickler
+from cPickle import Pickler, Unpickler
 from cStringIO import StringIO
 from itertools import chain
 import cherrypy
@@ -70,6 +70,7 @@ class EditStacksManager(object):
         return buffer.getvalue()
 
     def __persistent_id(self, obj):
+
         if isinstance(obj, PersistentObject) and obj.is_inserted:
             return "%s-%s-%s" % (
                 self._persistent_id_prefix,
