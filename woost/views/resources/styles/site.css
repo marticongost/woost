@@ -200,6 +200,28 @@ a,
     color: rgb(135,35,10);
 }
 
+.Form .field_instance {
+    clear: left;
+    overflow: auto;
+    margin-bottom: 0.3em;
+}
+
+.Form .field_instance > label {
+    width: 12em;
+    display: block;
+    float: left;
+    padding-top: 0.3em;
+}
+
+.Form .required_mark {
+    font-weight: bold;
+    color: #6478AA;
+}
+
+.Form .buttons {
+    margin-top: 0.7em;
+}
+
 /* Attachments list
 -----------------------------------------------------------------------------*/
 .attachments {
