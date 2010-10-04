@@ -72,9 +72,14 @@ class EditStacksManager(object):
     def __persistent_id(self, obj):
 
         if isinstance(obj, PersistentObject) and obj.is_inserted:
+            
+            full_name = obj.__class__.full_name
+            if isinstance(full_name, unicode):
+                full_name = str(full_name)
+
             return "%s-%s-%s" % (
                 self._persistent_id_prefix,
-                obj.__class__.full_name,
+                full_name,
                 obj.id
             )
         else:
