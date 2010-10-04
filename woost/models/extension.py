@@ -69,6 +69,7 @@ def load_extensions():
                 # If all dependencies were loaded, load the extension
                 else:
                     extension.loading()
+                    extension.installed = True
                     state = LOADED
 
             extension_state[extension] = state
@@ -77,6 +78,8 @@ def load_extensions():
 
     for extension in Extension.select():
         load(extension)
+
+    datastore.commit()
 
 def install_new_extensions():
     """Finds new available extensions and registers them with the site."""
@@ -129,6 +132,8 @@ class Extension(Item):
     instantiable = False
     edit_node_class = "woost.controllers.backoffice.extensioneditnode." \
                       "ExtensionEditNode"
+
+    installed = False
 
     member_order = (
         "extension_author",
