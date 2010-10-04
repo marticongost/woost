@@ -75,7 +75,8 @@ of its features include:\n"
 			"signup = woost.extensions.signup:SignUpExtension",
             "googlesearch = woost.extensions.googlesearch:GoogleSearchExtension",
             "googleanalytics = woost.extensions.googleanalytics:GoogleAnalyticsExtension",
-            "campaignmonitor = woost.extensions.campaignmonitor:CampaignMonitorExtension"
+            "campaignmonitor = woost.extensions.campaignmonitor:CampaignMonitorExtension",
+            "mailer = woost.extensions.mailer:MailerExtension",
         ]
     },
     # Woost can't yet access view resources (images, style sheets, client
