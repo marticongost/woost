@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?py
+from cocktail.translations import translations
+from cocktail.controllers import view_state_form
+from woost.models import User
+from woost.controllers.backoffice.useractions import \
+    add_view_action_context
+from woost.extensions.mailer.sendemailcontroller import available_users
+?>
+
+<py:woost.views.BackOfficeItemView
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:py="http://www.whads.com/ns/cocktail/templates">
+
+    <?py-class
+    translations = ()
+    form_data = None
+    form_schema = None
+    form_errors = None
+    form_submitted = None
+    mailer_receivers = 0
+    mailer_errors = 0
+    ?>  
+
+    <?py
+    add_view_action_context(self, "send_email")
+    self.add_resource("/resources/styles/SendEmailView.css")
+    ?>  
+
+    <py:with py:element="self.item_body">
+
+        <py:ready>
+            <block py:if="not self.form_submitted or self.form_errors">
+                <ul py:id="error_box" py:collapsible="${True}">
+                        <li py:for="error in self.form_errors">${translations(error)}</li>
+                </ul>
+
+                <py:cocktail.html.Form
+                    action=""
+                    method="post"
+                    py:data="@{self.form_data}"
+                    py:schema="@{self.form_schema}"
+                    py:errors="@{self.form_errors}">
+                    <?py
+                    element.submit_button.empty()
+                    element.submit_button.append(translations("woost.extensions.mailer.SendEmailView continue"))
+                    element.submit_button["name"] = "mailer_action"
+                    element.submit_button["value"] = "continue"
+                    ?>
+                </py:cocktail.html.Form>
+            </block>
+
+            <block py:if="self.action == 'continue' and not self.form_errors">
+                <p>
+                    ${translations("woost.extensions.mailer.SendEmailView confirmation text") % (self.edited_item.title, translations(self.form_data["language"]))}
+
+                    <ul>
+                        <li py:for="role in self.form_data['roles']">${self.form_schema.get_member("roles").translate_value([role])}</li>
+                    </ul>
+                    <p>
+                        <strong>${translations("woost.extensions.mailer.SendEmailView total")}</strong>
+                        <span>${sum(len(available_users([role])) for role in self.form_data['roles'])} ${translations("woost.extensions.mailer users")}</span>
+                                
+                    </p>
+                </p>
+                <p class="notice" py:if="not self.edited_item.is_accessible(User.get_instance(qname = 'woost.anonymous_user'), language = self.form_data['language'])">
+                    ${translations("woost.extensions.mailer.SendEmailView accessibility warning")}
+                </p>
+                ${view_state_form(schema = self.form_schema, **self.form_data)}
+                <div class="buttons">
+                    <button type="submit" name="mailer_action" value="send">
+                        ${translations("woost.extensions.mailer.SendEmailView send")}
+                    </button>
+                </div>
+            </block>
+
+            <block py:if="self.action == 'send' and not self.form_errors">
+
+                <div class="success" py:if="not self.mailer_errors">
+                    <p>${translations("woost.extensions.mailer.SendEmailView successful mail delivery")}</p>
+                </div>
+
+                <div class="error_box" py:if="self.mailer_errors">
+                    <p>${translations("woost.extensions.mailer.SendEmailView error mail delivery")}</p>
+                </div>
+
+                <p class="summary">
+                    <p>${translations("woost.extensions.mailer.SendEmailView mailer summary") % (self.mailer_receivers - self.mailer_errors, self.mailer_receivers)}</p>
+                </p>
+            </block>
+
+        </py:ready>
+
+    </py:with>
+
+</py:woost.views.BackOfficeItemView>
