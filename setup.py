@@ -56,7 +56,7 @@ of its features include:\n"
         "cocktail==0.5"
     ],    
     extras_require = {
-        'campaign_monitor_api':  ["campaign_monitor_api"]
+        'campaign_monitor_api': ["campaign_monitor_api"]
     },
     packages = find_packages(),
     include_package_data = True,
@@ -75,7 +75,8 @@ of its features include:\n"
 			"signup = woost.extensions.signup:SignUpExtension",
             "googlesearch = woost.extensions.googlesearch:GoogleSearchExtension",
             "googleanalytics = woost.extensions.googleanalytics:GoogleAnalyticsExtension",
-            "campaignmonitor = woost.extensions.campaignmonitor:CampaignMonitorExtension"
+            "campaignmonitor = woost.extensions.campaignmonitor:CampaignMonitorExtension",
+            "usermodels = woost.extensions.usermodels:UserModelsExtension"
         ]
     },
     # Woost can't yet access view resources (images, style sheets, client
