@@ -3618,6 +3618,12 @@ translations.define("woost.views.ContentTypePicker cancel",
     en = u"Cancel"
 )
 
+translations.define("woost.views.ContentTypePicker.empty_label",
+    ca = u"Cap",
+    es = u"Ninguno",
+    en = u"None"
+)
+
 # Preview
 #------------------------------------------------------------------------------
 translations.define("woost.backoffice invalid item preview",

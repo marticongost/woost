@@ -1133,37 +1133,47 @@ body.scripted .BackOfficeLayout .selector:hover .selector_content {
 
 /* Content type picker
 -----------------------------------------------------------------------------*/
+.BackOfficeLayout .ContentTypePicker {
+    clear: left;
+}
+
 .BackOfficeLayout .ContentTypePicker .label {
     display: block;
     padding: 0.5em 0.2em;
 }
 
-.BackOfficeLayout .ContentTypePicker .label .empty_option {
-    padding-left: 0;
+.BackOfficeLayout .ContentTypePicker .entry_label {
+    display: inline;
 }
 
-.BackOfficeLayout .ContentTypePicker label.empty_option {
-    padding-left: 0.3em;
-    margin-left: 0;
-}
-
-.BackOfficeLayout .ContentTypePicker .selector_content {
-    max-height: 20em;
-    min-width: 16em;
-    overflow: auto;
-}
-
-body.scripted .BackOfficeLayout .ContentTypePicker {
+.scripted .BackOfficeLayout .ContentTypePicker ul {
     display: none;
 }
 
-body.scripted .BackOfficeLayout .ContentTypePicker.selector {
-    display: block;
+.scripted .BackOfficeLayout .ContentTypePicker ul .empty_item {
+    padding-left: 3.6em;
 }
 
-.BackOfficeLayout .ContentTypePicker .entry_label {
-    display: inline;
-    margin-left: 0.3em;
+.scripted .BackOfficeLayout .ContentTypePicker .toggle_button {
+    margin-right: 0.4em;
+    position: relative;
+    top: 0.2em;
+}
+
+.scripted .BackOfficeLayout .ContentTypePicker label {
+    padding: 0.2em;
+    -webkit-border-radius: 0.3em;
+    -moz-border-radius: 0.3em;
+}
+
+.scripted .BackOfficeLayout .ContentTypePicker label.selected {
+    color: white;
+    font-weight: bold;
+    background-color: rgb(75,75,75);
+}
+
+.scripted .BackOfficeLayout .ContentTypePicker input {
+    display: none;
 }
 
 /* Paging
