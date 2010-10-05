@@ -30,7 +30,7 @@ from woost.extensions.mailer.sendemailcontroller import available_users
     <py:with py:element="self.item_body">
 
         <py:ready>
-            <block py:if="not self.form_submitted or self.form_errors">
+            <block class="Form" py:if="not self.form_submitted or self.form_errors">
                 <ul py:id="error_box" py:collapsible="${True}">
                         <li py:for="error in self.form_errors">${translations(error)}</li>
                 </ul>
