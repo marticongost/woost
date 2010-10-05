@@ -409,7 +409,6 @@ body.modal {
 .BackOfficeLayout .Form label {
     display: block;
     padding-bottom: 0.2em;
-    white-space: nowrap;
 }
 
 .BackOfficeLayout .Form label .language {
