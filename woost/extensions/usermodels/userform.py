@@ -38,13 +38,13 @@ class UserForm(Document):
 
     default_controller = schema.DynamicDefault(
         lambda: Controller.get_instance(
-            qname = "woost.extensions.usermodels.UserFormController"
+            qname = "woost.extensions.usermodels.user_form_controller"
         )
     )
 
     default_template = schema.DynamicDefault(
         lambda: Template.get_instance(
-            qname = "woost.extensions.usermodels.UserFormView"
+            qname = "woost.extensions.usermodels.user_form_template"
         )
     )
 
