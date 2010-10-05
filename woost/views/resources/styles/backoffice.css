@@ -1135,6 +1135,14 @@ body.scripted .BackOfficeLayout .selector:hover .selector_content {
 -----------------------------------------------------------------------------*/
 .BackOfficeLayout .ContentTypePicker {
     clear: left;
+    border: 1px solid #ccc;
+    background-color: #eee;
+    margin-top: 2.4em;
+    padding: 0.4em;
+}
+
+.BackOfficeLayout .ContentTypePicker > li:first-child {
+    padding-top: 0;
 }
 
 .BackOfficeLayout .ContentTypePicker .label {
