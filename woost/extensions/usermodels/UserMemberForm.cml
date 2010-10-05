@@ -6,6 +6,7 @@
 
     <?py
     self.add_resource("/resources/styles/usermodels-UserMemberForm.css")
+    self.add_resource("/resources/scripts/usermodels-UserMemberForm.js")
     ?>
 
 </py:woost.views.ContentForm>
