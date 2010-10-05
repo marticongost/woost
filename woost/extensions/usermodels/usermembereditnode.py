@@ -15,9 +15,11 @@ class UserMemberEditNode(EditNode):
     def form_adapter(self):
         form_adapter = EditNode.form_adapter(self)
 
-        if not self.content_type.edit_controls \
-        or len(self.content_type.edit_controls) < 2:
+        if not self.content_type.edit_controls:
             form_adapter.exclude(["member_edit_control"])
+
+        if not self.content_type.search_controls:
+            form_adapter.exclude(["member_search_control"])
 
         return form_adapter
 
@@ -28,6 +30,10 @@ class UserMemberEditNode(EditNode):
         edit_control = form_schema.get_member("member_edit_control")
         if edit_control:
             edit_control.enumeration = self.item.edit_controls
+
+        search_control = form_schema.get_member("member_search_control")
+        if search_control:
+            search_control.enumeration = self.item.search_controls
 
         return form_schema
 
