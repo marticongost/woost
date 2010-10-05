@@ -1,0 +1,33 @@
+/* SendEmailView form
+-----------------------------------------------------------------------------*/
+
+.SendEmailView .item_body {
+    padding: 1em;
+}
+
+#barprogress {
+    height: 20px;
+    width: 500px;
+    background-color: #eee;
+    border: 1px solid #ccc;
+    position: relative;
+    margin: 0 auto;
+}
+
+#textoporcentaje {
+    text-align:center;
+    width: 500px;
+    color: red;
+    font-weight: bold;
+    display: block;
+    overflow: hidden;
+    margin: 0 auto;
+    position: absolute;
+}
+
+#porcentaje {
+    float: left;
+    height: 20px;
+    width: 0;
+    background-color: #ccc;
+}
