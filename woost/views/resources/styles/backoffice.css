@@ -231,6 +231,10 @@ body {
     -moz-box-sizing: border-box;
 }
 
+.BackOfficeLayout .CodeMirror-wrapping {
+    clear: left;
+}
+
 .BackOfficeLayout .TreeView .filtered {
     opacity: 0.5;
 }
