@@ -70,7 +70,7 @@ translations.define("woost.extensions.mailer.SendEmailView send",
 )
 
 translations.define("woost.extensions.mailer.SendEmailView confirmation text",
-    ca = u"""Estas a punt d'enviar el document <strong>%s</strong> en
+    ca = u"""Estàs a punt d'enviar el document <strong>%s</strong> en
 <strong>%s</strong> als següents grups d'usuaris:""",
     es = u"""Estás a punto de enviar el documento <strong>%s</strong> en
 </strong>%s</strong> a los siguientes grupos de usuarios:""",
