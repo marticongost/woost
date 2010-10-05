@@ -52,6 +52,7 @@ class UserMember(Item):
     member_class = schema.Member
     member_property_prefix = "member_"
     edit_controls = None
+    search_controls = None
     edit_node_class = \
         "woost.extensions.usermodels.usermembereditnode.UserMemberEditNode"
     edit_form = "woost.extensions.usermodels.UserMemberForm"
@@ -189,8 +190,7 @@ class UserMember(Item):
         member_group = "behavior",
         translate_value = lambda value, language = None, **kwargs:
             translations(
-                "woost.extensions.usermodels"
-                ".UserMember.member_edit_control-auto",
+                "woost.extensions.usermodels.auto-control",
                 language
             )
             if not value else translations(value)
@@ -205,7 +205,13 @@ class UserMember(Item):
 
     member_search_control = schema.String(
         listed_by_default = False,
-        member_group = "behavior"
+        member_group = "behavior",
+        translate_value = lambda value, language = None, **kwargs:
+            translations(
+                "woost.extensions.usermodels.auto-control",
+                language
+            )
+            if not value else translations(value)
     )
     
     @classmethod
@@ -346,7 +352,10 @@ class UserBoolean(UserMember):
         "cocktail.html.CheckBox",
         "cocktail.html.RadioSelector"
     ]
-
+    search_controls = [
+        "cocktail.html.CheckBox",
+        "cocktail.html.RadioSelector"
+    ]
     default_member_required = True
     default_member_default = False
 
@@ -434,6 +443,9 @@ class UserString(UserMember):
         "cocktail.html.TextArea",
         "woost.views.RichTextEditor"
     ]
+    search_controls = [
+        "cocktail.html.TextBox"
+    ]
 
     member_min = schema.Integer(
         listed_by_default = False,
@@ -471,6 +483,14 @@ class UserDate(UserMember):
     instantiable = True
     groups_order = UserMember.groups_order
     member_class = schema.Date
+    edit_controls = [
+        "cocktail.html.TextBox",
+        "cocktail.html.DatePicker"
+    ]
+    search_controls = [
+        "cocktail.html.TextBox",
+        "cocktail.html.DatePicker"
+    ]
 
     member_min = schema.Integer(
         listed_by_default = False,
@@ -489,6 +509,14 @@ class UserTime(UserMember):
     instantiable = True
     groups_order = UserMember.groups_order
     member_class = schema.Time
+    edit_controls = [
+        "cocktail.html.TextBox",
+        "cocktail.html.DatePicker"
+    ]
+    search_controls = [
+        "cocktail.html.TextBox",
+        "cocktail.html.DatePicker"
+    ]
 
     member_min = schema.Integer(
         listed_by_default = False,
@@ -507,6 +535,14 @@ class UserDateTime(UserMember):
     instantiable = True
     groups_order = UserMember.groups_order
     member_class = schema.DateTime
+    edit_controls = [
+        "cocktail.html.TextBox",
+        "cocktail.html.DatePicker"
+    ]
+    search_controls = [
+        "cocktail.html.TextBox",
+        "cocktail.html.DatePicker"
+    ]
 
     member_min = schema.Integer(
         listed_by_default = False,
@@ -565,6 +601,16 @@ class UserReference(UserRelation):
     instantiable = True
     groups_order = UserMember.groups_order
     member_class = schema.Reference
+    edit_controls = [
+        "cocktail.html.DropdownSelector",
+        "cocktail.html.RadioSelector",
+        "woost.views.ItemSelector"
+    ]
+    search_controls = [
+        "cocktail.html.DropdownSelector",
+        "cocktail.html.RadioSelector",
+        "woost.views.ItemSelector"
+    ]
 
     member_type = schema.Reference(
         class_family = Item,
@@ -592,6 +638,18 @@ class UserCollection(UserRelation):
     instantiable = True
     groups_order = UserMember.groups_order
     member_class = schema.Collection
+    edit_controls = [
+        "cocktail.html.TextArea",
+        "cocktail.html.CheckList",
+        "cocktail.html.MultipleChoiceSelector"
+    ]
+    search_controls = [
+        "cocktail.html.DropdownSelector",
+        "cocktail.html.RadioSelector",
+        "woost.views.ItemSelector",
+        "cocktail.html.CheckList",
+        "cocktail.html.MultipleChoiceSelector"
+    ]
 
     member_items = schema.Reference(
         type = UserMember,

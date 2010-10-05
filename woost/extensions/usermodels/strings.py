@@ -643,8 +643,7 @@ translations.define("UserModel.member_visible_from_root",
 
 # UI controls
 #------------------------------------------------------------------------------
-translations.define(
-    "woost.extensions.usermodels.UserMember.member_edit_control-auto",
+translations.define("woost.extensions.usermodels.auto-control",
     ca = u"Automàtic",
     es = u"Automático",
     en = u"Automatic"
@@ -681,8 +680,38 @@ translations.define("cocktail.html.CheckBox",
 )
 
 translations.define("cocktail.html.RadioSelector",
-    ca = u"Selector d'opcions",
-    es = u"Selector de opciones",
-    en = u"Radio button"
+    ca = u"Botons de radio",
+    es = u"Botones de radio",
+    en = u"Radio buttons"
+)
+
+translations.define("cocktail.html.CheckList",
+    ca = u"Llistat de caselles de verificació",
+    es = u"Listado de casillas de verificación",
+    en = u"Check list"
+)
+
+translations.define("cocktail.html.MultipleChoiceSelector",
+    ca = u"Quadre de diàleg amb múltiples opcions",
+    es = u"Ventana modal con múltiples opciones",
+    en = u"Multiple choices dialog window"
+)
+
+translations.define("cocktail.html.DropdownSelector",
+    ca = u"Selector desplegable",
+    es = u"Selector desplegable",
+    en = u"Dropdown selector"
+)
+
+translations.define("woost.views.ItemSelector",
+    ca = u"Selector d'element relacionat",
+    es = u"Selector de elemento relacionado",
+    en = u"Related item selector"
+)
+
+translations.define("cocktail.html.DatePicker",
+    ca = u"Selector de data/hora",
+    es = u"Selector de fecha/hora",
+    en = u"Date/time selector"
 )
 
