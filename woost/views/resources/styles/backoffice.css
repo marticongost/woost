@@ -7,6 +7,7 @@ html, body {
 * {
     box-sizing: content-box;
     -moz-box-sizing: content-box;
+    -webkit-box-sizing: content-box;
 }
 
 body {
@@ -169,8 +170,8 @@ body {
 .BackOfficeLayout .tab {
     color: rgb(75,75,75);
     position: relative;
-    top: 0px;
-    height: 1.1em;
+    top: 0;
+    height: 1.15em;
     float: left;
     display: block;
     background-color: rgb(240,240,240);
@@ -182,6 +183,8 @@ body {
     border: 1px solid rgb(200,210,220);
     -moz-border-radius-topleft: 5px;
     -moz-border-radius-topright: 5px;
+    -webkit-border-top-left-radius: 5px;
+    -webkit-border-top-right-radius: 5px;
     border-radius-topleft: 5px;
     border-radius-topright: 5px;
     font-size: 90%;
@@ -229,6 +232,7 @@ body {
     border: 1px solid rgb(200,200,200);
     padding: 0.2em;
     -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
 }
 
 .BackOfficeLayout .CodeMirror-wrapping {
@@ -1325,6 +1329,7 @@ body.scripted .BackOfficeLayout .ThumbnailsContentView .collection_display input
     background-color: rgb(75,75,75);
     color: white;
     -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
 }
 
 /* Changelog
