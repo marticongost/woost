@@ -6,6 +6,7 @@ u"""
 @organization:	Whads/Accent SL
 @since:			November 2008
 """
+from cocktail.translations import translations
 from cocktail.html import Element
 from cocktail.html.databoundcontrol import DataBoundControl
 from cocktail.html.datadisplay import (
@@ -24,8 +25,6 @@ class ContentTypePicker(ContentTypeTree, DataBoundControl):
     selection_mode = SINGLE_SELECTION
 
     empty_option_displayed = True
-    empty_label = "---"
-    empty_value = ""
 
     def __init__(self, *args, **kwargs):
         Element.__init__(self, *args, **kwargs)
@@ -70,7 +69,7 @@ class ContentTypePicker(ContentTypeTree, DataBoundControl):
         entry.control = Element("input",
             type = self._control_type,
             name = self.name,
-            value = self.empty_value,
+            value = "",
             checked = self.value is None
         )
         self._bind_member(entry.control)
@@ -79,7 +78,7 @@ class ContentTypePicker(ContentTypeTree, DataBoundControl):
         entry.label = Element("label")
         entry.label.add_class("entry_label")
         entry.label.add_class("empty_option")
-        entry.label.append(self.empty_label)
+        entry.label.append(translations("woost.views.ContentTypePicker.empty_label"))
         entry.append(entry.label)
 
         entry.label["for"] = entry.control.require_id()

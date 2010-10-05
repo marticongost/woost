@@ -9,6 +9,57 @@
 
 cocktail.bind(".ContentTypePicker", function ($picker) {
 
+    function redrawSelection() {
+        $picker.find("label.selected").removeClass("selected");
+        $picker.find("input:checked").siblings("label").addClass("selected");
+    }
+
+    $picker.find("li").each(function () {
+
+        var collapsed = true;
+
+        this.toggle = function (speed /* optional */) {
+            this.setCollapsed(!collapsed, speed);
+        }
+        
+        this.getCollapsed = function () {
+            return collapsed;
+        }
+
+        this.setCollapsed = function (value, speed /* optional */) {
+            collapsed = value;
+            jQuery(this).children(".toggle_button").attr(
+                "src", "/resources/images/" + (collapsed ? "collapsed" : "expanded") + ".png"
+            );
+            jQuery(this).children("ul")[collapsed ? "hide" : "show"](speed);
+        }
+
+        jQuery(this).children("input").change(redrawSelection);           
+
+        if (jQuery(this).children("ul").length) {
+            var $img = jQuery("<img>")
+                .addClass("toggle_button")
+                .attr("src", "/resources/images/collapsed.png")
+                .click(function (e) {
+                    jQuery(this).closest("li").get(0).toggle(300);
+                    e.stopPropagation();
+                })
+                .prependTo(this);
+
+            if (jQuery(this).find("ul input:checked").length) {
+                this.setCollapsed(false);
+            }
+        }
+        else {
+            jQuery(this).addClass("empty_item");
+        }
+    });
+
+    redrawSelection();
+});
+
+/*cocktail.bind(".ContentTypePicker", function ($picker) {
+
     this.tag = "div";
             
     if (this.selectionMode == cocktail.SINGLE_SELECTION) {
@@ -104,5 +155,5 @@ cocktail.bind(".ContentTypePicker", function ($picker) {
     applySelection(this);
     $picker.addClass("selector");
     cocktail.init(this);
-});
+});*/
 
