@@ -111,7 +111,7 @@ class UserMember(Item):
 
     member_name = schema.String(
         required = True,
-        format = r"[a-zA-Z][a-zA-Z0-9_]*",
+        format = r"^[a-zA-Z][a-zA-Z0-9_]*$",
         listed_by_default = False,
         member_group = "definition"
     )
