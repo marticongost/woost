@@ -93,22 +93,34 @@ estás enviando no és accesible para los usuarios anónimos.""",
 is not accessible for anonymous users."""
 )
 
-translations.define("woost.extensions.mailer.SendEmailView successful mail delivery",
-    ca = u"Enviament realitzat correctament",
-    es = u"Envio realizado correctamente",
-    en = u"Sucessful mail delivery"
+translations.define("woost.extensions.mailer.SendEmailView doing email delivery",
+    ca = u"Ralitzant enviament",
+    es = u"Realizando envio",
+    en = u"Doing email delivery"
 )
 
-translations.define("woost.extensions.mailer.SendEmailView error mail delivery",
-    ca = u"S'ha produït un error. Posa't en contacte amb l'administrador.",
-    es = u"Se ha producido un error. Ponte en contacto con el administrador.",
-    en = u"An error has ocurred. Please, contact your administrator."
+translations.define("woost.extensions.mailer.SendEmailView zero per cent",
+    ca = u"0%",
+    es = u"0%",
+    en = u"0%"
+)
+
+translations.define("woost.extensions.mailer.SendEmailView email delivery finished",
+    ca = u"Enviament finalitzat",
+    es = u"Envio finalizado",
+    en = u"Mail delivery finished"
+)
+
+translations.define("woost.extensions.mailer.SendEmailView error email delivery",
+    ca = u"No s'ha pogut enviar alguns correus. Posa't en contacte amb l'administrador.",
+    es = u"No se ha podido enviar algunos correos. Ponte en contacto con el administrador.",
+    en = u"Unable to send some emails. Please, contact your administrator."
 )
 
 translations.define("woost.extensions.mailer.SendEmailView mailer summary",
-    ca = u"S'ha enviat <strong>%d</strong> correus de <strong>%d</strong>.",
-    es = u"Se han enviado <strong>%d</strong> correos de <strong>%d</strong>.",
-    en = u"<strong>%d</strong> of <strong>%d</strong> emails have been sent."
+    ca = u"S'ha enviat <strong>{0}</strong> correus de <strong>{1}</strong>.",
+    es = u"Se han enviado <strong>{0}</strong> correos de <strong>{1}</strong>.",
+    en = u"<strong>{0}</strong> of <strong>{1}</strong> emails have been sent."
 )
 
 # Template
