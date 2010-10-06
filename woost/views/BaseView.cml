@@ -16,6 +16,7 @@ from woost.models import Site, Publishable, Language
     content_language = None
     fully_translated = True
     body_end_html = ""
+    base_url = None
     
     def get_keywords(self):
         keywords = []
@@ -140,6 +141,10 @@ from woost.models import Site, Publishable, Language
             user_styles = Publishable.get_instance(qname = "woost.user_styles")
             if user_styles:
                 self.add_resource(self.cms.uri(user_styles), mime_type = user_styles.mime_type)
+
+            # Base tag
+            if self.base_url:
+                self.add_head_element(Element("base", href = self.base_url))
         ?>
     </py:ready>
 
