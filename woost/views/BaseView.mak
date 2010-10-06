@@ -140,6 +140,11 @@ ${self.dtd()}
     % if icon:                
         <link rel="Shortcut Icon" type="${icon.mime_type}" href="${cms.uri(icon)}"${closure()}>
     % endif
+
+    ## Base tag
+    % if base_url:
+        <base url="${base_url}"${closure()}>
+    % endif
 </%def>
 
 <%def name="resource_markup(uri, mime_type = None)">
