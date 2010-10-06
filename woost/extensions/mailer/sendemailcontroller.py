@@ -30,8 +30,8 @@ from woost.extensions.mailer.sendemailpermission import SendEmailPermission
 
 logger = logging.getLogger("woost.extensions.mailer")
 
-
-thread_data = {}
+lock = Lock()
+current_threads = {}
 
 def available_users(roles):
     users = []
@@ -92,9 +92,8 @@ class MailerThread(Thread):
         }
 
         # Initialize thread data
-        lock = Lock()
         with lock:
-            thread_data[str(id(self))] = self
+            current_threads[str(id(self))] = self
 
     @cached_getter                                                                                                                                                                                             
     def mailer_rendering_engine(self):
@@ -269,17 +268,16 @@ class SendEmailController(EditController):
     def mailing_state(self, thread_id, *args, **kwargs):
         cherrypy.response.headers["Content-Type"] = "text/javascript"
 
-        lock = Lock()
         with lock:
-            thread = thread_data.get(thread_id)
+            thread = current_threads.get(thread_id)
             if thread:
                 data = thread.state.copy()
                 user_id = thread.user.id
 
                 # Remove dead threads
-                for key, value in thread_data.items():
+                for key, value in current_threads.items():
                     if not value.state.get("alive"):
-                        del thread_data[key]
+                        del current_threads[key]
             else:
                 user_id = None
 
