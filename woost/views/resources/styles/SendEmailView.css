@@ -5,19 +5,19 @@
     padding: 1em;
 }
 
-#barprogress {
+.mailing_info .progress-bar {
     height: 20px;
     width: 500px;
     background-color: #eee;
     border: 1px solid #ccc;
     position: relative;
-    margin: 0 auto;
+    margin: .7em 0;
 }
 
-#textoporcentaje {
+.mailing_info .progress-text {
     text-align:center;
     width: 500px;
-    color: red;
+    color: #333;
     font-weight: bold;
     display: block;
     overflow: hidden;
@@ -25,9 +25,13 @@
     position: absolute;
 }
 
-#porcentaje {
+.mailing_info .progress {
     float: left;
     height: 20px;
     width: 0;
     background-color: #ccc;
+}
+
+.mailing_info .summary {
+    height: 1.5em;
 }

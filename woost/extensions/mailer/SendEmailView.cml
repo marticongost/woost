@@ -18,14 +18,24 @@ from woost.extensions.mailer.sendemailcontroller import available_users
     form_schema = None
     form_errors = None
     form_submitted = None
-    mailer_receivers = 0
-    mailer_errors = 0
+    thread_id = None
     ?>  
 
     <?py
     add_view_action_context(self, "send_email")
     self.add_resource("/resources/styles/SendEmailView.css")
     ?>  
+
+    <py:ready>
+        <?py
+        if self.thread_id:
+            self.set_client_param("thread_id", self.thread_id)
+            self.add_resource("/resources/scripts/SendEmailView.js")
+            self.add_client_translation("woost.extensions.mailer.SendEmailView email delivery finished")
+            self.add_client_translation("woost.extensions.mailer.SendEmailView mailer summary")
+            self.add_client_translation("woost.extensions.mailer.SendEmailView error email delivery")
+        ?>
+    </py:ready>
 
     <py:with py:element="self.item_body">
 
@@ -63,7 +73,7 @@ from woost.extensions.mailer.sendemailcontroller import available_users
                                 
                     </p>
                 </p>
-                <p class="notice" py:if="not self.edited_item.is_accessible(User.get_instance(qname = 'woost.anonymous_user'), language = self.form_data['language'])">
+                <p class="notice" py:if="not self.edited_item.is_accessible(User.get_instance(qname = 'woost.anonymous_user'), language = self.form_data['language'].iso_code)">
                     ${translations("woost.extensions.mailer.SendEmailView accessibility warning")}
                 </p>
                 ${view_state_form(schema = self.form_schema, **self.form_data)}
@@ -76,17 +86,17 @@ from woost.extensions.mailer.sendemailcontroller import available_users
 
             <block py:if="self.action == 'send' and not self.form_errors">
 
-                <div class="success" py:if="not self.mailer_errors">
-                    <p>${translations("woost.extensions.mailer.SendEmailView successful mail delivery")}</p>
+                <div class="mailing_info">
+                    <h3>${translations("woost.extensions.mailer.SendEmailView doing email delivery")}</h3>
+
+                    <div class="summary" />
+
+                    <div class="progress-bar" > 
+                        <div class="progress-text">${translations("woost.extensions.mailer.SendEmailView zero per cent")}</div>
+                        <div class="progress"></div> 
+                    </div> 
                 </div>
 
-                <div class="error_box" py:if="self.mailer_errors">
-                    <p>${translations("woost.extensions.mailer.SendEmailView error mail delivery")}</p>
-                </div>
-
-                <p class="summary">
-                    <p>${translations("woost.extensions.mailer.SendEmailView mailer summary") % (self.mailer_receivers - self.mailer_errors, self.mailer_receivers)}</p>
-                </p>
             </block>
 
         </py:ready>
