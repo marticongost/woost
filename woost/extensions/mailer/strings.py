@@ -145,3 +145,9 @@ translations.define("SendEmailPermission-plural",
     en = u"Permissions to send email"
 )
 
+translations.define("SendEmailPermission.roles",
+    ca = u"Rols",
+    es = u"Roles",
+    en = u"Roles"
+)
+

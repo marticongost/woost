@@ -24,8 +24,8 @@ from cocktail.controllers.renderingengines import get_rendering_engine
 from woost.models import (
     Role, Language, Site, get_current_user, set_current_user
 )
-from woost.controllers.backoffice.editcontroller \
-    import EditController
+from woost.controllers.backoffice.editcontroller import EditController
+from woost.extensions.mailer.sendemailpermission import SendEmailPermission
 
 
 logger = logging.getLogger("woost.extensions.mailer")
@@ -46,8 +46,9 @@ def available_users(roles):
 
 def _available_roles():
     roles = []
+    user = get_current_user()
     for role in Role.select():
-        if role.qname != "woost.anonymous" \
+        if user.has_permission(SendEmailPermission, role = role) \
         and len(available_users([role])):
             roles.append(role)
     return roles
