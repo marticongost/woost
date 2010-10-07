@@ -6,167 +6,103 @@ u"""
 @organization:	Whads/Accent SL
 @since:			September 2010
 """
-from __future__ import with_statement
 import logging
 import smtplib
 import cherrypy
-from threading import Thread, Lock
 from simplejson import dumps
 from email.mime.text import MIMEText
 from email.Header import Header
 from email.Utils import formatdate
+from cocktail.asynctask import TaskManager
 from cocktail import schema
 from cocktail.modeling import cached_getter
 from cocktail.translations import translations, set_language
 from cocktail.controllers import context
 from cocktail.controllers.parameters import get_parameter
-from cocktail.controllers.renderingengines import get_rendering_engine
 from woost.models import (
     Role, Language, Site, get_current_user, set_current_user
 )
 from woost.controllers.backoffice.editcontroller import EditController
 from woost.extensions.mailer.sendemailpermission import SendEmailPermission
 
-
 logger = logging.getLogger("woost.extensions.mailer")
 
-lock = Lock()
-current_threads = {}
+tasks = TaskManager()
 
-def available_users(roles):
-    users = []
+def get_receivers_by_roles(roles):
+    users = set()
     for role in roles:
-        users.extend([
-            user for user in role.users 
+        users.update(
+            user for user in role.users
             if user.enabled
             and getattr(user, "confirmed_email", True)
-        ])
+        )
 
     return users
 
-def _available_roles():
-    roles = []
-    user = get_current_user()
-    for role in Role.select():
-        if user.has_permission(SendEmailPermission, role = role) \
-        and len(available_users([role])):
-            roles.append(role)
-    return roles
 
+class Mailing(object):
 
-class MailerThread(Thread):
-    
-    subtype = "html"
-    encoding = "utf-8"
+    errors = 0
+    sent = 0    
+    smtp = None
+    document = None
+    receivers = []
+    sender = None
+    subject = None
+    customizable = False
+    template_values = {}
+    __cached_body = None
 
-    def __init__(
-        self, 
-        user, 
-        item, 
-        receivers, 
-        form_data, 
-        rendering_enigne_options,
-        controller_context = {},
-        context = {},
-        *args, 
-        **kwargs
-    ):
-        Thread.__init__(self, *args, **kwargs)
-        self.user = user
-        self.item = item
-        self.receivers = receivers
-        self.form_data = form_data
-        self.rendering_enigne_options = rendering_enigne_options
-        self.controller_context = controller_context
-        self.context = context
-        self.smtp_host = Site.main.smtp_host or "localhost"                                                                                                                                                         
-        self.smtp_port = smtplib.SMTP_PORT
-        self.smtp_user = Site.main.smtp_user
-        self.smtp_password = Site.main.smtp_password
-        self.__cached_email_content = None
-        self.state = {
-            "num_receivers": len(self.receivers),
-            "mailer_errors": 0,
-            "emails_sent": 0,
-            "alive": True
-        }
+    def __init__(self):
+        self.receivers = []
+        self.template_values = {}
 
-        # Initialize thread data
-        with lock:
-            current_threads[str(id(self))] = self
-
-    @cached_getter                                                                                                                                                                                             
-    def mailer_rendering_engine(self):
-        return get_rendering_engine(
-            self.item.template.engine
-        )
-
-    def render_email_content(self, user, document):
-        output = self.context
-        output.update(
-            user = user,
-            publishable = document
-        )
-
-        if not self.form_data.get("per_user_customizable") \
-        and self.__cached_email_content:
-            email_content = self.__cached_email_content
-        else:
-            email_content = self.mailer_rendering_engine.render(
-                output,
-                template = document.template.identifier
-            )
-            self.__cached_email_content = email_content
-
-        return email_content
-
-    def run(self):
-        logger.info("Sending %s" % repr(self.item))
-        logger.info("Data - %s" % self.form_data)
-
-        cherrypy.request.config["rendering.engine_options"] = \
-            self.rendering_enigne_options
-        set_language(self.form_data["language"].iso_code)
-        set_current_user(self.user)
-        context.update(self.controller_context)
+    def send(self):
+        logger.info("Sending mailing")
 
         for receiver in self.receivers:
-            try:
-                sender = self.form_data["sender"]
-                receiver_email = receiver.email.strip()
-                subject = self.form_data["subject"]
-
+            try:                
                 message = MIMEText(
-                    self.render_email_content(receiver, self.item),
-                    _subtype = self.subtype, 
-                    _charset = self.encoding
+                    self.render_body(receiver),
+                    _subtype = self.document.mime_type.split("/")[1],
+                    _charset = self.document.encoding
                 )
-                message["To"] = receiver_email
-                message["From"] = sender
-                message["Subject"] = Header(subject, "utf-8")
+                message["To"] = receiver.email
+                message["From"] = self.sender
+                message["Subject"] = Header(self.subject, self.document.encoding)
                 message["Date"] = formatdate()
-                # Send the message
-                smtp = smtplib.SMTP(self.smtp_host, self.smtp_port)
-                if self.smtp_user and self.smtp_password:
-                    smtp.login(
-                        self.smtp_user.encode(self.encoding), 
-                        self.smtp_password.encode(self.encoding)
-                    )
-                smtp.sendmail(sender, [receiver_email], message.as_string())
-                smtp.quit()
+                self.smtp.sendmail(self.sender, [receiver.email], message.as_string())
                 logger.info("Email sent to %s (%s)" % (receiver, receiver.email))
             except Exception, e:
                 logger.exception("%s (%s) - %s" % (receiver, receiver.email, e))
-                self.state["mailer_errors"] += 1
+                self.errors += 1
             finally:
-                self.state["emails_sent"] += 1
+                self.sent += 1
 
-        self.state["alive"] = False
+    def render_body(self, receiver):
+        
+        if not self.customizable and self.__cached_body:
+            return self.__cached_body
+
+        values = self.template_values
+        
+        if self.customizable:
+            values = values.copy()
+            values["mailing_receiver"] = receiver
+        
+        body = self.document.render(**values)
+
+        if not self.customizable:
+            self.__cached_body = body
+
+        return body
 
 
 class SendEmailController(EditController):
 
     section = "send_email"
+    task_id = None
 
     def __init__(self, *args, **kwargs):
         EditController.__init__(self, *args, **kwargs)
@@ -175,12 +111,13 @@ class SendEmailController(EditController):
     # Form
     #------------------------------------------------------------------------------
 
-    @cached_getter                                                                                                                                                                                             
+    @cached_getter
     def form_submitted(self):
         return self.mailer_action in ("continue", "send")
 
     @cached_getter
     def form_schema(self):
+
         form_schema = schema.Schema(
             "SendEmail",
             members = [
@@ -199,20 +136,20 @@ class SendEmailController(EditController):
                     required = True,
                     enumeration = lambda ctx: \
                         [
-                            Language.get_instance(iso_code = language) 
+                            Language.get_instance(iso_code = language)
                             for language in self.context["cms_item"].translations.keys()
                         ],
                 ),
                 schema.Collection(
                     "roles",
                     items = schema.Reference(
-                        type = "woost.models.Role", 
+                        type = "woost.models.Role",
                         default_order = "title",
-                        enumeration = lambda ctx: _available_roles(),
+                        enumeration = lambda ctx: self.available_roles,
                         translate_value = lambda value, language = None, **kwargs: \
                             "%s (%d %s)" % (
-                                translations(value), 
-                                len(available_users([value])),
+                                translations(value),
+                                len(get_receivers_by_roles([value])),
                                 translations("woost.extensions.mailer users")
                             )
                     ),
@@ -244,7 +181,7 @@ class SendEmailController(EditController):
         return form_data
 
     @cached_getter
-    def form_errors(self):                                                                                                                                                                                     
+    def form_errors(self):
         return schema.ErrorList(
             self.form_schema.get_errors(
                 self.form_data
@@ -253,45 +190,76 @@ class SendEmailController(EditController):
             else ()
         )
 
+    @cached_getter
+    def available_roles(self):
+        roles = []
+        user = get_current_user()
+        for role in Role.select():
+            if user.has_permission(SendEmailPermission, role = role) \
+            and len(get_receivers_by_roles([role])):
+                roles.append(role)
+        return roles
+
     # Mailing
     #------------------------------------------------------------------------------
 
-    @cached_getter                                                                                                                                                                                             
+    @cached_getter
+    def mailing(self):
+        mailing = Mailing()
+        mailing.smtp = self.smtp_server
+        mailing.document = self.context["cms_item"]
+        mailing.receivers = self.mailer_receivers
+        mailing.sender = self.form_data["sender"]
+        mailing.subject = self.form_data["subject"]
+        mailing.customizable = self.form_data.get("per_user_customizable", False)
+        mailing.template_values = {
+            "cms": self.context["cms"],
+            "base_url": "http://" + cherrypy.url().split('/')[2]
+        }
+        return mailing
+
+    @cached_getter
+    def smtp_server(self):
+
+        site = Site.main
+        smtp = smtplib.SMTP(site.smtp_host, smtplib.SMTP_PORT)
+
+        if site.smtp_user and site.smtp_password:
+            smtp.login(
+                str(site.smtp_user),
+                str(site.smtp_password)
+            )
+
+        return smtp
+
+    @cached_getter
     def mailer_action(self):
         return self.params.read(schema.String("mailer_action"))
 
-    @cached_getter                                                                                                                                                                                             
+    @cached_getter
     def mailer_receivers(self):
-        return set(available_users(self.form_data.get("roles", [])))
+        return get_receivers_by_roles(self.form_data.get("roles", []))
 
     @cherrypy.expose
-    def mailing_state(self, thread_id, *args, **kwargs):
-        cherrypy.response.headers["Content-Type"] = "text/javascript"
+    def mailing_state(self, task_id, *args, **kwargs):
+        cherrypy.response.headers["Content-Type"] = "application/json"
 
-        with lock:
-            thread = current_threads.get(thread_id)
-            if thread:
-                data = thread.state.copy()
-                user_id = thread.user.id
+        task = tasks.get(int(task_id))
 
-                # Remove dead threads
-                for key, value in current_threads.items():
-                    if not value.state.get("alive"):
-                        del current_threads[key]
-            else:
-                user_id = None
+        if task is None:
+            return dumps({})
+        
+        if get_current_user().id != task.user_id:
+            raise cherrypy.HTTPError("403 Forbidden")
 
-        # Check permission
-        if get_current_user().id != user_id:
-            data = ""
-        else:
-            data["progress"] = (
-                int(100 * data["emails_sent"] / data["num_receivers"])
-            ) if data["alive"] else 100
-            data["edit_stack"] = self.edit_stack.to_param()
+        tasks.remove_expired_tasks()
 
-        return dumps(data)
-
+        return dumps({
+            "sent": task.mailing.sent,
+            "errors": task.mailing.errors,
+            "total": len(task.mailing.receivers),
+            "completed": task.completed
+        })
 
     # BackOffice
     #------------------------------------------------------------------------------
@@ -300,7 +268,7 @@ class SendEmailController(EditController):
     def view_class(self):
         return self.stack_node.item.send_email_view
 
-    @cached_getter                                                                                                                                                                                             
+    @cached_getter
     def ready(self):
         return EditController.ready(self) or (
             self.form_submitted and not
@@ -312,20 +280,23 @@ class SendEmailController(EditController):
             EditController.submit(self)
         else:
             if self.mailer_action == "send":
-                mailer_thread = MailerThread(
-                    get_current_user(), 
-                    self.context["cms_item"], 
-                    self.mailer_receivers, 
-                    self.form_data,
-                    cherrypy.request.config.get("rendering.engine_options"),
-                    controller_context = context.copy(),
-                    context = {
-                        "cms": self.context["cms"], 
-                        "base_url": "http://" + cherrypy.url().split('/')[2]
-                    }
-                )
-                self.thread_id = id(mailer_thread)
-                mailer_thread.start()
+                
+                user = get_current_user()
+                language = self.form_data["language"].iso_code
+                current_context = context.copy()
+                mailing = self.mailing
+                
+                def process():
+                    set_current_user(user)
+                    set_language(language)
+                    context.update(current_context)
+                    mailing.send()
+
+                task = tasks.execute(process)
+                task.mailing = mailing
+                task.user_id = user.id
+                self.task_id = task.id
+
 
     @cached_getter
     def output(self):
@@ -337,7 +308,7 @@ class SendEmailController(EditController):
             form_submitted = self.form_submitted,
             action = self.mailer_action,
             mailer_receivers = len(self.mailer_receivers),
-            thread_id = self.thread_id
+            task_id = self.task_id
         )
         return output
 
