@@ -25,6 +25,38 @@ translations.define("Location.location_name",
     en = u"Name"
 )
 
+translations.define("Location.location_type",
+    ca = u"Tipus de localitat",
+    es = u"Tipo de localidad",
+    en = u"Location type"
+)
+
+translations.define("woost.extensions.locations.location.Location-continent",
+    ca = u"Continent",
+    es = u"Continente",
+    en = u"Continent"
+)
+
+translations.define("woost.extensions.locations.location.Location-country",
+    ca = u"País",
+    es = u"País",
+    en = u"Country"
+)
+
+translations.define(
+    "woost.extensions.locations.location.Location-autonomous_community",
+    ca = u"Comunitat autònoma",
+    es = u"Comunidad autónoma",
+    en = u"Autonomous community"
+)
+
+translations.define(
+    "woost.extensions.locations.location.Location-province",
+    ca = u"Província",
+    es = u"Provincia",
+    en = u"Province"
+)
+
 translations.define("Location.code",
     ca = u"Codi",
     es = u"Código",

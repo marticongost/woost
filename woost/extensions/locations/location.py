@@ -4,6 +4,7 @@ u"""Defines the `Location` class.
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
 from cocktail.iteration import first
+from cocktail.translations import translations
 from cocktail import schema
 from woost.models import Item
 from woost.controllers.backoffice.contentviews import global_content_views
@@ -13,6 +14,7 @@ class Location(Item):
 
     members_order = [
         "location_name",
+        "location_type",
         "code",
         "parent",
         "locations"
@@ -24,6 +26,19 @@ class Location(Item):
         required = True,
         indexed = True,
         normalized_index = True
+    )
+
+    location_type = schema.String(
+        required = True,
+        indexed = True,
+        text_search = False,
+        translate_value = lambda value, language = None, **kwargs:
+            "" if not value 
+            else translations(
+                "woost.extensions.locations.location.Location-" + value,
+                language,
+                **kwargs
+            )
     )
 
     code = schema.String(
@@ -43,6 +58,22 @@ class Location(Item):
         items = "woost.extensions.locations.location.Location",
         bidirectional = True
     )
+
+    def descend(self, include_self = False):
+        """Iterates over the location's descendants.
+        
+        :param include_self: If set to True, the location itself is yielded as
+            the first element in the iteration.
+        :type include_self: bool
+
+        :return: An iterable sequence containing the location's flattened tree.
+        :rtype: `Location`
+        """
+        if include_self:
+            yield self
+        for location in self.locations:
+            for descendant in location.descend(True):
+                yield descendant
 
     def get_child_location(self, code):
         """Retrieves the contained location that matches the indicated code.
