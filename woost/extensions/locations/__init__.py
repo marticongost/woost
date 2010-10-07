@@ -108,6 +108,8 @@ class LocationsExtension(Extension):
                 location.code = code
                 location.insert()
 
+            location.location_type = record["type"]
+
             for lang, value in record["name"].iteritems():
                 if isinstance(value, str):
                     value = value.decode("utf-8")
