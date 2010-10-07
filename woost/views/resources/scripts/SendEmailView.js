@@ -8,12 +8,14 @@
 -----------------------------------------------------------------------------*/
 
 cocktail.bind(".SendEmailView", function ($sendEmailView) {
-    setTimeout("update_progress(" + this.task_id + ")", 3000);
+    setTimeout("update_progress({0}, '{1}')".format(this.task_id, this.edit_stack), 3000);
 });
 
-function update_progress(task_id) {
+function update_progress(task_id, edit_stack) {
 
     var url = "./send_email/mailing_state/" + task_id
+    if (edit_stack)
+        url += "?edit_stack=" + edit_stack
 
     jQuery.getJSON(url, function(data) {
         var progress = 0;
@@ -24,7 +26,7 @@ function update_progress(task_id) {
 
             if (!data.completed) {
                 progress = parseInt(parseInt(data.sent) * 100 / parseInt(data.total));
-                setTimeout("update_progress(" + task_id + ")", 3000);
+                setTimeout("update_progress({0}, '{1}')".format(task_id, edit_stack), 3000);
             } else {
                 progress = 100;
                 jQuery(".mailing_info h3").text(cocktail.translate("woost.extensions.mailer.SendEmailView email delivery finished"));
