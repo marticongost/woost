@@ -143,7 +143,7 @@ ${self.dtd()}
 
     ## Base tag
     % if base_url:
-        <base url="${base_url}"${closure()}>
+        <base href="${base_url}"${closure()}>
     % endif
 </%def>
 
