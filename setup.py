@@ -77,7 +77,8 @@ of its features include:\n"
             "googleanalytics = woost.extensions.googleanalytics:GoogleAnalyticsExtension",
             "campaignmonitor = woost.extensions.campaignmonitor:CampaignMonitorExtension",
             "mailer = woost.extensions.mailer:MailerExtension",
-            "usermodels = woost.extensions.usermodels:UserModelsExtension"
+            "usermodels = woost.extensions.usermodels:UserModelsExtension",
+            "locations = woost.extensions.locations:LocationsExtension"
         ]
     },
     # Woost can't yet access view resources (images, style sheets, client
