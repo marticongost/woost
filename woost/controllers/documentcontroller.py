@@ -29,7 +29,10 @@ class DocumentController(BaseCMSController):
         engine_name = self.page_template.engine
 
         if engine_name:
-            return get_rendering_engine(engine_name)
+            return get_rendering_engine(
+                engine_name,
+                cherrypy.request.config.get("rendering.engine_options")
+            )
         else:
             return BaseCMSController.rendering_engine(self)
 
