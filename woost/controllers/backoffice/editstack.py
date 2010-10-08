@@ -247,6 +247,9 @@ class EditStacksManager(object):
         if preserved_stacks is None:
             preserved_stacks = cherrypy.session.get(self._session_key)
 
+        if preserved_stacks is None:
+            return
+
         if current_time is None:
             current_time = datetime.now()
 
