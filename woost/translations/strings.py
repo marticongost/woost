@@ -543,18 +543,11 @@ translations.define(
 
 translations.define(
     "woost.controllers.backoffice.editstack.WrongEditStackError-instance",
-    ca = u"La sessió d'edició indicada no existeix o s'ha perdut.",
-    es = u"La sesión de edición indicada no existe o se ha perdido.",
-    en = u"The indicated edit session doesn't exist, or it has been lost."
+    ca = u"La sessió d'edició indicada no existeix o ha expirat.",
+    es = u"La sesión de edición indicada no existe o ha expirado.",
+    en = u"The indicated edit session doesn't exist, or has expired."
 )
 
-
-translations.define(
-    "woost.controllers.backoffice.editstack.EditStackExpiredError-instance",
-    ca = u"La sessió d'edició ha expirat.",
-    es = u"La sesión de edición ha expirado.",
-    en = u"The indicated edit session has expired."
-)
 
 translations.define(
     "woost.controllers.backoffice.fileeditnode.FileRequiredError-instance",
