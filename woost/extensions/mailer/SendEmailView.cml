@@ -5,7 +5,7 @@ from cocktail.controllers import view_state_form
 from woost.models import User
 from woost.controllers.backoffice.useractions import \
     add_view_action_context
-from woost.extensions.mailer.sendemailcontroller import available_users
+from woost.extensions.mailer.sendemailcontroller import get_receivers_by_roles
 ?>
 
 <py:woost.views.BackOfficeItemView
@@ -18,7 +18,7 @@ from woost.extensions.mailer.sendemailcontroller import available_users
     form_schema = None
     form_errors = None
     form_submitted = None
-    thread_id = None
+    task_id = None
     ?>  
 
     <?py
@@ -28,8 +28,8 @@ from woost.extensions.mailer.sendemailcontroller import available_users
 
     <py:ready>
         <?py
-        if self.thread_id:
-            self.set_client_param("thread_id", self.thread_id)
+        if self.task_id:
+            self.set_client_param("task_id", self.task_id)
             self.add_resource("/resources/scripts/SendEmailView.js")
             self.add_client_translation("woost.extensions.mailer.SendEmailView email delivery finished")
             self.add_client_translation("woost.extensions.mailer.SendEmailView mailer summary")
@@ -69,7 +69,7 @@ from woost.extensions.mailer.sendemailcontroller import available_users
                     </ul>
                     <p>
                         <strong>${translations("woost.extensions.mailer.SendEmailView total")}</strong>
-                        <span>${sum(len(available_users([role])) for role in self.form_data['roles'])} ${translations("woost.extensions.mailer users")}</span>
+                        <span>${sum(len(get_receivers_by_roles([role])) for role in self.form_data['roles'])} ${translations("woost.extensions.mailer users")}</span>
                                 
                     </p>
                 </p>

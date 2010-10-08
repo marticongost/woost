@@ -94,7 +94,7 @@ is not accessible for anonymous users."""
 )
 
 translations.define("woost.extensions.mailer.SendEmailView doing email delivery",
-    ca = u"Ralitzant enviament",
+    ca = u"Realitzant enviament",
     es = u"Realizando envio",
     en = u"Doing email delivery"
 )

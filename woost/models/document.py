@@ -6,9 +6,10 @@ u"""
 @organization:	Whads/Accent SL
 @since:			July 2008
 """
+from cocktail import schema
 from cocktail.modeling import getter
 from cocktail.events import event_handler
-from cocktail import schema
+from cocktail.controllers.renderingengines import get_rendering_engine
 from woost.models.publishable import Publishable
 from woost.models.controller import Controller
 
@@ -142,4 +143,13 @@ class Document(Publishable):
 
         for resource in self.page_resources:
             yield resource
+
+    def render(self, **values):
+        """Renders the document using its template."""
+        if self.template is None:
+            raise ValueError("Can't render a document without a template")
+        
+        values["publishable"] = self
+        engine = get_rendering_engine(self.template.engine)
+        return engine.render(values, template = self.template.identifier)
 
