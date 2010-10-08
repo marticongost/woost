@@ -111,3 +111,6 @@ class BackOfficeController(BaseBackOfficeController):
         else:
             return "var tinyMCELinkList = %s" % (dumps(output))
 
+    @cherrypy.expose
+    def keep_alive(self, *args, **kwargs):
+        pass
