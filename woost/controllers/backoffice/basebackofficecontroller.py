@@ -27,8 +27,7 @@ from woost.controllers.backoffice.editstack import (
     EditNode,
     SelectionNode,
     RelationNode,
-    WrongEditStackError,
-    EditStackExpiredError
+    WrongEditStackError
 )
 
 
@@ -171,7 +170,7 @@ class BaseBackOfficeController(BaseCMSController):
         # stack node
         if isinstance(
             event.exception,
-            (EditStackExpiredError, WrongEditStackError)
+            WrongEditStackError
         ):
             notify_user(translations(event.exception), "error")
             raise cherrypy.HTTPRedirect(event.source.contextual_uri())

@@ -112,18 +112,12 @@ class EditStacksManager(object):
         
         if preserved_stacks:
             for id, entry in preserved_stacks.iteritems():
-                try:
-                    stack = self._get_edit_stack(id)
-                except EditStackExpiredError:
-                    pass
-                else:
-                    edit_stacks[id] = stack
+                stack = self._get_edit_stack(id)
+                edit_stacks[id] = stack
         
         return DictWrapper(edit_stacks)
 
-    def _get_edit_stack(self, stack_id,
-        preserved_stacks = None,
-        current_time = None):
+    def _get_edit_stack(self, stack_id, preserved_stacks = None):
 
         edit_stack = self.__stack_map.get(stack_id)
 
@@ -132,13 +126,7 @@ class EditStacksManager(object):
             if preserved_stacks is None:
                 preserved_stacks = cherrypy.session.get(self._session_key)
 
-            if self.expiration and current_time is None:
-                current_time = datetime.now()
-
             if preserved_stacks:
-
-                if self.expiration is not None:
-                    now = datetime.now()
 
                 entry = preserved_stacks.get(stack_id)
 
@@ -147,12 +135,16 @@ class EditStacksManager(object):
 
                 last_update, stack_data = entry
 
-                if self.expiration is not None \
-                and (current_time - last_update).seconds >= self.expiration:
-                    raise EditStackExpiredError()
-                            
+                if self.expiration is not None:
+                    preserved_stacks[stack_id] = (
+                        datetime.now(),
+                        stack_data
+                    )
+
                 edit_stack = self._loads(stack_data)
                 self.__stack_map[stack_id] = edit_stack
+
+        self._remove_expired_edit_stacks(preserved_stacks)
             
         return edit_stack
         
@@ -221,6 +213,9 @@ class EditStacksManager(object):
         edit_stack.id = cherrypy.session.get(self._session_id_key, 0)
         cherrypy.session[self._session_id_key] = edit_stack.id + 1
         self.__stack_map[edit_stack.id] = edit_stack
+
+        self._remove_expired_edit_stacks()
+
         return edit_stack
 
     def preserve_edit_stack(self, edit_stack):
@@ -240,6 +235,24 @@ class EditStacksManager(object):
             datetime.now(),
             self._dumps(edit_stack)
         )
+
+    def _remove_expired_edit_stacks(
+        self, 
+        preserved_stacks = None, 
+        current_time = None
+    ):
+        if self.expiration is None:
+            return
+
+        if preserved_stacks is None:
+            preserved_stacks = cherrypy.session.get(self._session_key)
+
+        if current_time is None:
+            current_time = datetime.now()
+
+        for stack_id, (last_update, stack_data) in preserved_stacks.items():
+            if (current_time - last_update).seconds >= self.expiration:
+                del preserved_stacks[stack_id]
 
 
 class EditStack(ListWrapper):
@@ -910,12 +923,6 @@ class RelationNode(StackNode):
 
         content_type = self.get_ancestor_node(EditNode).content_type
         self.member = content_type[member_name]
-
-
-class EditStackExpiredError(Exception):
-    """An exception raised to signal that an edit stack stored on the session
-    has expired.
-    """
 
 
 class WrongEditStackError(Exception):
