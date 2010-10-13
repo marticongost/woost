@@ -357,12 +357,9 @@ class FolderDestination(StaticSiteDestination):
     
     target_folder = schema.String(
         required = True,
-        unique = True
+        unique = True,
+        descriptive = True
     )
-
-    def __translate__(self, language, **kwargs):
-        return (self.draft_source is None and self.target_folder) \
-            or StaticSiteDestination.__translate__(self, language, **kwargs)
 
     def create_folder(self, folder, context):
         full_path = os.path.join(self.target_folder, folder)

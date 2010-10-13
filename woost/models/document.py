@@ -40,6 +40,7 @@ class Document(Publishable):
     title = schema.String(
         indexed = True,
         normalized_index = True,
+        descriptive = True,
         translated = True,
         required = True,
         member_group = "content"
@@ -106,10 +107,6 @@ class Document(Publishable):
         related_key = "parent",
         cascade_delete = True
     )
- 
-    def __translate__(self, language, **kwargs):
-        return (self.draft_source is None and self.get("title", language)) \
-            or Publishable.__translate__(self, language, **kwargs)
 
     def _update_path(self, parent, path):
 

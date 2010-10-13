@@ -30,7 +30,8 @@ class CampaignMonitorList(Item):
 
     title = schema.String(
         editable = False,
-        listed_by_default = False
+        listed_by_default = False,
+        descriptive = True
     )
 
     list_id = schema.String(
@@ -53,8 +54,4 @@ class CampaignMonitorList(Item):
         type = "woost.models.Publishable",
         related_end = schema.Collection()
     )
-
-    def __translate__(self, language, **kwargs):
-        return (self.draft_source is None and self.title) \
-            or Item.__translate__(self, language, **kwargs)
 

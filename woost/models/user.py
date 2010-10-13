@@ -65,6 +65,7 @@ class User(Item):
     email = schema.String(
         required = True,
         unique = True,
+        descriptive = True,
         max = 255,
         indexed = True,
         format = "^.+@.+$"
@@ -110,10 +111,6 @@ class User(Item):
             data = self.encryption_method(data).digest()
 
         return data
-
-    def __translate__(self, language, **kwargs):
-        return (self.draft_source is None and self.email) \
-            or Item.__translate__(self, language, **kwargs)
 
     @event_handler
     def handle_changing(cls, event):

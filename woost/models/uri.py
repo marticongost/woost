@@ -29,6 +29,7 @@ class URI(Publishable):
     title = schema.String(
         indexed = True,
         normalized_index = True,
+        descriptive = True,
         translated = True,
         member_group = "content"
     )
@@ -38,9 +39,5 @@ class URI(Publishable):
         indexed = True,
         member_group = "content"
     )
-
-    def __translate__(self, language, **kwargs):
-        return (self.draft_source is None and self.get("title", language)) \
-            or Publishable.__translate__(self, language, **kwargs)
 
 

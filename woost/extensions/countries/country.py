@@ -20,6 +20,7 @@ class Country(Item):
         required = True,
         indexed = True,
         normalized_index = True,
+        descriptive = True,
         translated = True
     )
 
@@ -29,10 +30,4 @@ class Country(Item):
         indexed = True,
         format = re.compile(r"^[a-z]{2}$")
     )
-
-    def __translate__(self, language, **kwargs):
-        return (
-            self.draft_source is None
-            and self.get("country_name", language)
-        ) or Item.__translate__(self, language, **kwargs)
 

@@ -35,6 +35,7 @@ class Role(Item):
         unique = True,
         indexed = True,
         normalized_index = True,
+        descriptive = True,
         translated = True
     )
     
@@ -116,8 +117,4 @@ class Role(Item):
         for base_role in self.base_roles:
             for permission in base_role.iter_permissions(permission_type):
                 yield permission
-
-    def __translate__(self, language, **kwargs):
-        return (self.draft_source is None and self.get("title", language)) \
-            or Item.__translate__(self, language, **kwargs)
 
