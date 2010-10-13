@@ -34,6 +34,7 @@ class Publishable(Item):
     groups_order = ["navigation", "presentation", "publication"]
 
     members_order = [
+        "inherit_resources",
         "mime_type",
         "resource_type",
         "encoding",
@@ -91,6 +92,12 @@ class Publishable(Item):
         bidirectional = True,
         listed_by_default = False,
         member_group = "presentation"
+    )
+
+    inherit_resources = schema.Boolean(
+        listed_by_default = False,
+        member_group = "presentation",
+        default = True
     )
 
     def resolve_controller(self):
@@ -229,7 +236,12 @@ class Publishable(Item):
         """Iterates over all the resources that apply to the item.        
         @type: L{Publishable}
         """
-        ancestry = list(self.ascend_tree(include_self = False))
+        ancestry = []
+        document = self
+        while document.parent is not None and document.inherit_resources:
+            ancestry.append(document.parent)
+            document = document.parent
+
         ancestry.reverse()
 
         for document in ancestry:

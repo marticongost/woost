@@ -1767,6 +1767,12 @@ translations.define("woost.models.Publishable.resource_type other",
     en = u"Other"
 )
 
+translations.define("Publishable.inherit_resources",
+    ca = u"Hereda els recursos",
+    es = u"Hereda los recursos",
+    en = u"Inherit resources"
+)
+
 translations.define("Publishable.mime_type",
     ca = u"Tipus MIME",
     es = u"Tipo MIME",
