@@ -23,6 +23,7 @@ class State(Item):
     title = schema.String(
         unique = True,
         required = True,
+        descriptive = True,
         translated = True
     )
 
@@ -47,10 +48,6 @@ class State(Item):
         editable = False,
         integral = True
     )
-
-    def __translate__(self, language, **kwargs):
-        return (self.draft_source is None and self.get("title", language)) \
-            or Item.__translate__(self, language, **kwargs)
 
 
 Item.add_member(

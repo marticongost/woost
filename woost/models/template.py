@@ -24,6 +24,7 @@ class Template(Item):
         unique = True,
         indexed = True,
         normalized_index = True,
+        descriptive = True,
         translated = True
     )
 
@@ -43,8 +44,4 @@ class Template(Item):
         bidirectional = True,
         editable = False
     )
-
-    def __translate__(self, language, **kwargs):
-        return (self.draft_source is None and self.get("title", language)) \
-            or Item.__translate__(self, language, **kwargs)
 

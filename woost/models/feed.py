@@ -47,6 +47,7 @@ class Feed(Publishable):
     title = schema.String(
         indexed = True,
         normalized_index = True,
+        descriptive = True,
         translated = True,
         member_group = "meta"
     )           
@@ -123,10 +124,6 @@ class Feed(Publishable):
         ),
         member_group = "feed_items"
     )
-
-    def __translate__(self, language, **kwargs):
-        return (self.draft_source is None and self.get("title", language)) \
-            or Publishable.__translate__(self, language, **kwargs)
 
     def select_items(self):
          
