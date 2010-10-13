@@ -48,6 +48,8 @@ class GoogleSearchExtension(Extension):
         "&filter=%(filter)d"
         "&client=google-csbe"
         "&output=xml_no_dtd"
+        "&ie=utf8"
+        "&oe=utf8"
     )
 
     def __init__(self, **values):
