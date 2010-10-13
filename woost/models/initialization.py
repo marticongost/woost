@@ -396,6 +396,7 @@ def init_site(
         back_office.parent = site.home
         back_office.hidden = True
         back_office.path = u"cms"
+        back_office.inherit_resources = False
         set_translations(back_office, "title", "Back office title")
         back_office.insert()
         
