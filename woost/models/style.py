@@ -20,6 +20,7 @@ class Style(Item):
         unique = True,
         indexed = True,
         normalized_index = True,
+        descriptive = True,
         translated = True
     )
 
@@ -35,8 +36,4 @@ class Style(Item):
     @getter
     def class_name(self):
         return "woost_style_%d" % self.id
-
-    def __translate__(self, language, **kwargs):
-        return (self.draft_source is None and self.get("title", language)) \
-            or Item.__translate__(self, language, **kwargs)
 

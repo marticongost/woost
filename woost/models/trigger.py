@@ -71,7 +71,8 @@ class Trigger(Item):
     ]
     
     title = schema.String(
-        translated = True
+        translated = True,
+        descriptive = True
     )
 
     execution_point = schema.String(
@@ -145,10 +146,6 @@ class Trigger(Item):
             return False
 
         return True
-
-    def __translate__(self, language, **kwargs):
-        return (self.draft_source is None and self.get("title", language)) \
-            or Item.__translate__(self, language, **kwargs)
 
 
 class ContentTrigger(Trigger):

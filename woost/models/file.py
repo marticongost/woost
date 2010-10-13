@@ -50,6 +50,7 @@ class File(Publishable):
     title = schema.String(
         indexed = True,
         normalized_index = True,
+        descriptive = True,
         translated = True,
         member_group = "content"
     )
@@ -94,10 +95,6 @@ class File(Publishable):
         searchable = False,
         member_group = "content"
     )
-
-    def __translate__(self, language, **kwargs):
-        return (self.draft_source is None and self.get("title", language)) \
-            or Publishable.__translate__(self, language, **kwargs)
 
     @getter
     def file_path(self):
