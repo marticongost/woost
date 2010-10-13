@@ -23,6 +23,7 @@ class ProductCategory(Item):
         required = True,
         indexed = True,
         normalized_index = True,
+        descriptive = True,
         translated = True
     )
 
@@ -40,10 +41,4 @@ class ProductCategory(Item):
         items = "woost.extensions.shop.product.Product",
         bidirectional = True
     )
-
-    def __translate__(self, language, **kwargs):
-        return (
-            self.draft_source is None
-            and self.get("title", language)
-        ) or Item.__translate__(self, language, **kwargs)
 

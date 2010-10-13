@@ -22,6 +22,7 @@ class Action(PersistentObject):
         required = True,
         unique = True,
         indexed = True,
+        descriptive = True,
         translated = True
     )
 
@@ -33,8 +34,4 @@ class Action(PersistentObject):
             base_repr += " (" + self.identifier + ")"
 
         return base_repr
-
-    def __translate__(self, language, **kwargs):
-        return self.get("title", language) \
-            or PersistentObject.__translate__(self, language, **kwargs)
 

@@ -62,6 +62,7 @@ class VimeoVideo(Publishable):
 
     title = schema.String(
         member_group = "content",
+        descriptive = True,
         translated = True,
         required = True
     )
@@ -173,8 +174,4 @@ class VimeoVideo(Publishable):
         indexed = True,
         listed_by_default = False
     )
-
-    def __translate__(self, language, **kwargs):
-        return (self.draft_source is None and self.get("title", language)) \
-                or Publishable.__translate__(self, language, **kwargs)
 

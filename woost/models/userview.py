@@ -21,6 +21,7 @@ class UserView(Item):
     edit_view = "woost.views.UserViewFields"
 
     title = schema.String(
+        descriptive = True,
         translated = True,
         required = True,
         unique = True
@@ -74,10 +75,6 @@ class UserView(Item):
         items = "woost.models.Role",
         bidirectional = True
     )
-
-    def __translate__(self, language, **kwargs):
-        return (self.draft_source is None and self.get("title", language)) \
-            or Item.__translate__(self, language, **kwargs)
 
     def uri(self, **kwargs):        
         params = self.parameters.copy()

@@ -36,6 +36,7 @@ class Transition(Item):
 
     title = schema.String(
         required = True,
+        descriptive = True,
         translated = True
     )
 
@@ -61,10 +62,6 @@ class Transition(Item):
         related_key = "transition",
         bidirectional = True
     )
-    
-    def __translate__(self, language, **kwargs):
-        return (self.draft_source is None and self.get("title", language)) \
-                or Item.__translate__(self, language, **kwargs)
 
     def execute(self, item, data = None):
         
