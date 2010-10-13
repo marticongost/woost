@@ -134,12 +134,8 @@ class Document(Publishable):
         """Iterates over all the resources that apply to the page.
         @type: L{Publishable}
         """
-        ancestry = list(self.ascend_tree(include_self = True))
-        ancestry.reverse()
-
-        for page in ancestry:
-            for resource in page.branch_resources:
-                yield resource
+        for resource in Publishable.resources.__get__(self):
+            yield resource
 
         for resource in self.page_resources:
             yield resource
