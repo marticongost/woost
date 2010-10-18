@@ -35,7 +35,7 @@ class Location(Item):
         translate_value = lambda value, language = None, **kwargs:
             "" if not value 
             else translations(
-                "woost.extensions.locations.location.Location-" + value,
+                "woost.extensions.locations.location_types." + value,
                 language,
                 **kwargs
             )
