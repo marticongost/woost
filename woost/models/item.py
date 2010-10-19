@@ -276,6 +276,12 @@ class Item(PersistentObject):
                 )
             else:
                 value = self.get(key)
+                
+                # Make a copy of mutable objects
+                if isinstance(
+                    value, (list, set, ListWrapper, SetWrapper)
+                ):
+                    value = list(value)
 
             state[key] = value
 
