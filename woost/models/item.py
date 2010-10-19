@@ -289,6 +289,7 @@ class Item(PersistentObject):
         now = datetime.now()
         item.creation_time = now
         item.last_update_time = now
+        item.__deleted = False
 
         if not item.is_draft and item.__class__.versioned:
             changeset = ChangeSet.current
