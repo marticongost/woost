@@ -7,7 +7,7 @@ u"""
 @since:			June 2008
 """
 from datetime import datetime
-from cocktail.modeling import getter
+from cocktail.modeling import getter, ListWrapper, SetWrapper
 from cocktail.events import event_handler
 from cocktail import schema
 from cocktail.translations import translations
@@ -276,6 +276,12 @@ class Item(PersistentObject):
                 )
             else:
                 value = self.get(key)
+                
+                # Make a copy of mutable objects
+                if isinstance(
+                    value, (list, set, ListWrapper, SetWrapper)
+                ):
+                    value = list(value)
 
             state[key] = value
 
@@ -289,6 +295,7 @@ class Item(PersistentObject):
         now = datetime.now()
         item.creation_time = now
         item.last_update_time = now
+        item.__deleted = False
 
         if not item.is_draft and item.__class__.versioned:
             changeset = ChangeSet.current
@@ -353,10 +360,18 @@ class Item(PersistentObject):
                 change.changed_members.add(member_name)
                 
             if action_type in ("create", "modify"):
+                value = event.value
+
+                # Make a copy of mutable objects
+                if isinstance(
+                    value, (list, set, ListWrapper, SetWrapper)
+                ):
+                    value = list(value)
+
                 if language:
-                    change.item_state[member_name][language] = event.value
+                    change.item_state[member_name][language] = value
                 else:
-                    change.item_state[member_name] = event.value
+                    change.item_state[member_name] = value
         else:
             item.last_update_time = datetime.now()
 
