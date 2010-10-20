@@ -47,5 +47,5 @@ def pop_user_notifications():
     """
     notifications = cherrypy.session.get("notifications")
     cherrypy.session["notifications"] = []
-    return notifications
+    return notifications or []
 

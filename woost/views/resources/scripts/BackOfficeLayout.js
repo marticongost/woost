@@ -11,12 +11,6 @@ cocktail.bind({
     selector: ".BackOfficeLayout",
     behavior: function ($layout) {
 
-        // Hide transient notifications
-        setTimeout(
-            function () { $layout.find(".notification.transient").hide("slow"); },
-            this.notificationTimeout || 2000
-        );
-
         // Keep alive the current edit_stack
         if (this.edit_stack)
             setTimeout("keepalive('" + this.edit_stack + "')", 300000);

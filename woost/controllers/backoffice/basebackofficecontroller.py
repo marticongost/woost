@@ -18,10 +18,7 @@ from cocktail import schema
 from cocktail.controllers import get_parameter, CookieParameterSource
 from woost.models import Item
 from woost.controllers import BaseCMSController
-from woost.controllers.notifications import (
-    notify_user,
-    pop_user_notifications
-)
+from woost.controllers.notifications import notify_user
 from woost.controllers.backoffice.useractions import get_user_action
 from woost.controllers.backoffice.editstack import (
     EditNode,
@@ -203,7 +200,6 @@ class BaseBackOfficeController(BaseCMSController):
             backoffice = self.context["publishable"],
             section = self.section,
             edit_stack = self.edit_stack,
-            notifications = pop_user_notifications(),
             edit_uri = self.edit_uri,
             client_side_scripting = self.client_side_scripting
         )
