@@ -110,21 +110,7 @@ from woost.controllers.backoffice.useractions import add_view_action_context
         </div>
     </div>
 
-    <div py:id="notification_box" py:collapsible="${True}">
-        <py:ready>
-            <div class="notification"
-                py:if="self.notifications"
-                py:for="message, category, transient in self.notifications">
-                <?py
-                if category:
-                    element.add_class(category)
-                if transient:
-                    element.add_class("transient")
-                ?>
-                ${message}
-            </div>
-        </py:ready>
-    </div>
+    <py:woost.views.NotificationBox py:id="notification_box" />
 
     <py:ready>
         <?py
