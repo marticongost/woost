@@ -59,7 +59,7 @@ class Mailing(object):
         self.template_values = {}
 
     def send(self):
-        logger.info("Sending mailing")
+        logger.info("Sending mailing (%s)" % self.document)
 
         for receiver in self.receivers:
             try:                
@@ -72,13 +72,21 @@ class Mailing(object):
                 message["From"] = self.sender
                 message["Subject"] = Header(self.subject, self.document.encoding)
                 message["Date"] = formatdate()
-                self.smtp.sendmail(self.sender, [receiver.email], message.as_string())
-                logger.info("Email sent to %s (%s)" % (receiver, receiver.email))
+                try:
+                    self.smtp.sendmail(self.sender, [receiver.email], message.as_string())
+                    logger.info("Email sent to %s (%s)" % (receiver, receiver.email))
+                except smtplib.SMTPServerDisconnected, e:
+                    logger.info("Server disconnected, reconnecting - %s" % e)
+                    self.smtp.connect(site.smtp_host, smtplib.SMTP_PORT)
+                    self.smtp.sendmail(self.sender, [receiver.email], message.as_string())
+                    logger.info("Email sent to %s (%s)" % (receiver, receiver.email))
             except Exception, e:
                 logger.exception("%s (%s) - %s" % (receiver, receiver.email, e))
                 self.errors += 1
             finally:
                 self.sent += 1
+
+        self.smtp.quit()
 
     def render_body(self, receiver):
         
