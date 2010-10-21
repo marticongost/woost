@@ -39,6 +39,7 @@ from woost.controllers.backoffice.editstack import SelectionNode
     ?>
 
     <?py-class
+    referer = None
     collection_params = None
     root_content_type = Item
     edit_stack = None
@@ -143,6 +144,7 @@ from woost.controllers.backoffice.editstack import SelectionNode
         <py:with py:element="self.search_results_message" py:visible="${False}"/>
 
         <py:with py:element="self.collection_display"
+            py:referer="${self.referer}"
             py:filters="${self.user_collection.user_filters}">
             <?py
             if isinstance(element, DataDisplay):

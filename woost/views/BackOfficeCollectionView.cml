@@ -37,6 +37,7 @@ from woost.controllers.backoffice.useractions import \
             py:tag="div"
             method="${None}"
             action="${None}"
+            py:referer="${self.edited_item}"
             py:user_collection="${self.user_collection}"
             py:available_languages="${self.available_languages}"
             py:root_content_type="${self.root_content_type}"
