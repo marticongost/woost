@@ -30,7 +30,6 @@ from woost.controllers.backoffice.useractions import add_view_action_context
     ?>
 
     <?py
-    self.add_resource("/resources/scripts/core.js")
     self.add_resource("/resources/styles/backoffice.css")
     self.add_resource("/cocktail/scripts/form.js")
     self.add_resource("/resources/scripts/BackOfficeLayout.js")
