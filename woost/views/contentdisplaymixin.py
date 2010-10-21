@@ -20,6 +20,7 @@ from woost.models import (
 class ContentDisplayMixin(object):
 
     base_url = None
+    referer = None
 
     def __init__(self):
 

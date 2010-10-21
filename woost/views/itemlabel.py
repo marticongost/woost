@@ -17,6 +17,7 @@ class ItemLabel(Element):
     icon_size = 16
     icon_visible = True
     thumbnail = True
+    referer = None
 
     def _ready(self):
         Element._ready(self)
@@ -42,5 +43,5 @@ class ItemLabel(Element):
         return img
     
     def get_label(self):
-        return translations(self.item)
+        return translations(self.item, referer = self.referer)
 

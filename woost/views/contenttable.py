@@ -59,7 +59,8 @@ class ContentTable(ContentDisplayMixin, Table):
         display.tag = "label"
         display["for"] = "selection_" + str(item.id)
         display.item = item
-                
+        display.referer = self.referer
+
         if self.inline_draft_copies and item.draft_source:
             display.get_label = lambda: translations(
                 "woost.views.ContentTable draft label",
