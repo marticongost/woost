@@ -18,7 +18,7 @@ TinyMCE = templates.get_class("cocktail.html.TinyMCE")
 #Required Version: 3.2.2.3 TinyMCE
 class RichTextEditor(TinyMCE):
 
-    default_tinymce_params = {
+    tinymce_params = {
         "plugins": "fullscreen, paste, inlinepopups, advimage, "
                    "contextmenu, tabfocus, -advimagescale",
         "entity_encoding": "raw",
@@ -58,13 +58,13 @@ class RichTextEditor(TinyMCE):
                 "/editor_attachments?edit_stack=%s&language=%s&resource_type=" % (
                     edit_stack_param, self.language
                 )
-            self.tinymce_params.update(
-                init_instance_callback = "initRichTextEditor",
-                theme_advanced_styles = ";".join(styles),
-                external_image_list_url = attachments_uri + "image",
-                external_link_list_url = attachments_uri + "document",
-                media_external_list_url = attachments_uri + "video"
-            )
+            
+            d = self.tinymce_params.setdefault            
+            d("theme_advanced_styles", ";".join(styles))
+            d("init_instance_callback", "initRichTextEditor")
+            d("external_image_list_url", attachments_uri + "image")
+            d("external_link_list_url", attachments_uri + "document")
+            d("media_external_list_url", attachments_uri + "video")
 
         load_plugin = Element("script")
         load_plugin["type"] = "text/javascript"
