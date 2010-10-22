@@ -7,7 +7,9 @@
 @since:			October 2008
 -----------------------------------------------------------------------------*/
 
-function initRichTextEditor(instance) {
+cocktail.declare("woost");
+
+woost.initRichTextEditor = function (instance) {
 
     var doc = instance.contentDocument;
 
