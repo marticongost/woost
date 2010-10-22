@@ -61,7 +61,7 @@ class RichTextEditor(TinyMCE):
             
             d = self.tinymce_params.setdefault            
             d("theme_advanced_styles", ";".join(styles))
-            d("init_instance_callback", "initRichTextEditor")
+            d("init_instance_callback", "woost.initRichTextEditor")
             d("external_image_list_url", attachments_uri + "image")
             d("external_link_list_url", attachments_uri + "document")
             d("media_external_list_url", attachments_uri + "video")
