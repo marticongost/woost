@@ -126,33 +126,3 @@ function initRichTextEditor(instance) {
 
 }
 
-function resizeOne (id) {
-
-    var ed = tinyMCE.getInstanceById(id);
-    var DOM = tinymce.DOM;
-    var c, o;
-    var Cookie = tinymce.util.Cookie;
-    var tmp = ed.id.split("-");
-
-    jQuery(".language.selected").each(function () {
-
-        var langcode = jQuery(this).next("button").val();
-        var areaid = tmp[0] + '-' + langcode + '_editor-' + langcode;
-
-        o = Cookie.getHash("TinyMCE_" + areaid + "_size");
-
-        if (o) {
-            return;
-        }
-    });
-
-    if (String(o) == "undefined") {
-        o = Cookie.getHash("TinyMCE_" + ed.id + "_size") || {ch: 100 - ed.theme.deltaHeight, ci: 100};
-    }
-
-    var c = DOM.get(ed.id + '_tbl');
-    c.style.height = Math.max(10, o.ch) + 'px';
-
-    var ifr = DOM.get(ed.id + '_ifr');
-    ifr.style.height = Math.max(10, parseInt(o.ci)) + 'px';
-}
