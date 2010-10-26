@@ -176,7 +176,7 @@ class Mailing(Item):
 
         return body
 
-    def send(self, smtp_server):
+    def send(self, smtp_server, current_context):
 
         if not self.id in tasks:
             current_user = get_current_user()
@@ -194,6 +194,7 @@ class Mailing(Item):
 
                 set_current_user(current_user)
                 set_language(self.language.iso_code)
+                context.update(current_context)
                 self.status = MAILING_STARTED
                 processed_emails = 0
                 try:
