@@ -25,7 +25,7 @@ class RichTextEditor(TinyMCE):
         "dialog_type": "modal",
         "theme": "advanced",
         "theme_advanced_buttons1_add": "fullscreen",
-        "theme_advanced_buttons2_add": "pastetext,pasteword,selectall",
+        "theme_advanced_buttons2_add": "selectall",
         "theme_advanced_buttons3": "",
         "theme_advanced_toolbar_location": "top",
         "theme_advanced_resizing": True,

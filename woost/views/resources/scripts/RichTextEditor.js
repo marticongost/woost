@@ -11,6 +11,9 @@ cocktail.declare("woost");
 
 woost.initRichTextEditor = function (instance) {
 
+    // Paste as plain text by default
+    instance.pasteAsPlainText = true;
+
     var doc = instance.contentDocument;
 
     var evento = tinymce.dom.Event;
