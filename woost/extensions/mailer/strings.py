@@ -7,7 +7,7 @@
 @since:			September 2010
 """
 from cocktail.translations import translations
-from woost.translations.strings import content_permission_translation_factory
+from cocktail.translations.strings import member_identifier
 
 # UI
 #------------------------------------------------------------------------------
@@ -23,36 +23,78 @@ translations.define("woost.extensions.mailer users",
     en = u"usuarios"
 )
 
-# SendEmail
+# Mailing
 #------------------------------------------------------------------------------
-translations.define("SendEmail.sender",
+translations.define("Mailing",
+    ca = u"Enviament",
+    es = u"Envio",
+    en = u"Mailing"
+)
+
+translations.define("Mailing-plural",
+    ca = u"Enviaments",
+    es = u"Envios",
+    en = u"Mailings"
+)
+
+translations.define("Mailing.content",
+    ca = u"Contingut",
+    es = u"Contenido",
+    en = u"Content"
+)
+
+translations.define("Mailing.document",
+    ca = u"Document",
+    es = u"Documento",
+    en = u"Document"
+)
+
+translations.define("Mailing.sender",
     ca = u"Remitent",
     es = u"Remitente",
     en = u"Sender"
 )
 
-translations.define("SendEmail.subject",
+translations.define("Mailing.subject",
     ca = u"Assumpte",
     es = u"Asunto",
     en = u"Subject"
 )
 
-translations.define("SendEmail.roles",
+translations.define("Mailing.roles",
     ca = u"Rols",
     es = u"Roles",
     en = u"Roles"
 )
 
-translations.define("SendEmail.language",
+translations.define("Mailing.language",
     ca = u"Idioma",
     es = u"Idioma",
     en = u"Language"
 )
 
-translations.define("SendEmail.per_user_customizable",
+translations.define("Mailing.per_user_customizable",
     ca = u"Personalitzable per usuari",
     es = u"Personalizable por usuario",
     en = u"Per user customizable"
+)
+
+translations.define("Mailing.status",
+    ca = u"Estat",
+    es = u"Estado",
+    en = u"Status"
+)
+
+translations.define("woost.extensions.mailer.mailing.Mailing.status 1",
+    ca = u"Iniciat",
+    es = u"Iniciado",
+    en = u"Started"
+)
+
+translations.define("woost.extensions.mailer.mailing.Mailing.status 2",
+    ca = u"Finalitzat",
+    es = u"Finalizado",
+    en = u"Finished"
 )
 
 # SendEmailView
@@ -149,5 +191,50 @@ translations.define("SendEmailPermission.roles",
     ca = u"Rols",
     es = u"Roles",
     en = u"Roles"
+)
+
+# Exceptions
+#------------------------------------------------------------------------------
+translations.define("woost.extensions.mailer.mailing.DocumentTemplateRequiredError-instance",                                                                                                                             
+    ca = lambda instance:
+        u"El camp <em>%s</em> ha de tindre plantilla"
+        % member_identifier(instance),
+    es = lambda instance:
+        u"El campo <em>%s</em> debe tener plantilla"
+        % member_identifier(instance),
+    en = lambda instance:
+        u"The <em>%s</em> field must have a template"
+        % member_identifier(instance)
+)
+
+translations.define("woost.extensions.mailer.mailing.LanguageValueError-instance",                                                                                                                             
+    ca = lambda instance:
+        u"El camp <em>%s</em> no és un dels idiomes del document"
+        % member_identifier(instance),
+    es = lambda instance:
+        u"El campo <em>%s</em> no es uno de los idiomas del documento"
+        % member_identifier(instance),
+    en = lambda instance:
+        u"The <em>%s</em> field isn't one of the document languages"
+        % member_identifier(instance)
+)
+
+translations.define("woost.extensions.mailer.mailing.PerUserCustomizableValueError-instance",                                                                                                                             
+    ca = lambda instance:
+        u"El camp <em>%s</em> no és vàlid pel document seleccionat"
+        % member_identifier(instance),
+    es = lambda instance:
+        u"El campo <em>%s</em> no es válido para el documento seleccionado"
+        % member_identifier(instance),
+    en = lambda instance:
+        u"The <em>%s</em> is not valid for the selected document"
+        % member_identifier(instance)
+)
+
+translations.define(
+    "woost.extensions.mailer.mailing.RunningMailingError-instance",                                                                                                                                     
+    ca = u"No es pot eliminar un enviament que està en execució.",
+    es = u"No se puede eliminar un envio que está en ejecución.",
+    en = u"Can't delete a running mailing."
 )
 

@@ -5,7 +5,7 @@ from cocktail.controllers import view_state_form
 from woost.models import User
 from woost.controllers.backoffice.useractions import \
     add_view_action_context
-from woost.extensions.mailer.sendemailcontroller import get_receivers_by_roles
+from woost.extensions.mailer.mailing import get_receivers_by_roles
 ?>
 
 <py:woost.views.BackOfficeItemView
@@ -14,10 +14,6 @@ from woost.extensions.mailer.sendemailcontroller import get_receivers_by_roles
 
     <?py-class
     translations = ()
-    form_data = None
-    form_schema = None
-    form_errors = None
-    form_submitted = None
     task_id = None
     ?>  
 
@@ -40,43 +36,22 @@ from woost.extensions.mailer.sendemailcontroller import get_receivers_by_roles
     <py:with py:element="self.item_body">
 
         <py:ready>
-            <block class="Form" py:if="not self.form_submitted or self.form_errors">
-                <ul py:id="error_box" py:collapsible="${True}">
-                        <li py:for="error in self.form_errors">${translations(error)}</li>
-                </ul>
-
-                <py:cocktail.html.Form
-                    action=""
-                    method="post"
-                    py:data="@{self.form_data}"
-                    py:schema="@{self.form_schema}"
-                    py:errors="@{self.form_errors}">
-                    <?py
-                    element.submit_button.empty()
-                    element.submit_button.append(translations("woost.extensions.mailer.SendEmailView continue"))
-                    element.submit_button["name"] = "mailer_action"
-                    element.submit_button["value"] = "continue"
-                    ?>
-                </py:cocktail.html.Form>
-            </block>
-
-            <block py:if="self.action == 'continue' and not self.form_errors">
+            <block py:if="not self.action">
                 <p>
-                    ${translations("woost.extensions.mailer.SendEmailView confirmation text") % (self.edited_item.title, translations(self.form_data["language"]))}
+                    ${translations("woost.extensions.mailer.SendEmailView confirmation text") % (self.edited_item.document.title, translations(self.edited_item.language))}
 
                     <ul>
-                        <li py:for="role in self.form_data['roles']">${self.form_schema.get_member("roles").translate_value([role])}</li>
+                        <li py:for="role in self.edited_item.roles">${self.edited_item.__class__.get_member("roles").translate_value([role])}</li>
                     </ul>
                     <p>
                         <strong>${translations("woost.extensions.mailer.SendEmailView total")}</strong>
-                        <span>${sum(len(get_receivers_by_roles([role])) for role in self.form_data['roles'])} ${translations("woost.extensions.mailer users")}</span>
+                        <span>${sum(len(get_receivers_by_roles([role])) for role in self.edited_item.roles)} ${translations("woost.extensions.mailer users")}</span>
                                 
                     </p>
                 </p>
-                <p class="notice" py:if="not self.edited_item.is_accessible(User.get_instance(qname = 'woost.anonymous_user'), language = self.form_data['language'].iso_code)">
+                <p class="notice" py:if="not self.edited_item.document.is_accessible(User.get_instance(qname = 'woost.anonymous_user'), language = self.edited_item.language.iso_code)">
                     ${translations("woost.extensions.mailer.SendEmailView accessibility warning")}
                 </p>
-                ${view_state_form(schema = self.form_schema, **self.form_data)}
                 <div class="buttons">
                     <button type="submit" name="mailer_action" value="send">
                         ${translations("woost.extensions.mailer.SendEmailView send")}
@@ -84,7 +59,7 @@ from woost.extensions.mailer.sendemailcontroller import get_receivers_by_roles
                 </div>
             </block>
 
-            <block py:if="self.action == 'send' and not self.form_errors">
+            <block py:if="self.action == 'send'">
 
                 <div class="mailing_info">
                     <h3>${translations("woost.extensions.mailer.SendEmailView doing email delivery")}</h3>
