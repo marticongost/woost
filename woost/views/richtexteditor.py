@@ -38,7 +38,8 @@ class RichTextEditor(TinyMCE):
         "content_css": "/user_styles/?backoffice=1",
         "fullscreen_settings": {
             "theme_advanced_toolbar_location": "top"
-        }
+        },
+        "height": 250
     }
 
     def _ready(self):
