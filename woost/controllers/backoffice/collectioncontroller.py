@@ -55,6 +55,7 @@ class CollectionController(EditController, ContentController):
         user_collection.content_views_registry = relation_content_views
         user_collection.base_collection = \
             schema.get(self.stack_node.form_data, self.member)
+        user_collection.default_order = None
         return user_collection
 
     @cached_getter

@@ -34,6 +34,7 @@ from cocktail.schema.expressions import (
     Expression,
     CustomExpression,
     ExclusionExpression,
+    NegativeExpression,
     Self
 )
 from cocktail.persistence import datastore
@@ -223,6 +224,8 @@ class ContentController(BaseBackOfficeController):
         user_collection = BackOfficeUserCollection(self.root_content_type)
         user_collection.available_languages = self.available_languages
         user_collection.selection_mode = self.selection_mode
+        user_collection.default_order = \
+            [NegativeExpression(Item.last_update_time)]
 
         # Parameter persistence
         prefix = self.persistence_prefix
