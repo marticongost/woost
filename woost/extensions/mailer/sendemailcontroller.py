@@ -90,7 +90,7 @@ class SendEmailController(EditController):
                 "cms": self.context["cms"],
                 "base_url": unicode(Location.get_current_host()).rstrip("/")
             }
-            mailing.send(self.smtp_server)
+            mailing.send(self.smtp_server, self.context.copy())
 
     @cached_getter
     def output(self):
