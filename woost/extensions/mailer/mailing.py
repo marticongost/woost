@@ -199,17 +199,15 @@ class Mailing(Item):
                 try:
                     for email, receiver in self.pending.items():
                         try:                
-                            #message = self._get_message(receiver)
-                            from time import sleep
-                            sleep(0.1)
-                            #try:
-                                #smtp_server.sendmail(self.sender, [email], message.as_string())
-                            #except smtplib.SMTPServerDisconnected, e:
-                                #logger.info("%d - Server disconnected, reconnecting - %s" % (
-                                    #self.id, e
-                                #))
-                                #smtp_server.connect(site.smtp_host, smtplib.SMTP_PORT)
-                                #smtp_server.sendmail(self.sender, [email], message.as_string())
+                            message = self._get_message(receiver)
+                            try:
+                                smtp_server.sendmail(self.sender, [email], message.as_string())
+                            except smtplib.SMTPServerDisconnected, e:
+                                logger.info("%d - Server disconnected, reconnecting - %s" % (
+                                    self.id, e
+                                ))
+                                smtp_server.connect(site.smtp_host, smtplib.SMTP_PORT)
+                                smtp_server.sendmail(self.sender, [email], message.as_string())
                         except Exception, e:
                             logger.exception("%d - %s (%s) - %s" % (
                                 self.id, receiver, email, e
