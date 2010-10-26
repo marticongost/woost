@@ -6,11 +6,13 @@
 @organization:	Whads/Accent SL
 @since:			September 2010
 """
+import cherrypy
 from cocktail.events import event_handler, when
 from cocktail import schema
 from cocktail.translations import translations
 from cocktail.controllers import context
-from woost.models import Extension, Document, Template
+from woost.models import Extension, Document, Template, Role
+from woost.models.permission import DeletePermission, ModifyPermission
 
 
 translations.define("MailerExtension",
@@ -50,6 +52,9 @@ class MailerExtension(Extension):
  
         extension = event.source
 
+        from woost.controllers.notifications import notify_user
+        from woost.controllers.backoffice.basebackofficecontroller import \
+            BaseBackOfficeController
         from woost.controllers.backoffice.itemcontroller import \
             ItemController
 
@@ -57,13 +62,13 @@ class MailerExtension(Extension):
             useraction,
             strings
         )
-
+        from woost.extensions.mailer.mailing import Mailing, \
+            RunningMailingError
         from woost.extensions.mailer.sendemailcontroller import \
             SendEmailController
 
         ItemController.send_email = SendEmailController
 
-        Document.send_email_view = "woost.extensions.mailer.SendEmailView"
         Template.add_member(
             schema.Boolean(
                 "per_user_customizable",
@@ -72,6 +77,15 @@ class MailerExtension(Extension):
             )
         )
         Template.members_order.append("per_user_customizable")
+
+        @when(BaseBackOfficeController.exception_raised)
+        def handle_exception_raised(event):                                                                                                                                                                   
+            if isinstance(
+                event.exception,
+                RunningMailingError
+            ):  
+                notify_user(translations(event.exception), "error")
+                raise cherrypy.HTTPRedirect(event.source.contextual_uri())
     
         # Disable interactive features from rendered pages when rendering
         # static content
