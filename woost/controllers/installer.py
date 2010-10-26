@@ -305,6 +305,7 @@ class Installer(object):
                 "tools.encode.encoding": "utf-8",
                 "tools.decode.on": True,
                 "tools.decode.encoding": 'utf-8',
+                "tools.sessions.on": True,
                 "engine.autoreload_on": False
             }
         }
