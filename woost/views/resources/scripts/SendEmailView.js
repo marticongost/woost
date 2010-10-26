@@ -37,7 +37,7 @@ function update_progress(task_id, edit_stack) {
 
             jQuery(".mailing_info .progress").css("width", progress + "%");
             jQuery(".mailing_info .progress-text").text(progress + "%");
-            jQuery(".mailing_info .summary").html(cocktail.translate("woost.extensions.mailer.SendEmailView mailer summary").format((parseInt(data.sent) - parseInt(data.errors)), parseInt(data.total)));
+            jQuery(".mailing_info .summary").html(cocktail.translate("woost.extensions.mailer.SendEmailView mailer summary").format(parseInt(data.sent), parseInt(data.total)));
         }
     });
 }
