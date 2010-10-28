@@ -63,4 +63,14 @@ class LanguageSelector(LinkSelector):
                     else "/"),
             language = language
         )
+        
+    def create_entry_link(self, value, label):
 
+        link = LinkSelector.create_entry_link(self, value, label)
+        link["lang"] = value
+        link["hreflang"] = value
+        link["xml:lang"] = value
+        return link
+    
+
+        

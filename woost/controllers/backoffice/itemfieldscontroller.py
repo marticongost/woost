@@ -54,6 +54,15 @@ class ItemFieldsController(EditController):
             )
         )
 
+        # Remove translations
+        if deleted_translation:
+            translations.remove(deleted_translation)
+            for key, member in self.fields_schema.members().iteritems():
+                if member.translated:
+                    values = form_data.get(key)
+                    if values:
+                        values.pop(deleted_translation, None)
+        
         # Load form data from the request
         get_parameter(
             self.fields_schema,
@@ -66,24 +75,16 @@ class ItemFieldsController(EditController):
                         else "set_none"
         )
 
+        # Add translations
+        if added_translation and added_translation not in translations:        
+            translations.append(added_translation)
+        
         # Drop references
         unlink = cherrypy.request.params.get("ItemSelector-unlink")
 
         if unlink:
             form_data[unlink] = None
 
-        # Add/remove translations
-        if added_translation and added_translation not in translations:        
-            translations.append(added_translation)
-        
-        if deleted_translation:
-            translations.remove(deleted_translation)
-            for key, member in self.fields_schema.members().iteritems():
-                if member.translated:
-                    values = form_data.get(key)
-                    if values:
-                        values.pop(deleted_translation, None)
-        
         return form_data
 
     @cached_getter

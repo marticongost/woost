@@ -2,6 +2,7 @@
 
 <?py
 from cocktail.translations import translations
+from cocktail.html import html5_attr
 from cocktail.controllers import context
 from woost.models.standardpage import StandardPage
 ?>
@@ -30,7 +31,11 @@ from woost.models.standardpage import StandardPage
         method="post"
         py:schema="@{self.schema}"
         py:errors="@{self.errors}"
-        py:data="@{self.data}"/>
+        py:data="@{self.data}">
+        <py:cocktail.html.TextBox py:def="user_display">
+            <?py html5_attr(element, "autofocus", True) ?>
+        </py:cocktail.html.TextBox>
+    </py:cocktail.html.Form>
         
     <py:with py:element="self.login_form.submit_button" name="authenticate">
         <?py element.empty() ?>
