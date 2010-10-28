@@ -118,6 +118,7 @@ class Item(PersistentObject):
     )
 
     last_update_time = schema.DateTime(
+        indexed = True,
         versioned = False,
         editable = False,
         member_group = "administration"
