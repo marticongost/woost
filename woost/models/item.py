@@ -96,7 +96,8 @@ class Item(PersistentObject):
      # When validating unique members, ignore conflicts with the draft source
     def _counts_as_duplicate(self, other):
         return PersistentObject._counts_as_duplicate(self, other) \
-            and other is not self.draft_source
+            and other is not self.draft_source \
+            and self is not other.draft_source
 
     # Versioning
     #--------------------------------------------------------------------------
