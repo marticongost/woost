@@ -89,13 +89,6 @@ class File(Publishable):
             e.source.file_hash = None
             e.source.file_size = None
 
-    image_effects = schema.String(
-        visible = True,
-        listed_by_default = False,
-        searchable = False,
-        member_group = "content"
-    )
-
     @getter
     def file_path(self):
         

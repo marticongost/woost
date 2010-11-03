@@ -2667,12 +2667,6 @@ translations.define("File.local_path",
     en = u"Local file"
 )
 
-translations.define("File.image_effects",
-    ca = u"Efectes",
-    es = u"Efectos",
-    en = u"Effects"
-)
-
 translations.define("BackOfficeEditForm.upload",
     ca = u"Càrrega de fitxer",
     es = u"Carga de fichero",
