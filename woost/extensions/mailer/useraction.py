@@ -13,7 +13,7 @@ from woost.extensions.mailer.sendemailpermission import \
 
 
 class SendEmailAction(UserAction):
-    included = frozenset(["toolbar_extra", "item_buttons"])
+    included = frozenset(["item_buttons"])
     content_type = Mailing
 
     def is_permitted(self, user, target):
