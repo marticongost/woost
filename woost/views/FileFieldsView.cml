@@ -1,54 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <?py
-import time
 from cocktail.html import Element
-from cocktail.translations import translations
 from woost.models.publishable import get_category_from_mime_type
 from woost.models.file import get_human_readable_file_size
-from woost.controllers.imagescontroller import get_processors, ImagesController
 ?>
 
 <py:woost.views.BackOfficeFieldsView
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:py="http://www.whads.com/ns/cocktail/templates">
-
-    <py:ready>
-        <?py
-            parsed = []
-            resource_type = self.edited_item.resource_type
-            
-            if resource_type == "image":
-                self.add_resource("/resources/scripts/imageprocessors.js")
-
-                script = Element("script",type = "text/javascript")
-                
-                imageprocessors = get_processors()
-                processornames = []
-                for processor in imageprocessors:
-                    self.add_resource("/resources/scripts/imageprocessors-%s.js" % (processor))
-                    processornames.append(processor)
-                script.append("woost.imageprocessors.effects = ['%s'];\n" % ("','".join(processornames)))
-
-                if resource_type == 'image' and self.edited_item.image_effects:
-                    image_effects = self.edited_item.image_effects.split("/")
-                    for effect in image_effects:
-                        parsed.append(ImagesController()._parse_processor(effect))
-                
-                script.append("woost.imageprocessors.image = '/images/%s';\n" % self.edited_item.id)
-                script.append("woost.imageprocessors.stack = [\n")
-                processor_pairs = []
-                for processor in parsed:                    
-                    process = processor[0].func_name
-                    params = processor[0].func_code.co_varnames[1:processor[0].func_code.co_argcount]
-                    param_pairs = []                    
-                    for index,param in enumerate(params):
-                        param_pairs.append("\t\t'%s': %s" % (param, processor[1][index]))
-                    processor_pairs.append("\t['%s',{\n%s\n\t}]" % (process,",\n".join(param_pairs)))
-                script.append(",\n".join(processor_pairs))
-                script.append("\n]")
-                self.add_head_element(script)
-        ?>
-    </py:ready>
 
     <py:with py:element="self.body" enctype="multipart/form-data"/>
 
@@ -68,46 +27,16 @@ from woost.controllers.imagescontroller import get_processors, ImagesController
         </py:ready>
     </py:with>
 
-    <p py:def="upload_info">
+    <p py:def="upload_info" py:args="upload">
         <?py
-            mime_type = self.edited_item.mime_type
-            resource_type =  self.edited_item.resource_type
-            element.add_class("resource_type_" + resource_type)
-            element.add_class("mime_type_" + mime_type.replace("/", "_").replace(".", "_"))
-            if resource_type == 'image' and self.edited_item.image_effects:
-                parsed = []
-                image_effects = self.edited_item.image_effects.split("/")
-                for effect in image_effects:
-                    parsed.append(ImagesController()._parse_processor(effect))
+        mime_type = upload["mime_type"]
+        element.add_class("resource_type_" + get_category_from_mime_type(mime_type))
+        element.add_class("mime_type_" + mime_type.replace("/", "_").replace(".", "_"))
         ?>
-        <span class="file_name">${self.edited_item.file_name}</span>
+        <span class="file_name">${upload["file_name"]}</span>
         <span class="file_size">
-            ${get_human_readable_file_size(self.edited_item.file_size)}
+            ${get_human_readable_file_size(upload["file_size"])}
         </span>
-        <input class="edit_button" py:if="resource_type=='image'" value="${translations('Action edit')}" type="button" name="edit" />
-        <div class="file_image" py:if="resource_type=='image'" title="${self.edited_item.title}">
-            <?py
-                    self.add_resource("/resources/scripts/jquery.Jcrop.min.js")
-                    self.add_resource("/resources/scripts/BackOfficeFileView.js")
-                    self.add_resource("/resources/styles/jquery.Jcrop.css")
-                    src = "/images/%s" % (self.edited_item.id)
-                    if self.edited_item.image_effects:
-                        src += "/%s" % (self.edited_item.image_effects)
-            ?>
-            <div><img id="jcrop_target" src="${src}" /></div>
-            <div id="image_applicable_effects">
-                <ul py:if="self.edited_item.image_effects">
-                    <py:ready>
-                        <li class="${effect[0].func_name}" py:for="i,effect in enumerate(parsed)" title="">
-                            <?py
-                                element.add_class("even" if i % 2 else "odd")
-                            ?>
-                            <a href="javascript:;" rel="${str(i)}" class="${effect[0].func_name}_button stored">${effect[0].func_name}</a>
-                        </li>
-                    </py:ready>
-                </ul>
-            </div>
-        </div>
     </p>
 
 </py:woost.views.BackOfficeFieldsView>
