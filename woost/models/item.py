@@ -122,8 +122,7 @@ class Item(PersistentObject):
         indexed = True,
         versioned = False,
         editable = False,
-        member_group = "administration",
-        indexed = True
+        member_group = "administration"
     )
 
     is_draft = schema.Boolean(
