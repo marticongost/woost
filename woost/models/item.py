@@ -114,13 +114,15 @@ class Item(PersistentObject):
     creation_time = schema.DateTime(
         versioned = False,
         editable = False,
-        member_group = "administration"
+        member_group = "administration",
+        indexed = True
     )
 
     last_update_time = schema.DateTime(
         versioned = False,
         editable = False,
-        member_group = "administration"
+        member_group = "administration",
+        indexed = True
     )
 
     is_draft = schema.Boolean(
