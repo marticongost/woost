@@ -55,9 +55,9 @@ class UserModelsExtension(Extension):
 
         # Create extension objects the first time it is run
         if not e.source.installed:
-            controller = self._create_user_form_controller()
+            controller = e.source._create_user_form_controller()
             controller.insert()
-            template = self._create_user_form_template()
+            template = e.source._create_user_form_template()
             template.insert()
 
         # Make all existing user models available to the application
