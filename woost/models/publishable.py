@@ -236,7 +236,7 @@ class Publishable(Item):
         """Iterates over all the resources that apply to the item.        
         @type: L{Publishable}
         """
-        ancestry = []
+        ancestry = [self]
         document = self
         while document.parent is not None and document.inherit_resources:
             ancestry.append(document.parent)
