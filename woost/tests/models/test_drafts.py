@@ -98,3 +98,47 @@ class DraftTestCase(BaseTestCase):
         assert not draft in doc.drafts
         assert doc.get("title", "en") == "Modified test item"
 
+    def test_unique_validation_enabled_for_new_drafts(self):
+
+        from cocktail import schema
+        from cocktail.persistence.persistentobject import UniqueValueError
+        from woost.models import Item
+
+        class Foo(Item):
+            spam = schema.Integer(indexed = True, unique = True)
+ 
+        source = Foo()
+        source.spam = 4
+        source.insert()
+
+        foo = Foo()
+        foo.is_draft = True
+        foo.spam = 4
+
+        assert len([error 
+            for error in Foo.get_errors(foo) 
+            if isinstance(error, UniqueValueError)
+            and error.member is Foo.spam
+        ]) == 1
+
+        
+    def test_unique_validation_disabled_for_draft_copies(self):
+        
+        from cocktail import schema
+        from cocktail.persistence.persistentobject import UniqueValueError
+        from woost.models import Item
+
+        class Foo(Item):
+            spam = schema.Integer(indexed = True, unique = True)
+ 
+        source = Foo()
+        source.spam = 4
+        source.insert()
+
+        foo = source.make_draft()
+
+        assert len([error 
+            for error in Foo.get_errors(foo) 
+            if isinstance(error, UniqueValueError)
+            and error.member is Foo.spam
+        ]) == 0
