@@ -236,7 +236,7 @@ class Publishable(Item):
         """Iterates over all the resources that apply to the item.        
         @type: L{Publishable}
         """
-        ancestry = []
+        ancestry = [self]
         document = self
         while document.parent is not None and document.inherit_resources:
             ancestry.append(document.parent)
@@ -307,18 +307,20 @@ class IsPublishedExpression(Expression):
             
             # Publication min/max date
             now = datetime.now()
-                
+            snow = Publishable.start_date.get_index_value(now)
+            enow = Publishable.end_date.get_index_value(now)
+
             s = Publishable.start_date.index
             e = Publishable.end_date.index
 
             # No start date set, or the start date has been reached
             dataset.intersection_update(
-                s[None] | set(s.values(max = now))
+                s[None] | set(s.values(max = snow))
             )
             
             # No end date set, or the end date hasn't been reached yet
             dataset.intersection_update(
-                e[None] | set(e.values(min = now, excludemin = True))
+                e[None] | set(e.values(min = enow, excludemin = True))
             )
 
             return dataset
