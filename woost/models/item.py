@@ -39,6 +39,13 @@ class Item(PersistentObject):
         "owner"
     ]
 
+    # Enable full text indexing for all items (although the Item class itself
+    # doesn't provide any searchable text field by default, its subclasses may,
+    # or it may be extended; by enabling full text indexing at the root class,
+    # heterogeneous queries on the whole Item class will use available 
+    # indexes).
+    full_text_indexed = True
+
     # Extension property that indicates if content types should be visible from
     # the backoffice root view
     visible_from_root = True
@@ -92,6 +99,10 @@ class Item(PersistentObject):
         return PersistentObject._should_index_member(self, member) and (
             member.primary or self.draft_source is None
         )
+
+    def _should_index_member_full_text(self, member):
+        return PersistentObject._should_index_member_full_text(self, member) \
+            and self.draft_source is None
 
      # When validating unique members, ignore conflicts with the draft source
     def _counts_as_duplicate(self, other):

@@ -50,6 +50,7 @@ class File(Publishable):
     title = schema.String(
         indexed = True,
         normalized_index = True,
+        full_text_indexed = True,
         descriptive = True,
         translated = True,
         member_group = "content"

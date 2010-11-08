@@ -24,6 +24,7 @@ class Template(Item):
         unique = True,
         indexed = True,
         normalized_index = True,
+        full_text_indexed = True,
         descriptive = True,
         translated = True
     )
