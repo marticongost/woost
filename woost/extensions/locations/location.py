@@ -25,7 +25,8 @@ class Location(Item):
         descriptive = True,
         required = True,
         indexed = True,
-        normalized_index = True
+        normalized_index = True,
+        full_text_indexed = True
     )
 
     location_type = schema.String(
