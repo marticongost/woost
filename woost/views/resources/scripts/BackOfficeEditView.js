@@ -38,8 +38,13 @@ cocktail.bind(".BackOfficeEditView", function ($editView) {
             }
         });
 
+        var h = ed.settings["height"];
+        if (h == "undefined") {
+            h = 100 - ed.theme.deltaHeight
+        }
+
         if (String(o) == "undefined") {
-            o = Cookie.getHash("TinyMCE_" + ed.id + "_size") || {ch: 100 - ed.theme.deltaHeight, ci: 100};
+            o = Cookie.getHash("TinyMCE_" + ed.id + "_size") || {ch: h, ci: h + ed.theme.deltaHeight};
         }
 
         var c = DOM.get(ed.id + '_tbl');
