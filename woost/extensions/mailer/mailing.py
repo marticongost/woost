@@ -16,7 +16,7 @@ from cocktail.translations import translations, set_language
 from cocktail.persistence import datastore
 from cocktail.schema.exceptions import ValidationError
 from woost.models import (
-    Item, Role, Language, get_current_user, set_current_user
+    Site, Item, Role, Language, get_current_user, set_current_user
 )
 from woost.extensions.mailer.sendemailpermission import SendEmailPermission
 
@@ -207,7 +207,7 @@ class Mailing(Item):
                                 logger.info("%d - Server disconnected, reconnecting - %s" % (
                                     self.id, e
                                 ))
-                                smtp_server.connect(site.smtp_host, smtplib.SMTP_PORT)
+                                smtp_server.connect(Site.main.smtp_host, smtplib.SMTP_PORT)
                                 smtp_server.sendmail(self.sender, [email], message.as_string())
                         except Exception, e:
                             logger.exception("%d - %s (%s) - %s" % (
