@@ -11,6 +11,7 @@ from cocktail.translations import (
     get_language,
     set_language
 )
+from cocktail.controllers import try_decode
 from cocktail.controllers.parameters import set_cookie_expiration
 from woost.models import Site, Language
 from woost.controllers.module import Module
@@ -48,10 +49,7 @@ class LanguageModule(Module):
         qs = ""
 
         if path is None:
-            try:
-                path = unicode(cherrypy.request.path_info, "utf-8")
-            except UnicodeDecodeError:
-                path = unicode(cherrypy.request.path_info, "latin-1")
+            path = try_decode(cherrypy.request.path_info)
             qs = cherrypy.request.query_string
 
         if language is None:

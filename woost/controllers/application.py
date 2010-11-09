@@ -19,7 +19,12 @@ from cherrypy.lib.cptools import validate_since
 from pkg_resources import resource_filename, iter_entry_points
 from cocktail.events import Event, event_handler
 from cocktail.translations import get_language, set_language
-from cocktail.controllers import Dispatcher, Location, folder_publisher
+from cocktail.controllers import (
+    Dispatcher, 
+    Location, 
+    folder_publisher,
+    try_decode
+)
 from cocktail.controllers.percentencode import percent_encode
 from cocktail.persistence import datastore
 from woost.models import (
@@ -213,7 +218,7 @@ class CMS(BaseCMSController):
     
         site = Site.main
         request = cherrypy.request
-        unicode_path = [step.decode("utf8") for step in path]
+        unicode_path = [try_decode(step) for step in path]
 
         # Item resolution
         path_resolution = site.resolve_path(unicode_path)
