@@ -48,7 +48,10 @@ class LanguageModule(Module):
         qs = ""
 
         if path is None:
-            path = unicode(cherrypy.request.path_info, "utf-8")
+            try:
+                path = unicode(cherrypy.request.path_info, "utf-8")
+            except UnicodeDecodeError:
+                path = unicode(cherrypy.request.path_info, "latin-1")
             qs = cherrypy.request.query_string
 
         if language is None:
