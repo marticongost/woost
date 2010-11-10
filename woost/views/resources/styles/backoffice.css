@@ -414,6 +414,8 @@ body.modal {
     margin-left: 1em;
     color: rgb(75,75,75);
     font-size: 0.8em;
+    max-width: 38em;
+    text-align: justify;
 }
 
 .BackOfficeLayout .Form label {
