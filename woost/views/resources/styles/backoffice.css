@@ -237,6 +237,8 @@ body {
 
 .BackOfficeLayout .CodeMirror-wrapping {
     clear: left;
+    width: 45em !important;
+    height: 10em !important;
 }
 
 .BackOfficeLayout .TreeView .filtered {
