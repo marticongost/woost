@@ -198,6 +198,15 @@ def init_site(
                 ],
                 authorized = False
             ),
+
+            # Only administrators can see the CachePolicy model
+            ReadPermission(
+                matching_items = {
+                    "type": "woost.models.caching.CachingPolicy"                    
+                },
+                authorized = False
+            ),
+
             ReadMemberPermission(),
             ModifyMemberPermission(
                 matching_members = ["woost.models.item.Item.owner"],
@@ -412,11 +421,13 @@ def init_site(
         user_styles.hidden = True
         user_styles.path = u"user_styles"
         user_styles.mime_type = "text/css"
-        user_styles.caching_policy = CachingPolicy(
-            server_side_cache = True,
-            last_update_expression =
-                "from woost.models import Style\n"
-                "last_update = [publishable, latest(Style)]\n"
+        user_styles.caching_policies.append(
+            CachingPolicy(
+                server_side_cache = True,
+                last_update_expression =
+                    "from woost.models import Style\n"
+                    "last_update = [publishable, latest(Style)]\n"
+            )
         )
         set_translations(user_styles, "title", "User styles title")
         user_styles.insert()
