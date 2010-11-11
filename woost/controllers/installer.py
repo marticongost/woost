@@ -256,7 +256,7 @@ class Installer(object):
             if fname != "__init__.py":   
                 script = os.path.join(scripts_path, fname)
                 if os.path.isfile(script):
-                    os.chmod(script, 744)
+                    os.chmod(script, 0774)
 
     def _subprocess(self, cmd):
         # - Not used -
