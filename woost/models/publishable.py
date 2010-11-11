@@ -7,7 +7,6 @@
 @since:			January 2010
 """
 from datetime import datetime
-from cocktail.iteration import first
 from cocktail.modeling import getter
 from cocktail.events import event_handler
 from cocktail.pkgutils import import_object
@@ -48,7 +47,7 @@ class Publishable(Item):
         "translation_enabled",
         "start_date",
         "end_date",
-        "caching_policy"
+        "caching_policies"
     ]
 
     mime_type = schema.String(
@@ -173,8 +172,8 @@ class Publishable(Item):
         member_group = "publication"
     )
 
-    caching_policy = schema.Reference(
-        type = CachingPolicy,
+    caching_policies = schema.Collection(
+        items = schema.Reference(type = CachingPolicy),
         bidirectional = True,
         integral = True,
         related_end = schema.Reference(),
@@ -182,17 +181,17 @@ class Publishable(Item):
     )
 
     def get_effective_caching_policy(self, **context):
-        policy = self.caching_policy
+        
+        # Specific caching policies
+        for policy in self.caching_policies:
+            if policy.applies_to(self, **context):
+                return policy
 
         # Site-wide caching policies
-        if policy is None:
-            from woost.models.site import Site
-            return first(policy
-                         for policy in Site.main.caching_policies
-                         if policy.applies_to(self, **context))
-        
-        # Item defined caching policy
-        return policy if policy.applies_to(self, **context) else None 
+        from woost.models.site import Site
+        for policy in Site.main.caching_policies:
+            if policy.applies_to(self, **context):
+                return policy
 
     @event_handler
     def handle_changed(cls, event):
