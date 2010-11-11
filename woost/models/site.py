@@ -15,6 +15,7 @@ from woost.models.item import Item
 from woost.models.language import Language
 from woost.models.file import File
 from woost.models.publicationschemes import PathResolution
+from woost.models.caching import CachingPolicy
 
 
 class Site(Item):
@@ -39,6 +40,7 @@ class Site(Item):
         "smtp_user",
         "smtp_password",
         "publication_schemes",
+        "caching_policies",
         "triggers"
     ]
 
@@ -150,6 +152,13 @@ class Site(Item):
         bidirectional = True,
         integral = True,
         min = 1
+    )
+
+    caching_policies = schema.Collection(
+        items = schema.Reference(type = CachingPolicy),
+        bidirectional = True,
+        integral = True,
+        related_end = schema.Reference()
     )
 
     def __translate__(self, language, **kwargs):

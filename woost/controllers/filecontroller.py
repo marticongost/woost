@@ -9,13 +9,13 @@ u"""
 from cocktail.modeling import classgetter, DictWrapper
 import cherrypy
 from cocktail.controllers import serve_file
-from woost.controllers import BaseCMSController
+from woost.controllers.publishablecontroller import PublishableController
 
 
-class FileController(BaseCMSController):
+class FileController(PublishableController):
     """A controller that serves the files managed by the CMS."""
 
-    def __call__(self, disposition = "inline"):
+    def _produce_content(self, disposition = "inline"):
         file = self.context["publishable"]
         
         return serve_file(

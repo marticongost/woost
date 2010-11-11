@@ -9,7 +9,7 @@ from woost.controllers.notifications import pop_user_notifications
     py:collapsible="${True}">
 
     <?py
-    self.add_resource("/woost/scripts/NotificationBox.js")
+    self.add_resource("/resources/scripts/NotificationBox.js")
     ?>
 
     <py:ready>

@@ -1543,6 +1543,12 @@ translations.define("Site.publication_schemes",
     en = u"Publication schemes"
 )
 
+translations.define("Site.caching_policies",
+    ca = u"Polítiques de cache",
+    es = u"Políticas de cache",
+    en = u"Caching policies"
+)
+
 # PublicationScheme
 #------------------------------------------------------------------------------
 translations.define("PublicationScheme",
@@ -1673,6 +1679,134 @@ translations.define("DescriptiveIdPublicationScheme.format-explanation",
          u"<em>id</em> y <em>separator</em> como parámetros.",
     en = u"A python text formatting string that takes <em>title</em>, "
          u"<em>id</em> and <em>separator</em> parameters."
+)
+
+# CachingPolicy
+#------------------------------------------------------------------------------
+translations.define("CachingPolicy",
+    ca = u"Política de cache",
+    es = u"Política de cache",
+    en = u"Caching policy"
+)
+
+translations.define("CachingPolicy-plural",
+    ca = u"Polítiques de cache",
+    es = u"Políticas de cache",
+    en = u"Caching policies"
+)
+
+translations.define("CachingPolicy.description",
+    ca = u"Descripció",
+    es = u"Descripción",
+    en = u"Description"
+)
+
+translations.define("CachingPolicy.cache_enabled",
+    ca = u"Cache habilitat",
+    es = u"Cache habilitado",
+    en = u"Cache enabled"
+)
+
+translations.define("CachingPolicy.cache_enabled-explanation",
+    ca = u"Si s'habilita el cache, els elements sol·licitats pels usuaris "
+         u"només són reprocessats quan han estat modificats. Això millora "
+         u"notablement el rendiment, però per contra no garanteix que el "
+         u"contingut que es mostra estigui actualitzat a la última "
+         u"versió.",
+    es = u"Si se habilita el cache, los elementos solicitados por los "
+         u"usuarios solo son procesados si han sido modificados. Esto "
+         u"mejora notablemente el rendimiento, pero por contra no "
+         u"garantiza que el contenido que se muestra a los usuarios este "
+         u"actualizado a la última versión.",
+    en = u"Enabling caching for this item will cause the application to "
+         u"only process items if they have been modified. This can "
+         u"greatly increase performance, at the expense of being unable "
+         u"to guarantee that users are served the latest version of the "
+         u"content."
+)
+
+translations.define("CachingPolicy.server_side_cache",
+    ca = u"Cache de servidor habilitat",
+    es = u"Cache de servidor habilitado",
+    en = u"Server side cache enabled"
+)
+
+translations.define("CachingPolicy.server_side_cache-explanation",
+    ca = u"Habilitar per mantenir el contingut publicable de l'element "
+         u"en memòria. Això accelera el temps de resposta, però "
+         u"augmenta els recursos consumits per l'aplicació.",
+    es = u"Habilitar para mantener el contenido publicable del elemento "
+         u"en memoria. Esto acelera los tiempos de respuesta, pero "
+         u"aumenta los recursos consumidos por la aplicación.",
+    en = u"Enable to maintain the item's rendered content in memory. This "
+         u"minimizes response times, but increases the amount of memory "
+         u"consumed by the application."
+)
+
+translations.define("CachingPolicy.cache_expiration",
+    ca = u"Expiració del cache",
+    es = u"Expiración del cache",
+    en = u"Cache expiration"
+)
+
+translations.define("CachingPolicy.cache_expiration-explanation",
+    ca = u"Duració de les entrades al cache per aquest element, en minuts. "
+         u"Deixar en blanc per deshabilitar l'expiració automàtica.",
+    es = u"Duración de las entradas al cache para este elemento, en "
+         u"minutos. Dejar en blanco para deshabilitar la expiración "
+         u"automática.",
+    en = u"Maximum lifetime of cached content for this item. Leave blank "
+         u"to disable the automatic expiration of cached content."
+)
+
+translations.define("CachingPolicy.condition",
+    ca = u"Condició",
+    es = u"Condición",
+    en = u"Condition"
+)
+
+translations.define("CachingPolicy.condition-explanation",
+    ca = u"Una expressió que especifica les circumstàncies necessàries "
+         u"perquè s'apliqui aquesta política de cache.",
+    es = u"Una expresión que especifica las circunstancias necesarias "
+         u"para que se aplique esta política de cache.",
+    en = u"An expression describing the necessary conditions for this "
+         u"caching policy to be applied."
+)
+
+translations.define("CachingPolicy.cache_key_expression",
+    ca = u"Clau de cache",
+    es = u"Clave de cache",
+    en = u"Cache key"
+)
+
+translations.define("CachingPolicy.cache_key_expression-explanation",
+    ca = u"Una expressió que determina l'entrada al cache que correspon a la "
+         u"petició en curs. Deixar en blanc per utilitzar l'expressió per "
+         u"defecte.",
+    es = u"Una expresión que determina la entrada en cache que le "
+         u"corresponde a la petición en curso. Dejar en blanco para usar la "
+         u"expresión por defecto.",
+    en = u"An expression that designates which cache entry should be used by "
+         u"the active request. Leave blank to use the default expression."
+)
+
+translations.define("CachingPolicy.last_update_expression",
+    ca = u"Última modificació",
+    es = u"Última modificación",
+    en = u"Last update"
+)
+
+translations.define("CachingPolicy.last_update_expression-explanation",
+    ca = u"Una expressió que determina la data de la última modificació del "
+         u"document i el seu contingut relacionat. El contingut en cache "
+         u"anterior a aquesta data serà descartat automàticament.",
+    es = u"Una expresión que determina la fecha de la última modificación del "
+         u"documento y su contenido relacionado. El contenido en cache "
+         u"anterior a esta fecha será descartado automáticamente.",
+    en = u"An expression indicating the date of the latest revision of the "
+         u"document's content. Cached content older than this will be "
+         u"automatically discarded."
 )
 
 # Publishable
@@ -1831,6 +1965,23 @@ translations.define("Publishable.full_path",
     ca = u"Ruta completa",
     es = u"Ruta completa",
     en = u"Full path"
+)
+
+translations.define("Publishable.caching_policy",
+    ca = u"Política de cache",
+    es = u"Política de cache",
+    en = u"Caching policy"
+)
+
+translations.define("Publishable.caching_policy-explanation",
+    ca = u"Permet establir una política de cache específica per a "
+         u"l'element. Si es deixa en blanc s'utilitzarà la política general "
+         u"del lloc web.",
+    es = u"Permite establecer una política de cache específica para el "
+         u"elemento. Si se deja en blanco se utilizará la política general "
+         u"del sitio web.",
+    en = u"Sets a specific caching policy for this item. Leave blank to fall "
+         u"back to the site wide caching policy." 
 )
 
 # Page

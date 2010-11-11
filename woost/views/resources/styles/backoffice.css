@@ -237,6 +237,8 @@ body {
 
 .BackOfficeLayout .CodeMirror-wrapping {
     clear: left;
+    width: 45em !important;
+    height: 10em !important;
 }
 
 .BackOfficeLayout .TreeView .filtered {
@@ -412,6 +414,8 @@ body.modal {
     margin-left: 1em;
     color: rgb(75,75,75);
     font-size: 0.8em;
+    max-width: 38em;
+    text-align: justify;
 }
 
 .BackOfficeLayout .Form label {
@@ -2658,6 +2662,12 @@ a.pickcolor span {
 .TagCloudSelector div.selected label {    
     color: white;
     background-color: rgb(40,80,150);
+}
+
+/* Publishable edit styles
+-----------------------------------------------------------------------------*/
+.Publishable .cache_expiration_field .field_instance input.control {
+    width: 5em;
 }
 
 /* Trigger edit styles

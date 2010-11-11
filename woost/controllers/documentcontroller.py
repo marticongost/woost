@@ -9,10 +9,10 @@ u"""
 import cherrypy
 from cocktail.modeling import cached_getter
 from cocktail.controllers.renderingengines import get_rendering_engine
-from woost.controllers import BaseCMSController
+from woost.controllers.publishablecontroller import PublishableController
 
 
-class DocumentController(BaseCMSController):
+class DocumentController(PublishableController):
     """A controller that serves rendered pages."""
 
     @cached_getter
@@ -34,7 +34,7 @@ class DocumentController(BaseCMSController):
                 cherrypy.request.config.get("rendering.engine_options")
             )
         else:
-            return BaseCMSController.rendering_engine(self)
+            return PublishableController.rendering_engine(self)
 
     @cached_getter
     def view_class(self):
