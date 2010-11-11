@@ -1967,7 +1967,7 @@ translations.define("Publishable.full_path",
     en = u"Full path"
 )
 
-translations.define("Publishable.caching_policy",
+translations.define("Publishable.caching_policies",
     ca = u"Polítiques de cache",
     es = u"Políticas de cache",
     en = u"Caching policies"
