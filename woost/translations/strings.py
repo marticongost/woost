@@ -1968,9 +1968,9 @@ translations.define("Publishable.full_path",
 )
 
 translations.define("Publishable.caching_policy",
-    ca = u"Política de cache",
-    es = u"Política de cache",
-    en = u"Caching policy"
+    ca = u"Polítiques de cache",
+    es = u"Políticas de cache",
+    en = u"Caching policies"
 )
 
 translations.define("Publishable.caching_policy-explanation",
