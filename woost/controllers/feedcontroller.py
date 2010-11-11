@@ -18,12 +18,12 @@ from woost.models import (
     ReadPermission,
     get_current_user
 )
-from woost.controllers import BaseCMSController
+from woost.controllers.publishablecontroller import PublishableController
 
 
-class FeedController(BaseCMSController):
+class FeedController(PublishableController):
 
-    def __call__(self):
+    def _produce_content(self, **kwargs):
 
         site = Site.main
         cms = self.context["cms"]

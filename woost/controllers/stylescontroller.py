@@ -8,12 +8,12 @@
 """
 import cherrypy
 from woost.models import Style
-from woost.controllers import BaseCMSController
+from woost.controllers.publishablecontroller import PublishableController 
 
 
-class StylesController(BaseCMSController):
+class StylesController(PublishableController):
 
-    def __call__(self, backoffice = False):
+    def _produce_content(self, backoffice = False):
         
         for style in Style.select():
             declarations = (backoffice and style.admin_declarations) or style.declarations

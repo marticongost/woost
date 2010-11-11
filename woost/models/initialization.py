@@ -43,7 +43,8 @@ from woost.models import (
     DeleteTrigger,
     CustomTriggerResponse,
     ConfirmDraftPermission,
-    EmailTemplate
+    EmailTemplate,
+    CachingPolicy
 )
 
 standard_template_identifiers = {
@@ -411,6 +412,12 @@ def init_site(
         user_styles.hidden = True
         user_styles.path = u"user_styles"
         user_styles.mime_type = "text/css"
+        user_styles.caching_policy = CachingPolicy(
+            server_side_cache = True,
+            last_update_expression =
+                "from woost.models import Style\n"
+                "last_update = [publishable, latest(Style)]\n"
+        )
         set_translations(user_styles, "title", "User styles title")
         user_styles.insert()
 
