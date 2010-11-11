@@ -2664,6 +2664,12 @@ a.pickcolor span {
     background-color: rgb(40,80,150);
 }
 
+/* Publishable edit styles
+-----------------------------------------------------------------------------*/
+.Publishable .cache_expiration_field .field_instance input.control {
+    width: 5em;
+}
+
 /* Trigger edit styles
 -----------------------------------------------------------------------------*/
 .Trigger .condition_field .control {
