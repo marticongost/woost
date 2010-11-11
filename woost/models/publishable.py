@@ -15,7 +15,6 @@ from cocktail import schema
 from cocktail.schema.expressions import Expression
 from woost.models.item import Item
 from woost.models.usersession import get_current_user
-from woost.models.permission import ReadPermission
 from woost.models.permission import ReadPermission, PermissionExpression
 
 
