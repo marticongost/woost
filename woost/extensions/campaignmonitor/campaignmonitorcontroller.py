@@ -18,9 +18,9 @@ from woost.extensions.campaignmonitor import CampaignMonitorExtension
 
 class CampaignMonitorController(FormProcessor, DocumentController):
 
-    campaign_monitor_errors = None
-
     class SubscriptionForm(Form):
+
+        campaign_monitor_errors = None
 
         @cached_getter
         def model(self):

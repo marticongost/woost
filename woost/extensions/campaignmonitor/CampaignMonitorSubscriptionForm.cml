@@ -16,11 +16,11 @@ from cocktail.translations import translations
             <ul>
                 <li py:if="self.form.campaign_monitor_errors">${translations("woost.extensions.campaignmonitor.CampaignMonitorSubscriptionView api error")}</li>
                 <py:block py:if="not self.form.campaign_monitor_errors">
-                    <py:block py:for="member in self.schema.ordered_members()">
-                        <li py:for="error in self.errors.in_member(member)">${translations(error)}</li>
+                    <py:block py:for="member in self.form.schema.ordered_members()">
+                        <li py:for="error in self.form.errors.in_member(member)">${translations(error)}</li>
                     </py:block>
-                    <py:block py:for="error in self.errors">                    
-                        <li py:if="error.member not in self.schema.ordered_members()">${translations(error)}</li>
+                    <py:block py:for="error in self.form.errors">                    
+                        <li py:if="error.member not in self.form.schema.ordered_members()">${translations(error)}</li>
                     </py:block> 
                 </py:block>
             </ul> 
@@ -29,14 +29,14 @@ from cocktail.translations import translations
     
     <py:cocktail.html.Form
         py:id="subscription_form"
-        py:data="@{self.data}"
-        py:schema="@{self.schema}"
-        py:errors="@{self.errors}"
+        py:data="@{self.form.data}"
+        py:schema="@{self.form.schema}"
+        py:errors="@{self.form.errors}"
         method="post">
 
         <py:ready>
             <?py
-            member = self.schema.get_member("list")
+            member = self.form.schema.get_member("list")
             lists = member.resolve_constraint(member.enumeration, None)
             if len(lists) <= 1:
                 element.list_field.release()
