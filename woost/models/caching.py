@@ -88,13 +88,16 @@ class CachingPolicy(Item):
 
     def get_content_cache_key(self, publishable, **context):
 
-        context["publishable"] = publishable
-
         cache_key = (publishable.id,)
         key_qualifier = None
         
-        if self.cache_key_expression:
-            key_qualifier = eval(self.cache_key_expression, context)
+        expression = self.cache_key_expression
+
+        if expression:
+            expression = expression.replace("\r", "")
+            context["publishable"] = publishable
+            exec expression in context
+            key_qualifier = context.get("cache_key")
         else:
             request = context.get("request")
             if request:
