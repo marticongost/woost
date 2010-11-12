@@ -20,6 +20,7 @@ class CachingPolicy(Item):
     groups_order = ["cache"]
     members_order = [
         "description",
+        "important",
         "cache_enabled",
         "server_side_cache",
         "cache_expiration",
@@ -32,6 +33,11 @@ class CachingPolicy(Item):
         descriptive = True,
         translated = True,
         listed_by_default = False
+    )
+
+    important = schema.Boolean(
+        required = True,
+        default = False
     )
 
     cache_enabled = schema.Boolean(

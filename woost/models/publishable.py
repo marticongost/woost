@@ -182,14 +182,19 @@ class Publishable(Item):
 
     def get_effective_caching_policy(self, **context):
         
-        # Specific caching policies
-        for policy in self.caching_policies:
-            if policy.applies_to(self, **context):
-                return policy
+        from woost.models import Site
 
-        # Site-wide caching policies
-        from woost.models.site import Site
-        for policy in Site.main.caching_policies:
+        policies = [
+            ((-policy.important, 1), policy)
+            for policy in self.caching_policies
+        ]
+        policies.extend(
+            ((-policy.important, 2), policy)
+            for policy in Site.main.caching_policies
+        )
+        policies.sort()
+
+        for criteria, policy in policies:
             if policy.applies_to(self, **context):
                 return policy
 
