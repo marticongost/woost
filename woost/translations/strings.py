@@ -1701,6 +1701,18 @@ translations.define("CachingPolicy.description",
     en = u"Description"
 )
 
+translations.define("CachingPolicy.important",
+    ca = u"Important",
+    es = u"Importante",
+    en = u"Important"
+)
+
+translations.define("CachingPolicy.important-explanation",
+    ca = u"Indica que la regla s'aplica abans que la resta.",
+    es = u"Indica que la regla se aplica antes que el resto.",
+    en = u"Indicates that this rule should be applied before the rest."
+)
+
 translations.define("CachingPolicy.cache_enabled",
     ca = u"Cache habilitat",
     es = u"Cache habilitado",
