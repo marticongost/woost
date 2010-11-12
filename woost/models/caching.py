@@ -15,6 +15,7 @@ class CachingPolicy(Item):
     # TODO: combine per type filtering with a per item condition
 
     visible_from_root = False
+    edit_form = "woost.views.CachingPolicyForm"
 
     groups_order = ["cache"]
     members_order = [
@@ -22,9 +23,9 @@ class CachingPolicy(Item):
         "cache_enabled",
         "server_side_cache",
         "cache_expiration",
-        "condition",
+        "last_update_expression",
         "cache_key_expression",
-        "last_update_expression"
+        "condition"
     ]
 
     description = schema.String(
