@@ -6,6 +6,7 @@ u"""
 import os
 from datetime import datetime
 from cocktail import schema
+from cocktail.persistence import datastore, PersistentMapping
 from cocktail.html.datadisplay import display_factory
 from woost.models.item import Item
 
@@ -138,18 +139,45 @@ class CachingPolicy(Item):
             
             return value
 
+        # Per model cache invalidation
+        cache_expiration = datastore.root.get("woost.cache_expiration")
+        dates = []
+        
+        if cache_expiration:
+            for cls in publishable.__class__.__mro__:
+                if cls is Item:
+                    break
+                dates.append(cache_expiration.get(cls.full_name))
+
+        # Custom expression
         expression = self.last_update_expression
         if expression:
             expression = expression.replace("\r", "")
             exec expression in context
-            last_update = context.get("last_update")
-            return normalize_date(last_update)
+            dates.append(context.get("last_update"))
+
+        # By default, only check the item's own last update date
         else:
-            return publishable.last_update_time
+            dates.append(publishable.last_update_time)
+
+        return normalize_date(dates)
 
 
 # Utility functions for last update expressions
 #------------------------------------------------------------------------------
+
+def expire_cache(cls = None):
+
+    if cls is None:
+        from woost.models.publishable import Publishable as cls
+
+    cache_expiration = datastore.root.get("woost.cache_expiration")
+
+    if cache_expiration is None:
+        cache_expiration = PersistentMapping()
+        datastore.root["woost.cache_expiration"] = cache_expiration
+
+    cache_expiration[cls.full_name] = datetime.now()
 
 def latest(selectable, *args, **kwargs):
     return (

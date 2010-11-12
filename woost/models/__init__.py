@@ -147,5 +147,5 @@ from woost.models.userfilter import (
     TypeFilter
 )
 
-from woost.models.caching import CachingPolicy
+from woost.models.caching import CachingPolicy, expire_cache
 
