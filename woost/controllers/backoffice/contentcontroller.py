@@ -393,11 +393,16 @@ class ContentController(BaseBackOfficeController):
         cd = 'attachment; filename="%s"' % (
             translations(self.user_collection.type.name + "-plural") + ".xls"
         )
+        languages = self.params.read(
+            schema.Collection("language", items = schema.String())
+        )
 
         cherrypy.response.headers['Content-Type'] = content_type
         cherrypy.response.headers["Content-Disposition"] = cd
 
         buffer = StringIO()
-        self.user_collection.export_file(buffer, mime_type = content_type)
+        self.user_collection.export_file(
+            buffer, mime_type = content_type, languages = languages
+        )
         return buffer.getvalue()
 
