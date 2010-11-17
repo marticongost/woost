@@ -69,7 +69,9 @@ from woost.models import Site, Publishable, Language
     <py:ready>
         <?py
         if self.body_end_html:
-            self.add_body_end_element(Content(self.body_end_html))
+            @self.when_document_ready
+            def add_body_end_html(document):
+                document.body.append(self.body_end_html)
 
         publishable = self.publishable
 
