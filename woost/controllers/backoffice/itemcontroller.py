@@ -95,10 +95,11 @@ class ItemController(BaseBackOfficeController):
             raise cherrypy.NotFound()
 
         # Restrict access
-        get_current_user().require_permission(
-            ReadPermission,
-            target = controller.stack_node.item
-        )
+        if controller.stack_node.item.is_inserted:
+            get_current_user().require_permission(
+                ReadPermission,
+                target = controller.stack_node.item
+            )
     
     def _require_edit_node(self):
 
