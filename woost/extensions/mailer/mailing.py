@@ -207,6 +207,27 @@ class Mailing(Item):
                                 logger.info("%d - Server disconnected, reconnecting - %s" % (
                                     self.id, e
                                 ))
+                                # smtplib bug
+                                # SMTP.quit() doesn't clear the HELO/EHLO
+                                # attributes, so on the next connection these
+                                # commands weren't sent.
+                                # http://bugs.python.org/issue4142
+                                smtp_server.helo_resp = None
+                                smtp_server.ehlo_resp = None
+                                smtp_server.connect(Site.main.smtp_host, smtplib.SMTP_PORT)
+                                smtp_server.sendmail(self.sender, [email], message.as_string())
+                            except smtplib.SMTPSenderRefused, e:
+                                logger.info("%d - Maximum number of messages per connection reached, reconnecting - %s" % (
+                                    self.id, e
+                                ))
+                                smtp_server.quit()
+                                # smtplib bug
+                                # SMTP.quit() doesn't clear the HELO/EHLO
+                                # attributes, so on the next connection these
+                                # commands weren't sent.
+                                # http://bugs.python.org/issue4142
+                                smtp_server.helo_resp = None
+                                smtp_server.ehlo_resp = None
                                 smtp_server.connect(Site.main.smtp_host, smtplib.SMTP_PORT)
                                 smtp_server.sendmail(self.sender, [email], message.as_string())
                         except Exception, e:
