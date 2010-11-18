@@ -7,6 +7,7 @@ from __future__ import with_statement
 from types import GeneratorType
 from threading import Lock
 from time import time, mktime
+from hashlib import md5
 import cherrypy
 from cherrypy.lib import cptools, http
 from woost.controllers import BaseCMSController
@@ -50,34 +51,35 @@ class PublishableController(BaseCMSController):
             "controller": self
         }
         policy = publishable.get_effective_caching_policy(**caching_context)
-        
+
         if policy is not None and policy.cache_enabled:
-        
+
+            # Find the unique cache identifier for the requested content
+            cache_key = policy.get_content_cache_key(
+                publishable,
+                **caching_context
+            )
+
             # Find the last time that the requested element (or its related
             # content) was modified
             content_last_update = policy.get_content_last_update(
                 publishable,
                 **caching_context
             )
-
-            timestamp = None
-
+            
             # Client side cache
+            timestamp = None
+            
             if content_last_update:
-
                 timestamp = mktime(content_last_update.timetuple())
-
-                cherrypy.response.headers["Last-Modified"] = \
-                    http.HTTPDate(timestamp)
-
-                cptools.validate_since()
+                etag_hash = md5()
+                etag_hash.update(repr(cache_key))
+                etag_hash.update(repr(timestamp))
+                response.headers["ETag"] = etag_hash.hexdigest()
+                cptools.validate_etags()
 
             # Server side cache
             if policy.server_side_cache:
-
-                cache_key = policy.get_content_cache_key(
-                    publishable,
-                    **caching_context)
                 
                 cached_response = \
                     self._get_cached_content(cache_key, policy, timestamp)
@@ -115,16 +117,7 @@ class PublishableController(BaseCMSController):
                 if expired or not current:
                     del self.__class__._cached_responses[cache_key]
                     cached_response = None
-
-        # If there was no known last modification date for the content, rely on
-        # the creation time of its cache entry for client side caching
-        if cache_entry is not None \
-        and cached_response is not None \
-        and "Last-Modified" not in cherrypy.response.headers:
-            cherrypy.response.headers["Last-Modified"] = \
-                http.HTTPDate(entry_creation_time)
-            cptools.validate_since()
-
+        
         return cached_response
 
     def _produce_cached_content(self, cache_key, **kwargs):
@@ -148,12 +141,6 @@ class PublishableController(BaseCMSController):
         cached_response = (headers, content)
         self.__class__._cached_responses[cache_key] = \
             (entry_creation_time, cached_response)
-
-        # If there was no known last modification date for the content, rely on
-        # the creation time of this cache entry for client side caching
-        if "Last-Modified" not in cherrypy.response.headers:
-            cherrypy.response.headers["Last-Modified"] = \
-                http.HTTPDate(entry_creation_time)
 
         return content
 
