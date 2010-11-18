@@ -1068,12 +1068,6 @@ translations.define("woost.views.ContentTable search header",
     en = u"Filters"
 )
 
-translations.define("woost.views.ContentTable remove grouping",
-    ca = u"Treure agrupació",
-    es = u"Quitar agrupación",
-    en = u"Remove grouping"
-)
-
 # Content views
 #------------------------------------------------------------------------------
 translations.define("View as",
