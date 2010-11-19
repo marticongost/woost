@@ -10,13 +10,17 @@ import sys
 from threading import Condition
 from PyQt4.QtCore import QObject, QUrl, SIGNAL
 from PyQt4.QtGui import QApplication, QPrinter
+from PyQt4.QtNetwork import QNetworkRequest
 from PyQt4.QtWebKit import QWebView
  
 def renderpdf(url, dest):
 
     app = QApplication(sys.argv)
     web = QWebView()
-    web.load(QUrl(url))
+
+    request = QNetworkRequest(QUrl(url))
+    request.setRawHeader("X-Rendering-PDF", "true")
+    web.load(request)
 
     printer = QPrinter()
     printer.setPageSize(QPrinter.A4)
