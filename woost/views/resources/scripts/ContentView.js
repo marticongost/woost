@@ -73,5 +73,10 @@ cocktail.bind(".ContentView", function ($contentView) {
                 filterBox.addUserFilter(this.filterId);
             });
     }
+
+    // Reset page value when a new search is done
+    $contentView.find(".search_button").click(function () {
+        $contentView.find("input[name=page]").val("0");
+    });
 });
 

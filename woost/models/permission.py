@@ -390,6 +390,10 @@ class PermissionExpression(Expression):
             )):
                 permission_query = permission.select_items()
 
+                if query.verbose:
+                    permission_query.verbose = True
+                    permission_query.nesting = query.nesting + 1
+
                 if issubclass(queried_type, permission_query.type) \
                 or issubclass(permission_query.type, queried_type):
 
