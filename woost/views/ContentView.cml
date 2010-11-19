@@ -218,6 +218,8 @@ from woost.controllers.backoffice.editstack import SelectionNode
                     @refine(tree)
                     def get_item_url(tree, content_type):
                         url = "?type=" + content_type.full_name
+                        # Clear filters
+                        url += "&filter="
                         if self.edit_stack:
                             url += "&edit_stack=" + self.edit_stack.to_param()
                         return url
