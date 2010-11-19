@@ -11,6 +11,10 @@ cocktail.bind({
     selector: ".BackOfficeLayout",
     behavior: function ($layout) {
 
+        // Disable browser's in-memory caching due to problems going backward 
+        // and forward between visited pages
+        jQuery(window).unload(function() {});
+
         // Keep alive the current edit_stack
         if (this.edit_stack)
             setTimeout("keepalive('" + this.edit_stack + "')", 300000);
