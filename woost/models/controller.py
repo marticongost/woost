@@ -26,7 +26,8 @@ class Controller(Item):
     )
 
     python_name = schema.String(
-        required = True
+        required = True,
+        text_search = False
     )
 
     published_items = schema.Collection(

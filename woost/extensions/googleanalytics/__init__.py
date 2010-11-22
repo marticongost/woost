@@ -51,7 +51,8 @@ class GoogleAnalyticsExtension(Extension):
     last_update = None
 
     account = schema.String(
-        required = True
+        required = True,
+        text_search = False
     )
 
     @event_handler

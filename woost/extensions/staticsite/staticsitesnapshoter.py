@@ -92,6 +92,7 @@ class WgetSnapShoter(StaticSiteSnapShoter):
     file_names_mode = schema.String(                                          
         required = True,
         default = "unix",
+        text_search = False,
         enumeration = frozenset(("unix", "windows")),
         translate_value = lambda value, **kwargs:    
             u"" if not value else translations(

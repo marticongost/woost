@@ -33,11 +33,13 @@ class Template(Item):
         required = True,
         unique = True,
         indexed = True,
-        max = 255
+        max = 255,
+        text_search = False
     )
 
     engine = schema.String(
-        enumeration = buffet.available_engines.keys()
+        enumeration = buffet.available_engines.keys(),
+        text_search = False
     )
 
     documents = schema.Collection(

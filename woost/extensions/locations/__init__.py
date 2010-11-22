@@ -91,7 +91,8 @@ class LocationsExtension(Extension):
 
     service_uri = schema.String(
         required = True,
-        default = "http://services.woost.info/locations"
+        default = "http://services.woost.info/locations",
+        text_search = False
     )
 
     update_frequency = schema.Integer(
@@ -117,7 +118,8 @@ class LocationsExtension(Extension):
                     language,
                     **kwargs
                 )
-        )
+        ),
+        text_search = False
     )
 
     updated_subset = schema.Collection(

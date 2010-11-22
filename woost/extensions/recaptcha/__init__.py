@@ -108,14 +108,16 @@ class ReCaptchaExtension(Extension):
         ReCaptchaExtension.add_member(
             schema.String(
                 "public_key",
-                required = True
+                required = True,
+                text_search = False
             )   
         )
 
         ReCaptchaExtension.add_member(
             schema.String(
                 "private_key",
-                required = True
+                required = True,
+                text_search = False
             )   
         )
 
@@ -126,7 +128,8 @@ class ReCaptchaExtension(Extension):
                 enumeration = (
                     "red", "white", "blackglass", "clean", "custom"
                 ),
-                default = "red"
+                default = "red",
+                text_search = False
             )   
         )
 
@@ -134,7 +137,8 @@ class ReCaptchaExtension(Extension):
             schema.String(
                 "custom_theme_widget",
                 exclusive = ReCaptchaExtension.theme.equal("custom"),
-                member_group = "custom_group"
+                member_group = "custom_group",
+                text_search = False
             )   
         )  
 
@@ -143,7 +147,8 @@ class ReCaptchaExtension(Extension):
                 "custom_template",
                 exclusive = ReCaptchaExtension.theme.equal("custom"),
                 member_group = "custom_group",
-                default = "woost.extensions.recaptcha.RecaptchaCustomView"
+                default = "woost.extensions.recaptcha.RecaptchaCustomView",
+                text_search = False
             )   
         )
 

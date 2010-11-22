@@ -19,7 +19,8 @@ class Language(Item):
     iso_code = schema.String(
         required = True,
         unique = True,
-        max = 64
+        max = 64,
+        text_search = False
     )
     
     fallback = schema.Reference(

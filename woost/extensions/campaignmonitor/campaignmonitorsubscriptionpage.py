@@ -47,6 +47,7 @@ class CampaignMonitorSubscriptionPage(Document):
     subscription_form = schema.String(
         member_group = "content",
         default = \
-            "woost.extensions.campaignmonitor.subscriptionform.SubscriptionForm"
+            "woost.extensions.campaignmonitor.subscriptionform.SubscriptionForm",
+        text_search = False
     )
 

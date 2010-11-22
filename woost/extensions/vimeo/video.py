@@ -140,6 +140,7 @@ class VimeoVideo(Publishable):
         required = True,
         indexed = True,
         editable = False,
+        text_search = False,
         listed_by_default = False
     )
 

@@ -113,6 +113,7 @@ class UserMember(Item):
         required = True,
         format = r"^[a-zA-Z][a-zA-Z0-9_]*$",
         listed_by_default = False,
+        text_search = False,
         member_group = "definition"
     )
 
@@ -149,6 +150,7 @@ class UserMember(Item):
             "cocktail.html.CodeEditor", syntax = "python"
         ),
         listed_by_default = False,
+        text_search = False,
         member_group = "code"
     )
 
@@ -168,6 +170,7 @@ class UserMember(Item):
 
     member_member_group = schema.String(
         listed_by_default = False,
+        text_search = False,
         member_group = "behavior"
     )
 
@@ -188,6 +191,7 @@ class UserMember(Item):
     member_edit_control = schema.String(
         listed_by_default = False,
         member_group = "behavior",
+        text_search = False,
         translate_value = lambda value, language = None, **kwargs:
             translations(
                 "woost.extensions.usermodels.auto-control",
@@ -206,6 +210,7 @@ class UserMember(Item):
     member_search_control = schema.String(
         listed_by_default = False,
         member_group = "behavior",
+        text_search = False,
         translate_value = lambda value, language = None, **kwargs:
             translations(
                 "woost.extensions.usermodels.auto-control",
@@ -460,6 +465,7 @@ class UserString(UserMember):
 
     member_format = schema.String(
         listed_by_default = False,
+        text_search = False,
         member_group = "constraints"
     )
 
@@ -564,6 +570,7 @@ class UserRelation(UserMember):
 
     member_related_key = schema.String(
         listed_by_default = False,
+        text_search = False,
         member_group = "definition"        
     )
 
@@ -699,6 +706,7 @@ class UserModel(UserMember):
         default = "woost.models",
         format = r"[a-zA-Z][a-zA-Z0-9_]*(\.[a-zA-Z][a-zA-Z0-9_]*)*",
         listed_by_default = False,
+        text_search = False,
         member_group = "definition"
     )
 

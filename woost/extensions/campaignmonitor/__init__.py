@@ -88,14 +88,16 @@ class CampaignMonitorExtension(Extension):
         CampaignMonitorExtension.add_member(
             schema.String(
                 "api_key",
-                required = True
+                required = True,
+                text_search = False
             )
         )
 
         CampaignMonitorExtension.add_member(
             schema.String(
                 "client_id",
-                required = True
+                required = True,
+                text_search = False
             )
         )
 

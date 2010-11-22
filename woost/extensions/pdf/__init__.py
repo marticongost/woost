@@ -60,7 +60,8 @@ class PDFExtension(Extension):
     command = schema.String(
         required = True,
         default = u"python -m woost.extensions.pdf.renderpdf "
-                  u"%(url)s %(output_file)s"
+                  u"%(url)s %(output_file)s",
+        text_search = False
     )
 
     @event_handler
