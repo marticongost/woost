@@ -78,12 +78,14 @@ class Publishable(Item):
                 **kwargs
             ),
         listed_by_default = False,
+        text_search = False,
         member_group = "presentation"
     )
 
     encoding = schema.String(
         listed_by_default = False,
         member_group = "presentation",
+        text_search = False,
         default = "utf-8"
     )
 
@@ -117,6 +119,7 @@ class Publishable(Item):
         max = 1024,
         indexed = True,
         listed_by_default = False,
+        text_search = False,
         member_group = "navigation"
     )
 
@@ -124,6 +127,7 @@ class Publishable(Item):
         indexed = True,
         unique = True,
         editable = False,
+        text_search = False,
         member_group = "navigation"
     )
     

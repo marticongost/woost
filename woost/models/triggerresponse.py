@@ -66,7 +66,8 @@ class CustomTriggerResponse(TriggerResponse):
         required = True,
         edit_control = display_factory(
             "cocktail.html.CodeEditor", syntax = "python"
-        )
+        ),
+        text_search = False
     )
 
     def execute(self, items, user, batch = False, **context):

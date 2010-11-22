@@ -29,6 +29,7 @@ class Country(Item):
         unique = True,
         required = True,
         indexed = True,
-        format = re.compile(r"^[a-z]{2}$")
+        format = re.compile(r"^[a-z]{2}$"),
+        text_search = False
     )
 

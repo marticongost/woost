@@ -49,7 +49,8 @@ class StaticSiteDestination(Item):
 
     encoding = schema.String(
         required = True,
-        default = "utf-8"
+        default = "utf-8",
+        text_search = False
     )
 
 
@@ -358,7 +359,8 @@ class FolderDestination(StaticSiteDestination):
     target_folder = schema.String(
         required = True,
         unique = True,
-        descriptive = True
+        descriptive = True,
+        text_search = False
     )
 
     def create_folder(self, folder, context):
@@ -403,15 +405,23 @@ class FTPDestination(StaticSiteDestination):
         "ftp_path"
     ]
 
-    ftp_host = schema.String(required = True)
-
-    ftp_user = schema.String()
-
-    ftp_password = schema.String(
-        edit_control = "cocktail.html.PasswordBox"
+    ftp_host = schema.String(
+        required = True,
+        text_search = False
     )
 
-    ftp_path = schema.String()
+    ftp_user = schema.String(
+        text_search = False
+    )
+
+    ftp_password = schema.String(
+        edit_control = "cocktail.html.PasswordBox",
+        text_search = False
+    )
+
+    ftp_path = schema.String(
+        text_search = False
+    )
 
     def __translate__(self, language, **kwargs):
 

@@ -93,6 +93,7 @@ class Feed(Publishable):
         edit_control = display_factory(
             "cocktail.html.CodeEditor", syntax = "python"
         ),
+        text_search = False,
         member_group = "feed_items"
     )
 
@@ -103,6 +104,7 @@ class Feed(Publishable):
         edit_control = display_factory(
             "cocktail.html.CodeEditor", syntax = "python"
         ),
+        text_search = False,
         member_group = "feed_items"
     )
 
@@ -113,6 +115,7 @@ class Feed(Publishable):
         edit_control = display_factory(
             "cocktail.html.CodeEditor", syntax = "python"
         ),
+        text_search = False,
         member_group = "feed_items"
     )
 
@@ -123,6 +126,7 @@ class Feed(Publishable):
         edit_control = display_factory(
             "cocktail.html.CodeEditor", syntax = "python"
         ),
+        text_search = False,
         member_group = "feed_items"
     )
 

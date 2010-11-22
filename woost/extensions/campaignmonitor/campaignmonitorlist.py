@@ -36,7 +36,8 @@ class CampaignMonitorList(Item):
 
     list_id = schema.String(
         unique = True,
-        editable = False
+        editable = False,
+        text_search = False
     )
 
     unsubscribe_page = schema.Reference(

@@ -85,7 +85,8 @@ class Trigger(Item):
                 "woost.models.Trigger.execution_point " + value,
                 language,
                 **kwargs
-            )
+            ),
+        text_search = False
     )
 
     batch_execution = schema.Boolean(
@@ -118,7 +119,8 @@ class Trigger(Item):
             "cocktail.html.CodeEditor",
             syntax = "python",
             cols = 80
-        )
+        ),
+        text_search = False
     )
      
     def match(self, user, verbose = False, **context):
