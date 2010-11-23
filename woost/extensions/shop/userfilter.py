@@ -30,6 +30,7 @@ class ShopOrderCostFilter(UserFilter):
                 required = True,
                 default = "eq",
                 enumeration = self.operators,
+                text_search = False,
                 translate_value = lambda value, language = None, **kwargs:
                     "" if not value
                     else translations(

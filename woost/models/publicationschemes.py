@@ -189,12 +189,14 @@ class DescriptiveIdPublicationScheme(PublicationScheme):
 
     id_separator = schema.String(
         required = True,
-        default = "_"
+        default = "_",
+        text_search = False
     )
 
     word_separator = schema.String(
         required = True,
-        default = "-"
+        default = "-",
+        text_search = False
     )
 
     id_regexp = schema.Member(
@@ -219,7 +221,8 @@ class DescriptiveIdPublicationScheme(PublicationScheme):
 
     format = schema.String(
         required = True,
-        default = "%(title)s%(separator)s%(id)d"
+        default = "%(title)s%(separator)s%(id)d",
+        text_search = False
     )
 
     _uri_encodings = ["utf-8", "iso-8859-1"]

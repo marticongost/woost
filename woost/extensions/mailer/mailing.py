@@ -176,7 +176,7 @@ class Mailing(Item):
 
         return body
 
-    def send(self, smtp_server, current_context):
+    def send(self, smtp_server, template_values, current_context):
 
         if not self.id in tasks:
             current_user = get_current_user()
@@ -188,24 +188,26 @@ class Mailing(Item):
                 datastore.commit()
 
             def process():
+                mailing = Mailing.get_instance(self.id)
+                mailing._v_template_values = template_values.copy()
                 logger.info("%d - Mailing started by user %s (%s)" % (
-                    self.id, current_user, current_user.email
+                    mailing.id, current_user, current_user.email
                 ))
 
                 set_current_user(current_user)
-                set_language(self.language.iso_code)
+                set_language(mailing.language.iso_code)
                 context.update(current_context)
-                self.status = MAILING_STARTED
+                mailing.status = MAILING_STARTED
                 processed_emails = 0
                 try:
-                    for email, receiver in self.pending.items():
+                    for email, receiver in mailing.pending.items():
                         try:                
-                            message = self._get_message(receiver)
+                            message = mailing._get_message(receiver)
                             try:
-                                smtp_server.sendmail(self.sender, [email], message.as_string())
+                                smtp_server.sendmail(mailing.sender, [email], message.as_string())
                             except smtplib.SMTPServerDisconnected, e:
                                 logger.info("%d - Server disconnected, reconnecting - %s" % (
-                                    self.id, e
+                                    mailing.id, e
                                 ))
                                 # smtplib bug
                                 # SMTP.quit() doesn't clear the HELO/EHLO
@@ -215,10 +217,10 @@ class Mailing(Item):
                                 smtp_server.helo_resp = None
                                 smtp_server.ehlo_resp = None
                                 smtp_server.connect(Site.main.smtp_host, smtplib.SMTP_PORT)
-                                smtp_server.sendmail(self.sender, [email], message.as_string())
+                                smtp_server.sendmail(mailing.sender, [email], message.as_string())
                             except smtplib.SMTPSenderRefused, e:
                                 logger.info("%d - Maximum number of messages per connection reached, reconnecting - %s" % (
-                                    self.id, e
+                                    mailing.id, e
                                 ))
                                 smtp_server.quit()
                                 # smtplib bug
@@ -229,40 +231,45 @@ class Mailing(Item):
                                 smtp_server.helo_resp = None
                                 smtp_server.ehlo_resp = None
                                 smtp_server.connect(Site.main.smtp_host, smtplib.SMTP_PORT)
-                                smtp_server.sendmail(self.sender, [email], message.as_string())
+                                smtp_server.sendmail(mailing.sender, [email], message.as_string())
                         except Exception, e:
                             logger.exception("%d - %s (%s) - %s" % (
-                                self.id, receiver, email, e
+                                mailing.id, receiver, email, e
                             ))
-                            self.errors[email] = e
+                            mailing.errors[email] = e
                         else:
                             logger.info("%d - Email sent to %s (%s)" % (
-                                self.id, receiver, email
+                                mailing.id, receiver, email
                             ))
-                            self.sent[email] = receiver
-                            del self.pending[email]
+                            mailing.sent[email] = receiver
+                            del mailing.pending[email]
                             try:
-                                del self.errors[email]
+                                del mailing.errors[email]
                                 logger.info("%d - Removed %s (%s) from errors" % (
-                                    self.id, receiver, email
+                                    mailing.id, receiver, email
                                 ))
                             except KeyError:
                                 pass
                         finally:
                             processed_emails += 1
-                            if processed_emails >= self.emails_per_transaction:
-                                self._p_changed = True
+                            if processed_emails >= mailing.emails_per_transaction:
+                                mailing._p_changed = True
                                 datastore.commit()
                                 processed_emails = 0
                 finally:
-                    if not self.pending:
-                        self.status = MAILING_FINISHED
-                    self._p_changed = True
-                    datastore.commit()
-                    smtp_server.quit()
+                    if not mailing.pending:
+                        mailing.status = MAILING_FINISHED
+                    mailing._p_changed = True
+                    try:
+                        datastore.commit()
+                    finally:
+                        try:
+                            smtp_server.quit()
+                        finally:
+                            datastore.close()
 
             task = tasks.task(process, id = self.id)
-            task.mailing = self
+            task.mailing_id = self.id
             task.user_id = current_user.id
 
 def get_receivers_by_roles(roles):

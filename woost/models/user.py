@@ -76,6 +76,7 @@ class User(Item):
         listable = False,
         listed_by_default = False,
         searchable = False,
+        text_search = False,
         min = 8,
         visible_in_detail_view = False,
         edit_control = "cocktail.html.PasswordBox"
@@ -88,7 +89,8 @@ class User(Item):
         ),
         enumeration = lambda ctx: Site.backoffice_language.enumeration,
         translate_value = lambda value, language = None, **kwargs:
-            "" if value is None else translations(value, language, **kwargs)
+            "" if value is None else translations(value, language, **kwargs),
+        text_search = False
     )
 
     roles = schema.Collection(

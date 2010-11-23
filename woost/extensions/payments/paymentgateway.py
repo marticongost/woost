@@ -39,7 +39,8 @@ class PaymentGateway(Item):
 
     currency = schema.String(
         required = True,
-        enumeration = currency_alpha
+        enumeration = currency_alpha,
+        text_search = False
     )
 
     def __translate__(self, language, **kwargs):

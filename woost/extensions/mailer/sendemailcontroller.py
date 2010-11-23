@@ -16,7 +16,7 @@ from cocktail.controllers.location import Location
 from woost.models import Site, get_current_user
 from woost.models.permission import ReadPermission
 from woost.controllers.backoffice.editcontroller import EditController
-from woost.extensions.mailer.mailing import MAILING_FINISHED, tasks
+from woost.extensions.mailer.mailing import Mailing, MAILING_FINISHED, tasks
 from woost.extensions.mailer.sendemailpermission import SendEmailPermission
 
 
@@ -52,20 +52,21 @@ class SendEmailController(EditController):
         cherrypy.response.headers["Content-Type"] = "application/json"
 
         task = tasks.get(int(task_id))
+        mailing = Mailing.get_instance(task.mailing_id)
         user = get_current_user()
 
-        if task is None:
+        if task is None or mailing is None:
             return dumps({})
 
-        if not user.has_permission(ReadPermission, target = task.mailing):
+        if not user.has_permission(ReadPermission, target = mailing):
             raise cherrypy.HTTPError(403, "Forbidden")
 
         tasks.remove_expired_tasks()
 
         return dumps({
-            "sent": len(task.mailing.sent),
-            "errors": len(task.mailing.errors),
-            "total": task.mailing.total,
+            "sent": len(mailing.sent),
+            "errors": len(mailing.errors),
+            "total": mailing.total,
             "completed": task.completed
         })
 
@@ -86,11 +87,11 @@ class SendEmailController(EditController):
             EditController.submit(self)
         else:
             self.task_id = mailing.id
-            mailing._v_template_values = {
+            template_values = {
                 "cms": self.context["cms"],
                 "base_url": unicode(Location.get_current_host()).rstrip("/")
             }
-            mailing.send(self.smtp_server, self.context.copy())
+            mailing.send(self.smtp_server, template_values, self.context.copy())
 
     @cached_getter
     def output(self):

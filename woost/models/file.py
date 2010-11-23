@@ -74,11 +74,13 @@ class File(Publishable):
     file_hash = schema.String(
         visible = False,
         searchable = False,
+        text_search = False,
         member_group = "content"
     )
 
     local_path = schema.String(
         listed_by_default = False,
+        text_search = False,
         member_group = "content"
     )
 

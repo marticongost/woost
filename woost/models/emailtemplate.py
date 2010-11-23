@@ -50,7 +50,8 @@ class EmailTemplate(Item):
         enumeration = [
             "plain",
             "html"
-        ]
+        ],
+        text_search = False
     )
 
     sender = schema.String(
@@ -74,7 +75,8 @@ class EmailTemplate(Item):
     )
 
     template_engine = schema.String(
-        enumeration = buffet.available_engines.keys()
+        enumeration = buffet.available_engines.keys(),
+        text_search = False
     )
 
     subject = schema.String(

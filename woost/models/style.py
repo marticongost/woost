@@ -27,10 +27,12 @@ class Style(Item):
 
     declarations = schema.String(
         required = True,
+        text_search = False,
         edit_control = "cocktail.html.TextArea"
     )
     
     admin_declarations = schema.String(
+        text_search = False,
         edit_control = "cocktail.html.TextArea"
     )
     

@@ -35,6 +35,7 @@ class SyncVimeoController(FormControllerMixin, BaseBackOfficeController):
         return schema.Schema("VimeoSynchronizationForm", members = [
             schema.String("vimeo_user_name",
                 required = True,
+                text_search = False,
                 default = schema.DynamicDefault(
                     lambda: VimeoExtension.instance.default_vimeo_user_name
                 )

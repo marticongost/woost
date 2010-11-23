@@ -71,7 +71,8 @@ class GoogleSearchExtension(Extension):
         )
 
     search_engine_id = schema.String(
-        required = True
+        required = True,
+        text_search = False
     )
 
     results_per_page = schema.Integer(
