@@ -61,6 +61,7 @@ class Publishable(Item):
 
     resource_type = schema.String(
         indexed = True,
+        text_search = False,
         editable = False,
         enumeration = (
             "document",
@@ -83,6 +84,7 @@ class Publishable(Item):
 
     encoding = schema.String(
         listed_by_default = False,
+        text_search = False,
         member_group = "presentation",
         default = "utf-8"
     )
