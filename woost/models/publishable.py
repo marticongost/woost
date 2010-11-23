@@ -318,40 +318,43 @@ class IsPublishedExpression(Expression):
         def impl(dataset):
 
             # Exclude disabled items
-            simple_pub = (
-                Publishable.per_language_publication.index[False]
-                .intersection(Publishable.enabled.index[True])
+            subset = set(
+                Publishable.per_language_publication.index.values(key = False)
             )
-            per_language_pub = (
-                Publishable.per_language_publication.index[True]
-                .intersection(Publishable.translation_enabled.index[
-                    (get_language(), True)
-                ])
+            subset.intersection_update(
+                Publishable.enabled.index.values(key = False)
             )
-            dataset.intersection_update(simple_pub | per_language_pub)
+            per_language_subset = set(
+                Publishable.per_language_publication.index.values(key = True)
+            )
+            per_language_subset.intersection_update(
+                Publishable.translation_enabled.index.values(
+                    key = (get_language(), False)
+                )
+            )
+            subset.update(per_language_subset)
+            dataset.difference_update(subset)
 
             # Exclude drafts
-            is_draft_expr = Item.is_draft.equal(False)
-            dataset = is_draft_expr.resolve_filter(query)[1](dataset)
+            dataset.difference_update(Item.is_draft.index.values(key = True))
             
-            # Publication min/max date
+            # Remove items outside their publication window
             now = datetime.now()
-            snow = Publishable.start_date.get_index_value(now)
-            enow = Publishable.end_date.get_index_value(now)
-
-            s = Publishable.start_date.index
-            e = Publishable.end_date.index
-
-            # No start date set, or the start date has been reached
-            dataset.intersection_update(
-                s[None] | set(s.values(max = snow))
+            dataset.difference_update(
+                Publishable.start_date.index.values(
+                    min = Publishable.start_date.get_index_value(now),
+                    exclude_min = True
+                )
+            )
+            dataset.difference_update(
+                Publishable.end_date.index.values(
+                    min = None,
+                    exclude_min = True,
+                    max = Publishable.end_date.get_index_value(now),
+                    exclude_max = True
+                )
             )
             
-            # No end date set, or the end date hasn't been reached yet
-            dataset.intersection_update(
-                e[None] | set(e.values(min = enow, excludemin = True))
-            )
-
             return dataset
         
         return ((-1, 1), impl)
