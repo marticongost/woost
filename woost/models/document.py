@@ -19,7 +19,9 @@ class Document(Publishable):
     instantiable = True
     default_per_language_publication = True
 
-    groups_order = ["content"]
+    groups_order = [
+        "content", "navigation", "presentation", "publication", "meta"
+    ]
 
     members_order = (
         "title",
@@ -57,14 +59,14 @@ class Document(Publishable):
         translated = True,
         listed_by_default = False,
         edit_control = "cocktail.html.TextArea",
-        member_group = "content"
+        member_group = "meta"
     )
 
     keywords = schema.String(
         translated = True,
         listed_by_default = False,
         edit_control = "cocktail.html.TextArea",
-        member_group = "content"
+        member_group = "meta"
     )
 
     template = schema.Reference(
