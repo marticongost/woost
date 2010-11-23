@@ -26,21 +26,25 @@ class SISPaymentGateway(PaymentGateway, Implementation):
 
     merchant_code = schema.String(
         required = True,
-        shadows_attribute = True
+        shadows_attribute = True,
+        text_search = False
     )
 
     merchant_name = schema.String(
-        shadows_attribute = True
+        shadows_attribute = True,
+        text_search = False
     )
 
     merchant_terminal = schema.String(
         required = True,
-        shadows_attribute = True
+        shadows_attribute = True,
+        text_search = False
     )
 
     merchant_secret_key = schema.String(
         required = True,
-        shadows_attribute = True
+        shadows_attribute = True,
+        text_search = False
     )
 
     payment_successful_page = schema.Reference(

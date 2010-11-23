@@ -41,7 +41,8 @@ Publishable.add_member(
                 language,
                 **kwargs
             ),
-        member_group = "sitemap"
+        member_group = "sitemap",
+        text_search = False
     ),
     append = True
 )

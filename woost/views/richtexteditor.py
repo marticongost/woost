@@ -19,7 +19,7 @@ TinyMCE = templates.get_class("cocktail.html.TinyMCE")
 class RichTextEditor(TinyMCE):
 
     tinymce_params = {
-        "plugins": "fullscreen, paste, inlinepopups, advimage, "
+        "plugins": "fullscreen, paste, media, inlinepopups, advimage, "
                    "contextmenu, tabfocus, -advimagescale",
         "entity_encoding": "raw",
         "dialog_type": "modal",
@@ -39,7 +39,8 @@ class RichTextEditor(TinyMCE):
         "fullscreen_settings": {
             "theme_advanced_toolbar_location": "top"
         },
-        "height": 250
+        "height": 250,
+        "media_strict": False
     }
 
     def _ready(self):

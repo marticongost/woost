@@ -70,6 +70,7 @@ class ShopOrder(Item):
         format = "^[a-z]{2}$",
         editable = False,
         default = schema.DynamicDefault(get_language),
+        text_search = False,
         translate_value = lambda value, language = None, **kwargs:
             u"" if not value else translations(value, language, **kwargs)
     )
@@ -79,6 +80,7 @@ class ShopOrder(Item):
         indexed = True,
         enumeration = ["pending", "accepted", "failed"],
         default = "pending",
+        text_search = False,
         translate_value = lambda value, language = None, **kwargs:
             u"" if not value else translations(
                 "woost.extensions.shop.ShopOrder.status " + value,

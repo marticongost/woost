@@ -53,6 +53,7 @@ class Site(Item):
         default = "en",
         enumeration = lambda ctx: Language.codes,
         listed_by_default = False,
+        text_search = False,
         translate_value = lambda value, language = None, **kwargs:
             u"" if not value else translations(value, language, **kwargs),
         member_group = "language"
@@ -62,6 +63,7 @@ class Site(Item):
         required = True,
         enumeration = ["en", "es", "ca"],        
         default = "en",
+        text_search = False,
         translate_value = lambda value, language = None, **kwargs:
             u"" if not value else translations(value, language, **kwargs),
         member_group = "language"
@@ -123,22 +125,26 @@ class Site(Item):
     smtp_host = schema.String(
         default = "localhost",
         listed_by_default = False,
+        text_search = False,
         member_group = "system"
     )
 
     smtp_user = schema.String(
         listed_by_default = False,
+        text_search = False,
         member_group = "system"
     )
 
     smtp_password = schema.String(
         listed_by_default = False,
+        text_search = False,
         member_group = "system"
     )
 
     timezone = schema.String(
         required = False,
         format = re.compile(r'^["GMT"|"UTC"|"PST"|"MST"|"CST"|"EST"]{3}$|^[+-]\d{4}$'),
+        text_search = False,
         member_group = "system"
     )
 

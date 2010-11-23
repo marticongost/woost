@@ -35,7 +35,8 @@ class DummyPaymentGateway(CMSPaymentGateway, PaymentGateway):
                 "DummyPaymentGateway.payment_status " + value,
                 language,
                 **kwargs
-            )        
+            ),
+        text_search = False
     )
 
     payment_successful_page = schema.Reference(

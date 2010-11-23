@@ -17,6 +17,7 @@ class Pasat4bPaymentGateway(PaymentGateway, Implementation):
 
     merchant_code = schema.String(
         required = True,
-        shadows_attribute = True
+        shadows_attribute = True,
+        text_search = False
     )
 

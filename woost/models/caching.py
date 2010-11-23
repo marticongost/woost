@@ -64,7 +64,8 @@ class CachingPolicy(Item):
             syntax = "python",
             cols = 80
         ),
-        listed_by_default = False
+        listed_by_default = False,
+        text_search = False
     )
 
     cache_key_expression = schema.String(
@@ -73,7 +74,8 @@ class CachingPolicy(Item):
             syntax = "python",
             cols = 80
         ),
-        listed_by_default = False
+        listed_by_default = False,
+        text_search = False
     )
 
     last_update_expression = schema.String(
@@ -82,7 +84,8 @@ class CachingPolicy(Item):
             syntax = "python",
             cols = 80
         ),
-        listed_by_default = False
+        listed_by_default = False,
+        text_search = False
     )
 
     def applies_to(self, publishable, **context):

@@ -54,7 +54,9 @@ class Transition(Item):
         edit_control = "cocktail.html.DropdownSelector"
     )
 
-    transition_form = schema.String()
+    transition_form = schema.String(
+        text_search = False
+    )
 
     transition_permissions = schema.Collection(
         items = "woost.extensions.workflow.transitionpermission."
