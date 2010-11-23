@@ -67,6 +67,7 @@ class Item(PersistentObject):
     qname = schema.String(
         unique = True,
         indexed = True,
+        text_search = False,
         listed_by_default = False,
         member_group = "administration"
     )
