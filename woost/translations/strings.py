@@ -2010,6 +2010,12 @@ translations.define("Document.content",
     en = u"Content"
 )
 
+translations.define("Document.meta",
+    ca = u"Metadades",
+    es = u"Metadatos",
+    en = u"Metadata"
+)
+
 translations.define("Document.title",
     ca = u"Títol",
     es = u"Título",
