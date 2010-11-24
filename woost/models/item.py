@@ -69,7 +69,6 @@ class Item(PersistentObject):
         indexed = True,
         text_search = False,
         listed_by_default = False,
-        text_search = False,
         member_group = "administration"
     )
 
