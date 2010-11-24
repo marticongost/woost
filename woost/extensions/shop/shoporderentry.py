@@ -14,7 +14,6 @@ from woost.models import Item
 
 class ShopOrderEntry(Item):
 
-    integral = True
     listed_from_root = False
 
     members_order = [
