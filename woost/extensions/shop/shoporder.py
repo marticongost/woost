@@ -91,6 +91,7 @@ class ShopOrder(Item):
     
     entries = schema.Collection(
         items = "woost.extensions.shop.shoporderentry.ShopOrderEntry",
+        integral = True,
         bidirectional = True,
         min = 1
     )
