@@ -79,7 +79,6 @@ class Publishable(Item):
                 **kwargs
             ),
         listed_by_default = False,
-        text_search = False,
         member_group = "presentation"
     )
 
@@ -87,7 +86,6 @@ class Publishable(Item):
         listed_by_default = False,
         text_search = False,
         member_group = "presentation",
-        text_search = False,
         default = "utf-8"
     )
 
