@@ -19,16 +19,18 @@
 
     <py:with py:element="self.body">
         <py:ready>
-            <p py:id="blocking_members_box" py:if="len(self.blocking_members) > 0">
-                @{translations("woost.views.BackOfficeDeleteView blocked_delete")}        
+            <div py:id="blocking_members_box" py:if="len(self.blocking_members) > 0" class="error_box">
+                @{translations("woost.views.BackOfficeDeleteView blocked_delete")}
                 <ul class="blocked_item_block">
                     <li py:for="item, blocked_member in self.blocking_members">
-                        <div class="blocked_item">
-                            ${translations("woost.views.BackOfficeDeleteView blocked_delete_item", blocked_item = item, blocked_member = blocked_member)}
-                        </div>
+                        <py:woost.views.ContentLink 
+                            py:local_id="blocking_item"
+                            py:icon_visible="${True}"
+                            py:item="${item}"/>:
+                        <span py:local_id="blocking_member">${translations(blocked_member)}</span>
                     </li>
                 </ul>
-            </p>
+            </div>
             <p py:id="warning_box" py:if="not len(self.blocking_members) > 0">
                 @{translations("woost.views.BackOfficeDeleteView warning")}        
                 <py:new py:element="self.create_deleted_item_block(self.delete_tree)"/>

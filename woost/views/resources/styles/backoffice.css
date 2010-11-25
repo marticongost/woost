@@ -2378,9 +2378,8 @@ a.pickcolor span {
 
 /* Block delete
 -----------------------------------------------------------------------------*/
-.BackOfficeLayout ul.blocked_item_block .blocked_item {
-    padding-top: 0.5em;
-    margin: 0;
+.BackOfficeLayout .blocking_members_box .ContentLink {
+    text-decoration: none;
 }
 
 /* Feed edit form
