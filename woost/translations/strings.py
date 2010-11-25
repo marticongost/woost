@@ -570,12 +570,13 @@ translations.define("woost.views.BackOfficeDeleteView warning",
 )
 
 translations.define("woost.views.BackOfficeDeleteView blocked_delete",
-    ca = u"No es pot realitzar l'eliminació ja que els elements llistats no \
-        estan buits:",
-    es = u"No se puede realizar la eliminación ya que los elementos listados \
-        no están vacios:",
-    en = u"The deletion couldn't be performed because the listed elements \
-        doesn't be empty:"
+    ca = u"No es pot completar l'eliminació, ja que els elements següents "
+         u"tenen vinculacions que impedeixen que puguin ser eliminats:",
+    es = u"No se puede completar la eliminación, ya que los elementos "
+         u"siguientes tienen vinculaciones que impiden que puedan ser "
+         u"eliminados:",
+    en = u"The delete operation could not be executed; it is blocked by the "
+         u"the following relations:"
 )
 
 translations.define("woost.views.BackOfficeDeleteView blocked_delete_item",
