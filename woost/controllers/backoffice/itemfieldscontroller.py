@@ -95,7 +95,14 @@ class ItemFieldsController(EditController):
         adapter.exclude([
             member.name
             for member in self.stack_node.content_type.members().itervalues()
-            if isinstance(member, schema.Collection) and not member.edit_inline
+            if (
+                isinstance(member, schema.Collection) 
+                and not member.edit_inline
+            )
+            or (
+                isinstance(member, (schema.RelationMember)) 
+                and member.bidirectional and member.related_end.integral
+            )
         ])
         return adapter
 
