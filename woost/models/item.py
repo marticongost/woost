@@ -166,6 +166,7 @@ class Item(PersistentObject):
         cascade_delete = True,
         editable = False,
         versioned = False,
+        searchable = False,
         member_group = "administration"
     )
 
