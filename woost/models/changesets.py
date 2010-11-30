@@ -155,6 +155,7 @@ class Change(PersistentObject):
     )
 
     changed_members = schema.Collection(
+        type = set,
         items = schema.String()
     )
 
