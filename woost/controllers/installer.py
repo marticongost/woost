@@ -165,7 +165,12 @@ class Installer(object):
         form_data = {}
 
         if submitted:
-            get_parameter(form_schema, target = form_data, errors = "ignore")
+            get_parameter(
+                form_schema,
+                target = form_data,
+                errors = "ignore",
+                undefined = "set_none"
+            )
             errors = list(form_schema.get_errors(form_data))
 
             if not errors:
