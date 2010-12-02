@@ -31,8 +31,8 @@ class ContentForm(Form):
 
     def _get_reference_display(self, obj, member):
         if member.class_family is not None:
-            display = templates.new("woost.views.ContentTypePicker")
-            display.root = member.class_family
+            display = templates.new("woost.views.ContentTypePickerDropdown")
+            display.content_type_picker.root = member.class_family
         else:
             display = "woost.views.ItemSelector"
     

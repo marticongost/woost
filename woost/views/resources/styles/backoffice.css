@@ -1195,6 +1195,25 @@ body.scripted .BackOfficeLayout .selector:hover .selector_content {
     display: none;
 }
 
+.scripted .BackOfficeLayout .ContentTypePickerDropdown {
+    margin-top: 0.4em;
+}
+
+.scripted .BackOfficeLayout .ContentTypePickerDropdown .button .label .icon {
+    vertical-align: middle;
+    margin-right: 0.4em;
+}
+
+.scripted .BackOfficeLayout .ContentTypePickerDropdown .panel {
+    width: 32em;
+}
+
+.scripted .BackOfficeLayout .ContentTypePickerDropdown .content_type_picker {
+    margin: 0;
+    padding: 0;
+    border: none;
+}
+
 /* Paging
 -----------------------------------------------------------------------------*/
 

@@ -123,7 +123,7 @@ from woost.controllers.backoffice.editstack import SelectionNode
                     def get_default_member_display(element, obj, member):
                         if isinstance(member, Reference):
                             if member.class_family is not None:
-                                display = loader.new("woost.views.ContentTypePicker")
+                                display = loader.new("woost.views.ContentTypePickerDropdown")
                                 display.root = member.class_family
                                 return display
                             elif not (
