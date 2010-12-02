@@ -14,6 +14,8 @@ cocktail.bind(".ContentTypePicker", function ($picker) {
         $picker.find("input:checked").siblings("label").addClass("selected");
     }
 
+    $picker.find("label").attr("tabindex", "0");
+
     $picker.find("li").each(function () {
 
         var collapsed = true;
@@ -40,6 +42,7 @@ cocktail.bind(".ContentTypePicker", function ($picker) {
             var $img = jQuery("<img>")
                 .addClass("toggle_button")
                 .attr("src", "/resources/images/collapsed.png")
+                .attr("tabindex", "0")
                 .click(function (e) {
                     jQuery(this).closest("li").get(0).toggle(300);
                     e.stopPropagation();
