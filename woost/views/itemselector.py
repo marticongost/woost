@@ -9,7 +9,7 @@ u"""
 from cocktail.modeling import extend, call_base
 from cocktail.translations import translations
 from cocktail.html import Element, templates
-from cocktail.html.databoundcontrol import DataBoundControl
+from cocktail.html.databoundcontrol import data_bound
 from woost.models import (
     Item,
     CreatePermission,
@@ -19,21 +19,18 @@ from woost.models import (
 )
 
 
-class ItemSelector(Element, DataBoundControl):
+class ItemSelector(Element):
 
     value = None
     _empty_label = None    
     existing_items_only = False
-
-    def __init__(self, *args, **kwargs):
-        Element.__init__(self, *args, **kwargs)
-        DataBoundControl.__init__(self)
 
     empty_label = ""
 
     def _build(self):
     
         Element._build(self)
+        data_bound(self)
 
         self.add_resource("/resources/scripts/ItemSelector.js")
         self.set_client_param("emptyLabel", self.empty_label)

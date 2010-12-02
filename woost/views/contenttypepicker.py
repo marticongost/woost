@@ -8,7 +8,7 @@ u"""
 """
 from cocktail.translations import translations
 from cocktail.html import Element
-from cocktail.html.databoundcontrol import DataBoundControl
+from cocktail.html.databoundcontrol import data_bound, bind_member
 from cocktail.html.datadisplay import (
     NO_SELECTION,
     SINGLE_SELECTION,
@@ -17,7 +17,7 @@ from cocktail.html.datadisplay import (
 from woost.views.contenttypetree import ContentTypeTree
 
 
-class ContentTypePicker(ContentTypeTree, DataBoundControl):
+class ContentTypePicker(ContentTypeTree):
     
     name = None
     value = None
@@ -26,11 +26,8 @@ class ContentTypePicker(ContentTypeTree, DataBoundControl):
 
     empty_option_displayed = True
 
-    def __init__(self, *args, **kwargs):
-        Element.__init__(self, *args, **kwargs)
-        DataBoundControl.__init__(self)
-
     def _build(self):
+        data_bound(self)
         ContentTypeTree._build(self)
         self.add_resource("/resources/scripts/ContentTypePicker.js")
 
@@ -72,7 +69,7 @@ class ContentTypePicker(ContentTypeTree, DataBoundControl):
             value = "",
             checked = self.value is None
         )
-        self._bind_member(entry.control)
+        bind_member(self, entry.control)
         entry.append(entry.control)
 
         entry.label = Element("label")
@@ -100,7 +97,7 @@ class ContentTypePicker(ContentTypeTree, DataBoundControl):
             )
         )
 
-        self._bind_member(entry.control)
+        bind_member(self, entry.control)
         entry.insert(0, entry.control)
         entry.label["for"] = entry.control.require_id()
         return entry
