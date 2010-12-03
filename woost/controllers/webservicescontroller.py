@@ -45,7 +45,27 @@ class ItemWebService(PersistentClassWebService):
         return Language.codes
 
     class JSONEncoder(PersistentClassWebService.JSONEncoder):
-                
+
+        def _member_permission(self, member):
+            permission = self._member_permissions.get(member)
+            if permission is None:
+                permission = self.user.has_permission(
+                    ReadMemberPermission,
+                    member = member
+                )
+                self._member_permissions[member] = permission
+            return permission
+
+        def _language_permission(self, language):
+            permission = self._language_permissions.get(language)
+            if permission is None:
+                permission = self.user.has_permission(
+                    ReadTranslationPermission,
+                    language = language
+                )
+                self._language_permissions[language] = permission
+            return permission
+
         def get_member_value(self, obj, member, language = None):
 
             # Exclude the 'changes' member
@@ -54,14 +74,8 @@ class ItemWebService(PersistentClassWebService):
 
             # Exclude restricted members
             elif not (
-                self.user.has_permission(
-                    ReadMemberPermission,
-                    member = member
-                )
-                and self.user.has_permission(
-                    ReadTranslationPermission,
-                    language = language
-                )
+                self._language_permission(language) 
+                and self._member_permission(member)
             ):
                 value = excluded_member
  
@@ -84,6 +98,8 @@ class ItemWebService(PersistentClassWebService):
     def json_encoder(self):        
         encoder = PersistentClassWebService.json_encoder(self)
         encoder.user = get_current_user()
+        encoder._language_permissions = {}
+        encoder._member_permissions = {}
         return encoder
     
     def _init_new_instance(self, instance):
