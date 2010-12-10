@@ -176,6 +176,38 @@ class Mailing(Item):
 
         return body
 
+    def send_message(self, smtp_server, receiver):
+        message = self._get_message(receiver)
+        try:
+            return smtp_server.sendmail(self.sender, [receiver.email], message.as_string())
+        except smtplib.SMTPServerDisconnected, e:
+            logger.info("%d - Server disconnected, reconnecting - %s" % (
+                self.id, e
+            ))
+            # smtplib bug
+            # SMTP.quit() doesn't clear the HELO/EHLO
+            # attributes, so on the next connection these
+            # commands weren't sent.
+            # http://bugs.python.org/issue4142
+            smtp_server.helo_resp = None
+            smtp_server.ehlo_resp = None
+            smtp_server.connect(Site.main.smtp_host, smtplib.SMTP_PORT)
+            return smtp_server.sendmail(self.sender, [receiver.email], message.as_string())
+        except smtplib.SMTPSenderRefused, e:
+            logger.info("%d - Maximum number of messages per connection reached, reconnecting - %s" % (
+                self.id, e
+            ))
+            smtp_server.quit()
+            # smtplib bug
+            # SMTP.quit() doesn't clear the HELO/EHLO
+            # attributes, so on the next connection these
+            # commands weren't sent.
+            # http://bugs.python.org/issue4142
+            smtp_server.helo_resp = None
+            smtp_server.ehlo_resp = None
+            smtp_server.connect(Site.main.smtp_host, smtplib.SMTP_PORT)
+            return smtp_server.sendmail(self.sender, [receiver.email], message.as_string())
+
     def send(self, smtp_server, template_values, current_context):
 
         if not self.id in tasks:
@@ -202,36 +234,7 @@ class Mailing(Item):
                 try:
                     for email, receiver in mailing.pending.items():
                         try:                
-                            message = mailing._get_message(receiver)
-                            try:
-                                smtp_server.sendmail(mailing.sender, [email], message.as_string())
-                            except smtplib.SMTPServerDisconnected, e:
-                                logger.info("%d - Server disconnected, reconnecting - %s" % (
-                                    mailing.id, e
-                                ))
-                                # smtplib bug
-                                # SMTP.quit() doesn't clear the HELO/EHLO
-                                # attributes, so on the next connection these
-                                # commands weren't sent.
-                                # http://bugs.python.org/issue4142
-                                smtp_server.helo_resp = None
-                                smtp_server.ehlo_resp = None
-                                smtp_server.connect(Site.main.smtp_host, smtplib.SMTP_PORT)
-                                smtp_server.sendmail(mailing.sender, [email], message.as_string())
-                            except smtplib.SMTPSenderRefused, e:
-                                logger.info("%d - Maximum number of messages per connection reached, reconnecting - %s" % (
-                                    mailing.id, e
-                                ))
-                                smtp_server.quit()
-                                # smtplib bug
-                                # SMTP.quit() doesn't clear the HELO/EHLO
-                                # attributes, so on the next connection these
-                                # commands weren't sent.
-                                # http://bugs.python.org/issue4142
-                                smtp_server.helo_resp = None
-                                smtp_server.ehlo_resp = None
-                                smtp_server.connect(Site.main.smtp_host, smtplib.SMTP_PORT)
-                                smtp_server.sendmail(mailing.sender, [email], message.as_string())
+                            mailing.send_message(smtp_server, receiver)
                         except Exception, e:
                             logger.exception("%d - %s (%s) - %s" % (
                                 mailing.id, receiver, email, e
