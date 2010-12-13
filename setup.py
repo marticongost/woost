@@ -78,7 +78,8 @@ of its features include:\n"
             "campaignmonitor = woost.extensions.campaignmonitor:CampaignMonitorExtension",
             "mailer = woost.extensions.mailer:MailerExtension",
             "usermodels = woost.extensions.usermodels:UserModelsExtension",
-            "locations = woost.extensions.locations:LocationsExtension"
+            "locations = woost.extensions.locations:LocationsExtension",
+            "webconsole = woost.extensions.webconsole:WebConsoleExtension"
         ]
     },
     # Woost can't yet access view resources (images, style sheets, client
