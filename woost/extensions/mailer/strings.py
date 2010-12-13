@@ -165,6 +165,30 @@ translations.define("woost.extensions.mailer.SendEmailView mailer summary",
     en = u"<strong>{0}</strong> of <strong>{1}</strong> emails have been sent."
 )
 
+translations.define("woost.extensions.mailer.SendEmailView test explanation",
+    ca = u"""Degut a que molts clients de correu electrònic mostren el disseny
+del correu de forma diferent, recomanem enviar alguna prova abans de realitzar
+l'enviament definitiu.""",
+    es = u"""Debido a que muchos clientes de correo electrónico muestran el
+diseño del correo de forma diferente, recomendamos enviar alguna prueba antes
+de realitzar el envio definitivo.""",
+    en = u"""Because most email clients will display your email design
+differently, we recommend sending yourself a few tests before scheduling the
+final campaign."""
+)
+
+translations.define("woost.extensions.mailer.SendEmailView test email",
+    ca = u"Correu electrònic",
+    es = u"Correo electrónico",
+    en = u"E-mail address"
+)
+
+translations.define("woost.extensions.mailer.SendEmailView test",
+    ca = u"Enviar el correu de prova",
+    es = u"Enviar el correo de prueba",
+    en = u"Send the test email"
+)
+
 # Template
 #------------------------------------------------------------------------------
 translations.define("Template.per_user_customizable",
