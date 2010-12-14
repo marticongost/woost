@@ -62,12 +62,7 @@ class ItemFieldsController(EditController):
                     values = form_data.get(key)
                     if values:
                         values.pop(deleted_translation, None)
-        
-        # Add translations
-        if added_translation and added_translation not in translations:        
-            translations.append(added_translation)
-            stack_node.item.new_translation(added_translation)
-        
+                        
         get_method = cherrypy.request.method.upper() == "GET"
 
         # Load form data from the request
@@ -77,9 +72,14 @@ class ItemFieldsController(EditController):
             languages = translations,
             prefix = self.form_prefix,
             errors = "ignore",
-            implicit_booleans = get_method,
-            undefined = "skip" if get_method else "set_default"
+            implicit_booleans = not get_method,
+            undefined = "skip" if get_method else "set_none"
         )
+
+        # Add translations
+        if added_translation and added_translation not in translations:
+            translations.append(added_translation)
+            stack_node.item.new_translation(added_translation)
 
         # Drop references
         unlink = cherrypy.request.params.get("ItemSelector-unlink")
