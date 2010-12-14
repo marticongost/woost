@@ -89,6 +89,7 @@ class BackOfficeController(BaseBackOfficeController):
         attachments = schema.get(node.form_data, "attachments", default = None)
 
         resource_type = self.params.read(schema.String("resource_type"))
+            
         language = self.params.read(schema.String("language"))
         
         output = []
@@ -96,11 +97,17 @@ class BackOfficeController(BaseBackOfficeController):
 
         if attachments:
             for attachment in attachments:
-                if attachment.resource_type == resource_type:
+                item = None 
+                if resource_type == "linkable" and attachment.resource_type not in ["image","video"]:
+                    item = attachment
+                elif attachment.resource_type == resource_type:
+                    item = attachment
+                
+                if item:
                     output.append(
                         [
-                            attachment.get("title", language),
-                            cms.uri(attachment)
+                            item.get("title", language),
+                            cms.uri(item)
                         ]
                     )
 
