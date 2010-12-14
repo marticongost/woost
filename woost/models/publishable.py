@@ -320,22 +320,16 @@ class IsPublishedExpression(Expression):
         def impl(dataset):
 
             # Exclude disabled items
-            subset = set(
+            simple_pub = set(
                 Publishable.per_language_publication.index.values(key = False)
-            )
-            subset.intersection_update(
-                Publishable.enabled.index.values(key = False)
-            )
-            per_language_subset = set(
+            ).intersection(Publishable.enabled.index.values(key = True))
+            per_language_pub = set(
                 Publishable.per_language_publication.index.values(key = True)
-            )
-            per_language_subset.intersection_update(
-                Publishable.translation_enabled.index.values(
-                    key = (get_language(), False)
+            ).intersection(Publishable.translation_enabled.index.values(
+                    key = (get_language(), True)
                 )
             )
-            subset.update(per_language_subset)
-            dataset.difference_update(subset)
+            dataset.intersection_update(simple_pub | per_language_pub)
 
             # Exclude drafts
             dataset.difference_update(Item.is_draft.index.values(key = True))
