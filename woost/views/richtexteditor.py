@@ -65,7 +65,7 @@ class RichTextEditor(TinyMCE):
             d("theme_advanced_styles", ";".join(styles))
             d("init_instance_callback", "woost.initRichTextEditor")
             d("external_image_list_url", attachments_uri + "image")
-            d("external_link_list_url", attachments_uri + "document")
+            d("external_link_list_url", attachments_uri + "linkable")
             d("media_external_list_url", attachments_uri + "video")
 
         load_plugin = Element("script")
