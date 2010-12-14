@@ -126,7 +126,7 @@ class CommentsExtension(Extension):
             # Comments variables initialization
             comments_user_collection = None
             comments_schema = None
-            comment_error = None
+            comment_errors = None
 
             controller = event.source
             comment_model = \
