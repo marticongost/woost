@@ -79,7 +79,10 @@ class ItemFieldsController(EditController):
         # Add translations
         if added_translation and added_translation not in translations:
             translations.append(added_translation)
-            stack_node.item.new_translation(added_translation)
+            translation_data = {}
+            stack_node.content_type.translation.init_instance(translation_data)
+            for key, value in translation_data.iteritems():
+                schema.set(form_data, key, value, language = added_translation)
 
         # Drop references
         unlink = cherrypy.request.params.get("ItemSelector-unlink")
