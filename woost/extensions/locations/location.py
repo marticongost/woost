@@ -32,6 +32,13 @@ class Location(Item):
     location_type = schema.String(
         required = True,
         indexed = True,
+        enumeration = [
+            "continent",
+            "country",
+            "autonomous_community",
+            "province",
+            "town"
+        ],
         text_search = False,
         translate_value = lambda value, language = None, **kwargs:
             "" if not value 
@@ -39,7 +46,8 @@ class Location(Item):
                 "woost.extensions.locations.location_types." + value,
                 language,
                 **kwargs
-            )
+            ),
+        edit_control = "cocktail.html.DropdownSelector"
     )
 
     code = schema.String(
