@@ -26,20 +26,18 @@ class SendEmailController(EditController):
     section = "send_email"
     task_id = None
 
-    def __call__(self, **kwargs):
-
+    @event_handler
+    def handle_traversed(cls, event):
+        controller = event.source
         user = get_current_user()
-        mailing = self.context["cms_item"]
+        mailing = controller.context["cms_item"]
 
-        if not (
-            mailing.is_inserted 
-            and not mailing.status == MAILING_FINISHED
-            and user.has_permission(SendEmailPermission)
-            and user.has_permission(ReadPermission, target = mailing)
-        ):
+        user.require_permission(SendEmailPermission)
+
+        if (controller.action is None 
+            or controller.action.id == controller.section
+        ) and mailing.status == MAILING_FINISHED:
             raise cherrypy.HTTPError(403, "Forbidden")
-
-        return EditController.__call__(self, **kwargs)
 
     @cached_getter
     def smtp_server(self):
