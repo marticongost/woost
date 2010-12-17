@@ -213,9 +213,10 @@ class CMS(BaseCMSController):
 
     def resolve(self, path):
         
-        # Invoke the language module to set the active language
-        self.language.process_request(path)
-    
+        # Allow application modules (ie. language) to process the URI before
+        # resolving the requested publishable item
+        self._process_path(path)
+ 
         site = Site.main
         request = cherrypy.request
         unicode_path = [try_decode(step) for step in path]
@@ -280,6 +281,11 @@ class CMS(BaseCMSController):
             location.go()
 
         return controller
+
+    def _process_path(self, path):
+
+        # Invoke the language module to set the active language
+        self.language.process_request(path)
 
     def uri(self, publishable, *args, **kwargs):
         """Obtains the canonical absolute URI for the given item.
