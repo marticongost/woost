@@ -8,14 +8,14 @@ from cocktail.translations import translations
 # Location
 #------------------------------------------------------------------------------
 translations.define("Location",
-    ca = u"Localitat",
-    es = u"Localidad",
+    ca = u"Ubicació",
+    es = u"Ubicación",
     en = u"Location"
 )
 
 translations.define("Location-plural",
-    ca = u"Localitats",
-    es = u"Localidades",
+    ca = u"Ubicacions",
+    es = u"Ubicaciones",
     en = u"Locations"
 )
 
@@ -26,8 +26,8 @@ translations.define("Location.location_name",
 )
 
 translations.define("Location.location_type",
-    ca = u"Tipus de localitat",
-    es = u"Tipo de localidad",
+    ca = u"Tipus d'ubicació",
+    es = u"Tipo de ubicación",
     en = u"Location type"
 )
 
@@ -71,14 +71,14 @@ translations.define("Location.code",
 )
 
 translations.define("Location.parent",
-    ca = u"Localitat pare",
-    es = u"Localidad padre",
+    ca = u"Ubicació pare",
+    es = u"Ubicación padre",
     en = u"Parent location"
 )
 
 translations.define("Location.locations",
-    ca = u"Localitats filles",
-    es = u"Localidades hijas",
+    ca = u"Ubicacions contingudes",
+    es = u"Ubicaciones contenidas",
     en = u"Child locations"
 )
 

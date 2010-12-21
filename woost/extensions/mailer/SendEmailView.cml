@@ -36,7 +36,7 @@ from woost.extensions.mailer.mailing import get_receivers_by_roles
     <py:with py:element="self.item_body">
 
         <py:ready>
-            <block py:if="not self.action">
+            <block py:if="self.action != 'send'">
                 <p>
                     ${translations("woost.extensions.mailer.SendEmailView confirmation text") % (self.edited_item.document.title, translations(self.edited_item.language))}
 
@@ -52,6 +52,17 @@ from woost.extensions.mailer.mailing import get_receivers_by_roles
                 <p class="notice" py:if="not self.edited_item.document.is_accessible(User.get_instance(qname = 'woost.anonymous_user'), language = self.edited_item.language.iso_code)">
                     ${translations("woost.extensions.mailer.SendEmailView accessibility warning")}
                 </p>
+
+                <div class="mailing_test">
+                    <p>${translations("woost.extensions.mailer.SendEmailView test explanation")}</p>
+                    <label for="test_email"><strong>${translations("woost.extensions.mailer.SendEmailView test email")}</strong></label>
+                    <br />
+                    <input type="text" name="test_email" />
+                    <button type="submit" name="mailer_action" value="test">
+                        ${translations("woost.extensions.mailer.SendEmailView test")}
+                    </button>
+                </div>
+
                 <div class="buttons">
                     <button type="submit" name="mailer_action" value="send">
                         ${translations("woost.extensions.mailer.SendEmailView send")}
