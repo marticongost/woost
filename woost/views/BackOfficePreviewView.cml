@@ -8,11 +8,9 @@ from cocktail.controllers.viewstate import view_state
     xmlns:py="http://www.whads.com/ns/cocktail/templates">
 
     <py:with py:element="self.item_body">
-        <div class="preview_language_selector">
+        <div py:visible="@{len(self.edited_item.translations) > 1}" class="preview_language_selector">
             <span>${translations("woost.views.BackOfficePreviewView preview language")}</span>
-            <div 
-                py:visible="@{len(self.edited_item.translations) > 1}"
-                class="selector translations_selector">
+            <div class="selector translations_selector">
 
                 <span class="label">@{translations(self.preview_language)}</span>
                 <py:ready>
