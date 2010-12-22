@@ -111,3 +111,41 @@ class WebConsoleExtension(Extension):
             apply_translations(page, "title")
             page.insert()
 
+
+def breakpoint(open_browser = False, stack_depth = 0):
+    """Set a `~webconsole.utils.breakpoint` that is only triggered by users
+    with `code execution rights <WebConsolePermission>`.
+    """
+    from cocktail.controllers import Location
+    from webconsole.utils import breakpoint as webconsole_breakpoint
+    from woost.models import get_current_user, Publishable, Site
+    from woost.extensions.webconsole.webconsolepermission \
+        import WebConsolePermission   
+
+    user = get_current_user()
+
+    if user and user.has_permission(WebConsolePermission):
+
+        def initializer(session):
+            if open_browser:
+                
+                # Find the web console document
+                webconsole = Publishable.require_instance(
+                    qname = "woost.extensions.webconsole.page"
+                )
+                
+                # Determine the URI for the breakpoint session
+                webconsole_location = Location.get_current_host()
+                webconsole_location.path_info = \
+                    u"/" + Site.main.get_path(webconsole)
+                webconsole_location.query_string["session_id"] = session.id
+
+                # Open a web browser tab pointing at the URI
+                from webbrowser import open
+                open(str(webconsole_location))
+        
+        return webconsole_breakpoint(
+            initializer = initializer,
+            stack_depth = stack_depth + 1
+        )
+
