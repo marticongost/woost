@@ -982,3 +982,7 @@ def watermark(image, markid, position = "middle", opacity=1):
     # composite the watermark with the layer
     return Image.composite(layer, image, layer)
 
+@image_processor
+def flip(image, direction):
+    return image.transpose(direction)
+
