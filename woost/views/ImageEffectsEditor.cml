@@ -238,21 +238,6 @@ from woost.controllers.imagescontroller import parse_processor
     </py:new>
 
     <py:new
-        py:id="fill_control"
-        py:element="self.create_image_processor_control('fill')">
-        <py:with py:element="element.image_processor_container">
-            <div>
-                <label>${translations("woost.views.ImageEffectsEditor.fill_control.width")}</label>
-                <input type="number" class="width" min="1" step="1"/>
-            </div>
-            <div>
-                <label>${translations("woost.views.ImageEffectsEditor.fill_control.height")}</label>
-                <input type="number" class="height" min="1" step="1"/>
-            </div>
-        </py:with>
-    </py:new>
-
-    <py:new
         py:id="flip_control"
         py:element="self.create_image_processor_control('flip')">
         <py:with py:element="element.image_processor_container">
