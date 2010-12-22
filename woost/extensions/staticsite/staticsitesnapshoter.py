@@ -118,7 +118,8 @@ class WgetSnapShoter(StaticSiteSnapShoter):
 
         cmd += " --page-requisites --html-extension \
                 --convert-links --no-host-directories \
-                --directory-prefix=%s --restrict-file-names=%s %s"
+                --no-check-certificate --directory-prefix=%s \
+                --restrict-file-names=%s %s"
 
         return cmd
 
