@@ -49,31 +49,31 @@ from woost.models import (
     URI,
     User,
     get_current_user,
-    ReadPermission
+    ReadPermission,
+    ModifyPermission
 )
 from woost.controllers.basecmscontroller import BaseCMSController
 
+default_format = "PNG"
+
+formats_by_mime_type = {
+    "image/jpeg": "JPEG",
+    "image/pjpeg": "JPEG",
+    "image/png": "PNG",
+    "image/x-png": "PNG",
+    "image/gif": "GIF",
+    "image/tiff": "TIFF"
+}
+
+mime_types_by_format = dict(
+    (v, k)
+    for k, v in formats_by_mime_type.iteritems()
+)
 
 class ImagesController(BaseCMSController):
 
-    default_format = "PNG"
-
-    formats_by_mime_type = {
-        "image/jpeg": "JPEG",
-        "image/pjpeg": "JPEG",
-        "image/png": "PNG",
-        "image/x-png": "PNG",
-        "image/gif": "GIF",
-        "image/tiff": "TIFF"
-    }
-
-    mime_types_by_format = dict(
-        (v, k)
-        for k, v in formats_by_mime_type.iteritems()
-    )
-
     def __call__(self, id, *processing, **kwargs):
-        
+
         # Get the requested item or content type, validate access
         item = None
 
@@ -83,222 +83,246 @@ class ImagesController(BaseCMSController):
             for cls in Item.schema_tree():
                 if cls.full_name == id:
                     item = cls
-                    is_type = True
                     break
         else:
             item = Item.get_instance(int(id))
-            is_type = False
 
         if item is None:
             raise cherrypy.NotFound()
 
-        # Determine the rendering format
-        format = kwargs.pop("format", None)
-        if format:
-            format = format.upper()
+        return serve_image(item, *processing, **kwargs)
 
-        # Find a content renderer that can handle the requested item
-        renderer = None
-        kind = kwargs.pop("kind", "icon" if is_type else "image").split(",")
-        is_icon = False
+def serve_image(item, *processing, **kwargs):
+    
+    is_type = isinstance(item, type)
         
-        if "image" in kind:
-            if is_type:
-                raise ValueError(
-                    "Can't set 'kind' to 'image' when rendering a content type"
-                )
+    # Determine the rendering format
+    format = kwargs.pop("format", None)
+    if format:
+        format = format.upper()
 
-            for renderer in content_renderers:
-                if renderer.can_render(item):
-                    break
-            else:
-                renderer = None
-
-        if renderer is None and "icon" in kind:
-            for renderer in icon_renderers:
-                if renderer.can_render(item):
-                    is_icon = True
-                    processing = []
-                    break
-            else:
-                renderer = None
-
-        if renderer is None:
-            raise RuntimeError("No content renderer can render %s" % item)
-
-        if not is_type and not is_icon:
-            get_current_user().require_permission(ReadPermission, target = item)
-
-        # Caching:
-        cache_enabled_param = kwargs.pop("cache", "on")
-        if cache_enabled_param == "on":
-            cache_enabled = not is_icon
-        elif cache_enabled_param == "off":
-            cache_enabled = False
-        else:
+    # Find a content renderer that can handle the requested item
+    renderer = None
+    kind = kwargs.pop("kind", "icon" if is_type else "image").split(",")
+    is_icon = False
+    
+    if "image" in kind:
+        if is_type:
             raise ValueError(
-                "Unknown value for the 'cache' parameter: %s"
-                % cache_enabled_param
+                "Can't set 'kind' to 'image' when rendering a content type"
             )
 
-        if cache_enabled:
-        
-            # Client side cache
-            mtime = renderer.last_change_in_appearence(item)
-            cherrypy.response.headers["Last-Modified"] = rfc822.formatdate(mtime)
-            validate_since()
-
-            # Server side cache            
-            extension = format or self.default_format
-            file_name = str(id)
-            
-            if processing:
-                file_name += "-" + "-".join(processing)
-            
-            if kwargs:
-                file_name += "?"
-                for key in sorted(kwargs):
-                    value = kwargs[key]
-                    file_name += "%s=%s" % (key, value) 
-
-            file_name = file_name.replace("/", "-") + "." + extension.lower()
-
-            cached_file = os.path.join(
-                context["cms"].application_path,
-                "thumbnails",
-                file_name
-            )
-
-            if os.path.exists(cached_file) \
-            and os.stat(cached_file).st_mtime >= mtime:
-                mime_type = self.mime_types_by_format[extension]
-                cherrypy.response.headers["Content-Type"] = mime_type
-                return serve_file(cached_file, mime_type)
-
-        # Read rendering parameters
-        params = {}
-        rendering_schema = renderer.rendering_schema
-        
-        if rendering_schema:
-            
-            if not rendering_schema.name:
-                raise ValueError("All rendering schemas must have a name")
-
-            get_parameter(
-                rendering_schema,
-                target = params,
-                prefix = rendering_schema.name + ".",
-                implicit_booleans = False
-            )
-
-        # Render the image
-        image = renderer.render(item, **params)
-
-        # The renderer designated an image file as its return value: either
-        # serve it unmodified, or load it into memory for further processing
-        if isinstance(image, tuple):
-
-            file_name, file_mime_type = image
-            file_format = self.formats_by_mime_type[file_mime_type]
-
-            # Image processing or re-encoding requested
-            if processing or (format and format != file_format):
-                image = Image.open(file_name)
-                if not format:
-                    format = file_format
-
-            # Unmodified image requested; serve it straight away
-            else:
-                return serve_file(file_name, file_mime_type)
-
-        # Image processing
-        for processor in processing:
-            pfunc, pargs, pkwargs = self._parse_processor(processor)
-            image = pfunc(image, *pargs, **pkwargs)
-
-        # Encode the resulting image
-        buffer = StringIO()
-
-        if not format:
-            format = self.default_format
-
-        if format == "JPEG" and image.mode != "RGB":
-            image = image.convert("RGB")               
-
-        # Store the resulting image in the server side cache
-        if cache_enabled:
-            image.save(cached_file, format)
-
-        # Serve the image
-        cherrypy.response.headers["Content-Type"] = \
-            self.mime_types_by_format[format]
-        image.save(buffer, format)
-        return buffer.getvalue()
-
-    def _parse_processor(self, processor_string):
-
-        pos = processor_string.find("(")
-        if pos == -1:
-            proc_name = processor_string
+        for renderer in content_renderers:
+            if renderer.can_render(item):
+                break
         else:
-            proc_name = processor_string[:pos]
+            renderer = None
 
-        func = image_processors[proc_name]
-        args = []
-        kwargs = {}
+    apply_effects = kwargs.pop("apply", "on")
+    item_effects = []
+
+    if isinstance(item, File) and item.image_effects:
         
-        if pos != -1:
-            if processor_string[-1] != ")":
+        if apply_effects == "off":
+            get_current_user().require_permission(ModifyPermission, target = item)
+        else:
+            item_effects = item.image_effects.split("/")
+            processing = item_effects + list(processing)
+
+    if renderer is None and "icon" in kind:
+        for renderer in icon_renderers:
+            if renderer.can_render(item):
+                is_icon = True
+                processing = []
+                break
+        else:
+            renderer = None
+
+    if renderer is None:
+        raise RuntimeError("No content renderer can render %s" % item)
+
+    if not is_type and not is_icon:
+        get_current_user().require_permission(ReadPermission, target = item)
+
+    # Caching:
+    cache_enabled_param = kwargs.pop("cache", "on")
+    if cache_enabled_param == "on":
+        cache_enabled = not is_icon
+    elif cache_enabled_param == "off":
+        cache_enabled = False
+    else:
+        raise ValueError(
+            "Unknown value for the 'cache' parameter: %s"
+            % cache_enabled_param
+        )
+
+    if cache_enabled:
+    
+        # Client side cache
+        mtime = renderer.last_change_in_appearence(item)
+        cherrypy.response.headers["Last-Modified"] = rfc822.formatdate(mtime)
+        validate_since()
+
+        # Server side cache            
+        extension = format or default_format
+        file_name = str(item.id)
+        
+        if processing:
+            file_name += "-" + "-".join(processing[len(item_effects):])
+
+        if kwargs:
+            file_name += "?"
+            for key in sorted(kwargs):
+                value = kwargs[key]
+                file_name += "%s=%s" % (key, value) 
+
+        file_name = file_name.replace("/", "-") + "." + extension.lower()
+
+        cached_file = os.path.join(
+            context["cms"].application_path,
+            "thumbnails",
+            file_name
+        )
+
+        from cocktail.styled import styled
+        fexists = os.path.exists(cached_file)
+        fmtime = fexists and os.stat(cached_file).st_mtime
+        print "renderer:", styled(renderer, "brown")
+        print "file:", styled(file_name, "pink")
+        print "fmtime:", styled(fmtime, "slate_blue")
+        print "mtime:", styled(mtime, "yellow")
+        print "Current:", styled(fmtime >= mtime, "bright_green")
+
+        if os.path.exists(cached_file) \
+        and os.stat(cached_file).st_mtime >= mtime:
+            mime_type = mime_types_by_format[extension]
+            cherrypy.response.headers["Content-Type"] = mime_type
+            return serve_file(cached_file, mime_type)
+
+    # Read rendering parameters
+    params = {}
+    rendering_schema = renderer.rendering_schema
+    
+    if rendering_schema:
+        
+        if not rendering_schema.name:
+            raise ValueError("All rendering schemas must have a name")
+
+        get_parameter(
+            rendering_schema,
+            target = params,
+            prefix = rendering_schema.name + ".",
+            implicit_booleans = False
+        )
+
+    # Render the image
+    image = renderer.render(item, **params)
+
+    # The renderer designated an image file as its return value: either
+    # serve it unmodified, or load it into memory for further processing
+    if isinstance(image, tuple):
+
+        file_name, file_mime_type = image
+        file_format = formats_by_mime_type[file_mime_type]
+
+        # Image processing or re-encoding requested
+        if processing or (format and format != file_format):
+            image = Image.open(file_name)
+            if not format:
+                format = file_format
+
+        # Unmodified image requested; serve it straight away
+        else:
+            return serve_file(file_name, file_mime_type)
+
+    # Image processing
+    for processor in processing:
+        pfunc, pargs, pkwargs = parse_processor(processor)
+        image = pfunc(image, *pargs, **pkwargs)
+
+    # Encode the resulting image
+    buffer = StringIO()
+
+    if not format:
+        format = default_format
+
+    if format == "JPEG" and image.mode != "RGB":
+        image = image.convert("RGB")               
+
+    # Store the resulting image in the server side cache
+    if cache_enabled:
+        image.save(cached_file, format)
+
+    # Serve the image
+    cherrypy.response.headers["Content-Type"] = \
+        mime_types_by_format[format]
+    image.save(buffer, format)
+    return buffer.getvalue()
+
+def parse_processor(processor_string):
+
+    pos = processor_string.find("(")
+    if pos == -1:
+        proc_name = processor_string
+    else:
+        proc_name = processor_string[:pos]
+
+    func = image_processors[proc_name]
+    args = []
+    kwargs = {}
+    
+    if pos != -1:
+        if processor_string[-1] != ")":
+            raise ValueError(
+                "Invalid image processor string: %s" % processor_string
+            )
+
+        for arg in processor_string[pos + 1:-1].split(","):
+            parts = arg.split("=")
+            
+            # Positional parameters
+            if len(parts) == 1:
+                value = _parse_value(arg)
+                args.append(value)
+
+            # Keyword parameters
+            elif len(parts) == 2:
+                key, value = parts
+                value = _parse_value(value)
+                kwargs[key] = value
+            else:
                 raise ValueError(
                     "Invalid image processor string: %s" % processor_string
                 )
 
-            for arg in processor_string[pos + 1:-1].split(","):
-                parts = arg.split("=")
-                
-                # Positional parameters
-                if len(parts) == 1:
-                    value = self._parse_value(arg)
-                    args.append(value)
+    return func, args, kwargs
 
-                # Keyword parameters
-                elif len(parts) == 2:
-                    key, value = parts
-                    value = self._parse_value(value)
-                    kwargs[key] = value
-                else:
-                    raise ValueError(
-                        "Invalid image processor string: %s" % processor_string
-                    )
+def _parse_value(value):
 
-        return func, args, kwargs
+    if len(value) >= 2 and value[0] == value[-1] and value[0] in ("'\""):
+        return value[1:-1]
 
-    def _parse_value(self, value):
-
-        if len(value) >= 2 and value[0] == value[-1] and value[0] in ("'\""):
-            return value[1:-1]
-
-        if value in ("True", "False"):
-            return bool(value)
-        
-        if "." in value:
-            try:
-                value = float(value)
-            except ValueError:
-                pass
-            else:
-                return value
-
+    if value in ("True", "False"):
+        return bool(value)
+    
+    if "." in value:
         try:
-            value = int(value)
+            value = float(value)
         except ValueError:
             pass
         else:
             return value
 
-        raise ValueError(
-            "Invalid value for image processor parameter: %s" % value
-        )
+    try:
+        value = int(value)
+    except ValueError:
+        pass
+    else:
+        return value
+
+    raise ValueError(
+        "Invalid value for image processor parameter: %s" % value
+    )
 
 # Content renderers
 #------------------------------------------------------------------------------
@@ -429,13 +453,16 @@ class ImageFileRenderer(ContentRenderer):
     def can_render(self, item):
         return isinstance(item, File) \
         and item.resource_type == "image" \
-        and item.mime_type in ImagesController.formats_by_mime_type
+        and item.mime_type in formats_by_mime_type
 
     def render(self, item):
         return (item.file_path, item.mime_type)
 
     def last_change_in_appearence(self, item):
-        return os.stat(item.file_path).st_mtime
+        return max(
+            os.stat(item.file_path).st_mtime,
+            ContentRenderer.last_change_in_appearence(self, item)
+        )
 
 
 class ImageURIRenderer(ContentRenderer):

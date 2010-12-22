@@ -27,6 +27,8 @@ class FileEditNode(PublishableEditNode):
         adapter.exclude(["mime_type"])
         adapter.export_rules.add_rule(ExportUploadInfo())
         adapter.import_rules.add_rule(ImportUploadInfo())
+        if self.item.resource_type != "image":
+            adapter.exclude("image_effects")
         return adapter
 
     @cached_getter
@@ -39,7 +41,8 @@ class FileEditNode(PublishableEditNode):
                 hash_algorithm = "md5",
                 get_file_destination = lambda upload: self.temp_file_path,
                 member_group = "content"
-            )
+            ),
+            after = "local_path"
         )
         
         if form_schema.get_member("local_path") \
@@ -85,6 +88,10 @@ class FileEditNode(PublishableEditNode):
         # Move the uploaded file to its permanent location
         stack_node = event.source
         src = stack_node.temp_file_path
+
+        if "image_effects" in cherrypy.request.params:
+            stack_node.item.image_effects = \
+                cherrypy.request.params.get("image_effects")
 
         if os.path.exists(src):
             
