@@ -44,7 +44,8 @@ class File(Publishable):
         "file_name",
         "file_size",
         "file_hash",
-        "local_path"
+        "local_path",
+        "image_effects"
     ]
 
     title = schema.String(
@@ -91,6 +92,13 @@ class File(Publishable):
             e.source.mime_type = guess_type(e.value, strict = True)[0]
             e.source.file_hash = None
             e.source.file_size = None
+
+    image_effects = schema.String(
+        listed_by_default = False,
+        searchable = False,
+        member_group = "content",
+        edit_control = "woost.views.ImageEffectsEditor"
+    )
 
     @getter
     def file_path(self):

@@ -2831,10 +2831,176 @@ translations.define("File.local_path",
     en = u"Local file"
 )
 
+translations.define("File.image_effects",
+    ca = u"Efectes",
+    es = u"Efectos",
+    en = u"Effects"
+)
+
 translations.define("BackOfficeEditForm.upload",
     ca = u"Càrrega de fitxer",
     es = u"Carga de fichero",
     en = u"File upload"
+)
+
+# Image Effects
+#------------------------------------------------------------------------------
+
+translations.define("woost.views.ImageEffectsEditor.edit_button",
+    ca = u"Editar imatge",
+    es = u"Editar imagen",
+    en = u"Image edit"
+)
+
+translations.define("woost.views.ImageEffectsEditor-crop_effect",
+    ca = u"Retall",
+    es = u"Recorte",
+    en = u"Crop"
+)
+
+translations.define("woost.views.ImageEffectsEditor-rotate_effect",
+    ca = u"Rotació",
+    es = u"Rotación",
+    en = u"Rotation"
+)
+
+translations.define("woost.views.ImageEffectsEditor-brightness_effect",
+    ca = u"Brillantor",
+    es = u"Brillo",
+    en = u"Brightness"
+)
+
+translations.define("woost.views.ImageEffectsEditor-sharpness_effect",
+    ca = u"Enfocat",
+    es = u"Enfoque",
+    en = u"Sharpness"
+)
+
+translations.define("woost.views.ImageEffectsEditor-contrast_effect",
+    ca = u"Contrast",
+    es = u"Contraste",
+    en = u"Contrast"
+)
+
+translations.define("woost.views.ImageEffectsEditor-color_effect",
+    ca = u"Color",
+    es = u"Color",
+    en = u"Color"
+)
+
+translations.define("woost.views.ImageEffectsEditor-thumbnail_effect",
+    ca = u"Mida",
+    es = u"Tamaño",
+    en = u"Size"
+)
+
+translations.define("woost.views.ImageEffectsEditor-fill_effect",
+    ca = u"Encaix",
+    es = u"Encaje",
+    en = u"Fit"
+)
+
+translations.define("woost.views.ImageEffectsEditor-flip_effect",
+    ca = u"Mirall",
+    es = u"Espejo",
+    en = u"Mirror"
+)
+
+translations.define("woost.views.ImageEffectsEditor-custom_effect",
+    ca = u"Comanda",
+    es = u"Comando",
+    en = u"Command"
+)
+
+translations.define("woost.views.ImageEffectsEditor.dialog_header",
+    ca = u"Editant imatge",
+    es = u"Editando imagen",
+    en = u"Editing image"
+)
+
+translations.define("woost.views.ImageEffectsEditor.edit_box_header",
+    ca = u"Efectes",
+    es = u"Efectos",
+    en = u"Effects"
+)
+
+translations.define(
+    "woost.views.ImageEffectsEditor.image_processors_toolbar_label",
+    ca = u"Afegir...",
+    es = u"Añadir...",
+    en = u"Add..."
+)
+
+translations.define("woost.views.ImageEffectsEditor.preview_button",
+    ca = u"Previsualitzar",
+    es = u"Previsualizar",
+    en = u"Preview"
+)
+
+translations.define("woost.views.ImageEffectsEditor.remove_processor_button",
+    ca = u"Eliminar",
+    es = u"Eliminar",
+    en = u"Remove"
+)
+
+translations.define("woost.views.ImageEffectsEditor-loading",
+    ca = u"Generant la imatge...",
+    es = u"Generando la imagen",
+    en = u"Rendering image..."
+)
+
+translations.define("woost.views.ImageEffectsEditor.accept_button",
+    ca = u"Acceptar",
+    es = u"Aceptar",
+    en = u"Accept"
+)
+
+translations.define("woost.views.ImageEffectsEditor.cancel_button",
+    ca = u"Cancelar",
+    es = u"Cancelar",
+    en = u"Cancel"
+)
+
+translations.define(
+    "woost.views.ImageEffectsEditor.thumbnail_control.relative_label",
+    ca = u"Relativa",
+    es = u"Relativo",
+    en = u"Relative"
+)
+
+translations.define(
+    "woost.views.ImageEffectsEditor.thumbnail_control.absolute_label",
+    ca = u"Màxim",
+    es = u"Máximo",
+    en = u"Maximum"
+)
+
+translations.define(
+    "woost.views.ImageEffectsEditor.thumbnail_control.width",
+    ca = u"Amplada",
+    es = u"Ancho",
+    en = u"Width"
+)
+
+translations.define(
+    "woost.views.ImageEffectsEditor.thumbnail_control.height",
+    ca = u"Alçada",
+    es = u"Alto",
+    en = u"Height"
+)
+
+translations.define(
+    "woost.views.ImageEffectsEditor.flip_control.horizontal",
+    ca = u"Horitzontal",
+    es = u"Horizontal",
+    en = u"Horizontal"
+)
+
+translations.define(
+    "woost.views.ImageEffectsEditor.flip_control.vertical",
+    ca = u"Vertical",
+    es = u"Vertical",
+    en = u"Vertical"
 )
 
 # News

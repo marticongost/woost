@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <?py
 from cocktail.html import Element
+from cocktail.controllers import context
 from woost.models.publishable import get_category_from_mime_type
 from woost.models.file import get_human_readable_file_size
 ?>
@@ -23,19 +24,26 @@ from woost.models.file import get_human_readable_file_size
                         <py:new py:element="self.create_upload_info(upload)" py:if="upload and not form.data.get('local_path')"/>
                     </py:block>
                 </py:with>
+                <py:with py:def="control" py:args="obj, member">
+                    <?py
+                    if member.name == "image_effects":
+                        element.edited_item = context['cms_item']
+                    ?>
+                </py:with>
             </py:with>
         </py:ready>
     </py:with>
 
-    <p py:def="upload_info" py:args="upload">
+    <p py:def="upload_info">
         <?py
-        mime_type = upload["mime_type"]
-        element.add_class("resource_type_" + get_category_from_mime_type(mime_type))
-        element.add_class("mime_type_" + mime_type.replace("/", "_").replace(".", "_"))
+            mime_type = self.edited_item.mime_type
+            resource_type =  self.edited_item.resource_type
+            element.add_class("resource_type_" + resource_type)
+            element.add_class("mime_type_" + mime_type.replace("/", "_").replace(".", "_"))            
         ?>
-        <span class="file_name">${upload["file_name"]}</span>
+        <span class="file_name">${self.edited_item.file_name}</span>
         <span class="file_size">
-            ${get_human_readable_file_size(upload["file_size"])}
+            ${get_human_readable_file_size(self.edited_item.file_size)}
         </span>
     </p>
 
