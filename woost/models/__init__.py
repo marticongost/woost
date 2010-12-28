@@ -149,3 +149,5 @@ from woost.models.userfilter import (
 
 from woost.models.caching import CachingPolicy, expire_cache
 
+from woost.models import migration
+
