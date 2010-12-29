@@ -47,7 +47,7 @@ class WorkflowExtension(Extension):
 
     @event_handler
     def handle_loading(cls, event):
-        
+
         from woost.extensions.workflow import (
             strings,
             state,
@@ -63,6 +63,28 @@ class WorkflowExtension(Extension):
             import BackOfficeController
         from woost.extensions.workflow.transitioncontroller \
             import TransitionController
-        
+
         BackOfficeController.workflow_transition = TransitionController
+
+        # Add a content view for workflow graphs (if GraphViz is installed)
+        from woost.extensions.workflow.graph import graphviz_command
+
+        if graphviz_command:
+
+            from woost.controllers.backoffice.contentviews \
+                import global_content_views
+
+            global_content_views.add(
+                state.State,
+                "woost.extensions.workflow.WorkflowGraphContentView",
+                is_default = True
+            )
+
+            # Add a controller to render the SVG graphs for the graphs content view
+            from woost.controllers.backoffice.backofficecontroller \
+                import BackOfficeController
+            from woost.extensions.workflow.workflowgraphcontroller \
+                import WorkflowGraphController
+
+            BackOfficeController.workflow_graph = WorkflowGraphController
 

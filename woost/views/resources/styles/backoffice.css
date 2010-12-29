@@ -2377,6 +2377,13 @@ a.pickcolor span {
     margin-top: 0.5em;
 }
 
+.BackOfficeLayout .graph_frame {
+    width: 100%;
+    border: none;
+    height: 500px;
+    margin-top: 2em;
+}
+
 /* Delete warning
 -----------------------------------------------------------------------------*/
 .BackOfficeLayout ul.deleted_item_block {
