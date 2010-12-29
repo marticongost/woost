@@ -103,7 +103,9 @@ class ItemFieldsController(EditController):
                 and not member.edit_inline
             )
             or (
-                isinstance(member, (schema.RelationMember)) 
+                self.stack_node.item
+                and self.stack_node.item.is_inserted
+                and isinstance(member, (schema.RelationMember)) 
                 and member.bidirectional and member.related_end.integral
             )
         ])
