@@ -6,7 +6,8 @@
 @organization:	Whads/Accent SL
 @since:			May 2009
 """
-from cocktail.translations import translations, ca_possessive
+from cocktail.translations import translations
+from cocktail.translations.helpers import ca_possessive
 from woost.translations.strings import content_permission_translation_factory
 
 translations.define(
