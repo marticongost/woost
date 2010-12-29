@@ -46,7 +46,7 @@ class State(Item):
         related_key = "target_state",
         bidirectional = True,
         editable = False,
-        integral = True
+        cascade_delete = True
     )
 
 
