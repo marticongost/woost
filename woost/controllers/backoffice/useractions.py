@@ -164,7 +164,12 @@ class UserAction(object):
     """
     enabled = True
     included = frozenset(["toolbar_extra", "item_buttons_extra"])
-    excluded = frozenset(["selector", "calendar_content_view", "changelog"])
+    excluded = frozenset([
+        "selector",
+        "calendar_content_view",
+        "workflow_graph_content_view",
+        "changelog"
+    ])
     content_type = None
     ignores_selection = False
     min = 1
@@ -535,6 +540,7 @@ class DeleteAction(UserAction):
         "selector",
         "new_item",
         "calendar_content_view",
+        "workflow_graph_content_view",
         "changelog"
     ])
     max = None
@@ -550,6 +556,7 @@ class ShowChangelogAction(UserAction):
         "selector",
         "new_item",
         "calendar_content_view",
+        "workflow_graph_content_view",
         "changelog"
     ])
 
@@ -646,6 +653,7 @@ class OpenResourceAction(UserAction):
         "draft",
         "selector",
         "calendar_content_view",
+        "workflow_graph_content_view",
         "changelog"
     ])
 
