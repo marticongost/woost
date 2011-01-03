@@ -16,7 +16,8 @@ Publishable.add_member(
         "sitemap_indexable",
         required = True,
         default = True,
-        indexed = True
+        indexed = True,
+        listed_by_default = False
     ),
     append = True
 )
@@ -42,7 +43,8 @@ Publishable.add_member(
                 **kwargs
             ),
         member_group = "sitemap",
-        text_search = False
+        text_search = False,
+        listed_by_default = False
     ),
     append = True
 )
@@ -52,6 +54,7 @@ Publishable.add_member(
         default = Decimal("0.5"),
         min = 0,
         max = 1,
+        listed_by_default = False,
         member_group = "sitemap"
     ),
     append = True
