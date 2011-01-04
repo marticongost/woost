@@ -124,8 +124,7 @@ body.modal {
 .ImageGallery-dialog .close_button {
     position: absolute;
     top: 2px;
-    right: 2px;
-    padding: 5px;
+    right: 2px;    
     font-size: 0;
 }
 
@@ -133,11 +132,15 @@ body.modal {
     position: absolute;
     bottom: 7px;
     right: 2px;
+    padding: 5px;
+    font-size: 0;
 }
 
 .ImageGallery-dialog .previous_button {
     position: absolute;
     bottom: 7px;
     left: 2px;
+    padding: 5px;
+    font-size: 0;
 }
 

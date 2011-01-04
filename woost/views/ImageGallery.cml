@@ -117,12 +117,14 @@ from cocktail.controllers import context
         </button>
         <img py:local_id="image"/>
         <button
-            py:local_id="previous_button">
-            ${translations("woost.views.ImageGallery.previous_button")}
+            py:local_id="previous_button"
+            title="${translations('woost.views.ImageGallery.previous_button')}">
+            <img src="/resources/images/ImageGallery-previous_button.png" alt=""/>
         </button>
         <button
-            py:local_id="next_button">
-            ${translations("woost.views.ImageGallery.next_button")}
+            py:local_id="next_button"
+            title="${translations('woost.views.ImageGallery.next_button')}">
+            <img src="/resources/images/ImageGallery-next_button.png" alt=""/>
         </button>
     </div>
 
