@@ -1004,3 +1004,14 @@ def watermark(image, markid, position = "middle", opacity=1):
 def flip(image, direction):
     return image.transpose(direction)
 
+@image_processor
+def fit(image, width, height, crop = "center", filter = Image.ANTIALIAS):
+
+    if image.size[0] > width or image.size[1] > height:
+        if image.size[0] >= image.size[1]:
+            image = fill(image, width, height, crop, filter)
+        else:
+            image.thumbnail((width, height), filter)
+
+    return image
+
