@@ -64,6 +64,13 @@ cocktail.bind({
                 }
             }
 
+            if (entry.footnote) {
+                $dialog.find(".footnote").html(entry.footnote);
+            }
+            else {
+                $dialog.find(".footnote").hide();
+            }
+
             var $close = $dialog.find(".close_button");
             var $next = $dialog.find(".next_button");
             var $prev = $dialog.find(".previous_button");
