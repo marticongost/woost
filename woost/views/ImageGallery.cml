@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?py
+from cocktail.controllers import context
+?>
+
+<div
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:py="http://www.whads.com/ns/cocktail/templates">
+
+    <?py-class
+    gallery_type = "thumbnails" # Either "thumbnails" or "slideshow"
+    labels_visible = True
+    
+    images = ()
+    accessible_check = True
+    
+    full_image_effects = ("fit(900,700)",)
+    
+    thumbnail_effects = ("fill(%(width)s,%(height)s)",)
+    thumbnail_width = 200
+    thumbnail_height = 150
+    
+    slider_options = {
+        "continuous": False
+    }
+
+    def get_thumbnail_effects(self, image):
+        params = {
+            "width": self.thumbnail_width,
+            "height": self.thumbnail_height
+        }
+        return tuple(
+            effect % params
+            for effect in self.thumbnail_effects
+        )
+
+    def get_full_image_effects(self, image):
+        return self.full_image_effects
+    ?>
+
+    <?py
+    self.add_resource("/resources/styles/ImageGallery.css")
+    self.add_resource("/resources/scripts/ImageGallery.js")
+
+    self.slider_options = self.slider_options.copy()
+    ?>
+
+    <py:ready>
+        <?py
+        self.add_class(self.gallery_type)
+        self.set_client_param("galleryType", self.gallery_type)
+
+        if self.gallery_type == "slideshow":
+            self.add_resource("/resources/scripts/jquery.sudoSlider.js")
+            self.set_client_param("sliderOptions", self.slider_options)
+            element.add_client_code("this.style.width = '%dpx'" % self.thumbnail_width)
+        ?>
+    </py:ready>
+
+    <ul py:id="image_list">
+        <py:ready>
+            <?py            
+            images = self.images
+            if self.accessible_check:
+                images = (img for img in self.images if img.is_accessible())
+            ?>
+            <py:new
+                py:element="self.create_image_entry(image)"
+                py:for="image in images"/>
+        </py:ready>
+    </ul>
+
+    <li py:def="image_entry" py:args="image">
+        <?py
+        cms = context["cms"]
+        title = image.title or ""
+        ?>
+        <a py:local_id="image_link"
+            href="${cms.image_uri(image, *self.get_full_image_effects(image))}"
+            target="blank_">
+
+            <img py:local_id="image"
+                src="${context['cms'].image_uri(image, *self.get_thumbnail_effects(image))}"
+                alt="${title}"/>
+            
+            <span py:local_id="image_label"
+                py:visible="${self.labels_visible}"
+                py:collapsible="${True}">${title}</span>
+        </a>
+    </li>
+
+    <a py:id="next_button"
+        py:client_model="woost.views.ImageGallery.next_button"
+        py:visible="@{self.gallery_type == 'slideshow'}"
+        href="javascript:"
+        title="${translations('woost.views.ImageGallery.next_button')}">
+        <img src="/resources/images/ImageGallery-next_button.png" alt=""/>
+    </a>
+
+    <a py:id="previous_button"
+        py:client_model="woost.views.ImageGallery.previous_button"
+        py:visible="@{self.gallery_type == 'slideshow'}"
+        href="javascript:"
+        title="${translations('woost.views.ImageGallery.previous_button')}">
+        <img src="/resources/images/ImageGallery-previous_button.png" alt=""/>
+    </a>
+
+    <div py:id="image_dialog" 
+        py:client_model="woost.views.ImageGallery.image_dialog"
+        class="ImageGallery-dialog">
+        <div py:local_id="header">
+            <span py:local_id="index"></span>
+            <span py:local_id="label"></span>
+        </div>
+        <button py:local_id="close_button" title="${translations('woost.views.ImageGallery.close_button')}">
+            <img src="/resources/images/ImageGallery-close_button.png" alt=""/>
+        </button>
+        <img py:local_id="image"/>
+        <button
+            py:local_id="previous_button">
+            ${translations("woost.views.ImageGallery.previous_button")}
+        </button>
+        <button
+            py:local_id="next_button">
+            ${translations("woost.views.ImageGallery.next_button")}
+        </button>
+    </div>
+
+</div>
+

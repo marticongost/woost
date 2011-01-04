@@ -1,0 +1,143 @@
+
+.ImageGallery ul {
+    padding: 0;
+    list-style-type: none;
+    margin: 0;
+}
+
+.ImageGallery.thumbnails {
+    overflow: hidden;
+}
+
+.ImageGallery.thumbnails .image_entry {
+    float: left;
+    margin: 0.5em;
+}
+
+.ImageGallery .image_link {
+    display: block;
+    text-decoration: none;
+}
+
+.ImageGallery .image_label {
+    display: block;
+    text-align: center;
+    height: 1.5em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    -o-text-overflow: ellipsis;
+}
+
+.ImageGallery.slideshow .image {
+    display: block;
+}
+
+.ImageGallery .slideshow_controls {
+    display: block;
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0px;
+}
+
+.ImageGallery .slideshow_controls a {
+    position: absolute;
+    bottom: 2px;
+    padding: 5px;
+    font-size: 0;
+}
+
+.ImageGallery .slideshow_controls .next_button {
+    right: 2px;
+}
+
+.ImageGallery .slideshow_controls .previous_button {
+    left: 2px;
+}
+
+body.modal {
+    overflow: hidden;
+}
+
+.dialog-background {
+    z-index: 10000;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: black;
+    opacity: 0.85;
+}
+
+.ImageGallery-dialog {
+    z-index: 10001;
+    border: none;
+    position: fixed;
+    top: 4%;
+    background-color: white;
+    -webkit-box-shadow: 3px 3px 3px #272727;
+}
+
+.ImageGallery-dialog button,
+.ImageGallery-dialog .header,
+.ImageGallery .slideshow_controls a {
+    border: none;
+    text-decoration: none;
+    opacity: 0.7;
+    background-color: black;
+    color: white;
+    cursor: pointer;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+}
+
+.ImageGallery-dialog .image {
+    display: block;
+}
+
+.ImageGallery-dialog img.image[tabindex="0"] {
+    cursor: pointer;
+}
+
+.ImageGallery-dialog button:focus,
+.ImageGallery-dialog button:hover,
+.ImageGallery .slideshow_controls a:focus,
+.ImageGallery .slideshow_controls a:hover {
+    background-color: #313131;
+    opacity: 0.8;
+}
+
+.ImageGallery-dialog .header {
+    position: absolute;
+    left: 2px;
+    top: 2px;
+    padding: 0.2em;
+}
+
+.ImageGallery-dialog .index {
+    margin-right: 0.4em;
+    font-weight: bold;
+}
+
+.ImageGallery-dialog .close_button {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    padding: 5px;
+    font-size: 0;
+}
+
+.ImageGallery-dialog .next_button {
+    position: absolute;
+    bottom: 7px;
+    right: 2px;
+}
+
+.ImageGallery-dialog .previous_button {
+    position: absolute;
+    bottom: 7px;
+    left: 2px;
+}
+
