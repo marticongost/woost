@@ -10,6 +10,7 @@ from cocktail.controllers import context
     <?py-class
     gallery_type = "thumbnails" # Either "thumbnails" or "slideshow"
     labels_visible = True
+    footnotes_visible = True
     
     images = ()
     accessible_check = True
@@ -36,6 +37,9 @@ from cocktail.controllers import context
 
     def get_full_image_effects(self, image):
         return self.full_image_effects
+
+    def get_footnote(self, image):
+        return image.description
     ?>
 
     <?py
@@ -74,6 +78,11 @@ from cocktail.controllers import context
         <?py
         cms = context["cms"]
         title = image.title or ""
+
+        if self.footnotes_visible:
+            footnote = self.get_footnote(image)
+            if footnote:
+                element.set_client_param("footnote", footnote)
         ?>
         <a py:local_id="image_link"
             href="${cms.image_uri(image, *self.get_full_image_effects(image))}"
@@ -108,24 +117,27 @@ from cocktail.controllers import context
     <div py:id="image_dialog" 
         py:client_model="woost.views.ImageGallery.image_dialog"
         class="ImageGallery-dialog">
-        <div py:local_id="header">
-            <span py:local_id="index"></span>
-            <span py:local_id="label"></span>
+        <div py:id="image_frame">
+            <div py:local_id="header">
+                <span py:local_id="index"></span>
+                <span py:local_id="label"></span>
+            </div>
+            <button py:local_id="close_button" title="${translations('woost.views.ImageGallery.close_button')}">
+                <img src="/resources/images/ImageGallery-close_button.png" alt=""/>
+            </button>
+            <img py:local_id="image"/>
+            <button
+                py:local_id="previous_button"
+                title="${translations('woost.views.ImageGallery.previous_button')}">
+                <img src="/resources/images/ImageGallery-previous_button.png" alt=""/>
+            </button>
+            <button
+                py:local_id="next_button"
+                title="${translations('woost.views.ImageGallery.next_button')}">
+                <img src="/resources/images/ImageGallery-next_button.png" alt=""/>
+            </button>
         </div>
-        <button py:local_id="close_button" title="${translations('woost.views.ImageGallery.close_button')}">
-            <img src="/resources/images/ImageGallery-close_button.png" alt=""/>
-        </button>
-        <img py:local_id="image"/>
-        <button
-            py:local_id="previous_button"
-            title="${translations('woost.views.ImageGallery.previous_button')}">
-            <img src="/resources/images/ImageGallery-previous_button.png" alt=""/>
-        </button>
-        <button
-            py:local_id="next_button"
-            title="${translations('woost.views.ImageGallery.next_button')}">
-            <img src="/resources/images/ImageGallery-next_button.png" alt=""/>
-        </button>
+        <div py:local_id="footnote"></div>
     </div>
 
 </div>

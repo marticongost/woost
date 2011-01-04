@@ -93,6 +93,15 @@ body.modal {
     -webkit-border-radius: 3px;
 }
 
+.ImageGallery-dialog .image_frame {
+    position: relative;
+}
+
+.ImageGallery-dialog .footnote {
+    padding: 0.2em;
+    font-size: 0.85em;
+}
+
 .ImageGallery-dialog .image {
     display: block;
 }
