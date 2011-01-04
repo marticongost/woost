@@ -771,7 +771,7 @@ image_processors = OrderedDict()
 
 def image_processor(func):
     image_processors[func.func_name] = func
-    return image_processors
+    return func
 
 @image_processor
 def thumbnail(image, width = None, height = None, filter = Image.ANTIALIAS):
