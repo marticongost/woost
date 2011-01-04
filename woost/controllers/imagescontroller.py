@@ -184,15 +184,6 @@ def serve_image(item, *processing, **kwargs):
             file_name
         )
 
-        from cocktail.styled import styled
-        fexists = os.path.exists(cached_file)
-        fmtime = fexists and os.stat(cached_file).st_mtime
-        print "renderer:", styled(renderer, "brown")
-        print "file:", styled(file_name, "pink")
-        print "fmtime:", styled(fmtime, "slate_blue")
-        print "mtime:", styled(mtime, "yellow")
-        print "Current:", styled(fmtime >= mtime, "bright_green")
-
         if os.path.exists(cached_file) \
         and os.stat(cached_file).st_mtime >= mtime:
             mime_type = mime_types_by_format[extension]
