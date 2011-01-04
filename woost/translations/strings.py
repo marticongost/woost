@@ -1069,6 +1069,24 @@ translations.define("woost.views.ContentTable search header",
     en = u"Filters"
 )
 
+translations.define("woost.views.ImageGallery.close_button",
+    ca = u"Tancar la imatge",
+    es = u"Cerrar la imagen",
+    en = u"Close image"
+)
+
+translations.define("woost.views.ImageGallery.next_button",
+    ca = u"Següent",
+    es = u"Siguiente",
+    en = u"Next"
+)
+
+translations.define("woost.views.ImageGallery.previous_button",
+    ca = u"Anterior",
+    es = u"Anterior",
+    en = u"Previous"
+)
+
 # Content views
 #------------------------------------------------------------------------------
 translations.define("View as",
