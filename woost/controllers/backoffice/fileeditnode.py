@@ -35,6 +35,17 @@ class FileEditNode(PublishableEditNode):
     def form_schema(self):
 
         form_schema = PublishableEditNode.form_schema(self)
+
+        # Not all users can read the same members, try to find its best
+        # position
+        available_members = form_schema.members().keys()
+
+        if "local_path" in available_members:
+            member_params = {"after": "local_path"}
+        elif "image_effects" in available_members:
+            member_params = {"before": "image_effects"}
+        else:
+            member_params = {}
         
         form_schema.add_member(
             FileUpload("upload",
@@ -42,7 +53,7 @@ class FileEditNode(PublishableEditNode):
                 get_file_destination = lambda upload: self.temp_file_path,
                 member_group = "content"
             ),
-            after = "local_path"
+            **member_params
         )
         
         if form_schema.get_member("local_path") \
