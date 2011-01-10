@@ -38,11 +38,9 @@ class FileEditNode(PublishableEditNode):
 
         # Not all users can read the same members, try to find its best
         # position
-        available_members = form_schema.members().keys()
-
-        if "local_path" in available_members:
+        if form_schema.get_member("local_path"):
             member_params = {"after": "local_path"}
-        elif "image_effects" in available_members:
+        elif form_schema.get_member("image_effects"):
             member_params = {"before": "image_effects"}
         else:
             member_params = {}
