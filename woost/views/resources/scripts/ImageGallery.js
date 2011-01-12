@@ -54,14 +54,15 @@ cocktail.bind({
             
             if (imageTitle) {
                 $dialog.find(".header .label").html(imageTitle);
-                if (singleImage) {
-                    $dialog.find(".header .index").hide();
-                }
-                else {
-                    $dialog.find(".header .index").html(
-                        ($entry.index() + 1) + " / " + $imageGallery.find(".image_entry").length
-                    );
-                }
+            }
+
+            if (singleImage) {
+                $dialog.find(".header .index").hide();
+            }
+            else {
+                $dialog.find(".header .index").html(
+                    ($entry.index() + 1) + " / " + $imageGallery.find(".image_entry").length
+                );
             }
 
             if (entry.footnote) {
