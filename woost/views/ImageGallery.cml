@@ -55,7 +55,7 @@ from cocktail.controllers import context
         self.set_client_param("galleryType", self.gallery_type)
 
         if self.gallery_type == "slideshow":
-            self.add_resource("/resources/scripts/jquery.sudoSlider.js")
+            self.add_resource("/cocktail/scripts/jquery.sudoSlider.js")
             self.set_client_param("sliderOptions", self.slider_options)
             element.add_client_code("this.style.width = '%dpx'" % self.thumbnail_width)
         ?>
