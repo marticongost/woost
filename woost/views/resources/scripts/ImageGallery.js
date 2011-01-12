@@ -20,6 +20,11 @@ cocktail.bind({
                 .hide()
                 .fadeIn()
                 .find(".image[tabindex=0]").focus();
+
+            // Synchronize the gallery and the image dialog
+            if (this.sudoSlider) {
+                this.sudoSlider.goToSlide(jQuery(entry).index() + 1);
+            }
         }
 
         this.showPreviousImage = function (entry) {
@@ -167,7 +172,7 @@ cocktail.bind({
             this.sliderOptions.nextHtml = 
                 cocktail.instantiate("woost.views.ImageGallery.next_button");
 
-            $imageGallery.sudoSlider(this.sliderOptions);
+            this.sudoSlider = $imageGallery.sudoSlider(this.sliderOptions);
 
             // Move the navigation controls created by Sudo Slider into the gallery
             $imageGallery.next()
