@@ -17,6 +17,7 @@
 .ImageGallery .image_link {
     display: block;
     text-decoration: none;
+    text-align: center;
 }
 
 .ImageGallery .image_label {
@@ -31,6 +32,7 @@
 
 .ImageGallery.slideshow .image {
     display: block;
+    margin: auto;
 }
 
 .ImageGallery .slideshow_controls {
