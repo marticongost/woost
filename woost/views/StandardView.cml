@@ -72,17 +72,7 @@ from woost.models import Site, Publishable, ModifyPermission
         </div>
 
         <div py:id="toolbar">
-            <a py:id="edit_link">${translations("Action edit")}</a>
-            <py:ready>
-                <?py
-                if self.show_user_controls \
-                and self.user.has_permission(ModifyPermission, target = self.publishable):
-                    backoffice = Publishable.get_instance(qname = "woost.backoffice")
-                    self.edit_link["href"] = self.cms.uri(backoffice, "content", self.publishable.id, "fields")
-                else:
-                    element.visible = False
-                ?>
-            </py:ready>
+            <py:new py:id="modify_link" py:element="self.create_edit_link()" py:action="modify"/>
         </div>
 
         <?py
@@ -102,6 +92,8 @@ from woost.models import Site, Publishable, ModifyPermission
             </py:ready>
         </ul>
     </div>
+
+    <py:woost.views.EditLink py:def="edit_link" py:visible="@{element.visible and self.show_user_controls}"/>
 
     <li py:def="attachment_entry" py:args="attachment">
         <a href="${self.cms.uri(attachment)}" title="${getattr(attachment, 'description', None)}">
