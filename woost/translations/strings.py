@@ -710,6 +710,41 @@ translations.define("woost.views.BackOfficeChangeLogView expanded",
     en = u"Fold"
 )
 
+# woost.views.EditLink
+#------------------------------------------------------------------------------
+translations.define("woost.views.EditLink-publishable_target",
+    ca = u"aquesta pàgina",
+    es = u"esta página",
+    en = u"this page"
+)
+
+translations.define("woost.views.EditLink-create",
+    ca = lambda target_desc = None:
+        u"Crear " + (target_desc or u"element"),
+    es = lambda target_desc = None:
+        u"Crear " + (target_desc or u"elemento"),
+    en = lambda target_desc = None:
+        u"Create " + (target_desc or u"element")
+)
+
+translations.define("woost.views.EditLink-modify",
+    ca = lambda target_desc = None:
+        u"Editar" + (target_desc or u"això"),
+    es = lambda target_desc = None:
+        u"Editar " + (target_desc or u"esto"),
+    en = lambda target_desc = None:
+        u"Edit " + (target_desc or u"this")
+)
+
+translations.define("woost.views.EditLink-delete",
+    ca = lambda target_desc = None:
+        u"Eliminar " + (target_desc or u"això"),
+    es = lambda target_desc = None:
+        u"Eliminar " + (target_desc or u"esto"),
+    en = lambda target_desc = None:
+        u"Delete " + (target_desc or u"this")
+)
+
 # Initialization content
 #------------------------------------------------------------------------------
 translations.define(
