@@ -51,6 +51,9 @@ from cocktail.controllers import context
 
     <py:ready>
         <?py
+        if not self.images:
+            self.visible = False
+
         self.add_class(self.gallery_type)
         self.set_client_param("galleryType", self.gallery_type)
 
