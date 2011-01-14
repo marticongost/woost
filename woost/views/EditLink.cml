@@ -24,6 +24,7 @@ from woost.models import (
         "modify": ModifyPermission,
         "delete": DeletePermission
     }
+    edit_parameters = {}
 
     def is_permitted(self):
         return get_current_user().has_permission(
@@ -36,18 +37,22 @@ from woost.models import (
         if self.action == "create":
             return context["cms"].uri(
                 backoffice, 
-                "content", "new", 
-                item_type = self.target.full_name
+                "content", "new", "fields",
+                item_type = self.target.full_name,
+                **self.edit_parameters
             )
         elif self.action == "modify":
             return context["cms"].uri(
                 backoffice, 
-                "content", self.target.id, "fields"
+                "content", self.target.id, "fields",
+                **self.edit_parameters
             )
         elif self.action == "delete":
             return context["cms"].uri(
                 backoffice,
-                "delete", selection = self.target.id
+                "delete",
+                selection = self.target.id,
+                **self.edit_parameters
             )
     ?>
 
