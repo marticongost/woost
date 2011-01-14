@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <?py
 from cocktail.html import html5_tag, html5_attr
-from woost.models import Site, Publishable, ModifyPermission
+from woost.models import Site
 ?>
 
 <py:woost.views.BaseView
