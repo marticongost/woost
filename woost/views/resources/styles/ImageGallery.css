@@ -71,6 +71,7 @@ body.modal {
     height: 100%;
     background-color: black;
     opacity: 0.85;
+    filter: alpha(opacity=85);
 }
 
 .ImageGallery-dialog {
@@ -88,6 +89,7 @@ body.modal {
     border: none;
     text-decoration: none;
     opacity: 0.7;
+    filter: alpha(opacity=70);
     background-color: black;
     color: white;
     cursor: pointer;
@@ -118,6 +120,7 @@ body.modal {
 .ImageGallery .slideshow_controls a:hover {
     background-color: #313131;
     opacity: 0.8;
+    filter: alpha(opacity=80);
 }
 
 .ImageGallery-dialog .header {
@@ -154,4 +157,3 @@ body.modal {
     padding: 5px;
     font-size: 0;
 }
-

@@ -81,6 +81,10 @@ from cocktail.controllers import context
         <?py
         cms = context["cms"]
         title = image.title or ""
+        
+        # IE 7 requires this... :'(
+        element.set_style("width", "%dpx" % self.thumbnail_width)
+        element.set_style("height", "%dpx" % self.thumbnail_height)
 
         if self.footnotes_visible:
             footnote = self.get_footnote(image)
