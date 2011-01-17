@@ -11,15 +11,63 @@ cocktail.bind({
     selector: ".ImageGallery",
     behavior: function ($imageGallery) {
  
+        var loadedImages = {};
+
+        $imageGallery.bind("imageLoaded", function (e, loadedImage) {
+            loadedImages[loadedImage.src] = loadedImage;
+        });
+
+        this.loadImage = function (src, callback /* optional */) {
+
+            var image = loadedImages[src];
+
+            if (image && image.loaded) {
+                if (callback) {
+                    callback.call(this, image);                    
+                }                
+            }
+            else {
+                if (callback) {
+                    var handler = function (e, loadedImage) {
+                        if (loadedImage.src == src) {
+                            $imageGallery.unbind("imageLoaded", handler);
+                            callback.call(this, loadedImage);
+                        }
+                    }
+                    $imageGallery.bind("imageLoaded", handler);
+                }
+                
+                if (!image) {
+                    image = new Image();
+                    loadedImages[src] = image;
+                    image.onload = function () {
+                        this.loaded = true;
+                        $imageGallery.trigger("imageLoaded", this);
+                    }
+                    image.src = src;
+                }
+            }
+        }
+
         this.showImage = function (entry) {
             cocktail.closeDialog();
             var dialog = this.createImageDialog(entry);
-            cocktail.showDialog(dialog);
-            cocktail.center(dialog);
-            jQuery(dialog)
-                .hide()
-                .fadeIn()
-                .find(".image[tabindex=0]").focus();
+            cocktail.showDialog(dialog);            
+            var $dialog = jQuery(dialog);
+            $dialog.hide();
+
+            // Show the dialog once the image finishes loading
+            this.loadImage(
+                jQuery(entry).find(".image_link").get(0).href,
+                function (image) {
+                    $dialog.show();
+                    cocktail.center(dialog);
+                    $dialog
+                        .hide()
+                        .fadeIn()
+                        .find(".image[tabindex=0]").focus();
+                }
+            );
 
             // Synchronize the gallery and the image dialog
             if (this.sudoSlider) {
@@ -135,11 +183,6 @@ cocktail.bind({
                         $imageGallery.get(0).showNextImage(entry);
                     });
             }
-                        
-            // Center the dialog once the image finishes loading
-            $img.get(0).onload = function () {
-                cocktail.center($dialog.get(0));
-            }
             
             // Only show dialog controls when hovering over the image
             $dialogControls.filter(":not(.header)").hide();
@@ -179,6 +222,11 @@ cocktail.bind({
                 .addClass("slideshow_controls")
                 .appendTo($imageGallery);
         }
+
+        // Image pre-loading
+        $imageGallery.find(".image_entry .image_link").each(function () {
+            $imageGallery.get(0).loadImage(this.href);
+        });
     },
     children: {
         ".image_entry": function ($entry, $imageGallery) {
@@ -189,10 +237,6 @@ cocktail.bind({
                 $imageGallery.get(0).showImage($entry.get(0));
                 return false;
             });
-
-            // Image pre-loading
-            var img = new Image();
-            img.src = $link.attr("href");
         }
     }
 });
