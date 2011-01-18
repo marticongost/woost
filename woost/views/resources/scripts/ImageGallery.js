@@ -17,7 +17,7 @@ cocktail.bind({
             loadedImages[loadedImage.src] = loadedImage;
         });
 
-        this.loadImage = function (src, callback /* optional */) {
+        this.loadImage = function (src, callback /* optional */, showStatus /* optional */) {
 
             var image = loadedImages[src];
 
@@ -27,6 +27,10 @@ cocktail.bind({
                 }                
             }
             else {
+                if (showStatus) {
+                    this.setLoading(true);
+                }
+
                 if (callback) {
                     var handler = function (e, loadedImage) {
                         if (loadedImage.src == src) {
@@ -42,10 +46,45 @@ cocktail.bind({
                     loadedImages[src] = image;
                     image.onload = function () {
                         this.loaded = true;
+                        if (image.showStatus) {
+                            $imageGallery.get(0).setLoading(false);
+                        }
                         $imageGallery.trigger("imageLoaded", this);
                     }
+                    image.showStatus = showStatus;
                     image.src = src;
                 }
+                else if (showStatus) {
+                    image.showStatus = true;
+                }
+            }
+        }
+
+        this.setLoading = function (loading) {
+            var $sign = jQuery(".ImageGallery-loading_sign");
+
+            if (!loading) {
+                clearInterval($sign.get(0).animationTimer);
+                $sign.remove();
+            }
+            else if (!$sign.length) {
+                var sign = cocktail.instantiate("woost.views.ImageGallery.loading_sign");
+                sign.animationStep = 0;
+                sign.ball = document.createElement("div");
+                sign.ball.className = "ball";
+                sign.appendChild(sign.ball);
+                sign.animationTimer = setInterval(function () {
+                    sign.animationStep = (sign.animationStep + 1) % 200;
+                    if (sign.animationStep < 100) {
+                        var pos = sign.animationStep;
+                    }
+                    else {
+                        var pos = 200 - sign.animationStep;
+                    }
+                    sign.ball.style.left = sign.offsetWidth / 4 + (sign.offsetWidth / 2 * pos / 100) + "px";
+                }, 10);
+                document.body.appendChild(sign);
+                cocktail.center(sign);
             }
         }
 
@@ -56,7 +95,7 @@ cocktail.bind({
             var $dialog = jQuery(dialog);
             $dialog.hide();
 
-            // Show the dialog once the image finishes loading
+            // Show the dialog once the image finishes loading            
             this.loadImage(
                 jQuery(entry).find(".image_link").get(0).href,
                 function (image) {
@@ -66,7 +105,8 @@ cocktail.bind({
                         .hide()
                         .fadeIn()
                         .find(".image[tabindex=0]").focus();
-                }
+                },
+                true
             );
 
             // Synchronize the gallery and the image dialog
