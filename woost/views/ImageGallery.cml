@@ -147,5 +147,11 @@ from cocktail.controllers import context
         <div py:local_id="footnote"></div>
     </div>
 
+    <div py:id="loading_sign" 
+        py:client_model="woost.views.ImageGallery.loading_sign"
+        class="ImageGallery-loading_sign">
+        ${translations("woost.views.ImageGallery.loading_sign")}
+    </div>
+
 </div>
 

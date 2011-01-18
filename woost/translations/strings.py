@@ -1122,6 +1122,12 @@ translations.define("woost.views.ImageGallery.previous_button",
     en = u"Previous"
 )
 
+translations.define("woost.views.ImageGallery.loading_sign",
+    ca = u"Carregant la imatge",
+    es = u"Cargando la imagen",
+    en = u"Loading image"
+)
+
 # Content views
 #------------------------------------------------------------------------------
 translations.define("View as",
