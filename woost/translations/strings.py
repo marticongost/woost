@@ -1735,6 +1735,12 @@ translations.define("DescriptiveIdPublicationScheme.format-explanation",
          u"<em>id</em> and <em>separator</em> parameters."
 )
 
+translations.define("DescriptiveIdPublicationScheme.include_file_extensions",
+    ca = u"Incloure extensions de fitxer",
+    es = u"Incluir extensiones de fichero",
+    en = u"Include file extensions"
+)
+
 # CachingPolicy
 #------------------------------------------------------------------------------
 translations.define("CachingPolicy",

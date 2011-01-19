@@ -7,11 +7,13 @@
 @since:			January 2010
 """
 import re
+from os.path import splitext
 from cocktail.modeling import abstractmethod
 from cocktail import schema
 from cocktail.translations import translations
 from woost.models.item import Item
 from woost.models.publishable import Publishable
+from woost.models.file import File
 
 
 class PublicationScheme(Item):
@@ -184,7 +186,8 @@ class DescriptiveIdPublicationScheme(PublicationScheme):
         "word_separator",
         "id_regexp",
         "title_splitter_regexp",
-        "format"
+        "format",
+        "include_file_extensions"
     ]
 
     id_separator = schema.String(
@@ -201,7 +204,9 @@ class DescriptiveIdPublicationScheme(PublicationScheme):
 
     id_regexp = schema.Member(
         required = True,
-        default = re.compile(r"(.+_)?(?P<id>\d+)$"),
+        default = schema.DynamicDefault(
+            lambda: re.compile(r"(.+_)?(?P<id>\d+)(?P<ext>\.[a-z0-9]+)?$")
+        ),
         normalization = lambda value:
             re.compile(value) if isinstance(value, basestring) else value,
         serialize_request_value = lambda value:
@@ -210,7 +215,9 @@ class DescriptiveIdPublicationScheme(PublicationScheme):
 
     title_splitter_regexp = schema.Member(
         required = True,
-        default = re.compile(r"\W+", re.UNICODE),
+        default = schema.DynamicDefault(
+            lambda: re.compile(r"\W+", re.UNICODE)
+        ),
         normalization = lambda value:
             re.compile(value, re.UNICODE)
             if isinstance(value, basestring)
@@ -223,6 +230,11 @@ class DescriptiveIdPublicationScheme(PublicationScheme):
         required = True,
         default = "%(title)s%(separator)s%(id)d",
         text_search = False
+    )
+
+    include_file_extensions = schema.Boolean(
+        required = True,
+        default = False
     )
 
     _uri_encodings = ["utf-8", "iso-8859-1"]
@@ -260,8 +272,19 @@ class DescriptiveIdPublicationScheme(PublicationScheme):
                 return None
 
             publishable = Publishable.get_instance(id)
-            
+
             if publishable is not None:
+
+                # A file extension was provided, but either the scheme doesn't
+                # accept them, or the selected item doesn't match the requested
+                # file type: 404
+                ext = match.group("ext")
+                if ext and (
+                    not self.include_file_extensions
+                    or ext != self.get_publishable_file_extension(publishable)
+                ):
+                    return None
+
                 return PathResolution(
                     self,
                     publishable,
@@ -287,5 +310,17 @@ class DescriptiveIdPublicationScheme(PublicationScheme):
         else:
             ref = str(publishable.id)
 
+        if self.include_file_extensions:
+            ext = self.get_publishable_file_extension(publishable)
+            if ext:
+                ref += ext
+
         return ref
+
+    def get_publishable_file_extension(self, publishable):
+        return (
+            isinstance(publishable, File)
+            and publishable.file_name
+            and splitext(publishable.file_name)[1]
+        ) or None
 
