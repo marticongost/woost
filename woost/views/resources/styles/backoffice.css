@@ -353,6 +353,10 @@ body.modal {
     width: 18em;
 }
 
+.BackOfficeLayout .field input.ColorPicker {
+    width: 5em;
+}
+
 .BackOfficeLayout .field button.control {
     width: 12em;
 }

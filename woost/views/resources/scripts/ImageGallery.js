@@ -11,15 +11,108 @@ cocktail.bind({
     selector: ".ImageGallery",
     behavior: function ($imageGallery) {
  
+        var loadedImages = {};
+
+        $imageGallery.bind("imageLoaded", function (e, loadedImage) {
+            loadedImages[loadedImage.src] = loadedImage;
+        });
+
+        this.loadImage = function (src, callback /* optional */, showStatus /* optional */) {
+
+            var image = loadedImages[src];
+
+            if (image && image.loaded) {
+                if (callback) {
+                    callback.call(this, image);                    
+                }                
+            }
+            else {
+                if (showStatus) {
+                    this.setLoading(true);
+                }
+
+                if (callback) {
+                    var handler = function (e, loadedImage) {
+                        if (loadedImage.src == src) {
+                            $imageGallery.unbind("imageLoaded", handler);
+                            callback.call(this, loadedImage);
+                        }
+                    }
+                    $imageGallery.bind("imageLoaded", handler);
+                }
+                
+                if (!image) {
+                    image = new Image();
+                    loadedImages[src] = image;
+                    image.onload = function () {
+                        this.loaded = true;
+                        if (image.showStatus) {
+                            $imageGallery.get(0).setLoading(false);
+                        }
+                        $imageGallery.trigger("imageLoaded", this);
+                    }
+                    image.showStatus = showStatus;
+                    image.src = src;
+                }
+                else if (showStatus) {
+                    image.showStatus = true;
+                }
+            }
+        }
+
+        this.setLoading = function (loading) {
+            var $sign = jQuery(".ImageGallery-loading_sign");
+
+            if (!loading) {
+                clearInterval($sign.get(0).animationTimer);
+                $sign.remove();
+            }
+            else if (!$sign.length) {
+                var sign = cocktail.instantiate("woost.views.ImageGallery.loading_sign");
+                sign.animationStep = 0;
+                sign.ball = document.createElement("div");
+                sign.ball.className = "ball";
+                sign.appendChild(sign.ball);
+                sign.animationTimer = setInterval(function () {
+                    sign.animationStep = (sign.animationStep + 1) % 200;
+                    if (sign.animationStep < 100) {
+                        var pos = sign.animationStep;
+                    }
+                    else {
+                        var pos = 200 - sign.animationStep;
+                    }
+                    sign.ball.style.left = sign.offsetWidth / 4 + (sign.offsetWidth / 2 * pos / 100) + "px";
+                }, 10);
+                document.body.appendChild(sign);
+                cocktail.center(sign);
+            }
+        }
+
         this.showImage = function (entry) {
             cocktail.closeDialog();
             var dialog = this.createImageDialog(entry);
-            cocktail.showDialog(dialog);
-            cocktail.center(dialog);
-            jQuery(dialog)
-                .hide()
-                .fadeIn()
-                .find(".image[tabindex=0]").focus();
+            cocktail.showDialog(dialog);            
+            var $dialog = jQuery(dialog);
+            $dialog.hide();
+
+            // Show the dialog once the image finishes loading            
+            this.loadImage(
+                jQuery(entry).find(".image_link").get(0).href,
+                function (image) {
+                    $dialog.show();
+                    cocktail.center(dialog);
+                    $dialog
+                        .hide()
+                        .fadeIn()
+                        .find(".image[tabindex=0]").focus();
+                },
+                true
+            );
+
+            // Synchronize the gallery and the image dialog
+            if (this.sudoSlider) {
+                this.sudoSlider.goToSlide(jQuery(entry).index() + 1);
+            }
         }
 
         this.showPreviousImage = function (entry) {
@@ -54,14 +147,15 @@ cocktail.bind({
             
             if (imageTitle) {
                 $dialog.find(".header .label").html(imageTitle);
-                if (singleImage) {
-                    $dialog.find(".header .index").hide();
-                }
-                else {
-                    $dialog.find(".header .index").html(
-                        ($entry.index() + 1) + " / " + $imageGallery.find(".image_entry").length
-                    );
-                }
+            }
+
+            if (singleImage) {
+                $dialog.find(".header .index").hide();
+            }
+            else {
+                $dialog.find(".header .index").html(
+                    ($entry.index() + 1) + " / " + $imageGallery.find(".image_entry").length
+                );
             }
 
             if (entry.footnote) {
@@ -129,11 +223,6 @@ cocktail.bind({
                         $imageGallery.get(0).showNextImage(entry);
                     });
             }
-                        
-            // Center the dialog once the image finishes loading
-            $img.get(0).onload = function () {
-                cocktail.center($dialog.get(0));
-            }
             
             // Only show dialog controls when hovering over the image
             $dialogControls.filter(":not(.header)").hide();
@@ -166,13 +255,18 @@ cocktail.bind({
             this.sliderOptions.nextHtml = 
                 cocktail.instantiate("woost.views.ImageGallery.next_button");
 
-            $imageGallery.sudoSlider(this.sliderOptions);
+            this.sudoSlider = $imageGallery.sudoSlider(this.sliderOptions);
 
             // Move the navigation controls created by Sudo Slider into the gallery
             $imageGallery.next()
                 .addClass("slideshow_controls")
                 .appendTo($imageGallery);
         }
+
+        // Image pre-loading
+        $imageGallery.find(".image_entry .image_link").each(function () {
+            $imageGallery.get(0).loadImage(this.href);
+        });
     },
     children: {
         ".image_entry": function ($entry, $imageGallery) {
@@ -183,10 +277,6 @@ cocktail.bind({
                 $imageGallery.get(0).showImage($entry.get(0));
                 return false;
             });
-
-            // Image pre-loading
-            var img = new Image();
-            img.src = $link.attr("href");
         }
     }
 });

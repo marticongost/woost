@@ -710,6 +710,41 @@ translations.define("woost.views.BackOfficeChangeLogView expanded",
     en = u"Fold"
 )
 
+# woost.views.EditLink
+#------------------------------------------------------------------------------
+translations.define("woost.views.EditLink-publishable_target",
+    ca = u"aquesta pàgina",
+    es = u"esta página",
+    en = u"this page"
+)
+
+translations.define("woost.views.EditLink-create",
+    ca = lambda target_desc = None:
+        u"Crear " + (target_desc or u"element"),
+    es = lambda target_desc = None:
+        u"Crear " + (target_desc or u"elemento"),
+    en = lambda target_desc = None:
+        u"Create " + (target_desc or u"element")
+)
+
+translations.define("woost.views.EditLink-modify",
+    ca = lambda target_desc = None:
+        u"Editar" + (target_desc or u"això"),
+    es = lambda target_desc = None:
+        u"Editar " + (target_desc or u"esto"),
+    en = lambda target_desc = None:
+        u"Edit " + (target_desc or u"this")
+)
+
+translations.define("woost.views.EditLink-delete",
+    ca = lambda target_desc = None:
+        u"Eliminar " + (target_desc or u"això"),
+    es = lambda target_desc = None:
+        u"Eliminar " + (target_desc or u"esto"),
+    en = lambda target_desc = None:
+        u"Delete " + (target_desc or u"this")
+)
+
 # Initialization content
 #------------------------------------------------------------------------------
 translations.define(
@@ -1085,6 +1120,12 @@ translations.define("woost.views.ImageGallery.previous_button",
     ca = u"Anterior",
     es = u"Anterior",
     en = u"Previous"
+)
+
+translations.define("woost.views.ImageGallery.loading_sign",
+    ca = u"Carregant la imatge",
+    es = u"Cargando la imagen",
+    en = u"Loading image"
 )
 
 # Content views
@@ -1692,6 +1733,12 @@ translations.define("DescriptiveIdPublicationScheme.format-explanation",
          u"<em>id</em> y <em>separator</em> como parámetros.",
     en = u"A python text formatting string that takes <em>title</em>, "
          u"<em>id</em> and <em>separator</em> parameters."
+)
+
+translations.define("DescriptiveIdPublicationScheme.include_file_extensions",
+    ca = u"Incloure extensions de fitxer",
+    es = u"Incluir extensiones de fichero",
+    en = u"Include file extensions"
 )
 
 # CachingPolicy
