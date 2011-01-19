@@ -278,7 +278,11 @@ class DescriptiveIdPublicationScheme(PublicationScheme):
                 # A file extension was provided, but either the scheme doesn't
                 # accept them, or the selected item doesn't match the requested
                 # file type: 404
-                ext = match.group("ext")
+                try:
+                    ext = match.group("ext")
+                except:
+                    ext = None
+
                 if ext and (
                     not self.include_file_extensions
                     or ext != self.get_publishable_file_extension(publishable)
