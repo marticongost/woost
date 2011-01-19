@@ -45,7 +45,7 @@ from woost.extensions.mailer.mailing import get_receivers_by_roles
                     </ul>
                     <p>
                         <strong>${translations("woost.extensions.mailer.SendEmailView total")}</strong>
-                        <span>${sum(len(get_receivers_by_roles([role])) for role in self.edited_item.roles)} ${translations("woost.extensions.mailer users")}</span>
+                        <span>${len(get_receivers_by_roles(self.edited_item.roles))} ${translations("woost.extensions.mailer users")}</span>
                                 
                     </p>
                 </p>
