@@ -729,7 +729,7 @@ translations.define("woost.views.EditLink-create",
 
 translations.define("woost.views.EditLink-modify",
     ca = lambda target_desc = None:
-        u"Editar" + (target_desc or u"això"),
+        u"Editar " + (target_desc or u"això"),
     es = lambda target_desc = None:
         u"Editar " + (target_desc or u"esto"),
     en = lambda target_desc = None:
