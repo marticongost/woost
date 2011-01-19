@@ -51,11 +51,14 @@ from cocktail.controllers import context
 
     <py:ready>
         <?py
+        if not self.images:
+            self.visible = False
+
         self.add_class(self.gallery_type)
         self.set_client_param("galleryType", self.gallery_type)
 
         if self.gallery_type == "slideshow":
-            self.add_resource("/resources/scripts/jquery.sudoSlider.js")
+            self.add_resource("/cocktail/scripts/jquery.sudoSlider.js")
             self.set_client_param("sliderOptions", self.slider_options)
             element.add_client_code("this.style.width = '%dpx'" % self.thumbnail_width)
         ?>
@@ -78,6 +81,10 @@ from cocktail.controllers import context
         <?py
         cms = context["cms"]
         title = image.title or ""
+        
+        # IE 7 requires this... :'(
+        element.set_style("width", "%dpx" % self.thumbnail_width)
+        element.set_style("height", "%dpx" % self.thumbnail_height)
 
         if self.footnotes_visible:
             footnote = self.get_footnote(image)
@@ -138,6 +145,12 @@ from cocktail.controllers import context
             </button>
         </div>
         <div py:local_id="footnote"></div>
+    </div>
+
+    <div py:id="loading_sign" 
+        py:client_model="woost.views.ImageGallery.loading_sign"
+        class="ImageGallery-loading_sign">
+        ${translations("woost.views.ImageGallery.loading_sign")}
     </div>
 
 </div>
