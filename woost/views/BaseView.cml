@@ -150,6 +150,8 @@ from woost.models import Site, Publishable, Language
         ?>
     </py:ready>
 
+    <py:woost.views.EditPanel py:id="toolbar"/>
+   
     <div py:id="content">
         ${self.member_slot("body")}
     </div>
