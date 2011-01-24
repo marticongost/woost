@@ -2919,4 +2919,24 @@ div.success_label {
     width: 90%
 }
 
+/* Bulk file uploader
+-----------------------------------------------------------------------------*/
+.BackOfficeUploadFilesView .imported_files_list {
+    list-style-type: none;
+    padding: 0;
+    padding-left: 0.5em;
+    margin: 0;
+}
+
+.BackOfficeUploadFilesView .imported_files_list li {
+    margin-top: 1em;
+}
+
+.BackOfficeUploadFilesView .imported_files_list .ContentLink {
+    text-decoration: none;
+}
+
+.BackOfficeUploadFilesView .upload_another {
+    margin-top: 1.5em;
+}
 
