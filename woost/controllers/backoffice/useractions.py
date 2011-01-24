@@ -661,6 +661,14 @@ class OpenResourceAction(UserAction):
         return controller.context["cms"].uri(selection[0])
 
 
+class UploadFilesAction(UserAction):
+    included = frozenset(["toolbar_extra"])
+    content_type = File
+    min = None
+    max = None
+    ignores_selection = True
+
+
 class ExportAction(UserAction):
     included = frozenset(["toolbar_extra"])
     min = 1
@@ -829,6 +837,7 @@ OrderAction("order").register()
 ShowDetailAction("show_detail").register()
 PreviewAction("preview").register()
 OpenResourceAction("open_resource").register()
+UploadFilesAction("upload_files").register()
 EditAction("edit").register()
 DiffAction("diff").register()
 RevertAction("revert").register()
