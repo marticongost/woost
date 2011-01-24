@@ -33,7 +33,10 @@ class UploadFilesController(BaseBackOfficeController):
         form_schema = schema.Schema("UploadFilesForm")
         
         upload = FileUpload("upload", required = True)
-        upload["mime_type"].enumeration = ["application/zip"]
+        upload["mime_type"].enumeration = [
+            "application/zip",
+            "application/x-zip-compressed"
+        ]
         form_schema.add_member(upload)
 
         return form_schema
