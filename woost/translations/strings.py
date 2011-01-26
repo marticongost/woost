@@ -4099,3 +4099,9 @@ translations.define("woost.views.EditPanel.close_panel_button",
     en = u"Close edit panel"
 )
 
+translations.define("woost.views.EditPanel.actions_title",
+    ca = u"Accions",
+    es = u"Acciones",
+    en = u"Actions"
+)
+
