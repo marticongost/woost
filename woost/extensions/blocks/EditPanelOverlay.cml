@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?py
+from cocktail.controllers import context
+from woost.models import (
+    Publishable,
+    get_current_user,
+    ModifyPermission
+)
+from woost.extensions.blocks.blockspage import BlocksPage
+?>
+
+<py:overlay
+    py:class="woost.views.EditPanel"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:py="http://www.whads.com/ns/cocktail/templates">
+
+    <?py-class
+    def get_block_edit_uri(self, block):
+        backoffice = Publishable.require_instance(qname = "woost.backoffice")
+        return context['cms'].uri(backoffice, "content", block.id, "fields")
+    ?>
+
+    <py:with py:element="self.panel_content">
+        
+        <div py:id="blocks_section" 
+            class="edit_panel_section"
+            py:visible="@{isinstance(self.publishable, BlocksPage)}">
+
+            <?py
+            element.add_resource("/resources/styles/blocks-EditPanelOverlay.css")
+            element.add_resource("/resources/scripts/blocks-EditPanelOverlay.js")
+            ?>
+
+            <div py:id="blocks_title" class="edit_panel_title">
+                ${translations("woost.extensions.blocks.EditPanelOverlay.blocks_title")}
+            </div>
+
+            <div py:id="blocks_content" class="edit_panel_section_content">
+
+                <py:cocktail.html.TreeView
+                    py:id="block_tree"
+                    py:root="@{self.publishable}"
+                    py:root_visible="${False}"
+                    py:get_child_items="${lambda item: getattr(item, 'blocks', ()) }"
+                    py:get_item_url="${lambda item: self.get_block_edit_uri(item)}"
+                    py:filter_item="${lambda item: get_current_user().has_permission(ModifyPermission, target = item)}">
+
+                    <?py
+                    @extend(element)
+                    def get_item_label(self, item):
+                        if item.title:
+                            return item.title
+                        else:
+                            return translations(item.__class__.__name__)
+                    ?>
+
+                    <py:with py:def="entry" py:args="item">
+                        <?py
+                        entry.set_client_param("blockId", item.id)
+                        entry.add_class("block_entry_%d" % item.id)
+                        ?>
+                    </py:with>
+
+                </py:cocktail.html.TreeView>
+            </div>
+        </div>
+
+    </py:with>
+
+</py:overlay>
+

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<div
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:py="http://www.whads.com/ns/cocktail/templates">
+
+    <?py-class
+    blocks = ()
+    ?>
+
+    <div py:id="blocks">
+        <py:ready>
+            <py:new
+                py:element="block.create_view()"
+                py:for="block in self.publishable.blocks" />
+        </py:ready>
+    </div>
+
+</div>
+

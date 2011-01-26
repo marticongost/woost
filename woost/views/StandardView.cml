@@ -71,10 +71,6 @@ from woost.models import Site
             @{"" if self.fully_translated else translations("woost.views.StandardView fallback language notice", fallback = self.content_language)}
         </div>
 
-        <div py:id="toolbar">
-            <py:new py:id="modify_link" py:element="self.create_edit_link()" py:action="modify"/>
-        </div>
-
         <?py
         element.append(self.content)
         ?>

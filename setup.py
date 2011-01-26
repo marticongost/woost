@@ -79,7 +79,8 @@ of its features include:\n"
             "mailer = woost.extensions.mailer:MailerExtension",
             "usermodels = woost.extensions.usermodels:UserModelsExtension",
             "locations = woost.extensions.locations:LocationsExtension",
-            "webconsole = woost.extensions.webconsole:WebConsoleExtension"
+            "webconsole = woost.extensions.webconsole:WebConsoleExtension",
+            "blocks = woost.extensions.blocks:BlocksExtension"
         ]
     },
     # Woost can't yet access view resources (images, style sheets, client
