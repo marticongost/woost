@@ -30,11 +30,13 @@ from cocktail.events import event_handler
 from cocktail.translations import translations
 from cocktail.pkgutils import resolve
 from cocktail import schema
+from cocktail.schema import ValidationContext
 from cocktail.schema.expressions import (
     Expression,
     CustomExpression,
     ExclusionExpression,
     NegativeExpression,
+    InclusionExpression,
     Self
 )
 from cocktail.persistence import datastore
@@ -300,6 +302,21 @@ class ContentController(BaseBackOfficeController):
                 )
 
             # Add relation constraints
+            if relation.enumeration:
+                enumeration = relation.resolve_constraint(
+                    relation.enumeration, 
+                    ValidationContext(
+                        edit_node.item.__class__, 
+                        edit_node.item,
+                        persistent_object = edit_node.item
+                    )
+                )
+                user_collection.add_base_filter(
+                    InclusionExpression(
+                        Self, enumeration
+                    )
+                )
+
             for constraint in relation.get_constraint_filters(edit_node.item):
                 user_collection.add_base_filter(constraint)
 
