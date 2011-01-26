@@ -56,15 +56,25 @@ from woost.models import (
 
     <div py:id="panel_content">
 
-        <py:woost.views.EditLink 
-            py:id="modify_link" 
-            py:action="modify"
-            py:target="@{self.publishable}"/>
+        <div py:id="actions_section" class="edit_panel_section">
 
-        <py:woost.views.EditLink 
-            py:id="delete_link" 
-            py:action="delete"
-            py:target="@{self.publishable}"/> 
+            <div py:id="actions_title" class="edit_panel_title">
+                ${translations("woost.views.EditPanel.actions_title")}
+            </div>
+
+            <div py:id="actions_content" class="edit_panel_section_content">
+
+                <py:woost.views.EditLink 
+                    py:id="modify_link" 
+                    py:action="modify"
+                    py:target="@{self.publishable}"/>
+
+                <py:woost.views.EditLink 
+                    py:id="delete_link" 
+                    py:action="delete"
+                    py:target="@{self.publishable}"/> 
+            </div>
+        </div>
     </div>
 
 </div>
