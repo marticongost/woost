@@ -15,7 +15,9 @@ from cocktail.controllers import context
     images = ()
     accessible_check = True
     
-    full_image_effects = ("fit(900,700)",)
+    full_image_effects = ("fit(%(width)s,%(height)s)",)
+    full_width = 900
+    full_height = 700
     
     thumbnail_effects = ("fill(%(width)s,%(height)s)",)
     thumbnail_width = 200
@@ -36,7 +38,14 @@ from cocktail.controllers import context
         )
 
     def get_full_image_effects(self, image):
-        return self.full_image_effects
+        params = {
+            "width": self.full_width,
+            "height": self.full_height
+        }
+        return tuple(
+            effect % params
+            for effect in self.full_image_effects
+        )
 
     def get_footnote(self, image):
         return getattr(image, "description", None)
