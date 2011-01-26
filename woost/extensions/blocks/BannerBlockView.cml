@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<py:woost.extensions.blocks.BlockView
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:py="http://www.whads.com/ns/cocktail/templates">
+
+    <py:with py:element="self.block_content">
+        <py:ready>
+            <?py
+            if self.block.image:
+                element.set_style("background-image", "url('%s')" % self.cms.uri(self.block.image))
+            ?>
+        </py:ready>
+        <a py:id="block_link" href="@{self.cms.uri(self.block.target)}">
+            @{self.block.text or self.block.target.title}
+        </a>
+    </py:with>
+
+</py:woost.extensions.blocks.BlockView>
+
