@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<py:woost.extensions.blocks.BlockView
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:py="http://www.whads.com/ns/cocktail/templates">
+
+    <py:with py:element="self.block_content">
+        <py:woost.views.Menu
+            py:id="block_menu"
+            py:root="@{self.block.root}"
+            py:root_visible="@{self.block.root_visible}"
+            py:max_depth="@{self.block.max_depth}"
+            py:expanded="@{self.block.expanded}"
+            py:collapsible="@{True}"/>
+    </py:with>
+
+</py:woost.extensions.blocks.BlockView>
+

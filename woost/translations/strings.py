@@ -4119,3 +4119,23 @@ translations.define(
     en = u"Confirm password"
 )
 
+# EditPanel
+#------------------------------------------------------------------------------
+translations.define("woost.views.EditPanel.show_panel_button",
+    ca = u"Mostrar panell d'edició",
+    es = u"Mostrar panel de edición",
+    en = u"Show edit panel"
+)
+
+translations.define("woost.views.EditPanel.close_panel_button",
+    ca = u"Ocultar panell d'edició",
+    es = u"Ocultar panel de edición",
+    en = u"Close edit panel"
+)
+
+translations.define("woost.views.EditPanel.actions_title",
+    ca = u"Accions",
+    es = u"Acciones",
+    en = u"Actions"
+)
+
