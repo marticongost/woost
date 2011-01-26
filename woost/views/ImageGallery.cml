@@ -39,7 +39,7 @@ from cocktail.controllers import context
         return self.full_image_effects
 
     def get_footnote(self, image):
-        return image.description
+        return getattr(image, "description", None)
     ?>
 
     <?py
