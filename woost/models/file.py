@@ -148,6 +148,7 @@ class File(Publishable):
         
         if encoding:
             title = title.decode(encoding)
+            file_name = file_name.decode(encoding)
 
         title = title.replace("_", " ").replace("-", " ")
         title = title[0].upper() + title[1:]

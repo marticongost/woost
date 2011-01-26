@@ -1454,6 +1454,7 @@ body.scripted .BackOfficeLayout .ThumbnailsContentView .collection_display input
 }
 
 .preview-error-box,
+.BackOfficeLayout .ErrorBox,
 .BackOfficeLayout .error_box,
 .BackOfficeLayout .notification_box .error {
     color: black;
@@ -1472,6 +1473,7 @@ body.scripted .BackOfficeLayout .ThumbnailsContentView .collection_display input
     margin: 0 1em 1em 1em;
 }
 
+.BackOfficeLayout .ErrorBox li,
 .BackOfficeLayout .error_box li {
     list-style-type: none;
 }
@@ -2917,4 +2919,24 @@ div.success_label {
     width: 90%
 }
 
+/* Bulk file uploader
+-----------------------------------------------------------------------------*/
+.BackOfficeUploadFilesView .imported_files_list {
+    list-style-type: none;
+    padding: 0;
+    padding-left: 0.5em;
+    margin: 0;
+}
+
+.BackOfficeUploadFilesView .imported_files_list li {
+    margin-top: 1em;
+}
+
+.BackOfficeUploadFilesView .imported_files_list .ContentLink {
+    text-decoration: none;
+}
+
+.BackOfficeUploadFilesView .upload_another {
+    margin-top: 1.5em;
+}
 

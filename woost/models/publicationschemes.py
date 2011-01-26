@@ -205,7 +205,7 @@ class DescriptiveIdPublicationScheme(PublicationScheme):
     id_regexp = schema.Member(
         required = True,
         default = schema.DynamicDefault(
-            lambda: re.compile(r"(.+_)?(?P<id>\d+)(?P<ext>\.[a-z0-9]+)?$")
+            lambda: re.compile(r"(.+_)?(?P<id>\d+)(?P<ext>\.[a-zA-Z0-9]+)?$")
         ),
         normalization = lambda value:
             re.compile(value) if isinstance(value, basestring) else value,

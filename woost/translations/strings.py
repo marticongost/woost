@@ -174,6 +174,12 @@ translations.define("cocktail.html.shortcuts action open_resource",
     en = u"b"
 )
 
+translations.define("Action upload_files",
+    ca = u"Importar fitxers",
+    es = u"Importar ficheros",
+    en = u"Import files"
+)
+
 translations.define("Action export_xls",
     ca = u"Exportar a MS Excel",
     es = u"Exportar a MS Excel",
@@ -1354,6 +1360,34 @@ translations.define("woost.views.StandardView fallback language notice",
     en = lambda fallback:
         u"This page is not available in english. Its %s version is "
         u"shown instead." % translations(fallback).lower()
+)
+
+translations.define("UploadFilesForm.upload",
+    ca = u"Fitxer ZIP",
+    es = u"Fichero ZIP",
+    en = u"ZIP file"
+)
+
+translations.define(
+    "upload.mime_type-error: cocktail.schema.exceptions.EnumerationError",
+    ca = u"El fitxer indicat no és un fitxer ZIP",
+    es = u"El fichero indicado no es un fichero ZIP",
+    en = u"The selected file is not a ZIP file"
+)
+
+translations.define("woost.views.BackOfficeUploadFilesView.success_notice",
+    ca = lambda count: u"S'ha importat un total de <strong>%d</strong> %s:"
+        % (count, plural2(count, u"fitxer", u"fitxers")),
+    es = lambda count: u"Se han importado un total de <strong>%d</strong> %s:"
+        % (count, plural2(count, u"fichero", u"ficheros")),
+    en = lambda count: u"Uploaded <strong>%d</strong> %s:"
+        % (count, plural2(count, u"file", u"files"))
+)
+
+translations.define("woost.views.BackOfficeUploadFilesView.upload_another",
+    ca = u"Importar més fitxers",
+    es = u"Importar más ficheros",
+    en = u"Import more files"
 )
 
 # Item
