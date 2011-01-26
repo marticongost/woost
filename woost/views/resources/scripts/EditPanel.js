@@ -16,9 +16,11 @@ cocktail.bind(".EditPanel", function ($panel) {
     this.setExpanded = function (expanded) {
         if (expanded) {    
             $panel.addClass("expanded");
+            jQuery(document.body).addClass("editing");
         }
         else {
             $panel.removeClass("expanded");
+            jQuery(document.body).removeClass("editing");
         }
     }
 
