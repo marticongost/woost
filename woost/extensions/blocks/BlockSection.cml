@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?py
+from cocktail.controllers import context
+from woost.models import Publishable, ModifyPermission, get_current_user
+?>
+
+<div py:id="blocks_section" 
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:py="http://www.whads.com/ns/cocktail/templates"
+    class="edit_panel_section">
+
+    <?py-class
+    root_block = None
+    member = None
+
+    def get_block_edit_uri(self, block):
+        backoffice = Publishable.require_instance(qname = "woost.backoffice")
+        return context['cms'].uri(backoffice, "content", block.id, "fields")
+    ?>
+    
+    <?py
+    self.add_resource("/resources/styles/blocks-EditPanelOverlay.css")
+    self.add_resource("/resources/scripts/blocks-EditPanelOverlay.js")
+    ?>
+
+    <py:ready>
+        <?py
+        self.add_class(self.member.name + "_section")
+        ?>
+    </py:ready>
+
+    <div py:id="blocks_title" class="edit_panel_title">
+        @{translations(self.member)}
+    </div>
+
+    <div py:id="blocks_content" class="edit_panel_section_content">
+
+        <py:cocktail.html.TreeView
+            py:id="block_tree"
+            py:root="@{self.root_block}"
+            py:root_visible="${False}"
+            py:get_child_items="@{lambda item: item.get(self.member) or getattr(item, 'blocks', ()) }"
+            py:get_item_url="${lambda item: self.get_block_edit_uri(item)}"
+            py:filter_item="${lambda item: get_current_user().has_permission(ModifyPermission, target = item)}">
+
+            <?py
+            @extend(element)
+            def get_item_label(self, item):
+                if item.title:
+                    return item.title
+                else:
+                    return translations(item.__class__.__name__)
+            ?>
+
+            <py:with py:def="entry" py:args="item">
+                <?py
+                entry.set_client_param("blockId", item.id)
+                entry.add_class("block_entry_%d" % item.id)
+                ?>
+            </py:with>
+
+        </py:cocktail.html.TreeView>
+    </div>
+</div>

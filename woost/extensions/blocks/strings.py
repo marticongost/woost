@@ -159,10 +159,18 @@ translations.define("BannerBlock.text",
     en = u"Text"
 )
 
-translations.define("BannerBlock.publishable",
-    ca = u"Element publicable",
-    es = u"Elemento publicable",
-    en = u"Publishable item"
+translations.define("BannerBlock.text-explanation",
+    ca = u"""En cas de no especificar-se s'utilitzarà el títol de l'element
+destí""",
+    es = u"""En caso de no especificarse se utilitzará el título del
+elemento destino""",
+    en = u"If not text is provided the title from the target item will be used"
+)
+
+translations.define("BannerBlock.target",
+    ca = u"Destí",
+    es = u"Destino",
+    en = u"Target"
 )
 
 translations.define("BannerBlock.image",
@@ -229,6 +237,12 @@ translations.define("RichTextBlock.text",
     en = u"Text"
 )
 
+translations.define("RichTextBlock.attachments",
+    ca = u"Adjunts",
+    es = u"Adjuntos",
+    en = u"Attachments"
+)
+
 # TranslatedRichTextBlock
 #------------------------------------------------------------------------------
 translations.define("TranslatedRichTextBlock",
@@ -249,11 +263,9 @@ translations.define("TranslatedRichTextBlock.text",
     en = u"Text"
 )
 
-# EditPanelOverlay
-#------------------------------------------------------------------------------
-translations.define("woost.extensions.blocks.EditPanelOverlay.blocks_title",
-    ca = u"Blocs",
-    es = u"Bloques",
-    en = u"Blocks"
+translations.define("TranslatedRichTextBlock.attachments",
+    ca = u"Adjunts",
+    es = u"Adjuntos",
+    en = u"Attachments"
 )
 
