@@ -4,7 +4,7 @@ u"""
 .. moduleauthor:: Jordi Fernández <jordi.fernandez@whads.com>
 """
 from cocktail import schema
-from cocktail.modeling import getter
+from woost.models import Publishable
 from woost.extensions.blocks.block import Block
 
 
@@ -16,6 +16,12 @@ class RichTextBlock(Block):
     text = schema.String(
         required = True,
         edit_control = "woost.views.RichTextEditor",
+        member_group = "content"
+    )
+
+    attachments = schema.Collection(
+        items = schema.Reference(type = Publishable),
+        related_end = schema.Collection(),
         member_group = "content"
     )
 
