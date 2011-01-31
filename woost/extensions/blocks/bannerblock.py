@@ -4,7 +4,6 @@ u"""
 .. moduleauthor:: Jordi Fernández <jordi.fernandez@whads.com>
 """
 from cocktail import schema
-from cocktail.modeling import getter
 from woost.models import File, Publishable
 from woost.extensions.blocks.block import Block
 
@@ -12,28 +11,34 @@ from woost.extensions.blocks.block import Block
 class BannerBlock(Block):
 
     instantiable = True
+    tag = "a"
+    view_class = "woost.extensions.blocks.Banner"
 
-    text = schema.String(
+    members_order = "target", "image", "text"
+
+    image = schema.Reference(
+        type = File,
+        integral = True,
+        related_end = schema.Collection(),
         member_group = "content"
     )
 
     target = schema.Reference(
-        required = True,
         type = Publishable,
-        related_end = schema.Collection(),
+        required = True,
+        related_end = schema.Collection(cascade_delete = True),
         member_group = "content"
     )
 
-    image = schema.Reference(
-        type = File,
-        related_end = schema.Collection(),
-        relation_constraints = [File.resource_type.equal("image")],
+    text = schema.String(
+        translated = True,
+        edit_control = "woost.views.RichTextEditor",
         member_group = "content"
     )
 
-    @getter
-    def available_templates(self):
-        return [
-            "woost.extensions.blocks.BannerBlockView"
-        ]
-
+    def init_view(self, view):
+        Block.init_view(self, view)
+        view.image = self.image
+        view.target = self.target
+        view.text = self.text
+        
