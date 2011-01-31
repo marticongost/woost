@@ -17,6 +17,7 @@ Publishable.add_member(
         required = True,
         default = True,
         indexed = True,
+        member_group = "sitemap",
         listed_by_default = False
     ),
     append = True
