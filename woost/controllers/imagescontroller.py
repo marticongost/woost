@@ -258,7 +258,11 @@ def parse_processor(processor_string):
     else:
         proc_name = processor_string[:pos]
 
-    func = image_processors[proc_name]
+    try:
+        func = image_processors[proc_name]
+    except:
+        raise ValueError("Unknown image processor: %s" % proc_name)
+
     args = []
     kwargs = {}
     
@@ -754,13 +758,20 @@ def resolve_color(value):
 
     if isinstance(value, basestring):
 
-        if len(value) == 3:
+        if len(value) in (3, 4):
             value = tuple(int(d * 2, 16) for d in value)
         elif len(value) == 6:
             value = (
                 int(value[0:2], 16),
                 int(value[2:4], 16),
                 int(value[4:6], 16)
+            )
+        elif len(value) == 8:
+            value = (
+                int(value[0:2], 16),
+                int(value[2:4], 16),
+                int(value[4:6], 16),
+                int(value[6:8], 16)
             )
         else:
             raise ValueError("Invalid color: " + value)
@@ -1012,6 +1023,66 @@ def fit(image, width, height, crop = "center", filter = Image.ANTIALIAS):
             image = fill(image, width, height, crop, filter)
         else:
             image.thumbnail((width, height), filter)
+
+    return image
+
+@image_processor
+def align(
+    image, 
+    width = None, 
+    height = None, 
+    halign = "center", 
+    valign = "center", 
+    background = None):
+
+    needs_halign = (width and image.size[0] < width)
+    needs_valign = (height and image.size[1] < height)
+
+    if needs_halign or needs_valign:
+        
+        if background:
+            background = resolve_color(background)
+        elif image.mode == "RGBA":
+            background = (0,0,0,0)
+
+        copy = Image.new(
+            "RGBA" if background and len(background) == 4 else image.mode,
+            (
+                width or image.size[0],
+                height or image.size[1]
+            ), 
+            background
+        )
+
+        x = 0
+        y = 0
+            
+        if needs_halign:
+            if halign == "left":
+                pass
+            elif halign == "center":
+                x = width / 2 - image.size[0] / 2
+            elif halign == "right":
+                x = width - image.size[0]
+            else:
+                raise ValueError(
+                    "Invalid parameter: align(halign = %r)" % halign
+                )
+
+        if needs_valign:
+            if valign == "top":
+                pass
+            elif valign == "center":
+                y = height / 2 - image.size[1] / 2
+            elif valign == "bottom":
+                y = height - image.size[1]
+            else:
+                raise ValueError(
+                    "Invalid parameter: align(valign = %r)" % valign
+                )       
+
+        copy.paste(image, (x, y))
+        return copy
 
     return image
 
