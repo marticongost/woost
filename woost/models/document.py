@@ -20,7 +20,8 @@ class Document(Publishable):
     default_per_language_publication = True
 
     groups_order = [
-        "content", "navigation", "presentation", "publication", "meta"
+        "content", "navigation", "presentation", "publication", "meta",
+        "robots"
     ]
 
     members_order = (
@@ -32,7 +33,9 @@ class Document(Publishable):
         "attachments",
         "page_resources",
         "branch_resources",
-        "children"
+        "children",
+        "robots_should_index",
+        "robots_should_follow"
     )
 
     default_controller = schema.DynamicDefault(
@@ -109,6 +112,20 @@ class Document(Publishable):
         bidirectional = True,
         related_key = "parent",
         cascade_delete = True
+    )
+
+    robots_should_index = schema.Boolean(
+        required = True,
+        default = True,
+        listed_by_default = False,
+        member_group = "robots"
+    )
+
+    robots_should_follow = schema.Boolean(
+        required = True,
+        default = True,
+        listed_by_default = False,
+        member_group = "robots"
     )
 
     def _update_path(self, parent, path):
