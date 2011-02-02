@@ -2116,6 +2116,12 @@ translations.define("Document.meta",
     en = u"Metadata"
 )
 
+translations.define("Document.robots",
+    ca = u"Robots",
+    es = u"Robots",
+    en = u"Robots"
+)
+
 translations.define("Document.title",
     ca = u"Títol",
     es = u"Título",
@@ -2168,6 +2174,18 @@ translations.define("Document.children",
     ca = u"Pàgines filles",
     es = u"Páginas hijas",
     en = u"Child pages"
+)
+
+translations.define("Document.robots_should_index",
+    ca = u"Contingut indexable",
+    es = u"Contenido indexable",
+    en = u"Indexable content"
+)
+
+translations.define("Document.robots_should_follow",
+    ca = u"Seguir els enllaços",
+    es = u"Seguir los enlaces",
+    en = u"Follow links"
 )
 
 # Redirection
