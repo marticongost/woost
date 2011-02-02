@@ -258,7 +258,11 @@ def parse_processor(processor_string):
     else:
         proc_name = processor_string[:pos]
 
-    func = image_processors[proc_name]
+    try:
+        func = image_processors[proc_name]
+    except:
+        raise ValueError("Unknown image processor: %s" % proc_name)
+
     args = []
     kwargs = {}
     
