@@ -46,6 +46,7 @@ from woost.models import (
     EmailTemplate,
     CachingPolicy
 )
+from woost.models.migration import woost_migration
 
 standard_template_identifiers = {
     "cocktail": "woost.views.StandardView",
@@ -189,7 +190,7 @@ def init_site(
             DeletePermission(matching_items = owned_items()),
             ConfirmDraftPermission(matching_items = owned_items()),
             
-            # All members allowed, except for 'owner', 'controller' and 'qname'
+            # All members allowed, except for 'local_path', 'controller' and 'qname'
             ReadMemberPermission(
                 matching_members = [
                     "woost.models.item.Item.qname",
@@ -208,8 +209,18 @@ def init_site(
             ),
 
             ReadMemberPermission(),
+            
+            # Only administrators can modify 'owner', 'robots_should_index',
+            # and 'robots_should_follow' members
             ModifyMemberPermission(
                 matching_members = ["woost.models.item.Item.owner"],
+                authorized = False
+            ),
+            ModifyMemberPermission(
+                matching_members = [
+                    "woost.models.document.Document.robots_should_index",
+                    "woost.models.document.Document.robots_should_follow"
+                ],
                 authorized = False
             ),
             ModifyMemberPermission(),
@@ -562,6 +573,10 @@ def init_site(
         )
         file_gallery_view.insert()
                         
+    # Set migrations to the last version
+    if woost_migration.steps:
+        woost_migration.current_version = woost_migration.steps[-1].id
+
     datastore.commit()
 
 def random_string(length, source = letters + digits + "!?.-$#&@*"):
