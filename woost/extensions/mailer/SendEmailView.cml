@@ -36,7 +36,7 @@ from woost.extensions.mailer.mailing import get_receivers_by_roles
     <py:with py:element="self.item_body">
 
         <py:ready>
-            <block py:if="self.action != 'send'">
+            <block py:if="self.action in ('test', 'confirmation')">
                 <p>
                     ${translations("woost.extensions.mailer.SendEmailView confirmation text") % (self.edited_item.document.title, translations(self.edited_item.language))}
 
@@ -70,14 +70,15 @@ from woost.extensions.mailer.mailing import get_receivers_by_roles
                 </div>
             </block>
 
-            <block py:if="self.action == 'send'">
+            <block py:if="self.action in ('send', 'show')">
 
                 <div class="mailing_info">
-                    <h3>${translations("woost.extensions.mailer.SendEmailView doing email delivery")}</h3>
+                    <h3 py:visible="${self.action == 'send'}">${translations("woost.extensions.mailer.SendEmailView doing email delivery")}</h3>
+                    <h3 py:visible="${self.action == 'show'}">${translations("woost.extensions.mailer.SendEmailView email delivery finished")}</h3>
 
                     <div class="summary" />
 
-                    <div class="progress-bar" > 
+                    <div class="progress-bar"> 
                         <div class="progress-text">${translations("woost.extensions.mailer.SendEmailView zero per cent")}</div>
                         <div class="progress"></div> 
                     </div> 

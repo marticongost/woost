@@ -16,7 +16,7 @@ from cocktail.controllers.location import Location
 from woost.models import Site, User, get_current_user
 from woost.models.permission import ReadPermission
 from woost.controllers.backoffice.editcontroller import EditController
-from woost.extensions.mailer.mailing import Mailing, MAILING_FINISHED, tasks
+from woost.extensions.mailer.mailing import Mailing, MAILING_STARTED, MAILING_FINISHED, tasks
 from woost.extensions.mailer.sendemailpermission import SendEmailPermission
 
 
@@ -28,16 +28,8 @@ class SendEmailController(EditController):
 
     @event_handler
     def handle_traversed(cls, event):
-        controller = event.source
         user = get_current_user()
-        mailing = controller.context["cms_item"]
-
         user.require_permission(SendEmailPermission)
-
-        if (controller.action is None 
-            or controller.action.id == controller.section
-        ) and mailing.status == MAILING_FINISHED:
-            raise cherrypy.HTTPError(403, "Forbidden")
 
     @cached_getter
     def smtp_server(self):
@@ -54,23 +46,46 @@ class SendEmailController(EditController):
 
     @cached_getter
     def submitted(self):
-        return self.action is not None or self.mailer_action is not None
+        return self.action is not None \
+            or self.mailer_action in ("test", "send")
 
     @cached_getter
     def mailer_action(self):
-        return self.params.read(schema.String("mailer_action"))
+        mailing = self.context["cms_item"]
+        mailer_action = self.params.read(schema.String("mailer_action"))
+
+        if mailer_action in ("test", "send") and mailing.status == MAILING_FINISHED:
+            raise cherrypy.HTTPError(403, "Forbidden")
+
+        if mailer_action is None:
+            if mailing.status is None:
+                mailer_action = "confirmation"
+            elif mailing.status == MAILING_STARTED:
+                mailer_action = "send"
+            elif mailing.status == MAILING_FINISHED:
+                mailer_action = "show"
+
+        # A mailer action is required
+        assert mailer_action
+
+        return mailer_action
 
     @cherrypy.expose
     def mailing_state(self, task_id, *args, **kwargs):
         cherrypy.response.headers["Content-Type"] = "application/json"
 
         task = tasks.get(int(task_id))
-        mailing = Mailing.get_instance(task.mailing_id)
-        user = get_current_user()
 
-        if task is None or mailing is None:
+        # If task is expired show the status from the mailing object
+        if task is None:
+            mailing = self.context["cms_item"]
+        else:
+            mailing = Mailing.get_instance(task.mailing_id)
+
+        if mailing is None:
             return dumps({})
 
+        user = get_current_user()
         if not user.has_permission(ReadPermission, target = mailing):
             raise cherrypy.HTTPError(403, "Forbidden")
 
@@ -80,7 +95,7 @@ class SendEmailController(EditController):
             "sent": len(mailing.sent),
             "errors": len(mailing.errors),
             "total": mailing.total,
-            "completed": task.completed
+            "completed": task and task.completed or True
         })
 
     def submit(self):
@@ -88,6 +103,8 @@ class SendEmailController(EditController):
         mailing = self.context["cms_item"]
 
         if self.mailer_action == "test":
+
+            # Send a test email
             mailing._v_template_values = {
                 "cms": self.context["cms"],
                 "base_url": unicode(Location.get_current_host()).rstrip("/")
@@ -96,22 +113,32 @@ class SendEmailController(EditController):
             # Create a fake user
             receiver = User(email = test_email)
             mailing.send_message(self.smtp_server, receiver)
+
         elif self.mailer_action == "send":
+
+            # Send the mailing
             self.task_id = mailing.id
             template_values = {
                 "cms": self.context["cms"],
                 "base_url": unicode(Location.get_current_host()).rstrip("/")
             }
             mailing.send(self.smtp_server, template_values, self.context.copy())
+
         else:
             EditController.submit(self)
 
     @cached_getter
     def output(self):
         output = EditController.output(self)
+        
+        if self.task_id:
+            task_id = self.task_id
+        else:
+            task_id = self.context["cms_item"] and self.context["cms_item"].id or None
+
         output.update(
             action = self.mailer_action,
-            task_id = self.task_id
+            task_id = task_id
         )
         return output
 
