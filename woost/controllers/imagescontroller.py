@@ -758,13 +758,20 @@ def resolve_color(value):
 
     if isinstance(value, basestring):
 
-        if len(value) == 3:
+        if len(value) in (3, 4):
             value = tuple(int(d * 2, 16) for d in value)
         elif len(value) == 6:
             value = (
                 int(value[0:2], 16),
                 int(value[2:4], 16),
                 int(value[4:6], 16)
+            )
+        elif len(value) == 8:
+            value = (
+                int(value[0:2], 16),
+                int(value[2:4], 16),
+                int(value[4:6], 16),
+                int(value[6:8], 16)
             )
         else:
             raise ValueError("Invalid color: " + value)
