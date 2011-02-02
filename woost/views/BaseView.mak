@@ -117,6 +117,14 @@ ${self.dtd()}
     % if keywords:
         <meta name="keywords" content="${keywords}"${closure()}>
     % endif
+
+    <%
+    robots_should_index = getattr(publishable, "robots_should_index", True)
+    robots_should_follow = getattr(publishable, "robots_should_follow", True)
+    %>
+    % if not robots_should_index or not robots_should_follow:
+        <meta name="robots" content="${"%s, %s" % (robots_should_index and "index" or "noindex", robots_should_follow and "follow" or "nofollow")}"${closure()}>
+    % endif
     
     <link rel="start" title="${site.home.title}" href="/"${closure()}>
     
