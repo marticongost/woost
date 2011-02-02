@@ -8,3 +8,8 @@ from cocktail.persistence import datastore, Migration
 migration = Migration("_PROJECT_NAME_.models")
 datastore.migrations.append(migration)
 
+
+if __name__ == "__main__":
+    import _PROJECT_NAME_
+    datastore.migrate()
+
