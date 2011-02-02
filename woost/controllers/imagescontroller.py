@@ -1026,3 +1026,63 @@ def fit(image, width, height, crop = "center", filter = Image.ANTIALIAS):
 
     return image
 
+@image_processor
+def align(
+    image, 
+    width = None, 
+    height = None, 
+    halign = "center", 
+    valign = "center", 
+    background = None):
+
+    needs_halign = (width and image.size[0] < width)
+    needs_valign = (height and image.size[1] < height)
+
+    if needs_halign or needs_valign:
+        
+        if background:
+            background = resolve_color(background)
+        elif image.mode == "RGBA":
+            background = (0,0,0,0)
+
+        copy = Image.new(
+            "RGBA" if background and len(background) == 4 else image.mode,
+            (
+                width or image.size[0],
+                height or image.size[1]
+            ), 
+            background
+        )
+
+        x = 0
+        y = 0
+            
+        if needs_halign:
+            if halign == "left":
+                pass
+            elif halign == "center":
+                x = width / 2 - image.size[0] / 2
+            elif halign == "right":
+                x = width - image.size[0]
+            else:
+                raise ValueError(
+                    "Invalid parameter: align(halign = %r)" % halign
+                )
+
+        if needs_valign:
+            if valign == "top":
+                pass
+            elif valign == "center":
+                y = height / 2 - image.size[1] / 2
+            elif valign == "bottom":
+                y = height - image.size[1]
+            else:
+                raise ValueError(
+                    "Invalid parameter: align(valign = %r)" % valign
+                )       
+
+        copy.paste(image, (x, y))
+        return copy
+
+    return image
+
