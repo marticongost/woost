@@ -49,7 +49,6 @@ from woost.models import (
     EmailTemplate,
     CachingPolicy
 )
-from woost.models.migration import woost_migration
 
 standard_template_identifiers = {
     "cocktail": "woost.views.StandardView",
