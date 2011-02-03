@@ -2049,6 +2049,12 @@ translations.define("Publishable.end_date",
     en = u"Expiration date"
 )
 
+translations.define("Publishable.requires_https",
+    ca = u"Requereix HTTPS",
+    es = u"Requiere HTTPS",
+    en = u"Requires HTTPS"
+)
+
 translations.define("Publishable.controller",
     ca = u"Controlador",
     es = u"Controlador",
