@@ -260,6 +260,10 @@ class CMS(BaseCMSController):
         
         self.context["publishable"] = publishable
 
+        # HTTPS check
+        if publishable.requires_https:
+            Location.require_https()
+            
         # Controller resolution
         controller = publishable.resolve_controller()
 
@@ -438,13 +442,16 @@ class CMS(BaseCMSController):
         if content_type in ("text/html", "text/xhtml"):
 
             error_page, status = event.source.get_error_page(error)
-            
+
             if status:
                 cherrypy.request.status = status
 
             if error_page:
                 event.handled = True
                 
+                if error_page.requires_https:
+                    Location.require_https()
+
                 controller.context.update(
                     original_publishable = controller.context["publishable"],
                     publishable = error_page

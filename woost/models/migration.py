@@ -44,3 +44,18 @@ def set_defaults(document):
         document.robots_should_index = True
         document.robots_should_follow = True
 
+#------------------------------------------------------------------------------
+
+step = MigrationStep("added woost.models.Publishable.requires_https")
+
+step.executing.append(
+    admin_members_restriction([
+        "woost.models.publishable.Publishable.requires_https"
+    ])
+)
+
+@step.processor("woost.models.publishable.Publishable")
+def set_defaults(publishable):
+    if not hasattr(publishable, "_requires_https"):
+        publishable.requires_https = False
+

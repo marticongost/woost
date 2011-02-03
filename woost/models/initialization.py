@@ -214,9 +214,15 @@ def init_site(
             ReadMemberPermission(),
             
             # Only administrators can modify 'owner', 'robots_should_index',
-            # and 'robots_should_follow' members
+            # 'robots_should_follow' and 'requires_https' members
             ModifyMemberPermission(
                 matching_members = ["woost.models.item.Item.owner"],
+                authorized = False
+            ),
+            ModifyMemberPermission(
+                matching_members = [
+                    "woost.models.publishable.Publishable.requires_https"
+                ],
                 authorized = False
             ),
             ModifyMemberPermission(
