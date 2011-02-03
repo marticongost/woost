@@ -3,13 +3,11 @@ u"""Migration of the site's schema.
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
-from cocktail.persistence import datastore, Migration
-
-migration = Migration("_PROJECT_NAME_.models")
-datastore.migrations.append(migration)
+from cocktail.persistence import MigrationStep
 
 
 if __name__ == "__main__":
     import _PROJECT_NAME_
-    datastore.migrate()
+    from cocktail.persistence import migrate
+    migrate()
 

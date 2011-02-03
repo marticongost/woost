@@ -47,6 +47,7 @@ class Publishable(Item):
         "translation_enabled",
         "start_date",
         "end_date",
+        "requires_https",
         "caching_policies"
     ]
 
@@ -172,6 +173,13 @@ class Publishable(Item):
     end_date = schema.DateTime(
         indexed = True,
         min = start_date,
+        listed_by_default = False,
+        member_group = "publication"
+    )
+
+    requires_https = schema.Boolean(
+        required = True,
+        default = False,
         listed_by_default = False,
         member_group = "publication"
     )
