@@ -1532,6 +1532,46 @@ translations.define("Site.icon",
     en = u"Icon"
 )
 
+translations.define("Site.https_policy",
+    ca = u"Política de HTTPS",
+    es = u"Política de HTTPS",
+    en = u"HTTPS policy"
+)
+
+translations.define("Site.https_policy-always",
+    ca = u"Habilitar a totes les pàgines",
+    es = u"Habilitar en todas las páginas",
+    en = u"Enable for all pages"
+)
+
+translations.define("Site.https_policy-never",
+    ca = u"Deshabilitar a totes les pàgines",
+    es = u"Deshabilitar en todas las páginas",
+    en = u"Disable for all pages"
+)
+
+translations.define("Site.https_policy-per_page",
+    ca = u"Decidir-ho a cada pàgina",
+    es = u"Decidirlo en cada página",
+    en = u"Decide on a per-page basis"
+)
+
+translations.define("Site.https_persistence",
+    ca = u"Preservar HTTPS entre peticions",
+    es = u"Preservar HTTPS entre peticiones",
+    en = u"Persist HTTPS navigation across requests"
+)
+
+translations.define("Site.https_persistence-explanation",
+    ca = u"Aquesta opció només tindrà efecte si la <em>Política "
+         u"d'HTTPS</em> s'estableix a <em>Decidir a cada pàgina</em>.",
+    es = u"Esta opción solo tendrá efecto si la <em>Política "
+         u"de HTTPS</em> se establece a <em>Decidir en cada página</em>.",
+    en = u"This option will only be taken into account if "
+         u"<em>HTTPS policy</em> is set to <em>Decide on a per-page "
+         u"basis</em>."
+)
+
 translations.define("Site.smtp_host",
     ca = u"Servidor SMTP",
     es = u"Servidor SMTP",
@@ -2053,6 +2093,18 @@ translations.define("Publishable.requires_https",
     ca = u"Requereix HTTPS",
     es = u"Requiere HTTPS",
     en = u"Requires HTTPS"
+)
+
+translations.define("Publishable.requires_https-explanation",
+    ca = u"Aquesta opció només tindrà efecte si la <em>Política "
+         u"d'HTTPS</em> del lloc web s'estableix a <em>Decidir a cada "
+         u"pàgina</em>.",
+    es = u"Esta opción solo tendrá efecto si la <em>Política "
+         u"de HTTPS</em> del sitio web se establece a <em>Decidir en cada "
+         u"página</em>.",
+    en = u"This option will only be taken into account if the site's "
+         u"<em>HTTPS policy</em> is set to <em>Decide on a per-page "
+         u"basis</em>."
 )
 
 translations.define("Publishable.controller",
