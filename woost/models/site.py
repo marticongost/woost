@@ -36,6 +36,8 @@ class Site(Item):
         "generic_error_page",
         "not_found_error_page",
         "forbidden_error_page",
+        "https_policy",
+        "https_persistence",
         "smtp_host",
         "smtp_user",
         "smtp_password",
@@ -120,6 +122,32 @@ class Site(Item):
         listed_by_default = False,
         edit_control = "cocktail.html.TextArea",
         member_group = "meta"
+    )
+
+    https_policy = schema.String(
+        required = True,
+        default = "per_page",
+        enumeration = [
+            "always",
+            "never",
+            "per_page",
+        ],
+        translate_value = lambda value, language = None, **kwargs:
+            "" if not value 
+               else translations(
+                        "Site.https_policy-%s" % value, 
+                        language,
+                        **kwargs
+                    ),
+        listed_by_default = False,
+        member_group = "system"
+    )
+
+    https_persistence = schema.Boolean(
+        required = True,
+        default = False,
+        listed_by_default = False,
+        member_group = "system"
     )
 
     smtp_host = schema.String(

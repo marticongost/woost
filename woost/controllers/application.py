@@ -260,10 +260,9 @@ class CMS(BaseCMSController):
         
         self.context["publishable"] = publishable
 
-        # HTTPS check
-        if publishable.requires_https:
-            Location.require_https()
-            
+        # HTTP/HTTPS check
+        self._apply_https_policy(publishable)
+
         # Controller resolution
         controller = publishable.resolve_controller()
 
@@ -448,9 +447,9 @@ class CMS(BaseCMSController):
 
             if error_page:
                 event.handled = True
-                
-                if error_page.requires_https:
-                    Location.require_https()
+
+                # HTTP/HTTPS check
+                controller._apply_https_policy(error_page)
 
                 controller.context.update(
                     original_publishable = controller.context["publishable"],
@@ -503,6 +502,21 @@ class CMS(BaseCMSController):
             return site.generic_error_page, 500
 
         return None, None
+
+    def _apply_https_policy(self, publishable):
+        
+        site = Site.main
+        policy = site.https_policy
+
+        if policy == "always":
+            Location.require_https()
+        elif policy == "never":
+            Location.require_http()
+        elif policy == "per_page":
+            if publishable.requires_https:
+                Location.require_https()
+            elif not site.https_persistence:
+                Location.require_http()
 
     @event_handler
     def handle_after_request(cls, event):
