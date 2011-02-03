@@ -12,7 +12,10 @@ from string import letters, digits
 from random import choice
 from optparse import OptionParser
 from cocktail.translations import translations
-from cocktail.persistence import datastore
+from cocktail.persistence import (
+    datastore,
+    mark_all_migrations_as_executed
+)
 from woost.models import (
     changeset_context,
     Site,
@@ -572,11 +575,8 @@ def init_site(
             "File gallery user view"
         )
         file_gallery_view.insert()
-                        
-    # Set migrations to the last version
-    if woost_migration.steps:
-        woost_migration.current_version = woost_migration.steps[-1].id
-
+    
+    mark_all_migrations_as_executed()
     datastore.commit()
 
 def random_string(length, source = letters + digits + "!?.-$#&@*"):
