@@ -223,7 +223,11 @@ class Publishable(Item):
             publishable._update_path(event.value, publishable.path)
 
         elif member.name == "mime_type":
-            publishable.resource_type = get_category_from_mime_type(event.value)
+            if event.value is None:
+                publishable.resource_type = None
+            else:
+                publishable.resource_type = \
+                    get_category_from_mime_type(event.value)
 
     def _update_path(self, parent, path):
 
