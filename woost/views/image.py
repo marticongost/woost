@@ -14,10 +14,12 @@ class Image(Element):
     image = None
     effects = None
     styled_class = False
+    accessible_check = True
 
     def _ready(self):
-        
-        if self.image is None or not self.image.is_accessible():
+ 
+        if self.image is None \
+        or (self.accessible_check and not self.image.is_accessible()):
             self.visible = False
         else:
             self["alt"] = translations(self.image)
