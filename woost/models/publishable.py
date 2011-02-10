@@ -10,9 +10,18 @@ from datetime import datetime
 from cocktail.modeling import getter
 from cocktail.events import event_handler
 from cocktail.pkgutils import import_object
-from cocktail.translations import translations, get_language
+from cocktail.translations import (
+    translations,
+    get_language,
+    require_language
+)
 from cocktail import schema
 from cocktail.schema.expressions import Expression
+from cocktail.controllers import (
+    make_uri, 
+    percent_encode_uri,
+    Location
+)
 from woost.models.item import Item
 from woost.models.usersession import get_current_user
 from woost.models.permission import ReadPermission, PermissionExpression
@@ -319,6 +328,95 @@ class Publishable(Item):
         return cls.select(filters = [
             IsAccessibleExpression(get_current_user())
         ]).select(*args, **kwargs)
+
+    def get_uri(self, 
+        path = None, 
+        parameters = None,
+        language = None,
+        host = None,
+        encode = True):
+        
+        from woost.models import Site
+        uri = Site.main.get_path(self, language = language)
+
+        if uri is not None:
+            if self.per_language_publication:
+                uri = make_uri(require_language(language), uri)
+            
+            if path:
+                uri = make_uri(uri, *path)
+
+            if parameters:
+                uri = make_uri(uri, **parameters)
+
+            uri = self.__fix_uri(uri, host, encode)
+
+        return uri
+
+    def image_uri(self, element, 
+        effects = None,
+        parameters = None,
+        host = None,
+        encode = True):
+
+        if isinstance(element, type):
+            element = element.full_name
+        elif hasattr(element, "id"):
+            element = element.id
+        
+        uri = make_uri("/images", element)
+
+        if effects:
+            uri = make_uri(uri, *effects)
+
+        if parameters:
+            uri = make_uri(uri, **parameters)
+
+        return self.__fix_uri(uri, host, encode)
+
+    def icon_uri(self, 
+        element,
+        icon_size,
+        thumbnail_size = None,
+        host = None,
+        encode = True):
+
+        if thumbnail_size:
+            w, h = thumbnail_size
+            if w and h:
+                effects = ["thumbnail(%s,%s)" % thumbnail_size] 
+            elif w:
+                effects = ["thumbnail(width=%s)" % w]
+            else:
+                effects = ["thumbnail(height=%s)" % h]
+        else:
+            effects = []
+
+        parameters = {"icon.size": str(icon_size)}
+
+        if thumbnail_size:
+            parameters["kind"] = "image,icon"
+        elif not isinstance(element, type):
+            parameters["kind"] = "icon"
+        
+        return self.image_uri(element, effects, parameters, host, encode)
+
+    def __fix_uri(self, uri, host, encode):
+
+        if encode:
+            uri = percent_encode_uri(uri)
+
+        if host:
+            if host == ".":
+                host = str(Location.get_current_host())
+            elif not "://" in host:
+                host = "http://" + host
+
+            uri = make_uri(host, uri)
+        else:
+            uri = make_uri("/", uri)
+
+        return uri
 
 
 class IsPublishedExpression(Expression):

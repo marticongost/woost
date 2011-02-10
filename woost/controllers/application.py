@@ -7,6 +7,7 @@ u"""
 @since:			July 2008
 """
 import os.path
+from warnings import warn
 
 try:
     from cStringIO import StringIO
@@ -307,6 +308,12 @@ class CMS(BaseCMSController):
             constructed.
         @rtype: unicode
         """
+        warn(
+            "CMS.uri() is deprecated, use Publishable.get_uri() instead",
+            DeprecationWarning,
+            stacklevel = 2
+        )
+
         # User defined URIs
         if isinstance(publishable, URI):
             uri = publishable.uri
@@ -334,6 +341,13 @@ class CMS(BaseCMSController):
 
     def image_uri(self, element, *args, **kwargs):
 
+        warn(
+            "CMS.image_uri() is deprecated, use Publishable.get_image_uri() "
+            "instead",
+            DeprecationWarning,
+            stacklevel = 2
+        )
+
         if isinstance(element, type):
             element = element.full_name
         elif hasattr(element, "id"):
@@ -342,7 +356,14 @@ class CMS(BaseCMSController):
         return self.application_uri("images", element, *args, **kwargs)
 
     def icon_uri(self, element, icon_size, thumbnail_size = None):
-        
+
+        warn(
+            "CMS.icon_uri() is deprecated, use Publishable.get_icon_uri() "
+            "instead",
+            DeprecationWarning,
+            stacklevel = 2
+        )
+
         if thumbnail_size:
             w, h = thumbnail_size
             if w and h:
