@@ -35,7 +35,7 @@ translations.define("Publishable.sitemap_priority",
 translations.define("Publishable.sitemap_priority-explanation",
     ca = u"Prioritat relativa de l'element respecte la resta de pàgines del "
          u"lloc web. S'expressa com un valor decimal entre 0 i 1.",
-    es = u"Prioridad relativa del elemento respeto a la resta de páginas del "
+    es = u"Prioridad relativa del elemento respecto al resto de páginas del "
          u"sitio web. Se expresa como un valor decimal entre 0 y 1.",
     en = u"Relative priority of the element, relative to other site content. "
          u"Expressed as a decimal number, ranging from 0 to 1."
