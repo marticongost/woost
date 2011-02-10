@@ -57,12 +57,17 @@ class CommentsExtension(Extension):
         )
 
     def _after_process_comments(self, comment):
-        raise cherrypy.HTTPRedirect(unicode(Location.get_current()).encode('utf-8'))
+        raise cherrypy.HTTPRedirect(
+            "%s#comment-%s" % (
+                unicode(Location.get_current()).encode('utf-8'),
+                str(comment.id)
+            )
+        )
 
     @event_handler
     def handle_loading(cls, event):
         
-        # Import the extension's <models></models>
+        # Import the extension's models
         from woost.extensions.comments import strings
         from woost.extensions.comments.comment import Comment
 
@@ -105,6 +110,7 @@ class CommentsExtension(Extension):
         Publishable.add_member(
             schema.Boolean(
                 "allow_comments",
+                required = True,
                 default = False,
                 member_group = "administration"
             )
@@ -127,6 +133,7 @@ class CommentsExtension(Extension):
             comments_user_collection = None
             comments_schema = None
             comment_errors = None
+            comment_data = {}
 
             controller = event.source
             comment_model = \
@@ -183,8 +190,6 @@ class CommentsExtension(Extension):
                 and "post_comment" in cherrypy.request.params:
 
                     with changeset_context(user):
-                        comment_data = {}
-
                         get_parameter(
                             comments_schema, 
                             target = comment_data, 
@@ -217,6 +222,7 @@ class CommentsExtension(Extension):
                 controller.output.update(
                     comments_user_collection = comments_user_collection,
                     comments_schema = comments_schema,
-                    comment_errors = comment_errors
+                    comment_errors = comment_errors,
+                    comment_data = comment_data
                 )
 
