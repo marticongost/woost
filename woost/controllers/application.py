@@ -25,7 +25,7 @@ from cocktail.controllers import (
     folder_publisher,
     try_decode
 )
-from cocktail.controllers.percentencode import percent_encode
+from cocktail.controllers.uriutils import percent_encode
 from cocktail.persistence import datastore
 from woost.models import (
     Item,
