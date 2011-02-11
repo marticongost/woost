@@ -3,6 +3,7 @@ u"""Defines migrations to the database schema for woost.
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
+from cocktail.events import when
 from cocktail.persistence import MigrationStep
 
 def admin_members_restriction(members):
@@ -58,4 +59,25 @@ step.executing.append(
 def set_defaults(publishable):
     if not hasattr(publishable, "_requires_https"):
         publishable.requires_https = False
+
+
+#------------------------------------------------------------------------------
+
+step = MigrationStep("make Product extend Publishable")
+
+@when(step.executing)
+def update_keys(e):
+    from woost.extensions.shop import ShopExtension
+
+    if ShopExtension.enabled:
+        from cocktail.translations import translations
+        from woost.models import Publishable, Controller, Language
+        from woost.extensions.shop import create_product_controller
+        from woost.extensions.shop.product import Product
+
+        # Update the publishable keys
+        Publishable.keys.update([product.id for product in Product.select()])
+
+        # Create the product controller
+        create_product_controller()
 
