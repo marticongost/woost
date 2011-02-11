@@ -95,7 +95,6 @@ def install_new_extensions():
         if extension_type not in installed_extension_types:
             extension = extension_type()
             extension.insert()
-            extension.installed()
             extensions_installed = True
         
     if extensions_installed:
@@ -168,12 +167,6 @@ class Extension(Item):
     )
  
     dependencies = ()
-
-    installed = Event("""An event triggered when an extension is first
-        registered with the site.""")
-
-    uninstalled = Event("""An event triggered when an extension is removed from
-        the site.""")
 
     loading = Event("""An event triggered during application start up.""")
 
