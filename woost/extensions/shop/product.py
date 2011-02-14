@@ -8,18 +8,23 @@
 """
 from decimal import Decimal
 from cocktail import schema
-from woost.models import Item
+from woost.models import Publishable, Controller
 
 
-class Product(Item):
+class Product(Publishable):
 
     instantiable = False
+    view_class = None
 
     members_order = [
         "price",
         "categories",
         "entries"
     ]
+
+    default_controller = schema.DynamicDefault(
+        lambda: Controller.get_instance(qname = "woost.product_controller")
+    )
 
     price = schema.Decimal(
         required = True,

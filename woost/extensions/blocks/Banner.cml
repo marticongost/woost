@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?py
+from cocktail.controllers import context
+?>
+
+<a
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:py="http://www.whads.com/ns/cocktail/templates">
+
+    <?py-class
+    cms = None
+    target = None
+    image = None
+    text = None
+    ?>
+
+    <?py
+    self.add_resource("/resources/styles/blocks.css")
+    ?>
+
+    <py:ready>
+        <?py
+        if self.cms is None:
+            self.cms = context["cms"]
+
+        self["href"] = self.cms.uri(self.target)
+
+        if self.image:
+            self.set_style("background-image", "url('%s')" % self.cms.uri(self.image))
+        ?>
+
+        ${self.text or translations(target)}
+    </py:ready>
+
+</a>
+

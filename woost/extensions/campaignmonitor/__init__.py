@@ -221,7 +221,7 @@ class CampaignMonitorExtension(Extension):
 
         # Standard Template
         standard_template = Template.get_instance(
-            identifier = "woost.views.StandardView"
+            qname = "woost.standard_template"
         )
 
         # Default pending page

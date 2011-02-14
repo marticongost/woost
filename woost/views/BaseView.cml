@@ -99,6 +99,14 @@ from woost.models import Site, Publishable, Language
             if keywords:
                 self.set_meta("keywords", keywords)
             
+            robots_should_index = getattr(self.publishable, "robots_should_index", True)
+            robots_should_follow = getattr(self.publishable, "robots_should_follow", True)
+            if not robots_should_index or not robots_should_follow:
+                self.set_meta("robots", "%s, %s" % (
+                    robots_should_index and "index" or "noindex",
+                    robots_should_follow and "follow" or "nofollow"
+                ))
+
             # Links
             self.add_head_element(
                 Element("link", rel = "start", title = site.home.title, href = "/")
@@ -150,6 +158,8 @@ from woost.models import Site, Publishable, Language
         ?>
     </py:ready>
 
+    <py:woost.views.EditPanel py:id="toolbar"/>
+   
     <div py:id="content">
         ${self.member_slot("body")}
     </div>

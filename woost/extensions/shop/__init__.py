@@ -13,7 +13,7 @@ from cocktail.translations import (
 )
 from cocktail import schema
 from cocktail.persistence import datastore
-from woost.models import Extension
+from woost.models import Extension, Language, Controller
 
 translations.define("ShopExtension",
     ca = u"Botiga",
@@ -162,3 +162,21 @@ class ShopExtension(Extension):
         events.insert(pos, receive_order_payment)
         events.insert(pos + 2, commit_order_payment)
 
+        if not event.source.installed:
+            create_product_controller()
+            datastore.commit()
+
+def create_product_controller():
+    # Create the product controller
+    controller = Controller()
+    controller.qname = "woost.product_controller"
+    for language in Language.codes:
+        value = translations(
+            "woost.extensions.shop Product controller title",
+            language
+        )
+        if value:
+            controller.set("title", value, language)
+    controller.python_name = \
+        "woost.extensions.shop.productcontroller.ProductController"
+    controller.insert()
