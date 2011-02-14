@@ -357,13 +357,6 @@ class CMS(BaseCMSController):
 
     def icon_uri(self, element, icon_size, thumbnail_size = None):
 
-        warn(
-            "CMS.icon_uri() is deprecated, use Publishable.get_icon_uri() "
-            "instead",
-            DeprecationWarning,
-            stacklevel = 2
-        )
-
         if thumbnail_size:
             w, h = thumbnail_size
             if w and h:
