@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?py
+from cocktail import schema
+from woost.extensions.blocks.block import Block
+?>
+
+<py:overlay
+    py:class="woost.views.EditPanel"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:py="http://www.whads.com/ns/cocktail/templates">
+
+    <?py-class
+    def get_block_collections(self):
+        members = []
+        for member in self.publishable.__class__.ordered_members():
+            if isinstance(member, schema.Collection) \
+            and getattr(member, "is_persistent_relation", False) \
+            and issubclass(member.related_type, Block) \
+            and member.visible:
+                members.append(member)
+
+        return members
+    ?>
+
+    <py:with py:element="self.panel_content">
+        <py:ready>
+            <py:woost.extensions.blocks.BlockSection
+                py:root_block="${self.publishable}"
+                py:member="${member}" 
+                py:for="member in self.get_block_collections()" />
+        </py:ready>
+    </py:with>
+
+</py:overlay>
+

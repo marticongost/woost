@@ -7,6 +7,7 @@ u"""
 @since:			July 2008
 """
 import os.path
+from warnings import warn
 
 try:
     from cStringIO import StringIO
@@ -25,7 +26,7 @@ from cocktail.controllers import (
     folder_publisher,
     try_decode
 )
-from cocktail.controllers.percentencode import percent_encode
+from cocktail.controllers.uriutils import percent_encode
 from cocktail.persistence import datastore
 from woost.models import (
     Item,
@@ -260,6 +261,9 @@ class CMS(BaseCMSController):
         
         self.context["publishable"] = publishable
 
+        # HTTP/HTTPS check
+        self._apply_https_policy(publishable)
+
         # Controller resolution
         controller = publishable.resolve_controller()
 
@@ -304,6 +308,12 @@ class CMS(BaseCMSController):
             constructed.
         @rtype: unicode
         """
+        warn(
+            "CMS.uri() is deprecated, use Publishable.get_uri() instead",
+            DeprecationWarning,
+            stacklevel = 2
+        )
+
         # User defined URIs
         if isinstance(publishable, URI):
             uri = publishable.uri
@@ -331,6 +341,13 @@ class CMS(BaseCMSController):
 
     def image_uri(self, element, *args, **kwargs):
 
+        warn(
+            "CMS.image_uri() is deprecated, use Publishable.get_image_uri() "
+            "instead",
+            DeprecationWarning,
+            stacklevel = 2
+        )
+
         if isinstance(element, type):
             element = element.full_name
         elif hasattr(element, "id"):
@@ -339,7 +356,7 @@ class CMS(BaseCMSController):
         return self.application_uri("images", element, *args, **kwargs)
 
     def icon_uri(self, element, icon_size, thumbnail_size = None):
-        
+
         if thumbnail_size:
             w, h = thumbnail_size
             if w and h:
@@ -438,13 +455,16 @@ class CMS(BaseCMSController):
         if content_type in ("text/html", "text/xhtml"):
 
             error_page, status = event.source.get_error_page(error)
-            
+
             if status:
                 cherrypy.request.status = status
 
             if error_page:
                 event.handled = True
-                
+
+                # HTTP/HTTPS check
+                controller._apply_https_policy(error_page)
+
                 controller.context.update(
                     original_publishable = controller.context["publishable"],
                     publishable = error_page
@@ -496,6 +516,21 @@ class CMS(BaseCMSController):
             return site.generic_error_page, 500
 
         return None, None
+
+    def _apply_https_policy(self, publishable):
+        
+        site = Site.main
+        policy = site.https_policy
+
+        if policy == "always":
+            Location.require_https()
+        elif policy == "never":
+            Location.require_http()
+        elif policy == "per_page":
+            if publishable.requires_https:
+                Location.require_https()
+            elif not site.https_persistence:
+                Location.require_http()
 
     @event_handler
     def handle_after_request(cls, event):

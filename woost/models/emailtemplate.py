@@ -18,7 +18,6 @@ from woost.models import Item, Site
 
 class EmailTemplate(Item):
 
-    visible_from_root = False
     encoding = "utf-8"
 
     members_order = [

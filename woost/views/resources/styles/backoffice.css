@@ -265,6 +265,16 @@ body {
     margin-left: 0.2em;    
 }
 
+.BackOfficeLayout .CheckList .group_label,
+.BackOfficeLayout .RadioSelector .group_label {
+    font-weight: bold;
+}
+
+.BackOfficeLayout .CheckList .group,
+.BackOfficeLayout .RadioSelector .group {
+    margin-top: 0.8em;
+}
+
 .BackOfficeLayout .MemberList .content_type > .label {
     text-decoration: underline;
 }

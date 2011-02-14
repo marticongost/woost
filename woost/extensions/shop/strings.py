@@ -563,3 +563,11 @@ translations.define("ShopOrderCostFilter.include_taxes",
     en = u"Taxes included"
 )
 
+# ShopController
+#------------------------------------------------------------------------------
+translations.define("woost.extensions.shop Product controller title",
+    ca = u"Controlador de producte",
+    es = u"Controlador de producto",
+    en = u"Product controller"
+)
+

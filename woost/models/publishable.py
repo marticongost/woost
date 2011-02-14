@@ -10,9 +10,18 @@ from datetime import datetime
 from cocktail.modeling import getter
 from cocktail.events import event_handler
 from cocktail.pkgutils import import_object
-from cocktail.translations import translations, get_language
+from cocktail.translations import (
+    translations,
+    get_language,
+    require_language
+)
 from cocktail import schema
 from cocktail.schema.expressions import Expression
+from cocktail.controllers import (
+    make_uri, 
+    percent_encode_uri,
+    Location
+)
 from woost.models.item import Item
 from woost.models.usersession import get_current_user
 from woost.models.permission import ReadPermission, PermissionExpression
@@ -47,6 +56,7 @@ class Publishable(Item):
         "translation_enabled",
         "start_date",
         "end_date",
+        "requires_https",
         "caching_policies"
     ]
 
@@ -176,6 +186,13 @@ class Publishable(Item):
         member_group = "publication"
     )
 
+    requires_https = schema.Boolean(
+        required = True,
+        default = False,
+        listed_by_default = False,
+        member_group = "publication"
+    )
+
     caching_policies = schema.Collection(
         items = schema.Reference(type = CachingPolicy),
         bidirectional = True,
@@ -215,7 +232,11 @@ class Publishable(Item):
             publishable._update_path(event.value, publishable.path)
 
         elif member.name == "mime_type":
-            publishable.resource_type = get_category_from_mime_type(event.value)
+            if event.value is None:
+                publishable.resource_type = None
+            else:
+                publishable.resource_type = \
+                    get_category_from_mime_type(event.value)
 
     def _update_path(self, parent, path):
 
@@ -307,6 +328,63 @@ class Publishable(Item):
         return cls.select(filters = [
             IsAccessibleExpression(get_current_user())
         ]).select(*args, **kwargs)
+
+    def get_uri(self, 
+        path = None, 
+        parameters = None,
+        language = None,
+        host = None,
+        encode = True):
+        
+        from woost.models import Site
+        uri = Site.main.get_path(self, language = language)
+
+        if uri is not None:
+            if self.per_language_publication:
+                uri = make_uri(require_language(language), uri)
+            
+            if path:
+                uri = make_uri(uri, *path)
+
+            if parameters:
+                uri = make_uri(uri, **parameters)
+
+            uri = self.__fix_uri(uri, host, encode)
+
+        return uri
+
+    def get_image_uri(self,
+        effects = None,
+        parameters = None,
+        host = None,
+        encode = True):
+                
+        uri = make_uri("/images", self.id)
+
+        if effects:
+            uri = make_uri(uri, *effects)
+
+        if parameters:
+            uri = make_uri(uri, **parameters)
+
+        return self.__fix_uri(uri, host, encode)
+
+    def __fix_uri(self, uri, host, encode):
+
+        if encode:
+            uri = percent_encode_uri(uri)
+
+        if host:
+            if host == ".":
+                host = str(Location.get_current_host())
+            elif not "://" in host:
+                host = "http://" + host
+
+            uri = make_uri(host, uri)
+        else:
+            uri = make_uri("/", uri)
+
+        return uri
 
 
 class IsPublishedExpression(Expression):

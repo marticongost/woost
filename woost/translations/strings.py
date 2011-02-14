@@ -1532,6 +1532,46 @@ translations.define("Site.icon",
     en = u"Icon"
 )
 
+translations.define("Site.https_policy",
+    ca = u"Política de HTTPS",
+    es = u"Política de HTTPS",
+    en = u"HTTPS policy"
+)
+
+translations.define("Site.https_policy-always",
+    ca = u"Habilitar a totes les pàgines",
+    es = u"Habilitar en todas las páginas",
+    en = u"Enable for all pages"
+)
+
+translations.define("Site.https_policy-never",
+    ca = u"Deshabilitar a totes les pàgines",
+    es = u"Deshabilitar en todas las páginas",
+    en = u"Disable for all pages"
+)
+
+translations.define("Site.https_policy-per_page",
+    ca = u"Decidir-ho a cada pàgina",
+    es = u"Decidirlo en cada página",
+    en = u"Decide on a per-page basis"
+)
+
+translations.define("Site.https_persistence",
+    ca = u"Preservar HTTPS entre peticions",
+    es = u"Preservar HTTPS entre peticiones",
+    en = u"Persist HTTPS navigation across requests"
+)
+
+translations.define("Site.https_persistence-explanation",
+    ca = u"Aquesta opció només tindrà efecte si la <em>Política "
+         u"d'HTTPS</em> s'estableix a <em>Decidir a cada pàgina</em>.",
+    es = u"Esta opción solo tendrá efecto si la <em>Política "
+         u"de HTTPS</em> se establece a <em>Decidir en cada página</em>.",
+    en = u"This option will only be taken into account if "
+         u"<em>HTTPS policy</em> is set to <em>Decide on a per-page "
+         u"basis</em>."
+)
+
 translations.define("Site.smtp_host",
     ca = u"Servidor SMTP",
     es = u"Servidor SMTP",
@@ -2049,6 +2089,24 @@ translations.define("Publishable.end_date",
     en = u"Expiration date"
 )
 
+translations.define("Publishable.requires_https",
+    ca = u"Requereix HTTPS",
+    es = u"Requiere HTTPS",
+    en = u"Requires HTTPS"
+)
+
+translations.define("Publishable.requires_https-explanation",
+    ca = u"Aquesta opció només tindrà efecte si la <em>Política "
+         u"d'HTTPS</em> del lloc web s'estableix a <em>Decidir a cada "
+         u"pàgina</em>.",
+    es = u"Esta opción solo tendrá efecto si la <em>Política "
+         u"de HTTPS</em> del sitio web se establece a <em>Decidir en cada "
+         u"página</em>.",
+    en = u"This option will only be taken into account if the site's "
+         u"<em>HTTPS policy</em> is set to <em>Decide on a per-page "
+         u"basis</em>."
+)
+
 translations.define("Publishable.controller",
     ca = u"Controlador",
     es = u"Controlador",
@@ -2116,6 +2174,12 @@ translations.define("Document.meta",
     en = u"Metadata"
 )
 
+translations.define("Document.robots",
+    ca = u"Robots",
+    es = u"Robots",
+    en = u"Robots"
+)
+
 translations.define("Document.title",
     ca = u"Títol",
     es = u"Título",
@@ -2168,6 +2232,18 @@ translations.define("Document.children",
     ca = u"Pàgines filles",
     es = u"Páginas hijas",
     en = u"Child pages"
+)
+
+translations.define("Document.robots_should_index",
+    ca = u"Contingut indexable",
+    es = u"Contenido indexable",
+    en = u"Indexable content"
+)
+
+translations.define("Document.robots_should_follow",
+    ca = u"Seguir els enllaços",
+    es = u"Seguir los enlaces",
+    en = u"Follow links"
 )
 
 # Redirection
@@ -4117,5 +4193,25 @@ translations.define(
     ca = u"Confirmar la contrasenya",
     es = u"Confirmar la contraseña",
     en = u"Confirm password"
+)
+
+# EditPanel
+#------------------------------------------------------------------------------
+translations.define("woost.views.EditPanel.show_panel_button",
+    ca = u"Mostrar panell d'edició",
+    es = u"Mostrar panel de edición",
+    en = u"Show edit panel"
+)
+
+translations.define("woost.views.EditPanel.close_panel_button",
+    ca = u"Ocultar panell d'edició",
+    es = u"Ocultar panel de edición",
+    en = u"Close edit panel"
+)
+
+translations.define("woost.views.EditPanel.actions_title",
+    ca = u"Accions",
+    es = u"Acciones",
+    en = u"Actions"
 )
 

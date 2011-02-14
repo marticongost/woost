@@ -12,7 +12,10 @@ from string import letters, digits
 from random import choice
 from optparse import OptionParser
 from cocktail.translations import translations
-from cocktail.persistence import datastore
+from cocktail.persistence import (
+    datastore,
+    mark_all_migrations_as_executed
+)
 from woost.models import (
     changeset_context,
     Site,
@@ -189,7 +192,7 @@ def init_site(
             DeletePermission(matching_items = owned_items()),
             ConfirmDraftPermission(matching_items = owned_items()),
             
-            # All members allowed, except for 'owner', 'controller' and 'qname'
+            # All members allowed, except for 'local_path', 'controller' and 'qname'
             ReadMemberPermission(
                 matching_members = [
                     "woost.models.item.Item.qname",
@@ -208,8 +211,24 @@ def init_site(
             ),
 
             ReadMemberPermission(),
+            
+            # Only administrators can modify 'owner', 'robots_should_index',
+            # 'robots_should_follow' and 'requires_https' members
             ModifyMemberPermission(
                 matching_members = ["woost.models.item.Item.owner"],
+                authorized = False
+            ),
+            ModifyMemberPermission(
+                matching_members = [
+                    "woost.models.publishable.Publishable.requires_https"
+                ],
+                authorized = False
+            ),
+            ModifyMemberPermission(
+                matching_members = [
+                    "woost.models.document.Document.robots_should_index",
+                    "woost.models.document.Document.robots_should_follow"
+                ],
                 authorized = False
             ),
             ModifyMemberPermission(),
@@ -561,7 +580,8 @@ def init_site(
             "File gallery user view"
         )
         file_gallery_view.insert()
-                        
+    
+    mark_all_migrations_as_executed()
     datastore.commit()
 
 def random_string(length, source = letters + digits + "!?.-$#&@*"):
