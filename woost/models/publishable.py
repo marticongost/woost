@@ -353,18 +353,13 @@ class Publishable(Item):
 
         return uri
 
-    def image_uri(self, element, 
+    def get_image_uri(self,
         effects = None,
         parameters = None,
         host = None,
         encode = True):
-
-        if isinstance(element, type):
-            element = element.full_name
-        elif hasattr(element, "id"):
-            element = element.id
-        
-        uri = make_uri("/images", element)
+                
+        uri = make_uri("/images", self.id)
 
         if effects:
             uri = make_uri(uri, *effects)
@@ -373,33 +368,6 @@ class Publishable(Item):
             uri = make_uri(uri, **parameters)
 
         return self.__fix_uri(uri, host, encode)
-
-    def icon_uri(self, 
-        element,
-        icon_size,
-        thumbnail_size = None,
-        host = None,
-        encode = True):
-
-        if thumbnail_size:
-            w, h = thumbnail_size
-            if w and h:
-                effects = ["thumbnail(%s,%s)" % thumbnail_size] 
-            elif w:
-                effects = ["thumbnail(width=%s)" % w]
-            else:
-                effects = ["thumbnail(height=%s)" % h]
-        else:
-            effects = []
-
-        parameters = {"icon.size": str(icon_size)}
-
-        if thumbnail_size:
-            parameters["kind"] = "image,icon"
-        elif not isinstance(element, type):
-            parameters["kind"] = "icon"
-        
-        return self.image_uri(element, effects, parameters, host, encode)
 
     def __fix_uri(self, uri, host, encode):
 
