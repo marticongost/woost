@@ -29,7 +29,7 @@ from cocktail.controllers import context
             self.set_style("background-image", "url('%s')" % self.cms.uri(self.image))
         ?>
 
-        ${self.text or translations(target)}
+        ${self.text or translations(self.target)}
     </py:ready>
 
 </a>
