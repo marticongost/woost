@@ -289,3 +289,27 @@ translations.define("VimeoBlock.video",
     en = u"Video"
 )
 
+translations.define("VimeoBlock.video_width",
+    ca = u"Amplada",
+    es = u"Ancho",
+    en = u"Width"
+)
+
+translations.define("VimeoBlock.video_width-explanation",
+    ca = u"en píxels",
+    es = u"en píxeles",
+    en = u"in pixels"
+)
+
+translations.define("VimeoBlock.video_height",
+    ca = u"Alçada",
+    es = u"Alto",
+    en = u"Height"
+)
+
+translations.define("VimeoBlock.video_height-explanation",
+    ca = u"en píxels",
+    es = u"en píxeles",
+    en = u"in pixels"
+)
+
