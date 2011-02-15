@@ -154,6 +154,9 @@ class Document(Publishable):
         for resource in Publishable.resources.__get__(self):
             yield resource
 
+        for resource in self.branch_resources:
+            yield resource
+
         for resource in self.page_resources:
             yield resource
 
