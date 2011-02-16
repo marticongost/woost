@@ -46,11 +46,17 @@ class LanguageModule(Module):
 
     def translate_uri(self, path = None, language = None):
 
-        qs = ""
+        qs = u""
 
         if path is None:
-            path = try_decode(cherrypy.request.path_info)
+            path = cherrypy.request.path_info
             qs = cherrypy.request.query_string
+        
+        if isinstance(path, str):
+            path = try_decode(path)
+
+        if isinstance(qs, str):
+            qs = try_decode(qs)
 
         if language is None:
             language = get_language()

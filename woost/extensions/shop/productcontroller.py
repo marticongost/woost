@@ -6,6 +6,7 @@ u"""
 import cherrypy
 from cocktail.controllers import request_property
 from woost.controllers.publishablecontroller import PublishableController
+from woost.extensions.shop.basket import Basket
 
 
 class ProductController(PublishableController):
@@ -19,3 +20,10 @@ class ProductController(PublishableController):
             raise cherrypy.NotFound()
 
         return view_class
+
+    @request_property
+    def output(self):
+        output = PublishableController.output(self)
+        output["shop_order"] = Basket.get()
+        return output
+

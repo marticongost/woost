@@ -288,16 +288,16 @@ class Publishable(Item):
         """Iterates over all the resources that apply to the item.        
         @type: L{Publishable}
         """
-        ancestry = [self]
-        document = self
-        while document.parent is not None and document.inherit_resources:
-            ancestry.append(document.parent)
-            document = document.parent
+        ancestry = []
+        publishable = self
+        while publishable.parent is not None and publishable.inherit_resources:
+            ancestry.append(publishable.parent)
+            publishable = publishable.parent
 
         ancestry.reverse()
 
-        for document in ancestry:
-            for resource in document.branch_resources:
+        for publishable in ancestry:
+            for resource in publishable.branch_resources:
                 yield resource
 
     def is_current(self):
