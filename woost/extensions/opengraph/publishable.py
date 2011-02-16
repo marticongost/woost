@@ -89,21 +89,31 @@ def _get_news_properties(self):
 
 News.get_open_graph_properties = _get_news_properties
 
-def _get_open_graph_image(self):
+def _get_publishable_open_graph_image(self):
+    return None
+
+Publishable.get_open_graph_image = _get_publishable_open_graph_image
+
+def _get_document_open_graph_image(self):
     return first(attachment
                  for attachment in self.attachments
                  if attachment.resource_type == "image"
                  and attachment.is_accessible())
 
-Publishable.get_open_graph_image = _get_open_graph_image
+Document.get_open_graph_image = _get_document_open_graph_image
 
-def _get_open_graph_video(self):
+def _get_publishable_open_graph_video(self):
+    return None
+
+Publishable.get_open_graph_video = _get_publishable_open_graph_video
+
+def _get_document_open_graph_video(self):
     return first(attachment
                  for attachment in self.attachments
                  if attachment.resource_type == "video"
                  and attachment.is_accessible())
 
-Publishable.get_open_graph_video = _get_open_graph_video
+Document.get_open_graph_video = _get_document_open_graph_video
 
 # Metadata for shop products (only if the 'shop' extension is enabled)
 from woost.extensions.shop import ShopExtension

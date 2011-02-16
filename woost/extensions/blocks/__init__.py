@@ -56,6 +56,11 @@ class BlocksExtension(Extension):
             blockspage
         )
 
+        from woost.extensions.vimeo import VimeoExtension
+
+        if VimeoExtension.instance.enabled:
+            from woost.extensions.blocks import vimeoblock
+
         extension = event.source
 
         if not extension.installed:
