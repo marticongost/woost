@@ -104,9 +104,11 @@ from cocktail.controllers import context
             href="${cms.image_uri(image, *self.get_full_image_effects(image))}"
             target="blank_">
 
-            <img py:local_id="image"
-                src="${context['cms'].image_uri(image, *self.get_thumbnail_effects(image))}"
-                alt="${title}"/>
+            <py:woost.views.Image 
+                py:local_id="image"
+                py:image="${image}"
+                py:accessible_check="${False}"
+                py:effects="${self.get_thumbnail_effects(image)}" />
             
             <span py:local_id="image_label"
                 py:visible="${self.labels_visible}"
