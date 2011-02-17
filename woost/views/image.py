@@ -26,7 +26,7 @@ class Image(Element):
             cms = context["cms"]
 
             if self.effects:
-                self["src"] = cms.image_uri(self.image, self.effects)
+                self["src"] = cms.image_uri(self.image, *self.effects)
             else:
                 self["src"] = cms.uri(self.image)
 
