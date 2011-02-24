@@ -110,7 +110,7 @@ class LocationsExtension(Extension):
                 "autonomous_community",
                 "province",
                 "town"
-            ],
+            ],            
             translate_value = lambda value, language = None, **kwargs:
                 "" if not value 
                 else translations(
@@ -207,11 +207,12 @@ class LocationsExtension(Extension):
     def _should_add_location(self, record, parent, context):
 
         # Filter by tree subset
-        if not context.get("inside_subset") \
-        and context["full_code"] not in self.updated_subset:
-            return False
-        else:
-            context["inside_subset"] = True
+        if self.updated_subset:
+            if not context.get("inside_subset") \
+            and context["full_code"] not in self.updated_subset:
+                return False
+            else:
+                context["inside_subset"] = True
 
         # Filter by location type
         if record["type"] not in self.updated_location_types:
