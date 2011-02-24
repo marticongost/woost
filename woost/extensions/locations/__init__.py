@@ -102,6 +102,13 @@ class LocationsExtension(Extension):
 
     updated_location_types = schema.Collection(
         edit_inline = True,
+        default = [
+            "continent",
+            "country",
+            "autonomous_community",
+            "province",
+            "town"
+        ],
         items = schema.String(
             required = True,
             enumeration = [
