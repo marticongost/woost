@@ -84,6 +84,26 @@ class Location(Item):
             for descendant in location.descend(True):
                 yield descendant
 
+    def descends_from(self, ascendant):
+        """Indicates if the location descends from a given location.
+
+        :param ascendant: The hypothetical container of the location.
+        :type ascendant: `Location`
+
+        :return: True if the location is, or is contained within the given
+            location or one of its descendants, False otherwise.
+        :rtype: bool
+        """
+        location = self
+
+        while location is not None:
+            if location is ascendant:
+                return True
+            else:
+                location = location.parent
+
+        return False
+
     def get_child_location(self, code):
         """Retrieves the contained location that matches the indicated code.
 
