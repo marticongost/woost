@@ -105,6 +105,8 @@ class WebConsoleExtension(Extension):
             page.qname = "woost.extensions.webconsole.page"
             page.parent = Site.main.home
             page.path = "webconsole"
+            page.hidden = True
+            page.requires_https = True
             page.controller = controller
             page.template = template
             page.per_language_publication = False
