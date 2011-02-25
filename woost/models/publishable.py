@@ -285,11 +285,19 @@ class Publishable(Item):
 
     @getter
     def resources(self):
-        """Iterates over all the resources that apply to the item.        
+        """Iterates over all the resources that apply to the item.
+        @type: L{Publishable}
+        """
+        return self.inherited_resources
+
+    @getter
+    def inherited_resources(self):
+        """Iterates over all the inherited resources that apply to the item.
         @type: L{Publishable}
         """
         ancestry = []
         publishable = self
+        
         while publishable.parent is not None and publishable.inherit_resources:
             ancestry.append(publishable.parent)
             publishable = publishable.parent
