@@ -17,6 +17,11 @@ from woost.models import Site
 
     def get_content_title(self):
         return getattr(self.publishable, "inner_title", None) or translations(self.publishable)
+    
+    def get_linked_attachments(self):
+        return (attachment
+                for attachment in getattr(self.publishable, "attachments", ())
+                if attachment.is_published())
     ?>
 
     <div py:id="header">
@@ -77,14 +82,9 @@ from woost.models import Site
 
         <ul py:id="attachments" py:collapsible="${True}">
             <py:ready>
-                <?py
-                published_attachments = (attachment
-                               for attachment in self.publishable.attachments
-                               if attachment.is_published())
-                ?>
                 <py:new
                     py:element="self.create_attachment_entry(attachment)"
-                    py:for="attachment in published_attachments"/>
+                    py:for="attachment in self.get_linked_attachments()"/>
             </py:ready>
         </ul>
     </div>
