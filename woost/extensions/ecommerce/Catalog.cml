@@ -29,7 +29,7 @@
        <py:woost.views.Image
             py:local_id="product_image"
             py:image="${product.get_image()}"
-            py:effects="thumbnail(150,150)/align(width=150,height=150,halign='center',valign='bottom',background='fff')"
+            py:effects="${['thumbnail(150,150)', 'align(width=150,height=150,halign=\'center\',valign=\'bottom\',background=\'fff\')']}"
             py:accessible_check="${False}"/>
 
         <span py:local_id="product_label">           
