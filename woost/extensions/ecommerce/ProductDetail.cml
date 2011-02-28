@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?py
+from cocktail.controllers import context
+?>
+
+<div
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:py="http://www.whads.com/ns/cocktail/templates">
+
+    <?py-class
+    product = None
+    currency = u"€"
+    forms = None
+    ?>
+
+    <py:woost.views.ImageGallery
+        py:id="image_gallery"
+        py:gallery_type="slideshow"
+        py:thumbnail_effects="${('fit(%(width)s,%(height)s)',)}"
+        py:images="@{a for a in self.product.attachments if a.resource_type == 'image'}"/>
+
+    <span py:id="price_label">@{self.product.price} @{self.currency}</span>
+
+    <ul py:id="offers">
+        <py:ready>
+            <py:woost.extensions.ecommerce.Discount
+                py:tag="li"
+                py:pricing="${offer}"
+                py:currency="@{self.currency}"
+                py:for="offer in self.product.offers()"/>
+        </py:ready>
+    </ul>
+
+    <div py:id="description">@{self.product.description or ""}</div>
+
+    <ul py:id="attachments" py:collapsible="${True}">
+        <py:ready>
+            <li                
+                py:for="attachment in self.product.attachments"
+                py:where="attachment.resource_type != 'image' and attachment.is_accessible()">            
+                <a href="${attachment.get_uri()}" title="${getattr(attachment, 'description', None)}">
+                    <img src="${context['cms'].icon_uri(attachment, 16)}" alt=""/>
+                    <span>${translations(attachment)}</span>
+                </a>
+            </li>
+        </py:ready>
+    </ul>
+
+    <py:cocktail.html.Form
+        py:id="add_product_form"
+        py:form="@{self.forms['add_product_form']}"
+        method="post">
+
+        <div py:id="add_product_form_title" py:index="0">
+            ${translations("woost.extensions.ecommerce.Product.add_product_form.title")}
+        </div>
+
+        <py:cocktail.html.ErrorBox
+            py:id="errors"
+            py:errors="@{self.forms['add_product_form'].errors}"
+            py:index="1"/>
+
+        <py:cocktail.html.TextBox type="number" py:def="quantity_display"/>
+
+        <py:with py:element="element.submit_button" name="action" value="add_product">
+            <?py element.empty() ?>
+            ${translations("woost.extensions.ecommerce.Product.add_product_form.submit_button")}
+        </py:with>
+    </py:cocktail.html.Form>
+
+</div>
+
