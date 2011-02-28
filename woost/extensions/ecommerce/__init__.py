@@ -186,7 +186,7 @@ class ECommerceExtension(Extension):
     def create_content(self):
         
         catalog = self._create_document("catalog")
-        catalog.controller = self._create_template("catalog")
+        catalog.controller = self._create_controller("catalog")
         catalog.template = self._create_template("catalog")
         catalog.parent = Site.main.home
         catalog.insert()
