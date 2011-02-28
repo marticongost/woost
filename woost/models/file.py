@@ -147,8 +147,10 @@ class File(Publishable):
         title, ext = os.path.splitext(file_name)
         
         if encoding:
-            title = title.decode(encoding)
-            file_name = file_name.decode(encoding)
+            if isinstance(title, str):
+                title = title.decode(encoding)
+            if isinstance(file_name, str):
+                file_name = file_name.decode(encoding)
 
         title = title.replace("_", " ").replace("-", " ")
         title = title[0].upper() + title[1:]
