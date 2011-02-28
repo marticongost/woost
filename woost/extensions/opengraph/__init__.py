@@ -9,7 +9,7 @@ from cocktail.translations import translations
 from cocktail import schema
 from cocktail.html import templates
 from cocktail.persistence import datastore
-from woost.models import Extension
+from woost.models import Extension, File
 
 
 translations.define("OpenGraphExtension",
@@ -34,6 +34,12 @@ translations.define("OpenGraphExtension.site_name",
     ca = u"Nom del lloc web",
     es = u"Nombre del sitio web",
     en = u"Website name"
+)
+
+translations.define("OpenGraphExtension.site_image",
+    ca = u"Imatge del lloc web",
+    es = u"Imagen del sitio web",
+    en = u"Website image"
 )
 
 translations.define("OpenGraphExtension.facebook_administrators",
@@ -71,6 +77,7 @@ class OpenGraphExtension(Extension):
 
     members_order = [
         "site_name",
+        "site_image",
         "email",
         "phone_number",
         "fax_number",
@@ -80,6 +87,13 @@ class OpenGraphExtension(Extension):
 
     site_name = schema.String(
         required = True,
+        member_group = "open_graph"
+    )
+
+    site_image = schema.Reference(
+        required = True,
+        type = File,
+        related_end = schema.Collection(),
         member_group = "open_graph"
     )
 
@@ -269,6 +283,9 @@ class OpenGraphExtension(Extension):
         properties = {
             "og:site_name": self.site_name
         }
+
+        if self.site_image:
+            properties["og:image"] = self.site_image.get_uri(host = ".")
 
         if self.email:
             properties["og:email"] = self.email
