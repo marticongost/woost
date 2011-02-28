@@ -94,7 +94,7 @@ from woost.extensions.ecommerce.basket import Basket
                 <py:woost.views.Image
                     py:local_id="product_image"
                     py:image="${purchase.product.get_image()}"
-                    py:effects="thumbnail(75,75)" />
+                    py:effects="${['thumbnail(75,75)']}" />
             </a>
             <a 
                 py:local_id="product_label"
