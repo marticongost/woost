@@ -325,6 +325,7 @@ class ECommerceOrder(Item):
     def add_purchase(self, purchase):
         for order_purchase in self.purchases:
             if order_purchase.__class__ is purchase.__class__ \
+            and order_purchase.product is purchase.product \
             and all(
                 order_purchase.get(option) == purchase.get(option)
                 for option in purchase.get_options()
