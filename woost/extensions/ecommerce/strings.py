@@ -578,20 +578,6 @@ translations.define(
 # ProductView
 #------------------------------------------------------------------------------
 translations.define(
-    "woost.extensions.ecommerce.Product.add_product_form.title",
-    ca = u"Afegir a la cistella",
-    es = u"Añadir a la cesta",
-    en = u"Add to basket"
-)
-
-translations.define(
-    "woost.extensions.ecommerce.Product.add_product_form.submit_button",
-    ca = u"Afegir",
-    es = u"Añadir",
-    en = u"Add"
-)
-
-translations.define(
     "woost.extensions.ecommerce.ProductPage.back_link",
     ca = u"Tornar al catàleg",
     es = u"Volver al catálogo",
@@ -764,5 +750,19 @@ translations.define(
     ca = u"Modificar les dades de la comanda",
     es = u"Modificar los datos del pedido",
     en = u"Edit checkout data"
+)
+
+# AddProductForm
+#------------------------------------------------------------------------------
+translations.define("woost.extensions.ecommerce.AddProductForm.title",
+    ca = u"Afegir a la cistella",
+    es = u"Añadir a la cesta",
+    en = u"Add to basket"
+)
+
+translations.define("woost.extensions.ecommerce.AddProductForm.submit_button",
+    ca = u"Afegir",
+    es = u"Añadir",
+    en = u"Add"
 )
 

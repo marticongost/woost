@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<py:cocktail.html.Form
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:py="http://www.whads.com/ns/cocktail/templates" >
+
+    <?py-class
+    product = None
+    ?>
+
+    <div py:id="add_product_form_title" py:index="0">
+        ${translations("woost.extensions.ecommerce.AddProductForm.title")}
+    </div>
+
+    <py:cocktail.html.ErrorBox
+        py:id="errors"
+        py:errors="@{self.errors}"
+        py:index="1"/>
+
+    <py:cocktail.html.TextBox type="number" min="1" py:def="quantity_display"/>
+
+    <py:with py:element="self.fields">
+        <py:cocktail.html.HiddenInput py:id="product_field" name="product">
+            <py:ready>
+                <?py
+                if self.product:
+                    element["value"] = self.product.id
+                else:
+                    element.visible = False
+                ?>
+            </py:ready>
+        </py:cocktail.html.HiddenInput>
+    </py:with>
+
+    <py:with py:element="element.submit_button" name="action" value="add_product">
+        <?py element.empty() ?>
+        ${translations("woost.extensions.ecommerce.AddProductForm.submit_button")}
+    </py:with>
+</py:cocktail.html.Form>
+
+
