@@ -7,6 +7,7 @@
     <?py-class
     translation_members = ()
     pagination = None
+    forms = ()
     currency = u"€"
     ?>
 
@@ -14,6 +15,7 @@
         <py:woost.extensions.ecommerce.Catalog
             py:id="catalog"
             py:pagination="@{self.pagination}"
+            py:form="@{self.forms['add_product_form']}"
             py:currency="@{self.currency}"/>
     </div>
 

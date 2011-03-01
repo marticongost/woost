@@ -6,15 +6,17 @@ u"""
 import cherrypy
 from cocktail.translations import translations
 from cocktail import schema
+from cocktail.events import event_handler
 from cocktail.controllers import (
     request_property,
     get_state,
     get_parameter,
     Pagination
 )
+from cocktail.controllers.formprocessor import Form
 from woost.models import Publishable
-from woost.controllers.documentcontroller import DocumentController
 from woost.extensions.ecommerce.ecommerceproduct import ECommerceProduct
+from woost.extensions.ecommerce.productcontroller import ProductController
 
 SESSION_KEY = "woost.extensions.ecommerce.catalog_state"
 
@@ -26,7 +28,40 @@ def catalog_current_state_uri():
     return catalog.get_uri(parameters = state)
 
 
-class CatalogController(DocumentController):
+class CatalogController(ProductController):
+
+    @event_handler
+    def handle_before_request(cls, event):
+        cherrypy.session[SESSION_KEY] = get_state()
+
+    class AddProductForm(ProductController.AddProductForm):
+
+        @request_property
+        def product(self):
+            return get_parameter(
+                schema.Reference(
+                    "product", 
+                    type = ECommerceProduct, 
+                    required = True
+                )
+            )
+
+        @request_property
+        def model(self):
+            return self.product \
+                and self.product.purchase_model \
+                or Form.model(self)
+
+        @request_property
+        def adapter(self):
+            return self.product \
+                and ProductController.AddProductForm.adapter(self) \
+                or Form.adapter(self)
+
+        def create_instance(self):
+            return self.product \
+                and ProductController.AddProductForm.create_instance(self) \
+                or Form.create_instance(self)
 
     @request_property
     def products(self):
@@ -45,12 +80,9 @@ class CatalogController(DocumentController):
             errors = "set_default"
         )
 
-    def submit(self):
-        cherrypy.session[SESSION_KEY] = get_state()
-
     @request_property
     def output(self):
-        output = DocumentController.output(self)
+        output = ProductController.output(self)
         output.update(
             products = self.products,
             pagination = self.pagination
