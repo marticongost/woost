@@ -14,7 +14,7 @@ from cocktail import schema
     _adapter = None
     _adapted_schemas = None
 
-    def _get_adapted_schema(self, name, model):
+    def _get_adapted_schema(self, model):
 
         if self._adapted_schemas is None:
             self._adapted_schemas = {}
@@ -24,7 +24,7 @@ from cocktail import schema
             self._adapter.implicit_copy = False
 
         if model not in self._adapted_schemas:
-            adapted_schema = schema.Schema(name)
+            adapted_schema = schema.Schema(self.form.form_id)
 
             for member in model.get_options():
                 self._adapter.copy(member.name)
@@ -71,7 +71,7 @@ from cocktail import schema
             py:form="${form}"
             method="post">
             <?py
-            element.schema = self._get_adapted_schema(form.form_id, product.purchase_model)
+            element.schema = self._get_adapted_schema(product.purchase_model)
             if element.product is not form.product:
                 data = {}
                 element.schema.init_instance(data)
