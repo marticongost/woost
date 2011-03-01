@@ -180,7 +180,7 @@ from woost.extensions.ecommerce.basket import Basket
 
     <td py:def="actions_footer_cell">
         <button
-            py:id="empty_basket_button"
+            py:local_id="empty_basket_button"
             type="submit"
             name="action"
             value="empty_basket">
@@ -190,7 +190,7 @@ from woost.extensions.ecommerce.basket import Basket
     
     <td py:def="quantity_footer_cell">
         <button
-            py:id="set_quantities_button"
+            py:local_id="set_quantities_button"
             type="submit" 
             name="action" 
             value="set_quantities"
