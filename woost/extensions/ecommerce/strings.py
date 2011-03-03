@@ -654,6 +654,20 @@ translations.define(
 )
 
 translations.define(
+    "Basket.subtotal",
+    ca = u"Subtotal",
+    es = u"Subtotal",
+    en = u"Subtotal"
+)
+
+translations.define(
+    "Basket.taxes",
+    ca = u"Taxes",
+    es = u"Tasas",
+    en = u"Taxes"
+)
+
+translations.define(
     "Basket.total",
     ca = u"Total",
     es = u"Total",

@@ -20,6 +20,8 @@ from woost.extensions.ecommerce.basket import Basket
         schema.Member("actions"),
         schema.Integer("quantity"),
         schema.Decimal("price"),
+        schema.Decimal("subtotal"),
+        schema.Decimal("taxes"),
         schema.Decimal("total")
     ])
     currency = u"€"
@@ -138,6 +140,21 @@ from woost.extensions.ecommerce.basket import Basket
 
         <py:new 
             py:element="self.create_price_label(['purchases', purchase, 'price', 'total'])"
+            py:def="subtotal_display" py:args="purchase, member"/>
+
+        <div py:def="taxes_display" py:args="purchase, member">
+            <ul>
+                <?py
+                purchase_taxes = purchase.calculate_costs()["taxes"]["concepts"]
+                ?>
+                <li py:for="tax in purchase_taxes">
+                    ${translations(tax)}
+                </li>
+            </ul>
+        </div>
+
+        <py:new 
+            py:element="self.create_price_label(['purchases', purchase, 'total'])"
             py:def="total_display" py:args="purchase, member"/>
 
         <tfoot py:id="basket_table_footer">
