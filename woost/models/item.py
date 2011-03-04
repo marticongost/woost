@@ -356,13 +356,6 @@ class Item(PersistentObject):
         # Update the last time of modification for the item
         item.last_update_time = datetime.now()
 
-        # Break the relation to the draft's source. This needs to be done
-        # explicitly, because drafts are flagged as non bidirectional (to keep
-        # their changes in isolation), which prevents automatic management of
-        # referential integrity
-        if item.draft_source is not None:
-            item.draft_source.drafts.remove(item)
-
         if not item.is_draft:
             changeset = ChangeSet.current
 
@@ -382,11 +375,24 @@ class Item(PersistentObject):
                     changeset.changes[item.id] = change
                     change.insert()
     
+    @event_handler
+    def handle_deleted(cls, event):
+        
+        item = event.source
+
+        # Break the relation to the draft's source. This needs to be done
+        # explicitly, because drafts are flagged as non bidirectional (to keep
+        # their changes in isolation), which prevents automatic management of
+        # referential integrity
+        if item.draft_source is not None:
+            item.draft_source.drafts.remove(item)
+
     _preserved_members = frozenset([changes])
 
     def _should_erase_member(self, member):
         return PersistentObject._should_erase_member(self, member) \
-            and member not in self._preserved_members
+            and member not in self._preserved_members \
+            and member is not self.__class__.draft_source
 
     # Ownership and authorship
     #--------------------------------------------------------------------------
