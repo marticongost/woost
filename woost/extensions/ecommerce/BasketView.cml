@@ -87,7 +87,8 @@ from woost.extensions.ecommerce.basket import Basket
         py:id="basket_table"
         py:schema="@{self.order_schema}"
         py:data="@{self.order.purchases}"
-        py:visible="@{bool(self.order.purchases)}">
+        py:visible="@{bool(self.order.purchases)}"
+        py:resizable="${False}">
 
         <py:block py:def="product_display" py:args="purchase, member">
             <a 
