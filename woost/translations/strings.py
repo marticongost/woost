@@ -1862,7 +1862,7 @@ translations.define("CachingPolicy.cache_enabled-explanation",
     es = u"Si se habilita el cache, los elementos solicitados por los "
          u"usuarios solo son procesados si han sido modificados. Esto "
          u"mejora notablemente el rendimiento, pero por contra no "
-         u"garantiza que el contenido que se muestra a los usuarios este "
+         u"garantiza que el contenido que se muestra a los usuarios esté "
          u"actualizado a la última versión.",
     en = u"Enabling caching for this item will cause the application to "
          u"only process items if they have been modified. This can "

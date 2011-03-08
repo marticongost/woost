@@ -143,6 +143,10 @@ cocktail.bind({
 
             var $dialog = jQuery(cocktail.instantiate("woost.views.ImageGallery.image_dialog"));
 
+            $dialog.bind("dialogClosed", function () {
+                $entry.find(".image_link").focus();
+            });
+
             $dialog.find(".image").attr("src", imageURL);
             
             if (imageTitle) {
