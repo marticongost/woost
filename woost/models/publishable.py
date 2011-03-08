@@ -370,7 +370,10 @@ class Publishable(Item):
         uri = make_uri("/images", self.id)
 
         if effects:
-            uri = make_uri(uri, *effects)
+            if isinstance(effects, basestring):
+                uri = make_uri(uri, effects)
+            else:
+                uri = make_uri(uri, *effects)
 
         if parameters:
             uri = make_uri(uri, **parameters)
