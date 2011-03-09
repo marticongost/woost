@@ -1362,6 +1362,12 @@ translations.define("woost.views.StandardView fallback language notice",
         u"shown instead." % translations(fallback).lower()
 )
 
+translations.define("woost.views.StandardView.phone_number",
+    ca = u"Tel:",
+    es = u"Tel:",
+    en = u"Telephone:"
+)
+
 translations.define("UploadFilesForm.upload",
     ca = u"Fitxer ZIP",
     es = u"Fichero ZIP",
@@ -1502,6 +1508,12 @@ translations.define("Site.meta",
     en = u"Metadata"
 )
 
+translations.define("Site.contact",
+    ca = u"Dades de contacte",
+    es = u"Datos de contacto",
+    en = u"Contact details"
+)
+
 translations.define("Site.pages",
     ca = u"Pàgines",
     es = u"Páginas",
@@ -1512,6 +1524,12 @@ translations.define("Site.system",
     ca = u"Configuració del sistema",
     es = u"Configuración del sistema",
     en = u"System configuration"
+)
+
+translations.define("Site.site_name",
+    ca = u"Nom del lloc web",
+    es = u"Nombre del sitio web",
+    en = u"Website name"
 )
 
 translations.define("Site.keywords",
@@ -1530,6 +1548,72 @@ translations.define("Site.icon",
     ca = u"Icona",
     es = u"Icono",
     en = u"Icon"
+)
+
+translations.define("Site.logo",
+    ca = u"Logotip",
+    es = u"Logotipo",
+    en = u"Logo"
+)
+
+translations.define("Site.organization_name",
+    ca = u"Nom de l'entitat",
+    es = u"Nombre de la entidad",
+    en = u"Entity name"
+)
+
+translations.define("Site.organization_url",
+    ca = u"URL de l'entitat",
+    es = u"URL de la entidad",
+    en = u"Entity URL"
+)
+
+translations.define("Site.address",
+    ca = u"Adreça",
+    es = u"Dirección",
+    en = u"Address"
+)
+
+translations.define("Site.town",
+    ca = u"Localitat",
+    es = u"Localidad",
+    en = u"Town"
+)
+
+translations.define("Site.region",
+    ca = u"Regió",
+    es = u"Región",
+    en = u"Region"
+)
+
+translations.define("Site.postal_code",
+    ca = u"Codi postal",
+    es = u"Código postal",
+    en = u"Postal code"
+)
+
+translations.define("Site.country",
+    ca = u"País",
+    es = u"País",
+    en = u"Country"
+)
+
+translations.define("Site.phone_number",
+    ca = u"Telèfon",
+    es = u"Teléfono",
+    en = u"Phone number"
+)
+
+translations.define("Site.fax_number",
+    ca = u"Fax",
+    es = u"Fax",
+    en = u"Fax"
+)
+
+translations.define("Site.email",
+    ca = u"Correu electrònic",
+    es = u"Correo electrónico",
+    en = u"Email"
 )
 
 translations.define("Site.https_policy",

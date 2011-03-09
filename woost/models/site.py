@@ -23,14 +23,26 @@ class Site(Item):
     indexed = True
     instantiable = False
 
-    groups_order = ["language", "meta", "pages", "system"]
+    groups_order = ["language", "meta", "contact", "pages", "system"]
 
     members_order = [
         "default_language",
         "backoffice_language",
+        "site_name",
+        "logo",
         "icon",
         "keywords",
         "description",
+        "organization_name",
+        "organization_url",
+        "address",
+        "town",
+        "region",
+        "postal_code",
+        "country",
+        "phone_number",
+        "fax_number",
+        "email",
         "home",
         "login_page",
         "generic_error_page",
@@ -71,6 +83,59 @@ class Site(Item):
         member_group = "language"
     )
     
+    organization_name = schema.String(
+        translated = True,
+        listed_by_default = False,
+        member_group = "contact"
+    )
+
+    organization_url = schema.String(
+        listed_by_default = False,
+        member_group = "contact"
+    )
+
+    address = schema.String(
+        edit_control = "cocktail.html.TextArea",
+        member_group = "contact",
+        listed_by_default = False
+    )
+
+    town = schema.String(
+        member_group = "contact",
+        listed_by_default = False
+    )
+
+    region = schema.String(
+        member_group = "contact",
+        listed_by_default = False
+    )
+    
+    postal_code = schema.String(
+        member_group = "contact",
+        listed_by_default = False
+    )
+
+    country = schema.String(
+        member_group = "contact",
+        listed_by_default = False
+    )
+
+    phone_number = schema.String(
+        member_group = "contact",
+        listed_by_default = False
+    )
+
+    fax_number = schema.String(
+        member_group = "contact",
+        listed_by_default = False
+    )
+
+    email = schema.String(
+        format = "^.+@.+$",
+        member_group = "contact",
+        listed_by_default = False
+    )
+
     home = schema.Reference(
         type = "woost.models.Publishable",
         required = True,
@@ -102,7 +167,21 @@ class Site(Item):
         member_group = "pages"
     )
 
+    site_name = schema.String(
+        translated = True,
+        member_group = "meta",
+        listed_by_default = False
+    )
+
     icon = schema.Reference(
+        type = File,
+        relation_constraints = [File.resource_type.equal("image")],
+        related_end = schema.Collection(),
+        listed_by_default = False,
+        member_group = "meta"
+    )
+
+    logo = schema.Reference(
         type = File,
         relation_constraints = [File.resource_type.equal("image")],
         related_end = schema.Collection(),
