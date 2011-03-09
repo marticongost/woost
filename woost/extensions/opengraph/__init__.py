@@ -9,7 +9,7 @@ from cocktail.translations import translations
 from cocktail import schema
 from cocktail.html import templates
 from cocktail.persistence import datastore
-from woost.models import Extension, File
+from woost.models import Site, Extension, File
 
 
 translations.define("OpenGraphExtension",
@@ -30,18 +30,6 @@ translations.define("OpenGraphExtension.open_graph",
     en = u"OpenGraph/Facebook integration"
 )
 
-translations.define("OpenGraphExtension.site_name",
-    ca = u"Nom del lloc web",
-    es = u"Nombre del sitio web",
-    en = u"Website name"
-)
-
-translations.define("OpenGraphExtension.site_image",
-    ca = u"Imatge del lloc web",
-    es = u"Imagen del sitio web",
-    en = u"Website image"
-)
-
 translations.define("OpenGraphExtension.facebook_administrators",
     ca = u"Comptes de Facebook dels administradors",
     es = u"Cuentas de Facebook de los administradores",
@@ -52,24 +40,6 @@ translations.define("OpenGraphExtension.facebook_applications",
     ca = u"Comptes d'aplicació de Facebook",
     es = u"Cuentas de aplicación de Facebook",
     en = u"Facebook application accounts"
-)
-
-translations.define("OpenGraphExtension.email",
-    ca = u"Correu electrònic",
-    es = u"Correo electrónico",
-    en = u"Email address"
-)
-
-translations.define("OpenGraphExtension.phone_number",
-    ca = u"Número de telèfon",
-    es = u"Número de teléfono",
-    en = u"Phone number"
-)
-
-translations.define("OpenGraphExtension.fax_number",
-    ca = u"Número de fax",
-    es = u"Número de fax",
-    en = u"Fax number"
 )
 
 
@@ -84,30 +54,6 @@ class OpenGraphExtension(Extension):
         "facebook_administrators",
         "facebook_applications"
     ]
-
-    site_name = schema.String(
-        required = True,
-        member_group = "open_graph"
-    )
-
-    site_image = schema.Reference(
-        required = True,
-        type = File,
-        related_end = schema.Collection(),
-        member_group = "open_graph"
-    )
-
-    email = schema.String(
-        member_group = "open_graph"        
-    )
-
-    phone_number = schema.String(
-        member_group = "open_graph"
-    )
-
-    fax_number = schema.String(
-        member_group = "open_graph"
-    )
 
     facebook_administrators = schema.String(
         listed_by_default = False,
@@ -280,21 +226,39 @@ class OpenGraphExtension(Extension):
 
     def get_global_properties(self):
 
-        properties = {
-            "og:site_name": self.site_name
-        }
+        site = Site.main
 
-        if self.site_image:
-            properties["og:image"] = self.site_image.get_uri(host = ".")
+        properties = {}
 
-        if self.email:
-            properties["og:email"] = self.email
+        if site.site_name:
+            properties["og:site_name"] = site.site_name
 
-        if self.phone_number:
-            properties["og:phone_number"] = self.phone_number
+        if site.logo:
+            properties["og:image"] = site.logo.get_uri(host = ".")
 
-        if self.fax_number:
-            properties["og:fax_number"] = self.fax_number
+        if site.email:
+            properties["og:email"] = site.email
+
+        if site.phone_number:
+            properties["og:phone_number"] = site.phone_number
+
+        if site.fax_number:
+            properties["og:fax_number"] = site.fax_number
+
+        if site.address:
+            properties["og:street-address"] = site.address
+
+        if site.town:
+            properties["og:locality"] = site.town
+
+        if site.region:
+            properties["og:region"] = site.region
+
+        if site.postal_code:
+            properties["og:postal-code"] = site.postal_code
+
+        if site.country:
+            properties["og:country-name"] = site.country
 
         if self.facebook_administrators:
             properties["fb:admins"] = self.facebook_administrators
