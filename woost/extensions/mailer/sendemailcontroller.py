@@ -12,6 +12,7 @@ from simplejson import dumps
 from cocktail import schema
 from cocktail.events import event_handler
 from cocktail.modeling import cached_getter
+from cocktail.translations import set_language
 from cocktail.controllers.location import Location
 from woost.models import Site, User, get_current_user
 from woost.models.permission import ReadPermission
@@ -112,6 +113,7 @@ class SendEmailController(EditController):
             test_email = self.params.read(schema.String("test_email"))
             # Create a fake user
             receiver = User(email = test_email)
+            set_language(mailing.language.iso_code)
             mailing.send_message(self.smtp_server, receiver)
 
         elif self.mailer_action == "send":
