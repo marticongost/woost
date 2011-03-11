@@ -4,7 +4,6 @@ u"""
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
 from cocktail.translations import translations
-from cocktail.controllers import context
 from cocktail.html import Element
 
 
@@ -23,10 +22,5 @@ class Image(Element):
             self.visible = False
         else:
             self["alt"] = translations(self.image)
-            cms = context["cms"]
-
-            if self.effects:
-                self["src"] = cms.image_uri(self.image, self.effects)
-            else:
-                self["src"] = cms.uri(self.image)
+            self["src"] = self.image.get_image_uri(effects = self.effects)
 

@@ -139,6 +139,7 @@ a,
 /* Content
 -----------------------------------------------------------------------------*/
 .main {
+    float: left;
     padding: 1.4em;
 }
 
@@ -220,6 +221,31 @@ a,
 
 .Form .buttons {
     margin-top: 0.7em;
+}
+
+/* Errors
+-----------------------------------------------------------------------------*/
+.ErrorBox {
+    color: black;
+    border: 1px dotted rgb(200,160,120);
+    background-color: rgb(245,230,215);
+    padding: 0.5em;
+    margin: 0;
+    margin-bottom: 1em;
+}
+
+.ErrorBox li {
+    list-style-type: none;
+}
+
+.ErrorBox li + li {
+    margin-top: 0.2em;
+}
+
+.ErrorBox li em {
+    font-style: normal;
+    font-weight: bold;
+    color: rgb(135,35,10);
 }
 
 /* Attachments list
