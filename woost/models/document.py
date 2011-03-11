@@ -151,7 +151,10 @@ class Document(Publishable):
         """Iterates over all the resources that apply to the page.
         @type: L{Publishable}
         """
-        for resource in Publishable.resources.__get__(self):
+        for resource in self.inherited_resources:
+            yield resource
+
+        for resource in self.branch_resources:
             yield resource
 
         for resource in self.page_resources:

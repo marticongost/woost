@@ -12,7 +12,7 @@ from os.path import join, isdir
 
 setup(
     name = "woost",
-    version = "0.6",
+    version = "0.7",
     author = "Whads/Accent SL",
     author_email = "tech@whads.com",
     maintainer = "Marti Congost",
@@ -81,7 +81,8 @@ of its features include:\n"
             "locations = woost.extensions.locations:LocationsExtension",
             "webconsole = woost.extensions.webconsole:WebConsoleExtension",
             "blocks = woost.extensions.blocks:BlocksExtension",
-            "opengraph = woost.extensions.opengraph:OpenGraphExtension"
+            "opengraph = woost.extensions.opengraph:OpenGraphExtension",
+            "ecommerce = woost.extensions.ecommerce:ECommerceExtension",
         ]
     },
     # Woost can't yet access view resources (images, style sheets, client

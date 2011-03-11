@@ -285,19 +285,27 @@ class Publishable(Item):
 
     @getter
     def resources(self):
-        """Iterates over all the resources that apply to the item.        
+        """Iterates over all the resources that apply to the item.
         @type: L{Publishable}
         """
-        ancestry = [self]
-        document = self
-        while document.parent is not None and document.inherit_resources:
-            ancestry.append(document.parent)
-            document = document.parent
+        return self.inherited_resources
+
+    @getter
+    def inherited_resources(self):
+        """Iterates over all the inherited resources that apply to the item.
+        @type: L{Publishable}
+        """
+        ancestry = []
+        publishable = self
+        
+        while publishable.parent is not None and publishable.inherit_resources:
+            ancestry.append(publishable.parent)
+            publishable = publishable.parent
 
         ancestry.reverse()
 
-        for document in ancestry:
-            for resource in document.branch_resources:
+        for publishable in ancestry:
+            for resource in publishable.branch_resources:
                 yield resource
 
     def is_current(self):
@@ -362,7 +370,10 @@ class Publishable(Item):
         uri = make_uri("/images", self.id)
 
         if effects:
-            uri = make_uri(uri, *effects)
+            if isinstance(effects, basestring):
+                uri = make_uri(uri, effects)
+            else:
+                uri = make_uri(uri, *effects)
 
         if parameters:
             uri = make_uri(uri, **parameters)

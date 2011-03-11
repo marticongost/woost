@@ -47,8 +47,10 @@ from woost.models import (
     CustomTriggerResponse,
     ConfirmDraftPermission,
     EmailTemplate,
-    CachingPolicy
+    CachingPolicy,
+    Extension
 )
+from woost.models.extension import install_new_extensions
 
 standard_template_identifiers = {
     "cocktail": "woost.views.StandardView",
@@ -60,7 +62,8 @@ def init_site(
     admin_password = "",
     languages = ("en",),
     uri = "/",
-    template_engine = "cocktail"):
+    template_engine = "cocktail",
+    extensions = ()):
  
     datastore.root.clear()
     datastore.commit()
@@ -581,6 +584,14 @@ def init_site(
         )
         file_gallery_view.insert()
     
+    # Enable the selected extensions
+    if extensions:
+        install_new_extensions()
+        for extension in Extension.select():
+            ext_name = extension.__class__.__name__[:-len("Extension")].lower()
+            if ext_name in extensions:
+                extension.enabled = True
+
     mark_all_migrations_as_executed()
     datastore.commit()
 
@@ -597,6 +608,8 @@ def main():
     parser.add_option("-t", "--template-engine",
         default = "cocktail",
         help = "The buffet templating engine to use by default")
+    parser.add_option("-e", "--extensions",
+        help = "The list of extensions to enable")
     
     options, args = parser.parse_args()
 
@@ -618,7 +631,8 @@ def main():
         admin_email,
         admin_password,
         languages.split(),
-        template_engine = options.template_engine
+        template_engine = options.template_engine,
+        extensions = options.extensions.split(",")
     )
     
     print u"Your site has been successfully created. You can start it by " \
