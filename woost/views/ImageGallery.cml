@@ -108,7 +108,9 @@ from cocktail.controllers import context
                 py:local_id="image"
                 py:image="${image}"
                 py:accessible_check="${False}"
-                py:effects="${self.get_thumbnail_effects(image)}" />
+                py:effects="${self.get_thumbnail_effects(image)}"
+                width="@{self.thumbnail_width}"
+                height="@{self.thumbnail_height}"/>
             
             <span py:local_id="image_label"
                 py:visible="${self.labels_visible}"
