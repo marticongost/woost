@@ -3,7 +3,6 @@ u"""
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
-import cherrypy
 from cocktail.translations import translations
 from cocktail import schema
 from cocktail.events import event_handler
@@ -11,7 +10,8 @@ from cocktail.controllers import (
     request_property,
     get_state,
     get_parameter,
-    Pagination
+    Pagination,
+    session
 )
 from cocktail.controllers.formprocessor import Form
 from woost.models import Publishable
@@ -21,7 +21,7 @@ from woost.extensions.ecommerce.productcontroller import ProductController
 SESSION_KEY = "woost.extensions.ecommerce.catalog_state"
 
 def catalog_current_state_uri():
-    state = cherrypy.session.get(SESSION_KEY) or {}
+    state = session.get(SESSION_KEY) or {}
     catalog = Publishable.require_instance(
         qname = "woost.extensions.ecommerce.catalog_page"
     )
@@ -32,7 +32,7 @@ class CatalogController(ProductController):
 
     @event_handler
     def handle_before_request(cls, event):
-        cherrypy.session[SESSION_KEY] = get_state()
+        session[SESSION_KEY] = get_state()
 
     class AddProductForm(ProductController.AddProductForm):
 
