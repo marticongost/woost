@@ -6,7 +6,7 @@
 @organization:	Whads/Accent SL
 @since:			February 2010
 """
-import cherrypy
+from cocktail.controllers import session
 
 def notify_user(message, category = None, transient = True):
     """Creates a new notification for the current user.
@@ -26,10 +26,10 @@ def notify_user(message, category = None, transient = True):
         closed by the user (False).
     @type transient: bool
     """
-    notifications = cherrypy.session.get("notifications")
+    notifications = session.get("notifications")
 
     if notifications is None:
-        cherrypy.session["notifications"] = notifications = []
+        session["notifications"] = notifications = []
 
     notifications.append((message, category, transient))
 
@@ -45,7 +45,7 @@ def pop_user_notifications():
         or not it should be treated as a transient message.
     @rtype: sequence of (tuple of (unicode, unicode or None, bool))
     """
-    notifications = cherrypy.session.get("notifications")
-    cherrypy.session["notifications"] = []
+    notifications = session.get("notifications")
+    session["notifications"] = []
     return notifications or []
 

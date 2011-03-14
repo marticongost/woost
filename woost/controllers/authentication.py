@@ -9,6 +9,7 @@ u"""
 import cherrypy
 from cocktail.modeling import getter
 from cocktail.persistence import datastore
+from cocktail.controllers import session
 from woost.models import User, set_current_user
 from woost.controllers.module import Module
 
@@ -23,7 +24,7 @@ class AuthenticationModule(Module):
 
         params = cherrypy.request.params
     
-        session_user_id = cherrypy.session.get(self.SESSION_KEY)
+        session_user_id = session.get(self.SESSION_KEY)
         set_current_user(
             session_user_id and User.get_instance(session_user_id)
             or self.anonymous_user
@@ -42,7 +43,7 @@ class AuthenticationModule(Module):
         return User.get_instance(qname = "woost.anonymous_user")
 
     def set_user_session(self, user):
-        cherrypy.session[self.SESSION_KEY] = user.id
+        session[self.SESSION_KEY] = user.id
         set_current_user(user)
 
     def login(self, identifier, password):
@@ -77,7 +78,7 @@ class AuthenticationModule(Module):
 
     def logout(self):
         """Ends the current user session."""
-        cherrypy.session.clear()
+        session.delete()
         set_current_user(self.anonymous_user)
 
 
