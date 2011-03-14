@@ -68,7 +68,7 @@ class Menu(TreeView):
 
         while item is not None:
             self._expanded.add(item)
-            item = item.parent
+            item = self.get_parent_item(item)
 
         # Limited depth
         self._depth = 2 if self.root_visible else 1
