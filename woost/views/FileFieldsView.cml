@@ -36,17 +36,28 @@ from woost.models.file import get_human_readable_file_size
 
     <p py:def="upload_info">
         <?py
-        resource_type = self.edited_item.resource_type
+        upload = self.edit_form.data["upload"]
+
+        if upload:
+            file_name = upload["file_name"]
+            file_size = upload["file_size"]
+            mime_type = upload["mime_type"]
+            resource_type = get_category_from_mime_type(mime_type) if mime_type else None
+        else:
+            file_name = self.edited_item.file_name
+            file_size = self.edited_item.file_size
+            mime_type = self.edited_item.mime_type
+            resource_type = self.edited_item.resource_type
+
         if resource_type:
             element.add_class("resource_type_" + resource_type)
 
-        mime_type = self.edited_item.mime_type
         if mime_type:
             element.add_class("mime_type_" + mime_type.replace("/", "_").replace(".", "_"))
         ?>
-        <span class="file_name">${self.edited_item.file_name}</span>
-        <span class="file_size">
-            ${get_human_readable_file_size(self.edited_item.file_size)}
+        <span class="file_name" py:if="file_name is not None">${file_name}</span>
+        <span class="file_size" py:if="file_size is not None">
+            ${get_human_readable_file_size(file_size)}
         </span>
     </p>
 
