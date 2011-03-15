@@ -13,7 +13,7 @@ from cocktail.modeling import getter, cached_getter
 from cocktail.events import event_handler
 from cocktail import schema
 from cocktail.schema.exceptions import ValidationError
-from cocktail.controllers import context
+from cocktail.controllers import context, session
 from cocktail.controllers.fileupload import FileUpload
 from woost.controllers.backoffice.publishableeditnode \
     import PublishableEditNode
@@ -86,7 +86,7 @@ class FileEditNode(PublishableEditNode):
             "temp",
             "%s-%s-%s" % (
                 self.item.id,
-                cherrypy.session.id,
+                session.id,
                 self.stack.to_param()
             )
         )

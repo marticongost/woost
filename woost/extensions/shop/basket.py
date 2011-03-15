@@ -8,6 +8,7 @@
 """
 import cherrypy
 from cocktail.persistence import datastore
+from cocktail.controllers import session
 from woost.extensions.shop.shoporder import ShopOrder
 from woost.extensions.shop.shoporderentry import ShopOrderEntry
 from woost.extensions.shop.product import Product
@@ -40,18 +41,18 @@ class Basket(object):
     @classmethod
     def drop(cls):
         """Drops the current shop order."""
-        cherrypy.session.pop(cls.session_key, None)
+        session.pop(cls.session_key, None)
 
     @classmethod
     def store(cls):
         order = cls.get()
         order.insert()
         datastore.commit()
-        cherrypy.session[cls.session_key] = order.id
+        session[cls.session_key] = order.id
 
     @classmethod
     def restore(cls):
-        session_data = cherrypy.session.get(cls.session_key)
+        session_data = session.get(cls.session_key)
 
         if session_data is None:
             return None

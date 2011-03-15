@@ -7,6 +7,9 @@ u"""
 @since:			July 2008
 """
 import os.path
+from string import ascii_letters
+from sha import sha
+from random import choice
 from warnings import warn
 
 try:
@@ -18,13 +21,15 @@ import rfc822
 import cherrypy
 from cherrypy.lib.cptools import validate_since
 from pkg_resources import resource_filename, iter_entry_points
+from beaker.middleware import SessionMiddleware
 from cocktail.events import Event, event_handler
 from cocktail.translations import get_language, set_language
 from cocktail.controllers import (
     Dispatcher, 
     Location, 
     folder_publisher,
-    try_decode
+    try_decode,
+    session
 )
 from cocktail.controllers.uriutils import percent_encode
 from cocktail.persistence import datastore
@@ -116,11 +121,6 @@ class CMS(BaseCMSController):
     # being available beforehand.
     class ApplicationContainer(object):
 
-        _cp_config = {
-            "tools.sessions.on": True,
-            "tools.sessions.storage_type": "file"
-        }
-
         def __init__(self, cms):
             self.__cms = cms
             self.__dispatcher = Dispatcher()            
@@ -129,18 +129,31 @@ class CMS(BaseCMSController):
             if app_path:
 
                 # Set the default location for file-based sessions
-                if self._cp_config and \
-                self._cp_config.get("tools.sessions.storage_type") == "file":
+                if session.config.get("session.type") == 'file' \
+                and not session.config.get("session.data_dir"):
                     
                     # If the directory doesn't exist, create it
                     session_path = os.path.join(app_path, "sessions")
                     if not os.path.exists(session_path):
                         os.mkdir(session_path)
 
-                    self._cp_config.setdefault(
-                        "tools.sessions.storage_path",
-                        session_path
-                    )
+                    session.config["session.data_dir"] = session_path
+
+                if not session.config.get("session.secret"):
+
+                    session_key_path = os.path.join(app_path, ".session_key")
+                    if os.path.exists(session_key_path):
+                        with open(session_key_path, "r") as session_key_file:
+                            session_key = session_key_file.readline()
+                    else:
+                        with open(session_key_path, "w") as session_key_file:
+                            session_key = sha("".join(
+                                choice(ascii_letters) 
+                                for i in range(10)
+                            )).hexdigest()
+                            session_key_file.write(session_key)
+
+                    session.config["session.secret"] = session_key
 
                 # Set the default location for uploaded files
                 if not cms.upload_path:
@@ -170,6 +183,9 @@ class CMS(BaseCMSController):
             resource_filename("cocktail.html", "resources")
         )
 
+    def session_middleware(self, app):
+        return SessionMiddleware(app, session.config)
+
     def __init__(self, *args, **kwargs):
     
         BaseCMSController.__init__(self, *args, **kwargs)
@@ -193,8 +209,15 @@ class CMS(BaseCMSController):
 
     def run(self, block = True):
                 
+        app = cherrypy.Application(self.ApplicationContainer(self))
+
+        # Session middleware
+        app.wsgiapp.pipeline.append(
+            ("beaker_session", self.session_middleware)
+        )
+
         cherrypy.tree.mount(
-            self.ApplicationContainer(self),
+            app,
             self.virtual_path,
             self.application_settings
         )

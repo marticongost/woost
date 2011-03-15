@@ -24,7 +24,7 @@ from cocktail.events import Event, EventHub
 from cocktail.pkgutils import resolve
 from cocktail import schema
 from cocktail.translations import translations
-from cocktail.controllers import context, get_parameter
+from cocktail.controllers import context, get_parameter, session
 from cocktail.persistence import (
     PersistentObject,
     PersistentList, PersistentRelationList,
@@ -107,7 +107,7 @@ class EditStacksManager(object):
         @return: The mapping of stacks, indexed by their numerical id.
         @rtype: mapping of int => L{EditStack}
         """
-        preserved_stacks = cherrypy.session.get(self._session_key)
+        preserved_stacks = session.get(self._session_key)
         edit_stacks = {}
         
         if preserved_stacks:
@@ -124,7 +124,7 @@ class EditStacksManager(object):
         if edit_stack is None:
 
             if preserved_stacks is None:
-                preserved_stacks = cherrypy.session.get(self._session_key)
+                preserved_stacks = session.get(self._session_key)
 
             if preserved_stacks:
 
@@ -210,8 +210,8 @@ class EditStacksManager(object):
         @rtype: L{EditStack}
         """
         edit_stack = resolve(self._edit_stack_class)()
-        edit_stack.id = cherrypy.session.get(self._session_id_key, 0)
-        cherrypy.session[self._session_id_key] = edit_stack.id + 1
+        edit_stack.id = session.get(self._session_id_key, 0)
+        session[self._session_id_key] = edit_stack.id + 1
         self.__stack_map[edit_stack.id] = edit_stack
 
         self._remove_expired_edit_stacks()
@@ -225,11 +225,11 @@ class EditStacksManager(object):
         @param edit_stack: The edit stack to preserve.
         @type edit_stack: L{EditStack}
         """
-        preserved_stacks = cherrypy.session.get(self._session_key)
+        preserved_stacks = session.get(self._session_key)
 
         if preserved_stacks is None:
             preserved_stacks = {}
-            cherrypy.session[self._session_key] = preserved_stacks
+            session[self._session_key] = preserved_stacks
 
         preserved_stacks[edit_stack.id] = (
             datetime.now(),
@@ -245,7 +245,7 @@ class EditStacksManager(object):
             return
 
         if preserved_stacks is None:
-            preserved_stacks = cherrypy.session.get(self._session_key)
+            preserved_stacks = session.get(self._session_key)
 
         if preserved_stacks is None:
             return
