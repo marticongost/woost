@@ -22,25 +22,34 @@ class AuthenticationModule(Module):
 
     def process_request(self):
 
-        params = cherrypy.request.params
-    
-        session_user_id = session.get(self.SESSION_KEY)
         set_current_user(
-            session_user_id and User.get_instance(session_user_id)
+            self.get_user_from_session()
             or self.anonymous_user
         )
 
+        self.process_login()
+        self.process_logout()
+
+    def process_login(self):
+        params = cherrypy.request.params
         if "authenticate" in params:
             self.login(
                 params.get("user"),
                 params.get("password")
             )
-        elif "logout" in params:
+
+    def process_logout(self):
+        if "logout" in cherrypy.request.params:
             self.logout()
 
     @getter
     def anonymous_user(self):
         return User.get_instance(qname = "woost.anonymous_user")
+
+    def get_user_from_session(self):
+        session_user_id = cherrypy.session.get(self.SESSION_KEY)
+        if session_user_id:
+            return User.get_instance(session_user_id)
 
     def set_user_session(self, user):
         session[self.SESSION_KEY] = user.id
