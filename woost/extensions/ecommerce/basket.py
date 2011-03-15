@@ -5,6 +5,7 @@ u"""Defines the `Basket` class.
 """
 import cherrypy
 from cocktail.persistence import datastore
+from cocktail.controllers import session
 from woost.extensions.ecommerce.ecommerceorder import ECommerceOrder
 from woost.extensions.ecommerce.ecommercepurchase import ECommercePurchase
 from woost.extensions.ecommerce.ecommerceproduct import ECommerceProduct
@@ -44,7 +45,7 @@ class Basket(object):
         order = cls.get(create_new = False)
 
         if order is not None:
-            cherrypy.session.pop(cls.session_key, None)
+            session.pop(cls.session_key, None)
             del cherrypy.request.woost_ecommerce_order
 
         return order
@@ -69,11 +70,11 @@ class Basket(object):
             purchase.insert()
 
         datastore.commit()
-        cherrypy.session[cls.session_key] = order.id
+        session[cls.session_key] = order.id
 
     @classmethod
     def restore(cls):
-        session_data = cherrypy.session.get(cls.session_key)
+        session_data = session.get(cls.session_key)
 
         if session_data is None:
             return None
