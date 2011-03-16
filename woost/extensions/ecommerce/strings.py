@@ -780,3 +780,17 @@ translations.define("woost.extensions.ecommerce.AddProductForm.submit_button",
     en = u"Add"
 )
 
+translations.define(
+    "woost.extensions.ecommerce.AddProductForm.product_added_back_button",
+    ca = u"Veure més productes",
+    es = u"Ver más productos",
+    en = u"Keep shopping"
+)
+
+translations.define(
+    "woost.extensions.ecommerce.AddProductForm.product_added_forward_button",
+    ca = u"Comprar",
+    es = u"Comprar",
+    en = u"Checkout"
+)
+
