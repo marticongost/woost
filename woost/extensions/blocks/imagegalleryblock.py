@@ -42,27 +42,32 @@ class ImageGalleryBlock(Block):
                    "ImageGalleryBlock.gallery_type-%s" % value,
                    language,
                    **kwargs
-               )
+               ),
+        member_group = "content"
     )
 
     thumbnail_width = schema.Integer(
         required = True,
-        default = 200
+        default = 200,
+        member_group = "content"
     )
 
     thumbnail_height = schema.Integer(
         required = True,
-        default = 200
+        default = 200,
+        member_group = "content"
     )
 
     full_width = schema.Integer(
         required = True,
-        default = 800
+        default = 800,
+        member_group = "content"
     )
 
     full_height = schema.Integer(
         required = True,
-        default = 700
+        default = 700,
+        member_group = "content"
     )
 
     def init_view(self, view):
