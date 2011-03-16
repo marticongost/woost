@@ -146,8 +146,8 @@ from cocktail.controllers import context
             </button>
             <img 
                 py:local_id="image" 
-                width="${self.full_width}"
-                height="${self.full_height}"/>
+                width="@{self.full_width}"
+                height="@{self.full_height}"/>
             <button
                 py:local_id="previous_button"
                 title="${translations('woost.views.ImageGallery.previous_button')}">
