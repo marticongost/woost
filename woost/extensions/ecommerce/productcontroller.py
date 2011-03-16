@@ -52,7 +52,8 @@ class ProductController(FormProcessor, DocumentController):
                     "woost.extensions.ecommerce.product_added_notice",
                     product = self.product
                 ),
-                "success"
+                "success",
+                transient = False
             )
             Location.get_current().go("GET")
 
