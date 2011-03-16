@@ -8,14 +8,18 @@ from woost.controllers.notifications import pop_user_notifications
     xmlns:py="http://www.whads.com/ns/cocktail/templates"
     py:collapsible="${True}">
 
+    <?py-class
+    filter = None
+    ?>
+
     <?py
     self.add_resource("/resources/scripts/NotificationBox.js")
     ?>
 
     <py:ready>
-        <py:new 
+        <py:new
             py:element="self.create_notification(message, category, transient)"
-            py:for="message, category, transient in pop_user_notifications()"/>
+            py:for="message, category, transient in pop_user_notifications(filter = self.filter)"/>
     </py:ready>
 
     <div py:def="notification" py:args="message, category, transient">
