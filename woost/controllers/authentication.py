@@ -47,7 +47,7 @@ class AuthenticationModule(Module):
         return User.get_instance(qname = "woost.anonymous_user")
 
     def get_user_from_session(self):
-        session_user_id = cherrypy.session.get(self.SESSION_KEY)
+        session_user_id = session.get(self.SESSION_KEY)
         if session_user_id:
             return User.get_instance(session_user_id)
 
