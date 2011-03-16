@@ -19,7 +19,8 @@
     <py:woost.views.NotificationBox 
         py:id="notification_box"
         py:parent="self.main"
-        py:index="0"/>
+        py:index="0"
+        py:filter="${lambda notification: notification[1] != 'product_added'}"/>
 
 </py:woost.views.StandardView>
 
