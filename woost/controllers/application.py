@@ -227,18 +227,7 @@ class CMS(BaseCMSController):
 
     def run(self, block = True):
                 
-        app = cherrypy.Application(self.ApplicationContainer(self))
-
-        # Session middleware
-        app.wsgiapp.pipeline.append(
-            ("beaker_session", self.session_middleware)
-        )
-
-        cherrypy.tree.mount(
-            app,
-            self.virtual_path,
-            self.application_settings
-        )
+        self.mount()
     
         if hasattr(cherrypy.engine, "signal_handler"):
             cherrypy.engine.signal_handler.subscribe()
@@ -252,6 +241,21 @@ class CMS(BaseCMSController):
             cherrypy.engine.block()
         else:
             cherrypy.engine.wait(cherrypy.engine.states.STARTED)            
+
+    def mount(self):
+
+        app = cherrypy.Application(self.ApplicationContainer(self))
+
+        # Session middleware
+        app.wsgiapp.pipeline.append(
+            ("beaker_session", self.session_middleware)
+        )
+
+        return cherrypy.tree.mount(
+            app,
+            self.virtual_path,
+            self.application_settings
+        )
 
     def resolve(self, path):
         
