@@ -12,9 +12,10 @@ from cocktail.events import Event
 from cocktail.pkgutils import resolve
 from cocktail.translations import translations
 from cocktail import schema
-from cocktail.persistence import datastore
+from cocktail.persistence import transactional
 from woost.models.item import Item
 
+@transactional(5)
 def load_extensions():
     """Load all available extensions.
     
@@ -78,8 +79,6 @@ def load_extensions():
 
     for extension in Extension.select():
         load(extension)
-
-    datastore.commit()
 
 def install_new_extensions():
     """Finds new available extensions and registers them with the site."""
