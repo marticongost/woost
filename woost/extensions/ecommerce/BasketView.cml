@@ -27,6 +27,10 @@ from woost.extensions.ecommerce.basket import Basket
     currency = u"€"
     editable = False
     embeded = False
+    
+    apply_pricing = True
+    apply_shipping_costs = True
+    apply_taxes = True
 
     forms = None
     form_errors = ()
@@ -50,8 +54,17 @@ from woost.extensions.ecommerce.basket import Basket
         if self.order is None:
             self.order = Basket.get()
 
-        self.regular_costs = self.order.calculate_cost(apply_pricing = False)
-        self.costs = self.order.calculate_cost()
+        self.regular_costs = self.order.calculate_cost(
+            apply_pricing = False,
+            apply_shipping_costs = self.apply_shipping_costs,
+            apply_taxes = self.apply_taxes
+        )
+
+        self.costs = self.order.calculate_cost(
+            apply_pricing = self.apply_pricing,
+            apply_shipping_costs = self.apply_shipping_costs,
+            apply_taxes = self.apply_taxes
+        )
 
         if self.editable:
             
@@ -89,6 +102,14 @@ from woost.extensions.ecommerce.basket import Basket
         py:data="@{self.order.purchases}"
         py:visible="@{bool(self.order.purchases)}"
         py:resizable="${False}">
+
+        <py:binding>
+            <?py
+            if not self.apply_taxes:
+                element.set_member_displayed("taxes", False)
+                element.set_member_displayed("subtotal", False)
+            ?>
+        </py:binding>
 
         <py:block py:def="product_display" py:args="purchase, member">
             <a 
