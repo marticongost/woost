@@ -12,7 +12,9 @@
             py:editable="${True}"
             py:embeded="${True}"
             py:forms="@{self.forms}"
-            py:form_errors="@{self.form_errors}"/>
+            py:form_errors="@{self.form_errors}"
+            py:apply_shipping_costs="${False}"
+            py:apply_taxes="${False}"/>
     </py:with>
 
 </py:woost.extensions.ecommerce.OrderStep>
