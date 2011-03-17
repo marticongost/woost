@@ -105,7 +105,10 @@ from woost.extensions.ecommerce.basket import Basket
 
         <py:binding>
             <?py
-            if not self.apply_taxes:
+            if not self.apply_taxes or not any(
+                purchase_costs["taxes"]["concepts"]
+                for purchase_costs in self.costs["purchases"].itervalues()
+            ):
                 element.set_member_displayed("taxes", False)
                 element.set_member_displayed("subtotal", False)
             ?>
