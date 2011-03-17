@@ -129,17 +129,35 @@ class CMS(BaseCMSController):
             if app_path:
 
                 # Set the default location for file-based sessions
-                if session.config.get("session.type") == 'file' \
-                and not session.config.get("session.data_dir"):
+                sconf = session.config
+                using_file_sessions = (sconf.get("session.type") == "file")
+                using_dbm_sessions = (sconf.get("session.type") == "dbm")
+                lock_dir_missing = (
+                    not using_file_sessions 
+                    and not sconf.get("session.lock_dir")
+                )
+                data_dir_missing = (
+                    (
+                        using_file_sessions 
+                        or (using_dbm_sessions and not
+                            sconf.get("session.dbm_dir"))
+                    )
+                    and not sconf.get("session.data_dir")
+                )
+
+                if lock_dir_missing or data_dir_missing:
                     
-                    # If the directory doesn't exist, create it
                     session_path = os.path.join(app_path, "sessions")
                     if not os.path.exists(session_path):
                         os.mkdir(session_path)
 
-                    session.config["session.data_dir"] = session_path
+                    if lock_dir_missing:
+                        sconf["session.lock_dir"] = session_path
 
-                if not session.config.get("session.secret"):
+                    if data_dir_missing:
+                        sconf["session.data_dir"] = session_path
+
+                if not sconf.get("session.secret"):
 
                     session_key_path = os.path.join(app_path, ".session_key")
                     if os.path.exists(session_key_path):
@@ -153,7 +171,7 @@ class CMS(BaseCMSController):
                             )).hexdigest()
                             session_key_file.write(session_key)
 
-                    session.config["session.secret"] = session_key
+                    sconf["session.secret"] = session_key
 
                 # Set the default location for uploaded files
                 if not cms.upload_path:
