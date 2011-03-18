@@ -15,6 +15,7 @@ from subprocess import Popen, PIPE
 from pkg_resources import resource_filename
 import buffet
 import cherrypy
+from beaker.middleware import SessionMiddleware
 from cocktail import schema
 from cocktail.translations import set_language
 from cocktail.html import templates
@@ -299,8 +300,7 @@ class Installer(object):
         return True
 
     def run(self):
-        cherrypy.config.update(self.get_configuration())
-        cherrypy.quickstart(self, "/")
+        cherrypy.quickstart(self, "/", config = self.get_configuration())
 
     def get_configuration(self):
         return {
@@ -310,8 +310,11 @@ class Installer(object):
                 "tools.encode.encoding": "utf-8",
                 "tools.decode.on": True,
                 "tools.decode.encoding": 'utf-8',
-                "tools.sessions.on": True,
                 "engine.autoreload_on": False
+            },
+            "/": {
+                "wsgi.pipeline": [("beaker", SessionMiddleware)],
+                "wsgi.beaker.config": {"session.type": "memory"}
             }
         }
 
