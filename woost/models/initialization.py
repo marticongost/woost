@@ -609,6 +609,7 @@ def main():
         default = "cocktail",
         help = "The buffet templating engine to use by default")
     parser.add_option("-e", "--extensions",
+        default = "",
         help = "The list of extensions to enable")
     
     options, args = parser.parse_args()
