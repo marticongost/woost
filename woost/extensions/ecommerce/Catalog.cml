@@ -52,7 +52,7 @@ from cocktail import schema
         </py:ready>
     </div>
 
-    <div py:def="product_entry" py:args="product, form" href="${product.get_uri()}">
+    <div py:def="product_entry" py:args="product, form">
         <a py:local_id="product_link" href="${product.get_uri()}"> 
             <py:woost.views.Image
                 py:local_id="product_image"
