@@ -1046,7 +1046,7 @@ def align(
             background = (0,0,0,0)
 
         copy = Image.new(
-            "RGBA" if background and len(background) == 4 else image.mode,
+            "RGBA" if background and len(background) == 4 else "RGB",
             (
                 width or image.size[0],
                 height or image.size[1]
