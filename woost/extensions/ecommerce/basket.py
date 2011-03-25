@@ -5,6 +5,7 @@ u"""Defines the `Basket` class.
 """
 import cherrypy
 from cocktail.persistence import datastore
+from cocktail.events import Event
 from cocktail.controllers import session
 from woost.extensions.ecommerce.ecommerceorder import ECommerceOrder
 from woost.extensions.ecommerce.ecommercepurchase import ECommercePurchase
@@ -15,6 +16,14 @@ class Basket(object):
 
     session_key = "woost.extensions.ecommerce.basket"
     
+    created = Event(doc = """
+        An event triggered on the class when a new instance is created.
+
+        @ivar basket: A reference to the new instance.
+        @type basket: L{Basket}
+        """)
+
+
     @classmethod
     def get(cls, create_new = True):
         """Obtains the shop order for the current user session.
@@ -34,6 +43,7 @@ class Basket(object):
 
             if order is None and create_new:
                 order = ECommerceOrder()
+                cls.created(basket = order)
 
             cherrypy.request.woost_ecommerce_order = order
 
