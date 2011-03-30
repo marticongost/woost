@@ -46,11 +46,6 @@ translations.define("OpenGraphExtension.facebook_applications",
 class OpenGraphExtension(Extension):
 
     members_order = [
-        "site_name",
-        "site_image",
-        "email",
-        "phone_number",
-        "fax_number",
         "facebook_administrators",
         "facebook_applications"
     ]
