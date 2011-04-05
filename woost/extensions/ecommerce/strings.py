@@ -398,10 +398,10 @@ translations.define("ECommerceBillingConcept.condition",
     en = u"Condition"
 )
 
-translations.define("ECommerceBillingConcept.eligible_regions",
-    ca = u"Regions",
-    es = u"Regiones",
-    en = u"Regions"
+translations.define("ECommerceBillingConcept.eligible_countries",
+    ca = u"Països",
+    es = u"Paises",
+    en = u"Countries"
 )
 
 translations.define("ECommerceBillingConcept.eligible_products",
@@ -714,6 +714,18 @@ translations.define(
     ca = u"La cistella de la compra està buida.",
     es = u"La cesta de la compra está vacía.",
     en = u"The shopping basket is empty."
+)
+
+translations.define("woost.extensions.ecommerce.BasketView.shipping_costs",
+    ca = u"Costos d'enviament",
+    es = u"Costes de envío",
+    en = u"Shipping costs"
+)
+
+translations.define("woost.extensions.ecommerce.BasketView.taxes",
+    ca = u"Taxes",
+    es = u"Tasas",
+    en = u"Taxes"
 )
 
 # Discount
