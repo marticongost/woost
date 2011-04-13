@@ -84,7 +84,7 @@ from woost.extensions.ecommerce.basket import Basket
             apply_taxes = self.apply_taxes
         )
 
-        self.order_subtotal = self.apply_shipping_costs or self.apply_taxes
+        self.order_subtotal = self.apply_shipping_costs or (self.apply_taxes and self.costs["taxes"]["concepts"])
 
         if self.editable:
             
