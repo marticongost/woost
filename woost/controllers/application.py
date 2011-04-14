@@ -460,7 +460,7 @@ class CMS(BaseCMSController):
         cms = event.source
 
         # Validate access to the requested item
-        publishable = cms.context["publishable"]
+        publishable = cms.context.get("publishable")
         if publishable is not None:
             cms.validate_publishable(publishable)
 
