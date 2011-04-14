@@ -128,25 +128,7 @@ class CachingPolicy(Item):
         
         context["publishable"] = publishable    
         context["latest"] = latest
-
-        def normalize_date(value):
-
-            if isinstance(value, Item):
-                value = value.last_update_time
-
-            elif hasattr(value, "__iter__"):
-                max_date = None
-                for item in value:
-                    date = normalize_date(item)
-                    if date is None:
-                        continue
-                    if max_date is None or date > max_date:
-                        max_date = date
-
-                value = max_date
-            
-            return value
-
+        
         # Per model cache invalidation
         cache_expiration = datastore.root.get("woost.cache_expiration")
         dates = []
@@ -168,11 +150,28 @@ class CachingPolicy(Item):
         else:
             dates.append(publishable.last_update_time)
 
-        return normalize_date(dates)
-
+        return normalize_invalidation_date(dates)
 
 # Utility functions for last update expressions
 #------------------------------------------------------------------------------
+
+def normalize_invalidation_date(value):
+
+    if isinstance(value, Item):
+        value = value.last_update_time
+
+    elif hasattr(value, "__iter__"):
+        max_date = None
+        for item in value:
+            date = normalize_invalidation_date(item)
+            if date is None:
+                continue
+            if max_date is None or date > max_date:
+                max_date = date
+
+        value = max_date
+    
+    return value
 
 def expire_cache(cls = None):
 

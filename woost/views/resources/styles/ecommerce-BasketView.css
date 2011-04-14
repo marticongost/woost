@@ -59,8 +59,13 @@
     text-align: right;
 }
 
-.BasketView .basket_table tfoot {
-    background-image: -webkit-gradient(linear, left top, left bottom, from(white), to(#e5e5e5));
+.BasketView .basket_table .quantity_column input {
+    width: 3em;
+    text-align: right;
+}
+
+.BasketView .basket_table .total_subtotal_cell {
+    font-weight: bold;
 }
 
 .BasketView .basket_table .basket_table_total_cell {

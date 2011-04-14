@@ -47,7 +47,8 @@ from cocktail.html.datadisplay import (
 from cocktail.controllers import (
     view_state,
     get_parameter,
-    CookieParameterSource
+    CookieParameterSource,
+    SessionParameterSource
 )
 from cocktail.controllers.userfilter import GlobalSearchFilter
 from woost.models import (
@@ -234,10 +235,7 @@ class ContentController(BaseBackOfficeController):
         duration = self.persistence_duration
 
         user_collection.set_parameter_source("type",
-            CookieParameterSource(
-                cookie_prefix = prefix,
-                cookie_duration = duration
-            )
+            SessionParameterSource(key_prefix = prefix)
         )
 
         type_prefix = user_collection.type.full_name
@@ -245,9 +243,8 @@ class ContentController(BaseBackOfficeController):
             type_prefix += "-" + prefix
         
         user_collection.persistence_prefix = type_prefix
-        user_collection.persistent_source = psource = CookieParameterSource(
-            cookie_prefix = type_prefix,
-            cookie_duration = duration
+        user_collection.persistent_source = psource = SessionParameterSource(
+            key_prefix = type_prefix
         )
 
         user_collection.set_parameter_source("content_view", psource)

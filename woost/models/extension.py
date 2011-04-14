@@ -12,7 +12,7 @@ from cocktail.events import Event
 from cocktail.pkgutils import resolve
 from cocktail.translations import translations
 from cocktail import schema
-from cocktail.persistence import transactional
+from cocktail.persistence import datastore, transactional
 from woost.models.item import Item
 
 @transactional(5)

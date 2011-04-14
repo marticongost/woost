@@ -92,7 +92,8 @@ from cocktail.controllers import context
         title = image.title or ""
         
         # IE 7 requires this... :'(
-        element.set_style("width", "%dpx" % self.thumbnail_width)
+        if self.gallery_type == "slideshow":
+            element.set_style("width", "%dpx" % self.thumbnail_width)
 
         if self.footnotes_visible:
             footnote = self.get_footnote(image)
@@ -107,9 +108,7 @@ from cocktail.controllers import context
                 py:local_id="image"
                 py:image="${image}"
                 py:accessible_check="${False}"
-                py:effects="${self.get_thumbnail_effects(image)}"
-                width="@{self.thumbnail_width}"
-                height="@{self.thumbnail_height}"/>
+                py:effects="${self.get_thumbnail_effects(image)}"/>
             
             <span py:local_id="image_label"
                 py:visible="${self.labels_visible}"
@@ -144,10 +143,7 @@ from cocktail.controllers import context
             <button py:local_id="close_button" title="${translations('woost.views.ImageGallery.close_button')}">
                 <img src="/resources/images/ImageGallery-close_button.png" alt=""/>
             </button>
-            <img 
-                py:local_id="image" 
-                width="@{self.full_width}"
-                height="@{self.full_height}"/>
+            <img py:local_id="image"/>
             <button
                 py:local_id="previous_button"
                 title="${translations('woost.views.ImageGallery.previous_button')}">
