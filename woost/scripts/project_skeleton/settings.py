@@ -27,6 +27,10 @@ db_host = "_DATABASE_HOST_"
 db_port = _DATABASE_PORT_
 datastore.storage = lambda: ClientStorage((db_host, db_port))
 
+# Use file based sessions
+from cocktail.controllers import session
+session.config["session.type"] = "file"
+
 # Uncomment the code below to enable the interactive debugger
 # WARNING: *THE CODE BELOW MUST BE COMMENTED ON A PRODUCTION ENVIRONMENT*
 #from paste import evalexception
