@@ -141,7 +141,7 @@ class GoogleSearchExtension(Extension):
         READING_CONTEXT = 4
 
         class SAXContentHandler(ContentHandler):
-            result_count = None
+            result_count = 0
             current_result = None
             status = None
 

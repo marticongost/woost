@@ -31,7 +31,7 @@ class ECommerceBillingConcept(Item):
         "end_date",
         "hidden",
         "scope",
-        "eligible_regions",
+        "eligible_countries",
         "eligible_products",
         "eligible_roles",
         "condition",
@@ -82,8 +82,11 @@ class ECommerceBillingConcept(Item):
         )
     )
 
-    eligible_regions = schema.Collection(
-        items = schema.Reference(type = Location),
+    eligible_countries = schema.Collection(
+        items = schema.Reference(
+            type = Location,
+            relation_constraints = [Location.location_type.equal("country")]
+        ),
         related_end = schema.Collection()
     )
 
@@ -157,12 +160,12 @@ class ECommerceBillingConcept(Item):
             purchase = item
             product = item.product
 
-        if self.eligible_regions and (
+        if self.eligible_countries and (
             order is None
-            or order.region is None
+            or order.country is None
             or not any(
-                order.region.descends_from(region) 
-                for region in self.eligible_regions
+                order.country.descends_from(region) 
+                for region in self.eligible_countries
             )
         ):
             return False
@@ -201,12 +204,26 @@ class ECommerceBillingConcept(Item):
         kind, value = self.parse_implementation()
         
         if kind == "override":
+            applicable_concepts = []
+            for concept in costs["concepts"]:
+                concept_kind, concept_value = concept.parse_implementation()
+                if concept_kind not in ("add", "override") or concept is self:
+                    applicable_concepts.append(concept)
+
+            costs["concepts"] = applicable_concepts
             costs["cost"] = value
 
         elif kind == "add":
             costs["cost"] += value
 
         elif kind == "override_percentage":
+            applicable_concepts = []
+            for concept in costs["concepts"]:
+                concept_kind, concept_value = concept.parse_implementation()
+                if concept_kind not in ("add_percentage", "override_percentage") or concept is self:
+                    applicable_concepts.append(concept)
+
+            costs["concepts"] = applicable_concepts
             costs["percentage"] = value
         
         elif kind == "add_percentage":
