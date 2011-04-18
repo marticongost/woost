@@ -11,7 +11,7 @@ from cocktail.modeling import cached_getter
 from cocktail.events import event_handler
 from cocktail import schema
 from cocktail.schema.expressions import NegativeExpression
-from cocktail.controllers.parameters import CookieParameterSource
+from cocktail.controllers.parameters import SessionParameterSource
 from woost.models import (
     Item,
     ChangeSet,
@@ -100,8 +100,8 @@ class ChangeLogController(BaseBackOfficeController):
                 return filters
 
         user_collection = ChangeLogUserCollection(ChangeSet)
-        user_collection.params.source = CookieParameterSource(
-            cookie_prefix = user_collection.persistence_prefix
+        user_collection.params.source = SessionParameterSource(
+            key_prefix = user_collection.persistence_prefix
         )
         user_collection.add_base_filter(
             ChangeSetPermissionExpression(get_current_user())

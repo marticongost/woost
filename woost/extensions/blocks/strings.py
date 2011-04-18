@@ -114,8 +114,8 @@ translations.define("ImageGalleryBlock.full_width",
 )
 
 translations.define("ImageGalleryBlock.full_height",
-    ca = u"Alçada de les miniatures",
-    es = u"Alto de las miniaturas",
+    ca = u"Alçada de les imatges ampliades",
+    es = u"Alto de las imágenes ampliadas",
     en = u"Zoom in image height"
 )
 
