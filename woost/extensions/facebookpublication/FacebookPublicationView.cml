@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<py:woost.views.BackOfficeLayout
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:py="http://www.whads.com/ns/cocktail/templates">
+
+    <?py-class
+    selection = ()
+    form_schema = None
+    form_data = None
+    form_errors = None
+    ?>
+
+    <?py
+    self.add_resource("/resources/styles/facebookpublication-FacebookPublicationView.css")
+    ?>
+
+    <py:with py:element="self.body">
+
+        <h2 py:id="section_title">
+            ${translations("woost.extensions.facebookpublication.FacebookPublicationView.section_title")}
+        </h2>
+
+        <div py:id="selection_block">
+            ${translations("woost.extensions.facebookpublication.FacebookPublicationView.selection_block")}
+            <ul py:id="selection_list">
+                <py:ready>
+                    <li class="selection_item" py:for="item in self.selection">
+                        <py:woost.views.ContentLink 
+                            py:item="${item}"
+                            py:icon_visible="${True}"/>
+                    </li>
+                </py:ready>
+            </ul>
+        </div>
+
+        <py:cocktail.html.ErrorBox
+            py:id="error_box"
+            py:errors="@{self.form_errors}"/>
+
+        <py:cocktail.html.Form
+            py:id="publication_form"
+            method="POST"
+            py:schema="@{self.form_schema}"
+            py:data="@{self.form_data}"
+            py:errors="@{self.form_errors}">
+
+            <py:with py:element="element.submit_button" name="action" value="publish">
+                <?py element.empty() ?>
+                ${translations("woost.extensions.facebookpublication.FacebookPublicationView.publication_form.submit_button")}
+            </py:with>
+
+            <button 
+                py:id="close_button"
+                type="submit" 
+                name="action" 
+                value="close"
+                py:before="publication_form.submit_button">
+                ${translations("Action close")}
+            </button>
+
+        </py:cocktail.html.Form>
+
+    </py:with>
+
+</py:woost.views.BackOfficeLayout>
+
