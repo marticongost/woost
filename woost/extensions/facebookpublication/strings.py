@@ -155,10 +155,11 @@ translations.define(
 translations.define(
     "woost.extensions.facebookauthentication.fbpublish_auth.oauth_error",
     ca = u"L'autorització ha fallat: revisa l'id i el codi secret de "
-         u"l'aplicació.",
+        u"l'aplicació. Resposta: %(response)s",
     es = u"La autorización ha fallado: revisa el id y código secreto de tu "
-         u"aplicación.",
-    en = u"Authorization failed: check your application id and secret code."
+         u"aplicación. Respuesta: %(response)s",
+    en = u"Authorization failed: check your application id and secret code. "
+         u"Response: %(response)s"
 )
 
 # FacebookPublicationPermission
