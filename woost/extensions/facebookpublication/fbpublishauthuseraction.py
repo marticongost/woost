@@ -119,18 +119,22 @@ class FBPublishAuthUserAction(UserAction):
             
             location = Location.get_current(relative = False)
             location.query_string["item_action"] = self.id
+
+            permissions = "publish_stream,offline_access"
+
             if fb_page_id:
                 location.query_string["fb_page"] = fb_page_id
+                permissions += ",manage_pages"
 
             auth_url = (
                 "https://www.facebook.com/dialog/oauth?"
                 "client_id=%s"
                 "&redirect_uri=%s"
-                "&scope=%s,offline_access"
+                "&scope=%s"
                 % (
                     publication_target.app_id,
                     quote_plus(str(location)),
-                    "manage_pages" if fb_page_id else "publish_stream"
+                    permissions
                 )
             )
             raise cherrypy.HTTPRedirect(auth_url)
