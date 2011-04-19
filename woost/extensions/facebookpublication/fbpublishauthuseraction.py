@@ -61,20 +61,23 @@ class FBPublishAuthUserAction(UserAction):
                     code
                 )
             )
-            response_data = urlopen(auth_url).read()
+            response = urlopen(auth_url)
+            response_status = response.getcode()
+            response_body = response.read()
 
-            if "OAuthException" in response_data:
+            if response_status < 200 or response_status > 299:
                 notify_user(
                     translations(
                         "woost.extensions.facebookauthentication."
                         "fbpublish_auth.oauth_error",
-                        ),
+                        response = response_body
+                    ),
                     category = "error",
                     transient = False
                 )
                 return
 
-            auth_token = response_data.split("&")[0].split("=")[1]
+            auth_token = response_body.split("&")[0].split("=")[1]
 
             # Facebook pages require an additional authentication step
             fb_page_id = cherrypy.request.params.get("fb_page")
