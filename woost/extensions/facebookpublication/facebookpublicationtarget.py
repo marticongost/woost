@@ -196,7 +196,8 @@ class FacebookPublicationTarget(Item):
                     )
                 )
             }
-            exec self.targeting in context
+            targeting_code = self.targeting.replace("\r\n", "\n")
+            exec targeting_code in context
             targeting = context.get("targeting")
             if targeting:
                 post_data["targeting"] = dumps(targeting)
