@@ -7,8 +7,7 @@ from urllib import urlopen, urlencode
 from simplejson import dumps
 from cocktail.translations import (
     get_language,
-    translations,
-    language_context
+    translations
 )
 from cocktail import schema
 from cocktail.html.datadisplay import display_factory
@@ -144,29 +143,23 @@ class FacebookPublicationTarget(Item):
     )
 
     def publish(self, publishable):
-       
+
         if self.auth_token is None:
             raise ValueError(
                 "Can't publish %s to %s: missing authorization token."
                 % (publishable, self)
             )
 
-        graph_url = "https://graph.facebook.com/%s/feed" % self.graph_object_id
-
-        for language in self.languages:
-            if language in publishable.translations:
-                
-                with language_context(language):
-                    post_data = self._get_publication_parameters(publishable)
-                
-                encoded_post_data = dict(
-                    (k, v.encode("utf-8") if isinstance(v, unicode) else v)
-                    for k, v in post_data.iteritems()
-                )
-                response = urlopen(graph_url, urlencode(encoded_post_data))
-                status = response.getcode() 
-                if status < 200 or status > 299:
-                    raise FacebookPublicationError(response.read())
+        graph_url = "https://graph.facebook.com/%s/feed" % self.graph_object_id                
+        post_data = self._get_publication_parameters(publishable)        
+        encoded_post_data = dict(
+            (k, v.encode("utf-8") if isinstance(v, unicode) else v)
+            for k, v in post_data.iteritems()
+        )
+        response = urlopen(graph_url, urlencode(encoded_post_data))
+        status = response.getcode()
+        if status < 200 or status > 299:
+            raise FacebookPublicationError(response.read())
 
     def _get_publication_parameters(self, publishable):
 
@@ -214,6 +207,6 @@ class FacebookPublicationTarget(Item):
 class FacebookPublicationError(Exception):
 
     def __init__(self, response):
-        Exception.__init__(self, "FacebookPublicationError: " + response)
+        Exception.__init__(self, response)
         self.response = response
 

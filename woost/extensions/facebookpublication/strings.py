@@ -184,104 +184,16 @@ translations.define("FacebookPublicationPermission.publication_targets",
 # FacebookPublicationController
 #------------------------------------------------------------------------------
 
-translations.define(
-    "woost.extensions.facebookpublication.publication_success_notice",
-    ca = lambda target, items, summarize = False:
-        u"S'%s publicat %s a <em>%s</em>" % (
-            plural2(len(items), u"ha", u"han"),
-            (
-                u"%d %s" % (
-                    len(items),
-                    plural2(len(items), u"element", u"elements")
-                )
-                if summarize
-                else ca_join([
-                    u"<em>%s</em>"
-                    % translations(item) for item in items
-                ])
-            ),
-            translations(target)
-        ),
-    es = lambda target, items, summarize = False:
-        u"Se %s publicado %s en <em>%s</em>" % (
-            plural2(len(items), u"ha", u"han"),
-            (
-                u"%d %s" % (
-                    len(items),
-                    plural2(len(items), u"elemento", u"elementos")
-                )
-                if summarize
-                else es_join([
-                    u"<em>%s</em>"
-                    % translations(item) for item in items
-                ])
-            ),
-            translations(target)
-        ),
-    en = lambda target, items, summarize = False:
-        u"%s published to <em>%s</em>" % (            
-            (
-                u"%d %s" % (
-                    len(items),
-                    plural2(len(items), u"item", u"items")
-                )
-                if summarize
-                else en_join([
-                    u"<em>%s</em>"
-                    % translations(item) for item in items
-                ])
-            ),
-            translations(target)
-        )
+translations.define("FacebookPublicationForm.subset",
+    ca = u"Contingut a publicar",
+    es = u"Contenido a publicar",
+    en = u"Published content"
 )
 
-translations.define(
-    "woost.extensions.facebookpublication.publication_error_notice",
-    ca = lambda target, items, summarize = False:
-        u"Error en intentar publicar %s a <em>%s</em>" % (            
-            (
-                u"%d %s" % (
-                    len(items),
-                    plural2(len(items), u"element", u"elements")
-                )
-                if summarize
-                else ca_join([
-                    u"<em>%s</em>"
-                    % translations(item) for item in items
-                ])
-            ),
-            translations(target)
-        ),
-    es = lambda target, items, summarize = False:
-        u"Error al intentar publicar %s en <em>%s</em>" % (
-            (
-                u"%d %s" % (
-                    len(items),
-                    plural2(len(items), u"elemento", u"elementos")
-                )
-                if summarize
-                else es_join([
-                    u"<em>%s</em>"
-                    % translations(item) for item in items
-                ])
-            ),
-            translations(target)
-        ),
-    en = lambda target, items, summarize = False:
-        u"Could not publish %s to <em>%s</em>" % (            
-            (
-                u"%d %s" % (
-                    len(items),
-                    plural2(len(items), u"item", u"items")
-                )
-                if summarize
-                else en_join([
-                    u"<em>%s</em>"
-                    % translations(item) for item in items
-                ])
-            ),
-            translations(target)
-        )
+translations.define("FacebookPublicationForm.published_languages",
+    ca = u"Idiomes en que es publicarà el contingut",
+    es = u"Idiomas en los que se publicará el contenido",
+    en = u"Languages to publish the content in"
 )
 
 translations.define("FacebookPublicationForm.publication_targets",
@@ -318,5 +230,56 @@ translations.define(
     ca = u"Contingut a publicar:",
     es = u"Contenido a publicar:",
     en = u"Content to publish:"
+)
+
+translations.define(
+    "woost.extensions.facebookpublication.FacebookPublicationView."
+    "success",
+    ca = u"Publicat amb èxit",
+    es = u"Publicado con éxito",
+    en = u"Published successfully"
+)
+
+translations.define(
+    "woost.extensions.facebookpublication.FacebookPublicationView."
+    "publishable_header",
+    ca = u"Element",
+    es = u"Elemento",
+    en = u"Item"
+)
+
+translations.define(
+    "woost.extensions.facebookpublication.FacebookPublicationView."
+    "target_header",
+    ca = u"Destí",
+    es = u"Destino",
+    en = u"Destination"
+)
+
+translations.define(
+    "woost.extensions.facebookpublication.FacebookPublicationView."
+    "language_header",
+    ca = u"Idioma",
+    es = u"Idioma",
+    en = u"Language"
+)
+
+translations.define(
+    "woost.extensions.facebookpublication.FacebookPublicationView."
+    "outcome_header",
+    ca = u"Resultat",
+    es = u"Resultado",
+    en = u"Result"
+)
+
+translations.define(
+    "woost.extensions.facebookpublication.facebookpublicationtarget."
+    "FacebookPublicationError-instance",
+    ca = lambda instance: u"Error de publicació: <pre>%s</pre>" 
+                          % instance.response,
+    es = lambda instance: u"Error de publicación: <pre>%s</pre>"
+                          % instance.response,
+    en = lambda instance: u"Publication error: <pre>%s</pre>"
+                          % instance.response
 )
 
