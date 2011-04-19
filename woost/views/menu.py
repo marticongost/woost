@@ -54,8 +54,6 @@ class Menu(TreeView):
 
     def _ready(self):
 
-        self._cms = context["cms"]
-
         if self.root is None:
             self.root = Site.main.home
 
@@ -79,7 +77,7 @@ class Menu(TreeView):
         return not item.hidden and item.is_accessible()
 
     def get_item_uri(self, item):
-        return self._cms.uri(item)
+        return item.get_uri(host = ".")
 
     def create_entry(self, item):
         entry = TreeView.create_entry(self, item)
