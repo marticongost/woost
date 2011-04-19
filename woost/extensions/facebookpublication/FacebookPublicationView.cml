@@ -107,7 +107,7 @@
                     group_outcome = (i and translations(error) == translations(self.results[i - 1][3]))
 
                     if group_outcome:
-                        prev_cell = self.__language_starting_row.outcome_cell
+                        prev_cell = self.__outcome_starting_row.outcome_cell
                         if prev_cell["rowspan"]:
                             prev_cell["rowspan"] += 1
                         else:
