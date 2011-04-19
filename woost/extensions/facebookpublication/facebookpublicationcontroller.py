@@ -6,7 +6,7 @@ u"""
 import sys
 import cherrypy
 from cocktail.events import event_handler
-from cocktail.translations import translations
+from cocktail.translations import translations, language_context
 from cocktail import schema
 from cocktail.persistence import datastore
 from cocktail.controllers import (
@@ -33,6 +33,27 @@ class FacebookPublicationController(BaseBackOfficeController):
     @request_property
     def form_schema(self):
         return schema.Schema("FacebookPublicationForm", members = [
+            schema.Collection("subset",
+                items = schema.Reference(
+                    type = Publishable,
+                    required = True,
+                    enumeration = lambda ctx: self.selection
+                ),
+                min = 1,
+                default = schema.DynamicDefault(lambda: self.selection)
+            ),
+            schema.Collection("published_languages",
+                items = schema.String(
+                    translate_value = lambda value, language = None, **kwargs:
+                        "" if not value 
+                           else translations(value, language, **kwargs),
+                    enumeration = lambda ctx: self.eligible_languages
+                ),
+                min = 1,
+                default = schema.DynamicDefault(
+                    lambda: self.eligible_languages
+                )
+            ),
             schema.Collection("publication_targets",
                 items = schema.Reference(
                     type = FacebookPublicationTarget,
@@ -91,6 +112,21 @@ class FacebookPublicationController(BaseBackOfficeController):
                 )]
 
     @request_property
+    def eligible_languages(self):
+
+        selection_languages = set()
+
+        for publishable in self.selection:
+            selection_languages.update(publishable.translations.iterkeys())
+
+        target_languages = set()
+
+        for target in self.allowed_publication_targets:
+            target_languages.update(target.languages)
+
+        return selection_languages & target_languages
+
+    @request_property
     def selection(self):
         return get_parameter(
             schema.Collection("selection", 
@@ -121,56 +157,36 @@ class FacebookPublicationController(BaseBackOfficeController):
         if self.action == "close":
             self.go_back()
 
-        targets = self.form_data["publication_targets"]
-        published_everything = True
+        form_data = self.form_data
+        subset = form_data["subset"]
+        languages = set(form_data["published_languages"])
+        targets = form_data["publication_targets"]
 
-        for target in targets:
-            successful = []
-            failed = []
+        results = self.results
 
-            for publishable in self.selection:
-                try:
-                    target.publish(publishable)
-                except Exception, ex:
-                    sys.stderr.write(str(ex) + "\n")
-                    failed.append(publishable)
-                    published_everything = False
-                else:
-                    successful.append(publishable)
+        for publishable in subset:
+            for target in targets:
+                for language in sorted(languages & set(target.languages)):
+                    try:
+                        with language_context(language):
+                            target.publish(publishable)
+                    except Exception, ex:
+                        results.append((publishable, target, language, ex))
+                    else:
+                        results.append((publishable, target, language, None))
 
-            for items, outcome in (
-                (successful, "success"),
-                (failed, "error")
-            ):
-                if not items:
-                    continue
-
-                notify_user(
-                    translations(
-                        "woost.extensions.facebookpublication."
-                        "publication_%s_notice" % outcome,
-                        target = target,
-                        items = items,
-                        summarize = (len(items) >= self.notice_summary_threshold)
-                    ),
-                    category = outcome,
-                    transient = False
-                )
-
-        if published_everything:
-            if self.edit_stack:
-                self.edit_stack.go()
-            else:
-                self.go_back()
+    @request_property
+    def results(self):
+        return []
 
     @request_property
     def output(self):
         output = BaseBackOfficeController.output(self)
         output.update(
-            selection = self.selection,
             form_schema = self.form_schema,
             form_data = self.form_data,
-            form_errors = self.form_errors
+            form_errors = self.form_errors,
+            results = self.results
         )
         return output
 

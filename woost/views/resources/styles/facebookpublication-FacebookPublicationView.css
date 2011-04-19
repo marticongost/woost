@@ -1,28 +1,4 @@
 
-.FacebookPublicationView .selection_block {
-    margin-top: 1.5em;
-}
-
-.FacebookPublicationView .selection_list {
-    list-style-type: none;
-    margin: 0;
-    margin-top: 1em;
-    margin-bottom: 2em;
-    padding: 0;
-    padding-left: 0.5em;
-}
-
-.FacebookPublicationView .selection_item {
-    padding: 0;
-    margin: 0;
-    margin-top: 0.5em;
-}
-
-.FacebookPublicationView .selection_list .ContentLink {
-    text-decoration: none;
-    font-size: 0.9em;
-}
-
 .FacebookPublicationView .publication_form .publication_targets_field .field_label {
     margin-bottom: 0.5em;
 }
@@ -40,5 +16,42 @@
 
 .FacebookPublicationView .publication_form .close_button {
     float: left;
+}
+
+.FacebookPublicationView .results_table {
+    border-collapse: collapse;
+    margin-top: 1.5em;
+}
+
+.FacebookPublicationView .results_table tr.new_publishable_row td {
+    border-top: 2px solid #ccc;
+}
+
+.FacebookPublicationView .results_table th {
+    text-align: left;
+    color: #555;
+    background-color: #eee;
+}
+
+.FacebookPublicationView .results_table th,
+.FacebookPublicationView .results_table td {
+    padding: 0.2em;
+    padding-left: 0.5em;
+    padding-right: 1em;
+    border: 1px solid #ccc;
+}
+
+.FacebookPublicationView .results_table .ContentLink {
+    text-decoration: none;
+    font-size: 0.9em;
+    color: black;
+}
+
+.FacebookPublicationView .results_table .publication_success {
+    color: #2a611e;
+}
+
+.FacebookPublicationView .results_table .publication_error {
+    color: #982a24;
 }
 
