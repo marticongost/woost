@@ -1,0 +1,57 @@
+
+.TwitterPublicationView .publication_form .publication_targets_field .field_label {
+    margin-bottom: 0.5em;
+}
+
+.TwitterPublicationView .publication_form .publication_targets_field .CheckList div {
+    margin-top: 0.25em;
+    font-size: 0.9em;
+}
+
+.TwitterPublicationView .publication_form .buttons {
+    width: 30em;
+    padding-left: 0;
+    margin-left: 0;
+}
+
+.TwitterPublicationView .publication_form .close_button {
+    float: left;
+}
+
+.TwitterPublicationView .results_table {
+    border-collapse: collapse;
+    margin-top: 1.5em;
+}
+
+.TwitterPublicationView .results_table tr.new_publishable_row td {
+    border-top: 2px solid #ccc;
+}
+
+.TwitterPublicationView .results_table th {
+    text-align: left;
+    color: #555;
+    background-color: #eee;
+}
+
+.TwitterPublicationView .results_table th,
+.TwitterPublicationView .results_table td {
+    padding: 0.2em;
+    padding-left: 0.5em;
+    padding-right: 1em;
+    border: 1px solid #ccc;
+}
+
+.TwitterPublicationView .results_table .ContentLink {
+    text-decoration: none;
+    font-size: 0.9em;
+    color: black;
+}
+
+.TwitterPublicationView .results_table .publication_success {
+    color: #2a611e;
+}
+
+.TwitterPublicationView .results_table .publication_error {
+    color: #982a24;
+}
+
