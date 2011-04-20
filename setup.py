@@ -83,7 +83,8 @@ of its features include:\n"
             "blocks = woost.extensions.blocks:BlocksExtension",
             "opengraph = woost.extensions.opengraph:OpenGraphExtension",
             "ecommerce = woost.extensions.ecommerce:ECommerceExtension",
-            "facebookpublication = woost.extensions.facebookpublication:FacebookPublicationExtension"
+            "facebookpublication = woost.extensions.facebookpublication:FacebookPublicationExtension",
+            "shorturls = woost.extensions.shorturls:ShortURLsExtension"
         ]
     },
     # Woost can't yet access view resources (images, style sheets, client
