@@ -125,7 +125,6 @@ class FacebookPublicationTarget(Item):
 
     languages = schema.Collection(
         items = schema.String(
-            default = schema.DynamicDefault(lambda: Language.codes),
             enumeration = lambda ctx: Language.codes,
             translate_value = lambda value, language = None, **kwargs:
                 "" if not value else translations(value)

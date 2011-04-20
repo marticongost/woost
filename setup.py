@@ -56,7 +56,8 @@ of its features include:\n"
         "cocktail==0.6"
     ],    
     extras_require = {
-        'campaign_monitor_api': ["campaign_monitor_api"]
+        'campaign_monitor_api': ["campaign_monitor_api"],
+        "twitterpublication": ["oauth2"]
     },
     packages = find_packages(),
     include_package_data = True,
@@ -84,7 +85,8 @@ of its features include:\n"
             "opengraph = woost.extensions.opengraph:OpenGraphExtension",
             "ecommerce = woost.extensions.ecommerce:ECommerceExtension",
             "facebookpublication = woost.extensions.facebookpublication:FacebookPublicationExtension",
-            "shorturls = woost.extensions.shorturls:ShortURLsExtension"
+            "shorturls = woost.extensions.shorturls:ShortURLsExtension",
+            "twitterpublication = woost.extensions.twitterpublication:TwitterPublicationExtension"
         ]
     },
     # Woost can't yet access view resources (images, style sheets, client
