@@ -1452,8 +1452,11 @@ body.scripted .BackOfficeLayout .ThumbnailsContentView .collection_display input
     background-color: rgb(220,240,220);
 }
 
-.BackOfficeLayout .success strong {
+.BackOfficeLayout .success strong,
+.BackOfficeLayout .success em {
     color: rgb(20,80,20);
+    font-weight: bold;
+    font-style: normal;
 }
 
 .BackOfficeLayout .notice {
@@ -1492,6 +1495,7 @@ body.scripted .BackOfficeLayout .ThumbnailsContentView .collection_display input
     margin-top: 0.2em;
 }
 
+.BackOfficeLayout .notification_box .error em,
 .BackOfficeLayout .error_box li em {
     font-style: normal;
     font-weight: bold;

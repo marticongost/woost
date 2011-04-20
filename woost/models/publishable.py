@@ -387,7 +387,19 @@ class Publishable(Item):
 
         if host:
             if host == ".":
-                host = str(Location.get_current_host())
+                location = Location.get_current_host()
+
+                from woost.models import Site
+                site = Site.main
+                policy = site.https_policy
+
+                if policy == "always" \
+                or (policy == "per_page" and self.requires_https):
+                    location.scheme = "https"
+                else:
+                    location.scheme = "http"
+
+                host = str(location)
             elif not "://" in host:
                 host = "http://" + host
 
