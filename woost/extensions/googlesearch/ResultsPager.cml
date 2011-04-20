@@ -8,10 +8,7 @@
     results = None
     ?>
 
-    <py:woost.extensions.googlesearch.GooglePager
-        py:page="@{self.results.page}"
-        py:page_size="@{self.results.page_size}"
-        py:item_count="@{self.results.result_count}"/>
+    <py:new py:element="self.create_results_pager()" py:id="pager_top" />
 
     <ul py:id="results_list" py:collapsible="${True}">
         <py:ready>
@@ -27,9 +24,12 @@
         <a py:local_id="url" href="${result.url}">${result.url}</a>
     </li>
 
-     <py:woost.extensions.googlesearch.GooglePager id="pager-bottom"
+    <py:new py:element="self.create_results_pager()" id="pager-bottom" py:id="pager_bottom" />
+
+    <py:woost.extensions.googlesearch.GooglePager 
+        py:def="results_pager"
         py:page="@{self.results.page}"
         py:page_size="@{self.results.page_size}"
-        py:item_count="@{self.results.result_count}"/>
+        py:item_count="@{self.results.result_count}" />
 
 </div>
