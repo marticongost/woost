@@ -90,8 +90,10 @@ class TwitterAuthUserAction(UserAction):
             )
         else:
             notify_user(
-                "woost.extensions.twitterpublication."
-                "successful_authorization_notice",
+                translations(
+                    "woost.extensions.twitterpublication."
+                    "successful_authorization_notice"
+                ),
                 category = "success"
             )
 
