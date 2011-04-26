@@ -135,7 +135,7 @@ class TwitterPublicationTarget(Item):
             for i in range(max_length - len(ellipsis) - 1, -1, -1):
                 print i, repr(text)
                 if text[i] in whitespace:
-                    text = text[:i].rtrim() + ellipsis
+                    text = text[:i].rstrip() + ellipsis
                     break
 
         return text
