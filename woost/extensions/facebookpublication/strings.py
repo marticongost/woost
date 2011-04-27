@@ -121,6 +121,12 @@ translations.define("Action fbpublish",
     en = u"Publish to Facebook"
 )
 
+translations.define("Action fbpublish_albums",
+    ca = u"Publicar imatges a Facebook",
+    es = u"Publicar imágenes en Facebook",
+    en = u"Publish pictures to Facebook"
+)
+
 translations.define("Action fbpublish_auth",
     ca = u"Autoritzar",
     es = u"Autorizar",
@@ -267,6 +273,90 @@ translations.define(
 
 translations.define(
     "woost.extensions.facebookpublication.FacebookPublicationView."
+    "outcome_header",
+    ca = u"Resultat",
+    es = u"Resultado",
+    en = u"Result"
+)
+
+translations.define(
+    "woost.extensions.facebookpublication.FacebookAlbumsView."
+    "section_title",
+    ca = u"Publicar fotos a Facebook",
+    es = u"Publicar fotos en Facebook",
+    en = u"Publish photos in Facebook"
+)
+
+translations.define("FacebookAlbumsForm.album_title",
+    ca = u"Títol de l'àlbum",
+    es = u"Título del álbum",
+    en = u"Album title"
+)
+
+translations.define("FacebookAlbumsForm.album_description",
+    ca = u"Descripció de l'àlbum",
+    es = u"Descripción del álbum",
+    en = u"Album description"
+)
+
+translations.define("FacebookAlbumsForm.subset",
+    ca = u"Imatges incloses a l'àlbum",
+    es = u"Imágenes incluídas en el álbum",
+    en = u"Album photos"
+)
+
+translations.define("FacebookAlbumsForm.photo_languages",
+    ca = u"Idiomes per les descripcions de les fotos",
+    es = u"Idiomas para las descripciones de las fotos",
+    en = u"Languages that photo captions are translated into"
+)
+
+translations.define("FacebookAlbumsForm.generate_story",
+    ca = u"Anunciar l'àlbum al mur",
+    es = u"Anunciar el álbum en el muro",
+    en = u"Post a link to the new album in the wall"
+)
+
+translations.define("FacebookAlbumsForm.publication_targets",
+    ca = u"Canals on es publicaran els àlbums",
+    es = u"Canales donde se publicarán los álbumes",
+    en = u"Channels where the albums will be published"
+)
+
+translations.define(
+    "woost.extensions.facebookpublication.FacebookAlbumsView."
+    "publication_form.submit_button",
+    ca = u"Publicar",
+    es = u"Publicar",
+    en = u"Publish"
+)
+
+translations.define(
+    "woost.extensions.facebookpublication.FacebookAlbumsView."
+    "selection_block",
+    ca = u"Àlbums a publicar:",
+    es = u"Álbumes a publicar:",
+    en = u"Albums to publish:"
+)
+
+translations.define(
+    "woost.extensions.facebookpublication.FacebookAlbumsView."
+    "success",
+    ca = u"Publicat amb èxit",
+    es = u"Publicado con éxito",
+    en = u"Published successfully"
+)
+
+translations.define(
+    "woost.extensions.facebookpublication.FacebookAlbumsView."
+    "target_header",
+    ca = u"Destí",
+    es = u"Destino",
+    en = u"Destination"
+)
+
+translations.define(
+    "woost.extensions.facebookpublication.FacebookAlbumsView."
     "outcome_header",
     ca = u"Resultat",
     es = u"Resultado",
