@@ -1,4 +1,27 @@
 
+.FacebookPublicationView .publication_form {
+    position: relative;
+}
+
+.FacebookPublicationView .publication_form .disabling_layer {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: white;
+    opacity: .5;
+}
+
+.FacebookPublicationView-loading_sign {
+    width: 30em;
+    background-color: #f2eada;
+    border: 1px solid #cfb790;
+    padding: 0.5em;
+    box-shadow: 4px 4px 3px #ccc;
+    margin-bottom: 1.5em;
+}
+
 .FacebookPublicationView .publication_form .publication_targets_field .field_label {
     margin-bottom: 0.5em;
 }
@@ -20,7 +43,7 @@
 
 .FacebookPublicationView .results_table {
     border-collapse: collapse;
-    margin-top: 1.5em;
+    margin-bottom: 1.5em;
 }
 
 .FacebookPublicationView .results_table tr.new_publishable_row td {
