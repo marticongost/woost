@@ -374,3 +374,19 @@ translations.define(
                           % instance.response
 )
 
+translations.define(
+    "woost.extensions.facebookpublication.FacebookPublicationView."
+    "publish_again_link",
+    ca = u"Tornar a publicar",
+    es = u"Volver a publicar",
+    en = u"Publish again"
+)
+
+translations.define(
+    "woost.extensions.facebookpublication.FacebookPublicationView."
+    "loading_sign",
+    ca = u"Publicant el contingut a Facebook...",
+    es = u"Publicando el contenido en Facebook...",
+    en = u"Publishing content to Facebook..."
+)
+

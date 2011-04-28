@@ -13,6 +13,7 @@
 
     <?py
     self.add_resource("/resources/styles/facebookpublication-FacebookPublicationView.css")
+    self.add_resource("/resources/scripts/facebookpublication-FacebookPublicationView.js")
     ?>
 
     <py:with py:element="self.body">
@@ -20,33 +21,6 @@
         <h2 py:id="section_title">
             ${translations("woost.extensions.facebookpublication.FacebookPublicationView.section_title")}
         </h2>
-        
-        <py:cocktail.html.ErrorBox
-            py:id="error_box"
-            py:errors="@{self.form_errors}"/>
-
-        <py:cocktail.html.Form
-            py:id="publication_form"
-            method="POST"
-            py:schema="@{self.form_schema}"
-            py:data="@{self.form_data}"
-            py:errors="@{self.form_errors}">
-
-            <py:with py:element="element.submit_button" name="action" value="publish">
-                <?py element.empty() ?>
-                ${translations("woost.extensions.facebookpublication.FacebookPublicationView.publication_form.submit_button")}
-            </py:with>
-
-            <button 
-                py:id="close_button"
-                type="submit" 
-                name="action" 
-                value="close"
-                py:before="publication_form.submit_button">
-                ${translations("Action close")}
-            </button>
-
-        </py:cocktail.html.Form>
 
         <table py:id="results_table" py:visible="@{self.results}">
             <tr py:id="results_header">
@@ -137,6 +111,45 @@
                 </tr>
             </py:ready>
         </table>
+
+        <py:cocktail.html.ErrorBox
+            py:id="error_box"
+            py:errors="@{self.form_errors}"/>
+
+        <py:cocktail.html.Form
+            py:id="publication_form"
+            method="POST"
+            py:schema="@{self.form_schema}"
+            py:data="@{self.form_data}"
+            py:errors="@{self.form_errors}">
+
+            <py:with py:element="element.submit_button" name="action" value="publish">
+                <?py element.empty() ?>
+                ${translations("woost.extensions.facebookpublication.FacebookPublicationView.publication_form.submit_button")}
+            </py:with>
+
+            <button 
+                py:id="close_button"
+                type="submit" 
+                name="action" 
+                value="close"
+                py:before="publication_form.submit_button">
+                ${translations("Action close")}
+            </button>
+
+        </py:cocktail.html.Form>
+
+        <div py:id="loading_sign"
+            class="FacebookPublicationView-loading_sign"
+            py:client_model="woost.extensions.facebookpublication.FacebookPublicationView.loading_sign">            
+            ${translations("woost.extensions.facebookpublication.FacebookPublicationView.loading_sign")}
+        </div>
+
+        <a py:id="publish_again_link" 
+            py:client_model="woost.extensions.facebookpublication.FacebookPublicationView.publish_again_link"
+            href="javascript:">
+            ${translations("woost.extensions.facebookpublication.FacebookPublicationView.publish_again_link")}
+        </a>
 
     </py:with>
 
