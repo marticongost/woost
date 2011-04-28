@@ -1,6 +1,7 @@
 
 .TwitterPublicationView .publication_form {
     position: relative;
+    border: 1px solid red !important;
 }
 
 .TwitterPublicationView .publication_form .disabling_layer {
