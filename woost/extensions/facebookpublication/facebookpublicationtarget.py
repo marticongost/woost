@@ -208,6 +208,35 @@ class FacebookPublicationTarget(Item):
 
         return post_data
 
+    def feed_posts(self):
+
+        if self.auth_token is None:
+            raise ValueError(
+                "Can't read the posts in %s: missing authorization token."
+                % self
+            )
+
+        graph_url = "https://graph.facebook.com/%s/feed/?access_token=%s" % (
+            self.graph_object_id,
+            self.auth_token
+        )
+        response = urlopen(graph_url)
+        status = response.getcode()
+        body = response.read()
+        if status < 200 or status > 299:
+            raise FacebookPublicationError(body)
+
+        feed_data = loads(body)        
+        return feed_data["data"]
+
+    def find_post(self, publishable):
+
+        uri = self._get_publication_parameters(publishable)["link"]
+           
+        for post in self.feed_posts():
+            if post.get("link") == uri:
+                return post
+
     def publish_album(self,
         album_title,
         photos,
