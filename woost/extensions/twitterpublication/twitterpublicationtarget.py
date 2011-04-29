@@ -5,7 +5,8 @@ u"""Defines the `TwitterPublicationTarget`.
 """
 from string import whitespace
 from oauth2 import Client, Consumer, Token
-from urllib import urlencode
+from urllib import urlencode, urlopen
+from simplejson import loads
 from cocktail.events import when
 from cocktail.iteration import first
 from cocktail.translations import translations
@@ -109,6 +110,25 @@ class TwitterPublicationTarget(Item):
 
         if response["status"] != "200":
             raise TwitterAPIError(body)
+
+    def find_post(self, publishable):
+        
+        query = "from:%s %s" % (self.account, self.get_uri(publishable))
+
+        response = urlopen(
+            "http://search.twitter.com/search.json?" + urlencode({
+                "q": query,
+                "result_type": "mixed"
+            })
+        )
+        status = response.getcode()
+        body = response.read()
+
+        if status != 200:
+            raise TwitterAPIError(body)
+        
+        posts = loads(body)["results"]
+        return posts and posts[0] or None
 
     def get_status(self, publishable):
         uri = self.get_uri(publishable)
