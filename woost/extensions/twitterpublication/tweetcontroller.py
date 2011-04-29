@@ -160,19 +160,34 @@ class TweetController(BaseBackOfficeController):
         subset = form_data["subset"]
         languages = set(form_data["published_languages"])
         targets = form_data["publication_targets"]
+        check = (self.action == "check")
 
         results = self.results
 
         for publishable in subset:
             for target in targets:
                 for language in sorted(languages & set(target.languages)):
-                    try:
-                        with language_context(language):
-                            target.publish(publishable)
-                    except Exception, ex:
-                        results.append((publishable, target, language, ex))
+                    if check:
+                        try:
+                            with language_context(language):
+                                existing_post = target.find_post(publishable)
+
+                            results.append((
+                                publishable, 
+                                target,
+                                language,
+                                existing_post
+                            ))
+                        except Exception, ex:
+                            results.append((publishable, target, language, ex))
                     else:
-                        results.append((publishable, target, language, None))
+                        try:
+                            with language_context(language):
+                                target.publish(publishable)
+                        except Exception, ex:
+                            results.append((publishable, target, language, ex))
+                        else:
+                            results.append((publishable, target, language, None))
 
     @request_property
     def results(self):
@@ -185,7 +200,8 @@ class TweetController(BaseBackOfficeController):
             form_schema = self.form_schema,
             form_data = self.form_data,
             form_errors = self.form_errors,
-            results = self.results
+            results = self.results,
+            action = self.action
         )
         return output
 

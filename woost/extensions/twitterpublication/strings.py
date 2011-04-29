@@ -179,6 +179,30 @@ translations.define(
 
 translations.define(
     "woost.extensions.twitterpublication.TwitterPublicationView."
+    "publication_form.check_button",
+    ca = u"Comprovar",
+    es = u"Comprobar",
+    en = u"Check"
+)
+
+translations.define(
+    "woost.extensions.twitterpublication.TwitterPublicationView."
+    "already_published",
+    ca = u"Ja publicat",
+    es = u"Ya publicado",
+    en = u"Already published"
+)
+
+translations.define(
+    "woost.extensions.twitterpublication.TwitterPublicationView."
+    "not_yet_published",
+    ca = u"Encara no s'ha publicat",
+    es = u"Todavía no se ha publicado",
+    en = u"Not published yet"
+)
+
+translations.define(
+    "woost.extensions.twitterpublication.TwitterPublicationView."
     "success",
     ca = u"Publicat amb èxit",
     es = u"Publicado con éxito",
@@ -228,8 +252,8 @@ translations.define(
 translations.define(
     "woost.extensions.twitterpublication.TwitterPublicationView."
     "loading_sign",
-    ca = u"Publicant el contingut a Twitter...",
-    es = u"Publicando el contenido en Twitter...",
-    en = u"Publishing content to Twitter..."
+    ca = u"Enviant la petició a Twitter...",
+    es = u"Enviando la petición a Twitter...",
+    en = u"Sending the request to Twitter..."
 )
 
