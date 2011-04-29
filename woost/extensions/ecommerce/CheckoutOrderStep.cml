@@ -15,6 +15,13 @@
             py:embeded="${True}"
             py:form="@{self.forms['checkout_form']}">
 
+            <py:binding>
+                <?py
+                if len(element.form.schema.get_member("payment_type").enumeration) == 1:
+                    element.set_member_hidden("payment_type", True)
+                ?>
+            </py:binding>
+
         </py:cocktail.html.Form>
     </py:with>
 
