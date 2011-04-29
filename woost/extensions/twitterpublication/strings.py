@@ -217,3 +217,19 @@ translations.define(
     en = u"Result"
 )
 
+translations.define(
+    "woost.extensions.twitterpublication.TwitterPublicationView."
+    "publish_again_link",
+    ca = u"Tornar a publicar",
+    es = u"Volver a publicar",
+    en = u"Publish again"
+)
+
+translations.define(
+    "woost.extensions.twitterpublication.TwitterPublicationView."
+    "loading_sign",
+    ca = u"Publicant el contingut a Twitter...",
+    es = u"Publicando el contenido en Twitter...",
+    en = u"Publishing content to Twitter..."
+)
+

@@ -3,15 +3,13 @@ u"""
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
-from woost.models import Publishable
+from woost.models import Document, File, User
 from woost.controllers.backoffice.useractions import UserAction
 from woost.extensions.facebookpublication.facebookpublicationpermission \
     import FacebookPublicationPermission
 
 
-class FBPublishUserAction(UserAction):
- 
-    content_type = Publishable
+class BaseFBPublishUserAction(UserAction):
 
     included = frozenset([
         ("content", "toolbar"),
@@ -33,5 +31,22 @@ class FBPublishUserAction(UserAction):
         return user.has_permission(FacebookPublicationPermission, target = target)
 
 
+class FBPublishUserAction(BaseFBPublishUserAction):
+    content_type = Document
+
 FBPublishUserAction("fbpublish").register()
+
+
+class FBPublishAlbumsUserAction(BaseFBPublishUserAction):
+
+    content_type = File
+
+    def is_available(self, context, target):
+        
+        if not BaseFBPublishUserAction.is_available(self, context, target):
+            return False
+
+        return isinstance(target, type) or target.resource_type == "image"
+
+FBPublishAlbumsUserAction("fbpublish_albums").register()
 

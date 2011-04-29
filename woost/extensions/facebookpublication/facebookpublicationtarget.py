@@ -4,7 +4,12 @@ u"""
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
 from urllib import urlopen, urlencode
-from simplejson import dumps
+from simplejson import dumps, loads
+from poster.encode import multipart_encode
+from poster.streaminghttp import register_openers
+import urllib2
+register_openers()
+
 from cocktail.translations import (
     get_language,
     translations
@@ -202,6 +207,122 @@ class FacebookPublicationTarget(Item):
                 post_data["targeting"] = dumps(targeting)
 
         return post_data
+
+    def feed_posts(self):
+
+        if self.auth_token is None:
+            raise ValueError(
+                "Can't read the posts in %s: missing authorization token."
+                % self
+            )
+
+        graph_url = "https://graph.facebook.com/%s/feed/?access_token=%s" % (
+            self.graph_object_id,
+            self.auth_token
+        )
+        response = urlopen(graph_url)
+        status = response.getcode()
+        body = response.read()
+        if status < 200 or status > 299:
+            raise FacebookPublicationError(body)
+
+        feed_data = loads(body)        
+        return feed_data["data"]
+
+    def find_post(self, publishable):
+
+        uri = self._get_publication_parameters(publishable)["link"]
+           
+        for post in self.feed_posts():
+            if post.get("link") == uri:
+                return post
+
+    def publish_album(self,
+        album_title,
+        photos,
+        album_description = None,
+        photo_languages = None,
+        generate_story = True):
+
+        if self.auth_token is None:
+            raise ValueError(
+                "Can't publish album to %s: missing authorization token."
+                % self
+            )
+
+        # Create the album
+        response = urlopen(
+            "https://graph.facebook.com/%s/albums" % self.graph_object_id,
+            _encode_form({
+                "access_token": self.auth_token,
+                "name": album_title,
+                "message": album_description or ""
+            })
+        )
+
+        status = response.getcode()
+        body = response.read()
+        if status < 200 or status > 299:
+            raise FacebookPublicationError(body)
+
+        album_id = loads(body)["id"]        
+        photos_url = "https://graph.facebook.com/%s/photos" % album_id
+
+        # Upload photos
+        for photo in photos:
+
+            if photo_languages is None:
+                photo_languages = photo.translations.keys()
+            else:
+                photo_languages = list(
+                    set(photo_languages) & set(photo.translations.keys())
+                )
+
+            if not photo_languages:
+                photo_desc = ""
+            elif len(photo_languages) == 1:
+                photo_desc = translations(photo, photo_languages[0])
+            else:
+                photo_desc = u"\n".join(
+                    u"%s: %s" % (
+                        translations(lang, lang),
+                        translations(photo, lang)
+                    )
+                    for lang in photo_languages
+                )
+
+            datagen, headers = multipart_encode({
+                "access_token": self.auth_token,
+                "source": open(photo.file_path),
+                "message": photo_desc,
+                "no_story": ("0" if generate_story else "1")
+            })
+            request = urllib2.Request(photos_url, datagen, headers)
+            response = urllib2.urlopen(request)
+                        
+            status = response.getcode()
+            body = response.read()
+            if status < 200 or status > 299:
+                raise FacebookPublicationError(body)
+
+        response = urlopen(
+            "https://graph.facebook.com/%s/?access_token=%s" % (
+                album_id,
+                self.auth_token
+            )
+        )
+        status = response.getcode()
+        body = response.read()
+        if status < 200 or status > 299:
+            raise FacebookPublicationError(body)
+
+        return loads(body)
+
+def _encode_form(form):
+    return urlencode(dict(
+        (k, v.encode("utf-8") if isinstance(v, unicode) else v)
+        for k, v in form.iteritems()
+    ))
 
 
 class FacebookPublicationError(Exception):

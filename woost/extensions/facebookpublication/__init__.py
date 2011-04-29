@@ -65,8 +65,14 @@ class FacebookPublicationExtension(Extension):
 
         from woost.controllers.backoffice.backofficecontroller \
             import BackOfficeController
+
         from woost.extensions.facebookpublication.facebookpublicationcontroller \
             import FacebookPublicationController
 
         BackOfficeController.fbpublish = FacebookPublicationController
+
+        from woost.extensions.facebookpublication.facebookalbumscontroller \
+            import FacebookAlbumsController
+
+        BackOfficeController.fbpublish_albums = FacebookAlbumsController
 

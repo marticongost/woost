@@ -121,6 +121,12 @@ translations.define("Action fbpublish",
     en = u"Publish to Facebook"
 )
 
+translations.define("Action fbpublish_albums",
+    ca = u"Publicar imatges a Facebook",
+    es = u"Publicar imágenes en Facebook",
+    en = u"Publish pictures to Facebook"
+)
+
 translations.define("Action fbpublish_auth",
     ca = u"Autoritzar",
     es = u"Autorizar",
@@ -227,6 +233,14 @@ translations.define(
 
 translations.define(
     "woost.extensions.facebookpublication.FacebookPublicationView."
+    "publication_form.check_button",
+    ca = u"Comprovar",
+    es = u"Comprobar",
+    en = u"Check"
+)
+
+translations.define(
+    "woost.extensions.facebookpublication.FacebookPublicationView."
     "selection_block",
     ca = u"Contingut a publicar:",
     es = u"Contenido a publicar:",
@@ -239,6 +253,22 @@ translations.define(
     ca = u"Publicat amb èxit",
     es = u"Publicado con éxito",
     en = u"Published successfully"
+)
+
+translations.define(
+    "woost.extensions.facebookpublication.FacebookPublicationView."
+    "already_published",
+    ca = u"Ja publicat",
+    es = u"Ya publicado",
+    en = u"Already published"
+)
+
+translations.define(
+    "woost.extensions.facebookpublication.FacebookPublicationView."
+    "not_yet_published",
+    ca = u"Encara no s'ha publicat",
+    es = u"Todavía no se ha publicado",
+    en = u"Not published yet"
 )
 
 translations.define(
@@ -274,6 +304,90 @@ translations.define(
 )
 
 translations.define(
+    "woost.extensions.facebookpublication.FacebookAlbumsView."
+    "section_title",
+    ca = u"Publicar fotos a Facebook",
+    es = u"Publicar fotos en Facebook",
+    en = u"Publish photos in Facebook"
+)
+
+translations.define("FacebookAlbumsForm.album_title",
+    ca = u"Títol de l'àlbum",
+    es = u"Título del álbum",
+    en = u"Album title"
+)
+
+translations.define("FacebookAlbumsForm.album_description",
+    ca = u"Descripció de l'àlbum",
+    es = u"Descripción del álbum",
+    en = u"Album description"
+)
+
+translations.define("FacebookAlbumsForm.subset",
+    ca = u"Imatges incloses a l'àlbum",
+    es = u"Imágenes incluídas en el álbum",
+    en = u"Album photos"
+)
+
+translations.define("FacebookAlbumsForm.photo_languages",
+    ca = u"Idiomes per les descripcions de les fotos",
+    es = u"Idiomas para las descripciones de las fotos",
+    en = u"Languages that photo captions are translated into"
+)
+
+translations.define("FacebookAlbumsForm.generate_story",
+    ca = u"Anunciar l'àlbum al mur",
+    es = u"Anunciar el álbum en el muro",
+    en = u"Post a link to the new album in the wall"
+)
+
+translations.define("FacebookAlbumsForm.publication_targets",
+    ca = u"Canals on es publicaran els àlbums",
+    es = u"Canales donde se publicarán los álbumes",
+    en = u"Channels where the albums will be published"
+)
+
+translations.define(
+    "woost.extensions.facebookpublication.FacebookAlbumsView."
+    "publication_form.submit_button",
+    ca = u"Publicar",
+    es = u"Publicar",
+    en = u"Publish"
+)
+
+translations.define(
+    "woost.extensions.facebookpublication.FacebookAlbumsView."
+    "selection_block",
+    ca = u"Àlbums a publicar:",
+    es = u"Álbumes a publicar:",
+    en = u"Albums to publish:"
+)
+
+translations.define(
+    "woost.extensions.facebookpublication.FacebookAlbumsView."
+    "success",
+    ca = u"Publicat amb èxit",
+    es = u"Publicado con éxito",
+    en = u"Published successfully"
+)
+
+translations.define(
+    "woost.extensions.facebookpublication.FacebookAlbumsView."
+    "target_header",
+    ca = u"Destí",
+    es = u"Destino",
+    en = u"Destination"
+)
+
+translations.define(
+    "woost.extensions.facebookpublication.FacebookAlbumsView."
+    "outcome_header",
+    ca = u"Resultat",
+    es = u"Resultado",
+    en = u"Result"
+)
+
+translations.define(
     "woost.extensions.facebookpublication.facebookpublicationtarget."
     "FacebookPublicationError-instance",
     ca = lambda instance: u"Error de publicació: <pre>%s</pre>" 
@@ -282,5 +396,21 @@ translations.define(
                           % instance.response,
     en = lambda instance: u"Publication error: <pre>%s</pre>"
                           % instance.response
+)
+
+translations.define(
+    "woost.extensions.facebookpublication.FacebookPublicationView."
+    "publish_again_link",
+    ca = u"Tornar a publicar",
+    es = u"Volver a publicar",
+    en = u"Publish again"
+)
+
+translations.define(
+    "woost.extensions.facebookpublication.FacebookPublicationView."
+    "loading_sign",
+    ca = u"Enviant la petició a Facebook...",
+    es = u"Enviando la petición a Facebook...",
+    en = u"Sending the request to Facebook..."
 )
 
