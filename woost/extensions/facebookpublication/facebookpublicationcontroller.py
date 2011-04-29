@@ -5,6 +5,7 @@ u"""
 """
 import sys
 import cherrypy
+from cocktail.iteration import first
 from cocktail.events import event_handler
 from cocktail.translations import translations, language_context
 from cocktail import schema
@@ -18,6 +19,7 @@ from woost.models import Publishable, get_current_user
 from woost.controllers.notifications import notify_user
 from woost.controllers.backoffice.basebackofficecontroller \
     import BaseBackOfficeController
+from woost.extensions.opengraph import OpenGraphExtension
 from woost.extensions.facebookpublication import FacebookPublicationExtension
 from woost.extensions.facebookpublication.facebookpublicationtarget \
     import FacebookPublicationTarget
@@ -161,19 +163,45 @@ class FacebookPublicationController(BaseBackOfficeController):
         subset = form_data["subset"]
         languages = set(form_data["published_languages"])
         targets = form_data["publication_targets"]
+        check = (self.action == "check")
 
         results = self.results
 
-        for publishable in subset:
-            for target in targets:
+        if check:
+            og = OpenGraphExtension.instance
+
+        for target in targets:
+            
+            if check:
+                posts = target.feed_posts()
+
+            for publishable in subset:
                 for language in sorted(languages & set(target.languages)):
-                    try:
-                        with language_context(language):
-                            target.publish(publishable)
-                    except Exception, ex:
-                        results.append((publishable, target, language, ex))
+                    if check:
+                        try:
+                            with language_context(language):
+                                uri = og.get_properties(publishable)["og:url"]
+
+                            results.append((
+                                publishable, 
+                                target,
+                                language,
+                                first(
+                                    post
+                                    for post in posts 
+                                    if post.get("link") == uri
+                                )
+                            ))
+                        except Exception, ex:
+                            results.append((publishable, target, language, ex))
                     else:
-                        results.append((publishable, target, language, None))
+                        try:
+                            with language_context(language):
+                                target.publish(publishable)
+                        except Exception, ex:
+                            results.append((publishable, target, language, ex))
+                        else:
+                            results.append((publishable, target, language, None))
 
     @request_property
     def results(self):
@@ -186,7 +214,8 @@ class FacebookPublicationController(BaseBackOfficeController):
             form_schema = self.form_schema,
             form_data = self.form_data,
             form_errors = self.form_errors,
-            results = self.results
+            results = self.results,
+            action = self.action
         )
         return output
 
