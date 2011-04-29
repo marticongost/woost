@@ -233,6 +233,14 @@ translations.define(
 
 translations.define(
     "woost.extensions.facebookpublication.FacebookPublicationView."
+    "publication_form.check_button",
+    ca = u"Comprovar",
+    es = u"Comprobar",
+    en = u"Check"
+)
+
+translations.define(
+    "woost.extensions.facebookpublication.FacebookPublicationView."
     "selection_block",
     ca = u"Contingut a publicar:",
     es = u"Contenido a publicar:",
@@ -245,6 +253,22 @@ translations.define(
     ca = u"Publicat amb èxit",
     es = u"Publicado con éxito",
     en = u"Published successfully"
+)
+
+translations.define(
+    "woost.extensions.facebookpublication.FacebookPublicationView."
+    "already_published",
+    ca = u"Ja publicat",
+    es = u"Ya publicado",
+    en = u"Already published"
+)
+
+translations.define(
+    "woost.extensions.facebookpublication.FacebookPublicationView."
+    "not_yet_published",
+    ca = u"Encara no s'ha publicat",
+    es = u"Todavía no se ha publicado",
+    en = u"Not published yet"
 )
 
 translations.define(
@@ -385,8 +409,8 @@ translations.define(
 translations.define(
     "woost.extensions.facebookpublication.FacebookPublicationView."
     "loading_sign",
-    ca = u"Publicant el contingut a Facebook...",
-    es = u"Publicando el contenido en Facebook...",
-    en = u"Publishing content to Facebook..."
+    ca = u"Enviant la petició a Facebook...",
+    es = u"Enviando la petición a Facebook...",
+    en = u"Sending the request to Facebook..."
 )
 
