@@ -9,11 +9,13 @@
 from decimal import Decimal
 from cocktail.translations import get_language, translations
 from cocktail import schema
+from cocktail.events import Event, event_handler
 from woost.models import (
     Item,
     Site,
     User,
-    get_current_user
+    get_current_user,
+    ModifyMemberPermission
 )
 from woost.extensions.locations.location import Location
 from woost.extensions.ecommerce.ecommercebillingconcept \
@@ -32,6 +34,16 @@ def _translate_amount(amount, language = None, **kwargs):
 
 class ECommerceOrder(Item):
 
+    payment_types_completed_status = {
+        "credit_card": "accepted",
+        "transfer": "payment_pending", 
+        "cash_on_delivery": "payment_pending"
+    }
+
+    completed = Event(doc = """
+        An event triggered when an order is completed.
+        """)
+
     members_order = [
         "customer",
         "address",
@@ -42,6 +54,7 @@ class ECommerceOrder(Item):
         "language",
         "status",
         "purchases",
+        "payment_type",
         "total_price",
         "pricing",
         "total_shipping_costs",
@@ -129,6 +142,18 @@ class ECommerceOrder(Item):
         integral = True,
         bidirectional = True,
         min = 1
+    )
+
+    payment_type = schema.String(
+        member_group = "billing",
+        required = True,
+        translate_value = lambda value, language = None, **kwargs:
+            translations(
+                "ECommerceOrder.payment_type-%s" % value,
+                language = language
+            ),
+        edit_control = "cocktail.html.RadioSelector",
+        listed_by_default = False
     )
 
     total_price = schema.Decimal(
@@ -338,4 +363,51 @@ class ECommerceOrder(Item):
                 break
         else:
             self.purchases.append(purchase)
+
+    @classmethod
+    def get_summary_schema(cls):
+        checkout_schema = schema.Schema("OrderCheckoutSummary")
+        cls.get_summary_adapter().export_schema(
+            cls,
+            checkout_schema
+        )
+        return checkout_schema
+
+    @classmethod
+    def get_summary_adapter(cls):
+        from woost.extensions.ecommerce import ECommerceExtension
+
+        user = get_current_user()            
+        adapter = schema.Adapter()
+        adapter.exclude(["customer", "status", "purchases"])
+        adapter.exclude([
+            member.name
+            for member in cls.members().itervalues()
+            if not member.visible
+            or not member.editable
+            or not issubclass(member.schema, ECommerceOrder)
+            or not user.has_permission(
+                ModifyMemberPermission,
+                member = member
+            )
+        ])
+        if len(ECommerceExtension.instance.payment_types) == 1:
+            adapter.exclude(["payment_type"])
+        return adapter
+
+    @property
+    def is_completed(self):
+        return self.status \
+        and self.status == self.payment_types_completed_status.get(
+            self.payment_type
+        )
+
+    @event_handler
+    def handle_changed(cls, event):
+
+        item = event.source
+        member = event.member
+
+        if member.name == "status" and item.is_completed:
+            item.completed()
 
