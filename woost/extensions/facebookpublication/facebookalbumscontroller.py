@@ -5,9 +5,12 @@ u"""
 """
 import sys
 import cherrypy
-from cocktail.iteration import first
 from cocktail.events import event_handler
-from cocktail.translations import translations, language_context
+from cocktail.translations import (
+    translations,
+    language_context,
+    get_language
+)
 from cocktail import schema
 from cocktail.persistence import datastore
 from cocktail.controllers import (
@@ -15,11 +18,10 @@ from cocktail.controllers import (
     get_parameter,
     Location
 )
-from woost.models import Publishable, get_current_user
+from woost.models import File, Language, get_current_user
 from woost.controllers.notifications import notify_user
 from woost.controllers.backoffice.basebackofficecontroller \
     import BaseBackOfficeController
-from woost.extensions.opengraph import OpenGraphExtension
 from woost.extensions.facebookpublication import FacebookPublicationExtension
 from woost.extensions.facebookpublication.facebookpublicationtarget \
     import FacebookPublicationTarget
@@ -27,34 +29,44 @@ from woost.extensions.facebookpublication.facebookpublicationpermission \
     import FacebookPublicationPermission
 
 
-class FacebookPublicationController(BaseBackOfficeController):
+class FacebookAlbumsController(BaseBackOfficeController):
 
     notice_summary_threshold = 4
-    view_class = "woost.extensions.facebookpublication.FacebookPublicationView"
+    view_class = "woost.extensions.facebookpublication.FacebookAlbumsView"
 
     @request_property
     def form_schema(self):
-        return schema.Schema("FacebookPublicationForm", members = [
+        return schema.Schema("FacebookAlbumsForm", members = [
+            schema.String("album_title",
+                required = True                
+            ),
+            schema.String("album_description",                
+                edit_control = "cocktail.html.TextArea"
+            ),
             schema.Collection("subset",
                 items = schema.Reference(
-                    type = Publishable,
+                    type = File,
+                    relation_constraints = [File.resource_type.equal("image")],
                     required = True,
                     enumeration = lambda ctx: self.selection
                 ),
                 min = 1,
                 default = schema.DynamicDefault(lambda: self.selection)
             ),
-            schema.Collection("published_languages",
+            schema.Collection("photo_languages",
+                min = 1,
                 items = schema.String(
+                    required = True,
+                    enumeration = lambda ctx: Language.codes,
                     translate_value = lambda value, language = None, **kwargs:
                         "" if not value 
-                           else translations(value, language, **kwargs),
-                    enumeration = lambda ctx: self.eligible_languages
+                           else translations(value, language, **kwargs)
                 ),
-                min = 1,
-                default = schema.DynamicDefault(
-                    lambda: self.eligible_languages
-                )
+                default = schema.DynamicDefault(lambda: Language.codes)
+            ),
+            schema.Boolean("generate_story",
+                required = True,
+                default = True
             ),
             schema.Collection("publication_targets",
                 items = schema.Reference(
@@ -74,7 +86,8 @@ class FacebookPublicationController(BaseBackOfficeController):
         return get_parameter(
             self.form_schema,
             errors = "ignore",
-            undefined = "set_none" if self.submitted else "set_default"
+            undefined = "set_none" if self.submitted else "set_default",
+            implicit_booleans = self.submitted
         )
 
     @request_property
@@ -114,26 +127,11 @@ class FacebookPublicationController(BaseBackOfficeController):
                 )]
 
     @request_property
-    def eligible_languages(self):
-
-        selection_languages = set()
-
-        for publishable in self.selection:
-            selection_languages.update(publishable.translations.iterkeys())
-
-        target_languages = set()
-
-        for target in self.allowed_publication_targets:
-            target_languages.update(target.languages)
-
-        return selection_languages & target_languages
-
-    @request_property
     def selection(self):
         return get_parameter(
             schema.Collection("selection", 
                 items = schema.Reference(
-                    type = Publishable,
+                    type = File,
                     required = True
                 ),
                 min = 1
@@ -161,47 +159,28 @@ class FacebookPublicationController(BaseBackOfficeController):
 
         form_data = self.form_data
         subset = form_data["subset"]
-        languages = set(form_data["published_languages"])
+        album_title = form_data["album_title"]
+        album_description = form_data["album_description"]
+        photo_languages = set(form_data["photo_languages"])
+        generate_story = form_data["generate_story"]
         targets = form_data["publication_targets"]
-        check = (self.action == "check")
 
         results = self.results
 
-        if check:
-            og = OpenGraphExtension.instance
-
         for target in targets:
-            
-            if check:
-                posts = target.feed_posts()
-
-            for publishable in subset:
-                for language in sorted(languages & set(target.languages)):
-                    if check:
-                        try:
-                            with language_context(language):
-                                uri = og.get_properties(publishable)["og:url"]
-
-                            results.append((
-                                publishable, 
-                                target,
-                                language,
-                                first(
-                                    post
-                                    for post in posts 
-                                    if post.get("link") == uri
-                                )
-                            ))
-                        except Exception, ex:
-                            results.append((publishable, target, language, ex))
-                    else:
-                        try:
-                            with language_context(language):
-                                target.publish(publishable)
-                        except Exception, ex:
-                            results.append((publishable, target, language, ex))
-                        else:
-                            results.append((publishable, target, language, None))
+            album_data = None
+            try:
+                album_data = target.publish_album(
+                    album_title,
+                    subset,
+                    album_description = album_description,
+                    photo_languages = photo_languages,
+                    generate_story = generate_story
+                )
+            except Exception, ex:
+                results.append((target, album_data, ex))
+            else:
+                results.append((target, album_data, None))
 
     @request_property
     def results(self):
@@ -214,8 +193,7 @@ class FacebookPublicationController(BaseBackOfficeController):
             form_schema = self.form_schema,
             form_data = self.form_data,
             form_errors = self.form_errors,
-            results = self.results,
-            action = self.action
+            results = self.results
         )
         return output
 

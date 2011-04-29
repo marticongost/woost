@@ -120,7 +120,7 @@ class FBPublishAuthUserAction(UserAction):
             location = Location.get_current(relative = False)
             location.query_string["item_action"] = self.id
 
-            permissions = "publish_stream,offline_access"
+            permissions = "publish_stream,offline_access,user_photos"
 
             if fb_page_id:
                 location.query_string["fb_page"] = fb_page_id
