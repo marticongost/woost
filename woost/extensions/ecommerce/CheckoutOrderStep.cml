@@ -17,7 +17,8 @@
 
             <py:binding>
                 <?py
-                if len(element.form.schema.get_member("payment_type").enumeration) == 1:
+                payment_type = element.form.schema.get_member("payment_type")
+                if payment_type and len(payment_type.enumeration) == 1:
                     element.set_member_hidden("payment_type", True)
                 ?>
             </py:binding>

@@ -31,8 +31,9 @@ class CheckoutController(FormProcessor, DocumentController):
         def schema(self):
             schema = ProceedForm.schema(self)
             payment_type = schema.get_member("payment_type")
-            payment_type.enumeration = \
-                ECommerceExtension.instance.payment_types
+            if payment_type:
+                payment_type.enumeration = \
+                    ECommerceExtension.instance.payment_types
             return schema
 
         @request_property
