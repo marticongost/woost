@@ -22,8 +22,14 @@ from woost.models import (
     Document,
     StandardPage,
     Template,
-    Controller
+    Controller,
+    EmailTemplate,
+    User,
+    Language
 )
+from woost.models.triggerresponse import SendEmailTriggerResponse
+from woost.extensions.ecommerce.ecommerceordercompletedtrigger import \
+    ECommerceOrderCompletedTrigger
 
 translations.define("ECommerceExtension",
     ca = u"Comerç online",
@@ -66,16 +72,37 @@ class ECommerceExtension(Extension):
             ecommerceproduct,
             ecommerceorder,
             ecommercepurchase,
-            ecommercebillingconcept
+            ecommercebillingconcept,
+            ecommerceordercompletedtrigger
         )
+        from woost.extensions.ecommerce.ecommerceorder import ECommerceOrder
 
         # Add the necessary members to define pricing policies
         ECommerceExtension.members_order = [
+            "payment_types",
             "pricing",
             "shipping_costs", 
             "taxes",
             "order_steps"
         ]
+
+        available_payment_types = ("credit_card", "transfer", "cash_on_delivery")
+        ECommerceOrder.payment_type.enumeration = available_payment_types
+
+        ECommerceExtension.add_member(
+            schema.Collection(
+                "payment_types",
+                items = schema.String(
+                    enumeration = available_payment_types,
+                    translate_value = lambda value, language = None, **kwargs:
+                        translations(
+                            "ECommerceExtension.payment_types-%s" % value,
+                            language = language
+                        ),
+                ),
+                min = 1
+            )
+        )
 
         ECommerceExtension.add_member(
             schema.Collection("pricing",
@@ -215,6 +242,7 @@ class ECommerceExtension(Extension):
 
         self._create_controller("product").insert()
         self._create_template("product").insert()
+        self._create_ecommerceorder_completed_trigger().insert()
     
     def _create_document(self, name, 
         cls = Document, 
@@ -250,6 +278,51 @@ class ECommerceExtension(Extension):
                 underscore_to_capital(name)
             )
         return controller
+
+    def _create_ecommerceorder_completed_trigger(self):
+        trigger = ECommerceOrderCompletedTrigger( )
+        trigger.qname = \
+            "woost.extensions.ecommerce.ecommerceorder_completed_trigger"
+        self.__translate_field(trigger, "title")
+        trigger.site = Site.main
+        trigger.condition = "target.customer and not target.customer.anonymous and target.customer.email"
+        trigger.matching_items = {'type': u'woost.extensions.ecommerce.ecommerceorder.ECommerceOrder'}
+
+        # EmailTemplate
+        template = EmailTemplate()
+        template.qname = \
+            "woost.extensions.ecommerce.ecommerceorder_completed_emailtemplate"
+        self.__translate_field(template, "title")
+        template.sender = '"%s"' % User.require_instance(
+            qname = "woost.administrator"
+        ).email
+        template.receivers = '[items[0].customer.email]'
+        template.template_engine = "mako"
+
+        for language in translations:
+            with language_context(language):
+                template.subject = template.title
+                template.body = """
+<%
+from cocktail.html import templates
+
+
+order = items[0]
+order_summary = templates.new("woost.extensions.ecommerce.ECommerceOrderSummary")
+order_summary.order = order
+%>
+
+${order_summary.render_page()}
+"""
+
+        # Response
+        response = SendEmailTriggerResponse()
+        response.qname = \
+            "woost.extensions.ecommerce.ecommerceorder_completed_response"
+        response.email_template = template
+
+        trigger.responses = [response]
+        return trigger
 
     def __translate_field(self, obj, key):
         for language in translations:

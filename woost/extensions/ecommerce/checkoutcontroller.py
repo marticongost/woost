@@ -10,6 +10,7 @@ from cocktail.controllers import (
 )
 from woost.models import get_current_user, ModifyMemberPermission
 from woost.controllers.documentcontroller import DocumentController
+from woost.extensions.ecommerce import ECommerceExtension
 from woost.extensions.ecommerce.ecommerceorder import ECommerceOrder
 from woost.extensions.ecommerce.basket import Basket
 from woost.extensions.ecommerce.orderstepcontroller import (
@@ -27,9 +28,22 @@ class CheckoutController(FormProcessor, DocumentController):
             return Basket.get()
 
         @request_property
+        def schema(self):
+            schema = ProceedForm.schema(self)
+            payment_type = schema.get_member("payment_type")
+            payment_type.enumeration = \
+                ECommerceExtension.instance.payment_types
+            return schema
+
+        @request_property
         def adapter(self):
             user = get_current_user()
             adapter = ProceedForm.adapter(self)
+
+            # TODO: Request the credit card number when the payment type is
+            # 'credit_card' and the PaymentsExtensions isn't enabled;
+            # otherwise hide this field
+
             adapter.exclude(["customer", "status", "purchases"])
             adapter.exclude([
                 member.name
