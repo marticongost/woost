@@ -35,6 +35,30 @@ translations.define("ECommerceExtension.order_steps",
     en = u"Order steps"
 )
 
+translations.define("ECommerceExtension.payment_types",
+    ca = u"Tipus de pagament",
+    es = u"Tipos de pago",
+    en = u"Payment types"
+)
+
+translations.define("ECommerceExtension.payment_types-credit_card",
+    ca = u"Targeta de crèdit",
+    es = u"Tarjeta de crédito",
+    en = u"Credit card"
+)
+
+translations.define("ECommerceExtension.payment_types-transfer",
+    ca = u"Transferència",
+    es = u"Transferencia",
+    en = u"Transfer"
+)
+
+translations.define("ECommerceExtension.payment_types-cash_on_delivery",
+    ca = u"Contra reemborsament",
+    es = u"Contra reembolso",
+    en = u"Cash on delivery"
+)
+
 # ECommerceProduct
 #------------------------------------------------------------------------------
 translations.define("ECommerceProduct",
@@ -247,6 +271,30 @@ translations.define("ECommerceOrder.total",
     ca = u"Total",
     es = u"Total",
     en = u"Total"
+)
+
+translations.define("ECommerceOrder.payment_type",
+    ca = u"Tipus de pagament",
+    es = u"Tipo de pago",
+    en = u"Payment type"
+)
+
+translations.define("ECommerceOrder.payment_type-credit_card",
+    ca = u"Targeta de crèdit",
+    es = u"Tarjeta de crédito",
+    en = u"Credit card"
+)
+
+translations.define("ECommerceOrder.payment_type-transfer",
+    ca = u"Transferència",
+    es = u"Transferencia",
+    en = u"Transfer"
+)
+
+translations.define("ECommerceOrder.payment_type-cash_on_delivery",
+    ca = u"Contra reemborsament",
+    es = u"Contra reembolso",
+    en = u"Cash on delivery"
 )
 
 # ECommercePurchase
@@ -532,6 +580,18 @@ translations.define("woost.extensions.ecommerce.product_template.title",
     en = u"Shop product detail template"
 )
 
+translations.define("woost.extensions.ecommerce.ecommerceorder_completed_trigger.title",
+    ca = u"Enviar resum de la comanda",
+    es = u"Enviar resumen del pedido",
+    en = u"Send order summary"
+)
+
+translations.define("woost.extensions.ecommerce.ecommerceorder_completed_emailtemplate.title",
+    ca = u"Resum de la comanda",
+    es = u"Resumen del pedido",
+    en = u"Order summary"
+)
+
 # Notices
 #------------------------------------------------------------------------------
 translations.define(
@@ -804,5 +864,19 @@ translations.define(
     ca = u"Comprar",
     es = u"Comprar",
     en = u"Checkout"
+)
+
+# ECommerceOrderCompletedTrigger
+#------------------------------------------------------------------------------
+translations.define("ECommerceOrderCompletedTrigger",
+    ca = u"Disparador de comanda completada",
+    es = u"Disparador de pedido completado",
+    en = u"Order completed trigger"
+)
+
+translations.define("ECommerceOrderCompletedTrigger-plural",
+    ca = u"Disparadors de comanda completada",
+    es = u"Disparadores de pedido completado",
+    en = u"Order completed triggers"
 )
 
