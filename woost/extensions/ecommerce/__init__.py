@@ -285,7 +285,7 @@ class ECommerceExtension(Extension):
             "woost.extensions.ecommerce.ecommerceorder_completed_trigger"
         self.__translate_field(trigger, "title")
         trigger.site = Site.main
-        trigger.condition = "target.email or (target.customer and not target.customer.anonymous and target.customer.email)"
+        trigger.condition = "target.customer and not target.customer.anonymous and target.customer.email"
         trigger.matching_items = {'type': u'woost.extensions.ecommerce.ecommerceorder.ECommerceOrder'}
 
         # EmailTemplate
