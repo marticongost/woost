@@ -104,15 +104,15 @@ translations.define("woost.extensions.signup.SignupConfirmationMessageNotice",
 )
 
 translations.define("woost.extensions.signup.SignupSuccessfulConfirmationMessage",
-    ca = u"Alta d'usuari confirmada correctament!",
-    es = u"Alta de usuario confirmada correctamente!",
-    en = u"Sign up correctly confirmed"
+    ca = u"El procés d'alta d'usuari s'ha realitzat correctament.",
+    es = u"El proceso de alta de usuario se ha completado correctamente.",
+    en = u"The user registration process has been completed successfully."
 )
 
 translations.define("woost.extensions.signup.SignupFailConfirmationMessage",
-    ca = u"Confirmació fallida",
-    es = u"Fallo en proceso de confirmación.",
-    en = u"Confirmation failure"
+    ca = u"S'ha produït un error en el procés de confirmació.",
+    es = u"Se ha producido un error en el proceso de confirmación.",
+    en = u"An error has occurred in the confirmation process."
 )
 
 # User

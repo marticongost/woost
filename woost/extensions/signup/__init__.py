@@ -165,15 +165,18 @@ class SignUpExtension(Extension):
             confirmation_email_template.template_engine = u"mako"
             # body
             confirmation_email_template.set("body", u"""
-                Hello ${user.email}. Click here to confirm your email account.
+                Hello ${user.email}, <br/> <br/> 
+                Click here to confirm your email account:
                 <br/> <a href='${confirmation_url}'>${confirmation_url}</a>
             """, "en")
             confirmation_email_template.set("body", u"""
-                Hola ${user.email}. Haz clic para confirmar tu cuenta de usuario.
+                Hola ${user.email}: <br/> <br/> 
+                Haz clic para confirmar tu cuenta de usuario:
                 <br/> <a href='${confirmation_url}'>${confirmation_url}</a>
             """, "es")
             confirmation_email_template.set("body", u"""
-                Hola ${user.email}. Fes clic per confirmar el teu compte d'usuari.
+                Hola ${user.email}: <br/> <br/> 
+                Fes clic per confirmar el teu compte d'usuari:
                 <br/> <a href='${confirmation_url}'>${confirmation_url}</a>
             """, "ca")
             # sender
