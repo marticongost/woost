@@ -825,14 +825,15 @@ translations.define(
 
 translations.define(
     "woost.models.initialization Password Change Confirmation Email body",
-    ca = u"""Hola ${user.email}. Fes clic en el següent enllaç per a establir
-        la teva nova contrasenya.<br/>
+    ca = u"""Hola ${user.email}: <br/><br/>
+        Fes clic en el següent enllaç per establir la teva nova contrasenya:<br/>
         <a href='${confirmation_url}'>${confirmation_url}</a>""",
-    es = u"""Hola ${user.email}. Haz clic en el siguiente enlace para
-        establecer tu nueva contraseña.<br/>
+    es = u"""Hola ${user.email}: <br/><br/>
+        Haz clic en el siguiente enlace para establecer tu nueva contraseña:<br/>
         <a href='${confirmation_url}'>${confirmation_url}</a>""",
-    en = u"""Hello ${user.email}. Click on the following link to set your new
-        password.<br/><a href='${confirmation_url}'> ${confirmation_url}</a>"""
+    en = u"""Hello ${user.email}, <br/><br/>
+        Click on the following link to set your new password:<br/>
+        <a href='${confirmation_url}'> ${confirmation_url}</a>"""
 )
 
 translations.define(
@@ -930,11 +931,11 @@ translations.define(
 
 translations.define(
     "woost.models.initialization Password Change page body",
-    ca = u"""<p>Introduïx a continuació la teva adreça de correu electrònic per
-        a iniciar el procés de canvi de contrasenya</p>""",
+    ca = u"""<p>Introdueix a continuació la teva adreça de correu electrònic per
+        iniciar el procés de canvi de contrasenya</p>""",
     es = u"""<p>Introduce a continuación tu dirección de correo electrónico
         para iniciar el proceso de cambio de contraseña</p>""",
-    en = u"""<p>Enter your email address below to initiate the password change
+    en = u"""<p>Enter your email address below to start the password change
         process</p>"""
 )
 
@@ -4254,7 +4255,7 @@ translations.define(
         instruccions per reestablir la contrasenya.""",        
     es = u"""Hemos enviado un correo electrónico a la dirección indicada con
         las instrucciones para reestablecer tu contraseña.""",
-    en = u"""We have sent and e-mail message to the indicated account 
+    en = u"""We have sent an e-mail message to the indicated account 
         containing further instructions to reset your password."""
 )
 
