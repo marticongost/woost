@@ -28,8 +28,6 @@ from woost.models import (
     Language
 )
 from woost.models.triggerresponse import SendEmailTriggerResponse
-from woost.extensions.ecommerce.ecommerceordercompletedtrigger import \
-    ECommerceOrderCompletedTrigger
 
 translations.define("ECommerceExtension",
     ca = u"Comerç online",
@@ -280,6 +278,8 @@ class ECommerceExtension(Extension):
         return controller
 
     def _create_ecommerceorder_completed_trigger(self):
+        from woost.extensions.ecommerce.ecommerceordercompletedtrigger import \
+            ECommerceOrderCompletedTrigger
         trigger = ECommerceOrderCompletedTrigger( )
         trigger.qname = \
             "woost.extensions.ecommerce.ecommerceorder_completed_trigger"
