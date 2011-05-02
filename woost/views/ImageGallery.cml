@@ -11,6 +11,7 @@ from cocktail.controllers import context
     gallery_type = "thumbnails" # Either "thumbnails" or "slideshow"
     labels_visible = True
     footnotes_visible = True
+    close_up_enabled = True
     
     images = ()
     accessible_check = True
@@ -103,6 +104,11 @@ from cocktail.controllers import context
         <a py:local_id="image_link"
             href="${cms.image_uri(image, *self.get_full_image_effects(image))}"
             target="blank_">
+
+            <?py 
+            if not self.close_up_enabled:
+                element.tag = None
+            ?>
 
             <py:woost.views.Image 
                 py:local_id="image"
