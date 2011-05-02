@@ -15,12 +15,14 @@ from cocktail.controllers import context
     
     images = ()
     accessible_check = True
-    
-    full_image_effects = ("fit(%(width)s,%(height)s)",)
+
+    full_image_effects = ("%(method)s(%(width)s,%(height)s)",)
+    full_image_method = "fill"
     full_width = 900
     full_height = 700
     
-    thumbnail_effects = ("fill(%(width)s,%(height)s)",)
+    thumbnail_effects = ("%(method)s(%(width)s,%(height)s)",)
+    thumbnail_method = "fill"
     thumbnail_width = 200
     thumbnail_height = 150
     
@@ -30,6 +32,7 @@ from cocktail.controllers import context
 
     def get_thumbnail_effects(self, image):
         params = {
+            "method": self.thumbnail_method,
             "width": self.thumbnail_width,
             "height": self.thumbnail_height
         }
@@ -40,6 +43,7 @@ from cocktail.controllers import context
 
     def get_full_image_effects(self, image):
         params = {
+            "method": self.full_image_method,
             "width": self.full_width,
             "height": self.full_height
         }
