@@ -3,9 +3,11 @@ u"""Defines the `ProductController` class.
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
+import cherrypy
 from cocktail.translations import translations
 from cocktail.controllers import request_property, Location
 from cocktail.controllers.formprocessor import FormProcessor, Form
+from woost.models import Publishable
 from woost.controllers.notifications import notify_user
 from woost.controllers.documentcontroller import DocumentController
 from woost.extensions.ecommerce.ecommerceproduct import ECommerceProduct
@@ -18,6 +20,7 @@ class ProductController(FormProcessor, DocumentController):
     class AddProductForm(Form):
 
         actions = ("add_product",)
+        redirect_to_basket = False
 
         @request_property
         def product(self):
@@ -47,6 +50,7 @@ class ProductController(FormProcessor, DocumentController):
             Form.submit(self)
             Basket.get().add_purchase(self.instance)
             Basket.store()
+
             notify_user(
                 translations(
                     "woost.extensions.ecommerce.product_added_notice",
@@ -55,5 +59,13 @@ class ProductController(FormProcessor, DocumentController):
                 "product_added",
                 transient = False
             )
-            Location.get_current().go("GET")
+
+            if self.redirect_to_basket:
+                raise cherrypy.HTTPRedirect(
+                    Publishable.require_instance(
+                        qname = "woost.extensions.ecommerce.basket_page"
+                    ).get_uri()
+                )
+            else:
+                Location.get_current().go("GET")
 
