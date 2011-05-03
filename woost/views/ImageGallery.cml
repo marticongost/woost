@@ -36,10 +36,13 @@ from cocktail.controllers import context
             "width": self.thumbnail_width,
             "height": self.thumbnail_height
         }
-        return tuple(
-            effect % params
-            for effect in self.thumbnail_effects
-        )
+        if isinstance(self.thumbnail_effects, basestring):
+            return self.thumbnail_effects % params
+        else:
+            return tuple(
+                (effect % params)
+                for effect in self.thumbnail_effects
+            )
 
     def get_full_image_effects(self, image):
         params = {
@@ -47,10 +50,13 @@ from cocktail.controllers import context
             "width": self.full_width,
             "height": self.full_height
         }
-        return tuple(
-            effect % params
-            for effect in self.full_image_effects
-        )
+        if isinstance(self.full_image_effects, basestring):
+            return self.full_image_effects % params
+        else:
+            return tuple(
+                effect % params
+                for effect in self.full_image_effects
+            )
 
     def get_footnote(self, image):
         return getattr(image, "description", None)
