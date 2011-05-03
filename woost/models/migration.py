@@ -81,3 +81,31 @@ def update_keys(e):
         # Create the product controller
         create_product_controller()
 
+#------------------------------------------------------------------------------
+
+step = MigrationStep("use TranslationMapping to translations")
+
+@when(step.executing)
+def update_translations(e):
+    from cocktail.schema import TranslationMapping
+    from cocktail.persistence import PersistentObject
+
+    def translated_items(schema):
+        if schema.translated and schema.indexed:
+            for item in schema.select():
+                yield item
+        else:
+            for derived_schema in schema.derived_schemas(False):
+                for item in translated_items(derived_schema):
+                    yield item
+
+    for item in translated_items(PersistentObject):
+        translations = TranslationMapping(
+            owner = item, 
+            items = item.translations._items
+        )
+        item.translations._items = translations
+        item._p_changed = True
+
+    PersistentObject.rebuild_indexes(True)
+
