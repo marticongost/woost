@@ -31,6 +31,12 @@ def _translate_amount(amount, language = None, **kwargs):
             **kwargs
         )
 
+def _get_default_payment_type():
+    from woost.extensions.ecommerce import ECommerceExtension
+    payment_types = ECommerceExtension.instance.payment_types
+    if len(payment_types) == 1:
+        return payment_types[0]
+
 
 class ECommerceOrder(Item):
 
@@ -152,6 +158,8 @@ class ECommerceOrder(Item):
                 "ECommerceOrder.payment_type-%s" % value,
                 language = language
             ),
+        default = schema.DynamicDefault(_get_default_payment_type),
+        text_search = False,
         edit_control = "cocktail.html.RadioSelector",
         listed_by_default = False
     )
