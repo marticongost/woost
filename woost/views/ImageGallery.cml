@@ -37,7 +37,7 @@ from cocktail.controllers import context
             "height": self.thumbnail_height
         }
         if isinstance(self.thumbnail_effects, basestring):
-            return self.thumbnail_effects % params
+            return (self.thumbnail_effects % params,)
         else:
             return tuple(
                 (effect % params)
@@ -51,10 +51,10 @@ from cocktail.controllers import context
             "height": self.full_height
         }
         if isinstance(self.full_image_effects, basestring):
-            return self.full_image_effects % params
+            return (self.full_image_effects % params,)
         else:
             return tuple(
-                effect % params
+                (effect % params)
                 for effect in self.full_image_effects
             )
 
