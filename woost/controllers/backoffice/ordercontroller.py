@@ -8,11 +8,10 @@ u"""
 """
 import cherrypy
 from simplejson import dumps
-from cocktail.modeling import cached_getter
 from cocktail.events import event_handler
 from cocktail.translations import translations
 from cocktail import schema
-from cocktail.schema import Reference, String, Integer, Collection
+from cocktail.controllers import request_property, get_parameter
 from woost.models import Item
 from woost.controllers.backoffice.basebackofficecontroller \
     import BaseBackOfficeController, EditNode
@@ -20,53 +19,49 @@ from woost.controllers.backoffice.basebackofficecontroller \
 
 class OrderController(BaseBackOfficeController):
 
-    @cached_getter
+    @request_property
     def handling_ajax_request(self):
         return self.rendering_format == "json"
 
-    @cached_getter
-    def edited_content_type(self):
-        return self.item.__class__
-
-    @cached_getter
+    @request_property
     def content_type(self):
         return self.member.items.type
     
-    @cached_getter
+    @request_property
     def collection(self):
-        return schema.get(self.stack_node.form_data, self.member)
+        return schema.get(self.edit_node.form_data, self.member)
     
-    @cached_getter
+    @request_property
     def member(self):
-        key = self.params.read(String("member"))
-        return self.edited_content_type[key] if key else None
+        key = get_parameter(schema.String("member"))
+        return self.item.__class__.get_member(key) if key else None
 
-    @cached_getter
+    @request_property
     def item(self):
-        return self.stack_node.item
+        return self.edit_node.item
 
-    @cached_getter
+    @request_property
     def selection(self):
-        return self.params.read(
-            Collection("selection",
-                items = Reference(type = self.content_type)
+        return get_parameter(
+            schema.Collection("selection",
+                items = schema.Reference(type = self.content_type)
             )
         )
     
-    @cached_getter
+    @request_property
     def position(self):
-        return self.params.read(
-            Integer("position",
+        return get_parameter(
+            schema.Integer("position",
                 min = 0,
                 max = len(self.collection)
             )
         )
 
-    @cached_getter
+    @request_property
     def action(self):
-        return self.params.read(String("action"))
+        return get_parameter(schema.String("action"))
 
-    @cached_getter
+    @request_property
     def ready(self):
         return self.action == "order" \
             and self.selection \
@@ -74,25 +69,23 @@ class OrderController(BaseBackOfficeController):
 
     def submit(self):
         
-        def rearrange(collection, items, position):
+        collection = self.collection
+        selection = self.selection
+        position = self.position
+        size = len(collection)
+        selection_size = len(selection)
 
-            size = len(collection)
-            
-            if position < 0:
-                position = size + position
+        if position < 0:
+            position = size + position
 
-            if position + len(items) > size:
-                position = size - len(items)
+        for item in selection:
+            removed_index = collection.index(item)
+            collection.pop(removed_index)
+            if position > removed_index:
+                position -= 1
 
-            for item in items:
-                collection.remove(item)
-            
-            for item in reversed(list(items)):
-                collection.insert(position, item)
-            
-            return collection                   
-                   
-        rearrange(self.collection, self.selection, self.position)
+        for item in reversed(list(selection)):
+            collection.insert(position, item)
 
     def handle_error(self, error):
         if self.handling_ajax_request:
@@ -115,7 +108,7 @@ class OrderController(BaseBackOfficeController):
 
     view_class = "woost.views.BackOfficeOrderView"
 
-    @cached_getter
+    @request_property
     def output(self):
         if self.handling_ajax_request:
             return {}
