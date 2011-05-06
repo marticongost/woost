@@ -540,6 +540,16 @@ translations.define("woost.views.BackOfficeOrderView.stack_node_description",
 )
 
 translations.define(
+    "woost.views.BackOfficeOrderView.insertion_point_explanation",
+    ca = u"Els elements seleccionats es situaran <em>abans</em> del punt "
+        u"indicat:",
+    es = u"Los elementos seleccionados se situarán <em>antes</em> del punto "
+        u"indicado:",
+    en = u"The selected items will be inserted <em>before</em> the specified "
+        u"point:"
+)
+
+translations.define(
     "woost.controllers.backoffice.movecontroller.TreeCycleError-instance",
     ca = u"No es pot inserir un element dins de sí mateix.",
     es = u"No se puede insertar un elemento dentro de si mismo.",
