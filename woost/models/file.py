@@ -100,6 +100,12 @@ class File(Publishable):
         edit_control = "woost.views.ImageEffectsEditor"
     )
 
+    def compose_image_effects(self, extra_effects):
+        if self.image_effects:
+            return self.image_effects.split("/") + extra_effects
+        else:
+            return extra_effects
+
     @getter
     def file_path(self):
         

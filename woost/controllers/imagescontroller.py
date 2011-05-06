@@ -121,13 +121,12 @@ def serve_image(item, *processing, **kwargs):
     apply_effects = kwargs.pop("apply", "on")
     item_effects = []
 
-    if isinstance(item, File) and item.image_effects:
+    if isinstance(item, File):
         
         if apply_effects == "off":
             get_current_user().require_permission(ModifyPermission, target = item)
         else:
-            item_effects = item.image_effects.split("/")
-            processing = item_effects + list(processing)
+            processing = item.compose_image_effects(list(processing))
 
     if renderer is None and "icon" in kind:
         for renderer in icon_renderers:
