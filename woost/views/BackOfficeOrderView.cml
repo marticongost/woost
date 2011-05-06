@@ -26,6 +26,10 @@ from cocktail.html.datadisplay import SINGLE_SELECTION
 
     <py:with py:element="self.body" py:tag="form" method="post">
 
+        <div py:id="insertion_point_explanation">
+            ${translations("woost.views.BackOfficeOrderView.insertion_point_explanation")}
+        </div>
+
         <div py:id="position_selector">
             <py:ready>
                 <py:new

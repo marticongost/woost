@@ -1,6 +1,12 @@
 
+.BackOfficeOrderView .insertion_point_explanation {
+    margin-bottom: 1em;
+}
+
 .BackOfficeOrderView .position_selector .position_entry {
     clear: left;
+    overflow: hidden;
+    margin-bottom: 0.4em;
 }
 
 .BackOfficeOrderView .position_selector .radio_button,
@@ -11,5 +17,9 @@
 .BackOfficeOrderView .position_selector .in_movement {
     font-style: italic;
     padding-left: 1.5em;
+}
+
+.BackOfficeOrderView .position_selector .label {
+    font-size: 0.9em;
 }
 
