@@ -528,9 +528,15 @@ translations.define("datetime format",
 )
 
 translations.define("BackOfficeOrderView last position",
-    ca = u"Final de la llista",
-    es = u"Final de la lista",
-    en = u"End of the list"
+    ca = u"-- Final de la llista --",
+    es = u"-- Final de la lista --",
+    en = u"-- End of the list --"
+)
+
+translations.define("woost.views.BackOfficeOrderView.stack_node_description",
+    ca = u"ordenar",
+    es = u"ordenar",
+    en = u"rearrange"
 )
 
 translations.define(

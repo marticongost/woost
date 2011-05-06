@@ -500,7 +500,7 @@ class RemoveAction(UserAction):
 
 
 class OrderAction(UserAction):
-    included = frozenset([("toolbar", "order")])
+    included = frozenset([("order_content_view", "toolbar")])
     max = None
 
     def invoke(self, controller, selection):
@@ -512,7 +512,7 @@ class OrderAction(UserAction):
 
     def get_url_params(self, controller, selection):
         params = UserAction.get_url_params(self, controller, selection)
-        params["member"] = self.member.name
+        params["member"] = controller.section
         return params
 
 
@@ -833,7 +833,6 @@ MoveAction("move").register()
 AddAction("add").register()
 AddIntegralAction("add_integral").register()
 RemoveAction("remove").register()
-OrderAction("order").register()
 ShowDetailAction("show_detail").register()
 PreviewAction("preview").register()
 OpenResourceAction("open_resource").register()
@@ -843,6 +842,7 @@ DiffAction("diff").register()
 RevertAction("revert").register()
 ShowChangelogAction("changelog").register()
 DeleteAction("delete").register()
+OrderAction("order").register()
 ExportAction("export_xls", "msexcel").register()
 PrintAction("print").register()
 CloseAction("close").register()

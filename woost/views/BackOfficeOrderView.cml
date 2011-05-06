@@ -12,63 +12,30 @@ from cocktail.html.datadisplay import SINGLE_SELECTION
     content_type = None
     collection = None
     selection = None
+
+    def get_stack_node_description(self, node):
+        if node is self.edit_stack[-1]:
+            return translations("woost.views.BackOfficeOrderView.stack_node_description")
+        else:
+            return BackOfficeLayout.get_stack_node_description(self, node)
+    ?>
+
+    <?py
+    self.add_resource("/resources/styles/BackOfficeOrderView.css")
     ?>
 
     <py:with py:element="self.body" py:tag="form" method="post">
 
-        <py:woost.views.ContentTable
-            py:base_url="@{self.cms.contextual_uri()}"
-            py:accessor="${SchemaObjectAccessor}"
-            py:selection_mode="${SINGLE_SELECTION}"
-            py:data="@{self.collection}">
-            <?py
-            element.schema = Schema(members = [Member("element")])
-            element.schema.name = "BackOfficeContentView"
-            element._entry_count = 0
-
-            @refine(element)
-            def get_item_id(table, item):
-                index = table._entry_count
-                table._entry_count += 1
-                return index
-            
-            view = self
-            ?>
-            <py:with py:def="row" py:args="i, item">
-                <?py
-                if item in view.selection:
-                    element.add_class("original_position")
-                ?>
-            </py:with>
-
-            <py:with py:def="selection_control" py:args="item">
-                <?py
-                if len(view.selection) == 1 and item in view.selection:
-                    element["disabled"] = True
-                ?>
-            </py:with>
-
+        <div py:id="position_selector">
             <py:ready>
-                <tr>
-                    <?py
-                    size = len(self.collection)
-                    ?>
-                    <td>
-                        <input
-                            type="radio"
-                            name="position"
-                            id="position_${str(size)}"
-                            value="${str(size)}"/>
-                    </td>
-                    <td>
-                        <label for="position_${str(size)}">
-                            ${translations("BackOfficeOrderView last position")}
-                        </label>
-                    </td>
-                </tr>
+                <py:new
+                    py:element="self.create_position_entry(i, item)"
+                    py:for="i, item in enumerate(self.collection)"/>
+                <py:new
+                    py:local_id="last_position_entry"
+                    py:element="self.create_position_entry(len(self.collection), None)"/>
             </py:ready>
-
-        </py:woost.views.ContentTable>
+        </div>
 
         <div py:id="buttons">
             <button name="action" type="submit" value="cancel">${translations("Cancel")}</button>
@@ -76,5 +43,32 @@ from cocktail.html.datadisplay import SINGLE_SELECTION
         </div>
 
     </py:with>
+
+    <div py:def="position_entry" py:args="position, item">
+        <?py 
+        in_movement = (item is not None and item in self.selection)
+
+        if in_movement:
+            element.add_class("in_movement")
+        ?>
+        <input 
+            py:local_id="radio_button"
+            py:visible="${not in_movement}"
+            type="radio"
+            name="position" 
+            value="${position}"/>
+        <span py:local_id="label">
+            <?py
+            if not in_movement:
+                element.tag = "label"
+                element["for"] = position_entry.radio_button.require_id()
+            ?>
+            <py:woost.views.ItemLabel
+                py:if="item"
+                py:item="${item}"
+                py:icon_visible="${False}"/>
+            ${translations("BackOfficeOrderView last position") if item is None else ""}
+        </span>
+    </div>
 
 </py:woost.views.BackOfficeLayout>
