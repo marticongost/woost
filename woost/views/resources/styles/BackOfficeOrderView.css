@@ -4,19 +4,21 @@
 }
 
 .BackOfficeOrderView .position_selector .position_entry {
-    clear: left;
-    overflow: hidden;
     margin-bottom: 0.4em;
+    display: block;
 }
 
-.BackOfficeOrderView .position_selector .radio_button,
-.BackOfficeOrderView .position_selector .label {
-    float: left;
+.BackOfficeOrderView .position_selector button.position_entry {
+    padding: 0;
+    margin-left: -0.2em;
+    border: none;
+    background: none;
+    cursor: pointer;
+    color: #19426e;
 }
 
 .BackOfficeOrderView .position_selector .in_movement {
-    font-style: italic;
-    padding-left: 1.5em;
+    color: #666;
 }
 
 .BackOfficeOrderView .position_selector .label {
