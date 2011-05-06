@@ -541,9 +541,9 @@ translations.define("woost.views.BackOfficeOrderView.stack_node_description",
 
 translations.define(
     "woost.views.BackOfficeOrderView.insertion_point_explanation",
-    ca = u"Els elements seleccionats es situaran <em>abans</em> del punt "
+    ca = u"Els elements seleccionats es situaran <em>davant</em> del punt "
         u"indicat:",
-    es = u"Los elementos seleccionados se situarán <em>antes</em> del punto "
+    es = u"Los elementos seleccionados se situarán <em>delate</em> del punto "
         u"indicado:",
     en = u"The selected items will be inserted <em>before</em> the specified "
         u"point:"
