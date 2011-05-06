@@ -63,9 +63,7 @@ class OrderController(BaseBackOfficeController):
 
     @request_property
     def ready(self):
-        return self.action == "order" \
-            and self.selection \
-            and self.position is not None
+        return self.selection and self.position is not None
 
     def submit(self):
         
@@ -99,8 +97,7 @@ class OrderController(BaseBackOfficeController):
         controller = event.source
 
         if not controller.handling_ajax_request:
-            if controller.action == "cancel" \
-            or (controller.action == "order" and controller.successful):
+            if controller.action == "cancel" or controller.successful:
                 if controller.edit_stack:
                     controller.edit_stack.go(-2)
                 else:

@@ -43,7 +43,6 @@ from cocktail.html.datadisplay import SINGLE_SELECTION
 
         <div py:id="buttons">
             <button name="action" type="submit" value="cancel">${translations("Cancel")}</button>
-            <button name="action" type="submit" value="order">${translations("Select")}</button>
         </div>
 
     </py:with>
@@ -54,25 +53,16 @@ from cocktail.html.datadisplay import SINGLE_SELECTION
 
         if in_movement:
             element.add_class("in_movement")
+        else:
+            element.tag = "button"
+            element["type"] = "submit"
+            element["name"] = "position"
+            element["value"] = position
         ?>
-        <input 
-            py:local_id="radio_button"
-            py:visible="${not in_movement}"
-            type="radio"
-            name="position" 
-            value="${position}"/>
-        <span py:local_id="label">
-            <?py
-            if not in_movement:
-                element.tag = "label"
-                element["for"] = position_entry.radio_button.require_id()
-            ?>
-            <py:woost.views.ItemLabel
-                py:if="item"
-                py:item="${item}"
-                py:icon_visible="${False}"/>
-            ${translations("BackOfficeOrderView last position") if item is None else ""}
-        </span>
+        <py:woost.views.ItemLabel
+            py:if="item"
+            py:item="${item}"/>
+        ${translations("BackOfficeOrderView last position") if item is None else ""}        
     </div>
 
 </py:woost.views.BackOfficeLayout>
