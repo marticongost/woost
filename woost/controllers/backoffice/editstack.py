@@ -433,7 +433,7 @@ class StackNode(object):
         """
         return self._index
 
-    def get_ancestor_node(self, node_type):
+    def get_ancestor_node(self, node_type, include_self = False):
         """Walks up the edit stack towards its root, looking for the first node
         of the given type.
     
@@ -444,7 +444,7 @@ class StackNode(object):
             if the node has no ancestors of that type.
         @rtype: L{StackNode}
         """
-        node = self._parent_node
+        node = self if include_self else self._parent_node
         while node is not None:
             if isinstance(node, node_type):
                 break
