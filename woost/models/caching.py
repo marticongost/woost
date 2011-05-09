@@ -7,6 +7,7 @@ import os
 from datetime import datetime
 from cocktail import schema
 from cocktail.translations import get_language
+from cocktail.controllers import Location
 from cocktail.persistence import datastore, PersistentMapping
 from cocktail.html.datadisplay import display_factory
 from woost.models.item import Item
@@ -100,10 +101,7 @@ class CachingPolicy(Item):
 
     def get_content_cache_key(self, publishable, **context):
 
-        if publishable.per_language_publication:
-            cache_key = (publishable.id, get_language())
-        else:
-            cache_key = (publishable.id,)
+        cache_key = (str(Location.get_current()),)
 
         key_qualifier = None
         
