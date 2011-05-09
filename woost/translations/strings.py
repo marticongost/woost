@@ -919,7 +919,7 @@ translations.define(
     ca = u"<p>La direcció indicada no coincideix amb cap dels continguts "
          u"del web. Si us plau, revísa-la i torna-ho a provar.</p>",
     es = u"<p>La dirección indicada no coincide con ninguno de los "
-         u"contenidos del web. Por favor, revísala y intentalo de nuevo.</p>",
+         u"contenidos del web. Por favor, revísala y inténtalo de nuevo.</p>",
     en = u"<p>Couldn't find the indicated address. Please, verify it and try "
          u"again.</p>"
 )
