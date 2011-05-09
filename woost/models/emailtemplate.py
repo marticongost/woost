@@ -139,7 +139,7 @@ class EmailTemplate(Item):
          # Receivers (python expression)
         receivers = eval_member("receivers")
         if receivers:
-            receivers = set(r.strip() for r in receivers) 
+            receivers = set(r.strip().encode(self.encoding) for r in receivers) 
 
         if not receivers:
             return set()
@@ -149,12 +149,12 @@ class EmailTemplate(Item):
         # Sender (python expression)
         sender = eval_member("sender")
         if sender:
-            message["From"] = sender
+            message["From"] = sender.encode(self.encoding)
 
         # BCC (python expression)
         bcc = eval_member("bcc")
         if bcc:
-            receivers.update(r.strip() for r in bcc)
+            receivers.update(r.strip().encode(self.encoding) for r in bcc)
 
         if subject:
             message["Subject"] = Header(subject, self.encoding)
