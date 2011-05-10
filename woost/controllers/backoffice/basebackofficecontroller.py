@@ -145,7 +145,7 @@ class BaseBackOfficeController(BaseCMSController):
         """
         stack = self.edit_stack
         if stack:
-            return stack[-1].get_ancestor_node(EditNode)
+            return stack[-1].get_ancestor_node(EditNode, include_self = True)
         return None
 
     @getter
@@ -155,7 +155,10 @@ class BaseBackOfficeController(BaseCMSController):
         """
         stack = self.edit_stack
         if stack:
-            return stack[-1].get_ancestor_node(RelationNode)
+            return stack[-1].get_ancestor_node(
+                RelationNode, 
+                include_self = True
+            )
         return None
 
     # Request flow
