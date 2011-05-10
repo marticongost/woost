@@ -827,7 +827,7 @@ translations.define(
 
 translations.define(
     "woost.models.initialization Password Change Confirmation Email template title",
-    ca = u"Plantilla de correo electrònic para sol·licitud de canvi de contrasenya",
+    ca = u"Plantilla de correu electrònic per sol·licitar el canvi de contrasenya",
     es = u"Plantilla de correo electrónico para solicitud de cambio de contraseña",
     en = u"Password change confirmation email template"
 )
