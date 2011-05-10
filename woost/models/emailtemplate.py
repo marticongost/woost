@@ -10,7 +10,7 @@ import buffet
 import smtplib
 from email.mime.text import MIMEText
 from email.Header import Header
-from email.Utils import formatdate
+from email.Utils import formatdate, parseaddr, formataddr
 from cocktail import schema
 from cocktail.html.datadisplay import display_factory
 from woost.models import Item, Site
@@ -136,6 +136,12 @@ class EmailTemplate(Item):
             
         message = MIMEText(body, _subtype = mime_type, _charset = self.encoding)
 
+        def format_email_address(address, encoding):
+            name, address = parseaddr(address)
+            name = Header(name, encoding).encode()
+            address = address.encode('ascii')
+            return formataddr((name, address))
+
          # Receivers (python expression)
         receivers = eval_member("receivers")
         if receivers:
@@ -144,12 +150,15 @@ class EmailTemplate(Item):
         if not receivers:
             return set()
  
-        message["To"] = ", ".join(receivers)
+        message["To"] = ", ".join([
+            format_email_address(receiver, self.encoding) 
+            for receiver in receivers
+        ])
 
         # Sender (python expression)
         sender = eval_member("sender")
         if sender:
-            message["From"] = sender.encode(self.encoding)
+            message['From'] = format_email_address(sender, self.encoding)
 
         # BCC (python expression)
         bcc = eval_member("bcc")
@@ -157,7 +166,7 @@ class EmailTemplate(Item):
             receivers.update(r.strip().encode(self.encoding) for r in bcc)
 
         if subject:
-            message["Subject"] = Header(subject, self.encoding)
+            message["Subject"] = Header(subject, self.encoding).encode()
 
         message["Date"] = formatdate()
 
