@@ -54,6 +54,7 @@ class PaymentsExtension(Extension):
             dummypaymentgateway,
             pasat4b,
             sis,
+            paypal,
             transactionnotifiedtrigger
         )
 
