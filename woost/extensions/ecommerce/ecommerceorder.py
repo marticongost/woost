@@ -20,6 +20,7 @@ from woost.models import (
 from woost.extensions.locations.location import Location
 from woost.extensions.ecommerce.ecommercebillingconcept \
     import ECommerceBillingConcept
+from woost.extensions.payments import PaymentsExtension
 
 def _translate_amount(amount, language = None, **kwargs):
     if amount is None:
@@ -41,7 +42,7 @@ def _get_default_payment_type():
 class ECommerceOrder(Item):
 
     payment_types_completed_status = {
-        "credit_card": "accepted",
+        "payment_gateway": "accepted",
         "transfer": "payment_pending", 
         "cash_on_delivery": "payment_pending"
     }
@@ -373,16 +374,35 @@ class ECommerceOrder(Item):
             self.purchases.append(purchase)
 
     @classmethod
-    def get_summary_schema(cls):
-        checkout_schema = schema.Schema("OrderCheckoutSummary")
-        cls.get_summary_adapter().export_schema(
+    def get_public_schema(cls):
+        public_schema = schema.Schema("OrderCheckoutSummary")
+        cls.get_public_adapter().export_schema(
             cls,
-            checkout_schema
+            public_schema
         )
-        return checkout_schema
+
+        payment_type = public_schema.get_member("payment_type")
+        if payment_type:
+            payments = PaymentsExtension.instance
+
+            if payments.enabled and payments.payment_gateway:
+
+                translate_value = payment_type.translate_value
+
+                def payment_type_translate_value(value, language = None, **kwargs):
+                    if value == "payment_gateway":
+                        return payments.payment_gateway.label
+                    else:
+                        return translate_value(
+                            value, language = language, **kwargs
+                        )
+
+                payment_type.translate_value = payment_type_translate_value
+
+        return public_schema
 
     @classmethod
-    def get_summary_adapter(cls):
+    def get_public_adapter(cls):
         from woost.extensions.ecommerce import ECommerceExtension
 
         user = get_current_user()            
@@ -419,3 +439,10 @@ class ECommerceOrder(Item):
         if member.name == "status" and item.is_completed:
             item.completed()
 
+    def get_description_for_gateway(self):
+        if Site.main.site_name:
+            return translations(
+                "woost.extensions.ECommerceOrder description for gateway"
+            ) % Site.main.site_name
+        else:
+            return translations(self)

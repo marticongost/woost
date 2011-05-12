@@ -23,6 +23,8 @@ class CheckoutController(FormProcessor, DocumentController):
 
     class CheckoutForm(ProceedForm):
         
+        model = Basket.get().get_public_schema()
+
         @request_property
         def source_instance(self):
             return Basket.get()
@@ -35,29 +37,6 @@ class CheckoutController(FormProcessor, DocumentController):
                 payment_type.enumeration = \
                     ECommerceExtension.instance.payment_types
             return schema
-
-        @request_property
-        def adapter(self):
-            user = get_current_user()
-            adapter = ProceedForm.adapter(self)
-
-            # TODO: Request the credit card number when the payment type is
-            # 'credit_card' and the PaymentsExtensions isn't enabled;
-            # otherwise hide this field
-
-            adapter.exclude(["customer", "status", "purchases"])
-            adapter.exclude([
-                member.name
-                for member in self.model.members().itervalues()
-                if not member.visible
-                or not member.editable
-                or not issubclass(member.schema, ECommerceOrder)
-                or not user.has_permission(
-                    ModifyMemberPermission,
-                    member = member
-                )
-            ])      
-            return adapter
 
         def submit(self):
             Form.submit(self)

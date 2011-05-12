@@ -23,7 +23,7 @@ from woost.extensions.ecommerce.ecommerceorder import ECommerceOrder
 
         self.add_head_element(Element("base", href = self.base_url))
 
-        self.summary_schema = self.order.get_summary_schema()
+        self.summary_schema = self.order.get_public_schema()
         ?>
     </py:ready>
 

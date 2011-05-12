@@ -41,10 +41,10 @@ translations.define("ECommerceExtension.payment_types",
     en = u"Payment types"
 )
 
-translations.define("ECommerceExtension.payment_types-credit_card",
-    ca = u"Targeta de crèdit",
-    es = u"Tarjeta de crédito",
-    en = u"Credit card"
+translations.define("ECommerceExtension.payment_types-payment_gateway",
+    ca = u"Pagament en línia",
+    es = u"Pago en línea",
+    en = u"On-line payment"
 )
 
 translations.define("ECommerceExtension.payment_types-transfer",
@@ -279,10 +279,10 @@ translations.define("ECommerceOrder.payment_type",
     en = u"Payment type"
 )
 
-translations.define("ECommerceOrder.payment_type-credit_card",
-    ca = u"Targeta de crèdit",
-    es = u"Tarjeta de crédito",
-    en = u"Credit card"
+translations.define("ECommerceOrder.payment_type-payment_gateway",
+    ca = u"Pagament en línia",
+    es = u"Pago en línea",
+    en = u"On-line payment"
 )
 
 translations.define("ECommerceOrder.payment_type-transfer",
@@ -295,6 +295,12 @@ translations.define("ECommerceOrder.payment_type-cash_on_delivery",
     ca = u"Contra reemborsament",
     es = u"Contra reembolso",
     en = u"Cash on delivery"
+)
+
+translations.define("woost.extensions.ECommerceOrder description for gateway",
+    ca = u"Comanda de %s",
+    es = u"Pedido de %s",
+    en = u"Order at %s"
 )
 
 # ECommercePurchase
