@@ -198,3 +198,41 @@ translations.define(
     en = u"Canceled"
 )
 
+# PayPalPaymentGateway
+#------------------------------------------------------------------------------
+translations.define("PayPalPaymentGateway",
+    ca = u"PayPal",
+    es = u"PayPal",
+    en = u"PayPal"
+)
+
+translations.define("PayPalPaymentGateway-plural",
+    ca = u"PayPal",
+    es = u"PayPal",
+    en = u"PayPal"
+)
+
+translations.define("PayPalPaymentGateway.business",
+    ca = u"Compte de PayPal",
+    es = u"Cuenta de PayPal",
+    en = u"PayPal account"
+)
+
+translations.define("PayPalPaymentGateway.payment_successful_page",
+    ca = u"Pàgina de confirmació de pagament",
+    es = u"Página de confirmación de pago",
+    en = u"Payment successful page"
+)
+
+translations.define("PayPalPaymentGateway.payment_failed_page",
+    ca = u"Pàgina de pagament fallit",
+    es = u"Página de pago fallido",
+    en = u"Payment failed page"
+)
+
+translations.define("PayPalPaymentGateway.label default",
+    ca = u"Targeta de crèdit / PayPal",
+    es = u"Tarjeta de crédito / PayPal",
+    en = u"Credit card / PayPal"
+)
+
