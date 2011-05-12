@@ -9,11 +9,13 @@
 import buffet
 import smtplib
 from email.mime.text import MIMEText
+from email.MIMEMultipart import MIMEMultipart
+from email.MIMEImage import MIMEImage
 from email.Header import Header
 from email.Utils import formatdate, parseaddr, formataddr
 from cocktail import schema
 from cocktail.html.datadisplay import display_factory
-from woost.models import Item, Site
+from woost.models import Item, Site, File
 
 
 class EmailTemplate(Item):
@@ -28,6 +30,7 @@ class EmailTemplate(Item):
         "bcc",
         "template_engine",
         "subject",
+        "embeded_images",
         "body"
     ]
 
@@ -83,6 +86,13 @@ class EmailTemplate(Item):
         edit_control = "cocktail.html.TextArea"
     )
 
+    embeded_images = schema.String(
+        listed_by_default = False,
+        edit_control = display_factory(
+            "cocktail.html.CodeEditor", syntax = "python"
+        )
+    )
+
     body = schema.String(    
         translated = True,
         listed_by_default = False,
@@ -135,6 +145,29 @@ class EmailTemplate(Item):
             body = self.body.encode(self.encoding)
             
         message = MIMEText(body, _subtype = mime_type, _charset = self.encoding)
+
+        # Embeded images
+        if self.embeded_images:
+            image_context = context.copy()
+            image_context["images"] = {}
+            exec self.embeded_images in image_context
+            images = dict(
+                (cid, image) 
+                for cid, image in image_context["images"].iteritems()
+                if image is not None
+            )
+            if images:
+                message_text = message
+                message = MIMEMultipart("related")
+                message.attach(message_text)
+
+                for cid, image in images.iteritems():
+                    if isinstance(image, File):
+                        image = image.file_path
+                    with open(image) as image_file:
+                        message_image = MIMEImage(image_file.read())
+                        message_image.add_header("Content-ID", "<%s>" % cid)
+                        message.attach(message_image)
 
         def format_email_address(address, encoding):
             name, address = parseaddr(address)

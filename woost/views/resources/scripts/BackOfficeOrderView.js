@@ -13,9 +13,7 @@ cocktail.bind(".OrderContentView", function ($contentView) {
             )          
             .each(function (i) {
                 var td = document.createElement('td');
-                if (i > 0) {
-                    td.className = 'dragHandle';
-                }
+                td.className = 'dragHandle';
                 jQuery(this).prepend(td);
                 jQuery(this).attr('id', jQuery(this).find(":checkbox").val());
             });
@@ -32,7 +30,6 @@ cocktail.bind(".OrderContentView", function ($contentView) {
             });
         }
   
-        var position;
         var member = jQuery(this).closest(".BackOfficeCollectionView").get(0).member;
         var edit_stack = jQuery(this).closest(".BackOfficeItemView").get(0).edit_stack;
      
@@ -43,11 +40,8 @@ cocktail.bind(".OrderContentView", function ($contentView) {
                     
                     renderEvenOdd();                
                     
-                    $contentView.find(".Table tbody tr").each( function (i) {
-                        if(jQuery(row).attr('id') == jQuery(this).attr('id')) position = i;                                          
-                    });
-                    
-                    var url = '/' + cocktail.getLanguage() + cms_uri + '/order?';                           
+                    var position = jQuery(table).find("tbody tr").index(row);
+                    var url = '/' + cocktail.getLanguage() + cms_uri + '/order?';
                     url += "selection=" + jQuery(row).attr('id') + "&";
                     url += "member=" + member + "&";
                     url += "edit_stack=" + edit_stack + "&";
