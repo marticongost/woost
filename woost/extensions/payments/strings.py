@@ -44,6 +44,18 @@ translations.define("PaymentGateway-plural",
     en = u"Payment gateways"
 )
 
+translations.define("PaymentGateway.label",
+    ca = u"Etiqueta",
+    es = u"Etiqueta",
+    en = u"Label"
+)
+
+translations.define("PaymentGateway.label-explanation",
+    ca = u"Etiqueta utilitzada per mostrar als usuaris",
+    es = u"Etiqueta utilizada para mostrar a los usuarios",
+    en = u"Label showed to the users"
+)
+
 translations.define("PaymentGateway.test_mode",
     ca = u"Mode de proves",
     es = u"Modo de pruebas",
@@ -74,6 +86,12 @@ translations.define("Pasat4bPaymentGateway.merchant_code",
     ca = u"Codi de comerç",
     es = u"Código de comercio",
     en = u"Merchant code"
+)
+
+translations.define("Pasat4bPaymentGateway.label default",
+    ca = u"Targeta de crèdit",
+    es = u"Tarjeta de crédito",
+    en = u"Credit card"
 )
 
 # SISPaymentGateway
@@ -124,6 +142,12 @@ translations.define("SISPaymentGateway.payment_failed_page",
     ca = u"Pàgina de pagament fallit",
     es = u"Página de pago fallido",
     en = u"Payment failed page"
+)
+
+translations.define("SISPaymentGateway.label default",
+    ca = u"Targeta de crèdit",
+    es = u"Tarjeta de crédito",
+    en = u"Credit card"
 )
 
 # DummyPaymentGateway
