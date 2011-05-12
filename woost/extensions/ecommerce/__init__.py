@@ -167,6 +167,9 @@ class ECommerceExtension(Extension):
         from woost.extensions.payments.transactionnotifiedtrigger \
             import launch_transaction_notification_triggers
         from woost.extensions.ecommerce.ecommerceorder import ECommerceOrder
+        from woost.extensions.payments import PaymentsExtension
+
+        payments_ext = PaymentsExtension.instance
 
         def get_payment(self, payment_id):
 
@@ -181,12 +184,12 @@ class ECommerceExtension(Extension):
             payment.order = order
             payment.currency = Currency(payments_ext.payment_gateway.currency)
             
-            for entry in order.entries:
+            for purchase in order.purchases:
                 payment.add(PaymentItem(
-                    reference = str(entry.product.id),
-                    description = translations(entry.product),
-                    units = entry.quantity,
-                    price = entry.cost
+                    reference = str(purchase.product.id),
+                    description = translations(purchase.product),
+                    units = purchase.quantity,
+                    price = purchase.total
                 ))
 
             return payment
