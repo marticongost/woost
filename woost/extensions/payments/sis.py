@@ -8,6 +8,7 @@
 """
 from tpv.sis import SISPaymentGateway as Implementation
 from cocktail import schema
+from cocktail.translations import translations
 from cocktail.modeling import getter
 from cocktail.controllers import context
 from cocktail.controllers.location import Location
@@ -23,6 +24,10 @@ class SISPaymentGateway(PaymentGateway, Implementation):
     ]
 
     instantiable = True
+
+    default_label = schema.DynamicDefault(
+        lambda: translations("SISPaymentGateway.label default")
+    )
 
     merchant_code = schema.String(
         required = True,

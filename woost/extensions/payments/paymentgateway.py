@@ -28,9 +28,14 @@ class PaymentGateway(Item):
     )
 
     members_order = [
+        "label",
         "test_mode",
         "currency"
     ]
+
+    label = schema.String(
+        required = True
+    )
     
     test_mode = schema.Boolean(
         required = True,
