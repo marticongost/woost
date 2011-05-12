@@ -77,13 +77,11 @@ class OrderController(BaseBackOfficeController):
             position = size + position
 
         for item in selection:
-            removed_index = collection.index(item)
-            collection.pop(removed_index)
-            if position > removed_index:
-                position -= 1
+            collection.remove(item)
 
-        for item in reversed(list(selection)):
+        for item in selection:
             collection.insert(position, item)
+            position += 1
 
     def handle_error(self, error):
         if self.handling_ajax_request:
