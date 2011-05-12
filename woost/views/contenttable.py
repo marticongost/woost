@@ -38,7 +38,7 @@ class ContentTable(ContentDisplayMixin, Table):
         if self.inline_draft_copies and isinstance(item, Item):
             for draft in item.drafts:
                 draft_row = self.create_row(index, draft)
-                self.append(draft_row)
+                self.body.append(draft_row)
 
     def create_row(self, index, item):
         
