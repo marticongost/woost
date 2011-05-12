@@ -24,7 +24,7 @@ class SummaryController(FormProcessor, DocumentController):
 
     @request_property
     def checkout_schema(self):
-        return Basket.get().get_summary_schema()
+        return Basket.get().get_public_schema()
         
     @request_property
     def output(self):
@@ -48,7 +48,7 @@ class SummaryController(FormProcessor, DocumentController):
             # Redirect the user to the payment gateway
             if payments.enabled \
             and payments.payment_gateway \
-            and order.payment_type == "credit_card":
+            and order.payment_type == "payment_gateway":
                 payments.payment_request(order.id)
             
             # No payment gateway available, redirect the user to the success

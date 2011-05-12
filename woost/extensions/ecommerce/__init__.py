@@ -84,7 +84,7 @@ class ECommerceExtension(Extension):
             "order_steps"
         ]
 
-        available_payment_types = ("credit_card", "transfer", "cash_on_delivery")
+        available_payment_types = ("payment_gateway", "transfer", "cash_on_delivery")
         ECommerceOrder.payment_type.enumeration = available_payment_types
 
         ECommerceExtension.add_member(
@@ -180,7 +180,8 @@ class ECommerceExtension(Extension):
             
             payment = Payment()
             payment.id = order.id
-            payment.amount = order.cost
+            payment.description = order.get_description_for_gateway()
+            payment.amount = order.total
             payment.order = order
             payment.currency = Currency(payments_ext.payment_gateway.currency)
             
