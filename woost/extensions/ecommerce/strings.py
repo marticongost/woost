@@ -8,6 +8,7 @@
 """
 from cocktail.translations import translations, DATE_STYLE_TEXT
 from cocktail.translations.helpers import plural2
+from woost.models import Site
 
 # ECommerceExtension
 #------------------------------------------------------------------------------
@@ -884,5 +885,42 @@ translations.define("ECommerceOrderCompletedTrigger-plural",
     ca = u"Disparadors de comanda completada",
     es = u"Disparadores de pedido completado",
     en = u"Order completed triggers"
+)
+
+# OrderConfirmationMessage
+#------------------------------------------------------------------------------
+translations.define(
+    "woost.extensions.OrderConfirmationMessage.product_subtotal_cell",
+    ca = u"Subtotal",
+    es = u"Subtotal",
+    en = u"Subtotal"
+)
+
+translations.define(
+    "woost.extensions.OrderConfirmationMessage.product_footer_cell",
+    ca = u"Total",
+    es = u"Total",
+    en = u"Total"
+)
+
+translations.define(
+    "woost.extensions.ecommerce.OrderConfirmationMessage.introduction",
+    ca = u"Gràcies per la teva compra! Hem rebut la teva comanda "
+        u"correctament, i te la farem arribar amb la major brevetat possible. "
+        u"A continuació pots veure els productes que has comprat i les dades "
+        u"personals i d'enviament que hans facilitat. Et recomanem que "
+        u"conservis o imprimeixis aquest correu, com a comprovant de la "
+        u"compra i per facilitar-ne qualsevol possible gestió.",
+    es = u"Gracias por tu compra! Hemos recibido tu pedido correctamente, y "
+        u"te lo enviaremos en breve. A continuación te recordamos los "
+        u"productos que has comprado y los datos personales y de envío que "
+        u"nos has facilitado. Te recomendamos que conserves este correo, como "
+        u"comprovante de la compra y para facilitar cualquier possible "
+        u"gestión.",
+    en = u"Thank you for your purchase! We have received your order, and will "
+        u"ship it to you as soon as possible. This message contains a summary "
+        u"of the items you purchased, and of your personal and shipping "
+        u"information. We recommend you keep or print this message, to use as "
+        u"a purchase receipt."
 )
 

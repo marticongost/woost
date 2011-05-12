@@ -301,22 +301,33 @@ class ECommerceExtension(Extension):
             qname = "woost.administrator"
         ).email
         template.receivers = '[items[0].customer.email]'
-        template.template_engine = "mako"
+        template.embeded_images = """
+from woost.models import Site
+images["logo"] = Site.main.logo
+"""
+        template.template_engine = "cocktail"
 
         for language in translations:
             with language_context(language):
                 template.subject = template.title
                 template.body = """
 <%
+from cocktail.controllers import Location
 from cocktail.html import templates
 
-
 order = items[0]
-order_summary = templates.new("woost.extensions.ecommerce.ECommerceOrderSummary")
+order_summary = templates.new("woost.extensions.ecommerce.OrderConfirmationMessage")
 order_summary.order = order
 %>
 
-${order_summary.render_page()}
+<html>
+    <head>
+        <base href="@{unicode(Location.get_current_host())}"/>
+    </head>
+    <body>
+        ${order_summary.render()}
+    </body>
+</html>
 """
 
         # Response

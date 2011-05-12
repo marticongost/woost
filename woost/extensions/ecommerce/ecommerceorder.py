@@ -51,6 +51,11 @@ class ECommerceOrder(Item):
         An event triggered when an order is completed.
         """)
 
+    groups_order = [
+        "shipping_info",
+        "billing"
+    ]
+
     members_order = [
         "customer",
         "address",
