@@ -11,7 +11,7 @@ cocktail.bind(".BackOfficeEditView", function ($editView) {
 
     function getVisibleLanguages() {
         var languages = jQuery.cookie('visible_languages');
-        return languages ? languages.replace(/"/g,"").split(',') : cocktail.getLanguages();
+        return languages ? languages.replace(/"/g,"").replace(/\\054/g, ",").split(',') : cocktail.getLanguages();
     }
 
     function setVisibleLanguages(languages) {
