@@ -90,6 +90,8 @@ from woost.extensions.ecommerce.basket import Basket
         )
 
         if self.editable:
+
+            self.add_resource("/cocktail/scripts/form.js")
             
             if not self.embeded:
                 self.tag = "form"
