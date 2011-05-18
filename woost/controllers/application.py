@@ -21,6 +21,8 @@ import rfc822
 import cherrypy
 from cherrypy.lib.cptools import validate_since
 from pkg_resources import resource_filename, iter_entry_points
+from beaker.cache import CacheManager
+from beaker.util import parse_cache_config_options
 from beaker.middleware import SessionMiddleware
 from cocktail.events import Event, event_handler
 from cocktail.translations import get_language, set_language
@@ -44,6 +46,7 @@ from woost.models import (
     get_current_user
 )
 from woost.models.icons import IconResolver
+from woost.controllers import get_cache_manager, set_cache_manager
 from woost.controllers.basecmscontroller import BaseCMSController
 from woost.controllers.language import LanguageModule
 from woost.controllers.authentication import (
@@ -172,6 +175,22 @@ class CMS(BaseCMSController):
                             session_key_file.write(session_key)
 
                     sconf["session.secret"] = session_key
+
+                # If the cache manager doesn't exists, create it
+                if not get_cache_manager():
+                    cache_path = os.path.join(app_path, 'cache')
+
+                    if not os.path.exists(cache_path):
+                        os.mkdir(cache_path)
+
+                    cache_manager = CacheManager(
+                        **parse_cache_config_options({
+                            'cache.lock_dir': cache_path,
+                            'cache.regions': 'woost_cache',
+                            'cache.woost_cache.type': 'memory'
+                        })
+                    )
+                    set_cache_manager(cache_manager)
 
                 # Set the default location for uploaded files
                 if not cms.upload_path:
