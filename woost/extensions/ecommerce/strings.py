@@ -821,7 +821,7 @@ translations.define("woost.extensions.ecommerce.BasketIndicator",
             u"<strong>1</strong> producto", 
             u"<strong>%d</strong> productos" % count
         ) + u" en la cesta",
-    en = lambda order: 
+    en = lambda count: 
         plural2(
             count,
             u"<strong>1</strong> product", 
