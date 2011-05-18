@@ -10,7 +10,7 @@ from time import time, mktime
 from hashlib import md5
 import cherrypy
 from cherrypy.lib import cptools, http
-from woost.controllers import BaseCMSController
+from woost.controllers import BaseCMSController, get_cache_manager
 
 
 class PublishableController(BaseCMSController):
@@ -58,10 +58,10 @@ class PublishableController(BaseCMSController):
         if policy is not None and policy.cache_enabled:
 
             # Find the unique cache identifier for the requested content
-            cache_key = policy.get_content_cache_key(
+            cache_key = repr(policy.get_content_cache_key(
                 publishable,
                 **caching_context
-            )
+            ))
 
             # Find the last time that the requested element (or its related
             # content) was modified
@@ -76,7 +76,7 @@ class PublishableController(BaseCMSController):
             if content_last_update:
                 timestamp = mktime(content_last_update.timetuple())
                 etag_hash = md5()
-                etag_hash.update(repr(cache_key))
+                etag_hash.update(cache_key)
                 etag_hash.update(repr(timestamp))
                 response.headers["ETag"] = etag_hash.hexdigest()
                 cptools.validate_etags()
@@ -100,12 +100,15 @@ class PublishableController(BaseCMSController):
     def _get_cached_content(self, cache_key, policy, timestamp = None):
 
         publishable = self.context["publishable"]
+        cache = get_cache_manager().get_cache_region(
+            'cached_content', 'woost_cache'
+        )
 
         # Look for a cached response for the specified key
         cached_response = None
 
-        with self.__class__._cached_responses_lock:
-            cache_entry = self.__class__._cached_responses.get(cache_key)
+        if cache.has_key(cache_key):
+            cache_entry = cache.get(cache_key)
 
             if cache_entry:
                 entry_creation_time, cached_response = cache_entry
@@ -118,13 +121,16 @@ class PublishableController(BaseCMSController):
                 current = timestamp is None or entry_creation_time >= timestamp
 
                 if expired or not current:
-                    del self.__class__._cached_responses[cache_key]
+                    cache.remove(cache_key)
                     cached_response = None
         
         return cached_response
 
     def _produce_cached_content(self, cache_key, **kwargs):
 
+        cache = get_cache_manager().get_cache_region(
+            'cached_content', 'woost_cache'
+        )
         content = self._produce_content(**kwargs)
 
         if isinstance(content, GeneratorType):
@@ -142,8 +148,7 @@ class PublishableController(BaseCMSController):
         # Store the response in the cache
         entry_creation_time = time()
         cached_response = (headers, content)
-        self.__class__._cached_responses[cache_key] = \
-            (entry_creation_time, cached_response)
+        cache.put(cache_key, (entry_creation_time, cached_response))
 
         return content
 
