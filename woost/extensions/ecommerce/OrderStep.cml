@@ -18,6 +18,7 @@ from woost.extensions.ecommerce import ECommerceExtension
 
     <?py
     self.add_resource("/resources/styles/ecommerce-OrderStep.css")
+    self.add_resource("/cocktail/scripts/form.js")
     ?>
 
     <?py
