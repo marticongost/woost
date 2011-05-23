@@ -106,12 +106,15 @@ class PublishableController(BaseCMSController):
 
         # Look for a cached response for the specified key
         cached_response = None
+        cache_hash = md5(cache_key).hexdigest()
 
-        if cache.has_key(cache_key):
-            cache_entry = cache.get(cache_key)
+        if cache.has_key(cache_hash):
+            cache_entry = cache.get(cache_hash)
 
             if cache_entry:
-                entry_creation_time, cached_response = cache_entry
+                entry_creation_time, cached_response, cached_key = cache_entry
+
+                valid_key = (cached_key == cache_key)
 
                 # Validate entry expiration
                 expiration = policy.cache_expiration
@@ -120,8 +123,8 @@ class PublishableController(BaseCMSController):
                 
                 current = timestamp is None or entry_creation_time >= timestamp
 
-                if expired or not current:
-                    cache.remove(cache_key)
+                if expired or not current or not valid_key:
+                    cache.remove(cache_hash)
                     cached_response = None
         
         return cached_response
@@ -148,7 +151,8 @@ class PublishableController(BaseCMSController):
         # Store the response in the cache
         entry_creation_time = time()
         cached_response = (headers, content)
-        cache.put(cache_key, (entry_creation_time, cached_response))
+        cache_hash = md5(cache_key).hexdigest()
+        cache.put(cache_hash, (entry_creation_time, cached_response, cache_key))
 
         return content
 
