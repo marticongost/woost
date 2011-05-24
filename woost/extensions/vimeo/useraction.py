@@ -21,6 +21,7 @@ class SynchronizeVimeoAction(UserAction):
     min = None
     max = None
     included = frozenset(["toolbar"])
+    excluded = frozenset(["collection"])
     content_type = VimeoVideo
 
     def is_permitted(self, user, target):
