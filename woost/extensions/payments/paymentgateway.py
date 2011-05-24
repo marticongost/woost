@@ -34,7 +34,8 @@ class PaymentGateway(Item):
     ]
 
     label = schema.String(
-        required = True
+        required = True,
+        translated = True
     )
     
     test_mode = schema.Boolean(
