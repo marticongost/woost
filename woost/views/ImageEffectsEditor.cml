@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <?py
-from PIL import Image
+from Image import FLIP_TOP_BOTTOM, FLIP_LEFT_RIGHT
 from cocktail.html.databoundcontrol import data_bound
 from cocktail.controllers import context
 from cocktail.translations import translations
@@ -242,11 +242,11 @@ from woost.controllers.imagescontroller import parse_processor
         py:element="self.create_image_processor_control('flip')">
         <py:with py:element="element.image_processor_container">
             <div>
-                <input type="radio" value="${Image.FLIP_LEFT_RIGHT}" checked="checked"/>
+                <input type="radio" value="${FLIP_LEFT_RIGHT}" checked="checked"/>
                 <label>${translations("woost.views.ImageEffectsEditor.flip_control.horizontal")}</label>
             </div>
             <div>
-                <input type="radio" value="${Image.FLIP_TOP_BOTTOM}"/>
+                <input type="radio" value="${FLIP_TOP_BOTTOM}"/>
                 <label>${translations("woost.views.ImageEffectsEditor.flip_control.vertical")}</label>
             </div>
         </py:with>
