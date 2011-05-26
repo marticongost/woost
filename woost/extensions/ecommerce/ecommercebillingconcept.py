@@ -38,6 +38,8 @@ class ECommerceBillingConcept(Item):
         "implementation"
     ]
     
+    visible_from_root = False
+
     title = schema.String(
         translated = True,
         descriptive = True,
