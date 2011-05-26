@@ -2184,7 +2184,7 @@ button.TypeSelectorButton {
     width: 100%;
 }
 
-.BackOfficeLayout .CollectionView .Table th:last-child {
+.BackOfficeLayout .CollectionView .Table th.last {
     padding-right: 3em;
 }
 
