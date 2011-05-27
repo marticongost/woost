@@ -77,6 +77,8 @@ from woost.controllers.backoffice.useractions import add_view_action_context
 
     <py:ready>
         <?py
+        self.language = get_language()
+
         self.is_client_side_selector = (
             self.client_side_scripting
             and self.edit_stack
