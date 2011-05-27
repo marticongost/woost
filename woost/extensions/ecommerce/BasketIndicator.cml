@@ -8,6 +8,10 @@ from woost.extensions.ecommerce.basket import Basket
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:py="http://www.whads.com/ns/cocktail/templates">
 
+    <?py-class
+    hide_when_empty = True
+    ?>
+    
     <?py
     self.add_resource("/resources/styles/ecommerce-BasketIndicator.css")
     self.add_resource("/resources/scripts/ecommerce-BasketIndicator.js")
@@ -20,13 +24,13 @@ from woost.extensions.ecommerce.basket import Basket
             qname = "woost.extensions.ecommerce.basket_page"
         )
 
-        if not order.purchases or basket_page is None or not basket_page.is_accessible():
+        if basket_page is None or not basket_page.is_accessible() or (self.hide_when_empty and not order.purchases):
             self.visible = False
         else:
             self["href"] = basket_page.get_uri()
             self.append(
                 translations(
-                    "woost.extensions.ecommerce.BasketIndicator",                
+                    "woost.extensions.ecommerce.BasketIndicator",
                     count = order.count_units()
                 )
             )
