@@ -114,7 +114,7 @@ from woost.models import Site, Publishable, Language
 
             # Alternate languages
             if publishable.per_language_publication:
-                self.content_language = self.get_content_language(self.publishable)
+                self.language = self.content_language = self.get_content_language(self.publishable)
                 self.fully_translated = (self.content_language == language)
 
                 for trans_lang in publishable.translations:
