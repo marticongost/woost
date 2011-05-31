@@ -664,28 +664,32 @@ translations.define(
     "woost.extensions.ecommerce.OrderStep.catalog_button",
     ca = u"Veure més productes",
     es = u"Ver más productos",
-    en = u"See more products"
+    en = u"See more products",
+	fr = u"Voire plus products"
 )
 
 translations.define(
     "woost.extensions.ecommerce.OrderStep.back_button",
     ca = u"Tornar endarrere",
     es = u"Volver atrás",
-    en = u"Go back"
+    en = u"Go back",
+	fr = u"Retourner"
 )
 
 translations.define(
     "woost.extensions.ecommerce.OrderStep.proceed_button",
     ca = u"Continuar la compra",
     es = u"Continuar la compra",
-    en = u"Proceed"
+    en = u"Proceed",
+	fr = u"Procédez"
 )
 
 translations.define(
     "woost.extensions.ecommerce.OrderStep.submit_button",
     ca = u"Confirmar la compra",
     es = u"Confirmar la compra",
-    en = u"Submit order"
+    en = u"Submit order",
+	fr = u"Confirmer l'achat"
 )
 
 # BasketPage
@@ -694,7 +698,8 @@ translations.define(
     "woost.extensions.ecommerce.BasketPage.back_link",
     ca = u"Tornar al catàleg",
     es = u"Volver al catálogo",
-    en = u"Return to the catalog"
+    en = u"Return to the catalog",
+	fr = u"Retourner au catalogue"
 )
 
 # BasketView
@@ -703,96 +708,110 @@ translations.define(
     "Basket.product",
     ca = u"Producte",
     es = u"Producto",
-    en = u"Product"
+    en = u"Product",
+	fr = u"Produit"
 )
 
 translations.define(
     "Basket.quantity",
     ca = u"Quantitat",
     es = u"Cantidad",
-    en = u"Quantity"
+    en = u"Quantity",
+	fr = u"Quantité"
 )
 
 translations.define(
     "Basket.price",
     ca = u"Preu",
     es = u"Precio",
-    en = u"Price"
+    en = u"Price",
+	fr = u"Prix"
 )
 
 translations.define(
     "Basket.subtotal",
     ca = u"Subtotal",
     es = u"Subtotal",
-    en = u"Subtotal"
+    en = u"Subtotal",
+	fr = u"Subtotal"
 )
 
 translations.define(
     "Basket.taxes",
     ca = u"Taxes",
     es = u"Tasas",
-    en = u"Taxes"
+    en = u"Taxes",
+	fr = u"Taux"
 )
 
 translations.define(
     "Basket.total",
     ca = u"Total",
     es = u"Total",
-    en = u"Total"
+    en = u"Total",
+	fr = u"Total" 
 )
 
 translations.define(
     "SetQuantitiesForm-MinValueError",
     ca = u"No es pot demanar menys d'una unitat d'un producte",
     es = u"No se puede solicitar menos de una unidad de un producto",
-    en = u"Can't request less than one unit of a product"
+    en = u"Can't request less than one unit of a product",
+	fr = u"Vous ne pouvez pas demander moins d'une unité d'un produit"
 )
 
 translations.define(
     "woost.extensions.ecommerce.BasketView.basket_table_total_header",
     ca = u"Total",
     es = u"Total",
-    en = u"Total"
+    en = u"Total",
+	fr = u"Total"
 )
 
 translations.define(
     "woost.extensions.ecommerce.BasketView.delete_purchase_button",
     ca = u"Treure",
     es = u"Quitar",
-    en = u"Remove"
+    en = u"Remove",
+	fr = u"Supprimer"
 )
 
 translations.define(
     "woost.extensions.ecommerce.BasketView.empty_basket_button",
     ca = u"Buidar la cistella",
     es = u"Vaciar la cesta",
-    en = u"Empty the basket"
+    en = u"Empty the basket",
+	fr = u"Vider le panier"
 )
 
 translations.define(
     "woost.extensions.ecommerce.BasketView.set_quantities_button",
     ca = u"Establir quantitats",
     es = u"Establecer cantidades",
-    en = u"Set quantities"
+    en = u"Set quantities",
+	fr = u"Fixer les montants"
 )
 
 translations.define(
     "woost.extensions.ecommerce.BasketView.empty_basket_notice",
     ca = u"La cistella de la compra està buida.",
     es = u"La cesta de la compra está vacía.",
-    en = u"The shopping basket is empty."
+    en = u"The shopping basket is empty.",
+	fr = u"Le panier est vide."
 )
 
 translations.define("woost.extensions.ecommerce.BasketView.shipping_costs",
     ca = u"Costos d'enviament",
     es = u"Costes de envío",
-    en = u"Shipping costs"
+    en = u"Shipping costs",
+	fr = u"Frais d'expédition"
 )
 
 translations.define("woost.extensions.ecommerce.BasketView.taxes",
     ca = u"Taxes",
     es = u"Tasas",
-    en = u"Taxes"
+    en = u"Taxes",
+	fr = u"Taux"
 )
 
 # Discount
@@ -803,7 +822,9 @@ translations.define("woost.extensions.ecommerce.Discount.end_date",
     es = lambda end_date:
         u"hasta el " + translations(end_date, style = DATE_STYLE_TEXT),
     en = lambda end_date:
-        u"until " + translations(end_date, style = DATE_STYLE_TEXT)
+        u"until " + translations(end_date, style = DATE_STYLE_TEXT),
+	fr = lambda end_date:
+        u"jusqu'à " + translations(end_date, style = DATE_STYLE_TEXT)	
 )
 
 # Basket indicator
@@ -826,7 +847,13 @@ translations.define("woost.extensions.ecommerce.BasketIndicator",
             count,
             u"<strong>1</strong> product", 
             u"<strong>%d</strong> products" % count
-        ) + u" in the shopping basket"
+        ) + u" in the shopping basket",
+	fr = lambda count: 
+        plural2(
+            count,
+            u"<strong>1</strong> produit", 
+            u"<strong>%d</strong> produits" % count
+        ) + u" au panier"
 )
 
 # SummaryOrderStep
@@ -835,14 +862,16 @@ translations.define(
     "woost.extensions.ecommerce.SummaryOrderStep.modify_basket_link",
     ca = u"Modificar el contingut de la comanda",
     es = u"Modificar el contenido del pedido",
-    en = u"Edit the shopping basket"
+    en = u"Edit the shopping basket",
+	fr = u"Modifier le contenu de l'ordre"
 )
 
 translations.define(
     "woost.extensions.ecommerce.SummaryOrderStep.modify_checkout_link",
     ca = u"Modificar les dades de la comanda",
     es = u"Modificar los datos del pedido",
-    en = u"Edit checkout data"
+    en = u"Edit checkout data",
+	fr = u"Modifier les données checkout"
 )
 
 # AddProductForm
@@ -850,27 +879,31 @@ translations.define(
 translations.define("woost.extensions.ecommerce.AddProductForm.title",
     ca = u"Afegir a la cistella",
     es = u"Añadir a la cesta",
-    en = u"Add to basket"
+    en = u"Add to basket",
+	fr = u"Ajouter au panier"
 )
 
 translations.define("woost.extensions.ecommerce.AddProductForm.submit_button",
     ca = u"Afegir",
     es = u"Añadir",
-    en = u"Add"
+    en = u"Add",
+	fr = u"Ajouter"
 )
 
 translations.define(
     "woost.extensions.ecommerce.AddProductForm.product_added_back_button",
     ca = u"Veure més productes",
     es = u"Ver más productos",
-    en = u"Keep shopping"
+    en = u"Keep shopping",
+	fr = u"Voir plus de produits"
 )
 
 translations.define(
     "woost.extensions.ecommerce.AddProductForm.product_added_forward_button",
     ca = u"Comprar",
     es = u"Comprar",
-    en = u"Checkout"
+    en = u"Checkout",
+	fr = u"Acheter"
 )
 
 # ECommerceOrderCompletedTrigger
@@ -878,13 +911,15 @@ translations.define(
 translations.define("ECommerceOrderCompletedTrigger",
     ca = u"Disparador de comanda completada",
     es = u"Disparador de pedido completado",
-    en = u"Order completed trigger"
+    en = u"Order completed trigger",
+	fr = u"Order completed trigger"
 )
 
 translations.define("ECommerceOrderCompletedTrigger-plural",
     ca = u"Disparadors de comanda completada",
     es = u"Disparadores de pedido completado",
-    en = u"Order completed triggers"
+    en = u"Order completed triggers",
+	fr = u"Order completed trigger"
 )
 
 # OrderConfirmationMessage
@@ -893,14 +928,16 @@ translations.define(
     "woost.extensions.OrderConfirmationMessage.product_subtotal_cell",
     ca = u"Subtotal",
     es = u"Subtotal",
-    en = u"Subtotal"
+    en = u"Subtotal",
+	fr = u"Subtotal"
 )
 
 translations.define(
     "woost.extensions.OrderConfirmationMessage.product_footer_cell",
     ca = u"Total",
     es = u"Total",
-    en = u"Total"
+    en = u"Total",
+	fr = u"Total"
 )
 
 translations.define(
@@ -908,7 +945,7 @@ translations.define(
     ca = u"Gràcies per la teva compra! Hem rebut la teva comanda "
         u"correctament, i te la farem arribar amb la major brevetat possible. "
         u"A continuació pots veure els productes que has comprat i les dades "
-        u"personals i d'enviament que hans facilitat. Et recomanem que "
+        u"personals i d'enviament que has facilitat. Et recomanem que "
         u"conservis o imprimeixis aquest correu, com a comprovant de la "
         u"compra i per facilitar-ne qualsevol possible gestió.",
     es = u"Gracias por tu compra! Hemos recibido tu pedido correctamente, y "
@@ -921,6 +958,11 @@ translations.define(
         u"ship it to you as soon as possible. This message contains a summary "
         u"of the items you purchased, and of your personal and shipping "
         u"information. We recommend you keep or print this message, to use as "
-        u"a purchase receipt."
+        u"a purchase receipt.",
+	fr = u"Merci pour votre achat! Nous avons reçu votre commande correctement, et nous "
+        u"le plus tôt possible. Ci-dessous vous pouvez voir les produits que vous avez  "
+        u"acheté et les données prestation personnelle que vous avez fourni. Nous  "
+        u"recommandons conserver ou imprimer cet email comme preuve de l'achat et à "
+        u"faciliter toute la gestion possible."
 )
 
