@@ -23,7 +23,7 @@ translations.define("ECommerceExtension.shipping_costs",
     ca = u"Costos d'enviament",
     es = u"Costes de envío",
     en = u"Shipping costs",
-    en = u"Frais d'expédition"
+    fr = u"Frais d'expédition"
 )
 
 translations.define("ECommerceExtension.taxes",
