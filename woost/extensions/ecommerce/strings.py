@@ -15,49 +15,57 @@ from woost.models import Site
 translations.define("ECommerceExtension.pricing",
     ca = u"Preus",
     es = u"Precios",
-    en = u"Pricing"
+    en = u"Pricing",
+    fr = u"Prix"
 )
 
 translations.define("ECommerceExtension.shipping_costs",
     ca = u"Costos d'enviament",
     es = u"Costes de envío",
-    en = u"Shipping costs"
+    en = u"Shipping costs",
+    en = u"Frais d'expédition"
 )
 
 translations.define("ECommerceExtension.taxes",
     ca = u"Taxes",
     es = u"Tasas",
-    en = u"Taxes"
+    en = u"Taxes",
+    fr = u"Taux"
 )
 
 translations.define("ECommerceExtension.order_steps",
     ca = u"Passos de la compra",
     es = u"Pasos de la compra",
-    en = u"Order steps"
+    en = u"Order steps",
+    fr = u"Étapes à suivre pour l'achat"
 )
 
 translations.define("ECommerceExtension.payment_types",
     ca = u"Tipus de pagament",
     es = u"Tipos de pago",
-    en = u"Payment types"
+    en = u"Payment types",
+    fr = u"Type de paiement"
 )
 
 translations.define("ECommerceExtension.payment_types-payment_gateway",
     ca = u"Pagament en línia",
     es = u"Pago en línea",
-    en = u"On-line payment"
+    en = u"On-line payment",
+    fr = u"Paiement on-line"
 )
 
 translations.define("ECommerceExtension.payment_types-transfer",
     ca = u"Transferència",
     es = u"Transferencia",
-    en = u"Transfer"
+    en = u"Transfer",
+    fr = u"Transfert"
 )
 
 translations.define("ECommerceExtension.payment_types-cash_on_delivery",
     ca = u"Contra reemborsament",
     es = u"Contra reembolso",
-    en = u"Cash on delivery"
+    en = u"Cash on delivery",
+    fr = u"Contre remboursement"
 )
 
 # ECommerceProduct
@@ -65,61 +73,71 @@ translations.define("ECommerceExtension.payment_types-cash_on_delivery",
 translations.define("ECommerceProduct",
     ca = u"Producte",
     es = u"Producto",
-    en = u"Product"
+    en = u"Product",
+    fr = u"Produit"
 )
 
 translations.define("ECommerceProduct-plural",
     ca = u"Productes",
     es = u"Productos",
-    en = u"Products"
+    en = u"Products",
+    fr = u"Produits"
 )
 
 translations.define("ECommerceProduct.product_data",
     ca = u"Dades del producte",
     es = u"Datos del producto",
-    en = u"Product data"
+    en = u"Product data",
+    fr = u"Détails sur le produit"
 )
 
 translations.define("ECommerceProduct.description",
     ca = u"Descripció",
     es = u"Descripción",
-    en = u"Description"
+    en = u"Description",
+    fr = u"Description"
 )
 
 translations.define("ECommerceProduct.price",
     ca = u"Preu",
     es = u"Precio",
-    en = u"Price"
+    en = u"Price",
+    fr = u"Prix"
 )
 
 translations.define("ECommerceProduct.weight",
     ca = u"Pes",
     es = u"Peso",
-    en = u"Weight"
+    en = u"Weight",
+    fr = u"Poids"
 )
 
 translations.define("ECommerceProduct.attachments",
     ca = u"Adjunts",
     es = u"Adjuntos",
-    en = u"Attachments"
+    en = u"Attachments",
+    fr = u"Pièces jointes"
 )
 
 translations.define("ECommerceProduct.purchase_model",
     ca = u"Model de compra",
     es = u"Modelo de compra",
-    en = u"Purchase model"
+    en = u"Purchase model",
+    fr = u"Achat modèle"
 )
 
 translations.define("ECommerceProduct.purchases",
     ca = u"Compres",
     es = u"Compras",
-    en = u"Purchases"
+    en = u"Purchases",
+    fr = u"Achats"
 )
 
 translations.define("ECommerceProduct.template",
     ca = u"Plantilla",
     es = u"Plantilla",
-    en = u"Template"
+    en = u"Template",
+    fr = u"Modèle"
 )
 
 # ECommerceOrder
@@ -127,181 +145,211 @@ translations.define("ECommerceProduct.template",
 translations.define("ECommerceOrder",
     ca = u"Comanda",
     es = u"Pedido",
-    en = u"Shop order"
+    en = u"Shop order",
+    fr = u"Commande"
 )
 
 translations.define("ECommerceOrder-plural",
     ca = u"Comandes",
     es = u"Pedidos",
-    en = u"Shop orders"
+    en = u"Shop orders",
+    fr = u"Commandes"
 )
 
 translations.define("ECommerceOrder.customer",
     ca = u"Client",
     es = u"Cliente",
-    en = u"Customer"
+    en = u"Customer",
+    fr = u"Client"
 )
 
 translations.define("ECommerceOrder.shipping_info",
     ca = u"Direcció d'enviament",
     es = u"Dirección de envío",
-    en = u"Shipping address"
+    en = u"Shipping address",
+    fr = u"Adresse d'affichage"
 )
 
 translations.define("ECommerceOrder.address",
     ca = u"Adreça",
     es = u"Dirección",
-    en = u"Address"
+    en = u"Address",
+    fr = u"Adresse"
 )
 
 translations.define("ECommerceOrder.town",
     ca = u"Població",
     es = u"Población",
-    en = u"Town"
+    en = u"Town",
+    fr = u"Ville"
 )
 
 translations.define("ECommerceOrder.region",
     ca = u"Estat o província",
     es = u"Estado o provincia",
-    en = u"State or province"
+    en = u"State or province",
+    fr = u"État ou province"
 )
 
 translations.define("ECommerceOrder.country",
     ca = u"País",
     es = u"País",
-    en = u"Country"
+    en = u"Country",
+    fr = u"Pays"
 )
 
 translations.define("ECommerceOrder.postal_code",
     ca = u"Codi postal",
     es = u"Código postal",
-    en = u"Postal code"
+    en = u"Postal code",
+    fr = u"Code postal"
 )
 
 translations.define("ECommerceOrder.language",
     ca = u"Idioma",
     es = u"Idioma",
-    en = u"Language"
+    en = u"Language",
+    fr = u"Langue"
 )
 
 translations.define("ECommerceOrder.status",
     ca = u"Estat",
     es = u"Estado",
-    en = u"State"
+    en = u"State",
+    fr = u"État"
 )
 
 translations.define("ECommerceOrder.status-shopping",
     ca = u"En curs",
     es = u"En curso",
-    en = u"Shopping"
+    en = u"Shopping",
+    fr = u"En cours"
 )
 
 translations.define("ECommerceOrder.status-payment_pending",
     ca = u"Pendent de pagament",
     es = u"Pago pendiente",
-    en = u"Payment pending"
+    en = u"Payment pending",
+    fr = u"Paiement en attente"
 )
 
 translations.define("ECommerceOrder.status-accepted",
     ca = u"Acceptada",
     es = u"Aceptada",
-    en = u"Accepted"
+    en = u"Accepted",
+    fr = u"Accepté"
 )
 
 translations.define("ECommerceOrder.status-refund",
     ca = u"Devolució",
     es = u"Devolución",
-    en = u"Refund"
+    en = u"Refund",
+    fr = u"Remboursement"
 )
 
 translations.define("ECommerceOrder.status-failed",
     ca = u"Cancel·lada",
     es = u"Cancelada",
-    en = u"Cancelled"
+    en = u"Cancelled",
+    fr = u"Annulé"
 )
 
 translations.define("ECommerceOrder.purchases",
     ca = u"Contingut de la comanda",
     es = u"Contenido del pedido",
-    en = u"Purchases"
+    en = u"Purchases",
+    fr = u"Contenu de la commande"
 )
 
 translations.define("ECommerceOrder.billing",
     ca = u"Facturació",
     es = u"Facturación",
-    en = u"Billing"
+    en = u"Billing",
+    fr = u"Facturation"
 )
 
 translations.define("ECommerceOrder.total_price",
     ca = u"Preu",
     es = u"Precio",
-    en = u"Price"
+    en = u"Price",
+    fr = u"Prix"
 )
 
 translations.define("ECommerceOrder.pricing",
     ca = u"Modificacions al preu",
     es = u"Modificaciones al precio",
-    en = u"Pricing"
+    en = u"Pricing",
+    fr = u"Modifications au prix"
 )
 
 translations.define("ECommerceOrder.total_shipping_costs",
     ca = u"Costos d'enviament",
     es = u"Costes de envío",
-    en = u"Shipping costs"
+    en = u"Shipping costs",
+    fr = u"Frais d'expédition"
 )
 
 translations.define("ECommerceOrder.shipping_costs",
     ca = u"Costos d'enviament aplicats",
     es = u"Costes de envío aplicados",
-    en = u"Applied shipping costs"
+    en = u"Applied shipping costs",
+    fr = u"Frais d'expédition appliqués"
 )
 
 translations.define("ECommerceOrder.total_taxes",
     ca = u"Taxes",
     es = u"Tasas",
-    en = u"Taxes"
+    en = u"Taxes",
+    fr = u"Impôts"
 )
 
 translations.define("ECommerceOrder.taxes",
     ca = u"Taxes aplicades",
     es = u"Tasas aplicadas",
-    en = u"Applied taxes"
+    en = u"Applied taxes",
+    fr = u"Taxes appliquées"
 )
 
 translations.define("ECommerceOrder.total",
     ca = u"Total",
     es = u"Total",
-    en = u"Total"
+    en = u"Total",
+    fr = u"Total"
 )
 
 translations.define("ECommerceOrder.payment_type",
     ca = u"Tipus de pagament",
     es = u"Tipo de pago",
-    en = u"Payment type"
+    en = u"Payment type",
+    fr = u"Type de paiement"
 )
 
 translations.define("ECommerceOrder.payment_type-payment_gateway",
     ca = u"Pagament en línia",
     es = u"Pago en línea",
-    en = u"On-line payment"
+    en = u"On-line payment",
+    fr = u"Paiment on-line "
 )
 
 translations.define("ECommerceOrder.payment_type-transfer",
     ca = u"Transferència",
     es = u"Transferencia",
-    en = u"Transfer"
+    en = u"Transfer",
+    fr = u"Transfert"
 )
 
 translations.define("ECommerceOrder.payment_type-cash_on_delivery",
     ca = u"Contra reemborsament",
     es = u"Contra reembolso",
-    en = u"Cash on delivery"
+    en = u"Cash on delivery",
+    fr = u"Contre remboursement"
 )
 
 translations.define("woost.extensions.ECommerceOrder description for gateway",
     ca = u"Comanda de %s",
     es = u"Pedido de %s",
-    en = u"Order at %s"
+    en = u"Order at %s",
+    fr = u"Commande de %s"
 )
 
 # ECommercePurchase
@@ -309,79 +357,92 @@ translations.define("woost.extensions.ECommerceOrder description for gateway",
 translations.define("ECommercePurchase",
     ca = u"Línia de comanda",
     es = u"Linea de pedido",
-    en = u"Purchase"
+    en = u"Purchase",
+    fr = u"Achat en ligne"
 )
 
 translations.define("ECommercePurchase-plural",
     ca = u"Línies de comanda",
     es = u"Lineas de pedido",
-    en = u"Purchases"
+    en = u"Purchases",
+    fr = u"Achats en ligne"
 )
 
 translations.define("ECommercePurchase.order",
     ca = u"Comanda",
     es = u"Pedido",
-    en = u"Order"
+    en = u"Order",
+    fr = u"Commande"
 )
 
 translations.define("ECommercePurchase.product",
     ca = u"Producte",
     es = u"Producto",
-    en = u"Product"
+    en = u"Product",
+    fr = u"Produit"
 )
 
 translations.define("ECommercePurchase.quantity",
     ca = u"Quantitat",
     es = u"Cantidad",
-    en = u"Quantity"
+    en = u"Quantity",
+    fr = u"Quantité"
 )
 
 translations.define("ECommercePurchase.billing",
     ca = u"Facturació",
     es = u"Facturación",
-    en = u"Billing"
+    en = u"Billing",
+    fr = u"Facturation"
 )
 
 translations.define("ECommercePurchase.total_price",
     ca = u"Preu",
     es = u"Precio",
-    en = u"Price"
+    en = u"Price",
+    fr = u"Prix"
 )
 
 translations.define("ECommercePurchase.pricing",
     ca = u"Modificacions al preu",
     es = u"Modificaciones al precio",
-    en = u"Pricing"
+    en = u"Pricing",
+    fr = u"Modifications au prix"
 )
 
 translations.define("ECommercePurchase.total_shipping_costs",
     ca = u"Costos d'enviament",
     es = u"Costes de envío",
-    en = u"Shipping costs"
+    en = u"Shipping costs",
+    fr = u"Frais d'expédition"
 )
 
 translations.define("ECommercePurchase.shipping_costs",
     ca = u"Costos d'enviament aplicats",
     es = u"Costes de envío aplicados",
-    en = u"Applied shipping costs"
+    en = u"Applied shipping costs",
+    fr = u"Frais d'expédition appliqués"
 )
 
 translations.define("ECommercePurchase.total_taxes",
     ca = u"Taxes",
     es = u"Tasas",
-    en = u"Taxes"
+    en = u"Taxes",
+    fr = u"Impôts"
 )
 
 translations.define("ECommercePurchase.taxes",
     ca = u"Taxes aplicades",
     es = u"Tasas aplicadas",
-    en = u"Applied taxes"
+    en = u"Applied taxes",
+    fr = u"Impôts appliqués"
 )
 
 translations.define("ECommercePurchase.total",
     ca = u"Total",
     es = u"Total",
-    en = u"Total"
+    en = u"Total",
+    fr = u"Total"
 )
 
 # ECommerceBillingConcept
@@ -389,92 +450,107 @@ translations.define("ECommercePurchase.total",
 translations.define("ECommerceBillingConcept",
     ca = u"Concepte de facturació",
     es = u"Concepto de facturación",
-    en = u"Billing concept"
+    en = u"Billing concept",
+    fr = u"Concept de facturation"
 )
 
 translations.define("ECommerceBillingConcept-plural",
     ca = u"Conceptes de facturació",
     es = u"Conceptos de facturación",
-    en = u"Billing concepts"
+    en = u"Billing concepts",
+    fr = u"Concepts de facturation"
 )
 
 
 translations.define("ECommerceBillingConcept.title",
     ca = u"Títol",
     es = u"Título",
-    en = u"Title"
+    en = u"Title",
+    fr = u"Titre"
 )
 
 translations.define("ECommerceBillingConcept.enabled",
     ca = u"Activa",
     es = u"Activa",
-    en = u"Enabled"
+    en = u"Enabled",
+    fr = u"Active"
 )
 
 translations.define("ECommerceBillingConcept.start_date",
     ca = u"Data d'inici",
     es = u"Fecha de inicio",
-    en = u"Start date"
+    en = u"Start date",
+    fr = u"Date de début"
 )
 
 translations.define("ECommerceBillingConcept.end_date",
     ca = u"Data de fi",
     es = u"Fecha de fin",
-    en = u"End date"
+    en = u"End date",
+    fr = u"Date de fin"
 )
 
 translations.define("ECommerceBillingConcept.hidden",
     ca = u"Ocult",
     es = u"Oculto",
-    en = u"Hidden"
+    en = u"Hidden",
+    fr = u"Invisible"
 )
 
 translations.define("ECommerceBillingConcept.scope",
     ca = u"Àmbit",
     es = u"Ámbito",
-    en = u"Scope"
+    en = u"Scope",
+    fr = u"Champ d'application"
 )
 
 translations.define("ECommerceBillingConcept.scope-order",
     ca = u"Comanda",
     es = u"Pedido",
-    en = u"Order"
+    en = u"Order",
+    fr = u"Commande"
 )
 
 translations.define("ECommerceBillingConcept.scope-purchase",
     ca = u"Línia de comanda",
     es = u"Linea de pedido",
-    en = u"Purchase"
+    en = u"Purchase",
+    fr = u"Commande en ligne"
 )
 
 translations.define("ECommerceBillingConcept.condition",
     ca = u"Condició",
     es = u"Condición",
-    en = u"Condition"
+    en = u"Condition",
+    fr = u"Condition"
 )
 
 translations.define("ECommerceBillingConcept.eligible_countries",
     ca = u"Països",
     es = u"Paises",
-    en = u"Countries"
+    en = u"Countries",
+    fr = u"Pays"
 )
 
 translations.define("ECommerceBillingConcept.eligible_products",
     ca = u"Productes",
     es = u"Productos",
-    en = u"Products"
+    en = u"Products",
+    fr = u"Produits"
 )
 
 translations.define("ECommerceBillingConcept.eligible_roles",
     ca = u"Rols",
     es = u"Roles",
-    en = u"Roles"
+    en = u"Roles",
+    fr = u"Roles"
 )
 
 translations.define("ECommerceBillingConcept.implementation",
     ca = u"Valor",
     es = u"Valor",
-    en = u"Value"
+    en = u"Value",
+    fr = u"Valeur"
 )
 
 # Initialization
@@ -482,121 +558,141 @@ translations.define("ECommerceBillingConcept.implementation",
 translations.define("woost.extensions.ecommerce.catalog_page.title",
     ca = u"Botiga",
     es = u"Tienda",
-    en = u"Shop"
+    en = u"Shop",
+    fr = u"Boutique"
 )
 
 translations.define("woost.extensions.ecommerce.catalog_controller.title",
     ca = u"Controlador de catàleg de productes",
     es = u"Controlador de catálogo de productos",
-    en = u"Product catalog controller"
+    en = u"Product catalog controller",
+    fr = u"Controleur de catalogue de produits"
 )
 
 translations.define("woost.extensions.ecommerce.catalog_template.title",
     ca = u"Plantilla de catàleg de productes",
     es = u"Plantilla de catálogo de productos",
-    en = u"Product catalog template"
+    en = u"Product catalog template",
+    fr = u"Modèle de catalogue de produits"
 )
 
 translations.define("woost.extensions.ecommerce.basket_page.title",
     ca = u"Cistella de la compra",
     es = u"Cesta de la compra",
-    en = u"Shopping basket"
+    en = u"Shopping basket",
+    fr = u"Panier"
 )
 
 translations.define("woost.extensions.ecommerce.basket_controller.title",
     ca = u"Controlador per la cistella de la compra",
     es = u"Controlador para la Cesta de la compra",
-    en = u"Shopping basket controller"
+    en = u"Shopping basket controller",
+    fr = u"Controleur de panier"
 )
 
 translations.define("woost.extensions.ecommerce.basket_template.title",
     ca = u"Plantilla per cistella de la compra",
     es = u"Plantilla para cesta de la compra",
-    en = u"Shopping basket template"
+    en = u"Shopping basket template",
+    fr = u"Modèle de panier"
 )
 
 translations.define("woost.extensions.ecommerce.checkout_page.title",
     ca = u"Dades de la comanda",
     es = u"Datos del pedido",
-    en = u"Checkout"
+    en = u"Checkout",
+    fr = u"Détails de la commande"
 )
 
 translations.define("woost.extensions.ecommerce.checkout_controller.title",
     ca = u"Controlador de recollida de dades de comanda de la botiga",
-    es = u"Controlador de recojida de datos de pedido de la tienda",
-    en = u"Shop checkout controller"
+    es = u"Controlador de recogida de datos de pedido de la tienda",
+    en = u"Shop checkout controller",
+    fr = u"Controleur de prise de détails de la commande"
 )
 
 translations.define("woost.extensions.ecommerce.checkout_template.title",
     ca = u"Plantilla de recollida de dades de comanda de la botiga",
     es = u"Plantilla de recojida de datos de pedido de la tienda",
-    en = u"Shop checkout template"
+    en = u"Shop checkout template",
+    fr = u"Modèle de prise de détails de la commande"
 )
 
 translations.define("woost.extensions.ecommerce.summary_page.title",
     ca = u"Sumari de la comanda",
     es = u"Sumario del pedido",
-    en = u"Order summary"
+    en = u"Order summary",
+    fr = u"Resumé de la commande"
 )
 
 translations.define("woost.extensions.ecommerce.summary_controller.title",
     ca = u"Controlador de sumari de comanda de la botiga",
     es = u"Controlador de sumario de pedido de la tienda",
-    en = u"Shop order summary controller"
+    en = u"Shop order summary controller",
+    fr = u"Controleur de resumé de la commande"
 )
 
 translations.define("woost.extensions.ecommerce.summary_template.title",
     ca = u"Plantilla de sumari de comanda de la botiga",
     es = u"Plantilla de sumario de pedido de la tienda",
-    en = u"Shop order summary template"
+    en = u"Shop order summary template",
+    fr = u"Modèle de resumé de commande"
 )
 
 translations.define("woost.extensions.ecommerce.success_page.title",
     ca = u"Comanda completada",
     es = u"Pedido completado",
-    en = u"Order completed"
+    en = u"Order completed",
+    fr = u"Commande terminée"
 )
 
 translations.define("woost.extensions.ecommerce.success_page.body",
     ca = u"La teva comanda s'ha processat correctament.",
     es = u"Tu pedido se ha procesado correctamente.",
-    en = u"Your order has been completed successfully."
+    en = u"Your order has been completed successfully.",
+    fr = u"Votre commande a été traitée avec succès."
 )
 
 translations.define("woost.extensions.ecommerce.failure_page.title",
     ca = u"Comanda cancel·lada",
     es = u"Pedido cancelado",
-    en = u"Order cancelled"
+    en = u"Order cancelled",
+    fr = u"Commande annulée"
 )
 
 translations.define("woost.extensions.ecommerce.failure_page.body",
     ca = u"La teva comanda ha estat cancel·lada.",
     es = u"Tu pedido ha sido cancelado.",
-    en = u"Your order has been cancelled."
+    en = u"Your order has been cancelled.",
+    fr = u"Votre commande a été annulée."
 )
 
 translations.define("woost.extensions.ecommerce.product_controller.title",
     ca = u"Controlador de detall de producte",
     es = u"Controlador de detalle de producto",
-    en = u"Shop product detail controller"
+    en = u"Shop product detail controller",
+    fr = u"Contrôleur de détail du produit"
 )
 
 translations.define("woost.extensions.ecommerce.product_template.title",
     ca = u"Plantilla de detall de producte",
     es = u"Plantilla de detalle de producto",
-    en = u"Shop product detail template"
+    en = u"Shop product detail template",
+    fr = u"Modèle de détail du produit"
 )
 
 translations.define("woost.extensions.ecommerce.ecommerceorder_completed_trigger.title",
     ca = u"Enviar resum de la comanda",
     es = u"Enviar resumen del pedido",
-    en = u"Send order summary"
+    en = u"Send order summary",
+    fr = u"Envoyer résumé de la commande"
 )
 
 translations.define("woost.extensions.ecommerce.ecommerceorder_completed_emailtemplate.title",
     ca = u"Resum de la comanda",
     es = u"Resumen del pedido",
-    en = u"Order summary"
+    en = u"Order summary",
+    fr = u"Résumé de la commande"
 )
 
 # Notices
@@ -611,6 +707,9 @@ translations.define(
         % translations(product),
     en = lambda product: 
         u"<strong>%s</strong> added to the shopping basket"
+        % translations(product),
+    fr = lambda product: 
+        u"<strong>%s</strong> ajouté au panier"
         % translations(product)
 )
 
@@ -619,7 +718,8 @@ translations.define(
     "woost.extensions.ecommerce.set_quantities_notice",
     ca = u"S'han actualitzat les quantitats",
     es = u"Se han actualizado las cantidades",
-    en = u"Product quantities have been updated"
+    en = u"Product quantities have been updated",
+    fr = u"Les montants ont été mis à jour"
 )
 
 translations.define(
@@ -632,6 +732,9 @@ translations.define(
         % translations(product),
     en = lambda product: 
         u"<strong>%s</strong> has been removed from the shopping basket"
+        % translations(product),
+    fr = lambda product: 
+        u"<strong>%s</strong> a été effacé du panier"
         % translations(product)
 )
 
@@ -639,7 +742,8 @@ translations.define(
     "woost.extensions.ecommerce.empty_basket_notice",
     ca = u"S'ha buidat la cistella",
     es = u"Se ha vaciado la cesta",
-    en = u"The shopping basket has been cleared"
+    en = u"The shopping basket has been cleared",
+    fr = u"Le panier a été effacé"
 )
 
 # ProductView
@@ -648,14 +752,16 @@ translations.define(
     "woost.extensions.ecommerce.ProductPage.back_link",
     ca = u"Tornar al catàleg",
     es = u"Volver al catálogo",
-    en = u"Return to the catalog"
+    en = u"Return to the catalog",
+    fr = u"Retour au catalogue"
 )
 
 translations.define(
     "woost.extensions.ecommerce.ProductPage.checkout_button",
     ca = u"Continuar la compra",
     es = u"Continuar la compra",
-    en = u"Checkout"
+    en = u"Checkout",
+    fr = u"Continuer les achats"
 )
 
 # OrderStep
@@ -741,7 +847,7 @@ translations.define(
     ca = u"Taxes",
     es = u"Tasas",
     en = u"Taxes",
-	fr = u"Taux"
+	fr = u"Impôts"
 )
 
 translations.define(
