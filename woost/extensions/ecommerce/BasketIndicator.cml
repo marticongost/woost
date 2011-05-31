@@ -10,6 +10,7 @@ from woost.extensions.ecommerce.basket import Basket
 
     <?py-class
     hide_when_empty = True
+    order = None
     ?>
     
     <?py
@@ -19,22 +20,33 @@ from woost.extensions.ecommerce.basket import Basket
 
     <py:ready>
         <?py
-        order = Basket.get()
+        if self.order is None:
+            self.order = Basket.get()
+
         basket_page = Publishable.get_instance(
             qname = "woost.extensions.ecommerce.basket_page"
         )
 
-        if basket_page is None or not basket_page.is_accessible() or (self.hide_when_empty and not order.purchases):
+        if basket_page is None or not basket_page.is_accessible() \
+        or (self.hide_when_empty and not self.order.purchases):
             self.visible = False
         else:
             self["href"] = basket_page.get_uri()
-            self.append(
-                translations(
-                    "woost.extensions.ecommerce.BasketIndicator",
-                    count = order.count_units()
-                )
-            )
         ?>
     </py:ready>
+
+    <span py:id="count_label">
+        <py:ready>
+            <?py
+            if self.visible:
+                element.append(
+                    translations(
+                        "woost.extensions.ecommerce.BasketIndicator",
+                        count = self.order.count_units()
+                    )
+                )
+            ?>
+        </py:ready>
+    </span>    
 </a>
 
