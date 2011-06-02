@@ -185,6 +185,11 @@ def expire_cache(cls = None):
     cache_expiration[cls.full_name] = datetime.now()
 
 def latest(selectable, *args, **kwargs):
+
+    if not args and not kwargs \
+    and hasattr(selectable, "get_last_instance_change"):
+        return selectable.get_last_instance_change()
+
     return (
         selectable.select(
             order = Item.last_update_time.negative(),
