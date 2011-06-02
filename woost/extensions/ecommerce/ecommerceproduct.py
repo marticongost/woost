@@ -70,6 +70,7 @@ class ECommerceProduct(Publishable):
             lambda: ECommerceProduct.purchase_model.class_family
         ),
         required = True,
+        searchable = False,
         member_group = "product_data"
     )
 
