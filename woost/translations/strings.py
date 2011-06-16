@@ -21,7 +21,8 @@ translations.define("logged in as",
 translations.define("Logout",
     ca = u"Sortir",
     es = u"Salir",
-    en = u"Logout"
+    en = u"Log out",
+    fr = u"Log out"
 )
 
 translations.define("Type",

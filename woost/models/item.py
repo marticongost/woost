@@ -12,7 +12,11 @@ from cocktail.events import event_handler
 from cocktail import schema
 from cocktail.translations import translations
 from cocktail.persistence import (
-    PersistentObject, PersistentClass, datastore, PersistentMapping
+    datastore, 
+    PersistentObject, 
+    PersistentClass, 
+    PersistentMapping,
+    MaxValue
 )
 from woost.models.changesets import ChangeSet, Change
 from woost.models.action import Action
@@ -110,6 +114,24 @@ class Item(PersistentObject):
         return PersistentObject._counts_as_duplicate(self, other) \
             and other is not self.draft_source \
             and self is not other.draft_source
+
+    # Last change timestamp
+    #--------------------------------------------------------------------------
+    @classmethod
+    def get_last_instance_change(cls):
+        max_value = datastore.root.get(cls.full_name + ".last_instance_change")
+        return None if max_value is None else max_value.value
+
+    @classmethod
+    def set_last_instance_change(cls, last_change):
+        for cls in cls.__mro__:
+            if hasattr(cls, "set_last_instance_change"):
+                key = cls.full_name + ".last_instance_change"
+                max_value = datastore.root.get(key)
+                if max_value is None:
+                    datastore.root[key] = max_value = MaxValue(last_change)
+                else:
+                    max_value.value = last_change
 
     # Versioning
     #--------------------------------------------------------------------------
@@ -310,6 +332,7 @@ class Item(PersistentObject):
         now = datetime.now()
         item.creation_time = now
         item.last_update_time = now
+        item.set_last_instance_change(now)
         item.__deleted = False
 
         if not item.is_draft and item.__class__.versioned:
@@ -341,6 +364,11 @@ class Item(PersistentObject):
     def handle_changed(cls, event):
 
         item = event.source
+        now = None
+
+        if item.is_inserted:
+            now = datetime.now()
+            item.set_last_instance_change(now)
 
         if getattr(item, "_v_initializing", False) \
         or not event.member.versioned \
@@ -366,7 +394,7 @@ class Item(PersistentObject):
                 change.item_state = item._get_revision_state()
                 change.changeset = changeset
                 changeset.changes[item.id] = change
-                item.last_update_time = datetime.now()
+                item.last_update_time = now or datetime.now()
                 change.insert()
             else:
                 action_type = change.action.identifier
@@ -396,7 +424,9 @@ class Item(PersistentObject):
         item = event.source
 
         # Update the last time of modification for the item
-        item.last_update_time = datetime.now()
+        now = datetime.now()
+        item.set_last_instance_change(now)
+        item.last_update_time = now
 
         if not item.is_draft and item.__class__.versioned:
             changeset = ChangeSet.current
