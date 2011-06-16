@@ -134,16 +134,14 @@ class CommentsExtension(Extension):
             comments_schema = None
             comment_errors = None
             comment_data = {}
-
+            
             controller = event.source
             comment_model = \
                 resolve(getattr(controller, "comment_model", Comment))
             publishable = controller.context["publishable"]
             user = get_current_user()
 
-            if publishable is not None and \
-            publishable.allow_comments and \
-            user.has_permission(CreatePermission, target = comment_model):
+            if publishable is not None and publishable.allow_comments:
 
                 # Comments collection
                 comments_user_collection = UserCollection(comment_model)
@@ -188,7 +186,7 @@ class CommentsExtension(Extension):
                 # Insert a new comment
                 if cherrypy.request.method == "POST" \
                 and "post_comment" in cherrypy.request.params:
-
+                    
                     with changeset_context(user):
                         get_parameter(
                             comments_schema, 
@@ -211,18 +209,19 @@ class CommentsExtension(Extension):
                             )
 
                             comment.publishable = publishable
+                            user.require_permission(CreatePermission, target = comment)
+
                             comment.insert()
                             datastore.commit()
                             CommentsExtension.instance._after_process_comments(comment)
                 else:
                     comment_errors = schema.ErrorList([])
-                
+            
             # Update the output
-            if publishable is not None and publishable.allow_comments:
-                controller.output.update(
-                    comments_user_collection = comments_user_collection,
-                    comments_schema = comments_schema,
-                    comment_errors = comment_errors,
-                    comment_data = comment_data
-                )
+            controller.output.update(
+                comments_user_collection = comments_user_collection,
+                comments_schema = comments_schema,
+                comment_errors = comment_errors,
+                comment_data = comment_data
+            )
 

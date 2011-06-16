@@ -11,7 +11,8 @@ from cocktail.translations.strings import DATE_STYLE_NUMBERS
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:py="http://www.whads.com/ns/cocktail/templates"
     action="#comment_errors"
-    method="post">
+    method="post"
+    py:visible="@{self.user_collection is not None}">
 
     <?py-class
     user_collection = None
