@@ -20,6 +20,7 @@ from woost.controllers.module import Module
 class LanguageModule(Module):
 
     cookie_duration = 60 * 60 * 24 * 15 # 15 days
+    respect_client_preferences = False
 
     def __init__(self, *args, **kwargs):
         Module.__init__(self, *args, **kwargs)
@@ -40,9 +41,53 @@ class LanguageModule(Module):
         set_language(language)
     
     def infer_language(self):
-        # TODO: Parse language headers
+
+        # Check for a language preference in a cookie
         cookie = cherrypy.request.cookie.get("language")
-        return cookie.value if cookie else Site.main.default_language
+        
+        if cookie:
+            return cookie.value
+
+        # Check the 'Accept-Language' header sent by the client
+        if self.respect_client_preferences:
+            accept_language = cherrypy.request.headers.get("Accept-Language", None)
+
+            if accept_language:
+                available_languages = Language.codes
+                best_language = None
+                best_score = None
+
+                for chunk in accept_language.split(","):
+                    chunk = chunk.strip()
+                    score = 1.0
+                    chunk_parts = chunk.split(";")
+
+                    if len(chunk_parts) > 1:
+                        language = chunk_parts[0]
+                        for part in chunk_parts[1:]:
+                            if part.startswith("q="):
+                                try:
+                                    score = float(part[2:])
+                                except TypeError:
+                                    pass
+                                else:
+                                    break
+                    else:
+                        language = chunk
+
+                    if (
+                        score
+                        and language in available_languages
+                        and (best_language is None or score > best_score)
+                    ):
+                        best_language = language
+                        best_score = score
+                    
+                if best_language:
+                    return best_language
+
+        # Fall back to the site's default language
+        return Site.main.default_language
 
     def translate_uri(self, path = None, language = None):
 

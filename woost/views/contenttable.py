@@ -40,6 +40,11 @@ class ContentTable(ContentDisplayMixin, Table):
                 draft_row = self.create_row(index, draft)
                 self.body.append(draft_row)
 
+    def _fill_head(self):
+        Table._fill_head(self)
+        if self.head_row.children:
+            self.head_row.children[-1].add_class("last")
+
     def create_row(self, index, item):
         
         row = Table.create_row(self, index, item)

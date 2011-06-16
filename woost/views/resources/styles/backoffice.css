@@ -2181,10 +2181,11 @@ button.TypeSelectorButton {
     clear: both;
     position: relative;
     overflow: visible;
-    width: 100%;
+    min-width: 100%;
+    display: inline-block;
 }
 
-.BackOfficeLayout .CollectionView .Table th:last-child {
+.BackOfficeLayout .CollectionView .Table th.last {
     padding-right: 3em;
 }
 
