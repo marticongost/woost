@@ -9,7 +9,7 @@ u"""
 import cherrypy
 from cocktail.modeling import getter
 from cocktail.persistence import datastore
-from cocktail.controllers import session
+from cocktail.controllers import session, Location
 from woost.models import User, set_current_user
 from woost.controllers.module import Module
 
@@ -37,6 +37,14 @@ class AuthenticationModule(Module):
                 params.get("user"),
                 params.get("password")
             )
+
+            # Request the current location again, with all authentication 
+            # parameters stripped
+            location = Location.get_current()
+            location.query_string.pop("user", None)
+            location.query_string.pop("password", None)
+            location.query_string.pop("authenticate", None)
+            location.go("GET")
 
     def process_logout(self):
         if "logout" in cherrypy.request.params:
