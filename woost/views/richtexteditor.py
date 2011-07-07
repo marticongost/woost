@@ -40,7 +40,8 @@ class RichTextEditor(TinyMCE):
             "theme_advanced_toolbar_location": "top"
         },
         "height": 250,
-        "media_strict": False
+        "media_strict": False,
+        "paste_text_sticky_default": True
     }
 
     def _ready(self):
