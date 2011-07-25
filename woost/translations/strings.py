@@ -4106,10 +4106,10 @@ translations.define("EmailTemplate.subject",
     en = u"Subject"
 )
 
-translations.define("EmailTemplate.embeded_images",
-    ca = u"Imatges incrustades",
-    es = u"Imágenes incrustadas",
-    en = u"Embeded images"
+translations.define("EmailTemplate.attachments",
+    ca = u"Fitxers adjunts",
+    es = u"Ficheros adjuntos",
+    en = u"Attachments"
 )
 
 translations.define("EmailTemplate.body",
