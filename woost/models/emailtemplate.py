@@ -8,11 +8,14 @@
 """
 import buffet
 import smtplib
+from mimetypes import guess_type
 from email.mime.text import MIMEText
 from email.MIMEMultipart import MIMEMultipart
 from email.MIMEImage import MIMEImage
+from email.MIMEBase import MIMEBase
 from email.Header import Header
 from email.Utils import formatdate, parseaddr, formataddr
+from email import Encoders
 from cocktail import schema
 from cocktail.html.datadisplay import display_factory
 from woost.models import Item, Site, File
@@ -30,7 +33,7 @@ class EmailTemplate(Item):
         "bcc",
         "template_engine",
         "subject",
-        "embeded_images",
+        "attachments",
         "body"
     ]
 
@@ -86,7 +89,7 @@ class EmailTemplate(Item):
         edit_control = "cocktail.html.TextArea"
     )
 
-    embeded_images = schema.String(
+    attachments = schema.String(
         listed_by_default = False,
         edit_control = display_factory(
             "cocktail.html.CodeEditor", syntax = "python"
@@ -146,28 +149,46 @@ class EmailTemplate(Item):
             
         message = MIMEText(body, _subtype = mime_type, _charset = self.encoding)
 
-        # Embeded images
-        if self.embeded_images:
-            image_context = context.copy()
-            image_context["images"] = {}
-            exec self.embeded_images in image_context
-            images = dict(
-                (cid, image) 
-                for cid, image in image_context["images"].iteritems()
-                if image is not None
+        # Attachments
+        if self.attachments:
+            attachments_context = context.copy()
+            attachments_context["attachments"] = {}
+            exec self.attachments in attachments_context
+            attachments = dict(
+                (cid, attachment) 
+                for cid, attachment in attachments_context["attachments"].iteritems()
+                if attachment is not None
             )
-            if images:
+            if attachments:
                 message_text = message
                 message = MIMEMultipart("related")
                 message.attach(message_text)
 
-                for cid, image in images.iteritems():
-                    if isinstance(image, File):
-                        image = image.file_path
-                    with open(image) as image_file:
-                        message_image = MIMEImage(image_file.read())
-                        message_image.add_header("Content-ID", "<%s>" % cid)
-                        message.attach(message_image)
+                for cid, attachment in attachments.iteritems():
+                    
+                    if isinstance(attachment, File):
+                        file_path = attachment.file_path
+                        file_name = attachment.file_name
+                        mime_type = attachment.mime_type
+                    else:
+                        file_path = attachment
+                        file_name = os.path.basename(file_path)
+                        mime_type_guess = guess_type(file_path)
+                        if mime_type_guess:
+                            mime_type = mime_type_guess[0]
+                        else:
+                            mime_type = "application/octet-stream"
+
+                    main_type, sub_type = mime_type.split('/', 1)
+                    message_attachment = MIMEBase(main_type, sub_type)
+                    message_attachment.set_payload(open(file_path).read())
+                    Encoders.encode_base64(message_attachment)
+                    message_attachment.add_header("Content-ID", "<%s>" % cid)                    
+                    message_attachment.add_header(
+                        'Content-Disposition',
+                        'attachment; filename="%s"' % file_name
+                    )
+                    message.attach(message_attachment)
 
         def format_email_address(address, encoding):
             name, address = parseaddr(address)

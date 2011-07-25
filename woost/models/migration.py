@@ -109,3 +109,15 @@ def update_translations(e):
 
     PersistentObject.rebuild_indexes(True)
 
+#------------------------------------------------------------------------------
+
+step = MigrationStep(
+    "rename EmailTemplate.embeded_images to EmailTemplate.attachments"
+)
+
+step.rename_member(
+    "woost.models.EmailTemplate",
+    "embeded_images",
+    "attachments"
+)
+
