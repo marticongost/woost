@@ -2255,7 +2255,7 @@ translations.define("Publishable.caching_policy-explanation",
 translations.define("Document",
     ca = u"Document",
     es = u"Documento",
-    en = u"Documentos"
+    en = u"Document"
 )
 
 translations.define("Document-plural",
