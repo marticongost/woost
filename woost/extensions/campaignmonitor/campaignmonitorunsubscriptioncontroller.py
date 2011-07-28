@@ -53,7 +53,7 @@ class CampaignMonitorUnsubscriptionController(DocumentController):
             "email": email,
             "lists": []
         }
-        for i, list in enumerate(lists):
+        for list in lists:
             try:
                 response = api.subscribers_get_single_subscriber(
                     list.get("ListID"),
@@ -94,7 +94,7 @@ class CampaignMonitorUnsubscriptionController(DocumentController):
                             )           
                             encoded_custom_fields[encoded_key] = encoded_value
                             
-                            cm_context["lists"][i].update(**encoded_custom_fields)
+                            cm_context["lists"][-1].update(**encoded_custom_fields)
 
                         try:
                             # Resubscribe
