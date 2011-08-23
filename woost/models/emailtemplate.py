@@ -183,7 +183,8 @@ class EmailTemplate(Item):
                     message_attachment = MIMEBase(main_type, sub_type)
                     message_attachment.set_payload(open(file_path).read())
                     Encoders.encode_base64(message_attachment)
-                    message_attachment.add_header("Content-ID", "<%s>" % cid)                    
+                    if main_type == 'image':
+                        message_attachment.add_header("Content-ID", "<%s>" % cid)
                     message_attachment.add_header(
                         'Content-Disposition',
                         'attachment; filename="%s"' % file_name
