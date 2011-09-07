@@ -245,7 +245,8 @@ class ECommerceExtension(Extension):
         self._create_controller("product").insert()
         self._create_template("product").insert()
         self._create_ecommerceorder_completed_trigger().insert()
-    
+        self._create_incoming_order_trigger().insert()
+
     def _create_document(self, name, 
         cls = Document, 
         template = None,
@@ -337,6 +338,53 @@ order_summary.order = order
         response.email_template = template
 
         trigger.responses = [response]
+        return trigger
+
+    def _create_incoming_order_trigger(self):
+        from woost.extensions.ecommerce.incomingordertrigger import \
+            IncomingOrderTrigger
+        trigger = IncomingOrderTrigger( )
+        trigger.qname = "woost.extensions.ecommerce.incoming_order.trigger"
+        self.__translate_field(trigger, "title")
+        trigger.site = Site.main
+        trigger.matching_items = {'type': u'woost.extensions.ecommerce.ecommerceorder.ECommerceOrder'}
+
+        # EmailTemplate
+        template = EmailTemplate()
+        template.qname = \
+            "woost.extensions.ecommerce.incoming_order.email_template"
+        self.__translate_field(template, "title")
+        admin = User.require_instance(qname = "woost.administrator")
+        template.sender = repr(admin.email)
+        template.receivers = repr([admin.email])
+        template.template_engine = "cocktail"
+
+        for language in translations:
+            with language_context(language):
+                template.subject = template.title
+                template.body = """
+<%
+from cocktail.translations import translations
+from woost.models import Publishable
+
+order = items[0]
+bo = Publishable.require_instance(qname = "woost.backoffice")
+edit_url = bo.get_uri(host = ".", path = ["content", str(order.id)])
+%>
+
+<html>
+    <body>
+        <a href="${edit_url}">${translations('woost.extensions.ecommerce.incoming_order.edit_link')}
+        </a>
+    </body>
+</html>
+"""
+
+        # Response
+        response = SendEmailTriggerResponse()
+        response.email_template = template
+        trigger.responses = [response]
+
         return trigger
 
     def __translate_field(self, obj, key):
