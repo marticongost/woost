@@ -6,18 +6,10 @@
 @organization:	Whads/Accent SL
 @since:			February 2010
 """
-import os
-from shutil import rmtree
-from tempfile import mkdtemp
-from subprocess import Popen
-import cherrypy
 from cocktail.events import event_handler
 from cocktail.translations import translations
 from cocktail import schema
-from cocktail.controllers import serve_file
-from cocktail.controllers.location import Location
 from woost.models import Extension
-from woost.controllers import BaseCMSController
 
 
 translations.define("PDFExtension",
@@ -68,6 +60,14 @@ class PDFExtension(Extension):
     def handle_loading(cls, event):
 
         extension = event.source
+
+        import os
+        from shutil import rmtree
+        from tempfile import mkdtemp
+        from subprocess import Popen
+        import cherrypy
+        from cocktail.controllers import Location, serve_file
+        from woost.controllers import BaseCMSController
 
         def render_pdf(self):
 
