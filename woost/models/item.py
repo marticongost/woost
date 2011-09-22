@@ -31,6 +31,9 @@ schema.Collection.edit_controller = \
 # collection in the backoffice
 schema.Collection.edit_view = None
 
+# Extension property that sets the default type that should be shown by default
+# when opening an item selector for the indicated property
+schema.RelationMember.selector_default_type = None
 
 class Item(PersistentObject):
     """Base class for all CMS items. Provides basic functionality such as
