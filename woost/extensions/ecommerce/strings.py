@@ -695,6 +695,24 @@ translations.define("woost.extensions.ecommerce.ecommerceorder_completed_emailte
     fr = u"Résumé de la commande"
 )
 
+translations.define("woost.extensions.ecommerce.incoming_order.trigger.title",
+    ca = u"Enviar resum de la comanda",
+    es = u"Enviar resumen del pedido",
+    en = u"Send order summary"
+)
+
+translations.define("woost.extensions.ecommerce.incoming_order.email_template.title",
+    ca = u"Notificació de nova comanda",
+    es = u"Notificación de nuevo pedido",
+    en = u"New shop order notification"
+)
+
+translations.define("woost.extensions.ecommerce.incoming_order.edit_link",
+    ca = u"Obrir la comanda",
+    es = u"Abrir el pedido",
+    en = u"Edit the order"
+)
+
 # Notices
 #------------------------------------------------------------------------------
 translations.define(
@@ -1026,6 +1044,20 @@ translations.define("ECommerceOrderCompletedTrigger-plural",
     es = u"Disparadores de pedido completado",
     en = u"Order completed triggers",
 	fr = u"Order completed trigger"
+)
+
+# IncomingOrderTrigger
+#------------------------------------------------------------------------------
+translations.define("IncomingOrderTrigger",
+    ca = u"Disparador de nova comanda",
+    es = u"Disparador de nuevo pedido",
+    en = u"Incoming order trigger"
+)
+
+translations.define("IncomingOrderTrigger-plural",
+    ca = u"Disparadors de nova comanda",
+    es = u"Disparadores de nuevo pedido",
+    en = u"Incoming order triggers"
 )
 
 # OrderConfirmationMessage

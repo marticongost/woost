@@ -121,7 +121,6 @@ class DraftTestCase(BaseTestCase):
             and error.member is Foo.spam
         ]) == 1
 
-        
     def test_unique_validation_disabled_for_draft_copies(self):
         
         from cocktail import schema
@@ -142,3 +141,32 @@ class DraftTestCase(BaseTestCase):
             if isinstance(error, UniqueValueError)
             and error.member is Foo.spam
         ]) == 0
+
+    def test_no_bidirectionality_in_default_references_for_draft_copies(self):
+
+        from cocktail import schema        
+        from woost.models import Item
+
+        class Foo(Item):
+            pass
+
+        Foo.add_member(
+            schema.Reference("parent",
+                type = Foo,
+                bidirectional = True
+            )
+        )
+
+        Foo.add_member(
+            schema.Collection("children",
+                items = schema.Reference(type = Foo),
+                bidirectional = True
+            )
+        )
+        
+        x = Foo()
+        Foo.default_parent = x
+        y = Foo()
+        y2 = y.make_draft()
+        assert y2 not in x.children
+

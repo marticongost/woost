@@ -97,6 +97,9 @@ class ReCaptcha(Schema):
         else:
             yield ReCaptchaValidationError(self, response, context)
 
+    def _create_default_instance(self):
+        return None
+
 
 class ReCaptchaValidationError(ValidationError):
     """A validation error produced when the user fails a ReCaptcha
