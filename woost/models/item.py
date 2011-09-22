@@ -214,7 +214,8 @@ class Item(PersistentObject):
         @return: The draft copy of the item.
         @rtype: L{Item}
         """
-        draft = self.__class__()
+        draft = self.__class__(bidirectional = False)
+        draft.bidirectional = True
         draft.draft_source = self
         draft.is_draft = True
         draft.bidirectional = False
