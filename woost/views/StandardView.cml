@@ -22,6 +22,9 @@ from woost.models import Site
         return (attachment
                 for attachment in getattr(self.publishable, "attachments", ())
                 if attachment.is_published())
+
+    def get_logo(self):
+        return Site.main.logo
     ?>
 
     <div py:id="header">
@@ -31,7 +34,7 @@ from woost.models import Site
             <py:ready>
                 <?py 
                 self._title = self.get_title()
-                self._logo = Site.main.logo
+                self._logo = self.get_logo()
                 if self._logo and not self._logo.is_accessible():
                     self._logo = None
 
@@ -122,7 +125,7 @@ from woost.models import Site
             <py:woost.views.Image 
                 py:id="vcard_logo" 
                 class="logo"
-                py:image="@{Site.main.logo}"
+                py:image="@{self.get_logo()}"
                 style="display:none"/>
             <a
                 py:id="organization_label"
