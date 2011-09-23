@@ -225,6 +225,11 @@ class ContentController(BaseBackOfficeController):
     def user_collection(self):
 
         user_collection = BackOfficeUserCollection(self.root_content_type)
+
+        if self.edit_stack and isinstance(self.stack_node, RelationNode):
+            user_collection.default_type = \
+                self.stack_node.member.selector_default_type
+
         user_collection.available_languages = self.available_languages
         user_collection.selection_mode = self.selection_mode
         user_collection.default_order = \

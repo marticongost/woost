@@ -11,13 +11,8 @@ import cherrypy
 from cocktail import schema
 from cocktail.events import event_handler, when
 from cocktail.translations import translations
-from cocktail.persistence import datastore
-from cocktail.controllers import UserCollection, get_parameter, Location
-from cocktail.pkgutils import resolve
-from woost.models import Extension, Publishable, Role, get_current_user
-from woost.models.changesets import changeset_context
-from woost.models.permission import CreatePermission
-from woost.controllers.basecmscontroller import BaseCMSController
+from cocktail.controllers import Location
+from woost.models import Extension
 
 translations.define("CommentsExtension",
     ca = u"Comentaris",
@@ -67,6 +62,18 @@ class CommentsExtension(Extension):
     @event_handler
     def handle_loading(cls, event):
         
+        from cocktail.persistence import datastore
+        from cocktail.controllers import UserCollection, get_parameter
+        from cocktail.pkgutils import resolve
+        from woost.models import (
+            Publishable,
+            Role,
+            CreatePermission,
+            get_current_user
+        )
+        from woost.models.changesets import changeset_context
+        from woost.controllers.basecmscontroller import BaseCMSController
+
         # Import the extension's models
         from woost.extensions.comments import strings
         from woost.extensions.comments.comment import Comment

@@ -11,6 +11,7 @@ from cocktail.modeling import getter
 from cocktail.events import event_handler
 from cocktail.controllers.renderingengines import get_rendering_engine
 from woost.models.publishable import Publishable
+from woost.models.file import File
 from woost.models.controller import Controller
 
 
@@ -104,6 +105,7 @@ class Document(Publishable):
             type = Publishable,
             required = True
         ),
+        selector_default_type = File,
         related_end = schema.Collection()
     )
  
