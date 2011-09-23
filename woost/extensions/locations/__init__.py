@@ -19,6 +19,12 @@ translations.define("LocationsExtension",
     en = u"Locations"
 )
 
+translations.define("LocationsExtension.service_uri",
+    ca = u"URL del repositori de dades",
+    es = u"URL del repositorio de datos",
+    en = u"URL of the data repository"
+)
+
 translations.define("LocationsExtension.update_frequency",
     ca = u"Freqüència d'actualització",
     es = u"Frecuencia de actualización",
