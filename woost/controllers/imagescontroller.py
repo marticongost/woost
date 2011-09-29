@@ -491,7 +491,8 @@ class ImageURIRenderer(ContentRenderer):
         http_conn.request("HEAD", path)
         http_date = http_conn.getresponse().getheader("last-modified")
         http_conn.close()
-        return mktime(strptime(http_date, "%a, %d %b %Y %H:%M:%S %Z"))
+        if http_date:
+            return mktime(strptime(http_date, "%a, %d %b %Y %H:%M:%S %Z"))
 
 
 class HTMLRenderer(ContentRenderer):
