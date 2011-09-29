@@ -1152,6 +1152,12 @@ translations.define("woost.views.ImageGallery.loading_sign",
     en = u"Loading image"
 )
 
+translations.define("woost.views.ImageGallery.original_image_link",
+    ca = u"Descarregar l'original",
+    es = u"Descargar el original",
+    en = u"Download the original"
+)
+
 # Content views
 #------------------------------------------------------------------------------
 translations.define("View as",

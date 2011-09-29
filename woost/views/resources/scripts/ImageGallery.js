@@ -169,6 +169,15 @@ cocktail.bind({
                 $dialog.find(".footnote").hide();
             }
 
+            if (entry.originalImage) {
+                var $originalLink = $dialog.find(".original_image_link");
+                $originalLink.find("a").attr("href", entry.originalImage);
+                $originalLink.show();
+            }
+            else {
+                $dialog.find(".original_image_link").hide();
+            }
+
             var $close = $dialog.find(".close_button");
             var $next = $dialog.find(".next_button");
             var $prev = $dialog.find(".previous_button");
