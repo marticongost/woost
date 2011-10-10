@@ -1393,7 +1393,7 @@ translations.define("UploadFilesForm.upload",
 )
 
 translations.define(
-    "upload.mime_type-error: cocktail.schema.exceptions.EnumerationError",
+    "UploadFilesForm.upload.mime_type-error: cocktail.schema.exceptions.EnumerationError",
     ca = u"El fitxer indicat no és un fitxer ZIP",
     es = u"El fichero indicado no es un fichero ZIP",
     en = u"The selected file is not a ZIP file"
