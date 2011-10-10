@@ -19,7 +19,7 @@ class ContentTypeTree(TreeView):
     root = Item
     root_visible = True
     plural_labels = False
-    icon_size = 16
+    icon_image_factory = "icon16.png"
 
     def create_label(self, content_type):
         
@@ -29,7 +29,9 @@ class ContentTypeTree(TreeView):
             label.add_class(schema.name)
 
         img = Element("img")
-        img["src"] = context["cms"].icon_uri(content_type, self.icon_size)
+        img["src"] = context["cms"].image_uri(
+            content_type, self.icon_image_factory
+        )
         img.add_class("icon")
         label.insert(0, img)
 

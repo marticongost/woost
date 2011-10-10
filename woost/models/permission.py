@@ -18,6 +18,7 @@ from woost.models.item import Item
 from woost.models.language import Language
 from woost.models.messagestyles import permission_doesnt_match_style
 from woost.models.usersession import get_current_user
+from woost.models.messagestyles import unauthorized_style
 
 
 class Permission(Item):
@@ -52,6 +53,12 @@ class Permission(Item):
             instance = self,
             **kwargs
         ) or Item.__translate__(self, language, **kwargs)
+
+    @classmethod
+    def permission_not_found(cls, **context):
+        if verbose:
+            print unauthorized_style("unauthorized")
+        return False
 
 
 class ContentPermission(Permission):
@@ -143,6 +150,39 @@ class DeletePermission(ContentPermission):
 class ConfirmDraftPermission(ContentPermission):
     """Permission to confirm drafts of instances of a content type."""
     instantiable = True
+
+
+class RenderPermission(ContentPermission):
+    """Permission to obtain images representing instances of a content type."""
+    instantiable = True
+
+    def _image_factories_enumeration(ctx):
+        from woost.models.rendering.factories import image_factories
+        return image_factories.keys()
+
+    image_factories = schema.Collection(
+        items = schema.String(enumeration = _image_factories_enumeration),
+        searchable = False
+    )
+
+    del _image_factories_enumeration
+
+    def match(self, target, image_factory, verbose = False):
+        
+        if self.image_factories and image_factory not in self.image_factories:
+            print permission_doesnt_match_style("image_factory doesn't match")
+            return False
+
+        return ContentPermission.match(self, target, verbose)
+
+    @classmethod
+    def permission_not_found(cls, user, **context):
+        # If no specific render permission is found, a read permission will do
+        return user.has_permission(
+            ReadPermission,
+            target = context["item"],
+            verbose = context.get("verbose", False)
+        )
 
 
 class TranslationPermission(Permission):

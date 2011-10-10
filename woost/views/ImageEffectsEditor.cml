@@ -4,7 +4,7 @@ from Image import FLIP_TOP_BOTTOM, FLIP_LEFT_RIGHT
 from cocktail.html.databoundcontrol import data_bound
 from cocktail.controllers import context
 from cocktail.translations import translations
-from woost.controllers.imagescontroller import parse_processor
+from woost.models.rendering.effectschain import parse_effect
 ?>
 
 <div
@@ -15,7 +15,7 @@ from woost.controllers.imagescontroller import parse_processor
     value = None
     item = None
 
-    processors = [
+    effects = [
         "brightness",
         "contrast",
         "sharpness",
@@ -42,15 +42,15 @@ from woost.controllers.imagescontroller import parse_processor
         <?py
         self.set_client_param("editedItemId", self.edited_item.id)
 
-        for processor_name in self.processors:
-            self.add_client_translation("woost.views.ImageEffectsEditor-%s_effect" % processor_name)
+        for effect_name in self.effects:
+            self.add_client_translation("woost.views.ImageEffectsEditor-%s_effect" % effect_name)
         
         if self.value is None:
             stack = []
         else:
             stack = [
                 (func.func_name,) + tuple(args)
-                for func, args, kwargs in map(parse_processor, self.value.split("/"))
+                for func, args, kwargs in map(parse_effect, self.value.split("/"))
             ]
 
         self.set_client_param("stack", stack)
@@ -79,13 +79,13 @@ from woost.controllers.imagescontroller import parse_processor
 
             <div py:id="stack_box"></div>
 
-            <div py:id="image_processors_toolbar">
-                <div py:id="image_processors_toolbar_label">
-                    ${translations("woost.views.ImageEffectsEditor.image_processors_toolbar_label")}
+            <div py:id="image_effects_toolbar">
+                <div py:id="image_effects_toolbar_label">
+                    ${translations("woost.views.ImageEffectsEditor.image_effects_toolbar_label")}
                 </div>
                 <py:ready>
-                    <py:new py:element="self.create_image_processor_button(processor_name)"
-                        py:for="processor_name in self.processors"/>                                                
+                    <py:new py:element="self.create_image_effect_button(effect_name)"
+                        py:for="effect_name in self.effects"/>                                                
                 </py:ready>
             </div>
 
@@ -106,66 +106,66 @@ from woost.controllers.imagescontroller import parse_processor
         </div>
     </div>
 
-    <button py:def="image_processor_button" py:args="processor_name" type="button">
-        <img src="/resources/images/image-processor-${processor_name}.png" alt=""/>
+    <button py:def="image_effect_button" py:args="effect_name" type="button">
+        <img src="/resources/images/image-effect-${effect_name}.png" alt=""/>
         <?py
-        element.set_client_param("imageProcessor", processor_name)
+        element.set_client_param("imageEffect", effect_name)
         ?>
-        <span>${translations("woost.views.ImageEffectsEditor-%s_effect" % processor_name)}</span>
+        <span>${translations("woost.views.ImageEffectsEditor-%s_effect" % effect_name)}</span>
     </button>
 
-    <!-- Image processors UI -->
-    <div py:def="image_processor_control" py:args="processor_name"
-        py:client_model="woost.views.ImageEffectsEditor-${processor_name}Control">
-        <div py:local_id="image_processor_header">
-            <img src="/resources/images/image-processor-${processor_name}.png" alt=""/>
-            <span>${translations("woost.views.ImageEffectsEditor-%s_effect" % processor_name)}</span>
+    <!-- Image effects UI -->
+    <div py:def="image_effect_control" py:args="effect_name"
+        py:client_model="woost.views.ImageEffectsEditor-${effect_name}Control">
+        <div py:local_id="image_effect_header">
+            <img src="/resources/images/image-effect-${effect_name}.png" alt=""/>
+            <span>${translations("woost.views.ImageEffectsEditor-%s_effect" % effect_name)}</span>
         </div>
-        <div py:local_id="image_processor_container"></div>
-        <div py:local_id="image_processor_buttons">
+        <div py:local_id="image_effect_container"></div>
+        <div py:local_id="image_effect_buttons">
             <button py:local_id="remove_button" type="button">
-                <img src="/resources/images/remove-image-processor.png"
-                    alt="${translations('woost.views.ImageEffectsEditor.remove_processor_button')}"/>
+                <img src="/resources/images/remove-image-effect.png"
+                    alt="${translations('woost.views.ImageEffectsEditor.remove_effect_button')}"/>
             </button>            
         </div>
     </div>
 
     <py:new
         py:id="brightness_control"
-        py:element="self.create_image_processor_control('brightness')">
-        <py:with py:element="element.image_processor_container">
+        py:element="self.create_image_effect_control('brightness')">
+        <py:with py:element="element.image_effect_container">
             <input type="number" min="0" step="0.1" value="1.0"/>
         </py:with>
     </py:new>
 
     <py:new
         py:id="sharpness_control"
-        py:element="self.create_image_processor_control('sharpness')">
-        <py:with py:element="element.image_processor_container">
+        py:element="self.create_image_effect_control('sharpness')">
+        <py:with py:element="element.image_effect_container">
             <input type="number" min="0" step="0.1" value="1.0"/>
         </py:with>
     </py:new>
 
     <py:new
         py:id="contrast_control"
-        py:element="self.create_image_processor_control('contrast')">
-        <py:with py:element="element.image_processor_container">
+        py:element="self.create_image_effect_control('contrast')">
+        <py:with py:element="element.image_effect_container">
             <input type="number" min="0" step="0.1" value="1.0"/>
         </py:with>
     </py:new>
 
     <py:new
         py:id="color_control"
-        py:element="self.create_image_processor_control('color')">
-        <py:with py:element="element.image_processor_container">
+        py:element="self.create_image_effect_control('color')">
+        <py:with py:element="element.image_effect_container">
             <input type="number" min="0" step="0.1" value="1.0"/>
         </py:with>
     </py:new>
 
     <py:new
         py:id="rotate_control"
-        py:element="self.create_image_processor_control('rotate')">
-        <py:with py:element="element.image_processor_container">
+        py:element="self.create_image_effect_control('rotate')">
+        <py:with py:element="element.image_effect_container">
             <canvas py:local_id="angle_selector" width="40" height="40"/>
             <input type="number" value="0"/>
         </py:with>
@@ -173,8 +173,8 @@ from woost.controllers.imagescontroller import parse_processor
 
     <py:new
         py:id="crop_control"
-        py:element="self.create_image_processor_control('crop')">        
-        <py:with py:element="element.image_processor_container">
+        py:element="self.create_image_effect_control('crop')">        
+        <py:with py:element="element.image_effect_container">
             <div py:local_id="x1">
                 <label for="@{element.parent.children[-1].require_id()}">X1</label>
                 <input type="number" value="0"/>
@@ -196,8 +196,8 @@ from woost.controllers.imagescontroller import parse_processor
 
     <py:new
         py:id="thumbnail_control"
-        py:element="self.create_image_processor_control('thumbnail')">
-        <py:with py:element="element.image_processor_container">
+        py:element="self.create_image_effect_control('thumbnail')">
+        <py:with py:element="element.image_effect_container">
             <div py:local_id="absolute_block">
                 <input type="radio" value="absolute" checked="checked"/>
                 <label>${translations("woost.views.ImageEffectsEditor.thumbnail_control.absolute_label")}</label>
@@ -224,8 +224,8 @@ from woost.controllers.imagescontroller import parse_processor
 
     <py:new
         py:id="fill_control"
-        py:element="self.create_image_processor_control('fill')">
-        <py:with py:element="element.image_processor_container">
+        py:element="self.create_image_effect_control('fill')">
+        <py:with py:element="element.image_effect_container">
             <div>
                 <label>${translations("woost.views.ImageEffectsEditor.fill_control.width")}</label>
                 <input type="number" class="width" min="1" step="1"/>
@@ -239,8 +239,8 @@ from woost.controllers.imagescontroller import parse_processor
 
     <py:new
         py:id="flip_control"
-        py:element="self.create_image_processor_control('flip')">
-        <py:with py:element="element.image_processor_container">
+        py:element="self.create_image_effect_control('flip')">
+        <py:with py:element="element.image_effect_container">
             <div>
                 <input type="radio" value="${FLIP_LEFT_RIGHT}" checked="checked"/>
                 <label>${translations("woost.views.ImageEffectsEditor.flip_control.horizontal")}</label>
@@ -254,8 +254,8 @@ from woost.controllers.imagescontroller import parse_processor
 
     <py:new
         py:id="custom_control"
-        py:element="self.create_image_processor_control('custom')">
-        <py:with py:element="element.image_processor_container">
+        py:element="self.create_image_effect_control('custom')">
+        <py:with py:element="element.image_effect_container">
             <input type="text"/>
         </py:with>
     </py:new>

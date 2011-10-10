@@ -187,7 +187,10 @@ class User(Item):
             for permission in role.iter_permissions(permission_type):
                 yield permission
 
-    def has_permission(self, permission_type, verbose = None, **context):
+    def has_permission(self,
+        permission_type,
+        verbose = None,        
+        **context):
         """Determines if the user is given permission to perform an action.
 
         @param permission_type: The kind of permission to assert.
@@ -252,10 +255,11 @@ class User(Item):
                 else:
                     break                
 
-        if verbose:
-            print unauthorized_style("unauthorized")
-
-        return False
+        return permission_type.permission_not_found(
+            self,
+            verbose = verbose,
+            **context
+        )
 
     def require_permission(self, permission_type, verbose = None, **context):
         """Asserts the user has permission to perform an action.

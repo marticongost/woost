@@ -222,7 +222,9 @@ body {
 }
 
 .BackOfficeLayout .ItemLabel {
+    display: inline-block;
     background-repeat: no-repeat;
+    white-space: nowrap;
 }
 
 .BackOfficeLayout input[type=text],
@@ -776,14 +778,6 @@ body.scripted .BackOfficeLayout .Table .selection {
 .BackOfficeLayout .Table tr.selected td,
 .BackOfficeLayout .Table tr.selected td * {
     color: white !important;
-}
-
-.BackOfficeLayout .Table .element_column img.icon {
-    float: left;
-}
-
-.BackOfficeLayout .Table .element_column label {
-    white-space: normal;
 }
 
 .BackOfficeLayout .draft,
