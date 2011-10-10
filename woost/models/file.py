@@ -13,11 +13,10 @@ import os
 import hashlib
 from mimetypes import guess_type
 from shutil import copy
-from cocktail.modeling import getter
 from cocktail.events import event_handler
 from cocktail import schema
-from cocktail.controllers import context
 from cocktail.persistence import datastore
+from woost import app
 from woost.models.publishable import Publishable
 from woost.models.controller import Controller
 from woost.models.language import Language
@@ -84,15 +83,7 @@ class File(Publishable):
         text_search = False,
         member_group = "content"
     )
-
-    @event_handler
-    def handle_changed(cls, e):
-        if e.member is cls.local_path and e.value:
-            e.source.file_name = os.path.basename(e.value)
-            e.source.mime_type = guess_type(e.value, strict = True)[0]
-            e.source.file_hash = None
-            e.source.file_size = None
-
+    
     image_effects = schema.String(
         listed_by_default = False,
         searchable = False,
@@ -100,23 +91,30 @@ class File(Publishable):
         edit_control = "woost.views.ImageEffectsEditor"
     )
 
-    def compose_image_effects(self, extra_effects):
-        if self.image_effects:
-            return self.image_effects.split("/") + extra_effects
-        else:
-            return extra_effects
+    @property
+    def file_extension(self):
+        return os.path.splitext(self.file_name)[1]
 
-    @getter
+    @event_handler
+    def handle_changed(cls, e):
+
+        if e.member is cls.local_path and e.value:
+            file = e.source
+            file.file_name = os.path.basename(e.value)
+            file.mime_type = guess_type(e.value, strict = True)[0]
+            file.file_hash = None
+            file.file_size = None
+
+    @property
     def file_path(self):
-        
-        cms = context["cms"]
+
         file_path = self.local_path
 
         if file_path:
             if not os.path.isabs(file_path):
-                file_path = os.path.join(cms.application_path, file_path)            
-        else:
-            file_path = cms.get_file_upload_path(self.id)
+                file_path = app.path(file_path)            
+        else:            
+            file_path = app.path("upload", str(self.id))
 
         return file_path
 

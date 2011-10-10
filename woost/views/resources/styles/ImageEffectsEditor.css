@@ -70,7 +70,7 @@
     overflow: auto;
 }
 
-.image_effects_dialog .image_processor_control {
+.image_effects_dialog .image_effect_control {
     position: relative;
     border: 1px solid #999;
     margin-top: 0.4em;
@@ -81,7 +81,7 @@
     box-shadow: 2px 2px 2px #ccc;
 }
 
-.image_effects_dialog .image_processor_header {
+.image_effects_dialog .image_effect_header {
     color: #333;
     font-weight: bold;
     font-size: 0.9em;
@@ -89,23 +89,23 @@
     padding-left: 0.4em;
 }
 
-.image_effects_dialog .image_processor_header img {
+.image_effects_dialog .image_effect_header img {
     vertical-align: middle;
 }
 
-.image_effects_dialog .image_processor_container {
+.image_effects_dialog .image_effect_container {
     padding: 0.4em;
     float: left;
     font-size: 0.9em;
 }
 
-.image_effects_dialog .image_processor_buttons {
+.image_effects_dialog .image_effect_buttons {
     padding: 0.4em;
     text-align: right;
     float: right;
 }
 
-.image_effects_dialog .image_processor_buttons .remove_button {
+.image_effects_dialog .image_effect_buttons .remove_button {
     position: absolute;
     right: 0;
     top: 0;
@@ -114,7 +114,7 @@
     cursor: pointer;
 }
 
-.image_effects_dialog .image_processors_toolbar {
+.image_effects_dialog .image_effects_toolbar {
     border: 1px solid #999;
     margin-top: 0.4em;
     background-color: white;
@@ -123,12 +123,12 @@
     box-shadow: 2px 2px 2px #ccc;
 }
 
-.image_effects_dialog .image_processors_toolbar .label {
+.image_effects_dialog .image_effects_toolbar .label {
     font-size: 0.9em;
     margin-bottom: 0.3em;
 }
     
-.image_effects_dialog .image_processors_toolbar .image_processor_button {
+.image_effects_dialog .image_effects_toolbar .image_effect_button {
     text-align: center;
     width: 4em;
     margin-right: 0.2em;
@@ -141,18 +141,18 @@
     cursor: pointer;
 }
 
-.image_effects_dialog .image_processors_toolbar button.image_processor_button:hover {
+.image_effects_dialog .image_effects_toolbar button.image_effect_button:hover {
     background-color: #666a8f;
     border: 1px solid #585b73;
     color: white;
     outline: none;
 }
 
-.image_effects_dialog .image_processors_toolbar button.image_processor_button:focus {
+.image_effects_dialog .image_effects_toolbar button.image_effect_button:focus {
     outline: 1px dotted #888;
 }
 
-.image_effects_dialog .image_processors_toolbar .image_processor_button span {
+.image_effects_dialog .image_effects_toolbar .image_effect_button span {
     display: block;
     text-align: center;
 }

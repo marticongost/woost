@@ -109,7 +109,7 @@ from woost.models import Site
     <li py:def="attachment_entry" py:args="attachment">
         <a href="${self.cms.uri(attachment)}" title="${getattr(attachment, 'description', None)}">
             <img
-                src="${self.cms.icon_uri(attachment, 16)}"
+                src="${attachment.get_image_uri('icon16')}"
                 alt="${translations('woost.views.StandardView attachment icon description')}"/>
             <span>${translations(attachment)}</span>
         </a>

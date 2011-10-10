@@ -322,9 +322,5 @@ class DescriptiveIdPublicationScheme(PublicationScheme):
         return ref
 
     def get_publishable_file_extension(self, publishable):
-        return (
-            isinstance(publishable, File)
-            and publishable.file_name
-            and splitext(publishable.file_name)[1]
-        ) or None
+        return getattr(publishable, "file_extension", None)
 

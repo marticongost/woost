@@ -2613,6 +2613,20 @@ translations.define(
 )
 
 translations.define(
+    "woost.models.permission.RenderPermission-instance",
+    ca = content_permission_translation_factory(
+        "ca",
+        lambda permission, subject, **kwargs:
+            u"generar imatges " + ca_possessive(subject)
+    ),
+    es = content_permission_translation_factory(
+        "es",
+        u"generar imágenes de %s"
+    ),
+    en = content_permission_translation_factory("en", u"render %s")
+)
+
+translations.define(
     "woost.models.permission.ReadMemberPermission-instance",
     ca = member_permission_translation_factory("ca",
         lambda instance, subject, **kwargs:
@@ -2814,6 +2828,35 @@ translations.define("ConfirmDraftPermission-plural",
     ca = u"Permisos de confirmació d'esborranys",
     es = u"Permisos de confirmación de borradores",
     en = u"Confirm draft permissions"
+)
+
+# RenderPermission
+#------------------------------------------------------------------------------
+translations.define("RenderPermission",
+    ca = u"Permís de visualització d'imatges",
+    es = u"Permiso de visualización de imágenes",
+    en = u"Render permission"
+)
+
+translations.define("RenderPermission-plural",
+    ca = u"Permisos de visualització d'imatges",
+    es = u"Permisos de visualización de imágenes",
+    en = u"Render permissions"
+)
+
+translations.define("RenderPermission.image_factories",
+    ca = u"Processat",
+    es = u"Procesado",
+    en = u"Processing"
+)
+
+translations.define("RenderPermission.image_factories-explanation",
+    ca = u"Limita el permís o prohibició a un subconjunt de les diferents "
+         u"visualitzacions suportades pel lloc web.",
+    es = u"Limita el permiso o prohibición a un subconjunto de las distintas "
+         u"visualizaciones soportadas por el sitio web.",
+    en = u"Limits the permission to a specific subset of the different "
+         u"renderings supported by the site."
 )
 
 # MemberPermission
