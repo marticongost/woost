@@ -55,7 +55,7 @@ class Permission(Item):
         ) or Item.__translate__(self, language, **kwargs)
 
     @classmethod
-    def permission_not_found(cls, **context):
+    def permission_not_found(cls, user, verbose = False, **context):
         if verbose:
             print unauthorized_style("unauthorized")
         return False
@@ -176,12 +176,12 @@ class RenderPermission(ContentPermission):
         return ContentPermission.match(self, target, verbose)
 
     @classmethod
-    def permission_not_found(cls, user, **context):
+    def permission_not_found(cls, user, verbose = False, **context):
         # If no specific render permission is found, a read permission will do
         return user.has_permission(
             ReadPermission,
             target = context["item"],
-            verbose = context.get("verbose", False)
+            verbose = verbose
         )
 
 
