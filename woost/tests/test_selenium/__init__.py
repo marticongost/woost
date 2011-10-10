@@ -20,7 +20,7 @@ from cocktail.tests.seleniumtester import (
 )
 from woost import app
 from woost.models.initialization import init_site
-from woost.controllers.application import CMS
+from woost.controllers.cmscontroller import CMSController
 
 # Site defaults
 admin_email = "admin@localhost"
@@ -70,7 +70,7 @@ def setup_package():
     })
 
     # Configure the application
-    cms = CMS()
+    cms = CMSController()
     cms.closing_item_requires_confirmation = False
 
     # Launch the site's webserver on another thread
