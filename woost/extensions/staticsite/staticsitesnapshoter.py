@@ -147,7 +147,8 @@ class WgetSnapShoter(StaticSiteSnapShoter):
         return unicode(location).encode("utf-8")
 
     def cleanup(self, context):
-        rmtree(self.snapshot_path)
+	if os.path.exists(self.snapshot_path):
+ 	       rmtree(self.snapshot_path)
 
 
 

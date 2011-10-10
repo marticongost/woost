@@ -115,7 +115,7 @@ class Menu(TreeView):
         or (not self.expanded and parent not in self._expanded):
             return []
         else:
-            return TreeView.get_child_items(self, parent)
+            return getattr(parent, "children", [])
 
     def _fill_children_container(self, container, item, children):
         self._depth += 1

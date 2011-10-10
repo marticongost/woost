@@ -335,9 +335,12 @@ body.modal {
     margin-bottom: 0.75em;
 }
 
-.BackOfficeLayout fieldset.anonymous {
-    padding: 0;
-    margin: 0;
+.BackOfficeLayout .Form fieldset div.field:last-child {
+    margin-bottom: 0;
+}
+
+.BackOfficeLayout fieldset fieldset + fieldset {
+    margin-top: 1em;
 }
 
 .BackOfficeLayout fieldset legend {
@@ -349,14 +352,25 @@ body.modal {
     color: #545f75;
 }
 
-.BackOfficeLayout fieldset legend + .field {
+.BackOfficeLayout fieldset fieldset legend {
+    font-size: 0.9em;
+    color: rgb(70,70,70);
+}
+
+.BackOfficeLayout fieldset .fieldset_fields {
     border-top: 1px solid #adb2bc;
     padding-top: 1em;
     margin-top: 0;
 }
 
-.BackOfficeLayout fieldset > .field > * {
-    margin-left: 0.75em;
+.BackOfficeLayout fieldset .fieldset_fields {
+    padding-left: 0.75em;
+}
+
+.BackOfficeLayout fieldset fieldset .fieldset_fields {
+    border: 1px solid #ccc;
+    background-color: #eee;
+    padding: 0.5em;
 }
 
 .BackOfficeLayout .field input.control,

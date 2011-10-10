@@ -47,6 +47,10 @@ class ECommerceOrder(Item):
         "cash_on_delivery": "payment_pending"
     }
 
+    incoming = Event(doc = """
+        An event triggered when a new order is received.
+        """)
+
     completed = Event(doc = """
         An event triggered when an order is completed.
         """)
@@ -441,8 +445,14 @@ class ECommerceOrder(Item):
         item = event.source
         member = event.member
 
-        if member.name == "status" and item.is_completed:
-            item.completed()
+        if member.name == "status":
+            
+            if event.previous_value == "shopping" \
+            and event.value in ("payment_pending", "accepted"):
+                item.incoming()
+
+            if item.is_completed:
+                item.completed()
 
     def get_description_for_gateway(self):
         if Site.main.site_name:
