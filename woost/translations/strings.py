@@ -1152,6 +1152,12 @@ translations.define("woost.views.ImageGallery.loading_sign",
     en = u"Loading image"
 )
 
+translations.define("woost.views.ImageGallery.original_image_link",
+    ca = u"Descarregar l'original",
+    es = u"Descargar el original",
+    en = u"Download the original"
+)
+
 # Content views
 #------------------------------------------------------------------------------
 translations.define("View as",
@@ -2255,7 +2261,7 @@ translations.define("Publishable.caching_policy-explanation",
 translations.define("Document",
     ca = u"Document",
     es = u"Documento",
-    en = u"Documentos"
+    en = u"Document"
 )
 
 translations.define("Document-plural",
@@ -4106,10 +4112,10 @@ translations.define("EmailTemplate.subject",
     en = u"Subject"
 )
 
-translations.define("EmailTemplate.embeded_images",
-    ca = u"Imatges incrustades",
-    es = u"Imágenes incrustadas",
-    en = u"Embeded images"
+translations.define("EmailTemplate.attachments",
+    ca = u"Fitxers adjunts",
+    es = u"Ficheros adjuntos",
+    en = u"Attachments"
 )
 
 translations.define("EmailTemplate.body",
