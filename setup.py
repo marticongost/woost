@@ -12,7 +12,7 @@ from os.path import join, isdir
 
 setup(
     name = "woost",
-    version = "0.7",
+    version = "0.8",
     author = "Whads/Accent SL",
     author_email = "tech@whads.com",
     maintainer = "Marti Congost",
