@@ -7,7 +7,7 @@ u"""
 @since:			April 2009
 """
 from warnings import warn
-from traceback import format_exc
+from traceback import print_exc, format_exc
 from threading import local
 from weakref import WeakKeyDictionary
 from cocktail import schema
@@ -397,7 +397,9 @@ def trigger_responses(
                                     datastore.commit()
 
                                 except Exception, ex:
-                                    warn(format_exc(ex))
+                                    warn("The following exception was raised "
+                                         "by a deferred trigger response:")
+                                    print_exc()
                                     datastore.abort()
 
                         trans.addAfterCommitHook(
@@ -417,7 +419,9 @@ def trigger_responses(
                                 datastore.commit()
 
                             except Exception, ex:
-                                warn(str(ex))
+                                warn("The following exception was raised "
+                                     "by a deferred trigger response:")
+                                print_exc()
                                 datastore.abort()
 
                     trans.addAfterCommitHook(

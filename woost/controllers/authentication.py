@@ -41,9 +41,10 @@ class AuthenticationModule(Module):
             # Request the current location again, with all authentication 
             # parameters stripped
             location = Location.get_current()
-            location.query_string.pop("user", None)
-            location.query_string.pop("password", None)
-            location.query_string.pop("authenticate", None)
+            for params in (location.query_string, location.form_data):
+                params.pop("user", None)
+                params.pop("password", None)
+                params.pop("authenticate", None)
             location.go("GET")
 
     def process_logout(self):

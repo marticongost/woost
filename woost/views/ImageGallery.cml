@@ -11,6 +11,7 @@ from cocktail.controllers import context
     gallery_type = "thumbnails" # Either "thumbnails" or "slideshow"
     labels_visible = True
     footnotes_visible = True
+    original_link_visible = False
     close_up_enabled = True
     
     images = ()
@@ -23,7 +24,7 @@ from cocktail.controllers import context
     thumbnail_factory = "image_gallery_thumbnail"
     thumbnail_width = 200
     thumbnail_height = 150
-    
+
     slider_options = {
         "continuous": False
     }
@@ -80,6 +81,12 @@ from cocktail.controllers import context
             footnote = self.get_footnote(image)
             if footnote:
                 element.set_client_param("footnote", footnote)
+
+        if self.original_link_visible:
+            element.set_client_param(
+                "originalImage",
+                image.get_uri(parameters = {"disposition": "attachment"})
+            )
         ?>
         <a py:local_id="image_link"
             href="${cms.image_uri(image, self.close_up_factory)}"
@@ -142,6 +149,9 @@ from cocktail.controllers import context
             </button>
         </div>
         <div py:local_id="footnote"></div>
+        <div py:local_id="original_image_link">
+            <a py:local_id="link">${translations("woost.views.ImageGallery.original_image_link")}</a>
+        </div>
     </div>
 
     <div py:id="loading_sign" 
