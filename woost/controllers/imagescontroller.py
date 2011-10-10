@@ -491,7 +491,8 @@ class ImageURIRenderer(ContentRenderer):
         http_conn.request("HEAD", path)
         http_date = http_conn.getresponse().getheader("last-modified")
         http_conn.close()
-        return mktime(strptime(http_date, "%a, %d %b %Y %H:%M:%S %Z"))
+        if http_date:
+            return mktime(strptime(http_date, "%a, %d %b %Y %H:%M:%S %Z"))
 
 
 class HTMLRenderer(ContentRenderer):
@@ -704,7 +705,7 @@ class PDFRenderer(ContentRenderer):
 
             temp_image_file = os.path.join(temp_path, "thumbnail.png")
 
-            command = u'%s -type TrueColor "%s[%d]" %s' % ( 
+            command = u'%s -antialias -density 400 -resize 25%% -type TrueColor "%s[%d]" %s' % ( 
                 self.convert_path, item.file_path, page, temp_image_file
             )
             p = Popen(command, shell=True, stdout=PIPE)
