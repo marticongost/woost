@@ -15,6 +15,7 @@ from cocktail import schema
 from cocktail.schema.exceptions import ValidationError
 from cocktail.controllers import context, session
 from cocktail.controllers.fileupload import FileUpload
+from woost import app
 from woost.controllers.backoffice.publishableeditnode \
     import PublishableEditNode
 
@@ -81,15 +82,11 @@ class FileEditNode(PublishableEditNode):
 
     @getter
     def temp_file_path(self):
-        return os.path.join(
-            context["cms"].upload_path,
-            "temp",
-            "%s-%s-%s" % (
-                self.item.id,
-                session.id,
-                self.stack.to_param()
-            )
-        )
+        return app.path("upload", "temp", "%s-%s-%s" % (
+            self.item.id,
+            session.id,
+            self.stack.to_param()
+        ))
 
     @event_handler
     def handle_saving(cls, event):

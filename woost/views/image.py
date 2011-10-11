@@ -11,7 +11,7 @@ class Image(Element):
 
     tag = "img"
     image = None
-    effects = None
+    image_factory = "default"
     styled_class = False
     accessible_check = True
 
@@ -22,5 +22,5 @@ class Image(Element):
             self.visible = False
         else:
             self["alt"] = translations(self.image)
-            self["src"] = self.image.get_image_uri(effects = self.effects)
+            self["src"] = self.image.get_image_uri(self.image_factory)
 

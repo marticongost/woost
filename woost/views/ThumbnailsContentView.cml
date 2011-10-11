@@ -61,16 +61,7 @@ from cocktail.html.selectable import selectable
             ?>
             <div class="icon_frame">
                 <?py
-                image_uri = self.cms.image_uri(
-                    value,
-                    "thumbnail(100,100)",
-                    "frame(1,'ddd',4,'eee')",
-                    **{
-                        "format": "png",
-                        "kind": "image,icon",
-                        "icon.size": "32"
-                    }
-                )
+                image_uri = self.cms.image_uri(value, "backoffice_thumbnail.png")
                 ?>
                 <img class="icon" src="${image_uri}"/>
             </div>

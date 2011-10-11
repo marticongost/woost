@@ -79,7 +79,7 @@ from woost.controllers.backoffice.useractions import \
         
         <div py:def="resource_thumbnail" py:args="resource">
             <a href="${self.edit_uri(resource, edit_stack = None)}" class="thumbnail_link">
-                <img class="thumbnail" src="${self.cms.icon_uri(resource, 32, (100, 100))}"/>
+                <img class="thumbnail" src="${resource.get_image_uri('backoffice_thumbnail')}"/>
                 <span class="label">${translations(resource, referer = self.edited_item)}</span>
             </a>
             <a class="open_resource_link" href="${self.cms.uri(resource)}">
