@@ -6,10 +6,7 @@
 @organization:	Whads/Accent SL
 @since:			February 2010
 """
-from woost.controllers.imagescontroller import (
-    ImageURIRenderer,
-    content_renderers
-)
+from woost.models.rendering import ImageURIRenderer, content_renderers
 from woost.extensions.vimeo.video import VimeoVideo
 
 

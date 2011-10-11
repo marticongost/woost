@@ -57,11 +57,15 @@ def _get_publishable_properties(self):
 
     image = self.get_open_graph_image()
     if image:
-        properties["og:image"] = image.get_uri(host = ".")
+        if isinstance(image, Publishable):
+            image = image.get_uri(host = ".")
+        properties["og:image"] = image
 
     video = self.get_open_graph_video()
     if video:
-        properties["og:video"] = video.get_uri(host = ".")
+        if isinstance(video, Publishable):
+            video = video.get_uri(host = ".")
+        properties["og:video"] = video
 
     return properties
 

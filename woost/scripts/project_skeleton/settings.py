@@ -7,6 +7,9 @@ u"""
 @since:			October 2008
 """
 
+from woost import app
+app.package = "_PROJECT_MODULE_"
+
 # Application server configuration
 import cherrypy
 cherrypy.config.update({
