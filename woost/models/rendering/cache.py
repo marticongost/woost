@@ -101,7 +101,7 @@ def require_rendering(item, factory_name = "default", format = None):
         ext = extensions_by_format[format]
 
     file_name = factory_name + "." + ext
-    item_id = str(item.id)
+    item_id = item.full_name if isinstance(item, type) else str(item.id)
 
     # If the image hasn't been generated yet, do so and store it in the
     # application's image cache
