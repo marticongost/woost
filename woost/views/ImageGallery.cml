@@ -17,7 +17,7 @@ from cocktail.controllers import context
     images = ()
     accessible_check = True
 
-    close_up_factory = "image_gallery_close_up"    
+    close_up_factory = "image_gallery_close_up"
     close_up_width = 900
     close_up_height = 700
     
@@ -89,7 +89,7 @@ from cocktail.controllers import context
             )
         ?>
         <a py:local_id="image_link"
-            href="${cms.image_uri(image, self.close_up_factory)}"
+            href="${image.get_image_uri(self.close_up_factory)}"
             target="blank_">
 
             <?py 
