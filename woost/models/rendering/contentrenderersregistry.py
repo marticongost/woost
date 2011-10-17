@@ -60,13 +60,8 @@ class ContentRenderersRegistry(ListWrapper):
                         pos = -1
 
                 if pos == -1:
-                    raise IndexError(
-                        "Trying to register content renderer '%s' %s %s, "
-                        "which hasn't been registered yet"
-                        % (renderer, "after" if after else "before", marker)
-                    )
-
-                if before:
+                    self._items.append(renderer)
+                elif before:
                     self._items.insert(pos, renderer)
                 else:
                     self._items.insert(pos + 1, renderer)  
