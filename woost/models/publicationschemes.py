@@ -234,7 +234,7 @@ class DescriptiveIdPublicationScheme(PublicationScheme):
 
     include_file_extensions = schema.Boolean(
         required = True,
-        default = False
+        default = True
     )
 
     _uri_encodings = ["utf-8", "iso-8859-1"]
