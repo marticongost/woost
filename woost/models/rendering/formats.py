@@ -4,7 +4,7 @@ u"""
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
 
-default_format = "PNG"
+default_format = "JPEG"
 
 # Mappings between MIME types and PIL formats
 formats_by_mime_type = {
