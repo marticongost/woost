@@ -17,7 +17,10 @@ from woost.models.rendering.formats import (
     formats_by_extension,
     default_format
 )
-from woost.models.rendering.factories import image_factories
+from woost.models.rendering.factories import (
+    image_factories,
+    parse_image_factory_parameters
+)
 
 verbose = True
 
@@ -73,7 +76,11 @@ def _clear_image_cache_after_commit_callback(commit_successful, item):
     if commit_successful:
         clear_image_cache(item)
 
-def require_rendering(item, factory_name = "default", format = None):
+def require_rendering(
+    item,
+    factory_name = "default",
+    format = None,
+    parameters = None):
 
     factory = image_factories.get(factory_name)
     
@@ -100,7 +107,11 @@ def require_rendering(item, factory_name = "default", format = None):
     if ext is None:
         ext = extensions_by_format[format]
 
-    file_name = factory_name + "." + ext
+    file_name = factory_name
+    if parameters:
+        file_name += "." + parameters
+    file_name += "." + ext
+    
     item_id = item.full_name if isinstance(item, type) else str(item.id)
 
     # If the image hasn't been generated yet, do so and store it in the
@@ -110,7 +121,8 @@ def require_rendering(item, factory_name = "default", format = None):
     if not os.path.exists(image_cache_file):
 
         # Generate the file
-        image = factory(item)
+        values = parse_image_factory_parameters(factory.parameters, parameters)
+        image = factory(item, *values)
 
         # Store the generated image in the image cache
         try:

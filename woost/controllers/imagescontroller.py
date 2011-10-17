@@ -45,10 +45,16 @@ class ImagesController(BaseCMSController):
 
         # Parse the given processing string, splitting the image factory from
         # the image format (ie. "home_thumbnail.png" -> ("home_thumbnail", "PNG"))
-        parts = processing.rsplit(".")
+        parts = processing.rsplit(".", 1)
+        parameters = None
 
         if len(parts) == 2:
-            factory_name, ext = parts
+            factory_string, ext = parts
+            factory_parts = factory_string.split(".", 1)
+            if len(factory_parts) == 1:
+                factory_name = factory_string
+            else:
+                factory_name, parameters = factory_parts
             format = formats_by_extension.get(ext)
             if format is None:
                 raise ValueError("Invalid image extension: %s" % ext)
@@ -63,6 +69,12 @@ class ImagesController(BaseCMSController):
             image_factory = factory_name
         )
 
-        image_cache_file = require_rendering(item, factory_name, format)
+        image_cache_file = require_rendering(
+            item, 
+            factory_name, 
+            format,
+            parameters
+        )
+
         return serve_file(image_cache_file)
 

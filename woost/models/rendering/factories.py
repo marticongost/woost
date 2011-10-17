@@ -14,7 +14,34 @@ image_factories = OrderedDict()
 def image_factory(func):
     """A decorator used to register image factories."""
     image_factories[func.func_name] = func
+    func.parameters = []
     return func
+
+def parse_image_factory_parameters(parameters, string):
+    """Parses additional parameters for an image factory."""
+
+    if not string:
+        return ()
+
+    values = []
+    chunks = string.split(".")
+    chunk_count = len(chunks)
+
+    for i, parameter in enumerate(parameters):
+        
+        if i >= chunk_count:
+            chunk = parameter.produce_default()
+        else:
+            chunk = chunks[i]
+
+        value = parameter.parse_request_value(None, chunk)
+        
+        for error in parameter.get_errors(value):
+            raise error
+
+        values.append(value)
+
+    return tuple(values)
 
 @image_factory
 def default(item):
