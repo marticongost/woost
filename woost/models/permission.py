@@ -180,7 +180,7 @@ class RenderPermission(ContentPermission):
         # If no specific render permission is found, a read permission will do
         return user.has_permission(
             ReadPermission,
-            target = context["item"],
+            target = context["target"],
             verbose = verbose
         )
 
