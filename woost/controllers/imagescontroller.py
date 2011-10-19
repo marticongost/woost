@@ -24,7 +24,7 @@ class ImagesController(BaseCMSController):
     different kinds of content managed by the CMS.
     """
 
-    def __call__(self, id, processing):
+    def __call__(self, id, processing, *args, **kwargs):
 
         # Get the requested element or content type
         item = None
@@ -42,6 +42,10 @@ class ImagesController(BaseCMSController):
         # Make sure the selected element exists
         if item is None:
             raise cherrypy.NotFound()
+
+        # Handle legacy image requests (woost < 0.8)
+        if args or kwargs or "(" in processing:
+            raise cherrypy.HTTPError(410)
 
         # Parse the given processing string, splitting the image factory from
         # the image format (ie. "home_thumbnail.png" -> ("home_thumbnail", "PNG"))
@@ -68,7 +72,7 @@ class ImagesController(BaseCMSController):
             target = item,
             image_factory = factory_name
         )
-
+        
         image_cache_file = require_rendering(
             item, 
             factory_name, 
