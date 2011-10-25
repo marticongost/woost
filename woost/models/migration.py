@@ -55,6 +55,17 @@ step.executing.append(
     ])
 )
 
+#------------------------------------------------------------------------------
+
+step = MigrationStep(
+    "Apply full text indexing to elements with no translations"
+)
+
+@when(step.executing)
+def rebuild_full_text_index(e):
+    from woost.models import Item
+    Item.rebuild_full_text_indexes(True)
+
 @step.processor("woost.models.publishable.Publishable")
 def set_defaults(publishable):
     if not hasattr(publishable, "_requires_https"):
