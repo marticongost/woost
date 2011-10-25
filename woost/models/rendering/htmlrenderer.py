@@ -17,6 +17,8 @@ from woost.models.rendering.contentrenderersregistry import content_renderers
 class HTMLRenderer(ContentRenderer):
     """A content renderer that handles XHTML/HTML pages."""
 
+    enabled = False
+
     mime_types = set([
         "text/html",
         "text/xhtml",
