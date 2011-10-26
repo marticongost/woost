@@ -380,9 +380,10 @@ class Publishable(Item):
                 default_format
             )
             ext = getattr(self, "file_extension", None)
-            if ext is None or ext not in formats_by_extension:
-                ext = extensions_by_format[default_format]
-            uri += "." + ext
+            if ext is None \
+            or ext.lstrip(".").lower() not in formats_by_extension:
+                ext = "." + extensions_by_format[default_format]
+            uri += ext
 
         if parameters:
             uri = make_uri(uri, **parameters)
