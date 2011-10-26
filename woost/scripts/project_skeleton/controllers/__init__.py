@@ -2,5 +2,5 @@
 u"""
 Site specific controllers.
 """
-from _PROJECT_MODULE_.controllers._PROJECT_NAME_cmscontroller import _PROJECT_NAME_CMSController
+from _PROJECT_MODULE_.controllers._PROJECT_MODULE_cmscontroller import _PROJECT_NAME_CMSController
 
