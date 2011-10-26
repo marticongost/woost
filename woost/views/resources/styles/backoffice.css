@@ -339,8 +339,8 @@ body.modal {
     margin-bottom: 0;
 }
 
-.BackOfficeLayout fieldset fieldset + fieldset {
-    margin-top: 1em;
+.BackOfficeLayout fieldset + fieldset {
+    margin-top: 2em;
 }
 
 .BackOfficeLayout fieldset legend {
@@ -359,12 +359,14 @@ body.modal {
 
 .BackOfficeLayout fieldset .fieldset_fields {
     border-top: 1px solid #adb2bc;
-    padding-top: 1em;
     margin-top: 0;
+    padding-top: 1em;
+    padding-left: 0.75em;
 }
 
-.BackOfficeLayout fieldset .fieldset_fields {
-    padding-left: 0.75em;
+.BackOfficeLayout fieldset.anonymous > .fieldset_fields {
+    border-top: none;
+    padding-top: 0;
 }
 
 .BackOfficeLayout fieldset fieldset .fieldset_fields {
