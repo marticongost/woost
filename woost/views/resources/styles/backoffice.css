@@ -156,6 +156,14 @@ body {
     list-style-type: none;
 }
 
+.BackOfficeLayout .members_selector {
+    font-size: 0.9em;
+}
+
+.BackOfficeLayout .members_selector .group_label {
+    color: rgb(75,75,75);
+}
+
 .BackOfficeLayout .tabs {
     clear: both;
     overflow: visible;
@@ -2141,7 +2149,7 @@ button.TypeSelectorButton {
 .BackOfficeLayout .CollectionView .settings_box .selector_content {
     right: 0;
     top: 23px;
-    width: 22em;
+    width: 30em;
 }
 
 .BackOfficeLayout .CollectionView .settings_box .box_label,
