@@ -2415,30 +2415,6 @@ a.pickcolor span {
     margin-top: 2em;
 }
 
-/* Delete warning
------------------------------------------------------------------------------*/
-.BackOfficeLayout ul.deleted_item_block {
-    font-weight: bold;
-    list-style-type: disc;
-}
-
-.BackOfficeLayout ul.deleted_item_block ul {
-    font-weight: normal;
-    font-style: italic;
-    list-style-type: circle;
-}
-
-.BackOfficeLayout ul.deleted_item_block .deleted_item {
-    padding-top: 0.5em;
-    margin: 0;
-}
-
-/* Block delete
------------------------------------------------------------------------------*/
-.BackOfficeLayout .blocking_members_box .ContentLink {
-    text-decoration: none;
-}
-
 /* Feed edit form
 -----------------------------------------------------------------------------*/
 .FeedFields .edit_form .ttl_field input.control,
