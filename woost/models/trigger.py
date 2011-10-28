@@ -58,7 +58,6 @@ def set_triggers_enabled(enabled):
 class Trigger(Item):
     """Describes an event."""
 
-    integral = True
     instantiable = False
     visible_from_root = False
     members_order = [
