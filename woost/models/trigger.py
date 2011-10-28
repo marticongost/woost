@@ -66,6 +66,7 @@ class Trigger(Item):
         "batch_execution",
         "matching_roles",
         "condition",
+        "custom_context",
         "responses"
     ]
     
@@ -121,7 +122,16 @@ class Trigger(Item):
         ),
         text_search = False
     )
-     
+ 
+    custom_context = schema.String(
+        edit_control = display_factory(
+            "cocktail.html.CodeEditor",
+            syntax = "python",
+            cols = 80
+        ),
+        text_search = False
+    )
+
     def match(self, user, verbose = False, **context):
 
         # Check the user
@@ -371,6 +381,22 @@ def trigger_responses(
 
             if target is not None:
                 trigger_targets.add(target)
+
+            # Apply user defined customizations to the context
+            # This can be specially useful to allow after-commit triggers to
+            # capture state as it was when they were scheduled for execution
+            # (ie. when deleting elements or confirming drafts).
+            if trigger.custom_context:
+                ctx = {
+                    "self": trigger,
+                    "context": context,
+                    "user": user,
+                    "target": target,
+                    "trigger_targets": trigger_targets,
+                    "modified_members": modified_members
+                }
+                exec trigger.custom_context in ctx
+                context = ctx["context"]
 
             # Execute after the transaction is committed
             if trigger.execution_point == "after":

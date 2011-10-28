@@ -3915,6 +3915,21 @@ translations.define("Trigger.condition-explanation",
          u"the trigger depending on its context."
 )
 
+translations.define("Trigger.custom_context",
+    ca = u"Context",
+    es = u"Contexto",
+    en = u"Context"
+)
+
+translations.define("Trigger.custom_context-explanation",
+    ca = u"Un bloc de codi Python que permet personalitzar els paràmetres "
+         u"que es passaran al disparador en el moment en que sigui executat.",
+    es = u"Un bloque de código Python que permite personalizar los parámetros "
+         u"que recibirá el disparador en el momento en que sea ejecutado.",
+    en = u"A block of Python code that allows to customize the parameters "
+         u"that the trigger will receive when it is finally executed."
+)
+
 translations.define("Trigger.responses",
     ca = u"Respostes",
     es = u"Respuestas",
