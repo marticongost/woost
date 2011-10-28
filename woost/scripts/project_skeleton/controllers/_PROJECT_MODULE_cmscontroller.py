@@ -18,10 +18,10 @@ renderingengines.rendering_options.update({
 
 class _PROJECT_NAME_CMSController(CMSController):
 
-    _cp_config = CMS.copy_config()
+    _cp_config = CMSController.copy_config()
     _cp_config["rendering.engine"] = "_TEMPLATE_ENGINE_"
 
-    class ApplicationContainer(CMS.ApplicationContainer):
+    class ApplicationContainer(CMSController.ApplicationContainer):
         _PROJECT_MODULE__resources = folder_publisher(
             resource_filename("_PROJECT_MODULE_.views", "resources")
         )

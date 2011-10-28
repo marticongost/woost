@@ -6,23 +6,15 @@ u"""
 @organization:	Whads/Accent SL
 @since:			February 2009
 """
-from __future__ import with_statement
 from ZODB.POSException import ConflictError
-from cocktail.modeling import getter, cached_getter, InstrumentedSet
 from cocktail.translations import translations
-from cocktail.schema import (
-    String,
-    Collection,
-    Reference,
-    RelationMember,
-    remove
-)
-from cocktail.persistence import datastore, PersistentClass
+from cocktail.schema import String, Collection
+from cocktail.persistence import datastore, delete_dry_run
+from cocktail.controllers import request_property
 from woost.models import (
     changeset_context,
     delete_validating,
-    get_current_user,
-    DeletePermission
+    get_current_user
 )
 from woost.controllers.notifications import notify_user
 from woost.controllers.backoffice.editstack import EditNode
@@ -34,15 +26,7 @@ class DeleteController(BaseBackOfficeController):
     
     MAX_TRANSACTION_ATTEMPTS = 3
 
-    _delete_dry_run_done = False
-
-    def __init__(self, *args, **kwargs):
-        BaseBackOfficeController.__init__(self, *args, **kwargs)
-
-        self._delete_tree = []
-        self._blocking_members = []
-
-    @cached_getter
+    @request_property
     def selection(self):
         """The selected subset of items that should be deleted.
         @type: L{Item<woost.models.item.Item>} collection
@@ -50,64 +34,12 @@ class DeleteController(BaseBackOfficeController):
         return self.params.read(
             Collection("selection", items = "woost.models.Item"))
 
-    def _delete_dry_run(self):
-
-        if self._delete_dry_run_done:
-            return
-
+    @request_property
+    def delete_dry_run(self):
         visited = set()
+        return [delete_dry_run(item, visited) for item in self.selection]
 
-        def recurse(item, container):
-
-            if item in visited:
-                return
-            
-            visited.add(item)
-            deleted_descendants = list()
-            container.append((item, deleted_descendants))
-            
-            for member in item.__class__.members().itervalues():
-
-                if isinstance(member, RelationMember) \
-                and member.related_type \
-                and isinstance(member.related_type, PersistentClass):
-                    
-                    if member.block_delete and item.get(member):
-                        self._blocking_members.append((item, member))
-
-                    if item._should_cascade_delete(member):
-                        value = item.get(member)
-
-                        if value is not None:
-                            if isinstance(member, Reference):
-                                value = (value,)
-
-                            member_container = list()
-                            for descendant in value:
-                                if descendant is not None:
-                                    recurse(descendant, member_container)
-       
-                            if len(member_container) > 0:
-                                deleted_descendants.append(
-                                    (member, member_container)
-                                )
-
-        for item in self.selection:
-            recurse(item, self._delete_tree)
-        
-        self._delete_dry_run_done = True
-
-    @getter
-    def delete_tree(self):
-        self._delete_dry_run()
-        return self._delete_tree
-
-    @getter
-    def blocking_members(self):
-        self._delete_dry_run()
-        return self._blocking_members
-
-    @cached_getter
+    @request_property
     def action(self):
         """A string identifier indicating the action that has been activated by
         the user.
@@ -115,7 +47,7 @@ class DeleteController(BaseBackOfficeController):
         """
         return self.params.read(String("action"))
 
-    @cached_getter
+    @request_property
     def submitted(self):
         return self.action is not None
     
@@ -184,14 +116,12 @@ class DeleteController(BaseBackOfficeController):
             stack.go()
         else:
             self.go_back()
-            
 
     view_class = "woost.views.BackOfficeDeleteView"
 
-    @cached_getter
+    @request_property
     def output(self):
         output = BaseBackOfficeController.output(self)
-        output["delete_tree"] = self.delete_tree
-        output["blocking_members"] = self.blocking_members
+        output["delete_dry_run"] = self.delete_dry_run
         return output
 
