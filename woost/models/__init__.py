@@ -132,7 +132,8 @@ from woost.models.trigger import (
     CreateTrigger,
     InsertTrigger,
     ModifyTrigger,
-    DeleteTrigger
+    DeleteTrigger,
+    ConfirmDraftTrigger
 )
 from woost.models.triggerresponse import (
     TriggerResponse,

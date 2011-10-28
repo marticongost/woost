@@ -4060,6 +4060,20 @@ translations.define("DeleteTrigger-plural",
     en = u"Delete triggers"
 )
 
+# ConfirmDraftTrigger
+#------------------------------------------------------------------------------
+translations.define("ConfirmDraftTrigger",
+    ca = u"Disparador de confirmació d'esborrany",
+    es = u"Disparador de confirmación de borrador",
+    en = u"Draft confirmation trigger"
+)
+
+translations.define("ConfirmDraftTrigger-plural",
+    ca = u"Disparadors de confirmació d'esborrany",
+    es = u"Disparadores de confirmación de borrador",
+    en = u"Draft confirmation triggers"
+)
+
 # TriggerResponse
 #------------------------------------------------------------------------------
 translations.define("TriggerResponse",
