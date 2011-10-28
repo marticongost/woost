@@ -390,7 +390,8 @@ def trigger_responses(
                                             trigger_targets,
                                             user,
                                             batch = True,
-                                            modified_members = modified_members
+                                            modified_members = modified_members,
+                                            **context
                                         )
 
                                     datastore.commit()
