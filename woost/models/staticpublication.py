@@ -15,6 +15,7 @@ from woost.models.user import User
 from woost.models.rendering.cache import require_rendering
 
 debug = True
+filesystem_encoding = "utf-8"
 
 members_affecting_static_publication = set([
     File.title,
@@ -65,7 +66,12 @@ def _update_links_after_commit(commit_successful, file, old_links):
         remove_links(file, old_links)
         create_links(file)
 
-def create_links(file, links = None):
+def encode_filename(link, encoding = None):
+    if encoding is None:
+        encoding = filesystem_encoding
+    return link.encode(encoding) if isinstance(link, unicode) else link
+
+def create_links(file, links = None, encoding = None):
     
     if not file.is_inserted:
         return
@@ -83,7 +89,11 @@ def create_links(file, links = None):
     else:
         linked_file = file.file_path
 
+    linked_file = encode_filename(linked_file, encoding)
+
     for link in links:
+
+        link = encode_filename(link, encoding)
 
         if debug:
             print styled("STATIC PUBLICATION", "white", "green"),
@@ -102,12 +112,13 @@ def create_links(file, links = None):
         # Create the new link
         os.symlink(linked_file, link)
 
-def remove_links(file, links = None):
+def remove_links(file, links = None, encoding = None):
     
     if links is None:
         links = get_links(file)
 
     for link in links:
+        link = encode_filename(link, encoding)
         if os.path.lexists(link):
             if debug:
                 print styled("STATIC PUBLICATION", "white", "red"),
