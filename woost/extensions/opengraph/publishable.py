@@ -9,6 +9,7 @@ from cocktail.translations import translations
 from cocktail.html.datadisplay import display_factory
 from woost.models import Publishable, Document, News, File
 from woost.extensions.opengraph.opengraphtype import OpenGraphType
+from woost.extensions.opengraph.utils import export_content
 
 File.default_open_graph_enabled = False
 File.default_open_graph_type = None
@@ -57,11 +58,15 @@ def _get_publishable_properties(self):
 
     image = self.get_open_graph_image()
     if image:
-        properties["og:image"] = image.get_uri(host = ".")
+        if isinstance(image, Publishable):
+            image = image.get_uri(host = ".")
+        properties["og:image"] = image
 
     video = self.get_open_graph_video()
     if video:
-        properties["og:video"] = video.get_uri(host = ".")
+        if isinstance(video, Publishable):
+            video = video.get_uri(host = ".")
+        properties["og:video"] = video
 
     return properties
 
@@ -72,7 +77,7 @@ def _get_document_properties(self):
     properties = Publishable.get_open_graph_properties(self)
 
     if self.description:
-        properties["og:description"] = self.description
+        properties["og:description"] = export_content(self.description)
 
     return properties
 
@@ -83,7 +88,7 @@ def _get_news_properties(self):
     properties = Document.get_open_graph_properties(self)
 
     if self.summary:
-        properties["og:description"] = self.summary
+        properties["og:description"] = export_content(self.summary)
 
     return properties
 

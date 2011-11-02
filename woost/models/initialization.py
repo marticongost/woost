@@ -36,6 +36,7 @@ from woost.models import (
     CreatePermission,
     ModifyPermission,
     DeletePermission,
+    RenderPermission,
     ReadMemberPermission,
     ModifyMemberPermission,
     CreateTranslationPermission,
@@ -181,7 +182,14 @@ def init_site(
             "filter": "owned-items"
         }
         everybody_role.permissions = [
-            
+
+            # Everybody can render any item
+            RenderPermission(
+                matching_items = {
+                    "type": "woost.models.item.Item"
+                }
+            ),
+
             # Everybody can read published items
             ReadPermission(
                 matching_items = {

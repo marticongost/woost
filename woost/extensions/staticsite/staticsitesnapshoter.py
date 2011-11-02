@@ -14,6 +14,7 @@ from cocktail.controllers import context as controller_context
 from cocktail.modeling import abstractmethod, getter
 from cocktail.translations import translations
 from cocktail.controllers.location import Location
+from woost import app
 from woost.models import Item
 
 
@@ -103,12 +104,7 @@ class WgetSnapShoter(StaticSiteSnapShoter):
 
     @getter
     def snapshot_path(self):
-        return os.path.join(
-            controller_context["cms"].application_path,
-            u"snapshots",
-            str(self.id)
-        )
-
+        return app.path("snapshots", str(self.id))
 
     def _get_cmd(self, context):
         cmd = "wget --mirror"

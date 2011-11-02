@@ -257,7 +257,8 @@ class Site(Item):
 
     triggers = schema.Collection(
         items = "woost.models.Trigger",
-        bidirectional = True
+        bidirectional = True,
+        integral = True
     )
 
     publication_schemes = schema.Collection(
