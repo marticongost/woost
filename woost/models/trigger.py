@@ -58,7 +58,6 @@ def set_triggers_enabled(enabled):
 class Trigger(Item):
     """Describes an event."""
 
-    integral = True
     instantiable = False
     visible_from_root = False
     members_order = [
@@ -67,6 +66,7 @@ class Trigger(Item):
         "batch_execution",
         "matching_roles",
         "condition",
+        "custom_context",
         "responses"
     ]
     
@@ -122,7 +122,16 @@ class Trigger(Item):
         ),
         text_search = False
     )
-     
+ 
+    custom_context = schema.String(
+        edit_control = display_factory(
+            "cocktail.html.CodeEditor",
+            syntax = "python",
+            cols = 80
+        ),
+        text_search = False
+    )
+
     def match(self, user, verbose = False, **context):
 
         # Check the user
@@ -277,6 +286,11 @@ class DeleteTrigger(ContentTrigger):
     instantiable = True
 
 
+class ConfirmDraftTrigger(ContentTrigger):
+    """A trigger executed when a draft is confirmed."""
+    instantiable = True
+
+
 def trigger_responses(
     trigger_type,
     user = None,
@@ -373,6 +387,22 @@ def trigger_responses(
             if target is not None:
                 trigger_targets.add(target)
 
+            # Apply user defined customizations to the context
+            # This can be specially useful to allow after-commit triggers to
+            # capture state as it was when they were scheduled for execution
+            # (ie. when deleting elements or confirming drafts).
+            if trigger.custom_context:
+                ctx = {
+                    "self": trigger,
+                    "context": context,
+                    "user": user,
+                    "target": target,
+                    "trigger_targets": trigger_targets,
+                    "modified_members": modified_members
+                }
+                exec trigger.custom_context in ctx
+                context = ctx["context"]
+
             # Execute after the transaction is committed
             if trigger.execution_point == "after":
                 
@@ -391,7 +421,8 @@ def trigger_responses(
                                             trigger_targets,
                                             user,
                                             batch = True,
-                                            modified_members = modified_members
+                                            modified_members = modified_members,
+                                            **context
                                         )
 
                                     datastore.commit()
@@ -476,4 +507,8 @@ def _trigger_relation_responses(event):
 @when(Item.deleted)
 def _trigger_deletion_responses(event):
     trigger_responses(DeleteTrigger, target = event.source)
+
+@when(Item.draft_confirmation)
+def _trigger_draft_confirmation_responses(event):
+    trigger_responses(ConfirmDraftTrigger, target = event.source)
 

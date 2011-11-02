@@ -362,18 +362,30 @@ class Publishable(Item):
         return uri
 
     def get_image_uri(self,
-        effects = None,
+        image_factory = None,
         parameters = None,
         host = None,
-        encode = True):
+        encode = True,
+        include_extension = True):
                 
         uri = make_uri("/images", self.id)
 
-        if effects:
-            if isinstance(effects, basestring):
-                uri = make_uri(uri, effects)
-            else:
-                uri = make_uri(uri, *effects)
+        if image_factory:
+            uri = make_uri(uri, image_factory)
+
+        if include_extension:
+            from woost.models.rendering.formats import (
+                formats_by_extension,
+                extensions_by_format,
+                default_format
+            )
+            ext = getattr(self, "file_extension", None)
+            if ext is not None:
+                ext = ext.lower()
+            if ext is None \
+            or ext.lstrip(".") not in formats_by_extension:
+                ext = "." + extensions_by_format[default_format]
+            uri += ext
 
         if parameters:
             uri = make_uri(uri, **parameters)

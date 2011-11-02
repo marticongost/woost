@@ -105,6 +105,7 @@ from woost.models.permission import (
     ModifyPermission,
     DeletePermission,
     ConfirmDraftPermission,
+    RenderPermission,
     ReadMemberPermission,
     ModifyMemberPermission,
     CreateTranslationPermission,
@@ -131,7 +132,8 @@ from woost.models.trigger import (
     CreateTrigger,
     InsertTrigger,
     ModifyTrigger,
-    DeleteTrigger
+    DeleteTrigger,
+    ConfirmDraftTrigger
 )
 from woost.models.triggerresponse import (
     TriggerResponse,
@@ -149,5 +151,7 @@ from woost.models.userfilter import (
 
 from woost.models.caching import CachingPolicy, expire_cache
 
+from woost.models import rendering
+from woost.models import staticpublication
 from woost.models import migration
 

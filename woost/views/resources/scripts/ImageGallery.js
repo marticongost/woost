@@ -11,6 +11,7 @@ cocktail.bind({
     selector: ".ImageGallery",
     behavior: function ($imageGallery) {
  
+        var inDialog = false;
         var loadedImages = {};
 
         $imageGallery.bind("imageLoaded", function (e, loadedImage) {
@@ -88,7 +89,28 @@ cocktail.bind({
             }
         }
 
+        this.pauseAutoplay = function () {
+            // Temporarely disable the automatic slideshow, until the user
+            // closes the dialog
+            if (this.sudoSlider && this.sliderOptions.auto) {
+                this.sudoSlider.stopAuto();
+            }
+        }
+
+        this.resumeAutoplay = function () {
+            // Resume the automatic slideshow
+            if (this.sudoSlider && this.sliderOptions.auto && !inDialog) {
+                this.sudoSlider.startAuto();
+            }
+        }
+
+        $imageGallery.hover(this.pauseAutoplay, this.resumeAutoplay);
+
         this.showImage = function (entry) {
+            
+            inDialog = true;
+            this.pauseAutoplay();
+
             cocktail.closeDialog();
             var dialog = this.createImageDialog(entry);
             cocktail.showDialog(dialog);            
@@ -111,7 +133,7 @@ cocktail.bind({
 
             // Synchronize the gallery and the image dialog
             if (this.sudoSlider) {
-                this.sudoSlider.goToSlide(jQuery(entry).index() + 1);
+                this.sudoSlider.goToSlide(jQuery(entry).index());
             }
         }
 
@@ -144,7 +166,9 @@ cocktail.bind({
             var $dialog = jQuery(cocktail.instantiate("woost.views.ImageGallery.image_dialog"));
 
             $dialog.bind("dialogClosed", function () {
+                inDialog = false;
                 $entry.find(".image_link").focus();
+                var ig = $imageGallery.get(0).resumeAutoplay();
             });
 
             $dialog.find(".image").attr("src", imageURL);
@@ -167,6 +191,15 @@ cocktail.bind({
             }
             else {
                 $dialog.find(".footnote").hide();
+            }
+
+            if (entry.originalImage) {
+                var $originalLink = $dialog.find(".original_image_link");
+                $originalLink.find("a").attr("href", entry.originalImage);
+                $originalLink.show();
+            }
+            else {
+                $dialog.find(".original_image_link").hide();
             }
 
             var $close = $dialog.find(".close_button");

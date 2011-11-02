@@ -16,7 +16,6 @@ from cocktail.controllers import context
     <py:woost.views.ImageGallery
         py:id="image_gallery"
         py:gallery_type="slideshow"
-        py:thumbnail_effects="${('fit(%(width)s,%(height)s)',)}"
         py:images="@{a for a in self.product.attachments if a.resource_type == 'image'}"/>
 
     <span py:id="price_label">@{self.product.price} @{self.currency}</span>
@@ -39,7 +38,7 @@ from cocktail.controllers import context
                 py:for="attachment in self.product.attachments"
                 py:where="attachment.resource_type != 'image' and attachment.is_accessible()">            
                 <a href="${attachment.get_uri()}" title="${getattr(attachment, 'description', None)}">
-                    <img src="${context['cms'].icon_uri(attachment, 16)}" alt=""/>
+                    <img src="${attachment.get_image_uri('icon16')}" alt=""/>
                     <span>${translations(attachment)}</span>
                 </a>
             </li>

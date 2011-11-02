@@ -35,6 +35,7 @@ from cocktail.controllers import (
 )
 from cocktail.controllers.uriutils import percent_encode
 from cocktail.persistence import datastore
+from woost import app
 from woost.models import (
     Item,
     Publishable,
@@ -54,9 +55,10 @@ from woost.controllers.authentication import (
     AuthenticationFailedError
 )
 from woost.controllers.imagescontroller import ImagesController
+from woost.controllers.imageeffectscontroller import ImageEffectsController
 
 
-class CMS(BaseCMSController):
+class CMSController(BaseCMSController):
     
     application_settings = None
 
@@ -109,10 +111,6 @@ class CMS(BaseCMSController):
 
     # Webserver configuration
     virtual_path = "/"
-    
-    # Paths
-    application_path = None
-    upload_path = None
 
     # Enable / disable confirmation dialogs when closing an edit session. This
     # setting exists mainly to disable the dialogs on selenium test runs.
@@ -126,85 +124,77 @@ class CMS(BaseCMSController):
 
         def __init__(self, cms):
             self.__cms = cms
-            self.__dispatcher = Dispatcher()            
-            app_path = cms.application_path
+            self.__dispatcher = Dispatcher()
 
-            if app_path:
-
-                # Set the default location for file-based sessions
-                sconf = session.config
-                using_file_sessions = (sconf.get("session.type") == "file")
-                using_dbm_sessions = (sconf.get("session.type") == "dbm")
-                lock_dir_missing = (
-                    not using_file_sessions 
-                    and not sconf.get("session.lock_dir")
+            # Set the default location for file-based sessions
+            sconf = session.config
+            using_file_sessions = (sconf.get("session.type") == "file")
+            using_dbm_sessions = (sconf.get("session.type") == "dbm")
+            lock_dir_missing = (
+                not using_file_sessions 
+                and not sconf.get("session.lock_dir")
+            )
+            data_dir_missing = (
+                (
+                    using_file_sessions 
+                    or (using_dbm_sessions and not
+                        sconf.get("session.dbm_dir"))
                 )
-                data_dir_missing = (
-                    (
-                        using_file_sessions 
-                        or (using_dbm_sessions and not
-                            sconf.get("session.dbm_dir"))
-                    )
-                    and not sconf.get("session.data_dir")
+                and not sconf.get("session.data_dir")
+            )
+
+            if lock_dir_missing or data_dir_missing:
+                
+                session_path = app.path("sessions")
+                if not os.path.exists(session_path):
+                    os.mkdir(session_path)
+
+                if lock_dir_missing:
+                    sconf["session.lock_dir"] = session_path
+
+                if data_dir_missing:
+                    sconf["session.data_dir"] = session_path
+
+            if not sconf.get("session.secret"):
+
+                session_key_path = app.path(".session_key")
+                if os.path.exists(session_key_path):
+                    with open(session_key_path, "r") as session_key_file:
+                        session_key = session_key_file.readline()
+                else:
+                    with open(session_key_path, "w") as session_key_file:
+                        session_key = sha("".join(
+                            choice(ascii_letters) 
+                            for i in range(10)
+                        )).hexdigest()
+                        session_key_file.write(session_key)
+
+                sconf["session.secret"] = session_key
+
+            # If the cache manager doesn't exist, create it
+            if not get_cache_manager():
+                cache_path = app.path('cache')
+
+                if not os.path.exists(cache_path):
+                    os.mkdir(cache_path)
+
+                cache_manager = CacheManager(
+                    **parse_cache_config_options({
+                        'cache.lock_dir': cache_path,
+                        'cache.regions': 'woost_cache',
+                        'cache.woost_cache.type': 'memory'
+                    })
                 )
+                set_cache_manager(cache_manager)
 
-                if lock_dir_missing or data_dir_missing:
-                    
-                    session_path = os.path.join(app_path, "sessions")
-                    if not os.path.exists(session_path):
-                        os.mkdir(session_path)
+            # Create the folders for uploaded files
+            upload_path = app.path("upload")
+            if not os.path.exists(upload_path):
+                os.mkdir(upload_path)
 
-                    if lock_dir_missing:
-                        sconf["session.lock_dir"] = session_path
-
-                    if data_dir_missing:
-                        sconf["session.data_dir"] = session_path
-
-                if not sconf.get("session.secret"):
-
-                    session_key_path = os.path.join(app_path, ".session_key")
-                    if os.path.exists(session_key_path):
-                        with open(session_key_path, "r") as session_key_file:
-                            session_key = session_key_file.readline()
-                    else:
-                        with open(session_key_path, "w") as session_key_file:
-                            session_key = sha("".join(
-                                choice(ascii_letters) 
-                                for i in range(10)
-                            )).hexdigest()
-                            session_key_file.write(session_key)
-
-                    sconf["session.secret"] = session_key
-
-                # If the cache manager doesn't exists, create it
-                if not get_cache_manager():
-                    cache_path = os.path.join(app_path, 'cache')
-
-                    if not os.path.exists(cache_path):
-                        os.mkdir(cache_path)
-
-                    cache_manager = CacheManager(
-                        **parse_cache_config_options({
-                            'cache.lock_dir': cache_path,
-                            'cache.regions': 'woost_cache',
-                            'cache.woost_cache.type': 'memory'
-                        })
-                    )
-                    set_cache_manager(cache_manager)
-
-                # Set the default location for uploaded files
-                if not cms.upload_path:
-                    
-                    # If the directory doesn't exist, create it
-                    upload_path = os.path.join(app_path, "upload")
-                    if not os.path.exists(upload_path):
-                        os.mkdir(upload_path)
-
-                    temp_path = os.path.join(upload_path, "temp")
-                    if not os.path.exists(temp_path):
-                        os.mkdir(temp_path)
-
-                    cms.upload_path = upload_path
+            temp_path = app.path("upload", "temp")
+            if not os.path.exists(temp_path):
+                os.mkdir(temp_path)
 
         @cherrypy.expose
         def default(self, *args, **kwargs):
@@ -227,22 +217,8 @@ class CMS(BaseCMSController):
     
         BaseCMSController.__init__(self, *args, **kwargs)
 
-        app_path = kwargs.get("application_path")
-        if app_path:
-            self.application_path = app_path
-
         self.language = self.LanguageModule(self)
         self.authentication = self.AuthenticationModule(self)
-        self.icon_resolver = IconResolver()
-
-        if self.application_path:
-
-            # Add an application specific icon repository
-            app_icon_path = os.path.join(
-                self.application_path,
-                "views", "resources", "images", "icons"
-            )
-            self.icon_resolver.icon_repositories.insert(0, app_icon_path)
 
     def run(self, block = True):
                 
@@ -295,31 +271,7 @@ class CMS(BaseCMSController):
             for step in path_resolution.matching_path:
                 path.pop(0)
 
-            # Redirection to the item's canonical path
-            canonical_path = site.get_path(publishable)
-            if canonical_path is not None:
-                canonical_path = canonical_path.strip("/")
-                canonical_path = (
-                    canonical_path.split("/")
-                    if canonical_path
-                    else []
-                )
-                if canonical_path != path_resolution.matching_path:
-                    canonical_uri = "".join(
-                        percent_encode(c) for c in "/" + "/".join(
-                            step for step in (
-                                canonical_path
-                                + path_resolution.extra_path
-                            )
-                        )
-                    )
-                    if publishable.per_language_publication:
-                        canonical_uri = \
-                            self.language.translate_uri(canonical_uri)
-                    if cherrypy.request.query_string:
-                        canonical_uri = canonical_uri + \
-                            "?" + cherrypy.request.query_string
-                    raise cherrypy.HTTPRedirect(canonical_uri)
+            self.canonical_redirection(path_resolution)        
         else:
             publishable = site.home
         
@@ -349,6 +301,49 @@ class CMS(BaseCMSController):
             location.go()
 
         return controller
+
+    def canonical_redirection(self, path_resolution):
+        """Redirect the current request to the canonical URL for the selected
+        publishable element.
+        """        
+        site = Site.main
+        publishable = path_resolution.item
+
+        # Find the canonical path for the element
+        canonical_path = site.get_path(publishable)
+
+        if canonical_path is None:
+            return
+
+        canonical_path = canonical_path.strip("/")
+        canonical_path = (
+            canonical_path.split("/")
+            if canonical_path
+            else []
+        )
+
+        # The current request matches the canonical path, do nothing
+        if canonical_path == path_resolution.matching_path:
+            return
+
+        canonical_uri = "".join(
+            percent_encode(c) for c in "/" + "/".join(
+                step for step in (
+                    canonical_path
+                    + path_resolution.extra_path
+                )
+            )
+        )
+
+        if publishable.per_language_publication:
+            canonical_uri = \
+                self.language.translate_uri(canonical_uri)
+
+        if cherrypy.request.query_string:
+            canonical_uri = canonical_uri + \
+                "?" + cherrypy.request.query_string
+
+        raise cherrypy.HTTPRedirect(canonical_uri)
 
     def _process_path(self, path):
 
@@ -403,43 +398,16 @@ class CMS(BaseCMSController):
             self.language.translate_uri(path = path, language = language)
         )
 
-    def image_uri(self, element, *args, **kwargs):
+    def image_uri(self, element, factory = "default"):
 
-        warn(
-            "CMS.image_uri() is deprecated, use Publishable.get_image_uri() "
-            "instead",
-            DeprecationWarning,
-            stacklevel = 2
-        )
+        if not isinstance(element, (int, basestring)):
+            if isinstance(element, type) \
+            or not getattr(element, "is_inserted", False):
+                element = element.full_name
+            elif hasattr(element, "id"):
+                element = element.id
 
-        if isinstance(element, type):
-            element = element.full_name
-        elif hasattr(element, "id"):
-            element = element.id
-        
-        return self.application_uri("images", element, *args, **kwargs)
-
-    def icon_uri(self, element, icon_size, thumbnail_size = None):
-
-        if thumbnail_size:
-            w, h = thumbnail_size
-            if w and h:
-                args = ["thumbnail(%s,%s)" % thumbnail_size] 
-            elif w:
-                args = ["thumbnail(width=%s)" % w]
-            else:
-                args = ["thumbnail(height=%s)" % h]
-        else:
-            args = []
-
-        kwargs = {"icon.size": str(icon_size)}
-
-        if thumbnail_size:
-            kwargs["kind"] = "image,icon"
-        elif not isinstance(element, type):
-            kwargs["kind"] = "icon"
-
-        return self.image_uri(element, *args, **kwargs)
+        return self.application_uri("images", element, factory)
 
     def validate_publishable(self, publishable):
 
@@ -600,8 +568,6 @@ class CMS(BaseCMSController):
     def handle_after_request(cls, event):
         datastore.abort()
 
-    def get_file_upload_path(self, id):
-        return os.path.join(self.upload_path, str(id))
-
     images = ImagesController
+    image_effects = ImageEffectsController
 

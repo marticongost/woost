@@ -121,3 +121,14 @@ step.rename_member(
     "attachments"
 )
 
+#------------------------------------------------------------------------------
+
+step = MigrationStep(
+    "Apply full text indexing to elements with no translations"
+)
+
+@when(step.executing)
+def rebuild_full_text_index(e):
+    from woost.models import Item
+    Item.rebuild_full_text_indexes(True)
+

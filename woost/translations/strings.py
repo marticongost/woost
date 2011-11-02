@@ -586,50 +586,42 @@ translations.define(
     en = u"Restricted field"
 )
 
-translations.define("woost.views.BackOfficeDeleteView warning",
-    ca = u"S'eliminarà els elements llistats:",
-    es = u"Se eliminará los elementos listados:",
-    en = u"The listed elements will be deleted:"
+translations.define("woost.views.BackOfficeDeleteView.warning",
+    ca = u"S'eliminaran els elements indicats:",
+    es = u"Se eliminarán los elementos indicados:",
+    en = u"The following elements will be deleted:"
 )
 
-translations.define("woost.views.BackOfficeDeleteView blocked_delete",
-    ca = u"No es pot completar l'eliminació, ja que els elements següents "
-         u"tenen vinculacions que impedeixen que puguin ser eliminats:",
-    es = u"No se puede completar la eliminación, ya que los elementos "
-         u"siguientes tienen vinculaciones que impiden que puedan ser "
-         u"eliminados:",
+translations.define("woost.views.BackOfficeDeleteView.block_notice",
+    ca = u"No es pot completar l'eliminació, ja que alguns dels elements  "
+         u"seleccionats tenen contingut relacionat que impedeix que puguin "
+         u"ser eliminats:",
+    es = u"No se puede completar la eliminación, ya que algunos de los "
+         u"elementos seleccionados contienen vinculaciones que impiden que "
+         u"puedan ser eliminados:",
     en = u"The delete operation could not be executed; it is blocked by the "
          u"the following relations:"
 )
 
-translations.define("woost.views.BackOfficeDeleteView blocked_delete_item",
-    ca = lambda blocked_item, blocked_member: u"<em>%s</em> de l'element \
-        <strong>%s</strong>" \
-        % (
-            translations(blocked_member, "ca"),
-            translations(blocked_item, "ca")
-        ),
-    es = lambda blocked_item, blocked_member: u"<em>%s</em> de l'elemento \
-        <strong>%s</strong>" \
-        % (
-            translations(blocked_member, "es"),
-            translations(blocked_item, "es")
-        ),
-    en = lambda blocked_item, blocked_member: u"<em>%s</em> from the \
-        <strong>%s</strong> element" \
-        % (
-            translations(blocked_member, "en"),
-            translations(blocked_item, "en")
-        ),
+translations.define("woost.views.BackOfficeDeleteView.cascade_details",
+    ca = u"També eliminarà:",
+    es = u"También eliminará:",
+    en = u"Will also delete:"
 )
 
-translations.define("woost.views.BackOfficeDeleteView delete",
+translations.define("woost.views.BackOfficeDeleteView.block_details",
+    ca = u"Bloquejat per:",
+    es = u"Bloqueado por:",
+    en = u"Blocked by:"
+)
+
+translations.define("woost.views.BackOfficeDeleteView.confirm_delete_button",
     ca = u"Eliminar",
     es = u"Eliminar",
     en = u"Delete"
 )
 
-translations.define("woost.views.BackOfficeDeleteView cancel",
+translations.define("woost.views.BackOfficeDeleteView.cancel_button",
     ca = u"Cancel·lar",
     es = u"Cancelar",
     en = u"Cancel"
@@ -1152,6 +1144,12 @@ translations.define("woost.views.ImageGallery.loading_sign",
     en = u"Loading image"
 )
 
+translations.define("woost.views.ImageGallery.original_image_link",
+    ca = u"Descarregar l'original",
+    es = u"Descargar el original",
+    en = u"Download the original"
+)
+
 # Content views
 #------------------------------------------------------------------------------
 translations.define("View as",
@@ -1393,7 +1391,7 @@ translations.define("UploadFilesForm.upload",
 )
 
 translations.define(
-    "upload.mime_type-error: cocktail.schema.exceptions.EnumerationError",
+    "UploadFilesForm.upload.mime_type-error: cocktail.schema.exceptions.EnumerationError",
     ca = u"El fitxer indicat no és un fitxer ZIP",
     es = u"El fichero indicado no es un fichero ZIP",
     en = u"The selected file is not a ZIP file"
@@ -2613,6 +2611,20 @@ translations.define(
 )
 
 translations.define(
+    "woost.models.permission.RenderPermission-instance",
+    ca = content_permission_translation_factory(
+        "ca",
+        lambda permission, subject, **kwargs:
+            u"generar imatges " + ca_possessive(subject)
+    ),
+    es = content_permission_translation_factory(
+        "es",
+        u"generar imágenes de %s"
+    ),
+    en = content_permission_translation_factory("en", u"render %s")
+)
+
+translations.define(
     "woost.models.permission.ReadMemberPermission-instance",
     ca = member_permission_translation_factory("ca",
         lambda instance, subject, **kwargs:
@@ -2814,6 +2826,35 @@ translations.define("ConfirmDraftPermission-plural",
     ca = u"Permisos de confirmació d'esborranys",
     es = u"Permisos de confirmación de borradores",
     en = u"Confirm draft permissions"
+)
+
+# RenderPermission
+#------------------------------------------------------------------------------
+translations.define("RenderPermission",
+    ca = u"Permís de visualització d'imatges",
+    es = u"Permiso de visualización de imágenes",
+    en = u"Render permission"
+)
+
+translations.define("RenderPermission-plural",
+    ca = u"Permisos de visualització d'imatges",
+    es = u"Permisos de visualización de imágenes",
+    en = u"Render permissions"
+)
+
+translations.define("RenderPermission.image_factories",
+    ca = u"Processat",
+    es = u"Procesado",
+    en = u"Processing"
+)
+
+translations.define("RenderPermission.image_factories-explanation",
+    ca = u"Limita el permís o prohibició a un subconjunt de les diferents "
+         u"visualitzacions suportades pel lloc web.",
+    es = u"Limita el permiso o prohibición a un subconjunto de las distintas "
+         u"visualizaciones soportadas por el sitio web.",
+    en = u"Limits the permission to a specific subset of the different "
+         u"renderings supported by the site."
 )
 
 # MemberPermission
@@ -3866,6 +3907,21 @@ translations.define("Trigger.condition-explanation",
          u"the trigger depending on its context."
 )
 
+translations.define("Trigger.custom_context",
+    ca = u"Context",
+    es = u"Contexto",
+    en = u"Context"
+)
+
+translations.define("Trigger.custom_context-explanation",
+    ca = u"Un bloc de codi Python que permet personalitzar els paràmetres "
+         u"que es passaran al disparador en el moment en que sigui executat.",
+    es = u"Un bloque de código Python que permite personalizar los parámetros "
+         u"que recibirá el disparador en el momento en que sea ejecutado.",
+    en = u"A block of Python code that allows to customize the parameters "
+         u"that the trigger will receive when it is finally executed."
+)
+
 translations.define("Trigger.responses",
     ca = u"Respostes",
     es = u"Respuestas",
@@ -3994,6 +4050,20 @@ translations.define("DeleteTrigger-plural",
     ca = u"Disparadors d'eliminació",
     es = u"Disparadores de eliminación",
     en = u"Delete triggers"
+)
+
+# ConfirmDraftTrigger
+#------------------------------------------------------------------------------
+translations.define("ConfirmDraftTrigger",
+    ca = u"Disparador de confirmació d'esborrany",
+    es = u"Disparador de confirmación de borrador",
+    en = u"Draft confirmation trigger"
+)
+
+translations.define("ConfirmDraftTrigger-plural",
+    ca = u"Disparadors de confirmació d'esborrany",
+    es = u"Disparadores de confirmación de borrador",
+    en = u"Draft confirmation triggers"
 )
 
 # TriggerResponse

@@ -58,9 +58,9 @@ class GoogleAnalyticsExtension(Extension):
     @event_handler
     def handle_loading(cls, event):        
         from cocktail.events import when
-        from woost.controllers.application import CMS
+        from woost.controllers import CMSController
 
-        @when(CMS.producing_output)
+        @when(CMSController.producing_output)
         def handle_producing_output(e):
             html = e.output.get("body_end_html", "")
             if html:

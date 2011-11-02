@@ -234,7 +234,7 @@ class DescriptiveIdPublicationScheme(PublicationScheme):
 
     include_file_extensions = schema.Boolean(
         required = True,
-        default = False
+        default = True
     )
 
     _uri_encodings = ["utf-8", "iso-8859-1"]
@@ -322,9 +322,5 @@ class DescriptiveIdPublicationScheme(PublicationScheme):
         return ref
 
     def get_publishable_file_extension(self, publishable):
-        return (
-            isinstance(publishable, File)
-            and publishable.file_name
-            and splitext(publishable.file_name)[1]
-        ) or None
+        return getattr(publishable, "file_extension", None)
 

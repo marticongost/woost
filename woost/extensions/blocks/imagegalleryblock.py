@@ -76,6 +76,6 @@ class ImageGalleryBlock(Block):
         view.gallery_type = self.gallery_type
         view.thumbnail_width = self.thumbnail_width
         view.thumbnail_height = self.thumbnail_height
-        view.full_width = self.full_width
-        view.full_height = self.full_height
+        view.close_up_width = self.full_width
+        view.close_up_height = self.full_height
 
