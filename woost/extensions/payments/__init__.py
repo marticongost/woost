@@ -59,7 +59,7 @@ class PaymentsExtension(Extension):
         )
 
         # Setup payment controllers
-        from woost.controllers.application import CMS        
+        from woost.controllers.cmscontroller import CMSController
         from woost.extensions.payments.paymenthandshakecontroller \
             import PaymentHandshakeController
         from woost.extensions.payments.paymentnotificationcontroller \
@@ -67,10 +67,10 @@ class PaymentsExtension(Extension):
         from woost.extensions.payments.dummycontroller \
             import DummyPaymentGatewayController
 
-        CMS.payment_handshake = PaymentHandshakeController
-        CMS.payment_notification = PaymentNotificationController
-        CMS.dummy_payment_gateway = DummyPaymentGatewayController      
-        
+        CMSController.payment_handshake = PaymentHandshakeController
+        CMSController.payment_notification = PaymentNotificationController
+        CMSController.dummy_payment_gateway = DummyPaymentGatewayController
+
         # Append additional members to the extension
         PaymentsExtension.members_order = ["payment_gateway"]
 

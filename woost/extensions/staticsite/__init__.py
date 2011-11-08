@@ -103,9 +103,9 @@ class StaticSiteExtension(Extension):
 
         # Disable interactive features from rendered pages when rendering
         # static content
-        from woost.controllers.application import CMS
+        from woost.controllers.cmscontroller import CMSController
     
-        @when(CMS.producing_output)
+        @when(CMSController.producing_output)
         def disable_user_controls(event):
             if context.get("exporting_static_site", False):
                 event.output["show_user_controls"] = False
