@@ -56,9 +56,9 @@ class WebConsoleExtension(Extension):
         extension = event.source
 
         from woost.extensions.webconsole import strings
-        from woost.controllers import CMS
+        from woost.controllers.cmscontroller import CMSController
 
-        CMS.ApplicationContainer.webconsole_resources = \
+        CMSController.ApplicationContainer.webconsole_resources = \
             cherrypy.tools.staticdir.handler(
                 section = "webconsole_resources",
                 dir = resource_filename("webconsole", "resources")

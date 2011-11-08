@@ -13,7 +13,7 @@ class Image(Element):
     image = None
     image_factory = "default"
     styled_class = False
-    accessible_check = True
+    accessible_check = False
 
     def _ready(self):
  
