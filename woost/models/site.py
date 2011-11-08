@@ -28,6 +28,7 @@ class Site(Item):
     members_order = [
         "default_language",
         "backoffice_language",
+        "heed_client_language",
         "site_name",
         "logo",
         "icon",
@@ -83,6 +84,13 @@ class Site(Item):
         member_group = "language"
     )
     
+    heed_client_language = schema.Boolean(
+        required = True,
+        default = True,
+        listed_by_default = False,
+        member_group = "language"
+    )
+
     organization_name = schema.String(
         translated = True,
         listed_by_default = False,

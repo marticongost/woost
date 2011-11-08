@@ -1716,6 +1716,12 @@ translations.define("Site.backoffice_language",
     en = u"Backoffice default language"
 )
 
+translations.define("Site.heed_client_language",
+    ca = u"Respectar les preferències d'idioma del navegador",
+    es = u"Respetar las preferencias de idioma del navegador",
+    en = u"Heed the language preferences from the browser"
+)
+
 translations.define("Site.home",
     ca = u"Document d'inici",
     es = u"Documento de inicio",
