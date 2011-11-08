@@ -94,7 +94,7 @@ def require_rendering(
             ext = getattr(item, "file_extension", None)
             
             if ext is not None:
-                format = formats_by_extension.get(ext.lower())
+                format = formats_by_extension.get(ext.lstrip(".").lower())
                 if format is None:
                     ext = None
     

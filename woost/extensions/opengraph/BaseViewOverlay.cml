@@ -30,7 +30,7 @@ from woost.extensions.opengraph import OpenGraphExtension
             document["xmlns:fb"] = "http://www.facebook.com/2008/fbml"
 
             # Add the meta tags. Produce the HTML manually, instead of relying
-            # on html.Element rendeirng; this is a bit of a hack, but sadly
+            # on html.Element rendering; this is a bit of a hack, but sadly
             # Facebook's OpenGraph parser depends on a precise attribute order,
             # which element rendering can't guarantee.
             tag_closure = get_current_rendering().renderer.single_tag_closure

@@ -156,6 +156,14 @@ body {
     list-style-type: none;
 }
 
+.BackOfficeLayout .members_selector {
+    font-size: 0.9em;
+}
+
+.BackOfficeLayout .members_selector .group_label {
+    color: rgb(75,75,75);
+}
+
 .BackOfficeLayout .tabs {
     clear: both;
     overflow: visible;
@@ -339,8 +347,8 @@ body.modal {
     margin-bottom: 0;
 }
 
-.BackOfficeLayout fieldset fieldset + fieldset {
-    margin-top: 1em;
+.BackOfficeLayout fieldset + fieldset {
+    margin-top: 2em;
 }
 
 .BackOfficeLayout fieldset legend {
@@ -359,12 +367,14 @@ body.modal {
 
 .BackOfficeLayout fieldset .fieldset_fields {
     border-top: 1px solid #adb2bc;
-    padding-top: 1em;
     margin-top: 0;
+    padding-top: 1em;
+    padding-left: 0.75em;
 }
 
-.BackOfficeLayout fieldset .fieldset_fields {
-    padding-left: 0.75em;
+.BackOfficeLayout fieldset.anonymous > .fieldset_fields {
+    border-top: none;
+    padding-top: 0;
 }
 
 .BackOfficeLayout fieldset fieldset .fieldset_fields {
@@ -2139,7 +2149,7 @@ button.TypeSelectorButton {
 .BackOfficeLayout .CollectionView .settings_box .selector_content {
     right: 0;
     top: 23px;
-    width: 22em;
+    width: 30em;
 }
 
 .BackOfficeLayout .CollectionView .settings_box .box_label,
@@ -2411,30 +2421,6 @@ a.pickcolor span {
     border: none;
     height: 500px;
     margin-top: 2em;
-}
-
-/* Delete warning
------------------------------------------------------------------------------*/
-.BackOfficeLayout ul.deleted_item_block {
-    font-weight: bold;
-    list-style-type: disc;
-}
-
-.BackOfficeLayout ul.deleted_item_block ul {
-    font-weight: normal;
-    font-style: italic;
-    list-style-type: circle;
-}
-
-.BackOfficeLayout ul.deleted_item_block .deleted_item {
-    padding-top: 0.5em;
-    margin: 0;
-}
-
-/* Block delete
------------------------------------------------------------------------------*/
-.BackOfficeLayout .blocking_members_box .ContentLink {
-    text-decoration: none;
 }
 
 /* Feed edit form
