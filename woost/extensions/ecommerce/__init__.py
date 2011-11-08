@@ -71,7 +71,8 @@ class ECommerceExtension(Extension):
             ecommerceorder,
             ecommercepurchase,
             ecommercebillingconcept,
-            ecommerceordercompletedtrigger
+            ecommerceordercompletedtrigger,
+            imagefactories
         )
         from woost.extensions.ecommerce.ecommerceorder import ECommerceOrder
 
