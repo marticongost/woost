@@ -85,7 +85,7 @@ def require_rendering(
     factory = image_factories.get(factory_name)
     
     if factory is None:
-        raise ValueError("Invalid image factory: %s" % factory_name)
+        raise BadRenderingRequest("Invalid image factory: %s" % factory_name)
     
     ext = None
 
@@ -99,7 +99,7 @@ def require_rendering(
                     ext = None
     
     elif format not in mime_types_by_format:
-        raise ValueError("Invalid image format: %s" % format)
+        raise BadRenderingRequest("Invalid image format: %s" % format)
 
     if format is None:
         format = default_format
@@ -159,4 +159,10 @@ def require_rendering(
             os.symlink(image_cache_file, static_publication_link)
 
     return image_cache_file
+
+
+class BadRenderingRequest(Exception):
+    """An exception raised when trying to render a piece of content using
+    invalid parameters (ie. an unknown image factory or image format).
+    """
 
