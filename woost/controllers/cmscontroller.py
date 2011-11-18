@@ -33,6 +33,7 @@ from cocktail.controllers import (
     try_decode,
     session
 )
+from cocktail.controllers.asyncupload import AsyncUploadController
 from cocktail.controllers.uriutils import percent_encode
 from cocktail.persistence import datastore
 from woost import app
@@ -47,6 +48,7 @@ from woost.models import (
     get_current_user
 )
 from woost.models.icons import IconResolver
+from woost.controllers.asyncupload import async_uploader
 from woost.controllers import get_cache_manager, set_cache_manager
 from woost.controllers.basecmscontroller import BaseCMSController
 from woost.controllers.language import LanguageModule
@@ -195,6 +197,8 @@ class CMSController(BaseCMSController):
             temp_path = app.path("upload", "temp")
             if not os.path.exists(temp_path):
                 os.mkdir(temp_path)
+
+            async_uploader.temp_folder = temp_path
 
         @cherrypy.expose
         def default(self, *args, **kwargs):
@@ -570,4 +574,7 @@ class CMSController(BaseCMSController):
 
     images = ImagesController
     image_effects = ImageEffectsController
+
+    async_upload = AsyncUploadController()
+    async_upload.uploader = async_uploader
 
