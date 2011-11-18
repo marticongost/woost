@@ -34,7 +34,8 @@ class EmailTemplate(Item):
         "template_engine",
         "subject",
         "attachments",
-        "body"
+        "body",
+        "initialization_code"
     ]
 
     title = schema.String(
@@ -102,6 +103,15 @@ class EmailTemplate(Item):
         edit_control = "cocktail.html.TextArea"
     )
 
+    initialization_code = schema.String(
+        edit_control = display_factory(
+            "cocktail.html.CodeEditor",
+            syntax = "python",
+            cols = 80
+        ),
+        text_search = False
+    )
+
     def send(self, context = None):
 
         smtp_host = Site.main.smtp_host or "localhost"
@@ -122,6 +132,11 @@ class EmailTemplate(Item):
 
         if pos != -1:
             mime_type = mime_type[pos + 1:]
+
+        # Custom initialization code
+        init_code = self.initialization_code
+        if init_code:
+            exec init_code in context
 
         # Subject and body (templates)
         if self.template_engine:
