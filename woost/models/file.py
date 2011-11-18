@@ -14,6 +14,7 @@ import hashlib
 from mimetypes import guess_type
 from shutil import copy
 from cocktail.events import event_handler
+from cocktail.memoryutils import format_bytes
 from cocktail import schema
 from cocktail.persistence import datastore
 from woost import app
@@ -66,7 +67,7 @@ class File(Publishable):
         required = True,
         editable = False,
         translate_value = lambda size, language = None, **kwargs:
-            "" if size in (None, "") else get_human_readable_file_size(size),
+            "" if size in (None, "") else format_bytes(size),
         min = 0,
         member_group = "content"
     )
@@ -252,30 +253,4 @@ def file_hash(source, algorithm = "md5", chunk_size = 1024):
             source.close()
 
     return hash.digest()
-
-# Adapted from a script by Martin Pool, original found at
-# http://mail.python.org/pipermail/python-list/1999-December/018519.html
-_size_suffixes = [
-    (1<<50L, 'Pb'),
-    (1<<40L, 'Tb'), 
-    (1<<30L, 'Gb'), 
-    (1<<20L, 'Mb'), 
-    (1<<10L, 'kb'),
-    (1, 'bytes')
-]
-
-def get_human_readable_file_size(size):
-    """Return a string representing the greek/metric suffix of a file size.
-    
-    @param size: The size to represent, in bytes.
-    @type size: int
-
-    @return: The metric representation of the given size.
-    @rtype: str
-    """
-    for factor, suffix in _size_suffixes:
-        if size > factor:
-            break
-    return str(int(size/factor)) + suffix
-
 
