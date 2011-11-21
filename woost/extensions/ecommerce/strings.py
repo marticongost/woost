@@ -167,7 +167,7 @@ translations.define("ECommerceOrder.shipping_info",
     ca = u"Direcció d'enviament",
     es = u"Dirección de envío",
     en = u"Shipping address",
-    fr = u"Adresse d'affichage"
+    fr = u"Adresse de livraison"
 )
 
 translations.define("ECommerceOrder.address",
@@ -1097,10 +1097,11 @@ translations.define(
         u"of the items you purchased, and of your personal and shipping "
         u"information. We recommend you keep or print this message, to use as "
         u"a purchase receipt.",
-	fr = u"Merci pour votre achat! Nous avons reçu votre commande correctement, et nous "
-        u"le plus tôt possible. Ci-dessous vous pouvez voir les produits que vous avez  "
-        u"acheté et les données prestation personnelle que vous avez fourni. Nous  "
-        u"recommandons conserver ou imprimer cet email comme preuve de l'achat et à "
-        u"faciliter toute la gestion possible."
+	fr = u"Merci pour votre achat! Nous avons reçu votre commande "
+        u"correctement, et nous alons l'envoyer le plus tôt possible. "
+        u"Ci-dessous vous pouvez voir les produits que vous avez acheté et "
+        u"les données personnelles que vous nous avez fourni. Nous "
+        u"recommandons conserver ou imprimer cet email comme preuve de "
+        u"l'achat et pour faciliter toute gestion."
 )
 
