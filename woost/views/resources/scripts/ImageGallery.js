@@ -133,7 +133,7 @@ cocktail.bind({
 
             // Synchronize the gallery and the image dialog
             if (this.sudoSlider) {
-                this.sudoSlider.goToSlide(jQuery(entry).index());
+                this.sudoSlider.goToSlide(jQuery(entry).index() + 1);
             }
         }
 
