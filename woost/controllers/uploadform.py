@@ -131,10 +131,10 @@ class UploadForm(Form):
             file = None
 
             if not isinstance(member, schema.Collection):
-                file = context.target_object.get(self.key, default = None)
+                file = context.target_object.get(self.key)
 
             if file is None:
-                file = self.create_file(context)                
+                file = self.create_file(context)
 
             file.file_name = upload["file_name"]
             file.mime_type = upload["mime_type"]
