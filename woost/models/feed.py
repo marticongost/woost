@@ -8,7 +8,6 @@
 """
 from cocktail import schema
 from cocktail.controllers.usercollection import UserCollection
-from cocktail.html.datadisplay import display_factory
 from woost.models.publishable import Publishable
 from woost.models.language import Language
 from woost.models.controller import Controller
@@ -86,47 +85,31 @@ class Feed(Publishable):
         member_group = "feed_items"
     )
 
-    item_title_expression = schema.String(
+    item_title_expression = schema.CodeBlock(
+        language = "python",
         required = True,
         default = "translations(item)",
-        listed_by_default = False,
-        edit_control = display_factory(
-            "cocktail.html.CodeEditor", syntax = "python"
-        ),
-        text_search = False,
         member_group = "feed_items"
     )
 
-    item_link_expression = schema.String(
+    item_link_expression = schema.CodeBlock(
+        language = "python",
         required = True,
         default = "cms.uri(item)",
-        listed_by_default = False,
-        edit_control = display_factory(
-            "cocktail.html.CodeEditor", syntax = "python"
-        ),
-        text_search = False,
         member_group = "feed_items"
     )
 
-    item_publication_date_expression = schema.String(
+    item_publication_date_expression = schema.CodeBlock(
+        language = "python",
         required = True,
         default = "item.start_date or item.creation_time",
-        listed_by_default = False,
-        edit_control = display_factory(
-            "cocktail.html.CodeEditor", syntax = "python"
-        ),
-        text_search = False,
         member_group = "feed_items"
     )
 
-    item_description_expression = schema.String(
+    item_description_expression = schema.CodeBlock(
+        language = "python",
         required = True,
         default = "item.description",
-        listed_by_default = False,
-        edit_control = display_factory(
-            "cocktail.html.CodeEditor", syntax = "python"
-        ),
-        text_search = False,
         member_group = "feed_items"
     )
 

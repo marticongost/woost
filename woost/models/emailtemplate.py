@@ -17,7 +17,6 @@ from email.Header import Header
 from email.Utils import formatdate, parseaddr, formataddr
 from email import Encoders
 from cocktail import schema
-from cocktail.html.datadisplay import display_factory
 from woost.models import Item, Site, File
 
 
@@ -60,24 +59,18 @@ class EmailTemplate(Item):
         text_search = False
     )
 
-    sender = schema.String(
-        edit_control = display_factory(
-            "cocktail.html.CodeEditor", syntax = "python"
-        )
+    sender = schema.CodeBlock(
+        language = "python"
     )
 
-    receivers = schema.String(
-        required = True,
-        edit_control = display_factory(
-            "cocktail.html.CodeEditor", syntax = "python"
-        )
+    receivers = schema.CodeBlock(
+        language = "python",
+        required = True
     )
     
     bcc = schema.String(
-        listed_by_default = False,
-        edit_control = display_factory(
-            "cocktail.html.CodeEditor", syntax = "python"
-        )
+        language = "python",
+        listed_by_default = False
     )
 
     template_engine = schema.String(
@@ -90,26 +83,19 @@ class EmailTemplate(Item):
         edit_control = "cocktail.html.TextArea"
     )
 
-    attachments = schema.String(
-        listed_by_default = False,
-        edit_control = display_factory(
-            "cocktail.html.CodeEditor", syntax = "python"
-        )
+    attachments = schema.CodeBlock(
+        language = "python",
+        listed_by_default = False
     )
 
-    body = schema.String(    
+    body = schema.String(
         translated = True,
         listed_by_default = False,
         edit_control = "cocktail.html.TextArea"
     )
 
-    initialization_code = schema.String(
-        edit_control = display_factory(
-            "cocktail.html.CodeEditor",
-            syntax = "python",
-            cols = 80
-        ),
-        text_search = False
+    initialization_code = schema.CodeBlock(
+        language = "python"
     )
 
     def send(self, context = None):

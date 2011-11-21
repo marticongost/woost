@@ -10,7 +10,6 @@ import re
 import buffet
 from cocktail.modeling import abstractmethod
 from cocktail import schema
-from cocktail.html.datadisplay import display_factory
 from woost.models.item import Item
 from woost.models.emailtemplate import EmailTemplate
 
@@ -62,12 +61,9 @@ class CustomTriggerResponse(TriggerResponse):
     code."""
     instantiable = True
 
-    code = schema.String(
-        required = True,
-        edit_control = display_factory(
-            "cocktail.html.CodeEditor", syntax = "python"
-        ),
-        text_search = False
+    code = schema.CodeBlock(
+        language = "python",
+        required = True
     )
 
     def execute(self, items, user, batch = False, **context):
