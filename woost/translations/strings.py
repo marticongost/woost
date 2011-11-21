@@ -1379,9 +1379,9 @@ translations.define("woost.views.StandardView fallback language notice",
 )
 
 translations.define("woost.views.StandardView.phone_number",
-    ca = u"Tel:",
-    es = u"Tel:",
-    en = u"Telephone:"
+    ca = u"Tel",
+    es = u"Tel",
+    en = u"Telephone"
 )
 
 translations.define("UploadFilesForm.upload",
