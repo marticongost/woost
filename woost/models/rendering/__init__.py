@@ -19,6 +19,7 @@ from woost.models.rendering.factories import image_factory
 from woost.models.rendering.effects import image_effect
 from woost.models.rendering.cache import (
     require_rendering,
-    clear_image_cache
+    clear_image_cache,
+    BadRenderingRequest
 )
 

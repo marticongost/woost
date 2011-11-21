@@ -13,9 +13,9 @@ class TweetUserAction(UserAction):
     content_type = Publishable
 
     included = frozenset([
-        ("content", "toolbar"),
-        ("collection", "toolbar", "integral"),
-        "item_buttons"
+        ("content", "toolbar_extra"),
+        ("collection", "toolbar_extra", "integral"),
+        "item_buttons_extra"
     ])
 
     excluded = frozenset([

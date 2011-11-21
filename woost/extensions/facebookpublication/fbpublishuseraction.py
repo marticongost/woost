@@ -12,9 +12,9 @@ from woost.extensions.facebookpublication.facebookpublicationpermission \
 class BaseFBPublishUserAction(UserAction):
 
     included = frozenset([
-        ("content", "toolbar"),
-        ("collection", "toolbar", "integral"),
-        "item_buttons"
+        ("content", "toolbar_extra"),
+        ("collection", "toolbar_extra", "integral"),
+        "item_buttons_extra"
     ])
 
     excluded = frozenset([

@@ -1708,6 +1708,12 @@ translations.define("Site.backoffice_language",
     en = u"Backoffice default language"
 )
 
+translations.define("Site.heed_client_language",
+    ca = u"Respectar les preferències d'idioma del navegador",
+    es = u"Respetar las preferencias de idioma del navegador",
+    en = u"Heed the language preferences from the browser"
+)
+
 translations.define("Site.home",
     ca = u"Document d'inici",
     es = u"Documento de inicio",
@@ -4186,6 +4192,28 @@ translations.define("EmailTemplate.body",
     ca = u"Cos del missatge",
     es = u"Cuerpo del mensaje",
     en = u"Message body"
+)
+
+translations.define("EmailTemplate.initialization_code",
+    ca = u"Codi d'inicialització",
+    es = u"Código de inicialización",
+    en = u"Initialization code"
+)
+
+translations.define("EmailTemplate.initialization_code-explanation",
+    ca = u"Un bloc de codi Python que permet modificar el context que es "
+         u"facilita a la resta de camps durant la construcció del missatge "
+         u"(útil per definir variables complexes i valors comuns a diferents "
+         u"camps o traduccions).",
+    es = u"Un bloque de código Python que permite modificar el contexto que "
+         u"se facilita al resto de campos durante la construcción del "
+         u"mensaje (útil para definir variables complejas o valores comunes a "
+         u"distintos campos o traducciones).",
+    en = u"A block of Python code that makes it possible to modify the "
+         u"context supplid to the other fields when the message is "
+         u"constructed (useful in order to more comfortably define complex "
+         u"variables or values that must be shared across fields or "
+         u"translations)."
 )
 
 # Feed
