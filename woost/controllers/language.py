@@ -20,7 +20,6 @@ from woost.controllers.module import Module
 class LanguageModule(Module):
 
     cookie_duration = 60 * 60 * 24 * 15 # 15 days
-    respect_client_preferences = False
 
     def __init__(self, *args, **kwargs):
         Module.__init__(self, *args, **kwargs)
@@ -49,7 +48,7 @@ class LanguageModule(Module):
             return cookie.value
 
         # Check the 'Accept-Language' header sent by the client
-        if self.respect_client_preferences:
+        if Site.main.heed_client_language:
             accept_language = cherrypy.request.headers.get("Accept-Language", None)
 
             if accept_language:

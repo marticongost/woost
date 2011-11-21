@@ -14,7 +14,7 @@ from woost.models import (
     get_current_user,
     RenderPermission
 )
-from woost.models.rendering.cache import require_rendering
+from woost.models.rendering.cache import require_rendering, BadRenderingRequest
 from woost.models.rendering.formats import formats_by_extension
 from woost.controllers.basecmscontroller import BaseCMSController
 
@@ -61,7 +61,10 @@ class ImagesController(BaseCMSController):
                 factory_name, parameters = factory_parts
             format = formats_by_extension.get(ext)
             if format is None:
-                raise ValueError("Invalid image extension: %s" % ext)
+                raise cherrypy.HTTPError(
+                    400,
+                    "Invalid image extension: %s" % ext
+                )
         else:
             factory_name = processing
             format = None
@@ -72,13 +75,16 @@ class ImagesController(BaseCMSController):
             target = item,
             image_factory = factory_name
         )
-        
-        image_cache_file = require_rendering(
-            item, 
-            factory_name, 
-            format,
-            parameters
-        )
+ 
+        try:
+            image_cache_file = require_rendering(
+                item, 
+                factory_name, 
+                format,
+                parameters
+            )
+        except BadRenderingRequest, ex:
+            raise cherrypy.HTTPError(400, ex.message)
 
         return serve_file(image_cache_file)
 

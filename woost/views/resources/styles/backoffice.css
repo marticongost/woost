@@ -16,7 +16,30 @@ body {
 }
 
 .BackOfficeLayout button {
-		font-family: Bitstream Vera Sans, Arial;
+	font-family: Bitstream Vera Sans, Arial;
+}
+
+.BackOfficeLayout button.button,
+.BackOfficeLayout input[type=submit],
+.BackOfficeLayout .AsyncFileUploader .button {
+    background-color: #ddd;
+    background-image: -moz-linear-gradient(#f6f6f6,#ccc);
+    background-image: -webkit-linear-gradient(#f6f6f6,#ccc);
+    padding: 0.3em 0.7em;
+    border-radius: 0.5em;
+    border: 1px solid #aaa;
+    -moz-box-shadow: 1px 1px 4px #bbb;
+    cursor: pointer;
+    font-size: 0.9em;
+    color: #222;
+}
+
+.BackOfficeLayout button.button:hover,
+.BackOfficeLayout input[type=submit]:hover,
+.BackOfficeLayout .AsyncFileUploader .button:hover {
+    background-color: #eee;
+    background-image: -moz-linear-gradient(white,#ddd);
+    background-image: -webkit-linear-gradient(white,#ddd);
 }
 
 .BackOfficeLayout .header {
