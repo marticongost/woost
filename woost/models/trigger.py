@@ -15,7 +15,6 @@ from cocktail.translations import translations
 from cocktail.events import when
 from cocktail.persistence import datastore
 from cocktail.controllers import UserCollection
-from cocktail.html.datadisplay import display_factory
 from woost.models.action import Action
 from woost.models.changesets import ChangeSet
 from woost.models.site import Site
@@ -114,22 +113,12 @@ class Trigger(Item):
         edit_inline = True
     )
 
-    condition = schema.String(
-        edit_control = display_factory(
-            "cocktail.html.CodeEditor",
-            syntax = "python",
-            cols = 80
-        ),
-        text_search = False
+    condition = schema.CodeBlock(
+        language = "python"
     )
  
-    custom_context = schema.String(
-        edit_control = display_factory(
-            "cocktail.html.CodeEditor",
-            syntax = "python",
-            cols = 80
-        ),
-        text_search = False
+    custom_context = schema.CodeBlock(
+        language = "python"
     )
 
     def match(self, user, verbose = False, **context):

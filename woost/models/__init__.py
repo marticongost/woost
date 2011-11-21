@@ -29,6 +29,7 @@ schema.Collection.edit_inline = property(_get_edit_inline, _set_edit_inline)
 # Add an extension property to control the default member visibility on item listings
 schema.Member.listed_by_default = True
 schema.Collection.listed_by_default = False
+schema.CodeBlock.listed_by_default = False
 
 # Add an extension property to indicate if members should be visible by users
 schema.Member.visible = True
