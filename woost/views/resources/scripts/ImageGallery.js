@@ -13,6 +13,7 @@ cocktail.bind({
  
         var inDialog = false;
         var loadedImages = {};
+        var singleImage = ($imageGallery.find(".image_entry").length < 2);
 
         $imageGallery.bind("imageLoaded", function (e, loadedImage) {
             loadedImages[loadedImage.src] = loadedImage;
@@ -157,8 +158,6 @@ cocktail.bind({
                 return;
             }
 
-            var singleImage = ($imageGallery.find(".image_entry").length < 2);
-
             var $entry = jQuery(entry);
             var imageURL = $entry.find(".image_link").attr("href");
             var imageTitle = $entry.find(".image_label").html();
@@ -267,7 +266,7 @@ cocktail.bind({
                 function () { $dialog.find(".header").fadeOut(); },
                 1500
             );
-            
+
             $dialog.hover(
                 function () {
                     $dialogControls.show();
@@ -284,7 +283,7 @@ cocktail.bind({
             return $dialog.get(0);
         }
 
-        if (this.galleryType == "slideshow") {
+        if (this.galleryType == "slideshow" && !singleImage) {
 
             this.sliderOptions.prevHtml = 
                 cocktail.instantiate("woost.views.ImageGallery.previous_button");
