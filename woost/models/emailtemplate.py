@@ -68,7 +68,7 @@ class EmailTemplate(Item):
         required = True
     )
     
-    bcc = schema.String(
+    bcc = schema.CodeBlock(
         language = "python",
         listed_by_default = False
     )
