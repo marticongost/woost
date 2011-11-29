@@ -15,7 +15,7 @@ class ContainerBlock(Block):
     blocks = schema.Collection(
         items = schema.Reference(type = Block),
         bidirectional = True,
-        related_end = schema.Collection(),
+        related_key = "containers",
         member_group = "content"
     )
 
