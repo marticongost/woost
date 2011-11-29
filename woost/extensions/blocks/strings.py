@@ -57,6 +57,12 @@ translations.define("Block.css_class",
     en = u"CSS classes"
 )
 
+translations.define("Block.containers",
+    ca = u"Contenidors",
+    es = u"Contenedores",
+    en = u"Containers"
+)
+
 # ImageGalleryBlock
 #------------------------------------------------------------------------------
 translations.define("ImageGalleryBlock",

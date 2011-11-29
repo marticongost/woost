@@ -21,7 +21,8 @@ class Block(Item):
 
     members_order = [
         "title",
-        "css_class"
+        "css_class",
+        "containers"
     ]
 
     groups_order = ["content"]
@@ -32,6 +33,14 @@ class Block(Item):
     )
 
     css_class = schema.String(
+        member_group = "content"
+    )
+
+    containers = schema.Collection(
+        items = "woost.extensions.blocks.containerblock.ContainerBlock",
+        bidirectional = True,
+        related_key = "blocks",
+        editable = False,
         member_group = "content"
     )
 

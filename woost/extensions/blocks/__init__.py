@@ -53,7 +53,8 @@ class BlocksExtension(Extension):
             menublock,
             richtextblock,
             translatedrichtextblock,
-            blockspage
+            blockspage,
+            migration
         )
 
         from woost.extensions.vimeo import VimeoExtension
