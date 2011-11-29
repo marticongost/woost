@@ -15,7 +15,7 @@ class ContainerBlock(Block):
     blocks = schema.Collection(
         items = schema.Reference(type = Block),
         bidirectional = True,
-        related_end = schema.Collection(),
+        related_key = "containers",
         member_group = "content"
     )
 
@@ -35,8 +35,9 @@ class ContainerBlock(Block):
         children_container = getattr(view, "block_content", view)
 
         for child in self.blocks:
-            child_view = child.create_view()
-            children_container.append(child_view)
+            if child.enabled:
+                child_view = child.create_view()
+                children_container.append(child_view)
 
         return view
 
