@@ -21,7 +21,8 @@
             <py:ready>
                 <py:new 
                     py:element="block.create_view()" 
-                    py:for="block in self.blocks"/>
+                    py:for="block in self.blocks"
+                    py:where="block.enabled"/>
             </py:ready>
         </div>
     </div>
