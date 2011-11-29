@@ -22,6 +22,7 @@ class Block(Item):
     members_order = [
         "title",
         "css_class",
+        "enabled",
         "containers"
     ]
 
@@ -33,6 +34,12 @@ class Block(Item):
     )
 
     css_class = schema.String(
+        member_group = "content"
+    )
+
+    enabled = schema.Boolean(
+        required = True,
+        default = True,
         member_group = "content"
     )
 
