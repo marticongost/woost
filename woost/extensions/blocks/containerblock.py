@@ -35,8 +35,9 @@ class ContainerBlock(Block):
         children_container = getattr(view, "block_content", view)
 
         for child in self.blocks:
-            child_view = child.create_view()
-            children_container.append(child_view)
+            if child.enabled:
+                child_view = child.create_view()
+                children_container.append(child_view)
 
         return view
 

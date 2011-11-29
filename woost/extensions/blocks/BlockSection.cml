@@ -56,6 +56,9 @@ from woost.models import Publishable, ModifyPermission, get_current_user
                 <?py
                 entry.set_client_param("blockId", item.id)
                 entry.add_class("block_entry_%d" % item.id)
+
+                if not item.enabled:
+                    entry.add_class("disabled_block")
                 ?>
             </py:with>
 
