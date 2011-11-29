@@ -151,6 +151,59 @@ translations.define("ContainerBlock.blocks",
     en = u"Child blocks"
 )
 
+# SlideShowBlock
+#------------------------------------------------------------------------------
+translations.define("SlideShowBlock",
+    ca = u"Passador",
+    es = u"Pasador",
+    en = u"Slide show"
+)
+
+translations.define("SlideShowBlock-plural",
+    ca = u"Passadors",
+    es = u"Pasadores",
+    en = u"Slide shows"
+)
+
+translations.define("SlideShowBlock.transition_settings",
+    ca = u"Transicions",
+    es = u"Transiciones",
+    en = u"Transitions"
+)
+
+translations.define("SlideShowBlock.autoplay",
+    ca = u"Transicions automàtiques",
+    es = u"Transiciones automáticas",
+    en = u"Autoplay"
+)
+
+translations.define("SlideShowBlock.interval",
+    ca = u"Freqüència de les transicions",
+    es = u"Frecuencia de las transiciones",
+    en = u"Time between transitions"
+)
+
+translations.define("SlideShowBlock.interval-explanation",
+    ca = u"Si s'activen les transicions automàtiques, indica el nombre de "
+         u"milisegons abans que el bloc passi a la següent diapositiva.",
+    es = u"Si se activan las transiciones automáticas, indica el número de "
+         u"milisegundos antes que el bloque pase a la diapositiva siguiente.",
+    en = u"If autoplay is enabled, indicates the number of milliseconds that "
+         u"pass between automatic transitions."
+)
+
+translations.define("SlideShowBlock.transition_duration",
+    ca = u"Duració de les transicions",
+    es = u"Duración de las transiciones",
+    en = u"Transition duration"
+)
+
+translations.define("SlideShowBlock.interval-explanation",
+    ca = u"Especifica la duració de l'efecte de transició, en milisegons",
+    es = u"Especifica la duración del efecto de transición, en milisegundos",
+    en = u"Sets the duration of the slide transition effect, in milliseconds"
+)
+
 # BannerBlock
 #------------------------------------------------------------------------------
 translations.define("BannerBlock",

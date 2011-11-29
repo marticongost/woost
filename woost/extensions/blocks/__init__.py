@@ -48,6 +48,7 @@ class BlocksExtension(Extension):
             strings, 
             block, 
             containerblock,
+            slideshowblock,
             imagegalleryblock,
             bannerblock,
             menublock,
