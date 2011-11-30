@@ -85,7 +85,7 @@ from woost.models import Site, Publishable, Language
             self.page_charset = publishable.encoding
 
             # Page title
-            self.page_title = translations(publishable)
+            self.page_title = self.get_content_title()
 
             # Meta tags
             self.set_meta("Content-Language", language)
