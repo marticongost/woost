@@ -73,19 +73,31 @@ from woost.controllers.backoffice.editstack import SelectionNode
 
         return self.cms.contextual_uri('content', 'new', **params)        
 
+    def content_type_is_hidden(self, content_type):
+        user = get_current_user()
+        role = user.roles and user.roles[0]
+        hidden_content_types = role and getattr(role, "hidden_content_types", None)
+        return hidden_content_types is not None and content_type in hidden_content_types
+
     def content_type_is_selectable(self, content_type):
-        return get_current_user().has_permission(
-            ReadPermission,
-            target = content_type
+        return (
+            not self.content_type_is_hidden(content_type)
+            and get_current_user().has_permission(
+                ReadPermission,
+                target = content_type
+            )
         )
 
     def content_type_is_instantiable(self, content_type):
-        return content_type.visible \
-            and content_type.instantiable \
+        return (
+            not self.content_type_is_hidden(content_type)
+            and content_type.visible
+            and content_type.instantiable
             and get_current_user().has_permission(
                 CreatePermission,
                 target = content_type
             )
+        )
 
     def get_visible_content_views(self):
         return sorted(

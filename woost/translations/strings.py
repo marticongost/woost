@@ -3445,6 +3445,22 @@ translations.define("Role.child_roles",
     en = u"Derived roles"
 )
 
+translations.define("Role.hidden_content_types",
+    ca = u"Tipus ocults",
+    es = u"Tipos ocultos",
+    en = u"Hidden content types"
+)
+
+translations.define("Role.hidden_content_types-explanation",
+    ca = u"Una llista de tipus de contingut que no es mostraran a l'usuari. "
+         u"Utilitzat per filtrar les entrades del menú principal del gestor.",
+    es = u"Una lista de tipos de contenido que no se mostrarán al usuario. "
+         u"Utilizado para filtrar las entradas del menú principal del gestor.",
+    en = u"A list of content types that will be hidden from the user. Used to "
+         u"filter the visible entries in the main menu for the back office "
+         u"interface."
+)
+
 # Template
 #------------------------------------------------------------------------------
 translations.define("Template",
