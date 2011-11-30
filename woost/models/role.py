@@ -8,6 +8,7 @@ u"""
 """
 from cocktail import schema
 from woost.models.item import Item
+from cocktail.html.datadisplay import display_factory, MULTIPLE_SELECTION
 
 
 class Role(Item):
@@ -27,7 +28,9 @@ class Role(Item):
         "base_roles",
         "child_roles",
         "users",
-        "permissions"
+        "permissions",
+        "user_views",
+        "hidden_content_types"
     ]
 
     title = schema.String(
@@ -65,7 +68,18 @@ class Role(Item):
         items = "woost.models.UserView",
         bidirectional = True
     )
-    
+
+    hidden_content_types = schema.Collection(
+        items = schema.Reference(
+            class_family = Item
+        ),
+        edit_inline = True,
+        edit_control = display_factory(
+            "woost.views.ContentTypePicker",
+            selection_mode = MULTIPLE_SELECTION
+        )
+    )
+
     def iter_roles(self, include_self = True, recursive = True):
         """Iterates over the role and its bases.
 
