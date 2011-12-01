@@ -39,13 +39,16 @@ from woost.models import Publishable, ModifyPermission, get_current_user
             py:id="block_tree"
             py:root="@{self.root_block}"
             py:root_visible="${False}"
-            py:get_child_items="@{lambda item: item.get(self.member) or getattr(item, 'blocks', ()) }"
             py:get_item_url="${lambda item: self.get_block_edit_uri(item)}"
             py:filter_item="${lambda item: get_current_user().has_permission(ModifyPermission, target = item)}">
 
             <?py
             @extend(element)
-            def get_item_label(self, item):
+            def get_child_items(tree, item):
+                return item.get(self.member) or getattr(item, "blocks", ())
+
+            @extend(element)
+            def get_item_label(tree, item):
                 if item.title:
                     return item.title
                 else:
