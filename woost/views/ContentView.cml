@@ -226,7 +226,11 @@ from woost.controllers.backoffice.editstack import SelectionNode
                             ContentTypeTree.filter_item(tree, content_type)
                             and self.content_type_is_selectable(content_type)
                         )
-                    
+
+                    @extend(tree)
+                    def should_collapse(tree, content_type):
+                        return content_type.collapsed_backoffice_menu or call_base(content_type)
+
                     @refine(tree)
                     def get_item_url(tree, content_type):
                         url = "?type=" + content_type.full_name
