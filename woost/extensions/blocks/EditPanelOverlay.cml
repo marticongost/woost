@@ -24,12 +24,20 @@ from woost.extensions.blocks.block import Block
 
     <py:with py:element="self.panel_content">
         <py:ready>
-            <py:woost.extensions.blocks.BlockSection
-                py:root_block="${self.publishable}"
-                py:member="${member}" 
-                py:for="member in self.get_block_collections()" />
+            <py:new
+                py:element="self.create_block_section()"
+                py:for="member in self.get_block_collections()"
+                py:member="${member}">
+                <?py
+                setattr(self, "%s_section" % member.name, element)
+                ?>
+            </py:new>
         </py:ready>
     </py:with>
+
+    <py:woost.extensions.blocks.BlockSection
+        py:def="block_section"
+        py:root_block="${self.publishable}"/>
 
 </py:overlay>
 
