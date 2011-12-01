@@ -57,6 +57,10 @@ class Item(PersistentObject):
     # the backoffice root view
     visible_from_root = True
 
+    # Extension property that indicates if the backoffice should show child
+    # entries for this content type in the type selector
+    collapsed_backoffice_menu = False
+
     def __translate__(self, language, **kwargs):
         if self.draft_source is not None:
             return translations(
