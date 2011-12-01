@@ -393,3 +393,29 @@ translations.define("VimeoBlock.video_height-explanation",
     en = u"in pixels"
 )
 
+# TwitterTimelineBlock
+#------------------------------------------------------------------------------
+translations.define("TwitterTimelineBlock",
+    ca = u"Missatges de Twitter",
+    es = u"Mensajes de Twitter",
+    en = u"Twitter timeline"
+)
+
+translations.define("TwitterTimelineBlock-plural",
+    ca = u"Missatges de Twitter",
+    es = u"Mensajes de Twitter",
+    en = u"Twitter timeline"
+)
+
+translations.define("TwitterTimelineBlock.account",
+    ca = u"Compte de Twitter",
+    es = u"Cuenta de Twitter",
+    en = u"Twitter account"
+)
+
+translations.define("TwitterTimelineBlock.max_tweets",
+    ca = u"Missatges a mostrar",
+    es = u"Mensajes a mostrar",
+    en = u"Max tweets"
+)
+
