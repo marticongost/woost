@@ -244,6 +244,21 @@ translations.define("BannerBlock.image",
     en = u"Image"
 )
 
+translations.define("BannerBlock.label_displayed",
+    ca = u"Mostrar el text",
+    es = u"Mostrar el texto",
+    en = u"Label displayed"
+)
+
+translations.define("BannerBlock.label_displayed-explanation",
+    ca = u"Si es desactiva aquesta opció no es mostra el text del bloc, "
+         u"només la seva imatge.",
+    es = u"Si se desactiva esta opción no se muestra el texto del bloque, "
+         u"solo su imagen.",
+    en = u"If this option is disabled, the block's text won't be displayed, "
+         u"only its image will be shown."
+)
+
 # MenuBlock
 #------------------------------------------------------------------------------
 translations.define("MenuBlock",
