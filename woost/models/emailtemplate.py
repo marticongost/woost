@@ -75,7 +75,8 @@ class EmailTemplate(Item):
 
     template_engine = schema.String(
         enumeration = buffet.available_engines.keys(),
-        text_search = False
+        text_search = False,
+        listed_by_default = False
     )
 
     subject = schema.String(
