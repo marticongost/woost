@@ -225,11 +225,11 @@ translations.define("BannerBlock.text",
 )
 
 translations.define("BannerBlock.text-explanation",
-    ca = u"""En cas de no especificar-se s'utilitzarà el títol de l'element
-destí""",
-    es = u"""En caso de no especificarse se utilitzará el título del
-elemento destino""",
-    en = u"If not text is provided the title from the target item will be used"
+    ca = u"En cas de no especificar-se s'utilitzarà el títol de l'element "
+         u"destí",
+    es = u"En caso de no especificarse se utilitzará el título del "
+         u"elemento destino",
+    en = u"If no text is provided the title from the target item will be used"
 )
 
 translations.define("BannerBlock.target",
