@@ -12,6 +12,7 @@ from cocktail.controllers import context
     target = None
     image = None
     text = None
+    label_displayed = True
     ?>
 
     <?py
@@ -25,12 +26,19 @@ from cocktail.controllers import context
 
         self["href"] = self.cms.uri(self.target)
 
-        if self.image:
-            self.set_style("background-image", "url('%s')" % self.cms.uri(self.image))
+        title = self.text or translations(self.target)
+
+        if self.label_displayed:
+            self.append(title)
+            if self.image:
+                self.set_style("background-image", "url('%s')" % self.image.get_uri())
+        else:
+            self["title"] = title
+            if self.image:
+                image = loader.new("woost.views.Image")
+                image.image = self.image
+                self.append(image)
         ?>
-
-        ${self.text or translations(self.target)}
     </py:ready>
-
 </a>
 
