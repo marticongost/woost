@@ -52,6 +52,4 @@ class BannerBlock(Block):
         view.target = self.target
         view.text = self.text
         view.label_displayed = self.label_displayed
-        from cocktail.styled import styled
-        print styled(view, "green"), view.label_displayed
 
