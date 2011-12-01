@@ -12,10 +12,10 @@ from woost.models import Item
 default_tag = object()
 
 
-class Block(Item):
+class Block(Item):    
 
-    visible_from_root = False
     instantiable = False
+    collapsed_backoffice_menu = True
     view_class = None
     tag = default_tag
 
