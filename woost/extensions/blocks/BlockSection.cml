@@ -45,7 +45,10 @@ from woost.models import Publishable, ModifyPermission, get_current_user
             <?py
             @extend(element)
             def get_child_items(tree, item):
-                return item.get(self.member) or getattr(item, "blocks", ())
+                if item is tree.root:
+                    return item.get(self.member)
+                else:
+                    return getattr(item, "blocks", ())
 
             @extend(element)
             def get_item_label(tree, item):
