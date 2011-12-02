@@ -51,6 +51,24 @@ translations.define("Block.title",
     en = u"Title"
 )
 
+translations.define("Block.title-explanation",
+    ca = u"Descripció del bloc, d'ús intern pels editors",
+    es = u"Descripción del bloque, de uso interno para los editores",
+    en = u"Description for this block, used internally by editors"
+)
+
+translations.define("Block.heading",
+    ca = u"Títol de capçalera",
+    es = u"Título de cabecera",
+    en = u"Heading"
+)
+
+translations.define("Block.heading-explanation",
+    ca = u"Títol del bloc, tal com es mostrarà al web",
+    es = u"Título del bloque, tal como se mostraré en la web",
+    en = u"Block title, as shown on the website"
+)
+
 translations.define("Block.css_class",
     ca = u"Classes CSS",
     es = u"Clases CSS",
@@ -335,6 +353,12 @@ translations.define("TranslatedRichTextBlock-plural",
     ca = u"Textos traduïbles",
     es = u"Textos traducibles",
     en = u"Translated texts"
+)
+
+translations.define("TranslatedRichTextBlock.text",
+    ca = u"Text",
+    es = u"Texto",
+    en = u"Text"
 )
 
 translations.define("TranslatedRichTextBlock.text",
