@@ -155,6 +155,10 @@ from woost.models import Site, Publishable, Language
             # Base tag
             if self.base_url:
                 self.add_head_element(Element("base", href = self.base_url))
+
+            # Add a CSS class based on the page's name
+            if self.publishable.qname:
+                self.add_class(self.publishable.qname.replace(".", "-"))
         ?>
     </py:ready>
 
