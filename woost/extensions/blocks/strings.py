@@ -343,6 +343,18 @@ translations.define("TranslatedRichTextBlock.text",
     en = u"Text"
 )
 
+translations.define("TranslatedRichTextBlock.image",
+    ca = u"Imatge",
+    es = u"Imagen",
+    en = u"Image"
+)
+
+translations.define("TranslatedRichTextBlock.image_factory",
+    ca = u"Processat de la imatge",
+    es = u"Procesado de la imagen",
+    en = u"Image processing"
+)
+
 translations.define("TranslatedRichTextBlock.attachments",
     ca = u"Adjunts",
     es = u"Adjuntos",
