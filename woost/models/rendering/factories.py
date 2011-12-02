@@ -4,6 +4,8 @@ u"""
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
 from cocktail.modeling import OrderedDict
+from cocktail.translations import translations
+from cocktail import schema
 from woost.models.rendering.contentrenderersregistry import (
     content_renderers,
     icon_renderers
@@ -16,6 +18,27 @@ def image_factory(func):
     image_factories[func.func_name] = func
     func.parameters = []
     return func
+
+
+class ImageFactoryMember(schema.String):
+
+    edit_control = "cocktail.html.DropdownSelector"
+
+    def __init__(self, *args, **kwargs):
+        kwargs.setdefault("enumeration", lambda ctx: image_factories.keys())
+        schema.String.__init__(self, *args, **kwargs)
+
+    def translate_value(self, value, language = None, **kwargs):        
+        if not value:
+            return ""
+        else:
+            kwargs.setdefault("default", value)
+            return translations(
+                "woost.image_factory.%s" % value,
+                language,
+                **kwargs
+            )
+
 
 def parse_image_factory_parameters(parameters, string):
     """Parses additional parameters for an image factory."""
