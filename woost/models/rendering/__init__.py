@@ -15,7 +15,7 @@ from woost.models.rendering.videorenderer import VideoRenderer
 from woost.models.rendering.pdfrenderer import PDFRenderer
 from woost.models.rendering.htmlrenderer import HTMLRenderer
 from woost.models.rendering.iconrenderer import IconRenderer
-from woost.models.rendering.factories import image_factory
+from woost.models.rendering.factories import image_factory, ImageFactoryMember
 from woost.models.rendering.effects import image_effect
 from woost.models.rendering.cache import (
     require_rendering,
