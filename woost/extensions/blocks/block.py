@@ -6,7 +6,7 @@ u"""Defines the `Block` model.
 from cocktail.iteration import last
 from cocktail.translations import translations
 from cocktail import schema
-from cocktail.html import templates
+from cocktail.html import templates, Element
 from woost.models import Item
 
 default_tag = object()
@@ -21,6 +21,7 @@ class Block(Item):
 
     members_order = [
         "title",
+        "heading",
         "css_class",
         "enabled",
         "containers"
@@ -30,6 +31,11 @@ class Block(Item):
 
     title = schema.String(
         descriptive = True,
+        member_group = "content"
+    )
+
+    heading = schema.String(
+        translated = True,
         member_group = "content"
     )
 
@@ -76,6 +82,14 @@ class Block(Item):
 
         if self.tag is not default_tag:
             view.tag = self.tag
+
+        if self.heading:
+            if hasattr(view, "heading"):
+                view.heading = heading
+            else:
+                view.block_heading = Element("h2")
+                view.block_heading.append(self.heading)
+                view.insert(0, view.block_heading)
 
     def descend_tree(self, include_self = False):
         if include_self:
