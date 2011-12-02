@@ -22,5 +22,7 @@ class Image(Element):
             self.visible = False
         else:
             self["alt"] = translations(self.image)
-            self["src"] = self.image.get_image_uri(self.image_factory)
+            self["src"] = self.image.get_image_uri(
+                self.image_factory or "default"
+            )
 
