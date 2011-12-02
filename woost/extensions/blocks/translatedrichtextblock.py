@@ -42,11 +42,14 @@ class TranslatedRichTextBlock(Block):
     )
 
     def init_view(self, view):
+
         Block.init_view(self, view)
 
         if self.image is None:
             view.append(self.text)
         else:
+            view.add_class("text_with_image")
+
             image = templates.new("woost.views.Image")
             image.image = self.image
             image.image_factory = self.image_factory
