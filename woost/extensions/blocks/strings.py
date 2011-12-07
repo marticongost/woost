@@ -455,3 +455,23 @@ translations.define("TwitterTimelineBlock.max_tweets",
     en = u"Max tweets"
 )
 
+# LinksBox
+#------------------------------------------------------------------------------
+translations.define("LinksBlock",
+    ca = u"Llista d'enllaços",
+    es = u"Lista de enlaces",
+    en = u"Link list"
+)
+
+translations.define("LinksBlock-plural",
+    ca = u"Llistes d'enllaços",
+    es = u"Listas de enlaces",
+    en = u"Link lists"
+)
+
+translations.define("LinksBlock.links",
+    ca = u"Enllaços",
+    es = u"Enlaces",
+    en = u"Links"
+)
+
