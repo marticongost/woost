@@ -27,7 +27,7 @@ from woost.models import (
     ReadTranslationPermission,
     ConfirmDraftPermission
 )
-from woost.controllers.notifications import notify_user
+from woost.controllers.notifications import notify_user, pop_user_notifications
 from woost.controllers.backoffice.editstack import RelationNode, EditNode
 from woost.controllers.backoffice.basebackofficecontroller \
         import BaseBackOfficeController
@@ -164,8 +164,13 @@ class EditController(BaseBackOfficeController):
 
         # The user had arrived to the edit interface using a frontend link,
         # and has just saved the item at the top of the stack; redirect the
-        # browser to the original frontend location
+        # browser to the original frontend location. Notifications are
+        # discarded before redirecting, since there is no guarantee that the
+        # frontend will display them; this is clearly not ideal, but the
+        # alternative (having them stack up and show all at once whenever the
+        # user opens the backoffice) is not that great either.
         if stack_node.parent_node is None and self.edit_stack.root_url:
+            pop_user_notifications()
             self.edit_stack.go_back()
 
     def confirm_draft(self):
