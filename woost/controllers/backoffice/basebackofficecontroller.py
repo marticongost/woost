@@ -122,7 +122,9 @@ class BaseBackOfficeController(BaseCMSController):
         
         # Go back to the root of the backoffice
         else:
-            raise cherrypy.HTTPRedirect(self.contextual_uri())
+            raise cherrypy.HTTPRedirect(
+                edit_stack and edit_stack.root_url or self.contextual_uri()
+            )
 
     # Edit stack
     #--------------------------------------------------------------------------    
