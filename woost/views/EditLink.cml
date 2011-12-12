@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <?py
-from cocktail.controllers import context
+from cocktail.controllers import context, Location
 from woost.models import (
     Publishable,
     get_current_user,
@@ -63,6 +63,9 @@ from woost.models import (
 
         if self.target_desc is None and self.target is context["publishable"]:
             self.target_desc = translations("woost.views.EditLink-publishable_target")
+
+        if "root_url" not in self.edit_parameters:
+            self.edit_parameters["root_url"] = unicode(Location.get_current())
 
         if not self.is_permitted():
             self.visible = False
