@@ -557,11 +557,80 @@ translations.define(
     en = u"Can't insert an element into itself."
 )
 
+def _selection_error_ca(instance):    
+    if instance.action.min and instance.selection_size < instance.action.min:
+        bound = instance.action.min
+        bound_label = "mínim"
+    else:
+        bound = instance.action.max
+        bound_label = "màxim"
+
+    return u"No es pot %s una selecció %s; el %s és %s" % (
+        translations(instance.action).lower(),
+        plural2(
+            instance.selection_size, 
+            "d'un sol element", 
+            "de %d elements" % instance.selection_size
+        ),
+        bound_label,
+        plural2(
+            bound,
+            "d'un element",
+            "de %d elements" % bound
+        )
+    )
+
+def _selection_error_es(instance):    
+    if instance.action.min and instance.selection_size < instance.action.min:
+        bound = instance.action.min
+        bound_label = "mínimo"
+    else:
+        bound = instance.action.max
+        bound_label = "máximo"
+
+    return u"No se puede %s una selección de %s; el %s es de %s" % (
+        translations(instance.action).lower(),
+        plural2(
+            instance.selection_size, 
+            "a single element", 
+            "%d elements" % instance.selection_size
+        ),
+        bound_label,
+        plural2(
+            bound,
+            "un elemento",
+            "%d elementos" % bound
+        )
+    )
+
+def _selection_error_en(instance):    
+    if instance.action.min and instance.selection_size < instance.action.min:
+        bound = instance.action.min
+        bound_label = "at least"
+    else:
+        bound = instance.action.max
+        bound_label = "no more than"
+
+    return u"Can't %s a selection consisting of %s; must select %s %s" % (
+        translations(instance.action).lower(),
+        plural2(
+            instance.selection_size, 
+            "a single element", 
+            "%d elements" % instance.selection_size
+        ),
+        bound_label,
+        plural2(
+            bound,
+            "one element",
+            "%d elements" % bound
+        )
+    )
+
 translations.define(
     "woost.controllers.backoffice.useractions.SelectionError-instance",
-    ca = lambda instance: u"Acció no disponible en el context actual",
-    es = lambda instance: u"Acción no disponible en el contexto actual",
-    en = lambda instance: u"Action not available in the current context"
+    ca = _selection_error_ca,
+    es = _selection_error_es,
+    en = _selection_error_en
 )
 
 translations.define(
