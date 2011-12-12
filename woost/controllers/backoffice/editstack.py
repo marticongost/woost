@@ -211,6 +211,7 @@ class EditStacksManager(object):
         """
         edit_stack = resolve(self._edit_stack_class)()
         edit_stack.id = session.get(self._session_id_key, 0)
+        edit_stack.root_url = cherrypy.request.params.get("root_url")
         session[self._session_id_key] = edit_stack.id + 1
         self.__stack_map[edit_stack.id] = edit_stack
 
@@ -279,6 +280,7 @@ class EditStack(ListWrapper):
         unique throughout the current browser session.
     """
     id = None
+    root_url = None
     
     def push(self, node):
         """Adds a new node to the edit stack.
@@ -322,7 +324,7 @@ class EditStack(ListWrapper):
             raise cherrypy.HTTPRedirect(self._items[-2].uri(**params))
         else:
             raise cherrypy.HTTPRedirect(
-                context["cms"].contextual_uri(**params)
+                self.root_url or context["cms"].contextual_uri(**params)
             )
 
     def go(self, index = -1):
