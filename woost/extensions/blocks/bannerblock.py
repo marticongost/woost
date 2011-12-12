@@ -41,7 +41,7 @@ class BannerBlock(Block):
     )
 
     label_displayed = schema.Boolean(
-        default = True,
+        default = False,
         required = True,
         member_group = "content"
     )
