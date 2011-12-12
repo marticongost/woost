@@ -162,6 +162,12 @@ class EditController(BaseBackOfficeController):
                 parent_edit_node.relate(member, item)
                 self.edit_stack.go(-3)
 
+        # The user had arrived to the edit interface using a frontend link,
+        # and has just saved the item at the top of the stack; redirect the
+        # browser to the original frontend location
+        if stack_node.parent_node is None and self.edit_stack.root_url:
+            self.edit_stack.go_back()
+
     def confirm_draft(self):
 
         draft = self.stack_node.item
