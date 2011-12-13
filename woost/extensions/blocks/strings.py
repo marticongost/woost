@@ -262,6 +262,12 @@ translations.define("BannerBlock.image",
     en = u"Image"
 )
 
+translations.define("BannerBlock.image_factory",
+    ca = u"Processat d'imatge",
+    es = u"Procesado de imagen",
+    en = u"Image processing"
+)
+
 translations.define("BannerBlock.label_displayed",
     ca = u"Mostrar el text",
     es = u"Mostrar el texto",
