@@ -21,7 +21,8 @@ class ImageGalleryBlock(Block):
         "thumbnail_width",
         "thumbnail_height",
         "full_width",
-        "full_height"
+        "full_height",
+        "auto_play"
     ]
 
     images = schema.Collection(
@@ -70,6 +71,12 @@ class ImageGalleryBlock(Block):
         member_group = "content"
     )
 
+    auto_play = schema.Boolean(
+        required = True,
+        default = False,
+        member_group = "content"
+    )
+
     def init_view(self, view):
         Block.init_view(self, view)
         view.images = self.images
@@ -78,4 +85,5 @@ class ImageGalleryBlock(Block):
         view.thumbnail_height = self.thumbnail_height
         view.close_up_width = self.full_width
         view.close_up_height = self.full_height
+        view.slider_options["auto"] = self.auto_play
 
