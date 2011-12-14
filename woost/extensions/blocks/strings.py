@@ -149,6 +149,12 @@ translations.define("ImageGalleryBlock.full_height",
     en = u"Zoom in image height"
 )
 
+translations.define("ImageGalleryBlock.auto_play",
+    ca = u"Transicions automàtiques",
+    es = u"Transiciones automáticas",
+    en = u"Auto play"
+)
+
 # ContainerBlock
 #------------------------------------------------------------------------------
 translations.define("ContainerBlock",
@@ -260,6 +266,12 @@ translations.define("BannerBlock.image",
     ca = u"Imatge",
     es = u"Imagen",
     en = u"Image"
+)
+
+translations.define("BannerBlock.image_factory",
+    ca = u"Processat d'imatge",
+    es = u"Procesado de imagen",
+    en = u"Image processing"
 )
 
 translations.define("BannerBlock.label_displayed",

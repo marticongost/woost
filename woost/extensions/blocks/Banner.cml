@@ -14,6 +14,7 @@ from woost.models import URI
     image = None
     text = None
     label_displayed = True
+    image_factory = None
     ?>
 
     <?py
@@ -35,12 +36,18 @@ from woost.models import URI
         if self.label_displayed:
             self.append(title)
             if self.image:
-                self.set_style("background-image", "url('%s')" % self.image.get_uri())
+                self.set_style(
+                    "background-image", 
+                    "url('%s')" % self.image.get_image_uri(
+                        self.image_factory or "default"
+                    )
+                )
         else:
             self["title"] = title
             if self.image:
                 image = loader.new("woost.views.Image")
                 image.image = self.image
+                image.image_factory = self.image_factory
                 self.append(image)
         ?>
     </py:ready>

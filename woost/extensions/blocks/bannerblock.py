@@ -5,6 +5,7 @@ u"""
 """
 from cocktail import schema
 from woost.models import File, Publishable
+from woost.models.rendering import ImageFactoryMember
 from woost.extensions.blocks.block import Block
 
 
@@ -17,6 +18,7 @@ class BannerBlock(Block):
     members_order = [
         "target",
         "image",
+        "image_factory",
         "text",
         "label_displayed"
     ]
@@ -25,6 +27,10 @@ class BannerBlock(Block):
         type = File,
         integral = True,
         related_end = schema.Collection(),
+        member_group = "content"
+    )
+
+    image_factory = ImageFactoryMember(
         member_group = "content"
     )
 
@@ -49,6 +55,7 @@ class BannerBlock(Block):
     def init_view(self, view):
         Block.init_view(self, view)
         view.image = self.image
+        view.image_factory = self.image_factory
         view.target = self.target
         view.text = self.text
         view.label_displayed = self.label_displayed
