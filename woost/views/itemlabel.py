@@ -14,7 +14,7 @@ from cocktail.controllers import context
 class ItemLabel(Element):
 
     item = None
-    image_factory = "backoffice_small_thumbnail.png"
+    image_factory = "backoffice_small_thumbnail"
     icon_visible = True
     thumbnail = True
     referer = None
@@ -35,7 +35,7 @@ class ItemLabel(Element):
     def create_icon(self):
         img = Element("img")
         img.add_class("icon")
-        img["src"] = context["cms"].image_uri(self.item, self.image_factory)
+        img["src"] = self.item.get_image_uri(self.image_factory)
         return img
     
     def get_label(self):
