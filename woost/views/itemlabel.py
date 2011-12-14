@@ -35,7 +35,13 @@ class ItemLabel(Element):
     def create_icon(self):
         img = Element("img")
         img.add_class("icon")
-        img["src"] = self.item.get_image_uri(self.image_factory)
+        if isinstance(self.item, type):
+            img["src"] = context["cms"].image_uri(
+                self.item, 
+                self.image_factory + ".png"
+            )
+        else:
+            img["src"] = self.item.get_image_uri(self.image_factory)
         return img
     
     def get_label(self):
