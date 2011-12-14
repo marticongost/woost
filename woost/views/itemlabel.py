@@ -35,13 +35,23 @@ class ItemLabel(Element):
     def create_icon(self):
         img = Element("img")
         img.add_class("icon")
-        if isinstance(self.item, type):
-            img["src"] = context["cms"].image_uri(
-                self.item, 
-                self.image_factory + ".png"
-            )
+        get_image_uri = getattr(self.item, "get_image_uri", None)
+
+        if get_image_uri:
+            img["src"] = get_image_uri(self.image_factory)
         else:
-            img["src"] = self.item.get_image_uri(self.image_factory)
+            image_factory = self.image_factory or "default"
+
+            if "." not in image_factory:
+                from woost.models.rendering.formats import (
+                    extensions_by_format,
+                    default_format
+                )
+                extension = extensions_by_format[default_format]
+                image_factory += "." + extension
+
+            img["src"] = context["cms"].image_uri(self.item, image_factory)
+
         return img
     
     def get_label(self):
