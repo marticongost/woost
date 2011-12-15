@@ -86,7 +86,8 @@ of its features include:\n"
             "ecommerce = woost.extensions.ecommerce:ECommerceExtension",
             "facebookpublication = woost.extensions.facebookpublication:FacebookPublicationExtension",
             "shorturls = woost.extensions.shorturls:ShortURLsExtension",
-            "twitterpublication = woost.extensions.twitterpublication:TwitterPublicationExtension"
+            "twitterpublication = woost.extensions.twitterpublication:TwitterPublicationExtension",
+            "textfile = woost.extensions.textfile:TextFileExtension"
         ]
     },
     # Woost can't yet access view resources (images, style sheets, client
