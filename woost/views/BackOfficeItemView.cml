@@ -2,6 +2,7 @@
 
 <?py
 from cocktail.schema import Collection
+from cocktail.html import html5_attr
 from woost.models import Item
 from woost.controllers.backoffice.useractions import (
     get_view_actions, get_view_actions_context, add_view_action_context
@@ -55,6 +56,8 @@ from woost.controllers.backoffice.useractions import (
         py:tag="form"
         method="post"
         autocomplete="off">
+
+        <?py html5_attr(element, "novalidate", "novalidate") ?>
 
         <!-- Default button (hidden) -->
         <button
