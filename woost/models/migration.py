@@ -132,3 +132,21 @@ def rebuild_full_text_index(e):
     from woost.models import Item
     Item.rebuild_full_text_indexes(True)
 
+#------------------------------------------------------------------------------
+
+step = MigrationStep(
+    "Replace EmailTemplate.attachments with EmailTemplate.initialization_code"
+)
+
+@when(step.executing)
+def relocate_attachments_code(e):
+    from woost.models import EmailTemplate
+
+    for email_template in EmailTemplate.select():
+        code = getattr(email_template, "_attachments", None)
+        if code:
+            del email_template._attachments
+            if email_template.initialization_code:
+                code = email_template.initialization_code + "\n\n" + code
+            email_template.initialization_code = code
+
