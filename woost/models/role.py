@@ -76,7 +76,9 @@ class Role(Item):
         edit_inline = True,
         edit_control = display_factory(
             "woost.views.ContentTypePicker",
-            selection_mode = MULTIPLE_SELECTION
+            selection_mode = MULTIPLE_SELECTION,
+            filter_item = lambda content_type:
+                content_type.visible and content_type.visible_from_root
         )
     )
 
