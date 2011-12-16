@@ -4267,12 +4267,6 @@ translations.define("EmailTemplate.subject",
     en = u"Subject"
 )
 
-translations.define("EmailTemplate.attachments",
-    ca = u"Fitxers adjunts",
-    es = u"Ficheros adjuntos",
-    en = u"Attachments"
-)
-
 translations.define("EmailTemplate.body",
     ca = u"Cos del missatge",
     es = u"Cuerpo del mensaje",

@@ -32,7 +32,6 @@ class EmailTemplate(Item):
         "bcc",
         "template_engine",
         "subject",
-        "attachments",
         "body",
         "initialization_code"
     ]
@@ -84,11 +83,6 @@ class EmailTemplate(Item):
         edit_control = "cocktail.html.TextArea"
     )
 
-    attachments = schema.CodeBlock(
-        language = "python",
-        listed_by_default = False
-    )
-
     body = schema.String(
         translated = True,
         listed_by_default = False,
@@ -109,6 +103,9 @@ class EmailTemplate(Item):
         if context is None:
             context = {}
         
+        if context.get("attachments") is None:
+            context["attachments"] = {}
+
         def eval_member(key):
             expr = self.get(key)
             return eval(expr, context.copy()) if expr else None
@@ -152,13 +149,11 @@ class EmailTemplate(Item):
         message = MIMEText(body, _subtype = mime_type, _charset = self.encoding)
 
         # Attachments
-        if self.attachments:
-            attachments_context = context.copy()
-            attachments_context["attachments"] = {}
-            exec self.attachments in attachments_context
+        attachments = context.get("attachments")
+        if attachments:
             attachments = dict(
                 (cid, attachment) 
-                for cid, attachment in attachments_context["attachments"].iteritems()
+                for cid, attachment in attachments.iteritems()
                 if attachment is not None
             )
             if attachments:
