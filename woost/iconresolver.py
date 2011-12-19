@@ -11,6 +11,7 @@ import os
 from pkg_resources import resource_filename
 from cocktail.typemapping import TypeMapping
 from cocktail.cache import Cache
+from woost.models.site import Site
 from woost.models.item import Item
 from woost.models.publishable import Publishable
 from woost.models.file import File
@@ -135,6 +136,9 @@ class IconResolver(object):
 
         if item is not None and item.resource_type:
             file_names.insert(0, "resource-type-" + item.resource_type)
+
+        if item is Site.main.home:
+            file_names.insert(0, "home")
 
         return file_names
 
