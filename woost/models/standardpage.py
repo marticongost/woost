@@ -7,12 +7,17 @@ u"""
 @since:			June 2008
 """
 from cocktail import schema
+from woost.models.site import Site
 from woost.models.document import Document
 from woost.models.template import Template
 
 
 class StandardPage(Document):
     
+    default_parent = schema.DynamicDefault(
+        lambda: Site.main.home
+    )
+
     default_template = schema.DynamicDefault(
         lambda: Template.get_instance(qname = "woost.standard_template")
     )
