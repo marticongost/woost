@@ -76,23 +76,23 @@ class BlocksExtension(Extension):
         templates.get_class("woost.extensions.blocks.EditPanelOverlay")
 
     def _create_blocks_page_template(self):
-        blocks_page_template = Template.get_instance(
-            identifier = "woost.extensions.blocks.BlocksPageView"
-        )
+
+        qname = "woost.extensions.blocks.blocks_page_template"
+        blocks_page_template = Template.get_instance(qname = qname)
+        
         if blocks_page_template is None:
-            blocks_page_template = Template()
-            blocks_page_template.set(
-                "title", u"Plantilla pàgina de blocs", "ca"
+            blocks_page_template = Template(
+                qname = qname,
+                engine = "cocktail",
+                identifier = "woost.extensions.blocks.BlocksPageView"
             )
-            blocks_page_template.set(
-                "title", u"Plantilla página de bloques", "es"
-            )
-            blocks_page_template.set(
-                "title", u"Blocks page template", "en"
-            )
-            blocks_page_template.identifier = \
-                "woost.extensions.blocks.BlocksPageView"
-            blocks_page_template.engine = "cocktail"
+            for lang in Language.codes:
+                title = translations(
+                    "woost.extensions.blocks.blocks_page_template.title",
+                    lang
+                )
+                if title:
+                    blocks_page_template.set("title", title, lang)
 
         return blocks_page_template
 

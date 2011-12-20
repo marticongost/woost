@@ -25,6 +25,14 @@ translations.define("BlocksPage.blocks",
     en = u"Blocks"
 )
 
+# Blocks page template
+#------------------------------------------------------------------------------
+translations.define("woost.extensions.blocks.blocks_page_template.title",
+    ca = u"Plantilla pàgina de blocs",
+    es = u"Plantilla página de bloques",
+    en = u"Blocks page template"
+)
+
 # Block
 #------------------------------------------------------------------------------
 translations.define("Block",
