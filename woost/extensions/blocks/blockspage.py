@@ -6,14 +6,9 @@ u"""Defines the `BlocksPage` model.
 from cocktail import schema
 from woost.models import Document, Template
 from woost.extensions.blocks.block import Block
-from woost.models.site import Site
 
 
 class BlocksPage(Document):
-
-    default_parent = schema.DynamicDefault(
-        lambda: Site.main.home
-    )
 
     blocks = schema.Collection(
         items = schema.Reference(type = Block),        
