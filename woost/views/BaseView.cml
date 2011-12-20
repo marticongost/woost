@@ -28,6 +28,9 @@ from woost.models import Site, Publishable, Language
             keywords.append(item_keywords)        
         return " ".join(keywords) if keywords else None
 
+    def get_content_title(self):
+        return getattr(self.publishable, "inner_title", None) or translations(self.publishable)
+
     def get_content_language(self, item, language = None):
         return item.get_common_language(self.translation_members, language)
     
