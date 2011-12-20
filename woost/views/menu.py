@@ -33,6 +33,7 @@ class Menu(TreeView):
     emphasized_selection = True
     linked_selection = True
     linked_containers = True
+    display_filtered_containers = False
 
     def _ready(self):
 
