@@ -495,3 +495,35 @@ translations.define("LinksBlock.links",
     en = u"Links"
 )
 
+# FolderBlock
+#------------------------------------------------------------------------------
+translations.define("FolderBlock",
+    ca = u"Llistat de documents fills",
+    es = u"Listado de documentos hijos",
+    en = u"Child documents listing"
+)
+
+translations.define("FolderBlock-plural",
+    ca = u"Llistats de documents fills",
+    es = u"Listados de documentos hijos",
+    en = u"Child documents listings"
+)
+
+translations.define("FolderBlock.show_hidden_children",
+    ca = u"Mostrar documents ocults",
+    es = u"Mostrar documentos ocultos",
+    en = u"Show hidden documents"
+)
+
+translations.define("FolderBlock.show_thumbnails",
+    ca = u"Mostrar miniatures",
+    es = u"Mostrar miniaturas",
+    en = u"Show thumbnails"
+)
+
+translations.define("FolderBlock.thumbnails_factory",
+    ca = u"Processador de miniatures",
+    es = u"Procesador de miniaturas",
+    en = u"Thumbnail factory"
+)
+
