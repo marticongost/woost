@@ -56,6 +56,7 @@ class BlocksExtension(Extension):
             translatedrichtextblock,
             twittertimelineblock,
             linksblock,
+            folderblock,
             blockspage,
             migration
         )
