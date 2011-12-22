@@ -58,6 +58,9 @@ from woost.models import (
 
     <py:ready>
         <?py
+        if self.edit_parameters is self.__class__.edit_parameters:
+            self.edit_parameters = self.edit_parameters.copy()
+
         if self.target is None:
             self.target = context["publishable"]
 
