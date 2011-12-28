@@ -71,7 +71,11 @@ class UploadForm(Form):
                     setattr(target_member, key, value)
                 
                 if isinstance(source_member, schema.Collection):
-                    target_member = schema.Collection(items = target_member)
+                    target_member = schema.Collection(
+                        items = target_member,
+                        min = source_member.min,
+                        max = source_member.max
+                    )
 
                 target_member.name = self.key
                 target_member.member_group = source_member.member_group
