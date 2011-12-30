@@ -209,6 +209,12 @@ translations.define("SlideShowBlock.autoplay",
     en = u"Autoplay"
 )
 
+translations.define("SlideShowBlock.navigation_controls",
+    ca = u"Mostrar controls de navegació",
+    es = u"Mostrar controles de navegación",
+    en = u"Show navigation controls"
+)
+
 translations.define("SlideShowBlock.interval",
     ca = u"Freqüència de les transicions",
     es = u"Frecuencia de las transiciones",
