@@ -25,8 +25,12 @@ from woost.models.rendering.factories import (
 verbose = True
 
 def _remove_dir_contents(path):
+    
+    # os.path.lexists is not supported on windows
     from cocktail.styled import styled
-    if os.path.lexists(path):
+    exists = getattr(os.path, "lexists", os.path.exists)
+
+    if exists(path):
         for item in os.listdir(path):
             item_path = os.path.join(path, item)
             if verbose:
@@ -135,28 +139,33 @@ def require_rendering(
                 os.remove(image_cache_file)
             except OSError:
                 pass
-            os.symlink(image, image_cache_file)
+            
+            if hasattr(os, "symlink"):
+                os.symlink(image, image_cache_file)
+            else:
+                copy(image, image_cache_file)
         else:
             image.save(image_cache_file, format)
 
     # If the image is accessible to anonymous users, create a link in the
     # application's static content folder (further requests will be served
     # by the web server, no questions asked).
-    static_publication_link = app.path("static", "images", item_id, file_name)
+    if hasattr(os, "symlink"):
+        static_publication_link = app.path("static", "images", item_id, file_name)
 
-    if not os.path.lexists(static_publication_link):
-        anonymous = User.require_instance(qname ="woost.anonymous_user")            
-        
-        if anonymous.has_permission(
-            RenderPermission, 
-            target = item,
-            image_factory = factory_name
-        ):
-            try:
-                os.mkdir(app.path("static", "images", item_id))
-            except OSError:
-                pass
-            os.symlink(image_cache_file, static_publication_link)
+        if not os.path.lexists(static_publication_link):
+            anonymous = User.require_instance(qname ="woost.anonymous_user")
+
+            if anonymous.has_permission(
+                RenderPermission, 
+                target = item,
+                image_factory = factory_name
+            ):
+                try:
+                    os.mkdir(app.path("static", "images", item_id))
+                except OSError:
+                    pass
+                os.symlink(image_cache_file, static_publication_link)
 
     return image_cache_file
 
