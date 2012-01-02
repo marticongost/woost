@@ -4,7 +4,7 @@ u"""
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
 import os
-from shutil import rmtree
+from shutil import rmtree, copy
 from cocktail.events import when
 from cocktail.persistence import datastore
 from woost import app
