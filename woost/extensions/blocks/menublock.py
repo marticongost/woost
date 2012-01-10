@@ -30,9 +30,16 @@ class MenuBlock(Block):
         member_group = "content"
     )
 
+    expanded = schema.Boolean(
+        required = True,
+        default = False,
+        member_group = "content"
+    )
+
     def init_view(self, view):
         Block.init_view(self, view)
         view.root = self.root
         view.root_visible = self.root_visible
         view.max_depth = self.max_depth
+        view.expanded = self.expanded
 
