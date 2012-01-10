@@ -5,6 +5,12 @@ u"""
 """
 from cocktail.translations import translations
 
+translations.define("woost.extensions.blocks.slots.blocks",
+    ca = u"Blocs",
+    es = u"Bloques",
+    en = u"Blocks"
+)
+
 # BlocksPage
 #------------------------------------------------------------------------------
 translations.define("BlocksPage",
