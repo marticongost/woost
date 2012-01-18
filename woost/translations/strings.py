@@ -4500,3 +4500,47 @@ translations.define("woost.views.EditPanel.actions_title",
     en = u"Actions"
 )
 
+# Image factories
+#------------------------------------------------------------------------------
+translations.define("woost.image_factory.default",
+    ca = u"Imatge sense modificar",
+    es = u"Imagen sin modificar",
+    en = u"Unmodified image"
+)
+
+translations.define("woost.image_factory.icon16",
+    ca = u"Icona de 16x16",
+    es = u"Icono de 16x16",
+    en = u"16x16 icon"
+)
+
+translations.define("woost.image_factory.icon32",
+    ca = u"Icona de 32x32",
+    es = u"Icono de 32x32",
+    en = u"32x32 icon"
+)
+
+translations.define("woost.image_factory.backoffice_thumbnail",
+    ca = u"Miniatura del panell d'administració",
+    es = u"Miniatura del panel de administración",
+    en = u"Backoffice thumbnail"
+)
+
+translations.define("woost.image_factory.backoffice_small_thumbnail",
+    ca = u"Miniatura petita del panell d'administració",
+    es = u"Miniatura pequeña del panel de administración",
+    en = u"Backoffice small thumbnail"
+)
+
+translations.define("woost.image_factory.image_gallery_close_up",
+    ca = u"Ampliació estàndar de la galeria d'imatges",
+    es = u"Ampliación estándar de la galería de imágenes",
+    en = u"Standard image gallery close up"
+)
+
+translations.define("woost.image_factory.image_gallery_thumbnail",
+    ca = u"Miniatura estàndar de la galeria d'imatges",
+    es = u"Miniatura estándar de la galería de imágenes",
+    en = u"Standard image gallery thumbnail"
+)
+
