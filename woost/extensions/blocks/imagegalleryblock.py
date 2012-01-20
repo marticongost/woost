@@ -6,7 +6,9 @@ u"""
 from cocktail.translations import translations
 from cocktail import schema
 from cocktail.modeling import getter
+from cocktail.html import templates
 from woost.models import File
+from woost.models.rendering.factories import ImageFactoryMember
 from woost.extensions.blocks.block import Block
 
 
@@ -18,10 +20,8 @@ class ImageGalleryBlock(Block):
     members_order = [
         "images",
         "gallery_type",
-        "thumbnail_width",
-        "thumbnail_height",
-        "full_width",
-        "full_height",
+        "thumbnail_factory",
+        "close_up_factory",
         "auto_play"
     ]
 
@@ -47,27 +47,21 @@ class ImageGalleryBlock(Block):
         member_group = "content"
     )
 
-    thumbnail_width = schema.Integer(
+    thumbnail_factory = ImageFactoryMember(
         required = True,
-        default = 200,
+        default = "image_gallery_thumbnail",
+        enumeration = lambda ctx:
+            templates.get_class("woost.views.ImageGallery")
+            .thumbnail_sizes.keys(),
         member_group = "content"
     )
 
-    thumbnail_height = schema.Integer(
+    close_up_factory = ImageFactoryMember(
         required = True,
-        default = 200,
-        member_group = "content"
-    )
-
-    full_width = schema.Integer(
-        required = True,
-        default = 800,
-        member_group = "content"
-    )
-
-    full_height = schema.Integer(
-        required = True,
-        default = 700,
+        default = "image_gallery_close_up",
+        enumeration = lambda ctx:
+            templates.get_class("woost.views.ImageGallery")
+            .close_up_sizes.keys(),
         member_group = "content"
     )
 
@@ -77,13 +71,39 @@ class ImageGalleryBlock(Block):
         member_group = "content"
     )
 
+    labels_visible = schema.Boolean(
+        required = True,
+        default = True,
+        member_group = "content"
+    )
+
+    footnotes_visible = schema.Boolean(
+        required = True,
+        default = True,
+        member_group = "content"
+    )
+
+    original_link_visible = schema.Boolean(
+        required = True,
+        default = False,
+        member_group = "content"
+    )
+
+    close_up_enabled = schema.Boolean(
+        required = True,
+        default = True,
+        member_group = "content"
+    )
+
     def init_view(self, view):
         Block.init_view(self, view)
         view.images = self.images
         view.gallery_type = self.gallery_type
-        view.thumbnail_width = self.thumbnail_width
-        view.thumbnail_height = self.thumbnail_height
-        view.close_up_width = self.full_width
-        view.close_up_height = self.full_height
+        view.thumbnail_factory = self.thumbnail_factory
+        view.close_up_factory = self.close_up_factory
         view.slider_options["auto"] = self.auto_play
+        view.labels_visible = self.labels_visible
+        view.footnotes_visible = self.footnotes_visible
+        view.original_link_visible = self.original_link_visible
+        view.close_up_enabled = self.close_up_enabled
 
