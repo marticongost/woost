@@ -139,34 +139,46 @@ translations.define("ImageGalleryBlock-plural",
     en = u"Image galleries"
 )
 
-translations.define("ImageGalleryBlock.thumbnail_width",
-    ca = u"Amplada de les miniatures",
-    es = u"Ancho de las miniaturas",
-    en = u"Thumbnail width"
+translations.define("ImageGalleryBlock.thumbnail_factory",
+    ca = u"Processat per les miniatures",
+    es = u"Procesado para las miniaturas",
+    en = u"Thumbnail factory"
 )
 
-translations.define("ImageGalleryBlock.thumbnail_height",
-    ca = u"Alçada de les miniatures",
-    es = u"Alto de las miniaturas",
-    en = u"Thumbnail height"
-)
-
-translations.define("ImageGalleryBlock.full_width",
-    ca = u"Amplada de les imatges ampliades",
-    es = u"Ancho de las imágenes ampliadas",
-    en = u"Zoom in image width"
-)
-
-translations.define("ImageGalleryBlock.full_height",
-    ca = u"Alçada de les imatges ampliades",
-    es = u"Alto de las imágenes ampliadas",
-    en = u"Zoom in image height"
+translations.define("ImageGalleryBlock.close_up_factory",
+    ca = u"Processat per les imatges ampliades",
+    es = u"Procesado para la imagen ampliada",
+    en = u"Close up factory"
 )
 
 translations.define("ImageGalleryBlock.auto_play",
     ca = u"Transicions automàtiques",
     es = u"Transiciones automáticas",
     en = u"Auto play"
+)
+
+translations.define("ImageGalleryBlock.labels_visible",
+    ca = u"Mostrar els títols de les imatges",
+    es = u"Mostrar los títulos de las imágenes",
+    en = u"Show image titles"
+)
+
+translations.define("ImageGalleryBlock.footnotes_visible",
+    ca = u"Mostrar els peus de foto",
+    es = u"Mostrar los pies de foto",
+    en = u"Include footnotes"
+)
+
+translations.define("ImageGalleryBlock.original_link_visible",
+    ca = u"Mostrar un enllaç a la imatge completa",
+    es = u"Mostrar un enlace a la imagen completa",
+    en = u"Include a link to the original image"
+)
+
+translations.define("ImageGalleryBlock.close_up_enabled",
+    ca = u"Habilitar la versió ampliada de les imatges",
+    es = u"Habilitar la versión ampliada de las imágenes",
+    en = u"Enable image close ups"
 )
 
 # ContainerBlock
