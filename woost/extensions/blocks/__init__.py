@@ -57,6 +57,7 @@ class BlocksExtension(Extension):
             twittertimelineblock,
             linksblock,
             folderblock,
+            loginblock,
             blockspage,
             migration
         )
