@@ -551,3 +551,48 @@ translations.define("FolderBlock.thumbnails_factory",
     en = u"Thumbnail factory"
 )
 
+# LoginBlock
+#------------------------------------------------------------------------------
+translations.define("LoginBlock",
+    ca = u"Formulari d'autenticació d'usuari",
+    es = u"Formulario de autenticación de usuario",
+    en = u"Login form"
+)
+
+translations.define("LoginBlock-plural",
+    ca = u"Formularis d'autenticació d'usuari",
+    es = u"Formularios de autenticación de usuario",
+    en = u"Login forms"
+)
+
+translations.define("LoginBlock.login_target",
+    ca = u"Pàgina de destí",
+    es = u"Página de destino",
+    en = u"Destination page"
+)
+
+translations.define("LoginBlock.login_target-explanation",
+    ca = u"La pàgina que rebrà la petició d'autenticació de l'usuari",
+    es = u"La pàgina que recibirá la petición de autenticación del "
+         u"usuario",
+    en = u"The page that will handle the user's authentication request"
+)
+
+translations.define("LoginBlockForm.user",
+    ca = u"Usuari",
+    es = u"Usuario",
+    en = u"User"
+)
+
+translations.define("LoginBlockForm.password",
+    ca = u"Contrasenya",
+    es = u"Contraseña",
+    en = u"Password"
+)
+
+translations.define("woost.extensions.blocks.LoginBlockView.submit_button",
+    ca = u"Entrar",
+    es = u"Entrar",
+    en = u"Login"
+)
+
