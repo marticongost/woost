@@ -23,7 +23,7 @@ from woost.extensions.opengraph import OpenGraphExtension
     @self.when_document_ready
     def add_open_graph_metadata(document):
         
-        if self.open_graph_properties:
+        if self.publishable.open_graph_enabled and self.open_graph_properties:
 
             # Add the OpenGraph and Facebook namespaces to the HTML document
             document["xmlns:og"] = "http://ogp.me/ns#"
