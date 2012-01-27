@@ -237,6 +237,8 @@ class EditStacksManager(object):
             self._dumps(edit_stack)
         )
 
+        session.save()
+
     def _remove_expired_edit_stacks(
         self, 
         preserved_stacks = None, 
@@ -257,6 +259,8 @@ class EditStacksManager(object):
         for stack_id, (last_update, stack_data) in preserved_stacks.items():
             if (current_time - last_update).seconds >= self.expiration:
                 del preserved_stacks[stack_id]
+
+        session.save()
 
 
 class EditStack(ListWrapper):
