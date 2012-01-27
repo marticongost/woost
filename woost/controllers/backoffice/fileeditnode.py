@@ -117,6 +117,7 @@ class ExportUploadInfo(schema.Rule):
         
         if file_name and not context.get("local_path", None):
             context.set("upload", {
+                "id": None,
                 "file_name": file_name,
                 "mime_type": context.get("mime_type"),
                 "file_size": context.get("file_size"),
