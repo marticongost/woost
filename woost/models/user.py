@@ -167,6 +167,20 @@ class User(Item):
 
         yield Role.require_instance(qname = "woost.everybody")
 
+    def has_role(self, role):
+        """Determines if the user has been granted the indicated role.
+
+        This takes into account inherited and implicit roles.
+
+        @return: True if the user possesses the given role, False otherwise.
+        @rtype: bool
+        """
+        for user_role in self.iter_roles():
+            if user_role is role:
+                return True
+
+        return False
+
     def iter_permissions(self, permission_type = None):
         """Iterates over the permissions granted to the user's roles.
 
