@@ -33,7 +33,13 @@ class PDFRenderer(ContentRenderer):
 
     def render(self, item, page = 0):
         
-        TIMEOUT = 10
+        timeout = 10 
+        
+        # Increase the timeout for bigger files
+        size = item.file_size
+        if size:
+            timeout += size / (10 * 1024 * 1024)
+
         RESOLUTION = 0.25
         temp_path = mkdtemp()
 
@@ -43,11 +49,12 @@ class PDFRenderer(ContentRenderer):
             command = u'%s -type TrueColor "%s[%d]" %s' % ( 
                 self.convert_path, item.file_path, page, temp_image_file
             )
+
             p = Popen(command, shell=True, stdout=PIPE)
             start = time()
 
             while p.poll() is None:
-                if time() - start > TIMEOUT:
+                if time() - start > timeout:
                     p.terminate()
                     raise IOError("Timeout was reached")
                 sleep(RESOLUTION)
