@@ -13,6 +13,7 @@ from cocktail.controllers import context
     footnotes_visible = True
     original_link_visible = False
     close_up_enabled = True
+    close_up_preload = True
     
     images = ()
     accessible_check = True
@@ -101,6 +102,7 @@ from cocktail.controllers import context
 
         self.add_class(self.gallery_type)
         self.set_client_param("galleryType", self.gallery_type)
+        self.set_client_param("closeUpPreload", self.close_up_preload)
 
         if self.gallery_type == "slideshow":
             self.add_resource("/cocktail/scripts/jquery.sudoSlider.js")

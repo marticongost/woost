@@ -303,9 +303,11 @@ cocktail.bind({
         }
 
         // Image pre-loading
-        $imageGallery.find(".image_entry .image_link").each(function () {
-            $imageGallery.get(0).loadImage(this.href);
-        });
+        if (this.closeUpPreload) {
+            $imageGallery.find(".image_entry .image_link").each(function () {
+                $imageGallery.get(0).loadImage(this.href);
+            });
+        }
     },
     children: {
         ".image_entry": function ($entry, $imageGallery) {
