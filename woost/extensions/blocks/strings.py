@@ -181,6 +181,25 @@ translations.define("ImageGalleryBlock.close_up_enabled",
     en = u"Enable image close ups"
 )
 
+translations.define("ImageGalleryBlock.close_up_preload",
+    ca = u"Precàrrega de la versió ampliada de les imatges",
+    es = u"Precarga de la versión ampliada de las imágenes",
+    en = u"Preload image close ups"
+)
+
+translations.define("ImageGalleryBlock.close_up_preload-explanation",
+    ca = u"Habilitar per tal que el navegador carregui la versió ampliada de "
+         u"les imatges tan bon punt es mostri la galeria. Això accelera la "
+         u"navegació, però representa un major impacte pel servidor.",
+    es = u"Habilitar para que el navegador empiece a cargar la versión "
+         u"ampliada de las imágenes desde el primer momento en que se muestre "
+         u"la galería. Esto acelera la navegación, pero representa un mayor "
+         u"impacto para el servidor.",
+    en = u"Enable to instruct the browser to start downloading the image "
+         u"close ups as soon as the gallery is displayed. This improves the "
+         u"user experience but causes a higher load for the web server."
+)
+
 # ContainerBlock
 #------------------------------------------------------------------------------
 translations.define("ContainerBlock",
