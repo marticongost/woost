@@ -122,6 +122,9 @@ cocktail.bind({
             this.loadImage(
                 jQuery(entry).find(".image_link").get(0).href,
                 function (image) {
+                    $dialog.find(".image")
+                        .width(image.width)
+                        .height(image.height);
                     $dialog.show();
                     cocktail.center(dialog);
                     $dialog
