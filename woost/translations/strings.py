@@ -4544,3 +4544,39 @@ translations.define("woost.image_factory.image_gallery_thumbnail",
     en = u"Standard image gallery thumbnail"
 )
 
+# Agreement to terms & conditions
+#------------------------------------------------------------------------------
+translations.define("woost.controllers.formagreement",
+    ca = lambda member:
+        u"He llegit i accepto "
+        u"<a href='%s' target='_blank'>els termes i condicions</a> "
+        u"d'aquest formulari"
+        % member.agreement_document.get_uri(),
+    es = lambda member:
+        u"He leído y acepto "
+        u"<a href='%s' target='_blank'>los términos y condiciones</a> "
+        u"de este formulario"
+        % member.agreement_document.get_uri(),
+    en = lambda member:
+        u"I have read and agree to the "
+        u"<a href='%s' target='_blank'>terms and conditions</a> "
+        u"of this form"
+        % member.agreement_document.get_uri()
+)
+
+translations.define(
+    "woost.controllers.formagreement.ConsentNotGivenError-instance",
+    ca = lambda instance:
+        u"Has d'acceptar <a href='%s' target='_blank'>els termes i "
+        u"condicions</a> del formulari" 
+        % instance.member.agreement_document.get_uri(),
+    es = lambda instance:
+        u"Debes aceptar <a href='%s' target='_blank'>los términos y "
+        u"condiciones</a> de este formulario"
+        % instance.member.agreement_document.get_uri(),
+    en = lambda instance:
+        u"You must accept the <a href='%s' target='_blank'>terms & conditions "
+        u"</a> of the form"
+        % instance.member.agreement_document.get_uri()
+)
+
