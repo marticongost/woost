@@ -22,6 +22,7 @@ class ImageGalleryBlock(Block):
         "gallery_type",
         "thumbnail_factory",
         "close_up_factory",
+        "close_up_preload",
         "auto_play"
     ]
 
@@ -62,6 +63,12 @@ class ImageGalleryBlock(Block):
         enumeration = lambda ctx:
             templates.get_class("woost.views.ImageGallery")
             .close_up_sizes.keys(),
+        member_group = "content"
+    )
+
+    close_up_preload = schema.Boolean(
+        required = True,
+        default = True,
         member_group = "content"
     )
 
@@ -106,4 +113,5 @@ class ImageGalleryBlock(Block):
         view.footnotes_visible = self.footnotes_visible
         view.original_link_visible = self.original_link_visible
         view.close_up_enabled = self.close_up_enabled
+        view.close_up_preload = self.close_up_preload
 
