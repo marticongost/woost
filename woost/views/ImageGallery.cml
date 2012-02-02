@@ -13,15 +13,20 @@ from cocktail.controllers import context
     footnotes_visible = True
     original_link_visible = False
     close_up_enabled = True
+    close_up_preload = True
     
     images = ()
     accessible_check = True
 
+    _close_up_width = None
+    _close_up_height = None
     close_up_factory = "image_gallery_close_up"
     close_up_sizes = {
         "image_gallery_close_up": (900, 700)
     }
 
+    _thumbnail_width = None
+    _thumbnail_height = None
     thumbnail_factory = "image_gallery_thumbnail"
     thumbnail_sizes = {
         "image_gallery_thumbnail": (200, 150)
@@ -34,25 +39,53 @@ from cocktail.controllers import context
     def get_footnote(self, image):
         return getattr(image, "description", None)
 
-    @property
-    def thumbnail_width(self):
-        size = self.thumbnail_sizes.get(self.thumbnail_factory)
-        return size and size[0]
+    def _get_thumbnail_width(self):
+        if self._thumbnail_width is None:
+            size = self.thumbnail_sizes.get(self.thumbnail_factory)
+            return size and size[0]
+        
+        return self._thumbnail_width
+
+    def _set_thumbnail_width(self, width):
+        self._thumbnail_width = width
+
+    thumbnail_width = property(_get_thumbnail_width, _set_thumbnail_width)
     
-    @property
-    def thumbnail_height(self):
-        size = self.thumbnail_sizes.get(self.thumbnail_factory)
-        return size and size[1]
+    def _get_thumbnail_height(self):
+        if self._thumbnail_height is None:
+            size = self.thumbnail_sizes.get(self.thumbnail_factory)
+            return size and size[1]
 
-    @property
-    def close_up_width(self):
-        size = self.close_up_sizes.get(self.close_up_factory)
-        return size and size[0]
+        return self._thumbnail_height
 
-    @property
-    def close_up_height(self):
-        size = self.close_up_sizes.get(self.close_up_factory)
-        return size and size[1]
+    def _set_thumbnail_height(self, height):
+        self._thumbnail_height = height
+
+    thumbnail_height = property(_get_thumbnail_height, _set_thumbnail_height)
+
+    def _get_close_up_width(self):
+        if self._close_up_width is None:
+            size = self.close_up_sizes.get(self.close_up_factory)
+            return size and size[0]
+        
+        return self._close_up_width
+
+    def _set_close_up_width(self, width):
+        self._close_up_width = width
+
+    close_up_width = property(_get_close_up_width, _set_close_up_width)
+    
+    def _get_close_up_height(self):
+        if self._close_up_height is None:
+            size = self.close_up_sizes.get(self.close_up_factory)
+            return size and size[1]
+
+        return self._close_up_height
+
+    def _set_close_up_height(self, height):
+        self._close_up_height = height
+
+    close_up_height = property(_get_close_up_height, _set_close_up_height)
     ?>
 
     <?py
@@ -69,6 +102,7 @@ from cocktail.controllers import context
 
         self.add_class(self.gallery_type)
         self.set_client_param("galleryType", self.gallery_type)
+        self.set_client_param("closeUpPreload", self.close_up_preload)
 
         if self.gallery_type == "slideshow":
             self.add_resource("/cocktail/scripts/jquery.sudoSlider.js")
