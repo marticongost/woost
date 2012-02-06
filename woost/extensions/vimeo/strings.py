@@ -143,7 +143,7 @@ translations.define("VimeoVideo.description",
     en = u"Description"
 )
 
-translations.define("VimeoVideo.tags",
+translations.define("VimeoVideo.vimeo_tags",
     ca = u"Etiquetes",
     es = u"Etiquetas",
     en = u"Tags"
