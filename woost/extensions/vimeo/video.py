@@ -34,7 +34,7 @@ class VimeoVideo(Publishable):
     members_order = [
         "title",
         "description",
-        "tags",
+        "vimeo_tags",
         "duration",
         "width",
         "height",
@@ -73,7 +73,7 @@ class VimeoVideo(Publishable):
         edit_control = "woost.views.RichTextEditor"
     )
 
-    tags = schema.String(
+    vimeo_tags = schema.String(
         member_group = "content",
         editable = False
     )
@@ -175,4 +175,7 @@ class VimeoVideo(Publishable):
         indexed = True,
         listed_by_default = False
     )
+
+    def get_embed_uri(self):
+        return "http://player.vimeo.com/video/%s" % self.vimeo_video_id
 
