@@ -22,6 +22,7 @@ class Block(Item):
     members_order = [
         "title",
         "heading",
+        "html_id",
         "css_class",
         "enabled",
         "containers"
@@ -36,6 +37,11 @@ class Block(Item):
 
     heading = schema.String(
         translated = True,
+        member_group = "content"
+    )
+
+    html_id = schema.String(
+        listed_by_default = False,
         member_group = "content"
     )
 
@@ -71,7 +77,10 @@ class Block(Item):
         view.set_client_param("blockId", self.id)
         
         view.add_class("block")
-        
+ 
+        if self.html_id:
+            view["id"] = self.html_id
+
         if self.css_class:
             view.add_class(self.css_class)
 
