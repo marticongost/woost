@@ -24,10 +24,11 @@ class SendEmailPermission(Permission):
     def match(self, role = None, verbose = False):
 
         if role and role not in self.roles:
-            print permission_doesnt_match_style("Role doesn't match")
+
+            if verbose:
+                print permission_doesnt_match_style("Role doesn't match")
+            
             return False
 
         return Permission.match(self, verbose)
-
-    
 
