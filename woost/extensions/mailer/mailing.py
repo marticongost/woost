@@ -54,7 +54,8 @@ def available_roles(ctx):
     user = get_current_user()
     return [role 
             for role in Role.select() 
-            if user.has_permission(SendEmailPermission, role = role) 
+            if not role.implicit
+            and user.has_permission(SendEmailPermission, role = role) 
             and len(get_receivers_by_roles([role]))]
 
 
