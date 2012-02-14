@@ -24,7 +24,6 @@ from woost.models.messagestyles import unauthorized_style
 class Permission(Item):
 
     instantiable = False
-    integral = True
     visible_from_root = False
 
     authorized = schema.Boolean(

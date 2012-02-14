@@ -61,7 +61,8 @@ class Role(Item):
 
     permissions = schema.Collection(
         items = "woost.models.Permission",
-        bidirectional = True
+        bidirectional = True,
+        integral = True
     )
 
     user_views = schema.Collection(
