@@ -175,10 +175,22 @@ class ItemController(BaseBackOfficeController):
 
     def switch_section(self, section):
         item = self.stack_node.item
+
+        # Preserve form initialization parameters
+        if cherrypy.request.method == "GET":
+            params = dict(
+                (key, value)
+                for key, value in cherrypy.request.params.iteritems()
+                if key.startswith("edited_item_")
+            )
+        else:
+            params = {}
+        
         raise cherrypy.HTTPRedirect(
             self.edit_uri(
                 item if item.is_inserted else item.__class__,
-                section
+                section,
+                **params
             )
         )
 
