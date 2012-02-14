@@ -3530,6 +3530,12 @@ translations.define("Role.hidden_content_types-explanation",
          u"interface."
 )
 
+translations.define("Role.implicit",
+    ca = u"Implícit",
+    es = u"Implícito",
+    en = u"Implicit"
+)
+
 # Template
 #------------------------------------------------------------------------------
 translations.define("Template",

@@ -134,6 +134,7 @@ def init_site(
         
         # Create the anonymous user and role
         anonymous_role = Role()
+        anonymous_role.implicit = True
         anonymous_role.critical = True
         anonymous_role.qname = "woost.anonymous"
         set_translations(anonymous_role, "title", "Anonymous role title")        
@@ -174,6 +175,7 @@ def init_site(
 
         # Create the 'everybody' role
         everybody_role = Role()
+        everybody_role.implicit = True
         everybody_role.critical = True
         everybody_role.qname = "woost.everybody"
         set_translations(everybody_role, "title", "Everybody role title")
@@ -254,6 +256,7 @@ def init_site(
 
         # Create the 'authenticated' role
         authenticated_role = Role()
+        authenticated_role.implicit = True
         authenticated_role.critical = True
         authenticated_role.qname = "woost.authenticated"
         set_translations(authenticated_role, "title",
