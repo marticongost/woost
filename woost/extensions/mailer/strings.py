@@ -17,6 +17,12 @@ translations.define("Action send_email",
     en = u"Send"
 )
 
+translations.define("Action create_mailing",
+    ca = u"Enviar per correu",
+    es = u"Enviar por correo",
+    en = u"Send by e-mail"
+)
+
 translations.define("woost.extensions.mailer users",
     ca = u"usuaris",
     es = u"usuarios",

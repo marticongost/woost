@@ -59,7 +59,8 @@ class MailerExtension(Extension):
             ItemController
 
         from woost.extensions.mailer import (
-            useraction,
+            sendemailaction,
+            createmailingaction,
             strings
         )
         from woost.extensions.mailer.mailing import Mailing, \
