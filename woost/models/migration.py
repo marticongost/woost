@@ -150,3 +150,22 @@ def relocate_attachments_code(e):
                 code = email_template.initialization_code + "\n\n" + code
             email_template.initialization_code = code
 
+#------------------------------------------------------------------------------
+
+step = MigrationStep(
+    "Added the Role.implicit member"
+)
+
+@when(step.executing)
+def flag_implicit_roles(e):
+    from woost.models import Role
+
+    implicit_roles_qnames = set((
+        "woost.anonymous",
+        "woost.everybody",
+        "woost.authenticated"
+    ))
+
+    for role in Role.select():
+        role.implicit = (role.qname in implicit_roles_qnames)
+

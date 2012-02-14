@@ -82,6 +82,13 @@ class Role(Item):
         )
     )
 
+    implicit = schema.Boolean(
+        required = True,
+        default = False,
+        indexed = True,
+        editable = False
+    )
+
     def iter_roles(self, include_self = True, recursive = True):
         """Iterates over the role and its bases.
 
