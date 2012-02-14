@@ -681,7 +681,7 @@ class EditNode(StackNode):
 
         # Hide relations with relation nodes in the stack
         relation_node = self.get_ancestor_node(RelationNode)
-        if relation_node and relation_node.member.related_end:
+        if relation_node and member is relation_node.member.related_end:
             return True
 
         user = get_current_user()
