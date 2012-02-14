@@ -662,72 +662,91 @@ class EditNode(StackNode):
         edit form.
         @type: L{Adapter<cocktail.schema.Adapter>}
         """
-        user = get_current_user()    
-        relation_node = self.get_ancestor_node(RelationNode)
-        stack_relation = relation_node and relation_node.member.related_end
-
-        def class_family_permission(root, permission_type):
-            return any(
-                user.has_permission(permission_type, target = cls)
-                for cls in root.schema_tree()
-            )
-
         adapter = schema.Adapter()
         adapter.collection_copy_mode = self._adapt_collection
         adapter.exclude([
             member.name
             for member in self.content_type.members().itervalues()
-            if not member.editable
-            or not member.visible                
-            or member is stack_relation
-            or not user.has_permission(ReadMemberPermission, member = member)
-            or not user.has_permission(ModifyMemberPermission, member = member)
-            or (
-                isinstance(member, schema.RelationMember)
-                and member.is_persistent_relation
-                and (
-                    # Hide relations to invisible types
-                    not member.related_type.visible
-
-                    # Hide empty collections with the exclude_when_empty flag
-                    # set
-                    or (
-                        isinstance(member, schema.Collection)
-                        and member.exclude_when_empty
-                        and not member.select_constraint_instances(
-                            parent = self.item
-                        )
-                    )
-                    # Require read permission for related types
-                    or not class_family_permission(
-                        member.related_type, ReadPermission
-                    )
-                    # Integral relation
-                    or (
-                        isinstance(member, schema.Reference)
-                        and member.integral
-                        and self.item
-                        and not (
-                            # Empty: require create permission
-                            # Has an item: require edit or delete permission
-                            class_family_permission(
-                                member.type, CreatePermission
-                            )
-                            if self.item.get(member) is None
-                            else (
-                                class_family_permission(
-                                    member.type, ModifyPermission
-                                )
-                                or class_family_permission(
-                                    member.type, DeletePermission
-                                )
-                            )
-                        )
-                    )
-                )
-            )
+            if self.should_exclude_member(member)
         ])
         return adapter
+
+    def should_exclude_member(self, member):
+
+        if not member.editable:
+            return True
+
+        if not member.visible:
+            return True
+
+        # Hide relations with relation nodes in the stack
+        relation_node = self.get_ancestor_node(RelationNode)
+        if relation_node and relation_node.member.related_end:
+            return True
+
+        user = get_current_user()
+
+        if not user.has_permission(ReadMemberPermission, member = member):
+            return True
+
+        if not user.has_permission(ModifyMemberPermission, member = member):
+            return True
+
+        if isinstance(member, schema.RelationMember) \
+        and member.is_persistent_relation:
+            
+            # Hide relations to invisible types
+            if not member.related_type.visible:
+                return True
+
+            # Hide empty collections with the exclude_when_empty flag
+            # set
+            if (
+                isinstance(member, schema.Collection)
+                and member.exclude_when_empty
+                and not member.select_constraint_instances(
+                    parent = self.item
+                )
+            ):
+                return True
+
+            def class_family_permission(root, permission_type):
+                return any(
+                    user.has_permission(permission_type, target = cls)
+                    for cls in root.schema_tree()
+                )
+
+            # Require read permission for related types
+            if not class_family_permission(
+                member.related_type, ReadPermission
+            ):
+                return True
+
+            # Integral relation
+            if (
+                isinstance(member, schema.Reference) 
+                and member.integral
+                and self.item
+            ):
+                # Empty: require create permission
+                # Has an item: require edit or delete permission
+                if self.item.get(member) is None:
+                    if not class_family_permission(
+                        member.type,
+                        CreatePermission
+                    ):
+                        return True
+                elif not (
+                    class_family_permission(
+                        member.type, ModifyPermission
+                    )
+                    and class_family_permission(
+                        member.type, DeletePermission                        
+                    )
+                ):
+                    return True
+
+        return False
 
     def _adapt_collection(self, context, key, value):
         return self._copy_collection(value)
