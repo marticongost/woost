@@ -217,6 +217,17 @@ translations.define("SendEmailPermission.roles",
     en = u"Roles"
 )
 
+translations.define("SendEmailPermission.roles-explanation",
+    ca = u"Limita el permís en funció dels destinataris de l'enviament. "
+         u"Deixar en blanc per permetre o prohibir l'enviament a tothom.",
+    es = u"Limita el permiso en función de los destinatarios del envío. "
+         u"Dejar en blanco para permitir o prohibir el envío sin importar "
+         u"los destinatarios seleccionados.",
+    en = u"Limits the groups of receivers that the user can or can't send "
+         u"email to. Leave blank to allow / disallow sending e-mail "
+         u"regardless of the selected receivers."
+)
+
 # Exceptions
 #------------------------------------------------------------------------------
 translations.define("woost.extensions.mailer.mailing.DocumentTemplateRequiredError-instance",                                                                                                                             
