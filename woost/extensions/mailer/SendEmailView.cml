@@ -24,7 +24,7 @@ from woost.extensions.mailer.mailing import get_receivers_by_roles
 
     <py:ready>
         <?py
-        if self.task_id:
+        if self.task_id and self.edited_item.status is not None:
             self.set_client_param("task_id", self.task_id)
             self.add_resource("/resources/scripts/SendEmailView.js")
             self.add_client_translation("woost.extensions.mailer.SendEmailView email delivery finished")
