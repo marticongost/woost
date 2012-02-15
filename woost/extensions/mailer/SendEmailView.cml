@@ -20,7 +20,7 @@ from woost.extensions.mailer.mailing import get_receivers_by_roles
     <?py
     add_view_action_context(self, "send_email")
     self.add_resource("/resources/styles/SendEmailView.css")
-    ?>  
+    ?>
 
     <py:ready>
         <?py
@@ -35,58 +35,59 @@ from woost.extensions.mailer.mailing import get_receivers_by_roles
 
     <py:with py:element="self.item_body">
 
-        <py:ready>
-            <block py:if="self.action in ('test', 'confirmation')">
+        <div py:id="mailing_controls" py:visible="@{self.action in ('test', 'confirmation')}">
+
+            <div py:id="users_summary">
+                @{translations("woost.extensions.mailer.SendEmailView confirmation text", mailing = self.edited_item)}
+                <ul>
+                    <py:ready>
+                        <li py:for="role in self.edited_item.roles">
+                            ${self.edited_item.__class__.get_member("roles").translate_value([role])}
+                        </li>
+                    </py:ready>
+                </ul>
                 <p>
-                    ${translations("woost.extensions.mailer.SendEmailView confirmation text") % (self.edited_item.document.title, translations(self.edited_item.language))}
-
-                    <ul>
-                        <li py:for="role in self.edited_item.roles">${self.edited_item.__class__.get_member("roles").translate_value([role])}</li>
-                    </ul>
-                    <p>
-                        <strong>${translations("woost.extensions.mailer.SendEmailView total")}</strong>
-                        <span>${len(get_receivers_by_roles(self.edited_item.roles))} ${translations("woost.extensions.mailer users")}</span>
-                                
-                    </p>
+                    <strong>${translations("woost.extensions.mailer.SendEmailView total")}</strong>
+                    <span>@{len(self.edited_item.get_receivers())} ${translations("woost.extensions.mailer users")}</span>
                 </p>
-                <p class="notice" py:if="not self.edited_item.document.is_accessible(User.get_instance(qname = 'woost.anonymous_user'), language = self.edited_item.language.iso_code)">
-                    ${translations("woost.extensions.mailer.SendEmailView accessibility warning")}
-                </p>
+            </div>
 
-                <div class="mailing_test">
-                    <p>${translations("woost.extensions.mailer.SendEmailView test explanation")}</p>
-                    <label for="test_email"><strong>${translations("woost.extensions.mailer.SendEmailView test email")}</strong></label>
-                    <br />
-                    <input type="text" name="test_email" />
-                    <button type="submit" name="mailer_action" value="test">
-                        ${translations("woost.extensions.mailer.SendEmailView test")}
-                    </button>
-                </div>
+            <p 
+                py:id="accessibility_notice" 
+                class="notice"
+                py:visible="@{not self.edited_item.document.is_accessible(User.get_instance(qname = 'woost.anonymous_user'), language = self.edited_item.language.iso_code)}">
+                ${translations("woost.extensions.mailer.SendEmailView accessibility warning")}
+            </p>
 
-                <div class="buttons">
-                    <button type="submit" name="mailer_action" value="send">
-                        ${translations("woost.extensions.mailer.SendEmailView send")}
-                    </button>
-                </div>
-            </block>
+            <div py:id="mailing_test">
+                <p>${translations("woost.extensions.mailer.SendEmailView test explanation")}</p>
+                <label for="test_email"><strong>${translations("woost.extensions.mailer.SendEmailView test email")}</strong></label>
+                <br />
+                <input type="text" name="test_email" />
+                <button type="submit" name="mailer_action" value="test">
+                    ${translations("woost.extensions.mailer.SendEmailView test")}
+                </button>
+            </div>
 
-            <block py:if="self.action in ('send', 'show')">
+            <div py:id="mailing_buttons" class="buttons">
+                <button type="submit" name="mailer_action" value="send">
+                    ${translations("woost.extensions.mailer.SendEmailView send")}
+                </button>
+            </div>
 
-                <div class="mailing_info">
-                    <h3 py:visible="${self.action == 'send'}">${translations("woost.extensions.mailer.SendEmailView doing email delivery")}</h3>
-                    <h3 py:visible="${self.action == 'show'}">${translations("woost.extensions.mailer.SendEmailView email delivery finished")}</h3>
+        </div>
 
-                    <div class="summary" />
+        <div py:id="mailing_info" py:visible="@{self.action in ('send', 'show')}">
+            <h3 py:visible="@{self.action == 'send'}">${translations("woost.extensions.mailer.SendEmailView doing email delivery")}</h3>
+            <h3 py:visible="@{self.action == 'show'}">${translations("woost.extensions.mailer.SendEmailView email delivery finished")}</h3>
 
-                    <div class="progress-bar"> 
-                        <div class="progress-text">${translations("woost.extensions.mailer.SendEmailView zero per cent")}</div>
-                        <div class="progress"></div> 
-                    </div> 
-                </div>
+            <div class="summary" />
 
-            </block>
-
-        </py:ready>
+            <div class="progress-bar"> 
+                <div class="progress-text">${translations("woost.extensions.mailer.SendEmailView zero per cent")}</div>
+                <div class="progress"></div> 
+            </div> 
+        </div>
 
     </py:with>
 
