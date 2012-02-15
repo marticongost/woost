@@ -215,7 +215,7 @@ class Mailing(Item):
         if not self.id in tasks:
             current_user = get_current_user()
             if self.status is None:
-                self.pending = get_receivers_by_roles(self.roles)
+                self.pending = self.get_receivers()
                 self.total = len(self.pending)
                 self.sent = {}
                 self.errors = {}
@@ -276,6 +276,10 @@ class Mailing(Item):
             task = tasks.task(process, id = self.id)
             task.mailing_id = self.id
             task.user_id = current_user.id
+
+    def get_receivers(self):
+        return get_receivers_by_roles(self.roles)
+
 
 def get_receivers_by_roles(roles):
     receivers = {}
