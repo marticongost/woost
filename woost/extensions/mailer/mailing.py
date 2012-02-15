@@ -298,18 +298,6 @@ def document_validation(member, document, context):
             context
         )
 
-def per_user_customizable_validation(cls, instance, context):
-    per_user_customizable = instance.get("per_user_customizable")
-    document = instance.get("document")
-    template_per_user_customizable = document and document.template and document.template.per_user_customizable
-
-    if per_user_customizable and not template_per_user_customizable:
-        yield PerUserCustomizableValueError(
-            cls.get_member("per_user_customizable"),
-            None,
-            context
-        )
-
 def language_validation(cls, instance, context):
     language = instance.get("language")
     document = instance.get("document")
@@ -322,5 +310,4 @@ def language_validation(cls, instance, context):
         )
 
 Mailing.document.add_validation(document_validation)
-Mailing.add_validation(per_user_customizable_validation)
 Mailing.add_validation(language_validation)
