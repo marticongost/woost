@@ -170,6 +170,7 @@ class Mailing(Item):
             values = values.copy()
             values["mailing_receiver"] = receiver
         
+        values["show_user_controls"] = False
         body = self.document.render(**values)
 
         if not self.per_user_customizable:
