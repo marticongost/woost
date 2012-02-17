@@ -296,7 +296,8 @@ class ReadHistoryPermission(Permission):
 def restricted_modification_context(
     item,
     user = None,
-    member_subset = None
+    member_subset = None,
+    verbose = False
 ):
     """A context manager that restricts modifications to an item.
 
@@ -308,6 +309,10 @@ def restricted_modification_context(
         L{get_current_user<woost.models.usersession.get_current_user>}
         will be used.
     @type user: L{User<woost.models.user.User>}
+
+    @param verbose: Set to True to enable debug messages for the permission
+        checks executed by this function.
+    @type verbose: True
 
     @raise L{AuthorizationError<woost.models.user.AuthorizationError}:
         Raised if attempting to execute an action on the monitored item without
@@ -330,7 +335,11 @@ def restricted_modification_context(
         # them, taking into account constraints that may derive from the
         # object's present state. New objects, by definition, have no present
         # state, so the test is skipped.
-        user.require_permission(ModifyPermission, target = item)
+        user.require_permission(
+            ModifyPermission,
+            target = item,
+            verbose = verbose
+        )
     
     # Creating a new item
     else:
@@ -346,7 +355,11 @@ def restricted_modification_context(
 
         # Require permission to modify the changed member
         if member_subset is None or member.name in member_subset:
-            user.require_permission(ModifyMemberPermission, member = member)
+            user.require_permission(
+                ModifyMemberPermission,
+                member = member,
+                verbose = verbose
+            )
 
         if member.translated:
             language = event.language
@@ -357,7 +370,8 @@ def restricted_modification_context(
                 and language not in modified_languages:
                     user.require_permission(
                         CreateTranslationPermission,
-                        language = language
+                        language = language,
+                        verbose = verbose
                     )
                     modified_languages.add(language)
 
@@ -366,7 +380,8 @@ def restricted_modification_context(
                 if language not in modified_languages:
                     user.require_permission(
                         ModifyTranslationPermission,
-                        language = language
+                        language = language,
+                        verbose = verbose
                     )
                     modified_languages.add(language)
 
@@ -383,13 +398,18 @@ def restricted_modification_context(
         for language in starting_languages - set(item.translations):
             user.require_permission(
                 DeleteTranslationPermission,
-                language = language
+                language = language,
+                verbose = verbose
             )
 
     # Restrict access *after* the object is modified, both for new and old
     # objects, to make sure the user is leaving the object in a state that
     # complies with all existing restrictions.
-    user.require_permission(permission_type, target = item)
+    user.require_permission(
+        permission_type,
+        target = item,
+        verbose = verbose
+    )
 
 def delete_validating(item, user = None, deleted_set = None):
 
