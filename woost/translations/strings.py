@@ -3242,7 +3242,7 @@ translations.define("BackOfficeEditForm.upload",
 translations.define("woost.views.ImageEffectsEditor.edit_button",
     ca = u"Editar imatge",
     es = u"Editar imagen",
-    en = u"Image edit"
+    en = u"Edit image effects"
 )
 
 translations.define("woost.views.ImageEffectsEditor-crop_effect",
