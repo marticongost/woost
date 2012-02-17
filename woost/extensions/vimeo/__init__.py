@@ -68,7 +68,8 @@ class VimeoExtension(Extension):
             video,
             strings,
             useraction,
-            vimeovideorenderer
+            vimeovideorenderer,
+            migration
         )
 
         # Setup the synchronization view
@@ -150,7 +151,7 @@ class VimeoExtension(Extension):
             video.vimeo_user_large_portrait_uri = video_data["user_portrait_large"]
             video.vimeo_user_url = video_data["user_url"]
             video.uri = video_data["url"]
-            video.tags = video_data["tags"]
+            video.vimeo_tags = video_data["tags"]
             video.duration = int(video_data["duration"])
             video.width = int(video_data["width"])
             video.height = int(video_data["height"])
