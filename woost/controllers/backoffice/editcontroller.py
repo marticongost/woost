@@ -104,8 +104,11 @@ class EditController(BaseBackOfficeController):
 
             changeset = None
 
-            with restricted_modification_context(item, user):
-                
+            with restricted_modification_context(
+                item, 
+                user, 
+                member_subset = set(stack_node.form_schema.members())
+            ):
                 # Store the changes on a draft; this skips revision control
                 if item.is_draft:       
                     self._apply_changes(item)
@@ -181,16 +184,25 @@ class EditController(BaseBackOfficeController):
         user = get_current_user()
 
         user.require_permission(ConfirmDraftPermission, target = draft)
+        member_subset = set(self.stack_node.form_schema.members())
 
         for i in range(self.MAX_TRANSACTION_ATTEMPTS):
 
             # Update the draft
-            with restricted_modification_context(draft, user):
+            with restricted_modification_context(
+                draft, 
+                user, 
+                member_subset = member_subset
+            ):
                 self._apply_changes(draft)
 
             # Confirm the draft
             with changeset_context(author = user) as changeset:
-                with restricted_modification_context(target_item, user):
+                with restricted_modification_context(
+                    target_item,
+                    user,
+                    member_subset = member_subset
+                ):
                     draft.confirm_draft()
             try:
                 datastore.commit()

@@ -83,6 +83,12 @@ translations.define("Block.heading-explanation",
     en = u"Block title, as shown on the website"
 )
 
+translations.define("Block.html_id",
+    ca = u"ID de l'element HTML",
+    es = u"ID del elemento HTML",
+    en = u"HTML element ID"
+)
+
 translations.define("Block.css_class",
     ca = u"Classes CSS",
     es = u"Clases CSS",

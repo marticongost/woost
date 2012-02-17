@@ -1009,12 +1009,12 @@ translations.define(
 
 translations.define(
     "woost.models.initialization Password Change page body",
-    ca = u"""<p>Introdueix a continuació la teva adreça de correu electrònic per
-        iniciar el procés de canvi de contrasenya</p>""",
-    es = u"""<p>Introduce a continuación tu dirección de correo electrónico
-        para iniciar el proceso de cambio de contraseña</p>""",
-    en = u"""<p>Enter your email address below to start the password change
-        process</p>"""
+    ca = u"<p>Introdueix el teu identificador d'usuari per iniciar el "
+         u"procés de canvi de contrasenya</p>",
+    es = u"<p>Introduce a tu identificador de usuario para iniciar el "
+         u"proceso de cambio de contraseña</p>",
+    en = u"<p>Enter your user identifier below to start the password "
+         u"change process</p>"""
 )
 
 translations.define(
@@ -4473,10 +4473,25 @@ translations.define(
 )
 
 translations.define(
-    "woost.controllers.passwordchangecontroller.UserIdentifierNotRegisteredError-instance",
+    "woost.controllers.passwordchangecontroller."
+    "UserIdentifierNotRegisteredError-instance",
     ca = u"No existeix cap usuari amb aquest identificador",
     es = u"No existe ningún usuario registrado con este identificador",
     en = u"There is no user with the indicated identifier"
+)
+
+translations.define(
+    "woost.controllers.passwordchangecontroller."
+    "UserEmailMissingError-instance",
+    ca = u"L'usuari que has indicat no té cap adreça de correu electrònic "
+         u"associada: no es pot canviar la seva contrasenya a través "
+         u"d'aquest formulari.",
+    es = u"El usuario que has indicado no tiene ninguna dirección de "
+         u"correo electrónico asociada: no se puede cambiar su contraseña a "
+         u"través de este formulario.",
+    en = u"The user you indicated has no known e-mail address. Only users "
+         u"with verified e-mail addresses can use this form to change their "
+         u"password."
 )
 
 translations.define(
@@ -4548,5 +4563,41 @@ translations.define("woost.image_factory.image_gallery_thumbnail",
     ca = u"Miniatura estàndar de la galeria d'imatges",
     es = u"Miniatura estándar de la galería de imágenes",
     en = u"Standard image gallery thumbnail"
+)
+
+# Agreement to terms & conditions
+#------------------------------------------------------------------------------
+translations.define("woost.controllers.formagreement",
+    ca = lambda member:
+        u"He llegit i accepto "
+        u"<a href='%s' target='_blank'>els termes i condicions</a> "
+        u"d'aquest formulari"
+        % member.agreement_document.get_uri(),
+    es = lambda member:
+        u"He leído y acepto "
+        u"<a href='%s' target='_blank'>los términos y condiciones</a> "
+        u"de este formulario"
+        % member.agreement_document.get_uri(),
+    en = lambda member:
+        u"I have read and agree to the "
+        u"<a href='%s' target='_blank'>terms and conditions</a> "
+        u"of this form"
+        % member.agreement_document.get_uri()
+)
+
+translations.define(
+    "woost.controllers.formagreement.ConsentNotGivenError-instance",
+    ca = lambda instance:
+        u"Has d'acceptar <a href='%s' target='_blank'>els termes i "
+        u"condicions</a> del formulari" 
+        % instance.member.agreement_document.get_uri(),
+    es = lambda instance:
+        u"Debes aceptar <a href='%s' target='_blank'>los términos y "
+        u"condiciones</a> de este formulario"
+        % instance.member.agreement_document.get_uri(),
+    en = lambda instance:
+        u"You must accept the <a href='%s' target='_blank'>terms & conditions "
+        u"</a> of the form"
+        % instance.member.agreement_document.get_uri()
 )
 

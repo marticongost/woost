@@ -29,7 +29,6 @@ from woost.controllers.backoffice.useractions import \
         py:id="property_table"
         py:parent="self.item_body"
         py:translations="@{self.translations}"
-        py:translated_values="${True}"
         py:schema="@{self.detail_schema}"
         py:data="@{self.edited_item}"
         py:base_url="@{self.cms.contextual_uri()}"

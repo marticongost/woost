@@ -122,7 +122,7 @@ class File(Publishable):
     @classmethod
     def from_path(cls,
         path,
-        dest,
+        dest = None,
         languages = None,
         hash = None,
         encoding = "utf-8"):
@@ -174,7 +174,11 @@ class File(Publishable):
         for language in languages:
             file.set("title", title, language)
 
-        upload_path = os.path.join(dest, str(file.id))           
+        if dest is None:
+            upload_path = file.file_path
+        else:
+            upload_path = os.path.join(dest, str(file.id))
+
         copy(path, upload_path)
 
         return file

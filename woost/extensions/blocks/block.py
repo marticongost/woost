@@ -7,7 +7,7 @@ from cocktail.iteration import last
 from cocktail.translations import translations
 from cocktail import schema
 from cocktail.html import templates, Element
-from woost.models import Item
+from woost.models import Item, Publishable
 
 default_tag = object()
 
@@ -22,6 +22,7 @@ class Block(Item):
     members_order = [
         "title",
         "heading",
+        "html_id",
         "css_class",
         "enabled",
         "containers"
@@ -36,6 +37,11 @@ class Block(Item):
 
     heading = schema.String(
         translated = True,
+        member_group = "content"
+    )
+
+    html_id = schema.String(
+        listed_by_default = False,
         member_group = "content"
     )
 
@@ -71,7 +77,10 @@ class Block(Item):
         view.set_client_param("blockId", self.id)
         
         view.add_class("block")
-        
+ 
+        if self.html_id:
+            view["id"] = self.html_id
+
         if self.css_class:
             view.add_class(self.css_class)
 
@@ -94,4 +103,34 @@ class Block(Item):
     def descend_tree(self, include_self = False):
         if include_self:
             yield self
+
+    def find_publication_points(self):
+        """Find all the publishable elements that contain this block, either
+        directly or nested within one or more containers.
+
+        :return: An iterable sequence of all the publishable elements that
+            contain the block.
+        :rtype: `woost.models.Publishable` iterable sequence
+        """
+        def iter_points(block, path):
+            for member in block.__class__.members().itervalues():
+                if (
+                    isinstance(member, schema.RelationMember)
+                    and member.related_type
+                    and issubclass(member.related_type, Publishable)
+                    and member.related_end.visible
+                ):
+                    value = block.get(member)
+                    if value:
+                        if isinstance(member, schema.Reference):
+                            yield [value, member] + path
+                        else:
+                            for publishable in value:
+                                yield [publishable, member] + path
+
+            for container in block.containers:
+                for point in iter_points(container, [container] + path):
+                    yield point
+
+        return iter_points(self, [])
 

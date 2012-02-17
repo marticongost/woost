@@ -22,7 +22,7 @@ from woost.models.rendering.factories import (
     parse_image_factory_parameters
 )
 
-verbose = True
+debug = False
 
 def _remove_dir_contents(path):
     
@@ -33,7 +33,7 @@ def _remove_dir_contents(path):
     if exists(path):
         for item in os.listdir(path):
             item_path = os.path.join(path, item)
-            if verbose:
+            if debug:
                 print styled(" " * 4 + item_path, "red")
             try:
                 if os.path.isdir(item_path):
@@ -41,12 +41,12 @@ def _remove_dir_contents(path):
                 else:
                     os.remove(item_path)
             except OSError, ex:
-                if verbose:
+                if debug:
                     print styled(ex, "red")
 
 def clear_image_cache(item = None):
     
-    if verbose:
+    if debug:
         from cocktail.styled import styled
         if item is None:
             print styled("Clearing image cache", "red")
