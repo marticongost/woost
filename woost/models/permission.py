@@ -293,7 +293,11 @@ class ReadHistoryPermission(Permission):
 
 
 @contextmanager
-def restricted_modification_context(item, user = None):
+def restricted_modification_context(
+    item,
+    user = None,
+    member_subset = None
+):
     """A context manager that restricts modifications to an item.
 
     @param item: The item to monitor.
@@ -333,17 +337,16 @@ def restricted_modification_context(item, user = None):
         is_new = True
         permission_type = CreatePermission
 
-    # Add an event listeners to the edited item, to restrict changes to its
+    # Add an event listener to the edited item, to restrict changes to its
     # members
     @when(item.changed)
     def restrict_members(event):
         
-        # Require permission to modify the changed member
         member = event.member
-        user.require_permission(
-            ModifyMemberPermission,
-            member = member
-        )
+
+        # Require permission to modify the changed member
+        if member_subset is None or member.name in member_subset:
+            user.require_permission(ModifyMemberPermission, member = member)
 
         if member.translated:
             language = event.language
