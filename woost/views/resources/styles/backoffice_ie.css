@@ -366,3 +366,13 @@ body.scripted .BackOfficeLayout .selector:hover .label {
 .BackOfficeLayout .stack_node > .label {
     height: 1%;
 }
+
+/* Remove height limitation for solving an overflow issue in toolbars */
+
+.BackOfficeLayout .toolbar,
+.BackOfficeLayout .data_controls,
+.BackOfficeLayout .item_buttons,
+.BackOfficeLayout .toolbar_box {
+    overflow: hidden;
+    height: auto;
+}
