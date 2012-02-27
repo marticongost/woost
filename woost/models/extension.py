@@ -20,6 +20,7 @@ from woost.models.item import Item
 from woost.models.language import Language
 
 extension_translations = object()
+_loaded_extensions = set()
 _extensions_lock = RLock()
 
 def load_extensions():
@@ -42,7 +43,6 @@ def load_extensions():
 
             # Create an instance of each new extension
             if extension is None:
-
                 def create_extension_instance():
                     extension = extension_type()
                     extension.insert()
@@ -54,9 +54,9 @@ def load_extensions():
                 )
 
             # Load enabled extensions
-            elif extension.enabled and not extension._v_extension_loaded:
+            elif extension.enabled:
                 extension.load()
-                
+
 
 class Extension(Item):
     """Base model for Woost extensions."""
@@ -67,7 +67,10 @@ class Extension(Item):
                       "ExtensionEditNode"
 
     installed = False
-    _v_extension_loaded = False
+    
+    @property
+    def loaded(self):
+        return self.__class__ in _loaded_extensions
 
     member_order = (
         "extension_author",
@@ -117,9 +120,11 @@ class Extension(Item):
         return translations(self.__class__.name)
 
     def load(self):
-        self._v_extension_loaded = True
-        self._load()
-        self.loading()
+        with _extensions_lock:
+            if self.__class__ not in _loaded_extensions:
+                _loaded_extensions.add(self.__class__)
+                self._load()
+                self.loading()
 
     def _load(self):
         pass
