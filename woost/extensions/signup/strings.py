@@ -8,6 +8,72 @@
 """
 from cocktail.translations import translations
 
+translations.define("woost.extensions.signup.signup_controller.title",
+    ca = u"Controlador d'alta d'usuaris",
+    es = u"Controlador de alta de usuarios",
+    en = u"Sign Up controller"
+)
+
+translations.define("woost.extensions.signup.signup_confirmation_controller.title",
+    ca = u"Controlador de confirmació d'alta d'usuaris",
+    es = u"Controlador de confirmación alta de usuarios",
+    en = u"Sign Up confirmation controller"
+)
+
+translations.define("woost.extensions.signup.signup_template.title",
+    ca = u"Plantilla d'alta d'usuaris",
+    es = u"Plantilla de alta de usuarios",
+    en = u"Sign up template"
+)
+
+translations.define(
+    "woost.extensions.signup.signup_confirmation_template.title",
+    ca = u"Plantilla de confirmació d'alta d'usuaris",
+    es = u"Plantilla de confirmación de alta de usuarios",
+    en = u"Sign up confirmation template"
+)
+
+translations.define(
+    "woost.extensions.signup.signup_confirmation_email_template.title",
+    ca = u"Plantilla de correu electrònic de confirmació d'alta d'usuari",
+    es = u"Plantilla de email de confirmación de alta de usuario",
+    en = u"Sign Up Confirmation email template"
+)
+
+translations.define(
+    "woost.extensions.signup.signup_confirmation_email_template.subject",
+    ca = u"Confirmació de compte d'usuari",
+    es = u"Confirmación de cuenta de usuario",
+    en = u"User account confirmation"
+)
+
+translations.define(
+    "woost.extensions.signup.signup_confirmation_email_template.body",
+    ca = u"Hola ${user.email}:<br/><br/>"
+         u"Fes clic per confirmar el teu compte d'usuari:<br/>"
+         u"<a href='${confirmation_url}'>${confirmation_url}</a>",
+    es = u"Hola ${user.email}:<br/><br/>"
+         u"Haz clic para confirmar tu cuenta de usuario:<br/>"
+         u"<a href='${confirmation_url}'>${confirmation_url}</a>",
+    en = u"Hello ${user.email},<br/><br/>"
+         u"Click here to confirm your email account:<br/>"
+         u"<a href='${confirmation_url}'>${confirmation_url}</a>"
+)
+
+translations.define(
+    "woost.extensions.signup.signup_confirmation_target.title",
+    ca = u"Confirmació d'alta d'usuari",
+    es = u"Confirmación de alta de usuario",
+    en = u"Sign Up Confirmation Page"
+)
+
+translations.define(
+    "woost.extensions.signup.signup_page.title",
+    ca = u"Registre d'usuari",
+    es = u"Registro de usuario",
+    en = u"Sign Up"
+)
+
 # Sign up Page
 translations.define("SignUpPage",
     ca = u"Pàgina d'alta d'usuari",

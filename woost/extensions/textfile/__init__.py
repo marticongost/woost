@@ -3,10 +3,8 @@ u"""
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
-from cocktail.events import event_handler
 from cocktail.translations import translations
-from cocktail.persistence import datastore
-from woost.models import Extension, Controller, Language
+from woost.models import Extension
 
 translations.define("TextFileExtension",
     ca = u"Fitxers de text",
@@ -33,31 +31,19 @@ class TextFileExtension(Extension):
             "en"
         )
     
-    @event_handler
-    def handle_loading(cls, event):        
+    def _load(self):
         from woost.extensions.textfile import textfile, strings
-        extension = event.source
-        
-        if not extension.installed:
-            controller = extension.create_text_file_controller()
-            controller.insert()
-            datastore.commit()
+        self.install()
 
-    def create_text_file_controller(self):
+    def _install(self):
 
-        controller = Controller(
-            qname = "woost.extensions.textfile.TextFileController",
+        from woost.models import Controller, extension_translations
+
+        controller = self._create_asset(
+            Controller,
+            "controller",
+            title = extension_translations,
             python_name = "woost.extensions.textfile.textfilecontroller."
                           "TextFileController"
         )
-        
-        for language in Language.codes:            
-            title = translations(
-                "woost.extensions.textfile.controller_title",
-                language
-            )
-            if title:
-                controller.set("title", title, language)
-        
-        return controller
 

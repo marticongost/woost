@@ -3,9 +3,7 @@ u"""Defines an extension that allows end users to define their own data models.
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
-from __future__ import with_statement
 import cherrypy
-from cocktail.events import event_handler
 from cocktail.translations import translations
 from woost.models import Extension
 
@@ -45,8 +43,7 @@ class UserModelsExtension(Extension):
             "en"
         )
 
-    @event_handler
-    def handle_loading(cls, e):
+    def _load(self):
         
         global models_access
 
@@ -54,11 +51,7 @@ class UserModelsExtension(Extension):
         from woost.extensions.usermodels.door import Door
 
         # Create extension objects the first time it is run
-        if not e.source.installed:
-            controller = e.source._create_user_form_controller()
-            controller.insert()
-            template = e.source._create_user_form_template()
-            template.insert()
+        self.install()
 
         # Make all existing user models available to the application
         for user_model in usermembers.UserModel.select():
@@ -79,31 +72,22 @@ class UserModelsExtension(Extension):
             failsafe = True
         )
 
-    def _create_user_form_controller(self):
-        from woost.models import Controller
-        pkg = "woost.extensions.usermodels."
-        controller = Controller()
-        controller.qname = pkg + "user_form_controller"
-        controller.python_name = pkg + "userform.UserFormController"
-        for lang in translations:
-            controller.set(
-                "title",
-                translations(controller.qname + ".title", lang),
-                lang
-            )
-        return controller
+    def _install(self):
+        
+        from woost.models import Controller, Template, extension_translations
+        
+        self._create_asset(
+            Controller,
+            "user_form_controller",
+            python_name = "woost.extensions.usermodels.userform."
+                          "UserFormController",
+            title = extension_translations
+        )
 
-    def _create_user_form_template(self):
-        from woost.models import Template
-        pkg = "woost.extensions.usermodels."
-        template = Template()
-        template.qname = pkg + "user_form_template"
-        template.identifier = pkg + "UserFormView"
-        for lang in translations:
-            template.set(
-                "title",
-                translations(template.qname + ".title", lang),
-                lang
-            )
-        return template
+        self._create_asset(
+            Template,
+            "user_form_template",
+            identifier = "woost.extensions.usermodels.UserFormView",
+            title = extension_translations
+        )
 

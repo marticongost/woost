@@ -33,7 +33,7 @@ translations.define("TextFile.content",
 
 # TextFileController
 #------------------------------------------------------------------------------
-translations.define("woost.extensions.textfile.controller_title",
+translations.define("woost.extensions.textfile.controller.title",
     ca = u"Controlador de fitxer de text",
     es = u"Controlador de fichero de texto",
     en = u"Text file controller"

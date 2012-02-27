@@ -8,6 +8,18 @@
 """
 from cocktail.translations import translations
 
+translations.define("woost.extensions.sitemap.sitemap_controller.title",
+    ca = u"Controlador de mapa web",
+    es = u"Controlador de mapa web",
+    en = u"Sitemap controller"
+)
+
+translations.define("woost.extensions.sitemap.sitemap_document.title",
+    ca = u"Mapa XML del lloc web",
+    es = u"Mapa XML del sitio web",
+    en = u"XML sitemap"
+)
+
 translations.define("Publishable.sitemap",
     ca = u"Refinament de l'indexat web",
     es = u"Refinamiento del indexado web",
