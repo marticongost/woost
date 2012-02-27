@@ -4,7 +4,6 @@ published with Woost.
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
-from cocktail.events import event_handler
 from cocktail.translations import translations
 from cocktail import schema
 from cocktail.html import templates
@@ -81,8 +80,7 @@ class OpenGraphExtension(Extension):
             "en"
         )
 
-    @event_handler
-    def handle_loading(cls, event):
+    def _load(self):
 
         from woost.extensions.opengraph import (
             strings, 
@@ -105,8 +103,10 @@ class OpenGraphExtension(Extension):
         # metadata to HTML documents
         templates.get_class("woost.extensions.opengraph.BaseViewOverlay")
 
-        if not event.source.installed:
-            event.source.create_default_categories(verbose = True)
+        self.install()
+        
+    def _install(self):
+        self.create_default_categories(verbose = True)
 
     def create_default_categories(self, verbose = False):
         

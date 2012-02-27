@@ -6,7 +6,6 @@ u"""
 from pkg_resources import resource_filename
 import cherrypy
 from cocktail import schema
-from cocktail.events import event_handler
 from cocktail.translations import translations
 from woost.models import (
     Site,
@@ -50,10 +49,7 @@ class WebConsoleExtension(Extension):
             "en"
         )
 
-    @event_handler
-    def handle_loading(cls, event):
-
-        extension = event.source
+    def _load(self):
 
         from woost.extensions.webconsole import strings
         from woost.controllers.cmscontroller import CMSController
@@ -64,54 +60,52 @@ class WebConsoleExtension(Extension):
                 dir = resource_filename("webconsole", "resources")
             )
         
-        if not extension.installed:
-            
-            def apply_translations(item, member):
-                for lang in translations:
-                    trans = translations("%s.%s" % (item.qname, member), lang)
-                    if trans:
-                        item.set(member, trans, lang)
+    def _install(self):
+        
+        from woost.models import extension_translations
+        from woost.extensions.webconsole.webconsolepermission \
+            import WebConsolePermission
 
-            # Permissions: by default, only administrators can use the web
-            # console
-            from woost.extensions.webconsole.webconsolepermission \
-                import WebConsolePermission
+        # Permissions: by default, only administrators can use the web
+        # console
+        administrators = Role.get_instance(qname = "woost.administrators")
 
-            administrators = Role.get_instance(qname = "woost.administrators")
+        if administrators:
+            web_console_permission = WebConsolePermission()
+            web_console_permission.insert()
+            administrators.permissions.append(web_console_permission)
 
-            if administrators:
-                web_console_permission = WebConsolePermission()
-                web_console_permission.insert()
-                administrators.permissions.append(web_console_permission)
+        # Controller
+        controller = self._create_asset(
+            Controller,
+            "controller",
+            python_name = \
+                "woost.extensions.webconsole.cmswebconsole.CMSWebConsole",
+            title = extension_translations
+        )
 
-            # Controller
-            controller = Controller()
-            controller.qname = "woost.extensions.webconsole.controller"
-            controller.python_name = \
-                "woost.extensions.webconsole.cmswebconsole.CMSWebConsole"
-            apply_translations(controller, "title")
-            controller.insert()
+        # Template
+        template = self._create_asset(
+            Template,
+            "template",
+            engine = "cocktail",
+            identifier = "webconsole.WebConsole",
+            title = extension_translations
+        )
 
-            # Template
-            template = Template()
-            template.qname = "woost.extensions.webconsole.template"
-            template.engine = "cocktail"
-            template.identifier = "webconsole.WebConsole"
-            apply_translations(template, "title")
-            template.insert()
-
-            # Page
-            page = Document()
-            page.qname = "woost.extensions.webconsole.page"
-            page.parent = Site.main.home
-            page.path = "webconsole"
-            page.hidden = True
-            page.requires_https = True
-            page.controller = controller
-            page.template = template
-            page.per_language_publication = False
-            apply_translations(page, "title")
-            page.insert()
+        # Page
+        page = self._create_asset(
+            Document,
+            "page",
+            parent = Site.main.home,
+            path = "webconsole",
+            hidden = True,
+            requires_https = True,
+            controller = controller,
+            template = template,
+            per_language_publication = False,
+            title = extension_translations
+        )
 
 
 def breakpoint(open_browser = False, stack_depth = 0):

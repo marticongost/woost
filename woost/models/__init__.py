@@ -126,7 +126,7 @@ from woost.models.event import Event
 from woost.models.uri import URI
 from woost.models.file import File
 from woost.models.style import Style
-from woost.models.extension import Extension
+from woost.models.extension import Extension, extension_translations
 from woost.models.trigger import (
     Trigger,
     ContentTrigger,

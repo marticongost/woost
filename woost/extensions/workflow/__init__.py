@@ -6,9 +6,7 @@
 @organization:	Whads/Accent SL
 @since:			May 2009
 """
-from cocktail.events import event_handler
 from cocktail.translations import translations
-from cocktail.persistence import datastore
 from woost.models import Extension
 
 translations.define("WorkflowExtension",
@@ -45,8 +43,7 @@ class WorkflowExtension(Extension):
             "en"
         )
 
-    @event_handler
-    def handle_loading(cls, event):
+    def _load(self):
 
         from woost.extensions.workflow import (
             strings,

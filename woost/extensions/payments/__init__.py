@@ -7,7 +7,6 @@
 @since:			October 2009
 """
 from cocktail.modeling import OrderedDict
-from cocktail.events import event_handler
 from cocktail.translations import translations, get_language
 from cocktail import schema
 from cocktail.controllers.location import Location
@@ -44,8 +43,7 @@ class PaymentsExtension(Extension):
             "en"
         )
 
-    @event_handler
-    def handle_loading(cls, event):
+    def _load(self):
 
         # Import the extension's models
         from woost.extensions.payments.paymentgateway import PaymentGateway

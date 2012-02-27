@@ -7,10 +7,9 @@ from time import time
 from simplejson import loads
 from urllib import urlopen
 from cocktail.iteration import first
-from cocktail.events import event_handler
 from cocktail.translations import translations
 from cocktail import schema
-from cocktail.persistence import datastore
+from cocktail.persistence import transaction
 from woost.models import Extension
 
 translations.define("LocationsExtension",
@@ -142,22 +141,24 @@ class LocationsExtension(Extension):
         edit_control = "cocktail.html.TextArea"
     )
 
-    @event_handler
-    def handle_loading(cls, event):
-        
+    def _load(self):        
         from woost.extensions.locations import location, strings
 
-        now = time()
-        ext = event.source
+        if self.should_update():
+            transaction(
+                self.sync_locations, 
+                desist = lambda: not self.should_update()
+            )
 
-        if ext.last_update is None \
-        or (
-            ext.update_frequency is not None
-            and now - ext.last_update >= ext.update_frequency * SECONDS_IN_A_DAY
-        ):
-            ext.sync_locations()
-            ext.last_update = now
-            datastore.commit()
+    def should_update(self):
+
+        if self.last_update is None:
+            return True
+
+        if self.update_frequency is None:
+            return False
+
+        return time() - self.last_update >= self.update_frequency * SECONDS_IN_A_DAY
 
     def sync_locations(self):
         """Populate the locations database with the data provided by the web
@@ -168,6 +169,8 @@ class LocationsExtension(Extension):
 
         for record in json_data:
             self._process_record(record)
+            
+        self.last_update = now
 
     def _process_record(self, record, parent = None, context = None):
         
