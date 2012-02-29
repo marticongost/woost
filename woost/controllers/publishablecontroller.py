@@ -16,6 +16,8 @@ from woost.controllers import BaseCMSController, get_cache_manager
 class PublishableController(BaseCMSController):
     """Base controller for all publishable items (documents, files, etc)."""
 
+    cache_enabled = True
+
     cached_headers = (
         "Content-Type",
         "Content-Length",
@@ -33,7 +35,7 @@ class PublishableController(BaseCMSController):
 
     def __call__(self, **kwargs):
         
-        if cherrypy.request.method == "GET":
+        if self.cache_enabled and cherrypy.request.method == "GET":
             content = self._apply_cache(kwargs)
             if content is not None:
                 return content
