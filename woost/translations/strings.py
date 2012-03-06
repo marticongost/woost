@@ -2323,6 +2323,24 @@ translations.define("Publishable.caching_policy-explanation",
          u"back to the site wide caching policy." 
 )
 
+translations.define("Publishable.login_page",
+    ca = u"Pàgina d'autorització",
+    es = u"Página de autorización",
+    en = u"Authorization page"
+)
+
+translations.define("Publishable.login_page-explanation",
+    ca = u"Permet dotar l'element i les seves pàgines filles d'una pàgina "
+         u"d'autenticació pròpia. Deixar buit per utilitzar el mateix "
+         u"formulari que la resta del lloc web.",
+    es = u"Permite dotar al elemento y a sus páginas hijas de una página "
+         u"de autenticación propia. Dejar vacío para utilizar el mismo "
+         u"formulario que el resto del sitio.",
+    en = u"If set, indicates an alternative authentication page to use when "
+         u"restricting access to this element or its descending pages. Leave "
+         u"blank to use the same authentication form as the rest of the site."
+)
+
 # Page
 #------------------------------------------------------------------------------
 translations.define("Document",
