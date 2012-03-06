@@ -56,6 +56,7 @@ class BlocksExtension(Extension):
             linksblock,
             folderblock,
             loginblock,
+            iframeblock,
             blockspage,
             migration
         )
