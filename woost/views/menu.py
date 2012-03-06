@@ -34,6 +34,7 @@ class Menu(TreeView):
     linked_selection = True
     linked_containers = True
     display_filtered_containers = False
+    validate_permissions = True
 
     def _ready(self):
 
@@ -46,7 +47,11 @@ class Menu(TreeView):
         TreeView._ready(self)
     
     def filter_item(self, item):
-        return not item.hidden and item.is_accessible()
+        return not item.hidden and (
+            item.is_accessible()
+            if self.validate_permissions
+            else item.is_published()
+        )
 
     def get_item_uri(self, item):
         return item.get_uri(host = ".")
