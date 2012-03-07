@@ -353,7 +353,7 @@ def align(
                     "Invalid parameter: align(valign = %r)" % valign
                 )       
 
-        copy.paste(image, (x, y))
+        copy.paste(image, (x, y), image if image.mode == "RGBA" else None)
         return copy
 
     return image
