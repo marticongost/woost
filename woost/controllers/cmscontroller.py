@@ -442,13 +442,13 @@ class CMSController(BaseCMSController):
         language = cms.language.infer_language()
         set_language(language)
 
+        # Invoke the authentication module
+        cms.authentication.process_request()
+
     @event_handler
     def handle_before_request(cls, event):
         
         cms = event.source
-
-        # Invoke the authentication module
-        cms.authentication.process_request()
 
         # Validate access to the requested item
         publishable = cms.context.get("publishable")
