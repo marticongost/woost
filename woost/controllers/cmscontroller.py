@@ -543,6 +543,15 @@ class CMSController(BaseCMSController):
         elif is_http_error and error.status == 403 \
         or isinstance(error, (AuthorizationError, AuthenticationFailedError)):
             if get_current_user().anonymous:
+
+                publishable = self.context["publishable"]
+
+                while publishable is not None:
+                    login_page = publishable.login_page
+                    if login_page is not None:
+                        return login_page, 200
+                    publishable = publishable.parent
+
                 return site.login_page, 200
             else:
                 return site.forbidden_error_page, 403

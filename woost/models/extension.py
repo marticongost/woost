@@ -7,15 +7,22 @@ u"""
 @since:			December 2008
 """
 from pkg_resources import iter_entry_points
+from threading import RLock
+from ZODB.POSException import ConflictError
+from cocktail.iteration import first
 from cocktail.modeling import classgetter
-from cocktail.events import Event
+from cocktail.events import Event, event_handler
 from cocktail.pkgutils import resolve
 from cocktail.translations import translations
 from cocktail import schema
-from cocktail.persistence import datastore, transactional
+from cocktail.persistence import datastore, transaction
 from woost.models.item import Item
+from woost.models.language import Language
 
-@transactional(5)
+extension_translations = object()
+_loaded_extensions = set()
+_extensions_lock = RLock()
+
 def load_extensions():
     """Load all available extensions.
     
@@ -27,111 +34,43 @@ def load_extensions():
           uninstalled
         * All installed and enabled extensions are initialized
     """
-    # Add/remove extensions
-    install_new_extensions()
-    uninstall_missing_extensions()
+    with _extensions_lock:
 
-    # Load enabled extensions
-    NOT_YET_LOADED = object()
-    LOADED = object()
-    DISABLED = object()
-    
-    extension_state = {}
+        for entry_point in iter_entry_points("woost.extensions"):
 
-    def load(extension):
-        state = extension_state.get(extension, NOT_YET_LOADED)
+            extension_type = entry_point.load()
+            extension = extension_type.instance
 
-        # Avoid loading an extension twice
-        if state is NOT_YET_LOADED:
-            
-            # Ignore disabled extensions, and those where its implementation is
-            # no longer available
-            try:
-                enabled = extension.enabled
-            except AttributeError:
-                enabled = False
+            # Create an instance of each new extension
+            if extension is None:
+                def create_extension_instance():
+                    extension = extension_type()
+                    extension.insert()
 
-            if not enabled:
-                state = DISABLED
-            else:
-                # Load dependencies first
-                for dependency in extension.dependencies:
-                    dependency = resolve(dependency)
-                    if isinstance(dependency, type):
-                        dependency = list(dependency.select())[0]
-                    
-                    if not load(dependency):
-                        
-                        # A dependency for the extension has been disabled; the
-                        # extension (and its dependencies) won't be loaded
-                        state = DISABLED
-                        break
-                
-                # If all dependencies were loaded, load the extension
-                else:
-                    extension.loading()
-                    extension.installed = True
-                    state = LOADED
+                transaction(
+                    create_extension_instance,
+                    max_attempts = 5,
+                    desist = lambda: extension_type.instance is not None
+                )
 
-            extension_state[extension] = state
-        
-        return state is LOADED
+            # Load enabled extensions
+            elif extension.enabled:
+                extension.load()
 
-    for extension in Extension.select():
-        load(extension)
-
-def install_new_extensions():
-    """Finds new available extensions and registers them with the site."""
-
-    # Create an instance of each new extension
-    installed_extension_types = \
-        set(extension.__class__ for extension in Extension.select())
-
-    extensions_installed = False
-
-    for entry_point in iter_entry_points("woost.extensions"):
-        extension_type = entry_point.load()
-        if extension_type not in installed_extension_types:
-            extension = extension_type()
-            extension.insert()
-            extensions_installed = True
-        
-    if extensions_installed:
-        datastore.commit()
-
-def uninstall_missing_extensions():
-    """Removes installed extensions that are no longer available."""
-    # TODO: implement this!
-
-# Class stub, required by the metaclass
-Extension = None
 
 class Extension(Item):
-    """Base model for all application extensions.
-    
-    @ivar dependencies: A sequence of other extensions that should be loaded as
-        dependencies of the extension. Each dependency can be specified using a
-        reference to an extension object, a reference to an extension class or
-        the qualified name of an extension class.
-    @type dependencies: sequence of (L{Extension}, L{Extension} subclass or
-        str)
-    """
-
-    # Add a custom metaclass to hide all subclasses of Extension by default
-    class __metaclass__(Item.__metaclass__):
-
-        def __init__(cls, name, bases, members):
-
-            if Extension is not None and "visible_from_root" not in members:
-                cls.visible_from_root = False
-
-            Item.__metaclass__.__init__(cls, name, bases, members)
+    """Base model for Woost extensions."""
 
     instantiable = False
+    collapsed_backoffice_menu = True
     edit_node_class = "woost.controllers.backoffice.extensioneditnode." \
                       "ExtensionEditNode"
 
     installed = False
+    
+    @property
+    def loaded(self):
+        return self.__class__ in _loaded_extensions
 
     member_order = (
         "extension_author",
@@ -165,14 +104,60 @@ class Extension(Item):
         default = False
     )
  
-    dependencies = ()
-
     loading = Event("""An event triggered during application start up.""")
+
+    installing = Event(
+        """An event triggered when an extension creates its assets, the first
+        time it is loaded.
+        """
+    )
 
     @classgetter
     def instance(cls):
-        return iter(cls.select()).next()
+        return first(cls.select())
 
     def __translate__(self, language, **kwargs):
         return translations(self.__class__.name)
+
+    def load(self):
+        with _extensions_lock:
+            if self.__class__ not in _loaded_extensions:
+                _loaded_extensions.add(self.__class__)
+                self._load()
+                self.loading()
+
+    def _load(self):
+        pass
+
+    def install(self):
+        if not self.installed:
+            def install_extension():
+                self._install()
+                self.installing()
+                self.installed = True
+            
+            transaction(install_extension, desist = lambda: self.installed)
+
+    def _install(self):
+        pass
+
+    def _create_asset(self, cls, id, **values):
+        """Convenience method for creating content when installing an
+        extension.        
+        """
+        asset = cls()
+        cls.qname = qname = self.full_name.rsplit(".", 1)[0] + "." + id
+        
+        if values:
+            for key, value in values.iteritems():
+                if value is extension_translations:
+                    for language in Language.codes:
+                        value = translations(qname + "." + key, language),
+                        if value:
+                            asset.set(key, value, language)
+                else:
+                    asset(set, key, value)
+
+        asset.insert()
+        return asset
 

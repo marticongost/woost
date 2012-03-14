@@ -6,7 +6,6 @@
 @organization:	Whads/Accent SL
 @since:			December 2009
 """
-from cocktail.events import event_handler
 from cocktail.modeling import ListWrapper
 from cocktail.translations import translations, get_language
 from cocktail import schema
@@ -80,8 +79,7 @@ class GoogleSearchExtension(Extension):
         max = 20
     )
 
-    @event_handler
-    def handle_loading(cls, event):        
+    def _load(self):
         from woost.extensions.googlesearch import strings
 
     def search(self,

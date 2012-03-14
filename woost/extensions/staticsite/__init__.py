@@ -6,7 +6,7 @@
 @organization:	Whads/Accent SL
 @since:			December 2009
 """
-from cocktail.events import event_handler, when
+from cocktail.events import when
 from cocktail import schema
 from cocktail.translations import translations
 from cocktail.controllers import context
@@ -50,11 +50,7 @@ class StaticSiteExtension(Extension):
             "en"
         )
 
-
-    @event_handler
-    def handle_loading(cls, event):
- 
-        extension = event.source
+    def _load(self):
 
         from woost.controllers.backoffice.backofficecontroller \
             import BackOfficeController

@@ -7,7 +7,7 @@
 @since:			September 2010
 """
 import cherrypy
-from cocktail.events import event_handler, when
+from cocktail.events import when
 from cocktail import schema
 from cocktail.translations import translations
 from cocktail.controllers import context
@@ -46,11 +46,7 @@ class MailerExtension(Extension):
             "en"
         )
 
-
-    @event_handler
-    def handle_loading(cls, event):
- 
-        extension = event.source
+    def _load(self):
 
         from woost.controllers.notifications import notify_user
         from woost.controllers.backoffice.basebackofficecontroller import \
