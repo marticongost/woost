@@ -3,11 +3,10 @@ u"""
 
 .. moduleauthor:: Jordi Fernández <jordi.fernandez@whads.com>
 """
-from cocktail.events import event_handler
 from cocktail.translations import translations
 from cocktail.persistence import datastore
 from cocktail.html import templates
-from woost.models import Extension, Template
+from woost.models import Extension
 
 
 translations.define("BlocksExtension",
@@ -41,8 +40,7 @@ class BlocksExtension(Extension):
             "en"
         )
 
-    @event_handler
-    def handle_loading(cls, event):
+    def _load(self):
 
         from woost.extensions.blocks import (
             strings, 
@@ -58,6 +56,7 @@ class BlocksExtension(Extension):
             linksblock,
             folderblock,
             loginblock,
+            iframeblock,
             blockspage,
             migration
         )
@@ -67,34 +66,19 @@ class BlocksExtension(Extension):
         if VimeoExtension.instance.enabled:
             from woost.extensions.blocks import vimeoblock
 
-        extension = event.source
-
-        if not extension.installed:
-            template = extension._create_blocks_page_template()
-            template.insert()
-            datastore.commit()
-
         # Install an overlay for the frontend edit panel
         templates.get_class("woost.extensions.blocks.EditPanelOverlay")
 
-    def _create_blocks_page_template(self):
+        self.install()
 
-        qname = "woost.extensions.blocks.blocks_page_template"
-        blocks_page_template = Template.get_instance(qname = qname)
-        
-        if blocks_page_template is None:
-            blocks_page_template = Template(
-                qname = qname,
-                engine = "cocktail",
-                identifier = "woost.extensions.blocks.BlocksPageView"
-            )
-            for lang in Language.codes:
-                title = translations(
-                    "woost.extensions.blocks.blocks_page_template.title",
-                    lang
-                )
-                if title:
-                    blocks_page_template.set("title", title, lang)
+    def _install(self):
+        from woost.models import Template, extension_translations
 
-        return blocks_page_template
+        self._create_asset(
+            Template,
+            "blocks_page_template",
+            title = extension_translations,
+            engine = "cocktail",
+            identifier = "woost.extensions.blocks.BlocksPageView"
+        )
 

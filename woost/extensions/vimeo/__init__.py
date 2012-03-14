@@ -60,8 +60,7 @@ class VimeoExtension(Extension):
 
     default_vimeo_user_name = schema.String()
 
-    @event_handler
-    def handle_loading(cls, event):
+    def _load(self):
         
         # Load extension models, translations and UI extensions
         from woost.extensions.vimeo import (
@@ -100,7 +99,7 @@ class VimeoExtension(Extension):
         @param user_name: The Vimeo account to load the videos from.
         @type user_name: str
 
-        @param restricted: Indicated if access control should be applied to the
+        @param restricted: Indicates if access control should be applied to the
             operations performed by the method.
         @type restricted: bool
         """

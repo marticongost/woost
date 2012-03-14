@@ -52,6 +52,7 @@ class Publishable(Item):
         "path",
         "full_path",
         "hidden",
+        "login_page",
         "enabled",
         "translation_enabled",
         "start_date",
@@ -144,6 +145,11 @@ class Publishable(Item):
     hidden = schema.Boolean(
         required = True,
         default = False,
+        listed_by_default = False,
+        member_group = "navigation"
+    )
+
+    login_page = schema.Reference(        
         listed_by_default = False,
         member_group = "navigation"
     )
@@ -420,6 +426,9 @@ class Publishable(Item):
             uri = make_uri("/", uri)
 
         return uri
+
+Publishable.login_page.type = Publishable
+Publishable.related_end = schema.Collection()
 
 
 class IsPublishedExpression(Expression):

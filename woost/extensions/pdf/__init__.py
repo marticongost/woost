@@ -6,7 +6,6 @@
 @organization:	Whads/Accent SL
 @since:			February 2010
 """
-from cocktail.events import event_handler
 from cocktail.translations import translations
 from cocktail import schema
 from woost.models import Extension
@@ -56,10 +55,7 @@ class PDFExtension(Extension):
         text_search = False
     )
 
-    @event_handler
-    def handle_loading(cls, event):
-
-        extension = event.source
+    def _load(self):
 
         import os
         from shutil import rmtree
@@ -68,6 +64,8 @@ class PDFExtension(Extension):
         import cherrypy
         from cocktail.controllers import Location, serve_file
         from woost.controllers import BaseCMSController
+
+        extension = self
 
         def render_pdf(self):
 

@@ -49,9 +49,9 @@ from woost.models import (
     ConfirmDraftPermission,
     EmailTemplate,
     CachingPolicy,
-    Extension
+    Extension,
+    load_extensions
 )
-from woost.models.extension import install_new_extensions
 
 standard_template_identifiers = {
     "cocktail": "woost.views.StandardView",
@@ -597,7 +597,7 @@ def init_site(
     
     # Enable the selected extensions
     if extensions:
-        install_new_extensions()
+        load_extensions()
         for extension in Extension.select():
             ext_name = extension.__class__.__name__[:-len("Extension")].lower()
             if ext_name in extensions:

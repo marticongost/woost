@@ -8,6 +8,95 @@ u"""
 """
 from cocktail.translations import translations
 
+translations.define(
+    "woost.extensions.campaignmonitor.subscription_controller.title",
+    ca = u"Controlador de subscripció a Campaign Monitor",
+    es = u"Controlador de suscripicón a Campaign Monitor",
+    en = u"Subscription to Campaign Monitor controller"
+)
+
+translations.define(
+    "woost.extensions.campaignmonitor.unsubscription_controller.title",
+    ca = u"Controlador de baixa de Campaign Monitor",
+    es = u"Controlador de baja de Campaign Monitor",
+    en = u"Unsubscription to Campaign Monitor controller"
+)
+
+translations.define(
+    "woost.extensions.campaignmonitor.subscription_template.title",
+    ca = u"Vista de subscripció a Campaign Monitor",
+    en = u"Subscription to Campaign Monitor view",
+    es = u"Vista de suscripción a Campaign Monitor"
+)
+
+translations.define(
+    "woost.extensions.campaignmonitor.unsubscription_template.title",
+    ca = u"Plantilla de baixa de Campaign Monitor",
+    es = u"Plantilla de baja de Campaign Monitor",
+    en = u"Unsubscription from Campaign Monitor template"
+)
+
+translations.define(
+    "woost.extensions.campaignmonitor.subscription_page.title",
+    ca = u"Pàgina de subscripció",
+    es = u"Página de suscripción",
+    en = u"Subscription page"
+)
+
+translations.define(
+    "woost.extensions.campaignmonitor.pending_page.title",
+    ca = u"Pàgina d'instruccions de subscripció",
+    es = u"Página de instrucciones de suscripcion",
+    en = u"Page with instructions for subscription"
+)
+
+translations.define(
+    "woost.extensions.campaignmonitor.pending_page.body",
+    ca = u"T'hem enviat un e-mail per confirmar la teva adreça de correu "
+         u"electrònic. Si et plau, fes clic a l'enllaç que apareix a "
+         u"l'e-mail per confirmar la teva subscripció.",
+    es = u"Te hemos enviado un e-mail para confirmar tu dirección de correo "
+         u"electrónico. Por favor, haz clic en el enlace que aparece en el "
+         u"e-mail para confirmar tu suscripción.""",
+    en = u"We've just been sent an email to confirm your email address. "
+         u"Please click on the link in this email to confirm your "
+         u"subscription."
+)
+
+translations.define(
+    "woost.extensions.campaignmonitor.confirmation_success_page.title",
+    ca = u"Pàgina de confirmació",
+    es = u"Página de confirmación",
+    en = u"Confirmation page"
+)
+
+translations.define(
+    "woost.extensions.campaignmonitor.confirmation_success_page.body",
+    ca = u"La teva subscripció ha estat confirmada. Hem afegit la teva "
+         u"adreça a la nostra llista i en breu rebràs notícies nostres.",
+    es = u"Tu suscripción ha sido confirmada. Se ha añadido tu dirección a "
+         u"nuestra lista y en breve recibirás noticias nuestras.",
+    en = u"Your subscription has been confirmed. You've been added to our "
+         u"list and will hear from us soon."
+)
+
+translations.define(
+    "woost.extensions.campaignmonitor.unsubscribe_page.title",
+    ca = u"Pàgina de baixa",
+    es = u"Página de baja",
+    en = u"Unsubscribe page"
+)
+
+translations.define(
+    "woost.extensions.campaignmonitor.unsubscribe_page.body",
+    ca = u"La teva adreça s'ha retirat amb èxit d'aquesta llista de "
+         u"subscripció. No tornaràs a rebre'n missatges.",
+    es = u"Tu dirección ha sido eliminada con éxito de esta lista de "
+         u"suscripción. No volverás a recibir mensajes de esta lista.",
+    en = u"You have been successfully removed from this subscriber list. You "
+         u"will no longer receive messages from this list."         
+)
+
 # UI
 #------------------------------------------------------------------------------
 translations.define("Action sync_campaign_monitor_lists",                                                                                                                                                                       

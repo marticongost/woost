@@ -621,3 +621,35 @@ translations.define("woost.extensions.blocks.LoginBlockView.submit_button",
     en = u"Login"
 )
 
+# IFrameBlock
+#------------------------------------------------------------------------------
+translations.define("IFrameBlock",
+    ca = u"IFrame",
+    es = u"IFrame",
+    en = u"IFrame"
+)
+
+translations.define("IFrameBlock-plural",
+    ca = u"IFrames",
+    es = u"IFrames",
+    en = u"IFrames"
+)
+
+translations.define("IFrameBlock.src",
+    ca = u"Adreça a mostrar",
+    es = u"Dirección a mostrar",
+    en = u"Content URL"
+)
+
+translations.define("IFrameBlock.width",
+    ca = u"Amplada",
+    es = u"Ancho",
+    en = u"Width"
+)
+
+translations.define("IFrameBlock.height",
+    ca = u"Alçada",
+    es = u"Alto",
+    en = u"Height"
+)
+
