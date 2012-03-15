@@ -12,6 +12,7 @@ class Image(Element):
     tag = "img"
     image = None
     image_factory = "default"
+    host = None
     styled_class = False
     accessible_check = False
 
@@ -23,6 +24,7 @@ class Image(Element):
         else:
             self["alt"] = translations(self.image)
             self["src"] = self.image.get_image_uri(
-                self.image_factory or "default"
+                image_factory = self.image_factory or "default",
+                host = self.host
             )
 
