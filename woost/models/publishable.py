@@ -370,9 +370,9 @@ class Publishable(Item):
     def get_image_uri(self,
         image_factory = None,
         parameters = None,
-        host = None,
         encode = True,
-        include_extension = True):
+        include_extension = True,
+        host = None,):
                 
         uri = make_uri("/images", self.id)
 
