@@ -10,6 +10,10 @@ from woost.models import Site, Publishable, Language
 output_format = "html4"
 container_classes = "BaseView"
 site = Site.main
+xmlns_definitions = ({
+    "xml:lang": get_language(),
+    "xmlns":"http://www.w3.org/199/xhtml"
+})
 translation_members = ("body",)
 %>
 
@@ -53,11 +57,16 @@ self.fully_translated = (self.content_language == self.language)
 
 ${self.dtd()}
 
-% if self.attr.output_format == "xhtml":
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="${self.language}" lang="${self.language}">
-% else:
-<html lang="${self.language}">
-% endif
+<%def name="htmltag(xmlnsdefs)" >
+    <% 
+    ns_attributes = ''
+
+    if self.attr.output_format == "xhtml":        
+        ns_attributes = " ".join('%s="%s"' % item for item in xmlnsdefs.iteritems())
+    %>
+    <html ${ns_attributes} lang="${self.content_language}">
+</%def>
+${self.htmltag(self.attr.xmlns_definitions)}
     
     <head>        
         ${self.meta()}
