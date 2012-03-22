@@ -94,7 +94,7 @@ class Block(Item):
 
         if self.heading:
             if hasattr(view, "heading"):
-                view.heading = heading
+                view.heading = self.heading
             else:
                 view.block_heading = Element("h2")
                 view.block_heading.append(self.heading)

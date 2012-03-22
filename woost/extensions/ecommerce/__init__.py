@@ -62,7 +62,7 @@ class ECommerceExtension(Extension):
 
     def _load(self):
 
-        extension = event.source
+        extension = self
 
         from woost.extensions.ecommerce import (
             strings,

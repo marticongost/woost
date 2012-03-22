@@ -170,7 +170,7 @@ class LocationsExtension(Extension):
         for record in json_data:
             self._process_record(record)
             
-        self.last_update = now
+        self.last_update = time()
 
     def _process_record(self, record, parent = None, context = None):
         
