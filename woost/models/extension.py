@@ -152,11 +152,11 @@ class Extension(Item):
             for key, value in values.iteritems():
                 if value is extension_translations:
                     for language in Language.codes:
-                        value = translations(qname + "." + key, language),
+                        value = translations(qname + "." + key, language)
                         if value:
                             asset.set(key, value, language)
                 else:
-                    asset(set, key, value)
+                    asset.set(key, value)
 
         asset.insert()
         return asset
