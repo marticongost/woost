@@ -557,7 +557,8 @@ class CMSController(BaseCMSController):
                 return site.forbidden_error_page, 403
         
         # Generic error
-        else:
+        elif is_http_error and error.status == 500 \
+        or not is_http_error:
             return site.generic_error_page, 500
 
         return None, None
