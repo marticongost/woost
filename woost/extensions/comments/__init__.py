@@ -192,6 +192,7 @@ class CommentsExtension(Extension):
                         if not comment_errors:
                             comment = comment_model()
 
+                            adapter = CommentsExtension.instance._create_comments_adapter(comment_model)
                             adapter.import_object(                                                                                                                                                                       
                                 comment_data,
                                 comment,
