@@ -573,7 +573,8 @@ class CMSController(BaseCMSController):
         elif policy == "never":
             Location.require_http()
         elif policy == "per_page":
-            if publishable.requires_https:
+            if publishable.requires_https \
+            or not get_current_user().anonymous:
                 Location.require_https()
             elif not site.https_persistence:
                 Location.require_http()

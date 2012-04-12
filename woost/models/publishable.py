@@ -411,8 +411,15 @@ class Publishable(Item):
                 site = Site.main
                 policy = site.https_policy
 
-                if policy == "always" \
-                or (policy == "per_page" and self.requires_https):
+                if (
+                    policy == "always"
+                    or (
+                        policy == "per_page" and (
+                            self.requires_https
+                            or not get_current_user().anonymous
+                        )
+                    )
+                ):
                     location.scheme = "https"
                 else:
                     location.scheme = "http"
