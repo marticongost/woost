@@ -213,7 +213,7 @@ class Site(Item):
 
     https_policy = schema.String(
         required = True,
-        default = "per_page",
+        default = "never",
         enumeration = [
             "always",
             "never",
