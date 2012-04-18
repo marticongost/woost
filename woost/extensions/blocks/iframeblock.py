@@ -37,7 +37,8 @@ class IFrameBlock(Block):
     def init_view(self, view):
         Block.init_view(self, view)
         view["src"] = self.src
-        
+        view["frameborder"] = "0"
+
         if self.width:
             view["width"] = self.width
 
