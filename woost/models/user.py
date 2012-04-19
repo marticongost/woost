@@ -162,6 +162,11 @@ class User(Item):
                 for role in explicit_roles:
                     yield role
 
+        for role in self.iter_implicit_roles():
+            yield role
+
+    def iter_implicit_roles(self):
+
         if not self.anonymous:
             yield Role.require_instance(qname = "woost.authenticated")
 
