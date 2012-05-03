@@ -21,8 +21,10 @@ class LanguageSelector(LinkSelector):
     translated_labels = True
     tag = "ul"
 
-    def create_entry(self, value, label, selected):        
-        
+    missing_translations = "redirect" # "redirect", "hide", "disable"
+
+    def create_entry(self, value, label, selected):
+
         entry = Element("li")
         link = self.create_entry_link(value, label)
 
@@ -33,10 +35,19 @@ class LanguageSelector(LinkSelector):
         else:
             entry.append(link)
 
+        if self.missing_translations != "redirect":
+            publishable = context["publishable"]
+            if not publishable.is_accessible(language = value):
+                if self.missing_translations == "hide":
+                    entry.visible = False
+                elif self.missing_translations == "disable":
+                    link.tag = "span"
+                    link["href"] = None
+
         return entry
 
     def _ready(self):
-        
+
         if self.items is None:
             self.items = Language.codes
 
@@ -58,12 +69,14 @@ class LanguageSelector(LinkSelector):
     def get_entry_url(self, language):
         cms = context["cms"]
         publishable = context["publishable"]
-        return cms.translate_uri(
-            path = (None
-                    if publishable.is_accessible(language = language)
-                    else "/"),
-            language = language
-        )
+
+        if self.missing_translations == "redirect" \
+        and not publishable.is_accessible(language = language):
+            path = "/"
+        else:
+            path = None
+
+        return cms.translate_uri(path = path, language = language)
 
     def create_entry_link(self, value, label):
         link = LinkSelector.create_entry_link(self, value, label)
