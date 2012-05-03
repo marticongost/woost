@@ -9,6 +9,7 @@ u"""
 from cocktail.translations import translations, get_language
 from cocktail.html.element import Element
 from cocktail.html import templates
+from cocktail.html.utils import rendering_xml
 from cocktail.controllers import context
 from woost.models import Language, Site
 
@@ -63,14 +64,16 @@ class LanguageSelector(LinkSelector):
                     else "/"),
             language = language
         )
-        
-    def create_entry_link(self, value, label):
 
+    def create_entry_link(self, value, label):
         link = LinkSelector.create_entry_link(self, value, label)
         link["lang"] = value
         link["hreflang"] = value
-        link["xml:lang"] = value
-        return link
-    
 
-        
+        @link.when_ready
+        def set_xml_lang():
+            if rendering_xml():
+                link["xml:lang"] = value
+
+        return link
+
