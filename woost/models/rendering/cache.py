@@ -145,6 +145,8 @@ def require_rendering(
             else:
                 copy(image, image_cache_file)
         else:
+            if format == 'JPEG' and image.mode not in ('RGB', 'RGBA'):
+                image = image.convert('RGBA')
             image.save(image_cache_file, format)
 
     # If the image is accessible to anonymous users, create a link in the
