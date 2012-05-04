@@ -17,6 +17,8 @@ from woost.models.rendering.contentrenderersregistry import content_renderers
 class PDFRenderer(ContentRenderer):
     """A content renderer that handles pdf files."""
 
+    timeout = 20
+
     try:
         p = Popen(["which", "convert"], stdout=PIPE)
         convert_path = p.communicate()[0].replace("\n", "") or None
@@ -32,8 +34,8 @@ class PDFRenderer(ContentRenderer):
         )
 
     def render(self, item, page = 0):
-        
-        timeout = 10 
+
+        timeout = self.timeout
         
         # Increase the timeout for bigger files
         size = item.file_size
