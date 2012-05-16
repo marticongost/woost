@@ -102,6 +102,15 @@ def fill(image, width, height, crop = "center", filter = Image.ANTIALIAS):
                 width + offset_x,
                 height + offset_y
             ))
+        elif crop == 'top':
+            offset_x = (target_width - width) / 2
+            offset_y = 0
+            image = image.crop((
+                offset_x,
+                offset_y,
+                width + offset_x,
+                height + offset_y
+            ))
         else:
             raise ValueError("crop = %s not implemented" % crop)
 
