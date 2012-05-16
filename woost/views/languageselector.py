@@ -49,7 +49,11 @@ class LanguageSelector(LinkSelector):
     def _ready(self):
 
         if self.items is None:
-            self.items = Language.codes
+            self.items = [
+                language.iso_code 
+                for language in Language.select() 
+                if language.enabled
+            ]
 
         if self.value is None:
             self.value = get_language()

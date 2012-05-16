@@ -3648,6 +3648,12 @@ translations.define("Language.iso_code",
     en = u"ISO code"
 )
 
+translations.define("Language.enabled",
+    ca = u"Actiu",
+    es = u"Activo",
+    en = u"Enabled"
+)
+
 translations.define("Language.fallback",
     ca = u"Idioma substitutiu",
     es = u"Idioma sustitutivo",
