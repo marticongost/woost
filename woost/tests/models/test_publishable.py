@@ -20,9 +20,9 @@ class IsAccessibleExpressionTestCase(BaseTestCase):
         self.user = User()
         self.user.insert()
 
-    def list_accessible_items(self):
+    def accessible_items(self):
         from woost.models import Publishable, IsAccessibleExpression
-        return list(Publishable.select(IsAccessibleExpression(self.user)))
+        return set(Publishable.select(IsAccessibleExpression(self.user)))
 
     def test_enabled(self):
         
@@ -52,7 +52,50 @@ class IsAccessibleExpressionTestCase(BaseTestCase):
         d.enabled = False
         d.insert()
         
-        assert self.list_accessible_items() == [a, c]
+        assert self.accessible_items() == set([a, c])
+
+    def test_translation_enabled(self):
+
+        from cocktail.translations import language_context
+        from woost.models import Publishable, Language, ReadPermission
+        
+        self.everybody_role.permissions.append(
+            ReadPermission(
+                matching_items = {
+                    "type": "woost.models.publishable.Publishable"
+                }
+            )
+        )
+
+        site_language = Language()
+        site_language.iso_code = "en"
+        site_language.insert()
+
+        with language_context("en"):
+            a = Publishable()
+            a.per_language_publication = True
+            a.translation_enabled = True
+            a.insert()
+
+            b = Publishable()
+            b.per_language_publication = True
+            b.translation_enabled = False
+            b.insert()
+
+            c = Publishable()
+            c.per_language_publication = True
+            c.translation_enabled = True
+            c.insert()
+            
+            d = Publishable()
+            d.per_language_publication = True
+            d.set("translation_enabled", True, "de")
+            d.insert()
+
+            assert self.accessible_items() == set([a, c])
+
+            site_language.enabled = False
+            assert not self.accessible_items()
 
     def test_current(self):
 
@@ -89,7 +132,7 @@ class IsAccessibleExpressionTestCase(BaseTestCase):
         d.end_date = now - timedelta(days = 1)
         d.insert()
 
-        assert self.list_accessible_items() == [a, b]
+        assert self.accessible_items() == set([a, b])
 
     def test_allowed(self):
         
@@ -114,5 +157,5 @@ class IsAccessibleExpressionTestCase(BaseTestCase):
             )
         )
         
-        assert self.list_accessible_items() == [a]
+        assert self.accessible_items() == set([a])
 
