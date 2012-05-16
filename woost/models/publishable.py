@@ -23,6 +23,7 @@ from cocktail.controllers import (
     Location
 )
 from woost.models.item import Item
+from woost.models.language import Language
 from woost.models.usersession import get_current_user
 from woost.models.permission import ReadPermission, PermissionExpression
 from woost.models.caching import CachingPolicy
@@ -320,15 +321,28 @@ class Publishable(Item):
             and (self.end_date is None or self.end_date > now)
     
     def is_published(self, language = None):
-        return (
-            not self.is_draft
-            and (
-                self.get("translation_enabled", language)                
-                if self.per_language_publication
-                else self.enabled
-            )
-            and self.is_current()
-        )
+
+        if self.is_draft:
+            return False
+
+        if self.per_language_publication:
+
+            language = require_language(language)
+
+            if not self.get("translation_enabled", language):
+                return False
+
+            site_language = Language.get_instance(iso_code = language)
+            if site_language is None or not site_language.enabled:
+                return False
+           
+        elif not self.enabled:
+            return False
+
+        if not self.is_current():
+            return False
+
+        return True
 
     def is_accessible(self, user = None, language = None):
         return self.is_published(language) \
@@ -448,17 +462,28 @@ class IsPublishedExpression(Expression):
 
         def impl(dataset):
 
+
             # Exclude disabled items
             simple_pub = set(
                 Publishable.per_language_publication.index.values(key = False)
             ).intersection(Publishable.enabled.index.values(key = True))
+
+            language = get_language()
+            site_language = Language.get_instance(iso_code = language)
             per_language_pub = set(
                 Publishable.per_language_publication.index.values(key = True)
-            ).intersection(Publishable.translation_enabled.index.values(
-                    key = (get_language(), True)
-                )
             )
-            dataset.intersection_update(simple_pub | per_language_pub)
+            
+            if site_language is None or not site_language.enabled:
+                dataset.intersection_update(simple_pub)
+                dataset.difference_update(per_language_pub)
+            else:
+                per_language_pub.intersection_update(
+                    Publishable.translation_enabled.index.values(
+                        key = (language, True)
+                    )
+                )                
+                dataset.intersection_update(simple_pub | per_language_pub)
 
             # Exclude drafts
             dataset.difference_update(Item.is_draft.index.values(key = True))
