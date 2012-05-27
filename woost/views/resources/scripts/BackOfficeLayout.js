@@ -24,7 +24,7 @@ cocktail.bind({
 
             var closeButton = document.createElement("img");
             closeButton.className = "close_button";
-            closeButton.src = "/resources/images/close_small.png";
+            closeButton.src = "/resources/images/close.png";
             $notification.prepend(closeButton);
 
             jQuery(closeButton).click(function () {

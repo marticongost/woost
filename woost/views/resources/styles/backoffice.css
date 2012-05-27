@@ -647,7 +647,7 @@ body.scripted .BackOfficeLayout .Table .selection {
 }
 
 .BackOfficeLayout .ContentTable .search_options .add_filter {
-    background-image: url(../images/add_small.png);
+    background-image: url(../images/add.png);
     _background-position:0 -2px;
     _background-repeat:no-repeat;
     _display:block;
@@ -842,7 +842,7 @@ body.scripted .BackOfficeLayout .Table .selection {
 }
 
 .BackOfficeLayout .FlatContentView .nested_draft td.element_column label {
-    background-image: url(../images/edit_small.png);
+    background-image: url(../images/edit.png);
     padding-left: 1.8em;
 }
 
@@ -2057,7 +2057,7 @@ button.TypeSelectorButton {
     padding-left: 1.6em;
     background-repeat: no-repeat;
     background-position: left center;
-    background-image: url(../images/clear_small.png);
+    background-image: url(../images/clear.png);
 }
 
 .BackOfficeLayout .CollectionView .filters .discard_button,
@@ -2076,7 +2076,7 @@ button.TypeSelectorButton {
     padding-bottom: 0.3em;
     padding-left: 1.5em !important;
     background-position: 0.2em center;
-    background-image: url(../images/add_small.png);
+    background-image: url(../images/add.png);
     color: rgb(50,80,110);
 }
 
