@@ -408,7 +408,7 @@ class UserAction(object):
 
     @getter
     def icon_uri(self):
-        return "/resources/images/%s_small.png" % self.id
+        return "/resources/images/%s.png" % self.id
 
 
 class SelectionError(Exception):
