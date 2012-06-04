@@ -2982,3 +2982,28 @@ div.success_label {
     margin-top: 1.5em;
 }
 
+/* Item palette
+-----------------------------------------------------------------------------*/
+.ItemPalette {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    display: block;
+}
+
+.ItemPalette li {
+    white-space: nowrap;
+}
+
+.ItemPalette li + li {
+    margin-top: 0.3em;
+}
+
+.ItemPalette li a {
+    text-decoration: none;
+}
+
+.ItemPalette li a * {
+    vertical-align: middle;
+}
+

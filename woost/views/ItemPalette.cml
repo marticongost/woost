@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?py
+from cocktail.schema import SchemaClass
+from cocktail.controllers import context
+from woost.models import get_current_user, CreatePermission
+?>
+
+<ul
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:py="http://www.whads.com/ns/cocktail/templates">
+
+    <?py-class
+    regular_icon_factory = "icon16"
+    promoted_icon_factory = "icon32"
+    promoted_content_types = []
+    types = None
+
+    def should_include_type(self, content_type):
+        return (
+            content_type.visible
+            and content_type.instantiable
+            and self._user.has_permission(CreatePermission, target = content_type)
+        )
+    ?>
+
+    <py:binding>
+        <?py
+        self._user = get_current_user()
+        self._cms = context['cms']
+
+        if isinstance(self.types, SchemaClass):
+            self._types = [self.types] + list(self.types.derived_schemas(recursive = True))
+        else:
+            self._types = self.types
+
+        self._types.sort(key = lambda content_type: translations(content_type.name))
+        ?>
+    </py:binding>
+
+    <py:ready>
+        <?py
+        self._promoted_types = [
+            ct 
+            for ct in self.promoted_content_types 
+            if self.should_include_type(ct)
+        ]
+
+        if self._promoted_types:
+            self.add_class("with_promoted_entries")
+        ?>
+    </py:ready>
+
+    <div py:id="promoted_entries">
+        <py:ready>
+            <py:new
+                py:element="self.create_palette_entry(content_type, True)"
+                py:for="content_type in self._promoted_types"/>
+        </py:ready>
+    </div>
+
+    <div py:id="regular_entries">
+        <py:ready>
+            <py:new
+                py:element="self.create_palette_entry(content_type, False)"
+                py:for="content_type in self._types"
+                py:where="self.should_include_type(content_type) and content_type not in self.promoted_content_types"/>
+        </py:ready>
+    </div>
+
+    <li py:def="palette_entry" py:args="content_type, promoted">
+        <a py:local_id="button" href="#">
+            <?py
+            if promoted:
+                icon_factory = self.promoted_icon_factory
+            else:
+                icon_factory = self.regular_icon_factory
+            ?>
+            <img py:local_id="type_icon"  src="${self._cms.image_uri(content_type, icon_factory)}"/>
+            <span py:local_id="type_label">${translations(content_type.name)}</span>
+        </a>
+    </li>
+
+</ul>
+
