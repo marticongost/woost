@@ -29,22 +29,7 @@ from woost.controllers.backoffice.useractions import add_view_action_context
         return self.backoffice and self.backoffice.title
 
     def get_stack_node_description(self, node):
-
-        if isinstance(node, RelationNode):
-            if isinstance(node.member, Collection):
-                return translations("woost.views.BackOfficeLayout edit stack add")
-            else:
-                return translations("woost.views.BackOfficeLayout edit stack select")
-        elif isinstance(node, SelectionNode):
-            return translations(
-                "woost.views.BackOfficeLayout edit stack select",
-                type = node.content_type
-            )
-        elif isinstance(node, EditNode):
-            if node.item.is_inserted:
-                return translations(node.item)
-            else:
-                return translations("creating", content_type = node.content_type)
+        return translations(node)
     ?>
 
     <?py
