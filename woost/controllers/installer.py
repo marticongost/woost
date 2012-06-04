@@ -62,6 +62,7 @@ class Installer(object):
                     name = "python_package_repository",
                     required = True,
                     enumeration = paths,
+                    translatable_enumeration = False,
                     default = paths and paths[0] or None,
                     member_group = "project"
                 ),
@@ -90,6 +91,7 @@ class Installer(object):
                     required = True,
                     default = "cocktail",
                     enumeration = buffet.available_engines.keys(),
+                    translatable_enumeration = False,
                     member_group = "project"
                 ),
                 schema.String(
