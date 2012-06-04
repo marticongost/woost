@@ -16,6 +16,13 @@
         <?py
         self.add_class(self.block.image_alignment)
         self._images = [image for image in self.block.images if image.is_accessible()]
+
+        if self.block.link_destination:
+            self.tag = "a"
+            self["href"] = self.block.link_destination.get_uri()
+
+            if self.block.link_opens_in_new_window:
+                self["target"] = "_blank"       
         ?>
     </py:ready>
 

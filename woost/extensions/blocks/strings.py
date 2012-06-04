@@ -236,67 +236,6 @@ translations.define("SlideShowBlock.interval-explanation",
     en = u"Sets the duration of the slide transition effect, in milliseconds"
 )
 
-# BannerBlock
-#------------------------------------------------------------------------------
-translations.define("BannerBlock",
-    ca = u"Banner",
-    es = u"Banner",
-    en = u"Banner"
-)
-
-translations.define("BannerBlock-plural",
-    ca = u"Banners",
-    es = u"Banners",
-    en = u"Banners"
-)
-
-translations.define("BannerBlock.text",
-    ca = u"Text",
-    es = u"Texto",
-    en = u"Text"
-)
-
-translations.define("BannerBlock.text-explanation",
-    ca = u"En cas de no especificar-se s'utilitzarà el títol de l'element "
-         u"destí",
-    es = u"En caso de no especificarse se utilitzará el título del "
-         u"elemento destino",
-    en = u"If no text is provided the title from the target item will be used"
-)
-
-translations.define("BannerBlock.target",
-    ca = u"Destí",
-    es = u"Destino",
-    en = u"Target"
-)
-
-translations.define("BannerBlock.image",
-    ca = u"Imatge",
-    es = u"Imagen",
-    en = u"Image"
-)
-
-translations.define("BannerBlock.image_factory",
-    ca = u"Processat d'imatge",
-    es = u"Procesado de imagen",
-    en = u"Image processing"
-)
-
-translations.define("BannerBlock.label_displayed",
-    ca = u"Mostrar el text",
-    es = u"Mostrar el texto",
-    en = u"Label displayed"
-)
-
-translations.define("BannerBlock.label_displayed-explanation",
-    ca = u"Si es desactiva aquesta opció no es mostra el text del bloc, "
-         u"només la seva imatge.",
-    es = u"Si se desactiva esta opción no se muestra el texto del bloque, "
-         u"solo su imagen.",
-    en = u"If this option is disabled, the block's text won't be displayed, "
-         u"only its image will be shown."
-)
-
 # MenuBlock
 #------------------------------------------------------------------------------
 translations.define("MenuBlock",
@@ -367,6 +306,24 @@ translations.define("TextBlock-plural",
     ca = u"Text + imatges",
     es = u"Texto + imágenes",
     en = u"Text + images"
+)
+
+translations.define("TextBlock.link",
+    ca = u"Enllaç",
+    es = u"Enlace",
+    en = u"Link"
+)
+
+translations.define("TextBlock.link_destination",
+    ca = u"Destí de l'enllaç",
+    es = u"Destino del enlace",
+    en = u"Linked resource"
+)
+
+translations.define("TextBlock.link_opens_in_new_window",
+    ca = u"Obrir l'enllaç a una nova finestra",
+    es = u"Abrir el enlace en una ventana nueva",
+    en = u"Open the link in a new window"
 )
 
 translations.define("TextBlock.text",
