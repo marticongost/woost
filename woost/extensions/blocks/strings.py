@@ -4,11 +4,36 @@ u"""
 .. moduleauthor:: Jordi Fernández <jordi.fernandez@whads.com>
 """
 from cocktail.translations import translations
+from cocktail.translations.helpers import ca_possessive
+
+translations.define("Action edit_blocks",
+    ca = u"Editar blocs",
+    es = u"Editar bloques",
+    en = u"Edit blocks"
+)
 
 translations.define("woost.extensions.blocks.slots.blocks",
     ca = u"Blocs",
     es = u"Bloques",
     en = u"Blocks"
+)
+
+translations.define(
+    "woost.extensions.blocks.editblocksnode.EditBlocksNode-instance",
+    ca = lambda instance: 
+        u"Editant els blocs " + ca_possessive(translations(instance.item)),
+    es = lambda instance:
+        u"Editando los bloques de " + translations(instance.item),
+    en = lambda instance:
+        u"Editing the blocks for " + translations(instance.item)
+)
+
+# Site
+#------------------------------------------------------------------------------
+translations.define("Site.common_blocks",
+    ca = u"Blocs comuns",
+    es = u"Bloques comunes",
+    en = u"Common blocks"
 )
 
 # BlocksPage
@@ -59,6 +84,12 @@ translations.define("Block.content",
     en = u"Content"
 )
 
+translations.define("Block.html",
+    ca = u"HTML",
+    es = u"HTML",
+    en = u"HTML"
+)
+
 translations.define("Block.title",
     ca = u"Títol",
     es = u"Título",
@@ -72,8 +103,8 @@ translations.define("Block.title-explanation",
 )
 
 translations.define("Block.heading",
-    ca = u"Títol de capçalera",
-    es = u"Título de cabecera",
+    ca = u"Encapçalament",
+    es = u"Encabezado",
     en = u"Heading"
 )
 
@@ -83,10 +114,29 @@ translations.define("Block.heading-explanation",
     en = u"Block title, as shown on the website"
 )
 
-translations.define("Block.html_id",
-    ca = u"ID de l'element HTML",
-    es = u"ID del elemento HTML",
-    en = u"HTML element ID"
+translations.define("Block.heading_type",
+    ca = u"Tipus d'encapçalament",
+    es = u"Tipo de encabezado",
+    en = u"Heading type"
+)
+
+translations.define("Block.heading_type=generic",
+    ca = u"Etiqueta genèrica",
+    es = u"Etiqueta genérica",
+    en = u"Generic label"
+)
+
+for level in range(1, 7):
+    translations.define("Block.heading_type=h" + str(level),
+        ca = u"H" + str(level),
+        es = u"H" + str(level),
+        en = u"H" + str(level)
+    )
+
+translations.define("Block.html_attributes",
+    ca = u"Atributs HTML",
+    es = u"Atributos HTML",
+    en = u"HTML attributes"
 )
 
 translations.define("Block.css_class",
@@ -95,115 +145,16 @@ translations.define("Block.css_class",
     en = u"CSS classes"
 )
 
+translations.define("Block.inline_css_styles",
+    ca = u"Estils en línia",
+    es = u"Estilos en linea",
+    en = u"Inline CSS styles"
+)
+
 translations.define("Block.enabled",
     ca = u"Actiu",
     es = u"Activo",
     en = u"Active"
-)
-
-translations.define("Block.containers",
-    ca = u"Contenidors",
-    es = u"Contenedores",
-    en = u"Containers"
-)
-
-# ImageGalleryBlock
-#------------------------------------------------------------------------------
-translations.define("ImageGalleryBlock",
-    ca = u"Galeria d'imatges",
-    es = u"Galería de imágenes",
-    en = u"Image gallery"
-)
-
-translations.define("ImageGalleryBlock.gallery_type",
-    ca = u"Tipus de galeria",
-    es = u"Tipo de galería",
-    en = u"Gallery type"
-)
-
-translations.define("ImageGalleryBlock.gallery_type-thumbnails",
-    ca = u"Miniatures",
-    es = u"Miniaturas",
-    en = u"Thumbnails"
-)
-
-translations.define("ImageGalleryBlock.gallery_type-slideshow",
-    ca = u"Passador",
-    es = u"Pasador",
-    en = u"Slideshow"
-)
-
-translations.define("ImageGalleryBlock.images",
-    ca = u"Imatges",
-    es = u"Imágenes",
-    en = u"Images"
-)
-
-translations.define("ImageGalleryBlock-plural",
-    ca = u"Galeries",
-    es = u"Galerías",
-    en = u"Image galleries"
-)
-
-translations.define("ImageGalleryBlock.thumbnail_factory",
-    ca = u"Processat per les miniatures",
-    es = u"Procesado para las miniaturas",
-    en = u"Thumbnail factory"
-)
-
-translations.define("ImageGalleryBlock.close_up_factory",
-    ca = u"Processat per les imatges ampliades",
-    es = u"Procesado para la imagen ampliada",
-    en = u"Close up factory"
-)
-
-translations.define("ImageGalleryBlock.auto_play",
-    ca = u"Transicions automàtiques",
-    es = u"Transiciones automáticas",
-    en = u"Auto play"
-)
-
-translations.define("ImageGalleryBlock.labels_visible",
-    ca = u"Mostrar els títols de les imatges",
-    es = u"Mostrar los títulos de las imágenes",
-    en = u"Show image titles"
-)
-
-translations.define("ImageGalleryBlock.footnotes_visible",
-    ca = u"Mostrar els peus de foto",
-    es = u"Mostrar los pies de foto",
-    en = u"Include footnotes"
-)
-
-translations.define("ImageGalleryBlock.original_link_visible",
-    ca = u"Mostrar un enllaç a la imatge completa",
-    es = u"Mostrar un enlace a la imagen completa",
-    en = u"Include a link to the original image"
-)
-
-translations.define("ImageGalleryBlock.close_up_enabled",
-    ca = u"Habilitar la versió ampliada de les imatges",
-    es = u"Habilitar la versión ampliada de las imágenes",
-    en = u"Enable image close ups"
-)
-
-translations.define("ImageGalleryBlock.close_up_preload",
-    ca = u"Precàrrega de la versió ampliada de les imatges",
-    es = u"Precarga de la versión ampliada de las imágenes",
-    en = u"Preload image close ups"
-)
-
-translations.define("ImageGalleryBlock.close_up_preload-explanation",
-    ca = u"Habilitar per tal que el navegador carregui la versió ampliada de "
-         u"les imatges tan bon punt es mostri la galeria. Això accelera la "
-         u"navegació, però representa un major impacte pel servidor.",
-    es = u"Habilitar para que el navegador empiece a cargar la versión "
-         u"ampliada de las imágenes desde el primer momento en que se muestre "
-         u"la galería. Esto acelera la navegación, pero representa un mayor "
-         u"impacto para el servidor.",
-    en = u"Enable to instruct the browser to start downloading the image "
-         u"close ups as soon as the gallery is displayed. This improves the "
-         u"user experience but causes a higher load for the web server."
 )
 
 # ContainerBlock
@@ -384,74 +335,140 @@ translations.define("MenuBlock.expanded",
     en = u"Expanded"
 )
 
-# RichTextBlock
+# HTMLBlock
 #------------------------------------------------------------------------------
-translations.define("RichTextBlock",
-    ca = u"Text",
-    es = u"Texto",
-    en = u"Text"
+translations.define("HTMLBlock",
+    ca = u"HTML",
+    es = u"HTML",
+    en = u"HTML"
 )
 
-translations.define("RichTextBlock-plural",
-    ca = u"Textos",
-    es = u"Textos",
-    en = u"Texts"
+translations.define("HTMLBlock-plural",
+    ca = u"HTML",
+    es = u"HTML",
+    en = u"HTML"
 )
 
-translations.define("RichTextBlock.text",
-    ca = u"Text",
-    es = u"Texto",
-    en = u"Text"
+translations.define("HTMLBlock.html",
+    ca = u"HTML",
+    es = u"HTML",
+    en = u"HTML"
 )
 
-translations.define("RichTextBlock.attachments",
-    ca = u"Adjunts",
-    es = u"Adjuntos",
-    en = u"Attachments"
-)
-
-# TranslatedRichTextBlock
+# TextBlock
 #------------------------------------------------------------------------------
-translations.define("TranslatedRichTextBlock",
-    ca = u"Text traduïble",
-    es = u"Texto traducible",
-    en = u"Translated text"
+translations.define("TextBlock",
+    ca = u"Text + imatges",
+    es = u"Texto + imágenes",
+    en = u"Text + images"
 )
 
-translations.define("TranslatedRichTextBlock-plural",
-    ca = u"Textos traduïbles",
-    es = u"Textos traducibles",
-    en = u"Translated texts"
+translations.define("TextBlock-plural",
+    ca = u"Text + imatges",
+    es = u"Texto + imágenes",
+    en = u"Text + images"
 )
 
-translations.define("TranslatedRichTextBlock.text",
+translations.define("TextBlock.text",
     ca = u"Text",
     es = u"Texto",
     en = u"Text"
 )
 
-translations.define("TranslatedRichTextBlock.text",
-    ca = u"Text",
-    es = u"Texto",
-    en = u"Text"
+translations.define("TextBlock.images",
+    ca = u"Imatges",
+    es = u"Imágenes",
+    en = u"Images"
 )
 
-translations.define("TranslatedRichTextBlock.image",
-    ca = u"Imatge",
-    es = u"Imagen",
-    en = u"Image"
+translations.define("TextBlock.image_gallery_type",
+    ca = u"Presentació de les imatges",
+    es = u"Presentación de las imágenes",
+    en = u"Image presentation"
 )
 
-translations.define("TranslatedRichTextBlock.image_factory",
-    ca = u"Processat de la imatge",
-    es = u"Procesado de la imagen",
+translations.define("TextBlock.image_gallery_type=thumbnails",
+    ca = u"Miniatures",
+    es = u"Miniaturas",
+    en = u"Thumbnails"
+)
+
+translations.define("TextBlock.image_gallery_type=slideshow",
+    ca = u"Passador",
+    es = u"Pasador",
+    en = u"Slideshow"
+)
+
+translations.define("TextBlock.image_alignment",
+    ca = u"Disposició de les imatges",
+    es = u"Disposición de las imágenes",
+    en = u"Image alignment"
+)
+
+translations.define("TextBlock.image_alignment=float_top_left",
+    ca = u"Flotar a l'esquerra",
+    es = u"Flotar a la izquierda",
+    en = u"Top left, floating"
+)
+
+translations.define("TextBlock.image_alignment=float_top_right",
+    ca = u"Flotar a la dreta",
+    es = u"Flotar a la derecha",
+    en = u"Top right, floating"
+)
+
+translations.define("TextBlock.image_alignment=column_left",
+    ca = u"Columna a l'esquerra",
+    es = u"Columna a la izquierda",
+    en = u"Top left, in their own column"
+)
+
+translations.define("TextBlock.image_alignment=column_right",
+    ca = u"Columna a la dreta",
+    es = u"Columna a l'esquerra",
+    en = u"Top right, in their own column"
+)
+
+translations.define("TextBlock.image_alignment=center_top",
+    ca = u"Centrar a dalt",
+    es = u"Centrar arriba",
+    en = u"Top center"
+)
+
+translations.define("TextBlock.image_thumbnail_factory",
+    ca = u"Processat de les imatges",
+    es = u"Procesado de las imágenes",
     en = u"Image processing"
 )
 
-translations.define("TranslatedRichTextBlock.attachments",
-    ca = u"Adjunts",
-    es = u"Adjuntos",
-    en = u"Attachments"
+translations.define("TextBlock.image_close_up_enabled",
+    ca = u"Ampliar les imatges en fer-hi clic",
+    es = u"Ampliar las imágenes al pulsarlas",
+    en = u"Click to enlarge"
+)
+
+translations.define("TextBlock.image_close_up_factory",
+    ca = u"Processat de les imatges ampliades",
+    es = u"Procesado de las imágenes ampliadas",
+    en = u"Image processing for enlarged images"
+)
+
+translations.define("TextBlock.image_close_up_preload",
+    ca = u"Precàrrega de les imatges ampliades",
+    es = u"Precarga de las imágenes ampliadas",
+    en = u"Preload enlarged images"
+)
+
+translations.define("TextBlock.image_labels_visible",
+    ca = u"Mostrar els títols de les imatges",
+    es = u"Mostrar los títulos de las imágenes",
+    en = u"Show image titles"
+)
+
+translations.define("TextBlock.image_original_link_visible",
+    ca = u"Mostrar un enllaç a la imatge sense modificar",
+    es = u"Mostrar un enlace a la imagen sin modificar",
+    en = u"Show a link to the original image"
 )
 
 # VimeoBlock
@@ -651,5 +668,140 @@ translations.define("IFrameBlock.height",
     ca = u"Alçada",
     es = u"Alto",
     en = u"Height"
+)
+
+# EditBlocksView
+#------------------------------------------------------------------------------
+translations.define("woost.extensions.blocks.EditBlocksView.body_header",
+    ca = lambda item: 
+        u"Editant els blocs " + ca_possessive(translations(item)),
+    es = lambda item:
+        u"Editando los bloques de " + translations(item),
+    en = lambda item:
+        u"Editing the blocks for " + translations(item)
+)
+
+# EditBlocksSlotList
+#------------------------------------------------------------------------------
+translations.define(
+    "woost.extensions.blocks.EditBlocksSlotList.new_blocks_panel.panel_header",
+    ca = u"Nou bloc",
+    es = u"Nuevo bloque",
+    en = u"New block"
+)
+
+translations.define(     
+    "woost.extensions.blocks.EditBlocksSlotList.common_blocks_panel.panel_header",
+    ca = u"Blocs comuns",
+    es = u"Bloques comunes",
+    en = u"Common blocks"
+)
+
+translations.define(
+    "woost.extensions.blocks.EditBlocksSlotList.dialog_buttons.cancel_button",
+    ca = u"Cancel·lar",
+    es = u"Cancelar",
+    en = u"Cancel"
+)
+
+# BlockDisplay
+#------------------------------------------------------------------------------
+translations.define("woost.extensions.blocks.BlockDisplay.common_status.label",
+    ca = u"Comú",
+    es = u"Común",
+    en = u"Common"
+)
+
+translations.define("woost.extensions.blocks.BlockDisplay.common_status.title",
+    ca = u"Aquest bloc resideix a la llibreria de blocs comuns, i pot "
+         u"aparèixer a més d'una pàgina",
+    es = u"Este bloque reside en la libreria de bloques comunes, pudiendo "
+         u"aparecer en más de una página",
+    en = u"This block resides within the site's common blocks gallery, and "
+         u"it may appear in more than one page"
+)
+
+translations.define("woost.extensions.blocks.BlockDisplay.disabled_status.label",
+    ca = u"Inactiu",
+    es = u"Inactivo",
+    en = u"Disabled"
+)
+
+translations.define("woost.extensions.blocks.BlockDisplay.disabled_status.title",
+    ca = u"Aquest bloc està deshabilitat, no s'inclourà a la pàgina",
+    es = u"Este bloque está deshabilitado, no se incluirá en la página",
+    en = u"This block is disabled and won't be displayed in the page"
+)
+
+translations.define("Action add_block",
+    ca = u"Afegir",
+    es = u"Añadir",
+    en = u"Add"
+)
+
+translations.define("Action add_block_before",
+    ca = u"Afegir davant",
+    es = u"Añadir en frente",
+    en = u"Add before"
+)
+
+translations.define("Action add_block_after",
+    ca = u"Afegir darrere",
+    es = u"Añadir detrás",
+    en = u"Add after"
+)
+
+translations.define("Action edit_block",
+    ca = u"Editar",
+    es = u"Editar",
+    en = u"Edit"
+)
+
+translations.define("Action remove_block",
+    ca = u"Treure",
+    es = u"Quitar",
+    en = u"Remove"
+)
+
+translations.define("Action cut_block",
+    ca = u"Retallar",
+    es = u"Cortar",
+    en = u"Cut"
+)
+
+translations.define("Action paste_block",
+    ca = u"Enganxar",
+    es = u"Pegar",
+    en = u"Paste"
+)
+
+translations.define("Action paste_block_after",
+    ca = u"Enganxar darrere",
+    es = u"Pegar detrás",
+    en = u"Paste after"
+)
+
+translations.define("Action paste_block_before",
+    ca = u"Enganxar davant",
+    es = u"Pegar delante",
+    en = u"Paste before"
+)
+
+translations.define("Action share_block",
+    ca = u"Afegir a la llibreria",
+    es = u"Añadir a la libreria",
+    en = u"Add to the library"
+)
+
+translations.define("woost.extensions.blocks.empty_clipboard",
+    ca = u"El portaretalls no conté cap bloc",
+    es = u"El portapapeles no cotiene ningún bloque",
+    en = u"The clipboard is empty"
+)
+
+translations.define("woost.extensions.blocks.clipboard_error",
+    ca = u"El contingut del portaretalls no és vàlid",
+    es = u"El contenido del portapapeles no es válido",
+    en = u"The clipboard content is not valid"
 )
 

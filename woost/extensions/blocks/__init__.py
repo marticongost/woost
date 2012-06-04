@@ -5,6 +5,7 @@ u"""
 """
 from cocktail.translations import translations
 from cocktail.persistence import datastore
+from cocktail import schema
 from cocktail.html import templates
 from woost.models import Extension
 
@@ -42,22 +43,22 @@ class BlocksExtension(Extension):
 
     def _load(self):
 
+        from woost.extensions.blocks.block import Block
         from woost.extensions.blocks import (
             strings, 
-            block, 
             containerblock,
             slideshowblock,
-            imagegalleryblock,
             bannerblock,
             menublock,
-            richtextblock,
-            translatedrichtextblock,
+            htmlblock,
+            textblock,
             twittertimelineblock,
-            linksblock,
-            folderblock,
             loginblock,
             iframeblock,
             blockspage,
+            blockactions,
+            imagefactories,
+            site,
             migration
         )
 
@@ -68,6 +69,31 @@ class BlocksExtension(Extension):
 
         # Install an overlay for the frontend edit panel
         templates.get_class("woost.extensions.blocks.EditPanelOverlay")
+
+        # Add a module to the backoffice for editing block hierarchies
+        # in a more visual fashion
+        from woost.controllers.backoffice.backofficecontroller \
+            import BackOfficeController
+        from woost.extensions.blocks.editblockscontroller \
+            import EditBlocksController
+        BackOfficeController.blocks = EditBlocksController
+
+        from woost.extensions.blocks.dropblockcontroller \
+            import DropBlockController
+        BackOfficeController.drop_block = DropBlockController
+
+        # Remove all relations to blocks from the edit view
+        from woost.controllers.backoffice.editstack import EditNode
+        base_should_exclude_member = EditNode.should_exclude_member
+
+        def should_exclude_member(self, member):
+            return base_should_exclude_member(self, member) or (
+                isinstance(member, schema.RelationMember)
+                and member.related_type
+                and issubclass(member.related_type, Block)
+            )
+
+        EditNode.should_exclude_member = should_exclude_member
 
         self.install()
 

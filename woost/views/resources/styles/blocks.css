@@ -1,8 +1,38 @@
-/* Block styles */
 
-    /* Banner */
+.TextBlockView {
+    clear: both;
+}
 
-    .Banner {
-        background-repeat: no-repeat;
-    }
+/* Float top left */
+.TextBlockView.float_top_left > .image_gallery {
+    float: left;
+}
+
+/* Float top right */
+.TextBlockView.float_top_right > .image_gallery {
+    float: right;
+}
+
+/* Column (both left and right) */
+.TextBlockView.column_left,
+.TextBlockView.column_right {
+    display: table-row;
+}
+
+.TextBlockView.column_left > .image_gallery,
+.TextBlockView.column_left > .text_container,
+.TextBlockView.column_right > .image_gallery,
+.TextBlockView.column_right > .text_container {
+    display: table-cell;
+    vertical-align: top;
+}
+
+/* Center top */
+.TextBlockView.center_top > .image_gallery {
+    text-align: center;
+}
+
+.TextBlockView.center_top > .image_gallery > ul {
+    display: inline-block;
+}
 
