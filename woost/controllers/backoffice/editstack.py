@@ -529,6 +529,12 @@ class EditNode(StackNode):
         assert item is not None
         self._item = item
 
+    def __translate__(self, language, **kwargs):
+        if self.item.is_inserted:
+            return translations(self.item)
+        else:
+            return translations("creating", content_type = self.content_type)
+
     def uri(self, **params):
         
         if "edit_stack" not in params:
@@ -916,6 +922,12 @@ class SelectionNode(StackNode):
     content_type = None
     selection_parameter = None
 
+    def __translate__(self, language, **kwargs):
+        return translations(
+            "woost.views.BackOfficeLayout edit stack select",
+            type = self.content_type
+        )
+
     def uri(self, **params):
                 
         if "edit_stack" not in params:
@@ -934,6 +946,12 @@ class RelationNode(StackNode):
         or L{Reference<cocktail.schema.schemareference.Reference>}
     """
     member = None
+
+    def __translate__(self, language, **kwargs):
+        if isinstance(self.member, schema.Collection):
+            return translations("woost.views.BackOfficeLayout edit stack add")
+        else:
+            return translations("woost.views.BackOfficeLayout edit stack select")
 
     def uri(self, **params):
                 
