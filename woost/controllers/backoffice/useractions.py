@@ -10,7 +10,7 @@ Declaration of back office actions.
 import cherrypy
 from cocktail.modeling import getter, ListWrapper
 from cocktail.translations import translations
-from cocktail.controllers import view_state
+from cocktail.controllers import view_state, context as controller_context
 from cocktail import schema
 from woost.models import (
     Item,
@@ -25,6 +25,7 @@ from woost.models import (
     ReadHistoryPermission
 )
 from woost.controllers.backoffice.editstack import (
+    EditNode,
     SelectionNode,
     RelationNode
 )
@@ -525,6 +526,22 @@ class ShowDetailAction(UserAction):
 
 class EditAction(UserAction):
     included = frozenset(["toolbar", "item_buttons"])
+
+    def is_available(self, context, target):
+        
+        # Prevent action nesting
+        edit_stacks_manager = \
+            controller_context.get("edit_stacks_manager")
+        
+        if edit_stacks_manager:
+            edit_stack = edit_stacks_manager.current_edit_stack
+            if edit_stack:
+                for node in edit_stack[:-1]:
+                    if isinstance(node, EditNode) \
+                    and node.item is target:
+                        return False
+
+        return UserAction.is_available(self, context, target)
 
     def is_permitted(self, user, target):
         return user.has_permission(ModifyPermission, target = target)
