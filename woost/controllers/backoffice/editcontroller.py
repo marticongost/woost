@@ -152,10 +152,13 @@ class EditController(BaseBackOfficeController):
             # The edit operation was the root of the edit stack; redirect the
             # browser to the new item
             if len(self.edit_stack) == 1:
-                params = {"edit_stack": None} if make_draft else {}
-                raise cherrypy.HTTPRedirect(
-                    self.edit_uri(item, **params)
-                )
+                if self.edit_stack.root_url:
+                    self.edit_stack.go_back()
+                else:
+                    params = {"edit_stack": None} if make_draft else {}
+                    raise cherrypy.HTTPRedirect(
+                        self.edit_uri(item, **params)
+                    )
 
             # The edit operation was nested; relate the created item to its
             # owner, and redirect the browser to the owner
@@ -165,15 +168,7 @@ class EditController(BaseBackOfficeController):
                 parent_edit_node.relate(member, item)
                 self.edit_stack.go(-3)
 
-        # The user had arrived to the edit interface using a frontend link,
-        # and has just saved the item at the top of the stack; redirect the
-        # browser to the original frontend location. Notifications are
-        # discarded before redirecting, since there is no guarantee that the
-        # frontend will display them; this is clearly not ideal, but the
-        # alternative (having them stack up and show all at once whenever the
-        # user opens the backoffice) is not that great either.
         if stack_node.parent_node is None and self.edit_stack.root_url:
-            pop_user_notifications()
             self.edit_stack.go_back()
 
     def confirm_draft(self):

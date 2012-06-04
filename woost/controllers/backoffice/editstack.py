@@ -43,7 +43,7 @@ from woost.models import (
     ModifyMemberPermission,
     ReadTranslationPermission
 )
-from woost.controllers.notifications import notify_user
+from woost.controllers.notifications import notify_user, pop_user_notifications
 
 
 class EditStacksManager(object):
@@ -199,7 +199,7 @@ class EditStacksManager(object):
             # Prune the stack
             else:
                 while len(edit_stack) > step + 1:
-                    edit_stack.pop()                    
+                    edit_stack.pop()
         
         return edit_stack
 
@@ -323,13 +323,23 @@ class EditStack(ListWrapper):
         
         @param params: Additional query string parameters to pass to the
             destination URI.
-        """
+        """        
         if len(self._items) > 1:
             raise cherrypy.HTTPRedirect(self._items[-2].uri(**params))
         else:
-            raise cherrypy.HTTPRedirect(
-                self.root_url or context["cms"].contextual_uri(**params)
-            )
+            if self.root_url:
+                # When redirecting the user by means of a callback URL, discard
+                # all notifications before redirecting, since there is no
+                # guarantee that the target URL will display them. This is
+                # clearly not ideal, but the alternative (having them stack up
+                # and show all at once whenever the user opens the backoffice)
+                # is not that great either.
+                pop_user_notifications()
+                raise cherrypy.HTTPRedirect(self.root_url)
+            else:
+                raise cherrypy.HTTPRedirect(
+                    context["cms"].contextual_uri(**params)
+                )
 
     def go(self, index = -1):
         """Redirects the user to the indicated node of the edit stack.
