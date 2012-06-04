@@ -17,8 +17,18 @@ class TextBlock(Block):
     view_class = "woost.extensions.blocks.TextBlockView"
     block_display = "woost.extensions.blocks.TextBlockDisplay"
 
+    groups_order = [
+        "content",
+        "link",
+        "images",
+        "html",
+        "administration"
+    ]
+
     members_order = [
         "text",
+        "link_destination",
+        "link_opens_in_new_window",
         "images",
         "image_alignment",
         "image_gallery_type",
@@ -31,10 +41,21 @@ class TextBlock(Block):
     ]
 
     text = schema.String(
-        required = True,
         edit_control = "woost.views.RichTextEditor",
         translated = True,
         member_group = "content"
+    )
+
+    link_destination = schema.Reference(
+        type = Publishable,
+        related_end = schema.Collection(),
+        member_group = "link"
+    )
+
+    link_opens_in_new_window = schema.Boolean(
+        default = False,
+        required = True,
+        member_group = "link"
     )
 
     images = schema.Collection(
