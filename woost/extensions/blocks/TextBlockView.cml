@@ -17,6 +17,9 @@
         self.add_class(self.block.image_alignment)
         self._images = [image for image in self.block.images if image.is_accessible()]
 
+        if self._images and self.block.image_alignment == "background":
+            element.set_style("background-image", "url(%s)" % self._images[0].get_uri())
+
         if self.block.link_destination:
             self.tag = "a"
             self["href"] = self.block.link_destination.get_uri()
@@ -30,6 +33,7 @@
         py:id="image_gallery"
         py:images="@{self._images}"
         py:accessible_check="${False}"
+        py:visible="@{self._images and self.block.image_alignment != 'background'}"
         py:gallery_type="@{self.block.image_gallery_type}"
         py:thumbnail_factory="@{self.block.image_thumbnail_factory}"
         py:close_up_enabled="@{self.block.image_close_up_enabled}"
