@@ -90,34 +90,22 @@ translations.define("Block.html",
     en = u"HTML"
 )
 
-translations.define("Block.title",
-    ca = u"Títol",
-    es = u"Título",
-    en = u"Title"
-)
-
-translations.define("Block.title-explanation",
-    ca = u"Descripció del bloc, d'ús intern pels editors",
-    es = u"Descripción del bloque, de uso interno para los editores",
-    en = u"Description for this block, used internally by editors"
-)
-
 translations.define("Block.heading",
     ca = u"Encapçalament",
     es = u"Encabezado",
     en = u"Heading"
 )
 
-translations.define("Block.heading-explanation",
-    ca = u"Títol del bloc, tal com es mostrarà al web",
-    es = u"Título del bloque, tal como se mostraré en la web",
-    en = u"Block title, as shown on the website"
-)
-
 translations.define("Block.heading_type",
     ca = u"Tipus d'encapçalament",
     es = u"Tipo de encabezado",
     en = u"Heading type"
+)
+
+translations.define("Block.heading_type=hidden",
+    ca = u"Ocult",
+    es = u"Oculto",
+    en = u"Hidden"
 )
 
 translations.define("Block.heading_type=generic",
