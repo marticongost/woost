@@ -73,7 +73,8 @@ class TextBlock(Block):
             "float_top_right",
             "column_left",
             "column_right",
-            "center_top"
+            "center_top",
+            "background"
         ],
         member_group = "images"
     )

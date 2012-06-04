@@ -380,6 +380,12 @@ translations.define("TextBlock.image_alignment=center_top",
     en = u"Top center"
 )
 
+translations.define("TextBlock.image_alignment=background",
+    ca = u"Imatge de fons",
+    es = u"Imagen de fondo",
+    en = u"Background image"
+)
+
 translations.define("TextBlock.image_thumbnail_factory",
     ca = u"Processat de les imatges",
     es = u"Procesado de las imágenes",
