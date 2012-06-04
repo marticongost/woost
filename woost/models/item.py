@@ -18,6 +18,7 @@ from cocktail.persistence import (
     PersistentMapping,
     MaxValue
 )
+from cocktail.controllers import make_uri, percent_encode_uri, Location
 from woost.models.changesets import ChangeSet, Change
 from woost.models.action import Action
 
@@ -507,6 +508,75 @@ class Item(PersistentObject):
         listed_by_default = False,
         member_group = "administration"
     )
+
+    # URLs
+    #--------------------------------------------------------------------------     
+    def get_image_uri(self,
+        image_factory = None,
+        parameters = None,
+        encode = True,
+        include_extension = True,
+        host = None,):
+                
+        uri = make_uri("/images", self.id)
+
+        if image_factory:
+            uri = make_uri(uri, image_factory)
+
+        if include_extension:
+            from woost.models.rendering.formats import (
+                formats_by_extension,
+                extensions_by_format,
+                default_format
+            )
+            ext = getattr(self, "file_extension", None)
+            if ext is not None:
+                ext = ext.lower()
+            if ext is None \
+            or ext.lstrip(".") not in formats_by_extension:
+                ext = "." + extensions_by_format[default_format]
+            uri += ext
+
+        if parameters:
+            uri = make_uri(uri, **parameters)
+
+        return self._fix_uri(uri, host, encode)
+
+    def _fix_uri(self, uri, host, encode):
+
+        if encode:
+            uri = percent_encode_uri(uri)
+
+        if host:
+            if host == ".":
+                location = Location.get_current_host()
+
+                from woost.models import Site
+                site = Site.main
+                policy = site.https_policy
+
+                if (
+                    policy == "always"
+                    or (
+                        policy == "per_page" and (
+                            self.requires_https
+                            or not get_current_user().anonymous
+                        )
+                    )
+                ):
+                    location.scheme = "https"
+                else:
+                    location.scheme = "http"
+
+                host = str(location)
+            elif not "://" in host:
+                host = "http://" + host
+
+            uri = make_uri(host, uri)
+        else:
+            uri = make_uri("/", uri)
+
+        return uri
 
 
 Item.id.versioned = False
