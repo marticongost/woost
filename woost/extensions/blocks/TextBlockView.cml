@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<div
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:py="http://www.whads.com/ns/cocktail/templates">
+
+    <?py-class
+    enable_ie_table_layout_workaround = True
+    ?>
+
+    <?py
+    block = None
+    ?>
+
+    <py:ready>
+        <?py
+        self.add_class(self.block.image_alignment)
+        self._images = [image for image in self.block.images if image.is_accessible()]
+        ?>
+    </py:ready>
+
+    <py:woost.views.ImageGallery
+        py:id="image_gallery"
+        py:images="@{self._images}"
+        py:accessible_check="${False}"
+        py:gallery_type="@{self.block.image_gallery_type}"
+        py:thumbnail_factory="@{self.block.image_thumbnail_factory}"
+        py:close_up_enabled="@{self.block.image_close_up_enabled}"
+        py:close_up_factory="@{self.block.image_close_up_factory}"
+        py:close_up_preload="@{self.block.image_close_up_preload}"
+        py:labels_visible="@{self.block.image_labels_visible}"
+        py:original_link_visible="@{self.block.image_original_link_visible}"/>
+
+    <div py:id="text_container" py:visible="@{bool(self.block.text)}">
+        @{self.block.text}
+    </div>
+
+    <py:ready>
+        <?py
+        if self.block.text and self._images:
+
+            if self.block.image_alignment == "column_right":
+                self.image_gallery.place_after(self.text_container)
+
+            if (
+                self.enable_ie_table_layout_workaround
+                and self.block.image_alignment in ("column_left", "column_right")
+            ):  
+                self.insert(0, self.create_ie_table_layout_workaround("<table class='ie_layout_workaround'><tr>"))
+                self.create_ie_table_layout_workaround("<td class='image_gallery_cell' valign='top'>").place_before(self.image_gallery)
+                self.create_ie_table_layout_workaround("</td>").place_after(self.image_gallery)
+                self.create_ie_table_layout_workaround("<td class='text_container_cell' valign='top'>").place_before(self.text_container)
+                self.create_ie_table_layout_workaround("</td>").place_after(self.text_container)
+                self.append(self.create_ie_table_layout_workaround("</tr></table>"))
+        ?>
+    </py:ready>
+
+    <py:cocktail.html.IEConditionalComment
+        py:def="ie_table_layout_workaround" py:args="html"
+        py:condition="lt IE 9">
+        ${html}
+    </py:cocktail.html.IEConditionalComment>
+
+</div>
+

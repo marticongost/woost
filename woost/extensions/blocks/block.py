@@ -7,7 +7,7 @@ from cocktail.iteration import last
 from cocktail.translations import translations
 from cocktail import schema
 from cocktail.html import templates, Element
-from woost.models import Item, Publishable
+from woost.models import Item, Publishable, Site
 
 default_tag = object()
 
@@ -18,34 +18,22 @@ class Block(Item):
     collapsed_backoffice_menu = True
     view_class = None
     tag = default_tag
+    block_display = "woost.extensions.blocks.BlockDisplay"
+
+    groups_order = ["content", "html"]
 
     members_order = [
         "title",
-        "heading",
-        "html_id",
-        "css_class",
         "enabled",
-        "containers"
+        "heading",
+        "heading_type",
+        "css_class",
+        "inline_css_styles",
+        "html_attributes"
     ]
-
-    groups_order = ["content"]
 
     title = schema.String(
         descriptive = True,
-        member_group = "content"
-    )
-
-    heading = schema.String(
-        translated = True,
-        member_group = "content"
-    )
-
-    html_id = schema.String(
-        listed_by_default = False,
-        member_group = "content"
-    )
-
-    css_class = schema.String(
         member_group = "content"
     )
 
@@ -55,12 +43,31 @@ class Block(Item):
         member_group = "content"
     )
 
-    containers = schema.Collection(
-        items = "woost.extensions.blocks.containerblock.ContainerBlock",
-        bidirectional = True,
-        related_key = "blocks",
-        editable = False,
+    heading = schema.String(
+        translated = True,
         member_group = "content"
+    )
+
+    heading_type = schema.String(
+        default = "generic",
+        enumeration = ["generic", "h1", "h2", "h3", "h4", "h5", "h6"],
+        required = heading,
+        member_group = "content"
+    )
+
+    css_class = schema.String(
+        member_group = "html"
+    )
+
+    inline_css_styles = schema.String(
+        edit_control = "cocktail.html.TextArea",
+        member_group = "html"
+    )
+
+    html_attributes = schema.String(
+        listed_by_default = False,
+        edit_control = "cocktail.html.TextArea",
+        member_group = "html"
     )
 
     def create_view(self):
@@ -78,14 +85,29 @@ class Block(Item):
         
         view.add_class("block")
  
-        if self.html_id:
-            view["id"] = self.html_id
+        if self.html_attributes:
+            for line in self.html_attributes.split("\n"):
+                try:
+                    key, value = line.split("=")
+                except:
+                    pass
+                else:
+                    view[key.strip()] = value.strip()
+
+        if self.inline_css_styles:
+            for line in self.inline_css_styles.split(";"):
+                try:
+                    key, value = line.split(":")
+                except:
+                    pass
+                else:
+                    view.set_style(key.strip(), value.strip())
 
         if self.css_class:
             view.add_class(self.css_class)
 
         view.add_class("block%d" % self.id)
-
+        
         if self.qname:
             view.add_class(self.qname.replace(".", "-"))
 
@@ -93,44 +115,28 @@ class Block(Item):
             view.tag = self.tag
 
         if self.heading:
-            if hasattr(view, "heading"):
-                view.heading = self.heading
-            else:
-                view.block_heading = Element("h2")
-                view.block_heading.append(self.heading)
-                view.insert(0, view.block_heading)
+            self.add_heading(view)
 
-    def descend_tree(self, include_self = False):
-        if include_self:
-            yield self
+    def add_heading(self, view):
+        if hasattr(view, "heading"):
+            view.heading = self.heading
+        else:                
+            view.heading = self.create_heading()
+            view.insert(0, view.heading)
 
-    def find_publication_points(self):
-        """Find all the publishable elements that contain this block, either
-        directly or nested within one or more containers.
+    def create_heading(self):
+        if self.heading_type in ("h1", "h2", "h3", "h4", "h5", "h6"):
+            heading = Element(self.heading_type)
+        else:
+            heading = Element()
+            heading.add_class("heading")
 
-        :return: An iterable sequence of all the publishable elements that
-            contain the block.
-        :rtype: `woost.models.Publishable` iterable sequence
-        """
-        def iter_points(block, path):
-            for member in block.__class__.members().itervalues():
-                if (
-                    isinstance(member, schema.RelationMember)
-                    and member.related_type
-                    and issubclass(member.related_type, Publishable)
-                    and member.related_end.visible
-                ):
-                    value = block.get(member)
-                    if value:
-                        if isinstance(member, schema.Reference):
-                            yield [value, member] + path
-                        else:
-                            for publishable in value:
-                                yield [publishable, member] + path
+        heading.append(self.heading)
+        return heading
 
-            for container in block.containers:
-                for point in iter_points(container, [container] + path):
-                    yield point
+    def is_common_block(self):
+        return bool(self.get(Site.common_blocks.related_end))
 
-        return iter_points(self, [])
+    def is_published(self):
+        return self.enabled
 
