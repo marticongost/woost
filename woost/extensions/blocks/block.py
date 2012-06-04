@@ -23,35 +23,40 @@ class Block(Item):
     groups_order = ["content", "html"]
 
     members_order = [
-        "title",
-        "enabled",
         "heading",
         "heading_type",
+        "enabled",
         "css_class",
         "inline_css_styles",
         "html_attributes"
     ]
 
-    title = schema.String(
+
+    heading = schema.String(
         descriptive = True,
+        translated = True,
+        member_group = "content"
+    )
+
+    heading_type = schema.String(
+        default = "hidden",
+        enumeration = [
+            "hidden",
+            "generic",
+            "h1",
+            "h2",
+            "h3",
+            "h4",
+            "h5",
+            "h6"
+        ],
+        required = heading,
         member_group = "content"
     )
 
     enabled = schema.Boolean(
         required = True,
         default = True,
-        member_group = "content"
-    )
-
-    heading = schema.String(
-        translated = True,
-        member_group = "content"
-    )
-
-    heading_type = schema.String(
-        default = "generic",
-        enumeration = ["generic", "h1", "h2", "h3", "h4", "h5", "h6"],
-        required = heading,
         member_group = "content"
     )
 
@@ -118,11 +123,12 @@ class Block(Item):
             self.add_heading(view)
 
     def add_heading(self, view):
-        if hasattr(view, "heading"):
-            view.heading = self.heading
-        else:                
-            view.heading = self.create_heading()
-            view.insert(0, view.heading)
+        if self.heading_type != "hidden":
+            if hasattr(view, "heading"):
+                view.heading = self.heading
+            else:                
+                view.heading = self.create_heading()
+                view.insert(0, view.heading)
 
     def create_heading(self):
         if self.heading_type in ("h1", "h2", "h3", "h4", "h5", "h6"):

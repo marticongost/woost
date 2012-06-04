@@ -56,8 +56,8 @@ from woost.models import Publishable, ModifyPermission, get_current_user
 
             @extend(element)
             def get_item_label(tree, item):
-                if item.title:
-                    return item.title
+                if item.heading:
+                    return item.heading
                 else:
                     return translations(item.__class__.__name__)
             ?>
