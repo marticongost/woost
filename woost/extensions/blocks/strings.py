@@ -179,6 +179,12 @@ translations.define("SlideShowBlock-plural",
     en = u"Slide shows"
 )
 
+translations.define("SlideShowBlock.slides",
+    ca = u"Diapositives",
+    es = u"Diapositivas",
+    en = u"Slides"
+)
+
 translations.define("SlideShowBlock.transition_settings",
     ca = u"Transicions",
     es = u"Transiciones",

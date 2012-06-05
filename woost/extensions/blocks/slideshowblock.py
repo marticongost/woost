@@ -4,23 +4,31 @@ u"""
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
 from cocktail import schema
-from woost.extensions.blocks.containerblock import ContainerBlock
+from cocktail.html import templates
+from woost.extensions.blocks.containerblock import Block
 
 
-class SlideShowBlock(ContainerBlock):
+class SlideShowBlock(Block):
 
     instantiable = True
     view_class = "cocktail.html.SlideShow"
 
-    groups_order = ["content", "transition_settings"]
+    groups_order = ["content", "transition_settings", "html", "administration"]
 
     members_order = [
+        "slides",
         "autoplay",
         "interval",
         "transition_duration",
         "navigation_controls"
     ]
     
+    slides = schema.Collection(
+        items = schema.Reference(type = Block),
+        related_end = schema.Collection(),
+        member_group = "content"
+    )
+
     autoplay = schema.Boolean(
         required = True,
         default = True,
@@ -48,8 +56,11 @@ class SlideShowBlock(ContainerBlock):
     )
 
     def init_view(self, view):
-        ContainerBlock.init_view(self, view)
-        view.block_content = view.slides
+        Block.init_view(self, view)
+        block_list = templates.new("woost.extensions.blocks.BlockList")
+        block_list.tag = None
+        block_list.blocks = self.slides
+        view.slides.append(block_list)
         view.autoplay = self.autoplay
         view.interval = self.interval
         view.transition_duration = self.transition_duration
