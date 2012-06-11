@@ -3,6 +3,12 @@
     clear: both;
 }
 
+.TextBlockView > .image_gallery.thumbnails .image_entry {
+    margin: 0;
+    margin-right: 1em;
+    margin-bottom: 1em;
+}
+
 /* Float top left */
 .TextBlockView.float_top_left > .image_gallery {
     float: left;
