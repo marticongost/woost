@@ -89,7 +89,7 @@ class TextBlock(Block):
     )
 
     image_thumbnail_factory = ImageFactoryMember(
-        required = True,
+        required = image_gallery_type.not_equal("thumbnails"),
         default = "image_gallery_thumbnail",
         enumeration = lambda ctx:
             templates.get_class("woost.views.ImageGallery")
@@ -104,7 +104,7 @@ class TextBlock(Block):
     )
 
     image_close_up_factory = ImageFactoryMember(
-        required = True,
+        required = image_gallery_type.not_equal("thumbnails"),
         default = "image_gallery_close_up",
         enumeration = lambda ctx:
             templates.get_class("woost.views.ImageGallery")
