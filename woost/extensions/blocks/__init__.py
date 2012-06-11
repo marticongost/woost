@@ -45,7 +45,8 @@ class BlocksExtension(Extension):
 
         from woost.extensions.blocks.block import Block
         from woost.extensions.blocks import (
-            strings, 
+            strings,
+            customblock,
             containerblock,
             slideshowblock,
             menublock,

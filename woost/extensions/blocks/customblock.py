@@ -1,0 +1,20 @@
+#-*- coding: utf-8 -*-
+u"""
+
+.. moduleauthor:: Martí Congost <marti.congost@whads.com>
+"""
+from cocktail import schema
+from woost.extensions.blocks.block import Block
+
+
+class CustomBlock(Block):
+
+    instantiable = True
+
+    view_class = schema.String(
+        required = True,
+        shadows_attribute = True,
+        before_member = "controller",
+        member_group = "behavior"
+    )
+
