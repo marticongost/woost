@@ -157,6 +157,32 @@ translations.define("Block.controller",
     en = u"Controller"
 )
 
+# CustomBlock
+#------------------------------------------------------------------------------
+translations.define("CustomBlock",
+    ca = u"Bloc a mida",
+    es = u"Bloque a medida",
+    en = u"Custom block"
+)
+
+translations.define("CustomBlock-plural",
+    ca = u"Blocs a mida",
+    es = u"Bloques a medida",
+    en = u"Custom blocks"
+)
+
+translations.define("CustomBlock.view_class",
+    ca = u"Vista",
+    es = u"Vista",
+    en = u"View"
+)
+
+translations.define("CustomBlock.view_class-explanation",
+    ca = u"Nom qualificat de la vista CML a mostrar",
+    es = u"Nombre cualificado de la vista CML a mostrar",
+    en = u"The qualified name of the CML view to display"
+)
+
 # ContainerBlock
 #------------------------------------------------------------------------------
 translations.define("ContainerBlock",
