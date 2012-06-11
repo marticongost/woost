@@ -13,7 +13,13 @@ class SlideShowBlock(Block):
     instantiable = True
     view_class = "cocktail.html.SlideShow"
 
-    groups_order = ["content", "transition_settings", "html", "administration"]
+    groups_order = [
+        "content",
+        "transition_settings",
+        "behavior",
+        "html",
+        "administration"
+    ]
 
     members_order = [
         "slides",

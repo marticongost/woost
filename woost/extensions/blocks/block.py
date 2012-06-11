@@ -3,6 +3,7 @@ u"""Defines the `Block` model.
 
 .. moduleauthor:: Jordi Fernández <jordi.fernandez@whads.com>
 """
+from cocktail.pkgutils import import_object
 from cocktail.iteration import last
 from cocktail.translations import translations
 from cocktail import schema
@@ -20,17 +21,22 @@ class Block(Item):
     tag = default_tag
     block_display = "woost.extensions.blocks.BlockDisplay"
 
-    groups_order = ["content", "html"]
+    groups_order = [
+        "content",
+        "behavior",
+        "html",
+        "administration"
+    ]
 
     members_order = [
         "heading",
         "heading_type",
         "enabled",
+        "controller",
         "css_class",
         "inline_css_styles",
         "html_attributes"
     ]
-
 
     heading = schema.String(
         descriptive = True,
@@ -57,7 +63,11 @@ class Block(Item):
     enabled = schema.Boolean(
         required = True,
         default = True,
-        member_group = "content"
+        member_group = "behavior"
+    )
+
+    controller = schema.String(
+        member_group = "behavior"
     )
 
     css_class = schema.String(
@@ -82,6 +92,16 @@ class Block(Item):
         
         view = templates.new(self.view_class)
         self.init_view(view)
+
+        if self.controller:
+            controller_class = import_object(self.controller)
+            controller = controller_class()
+            controller.block = self
+            controller.view = view
+            controller()
+            for key, value in controller.output.iteritems():
+                setattr(view, key, value)
+
         return view
 
     def init_view(self, view):

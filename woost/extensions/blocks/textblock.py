@@ -21,6 +21,7 @@ class TextBlock(Block):
         "content",
         "link",
         "images",
+        "behavior",
         "html",
         "administration"
     ]
