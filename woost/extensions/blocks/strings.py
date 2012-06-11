@@ -84,6 +84,12 @@ translations.define("Block.content",
     en = u"Content"
 )
 
+translations.define("Block.behavior",
+    ca = u"Comportament",
+    es = u"Comportamiento",
+    en = u"Behavior"
+)
+
 translations.define("Block.html",
     ca = u"HTML",
     es = u"HTML",
@@ -143,6 +149,12 @@ translations.define("Block.enabled",
     ca = u"Actiu",
     es = u"Activo",
     en = u"Active"
+)
+
+translations.define("Block.controller",
+    ca = u"Controlador",
+    es = u"Controlador",
+    en = u"Controller"
 )
 
 # ContainerBlock
