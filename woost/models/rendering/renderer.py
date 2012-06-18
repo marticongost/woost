@@ -5,14 +5,22 @@ u"""
 """
 from time import mktime
 from cocktail.modeling import abstractmethod
+from cocktail import schema
+from woost.models.item import Item
 
 
-class ContentRenderer(object):
+class Renderer(Item):
 
-    enabled = True
+    instantiable = False
+    visible_from_root = False
+
+    title = schema.String(
+        descriptive = True,
+        translated = True
+    )
 
     @abstractmethod
-    def can_render(self, item):
+    def can_render(self, item, **parameters):
         """Indicates if the renderer is able to render the given item.
 
         @param item: The item to evaluate.
@@ -24,15 +32,11 @@ class ContentRenderer(object):
         """
 
     @abstractmethod
-    def render(self, item, **kwargs):
+    def render(self, item, **parameters):
         """Produces an image for the given item.
 
         @param item: The item to render.
         @type item: L{Item<woost.models.item.Item>}
-
-        @param kwargs: Additional parameters that can modify the image produced
-            by the renderer. These are implementation dependant, and should
-            be described by L{rendering_schema}.
 
         @return: The image for the given item. If a suitable image file
             exists, the method should return a tuple consisting of a string

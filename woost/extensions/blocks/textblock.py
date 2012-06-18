@@ -3,12 +3,47 @@ u"""
 
 .. moduleauthor:: Jordi Fernández <jordi.fernandez@whads.com>
 """
+from cocktail.iteration import first
 from cocktail import schema
-from cocktail.html import Element, templates
 from cocktail.translations import translations
-from woost.models import Publishable, File
-from woost.models.rendering import ImageFactoryMember
+from cocktail.html import Element, templates
+from cocktail.html.datadisplay import display_factory
+from woost.models import Site, Publishable, File
+from woost.models.rendering import ImageFactory
 from woost.extensions.blocks.block import Block
+
+def _iter_block_image_factories():
+    for factory in Site.main.image_factories:
+        if factory.applicable_to_blocks:
+            yield factory
+
+def _block_image_factories_enumeration(ctx):
+    return list(_iter_block_image_factories())
+
+_block_image_factories_default = schema.DynamicDefault(
+    lambda: first(_iter_block_image_factories())
+)
+
+_mandatory_dropdown = display_factory(
+    "cocktail.html.DropdownSelector",
+    empty_option_displayed = False
+)
+
+
+class BlockImageFactory(schema.Reference):
+
+    def __init__(self, *args, **kwargs):
+        
+        kwargs.setdefault("required", True)
+        kwargs.setdefault("type", ImageFactory)
+        kwargs.setdefault("enumeration", _block_image_factories_enumeration)
+        kwargs.setdefault("default", _block_image_factories_default)                
+        kwargs.setdefault("edit_control", _mandatory_dropdown)
+
+        if "bidirectional" not in kwargs and "related_end" not in kwargs:
+            kwargs["related_end"] = schema.Collection()
+        
+        schema.Reference.__init__(self, *args, **kwargs)
 
 
 class TextBlock(Block):
@@ -19,8 +54,8 @@ class TextBlock(Block):
 
     groups_order = [
         "content",
-        "link",
         "images",
+        "link",
         "behavior",
         "html",
         "administration"
@@ -28,35 +63,22 @@ class TextBlock(Block):
 
     members_order = [
         "text",
-        "link_destination",
-        "link_opens_in_new_window",
         "images",
         "image_alignment",
-        "image_gallery_type",
         "image_thumbnail_factory",
         "image_close_up_enabled",
         "image_close_up_factory",
         "image_close_up_preload",
         "image_labels_visible",
-        "image_original_link_visible"
+        "image_original_link_visible",
+        "link_destination",
+        "link_opens_in_new_window"
     ]
 
     text = schema.String(
         edit_control = "woost.views.RichTextEditor",
         translated = True,
         member_group = "content"
-    )
-
-    link_destination = schema.Reference(
-        type = Publishable,
-        related_end = schema.Collection(),
-        member_group = "link"
-    )
-
-    link_opens_in_new_window = schema.Boolean(
-        default = False,
-        required = True,
-        member_group = "link"
     )
 
     images = schema.Collection(
@@ -77,38 +99,25 @@ class TextBlock(Block):
             "center_top",
             "background"
         ],
+        edit_control = _mandatory_dropdown,
         member_group = "images"
     )
 
-    image_gallery_type = schema.String(
+    image_thumbnail_factory = BlockImageFactory(
         required = True,
-        default = "thumbnails",
-        enumeration = ["thumbnails", "slideshow"],
-        edit_control = "cocktail.html.RadioSelector",
-        member_group = "images"
-    )
-
-    image_thumbnail_factory = ImageFactoryMember(
-        required = image_gallery_type.not_equal("thumbnails"),
-        default = "image_gallery_thumbnail",
-        enumeration = lambda ctx:
-            templates.get_class("woost.views.ImageGallery")
-            .thumbnail_sizes.keys(),
         member_group = "images"
     )
 
     image_close_up_enabled = schema.Boolean(
-        required = True,
         default = True,
         member_group = "images"
     )
 
-    image_close_up_factory = ImageFactoryMember(
-        required = image_gallery_type.not_equal("thumbnails"),
-        default = "image_gallery_close_up",
-        enumeration = lambda ctx:
-            templates.get_class("woost.views.ImageGallery")
-            .close_up_sizes.keys(),
+    image_close_up_factory = BlockImageFactory(
+        required = True,
+        default = schema.DynamicDefault(
+            ImageFactory.get_instance(identifier = "gallery_close_up")
+        ),
         member_group = "images"
     )
 
@@ -120,7 +129,7 @@ class TextBlock(Block):
 
     image_labels_visible = schema.Boolean(
         required = True,
-        default = True,
+        default = False,
         member_group = "images"
     )
 
@@ -128,5 +137,17 @@ class TextBlock(Block):
         required = True,
         default = False,
         member_group = "images"
+    )
+
+    link_destination = schema.Reference(
+        type = Publishable,
+        related_end = schema.Collection(),
+        member_group = "link"
+    )
+
+    link_opens_in_new_window = schema.Boolean(
+        default = False,
+        required = True,
+        member_group = "link"
     )
 

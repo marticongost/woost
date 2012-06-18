@@ -43,9 +43,7 @@ class File(Publishable):
         "title",
         "file_name",
         "file_size",
-        "file_hash",
-        "local_path",
-        "image_effects"
+        "file_hash"
     ]
 
     title = schema.String(
@@ -79,45 +77,13 @@ class File(Publishable):
         member_group = "content"
     )
 
-    local_path = schema.String(
-        listed_by_default = False,
-        text_search = False,
-        member_group = "content"
-    )
-    
-    image_effects = schema.String(
-        listed_by_default = False,
-        searchable = False,
-        member_group = "content",
-        edit_control = "woost.views.ImageEffectsEditor"
-    )
-
     @property
     def file_extension(self):
         return os.path.splitext(self.file_name)[1]
 
-    @event_handler
-    def handle_changed(cls, e):
-
-        if e.member is cls.local_path and e.value:
-            file = e.source
-            file.file_name = os.path.basename(e.value)
-            file.mime_type = guess_type(e.value, strict = True)[0]
-            file.file_hash = None
-            file.file_size = None
-
     @property
     def file_path(self):
-
-        file_path = self.local_path
-
-        if file_path:
-            if not os.path.isabs(file_path):
-                file_path = app.path(file_path)            
-        else:            
-            file_path = app.path("upload", str(self.id))
-
-        return file_path
+        return app.path("upload", str(self.id))
 
     @classmethod
     def from_path(cls,

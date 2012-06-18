@@ -16,6 +16,8 @@ from woost.models.language import Language
 from woost.models.file import File
 from woost.models.publicationschemes import PathResolution
 from woost.models.caching import CachingPolicy
+from woost.models.rendering.renderer import Renderer
+from woost.models.rendering.imagefactory import ImageFactory
 
 
 class Site(Item):
@@ -56,7 +58,9 @@ class Site(Item):
         "smtp_password",
         "publication_schemes",
         "caching_policies",
-        "triggers"
+        "triggers",
+        "renderers",
+        "image_factories"
     ]
 
     @classgetter
@@ -278,6 +282,20 @@ class Site(Item):
 
     caching_policies = schema.Collection(
         items = schema.Reference(type = CachingPolicy),
+        bidirectional = True,
+        integral = True,
+        related_end = schema.Reference()
+    )
+
+    renderers = schema.Collection(
+        items = schema.Reference(type = Renderer),
+        bidirectional = True,
+        integral = True,
+        related_end = schema.Reference()
+    )
+
+    image_factories = schema.Collection(
+        items = schema.Reference(type = ImageFactory),
         bidirectional = True,
         integral = True,
         related_end = schema.Reference()

@@ -14,7 +14,7 @@ from cocktail.controllers import context
 class ItemLabel(Element):
 
     item = None
-    image_factory = "backoffice_small_thumbnail"
+    image_factory = "backoffice_small_thumbnail.png"
     icon_visible = True
     thumbnail = True
     referer = None

@@ -11,6 +11,7 @@ import os
 from pkg_resources import resource_filename
 from cocktail.typemapping import TypeMapping
 from cocktail.cache import Cache
+from cocktail.persistence import PersistentObject
 from woost.models.site import Site
 from woost.models.item import Item
 from woost.models.publishable import Publishable
@@ -24,8 +25,8 @@ class IconResolver(object):
         same values accepted by PIL images.
     @type icon_format: str
 
-    @ivar icon_repositories: A list of the directories to search for icons, in
-        descending order of preference.
+    @ivar icon_repositories: A list of the directory/URL tuples to search for
+        icons, in descending order of preference.
     @type icon_repositories: str list
 
     @ivar file_resolvers: A mapping of types and icon resolution functions.
@@ -49,7 +50,10 @@ class IconResolver(object):
 
     def __init__(self):
         self.icon_repositories = [
-            resource_filename("woost.views", "resources/images/icons")
+            (
+                resource_filename("woost.views", "resources/images/icons"),
+                "/resources/images/icons"
+            )
         ]
         self.file_resolvers = TypeMapping()
         self.file_resolvers[Item] = self._resolve_item
@@ -105,6 +109,16 @@ class IconResolver(object):
 
         return None
 
+    def find_icon_path(self, item, size):
+        match = self.find_icon(item, size)
+        if match:
+            return match[0]
+
+    def find_icon_url(self, item, size):
+        match = self.find_icon(item, size)
+        if match:
+            return match[1]
+
     def _find_icon(self, key):
 
         size, file_names = key
@@ -113,15 +127,20 @@ class IconResolver(object):
         size_str = "%dx%d" % (size, size)
         icon_ext = "." + self.icon_extension
 
-        for repository in repositories:
+        for repo_path, repo_url in repositories:
             for file_name in file_names:
                 icon_path = os.path.join(
-                    repository,
+                    repo_path,
                     size_str,
                     file_name + icon_ext
                 )
                 if os.path.exists(icon_path):
-                    return icon_path
+                    icon_url = "%s/%s/%s" % (
+                        repo_url.rstrip("/"),
+                        size_str,
+                        file_name + icon_ext
+                    )
+                    return (icon_path, icon_url)
 
         return None
         
@@ -129,6 +148,7 @@ class IconResolver(object):
         return [
             "type-" + cls.full_name.replace(".", "-")
             for cls in content_type.ascend_inheritance(True)
+            if cls is not PersistentObject
         ]
 
     def _resolve_publishable(self, content_type, item):

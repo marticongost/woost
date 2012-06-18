@@ -34,7 +34,6 @@
         py:images="@{self._images}"
         py:accessible_check="${False}"
         py:visible="@{self._images and self.block.image_alignment != 'background'}"
-        py:gallery_type="@{self.block.image_gallery_type}"
         py:thumbnail_factory="@{self.block.image_thumbnail_factory}"
         py:close_up_enabled="@{self.block.image_close_up_enabled}"
         py:close_up_factory="@{self.block.image_close_up_factory}"

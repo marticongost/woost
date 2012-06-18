@@ -8,20 +8,22 @@ from httplib import HTTPConnection
 from time import mktime, strptime
 from cStringIO import StringIO
 import Image
+from cocktail import schema
 from woost.models.uri import URI
-from woost.models.rendering.contentrenderer import ContentRenderer
-from woost.models.rendering.contentrenderersregistry import content_renderers
+from woost.models.rendering.renderer import Renderer
 
 
-class ImageURIRenderer(ContentRenderer):
+class ImageURIRenderer(Renderer):
 
-    def can_render(self, item):
+    instantiable = True
+
+    def can_render(self, item, **parameters):
         return isinstance(item, URI) and item.resource_type == "image"
 
     def get_item_uri(self, item):
         return item.uri
 
-    def render(self, item):
+    def render(self, item, **parameters):
         
         # Open the remote resource
         uri = self.get_item_uri(item)
@@ -50,7 +52,4 @@ class ImageURIRenderer(ContentRenderer):
         
         if http_date:
             return mktime(strptime(http_date, "%a, %d %b %Y %H:%M:%S %Z"))
-
-
-content_renderers.register(ImageURIRenderer())
 
