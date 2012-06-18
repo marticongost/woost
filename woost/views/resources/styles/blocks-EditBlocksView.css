@@ -279,6 +279,7 @@
     vertical-align: top;
     display: table-cell;
     padding-left: 1em;
+    padding-top: 0.5em;
     min-width: 14em;
 }
 
