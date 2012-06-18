@@ -16,7 +16,7 @@ default_tag = object()
 class Block(Item):    
 
     instantiable = False
-    collapsed_backoffice_menu = True
+    visible_from_root = False
     view_class = None
     tag = default_tag
     block_display = "woost.extensions.blocks.BlockDisplay"
