@@ -8,12 +8,13 @@ import datetime
 from subprocess import Popen, PIPE
 import Image
 from woost.models.file import File
-from woost.models.rendering.contentrenderer import ContentRenderer
-from woost.models.rendering.contentrenderersregistry import content_renderers
+from woost.models.rendering.renderer import Renderer
 
 
-class VideoRenderer(ContentRenderer):
+class VideoFileRenderer(Renderer):
     """A content renderer that handles video files."""
+
+    instantiable = True
 
     try:                                                                                                                                                                                                       
         p = Popen(["which", "ffmpeg"], stdout=PIPE)
@@ -51,7 +52,7 @@ class VideoRenderer(ContentRenderer):
         return d.hour*60*60 + d.minute*60 + d.second + \
             (float(d.microsecond) / 1000000)
 
-    def can_render(self, item):
+    def can_render(self, item, **parameters):
         return (
             self.ffmpeg_path 
             and self.grep_path 
@@ -61,8 +62,8 @@ class VideoRenderer(ContentRenderer):
             and item.resource_type == "video"
         )
 
-    def render(self, item, position = None):
-        
+    def render(self, item, position = None, **parameters):
+
         temp_path = mkdtemp()
 
         try:
@@ -112,7 +113,4 @@ class VideoRenderer(ContentRenderer):
 
     def last_change_in_appearence(self, item):
         return os.stat(item.file_path).st_mtime
-
-
-content_renderers.register(VideoRenderer())
 

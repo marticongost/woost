@@ -1171,6 +1171,70 @@ translations.define("woost.models.initialization delete_files_trigger",
     en = u"Erase files from disc when their item is deleted"
 )
 
+translations.define("woost.models.initialization content_renderer",
+    ca = u"Imatge del contingut",
+    es = u"Imagen del contenido",
+    en = u"Content renderer"
+)
+
+translations.define("woost.models.initialization icon16_renderer",
+    ca = u"Icones de 16x16",
+    es = u"Iconos de 16x16",
+    en = u"16x16 icons"
+)
+
+translations.define("woost.models.initialization icon32_renderer",
+    ca = u"Icones de 32x32",
+    es = u"Iconos de 32x32",
+    en = u"32x32 icons"
+)
+
+translations.define("woost.models.initialization default_image_factory",
+    ca = u"Imatge sense processar",
+    es = u"Imagen sin procesar",
+    en = u"Unprocessed image"
+)
+
+translations.define("woost.models.initialization icon16_image_factory",
+    ca = u"Icona de 16x16",
+    es = u"Icono de 16x16",
+    en = u"16x16 icon"
+)
+
+translations.define("woost.models.initialization icon32_image_factory",
+    ca = u"Icona de 32x32",
+    es = u"Icono de 32x32",
+    en = u"32x32 icon"
+)
+
+translations.define(
+    "woost.models.initialization backoffice_thumbnail_image_factory",
+    ca = u"Vista en miniatura del panell d'administració",
+    es = u"Vista en miniatura del panel de administración",
+    en = u"Backoffice thumbnail"
+)
+
+translations.define(
+    "woost.models.initialization backoffice_small_thumbnail_image_factory",
+    ca = u"Vista en miniatura petita del panell d'administració",
+    es = u"Vista en miniatura pequeña del panel de administración",
+    en = u"Backoffice small thumbnail"
+)
+
+translations.define(
+    "woost.models.initialization image_gallery_close_up_image_factory",
+    ca = u"Ampliació estàndard de la galeria d'imatges",
+    es = u"Ampliación estándar de la galería de imágenes",
+    en = u"Default image gallery close up"
+)
+
+translations.define(
+    "woost.models.initialization image_gallery_thumbnail_image_factory",
+    ca = u"Miniatura estàndard de la galeria d'imatges",
+    es = u"Miniatura estándar de la galería de imágenes",
+    en = u"Default image gallery thumbnail"
+)
+
 translations.define("woost.views.ContentTable sorting header",
     ca = u"Ordenació",
     es = u"Ordenación",
@@ -1850,6 +1914,18 @@ translations.define("Site.caching_policies",
     ca = u"Polítiques de cache",
     es = u"Políticas de cache",
     en = u"Caching policies"
+)
+
+translations.define("Site.renderers",
+    ca = u"Pintadors",
+    es = u"Pintadores",
+    en = u"Renderer"
+)
+
+translations.define("Site.image_factories",
+    ca = u"Processadors d'imatge",
+    es = u"Procesadores de imagen",
+    en = u"Image factories"
 )
 
 # PublicationScheme
@@ -3254,166 +3330,6 @@ translations.define("BackOfficeEditForm.upload",
     en = u"File upload"
 )
 
-# Image Effects
-#------------------------------------------------------------------------------
-
-translations.define("woost.views.ImageEffectsEditor.edit_button",
-    ca = u"Editar imatge",
-    es = u"Editar imagen",
-    en = u"Edit image effects"
-)
-
-translations.define("woost.views.ImageEffectsEditor-crop_effect",
-    ca = u"Retall",
-    es = u"Recorte",
-    en = u"Crop"
-)
-
-translations.define("woost.views.ImageEffectsEditor-rotate_effect",
-    ca = u"Rotació",
-    es = u"Rotación",
-    en = u"Rotation"
-)
-
-translations.define("woost.views.ImageEffectsEditor-brightness_effect",
-    ca = u"Brillantor",
-    es = u"Brillo",
-    en = u"Brightness"
-)
-
-translations.define("woost.views.ImageEffectsEditor-sharpness_effect",
-    ca = u"Enfocat",
-    es = u"Enfoque",
-    en = u"Sharpness"
-)
-
-translations.define("woost.views.ImageEffectsEditor-contrast_effect",
-    ca = u"Contrast",
-    es = u"Contraste",
-    en = u"Contrast"
-)
-
-translations.define("woost.views.ImageEffectsEditor-color_effect",
-    ca = u"Color",
-    es = u"Color",
-    en = u"Color"
-)
-
-translations.define("woost.views.ImageEffectsEditor-thumbnail_effect",
-    ca = u"Mida",
-    es = u"Tamaño",
-    en = u"Size"
-)
-
-translations.define("woost.views.ImageEffectsEditor-fill_effect",
-    ca = u"Encaix",
-    es = u"Encaje",
-    en = u"Fit"
-)
-
-translations.define("woost.views.ImageEffectsEditor-flip_effect",
-    ca = u"Mirall",
-    es = u"Espejo",
-    en = u"Mirror"
-)
-
-translations.define("woost.views.ImageEffectsEditor-custom_effect",
-    ca = u"Comanda",
-    es = u"Comando",
-    en = u"Command"
-)
-
-translations.define("woost.views.ImageEffectsEditor.dialog_header",
-    ca = u"Editant imatge",
-    es = u"Editando imagen",
-    en = u"Editing image"
-)
-
-translations.define("woost.views.ImageEffectsEditor.edit_box_header",
-    ca = u"Efectes",
-    es = u"Efectos",
-    en = u"Effects"
-)
-
-translations.define(
-    "woost.views.ImageEffectsEditor.image_processors_toolbar_label",
-    ca = u"Afegir...",
-    es = u"Añadir...",
-    en = u"Add..."
-)
-
-translations.define("woost.views.ImageEffectsEditor.preview_button",
-    ca = u"Previsualitzar",
-    es = u"Previsualizar",
-    en = u"Preview"
-)
-
-translations.define("woost.views.ImageEffectsEditor.remove_processor_button",
-    ca = u"Eliminar",
-    es = u"Eliminar",
-    en = u"Remove"
-)
-
-translations.define("woost.views.ImageEffectsEditor-loading",
-    ca = u"Generant la imatge...",
-    es = u"Generando la imagen",
-    en = u"Rendering image..."
-)
-
-translations.define("woost.views.ImageEffectsEditor.accept_button",
-    ca = u"Acceptar",
-    es = u"Aceptar",
-    en = u"Accept"
-)
-
-translations.define("woost.views.ImageEffectsEditor.cancel_button",
-    ca = u"Cancelar",
-    es = u"Cancelar",
-    en = u"Cancel"
-)
-
-translations.define(
-    "woost.views.ImageEffectsEditor.thumbnail_control.relative_label",
-    ca = u"Relativa",
-    es = u"Relativo",
-    en = u"Relative"
-)
-
-translations.define(
-    "woost.views.ImageEffectsEditor.thumbnail_control.absolute_label",
-    ca = u"Màxim",
-    es = u"Máximo",
-    en = u"Maximum"
-)
-
-translations.define(
-    "woost.views.ImageEffectsEditor.thumbnail_control.width",
-    ca = u"Amplada",
-    es = u"Ancho",
-    en = u"Width"
-)
-
-translations.define(
-    "woost.views.ImageEffectsEditor.thumbnail_control.height",
-    ca = u"Alçada",
-    es = u"Alto",
-    en = u"Height"
-)
-
-translations.define(
-    "woost.views.ImageEffectsEditor.flip_control.horizontal",
-    ca = u"Horitzontal",
-    es = u"Horizontal",
-    en = u"Horizontal"
-)
-
-translations.define(
-    "woost.views.ImageEffectsEditor.flip_control.vertical",
-    ca = u"Vertical",
-    es = u"Vertical",
-    en = u"Vertical"
-)
-
 # News
 #------------------------------------------------------------------------------
 translations.define("News",
@@ -4539,48 +4455,601 @@ translations.define("woost.views.EditPanel.actions_title",
     en = u"Actions"
 )
 
-# Image factories
+# Renderer
 #------------------------------------------------------------------------------
-translations.define("woost.image_factory.default",
-    ca = u"Imatge sense modificar",
-    es = u"Imagen sin modificar",
-    en = u"Unmodified image"
+translations.define("Renderer",
+    ca = u"Pintador d'imatges",
+    es = u"Pintador de imágenes",
+    en = u"Renderer"
 )
 
-translations.define("woost.image_factory.icon16",
-    ca = u"Icona de 16x16",
-    es = u"Icono de 16x16",
-    en = u"16x16 icon"
+translations.define("Renderer-plural",
+    ca = u"Pintadors d'imatges",
+    es = u"Pintadores de imágenes",
+    en = u"Renderers"
 )
 
-translations.define("woost.image_factory.icon32",
-    ca = u"Icona de 32x32",
-    es = u"Icono de 32x32",
-    en = u"32x32 icon"
+translations.define("Renderer.title",
+    ca = u"Nom",
+    es = u"Nombre",
+    en = u"Name"
 )
 
-translations.define("woost.image_factory.backoffice_thumbnail",
-    ca = u"Miniatura del panell d'administració",
-    es = u"Miniatura del panel de administración",
-    en = u"Backoffice thumbnail"
+# ImageFileRenderer
+#------------------------------------------------------------------------------
+translations.define("ImageFileRenderer",
+    ca = u"Pintador de fitxers d'imatge",
+    es = u"Pintador de ficheros de imagen",
+    en = u"Image file renderer"
 )
 
-translations.define("woost.image_factory.backoffice_small_thumbnail",
-    ca = u"Miniatura petita del panell d'administració",
-    es = u"Miniatura pequeña del panel de administración",
-    en = u"Backoffice small thumbnail"
+translations.define("ImageFileRenderer-plural",
+    ca = u"Pintadors de fitxers d'imatge",
+    es = u"Pintadores de ficheros de imagen",
+    en = u"Image file renderers"
 )
 
-translations.define("woost.image_factory.image_gallery_close_up",
-    ca = u"Ampliació estàndar de la galeria d'imatges",
-    es = u"Ampliación estándar de la galería de imágenes",
-    en = u"Standard image gallery close up"
+# IconRenderer
+#------------------------------------------------------------------------------
+translations.define("IconRenderer",
+    ca = u"Llibreria de icones",
+    es = u"Librería de iconos",
+    en = u"Icon library"
 )
 
-translations.define("woost.image_factory.image_gallery_thumbnail",
-    ca = u"Miniatura estàndar de la galeria d'imatges",
-    es = u"Miniatura estándar de la galería de imágenes",
-    en = u"Standard image gallery thumbnail"
+translations.define("IconRenderer-plural",
+    ca = u"Llibreries de icones",
+    es = u"Librerías de iconos",
+    en = u"Icon libraries"
+)
+
+translations.define("IconRenderer.icon_size",
+    ca = u"Mida de les icones",
+    es = u"Tamaño de los iconos",
+    en = u"Icon size"
+)
+
+# HTMLRenderer
+#------------------------------------------------------------------------------
+translations.define("HTMLRenderer",
+    ca = u"Pintador de documents HTML",
+    es = u"Pintador de documentos HTML",
+    en = u"HTML renderer"
+)
+
+translations.define("HTMLRenderer-plural",
+    ca = u"Pintadors de documents HTML",
+    es = u"Pintadores de documentos HTML",
+    en = u"HTML renderers"
+)
+
+# ImageURIRenderer
+#------------------------------------------------------------------------------
+translations.define("ImageURIRenderer",
+    ca = u"Pintador d'imatges remotes",
+    es = u"Pintador de imágenes remotas",
+    en = u"Image URI renderer"
+)
+
+translations.define("ImageURIRenderer-plural",
+    ca = u"Pintadors d'imatges remotes",
+    es = u"Pintadores de imágenes remotas",
+    en = u"Image URI renderers"
+)
+
+# PDFRenderer
+#------------------------------------------------------------------------------
+translations.define("PDFRenderer",
+    ca = u"Pintador de documents PDF",
+    es = u"Pintador de documentos PDF",
+    en = u"PDF renderer"
+)
+
+translations.define("PDFRenderer-plural",
+    ca = u"Pintadors de documents PDF",
+    es = u"Pintadores de documentos PDF",
+    en = u"PDF renderers"
+)
+
+translations.define("PDFRenderer.command",
+    ca = u"Comanda",
+    es = u"Comando",
+    en = u"Command"
+)
+
+translations.define("PDFRenderer.timeout",
+    ca = u"Temps màxim d'execució",
+    es = u"Tiempo máximo de ejecución",
+    en = u"Timeout"
+)
+
+translations.define("PDFRenderer.timeout_size_factor",
+    ca = u"Temps de gràcia segons la mida del fitxer",
+    es = u"Tiempo de gracia según el tamaño del fichero",
+    en = u"Timeout file size factor"
+)
+
+# VideoFileRenderer
+#------------------------------------------------------------------------------
+translations.define("VideoFileRenderer",
+    ca = u"Pintador de fitxers de vídeo",
+    es = u"Pintador de ficheros de video",
+    en = u"Video file renderer"
+)
+
+translations.define("VideoFileRenderer-plural",
+    ca = u"Pintadors de fitxers de vídeo",
+    es = u"Pintadores de ficheros de video",
+    en = u"Video file renderers"
+)
+
+# ChainRenderer
+#------------------------------------------------------------------------------
+translations.define("ChainRenderer",
+    ca = u"Pintador en cadena",
+    es = u"Pintador en cadena",
+    en = u"Chain renderer"
+)
+
+translations.define("ChainRenderer-plural",
+    ca = u"Pintadors en cadena",
+    es = u"Pintadores en cadena",
+    en = u"Chain renderers"
+)
+
+translations.define("ChainRenderer.renderers",
+    ca = u"Pintadors",
+    es = u"Pintadores",
+    en = u"Renderers"
+)
+
+# ImageFactory
+#------------------------------------------------------------------------------
+translations.define("ImageFactory",
+    ca = u"Processador d'imatges",
+    es = u"Procesador de imágenes",
+    en = u"Image factory"
+)
+
+translations.define("ImageFactory-plural",
+    ca = u"Processadors d'imatges",
+    es = u"Procesadores de imágenes",
+    en = u"Image factories"
+)
+
+translations.define("ImageFactory.title",
+    ca = u"Nom",
+    es = u"Nombre",
+    en = u"Name"
+)
+
+translations.define("ImageFactory.identifier",
+    ca = u"Identificador",
+    es = u"Identificador",
+    en = u"Identifier"
+)
+
+translations.define("ImageFactory.identifier-explanation",
+    ca = u"Un valor únic que permet accedir al processador programàticament",
+    es = u"Un valor único que permite acceder al procesador "
+         u"programáticamente",
+    en = u"A unique value that makes it possible to access the image factory "
+         u"programmatically"
+)
+
+translations.define("ImageFactory.renderer",
+    ca = u"Pintador",
+    es = u"Pintador",
+    en = u"Renderer"
+)
+
+translations.define("ImageFactory.renderer-explanation",
+    ca = u"Especifica la manera en que s'obté la imatge",
+    es = u"Especifica la manera en que se obtiene la imagen",
+    en = u"Determines the source of produced images"
+)
+
+translations.define("ImageFactory.default_format",
+    ca = u"Format d'imatge",
+    es = u"Formato de imagen",
+    en = u"Image format"
+)
+
+translations.define("ImageFactory.effects",
+    ca = u"Efectes",
+    es = u"Efectos",
+    en = u"Effects"
+)
+
+translations.define("ImageFactory.fallback",
+    ca = u"Processador alternatiu",
+    es = u"Procesador alternativo",
+    en = u"Fallback"
+)
+
+translations.define("ImageFactory.fallback-explanation",
+    ca = u"Si el processador és incapaç de produïr una imatge, "
+         u"es provarà d'obtenir una imatge substitutiva utilitzant "
+         u"el processador alternatiu indicat",
+    es = u"Si el procesador es incapaz de producir una imagen, se "
+         u"intentará obtener una imagen sustitutiva utilizando el "
+         u"procesador alternativo indicado",
+    en = u"If the image factory fails to produce an image, it will try to "
+         u"fall back to the indicated factory to produce an alternative image"
+)
+
+# ImageEffect
+#------------------------------------------------------------------------------
+translations.define("ImageEffect",
+    ca = u"Efecte d'imatge",
+    es = u"Efecto de imagen",
+    en = u"Image effect"
+)
+
+translations.define("ImageEffect-plural",
+    ca = u"Efectes d'imatge",
+    es = u"Efectos de imagen",
+    en = u"Image effects"
+)
+
+translations.define(
+    "woost.models.rendering.horizontal_alignment=horizontal",
+    ca = u"Horitzontal",
+    es = u"Horizontal",
+    en = u"Horizontal"
+)
+
+translations.define(
+    "woost.models.rendering.horizontal_alignment=vertical",
+    ca = u"Vertical",
+    es = u"Vertical",
+    en = u"Vertical"
+)
+
+# Thumbnail
+#------------------------------------------------------------------------------
+translations.define("Thumbnail",
+    ca = u"Redimensionar",
+    es = u"Redimensionar",
+    en = u"Thumbnail"
+)
+
+translations.define("Thumbnail.width",
+    ca = u"Amplada",
+    es = u"Ancho",
+    en = u"Width"
+)
+
+translations.define("Thumbnail.height",
+    ca = u"Alçada",
+    es = u"Alto",
+    en = u"Height"
+)
+
+# Crop
+#------------------------------------------------------------------------------
+translations.define("Crop",
+    ca = u"Retallar",
+    es = u"Recortar",
+    en = u"Crop"
+)
+
+translations.define("Crop.left",
+    ca = u"X1",
+    es = u"X1",
+    en = u"X1"
+)
+
+translations.define("Crop.top",
+    ca = u"Y1",
+    es = u"Y1",
+    en = u"Y1"
+)
+
+translations.define("Crop.right",
+    ca = u"X2",
+    es = u"X2",
+    en = u"X2"
+)
+
+translations.define("Crop.bottom",
+    ca = u"Y2",
+    es = u"Y2",
+    en = u"Y2"
+)
+
+# Fill
+#------------------------------------------------------------------------------
+translations.define("Fill",
+    ca = u"Redimensionar i retallar",
+    es = u"Redimensionar y recortar",
+    en = u"Thumbnail and crop"
+)
+
+translations.define("Fill.width",
+    ca = u"Amplada",
+    es = u"Ancho",
+    en = u"Width"
+)
+
+translations.define("Fill.height",
+    ca = u"Alçada",
+    es = u"Alto",
+    en = u"Height"
+)
+
+translations.define("Fill.horizontal_alignment",
+    ca = u"Alineament horitzontal",
+    es = u"Alineamiento horizontal",
+    en = u"Horizontal alignment"
+)
+
+translations.define("Fill.vertical_alignment",
+    ca = u"Alineament vertical",
+    es = u"Alineamiento vertical",
+    en = u"Vertical alignment"
+)
+
+translations.define("Fill.preserve_vertical_images",
+    ca = u"Preservar imatges verticals",
+    es = u"Preservar imágenes verticales",
+    en = u"Preserve vertical images"
+)
+
+# Rotate
+#------------------------------------------------------------------------------
+translations.define("Rotate",
+    ca = u"Rotar",
+    es = u"Rotar",
+    en = u"Rotate"
+)
+
+translations.define("Rotate.angle",
+    ca = u"Angle",
+    es = u"Ángulo",
+    en = u"Angle"
+)
+
+# Color
+#------------------------------------------------------------------------------
+translations.define("Color",
+    ca = u"Intensitat del color",
+    es = u"Intensidad del color",
+    en = u"Color intensity"
+)
+
+translations.define("Color.level",
+    ca = u"Nivell",
+    es = u"Nivel",
+    en = u"Level"
+)
+
+# Brightness
+#------------------------------------------------------------------------------
+translations.define("Brightness",
+    ca = u"Lluminositat",
+    es = u"Luminosidad",
+    en = u"Brightness"
+)
+
+translations.define("Brightness.level",
+    ca = u"Nivell",
+    es = u"Nivel",
+    en = u"Level"
+)
+
+# Contrast
+#------------------------------------------------------------------------------
+translations.define("Contrast",
+    ca = u"Contrast",
+    es = u"Contraste",
+    en = u"Contrast"
+)
+
+translations.define("Contrast.level",
+    ca = u"Nivell",
+    es = u"Nivel",
+    en = u"Level"
+)
+
+# Sharpness
+#------------------------------------------------------------------------------
+translations.define("Sharpness",
+    ca = u"Definició",
+    es = u"Definición",
+    en = u"Sharpness"
+)
+
+translations.define("Sharpness.level",
+    ca = u"Nivell",
+    es = u"Nivel",
+    en = u"Level"
+)
+
+# Frame
+#------------------------------------------------------------------------------
+translations.define("Frame",
+    ca = u"Marc",
+    es = u"Marco",
+    en = u"Frame"
+)
+
+translations.define("Frame.edge_width",
+    ca = u"Gruix del marc",
+    es = u"Grueso del marco",
+    en = u"Edge width"
+)
+
+translations.define("Frame.edge_color",
+    ca = u"Color del marc",
+    es = u"Color del marco",
+    en = u"Edge color"
+)
+
+translations.define("Frame.vertical_padding",
+    ca = u"Espaiat vertical",
+    es = u"Espaciado vertical",
+    en = u"Vertical padding"
+)
+
+translations.define("Frame.horizontal_padding",
+    ca = u"Espaiat horitzontal",
+    es = u"Espaciado horizontal",
+    en = u"Horizontal padding"
+)
+
+translations.define("Frame.background",
+    ca = u"Color de fons",
+    es = u"Color de fondo",
+    en = u"Background"
+)
+
+# Shadow
+#------------------------------------------------------------------------------
+translations.define("Shadow",
+    ca = u"Ombra",
+    es = u"Sombra",
+    en = u"Shadow"
+)
+
+translations.define("Shadow.offset",
+    ca = u"Desplaçament",
+    es = u"Desplazamiento",
+    en = u"Offset"
+)
+
+translations.define("Shadow.padding",
+    ca = u"Espaiat",
+    es = u"Espaciado",
+    en = u"Padding"
+)
+
+translations.define("Shadow.color",
+    ca = u"Color",
+    es = u"Color",
+    en = u"Color"
+)
+
+# ReducedOpacity
+#------------------------------------------------------------------------------
+translations.define("ReducedOpacity",
+    ca = u"Reduïr l'opacitat",
+    es = u"Reducir la opacidad",
+    en = u"Reduce opacity"
+)
+
+translations.define("ReducedOpacity.level",
+    ca = u"Nivell",
+    es = u"Nivel",
+    en = u"Level"
+)
+
+# Watermark
+#------------------------------------------------------------------------------
+translations.define("Watermark",
+    ca = u"Marca d'aigua",
+    es = u"Marca de agua",
+    en = u"Watermark"
+)
+
+translations.define("Watermark.mark",
+    ca = u"Marca",
+    es = u"Marca",
+    en = u"Mark"
+)
+
+translations.define("Watermark.opacity",
+    ca = u"Opacitat",
+    es = u"Opacidad",
+    en = u"Opacity"
+)
+
+translations.define("Watermark.placement",
+    ca = u"Posicionament",
+    es = u"Posicionamiento",
+    en = u"Positioning"
+)
+
+translations.define("Watermark.placement=middle",
+    ca = u"Centrat",
+    es = u"Centrado",
+    en = u"In the middle"
+)
+
+translations.define("Watermark.placement=scale",
+    ca = u"Omplir",
+    es = u"Rellenar",
+    en = u"Scale"
+)
+
+translations.define("Watermark.placement=tile",
+    ca = u"Repetir",
+    es = u"Repetir",
+    en = u"Tile"
+)
+
+# Flip
+#------------------------------------------------------------------------------
+translations.define("Flip",
+    ca = u"Capgirar",
+    es = u"Voltear",
+    en = u"Flip"
+)
+
+translations.define("Flip.axis",
+    ca = u"Eix",
+    es = u"Eje",
+    en = u"Axis"
+)
+
+translations.define("Flip.axis=horizontal",
+    ca = u"Horitzontal",
+    es = u"Horizontal",
+    en = u"Horizontal"
+)
+
+translations.define("Flip.axis=vertical",
+    ca = u"Vertical",
+    es = u"Vertical",
+    en = u"Vertical"
+)
+
+# Align
+#------------------------------------------------------------------------------
+translations.define("Align",
+    ca = u"Alinear",
+    es = u"Alinear",
+    en = u"Align"
+)
+
+translations.define("Align.width",
+    ca = u"Amplada",
+    es = u"Ancho",
+    en = u"Width"
+)
+
+translations.define("Align.height",
+    ca = u"Alçada",
+    es = u"Alto",
+    en = u"Height"
+)
+
+translations.define("Align.horizontal_alignment",
+    ca = u"Alineament horitzontal",
+    es = u"Alineamiento horizontal",
+    en = u"Horizontal alignment"
+)
+
+translations.define("Align.vertical_alignment",
+    ca = u"Alineament vertical",
+    es = u"Alineamiento vertical",
+    en = u"Vertical alignment"
+)
+
+translations.define("Align.background",
+    ca = u"Color de fons",
+    es = u"Color de fondo",
+    en = u"Background"
 )
 
 # Agreement to terms & conditions

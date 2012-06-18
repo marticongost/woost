@@ -519,9 +519,23 @@ class Item(PersistentObject):
         host = None,):
                 
         uri = make_uri("/images", self.id)
+        ext = None
 
         if image_factory:
-            uri = make_uri(uri, image_factory)
+            if isinstance(image_factory, basestring):
+                pos = image_factory.rfind(".")
+                if pos != -1:
+                    ext = image_factory[pos + 1:]
+                    image_factory = image_factory[:pos]
+                
+                from woost.models.rendering import ImageFactory
+                image_factory = \
+                    ImageFactory.require_instance(identifier = image_factory)
+
+            uri = make_uri(
+                uri,
+                image_factory.identifier or "factory%d" % image_factory.id
+            )
 
         if include_extension:
             from woost.models.rendering.formats import (
@@ -529,13 +543,20 @@ class Item(PersistentObject):
                 extensions_by_format,
                 default_format
             )
-            ext = getattr(self, "file_extension", None)
-            if ext is not None:
-                ext = ext.lower()
-            if ext is None \
-            or ext.lstrip(".") not in formats_by_extension:
-                ext = "." + extensions_by_format[default_format]
-            uri += ext
+
+            if not ext and image_factory and image_factory.default_format:
+                ext = extensions_by_format[image_factory.default_format]
+
+            if not ext:
+                ext = getattr(self, "file_extension", None)
+
+            if ext:
+                ext = ext.lower().lstrip(".")
+
+            if not ext or ext not in formats_by_extension:
+                ext = extensions_by_format[default_format]
+
+            uri += "." + ext
 
         if parameters:
             uri = make_uri(uri, **parameters)

@@ -36,6 +36,14 @@ translations.define("Site.common_blocks",
     en = u"Common blocks"
 )
 
+# ImageFactory
+#------------------------------------------------------------------------------
+translations.define("ImageFactory.applicable_to_blocks",
+    ca = u"Aplicable a blocs",
+    es = u"Aplicable a bloques",
+    en = u"Applicable to blocks"
+)
+
 # BlocksPage
 #------------------------------------------------------------------------------
 translations.define("BlocksPage",
@@ -368,24 +376,6 @@ translations.define("TextBlock.images",
     ca = u"Imatges",
     es = u"Imágenes",
     en = u"Images"
-)
-
-translations.define("TextBlock.image_gallery_type",
-    ca = u"Presentació de les imatges",
-    es = u"Presentación de las imágenes",
-    en = u"Image presentation"
-)
-
-translations.define("TextBlock.image_gallery_type=thumbnails",
-    ca = u"Miniatures",
-    es = u"Miniaturas",
-    en = u"Thumbnails"
-)
-
-translations.define("TextBlock.image_gallery_type=slideshow",
-    ca = u"Passador",
-    es = u"Pasador",
-    en = u"Slideshow"
 )
 
 translations.define("TextBlock.image_alignment",

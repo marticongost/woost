@@ -4,6 +4,7 @@ u"""
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
 import os
+from glob import glob
 from shutil import rmtree, copy
 from cocktail.events import when
 from cocktail.persistence import datastore
@@ -11,27 +12,30 @@ from woost import app
 from woost.models.item import Item
 from woost.models.user import User
 from woost.models.permission import RenderPermission
+from woost.models.rendering.imagefactory import ImageFactory
 from woost.models.rendering.formats import (
     mime_types_by_format,
     extensions_by_format,
     formats_by_extension,
     default_format
 )
-from woost.models.rendering.factories import (
-    image_factories,
-    parse_image_factory_parameters
-)
 
 debug = False
 
-def _remove_dir_contents(path):
+def _remove_dir_contents(path, pattern = None):
     
     # os.path.lexists is not supported on windows
     from cocktail.styled import styled
     exists = getattr(os.path, "lexists", os.path.exists)
 
     if exists(path):
-        for item in os.listdir(path):
+
+        if pattern:
+            items = glob(os.path.join(path, pattern))
+        else:
+            items = os.listdir(path)
+
+        for item in items:
             item_path = os.path.join(path, item)
             if debug:
                 print styled(" " * 4 + item_path, "red")
@@ -44,54 +48,92 @@ def _remove_dir_contents(path):
                 if debug:
                     print styled(ex, "red")
 
-def clear_image_cache(item = None):
-    
+def clear_image_cache(item = None, factory = None):
+
     if debug:
         from cocktail.styled import styled
-        if item is None:
-            print styled("Clearing image cache", "red")
-        else:
-            print styled("Clearing image cache for", "red"),
-            print styled(item, "red", style = "bold")
+        print styled("Clearing image cache", "red"),
+
+        if item:
+            print styled("Item:", "light_gray"),
+            print styled(item, "red", style = "bold"),
+        
+        if factory:
+            print styled("Factory:", "light_gray"),
+            print styled(factory, "red", style = "bold"),
+
+        print
 
     # Remove the full cache
-    if item is None:
+    if item is None and factory is None:
         _remove_dir_contents(app.path("image-cache"))
         _remove_dir_contents(app.path("static", "images"))
-    
-    # Remove the cache for a single item
+
+    # Selective drop: per item and/or factory
     else:
-        from cocktail.styled import styled
-        _remove_dir_contents(app.path("image-cache", str(item.id)))
-        _remove_dir_contents(app.path("static", "images", str(item.id)))
+        paths = []
+        
+        if item is not None:
+            paths.append(app.path("image-cache", str(item.id)))
+            paths.append(app.path("static", "images", str(item.id)))
+        else:
+            for base in (
+                app.path("image-cache"),
+                app.path("static", "images")
+            ):
+                for item in os.listdir(base):
+                    path = os.path.join(base, item)
+                    if os.path.isdir(path):
+                        paths.append(path)
+    
+        if factory is None:
+            pattern = None
+        else:
+            pattern = factory + ".*"
+
+        for path in paths:
+            _remove_dir_contents(path, pattern)
 
 @when(Item.changed)
 @when(Item.deleted)
 def _clear_image_cache_after_commit(event):
     item = event.source    
     if item.is_inserted:
-        datastore.unique_after_commit_hook(
-            "woost.models.clear_image_cache-%d" % item.id,
-            _clear_image_cache_after_commit_callback,
-            item
-        )
+        clear_image_cache_after_commit(item = item)
 
-def _clear_image_cache_after_commit_callback(commit_successful, item):
+def clear_image_cache_after_commit(item = None, factory = None):
+
+    if factory:
+        factory_identifier = factory.identifier or "factory%d" % factory.id
+    else:
+        factory_identifier = None
+
+    key = "woost.models.rendering.clear_image_cache(item=%s,factory=%s)" % (
+        item.id if item else "*",
+        factory_identifier or "*"
+    )
+
+    datastore.unique_after_commit_hook(
+        key,
+        _clear_image_cache_after_commit_callback,
+        item,
+        factory_identifier
+    )
+
+def _clear_image_cache_after_commit_callback(commit_successful, item, factory):
     if commit_successful:
-        clear_image_cache(item)
+        clear_image_cache(item, factory)
 
 def require_rendering(
     item,
-    factory_name = "default",
+    factory = None,
     format = None,
     parameters = None):
-
-    factory = image_factories.get(factory_name)
-    
-    if factory is None:
-        raise BadRenderingRequest("Invalid image factory: %s" % factory_name)
     
     ext = None
+
+    if factory is None:
+        factory = ImageFactory.require_instance(identifier = "default")
 
     if format is None:        
         if not isinstance(item, type):
@@ -111,11 +153,8 @@ def require_rendering(
     if ext is None:
         ext = extensions_by_format[format]
 
-    file_name = factory_name
-    if parameters:
-        file_name += "." + parameters
-    file_name += "." + ext
-    
+    identifier = factory.identifier or "factory%d" % factory.id
+    file_name = "%s.%s" % (identifier, ext)
     item_id = item.full_name if isinstance(item, type) else str(item.id)
 
     # If the image hasn't been generated yet, do so and store it in the
@@ -125,8 +164,10 @@ def require_rendering(
     if not os.path.exists(image_cache_file):
 
         # Generate the file
-        values = parse_image_factory_parameters(factory.parameters, parameters)
-        image = factory(item, *values)
+        image = factory.render(item)
+
+        if not image:
+            raise RenderError("Can't render %s" % item)
 
         # Store the generated image in the image cache
         try:
@@ -145,21 +186,24 @@ def require_rendering(
             else:
                 copy(image, image_cache_file)
         else:
+            if format == 'JPEG' and image.mode not in ('RGB', 'RGBA'):
+                image = image.convert('RGBA')
             image.save(image_cache_file, format)
 
     # If the image is accessible to anonymous users, create a link in the
     # application's static content folder (further requests will be served
     # by the web server, no questions asked).
     if hasattr(os, "symlink"):
-        static_publication_link = app.path("static", "images", item_id, file_name)
+        static_publication_link = \
+            app.path("static", "images", item_id, file_name)
 
         if not os.path.lexists(static_publication_link):
-            anonymous = User.require_instance(qname ="woost.anonymous_user")
+            anonymous = User.require_instance(qname = "woost.anonymous_user")
 
             if anonymous.has_permission(
                 RenderPermission, 
                 target = item,
-                image_factory = factory_name
+                image_factory = factory
             ):
                 try:
                     os.mkdir(app.path("static", "images", item_id))
@@ -172,6 +216,13 @@ def require_rendering(
 
 class BadRenderingRequest(Exception):
     """An exception raised when trying to render a piece of content using
-    invalid parameters (ie. an unknown image factory or image format).
+    invalid parameters (ie. an unknown image format).
+    """
+
+
+class RenderError(Exception):
+    """An exception raised when a request for a certain image can't be
+    fulfilled (ie. because there is no content renderer that can handle the
+    specified content).
     """
 

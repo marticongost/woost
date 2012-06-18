@@ -30,19 +30,18 @@ class Application(object):
     def _set_root(self, root):
         
         if self.__root:            
-            try:
-                self.icon_resolver.icon_repositories.remove(
-                    self.path("views", "resources", "images", "icons")
-                )
-            except:
-                pass
+            old_path = self.path("views", "resources", "images", "icons")
+            for path, url in self.icon_resolver.icon_repositories:
+                if path == old_path:
+                    self.icon_resolver.icon_repositories.remove((path, url))
 
         self.__root = root
 
         if root:
             # Add an application specific icon repository
             self.icon_resolver.icon_repositories.insert(
-                0, self.path("views", "resources", "images", "icons")
+                0, (self.path("views", "resources", "images", "icons"),
+                    self.package + "_resources/images/icons")
             )
 
     root = property(_get_root, _set_root)

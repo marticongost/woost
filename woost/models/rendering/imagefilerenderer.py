@@ -5,27 +5,28 @@ u"""
 """
 import os
 from woost.models.file import File
-from woost.models.rendering.contentrenderer import ContentRenderer
-from woost.models.rendering.contentrenderersregistry import content_renderers
+from woost.models.rendering.renderer import Renderer
 from woost.models.rendering.formats import formats_by_mime_type
 
 
-class ImageFileRenderer(ContentRenderer):
+class ImageFileRenderer(Renderer):
     """A content renderer that handles image files."""
 
-    def can_render(self, item):
-        return isinstance(item, File) \
-        and item.resource_type == "image" \
-        and item.mime_type in formats_by_mime_type
+    instantiable = True
 
-    def render(self, item):
+    def can_render(self, item, **parameters):
+        return (
+            isinstance(item, File)
+            and item.resource_type == "image"
+            and item.mime_type in formats_by_mime_type
+        )
+
+    def render(self, item, **parameters):
         return item.file_path
 
     def last_change_in_appearence(self, item):
         return max(
             os.stat(item.file_path).st_mtime,
-            ContentRenderer.last_change_in_appearence(self, item)
+            Renderer.last_change_in_appearence(self, item)
         )
-
-content_renderers.register(ImageFileRenderer())
 

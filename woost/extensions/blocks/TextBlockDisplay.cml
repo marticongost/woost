@@ -19,7 +19,7 @@ from woost.models import Language
         <py:woost.views.ImageGallery
             py:id="image_gallery"
             py:images="@{self.block.images}"
-            py:thumbnail_factory="edit_blocks_thumbnail"
+            py:thumbnail_factory="edit_blocks_thumbnail.png"
             py:labels_visible="${False}"/>
     </py:with>
 

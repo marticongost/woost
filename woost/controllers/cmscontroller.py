@@ -47,7 +47,6 @@ from woost.models import (
     AuthorizationError,
     get_current_user
 )
-from woost.models.icons import IconResolver
 from woost.controllers.asyncupload import async_uploader
 from woost.controllers import get_cache_manager, set_cache_manager
 from woost.controllers.basecmscontroller import BaseCMSController
@@ -57,7 +56,6 @@ from woost.controllers.authentication import (
     AuthenticationFailedError
 )
 from woost.controllers.imagescontroller import ImagesController
-from woost.controllers.imageeffectscontroller import ImageEffectsController
 
 
 class CMSController(BaseCMSController):
@@ -584,7 +582,6 @@ class CMSController(BaseCMSController):
         datastore.abort()
 
     images = ImagesController
-    image_effects = ImageEffectsController
 
     async_upload = AsyncUploadController()
     async_upload.uploader = async_uploader

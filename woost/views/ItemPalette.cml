@@ -2,6 +2,7 @@
 <?py
 from cocktail.schema import SchemaClass
 from cocktail.controllers import context
+from woost import app
 from woost.models import get_current_user, CreatePermission
 ?>
 
@@ -10,8 +11,8 @@ from woost.models import get_current_user, CreatePermission
     xmlns:py="http://www.whads.com/ns/cocktail/templates">
 
     <?py-class
-    regular_icon_factory = "icon16"
-    promoted_icon_factory = "icon32"
+    regular_icon_size = 16
+    promoted_icon_size = 32
     promoted_content_types = []
     types = None
 
@@ -71,11 +72,11 @@ from woost.models import get_current_user, CreatePermission
         <a py:local_id="button" href="#">
             <?py
             if promoted:
-                icon_factory = self.promoted_icon_factory
+                icon_size = self.promoted_icon_size
             else:
-                icon_factory = self.regular_icon_factory
+                icon_size = self.regular_icon_size
             ?>
-            <img py:local_id="type_icon"  src="${self._cms.image_uri(content_type, icon_factory)}"/>
+            <img py:local_id="type_icon"  src="${app.icon_resolver.find_icon_url(content_type, icon_size)}"/>
             <span py:local_id="type_label">${translations(content_type.name)}</span>
         </a>
     </li>

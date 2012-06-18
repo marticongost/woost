@@ -7,7 +7,7 @@ from cocktail.translations import translations
 from cocktail.persistence import datastore
 from cocktail import schema
 from cocktail.html import templates
-from woost.models import Extension
+from woost.models import Extension, Site
 
 
 translations.define("BlocksExtension",
@@ -24,6 +24,13 @@ translations.define("BlocksExtension-plural",
 
 
 class BlocksExtension(Extension):
+
+    unusable_image_factories = (
+        "icon16",
+        "icon32",
+        "backoffice_thumbnail",
+        "backoffice_small_thumbnail"
+    )
 
     def __init__(self, **values):
         Extension.__init__(self, **values)
@@ -57,8 +64,8 @@ class BlocksExtension(Extension):
             iframeblock,
             blockspage,
             blockactions,
-            imagefactories,
             site,
+            imagefactory,
             migration
         )
 
@@ -107,4 +114,36 @@ class BlocksExtension(Extension):
             engine = "cocktail",
             identifier = "woost.extensions.blocks.BlocksPageView"
         )
+
+        self._create_image_factories()
+
+    def _create_image_factories(self):
+        from woost.models import extension_translations
+        from woost.models.rendering import ImageFactory, Thumbnail, Frame
+         
+        for factory_id in self.unusable_image_factories:
+            factory = ImageFactory.get_instance(identifier = factory_id)
+            if factory is not None:
+                factory.applicable_to_blocks = False
+
+        ImageFactory.applicable_to_blocks.rebuild_index()
+
+        edit_blocks_thumbnail = self._create_asset(
+            ImageFactory,
+            "edit_blocks_thumbnail_image_factory",
+            title = extension_translations,
+            identifier = "edit_blocks_thumbnail",
+            effects = [
+                Thumbnail(width = "75", height = "75"),
+                Frame(
+                    edge_width = 1,
+                    edge_color = "ccc",
+                    vertical_padding = "4",
+                    horizontal_padding = "4",
+                    background = "eee"
+                )
+            ]
+        )
+
+        Site.main.image_factories.append(edit_blocks_thumbnail)
 
