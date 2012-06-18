@@ -116,7 +116,7 @@ class TextBlock(Block):
     image_close_up_factory = BlockImageFactory(
         required = True,
         default = schema.DynamicDefault(
-            ImageFactory.get_instance(identifier = "gallery_close_up")
+            lambda: ImageFactory.get_instance(identifier = "gallery_close_up")
         ),
         member_group = "images"
     )
