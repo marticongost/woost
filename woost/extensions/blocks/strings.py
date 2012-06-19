@@ -211,6 +211,30 @@ translations.define("ContainerBlock.blocks",
     en = u"Child blocks"
 )
 
+translations.define("ContainerBlock.view_class",
+    ca = u"Tipus de contenidor",
+    es = u"Tipo de contenedor",
+    en = u"Container type"
+)
+
+translations.define("ContainerBlock.view_class=woost.extensions.blocks.BlockList",
+    ca = u"Contenidor genèric",
+    es = u"Contenedor genérico",
+    en = u"Generic container"
+)
+
+translations.define("ContainerBlock.view_class=woost.extensions.blocks.UnorderedBlockList",
+    ca = u"Llista",
+    es = u"Lista",
+    en = u"List"
+)
+
+translations.define("ContainerBlock.view_class=woost.extensions.blocks.OrderedBlockList",
+    ca = u"Llista ordenada",
+    es = u"Lista ordenada",
+    en = u"Ordered list"
+)
+
 # SlideShowBlock
 #------------------------------------------------------------------------------
 translations.define("SlideShowBlock",
