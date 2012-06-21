@@ -9,7 +9,7 @@
 
 // Show the block picker dialog when clicking an 'add' button
 cocktail.bind(".EditBlocksSlotList", function ($slotList) {
-    
+
     var $dialog;
 
     $slotList.find(".block_picker").click(function () {
@@ -33,6 +33,82 @@ cocktail.bind(".EditBlocksSlotList", function ($slotList) {
         cocktail.center($dialog.get(0));
         return false;
     });    
+});
+
+// Fold / unfold slot contents
+cocktail.bind(".EditBlocksSlotList.foldable .slot", function ($slot) {
+    
+    this.getFolded = function () {
+        return $slot.is(".folded");
+    }
+
+    this.setFolded = function (folded) {
+        if (folded) {
+            $slot.addClass("folded");
+            addToPersistentFoldList();
+        }
+        else {
+            $slot.removeClass("folded");
+            removeFromPersistentFoldList();
+        }
+    }
+
+    this.toggleFolded = function () {
+        this.setFolded(!this.getFolded());
+    }
+        
+    $slot.find(".slot_header")
+        .attr("tabindex", "0")
+        .click(function () {
+            $slot.get(0).toggleFolded();
+            return false;
+        });
+
+    var cookieName = "woost.extensions.blocks.folded_slots";
+    var cookieSettings = {path: "/", expires: 60};
+
+    var pkey = $slot.closest(".EditBlocksSlotList").get(0).blockParent + "-" + this.blockSlot;
+
+    function inPersistentFoldList() {
+        var list = jQuery.cookie(cookieName);
+        if (list) {
+            var chunks = list.split(",");
+            for (var i = 0; i < chunks.length; i++) {
+                if (chunks[i] == pkey) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    function addToPersistentFoldList() {
+        if (!inPersistentFoldList()) {
+            var list = jQuery.cookie(cookieName);
+            if (list) list += ",";
+            list += pkey;
+            jQuery.cookie(cookieName, list, cookieSettings);
+        }
+    }
+
+    function removeFromPersistentFoldList() {
+        var list = jQuery.cookie(cookieName);
+        if (list) {
+            var chunks = list.split(",");
+            var newList = [];
+            for (var i = 0; i < chunks.length; i++) {
+                var chunk = chunks[i];
+                if (chunk != pkey) {
+                    newList.push(chunk);
+                }
+            }
+            jQuery.cookie(cookieName, newList.join(","), cookieSettings);
+        }
+    }
+
+    if (inPersistentFoldList()) {
+        this.setFolded(true);
+    }
 });
 
 // Drag and drop blocks
