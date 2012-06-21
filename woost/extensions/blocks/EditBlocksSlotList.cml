@@ -14,6 +14,7 @@ from woost.extensions.blocks.block import Block
 
     <?py-class
     item = None
+    foldable = False
 
     def iter_block_members(self):
 
@@ -37,12 +38,15 @@ from woost.extensions.blocks.block import Block
     ?>
 
     <?py
+    self.add_resource("/cocktail/scripts/jquery.cookie.js")
     self.add_resource("/resources/scripts/blocks-EditBlocksSlotList.js")
     ?>
 
     <py:ready>
         <?py 
         element.set_client_param("blockParent", self.item.id)
+        if self.foldable:
+            element.add_class("foldable")
         ?>
         <py:new
             py:element="self.create_slot(member)"
@@ -54,7 +58,7 @@ from woost.extensions.blocks.block import Block
         element.set_client_param("blockSlot", member.name)
         self._current_slot = member
         ?>
-        <h3 py:local_id="slot_header">${translations(member)}:</h3>
+        <h3 py:local_id="slot_header">${translations(member)}</h3>
         <div py:local_id="slot_blocks">
             <?py
             value = self.item.get(member)

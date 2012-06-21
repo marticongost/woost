@@ -81,7 +81,8 @@ from woost.extensions.blocks.blockactions import get_clipboard_contents
 
     <py:woost.extensions.blocks.EditBlocksSlotList
         py:id="slots_list"
-        py:item="@{self.block}"/>
+        py:item="@{self.block}"
+        py:foldable="${True}"/>
 
 </div>
 
