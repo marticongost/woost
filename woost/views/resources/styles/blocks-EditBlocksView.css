@@ -11,7 +11,7 @@
     background-color: white;
 }
 
-.EditBlocksView .EditBlocksSlotList .slot.folded .slot_blocks {
+.EditBlocksView .EditBlocksSlotList .slot.folded > .slot_blocks {
     display: none;
 }
 
