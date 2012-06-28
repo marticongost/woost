@@ -57,7 +57,7 @@ cocktail.bind(".EditBlocksSlotList.foldable .slot", function ($slot) {
         this.setFolded(!this.getFolded());
     }
         
-    $slot.find(".slot_header")
+    $slot.children(".slot_header")
         .attr("tabindex", "0")
         .click(function () {
             $slot.get(0).toggleFolded();
