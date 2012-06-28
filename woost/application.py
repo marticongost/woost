@@ -41,7 +41,7 @@ class Application(object):
             # Add an application specific icon repository
             self.icon_resolver.icon_repositories.insert(
                 0, (self.path("views", "resources", "images", "icons"),
-                    self.package + "_resources/images/icons")
+                    "/" + self.package + "_resources/images/icons")
             )
 
     root = property(_get_root, _set_root)
