@@ -254,8 +254,11 @@ class Installer(object):
 
         copy(self.skeleton_path, params["project_path"])
 
-        # Create the folder for the database
+        # Create empty folders
         os.mkdir(os.path.join(params["project_path"], "data"))
+        os.mkdir(os.path.join(params["project_path"], "static"))
+        os.mkdir(os.path.join(params["project_path"], "static", "images"))
+        os.mkdir(os.path.join(params["project_path"], "image-cache"))
 
         # Grant execution permission for project scripts
         scripts_path = os.path.join(params["project_path"], "scripts")
