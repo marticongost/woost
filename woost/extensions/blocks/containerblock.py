@@ -10,11 +10,22 @@ from woost.extensions.blocks.block import Block
 class ContainerBlock(Block):
 
     instantiable = True
-    view_class = "woost.extensions.blocks.BlockList"
 
     blocks = schema.Collection(
         items = schema.Reference(type = Block),
         related_end = schema.Collection(),
+        member_group = "content"
+    )
+
+    view_class = schema.String(
+        shadows_attribute = True,
+        required = True,
+        default = "woost.extensions.blocks.BlockList",
+        enumeration = [
+            "woost.extensions.blocks.BlockList",
+            "woost.extensions.blocks.UnorderedBlockList",
+            "woost.extensions.blocks.OrderedBlockList"
+        ],
         member_group = "content"
     )
 

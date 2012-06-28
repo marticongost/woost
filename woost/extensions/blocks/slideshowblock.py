@@ -26,7 +26,8 @@ class SlideShowBlock(Block):
         "autoplay",
         "interval",
         "transition_duration",
-        "navigation_controls"
+        "navigation_controls",
+        "bullet_controls"
     ]
     
     slides = schema.Collection(
@@ -61,14 +62,23 @@ class SlideShowBlock(Block):
         member_group = "content"
     )
 
+    bullet_controls = schema.Boolean(
+        required = True,
+        default = False,
+        member_group = "content"
+    )
+
     def init_view(self, view):
+
         Block.init_view(self, view)
-        block_list = templates.new("woost.extensions.blocks.BlockList")
-        block_list.tag = None
-        block_list.blocks = self.slides
-        view.slides.append(block_list)
+
         view.autoplay = self.autoplay
         view.interval = self.interval
         view.transition_duration = self.transition_duration
         view.navigation_controls = self.navigation_controls
+        view.bullet_controls = self.bullet_controls
+
+        for slide in self.slides:
+            if slide.is_published():
+                view.slides.append(slide.create_view())
 
