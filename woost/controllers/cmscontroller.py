@@ -260,23 +260,10 @@ class CMSController(BaseCMSController):
         # resolving the requested publishable item
         self._process_path(path)
  
-        site = Site.main
         request = cherrypy.request
-        unicode_path = [try_decode(step) for step in path]
 
         # Item resolution
-        path_resolution = site.resolve_path(unicode_path)
-
-        if path_resolution:
-            publishable = path_resolution.item
-
-            for step in path_resolution.matching_path:
-                path.pop(0)
-
-            self.canonical_redirection(path_resolution)        
-        else:
-            publishable = site.home
-        
+        publishable = self._resolve_path(path)        
         self.context["publishable"] = publishable
 
         # HTTP/HTTPS check
@@ -351,6 +338,24 @@ class CMSController(BaseCMSController):
 
         # Invoke the language module to set the active language
         self.language.process_request(path)
+
+    def _resolve_path(self, path):
+
+        site = Site.main
+        unicode_path = [try_decode(step) for step in path]
+        path_resolution = site.resolve_path(unicode_path)
+
+        if path_resolution:
+            publishable = path_resolution.item
+
+            for step in path_resolution.matching_path:
+                path.pop(0)
+
+            self.canonical_redirection(path_resolution)
+        else:
+            publishable = site.home
+
+        return publishable
 
     def uri(self, publishable, *args, **kwargs):
         """Obtains the canonical absolute URI for the given item.
