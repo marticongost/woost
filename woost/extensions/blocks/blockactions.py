@@ -39,6 +39,22 @@ def get_clipboard_contents():
 def set_clipboard_contents(contents):
     session[CLIPBOARD_SESSION_KEY] = contents
 
+def type_is_block_container(cls):
+
+    for member in cls.members(recursive = False).itervalues():
+        if (
+            isinstance(member, schema.RelationMember)
+            and member.related_type
+            and issubclass(member.related_type, Block)
+            and member.visible and member.editable
+        ):
+            return True
+
+    return any(
+        type_is_block_container(subclass)
+        for subclass in cls.derived_schemas(recursive = False)
+    )
+
 
 class EditBlocksAction(UserAction):
     min = 1
@@ -67,12 +83,7 @@ class EditBlocksAction(UserAction):
                             and node.item is target:
                                 return False
 
-            return any(
-                isinstance(member, schema.RelationMember)
-                and member.related_type
-                and issubclass(member.related_type, Block)
-                for member in content_type.members().itervalues()
-            )
+            return type_is_block_container(content_type)
 
         return False
 
