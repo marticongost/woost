@@ -13,16 +13,21 @@ from simplejson import dumps
 
     <?py
     self.add_resource("/cocktail/scripts/jquery.cookie.js")
+    self.add_resource("/cocktail/scripts/jquery.ba-hashchange.min.js")
     self.add_resource("/resources/scripts/BackOfficeEditView.js")
     
     add_view_action_context(self, "edit")
     ?>
 
     <?py-class
-    collections = ()
+    tab = None
     errors = ()
     available_languages = ()
     ?>
+
+    <py:with py:element="self.item_body">
+        <input type="hidden" name="tab" value="@{self.tab or ''}"/>
+    </py:with>
 
     <py:ready>
         <?py
@@ -65,57 +70,5 @@ from simplejson import dumps
         </ul>
 
     </div>
-
-    <py:with py:element="self.item_body">
-
-        <!-- Tabs -->
-        <div py:id="tabs">                        
-            <py:ready>
-                 <py:new py:element="self.create_tab(member)"
-                     py:for="member in [self.edited_content_type] + list(self.collections)">
-                     <?py
-                     setattr(self, member.name + "_tab", element)
-                     ?>
-                 </py:new>
-             </py:ready>
-         </div>
-
-    </py:with>
-
-    <button
-        py:def="tab"
-        py:args="member"
-        type="submit"
-        name="section">
-        <?py
-        is_collection = isinstance(member, schema.Collection)
-        section_id = member.name if is_collection else "fields"
-        element["value"] = section_id
-        element.add_class(member.name + "_tab")
-
-        if section_id == self.section:
-            element.add_class("selected")
-
-        if self.edited_item.is_inserted and (
-            (is_collection and (member.name, None) in self.changed_keys)
-            or (not is_collection
-                and any(
-                    not isinstance(changed_member, schema.Collection)
-                    for changed_member, language in self.changes
-                )
-            )
-        ):
-            element.add_class("changed")
-        ?>
-        ${translations(member if is_collection else member.name)}
-        <?py
-        if is_collection:
-            items = schema.get(self.form_data, member.name)
-            if items:
-                count = Element("span", class_name = "count")
-                count.append("(" + str(len(items)) + ")")
-                element.append(count)
-        ?>
-    </button>
 
 </py:woost.views.BackOfficeItemView>

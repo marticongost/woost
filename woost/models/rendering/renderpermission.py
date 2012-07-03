@@ -17,7 +17,6 @@ class RenderPermission(ContentPermission):
     factories = schema.Collection(
         items = schema.Reference(type = ImageFactory),
         related_end = schema.Collection(),
-        edit_inline = True,
         edit_control = "cocktail.html.CheckList",
         searchable = False
     )

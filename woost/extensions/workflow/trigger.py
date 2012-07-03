@@ -23,8 +23,7 @@ Trigger.add_member(
     schema.Collection(
         "item_states",
         items = schema.Reference(type = State, required = True),
-        related_end = schema.Collection(),
-        edit_inline = True
+        related_end = schema.Collection()
     )
 )
 
@@ -32,9 +31,7 @@ Trigger.add_member(
     schema.Collection(
         "item_previous_states",
         items = schema.Reference(type = State, required = True),
-        related_end = schema.Collection(),
-        #exclusive = _handles_action("transition"),
-        edit_inline = True
+        related_end = schema.Collection()
     )
 )
 

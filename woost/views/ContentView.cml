@@ -138,10 +138,7 @@ from woost.controllers.backoffice.editstack import SelectionNode
                                 display = loader.new("woost.views.ContentTypePickerDropdown")
                                 display.root = member.class_family
                                 return display
-                            elif not (
-                                isinstance(filter, CollectionFilter)
-                                and filter.member.edit_inline
-                            ):
+                            else:
                                 return "woost.views.ItemSelector"
                     
                         return call_base(obj, member)

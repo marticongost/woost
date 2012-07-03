@@ -19,7 +19,6 @@ class FacebookPublicationPermission(ContentPermission):
     publication_targets = schema.Collection(
         items = schema.Reference(type = FacebookPublicationTarget),
         related_end = schema.Collection(),
-        edit_inline = True,
         after_member = "matching_items"
     )
 

@@ -78,7 +78,8 @@ class Document(Publishable):
         type = "woost.models.Template",
         bidirectional = True,
         listed_by_default = False,
-        member_group = "presentation"
+        after_member = "controller",
+        member_group = "presentation.behavior"
     )
 
     branch_resources = schema.Collection(
@@ -88,7 +89,9 @@ class Document(Publishable):
             relation_constraints =
                 Publishable.resource_type.equal("html_resource")
         ),
-        related_end = schema.Collection()
+        related_end = schema.Collection(),
+        after_member = "inherit_resources",
+        member_group = "presentation.resources"
     )
 
     page_resources = schema.Collection(
@@ -98,7 +101,9 @@ class Document(Publishable):
             relation_constraints =
                 Publishable.resource_type.equal("html_resource")
         ),
-        related_end = schema.Collection()
+        related_end = schema.Collection(),
+        after_member = "branch_resources",
+        member_group = "presentation.resources"
     )
 
     attachments = schema.Collection(
@@ -107,28 +112,31 @@ class Document(Publishable):
             required = True
         ),
         selector_default_type = File,
-        related_end = schema.Collection()
+        related_end = schema.Collection(),
+        member_group = "content"
     )
  
     children = schema.Collection(
         items = "woost.models.Publishable",
         bidirectional = True,
         related_key = "parent",
-        cascade_delete = True
+        cascade_delete = True,
+        after_member = "parent",
+        member_group = "navigation"
     )
 
     robots_should_index = schema.Boolean(
         required = True,
         default = True,
         listed_by_default = False,
-        member_group = "robots"
+        member_group = "meta.robots"
     )
 
     robots_should_follow = schema.Boolean(
         required = True,
         default = True,
         listed_by_default = False,
-        member_group = "robots"
+        member_group = "meta.robots"
     )
 
     def _update_path(self, parent, path):
