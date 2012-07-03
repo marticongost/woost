@@ -672,6 +672,13 @@ class CloseAction(GoBackAction):
     included = frozenset(["item_buttons", ("changelog", "bottom_buttons")])
 
 
+class CancelAction(GoBackAction):
+    included = frozenset([
+        ("list_buttons", "selector")
+    ])
+    excluded = frozenset()
+
+
 class SaveAction(UserAction):
     included = frozenset([
         ("item_buttons", "new"),
@@ -757,6 +764,7 @@ OrderAction("order").register()
 ExportAction("export_xls", "msexcel").register()
 PrintAction("print").register()
 CloseAction("close").register()
+CancelAction("cancel").register()
 SaveAction("save").register()
 SaveDraftAction("save_draft").register()
 ConfirmDraftAction("confirm_draft").register()
