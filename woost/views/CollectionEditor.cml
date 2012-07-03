@@ -54,6 +54,7 @@ from woost.controllers.backoffice.useractions import add_view_action_context
         entry_selector = "ul.entries li"
     )
 
+    self.add_resource("/cocktail/scripts/jquery-ui.js")
     self.add_resource("/resources/scripts/CollectionEditor.js")
     ?>
 
