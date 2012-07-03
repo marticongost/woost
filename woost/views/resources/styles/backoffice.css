@@ -377,6 +377,14 @@ body {
     font-size: 0.9em;
 }
 
+.CollectionEditor li.ui-sortable-helper {
+    width: 100%;
+    border-top: 1px solid #ddd;
+    background-color: white;
+    opacity: 0.7;
+    box-sizing: border-box;
+}
+
 /* Item selector
 -----------------------------------------------------------------------------*/
 .BackOfficeItemSelectorView .content_type_selector > .entry_label {
