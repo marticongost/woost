@@ -44,7 +44,7 @@ from woost.controllers.backoffice.editstack import SelectionNode
     root_content_type = Item
     edit_stack = None
     member = None
-    activation_control = ".show_detail_action"
+    activation_control = ".edit_action"
     search_expanded = False
     
     # User collection settings
