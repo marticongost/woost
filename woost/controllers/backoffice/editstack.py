@@ -496,11 +496,13 @@ class EditNode(StackNode):
         "_item",
         "_form_data",
         "translations",
-        "section"
+        "section",
+        "tab"
     ])
     _item = None
     translations = None
     section = "fields"
+    tab = None
 
     saving = Event("""
         An event triggered when saving the changes contained within the node,
@@ -540,12 +542,17 @@ class EditNode(StackNode):
         if "edit_stack" not in params:
             params["edit_stack"] = self.stack.to_param(self.index)
 
-        return context["cms"].contextual_uri(
+        uri = context["cms"].contextual_uri(
             "content",
             str(self.item.id) if self.item.is_inserted or self.item.is_deleted else "new",
             self.section,
             **params
         )
+
+        if self.tab:
+            uri += "#" + self.tab
+
+        return uri
 
     def __getstate__(self):
 

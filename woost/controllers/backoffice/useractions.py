@@ -470,7 +470,7 @@ class AddAction(UserAction):
         # Add a relation node to the edit stack, and redirect the user
         # there
         node = RelationNode()
-        node.member = controller.member
+        node.member = controller.relation_member
         node.action = "add"
         controller.edit_stack.push(node)
         controller.edit_stack.go()
@@ -497,10 +497,7 @@ class RemoveAction(UserAction):
         stack_node = controller.stack_node
 
         for item in selection:
-            stack_node.unrelate(controller.member, item)
-
-        controller.user_collection.base_collection = \
-            schema.get(stack_node.form_data, controller.member)
+            stack_node.unrelate(controller.relation_member, item)
 
 
 class OrderAction(UserAction):
@@ -509,7 +506,7 @@ class OrderAction(UserAction):
 
     def invoke(self, controller, selection):
         node = RelationNode()
-        node.member = controller.member
+        node.member = controller.relation_member
         node.action = "order"
         controller.edit_stack.push(node)
         UserAction.invoke(self, controller, selection)
@@ -569,97 +566,8 @@ class DeleteAction(UserAction):
         return user.has_permission(DeletePermission, target = target)
 
 
-class ShowChangelogAction(UserAction):
-    min = None
-    max = 1
-    excluded = frozenset([
-        "selector",
-        "new_item",
-        "calendar_content_view",
-        "workflow_graph_content_view",
-        "changelog"
-    ])
-
-    def get_url(self, controller, selection):
-
-        params = self.get_url_params(controller, selection)
-
-        # Filter by target element
-        if selection:
-            params["filter"] = "member-changes"
-            params["filter_value0"] = str(selection[0].id)
-
-        # Filter by target type
-        else:
-            user_collection = getattr(controller, "user_collection", None)
-            if user_collection and user_collection.type is not Item:
-                params["filter"] = "target-type"
-                params["filter_value0"] = user_collection.type.full_name
-
-        return controller.contextual_uri(
-            "changelog",                
-            **params
-        )
-
-    def is_permitted(self, user, target):
-        return user.has_permission(ReadHistoryPermission)
-
-
-class DiffAction(UserAction):
-    included = frozenset(["item_buttons"])
-    
-    def is_permitted(self, user, target):
-        return user.has_permission(ModifyPermission, target = target)
-
-
-class RevertAction(UserAction):
-    included = frozenset([("diff", "item_body_buttons", "changed")])
-    
-    def is_permitted(self, user, target):
-        return user.has_permission(ModifyPermission, target = target)
-
-    def invoke(self, controller, selection):
-
-        reverted_members = controller.params.read(
-            schema.Collection("reverted_members",
-                type = set,
-                items = schema.String
-            )
-        )
-
-        stack_node = controller.stack_node
-
-        form_data = stack_node.form_data
-        form_schema = stack_node.form_schema
-        languages = set(
-            list(stack_node.translations)
-            + list(stack_node.item.translations.keys())
-        )
-
-        source = {}
-        stack_node.export_form_data(stack_node.item, source)
-        
-        for member in form_schema.members().itervalues():
-                      
-            if member.translated:
-                for lang in languages:
-                    if (member.name + "-" + lang) in reverted_members:
-                        schema.set(
-                            form_data,
-                            member.name,
-                            schema.get(source, member.name, language = lang),
-                            language = lang
-                        )
-            elif member.name in reverted_members:
-                schema.set(
-                    form_data,
-                    member.name,
-                    schema.get(source, member.name)
-                )
-
-
 class PreviewAction(UserAction):
-    included = frozenset(["toolbar_extra", "item_buttons"])
+    included = frozenset(["item_buttons", "item_bottom_buttons"])
     content_type = Publishable
 
 
@@ -691,6 +599,7 @@ class UploadFilesAction(UserAction):
 
 class ExportAction(UserAction):
     included = frozenset(["toolbar_extra"])
+    excluded = UserAction.excluded | frozenset(["collection", "empty_set"])
     min = 1
     max = None
     ignores_selection = True
@@ -761,20 +670,6 @@ class GoBackAction(UserAction):
 
 class CloseAction(GoBackAction):
     included = frozenset(["item_buttons", ("changelog", "bottom_buttons")])
-    excluded = frozenset(["changed", "new", "edit"])
-
-
-class CancelAction(GoBackAction):
-    included = frozenset([
-        ("list_buttons", "selector"),
-        ("item_buttons", "edit"),
-        ("item_buttons", "changed"),
-        ("item_buttons", "new"),
-        ("item_bottom_buttons", "edit"),
-        ("item_bottom_buttons", "changed"),
-        ("item_bottom_buttons", "new")
-    ])
-    excluded = frozenset()
 
 
 class SaveAction(UserAction):
@@ -840,7 +735,7 @@ class ConfirmDraftAction(SaveAction):
 class PrintAction(UserAction):
     direct_link = True
     ignore_selection = True
-    excluded = frozenset(["selector"])
+    excluded = frozenset(["selector", "collection"])
 
     def get_url(self, controller, selection):
         return "javascript: print();"
@@ -854,21 +749,17 @@ AddAction("add").register()
 AddIntegralAction("add_integral").register()
 RemoveAction("remove").register()
 ShowDetailAction("show_detail").register()
-PreviewAction("preview").register()
 OpenResourceAction("open_resource").register()
 UploadFilesAction("upload_files").register()
 EditAction("edit").register()
-DiffAction("diff").register()
-RevertAction("revert").register()
-ShowChangelogAction("changelog").register()
 DeleteAction("delete").register()
 OrderAction("order").register()
 ExportAction("export_xls", "msexcel").register()
 PrintAction("print").register()
 CloseAction("close").register()
-CancelAction("cancel").register()
 SaveAction("save").register()
 SaveDraftAction("save_draft").register()
 ConfirmDraftAction("confirm_draft").register()
+PreviewAction("preview").register()
 SelectAction("select").register()
 

@@ -187,6 +187,32 @@ body {
     color: rgb(75,75,75);
 }
 
+/* Tabs */
+.scripted .BackOfficeEditView .ContentForm > .fields > fieldset {
+    display: none;
+    margin: 0;
+}
+
+.scripted .BackOfficeEditView .ContentForm > .fields > fieldset > .fieldset_fields {
+    border: none;
+    margin: 0;
+    padding: 0;
+    padding-left: 0.6em;
+}
+
+.scripted .BackOfficeEditView .ContentForm > .fields > fieldset > legend {
+    display: none;
+}
+
+.scripted .BackOfficeEditView .ContentForm > .fields > fieldset.selected {
+    display: block;
+}
+
+.BackOfficeEditView .tabStrip {
+    margin-bottom: 2em;
+    border-bottom: 1px solid #ccc;
+}
+
 .BackOfficeLayout .tabs {
     clear: both;
     overflow: visible;
@@ -199,19 +225,19 @@ body {
 }
 
 .BackOfficeLayout .tab {
-    color: rgb(75,75,75);
+    color: #666;
     position: relative;
-    top: 0;
+    top: 1px;
     height: 1.15em;
-    float: left;
-    display: block;
-    background-color: rgb(240,240,240);
+    display: inline-block;
+    background-color: #f0f0f0;
     padding-left: 0.4em;
-    padding-top: 0.2em;
+    padding-top: 0.4em;
     padding-bottom: 0.5em;
     padding-right: 0.4em;
     margin-left: 0.2em;
-    border: 1px solid rgb(200,210,220);
+    border: 1px solid #d8d8d8;
+    border-bottom-color: #ccc;
     -moz-border-radius-topleft: 5px;
     -moz-border-radius-topright: 5px;
     -webkit-border-top-left-radius: 5px;
@@ -223,16 +249,10 @@ body {
 }
 
 .BackOfficeLayout .tab.selected {
+    color: #333;
+    border-color: #ccc;
     border-bottom-color: white;
     background-color: white;
-}
-
-.BackOfficeLayout .tab .count {
-    position: relative;
-    top: -0.05em;
-    margin-left: 0.3em;
-    font-weight: bold;
-    font-size: 85%;
 }
 
 .BackOfficeLayout h2 {
@@ -317,6 +337,46 @@ body {
     margin-left: 2em;
 }
 
+/* Collection editor
+-----------------------------------------------------------------------------*/
+.CollectionEditor .ActionBar.toolbar {
+    margin-bottom: 0;
+}
+
+.CollectionEditor ul {
+    display: block;
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    background-color: white;
+}
+
+.CollectionEditor li {
+    cursor: pointer;
+    display: block;
+    padding: 0;
+    margin: 0;
+    border: 1px solid #ddd;
+    border-top: none;
+    padding: 0.4em;
+}
+
+.CollectionEditor li.selected {
+    background-color: #4b4b4b;
+    border-color: #4b4b4b;
+    color: white;
+}
+
+.scripted .CollectionEditor li input[type=checkbox] {
+    display: none;
+}
+
+.CollectionEditor li label {
+    margin: 0;
+    padding: 0 !important;
+    font-size: 0.9em;
+}
+
 /* Item selector
 -----------------------------------------------------------------------------*/
 .BackOfficeItemSelectorView .content_type_selector > .entry_label {
@@ -384,7 +444,8 @@ body.modal {
     margin-top: 2em;
 }
 
-.BackOfficeLayout fieldset legend {
+.BackOfficeLayout fieldset legend,
+.scripted .BackOfficeEditView .ContentForm > .fields > fieldset .fieldset_fields > fieldset > legend {
     position: relative;
     font-weight: bold;
     margin: 0;
@@ -398,11 +459,18 @@ body.modal {
     color: rgb(70,70,70);
 }
 
-.BackOfficeLayout fieldset .fieldset_fields {
+.BackOfficeLayout fieldset .fieldset_fields,
+.scripted .BackOfficeEditView .ContentForm > .fields > fieldset .fieldset_fields > fieldset > .fieldset_fields {
     border-top: 1px solid #adb2bc;
     margin-top: 0;
     padding-top: 1em;
     padding-left: 0.75em;
+}
+
+.scripted .BackOfficeEditView .ContentForm > .fields > fieldset .fieldset_fields > fieldset > .fieldset_fields {
+    border: none;
+    border-top: 1px solid #adb2bc;
+    background-color: inherit;
 }
 
 .BackOfficeLayout fieldset.anonymous > .fieldset_fields {
@@ -473,7 +541,8 @@ body.modal {
 
 .BackOfficeLayout .Form div.field_instance {
     float: left;
-    padding-right: 1.5em;
+    margin-right: 1.5em;
+    padding: 0.2em;
 }
 
 .BackOfficeLayout .Form td.field_instance {
@@ -1623,6 +1692,7 @@ body.scripted .BackOfficeLayout .ThumbnailsContentView .collection_display input
     color: rgb(50,50,50);
 }
 
+.BackOfficeItemView .toolbar .preview_action,
 .BackOfficeItemView .toolbar .save_action,
 .BackOfficeItemView .toolbar .save_draft_action,
 .BackOfficeItemView .toolbar .confirm_draft_action,
@@ -2238,12 +2308,6 @@ button.TypeSelectorButton {
 
 .BackOfficeLayout .CollectionView .Table th.last {
     padding-right: 3em;
-}
-
-/* Collection tab
------------------------------------------------------------------------------*/
-.BackOfficeCollectionView .tabs {
-    margin-bottom: 1.2em;
 }
 
 /* Datepicker styles */

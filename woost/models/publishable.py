@@ -41,14 +41,21 @@ class Publishable(Item):
     edit_node_class = "woost.controllers.backoffice.publishableeditnode." \
         "PublishableEditNode"
  
-    groups_order = ["navigation", "presentation", "publication"]
+    groups_order = [
+        "navigation",
+        "presentation",
+        "presentation.behavior",
+        "presentation.resources",
+        "presentation.format",
+        "publication"
+    ]
 
     members_order = [
+        "controller",
         "inherit_resources",
         "mime_type",
         "resource_type",
         "encoding",
-        "controller",
         "parent",
         "path",
         "full_path",
@@ -68,7 +75,7 @@ class Publishable(Item):
         text_search = False,
         format = r"^[^/]+/[^/]+$",
         listed_by_default = False,
-        member_group = "presentation"
+        member_group = "presentation.format"
     )
 
     resource_type = schema.String(
@@ -91,14 +98,14 @@ class Publishable(Item):
                 **kwargs
             ),
         listed_by_default = False,
-        member_group = "presentation"
+        member_group = "presentation.format"
     )
 
     encoding = schema.String(
         listed_by_default = False,
         text_search = False,
-        member_group = "presentation",
-        default = "utf-8"
+        default = "utf-8",
+        member_group = "presentation.format"
     )
 
     controller = schema.Reference(
@@ -106,13 +113,13 @@ class Publishable(Item):
         indexed = True,
         bidirectional = True,
         listed_by_default = False,
-        member_group = "presentation"
+        member_group = "presentation.behavior"
     )
 
     inherit_resources = schema.Boolean(
         listed_by_default = False,
-        member_group = "presentation",
-        default = True
+        default = True,
+        member_group = "presentation.resources"
     )
 
     def resolve_controller(self):

@@ -9,13 +9,13 @@ u"""
 from __future__ import with_statement
 import cherrypy
 from ZODB.POSException import ConflictError
-from cocktail.modeling import cached_getter
 from cocktail.events import event_handler, when
 from cocktail.schema import (
     Adapter, ErrorList, DictAccessor, Collection, Reference
 )
 from cocktail.translations import translations
 from cocktail.persistence import datastore
+from cocktail.controllers import request_property, get_parameter
 from woost.models import (
     Site,
     Language,
@@ -29,6 +29,7 @@ from woost.models import (
 )
 from woost.controllers.notifications import notify_user, pop_user_notifications
 from woost.controllers.backoffice.editstack import RelationNode, EditNode
+from woost.controllers.backoffice.useractions import get_user_action
 from woost.controllers.backoffice.basebackofficecontroller \
         import BaseBackOfficeController
 
@@ -44,14 +45,14 @@ class EditController(BaseBackOfficeController):
         controller.context["parent_handler"].section_redirection()
         controller.stack_node.section = controller.section
 
-    @cached_getter
+    @request_property
     def errors(self):
         if self.action:
-            return ErrorList(self.action.get_errors(self, self.action_content))
+            return ErrorList(self.action.get_errors(self, self.action_selection))
         else:
             return []
 
-    @cached_getter
+    @request_property
     def available_languages(self):
         user = get_current_user()
         return [language
@@ -61,24 +62,75 @@ class EditController(BaseBackOfficeController):
                     language = language
                 )]
 
-    @cached_getter
+    @request_property
     def action(self):
         return self._get_user_action("item_action")
 
-    @cached_getter
-    def action_content(self):
+    @request_property
+    def action_selection(self):
         return [self.stack_node.item]
 
-    @cached_getter
-    def submitted(self):
-        return self.action is not None
+    @request_property
+    def relation_action(self):
+        return self._relation_action_data[0]
 
-    @cached_getter
+    @request_property
+    def relation_member(self):
+        return self._relation_action_data[1]
+
+    @request_property
+    def _relation_action_data(self):        
+        for key, value in cherrypy.request.params.iteritems():
+            if key.startswith("relation_action-"):
+                member_name = key.split("-", 1)[1]
+
+                action = get_user_action(value)
+                if action and not action.enabled:
+                    action = None
+
+                member = self.stack_node.content_type.get_member(member_name)
+                if not isinstance(member, (Collection, Reference)):
+                    member = None
+
+                return action, member
+
+        return None, None
+   
+    @request_property
+    def relation_selection(self):
+        member = self.relation_member
+        value = get_parameter(
+            Collection(
+                name = "relation_selection-" + member.name,
+                items = Reference(type = member.related_type)
+            )
+        )
+        if not value:
+            return []
+        else:
+            enum = frozenset(self.stack_node.form_data.get(member.name))
+            return [item for item in value if item in enum]
+
+    @request_property
+    def submitted(self):
+        return self.action or self.relation_action
+
+    @request_property
     def ready(self):
         return self.submitted and not self.errors
 
     def submit(self):
-        self._invoke_user_action(self.action, self.action_content)
+        self.stack_node.tab = self.tab
+        if self.action:
+            self._invoke_user_action(
+                self.action,
+                self.action_selection
+            )
+        elif self.relation_action:
+            self._invoke_user_action(
+                self.relation_action,
+                self.relation_selection
+            )
 
     def save_item(self, make_draft = False):
         
@@ -259,12 +311,15 @@ class EditController(BaseBackOfficeController):
         finally:
             item.changed.remove(delete_replaced_integral_children)
 
-    @cached_getter
+    @request_property
+    def tab(self):
+        return cherrypy.request.params.get("tab")
+
+    @request_property
     def output(self):
         output = BaseBackOfficeController.output(self)
         stack_node = self.stack_node 
         output.update(
-            collections = self.context["parent_handler"].collections,
             edited_item = stack_node.item,
             edited_content_type = stack_node.content_type,
             errors = self.errors,
@@ -272,7 +327,8 @@ class EditController(BaseBackOfficeController):
             form_data = stack_node.form_data,
             changes = set(stack_node.iter_changes()),
             translations = stack_node.translations,
-            section = self.section
+            section = self.section,
+            tab = self.tab
         )
         return output
 

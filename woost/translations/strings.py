@@ -1657,22 +1657,58 @@ translations.define("Site.meta",
     en = u"Metadata"
 )
 
-translations.define("Site.contact",
+translations.define("Site.meta.description",
+    ca = u"Descripció del lloc",
+    es = u"Descripción del sitio",
+    en = u"Site description"
+)
+
+translations.define("Site.meta.contact",
     ca = u"Dades de contacte",
     es = u"Datos de contacto",
     en = u"Contact details"
 )
 
-translations.define("Site.pages",
+translations.define("Site.behavior",
+    ca = u"Comportament",
+    es = u"Comportamiento",
+    en = u"Behavior"
+)
+
+translations.define("Site.behavior.pages",
     ca = u"Pàgines",
     es = u"Páginas",
     en = u"Pages"
 )
 
+translations.define("Site.behavior.publication",
+    ca = u"Publicació",
+    es = u"Publicación",
+    en = u"Publication"
+)
+
+translations.define("Site.behavior.triggers",
+    ca = u"Disparadors",
+    es = u"Disparadores",
+    en = u"Triggers"
+)
+
+translations.define("Site.rendering",
+    ca = u"Processat d'imatges",
+    es = u"Procesado de imágenes",
+    en = u"Image processing"
+)
+
 translations.define("Site.system",
-    ca = u"Configuració del sistema",
-    es = u"Configuración del sistema",
-    en = u"System configuration"
+    ca = u"Sistema",
+    es = u"Sistema",
+    en = u"System"
+)
+
+translations.define("Site.system.mail",
+    ca = u"Servidor de correu electrònic",
+    es = u"Servidor de correo electrónico",
+    en = u"E-mail server"
 )
 
 translations.define("Site.site_name",
@@ -2226,6 +2262,24 @@ translations.define("Publishable.presentation",
     en = u"Presentation"
 )
 
+translations.define("Publishable.presentation.behavior",
+    ca = u"Comportament",
+    es = u"Comportamiento",
+    en = u"Behavior"
+)
+
+translations.define("Publishable.presentation.resources",
+    ca = u"Recursos",
+    es = u"Recursos",
+    en = u"Resources"
+)
+
+translations.define("Publishable.presentation.format",
+    ca = u"Format",
+    es = u"Formato",
+    en = u"Format"
+)
+
 translations.define("Publishable.navigation",
     ca = u"Navegació",
     es = u"Navegación",
@@ -2443,7 +2497,7 @@ translations.define("Document.meta",
     en = u"Metadata"
 )
 
-translations.define("Document.robots",
+translations.define("Document.meta.robots",
     ca = u"Robots",
     es = u"Robots",
     en = u"Robots"

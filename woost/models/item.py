@@ -22,12 +22,6 @@ from cocktail.controllers import make_uri, percent_encode_uri, Location
 from woost.models.changesets import ChangeSet, Change
 from woost.models.action import Action
 
-# Extension property that allows changing the controller that handles a
-# collection in the backoffice
-schema.Collection.edit_controller = \
-    "woost.controllers.backoffice.collectioncontroller." \
-    "CollectionController"
-
 # Extension property that makes it easier to customize the edit view for a
 # collection in the backoffice
 schema.Collection.edit_view = None

@@ -126,7 +126,7 @@ class ItemSelector(Element):
     def create_select_button(self):
 
         select_button = Element("button",
-            name = "ItemSelector-select",
+            name = "relation-select",
             type = "submit",
             class_name = "ItemSelector-button select",
             value = self.member.type.full_name + "-" + self._param_name
@@ -139,7 +139,7 @@ class ItemSelector(Element):
     def create_unlink_button(self):
         
         unlink_button = Element("button",
-            name = "ItemSelector-unlink",
+            name = "relation-unlink",
             type = "submit",
             class_name = "ItemSelector-button unlink",
             value = self.member.name
@@ -184,7 +184,7 @@ class ItemSelector(Element):
                 label = call_base(content_type)
                 label.tag = "button"
                 label["type"] = "submit"
-                label["name"] = "ItemSelector-new"
+                label["name"] = "relation-new"
                 label["value"] = self.member.name + "-" + content_type.full_name
                 return label
             
@@ -192,7 +192,7 @@ class ItemSelector(Element):
         else:
             new_button.tag = "button"
             new_button["type"] = "submit"
-            new_button["name"] = "ItemSelector-new"
+            new_button["name"] = "relation-new"
             new_button["value"] = \
                 self.member.name + "-" + list(instantiable_types)[0].full_name
             label = new_button
@@ -204,7 +204,7 @@ class ItemSelector(Element):
     def create_edit_button(self):
 
         edit_button = Element("button",
-            name = "ItemSelector-edit",
+            name = "relation-edit",
             type = "submit",
             class_name = "ItemSelector-button edit",
             value = self.member.name
@@ -217,7 +217,7 @@ class ItemSelector(Element):
     def create_delete_button(self):
 
         delete_button = Element("button",
-            name = "ItemSelector-unlink",
+            name = "relation-unlink",
             type = "submit",
             class_name = "ItemSelector-button delete",
             value = self.member.name

@@ -115,5 +115,46 @@ cocktail.bind(".BackOfficeEditView", function ($editView) {
             setVisibleLanguages(languages);
         }
     });
+    
+    /* Turn first level form fieldsets into a tab strip
+    -------------------------------------------------------------------------*/     
+    var $form = $editView.find(".ContentForm").first();
+    
+    var $tabStrip = jQuery("<div class='tabStrip'>")
+        .prependTo($form);
+
+    var $fieldsets = $form.find(".fields > fieldset");
+
+    $fieldsets.each(function () {
+        $tab = jQuery("<button type='button' class='tab'>")
+            .addClass(this.group)
+            .html(jQuery(this).children("legend").html())
+            .appendTo($tabStrip)
+            .click(function () { location.hash = this.group; });
+        $tab.get(0).group = this.group;
+    });
+
+    function selectTab(group) {
+        
+        var $tab = $tabStrip.children("." + group);
+        var $fieldset = $fieldsets.filter("." + group);
+
+        if ($tab.length && $fieldset.length) {
+            $tabStrip.children().removeClass("selected");
+            $fieldsets.removeClass("selected");
+            $tab.addClass("selected");            
+            $fieldset.addClass("selected");
+            location.hash = group;
+            $editView.find("input[type=hidden][name=tab]").val(group);
+        }
+    }
+
+    selectTab(location.hash ? location.hash.substr(1) : $fieldsets.get(0).group);
+
+    jQuery(window).hashchange(function () {
+        if (location.hash) {
+            selectTab(location.hash.substr(1));
+        }
+    });
 });
 
