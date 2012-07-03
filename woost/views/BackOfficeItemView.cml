@@ -64,7 +64,7 @@ from woost.controllers.backoffice.useractions import (
             py:index="0"
             type="submit"
             name="item_action" value="save"
-            style="display: none"/>
+            style="position: absolute; left: -1000px; top: -1000px"/>
 
         <!-- Title -->
         <h2 py:parent="self.body" py:position="0">
