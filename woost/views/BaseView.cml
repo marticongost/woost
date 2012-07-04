@@ -16,6 +16,7 @@ from woost.models import Site, Publishable, Language
     content_language = None
     fully_translated = True
     body_end_html = ""
+    head_end_html = ""
     base_url = None
     
     def get_keywords(self):
