@@ -166,3 +166,18 @@ class Block(Item):
     def is_published(self):
         return self.enabled
 
+    def get_member_copy_mode(self, member):
+        
+        mode = Item.get_member_copy_mode(self, member)
+        
+        if (
+            mode 
+            and mode != schema.DEEP_COPY
+            and isinstance(member, schema.RelationMember)
+            and member.is_persistent_relation
+            and issubclass(member.related_type, Block)
+        ):
+            mode = schema.DEEP_COPY
+
+        return mode
+
