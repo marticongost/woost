@@ -176,6 +176,7 @@ class UserAction(object):
     min = 1
     max = 1
     direct_link = False
+    link_target = None
     parameters = None
 
     def __init__(self, id):
@@ -584,6 +585,7 @@ class OpenResourceAction(UserAction):
         "workflow_graph_content_view",
         "changelog"
     ])
+    link_target = "_blank"
 
     def get_url(self, controller, selection):
         return controller.context["cms"].uri(selection[0])

@@ -51,11 +51,13 @@ from woost.controllers.backoffice.useractions import (
             if action.direct_link:
                 element.tag = "a"
                 element["href"] = action.get_url(context["cms"], None)
+                element["target"] = action.link_target
             else:
                 element.tag = "button"
                 element["type"] = "submit"
                 element["name"] = self.action_parameter
                 element["value"] = action.id
+                element["formtarget"] = action.link_target
 
         set_translated_shortcut(label, "action " + action.id)
         ?>
