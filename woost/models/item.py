@@ -593,6 +593,16 @@ class Item(PersistentObject):
 
         return uri
 
+    copy_excluded_members = set([
+        is_draft,
+        drafts,
+        changes,
+        author,
+        owner,
+        creation_time,
+        last_update_time
+    ])
+
 
 Item.id.versioned = False
 Item.id.editable = False
