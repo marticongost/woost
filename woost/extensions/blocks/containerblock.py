@@ -14,6 +14,7 @@ class ContainerBlock(Block):
     blocks = schema.Collection(
         items = schema.Reference(type = Block),
         related_end = schema.Collection(),
+        cascade_delete = True,
         member_group = "content"
     )
 
