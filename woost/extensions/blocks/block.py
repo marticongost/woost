@@ -181,3 +181,10 @@ class Block(Item):
 
         return mode
 
+    def _included_in_cascade_delete(self, parent, member):
+
+        if isinstance(parent, Block) and self.is_common_block():
+            return False
+
+        return Item._included_in_cascade_delete(self, parent, member)
+
