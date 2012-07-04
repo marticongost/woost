@@ -36,6 +36,7 @@ class BaseBackOfficeController(BaseCMSController):
 
     section = None
     settings_duration = 60 * 60 * 24 * 30 # ~= 1 month
+    default_rendering_format = "html5"
 
     @cached_getter
     def visible_languages(self):
