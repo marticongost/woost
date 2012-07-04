@@ -238,6 +238,19 @@ class RemoveBlockAction(UserAction):
         datastore.commit()
 
 
+class CopyBlockAction(UserAction):
+    content_type = Block
+    included = frozenset(["block_menu"])
+
+    def invoke(self, controller, selection):
+        set_clipboard_contents({
+            "mode": "copy",
+            "block": controller.block.id,
+            "block_parent": controller.block_parent.id,
+            "block_slot": controller.block_slot.name
+        })
+
+
 class CutBlockAction(UserAction):
     content_type = Block
     included = frozenset(["block_menu"])
@@ -279,13 +292,18 @@ class PasteBlockAction(UserAction):
                 )
             else:
                 # Remove the block from the source location
-                if isinstance(src_slot, schema.Reference):
-                    src_parent.set(src_slot, None)
-                elif isinstance(src_slot, schema.Collection):
-                    src_collection = src_parent.get(src_slot)
-                    schema.remove(src_collection, block)
+                if clipboard["mode"] == "cut":
+                    if isinstance(src_slot, schema.Reference):
+                        src_parent.set(src_slot, None)
+                    elif isinstance(src_slot, schema.Collection):
+                        src_collection = src_parent.get(src_slot)
+                        schema.remove(src_collection, block)
+                # Or copy it
+                elif clipboard["mode"] == "copy":
+                    block = block.create_copy()
+                    block.insert()
 
-                # Add it to its new position
+                # Add the block to its new position
                 add_block(
                     block, 
                     controller.block_parent,
@@ -337,6 +355,7 @@ add_after.register(before = "edit")
 edit_action = get_user_action("edit")
 edit_action.included = edit_action.included | frozenset(["block_menu"])
 
+CopyBlockAction("copy_block").register(before = "delete")
 CutBlockAction("cut_block").register(before = "delete")
 
 PasteBlockAction("paste_block").register(before = "delete")

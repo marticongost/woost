@@ -778,6 +778,12 @@ translations.define("Action remove_block",
     en = u"Remove"
 )
 
+translations.define("Action copy_block",
+    ca = u"Copiar",
+    es = u"Copiar",
+    en = u"Copy"
+)
+
 translations.define("Action cut_block",
     ca = u"Retallar",
     es = u"Cortar",
