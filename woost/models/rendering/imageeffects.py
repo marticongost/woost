@@ -62,7 +62,7 @@ class HorizontalAlignment(schema.String):
         if not value:
             return ""
         else:
-            translations(
+            return translations(
                 "woost.models.rendering.horizontal_alignment=" + value,
                 language,
                 kwargs
@@ -79,7 +79,7 @@ class VerticalAlignment(schema.String):
         if not value:
             return ""
         else:
-            translations(
+            return translations(
                 "woost.models.rendering.vertical_alignment=" + value,
                 language,
                 kwargs
