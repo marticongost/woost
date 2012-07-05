@@ -6,6 +6,7 @@ u"""
 import Image
 import ImageEnhance
 import ImageFilter
+import ImageOps
 from cocktail.events import event_handler
 from cocktail import schema
 from cocktail.translations import translations
@@ -692,4 +693,12 @@ class Align(ImageEffect):
             return copy
 
         return image
+
+
+class Grayscale(ImageEffect):
+
+    instantiable = True
+
+    def apply(self, image):
+        return ImageOps.grayscale(image)
 

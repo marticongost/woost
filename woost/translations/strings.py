@@ -5140,6 +5140,14 @@ translations.define("Align.background",
     en = u"Background"
 )
 
+# Grayscale
+#------------------------------------------------------------------------------
+translations.define("Grayscale",
+    ca = u"Tons de gris",
+    es = u"Tonos de gris",
+    en = u"Grayscale"
+)
+
 # Agreement to terms & conditions
 #------------------------------------------------------------------------------
 translations.define("woost.controllers.formagreement",
