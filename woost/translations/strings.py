@@ -4753,17 +4753,45 @@ translations.define("ImageEffect-plural",
 )
 
 translations.define(
-    "woost.models.rendering.horizontal_alignment=horizontal",
-    ca = u"Horitzontal",
-    es = u"Horizontal",
-    en = u"Horizontal"
+    "woost.models.rendering.horizontal_alignment=left",
+    ca = u"Esquerra",
+    es = u"Izquierda",
+    en = u"Left"
 )
 
 translations.define(
-    "woost.models.rendering.horizontal_alignment=vertical",
-    ca = u"Vertical",
-    es = u"Vertical",
-    en = u"Vertical"
+    "woost.models.rendering.horizontal_alignment=center",
+    ca = u"Centrat",
+    es = u"Centrado",
+    en = u"Center"
+)
+
+translations.define(
+    "woost.models.rendering.horizontal_alignment=right",
+    ca = u"Dreta",
+    es = u"Derecha",
+    en = u"Right"
+)
+
+translations.define(
+    "woost.models.rendering.vertical_alignment=top",
+    ca = u"A dalt",
+    es = u"Arriba",
+    en = u"Top"
+)
+
+translations.define(
+    "woost.models.rendering.vertical_alignment=center",
+    ca = u"Centrat",
+    es = u"Centrado",
+    en = u"Center"
+)
+
+translations.define(
+    "woost.models.rendering.vertical_alignment=bottom",
+    ca = u"A baix",
+    es = u"Abajo",
+    en = u"Bottom"
 )
 
 # Thumbnail
