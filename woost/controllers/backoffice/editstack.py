@@ -549,8 +549,7 @@ class EditNode(StackNode):
             **params
         )
 
-        if self.tab:
-            uri += "#" + self.tab
+        uri += "#" + (self.tab or "")
 
         return uri
 
