@@ -3295,8 +3295,8 @@ translations.define("Style.declarations",
 )
 
 translations.define("Style.admin_declarations",
-    ca = u"Declaracions CSS Admin",
-    es = u"Declaraciones CSS Admin",
+    ca = u"Declaracions CSS per l'administració",
+    es = u"Declaraciones CSS para el administrador",
     en = u"Admin CSS declarations"
 )
 
