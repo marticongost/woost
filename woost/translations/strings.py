@@ -3270,6 +3270,24 @@ translations.define("Style.title",
     en = u"Name"
 )
 
+translations.define("Style.custom_class_name",
+    ca = u"Classe CSS",
+    es = u"Clase CSS",
+    en = u"CSS class"
+)
+
+translations.define("Style.custom_class_name-explanation",
+    ca = u"Permet especificar el nom de la classe CSS resultant. Si no "
+         u"s'indica, el sistema decidirà el nom seguint un patró "
+         u"incremental.",
+    es = u"Permite especificar el nombre de la clase CSS resultante. Si no "
+         u"se indica, el sistema decidirá el nombre siguiendo un patrón "
+         u"incremental.",
+    en = u"Specifies the name of the resulting CSS class. If no name is "
+         u"given, the system will choose a name following an incremental "
+         u"pattern."
+)
+
 translations.define("Style.declarations",
     ca = u"Declaracions CSS",
     es = u"Declaraciones CSS",
