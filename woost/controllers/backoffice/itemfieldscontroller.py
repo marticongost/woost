@@ -171,7 +171,7 @@ class ItemFieldsController(EditController):
                     selection = value.id if value is not None else None,
                     edit_stack = controller.edit_stack.to_param(),
                     client_side_scripting = controller.client_side_scripting
-                )
+                ) + "#default"
             )
 
         # Open an editor for a new nested item
