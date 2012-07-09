@@ -29,6 +29,7 @@ class ItemFieldsController(EditController):
     form_prefix = "edited_item_"
 
     def __call__(self, *args, **kwargs):
+        self.stack_node.tab = self.tab
         self._handle_form_data()
         return EditController.__call__(self, *args, **kwargs)
 

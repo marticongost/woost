@@ -119,8 +119,7 @@ class EditController(BaseBackOfficeController):
     def ready(self):
         return self.submitted and not self.errors
 
-    def submit(self):
-        self.stack_node.tab = self.tab
+    def submit(self):        
         if self.action:
             self._invoke_user_action(
                 self.action,
