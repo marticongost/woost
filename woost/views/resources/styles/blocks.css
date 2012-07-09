@@ -1,6 +1,6 @@
 
 .TextBlockView {
-    clear: both;
+    overflow: hidden;
 }
 
 .TextBlockView > .image_gallery.thumbnails .image_entry {
