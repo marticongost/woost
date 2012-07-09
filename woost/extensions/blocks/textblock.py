@@ -96,7 +96,9 @@ class TextBlock(Block):
             "float_top_right",
             "column_left",
             "column_right",
+            "top_left",
             "center_top",
+            "top_right",
             "background"
         ],
         edit_control = _mandatory_dropdown,
