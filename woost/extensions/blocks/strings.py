@@ -390,6 +390,21 @@ translations.define("TextBlock.link_destination",
     en = u"Linked resource"
 )
 
+translations.define("TextBlock.link_parameters",
+    ca = u"Paràmetres addicionals per l'enllaç",
+    es = u"Parámetros adicionales para el enlace",
+    en = u"Additional URL parameters"
+)
+
+translations.define("TextBlock.link_parameters-explanation",
+    ca = u"Un paràmetre per línia, separant el nom i el valor amb un caràcter "
+         u"'='",
+    es = u"Un parámetro por linea, separando el nombre y el valor con un "
+         u"caracter '='",
+    en = u"One parameter per line, with key and value separated by a "
+         u"'=' character"
+)
+
 translations.define("TextBlock.link_opens_in_new_window",
     ca = u"Obrir l'enllaç a una nova finestra",
     es = u"Abrir el enlace en una ventana nueva",

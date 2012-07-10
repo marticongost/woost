@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
+<?py
+from cocktail.controllers import Location
+?>
 
 <div
     xmlns="http://www.w3.org/1999/xhtml"
@@ -21,8 +24,20 @@
             element.set_style("background-image", "url(%s)" % self._images[0].get_uri())
 
         if self.block.link_destination:
+
+            uri = self.block.link_destination.get_uri()
+
+            # Add additional parameters
+            if self.block.link_parameters:
+                location = Location(uri)
+                for chunk in self.block.link_parameters.split("\n"):
+                    parts = chunk.split("=")
+                    if len(parts) == 2:
+                        location.query_string[parts[0].strip()] = parts[1].strip()
+                uri = unicode(location)
+            
             self.tag = "a"
-            self["href"] = self.block.link_destination.get_uri()
+            self["href"] = uri
 
             if self.block.link_opens_in_new_window:
                 self["target"] = "_blank"       
