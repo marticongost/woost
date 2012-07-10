@@ -149,12 +149,23 @@ cocktail.bind(".BackOfficeEditView", function ($editView) {
         }
     }
 
-    selectTab(location.hash ? location.hash.substr(1) : $fieldsets.get(0).group);
+    function trackHash() {
+        var tabSelected = false;
 
-    jQuery(window).hashchange(function () {
         if (location.hash) {
-            selectTab(location.hash.substr(1));
+            var group = location.hash.substr(1);
+            if ($tabStrip.children("." + group).length) {
+                tabSelected = true;
+                selectTab(group);
+            }
         }
-    });
+
+        if (!tabSelected) {
+            selectTab($tabStrip.children().first().get(0).group);
+        }
+    }
+
+    jQuery(window).hashchange(trackHash);
+    trackHash();
 });
 

@@ -29,6 +29,7 @@ class ItemFieldsController(EditController):
     form_prefix = "edited_item_"
 
     def __call__(self, *args, **kwargs):
+        self.stack_node.tab = self.tab
         self._handle_form_data()
         return EditController.__call__(self, *args, **kwargs)
 
@@ -170,7 +171,7 @@ class ItemFieldsController(EditController):
                     selection = value.id if value is not None else None,
                     edit_stack = controller.edit_stack.to_param(),
                     client_side_scripting = controller.client_side_scripting
-                )
+                ) + "#default"
             )
 
         # Open an editor for a new nested item

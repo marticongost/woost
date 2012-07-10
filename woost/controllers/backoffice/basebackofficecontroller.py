@@ -107,7 +107,7 @@ class BaseBackOfficeController(BaseCMSController):
                 True
             )
 
-        return uri
+        return uri + "#default"
 
     def go_back(self):
         """Redirects the user to its previous significant location."""

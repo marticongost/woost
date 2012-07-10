@@ -1841,7 +1841,7 @@ body.scripted .BackOfficeEditView .translations_selector .selector_content li in
 
 .BackOfficeLayout .ItemSelector .selection_label,
 .BackOfficeLayout .ItemSelector-buttons {
-    float: left;
+    display: inline-block;
 }
 
 .BackOfficeLayout .ItemSelector .selection_label {
