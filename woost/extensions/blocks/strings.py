@@ -453,10 +453,22 @@ translations.define("TextBlock.image_alignment=column_right",
     en = u"Top right, in their own column"
 )
 
+translations.define("TextBlock.image_alignment=top_left",
+    ca = u"A dalt a l'esquerra",
+    es = u"Arriba a la izquierda",
+    en = u"Top left"
+)
+
 translations.define("TextBlock.image_alignment=center_top",
     ca = u"Centrar a dalt",
     es = u"Centrar arriba",
     en = u"Top center"
+)
+
+translations.define("TextBlock.image_alignment=top_right",
+    ca = u"A dalt a la dreta",
+    es = u"Arriba a la derecha",
+    en = u"Top right"
 )
 
 translations.define("TextBlock.image_alignment=background",

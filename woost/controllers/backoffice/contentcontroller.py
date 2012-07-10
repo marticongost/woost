@@ -107,7 +107,7 @@ class ContentController(BaseBackOfficeController):
 
     def __call__(self, *args, **kwargs):
 
-        rel = cherrypy.request.params.get("ItemSelector-select")
+        rel = cherrypy.request.params.get("relation-select")
 
         # Open the item selector
         if rel:

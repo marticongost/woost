@@ -1,12 +1,22 @@
 
 .TextBlockView {
-    clear: both;
+    overflow: hidden;
 }
 
-.TextBlockView > .image_gallery.thumbnails .image_entry {
+.TextBlockView > .image_gallery .image_entry {
     margin: 0;
     margin-right: 1em;
     margin-bottom: 1em;
+}
+
+/* Top left */
+.TextBlockView.top_left > .image_gallery .image_entry > a {
+    text-align: left;
+}
+
+/* Top right */
+.TextBlockView.top_right > .image_gallery .image_entry > a {
+    text-align: right;
 }
 
 /* Float top left */

@@ -3270,6 +3270,24 @@ translations.define("Style.title",
     en = u"Name"
 )
 
+translations.define("Style.custom_class_name",
+    ca = u"Classe CSS",
+    es = u"Clase CSS",
+    en = u"CSS class"
+)
+
+translations.define("Style.custom_class_name-explanation",
+    ca = u"Permet especificar el nom de la classe CSS resultant. Si no "
+         u"s'indica, el sistema decidirà el nom seguint un patró "
+         u"incremental.",
+    es = u"Permite especificar el nombre de la clase CSS resultante. Si no "
+         u"se indica, el sistema decidirá el nombre siguiendo un patrón "
+         u"incremental.",
+    en = u"Specifies the name of the resulting CSS class. If no name is "
+         u"given, the system will choose a name following an incremental "
+         u"pattern."
+)
+
 translations.define("Style.declarations",
     ca = u"Declaracions CSS",
     es = u"Declaraciones CSS",
@@ -3277,8 +3295,8 @@ translations.define("Style.declarations",
 )
 
 translations.define("Style.admin_declarations",
-    ca = u"Declaracions CSS Admin",
-    es = u"Declaraciones CSS Admin",
+    ca = u"Declaracions CSS per l'administració",
+    es = u"Declaraciones CSS para el administrador",
     en = u"Admin CSS declarations"
 )
 
@@ -4753,17 +4771,45 @@ translations.define("ImageEffect-plural",
 )
 
 translations.define(
-    "woost.models.rendering.horizontal_alignment=horizontal",
-    ca = u"Horitzontal",
-    es = u"Horizontal",
-    en = u"Horizontal"
+    "woost.models.rendering.horizontal_alignment=left",
+    ca = u"Esquerra",
+    es = u"Izquierda",
+    en = u"Left"
 )
 
 translations.define(
-    "woost.models.rendering.horizontal_alignment=vertical",
-    ca = u"Vertical",
-    es = u"Vertical",
-    en = u"Vertical"
+    "woost.models.rendering.horizontal_alignment=center",
+    ca = u"Centrat",
+    es = u"Centrado",
+    en = u"Center"
+)
+
+translations.define(
+    "woost.models.rendering.horizontal_alignment=right",
+    ca = u"Dreta",
+    es = u"Derecha",
+    en = u"Right"
+)
+
+translations.define(
+    "woost.models.rendering.vertical_alignment=top",
+    ca = u"A dalt",
+    es = u"Arriba",
+    en = u"Top"
+)
+
+translations.define(
+    "woost.models.rendering.vertical_alignment=center",
+    ca = u"Centrat",
+    es = u"Centrado",
+    en = u"Center"
+)
+
+translations.define(
+    "woost.models.rendering.vertical_alignment=bottom",
+    ca = u"A baix",
+    es = u"Abajo",
+    en = u"Bottom"
 )
 
 # Thumbnail
@@ -5110,6 +5156,14 @@ translations.define("Align.background",
     ca = u"Color de fons",
     es = u"Color de fondo",
     en = u"Background"
+)
+
+# Grayscale
+#------------------------------------------------------------------------------
+translations.define("Grayscale",
+    ca = u"Tons de gris",
+    es = u"Tonos de gris",
+    en = u"Grayscale"
 )
 
 # Agreement to terms & conditions

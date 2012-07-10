@@ -24,6 +24,11 @@ cocktail.bind(".CollectionEditor", function ($editor) {
     $editor.bind("selectionChanged", updateToolbar);
     updateToolbar();
 
+    // Double click to edit
+    $editor.bind("activated", function () {
+        $editor.find(".edit_action").click();
+    });
+
     // Enable drag & drop sorting
     $editor.find("ul.entries").sortable({axis: "y"});
 });

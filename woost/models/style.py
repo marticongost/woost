@@ -13,7 +13,12 @@ from woost.models import Item
 
 class Style(Item):
 
-    members_order = "title", "declarations", "admin_declarations"
+    members_order = [
+        "title",
+        "custom_class_name",
+        "declarations",
+        "admin_declarations"
+    ]
 
     title = schema.String(
         required = True,
@@ -23,6 +28,12 @@ class Style(Item):
         full_text_indexed = True,
         descriptive = True,
         translated = True
+    )
+
+    custom_class_name = schema.String(
+        indexed = True,
+        unique = True,
+        normalized_index = False
     )
 
     declarations = schema.String(
@@ -35,8 +46,8 @@ class Style(Item):
         text_search = False,
         edit_control = "cocktail.html.TextArea"
     )
-    
-    @getter
+
+    @property
     def class_name(self):
-        return "woost_style_%d" % self.id
+        return self.custom_class_name or ("woost_style_%d" % self.id)
 
