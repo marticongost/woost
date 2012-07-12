@@ -147,6 +147,7 @@ class Publishable(Item):
         unique = True,
         editable = False,
         text_search = False,
+        listed_by_default = False,
         member_group = "navigation"
     )
     
