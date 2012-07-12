@@ -72,6 +72,7 @@ class TextBlock(Block):
         "image_labels_visible",
         "image_original_link_visible",
         "link_destination",
+        "link_parameters",
         "link_opens_in_new_window"
     ]
 
@@ -144,6 +145,11 @@ class TextBlock(Block):
     link_destination = schema.Reference(
         type = Publishable,
         related_end = schema.Collection(),
+        member_group = "link"
+    )
+
+    link_parameters = schema.String(
+        edit_control = "cocktail.html.TextArea",
         member_group = "link"
     )
 
