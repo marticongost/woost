@@ -37,7 +37,6 @@ class Style(Item):
     )
 
     declarations = schema.String(
-        required = True,
         text_search = False,
         edit_control = "cocktail.html.TextArea"
     )
