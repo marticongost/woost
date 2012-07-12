@@ -18,7 +18,8 @@
         self._images = [image for image in self.block.images if image.is_accessible()]
 
         if self._images and self.block.image_alignment == "background":
-            element.set_style("background-image", "url(%s)" % self._images[0].get_uri())
+            image_uri = self._images[0].get_image_uri(self.block.image_thumbnail_factory)
+            element.set_style("background-image", "url(%s)" % image_uri)
 
         if self.block.link_destination:
             self.tag = "a"
