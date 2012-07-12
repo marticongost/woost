@@ -13,7 +13,7 @@ from woost.models import Language
                 <py:new 
                     py:element="self.create_translation_preview(language)"
                     py:for="language in Language.codes"
-                    py:where="language in self.block.translations"/>
+                    py:where="self.block.get('text', language)"/>
             </py:ready>
         </div>
         <py:woost.views.ImageGallery
