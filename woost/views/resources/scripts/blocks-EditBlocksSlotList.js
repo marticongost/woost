@@ -229,7 +229,9 @@ cocktail.bind(".EditBlocksSlotList.foldable .slot", function ($slot) {
         }
 
         function handleDrag(e) {
-            if (e.dataTransfer.types.indexOf("application/x-woost-item") != -1) {
+            var types = e.dataTransfer.types;
+            var mimeType = "application/x-woost-item";
+            if (types.contains ? types.contains(mimeType) : (types.indexOf(mimeType) != -1)) {
                 placeMarker(e);
                 e.preventDefault();
                 e.stopPropagation();
