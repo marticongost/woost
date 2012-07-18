@@ -111,7 +111,7 @@ class TextBlock(Block):
     )
 
     image_close_up_enabled = schema.Boolean(
-        default = True,
+        default = False,
         member_group = "images"
     )
 
