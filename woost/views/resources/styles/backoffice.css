@@ -1700,12 +1700,12 @@ body.scripted .BackOfficeLayout .ThumbnailsContentView .collection_display input
     color: rgb(50,50,50);
 }
 
-.BackOfficeLayout .ActionBar.toolbar .preview_action,
-.BackOfficeLayout .ActionBar.toolbar .save_action,
-.BackOfficeLayout .ActionBar.toolbar .save_draft_action,
-.BackOfficeLayout .ActionBar.toolbar .confirm_draft_action,
-.BackOfficeLayout .ActionBar.toolbar .close_action,
-.BackOfficeLayout .ActionBar.toolbar .cancel_action {
+.BackOfficeLayout .toolbar .preview_action,
+.BackOfficeLayout .toolbar .save_action,
+.BackOfficeLayout .toolbar .save_draft_action,
+.BackOfficeLayout .toolbar .confirm_draft_action,
+.BackOfficeLayout .toolbar .close_action,
+.BackOfficeLayout .toolbar .cancel_action {
     float: right;
 }
 
