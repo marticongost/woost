@@ -61,6 +61,11 @@ class Item(PersistentObject):
     # entries for this content type in the type selector
     collapsed_backoffice_menu = False
 
+    # Customization of the backoffice preview action
+    preview_view = "woost.views.BackOfficePreviewView"
+    preview_controller = "woost.controllers.backoffice." \
+        "previewcontroller.PreviewController"
+
     def __translate__(self, language, **kwargs):
         if self.draft_source is not None:
             return translations(

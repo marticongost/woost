@@ -8,48 +8,62 @@ u"""
 """
 import cherrypy
 from simplejson import dumps
-from cocktail.pkgutils import resolve
-from cocktail.modeling import cached_getter
-from cocktail.translations import (
-    translations,
-    get_language,
-    set_language
-)
-from cocktail.html import Element
+from cocktail.translations import translations, get_language, set_language
 from cocktail import schema
-from woost.models import (
-    get_current_user,
-    ReadPermission
-)
+from cocktail.controllers import get_parameter, request_property
+from cocktail.html import Element
+from woost.models import get_current_user, ReadPermission, Publishable
 from woost.controllers.backoffice.basebackofficecontroller \
     import BaseBackOfficeController
 
+
 class RenderPreviewController(BaseBackOfficeController):    
-    
-    def __init__(self, *args, **kwargs):
-        BaseBackOfficeController.__init__(self, *args, **kwargs)
-        
+
+    @request_property
+    def previewed_item(self):
+        return self.stack_node.item
+
+    @request_property
+    def preview_publishable(self):
+        return get_parameter(
+            schema.Reference("preview_publishable",
+                type = Publishable
+            )
+        )
+
+    @request_property
+    def preview_language(self):
+        return get_parameter(
+            schema.String("preview_language", 
+                default = get_language()
+            )
+        )
+
     def __call__(self, *args, **kwargs):
 
-        preview_language = self.params.read(                                                                                                                                                                            
-            schema.String("preview_language", default = get_language())
-        )
+        node = self.stack_node
+        previewed_item = self.previewed_item
+        publishable = self.preview_publishable
+        preview_language = self.preview_language
+        user = get_current_user()
+
+        # Set the language for the preview
         if preview_language:
             set_language(preview_language)
 
-        node = self.stack_node
+        # Enforce permissions
+        user.require_permission(ReadPermission, target = previewed_item)
         
-        get_current_user().require_permission(
-            ReadPermission,
-            target = node.item
-        )
-        
-        node.import_form_data(
-            node.form_data,
-            node.item
-        )
-        
-        errors = list(node.item.__class__.get_errors(node.item))
+        if publishable is not previewed_item:
+            user.require_permission(ReadPermission, target = publishable)
+
+        # Update the edited item with the data to preview
+        node.import_form_data(node.form_data, previewed_item)
+
+        # Disable the preview if the item's unsaved state produces validation
+        # errors; these would usually lead to unhandled server errors during
+        # rendering.
+        errors = list(previewed_item.__class__.get_errors(previewed_item))
 
         if errors:
             message = Element("div",
@@ -67,14 +81,13 @@ class RenderPreviewController(BaseBackOfficeController):
             )
             message.add_resource("/resources/styles/backoffice.css")           
             return message.render_page()        
-        else:
-            
+        else:            
             self.context.update(
                 original_publishable = self.context["publishable"],
-                publishable = node.item
+                publishable = publishable
             )
-            
-            controller = node.item.resolve_controller()
+
+            controller = publishable.resolve_controller()
 
             if controller is None:
                 raise cherrypy.NotFound()
@@ -83,3 +96,4 @@ class RenderPreviewController(BaseBackOfficeController):
                 controller = controller()
 
             return controller()
+
