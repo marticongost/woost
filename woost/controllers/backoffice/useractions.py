@@ -568,7 +568,7 @@ class DeleteAction(UserAction):
 
 
 class PreviewAction(UserAction):
-    included = frozenset(["item_buttons", "item_bottom_buttons"])
+    included = frozenset(["item_buttons"])
     content_type = Publishable
 
 
@@ -671,7 +671,7 @@ class GoBackAction(UserAction):
 
 
 class CloseAction(GoBackAction):
-    included = frozenset(["item_buttons", ("changelog", "bottom_buttons")])
+    included = frozenset(["item_buttons", "item_bottom_buttons"])
 
 
 class CancelAction(GoBackAction):
