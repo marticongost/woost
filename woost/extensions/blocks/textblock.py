@@ -100,6 +100,7 @@ class TextBlock(Block):
             "column_right",
             "top_left",
             "center_top",
+            "center_bottom",
             "top_right",
             "background"
         ],

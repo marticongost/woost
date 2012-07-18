@@ -65,7 +65,7 @@ from cocktail.controllers import Location
         <?py
         if self.block.text and self._images:
 
-            if self.block.image_alignment == "column_right":
+            if self.block.image_alignment in ["column_right", "center_bottom"]:
                 self.image_gallery.place_after(self.text_container)
 
             if (
