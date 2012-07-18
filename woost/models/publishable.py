@@ -262,6 +262,27 @@ class Publishable(Item):
         else:
             self.full_path = path
 
+    def get_ancestor(self, depth):
+        """Obtain one of the item's ancestors, given its depth in the document
+        tree.
+        
+        @param depth: The depth level of the ancestor to obtain, with 0
+            indicating the root of the tree. Negative indices are accepted, and
+            they reverse the traversal order (-1 will point to the item itself,
+            -2 to its parent, and so on).
+        @type depth: int
+
+        @return: The requested ancestor, or None if there is no ancestor with
+            the indicated depth.
+        @rtype: L{Publishable}
+        """
+        tree_line = list(self.ascend_tree(include_self = True))
+        tree_line.reverse()
+        try:
+            return tree_line[depth]
+        except IndexError:
+            return None
+
     def ascend_tree(self, include_self = False):
         """Iterate over the item's ancestors, moving towards the root of the
         document tree.
