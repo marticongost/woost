@@ -35,9 +35,6 @@ class Publishable(Item):
     instantiable = False
 
     # Backoffice customization
-    preview_view = "woost.views.BackOfficePreviewView"
-    preview_controller = "woost.controllers.backoffice." \
-        "previewcontroller.PreviewController"
     edit_node_class = "woost.controllers.backoffice.publishableeditnode." \
         "PublishableEditNode"
  

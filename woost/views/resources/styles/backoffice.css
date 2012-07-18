@@ -1700,7 +1700,6 @@ body.scripted .BackOfficeLayout .ThumbnailsContentView .collection_display input
     color: rgb(50,50,50);
 }
 
-.BackOfficeLayout .toolbar .preview_action,
 .BackOfficeLayout .toolbar .save_action,
 .BackOfficeLayout .toolbar .save_draft_action,
 .BackOfficeLayout .toolbar .confirm_draft_action,

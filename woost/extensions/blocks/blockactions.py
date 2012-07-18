@@ -24,7 +24,8 @@ from woost.models import (
 )
 from woost.controllers.backoffice.useractions import (
     UserAction,
-    get_user_action
+    get_user_action,
+    PreviewAction
 )
 from woost.controllers.backoffice.editstack import StackNode, EditNode
 from woost.controllers.notifications import notify_user
@@ -380,4 +381,28 @@ delete_action.excluded = delete_action.excluded | frozenset(["common_block"])
 for action_id in "edit", "open_resource", "close":
     action = get_user_action(action_id)
     action.included = action.included | frozenset(["edit_blocks_toolbar"])
+
+# Enable the preview button for blocks
+from woost.controllers.backoffice.previewcontroller import PreviewController
+
+base_preview_publishable = PreviewController.preview_publishable
+
+@request_property
+def preview_publishable(self):
+
+    publishable = base_preview_publishable(self)
+    
+    if publishable is None and isinstance(self.previewed_item, Block):
+        for item, member in self.previewed_item.find_publication_slots():
+            publishable = item
+            break
+
+    return publishable
+
+PreviewController.preview_publishable = preview_publishable
+
+if isinstance(PreviewAction.content_type, type):
+    PreviewAction.content_type = (PreviewAction.content_type, Block)
+else:
+    PreviewAction.content_type = PreviewAction.content_type + (Block,)
 
