@@ -188,3 +188,50 @@ class Block(Item):
 
         return Item._included_in_cascade_delete(self, parent, member)
 
+    def find_publication_slots(self):
+        """Iterates over the different slots of publishable elements that
+        contain the block.
+
+        @return: An iterable sequence of the slots that contain the block. Each
+            slot is represented by a tuple consisting of a L{Publishable} and a
+            L{Member<cocktail.schema.member>}.
+        """
+        visited = set()
+
+        def iter_slots(block):
+
+            for member in block.__class__.members().itervalues():
+                if (
+                    (block, member) not in visited
+                    and isinstance(member, schema.RelationMember)
+                    and member.related_type
+                ):
+                    value = block.get(member)
+                    if value is not None:
+
+                        # Yield relations to publishable elements
+                        if issubclass(member.related_type, Publishable):
+                            if isinstance(member, schema.Collection):
+                                for publishable in value:
+                                    yield (publishable, member)
+                            else:
+                                yield (value, member)
+
+                        # Recurse into relations to other blocks
+                        elif issubclass(member.related_type, Block):
+
+                            visited.add((block, member))
+
+                            if member.related_end:
+                                visited.add((block, member.related_end))
+
+                            if isinstance(member, schema.Collection):
+                                for child in value:
+                                    for slot in iter_slots(child):
+                                        yield slot
+                            else:
+                                for slot in iter_slots(value):
+                                    yield slot
+        
+        return iter_slots(self)
+
