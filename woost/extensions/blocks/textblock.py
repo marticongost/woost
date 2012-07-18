@@ -51,6 +51,7 @@ class TextBlock(Block):
     instantiable = True
     view_class = "woost.extensions.blocks.TextBlockView"
     block_display = "woost.extensions.blocks.TextBlockDisplay"
+    edit_form = "woost.extensions.blocks.TextBlockForm"
 
     groups_order = [
         "content",
