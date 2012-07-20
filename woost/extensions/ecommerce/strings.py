@@ -713,6 +713,13 @@ translations.define("woost.extensions.ecommerce.incoming_order.edit_link",
     en = u"Edit the order"
 )
 
+translations.define(
+    "woost.extensions.ecommerce.ecommerce_basket_thumbnail.edit_link.title",
+    ca = u"Miniatura dels productes al carro de la compra",
+    es = u"Miniatura de los productos en el carro de la compra",
+    en = u"Thumbnail for products inside the shopping basket"
+)
+
 # Notices
 #------------------------------------------------------------------------------
 translations.define(
