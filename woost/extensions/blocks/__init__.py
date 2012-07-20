@@ -62,6 +62,7 @@ class BlocksExtension(Extension):
             twittertimelineblock,
             loginblock,
             iframeblock,
+            youtubeblock,
             blockspage,
             blockactions,
             site,
