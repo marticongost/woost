@@ -838,3 +838,59 @@ translations.define("woost.extensions.blocks.clipboard_error",
     en = u"The clipboard content is not valid"
 )
 
+# YouTubeBlock
+#------------------------------------------------------------------------------
+translations.define("YouTubeBlock",
+    ca = u"Vídeo de YouTube",
+    es = u"Video de YouTube",
+    en = u"YouTube video"
+)
+
+translations.define("YouTubeBlock-plural",
+    ca = u"Vídeos de YouTube",
+    es = u"Videos de YouTube",
+    en = u"YouTube videos"
+)
+
+translations.define("YouTubeBlock.video",
+    ca = u"Vídeo",
+    es = u"Video",
+    en = u"Video"
+)
+
+translations.define("YouTubeBlock.video_id",
+    ca = u"Identificador del vídeo",
+    es = u"Identificador del video",
+    en = u"Video ID"
+)
+
+translations.define("YouTubeBlock.width",
+    ca = u"Amplada",
+    es = u"Ancho",
+    en = u"Width"
+)
+
+translations.define("YouTubeBlock.height",
+    ca = u"Alçada",
+    es = u"Alto",
+    en = u"Ancho"
+)
+
+translations.define("YouTubeBlock.allow_fullscreen",
+    ca = u"Permetre pantalla completa",
+    es = u"Permitir pantalla completa",
+    en = u"Allow fullscreen"
+)
+
+translations.define("YouTubeBlock.autoplay",
+    ca = u"Iniciar la reproducció automàticament",
+    es = u"Iniciar la reproducción automáticamente",
+    en = u"Autoplay"
+)
+
+translations.define("YouTubeBlock.show_related_videos",
+    ca = u"Mostrar vídeos relacionats",
+    es = u"Mostrar videos relacionados",
+    en = u"Show related videos"
+)
+
