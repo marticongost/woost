@@ -30,15 +30,12 @@
 }
 
 /* Column (both left and right) */
-.TextBlockView.column_left,
-.TextBlockView.column_right {
+.TextBlockView .columns_wrapper {
     display: table-row;
 }
 
-.TextBlockView.column_left > .image_gallery,
-.TextBlockView.column_left > .text_container,
-.TextBlockView.column_right > .image_gallery,
-.TextBlockView.column_right > .text_container {
+.TextBlockView .columns_wrapper > .image_gallery,
+.TextBlockView .columns_wrapper > .text_container {
     display: table-cell;
     vertical-align: top;
 }

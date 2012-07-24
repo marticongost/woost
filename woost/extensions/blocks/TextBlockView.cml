@@ -19,6 +19,10 @@ from cocktail.controllers import Location
         <?py
         self.add_class(self.block.image_alignment)
         self._images = [image for image in self.block.images if image.is_accessible()]
+        self._column_layout = (self.block.image_alignment in ("column_left", "column_right"))
+
+        if self._column_layout:
+            self.columns_wrapper.tag = "div"
 
         if self._images and self.block.image_alignment == "background":
             image_uri = self._images[0].get_image_uri(self.block.image_thumbnail_factory)
@@ -45,21 +49,23 @@ from cocktail.controllers import Location
         ?>
     </py:ready>
 
-    <py:woost.views.ImageGallery
-        py:id="image_gallery"
-        py:images="@{self._images}"
-        py:accessible_check="${False}"
-        py:visible="@{self._images and self.block.image_alignment != 'background'}"
-        py:thumbnail_factory="@{self.block.image_thumbnail_factory}"
-        py:close_up_enabled="@{self.block.image_close_up_enabled}"
-        py:close_up_factory="@{self.block.image_close_up_factory}"
-        py:close_up_preload="@{self.block.image_close_up_preload}"
-        py:labels_visible="@{self.block.image_labels_visible}"
-        py:original_link_visible="@{self.block.image_original_link_visible}"/>
+    <py:block py:id="columns_wrapper">
+        <py:woost.views.ImageGallery
+            py:id="image_gallery"
+            py:images="@{self._images}"
+            py:accessible_check="${False}"
+            py:visible="@{self._images and self.block.image_alignment != 'background'}"
+            py:thumbnail_factory="@{self.block.image_thumbnail_factory}"
+            py:close_up_enabled="@{self.block.image_close_up_enabled}"
+            py:close_up_factory="@{self.block.image_close_up_factory}"
+            py:close_up_preload="@{self.block.image_close_up_preload}"
+            py:labels_visible="@{self.block.image_labels_visible}"
+            py:original_link_visible="@{self.block.image_original_link_visible}"/>
 
-    <div py:id="text_container" py:visible="@{bool(self.block.text)}">
-        @{self.block.text}
-    </div>
+        <div py:id="text_container" py:visible="@{bool(self.block.text)}">
+            @{self.block.text}
+        </div>
+    </py:block>
 
     <py:ready>
         <?py
@@ -68,10 +74,7 @@ from cocktail.controllers import Location
             if self.block.image_alignment in ["column_right", "center_bottom"]:
                 self.image_gallery.place_after(self.text_container)
 
-            if (
-                self.enable_ie_table_layout_workaround
-                and self.block.image_alignment in ("column_left", "column_right")
-            ):  
+            if self._column_layout and self.enable_ie_table_layout_workaround:
                 self.insert(0, self.create_ie_table_layout_workaround("<table class='ie_layout_workaround'><tr>"))
                 self.create_ie_table_layout_workaround("<td class='image_gallery_cell' valign='top'>").place_before(self.image_gallery)
                 self.create_ie_table_layout_workaround("</td>").place_after(self.image_gallery)
