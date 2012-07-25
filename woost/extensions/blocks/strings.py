@@ -909,6 +909,12 @@ translations.define("YouTubeBlock.autoplay",
     en = u"Autoplay"
 )
 
+translations.define("YouTubeBlock.show_info",
+    ca = u"Sobreimpressionar el títol del vídeo",
+    es = u"Sobreimpresionar el título del video",
+    en = u"Overlay the video title"
+)
+
 translations.define("YouTubeBlock.show_related_videos",
     ca = u"Mostrar vídeos relacionats",
     es = u"Mostrar videos relacionados",
