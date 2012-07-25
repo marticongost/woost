@@ -10,7 +10,8 @@ from woost.models import Language
     <py:with py:element="self.content_preview">
         <div py:id="text_preview">
             <py:ready>
-                <py:new 
+                <py:new
+                    py:if="self.block.element_type != 'dd'"
                     py:element="self.create_translation_preview(language)"
                     py:for="language in Language.codes"
                     py:where="self.block.get('text', language)"/>
