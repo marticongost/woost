@@ -46,7 +46,7 @@ from woost.extensions.blocks.blockactions import get_clipboard_contents
                 @{translations(type(self.block).name)}
             </span>
             <span py:local_id="block_title" py:visible="@{self.block.heading}">
-                (@{self.block.heading})
+                - @{self.block.heading}
             </span>
         </py:with>
         <py:with py:element="element.panel">

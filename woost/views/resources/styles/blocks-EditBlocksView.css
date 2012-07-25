@@ -47,6 +47,14 @@
     margin-left: 0.5em;
 }
 
+.EditBlocksView .EditBlocksSlotList .block_type {
+    font-size: 0.9em;
+}
+
+.EditBlocksView .EditBlocksSlotList .block_title {
+    color: #333;
+}
+
 /* Block picker dialog
 -----------------------------------------------------------------------------*/
 .block_picker_dialog {
