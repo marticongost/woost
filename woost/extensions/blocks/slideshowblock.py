@@ -6,6 +6,7 @@ u"""
 from cocktail import schema
 from cocktail.html import templates
 from woost.extensions.blocks.containerblock import Block
+from woost.extensions.blocks.utils import create_block_views
 
 
 class SlideShowBlock(Block):
@@ -78,7 +79,6 @@ class SlideShowBlock(Block):
         view.navigation_controls = self.navigation_controls
         view.bullet_controls = self.bullet_controls
 
-        for slide in self.slides:
-            if slide.is_published():
-                view.slides.append(slide.create_view())
+        for block_view in create_block_views(self.slides):
+            view.slides.append(block_view)
 
