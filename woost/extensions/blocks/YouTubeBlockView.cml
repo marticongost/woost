@@ -10,6 +10,7 @@
     height = 385
     allow_fullscreen = True
     autoplay = False
+    show_info = False
     show_related_videos = False
     ?>
 
@@ -19,6 +20,7 @@
         py:height="@{self.height}"
         py:allow_fullscreen="@{self.allow_fullscreen}"
         py:autoplay="@{self.autoplay}"
+        py:show_info="@{self.show_info}"
         py:show_related_videos="@{self.show_related_videos}"/>
 </div>
 

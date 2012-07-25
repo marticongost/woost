@@ -31,6 +31,7 @@ class YouTubeBlock(Block):
         "height",
         "allow_fullscreen",
         "autoplay",
+        "show_info",
         "show_related_videos"
     ]
 
@@ -69,6 +70,13 @@ class YouTubeBlock(Block):
         member_group = "video"
     )
 
+    show_info = schema.Boolean(
+        required = True,
+        default = False,
+        listed_by_default = False,
+        member_group = "video"
+    )
+
     show_related_videos = schema.Boolean(
         required = True,
         default = False,
@@ -83,5 +91,6 @@ class YouTubeBlock(Block):
         view.height = self.height
         view.allow_fullscreen = self.allow_fullscreen
         view.autoplay = self.autoplay
+        view.show_info = self.show_info
         view.show_related_videos = self.show_related_videos
 
