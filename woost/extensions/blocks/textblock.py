@@ -63,6 +63,7 @@ class TextBlock(Block):
     ]
 
     members_order = [
+        "element_type",
         "text",
         "images",
         "image_alignment",
@@ -76,6 +77,22 @@ class TextBlock(Block):
         "link_parameters",
         "link_opens_in_new_window"
     ]
+
+    element_type = schema.String(
+        required = True,
+        default = "section",
+        enumeration = [
+            "div",
+            "section",
+            "article",
+            "details",
+            "aside",
+            "header",
+            "footer",
+            "dd"
+        ],
+        member_group = "content"
+    )
 
     text = schema.String(
         edit_control = "woost.views.RichTextEditor",
@@ -114,6 +131,7 @@ class TextBlock(Block):
     )
 
     image_close_up_enabled = schema.Boolean(
+        required = True,
         default = False,
         member_group = "images"
     )
@@ -160,4 +178,18 @@ class TextBlock(Block):
         required = True,
         member_group = "link"
     )
+
+    def init_view(self, view):
+        Block.init_view(self, view)
+        
+        if self.element_type == "dd":
+            view.tag = None
+            view.content_wrapper.tag = "dd"
+        else:
+            view.tag = self.element_type
+
+    def get_block_proxy(self, view):
+        if self.element_type == "dd":
+            return view.content_wrapper
+        return view
 

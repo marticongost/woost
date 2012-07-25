@@ -10,15 +10,12 @@ from cocktail import schema
 from cocktail.html import templates, Element
 from woost.models import Item, Publishable, Site
 
-default_tag = object()
-
 
 class Block(Item):    
 
     instantiable = False
     visible_from_root = False
     view_class = None
-    tag = default_tag
     block_display = "woost.extensions.blocks.BlockDisplay"
 
     groups_order = [
@@ -54,7 +51,8 @@ class Block(Item):
             "h3",
             "h4",
             "h5",
-            "h6"
+            "h6",
+            "dt"
         ],
         required = heading,
         member_group = "content"
@@ -106,9 +104,9 @@ class Block(Item):
 
     def init_view(self, view):
         view.block = self
-        view.set_client_param("blockId", self.id)
-        
-        view.add_class("block")
+        block_proxy = self.get_block_proxy(view)
+        block_proxy.set_client_param("blockId", self.id)
+        block_proxy.add_class("block")
  
         if self.html_attributes:
             for line in self.html_attributes.split("\n"):
@@ -117,7 +115,7 @@ class Block(Item):
                 except:
                     pass
                 else:
-                    view[key.strip()] = value.strip()
+                    block_proxy[key.strip()] = value.strip()
 
         if self.inline_css_styles:
             for line in self.inline_css_styles.split(";"):
@@ -126,21 +124,21 @@ class Block(Item):
                 except:
                     pass
                 else:
-                    view.set_style(key.strip(), value.strip())
+                    block_proxy.set_style(key.strip(), value.strip())
 
         if self.css_class:
-            view.add_class(self.css_class)
+            block_proxy.add_class(self.css_class)
 
-        view.add_class("block%d" % self.id)
+        block_proxy.add_class("block%d" % self.id)
         
         if self.qname:
-            view.add_class(self.qname.replace(".", "-"))
-
-        if self.tag is not default_tag:
-            view.tag = self.tag
+            block_proxy.add_class(self.qname.replace(".", "-"))
 
         if self.heading:
             self.add_heading(view)
+
+    def get_block_proxy(self, view):
+        return view
 
     def add_heading(self, view):
         if self.heading_type != "hidden":
@@ -151,12 +149,8 @@ class Block(Item):
                 view.insert(0, view.heading)
 
     def create_heading(self):
-        if self.heading_type in ("h1", "h2", "h3", "h4", "h5", "h6"):
-            heading = Element(self.heading_type)
-        else:
-            heading = Element()
-            heading.add_class("heading")
-
+        heading = Element(self.heading_type)
+        heading.add_class("heading")
         heading.append(self.heading)
         return heading
 

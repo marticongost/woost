@@ -123,17 +123,23 @@ translations.define("Block.heading_type=hidden",
 )
 
 translations.define("Block.heading_type=generic",
-    ca = u"Etiqueta genèrica",
-    es = u"Etiqueta genérica",
-    en = u"Generic label"
+    ca = u"Etiqueta genèrica (div)",
+    es = u"Etiqueta genérica (div)",
+    en = u"Generic label (div)"
 )
 
 for level in range(1, 7):
     translations.define("Block.heading_type=h" + str(level),
-        ca = u"H" + str(level),
-        es = u"H" + str(level),
-        en = u"H" + str(level)
+        ca = u"Encapçalament %d" % level,
+        es = u"Encabezado %d" % level,
+        en = u"Heading %d" % level
     )
+
+translations.define("Block.heading_type=dt",
+    ca = u"Terme (dt)",
+    es = u"Término (dt)",
+    en = u"Term (dt)"
+)
 
 translations.define("Block.html_attributes",
     ca = u"Atributs HTML",
@@ -164,6 +170,64 @@ translations.define("Block.controller",
     es = u"Controlador",
     en = u"Controller"
 )
+
+
+
+for block_type in "TextBlock", "ContainerBlock":
+
+    translations.define(block_type + ".element_type",
+        ca = u"Tipus d'element",
+        es = u"Tipo de elemento",
+        en = u"Element type"
+    )
+
+    translations.define(block_type + ".element_type=div",
+        ca = u"Element genèric (div)",
+        es = u"Elemento genérico (div)",
+        en = u"Generic element (div)"
+    )
+
+    translations.define(block_type + ".element_type=section",
+        ca = u"Secció",
+        es = u"Sección",
+        en = u"Section"
+    )
+
+    translations.define(block_type + ".element_type=article",
+        ca = u"Article",
+        es = u"Artículo",
+        en = u"Article"
+    )
+
+    translations.define(block_type + ".element_type=details",
+        ca = u"Detalls",
+        es = u"Detalles",
+        en = u"Details"
+    )
+
+    translations.define(block_type + ".element_type=aside",
+        ca = u"Contingut suplementari (aside)",
+        es = u"Contenido suplementario (aside)",
+        en = u"Tangentially related content (aside)"
+    )
+
+    translations.define(block_type + ".element_type=header",
+        ca = u"Capçalera",
+        es = u"Cabecera",
+        en = u"Header"
+    )
+
+    translations.define(block_type + ".element_type=footer",
+        ca = u"Peu",
+        es = u"Pie",
+        en = u"Footer"
+    )
+
+    translations.define(block_type + ".element_type=dd",
+        ca = u"Definició (dd)",
+        es = u"Definición (dd)",
+        en = u"Definition (dd)"
+    )
 
 # CustomBlock
 #------------------------------------------------------------------------------
@@ -211,28 +275,40 @@ translations.define("ContainerBlock.blocks",
     en = u"Child blocks"
 )
 
-translations.define("ContainerBlock.view_class",
-    ca = u"Tipus de contenidor",
-    es = u"Tipo de contenedor",
-    en = u"Container type"
+translations.define("ContainerBlock.element_type",
+    ca = u"Tipus d'element",
+    es = u"Tipo de elemento",
+    en = u"Element type"
 )
 
-translations.define("ContainerBlock.view_class=woost.extensions.blocks.BlockList",
-    ca = u"Contenidor genèric",
-    es = u"Contenedor genérico",
-    en = u"Generic container"
+translations.define("ContainerBlock.list_type",
+    ca = u"Tipus de llista",
+    es = u"Tipo de lista",
+    en = u"List type"
 )
 
-translations.define("ContainerBlock.view_class=woost.extensions.blocks.UnorderedBlockList",
+translations.define("ContainerBlock.list_type=div",
+    ca = u"Element genèric (div)",
+    es = u"Elemento genérico (div)",
+    en = u"Generic element (div)"
+)
+
+translations.define("ContainerBlock.list_type=ul",
     ca = u"Llista",
     es = u"Lista",
     en = u"List"
 )
 
-translations.define("ContainerBlock.view_class=woost.extensions.blocks.OrderedBlockList",
+translations.define("ContainerBlock.list_type=ol",
     ca = u"Llista ordenada",
     es = u"Lista ordenada",
     en = u"Ordered list"
+)
+
+translations.define("ContainerBlock.list_type=dl",
+    ca = u"Llista de definició",
+    es = u"Lista de definición",
+    en = u"Definition list"
 )
 
 # SlideShowBlock

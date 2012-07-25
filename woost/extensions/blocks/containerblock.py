@@ -11,6 +11,42 @@ class ContainerBlock(Block):
 
     instantiable = True
 
+view_class = "woost.extensions.blocks.ContainerBlockView"
+
+    members_order = [
+        "element_type",
+        "list_type",
+        "block_formats"
+    ]
+
+    element_type = schema.String(
+        required = True,
+        default = "div",
+        enumeration = [
+            "div",
+            "section",
+            "article",
+            "details",
+            "aside",
+            "header",
+            "footer",
+            "dd"
+        ],
+        member_group = "content"
+    )
+
+    list_type = schema.String(
+        required = True,
+        default = "div",
+        enumeration = [
+            "div",
+            "ul",
+            "ol",
+            "dl"
+        ],
+        member_group = "content"
+    )
+
     blocks = schema.Collection(
         items = schema.Reference(type = Block),
         related_end = schema.Collection(),
@@ -18,20 +54,21 @@ class ContainerBlock(Block):
         member_group = "content"
     )
 
-    view_class = schema.String(
-        shadows_attribute = True,
-        required = True,
-        default = "woost.extensions.blocks.BlockList",
-        enumeration = [
-            "woost.extensions.blocks.BlockList",
-            "woost.extensions.blocks.UnorderedBlockList",
-            "woost.extensions.blocks.OrderedBlockList"
-        ],
-        member_group = "content"
-    )
-
     def init_view(self, view):
         Block.init_view(self, view)
+
+        if self.element_type == "dd":
+            view.tag = None
+            view.blocks_list.tag = "dd"
+        else:
+            view.tag = self.element_type
+
+        view.blocks_list.tag = self.list_type
         view.blocks = self.blocks
+        return view
+
+    def get_block_proxy(self, view):
+        if self.element_type == "dd":
+            return view.blocks_list
         return view
 

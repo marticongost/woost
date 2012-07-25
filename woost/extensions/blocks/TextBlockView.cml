@@ -22,7 +22,8 @@ from cocktail.controllers import Location
         self._column_layout = (self.block.image_alignment in ("column_left", "column_right"))
 
         if self._column_layout:
-            self.columns_wrapper.tag = "div"
+            self.content_wrapper.tag = "div"
+            self.content_wrapper.add_class("columns_wrapper")
 
         if self._images and self.block.image_alignment == "background":
             image_uri = self._images[0].get_image_uri(self.block.image_thumbnail_factory)
@@ -49,7 +50,7 @@ from cocktail.controllers import Location
         ?>
     </py:ready>
 
-    <py:block py:id="columns_wrapper">
+    <py:block py:id="content_wrapper">
         <py:woost.views.ImageGallery
             py:id="image_gallery"
             py:images="@{self._images}"

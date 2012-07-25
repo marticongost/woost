@@ -67,6 +67,7 @@ class BlocksExtension(Extension):
             blockactions,
             site,
             imagefactory,
+            utils,
             migration
         )
 

@@ -1493,6 +1493,12 @@ translations.define("woost.views.BaseView alternate language link",
     en = lambda lang: translations(lang, "en") + " version"
 )
 
+translations.define("woost.views.StandardView.navigation_title",
+    ca = u"Menú principal",
+    es = u"Menú principal",
+    en = u"Main navigation"
+)
+
 translations.define("woost.views.StandardView attachment icon description",
     ca = u"Icona",
     es = u"Icono",
