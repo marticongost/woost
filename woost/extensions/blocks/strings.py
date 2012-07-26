@@ -128,6 +128,12 @@ translations.define("Block.heading_type=generic",
     en = u"Generic label (div)"
 )
 
+translations.define("Block.heading_type=hidden_h1",
+    ca = u"Encapçalament de secció ocult",
+    es = u"Encabezado de sección oculto",
+    en = u"Hidden section heading"
+)
+
 for level in range(1, 7):
     translations.define("Block.heading_type=h" + str(level),
         ca = u"Encapçalament %d" % level,

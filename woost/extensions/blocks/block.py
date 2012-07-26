@@ -45,6 +45,7 @@ class Block(Item):
         default = "hidden",
         enumeration = [
             "hidden",
+            "hidden_h1",
             "generic",
             "h1",
             "h2",
@@ -149,7 +150,13 @@ class Block(Item):
                 view.insert(0, view.heading)
 
     def create_heading(self):
-        heading = Element(self.heading_type)
+
+        if self.heading_type == "hidden_h1":
+            heading = Element("h1")
+            heading.set_style("display", "none")
+        else:
+            heading = Element(self.heading_type)
+
         heading.add_class("heading")
         heading.append(self.heading)
         return heading
