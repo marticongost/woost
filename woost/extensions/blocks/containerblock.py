@@ -14,8 +14,7 @@ class ContainerBlock(Block):
 
     members_order = [
         "element_type",
-        "list_type",
-        "block_formats"
+        "list_type"
     ]
 
     element_type = schema.String(
@@ -29,6 +28,7 @@ class ContainerBlock(Block):
             "aside",
             "header",
             "footer",
+            "nav",
             "dd"
         ],
         member_group = "content"

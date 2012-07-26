@@ -223,6 +223,12 @@ for block_type in "TextBlock", "ContainerBlock":
         en = u"Footer"
     )
 
+    translations.define(block_type + ".element_type=nav",
+        ca = u"Navegació",
+        es = u"Navegación",
+        en = u"Navigation"
+    )
+
     translations.define(block_type + ".element_type=dd",
         ca = u"Definició (dd)",
         es = u"Definición (dd)",
