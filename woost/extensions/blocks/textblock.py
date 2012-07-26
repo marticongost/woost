@@ -89,6 +89,7 @@ class TextBlock(Block):
             "aside",
             "header",
             "footer",
+            "nav",
             "dd"
         ],
         member_group = "content"
