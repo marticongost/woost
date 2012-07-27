@@ -47,7 +47,7 @@ cocktail.bind(".block", function ($block) {
     $block
         .click(function (e) {
             if (jQuery(this).closest("body.editing").length) {
-                location.href = jQuery(".block_entry_" + this.blockId + " a").attr("href");
+                location.href = woost.backofficeURI + "/content/" + this.blockId;
                 return false;
             }
         })
