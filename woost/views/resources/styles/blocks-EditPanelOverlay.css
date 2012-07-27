@@ -51,17 +51,12 @@
 }
 
 body.editing .block {
-    outline: 2px solid rgb(200,200,200) !important;
-    outline: 2px solid rgba(200,200,200,0.8) !important;
-    background: rgb(230,230,230) !important;
-    background: rgba(230,230,230,0.8) !important;
-    cursor: pointer;
+    outline: 1px solid #ccc !important;
+    cursor: pointer !important;
 }
 
 body.editing .highlighted_block {
-    outline: 2px solid rgb(50,100,150) !important;
-    outline: 2px solid rgba(50,100,150,0.4) !important;
-    background: rgb(180,215,255) !important;
-    background: rgba(50,100,150,0.3) !important;
+    outline: 2px solid #05b !important;
+    background-color: #cbd6e3;
 }
 
