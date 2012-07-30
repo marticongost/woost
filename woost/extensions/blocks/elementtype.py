@@ -10,7 +10,7 @@ from cocktail import schema
 class ElementType(schema.String):
 
     required = True
-    default = "section"
+    default = "div"
     enumeration = [
         "div",
         "section",
