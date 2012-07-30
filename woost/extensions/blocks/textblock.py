@@ -11,6 +11,7 @@ from cocktail.html.datadisplay import display_factory
 from woost.models import Site, Publishable, File
 from woost.models.rendering import ImageFactory
 from woost.extensions.blocks.block import Block
+from woost.extensions.blocks.elementtype import ElementType
 
 def _iter_block_image_factories():
     for factory in Site.main.image_factories:
@@ -78,20 +79,7 @@ class TextBlock(Block):
         "link_opens_in_new_window"
     ]
 
-    element_type = schema.String(
-        required = True,
-        default = "section",
-        enumeration = [
-            "div",
-            "section",
-            "article",
-            "details",
-            "aside",
-            "header",
-            "footer",
-            "nav",
-            "dd"
-        ],
+    element_type = ElementType(
         member_group = "content"
     )
 

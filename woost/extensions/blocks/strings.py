@@ -72,6 +72,62 @@ translations.define("woost.extensions.blocks.blocks_page_template.title",
     en = u"Blocks page template"
 )
 
+# Element types
+#------------------------------------------------------------------------------
+translations.define("woost.extensions.blocks.ElementType=div",
+    ca = u"Element genèric (div)",
+    es = u"Elemento genérico (div)",
+    en = u"Generic element (div)"
+)
+
+translations.define("woost.extensions.blocks.ElementType=section",
+    ca = u"Secció",
+    es = u"Sección",
+    en = u"Section"
+)
+
+translations.define("woost.extensions.blocks.ElementType=article",
+    ca = u"Article",
+    es = u"Artículo",
+    en = u"Article"
+)
+
+translations.define("woost.extensions.blocks.ElementType=details",
+    ca = u"Detalls",
+    es = u"Detalles",
+    en = u"Details"
+)
+
+translations.define("woost.extensions.blocks.ElementType=aside",
+    ca = u"Contingut suplementari (aside)",
+    es = u"Contenido suplementario (aside)",
+    en = u"Tangentially related content (aside)"
+)
+
+translations.define("woost.extensions.blocks.ElementType=header",
+    ca = u"Capçalera",
+    es = u"Cabecera",
+    en = u"Header"
+)
+
+translations.define("woost.extensions.blocks.ElementType=footer",
+    ca = u"Peu",
+    es = u"Pie",
+    en = u"Footer"
+)
+
+translations.define("woost.extensions.blocks.ElementType=nav",
+    ca = u"Navegació",
+    es = u"Navegación",
+    en = u"Navigation"
+)
+
+translations.define("woost.extensions.blocks.ElementType=dd",
+    ca = u"Definició (dd)",
+    es = u"Definición (dd)",
+    en = u"Definition (dd)"
+)
+
 # Block
 #------------------------------------------------------------------------------
 translations.define("Block",
@@ -176,71 +232,7 @@ translations.define("Block.controller",
     es = u"Controlador",
     en = u"Controller"
 )
-
-
-
-for block_type in "TextBlock", "ContainerBlock":
-
-    translations.define(block_type + ".element_type",
-        ca = u"Tipus d'element",
-        es = u"Tipo de elemento",
-        en = u"Element type"
-    )
-
-    translations.define(block_type + ".element_type=div",
-        ca = u"Element genèric (div)",
-        es = u"Elemento genérico (div)",
-        en = u"Generic element (div)"
-    )
-
-    translations.define(block_type + ".element_type=section",
-        ca = u"Secció",
-        es = u"Sección",
-        en = u"Section"
-    )
-
-    translations.define(block_type + ".element_type=article",
-        ca = u"Article",
-        es = u"Artículo",
-        en = u"Article"
-    )
-
-    translations.define(block_type + ".element_type=details",
-        ca = u"Detalls",
-        es = u"Detalles",
-        en = u"Details"
-    )
-
-    translations.define(block_type + ".element_type=aside",
-        ca = u"Contingut suplementari (aside)",
-        es = u"Contenido suplementario (aside)",
-        en = u"Tangentially related content (aside)"
-    )
-
-    translations.define(block_type + ".element_type=header",
-        ca = u"Capçalera",
-        es = u"Cabecera",
-        en = u"Header"
-    )
-
-    translations.define(block_type + ".element_type=footer",
-        ca = u"Peu",
-        es = u"Pie",
-        en = u"Footer"
-    )
-
-    translations.define(block_type + ".element_type=nav",
-        ca = u"Navegació",
-        es = u"Navegación",
-        en = u"Navigation"
-    )
-
-    translations.define(block_type + ".element_type=dd",
-        ca = u"Definició (dd)",
-        es = u"Definición (dd)",
-        en = u"Definition (dd)"
-    )
-
+    
 # CustomBlock
 #------------------------------------------------------------------------------
 translations.define("CustomBlock",
@@ -464,6 +456,12 @@ translations.define("TextBlock-plural",
     ca = u"Text + imatges",
     es = u"Texto + imágenes",
     en = u"Text + images"
+)
+
+translations.define("TextBlock.element_type",
+    ca = u"Tipus d'element",
+    es = u"Tipo de elemento",
+    en = u"Element type"
 )
 
 translations.define("TextBlock.link",
@@ -1008,4 +1006,5 @@ translations.define("YouTubeBlock.show_related_videos",
     es = u"Mostrar videos relacionados",
     en = u"Show related videos"
 )
+
 

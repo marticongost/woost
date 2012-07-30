@@ -5,6 +5,7 @@ u"""
 """
 from cocktail import schema
 from woost.extensions.blocks.block import Block
+from woost.extensions.blocks.elementtype import ElementType
 
 
 class ContainerBlock(Block):
@@ -17,20 +18,7 @@ class ContainerBlock(Block):
         "list_type"
     ]
 
-    element_type = schema.String(
-        required = True,
-        default = "div",
-        enumeration = [
-            "div",
-            "section",
-            "article",
-            "details",
-            "aside",
-            "header",
-            "footer",
-            "nav",
-            "dd"
-        ],
+    element_type = ElementType(
         member_group = "content"
     )
 
