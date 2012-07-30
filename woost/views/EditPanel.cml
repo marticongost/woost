@@ -3,7 +3,8 @@
 from cocktail.controllers import context
 from woost.models import (
     get_current_user,
-    ModifyPermission
+    ModifyPermission,
+    Publishable
 )
 ?>
 
@@ -22,6 +23,10 @@ from woost.models import (
 
     <py:binding>
         <?py
+        backoffice = Publishable.get_instance(qname = "woost.backoffice")
+        if backoffice:
+            self.set_client_variable("woost.backofficeURI", backoffice.get_uri())
+
         if self.publishable is None:
             self.publishable = context["publishable"]
 
