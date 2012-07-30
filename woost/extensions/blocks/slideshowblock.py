@@ -6,6 +6,7 @@ u"""
 from cocktail import schema
 from cocktail.html import templates
 from woost.extensions.blocks.containerblock import Block
+from woost.extensions.blocks.elementtype import ElementType
 from woost.extensions.blocks.utils import create_block_views
 
 
@@ -23,6 +24,7 @@ class SlideShowBlock(Block):
     ]
 
     members_order = [
+        "element_type",
         "slides",
         "autoplay",
         "interval",
@@ -31,6 +33,17 @@ class SlideShowBlock(Block):
         "bullet_controls"
     ]
     
+    element_type = ElementType(
+        enumeration = list(ElementType.enumeration),
+        member_group = "content"
+    )
+
+    for et in ("nav", "dd"):
+        try:
+            element_type.enumeration.remove(et)
+        except:
+            pass
+
     slides = schema.Collection(
         items = schema.Reference(type = Block),
         related_end = schema.Collection(),
@@ -73,6 +86,7 @@ class SlideShowBlock(Block):
 
         Block.init_view(self, view)
 
+        view.tag = self.element_type
         view.autoplay = self.autoplay
         view.interval = self.interval
         view.transition_duration = self.transition_duration

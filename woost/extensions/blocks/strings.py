@@ -329,6 +329,12 @@ translations.define("SlideShowBlock-plural",
     en = u"Slide shows"
 )
 
+translations.define("SlideShowBlock.element_type",
+    ca = u"Tipus d'element",
+    es = u"Tipo de elemento",
+    en = u"Element type"
+)
+
 translations.define("SlideShowBlock.slides",
     ca = u"Diapositives",
     es = u"Diapositivas",
