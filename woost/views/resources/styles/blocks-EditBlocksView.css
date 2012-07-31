@@ -69,9 +69,13 @@
 .block_picker_dialog .new_blocks_panel,
 .block_picker_dialog .common_blocks_panel {
     display: inline-block;
-    max-height: 24em;
+    max-height: 30em;
     overflow: auto;
     vertical-align: top;
+}
+
+.block_picker_dialog .new_blocks_panel {
+    width: 20em;
 }
 
 .block_picker_dialog.with_common_blocks .new_blocks_panel {
