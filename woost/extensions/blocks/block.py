@@ -145,9 +145,13 @@ class Block(Item):
         if self.heading_type != "hidden":
             if hasattr(view, "heading"):
                 view.heading = self.heading
-            else:                
+            else:
+                insert_heading = getattr(view, "insert_heading", None)
                 view.heading = self.create_heading()
-                view.insert(0, view.heading)
+                if insert_heading:
+                    insert_heading(view.heading)
+                else:
+                    view.insert(0, view.heading)
 
     def create_heading(self):
 
