@@ -386,7 +386,7 @@ translations.define("SlideShowBlock.transition_duration",
     en = u"Transition duration"
 )
 
-translations.define("SlideShowBlock.interval-explanation",
+translations.define("SlideShowBlock.transition_duration-explanation",
     ca = u"Especifica la duració de l'efecte de transició, en milisegons",
     es = u"Especifica la duración del efecto de transición, en milisegundos",
     en = u"Sets the duration of the slide transition effect, in milliseconds"
