@@ -3,11 +3,15 @@ u"""
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
-from cocktail.html import Element
+from cocktail.html import Element, first_last_classes
 from woost.extensions.blocks.utils import create_block_views
 
 
 class BlockList(Element):
+
+    def __init__(self, *args, **kwargs):
+        Element.__init__(self, *args, **kwargs)
+        first_last_classes(self)
 
     def _build(self):
         self.blocks_container = self
