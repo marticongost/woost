@@ -36,6 +36,14 @@ translations.define("Site.common_blocks",
     en = u"Common blocks"
 )
 
+# News
+#------------------------------------------------------------------------------
+translations.define("News.blocks",
+    ca = u"Blocs",
+    es = u"Bloques",
+    en = u"Blocks"
+)
+
 # ImageFactory
 #------------------------------------------------------------------------------
 translations.define("ImageFactory.applicable_to_blocks",
