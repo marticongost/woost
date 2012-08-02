@@ -39,6 +39,11 @@
     float: right;
 }
 
+.TextBlockView.float_top_right .image_gallery .image_entry {
+    margin-right: 0;
+    margin-left: 1em;
+}
+
 /* Column (both left and right) */
 .TextBlockView .columns_wrapper {
     display: table-row;
