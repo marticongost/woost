@@ -3426,6 +3426,12 @@ translations.define("News-none",
     es = u"Ninguna"
 )
 
+translations.define("News.news_date",
+    ca = u"Data de la notícia",
+    es = u"Fecha de la noticia",
+    en = u"News date"
+)
+
 translations.define("News.summary",
     ca = u"Sumari",
     es = u"Sumario",
