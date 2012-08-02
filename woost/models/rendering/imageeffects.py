@@ -118,6 +118,11 @@ class Thumbnail(ImageEffect):
 
     instantiable = True
 
+    members_order = [
+        "width",
+        "height"
+    ]
+
     width = ImageSize()
 
     height = ImageSize()
