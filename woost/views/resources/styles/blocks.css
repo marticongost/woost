@@ -14,6 +14,12 @@
 }
 
 /* Top left */
+.TextBlockView.top_left .image_gallery .image_entry,
+.TextBlockView.top_right .image_gallery .image_entry {
+    display: inline-block;
+    vertical-align: top;
+}
+
 .TextBlockView.top_left .image_gallery .image_entry > a {
     text-align: left;
 }
