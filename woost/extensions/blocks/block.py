@@ -182,7 +182,7 @@ class Block(Item):
             and member.is_persistent_relation
             and issubclass(member.related_type, Block)
         ):
-            mode = schema.DEEP_COPY
+            mode = lambda block, member, value: not block.is_common_block
 
         return mode
 
