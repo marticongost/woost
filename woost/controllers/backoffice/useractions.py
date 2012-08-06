@@ -10,7 +10,11 @@ Declaration of back office actions.
 import cherrypy
 from cocktail.modeling import getter, ListWrapper
 from cocktail.translations import translations
-from cocktail.controllers import view_state, context as controller_context
+from cocktail.controllers import (
+    view_state,
+    Location,
+    context as controller_context
+)
 from cocktail import schema
 from woost.models import (
     Item,
@@ -176,6 +180,7 @@ class UserAction(object):
     min = 1
     max = 1
     direct_link = False
+    client_redirect = False
     link_target = None
     parameters = None
 
@@ -349,8 +354,9 @@ class UserAction(object):
         @param controller: The controller that invokes the action.
         @type controller: L{Controller<cocktail.controllers.controller.Controller>}
         """
-        raise cherrypy.HTTPRedirect(self.get_url(controller, selection))
-    
+        location = Location(self.get_url(controller, selection))
+        location.go(client_redirect = self.client_redirect)
+
     def get_url(self, controller, selection):
         """Produces the URL of the controller that handles the action
         execution. This is used by the default implementation of the L{invoke}
@@ -586,9 +592,10 @@ class OpenResourceAction(UserAction):
         "changelog"
     ])
     link_target = "_blank"
+    client_redirect = True
 
     def get_url(self, controller, selection):
-        return controller.context["cms"].uri(selection[0])
+        return selection[0].get_uri()
 
 
 class UploadFilesAction(UserAction):
