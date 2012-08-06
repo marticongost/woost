@@ -128,6 +128,7 @@ class ItemController(BaseBackOfficeController):
             location.method = "GET"
             location.params["edit_stack"] = edit_stack.to_param()
             location.params.pop("member", None)
+            location.hash = Location.empty_hash
             location.go()
 
         return edit_stack
