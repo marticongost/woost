@@ -2262,6 +2262,12 @@ translations.define("Publishable-plural",
     en = u"Publishable elements"
 )
 
+translations.define("Publishable.meta",
+    ca = u"Metadades",
+    es = u"Metadatos",
+    en = u"Metadata"
+)
+
 translations.define("Publishable.presentation",
     ca = u"Presentació",
     es = u"Presentación",
@@ -2495,12 +2501,6 @@ translations.define("Document.content",
     ca = u"Contingut",
     es = u"Contenido",
     en = u"Content"
-)
-
-translations.define("Document.meta",
-    ca = u"Metadades",
-    es = u"Metadatos",
-    en = u"Metadata"
 )
 
 translations.define("Document.meta.robots",
@@ -4337,12 +4337,6 @@ translations.define("Feed-plural",
     ca = u"Canals de sindicació",
     es = u"Canales de sindicación",
     en = u"Syndication feeds"
-)
-
-translations.define("Feed.meta",
-    ca = u"Metadades",
-    es = u"Metadatos",
-    en = u"Metadata"
 )
 
 translations.define("Feed.feed_items",
