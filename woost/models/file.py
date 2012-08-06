@@ -12,7 +12,9 @@ u"""
 import os
 import hashlib
 from mimetypes import guess_type
-from shutil import copy
+from shutil import copy, copyfileobj
+from urllib import urlopen
+from tempfile import mkdtemp
 from cocktail.events import event_handler
 from cocktail.memoryutils import format_bytes
 from cocktail import schema
@@ -91,7 +93,8 @@ class File(Publishable):
         dest = None,
         languages = None,
         hash = None,
-        encoding = "utf-8"):
+        encoding = "utf-8",
+        download_temp_folder = None):
         """Imports a file into the site.
         
         @param path: The path to the file that should be imported.
@@ -116,7 +119,20 @@ class File(Publishable):
 
         file_name = os.path.split(path)[1]
         title, ext = os.path.splitext(file_name)
-        
+
+        # Download remote files
+        if "://" in path:            
+            if not download_temp_folder:
+                download_temp_folder = mkdtemp()
+
+            response = urlopen(path)
+            temp_path = os.path.join(download_temp_folder, file_name)
+
+            with open(temp_path, "w") as temp_file:
+                copyfileobj(response, temp_file)
+
+            path = temp_path
+
         if encoding:
             if isinstance(title, str):
                 title = title.decode(encoding)
