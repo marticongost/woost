@@ -4,7 +4,10 @@ u"""
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
 import os
+import re
 import datetime
+from tempfile import mkdtemp
+from shutil import rmtree
 from subprocess import Popen, PIPE
 import Image
 from woost.models.file import File
