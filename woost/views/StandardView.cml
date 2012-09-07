@@ -11,6 +11,7 @@ from woost.models import Site
 
     <?py-class
     show_user_controls = True
+    attachments_icon_factory = "icon16"
 
     def get_title(self):
         return Site.main.home.title
@@ -125,10 +126,17 @@ from woost.models import Site
         ?>
 
         <ul py:id="attachments" py:collapsible="${True}">
+            <py:binding>
+                <?py
+                self._attachments = list(self.get_linked_attachments())
+                if not self._attachments:
+                    element.visible = False
+                ?>
+            </py:binding>
             <py:ready>
                 <py:new
                     py:element="self.create_attachment_entry(attachment)"
-                    py:for="attachment in self.get_linked_attachments()"/>
+                    py:for="attachment in self._attachments"/>
             </py:ready>
         </ul>
     </div>
@@ -136,9 +144,10 @@ from woost.models import Site
     <py:woost.views.EditLink py:def="edit_link" py:visible="@{element.visible and self.show_user_controls}"/>
 
     <li py:def="attachment_entry" py:args="attachment">
-        <a href="${self.cms.uri(attachment)}" title="${getattr(attachment, 'description', None)}">
-            <img
-                src="${attachment.get_image_uri('icon16')}"
+        <a href="${attachment.get_uri()}" title="${getattr(attachment, 'description', None)}">
+            <py:woost.views.Image
+                py:image="${attachment}"
+                py:image_factory="${self.attachments_icon_factory}"
                 alt="${translations('woost.views.StandardView attachment icon description')}"/>
             <span>${translations(attachment)}</span>
         </a>
