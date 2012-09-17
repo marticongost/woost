@@ -56,11 +56,10 @@
 }
 
 /* Center top */
-.TextBlockView.center_top .image_gallery {
-    text-align: center;
+.TextBlockView.center_top .image_gallery > ul {
+    text-align: center;    
 }
 
-.TextBlockView.center_top .image_gallery > ul {
+.TextBlockView.center_top .image_gallery > ul > li {
     display: inline-block;
 }
-
