@@ -296,6 +296,19 @@ class Publishable(Item):
             yield publishable
             publishable = publishable.parent
 
+    def descend_tree(self, include_self = False):
+        """Iterate over the item's descendants.
+        
+        @param include_self: Indicates if the object itself should be included
+            in the iteration.
+        @type include_self: bool
+
+        @return: An iterable sequence of publishable elements.
+        @rtype: L{Publishable} iterable sequence
+        """
+        if include_self:
+            yield self
+
     def descends_from(self, page):
         """Indicates if the object descends from the given document.
 
