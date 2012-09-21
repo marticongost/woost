@@ -68,7 +68,11 @@ class PDFRenderer(Renderer):
             while p.poll() is None:
                 if time() - start > timeout:
                     p.terminate()
-                    raise IOError("Timeout was reached")
+                    raise IOError(
+                        "PDF rendering timeout: '%s' took more than "
+                        "%.2f seconds"
+                        % (command, timeout)
+                    )
                 sleep(RESOLUTION)
 
             return Image.open(temp_image_file)
@@ -78,6 +82,12 @@ class PDFRenderer(Renderer):
 
     def last_change_in_appearence(self, item):
         return os.stat(item.file_path).st_mtime
+
+
+class PDFTimeoutError(IOError):
+    """An exception raised when a PDF rendering operation takes too long to
+    complete.
+    """
 
 
 try:
