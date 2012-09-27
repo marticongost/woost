@@ -112,7 +112,9 @@ class Block(Item):
         if self.html_attributes:
             for line in self.html_attributes.split("\n"):
                 try:
-                    key, value = line.split("=")
+                    pos = line.find("=")
+                    key = line[:pos]
+                    value = line[pos + 1:]
                 except:
                     pass
                 else:
