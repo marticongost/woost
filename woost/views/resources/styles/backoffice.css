@@ -693,6 +693,11 @@ body.scripted .BackOfficeLayout .Table .selection {
     background-color: rgb(220,223,227);
 }
 
+.BackOfficeLayout .ContentTable td,
+.BackOfficeLayout .ContentTable td * {
+    cursor: default;
+}
+
 .BackOfficeLayout .ContentTable th .selector > .label {
     background-position: right 0.5em;
     white-space: nowrap;
