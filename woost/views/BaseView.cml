@@ -94,8 +94,6 @@ from woost.models import Site, Publishable, Language
             self.page_title = self.get_content_title()
 
             # Meta tags
-            self.set_meta("Content-Language", language)
-            
             description = getattr(publishable, "description", None) or site.description
 
             if description:
