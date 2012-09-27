@@ -15,6 +15,7 @@ from woost.models import Site, Publishable, Language
     translation_members = ("body",)
     content_language = None
     fully_translated = True
+    head_end_html = ""
     body_end_html = ""
     base_url = None
     
