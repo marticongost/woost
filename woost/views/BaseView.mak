@@ -70,7 +70,8 @@ ${self.htmltag(self.attr.xmlns_definitions)}
     
     <head>        
         ${self.meta()}
-        ${self.resources()}        
+        ${self.resources()}
+        ${head_end_html or ""}
     </head>
 
     <body>
