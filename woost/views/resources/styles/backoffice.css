@@ -175,6 +175,15 @@ body {
     white-space: nowrap;
 }
 
+.BackOfficeLayout .Selector .column {
+    display: inline-block;
+    vertical-align: top;
+}
+
+.BackOfficeLayout .Selector .column + .column {
+    margin-left: 1.5em;
+}
+
 .TreeSelector li {
     list-style-type: none;
 }
