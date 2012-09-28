@@ -3030,12 +3030,28 @@ a.pickcolor span {
     display: inline;
     float: left;
     font-size: 85%;
-    margin-top: .45em;
+    line-height: 2em;
+    padding: 1px;
 }
 
 .BackOfficePreviewView .preview_language_selector .translations_selector {
     display: inline;
     float: left;
+}
+
+.BackOfficePreviewView .preview_language_selector .translations_selector .selector_content {
+    top: 2em;
+}
+
+.BackOfficePreviewView .preview_language_selector .translations_selector .label {
+    line-height: 2em;
+    font-size: 100%;
+    padding-top: 0;
+}
+
+.BackOfficePreviewView .preview_language_selector .translations_selector .language {
+    height: auto;
+    line-height: 1.6em;
 }
 
 /* Tweaks for password change process
