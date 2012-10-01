@@ -83,6 +83,7 @@ class SignUpController(FormControllerMixin, DocumentController):
         return form_schema
 
     def submit(self):
+
         FormControllerMixin.submit(self)
         publishable = self.context["publishable"]
 
@@ -96,10 +97,7 @@ class SignUpController(FormControllerMixin, DocumentController):
         if confirmation_email_template:
             instance.enabled = False
             instance.confirmed_email = False
-            confirmation_email_template.send({
-                "user": instance,
-                "confirmation_url": self.confirmation_url
-            })
+            confirmation_email_template.send(self.email_parameters)
             # Storing instance
             instance.insert()
             datastore.commit()
@@ -115,6 +113,14 @@ class SignUpController(FormControllerMixin, DocumentController):
             self.context["cms"].authentication.set_user_session(instance)
             # Redirecting to confirmation target
             raise cherrypy.HTTPRedirect(uri)
+
+    @cached_getter
+    def email_parameters(self):
+        parameters = {
+            "user": self.form_instance,
+            "confirmation_url": self.confirmation_url
+        }
+        return parameters
 
     @cached_getter
     def confirmation_url(self): 
