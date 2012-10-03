@@ -82,7 +82,7 @@ class AudioExtension(Extension):
 
         flac = AudioDecoder()
         flac.mime_type = "audio/flac"
-        flac.command = '/usr/bin/flac -d "%s"'
+        flac.command = '/usr/bin/flac -dsc "%s"'
         flac.insert()
         site.audio_decoders.append(flac)
 
@@ -100,10 +100,10 @@ class AudioExtension(Extension):
         site.audio_encoders.append(mp3)
 
         ogg = AudioEncoder()
-        ogg.identifier = "ogg-128"
+        ogg.identifier = "ogg-q5"
         ogg.mime_type = "audio/ogg"
         ogg.extension = ".ogg"
-        ogg.command = "/usr/bin/oggenc -b 128 - %s"
+        ogg.command = "/usr/bin/oggenc -q 5 - -o %s"
         ogg.insert()
         site.audio_encoders.append(ogg)
 
