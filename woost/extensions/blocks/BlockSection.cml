@@ -3,6 +3,7 @@
 from cocktail.controllers import Location
 from cocktail.controllers import context
 from woost.models import Publishable, ModifyPermission, get_current_user
+from woost.extensions.blocks.slot import Slot
 ?>
 
 <div py:id="blocks_section" 
@@ -29,14 +30,13 @@ from woost.models import Publishable, ModifyPermission, get_current_user
     ?>
 
     <py:ready>
-        <?py
-        self.add_class(self.slot + "_section")
+        <?py        
         self.block_edit_parameters["root_url"] = unicode(Location.get_current())
         ?>
     </py:ready>
 
     <div py:id="blocks_title" class="edit_panel_title">
-        @{translations("woost.extensions.blocks.slots." + self.slot)}
+        @{translations(self.slot)}
     </div>
 
     <div py:id="blocks_content" class="edit_panel_section_content">
@@ -51,8 +51,13 @@ from woost.models import Publishable, ModifyPermission, get_current_user
             <?py
             @extend(element)
             def get_child_items(tree, item):
-                blocks = getattr(item, "blocks", None)
-                return () if blocks is None else blocks
+                blocks = []
+                for member in item.__class__.ordered_members():
+                    if isinstance(member, Slot):
+                        value = item.get(member)
+                        if value:
+                            blocks.extend(value)
+                return blocks
 
             @extend(element)
             def get_item_label(tree, item):
