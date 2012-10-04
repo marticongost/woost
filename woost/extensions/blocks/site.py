@@ -6,13 +6,8 @@ u"""
 from cocktail import schema
 from woost.models import Site
 from woost.extensions.blocks.block import Block
+from woost.extensions.blocks.slot import Slot
 
 
-Site.add_member(
-    schema.Collection(
-        "common_blocks",
-        items = schema.Reference(type = Block),
-        related_end = schema.Reference()
-    )
-)
+Site.add_member(Slot("common_blocks"))
 

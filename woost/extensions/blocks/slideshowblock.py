@@ -5,7 +5,8 @@ u"""
 """
 from cocktail import schema
 from cocktail.html import templates
-from woost.extensions.blocks.containerblock import Block
+from woost.extensions.blocks.block import Block
+from woost.extensions.blocks.slot import Slot
 from woost.extensions.blocks.elementtype import ElementType
 from woost.extensions.blocks.utils import create_block_views
 
@@ -44,11 +45,7 @@ class SlideShowBlock(Block):
         except:
             pass
 
-    slides = schema.Collection(
-        items = schema.Reference(type = Block),
-        related_end = schema.Collection(),
-        member_group = "content"
-    )
+    slides = Slot()
 
     autoplay = schema.Boolean(
         required = True,

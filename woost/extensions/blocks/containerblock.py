@@ -5,6 +5,7 @@ u"""
 """
 from cocktail import schema
 from woost.extensions.blocks.block import Block
+from woost.extensions.blocks.slot import Slot
 from woost.extensions.blocks.elementtype import ElementType
 
 
@@ -34,12 +35,7 @@ class ContainerBlock(Block):
         member_group = "content"
     )
 
-    blocks = schema.Collection(
-        items = schema.Reference(type = Block),
-        related_end = schema.Collection(),
-        cascade_delete = True,
-        member_group = "content"
-    )
+    blocks = Slot()
 
     def init_view(self, view):
         Block.init_view(self, view)
