@@ -27,6 +27,7 @@
 
 .EditPanel .block_tree .entry_label {
     padding: 0.1em 0.3em;
+    display: block;
 }
 
 .EditPanel .block_tree .entry_label .qualifier_label {
