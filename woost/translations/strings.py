@@ -290,24 +290,21 @@ translations.define("creating",
 )
 
 translations.define("woost.views.BackOfficeLayout edit stack select",
-    ca = lambda type = None:
-        u"Seleccionar " + translations(type.name, "ca").lower()
-        if type
-        else u"seleccionar",
-    es = lambda type = None:
-        u"Seleccionar " + translations(type.name, "es").lower()
-        if type
-        else u"seleccionar",
-    en = lambda type = None:
-        u"Select " + translations(type.name, "en").lower()
-        if type
-        else u"select",
+    ca = lambda type = None, relation = None:
+        u"Seleccionar %s"
+        % translations(relation if relation else type.name).lower(),
+    es = lambda type = None, relation = None:
+        u"Seleccionar %s"
+        % translations(relation if relation else type.name).lower(),
+    en = lambda type = None, relation = None:
+        u"Select %s"
+        % translations(relation if relation else type.name).lower()
 )
 
 translations.define("woost.views.BackOfficeLayout edit stack add",
-    ca = u"afegir",
-    es = u"añadir",
-    en = u"add"
+    ca = lambda relation: u"Afegir %s" % translations(relation).lower(),
+    es = lambda relation: u"Añadir %s" % translations(relation).lower(),
+    en = lambda relation: u"Add %s" % translations(relation).lower()
 )
 
 translations.define("Backout",

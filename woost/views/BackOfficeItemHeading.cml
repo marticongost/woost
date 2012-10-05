@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?py
+from woost import app
+?>
+
+<div
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:py="http://www.whads.com/ns/cocktail/templates">
+
+    <?py-class
+    item = None
+    icon_factory = "backoffice_thumbnail"
+    ?>
+
+    <img py:id="item_icon">
+        <py:binding>
+            <?py
+            if self.item and self.item.is_inserted:
+                element["src"] = self.item.get_image_uri(self.icon_factory)
+            else:
+                element["src"] = app.icon_resolver.find_icon_url(self.item.__class__, 32)
+            ?>
+        </py:binding>
+    </img>
+
+    <div py:id="item_info">
+        <div py:id="item_translation">
+            <py:ready>
+                <?py
+                if self.item.is_inserted \
+                and not (self.item.is_draft and self.item.draft_source is None):
+                    context_desc = translations(self.item)
+                else:
+                    context_desc = translations("creating", content_type = self.item.__class__)
+                ?>
+                ${context_desc}
+            </py:ready>
+        </div>
+
+        <span py:id="item_type">
+            @{translations(self.item.__class__.name)}
+        </span>
+    </div>
+
+</div>
+

@@ -933,6 +933,39 @@ body.scripted .BackOfficeLayout .Table .selection {
     background-color: rgb(250,242,190);
 }
 
+.BackOfficeItemView h2 {
+    font-size: 1em;
+    font-weight: normal;
+    overflow: hidden;
+}
+
+.BackOfficeItemView h2 .item_icon {
+    float: left;
+    margin-right: 0.5em;
+}
+
+.BackOfficeItemView h2 .item_info {
+    float: left;
+}
+
+.BackOfficeItemView h2 .item_translation {
+    font-size: 1.1em;
+    font-weight: bold;
+    margin-bottom: 0.2em;
+}
+
+.BackOfficeItemView h2 .item_info > span {
+    font-size: 0.85em;
+    margin-top: 0.3em;
+    margin-right: 0.3em;
+    color: #333;
+}
+
+.BackOfficeItemView h2 .item_info .file_size,
+.BackOfficeItemView h2 .item_info .file_mime_type {
+    color: #666;
+}
+
 .BackOfficeLayout .changed {
     border: 1px solid #EBE3AF;
 }
@@ -2474,10 +2507,6 @@ button.TypeSelectorButton {
 .BackOfficeLayout .stack_node.top > .label {
     color: rgb(50,50,50);
     font-size: 100%;
-}
-
-.BackOfficeLayout .stack_node h2 {
-    display: none;
 }
 
 .BackOfficeLayout .stack_node .body {

@@ -16,9 +16,6 @@ from woost.extensions.blocks.block import Block
     ?>
 
     <py:with py:element="self.body">
-        <h2 py:id="body_header">
-            @{translations("woost.extensions.blocks.EditBlocksView.body_header", item = self.edited_item)}
-        </h2>
         <py:woost.views.ActionBar
             py:id="toolbar"
             py:tag="form"
