@@ -146,7 +146,15 @@ class Block(Item):
     def add_heading(self, view):
         if self.heading_type != "hidden":
             if hasattr(view, "heading"):
-                view.heading = self.heading
+                if isinstance(view.heading, Element):
+                    if self.heading_type == "hidden_h1":
+                        view.heading.tag = "h1"
+                        view.heading.set_style("display", "none")
+                    else:
+                        view.heading.tag = self.heading_type
+                    view.heading.append(self.heading)
+                else:
+                    view.heading = self.heading          
             else:
                 insert_heading = getattr(view, "insert_heading", None)
                 view.heading = self.create_heading()
