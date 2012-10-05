@@ -931,7 +931,7 @@ class SelectionNode(StackNode):
     def __translate__(self, language, **kwargs):
         return translations(
             "woost.views.BackOfficeLayout edit stack select",
-            type = self.content_type
+            relation = self.parent_node.member
         )
 
     def uri(self, **params):
@@ -955,9 +955,15 @@ class RelationNode(StackNode):
 
     def __translate__(self, language, **kwargs):
         if isinstance(self.member, schema.Collection):
-            return translations("woost.views.BackOfficeLayout edit stack add")
+            return translations(
+                "woost.views.BackOfficeLayout edit stack add",
+                relation = self.member
+            )
         else:
-            return translations("woost.views.BackOfficeLayout edit stack select")
+            return translations(
+                "woost.views.BackOfficeLayout edit stack select",
+                relation = self.member
+            )
 
     def uri(self, **params):
                 

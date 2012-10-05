@@ -27,9 +27,6 @@ from woost.controllers.backoffice.useractions import add_view_action_context
 
     def get_page_title(self):
         return self.backoffice and self.backoffice.title
-
-    def get_stack_node_description(self, node):
-        return translations(node)
     ?>
 
     <?py
@@ -120,7 +117,6 @@ from woost.controllers.backoffice.useractions import add_view_action_context
         <?py
         if self.edit_stack and len(self.edit_stack) > 1 and not self.is_client_side_selector:
             node_container = None
-            relation = None
 
             for node in self.edit_stack:
                 
@@ -129,8 +125,7 @@ from woost.controllers.backoffice.useractions import add_view_action_context
                 if isinstance(node, RelationNode):
                     if node is not self.edit_stack[-1]:
                         continue
-                    relation = node.member
-                
+
                 # Nesting
                 parent_container = node_container
                 node_container = Element()
@@ -144,34 +139,31 @@ from woost.controllers.backoffice.useractions import add_view_action_context
 
                 if node is self.edit_stack[-1]:
                     node_container.add_class("top")
+                    continue
 
                 # Title
                 node_label = Element()
                 node_label.add_class("label")
-
-                if relation:
-                    node_label.append(
-                        Element("span",
-                            class_name = "relation",
-                            children = [translations(relation)]
-                        )
-                    )
-                    node_label.append(": ")
-                    relation = None
-
-                node_desc = self.get_stack_node_description(node)
-
-                node_label.append(
-                    Element("span", class_name = "description", children = [node_desc])
-                )
-
+                node_label.append(translations(node))
                 node_container.append(node_label)
 
             node_container.append(self.body)
         ?>
     </py:ready>
 
-    <div py:id="body"/>
+    <div py:id="body">
+        <h2 py:id="page_title">
+            <py:ready>
+                <?py
+                edit_stack = self.edit_stack
+                if self.edit_stack:
+                    element.append(translations(self.edit_stack[-1]))
+                else:
+                    element.visible = False
+                ?>
+            </py:ready>
+        </h2>
+    </div>
 
     <div py:id="footer"/>
 
