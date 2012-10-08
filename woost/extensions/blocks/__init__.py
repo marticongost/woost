@@ -4,7 +4,6 @@ u"""
 .. moduleauthor:: Jordi Fernández <jordi.fernandez@whads.com>
 """
 from cocktail.translations import translations
-from cocktail.persistence import datastore
 from cocktail import schema
 from cocktail.html import templates
 from woost.models import Extension, Site
