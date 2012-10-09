@@ -1053,8 +1053,8 @@ translations.define("NewsListing.element_type",
 )
 
 translations.define("NewsListing.paginated",
-    ca = u"Paginar los resultados",
-    es = u"Paginar els resultats",
+    ca = u"Paginar els resultats",
+    es = u"Paginar los resultados",
     en = u"Paginate results"
 )
 
@@ -1064,63 +1064,30 @@ translations.define("NewsListing.page_size",
     en = u"Listing size"
 )
 
-translations.define("NewsListing.entry_view",
+translations.define("NewsListing.view_class",
     ca = u"Aparença",
     es = u"Apariencia",
     en = u"Appearence"
 )
 
 translations.define(
-    "NewsListing.entry_view=woost.views.CompactNewsEntry",
+    "NewsListing.view_class=woost.views.CompactNewsListing",
     ca = u"Compacta",
     es = u"Compacta",
     en = u"Compact"
 )
 
 translations.define(
-    "NewsListing.entry_view=woost.views.TextOnlyNewsEntry",
+    "NewsListing.view_class=woost.views.TextOnlyNewsListing",
     ca = u"Només text",
     es = u"Solo texto",
     en = u"Text only"
 )
 
 translations.define(
-    "NewsListing.entry_view=woost.views.TextAndImageNewsEntry",
+    "NewsListing.view_class=woost.views.TextAndImageNewsListing",
     ca = u"Text i imatge",
     es = u"Texto e imagen",
     en = u"Text and image"
-)
-
-translations.define("NewsListing.date_style",
-    ca = u"Format de data",
-    es = u"Formato de fecha",
-    en = u"Date style"
-)
-
-translations.define(
-    "NewsListing.date_style=%d" % DATE_STYLE_TEXT,
-    ca = u"Text",
-    es = u"Texto",
-    en = u"Text"
-)
-
-translations.define(
-    "NewsListing.date_style=%d" % DATE_STYLE_ABBR,
-    ca = u"Text abreviat",
-    es = u"Texto abreviado",
-    en = u"Abbreviated text"
-)
-
-translations.define(
-    "NewsListing.date_style=%d" % DATE_STYLE_NUMBERS,
-    ca = u"Numèric",
-    es = u"Numérico",
-    en = u"Numeric"
-)
-
-translations.define("NewsListing.image_factory",
-    ca = u"Processat d'imatge",
-    es = u"Procesado de imagen",
-    en = u"Image factory"
 )
 
