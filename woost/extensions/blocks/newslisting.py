@@ -26,7 +26,6 @@ class NewsListing(Block):
     max_page_size = 50
 
     instantiable = True
-    view_class = "woost.views.NewsListing"
 
     groups_order = list(Block.groups_order)
     groups_order.insert(groups_order.index("content") + 1, "listing")
@@ -35,9 +34,7 @@ class NewsListing(Block):
         "element_type",
         "paginated",
         "page_size",
-        "entry_view",
-        "date_style",
-        "image_factory"
+        "view_class"
     ]
     
     element_type = ElementType(
@@ -56,43 +53,15 @@ class NewsListing(Block):
         member_group = "listing"
     )
 
-    entry_view = schema.String(
+    view_class = schema.String(
         required = True,
+        shadows_attribute = True,
         enumeration = [
-            "woost.views.CompactNewsEntry",
-            "woost.views.TextOnlyNewsEntry",
-            "woost.views.TextAndImageNewsEntry"
+            "woost.views.CompactNewsListing",
+            "woost.views.TextOnlyNewsListing",
+            "woost.views.TextAndImageNewsListing"
         ],
-        default = "woost.views.TextOnlyNewsEntry",
-        member_group = "listing"
-    )
-
-    date_style = schema.Integer(
-        required = True,
-        enumeration = [
-            DATE_STYLE_TEXT,
-            DATE_STYLE_ABBR,
-            DATE_STYLE_NUMBERS
-        ],
-        default = DATE_STYLE_TEXT,
-        translate_value = lambda value, language = None, **kwargs:
-            "" if not value else translations(
-                "NewsListing.date_style=%d" % value,
-                language,
-                **kwargs
-            ),
-        edit_control = "cocktail.html.DropdownSelector",
-        member_group = "listing"
-    )
-
-    image_factory = schema.Reference(
-        type = ImageFactory,
-        related_end = schema.Collection(),
-        default = schema.DynamicDefault(
-            lambda: ImageFactory.get_instance(
-                identifier = "image_gallery_thumbnail"
-            )
-        ),
+        default = "woost.views.TextOnlyNewsListing",
         member_group = "listing"
     )
 
@@ -106,9 +75,6 @@ class NewsListing(Block):
             view.pagination = self.pagination
         else:
             view.news = self.select_news()
-
-        view.entry_view = self.entry_view
-        view.date_style = self.date_style
 
     def select_news(self):
         news = News.select_accessible(order = "-news_date")
