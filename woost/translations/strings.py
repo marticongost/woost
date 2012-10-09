@@ -3429,6 +3429,12 @@ translations.define("News.news_date",
     en = u"News date"
 )
 
+translations.define("News.image",
+    ca = u"Imatge",
+    es = u"Imagen",
+    en = u"Image"
+)
+
 translations.define("News.summary",
     ca = u"Sumari",
     es = u"Sumario",
