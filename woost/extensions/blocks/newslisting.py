@@ -99,7 +99,9 @@ class NewsListing(Block):
     def init_view(self, view):
         Block.init_view(self, view)
         view.tag = self.element_type
-        
+        view.name_prefix = self.name_prefix
+        view.name_suffix = self.name_suffix
+
         if self.paginated:
             view.pagination = self.pagination
         else:
