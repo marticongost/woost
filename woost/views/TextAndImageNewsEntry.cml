@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?py
+from cocktail.translations import DATE_STYLE_TEXT
+?>
+
+<article
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:py="http://www.whads.com/ns/cocktail/templates">
+
+    <?py-class
+    news = None
+    date_style = DATE_STYLE_TEXT
+    image_factory = None
+    ?>
+
+    <py:ready>
+        <?py
+        self._news_uri = self.news.get_uri()
+        ?>
+    </py:ready>
+
+    <a py:id="image_link" href="@{self._news_uri}">
+        <py:woost.views.Image
+            py:id="image"
+            py:image="@{self.news.image}"
+            py:image_factory="@{self.image_factory}"/>
+    </a>
+
+    <div py:id="text_wrapper">
+        <h1 py:id="heading">
+            <a py:id="heading_link" href="@{self._news_uri}">@{self.news.title}</a>
+        </h1>
+
+        <div py:id="date" py:visible="@{bool(self.news.news_date)}">
+            @{translations(self.news.news_date, style = self.date_style)}
+        </div>
+
+        <div py:id="summary" py:visible="@{bool(self.news.summary)}">
+            @{self.news.summary}
+        </div>
+    </div>
+
+</article>
+
