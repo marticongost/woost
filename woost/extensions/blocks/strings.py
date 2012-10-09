@@ -1060,7 +1060,7 @@ translations.define("NewsListing.paginated",
 
 translations.define("NewsListing.page_size",
     ca = u"Mida del llistat",
-    es = u"Mida del listado",
+    es = u"Tamaño del listado",
     en = u"Listing size"
 )
 
