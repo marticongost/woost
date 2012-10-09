@@ -9,12 +9,15 @@ u"""
 from datetime import date
 from cocktail import schema
 from woost.models.document import Document
+from woost.models.file import File
+
 
 class News(Document):
 
     members_order = [
         "news_date",
-        "summary",
+        "image",
+        "summary",        
         "body"
     ]
 
@@ -22,6 +25,13 @@ class News(Document):
         required = True,
         indexed = True,
         default = schema.DynamicDefault(date.today),
+        member_group = "content"
+    )
+
+    image = schema.Reference(
+        type = File,
+        related_end = schema.Collection(),
+        relation_constraints = {"resource_type": "image"},
         member_group = "content"
     )
 
