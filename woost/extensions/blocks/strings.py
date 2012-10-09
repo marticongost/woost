@@ -3,7 +3,12 @@ u"""
 
 .. moduleauthor:: Jordi Fernández <jordi.fernandez@whads.com>
 """
-from cocktail.translations import translations
+from cocktail.translations import (
+    translations,
+    DATE_STYLE_TEXT,
+    DATE_STYLE_ABBR,
+    DATE_STYLE_NUMBERS
+)
 from cocktail.translations.helpers import ca_possessive
 
 translations.define("Action edit_blocks",
@@ -1021,4 +1026,101 @@ translations.define("YouTubeBlock.show_related_videos",
     en = u"Show related videos"
 )
 
+# NewsListing
+#------------------------------------------------------------------------------
+translations.define("NewsListing",
+    ca = u"Llistat de notícies",
+    es = u"Listado de noticias",
+    en = u"News listing"
+)
+
+translations.define("NewsListing-plural",
+    ca = u"Llistats de notícies",
+    es = u"Listados de noticias",
+    en = u"News listings"
+)
+
+translations.define("NewsListing.listing",
+    ca = u"Llistat",
+    es = u"Listado",
+    en = u"Listing"
+)
+
+translations.define("NewsListing.element_type",
+    ca = u"Tipus d'element",
+    es = u"Tipo de elemento",
+    en = u"Element type"
+)
+
+translations.define("NewsListing.paginated",
+    ca = u"Paginar los resultados",
+    es = u"Paginar els resultats",
+    en = u"Paginate results"
+)
+
+translations.define("NewsListing.page_size",
+    ca = u"Mida del llistat",
+    es = u"Mida del listado",
+    en = u"Listing size"
+)
+
+translations.define("NewsListing.entry_view",
+    ca = u"Aparença",
+    es = u"Apariencia",
+    en = u"Appearence"
+)
+
+translations.define(
+    "NewsListing.entry_view=woost.views.CompactNewsEntry",
+    ca = u"Compacta",
+    es = u"Compacta",
+    en = u"Compact"
+)
+
+translations.define(
+    "NewsListing.entry_view=woost.views.TextOnlyNewsEntry",
+    ca = u"Només text",
+    es = u"Solo texto",
+    en = u"Text only"
+)
+
+translations.define(
+    "NewsListing.entry_view=woost.views.TextAndImageNewsEntry",
+    ca = u"Text i imatge",
+    es = u"Texto e imagen",
+    en = u"Text and image"
+)
+
+translations.define("NewsListing.date_style",
+    ca = u"Format de data",
+    es = u"Formato de fecha",
+    en = u"Date style"
+)
+
+translations.define(
+    "NewsListing.date_style=%d" % DATE_STYLE_TEXT,
+    ca = u"Text",
+    es = u"Texto",
+    en = u"Text"
+)
+
+translations.define(
+    "NewsListing.date_style=%d" % DATE_STYLE_ABBR,
+    ca = u"Text abreviat",
+    es = u"Texto abreviado",
+    en = u"Abbreviated text"
+)
+
+translations.define(
+    "NewsListing.date_style=%d" % DATE_STYLE_NUMBERS,
+    ca = u"Numèric",
+    es = u"Numérico",
+    en = u"Numeric"
+)
+
+translations.define("NewsListing.image_factory",
+    ca = u"Processat d'imatge",
+    es = u"Procesado de imagen",
+    en = u"Image factory"
+)
 

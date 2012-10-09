@@ -105,6 +105,11 @@ class Block(Item):
 
     def init_view(self, view):
         view.block = self
+        
+        # Naming scheme for request parameters required by the block
+        view.name_prefix = self.name_prefix
+        view.name_suffix = self.name_suffix
+
         block_proxy = self.get_block_proxy(view)
         block_proxy.set_client_param("blockId", self.id)
         block_proxy.add_class("block")
@@ -249,4 +254,12 @@ class Block(Item):
                                     yield slot
         
         return iter_slots(self)
+
+    @property
+    def name_prefix(self):
+        return "block%d." % self.id
+
+    @property
+    def name_suffix(self):
+        return None
 
