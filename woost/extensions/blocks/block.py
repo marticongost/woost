@@ -105,10 +105,6 @@ class Block(Item):
 
     def init_view(self, view):
         view.block = self
-        
-        # Naming scheme for request parameters required by the block
-        view.name_prefix = self.name_prefix
-        view.name_suffix = self.name_suffix
 
         block_proxy = self.get_block_proxy(view)
         block_proxy.set_client_param("blockId", self.id)
