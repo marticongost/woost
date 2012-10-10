@@ -1105,6 +1105,12 @@ translations.define("FileListing-plural",
     en = u"File listings"
 )
 
+translations.define("FileListing.listing",
+    ca = u"Llistat",
+    es = u"Listado",
+    en = u"Listing"
+)
+
 translations.define("FileListing.files",
     ca = u"Fitxers",
     es = u"Ficheros",
