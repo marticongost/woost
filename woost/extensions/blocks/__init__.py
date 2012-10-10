@@ -64,6 +64,7 @@ class BlocksExtension(Extension):
             youtubeblock,
             newslisting,
             filelisting,
+            facebooklikebutton,
             blockspage,
             blockactions,
             site,

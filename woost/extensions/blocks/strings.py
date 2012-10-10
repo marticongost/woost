@@ -1147,3 +1147,128 @@ translations.define("FileListing.image_factory",
     en = u"Image processing"
 )
 
+# FacebookLikeButton
+#------------------------------------------------------------------------------
+translations.define("FacebookLikeButton",
+    ca = u'Botó de "M\'agrada" de Facebook',
+    es = u'Botón de "Me gusta" de Facebook',
+    en = u"Facebook Like button"
+)
+
+translations.define("FacebookLikeButton-plural",
+    ca = u'Botons de "M\'agrada" de Facebook',
+    es = u'Botones de "Me gusta" de Facebook',
+    en = u"Facebook Like buttons"
+)
+
+translations.define("FacebookLikeButton.appearence",
+    ca = u"Aparença",
+    es = u"Apariencia",
+    en = u"Appearence"
+)
+
+translations.define("FacebookLikeButton.fb_href",
+    ca = u"Recurs",
+    es = u"Recurso",
+    en = u"Resource"
+)
+
+translations.define("FacebookLikeButton.fb_href-explanation",
+    ca = u"La pàgina a recomanar. Deixar en blanc per seleccionar la pàgina on "
+         u"es trobi el botó.",
+    es = u"La página a recomendar. Dejar en blanco para seleccionar la página "
+         u"donde se ubique el botón.",
+    en = u"The resource to like. Leave blank to assume the page that contains "
+         u"the button."
+)
+
+translations.define("FacebookLikeButton.fb_send",
+    ca = u"Mostrar el botó d'enviar",
+    es = u"Mostrar el botón de enviar",
+    en = u"Show the Send button"
+)
+
+translations.define("FacebookLikeButton.fb_layout",
+    ca = u"Disposició",
+    es = u"Disposición",
+    en = u"Layout"
+)
+
+translations.define("FacebookLikeButton.fb_layout=standard",
+    ca = u"Estàndard",
+    es = u"Estándar",
+    en = u"Standard"
+)
+
+translations.define("FacebookLikeButton.fb_layout=button_count",
+    ca = u"Recompte",
+    es = u"Recuento",
+    en = u"Button count"
+)
+
+translations.define("FacebookLikeButton.fb_layout=box_count",
+    ca = u"Recompte en caixa vertical",
+    es = u"Recuento con caja vertical",
+    en = u"Box count"
+)
+
+translations.define("FacebookLikeButton.fb_show_faces",
+    ca = u"Mostrar cares",
+    es = u"Mostrar caras",
+    en = u"Show faces"
+)
+
+translations.define("FacebookLikeButton.fb_width",
+    ca = u"Amplada",
+    es = u"Ancho",
+    en = u"Width"
+)
+
+translations.define("FacebookLikeButton.fb_action",
+    ca = u"Verb",
+    es = u"Verbo",
+    en = u"Verb"
+)
+
+translations.define("FacebookLikeButton.fb_action=like",
+    ca = u"M'agrada",
+    es = u"Me gusta",
+    en = u"Like"
+)
+
+translations.define("FacebookLikeButton.fb_action=recommend",
+    ca = u"Recomanar",
+    es = u"Recomendar",
+    en = u"Recommend"
+)
+
+translations.define("FacebookLikeButton.fb_font",
+    ca = u"Font",
+    es = u"Fuente",
+    en = u"Font"
+)
+
+translations.define("FacebookLikeButton.fb_colorscheme",
+    ca = u"Esquema de colors",
+    es = u"Esquema de colores",
+    en = u"Colorscheme"
+)
+
+translations.define("FacebookLikeButton.fb_colorscheme=light",
+    ca = u"Clar",
+    es = u"Claro",
+    en = u"Light"
+)
+
+translations.define("FacebookLikeButton.fb_colorscheme=dark",
+    ca = u"Fosc",
+    es = u"Oscuro",
+    en = u"Dark"
+)
+
+translations.define("FacebookLikeButton.fb_ref",
+    ca = u"Codi de seguiment",
+    es = u"Código de seguimiento",
+    en = u"Referral tracking label"
+)
+
