@@ -1091,3 +1091,53 @@ translations.define(
     en = u"Text and image"
 )
 
+# FileListing
+#------------------------------------------------------------------------------
+translations.define("FileListing",
+    ca = u"Llistat de fitxers",
+    es = u"Listado de ficheros",
+    en = u"File listing"
+)
+
+translations.define("FileListing-plural",
+    ca = u"Llistats de fitxers",
+    es = u"Listados de ficheros",
+    en = u"File listings"
+)
+
+translations.define("FileListing.files",
+    ca = u"Fitxers",
+    es = u"Ficheros",
+    en = u"Files"
+)
+
+translations.define("FileListing.listing_order",
+    ca = u"Ordenació",
+    es = u"Ordenación",
+    en = u"Order"
+)
+
+translations.define("FileListing.listing_order=arbitrary",
+    ca = u"Arbitrària",
+    es = u"Arbitraria",
+    en = u"Arbitrary"
+)
+
+translations.define("FileListing.listing_order=title",
+    ca = u"Alfabètica",
+    es = u"Alfabética",
+    en = u"Alphabetical"
+)
+
+translations.define("FileListing.listing_order=-last_update_time",
+    ca = u"Última modificació",
+    es = u"Última modificación",
+    en = u"Last update"
+)
+
+translations.define("FileListing.image_factory",
+    ca = u"Processat d'imatge",
+    es = u"Procesado de imagen",
+    en = u"Image processing"
+)
+

@@ -63,6 +63,7 @@ class BlocksExtension(Extension):
             iframeblock,
             youtubeblock,
             newslisting,
+            filelisting,
             blockspage,
             blockactions,
             site,
