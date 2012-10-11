@@ -11,7 +11,7 @@ from woost.extensions.blocks.block import Block
 class FacebookLikeButton(Block):
 
     instantiable = True
-    view_class = "woost.views.FacebookLikeButton"
+    view_class = "cocktail.html.FacebookLikeButton"
 
     members_order = [
         "fb_href",
