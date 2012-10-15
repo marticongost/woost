@@ -35,6 +35,7 @@ class ItemLabel(Element):
     def create_icon(self):
         img = Element("img")
         img.add_class("icon")
+        img["title"] = translations(self.item.__class__.__name__)
         get_image_uri = getattr(self.item, "get_image_uri", None)
 
         if get_image_uri:
