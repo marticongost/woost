@@ -120,6 +120,12 @@ def _get_document_open_graph_video(self):
 
 Document.get_open_graph_video = _get_document_open_graph_video
 
+def _get_news_open_graph_image(self):
+    if self.image and self.image.is_accessible():
+        return self.image.get_image_uri("facebook")
+
+News.get_open_graph_image = _get_news_open_graph_image
+
 # Metadata for shop products (only if the 'shop' extension is enabled)
 from woost.extensions.shop import ShopExtension
 
