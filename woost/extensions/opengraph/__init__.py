@@ -234,27 +234,6 @@ class OpenGraphExtension(Extension):
         if site.email:
             properties["og:email"] = site.email
 
-        if site.phone_number:
-            properties["og:phone_number"] = site.phone_number
-
-        if site.fax_number:
-            properties["og:fax_number"] = site.fax_number
-
-        if site.address:
-            properties["og:street-address"] = site.address
-
-        if site.town:
-            properties["og:locality"] = site.town
-
-        if site.region:
-            properties["og:region"] = site.region
-
-        if site.postal_code:
-            properties["og:postal-code"] = site.postal_code
-
-        if site.country:
-            properties["og:country-name"] = site.country
-
         if self.facebook_administrators:
             properties["fb:admins"] = self.facebook_administrators
 
