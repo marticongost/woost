@@ -59,7 +59,7 @@ def _get_publishable_properties(self):
     image = self.get_open_graph_image()
     if image:
         if isinstance(image, Publishable):
-            image = image.get_uri(host = ".")
+            image = image.get_image_uri("facebook", host = ".")
         properties["og:image"] = image
 
     video = self.get_open_graph_video()

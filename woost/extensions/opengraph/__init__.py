@@ -8,8 +8,13 @@ from cocktail.translations import translations
 from cocktail import schema
 from cocktail.html import templates
 from cocktail.persistence import datastore
-from woost.models import Site, Extension, File
-
+from woost.models import (
+    Site,
+    File,
+    Extension,
+    extension_translations,
+    rendering
+)
 
 translations.define("OpenGraphExtension",
     ca = u"OpenGraph",
@@ -107,6 +112,7 @@ class OpenGraphExtension(Extension):
         
     def _install(self):
         self.create_default_categories(verbose = True)
+        self.create_facebook_image_factory()
 
     def create_default_categories(self, verbose = False):
         
@@ -246,4 +252,25 @@ class OpenGraphExtension(Extension):
         properties = self.get_global_properties()
         properties.update(publishable.get_open_graph_properties())
         return properties
+
+    def create_facebook_image_factory(self):
+        Site.main.image_factories.append(
+            self._create_asset(
+                rendering.ImageFactory,
+                "image_factory",
+                title = extension_translations,
+                identifier = "facebook",
+                effects = [
+                    rendering.Fill(
+                        width = "200",
+                        height = "200"
+                    ),
+                    rendering.Align(
+                        width = "200",
+                        height = "200",
+                        background = "fff"
+                    )
+                ]
+            )
+        )
 
