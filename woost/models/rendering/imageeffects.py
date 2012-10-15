@@ -646,8 +646,8 @@ class Align(ImageEffect):
     def apply(self, image):
 
         source_width, source_height = image.size
-        width = ImageSize.resolve(self.width, source_width)
-        height = ImageSize.resolve(self.height, source_height)
+        width = ImageSize.resolve_size(self.width, source_width)
+        height = ImageSize.resolve_size(self.height, source_height)
 
         needs_halign = (source_width < width)
         needs_valign = (source_height < height)
