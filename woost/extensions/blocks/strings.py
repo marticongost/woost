@@ -1272,3 +1272,120 @@ translations.define("FacebookLikeButton.fb_ref",
     en = u"Referral tracking label"
 )
 
+# TweetButton
+#------------------------------------------------------------------------------
+translations.define("TweetButton",
+    ca = u"Botó de Twitter",
+    es = u"Botón de Twitter",
+    en = u"Twitter button"
+)
+
+translations.define("TweetButton-plural",
+    ca = u"Botons de Twitter",
+    es = u"Botones de Twitter",
+    en = u"Twitter buttons"
+)
+
+translations.define("TweetButton.tweet",
+    ca = u"Tuit",
+    es = u"Tuit",
+    en = u"Tweet"
+)
+
+translations.define("TweetButton.appearence",
+    ca = u"Aparença",
+    es = u"Apariencia",
+    en = u"Appearence"
+)
+
+translations.define("TweetButton.tw_target",
+    ca = u"Element a compartir",
+    es = u"Elemento a compartir",
+    en = u"Element to tweet"
+)
+
+translations.define("TweetButton.tw_target-explanation",
+    ca = u"Deixar en blanc per compartir la pàgina on s'ubiqui el botó",
+    es = u"Dejar en blanco para compartir la página donde se ubique el "
+         u"botón",
+    en = u"Leave blank to tweet the same page where the button resides"
+)
+
+translations.define("TweetButton.tw_via",
+    ca = u"Via",
+    es = u"Via",
+    en = u"Via"
+)
+
+translations.define("TweetButton.tw_via-explanation",
+    ca = u"Nom d'usuari al que s'atribuirà el tuit",
+    es = u"Nombre de usuario al que se atribuirá el tuit",
+    en = u"Screen name of the user to attribute the Tweet to"
+)
+
+translations.define("TweetButton.tw_related",
+    ca = u"Comptes relacionats",
+    es = u"Cuentas relacionadas",
+    en = u"Related accounts"
+)
+
+translations.define("TweetButton.tw_hashtags",
+    ca = u"Hashtags",
+    es = u"Hashtags",
+    en = u"Hashtag"
+)
+
+translations.define("TweetButton.tw_dnt",
+    ca = u"Deshabilitar el seguiment de Twitter",
+    es = u"Deshabilitar el seguimiento de Twitter",
+    en = u"Opt out of Twitter tailoring"
+)
+
+translations.define("TweetButton.tw_text",
+    ca = u"Text per defecte",
+    es = u"Texto por defecto",
+    en = u"Default text for the Tweet"
+)
+
+translations.define("TweetButton.tw_size",
+    ca = u"Mida del botó",
+    es = u"Tamaño del botón",
+    en = u"Button size"
+)
+
+translations.define("TweetButton.tw_size=medium",
+    ca = u"Mitjana",
+    es = u"Mediana",
+    en = u"Medium"
+)
+
+translations.define("TweetButton.tw_size=big",
+    ca = u"Gran",
+    es = u"Grande",
+    en = u"Big"
+)
+
+translations.define("TweetButton.tw_count",
+    ca = u"Recompte",
+    es = u"Recuento",
+    en = u"Count"
+)
+
+translations.define("TweetButton.tw_count=none",
+    ca = u"Invisible",
+    es = u"Invisible",
+    en = u"None"
+)
+
+translations.define("TweetButton.tw_count=horizontal",
+    ca = u"Horitzontal",
+    es = u"Horizontal",
+    en = u"Horizontal"
+)
+
+translations.define("TweetButton.tw_count=vertical",
+    ca = u"Vertical",
+    es = u"Vertical",
+    en = u"Vertical"
+)
+
