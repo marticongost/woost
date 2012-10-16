@@ -4576,6 +4576,30 @@ translations.define("ImageFileRenderer-plural",
     en = u"Image file renderers"
 )
 
+translations.define("ImageFileRenderer.max_size",
+    ca = u"Mida màxima",
+    es = u"Tamaño máximo",
+    en = u"Max size"
+)
+
+translations.define("ImageFileRenderer.max_size-explanation",
+    ca = u"Evita que el servidor processi imatges amb una mida excessiva. "
+         u"La mida màxima a processar s'ha d'indicar amb dos valors enters, "
+         u"separats per un caràcter 'x' (per exemple, 2000 x 1500). Les "
+         u"mides es validaran en orientació vertical o horitzontal, "
+         u"indistintament.",
+    es = u"Evita que el servidor procese imágenes con un tamaño excesivo. "
+         u"El tamaño máximo admisible debe indicarse con dos valores "
+         u"enteros, separados por un carácter 'x' (por ejemplo, 2000 x "
+         u"1500). El tamaño se validará en orientación vertical o "
+         u"horizontal, indistintamente.",
+    en = u"Prevents the server from processing excessively large images. The "
+         u"maximum image size allowed has to be indicated as a tuple of two "
+         u"integers, separated by an 'x' character (ie. 2000 x 1500). Images "
+         u"will be validated against this size constraint in both landscape "
+         u"and portrait orientations."
+)
+
 # IconRenderer
 #------------------------------------------------------------------------------
 translations.define("IconRenderer",
