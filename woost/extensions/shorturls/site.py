@@ -13,7 +13,8 @@ Site.add_member(
         type = URLShortener,
         related_end = schema.Reference(),
         member_group = "behavior.publication",
-        after_member = "caching_policies"
+        after_member = "caching_policies",
+        listed_by_default = False
     )
 )
 
