@@ -98,6 +98,7 @@ class Site(Item):
         text_search = False,
         translate_value = lambda value, language = None, **kwargs:
             u"" if not value else translations(value, language, **kwargs),
+        listed_by_default = False,
         member_group = "language"
     )
     
@@ -277,7 +278,8 @@ class Site(Item):
         required = False,
         format = re.compile(r'^["GMT"|"UTC"|"PST"|"MST"|"CST"|"EST"]{3}$|^[+-]\d{4}$'),
         text_search = False,
-        member_group = "system"
+        member_group = "system",
+        listed_by_default = False
     )
 
     triggers = schema.Collection(
