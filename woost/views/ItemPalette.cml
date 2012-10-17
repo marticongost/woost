@@ -11,9 +11,7 @@ from woost.models import get_current_user, CreatePermission
     xmlns:py="http://www.whads.com/ns/cocktail/templates">
 
     <?py-class
-    regular_icon_size = 16
-    promoted_icon_size = 32
-    promoted_content_types = []
+    icon_size = 16
     types = None
 
     def should_include_type(self, content_type):
@@ -39,44 +37,15 @@ from woost.models import get_current_user, CreatePermission
     </py:binding>
 
     <py:ready>
-        <?py
-        self._promoted_types = [
-            ct 
-            for ct in self.promoted_content_types 
-            if self.should_include_type(ct)
-        ]
-
-        if self._promoted_types:
-            self.add_class("with_promoted_entries")
-        ?>
+        <py:new
+            py:element="self.create_palette_entry(content_type)"
+            py:for="content_type in self._types"
+            py:where="self.should_include_type(content_type)"/>
     </py:ready>
 
-    <div py:id="promoted_entries">
-        <py:ready>
-            <py:new
-                py:element="self.create_palette_entry(content_type, True)"
-                py:for="content_type in self._promoted_types"/>
-        </py:ready>
-    </div>
-
-    <div py:id="regular_entries">
-        <py:ready>
-            <py:new
-                py:element="self.create_palette_entry(content_type, False)"
-                py:for="content_type in self._types"
-                py:where="self.should_include_type(content_type) and content_type not in self.promoted_content_types"/>
-        </py:ready>
-    </div>
-
-    <li py:def="palette_entry" py:args="content_type, promoted">
+    <li py:def="palette_entry" py:args="content_type">
         <a py:local_id="button" href="#">
-            <?py
-            if promoted:
-                icon_size = self.promoted_icon_size
-            else:
-                icon_size = self.regular_icon_size
-            ?>
-            <img py:local_id="type_icon"  src="${app.icon_resolver.find_icon_url(content_type, icon_size)}"/>
+            <img py:local_id="type_icon"  src="${app.icon_resolver.find_icon_url(content_type, self.icon_size)}"/>
             <span py:local_id="type_label">${translations(content_type.name)}</span>
         </a>
     </li>
