@@ -3119,11 +3119,22 @@ div.success_label {
 
 /* Item palette
 -----------------------------------------------------------------------------*/
-.ItemPalette {
+.ItemPalette,
+.ItemPalette .group_entries {
     list-style-type: none;
     padding: 0;
     margin: 0;
     display: block;
+}
+
+.ItemPalette .group_label {
+    font-size: 0.8em;
+    font-weight: bold;
+    border-bottom: 1px solid #ADB2BC;
+    padding-bottom: 0.1em;
+    margin-top: 1.2em;
+    margin-bottom: 0.6em;
+    color: #545F75;
 }
 
 .ItemPalette li {

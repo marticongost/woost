@@ -13,6 +13,7 @@ from woost.models import get_current_user, CreatePermission
     <?py-class
     icon_size = 16
     types = None
+    groups_order = None
 
     def should_include_type(self, content_type):
         return (
@@ -20,28 +21,52 @@ from woost.models import get_current_user, CreatePermission
             and content_type.instantiable
             and self._user.has_permission(CreatePermission, target = content_type)
         )
+    
+    def __get_group_order(self, group):
+        if group:
+            try:
+                return self.groups_order.index(group)
+            except ValueError:
+                pass
+        return len(self.groups_order)
     ?>
 
-    <py:binding>
-        <?py
-        self._user = get_current_user()
-        self._cms = context['cms']
-
-        if isinstance(self.types, SchemaClass):
-            self._types = [self.types] + list(self.types.derived_schemas(recursive = True))
-        else:
-            self._types = self.types
-
-        self._types.sort(key = lambda content_type: translations(content_type.name))
-        ?>
-    </py:binding>
-
     <py:ready>
-        <py:new
-            py:element="self.create_palette_entry(content_type)"
-            py:for="content_type in self._types"
-            py:where="self.should_include_type(content_type)"/>
+        <?py
+        if isinstance(self.types, SchemaClass):
+            types = [self.types] + list(self.types.derived_schemas(recursive = True))
+        else:
+            types = self.types
+
+        types.sort(key = lambda content_type: translations(content_type.name))
+        self._user = get_current_user()
+        groups = {}
+
+        for content_type in types:
+            if self.should_include_type(content_type):
+                group = groups.get(content_type.type_group)
+
+                if group is None:
+                    group = self.create_palette_group(content_type.type_group)
+                    groups[content_type.type_group] = group
+                    if not self.groups_order:
+                        self.append(group)
+
+                entry = self.create_palette_entry(content_type)
+                group.group_entries.append(entry)
+
+        if self.groups_order:
+            for group_name in sorted(groups, key = self.__get_group_order):
+                self.append(groups[group_name])
+        ?>
     </py:ready>
+
+    <li py:def="palette_group" py:args="group" py:type_group="${group}">
+        <div py:local_id="group_label">
+            ${group and translations("woost.type_groups." + group) or ""}
+        </div>
+        <ul py:local_id="group_entries"/>
+    </li>
 
     <li py:def="palette_entry" py:args="content_type">
         <a py:local_id="button" href="#">

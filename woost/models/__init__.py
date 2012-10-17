@@ -34,6 +34,9 @@ schema.Member.editable = True
 # Add an extesnion property to indiciate if members should be shown in detailed view
 schema.Member.visible_in_detail_view = True
 
+# Add an extension property to group types
+schema.Schema.type_group = None
+
 # Add an extension property to indicate if relations should be excluded if no
 # relatable elements exist
 schema.Collection.exclude_when_empty = False
