@@ -111,20 +111,7 @@
     cursor: pointer;
 }
 
-.block_picker_dialog .new_blocks_panel .new_blocks_palette .promoted_entries {
-    margin-bottom: 0.5em;
-}
-
-.block_picker_dialog .new_blocks_panel .new_blocks_palette .promoted_entries .type_label {
-    position: relative;
-    top: -0.8em;
-}
-
-.block_picker_dialog .new_blocks_panel .new_blocks_palette.with_promoted_entries .regular_entries .palette_entry {
-    margin-left: 1.2em;
-}
-
-.block_picker_dialog .new_blocks_panel .new_blocks_palette .regular_entries .type_label {
+.block_picker_dialog .new_blocks_panel .new_blocks_palette .palette_entry .type_label {
     font-size: 0.9em;
 }
 

@@ -72,7 +72,7 @@ from woost.extensions.blocks.block import Block
                 <py:woost.views.ItemPalette
                     py:local_id="new_blocks_palette"
                     py:types="${Block}">
-                    <py:with py:def="palette_entry" py:args="content_type, promoted">
+                    <py:with py:def="palette_entry" py:args="content_type">
                         <form py:local_id="form" method="POST" py:wrap="palette_entry.button">
                             <input type="hidden" name="action" value=""/>
                             <input type="hidden" name="block_parent" value=""/>
