@@ -10,6 +10,7 @@ from woost.extensions.blocks.block import Block
 class IFrameBlock(Block):
 
     instantiable = True
+    type_group = "blocks.custom"
     view_class = "cocktail.html.Element"
     tag = "iframe"
 

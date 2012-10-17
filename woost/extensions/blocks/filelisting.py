@@ -14,6 +14,7 @@ from woost.extensions.blocks.elementtype import ElementType
 class FileListing(Block):
 
     instantiable = True
+    type_group = "blocks.listings"
     view_class = "woost.views.FileListing"
 
     groups_order = list(Block.groups_order)

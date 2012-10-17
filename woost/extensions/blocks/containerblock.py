@@ -12,6 +12,7 @@ from woost.extensions.blocks.elementtype import ElementType
 class ContainerBlock(Block):
 
     instantiable = True
+    type_group = "blocks.layout"
     view_class = "woost.extensions.blocks.ContainerBlockView"
 
     members_order = [

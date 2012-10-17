@@ -11,6 +11,7 @@ from woost.extensions.blocks.block import Block
 class HTMLBlock(Block):
 
     instantiable = True
+    type_group = "blocks.custom"
     view_class = "cocktail.html.Element"
 
     html = schema.CodeBlock(

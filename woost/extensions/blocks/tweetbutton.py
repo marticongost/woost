@@ -11,6 +11,7 @@ from woost.extensions.blocks.block import Block
 class TweetButton(Block):
 
     instantiable = True
+    type_group = "blocks.social"
     view_class = "woost.views.TweetButton"
 
     groups_order = list(Block.groups_order)

@@ -26,6 +26,7 @@ class NewsListing(Block):
     max_page_size = 50
 
     instantiable = True
+    type_group = "blocks.listings"
 
     groups_order = list(Block.groups_order)
     groups_order.insert(groups_order.index("content") + 1, "listing")

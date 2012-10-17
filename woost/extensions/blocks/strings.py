@@ -838,16 +838,16 @@ translations.define("woost.extensions.blocks.EditBlocksView.body_header",
 #------------------------------------------------------------------------------
 translations.define(
     "woost.extensions.blocks.EditBlocksSlotList.new_blocks_panel.panel_header",
-    ca = u"Nou bloc",
-    es = u"Nuevo bloque",
-    en = u"New block"
+    ca = u"Crear un nou bloc",
+    es = u"Crear un bloque nuevo",
+    en = u"Create a new block"
 )
 
 translations.define(     
     "woost.extensions.blocks.EditBlocksSlotList.common_blocks_panel.panel_header",
-    ca = u"Blocs comuns",
-    es = u"Bloques comunes",
-    en = u"Common blocks"
+    ca = u"Afegir un bloc existent",
+    es = u"Añadir un bloque existente",
+    en = u"Add an existing block"
 )
 
 translations.define(
@@ -1387,5 +1387,43 @@ translations.define("TweetButton.tw_count=vertical",
     ca = u"Vertical",
     es = u"Vertical",
     en = u"Vertical"
+)
+
+# Palette groups
+#------------------------------------------------------------------------------
+translations.define("woost.type_groups.blocks.content",
+    ca = u"Contingut",
+    es = u"Contenido",
+    en = u"Content"
+)
+
+translations.define("woost.type_groups.blocks.layout",
+    ca = u"Disposició",
+    es = u"Disposición",
+    en = u"Layout"
+)
+
+translations.define("woost.type_groups.blocks.listings",
+    ca = u"Llistats",
+    es = u"Listados",
+    en = u"Listings"
+)
+
+translations.define("woost.type_groups.blocks.social",
+    ca = u"Xarxes socials",
+    es = u"Redes sociales",
+    en = u"Social networks"
+)
+
+translations.define("woost.type_groups.blocks.forms",
+    ca = u"Formularis",
+    es = u"Formularios",
+    en = u"Forms"
+)
+
+translations.define("woost.type_groups.blocks.custom",
+    ca = u"Avançats",
+    es = u"Avanzados",
+    en = u"Custom"
 )
 

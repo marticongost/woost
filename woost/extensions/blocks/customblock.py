@@ -10,6 +10,7 @@ from woost.extensions.blocks.block import Block
 class CustomBlock(Block):
 
     instantiable = True
+    type_group = "blocks.custom"
 
     view_class = schema.String(
         required = True,
