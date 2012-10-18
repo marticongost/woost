@@ -1278,6 +1278,86 @@ translations.define("FacebookLikeButton.fb_ref",
     en = u"Referral tracking label"
 )
 
+# FacebookLikeBox
+#------------------------------------------------------------------------------
+translations.define("FacebookLikeBox",
+    ca = u'Caixa de "M\'agrada" per pàgines de Facebook',
+    es = u'Caja de "Me gusta" para páginas de Facebook',
+    en = u"Facebook Like Box"
+)
+
+translations.define("FacebookLikeBox-plural",
+    ca = u'Caixes de "M\'agrada" per pàgines de Facebook',
+    es = u'Cajas de "Me gusta" para páginas de Facebook',
+    en = u"Facebook Like Boxes"
+)
+
+translations.define("FacebookLikeBox.appearence",
+    ca = u"Aparença",
+    es = u"Apariencia",
+    en = u"Appearence"
+)
+
+translations.define("FacebookLikeBox.fb_href",
+    ca = u"Pàgina de Facebook",
+    es = u"Página de Facebook",
+    en = u"Facebook page"
+)
+
+translations.define("FacebookLikeBox.fb_show_faces",
+    ca = u"Mostrar cares",
+    es = u"Mostrar caras",
+    en = u"Show faces"
+)
+
+translations.define("FacebookLikeBox.fb_stream",
+    ca = u"Mostrar entrades del mur",
+    es = u"Mostrar entradas del muro",
+    en = u"Show stream"
+)
+
+translations.define("FacebookLikeBox.fb_header",
+    ca = u"Mostrar el logo de Facebook",
+    es = u"Mostrar el logo de Facebook",
+    en = u"Show Facebook's logo"
+)
+
+translations.define("FacebookLikeBox.fb_width",
+    ca = u"Amplada",
+    es = u"Ancho",
+    en = u"Width"
+)
+
+translations.define("FacebookLikeBox.fb_height",
+    ca = u"Alçada",
+    es = u"Alto",
+    en = u"Height"
+)
+
+translations.define("FacebookLikeBox.fb_border_color",
+    ca = u"Color de la vora",
+    es = u"Color del borde",
+    en = u"Border color"
+)
+
+translations.define("FacebookLikeBox.fb_colorscheme",
+    ca = u"Esquema de colors",
+    es = u"Esquema de colores",
+    en = u"Colorscheme"
+)
+
+translations.define("FacebookLikeBox.fb_colorscheme=light",
+    ca = u"Clar",
+    es = u"Claro",
+    en = u"Light"
+)
+
+translations.define("FacebookLikeBox.fb_colorscheme=dark",
+    ca = u"Fosc",
+    es = u"Oscuro",
+    en = u"Dark"
+)
+
 # TweetButton
 #------------------------------------------------------------------------------
 translations.define("TweetButton",
