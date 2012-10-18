@@ -379,9 +379,9 @@ translations.define("SlideShowBlock.navigation_controls",
 )
 
 translations.define("SlideShowBlock.bullet_controls",
-    ca = u"Mostrar botons de navegació",
-    es = u"Mostrar botones de navegación",
-    en = u"Show bullet controls"
+    ca = u"Mostrar botons de diapositiva",
+    es = u"Mostrar botones de diapositiva",
+    en = u"Show slide bullets"
 )
 
 translations.define("SlideShowBlock.interval",
