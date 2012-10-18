@@ -111,9 +111,15 @@ translations.define("woost.extensions.blocks.ElementType=details",
     en = u"Details"
 )
 
+translations.define("woost.extensions.blocks.ElementType=figure",
+    ca = u"Recurs complementari (figure)",
+    es = u"Recurso complementario (figure)",
+    en = u"Figure"
+)
+
 translations.define("woost.extensions.blocks.ElementType=aside",
-    ca = u"Contingut suplementari (aside)",
-    es = u"Contenido suplementario (aside)",
+    ca = u"Contingut relacionat (aside)",
+    es = u"Contenido relacionado (aside)",
     en = u"Tangentially related content (aside)"
 )
 
@@ -1060,7 +1066,7 @@ translations.define("NewsListing.paginated",
 
 translations.define("NewsListing.page_size",
     ca = u"Mida del llistat",
-    es = u"Tamaño del listado",
+    es = u"del listado",
     en = u"Listing size"
 )
 
