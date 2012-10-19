@@ -62,6 +62,7 @@ class BlocksExtension(Extension):
             loginblock,
             iframeblock,
             youtubeblock,
+            vimeoblock,
             newslisting,
             filelisting,
             facebooklikebutton,
@@ -75,11 +76,6 @@ class BlocksExtension(Extension):
             utils,
             migration
         )
-
-        from woost.extensions.vimeo import VimeoExtension
-
-        if VimeoExtension.instance.enabled:
-            from woost.extensions.blocks import vimeoblock
 
         # Install an overlay for the frontend edit panel
         templates.get_class("woost.extensions.blocks.EditPanelOverlay")
