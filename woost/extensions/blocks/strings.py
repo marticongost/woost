@@ -222,6 +222,12 @@ translations.define("Block.heading_type=dt",
     en = u"Term (dt)"
 )
 
+translations.define("Block.heading_type=figcaption",
+    ca = u"Títol per un recurs complementari (figcaption)",
+    es = u"Título para un recurso complementario (figcaption)",
+    en = u"Figure caption"
+)
+
 translations.define("Block.html_attributes",
     ca = u"Atributs HTML",
     es = u"Atributos HTML",
