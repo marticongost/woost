@@ -62,7 +62,8 @@ class Block(Item):
             "h4",
             "h5",
             "h6",
-            "dt"
+            "dt",
+            "figcaption"
         ],
         required = heading,
         member_group = "content"
