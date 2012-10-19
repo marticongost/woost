@@ -644,34 +644,82 @@ translations.define("VimeoBlock-plural",
     en = u"Vimeo videos"
 )
 
-translations.define("VimeoBlock.video",
-    ca = u"Vídeo",
-    es = u"Video",
-    en = u"Video"
+translations.define("VimeoBlock.appearence",
+    ca = u"Aparença",
+    es = u"Apariencia",
+    en = u"Appearence"
 )
 
-translations.define("VimeoBlock.video_width",
+translations.define("VimeoBlock.video_id",
+    ca = u"Codi del vídeo",
+    es = u"Código del video",
+    en = u"Video ID"
+)
+
+translations.define("VimeoBlock.vimeo_autoplay",
+    ca = u"Reproducció automàtica",
+    es = u"Reproducción automática",
+    en = u"Autoplay"
+)
+
+translations.define("VimeoBlock.vimeo_loop",
+    ca = u"Reproduïr continuament",
+    es = u"Reproducir continuamente",
+    en = u"Loop"
+)
+
+translations.define("VimeoBlock.vimeo_api",
+    ca = u"Habilitar l'API de Vimeo per Javascript",
+    es = u"Habilitar la API de Vimeo para Javascript",
+    en = u"Enable Vimeo's Javascript API"
+)
+
+translations.define("VimeoBlock.vimeo_player_id",
+    ca = u"Identificador únic del reproductor per l'API de Javascript",
+    es = u"Identificador único del reproductor para la API de Javascript",
+    en = u"Player unique ID for the Javascript API"
+)
+
+translations.define("VimeoBlock.width",
     ca = u"Amplada",
     es = u"Ancho",
     en = u"Width"
 )
 
-translations.define("VimeoBlock.video_width-explanation",
-    ca = u"en píxels",
-    es = u"en píxeles",
-    en = u"in pixels"
-)
-
-translations.define("VimeoBlock.video_height",
+translations.define("VimeoBlock.height",
     ca = u"Alçada",
     es = u"Alto",
     en = u"Height"
 )
 
-translations.define("VimeoBlock.video_height-explanation",
-    ca = u"en píxels",
-    es = u"en píxeles",
-    en = u"in pixels"
+translations.define("VimeoBlock.allow_fullscreen",
+    ca = u"Permetre pantalla completa",
+    es = u"Permitir pantalla completa",
+    en = u"Allow fullscreen"
+)
+
+translations.define("VimeoBlock.vimeo_title",
+    ca = u"Mostrar el títol del vídeo",
+    es = u"Mostrar el título del video",
+    en = u"Show the video's title"
+)
+
+translations.define("VimeoBlock.vimeo_byline",
+    ca = u"Mostrar informació de l'autor",
+    es = u"Mostrar información del autor",
+    en = u"Show the video's byline"
+)
+
+translations.define("VimeoBlock.vimeo_portrait",
+    ca = u"Mostrar imatge de l'autor",
+    es = u"Mostrar imagen del autor",
+    en = u"Show the author's portrait"
+)
+
+translations.define("VimeoBlock.vimeo_color",
+    ca = u"Color del reproductor",
+    es = u"Color del reproductor",
+    en = u"Player color"
 )
 
 # TwitterTimelineBlock
