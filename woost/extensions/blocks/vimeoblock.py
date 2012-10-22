@@ -6,7 +6,6 @@ u"""
 import re
 from cocktail import schema
 from woost.extensions.blocks.block import Block
-from woost.extensions.vimeo.video import VimeoVideo
 
 _video_id_expr = re.compile(r"/(\d+)")
 
