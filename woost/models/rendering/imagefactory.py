@@ -51,7 +51,7 @@ class ImageFactory(Item):
     )
 
     default_format = schema.String(
-        enumeration = ["JPG", "PNG", "GIF", "TIFF"],
+        enumeration = ["JPEG", "PNG", "GIF", "TIFF"],
         translatable_enumeration = False,
         edit_control = "cocktail.html.DropdownSelector"
     )
