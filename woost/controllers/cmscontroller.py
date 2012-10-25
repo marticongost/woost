@@ -183,8 +183,8 @@ class CMSController(BaseCMSController):
                 cache_manager = CacheManager(
                     **parse_cache_config_options({
                         'cache.lock_dir': cache_path,
-                        'cache.regions': app.package + '_page_cache',
-                        'cache.%s_page_cache.type' % app.package: 'memory'
+                        'cache.regions': 'woost_cache',
+                        'cache.woost_cache.type': 'memory'
                     })
                 )
                 set_cache_manager(cache_manager)
