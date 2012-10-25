@@ -17,6 +17,7 @@ class ElementType(schema.String):
         "article",
         "details",
         "aside",
+        "figure",
         "header",
         "footer",
         "nav",
