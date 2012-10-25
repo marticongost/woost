@@ -10,6 +10,7 @@ from time import time, mktime
 from hashlib import md5
 import cherrypy
 from cherrypy.lib import cptools, http
+from woost import app
 from woost.controllers import BaseCMSController, get_cache_manager
 
 _cache_lock = Lock()
@@ -126,7 +127,7 @@ class PublishableController(BaseCMSController):
 
         publishable = self.context["publishable"]
         cache = get_cache_manager().get_cache_region(
-            'cached_content', 'woost_cache'
+            'cached_content', app.package + '_page_cache'
         )
 
         # Look for a cached response for the specified key
@@ -157,7 +158,7 @@ class PublishableController(BaseCMSController):
     def _produce_cached_content(self, cache_key, **kwargs):
 
         cache = get_cache_manager().get_cache_region(
-            'cached_content', 'woost_cache'
+            'cached_content', app.package + '_page_cache'
         )
         content = self._produce_content(**kwargs)
 
