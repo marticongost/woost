@@ -82,10 +82,8 @@ class CachingPolicy(Item):
 
     def get_content_cache_key(self, publishable, **context):
 
-        cache_key = (str(Location.get_current()),)
-
+        cache_key = (str(Location.get_current(relative = False)),)
         key_qualifier = None
-        
         expression = self.cache_key_expression
 
         if expression:
