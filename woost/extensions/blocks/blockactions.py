@@ -61,7 +61,7 @@ class EditBlocksAction(UserAction):
     min = 1
     max = 1
     included = frozenset(["toolbar", "item_buttons"])
-    excluded = UserAction.excluded | frozenset(["new"])
+    excluded = UserAction.excluded | frozenset(["new_item"])
 
     def is_available(self, context, target):
         

@@ -111,9 +111,15 @@ translations.define("woost.extensions.blocks.ElementType=details",
     en = u"Details"
 )
 
+translations.define("woost.extensions.blocks.ElementType=figure",
+    ca = u"Recurs complementari (figure)",
+    es = u"Recurso complementario (figure)",
+    en = u"Figure"
+)
+
 translations.define("woost.extensions.blocks.ElementType=aside",
-    ca = u"Contingut suplementari (aside)",
-    es = u"Contenido suplementario (aside)",
+    ca = u"Contingut relacionat (aside)",
+    es = u"Contenido relacionado (aside)",
     en = u"Tangentially related content (aside)"
 )
 
@@ -214,6 +220,12 @@ translations.define("Block.heading_type=dt",
     ca = u"Terme (dt)",
     es = u"Término (dt)",
     en = u"Term (dt)"
+)
+
+translations.define("Block.heading_type=figcaption",
+    ca = u"Títol per un recurs complementari (figcaption)",
+    es = u"Título para un recurso complementario (figcaption)",
+    en = u"Figure caption"
 )
 
 translations.define("Block.html_attributes",
@@ -373,9 +385,9 @@ translations.define("SlideShowBlock.navigation_controls",
 )
 
 translations.define("SlideShowBlock.bullet_controls",
-    ca = u"Mostrar botons de navegació",
-    es = u"Mostrar botones de navegación",
-    en = u"Show bullet controls"
+    ca = u"Mostrar botons de diapositiva",
+    es = u"Mostrar botones de diapositiva",
+    en = u"Show slide bullets"
 )
 
 translations.define("SlideShowBlock.interval",
@@ -638,34 +650,82 @@ translations.define("VimeoBlock-plural",
     en = u"Vimeo videos"
 )
 
-translations.define("VimeoBlock.video",
-    ca = u"Vídeo",
-    es = u"Video",
-    en = u"Video"
+translations.define("VimeoBlock.appearence",
+    ca = u"Aparença",
+    es = u"Apariencia",
+    en = u"Appearence"
 )
 
-translations.define("VimeoBlock.video_width",
+translations.define("VimeoBlock.video_id",
+    ca = u"Codi del vídeo",
+    es = u"Código del video",
+    en = u"Video ID"
+)
+
+translations.define("VimeoBlock.vimeo_autoplay",
+    ca = u"Reproducció automàtica",
+    es = u"Reproducción automática",
+    en = u"Autoplay"
+)
+
+translations.define("VimeoBlock.vimeo_loop",
+    ca = u"Reproduïr continuament",
+    es = u"Reproducir continuamente",
+    en = u"Loop"
+)
+
+translations.define("VimeoBlock.vimeo_api",
+    ca = u"Habilitar l'API de Vimeo per Javascript",
+    es = u"Habilitar la API de Vimeo para Javascript",
+    en = u"Enable Vimeo's Javascript API"
+)
+
+translations.define("VimeoBlock.vimeo_player_id",
+    ca = u"Identificador únic del reproductor per l'API de Javascript",
+    es = u"Identificador único del reproductor para la API de Javascript",
+    en = u"Player unique ID for the Javascript API"
+)
+
+translations.define("VimeoBlock.width",
     ca = u"Amplada",
     es = u"Ancho",
     en = u"Width"
 )
 
-translations.define("VimeoBlock.video_width-explanation",
-    ca = u"en píxels",
-    es = u"en píxeles",
-    en = u"in pixels"
-)
-
-translations.define("VimeoBlock.video_height",
+translations.define("VimeoBlock.height",
     ca = u"Alçada",
     es = u"Alto",
     en = u"Height"
 )
 
-translations.define("VimeoBlock.video_height-explanation",
-    ca = u"en píxels",
-    es = u"en píxeles",
-    en = u"in pixels"
+translations.define("VimeoBlock.allow_fullscreen",
+    ca = u"Permetre pantalla completa",
+    es = u"Permitir pantalla completa",
+    en = u"Allow fullscreen"
+)
+
+translations.define("VimeoBlock.vimeo_title",
+    ca = u"Mostrar el títol del vídeo",
+    es = u"Mostrar el título del video",
+    en = u"Show the video's title"
+)
+
+translations.define("VimeoBlock.vimeo_byline",
+    ca = u"Mostrar informació de l'autor",
+    es = u"Mostrar información del autor",
+    en = u"Show the video's byline"
+)
+
+translations.define("VimeoBlock.vimeo_portrait",
+    ca = u"Mostrar imatge de l'autor",
+    es = u"Mostrar imagen del autor",
+    en = u"Show the author's portrait"
+)
+
+translations.define("VimeoBlock.vimeo_color",
+    ca = u"Color del reproductor",
+    es = u"Color del reproductor",
+    en = u"Player color"
 )
 
 # TwitterTimelineBlock
@@ -1060,7 +1120,7 @@ translations.define("NewsListing.paginated",
 
 translations.define("NewsListing.page_size",
     ca = u"Mida del llistat",
-    es = u"Tamaño del listado",
+    es = u"del listado",
     en = u"Listing size"
 )
 
@@ -1270,6 +1330,86 @@ translations.define("FacebookLikeButton.fb_ref",
     ca = u"Codi de seguiment",
     es = u"Código de seguimiento",
     en = u"Referral tracking label"
+)
+
+# FacebookLikeBox
+#------------------------------------------------------------------------------
+translations.define("FacebookLikeBox",
+    ca = u'Caixa de "M\'agrada" per pàgines de Facebook',
+    es = u'Caja de "Me gusta" para páginas de Facebook',
+    en = u"Facebook Like Box"
+)
+
+translations.define("FacebookLikeBox-plural",
+    ca = u'Caixes de "M\'agrada" per pàgines de Facebook',
+    es = u'Cajas de "Me gusta" para páginas de Facebook',
+    en = u"Facebook Like Boxes"
+)
+
+translations.define("FacebookLikeBox.appearence",
+    ca = u"Aparença",
+    es = u"Apariencia",
+    en = u"Appearence"
+)
+
+translations.define("FacebookLikeBox.fb_href",
+    ca = u"Pàgina de Facebook",
+    es = u"Página de Facebook",
+    en = u"Facebook page"
+)
+
+translations.define("FacebookLikeBox.fb_show_faces",
+    ca = u"Mostrar cares",
+    es = u"Mostrar caras",
+    en = u"Show faces"
+)
+
+translations.define("FacebookLikeBox.fb_stream",
+    ca = u"Mostrar entrades del mur",
+    es = u"Mostrar entradas del muro",
+    en = u"Show stream"
+)
+
+translations.define("FacebookLikeBox.fb_header",
+    ca = u"Mostrar el logo de Facebook",
+    es = u"Mostrar el logo de Facebook",
+    en = u"Show Facebook's logo"
+)
+
+translations.define("FacebookLikeBox.fb_width",
+    ca = u"Amplada",
+    es = u"Ancho",
+    en = u"Width"
+)
+
+translations.define("FacebookLikeBox.fb_height",
+    ca = u"Alçada",
+    es = u"Alto",
+    en = u"Height"
+)
+
+translations.define("FacebookLikeBox.fb_border_color",
+    ca = u"Color de la vora",
+    es = u"Color del borde",
+    en = u"Border color"
+)
+
+translations.define("FacebookLikeBox.fb_colorscheme",
+    ca = u"Esquema de colors",
+    es = u"Esquema de colores",
+    en = u"Colorscheme"
+)
+
+translations.define("FacebookLikeBox.fb_colorscheme=light",
+    ca = u"Clar",
+    es = u"Claro",
+    en = u"Light"
+)
+
+translations.define("FacebookLikeBox.fb_colorscheme=dark",
+    ca = u"Fosc",
+    es = u"Oscuro",
+    en = u"Dark"
 )
 
 # TweetButton

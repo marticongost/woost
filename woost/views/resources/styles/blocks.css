@@ -55,6 +55,11 @@
     vertical-align: top;
 }
 
+.TextBlockView.column_right .image_gallery .image_entry {
+    margin-right: 0;
+    margin-left: 1em;
+}
+
 /* Center top */
 .TextBlockView.center_top .image_gallery > ul {
     text-align: center;    
