@@ -166,13 +166,9 @@ cocktail.bind(".EditBlocksSlotList.foldable .slot", function ($slot) {
             }
         }
     }
-
+    
     cocktail.bind(".BlockDisplay", function ($blockDisplay) {
-
-        $blockDisplay.dblclick(function () {
-            $blockDisplay.children(".block_handle").find("[name=action][value=edit]").click();
-        });
-
+        
         function handleDragStart(e) {
             $blockDisplay.addClass("drag");
             e.dataTransfer.effectAllowed = "move";
