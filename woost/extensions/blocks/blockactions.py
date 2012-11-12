@@ -40,6 +40,15 @@ def get_clipboard_contents():
 def set_clipboard_contents(contents):
     session[CLIPBOARD_SESSION_KEY] = contents
 
+def focus_block(block):
+    location = Location.get_current()
+    location.hash = "block" + str(block.id)
+    location.query_string.pop("action", None)
+    location.query_string.pop("block_parent", None)
+    location.query_string.pop("block_slot", None)
+    location.query_string.pop("block", None)
+    location.go("GET")
+
 def type_is_block_container(cls):
 
     for member in cls.members(recursive = False).itervalues():
@@ -198,13 +207,12 @@ class AddBlockAction(UserAction):
                 anchor = controller.block
             )
             datastore.commit()
+            focus_block(common_block)
 
         # Add a new block: set up an edit stack node and redirect the user
         else:
             edit_stacks_manager = controller.context["edit_stacks_manager"]
-            edit_stack = edit_stacks_manager.create_edit_stack()
-            edit_stack.root_url = str(Location.get_current())
-            edit_stacks_manager.current_edit_stack = edit_stack
+            edit_stack = edit_stacks_manager.current_edit_stack
 
             block = self.block_type()
             node = AddBlockNode(block)
@@ -234,9 +242,26 @@ class RemoveBlockAction(UserAction):
         )
 
     def invoke(self, controller, selection):
+
         collection = controller.block_parent.get(controller.block_slot)
+        
+        try:
+            index = collection.index(selection[0])
+        except ValueError:
+            index = None        
+
         schema.remove(collection, selection[0])
         datastore.commit()
+
+        # Focus the block that was nearest to the removed block
+        if index is None or not collection:
+            adjacent_block = controller.block_parent
+        elif index > 0:
+            adjacent_block = collection[index - 1]
+        else:
+            adjacent_block = collection[0]
+        
+        focus_block(adjacent_block)
 
 
 class CopyBlockAction(UserAction):
@@ -250,6 +275,7 @@ class CopyBlockAction(UserAction):
             "block_parent": controller.block_parent.id,
             "block_slot": controller.block_slot.name
         })
+        focus_block(controller.block)
 
 
 class CutBlockAction(UserAction):
@@ -263,6 +289,7 @@ class CutBlockAction(UserAction):
             "block_parent": controller.block_parent.id,
             "block_slot": controller.block_slot.name
         })
+        focus_block(controller.block)
 
 
 class PasteBlockAction(UserAction):
@@ -315,6 +342,7 @@ class PasteBlockAction(UserAction):
 
                 datastore.commit()
                 del session[CLIPBOARD_SESSION_KEY]
+                focus_block(block)
 
 
 class ShareBlockAction(UserAction):
@@ -339,6 +367,7 @@ class ShareBlockAction(UserAction):
     def invoke(self, controller, selection):
         Site.main.common_blocks.append(selection[0])
         datastore.commit()
+        focus_block(selection[0])
 
 
 AddBlockAction("add_block").register(before = "edit")

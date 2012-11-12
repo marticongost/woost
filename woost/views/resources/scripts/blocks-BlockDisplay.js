@@ -10,7 +10,9 @@
 cocktail.bind(".BlockDisplay", function ($block) {
 
     function activate(action) {
-        $block.children(".block_handle").find("[name=action][value=" + action + "]").click();
+        var $button = $block.children(".block_handle").find("[name=action][value=" + action + "]");
+        $button.click();
+        return $button.length;
     }
 
     $block.dblclick(function () {
@@ -79,7 +81,7 @@ cocktail.bind(".BlockDisplay", function ($block) {
         }
         // Delete: remove the block
         else if (e.keyCode == 46) {
-            activate("delete");
+            activate("delete") || activate("remove_block");
             return false;
         }
         // Ctrl + c: copy
