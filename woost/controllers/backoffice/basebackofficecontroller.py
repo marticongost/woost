@@ -115,11 +115,8 @@ class BaseBackOfficeController(BaseCMSController):
         edit_stack = self.edit_stack
 
         # Go back to the parent edit state
-        if edit_stack and len(edit_stack) > 1:
-            if isinstance(edit_stack[-2], RelationNode):
-                edit_stack.go(-3)
-            else:
-                edit_stack.go(-2)
+        if edit_stack:
+            edit_stack.go_back()            
         
         # Go back to the root of the backoffice
         else:

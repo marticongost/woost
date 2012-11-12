@@ -323,9 +323,14 @@ class EditStack(ListWrapper):
         
         @param params: Additional query string parameters to pass to the
             destination URI.
-        """        
-        if len(self._items) > 1:
-            raise cherrypy.HTTPRedirect(self._items[-2].uri(**params))
+        """
+        if len(self._items) > 1:            
+            
+            target_node = self._items[-2]
+            if isinstance(target_node, RelationNode):
+                target_node = self._items[-3]
+
+            raise cherrypy.HTTPRedirect(target_node.uri(**params))
         else:
             if self.root_url:
                 # When redirecting the user by means of a callback URL, discard
