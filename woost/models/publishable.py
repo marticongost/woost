@@ -33,10 +33,7 @@ class Publishable(Item):
     """Base class for all site elements suitable for publication."""
     
     instantiable = False
-
-    # Backoffice customization
-    edit_node_class = "woost.controllers.backoffice.publishableeditnode." \
-        "PublishableEditNode"
+    edit_view = "woost.views.PublishableFieldsView"
  
     groups_order = [
         "navigation",
@@ -58,6 +55,7 @@ class Publishable(Item):
         "full_path",
         "hidden",
         "login_page",
+        "per_language_publication",
         "enabled",
         "translation_enabled",
         "start_date",
@@ -164,7 +162,7 @@ class Publishable(Item):
         required = True,
         default = False,
         indexed = True,
-        visible = False,
+        #visible = False,
         member_group = "publication"
     )
 

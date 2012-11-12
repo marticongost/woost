@@ -6,7 +6,7 @@ from cocktail.controllers import context
 from woost.models.publishable import get_category_from_mime_type
 ?>
 
-<py:woost.views.BackOfficeFieldsView
+<py:woost.views.PublishableFieldsView
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:py="http://www.whads.com/ns/cocktail/templates">
 
@@ -59,4 +59,4 @@ from woost.models.publishable import get_category_from_mime_type
         <span class="file_size" py:if="file_size is not None">${format_bytes(file_size)}</span>
     </p>
 
-</py:woost.views.BackOfficeFieldsView>
+</py:woost.views.PublishableFieldsView>
