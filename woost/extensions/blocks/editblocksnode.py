@@ -5,7 +5,7 @@ u"""
 """
 from cocktail.controllers import context
 from woost.models import Item
-from woost.controllers.backoffice.editstack import StackNode
+from woost.controllers.backoffice.editstack import StackNode, EditNode
 
 
 class EditBlocksNode(StackNode):
@@ -36,4 +36,8 @@ class EditBlocksNode(StackNode):
             str(self.item.id),
             **params
         )
+
+    def back_hash(self, previous_node):
+        if isinstance(previous_node, EditNode):
+            return "block" + str(previous_node.item.id)
 
