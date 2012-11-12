@@ -330,7 +330,12 @@ class EditStack(ListWrapper):
             if isinstance(target_node, RelationNode):
                 target_node = self._items[-3]
 
-            raise cherrypy.HTTPRedirect(target_node.uri(**params))
+            back_hash = target_node.back_hash(self._items[-1])
+            uri = target_node.uri(**params)
+            if back_hash:
+                uri += "#" + back_hash
+
+            raise cherrypy.HTTPRedirect(uri)
         else:
             if self.root_url:
                 # When redirecting the user by means of a callback URL, discard
@@ -483,6 +488,9 @@ class StackNode(object):
         @return: The URI for the node.
         @rtype: unicode
         """ 
+
+    def back_hash(self, previous_node):
+        return None
 
 
 class EditNode(StackNode):
