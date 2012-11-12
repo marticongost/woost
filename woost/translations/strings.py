@@ -2373,6 +2373,12 @@ translations.define("Publishable.mime_type",
     en = u"MIME type"
 )
 
+translations.define("Publishable.per_language_publication",
+    ca = u"Publicació per idiomes",
+    es = u"Publicación por idiomas",
+    en = u"Per language publication"
+)
+
 translations.define("Publishable.enabled",
     ca = u"Actiu",
     es = u"Activo",
