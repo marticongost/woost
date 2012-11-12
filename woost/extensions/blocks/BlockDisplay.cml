@@ -7,7 +7,8 @@ from woost.extensions.blocks.blockactions import get_clipboard_contents
 <div
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:py="http://www.whads.com/ns/cocktail/templates"
-    draggable="true">
+    draggable="true"
+    id="block@{str(self.block.id)}">
 
     <?py-class
     block = None
