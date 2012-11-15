@@ -61,3 +61,18 @@ body.editing .highlighted_block {
     background-color: #cbd6e3;
 }
 
+.EditPanel .edit_slot_link {
+    text-decoration: none;
+}
+
+.EditPanel .edit_slot_link .label {
+    text-decoration: underline;
+    font-size: 1.1em;
+    position: relative;
+    top: -2px;
+}
+
+.EditPanel .edit_slot_link + * {
+    margin-top: 0.2em;
+}
+

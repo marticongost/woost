@@ -2,7 +2,12 @@
 <?py
 from cocktail.controllers import Location
 from cocktail.controllers import context
-from woost.models import Publishable, ModifyPermission, get_current_user
+from woost.models import (
+    Item,
+    Publishable,
+    ModifyPermission,
+    get_current_user
+)
 from woost.extensions.blocks.slot import Slot
 ?>
 
@@ -13,12 +18,17 @@ from woost.extensions.blocks.slot import Slot
 
     <?py-class
     slot = None
-    blocks = None
+    blocks_source = None
     block_edit_parameters = {}
 
+    def get_slot_edit_uri(self):
+        return self._backoffice.get_uri(
+            path = ["blocks", self.blocks_source.id],
+            parameters = {"root_url": self._location}
+        ) + "#slot_%d_%s" % (self.blocks_source.id, self.slot.name)
+
     def get_block_edit_uri(self, block):
-        backoffice = Publishable.require_instance(qname = "woost.backoffice")
-        return backoffice.get_uri(
+        return self._backoffice.get_uri(
             path = ["content", block.id, "fields"],
             parameters = self.block_edit_parameters            
         )
@@ -30,8 +40,16 @@ from woost.extensions.blocks.slot import Slot
     ?>
 
     <py:ready>
-        <?py        
-        self.block_edit_parameters["root_url"] = unicode(Location.get_current())
+        <?py
+        self._backoffice = Publishable.require_instance(qname = "woost.backoffice")
+        self._location = unicode(Location.get_current())
+        self.block_edit_parameters = self.block_edit_parameters.copy()
+        self.block_edit_parameters["root_url"] = self._location
+        
+        if isinstance(self.blocks_source, Item):
+            self._blocks = self.blocks_source.get(self.slot)
+        else:
+            self._blocks = self.blocks_source
         ?>
     </py:ready>
 
@@ -41,9 +59,23 @@ from woost.extensions.blocks.slot import Slot
 
     <div py:id="blocks_content" class="edit_panel_section_content">
 
+        <a py:id="edit_slot_link">
+            <py:binding>
+                <?py
+                if isinstance(self.blocks_source, Item):
+                    element["href"] = self.get_slot_edit_uri()
+                else:
+                    element.visible = False
+                ?>
+            </py:binding>
+            <img class="icon" src="/resources/images/edit_blocks.png" alt=""/>
+            <span class="label">${translations("woost.extensions.blocks.BlockSection.edit_slot_link")}</span>
+        </a>
+
         <py:cocktail.html.TreeView
             py:id="block_tree"
-            py:root="@{self.blocks}"
+            py:visible="@{bool(self._blocks)}"
+            py:root="@{self._blocks}"
             py:root_visibility="${TreeView.ITERABLE_ROOT}"
             py:get_item_url="${lambda item: self.get_block_edit_uri(item)}"
             py:filter_item="${lambda item: get_current_user().has_permission(ModifyPermission, target = item)}">
