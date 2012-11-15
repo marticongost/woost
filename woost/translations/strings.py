@@ -799,6 +799,12 @@ translations.define("woost.views.EditLink-publishable_target",
     en = u"this page"
 )
 
+translations.define("woost.views.EditLink-site",
+    ca = u"les propietats del lloc web",
+    es = u"las propiedades del sitio web",
+    en = u"site-wide properties"
+)
+
 translations.define("woost.views.EditLink-create",
     ca = lambda target_desc = None:
         u"Crear " + (target_desc or u"element"),

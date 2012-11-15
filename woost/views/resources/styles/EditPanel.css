@@ -22,7 +22,7 @@
 }
 
 .EditPanel .edit_panel_section {
-    margin-bottom: 1em;
+    margin-top: 1em;
 }
 
 .EditPanel .edit_panel_section_content {
@@ -70,7 +70,14 @@
     text-decoration: none;
 }
 
+.EditPanel .EditLink + .EditLink {
+    margin-top: 0.2em;
+}
+
 .EditPanel .EditLink .label {
     text-decoration: underline;
+    font-size: 1.1em;
+    position: relative;
+    top: -2px;
 }
 
