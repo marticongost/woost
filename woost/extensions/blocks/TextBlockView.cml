@@ -87,6 +87,18 @@ from cocktail.controllers import Location
                 self.create_ie_table_layout_workaround("<td class='text_container_cell' valign='top'>").place_before(self.text_container)
                 self.create_ie_table_layout_workaround("</td>").place_after(self.text_container)
                 self.append(self.create_ie_table_layout_workaround("</tr></table>"))
+        
+        if self.block.image_alignment == "inline":
+            self.content_wrapper.tag = None
+            self.text_container.tag = "span"
+            self.image_gallery.tag = None
+            self.image_gallery.image_list.tag = None
+
+            @extend(self.image_gallery)
+            def create_image_entry(image_gallery, *args, **kwargs):
+                entry = call_base(*args, **kwargs)
+                entry.tag = None
+                return entry
         ?>
     </py:ready>
 

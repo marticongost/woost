@@ -600,6 +600,12 @@ translations.define("TextBlock.image_alignment=top_right",
     en = u"Top right"
 )
 
+translations.define("TextBlock.image_alignment=inline",
+    ca = u"En línia",
+    es = u"En linea",
+    en = u"Inline"
+)
+
 translations.define("TextBlock.image_alignment=background",
     ca = u"Imatge de fons",
     es = u"Imagen de fondo",
