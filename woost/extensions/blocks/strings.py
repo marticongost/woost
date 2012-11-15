@@ -33,6 +33,12 @@ translations.define(
         u"Editing the blocks for " + translations(instance.item)
 )
 
+translations.define("woost.extensions.blocks.BlockSection.edit_slot_link",
+    ca = u"Editar aquest espai",
+    es = u"Editar este espacio",
+    en = u"Edit this slot"
+)
+
 # Site
 #------------------------------------------------------------------------------
 translations.define("Site.common_blocks",

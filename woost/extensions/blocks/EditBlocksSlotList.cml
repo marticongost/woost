@@ -55,6 +55,7 @@ from woost.extensions.blocks.block import Block
 
     <div py:def="slot" py:args="member">
         <?py
+        element["id"] = "slot_%d_%s" % (self.item.id, member.name)
         element.set_client_param("blockSlot", member.name)
         self._current_slot = member
         ?>

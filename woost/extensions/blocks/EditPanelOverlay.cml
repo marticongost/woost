@@ -12,7 +12,7 @@ from woost.extensions.blocks.slot import Slot
     <?py-class
     def get_slots(self):
         return [
-            (member, self.publishable.get(member))
+            (member, self.publishable)
             for member in self.publishable.__class__.ordered_members()
             if isinstance(member, Slot) and member.visible
         ]
@@ -21,17 +21,16 @@ from woost.extensions.blocks.slot import Slot
     <py:with py:element="self.panel_content">
         <py:ready>
             <py:new
-                py:element="self.create_block_section(slot, blocks)"
-                py:for="slot, blocks in self.get_slots()"
-                py:where="blocks"/>
+                py:element="self.create_block_section(slot, blocks_source)"
+                py:for="slot, blocks_source in self.get_slots()"/>
         </py:ready>
     </py:with>
 
     <py:woost.extensions.blocks.BlockSection
         py:def="block_section"
-        py:args="slot, blocks"
+        py:args="slot, blocks_source"
         py:slot="${slot}"
-        py:blocks="${blocks}"/>
+        py:blocks_source="${blocks_source}"/>
 
 </py:overlay>
 
