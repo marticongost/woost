@@ -596,7 +596,7 @@ class Item(PersistentObject):
                 host = "http://" + host
 
             uri = make_uri(host, uri)
-        else:
+        elif "://" not in uri:
             uri = make_uri("/", uri)
 
         return uri
