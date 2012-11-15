@@ -108,6 +108,7 @@ class TextBlock(Block):
             "center_top",
             "center_bottom",
             "top_right",
+            "inline",
             "background"
         ],
         edit_control = _mandatory_dropdown,

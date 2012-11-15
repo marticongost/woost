@@ -68,3 +68,23 @@
 .TextBlockView.center_top .image_gallery > ul > li {
     display: inline-block;
 }
+
+/* Inline */
+.TextBlockView.inline * {
+    vertical-align: middle;
+}
+
+.TextBlockView.inline .text_container * {
+    display: inline !important;
+    margin: 0;
+    padding: 0;
+}
+
+.TextBlockView.inline a.block_link {
+    text-decoration: none;
+}
+
+.TextBlockView.inline a.block_link .text_container {
+    text-decoration: underline;
+}
+
