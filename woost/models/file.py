@@ -95,7 +95,8 @@ class File(Publishable):
         languages = None,
         hash = None,
         encoding = "utf-8",
-        download_temp_folder = None):
+        download_temp_folder = None,
+        redownload = False):
         """Imports a file into the site.
         
         @param path: The path to the file that should be imported.
@@ -126,11 +127,12 @@ class File(Publishable):
             if not download_temp_folder:
                 download_temp_folder = mkdtemp()
 
-            response = urlopen(path)
             temp_path = os.path.join(download_temp_folder, file_name)
 
-            with open(temp_path, "w") as temp_file:
-                copyfileobj(response, temp_file)
+            if redownload or not os.path.exists(temp_path):
+                response = urlopen(path)
+                with open(temp_path, "w") as temp_file:
+                    copyfileobj(response, temp_file)
 
             path = temp_path
 
