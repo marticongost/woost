@@ -114,6 +114,3 @@ class VideoFileRenderer(Renderer):
         finally:
             rmtree(temp_path)
 
-    def last_change_in_appearence(self, item):
-        return os.stat(item.file_path).st_mtime
-

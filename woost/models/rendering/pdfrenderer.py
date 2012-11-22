@@ -80,9 +80,6 @@ class PDFRenderer(Renderer):
         finally:
             rmtree(temp_path)
 
-    def last_change_in_appearence(self, item):
-        return os.stat(item.file_path).st_mtime
-
 
 class PDFTimeoutError(IOError):
     """An exception raised when a PDF rendering operation takes too long to

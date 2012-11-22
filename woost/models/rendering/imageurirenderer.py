@@ -38,18 +38,3 @@ class ImageURIRenderer(Renderer):
 
         return Image.open(buffer)
 
-    def last_change_in_appearence(self, item):
-
-        uri = self.get_item_uri(item)
-        urlparts = urlsplit(uri)
-        host = urlparts[1]
-        path = urlparts[2] + urlparts[3] + urlparts[4]
-        
-        http_conn = HTTPConnection(host)
-        http_conn.request("HEAD", path)
-        http_date = http_conn.getresponse().getheader("last-modified")
-        http_conn.close()
-        
-        if http_date:
-            return mktime(strptime(http_date, "%a, %d %b %Y %H:%M:%S %Z"))
-

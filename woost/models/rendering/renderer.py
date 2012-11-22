@@ -3,7 +3,6 @@ u"""
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
-from time import mktime
 from cocktail.modeling import abstractmethod
 from cocktail import schema
 from woost.models.item import Item
@@ -45,20 +44,4 @@ class Renderer(Item):
             the L{Image<Image.Image>} class.
         @rtype: tuple(str, str) or L{Image<Image.Image>}
         """
-
-    def last_change_in_appearence(self, item):
-        """Determines the last time an item was modified in a way that may
-        alter its rendering.
-
-        This method is used to check wether cached images are still current.
-
-        @param item: The item to evaluate.
-        @type item: L{Item<woost.models.item.Item>}
-
-        @return: The timestamp of the last change to the item that could alter
-            the resulting image produced by the L{render} method of this
-            renderer.
-        @rtype: float
-        """
-        return mktime(item.last_update_time.timetuple())
 
