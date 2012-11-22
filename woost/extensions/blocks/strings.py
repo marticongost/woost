@@ -1541,6 +1541,68 @@ translations.define("TweetButton.tw_count=vertical",
     en = u"Vertical"
 )
 
+# FlashBlock
+#------------------------------------------------------------------------------
+translations.define("FlashBlock",
+    ca = u"Animació Flash",
+    es = u"Animación Flash",
+    en = u"Flash animation"
+)
+
+translations.define("FlashBlock-plural",
+    ca = u"Animacions Flash",
+    es = u"Animaciones Flash",
+    en = u"Flash animations"
+)
+
+translations.define("FlashBlock.swf_file",
+    ca = u"Fitxer Flash",
+    es = u"Fichero Flash",
+    en = u"Flash file"
+)
+
+translations.define("FlashBlock.swf_file",
+    ca = u"Fitxer Flash",
+    es = u"Fichero Flash",
+    en = u"Flash file"
+)
+
+translations.define("FlashBlock.width",
+    ca = u"Amplada",
+    es = u"Ancho",
+    en = u"Width"
+)
+
+translations.define("FlashBlock.height",
+    ca = u"Alçada",
+    es = u"Alto",
+    en = u"Height"
+)
+
+translations.define("FlashBlock.flash_version",
+    ca = u"Versió del reproductor Flash",
+    es = u"Versión del reproductor Flash",
+    en = u"Flash player version"
+)
+
+translations.define("FlashBlock.flash_vars",
+    ca = u"Variables Flash",
+    es = u"Variables Flash",
+    en = u"Flash variables"
+)
+
+translations.define("FlashBlock.flash_params",
+    ca = u"Paràmetres Flash",
+    es = u"Parámetros Flash",
+    en = u"Flash parameters"
+)
+
+translations.define("FlashBlock.flash_attributes",
+    ca = u"Atributs Flash",
+    es = u"Atributos Flash",
+    en = u"Flash attributes"
+)
+
 # Palette groups
 #------------------------------------------------------------------------------
 translations.define("woost.type_groups.blocks.content",
@@ -1577,5 +1639,33 @@ translations.define("woost.type_groups.blocks.custom",
     ca = u"Avançats",
     es = u"Avanzados",
     en = u"Custom"
+)
+
+# VimeoBlockRenderer
+#------------------------------------------------------------------------------
+translations.define("VimeoBlockRenderer",
+    ca = u"Pintador de fotogrames pels blocs de Vimeo",
+    es = u"Pintador de fotogramas para los bloques de Vimeo",
+    en = u"Vimeo blocks still renderer"
+)
+
+translations.define("VimeoBlockRenderer-plural",
+    ca = u"Pintadors de fotogrames pels blocs de Vimeo",
+    es = u"Pintadores de fotogramas para los bloques de Vimeo",
+    en = u"Vimeo blocks still renderers"
+)
+
+# YouTubeBlockRenderer
+#------------------------------------------------------------------------------
+translations.define("YouTubeBlockRenderer",
+    ca = u"Pintador de fotogrames pels blocs de YouTube",
+    es = u"Pintador de fotogramas para los bloques de YouTube",
+    en = u"YouTube blocks still renderer"
+)
+
+translations.define("YouTubeBlockRenderer-plural",
+    ca = u"Pintadors de fotogrames pels blocs de YouTube",
+    es = u"Pintadores de fotogramas para los bloques de YouTube",
+    en = u"YouTube blocks still renderers"
 )
 
