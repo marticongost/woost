@@ -23,6 +23,7 @@ class VimeoBlock(Block):
 
     instantiable = True
     view_class = "woost.extensions.blocks.VimeoBlockView"
+    block_display = "woost.extensions.blocks.GenericThumbnailBlockDisplay"
     groups_order = ["content", "appearence"] + Block.groups_order[1:]
 
     members_order = [

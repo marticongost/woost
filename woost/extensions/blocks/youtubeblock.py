@@ -22,6 +22,7 @@ class YouTubeBlock(Block):
 
     instantiable = True
     view_class = "woost.extensions.blocks.YouTubeBlockView"
+    block_display = "woost.extensions.blocks.GenericThumbnailBlockDisplay"
 
     groups_order = ["content", "video"] + Block.groups_order[1:]
 
