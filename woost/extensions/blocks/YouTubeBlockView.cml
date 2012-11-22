@@ -21,6 +21,7 @@
         py:allow_fullscreen="@{self.allow_fullscreen}"
         py:autoplay="@{self.autoplay}"
         py:show_info="@{self.show_info}"
-        py:show_related_videos="@{self.show_related_videos}"/>
+        py:show_related_videos="@{self.show_related_videos}"
+        py:enablejsapi="${True}"/>
 </div>
 

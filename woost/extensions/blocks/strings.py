@@ -686,18 +686,6 @@ translations.define("VimeoBlock.vimeo_loop",
     en = u"Loop"
 )
 
-translations.define("VimeoBlock.vimeo_api",
-    ca = u"Habilitar l'API de Vimeo per Javascript",
-    es = u"Habilitar la API de Vimeo para Javascript",
-    en = u"Enable Vimeo's Javascript API"
-)
-
-translations.define("VimeoBlock.vimeo_player_id",
-    ca = u"Identificador únic del reproductor per l'API de Javascript",
-    es = u"Identificador único del reproductor para la API de Javascript",
-    en = u"Player unique ID for the Javascript API"
-)
-
 translations.define("VimeoBlock.width",
     ca = u"Amplada",
     es = u"Ancho",
