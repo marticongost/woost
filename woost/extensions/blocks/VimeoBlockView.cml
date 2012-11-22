@@ -11,8 +11,7 @@
     video_id = None
     vimeo_autoplay = False
     vimeo_loop = False
-    vimeo_api = False
-    vimeo_player_id = None
+    vimeo_api = True
     vimeo_title = True
     vimeo_byline = True
     vimeo_portrait = True
@@ -27,7 +26,6 @@
         py:vimeo_autoplay="@{self.vimeo_autoplay}"
         py:vimeo_loop="@{self.vimeo_loop}"
         py:vimeo_api="@{self.vimeo_api}"
-        py:vimeo_player_id="@{self.vimeo_player_id}"
         py:vimeo_title="@{self.vimeo_title}"
         py:vimeo_byline="@{self.vimeo_byline}"
         py:vimeo_portrait="@{self.vimeo_portrait}"

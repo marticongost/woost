@@ -30,8 +30,6 @@ class VimeoBlock(Block):
         "video_id",
         "vimeo_autoplay",
         "vimeo_loop",
-        "vimeo_api",
-        "vimeo_player_id",
         "width",
         "height",
         "allow_fullscreen",
@@ -58,18 +56,6 @@ class VimeoBlock(Block):
     vimeo_loop = schema.Boolean(
         required = True,
         default = False,
-        listed_by_default = False,
-        member_group = "content"
-    )
-
-    vimeo_api = schema.Boolean(
-        required = True,
-        default = False,
-        listed_by_default = False,
-        member_group = "content"
-    )
-
-    vimeo_player_id = schema.String(
         listed_by_default = False,
         member_group = "content"
     )
@@ -123,8 +109,6 @@ class VimeoBlock(Block):
         view.video_id = self.video_id
         view.vimeo_autoplay = self.vimeo_autoplay
         view.vimeo_loop = self.vimeo_loop
-        view.vimeo_api = self.vimeo_api
-        view.vimeo_player_id = self.vimeo_player_id
         view.width = self.width
         view.height = self.height
         view.vimeo_title = self.vimeo_title
