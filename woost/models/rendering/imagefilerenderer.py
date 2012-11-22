@@ -51,9 +51,3 @@ class ImageFileRenderer(Renderer):
     def render(self, item, **parameters):
         return item.file_path
 
-    def last_change_in_appearence(self, item):
-        return max(
-            os.stat(item.file_path).st_mtime,
-            Renderer.last_change_in_appearence(self, item)
-        )
-
