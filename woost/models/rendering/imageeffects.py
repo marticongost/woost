@@ -658,6 +658,8 @@ class Align(ImageEffect):
                 background = resolve_color(self.background)
             elif image.mode == "RGBA":
                 background = (0,0,0,0)
+            else:
+                background = (255,255,255)
 
             copy = Image.new(
                 "RGBA" if background and len(background) == 4 else "RGB",
