@@ -12,39 +12,12 @@ from woost.models import Site, Publishable, File
 from woost.models.rendering import ImageFactory
 from woost.extensions.blocks.block import Block
 from woost.extensions.blocks.elementtype import ElementType
-
-def _iter_block_image_factories():
-    for factory in Site.main.image_factories:
-        if factory.applicable_to_blocks:
-            yield factory
-
-def _block_image_factories_enumeration(ctx):
-    return list(_iter_block_image_factories())
-
-_block_image_factories_default = schema.DynamicDefault(
-    lambda: first(_iter_block_image_factories())
-)
+from woost.extensions.blocks.blockimagefactory import BlockImageFactory
 
 _mandatory_dropdown = display_factory(
     "cocktail.html.DropdownSelector",
     empty_option_displayed = False
 )
-
-
-class BlockImageFactory(schema.Reference):
-
-    def __init__(self, *args, **kwargs):
-        
-        kwargs.setdefault("required", True)
-        kwargs.setdefault("type", ImageFactory)
-        kwargs.setdefault("enumeration", _block_image_factories_enumeration)
-        kwargs.setdefault("default", _block_image_factories_default)                
-        kwargs.setdefault("edit_control", _mandatory_dropdown)
-
-        if "bidirectional" not in kwargs and "related_end" not in kwargs:
-            kwargs["related_end"] = schema.Collection()
-        
-        schema.Reference.__init__(self, *args, **kwargs)
 
 
 class TextBlock(Block):
