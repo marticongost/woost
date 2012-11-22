@@ -384,6 +384,12 @@ translations.define("SlideShowBlock.autoplay",
     en = u"Autoplay"
 )
 
+translations.define("SlideShowBlock.controls",
+    ca = u"Controls",
+    es = u"Controles",
+    en = u"Controls"
+)
+
 translations.define("SlideShowBlock.navigation_controls",
     ca = u"Mostrar controls de navegació",
     es = u"Mostrar controles de navegación",
@@ -394,6 +400,50 @@ translations.define("SlideShowBlock.bullet_controls",
     ca = u"Mostrar botons de diapositiva",
     es = u"Mostrar botones de diapositiva",
     en = u"Show slide bullets"
+)
+
+translations.define("SlideShowBlock.bullet_view_class",
+    ca = u"Aparença dels botons de diapositiva",
+    es = u"Apariencia de los botones de diapositiva",
+    en = u"Slide bullets appearence"
+)
+
+translations.define(
+    "SlideShowBlock.bullet_view_class"
+    "=woost.extensions.blocks.SlideShowButtonBullet",
+    ca = u"Botó",
+    es = u"Botón",
+    en = u"Button"
+)
+
+translations.define(
+    "SlideShowBlock.bullet_view_class"
+    "=woost.extensions.blocks.SlideShowTextBullet",
+    ca = u"Text",
+    es = u"Texto",
+    en = u"Text"
+)
+
+translations.define(
+    "SlideShowBlock.bullet_view_class"
+    "=woost.extensions.blocks.SlideShowImageBullet",
+    ca = u"Imatge",
+    es = u"Imagen",
+    en = u"Image"
+)
+
+translations.define(
+    "SlideShowBlock.bullet_view_class"
+    "=woost.extensions.blocks.SlideShowTextAndImageBullet",
+    ca = u"Imatge i text",
+    es = u"Imagen y texto",
+    en = u"Image and text"
+)
+
+translations.define("SlideShowBlock.bullet_image_factory",
+    ca = u"Processat d'imatge pels botons de diapositiva",
+    es = u"Procesado de imagen para los botones de diapositiva",
+    en = u"Image processing for slide bullets"
 )
 
 translations.define("SlideShowBlock.interval",
