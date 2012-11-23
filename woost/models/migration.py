@@ -187,3 +187,12 @@ def remove_permissions_for_file_local_path(permission):
     except:
         pass
 
+#------------------------------------------------------------------------------
+
+step = MigrationStep("Added the Style.applicable_to_text member")
+
+@when(step.executing)
+def index_style_applicable_to_text_member(e):
+    from woost.models import Style
+    Style.applicable_to_text.rebuild_index()
+

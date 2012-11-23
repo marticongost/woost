@@ -32,3 +32,34 @@ def add_video_renderers(e):
 
             break
 
+step = MigrationStep("woost.extensions.blocks Model block styles")
+
+@when(step.executing)
+def model_block_styles(e):
+
+    from woost.models import Style, Language
+    from woost.extensions.blocks.block import Block
+
+    for style in Style.select():
+        style.applicable_to_blocks = False
+
+    for block in Block.select():
+        
+        value = getattr(block, "_css_class", None)
+
+        if value is not None:
+            for css_class in value.split():
+                style = Style.get_instance(custom_class_name = css_class)
+
+                if style is None:
+                    style = Style()
+                    style.custom_class_name = css_class
+                    for language in Language.codes:
+                        style.set("title", css_class, language)
+                    style.insert()
+
+                style.applicable_to_blocks = True
+                block.styles.append(style)
+
+            del block._css_class
+

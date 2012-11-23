@@ -53,7 +53,7 @@ class RichTextEditor(TinyMCE):
         
         styles = [
             "%s=%s" % (translations(style), style.class_name)
-            for style in Style.select()
+            for style in Style.select({"applicable_to_text": True})
         ]
 
         if current_edit_stack:

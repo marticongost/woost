@@ -15,6 +15,7 @@ class Style(Item):
 
     members_order = [
         "title",
+        "applicable_to_text",
         "custom_class_name",
         "declarations",
         "admin_declarations"
@@ -27,23 +28,34 @@ class Style(Item):
         normalized_index = True,
         full_text_indexed = True,
         descriptive = True,
-        translated = True
+        translated = True,
+        listed_by_default = False
+    )
+
+    applicable_to_text = schema.Boolean(
+        required = True,
+        indexed = True,
+        default = True,
+        listed_by_default = False
     )
 
     custom_class_name = schema.String(
         indexed = True,
         unique = True,
-        normalized_index = False
+        normalized_index = False,
+        listed_by_default = False
     )
 
     declarations = schema.String(
         text_search = False,
-        edit_control = "cocktail.html.TextArea"
+        edit_control = "cocktail.html.TextArea",
+        listed_by_default = False
     )
     
     admin_declarations = schema.String(
         text_search = False,
-        edit_control = "cocktail.html.TextArea"
+        edit_control = "cocktail.html.TextArea",
+        listed_by_default = False
     )
 
     @property

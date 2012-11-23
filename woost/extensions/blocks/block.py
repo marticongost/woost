@@ -8,7 +8,7 @@ from cocktail.iteration import last
 from cocktail.translations import translations
 from cocktail import schema
 from cocktail.html import templates, Element
-from woost.models import Item, Publishable, Site
+from woost.models import Item, Publishable, Style, Site
 
 
 class Block(Item):    
@@ -39,7 +39,7 @@ class Block(Item):
         "heading_type",
         "enabled",
         "controller",
-        "css_class",
+        "styles",
         "inline_css_styles",
         "html_attributes"
     ]
@@ -79,7 +79,10 @@ class Block(Item):
         member_group = "behavior"
     )
 
-    css_class = schema.String(
+    styles = schema.Collection(
+        items = schema.Reference(type = Style),
+        relation_constraints = {"applicable_to_blocks": True},
+        related_end = schema.Collection(),
         member_group = "html"
     )
 
@@ -140,8 +143,8 @@ class Block(Item):
                 else:
                     block_proxy.set_style(key.strip(), value.strip())
 
-        if self.css_class:
-            block_proxy.add_class(self.css_class)
+        for style in self.styles:
+            block_proxy.add_class(style.class_name)
 
         block_proxy.add_class("block%d" % self.id)
         

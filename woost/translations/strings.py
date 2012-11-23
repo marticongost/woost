@@ -3291,6 +3291,12 @@ translations.define("Style.custom_class_name",
     en = u"CSS class"
 )
 
+translations.define("Style.applicable_to_text",
+    ca = u"Aplicable al text",
+    es = u"Aplicable al texto",
+    en = u"Applies to text"
+)
+
 translations.define("Style.custom_class_name-explanation",
     ca = u"Permet especificar el nom de la classe CSS resultant. Si no "
          u"s'indica, el sistema decidirà el nom seguint un patró "
