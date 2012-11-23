@@ -9,7 +9,7 @@ from cocktail.translations import (
     DATE_STYLE_ABBR,
     DATE_STYLE_NUMBERS
 )
-from cocktail.translations.helpers import ca_possessive
+from cocktail.translations.helpers import ca_possessive, plural2
 
 translations.define("Action edit_blocks",
     ca = u"Editar blocs",
@@ -45,6 +45,14 @@ translations.define("Site.common_blocks",
     ca = u"Blocs comuns",
     es = u"Bloques comunes",
     en = u"Common blocks"
+)
+
+# Style
+#------------------------------------------------------------------------------
+translations.define("Style.applicable_to_blocks",
+    ca = u"Aplicable a blocs",
+    es = u"Aplicable a bloques",
+    en = u"Applicable to blocks"
 )
 
 # News
@@ -240,10 +248,10 @@ translations.define("Block.html_attributes",
     en = u"HTML attributes"
 )
 
-translations.define("Block.css_class",
-    ca = u"Classes CSS",
-    es = u"Clases CSS",
-    en = u"CSS classes"
+translations.define("Block.styles",
+    ca = u"Estils",
+    es = u"Estilos",
+    en = u"Styles"
 )
 
 translations.define("Block.inline_css_styles",
@@ -942,6 +950,31 @@ translations.define("woost.extensions.blocks.EditBlocksView.body_header",
         u"Editando los bloques de " + translations(item),
     en = lambda item:
         u"Editing the blocks for " + translations(item)
+)
+
+# BackOfficeItemViewOverlay
+#------------------------------------------------------------------------------
+translations.define(
+    "woost.extensions.blocks."
+    "BackOfficeItemViewOverlay.block_map.explanation",
+    ca = lambda count:
+        u"Aplicat a " + plural2(
+            count,
+            "<strong>1</strong> bloc:",
+            "<strong>%d</strong> blocs:" % count
+        ),
+    es = lambda count:
+        u"Aplicado a " + plural2(
+            count,
+            "<strong>1</strong> bloque:",
+            "<strong>%d</strong> bloques:" % count
+        ),
+    en = lambda count:
+        u"Applied to " + plural2(
+            count,
+            "<strong>1</strong> block:",
+            "<strong>%d</strong> blocks:" % count
+        )
 )
 
 # EditBlocksSlotList

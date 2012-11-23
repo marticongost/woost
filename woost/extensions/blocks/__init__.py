@@ -74,6 +74,7 @@ class BlocksExtension(Extension):
             blockspage,
             blockactions,
             site,
+            style,
             news,
             imagefactory,
             utils,
@@ -82,6 +83,11 @@ class BlocksExtension(Extension):
 
         # Install an overlay for the frontend edit panel
         templates.get_class("woost.extensions.blocks.EditPanelOverlay")
+
+        # Install an overlay for the edit views of style items
+        templates.get_class(
+            "woost.extensions.blocks.BackOfficeItemViewOverlay"
+        )
 
         # Add a module to the backoffice for editing block hierarchies
         # in a more visual fashion

@@ -1640,6 +1640,12 @@ body.scripted .BackOfficeLayout .ThumbnailsContentView .collection_display input
     margin-bottom: 1em;
 }
 
+.BackOfficeLayout .item_info_panel {
+    background-color: #eee;
+    border: 1px solid #ccc;
+    padding: 0.5em;
+}
+
 .preview-error-box,
 .BackOfficeLayout .ErrorBox,
 .BackOfficeLayout .error_box,
@@ -3151,5 +3157,23 @@ div.success_label {
 
 .ItemPalette li a * {
     vertical-align: middle;
+}
+
+/* BackOfficeItemViewOverlay
+-----------------------------------------------------------------------------*/
+.BackOfficeItemView .block_map .explanation {
+    font-size: 0.85em;
+}
+
+.BackOfficeItemView .block_map .block_list {
+    list-style-type: none;
+    padding: 0;
+    padding-left: 0.5em;
+    margin: 0;
+    margin-top: 0.5em;
+}
+
+.BackOfficeItemView .block_map .block_list .ItemLabel {
+    font-size: 0.75em;
 }
 
