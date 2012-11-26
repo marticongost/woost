@@ -7,6 +7,7 @@ from cocktail.translations import translations
 from cocktail import schema
 from cocktail.html import templates
 from woost.models import Extension, Site
+from woost.models.rendering import ChainRenderer
 
 
 translations.define("BlocksExtension",
@@ -127,7 +128,29 @@ class BlocksExtension(Extension):
             identifier = "woost.extensions.blocks.BlocksPageView"
         )
 
+        self._create_renderers()
         self._create_image_factories()
+
+    def _create_renderers(self):
+
+        from woost.extensions.blocks.youtubeblockrenderer import YouTubeBlockRenderer
+        from woost.extensions.blocks.vimeoblockrenderer import VimeoBlockRenderer
+
+        # Look for the first chain renderer
+        for renderer in Site.main.renderers:
+            if isinstance(renderer, ChainRenderer):
+
+                # Add the renderer for YouTube blocks
+                youtube_renderer = YouTubeBlockRenderer()
+                youtube_renderer.insert()
+                renderer.renderers.append(youtube_renderer)
+
+                # Add the renderer for Vimeo blocks
+                vimeo_renderer = VimeoBlockRenderer()
+                vimeo_renderer.insert()
+                renderer.renderers.append(vimeo_renderer)
+
+                break
 
     def _create_image_factories(self):
         from woost.models import extension_translations
