@@ -20,6 +20,7 @@ from cocktail.controllers import (
 )
 from cocktail.controllers.fileupload import FileUpload
 from woost import app
+from woost.controllers.asyncupload import async_uploader
 from woost.controllers.backoffice.editstack import EditNode
 
 
@@ -29,7 +30,6 @@ class FileEditNode(EditNode):
     def form_adapter(self):
         adapter = EditNode.form_adapter(self)
         adapter.exclude(["mime_type"])
-        adapter.export_rules.add_rule(ExportUploadInfo())
         adapter.import_rules.add_rule(ImportUploadInfo())
         return adapter
 
@@ -40,6 +40,9 @@ class FileEditNode(EditNode):
 
         form_schema.add_member(
             FileUpload("upload",
+                async = True,
+                async_uploader = async_uploader,
+                async_upload_url = "/async_upload",
                 hash_algorithm = "md5",
                 get_file_destination = lambda upload: self.temp_file_path,
                 member_group = "content",
@@ -56,9 +59,13 @@ class FileEditNode(EditNode):
 
             # Ignore differences on the upload field if no file has been
             # uploaded
-            if member.name == "upload" \
-            and schema.get(self.form_data, "upload", None) is None:
-                continue
+            if member.name == "upload":
+                upload = schema.get(self.form_data, "upload", None)
+                if (
+                    upload is None
+                    or upload.get("file_hash") == self.item.file_hash
+                ):
+                    continue
 
             yield (member, language)
 
@@ -86,21 +93,7 @@ class FileEditNode(EditNode):
 
             move(src, dest)
 
-
-class ExportUploadInfo(schema.Rule):
-
-    def adapt_object(self, context):
-
-        file_name = context.get("file_name")
-        
-        if file_name:
-            context.set("upload", {
-                "id": None,
-                "file_name": file_name,
-                "mime_type": context.get("mime_type"),
-                "file_size": context.get("file_size"),
-                "file_hash": context.get("file_hash")
-            })
+        stack_node.form_data["upload"] = None
 
 
 class ImportUploadInfo(schema.Rule):
