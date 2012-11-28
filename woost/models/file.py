@@ -1,9 +1,6 @@
 #-*- coding: utf-8 -*-
 u"""
 
-@var extensions: A dictionary mapping extensions to MIME types.
-@var extensions: dict(str, str)
-
 @author:		Martí Congost
 @contact:		marti.congost@whads.com
 @organization:	Whads/Accent SL
