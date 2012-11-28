@@ -1127,6 +1127,22 @@ body.scripted .BackOfficeLayout .Table .selection {
     display: inline;
 }
 
+.BackOfficeLayout .settings_box .members_box input,
+.BackOfficeLayout .settings_box .members_box label {
+    vertical-align: top;
+}
+
+.BackOfficeLayout .settings_box .members_box .group_label,
+.BackOfficeLayout .settings_box .members_box label {
+    max-width: 20em;
+    white-space: normal;
+}
+
+.BackOfficeLayout .settings_box .members_box label {
+    display: inline-block;
+    padding-top: 0.5em;
+}
+
 /* Content type selector
 -----------------------------------------------------------------------------*/
 .BackOfficeLayout .content_type_box {
