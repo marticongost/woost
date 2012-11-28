@@ -5,6 +5,7 @@ u"""
 """
 from cocktail import schema
 from cocktail.html.datadisplay import display_factory
+from cocktail.iteration import first
 from woost.models import Site
 from woost.models.rendering import ImageFactory
 
