@@ -3,12 +3,9 @@ u"""
 
 .. moduleauthor:: Jordi Fernández <jordi.fernandez@whads.com>
 """
-from cocktail.iteration import first
 from cocktail import schema
-from cocktail.translations import translations
-from cocktail.html import Element, templates
 from cocktail.html.datadisplay import display_factory
-from woost.models import Site, Publishable, File
+from woost.models import Publishable, File
 from woost.models.rendering import ImageFactory
 from woost.extensions.blocks.block import Block
 from woost.extensions.blocks.elementtype import ElementType
