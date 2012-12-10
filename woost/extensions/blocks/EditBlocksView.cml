@@ -24,7 +24,8 @@ from woost.extensions.blocks.block import Block
             py:action_target="@{self.edited_item}"/>
         <py:woost.extensions.blocks.EditBlocksSlotList 
             py:id="item_slots"
-            py:item="@{self.edited_item}"/>
+            py:item="@{self.edited_item}"
+            py:edited_item="@{self.edited_item}"/>
     </py:with>
 
 </py:woost.views.BackOfficeLayout>
