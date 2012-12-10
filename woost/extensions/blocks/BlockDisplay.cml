@@ -15,6 +15,7 @@ from woost.extensions.blocks.blockactions import get_clipboard_contents
     block = None
     block_parent = None
     block_slot = None
+    edited_item = None
 
     def add_status(self, status):
         self.add_class(status + "_block")
@@ -88,6 +89,7 @@ from woost.extensions.blocks.blockactions import get_clipboard_contents
     <py:woost.extensions.blocks.EditBlocksSlotList
         py:id="slots_list"
         py:item="@{self.block}"
+        py:edited_item="@{self.edited_item}"
         py:foldable="${True}"/>
 
 </div>

@@ -6,6 +6,7 @@ from woost.models import (
     get_current_user, 
     ModifyMemberPermission
 )
+from woost.controllers.backoffice.editstack import EditStacksManager
 from woost.extensions.blocks.block import Block
 ?>
 
@@ -17,6 +18,21 @@ from woost.extensions.blocks.block import Block
     block = None
     block_parent = None
     block_slot = None
+    edited_item = None
+
+    def can_create_block_type(self, block_type):
+
+        if self.edited_item:
+            allows_block_type = getattr(self.edited_item, "allows_block_type", None)
+
+            if allows_block_type is not None:
+                return allows_block_type(
+                    self.block or self.block_parent,
+                    self.block_slot,
+                    block_type
+                )
+
+        return True
 
     def create_action_button(self, action, extra):
         if action.id in ("add_block", "add_block_before", "add_block_after"):
@@ -44,6 +60,16 @@ from woost.extensions.blocks.block import Block
             else:
                 return button
     ?>
+
+    <py:ready>
+        <?py
+        self._common_blocks = [
+            common_block
+            for common_block in Site.main.common_blocks
+            if self.can_create_block_type(common_block.__class__)
+        ]
+        ?>
+    </py:ready>
 
     <button
         py:def="block_picker" py:args="action"
@@ -74,6 +100,11 @@ from woost.extensions.blocks.block import Block
                     py:local_id="new_blocks_palette"
                     py:types="${Block}"
                     py:groups_order="${Block.type_groups_order}">
+                    <?py
+                    @extend(element)
+                    def should_include_type(new_blocks_palette, block_type):
+                        return call_base(block_type) and self.can_create_block_type(block_type)
+                    ?>
                     <py:with py:def="palette_entry" py:args="content_type">
                         <form py:local_id="form" method="POST" py:wrap="palette_entry.button">
                             <input type="hidden" name="action" value=""/>
@@ -86,7 +117,7 @@ from woost.extensions.blocks.block import Block
                     </py:with>
                 </py:woost.views.ItemPalette>
             </div>
-            <div py:local_id="common_blocks_panel" py:visible="@{bool(Site.main.common_blocks)}">
+            <div py:local_id="common_blocks_panel" py:visible="@{bool(self._common_blocks)}">
                 <div py:local_id="panel_header">
                     ${translations("woost.extensions.blocks.EditBlocksSlotList.common_blocks_panel.panel_header")}
                 </div>
@@ -98,7 +129,7 @@ from woost.extensions.blocks.block import Block
                     <py:ready>
                         <py:new 
                             py:element="self.create_common_block_entry(common_block)"
-                            py:for="common_block in Site.main.common_blocks"/>
+                            py:for="common_block in self._common_blocks"/>
                     </py:ready>
                 </form>
             </div>
