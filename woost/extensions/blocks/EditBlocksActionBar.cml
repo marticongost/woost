@@ -80,11 +80,12 @@ from woost.extensions.blocks.block import Block
         ?>
         <img src="${action.icon_uri}"/>
         ${translations("Action " + action.id)}
+        <py:new
+            py:element="self.create_block_picker_dialog()"
+            py:client_model="woost.extensions.blocks.EditBlocksSlotList.blockPickerDialog-${block_picker.require_id()}"/>
     </button>
 
-    <div
-        py:id="block_picker_dialog" 
-        py:client_model="woost.extensions.blocks.EditBlocksSlotList.blockPickerDialog">
+    <div py:def="block_picker_dialog">
         <py:ready>
             <?py
             if Site.main.common_blocks:
