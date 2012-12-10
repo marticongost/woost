@@ -14,6 +14,7 @@ from woost.models import get_current_user, CreatePermission
     icon_size = 16
     types = None
     groups_order = None
+    grouping_threshold = 8
 
     def should_include_type(self, content_type):
         return (
@@ -38,22 +39,23 @@ from woost.models import get_current_user, CreatePermission
         else:
             types = self.types
 
-        types.sort(key = lambda content_type: translations(content_type.name))
         self._user = get_current_user()
+        types = [content_type for content_type in types if self.should_include_type(content_type)]
+        types.sort(key = lambda content_type: translations(content_type.name))
+        self._groups_visible = (len(types) >= self.grouping_threshold)
         groups = {}
 
         for content_type in types:
-            if self.should_include_type(content_type):
-                group = groups.get(content_type.type_group)
+            group = groups.get(content_type.type_group)
 
-                if group is None:
-                    group = self.create_palette_group(content_type.type_group)
-                    groups[content_type.type_group] = group
-                    if not self.groups_order:
-                        self.append(group)
+            if group is None:
+                group = self.create_palette_group(content_type.type_group)
+                groups[content_type.type_group] = group
+                if not self.groups_order:
+                    self.append(group)
 
-                entry = self.create_palette_entry(content_type)
-                group.group_entries.append(entry)
+            entry = self.create_palette_entry(content_type)
+            group.group_entries.append(entry)
 
         if self.groups_order:
             for group_name in sorted(groups, key = self.__get_group_order):
@@ -62,7 +64,7 @@ from woost.models import get_current_user, CreatePermission
     </py:ready>
 
     <li py:def="palette_group" py:args="group" py:type_group="${group}">
-        <div py:local_id="group_label">
+        <div py:local_id="group_label" py:visible="${self._groups_visible}">
             ${group and translations("woost.type_groups." + group) or ""}
         </div>
         <ul py:local_id="group_entries"/>
