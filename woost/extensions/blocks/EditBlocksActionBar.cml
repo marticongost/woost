@@ -26,11 +26,7 @@ from woost.extensions.blocks.block import Block
             allows_block_type = getattr(self.edited_item, "allows_block_type", None)
 
             if allows_block_type is not None:
-                return allows_block_type(
-                    self.block or self.block_parent,
-                    self.block_slot,
-                    block_type
-                )
+                return allows_block_type(block_type)
 
         return True
 
@@ -80,12 +76,11 @@ from woost.extensions.blocks.block import Block
         ?>
         <img src="${action.icon_uri}"/>
         ${translations("Action " + action.id)}
-        <py:new
-            py:element="self.create_block_picker_dialog()"
-            py:client_model="woost.extensions.blocks.EditBlocksSlotList.blockPickerDialog-${block_picker.require_id()}"/>
     </button>
 
-    <div py:def="block_picker_dialog">
+    <div
+        py:id="block_picker_dialog" 
+        py:client_model="woost.extensions.blocks.EditBlocksSlotList.blockPickerDialog">
         <py:ready>
             <?py
             if Site.main.common_blocks:

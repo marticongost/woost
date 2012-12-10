@@ -8,16 +8,14 @@
 -----------------------------------------------------------------------------*/
 
 // Show the block picker dialog when clicking an 'add' button
-cocktail.bind(".EditBlocksSlotList .block_picker", function ($picker) {
+cocktail.bind(".EditBlocksSlotList", function ($slotList) {
 
     var $dialog;
 
-    $picker.click(function () {
-
-        var $slotList = $picker.closest(".EditBlocksSlotList");
+    $slotList.find(".block_picker").click(function () {
 
         if (!$dialog) {
-            $dialog = jQuery(cocktail.instantiate("woost.extensions.blocks.EditBlocksSlotList.blockPickerDialog-" + this.id));
+            $dialog = jQuery(cocktail.instantiate("woost.extensions.blocks.EditBlocksSlotList.blockPickerDialog"));
             $dialog.addClass("EditBlocksSlotList-block_picker_dialog");
             $dialog.find(".cancel_button").click(function () { cocktail.closeDialog(); });
         }
