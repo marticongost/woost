@@ -1169,6 +1169,12 @@ translations.define("YouTubeBlock.show_related_videos",
     en = u"Show related videos"
 )
 
+translations.define("YouTubeBlock.show_player_controls",
+    ca = u"Mostrar controls de reproducció",
+    es = u"Mostrar controles de reproducción",
+    en = u"Show player controls"
+)
+
 # NewsListing
 #------------------------------------------------------------------------------
 translations.define("NewsListing",

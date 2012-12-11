@@ -33,7 +33,8 @@ class YouTubeBlock(Block):
         "allow_fullscreen",
         "autoplay",
         "show_info",
-        "show_related_videos"
+        "show_related_videos",
+        "show_player_controls"
     ]
 
     video_id = schema.String(
@@ -85,6 +86,13 @@ class YouTubeBlock(Block):
         member_group = "video"
     )
 
+    show_player_controls = schema.Boolean(
+        required = True,
+        default = True,
+        listed_by_default = False,
+        member_group = "video"
+    )
+
     def init_view(self, view):
         Block.init_view(self, view)
         view.video_id = self.video_id
@@ -94,4 +102,5 @@ class YouTubeBlock(Block):
         view.autoplay = self.autoplay
         view.show_info = self.show_info
         view.show_related_videos = self.show_related_videos
+        view.show_player_controls = self.show_player_controls
 
