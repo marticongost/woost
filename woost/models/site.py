@@ -16,6 +16,8 @@ from woost.models.language import Language
 from woost.models.file import File
 from woost.models.publicationschemes import PathResolution
 from woost.models.caching import CachingPolicy
+from woost.models.rendering.renderer import Renderer
+from woost.models.rendering.imagefactory import ImageFactory
 
 
 class Site(Item):
@@ -23,7 +25,19 @@ class Site(Item):
     indexed = True
     instantiable = False
 
-    groups_order = ["language", "meta", "contact", "pages", "system"]
+    groups_order = [
+        "meta",
+        "meta.description",
+        "meta.contact",
+        "behavior",
+        "behavior.pages",
+        "behavior.publication",
+        "behavior.triggers",
+        "rendering",
+        "language",
+        "system",
+        "system.smtp"
+    ]
 
     members_order = [
         "default_language",
@@ -51,12 +65,15 @@ class Site(Item):
         "forbidden_error_page",
         "https_policy",
         "https_persistence",
+        "timezone",
         "smtp_host",
         "smtp_user",
         "smtp_password",
         "publication_schemes",
         "caching_policies",
-        "triggers"
+        "triggers",
+        "renderers",
+        "image_factories"
     ]
 
     @classgetter
@@ -81,6 +98,7 @@ class Site(Item):
         text_search = False,
         translate_value = lambda value, language = None, **kwargs:
             u"" if not value else translations(value, language, **kwargs),
+        listed_by_default = False,
         member_group = "language"
     )
     
@@ -94,53 +112,53 @@ class Site(Item):
     organization_name = schema.String(
         translated = True,
         listed_by_default = False,
-        member_group = "contact"
+        member_group = "meta.contact"
     )
 
     organization_url = schema.String(
         listed_by_default = False,
-        member_group = "contact"
+        member_group = "meta.contact"
     )
 
     address = schema.String(
         edit_control = "cocktail.html.TextArea",
-        member_group = "contact",
+        member_group = "meta.contact",
         listed_by_default = False
     )
 
     town = schema.String(
-        member_group = "contact",
+        member_group = "meta.contact",
         listed_by_default = False
     )
 
     region = schema.String(
-        member_group = "contact",
+        member_group = "meta.contact",
         listed_by_default = False
     )
     
     postal_code = schema.String(
-        member_group = "contact",
+        member_group = "meta.contact",
         listed_by_default = False
     )
 
     country = schema.String(
-        member_group = "contact",
+        member_group = "meta.contact",
         listed_by_default = False
     )
 
     phone_number = schema.String(
-        member_group = "contact",
+        member_group = "meta.contact",
         listed_by_default = False
     )
 
     fax_number = schema.String(
-        member_group = "contact",
+        member_group = "meta.contact",
         listed_by_default = False
     )
 
     email = schema.String(
         format = "^.+@.+$",
-        member_group = "contact",
+        member_group = "meta.contact",
         listed_by_default = False
     )
 
@@ -148,36 +166,36 @@ class Site(Item):
         type = "woost.models.Publishable",
         required = True,
         listed_by_default = False,
-        member_group = "pages"
+        member_group = "behavior.pages"
     )
 
     login_page = schema.Reference(
         type = "woost.models.Publishable",
         listed_by_default = False,
-        member_group = "pages"
+        member_group = "behavior.pages"
     )
 
     generic_error_page = schema.Reference(
         type = "woost.models.Publishable",
         listed_by_default = False,
-        member_group = "pages"
+        member_group = "behavior.pages"
     )
 
     not_found_error_page = schema.Reference(
         type = "woost.models.Publishable",
         listed_by_default = False,
-        member_group = "pages"
+        member_group = "behavior.pages"
     )
 
     forbidden_error_page = schema.Reference(
         type = "woost.models.Publishable",
         listed_by_default = False,
-        member_group = "pages"
+        member_group = "behavior.pages"
     )
 
     site_name = schema.String(
         translated = True,
-        member_group = "meta",
+        member_group = "meta.description",
         listed_by_default = False
     )
 
@@ -186,7 +204,7 @@ class Site(Item):
         relation_constraints = [File.resource_type.equal("image")],
         related_end = schema.Collection(),
         listed_by_default = False,
-        member_group = "meta"
+        member_group = "meta.description"
     )
 
     logo = schema.Reference(
@@ -194,21 +212,21 @@ class Site(Item):
         relation_constraints = [File.resource_type.equal("image")],
         related_end = schema.Collection(),
         listed_by_default = False,
-        member_group = "meta"
+        member_group = "meta.description"
     )
 
     keywords = schema.String(
         translated = True,
         listed_by_default = False,
         edit_control = "cocktail.html.TextArea",
-        member_group = "meta"
+        member_group = "meta.description"
     )
 
     description = schema.String(
         translated = True,
         listed_by_default = False,
         edit_control = "cocktail.html.TextArea",
-        member_group = "meta"
+        member_group = "meta.description"
     )
 
     https_policy = schema.String(
@@ -241,46 +259,66 @@ class Site(Item):
         default = "localhost",
         listed_by_default = False,
         text_search = False,
-        member_group = "system"
+        member_group = "system.smtp"
     )
 
     smtp_user = schema.String(
         listed_by_default = False,
         text_search = False,
-        member_group = "system"
+        member_group = "system.smtp"
     )
 
     smtp_password = schema.String(
         listed_by_default = False,
         text_search = False,
-        member_group = "system"
+        member_group = "system.smtp"
     )
 
     timezone = schema.String(
         required = False,
         format = re.compile(r'^["GMT"|"UTC"|"PST"|"MST"|"CST"|"EST"]{3}$|^[+-]\d{4}$'),
         text_search = False,
-        member_group = "system"
+        member_group = "system",
+        listed_by_default = False
     )
 
     triggers = schema.Collection(
         items = "woost.models.Trigger",
         bidirectional = True,
-        integral = True
+        integral = True,
+        member_group = "behavior.triggers"
     )
 
     publication_schemes = schema.Collection(
         items = "woost.models.PublicationScheme",
         bidirectional = True,
         integral = True,
-        min = 1
+        min = 1,
+        member_group = "behavior.publication"
     )
 
     caching_policies = schema.Collection(
         items = schema.Reference(type = CachingPolicy),
         bidirectional = True,
         integral = True,
-        related_end = schema.Reference()
+        related_end = schema.Reference(),
+        member_group = "behavior.publication"
+    )
+
+    renderers = schema.Collection(
+        items = schema.Reference(type = Renderer),
+        bidirectional = True,
+        integral = True,
+        related_end = schema.Reference(),
+        member_group = "rendering"
+    )
+
+    image_factories = schema.Collection(
+        items = schema.Reference(type = ImageFactory),
+        bidirectional = True,
+        integral = True,
+        related_end = schema.Reference(),
+        member_group = "rendering"
     )
 
     def __translate__(self, language, **kwargs):

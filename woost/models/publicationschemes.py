@@ -10,7 +10,7 @@ import re
 from os.path import splitext
 from cocktail.modeling import abstractmethod
 from cocktail import schema
-from cocktail.translations import translations
+from cocktail.translations import translations, get_language
 from woost.models.item import Item
 from woost.models.publishable import Publishable
 from woost.models.file import File
@@ -297,8 +297,14 @@ class DescriptiveIdPublicationScheme(PublicationScheme):
                 )
         
     def get_path(self, publishable, language):
-        
-        title = translations(publishable, language)
+ 
+        if not language:
+            language = get_language()
+
+        if language:
+            title = translations(publishable, language)
+        else:
+            title = None
 
         if title:
             title = self.title_splitter_regexp.sub(

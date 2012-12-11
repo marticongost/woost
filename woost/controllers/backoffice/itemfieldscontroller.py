@@ -29,6 +29,7 @@ class ItemFieldsController(EditController):
     form_prefix = "edited_item_"
 
     def __call__(self, *args, **kwargs):
+        self.stack_node.tab = self.tab
         self._handle_form_data()
         return EditController.__call__(self, *args, **kwargs)
 
@@ -85,7 +86,7 @@ class ItemFieldsController(EditController):
                 schema.set(form_data, key, value, language = added_translation)
 
         # Drop references
-        unlink = cherrypy.request.params.get("ItemSelector-unlink")
+        unlink = cherrypy.request.params.get("relation-unlink")
 
         if unlink:
             form_data[unlink] = None
@@ -99,10 +100,6 @@ class ItemFieldsController(EditController):
             member.name
             for member in self.stack_node.content_type.members().itervalues()
             if (
-                isinstance(member, schema.Collection) 
-                and not member.edit_inline
-            )
-            or (
                 self.stack_node.item
                 and self.stack_node.item.is_inserted
                 and isinstance(member, (schema.RelationMember)) 
@@ -151,7 +148,7 @@ class ItemFieldsController(EditController):
     def handle_processed(cls, event):
 
         controller = event.source
-        rel = cherrypy.request.params.get("ItemSelector-select")
+        rel = cherrypy.request.params.get("relation-select")
 
         # Open the item selector
         if rel:
@@ -174,11 +171,11 @@ class ItemFieldsController(EditController):
                     selection = value.id if value is not None else None,
                     edit_stack = controller.edit_stack.to_param(),
                     client_side_scripting = controller.client_side_scripting
-                )
+                ) + "#default"
             )
 
         # Open an editor for a new nested item
-        new = cherrypy.request.params.get("ItemSelector-new")
+        new = cherrypy.request.params.get("relation-new")
 
         if new:
             pos = new.find("-")
@@ -201,7 +198,7 @@ class ItemFieldsController(EditController):
             )
 
         # Open an editor for an existing nested item
-        edit = cherrypy.request.params.get("ItemSelector-edit")
+        edit = cherrypy.request.params.get("relation-edit")
 
         if edit:
             raise cherrypy.HTTPRedirect(

@@ -14,7 +14,6 @@ if hasattr(os, "symlink"):
     from woost.models.site import Site
     from woost.models.file import File
     from woost.models.user import User
-    from woost.models.rendering.cache import require_rendering
 
     debug = True
     filesystem_encoding = "utf-8"
@@ -22,7 +21,6 @@ if hasattr(os, "symlink"):
     members_affecting_static_publication = set([
         File.title,
         File.file_name,
-        File.image_effects,
         Publishable.enabled,
         Publishable.start_date,
         Publishable.end_date
@@ -86,11 +84,7 @@ if hasattr(os, "symlink"):
         if links is None:
             links = get_links(file)
 
-        if file.image_effects:
-            linked_file = require_rendering(file)
-        else:
-            linked_file = file.file_path
-
+        linked_file = file.file_path
         linked_file = encode_filename(linked_file, encoding)
 
         for link in links:

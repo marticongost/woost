@@ -109,8 +109,7 @@ class Trigger(Item):
             type = Role,
             required = True
         ),
-        related_end = schema.Collection(),
-        edit_inline = True
+        related_end = schema.Collection()
     )
 
     condition = schema.CodeBlock(

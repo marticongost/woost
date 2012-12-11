@@ -11,8 +11,13 @@ cocktail.bind(".BackOfficeItemView", function ($itemView) {
     
     // Pending changes control
     var itemView = jQuery(".BackOfficeItemView").get(0);
-    
+
     if (itemView.closingItemRequiresConfirmation) {
+
+        $itemView.find(".ContentForm .fields").change(function () {
+            hasPendingChanges = true;
+        });
+
         var hasPendingChanges = itemView.hasPendingChanges;
         var NAVIGATE_AWAY = 0;
         var SUBMIT_CLOSING = 1;

@@ -44,7 +44,7 @@ from woost.controllers.backoffice.editstack import SelectionNode
     root_content_type = Item
     edit_stack = None
     member = None
-    activation_control = ".show_detail_action"
+    activation_control = ".edit_action"
     search_expanded = False
     
     # User collection settings
@@ -138,10 +138,7 @@ from woost.controllers.backoffice.editstack import SelectionNode
                                 display = loader.new("woost.views.ContentTypePickerDropdown")
                                 display.root = member.class_family
                                 return display
-                            elif not (
-                                isinstance(filter, CollectionFilter)
-                                and filter.member.edit_inline
-                            ):
+                            else:
                                 return "woost.views.ItemSelector"
                     
                         return call_base(obj, member)

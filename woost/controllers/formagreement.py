@@ -31,12 +31,21 @@ def requires_agreement(form, name = "terms", document = None):
                 "woost.controllers.formagreement.%s" % member.name,
                 member = member
             )
-            or translations("woost.controllers.formagreement", member = member)
+            or translations("woost.controllers.formagreement", member =
+                member),
+        member_group = "form_agreement"
     )
     member.agreement_document = document
     member.add_validation(_validate_consent)
 
     form.schema.add_member(member)
+
+    if form.schema.groups_order:
+        if "form_agreement" not in form.schema.groups_order:
+            if not isinstance(form.schema.groups_order, list):
+                form.schema.groups_order = list(form.schema.groups_order)
+            form.schema.groups_order.append("form_agreement")
+
     form.adapter.exclude(name)
     return member
 

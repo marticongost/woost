@@ -21,8 +21,7 @@ class SendEmailPermission(Permission):
             type = Role,
         ),
         related_end = schema.Collection(),
-        relation_constraints = [Role.implicit.equal(False)],
-        edit_inline = True
+        relation_constraints = [Role.implicit.equal(False)]
     )
 
     def match(self, role = None, verbose = False):

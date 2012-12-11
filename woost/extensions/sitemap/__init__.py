@@ -47,7 +47,7 @@ class SitemapExtension(Extension):
         from woost.extensions.sitemap import publishable, strings
         self.install()
 
-    def _install():
+    def _install(self):
         
         from woost.models import (
             Site,

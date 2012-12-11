@@ -10,26 +10,16 @@ Provides base and default content types for the woost CMS.
 from cocktail import schema
 from cocktail.events import when
 
-# Add an extension property to determine wether collections should be edited on
-# the main tab of the object editor (True) or if they should be promoted to
-# their own tab (False, default)
-def _get_edit_inline(self):
-
-    if self._edit_inline is None:
-        return not self.is_persistent_relation
-
-    return self._edit_inline
-
-def _set_edit_inline(self, value):
-    self._edit_inline = value
-
-schema.Collection._edit_inline = None
-schema.Collection.edit_inline = property(_get_edit_inline, _set_edit_inline)
-
 # Add an extension property to control the default member visibility on item listings
 schema.Member.listed_by_default = True
 schema.Collection.listed_by_default = False
 schema.CodeBlock.listed_by_default = False
+
+# Add an extension property to show/hide the 'Element' column on listings
+schema.Schema.show_element_in_listings = True
+
+# Add an extension property to show/hide the 'Type' column on listings
+schema.Schema.show_type_in_listings = True
 
 # Add an extension property to indicate if members should be visible by users
 schema.Member.visible = True
@@ -43,6 +33,9 @@ schema.Member.editable = True
 
 # Add an extesnion property to indiciate if members should be shown in detailed view
 schema.Member.visible_in_detail_view = True
+
+# Add an extension property to group types
+schema.Schema.type_group = None
 
 # Add an extension property to indicate if relations should be excluded if no
 # relatable elements exist

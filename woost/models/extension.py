@@ -146,8 +146,8 @@ class Extension(Item):
         extension.        
         """
         asset = cls()
-        cls.qname = qname = self.full_name.rsplit(".", 1)[0] + "." + id
-        
+        asset.qname = qname = self.full_name.rsplit(".", 1)[0] + "." + id
+
         if values:
             for key, value in values.iteritems():
                 if value is extension_translations:
