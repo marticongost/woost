@@ -55,6 +55,7 @@ class EmailTemplate(Item):
             "plain",
             "html"
         ],
+        translatable_enumeration = False,
         text_search = False
     )
 
@@ -74,6 +75,7 @@ class EmailTemplate(Item):
 
     template_engine = schema.String(
         enumeration = buffet.available_engines.keys(),
+        translatable_enumeration = False,
         text_search = False,
         listed_by_default = False
     )

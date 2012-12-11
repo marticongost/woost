@@ -50,7 +50,6 @@ class SignUpPage(Document):
             name = "related_signup_pages",
             visible = False
         ),
-        edit_inline = True,
         member_group = "signup_process",
         relation_constraints = lambda ctx: [excluded_roles()]
     )

@@ -50,6 +50,7 @@ from woost.models import (
     EmailTemplate,
     CachingPolicy,
     Extension,
+    rendering,
     load_extensions
 )
 
@@ -595,6 +596,145 @@ def init_site(
         )
         file_gallery_view.insert()
     
+        # Renderers
+        #----------------------------------------------------------------------
+        content_renderer = rendering.ChainRenderer()
+        set_translations(
+            content_renderer,
+            "title",
+            "content_renderer"
+        )
+        content_renderer.renderers = [
+            rendering.ImageFileRenderer(),
+            rendering.PDFRenderer(),
+            rendering.VideoFileRenderer(),
+            rendering.ImageURIRenderer()
+        ]
+        content_renderer.insert()
+
+        icon16_renderer = rendering.IconRenderer()
+        icon16_renderer.icon_size = 16
+        set_translations(
+            icon16_renderer,
+            "title",
+            "icon16_renderer"
+        )
+        icon16_renderer.insert()
+
+        icon32_renderer = rendering.IconRenderer()
+        icon32_renderer.icon_size = 32
+        set_translations(
+            icon32_renderer,
+            "title",
+            "icon32_renderer"
+        )
+        icon32_renderer.insert()
+
+        site.renderers = [
+            content_renderer,
+            icon16_renderer,
+            icon32_renderer
+        ]
+
+        # Image factories
+        #----------------------------------------------------------------------
+        default_factory = rendering.ImageFactory(identifier = "default")
+        set_translations(default_factory, "title", "default_image_factory")
+        default_factory.insert()
+
+        icon16_factory = rendering.ImageFactory(
+            identifier = "icon16",
+            renderer = icon16_renderer
+        )
+        set_translations(icon16_factory, "title", "icon16_image_factory")
+        icon16_factory.insert()
+
+        icon32_factory = rendering.ImageFactory(
+            identifier = "icon32",
+            renderer = icon32_renderer
+        )
+        set_translations(icon32_factory, "title", "icon32_image_factory")
+        icon32_factory.insert()
+
+        backoffice_thumbnail_factory = rendering.ImageFactory(
+            identifier = "backoffice_thumbnail",
+            effects = [
+                rendering.Thumbnail(width = "100", height = "100"),
+                rendering.Frame(
+                    edge_width = 1,
+                    edge_color = "ddd",
+                    vertical_padding = "4",
+                    horizontal_padding = "4",
+                    background = "eee"
+                )
+            ],
+            fallback = icon32_factory
+        )
+        set_translations(
+            backoffice_thumbnail_factory,
+            "title",
+            "backoffice_thumbnail_image_factory"
+        )
+        backoffice_thumbnail_factory.insert()
+
+        backoffice_small_thumbnail_factory = rendering.ImageFactory(
+            identifier = "backoffice_small_thumbnail",
+            effects = [
+                rendering.Thumbnail(width = "32", height = "32")
+            ],
+            fallback = icon16_factory
+        )
+        set_translations(
+            backoffice_small_thumbnail_factory,
+            "title",
+            "backoffice_small_thumbnail_image_factory"
+        )
+        backoffice_small_thumbnail_factory.insert()
+
+        image_gallery_close_up_factory = rendering.ImageFactory(
+            identifier = "image_gallery_close_up",
+            effects = [
+                rendering.Fill(
+                    width = "900",
+                    height = "700",
+                    preserve_vertical_images = True
+                )
+            ]
+        )
+        set_translations(
+            image_gallery_close_up_factory,
+            "title",
+            "image_gallery_close_up_image_factory"
+        )
+        image_gallery_close_up_factory.insert()
+
+        image_gallery_thumbnail_factory = rendering.ImageFactory(
+            identifier = "image_gallery_thumbnail",
+            effects = [
+                rendering.Fill(
+                    width = "200",
+                    height = "150",
+                    preserve_vertical_images = True
+                )
+            ]
+        )
+        set_translations(
+            image_gallery_thumbnail_factory,
+            "title",
+            "image_gallery_thumbnail_image_factory"
+        )
+        image_gallery_thumbnail_factory.insert()
+
+        site.image_factories = [
+            default_factory,
+            icon16_factory,
+            icon32_factory,
+            backoffice_thumbnail_factory,
+            backoffice_small_thumbnail_factory,
+            image_gallery_close_up_factory,
+            image_gallery_thumbnail_factory
+        ]
+
     # Enable the selected extensions
     if extensions:
         load_extensions()

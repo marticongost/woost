@@ -39,6 +39,7 @@ class Template(Item):
 
     engine = schema.String(
         enumeration = buffet.available_engines.keys(),
+        translatable_enumeration = False,
         text_search = False
     )
 

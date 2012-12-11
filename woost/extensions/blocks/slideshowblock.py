@@ -4,23 +4,53 @@ u"""
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
 from cocktail import schema
-from woost.extensions.blocks.containerblock import ContainerBlock
+from cocktail.html import templates
+from woost.models.rendering import ImageFactory
+from woost.extensions.blocks.block import Block
+from woost.extensions.blocks.slot import Slot
+from woost.extensions.blocks.elementtype import ElementType
+from woost.extensions.blocks.utils import create_block_views
 
 
-class SlideShowBlock(ContainerBlock):
+class SlideShowBlock(Block):
 
     instantiable = True
-    view_class = "cocktail.html.SlideShow"
+    view_class = "woost.extensions.blocks.SlideShowBlockView"
 
-    groups_order = ["content", "transition_settings"]
+    groups_order = [
+        "content",
+        "transition_settings",
+        "controls",
+        "behavior",
+        "html",
+        "administration"
+    ]
 
     members_order = [
+        "element_type",
+        "slides",
         "autoplay",
         "interval",
         "transition_duration",
-        "navigation_controls"
+        "navigation_controls",
+        "bullet_controls",
+        "bullet_view_class",
+        "bullet_image_factory"
     ]
     
+    element_type = ElementType(
+        enumeration = list(ElementType.enumeration),
+        member_group = "content"
+    )
+
+    for et in ("nav", "dd"):
+        try:
+            element_type.enumeration.remove(et)
+        except:
+            pass
+
+    slides = Slot()
+
     autoplay = schema.Boolean(
         required = True,
         default = True,
@@ -44,14 +74,50 @@ class SlideShowBlock(ContainerBlock):
     navigation_controls = schema.Boolean(
         required = True,
         default = False,
-        member_group = "content"
+        member_group = "controls"
+    )
+
+    bullet_controls = schema.Boolean(
+        required = True,
+        default = False,
+        member_group = "controls"
+    )
+
+    bullet_view_class = schema.String(
+        required = True,
+        default = "woost.extensions.blocks.SlideShowButtonBullet",
+        enumeration = [
+            "woost.extensions.blocks.SlideShowButtonBullet",
+            "woost.extensions.blocks.SlideShowTextBullet",
+            "woost.extensions.blocks.SlideShowImageBullet",
+            "woost.extensions.blocks.SlideShowTextAndImageBullet"
+        ],
+        member_group = "controls"
+    )
+
+    bullet_image_factory = schema.Reference(
+        type = ImageFactory,
+        related_end = schema.Collection(),
+        required = True,
+        default = schema.DynamicDefault(
+            lambda: ImageFactory.get_instance(identifier = "image_gallery_thumbnail")
+        ),
+        member_group = "controls"
     )
 
     def init_view(self, view):
-        ContainerBlock.init_view(self, view)
-        view.block_content = view.slides
+
+        Block.init_view(self, view)
+
+        view.tag = self.element_type
         view.autoplay = self.autoplay
         view.interval = self.interval
         view.transition_duration = self.transition_duration
         view.navigation_controls = self.navigation_controls
+        view.bullet_controls = self.bullet_controls
+        view.bullet_view_class = self.bullet_view_class
+        view.bullet_image_factory = self.bullet_image_factory
+
+        for block_view in create_block_views(self.slides):
+            view.slides.append(block_view)
 

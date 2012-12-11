@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<py:woost.views.BaseView
+<py:woost.views.StandardView
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:py="http://www.whads.com/ns/cocktail/templates">
 
@@ -9,22 +9,21 @@
     blocks = None
     ?>
 
+    <?py
+    self.add_resource("/resources/styles/blocks.css")
+    ?>
+
     <py:ready>
         <?py
         if self.blocks is None:
-            self.blocks = self.publishable.blocks
+            self.blocks = getattr(self.publishable, "blocks", None)
         ?>
     </py:ready>
 
     <div py:def="content">
-        <div py:id="block_content">
-            <py:ready>
-                <py:new 
-                    py:element="block.create_view()" 
-                    py:for="block in self.blocks"
-                    py:where="block.enabled"/>
-            </py:ready>
-        </div>
+        <py:woost.extensions.blocks.BlockList
+            py:id="block_content"
+            py:blocks="@{self.blocks}"/>
     </div>
 
-</py:woost.views.BaseView>
+</py:woost.views.StandardView>

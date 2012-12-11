@@ -4,6 +4,7 @@
 from cocktail.controllers import context, Location
 from woost.models import (
     Publishable,
+    Site,
     get_current_user,
     CreatePermission,
     ModifyPermission,
@@ -64,8 +65,13 @@ from woost.models import (
         if self.target is None:
             self.target = context["publishable"]
 
-        if self.target_desc is None and self.target is context["publishable"]:
-            self.target_desc = translations("woost.views.EditLink-publishable_target")
+        if self.target_desc is None:
+            if self.target is context["publishable"]:
+                self.target_desc = translations("woost.views.EditLink-publishable_target")
+            elif self.target is Site.main:
+                self.target_desc = translations("woost.views.EditLink-site")
+            else:
+                self.target_desc = translations(self.target)
 
         if "root_url" not in self.edit_parameters:
             self.edit_parameters["root_url"] = unicode(Location.get_current())

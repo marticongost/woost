@@ -49,7 +49,18 @@ from woost.controllers.backoffice.useractions import (
         self.add_client_translation("woost.views.BackOfficeItemView pending changes warning")
         ?>
     </py:ready>
-    
+
+    <!-- Item heading -->
+    <h2 py:def="page_title">
+        <py:ready>
+            <py:new                
+                py:element="loader.new(self.edited_item.backoffice_heading_view)"
+                py:tag="h2"
+                py:index="0"
+                py:item="${self.edited_item}"/>
+        </py:ready>
+    </h2>
+
     <!-- Turn the central content into a form -->
     <py:with
         py:element="self.body"
@@ -64,21 +75,7 @@ from woost.controllers.backoffice.useractions import (
             py:index="0"
             type="submit"
             name="item_action" value="save"
-            style="display: none"/>
-
-        <!-- Title -->
-        <h2 py:parent="self.body" py:position="0">
-            <py:ready>
-                <?py
-                if self.edited_item.is_inserted \
-                and not (self.edited_item.is_draft and self.edited_item.draft_source is None):
-                    context_desc = translations(self.edited_item)
-                else:
-                    context_desc = translations("creating", content_type = self.edited_content_type)
-                ?>
-                ${context_desc}
-            </py:ready>
-        </h2>
+            style="position: absolute; left: -1000px; top: -1000px"/>
 
         <!-- Actions -->
         <py:woost.views.ActionBar

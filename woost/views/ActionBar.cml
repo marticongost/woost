@@ -5,7 +5,7 @@ from itertools import chain
 from cocktail.html.shortcuts import set_translated_shortcut
 from cocktail.controllers import context
 from woost.controllers.backoffice.useractions import (
-    get_view_actions, get_view_actions_context
+    get_view_actions, get_view_actions_context, add_view_action_context
 )
 ?>
 
@@ -16,6 +16,7 @@ from woost.controllers.backoffice.useractions import (
     <?py-class
     action_context = None
     action_target = None
+    action_parameter = "action"
     button_images = True
     hide_when_empty = True    
     group_additional_actions = True
@@ -50,11 +51,13 @@ from woost.controllers.backoffice.useractions import (
             if action.direct_link:
                 element.tag = "a"
                 element["href"] = action.get_url(context["cms"], None)
+                element["target"] = action.link_target
             else:
                 element.tag = "button"
                 element["type"] = "submit"
-                element["name"] = "action"
+                element["name"] = self.action_parameter
                 element["value"] = action.id
+                element["formtarget"] = action.link_target
 
         set_translated_shortcut(label, "action " + action.id)
         ?>
@@ -86,6 +89,9 @@ from woost.controllers.backoffice.useractions import (
 
         if not self.action_target:
             raise ValueError("woost.views.ActionBar needs an action_target attribute")
+
+        if self.empty_result_set:
+            add_view_action_context(self, "empty_set")
 
         context = get_view_actions_context(self)        
         actions = self.get_actions(context | set([self.action_context]))

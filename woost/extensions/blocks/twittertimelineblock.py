@@ -10,6 +10,7 @@ from woost.extensions.blocks.block import Block
 class TwitterTimelineBlock(Block):
 
     instantiable = True
+    type_group = "blocks.social"
     view_class = "cocktail.html.TwitterTimeline"
 
     members_order = [

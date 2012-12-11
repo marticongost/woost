@@ -169,3 +169,30 @@ def flag_implicit_roles(e):
     for role in Role.select():
         role.implicit = (role.qname in implicit_roles_qnames)
 
+#------------------------------------------------------------------------------
+ 
+step = MigrationStep("Removed the File.local_path member")
+
+@step.processor("woost.models.file.File")
+def remove_file_local_path_values(file):
+    try:
+        del file._local_path
+    except:
+        pass
+
+@step.processor("woost.models.permission.MemberPermission")
+def remove_permissions_for_file_local_path(permission):
+    try:
+        permission.matching_members.remove("woost.models.file.File.local_path")
+    except:
+        pass
+
+#------------------------------------------------------------------------------
+
+step = MigrationStep("Added the Style.applicable_to_text member")
+
+@when(step.executing)
+def index_style_applicable_to_text_member(e):
+    from woost.models import Style
+    Style.applicable_to_text.rebuild_index()
+

@@ -110,7 +110,6 @@ class Mailing(Item):
                 )
         ),
         min = 1,
-        edit_inline = True,
         member_group = "content"
     )
 

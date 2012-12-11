@@ -62,6 +62,7 @@ class Installer(object):
                     name = "python_package_repository",
                     required = True,
                     enumeration = paths,
+                    translatable_enumeration = False,
                     default = paths and paths[0] or None,
                     member_group = "project"
                 ),
@@ -90,6 +91,7 @@ class Installer(object):
                     required = True,
                     default = "cocktail",
                     enumeration = buffet.available_engines.keys(),
+                    translatable_enumeration = False,
                     member_group = "project"
                 ),
                 schema.String(
@@ -252,8 +254,11 @@ class Installer(object):
 
         copy(self.skeleton_path, params["project_path"])
 
-        # Create the folder for the database
+        # Create empty folders
         os.mkdir(os.path.join(params["project_path"], "data"))
+        os.mkdir(os.path.join(params["project_path"], "static"))
+        os.mkdir(os.path.join(params["project_path"], "static", "images"))
+        os.mkdir(os.path.join(params["project_path"], "image-cache"))
 
         # Grant execution permission for project scripts
         scripts_path = os.path.join(params["project_path"], "scripts")

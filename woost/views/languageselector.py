@@ -18,10 +18,10 @@ LinkSelector = templates.get_class("cocktail.html.LinkSelector")
 
 class LanguageSelector(LinkSelector):
 
-    translated_labels = True
     tag = "ul"
-
+    translated_labels = True
     missing_translations = "redirect" # "redirect", "hide", "disable"
+    autohide = True
 
     def create_entry(self, value, label, selected):
 
@@ -58,11 +58,12 @@ class LanguageSelector(LinkSelector):
         if self.value is None:
             self.value = get_language()
 
-        LinkSelector._ready(self)
+        if not self.autohide or len(self.items) > 1:
+            LinkSelector._ready(self)
 
-        # Hack for IE <= 6
-        if self.children:
-            self.children[-1].add_class("last")
+            # Hack for IE <= 6
+            if self.children:
+                self.children[-1].add_class("last")
 
     def get_item_label(self, language):
         if self.translated_labels:

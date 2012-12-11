@@ -13,6 +13,13 @@ translations.define("OpenGraphExtension.categories",
     en = u"Categories"
 )
 
+translations.define(
+    "woost.extensions.opengraph.image_factory.title",
+    ca = u"Miniatura per Facebook",
+    es = u"Miniatura para Facebook",
+    en = u"Facebook thumbnail"
+)
+
 # Extensions to the Publishable model
 #------------------------------------------------------------------------------
 translations.define("Publishable.open_graph",

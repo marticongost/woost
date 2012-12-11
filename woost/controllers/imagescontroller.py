@@ -8,15 +8,18 @@
 """
 import os
 import cherrypy
+import re
 from cocktail.controllers import serve_file
-from woost.models import (
-    Item,
-    get_current_user,
-    RenderPermission
+from woost.models import Item, get_current_user, RenderPermission
+from woost.models.rendering import (
+    require_rendering,
+    ImageFactory,
+    BadRenderingRequest
 )
-from woost.models.rendering.cache import require_rendering, BadRenderingRequest
 from woost.models.rendering.formats import formats_by_extension
 from woost.controllers.basecmscontroller import BaseCMSController
+
+generic_image_factory_pattern = re.compile(r"^factory(\d+)$")
 
 
 class ImagesController(BaseCMSController):
@@ -26,16 +29,13 @@ class ImagesController(BaseCMSController):
 
     def __call__(self, id, processing, *args, **kwargs):
 
-        # Get the requested element or content type
+        # Get the requested element
         item = None
 
         try:
             item_id = int(id)
         except ValueError:
-            for cls in Item.schema_tree():
-                if cls.full_name == id:
-                    item = cls
-                    break            
+            pass
         else:
             item = Item.get_instance(item_id)
 
@@ -53,12 +53,7 @@ class ImagesController(BaseCMSController):
         parameters = None
 
         if len(parts) == 2:
-            factory_string, ext = parts
-            factory_parts = factory_string.split(".", 1)
-            if len(factory_parts) == 1:
-                factory_name = factory_string
-            else:
-                factory_name, parameters = factory_parts
+            factory_id, ext = parts            
             format = formats_by_extension.get(ext)
             if format is None:
                 raise cherrypy.HTTPError(
@@ -66,20 +61,37 @@ class ImagesController(BaseCMSController):
                     "Invalid image extension: %s" % ext
                 )
         else:
-            factory_name = processing
+            factory_id = processing
             format = None
-    
+        
+        factory = ImageFactory.get_instance(identifier = factory_id)
+
+        if factory is None:
+            match = generic_image_factory_pattern.match(factory_id)
+            if match:
+                try:
+                    factory_id = int(match.group(1))
+                    factory = ImageFactory.require_instance(factory_id)
+                except:
+                    pass
+            
+            if factory is None:
+                raise cherrypy.HTTPError(
+                    400,
+                    "Invalid image factory id: %s" % factory_id
+                )
+
         # Deny access to unauthorized elements
         get_current_user().require_permission(
             RenderPermission,
             target = item,
-            image_factory = factory_name
+            image_factory = factory
         )
  
         try:
             image_cache_file = require_rendering(
                 item, 
-                factory_name, 
+                factory, 
                 format,
                 parameters
             )

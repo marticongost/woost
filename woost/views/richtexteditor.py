@@ -33,6 +33,7 @@ class RichTextEditor(TinyMCE):
         "theme_advanced_toolbar_align": "left",
         "theme_advanced_path": False,
         "theme_advanced_resize_horizontal": False,
+        "theme_advanced_blockformats": "p,h1,h2,h3,h4,h5,h6,pre,address,blockquote",
         "document_base_url": "/",
         "relative_urls": False,
         "content_css": "/user_styles/?backoffice=1",
@@ -52,7 +53,7 @@ class RichTextEditor(TinyMCE):
         
         styles = [
             "%s=%s" % (translations(style), style.class_name)
-            for style in Style.select()
+            for style in Style.select({"applicable_to_text": True})
         ]
 
         if current_edit_stack:

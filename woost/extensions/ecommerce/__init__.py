@@ -27,6 +27,7 @@ from woost.models import (
     User,
     Language
 )
+from woost.models.rendering import ImageFactory, Thumbnail
 from woost.models.triggerresponse import SendEmailTriggerResponse
 
 translations.define("ECommerceExtension",
@@ -70,8 +71,7 @@ class ECommerceExtension(Extension):
             ecommerceorder,
             ecommercepurchase,
             ecommercebillingconcept,
-            ecommerceordercompletedtrigger,
-            imagefactories
+            ecommerceordercompletedtrigger
         )
         from woost.extensions.ecommerce.ecommerceorder import ECommerceOrder
 
@@ -244,6 +244,7 @@ class ECommerceExtension(Extension):
         self._create_template("product").insert()
         self._create_ecommerceorder_completed_trigger().insert()
         self._create_incoming_order_trigger().insert()
+        self._create_image_factories()
 
     def _create_document(self, name, 
         cls = Document, 
@@ -384,6 +385,15 @@ edit_url = bo.get_uri(host = ".", path = ["content", str(order.id)])
         trigger.responses = [response]
 
         return trigger
+
+    def _create_image_factories(self):        
+        thumbnail = ImageFactory()
+        thumbnail.qname = \
+            "woost.extensions.ecommerce.ecommerce_basket_thumbnail"
+        self.__translate_field(thumbnail, "title")
+        thumbnail.identifier = "ecommerce_basket_thumbnail"
+        thumbnail.effects = [Thumbnail(width = "75", height = "75")]
+        thumbnail.insert()
 
     def __translate_field(self, obj, key):
         for language in translations:
