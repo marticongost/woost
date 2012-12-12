@@ -107,6 +107,8 @@ cocktail.bind({
                     $dialog.find(".image")
                         .width(image.width)
                         .height(image.height);
+                    $dialog.find(".footnote")
+                        .width(image.width);
                     $dialog.show();
                     cocktail.center(dialog);
                     $dialog
