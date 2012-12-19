@@ -8,6 +8,7 @@ from cocktail.controllers import Location
     xmlns:py="http://www.whads.com/ns/cocktail/templates">
 
     <?py-class
+    alignments_with_text_above = ["column_right", "center_bottom"]
     enable_ie_table_layout_workaround = True
 
     def insert_heading(self, heading):
@@ -77,7 +78,7 @@ from cocktail.controllers import Location
         <?py
         if self.block.text and self._images:
 
-            if self.block.image_alignment in ["column_right", "center_bottom"]:
+            if self.block.image_alignment in self.alignments_with_text_above:
                 self.image_gallery.place_after(self.text_container)
 
             if self._column_layout and self.enable_ie_table_layout_workaround:
