@@ -580,6 +580,24 @@ body.modal {
     text-align: justify;
 }
 
+.BackOfficeLayout .Form .explanation dl {
+    margin-left: 1em;
+}
+
+.BackOfficeLayout .Form .explanation dt {
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 0.2em;
+}
+
+.BackOfficeLayout .Form .explanation dd {
+    margin-left: 0;
+}
+
+.BackOfficeLayout .Form .explanation dd + dt {
+    margin-top: 0.8em;
+}
+
 .BackOfficeLayout .Form label {
     display: block;
     padding-bottom: 0.2em;
