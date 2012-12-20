@@ -4,7 +4,7 @@ u"""
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
 import os
-from datetime import datetime
+from datetime import datetime, timedelta
 from cocktail import schema
 from cocktail.translations import get_language
 from cocktail.controllers import Location
@@ -25,7 +25,7 @@ class CachingPolicy(Item):
         "important",
         "cache_enabled",
         "server_side_cache",
-        "cache_expiration",
+        "expiration_expression",
         "last_update_expression",
         "cache_key_expression",
         "condition"
@@ -53,9 +53,8 @@ class CachingPolicy(Item):
         listed_by_default = False
     )
 
-    cache_expiration = schema.Integer(
-        min = 1,
-        listed_by_default = False
+    expiration_expression = schema.CodeBlock(
+        language = "python"
     )
 
     condition = schema.CodeBlock(
@@ -128,6 +127,28 @@ class CachingPolicy(Item):
             dates.append(publishable.last_update_time)
 
         return normalize_invalidation_date(dates)
+
+    def get_content_expiration(self, publishable, **context):
+
+        expression = self.expiration_expression
+
+        if expression:
+            expression = expression.replace("\r", "")
+            context["publishable"] = publishable
+            context["datetime"] = datetime
+            context["timedelta"] = timedelta
+            exec expression in context
+            expiration = context.get("expiration")
+        else:
+            expiration = None
+
+        if isinstance(expiration, timedelta):
+            expiration = datetime.now() + expiration
+        elif isinstance(expiration, int):
+            expiration = datetime.now() + timedelta(minutes = expiration)
+
+        return expiration
+
 
 # Utility functions for last update expressions
 #------------------------------------------------------------------------------

@@ -196,3 +196,17 @@ def index_style_applicable_to_text_member(e):
     from woost.models import Style
     Style.applicable_to_text.rebuild_index()
 
+#------------------------------------------------------------------------------
+
+step = MigrationStep(
+    "Replaced CachingPolicy.cache_expiration with "
+    "CachingPolicy.expiration_expression"
+)
+
+@step.processor("woost.models.caching.CachingPolicy")
+def replace_cache_expiration_with_expiration_expression(policy):
+    expiration = getattr(policy, "_cache_expiration", None)
+    if expiration is not None:
+        policy.expiration_expression = "expiration = %s" % expiration
+        del policy._cache_expiration
+
