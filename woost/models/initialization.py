@@ -206,12 +206,11 @@ def init_site(
             DeletePermission(matching_items = owned_items()),
             ConfirmDraftPermission(matching_items = owned_items()),
             
-            # All members allowed, except for 'local_path', 'controller' and 'qname'
+            # All members allowed, 'controller' and 'qname'
             ReadMemberPermission(
                 matching_members = [
                     "woost.models.item.Item.qname",
-                    "woost.models.publishable.Publishable.controller",
-                    "woost.models.file.File.local_path"
+                    "woost.models.publishable.Publishable.controller"
                 ],
                 authorized = False
             ),
