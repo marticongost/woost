@@ -20,12 +20,14 @@ class Event(Document):
     ]
 
     event_start = schema.DateTime(
-        member_group = "content"
+        member_group = "content",
+        indexed = True
     )
 
     event_end = schema.DateTime(
         member_group = "content",
-        min = event_start
+        min = event_start,
+        indexed = True
     )
 
     event_location = schema.String(
