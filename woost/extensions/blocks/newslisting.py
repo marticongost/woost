@@ -4,19 +4,12 @@ u"""
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
 from cocktail import schema
-from cocktail.translations import (
-    translations,
-    DATE_STYLE_TEXT,
-    DATE_STYLE_ABBR,
-    DATE_STYLE_NUMBERS
-)
 from cocktail.controllers import (
     request_property,
     get_parameter,
     Pagination
 )
 from woost.models import News
-from woost.models.rendering import ImageFactory
 from woost.extensions.blocks.block import Block
 from woost.extensions.blocks.elementtype import ElementType
 
