@@ -67,6 +67,7 @@ class BlocksExtension(Extension):
             vimeoblock,
             vimeoblockrenderer,
             newslisting,
+            eventlisting,
             filelisting,
             facebooklikebutton,
             facebooklikebox,
