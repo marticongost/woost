@@ -52,9 +52,9 @@ class EventListing(Block):
         shadows_attribute = True,
         enumeration = [
             "woost.views.CompactEventListing",
-            "woost.views.DateTitleLocationEventListing"
+            "woost.views.DateLocationTitleEventListing"
         ],
-        default = "woost.views.DateTitleLocationEventListing",
+        default = "woost.views.DateLocationTitleEventListing",
         member_group = "listing"
     )
 

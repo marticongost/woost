@@ -1292,10 +1292,10 @@ translations.define(
 )
 
 translations.define(
-    "EventListing.view_class=woost.views.DateTitleLocationEventListing",
-    ca = u"Data, títol i ubicació",
-    es = u"Fecha, título y ubicación",
-    en = u"Date, title and location"
+    "EventListing.view_class=woost.views.DateLocationTitleEventListing",
+    ca = u"Data, ubicació i títol",
+    es = u"Fecha, ubicación y título",
+    en = u"Date, location and title"
 )
 
 # FileListing

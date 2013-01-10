@@ -14,12 +14,12 @@
                 element.visible = False
             ?>
         </div>
-        <h1 py:local_id="heading">
-            <a py:local_id="link" href="${event.get_uri()}">${translations(event)}</a>
-        </h1>
         <div py:local_id="location" py:visible="${bool(event.event_location)}">
             ${event.event_location}
         </div>
+        <h1 py:local_id="heading">
+            <a py:local_id="link" href="${event.get_uri()}">${translations(event)}</a>
+        </h1>
     </article>
 
 </py:woost.views.EventListing>
