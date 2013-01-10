@@ -13,6 +13,10 @@
     margin-bottom: 1em;
 }
 
+.TextBlockView.single_image.no_text .image_gallery .image_entry {
+    margin: 0;
+}
+
 /* Top left */
 .TextBlockView.top_left .image_gallery .image_entry,
 .TextBlockView.top_right .image_gallery .image_entry {

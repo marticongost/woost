@@ -25,6 +25,14 @@ from cocktail.controllers import Location
         self._images = [image for image in self.block.images if image.is_accessible()]
         self._column_layout = (self.block.image_alignment in ("column_left", "column_right"))
 
+        if not self._images:
+            self.add_class("no_images")
+        elif len(self._images) == 1:
+            self.add_class("single_image")
+
+        if not self.block.text:
+            self.add_class("no_text")
+
         if self._column_layout:
             self.content_wrapper.tag = "div"
             self.content_wrapper.add_class("columns_wrapper")
