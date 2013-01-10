@@ -1240,6 +1240,64 @@ translations.define(
     en = u"Text and image"
 )
 
+# EventListing
+#------------------------------------------------------------------------------
+translations.define("EventListing",
+    ca = u"Llistat d'esdeveniments",
+    es = u"Listado de eventos",
+    en = u"Event listing"
+)
+
+translations.define("EventListing-plural",
+    ca = u"Llistats d'events",
+    es = u"Listados de eventos",
+    en = u"Event listings"
+)
+
+translations.define("EventListing.listing",
+    ca = u"Llistat",
+    es = u"Listado",
+    en = u"Listing"
+)
+
+translations.define("EventListing.element_type",
+    ca = u"Tipus d'element",
+    es = u"Tipo de elemento",
+    en = u"Element type"
+)
+
+translations.define("EventListing.paginated",
+    ca = u"Paginar els resultats",
+    es = u"Paginar los resultados",
+    en = u"Paginate results"
+)
+
+translations.define("EventListing.page_size",
+    ca = u"Mida del llistat",
+    es = u"del listado",
+    en = u"Listing size"
+)
+
+translations.define("EventListing.view_class",
+    ca = u"Aparença",
+    es = u"Apariencia",
+    en = u"Appearence"
+)
+
+translations.define(
+    "EventListing.view_class=woost.views.CompactEventListing",
+    ca = u"Només el títol",
+    es = u"Solo el título",
+    en = u"Title only"
+)
+
+translations.define(
+    "EventListing.view_class=woost.views.DateTitleLocationEventListing",
+    ca = u"Data, títol i ubicació",
+    es = u"Fecha, título y ubicación",
+    en = u"Date, title and location"
+)
+
 # FileListing
 #------------------------------------------------------------------------------
 translations.define("FileListing",
