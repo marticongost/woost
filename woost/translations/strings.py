@@ -3372,6 +3372,12 @@ translations.define("URI.uri",
     en = u"Address"
 )
 
+translations.define("URI.language_specific_uri",
+    ca = u"Adreça per idioma",
+    es = u"Dirección por idioma",
+    en = u"Language specific address"
+)
+
 # Style
 #------------------------------------------------------------------------------
 translations.define("Style",
