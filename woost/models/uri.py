@@ -20,7 +20,8 @@ class URI(Publishable):
 
     members_order = [
         "title",
-        "uri"
+        "uri",
+        "language_specific_uri"
     ]
 
     default_controller = schema.DynamicDefault(
@@ -37,8 +38,12 @@ class URI(Publishable):
     )
 
     uri = schema.String(
-        required = True,
         indexed = True,
+        member_group = "content"
+    )
+
+    language_specific_uri = schema.String(
+        translated = True,
         member_group = "content"
     )
 
@@ -49,7 +54,7 @@ class URI(Publishable):
         host = None,
         encode = True):
 
-        uri = self.uri
+        uri = self.language_specific_uri or self.uri
 
         if uri is not None:
 

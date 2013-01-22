@@ -8,13 +8,20 @@ from cocktail.controllers import Location
 from woost.extensions.blocks.block import Block
 
 def extract_video_id(string):
+
     try:
         if string.startswith("http"):
             location = Location(string)
             return location.query_string["v"][0]
     except:
         pass
-    
+
+    try:
+        if "youtu.be" in string:
+            return string[string.rfind("/") + 1:]
+    except:
+        pass
+
     return string
 
 
