@@ -91,6 +91,6 @@ class EventListing(Block):
         return Pagination.copy(**{
             "page_size.default": self.page_size,
             "page_size.max": self.max_page_size,
-            "items": self.select_news()
+            "items": self.select_events()
         })
 
