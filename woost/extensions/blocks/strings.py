@@ -800,16 +800,64 @@ translations.define("TwitterTimelineBlock-plural",
     en = u"Twitter timeline"
 )
 
-translations.define("TwitterTimelineBlock.account",
-    ca = u"Compte de Twitter",
-    es = u"Cuenta de Twitter",
-    en = u"Twitter account"
+translations.define("TwitterTimelineBlock.tweet",
+    ca = u"Tuit",
+    es = u"Tuit",
+    en = u"Tweet"
 )
 
-translations.define("TwitterTimelineBlock.max_tweets",
-    ca = u"Missatges a mostrar",
-    es = u"Mensajes a mostrar",
-    en = u"Max tweets"
+translations.define("TwitterTimelineBlock.appearence",
+    ca = u"Aparença",
+    es = u"Apariencia",
+    en = u"Appearence"
+)
+
+translations.define("TwitterTimelineBlock.widget_id",
+    ca = u"ID del widget",
+    es = u"ID del widget",
+    en = u"Widget ID"
+)
+
+translations.define("TwitterTimelineBlock.theme",
+    ca = u"Plantilla",
+    es = u"Plantilla",
+    en = u"Theme"
+)
+
+translations.define("TwitterTimelineBlock.theme=light",
+    ca = u"Clar",
+    es = u"Claro",
+    en = u"Light"
+)
+
+translations.define("TwitterTimelineBlock.theme=dark",
+    ca = u"Fosc",
+    es = u"Oscuro",
+    en = u"Dark"
+)
+
+translations.define("TwitterTimelineBlock.link_color",
+    ca = u"Color de l'enllaç",
+    es = u"Color del enlace",
+    en = u"Link color"
+)
+
+translations.define("TwitterTimelineBlock.width",
+    ca = u"Amplada",
+    es = u"Ancho",
+    en = u"Width"
+)
+
+translations.define("TwitterTimelineBlock.height",
+    ca = u"Alçada",
+    es = u"Alto",
+    en = u"Height"
+)
+
+translations.define("TwitterTimelineBlock.related_accounts",
+    ca = u"Comptes relacionats",
+    es = u"Cuentas relacionadas",
+    en = u"Related accounts"
 )
 
 # LinksBox
