@@ -14,25 +14,48 @@ class TwitterTimelineBlock(Block):
     view_class = "cocktail.html.TwitterTimeline"
 
     members_order = [
-        "account",
-        "max_tweets"
+        "widget_id",
+        "theme",
+        "link_color",
+        "width",
+        "height",
+        "related_accounts"
     ]
 
-    account = schema.String(
+    widget_id = schema.String(
         required = True,
         member_group = "content"
     )
 
-    max_tweets = schema.Integer(
+    theme = schema.String(
         required = True,
-        default = 5,
-        min = 1,
-        max = 20,
-        member_group = "content"
+        default = "light",
+        enumeration = ("light", "dark"),
+        member_group = "appearence"
+    )
+
+    link_color = schema.Color(
+        member_group = "appearence"
+    )
+
+    width = schema.Integer(
+        member_group = "appearence"
+    )
+
+    height = schema.Integer(
+        member_group = "appearence"
+    )
+
+    related_accounts = schema.String(
+        member_group = "tweet"
     )
 
     def init_view(self, view):
         Block.init_view(self, view)
-        view.account = self.account
-        view.max_tweets = self.max_tweets
+        view.widget_id = self.widget_id
+        view.theme = self.theme
+        view.link_color = self.link_color
+        view.width = self.width
+        view.height = self.height
+        view.related = self.related_accounts
 
