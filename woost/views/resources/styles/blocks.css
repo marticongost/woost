@@ -29,6 +29,10 @@
 }
 
 /* Top right */
+.TextBlockView.top_right .image_list {
+    text-align: right;
+}
+
 .TextBlockView.top_right .image_gallery .image_entry > a {
     text-align: right;
 }
