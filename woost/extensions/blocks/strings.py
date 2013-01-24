@@ -63,6 +63,14 @@ translations.define("News.blocks",
     en = u"Blocks"
 )
 
+# Event
+#------------------------------------------------------------------------------
+translations.define("Event.blocks",
+    ca = u"Blocs",
+    es = u"Bloques",
+    en = u"Blocks"
+)
+
 # ImageFactory
 #------------------------------------------------------------------------------
 translations.define("ImageFactory.applicable_to_blocks",

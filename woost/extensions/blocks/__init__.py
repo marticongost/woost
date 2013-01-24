@@ -78,6 +78,7 @@ class BlocksExtension(Extension):
             site,
             style,
             news,
+            event,
             imagefactory,
             utils,
             migration
