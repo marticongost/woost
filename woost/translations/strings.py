@@ -5366,3 +5366,11 @@ translations.define(
         % instance.member.agreement_document.get_uri()
 )
 
+# BackOfficeItemHeading
+#------------------------------------------------------------------------------
+translations.define("woost.views.BackOfficeItemHeading.item_path.conjunction",
+    ca = u"a",
+    es = u"en",
+    en = u"in"
+)
+
