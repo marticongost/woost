@@ -55,14 +55,16 @@ from woost import app
             </py:ready>
             <ul>
                 <py:ready>
-                    <py:new py:element="self.create_item_path_step(step)" py:for="step in self._item_path"/>
+                    <py:new
+                        py:element="self.create_item_path_step(self._item_path, index, step)"
+                        py:for="index, step in enumerate(self._item_path)"/>
                 </py:ready>
             </ul>
         </span>
     </div>
 
-    <li py:def="item_path_step" py:args="step">
-        ${translations(step)}
+    <li py:def="item_path_step" py:args="path, index, step">
+        ${translations(path[index])}
     </li>
 </div>
 
