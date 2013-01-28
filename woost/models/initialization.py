@@ -14,7 +14,8 @@ from optparse import OptionParser
 from cocktail.translations import translations
 from cocktail.persistence import (
     datastore,
-    mark_all_migrations_as_executed
+    mark_all_migrations_as_executed,
+    reset_incremental_id
 )
 from woost.models import (
     changeset_context,
@@ -65,12 +66,16 @@ def init_site(
     languages = ("en",),
     uri = "/",
     template_engine = "cocktail",
-    extensions = ()):
+    extensions = (),
+    base_id = None):
  
     datastore.root.clear()
     datastore.commit()
     datastore.close()
     
+    if base_id:
+        reset_incremental_id(base_id)
+
     def set_translations(item, member, key, **kwargs):
         for language in languages:
             value = translations(
@@ -761,7 +766,10 @@ def main():
     parser.add_option("-e", "--extensions",
         default = "",
         help = "The list of extensions to enable")
-    
+    parser.add_option("-b", "--base-id",
+        type = int,
+        help = "Seed the incremental ID sequence at a non-zero value")
+
     options, args = parser.parse_args()
 
     admin_email = options.user
@@ -783,7 +791,8 @@ def main():
         admin_password,
         languages.split(),
         template_engine = options.template_engine,
-        extensions = options.extensions.split(",")
+        extensions = options.extensions.split(","),
+        base_id = options.base_id
     )
     
     print u"Your site has been successfully created. You can start it by " \

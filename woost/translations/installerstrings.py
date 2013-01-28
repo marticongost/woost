@@ -88,6 +88,16 @@ translations.define("Installer.validate_database_address",
     en = u"Test address availability"
 )
 
+translations.define("Installer.base_id",
+    en = u"Base object ID"
+)
+
+translations.define("Installer.base_id-explanation",
+    en = u"Start the incremental ID sequence at a non-zero value. "
+         u"May be useful to preserve the identifiers of old objects "
+         u"when importing existing content into a new site."
+)
+
 translations.define("Install",
     en = u"Install"
 )
