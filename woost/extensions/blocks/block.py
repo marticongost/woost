@@ -26,6 +26,7 @@ class Block(Item):
     ]
     view_class = None
     block_display = "woost.extensions.blocks.BlockDisplay"
+    backoffice_heading_view = "woost.extensions.blocks.BackOfficeBlockHeading"
 
     groups_order = [
         "content",
