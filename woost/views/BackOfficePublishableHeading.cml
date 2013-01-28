@@ -11,7 +11,7 @@
         return line
     ?>
 
-    <li py:def="item_path_step" py:args="step">
+    <li py:def="item_path_step" py:args="path, index, step">
         <py:woost.views.ContentLink py:item="${step}"/>
     </li>
 
