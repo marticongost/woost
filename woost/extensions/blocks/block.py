@@ -264,6 +264,43 @@ class Block(Item):
         
         return iter_slots(self)
 
+    def find_paths(self):
+        """Iterates over the different sequences of slots that contain the block.
+
+        @return: A list of lists, where each list represents one of the paths
+            that the block descends from. Each entry in a path consists of
+            container, slot pair.
+        @rtype: list of 
+            (L{Item<woost.models.item.Item>},
+            L{Slot<woost.extensions.blocks.slot.Slot>}) lists           
+        """
+        # Imported here to prevent an import cycle
+        from woost.extensions.blocks.slot import Slot
+
+        def visit(block, followed_path):
+
+            paths = []
+
+            for member in block.__class__.members().itervalues():
+                related_end = getattr(member, "related_end", None)
+                if isinstance(related_end, Slot):
+                    parents = block.get(member)
+                    if parents:
+                        for parent in parents:
+                            location = (parent, related_end)
+                            if location not in followed_path:
+                                paths.extend(
+                                    visit(parent, [location] + followed_path)
+                                )
+
+            # End of the line
+            if not paths and followed_path:
+                paths.append(followed_path)
+
+            return paths
+
+        return visit(self, [])
+
     @property
     def name_prefix(self):
         return "block%d." % self.id
