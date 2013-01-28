@@ -129,6 +129,10 @@ class Installer(object):
                     name = "validate_database_address",
                     default = True,
                     member_group = "database"
+                ),
+                schema.Integer(
+                    name = "base_id",
+                    member_group = "database"
                 )
             ]
         )
@@ -290,7 +294,8 @@ class Installer(object):
             admin_email = params["admin_email"],
             admin_password = params["admin_password"],
             languages = params["languages"].split(),
-            template_engine = params["template_engine"]
+            template_engine = params["template_engine"],
+            base_id = params["base_id"]
         )
 
     def _is_valid_local_address(self, host, port):
