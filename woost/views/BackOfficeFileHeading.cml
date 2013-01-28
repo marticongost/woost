@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<py:woost.views.BackOfficeItemHeading
+<py:woost.views.BackOfficePublishableHeading
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:py="http://www.whads.com/ns/cocktail/templates">
 
@@ -13,5 +13,5 @@
         </span>
     </py:with>
 
-</py:woost.views.BackOfficeItemHeading>
+</py:woost.views.BackOfficePublishableHeading>
 
