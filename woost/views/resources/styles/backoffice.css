@@ -266,12 +266,10 @@ body {
 
 .BackOfficeLayout h2 {
     font-size: inherit;
-    margin-top: 0;
 }
 
 .BackOfficeLayout .body {
     clear: both;
-    margin-top: 1em;
     padding: 1em;
 }
 
@@ -3245,3 +3243,6 @@ div.success_label {
     font-size: 1.2em;
 }
 
+.BackOfficeItemHeading .item_path li a {
+    display: inline-block;
+}
