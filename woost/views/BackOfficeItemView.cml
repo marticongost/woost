@@ -55,7 +55,6 @@ from woost.controllers.backoffice.useractions import (
         <py:ready>
             <py:new                
                 py:element="loader.new(self.edited_item.backoffice_heading_view)"
-                py:tag="h2"
                 py:index="0"
                 py:item="${self.edited_item}"/>
         </py:ready>
