@@ -166,6 +166,7 @@ class ECommerceExtension(Extension):
             import launch_transaction_notification_triggers
         from woost.extensions.ecommerce.ecommerceorder import ECommerceOrder
         from woost.extensions.payments import PaymentsExtension
+        from woost.extensions.payments.paypal import PayPalPaymentGateway
 
         payments_ext = PaymentsExtension.instance
 
@@ -182,7 +183,27 @@ class ECommerceExtension(Extension):
             payment.amount = order.total
             payment.order = order
             payment.currency = Currency(payments_ext.payment_gateway.currency)
-            
+
+            # PayPal form data
+            if isinstance(payments_ext.payment_gateway, PayPalPaymentGateway):
+                paypal_form_data = {}
+                if order.address:
+                    paypal_form_data["address1"] = order.address
+
+                if order.town:
+                    paypal_form_data["city"] = order.town
+
+                if order.country and order.country.code:
+                    paypal_form_data["country"] = order.country.code
+
+                if order.postal_code:
+                    paypal_form_data["zip"] = order.postal_code
+
+                if order.language:
+                    paypal_form_data["lc"] = order.language
+
+                payment.paypal_form_data = paypal_form_data
+
             for purchase in order.purchases:
                 payment.add(PaymentItem(
                     reference = str(purchase.product.id),
