@@ -1404,6 +1404,12 @@ translations.define("FileListing.listing_order=-last_update_time",
     en = u"Last update"
 )
 
+translations.define("FileListing.links_open_in_new_window",
+    ca = u"Obrir els enllaços a una nova finestra",
+    es = u"Abrir los enlaces en una ventana nueva",
+    en = u"Open links in a new window"
+)
+
 translations.define("FileListing.image_factory",
     ca = u"Processat d'imatge",
     es = u"Procesado de imagen",

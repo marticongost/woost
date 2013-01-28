@@ -9,6 +9,7 @@ from woost.extensions.audio import AudioExtension
 
     <?py-class
     files = ()
+    links_open_in_new_window = False
     image_factory = None
     enable_audio_player = True
     ?>
@@ -36,6 +37,10 @@ from woost.extensions.audio import AudioExtension
             py:file="${file}"/>
 
         <a py:local_id="link" href="${file.get_uri()}">
+            <?py
+            if self.links_open_in_new_window:
+                element["target"] = "_blank"
+            ?>
             <py:woost.views.Image
                 py:local_id="image"
                 py:image="${file}"
