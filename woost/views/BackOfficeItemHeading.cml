@@ -10,6 +10,9 @@ from woost import app
     <?py-class
     item = None
     icon_factory = "backoffice_thumbnail"
+
+    def get_item_path(self, item):
+        return None
     ?>
 
     <img py:id="item_icon">
@@ -40,7 +43,26 @@ from woost import app
         <span py:id="item_type">
             @{translations(self.item.__class__.name)}
         </span>
+
+        <span py:id="item_path">            
+            ${translations("woost.views.BackOfficeItemHeading.item_path.conjunction")}
+            <py:ready>
+                <?py
+                self._item_path = self.get_item_path(self.item)
+                if not self._item_path:
+                    element.visible = False
+                ?>
+            </py:ready>
+            <ul>
+                <py:ready>
+                    <py:new py:element="self.create_item_path_step(step)" py:for="step in self._item_path"/>
+                </py:ready>
+            </ul>
+        </span>
     </div>
 
+    <li py:def="item_path_step" py:args="step">
+        ${translations(step)}
+    </li>
 </div>
 
