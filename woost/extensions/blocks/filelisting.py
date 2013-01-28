@@ -23,6 +23,7 @@ class FileListing(Block):
     members_order = [
         "files",
         "listing_order",
+        "links_open_in_new_window",
         "image_factory"
     ]
 
@@ -42,6 +43,12 @@ class FileListing(Block):
         member_group = "listing"
     )
 
+    links_open_in_new_window = schema.Boolean(
+        required = True,
+        default = False,
+        member_group = "listing"
+    )
+
     image_factory = schema.Reference(
         type = ImageFactory,
         related_end = schema.Collection(),
@@ -53,6 +60,7 @@ class FileListing(Block):
         Block.init_view(self, view)
         view.tag = self.element_type
         view.files = self.select_files()
+        view.links_open_in_new_window = self.links_open_in_new_window
         view.image_factory = self.image_factory
 
     def select_files(self):
