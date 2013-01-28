@@ -355,7 +355,7 @@ body {
     margin-bottom: 0;
 }
 
-.CollectionEditor ul {
+.CollectionEditor ul.entries {
     display: block;
     list-style-type: none;
     padding: 0;
@@ -363,7 +363,7 @@ body {
     background-color: white;
 }
 
-.CollectionEditor li {
+.CollectionEditor ul.entries li {
     cursor: pointer;
     display: block;
     padding: 0;
@@ -373,23 +373,23 @@ body {
     padding: 0.4em;
 }
 
-.CollectionEditor li.selected {
+.CollectionEditor ul.entries li.selected {
     background-color: #4b4b4b;
     border-color: #4b4b4b;
     color: white;
 }
 
-.scripted .CollectionEditor li input[type=checkbox] {
+.scripted .CollectionEditor ul.entries li input[type=checkbox] {
     display: none;
 }
 
-.CollectionEditor li label {
+.CollectionEditor ul.entries li label {
     margin: 0;
     padding: 0 !important;
     font-size: 0.9em;
 }
 
-.CollectionEditor li.ui-sortable-helper {
+.CollectionEditor ul.entries li.ui-sortable-helper {
     width: 100%;
     border-top: 1px solid #ddd;
     background-color: white;

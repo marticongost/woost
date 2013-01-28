@@ -18,16 +18,19 @@ class BlockList(Element):
 
     def _ready(self):
         Element._ready(self)
+        self.__is_list = self.tag in ("ul", "ol")
         self._fill_blocks()
 
     def _fill_blocks(self):
         if self.blocks:
-            if self.tag in ("ul", "ol"):
-                for block_view in create_block_views(self.blocks):
-                    entry = Element("li")
-                    entry.append(block_view)
-                    self.blocks_container.append(entry)
-            else:
-                for block_view in create_block_views(self.blocks):
-                    self.blocks_container.append(block_view)
+            for block_view in create_block_views(self.blocks):
+                self._insert_block_view(block_view)
+
+    def _insert_block_view(self, block_view):
+        if self.__is_list:
+            entry = Element("li")
+            entry.append(block_view)
+            self.blocks_container.append(entry)
+        else:
+            self.blocks_container.append(block_view)
 
