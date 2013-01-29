@@ -15,6 +15,7 @@ from cocktail.persistence import PersistentObject
 from woost.models.site import Site
 from woost.models.item import Item
 from woost.models.publishable import Publishable
+from woost.models.document import Document
 from woost.models.file import File
 
 
@@ -58,6 +59,7 @@ class IconResolver(object):
         self.file_resolvers = TypeMapping()
         self.file_resolvers[Item] = self._resolve_item
         self.file_resolvers[Publishable] = self._resolve_publishable
+        self.file_resolvers[Document] = self._resolve_document
         self.file_resolvers[File] = self._resolve_file
         self.name_resolution_cache = Cache(load = self._find_icon)
         
@@ -159,6 +161,14 @@ class IconResolver(object):
 
         if item is Site.main.home:
             file_names.insert(0, "home")
+
+        return file_names
+
+    def _resolve_document(self, content_type, item):
+        file_names = self._resolve_publishable(content_type, item)
+
+        if item is not None and item.redirection_mode:
+            file_names.insert(0, "redirection")
 
         return file_names
 
