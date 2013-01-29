@@ -2679,6 +2679,30 @@ translations.define("Document.children",
     en = u"Child pages"
 )
 
+translations.define("Document.redirection_mode",
+    ca = u"Modalitat de redirecció",
+    es = u"Modalidad de redirección",
+    en = u"Redirection mode"
+)
+
+translations.define("Document.redirection_mode=first_child",
+    ca = u"Redirigir al primer fill accessible",
+    es = u"Redirigir al primer hijo accesible",
+    en = u"Redirect to the first accessible child"
+)
+
+translations.define("Document.redirection_mode=custom_target",
+    ca = u"Redirigir a un element concret",
+    es = u"Redirigir a un elemento concreto",
+    en = u"Redirect to a custom target"
+)
+
+translations.define("Document.redirection_target",
+    ca = u"Destí de la redirecció",
+    es = u"Destino de la redirección",
+    en = u"Redirection target"
+)
+
 translations.define("Document.robots_should_index",
     ca = u"Contingut indexable",
     es = u"Contenido indexable",

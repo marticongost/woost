@@ -36,6 +36,8 @@ class Document(Publishable):
         "page_resources",
         "branch_resources",
         "children",
+        "redirection_mode",
+        "redirection_target",
         "robots_should_index",
         "robots_should_follow"
     )
@@ -125,6 +127,20 @@ class Document(Publishable):
         member_group = "navigation"
     )
 
+    redirection_mode = schema.String(
+        enumeration = ["first_child", "custom_target"],
+        listed_by_default = False,
+        member_group = "navigation"
+    )
+
+    redirection_target = schema.Reference(
+        type = Publishable,
+        related_end = schema.Collection(),
+        required = redirection_mode.equal("custom_target"),
+        listed_by_default = False,
+        member_group = "navigation"
+    )
+
     robots_should_index = schema.Boolean(
         required = True,
         default = True,
@@ -188,4 +204,15 @@ class Document(Publishable):
             if attachment.resource_type == "image"
             and attachment.is_accessible()
         )
+
+    def find_redirection_target(self):
+        mode = self.redirection_mode
+
+        if mode == "first_child":
+            for child in self.children:
+                if child.is_accessible():
+                    return child.find_redirection_target() or child
+
+        elif mode == "custom_target":
+            return self.redirection_target
 
