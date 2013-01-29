@@ -34,6 +34,15 @@ from cocktail.controllers import context
         if not self.images:
             self.visible = False
 
+        if self.thumbnail_factory:
+            if isinstance(self.thumbnail_factory, basestring):
+                factory_name = self.thumbnail_factory
+            else:
+                factory_name = self.thumbnail_factory.identifier
+
+            if factory_name:
+                self.add_class("thumbnail_factory-" + factory_name)
+
         self.set_client_param("closeUpPreload", self.close_up_preload)
         ?>
     </py:ready>
