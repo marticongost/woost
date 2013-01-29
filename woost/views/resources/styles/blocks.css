@@ -77,6 +77,16 @@
     display: inline-block;
 }
 
+/* Center bottom */
+.TextBlockView.center_bottom .image_gallery > ul {
+    text-align: center;
+}
+
+.TextBlockView.center_bottom .image_gallery > ul > li {
+    vertical-align: top;
+    display: inline-block;
+}
+
 /* Inline */
 .TextBlockView.inline * {
     vertical-align: middle;
