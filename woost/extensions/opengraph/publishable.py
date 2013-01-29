@@ -24,7 +24,7 @@ Publishable.add_member(
         required = True,
         default = True,
         listed_by_default = False,
-        member_group = "open_graph"
+        member_group = "meta.open_graph"
     )
 )
 
@@ -40,7 +40,7 @@ Publishable.add_member(
         ),
         indexed = True,
         listed_by_default = False,
-        member_group = "open_graph",
+        member_group = "meta.open_graph",
         edit_control = display_factory(
             "cocktail.html.DropdownSelector",
             grouping = lambda type: type.category
