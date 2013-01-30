@@ -349,11 +349,11 @@ body {
 
 /* Collection editor
 -----------------------------------------------------------------------------*/
-.CollectionEditor .ActionBar.toolbar {
+.ItemCollectionEditor .ActionBar.toolbar {
     margin-bottom: 0;
 }
 
-.CollectionEditor ul.entries {
+.ItemCollectionEditor ul.entries {
     display: block;
     list-style-type: none;
     padding: 0;
@@ -361,7 +361,7 @@ body {
     background-color: white;
 }
 
-.CollectionEditor ul.entries li {
+.ItemCollectionEditor ul.entries li {
     cursor: pointer;
     display: block;
     padding: 0;
@@ -371,23 +371,23 @@ body {
     padding: 0.4em;
 }
 
-.CollectionEditor ul.entries li.selected {
+.ItemCollectionEditor ul.entries li.selected {
     background-color: #4b4b4b;
     border-color: #4b4b4b;
     color: white;
 }
 
-.scripted .CollectionEditor ul.entries li input[type=checkbox] {
+.scripted .ItemCollectionEditor ul.entries li input[type=checkbox] {
     display: none;
 }
 
-.CollectionEditor ul.entries li label {
+.ItemCollectionEditor ul.entries li label {
     margin: 0;
     padding: 0 !important;
     font-size: 0.9em;
 }
 
-.CollectionEditor ul.entries li.ui-sortable-helper {
+.ItemCollectionEditor ul.entries li.ui-sortable-helper {
     width: 100%;
     border-top: 1px solid #ddd;
     background-color: white;

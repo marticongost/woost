@@ -7,7 +7,7 @@
 @since:			July 2012
 -----------------------------------------------------------------------------*/
 
-cocktail.bind(".CollectionEditor", function ($editor) {
+cocktail.bind(".ItemCollectionEditor", function ($editor) {
 
     // Enable/disable buttons depending on the selected content    
     function updateToolbar() {
