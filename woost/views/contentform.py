@@ -33,7 +33,7 @@ class ContentForm(Form):
 
     def _get_collection_display(self, obj, member):
         if member.is_persistent_relation:
-            return "woost.views.CollectionEditor"
+            return "woost.views.ItemCollectionEditor"
         else:
             return "cocktail.html.CollectionEditor"
 
