@@ -211,7 +211,10 @@ class Document(Publishable):
         if mode == "first_child":
             for child in self.children:
                 if child.is_accessible():
-                    return child.find_redirection_target() or child
+                    if isinstance(child, Document):
+                        return child.find_redirection_target() or child
+                    else:
+                        return child
 
         elif mode == "custom_target":
             return self.redirection_target
