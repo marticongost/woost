@@ -274,6 +274,18 @@ translations.define("Block.enabled",
     en = u"Active"
 )
 
+translations.define("Block.start_date",
+    ca = u"Inici de publicació",
+    es = u"Inicio de publicación",
+    en = u"Publication start"
+)
+
+translations.define("Block.end_date",
+    ca = u"Fi de publicació",
+    es = u"Fin de publicación",
+    en = u"Publication end"
+)
+
 translations.define("Block.controller",
     ca = u"Controlador",
     es = u"Controlador",
@@ -1083,6 +1095,49 @@ translations.define("woost.extensions.blocks.BlockDisplay.disabled_status.title"
     ca = u"Aquest bloc està deshabilitat, no s'inclourà a la pàgina",
     es = u"Este bloque está deshabilitado, no se incluirá en la página",
     en = u"This block is disabled and won't be displayed in the page"
+)
+
+translations.define("woost.extensions.blocks.BlockDisplay.expired_status.label",
+    ca = u"Expirat",
+    es = u"Expirado",
+    en = u"Expired"
+)
+
+translations.define("woost.extensions.blocks.BlockDisplay.expired_status.title",
+    ca = u"Aquest bloc ha assolit la seva data d'expiració i ha deixat d'estar "
+         u"visible",
+    es = u"Este bloque ha alcanzado su fecha de expiración y ha dejado de "
+         u"estar visible",
+    en = u"This block has reached its expiration date and is no longer visible"
+)
+
+translations.define(
+    "woost.extensions.blocks.BlockDisplay.awaiting_publication_status.label",
+    ca = u"Esperant inici de publicació",
+    es = u"Esperando inicio de publicación",
+    en = u"Awaiting start of publication"
+)
+
+translations.define(
+    "woost.extensions.blocks.BlockDisplay.awaiting_publication_status.title",
+    ca = u"Aquest bloc no ha assolit la seva data d'inici de publicació i "
+         u"encara no és visible",
+    es = u"Este bloque no ha alcanzado su fecha de inicio de publicación y "
+         u"todavía no es visible",
+    en = u"This block has not reached its publication date and is not "
+         u"visible yet"
+)
+
+translations.define("woost.extensions.blocks.BlockDisplay.temporary_status.label",
+    ca = u"Temporal",
+    es = u"Temporal",
+    en = u"Temporary"
+)
+
+translations.define("woost.extensions.blocks.BlockDisplay.temporary_status.title",
+    ca = u"Aquest bloc es publica només durant una finestra de temps",
+    es = u"Este bloque solo se publicada durante una ventana de tiempo",
+    en = u"This block is only published during a certain time window"
 )
 
 translations.define("Action add_block",
