@@ -163,7 +163,7 @@ class Publishable(Item):
         required = True,
         default = False,
         indexed = True,
-        #visible = False,
+        listed_by_default = False,
         member_group = "publication"
     )
 
