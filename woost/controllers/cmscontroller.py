@@ -41,6 +41,7 @@ from woost.models import (
     Item,
     Publishable,
     URI,
+    File,
     Site,
     ReadPermission,
     ReadTranslationPermission,
@@ -259,7 +260,7 @@ class CMSController(BaseCMSController):
         # Allow application modules (ie. language) to process the URI before
         # resolving the requested publishable item
         self._process_path(path)
- 
+
         request = cherrypy.request
 
         # Item resolution
@@ -268,6 +269,9 @@ class CMSController(BaseCMSController):
 
         # HTTP/HTTPS check
         self._apply_https_policy(publishable)
+
+        # Check maintenance mode
+        self._maintenance_check(publishable)
 
         # Controller resolution
         controller = publishable.resolve_controller()
@@ -338,6 +342,18 @@ class CMSController(BaseCMSController):
 
         # Invoke the language module to set the active language
         self.language.process_request(path)
+
+    def _maintenance_check(self, publishable):
+
+        site = Site.main
+
+        if site.down_for_maintenance and not isinstance(publishable, File):
+            headers = cherrypy.request.headers
+            client_ip = headers.get("X-Forwarded-For") \
+                     or headers.get("Remote-Addr")
+
+            if client_ip not in site.maintenance_addresses:
+                raise cherrypy.HTTPError(503, "Site down for maintenance")
 
     def _resolve_path(self, path):
 
@@ -540,6 +556,10 @@ class CMSController(BaseCMSController):
         if is_http_error and error.status == 404:
             return site.not_found_error_page, 404
         
+        # Service unavailable
+        elif is_http_error and error.status == 503:
+            return site.maintenance_page, 503
+
         # Access forbidden:
         # The default behavior is to show a login page for anonymous users, and
         # a 403 error message for authenticated users.

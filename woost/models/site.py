@@ -31,6 +31,7 @@ class Site(Item):
         "meta.contact",
         "behavior",
         "behavior.pages",
+        "behavior.maintenance",
         "behavior.publication",
         "behavior.triggers",
         "rendering",
@@ -63,6 +64,9 @@ class Site(Item):
         "generic_error_page",
         "not_found_error_page",
         "forbidden_error_page",
+        "down_for_maintenance",
+        "maintenance_page",
+        "maintenance_addresses",
         "https_policy",
         "https_persistence",
         "timezone",
@@ -191,6 +195,25 @@ class Site(Item):
         type = "woost.models.Publishable",
         listed_by_default = False,
         member_group = "behavior.pages"
+    )
+
+    down_for_maintenance = schema.Boolean(
+        required = True,
+        default = False,
+        listed_by_default = False,
+        member_group = "behavior.maintenance"
+    )
+
+    maintenance_page = schema.Reference(
+        type = "woost.models.Publishable",
+        listed_by_default = False,
+        member_group = "behavior.maintenance"
+    )
+
+    maintenance_addresses = schema.Collection(
+        items = schema.String(),
+        listed_by_default = False,
+        member_group = "behavior.maintenance"
     )
 
     site_name = schema.String(
