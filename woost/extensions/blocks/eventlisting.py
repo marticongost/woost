@@ -3,6 +3,7 @@ u"""
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
+from datetime import datetime
 from cocktail import schema
 from cocktail.controllers import (
     request_property,
@@ -26,6 +27,8 @@ class EventListing(Block):
 
     members_order = [
         "element_type",
+        "include_expired",
+        "listing_order",
         "paginated",
         "page_size",
         "view_class"
@@ -33,6 +36,21 @@ class EventListing(Block):
 
     element_type = ElementType(
         member_group = "content"
+    )
+
+    include_expired = schema.Boolean(
+        required = True,
+        default = True,
+        member_group = "listing"
+    )
+
+    listing_order = schema.String(
+        default = "-event_start",
+        enumeration = [
+            "-event_start",
+            "event_start"
+        ],
+        member_group = "listing"
     )
 
     paginated = schema.Boolean(
@@ -70,12 +88,21 @@ class EventListing(Block):
             view.events = self.select_events()
 
     def select_events(self):
-        events = Event.select_accessible(order = "-event_start")
+        events = Event.select_accessible()
+
+        if not self.include_expired:
+            events.add_filter(Event.event_start.greater_equal(datetime.now()))
+
+        self._apply_listing_order(events)
 
         if not self.paginated and self.page_size:
             events.range = (0, self.page_size)
 
         return events
+
+    def _apply_listing_order(self, events):
+        if self.listing_order:
+            events.order = self.listing_order
 
     @request_property
     def pagination(self):
