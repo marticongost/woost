@@ -3658,6 +3658,18 @@ translations.define("Event.event_location",
     en = u"Place"
 )
 
+translations.define("Event.image",
+    ca = u"Imatge",
+    es = u"Imagen",
+    en = u"Image"
+)
+
+translations.define("Event.summary",
+    ca = u"Sumari",
+    es = u"Sumario",
+    en = u"Summary"
+)
+
 translations.define("Event.body",
     ca = u"Cos",
     es = u"Cuerpo",
