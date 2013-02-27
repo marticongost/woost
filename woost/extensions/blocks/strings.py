@@ -1322,6 +1322,30 @@ translations.define("EventListing.element_type",
     en = u"Element type"
 )
 
+translations.define("EventListing.include_expired",
+    ca = u"Incloure esdeveniments passats",
+    es = u"Incluir eventos pasados",
+    en = u"Include expired events"
+)
+
+translations.define("EventListing.listing_order",
+    ca = u"Ordenació",
+    es = u"Ordenación",
+    en = u"Order"
+)
+
+translations.define("EventListing.listing_order=event_start",
+    ca = u"Data d'inici, ascendent",
+    es = u"Fecha de inicio, ascendente",
+    en = u"Event start, ascending"
+)
+
+translations.define("EventListing.listing_order=-event_start",
+    ca = u"Data d'inici, descendent",
+    es = u"Fecha de inicio, descendente",
+    en = u"Event start, descending"
+)
+
 translations.define("EventListing.paginated",
     ca = u"Paginar els resultats",
     es = u"Paginar los resultados",
