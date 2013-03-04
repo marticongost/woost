@@ -314,6 +314,8 @@ class Block(Item):
                 if isinstance(related_end, Slot):
                     parents = block.get(member)
                     if parents:
+                        if isinstance(parents, Item):
+                            parents = (parents,)
                         for parent in parents:
                             location = (parent, related_end)
                             if location not in followed_path:
