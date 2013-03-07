@@ -50,7 +50,6 @@ class SitemapExtension(Extension):
     def _install(self):
         
         from woost.models import (
-            Site,
             Publishable,
             Document,
             Controller,
@@ -71,7 +70,6 @@ class SitemapExtension(Extension):
             Document,
             "sitemap_document",
             title = extension_translations,
-            parent = Site.main.home,
             path = "sitemap_xml",
             per_language_publication = False,
             mime_type = "text/xml",

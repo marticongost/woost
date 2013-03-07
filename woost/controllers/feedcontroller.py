@@ -13,7 +13,7 @@ from cocktail.controllers.location import Location
 from cocktail.translations import translations, get_language
 from woost.models import (
     Feed,
-    Site,
+    Configuration,
     PermissionExpression,
     ReadPermission,
     get_current_user
@@ -25,15 +25,15 @@ class FeedController(PublishableController):
 
     def _produce_content(self, **kwargs):
 
-        site = Site.main
         cms = self.context["cms"]
         feed = self.context["publishable"]
         
         location = Location.get_current()
         location.relative = False
 
+        tz = Configuration.instance.get_setting("timezone") or "Z"
+
         def rfc822_date(date):
-            tz = "Z" if site.timezone is None else site.timezone
             return date.strftime("%d %%s %Y %H:%M:%S %%s") % (
                 ("Jan", "Feb", "Mar", "Apr", "May", "Jun",
                  "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")[date.month - 1],

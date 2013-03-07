@@ -11,8 +11,8 @@ from woost.models.item import Item
 from woost.models.rendering.renderer import Renderer
 
 def _get_site_renderers():
-    from woost.models import Site
-    return Site.main.renderers
+    from woost.models import Configuration
+    return Configuration.instance.renderers
 
 
 class ImageFactory(Item):

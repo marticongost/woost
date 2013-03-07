@@ -38,7 +38,7 @@ from woost.models.publishable import Publishable
         
     <py:with py:element="self.login_form.submit_button" name="authenticate">
         <?py element.empty() ?>
-        ${translations("Site.login_page enter")}
+        ${translations("woost.views.LoginForm.submit_button")}
     </py:with>
     
     <a py:id="forgot_password_link" py:before="self.login_form.submit_button">
@@ -54,7 +54,7 @@ from woost.models.publishable import Publishable
                 element.visible = False
             ?>
         </py:ready>
-        ${translations("Site.login_page password_forgot")}
+        ${translations("woost.views.LoginForm.forgot_password_link")}
     </a>
 </div>
 

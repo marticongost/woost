@@ -8,7 +8,7 @@ import cherrypy
 from cocktail import schema
 from cocktail.translations import translations
 from woost.models import (
-    Site,
+    Configuration,
     Extension,
     Role,
     Document,
@@ -97,7 +97,6 @@ class WebConsoleExtension(Extension):
         page = self._create_asset(
             Document,
             "page",
-            parent = Site.main.home,
             path = "webconsole",
             hidden = True,
             requires_https = True,
@@ -114,7 +113,7 @@ def breakpoint(open_browser = False, stack_depth = 0):
     """
     from cocktail.controllers import Location
     from webconsole.utils import breakpoint as webconsole_breakpoint
-    from woost.models import get_current_user, Publishable, Site
+    from woost.models import get_current_user, Publishable
     from woost.extensions.webconsole.webconsolepermission \
         import WebConsolePermission   
 
@@ -132,8 +131,7 @@ def breakpoint(open_browser = False, stack_depth = 0):
                 
                 # Determine the URI for the breakpoint session
                 webconsole_location = Location.get_current_host()
-                webconsole_location.path_info = \
-                    u"/" + Site.main.get_path(webconsole)
+                webconsole_location.path_info = webconsole.get_uri()
                 webconsole_location.query_string["session_id"] = session.id
 
                 # Open a web browser tab pointing at the URI

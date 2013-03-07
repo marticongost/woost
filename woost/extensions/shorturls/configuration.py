@@ -4,11 +4,11 @@ u"""
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
 from cocktail import schema
-from woost.models import Site
+from woost.models import Configuration
 from woost.extensions.shorturls.urlshortener import URLShortener
 
 
-Site.add_member(
+Configuration.add_member(
     schema.Reference("url_shortener",
         type = URLShortener,
         related_end = schema.Reference(),

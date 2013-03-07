@@ -18,8 +18,7 @@ from woost.models import (
     changeset_context,
     Item,
     User,
-    Site,
-    Language,
+    Configuration,
     get_current_user,
     restricted_modification_context,
     PermissionExpression,
@@ -42,7 +41,7 @@ class ItemWebService(PersistentClassWebService):
 
     @cached_getter
     def languages(self):
-        return Language.codes
+        return Configuration.instance.languages
 
     class JSONEncoder(PersistentClassWebService.JSONEncoder):
 

@@ -15,11 +15,7 @@ from cocktail.translations import translations
 from cocktail import schema
 from cocktail.controllers.formcontrollermixin import FormControllerMixin
 from cocktail.persistence import datastore
-from woost.models import (
-    Publishable,
-    Language,
-    get_current_user
-)
+from woost.models import Configuration, Publishable, get_current_user
 from woost.controllers.backoffice.basebackofficecontroller \
     import BaseBackOfficeController
 from woost.extensions.staticsite.staticsitedestination import StatusTracker
@@ -48,7 +44,7 @@ class ExportStaticSiteController(
         from woost.extensions.staticsite import StaticSiteExtension
         extension = StaticSiteExtension.instance        
         
-        site_languages = Language.codes
+        site_languages = Configuration.instance.languages
 
         def allowed_destinations():
             return [

@@ -2,7 +2,6 @@
 <?py
 from cocktail.controllers import context
 from woost.models import (
-    Site,
     get_current_user,
     ModifyPermission,
     Publishable
@@ -65,14 +64,6 @@ from woost.models import (
             py:id="modify_link" 
             py:action="modify"
             py:target="@{self.publishable}"/>
-        <py:woost.views.EditLink 
-            py:id="modify_site_link" 
-            py:action="modify"
-            py:target="@{Site.main}">
-            <py:with
-                py:element="element.icon"
-                src="@{Site.main.get_image_uri('icon16')}"/>
-        </py:woost.views.EditLink>
     </div>
 
 </div>

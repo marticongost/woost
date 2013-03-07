@@ -13,7 +13,7 @@ class BaseTestCase(TempStorageMixin, TestCase):
 
     def setUp(self):
 
-        from woost.models import Site, Action, User, Role
+        from woost.models import Configuration, Action, User, Role
         from woost.models.trigger import set_triggers_enabled
 
         set_triggers_enabled(False)
@@ -36,9 +36,9 @@ class BaseTestCase(TempStorageMixin, TestCase):
         self.confirm_draft_action = Action(identifier = "confirm_draft")
         self.confirm_draft_action.insert()
 
-        # Site
-        self.site = Site(qname = "woost.main_site")
-        self.site.insert()
+        # Configuration
+        self.config = Configuration(qname = "woost.configuration")
+        self.config.insert()
 
         # Roles and users
         self.anonymous_role = Role(qname = "woost.anonymous")

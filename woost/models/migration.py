@@ -71,7 +71,7 @@ def update_keys(e):
 
     if ShopExtension.enabled:
         from cocktail.translations import translations
-        from woost.models import Publishable, Controller, Language
+        from woost.models import Publishable
         from woost.extensions.shop import create_product_controller
         from woost.extensions.shop.product import Product
 
