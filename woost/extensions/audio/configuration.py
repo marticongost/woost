@@ -8,7 +8,7 @@ from woost.models import Configuration
 from woost.extensions.audio.audiodecoder import AudioDecoder
 from woost.extensions.audio.audioencoder import AudioEncoder
 
-pos = configuration.groups_order.index("rendering")
+pos = Configuration.groups_order.index("rendering")
 Configuration.groups_order.insert(pos + 1, "audio")
 Configuration.members_order += ["audio_decoders", "audio_encoders"]
 

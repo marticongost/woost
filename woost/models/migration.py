@@ -231,9 +231,9 @@ def add_multisite_support(e):
                 delattr(item, key)
 
     # Remove the instance of Site from the database
-    site = root.pop("woost.main_site")
+    site_id = list(Item.qname.index.values(key = "woost.main_site"))[0]
+    site = Item.index[site_id]
     site_state = site.__Broken_state__
-    site_id = site_state["_id"]
     Item.index.remove(site_id)
     Item.keys.remove(site_id)
 
@@ -249,13 +249,12 @@ def add_multisite_support(e):
     config.websites.append(website)
 
     # Languages
-    config.default_language = site["_default_language"].__Broken_state__["_id"]
-    config.heed_client_language = site["_heed_client_language"]
     published_languages = []
 
     for lang_id in root["woost.models.language.Language-keys"]:
-        language = Item.index.get(lang_id)
+        language = Item.index[lang_id]
         Item.index.remove(lang_id)
+        Item.keys.remove(lang_id)
         language_state = language.__Broken_state__
         config.languages.append(language_state["_iso_code"])
         if language_state["_enabled"]:
@@ -272,16 +271,18 @@ def add_multisite_support(e):
         ):
             del root[key]
 
+    # Settings that now belong in Configuration, as attributes
+    config.secret_key = site_state["secret_key"]
+
     # Settings that now belong in Configuration, as regular fields
-    for key in (
-        "down_for_maintenance",
-        "maintenance_page",
-        "maintenance_addresses",
+    for key in (        
         "login_page",
         "generic_error_page",
         "not_found_error_page",
         "forbidden_error_page",
+        "default_language",
         "backoffice_language",
+        "heed_client_language",
         "timezone",
         "smtp_host",
         "smtp_user",
@@ -301,12 +302,11 @@ def add_multisite_support(e):
 
     # Settings that now belong in Website, becoming translated fields
     for key in (
-        "organization_name",
         "town",
         "region",
         "country"
     ):
-        value = website.set(key, site_state["_" + key])
+        value = site_state["_" + key]
         for lang in config.languages:
             website.set(key, value, lang)
 
@@ -316,7 +316,7 @@ def add_multisite_support(e):
         "keywords",
         "description"
     ):
-        for lang, translation in site_state["_translations"]:
+        for lang, translation in site_state["_translations"].iteritems():
             value = translation.__Broken_state__["_" + key]
             website.set(key, value, lang)
 
