@@ -433,6 +433,13 @@ class Publishable(Item):
 
         return False
 
+    def is_home_page(self):
+        """Indicates if the object is the home page for any website.
+        @rtype: bool
+        """
+        from woost.models import Website
+        return self.get(Website.home.related_end) is not None
+
     @getter
     def resources(self):
         """Iterates over all the resources that apply to the item.
