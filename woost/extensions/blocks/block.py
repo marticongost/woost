@@ -9,7 +9,7 @@ from cocktail.iteration import last
 from cocktail.translations import translations
 from cocktail import schema
 from cocktail.html import templates, Element
-from woost.models import Item, Publishable, Style, Site
+from woost.models import Item, Publishable, Style, Configuration
 
 
 class Block(Item):    
@@ -205,7 +205,7 @@ class Block(Item):
         return heading
 
     def is_common_block(self):
-        return bool(self.get(Site.common_blocks.related_end))
+        return bool(self.get(Configuration.common_blocks.related_end))
 
     def is_published(self):
         

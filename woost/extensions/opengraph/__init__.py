@@ -9,7 +9,7 @@ from cocktail import schema
 from cocktail.html import templates
 from cocktail.persistence import datastore
 from woost.models import (
-    Site,
+    Configuration,
     File,
     Extension,
     extension_translations,
@@ -227,18 +227,20 @@ class OpenGraphExtension(Extension):
 
     def get_global_properties(self):
 
-        site = Site.main
-
         properties = {}
+        config = Configuration.instance
 
-        if site.site_name:
-            properties["og:site_name"] = site.site_name
+        site_name = config.get_setting("site_name")
+        if site_name:
+            properties["og:site_name"] = site_name
 
-        if site.logo:
-            properties["og:image"] = site.logo.get_uri(host = ".")
+        logo = config.get_setting("logo")
+        if logo:
+            properties["og:image"] = logo.get_uri(host = ".")
 
-        if site.email:
-            properties["og:email"] = site.email
+        email = config.get_setting("email")
+        if email:
+            properties["og:email"] = email
 
         if self.facebook_administrators:
             properties["fb:admins"] = self.facebook_administrators
@@ -254,7 +256,7 @@ class OpenGraphExtension(Extension):
         return properties
 
     def create_facebook_image_factory(self):
-        Site.main.image_factories.append(
+        Configuration.instance.image_factories.append(
             self._create_asset(
                 rendering.ImageFactory,
                 "image_factory",

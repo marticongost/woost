@@ -42,11 +42,13 @@ from woost.models import (
     Publishable,
     URI,
     File,
-    Site,
+    Configuration,
     ReadPermission,
     ReadTranslationPermission,
     AuthorizationError,
-    get_current_user
+    get_current_user,
+    get_current_website,
+    set_current_website
 )
 from woost.controllers.asyncupload import async_uploader
 from woost.controllers import get_cache_manager, set_cache_manager
@@ -264,7 +266,7 @@ class CMSController(BaseCMSController):
         request = cherrypy.request
 
         # Item resolution
-        publishable = self._resolve_path(path)        
+        publishable = self._resolve_path(path)
         self.context["publishable"] = publishable
 
         # HTTP/HTTPS check
@@ -299,11 +301,11 @@ class CMSController(BaseCMSController):
         """Redirect the current request to the canonical URL for the selected
         publishable element.
         """        
-        site = Site.main
+        config = Configuration.instance
         publishable = path_resolution.item
 
         # Find the canonical path for the element
-        canonical_path = site.get_path(publishable)
+        canonical_path = config.get_path(publishable)
 
         if canonical_path is None:
             return
@@ -345,21 +347,28 @@ class CMSController(BaseCMSController):
 
     def _maintenance_check(self, publishable):
 
-        site = Site.main
+        if isinstance(publishable, File):
+            return
 
-        if site.down_for_maintenance and not isinstance(publishable, File):
+        config = Configuration.instance
+        website = get_current_website()
+
+        if (
+            config.down_for_maintenance 
+            or (website and website.down_for_maintenance)
+        ):
             headers = cherrypy.request.headers
             client_ip = headers.get("X-Forwarded-For") \
                      or headers.get("Remote-Addr")
 
-            if client_ip not in site.maintenance_addresses:
+            if client_ip not in config.maintenance_addresses:
                 raise cherrypy.HTTPError(503, "Site down for maintenance")
 
     def _resolve_path(self, path):
 
-        site = Site.main
+        config = Configuration.instance
         unicode_path = [try_decode(step) for step in path]
-        path_resolution = site.resolve_path(unicode_path)
+        path_resolution = config.resolve_path(unicode_path)
 
         if path_resolution:
             publishable = path_resolution.item
@@ -369,7 +378,8 @@ class CMSController(BaseCMSController):
 
             self.canonical_redirection(path_resolution)
         else:
-            publishable = site.home
+            website = get_current_website()            
+            publishable = website.home if website else None
 
         return publishable
 
@@ -402,7 +412,7 @@ class CMSController(BaseCMSController):
 
         # Regular elements
         else:
-            uri = Site.main.get_path(publishable)
+            uri = Configuration.instance.get_path(publishable)
             
             if uri is not None:
                 
@@ -445,6 +455,14 @@ class CMSController(BaseCMSController):
             language = get_language()
         )
 
+    def _establish_active_website(self):
+        location = Location.get_current_host()
+        website = Configuration.instance.get_website_by_host(location.host)
+        set_current_website(website)
+
+        if website is None:
+            raise cherrypy.HTTPError(404, "Unknown hostname: " + location.host)
+
     @event_handler
     def handle_traversed(cls, event):
 
@@ -457,7 +475,10 @@ class CMSController(BaseCMSController):
             publishable = None
         )
 
-        # Set the default language as soon as possible
+        # Determine the active website
+        cms._establish_active_website()
+
+        # Set the default language
         language = cms.language.infer_language()
         set_language(language)
 
@@ -469,9 +490,15 @@ class CMSController(BaseCMSController):
         
         cms = event.source
 
-        # Validate access to the requested item
         publishable = cms.context.get("publishable")
+
         if publishable is not None:
+
+            # Possibly redirect to another website, if the selected publishable is
+            # specific to another website
+            cms._apply_website_exclusiveness(publishable)
+
+            # Validate access to the requested item
             cms.validate_publishable(publishable)
 
             # Set the content type and encoding
@@ -490,13 +517,16 @@ class CMSController(BaseCMSController):
         cms = event.source
         event.output.update(
             cms = cms,
-            site = Site.main,
             user = get_current_user(),
             publishable = event.controller.context.get("publishable")
         )
 
     @event_handler
     def handle_exception_raised(cls, event):
+
+        # Couldn't establish the active website: show a generic error
+        if get_current_website() is None:
+            return
 
         error = event.exception
         controller = event.source
@@ -549,16 +579,19 @@ class CMSController(BaseCMSController):
             changed, respectively.
         @rtype: (L{Document<woost.models.Document>}, int)
         """
-        site = Site.main
         is_http_error = isinstance(error, cherrypy.HTTPError)
+        config = Configuration.instance
+        page = None
+        page_name = None
+        status = None
 
         # Page not found
         if is_http_error and error.status == 404:
-            return site.not_found_error_page, 404
+            return config.get_setting("not_found_error_page"), 404
         
         # Service unavailable
         elif is_http_error and error.status == 503:
-            return site.maintenance_page, 503
+            return config.get_setting("maintenance_page"), 503
 
         # Access forbidden:
         # The default behavior is to show a login page for anonymous users, and
@@ -575,31 +608,37 @@ class CMSController(BaseCMSController):
                         return login_page, 200
                     publishable = publishable.parent
 
-                return site.login_page, 200
+                return config.get_setting("login_page"), 200
             else:
-                return site.forbidden_error_page, 403
-        
+                return config.get_setting("forbidden_error_page"), 403
+
         # Generic error
-        elif is_http_error and error.status == 500 \
-        or not is_http_error:
-            return site.generic_error_page, 500
+        elif (is_http_error and error.status == 500) or not is_http_error:
+            return config.get_setting("generic_error_page"), 500
 
         return None, None
 
+    def _apply_website_exclusiveness(self, publishable):
+        if (
+            publishable.websites
+            and get_current_website() not in publishable.websites
+        ):
+            raise cherrypy.HTTPRedirect(
+                publishable.get_uri(host = publishable.websites[0].hosts[0])
+            )
+
     def _apply_https_policy(self, publishable):
         
-        site = Site.main
-        policy = site.https_policy
+        policy = Configuration.instance.get_setting("https_policy")
 
         if policy == "always":
             Location.require_https()
         elif policy == "never":
             Location.require_http()
         elif policy == "per_page":
-            if publishable.requires_https \
-            or not get_current_user().anonymous:
+            if publishable.requires_https or not get_current_user().anonymous:
                 Location.require_https()
-            elif not site.https_persistence:
+            elif not website.https_persistence:
                 Location.require_http()
 
     @event_handler

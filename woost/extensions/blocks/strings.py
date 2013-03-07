@@ -39,9 +39,9 @@ translations.define("woost.extensions.blocks.BlockSection.edit_slot_link",
     en = u"Edit this slot"
 )
 
-# Site
+# Configuration
 #------------------------------------------------------------------------------
-translations.define("Site.common_blocks",
+translations.define("Configuration.common_blocks",
     ca = u"Blocs comuns",
     es = u"Bloques comunes",
     en = u"Common blocks"

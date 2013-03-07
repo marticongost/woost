@@ -5,9 +5,9 @@ u"""
 """
 from cocktail.translations import translations
 
-# Site
+# Configuration
 #------------------------------------------------------------------------------
-translations.define("Site.url_shortener",
+translations.define("Configuration.url_shortener",
     ca = u"Servei d'URLs curtes",
     es = u"Servicio de URLs cortas",
     en = u"Short URLs service"

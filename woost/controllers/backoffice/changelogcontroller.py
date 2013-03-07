@@ -15,7 +15,7 @@ from cocktail.controllers.parameters import SessionParameterSource
 from woost.models import (
     Item,
     ChangeSet,
-    Language,
+    Configuration,
     get_current_user,
     ReadHistoryPermission,
     ChangeSetPermissionExpression
@@ -86,7 +86,7 @@ class ChangeLogController(BaseBackOfficeController):
             allow_sorting = False
             allow_type_selection = False
             allow_language_selection = False
-            available_languages = Language.codes
+            available_languages = Configuration.instance.languages
 
             @cached_getter
             def available_user_filters(self):
