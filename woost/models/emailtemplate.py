@@ -7,7 +7,6 @@
 @since:			February 2010
 """
 import buffet
-import smtplib
 from mimetypes import guess_type
 from email.mime.text import MIMEText
 from email.MIMEMultipart import MIMEMultipart
@@ -17,7 +16,7 @@ from email.Header import Header
 from email.Utils import formatdate, parseaddr, formataddr
 from email import Encoders
 from cocktail import schema
-from woost.models import Item, Site, File
+from woost.models import Item, Configuration, File
 
 
 class EmailTemplate(Item):
@@ -96,11 +95,6 @@ class EmailTemplate(Item):
     )
 
     def send(self, context = None):
-
-        smtp_host = Site.main.smtp_host or "localhost"
-        smtp_port = smtplib.SMTP_PORT
-        smtp_user = Site.main.smtp_user
-        smtp_password = Site.main.smtp_password
 
         if context is None:
             context = {}
@@ -223,13 +217,8 @@ class EmailTemplate(Item):
 
         message["Date"] = formatdate()
 
-        # Send the message
-        smtp = smtplib.SMTP(smtp_host, smtp_port)
-        if smtp_user and smtp_password:
-            smtp.login(
-                smtp_user.encode(self.encoding), 
-                smtp_password.encode(self.encoding)
-            )
+        # Send the message        
+        smtp = Configuration.instance.connect_to_smtp()
         smtp.sendmail(sender, list(receivers), message.as_string())
         smtp.quit()
 

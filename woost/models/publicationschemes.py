@@ -23,12 +23,6 @@ class PublicationScheme(Item):
     instantiable = False
     permanent_links = False
 
-    site = schema.Reference(
-        type = "woost.models.Site",
-        bidirectional = True,
-        visible = False
-    )
-
     @abstractmethod
     def resolve_path(self, path):
         """Determines the publishable item that matches the indicated path.       
@@ -65,13 +59,13 @@ class PublicationScheme(Item):
 class PathResolution(object):
     """A structure that provides publication information for an item.
 
-    The L{PublicationScheme.resolve_path} and L{Site.resolve_path} methods use
-    this class to wrap their return values.
+    The L{PublicationScheme.resolve_path} and L{Configuration.resolve_path}
+    methods use this class to wrap their return values.
 
     @var scheme: The publishing scheme used to resolve the publication details
         for the indicated path. This will only be set when calling
-        L{Site.resolve_path}, to enable the caller to discern which of all the
-        registered schemes handled the path's resolution.
+        L{Configuration.resolve_path}, to enable the caller to discern which of
+        all the registered schemes handled the path's resolution.
     @type scheme: L{PublicationScheme}
 
     @var item: The publishable item that matches the indicated path.

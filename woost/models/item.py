@@ -19,6 +19,7 @@ from cocktail.persistence import (
     MaxValue
 )
 from cocktail.controllers import make_uri, percent_encode_uri, Location
+from woost.models.websitesession import get_current_website
 from woost.models.changesets import ChangeSet, Change
 from woost.models.action import Action
 from woost.models.usersession import get_current_user
@@ -577,12 +578,10 @@ class Item(PersistentObject):
         if host:
             if host == ".":
                 location = Location.get_current_host()
+                website = get_current_website()
+                policy = website and website.https_policy
 
-                from woost.models import Site
-                site = Site.main
-                policy = site.https_policy
-
-                if (
+                if (                    
                     policy == "always"
                     or (
                         policy == "per_page" and (

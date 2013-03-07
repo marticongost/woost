@@ -4,7 +4,7 @@ u"""
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
 from cocktail.translations import translations
-from woost.models import Extension, Site
+from woost.models import Extension, Configuration
 
 
 translations.define("AudioExtension",
@@ -45,7 +45,7 @@ class AudioExtension(Extension):
 
         from woost.extensions.audio import (
             strings,
-            site,
+            configuration,
             audiodecoder,
             audioencoder
         )
@@ -66,30 +66,30 @@ class AudioExtension(Extension):
     def create_default_decoders(self):
 
         from woost.extensions.audio.audiodecoder import AudioDecoder
-        site = Site.main
+        config = Configuration.instance
 
         mp3 = AudioDecoder()
         mp3.mime_type = "audio/mpeg"
         mp3.command = '/usr/bin/mpg321 "%s" -w -'
         mp3.insert()
-        site.audio_decoders.append(mp3)
+        config.audio_decoders.append(mp3)
 
         ogg = AudioDecoder()
         ogg.mime_type = "audio/ogg"
         ogg.command = '/usr/bin/oggdec -Q -o - "%s"'
         ogg.insert()
-        site.audio_decoders.append(ogg)
+        config.audio_decoders.append(ogg)
 
         flac = AudioDecoder()
         flac.mime_type = "audio/flac"
         flac.command = '/usr/bin/flac -dsc "%s"'
         flac.insert()
-        site.audio_decoders.append(flac)
+        config.audio_decoders.append(flac)
 
     def create_default_encoders(self):
         
         from woost.extensions.audio.audioencoder import AudioEncoder
-        site = Site.main
+        config = Configuration.instance
 
         mp3 = AudioEncoder()
         mp3.identifier = "mp3-128"
@@ -97,7 +97,7 @@ class AudioExtension(Extension):
         mp3.extension = ".mp3"
         mp3.command = "/usr/bin/lame --quiet -b 128 - %s"
         mp3.insert()
-        site.audio_encoders.append(mp3)
+        config.audio_encoders.append(mp3)
 
         ogg = AudioEncoder()
         ogg.identifier = "ogg-q5"
@@ -105,5 +105,5 @@ class AudioExtension(Extension):
         ogg.extension = ".ogg"
         ogg.command = "/usr/bin/oggenc -q 5 - -o %s"
         ogg.insert()
-        site.audio_encoders.append(ogg)
+        config.audio_encoders.append(ogg)
 

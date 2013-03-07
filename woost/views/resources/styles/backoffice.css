@@ -679,7 +679,7 @@ body.scripted .BackOfficeLayout .Table .selection {
 }
 
 .BackOfficeLayout .Table {
-    border-bottom: 1px solid rgb(225,225,225);
+    border: 1px solid #eee;
 }
 
 .BackOfficeLayout .PropertyTable th {
@@ -809,10 +809,6 @@ body.scripted .BackOfficeLayout .Table .selection {
     padding-left: 2.4em;
 }
 
-.BackOfficeLayout .Table td {
-    border: 1px solid rgb(225,225,225);
-}
-
 .BackOfficeLayout .Table th, .BackOfficeLayout .Table th * {
     font-weight: normal;
     color: black;
@@ -939,7 +935,6 @@ body.scripted .BackOfficeLayout .Table .selection {
 
 .BackOfficeLayout .Table tr.selected td {
     background-color: rgb(75,75,75) !important;
-    border: 1px solid rgb(75,75,75) !important;
 }
 
 .BackOfficeLayout .Table tr.selected td,
@@ -1000,8 +995,8 @@ body.scripted .BackOfficeLayout .Table .selection {
 }
 
 .BackOfficeLayout .Table td.element_column label {
-    padding-top: 0.1em;
-    padding-bottom: 0.1em;
+    padding-top: 0;
+    padding-bottom: 0;
 }
 
 .BackOfficeLayout .search_results_message {

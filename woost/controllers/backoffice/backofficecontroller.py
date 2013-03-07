@@ -21,7 +21,7 @@ from cocktail import schema
 from woost.models import (
     get_current_user,
     ReadPermission,
-    Site
+    Configuration
 )
 from woost.controllers.backoffice.basebackofficecontroller \
     import BaseBackOfficeController
@@ -69,8 +69,10 @@ class BackOfficeController(BaseBackOfficeController):
     @event_handler
     def handle_before_request(cls, event):
         user = get_current_user()
-        language = \
-            user and user.prefered_language or Site.main.backoffice_language
+        language = (
+            user and user.prefered_language 
+            or Configuration.instance.get_setting("backoffice_language")
+        )
         set_language(language)
 
     @event_handler

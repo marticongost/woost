@@ -6,7 +6,7 @@ u"""
 from cocktail.translations import translations
 from cocktail import schema
 from cocktail.html import templates
-from woost.models import Extension, Site
+from woost.models import Extension, Configuration
 from woost.models.rendering import ChainRenderer
 
 
@@ -75,7 +75,7 @@ class BlocksExtension(Extension):
             flashblock,
             blockspage,
             blockactions,
-            site,
+            configuration,
             style,
             news,
             event,
@@ -139,7 +139,7 @@ class BlocksExtension(Extension):
         from woost.extensions.blocks.vimeoblockrenderer import VimeoBlockRenderer
 
         # Look for the first chain renderer
-        for renderer in Site.main.renderers:
+        for renderer in Configuration.instance.renderers:
             if isinstance(renderer, ChainRenderer):
 
                 # Add the renderer for YouTube blocks
@@ -182,5 +182,5 @@ class BlocksExtension(Extension):
             ]
         )
 
-        Site.main.image_factories.append(edit_blocks_thumbnail)
+        Configuration.instance.image_factories.append(edit_blocks_thumbnail)
 
