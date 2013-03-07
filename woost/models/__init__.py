@@ -45,10 +45,6 @@ schema.Collection.exclude_when_empty = False
 # revisions
 schema.Member.versioned = True
 
-# Add an extension property to allow relations to block a delete operation if
-# the relation is not empty
-schema.RelationMember.block_delete = False
-
 @when(schema.RelationMember.attached_as_orphan)
 def _hide_self_contained_relations(event):
     if event.anonymous:
@@ -62,11 +58,15 @@ del mimetypes
 
 # Base content types
 #------------------------------------------------------------------------------
-from woost.models.site import Site
+from woost.models.configuration import Configuration
+from woost.models.website import Website
+from woost.models.websitesession import (
+    get_current_website,
+    set_current_website
+)
 from woost.models.changesets import ChangeSet, Change, changeset_context
 from woost.models.item import Item
 from woost.models.action import Action
-from woost.models.language import Language
 from woost.models.userview import UserView
 from woost.models.publicationschemes import (
     PublicationScheme,

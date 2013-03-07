@@ -60,7 +60,7 @@ ACCESSIBLE_DESCENDANTS = 2
         self.__index = 0
 
         for item in self.data:
-            self._fill_branch(item)            
+            self._fill_branch(item)
 
     def _fill_branch(self, item):
 
@@ -71,7 +71,7 @@ ACCESSIBLE_DESCENDANTS = 2
 
         if access_level != NOT_ACCESSIBLE:
             row = self.create_row(self.__index, item)
-            self.append(row)
+            self.body.append(row)
 
             if access_level == ACCESSIBLE_DESCENDANTS:
                 row.add_class("filtered")

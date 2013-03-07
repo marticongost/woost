@@ -9,7 +9,7 @@
 from decimal import Decimal
 from cocktail.translations import get_language, translations
 from cocktail import schema
-from woost.models import Item, Site
+from woost.models import Item
 from woost.extensions.countries.country import Country
 from woost.extensions.shop.shoporderentry import ShopOrderEntry
 

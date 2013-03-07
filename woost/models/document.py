@@ -219,3 +219,16 @@ class Document(Publishable):
         elif mode == "custom_target":
             return self.redirection_target
 
+    @event_handler
+    def handle_related(cls, event):
+        if event.member is cls.websites:
+            for child in event.source.children:
+                child.websites = list(event.source.websites)
+
+    @event_handler
+    def handle_unrelated(cls, event):
+        if event.member is cls.websites:
+            for child in event.source.children:
+                child.websites = list(event.source.websites)
+
+

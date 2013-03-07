@@ -16,7 +16,7 @@ from cocktail.controllers import (
 )
 from woost.models import (
     Item,
-    Site,
+    Configuration,
     ModifyPermission,
     DeletePermission,
     ModifyMemberPermission,
@@ -354,18 +354,19 @@ class ShareBlockAction(UserAction):
             and not target.is_common_block()
 
     def is_permitted(self, user, target):
+        config = Configuration.instance
         return (
             UserAction.is_permitted(self, user, target)
-            and user.has_permission(ModifyPermission, target = Site.main)
+            and user.has_permission(ModifyPermission, target = config)
             and user.has_permission(ModifyPermission, target = target)
             and user.has_permission(
                 ModifyMemberPermission, 
-                member = Site.common_blocks
+                member = config.common_blocks
             )
         )
 
     def invoke(self, controller, selection):
-        Site.main.common_blocks.append(selection[0])
+        Configuration.instance.common_blocks.append(selection[0])
         datastore.commit()
         focus_block(selection[0])
 

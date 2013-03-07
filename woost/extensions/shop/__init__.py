@@ -13,7 +13,7 @@ from cocktail.translations import (
 )
 from cocktail import schema
 from cocktail.persistence import datastore
-from woost.models import Extension, Language, Controller
+from woost.models import Extension, Configuration, Controller
 
 translations.define("ShopExtension",
     ca = u"Botiga",
@@ -168,7 +168,7 @@ class ShopExtension(Extension):
         # Create the product controller
         controller = Controller()
         controller.qname = "woost.product_controller"
-        for language in Language.codes:
+        for language in Configuration.instance.languages:
             value = translations(
                 "woost.extensions.shop Product controller title",
                 language

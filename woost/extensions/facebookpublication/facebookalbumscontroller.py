@@ -18,7 +18,7 @@ from cocktail.controllers import (
     get_parameter,
     Location
 )
-from woost.models import File, Language, get_current_user
+from woost.models import File, Configuration, get_current_user
 from woost.controllers.notifications import notify_user
 from woost.controllers.backoffice.basebackofficecontroller \
     import BaseBackOfficeController
@@ -57,12 +57,14 @@ class FacebookAlbumsController(BaseBackOfficeController):
                 min = 1,
                 items = schema.String(
                     required = True,
-                    enumeration = lambda ctx: Language.codes,
+                    enumeration = lambda ctx: Configuration.instance.languages,
                     translate_value = lambda value, language = None, **kwargs:
                         "" if not value 
                            else translations(value, language, **kwargs)
                 ),
-                default = schema.DynamicDefault(lambda: Language.codes)
+                default = schema.DynamicDefault(
+                    lambda: Configuration.instance.languages
+                )
             ),
             schema.Boolean("generate_story",
                 required = True,

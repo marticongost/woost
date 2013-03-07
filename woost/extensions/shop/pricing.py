@@ -11,7 +11,7 @@ other specialized pricing policies for a shop.
 from datetime import datetime
 from cocktail import schema
 from cocktail.controllers.usercollection import UserCollection
-from woost.models import Item, Site
+from woost.models import Configuration, Item
 from woost.extensions.shop.shoporder import ShopOrder
 from woost.extensions.shop.shoporderentry import ShopOrderEntry
 
@@ -68,7 +68,7 @@ class PricingPolicy(Item):
         user_collection.allow_member_selection = False
         user_collection.allow_language_selection = False
         user_collection.params.source = self.matching_items.get
-        #user_collection.available_languages = Language.codes # <- required?
+        #user_collection.available_languages = Configuration.instance.languages # <- required?
         return user_collection.subset
     
     def match_item(self, item):

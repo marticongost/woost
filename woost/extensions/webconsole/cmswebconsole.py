@@ -11,7 +11,7 @@ from cocktail.translations import translations, get_language
 from cocktail.persistence import PersistentObject
 from cocktail.controllers import request_property
 from woost.controllers.documentcontroller import DocumentController
-from woost.models import Site, get_current_user
+from woost.models import Configuration, get_current_user
 from woost.extensions.webconsole.webconsolepermission \
     import WebConsolePermission
 
@@ -31,7 +31,7 @@ class CMSWebConsole(DocumentController, WebConsoleController):
         session = WebConsoleController.session(self)
 
         session.context.update(
-            site = Site.main,
+            config = Configuration.instance,
             user = get_current_user(),
             language = get_language(),
             translations = translations,
