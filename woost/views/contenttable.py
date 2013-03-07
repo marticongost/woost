@@ -26,7 +26,6 @@ class ContentTable(ContentDisplayMixin, Table):
     base_url = None
     inline_draft_copies = True
     entry_selector = "tbody tr.item_row"
-    resizable_rows_selector = "tbody tr.item_row"
 
     def __init__(self, *args, **kwargs):
         Table.__init__(self, *args, **kwargs)
