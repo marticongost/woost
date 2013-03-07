@@ -88,7 +88,8 @@ of its features include:\n"
             "shorturls = woost.extensions.shorturls:ShortURLsExtension",
             "twitterpublication = woost.extensions.twitterpublication:TwitterPublicationExtension",
             "textfile = woost.extensions.textfile:TextFileExtension",
-            "audio = woost.extensions.audio:AudioExtension"
+            "audio = woost.extensions.audio:AudioExtension",
+            "issuu = woost.extensions.issuu:IssuuExtension"
         ]
     },
     # Woost can't yet access view resources (images, style sheets, client
