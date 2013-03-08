@@ -88,6 +88,15 @@ class ItemController(BaseBackOfficeController):
             if member_name:
                 node = RelationNode()
                 node.member = edit_stack[-1].content_type[member_name]
+
+                # Preserve the selected tab
+                group = node.member.member_group
+                if group:
+                    pos = group.find(".")
+                    if pos != -1:
+                        group = group[:pos]
+                edit_stack[-1].tab = group
+
                 edit_stack.push(node)
                 redirect = True
 
