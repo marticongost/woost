@@ -17,6 +17,7 @@ from cocktail.controllers import (
 from woost.models import (
     Item,
     Configuration,
+    Publishable,
     ModifyPermission,
     DeletePermission,
     ModifyMemberPermission,
@@ -421,11 +422,13 @@ base_preview_publishable = PreviewController.preview_publishable
 def preview_publishable(self):
 
     publishable = base_preview_publishable(self)
-    
+
     if publishable is None and isinstance(self.previewed_item, Block):
-        for item, member in self.previewed_item.find_publication_slots():
-            publishable = item
-            break
+        for path in self.previewed_item.find_paths():
+            container = path[0][0]
+            if isinstance(container, Publishable):
+                publishable = container
+                break
 
     return publishable
 
