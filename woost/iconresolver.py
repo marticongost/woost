@@ -160,7 +160,7 @@ class IconResolver(object):
             if item.resource_type:
                 file_names.insert(0, "resource-type-" + item.resource_type)
 
-            if item.get(Website.home.related_end):
+            if item.is_home_page():
                 file_names.insert(0, "home")
 
         return file_names

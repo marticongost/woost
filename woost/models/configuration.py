@@ -303,7 +303,7 @@ class Configuration(Item):
         @rtype: unicode
         """
         # The path to the home page is always the application root
-        if publishable.get(Website.home.related_end):
+        if publishable.is_home_page():
             return ""
 
         for pubscheme in self.publication_schemes:
