@@ -438,7 +438,7 @@ class Publishable(Item):
         @rtype: bool
         """
         from woost.models import Website
-        return self.get(Website.home.related_end) is not None
+        return bool(self.get(Website.home.related_end))
 
     @getter
     def resources(self):
