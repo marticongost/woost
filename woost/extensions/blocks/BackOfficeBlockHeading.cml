@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <?py
 from cocktail.controllers import context
-from woost.models import Site
+from woost.models import Configuration
 from woost.extensions.blocks.block import Block
 ?>
 
@@ -14,7 +14,7 @@ from woost.extensions.blocks.block import Block
         paths = item.find_paths()
 
         for path in paths:
-            if path[0][0] is Site.main:
+            if path[0][0] is Configuration.instance:
                 return path
 
         if paths:

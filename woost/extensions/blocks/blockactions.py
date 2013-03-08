@@ -362,7 +362,7 @@ class ShareBlockAction(UserAction):
             and user.has_permission(ModifyPermission, target = target)
             and user.has_permission(
                 ModifyMemberPermission, 
-                member = config.common_blocks
+                member = Configuration.common_blocks
             )
         )
 
