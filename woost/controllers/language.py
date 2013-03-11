@@ -58,7 +58,8 @@ class LanguageModule(Module):
             accept_language = cherrypy.request.headers.get("Accept-Language", None)
 
             if accept_language:
-                available_languages = Configuration.instance.languages
+                available_languages = \
+                    Configuration.instance.get_enabled_languages()
                 best_language = None
                 best_score = None
 
