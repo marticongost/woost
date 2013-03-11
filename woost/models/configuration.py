@@ -359,7 +359,7 @@ class Configuration(Item):
         if user and password:
             smtp.login(str(user), str(password))
 
-        return user, password
+        return smtp
 
     def get_website_by_host(self, host):
 
