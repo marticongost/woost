@@ -8,6 +8,7 @@ u"""
 """
 from cocktail.translations import translations
 from cocktail.translations.helpers import ca_possessive, plural2
+from collections import OrderedDict
 
 translations.define("logged in as",
     ca = lambda user: u"Estàs identificat com a " \
@@ -3092,24 +3093,44 @@ def content_permission_translation_factory(language, predicate):
         predicate_factory
     )
 
-def member_permission_translation_factory(language, predicate, any_predicate):
+MEMBER_PERMISSION_ABBR_THRESHOLD = 4
 
+def member_permission_translation_factory(
+    language,
+    predicate,
+    enum,
+    abbr,
+    any_predicate
+):
     def predicate_factory(instance, **kwargs):
         
         members = list(instance.iter_members())
 
         if not members:
-            return any_predicate
+            target = any_predicate
 
-        subject = u", ".join(
-            translations(member, language, qualified = True)
-            for member in members
-        )
+        elif len(members) >= MEMBER_PERMISSION_ABBR_THRESHOLD:
+            counter = OrderedDict()
 
-        if hasattr(predicate, "__call__"):
-            return predicate(instance, subject, **kwargs)
+            for member in members:
+                counter[member.schema] = counter.get(member.schema, 0) + 1
+
+            target = u", ".join(
+                abbr(count, content_type)
+                for content_type, count in counter.iteritems()
+            )
         else:
-            return predicate % subject
+            subject = u", ".join(
+                translations(member, language, qualified = True)
+                for member in members
+            )
+
+            if hasattr(enum, "__call__"):
+                target = enum(instance, subject, **kwargs)
+            else:
+                target = enum % subject
+
+        return predicate % target
 
     return permission_translation_factory(
         language,
@@ -3208,62 +3229,86 @@ translations.define(
 translations.define(
     "woost.models.permission.ReadMemberPermission-instance",
     ca = member_permission_translation_factory("ca",
+        u"llegir %s",
         lambda instance, subject, **kwargs:
             plural2(
                 len(instance.matching_members),
-                u"llegir el membre %s",
-                u"llegir els membres %s"
+                u"el membre %s",
+                u"els membres %s"
             ) % subject,
-        u"llegir qualsevol membre"
+        lambda count, content_type, **kwargs:
+            plural2(count, u"1 membre ", u"%d membres " % count)
+            + ca_possessive(translations(content_type.name)),
+        u"qualsevol membre"
     ),
     es = member_permission_translation_factory("es",
+        u"leer %s",
         lambda instance, subject, **kwargs:
             plural2(
                 len(instance.matching_members),
-                u"leer el miembro %s",
-                u"leer los miembros %s"
+                u"el miembro %s",
+                u"los miembros %s"
             ) % subject,
-        u"leer cualquier miembro"
+        lambda count, content_type, **kwargs:
+            plural2(count, u"1 miembro", u"%d miembros" % count)
+            + u" de " + (translations(content_type.name)),
+        u"cualquier miembro"
     ),
     en = member_permission_translation_factory("en",
+        u"read %s",
         lambda instance, subject, **kwargs:
             plural2(
                 len(instance.matching_members),
-                u"read the %s member",
-                u"read the %s members"
+                u"the %s member",
+                u"the %s members"
             ) % subject,
-        u"read any member"
+        lambda count, content_type, **kwargs:
+            plural2(count, u"1 member", u"%d members" % count)
+            + u" of " + (translations(content_type.name)),
+        u"any member"
     )
 )
 
 translations.define(
     "woost.models.permission.ModifyMemberPermission-instance",
     ca = member_permission_translation_factory("ca",
+        u"modificar %s",
         lambda instance, subject, **kwargs:
             plural2(
                 len(instance.matching_members),
-                u"modificar el membre %s", 
-                u"modificar els membres %s"
+                u"el membre %s", 
+                u"els membres %s"
             ) % subject,
-        u"modificar qualsevol membre"
+        lambda count, content_type, **kwargs:
+            plural2(count, u"1 membre ", u"%d membres " % count)
+            + ca_possessive(translations(content_type.name)),
+        u"qualsevol membre"
     ),
     es = member_permission_translation_factory("es",
+        u"modificar %s",
         lambda instance, subject, **kwargs:
             plural2(
                 len(instance.matching_members),
-                u"modificar el miembro %s", 
-                u"modificar los miembros %s"
+                u"el miembro %s", 
+                u"los miembros %s"
             ) % subject,
-        u"modificar cualquier miembro"
+        lambda count, content_type, **kwargs:
+            plural2(count, u"1 miembro", u"%d miembros" % count)
+            + u" de " + (translations(content_type.name)),
+        u"cualquier miembro"
     ),
     en = member_permission_translation_factory("en",
+        u"modify %s",
         lambda instance, subject, **kwargs:
             plural2(
                 len(instance.matching_members),
-                u"modify the %s member", 
-                u"modify the %s members"
+                u"the %s member", 
+                u"the %s members"
             ) % subject,
-        u"modify any member"
+        lambda count, content_type, **kwargs:
+            plural2(count, u"1 member", u"%d members" % count)
+            + u" of " + (translations(content_type.name)),
+        u"any member"
     )
 )
 
