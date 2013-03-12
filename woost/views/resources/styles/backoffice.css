@@ -877,8 +877,13 @@ body.scripted .BackOfficeLayout .Table .selection {
 
 .BackOfficeLayout .Table tr.group td {
     color: rgb(70,70,70);
-    background-color: rgb(230,230,230);
     text-align: right;
+    background-image: -webkit-linear-gradient(#eee,#d5d5d5);
+    background-image: -moz-linear-gradient(#eee,#d5d5d5);
+    background-image: linear-gradient(#eee,#d5d5d5);
+    background-color: #eee;
+    border-top: 1px solid #bbb;
+    border-bottom: 1px solid #bbb;
 }
 
 .BackOfficeLayout .Table tr.group .grouping_value {
