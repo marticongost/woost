@@ -69,10 +69,13 @@ cocktail.bind("[data-woost-item]", function ($item) {
 });
 
 // Dropping
-cocktail.bind("[data-woost-drop],[data-woost-dropbefore]", function ($receiver) {
+cocktail.bind("[data-woost-drop],[data-woost-relativedrop]", function ($receiver) {
 
     // Dropping on objects 
-    INSERT_BEFORE_THRESHOLD = 1 / 2;
+    RELATIVE_INSERT_THRESHOLD = 0.3;
+    INSERT_BEFORE = -1;
+    APPEND_INSIDE = 0;
+    INSERT_AFTER = 1;
 
     var dropInfo = $receiver.attr("data-woost-drop");
     if (dropInfo) {
@@ -81,12 +84,12 @@ cocktail.bind("[data-woost-drop],[data-woost-dropbefore]", function ($receiver) 
         var dropTargetMember = parts[1];
     }
     
-    var dropBeforeInfo = $receiver.attr("data-woost-dropbefore");
-    if (dropBeforeInfo) {
-        var parts = dropBeforeInfo.split(".");
-        var dropBeforeTargetObject = parts[0];
-        var dropBeforeTargetMember = parts[1];
-        var dropBeforeSibling = parts[2];
+    var relativeDropInfo = $receiver.attr("data-woost-relativedrop");
+    if (relativeDropInfo) {
+        var parts = relativeDropInfo.split(".");
+        var relativeDropTargetObject = parts[0];
+        var relativeDropTargetMember = parts[1];
+        var relativeDropSibling = parts[2];
     }
 
     function getPageTop(node) {
@@ -98,23 +101,41 @@ cocktail.bind("[data-woost-drop],[data-woost-dropbefore]", function ($receiver) 
         return y;
     }
     
-    function shouldInsertBefore(element, e) {
-        if (!dropBeforeInfo) {
-            return false;
+    function getInsertionMode(element, e) {
+        if (relativeDropInfo) {            
+            var mousePos = 0;
+            if (e.pageY) {
+                mousePos = e.pageY;
+            }
+            else if (e.clientY) {
+                mousePos = e.clientY + document.body.scrollTop + document.documentElement.scrollTop;
+            }
+            var elementTop = getPageTop(element);
+
+            if (dropInfo) {
+                if (mousePos < elementTop + element.offsetHeight * RELATIVE_INSERT_THRESHOLD) {
+                    return INSERT_BEFORE;
+                }
+                else if (mousePos > elementTop + element.offsetHeight * (1 - RELATIVE_INSERT_THRESHOLD)) {
+                    return INSERT_AFTER;
+                }
+            }
+            else {
+                if (mousePos < elementTop + element.offsetHeight / 2) {
+                    return INSERT_BEFORE;
+                }
+                else {
+                    return INSERT_AFTER;
+                }
+            }
         }
-        var mousePos = 0;
-        if (e.pageY) {
-            mousePos = e.pageY;
-        }
-        else if (e.clientY) {
-            mousePos = e.clientY + document.body.scrollTop + document.documentElement.scrollTop;
-        }
-        return (mousePos < getPageTop(element) + element.offsetHeight * INSERT_BEFORE_THRESHOLD);
+        return APPEND_INSIDE;
     }
 
     function clearHighlights() {
         jQuery(".dropReceiver").removeClass("dropReceiver");
         jQuery(".dropBeforeReceiver").removeClass("dropBeforeReceiver");
+        jQuery(".dropAfterReceiver").removeClass("dropAfterReceiver");
         jQuery(".dragInsertionMarker").remove();
     }
 
@@ -124,27 +145,35 @@ cocktail.bind("[data-woost-drop],[data-woost-dropbefore]", function ($receiver) 
         if (types.contains ? types.contains(mimeType) : types.indexOf(mimeType) != -1) {
             clearHighlights();
 
-            if (dropBeforeInfo) {
+            if (relativeDropInfo) {
                 var $marker = jQuery("<div class='dragInsertionMarker'>")
                     .appendTo($receiver);
             }
 
-            if (shouldInsertBefore(this, e)) {
+            var mode = getInsertionMode(this, e);
+
+            if (mode == INSERT_BEFORE) {
                 $receiver.addClass("dropBeforeReceiver");
                 $marker
                     .html(cocktail.translate("woost.views.BackOfficeLayout.drop_before"))
                     .css("top", -$marker.height() / 2 + "px");
             }
+            else if (mode == INSERT_AFTER) {
+                $receiver.addClass("dropAfterReceiver");
+                $marker
+                    .html(cocktail.translate("woost.views.BackOfficeLayout.drop_after"))
+                    .css("top", $receiver.height() -$marker.height() / 2 + "px");
+            }
             else {
                 $receiver.addClass("dropReceiver");
-                if (dropBeforeInfo) {
+                if (relativeDropInfo) {
                     $marker
                         .html(cocktail.translate("woost.views.BackOfficeLayout.drop"))
                         .css("top", $receiver.height() / 2 - $marker.height() / 2 + "px");
                 }
             }
-            
-            if (dropBeforeInfo) {
+
+            if (relativeDropInfo) {
                 $marker.css("left", $receiver.width() + 3 + "px")
             }
 
@@ -158,23 +187,32 @@ cocktail.bind("[data-woost-drop],[data-woost-dropbefore]", function ($receiver) 
         var data = e.dataTransfer.getData("application/x-woost-item");
         
         if (data) {
-            var parameters = { dragged_object: data };
+            e.stopPropagation();
 
-            if (shouldInsertBefore(this, e)) {
-                parameters.target_object = dropBeforeTargetObject;
-                parameters.target_member = dropBeforeTargetMember;
-                parameters.sibling = dropBeforeSibling;
-            }
-            else {
+            var parameters = { dragged_object: data };
+            var mode = getInsertionMode(this, e);
+
+            if (mode == APPEND_INSIDE) {
                 parameters.target_object = dropTargetObject;
                 parameters.target_member = dropTargetMember;
+            }
+            else {
+                parameters.target_object = relativeDropTargetObject;
+                parameters.target_member = relativeDropTargetMember;
+                parameters.sibling = relativeDropSibling;
+            
+                if (mode == INSERT_BEFORE) {
+                    parameters.relative_placement = "before";
+                }
+                else if (mode == INSERT_AFTER) {
+                    parameters.relative_placement = "after";
+                }
             }
 
             jQuery.getJSON("/cms/drop", parameters, function () {
                 location.reload();
             });
             
-            e.stopPropagation();
             return false;
         }
         clearHighlights();
@@ -184,5 +222,17 @@ cocktail.bind("[data-woost-drop],[data-woost-dropbefore]", function ($receiver) 
     this.addEventListener("dragover", handleDrag, false);
     this.addEventListener("dragleave", clearHighlights, false);
     this.addEventListener("drop", handleDrop, false);
+});
+
+cocktail.bind(".ContentList", function ($list) {
+
+    function stopPropagation(e) {
+        e.stopPropagation();
+        return false;
+    }
+
+    $list.get(0).addEventListener("dragenter", stopPropagation, false);
+    $list.get(0).addEventListener("dragover", stopPropagation, false);
+    $list.get(0).addEventListener("dragleave", stopPropagation, false);
 });
 

@@ -3272,6 +3272,12 @@ div.success_label {
     border-top: 1px dashed #ccdade;
 }
 
+.BackOfficeLayout .dropAfterReceiver {
+    position: relative;
+    margin-bottom: -1px;
+    border-bottom: 1px dashed #ccdade;
+}
+
 .BackOfficeLayout .dragInsertionMarker {
     position: absolute;
     background-repeat: no-repeat;

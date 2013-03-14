@@ -156,7 +156,7 @@ ACCESSIBLE_DESCENDANTS = 2
             )
 
             if self.__parent:
-                element_display["data-woost-dropbefore"] = "%d.%s.%d" % (
+                element_display["data-woost-relativedrop"] = "%d.%s.%d" % (
                     self.__parent.id,
                     self.__children_collection_name,
                     item.id
