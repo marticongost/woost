@@ -8,6 +8,7 @@ u"""
 """
 from cocktail.translations import translations
 from cocktail.translations.helpers import ca_possessive, plural2
+from cocktail import schema
 from collections import OrderedDict
 
 translations.define("logged in as",
@@ -553,6 +554,52 @@ translations.define(
     ca = u"No es pot inserir un element dins de sí mateix.",
     es = u"No se puede insertar un elemento dentro de si mismo.",
     en = u"Can't insert an element into itself."
+)
+
+translations.define(
+    "woost.controllers.backoffice.DragAndDropController.drop_notification",
+    ca = lambda dragged_object, target_object, target_member:
+        (
+            u"S'ha establert %s com a %s %s" 
+            if isinstance(target_member, schema.Reference)
+            else u"S'ha afegit %s a %s %s"
+        ) % (
+            translations(dragged_object),
+            translations(target_member),
+            ca_possessive(translations(target_object))
+        ),
+    es = lambda dragged_object, target_object, target_member:
+        (
+            u"Se ha establecido %s como %s de %s"
+            if isinstance(target_member, schema.Reference)
+            else u"Se ha añadido %s a %s de %s"
+        ) % (
+            translations(dragged_object),
+            translations(target_member),
+            translations(target_object)
+        ),
+    en = lambda dragged_object, target_object, target_member:
+        (
+            u"%s set as %s of %s"
+            if isinstance(target_member, schema.Reference)
+            else u"%s added to the %s of %s"
+        ) % (
+            translations(dragged_object),
+            translations(target_member),
+            translations(target_object)
+        )
+)
+
+translations.define("woost.views.BackOfficeLayout.drop",
+    ca = u"Inserir a dins",
+    es = u"Insertar dentro",
+    en = u"Insert inside"
+)
+
+translations.define("woost.views.BackOfficeLayout.drop_before",
+    ca = u"Inserir davant",
+    es = u"Insertar en frente",
+    en = u"Insert before"
 )
 
 def _selection_error_ca(instance):    

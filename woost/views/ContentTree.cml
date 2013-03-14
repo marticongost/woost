@@ -4,7 +4,7 @@
 from itertools import chain
 import cherrypy
 from cocktail.iteration import is_empty
-from cocktail.schema import SchemaObjectAccessor
+from cocktail.schema import Member, SchemaObjectAccessor
 from cocktail.controllers import view_state
 from cocktail.html.datadisplay import MULTIPLE_SELECTION
 
@@ -56,8 +56,14 @@ ACCESSIBLE_DESCENDANTS = 2
 
     def _fill_body(self):
         
+        self.__parent = None
         self.__depth = 0
         self.__index = 0
+        self.__children_collection_name = (
+            self.children_collection.name
+            if isinstance(self.children_collection, Member)
+            else self.children_collection
+        )
 
         for item in self.data:
             self._fill_branch(item)
@@ -79,9 +85,12 @@ ACCESSIBLE_DESCENDANTS = 2
             self.__index += 1
 
             if self.is_expanded(item):
+                previous_parent = self.__parent
+                self.__parent = item
                 self.__depth += 1
                 for item in self.get_children(item):
                     self._fill_branch(item)
+                self.__parent = previous_parent
                 self.__depth -= 1
 
     def is_expanded(self, item):
@@ -137,7 +146,24 @@ ACCESSIBLE_DESCENDANTS = 2
                 href="?${view_state(expanded = expanded_param)}">
                 <img src="${self.cms.application_uri('resources', 'images', state + '.png')}"/>
             </a>
-            <py:new py:element="ContentTable.create_element_display(self, item, member)"/>
+            <?py
+            element_display = ContentTable.create_element_display(self, item, member)
+
+            # Drag & drop information
+            element_display["data-woost-drop"] = "%d.%s" % (
+                item.id,
+                self.__children_collection_name
+            )
+
+            if self.__parent:
+                element_display["data-woost-dropbefore"] = "%d.%s.%d" % (
+                    self.__parent.id,
+                    self.__children_collection_name,
+                    item.id
+                )
+            
+            element.append(element_display)
+            ?>
         </py:with>
 
     </div>
