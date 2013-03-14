@@ -76,6 +76,9 @@ from woost.controllers.backoffice.useractions import add_view_action_context
         add_view_action_context(element, "nested" if self.edit_stack else "root")
         if self.cms:
             self.set_client_variable("cms_uri", self.cms.contextual_uri())
+
+        self.add_client_translation("woost.views.BackOfficeLayout.drop")
+        self.add_client_translation("woost.views.BackOfficeLayout.drop_before")
         ?>
     </py:ready>
 
