@@ -42,7 +42,7 @@ class ContentList(List):
         link.member = self.member
 
         if self.referer and self.member:
-            link["data-woost-dropbefore"] = "%d.%s.%d" % (
+            link["data-woost-relativedrop"] = "%d.%s.%d" % (
                 self.referer.id,
                 self.member.name,
                 item.id

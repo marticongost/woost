@@ -79,6 +79,7 @@ from woost.controllers.backoffice.useractions import add_view_action_context
 
         self.add_client_translation("woost.views.BackOfficeLayout.drop")
         self.add_client_translation("woost.views.BackOfficeLayout.drop_before")
+        self.add_client_translation("woost.views.BackOfficeLayout.drop_after")
         ?>
     </py:ready>
 

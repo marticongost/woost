@@ -602,6 +602,12 @@ translations.define("woost.views.BackOfficeLayout.drop_before",
     en = u"Insert before"
 )
 
+translations.define("woost.views.BackOfficeLayout.drop_after",
+    ca = u"Inserir darrere",
+    es = u"Insertar detrás",
+    en = u"Insert after"
+)
+
 def _selection_error_ca(instance):    
     if instance.action.min and instance.selection_size < instance.action.min:
         bound = instance.action.min

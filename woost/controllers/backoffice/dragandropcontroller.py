@@ -80,11 +80,18 @@ class DragAndDropController(BaseBackOfficeController):
             )
 
     @request_property
+    def relative_placement(self):
+        return get_parameter(
+            schema.String("relative_placement", enumeration = ["after", "before"])
+        )
+
+    @request_property
     def valid(self):
         return (
             self.dragged_object
             and self.target_object
             and self.target_member
+            and (not self.sibling or self.relative_placement)
         )
 
     def submit(self):
@@ -108,25 +115,35 @@ class DragAndDropController(BaseBackOfficeController):
                     target_object.set(target_member, dragged_object)
                 else:
                     collection = target_object.get(target_member)
-                   
-                    if isinstance(
-                        collection,
-                        (OrderedSet, InstrumentedOrderedSet)
-                    ):
-                        kwargs = {"relocate": True}
-                    else:
-                        kwargs = {}
                     
                     sibling = self.sibling
+                    relative_placement = self.relative_placement
 
                     if sibling:
-                        current_index = collection.index(dragged_object)
+                        try:
+                            current_index = collection.index(dragged_object)
+                        except ValueError:
+                            current_index = None
                         index = collection.index(sibling)
-                        if current_index < index:
-                            index -= 1
+
+                        if relative_placement == "before":
+                            if current_index is not None and current_index < index:
+                                index -= 1
+                        elif relative_placement == "after":
+                            if current_index is None or current_index >= index:
+                                index += 1
+
+                        if isinstance(
+                            collection,
+                            (OrderedSet, InstrumentedOrderedSet)
+                        ):
+                            kwargs = {"relocate": True}
+                        else:
+                            kwargs = {}
+
                         collection.insert(index, dragged_object, **kwargs)
                     else:
-                        collection.append(dragged_object, **kwargs)
+                        collection.append(dragged_object)
         relate()
 
         notify_user(
