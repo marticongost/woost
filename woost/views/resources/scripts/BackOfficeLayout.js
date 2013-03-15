@@ -241,9 +241,9 @@ function keepalive(edit_stack) {
             return false;
         }
 
-        $list.get(0).addEventListener("dragenter", stopPropagation, false);
-        $list.get(0).addEventListener("dragover", stopPropagation, false);
-        $list.get(0).addEventListener("dragleave", stopPropagation, false);
+        this.addEventListener("dragenter", stopPropagation, false);
+        this.addEventListener("dragover", stopPropagation, false);
+        this.addEventListener("dragleave", stopPropagation, false);
     });
 
 })();
