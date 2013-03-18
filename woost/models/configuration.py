@@ -39,6 +39,7 @@ class Configuration(Item):
         "publication.maintenance",
         "language",
         "rendering",
+        "services",
         "system",
         "system.smtp",
         "admin"

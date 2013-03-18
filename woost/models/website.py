@@ -23,7 +23,8 @@ class Website(Item):
         "publication.pages",
         "publication.maintenance",
         "publication.https",
-        "language"
+        "language",
+        "services"
     ]
 
     members_order = [
