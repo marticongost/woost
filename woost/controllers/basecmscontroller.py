@@ -11,7 +11,7 @@ import cherrypy
 from cocktail.modeling import getter
 from cocktail.events import event_handler
 from cocktail.controllers import Controller
-from woost.models import Site
+from woost.models import Configuration
 
 
 class BaseCMSController(Controller):
@@ -81,7 +81,7 @@ class BaseCMSController(Controller):
         @rtype: unicode
         """
         publishable = self.context["publishable"]
-        uri = Site.main.get_path(publishable)
+        uri = Configuration.instance.get_path(publishable)
 
         if uri is None:
             return None

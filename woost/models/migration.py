@@ -71,7 +71,7 @@ def update_keys(e):
 
     if ShopExtension.enabled:
         from cocktail.translations import translations
-        from woost.models import Publishable, Controller, Language
+        from woost.models import Publishable
         from woost.extensions.shop import create_product_controller
         from woost.extensions.shop.product import Product
 
@@ -209,4 +209,158 @@ def replace_cache_expiration_with_expiration_expression(policy):
     if expiration is not None:
         policy.expiration_expression = "expiration = %s" % expiration
         del policy._cache_expiration
+
+#------------------------------------------------------------------------------
+
+step = MigrationStep("Add multisite support")
+
+@when(step.executing)
+def add_multisite_support(e):
+    from cocktail.persistence import datastore
+    from woost.models import Configuration, Website, Item
+    root = datastore.root
+
+    # Remove all back-references from the Site and Language models
+    for item in Item.select():
+        for key in dir(item):
+            if (
+                key == "_site"
+                or key.startswith("_Site_")
+                or key.startswith("_Language_")
+            ):
+                delattr(item, key)
+
+    # Remove the instance of Site from the database
+    site_id = list(Item.qname.index.values(key = "woost.main_site"))[0]
+    site = Item.index[site_id]
+    site_state = site.__Broken_state__.copy()
+    site_state["translations"] = dict(
+        (lang, translation.__Broken_state__.copy())
+        for lang, translation in site_state.pop("_translations").iteritems()
+    )
+    Item.index.remove(site_id)
+    Item.keys.remove(site_id)
+
+    # Create the configuration object
+    config = Configuration()
+    config.qname = "woost.configuration"
+    config.insert()
+
+    # Create a website
+    website = Website()
+    website.insert()
+    website.hosts = ["localhost"]
+    config.websites.append(website)
+
+    # Languages
+    published_languages = []
+
+    for lang_id in root["woost.models.language.Language-keys"]:
+        language = Item.index[lang_id]
+        Item.index.remove(lang_id)
+        Item.keys.remove(lang_id)
+        language_state = language.__Broken_state__
+        config.languages.append(language_state["_iso_code"])
+        if language_state["_enabled"]:
+            published_languages.append(language_state["_iso_code"])
+
+    if list(config.languages) != published_languages:
+        config.published_languages = published_languages
+
+    # Delete old indexes from the database
+    for key in list(root):
+        if (
+            key.startswith("woost.models.site.Site")
+            or key.startswith("woost.models.language.Language")
+        ):
+            del root[key]
+
+    # Settings that now belong in Configuration, as attributes
+    config.secret_key = site_state.pop("secret_key")
+
+    # Settings that now belong in Configuration, as regular fields
+    for key in (        
+        "login_page",
+        "generic_error_page",
+        "not_found_error_page",
+        "forbidden_error_page",
+        "default_language",
+        "backoffice_language",
+        "heed_client_language",
+        "timezone",
+        "smtp_host",
+        "smtp_user",
+        "smtp_password"
+    ):
+        config.set(key, site_state.pop("_" + key))
+
+    # Settings that now belong in Configuration, as collections
+    for key in (
+        "publication_schemes",
+        "caching_policies",
+        "renderers",
+        "image_factories",
+        "triggers"
+    ):
+        config.set(key, list(site_state.pop("_" + key)))
+
+    # Settings that now belong in Website, becoming translated fields
+    for key in (
+        "town",
+        "region",
+        "country"
+    ):
+        value = site_state.pop("_" + key)
+        for lang in config.languages:
+            website.set(key, value, lang)
+
+    # Settings that now belong in website, as translated fields
+    for key in (
+        "site_name",
+        "keywords",
+        "description"
+    ):
+        for lang, translation_state in site_state["translations"].iteritems():
+            value = translation_state.pop("_" + key)
+            website.set(key, value, lang)
+
+    # Settings that now belong in website, as regular fields
+    for key in (
+        "logo",
+        "icon",
+        "home",
+        "organization_url",
+        "address",
+        "postal_code",
+        "phone_number",
+        "fax_number",
+        "email",
+        "https_policy",
+        "https_persistence"
+    ):
+        website.set(key, site_state.pop("_" + key))
+
+    # Extension specific changes
+    from woost.extensions.blocks import BlocksExtension
+    if BlocksExtension.instance.enabled:
+        config.common_blocks = list(site_state.pop("_common_blocks"))
+
+    from woost.extensions.audio import AudioExtension
+    if AudioExtension.instance.enabled:
+        config.audio_encoders = list(site_state.pop("_audio_encoders"))
+        config.audio_decoders = list(site_state.pop("_audio_decoders"))
+
+    from woost.extensions.mailer import MailerExtension
+    if MailerExtension.instance.enabled:
+        from woost.extensions.mailer.mailing import Mailing
+        for mailing in Mailing.select():
+            language = mailing._language
+            if language:
+                mailing._language = language.__Broken_state__["_iso_code"]
+
+    # Rebuild all indexes
+    Item.rebuild_indexes()
+
+    # Preserve the remaining state
+    datastore.root["woost.models.migration.multisite_leftovers"] = site_state
 

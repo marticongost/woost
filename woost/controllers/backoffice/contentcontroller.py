@@ -52,8 +52,7 @@ from cocktail.controllers import (
 )
 from cocktail.controllers.userfilter import GlobalSearchFilter
 from woost.models import (
-    Site,
-    Language,
+    Configuration,
     Item,
     UserView,
     changeset_context,
@@ -214,7 +213,7 @@ class ContentController(BaseBackOfficeController):
         user = get_current_user()
         return [
             language
-            for language in Language.codes
+            for language in Configuration.instance.languages
             if user.has_permission(
                 ReadTranslationPermission,
                 language = language

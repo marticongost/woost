@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <?py
 from cocktail.html.utils import html5_tag, rendering_html5
-from woost.models import Site
+from woost.models import Configuration, get_current_website
 ?>
 
 <py:woost.views.BaseView
@@ -14,7 +14,7 @@ from woost.models import Site
     attachments_icon_factory = "icon16"
 
     def get_title(self):
-        return Site.main.home.title
+        return self._home.title
         
     def get_linked_attachments(self):
         return (attachment
@@ -22,11 +22,18 @@ from woost.models import Site
                 if attachment.is_published())
 
     def get_logo(self):
-        return Site.main.logo
+        return self._website.logo
 
     def rendering_home_page(self):
-        return self.publishable is Site.main.home
+        return self.publishable is self._home
     ?>
+
+    <py:ready>
+        <?py
+        self._website = get_current_website()
+        self._home = self._website.home
+        ?>
+    </py:ready>
 
     <div py:id="header">
         <?py html5_tag(element, "header") ?>
@@ -43,7 +50,7 @@ from woost.models import Site
                     element.visible = False
                 ?>
             </py:ready>
-            <a href="@{self.cms.uri(Site.main.home)}" style="position: relative">
+            <a href="@{self._home.get_uri()}" style="position: relative">
                 <py:woost.views.Image
                     py:id="logo"
                     py:image="@{self._logo}"
@@ -165,9 +172,9 @@ from woost.models import Site
             <a
                 py:id="organization_label"
                 class="fn org url"
-                href="@{Site.main.organization_url or Site.main.home.get_uri()}"
-                py:visible="@{Site.main.organization_name}">
-                @{Site.main.organization_name}
+                href="@{self._website.organization_url or self._home.get_uri()}"
+                py:visible="@{self._website.organization_name}">
+                @{self._website.organization_name}
             </a>
             <div 
                 py:id="vcard_address" 
@@ -176,61 +183,63 @@ from woost.models import Site
                 <span
                     py:id="address_label"
                     class="street-address"
-                    py:visible="@{Site.main.address}">
-                    @{Site.main.address}
+                    py:visible="@{self._website.address}">
+                    @{self._website.address}
                 </span>
-                <span class="sep" py:visible="@{Site.main.address}">-</span>
+                <span class="sep" py:visible="@{self._website.address}">-</span>
                 <span
                     py:id="postal_code_label"
                     class="postal-code"
-                    py:visible="@{Site.main.postal_code}">
-                    @{Site.main.postal_code}
+                    py:visible="@{self._website.postal_code}">
+                    @{self._website.postal_code}
                 </span>
                 <span
                     py:id="town_label"
                     class="locality"
-                    py:visible="@{Site.main.town}">
-                    @{Site.main.town}
+                    py:visible="@{self._website.town}">
+                    @{self._website.town}
                 </span>
                 <span
                     py:id="region_label"
                     class="region"
-                    py:visible="@{Site.main.address}">
-                    @{Site.main.region}
-                    <?py
-                    if Site.main.town == Site.main.region:
-                        element.set_style("display", "none")
-                    ?>
-                </span>                
+                    py:visible="@{self._website.region}">
+                    @{self._website.region}
+                    <py:ready>
+                        <?py
+                        if self._website.town == self._website.region:
+                            element.set_style("display", "none")
+                        ?>
+                    </py:ready>
+                </span>
                 <span
                     py:id="country_label"
                     class="country-name"
-                    py:visible="@{Site.main.country}">
-                    @{Site.main.country}
+                    py:visible="@{self._website.country}">
+                    @{self._website.country}
                 </span>
             </div>            
             <span
                 py:id="phone_label"
                 class="tel"
-                py:visible="@{Site.main.phone_number}">
+                py:visible="@{self._website.phone_number}">
                 <span>${translations("woost.views.StandardView.phone_number")}</span>
-                <span class="value">@{Site.main.phone_number}</span>
+                <span class="value">@{self._website.phone_number}</span>
             </span>
-            <span class="sep" py:visible="@{Site.main.phone_number and Site.main.fax_number}">-</span>
+            <span class="sep" py:visible="@{self._website.phone_number and self._website.fax_number}">-</span>
             <span 
                 py:id="fax_label"
                 class="tel"
-                py:visible="@{Site.main.fax_number}">
+                py:visible="@{self._website.fax_number}">
                 <span class="type">Fax</span>
-                <span class="value">@{Site.main.fax_number}</span>
+                <span class="value">@{self._website.fax_number}</span>
             </span>
             <br/>
             <a
                 py:id="email_label"
                 class="email"
-                href="mailto:@{Site.main.email or ''}"
-                py:visible="@{Site.main.email}">
-                @{Site.main.email}
+                href="mailto:@{self._website.email or ''}"
+                py:visible="@{self._website.email}">
+                @{self._website.email}
             </a>
         </div>
     </div>

@@ -19,6 +19,7 @@ from cocktail.persistence import (
     MaxValue
 )
 from cocktail.controllers import make_uri, percent_encode_uri, Location
+from woost.models.websitesession import get_current_website
 from woost.models.changesets import ChangeSet, Change
 from woost.models.action import Action
 from woost.models.usersession import get_current_user
@@ -392,7 +393,13 @@ class Item(PersistentObject):
         item = event.source
         now = None
 
-        if item.is_inserted:
+        update_timestamp = (
+            item.is_inserted
+            and event.member.affects_last_update_time
+            and not getattr(item, "_v_is_producing_default", False)
+        )
+
+        if update_timestamp:
             now = datetime.now()
             item.set_last_instance_change(now)
 
@@ -402,7 +409,7 @@ class Item(PersistentObject):
         or item.is_draft \
         or not item.__class__.versioned:
             return
-        
+
         changeset = ChangeSet.current
 
         if changeset:
@@ -420,8 +427,8 @@ class Item(PersistentObject):
                 change.item_state = item._get_revision_state()
                 change.changeset = changeset
                 changeset.changes[item.id] = change
-                if event.member.affects_last_update_time:
-                    item.last_update_time = now or datetime.now()
+                if update_timestamp:
+                    item.last_update_time = now
                 change.insert()
             else:
                 action_type = change.action.identifier
@@ -442,8 +449,8 @@ class Item(PersistentObject):
                     change.item_state[member_name][language] = value
                 else:
                     change.item_state[member_name] = value
-        elif event.member.affects_last_update_time:
-            item.last_update_time = datetime.now()
+        elif update_timestamp:
+            item.last_update_time = now
 
     @event_handler
     def handle_deleting(cls, event):
@@ -577,12 +584,10 @@ class Item(PersistentObject):
         if host:
             if host == ".":
                 location = Location.get_current_host()
+                website = get_current_website()
+                policy = website and website.https_policy
 
-                from woost.models import Site
-                site = Site.main
-                policy = site.https_policy
-
-                if (
+                if (                    
                     policy == "always"
                     or (
                         policy == "per_page" and (

@@ -14,7 +14,7 @@ from cocktail.events import event_handler
 from cocktail.modeling import cached_getter
 from cocktail.translations import set_language
 from cocktail.controllers.location import Location
-from woost.models import Site, User, get_current_user
+from woost.models import Configuration, User, get_current_user
 from woost.models.permission import ReadPermission
 from woost.controllers.backoffice.editcontroller import EditController
 from woost.extensions.mailer.mailing import Mailing, MAILING_STARTED, MAILING_FINISHED, tasks
@@ -33,17 +33,8 @@ class SendEmailController(EditController):
         user.require_permission(SendEmailPermission)
 
     @cached_getter
-    def smtp_server(self):
-        site = Site.main
-        smtp = smtplib.SMTP(site.smtp_host, smtplib.SMTP_PORT)
-
-        if site.smtp_user and site.smtp_password:
-            smtp.login(
-                str(site.smtp_user),
-                str(site.smtp_password)
-            )
-
-        return smtp
+    def smtp_server(self):        
+        return Configuration.instance.connect_to_smtp()
 
     @cached_getter
     def submitted(self):

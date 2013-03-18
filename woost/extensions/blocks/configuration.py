@@ -4,10 +4,10 @@ u"""
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
 from cocktail import schema
-from woost.models import Site
+from woost.models import Configuration
 from woost.extensions.blocks.block import Block
 from woost.extensions.blocks.slot import Slot
 
 
-Site.add_member(Slot("common_blocks"))
+Configuration.add_member(Slot("common_blocks"))
 
