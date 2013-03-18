@@ -2,7 +2,7 @@
 <?py
 from cocktail.translations import require_language
 from cocktail.html import Content
-from woost.models import Site, Publishable, Language
+from woost.models import Configuration, Publishable, get_current_website
 ?>
 
 <py:block
@@ -21,7 +21,7 @@ from woost.models import Site, Publishable, Language
     
     def get_keywords(self):
         keywords = []
-        site_keywords = Site.main.keywords
+        site_keywords = Configuration.instance.get_setting("keywords")
         if site_keywords:
             keywords.append(site_keywords)
         item_keywords = getattr(self.publishable, "keywords", None)
@@ -31,43 +31,6 @@ from woost.models import Site, Publishable, Language
 
     def get_content_title(self):
         return getattr(self.publishable, "inner_title", None) or translations(self.publishable)
-
-    def get_content_language(self, item, language = None):
-        return item.get_common_language(self.translation_members, language)
-    
-    def is_fully_translated(self, item, language = None):
-        language = require_language(language)
-        return self.get_content_language(item, language) == language
-
-    def member_slot(self, key, use_fallback_language = True):
-        
-        slot = Element()
-        slot.add_class(key + "_slot")
-        setattr(self, key + "_slot", slot)
-
-        def _fill_slot():
-
-            item = self.publishable
-            member = item.__class__[key]
-
-            # Set the 'lang' HTML attribute
-            if member.translated \
-            and not self.fully_translated \
-            and use_fallback_language:
-                slot["lang"] = self.content_language
-            
-            value = item.get(
-                member,
-                self.content_language
-                    if member.translated and use_fallback_language
-                    else None
-            )
-
-            if value is not None:
-                slot.append(value)
-
-        slot.when_ready(_fill_slot)
-        return slot
     ?>
 
     <py:ready>
@@ -81,10 +44,10 @@ from woost.models import Site, Publishable, Language
                     document.body.append(self.body_end_html)
 
         publishable = self.publishable
+        config = Configuration.instance
 
         if publishable:
 
-            site = Site.main
             language = get_language()
 
             # Content type / charset
@@ -95,7 +58,8 @@ from woost.models import Site, Publishable, Language
             self.page_title = self.get_content_title()
 
             # Meta tags
-            description = getattr(publishable, "description", None) or site.description
+            description = getattr(publishable, "description", None) \
+                          or config.get_setting("description")
 
             if description:
                 self.set_meta("description", description)
@@ -113,23 +77,22 @@ from woost.models import Site, Publishable, Language
                 ))
 
             # Links
+            home = get_current_website().home
             self.add_head_element(
-                Element("link", rel = "start", title = site.home.title, href = "/")
+                Element("link", rel = "start", title = home.title, href = home.get_uri() or "/")
             )
 
             # Alternate languages
             if publishable.per_language_publication:
-                self.language = self.content_language = self.get_content_language(self.publishable)
-                self.fully_translated = (self.content_language == language)
-
                 for trans_lang in publishable.translations:
-                    if trans_lang in Language.codes \
-                    and trans_lang != language \
-                    and publishable.get("translation_enabled", trans_lang) \
-                    and self.is_fully_translated(publishable, trans_lang):
+                    if (
+                        trans_lang != language
+                        and config.language_is_enabled(trans_lang)
+                        and publishable.get("translation_enabled", trans_lang)
+                    ):
                         self.add_head_element(
                             Element("link",
-                                rel = "canonical" if not self.fully_translated and trans_lang == self.content_language else "alternate",
+                                rel = "alternate",
                                 title = translations("woost.views.BaseView alternate language link", language = trans_lang, lang = trans_lang),
                                 href = self.cms.translate_uri(language = trans_lang),
                                 lang = trans_lang,
@@ -138,7 +101,7 @@ from woost.models import Site, Publishable, Language
                         )
 
             # Shortcut icon
-            icon = site.icon
+            icon = config.get_setting("icon")
             if icon:                
                 self.add_head_element(
                     Element("link",
@@ -161,6 +124,11 @@ from woost.models import Site, Publishable, Language
             if self.base_url:
                 self.add_head_element(Element("base", href = self.base_url))
 
+            # Add a CSS class based on the website's identifier
+            website = get_current_website()
+            if website and website.qname:
+                self.add_class(website.qname.replace(".", "-"))
+
             # Add a CSS class based on the page's name
             if self.publishable.qname:
                 self.add_class(self.publishable.qname.replace(".", "-"))
@@ -170,7 +138,7 @@ from woost.models import Site, Publishable, Language
     <py:woost.views.EditPanel py:id="toolbar"/>
    
     <div py:id="content">
-        ${self.member_slot("body")}
+        @{self.publishable.body}
     </div>
 
 </py:block>

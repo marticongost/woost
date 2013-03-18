@@ -8,6 +8,8 @@ u"""
 """
 from cocktail.translations import translations
 from cocktail.translations.helpers import ca_possessive, plural2
+from cocktail import schema
+from collections import OrderedDict
 
 translations.define("logged in as",
     ca = lambda user: u"Estàs identificat com a " \
@@ -552,6 +554,58 @@ translations.define(
     ca = u"No es pot inserir un element dins de sí mateix.",
     es = u"No se puede insertar un elemento dentro de si mismo.",
     en = u"Can't insert an element into itself."
+)
+
+translations.define(
+    "woost.controllers.backoffice.DragAndDropController.drop_notification",
+    ca = lambda dragged_object, target_object, target_member:
+        (
+            u"S'ha establert %s com a %s %s" 
+            if isinstance(target_member, schema.Reference)
+            else u"S'ha afegit %s a %s %s"
+        ) % (
+            translations(dragged_object),
+            translations(target_member),
+            ca_possessive(translations(target_object))
+        ),
+    es = lambda dragged_object, target_object, target_member:
+        (
+            u"Se ha establecido %s como %s de %s"
+            if isinstance(target_member, schema.Reference)
+            else u"Se ha añadido %s a %s de %s"
+        ) % (
+            translations(dragged_object),
+            translations(target_member),
+            translations(target_object)
+        ),
+    en = lambda dragged_object, target_object, target_member:
+        (
+            u"%s set as %s of %s"
+            if isinstance(target_member, schema.Reference)
+            else u"%s added to the %s of %s"
+        ) % (
+            translations(dragged_object),
+            translations(target_member),
+            translations(target_object)
+        )
+)
+
+translations.define("woost.views.BackOfficeLayout.drop",
+    ca = u"Inserir a dins",
+    es = u"Insertar dentro",
+    en = u"Insert inside"
+)
+
+translations.define("woost.views.BackOfficeLayout.drop_before",
+    ca = u"Inserir davant",
+    es = u"Insertar en frente",
+    en = u"Insert before"
+)
+
+translations.define("woost.views.BackOfficeLayout.drop_after",
+    ca = u"Inserir darrere",
+    es = u"Insertar detrás",
+    en = u"Insert after"
 )
 
 def _selection_error_ca(instance):    
@@ -1640,207 +1694,489 @@ translations.define("Item.last_update_time",
     en = u"Last updated"
 )
 
-# Site
+# Configuration
 #------------------------------------------------------------------------------
-translations.define("Site",
-    ca = u"Lloc web",
-    es = u"Sitio web",
-    en = u"Site"
+translations.define("Configuration",
+    ca = u"Configuració",
+    es = u"Configuración",
+    en = u"Configuration"
 )
 
-translations.define("Site-plural",
-    ca = u"Llocs web",
-    es = u"Sitios web",
-    en = u"Sites"
+translations.define("Configuration-plural",
+    ca = u"Configuració",
+    es = u"Configuración",
+    en = u"Configuration"
 )
 
-translations.define("Site.language",
-    ca = u"Idioma",
-    es = u"Idioma",
-    en = u"Language"
-)
-
-translations.define("Site.meta",
-    ca = u"Metadades",
-    es = u"Metadatos",
-    en = u"Metadata"
-)
-
-translations.define("Site.meta.description",
-    ca = u"Descripció del lloc",
-    es = u"Descripción del sitio",
-    en = u"Site description"
-)
-
-translations.define("Site.meta.contact",
-    ca = u"Dades de contacte",
-    es = u"Datos de contacto",
-    en = u"Contact details"
-)
-
-translations.define("Site.behavior",
-    ca = u"Comportament",
-    es = u"Comportamiento",
-    en = u"Behavior"
-)
-
-translations.define("Site.behavior.pages",
-    ca = u"Pàgines",
-    es = u"Páginas",
-    en = u"Pages"
-)
-
-translations.define("Site.behavior.publication",
+translations.define("Configuration.publication",
     ca = u"Publicació",
     es = u"Publicación",
     en = u"Publication"
 )
 
-translations.define("Site.behavior.triggers",
-    ca = u"Disparadors",
-    es = u"Disparadores",
-    en = u"Triggers"
+translations.define("Configuration.publication.pages",
+    ca = u"Pàgines especials",
+    es = u"Páginas especiales",
+    en = u"Special pages"
 )
 
-translations.define("Site.rendering",
+translations.define("Configuration.publication.maintenance",
+    ca = u"Manteniment",
+    es = u"Mantenimiento",
+    en = u"Maintenance"
+)
+
+translations.define("Configuration.language",
+    ca = u"Idioma",
+    es = u"Idioma",
+    en = u"Language"
+)
+
+translations.define("Configuration.rendering",
     ca = u"Processat d'imatges",
     es = u"Procesado de imágenes",
     en = u"Image processing"
 )
 
-translations.define("Site.system",
+translations.define("Configuration.services",
+    ca = u"Serveis",
+    es = u"Servicios",
+    en = u"Services"
+)
+
+translations.define("Configuration.system",
     ca = u"Sistema",
     es = u"Sistema",
     en = u"System"
 )
 
-translations.define("Site.system.mail",
-    ca = u"Servidor de correu electrònic",
-    es = u"Servidor de correo electrónico",
-    en = u"E-mail server"
+translations.define("Configuration.system.smtp",
+    ca = u"Servidor SMTP",
+    es = u"Servidor SMTP",
+    en = u"SMTP server"
 )
 
-translations.define("Site.site_name",
-    ca = u"Nom del lloc web",
-    es = u"Nombre del sitio web",
-    en = u"Website name"
+translations.define("Configuration.websites",
+    ca = u"Pàgines web",
+    es = u"Páginas web",
+    en = u"Websites"
 )
 
-translations.define("Site.keywords",
-    ca = u"Paraules clau",
-    es = u"Palabras clave",
-    en = u"Keywords"
+translations.define("Configuration.publication_schemes",
+    ca = u"Esquemes de publicació",
+    es = u"Esquemas de publicación",
+    en = u"Publication schemes"
 )
 
-translations.define("Site.description",
-    ca = u"Descripció",
-    es = u"Descripción",
-    en = u"Description"
+translations.define("Configuration.caching_policies",
+    ca = u"Polítiques de cache",
+    es = u"Políticas de cache",
+    en = u"Caching policies"
 )
 
-translations.define("Site.icon",
-    ca = u"Icona",
-    es = u"Icono",
-    en = u"Icon"
+translations.define("Configuration.login_page",
+    ca = u"Pàgina d'autenticació",
+    es = u"Página de autenticación",
+    en = u"Authentication page"
 )
 
-translations.define("Site.logo",
+translations.define("Configuration.generic_error_page",
+    ca = u"Pàgina d'error genèric",
+    es = u"Página de error genérico",
+    en = u"Generic error page"
+)
+
+translations.define("Configuration.not_found_error_page",
+    ca = u"Pàgina no trobada",
+    es = u"Página no encontrada",
+    en = u"Not found error page"
+)
+
+translations.define("Configuration.forbidden_error_page",
+    ca = u"Pàgina d'error per accés restringit",
+    es = u"Página de error por acceso restringido",
+    en = u"Access forbidden page"
+)
+
+translations.define("Configuration.down_for_maintenance",
+    ca = u"Lloc aturat per manteniment",
+    es = u"Sitio parado por mantenimiento",
+    en = u"Site down for maintenance"
+)
+
+translations.define("Configuration.maintenance_page",
+    ca = u"Pàgina a mostrar durant el manteniment",
+    es = u"Página a mostrar durante el mantenimiento",
+    en = u"Service unavailable page"
+)
+
+translations.define("Configuration.maintenance_addresses",
+    ca = u"Adreces IP que ignoren el mode de manteniment",
+    es = u"Direcciones IP que ignoran el modo de mantenimiento",
+    en = u"IP addresses that ignore maintenance mode"
+)
+
+translations.define("Configuration.languages",
+    ca = u"Idiomes",
+    es = u"Idiomas",
+    en = u"Languages"
+)
+
+translations.define("Configuration.languages-explanation",
+    ca = u"Llistat d'idiomes als que es pot traduïr el contingut. Cada "
+         u"idioma s'indica mitjançant el seu codi ISO de dues lletres.",
+    es = u"Listado de idiomas a los que se puede traducir el contenido. Cada "
+         u"idioma se indica mediante su código ISO de dos letras.",
+    en = u"Languages that content can be translated to. Each language is "
+         u"specified using its two letter ISO code."
+)
+
+translations.define("Configuration.published_languages",
+    ca = u"Idiomes publicats",
+    es = u"Idiomas publicados",
+    en = u"Published languages"
+)
+
+translations.define("Configuration.published_languages-explanation",
+    ca = u"Limita els idiomes publicats al subconjunt indicat. Deixar en "
+         u"blanc per permetre la publicació en qualsevol dels idiomes "
+         u"disponibles.",
+    es = u"Limita los idiomas publicados al subconjunto indicado. Dejar en "
+         u"blanco para permitir la publicación en cualquiera de los idiomas "
+         u"disponibles.",
+    en = u"Limits publication to the indicated subset of languages. Leave "
+         u"blank to allow publishing in any of the available languages."
+)
+
+translations.define("Configuration.default_language",
+    ca = u"Idioma per defecte",
+    es = u"Idioma por defecto",
+    en = u"Default language"
+)
+
+translations.define("Configuration.heed_client_language",
+    ca = u"Respectar les preferències d'idioma del navegador",
+    es = u"Respetar las preferencias de idioma del navegador",
+    en = u"Heed the language preferences from the browser"
+)
+
+translations.define("Configuration.backoffice_language",
+    ca = u"Idioma per defecte de la interfície d'edició",
+    es = u"Idioma por defecto de la interfaz de edición",
+    en = u"Default language for the backoffice"
+)    
+
+translations.define("Configuration.renderers",
+    ca = u"Pintadors",
+    es = u"Pintadores",
+    en = u"Renderers"
+)
+
+translations.define("Configuration.renderers-explanation",
+    ca = u"Components encarregats de produïr una imatge representativa a "
+         u"partir d'un tipus de contingut específic (imatges, PDFs, vídeos, "
+         u"etc).",
+    es = u"Componentes encargados de producir una imagen representativa a "
+         u"partir de un tipo de contenido específico (imágenes, PDFs, "
+         u"videos, etc).",
+    en = u"Components tasked with producing images for different kinds of "
+         u"content (ie. image files, PDF documents, videos, etc)."
+)
+
+translations.define("Configuration.image_factories",
+    ca = u"Processadors d'imatges",
+    es = u"Procesadores de imágenes",
+    en = u"Image factories"
+)
+
+translations.define("Configuration.image_factories-explanation",
+    ca = u"Les diferents variants de redimensionat i efectes que "
+         u"s'apliquen a les imatges de la web.",
+    es = u"Las distintas variaciones de redimensionado y efectos que "
+         u"se aplican a las imágenes de la web.",
+    en = u"The different resizing and transformation effects applied "
+         u"to the site's images."
+)
+
+translations.define("Configuration.timezone",
+    ca = u"Zona horària",
+    es = u"Zona horaria",
+    en = u"Timezone"
+)
+
+translations.define("Configuration.smtp_host",
+    ca = u"Adreça del servidor SMTP",
+    es = u"Dirección del servidor SMTP",
+    en = u"SMTP host"
+)
+
+translations.define("Configuration.smtp_user",
+    ca = u"Compte d'usuari del servidor SMTP",
+    es = u"Cuenta de usuario del servidor SMTP",
+    en = u"SMTP server user account"
+)
+
+translations.define("Configuration.smtp_password",
+    ca = u"Contrasenya del servidor SMTP",
+    es = u"Contraseña de usuario del servidor SMTP",
+    en = u"SMTP server password"
+)
+
+translations.define("Configuration.triggers",
+    ca = u"Disparadors",
+    es = u"Disparadores",
+    en = u"Triggers"
+)
+
+translations.define("Configuration.triggers-explanation",
+    ca = u"Permet programar accions que s'activin quan es produeixin canvis "
+         u"al contingut.",
+    es = u"Permite programar acciones que se activen cuando se produzcan "
+         u"cambios en el contenido",
+    en = u"Program actions that will be activated when the site's content "
+         u"changes."
+)
+
+# Website
+#------------------------------------------------------------------------------
+translations.define("Website",
+    ca = u"Lloc web",
+    es = u"Sitio web",
+    en = u"Website"
+)
+
+translations.define("Website-plural",
+    ca = u"Llocs web",
+    es = u"Sitios web",
+    en = u"Websites"
+)
+
+translations.define("Website.website",
+    ca = u"Lloc web",
+    es = u"Sitio web",
+    en = u"Website"
+)
+
+translations.define("Website.contact",
+    ca = u"Contacte",
+    es = u"Contacto",
+    en = u"Contact"
+)
+
+translations.define("Website.publication",
+    ca = u"Publicació",
+    es = u"Publicación",
+    en = u"Publication"
+)
+
+translations.define("Website.publication.pages",
+    ca = u"Pàgines especials",
+    es = u"Páginas especiales",
+    en = u"Special pages"
+)
+
+translations.define("Website.publication.maintenance",
+    ca = u"Manteniment",
+    es = u"Mantenimiento",
+    en = u"Maintenance"
+)
+
+translations.define("Website.publication.https",
+    ca = u"HTTPS",
+    es = u"HTTPS",
+    en = u"HTTPS"
+)
+
+translations.define("Website.language",
+    ca = u"Idioma",
+    es = u"Idioma",
+    en = u"Language"
+)
+
+translations.define("Website.services",
+    ca = u"Serveis",
+    es = u"Servicios",
+    en = u"Services"
+)
+
+translations.define("Website.site_name",
+    ca = u"Nom del lloc",
+    es = u"Nombre del sitio",
+    en = u"Site name"
+)
+
+translations.define("Website.logo",
     ca = u"Logotip",
     es = u"Logotipo",
     en = u"Logo"
 )
 
-translations.define("Site.organization_name",
+translations.define("Website.icon",
+    ca = u"Icona",
+    es = u"Icono",
+    en = u"Icon"
+)
+
+translations.define("Website.keywords",
+    ca = u"Paraules clau",
+    es = u"Palabras clave",
+    en = u"Keywords"
+)
+
+translations.define("Website.description",
+    ca = u"Descripció",
+    es = u"Descripción",
+    en = u"Description"
+)
+
+translations.define("Website.hosts",
+    ca = u"Dominis",
+    es = u"Dominios",
+    en = u"Hosts"
+)
+
+translations.define("Website.hosts-explanation",
+    ca = u"La llista de dominis que han d'associar-se a aquesta web. "
+         u"Poden utilitzar-se comodins (per exemple, *.foo.com).",
+    es = u"La lista de dominios que deben asociarse a esta web. Pueden "
+         u"utilizarse comodines (por ejemplo, *.foo.com).",
+    en = u"The list of domains that can be associated to this website. Can "
+         u"use wildcard expressions (such as *.foo.com)."
+)
+
+translations.define("Website.organization_name",
     ca = u"Nom de l'entitat",
     es = u"Nombre de la entidad",
     en = u"Entity name"
 )
 
-translations.define("Site.organization_url",
+translations.define("Website.organization_url",
     ca = u"URL de l'entitat",
     es = u"URL de la entidad",
     en = u"Entity URL"
 )
 
-translations.define("Site.address",
+translations.define("Website.address",
     ca = u"Adreça",
     es = u"Dirección",
     en = u"Address"
 )
 
-translations.define("Site.town",
+translations.define("Website.town",
     ca = u"Localitat",
     es = u"Localidad",
     en = u"Town"
 )
 
-translations.define("Site.region",
+translations.define("Website.region",
     ca = u"Regió",
     es = u"Región",
     en = u"Region"
 )
 
-translations.define("Site.postal_code",
+translations.define("Website.postal_code",
     ca = u"Codi postal",
     es = u"Código postal",
     en = u"Postal code"
 )
 
-translations.define("Site.country",
+translations.define("Website.country",
     ca = u"País",
     es = u"País",
     en = u"Country"
 )
 
-translations.define("Site.phone_number",
+translations.define("Website.phone_number",
     ca = u"Telèfon",
     es = u"Teléfono",
     en = u"Phone number"
 )
 
-translations.define("Site.fax_number",
+translations.define("Website.fax_number",
     ca = u"Fax",
     es = u"Fax",
     en = u"Fax"
 )
 
-translations.define("Site.email",
+translations.define("Website.email",
     ca = u"Correu electrònic",
     es = u"Correo electrónico",
     en = u"Email"
 )
 
-translations.define("Site.https_policy",
+translations.define("Website.home",
+    ca = u"Pàgina d'inici",
+    es = u"Página de inicio",
+    en = u"Home page"
+)
+
+translations.define("Website.login_page",
+    ca = u"Pàgina d'autenticació",
+    es = u"Página de autenticación",
+    en = u"Authentication page"
+)
+
+translations.define("Website.generic_error_page",
+    ca = u"Pàgina d'error genèric",
+    es = u"Página de error genérico",
+    en = u"Generic error page"
+)
+
+translations.define("Website.not_found_error_page",
+    ca = u"Pàgina no trobada",
+    es = u"Página no encontrada",
+    en = u"Not found error page"
+)
+
+translations.define("Website.forbidden_error_page",
+    ca = u"Pàgina d'error per accés restringit",
+    es = u"Página de error por acceso restringido",
+    en = u"Access forbidden page"
+)
+
+translations.define("Website.down_for_maintenance",
+    ca = u"Lloc aturat per manteniment",
+    es = u"Sitio parado por mantenimiento",
+    en = u"Site down for maintenance"
+)
+
+translations.define("Website.maintenance_page",
+    ca = u"Pàgina a mostrar durant el manteniment",
+    es = u"Página a mostrar durante el mantenimiento",
+    en = u"Service unavailable page"
+)
+
+translations.define("Website.https_policy",
     ca = u"Política de HTTPS",
     es = u"Política de HTTPS",
     en = u"HTTPS policy"
 )
 
-translations.define("Site.https_policy-always",
+translations.define("Website.https_policy=always",
     ca = u"Habilitar a totes les pàgines",
     es = u"Habilitar en todas las páginas",
     en = u"Enable for all pages"
 )
 
-translations.define("Site.https_policy-never",
+translations.define("Website.https_policy=never",
     ca = u"Deshabilitar a totes les pàgines",
     es = u"Deshabilitar en todas las páginas",
     en = u"Disable for all pages"
 )
 
-translations.define("Site.https_policy-per_page",
+translations.define("Website.https_policy=per_page",
     ca = u"Decidir-ho a cada pàgina",
     es = u"Decidirlo en cada página",
     en = u"Decide on a per-page basis"
 )
 
-translations.define("Site.https_persistence",
+translations.define("Website.https_persistence",
     ca = u"Preservar HTTPS entre peticions",
     es = u"Preservar HTTPS entre peticiones",
     en = u"Persist HTTPS navigation across requests"
 )
 
-translations.define("Site.https_persistence-explanation",
+translations.define("Website.https_persistence-explanation",
     ca = u"Aquesta opció només tindrà efecte si la <em>Política "
          u"d'HTTPS</em> s'estableix a <em>Decidir a cada pàgina</em>.",
     es = u"Esta opción solo tendrá efecto si la <em>Política "
@@ -1850,61 +2186,36 @@ translations.define("Site.https_persistence-explanation",
          u"basis</em>."
 )
 
-translations.define("Site.smtp_host",
-    ca = u"Servidor SMTP",
-    es = u"Servidor SMTP",
-    en = u"SMTP host"
-)
-
-translations.define("Site.smtp_user",
-    ca = u"Usuari SMTP",
-    es = u"Usuario SMTP",
-    en = u"SMTP user"
-)
-
-translations.define("Site.smtp_password",
-    ca = u"Contrasenya SMTP",
-    es = u"Contraseña SMTP",
-    en = u"SMTP password"
-)
-
-translations.define("Site.triggers",
-    ca = u"Disparadors",
-    es = u"Disparadores",
-    en = u"Triggers"
-)
-
-translations.define("Site.default_language",
+translations.define("Website.default_language",
     ca = u"Idioma per defecte",
     es = u"Idioma por defecto",
     en = u"Default language"
 )
 
-translations.define("Site.backoffice_language",
-    ca = u"Idioma per defecte pel gestor de continguts",
-    es = u"Idioma por defecto para el gestor de contenidos",
-    en = u"Backoffice default language"
-)
-
-translations.define("Site.heed_client_language",
+translations.define("Website.heed_client_language",
     ca = u"Respectar les preferències d'idioma del navegador",
     es = u"Respetar las preferencias de idioma del navegador",
     en = u"Heed the language preferences from the browser"
 )
 
-translations.define("Site.home",
-    ca = u"Document d'inici",
-    es = u"Documento de inicio",
-    en = u"Home"
+translations.define("Website.published_languages",
+    ca = u"Idiomes publicats",
+    es = u"Idiomas publicados",
+    en = u"Published languages"
 )
 
-translations.define("Site.login_page",
-    ca = u"Formulari d'autenticació",
-    es = u"Formulario de autenticación",
-    en = u"Authentication form"
+translations.define("Website.published_languages-explanation",
+    ca = u"Limita els idiomes publicats al subconjunt indicat. Deixar en "
+         u"blanc per permetre la publicació en qualsevol dels idiomes "
+         u"disponibles.",
+    es = u"Limita los idiomas publicados al subconjunto indicado. Dejar en "
+         u"blanco para permitir la publicación en cualquiera de los idiomas "
+         u"disponibles.",
+    en = u"Limits publication to the indicated subset of languages. Leave "
+         u"blank to allow publishing in any of the available languages."
 )
 
-translations.define("Site.login_page body",
+translations.define("woost.views.LoginFormView.main",
     ca = u"""L'accés a aquesta secció del web està restringit. Per favor,
             introdueix les teves credencials d'usuari per continuar.""",
     es = u"""El acceso a esta sección del sitio está restringido. Por favor,
@@ -1913,88 +2224,16 @@ translations.define("Site.login_page body",
             your user credentials to proceed."""
 )
 
-translations.define("Site.login_page password_forgot",
+translations.define("woost.views.LoginForm.forgot_password_link",
     ca = u"He oblidat la contrasenya",
     es = u"He olvidado la contraseña",
     en = u"I forgot my password"
 )
 
-translations.define("Site.login_page enter",
+translations.define("woost.views.LoginForm.submit_button",
     ca = u"Entrar",
     es = u"Entrar",
     en = u"Enter"
-)
-
-translations.define("Site.not_found_error_page",
-    ca = u"Pàgina d'error per document no trobat",
-    es = u"Página de error para documento no encontrado",
-    en = u"'Not found' error page"
-)
-
-translations.define("Site.forbidden_error_page",
-    ca = u"Pàgina d'error per accés restringit",
-    es = u"Página de error para acceso restringido",
-    en = u"'Access denied' error page"
-)
-
-translations.define("Site.generic_error_page",
-    ca = u"Pàgina d'error genèric",
-    es = u"Página de error genérico",
-    en = u"Generic error page"
-)
-
-translations.define("Site.behavior.maintenance",
-    ca = u"Manteniment",
-    es = u"Mantenimiento",
-    en = u"Maintenance"
-)
-
-translations.define("Site.down_for_maintenance",
-    ca = u"Lloc aturat per manteniment",
-    es = u"Sitio parado por mantenimiento",
-    en = u"Site down for maintenance"
-)
-
-translations.define("Site.maintenance_page",
-    ca = u"Pàgina a mostrar durant el manteniment",
-    es = u"Página a mostrar durante el mantenimiento",
-    en = u"Service unavailable page"
-)
-
-translations.define("Site.maintenance_addresses",
-    ca = u"Adreces IP que ignoren el mode de manteniment",
-    es = u"Direcciones IP que ignoran el modo de mantenimiento",
-    en = u"IP addresses that ignore maintenance mode"
-)
-
-translations.define("Site.timezone",
-    ca = u"Zona horària",
-    es = u"Zona horaria",
-    en = u"Timezone"
-)
-
-translations.define("Site.publication_schemes",
-    ca = u"Esquemes de publicació",
-    es = u"Esquemas de publicación",
-    en = u"Publication schemes"
-)
-
-translations.define("Site.caching_policies",
-    ca = u"Polítiques de cache",
-    es = u"Políticas de cache",
-    en = u"Caching policies"
-)
-
-translations.define("Site.renderers",
-    ca = u"Pintadors",
-    es = u"Pintadores",
-    en = u"Renderer"
-)
-
-translations.define("Site.image_factories",
-    ca = u"Processadors d'imatge",
-    es = u"Procesadores de imagen",
-    en = u"Image factories"
 )
 
 # PublicationScheme
@@ -2528,6 +2767,21 @@ translations.define("Publishable.translation_enabled",
     en = u"Translation is enabled"
 )
 
+translations.define("Publishable.websites",
+    ca = u"Webs on es publica",
+    es = u"Webs donde se publica",
+    en = u"Websites where it is published"
+)
+
+translations.define("Publishable.websites-explanation",
+    ca = u"Webs des de les que es podrà veure i accedir a l'element. Deixar "
+         u"en blanc per permetre que l'element aparegui a totes les webs.",
+    es = u"Webs des de las que se podrá ver y acceder al elemento. Dejar en "
+         u"blanco para permitir que el elemento aparezca en todas las webs.",
+    en = u"Websites where the element will be published. Leave blank to share "
+         u"this element across all websites."
+)
+
 translations.define("Publishable.hidden",
     ca = u"Ocult",
     es = u"Oculto",
@@ -2904,24 +3158,44 @@ def content_permission_translation_factory(language, predicate):
         predicate_factory
     )
 
-def member_permission_translation_factory(language, predicate, any_predicate):
+MEMBER_PERMISSION_ABBR_THRESHOLD = 4
 
+def member_permission_translation_factory(
+    language,
+    predicate,
+    enum,
+    abbr,
+    any_predicate
+):
     def predicate_factory(instance, **kwargs):
         
         members = list(instance.iter_members())
 
         if not members:
-            return any_predicate
+            target = any_predicate
 
-        subject = u", ".join(
-            translations(member, language, qualified = True)
-            for member in members
-        )
+        elif len(members) >= MEMBER_PERMISSION_ABBR_THRESHOLD:
+            counter = OrderedDict()
 
-        if hasattr(predicate, "__call__"):
-            return predicate(instance, subject, **kwargs)
+            for member in members:
+                counter[member.schema] = counter.get(member.schema, 0) + 1
+
+            target = u", ".join(
+                abbr(count, content_type)
+                for content_type, count in counter.iteritems()
+            )
         else:
-            return predicate % subject
+            subject = u", ".join(
+                translations(member, language, qualified = True)
+                for member in members
+            )
+
+            if hasattr(enum, "__call__"):
+                target = enum(instance, subject, **kwargs)
+            else:
+                target = enum % subject
+
+        return predicate % target
 
     return permission_translation_factory(
         language,
@@ -3020,62 +3294,86 @@ translations.define(
 translations.define(
     "woost.models.permission.ReadMemberPermission-instance",
     ca = member_permission_translation_factory("ca",
+        u"llegir %s",
         lambda instance, subject, **kwargs:
             plural2(
                 len(instance.matching_members),
-                u"llegir el membre %s",
-                u"llegir els membres %s"
+                u"el membre %s",
+                u"els membres %s"
             ) % subject,
-        u"llegir qualsevol membre"
+        lambda count, content_type, **kwargs:
+            plural2(count, u"1 membre ", u"%d membres " % count)
+            + ca_possessive(translations(content_type.name)),
+        u"qualsevol membre"
     ),
     es = member_permission_translation_factory("es",
+        u"leer %s",
         lambda instance, subject, **kwargs:
             plural2(
                 len(instance.matching_members),
-                u"leer el miembro %s",
-                u"leer los miembros %s"
+                u"el miembro %s",
+                u"los miembros %s"
             ) % subject,
-        u"leer cualquier miembro"
+        lambda count, content_type, **kwargs:
+            plural2(count, u"1 miembro", u"%d miembros" % count)
+            + u" de " + (translations(content_type.name)),
+        u"cualquier miembro"
     ),
     en = member_permission_translation_factory("en",
+        u"read %s",
         lambda instance, subject, **kwargs:
             plural2(
                 len(instance.matching_members),
-                u"read the %s member",
-                u"read the %s members"
+                u"the %s member",
+                u"the %s members"
             ) % subject,
-        u"read any member"
+        lambda count, content_type, **kwargs:
+            plural2(count, u"1 member", u"%d members" % count)
+            + u" of " + (translations(content_type.name)),
+        u"any member"
     )
 )
 
 translations.define(
     "woost.models.permission.ModifyMemberPermission-instance",
     ca = member_permission_translation_factory("ca",
+        u"modificar %s",
         lambda instance, subject, **kwargs:
             plural2(
                 len(instance.matching_members),
-                u"modificar el membre %s", 
-                u"modificar els membres %s"
+                u"el membre %s", 
+                u"els membres %s"
             ) % subject,
-        u"modificar qualsevol membre"
+        lambda count, content_type, **kwargs:
+            plural2(count, u"1 membre ", u"%d membres " % count)
+            + ca_possessive(translations(content_type.name)),
+        u"qualsevol membre"
     ),
     es = member_permission_translation_factory("es",
+        u"modificar %s",
         lambda instance, subject, **kwargs:
             plural2(
                 len(instance.matching_members),
-                u"modificar el miembro %s", 
-                u"modificar los miembros %s"
+                u"el miembro %s", 
+                u"los miembros %s"
             ) % subject,
-        u"modificar cualquier miembro"
+        lambda count, content_type, **kwargs:
+            plural2(count, u"1 miembro", u"%d miembros" % count)
+            + u" de " + (translations(content_type.name)),
+        u"cualquier miembro"
     ),
     en = member_permission_translation_factory("en",
+        u"modify %s",
         lambda instance, subject, **kwargs:
             plural2(
                 len(instance.matching_members),
-                u"modify the %s member", 
-                u"modify the %s members"
+                u"the %s member", 
+                u"the %s members"
             ) % subject,
-        u"modify any member"
+        lambda count, content_type, **kwargs:
+            plural2(count, u"1 member", u"%d members" % count)
+            + u" of " + (translations(content_type.name)),
+        u"any member"
     )
 )
 
@@ -3820,38 +4118,6 @@ translations.define("Controller.python_name-explanation",
     ca = u"Nom qualificat de la implementació del controlador en Python",
     es = u"Nombre cualificado de la implementación del controlador en Python",
     en = u"Qualified name of the Python implementation for the controller"
-)
-
-# Language
-#------------------------------------------------------------------------------
-translations.define("Language",
-    ca = u"Idioma",
-    es = u"Idioma",
-    en = u"Language"
-)
-
-translations.define("Language-plural",
-    ca = u"Idiomes",
-    es = u"Idiomas",
-    en = u"Languages"
-)
-
-translations.define("Language.iso_code",
-    ca = u"Codi ISO",
-    es = u"Código ISO",
-    en = u"ISO code"
-)
-
-translations.define("Language.enabled",
-    ca = u"Actiu",
-    es = u"Activo",
-    en = u"Enabled"
-)
-
-translations.define("Language.fallback",
-    ca = u"Idioma substitutiu",
-    es = u"Idioma sustitutivo",
-    en = u"Fallback language"
 )
 
 # Extension

@@ -82,12 +82,12 @@ class User(Item):
     )
 
     def _backoffice_language_default():
-        from woost.models.site import Site
-        return Site.main.backoffice_language
+        from woost.models.configuration import Configuration
+        return Configuration.instance.backoffice_language
 
     def _backoffice_language_enumeration(ctx):
-        from woost.models.site import Site
-        return Site.backoffice_language.enumeration
+        from woost.models.configuration import Configuration
+        return Configuration.backoffice_language.enumeration
 
     prefered_language = schema.String(
         required = True,

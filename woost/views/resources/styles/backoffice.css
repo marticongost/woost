@@ -679,7 +679,7 @@ body.scripted .BackOfficeLayout .Table .selection {
 }
 
 .BackOfficeLayout .Table {
-    border-bottom: 1px solid rgb(225,225,225);
+    border: 1px solid #eee;
 }
 
 .BackOfficeLayout .PropertyTable th {
@@ -716,6 +716,10 @@ body.scripted .BackOfficeLayout .Table .selection {
 .BackOfficeLayout .ContentTable td,
 .BackOfficeLayout .ContentTable td * {
     cursor: default;
+}
+
+.BackOfficeLayout .ContentTable .ItemLabel {
+    display: inline-block;
 }
 
 .BackOfficeLayout .ContentTable th .selector > .label {
@@ -809,10 +813,6 @@ body.scripted .BackOfficeLayout .Table .selection {
     padding-left: 2.4em;
 }
 
-.BackOfficeLayout .Table td {
-    border: 1px solid rgb(225,225,225);
-}
-
 .BackOfficeLayout .Table th, .BackOfficeLayout .Table th * {
     font-weight: normal;
     color: black;
@@ -881,8 +881,13 @@ body.scripted .BackOfficeLayout .Table .selection {
 
 .BackOfficeLayout .Table tr.group td {
     color: rgb(70,70,70);
-    background-color: rgb(230,230,230);
     text-align: right;
+    background-image: -webkit-linear-gradient(#eee,#d5d5d5);
+    background-image: -moz-linear-gradient(#eee,#d5d5d5);
+    background-image: linear-gradient(#eee,#d5d5d5);
+    background-color: #eee;
+    border-top: 1px solid #bbb;
+    border-bottom: 1px solid #bbb;
 }
 
 .BackOfficeLayout .Table tr.group .grouping_value {
@@ -939,7 +944,6 @@ body.scripted .BackOfficeLayout .Table .selection {
 
 .BackOfficeLayout .Table tr.selected td {
     background-color: rgb(75,75,75) !important;
-    border: 1px solid rgb(75,75,75) !important;
 }
 
 .BackOfficeLayout .Table tr.selected td,
@@ -1000,8 +1004,8 @@ body.scripted .BackOfficeLayout .Table .selection {
 }
 
 .BackOfficeLayout .Table td.element_column label {
-    padding-top: 0.1em;
-    padding-bottom: 0.1em;
+    padding-top: 0;
+    padding-bottom: 0;
 }
 
 .BackOfficeLayout .search_results_message {
@@ -1501,7 +1505,7 @@ body.scripted .BackOfficeLayout .selector:hover .selector_content {
 }
 
 .BackOfficeLayout .TreeContentView .expander + label {
-    margin-left: 1.5em;
+    margin-left: 0.3em;
 }
 
 .BackOfficeLayout .TreeContentView .expander img {
@@ -3246,3 +3250,40 @@ div.success_label {
 .BackOfficeItemHeading .item_path li a {
     display: inline-block;
 }
+
+/* Content drag & drop
+-----------------------------------------------------------------------------*/
+.BackOfficeLayout .drag {
+    opacity: 0.7;
+}
+
+.BackOfficeLayout .dropReceiver {
+    position: relative;
+    background-color: #a6eeff;
+    background-image: -webkit-linear-gradient(#e4eff2,#ccdade);
+    background-image: -moz-linear-gradient(#e4eff2,#ccdade);
+    background-image: linear-gradient(#e4eff2,#ccdade);
+    outline: 1px dashed #a6c5cc;
+}
+
+.BackOfficeLayout .dropBeforeReceiver {
+    position: relative;
+    margin-top: -1px;
+    border-top: 1px dashed #ccdade;
+}
+
+.BackOfficeLayout .dropAfterReceiver {
+    position: relative;
+    margin-bottom: -1px;
+    border-bottom: 1px dashed #ccdade;
+}
+
+.BackOfficeLayout .dragInsertionMarker {
+    position: absolute;
+    background-repeat: no-repeat;
+    background-image: url(../images/insertion_marker.png);
+    background-position: left center;
+    padding-left: 0.8em;
+    white-space: nowrap;
+}
+

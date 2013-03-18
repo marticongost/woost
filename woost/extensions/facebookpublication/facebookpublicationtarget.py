@@ -15,7 +15,7 @@ from cocktail.translations import (
     translations
 )
 from cocktail import schema
-from woost.models import Item, Language
+from woost.models import Item, Configuration
 from woost.extensions.opengraph import OpenGraphExtension
 
 facebook_locales = {
@@ -130,7 +130,7 @@ class FacebookPublicationTarget(Item):
 
     languages = schema.Collection(
         items = schema.String(
-            enumeration = lambda ctx: Language.codes,
+            enumeration = lambda ctx: Configuration.instance.languages,
             translate_value = lambda value, language = None, **kwargs:
                 "" if not value else translations(value)
         )

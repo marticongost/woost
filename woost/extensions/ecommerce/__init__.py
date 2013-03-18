@@ -16,7 +16,7 @@ from cocktail.translations import (
 from cocktail import schema
 from cocktail.persistence import datastore
 from woost.models import (
-    Site,
+    Configuration,
     Extension,
     Publishable,
     Document,
@@ -24,8 +24,7 @@ from woost.models import (
     Template,
     Controller,
     EmailTemplate,
-    User,
-    Language
+    User    
 )
 from woost.models.rendering import ImageFactory, Thumbnail
 from woost.models.triggerresponse import SendEmailTriggerResponse
@@ -236,7 +235,6 @@ class ECommerceExtension(Extension):
         catalog = self._create_document("catalog")
         catalog.controller = self._create_controller("catalog")
         catalog.template = self._create_template("catalog")
-        catalog.parent = Site.main.home
         catalog.insert()
 
         for child_name in (
@@ -309,7 +307,7 @@ class ECommerceExtension(Extension):
         trigger.qname = \
             "woost.extensions.ecommerce.ecommerceorder_completed_trigger"
         self.__translate_field(trigger, "title")
-        trigger.site = Site.main
+        Configuration.instance.triggers.append(trigger)
         trigger.condition = "target.customer and not target.customer.anonymous and target.customer.email"
         trigger.matching_items = {'type': u'woost.extensions.ecommerce.ecommerceorder.ECommerceOrder'}
 
@@ -323,8 +321,10 @@ class ECommerceExtension(Extension):
         ).email
         template.receivers = '[items[0].customer.email]'
         template.embeded_images = """
-from woost.models import Site
-images["logo"] = Site.main.logo
+from woost.models import Configuration
+logo = Configuration.instance.get_setting("logo")
+if logo:
+    images["logo"] = logo
 """
         template.template_engine = "cocktail"
 
@@ -366,7 +366,7 @@ order_summary.order = order
         trigger = IncomingOrderTrigger( )
         trigger.qname = "woost.extensions.ecommerce.incoming_order.trigger"
         self.__translate_field(trigger, "title")
-        trigger.site = Site.main
+        Configuration.instance.triggers.append(trigger)
         trigger.matching_items = {'type': u'woost.extensions.ecommerce.ecommerceorder.ECommerceOrder'}
 
         # EmailTemplate

@@ -8,7 +8,6 @@
 """
 from cocktail.translations import translations, DATE_STYLE_TEXT
 from cocktail.translations.helpers import plural2
-from woost.models import Site
 
 # ECommerceExtension
 #------------------------------------------------------------------------------

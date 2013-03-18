@@ -13,7 +13,7 @@ from cocktail.translations import (
 )
 from cocktail.controllers import try_decode
 from cocktail.controllers.parameters import set_cookie_expiration
-from woost.models import Site, Language
+from woost.models import Configuration
 from woost.controllers.module import Module
 
 
@@ -26,7 +26,11 @@ class LanguageModule(Module):
         
     def process_request(self, path):
 
-        language = path.pop(0) if path and path[0] in Language.codes else None
+        language = (
+            path.pop(0)
+            if path and path[0] in Configuration.instance.languages
+            else None
+        )
         cherrypy.request.language_specified = (language is not None)
 
         if language is None:
@@ -47,12 +51,15 @@ class LanguageModule(Module):
         if cookie:
             return cookie.value
 
+        config = Configuration.instance
+
         # Check the 'Accept-Language' header sent by the client
-        if Site.main.heed_client_language:
+        if config.get_setting("heed_client_language"):
             accept_language = cherrypy.request.headers.get("Accept-Language", None)
 
             if accept_language:
-                available_languages = Language.codes
+                available_languages = \
+                    Configuration.instance.get_enabled_languages()
                 best_language = None
                 best_score = None
 
@@ -88,7 +95,7 @@ class LanguageModule(Module):
                     return best_language
 
         # Fall back to the site's default language
-        return Site.main.default_language
+        return config.get_setting("default_language")
 
     def translate_uri(self, path = None, language = None):
 
@@ -108,7 +115,10 @@ class LanguageModule(Module):
             language = get_language()
 
         path_components = path.strip("/").split("/")
-        if path_components and path_components[0] in Language.codes:
+        if (
+            path_components 
+            and path_components[0] in Configuration.instance.languages
+        ):
             path_components.pop(0)
 
         path_components.insert(0, language)

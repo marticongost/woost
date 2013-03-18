@@ -9,7 +9,7 @@ from woost.models import Item
 
 class AudioDecoder(Item):
 
-    instantiable = False
+    instantiable = True
     visible_from_root = False
 
     mime_type = schema.String(

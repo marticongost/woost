@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<div
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:py="http://www.whads.com/ns/cocktail/templates">
+
+    <?py-class
+    block = None
+    ?>
+
+    <py:ready>
+        <?py
+        if not self.block.issuu_document or not self.block.issuu_document.is_accessible():
+            self.visible = False
+        ?>
+    </py:ready>
+
+    @{self.block.issuu_document.issuu_embed_code}
+
+</div>
+

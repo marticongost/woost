@@ -33,7 +33,7 @@ from cocktail.persistence import (
     PersistentOrderedSet, PersistentRelationOrderedSet
 )
 from woost.models import (
-    Site,
+    Configuration,
     get_current_user,
     CreatePermission,
     ReadPermission,
@@ -624,7 +624,10 @@ class EditNode(StackNode):
         item.owner = owner
                 
         if item.__class__.translated:
-            for language in (languages or [Site.main.default_language]):
+            for language in (
+                languages
+                or [Configuration.instance.get_setting("default_language")]
+            ):
                 item.new_translation(language)
 
     def import_form_data(self, form_data, item):
@@ -679,9 +682,10 @@ class EditNode(StackNode):
             )
 
             if not self._item.translations:
-                default_language = Site.main.default_language
+                default_language = \
+                    Configuration.instance.get_setting("default_language")
                 if default_language in available_languages:
-                    self._item.new_translation(Site.main.default_language)
+                    self._item.new_translation(default_language)
 
             self.translations = [
                 language
@@ -944,7 +948,8 @@ class SelectionNode(StackNode):
     def __translate__(self, language, **kwargs):
         return translations(
             "woost.views.BackOfficeLayout edit stack select",
-            relation = self.parent_node.member
+            relation = self.parent_node and self.parent_node.member,
+            type = self.content_type
         )
 
     def uri(self, **params):

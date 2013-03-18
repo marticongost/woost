@@ -57,7 +57,7 @@ class IsAccessibleExpressionTestCase(BaseTestCase):
     def test_translation_enabled(self):
 
         from cocktail.translations import language_context
-        from woost.models import Publishable, Language, ReadPermission
+        from woost.models import Publishable, ReadPermission
         
         self.everybody_role.permissions.append(
             ReadPermission(
@@ -67,9 +67,8 @@ class IsAccessibleExpressionTestCase(BaseTestCase):
             )
         )
 
-        site_language = Language()
-        site_language.iso_code = "en"
-        site_language.insert()
+        self.config.languages = ["en"]
+        self.config.published_languages = []
 
         with language_context("en"):
             a = Publishable()
@@ -92,10 +91,19 @@ class IsAccessibleExpressionTestCase(BaseTestCase):
             d.set("translation_enabled", True, "de")
             d.insert()
 
-            assert self.accessible_items() == set([a, c])
+            e = Publishable()
+            e.per_language_publication = False
+            e.enabled = True
+            e.insert()
 
-            site_language.enabled = False
-            assert not self.accessible_items()
+            assert self.accessible_items() == set([a, c, e])
+        
+            self.config.published_languages = ["en"]
+            assert self.accessible_items() == set([a, c, e])
+
+        with language_context("de"):
+            self.config.published_languages = ["de"]
+            assert self.accessible_items() == set([d, e])
 
     def test_current(self):
 
