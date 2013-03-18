@@ -1738,6 +1738,12 @@ translations.define("Configuration.rendering",
     en = u"Image processing"
 )
 
+translations.define("Configuration.services",
+    ca = u"Serveis",
+    es = u"Servicios",
+    en = u"Services"
+)
+
 translations.define("Configuration.system",
     ca = u"Sistema",
     es = u"Sistema",
@@ -1985,6 +1991,12 @@ translations.define("Website.language",
     ca = u"Idioma",
     es = u"Idioma",
     en = u"Language"
+)
+
+translations.define("Website.services",
+    ca = u"Serveis",
+    es = u"Servicios",
+    en = u"Services"
 )
 
 translations.define("Website.site_name",
