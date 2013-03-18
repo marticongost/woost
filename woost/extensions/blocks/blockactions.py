@@ -298,8 +298,20 @@ class PasteBlockAction(UserAction):
     block_positioning = "append"
 
     def is_available(self, context, target):
-        return UserAction.is_available(self, context, target) \
-            and CLIPBOARD_SESSION_KEY in session
+
+        if UserAction.is_available(self, context, target):
+            clipboard = get_clipboard_contents()
+            if clipboard:
+                allows_block_type = getattr(target, "allows_block_type", None)
+                if (
+                    allows_block_type is None
+                    or allows_block_type(
+                        Block.require_instance(clipboard["block"]).__class__
+                    )
+                ):
+                    return True
+
+        return False
 
     def invoke(self, controller, selection):
         clipboard = get_clipboard_contents()
