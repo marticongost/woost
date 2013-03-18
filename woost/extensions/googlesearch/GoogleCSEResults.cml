@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <?py
-import cherrypy
-from simplejson import dumps
-from cocktail.controllers import Location
 from woost.models import Configuration
 ?>
 
@@ -12,33 +9,12 @@ from woost.models import Configuration
 
     <?py-class
     search_engine_id = None
-    query = None
-    query_parameter = "q"
-
-    def get_initialization_code(self):
-        return """
-            var cseOptions = %s;
-            var cse = new google.search.CustomSearchControl('%s', cseOptions);
-            %s
-            cse.draw('%s');
-            %s
-            """ % (
-                self.get_options_code(),
-                self.search_engine_id,
-                self.get_customization_code(),
-                self.require_id(),
-                "cse.execute(%s);" % dumps(self.query) if self.query else ""
-            )
-    
-    def get_options_code(self):
-        return "{}"
-
-    def get_customization_code(self):
-        return ""
+    search_control_type = "searchresults-only" # search, searchbox, searchresults, searchbox-only, searchresults-only
+    search_options = {"linkTarget": "_self"}
     ?>
 
     <?py
-    self.add_resource(Location.get_current_scheme() + "://www.google.com/jsapi", mime_type = "text/javascript")
+    self.search_options = self.search_options.copy()
     ?>
 
     <py:ready>
@@ -48,9 +24,6 @@ from woost.models import Configuration
 
         if not self.search_engine_id:
             self.visible = False
-
-        if self.query is None and self.query_parameter:
-            self.query = cherrypy.request.params.get(self.query_parameter)
         ?>
     </py:ready>
 
@@ -59,16 +32,28 @@ from woost.models import Configuration
     def add_google_cse_script(document):
         if not hasattr(document, "google_cse_script"):
             script = Element("script", type = "text/javascript")
-            script.append("""google.load("search", "1");""")
+            script.append("""
+                (function () {
+                var gcse = document.createElement('script');
+                gcse.type = 'text/javascript';
+                gcse.async = true;
+                gcse.src = document.location.protocol + '//www.google.com/cse/cse.js?cx=%s';
+                var s = document.getElementsByTagName('script')[0];
+                s.parentNode.insertBefore(gcse, s);
+                })();
+                """ % self.search_engine_id
+            )
             document.google_cse_script = script
             document.scripts_container.append(script)
     ?>
-
-    <script type="text/javascript">
-        <py:ready>
-            ${self.get_initialization_code()}
-        </py:ready>
-    </script>
-
+    <div>
+        <py:binding>
+            <?py
+            element.add_class("gcse-" + self.search_control_type)
+            for key, value in self.search_options.iteritems():
+                element["data-" + key] = value
+            ?>
+        </py:binding>
+    </div>
 </div>
 
