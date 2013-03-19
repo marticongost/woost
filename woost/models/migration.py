@@ -317,6 +317,7 @@ def add_multisite_support(e):
     # Settings that now belong in website, as translated fields
     for key in (
         "site_name",
+        "organization_name",
         "keywords",
         "description"
     ):
