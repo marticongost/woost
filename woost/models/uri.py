@@ -64,6 +64,9 @@ class URI(Publishable):
             if parameters:
                 uri = make_uri(uri, **parameters)
 
+            if host == "?" or host == "!":
+                host = None
+
             uri = self._fix_uri(uri, host, encode)
 
         return uri
