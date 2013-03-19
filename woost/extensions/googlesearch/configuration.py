@@ -13,7 +13,8 @@ Configuration.members_order.extend([
 
 Configuration.add_member(
     schema.String("google_search_engine_id",
-        member_group = "services.google_cse"
+        member_group = "services.google_cse",
+        listed_by_default = False
     )
 )
 
@@ -21,7 +22,8 @@ Configuration.add_member(
     schema.Reference("google_search_results_page",
         type = Document,
         related_end = schema.Collection(),
-        member_group = "services.google_cse"
+        member_group = "services.google_cse",
+        listed_by_default = False
     )
 )
 
