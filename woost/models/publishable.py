@@ -535,11 +535,11 @@ class Publishable(Item):
                 uri = make_uri(uri, **parameters)
 
             if host == "?":
-                host = None
-                if self.websites:
-                    website = get_current_website()
-                    if website not in self.websites:
-                        host = self.websites[0].hosts[0]
+                websites = self.websites
+                if websites and get_current_website() not in websites:
+                    host = websites[0].hosts[0]
+                else:
+                    host = None
             elif host == "!":
                 if self.websites:
                     host = self.websites[0].hosts[0]
