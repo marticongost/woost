@@ -7,8 +7,7 @@
 @since:			September 2009
 """
 from cocktail.translations import translations
-from cocktail import schema
-from woost.models import Extension
+from woost.models import Extension, Configuration
 
 translations.define("GoogleAnalyticsExtension",
     ca = u"Google Analytics",
@@ -38,7 +37,7 @@ class GoogleAnalyticsExtension(Extension):
             u"""Integra el lloc web amb Google Analytics.""",
             "ca"
         )
-        self.set("description",            
+        self.set("description",
             u"""Integra el sitio web con Google Analytics.""",
             "es"
         )
@@ -47,12 +46,14 @@ class GoogleAnalyticsExtension(Extension):
             "en"
         )
 
-    account = schema.String(
-        required = True,
-        text_search = False
-    )
-
     def _load(self):
+
+        from woost.extensions.googleanalytics import (
+            strings,
+            configuration,
+            website
+        )
+
         from cocktail.events import when
         from woost.controllers import CMSController
 
@@ -65,6 +66,8 @@ class GoogleAnalyticsExtension(Extension):
             e.output["head_end_html"] = html
 
     def get_analytics_script(self):
+        config = Configuration.instance
+        account = config.get_setting("google_analytics_account")
         return """
         <script type="text/javascript">
             var _gaq = _gaq || [];
@@ -75,5 +78,5 @@ class GoogleAnalyticsExtension(Extension):
             ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
             var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
             })();
-        </script>""" % self.account
+        </script>""" % account
 
