@@ -89,7 +89,8 @@ of its features include:\n"
             "twitterpublication = woost.extensions.twitterpublication:TwitterPublicationExtension",
             "textfile = woost.extensions.textfile:TextFileExtension",
             "audio = woost.extensions.audio:AudioExtension",
-            "issuu = woost.extensions.issuu:IssuuExtension"
+            "issuu = woost.extensions.issuu:IssuuExtension",
+            "campaign3 = woost.extensions.campaign3:CampaignMonitor3Extension"
         ]
     },
     # Woost can't yet access view resources (images, style sheets, client
