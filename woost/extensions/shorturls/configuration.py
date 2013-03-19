@@ -12,7 +12,7 @@ Configuration.add_member(
     schema.Reference("url_shortener",
         type = URLShortener,
         related_end = schema.Reference(),
-        member_group = "behavior.publication",
+        member_group = "services.short_urls",
         after_member = "caching_policies",
         listed_by_default = False
     )
