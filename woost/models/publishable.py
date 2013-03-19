@@ -493,7 +493,7 @@ class Publishable(Item):
             return False
 
         websites_subset = self.websites
-        if websites_subset:
+        if websites_subset and website != "any":
             if website is None:
                 website = get_current_website()
             if website is None or website not in websites_subset:
@@ -535,11 +535,11 @@ class Publishable(Item):
                 uri = make_uri(uri, **parameters)
 
             if host == "?":
-                host = None
-                if self.websites:
-                    website = get_current_website()
-                    if website not in self.websites:
-                        host = self.websites[0].hosts[0]
+                websites = self.websites
+                if websites and get_current_website() not in websites:
+                    host = websites[0].hosts[0]
+                else:
+                    host = None
             elif host == "!":
                 if self.websites:
                     host = self.websites[0].hosts[0]
@@ -605,7 +605,7 @@ class IsPublishedExpression(Expression):
                 per_website_index = Publishable.per_website_publication_index
 
                 # - content that can be published on any website
-                website_subset = per_website_index.values(key = None)
+                website_subset = set(per_website_index.values(key = None))
 
                 # - content that can be published on the active website
                 if website:
