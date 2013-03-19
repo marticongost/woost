@@ -33,7 +33,7 @@ from woost.models import Configuration
     </py:ready>
 
     <input
-        py:id="search_box"
+        py:id="input"
         type="search"
         name="@{self.query_parameter}"
         value="@{self.query}" />
