@@ -18,7 +18,7 @@ from woost.models import Configuration
     <py:ready>
         <?py
         if self.query is None:
-            self.query = cherrypy.request.params.get("q")
+            self.query = cherrypy.request.params.get(self.query_parameter)
 
         if self.results_uri is None:
             results_page = Configuration.instance.get_setting("google_search_results_page")
