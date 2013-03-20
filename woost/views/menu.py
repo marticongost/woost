@@ -55,7 +55,7 @@ class Menu(TreeView):
         )
 
     def get_item_uri(self, item):
-        return item.get_uri(host = ".")
+        return item.get_uri(host = "!")
 
     def create_label(self, item):
         
