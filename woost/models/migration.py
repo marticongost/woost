@@ -359,6 +359,12 @@ def add_multisite_support(e):
             if language:
                 mailing._language = language.__Broken_state__["_iso_code"]
 
+    from woost.extensions.googleanalytics import GoogleAnalyticsExtension
+    if GoogleAnalyticsExtension.instance.enabled:
+        account = GoogleAnalyticsExtension.instance._account
+        del GoogleAnalyticsExtension.instance._account
+        config.google_analytics_account = account
+
     # Rebuild all indexes
     Item.rebuild_indexes()
 
