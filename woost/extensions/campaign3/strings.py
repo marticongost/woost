@@ -234,9 +234,9 @@ translations.define("SubscriptionFormBlock.view_class",
 # ResubscribeFormView
 #------------------------------------------------------------------------------
 translations.define("woost.extensions.campaign3.ResubscribeFormView.unsubscribed_by_error",
-    ca = u"No volies donar-te de baixa? Clica a continuació per resubscriure't i continuar rebent comunicacions nostres.",
-    es = u"No querías darte de baja? Clica a continuación para resuscribirte y continuar recibiendo comunicaciones nuestras.",
-    en = u"Didn't mean to unsubscribe? Click the next button to re-subscribe and continue receiving emails from us."
+    ca = u"<strong>No volies donar-te de baixa?</strong> Clica a continuació per seguir rebent els nostres missatges.",
+    es = u"<strong>No querías darte de baja?</strong> Haz clic a continuación para seguir recibiendo nuestros mensajes.",
+    en = u"<strong>You did not want to unsubscribe?</strong> Click below to continue receiving our messages."
 )
 
 translations.define("woost.extensions.campaign3.ResubscribeFormView.resubscribe",
