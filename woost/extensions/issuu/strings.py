@@ -98,3 +98,17 @@ translations.define(
                           % instance.response
 )
 
+# IssuuDocumentRenderer
+#------------------------------------------------------------------------------
+translations.define("IssuuDocumentRenderer",
+    ca = u"Pintador de document Issuu",
+    es = u"Pintador de documento Issuu",
+    en = u"Issuu document renderer"
+)
+
+translations.define("IssuuDocumentRenderer-plural",
+    ca = u"Pintador de documents Issuu",
+    es = u"Pintador de documentos Issuu",
+    en = u"Issuu documents renderer"
+)
+
