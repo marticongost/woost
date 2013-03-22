@@ -726,6 +726,32 @@ translations.define("TextBlock.image_original_link_visible",
     en = u"Show a link to the original image"
 )
 
+# VideoBlock
+#------------------------------------------------------------------------------
+translations.define("VideoBlock",
+    ca = u"Vídeo",
+    es = u"Video",
+    en = u"Video"
+)
+
+translations.define("VideoBlock-plural",
+    ca = u"Vídeos",
+    es = u"Vídeos",
+    en = u"Videos"
+)
+
+translations.define("VideoBlock.video",
+    ca = u"Vídeo",
+    es = u"Video",
+    en = u"Video"
+)
+
+translations.define("VideoBlock.player_settings",
+    ca = u"Opcions de reproductor de vídeo",
+    es = u"Opciones de reproductor de video",
+    en = u"Video player settings"
+)
+
 # VimeoBlock
 #------------------------------------------------------------------------------
 translations.define("VimeoBlock",
