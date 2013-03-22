@@ -41,12 +41,12 @@ class IssuuExtension(Extension):
         )
 
     def _load(self):
-     
         from woost.extensions.issuu import (
             strings,
             issuudocument,
             issuublock
         )   
+        self.install()
      
     def _install(self):
 
