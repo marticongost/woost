@@ -7,7 +7,6 @@
 @since:			January 2010
 """
 from datetime import datetime
-from threading import Lock
 from cocktail.modeling import getter, classgetter
 from cocktail.events import event_handler
 from cocktail.pkgutils import import_object
@@ -31,8 +30,6 @@ from woost.models.permission import ReadPermission, PermissionExpression
 from woost.models.caching import CachingPolicy
 
 WEBSITE_PUB_INDEX_KEY = "woost.models.Publishable.per_website_publication_index"
-
-_per_website_publication_index_lock = Lock()
 
 
 class Publishable(Item):
@@ -331,11 +328,10 @@ class Publishable(Item):
         index = datastore.root.get(WEBSITE_PUB_INDEX_KEY)
 
         if index is None:
-            with _per_website_publication_index_lock:
-                index = datastore.root.get(WEBSITE_PUB_INDEX_KEY)
-                if index is None:
-                    index = MultipleValuesIndex()
-                    datastore.root[WEBSITE_PUB_INDEX_KEY] = index
+            index = datastore.root.get(WEBSITE_PUB_INDEX_KEY)
+            if index is None:
+                index = MultipleValuesIndex()
+                datastore.root[WEBSITE_PUB_INDEX_KEY] = index
         
         return index
 
