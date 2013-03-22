@@ -90,7 +90,8 @@ of its features include:\n"
             "textfile = woost.extensions.textfile:TextFileExtension",
             "audio = woost.extensions.audio:AudioExtension",
             "issuu = woost.extensions.issuu:IssuuExtension",
-            "campaign3 = woost.extensions.campaign3:CampaignMonitor3Extension"
+            "campaign3 = woost.extensions.campaign3:CampaignMonitor3Extension",
+            "youtube = woost.extensions.youtube:YouTubeExtension"
         ]
     },
     # Woost can't yet access view resources (images, style sheets, client
