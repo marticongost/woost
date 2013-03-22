@@ -1732,6 +1732,24 @@ translations.define("Configuration.language",
     en = u"Language"
 )
 
+translations.define("Configuration.media",
+    ca = u"Multimèdia",
+    es = u"Multimedia",
+    en = u"Media"
+)
+
+translations.define("Configuration.media.images",
+    ca = u"Imatges",
+    es = u"Imagenes",
+    en = u"Images"
+)
+
+translations.define("Configuration.media.video",
+    ca = u"Vídeo",
+    es = u"Video",
+    en = u"Video"
+)
+
 translations.define("Configuration.rendering",
     ca = u"Processat d'imatges",
     es = u"Procesado de imágenes",
@@ -1896,6 +1914,12 @@ translations.define("Configuration.image_factories-explanation",
          u"se aplican a las imágenes de la web.",
     en = u"The different resizing and transformation effects applied "
          u"to the site's images."
+)
+
+translations.define("Configuration.video_player_settings",
+    ca = u"Opcions de reproductor de vídeo",
+    es = u"Opciones de reproductor de video",
+    en = u"Video player settings"
 )
 
 translations.define("Configuration.timezone",
@@ -5698,5 +5722,49 @@ translations.define("woost.views.BackOfficeItemHeading.item_path.conjunction",
     ca = u"a",
     es = u"en",
     en = u"in"
+)
+
+# VideoPlayerSettings
+#------------------------------------------------------------------------------
+translations.define("VideoPlayerSettings", 
+    ca = u"Opcions de reproductor de vídeo",
+    es = u"Opciones de reproductor de video",
+    en = u"Video player settings"
+)
+
+translations.define("VideoPlayerSettings-plural", 
+    ca = u"Opcions de reproductor de vídeo",
+    es = u"Opciones de reproductor de video",
+    en = u"Video player settings"
+)
+
+translations.define("VideoPlayerSettings.title", 
+    ca = u"Nom",
+    es = u"Nombre",
+    en = u"Name"
+)
+
+translations.define("VideoPlayerSettings.width", 
+    ca = u"Amplada",
+    es = u"Ancho",
+    en = u"Width"
+)
+
+translations.define("VideoPlayerSettings.height", 
+    ca = u"Alçada",
+    es = u"Alto",
+    en = u"Height"
+)
+
+translations.define("VideoPlayerSettings.autoplay",
+    ca = u"Iniciar la reproducció automàticament",
+    es = u"Iniciar la reproducción automáticamente",
+    en = u"Autoplay"
+)
+
+translations.define("VideoPlayerSettings.show_player_controls",
+    ca = u"Mostrar controls de reproducció",
+    es = u"Mostrar controles de reproducción",
+    en = u"Show player controls"
 )
 

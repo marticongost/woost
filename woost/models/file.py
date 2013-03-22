@@ -28,6 +28,7 @@ class File(Publishable):
     edit_node_class = \
         "woost.controllers.backoffice.fileeditnode.FileEditNode"
     backoffice_heading_view = "woost.views.BackOfficeFileHeading"
+    video_player = "cocktail.html.MediaElementVideo"
 
     default_mime_type = None
 
