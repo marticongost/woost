@@ -21,7 +21,7 @@ def extract_video_id(string):
 
 class VimeoBlock(Block):
 
-    instantiable = True
+    instantiable = False
     view_class = "woost.extensions.blocks.VimeoBlockView"
     block_display = "woost.extensions.blocks.GenericThumbnailBlockDisplay"
     groups_order = ["content", "appearence"] + Block.groups_order[1:]
