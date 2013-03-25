@@ -740,6 +740,12 @@ translations.define("VideoBlock-plural",
     en = u"Videos"
 )
 
+translations.define("VideoBlock.element_type",
+    ca = u"Tipus d'element",
+    es = u"Tipo de elemento",
+    en = u"Element type"
+)
+
 translations.define("VideoBlock.video",
     ca = u"Vídeo",
     es = u"Video",
