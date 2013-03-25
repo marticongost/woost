@@ -265,6 +265,7 @@
 
 /* TextBlockDisplay
 -----------------------------------------------------------------------------*/ 
+.EditBlocksView .VideoBlockDisplay .content_preview,
 .EditBlocksView .TextBlockDisplay .content_preview {
     display: table-row;
     border-spacing: 0.5em;
@@ -305,6 +306,7 @@
     margin-bottom: 0;
 }
 
+.EditBlocksView .VideoBlockDisplay .image_gallery,
 .EditBlocksView .TextBlockDisplay .image_gallery {
     vertical-align: top;
     display: table-cell;
@@ -313,16 +315,19 @@
     min-width: 14em;
 }
 
+.EditBlocksView .VideoBlockDisplay .image_gallery li,
 .EditBlocksView .TextBlockDisplay .image_gallery li {
     float: none;
     display: inline-block;
     margin: 0;
 }
 
+.EditBlocksView .VideoBlockDisplay .image_gallery li + li,
 .EditBlocksView .TextBlockDisplay .image_gallery li + li {
     margin-left: 1em;
 }
 
+.EditBlocksView .VideoBlockDisplay .image_gallery img,
 .EditBlocksView .TextBlockDisplay .image_gallery img {
     box-shadow: 0 2px 2px #bbb;
 }
