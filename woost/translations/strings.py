@@ -1379,9 +1379,17 @@ translations.define("woost.views.StandardView fallback language notice",
 )
 
 translations.define("woost.views.StandardView.phone_number",
-    ca = u"Tel",
-    es = u"Tel",
-    en = u"Telephone"
+    ca = u"Tel:",
+    es = u"Tel:",
+    en = u"Phone:",
+    fr = u"Téléphone :"
+)
+
+translations.define("woost.views.StandardView.fax_number",
+    ca = u"Fax:",
+    es = u"Fax:",
+    en = u"Fax:",
+    fr = u"Fax :"
 )
 
 translations.define("UploadFilesForm.upload",
