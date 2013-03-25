@@ -14,6 +14,7 @@ class VideoBlock(Block):
 
     instantiable = True
     view_class = "woost.extensions.blocks.VideoBlockView"
+    block_display = "woost.extensions.blocks.VideoBlockDisplay"
 
     member_order = ["element_type", "video", "player_settings"]
 
