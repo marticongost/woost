@@ -13,7 +13,7 @@ from woost.extensions.blocks.elementtype import ElementType
 
 class FileListing(Block):
 
-    instantiable = True
+    instantiable = False
     type_group = "blocks.listings"
     view_class = "woost.views.FileListing"
 
