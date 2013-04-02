@@ -304,8 +304,6 @@ class Publishable(Item):
     def handle_deleted(cls, event):
         cls.per_website_publication_index.remove(None, event.source.id)
 
-    # TODO: setting website.home should update .websites accordingly
-
     def __insert_into_per_website_publication_index(self):
 
         index = self.__class__.per_website_publication_index
