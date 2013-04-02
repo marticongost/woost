@@ -117,6 +117,10 @@
     width: 22em;
 }
 
+.PublishableGrid li.entry > .ImageGallery {
+    display: inline-block;
+}
+
 .PublishableGrid li.entry {
     list-style: none;
 }
