@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<div
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:py="http://www.whads.com/ns/cocktail/templates">
+
+    <?py-class
+    publishable = None
+    image_factory = "image_gallery_thumbnail"
+    view_factory = None
+
+    def create_dialog(self):
+        return self.view_factory.create_view(self.publishable)
+    ?>
+
+    <?py
+    self.add_resource("/resources/scripts/PublishablePopUp.js")
+    ?>
+
+    <py:woost.views.Image
+        py:local_id="image"
+        py:image="@{self.publishable}"
+        py:image_factory="@{self.image_factory}"
+        py:accessible_check="${False}"/>
+
+    <div py:id="publishable_dialog" 
+        py:client_model="woost.views.PublishablePopUp.dialog_${self.require_id()}"
+        class="PublishablePopUp-dialog">
+        <div py:id="dialog_frame">
+            <py:ready>
+                <py:new py:element="self.create_dialog()"/>
+            </py:ready>
+        </div>
+    </div>
+
+</div>
+

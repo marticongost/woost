@@ -70,6 +70,7 @@ class BlocksExtension(Extension):
             newslisting,
             eventlisting,
             filelisting,
+            publishablelisting,
             facebooklikebutton,
             facebooklikebox,
             tweetbutton,
