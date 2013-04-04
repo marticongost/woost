@@ -108,6 +108,10 @@
 
 /* PublishableGrid
 -----------------------------------------------------------------------------*/ 
+.PublishableGrid ul.publishable_list {
+    padding: 0;
+}
+
 .PublishableGrid .entry {
     display: inline-block;
     vertical-align: top;
