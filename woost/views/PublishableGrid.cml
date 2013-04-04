@@ -8,7 +8,7 @@ from woost.views.viewfactory import publishable_grid_view_factory
     xmlns:py="http://www.whads.com/ns/cocktail/templates">
     
     <?py-class
-    view_factory = None
+    view_factory = publishable_grid_view_factory
 
     def create_publishable_view(self, publishable):
         view = self.view_factory.create_view(
@@ -17,13 +17,6 @@ from woost.views.viewfactory import publishable_grid_view_factory
         )
         return view
     ?>
-
-    <py:ready>
-        <?py
-        if self.view_factory is None:
-            self.view_factory = publishable_grid_view_factory
-        ?>
-    </py:ready>
 
     <li py:def="entry" py:args="publishable, publishable_index">
 
