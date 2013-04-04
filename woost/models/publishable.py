@@ -549,6 +549,30 @@ class Publishable(Item):
 
         return uri
 
+    def translate_file_type(self, language = None):
+
+        trans = ""
+
+        mime_type = self.mime_type
+        if mime_type:
+            trans = translations("mime " + mime_type, language = language)
+
+        if not trans:
+
+            res_type = self.resource_type
+            if res_type:
+                trans = self.__class__.resource_type.translate_value(
+                    res_type,
+                    language = language
+                )
+
+                if trans and res_type != "other":
+                    ext = self.file_extension
+                    if ext:
+                        trans += " " + ext.upper().lstrip(".")
+
+        return trans
+
 Publishable.login_page.type = Publishable
 Publishable.related_end = schema.Collection()
 
