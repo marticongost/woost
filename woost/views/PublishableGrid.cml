@@ -9,10 +9,12 @@ from woost.views.viewfactory import publishable_grid_view_factory
     
     <?py-class
     view_factory = publishable_grid_view_factory
+    thumbnail_factory = "image_gallery_thumbnail"
 
     def create_publishable_view(self, publishable):
         view = self.view_factory.create_view(
-            publishable, 
+            publishable,
+            thumbnail_factory = self.thumbnail_factory,
             links_open_in_new_window = self.links_open_in_new_window
         )
         return view
