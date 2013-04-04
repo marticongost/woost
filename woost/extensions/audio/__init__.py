@@ -114,7 +114,7 @@ class AudioExtension(Extension):
         from woost.extensions.audio.audioplayer import AudioPlayer
         from woost.views.viewfactory import publishable_view_factory
 
-        def audio_player(item, **parameters):
+        def audio_player(item, parameters):
             if item.resource_type == "audio":
                 player = AudioPlayer()
                 player.file = item

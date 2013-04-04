@@ -21,17 +21,18 @@ class ViewFactory(object):
         if isinstance(value, basestring):
             view = templates.new(value)
             view.item = item
-            for key, value in parameters.items():
-                setattr(view, key, value)
         elif isinstance(value, ViewFactory):
             view = value.create_view(item, **parameters)
         elif isinstance(value, type):
             view = value()
             view.item = item
-            for key, value in parameters.items():
-                setattr(view, key, value)
         elif callable(value):
-            view = value(item, **parameters)
+            view = value(item, parameters)
+
+        # Set any remaining parameters as attributes of the resulting view
+        if view:
+            for key, value in parameters.iteritems():
+                setattr(view, key, value)
 
         return view
 
@@ -171,7 +172,7 @@ class ViewFactory(object):
 
 publishable_view_factory = ViewFactory()
 
-def video_player(item, **parameters):
+def video_player(item, parameters):
     if item.resource_type == "video":
         player_settings = Configuration.instance.video_player_settings
         if player_settings:
@@ -179,7 +180,7 @@ def video_player(item, **parameters):
 
 publishable_view_factory.register(Publishable, "video_player", video_player) 
 
-def image_gallery(item, **parameters):
+def image_gallery(item, parameters):
     if item.resource_type == "image":
         view = templates.new("woost.views.ImageGallery")
         view.images = [item]
@@ -188,17 +189,21 @@ def image_gallery(item, **parameters):
 
 publishable_view_factory.register(Publishable, "image_gallery", image_gallery) 
 
-def publishable_thumbnail(item, **parameters):
+def publishable_thumbnail(item, parameters):
+
     link = templates.new("cocktail.html.Element")
     link.tag = "a"
     link["tabindex"] = 0
     link["href"] = item.get_uri()
-    if parameters.get("links_open_in_new_window"):
+
+    if parameters.pop("links_open_in_new_window", False):
         link["target"] = "_blank"
+
     image = templates.new("woost.views.Image")
     image.image = item
     image.image_factory = "image_gallery_thumbnail"
     link.append(image)
+
     return link
 
 publishable_view_factory.register(
@@ -209,7 +214,7 @@ publishable_view_factory.register(
 
 publishable_grid_view_factory = ViewFactory()
 
-def video_player_dialog(item, **parameters):
+def video_player_dialog(item, parameters):
     if item.resource_type == "video":
         view = templates.new("woost.views.PublishablePopUp")
         view.publishable = item
