@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<a
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:py="http://www.whads.com/ns/cocktail/templates"
+    href="@{self.item.get_uri()}"
+    tabindex="-1">
+
+    <?py
+    item = None
+    links_open_in_new_window = False
+    thumbnail_factory = "image_gallery_thumbnail"
+    ?>
+
+    <py:ready>
+        <?py
+        if self.links_open_in_new_window:
+            element["target"] = "_blank"
+        ?>
+    </py:ready>
+
+    <py:woost.views.Image
+        py:id="thumbnail"
+        py:image="@{self.item}"
+        py:image_factory="@{self.thumbnail_factory}"
+        py:accessible_check="${False}"/>
+</a>
+

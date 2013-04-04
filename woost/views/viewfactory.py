@@ -189,27 +189,10 @@ def image_gallery(item, parameters):
 
 publishable_view_factory.register(Publishable, "image_gallery", image_gallery) 
 
-def publishable_thumbnail(item, parameters):
-
-    link = templates.new("cocktail.html.Element")
-    link.tag = "a"
-    link["tabindex"] = 0
-    link["href"] = item.get_uri()
-
-    if parameters.pop("links_open_in_new_window", False):
-        link["target"] = "_blank"
-
-    image = templates.new("woost.views.Image")
-    image.image = item
-    image.image_factory = "image_gallery_thumbnail"
-    link.append(image)
-
-    return link
-
 publishable_view_factory.register(
     Publishable,
     "default_thumbnail",
-    publishable_thumbnail
+    "woost.views.ThumbnailLink"
 )
 
 publishable_grid_view_factory = ViewFactory()
