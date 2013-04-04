@@ -2015,12 +2015,6 @@ translations.define("PublishableListing.listing_order=arbitrary",
     en = u"Arbitrary"
 )
 
-translations.define("PublishableListing.listing_order=title",
-    ca = u"Alfabètica",
-    es = u"Alfabética",
-    en = u"Alphabetical"
-)
-
 translations.define("PublishableListing.listing_order=-last_update_time",
     ca = u"Última modificació",
     es = u"Última modificación",

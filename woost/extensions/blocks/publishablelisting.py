@@ -46,7 +46,7 @@ class PublishableListing(Block):
 
     listing_order = schema.String(
         default = "arbitrary",
-        enumeration = ["arbitrary", "title", "-last_update_time"],
+        enumeration = ["arbitrary", "-last_update_time"],
         member_group = "listing"
     )
 
@@ -96,11 +96,12 @@ class PublishableListing(Block):
     def select_publishables(self):
         publishables = Publishable.select_accessible()
         publishables.base_collection = self.publishables
+        self._apply_order(publishables)
+        return publishables
 
+    def _apply_order(self, publishables):
         if self.listing_order != "arbitrary":
             publishables.add_order(self.listing_order)
-
-        return publishables
 
     @request_property
     def pagination(self):
@@ -113,7 +114,7 @@ class PublishableListing(Block):
 
     @request_property
     def pagination_member(self):
-        return Pagination.copy(**{            
+        return Pagination.copy(**{
             "page_size.default": self.page_size,
             "page_size.max": self.max_page_size,
             "items": self.select_publishables()
