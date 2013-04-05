@@ -11,17 +11,18 @@
 
     <header py:id="dialog_header">
         <h1 py:id="dialog_heading"/>
-    </header>
 
-    <button
-        py:id="close_dialog_button"
-        type="button"
-        title="${translations('woost.views.Dialog.close_dialog_button')}">
-        <img
-            py:local_id="image"
-            src="/resources/images/Dialog-close.png"
-            alt=""/>
-    </button>
+        <button
+            py:id="close_dialog_button"
+            type="button"
+            title="${translations('woost.views.Dialog.close_dialog_button')}">
+            <img
+                py:local_id="image"
+                src="/resources/images/Dialog-close.png"
+                alt=""/>
+        </button>
+
+    </header>
 
     <div py:id="dialog_content"/>
 
