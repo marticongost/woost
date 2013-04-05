@@ -162,3 +162,9 @@
     background-color: #777 !important;
 }
 
+/* PublishablePopUp
+-----------------------------------------------------------------------------*/
+.PublishablePopUp {
+    cursor: pointer;
+}
+

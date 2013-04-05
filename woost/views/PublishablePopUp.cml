@@ -1,37 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<div
+<py:woost.views.ThumbnailLink
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:py="http://www.whads.com/ns/cocktail/templates">
 
     <?py-class
-    publishable = None
-    image_factory = "image_gallery_thumbnail"
     view_factory = None
 
-    def create_dialog(self):
-        return self.view_factory.create_view(self.publishable)
+    def create_item_view(self):
+        return self.view_factory.create_view(self.item)
     ?>
 
     <?py
     self.add_resource("/resources/scripts/PublishablePopUp.js")
+    self.set_client_param("publishableActivationSelector", "a")
     ?>
 
-    <py:woost.views.Image
-        py:local_id="image"
-        py:image="@{self.publishable}"
-        py:image_factory="@{self.image_factory}"
-        py:accessible_check="${False}"/>
-
-    <div py:id="publishable_dialog" 
-        py:client_model="woost.views.PublishablePopUp.dialog_${self.require_id()}"
-        class="PublishablePopUp-dialog">
-        <div py:id="dialog_frame">
+    <py:woost.views.Dialog py:id="publishable_dialog"
+        py:tag="article"
+        py:client_model="woost.views.PublishablePopUp.dialog_${self.require_id()}">
+        <?py
+        element.add_class("PublishablePopUp-dialog")
+        ?>
+        <py:with py:element="element.dialog_heading">@{translations(self.item)}</py:with>
+        <py:with py:element="element.dialog_content">
             <py:ready>
-                <py:new py:element="self.create_dialog()"/>
+                <py:new py:element="self.create_item_view()"/>
             </py:ready>
-        </div>
-    </div>
+        </py:with>
+    </py:woost.views.Dialog>
 
-</div>
+</py:woost.views.ThumbnailLink>
 
