@@ -15,6 +15,10 @@
         raise TypeError("%s doesn't implement the create_entry() method" % self)
     ?>
 
+    <?py
+    self.add_resource("/resources/scripts/PublishableListing.js")
+    ?>
+
     <py:ready>
         <?py
         if not self.publishables and not self.pagination:
