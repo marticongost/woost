@@ -6,7 +6,7 @@
     href="@{self.item.get_uri()}"
     tabindex="-1">
 
-    <?py
+    <?py-class
     item = None
     links_open_in_new_window = False
     thumbnail_factory = "image_gallery_thumbnail"
