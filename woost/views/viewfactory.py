@@ -200,7 +200,7 @@ publishable_grid_view_factory = ViewFactory()
 def video_player_dialog(item, parameters):
     if item.resource_type == "video":
         view = templates.new("woost.views.PublishablePopUp")
-        view.publishable = item
+        view.item = item
         view.view_factory = publishable_view_factory
         return view
 

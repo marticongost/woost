@@ -10,8 +10,7 @@
 cocktail.bind({
     selector: ".ImageGallery",
     behavior: function ($imageGallery) {
- 
-        var inDialog = false;
+
         var loadedImages = {};
         var singleImage = ($imageGallery.find(".image_entry").length < 2);
 
@@ -90,27 +89,34 @@ cocktail.bind({
             }
         }
 
+        var $dialog = null;
+
         this.showImage = function (entry) {
-            
-            inDialog = true;
 
             cocktail.closeDialog();
-            var dialog = this.createImageDialog(entry);
-            cocktail.showDialog(dialog);            
-            var $dialog = jQuery(dialog);
+            $dialog = jQuery(this.createImageDialog(entry));
+            cocktail.showDialog($dialog.get(0));
             $dialog.hide();
 
             // Show the dialog once the image finishes loading            
             this.loadImage(
                 jQuery(entry).find(".image_link").get(0).href,
                 function (image) {
-                    $dialog.find(".image")
+                    $dialog.find(".dialog_content .image")
                         .width(image.width)
                         .height(image.height);
+                    
                     $dialog.find(".footnote")
                         .width(image.width);
+                    
+                    var $next = $dialog.find(".next_button");
+                    $next.css("top", image.height / 2 - $next.get(0).offsetHeight / 2 + "px");
+
+                    var $prev = $dialog.find(".previous_button");
+                    $prev.css("top", image.height / 2 - $prev.get(0).offsetHeight / 2 + "px");
+
                     $dialog.show();
-                    cocktail.center(dialog);
+                    cocktail.center($dialog.get(0));
                     $dialog
                         .hide()
                         .fadeIn()
@@ -147,21 +153,21 @@ cocktail.bind({
             var $dialog = jQuery(cocktail.instantiate("woost.views.ImageGallery.image_dialog"));
 
             $dialog.bind("dialogClosed", function () {
-                inDialog = false;
+                $dialog = null;
                 $entry.find(".image_link").focus();
             });
 
-            $dialog.find(".image").attr("src", imageURL);
+            $dialog.find(".dialog_content .image").attr("src", imageURL);
             
             if (imageTitle) {
-                $dialog.find(".header .label").html(imageTitle);
+                $dialog.find(".dialog_heading").html(imageTitle);
             }
 
             if (singleImage) {
-                $dialog.find(".header .index").hide();
+                $dialog.find(".dialog_header .index").hide();
             }
             else {
-                $dialog.find(".header .index").html(
+                $dialog.find(".dialog_header .index").html(
                     ($entry.index() + 1) + " / " + $imageGallery.find(".image_entry").length
                 );
             }
@@ -186,8 +192,8 @@ cocktail.bind({
             var $next = $dialog.find(".next_button");
             var $prev = $dialog.find(".previous_button");
             var $img = $dialog.find(".image");
-            var $dialogControls = $dialog.find(".header").add($close);
-            
+            var $dialogControls = jQuery().add($next).add($prev);
+
             // Close dialog button
             $close.click(cocktail.closeDialog);
 
@@ -198,8 +204,6 @@ cocktail.bind({
                 $img.attr("tabindex", "-1");
             }
             else {
-                $dialogControls = $dialogControls.add($next).add($prev);
-
                 // Next button
                 $next.click(function () {
                     $imageGallery.get(0).showNextImage(entry);
@@ -242,23 +246,9 @@ cocktail.bind({
             }
             
             // Only show dialog controls when hovering over the image
-            $dialogControls.filter(":not(.header)").hide();
-            var hideHeaderTimer = setTimeout(
-                function () { $dialog.find(".header").fadeOut(); },
-                1500
-            );
-
             $dialog.hover(
-                function () {
-                    $dialogControls.show();
-                    if (hideHeaderTimer) {
-                        clearTimeout(hideHeaderTimer);
-                        hideHeaderTimer = null;
-                    }
-                },
-                function () {
-                    $dialogControls.hide();
-                }
+                function () { $dialogControls.show(); },
+                function () { $dialogControls.hide(); }
             );
 
             return $dialog.get(0);

@@ -1340,6 +1340,14 @@ translations.define("woost.views.ImageGallery.original_image_link",
     en = u"Download the original"
 )
 
+# Dialog
+#------------------------------------------------------------------------------
+translations.define("woost.views.Dialog.close_dialog_button",
+    ca = u"Tancar la finestra",
+    es = u"Cerrar la ventana",
+    en = u"Close this window"
+)
+
 # Content views
 #------------------------------------------------------------------------------
 translations.define("View as",

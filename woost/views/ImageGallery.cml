@@ -27,6 +27,7 @@ from cocktail.controllers import context
     <?py
     self.add_resource("/resources/styles/ImageGallery.css")
     self.add_resource("/resources/scripts/ImageGallery.js")
+    self.set_client_param("publishableActivationSelector", "a")
     ?>
 
     <py:ready>
@@ -97,17 +98,16 @@ from cocktail.controllers import context
         </a>
     </li>
 
-    <div py:id="image_dialog" 
-        py:client_model="woost.views.ImageGallery.image_dialog"
-        class="ImageGallery-dialog">
-        <div py:id="image_frame">
-            <div py:local_id="header" py:visible="@{self.labels_visible or len(self.images) > 1}">
-                <span py:local_id="index"></span>
-                <span py:local_id="label"></span>
-            </div>
-            <button py:local_id="close_button" title="${translations('woost.views.ImageGallery.close_button')}">
-                <img src="/resources/images/ImageGallery-close_button.png" alt=""/>
-            </button>
+    <py:woost.views.Dialog 
+        py:id="image_dialog" 
+        py:client_model="woost.views.ImageGallery.image_dialog">
+        <?py
+        element.add_class("ImageGallery-dialog")
+        ?>
+        <py:with py:element="element.dialog_header" py:visible="@{self.labels_visible or len(self.images) > 1}">
+            <span py:local_id="index" py:index="0"/>
+        </py:with>
+        <py:with py:element="element.dialog_content">
             <img py:local_id="image"/>
             <button
                 py:local_id="previous_button"
@@ -119,12 +119,12 @@ from cocktail.controllers import context
                 title="${translations('woost.views.ImageGallery.next_button')}">
                 <img src="/resources/images/ImageGallery-next_button.png" alt=""/>
             </button>
-        </div>
-        <div py:local_id="footnote"></div>
-        <div py:local_id="original_image_link">
-            <a py:local_id="link">${translations("woost.views.ImageGallery.original_image_link")}</a>
-        </div>
-    </div>
+            <div py:local_id="footnote"/>
+            <div py:local_id="original_image_link">
+                <a py:local_id="link">${translations("woost.views.ImageGallery.original_image_link")}</a>
+            </div>
+        </py:with>
+    </py:woost.views.Dialog>
 
     <div py:id="loading_sign" 
         py:client_model="woost.views.ImageGallery.loading_sign"
