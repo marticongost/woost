@@ -104,7 +104,7 @@ from cocktail.controllers import context
         <?py
         element.add_class("ImageGallery-dialog")
         ?>
-        <py:with py:element="element.dialog_header" py:visible="@{self.labels_visible or len(self.images) > 1}">
+        <py:with py:element="element.dialog_header">
             <span py:local_id="index" py:index="0"/>
         </py:with>
         <py:with py:element="element.dialog_content">
