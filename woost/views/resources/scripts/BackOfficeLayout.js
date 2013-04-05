@@ -44,6 +44,10 @@ function keepalive(edit_stack) {
 
 (function () {
 
+    if (!window.addEventListener) {
+        return;
+    }
+
     var UPDATE_DELAY_AFTER_FOREIGN_DROP = 1000;
     var knownDropLocation = false;
 
