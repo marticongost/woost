@@ -7,13 +7,11 @@
 @since:			March 2013
 -----------------------------------------------------------------------------*/
 
-cocktail.bind(".PublishablePopUp", function ($view) {
-
-    var view = this;
+cocktail.bind(".PublishablePopUp", function ($popUp) {
 
     this.createDialog = function () {
         if (!this.dialog) {
-            this.dialog = cocktail.instantiate("woost.views.PublishablePopUp.dialog_" + view.id);
+            this.dialog = cocktail.instantiate("woost.views.PublishablePopUp.dialog_" + this.id);
         }
         return this.dialog;
     };
@@ -24,9 +22,9 @@ cocktail.bind(".PublishablePopUp", function ($view) {
         cocktail.center(dialog);
     };
 
-    var $image = $view.find(".image");
-    $image.click(function (e) {
-        view.showDialog();
+    $popUp.click(function (e) {
+        $popUp.get(0).showDialog();
         return false;
     });
 });
+
