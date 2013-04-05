@@ -243,14 +243,14 @@ cocktail.bind({
                     .click(function () {
                         $imageGallery.get(0).showNextImage(entry);
                     });
+
+                    // Only show dialog controls when hovering over the image
+                    $dialog.hover(
+                        function () { $dialogControls.show(); },
+                        function () { $dialogControls.hide(); }
+                    );
             }
             
-            // Only show dialog controls when hovering over the image
-            $dialog.hover(
-                function () { $dialogControls.show(); },
-                function () { $dialogControls.hide(); }
-            );
-
             return $dialog.get(0);
         }
 
