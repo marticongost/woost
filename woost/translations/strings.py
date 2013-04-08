@@ -1943,6 +1943,30 @@ translations.define("Site.generic_error_page",
     en = u"Generic error page"
 )
 
+translations.define("Site.behavior.maintenance",
+    ca = u"Manteniment",
+    es = u"Mantenimiento",
+    en = u"Maintenance"
+)
+
+translations.define("Site.down_for_maintenance",
+    ca = u"Lloc aturat per manteniment",
+    es = u"Sitio parado por mantenimiento",
+    en = u"Site down for maintenance"
+)
+
+translations.define("Site.maintenance_page",
+    ca = u"Pàgina a mostrar durant el manteniment",
+    es = u"Página a mostrar durante el mantenimiento",
+    en = u"Service unavailable page"
+)
+
+translations.define("Site.maintenance_addresses",
+    ca = u"Adreces IP que ignoren el mode de manteniment",
+    es = u"Direcciones IP que ignoran el modo de mantenimiento",
+    en = u"IP addresses that ignore maintenance mode"
+)
+
 translations.define("Site.timezone",
     ca = u"Zona horària",
     es = u"Zona horaria",
@@ -3632,6 +3656,18 @@ translations.define("Event.event_location",
     ca = u"Lloc",
     es = u"Lugar",
     en = u"Place"
+)
+
+translations.define("Event.image",
+    ca = u"Imatge",
+    es = u"Imagen",
+    en = u"Image"
+)
+
+translations.define("Event.summary",
+    ca = u"Sumari",
+    es = u"Sumario",
+    en = u"Summary"
 )
 
 translations.define("Event.body",

@@ -17,6 +17,7 @@ from cocktail.controllers import (
 from woost.models import (
     Item,
     Site,
+    Publishable,
     ModifyPermission,
     DeletePermission,
     ModifyMemberPermission,
@@ -297,8 +298,20 @@ class PasteBlockAction(UserAction):
     block_positioning = "append"
 
     def is_available(self, context, target):
-        return UserAction.is_available(self, context, target) \
-            and CLIPBOARD_SESSION_KEY in session
+
+        if UserAction.is_available(self, context, target):
+            clipboard = get_clipboard_contents()
+            if clipboard:
+                allows_block_type = getattr(target, "allows_block_type", None)
+                if (
+                    allows_block_type is None
+                    or allows_block_type(
+                        Block.require_instance(clipboard["block"]).__class__
+                    )
+                ):
+                    return True
+
+        return False
 
     def invoke(self, controller, selection):
         clipboard = get_clipboard_contents()
@@ -420,11 +433,13 @@ base_preview_publishable = PreviewController.preview_publishable
 def preview_publishable(self):
 
     publishable = base_preview_publishable(self)
-    
+
     if publishable is None and isinstance(self.previewed_item, Block):
-        for item, member in self.previewed_item.find_publication_slots():
-            publishable = item
-            break
+        for path in self.previewed_item.find_paths():
+            container = path[0][0]
+            if isinstance(container, Publishable):
+                publishable = container
+                break
 
     return publishable
 

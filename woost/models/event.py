@@ -8,6 +8,7 @@ u"""
 """
 from cocktail import schema
 from woost.models.document import Document
+from woost.models.file import File
 
 
 class Event(Document):
@@ -16,6 +17,8 @@ class Event(Document):
         "event_start",
         "event_end",
         "event_location",
+        "image",
+        "summary",
         "body"
     ]
 
@@ -36,9 +39,24 @@ class Event(Document):
         member_group = "content"
     )
 
+    image = schema.Reference(
+        type = File,
+        relation_constraints = {"resource_type": "image"},
+        listed_by_default = False,
+        member_group = "content"
+    )
+
+    summary = schema.String(
+        translated = True,
+        edit_control = "woost.views.RichTextEditor",
+        listed_by_default = False,
+        member_group = "content"
+    )
+
     body = schema.String(
         edit_control = "woost.views.RichTextEditor",
         translated = True,
+        listed_by_default = False,
         member_group = "content"
     )
 
