@@ -3,6 +3,7 @@ u"""Defines the `Block` model.
 
 .. moduleauthor:: Jordi Fernández <jordi.fernandez@whads.com>
 """
+from datetime import datetime
 from cocktail.pkgutils import import_object
 from cocktail.iteration import last
 from cocktail.translations import translations
@@ -39,6 +40,8 @@ class Block(Item):
         "heading",
         "heading_type",
         "enabled",
+        "start_date",
+        "end_date",
         "controller",
         "styles",
         "inline_css_styles",
@@ -73,6 +76,17 @@ class Block(Item):
     enabled = schema.Boolean(
         required = True,
         default = True,
+        member_group = "behavior"
+    )
+
+    start_date = schema.DateTime(
+        indexed = True,
+        member_group = "behavior"
+    )
+
+    end_date = schema.DateTime(
+        indexed = True,
+        min = start_date,
         member_group = "behavior"
     )
 
@@ -194,6 +208,19 @@ class Block(Item):
         return bool(self.get(Site.common_blocks.related_end))
 
     def is_published(self):
+        
+        # Time based publication window
+        if self.start_date or self.end_date:
+            now = datetime.now()
+            
+            # Not published yet
+            if self.start_date and now < self.start_date:
+                return False
+            
+            # Expired
+            if self.end_date and now >= self.end_date:
+                return False
+
         return self.enabled
 
     def get_member_copy_mode(self, member):
@@ -287,6 +314,8 @@ class Block(Item):
                 if isinstance(related_end, Slot):
                     parents = block.get(member)
                     if parents:
+                        if isinstance(parents, Item):
+                            parents = (parents,)
                         for parent in parents:
                             location = (parent, related_end)
                             if location not in followed_path:

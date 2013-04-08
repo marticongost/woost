@@ -74,6 +74,8 @@ class LanguageModule(Module):
                     else:
                         language = chunk
 
+                    language = language.split('-', 1)[0]
+
                     if (
                         score
                         and language in available_languages

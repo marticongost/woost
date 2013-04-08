@@ -21,6 +21,7 @@ from cocktail.persistence import (
 from cocktail.controllers import make_uri, percent_encode_uri, Location
 from woost.models.changesets import ChangeSet, Change
 from woost.models.action import Action
+from woost.models.usersession import get_current_user
 
 # Extension property that makes it easier to customize the edit view for a
 # collection in the backoffice
@@ -70,16 +71,19 @@ class Item(PersistentObject):
         "previewcontroller.PreviewController"
 
     def __translate__(self, language, **kwargs):
-        if self.draft_source is not None:
-            return translations(
-                "woost.models.Item draft copy",
-                language,
-                item = self.draft_source,
-                draft_id = self._draft_id,
-                **kwargs
-            )
+        if kwargs.get("discard_generic_translation", False):
+            return ""
         else:
-            return PersistentObject.__translate__(self, language, **kwargs)
+            if self.draft_source is not None:
+                return translations(
+                    "woost.models.Item draft copy",
+                    language,
+                    item = self.draft_source,
+                    draft_id = self._draft_id,
+                    **kwargs
+                )
+            else:
+                return PersistentObject.__translate__(self, language, **kwargs)
 
     # Unique qualified name
     #--------------------------------------------------------------------------

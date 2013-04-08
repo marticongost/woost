@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <?py
 from cocktail.controllers import context
+from woost.models import Site
 from woost.extensions.blocks.block import Block
 ?>
 
@@ -11,7 +12,12 @@ from woost.extensions.blocks.block import Block
     <?py-class
     def get_item_path(self, item):
         paths = item.find_paths()
-        if len(paths) == 1:
+
+        for path in paths:
+            if path[0][0] is Site.main:
+                return path
+
+        if paths:
             return paths[0]
     ?>
 

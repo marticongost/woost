@@ -198,11 +198,10 @@ def init_site(
                 }
             ),
 
-            # Everybody can read published items
+            # Everybody can read publishable items
             ReadPermission(
                 matching_items = {
-                    "type": "woost.models.publishable.Publishable",
-                    "filter": "published"
+                    "type": "woost.models.publishable.Publishable"
                 }
             ),
             

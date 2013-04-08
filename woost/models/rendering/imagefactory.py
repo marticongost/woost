@@ -126,5 +126,9 @@ class ImageFactory(Item):
 
     @event_handler
     def handle_deleting(cls, e):
-        clear_image_cache_after_commit(factory = self)
+        from woost.models.rendering.request \
+            import clear_image_cache_after_commit
+        clear_image_cache_after_commit(factory = e.source)
+        for referer in e.source.fallback_referers:
+            clear_image_cache_after_commit(factory = referer)
 

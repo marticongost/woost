@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <?py
+from datetime import datetime
 from woost.controllers.backoffice.useractions import add_view_action_context
 from woost.extensions.blocks.blockactions import get_clipboard_contents
 ?>
@@ -35,7 +36,17 @@ from woost.extensions.blocks.blockactions import get_clipboard_contents
         
         if self.block.is_common_block():
             self.add_status("common")
-        
+
+        if self.block.start_date or self.block.end_date:
+            now = datetime.now()
+
+            if self.block.start_date and now < self.block.start_date:
+                self.add_status("awaiting_publication")
+            elif self.block.end_date and now >= self.block.end_date:
+                self.add_status("expired")
+            else:
+                self.add_status("temporary")
+
         clipboard = get_clipboard_contents()
         if clipboard and self.block.id == clipboard["block"]:
             self.add_class(clipboard["mode"])
