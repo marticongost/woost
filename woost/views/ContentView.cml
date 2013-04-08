@@ -325,6 +325,7 @@ from woost.controllers.backoffice.editstack import SelectionNode
             
             button.set_client_param("minSelection", action.min)
             button.set_client_param("maxSelection", action.max)
+            button.set_client_param("ignoresSelection", action.ignores_selection)
             return button
         ?>
     </py:woost.views.ActionBar>
