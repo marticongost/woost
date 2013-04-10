@@ -91,7 +91,8 @@ of its features include:\n"
             "audio = woost.extensions.audio:AudioExtension",
             "issuu = woost.extensions.issuu:IssuuExtension",
             "campaign3 = woost.extensions.campaign3:CampaignMonitor3Extension",
-            "youtube = woost.extensions.youtube:YouTubeExtension"
+            "youtube = woost.extensions.youtube:YouTubeExtension",
+            "externalfiles = woost.extensions.externalfiles:ExternalFilesExtension"
         ]
     },
     # Woost can't yet access view resources (images, style sheets, client
