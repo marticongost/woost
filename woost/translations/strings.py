@@ -8,8 +8,8 @@ u"""
 """
 from cocktail.translations import translations
 from cocktail.translations.helpers import ca_possessive, plural2
+from cocktail.modeling import OrderedDict
 from cocktail import schema
-from collections import OrderedDict
 
 translations.define("logged in as",
     ca = lambda user: u"Estàs identificat com a " \
