@@ -106,3 +106,65 @@
     text-decoration: underline;
 }
 
+/* PublishableGrid
+-----------------------------------------------------------------------------*/ 
+.PublishableGrid ul.publishable_list {
+    padding: 0;
+}
+
+.PublishableGrid .entry {
+    display: inline-block;
+    vertical-align: top;
+    text-align: center;
+    padding: 1em;
+    margin: 0;
+    width: 20em;
+}
+
+.PublishableGrid li.entry > .ImageGallery {
+    display: inline-block;
+}
+
+.PublishableGrid li.entry {
+    list-style: none;
+}
+
+.PublishableGrid .entry .publishable_view {
+    display: block;
+    margin-bottom: 1em;
+}
+
+.PublishableGrid .entry .AudioPlayer  {
+    width: 12em !important;
+    margin-left: 4em;
+}
+
+.PublishableGrid .entry .AudioPlayer .mejs-controls > * {
+    display: none;
+}
+
+.PublishableGrid .entry .AudioPlayer .mejs-controls > .mejs-playpause-button {
+    display: block;
+}
+
+.PublishableGrid .entry .AudioPlayer .mejs-time-rail {
+    display: block;
+    width: 7.4em !important;
+}
+
+.PublishableGrid .entry .AudioPlayer .mejs-time-total {
+    width: 7.4em !important;
+}
+
+.PublishableGrid .entry .AudioPlayer .mejs-time-loaded {
+    background: none !important;
+    background-color: #95889c !important;
+    background-color: #777 !important;
+}
+
+/* PublishablePopUp
+-----------------------------------------------------------------------------*/
+.PublishablePopUp {
+    cursor: pointer;
+}
+

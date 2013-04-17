@@ -15,7 +15,7 @@ translations.define("IssuuExtension",
     en = u"Issuu documents"
 )
 
-translations.define("FacebookPublicationExtension-plural",
+translations.define("IssuuExtension-plural",
     ca = u"Documents Issuu",
     es = u"Documentos Issuu",
     en = u"Issuu documents"
@@ -41,12 +41,12 @@ class IssuuExtension(Extension):
         )
 
     def _load(self):
-     
         from woost.extensions.issuu import (
             strings,
             issuudocument,
             issuublock
         )   
+        self.install()
      
     def _install(self):
 

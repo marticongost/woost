@@ -233,7 +233,11 @@ def add_multisite_support(e):
     # Remove the instance of Site from the database
     site_id = list(Item.qname.index.values(key = "woost.main_site"))[0]
     site = Item.index[site_id]
-    site_state = site.__Broken_state__
+    site_state = site.__Broken_state__.copy()
+    site_state["translations"] = dict(
+        (lang, translation.__Broken_state__.copy())
+        for lang, translation in site_state.pop("_translations").iteritems()
+    )
     Item.index.remove(site_id)
     Item.keys.remove(site_id)
 
@@ -272,7 +276,7 @@ def add_multisite_support(e):
             del root[key]
 
     # Settings that now belong in Configuration, as attributes
-    config.secret_key = site_state["secret_key"]
+    config.secret_key = site_state.pop("secret_key")
 
     # Settings that now belong in Configuration, as regular fields
     for key in (        
@@ -288,7 +292,7 @@ def add_multisite_support(e):
         "smtp_user",
         "smtp_password"
     ):
-        config.set(key, site_state["_" + key])
+        config.set(key, site_state.pop("_" + key))
 
     # Settings that now belong in Configuration, as collections
     for key in (
@@ -298,7 +302,7 @@ def add_multisite_support(e):
         "image_factories",
         "triggers"
     ):
-        config.set(key, list(site_state["_" + key]))
+        config.set(key, list(site_state.pop("_" + key)))
 
     # Settings that now belong in Website, becoming translated fields
     for key in (
@@ -306,18 +310,19 @@ def add_multisite_support(e):
         "region",
         "country"
     ):
-        value = site_state["_" + key]
+        value = site_state.pop("_" + key)
         for lang in config.languages:
             website.set(key, value, lang)
 
     # Settings that now belong in website, as translated fields
     for key in (
         "site_name",
+        "organization_name",
         "keywords",
         "description"
     ):
-        for lang, translation in site_state["_translations"].iteritems():
-            value = translation.__Broken_state__["_" + key]
+        for lang, translation_state in site_state["translations"].iteritems():
+            value = translation_state.pop("_" + key)
             website.set(key, value, lang)
 
     # Settings that now belong in website, as regular fields
@@ -334,17 +339,17 @@ def add_multisite_support(e):
         "https_policy",
         "https_persistence"
     ):
-        website.set(key, site_state["_" + key])
+        website.set(key, site_state.pop("_" + key))
 
     # Extension specific changes
     from woost.extensions.blocks import BlocksExtension
     if BlocksExtension.instance.enabled:
-        config.common_blocks = list(site_state["_common_blocks"])
+        config.common_blocks = list(site_state.pop("_common_blocks"))
 
     from woost.extensions.audio import AudioExtension
     if AudioExtension.instance.enabled:
-        config.audio_encoders = list(site_state["_audio_encoders"])
-        config.audio_decoders = list(site_state["_audio_decoders"])
+        config.audio_encoders = list(site_state.pop("_audio_encoders"))
+        config.audio_decoders = list(site_state.pop("_audio_decoders"))
 
     from woost.extensions.mailer import MailerExtension
     if MailerExtension.instance.enabled:
@@ -354,6 +359,15 @@ def add_multisite_support(e):
             if language:
                 mailing._language = language.__Broken_state__["_iso_code"]
 
+    from woost.extensions.googleanalytics import GoogleAnalyticsExtension
+    if GoogleAnalyticsExtension.instance.enabled:
+        account = GoogleAnalyticsExtension.instance._account
+        del GoogleAnalyticsExtension.instance._account
+        config.google_analytics_account = account
+
     # Rebuild all indexes
     Item.rebuild_indexes()
+
+    # Preserve the remaining state
+    datastore.root["woost.models.migration.multisite_leftovers"] = site_state
 

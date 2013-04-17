@@ -726,6 +726,38 @@ translations.define("TextBlock.image_original_link_visible",
     en = u"Show a link to the original image"
 )
 
+# VideoBlock
+#------------------------------------------------------------------------------
+translations.define("VideoBlock",
+    ca = u"Vídeo",
+    es = u"Video",
+    en = u"Video"
+)
+
+translations.define("VideoBlock-plural",
+    ca = u"Vídeos",
+    es = u"Vídeos",
+    en = u"Videos"
+)
+
+translations.define("VideoBlock.element_type",
+    ca = u"Tipus d'element",
+    es = u"Tipo de elemento",
+    en = u"Element type"
+)
+
+translations.define("VideoBlock.video",
+    ca = u"Vídeo",
+    es = u"Video",
+    en = u"Video"
+)
+
+translations.define("VideoBlock.player_settings",
+    ca = u"Opcions de reproductor de vídeo",
+    es = u"Opciones de reproductor de video",
+    en = u"Video player settings"
+)
+
 # VimeoBlock
 #------------------------------------------------------------------------------
 translations.define("VimeoBlock",
@@ -1943,5 +1975,94 @@ translations.define("YouTubeBlockRenderer-plural",
     ca = u"Pintadors de fotogrames pels blocs de YouTube",
     es = u"Pintadores de fotogramas para los bloques de YouTube",
     en = u"YouTube blocks still renderers"
+)
+
+# PublishableListing
+#------------------------------------------------------------------------------
+translations.define("PublishableListing",
+    ca = u"Llistat d'elements publicables",
+    es = u"Listado de elementos publicables",
+    en = u"Publishable elements listing"
+)
+
+translations.define("PublishableListing-plural",
+    ca = u"Llistats d'elements publicables",
+    es = u"Listados de elementos publicables",
+    en = u"Publishable elements listings"
+)
+
+translations.define("PublishableListing.listing",
+    ca = u"Llistat",
+    es = u"Listado",
+    en = u"Listing"
+)
+
+translations.define("PublishableListing.publishables",
+    ca = u"Elements publicables",
+    es = u"Elementos publicables",
+    en = u"Publishable elements"
+)
+
+translations.define("PublishableListing.listing_order",
+    ca = u"Ordenació",
+    es = u"Ordenación",
+    en = u"Order"
+)
+
+translations.define("PublishableListing.listing_order=arbitrary",
+    ca = u"Arbitrària",
+    es = u"Arbitraria",
+    en = u"Arbitrary"
+)
+
+translations.define("PublishableListing.listing_order=-last_update_time",
+    ca = u"Última modificació",
+    es = u"Última modificación",
+    en = u"Last update"
+)
+
+translations.define("PublishableListing.links_open_in_new_window",
+    ca = u"Obrir els enllaços a una nova finestra",
+    es = u"Abrir los enlaces en una ventana nueva",
+    en = u"Open links in a new window"
+)
+
+translations.define("PublishableListing.paginated",
+    ca = u"Paginar els resultats",
+    es = u"Paginar los resultados",
+    en = u"Paginate results"
+)
+
+translations.define("PublishableListing.page_size",
+    ca = u"Mida del llistat",
+    es = u"del listado",
+    en = u"Listing size"
+)
+
+translations.define("PublishableListing.view_class",
+    ca = u"Aparença",
+    es = u"Apariencia",
+    en = u"Appearence"
+)
+
+translations.define(
+    "PublishableListing.view_class=woost.views.PublishableTextualListing",
+    ca = u"Només text",
+    es = u"Solo texto",
+    en = u"Text only"
+)
+
+translations.define(
+    "PublishableListing.view_class=woost.views.PublishableIconListing",
+    ca = u"Icona i text",
+    es = u"Icono y texto",
+    en = u"Icon and text"
+)
+
+translations.define(
+    "PublishableListing.view_class=woost.views.PublishableGrid",
+    ca = u"Graella",
+    es = u"Parrilla",
+    en = u"Grid"
 )
 

@@ -58,6 +58,7 @@ class AudioExtension(Extension):
         CMSController.audio = AudioEncodingController
 
         self.install()
+        self.register_view_factory()
 
     def _install(self):
         self.create_default_decoders()
@@ -106,4 +107,18 @@ class AudioExtension(Extension):
         ogg.command = "/usr/bin/oggenc -q 5 - -o %s"
         ogg.insert()
         config.audio_encoders.append(ogg)
+
+    def register_view_factory(self):
+
+        from woost.models import Publishable
+        from woost.extensions.audio.audioplayer import AudioPlayer
+        from woost.views.viewfactory import publishable_view_factory
+
+        def audio_player(item, parameters):
+            if item.resource_type == "audio":
+                player = AudioPlayer()
+                player.file = item
+                return player
+
+        publishable_view_factory.register_first(Publishable, "audio_player", audio_player) 
 

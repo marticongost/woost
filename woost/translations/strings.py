@@ -8,7 +8,8 @@ u"""
 """
 from cocktail.translations import translations
 from cocktail.translations.helpers import ca_possessive, plural2
-from collections import OrderedDict
+from cocktail.modeling import OrderedDict
+from cocktail import schema
 
 translations.define("logged in as",
     ca = lambda user: u"Estàs identificat com a " \
@@ -553,6 +554,58 @@ translations.define(
     ca = u"No es pot inserir un element dins de sí mateix.",
     es = u"No se puede insertar un elemento dentro de si mismo.",
     en = u"Can't insert an element into itself."
+)
+
+translations.define(
+    "woost.controllers.backoffice.DragAndDropController.drop_notification",
+    ca = lambda dragged_object, target_object, target_member:
+        (
+            u"S'ha establert %s com a %s %s" 
+            if isinstance(target_member, schema.Reference)
+            else u"S'ha afegit %s a %s %s"
+        ) % (
+            translations(dragged_object),
+            translations(target_member),
+            ca_possessive(translations(target_object))
+        ),
+    es = lambda dragged_object, target_object, target_member:
+        (
+            u"Se ha establecido %s como %s de %s"
+            if isinstance(target_member, schema.Reference)
+            else u"Se ha añadido %s a %s de %s"
+        ) % (
+            translations(dragged_object),
+            translations(target_member),
+            translations(target_object)
+        ),
+    en = lambda dragged_object, target_object, target_member:
+        (
+            u"%s set as %s of %s"
+            if isinstance(target_member, schema.Reference)
+            else u"%s added to the %s of %s"
+        ) % (
+            translations(dragged_object),
+            translations(target_member),
+            translations(target_object)
+        )
+)
+
+translations.define("woost.views.BackOfficeLayout.drop",
+    ca = u"Inserir a dins",
+    es = u"Insertar dentro",
+    en = u"Insert inside"
+)
+
+translations.define("woost.views.BackOfficeLayout.drop_before",
+    ca = u"Inserir davant",
+    es = u"Insertar en frente",
+    en = u"Insert before"
+)
+
+translations.define("woost.views.BackOfficeLayout.drop_after",
+    ca = u"Inserir darrere",
+    es = u"Insertar detrás",
+    en = u"Insert after"
 )
 
 def _selection_error_ca(instance):    
@@ -1287,6 +1340,14 @@ translations.define("woost.views.ImageGallery.original_image_link",
     en = u"Download the original"
 )
 
+# Dialog
+#------------------------------------------------------------------------------
+translations.define("woost.views.Dialog.close_dialog_button",
+    ca = u"Tancar la finestra",
+    es = u"Cerrar la ventana",
+    en = u"Close this window"
+)
+
 # Content views
 #------------------------------------------------------------------------------
 translations.define("View as",
@@ -1679,10 +1740,34 @@ translations.define("Configuration.language",
     en = u"Language"
 )
 
+translations.define("Configuration.media",
+    ca = u"Multimèdia",
+    es = u"Multimedia",
+    en = u"Media"
+)
+
+translations.define("Configuration.media.images",
+    ca = u"Imatges",
+    es = u"Imagenes",
+    en = u"Images"
+)
+
+translations.define("Configuration.media.video",
+    ca = u"Vídeo",
+    es = u"Video",
+    en = u"Video"
+)
+
 translations.define("Configuration.rendering",
     ca = u"Processat d'imatges",
     es = u"Procesado de imágenes",
     en = u"Image processing"
+)
+
+translations.define("Configuration.services",
+    ca = u"Serveis",
+    es = u"Servicios",
+    en = u"Services"
 )
 
 translations.define("Configuration.system",
@@ -1839,6 +1924,12 @@ translations.define("Configuration.image_factories-explanation",
          u"to the site's images."
 )
 
+translations.define("Configuration.video_player_settings",
+    ca = u"Opcions de reproductor de vídeo",
+    es = u"Opciones de reproductor de video",
+    en = u"Video player settings"
+)
+
 translations.define("Configuration.timezone",
     ca = u"Zona horària",
     es = u"Zona horaria",
@@ -1932,6 +2023,12 @@ translations.define("Website.language",
     ca = u"Idioma",
     es = u"Idioma",
     en = u"Language"
+)
+
+translations.define("Website.services",
+    ca = u"Serveis",
+    es = u"Servicios",
+    en = u"Services"
 )
 
 translations.define("Website.site_name",
@@ -5633,5 +5730,49 @@ translations.define("woost.views.BackOfficeItemHeading.item_path.conjunction",
     ca = u"a",
     es = u"en",
     en = u"in"
+)
+
+# VideoPlayerSettings
+#------------------------------------------------------------------------------
+translations.define("VideoPlayerSettings", 
+    ca = u"Opcions de reproductor de vídeo",
+    es = u"Opciones de reproductor de video",
+    en = u"Video player settings"
+)
+
+translations.define("VideoPlayerSettings-plural", 
+    ca = u"Opcions de reproductor de vídeo",
+    es = u"Opciones de reproductor de video",
+    en = u"Video player settings"
+)
+
+translations.define("VideoPlayerSettings.title", 
+    ca = u"Nom",
+    es = u"Nombre",
+    en = u"Name"
+)
+
+translations.define("VideoPlayerSettings.width", 
+    ca = u"Amplada",
+    es = u"Ancho",
+    en = u"Width"
+)
+
+translations.define("VideoPlayerSettings.height", 
+    ca = u"Alçada",
+    es = u"Alto",
+    en = u"Height"
+)
+
+translations.define("VideoPlayerSettings.autoplay",
+    ca = u"Iniciar la reproducció automàticament",
+    es = u"Iniciar la reproducción automáticamente",
+    en = u"Autoplay"
+)
+
+translations.define("VideoPlayerSettings.show_player_controls",
+    ca = u"Mostrar controls de reproducció",
+    es = u"Mostrar controles de reproducción",
+    en = u"Show player controls"
 )
 

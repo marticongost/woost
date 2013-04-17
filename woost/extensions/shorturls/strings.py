@@ -7,6 +7,12 @@ from cocktail.translations import translations
 
 # Configuration
 #------------------------------------------------------------------------------
+translations.define("Configuration.services.short_urls",
+    ca = u"Escurçat d'URLs",
+    es = u"URLs cortas",
+    en = u"Short URLs"
+)
+
 translations.define("Configuration.url_shortener",
     ca = u"Servei d'URLs curtes",
     es = u"Servicio de URLs cortas",

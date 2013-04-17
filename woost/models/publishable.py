@@ -7,7 +7,6 @@
 @since:			January 2010
 """
 from datetime import datetime
-from threading import Lock
 from cocktail.modeling import getter, classgetter
 from cocktail.events import event_handler
 from cocktail.pkgutils import import_object
@@ -31,8 +30,6 @@ from woost.models.permission import ReadPermission, PermissionExpression
 from woost.models.caching import CachingPolicy
 
 WEBSITE_PUB_INDEX_KEY = "woost.models.Publishable.per_website_publication_index"
-
-_per_website_publication_index_lock = Lock()
 
 
 class Publishable(Item):
@@ -307,8 +304,6 @@ class Publishable(Item):
     def handle_deleted(cls, event):
         cls.per_website_publication_index.remove(None, event.source.id)
 
-    # TODO: setting website.home should update .websites accordingly
-
     def __insert_into_per_website_publication_index(self):
 
         index = self.__class__.per_website_publication_index
@@ -331,11 +326,10 @@ class Publishable(Item):
         index = datastore.root.get(WEBSITE_PUB_INDEX_KEY)
 
         if index is None:
-            with _per_website_publication_index_lock:
-                index = datastore.root.get(WEBSITE_PUB_INDEX_KEY)
-                if index is None:
-                    index = MultipleValuesIndex()
-                    datastore.root[WEBSITE_PUB_INDEX_KEY] = index
+            index = datastore.root.get(WEBSITE_PUB_INDEX_KEY)
+            if index is None:
+                index = MultipleValuesIndex()
+                datastore.root[WEBSITE_PUB_INDEX_KEY] = index
         
         return index
 
@@ -493,7 +487,7 @@ class Publishable(Item):
             return False
 
         websites_subset = self.websites
-        if websites_subset:
+        if websites_subset and website != "any":
             if website is None:
                 website = get_current_website()
             if website is None or website not in websites_subset:
@@ -535,11 +529,11 @@ class Publishable(Item):
                 uri = make_uri(uri, **parameters)
 
             if host == "?":
-                host = None
-                if self.websites:
-                    website = get_current_website()
-                    if website not in self.websites:
-                        host = self.websites[0].hosts[0]
+                websites = self.websites
+                if websites and get_current_website() not in websites:
+                    host = websites[0].hosts[0]
+                else:
+                    host = None
             elif host == "!":
                 if self.websites:
                     host = self.websites[0].hosts[0]
@@ -554,6 +548,30 @@ class Publishable(Item):
             uri = self._fix_uri(uri, host, encode)
 
         return uri
+
+    def translate_file_type(self, language = None):
+
+        trans = ""
+
+        mime_type = self.mime_type
+        if mime_type:
+            trans = translations("mime " + mime_type, language = language)
+
+        if not trans:
+
+            res_type = self.resource_type
+            if res_type:
+                trans = self.__class__.resource_type.translate_value(
+                    res_type,
+                    language = language
+                )
+
+                if trans and res_type != "other":
+                    ext = self.file_extension
+                    if ext:
+                        trans += " " + ext.upper().lstrip(".")
+
+        return trans
 
 Publishable.login_page.type = Publishable
 Publishable.related_end = schema.Collection()
@@ -605,7 +623,7 @@ class IsPublishedExpression(Expression):
                 per_website_index = Publishable.per_website_publication_index
 
                 # - content that can be published on any website
-                website_subset = per_website_index.values(key = None)
+                website_subset = set(per_website_index.values(key = None))
 
                 # - content that can be published on the active website
                 if website:

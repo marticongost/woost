@@ -19,6 +19,7 @@ from woost.models.publicationschemes import PublicationScheme, PathResolution
 from woost.models.caching import CachingPolicy
 from woost.models.rendering.renderer import Renderer
 from woost.models.rendering.imagefactory import ImageFactory
+from woost.models.videoplayersettings import VideoPlayerSettings
 from woost.models.trigger import Trigger
 
 try:
@@ -38,7 +39,10 @@ class Configuration(Item):
         "publication.pages",
         "publication.maintenance",
         "language",
+        "media.images",
+        "media.video",
         "rendering",
+        "services",
         "system",
         "system.smtp",
         "admin"
@@ -191,14 +195,14 @@ class Configuration(Item):
         member_group = "language"
     )
 
-    # rendering
+    # media
     #--------------------------------------------------------------------------     
     renderers = schema.Collection(
         items = schema.Reference(type = Renderer),
         bidirectional = True,
         integral = True,
         related_end = schema.Reference(),
-        member_group = "rendering"
+        member_group = "media.images"
     )
 
     image_factories = schema.Collection(
@@ -206,7 +210,15 @@ class Configuration(Item):
         bidirectional = True,
         integral = True,
         related_end = schema.Reference(),
-        member_group = "rendering"
+        member_group = "media.images"
+    )
+
+    video_player_settings = schema.Collection(
+        items = schema.Reference(type = VideoPlayerSettings),
+        bidirectional = True,
+        integral = True,
+        related_end = schema.Reference(),
+        member_group = "media.video"
     )
 
     # system
