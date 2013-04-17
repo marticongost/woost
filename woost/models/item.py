@@ -581,6 +581,9 @@ class Item(PersistentObject):
         if encode:
             uri = percent_encode_uri(uri)
 
+        if "://" in uri:
+            host = None
+
         if host:
             if host == ".":
                 location = Location.get_current_host()

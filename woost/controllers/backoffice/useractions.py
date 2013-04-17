@@ -750,7 +750,7 @@ class ConfirmDraftAction(SaveAction):
 
 class PrintAction(UserAction):
     direct_link = True
-    ignore_selection = True
+    ignores_selection = True
     excluded = frozenset(["selector", "collection"])
 
     def get_url(self, controller, selection):

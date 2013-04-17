@@ -948,7 +948,8 @@ class SelectionNode(StackNode):
     def __translate__(self, language, **kwargs):
         return translations(
             "woost.views.BackOfficeLayout edit stack select",
-            relation = self.parent_node.member
+            relation = self.parent_node and self.parent_node.member,
+            type = self.content_type
         )
 
     def uri(self, **params):

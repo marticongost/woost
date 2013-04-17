@@ -27,7 +27,7 @@ def extract_video_id(string):
 
 class YouTubeBlock(Block):
 
-    instantiable = True
+    instantiable = False
     view_class = "woost.extensions.blocks.YouTubeBlockView"
     block_display = "woost.extensions.blocks.GenericThumbnailBlockDisplay"
 

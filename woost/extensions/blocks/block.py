@@ -339,3 +339,20 @@ class Block(Item):
     def name_suffix(self):
         return None
 
+    def replace_with(self, replacement):
+        """Removes this block from all slots, putting another block in the same
+        position.
+
+        @param replacement: The block to insert.
+        @type replacement: L{Block}
+        """
+        # Imported here to prevent an import cycle
+        from woost.extensions.blocks.slot import Slot
+
+        for member in self.__class__.members().itervalues():
+            related_end = getattr(member, "related_end", None)
+            if isinstance(related_end, Slot):
+                for container in self.get(member):
+                    slot_content = container.get(related_end)
+                    slot_content[slot_content.index(self)] = replacement
+

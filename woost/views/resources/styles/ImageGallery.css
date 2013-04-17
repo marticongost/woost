@@ -54,33 +54,8 @@
     left: 2px;
 }
 
-body.modal {
-    overflow: hidden;
-}
-
-.dialog-background {
-    z-index: 10000;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: black;
-    opacity: 0.85;
-    filter: alpha(opacity=85);
-}
-
-.ImageGallery-dialog {
-    z-index: 10001;
-    border: none;
-    position: fixed;
-    top: 4%;
-    background-color: white;
-    -webkit-box-shadow: 3px 3px 3px #272727;
-}
-
-.ImageGallery-dialog button,
-.ImageGallery-dialog .header,
+.ImageGallery-dialog .previous_button,
+.ImageGallery-dialog .next_button,
 .ImageGallery .slideshow_controls a {
     border: none;
     text-decoration: none;
@@ -119,37 +94,21 @@ body.modal {
     filter: alpha(opacity=80);
 }
 
-.ImageGallery-dialog .header {
-    position: absolute;
-    left: 2px;
-    top: 2px;
-    padding: 0.2em;
-}
-
 .ImageGallery-dialog .index {
     margin-right: 0.4em;
     font-weight: bold;
 }
 
-.ImageGallery-dialog .close_button {
-    position: absolute;
-    top: 2px;
-    right: 2px;    
-    font-size: 0;
-}
-
 .ImageGallery-dialog .next_button {
     position: absolute;
-    bottom: 7px;
-    right: 2px;
+    right: 5px;
     padding: 5px;
     font-size: 0;
 }
 
 .ImageGallery-dialog .previous_button {
     position: absolute;
-    bottom: 7px;
-    left: 2px;
+    left: 5px;
     padding: 5px;
     font-size: 0;
 }
@@ -174,5 +133,15 @@ body.modal {
     background-color: #666;
     border: 2px solid #444;
     bottom: 2px;
+}
+
+.ImageGallery-dialog .dialog_heading {
+    display: inline;
+}
+
+.ImageGallery-dialog .dialog_header .index {
+    font-size: 1.3em;
+    margin-right: 0.8em;
+    color: #666;
 }
 

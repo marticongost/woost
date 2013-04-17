@@ -24,6 +24,9 @@ class ItemLabel(Element):
 
         if self.item:
 
+            self["draggable"] = "true"
+            self["data-woost-item"] = self.item.id
+
             for schema in self.item.__class__.descend_inheritance(True):
                 self.add_class(schema.name)
 

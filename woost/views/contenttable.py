@@ -8,7 +8,7 @@ u"""
 """
 from cocktail.pkgutils import resolve
 from cocktail.translations import translations
-from cocktail.schema import Reference
+from cocktail.schema import RelationMember
 from cocktail.schema.expressions import (
     PositiveExpression,
     NegativeExpression
@@ -56,6 +56,15 @@ class ContentTable(ContentDisplayMixin, Table):
             row.add_class("nested_draft")
 
         return row
+
+    def create_cell(self, item, column, language = None):        
+        cell = Table.create_cell(self, item, column, language = language)
+        
+        # Drag & drop information
+        if isinstance(column, RelationMember):
+            cell["data-woost-drop"] = "%d.%s" % (item.id, column.name)
+
+        return cell
 
     def create_element_display(self, item, member):
         
