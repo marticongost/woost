@@ -3,10 +3,7 @@ u"""
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
-import Image
-import ImageEnhance
-import ImageFilter
-import ImageOps
+from PIL import Image, ImageEnhance, ImageFilter, ImageOps
 from cocktail.events import event_handler
 from cocktail import schema
 from cocktail.translations import translations
