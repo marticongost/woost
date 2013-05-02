@@ -8,7 +8,7 @@ from shutil import rmtree
 from tempfile import mkdtemp
 from subprocess import Popen, PIPE
 from time import time, sleep
-import Image
+from PIL import Image
 from cocktail import schema
 from woost.models.file import File
 from woost.models.rendering.renderer import Renderer
