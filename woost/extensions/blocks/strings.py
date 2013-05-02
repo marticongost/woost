@@ -2066,3 +2066,9 @@ translations.define(
     en = u"Grid"
 )
 
+translations.define("PublishableListing.element_type",
+    ca = u"Tipus d'element",
+    es = u"Tipo de elemento",
+    en = u"Element type"
+)
+
