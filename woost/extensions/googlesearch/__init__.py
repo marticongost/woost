@@ -9,7 +9,7 @@
 from cocktail.modeling import ListWrapper
 from cocktail.translations import translations, get_language
 from cocktail import schema
-from woost.models import Extension
+from woost.models import Extension, Configuration
 
 translations.define("GoogleSearchExtension",
     ca = u"Cercador de Google",
