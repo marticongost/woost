@@ -4,7 +4,7 @@ u"""
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
 import os
-import Image
+from PIL import Image
 from tempfile import mkdtemp
 from shutil import rmtree
 from subprocess import Popen

@@ -3,7 +3,7 @@ u"""
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
-import Image
+from PIL import Image
 from cocktail.events import event_handler
 from cocktail.iteration import first
 from cocktail import schema

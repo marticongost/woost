@@ -6,6 +6,8 @@ u"""
 from xml.sax import parseString
 from xml.sax.handler import ContentHandler
 from urllib import urlopen, quote_plus
+from cocktail.modeling import ListWrapper
+from cocktail.translations import get_language
 
 URL_TEMPLATE = (
     "http://www.google.com/cse"
@@ -21,7 +23,7 @@ URL_TEMPLATE = (
     "&oe=utf8"
 )
 
-def google_cse_search(self,
+def google_cse_search(
     search_engine_id,
     query,
     page = 0,
@@ -54,7 +56,7 @@ def google_cse_search(self,
     @rtype: L{GoogleSearchResultsList}
     """
     cse_url = URL_TEMPLATE % {
-        "search_engine_id": self.search_engine_id,
+        "search_engine_id": search_engine_id,
         "query": quote_plus(query.encode("utf-8")),
         "page": page * page_size,
         "page_size": page_size,
@@ -68,14 +70,14 @@ def google_cse_search(self,
 
     results = []
 
-    parser = SAXContentHandler()
+    parser = GoogleCSEXMLParser()
     parseString(xml_response, parser)
 
     return GoogleSearchResultsList(
         parser.results,
         page,
         page_size,
-        sax_handler.result_count
+        parser.result_count
     )
         
 
