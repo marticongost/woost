@@ -62,9 +62,6 @@ class CampaignMonitorExtension(Extension):
             useraction
         )
 
-        from woost.extensions.campaignmonitor.campaignmonitorsubscriptionpage \
-            import CampaignMonitorSubscriptionPage
-
         # Setup the synchronization view
         from woost.controllers.backoffice.backofficecontroller \
             import BackOfficeController
@@ -109,6 +106,9 @@ class CampaignMonitorExtension(Extension):
 
     def _install(self):
 
+        from woost.extensions.campaignmonitor.campaignmonitorsubscriptionpage \
+            import CampaignMonitorSubscriptionPage
+
         # Subscription controller        
         campaign_monitor_controller = self._create_asset(
             Controller,
@@ -142,7 +142,7 @@ class CampaignMonitorExtension(Extension):
         )
         
         # Unsubscription template
-        subscription_view = self._create_asset(
+        unsubscription_view = self._create_asset(
             Template,
             "unsubscription_template",
             identifier =
