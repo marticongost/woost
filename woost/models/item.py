@@ -72,19 +72,16 @@ class Item(PersistentObject):
         "previewcontroller.PreviewController"
 
     def __translate__(self, language, **kwargs):
-        if kwargs.get("discard_generic_translation", False):
-            return ""
+        if self.draft_source is not None:
+            return translations(
+                "woost.models.Item draft copy",
+                language,
+                item = self.draft_source,
+                draft_id = self._draft_id,
+                **kwargs
+            )
         else:
-            if self.draft_source is not None:
-                return translations(
-                    "woost.models.Item draft copy",
-                    language,
-                    item = self.draft_source,
-                    draft_id = self._draft_id,
-                    **kwargs
-                )
-            else:
-                return PersistentObject.__translate__(self, language, **kwargs)
+            return PersistentObject.__translate__(self, language, **kwargs)
 
     # Unique qualified name
     #--------------------------------------------------------------------------
