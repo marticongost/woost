@@ -160,6 +160,11 @@
     cursor: move;
 }
 
+.EditBlocksView .BlockDisplay.disabled_block {
+    background-color: #eedbdb;
+    border-color: #cd9d9d;
+}
+
 .EditBlocksView .BlockDisplay + .BlockDisplay {
     margin-top: 1em;
 }
