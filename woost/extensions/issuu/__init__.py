@@ -47,6 +47,7 @@ class IssuuExtension(Extension):
             issuublock
         )   
         self.install()
+        self.register_view_factory()
      
     def _install(self):
 
@@ -81,4 +82,15 @@ class IssuuExtension(Extension):
                 renderer.renderers.append(issuu_renderer)
 
                 break
+
+    def register_view_factory(self):
+
+        from woost.extensions.issuu.issuudocument import IssuuDocument
+        from woost.views.viewfactory import publishable_view_factory
+
+        publishable_view_factory.register_first(
+            IssuuDocument, 
+            "issuu_viewer",
+            "woost.extensions.issuu.IssuuViewer"
+        )
 
