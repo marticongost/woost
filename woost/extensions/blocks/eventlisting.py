@@ -3,8 +3,10 @@ u"""
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
-from datetime import datetime
+from datetime import date, datetime, timedelta
+from cocktail.dateutils import add_time
 from cocktail import schema
+from cocktail.schema.expressions import RangeIntersectionExpression
 from cocktail.controllers import (
     request_property,
     get_parameter,
@@ -91,7 +93,28 @@ class EventListing(Block):
         events = Event.select_accessible()
 
         if not self.include_expired:
-            events.add_filter(Event.event_start.greater_equal(datetime.now()))
+            subset = set()
+
+            subset.update(
+                Event.select(filters = [
+                    Event.event_end.not_equal(None),
+                    RangeIntersectionExpression(
+                        Event.event_start,
+                        Event.event_end,
+                        datetime.now(),
+                        add_time(date.today() + timedelta(days = 1))
+                    )
+                ])
+            )
+
+            subset.update(
+                Event.select(filters = [
+                    Event.event_end.equal(None),
+                    Event.event_start.greater(datetime.now())
+                ])
+            )
+
+            events.base_collection = subset
 
         self._apply_listing_order(events)
 
