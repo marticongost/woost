@@ -179,6 +179,8 @@ class Block(Item):
                     if self.heading_type == "hidden_h1":
                         view.heading.tag = "h1"
                         view.heading.set_style("display", "none")
+                    elif self.heading_type == "generic":
+                        view.heading.tag = "div"
                     else:
                         view.heading.tag = self.heading_type
                     view.heading.append(self.heading)
@@ -197,6 +199,8 @@ class Block(Item):
         if self.heading_type == "hidden_h1":
             heading = Element("h1")
             heading.set_style("display", "none")
+        elif self.heading_type == "generic":
+            heading = Element()
         else:
             heading = Element(self.heading_type)
 
