@@ -5744,6 +5744,26 @@ translations.define("woost.views.BackOfficeItemHeading.item_path.conjunction",
     en = u"in"
 )
 
+# ReferenceList
+#------------------------------------------------------------------------------
+translations.define("woost.views.ReferenceList.summary",
+    ca = lambda count:
+        u"Referenciat per <strong>%d</strong> %s" % (
+            count,
+            plural2(count, u"element", u"elements")
+        ),
+    es = lambda count:
+        u"Referenciado porr <strong>%d</strong> %s" % (
+            count,
+            plural2(count, u"elemento", u"elementos")
+        ),
+    en = lambda count:
+        u"Referenced by <strong>%d</strong> %s" % (
+            count,
+            plural2(count, u"element", u"elements")
+        )
+)
+
 # VideoPlayerSettings
 #------------------------------------------------------------------------------
 translations.define("VideoPlayerSettings", 

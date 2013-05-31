@@ -36,6 +36,9 @@ schema.RelationMember.selector_default_type = None
 # the 'last_update_time' member of items when changed
 schema.Member.affects_last_update_time = True
 
+# Extension property that allows hiding relations in the ReferenceList view
+schema.RelationMember.visible_in_reference_list = True
+
 
 class Item(PersistentObject):
     """Base class for all CMS items. Provides basic functionality such as
