@@ -2031,6 +2031,12 @@ translations.define("Website.services",
     en = u"Services"
 )
 
+translations.define("Website.specific_content",
+    ca = u"Contingut específic",
+    es = u"Contenido específico",
+    en = u"Specific content"
+)
+
 translations.define("Website.site_name",
     ca = u"Nom del lloc",
     es = u"Nombre del sitio",
