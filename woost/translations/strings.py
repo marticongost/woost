@@ -4158,6 +4158,12 @@ translations.define("Controller.python_name-explanation",
     en = u"Qualified name of the Python implementation for the controller"
 )
 
+translations.define("Controller.published_items",
+    ca = u"Elements publicats",
+    es = u"Elementos publicados",
+    en = u"Published elements"
+)
+
 # Extension
 #------------------------------------------------------------------------------
 translations.define("Extension",
