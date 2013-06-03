@@ -2031,6 +2031,12 @@ translations.define("Website.services",
     en = u"Services"
 )
 
+translations.define("Website.specific_content",
+    ca = u"Contingut específic",
+    es = u"Contenido específico",
+    en = u"Specific content"
+)
+
 translations.define("Website.site_name",
     ca = u"Nom del lloc",
     es = u"Nombre del sitio",
@@ -4152,6 +4158,12 @@ translations.define("Controller.python_name-explanation",
     en = u"Qualified name of the Python implementation for the controller"
 )
 
+translations.define("Controller.published_items",
+    ca = u"Elements publicats",
+    es = u"Elementos publicados",
+    en = u"Published elements"
+)
+
 # Extension
 #------------------------------------------------------------------------------
 translations.define("Extension",
@@ -5730,6 +5742,26 @@ translations.define("woost.views.BackOfficeItemHeading.item_path.conjunction",
     ca = u"a",
     es = u"en",
     en = u"in"
+)
+
+# ReferenceList
+#------------------------------------------------------------------------------
+translations.define("woost.views.ReferenceList.summary",
+    ca = lambda count:
+        u"Referenciat per <strong>%d</strong> %s" % (
+            count,
+            plural2(count, u"element", u"elements")
+        ),
+    es = lambda count:
+        u"Referenciado porr <strong>%d</strong> %s" % (
+            count,
+            plural2(count, u"elemento", u"elementos")
+        ),
+    en = lambda count:
+        u"Referenced by <strong>%d</strong> %s" % (
+            count,
+            plural2(count, u"element", u"elements")
+        )
 )
 
 # VideoPlayerSettings
