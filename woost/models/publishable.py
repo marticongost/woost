@@ -333,13 +333,14 @@ class Publishable(Item):
         
         return index
 
-    @classmethod
-    def rebuild_indexes(cls, recursive = False, verbose = True):
-        Item.rebuild_indexes(cls, recursive, verbose)
-        self.rebuild_per_website_publication_index()
+    @event_handler
+    def handle_rebuilding_indexes(cls, e):
+        cls.rebuild_per_website_publication_index(verbose = e.verbose)
 
     @classmethod
-    def rebuild_per_website_publication_index(cls):
+    def rebuild_per_website_publication_index(cls, verbose = False):
+        if verbose:
+            print "Rebuilding the Publishable/Website index"
         del datastore.root[WEBSITE_PUB_INDEX_KEY]
         for publishable in cls.select():
             publishable.__insert_into_per_website_publication_index()
