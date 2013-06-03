@@ -15,7 +15,8 @@
         ?>
     </py:ready>
 
-    @{self.block.issuu_document.issuu_embed_code}
+    <py:woost.extensions.issuu.IssuuViewer
+        py:item="@{self.block.issuu_document}"/>
 
 </div>
 

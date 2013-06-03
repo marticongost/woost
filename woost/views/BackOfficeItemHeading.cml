@@ -61,6 +61,10 @@ from woost import app
                 </py:ready>
             </ul>
         </span>
+
+        <py:woost.views.ReferenceList
+            py:id="item_references"
+            py:item="@{self.item}"/>
     </div>
 
     <li py:def="item_path_step" py:args="path, index, step">
