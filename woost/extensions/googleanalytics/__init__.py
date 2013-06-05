@@ -51,7 +51,8 @@ class GoogleAnalyticsExtension(Extension):
         from woost.extensions.googleanalytics import (
             strings,
             configuration,
-            website
+            website,
+            document
         )
 
         from cocktail.events import when
@@ -59,11 +60,16 @@ class GoogleAnalyticsExtension(Extension):
 
         @when(CMSController.producing_output)
         def handle_producing_output(e):
-            html = e.output.get("head_end_html", "")
-            if html:
-                html += " "
-            html += self.get_analytics_script()
-            e.output["head_end_html"] = html
+            publishable = e.output.get("publishable")
+            if (
+                publishable is None 
+                or getattr(publishable, "ga_tracking_enabled", True)
+            ):
+                html = e.output.get("head_end_html", "")
+                if html:
+                    html += " "
+                html += self.get_analytics_script()
+                e.output["head_end_html"] = html
 
     def get_analytics_script(self):
         config = Configuration.instance
