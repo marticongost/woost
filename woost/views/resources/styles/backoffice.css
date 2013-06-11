@@ -551,6 +551,11 @@ body.modal {
     margin-bottom: 1.5em;
 }
 
+.BackOfficeLayout .Form div.field.translated {
+    clear: left;
+    margin-bottom: 1em;
+}
+
 .BackOfficeLayout .Form div.field:after {
     content: ".";
     display: block;
@@ -567,6 +572,10 @@ body.modal {
     float: left;
     margin-right: 1.5em;
     padding: 0.2em;
+}
+
+.BackOfficeLayout .Form .translated div.field_instance {
+    margin-bottom: 0.5em;
 }
 
 .BackOfficeLayout .Form td.field_instance {
