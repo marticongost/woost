@@ -42,7 +42,7 @@ from woost.models import (
                 ?>
                 <span class="label">${translations("Translations")}</span>                
                 <ul class="selector_content">
-                    <li py:for="language in self.available_languages">
+                    <li py:for="language in self.available_languages" data-language="${language}">
                         <?py
                         has_translation = language in self.translations
                         ?>
