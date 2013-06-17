@@ -51,27 +51,24 @@ class ViewFactory(object):
         )
 
     def register(self, cls, id, handler):
-        try:
-            handlers = self._type_mapping[cls]
-        except KeyError:
+        handlers = self._type_mapping.get(cls, recursive = False)
+        if handlers is None:
             handlers = []
             self._type_mapping[cls] = handlers
 
         handlers.append((id, handler))
 
     def register_first(self, cls, id, handler):
-        try:
-            handlers = self._type_mapping[cls]
-        except KeyError:
+        handlers = self._type_mapping.get(cls, recursive = False)
+        if handlers is None:
             handlers = []
             self._type_mapping[cls] = handlers
 
         handlers.insert(0, (id, handler))
 
     def register_before(self, cls, anchor, id, handler):
-        try:
-            handlers = self._type_mapping[cls]
-        except KeyError:
+        handlers = self._type_mapping.get(cls, recursive = False)
+        if handlers is None:
             handlers = []
             self._type_mapping[cls] = handlers
 
@@ -99,9 +96,8 @@ class ViewFactory(object):
             )
 
     def register_after(self, cls, anchor, id, handler):
-        try:
-            handlers = self._type_mapping[cls]
-        except KeyError:
+        handlers = self._type_mapping.get(cls, recursive = False)
+        if handlers is None:
             handlers = []
             self._type_mapping[cls] = handlers
 
@@ -129,9 +125,8 @@ class ViewFactory(object):
             )
 
     def replace(self, cls, id, handler):
-        try:
-            handlers = self._type_mapping[cls]
-        except KeyError:
+        handlers = self._type_mapping.get(cls, recursive = False)
+        if handlers is None:
             handlers = []
             self._type_mapping[cls] = handlers
 
@@ -155,9 +150,8 @@ class ViewFactory(object):
             )
 
     def unregister(self, cls, id):
-        try:
-            handlers = self._type_mapping[cls]
-        except KeyError:
+        handlers = self._type_mapping.get(cls, recursive = False)
+        if handlers is None:
             handlers = []
             self._type_mapping[cls] = handlers
 
