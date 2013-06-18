@@ -44,7 +44,9 @@ class IssuuExtension(Extension):
         from woost.extensions.issuu import (
             strings,
             issuudocument,
-            issuublock
+            issuublock,
+            issuuviewersettings,
+            configuration
         )   
         self.install()
         self.register_view_factory()
@@ -88,9 +90,14 @@ class IssuuExtension(Extension):
         from woost.extensions.issuu.issuudocument import IssuuDocument
         from woost.views.viewfactory import publishable_view_factory
 
+        def issuu_viewer(item, parameters):
+            viewer_settings = Configuration.instance.issuu_viewer_settings
+            if viewer_settings:
+                return viewer_settings[0].create_viewer(item)
+
         publishable_view_factory.register_first(
             IssuuDocument, 
             "issuu_viewer",
-            "woost.extensions.issuu.IssuuViewer"
+            issuu_viewer
         )
 

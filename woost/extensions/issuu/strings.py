@@ -37,12 +37,6 @@ translations.define("IssuuDocument.issuu_document_url",
     en = u"Issuu document URL"
 )
 
-translations.define("IssuuDocument.issuu_embed_code",
-    ca = u"Codi d'insersió",
-    es = u"Código de inserción",
-    en = u"Embed code"
-)
-
 translations.define("IssuuDocument.thumbnail_page",
     ca = u"Pàgina de la miniatura",
     es = u"Página de la miniatura",
@@ -53,6 +47,12 @@ translations.define("IssuuDocument.issuu_document_id",
     ca = u"ID document Issuu",
     es = u"ID documento Issuu",
     en = u"Issuu document ID"
+)
+
+translations.define("IssuuDocument.issuu_config_id",
+    ca = u"ID configuració Issuu",
+    es = u"ID configuración Issuu",
+    en = u"Issuu config ID"
 )
 
 # IssuuBlock
@@ -110,5 +110,51 @@ translations.define("IssuuDocumentRenderer-plural",
     ca = u"Pintador de documents Issuu",
     es = u"Pintador de documentos Issuu",
     en = u"Issuu documents renderer"
+)
+
+# IssuuViewerSettings
+#------------------------------------------------------------------------------
+translations.define("IssuuViewerSettings",
+    ca = u"Opcions de document Issuu",
+    es = u"Opciones de documento Issuu",
+    en = u"Issuu document settings"
+)
+
+translations.define("IssuuViewerSettings-plural",
+    ca = u"Opcions de document Issuu",
+    es = u"Opciones de documento Issuu",
+    en = u"Issuu document settings"
+)
+
+translations.define("IssuuViewerSettings.title", 
+    ca = u"Nom",
+    es = u"Nombre",
+    en = u"Name"
+)
+
+translations.define("IssuuViewerSettings.width", 
+    ca = u"Amplada",
+    es = u"Ancho",
+    en = u"Width"
+)
+
+translations.define("IssuuViewerSettings.height", 
+    ca = u"Alçada",
+    es = u"Alto",
+    en = u"Height"
+)
+
+# Configuration
+#------------------------------------------------------------------------------
+translations.define("Configuration.media.issuu",
+    ca = u"Issuu",
+    es = u"Issuu",
+    en = u"Issuu"
+)
+
+translations.define("Configuration.issuu_viewer_settings",
+    ca = u"Opcions de document Issuu",
+    es = u"Opciones de documento Issuu",
+    en = u"Issuu document settings"
 )
 

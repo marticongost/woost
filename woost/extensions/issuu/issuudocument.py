@@ -10,14 +10,16 @@ from cocktail import schema
 from cocktail.events import event_handler
 from woost.models import Publishable, Controller
 
-ISSUU_DOCUMENT_URL_PATTERN = re.compile(u"http://issuu.com/(.+)/docs/([^/]+)/?.*")
+ISSUU_DOCUMENT_URL_PATTERN = \
+    re.compile(u"http://issuu.com/(.+)/docs/([^/]+)/?(\d+)?\?e=(\d+/\d+).*")
 
 def extract_issuu_document_metadata(url):
     match = re.match(ISSUU_DOCUMENT_URL_PATTERN, url)
     if match:
         return {
             "username": match.group(1),
-            "docname": match.group(2)
+            "docname": match.group(2),
+            "configid": match.group(4)
         }
     else:
         return {}
@@ -35,7 +37,6 @@ class IssuuDocument(Publishable):
     members_order = [
         "title",
         "issuu_document_url",
-        "issuu_embed_code",
         "thumbnail_page"
     ]
 
@@ -56,14 +57,6 @@ class IssuuDocument(Publishable):
         member_group = "content"
     )
 
-    issuu_embed_code = schema.String(
-        required = True,
-        searchable = False,
-        edit_control = "cocktail.html.TextArea",
-        member_group = "content",
-        listed_by_default = False
-    )
-
     thumbnail_page = schema.Integer(
         required = True,
         default = 1,
@@ -81,6 +74,45 @@ class IssuuDocument(Publishable):
         listed_by_default = False
     )
 
+    issuu_config_id = schema.String(
+        editable = False,
+        searchable = False,
+        member_group = "content",
+        listed_by_default = False
+    )
+
+    def get_issuu_uri(self, page_number = None):
+        if page_number == None:
+            page_number = self.thumbnail_page
+
+        return u"http://issuu.com/%s/docs/%s/%s?e=%s" % (
+            self.issuu_document_username,
+            self.issuu_document_name,
+            page_number,
+            self.issuu_config_id
+        )
+
+    def get_uri(self,
+        path = None,
+        parameters = None,
+        language = None,
+        host = None,
+        encode = True):
+
+        uri = self.get_issuu_uri()
+
+        if uri is not None:
+
+            if path:
+                uri = make_uri(uri, *path)
+
+            if parameters:
+                uri = make_uri(uri, **parameters)
+
+            uri = self._fix_uri(uri, host, encode)
+
+        return uri
+
     @event_handler
     def handle_changed(cls, event):                                                                                                                                                       
 
@@ -95,6 +127,7 @@ class IssuuDocument(Publishable):
             metadata = extract_issuu_document_metadata(self.issuu_document_url)
             self.issuu_document_username = metadata.get("username")
             self.issuu_document_name = metadata.get("docname")
+            self.issuu_config_id = metadata.get("configid")
 
             if self.issuu_document_username and self.issuu_document_name:
                 response = urlopen(
@@ -113,7 +146,7 @@ class IssuuDocument(Publishable):
                 try:
                     self.issuu_document_id = \
                         data["response"]["docs"][0]["documentId"]
-                except KeyError, IndexError:
+                except (KeyError, IndexError):
                     self.issuu_document_id = None
 
 
