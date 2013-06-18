@@ -10,7 +10,7 @@ from woost.controllers import BaseCMSController
 class IssuuDocumentController(BaseCMSController):
 
     def __call__(self, *args, **kwargs):
-        uri = self.context["publishable"].issuu_document_url
+        uri = self.context["publishable"].get_issuu_uri()
         raise cherrypy.HTTPRedirect(uri)
 
 
