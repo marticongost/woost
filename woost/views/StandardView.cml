@@ -14,7 +14,7 @@ from woost.models import Configuration, get_current_website
     attachments_icon_factory = "icon16"
 
     def get_title(self):
-        return self._home.title
+        return get_current_website().site_name
         
     def get_linked_attachments(self):
         return (attachment
@@ -57,9 +57,19 @@ from woost.models import Configuration, get_current_website
                     py:accessible_check="${False}"
                     alt="@{self._title}"
                     style="z-index: 1; position: relative;"/>
-                <span 
-                    py:id="title_label_text"
-                    style="position: absolute; z-index: 0; left: 0; top: 0; visibility: hidden;">@{self._title}</span>
+                <span py:id="title_label_text">
+                    <py:ready>
+                        <?py
+                        if self._logo is not None:
+                            element.set_style("position", "absolute")
+                            element.set_style("z-index", "0")
+                            element.set_style("left", "0")
+                            element.set_style("top", "0")
+                            element.set_style("visibility", "hidden")
+                        ?>
+                    </py:ready>
+                    @{self._title}
+                </span>
             </a>
         </h1>
 
