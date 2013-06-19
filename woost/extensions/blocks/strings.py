@@ -1352,7 +1352,7 @@ translations.define("NewsListing.paginated",
 
 translations.define("NewsListing.page_size",
     ca = u"Mida del llistat",
-    es = u"del listado",
+    es = u"Tamaño del listado",
     en = u"Listing size"
 )
 
@@ -1441,7 +1441,7 @@ translations.define("EventListing.paginated",
 
 translations.define("EventListing.page_size",
     ca = u"Mida del llistat",
-    es = u"del listado",
+    es = u"Tamaño del listado",
     en = u"Listing size"
 )
 
@@ -2035,7 +2035,7 @@ translations.define("PublishableListing.paginated",
 
 translations.define("PublishableListing.page_size",
     ca = u"Mida del llistat",
-    es = u"del listado",
+    es = u"Tamaño del listado",
     en = u"Listing size"
 )
 
