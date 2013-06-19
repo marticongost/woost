@@ -5753,7 +5753,7 @@ translations.define("woost.views.ReferenceList.summary",
             plural2(count, u"element", u"elements")
         ),
     es = lambda count:
-        u"Referenciado porr <strong>%d</strong> %s" % (
+        u"Referenciado por <strong>%d</strong> %s" % (
             count,
             plural2(count, u"elemento", u"elementos")
         ),
