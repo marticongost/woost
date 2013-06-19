@@ -14,7 +14,7 @@ from woost.models import Configuration, get_current_website
     attachments_icon_factory = "icon16"
 
     def get_title(self):
-        return self._home.title
+        return get_current_website().site_name
         
     def get_linked_attachments(self):
         return (attachment
