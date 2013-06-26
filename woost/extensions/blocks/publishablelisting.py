@@ -20,6 +20,7 @@ class PublishableListing(Block):
 
     instantiable = True
     type_group = "blocks.listings"
+    block_display = "woost.extensions.blocks.PublishableListingDisplay"
 
     groups_order = list(Block.groups_order)
     groups_order.insert(groups_order.index("content") + 1, "listing")
