@@ -349,3 +349,29 @@
     top: -0.5em;
 }
 
+/* PublishableListingDisplay
+-----------------------------------------------------------------------------*/
+.EditBlocksView .PublishableListingDisplay .publishable_listing ul {
+    list-style-type: none;
+    display: block;
+    margin: 0;
+    padding: 0;
+    padding-left: 1.5em;
+}
+
+.EditBlocksView .PublishableListingDisplay .publishable_listing li {
+    display: block;
+    margin: 0;
+    margin-bottom: 0.5em;
+    padding: 0;
+}
+
+.EditBlocksView .PublishableListingDisplay .publishable_listing li a {
+    text-decoration: none;
+    font-size: 0.9em;
+}
+
+.EditBlocksView .PublishableListingDisplay .publishable_listing li a span {
+    text-decoration: underline;
+}
+
