@@ -20,6 +20,7 @@ class PublishableListing(Block):
 
     instantiable = True
     type_group = "blocks.listings"
+    block_display = "woost.extensions.blocks.PublishableListingDisplay"
 
     groups_order = list(Block.groups_order)
     groups_order.insert(groups_order.index("content") + 1, "listing")
@@ -27,6 +28,7 @@ class PublishableListing(Block):
     members_order = [
         "element_type",
         "publishables",
+        "item_accessibility",
         "listing_order",
         "links_open_in_new_window",
         "paginated",
@@ -41,6 +43,17 @@ class PublishableListing(Block):
     publishables = schema.Collection(
         items = schema.Reference(type = Publishable),
         related_end = schema.Collection(),
+        member_group = "listing"
+    )
+
+    item_accessibility = schema.String(
+        required = True,
+        enumeration = [
+            "accessible",
+            "published",
+            "any"
+        ],
+        default = "accessible",
         member_group = "listing"
     )
 
@@ -94,7 +107,14 @@ class PublishableListing(Block):
             view.news = self.select_publishables()
 
     def select_publishables(self):
-        publishables = Publishable.select_accessible()
+
+        if self.item_accessibility == "accessible":
+            publishables = Publishable.select_accessible()
+        elif self.item_accessibility == "published":
+            publishables = Publishable.select_published()
+        elif self.item_accessibility == "any":
+            publishables = Publishable.select()
+
         publishables.base_collection = self.publishables
         self._apply_order(publishables)
         return publishables

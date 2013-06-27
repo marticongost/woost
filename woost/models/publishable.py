@@ -504,6 +504,12 @@ class Publishable(Item):
             )
 
     @classmethod
+    def select_published(cls, *args, **kwargs):
+        return cls.select(filters = [
+            IsPublishedExpression()
+        ]).select(*args, **kwargs)
+
+    @classmethod
     def select_accessible(cls, *args, **kwargs):
         return cls.select(filters = [
             IsAccessibleExpression(get_current_user())
