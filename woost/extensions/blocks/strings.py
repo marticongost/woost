@@ -650,7 +650,7 @@ translations.define("TextBlock.image_alignment=column_left",
 
 translations.define("TextBlock.image_alignment=column_right",
     ca = u"Columna a la dreta",
-    es = u"Columna a l'esquerra",
+    es = u"Columna a la derecha",
     en = u"Top right, in their own column"
 )
 
@@ -2001,6 +2001,30 @@ translations.define("PublishableListing.publishables",
     ca = u"Elements publicables",
     es = u"Elementos publicables",
     en = u"Publishable elements"
+)
+
+translations.define("PublishableListing.item_accessibility",
+    ca = u"Control d'estat dels elements",
+    es = u"Control de estado de los elementos",
+    en = u"Item accessibility check"
+)
+
+translations.define("PublishableListing.item_accessibility=accessible",
+    ca = u"Elements publicats i amb drets de lectura",
+    es = u"Elementos publicados y con derechos de lectura",
+    en = u"Published items with read privileges"
+)
+
+translations.define("PublishableListing.item_accessibility=published",
+    ca = u"Elements publicats, tinguin o no drets de lectura",
+    es = u"Elementos publicados, tengan o no derechos de lectura",
+    en = u"Published items, regardless of read privileges"
+)
+
+translations.define("PublishableListing.item_accessibility=any",
+    ca = u"Qualsevol element",
+    es = u"Cualquier elemento",
+    en = u"Any item"
 )
 
 translations.define("PublishableListing.listing_order",
