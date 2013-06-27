@@ -650,7 +650,7 @@ translations.define("TextBlock.image_alignment=column_left",
 
 translations.define("TextBlock.image_alignment=column_right",
     ca = u"Columna a la dreta",
-    es = u"Columna a l'esquerra",
+    es = u"Columna a la derecha",
     en = u"Top right, in their own column"
 )
 
