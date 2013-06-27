@@ -10,7 +10,10 @@ Document.add_member(
     schema.Boolean("ga_tracking_enabled",
         default = True,
         required = True,
+        listed_by_default = False,
         member_group = "meta"
     )
 )
+
+Document.is_ga_tracking_enabled = lambda self: self.ga_tracking_enabled
 
