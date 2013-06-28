@@ -8,14 +8,6 @@
 """
 from cocktail.translations import translations
 
-# Payments extension
-#------------------------------------------------------------------------------
-translations.define("PaymentsExtension.payment_gateway",
-    ca = u"Passarel·la de pagaments",
-    es = u"Pasarela de pagos",
-    en = u"Payment gateway"
-)
-
 # TransactionNotifiedTrigger
 #------------------------------------------------------------------------------
 translations.define("TransactionNotifiedTrigger",
@@ -153,14 +145,14 @@ translations.define("SISPaymentGateway.label default",
 # DummyPaymentGateway
 #------------------------------------------------------------------------------
 translations.define("DummyPaymentGateway",
-    ca = u"Passarel·la de pagaments fictícia",
-    es = u"Pasarela de pagos ficticia",
+    ca = u"Passarel·la de pagaments simulada",
+    es = u"Pasarela de pagos simulada",
     en = u"Dummy payment gateway"
 )
 
 translations.define("DummyPaymentGateway-plural",
-    ca = u"Passarel·les de pagaments fictícies",
-    es = u"Pasarelas de pagos ficticias",
+    ca = u"Passarel·les de pagaments simulades",
+    es = u"Pasarelas de pagos simuladas",
     en = u"Dummy payment gateways"
 )
 
