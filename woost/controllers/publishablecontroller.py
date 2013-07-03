@@ -27,13 +27,6 @@ class PublishableController(BaseCMSController):
         "Last-Modified"
     )
 
-    class __metaclass__(BaseCMSController.__class__):
-
-        def __init__(cls, name, bases, members):
-            BaseCMSController.__class__.__init__(cls, name, bases, members)
-            cls._cached_responses = {}
-            cls._cached_responses_lock = Lock()
-
     def __call__(self, **kwargs):
         
         if self.cache_enabled and cherrypy.request.method == "GET":
