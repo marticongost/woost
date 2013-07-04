@@ -31,6 +31,7 @@ class SlideShowBlock(Block):
         "slides",
         "autoplay",
         "interval",
+        "transition_effect",
         "transition_duration",
         "navigation_controls",
         "bullet_controls",
@@ -61,6 +62,13 @@ class SlideShowBlock(Block):
         required = autoplay,
         default = 3000,
         min = 0,
+        member_group = "transition_settings"
+    )
+
+    transition_effect = schema.String(
+        required = True,
+        default = "fade",
+        enumeration = ["fade", "topBottomSlide"],
         member_group = "transition_settings"
     )
 
@@ -112,6 +120,7 @@ class SlideShowBlock(Block):
         view.tag = self.element_type
         view.autoplay = self.autoplay
         view.interval = self.interval
+        view.transition_effect = self.transition_effect
         view.transition_duration = self.transition_duration
         view.navigation_controls = self.navigation_controls
         view.bullet_controls = self.bullet_controls
