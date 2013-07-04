@@ -6,8 +6,7 @@
 @organization:	Whads/Accent SL
 @since:			October 2009
 """
-from cocktail.modeling import OrderedDict
-from cocktail.translations import translations, get_language
+from cocktail.translations import translations
 from cocktail import schema
 from cocktail.controllers.location import Location
 from woost.models import Extension
@@ -58,40 +57,8 @@ class PaymentsExtension(Extension):
 
         # Setup payment controllers
         from woost.controllers.cmscontroller import CMSController
-        from woost.extensions.payments.paymenthandshakecontroller \
-            import PaymentHandshakeController
-        from woost.extensions.payments.paymentnotificationcontroller \
-            import PaymentNotificationController
-        from woost.extensions.payments.dummycontroller \
-            import DummyPaymentGatewayController
+        from woost.extensions.payments.paymentrootcontroller \
+            import PaymentRootController
 
-        CMSController.payment_handshake = PaymentHandshakeController
-        CMSController.payment_notification = PaymentNotificationController
-        CMSController.dummy_payment_gateway = DummyPaymentGatewayController
-
-        # Append additional members to the extension
-        PaymentsExtension.members_order = ["payment_gateway"]
-
-        PaymentsExtension.add_member(
-            schema.Reference("payment_gateway",
-                type = PaymentGateway,
-                related_end = schema.Reference()
-            )
-        )
-
-    def payment_request(self, payment_id):
-        """Begin a payment transaction, redirecting the user to the payment
-        gateway.
-        
-        @param payment_id: The identifier of the payment to execute.
-        """
-        url, params = self.payment_gateway.get_payment_form_data(
-            payment_id,
-            get_language()
-        )
-
-        location = Location(url)
-        location.method = "POST"
-        location.form_data = OrderedDict(params)
-        location.go()
+        CMSController.payments = PaymentRootController
 
