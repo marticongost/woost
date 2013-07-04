@@ -501,6 +501,24 @@ translations.define("SlideShowBlock.transition_duration-explanation",
     en = u"Sets the duration of the slide transition effect, in milliseconds"
 )
 
+translations.define("SlideShowBlock.transition_effect",
+    ca = u"Efecte de transició",
+    es = u"Efecto de transición",
+    en = u"Transition effect"
+)
+
+translations.define("SlideShowBlock.transition_effect=fade",
+    ca = u"Fondre",
+    es = u"Fundir",
+    en = u"Fade"
+)
+
+translations.define("SlideShowBlock.transition_effect=topBottomSlide",
+    ca = u"Lliscar de dalt a baix",
+    es = u"Deslizar de arriba abajo",
+    en = u"Top-bottom slide"
+)
+
 # MenuBlock
 #------------------------------------------------------------------------------
 translations.define("MenuBlock",
