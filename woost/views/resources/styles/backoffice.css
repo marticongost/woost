@@ -674,6 +674,11 @@ body.modal {
     width: 6em;
 }
 
+.BackOfficeLayout .CollectionEditor .MoneyBox {
+    display: inline-block;
+    margin-right: 1em;
+}
+
 /* Tables
 -----------------------------------------------------------------------------*/
 
