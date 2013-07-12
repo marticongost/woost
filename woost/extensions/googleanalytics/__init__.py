@@ -63,7 +63,7 @@ class GoogleAnalyticsExtension(Extension):
             publishable = e.output.get("publishable")
             if (
                 publishable is None 
-                or getattr(publishable, "ga_tracking_enabled", True)
+                or getattr(publishable, "is_ga_tracking_enabled", lambda: True)()
             ):
                 html = e.output.get("head_end_html", "")
                 if html:
