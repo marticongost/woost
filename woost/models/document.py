@@ -227,7 +227,7 @@ class Document(Publishable):
 
     @event_handler
     def handle_unrelated(cls, event):
-        if event.source.is_inserted:
+        if not event.source.is_deleted:
             if event.member is cls.websites:
                 for child in event.source.children:
                     child.websites = list(event.source.websites)
