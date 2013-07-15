@@ -192,6 +192,7 @@ class TranslationPermission(Permission):
         return Configuration.instance.languages
 
     matching_languages = schema.Collection(
+        edit_control = "cocktail.html.CheckList",
         items = schema.String(
             enumeration = _matching_languages_enumeration,
             translate_value = lambda value, language = None, **kwargs:
