@@ -193,7 +193,7 @@ class TranslationPermission(Permission):
 
     matching_languages = schema.Collection(
         items = schema.String(
-            enumeration = lambda ctx: _matching_languages_enumeration,
+            enumeration = _matching_languages_enumeration,
             translate_value = lambda value, language = None, **kwargs:
                 u"" if not value else translations(value, language, **kwargs)
         )
