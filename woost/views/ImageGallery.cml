@@ -185,7 +185,7 @@ from cocktail.controllers import context
         py:client_model="woost.views.ImageGallery.image_dialog"
         class="ImageGallery-dialog">
         <div py:id="image_frame">
-            <div py:local_id="header">
+            <div py:local_id="header" py:visible="@{self.labels_visible or len(self.images) > 1}">
                 <span py:local_id="index"></span>
                 <span py:local_id="label"></span>
             </div>
