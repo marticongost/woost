@@ -25,7 +25,11 @@ from cocktail.controllers import (
 from woost.models.item import Item
 from woost.models.language import Language
 from woost.models.usersession import get_current_user
-from woost.models.permission import ReadPermission, PermissionExpression
+from woost.models.permission import (
+    ReadPermission,
+    ReadTranslationPermission,
+    PermissionExpression
+)
 from woost.models.caching import CachingPolicy
 
 
@@ -345,11 +349,23 @@ class Publishable(Item):
         return True
 
     def is_accessible(self, user = None, language = None):
-        return self.is_published(language) \
-            and (user or get_current_user()).has_permission(
+        if user is None:
+            user = get_current_user()
+
+        return (
+            self.is_published(language)
+            and user.has_permission(
                 ReadPermission,
                 target = self
             )
+            and (
+                not self.per_language_publication
+                or user.has_permission(
+                    ReadTranslationPermission,
+                    language = require_language(language)
+                )
+            )
+        )
 
     @classmethod
     def select_accessible(cls, *args, **kwargs):
@@ -529,15 +545,24 @@ class IsAccessibleExpression(Expression):
     def resolve_filter(self, query):
 
         def impl(dataset):
-            access_expr = PermissionExpression(
-                self.user or get_current_user(),
-                ReadPermission
-            )
+            user = self.user or get_current_user()
+            access_expr = PermissionExpression(user, ReadPermission)
             published_expr = IsPublishedExpression()
             dataset = access_expr.resolve_filter(query)[1](dataset)
             dataset = published_expr.resolve_filter(query)[1](dataset)
+
+            if not user.has_permission(
+                ReadTranslationPermission,
+                language = require_language()
+            ):
+                dataset.difference_update(
+                    Publishable.per_language_publication.index.values(
+                        key = True
+                    )
+                )
+
             return dataset
-        
+
         return ((-1, 1), impl)
 
 
