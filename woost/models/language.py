@@ -20,7 +20,8 @@ class Language(Item):
         required = True,
         unique = True,
         max = 64,
-        text_search = False
+        text_search = False,
+        indexed = True
     )
 
     enabled = schema.Boolean(
