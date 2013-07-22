@@ -14,7 +14,7 @@ cocktail.bind(".PublishableListing .entry .publishable_link", function ($link) {
             var selector = $view.get(0).publishableActivationSelector;
             var $target = $view.is(selector) ? $view : $view.find(selector);
             if ($target.length) {
-                $target.first().click();
+                $target[0].click();
                 return false;
             }
         }

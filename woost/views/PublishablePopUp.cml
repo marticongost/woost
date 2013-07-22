@@ -13,7 +13,6 @@
 
     <?py
     self.add_resource("/resources/scripts/PublishablePopUp.js")
-    self.set_client_param("publishableActivationSelector", "a")
     ?>
 
     <py:woost.views.Dialog py:id="publishable_dialog"
