@@ -19,6 +19,10 @@
     value = property(_get_value, _set_value)
     ?>
 
+    <?py
+    self.set_client_param("publishableActivationSelector", ".ThumbnailLink")
+    ?>
+
     <py:ready>
         <?py
         if self.item is None:
