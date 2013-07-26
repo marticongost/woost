@@ -76,6 +76,7 @@ class TextBlock(Block):
             "column_right",
             "top_left",
             "top_right",
+            "bottom_left",
             "center_top",
             "center_bottom",
             "inline",
