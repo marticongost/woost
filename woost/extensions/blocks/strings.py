@@ -691,7 +691,7 @@ translations.define("TextBlock.image_alignment=center_top",
 )
 
 translations.define("TextBlock.image_alignment=center_bottom",
-    ca = u"Centrar abaix",
+    ca = u"Centrar a sota",
     es = u"Centrar abajo",
     en = u"Bottom center"
 )
