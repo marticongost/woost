@@ -77,9 +77,7 @@ from woost.models import Configuration, get_current_website
             <strong>@{self.identity.visible and translations(self.user) or ""}</strong>
             <form py:id="logout_form" method="post" action="">
                 <div>
-                    <button py:id="logout_button" name="logout" type="submit">
-                        ${translations("Logout")}
-                    </button>
+                    <button py:id="logout_button" name="logout" type="submit">${translations("Logout")}</button>
                 </div>
             </form>
         </div>
