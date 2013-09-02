@@ -11,7 +11,11 @@ from cocktail.html.element import Element
 from cocktail.html import templates
 from cocktail.html.utils import rendering_xml
 from cocktail.controllers import context
-from woost.models import Configuration
+from woost.models import (
+    Configuration,
+    get_current_user,
+    ReadTranslationPermission
+)
 
 LinkSelector = templates.get_class("cocktail.html.LinkSelector")
 
@@ -50,10 +54,18 @@ class LanguageSelector(LinkSelector):
 
         if self.items is None:
             config = Configuration.instance
-            self.items = (
-                config.get_setting("published_languages")
-                or config.languages
-            )
+            user = get_current_user()
+            self.items = [
+                language
+                for language in (
+                    config.get_setting("published_languages")
+                    or config.languages
+                )
+                if user.has_permission(
+                    ReadTranslationPermission,
+                    language = language
+                )
+            ]
 
         if self.value is None:
             self.value = get_language()
