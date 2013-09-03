@@ -24,7 +24,10 @@ translations.define("Logout",
     ca = u"Sortir",
     es = u"Salir",
     en = u"Log out",
-    fr = u"Log out"
+    fr = u"Log out",
+    de = u"Abmelden",
+    pl = u"Zaloguj się",
+    nl = u"Log uit"
 )
 
 translations.define("Type",
