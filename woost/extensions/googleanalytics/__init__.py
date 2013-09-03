@@ -52,7 +52,8 @@ class GoogleAnalyticsExtension(Extension):
             strings,
             configuration,
             website,
-            document
+            document,
+            eventredirection
         )
 
         from cocktail.events import when

@@ -13,7 +13,7 @@ from woost.controllers.publishablecontroller import PublishableController
 class FileController(PublishableController):
     """A controller that serves the files managed by the CMS."""
 
-    def _produce_content(self, disposition = "inline"):
+    def _produce_content(self, disposition = "inline", **kwargs):
         file = self.context["publishable"]
         return serve_file(
             file.file_path,
