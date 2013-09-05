@@ -17,5 +17,5 @@ class StylesController(PublishableController):
         
         for style in Style.select():
             declarations = (backoffice and style.admin_declarations) or style.declarations
-            yield ".%s{\n%s\n}\n" % (style.class_name, declarations)
+            yield ".%s{\n%s\n}\n" % (style.class_name, declarations or "")
 
