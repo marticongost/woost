@@ -230,6 +230,10 @@ class Fill(ImageEffect):
         
         width = ImageSize.resolve_size(self.width, source_width)
         height = ImageSize.resolve_size(self.height, source_height)
+
+        if width == source_width and height == source_height:
+            return image
+
         target_ratio = float(width) / height
 
         if source_ratio > target_ratio:
