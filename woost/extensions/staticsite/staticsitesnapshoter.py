@@ -137,6 +137,10 @@ class WgetSnapShoter(StaticSiteSnapShoter):
         for root, dirs, files in os.walk(self.snapshot_path):
             for file in files:
                 file_path = os.path.join(root, file)
+
+                if isinstance(file_path, str):
+                    file_path = file_path.decode("utf-8")
+
                 relative_path = os.path.relpath(file_path, self.snapshot_path)
                 yield (file_path, relative_path)
 
@@ -147,8 +151,6 @@ class WgetSnapShoter(StaticSiteSnapShoter):
         return unicode(location).encode("utf-8")
 
     def cleanup(self, context):
-	if os.path.exists(self.snapshot_path):
- 	       rmtree(self.snapshot_path)
-
-
+        if os.path.exists(self.snapshot_path):
+            rmtree(self.snapshot_path)
 

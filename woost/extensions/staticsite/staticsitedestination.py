@@ -290,10 +290,10 @@ class StaticSiteDestination(Item):
         @type context: dict
         """
 
-    def view_class(self):
+    def view_class(self, context):
         return "woost.extensions.staticsite.ExportStaticSiteView"
 
-    def output(self):
+    def output(self, context):
         return {}
 
 
