@@ -5587,6 +5587,50 @@ translations.define("ReducedOpacity.level",
     en = u"Level"
 )
 
+# Fade
+#------------------------------------------------------------------------------
+translations.define("Fade",
+    ca = u"Esvaïr",
+    es = u"Desvanecer",
+    en = u"Fade"
+)
+
+translations.define("Fade.top_width",
+    ca = u"Gruix superior",
+    es = u"Ancho superior",
+    en = u"Top width"
+)
+
+translations.define("Fade.right_width",
+    ca = u"Gruix a la dreta",
+    es = u"Ancho derecho",
+    en = u"Right width"
+)
+
+translations.define("Fade.bottom_width",
+    ca = u"Gruix inferior",
+    es = u"Ancho inferior",
+    en = u"Bottom width"
+)
+
+translations.define("Fade.left_width",
+    ca = u"Gruix a l'esquerra",
+    es = u"Ancho a la izquierda",
+    en = u"Left width"
+)
+
+translations.define("Fade.edge_opacity",
+    ca = u"Opacitat exterior",
+    es = u"Opacidad exterior",
+    en = u"Edge opacity"
+)
+
+translations.define("Fade.inner_opacity",
+    ca = u"Opacitat interior",
+    es = u"Opacidad interior",
+    en = u"Inner opacity"
+)
+
 # Watermark
 #------------------------------------------------------------------------------
 translations.define("Watermark",

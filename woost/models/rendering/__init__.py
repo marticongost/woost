@@ -30,6 +30,7 @@ from woost.models.rendering.imageeffects import (
     Frame,
     Shadow,
     ReducedOpacity,
+    Fade,
     Watermark,
     Flip,
     Align
