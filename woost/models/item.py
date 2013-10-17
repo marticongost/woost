@@ -585,27 +585,28 @@ class Item(PersistentObject):
             host = None
 
         if host:
+            website = get_current_website()
+            policy = website and website.https_policy
+
+            if (                    
+                policy == "always"
+                or (
+                    policy == "per_page" and (
+                        getattr(self, 'requires_https', False)
+                        or not get_current_user().anonymous
+                    )
+                )
+            ):
+                scheme = "https"
+            else:
+                scheme = "http"
+
             if host == ".":
                 location = Location.get_current_host()
-                website = get_current_website()
-                policy = website and website.https_policy
-
-                if (                    
-                    policy == "always"
-                    or (
-                        policy == "per_page" and (
-                            self.requires_https
-                            or not get_current_user().anonymous
-                        )
-                    )
-                ):
-                    location.scheme = "https"
-                else:
-                    location.scheme = "http"
-
+                location.scheme = scheme
                 host = str(location)
             elif not "://" in host:
-                host = "http://" + host
+                host = "%s://%s" % (scheme, host)
 
             uri = make_uri(host, uri)
         elif "://" not in uri:
