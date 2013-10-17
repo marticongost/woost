@@ -630,6 +630,7 @@ class CMSController(BaseCMSController):
     def _apply_https_policy(self, publishable):
         
         policy = Configuration.instance.get_setting("https_policy")
+        website = get_current_website()
 
         if policy == "always":
             Location.require_https()
