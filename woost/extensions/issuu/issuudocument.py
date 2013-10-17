@@ -8,10 +8,11 @@ from urllib2 import urlopen
 from json import loads
 from cocktail import schema
 from cocktail.events import event_handler
+from cocktail.controllers import Location
 from woost.models import Publishable, Controller
 
 ISSUU_DOCUMENT_URL_PATTERN = \
-    re.compile(u"http://issuu.com/(.+)/docs/([^/]+)/?(\d+)?\?e=(\d+/\d+).*")
+    re.compile(r"http://issuu.com/(.+)/docs/([^/\?]+)/?(\d+)?(\?e=(\d+/\d+))?.*")
 
 def extract_issuu_document_metadata(url):
     match = re.match(ISSUU_DOCUMENT_URL_PATTERN, url)
@@ -19,7 +20,7 @@ def extract_issuu_document_metadata(url):
         return {
             "username": match.group(1),
             "docname": match.group(2),
-            "configid": match.group(4)
+            "configid": match.group(5)
         }
     else:
         return {}
@@ -148,6 +149,18 @@ class IssuuDocument(Publishable):
                         data["response"]["docs"][0]["documentId"]
                 except (KeyError, IndexError):
                     self.issuu_document_id = None
+
+            if self.issuu_config_id is None:
+                url = Location(self.issuu_document_url)
+                url.query_string.update(e = 0)
+                response = urlopen(url.get_url(), timeout = timeout)
+                status = response.getcode()
+                body = response.read()
+                if status >= 200 and status <= 299:
+                    url = Location(response.geturl())
+                    issuu_config_id = url.query_string.get("e")
+                    if issuu_config_id:
+                        self.issuu_config_id = issuu_config_id[0]
 
 
 class IssuuSearchAPIError(Exception):                                                                                                                                                
