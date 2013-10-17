@@ -119,8 +119,9 @@ cocktail.bind({
                     cocktail.center($dialog.get(0));
                     $dialog
                         .hide()
-                        .fadeIn()
-                        .find(".image[tabindex=0]").focus();
+                        .fadeIn(function () {
+                            $dialog.find(".image[tabindex=0]").focus();
+                        });
                 },
                 true
             );
