@@ -92,7 +92,8 @@ of its features include:\n"
             "issuu = woost.extensions.issuu:IssuuExtension",
             "campaign3 = woost.extensions.campaign3:CampaignMonitor3Extension",
             "youtube = woost.extensions.youtube:YouTubeExtension",
-            "externalfiles = woost.extensions.externalfiles:ExternalFilesExtension"
+            "externalfiles = woost.extensions.externalfiles:ExternalFilesExtension",
+            "restrictedaccess = woost.extensions.restrictedaccess:RestrictedAccessExtension"
         ]
     },
     # Woost can't yet access view resources (images, style sheets, client
