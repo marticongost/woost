@@ -13,6 +13,7 @@ Publishable.add_member(
         bidirectional = True,
         indexed = True,
         edit_control = "cocktail.html.DropdownSelector",
+        search_control = "cocktail.html.DropdownSelector",
         member_group = "publication"
     )
 )
