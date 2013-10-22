@@ -21,6 +21,12 @@ translations.define("Publishable.access_restriction",
     en = u"Access restriction"
 )
 
+translations.define("Publishable.access_restriction=None",
+    ca = u"Sense restricció",
+    es = u"Sin restricción",
+    en = u"Unrestricted"
+)
+
 # AccessRestriction
 #------------------------------------------------------------------------------
 translations.define("AccessRestriction",
