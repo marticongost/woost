@@ -20,7 +20,7 @@ cocktail.bind(".BackOfficeEditView", function ($editView) {
                 visibleLanguages.push(lang);
             }
         }
-        jQuery.cookie("visible_languages", '"' + visibleLanguages.join(',') + '"');
+        jQuery.cookie("visible_languages", visibleLanguages.join(','));
     }
 
     function setLanguageVisibility(language, visible) {
