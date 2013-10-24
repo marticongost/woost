@@ -106,6 +106,13 @@
     text-decoration: underline;
 }
 
+/* Fallback */
+.TextBlockView.fallback .text_container {
+    position: absolute;
+    left: -10000px;
+    top: 0;
+}
+
 /* PublishableGrid
 -----------------------------------------------------------------------------*/ 
 .PublishableGrid ul.publishable_list {

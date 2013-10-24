@@ -714,6 +714,12 @@ translations.define("TextBlock.image_alignment=background",
     en = u"Background image"
 )
 
+translations.define("TextBlock.image_alignment=fallback",
+    ca = u"Imatge amb descripció textual substitutiva",
+    es = u"Imagen con descripción textual sustitutiva",
+    en = u"Image with fallback content"
+)
+
 translations.define("TextBlock.image_thumbnail_factory",
     ca = u"Processat de les imatges",
     es = u"Procesado de las imágenes",
