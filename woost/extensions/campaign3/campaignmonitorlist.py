@@ -49,9 +49,10 @@ class CampaignMonitorList(Item):
     )
 
     def update(self):
-        CreateSend.api_key = \
-            Configuration.instance.get_setting("campaign_monitor_api_key")
-        list = List(self.list_id)
+        list = List(
+            {"api_key": Configuration.instance.get_setting("campaign_monitor_api_key")},
+            self.list_id
+        )
         details = list.details()
 
         if self.confirmation_success_page:

@@ -26,16 +26,20 @@ class ResubscribeController(Controller):
         return get_parameter(schema.String("email"))
 
     def resubscribe(self):
-        CreateSend.api_key = \
-            Configuration.instance.get_setting("campaign_monitor_api_key")
-
-        cs = CreateSend()
+        cs = CreateSend(
+            {"api_key": Configuration.instance.get_setting("campaign_monitor_api_key")}
+        )
         now = datetime.now()
 
         for client in cs.clients():
-            client = Client(client.ClientID)
+            client = Client(
+                {"api_key": Configuration.instance.get_setting("campaign_monitor_api_key")},
+                client.ClientID
+            )
             for list in client.lists():
-                subscriber = Subscriber()
+                subscriber = Subscriber(
+                    {"api_key": Configuration.instance.get_setting("campaign_monitor_api_key")}
+                )
                 try:
                     response = subscriber.get(list.ListID, self.email)
                 except BadRequest:
