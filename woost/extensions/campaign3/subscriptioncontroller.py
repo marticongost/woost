@@ -62,14 +62,13 @@ class SubscriptionController(FormProcessor, Controller):
 
         def submit(self):
             Form.submit(self)
-            CreateSend.api_key = \
-                Configuration.instance.get_setting("campaign_monitor_api_key")
-
             for list in self.subscribed_lists:
                 self.add_subscriber(list)
 
         def add_subscriber(self, list):
-            subscriber = Subscriber()
+            subscriber = Subscriber(
+                {"api_key": Configuration.instance.get_setting("campaign_monitor_api_key")}
+            )
 
             # Check if the user is new to any list
             try:
