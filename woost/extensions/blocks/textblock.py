@@ -80,7 +80,8 @@ class TextBlock(Block):
             "center_top",
             "center_bottom",
             "inline",
-            "background"
+            "background",
+            "fallback"
         ],
         edit_control = _mandatory_dropdown,
         member_group = "images"
