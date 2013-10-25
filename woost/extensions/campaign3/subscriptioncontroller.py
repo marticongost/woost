@@ -4,7 +4,7 @@ u"""
 .. moduleauthor:: Jordi Fernández <jordi.fernandez@whads.com>
 """
 import cherrypy
-from createsend import CreateSend, Subscriber
+from createsend import CreateSend, Subscriber, BadRequest
 from cocktail import schema
 from cocktail.pkgutils import import_object
 from cocktail.controllers import (
