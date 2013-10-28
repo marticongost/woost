@@ -11,7 +11,7 @@ from cocktail.translations import (
     get_language,
     set_language
 )
-from cocktail.controllers import try_decode
+from cocktail.controllers import try_decode, context
 from cocktail.controllers.parameters import set_cookie_expiration
 from woost.models import Configuration
 from woost.controllers.module import Module
@@ -99,28 +99,44 @@ class LanguageModule(Module):
 
     def translate_uri(self, path = None, language = None):
 
-        qs = u""
+        current_language = get_language()
+
+        if language is None:
+            language = current_language
 
         if path is None:
+            is_current_publishable = True
             path = cherrypy.request.path_info
             qs = cherrypy.request.query_string
-        
+        else:
+            is_current_publishable = False
+            qs = u""
+
         if isinstance(path, str):
             path = try_decode(path)
 
         if isinstance(qs, str):
             qs = try_decode(qs)
 
-        if language is None:
-            language = get_language()
+        if is_current_publishable and language != current_language:
+            publishable = context.get("original_publishable") \
+                          or context["publishable"]
+            current_uri = publishable.get_uri(
+                language = current_language,
+                encode = False
+            )
+            translation_uri = publishable.get_uri(language = language)
+            path = path.replace(current_uri, translation_uri)
+        else:
+            path_components = path.strip("/").split("/")
+            if (
+                path_components 
+                and path_components[0] in Configuration.instance.languages
+            ):
+                path_components.pop(0)
 
-        path_components = path.strip("/").split("/")
-        if (
-            path_components 
-            and path_components[0] in Configuration.instance.languages
-        ):
-            path_components.pop(0)
+            path_components.insert(0, language)
+            path = u"/" + u"/".join(path_components)
 
-        path_components.insert(0, language)
-        return u"/" + u"/".join(path_components) + (u"?" + qs if qs else u"")
+        return path + (u"?" + qs if qs else u"")
 
