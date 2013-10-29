@@ -107,10 +107,10 @@ class WgetSnapShoter(StaticSiteSnapShoter):
         return app.path("snapshots", str(self.id))
 
     def _get_cmd(self, context):
-        cmd = "wget --mirror"
+        cmd = "wget "
 
-        if not context.get("follow_links"):
-            cmd += " --level 1"
+        if context.get("follow_links"):
+            cmd += " --mirror"
 
         cmd += " --page-requisites --html-extension \
                 --convert-links --no-host-directories \
