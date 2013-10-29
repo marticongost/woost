@@ -108,10 +108,16 @@ class WgetSnapShoter(StaticSiteSnapShoter):
         if context.get("follow_links"):
             cmd += " --mirror"
 
-        cmd += " --page-requisites --html-extension \
-                --convert-links --no-host-directories \
-                --no-check-certificate --directory-prefix=%s \
-                --restrict-file-names=%s %s"
+        cmd += (
+            " --header='X-Woost-StaticSiteSnapshoter: " + self.__class__.__name__ + "'"
+            " --page-requisites"
+            " --html-extension"
+            " --convert-links"
+            " --no-host-directories"
+            " --no-check-certificate"
+            " --directory-prefix=%s"
+            " --restrict-file-names=%s %s"
+        )
 
         return cmd
 
