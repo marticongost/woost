@@ -65,26 +65,22 @@ class StaticSiteSnapShoter(Item):
         self.setup(context)
 
         try:
-            for item in items:
-                for file_data in self._snapshot(
-                    item,
-                    context = context
-                ):
-                    yield file_data
+            return self._snapshot(items, context)
         finally:
             self.cleanup(context)
 
     @abstractmethod
-    def _snapshot(self, root, context = {}):
+    def _snapshot(self, items, context = {}):
         """ Generates the snapshot of a site's content 
 
-        @param root: The item which the exportation will statrt.
-        @type root: Publishable
+        @param items: The list of items which the exportation will start.
+        @type items: L{Publishable}
 
         @param context: A dictionary used to share any contextual information
             with the snapshoter.
         @type context: dict
         """
+
 
 class WgetSnapShoter(StaticSiteSnapShoter):
     """ A class that creates a static snapshot of a site's content using wget """
@@ -119,16 +115,22 @@ class WgetSnapShoter(StaticSiteSnapShoter):
 
         return cmd
 
-    def _snapshot(self, root, context = {}):
+    def _snapshot(self, items, context = {}):
 
         cmd = self._get_cmd(context)
-
-        uri = self._get_uri(root, context)
+        uris = set(
+            (
+                item
+                if isinstance(item, basestring)
+                else self._get_uri(item, context)
+            )
+            for item in items
+        )
 
         cmd = cmd % (
             self.snapshot_path, 
             self.file_names_mode, 
-            uri
+            u" ".join(uris)
         )
 
         p = Popen(cmd, shell=True, stdout=PIPE)
