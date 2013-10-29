@@ -37,6 +37,7 @@ from cocktail.controllers.asyncupload import AsyncUploadController
 from cocktail.controllers.uriutils import percent_encode
 from cocktail.persistence import datastore
 from woost import app
+from woost.authenticationscheme import AuthenticationFailedError
 from woost.models import (
     Item,
     Publishable,
@@ -53,11 +54,6 @@ from woost.models import (
 from woost.controllers.asyncupload import async_uploader
 from woost.controllers import get_cache_manager, set_cache_manager
 from woost.controllers.basecmscontroller import BaseCMSController
-from woost.controllers.language import LanguageModule
-from woost.controllers.authentication import (
-    AuthenticationModule,
-    AuthenticationFailedError
-)
 from woost.controllers.imagescontroller import ImagesController
 
 
@@ -109,8 +105,8 @@ class CMSController(BaseCMSController):
         """)
 
     # Application modules
-    LanguageModule = LanguageModule
-    AuthenticationModule = AuthenticationModule
+    LanguageModule = None
+    AuthenticationModule = None
 
     # Webserver configuration
     virtual_path = "/"
@@ -218,12 +214,44 @@ class CMSController(BaseCMSController):
     def session_middleware(self, app):
         return SessionMiddleware(app, session.config)
 
+    @property
+    def language(self):
+        warn(
+            "CMSController.language is deprecated, use app.language instead",
+            DeprecationWarning,
+            stacklevel = 2
+        )
+        return app.language
+
+    @property
+    def authentication(self):
+        warn(
+            "CMSController.authentication is deprecated, use "
+            "app.authentication instead",
+            DeprecationWarning,
+            stacklevel = 2
+        )
+        return app.authentication
+
     def __init__(self, *args, **kwargs):
     
         BaseCMSController.__init__(self, *args, **kwargs)
 
-        self.language = self.LanguageModule(self)
-        self.authentication = self.AuthenticationModule(self)
+        if self.LanguageModule:
+            warn(
+                "CMSController.LanguageModule is deprecated, use "
+                "app.language instead",
+                DeprecationWarning
+            )
+            app.language = self.LanguageModule()
+
+        if self.AuthenticationModule:
+            warn(
+                "CMSController.AuthenticationModule is deprecated, use "
+                "app.authentication instead",
+                DeprecationWarning
+            )
+            app.authentication = self.AuthenticationModule()
 
     def run(self, block = True):
                 
@@ -285,7 +313,7 @@ class CMSController(BaseCMSController):
         if publishable.per_language_publication:
             if not request.language_specified:
                 location = Location.get_current()
-                location.path_info = "/" + get_language() + location.path_info
+                location.path_info = app.language.translate_uri()
                 location.go()
 
         # Remove the language selection from the current URI
@@ -332,7 +360,7 @@ class CMSController(BaseCMSController):
 
         if publishable.per_language_publication:
             canonical_uri = \
-                self.language.translate_uri(canonical_uri)
+                app.language.translate_uri(canonical_uri)
 
         if cherrypy.request.query_string:
             canonical_uri = canonical_uri + \
@@ -343,7 +371,7 @@ class CMSController(BaseCMSController):
     def _process_path(self, path):
 
         # Invoke the language module to set the active language
-        self.language.process_request(path)
+        app.language.process_request(path)
 
     def _maintenance_check(self, publishable):
 
@@ -417,7 +445,7 @@ class CMSController(BaseCMSController):
             if uri is not None:
                 
                 if publishable.per_language_publication:
-                    uri = self.language.translate_uri(uri)
+                    uri = app.language.translate_uri(uri)
 
                 uri = self.application_uri(uri, *args, **kwargs)
  
@@ -428,7 +456,7 @@ class CMSController(BaseCMSController):
 
     def translate_uri(self, path = None, language = None):
         return self.application_uri(
-            self.language.translate_uri(path = path, language = language)
+            app.language.translate_uri(path = path, language = language)
         )
 
     def image_uri(self, element, factory = "default"):
@@ -479,11 +507,11 @@ class CMSController(BaseCMSController):
         cms._establish_active_website()
 
         # Set the default language
-        language = cms.language.infer_language()
+        language = app.language.infer_language()
         set_language(language)
 
         # Invoke the authentication module
-        cms.authentication.process_request()
+        app.authentication.process_request()
 
     @event_handler
     def handle_before_request(cls, event):

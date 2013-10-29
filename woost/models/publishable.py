@@ -23,6 +23,7 @@ from cocktail.controllers import (
     percent_encode_uri,
     Location
 )
+from woost import app
 from woost.models.item import Item
 from woost.models.usersession import get_current_user
 from woost.models.websitesession import get_current_website
@@ -544,7 +545,10 @@ class Publishable(Item):
 
         if uri is not None:
             if self.per_language_publication:
-                uri = make_uri(require_language(language), uri)
+                uri = app.language.translate_uri(
+                    path = uri,
+                    language = require_language(language)
+                )
 
             if path:
                 uri = make_uri(uri, *path)
