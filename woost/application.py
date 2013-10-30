@@ -12,6 +12,9 @@ class Application(object):
     __root = None
     __icon_resolver = None
 
+    __language = None
+    __authentication = None
+
     def path(self, *args):
         return os.path.join(self.root, *args)
 
@@ -52,4 +55,32 @@ class Application(object):
             from woost.iconresolver import IconResolver
             self.__icon_resolver = IconResolver()
         return self.__icon_resolver
+
+    # Language scheme
+    __language = None
+
+    def _get_language(self):
+        if self.__language is None:
+            from woost.languagescheme import LanguageScheme
+            self.__language = LanguageScheme()
+        return self.__language
+
+    def _set_language(self, language):
+        self.__language = language
+
+    language = property(_get_language, _set_language)
+
+    # Authentication scheme
+    __authentication = None
+
+    def _get_authentication(self):
+        if self.__authentication is None:
+            from woost.authenticationscheme import AuthenticationScheme
+            self.__authentication = AuthenticationScheme()
+        return self.__authentication
+
+    def _set_authentication(self, authentication):
+        self.__authentication = authentication
+
+    authentication = property(_get_authentication, _set_authentication)
 
