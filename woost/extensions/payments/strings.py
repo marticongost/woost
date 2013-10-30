@@ -124,6 +124,30 @@ translations.define("SISPaymentGateway.merchant_secret_key",
     en = u"Secret key"
 )
 
+translations.define("SISPaymentGateway.pay_methods",
+    ca = u"Tipus de pagament acceptats",
+    es = u"Formas de pago aceptadas",
+    en = u"Allowed payment methods"
+)
+
+translations.define("SISPaymentGateway.pay_methods=T",
+    ca = u"Targeta de crèdit",
+    es = u"Tarjeta de crédito",
+    en = u"Credit card"
+)
+
+translations.define("SISPaymentGateway.pay_methods=D",
+    ca = u"Domiciliació bancària",
+    es = u"Domiciliación bancaria",
+    en = u"Direct debit"
+)
+
+translations.define("SISPaymentGateway.pay_methods=R",
+    ca = u"Transferència",
+    es = u"Transferencia",
+    en = u"Transfer"
+)
+
 translations.define("SISPaymentGateway.payment_successful_page",
     ca = u"Pàgina de confirmació de pagament",
     es = u"Página de confirmación de pago",

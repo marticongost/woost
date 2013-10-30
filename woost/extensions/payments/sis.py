@@ -26,6 +26,7 @@ class SISPaymentGateway(PaymentGateway, Implementation):
         "merchant_code",
         "merchant_terminal",
         "merchant_secret_key",
+        "pay_methods",
         "payment_successful_page",
         "payment_failed_page"
     ]
@@ -51,6 +52,16 @@ class SISPaymentGateway(PaymentGateway, Implementation):
         required = True,
         shadows_attribute = True,
         text_search = False
+    )
+
+    pay_methods = schema.Collection(
+        shadows_attribute = True,
+        items = schema.String(
+            enumeration = ["T", "D", "R"],
+            translate_value = lambda value, language = None, **kwargs: \
+                translations("SISPaymentGateway.pay_methods=%s" % (value,))
+        ),
+        edit_control = "cocktail.html.CheckList"
     )
 
     payment_successful_page = schema.Reference(
