@@ -65,26 +65,22 @@ class StaticSiteSnapShoter(Item):
         self.setup(context)
 
         try:
-            for item in items:
-                for file_data in self._snapshot(
-                    item,
-                    context = context
-                ):
-                    yield file_data
+            return self._snapshot(items, context)
         finally:
             self.cleanup(context)
 
     @abstractmethod
-    def _snapshot(self, root, context = {}):
+    def _snapshot(self, items, context = {}):
         """ Generates the snapshot of a site's content 
 
-        @param root: The item which the exportation will statrt.
-        @type root: Publishable
+        @param items: The list of items which the exportation will start.
+        @type items: L{Publishable}
 
         @param context: A dictionary used to share any contextual information
             with the snapshoter.
         @type context: dict
         """
+
 
 class WgetSnapShoter(StaticSiteSnapShoter):
     """ A class that creates a static snapshot of a site's content using wget """
@@ -107,28 +103,40 @@ class WgetSnapShoter(StaticSiteSnapShoter):
         return app.path("snapshots", str(self.id))
 
     def _get_cmd(self, context):
-        cmd = "wget --mirror"
+        cmd = "wget "
 
-        if not context.get("follow_links"):
-            cmd += " --level 1"
+        if context.get("follow_links"):
+            cmd += " --mirror"
 
-        cmd += " --page-requisites --html-extension \
-                --convert-links --no-host-directories \
-                --no-check-certificate --directory-prefix=%s \
-                --restrict-file-names=%s %s"
+        cmd += (
+            " --header='X-Woost-StaticSiteSnapshoter: " + self.__class__.__name__ + "'"
+            " --page-requisites"
+            " --html-extension"
+            " --convert-links"
+            " --no-host-directories"
+            " --no-check-certificate"
+            " --directory-prefix=%s"
+            " --restrict-file-names=%s %s"
+        )
 
         return cmd
 
-    def _snapshot(self, root, context = {}):
+    def _snapshot(self, items, context = {}):
 
         cmd = self._get_cmd(context)
-
-        uri = self._get_uri(root, context)
+        uris = set(
+            (
+                item
+                if isinstance(item, basestring)
+                else self._get_uri(item, context)
+            )
+            for item in items
+        )
 
         cmd = cmd % (
             self.snapshot_path, 
             self.file_names_mode, 
-            uri
+            u" ".join(uris)
         )
 
         p = Popen(cmd, shell=True, stdout=PIPE)
