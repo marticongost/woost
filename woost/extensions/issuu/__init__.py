@@ -45,8 +45,6 @@ class IssuuExtension(Extension):
             strings,
             issuudocument,
             issuublock,
-            issuuviewersettings,
-            configuration
         )   
         self.install()
         self.register_view_factory()
@@ -87,13 +85,15 @@ class IssuuExtension(Extension):
 
     def register_view_factory(self):
 
+        from cocktail.html import templates
         from woost.extensions.issuu.issuudocument import IssuuDocument
         from woost.views.viewfactory import publishable_view_factory
 
         def issuu_viewer(item, parameters):
-            viewer_settings = Configuration.instance.issuu_viewer_settings
-            if viewer_settings:
-                return viewer_settings[0].create_viewer(item)
+            viewer = templates.new("cocktail.html.IssuuViewer")
+            viewer.config_id = item.issuu_config_id
+            viewer.page_number = item.thumbnail_page
+            return viewer
 
         publishable_view_factory.register_first(
             IssuuDocument, 
