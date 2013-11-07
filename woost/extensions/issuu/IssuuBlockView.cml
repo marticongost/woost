@@ -15,8 +15,11 @@
         ?>
     </py:ready>
 
-    <py:woost.extensions.issuu.IssuuViewer
-        py:item="@{self.block.issuu_document}"/>
+    <py:cocktail.html.IssuuViewer
+        py:config_id="@{self.block.issuu_document.issuu_config_id}"
+        py:page_number="@{self.block.issuu_document.thumbnail_page}"
+        py:width="@{self.block.width}"
+        py:height="@{self.block.height}"/>
 
 </div>
 
