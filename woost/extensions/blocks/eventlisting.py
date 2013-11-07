@@ -93,18 +93,13 @@ class EventListing(Block):
         events = Event.select_accessible()
 
         if not self.include_expired:
+
             subset = set()
 
             subset.update(
-                Event.select(filters = [
-                    Event.event_end.not_equal(None),
-                    RangeIntersectionExpression(
-                        Event.event_start,
-                        Event.event_end,
-                        datetime.now(),
-                        add_time(date.today() + timedelta(days = 1))
-                    )
-                ])
+                Event.select(
+                    Event.event_end.greater(datetime.now())
+                )
             )
 
             subset.update(
