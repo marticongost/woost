@@ -92,6 +92,7 @@ of its features include:\n"
             "issuu = woost.extensions.issuu:IssuuExtension",
             "campaign3 = woost.extensions.campaign3:CampaignMonitor3Extension",
             "youtube = woost.extensions.youtube:YouTubeExtension",
+            "tv3alacarta = woost.extensions.tv3alacarta:TV3ALaCartaExtension",
             "externalfiles = woost.extensions.externalfiles:ExternalFilesExtension",
             "restrictedaccess = woost.extensions.restrictedaccess:RestrictedAccessExtension"
         ]
