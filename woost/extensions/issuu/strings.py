@@ -98,6 +98,18 @@ translations.define(
                           % instance.response
 )
 
+translations.define("IssuuBlock.width",
+    ca = u"Amplada",
+    es = u"Ancho",
+    en = u"Width"
+)
+
+translations.define("IssuuBlock.height",
+    ca = u"Alçada",
+    es = u"Alto",
+    en = u"Height"
+)
+
 # IssuuDocumentRenderer
 #------------------------------------------------------------------------------
 translations.define("IssuuDocumentRenderer",
@@ -110,51 +122,5 @@ translations.define("IssuuDocumentRenderer-plural",
     ca = u"Pintador de documents Issuu",
     es = u"Pintador de documentos Issuu",
     en = u"Issuu documents renderer"
-)
-
-# IssuuViewerSettings
-#------------------------------------------------------------------------------
-translations.define("IssuuViewerSettings",
-    ca = u"Opcions de document Issuu",
-    es = u"Opciones de documento Issuu",
-    en = u"Issuu document settings"
-)
-
-translations.define("IssuuViewerSettings-plural",
-    ca = u"Opcions de document Issuu",
-    es = u"Opciones de documento Issuu",
-    en = u"Issuu document settings"
-)
-
-translations.define("IssuuViewerSettings.title", 
-    ca = u"Nom",
-    es = u"Nombre",
-    en = u"Name"
-)
-
-translations.define("IssuuViewerSettings.width", 
-    ca = u"Amplada",
-    es = u"Ancho",
-    en = u"Width"
-)
-
-translations.define("IssuuViewerSettings.height", 
-    ca = u"Alçada",
-    es = u"Alto",
-    en = u"Height"
-)
-
-# Configuration
-#------------------------------------------------------------------------------
-translations.define("Configuration.media.issuu",
-    ca = u"Issuu",
-    es = u"Issuu",
-    en = u"Issuu"
-)
-
-translations.define("Configuration.issuu_viewer_settings",
-    ca = u"Opcions de document Issuu",
-    es = u"Opciones de documento Issuu",
-    en = u"Issuu document settings"
 )
 
