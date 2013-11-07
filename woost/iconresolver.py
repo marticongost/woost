@@ -157,11 +157,20 @@ class IconResolver(object):
         file_names = self._resolve_item(content_type, item)
 
         if item is not None:
-            if item.resource_type:
-                file_names.insert(0, "resource-type-" + item.resource_type)
 
+            # Use a distinct icon for home pages
             if item.is_home_page():
                 file_names.insert(0, "home")
+
+            # Apply icons based on the item's resource type (but icons for
+            # subclasses of Publishable / File still take precedence)
+            try:
+                pos = file_names.index("type-woost-models-file-File")
+            except ValueError:
+                pos = file_names.index("type-woost-models-publishable-Publishable")
+
+            if item.resource_type:
+                file_names.insert(pos, "resource-type-" + item.resource_type)
 
         return file_names
 
