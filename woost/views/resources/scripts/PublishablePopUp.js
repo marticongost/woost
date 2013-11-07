@@ -19,6 +19,7 @@ cocktail.bind(".PublishablePopUp", function ($popUp) {
     this.showDialog = function () {
         var dialog = this.createDialog();
         cocktail.showDialog(dialog);
+        cocktail.init(dialog);
         cocktail.center(dialog);
     };
 
