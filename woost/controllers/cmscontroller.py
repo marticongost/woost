@@ -636,7 +636,7 @@ class CMSController(BaseCMSController):
                         return login_page, 200
                     publishable = publishable.parent
 
-                return config.get_setting("login_page"), 200
+                return config.get_setting("login_page"), 403
             else:
                 return config.get_setting("forbidden_error_page"), 403
 
