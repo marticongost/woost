@@ -28,12 +28,15 @@ class ContentLink(ItemLabel):
 
         if self.item:
             self.tag = "a"
-            self["href"] = context["cms"].contextual_uri(
-                "content", self.item.id, "fields"
-            )
+            self["href"] = self.get_edit_url()
         else:
             self.append(u"-")
 
     def get_label(self):
         return translations(self.item, referer = self.referer)
+
+    def get_edit_url(self):
+        return context["cms"].contextual_uri(
+            "content", self.item.id, "fields"
+        )
 
