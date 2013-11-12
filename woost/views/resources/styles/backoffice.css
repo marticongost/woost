@@ -2600,7 +2600,7 @@ button.TypeSelectorButton {
 }
 
 .BackOfficeLayout .stack_node.top {
-    border: 2px solid rgb(200,210,220);
+    border: 2px solid #ccc;
     background-color: white;
     padding-bottom: 0.8em;
 }
