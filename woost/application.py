@@ -15,6 +15,9 @@ class Application(object):
     __language = None
     __authentication = None
 
+    installation_id = None
+    installation_color = None
+
     def path(self, *args):
         return os.path.join(self.root, *args)
 

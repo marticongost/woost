@@ -4,6 +4,7 @@
 from cocktail.translations import get_language, translations
 from cocktail.html.ieconditionalcomment import IEConditionalComment
 from cocktail.schema import Collection
+from woost import app
 from woost.controllers.backoffice.editstack import (
     EditNode,
     SelectionNode,
@@ -80,10 +81,19 @@ from woost.controllers.backoffice.useractions import add_view_action_context
         self.add_client_translation("woost.views.BackOfficeLayout.drop")
         self.add_client_translation("woost.views.BackOfficeLayout.drop_before")
         self.add_client_translation("woost.views.BackOfficeLayout.drop_after")
+
+        if app.installation_id:
+            self.add_class("installation-" + app.installation_id)
         ?>
     </py:ready>
 
     <div py:id="header">
+        <py:ready>
+            <?py
+            if app.installation_color:
+                element.set_style("background-color", app.installation_color)
+            ?>
+        </py:ready>
 
         <!-- Page title -->
         <h1>
