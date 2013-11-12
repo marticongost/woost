@@ -24,10 +24,25 @@ class AuthenticationScheme(object):
             or self.anonymous_user
         )
 
+        self.process_header_based_authentication()
         self.process_login()
         self.process_logout()
 
-    def process_login(self):
+    def process_header_based_authentication(self):
+
+        user_header = cherrypy.request.headers.get("X-Woost-User")
+        password_header = cherrypy.request.headers.get("X-Woost-Password")
+
+        if user_header and password_header:
+            params = {self.identifier_field.name: user_header}
+            user = User.get_instance(**params)
+
+            if user is None or not user.password == password_header:
+                raise AuthenticationFailedError(user_header)
+            else:
+                set_current_user(user)
+
+    def process_login(self):        
         params = cherrypy.request.params
         if "authenticate" in params:
             self.login(
