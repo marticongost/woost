@@ -49,6 +49,7 @@ schema.Member.versioned = True
 def _hide_self_contained_relations(event):
     if event.anonymous:
         event.source.visible = False
+        event.source.synchronizable = False
 
 # Register the 'text/javascript' MIME type
 import mimetypes
@@ -64,6 +65,7 @@ from woost.models.websitesession import (
     get_current_website,
     set_current_website
 )
+from woost.models.siteinstallation import SiteInstallation
 from woost.models.changesets import ChangeSet, Change, changeset_context
 from woost.models.item import Item
 from woost.models.action import Action
@@ -107,6 +109,7 @@ from woost.models.permission import (
     ModifyTranslationPermission,
     DeleteTranslationPermission,
     ReadHistoryPermission,
+    InstallationSyncPermission,
     restricted_modification_context,
     delete_validating,
     PermissionExpression,
@@ -151,6 +154,7 @@ from woost.models.caching import CachingPolicy, expire_cache
 
 from woost.models import rendering
 from woost.models.videoplayersettings import VideoPlayerSettings
+from woost.models.synchronization import Synchronization
 from woost.models import staticpublication
 from woost.models import migration
 

@@ -18,6 +18,7 @@ from cocktail.controllers import (
 from cocktail import schema
 from woost.models import (
     Item,
+    SiteInstallation,
     Publishable,
     URI,
     File,
@@ -26,7 +27,8 @@ from woost.models import (
     ModifyPermission,
     DeletePermission,
     ConfirmDraftPermission,
-    ReadHistoryPermission
+    ReadHistoryPermission,
+    InstallationSyncPermission
 )
 from woost.controllers.backoffice.editstack import (
     EditNode,
@@ -448,16 +450,14 @@ class CreateAction(UserAction):
         return controller.edit_uri(controller.edited_content_type)
 
 
-#class CreateBeforeAction(CreateAction):
-#   ignores_selection = False
+class InstallationSyncAction(UserAction):
+    included = frozenset(["toolbar", "item_buttons"])
+    content_type = SiteInstallation
+    min = 1
+    max = 1
 
-
-#class CreateInsideAction(CreateAction):
-#   ignores_selection = False
-
-
-#class CreateAfterAction(CreateAction):
-#   ignores_selection = False
+    def is_permitted(self, user, target):
+        return user.has_permission(InstallationSyncPermission)
 
 
 class MoveAction(UserAction):
@@ -581,7 +581,7 @@ class PreviewAction(UserAction):
 class OpenResourceAction(UserAction):
     min = 1
     max = 1
-    content_type = Publishable
+    content_type = (Publishable, SiteInstallation)
     included = frozenset(["toolbar", "item_buttons"])
     excluded = frozenset([
         "new",
@@ -595,7 +595,12 @@ class OpenResourceAction(UserAction):
     client_redirect = True
 
     def get_url(self, controller, selection):
-        return selection[0].get_uri(host = "?")
+        target = selection[0]
+
+        if isinstance(target, Publishable):
+            return target.get_uri(host = "?")
+        else:
+            return target.url
 
 
 class UploadFilesAction(UserAction):
@@ -768,6 +773,7 @@ ShowDetailAction("show_detail").register()
 OpenResourceAction("open_resource").register()
 UploadFilesAction("upload_files").register()
 EditAction("edit").register()
+InstallationSyncAction("installation_sync").register()
 PreviewAction("preview").register()
 DeleteAction("delete").register()
 OrderAction("order").register()
