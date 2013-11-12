@@ -76,6 +76,7 @@ class User(Item):
         listed_by_default = False,
         searchable = False,
         text_search = False,
+        synchronizable = False,
         min = 8,
         visible_in_detail_view = False,
         edit_control = "cocktail.html.PasswordBox"
@@ -111,14 +112,15 @@ class User(Item):
         default = True
     )
 
-    def encryption(self, data):
+    @classmethod
+    def encryption(cls, data):
 
-        if self.encryption_method:
+        if cls.encryption_method:
 
             if isinstance(data, unicode):
                 data = data.encode("utf-8")
 
-            data = self.encryption_method(data).digest()
+            data = cls.encryption_method(data).hexdigest()
 
         return data
 
@@ -127,7 +129,7 @@ class User(Item):
 
         if event.member is cls.password \
         and event.value is not None:
-            event.value = event.source.encryption(event.value)
+            event.value = cls.encryption(event.value)
 
     def test_password(self, password):
         """Indicates if the user's password matches the given string.

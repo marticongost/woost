@@ -238,5 +238,5 @@ def file_hash(source, algorithm = "md5", chunk_size = 1024):
         if should_close:
             source.close()
 
-    return hash.digest()
+    return hash.hexdigest()
 

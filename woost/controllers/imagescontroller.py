@@ -9,7 +9,7 @@
 import os
 import cherrypy
 import re
-from cocktail.controllers import serve_file
+from cocktail.controllers import serve_file, resolve_object_ref
 from woost.models import Item, get_current_user, RenderPermission
 from woost.models.rendering import (
     require_rendering,
@@ -30,18 +30,17 @@ class ImagesController(BaseCMSController):
     def __call__(self, id, processing, *args, **kwargs):
 
         # Get the requested element
-        item = None
-
-        try:
-            item_id = int(id)
-        except ValueError:
-            pass
-        else:
-            item = Item.get_instance(item_id)
+        item = resolve_object_ref(Item, id)
 
         # Make sure the selected element exists
         if item is None:
             raise cherrypy.NotFound()
+
+        # Normalize the URL to use a local id
+        if id == item.global_id:
+            raise cherrypy.HTTPRedirect(
+                cherrypy.url().replace("/" + id + "/", "/%d/" % item.id)
+            )
 
         # Handle legacy image requests (woost < 0.8)
         if args or kwargs or "(" in processing:

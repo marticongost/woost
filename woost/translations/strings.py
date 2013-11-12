@@ -9,6 +9,7 @@ u"""
 from cocktail.translations import translations
 from cocktail.translations.helpers import ca_possessive, plural2
 from cocktail.modeling import OrderedDict
+from cocktail.stringutils import decapitalize
 from cocktail import schema
 
 translations.define("logged in as",
@@ -40,6 +41,12 @@ translations.define("Action new",
     ca = u"Nou",
     es = u"Nuevo",
     en = u"New"
+)
+
+translations.define("Action installation_sync",
+    ca = u"Importar canvis",
+    es = u"Importar cambios",
+    en = u"Import changes"
 )
 
 translations.define("cocktail.html.shortcuts action new",
@@ -459,7 +466,7 @@ translations.define("Differences for",
     en = lambda item: u"Changes in <em>'%s'</em>" % translations(item, "en")
 )
 
-translations.define("No differences",
+translations.define("woost.views.ObjectDiff.no_differences",
     ca = u"L'element no té cap canvi.",
     es = u"El elemento no tiene ningún cambio.",
     en = u"The item has no changes."
@@ -614,69 +621,69 @@ translations.define("woost.views.BackOfficeLayout.drop_after",
 def _selection_error_ca(instance):    
     if instance.action.min and instance.selection_size < instance.action.min:
         bound = instance.action.min
-        bound_label = "mínim"
+        bound_label = u"mínim"
     else:
         bound = instance.action.max
-        bound_label = "màxim"
+        bound_label = u"màxim"
 
     return u"No es pot %s una selecció %s; el %s és %s" % (
         translations(instance.action).lower(),
         plural2(
             instance.selection_size, 
-            "d'un sol element", 
-            "de %d elements" % instance.selection_size
+            u"d'un sol element", 
+            u"de %d elements" % instance.selection_size
         ),
         bound_label,
         plural2(
             bound,
-            "d'un element",
-            "de %d elements" % bound
+            u"d'un element",
+            u"de %d elements" % bound
         )
     )
 
 def _selection_error_es(instance):    
     if instance.action.min and instance.selection_size < instance.action.min:
         bound = instance.action.min
-        bound_label = "mínimo"
+        bound_label = u"mínimo"
     else:
         bound = instance.action.max
-        bound_label = "máximo"
+        bound_label = u"máximo"
 
     return u"No se puede %s una selección de %s; el %s es de %s" % (
         translations(instance.action).lower(),
         plural2(
             instance.selection_size, 
-            "a single element", 
-            "%d elements" % instance.selection_size
+            u"de un solo elemento", 
+            u"%d elementos" % instance.selection_size
         ),
         bound_label,
         plural2(
             bound,
-            "un elemento",
-            "%d elementos" % bound
+            u"un elemento",
+            u"%d elementos" % bound
         )
     )
 
 def _selection_error_en(instance):    
     if instance.action.min and instance.selection_size < instance.action.min:
         bound = instance.action.min
-        bound_label = "at least"
+        bound_label = u"at least"
     else:
         bound = instance.action.max
-        bound_label = "no more than"
+        bound_label = u"no more than"
 
     return u"Can't %s a selection consisting of %s; must select %s %s" % (
         translations(instance.action).lower(),
         plural2(
             instance.selection_size, 
-            "a single element", 
-            "%d elements" % instance.selection_size
+            u"a single element", 
+            u"%d elements" % instance.selection_size
         ),
         bound_label,
         plural2(
             bound,
-            "one element",
-            "%d elements" % bound
+            u"one element",
+            u"%d elements" % bound
         )
     )
 
@@ -1657,6 +1664,27 @@ translations.define("Item.qname",
     en = u"Qualified name"
 )
 
+translations.define("Item.global_id",
+    ca = u"Identificador global",
+    es = u"Identificador global",
+    en = u"Global identifier"
+)
+
+translations.define("Item.synchronizable",
+    ca = u"Sincronitzable",
+    es = u"Sincronizable",
+    en = u"Synchronizable"
+)
+
+translations.define("Item.synchronizable-explanation",
+    ca = u"Indica si l'objecte es tindrà en compte a l'hora de sincronitzar "
+         u"les dades de dues còpies del lloc web.",
+    es = u"Indica si el objeto se tendrá en cuenta a la hora de sincronizar "
+         u"los datos de dos copias del sitio web.",
+    en = u"Indicates wether the object will be taken into account when "
+         u"synchronizing data across copies of the site."
+)
+
 translations.define("Item.author",
     ca = u"Autor",
     es = u"Autor",
@@ -2275,6 +2303,44 @@ translations.define("woost.views.LoginForm.submit_button",
     ca = u"Entrar",
     es = u"Entrar",
     en = u"Enter"
+)
+
+# SiteInstallation
+#------------------------------------------------------------------------------
+translations.define("SiteInstallation",
+    ca = u"Instal·lació del lloc web",
+    es = u"Instalación del sitio web",
+    en = u"Site installation"
+)
+
+translations.define("SiteInstallation-plural",
+    ca = u"Instal·lacions del lloc web",
+    es = u"Instalaciones del sitio web",
+    en = u"Site installations"
+)
+
+translations.define("SiteInstallation.title",
+    ca = u"Nom",
+    es = u"Nombre",
+    en = u"Name"
+)
+
+translations.define("SiteInstallation.url",
+    ca = u"URL",
+    es = u"URL",
+    en = u"URL"
+)
+
+translations.define("SiteInstallation.synchronization_user",
+    ca = u"Usuari per la sincronització",
+    es = u"Usuario para la sincronización",
+    en = u"Synchronization user"
+)
+
+translations.define("SiteInstallation.synchronization_password",
+    ca = u"Contrasenya per la sincronització",
+    es = u"Contraseña para la sincronización",
+    en = u"Synchronization password"
 )
 
 # PublicationScheme
@@ -3727,6 +3793,14 @@ translations.define("ReadMemberPermission-plural",
     en = u"Read past revisions permissions"
 )
 
+# InstallationSyncPermission
+#------------------------------------------------------------------------------
+translations.define("InstallationSyncPermission",
+    ca = u"Permís de sincronització",
+    es = u"Permiso de sincronización",
+    en = u"Synchronization permission"
+)
+
 # URI
 #------------------------------------------------------------------------------
 translations.define("URI",
@@ -3897,6 +3971,12 @@ translations.define("File.file_name",
     ca = u"Nom del fitxer",
     es = u"Nombre del fichero",
     en = u"File name"
+)
+
+translations.define("File.file_hash",
+    ca = u"Sumatori del contingut del fitxer",
+    es = u"Sumatorio del contenido del fichero",
+    en = u"Checksum"
 )
 
 translations.define("File.file_size",
@@ -5853,5 +5933,94 @@ translations.define("VideoPlayerSettings.show_player_controls",
     ca = u"Mostrar controls de reproducció",
     es = u"Mostrar controles de reproducción",
     en = u"Show player controls"
+)
+
+# BackOfficeInstallationSyncView
+#------------------------------------------------------------------------------
+translations.define("woost.views.BackOfficeInstallationSyncView.incomming_section",
+    ca = u"Contingut nou",
+    es = u"Contenido nuevo",
+    en = u"New content"
+)
+
+translations.define("woost.views.BackOfficeInstallationSyncView.modified_section",
+    ca = u"Contingut modificat",
+    es = u"Contenido modificado",
+    en = u"Modified content"
+)
+
+translations.define("woost.views.BackOfficeInstallationSyncView.remote_value",
+    ca = lambda installation: 
+        u"Valor a " + decapitalize(translations(installation)),
+    es = lambda installation:
+        u"Valor en " + decapitalize(translations(installation)),
+    en = lambda installation:
+        u"Value in " + decapitalize(translations(installation))
+)
+
+translations.define("woost.views.BackOfficeInstallationSyncView.local_value",
+    ca = u"Valor local",
+    es = u"Valor local",
+    en = u"Local value"
+)
+
+translations.define("woost.views.BackOfficeInstallationSyncView.diff_dialog_button",
+    ca = u"Detalls",
+    es = u"Detalles",
+    en = u"Details"
+)
+
+translations.define(
+    "woost.views.BackOfficeInstallationSyncView.sync_request_error",
+    ca = lambda error:
+        u"S'ha produït un error en intentar accedir a la instal·lació "
+        u"remota (%s)" % error,
+    es = lambda error:
+        u"Se ha producido un error al intentar acceder a la instalación "
+        u"remota (%s)" % error,
+    en = lambda error:
+        u"Error connecting to the remote installation (%s)" % error
+)
+
+translations.define(
+    "woost.views.BackOfficeInstallationSyncView.no_changes_notice",
+    ca = u"No hi ha cap canvi a importar.",
+    es = u"No hay cambios a importar.",
+    en = u"There are no changes to import."
+)
+
+translations.define("woost.views.BackOfficeInstallationSyncView.sync_button",
+    ca = u"Importar els canvis seleccionats",
+    es = u"Importar los cambios seleccionados",
+    en = u"Import selected content"
+)
+
+translations.define(
+    "woost.views.BackOfficeInstallationSyncView.select_all_button",
+    ca = u"Seleccionar-ho tot",
+    es = u"Seleccionarlo todo",
+    en = u"Select all"
+)
+
+translations.define(
+    "woost.views.BackOfficeInstallationSyncView.select_none_button",
+    ca = u"Buidar la selecció",
+    es = u"Vaciar la selección",
+    en = u"Empty selection"
+)
+
+translations.define(
+    "woost.views.BackOfficeInstallationSyncView.file_hash_diff_heading",
+    ca = u"Fitxer",
+    es = u"Fichero",
+    en = u"File"
+)
+
+# InstallationSyncController
+#------------------------------------------------------------------------------
+translations.define("woost.controllers.InstallationSyncController.success",
+    ca = u"S'han sincronitzat els continguts indicats.",
+    es = u"Se han sincronizado los contenidos indicados.",
+    en = u"Successfully synchronized the selected content."
 )
 
