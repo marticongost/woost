@@ -67,6 +67,12 @@ class Installer(object):
                     member_group = "project"
                 ),
                 schema.String(
+                    name = "installation_id",
+                    required = True,
+                    member_group = "project",
+                    default = "dev"
+                ),
+                schema.String(
                     name = "admin_email",
                     required = True,
                     default = "admin@localhost",

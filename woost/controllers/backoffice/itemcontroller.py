@@ -24,11 +24,11 @@ from woost.controllers.backoffice.basebackofficecontroller \
 
 from woost.controllers.backoffice.editstack import EditNode, RelationNode
 
-from woost.controllers.backoffice.showdetailcontroller \
-    import ShowDetailController
-
 from woost.controllers.backoffice.differencescontroller \
     import DifferencesController
+
+from woost.controllers.backoffice.installationsynccontroller \
+    import InstallationSyncController
 
 
 class ItemController(BaseBackOfficeController):
@@ -36,6 +36,7 @@ class ItemController(BaseBackOfficeController):
     default_section = "fields"
     
     diff = DifferencesController
+    installation_sync = InstallationSyncController
 
     @cached_getter
     def preview(self):

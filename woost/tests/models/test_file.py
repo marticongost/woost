@@ -40,7 +40,7 @@ class FileTestCase(BaseTestCase):
 
         assert file.file_name == "foo_bar-spam.css"
         assert file.file_size == len(content)
-        assert file.file_hash == md5(content).digest() 
+        assert file.file_hash == md5(content).hexdigest() 
         assert file.mime_type == "text/css"
         assert file.get("title", "ca") == "Foo bar spam"
         assert file.get("title", "ca") == "Foo bar spam"

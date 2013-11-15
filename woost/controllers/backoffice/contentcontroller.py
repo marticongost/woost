@@ -92,17 +92,17 @@ class ContentController(BaseBackOfficeController):
         else:
             component = path.pop(0)
             try:
-                item_id = int(component)
+                kwargs = {"id": int(component)}
             except ValueError:
+                kwargs = {"global_id": component}
+
+            item = self.root_content_type.get_instance(**kwargs)
+
+            if item is None:
                 return None
-            else:
-                item = self.root_content_type.get_instance(item_id)
 
-                if item is None:
-                    return None
-
-                self.context["cms_item"] = item
-                return self._item_controller_class()
+            self.context["cms_item"] = item
+            return self._item_controller_class()
 
     def __call__(self, *args, **kwargs):
 

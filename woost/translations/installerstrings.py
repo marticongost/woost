@@ -36,6 +36,20 @@ translations.define("Installer.python_package_repository-explanation",
     installed."""
 )
 
+translations.define("Installer.installation_id",
+    en = u"Installation identifier"
+)
+
+translations.define("Installer.installation_id-explanation",
+    en = u"A short string that uniquely identifies this instance of the site. "
+         u"Each installation of the site should be given a distinct "
+         u"identifier, following a convention fitting your workflow and "
+         u"site deployment specifics. For example, once could use "
+         u"<em>dev-john</em>, <em>dev-mary</em> and <em>prod</em> to "
+         u"distinguish between a couple of development "
+         u"copies and the production environment."
+)
+
 translations.define("Installer.admin_email",
     en = u"Administrator email"
 )

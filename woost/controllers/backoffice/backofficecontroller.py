@@ -38,6 +38,8 @@ from woost.controllers.backoffice.uploadfilescontroller \
     import UploadFilesController
 from woost.controllers.backoffice.dragandropcontroller \
     import DragAndDropController
+from woost.controllers.backoffice.sitesynccontroller \
+    import SiteSyncController
 
 
 class BackOfficeController(BaseBackOfficeController):
@@ -129,4 +131,6 @@ class BackOfficeController(BaseBackOfficeController):
     @cherrypy.expose
     def keep_alive(self, *args, **kwargs):
         pass
+
+    synchronization = SiteSyncController
 
