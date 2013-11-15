@@ -17,7 +17,8 @@ from woost.controllers.backoffice.usereditnode import PasswordConfirmationError
 from woost.extensions.signup.signupconfirmationcontroller import generate_confirmation_hash
 from woost.extensions.signup.signuppage import SignUpPage
 
-from woost.models import Item, Site, Language, User
+from woost.models import Item, User
+
 
 class SignUpController(FormControllerMixin, DocumentController):
 

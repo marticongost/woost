@@ -2,7 +2,7 @@
 <?py
 from cocktail import schema
 from cocktail.controllers import Location
-from woost.models import Site
+from woost.models import Configuration
 ?>
 
 <div
@@ -22,8 +22,8 @@ from woost.models import Site
 
     <img
         py:id="logo_image" 
-        py:visible="@{Site.main.logo is not None}"
-        alt="${translations(Site.main.logo)}"
+        py:visible="@{Configuration.instance.get_setting('logo') is not None}"
+        alt="${translations(Configuration.instance.get_setting('logo'))}"
         src="cid:logo"/>
 
     <div py:id="introduction">

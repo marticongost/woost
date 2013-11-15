@@ -10,8 +10,8 @@ from woost.extensions.blocks.block import Block
 class IFrameBlock(Block):
 
     instantiable = True
+    type_group = "blocks.custom"
     view_class = "cocktail.html.Element"
-    tag = "iframe"
 
     members_order = [
         "src",
@@ -36,6 +36,7 @@ class IFrameBlock(Block):
 
     def init_view(self, view):
         Block.init_view(self, view)
+        view.tag = "iframe"
         view["src"] = self.src
         view["frameborder"] = "0"
 

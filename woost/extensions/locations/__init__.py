@@ -106,7 +106,6 @@ class LocationsExtension(Extension):
     )
 
     updated_location_types = schema.Collection(
-        edit_inline = True,
         default = [
             "continent",
             "country",
@@ -131,7 +130,8 @@ class LocationsExtension(Extension):
                     **kwargs
                 )
         ),
-        text_search = False
+        text_search = False,
+        edit_control = "cocktail.html.CheckList"
     )
 
     updated_subset = schema.Collection(

@@ -18,14 +18,11 @@ from cocktail.persistence import (
     PersistentMapping,
     MaxValue
 )
+from cocktail.controllers import make_uri, percent_encode_uri, Location
+from woost.models.websitesession import get_current_website
 from woost.models.changesets import ChangeSet, Change
 from woost.models.action import Action
-
-# Extension property that allows changing the controller that handles a
-# collection in the backoffice
-schema.Collection.edit_controller = \
-    "woost.controllers.backoffice.collectioncontroller." \
-    "CollectionController"
+from woost.models.usersession import get_current_user
 
 # Extension property that makes it easier to customize the edit view for a
 # collection in the backoffice
@@ -38,6 +35,9 @@ schema.RelationMember.selector_default_type = None
 # Extension property that allows to indicate that specific members don't modify
 # the 'last_update_time' member of items when changed
 schema.Member.affects_last_update_time = True
+
+# Extension property that allows hiding relations in the ReferenceList view
+schema.RelationMember.visible_in_reference_list = True
 
 
 class Item(PersistentObject):
@@ -65,6 +65,14 @@ class Item(PersistentObject):
     # Extension property that indicates if the backoffice should show child
     # entries for this content type in the type selector
     collapsed_backoffice_menu = False
+
+    # Customization of the heading for BackOfficeItemView
+    backoffice_heading_view = "woost.views.BackOfficeItemHeading"
+
+    # Customization of the backoffice preview action
+    preview_view = "woost.views.BackOfficePreviewView"
+    preview_controller = "woost.controllers.backoffice." \
+        "previewcontroller.PreviewController"
 
     def __translate__(self, language, **kwargs):
         if self.draft_source is not None:
@@ -385,7 +393,13 @@ class Item(PersistentObject):
         item = event.source
         now = None
 
-        if item.is_inserted:
+        update_timestamp = (
+            item.is_inserted
+            and event.member.affects_last_update_time
+            and not getattr(item, "_v_is_producing_default", False)
+        )
+
+        if update_timestamp:
             now = datetime.now()
             item.set_last_instance_change(now)
 
@@ -395,7 +409,7 @@ class Item(PersistentObject):
         or item.is_draft \
         or not item.__class__.versioned:
             return
-        
+
         changeset = ChangeSet.current
 
         if changeset:
@@ -413,8 +427,8 @@ class Item(PersistentObject):
                 change.item_state = item._get_revision_state()
                 change.changeset = changeset
                 changeset.changes[item.id] = change
-                if event.member.affects_last_update_time:
-                    item.last_update_time = now or datetime.now()
+                if update_timestamp:
+                    item.last_update_time = now
                 change.insert()
             else:
                 action_type = change.action.identifier
@@ -435,8 +449,8 @@ class Item(PersistentObject):
                     change.item_state[member_name][language] = value
                 else:
                     change.item_state[member_name] = value
-        elif event.member.affects_last_update_time:
-            item.last_update_time = datetime.now()
+        elif update_timestamp:
+            item.last_update_time = now
 
     @event_handler
     def handle_deleting(cls, event):
@@ -483,7 +497,7 @@ class Item(PersistentObject):
 
     _preserved_members = frozenset([changes])
 
-    def _should_cascade_delete(self, member):
+    def _should_cascade_delete_member(self, member):
         return member.cascade_delete and not self.is_draft
 
     def _should_erase_member(self, member):
@@ -507,6 +521,108 @@ class Item(PersistentObject):
         listed_by_default = False,
         member_group = "administration"
     )
+
+    # URLs
+    #--------------------------------------------------------------------------     
+    def get_image_uri(self,
+        image_factory = None,
+        parameters = None,
+        encode = True,
+        include_extension = True,
+        host = None,):
+                
+        uri = make_uri("/images", self.id)
+        ext = None
+
+        if image_factory:
+            if isinstance(image_factory, basestring):
+                pos = image_factory.rfind(".")
+                if pos != -1:
+                    ext = image_factory[pos + 1:]
+                    image_factory = image_factory[:pos]
+                
+                from woost.models.rendering import ImageFactory
+                image_factory = \
+                    ImageFactory.require_instance(identifier = image_factory)
+
+            uri = make_uri(
+                uri,
+                image_factory.identifier or "factory%d" % image_factory.id
+            )
+
+        if include_extension:
+            from woost.models.rendering.formats import (
+                formats_by_extension,
+                extensions_by_format,
+                default_format
+            )
+
+            if not ext and image_factory and image_factory.default_format:
+                ext = extensions_by_format[image_factory.default_format]
+
+            if not ext:
+                ext = getattr(self, "file_extension", None)
+
+            if ext:
+                ext = ext.lower().lstrip(".")
+
+            if not ext or ext not in formats_by_extension:
+                ext = extensions_by_format[default_format]
+
+            uri += "." + ext
+
+        if parameters:
+            uri = make_uri(uri, **parameters)
+
+        return self._fix_uri(uri, host, encode)
+
+    def _fix_uri(self, uri, host, encode):
+
+        if encode:
+            uri = percent_encode_uri(uri)
+
+        if "://" in uri:
+            host = None
+
+        if host:
+            website = get_current_website()
+            policy = website and website.https_policy
+
+            if (                    
+                policy == "always"
+                or (
+                    policy == "per_page" and (
+                        getattr(self, 'requires_https', False)
+                        or not get_current_user().anonymous
+                    )
+                )
+            ):
+                scheme = "https"
+            else:
+                scheme = "http"
+
+            if host == ".":
+                location = Location.get_current_host()
+                location.scheme = scheme
+                host = str(location)
+            elif not "://" in host:
+                host = "%s://%s" % (scheme, host)
+
+            uri = make_uri(host, uri)
+        elif "://" not in uri:
+            uri = make_uri("/", uri)
+
+        return uri
+
+    copy_excluded_members = set([
+        is_draft,
+        drafts,
+        changes,
+        author,
+        owner,
+        creation_time,
+        last_update_time
+    ])
 
 
 Item.id.versioned = False

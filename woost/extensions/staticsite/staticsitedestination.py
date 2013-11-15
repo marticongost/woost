@@ -245,9 +245,9 @@ class StaticSiteDestination(Item):
         existing_folders = context.get("existing_folders")
 
         def ascend(folder):
-            if folder and \
-            (existing_folders is None or folder not in existing_folders):
-                ascend(os.path.dirname(folder))
+            if existing_folders is None or folder not in existing_folders:
+                if folder:
+                    ascend(os.path.dirname(folder))
                 created = self.create_folder(folder, context)
                 if existing_folders and created:
                     existing_folders.add(folder)
@@ -290,10 +290,10 @@ class StaticSiteDestination(Item):
         @type context: dict
         """
 
-    def view_class(self):
+    def view_class(self, context):
         return "woost.extensions.staticsite.ExportStaticSiteView"
 
-    def output(self):
+    def output(self, context):
         return {}
 
 

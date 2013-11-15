@@ -11,6 +11,7 @@ from woost.extensions.blocks.block import Block
 class LoginBlock(Block):
 
     instantiable = True
+    type_group = "blocks.forms"
     view_class = "woost.extensions.blocks.LoginBlockView"
 
     login_target = schema.Reference(

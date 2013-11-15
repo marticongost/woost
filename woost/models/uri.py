@@ -7,6 +7,7 @@ u"""
 @since:			February 2009
 """
 from cocktail import schema
+from cocktail.controllers import make_uri
 from woost.models.publishable import Publishable
 from woost.models.controller import Controller
 
@@ -19,7 +20,8 @@ class URI(Publishable):
 
     members_order = [
         "title",
-        "uri"
+        "uri",
+        "language_specific_uri"
     ]
 
     default_controller = schema.DynamicDefault(
@@ -36,9 +38,33 @@ class URI(Publishable):
     )
 
     uri = schema.String(
-        required = True,
         indexed = True,
         member_group = "content"
     )
 
+    language_specific_uri = schema.String(
+        translated = True,
+        member_group = "content"
+    )
+
+    def get_uri(self,
+        path = None,
+        parameters = None,
+        language = None,
+        host = None,
+        encode = True):
+
+        uri = self.language_specific_uri or self.uri
+
+        if uri is not None:
+
+            if path:
+                uri = make_uri(uri, *path)
+
+            if parameters:
+                uri = make_uri(uri, **parameters)
+
+            uri = self._fix_uri(uri, host, encode)
+
+        return uri
 

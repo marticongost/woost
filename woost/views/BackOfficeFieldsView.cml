@@ -6,7 +6,7 @@ from woost.models import (
     get_current_user,
     CreateTranslationPermission,
     DeleteTranslationPermission,
-    Language
+    Configuration
 )
 ?>
 
@@ -42,7 +42,7 @@ from woost.models import (
                 ?>
                 <span class="label">${translations("Translations")}</span>                
                 <ul class="selector_content">
-                    <li py:for="language in self.available_languages">
+                    <li py:for="language in self.available_languages" data-language="${language}">
                         <?py
                         has_translation = language in self.translations
                         ?>
@@ -70,14 +70,14 @@ from woost.models import (
                             name="add_translation"
                             type="submit"
                             value="${language}">
-                            <img src="/resources/images/add_small.png"/>
+                            <img src="/resources/images/add.png"/>
                         </button>
                         <button
                             py:if="can_delete"
                             name="delete_translation"
                             type="submit"
                             value="${language}">
-                            <img src="/resources/images/delete_small.png"/>
+                            <img src="/resources/images/delete.png"/>
                         </button>
                     </li>
                 </ul>
@@ -94,7 +94,7 @@ from woost.models import (
                 py:persistent_object="@{self.edited_item}"
                 py:schema="@{self.fields_schema}"
                 py:errors="@{self.submitted and self.errors}"
-                py:translations="@{[lang for lang in Language.codes if lang in self.translations]}"
+                py:translations="@{[lang for lang in Configuration.instance.languages if lang in self.translations]}"
                 py:edited_content_type="@{self.edited_content_type}"
                 py:name_prefix="edited_item_"
                 method="post">

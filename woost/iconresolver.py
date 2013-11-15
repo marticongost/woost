@@ -11,9 +11,11 @@ import os
 from pkg_resources import resource_filename
 from cocktail.typemapping import TypeMapping
 from cocktail.cache import Cache
-from woost.models.site import Site
+from cocktail.persistence import PersistentObject
+from woost.models.website import Website
 from woost.models.item import Item
 from woost.models.publishable import Publishable
+from woost.models.document import Document
 from woost.models.file import File
 
 
@@ -24,8 +26,8 @@ class IconResolver(object):
         same values accepted by PIL images.
     @type icon_format: str
 
-    @ivar icon_repositories: A list of the directories to search for icons, in
-        descending order of preference.
+    @ivar icon_repositories: A list of the directory/URL tuples to search for
+        icons, in descending order of preference.
     @type icon_repositories: str list
 
     @ivar file_resolvers: A mapping of types and icon resolution functions.
@@ -49,11 +51,15 @@ class IconResolver(object):
 
     def __init__(self):
         self.icon_repositories = [
-            resource_filename("woost.views", "resources/images/icons")
+            (
+                resource_filename("woost.views", "resources/images/icons"),
+                "/resources/images/icons"
+            )
         ]
         self.file_resolvers = TypeMapping()
         self.file_resolvers[Item] = self._resolve_item
         self.file_resolvers[Publishable] = self._resolve_publishable
+        self.file_resolvers[Document] = self._resolve_document
         self.file_resolvers[File] = self._resolve_file
         self.name_resolution_cache = Cache(load = self._find_icon)
         
@@ -105,6 +111,16 @@ class IconResolver(object):
 
         return None
 
+    def find_icon_path(self, item, size):
+        match = self.find_icon(item, size)
+        if match:
+            return match[0]
+
+    def find_icon_url(self, item, size):
+        match = self.find_icon(item, size)
+        if match:
+            return match[1]
+
     def _find_icon(self, key):
 
         size, file_names = key
@@ -113,15 +129,20 @@ class IconResolver(object):
         size_str = "%dx%d" % (size, size)
         icon_ext = "." + self.icon_extension
 
-        for repository in repositories:
+        for repo_path, repo_url in repositories:
             for file_name in file_names:
                 icon_path = os.path.join(
-                    repository,
+                    repo_path,
                     size_str,
                     file_name + icon_ext
                 )
                 if os.path.exists(icon_path):
-                    return icon_path
+                    icon_url = "%s/%s/%s" % (
+                        repo_url.rstrip("/"),
+                        size_str,
+                        file_name + icon_ext
+                    )
+                    return (icon_path, icon_url)
 
         return None
         
@@ -129,16 +150,35 @@ class IconResolver(object):
         return [
             "type-" + cls.full_name.replace(".", "-")
             for cls in content_type.ascend_inheritance(True)
+            if cls is not PersistentObject
         ]
 
     def _resolve_publishable(self, content_type, item):
         file_names = self._resolve_item(content_type, item)
 
-        if item is not None and item.resource_type:
-            file_names.insert(0, "resource-type-" + item.resource_type)
+        if item is not None:
 
-        if item is Site.main.home:
-            file_names.insert(0, "home")
+            # Use a distinct icon for home pages
+            if item.is_home_page():
+                file_names.insert(0, "home")
+
+            # Apply icons based on the item's resource type (but icons for
+            # subclasses of Publishable / File still take precedence)
+            try:
+                pos = file_names.index("type-woost-models-file-File")
+            except ValueError:
+                pos = file_names.index("type-woost-models-publishable-Publishable")
+
+            if item.resource_type:
+                file_names.insert(pos, "resource-type-" + item.resource_type)
+
+        return file_names
+
+    def _resolve_document(self, content_type, item):
+        file_names = self._resolve_publishable(content_type, item)
+
+        if item is not None and item.redirection_mode:
+            file_names.insert(0, "redirection")
 
         return file_names
 

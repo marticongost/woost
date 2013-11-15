@@ -54,7 +54,7 @@ cocktail.bind(".MemberList", function ($memberList) {
 
         var removeButton = document.createElement("img");
         removeButton.className = "remove_button";
-        removeButton.src = "/resources/images/delete_small.png";
+        removeButton.src = "/resources/images/delete.png";
         jQuery(removeButton).click(function () { memberList.removeChild(entry); });
         entry.appendChild(removeButton);
 

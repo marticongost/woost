@@ -8,6 +8,8 @@ u"""
 """
 from cocktail.translations import translations
 from cocktail.translations.helpers import ca_possessive, plural2
+from cocktail.modeling import OrderedDict
+from cocktail import schema
 
 translations.define("logged in as",
     ca = lambda user: u"Estàs identificat com a " \
@@ -22,7 +24,10 @@ translations.define("Logout",
     ca = u"Sortir",
     es = u"Salir",
     en = u"Log out",
-    fr = u"Log out"
+    fr = u"Log out",
+    de = u"Abmelden",
+    pl = u"Zaloguj się",
+    nl = u"Log uit"
 )
 
 translations.define("Type",
@@ -290,24 +295,21 @@ translations.define("creating",
 )
 
 translations.define("woost.views.BackOfficeLayout edit stack select",
-    ca = lambda type = None:
-        u"Seleccionar " + translations(type.name, "ca").lower()
-        if type
-        else u"seleccionar",
-    es = lambda type = None:
-        u"Seleccionar " + translations(type.name, "es").lower()
-        if type
-        else u"seleccionar",
-    en = lambda type = None:
-        u"Select " + translations(type.name, "en").lower()
-        if type
-        else u"select",
+    ca = lambda type = None, relation = None:
+        u"Seleccionar %s"
+        % translations(relation if relation else type.name).lower(),
+    es = lambda type = None, relation = None:
+        u"Seleccionar %s"
+        % translations(relation if relation else type.name).lower(),
+    en = lambda type = None, relation = None:
+        u"Select %s"
+        % translations(relation if relation else type.name).lower()
 )
 
 translations.define("woost.views.BackOfficeLayout edit stack add",
-    ca = u"afegir",
-    es = u"añadir",
-    en = u"add"
+    ca = lambda relation: u"Afegir %s" % translations(relation).lower(),
+    es = lambda relation: u"Añadir %s" % translations(relation).lower(),
+    en = lambda relation: u"Add %s" % translations(relation).lower()
 )
 
 translations.define("Backout",
@@ -557,6 +559,58 @@ translations.define(
     en = u"Can't insert an element into itself."
 )
 
+translations.define(
+    "woost.controllers.backoffice.DragAndDropController.drop_notification",
+    ca = lambda dragged_object, target_object, target_member:
+        (
+            u"S'ha establert %s com a %s %s" 
+            if isinstance(target_member, schema.Reference)
+            else u"S'ha afegit %s a %s %s"
+        ) % (
+            translations(dragged_object),
+            translations(target_member),
+            ca_possessive(translations(target_object))
+        ),
+    es = lambda dragged_object, target_object, target_member:
+        (
+            u"Se ha establecido %s como %s de %s"
+            if isinstance(target_member, schema.Reference)
+            else u"Se ha añadido %s a %s de %s"
+        ) % (
+            translations(dragged_object),
+            translations(target_member),
+            translations(target_object)
+        ),
+    en = lambda dragged_object, target_object, target_member:
+        (
+            u"%s set as %s of %s"
+            if isinstance(target_member, schema.Reference)
+            else u"%s added to the %s of %s"
+        ) % (
+            translations(dragged_object),
+            translations(target_member),
+            translations(target_object)
+        )
+)
+
+translations.define("woost.views.BackOfficeLayout.drop",
+    ca = u"Inserir a dins",
+    es = u"Insertar dentro",
+    en = u"Insert inside"
+)
+
+translations.define("woost.views.BackOfficeLayout.drop_before",
+    ca = u"Inserir davant",
+    es = u"Insertar en frente",
+    en = u"Insert before"
+)
+
+translations.define("woost.views.BackOfficeLayout.drop_after",
+    ca = u"Inserir darrere",
+    es = u"Insertar detrás",
+    en = u"Insert after"
+)
+
 def _selection_error_ca(instance):    
     if instance.action.min and instance.selection_size < instance.action.min:
         bound = instance.action.min
@@ -800,6 +854,12 @@ translations.define("woost.views.EditLink-publishable_target",
     ca = u"aquesta pàgina",
     es = u"esta página",
     en = u"this page"
+)
+
+translations.define("woost.views.EditLink-site",
+    ca = u"les propietats del lloc web",
+    es = u"las propiedades del sitio web",
+    en = u"site-wide properties"
 )
 
 translations.define("woost.views.EditLink-create",
@@ -1171,6 +1231,70 @@ translations.define("woost.models.initialization delete_files_trigger",
     en = u"Erase files from disc when their item is deleted"
 )
 
+translations.define("woost.models.initialization content_renderer",
+    ca = u"Imatge del contingut",
+    es = u"Imagen del contenido",
+    en = u"Content renderer"
+)
+
+translations.define("woost.models.initialization icon16_renderer",
+    ca = u"Icones de 16x16",
+    es = u"Iconos de 16x16",
+    en = u"16x16 icons"
+)
+
+translations.define("woost.models.initialization icon32_renderer",
+    ca = u"Icones de 32x32",
+    es = u"Iconos de 32x32",
+    en = u"32x32 icons"
+)
+
+translations.define("woost.models.initialization default_image_factory",
+    ca = u"Imatge sense processar",
+    es = u"Imagen sin procesar",
+    en = u"Unprocessed image"
+)
+
+translations.define("woost.models.initialization icon16_image_factory",
+    ca = u"Icona de 16x16",
+    es = u"Icono de 16x16",
+    en = u"16x16 icon"
+)
+
+translations.define("woost.models.initialization icon32_image_factory",
+    ca = u"Icona de 32x32",
+    es = u"Icono de 32x32",
+    en = u"32x32 icon"
+)
+
+translations.define(
+    "woost.models.initialization backoffice_thumbnail_image_factory",
+    ca = u"Vista en miniatura del panell d'administració",
+    es = u"Vista en miniatura del panel de administración",
+    en = u"Backoffice thumbnail"
+)
+
+translations.define(
+    "woost.models.initialization backoffice_small_thumbnail_image_factory",
+    ca = u"Vista en miniatura petita del panell d'administració",
+    es = u"Vista en miniatura pequeña del panel de administración",
+    en = u"Backoffice small thumbnail"
+)
+
+translations.define(
+    "woost.models.initialization image_gallery_close_up_image_factory",
+    ca = u"Ampliació estàndard de la galeria d'imatges",
+    es = u"Ampliación estándar de la galería de imágenes",
+    en = u"Default image gallery close up"
+)
+
+translations.define(
+    "woost.models.initialization image_gallery_thumbnail_image_factory",
+    ca = u"Miniatura estàndard de la galeria d'imatges",
+    es = u"Miniatura estándar de la galería de imágenes",
+    en = u"Default image gallery thumbnail"
+)
+
 translations.define("woost.views.ContentTable sorting header",
     ca = u"Ordenació",
     es = u"Ordenación",
@@ -1217,6 +1341,14 @@ translations.define("woost.views.ImageGallery.original_image_link",
     ca = u"Descarregar l'original",
     es = u"Descargar el original",
     en = u"Download the original"
+)
+
+# Dialog
+#------------------------------------------------------------------------------
+translations.define("woost.views.Dialog.close_dialog_button",
+    ca = u"Tancar la finestra",
+    es = u"Cerrar la ventana",
+    en = u"Close this window"
 )
 
 # Content views
@@ -1429,6 +1561,12 @@ translations.define("woost.views.BaseView alternate language link",
     en = lambda lang: translations(lang, "en") + " version"
 )
 
+translations.define("woost.views.StandardView.navigation_title",
+    ca = u"Menú principal",
+    es = u"Menú principal",
+    en = u"Main navigation"
+)
+
 translations.define("woost.views.StandardView attachment icon description",
     ca = u"Icona",
     es = u"Icono",
@@ -1567,171 +1705,519 @@ translations.define("Item.last_update_time",
     en = u"Last updated"
 )
 
-# Site
+# Configuration
 #------------------------------------------------------------------------------
-translations.define("Site",
-    ca = u"Lloc web",
-    es = u"Sitio web",
-    en = u"Site"
+translations.define("Configuration",
+    ca = u"Configuració",
+    es = u"Configuración",
+    en = u"Configuration"
 )
 
-translations.define("Site-plural",
-    ca = u"Llocs web",
-    es = u"Sitios web",
-    en = u"Sites"
+translations.define("Configuration-plural",
+    ca = u"Configuració",
+    es = u"Configuración",
+    en = u"Configuration"
 )
 
-translations.define("Site.language",
+translations.define("Configuration.publication",
+    ca = u"Publicació",
+    es = u"Publicación",
+    en = u"Publication"
+)
+
+translations.define("Configuration.publication.pages",
+    ca = u"Pàgines especials",
+    es = u"Páginas especiales",
+    en = u"Special pages"
+)
+
+translations.define("Configuration.publication.maintenance",
+    ca = u"Manteniment",
+    es = u"Mantenimiento",
+    en = u"Maintenance"
+)
+
+translations.define("Configuration.language",
     ca = u"Idioma",
     es = u"Idioma",
     en = u"Language"
 )
 
-translations.define("Site.meta",
-    ca = u"Metadades",
-    es = u"Metadatos",
-    en = u"Metadata"
+translations.define("Configuration.media",
+    ca = u"Multimèdia",
+    es = u"Multimedia",
+    en = u"Media"
 )
 
-translations.define("Site.contact",
-    ca = u"Dades de contacte",
-    es = u"Datos de contacto",
-    en = u"Contact details"
+translations.define("Configuration.media.images",
+    ca = u"Imatges",
+    es = u"Imagenes",
+    en = u"Images"
 )
 
-translations.define("Site.pages",
-    ca = u"Pàgines",
-    es = u"Páginas",
-    en = u"Pages"
+translations.define("Configuration.media.video",
+    ca = u"Vídeo",
+    es = u"Video",
+    en = u"Video"
 )
 
-translations.define("Site.system",
-    ca = u"Configuració del sistema",
-    es = u"Configuración del sistema",
-    en = u"System configuration"
+translations.define("Configuration.rendering",
+    ca = u"Processat d'imatges",
+    es = u"Procesado de imágenes",
+    en = u"Image processing"
 )
 
-translations.define("Site.site_name",
-    ca = u"Nom del lloc web",
-    es = u"Nombre del sitio web",
-    en = u"Website name"
+translations.define("Configuration.services",
+    ca = u"Serveis",
+    es = u"Servicios",
+    en = u"Services"
 )
 
-translations.define("Site.keywords",
-    ca = u"Paraules clau",
-    es = u"Palabras clave",
-    en = u"Keywords"
+translations.define("Configuration.system",
+    ca = u"Sistema",
+    es = u"Sistema",
+    en = u"System"
 )
 
-translations.define("Site.description",
-    ca = u"Descripció",
-    es = u"Descripción",
-    en = u"Description"
+translations.define("Configuration.system.smtp",
+    ca = u"Servidor SMTP",
+    es = u"Servidor SMTP",
+    en = u"SMTP server"
 )
 
-translations.define("Site.icon",
-    ca = u"Icona",
-    es = u"Icono",
-    en = u"Icon"
+translations.define("Configuration.websites",
+    ca = u"Pàgines web",
+    es = u"Páginas web",
+    en = u"Websites"
 )
 
-translations.define("Site.logo",
+translations.define("Configuration.publication_schemes",
+    ca = u"Esquemes de publicació",
+    es = u"Esquemas de publicación",
+    en = u"Publication schemes"
+)
+
+translations.define("Configuration.caching_policies",
+    ca = u"Polítiques de cache",
+    es = u"Políticas de cache",
+    en = u"Caching policies"
+)
+
+translations.define("Configuration.login_page",
+    ca = u"Pàgina d'autenticació",
+    es = u"Página de autenticación",
+    en = u"Authentication page"
+)
+
+translations.define("Configuration.generic_error_page",
+    ca = u"Pàgina d'error genèric",
+    es = u"Página de error genérico",
+    en = u"Generic error page"
+)
+
+translations.define("Configuration.not_found_error_page",
+    ca = u"Pàgina no trobada",
+    es = u"Página no encontrada",
+    en = u"Not found error page"
+)
+
+translations.define("Configuration.forbidden_error_page",
+    ca = u"Pàgina d'error per accés restringit",
+    es = u"Página de error por acceso restringido",
+    en = u"Access forbidden page"
+)
+
+translations.define("Configuration.down_for_maintenance",
+    ca = u"Lloc aturat per manteniment",
+    es = u"Sitio parado por mantenimiento",
+    en = u"Site down for maintenance"
+)
+
+translations.define("Configuration.maintenance_page",
+    ca = u"Pàgina a mostrar durant el manteniment",
+    es = u"Página a mostrar durante el mantenimiento",
+    en = u"Service unavailable page"
+)
+
+translations.define("Configuration.maintenance_addresses",
+    ca = u"Adreces IP que ignoren el mode de manteniment",
+    es = u"Direcciones IP que ignoran el modo de mantenimiento",
+    en = u"IP addresses that ignore maintenance mode"
+)
+
+translations.define("Configuration.languages",
+    ca = u"Idiomes",
+    es = u"Idiomas",
+    en = u"Languages"
+)
+
+translations.define("Configuration.languages-explanation",
+    ca = u"Llistat d'idiomes als que es pot traduïr el contingut. Cada "
+         u"idioma s'indica mitjançant el seu codi ISO de dues lletres.",
+    es = u"Listado de idiomas a los que se puede traducir el contenido. Cada "
+         u"idioma se indica mediante su código ISO de dos letras.",
+    en = u"Languages that content can be translated to. Each language is "
+         u"specified using its two letter ISO code."
+)
+
+translations.define("Configuration.published_languages",
+    ca = u"Idiomes publicats",
+    es = u"Idiomas publicados",
+    en = u"Published languages"
+)
+
+translations.define("Configuration.published_languages-explanation",
+    ca = u"Limita els idiomes publicats al subconjunt indicat. Deixar en "
+         u"blanc per permetre la publicació en qualsevol dels idiomes "
+         u"disponibles.",
+    es = u"Limita los idiomas publicados al subconjunto indicado. Dejar en "
+         u"blanco para permitir la publicación en cualquiera de los idiomas "
+         u"disponibles.",
+    en = u"Limits publication to the indicated subset of languages. Leave "
+         u"blank to allow publishing in any of the available languages."
+)
+
+translations.define("Configuration.default_language",
+    ca = u"Idioma per defecte",
+    es = u"Idioma por defecto",
+    en = u"Default language"
+)
+
+translations.define("Configuration.heed_client_language",
+    ca = u"Respectar les preferències d'idioma del navegador",
+    es = u"Respetar las preferencias de idioma del navegador",
+    en = u"Heed the language preferences from the browser"
+)
+
+translations.define("Configuration.backoffice_language",
+    ca = u"Idioma per defecte de la interfície d'edició",
+    es = u"Idioma por defecto de la interfaz de edición",
+    en = u"Default language for the backoffice"
+)    
+
+translations.define("Configuration.renderers",
+    ca = u"Pintadors",
+    es = u"Pintadores",
+    en = u"Renderers"
+)
+
+translations.define("Configuration.renderers-explanation",
+    ca = u"Components encarregats de produïr una imatge representativa a "
+         u"partir d'un tipus de contingut específic (imatges, PDFs, vídeos, "
+         u"etc).",
+    es = u"Componentes encargados de producir una imagen representativa a "
+         u"partir de un tipo de contenido específico (imágenes, PDFs, "
+         u"videos, etc).",
+    en = u"Components tasked with producing images for different kinds of "
+         u"content (ie. image files, PDF documents, videos, etc)."
+)
+
+translations.define("Configuration.image_factories",
+    ca = u"Processadors d'imatges",
+    es = u"Procesadores de imágenes",
+    en = u"Image factories"
+)
+
+translations.define("Configuration.image_factories-explanation",
+    ca = u"Les diferents variants de redimensionat i efectes que "
+         u"s'apliquen a les imatges de la web.",
+    es = u"Las distintas variaciones de redimensionado y efectos que "
+         u"se aplican a las imágenes de la web.",
+    en = u"The different resizing and transformation effects applied "
+         u"to the site's images."
+)
+
+translations.define("Configuration.video_player_settings",
+    ca = u"Opcions de reproductor de vídeo",
+    es = u"Opciones de reproductor de video",
+    en = u"Video player settings"
+)
+
+translations.define("Configuration.timezone",
+    ca = u"Zona horària",
+    es = u"Zona horaria",
+    en = u"Timezone"
+)
+
+translations.define("Configuration.smtp_host",
+    ca = u"Adreça del servidor SMTP",
+    es = u"Dirección del servidor SMTP",
+    en = u"SMTP host"
+)
+
+translations.define("Configuration.smtp_user",
+    ca = u"Compte d'usuari del servidor SMTP",
+    es = u"Cuenta de usuario del servidor SMTP",
+    en = u"SMTP server user account"
+)
+
+translations.define("Configuration.smtp_password",
+    ca = u"Contrasenya del servidor SMTP",
+    es = u"Contraseña de usuario del servidor SMTP",
+    en = u"SMTP server password"
+)
+
+translations.define("Configuration.triggers",
+    ca = u"Disparadors",
+    es = u"Disparadores",
+    en = u"Triggers"
+)
+
+translations.define("Configuration.triggers-explanation",
+    ca = u"Permet programar accions que s'activin quan es produeixin canvis "
+         u"al contingut.",
+    es = u"Permite programar acciones que se activen cuando se produzcan "
+         u"cambios en el contenido",
+    en = u"Program actions that will be activated when the site's content "
+         u"changes."
+)
+
+# Website
+#------------------------------------------------------------------------------
+translations.define("Website",
+    ca = u"Lloc web",
+    es = u"Sitio web",
+    en = u"Website"
+)
+
+translations.define("Website-plural",
+    ca = u"Llocs web",
+    es = u"Sitios web",
+    en = u"Websites"
+)
+
+translations.define("Website.website",
+    ca = u"Lloc web",
+    es = u"Sitio web",
+    en = u"Website"
+)
+
+translations.define("Website.contact",
+    ca = u"Contacte",
+    es = u"Contacto",
+    en = u"Contact"
+)
+
+translations.define("Website.publication",
+    ca = u"Publicació",
+    es = u"Publicación",
+    en = u"Publication"
+)
+
+translations.define("Website.publication.pages",
+    ca = u"Pàgines especials",
+    es = u"Páginas especiales",
+    en = u"Special pages"
+)
+
+translations.define("Website.publication.maintenance",
+    ca = u"Manteniment",
+    es = u"Mantenimiento",
+    en = u"Maintenance"
+)
+
+translations.define("Website.publication.https",
+    ca = u"HTTPS",
+    es = u"HTTPS",
+    en = u"HTTPS"
+)
+
+translations.define("Website.language",
+    ca = u"Idioma",
+    es = u"Idioma",
+    en = u"Language"
+)
+
+translations.define("Website.services",
+    ca = u"Serveis",
+    es = u"Servicios",
+    en = u"Services"
+)
+
+translations.define("Website.specific_content",
+    ca = u"Contingut específic",
+    es = u"Contenido específico",
+    en = u"Specific content"
+)
+
+translations.define("Website.site_name",
+    ca = u"Nom del lloc",
+    es = u"Nombre del sitio",
+    en = u"Site name"
+)
+
+translations.define("Website.logo",
     ca = u"Logotip",
     es = u"Logotipo",
     en = u"Logo"
 )
 
-translations.define("Site.organization_name",
+translations.define("Website.icon",
+    ca = u"Icona",
+    es = u"Icono",
+    en = u"Icon"
+)
+
+translations.define("Website.keywords",
+    ca = u"Paraules clau",
+    es = u"Palabras clave",
+    en = u"Keywords"
+)
+
+translations.define("Website.description",
+    ca = u"Descripció",
+    es = u"Descripción",
+    en = u"Description"
+)
+
+translations.define("Website.hosts",
+    ca = u"Dominis",
+    es = u"Dominios",
+    en = u"Hosts"
+)
+
+translations.define("Website.hosts-explanation",
+    ca = u"La llista de dominis que han d'associar-se a aquesta web. "
+         u"Poden utilitzar-se comodins (per exemple, *.foo.com).",
+    es = u"La lista de dominios que deben asociarse a esta web. Pueden "
+         u"utilizarse comodines (por ejemplo, *.foo.com).",
+    en = u"The list of domains that can be associated to this website. Can "
+         u"use wildcard expressions (such as *.foo.com)."
+)
+
+translations.define("Website.organization_name",
     ca = u"Nom de l'entitat",
     es = u"Nombre de la entidad",
     en = u"Entity name"
 )
 
-translations.define("Site.organization_url",
+translations.define("Website.organization_url",
     ca = u"URL de l'entitat",
     es = u"URL de la entidad",
     en = u"Entity URL"
 )
 
-translations.define("Site.address",
+translations.define("Website.address",
     ca = u"Adreça",
     es = u"Dirección",
     en = u"Address"
 )
 
-translations.define("Site.town",
+translations.define("Website.town",
     ca = u"Localitat",
     es = u"Localidad",
     en = u"Town"
 )
 
-translations.define("Site.region",
+translations.define("Website.region",
     ca = u"Regió",
     es = u"Región",
     en = u"Region"
 )
 
-translations.define("Site.postal_code",
+translations.define("Website.postal_code",
     ca = u"Codi postal",
     es = u"Código postal",
     en = u"Postal code"
 )
 
-translations.define("Site.country",
+translations.define("Website.country",
     ca = u"País",
     es = u"País",
     en = u"Country"
 )
 
-translations.define("Site.phone_number",
+translations.define("Website.phone_number",
     ca = u"Telèfon",
     es = u"Teléfono",
     en = u"Phone number"
 )
 
-translations.define("Site.fax_number",
+translations.define("Website.fax_number",
     ca = u"Fax",
     es = u"Fax",
     en = u"Fax"
 )
 
-translations.define("Site.email",
+translations.define("Website.email",
     ca = u"Correu electrònic",
     es = u"Correo electrónico",
     en = u"Email"
 )
 
-translations.define("Site.https_policy",
+translations.define("Website.home",
+    ca = u"Pàgina d'inici",
+    es = u"Página de inicio",
+    en = u"Home page"
+)
+
+translations.define("Website.login_page",
+    ca = u"Pàgina d'autenticació",
+    es = u"Página de autenticación",
+    en = u"Authentication page"
+)
+
+translations.define("Website.generic_error_page",
+    ca = u"Pàgina d'error genèric",
+    es = u"Página de error genérico",
+    en = u"Generic error page"
+)
+
+translations.define("Website.not_found_error_page",
+    ca = u"Pàgina no trobada",
+    es = u"Página no encontrada",
+    en = u"Not found error page"
+)
+
+translations.define("Website.forbidden_error_page",
+    ca = u"Pàgina d'error per accés restringit",
+    es = u"Página de error por acceso restringido",
+    en = u"Access forbidden page"
+)
+
+translations.define("Website.down_for_maintenance",
+    ca = u"Lloc aturat per manteniment",
+    es = u"Sitio parado por mantenimiento",
+    en = u"Site down for maintenance"
+)
+
+translations.define("Website.maintenance_page",
+    ca = u"Pàgina a mostrar durant el manteniment",
+    es = u"Página a mostrar durante el mantenimiento",
+    en = u"Service unavailable page"
+)
+
+translations.define("Website.https_policy",
     ca = u"Política de HTTPS",
     es = u"Política de HTTPS",
     en = u"HTTPS policy"
 )
 
-translations.define("Site.https_policy-always",
+translations.define("Website.https_policy=always",
     ca = u"Habilitar a totes les pàgines",
     es = u"Habilitar en todas las páginas",
     en = u"Enable for all pages"
 )
 
-translations.define("Site.https_policy-never",
+translations.define("Website.https_policy=never",
     ca = u"Deshabilitar a totes les pàgines",
     es = u"Deshabilitar en todas las páginas",
     en = u"Disable for all pages"
 )
 
-translations.define("Site.https_policy-per_page",
+translations.define("Website.https_policy=per_page",
     ca = u"Decidir-ho a cada pàgina",
     es = u"Decidirlo en cada página",
     en = u"Decide on a per-page basis"
 )
 
-translations.define("Site.https_persistence",
+translations.define("Website.https_persistence",
     ca = u"Preservar HTTPS entre peticions",
     es = u"Preservar HTTPS entre peticiones",
     en = u"Persist HTTPS navigation across requests"
 )
 
-translations.define("Site.https_persistence-explanation",
+translations.define("Website.https_persistence-explanation",
     ca = u"Aquesta opció només tindrà efecte si la <em>Política "
          u"d'HTTPS</em> s'estableix a <em>Decidir a cada pàgina</em>.",
     es = u"Esta opción solo tendrá efecto si la <em>Política "
@@ -1741,61 +2227,36 @@ translations.define("Site.https_persistence-explanation",
          u"basis</em>."
 )
 
-translations.define("Site.smtp_host",
-    ca = u"Servidor SMTP",
-    es = u"Servidor SMTP",
-    en = u"SMTP host"
-)
-
-translations.define("Site.smtp_user",
-    ca = u"Usuari SMTP",
-    es = u"Usuario SMTP",
-    en = u"SMTP user"
-)
-
-translations.define("Site.smtp_password",
-    ca = u"Contrasenya SMTP",
-    es = u"Contraseña SMTP",
-    en = u"SMTP password"
-)
-
-translations.define("Site.triggers",
-    ca = u"Disparadors",
-    es = u"Disparadores",
-    en = u"Triggers"
-)
-
-translations.define("Site.default_language",
+translations.define("Website.default_language",
     ca = u"Idioma per defecte",
     es = u"Idioma por defecto",
     en = u"Default language"
 )
 
-translations.define("Site.backoffice_language",
-    ca = u"Idioma per defecte pel gestor de continguts",
-    es = u"Idioma por defecto para el gestor de contenidos",
-    en = u"Backoffice default language"
-)
-
-translations.define("Site.heed_client_language",
+translations.define("Website.heed_client_language",
     ca = u"Respectar les preferències d'idioma del navegador",
     es = u"Respetar las preferencias de idioma del navegador",
     en = u"Heed the language preferences from the browser"
 )
 
-translations.define("Site.home",
-    ca = u"Document d'inici",
-    es = u"Documento de inicio",
-    en = u"Home"
+translations.define("Website.published_languages",
+    ca = u"Idiomes publicats",
+    es = u"Idiomas publicados",
+    en = u"Published languages"
 )
 
-translations.define("Site.login_page",
-    ca = u"Formulari d'autenticació",
-    es = u"Formulario de autenticación",
-    en = u"Authentication form"
+translations.define("Website.published_languages-explanation",
+    ca = u"Limita els idiomes publicats al subconjunt indicat. Deixar en "
+         u"blanc per permetre la publicació en qualsevol dels idiomes "
+         u"disponibles.",
+    es = u"Limita los idiomas publicados al subconjunto indicado. Dejar en "
+         u"blanco para permitir la publicación en cualquiera de los idiomas "
+         u"disponibles.",
+    en = u"Limits publication to the indicated subset of languages. Leave "
+         u"blank to allow publishing in any of the available languages."
 )
 
-translations.define("Site.login_page body",
+translations.define("woost.views.LoginFormView.main",
     ca = u"""L'accés a aquesta secció del web està restringit. Per favor,
             introdueix les teves credencials d'usuari per continuar.""",
     es = u"""El acceso a esta sección del sitio está restringido. Por favor,
@@ -1804,52 +2265,16 @@ translations.define("Site.login_page body",
             your user credentials to proceed."""
 )
 
-translations.define("Site.login_page password_forgot",
+translations.define("woost.views.LoginForm.forgot_password_link",
     ca = u"He oblidat la contrasenya",
     es = u"He olvidado la contraseña",
     en = u"I forgot my password"
 )
 
-translations.define("Site.login_page enter",
+translations.define("woost.views.LoginForm.submit_button",
     ca = u"Entrar",
     es = u"Entrar",
     en = u"Enter"
-)
-
-translations.define("Site.not_found_error_page",
-    ca = u"Pàgina d'error per document no trobat",
-    es = u"Página de error para documento no encontrado",
-    en = u"'Not found' error page"
-)
-
-translations.define("Site.forbidden_error_page",
-    ca = u"Pàgina d'error per accés restringit",
-    es = u"Página de error para acceso restringido",
-    en = u"'Access denied' error page"
-)
-
-translations.define("Site.generic_error_page",
-    ca = u"Pàgina d'error genèric",
-    es = u"Página de error genérico",
-    en = u"Generic error page"
-)
-
-translations.define("Site.timezone",
-    ca = u"Zona horària",
-    es = u"Zona horaria",
-    en = u"Timezone"
-)
-
-translations.define("Site.publication_schemes",
-    ca = u"Esquemes de publicació",
-    es = u"Esquemas de publicación",
-    en = u"Publication schemes"
-)
-
-translations.define("Site.caching_policies",
-    ca = u"Polítiques de cache",
-    es = u"Políticas de cache",
-    en = u"Caching policies"
 )
 
 # PublicationScheme
@@ -2064,20 +2489,127 @@ translations.define("CachingPolicy.server_side_cache-explanation",
          u"consumed by the application."
 )
 
-translations.define("CachingPolicy.cache_expiration",
+translations.define("CachingPolicy.expiration_expression",
     ca = u"Expiració del cache",
     es = u"Expiración del cache",
     en = u"Cache expiration"
 )
 
-translations.define("CachingPolicy.cache_expiration-explanation",
-    ca = u"Duració de les entrades al cache per aquest element, en minuts. "
-         u"Deixar en blanc per deshabilitar l'expiració automàtica.",
-    es = u"Duración de las entradas al cache para este elemento, en "
-         u"minutos. Dejar en blanco para deshabilitar la expiración "
-         u"automática.",
-    en = u"Maximum lifetime of cached content for this item. Leave blank "
-         u"to disable the automatic expiration of cached content."
+translations.define("CachingPolicy.expiration_expression-explanation",
+    ca = u"""
+        <p>
+            Fragment de codi Python que determina la duració de les entrades
+            de cache generades per aquesta política.
+        </p>
+        <details>
+            <summary>Detalls</summary>
+            <p>
+                Si el camp es deixa en blanc es desactiva l'expiració de les
+                entrades, que es mantindran actives fins que s'invalidin per
+                altres vies (com ara una actualització de l'<em>última
+                modificació</em> de l'element publicable).
+            </p>
+            <p>
+                L'expiració s'estableix amb una variable <em>expiration</em>, que pot
+                expressar-se utilitzant qualsevol dels tipus següents:
+            </p>
+            <dl>
+                <dt>int</dt>
+                <dd>Vigència de l'entrada, en minuts.</dd>
+                <dt><a href="http://docs.python.org/2/library/datetime.html#timedelta-objects">timedelta</a></dt>
+                <dd>Vigència de l'entrada, expressada en diferents unitats (minuts,
+                hores, dies, etc).</dd>
+                <dt><a href="http://docs.python.org/2/library/datetime.html#datetime-objects">datetime</a></dt>
+                <dd>Data exacta en que l'entrada es considerarà expirada.</dd>
+                <dt>None</dt>
+                <dd>Duració sense determinar, l'entrada no expirarà
+                automàticament.</dd>
+            </dl>
+            <p>
+                L'expressió rep una variable <em>publishable</em> (la
+                referència a l'element publicable al que s'aplica la política
+                de cache), així com referències a les classes
+                <em>datetime</em> i <em>timedelta</em> (com a conveniència,
+                per no haver-les d'importar explícitament).
+            </p>
+        </details>
+        """,
+    es = u"""
+        <p>
+            Fragmento de código Python que determina la duración de las
+            entradas de cache generadas por esta política.
+        </p>
+        <details>
+            <summary>Detalles</summary>
+            <p>
+                Si el campo se deja en blanco se desactiva la expiración de
+                las entradas, que se mantendrán activas hasta que se invaliden
+                por otras vías (como una actualización de la <em>última
+                modificación</em> del elemento publicable).
+            </p>
+            <p>
+                La expiración se establece con una variable
+                <em>expiration</em>, que puede expresarse mediante
+                cualquiera de los siguientes tipos:
+            </p>
+            <dl>
+                <dt>int</dt>
+                <dd>Vigencia de la entrada, en minutos.</dd>
+                <dt><a href="http://docs.python.org/2/library/datetime.html#timedelta-objects">timedelta</a></dt>
+                <dd>Vigencia de la entrada, expresada en distintas unidades
+                (minutos, horas, días, etc).</dd>
+                <dt><a href="http://docs.python.org/2/library/datetime.html#datetime-objects">datetime</a></dt>
+                <dd>Fecha exacta en que la entrada se considerará expirada.</dd>
+                <dt>None</dt>
+                <dd>Duración sin determinar, la entrada no expirará
+                automáticamente.</dd>
+            </dl>
+            <p>
+                La expresión recibe una variable <em>publishable</em> (la
+                referencia al elemento publicable al que se aplica la política
+                de cache), así como referencias a las clases <em>datetime</em>
+                y <em>timedelta</em> (como conveniencia, para no tener que
+                importar estos tipos explícitamente).
+            </p>
+        </details>
+        """,
+    en = u"""
+        <p>
+            A Python code block that determines the duration of the cache
+            entries generated by this caching policy. 
+        </p>
+        <details>
+            <summary>Details</summary>
+            <p>
+                If the field is left blank, cache entries will not expire, and
+                they will have to rely on other means in order to be
+                invalidated (such as a change in the <em>last update</em> of
+                the publishable element).
+            </p>
+            <p>
+                Entry duration is expressed using an <em>expiration</em>
+                variable, using any of the following types:
+            </p>
+            <dl>
+                <dt>int</dt>
+                <dd>Expresses entry duration in minutes.</dd>
+                <dt><a href="http://docs.python.org/2/library/datetime.html#timedelta-objects">timedelta</a></dt>
+                <dd>Expresses entry duration using a variety of units (minutes,
+                hours, days, etc).</dd>
+                <dt><a href="http://docs.python.org/2/library/datetime.html#datetime-objects">datetime</a></dt>
+                <dd>Exact date when the entry will expire.</dd>
+                <dt>None</dt>
+                <dd>Undefined duration, the entry won't expire on its own.</dd>
+            </dl>
+            <p>
+                The expression receives a <em>publishable</em> variable (the
+                publishable element that the cached content is being generated
+                for), as well as references to the <em>datetime</em> and
+                <em>timedelta</em> standard types (as a convenience, to avoid
+                having to import them explicitly).
+            </p>
+        </details>
+        """
 )
 
 translations.define("CachingPolicy.condition",
@@ -2144,10 +2676,34 @@ translations.define("Publishable-plural",
     en = u"Publishable elements"
 )
 
+translations.define("Publishable.meta",
+    ca = u"Metadades",
+    es = u"Metadatos",
+    en = u"Metadata"
+)
+
 translations.define("Publishable.presentation",
     ca = u"Presentació",
     es = u"Presentación",
     en = u"Presentation"
+)
+
+translations.define("Publishable.presentation.behavior",
+    ca = u"Comportament",
+    es = u"Comportamiento",
+    en = u"Behavior"
+)
+
+translations.define("Publishable.presentation.resources",
+    ca = u"Recursos",
+    es = u"Recursos",
+    en = u"Resources"
+)
+
+translations.define("Publishable.presentation.format",
+    ca = u"Format",
+    es = u"Formato",
+    en = u"Format"
 )
 
 translations.define("Publishable.navigation",
@@ -2234,6 +2790,12 @@ translations.define("Publishable.mime_type",
     en = u"MIME type"
 )
 
+translations.define("Publishable.per_language_publication",
+    ca = u"Publicació per idiomes",
+    es = u"Publicación por idiomas",
+    en = u"Per language publication"
+)
+
 translations.define("Publishable.enabled",
     ca = u"Actiu",
     es = u"Activo",
@@ -2244,6 +2806,21 @@ translations.define("Publishable.translation_enabled",
     ca = u"Traducció activa",
     es = u"Traducción activa",
     en = u"Translation is enabled"
+)
+
+translations.define("Publishable.websites",
+    ca = u"Webs on es publica",
+    es = u"Webs donde se publica",
+    en = u"Websites where it is published"
+)
+
+translations.define("Publishable.websites-explanation",
+    ca = u"Webs des de les que es podrà veure i accedir a l'element. Deixar "
+         u"en blanc per permetre que l'element aparegui a totes les webs.",
+    es = u"Webs des de las que se podrá ver y acceder al elemento. Dejar en "
+         u"blanco para permitir que el elemento aparezca en todas las webs.",
+    en = u"Websites where the element will be published. Leave blank to share "
+         u"this element across all websites."
 )
 
 translations.define("Publishable.hidden",
@@ -2361,13 +2938,7 @@ translations.define("Document.content",
     en = u"Content"
 )
 
-translations.define("Document.meta",
-    ca = u"Metadades",
-    es = u"Metadatos",
-    en = u"Metadata"
-)
-
-translations.define("Document.robots",
+translations.define("Document.meta.robots",
     ca = u"Robots",
     es = u"Robots",
     en = u"Robots"
@@ -2425,6 +2996,30 @@ translations.define("Document.children",
     ca = u"Pàgines filles",
     es = u"Páginas hijas",
     en = u"Child pages"
+)
+
+translations.define("Document.redirection_mode",
+    ca = u"Modalitat de redirecció",
+    es = u"Modalidad de redirección",
+    en = u"Redirection mode"
+)
+
+translations.define("Document.redirection_mode=first_child",
+    ca = u"Redirigir al primer fill accessible",
+    es = u"Redirigir al primer hijo accesible",
+    en = u"Redirect to the first accessible child"
+)
+
+translations.define("Document.redirection_mode=custom_target",
+    ca = u"Redirigir a un element concret",
+    es = u"Redirigir a un elemento concreto",
+    en = u"Redirect to a custom target"
+)
+
+translations.define("Document.redirection_target",
+    ca = u"Destí de la redirecció",
+    es = u"Destino de la redirección",
+    en = u"Redirection target"
 )
 
 translations.define("Document.robots_should_index",
@@ -2604,24 +3199,44 @@ def content_permission_translation_factory(language, predicate):
         predicate_factory
     )
 
-def member_permission_translation_factory(language, predicate, any_predicate):
+MEMBER_PERMISSION_ABBR_THRESHOLD = 4
 
+def member_permission_translation_factory(
+    language,
+    predicate,
+    enum,
+    abbr,
+    any_predicate
+):
     def predicate_factory(instance, **kwargs):
         
         members = list(instance.iter_members())
 
         if not members:
-            return any_predicate
+            target = any_predicate
 
-        subject = u", ".join(
-            translations(member, language, qualified = True)
-            for member in members
-        )
+        elif len(members) >= MEMBER_PERMISSION_ABBR_THRESHOLD:
+            counter = OrderedDict()
 
-        if hasattr(predicate, "__call__"):
-            return predicate(instance, subject, **kwargs)
+            for member in members:
+                counter[member.schema] = counter.get(member.schema, 0) + 1
+
+            target = u", ".join(
+                abbr(count, content_type)
+                for content_type, count in counter.iteritems()
+            )
         else:
-            return predicate % subject
+            subject = u", ".join(
+                translations(member, language, qualified = True)
+                for member in members
+            )
+
+            if hasattr(enum, "__call__"):
+                target = enum(instance, subject, **kwargs)
+            else:
+                target = enum % subject
+
+        return predicate % target
 
     return permission_translation_factory(
         language,
@@ -2720,62 +3335,86 @@ translations.define(
 translations.define(
     "woost.models.permission.ReadMemberPermission-instance",
     ca = member_permission_translation_factory("ca",
+        u"llegir %s",
         lambda instance, subject, **kwargs:
             plural2(
                 len(instance.matching_members),
-                u"llegir el membre %s",
-                u"llegir els membres %s"
+                u"el membre %s",
+                u"els membres %s"
             ) % subject,
-        u"llegir qualsevol membre"
+        lambda count, content_type, **kwargs:
+            plural2(count, u"1 membre ", u"%d membres " % count)
+            + ca_possessive(translations(content_type.name)),
+        u"qualsevol membre"
     ),
     es = member_permission_translation_factory("es",
+        u"leer %s",
         lambda instance, subject, **kwargs:
             plural2(
                 len(instance.matching_members),
-                u"leer el miembro %s",
-                u"leer los miembros %s"
+                u"el miembro %s",
+                u"los miembros %s"
             ) % subject,
-        u"leer cualquier miembro"
+        lambda count, content_type, **kwargs:
+            plural2(count, u"1 miembro", u"%d miembros" % count)
+            + u" de " + (translations(content_type.name)),
+        u"cualquier miembro"
     ),
     en = member_permission_translation_factory("en",
+        u"read %s",
         lambda instance, subject, **kwargs:
             plural2(
                 len(instance.matching_members),
-                u"read the %s member",
-                u"read the %s members"
+                u"the %s member",
+                u"the %s members"
             ) % subject,
-        u"read any member"
+        lambda count, content_type, **kwargs:
+            plural2(count, u"1 member", u"%d members" % count)
+            + u" of " + (translations(content_type.name)),
+        u"any member"
     )
 )
 
 translations.define(
     "woost.models.permission.ModifyMemberPermission-instance",
     ca = member_permission_translation_factory("ca",
+        u"modificar %s",
         lambda instance, subject, **kwargs:
             plural2(
                 len(instance.matching_members),
-                u"modificar el membre %s", 
-                u"modificar els membres %s"
+                u"el membre %s", 
+                u"els membres %s"
             ) % subject,
-        u"modificar qualsevol membre"
+        lambda count, content_type, **kwargs:
+            plural2(count, u"1 membre ", u"%d membres " % count)
+            + ca_possessive(translations(content_type.name)),
+        u"qualsevol membre"
     ),
     es = member_permission_translation_factory("es",
+        u"modificar %s",
         lambda instance, subject, **kwargs:
             plural2(
                 len(instance.matching_members),
-                u"modificar el miembro %s", 
-                u"modificar los miembros %s"
+                u"el miembro %s", 
+                u"los miembros %s"
             ) % subject,
-        u"modificar cualquier miembro"
+        lambda count, content_type, **kwargs:
+            plural2(count, u"1 miembro", u"%d miembros" % count)
+            + u" de " + (translations(content_type.name)),
+        u"cualquier miembro"
     ),
     en = member_permission_translation_factory("en",
+        u"modify %s",
         lambda instance, subject, **kwargs:
             plural2(
                 len(instance.matching_members),
-                u"modify the %s member", 
-                u"modify the %s members"
+                u"the %s member", 
+                u"the %s members"
             ) % subject,
-        u"modify any member"
+        lambda count, content_type, **kwargs:
+            plural2(count, u"1 member", u"%d members" % count)
+            + u" of " + (translations(content_type.name)),
+        u"any member"
     )
 )
 
@@ -3120,6 +3759,12 @@ translations.define("URI.uri",
     en = u"Address"
 )
 
+translations.define("URI.language_specific_uri",
+    ca = u"Adreça per idioma",
+    es = u"Dirección por idioma",
+    en = u"Language specific address"
+)
+
 # Style
 #------------------------------------------------------------------------------
 translations.define("Style",
@@ -3140,6 +3785,30 @@ translations.define("Style.title",
     en = u"Name"
 )
 
+translations.define("Style.custom_class_name",
+    ca = u"Classe CSS",
+    es = u"Clase CSS",
+    en = u"CSS class"
+)
+
+translations.define("Style.applicable_to_text",
+    ca = u"Aplicable al text",
+    es = u"Aplicable al texto",
+    en = u"Applies to text"
+)
+
+translations.define("Style.custom_class_name-explanation",
+    ca = u"Permet especificar el nom de la classe CSS resultant. Si no "
+         u"s'indica, el sistema decidirà el nom seguint un patró "
+         u"incremental.",
+    es = u"Permite especificar el nombre de la clase CSS resultante. Si no "
+         u"se indica, el sistema decidirá el nombre siguiendo un patrón "
+         u"incremental.",
+    en = u"Specifies the name of the resulting CSS class. If no name is "
+         u"given, the system will choose a name following an incremental "
+         u"pattern."
+)
+
 translations.define("Style.declarations",
     ca = u"Declaracions CSS",
     es = u"Declaraciones CSS",
@@ -3147,8 +3816,8 @@ translations.define("Style.declarations",
 )
 
 translations.define("Style.admin_declarations",
-    ca = u"Declaracions CSS Admin",
-    es = u"Declaraciones CSS Admin",
+    ca = u"Declaracions CSS per l'administració",
+    es = u"Declaraciones CSS para el administrador",
     en = u"Admin CSS declarations"
 )
 
@@ -3254,166 +3923,6 @@ translations.define("BackOfficeEditForm.upload",
     en = u"File upload"
 )
 
-# Image Effects
-#------------------------------------------------------------------------------
-
-translations.define("woost.views.ImageEffectsEditor.edit_button",
-    ca = u"Editar imatge",
-    es = u"Editar imagen",
-    en = u"Edit image effects"
-)
-
-translations.define("woost.views.ImageEffectsEditor-crop_effect",
-    ca = u"Retall",
-    es = u"Recorte",
-    en = u"Crop"
-)
-
-translations.define("woost.views.ImageEffectsEditor-rotate_effect",
-    ca = u"Rotació",
-    es = u"Rotación",
-    en = u"Rotation"
-)
-
-translations.define("woost.views.ImageEffectsEditor-brightness_effect",
-    ca = u"Brillantor",
-    es = u"Brillo",
-    en = u"Brightness"
-)
-
-translations.define("woost.views.ImageEffectsEditor-sharpness_effect",
-    ca = u"Enfocat",
-    es = u"Enfoque",
-    en = u"Sharpness"
-)
-
-translations.define("woost.views.ImageEffectsEditor-contrast_effect",
-    ca = u"Contrast",
-    es = u"Contraste",
-    en = u"Contrast"
-)
-
-translations.define("woost.views.ImageEffectsEditor-color_effect",
-    ca = u"Color",
-    es = u"Color",
-    en = u"Color"
-)
-
-translations.define("woost.views.ImageEffectsEditor-thumbnail_effect",
-    ca = u"Mida",
-    es = u"Tamaño",
-    en = u"Size"
-)
-
-translations.define("woost.views.ImageEffectsEditor-fill_effect",
-    ca = u"Encaix",
-    es = u"Encaje",
-    en = u"Fit"
-)
-
-translations.define("woost.views.ImageEffectsEditor-flip_effect",
-    ca = u"Mirall",
-    es = u"Espejo",
-    en = u"Mirror"
-)
-
-translations.define("woost.views.ImageEffectsEditor-custom_effect",
-    ca = u"Comanda",
-    es = u"Comando",
-    en = u"Command"
-)
-
-translations.define("woost.views.ImageEffectsEditor.dialog_header",
-    ca = u"Editant imatge",
-    es = u"Editando imagen",
-    en = u"Editing image"
-)
-
-translations.define("woost.views.ImageEffectsEditor.edit_box_header",
-    ca = u"Efectes",
-    es = u"Efectos",
-    en = u"Effects"
-)
-
-translations.define(
-    "woost.views.ImageEffectsEditor.image_processors_toolbar_label",
-    ca = u"Afegir...",
-    es = u"Añadir...",
-    en = u"Add..."
-)
-
-translations.define("woost.views.ImageEffectsEditor.preview_button",
-    ca = u"Previsualitzar",
-    es = u"Previsualizar",
-    en = u"Preview"
-)
-
-translations.define("woost.views.ImageEffectsEditor.remove_processor_button",
-    ca = u"Eliminar",
-    es = u"Eliminar",
-    en = u"Remove"
-)
-
-translations.define("woost.views.ImageEffectsEditor-loading",
-    ca = u"Generant la imatge...",
-    es = u"Generando la imagen",
-    en = u"Rendering image..."
-)
-
-translations.define("woost.views.ImageEffectsEditor.accept_button",
-    ca = u"Acceptar",
-    es = u"Aceptar",
-    en = u"Accept"
-)
-
-translations.define("woost.views.ImageEffectsEditor.cancel_button",
-    ca = u"Cancelar",
-    es = u"Cancelar",
-    en = u"Cancel"
-)
-
-translations.define(
-    "woost.views.ImageEffectsEditor.thumbnail_control.relative_label",
-    ca = u"Relativa",
-    es = u"Relativo",
-    en = u"Relative"
-)
-
-translations.define(
-    "woost.views.ImageEffectsEditor.thumbnail_control.absolute_label",
-    ca = u"Màxim",
-    es = u"Máximo",
-    en = u"Maximum"
-)
-
-translations.define(
-    "woost.views.ImageEffectsEditor.thumbnail_control.width",
-    ca = u"Amplada",
-    es = u"Ancho",
-    en = u"Width"
-)
-
-translations.define(
-    "woost.views.ImageEffectsEditor.thumbnail_control.height",
-    ca = u"Alçada",
-    es = u"Alto",
-    en = u"Height"
-)
-
-translations.define(
-    "woost.views.ImageEffectsEditor.flip_control.horizontal",
-    ca = u"Horitzontal",
-    es = u"Horizontal",
-    en = u"Horizontal"
-)
-
-translations.define(
-    "woost.views.ImageEffectsEditor.flip_control.vertical",
-    ca = u"Vertical",
-    es = u"Vertical",
-    en = u"Vertical"
-)
-
 # News
 #------------------------------------------------------------------------------
 translations.define("News",
@@ -3430,6 +3939,18 @@ translations.define("News-plural",
 
 translations.define("News-none",    
     es = u"Ninguna"
+)
+
+translations.define("News.news_date",
+    ca = u"Data de la notícia",
+    es = u"Fecha de la noticia",
+    en = u"News date"
+)
+
+translations.define("News.image",
+    ca = u"Imatge",
+    es = u"Imagen",
+    en = u"Image"
 )
 
 translations.define("News.summary",
@@ -3474,6 +3995,18 @@ translations.define("Event.event_location",
     ca = u"Lloc",
     es = u"Lugar",
     en = u"Place"
+)
+
+translations.define("Event.image",
+    ca = u"Imatge",
+    es = u"Imagen",
+    en = u"Image"
+)
+
+translations.define("Event.summary",
+    ca = u"Sumari",
+    es = u"Sumario",
+    en = u"Summary"
 )
 
 translations.define("Event.body",
@@ -3628,36 +4161,10 @@ translations.define("Controller.python_name-explanation",
     en = u"Qualified name of the Python implementation for the controller"
 )
 
-# Language
-#------------------------------------------------------------------------------
-translations.define("Language",
-    ca = u"Idioma",
-    es = u"Idioma",
-    en = u"Language"
-)
-
-translations.define("Language-plural",
-    ca = u"Idiomes",
-    es = u"Idiomas",
-    en = u"Languages"
-)
-
-translations.define("Language.iso_code",
-    ca = u"Codi ISO",
-    es = u"Código ISO",
-    en = u"ISO code"
-)
-
-translations.define("Language.enabled",
-    ca = u"Actiu",
-    es = u"Activo",
-    en = u"Enabled"
-)
-
-translations.define("Language.fallback",
-    ca = u"Idioma substitutiu",
-    es = u"Idioma sustitutivo",
-    en = u"Fallback language"
+translations.define("Controller.published_items",
+    ca = u"Elements publicats",
+    es = u"Elementos publicados",
+    en = u"Published elements"
 )
 
 # Extension
@@ -4339,12 +4846,6 @@ translations.define("Feed-plural",
     en = u"Syndication feeds"
 )
 
-translations.define("Feed.meta",
-    ca = u"Metadades",
-    es = u"Metadatos",
-    en = u"Metadata"
-)
-
 translations.define("Feed.feed_items",
     ca = u"Elements llistats",
     es = u"Elementos listados",
@@ -4545,48 +5046,705 @@ translations.define("woost.views.EditPanel.actions_title",
     en = u"Actions"
 )
 
-# Image factories
+# Renderer
 #------------------------------------------------------------------------------
-translations.define("woost.image_factory.default",
-    ca = u"Imatge sense modificar",
-    es = u"Imagen sin modificar",
-    en = u"Unmodified image"
+translations.define("Renderer",
+    ca = u"Pintador d'imatges",
+    es = u"Pintador de imágenes",
+    en = u"Renderer"
 )
 
-translations.define("woost.image_factory.icon16",
-    ca = u"Icona de 16x16",
-    es = u"Icono de 16x16",
-    en = u"16x16 icon"
+translations.define("Renderer-plural",
+    ca = u"Pintadors d'imatges",
+    es = u"Pintadores de imágenes",
+    en = u"Renderers"
 )
 
-translations.define("woost.image_factory.icon32",
-    ca = u"Icona de 32x32",
-    es = u"Icono de 32x32",
-    en = u"32x32 icon"
+translations.define("Renderer.title",
+    ca = u"Nom",
+    es = u"Nombre",
+    en = u"Name"
 )
 
-translations.define("woost.image_factory.backoffice_thumbnail",
-    ca = u"Miniatura del panell d'administració",
-    es = u"Miniatura del panel de administración",
-    en = u"Backoffice thumbnail"
+# ImageFileRenderer
+#------------------------------------------------------------------------------
+translations.define("ImageFileRenderer",
+    ca = u"Pintador de fitxers d'imatge",
+    es = u"Pintador de ficheros de imagen",
+    en = u"Image file renderer"
 )
 
-translations.define("woost.image_factory.backoffice_small_thumbnail",
-    ca = u"Miniatura petita del panell d'administració",
-    es = u"Miniatura pequeña del panel de administración",
-    en = u"Backoffice small thumbnail"
+translations.define("ImageFileRenderer-plural",
+    ca = u"Pintadors de fitxers d'imatge",
+    es = u"Pintadores de ficheros de imagen",
+    en = u"Image file renderers"
 )
 
-translations.define("woost.image_factory.image_gallery_close_up",
-    ca = u"Ampliació estàndar de la galeria d'imatges",
-    es = u"Ampliación estándar de la galería de imágenes",
-    en = u"Standard image gallery close up"
+translations.define("ImageFileRenderer.max_size",
+    ca = u"Mida màxima",
+    es = u"Tamaño máximo",
+    en = u"Max size"
 )
 
-translations.define("woost.image_factory.image_gallery_thumbnail",
-    ca = u"Miniatura estàndar de la galeria d'imatges",
-    es = u"Miniatura estándar de la galería de imágenes",
-    en = u"Standard image gallery thumbnail"
+translations.define("ImageFileRenderer.max_size-explanation",
+    ca = u"Evita que el servidor processi imatges amb una mida excessiva. "
+         u"La mida màxima a processar s'ha d'indicar amb dos valors enters, "
+         u"separats per un caràcter 'x' (per exemple, 2000 x 1500). Les "
+         u"mides es validaran en orientació vertical o horitzontal, "
+         u"indistintament.",
+    es = u"Evita que el servidor procese imágenes con un tamaño excesivo. "
+         u"El tamaño máximo admisible debe indicarse con dos valores "
+         u"enteros, separados por un carácter 'x' (por ejemplo, 2000 x "
+         u"1500). El tamaño se validará en orientación vertical o "
+         u"horizontal, indistintamente.",
+    en = u"Prevents the server from processing excessively large images. The "
+         u"maximum image size allowed has to be indicated as a tuple of two "
+         u"integers, separated by an 'x' character (ie. 2000 x 1500). Images "
+         u"will be validated against this size constraint in both landscape "
+         u"and portrait orientations."
+)
+
+# IconRenderer
+#------------------------------------------------------------------------------
+translations.define("IconRenderer",
+    ca = u"Llibreria de icones",
+    es = u"Librería de iconos",
+    en = u"Icon library"
+)
+
+translations.define("IconRenderer-plural",
+    ca = u"Llibreries de icones",
+    es = u"Librerías de iconos",
+    en = u"Icon libraries"
+)
+
+translations.define("IconRenderer.icon_size",
+    ca = u"Mida de les icones",
+    es = u"Tamaño de los iconos",
+    en = u"Icon size"
+)
+
+# HTMLRenderer
+#------------------------------------------------------------------------------
+translations.define("HTMLRenderer",
+    ca = u"Pintador de documents HTML",
+    es = u"Pintador de documentos HTML",
+    en = u"HTML renderer"
+)
+
+translations.define("HTMLRenderer-plural",
+    ca = u"Pintadors de documents HTML",
+    es = u"Pintadores de documentos HTML",
+    en = u"HTML renderers"
+)
+
+# ImageURIRenderer
+#------------------------------------------------------------------------------
+translations.define("ImageURIRenderer",
+    ca = u"Pintador d'imatges remotes",
+    es = u"Pintador de imágenes remotas",
+    en = u"Image URI renderer"
+)
+
+translations.define("ImageURIRenderer-plural",
+    ca = u"Pintadors d'imatges remotes",
+    es = u"Pintadores de imágenes remotas",
+    en = u"Image URI renderers"
+)
+
+# PDFRenderer
+#------------------------------------------------------------------------------
+translations.define("PDFRenderer",
+    ca = u"Pintador de documents PDF",
+    es = u"Pintador de documentos PDF",
+    en = u"PDF renderer"
+)
+
+translations.define("PDFRenderer-plural",
+    ca = u"Pintadors de documents PDF",
+    es = u"Pintadores de documentos PDF",
+    en = u"PDF renderers"
+)
+
+translations.define("PDFRenderer.command",
+    ca = u"Comanda",
+    es = u"Comando",
+    en = u"Command"
+)
+
+translations.define("PDFRenderer.timeout",
+    ca = u"Temps màxim d'execució",
+    es = u"Tiempo máximo de ejecución",
+    en = u"Timeout"
+)
+
+translations.define("PDFRenderer.timeout_size_factor",
+    ca = u"Temps de gràcia segons la mida del fitxer",
+    es = u"Tiempo de gracia según el tamaño del fichero",
+    en = u"Timeout file size factor"
+)
+
+# VideoFileRenderer
+#------------------------------------------------------------------------------
+translations.define("VideoFileRenderer",
+    ca = u"Pintador de fitxers de vídeo",
+    es = u"Pintador de ficheros de video",
+    en = u"Video file renderer"
+)
+
+translations.define("VideoFileRenderer-plural",
+    ca = u"Pintadors de fitxers de vídeo",
+    es = u"Pintadores de ficheros de video",
+    en = u"Video file renderers"
+)
+
+# ChainRenderer
+#------------------------------------------------------------------------------
+translations.define("ChainRenderer",
+    ca = u"Pintador en cadena",
+    es = u"Pintador en cadena",
+    en = u"Chain renderer"
+)
+
+translations.define("ChainRenderer-plural",
+    ca = u"Pintadors en cadena",
+    es = u"Pintadores en cadena",
+    en = u"Chain renderers"
+)
+
+translations.define("ChainRenderer.renderers",
+    ca = u"Pintadors",
+    es = u"Pintadores",
+    en = u"Renderers"
+)
+
+# ImageFactory
+#------------------------------------------------------------------------------
+translations.define("ImageFactory",
+    ca = u"Processador d'imatges",
+    es = u"Procesador de imágenes",
+    en = u"Image factory"
+)
+
+translations.define("ImageFactory-plural",
+    ca = u"Processadors d'imatges",
+    es = u"Procesadores de imágenes",
+    en = u"Image factories"
+)
+
+translations.define("ImageFactory.title",
+    ca = u"Nom",
+    es = u"Nombre",
+    en = u"Name"
+)
+
+translations.define("ImageFactory.identifier",
+    ca = u"Identificador",
+    es = u"Identificador",
+    en = u"Identifier"
+)
+
+translations.define("ImageFactory.identifier-explanation",
+    ca = u"Un valor únic que permet accedir al processador programàticament",
+    es = u"Un valor único que permite acceder al procesador "
+         u"programáticamente",
+    en = u"A unique value that makes it possible to access the image factory "
+         u"programmatically"
+)
+
+translations.define("ImageFactory.renderer",
+    ca = u"Pintador",
+    es = u"Pintador",
+    en = u"Renderer"
+)
+
+translations.define("ImageFactory.renderer-explanation",
+    ca = u"Especifica la manera en que s'obté la imatge",
+    es = u"Especifica la manera en que se obtiene la imagen",
+    en = u"Determines the source of produced images"
+)
+
+translations.define("ImageFactory.default_format",
+    ca = u"Format d'imatge",
+    es = u"Formato de imagen",
+    en = u"Image format"
+)
+
+translations.define("ImageFactory.effects",
+    ca = u"Efectes",
+    es = u"Efectos",
+    en = u"Effects"
+)
+
+translations.define("ImageFactory.fallback",
+    ca = u"Processador alternatiu",
+    es = u"Procesador alternativo",
+    en = u"Fallback"
+)
+
+translations.define("ImageFactory.fallback-explanation",
+    ca = u"Si el processador és incapaç de produïr una imatge, "
+         u"es provarà d'obtenir una imatge substitutiva utilitzant "
+         u"el processador alternatiu indicat",
+    es = u"Si el procesador es incapaz de producir una imagen, se "
+         u"intentará obtener una imagen sustitutiva utilizando el "
+         u"procesador alternativo indicado",
+    en = u"If the image factory fails to produce an image, it will try to "
+         u"fall back to the indicated factory to produce an alternative image"
+)
+
+# ImageEffect
+#------------------------------------------------------------------------------
+translations.define("ImageEffect",
+    ca = u"Efecte d'imatge",
+    es = u"Efecto de imagen",
+    en = u"Image effect"
+)
+
+translations.define("ImageEffect-plural",
+    ca = u"Efectes d'imatge",
+    es = u"Efectos de imagen",
+    en = u"Image effects"
+)
+
+translations.define(
+    "woost.models.rendering.horizontal_alignment=left",
+    ca = u"Esquerra",
+    es = u"Izquierda",
+    en = u"Left"
+)
+
+translations.define(
+    "woost.models.rendering.horizontal_alignment=center",
+    ca = u"Centrat",
+    es = u"Centrado",
+    en = u"Center"
+)
+
+translations.define(
+    "woost.models.rendering.horizontal_alignment=right",
+    ca = u"Dreta",
+    es = u"Derecha",
+    en = u"Right"
+)
+
+translations.define(
+    "woost.models.rendering.vertical_alignment=top",
+    ca = u"A dalt",
+    es = u"Arriba",
+    en = u"Top"
+)
+
+translations.define(
+    "woost.models.rendering.vertical_alignment=center",
+    ca = u"Centrat",
+    es = u"Centrado",
+    en = u"Center"
+)
+
+translations.define(
+    "woost.models.rendering.vertical_alignment=bottom",
+    ca = u"A baix",
+    es = u"Abajo",
+    en = u"Bottom"
+)
+
+# Thumbnail
+#------------------------------------------------------------------------------
+translations.define("Thumbnail",
+    ca = u"Redimensionar",
+    es = u"Redimensionar",
+    en = u"Thumbnail"
+)
+
+translations.define("Thumbnail.width",
+    ca = u"Amplada",
+    es = u"Ancho",
+    en = u"Width"
+)
+
+translations.define("Thumbnail.height",
+    ca = u"Alçada",
+    es = u"Alto",
+    en = u"Height"
+)
+
+# Crop
+#------------------------------------------------------------------------------
+translations.define("Crop",
+    ca = u"Retallar",
+    es = u"Recortar",
+    en = u"Crop"
+)
+
+translations.define("Crop.left",
+    ca = u"X1",
+    es = u"X1",
+    en = u"X1"
+)
+
+translations.define("Crop.top",
+    ca = u"Y1",
+    es = u"Y1",
+    en = u"Y1"
+)
+
+translations.define("Crop.right",
+    ca = u"X2",
+    es = u"X2",
+    en = u"X2"
+)
+
+translations.define("Crop.bottom",
+    ca = u"Y2",
+    es = u"Y2",
+    en = u"Y2"
+)
+
+# Fill
+#------------------------------------------------------------------------------
+translations.define("Fill",
+    ca = u"Redimensionar i retallar",
+    es = u"Redimensionar y recortar",
+    en = u"Thumbnail and crop"
+)
+
+translations.define("Fill.width",
+    ca = u"Amplada",
+    es = u"Ancho",
+    en = u"Width"
+)
+
+translations.define("Fill.height",
+    ca = u"Alçada",
+    es = u"Alto",
+    en = u"Height"
+)
+
+translations.define("Fill.horizontal_alignment",
+    ca = u"Alineament horitzontal",
+    es = u"Alineamiento horizontal",
+    en = u"Horizontal alignment"
+)
+
+translations.define("Fill.vertical_alignment",
+    ca = u"Alineament vertical",
+    es = u"Alineamiento vertical",
+    en = u"Vertical alignment"
+)
+
+translations.define("Fill.preserve_vertical_images",
+    ca = u"Preservar imatges verticals",
+    es = u"Preservar imágenes verticales",
+    en = u"Preserve vertical images"
+)
+
+# Rotate
+#------------------------------------------------------------------------------
+translations.define("Rotate",
+    ca = u"Rotar",
+    es = u"Rotar",
+    en = u"Rotate"
+)
+
+translations.define("Rotate.angle",
+    ca = u"Angle",
+    es = u"Ángulo",
+    en = u"Angle"
+)
+
+# Color
+#------------------------------------------------------------------------------
+translations.define("Color",
+    ca = u"Intensitat del color",
+    es = u"Intensidad del color",
+    en = u"Color intensity"
+)
+
+translations.define("Color.level",
+    ca = u"Nivell",
+    es = u"Nivel",
+    en = u"Level"
+)
+
+# Brightness
+#------------------------------------------------------------------------------
+translations.define("Brightness",
+    ca = u"Lluminositat",
+    es = u"Luminosidad",
+    en = u"Brightness"
+)
+
+translations.define("Brightness.level",
+    ca = u"Nivell",
+    es = u"Nivel",
+    en = u"Level"
+)
+
+# Contrast
+#------------------------------------------------------------------------------
+translations.define("Contrast",
+    ca = u"Contrast",
+    es = u"Contraste",
+    en = u"Contrast"
+)
+
+translations.define("Contrast.level",
+    ca = u"Nivell",
+    es = u"Nivel",
+    en = u"Level"
+)
+
+# Sharpness
+#------------------------------------------------------------------------------
+translations.define("Sharpness",
+    ca = u"Definició",
+    es = u"Definición",
+    en = u"Sharpness"
+)
+
+translations.define("Sharpness.level",
+    ca = u"Nivell",
+    es = u"Nivel",
+    en = u"Level"
+)
+
+# Frame
+#------------------------------------------------------------------------------
+translations.define("Frame",
+    ca = u"Marc",
+    es = u"Marco",
+    en = u"Frame"
+)
+
+translations.define("Frame.edge_width",
+    ca = u"Gruix del marc",
+    es = u"Grueso del marco",
+    en = u"Edge width"
+)
+
+translations.define("Frame.edge_color",
+    ca = u"Color del marc",
+    es = u"Color del marco",
+    en = u"Edge color"
+)
+
+translations.define("Frame.vertical_padding",
+    ca = u"Espaiat vertical",
+    es = u"Espaciado vertical",
+    en = u"Vertical padding"
+)
+
+translations.define("Frame.horizontal_padding",
+    ca = u"Espaiat horitzontal",
+    es = u"Espaciado horizontal",
+    en = u"Horizontal padding"
+)
+
+translations.define("Frame.background",
+    ca = u"Color de fons",
+    es = u"Color de fondo",
+    en = u"Background"
+)
+
+# Shadow
+#------------------------------------------------------------------------------
+translations.define("Shadow",
+    ca = u"Ombra",
+    es = u"Sombra",
+    en = u"Shadow"
+)
+
+translations.define("Shadow.offset",
+    ca = u"Desplaçament",
+    es = u"Desplazamiento",
+    en = u"Offset"
+)
+
+translations.define("Shadow.padding",
+    ca = u"Espaiat",
+    es = u"Espaciado",
+    en = u"Padding"
+)
+
+translations.define("Shadow.color",
+    ca = u"Color",
+    es = u"Color",
+    en = u"Color"
+)
+
+# ReducedOpacity
+#------------------------------------------------------------------------------
+translations.define("ReducedOpacity",
+    ca = u"Reduïr l'opacitat",
+    es = u"Reducir la opacidad",
+    en = u"Reduce opacity"
+)
+
+translations.define("ReducedOpacity.level",
+    ca = u"Nivell",
+    es = u"Nivel",
+    en = u"Level"
+)
+
+# Fade
+#------------------------------------------------------------------------------
+translations.define("Fade",
+    ca = u"Esvaïr",
+    es = u"Desvanecer",
+    en = u"Fade"
+)
+
+translations.define("Fade.top_width",
+    ca = u"Gruix superior",
+    es = u"Ancho superior",
+    en = u"Top width"
+)
+
+translations.define("Fade.right_width",
+    ca = u"Gruix a la dreta",
+    es = u"Ancho derecho",
+    en = u"Right width"
+)
+
+translations.define("Fade.bottom_width",
+    ca = u"Gruix inferior",
+    es = u"Ancho inferior",
+    en = u"Bottom width"
+)
+
+translations.define("Fade.left_width",
+    ca = u"Gruix a l'esquerra",
+    es = u"Ancho a la izquierda",
+    en = u"Left width"
+)
+
+translations.define("Fade.edge_opacity",
+    ca = u"Opacitat exterior",
+    es = u"Opacidad exterior",
+    en = u"Edge opacity"
+)
+
+translations.define("Fade.inner_opacity",
+    ca = u"Opacitat interior",
+    es = u"Opacidad interior",
+    en = u"Inner opacity"
+)
+
+# Watermark
+#------------------------------------------------------------------------------
+translations.define("Watermark",
+    ca = u"Marca d'aigua",
+    es = u"Marca de agua",
+    en = u"Watermark"
+)
+
+translations.define("Watermark.mark",
+    ca = u"Marca",
+    es = u"Marca",
+    en = u"Mark"
+)
+
+translations.define("Watermark.opacity",
+    ca = u"Opacitat",
+    es = u"Opacidad",
+    en = u"Opacity"
+)
+
+translations.define("Watermark.placement",
+    ca = u"Posicionament",
+    es = u"Posicionamiento",
+    en = u"Positioning"
+)
+
+translations.define("Watermark.placement=middle",
+    ca = u"Centrat",
+    es = u"Centrado",
+    en = u"In the middle"
+)
+
+translations.define("Watermark.placement=scale",
+    ca = u"Omplir",
+    es = u"Rellenar",
+    en = u"Scale"
+)
+
+translations.define("Watermark.placement=tile",
+    ca = u"Repetir",
+    es = u"Repetir",
+    en = u"Tile"
+)
+
+# Flip
+#------------------------------------------------------------------------------
+translations.define("Flip",
+    ca = u"Capgirar",
+    es = u"Voltear",
+    en = u"Flip"
+)
+
+translations.define("Flip.axis",
+    ca = u"Eix",
+    es = u"Eje",
+    en = u"Axis"
+)
+
+translations.define("Flip.axis=horizontal",
+    ca = u"Horitzontal",
+    es = u"Horizontal",
+    en = u"Horizontal"
+)
+
+translations.define("Flip.axis=vertical",
+    ca = u"Vertical",
+    es = u"Vertical",
+    en = u"Vertical"
+)
+
+# Align
+#------------------------------------------------------------------------------
+translations.define("Align",
+    ca = u"Alinear",
+    es = u"Alinear",
+    en = u"Align"
+)
+
+translations.define("Align.width",
+    ca = u"Amplada",
+    es = u"Ancho",
+    en = u"Width"
+)
+
+translations.define("Align.height",
+    ca = u"Alçada",
+    es = u"Alto",
+    en = u"Height"
+)
+
+translations.define("Align.horizontal_alignment",
+    ca = u"Alineament horitzontal",
+    es = u"Alineamiento horizontal",
+    en = u"Horizontal alignment"
+)
+
+translations.define("Align.vertical_alignment",
+    ca = u"Alineament vertical",
+    es = u"Alineamiento vertical",
+    en = u"Vertical alignment"
+)
+
+translations.define("Align.background",
+    ca = u"Color de fons",
+    es = u"Color de fondo",
+    en = u"Background"
+)
+
+# Grayscale
+#------------------------------------------------------------------------------
+translations.define("Grayscale",
+    ca = u"Tons de gris",
+    es = u"Tonos de gris",
+    en = u"Grayscale"
 )
 
 # Agreement to terms & conditions
@@ -4623,5 +5781,77 @@ translations.define(
         u"You must accept the <a href='%s' target='_blank'>terms & conditions "
         u"</a> of the form"
         % instance.member.agreement_document.get_uri()
+)
+
+# BackOfficeItemHeading
+#------------------------------------------------------------------------------
+translations.define("woost.views.BackOfficeItemHeading.item_path.conjunction",
+    ca = u"a",
+    es = u"en",
+    en = u"in"
+)
+
+# ReferenceList
+#------------------------------------------------------------------------------
+translations.define("woost.views.ReferenceList.summary",
+    ca = lambda count:
+        u"Referenciat per <strong>%d</strong> %s" % (
+            count,
+            plural2(count, u"element", u"elements")
+        ),
+    es = lambda count:
+        u"Referenciado por <strong>%d</strong> %s" % (
+            count,
+            plural2(count, u"elemento", u"elementos")
+        ),
+    en = lambda count:
+        u"Referenced by <strong>%d</strong> %s" % (
+            count,
+            plural2(count, u"element", u"elements")
+        )
+)
+
+# VideoPlayerSettings
+#------------------------------------------------------------------------------
+translations.define("VideoPlayerSettings", 
+    ca = u"Opcions de reproductor de vídeo",
+    es = u"Opciones de reproductor de video",
+    en = u"Video player settings"
+)
+
+translations.define("VideoPlayerSettings-plural", 
+    ca = u"Opcions de reproductor de vídeo",
+    es = u"Opciones de reproductor de video",
+    en = u"Video player settings"
+)
+
+translations.define("VideoPlayerSettings.title", 
+    ca = u"Nom",
+    es = u"Nombre",
+    en = u"Name"
+)
+
+translations.define("VideoPlayerSettings.width", 
+    ca = u"Amplada",
+    es = u"Ancho",
+    en = u"Width"
+)
+
+translations.define("VideoPlayerSettings.height", 
+    ca = u"Alçada",
+    es = u"Alto",
+    en = u"Height"
+)
+
+translations.define("VideoPlayerSettings.autoplay",
+    ca = u"Iniciar la reproducció automàticament",
+    es = u"Iniciar la reproducción automáticamente",
+    en = u"Autoplay"
+)
+
+translations.define("VideoPlayerSettings.show_player_controls",
+    ca = u"Mostrar controls de reproducció",
+    es = u"Mostrar controles de reproducción",
+    en = u"Show player controls"
 )
 

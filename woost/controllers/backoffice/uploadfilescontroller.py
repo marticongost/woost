@@ -13,6 +13,7 @@ from cocktail import schema
 from cocktail.persistence import datastore
 from cocktail.controllers import get_parameter
 from cocktail.controllers.fileupload import FileUpload
+from woost import app
 from woost.models import (
     get_current_user, 
     changeset_context,
@@ -68,7 +69,7 @@ class UploadFilesController(BaseBackOfficeController):
         file = self.form_data["upload"]["file"]
         zip_file = ZipFile(file)
         
-        upload_path = self.context["cms"].upload_path
+        upload_path = app.path("upload")
         temp_dir = mkdtemp()
 
         try:

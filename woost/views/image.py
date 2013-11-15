@@ -22,7 +22,9 @@ class Image(Element):
         or (self.accessible_check and not self.image.is_accessible()):
             self.visible = False
         else:
-            self["alt"] = translations(self.image)
+            self["alt"] = translations(
+                self.image, discard_generic_translation = True
+            )
             self["src"] = self.image.get_image_uri(
                 image_factory = self.image_factory or "default",
                 host = self.host

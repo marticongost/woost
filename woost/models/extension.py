@@ -17,7 +17,7 @@ from cocktail.translations import translations
 from cocktail import schema
 from cocktail.persistence import datastore, transaction
 from woost.models.item import Item
-from woost.models.language import Language
+from woost.models.configuration import Configuration
 
 extension_translations = object()
 _loaded_extensions = set()
@@ -146,12 +146,12 @@ class Extension(Item):
         extension.        
         """
         asset = cls()
-        cls.qname = qname = self.full_name.rsplit(".", 1)[0] + "." + id
-        
+        asset.qname = qname = self.full_name.rsplit(".", 1)[0] + "." + id
+
         if values:
             for key, value in values.iteritems():
                 if value is extension_translations:
-                    for language in Language.codes:
+                    for language in Configuration.instance.languages:
                         value = translations(qname + "." + key, language)
                         if value:
                             asset.set(key, value, language)

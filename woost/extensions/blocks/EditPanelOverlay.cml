@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <?py
 from cocktail import schema
-from woost.extensions.blocks.block import Block
+from woost.extensions.blocks.slot import Slot
 ?>
 
 <py:overlay
@@ -11,45 +11,26 @@ from woost.extensions.blocks.block import Block
 
     <?py-class
     def get_slots(self):
-        slots = []
-
-        for member in self.publishable.__class__.ordered_members():
-            if getattr(member, "is_persistent_relation", False) \
-            and issubclass(member.related_type, Block) \
-            and member.visible:
-                slots.append(member.name)
-
-        return slots
-
-    def get_slot_blocks(self, slot):
-        blocks = getattr(self.publishable, slot, None)
-        
-        if blocks is None:
-            return ()
-
-        if isinstance(blocks, Block):
-            blocks = [blocks]
-
-        return blocks
+        return [
+            (member, self.publishable)
+            for member in self.publishable.__class__.ordered_members()
+            if isinstance(member, Slot) and member.visible
+        ]
     ?>
 
     <py:with py:element="self.panel_content">
         <py:ready>
-            <?py
-            for slot in self.get_slots():
-                blocks = self.get_slot_blocks(slot)
-                if blocks:
-                    section = self.create_block_section()
-                    section.slot = slot
-                    section.blocks = blocks
-                    element.append(section)
-                    setattr(self, "%s_section" % slot, section)
-            ?>
+            <py:new
+                py:element="self.create_block_section(slot, blocks_source)"
+                py:for="slot, blocks_source in self.get_slots()"/>
         </py:ready>
     </py:with>
 
     <py:woost.extensions.blocks.BlockSection
-        py:def="block_section"/>
+        py:def="block_section"
+        py:args="slot, blocks_source"
+        py:slot="${slot}"
+        py:blocks_source="${blocks_source}"/>
 
 </py:overlay>
 

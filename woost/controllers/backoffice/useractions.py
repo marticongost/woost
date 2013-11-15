@@ -10,7 +10,11 @@ Declaration of back office actions.
 import cherrypy
 from cocktail.modeling import getter, ListWrapper
 from cocktail.translations import translations
-from cocktail.controllers import view_state
+from cocktail.controllers import (
+    view_state,
+    Location,
+    context as controller_context
+)
 from cocktail import schema
 from woost.models import (
     Item,
@@ -25,6 +29,7 @@ from woost.models import (
     ReadHistoryPermission
 )
 from woost.controllers.backoffice.editstack import (
+    EditNode,
     SelectionNode,
     RelationNode
 )
@@ -175,6 +180,8 @@ class UserAction(object):
     min = 1
     max = 1
     direct_link = False
+    client_redirect = False
+    link_target = None
     parameters = None
 
     def __init__(self, id):
@@ -347,8 +354,9 @@ class UserAction(object):
         @param controller: The controller that invokes the action.
         @type controller: L{Controller<cocktail.controllers.controller.Controller>}
         """
-        raise cherrypy.HTTPRedirect(self.get_url(controller, selection))
-    
+        location = Location(self.get_url(controller, selection))
+        location.go(client_redirect = self.client_redirect)
+
     def get_url(self, controller, selection):
         """Produces the URL of the controller that handles the action
         execution. This is used by the default implementation of the L{invoke}
@@ -408,7 +416,7 @@ class UserAction(object):
 
     @getter
     def icon_uri(self):
-        return "/resources/images/%s_small.png" % self.id
+        return "/resources/images/%s.png" % self.id
 
 
 class SelectionError(Exception):
@@ -469,7 +477,7 @@ class AddAction(UserAction):
         # Add a relation node to the edit stack, and redirect the user
         # there
         node = RelationNode()
-        node.member = controller.member
+        node.member = controller.relation_member
         node.action = "add"
         controller.edit_stack.push(node)
         controller.edit_stack.go()
@@ -496,10 +504,7 @@ class RemoveAction(UserAction):
         stack_node = controller.stack_node
 
         for item in selection:
-            stack_node.unrelate(controller.member, item)
-
-        controller.user_collection.base_collection = \
-            schema.get(stack_node.form_data, controller.member)
+            stack_node.unrelate(controller.relation_member, item)
 
 
 class OrderAction(UserAction):
@@ -508,7 +513,7 @@ class OrderAction(UserAction):
 
     def invoke(self, controller, selection):
         node = RelationNode()
-        node.member = controller.member
+        node.member = controller.relation_member
         node.action = "order"
         controller.edit_stack.push(node)
         UserAction.invoke(self, controller, selection)
@@ -525,6 +530,22 @@ class ShowDetailAction(UserAction):
 
 class EditAction(UserAction):
     included = frozenset(["toolbar", "item_buttons"])
+
+    def is_available(self, context, target):
+        
+        # Prevent action nesting
+        edit_stacks_manager = \
+            controller_context.get("edit_stacks_manager")
+        
+        if edit_stacks_manager:
+            edit_stack = edit_stacks_manager.current_edit_stack
+            if edit_stack:
+                for node in edit_stack[:-1]:
+                    if isinstance(node, EditNode) \
+                    and node.item is target:
+                        return False
+
+        return UserAction.is_available(self, context, target)
 
     def is_permitted(self, user, target):
         return user.has_permission(ModifyPermission, target = target)
@@ -552,97 +573,8 @@ class DeleteAction(UserAction):
         return user.has_permission(DeletePermission, target = target)
 
 
-class ShowChangelogAction(UserAction):
-    min = None
-    max = 1
-    excluded = frozenset([
-        "selector",
-        "new_item",
-        "calendar_content_view",
-        "workflow_graph_content_view",
-        "changelog"
-    ])
-
-    def get_url(self, controller, selection):
-
-        params = self.get_url_params(controller, selection)
-
-        # Filter by target element
-        if selection:
-            params["filter"] = "member-changes"
-            params["filter_value0"] = str(selection[0].id)
-
-        # Filter by target type
-        else:
-            user_collection = getattr(controller, "user_collection", None)
-            if user_collection and user_collection.type is not Item:
-                params["filter"] = "target-type"
-                params["filter_value0"] = user_collection.type.full_name
-
-        return controller.contextual_uri(
-            "changelog",                
-            **params
-        )
-
-    def is_permitted(self, user, target):
-        return user.has_permission(ReadHistoryPermission)
-
-
-class DiffAction(UserAction):
-    included = frozenset(["item_buttons"])
-    
-    def is_permitted(self, user, target):
-        return user.has_permission(ModifyPermission, target = target)
-
-
-class RevertAction(UserAction):
-    included = frozenset([("diff", "item_body_buttons", "changed")])
-    
-    def is_permitted(self, user, target):
-        return user.has_permission(ModifyPermission, target = target)
-
-    def invoke(self, controller, selection):
-
-        reverted_members = controller.params.read(
-            schema.Collection("reverted_members",
-                type = set,
-                items = schema.String
-            )
-        )
-
-        stack_node = controller.stack_node
-
-        form_data = stack_node.form_data
-        form_schema = stack_node.form_schema
-        languages = set(
-            list(stack_node.translations)
-            + list(stack_node.item.translations.keys())
-        )
-
-        source = {}
-        stack_node.export_form_data(stack_node.item, source)
-        
-        for member in form_schema.members().itervalues():
-                      
-            if member.translated:
-                for lang in languages:
-                    if (member.name + "-" + lang) in reverted_members:
-                        schema.set(
-                            form_data,
-                            member.name,
-                            schema.get(source, member.name, language = lang),
-                            language = lang
-                        )
-            elif member.name in reverted_members:
-                schema.set(
-                    form_data,
-                    member.name,
-                    schema.get(source, member.name)
-                )
-
-
 class PreviewAction(UserAction):
-    included = frozenset(["toolbar_extra", "item_buttons"])
+    included = frozenset(["item_buttons"])
     content_type = Publishable
 
 
@@ -659,9 +591,11 @@ class OpenResourceAction(UserAction):
         "workflow_graph_content_view",
         "changelog"
     ])
+    link_target = "_blank"
+    client_redirect = True
 
     def get_url(self, controller, selection):
-        return controller.context["cms"].uri(selection[0])
+        return selection[0].get_uri(host = "?")
 
 
 class UploadFilesAction(UserAction):
@@ -674,6 +608,7 @@ class UploadFilesAction(UserAction):
 
 class ExportAction(UserAction):
     included = frozenset(["toolbar_extra"])
+    excluded = UserAction.excluded | frozenset(["collection", "empty_set"])
     min = 1
     max = None
     ignores_selection = True
@@ -743,19 +678,12 @@ class GoBackAction(UserAction):
 
 
 class CloseAction(GoBackAction):
-    included = frozenset(["item_buttons", ("changelog", "bottom_buttons")])
-    excluded = frozenset(["changed", "new", "edit"])
+    included = frozenset(["item_buttons", "item_bottom_buttons"])
 
 
 class CancelAction(GoBackAction):
     included = frozenset([
-        ("list_buttons", "selector"),
-        ("item_buttons", "edit"),
-        ("item_buttons", "changed"),
-        ("item_buttons", "new"),
-        ("item_bottom_buttons", "edit"),
-        ("item_bottom_buttons", "changed"),
-        ("item_bottom_buttons", "new")
+        ("list_buttons", "selector")
     ])
     excluded = frozenset()
 
@@ -822,8 +750,8 @@ class ConfirmDraftAction(SaveAction):
 
 class PrintAction(UserAction):
     direct_link = True
-    ignore_selection = True
-    excluded = frozenset(["selector"])
+    ignores_selection = True
+    excluded = frozenset(["selector", "collection"])
 
     def get_url(self, controller, selection):
         return "javascript: print();"
@@ -837,13 +765,10 @@ AddAction("add").register()
 AddIntegralAction("add_integral").register()
 RemoveAction("remove").register()
 ShowDetailAction("show_detail").register()
-PreviewAction("preview").register()
 OpenResourceAction("open_resource").register()
 UploadFilesAction("upload_files").register()
 EditAction("edit").register()
-DiffAction("diff").register()
-RevertAction("revert").register()
-ShowChangelogAction("changelog").register()
+PreviewAction("preview").register()
 DeleteAction("delete").register()
 OrderAction("order").register()
 ExportAction("export_xls", "msexcel").register()

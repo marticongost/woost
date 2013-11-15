@@ -36,8 +36,17 @@ class ContentList(List):
 
     def create_entry_content(self, item):
         link = templates.new("woost.views.ContentLink")
+        link.icon_visible = True
         link.item = item
         link.referer = self.referer
         link.member = self.member
+
+        if self.referer and self.member:
+            link["data-woost-relativedrop"] = "%d.%s.%d" % (
+                self.referer.id,
+                self.member.name,
+                item.id
+            )
+
         return link
 

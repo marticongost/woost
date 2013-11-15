@@ -6,6 +6,7 @@
 @organization:	Whads/Accent SL
 @since:			December 2009
 """
+import cherrypy
 from cocktail.events import when
 from cocktail import schema
 from cocktail.translations import translations
@@ -30,6 +31,9 @@ translations.define("StaticSiteExtension.file_extension",
     es = u"Extensión de fichero",
     en = u"File extension"
 )
+
+def generating_static_site():
+    return bool(cherrypy.request.headers.get("X-Woost-StaticSiteSnapShoter"))
 
 
 class StaticSiteExtension(Extension):

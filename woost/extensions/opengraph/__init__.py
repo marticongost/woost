@@ -8,8 +8,13 @@ from cocktail.translations import translations
 from cocktail import schema
 from cocktail.html import templates
 from cocktail.persistence import datastore
-from woost.models import Site, Extension, File
-
+from woost.models import (
+    Configuration,
+    File,
+    Extension,
+    extension_translations,
+    rendering
+)
 
 translations.define("OpenGraphExtension",
     ca = u"OpenGraph",
@@ -107,6 +112,7 @@ class OpenGraphExtension(Extension):
         
     def _install(self):
         self.create_default_categories(verbose = True)
+        self.create_facebook_image_factory()
 
     def create_default_categories(self, verbose = False):
         
@@ -221,39 +227,20 @@ class OpenGraphExtension(Extension):
 
     def get_global_properties(self):
 
-        site = Site.main
-
         properties = {}
+        config = Configuration.instance
 
-        if site.site_name:
-            properties["og:site_name"] = site.site_name
+        site_name = config.get_setting("site_name")
+        if site_name:
+            properties["og:site_name"] = site_name
 
-        if site.logo:
-            properties["og:image"] = site.logo.get_uri(host = ".")
+        logo = config.get_setting("logo")
+        if logo:
+            properties["og:image"] = logo.get_uri(host = ".")
 
-        if site.email:
-            properties["og:email"] = site.email
-
-        if site.phone_number:
-            properties["og:phone_number"] = site.phone_number
-
-        if site.fax_number:
-            properties["og:fax_number"] = site.fax_number
-
-        if site.address:
-            properties["og:street-address"] = site.address
-
-        if site.town:
-            properties["og:locality"] = site.town
-
-        if site.region:
-            properties["og:region"] = site.region
-
-        if site.postal_code:
-            properties["og:postal-code"] = site.postal_code
-
-        if site.country:
-            properties["og:country-name"] = site.country
+        email = config.get_setting("email")
+        if email:
+            properties["og:email"] = email
 
         if self.facebook_administrators:
             properties["fb:admins"] = self.facebook_administrators
@@ -267,4 +254,25 @@ class OpenGraphExtension(Extension):
         properties = self.get_global_properties()
         properties.update(publishable.get_open_graph_properties())
         return properties
+
+    def create_facebook_image_factory(self):
+        Configuration.instance.image_factories.append(
+            self._create_asset(
+                rendering.ImageFactory,
+                "image_factory",
+                title = extension_translations,
+                identifier = "facebook",
+                effects = [
+                    rendering.Fill(
+                        width = "200",
+                        height = "200"
+                    ),
+                    rendering.Align(
+                        width = "200",
+                        height = "200",
+                        background = "fff"
+                    )
+                ]
+            )
+        )
 

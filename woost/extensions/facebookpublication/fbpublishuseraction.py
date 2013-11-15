@@ -3,7 +3,7 @@ u"""
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
-from woost.models import Document, File, User
+from woost.models import Publishable, File, User
 from woost.controllers.backoffice.useractions import UserAction
 from woost.extensions.facebookpublication.facebookpublicationpermission \
     import FacebookPublicationPermission
@@ -32,7 +32,7 @@ class BaseFBPublishUserAction(UserAction):
 
 
 class FBPublishUserAction(BaseFBPublishUserAction):
-    content_type = Document
+    content_type = Publishable
 
 FBPublishUserAction("fbpublish").register()
 

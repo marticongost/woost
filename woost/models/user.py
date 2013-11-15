@@ -10,7 +10,6 @@ from hashlib import sha1
 from cocktail.events import event_handler
 from cocktail.translations import translations
 from cocktail import schema
-from woost.models.site import Site
 from woost.models.item import Item
 from woost.models.role import Role
 from woost.models.messagestyles import (
@@ -82,16 +81,25 @@ class User(Item):
         edit_control = "cocktail.html.PasswordBox"
     )
 
+    def _backoffice_language_default():
+        from woost.models.configuration import Configuration
+        return Configuration.instance.backoffice_language
+
+    def _backoffice_language_enumeration(ctx):
+        from woost.models.configuration import Configuration
+        return Configuration.backoffice_language.enumeration
+
     prefered_language = schema.String(
         required = True,
-        default = schema.DynamicDefault(
-            lambda: Site.main.backoffice_language
-        ),
-        enumeration = lambda ctx: Site.backoffice_language.enumeration,
+        default = schema.DynamicDefault(_backoffice_language_default),
+        enumeration = _backoffice_language_enumeration,
         translate_value = lambda value, language = None, **kwargs:
             "" if value is None else translations(value, language, **kwargs),
         text_search = False
     )
+    
+    del _backoffice_language_default
+    del _backoffice_language_enumeration
 
     roles = schema.Collection(
         items = "woost.models.Role",

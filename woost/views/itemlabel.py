@@ -14,7 +14,7 @@ from cocktail.controllers import context
 class ItemLabel(Element):
 
     item = None
-    image_factory = "backoffice_small_thumbnail"
+    image_factory = "backoffice_small_thumbnail.png"
     icon_visible = True
     thumbnail = True
     referer = None
@@ -23,6 +23,9 @@ class ItemLabel(Element):
         Element._ready(self)
 
         if self.item:
+
+            self["draggable"] = "true"
+            self["data-woost-item"] = self.item.id
 
             for schema in self.item.__class__.descend_inheritance(True):
                 self.add_class(schema.name)
@@ -35,6 +38,7 @@ class ItemLabel(Element):
     def create_icon(self):
         img = Element("img")
         img.add_class("icon")
+        img["title"] = translations(self.item.__class__.__name__)
         get_image_uri = getattr(self.item, "get_image_uri", None)
 
         if get_image_uri:

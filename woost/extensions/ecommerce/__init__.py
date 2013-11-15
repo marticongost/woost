@@ -16,7 +16,7 @@ from cocktail.translations import (
 from cocktail import schema
 from cocktail.persistence import datastore
 from woost.models import (
-    Site,
+    Configuration,
     Extension,
     Publishable,
     Document,
@@ -24,9 +24,9 @@ from woost.models import (
     Template,
     Controller,
     EmailTemplate,
-    User,
-    Language
+    User    
 )
+from woost.models.rendering import ImageFactory, Thumbnail
 from woost.models.triggerresponse import SendEmailTriggerResponse
 
 translations.define("ECommerceExtension",
@@ -70,8 +70,7 @@ class ECommerceExtension(Extension):
             ecommerceorder,
             ecommercepurchase,
             ecommercebillingconcept,
-            ecommerceordercompletedtrigger,
-            imagefactories
+            ecommerceordercompletedtrigger
         )
         from woost.extensions.ecommerce.ecommerceorder import ECommerceOrder
 
@@ -166,6 +165,7 @@ class ECommerceExtension(Extension):
             import launch_transaction_notification_triggers
         from woost.extensions.ecommerce.ecommerceorder import ECommerceOrder
         from woost.extensions.payments import PaymentsExtension
+        from woost.extensions.payments.paypal import PayPalPaymentGateway
 
         payments_ext = PaymentsExtension.instance
 
@@ -182,7 +182,27 @@ class ECommerceExtension(Extension):
             payment.amount = order.total
             payment.order = order
             payment.currency = Currency(payments_ext.payment_gateway.currency)
-            
+
+            # PayPal form data
+            if isinstance(payments_ext.payment_gateway, PayPalPaymentGateway):
+                paypal_form_data = {}
+                if order.address:
+                    paypal_form_data["address1"] = order.address
+
+                if order.town:
+                    paypal_form_data["city"] = order.town
+
+                if order.country and order.country.code:
+                    paypal_form_data["country"] = order.country.code
+
+                if order.postal_code:
+                    paypal_form_data["zip"] = order.postal_code
+
+                if order.language:
+                    paypal_form_data["lc"] = order.language
+
+                payment.paypal_form_data = paypal_form_data
+
             for purchase in order.purchases:
                 payment.add(PaymentItem(
                     reference = str(purchase.product.id),
@@ -215,7 +235,6 @@ class ECommerceExtension(Extension):
         catalog = self._create_document("catalog")
         catalog.controller = self._create_controller("catalog")
         catalog.template = self._create_template("catalog")
-        catalog.parent = Site.main.home
         catalog.insert()
 
         for child_name in (
@@ -244,6 +263,7 @@ class ECommerceExtension(Extension):
         self._create_template("product").insert()
         self._create_ecommerceorder_completed_trigger().insert()
         self._create_incoming_order_trigger().insert()
+        self._create_image_factories()
 
     def _create_document(self, name, 
         cls = Document, 
@@ -287,7 +307,7 @@ class ECommerceExtension(Extension):
         trigger.qname = \
             "woost.extensions.ecommerce.ecommerceorder_completed_trigger"
         self.__translate_field(trigger, "title")
-        trigger.site = Site.main
+        Configuration.instance.triggers.append(trigger)
         trigger.condition = "target.customer and not target.customer.anonymous and target.customer.email"
         trigger.matching_items = {'type': u'woost.extensions.ecommerce.ecommerceorder.ECommerceOrder'}
 
@@ -301,8 +321,10 @@ class ECommerceExtension(Extension):
         ).email
         template.receivers = '[items[0].customer.email]'
         template.embeded_images = """
-from woost.models import Site
-images["logo"] = Site.main.logo
+from woost.models import Configuration
+logo = Configuration.instance.get_setting("logo")
+if logo:
+    images["logo"] = logo
 """
         template.template_engine = "cocktail"
 
@@ -344,7 +366,7 @@ order_summary.order = order
         trigger = IncomingOrderTrigger( )
         trigger.qname = "woost.extensions.ecommerce.incoming_order.trigger"
         self.__translate_field(trigger, "title")
-        trigger.site = Site.main
+        Configuration.instance.triggers.append(trigger)
         trigger.matching_items = {'type': u'woost.extensions.ecommerce.ecommerceorder.ECommerceOrder'}
 
         # EmailTemplate
@@ -384,6 +406,15 @@ edit_url = bo.get_uri(host = ".", path = ["content", str(order.id)])
         trigger.responses = [response]
 
         return trigger
+
+    def _create_image_factories(self):        
+        thumbnail = ImageFactory()
+        thumbnail.qname = \
+            "woost.extensions.ecommerce.ecommerce_basket_thumbnail"
+        self.__translate_field(thumbnail, "title")
+        thumbnail.identifier = "ecommerce_basket_thumbnail"
+        thumbnail.effects = [Thumbnail(width = "75", height = "75")]
+        thumbnail.insert()
 
     def __translate_field(self, obj, key):
         for language in translations:

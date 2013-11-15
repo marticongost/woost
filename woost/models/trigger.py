@@ -17,10 +17,8 @@ from cocktail.persistence import datastore
 from cocktail.controllers import UserCollection
 from woost.models.action import Action
 from woost.models.changesets import ChangeSet
-from woost.models.site import Site
 from woost.models.item import Item
 from woost.models.role import Role
-from woost.models.language import Language
 from woost.models.usersession import get_current_user
 from woost.models.messagestyles import (
     trigger_style,
@@ -92,12 +90,6 @@ class Trigger(Item):
         required = True
     )
 
-    site = schema.Reference(
-        type = "woost.models.Site",
-        bidirectional = True,
-        visible = False
-    )
-
     responses = schema.Collection(
         items = "woost.models.TriggerResponse",
         bidirectional = True,
@@ -109,8 +101,7 @@ class Trigger(Item):
             type = Role,
             required = True
         ),
-        related_end = schema.Collection(),
-        edit_inline = True
+        related_end = schema.Collection()
     )
 
     condition = schema.CodeBlock(
@@ -165,7 +156,8 @@ class ContentTrigger(Trigger):
         user_collection.allow_member_selection = False
         user_collection.allow_language_selection = False
         user_collection.params.source = self.matching_items.get
-        user_collection.available_languages = Language.codes
+        from woost.models import Configuration
+        user_collection.available_languages = Configuration.instance.languages
         return user_collection.subset
 
     def match(self, user, target = None, verbose = False, **context):
@@ -219,13 +211,19 @@ class ModifyTrigger(ContentTrigger):
         edit_control = "woost.views.MemberList"
     )
 
+    def _matching_languages_enumeration(ctx):
+        from woost.models import Configuration
+        return Configuration.instance.languages
+
     matching_languages = schema.Collection(
         items = schema.String(
-            enumeration = lambda ctx: Language.codes,
+            enumeration = lambda ctx: _matching_languages_enumeration,
             translate_value = lambda value, language = None, **kwargs:
                 u"" if not value else translations(value, language, **kwargs)
         )
     )
+
+    del _matching_languages_enumeration
 
     def match(self, user,
         target = None,
@@ -335,11 +333,13 @@ def trigger_responses(
                 (context["member"], context["language"])
             )
 
-        if not Site.main:
+        from woost.models.configuration import Configuration
+        config = Configuration.instance
+        if not config:
             return None
 
         # Execute or schedule matching triggers
-        for trigger in Site.main.triggers:
+        for trigger in config.triggers:
 
             if not isinstance(trigger, trigger_type):
                 continue
