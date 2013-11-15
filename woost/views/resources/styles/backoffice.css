@@ -175,6 +175,15 @@ body {
     white-space: nowrap;
 }
 
+.BackOfficeLayout .Selector .column {
+    display: inline-block;
+    vertical-align: top;
+}
+
+.BackOfficeLayout .Selector .column + .column {
+    margin-left: 1.5em;
+}
+
 .TreeSelector li {
     list-style-type: none;
 }
@@ -185,6 +194,32 @@ body {
 
 .BackOfficeLayout .members_selector .group_label {
     color: rgb(75,75,75);
+}
+
+/* Tabs */
+.scripted .BackOfficeEditView .ContentForm > .fields > fieldset {
+    display: none;
+    margin: 0;
+}
+
+.scripted .BackOfficeEditView .ContentForm > .fields > fieldset > .fieldset_fields {
+    border: none;
+    margin: 0;
+    padding: 0;
+    padding-left: 0.6em;
+}
+
+.scripted .BackOfficeEditView .ContentForm > .fields > fieldset > legend {
+    display: none;
+}
+
+.scripted .BackOfficeEditView .ContentForm > .fields > fieldset.selected {
+    display: block;
+}
+
+.BackOfficeEditView .tabStrip {
+    margin-bottom: 2em;
+    border-bottom: 1px solid #ccc;
 }
 
 .BackOfficeLayout .tabs {
@@ -199,50 +234,42 @@ body {
 }
 
 .BackOfficeLayout .tab {
-    color: rgb(75,75,75);
+    color: #666;
     position: relative;
-    top: 0;
+    top: 1px;
     height: 1.15em;
-    float: left;
-    display: block;
-    background-color: rgb(240,240,240);
+    display: inline-block;
+    background-color: #f0f0f0;
     padding-left: 0.4em;
-    padding-top: 0.2em;
+    padding-top: 0.4em;
     padding-bottom: 0.5em;
     padding-right: 0.4em;
     margin-left: 0.2em;
-    border: 1px solid rgb(200,210,220);
+    border: 1px solid #d8d8d8;
+    border-bottom-color: #ccc;
     -moz-border-radius-topleft: 5px;
     -moz-border-radius-topright: 5px;
     -webkit-border-top-left-radius: 5px;
     -webkit-border-top-right-radius: 5px;
-    border-radius-topleft: 5px;
-    border-radius-topright: 5px;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
     font-size: 90%;
     cursor: pointer;
 }
 
 .BackOfficeLayout .tab.selected {
+    color: #333;
+    border-color: #ccc;
     border-bottom-color: white;
     background-color: white;
 }
 
-.BackOfficeLayout .tab .count {
-    position: relative;
-    top: -0.05em;
-    margin-left: 0.3em;
-    font-weight: bold;
-    font-size: 85%;
-}
-
 .BackOfficeLayout h2 {
     font-size: inherit;
-    margin-top: 0;
 }
 
 .BackOfficeLayout .body {
     clear: both;
-    margin-top: 1em;
     padding: 1em;
 }
 
@@ -255,11 +282,14 @@ body {
 .BackOfficeLayout .ItemLabel {
     display: inline-block;
     background-repeat: no-repeat;
-    white-space: nowrap;
 }
 
 .BackOfficeLayout input[type=text],
 .BackOfficeLayout input[type=password],
+.BackOfficeLayout input[type=url],
+.BackOfficeLayout input[type=email],
+.BackOfficeLayout input[type=number],
+.BackOfficeLayout input[type=tel],
 .BackOfficeLayout textarea,
 .BackOfficeLayout .CodeMirror-wrapping {
     border: 1px solid rgb(200,200,200);
@@ -317,6 +347,60 @@ body {
     margin-left: 2em;
 }
 
+/* Collection editor
+-----------------------------------------------------------------------------*/
+.CollectionEditor > .entries > .entry {
+    white-space: nowrap;
+}
+
+/* Item collection editor
+-----------------------------------------------------------------------------*/
+.ItemCollectionEditor .ActionBar.toolbar {
+    margin-bottom: 0;
+}
+
+.ItemCollectionEditor ul.entries {
+    display: block;
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    background-color: white;
+}
+
+.ItemCollectionEditor ul.entries li {
+    cursor: pointer;
+    display: block;
+    padding: 0;
+    margin: 0;
+    border: 1px solid #ddd;
+    border-top: none;
+    padding: 0.4em;
+}
+
+.ItemCollectionEditor ul.entries li.selected {
+    background-color: #4b4b4b;
+    border-color: #4b4b4b;
+    color: white;
+}
+
+.scripted .ItemCollectionEditor ul.entries li input[type=checkbox] {
+    display: none;
+}
+
+.ItemCollectionEditor ul.entries li label {
+    margin: 0;
+    padding: 0 !important;
+    font-size: 0.9em;
+}
+
+.ItemCollectionEditor ul.entries li.ui-sortable-helper {
+    width: 100%;
+    border-top: 1px solid #ddd;
+    background-color: white;
+    opacity: 0.7;
+    box-sizing: border-box;
+}
+
 /* Item selector
 -----------------------------------------------------------------------------*/
 .BackOfficeItemSelectorView .content_type_selector > .entry_label {
@@ -336,7 +420,7 @@ body.modal {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: black;
+    background-color: #999;
     opacity: 0.7;
 }
 
@@ -350,10 +434,20 @@ body.modal {
     width: 92%;
     height: 92%;
     background-color: white;
+    box-shadow: 3px 3px 7px #666;
 }
 
 .dialog {
     overflow: auto;
+}
+
+.ImageGallery-dialog {
+    left: auto;
+    top: auto;
+    right: auto;
+    bottom: auto;
+    width: auto;
+    height: auto;
 }
 
 /* Forms
@@ -374,7 +468,8 @@ body.modal {
     margin-top: 2em;
 }
 
-.BackOfficeLayout fieldset legend {
+.BackOfficeLayout fieldset legend,
+.scripted .BackOfficeEditView .ContentForm > .fields > fieldset .fieldset_fields > fieldset > legend {
     position: relative;
     font-weight: bold;
     margin: 0;
@@ -388,11 +483,18 @@ body.modal {
     color: rgb(70,70,70);
 }
 
-.BackOfficeLayout fieldset .fieldset_fields {
+.BackOfficeLayout fieldset .fieldset_fields,
+.scripted .BackOfficeEditView .ContentForm > .fields > fieldset .fieldset_fields > fieldset > .fieldset_fields {
     border-top: 1px solid #adb2bc;
     margin-top: 0;
     padding-top: 1em;
     padding-left: 0.75em;
+}
+
+.scripted .BackOfficeEditView .ContentForm > .fields > fieldset .fieldset_fields > fieldset > .fieldset_fields {
+    border: none;
+    border-top: 1px solid #adb2bc;
+    background-color: inherit;
 }
 
 .BackOfficeLayout fieldset.anonymous > .fieldset_fields {
@@ -449,6 +551,11 @@ body.modal {
     margin-bottom: 1.5em;
 }
 
+.BackOfficeLayout .Form div.field.translated {
+    clear: left;
+    margin-bottom: 1em;
+}
+
 .BackOfficeLayout .Form div.field:after {
     content: ".";
     display: block;
@@ -463,7 +570,12 @@ body.modal {
 
 .BackOfficeLayout .Form div.field_instance {
     float: left;
-    padding-right: 1.5em;
+    margin-right: 1.5em;
+    padding: 0.2em;
+}
+
+.BackOfficeLayout .Form .translated div.field_instance {
+    margin-bottom: 0.5em;
 }
 
 .BackOfficeLayout .Form td.field_instance {
@@ -479,6 +591,24 @@ body.modal {
     font-size: 0.8em;
     max-width: 38em;
     text-align: justify;
+}
+
+.BackOfficeLayout .Form .explanation dl {
+    margin-left: 1em;
+}
+
+.BackOfficeLayout .Form .explanation dt {
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 0.2em;
+}
+
+.BackOfficeLayout .Form .explanation dd {
+    margin-left: 0;
+}
+
+.BackOfficeLayout .Form .explanation dd + dt {
+    margin-top: 0.8em;
 }
 
 .BackOfficeLayout .Form label {
@@ -544,6 +674,11 @@ body.modal {
     width: 6em;
 }
 
+.BackOfficeLayout .CollectionEditor .MoneyBox {
+    display: inline-block;
+    margin-right: 1em;
+}
+
 /* Tables
 -----------------------------------------------------------------------------*/
 
@@ -564,7 +699,7 @@ body.scripted .BackOfficeLayout .Table .selection {
 }
 
 .BackOfficeLayout .Table {
-    border-bottom: 1px solid rgb(225,225,225);
+    border: 1px solid #eee;
 }
 
 .BackOfficeLayout .PropertyTable th {
@@ -596,6 +731,15 @@ body.scripted .BackOfficeLayout .Table .selection {
     background-repeat: repeat-x;
     background-image: url(../images/header.png);
     background-color: rgb(220,223,227);
+}
+
+.BackOfficeLayout .ContentTable td,
+.BackOfficeLayout .ContentTable td * {
+    cursor: default;
+}
+
+.BackOfficeLayout .ContentTable .ItemLabel {
+    display: inline-block;
 }
 
 .BackOfficeLayout .ContentTable th .selector > .label {
@@ -647,7 +791,7 @@ body.scripted .BackOfficeLayout .Table .selection {
 }
 
 .BackOfficeLayout .ContentTable .search_options .add_filter {
-    background-image: url(../images/add_small.png);
+    background-image: url(../images/add.png);
     _background-position:0 -2px;
     _background-repeat:no-repeat;
     _display:block;
@@ -687,10 +831,6 @@ body.scripted .BackOfficeLayout .Table .selection {
 .BackOfficeLayout .PropertyTable .member_entry th {
     width: 18em;
     padding-left: 2.4em;
-}
-
-.BackOfficeLayout .Table td {
-    border: 1px solid rgb(225,225,225);
 }
 
 .BackOfficeLayout .Table th, .BackOfficeLayout .Table th * {
@@ -761,8 +901,13 @@ body.scripted .BackOfficeLayout .Table .selection {
 
 .BackOfficeLayout .Table tr.group td {
     color: rgb(70,70,70);
-    background-color: rgb(230,230,230);
     text-align: right;
+    background-image: -webkit-linear-gradient(#eee,#d5d5d5);
+    background-image: -moz-linear-gradient(#eee,#d5d5d5);
+    background-image: linear-gradient(#eee,#d5d5d5);
+    background-color: #eee;
+    border-top: 1px solid #bbb;
+    border-bottom: 1px solid #bbb;
 }
 
 .BackOfficeLayout .Table tr.group .grouping_value {
@@ -819,7 +964,6 @@ body.scripted .BackOfficeLayout .Table .selection {
 
 .BackOfficeLayout .Table tr.selected td {
     background-color: rgb(75,75,75) !important;
-    border: 1px solid rgb(75,75,75) !important;
 }
 
 .BackOfficeLayout .Table tr.selected td,
@@ -833,6 +977,64 @@ body.scripted .BackOfficeLayout .Table .selection {
     background-color: rgb(250,242,190);
 }
 
+.BackOfficeItemView h2 {
+    font-size: 1em;
+    font-weight: normal;
+    line-height: 1.2em;
+}
+
+.BackOfficeItemView h2 .item_icon {
+    margin-right: 0.8em;
+    display: inline-block;
+    vertical-align: top;
+}
+
+.BackOfficeItemView h2 .item_info {
+    display: inline-block;
+    vertical-align: top;
+}
+
+.BackOfficeItemView h2 .item_translation {
+    font-size: 1.1em;
+    font-weight: bold;
+    margin-bottom: 0.2em;
+}
+
+.BackOfficeItemView h2 .item_info > span {
+    font-size: 0.9em;
+    margin-right: 0.3em;
+    color: #333;
+    vertical-align: top;
+}
+
+.BackOfficeItemView h2 .item_path {
+    vertical-align: top;
+    display: inline-block;
+}
+
+.BackOfficeItemView h2 .item_references {
+    margin-top: 0.3em;
+    margin-left: -3px;
+}
+
+.BackOfficeItemView h2 .item_references .button {
+    padding-top: 0;
+}
+
+.BackOfficeItemView h2 .item_references .button .label {
+/*    color: #666;*/
+}
+
+.BackOfficeItemView h2 .item_references .panel_wrapper .panel {
+    padding: 0.5em;
+    min-width: 13em;
+}
+
+.BackOfficeItemView h2 .item_info .file_size,
+.BackOfficeItemView h2 .item_info .file_mime_type {
+    color: #666;
+}
+
 .BackOfficeLayout .changed {
     border: 1px solid #EBE3AF;
 }
@@ -842,13 +1044,13 @@ body.scripted .BackOfficeLayout .Table .selection {
 }
 
 .BackOfficeLayout .FlatContentView .nested_draft td.element_column label {
-    background-image: url(../images/edit_small.png);
+    background-image: url(../images/edit.png);
     padding-left: 1.8em;
 }
 
 .BackOfficeLayout .Table td.element_column label {
-    padding-top: 0.1em;
-    padding-bottom: 0.1em;
+    padding-top: 0;
+    padding-bottom: 0;
 }
 
 .BackOfficeLayout .search_results_message {
@@ -920,7 +1122,7 @@ body.scripted .BackOfficeLayout .Table .selection {
 .BackOfficeLayout .toolbar,
 .BackOfficeLayout .toolbar_box {
 	clear: both;
-    margin-top: 1em;    
+    margin-top: 1.5em;
 	background-color: rgb(242,240,235);
 	border: 1px solid rgb(232,230,225);    
 }
@@ -992,6 +1194,22 @@ body.scripted .BackOfficeLayout .Table .selection {
 
 .BackOfficeLayout .selector_content label {
     display: inline;
+}
+
+.BackOfficeLayout .settings_box .members_box input,
+.BackOfficeLayout .settings_box .members_box label {
+    vertical-align: top;
+}
+
+.BackOfficeLayout .settings_box .members_box .group_label,
+.BackOfficeLayout .settings_box .members_box label {
+    max-width: 20em;
+    white-space: normal;
+}
+
+.BackOfficeLayout .settings_box .members_box label {
+    display: inline-block;
+    padding-top: 0.5em;
 }
 
 /* Content type selector
@@ -1332,7 +1550,7 @@ body.scripted .BackOfficeLayout .selector:hover .selector_content {
 }
 
 .BackOfficeLayout .TreeContentView .expander + label {
-    margin-left: 1.5em;
+    margin-left: 0.3em;
 }
 
 .BackOfficeLayout .TreeContentView .expander img {
@@ -1507,6 +1725,12 @@ body.scripted .BackOfficeLayout .ThumbnailsContentView .collection_display input
     margin-bottom: 1em;
 }
 
+.BackOfficeLayout .item_info_panel {
+    background-color: #eee;
+    border: 1px solid #ccc;
+    padding: 0.5em;
+}
+
 .preview-error-box,
 .BackOfficeLayout .ErrorBox,
 .BackOfficeLayout .error_box,
@@ -1613,11 +1837,11 @@ body.scripted .BackOfficeLayout .ThumbnailsContentView .collection_display input
     color: rgb(50,50,50);
 }
 
-.BackOfficeItemView .toolbar .save_action,
-.BackOfficeItemView .toolbar .save_draft_action,
-.BackOfficeItemView .toolbar .confirm_draft_action,
-.BackOfficeItemView .toolbar .close_action,
-.BackOfficeItemView .toolbar .cancel_action {
+.BackOfficeLayout .toolbar .save_action,
+.BackOfficeLayout .toolbar .save_draft_action,
+.BackOfficeLayout .toolbar .confirm_draft_action,
+.BackOfficeLayout .toolbar .close_action,
+.BackOfficeLayout .toolbar .cancel_action {
     float: right;
 }
 
@@ -1753,7 +1977,7 @@ body.scripted .BackOfficeEditView .translations_selector .selector_content li in
 
 .BackOfficeLayout .ItemSelector .selection_label,
 .BackOfficeLayout .ItemSelector-buttons {
-    float: left;
+    display: inline-block;
 }
 
 .BackOfficeLayout .ItemSelector .selection_label {
@@ -2022,6 +2246,12 @@ button.TypeSelectorButton span {
     padding: 0;
 }
 
+.BackOfficeLayout .FilterBox .deleteButton {
+    position: relative;
+    top: 0.5em;
+    font-size: 0.8em;
+}
+
 .BackOfficeLayout .CollectionView .filters .filter_desc {
     min-width: 10em;
     margin-top: 0.3em;
@@ -2057,7 +2287,7 @@ button.TypeSelectorButton {
     padding-left: 1.6em;
     background-repeat: no-repeat;
     background-position: left center;
-    background-image: url(../images/clear_small.png);
+    background-image: url(../images/clear.png);
 }
 
 .BackOfficeLayout .CollectionView .filters .discard_button,
@@ -2076,7 +2306,7 @@ button.TypeSelectorButton {
     padding-bottom: 0.3em;
     padding-left: 1.5em !important;
     background-position: 0.2em center;
-    background-image: url(../images/add_small.png);
+    background-image: url(../images/add.png);
     color: rgb(50,80,110);
 }
 
@@ -2230,12 +2460,6 @@ button.TypeSelectorButton {
     padding-right: 3em;
 }
 
-/* Collection tab
------------------------------------------------------------------------------*/
-.BackOfficeCollectionView .tabs {
-    margin-bottom: 1.2em;
-}
-
 /* Datepicker styles */
 
 #ui-datepicker-div {
@@ -2374,10 +2598,6 @@ button.TypeSelectorButton {
 .BackOfficeLayout .stack_node.top > .label {
     color: rgb(50,50,50);
     font-size: 100%;
-}
-
-.BackOfficeLayout .stack_node h2 {
-    display: none;
 }
 
 .BackOfficeLayout .stack_node .body {
@@ -2930,12 +3150,28 @@ a.pickcolor span {
     display: inline;
     float: left;
     font-size: 85%;
-    margin-top: .45em;
+    line-height: 2em;
+    padding: 1px;
 }
 
 .BackOfficePreviewView .preview_language_selector .translations_selector {
     display: inline;
     float: left;
+}
+
+.BackOfficePreviewView .preview_language_selector .translations_selector .selector_content {
+    top: 2em;
+}
+
+.BackOfficePreviewView .preview_language_selector .translations_selector .label {
+    line-height: 2em;
+    font-size: 100%;
+    padding-top: 0;
+}
+
+.BackOfficePreviewView .preview_language_selector .translations_selector .language {
+    height: auto;
+    line-height: 1.6em;
 }
 
 /* Tweaks for password change process
@@ -2970,5 +3206,155 @@ div.success_label {
 
 .BackOfficeUploadFilesView .upload_another {
     margin-top: 1.5em;
+}
+
+/* Item palette
+-----------------------------------------------------------------------------*/
+.ItemPalette,
+.ItemPalette .group_entries {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    display: block;
+}
+
+.ItemPalette .group_label {
+    font-size: 0.8em;
+    font-weight: bold;
+    border-bottom: 1px solid #ADB2BC;
+    padding-bottom: 0.1em;
+    margin-top: 1.2em;
+    margin-bottom: 0.6em;
+    color: #545F75;
+}
+
+.ItemPalette li {
+    white-space: nowrap;
+}
+
+.ItemPalette li + li {
+    margin-top: 0.3em;
+}
+
+.ItemPalette li a {
+    text-decoration: none;
+}
+
+.ItemPalette li a * {
+    vertical-align: middle;
+}
+
+/* BackOfficeItemViewOverlay
+-----------------------------------------------------------------------------*/
+.BackOfficeItemView .block_map .explanation {
+    font-size: 0.85em;
+}
+
+.BackOfficeItemView .block_map .block_list {
+    list-style-type: none;
+    padding: 0;
+    padding-left: 0.5em;
+    margin: 0;
+    margin-top: 0.5em;
+}
+
+.BackOfficeItemView .block_map .block_list .ItemLabel {
+    font-size: 0.75em;
+}
+
+/* BackOfficeItemHeading
+-----------------------------------------------------------------------------*/
+.BackOfficeItemHeading .item_path {
+    margin-left: -0.3em;
+    vertical-align: top;
+}
+
+.BackOfficeItemHeading .item_path ul {
+    list-style-type: none;
+    display: inline-block;
+    vertical-align: top;
+    padding: 0;
+    margin: 0;
+    margin-left: 0.2em;
+}
+
+.BackOfficeItemHeading .item_path li {
+    display: inline-block;
+    vertical-align: top;
+    padding: 0;
+    margin: 0;
+}
+
+.BackOfficeItemHeading .item_path li + li:before {
+    position: relative;
+    top: 0.1em;
+    content: '>';
+    margin: 0 0.4em;
+    color: #666;
+    font-weight: bold;
+    font-size: 1.2em;
+}
+
+.BackOfficeItemHeading .item_path li a {
+    display: inline-block;
+    vertical-align: top;
+}
+
+/* ReferenceList
+-----------------------------------------------------------------------------*/
+.BackOfficeLayout .ReferenceList .label {
+    font-size: 90%;
+    color: #333;
+}
+
+.BackOfficeLayout .ReferenceList .ContentLink {
+    font-size: 90%;
+    text-decoration: none;
+    font-size: 80%;
+}
+
+.BackOfficeLayout .ReferenceList .referrer_cell {
+    padding-right: 2em;
+}
+
+.BackOfficeLayout .ReferenceList .relation_cell {
+    color: #666;
+    font-size: 80%;
+}
+
+/* Content drag & drop
+-----------------------------------------------------------------------------*/
+.BackOfficeLayout .drag {
+    opacity: 0.7;
+}
+
+.BackOfficeLayout .dropReceiver {
+    position: relative;
+    background-color: #a6eeff;
+    background-image: -webkit-linear-gradient(#e4eff2,#ccdade);
+    background-image: -moz-linear-gradient(#e4eff2,#ccdade);
+    background-image: linear-gradient(#e4eff2,#ccdade);
+    outline: 1px dashed #a6c5cc;
+}
+
+.BackOfficeLayout .dropBeforeReceiver {
+    position: relative;
+    margin-top: -1px;
+    border-top: 1px dashed #ccdade;
+}
+
+.BackOfficeLayout .dropAfterReceiver {
+    position: relative;
+    margin-bottom: -1px;
+    border-bottom: 1px dashed #ccdade;
+}
+
+.BackOfficeLayout .dragInsertionMarker {
+    position: absolute;
+    background-repeat: no-repeat;
+    background-image: url(../images/insertion_marker.png);
+    background-position: left center;
+    padding-left: 0.8em;
+    white-space: nowrap;
 }
 

@@ -68,6 +68,21 @@ class Location(Item):
         cascade_delete = True
     )
 
+    def ascend(self, include_self = False):
+        """Iterate over the location's ancestors.
+
+        :param include_self: Indicates if the location itself should be included
+            in the iteration.
+        :type include_self: bool
+
+        :return: An iterable sequence of locations.
+        :rtype: `Location`
+        """
+        ascendant = self if include_self else self.parent
+        while ascendant is not None:                                                                                                                                                    
+            yield ascendant
+            ascendant = ascendant.parent
+
     def descend(self, include_self = False):
         """Iterates over the location's descendants.
         

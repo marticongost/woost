@@ -16,7 +16,7 @@ from cocktail.translations import translations, set_language
 from cocktail.persistence import datastore
 from cocktail.schema.exceptions import ValidationError
 from woost.models import (
-    Site, Item, Role, Language, get_current_user, set_current_user
+    Configuration, Item, Role, get_current_user, set_current_user
 )
 from woost.extensions.mailer.sendemailpermission import SendEmailPermission
 
@@ -89,9 +89,11 @@ class Mailing(Item):
         member_group = "content"
     )
 
-    language = schema.Reference(
-        type = "woost.models.Language",
+    language = schema.String(
         required = True,
+        enumeration = lambda ctx: Configuration.instance.languages,
+        translate_value = lambda value, language = None, **kwargs:
+            "" if not value else translations(value, **kwargs),
         edit_control = "cocktail.html.RadioSelector",
         member_group = "content"
     )
@@ -110,7 +112,6 @@ class Mailing(Item):
                 )
         ),
         min = 1,
-        edit_inline = True,
         member_group = "content"
     )
 
@@ -180,6 +181,7 @@ class Mailing(Item):
 
     def send_message(self, smtp_server, receiver):
         message = self._get_message(receiver)
+        config = Configuratio.instance
         try:
             return smtp_server.sendmail(self.sender, [receiver.email], message.as_string())
         except smtplib.SMTPServerDisconnected, e:
@@ -193,7 +195,7 @@ class Mailing(Item):
             # http://bugs.python.org/issue4142
             smtp_server.helo_resp = None
             smtp_server.ehlo_resp = None
-            smtp_server.connect(Site.main.smtp_host, smtplib.SMTP_PORT)
+            smtp_server.connect(config.smtp_host, smtplib.SMTP_PORT)
             return smtp_server.sendmail(self.sender, [receiver.email], message.as_string())
         except smtplib.SMTPSenderRefused, e:
             logger.info("%d - Maximum number of messages per connection reached, reconnecting - %s" % (
@@ -207,7 +209,7 @@ class Mailing(Item):
             # http://bugs.python.org/issue4142
             smtp_server.helo_resp = None
             smtp_server.ehlo_resp = None
-            smtp_server.connect(Site.main.smtp_host, smtplib.SMTP_PORT)
+            smtp_server.connect(config.smtp_host, smtplib.SMTP_PORT)
             return smtp_server.sendmail(self.sender, [receiver.email], message.as_string())
 
     def send(self, smtp_server, template_values, current_context):

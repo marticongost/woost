@@ -36,6 +36,8 @@ class Document(Publishable):
         "page_resources",
         "branch_resources",
         "children",
+        "redirection_mode",
+        "redirection_target",
         "robots_should_index",
         "robots_should_follow"
     )
@@ -78,7 +80,8 @@ class Document(Publishable):
         type = "woost.models.Template",
         bidirectional = True,
         listed_by_default = False,
-        member_group = "presentation"
+        after_member = "controller",
+        member_group = "presentation.behavior"
     )
 
     branch_resources = schema.Collection(
@@ -88,7 +91,9 @@ class Document(Publishable):
             relation_constraints =
                 Publishable.resource_type.equal("html_resource")
         ),
-        related_end = schema.Collection()
+        related_end = schema.Collection(),
+        after_member = "inherit_resources",
+        member_group = "presentation.resources"
     )
 
     page_resources = schema.Collection(
@@ -98,7 +103,9 @@ class Document(Publishable):
             relation_constraints =
                 Publishable.resource_type.equal("html_resource")
         ),
-        related_end = schema.Collection()
+        related_end = schema.Collection(),
+        after_member = "branch_resources",
+        member_group = "presentation.resources"
     )
 
     attachments = schema.Collection(
@@ -107,28 +114,45 @@ class Document(Publishable):
             required = True
         ),
         selector_default_type = File,
-        related_end = schema.Collection()
+        related_end = schema.Collection(),
+        member_group = "content"
     )
  
     children = schema.Collection(
         items = "woost.models.Publishable",
         bidirectional = True,
         related_key = "parent",
-        cascade_delete = True
+        cascade_delete = True,
+        after_member = "parent",
+        member_group = "navigation"
+    )
+
+    redirection_mode = schema.String(
+        enumeration = ["first_child", "custom_target"],
+        listed_by_default = False,
+        member_group = "navigation"
+    )
+
+    redirection_target = schema.Reference(
+        type = Publishable,
+        related_end = schema.Collection(),
+        required = redirection_mode.equal("custom_target"),
+        listed_by_default = False,
+        member_group = "navigation"
     )
 
     robots_should_index = schema.Boolean(
         required = True,
         default = True,
         listed_by_default = False,
-        member_group = "robots"
+        member_group = "meta.robots"
     )
 
     robots_should_follow = schema.Boolean(
         required = True,
         default = True,
         listed_by_default = False,
-        member_group = "robots"
+        member_group = "meta.robots"
     )
 
     def _update_path(self, parent, path):
@@ -180,4 +204,32 @@ class Document(Publishable):
             if attachment.resource_type == "image"
             and attachment.is_accessible()
         )
+
+    def find_redirection_target(self):
+        mode = self.redirection_mode
+
+        if mode == "first_child":
+            for child in self.children:
+                if child.is_accessible():
+                    if isinstance(child, Document):
+                        return child.find_redirection_target() or child
+                    else:
+                        return child
+
+        elif mode == "custom_target":
+            return self.redirection_target
+
+    @event_handler
+    def handle_related(cls, event):
+        if event.member is cls.websites:
+            for child in event.source.children:
+                child.websites = list(event.source.websites)
+
+    @event_handler
+    def handle_unrelated(cls, event):
+        if not event.source.is_deleted:
+            if event.member is cls.websites:
+                for child in event.source.children:
+                    child.websites = list(event.source.websites)
+
 

@@ -12,8 +12,7 @@ from cocktail.html import templates
 from cocktail.html.utils import rendering_xml
 from cocktail.controllers import context
 from woost.models import (
-    Language,
-    Site,
+    Configuration,
     get_current_user,
     ReadTranslationPermission
 )
@@ -23,10 +22,10 @@ LinkSelector = templates.get_class("cocktail.html.LinkSelector")
 
 class LanguageSelector(LinkSelector):
 
-    translated_labels = True
     tag = "ul"
-
+    translated_labels = True
     missing_translations = "redirect" # "redirect", "hide", "disable"
+    autohide = True
 
     def create_entry(self, value, label, selected):
 
@@ -54,25 +53,29 @@ class LanguageSelector(LinkSelector):
     def _ready(self):
 
         if self.items is None:
+            config = Configuration.instance
             user = get_current_user()
             self.items = [
-                language.iso_code 
-                for language in Language.select() 
-                if language.enabled
-                and user.has_permission(
+                language
+                for language in (
+                    config.get_setting("published_languages")
+                    or config.languages
+                )
+                if user.has_permission(
                     ReadTranslationPermission,
-                    language = language.iso_code
+                    language = language
                 )
             ]
 
         if self.value is None:
             self.value = get_language()
 
-        LinkSelector._ready(self)
+        if not self.autohide or len(self.items) > 1:
+            LinkSelector._ready(self)
 
-        # Hack for IE <= 6
-        if self.children:
-            self.children[-1].add_class("last")
+            # Hack for IE <= 6
+            if self.children:
+                self.children[-1].add_class("last")
 
     def get_item_label(self, language):
         if self.translated_labels:

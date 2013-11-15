@@ -16,7 +16,7 @@ from woost.models.standardpage import StandardPage
 
     <py:with py:element="self.main">
 
-        <p>${translations("Site.login_page body")}</p>
+        <p>${translations("woost.views.LoginFormView.main")}</p>
 
         <py:woost.views.LoginForm
             py:data="@{self.form_data}"

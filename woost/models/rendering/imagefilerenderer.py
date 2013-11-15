@@ -4,28 +4,50 @@ u"""
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
 import os
+from cocktail import schema
+from cocktail.controllers.imageupload import get_image_size
 from woost.models.file import File
-from woost.models.rendering.contentrenderer import ContentRenderer
-from woost.models.rendering.contentrenderersregistry import content_renderers
+from woost.models.rendering.renderer import Renderer
 from woost.models.rendering.formats import formats_by_mime_type
 
 
-class ImageFileRenderer(ContentRenderer):
+class ImageFileRenderer(Renderer):
     """A content renderer that handles image files."""
 
-    def can_render(self, item):
-        return isinstance(item, File) \
-        and item.resource_type == "image" \
-        and item.mime_type in formats_by_mime_type
+    instantiable = True
 
-    def render(self, item):
-        return item.file_path
+    max_size = schema.Tuple(
+        items = (
+            schema.Integer(
+                required = True,
+                min = 1
+            ),
+            schema.Integer(
+                required = True,
+                min = 1
+            )
+        ),
+        request_value_separator = "x"
+    )
 
-    def last_change_in_appearence(self, item):
-        return max(
-            os.stat(item.file_path).st_mtime,
-            ContentRenderer.last_change_in_appearence(self, item)
+    def can_render(self, item, **parameters):
+        return (
+            isinstance(item, File)
+            and item.resource_type == "image"
+            and item.mime_type in formats_by_mime_type
+            and (self.max_size is None or self.validate_size(item))
         )
 
-content_renderers.register(ImageFileRenderer())
+    def validate_size(self, file):
+        try:
+            width, height = get_image_size(file.file_path)
+        except IOError:
+            return False
+        else:
+            max_size = self.max_size
+            return (width <= max_size[0] and height <= max_size[1]) \
+                or (width <= max_size[1] and height <= max_size[0])
+
+    def render(self, item, **parameters):
+        return item.file_path
 

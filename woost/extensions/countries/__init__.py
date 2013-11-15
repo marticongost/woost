@@ -14,7 +14,7 @@ from urllib import urlopen
 from cocktail.translations import translations
 from cocktail import schema
 from cocktail.persistence import datastore
-from woost.models import Extension, Language
+from woost.models import Extension, Configuration
 
 translations.define("CountriesExtension",
     ca = u"Països",
@@ -103,7 +103,7 @@ class CountriesExtension(Extension):
             r"([a-zA-Z_$][a-zA-Z_$0-9]*)(?=\s*:)"
         )
 
-        for language in Language.codes:
+        for language in Configuration.instance.languages:
             try:
                 javascript = urlopen(service_uri % language).read()
             except Exception, error:

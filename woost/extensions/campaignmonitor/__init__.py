@@ -12,7 +12,6 @@ from cocktail.translations import translations
 from woost.models import (
     Extension,
     extension_translations,
-    Site,
     StandardPage,
     Controller,
     Template,
@@ -63,9 +62,6 @@ class CampaignMonitorExtension(Extension):
             useraction
         )
 
-        from woost.extensions.campaignmonitor.campaignmonitorsubscriptionpage \
-            import CampaignMonitorSubscriptionPage
-
         # Setup the synchronization view
         from woost.controllers.backoffice.backofficecontroller \
             import BackOfficeController
@@ -110,6 +106,9 @@ class CampaignMonitorExtension(Extension):
 
     def _install(self):
 
+        from woost.extensions.campaignmonitor.campaignmonitorsubscriptionpage \
+            import CampaignMonitorSubscriptionPage
+
         # Subscription controller        
         campaign_monitor_controller = self._create_asset(
             Controller,
@@ -143,7 +142,7 @@ class CampaignMonitorExtension(Extension):
         )
         
         # Unsubscription template
-        subscription_view = self._create_asset(
+        unsubscription_view = self._create_asset(
             Template,
             "unsubscription_template",
             identifier =
@@ -158,7 +157,6 @@ class CampaignMonitorExtension(Extension):
             CampaignMonitorSubscriptionPage,
             "subscription_page",
             title = extension_translations,
-            parent = Site.main.home,
             hidden = True
         )
 
@@ -173,7 +171,6 @@ class CampaignMonitorExtension(Extension):
             "pending_page",
             title = extension_translations,
             body = extension_translations,
-            parent = Site.main.home,
             template = standard_template,
             hidden = True
         )
@@ -184,7 +181,6 @@ class CampaignMonitorExtension(Extension):
             "confirmation_success_page",
             title = extension_translations,
             body = extension_translations,
-            parent = Site.main.home,
             template = standard_template,
             hidden = True
         )
@@ -197,7 +193,6 @@ class CampaignMonitorExtension(Extension):
             body = extension_translations,
             controller = unsubscription_controller,
             template = unsubscription_view,
-            parent = Site.main.home,
             hidden = True
         )
 

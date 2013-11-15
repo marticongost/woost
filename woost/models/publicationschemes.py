@@ -10,7 +10,7 @@ import re
 from os.path import splitext
 from cocktail.modeling import abstractmethod
 from cocktail import schema
-from cocktail.translations import translations
+from cocktail.translations import translations, get_language
 from woost.models.item import Item
 from woost.models.publishable import Publishable
 from woost.models.file import File
@@ -22,12 +22,6 @@ class PublicationScheme(Item):
     visible_from_root = False
     instantiable = False
     permanent_links = False
-
-    site = schema.Reference(
-        type = "woost.models.Site",
-        bidirectional = True,
-        visible = False
-    )
 
     @abstractmethod
     def resolve_path(self, path):
@@ -65,13 +59,13 @@ class PublicationScheme(Item):
 class PathResolution(object):
     """A structure that provides publication information for an item.
 
-    The L{PublicationScheme.resolve_path} and L{Site.resolve_path} methods use
-    this class to wrap their return values.
+    The L{PublicationScheme.resolve_path} and L{Configuration.resolve_path}
+    methods use this class to wrap their return values.
 
     @var scheme: The publishing scheme used to resolve the publication details
         for the indicated path. This will only be set when calling
-        L{Site.resolve_path}, to enable the caller to discern which of all the
-        registered schemes handled the path's resolution.
+        L{Configuration.resolve_path}, to enable the caller to discern which of
+        all the registered schemes handled the path's resolution.
     @type scheme: L{PublicationScheme}
 
     @var item: The publishable item that matches the indicated path.
@@ -297,8 +291,14 @@ class DescriptiveIdPublicationScheme(PublicationScheme):
                 )
         
     def get_path(self, publishable, language):
-        
-        title = translations(publishable, language)
+ 
+        if not language:
+            language = get_language()
+
+        if language:
+            title = translations(publishable, language)
+        else:
+            title = None
 
         if title:
             title = self.title_splitter_regexp.sub(

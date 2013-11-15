@@ -3,7 +3,8 @@
 from cocktail.controllers import context
 from woost.models import (
     get_current_user,
-    ModifyPermission
+    ModifyPermission,
+    Publishable
 )
 ?>
 
@@ -22,6 +23,10 @@ from woost.models import (
 
     <py:binding>
         <?py
+        backoffice = Publishable.get_instance(qname = "woost.backoffice")
+        if backoffice:
+            self.set_client_variable("woost.backofficeURI", backoffice.get_uri())
+
         if self.publishable is None:
             self.publishable = context["publishable"]
 
@@ -55,26 +60,10 @@ from woost.models import (
     </button>
 
     <div py:id="panel_content">
-
-        <div py:id="actions_section" class="edit_panel_section">
-
-            <div py:id="actions_title" class="edit_panel_title">
-                ${translations("woost.views.EditPanel.actions_title")}
-            </div>
-
-            <div py:id="actions_content" class="edit_panel_section_content">
-
-                <py:woost.views.EditLink 
-                    py:id="modify_link" 
-                    py:action="modify"
-                    py:target="@{self.publishable}"/>
-
-                <py:woost.views.EditLink 
-                    py:id="delete_link" 
-                    py:action="delete"
-                    py:target="@{self.publishable}"/> 
-            </div>
-        </div>
+        <py:woost.views.EditLink 
+            py:id="modify_link" 
+            py:action="modify"
+            py:target="@{self.publishable}"/>
     </div>
 
 </div>

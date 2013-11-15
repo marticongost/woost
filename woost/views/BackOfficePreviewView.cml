@@ -33,8 +33,17 @@ from cocktail.controllers.viewstate import view_state
         </div>
 
         <iframe
-            src="@{self.cms.contextual_uri('render_preview', edit_stack=self.edit_stack.to_param(), preview_language=self.preview_language)}"
             frameborder="0">
+            <py:ready>
+                <?py
+                element["src"] = self.cms.contextual_uri(
+                    "render_preview",
+                    edit_stack = self.edit_stack.to_param(),
+                    preview_publishable = str(self.preview_publishable.id),
+                    preview_language = self.preview_language                    
+                )
+                ?>
+            </py:ready>
         </iframe>
     </py:with>
 

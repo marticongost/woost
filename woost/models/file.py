@@ -1,9 +1,6 @@
 #-*- coding: utf-8 -*-
 u"""
 
-@var extensions: A dictionary mapping extensions to MIME types.
-@var extensions: dict(str, str)
-
 @author:		Martí Congost
 @contact:		marti.congost@whads.com
 @organization:	Whads/Accent SL
@@ -12,7 +9,9 @@ u"""
 import os
 import hashlib
 from mimetypes import guess_type
-from shutil import copy
+from shutil import copy, copyfileobj
+from urllib import urlopen
+from tempfile import mkdtemp
 from cocktail.events import event_handler
 from cocktail.memoryutils import format_bytes
 from cocktail import schema
@@ -20,16 +19,16 @@ from cocktail.persistence import datastore
 from woost import app
 from woost.models.publishable import Publishable
 from woost.models.controller import Controller
-from woost.models.language import Language
 
 
 class File(Publishable):
  
     instantiable = True
 
-    edit_view = "woost.views.FileFieldsView"
     edit_node_class = \
         "woost.controllers.backoffice.fileeditnode.FileEditNode"
+    backoffice_heading_view = "woost.views.BackOfficeFileHeading"
+    video_player = "cocktail.html.MediaElementVideo"
 
     default_mime_type = None
 
@@ -43,9 +42,7 @@ class File(Publishable):
         "title",
         "file_name",
         "file_size",
-        "file_hash",
-        "local_path",
-        "image_effects"
+        "file_hash"
     ]
 
     title = schema.String(
@@ -79,45 +76,13 @@ class File(Publishable):
         member_group = "content"
     )
 
-    local_path = schema.String(
-        listed_by_default = False,
-        text_search = False,
-        member_group = "content"
-    )
-    
-    image_effects = schema.String(
-        listed_by_default = False,
-        searchable = False,
-        member_group = "content",
-        edit_control = "woost.views.ImageEffectsEditor"
-    )
-
     @property
     def file_extension(self):
         return os.path.splitext(self.file_name)[1]
 
-    @event_handler
-    def handle_changed(cls, e):
-
-        if e.member is cls.local_path and e.value:
-            file = e.source
-            file.file_name = os.path.basename(e.value)
-            file.mime_type = guess_type(e.value, strict = True)[0]
-            file.file_hash = None
-            file.file_size = None
-
     @property
     def file_path(self):
-
-        file_path = self.local_path
-
-        if file_path:
-            if not os.path.isabs(file_path):
-                file_path = app.path(file_path)            
-        else:            
-            file_path = app.path("upload", str(self.id))
-
-        return file_path
+        return app.path("upload", str(self.id))
 
     @classmethod
     def from_path(cls,
@@ -125,7 +90,9 @@ class File(Publishable):
         dest = None,
         languages = None,
         hash = None,
-        encoding = "utf-8"):
+        encoding = "utf-8",
+        download_temp_folder = None,
+        redownload = False):
         """Imports a file into the site.
         
         @param path: The path to the file that should be imported.
@@ -146,11 +113,26 @@ class File(Publishable):
         # The default behavior is to translate created files into all the languages
         # defined by the site
         if languages is None:
-            languages = Language.codes
+            from woost.models import Configuration
+            languages = Configuration.instance.languages
 
         file_name = os.path.split(path)[1]
         title, ext = os.path.splitext(file_name)
-        
+
+        # Download remote files
+        if "://" in path:            
+            if not download_temp_folder:
+                download_temp_folder = mkdtemp()
+
+            temp_path = os.path.join(download_temp_folder, file_name)
+
+            if redownload or not os.path.exists(temp_path):
+                response = urlopen(path)
+                with open(temp_path, "w") as temp_file:
+                    copyfileobj(response, temp_file)
+
+            path = temp_path
+
         if encoding:
             if isinstance(title, str):
                 title = title.decode(encoding)

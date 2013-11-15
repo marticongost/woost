@@ -15,6 +15,23 @@ from woost.controllers.publishablecontroller import PublishableController
 class DocumentController(PublishableController):
     """A controller that serves rendered pages."""
 
+    def __call__(self, **kwargs):
+
+        # Document specified redirection
+        document = self.context["publishable"]
+
+        if document.redirection_mode:
+
+            redirection_target = document.find_redirection_target()
+
+            if redirection_target is None:
+                raise cherrypy.NotFound()
+            
+            raise cherrypy.HTTPRedirect(redirection_target.get_uri())
+
+        # No redirection, serve the document normally
+        return PublishableController.__call__(self)
+
     @cached_getter
     def page_template(self):
         template = self.context["publishable"].template

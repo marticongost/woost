@@ -8,39 +8,47 @@ from shutil import rmtree
 from tempfile import mkdtemp
 from subprocess import Popen, PIPE
 from time import time, sleep
-import Image
+from PIL import Image
+from cocktail import schema
 from woost.models.file import File
-from woost.models.rendering.contentrenderer import ContentRenderer
-from woost.models.rendering.contentrenderersregistry import content_renderers
+from woost.models.rendering.renderer import Renderer
 
 
-class PDFRenderer(ContentRenderer):
+class PDFRenderer(Renderer):
     """A content renderer that handles pdf files."""
 
-    timeout = 20
+    instantiable = True
 
-    try:
-        p = Popen(["which", "convert"], stdout=PIPE)
-        convert_path = p.communicate()[0].replace("\n", "") or None
-    except:
-        convert_path = None
+    command = schema.String(
+        required = True
+    )
 
-    def can_render(self, item):
+    timeout = schema.Integer(
+        required = True,
+        default = 20
+    )
+
+    timeout_size_factor = schema.Float(
+        default = 10.0
+    )
+
+    def can_render(self, item, **parameters):
         return (
-            self.convert_path 
+            self.command
             and isinstance(item, File) 
             and item.resource_type == "document"
             and item.file_name.split(".")[-1].lower() == "pdf"
         )
 
-    def render(self, item, page = 0):
+    def render(self, item, page = 0, **parameters):
 
         timeout = self.timeout
         
         # Increase the timeout for bigger files
-        size = item.file_size
-        if size:
-            timeout += size / (10 * 1024 * 1024)
+        if self.timeout_size_factor:
+            size = item.file_size
+            if size:
+                timeout += size / (self.timeout_size_factor * 1024 * 1024)
 
         RESOLUTION = 0.25
         temp_path = mkdtemp()
@@ -48,9 +56,11 @@ class PDFRenderer(ContentRenderer):
         try:
             temp_image_file = os.path.join(temp_path, "thumbnail.png")
 
-            command = u'%s -type TrueColor "%s[%d]" %s' % ( 
-                self.convert_path, item.file_path, page, temp_image_file
-            )
+            command = self.command % {
+                "source": item.file_path,
+                "dest": temp_image_file,
+                "page": page
+            }
 
             p = Popen(command, shell=True, stdout=PIPE)
             start = time()
@@ -58,7 +68,11 @@ class PDFRenderer(ContentRenderer):
             while p.poll() is None:
                 if time() - start > timeout:
                     p.terminate()
-                    raise IOError("Timeout was reached")
+                    raise IOError(
+                        "PDF rendering timeout: '%s' took more than "
+                        "%.2f seconds"
+                        % (command, timeout)
+                    )
                 sleep(RESOLUTION)
 
             return Image.open(temp_image_file)
@@ -66,9 +80,20 @@ class PDFRenderer(ContentRenderer):
         finally:
             rmtree(temp_path)
 
-    def last_change_in_appearence(self, item):
-        return os.stat(item.file_path).st_mtime
+
+class PDFTimeoutError(IOError):
+    """An exception raised when a PDF rendering operation takes too long to
+    complete.
+    """
 
 
-content_renderers.register(PDFRenderer())
+try:
+    p = Popen(["which", "convert"], stdout=PIPE)
+    output = p.communicate()[0].replace("\n", "")
+except:
+    pass
+else:
+    if output:
+        PDFRenderer.command.default = \
+            output + ' -type TrueColor "%(source)s[%(page)s]" %(dest)s'
 

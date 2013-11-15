@@ -36,6 +36,7 @@ class BaseBackOfficeController(BaseCMSController):
 
     section = None
     settings_duration = 60 * 60 * 24 * 30 # ~= 1 month
+    default_rendering_format = "html5"
 
     @cached_getter
     def visible_languages(self):
@@ -106,7 +107,7 @@ class BaseBackOfficeController(BaseCMSController):
                 True
             )
 
-        return uri
+        return uri + "#default"
 
     def go_back(self):
         """Redirects the user to its previous significant location."""
@@ -114,11 +115,8 @@ class BaseBackOfficeController(BaseCMSController):
         edit_stack = self.edit_stack
 
         # Go back to the parent edit state
-        if edit_stack and len(edit_stack) > 1:
-            if isinstance(edit_stack[-2], RelationNode):
-                edit_stack.go(-3)
-            else:
-                edit_stack.go(-2)
+        if edit_stack:
+            edit_stack.go_back()            
         
         # Go back to the root of the backoffice
         else:

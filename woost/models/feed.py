@@ -8,8 +8,8 @@
 """
 from cocktail import schema
 from cocktail.controllers.usercollection import UserCollection
+from woost.models.configuration import Configuration
 from woost.models.publishable import Publishable
-from woost.models.language import Language
 from woost.models.controller import Controller
 
 
@@ -120,7 +120,8 @@ class Feed(Publishable):
         user_collection.allow_member_selection = False
         user_collection.allow_language_selection = False
         user_collection.params.source = self.query_parameters.get
-        user_collection.available_languages = Language.codes
+        user_collection.available_languages = \
+            Configuration.instance.get_enabled_languages()
         items = user_collection.subset
 
         if self.limit:

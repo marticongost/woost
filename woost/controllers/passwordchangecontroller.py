@@ -12,7 +12,7 @@ from cocktail.controllers import (
     Form
 )
 from woost.models.emailtemplate import EmailTemplate
-from woost.models import Site, User, Publishable
+from woost.models import Configuration, User, Publishable
 from woost.controllers.documentcontroller import DocumentController
 
 
@@ -27,7 +27,7 @@ class UserEmailMissingError(ValidationError):
 def generate_confirmation_hash(identifier):
     hash = hashlib.sha1()
     hash.update(identifier)
-    hash.update(Site.main.secret_key)
+    hash.update(Configuration.instance.secret_key)
     return hash.hexdigest()
 
 

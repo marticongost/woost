@@ -64,8 +64,7 @@ class UserView(Item):
             return ""
 
     parameters = schema.Mapping(
-        keys = schema.String(),
-        edit_inline = True
+        keys = schema.String()
     )
 
     del _parse_parameters

@@ -15,10 +15,18 @@ cocktail.bind(".ContentView", function ($contentView) {
         if (display && display.getSelection) {
             var selectionSize = display.getSelection().length;
             $contentView.find(".action_button").each(function () {
-                this.disabled = (
-                    (this.minSelection && selectionSize < this.minSelection)
-                    || (this.maxSelection && selectionSize > this.maxSelection)
-                );
+                if (
+                    !this.ignoresSelection
+                    && (
+                        (this.minSelection && selectionSize < this.minSelection)
+                        || (this.maxSelection && selectionSize > this.maxSelection)
+                    )
+                ) {
+                    this.setAttribute("disabled", "disabled");
+                }
+                else {
+                    this.removeAttribute("disabled");
+                }
             });
         }
     }

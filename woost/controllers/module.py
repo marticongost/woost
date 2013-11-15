@@ -6,6 +6,14 @@ u"""
 @organization:	Whads/Accent SL
 @since:			July 2008
 """
+from warnings import warn
+warn(
+    "woost.controllers.module.Module is deprecated, and its subclasses "
+    "(LanguageModule and AuthenticationModule) have been relocated to "
+    "woost.app",
+    DeprecationWarning
+)
+
 
 class Module(object):
 

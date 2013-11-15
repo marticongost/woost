@@ -5,39 +5,54 @@ u"""
 """
 from cocktail import schema
 from woost.extensions.blocks.block import Block
+from woost.extensions.blocks.slot import Slot
+from woost.extensions.blocks.elementtype import ElementType
 
 
 class ContainerBlock(Block):
 
     instantiable = True
-    view_class = "cocktail.html.Element"
+    type_group = "blocks.layout"
+    view_class = "woost.extensions.blocks.ContainerBlockView"
 
-    blocks = schema.Collection(
-        items = schema.Reference(type = Block),
-        bidirectional = True,
-        related_key = "containers",
+    members_order = [
+        "element_type",
+        "list_type"
+    ]
+
+    element_type = ElementType(
         member_group = "content"
     )
 
-    def descend_tree(self, include_self = False):
+    list_type = schema.String(
+        required = True,
+        default = "div",
+        enumeration = [
+            "div",
+            "ul",
+            "ol",
+            "dl"
+        ],
+        member_group = "content"
+    )
 
-        if include_self:
-            yield self
+    blocks = Slot()
 
-        for child in self.blocks:
-            for descendant in child.descend_tree(include_self = True):
-                yield descendant
+    def init_view(self, view):
+        Block.init_view(self, view)
 
-    def create_view(self):
-        
-        view = Block.create_view(self)
-    
-        children_container = getattr(view, "block_content", view)
+        if self.element_type == "dd":
+            view.tag = None
+            view.blocks_list.tag = "dd"
+        else:
+            view.tag = self.element_type
 
-        for child in self.blocks:
-            if child.enabled:
-                child_view = child.create_view()
-                children_container.append(child_view)
+        view.blocks_list.tag = self.list_type
+        view.blocks = self.blocks
+        return view
 
+    def get_block_proxy(self, view):
+        if self.element_type == "dd":
+            return view.blocks_list
         return view
 
