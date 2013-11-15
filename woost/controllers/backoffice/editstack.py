@@ -43,7 +43,7 @@ from woost.models import (
     ModifyMemberPermission,
     ReadTranslationPermission
 )
-from woost.controllers.notifications import notify_user
+from woost.controllers.notifications import notify_user, pop_user_notifications
 
 
 class EditStacksManager(object):
@@ -199,7 +199,7 @@ class EditStacksManager(object):
             # Prune the stack
             else:
                 while len(edit_stack) > step + 1:
-                    edit_stack.pop()                    
+                    edit_stack.pop()
         
         return edit_stack
 
@@ -324,12 +324,32 @@ class EditStack(ListWrapper):
         @param params: Additional query string parameters to pass to the
             destination URI.
         """
-        if len(self._items) > 1:
-            raise cherrypy.HTTPRedirect(self._items[-2].uri(**params))
+        if len(self._items) > 1:            
+            
+            target_node = self._items[-2]
+            if isinstance(target_node, RelationNode):
+                target_node = self._items[-3]
+
+            back_hash = target_node.back_hash(self._items[-1])
+            uri = target_node.uri(**params)
+            if back_hash:
+                uri += "#" + back_hash
+
+            raise cherrypy.HTTPRedirect(uri)
         else:
-            raise cherrypy.HTTPRedirect(
-                self.root_url or context["cms"].contextual_uri(**params)
-            )
+            if self.root_url:
+                # When redirecting the user by means of a callback URL, discard
+                # all notifications before redirecting, since there is no
+                # guarantee that the target URL will display them. This is
+                # clearly not ideal, but the alternative (having them stack up
+                # and show all at once whenever the user opens the backoffice)
+                # is not that great either.
+                pop_user_notifications()
+                raise cherrypy.HTTPRedirect(self.root_url)
+            else:
+                raise cherrypy.HTTPRedirect(
+                    context["cms"].contextual_uri(**params)
+                )
 
     def go(self, index = -1):
         """Redirects the user to the indicated node of the edit stack.
@@ -469,6 +489,9 @@ class StackNode(object):
         @rtype: unicode
         """ 
 
+    def back_hash(self, previous_node):
+        return None
+
 
 class EditNode(StackNode):
     """An L{edit stack<EditStack>} node, used to maintain a set of changes for
@@ -486,11 +509,13 @@ class EditNode(StackNode):
         "_item",
         "_form_data",
         "translations",
-        "section"
+        "section",
+        "tab"
     ])
     _item = None
     translations = None
     section = "fields"
+    tab = None
 
     saving = Event("""
         An event triggered when saving the changes contained within the node,
@@ -519,17 +544,27 @@ class EditNode(StackNode):
         assert item is not None
         self._item = item
 
+    def __translate__(self, language, **kwargs):
+        if self.item.is_inserted:
+            return translations(self.item)
+        else:
+            return translations("creating", content_type = self.content_type)
+
     def uri(self, **params):
         
         if "edit_stack" not in params:
             params["edit_stack"] = self.stack.to_param(self.index)
 
-        return context["cms"].contextual_uri(
+        uri = context["cms"].contextual_uri(
             "content",
             str(self.item.id) if self.item.is_inserted or self.item.is_deleted else "new",
             self.section,
             **params
         )
+
+        uri += "#" + (self.tab or "")
+
+        return uri
 
     def __getstate__(self):
 
@@ -906,6 +941,12 @@ class SelectionNode(StackNode):
     content_type = None
     selection_parameter = None
 
+    def __translate__(self, language, **kwargs):
+        return translations(
+            "woost.views.BackOfficeLayout edit stack select",
+            relation = self.parent_node.member
+        )
+
     def uri(self, **params):
                 
         if "edit_stack" not in params:
@@ -924,6 +965,18 @@ class RelationNode(StackNode):
         or L{Reference<cocktail.schema.schemareference.Reference>}
     """
     member = None
+
+    def __translate__(self, language, **kwargs):
+        if isinstance(self.member, schema.Collection):
+            return translations(
+                "woost.views.BackOfficeLayout edit stack add",
+                relation = self.member
+            )
+        else:
+            return translations(
+                "woost.views.BackOfficeLayout edit stack select",
+                relation = self.member
+            )
 
     def uri(self, **params):
                 

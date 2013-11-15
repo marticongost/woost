@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?py
+from woost.models import Style
+from woost.extensions.blocks.block import Block
+?>
+
+<py:overlay
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:py="http://www.whads.com/ns/cocktail/templates"
+    py:class="woost.views.BackOfficeItemView">
+
+    <py:ready>
+        <?py
+        if isinstance(self.edited_item, Style):
+            blocks = self.edited_item.get(Block.styles.related_end)
+            if blocks:
+                self.block_map = self.create_block_map(blocks)
+                self.block_map.place_before(self.item_buttons)
+        ?>
+    </py:ready>
+
+    <div py:def="block_map" py:args="blocks" class="item_info_panel">
+        <div py:local_id="explanation">
+            ${translations("woost.extensions.blocks.BackOfficeItemViewOverlay.block_map.explanation", count = len(blocks))}
+        </div>
+        <ul py:local_id="block_list">
+            <li py:for="block in blocks">
+                <py:woost.views.ContentLink
+                    py:local_id="item_label"
+                    py:item="${block}"
+                    py:icon_visible="${True}"/>
+            </li>
+        </ul>
+    </div>
+
+</py:overlay>
+

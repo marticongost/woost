@@ -8,16 +8,16 @@ import Image
 from tempfile import mkdtemp
 from shutil import rmtree
 from subprocess import Popen
+from cocktail import schema
 from woost.models.publishable import Publishable
 from woost.models.user import User
-from woost.models.rendering.contentrenderer import ContentRenderer
-from woost.models.rendering.contentrenderersregistry import content_renderers
+from woost.models.rendering.renderer import Renderer
 
 
-class HTMLRenderer(ContentRenderer):
+class HTMLRenderer(Renderer):
     """A content renderer that handles XHTML/HTML pages."""
 
-    enabled = False
+    instantiable = True
 
     mime_types = set([
         "text/html",
@@ -25,42 +25,59 @@ class HTMLRenderer(ContentRenderer):
         "application/xhtml"
     ])
 
-    def can_render(self, item):
+    command = schema.String(
+        required = True,
+        default = "python -m woost.models.rendering.renderurl "
+                  "%(source)s %(dest)s"
+    )
+
+    window_width = schema.Integer(
+        min = 0
+    )
+
+    window_height = schema.Integer(
+        min = 0
+    )
+
+    def can_render(self, item, **parameters):
         return (
             isinstance(item, Publishable)
-            and item.mime_type in self.mime_types            
+            and item.mime_type in self.mime_types
             and item.is_accessible(
                 user = User.get_instance(qname = "woost.anonymous_user")
             )
         )
 
-    def render(self, item, window_width = None, window_height = None):
-
+    def render(self, item,
+        window_width = None,
+        window_height = None,
+        **parameters
+    ):
         temp_path = mkdtemp()
 
         try:
             temp_image_file = os.path.join(temp_path, "thumbnail.png")
-            
-            command = "python -m woost.models.rendering.renderurl %s %s" \
-                % (item.get_uri(host = "."), temp_image_file)
-            
+
+            command = self.command % {
+                "source": item.get_uri(host = "."),
+                "dest": temp_image_file
+            }
+
+            if window_width is None:
+                window_width = self.window_width
+
             if window_width is not None:
                 command += " --min-width %d" % window_width
-            
+
+            if window_height is None:
+                window_height = self.window_height
+
             if window_height is not None:
-                command += " --min-width %d" % window_height 
+                command += " --min-width %d" % window_height
 
             Popen(command, shell = True).wait()
             return Image.open(temp_image_file)
 
         finally:
             rmtree(temp_path)
-
-
-try:
-    import PyQt4.QtWebKit
-except ImportError:
-    pass
-else:
-    content_renderers.register(HTMLRenderer())
 

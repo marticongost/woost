@@ -23,6 +23,7 @@ from cocktail.controllers import (
     Location
 )
 from woost.models.item import Item
+from woost.models.language import Language
 from woost.models.usersession import get_current_user
 from woost.models.permission import ReadPermission, PermissionExpression
 from woost.models.caching import CachingPolicy
@@ -32,27 +33,30 @@ class Publishable(Item):
     """Base class for all site elements suitable for publication."""
     
     instantiable = False
-
-    # Backoffice customization
-    preview_view = "woost.views.BackOfficePreviewView"
-    preview_controller = "woost.controllers.backoffice." \
-        "previewcontroller.PreviewController"
-    edit_node_class = "woost.controllers.backoffice.publishableeditnode." \
-        "PublishableEditNode"
+    edit_view = "woost.views.PublishableFieldsView"
+    backoffice_heading_view = "woost.views.BackOfficePublishableHeading"
  
-    groups_order = ["navigation", "presentation", "publication"]
+    groups_order = [
+        "navigation",
+        "presentation",
+        "presentation.behavior",
+        "presentation.resources",
+        "presentation.format",
+        "publication"
+    ]
 
     members_order = [
+        "controller",
         "inherit_resources",
         "mime_type",
         "resource_type",
         "encoding",
-        "controller",
         "parent",
         "path",
         "full_path",
         "hidden",
         "login_page",
+        "per_language_publication",
         "enabled",
         "translation_enabled",
         "start_date",
@@ -67,7 +71,7 @@ class Publishable(Item):
         text_search = False,
         format = r"^[^/]+/[^/]+$",
         listed_by_default = False,
-        member_group = "presentation"
+        member_group = "presentation.format"
     )
 
     resource_type = schema.String(
@@ -90,14 +94,14 @@ class Publishable(Item):
                 **kwargs
             ),
         listed_by_default = False,
-        member_group = "presentation"
+        member_group = "presentation.format"
     )
 
     encoding = schema.String(
         listed_by_default = False,
         text_search = False,
-        member_group = "presentation",
-        default = "utf-8"
+        default = "utf-8",
+        member_group = "presentation.format"
     )
 
     controller = schema.Reference(
@@ -105,13 +109,13 @@ class Publishable(Item):
         indexed = True,
         bidirectional = True,
         listed_by_default = False,
-        member_group = "presentation"
+        member_group = "presentation.behavior"
     )
 
     inherit_resources = schema.Boolean(
         listed_by_default = False,
-        member_group = "presentation",
-        default = True
+        default = True,
+        member_group = "presentation.resources"
     )
 
     def resolve_controller(self):
@@ -139,6 +143,7 @@ class Publishable(Item):
         unique = True,
         editable = False,
         text_search = False,
+        listed_by_default = False,
         member_group = "navigation"
     )
     
@@ -158,7 +163,7 @@ class Publishable(Item):
         required = True,
         default = False,
         indexed = True,
-        visible = False,
+        listed_by_default = False,
         member_group = "publication"
     )
 
@@ -253,6 +258,27 @@ class Publishable(Item):
         else:
             self.full_path = path
 
+    def get_ancestor(self, depth):
+        """Obtain one of the item's ancestors, given its depth in the document
+        tree.
+        
+        @param depth: The depth level of the ancestor to obtain, with 0
+            indicating the root of the tree. Negative indices are accepted, and
+            they reverse the traversal order (-1 will point to the item itself,
+            -2 to its parent, and so on).
+        @type depth: int
+
+        @return: The requested ancestor, or None if there is no ancestor with
+            the indicated depth.
+        @rtype: L{Publishable}
+        """
+        tree_line = list(self.ascend_tree(include_self = True))
+        tree_line.reverse()
+        try:
+            return tree_line[depth]
+        except IndexError:
+            return None
+
     def ascend_tree(self, include_self = False):
         """Iterate over the item's ancestors, moving towards the root of the
         document tree.
@@ -268,6 +294,19 @@ class Publishable(Item):
         while publishable is not None:
             yield publishable
             publishable = publishable.parent
+
+    def descend_tree(self, include_self = False):
+        """Iterate over the item's descendants.
+        
+        @param include_self: Indicates if the object itself should be included
+            in the iteration.
+        @type include_self: bool
+
+        @return: An iterable sequence of publishable elements.
+        @rtype: L{Publishable} iterable sequence
+        """
+        if include_self:
+            yield self
 
     def descends_from(self, page):
         """Indicates if the object descends from the given document.
@@ -320,15 +359,28 @@ class Publishable(Item):
             and (self.end_date is None or self.end_date > now)
     
     def is_published(self, language = None):
-        return (
-            not self.is_draft
-            and (
-                self.get("translation_enabled", language)                
-                if self.per_language_publication
-                else self.enabled
-            )
-            and self.is_current()
-        )
+
+        if self.is_draft:
+            return False
+
+        if self.per_language_publication:
+
+            language = require_language(language)
+
+            if not self.get("translation_enabled", language):
+                return False
+
+            site_language = Language.get_instance(iso_code = language)
+            if site_language is None or not site_language.enabled:
+                return False
+           
+        elif not self.enabled:
+            return False
+
+        if not self.is_current():
+            return False
+
+        return True
 
     def is_accessible(self, user = None, language = None):
         return self.is_published(language) \
@@ -363,74 +415,7 @@ class Publishable(Item):
             if parameters:
                 uri = make_uri(uri, **parameters)
 
-            uri = self.__fix_uri(uri, host, encode)
-
-        return uri
-
-    def get_image_uri(self,
-        image_factory = None,
-        parameters = None,
-        encode = True,
-        include_extension = True,
-        host = None,):
-                
-        uri = make_uri("/images", self.id)
-
-        if image_factory:
-            uri = make_uri(uri, image_factory)
-
-        if include_extension:
-            from woost.models.rendering.formats import (
-                formats_by_extension,
-                extensions_by_format,
-                default_format
-            )
-            ext = getattr(self, "file_extension", None)
-            if ext is not None:
-                ext = ext.lower()
-            if ext is None \
-            or ext.lstrip(".") not in formats_by_extension:
-                ext = "." + extensions_by_format[default_format]
-            uri += ext
-
-        if parameters:
-            uri = make_uri(uri, **parameters)
-
-        return self.__fix_uri(uri, host, encode)
-
-    def __fix_uri(self, uri, host, encode):
-
-        if encode:
-            uri = percent_encode_uri(uri)
-
-        if host:
-            if host == ".":
-                location = Location.get_current_host()
-
-                from woost.models import Site
-                site = Site.main
-                policy = site.https_policy
-
-                if (
-                    policy == "always"
-                    or (
-                        policy == "per_page" and (
-                            self.requires_https
-                            or not get_current_user().anonymous
-                        )
-                    )
-                ):
-                    location.scheme = "https"
-                else:
-                    location.scheme = "http"
-
-                host = str(location)
-            elif not "://" in host:
-                host = "http://" + host
-
-            uri = make_uri(host, uri)
-        else:
-            uri = make_uri("/", uri)
+            uri = self._fix_uri(uri, host, encode)
 
         return uri
 
@@ -448,17 +433,28 @@ class IsPublishedExpression(Expression):
 
         def impl(dataset):
 
+
             # Exclude disabled items
             simple_pub = set(
                 Publishable.per_language_publication.index.values(key = False)
             ).intersection(Publishable.enabled.index.values(key = True))
+
+            language = get_language()
+            site_language = Language.get_instance(iso_code = language)
             per_language_pub = set(
                 Publishable.per_language_publication.index.values(key = True)
-            ).intersection(Publishable.translation_enabled.index.values(
-                    key = (get_language(), True)
-                )
             )
-            dataset.intersection_update(simple_pub | per_language_pub)
+            
+            if site_language is None or not site_language.enabled:
+                dataset.intersection_update(simple_pub)
+                dataset.difference_update(per_language_pub)
+            else:
+                per_language_pub.intersection_update(
+                    Publishable.translation_enabled.index.values(
+                        key = (language, True)
+                    )
+                )                
+                dataset.intersection_update(simple_pub | per_language_pub)
 
             # Exclude drafts
             dataset.difference_update(Item.is_draft.index.values(key = True))

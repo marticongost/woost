@@ -5,12 +5,8 @@
     margin: 0;
 }
 
-.ImageGallery.thumbnails {
-    overflow: hidden;
-}
-
 .ImageGallery.thumbnails .image_entry {
-    float: left;
+    display: inline-block;
     margin: 0.5em;
 }
 

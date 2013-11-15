@@ -43,6 +43,7 @@ class ShortURLsExtension(Extension):
         
         from woost.extensions.shorturls import (
             strings,
+            site,
             urlshortener,
             bitlyurlshortener
         )

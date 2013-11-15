@@ -27,6 +27,7 @@ from woost.models import (
     User,
     Language
 )
+from woost.models.rendering import ImageFactory, Thumbnail
 from woost.models.triggerresponse import SendEmailTriggerResponse
 
 translations.define("ECommerceExtension",
@@ -70,8 +71,7 @@ class ECommerceExtension(Extension):
             ecommerceorder,
             ecommercepurchase,
             ecommercebillingconcept,
-            ecommerceordercompletedtrigger,
-            imagefactories
+            ecommerceordercompletedtrigger
         )
         from woost.extensions.ecommerce.ecommerceorder import ECommerceOrder
 
@@ -166,6 +166,7 @@ class ECommerceExtension(Extension):
             import launch_transaction_notification_triggers
         from woost.extensions.ecommerce.ecommerceorder import ECommerceOrder
         from woost.extensions.payments import PaymentsExtension
+        from woost.extensions.payments.paypal import PayPalPaymentGateway
 
         payments_ext = PaymentsExtension.instance
 
@@ -182,7 +183,27 @@ class ECommerceExtension(Extension):
             payment.amount = order.total
             payment.order = order
             payment.currency = Currency(payments_ext.payment_gateway.currency)
-            
+
+            # PayPal form data
+            if isinstance(payments_ext.payment_gateway, PayPalPaymentGateway):
+                paypal_form_data = {}
+                if order.address:
+                    paypal_form_data["address1"] = order.address
+
+                if order.town:
+                    paypal_form_data["city"] = order.town
+
+                if order.country and order.country.code:
+                    paypal_form_data["country"] = order.country.code
+
+                if order.postal_code:
+                    paypal_form_data["zip"] = order.postal_code
+
+                if order.language:
+                    paypal_form_data["lc"] = order.language
+
+                payment.paypal_form_data = paypal_form_data
+
             for purchase in order.purchases:
                 payment.add(PaymentItem(
                     reference = str(purchase.product.id),
@@ -244,6 +265,7 @@ class ECommerceExtension(Extension):
         self._create_template("product").insert()
         self._create_ecommerceorder_completed_trigger().insert()
         self._create_incoming_order_trigger().insert()
+        self._create_image_factories()
 
     def _create_document(self, name, 
         cls = Document, 
@@ -384,6 +406,15 @@ edit_url = bo.get_uri(host = ".", path = ["content", str(order.id)])
         trigger.responses = [response]
 
         return trigger
+
+    def _create_image_factories(self):        
+        thumbnail = ImageFactory()
+        thumbnail.qname = \
+            "woost.extensions.ecommerce.ecommerce_basket_thumbnail"
+        self.__translate_field(thumbnail, "title")
+        thumbnail.identifier = "ecommerce_basket_thumbnail"
+        thumbnail.effects = [Thumbnail(width = "75", height = "75")]
+        thumbnail.insert()
 
     def __translate_field(self, obj, key):
         for language in translations:

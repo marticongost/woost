@@ -70,14 +70,14 @@ from woost.models import (
                             name="add_translation"
                             type="submit"
                             value="${language}">
-                            <img src="/resources/images/add_small.png"/>
+                            <img src="/resources/images/add.png"/>
                         </button>
                         <button
                             py:if="can_delete"
                             name="delete_translation"
                             type="submit"
                             value="${language}">
-                            <img src="/resources/images/delete_small.png"/>
+                            <img src="/resources/images/delete.png"/>
                         </button>
                     </li>
                 </ul>

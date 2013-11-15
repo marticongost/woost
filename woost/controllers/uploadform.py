@@ -180,10 +180,10 @@ class UploadForm(Form):
         try:
             for member in self.upload_members:
 
-                value = schema.get(self.instance, member)
-
-                if value is None:
+                if schema.get(self.data, member) is None:
                     continue
+
+                value = schema.get(self.instance, member)
 
                 if isinstance(member, schema.Collection):
                     files = value
