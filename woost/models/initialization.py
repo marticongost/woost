@@ -417,15 +417,7 @@ def init_site(
         )
         password_change_confirmation_view.insert()
 
-        # Create standard resources
-        site_stylesheet = URI()
-        site_stylesheet.uri = uri + "resources/styles/site.css"
-        site_stylesheet.mime_type = "text/css"
-        site_stylesheet.qname = "woost.site_stylesheet"
-        set_translations(site_stylesheet, "title", "Site style sheet title")
-        site_stylesheet.insert()
-
-        # Create the temporary home page
+        # Create the home page
         website.home = StandardPage()
         website.home.template = std_template
         set_translations(website.home, "title", "Home page title")
@@ -434,11 +426,22 @@ def init_site(
             website.home, "body", "Home page body",
             uri = uri + "cms"
         )
-        website.home.branch_resources.append(site_stylesheet)
         website.home.insert()
-    
+
+        # Create standard resources
+        site_stylesheet = URI()
+        site_stylesheet.parent = website.home
+        site_stylesheet.hidden = True
+        site_stylesheet.uri = uri + "resources/styles/site.css"
+        site_stylesheet.mime_type = "text/css"
+        site_stylesheet.qname = "woost.site_stylesheet"
+        set_translations(site_stylesheet, "title", "Site style sheet title")
+        site_stylesheet.insert()
+        website.home.branch_resources.append(site_stylesheet)
+
         # Create the back office interface
         back_office = Document()
+        back_office.parent = website.home
         back_office.controller = back_office_controller
         back_office.critical = True
         back_office.qname = "woost.backoffice"
@@ -451,6 +454,7 @@ def init_site(
         
         # Create the user styles dynamic style sheet
         user_styles = Document()
+        user_styles.parent = website.home
         user_styles.critical = True
         user_styles.qname = "woost.user_styles"
         user_styles.per_language_publication = False
@@ -472,6 +476,7 @@ def init_site(
 
         # Create the 'content not found' page
         config.not_found_error_page = StandardPage()
+        config.not_found_error_page.parent = website.home
         config.not_found_error_page.hidden = True
         config.not_found_error_page.template = std_template
         config.not_found_error_page.qname = "woost.not_found_error_page"
@@ -483,6 +488,7 @@ def init_site(
 
         # Create forbidden error page
         config.forbidden_error_page = StandardPage()
+        config.forbidden_error_page.parent = website.home
         config.forbidden_error_page.hidden = True
         config.forbidden_error_page.template = std_template
         config.forbidden_error_page.qname = "woost.forbidden_error_page"
@@ -494,6 +500,7 @@ def init_site(
 
         # Create the password change request page
         config.password_change_page = StandardPage()
+        config.password_change_page.parent = website.home
         config.password_change_page.hidden = True
         config.password_change_page.template = password_change_request_view
         config.password_change_page.controller = \
@@ -508,6 +515,7 @@ def init_site(
 
         # Create the password change confirmation page
         config.password_change_confirmation_page = StandardPage()
+        config.password_change_confirmation_page.parent = website.home
         config.password_change_confirmation_page.hidden = True
         config.password_change_confirmation_page.per_language_publication = False
         config.password_change_confirmation_page.template = \
@@ -526,6 +534,7 @@ def init_site(
 
         # Create the login page
         config.login_page = StandardPage()
+        config.login_page.parent = website.home
         config.login_page.hidden = True
         config.login_page.template = login_form_template 
         config.login_page.controller = \

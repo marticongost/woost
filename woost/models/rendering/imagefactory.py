@@ -70,7 +70,8 @@ class ImageFactory(Item):
     fallback_referers = schema.Collection(
         items = "woost.models.rendering.ImageFactory",
         bidirectional = True,
-        visible = False
+        visible = False,
+        synchronizable = False
     )
 
     def render(self, item):

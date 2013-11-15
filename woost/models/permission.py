@@ -298,6 +298,11 @@ class ReadHistoryPermission(Permission):
     instantiable = True
 
 
+class InstallationSyncPermission(Permission):
+    """Permission to import content from remote installations."""
+    instantiable = True
+
+
 @contextmanager
 def restricted_modification_context(
     item,
