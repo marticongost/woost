@@ -349,6 +349,12 @@ body {
 
 /* Collection editor
 -----------------------------------------------------------------------------*/
+.CollectionEditor > .entries > .entry {
+    white-space: nowrap;
+}
+
+/* Item collection editor
+-----------------------------------------------------------------------------*/
 .ItemCollectionEditor .ActionBar.toolbar {
     margin-bottom: 0;
 }
@@ -545,6 +551,11 @@ body.modal {
     margin-bottom: 1.5em;
 }
 
+.BackOfficeLayout .Form div.field.translated {
+    clear: left;
+    margin-bottom: 1em;
+}
+
 .BackOfficeLayout .Form div.field:after {
     content: ".";
     display: block;
@@ -561,6 +572,10 @@ body.modal {
     float: left;
     margin-right: 1.5em;
     padding: 0.2em;
+}
+
+.BackOfficeLayout .Form .translated div.field_instance {
+    margin-bottom: 0.5em;
 }
 
 .BackOfficeLayout .Form td.field_instance {
@@ -659,6 +674,11 @@ body.modal {
     width: 6em;
 }
 
+.BackOfficeLayout .CollectionEditor .MoneyBox {
+    display: inline-block;
+    margin-right: 1em;
+}
+
 /* Tables
 -----------------------------------------------------------------------------*/
 
@@ -679,7 +699,7 @@ body.scripted .BackOfficeLayout .Table .selection {
 }
 
 .BackOfficeLayout .Table {
-    border-bottom: 1px solid rgb(225,225,225);
+    border: 1px solid #eee;
 }
 
 .BackOfficeLayout .PropertyTable th {
@@ -716,6 +736,10 @@ body.scripted .BackOfficeLayout .Table .selection {
 .BackOfficeLayout .ContentTable td,
 .BackOfficeLayout .ContentTable td * {
     cursor: default;
+}
+
+.BackOfficeLayout .ContentTable .ItemLabel {
+    display: inline-block;
 }
 
 .BackOfficeLayout .ContentTable th .selector > .label {
@@ -809,10 +833,6 @@ body.scripted .BackOfficeLayout .Table .selection {
     padding-left: 2.4em;
 }
 
-.BackOfficeLayout .Table td {
-    border: 1px solid rgb(225,225,225);
-}
-
 .BackOfficeLayout .Table th, .BackOfficeLayout .Table th * {
     font-weight: normal;
     color: black;
@@ -881,8 +901,13 @@ body.scripted .BackOfficeLayout .Table .selection {
 
 .BackOfficeLayout .Table tr.group td {
     color: rgb(70,70,70);
-    background-color: rgb(230,230,230);
     text-align: right;
+    background-image: -webkit-linear-gradient(#eee,#d5d5d5);
+    background-image: -moz-linear-gradient(#eee,#d5d5d5);
+    background-image: linear-gradient(#eee,#d5d5d5);
+    background-color: #eee;
+    border-top: 1px solid #bbb;
+    border-bottom: 1px solid #bbb;
 }
 
 .BackOfficeLayout .Table tr.group .grouping_value {
@@ -939,7 +964,6 @@ body.scripted .BackOfficeLayout .Table .selection {
 
 .BackOfficeLayout .Table tr.selected td {
     background-color: rgb(75,75,75) !important;
-    border: 1px solid rgb(75,75,75) !important;
 }
 
 .BackOfficeLayout .Table tr.selected td,
@@ -956,17 +980,18 @@ body.scripted .BackOfficeLayout .Table .selection {
 .BackOfficeItemView h2 {
     font-size: 1em;
     font-weight: normal;
-    overflow: hidden;
     line-height: 1.2em;
 }
 
 .BackOfficeItemView h2 .item_icon {
-    float: left;
-    margin-right: 0.5em;
+    margin-right: 0.8em;
+    display: inline-block;
+    vertical-align: top;
 }
 
 .BackOfficeItemView h2 .item_info {
-    float: left;
+    display: inline-block;
+    vertical-align: top;
 }
 
 .BackOfficeItemView h2 .item_translation {
@@ -979,6 +1004,30 @@ body.scripted .BackOfficeLayout .Table .selection {
     font-size: 0.9em;
     margin-right: 0.3em;
     color: #333;
+    vertical-align: top;
+}
+
+.BackOfficeItemView h2 .item_path {
+    vertical-align: top;
+    display: inline-block;
+}
+
+.BackOfficeItemView h2 .item_references {
+    margin-top: 0.3em;
+    margin-left: -3px;
+}
+
+.BackOfficeItemView h2 .item_references .button {
+    padding-top: 0;
+}
+
+.BackOfficeItemView h2 .item_references .button .label {
+/*    color: #666;*/
+}
+
+.BackOfficeItemView h2 .item_references .panel_wrapper .panel {
+    padding: 0.5em;
+    min-width: 13em;
 }
 
 .BackOfficeItemView h2 .item_info .file_size,
@@ -1000,8 +1049,8 @@ body.scripted .BackOfficeLayout .Table .selection {
 }
 
 .BackOfficeLayout .Table td.element_column label {
-    padding-top: 0.1em;
-    padding-bottom: 0.1em;
+    padding-top: 0;
+    padding-bottom: 0;
 }
 
 .BackOfficeLayout .search_results_message {
@@ -1501,7 +1550,7 @@ body.scripted .BackOfficeLayout .selector:hover .selector_content {
 }
 
 .BackOfficeLayout .TreeContentView .expander + label {
-    margin-left: 1.5em;
+    margin-left: 0.3em;
 }
 
 .BackOfficeLayout .TreeContentView .expander img {
@@ -3217,11 +3266,13 @@ div.success_label {
 -----------------------------------------------------------------------------*/
 .BackOfficeItemHeading .item_path {
     margin-left: -0.3em;
+    vertical-align: top;
 }
 
 .BackOfficeItemHeading .item_path ul {
     list-style-type: none;
     display: inline-block;
+    vertical-align: top;
     padding: 0;
     margin: 0;
     margin-left: 0.2em;
@@ -3229,6 +3280,7 @@ div.success_label {
 
 .BackOfficeItemHeading .item_path li {
     display: inline-block;
+    vertical-align: top;
     padding: 0;
     margin: 0;
 }
@@ -3245,4 +3297,64 @@ div.success_label {
 
 .BackOfficeItemHeading .item_path li a {
     display: inline-block;
+    vertical-align: top;
 }
+
+/* ReferenceList
+-----------------------------------------------------------------------------*/
+.BackOfficeLayout .ReferenceList .label {
+    font-size: 90%;
+    color: #333;
+}
+
+.BackOfficeLayout .ReferenceList .ContentLink {
+    font-size: 90%;
+    text-decoration: none;
+    font-size: 80%;
+}
+
+.BackOfficeLayout .ReferenceList .referrer_cell {
+    padding-right: 2em;
+}
+
+.BackOfficeLayout .ReferenceList .relation_cell {
+    color: #666;
+    font-size: 80%;
+}
+
+/* Content drag & drop
+-----------------------------------------------------------------------------*/
+.BackOfficeLayout .drag {
+    opacity: 0.7;
+}
+
+.BackOfficeLayout .dropReceiver {
+    position: relative;
+    background-color: #a6eeff;
+    background-image: -webkit-linear-gradient(#e4eff2,#ccdade);
+    background-image: -moz-linear-gradient(#e4eff2,#ccdade);
+    background-image: linear-gradient(#e4eff2,#ccdade);
+    outline: 1px dashed #a6c5cc;
+}
+
+.BackOfficeLayout .dropBeforeReceiver {
+    position: relative;
+    margin-top: -1px;
+    border-top: 1px dashed #ccdade;
+}
+
+.BackOfficeLayout .dropAfterReceiver {
+    position: relative;
+    margin-bottom: -1px;
+    border-bottom: 1px dashed #ccdade;
+}
+
+.BackOfficeLayout .dragInsertionMarker {
+    position: absolute;
+    background-repeat: no-repeat;
+    background-image: url(../images/insertion_marker.png);
+    background-position: left center;
+    padding-left: 0.8em;
+    white-space: nowrap;
+}
+

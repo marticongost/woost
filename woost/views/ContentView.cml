@@ -13,7 +13,6 @@ from cocktail.html.shortcuts import set_translated_shortcut
 from woost.models import (
     get_current_user,
     Item,
-    Site,
     ReadPermission,
     CreatePermission,
     ReadMemberPermission

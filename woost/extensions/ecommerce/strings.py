@@ -8,7 +8,6 @@
 """
 from cocktail.translations import translations, DATE_STYLE_TEXT
 from cocktail.translations.helpers import plural2
-from woost.models import Site
 
 # ECommerceExtension
 #------------------------------------------------------------------------------
@@ -44,7 +43,7 @@ translations.define("ECommerceExtension.payment_types",
     ca = u"Tipus de pagament",
     es = u"Tipos de pago",
     en = u"Payment types",
-    fr = u"Type de paiement"
+    fr = u"Moyen de paiement"
 )
 
 translations.define("ECommerceExtension.payment_types-payment_gateway",
@@ -321,7 +320,7 @@ translations.define("ECommerceOrder.payment_type",
     ca = u"Tipus de pagament",
     es = u"Tipo de pago",
     en = u"Payment type",
-    fr = u"Type de paiement"
+    fr = u"Moyen de paiement"
 )
 
 translations.define("ECommerceOrder.payment_type-payment_gateway",
@@ -796,7 +795,7 @@ translations.define(
     ca = u"Veure més productes",
     es = u"Ver más productos",
     en = u"See more products",
-	fr = u"Voire plus products"
+	fr = u"Voire autres articles"
 )
 
 translations.define(
@@ -804,7 +803,7 @@ translations.define(
     ca = u"Tornar endarrere",
     es = u"Volver atrás",
     en = u"Go back",
-	fr = u"Retourner"
+	fr = u"Revenir"
 )
 
 translations.define(
@@ -864,7 +863,7 @@ translations.define(
     ca = u"Subtotal",
     es = u"Subtotal",
     en = u"Subtotal",
-	fr = u"Subtotal"
+	fr = u"Sous-total"
 )
 
 translations.define(
@@ -994,7 +993,7 @@ translations.define(
     ca = u"Modificar el contingut de la comanda",
     es = u"Modificar el contenido del pedido",
     en = u"Edit the shopping basket",
-	fr = u"Modifier le contenu de l'ordre"
+	fr = u"Modifier le contenu de la commande"
 )
 
 translations.define(

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <?py
 from cocktail import schema
-from woost.models import get_current_user
+from woost.models import get_current_user, Publishable
 ?>
 
 <py:cocktail.html.Form
@@ -31,6 +31,22 @@ from woost.models import get_current_user
         <?py element.empty() ?>
         ${translations("woost.extensions.blocks.LoginBlockView.submit_button")}
     </py:with>
+
+    <a py:id="forgot_password_link" py:before="self.submit_button">
+        <py:ready>
+            <?py
+            password_change_page = Publishable.get_instance(
+                qname = "woost.password_change_page"
+            )
+            if password_change_page \
+            and password_change_page.is_accessible():
+                element["href"] = password_change_page.get_uri()
+            else:
+                element.visible = False
+            ?>
+        </py:ready>
+        ${translations("woost.views.LoginForm.forgot_password_link")}
+    </a>
 
 </py:cocktail.html.Form>
 

@@ -21,7 +21,7 @@ from cocktail import schema
 from woost.models import (
     get_current_user,
     ReadPermission,
-    Site
+    Configuration
 )
 from woost.controllers.backoffice.basebackofficecontroller \
     import BaseBackOfficeController
@@ -36,6 +36,8 @@ from woost.controllers.backoffice.changelogcontroller \
     import ChangeLogController
 from woost.controllers.backoffice.uploadfilescontroller \
     import UploadFilesController
+from woost.controllers.backoffice.dragandropcontroller \
+    import DragAndDropController
 
 
 class BackOfficeController(BaseBackOfficeController):
@@ -55,7 +57,8 @@ class BackOfficeController(BaseBackOfficeController):
     changelog = ChangeLogController
     render_preview = RenderPreviewController
     upload_files = UploadFilesController
-    
+    drop = DragAndDropController
+
     def submit(self):
         raise cherrypy.HTTPRedirect(
             self.contextual_uri(self.default_section) + "?" + view_state())
@@ -69,8 +72,10 @@ class BackOfficeController(BaseBackOfficeController):
     @event_handler
     def handle_before_request(cls, event):
         user = get_current_user()
-        language = \
-            user and user.prefered_language or Site.main.backoffice_language
+        language = (
+            user and user.prefered_language 
+            or Configuration.instance.get_setting("backoffice_language")
+        )
         set_language(language)
 
     @event_handler
@@ -124,3 +129,4 @@ class BackOfficeController(BaseBackOfficeController):
     @cherrypy.expose
     def keep_alive(self, *args, **kwargs):
         pass
+

@@ -24,7 +24,7 @@ from cocktail.translations import DATE_STYLE_TEXT
         """
         if not event.event_start:
             return ""
-        elif event.event_end:
+        elif event.event_end and event.event_end.date() != event.event_start.date():
             return translations("date range", start = event.event_start, end = event.event_end)
         else:
             return translations(event.event_start.date(), style = self.date_style)

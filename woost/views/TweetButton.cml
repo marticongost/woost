@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <?py
 from cocktail.controllers import context
-from woost.models import Site
+from woost.models import Configuration
 from woost.extensions.shorturls import ShortURLsExtension
 ?>
 
@@ -11,12 +11,14 @@ from woost.extensions.shorturls import ShortURLsExtension
 
     <py:binding>
         <?py
-        if ShortURLsExtension.instance.enabled and Site.main.url_shortener:
-            url = self.url
-            if url is None:
-                url = context["publishable"].get_uri(host = ".")
-            self.url = Site.main.url_shortener.request(url)
-            self.counturl = url
+        if ShortURLsExtension.instance.enabled:
+            shortener = Configuration.instance.url_shortener
+            if shortener:
+                url = self.url
+                if url is None:
+                    url = context["publishable"].get_uri(host = ".")
+                self.url = shortener.request(url)
+                self.counturl = url
         ?>
     </py:binding>
 

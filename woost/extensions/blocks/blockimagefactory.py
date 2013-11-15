@@ -6,11 +6,11 @@ u"""
 from cocktail import schema
 from cocktail.html.datadisplay import display_factory
 from cocktail.iteration import first
-from woost.models import Site
+from woost.models import Configuration
 from woost.models.rendering import ImageFactory
 
 def _iter_block_image_factories():
-    for factory in Site.main.image_factories:
+    for factory in Configuration.instance.image_factories:
         if factory.applicable_to_blocks:
             yield factory
 

@@ -5,21 +5,21 @@ u"""
 """
 from cocktail.translations import translations
 
-# Site
+# Configuration
 #------------------------------------------------------------------------------
-translations.define("Site.audio",
-    ca = u"Àudio",
+translations.define("Configuration.media.audio",
+    ca = u"Audio",
     es = u"Audio",
     en = u"Audio"
 )
 
-translations.define("Site.audio_decoders",
+translations.define("Configuration.audio_decoders",
     ca = u"Decodificadors d'àudio",
     es = u"Decodificadores de audio",
     en = u"Audio decoders"
 )
 
-translations.define("Site.audio_encoders",
+translations.define("Configuration.audio_encoders",
     ca = u"Codificadors d'àudio",
     es = u"Codificadores de audio",
     en = u"Audio encoders"

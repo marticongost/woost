@@ -8,7 +8,7 @@ from cocktail.controllers import Location
     xmlns:py="http://www.whads.com/ns/cocktail/templates">
 
     <?py-class
-    alignments_with_text_above = ["column_right", "center_bottom"]
+    alignments_with_text_above = ["column_right", "center_bottom", "bottom_left"]
     enable_ie_table_layout_workaround = True
 
     def insert_heading(self, heading):

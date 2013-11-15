@@ -57,7 +57,11 @@ class IsAccessibleExpressionTestCase(BaseTestCase):
     def test_translation_enabled(self):
 
         from cocktail.translations import language_context
-        from woost.models import Publishable, Language, ReadPermission
+        from woost.models import (
+            Publishable,
+            ReadPermission,
+            ReadTranslationPermission
+        )
         
         self.everybody_role.permissions.append(
             ReadPermission(
@@ -67,9 +71,10 @@ class IsAccessibleExpressionTestCase(BaseTestCase):
             )
         )
 
-        site_language = Language()
-        site_language.iso_code = "en"
-        site_language.insert()
+        self.everybody_role.permissions.append(ReadTranslationPermission())
+
+        self.config.languages = ["en"]
+        self.config.published_languages = []
 
         with language_context("en"):
             a = Publishable()
@@ -92,10 +97,82 @@ class IsAccessibleExpressionTestCase(BaseTestCase):
             d.set("translation_enabled", True, "de")
             d.insert()
 
-            assert self.accessible_items() == set([a, c])
+            e = Publishable()
+            e.per_language_publication = False
+            e.enabled = True
+            e.insert()
 
-            site_language.enabled = False
-            assert not self.accessible_items()
+            accessible = self.accessible_items()
+            print a in accessible
+            print b in accessible
+            print c in accessible
+            print d in accessible
+            print e in accessible
+
+            assert self.accessible_items() == set([a, c, e])
+        
+            self.config.published_languages = ["en"]
+            assert self.accessible_items() == set([a, c, e])
+
+        with language_context("de"):
+            self.config.published_languages = ["de"]
+            assert self.accessible_items() == set([d, e])
+
+    def test_translation_permitted(self):
+
+        from cocktail.translations import language_context
+        from woost.models import (
+            Publishable,
+            ReadPermission,
+            ReadTranslationPermission,
+            set_current_user
+        )
+
+        set_current_user(self.user)
+
+        self.everybody_role.permissions.append(
+            ReadPermission(
+                matching_items = {
+                    "type": "woost.models.publishable.Publishable"
+                }
+            )
+        )
+
+        self.everybody_role.permissions.append(
+            ReadTranslationPermission(
+                matching_languages = ["ca", "es"]
+            )
+        )
+
+        self.everybody_role.permissions.append(
+            ReadTranslationPermission(
+                matching_languages = ["en"],
+                authorized = False
+            )
+        )
+
+        self.config.languages = ["ca", "es", "en"]
+        self.config.published_languages = []
+
+        a = Publishable()
+        a.per_language_publication = True
+        a.insert()
+
+        b = Publishable()
+        b.per_language_publication = False
+        b.insert()
+
+        with language_context("ca"):
+            a.translation_enabled = True
+            assert a.is_accessible()
+            assert b.is_accessible()
+            assert self.accessible_items() == set([a, b])
+
+        for language in "es", "en", "de":
+            with language_context(language):
+                assert not a.is_accessible()
+                assert b.is_accessible()
+                assert self.accessible_items() == set([b])
 
     def test_current(self):
 

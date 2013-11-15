@@ -11,13 +11,13 @@ step = MigrationStep("woost.extensions.blocks Add video renderers")
 @when(step.executing)
 def add_video_renderers(e):
 
-    from woost.models import Site
+    from woost.models import Configuration
     from woost.models.rendering import ChainRenderer
     from woost.extensions.blocks.youtubeblockrenderer import YouTubeBlockRenderer
     from woost.extensions.blocks.vimeoblockrenderer import VimeoBlockRenderer
 
     # Look for the first chain renderer
-    for renderer in Site.main.renderers:
+    for renderer in Configuration.instance.renderers:
         if isinstance(renderer, ChainRenderer):
 
             # Add the renderer for YouTube blocks
@@ -37,7 +37,7 @@ step = MigrationStep("woost.extensions.blocks Model block styles")
 @when(step.executing)
 def model_block_styles(e):
 
-    from woost.models import Style, Language
+    from woost.models import Configuration, Style
     from woost.extensions.blocks.block import Block
 
     for style in Style.select():
@@ -54,7 +54,7 @@ def model_block_styles(e):
                 if style is None:
                     style = Style()
                     style.custom_class_name = css_class
-                    for language in Language.codes:
+                    for language in Configuration.instance.languages:
                         style.set("title", css_class, language)
                     style.insert()
 

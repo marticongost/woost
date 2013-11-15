@@ -6,7 +6,7 @@ u"""
 from cocktail.translations import translations
 from cocktail import schema
 from cocktail.html import templates
-from woost.models import Extension, Site
+from woost.models import Extension, Configuration
 from woost.models.rendering import ChainRenderer
 
 
@@ -62,6 +62,7 @@ class BlocksExtension(Extension):
             twittertimelineblock,
             loginblock,
             iframeblock,
+            videoblock,
             youtubeblock,
             youtubeblockrenderer,
             vimeoblock,
@@ -69,13 +70,14 @@ class BlocksExtension(Extension):
             newslisting,
             eventlisting,
             filelisting,
+            publishablelisting,
             facebooklikebutton,
             facebooklikebox,
             tweetbutton,
             flashblock,
             blockspage,
             blockactions,
-            site,
+            configuration,
             style,
             news,
             event,
@@ -86,11 +88,6 @@ class BlocksExtension(Extension):
 
         # Install an overlay for the frontend edit panel
         templates.get_class("woost.extensions.blocks.EditPanelOverlay")
-
-        # Install an overlay for the edit views of style items
-        templates.get_class(
-            "woost.extensions.blocks.BackOfficeItemViewOverlay"
-        )
 
         # Add a module to the backoffice for editing block hierarchies
         # in a more visual fashion
@@ -139,7 +136,7 @@ class BlocksExtension(Extension):
         from woost.extensions.blocks.vimeoblockrenderer import VimeoBlockRenderer
 
         # Look for the first chain renderer
-        for renderer in Site.main.renderers:
+        for renderer in Configuration.instance.renderers:
             if isinstance(renderer, ChainRenderer):
 
                 # Add the renderer for YouTube blocks
@@ -182,5 +179,5 @@ class BlocksExtension(Extension):
             ]
         )
 
-        Site.main.image_factories.append(edit_blocks_thumbnail)
+        Configuration.instance.image_factories.append(edit_blocks_thumbnail)
 

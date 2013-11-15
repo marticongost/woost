@@ -9,7 +9,7 @@ import datetime
 from tempfile import mkdtemp
 from shutil import rmtree
 from subprocess import Popen, PIPE
-import Image
+from PIL import Image
 from woost.models.file import File
 from woost.models.rendering.renderer import Renderer
 
