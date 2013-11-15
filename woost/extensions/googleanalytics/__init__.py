@@ -6,7 +6,6 @@
 @organization:	Whads/Accent SL
 @since:			September 2009
 """
-from cocktail.events import event_handler
 from cocktail.translations import translations
 from cocktail import schema
 from woost.models import Extension
@@ -48,25 +47,22 @@ class GoogleAnalyticsExtension(Extension):
             "en"
         )
 
-    last_update = None
-
     account = schema.String(
         required = True,
         text_search = False
     )
 
-    @event_handler
-    def handle_loading(cls, event):        
+    def _load(self):
         from cocktail.events import when
-        from woost.controllers.application import CMS
+        from woost.controllers import CMSController
 
-        @when(CMS.producing_output)
+        @when(CMSController.producing_output)
         def handle_producing_output(e):
-            html = e.output.get("body_end_html", "")
+            html = e.output.get("head_end_html", "")
             if html:
                 html += " "
-            html += event.source.get_analytics_script()
-            e.output["body_end_html"] = html
+            html += self.get_analytics_script()
+            e.output["head_end_html"] = html
 
     def get_analytics_script(self):
         return """

@@ -13,54 +13,79 @@ from cocktail.controllers import context
     footnotes_visible = True
     original_link_visible = False
     close_up_enabled = True
+    close_up_preload = True
     
     images = ()
     accessible_check = True
 
-    full_image_effects = ("%(method)s(%(width)s,%(height)s)",)
-    full_image_method = "fill"
-    full_width = 900
-    full_height = 700
-    
-    thumbnail_effects = ("%(method)s(%(width)s,%(height)s)",)
-    thumbnail_method = "fill"
-    thumbnail_width = 200
-    thumbnail_height = 150
+    _close_up_width = None
+    _close_up_height = None
+    close_up_factory = "image_gallery_close_up"
+    close_up_sizes = {
+        "image_gallery_close_up": (900, 700)
+    }
+
+    _thumbnail_width = None
+    _thumbnail_height = None
+    thumbnail_factory = "image_gallery_thumbnail"
+    thumbnail_sizes = {
+        "image_gallery_thumbnail": (200, 150)
+    }
 
     slider_options = {
         "continuous": False
     }
 
-    def get_thumbnail_effects(self, image):
-        params = {
-            "method": self.thumbnail_method,
-            "width": self.thumbnail_width,
-            "height": self.thumbnail_height
-        }
-        if isinstance(self.thumbnail_effects, basestring):
-            return (self.thumbnail_effects % params,)
-        else:
-            return tuple(
-                (effect % params)
-                for effect in self.thumbnail_effects
-            )
-
-    def get_full_image_effects(self, image):
-        params = {
-            "method": self.full_image_method,
-            "width": self.full_width,
-            "height": self.full_height
-        }
-        if isinstance(self.full_image_effects, basestring):
-            return (self.full_image_effects % params,)
-        else:
-            return tuple(
-                (effect % params)
-                for effect in self.full_image_effects
-            )
-
     def get_footnote(self, image):
         return getattr(image, "description", None)
+
+    def _get_thumbnail_width(self):
+        if self._thumbnail_width is None:
+            size = self.thumbnail_sizes.get(self.thumbnail_factory)
+            return size and size[0]
+        
+        return self._thumbnail_width
+
+    def _set_thumbnail_width(self, width):
+        self._thumbnail_width = width
+
+    thumbnail_width = property(_get_thumbnail_width, _set_thumbnail_width)
+    
+    def _get_thumbnail_height(self):
+        if self._thumbnail_height is None:
+            size = self.thumbnail_sizes.get(self.thumbnail_factory)
+            return size and size[1]
+
+        return self._thumbnail_height
+
+    def _set_thumbnail_height(self, height):
+        self._thumbnail_height = height
+
+    thumbnail_height = property(_get_thumbnail_height, _set_thumbnail_height)
+
+    def _get_close_up_width(self):
+        if self._close_up_width is None:
+            size = self.close_up_sizes.get(self.close_up_factory)
+            return size and size[0]
+        
+        return self._close_up_width
+
+    def _set_close_up_width(self, width):
+        self._close_up_width = width
+
+    close_up_width = property(_get_close_up_width, _set_close_up_width)
+    
+    def _get_close_up_height(self):
+        if self._close_up_height is None:
+            size = self.close_up_sizes.get(self.close_up_factory)
+            return size and size[1]
+
+        return self._close_up_height
+
+    def _set_close_up_height(self, height):
+        self._close_up_height = height
+
+    close_up_height = property(_get_close_up_height, _set_close_up_height)
     ?>
 
     <?py
@@ -77,6 +102,7 @@ from cocktail.controllers import context
 
         self.add_class(self.gallery_type)
         self.set_client_param("galleryType", self.gallery_type)
+        self.set_client_param("closeUpPreload", self.close_up_preload)
 
         if self.gallery_type == "slideshow":
             self.add_resource("/cocktail/scripts/jquery.sudoSlider.js")
@@ -119,7 +145,7 @@ from cocktail.controllers import context
             )
         ?>
         <a py:local_id="image_link"
-            href="${cms.image_uri(image, *self.get_full_image_effects(image))}"
+            href="${image.get_image_uri(self.close_up_factory)}"
             target="blank_">
 
             <?py 
@@ -130,9 +156,9 @@ from cocktail.controllers import context
             <py:woost.views.Image 
                 py:local_id="image"
                 py:image="${image}"
-                py:accessible_check="${False}"
-                py:effects="${self.get_thumbnail_effects(image)}"/>
-            
+                py:image_factory="${self.thumbnail_factory}"
+                py:accessible_check="${False}"/>
+
             <span py:local_id="image_label"
                 py:visible="${self.labels_visible}"
                 py:collapsible="${True}">${title}</span>
@@ -159,7 +185,7 @@ from cocktail.controllers import context
         py:client_model="woost.views.ImageGallery.image_dialog"
         class="ImageGallery-dialog">
         <div py:id="image_frame">
-            <div py:local_id="header">
+            <div py:local_id="header" py:visible="@{self.labels_visible or len(self.images) > 1}">
                 <span py:local_id="index"></span>
                 <span py:local_id="label"></span>
             </div>

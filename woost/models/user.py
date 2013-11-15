@@ -162,10 +162,29 @@ class User(Item):
                 for role in explicit_roles:
                     yield role
 
+        for role in self.iter_implicit_roles():
+            yield role
+
+    def iter_implicit_roles(self):
+
         if not self.anonymous:
             yield Role.require_instance(qname = "woost.authenticated")
 
         yield Role.require_instance(qname = "woost.everybody")
+
+    def has_role(self, role):
+        """Determines if the user has been granted the indicated role.
+
+        This takes into account inherited and implicit roles.
+
+        @return: True if the user possesses the given role, False otherwise.
+        @rtype: bool
+        """
+        for user_role in self.iter_roles():
+            if user_role is role:
+                return True
+
+        return False
 
     def iter_permissions(self, permission_type = None):
         """Iterates over the permissions granted to the user's roles.
@@ -187,7 +206,10 @@ class User(Item):
             for permission in role.iter_permissions(permission_type):
                 yield permission
 
-    def has_permission(self, permission_type, verbose = None, **context):
+    def has_permission(self,
+        permission_type,
+        verbose = None,        
+        **context):
         """Determines if the user is given permission to perform an action.
 
         @param permission_type: The kind of permission to assert.
@@ -252,10 +274,11 @@ class User(Item):
                 else:
                     break                
 
-        if verbose:
-            print unauthorized_style("unauthorized")
-
-        return False
+        return permission_type.permission_not_found(
+            self,
+            verbose = verbose,
+            **context
+        )
 
     def require_permission(self, permission_type, verbose = None, **context):
         """Asserts the user has permission to perform an action.

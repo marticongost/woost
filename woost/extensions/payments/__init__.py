@@ -7,7 +7,6 @@
 @since:			October 2009
 """
 from cocktail.modeling import OrderedDict
-from cocktail.events import event_handler
 from cocktail.translations import translations, get_language
 from cocktail import schema
 from cocktail.controllers.location import Location
@@ -44,8 +43,7 @@ class PaymentsExtension(Extension):
             "en"
         )
 
-    @event_handler
-    def handle_loading(cls, event):
+    def _load(self):
 
         # Import the extension's models
         from woost.extensions.payments.paymentgateway import PaymentGateway
@@ -59,7 +57,7 @@ class PaymentsExtension(Extension):
         )
 
         # Setup payment controllers
-        from woost.controllers.application import CMS        
+        from woost.controllers.cmscontroller import CMSController
         from woost.extensions.payments.paymenthandshakecontroller \
             import PaymentHandshakeController
         from woost.extensions.payments.paymentnotificationcontroller \
@@ -67,10 +65,10 @@ class PaymentsExtension(Extension):
         from woost.extensions.payments.dummycontroller \
             import DummyPaymentGatewayController
 
-        CMS.payment_handshake = PaymentHandshakeController
-        CMS.payment_notification = PaymentNotificationController
-        CMS.dummy_payment_gateway = DummyPaymentGatewayController      
-        
+        CMSController.payment_handshake = PaymentHandshakeController
+        CMSController.payment_notification = PaymentNotificationController
+        CMSController.dummy_payment_gateway = DummyPaymentGatewayController
+
         # Append additional members to the extension
         PaymentsExtension.members_order = ["payment_gateway"]
 

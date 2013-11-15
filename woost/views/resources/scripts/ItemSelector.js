@@ -27,7 +27,7 @@ cocktail.bind(".UserFilterEntry .ItemSelector", function ($itemSelector) {
 
         var icon = document.createElement("img");
         icon.className = "icon";
-        icon.src = "/images/" + itemId + "/thumbnail(24)/?icon.size=16";
+        icon.src = "/images/" + itemId + "/backoffice_small_thumbnail";
         itemLabel.appendChild(icon);
 
         itemLabel.appendChild(document.createTextNode(label));

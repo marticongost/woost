@@ -39,8 +39,7 @@ from woost.extensions.ecommerce.basket import Basket
             <py:cocktail.html.PropertyTable
                 py:id="checkout_table"
                 py:schema="@{self.checkout_schema}"
-                py:data="@{Basket.get()}"
-                py:translated_values="${True}"/>
+                py:data="@{Basket.get()}"/>
 
             <a py:id="modify_checkout_link" href="@{self._checkout_page.get_uri()}">
                 ${translations("woost.extensions.ecommerce.SummaryOrderStep.modify_checkout_link")}

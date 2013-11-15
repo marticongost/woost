@@ -7,7 +7,7 @@
 @since:			September 2010
 """
 from cocktail import schema
-from woost.models.permission import Permission
+from woost.models import Permission, Role
 from woost.models.messagestyles import permission_doesnt_match_style
 
 
@@ -17,17 +17,22 @@ class SendEmailPermission(Permission):
     instantiable = True
 
     roles = schema.Collection(
-        items = schema.Reference(type = "woost.models.Role"),
-        related_key = schema.Collection()
+        items = schema.Reference(
+            type = Role,
+        ),
+        related_end = schema.Collection(),
+        relation_constraints = [Role.implicit.equal(False)],
+        edit_inline = True
     )
 
     def match(self, role = None, verbose = False):
 
-        if role and role not in self.roles:
-            print permission_doesnt_match_style("Role doesn't match")
+        if role and self.roles and role not in self.roles:
+
+            if verbose:
+                print permission_doesnt_match_style("Role doesn't match")
+            
             return False
 
         return Permission.match(self, verbose)
-
-    
 

@@ -14,6 +14,7 @@ from cocktail.html import templates
 from woost.models import (
     Item,
     Publishable,
+    Document,
     Event,
     ChangeSet
 )
@@ -135,6 +136,13 @@ global_content_views.add(
 
 global_content_views.add(
     Publishable,
+    "woost.views.PublishableTreeContentView",
+    is_default = True,
+    inherited = False
+)
+
+global_content_views.add(
+    Document,
     "woost.views.PublishableTreeContentView",
     is_default = True,
     inherited = False

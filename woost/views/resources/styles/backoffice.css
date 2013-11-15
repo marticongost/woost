@@ -16,7 +16,30 @@ body {
 }
 
 .BackOfficeLayout button {
-		font-family: Bitstream Vera Sans, Arial;
+	font-family: Bitstream Vera Sans, Arial;
+}
+
+.BackOfficeLayout button.button,
+.BackOfficeLayout input[type=submit],
+.BackOfficeLayout .AsyncFileUploader .button {
+    background-color: #ddd;
+    background-image: -moz-linear-gradient(#f6f6f6,#ccc);
+    background-image: -webkit-linear-gradient(#f6f6f6,#ccc);
+    padding: 0.3em 0.7em;
+    border-radius: 0.5em;
+    border: 1px solid #aaa;
+    -moz-box-shadow: 1px 1px 4px #bbb;
+    cursor: pointer;
+    font-size: 0.9em;
+    color: #222;
+}
+
+.BackOfficeLayout button.button:hover,
+.BackOfficeLayout input[type=submit]:hover,
+.BackOfficeLayout .AsyncFileUploader .button:hover {
+    background-color: #eee;
+    background-image: -moz-linear-gradient(white,#ddd);
+    background-image: -webkit-linear-gradient(white,#ddd);
 }
 
 .BackOfficeLayout .header {
@@ -156,6 +179,14 @@ body {
     list-style-type: none;
 }
 
+.BackOfficeLayout .members_selector {
+    font-size: 0.9em;
+}
+
+.BackOfficeLayout .members_selector .group_label {
+    color: rgb(75,75,75);
+}
+
 .BackOfficeLayout .tabs {
     clear: both;
     overflow: visible;
@@ -222,7 +253,9 @@ body {
 }
 
 .BackOfficeLayout .ItemLabel {
+    display: inline-block;
     background-repeat: no-repeat;
+    white-space: nowrap;
 }
 
 .BackOfficeLayout input[type=text],
@@ -337,8 +370,8 @@ body.modal {
     margin-bottom: 0;
 }
 
-.BackOfficeLayout fieldset fieldset + fieldset {
-    margin-top: 1em;
+.BackOfficeLayout fieldset + fieldset {
+    margin-top: 2em;
 }
 
 .BackOfficeLayout fieldset legend {
@@ -357,12 +390,14 @@ body.modal {
 
 .BackOfficeLayout fieldset .fieldset_fields {
     border-top: 1px solid #adb2bc;
-    padding-top: 1em;
     margin-top: 0;
+    padding-top: 1em;
+    padding-left: 0.75em;
 }
 
-.BackOfficeLayout fieldset .fieldset_fields {
-    padding-left: 0.75em;
+.BackOfficeLayout fieldset.anonymous > .fieldset_fields {
+    border-top: none;
+    padding-top: 0;
 }
 
 .BackOfficeLayout fieldset fieldset .fieldset_fields {
@@ -790,14 +825,6 @@ body.scripted .BackOfficeLayout .Table .selection {
 .BackOfficeLayout .Table tr.selected td,
 .BackOfficeLayout .Table tr.selected td * {
     color: white !important;
-}
-
-.BackOfficeLayout .Table .element_column img.icon {
-    float: left;
-}
-
-.BackOfficeLayout .Table .element_column label {
-    white-space: normal;
 }
 
 .BackOfficeLayout .draft,
@@ -2145,7 +2172,7 @@ button.TypeSelectorButton {
 .BackOfficeLayout .CollectionView .settings_box .selector_content {
     right: 0;
     top: 23px;
-    width: 22em;
+    width: 30em;
 }
 
 .BackOfficeLayout .CollectionView .settings_box .box_label,
@@ -2417,30 +2444,6 @@ a.pickcolor span {
     border: none;
     height: 500px;
     margin-top: 2em;
-}
-
-/* Delete warning
------------------------------------------------------------------------------*/
-.BackOfficeLayout ul.deleted_item_block {
-    font-weight: bold;
-    list-style-type: disc;
-}
-
-.BackOfficeLayout ul.deleted_item_block ul {
-    font-weight: normal;
-    font-style: italic;
-    list-style-type: circle;
-}
-
-.BackOfficeLayout ul.deleted_item_block .deleted_item {
-    padding-top: 0.5em;
-    margin: 0;
-}
-
-/* Block delete
------------------------------------------------------------------------------*/
-.BackOfficeLayout .blocking_members_box .ContentLink {
-    text-decoration: none;
 }
 
 /* Feed edit form

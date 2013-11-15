@@ -9,8 +9,8 @@ u"""
 from cocktail.modeling import classgetter, DictWrapper
 import cherrypy
 from cocktail.controllers import serve_file
+from woost.models.rendering import require_rendering
 from woost.controllers.publishablecontroller import PublishableController
-from woost.controllers.imagescontroller import serve_image
 
 
 class FileController(PublishableController):
@@ -20,11 +20,13 @@ class FileController(PublishableController):
         file = self.context["publishable"]
         
         if file.image_effects:
-            return serve_image(file)
+            file_path = require_rendering(file)        
         else:
-            return serve_file(
-                file.file_path,
-                name = file.file_name,
-                content_type = file.mime_type,
-                disposition = disposition)
+            file_path = file.file_path
+            
+        return serve_file(
+            file_path,
+            name = file.file_name,
+            content_type = file.mime_type,
+            disposition = disposition)
 

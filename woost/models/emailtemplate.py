@@ -17,7 +17,6 @@ from email.Header import Header
 from email.Utils import formatdate, parseaddr, formataddr
 from email import Encoders
 from cocktail import schema
-from cocktail.html.datadisplay import display_factory
 from woost.models import Item, Site, File
 
 
@@ -33,8 +32,8 @@ class EmailTemplate(Item):
         "bcc",
         "template_engine",
         "subject",
-        "attachments",
-        "body"
+        "body",
+        "initialization_code"
     ]
 
     title = schema.String(
@@ -59,29 +58,24 @@ class EmailTemplate(Item):
         text_search = False
     )
 
-    sender = schema.String(
-        edit_control = display_factory(
-            "cocktail.html.CodeEditor", syntax = "python"
-        )
+    sender = schema.CodeBlock(
+        language = "python"
     )
 
-    receivers = schema.String(
-        required = True,
-        edit_control = display_factory(
-            "cocktail.html.CodeEditor", syntax = "python"
-        )
+    receivers = schema.CodeBlock(
+        language = "python",
+        required = True
     )
     
-    bcc = schema.String(
-        listed_by_default = False,
-        edit_control = display_factory(
-            "cocktail.html.CodeEditor", syntax = "python"
-        )
+    bcc = schema.CodeBlock(
+        language = "python",
+        listed_by_default = False
     )
 
     template_engine = schema.String(
         enumeration = buffet.available_engines.keys(),
-        text_search = False
+        text_search = False,
+        listed_by_default = False
     )
 
     subject = schema.String(
@@ -89,17 +83,14 @@ class EmailTemplate(Item):
         edit_control = "cocktail.html.TextArea"
     )
 
-    attachments = schema.String(
-        listed_by_default = False,
-        edit_control = display_factory(
-            "cocktail.html.CodeEditor", syntax = "python"
-        )
-    )
-
-    body = schema.String(    
+    body = schema.String(
         translated = True,
         listed_by_default = False,
         edit_control = "cocktail.html.TextArea"
+    )
+
+    initialization_code = schema.CodeBlock(
+        language = "python"
     )
 
     def send(self, context = None):
@@ -112,6 +103,9 @@ class EmailTemplate(Item):
         if context is None:
             context = {}
         
+        if context.get("attachments") is None:
+            context["attachments"] = {}
+
         def eval_member(key):
             expr = self.get(key)
             return eval(expr, context.copy()) if expr else None
@@ -122,6 +116,11 @@ class EmailTemplate(Item):
 
         if pos != -1:
             mime_type = mime_type[pos + 1:]
+
+        # Custom initialization code
+        init_code = self.initialization_code
+        if init_code:
+            exec init_code in context
 
         # Subject and body (templates)
         if self.template_engine:
@@ -150,13 +149,11 @@ class EmailTemplate(Item):
         message = MIMEText(body, _subtype = mime_type, _charset = self.encoding)
 
         # Attachments
-        if self.attachments:
-            attachments_context = context.copy()
-            attachments_context["attachments"] = {}
-            exec self.attachments in attachments_context
+        attachments = context.get("attachments")
+        if attachments:
             attachments = dict(
                 (cid, attachment) 
-                for cid, attachment in attachments_context["attachments"].iteritems()
+                for cid, attachment in attachments.iteritems()
                 if attachment is not None
             )
             if attachments:

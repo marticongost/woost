@@ -54,7 +54,8 @@ def available_roles(ctx):
     user = get_current_user()
     return [role 
             for role in Role.select() 
-            if user.has_permission(SendEmailPermission, role = role) 
+            if not role.implicit
+            and user.has_permission(SendEmailPermission, role = role) 
             and len(get_receivers_by_roles([role]))]
 
 
@@ -169,6 +170,7 @@ class Mailing(Item):
             values = values.copy()
             values["mailing_receiver"] = receiver
         
+        values["show_user_controls"] = False
         body = self.document.render(**values)
 
         if not self.per_user_customizable:
@@ -213,7 +215,7 @@ class Mailing(Item):
         if not self.id in tasks:
             current_user = get_current_user()
             if self.status is None:
-                self.pending = get_receivers_by_roles(self.roles)
+                self.pending = self.get_receivers()
                 self.total = len(self.pending)
                 self.sent = {}
                 self.errors = {}
@@ -275,6 +277,10 @@ class Mailing(Item):
             task.mailing_id = self.id
             task.user_id = current_user.id
 
+    def get_receivers(self):
+        return get_receivers_by_roles(self.roles)
+
+
 def get_receivers_by_roles(roles):
     receivers = {}
     for role in roles:
@@ -296,18 +302,6 @@ def document_validation(member, document, context):
             context
         )
 
-def per_user_customizable_validation(cls, instance, context):
-    per_user_customizable = instance.get("per_user_customizable")
-    document = instance.get("document")
-    template_per_user_customizable = document and document.template and document.template.per_user_customizable
-
-    if per_user_customizable and not template_per_user_customizable:
-        yield PerUserCustomizableValueError(
-            cls.get_member("per_user_customizable"),
-            None,
-            context
-        )
-
 def language_validation(cls, instance, context):
     language = instance.get("language")
     document = instance.get("document")
@@ -320,5 +314,4 @@ def language_validation(cls, instance, context):
         )
 
 Mailing.document.add_validation(document_validation)
-Mailing.add_validation(per_user_customizable_validation)
 Mailing.add_validation(language_validation)

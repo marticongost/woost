@@ -8,7 +8,7 @@ u"""
 """
 from datetime import datetime
 from cocktail.modeling import getter, ListWrapper, SetWrapper
-from cocktail.events import event_handler
+from cocktail.events import event_handler, Event
 from cocktail import schema
 from cocktail.translations import translations
 from cocktail.persistence import (
@@ -35,6 +35,11 @@ schema.Collection.edit_view = None
 # when opening an item selector for the indicated property
 schema.RelationMember.selector_default_type = None
 
+# Extension property that allows to indicate that specific members don't modify
+# the 'last_update_time' member of items when changed
+schema.Member.affects_last_update_time = True
+
+
 class Item(PersistentObject):
     """Base class for all CMS items. Provides basic functionality such as
     authorship, group membership, draft copies and versioning.
@@ -56,6 +61,10 @@ class Item(PersistentObject):
     # Extension property that indicates if content types should be visible from
     # the backoffice root view
     visible_from_root = True
+
+    # Extension property that indicates if the backoffice should show child
+    # entries for this content type in the type selector
+    collapsed_backoffice_menu = False
 
     def __translate__(self, language, **kwargs):
         if self.draft_source is not None:
@@ -234,6 +243,10 @@ class Item(PersistentObject):
         
         return draft
 
+    draft_confirmation = Event(doc = """
+        An event triggered just before a draft is confirmed.
+        """)
+
     def confirm_draft(self):
         """Confirms a draft. On draft copies, this applies all the changes made
         by the draft to its source element, and deletes the draft. On brand new
@@ -244,6 +257,8 @@ class Item(PersistentObject):
         """            
         if not self.is_draft:
             raise ValueError("confirm_draft() must be called on a draft")
+
+        self.draft_confirmation()
 
         if self.draft_source is None:
             self.bidirectional = True
@@ -398,7 +413,8 @@ class Item(PersistentObject):
                 change.item_state = item._get_revision_state()
                 change.changeset = changeset
                 changeset.changes[item.id] = change
-                item.last_update_time = now or datetime.now()
+                if event.member.affects_last_update_time:
+                    item.last_update_time = now or datetime.now()
                 change.insert()
             else:
                 action_type = change.action.identifier
@@ -419,7 +435,7 @@ class Item(PersistentObject):
                     change.item_state[member_name][language] = value
                 else:
                     change.item_state[member_name] = value
-        else:
+        elif event.member.affects_last_update_time:
             item.last_update_time = datetime.now()
 
     @event_handler

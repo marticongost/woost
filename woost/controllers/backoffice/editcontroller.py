@@ -27,7 +27,7 @@ from woost.models import (
     ReadTranslationPermission,
     ConfirmDraftPermission
 )
-from woost.controllers.notifications import notify_user
+from woost.controllers.notifications import notify_user, pop_user_notifications
 from woost.controllers.backoffice.editstack import RelationNode, EditNode
 from woost.controllers.backoffice.basebackofficecontroller \
         import BaseBackOfficeController
@@ -104,8 +104,11 @@ class EditController(BaseBackOfficeController):
 
             changeset = None
 
-            with restricted_modification_context(item, user):
-                
+            with restricted_modification_context(
+                item, 
+                user, 
+                member_subset = set(stack_node.form_schema.members())
+            ):
                 # Store the changes on a draft; this skips revision control
                 if item.is_draft:       
                     self._apply_changes(item)
@@ -162,6 +165,17 @@ class EditController(BaseBackOfficeController):
                 parent_edit_node.relate(member, item)
                 self.edit_stack.go(-3)
 
+        # The user had arrived to the edit interface using a frontend link,
+        # and has just saved the item at the top of the stack; redirect the
+        # browser to the original frontend location. Notifications are
+        # discarded before redirecting, since there is no guarantee that the
+        # frontend will display them; this is clearly not ideal, but the
+        # alternative (having them stack up and show all at once whenever the
+        # user opens the backoffice) is not that great either.
+        if stack_node.parent_node is None and self.edit_stack.root_url:
+            pop_user_notifications()
+            self.edit_stack.go_back()
+
     def confirm_draft(self):
 
         draft = self.stack_node.item
@@ -170,16 +184,25 @@ class EditController(BaseBackOfficeController):
         user = get_current_user()
 
         user.require_permission(ConfirmDraftPermission, target = draft)
+        member_subset = set(self.stack_node.form_schema.members())
 
         for i in range(self.MAX_TRANSACTION_ATTEMPTS):
 
             # Update the draft
-            with restricted_modification_context(draft, user):
+            with restricted_modification_context(
+                draft, 
+                user, 
+                member_subset = member_subset
+            ):
                 self._apply_changes(draft)
 
             # Confirm the draft
             with changeset_context(author = user) as changeset:
-                with restricted_modification_context(target_item, user):
+                with restricted_modification_context(
+                    target_item,
+                    user,
+                    member_subset = member_subset
+                ):
                     draft.confirm_draft()
             try:
                 datastore.commit()

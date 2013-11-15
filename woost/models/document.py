@@ -8,6 +8,7 @@ u"""
 """
 from cocktail import schema
 from cocktail.modeling import getter
+from cocktail.iteration import first
 from cocktail.events import event_handler
 from cocktail.controllers.renderingengines import get_rendering_engine
 from woost.models.publishable import Publishable
@@ -170,4 +171,13 @@ class Document(Publishable):
         values["publishable"] = self
         engine = get_rendering_engine(self.template.engine)
         return engine.render(values, template = self.template.identifier)
+
+    @property
+    def default_image(self):
+        return first(
+            attachment
+            for attachment in self.attachments
+            if attachment.resource_type == "image"
+            and attachment.is_accessible()
+        )
 

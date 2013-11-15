@@ -15,7 +15,6 @@ from cocktail.translations import (
     translations
 )
 from cocktail import schema
-from cocktail.html.datadisplay import display_factory
 from woost.models import Item, Language
 from woost.extensions.opengraph import OpenGraphExtension
 
@@ -136,14 +135,8 @@ class FacebookPublicationTarget(Item):
         )
     )
 
-    targeting = schema.String(
-        edit_control = display_factory(
-            "cocktail.html.CodeEditor",
-            syntax = "python",
-            cols = 80
-        ),
-        text_search = False,
-        listed_by_default = False
+    targeting = schema.CodeBlock(
+        language = "python"
     )
 
     def publish(self, publishable):

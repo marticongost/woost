@@ -8,5 +8,8 @@ in python.
 @organization:	Whads/Accent SL
 @since:			October 2008
 """
+from woost.application import Application
 from woost.translations import strings
+
+app = Application()
 

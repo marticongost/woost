@@ -187,6 +187,9 @@ class UserAction(object):
                             % type(id))
         self._id = id
 
+    def __translate__(self, language, **kwargs):
+        return translations("Action " + self.id, **kwargs)
+
     @getter
     def id(self):
         """The unique identifier for the action.

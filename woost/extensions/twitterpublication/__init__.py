@@ -3,7 +3,6 @@ u"""
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
-from cocktail.events import event_handler
 from cocktail.translations import translations
 from cocktail import schema
 from woost.models import Extension
@@ -40,8 +39,7 @@ class TwitterPublicationExtension(Extension):
             "en"
         )
 
-    @event_handler
-    def handle_loading(cls, event):
+    def _load(self):
         
         from woost.extensions.twitterpublication import (
             strings,
@@ -69,14 +67,21 @@ class TwitterPublicationExtension(Extension):
 
         BackOfficeController.tweet = TweetController
 
-        if not event.source.installed:
-            # By default, only administrator users can tweet content
-            permission = tweetpermission.TweetPermission()
-            permission.matching_items = {
-                "type": "woost.models.publishable.Publishable"
-            }
-            permission.insert()
-            from woost.models import Role
-            admins = Role.require_instance(qname = "woost.administrators")
-            admins.permissions.append(permission)
+        self.install()
+
+    def _install(self):
+
+        from woost.models import Role
+        from woost.extensions.twitterpublication.tweetpermission \
+            import TweetPermission
+        
+        # By default, only administrator users can tweet content
+        permission = TweetPermission()
+        permission.matching_items = {
+            "type": "woost.models.publishable.Publishable"
+        }
+        permission.insert()
+        
+        admins = Role.require_instance(qname = "woost.administrators")
+        admins.permissions.append(permission)
 

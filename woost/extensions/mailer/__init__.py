@@ -7,7 +7,7 @@
 @since:			September 2010
 """
 import cherrypy
-from cocktail.events import event_handler, when
+from cocktail.events import when
 from cocktail import schema
 from cocktail.translations import translations
 from cocktail.controllers import context
@@ -46,11 +46,7 @@ class MailerExtension(Extension):
             "en"
         )
 
-
-    @event_handler
-    def handle_loading(cls, event):
- 
-        extension = event.source
+    def _load(self):
 
         from woost.controllers.notifications import notify_user
         from woost.controllers.backoffice.basebackofficecontroller import \
@@ -59,7 +55,8 @@ class MailerExtension(Extension):
             ItemController
 
         from woost.extensions.mailer import (
-            useraction,
+            sendemailaction,
+            createmailingaction,
             strings
         )
         from woost.extensions.mailer.mailing import Mailing, \
@@ -89,9 +86,9 @@ class MailerExtension(Extension):
     
         # Disable interactive features from rendered pages when rendering
         # static content
-        from woost.controllers.application import CMS
+        from woost.controllers.cmscontroller import CMSController
     
-        @when(CMS.producing_output)
+        @when(CMSController.producing_output)
         def disable_user_controls(event):
             if context.get("sending_email", False):
                 event.output["show_user_controls"] = False

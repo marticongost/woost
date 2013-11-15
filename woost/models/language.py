@@ -14,15 +14,21 @@ from woost.models.item import Item
 
 class Language(Item):
  
-    members_order = ["iso_code", "fallback"]
+    members_order = ["iso_code", "enabled", "fallback"]
 
     iso_code = schema.String(
         required = True,
         unique = True,
         max = 64,
-        text_search = False
+        text_search = False,
+        indexed = True
     )
-    
+
+    enabled = schema.Boolean(
+        required = True,
+        default = True
+    )
+
     fallback = schema.Reference(
         type = "woost.models.Language",
         bidirectional = True,

@@ -9,7 +9,7 @@
 from __future__ import with_statement
 import cherrypy
 from cocktail import schema
-from cocktail.events import event_handler, when
+from cocktail.events import when
 from cocktail.translations import translations
 from cocktail.controllers import Location
 from woost.models import Extension
@@ -51,6 +51,24 @@ class CommentsExtension(Extension):
             "en"
         )
 
+    def _create_comments_adapter(self, comment_model):
+        adapter = schema.Adapter()
+        adapter.exclude(
+            member.name
+            for member in comment_model.members().itervalues()
+            if not member.visible 
+            or not member.editable
+            or not issubclass(member.schema, comment_model)
+        )
+        adapter.exclude(["publishable","captcha"])
+        return adapter
+
+    def _adapt_comments_schema(self, comment_model):
+        adapter = self._create_comments_adapter(comment_model)
+        comments_schema = schema.Schema(comment_model.name + "Form")
+        adapter.export_schema(comment_model, comments_schema)
+        return comments_schema
+
     def _after_process_comments(self, comment):
         raise cherrypy.HTTPRedirect(
             "%s#comment-%s" % (
@@ -59,9 +77,8 @@ class CommentsExtension(Extension):
             )
         )
 
-    @event_handler
-    def handle_loading(cls, event):
-        
+    def _load(self):
+
         from cocktail.persistence import datastore
         from cocktail.controllers import UserCollection, get_parameter
         from cocktail.pkgutils import resolve
@@ -90,29 +107,7 @@ class CommentsExtension(Extension):
                 CommentsExtension.add_member(
                     schema.Boolean("captcha_enabled", default = False)
                 )
-
-        # Permissions
-        #--------------------------------------------------------------------------
-        q = "woost.models.permission.CreatePermission " \
-                "anonymous_comments_permission"
-        anonymous_comments_permission = CreatePermission.get_instance(qname = q)
-
-        if anonymous_comments_permission is None:
-
-            anonymous = Role.get_instance(qname = "woost.anonymous")
-
-            anonymous_comments_permission = CreatePermission(
-                authorized = True,
-                role = anonymous,
-                matching_items = {
-                    "type": "woost.extensions.comments.comment.Comment"
-                },
-                qname = q
-            )
-            
-            anonymous_comments_permission.insert()
-            datastore.commit()
-
+       
         # Extend Publishable model
         Publishable.add_member(
             schema.Boolean(
@@ -171,18 +166,7 @@ class CommentsExtension(Extension):
                     )
                 
                 # Adapting the comments model
-                adapter = schema.Adapter()
-                adapter.exclude(
-                    member.name
-                    for member in comment_model.members().itervalues()
-                    if not member.visible 
-                    or not member.editable
-                    or not issubclass(member.schema, comment_model)
-                )
-                adapter.exclude(["publishable","captcha"])
-
-                comments_schema = schema.Schema(comment_model.name + "Form")
-                adapter.export_schema(comment_model, comments_schema)
+                comments_schema = CommentsExtension.instance._adapt_comments_schema(comment_model)
 
                 if user.anonymous \
                 and getattr(CommentsExtension.instance, "captcha_enabled", False):
@@ -208,6 +192,7 @@ class CommentsExtension(Extension):
                         if not comment_errors:
                             comment = comment_model()
 
+                            adapter = CommentsExtension.instance._create_comments_adapter(comment_model)
                             adapter.import_object(                                                                                                                                                                       
                                 comment_data,
                                 comment,
@@ -231,4 +216,17 @@ class CommentsExtension(Extension):
                 comment_errors = comment_errors,
                 comment_data = comment_data
             )
+
+        self.install()
+
+    def _install(self):
+        self._create_asset(
+            CreatePermission,
+            "anonymous_comments_permission",
+            role = Role.require_instance(qname = "woost.anonymous"),
+            authorized = True,
+            matching_items = {
+                "type": "woost.extensions.comments.comment.Comment"
+            }
+        )
 

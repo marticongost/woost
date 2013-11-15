@@ -6,7 +6,6 @@
 @organization:	Whads/Accent SL
 @since:			December 2009
 """
-from cocktail.events import event_handler
 from cocktail.persistence import datastore
 from cocktail.translations import translations
 from cocktail import schema
@@ -86,8 +85,7 @@ class ReCaptchaExtension(Extension):
             "en"
         )
 
-    @event_handler
-    def handle_loading(cls, event):
+    def _load(self):
 
         # Import the extension's models
         from woost.extensions.recaptcha import (

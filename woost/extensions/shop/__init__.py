@@ -6,7 +6,7 @@
 @organization:	Whads/Accent SL
 @since:			September 2009
 """
-from cocktail.events import event_handler, when
+from cocktail.events import when
 from cocktail.translations import (
     translations,
     set_language
@@ -49,8 +49,7 @@ class ShopExtension(Extension):
             "en"
         )
 
-    @event_handler
-    def handle_loading(cls, event):
+    def _load(self):
 
         from woost.extensions import shop
         from woost.extensions.shop import (
@@ -162,21 +161,21 @@ class ShopExtension(Extension):
         events.insert(pos, receive_order_payment)
         events.insert(pos + 2, commit_order_payment)
 
-        if not event.source.installed:
-            create_product_controller()
-            datastore.commit()
+        self.install()
 
-def create_product_controller():
-    # Create the product controller
-    controller = Controller()
-    controller.qname = "woost.product_controller"
-    for language in Language.codes:
-        value = translations(
-            "woost.extensions.shop Product controller title",
-            language
-        )
-        if value:
-            controller.set("title", value, language)
-    controller.python_name = \
-        "woost.extensions.shop.productcontroller.ProductController"
-    controller.insert()
+    def _install(self):
+
+        # Create the product controller
+        controller = Controller()
+        controller.qname = "woost.product_controller"
+        for language in Language.codes:
+            value = translations(
+                "woost.extensions.shop Product controller title",
+                language
+            )
+            if value:
+                controller.set("title", value, language)
+        controller.python_name = \
+            "woost.extensions.shop.productcontroller.ProductController"
+        controller.insert()
+

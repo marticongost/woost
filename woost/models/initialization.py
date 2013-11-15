@@ -36,6 +36,7 @@ from woost.models import (
     CreatePermission,
     ModifyPermission,
     DeletePermission,
+    RenderPermission,
     ReadMemberPermission,
     ModifyMemberPermission,
     CreateTranslationPermission,
@@ -48,9 +49,9 @@ from woost.models import (
     ConfirmDraftPermission,
     EmailTemplate,
     CachingPolicy,
-    Extension
+    Extension,
+    load_extensions
 )
-from woost.models.extension import install_new_extensions
 
 standard_template_identifiers = {
     "cocktail": "woost.views.StandardView",
@@ -133,6 +134,7 @@ def init_site(
         
         # Create the anonymous user and role
         anonymous_role = Role()
+        anonymous_role.implicit = True
         anonymous_role.critical = True
         anonymous_role.qname = "woost.anonymous"
         set_translations(anonymous_role, "title", "Anonymous role title")        
@@ -173,6 +175,7 @@ def init_site(
 
         # Create the 'everybody' role
         everybody_role = Role()
+        everybody_role.implicit = True
         everybody_role.critical = True
         everybody_role.qname = "woost.everybody"
         set_translations(everybody_role, "title", "Everybody role title")
@@ -181,7 +184,14 @@ def init_site(
             "filter": "owned-items"
         }
         everybody_role.permissions = [
-            
+
+            # Everybody can render any item
+            RenderPermission(
+                matching_items = {
+                    "type": "woost.models.item.Item"
+                }
+            ),
+
             # Everybody can read published items
             ReadPermission(
                 matching_items = {
@@ -246,6 +256,7 @@ def init_site(
 
         # Create the 'authenticated' role
         authenticated_role = Role()
+        authenticated_role.implicit = True
         authenticated_role.critical = True
         authenticated_role.qname = "woost.authenticated"
         set_translations(authenticated_role, "title",
@@ -586,7 +597,7 @@ def init_site(
     
     # Enable the selected extensions
     if extensions:
-        install_new_extensions()
+        load_extensions()
         for extension in Extension.select():
             ext_name = extension.__class__.__name__[:-len("Extension")].lower()
             if ext_name in extensions:

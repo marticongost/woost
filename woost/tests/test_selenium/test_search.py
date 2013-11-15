@@ -49,13 +49,13 @@ class SearchTestCase(object):
     @selenium_test
     def test_add_filters_from_selector(self):
         
-        from cocktail.schema.expressions import GlobalSearchExpression
+        from cocktail.schema.expressions import Self
         from cocktail.persistence import Query
         
         results = Item.select([
             Item.id.greater(15),
-            GlobalSearchExpression("@localhost", "en")
-        ])        
+            Self.search("@localhost", languages = ["en"])
+        ])
         results_count = len(results)
 
         browser.open(

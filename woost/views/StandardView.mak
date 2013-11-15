@@ -134,7 +134,7 @@ container_classes = "BaseView StandardView"
                 <li>
                     <a href="${cms.uri(attachment)}">
                         <img
-                            src="${cms.icon_uri(attachment, 16)}"
+                            src="${attachment.get_image_uri('icon16')}"
                             alt="${translations('woost.views.StandardView attachment icon description')}"/>
                         <span>${translations(attachment)}</span>
                     </a>

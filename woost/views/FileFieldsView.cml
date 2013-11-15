@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <?py
+from cocktail.memoryutils import format_bytes
 from cocktail.html import Element
 from cocktail.controllers import context
 from woost.models.publishable import get_category_from_mime_type
-from woost.models.file import get_human_readable_file_size
 ?>
 
 <py:woost.views.BackOfficeFieldsView
@@ -56,9 +56,7 @@ from woost.models.file import get_human_readable_file_size
             element.add_class("mime_type_" + mime_type.replace("/", "_").replace(".", "_"))
         ?>
         <span class="file_name" py:if="file_name is not None">${file_name}</span>
-        <span class="file_size" py:if="file_size is not None">
-            ${get_human_readable_file_size(file_size)}
-        </span>
+        <span class="file_size" py:if="file_size is not None">${format_bytes(file_size)}</span>
     </p>
 
 </py:woost.views.BackOfficeFieldsView>

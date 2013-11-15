@@ -13,11 +13,11 @@ import os
 import hashlib
 from mimetypes import guess_type
 from shutil import copy
-from cocktail.modeling import getter
 from cocktail.events import event_handler
+from cocktail.memoryutils import format_bytes
 from cocktail import schema
-from cocktail.controllers import context
 from cocktail.persistence import datastore
+from woost import app
 from woost.models.publishable import Publishable
 from woost.models.controller import Controller
 from woost.models.language import Language
@@ -67,7 +67,7 @@ class File(Publishable):
         required = True,
         editable = False,
         translate_value = lambda size, language = None, **kwargs:
-            "" if size in (None, "") else get_human_readable_file_size(size),
+            "" if size in (None, "") else format_bytes(size),
         min = 0,
         member_group = "content"
     )
@@ -84,15 +84,7 @@ class File(Publishable):
         text_search = False,
         member_group = "content"
     )
-
-    @event_handler
-    def handle_changed(cls, e):
-        if e.member is cls.local_path and e.value:
-            e.source.file_name = os.path.basename(e.value)
-            e.source.mime_type = guess_type(e.value, strict = True)[0]
-            e.source.file_hash = None
-            e.source.file_size = None
-
+    
     image_effects = schema.String(
         listed_by_default = False,
         searchable = False,
@@ -100,30 +92,37 @@ class File(Publishable):
         edit_control = "woost.views.ImageEffectsEditor"
     )
 
-    def compose_image_effects(self, extra_effects):
-        if self.image_effects:
-            return self.image_effects.split("/") + extra_effects
-        else:
-            return extra_effects
+    @property
+    def file_extension(self):
+        return os.path.splitext(self.file_name)[1]
 
-    @getter
+    @event_handler
+    def handle_changed(cls, e):
+
+        if e.member is cls.local_path and e.value:
+            file = e.source
+            file.file_name = os.path.basename(e.value)
+            file.mime_type = guess_type(e.value, strict = True)[0]
+            file.file_hash = None
+            file.file_size = None
+
+    @property
     def file_path(self):
-        
-        cms = context["cms"]
+
         file_path = self.local_path
 
         if file_path:
             if not os.path.isabs(file_path):
-                file_path = os.path.join(cms.application_path, file_path)            
-        else:
-            file_path = cms.get_file_upload_path(self.id)
+                file_path = app.path(file_path)            
+        else:            
+            file_path = app.path("upload", str(self.id))
 
         return file_path
 
     @classmethod
     def from_path(cls,
         path,
-        dest,
+        dest = None,
         languages = None,
         hash = None,
         encoding = "utf-8"):
@@ -175,7 +174,11 @@ class File(Publishable):
         for language in languages:
             file.set("title", title, language)
 
-        upload_path = os.path.join(dest, str(file.id))           
+        if dest is None:
+            upload_path = file.file_path
+        else:
+            upload_path = os.path.join(dest, str(file.id))
+
         copy(path, upload_path)
 
         return file
@@ -254,30 +257,4 @@ def file_hash(source, algorithm = "md5", chunk_size = 1024):
             source.close()
 
     return hash.digest()
-
-# Adapted from a script by Martin Pool, original found at
-# http://mail.python.org/pipermail/python-list/1999-December/018519.html
-_size_suffixes = [
-    (1<<50L, 'Pb'),
-    (1<<40L, 'Tb'), 
-    (1<<30L, 'Gb'), 
-    (1<<20L, 'Mb'), 
-    (1<<10L, 'kb'),
-    (1, 'bytes')
-]
-
-def get_human_readable_file_size(size):
-    """Return a string representing the greek/metric suffix of a file size.
-    
-    @param size: The size to represent, in bytes.
-    @type size: int
-
-    @return: The metric representation of the given size.
-    @rtype: str
-    """
-    for factor, suffix in _size_suffixes:
-        if size > factor:
-            break
-    return str(int(size/factor)) + suffix
-
 
