@@ -106,7 +106,6 @@ class LocationsExtension(Extension):
     )
 
     updated_location_types = schema.Collection(
-        edit_inline = True,
         default = [
             "continent",
             "country",

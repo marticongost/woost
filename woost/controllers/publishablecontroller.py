@@ -7,6 +7,7 @@ from __future__ import with_statement
 from types import GeneratorType
 from threading import Lock
 from time import time, mktime
+from datetime import datetime
 from hashlib import md5
 import cherrypy
 from cherrypy.lib import cptools, http
@@ -93,9 +94,15 @@ class PublishableController(BaseCMSController):
                     headers, content = cached_response
                     cherrypy.response.headers.update(headers)
                 else:
+                    expiration = policy.get_content_expiration(
+                        publishable,
+                        **caching_context
+                    )
                     content = self._produce_cached_content(
                         cache_key,
-                        **kwargs)
+                        expiration,
+                        **kwargs
+                    )
 
                 return content
 
@@ -114,24 +121,22 @@ class PublishableController(BaseCMSController):
             cache_entry = cache.get(cache_hash)
 
             if cache_entry:
-                entry_creation_time, cached_response, cached_key = cache_entry
+                entry_creation_time, expiration, cached_response, cached_key = cache_entry
 
                 valid_key = (cached_key == cache_key)
 
-                # Validate entry expiration
-                expiration = policy.cache_expiration
                 expired = (expiration is not None
-                           and time() - entry_creation_time > expiration * 60)
-                
+                           and datetime.now() >= expiration)
+
                 current = timestamp is None or entry_creation_time >= timestamp
 
                 if expired or not current or not valid_key:
                     cache.remove(cache_hash)
                     cached_response = None
-        
+
         return cached_response
 
-    def _produce_cached_content(self, cache_key, **kwargs):
+    def _produce_cached_content(self, cache_key, expiration = None, **kwargs):
 
         cache = get_cache_manager().get_cache_region(
             'cached_content', 'woost_cache'
@@ -154,7 +159,10 @@ class PublishableController(BaseCMSController):
         entry_creation_time = time()
         cached_response = (headers, content)
         cache_hash = md5(cache_key).hexdigest()
-        cache.put(cache_hash, (entry_creation_time, cached_response, cache_key))
+        cache.put(
+            cache_hash,
+            (entry_creation_time, expiration, cached_response, cache_key)
+        )
 
         return content
 

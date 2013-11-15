@@ -49,39 +49,6 @@ class ItemController(BaseBackOfficeController):
     def fields(self):
         return resolve(self.stack_node.item.edit_controller)
 
-    def resolve(self, path):
-
-        if path:
-            collection_name = path.pop(0)
-
-            try:
-                member = self.stack_node.content_type[collection_name]
-            except KeyError:
-                pass
-            else:
-                if any(
-                    collection.name == member.name
-                    for collection in self.collections
-                ):
-                    return self._get_collection_controller(member)
-
-    def _get_collection_controller(self, member):
-        controller_class = resolve(member.edit_controller)
-        return controller_class(member)
-
-    @cached_getter
-    def collections(self):
-        
-        relation_node = self.relation_node
-        stack_relation = relation_node and relation_node.member.related_end
-
-        return [
-            member
-            for member in self.stack_node.form_schema.ordered_members()
-            if isinstance(member, schema.Collection)
-            and not member.edit_inline
-        ]
-    
     @event_handler
     def handle_traversed(cls, event):
         
@@ -121,6 +88,15 @@ class ItemController(BaseBackOfficeController):
             if member_name:
                 node = RelationNode()
                 node.member = edit_stack[-1].content_type[member_name]
+
+                # Preserve the selected tab
+                group = node.member.member_group
+                if group:
+                    pos = group.find(".")
+                    if pos != -1:
+                        group = group[:pos]
+                edit_stack[-1].tab = group
+
                 edit_stack.push(node)
                 redirect = True
 
@@ -161,6 +137,7 @@ class ItemController(BaseBackOfficeController):
             location.method = "GET"
             location.params["edit_stack"] = edit_stack.to_param()
             location.params.pop("member", None)
+            location.hash = Location.empty_hash
             location.go()
 
         return edit_stack

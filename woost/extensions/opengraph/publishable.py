@@ -24,7 +24,7 @@ Publishable.add_member(
         required = True,
         default = True,
         listed_by_default = False,
-        member_group = "open_graph"
+        member_group = "meta.open_graph"
     )
 )
 
@@ -40,7 +40,7 @@ Publishable.add_member(
         ),
         indexed = True,
         listed_by_default = False,
-        member_group = "open_graph",
+        member_group = "meta.open_graph",
         edit_control = display_factory(
             "cocktail.html.DropdownSelector",
             grouping = lambda type: type.category
@@ -59,7 +59,7 @@ def _get_publishable_properties(self):
     image = self.get_open_graph_image()
     if image:
         if isinstance(image, Publishable):
-            image = image.get_uri(host = ".")
+            image = image.get_image_uri("facebook", host = ".")
         properties["og:image"] = image
 
     video = self.get_open_graph_video()
@@ -119,6 +119,12 @@ def _get_document_open_graph_video(self):
                  and attachment.is_accessible())
 
 Document.get_open_graph_video = _get_document_open_graph_video
+
+def _get_news_open_graph_image(self):
+    if self.image and self.image.is_accessible():
+        return self.image.get_image_uri("facebook")
+
+News.get_open_graph_image = _get_news_open_graph_image
 
 # Metadata for shop products (only if the 'shop' extension is enabled)
 from woost.extensions.shop import ShopExtension

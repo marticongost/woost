@@ -36,6 +36,7 @@ class ContentList(List):
 
     def create_entry_content(self, item):
         link = templates.new("woost.views.ContentLink")
+        link.icon_visible = True
         link.item = item
         link.referer = self.referer
         link.member = self.member

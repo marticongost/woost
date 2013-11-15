@@ -25,8 +25,8 @@ cocktail.bind({
 
             if (image && image.loaded) {
                 if (callback) {
-                    callback.call(this, image);                    
-                }                
+                    callback.call(this, image);
+                }
             }
             else {
                 if (showStatus) {
@@ -90,27 +90,9 @@ cocktail.bind({
             }
         }
 
-        this.pauseAutoplay = function () {
-            // Temporarely disable the automatic slideshow, until the user
-            // closes the dialog
-            if (this.sudoSlider && this.sliderOptions.auto) {
-                this.sudoSlider.stopAuto();
-            }
-        }
-
-        this.resumeAutoplay = function () {
-            // Resume the automatic slideshow
-            if (this.sudoSlider && this.sliderOptions.auto && !inDialog) {
-                this.sudoSlider.startAuto();
-            }
-        }
-
-        $imageGallery.hover(this.pauseAutoplay, this.resumeAutoplay);
-
         this.showImage = function (entry) {
             
             inDialog = true;
-            this.pauseAutoplay();
 
             cocktail.closeDialog();
             var dialog = this.createImageDialog(entry);
@@ -125,6 +107,8 @@ cocktail.bind({
                     $dialog.find(".image")
                         .width(image.width)
                         .height(image.height);
+                    $dialog.find(".footnote")
+                        .width(image.width);
                     $dialog.show();
                     cocktail.center(dialog);
                     $dialog
@@ -134,11 +118,6 @@ cocktail.bind({
                 },
                 true
             );
-
-            // Synchronize the gallery and the image dialog
-            if (this.sudoSlider) {
-                this.sudoSlider.goToSlide(jQuery(entry).index() + 1);
-            }
         }
 
         this.showPreviousImage = function (entry) {
@@ -170,7 +149,6 @@ cocktail.bind({
             $dialog.bind("dialogClosed", function () {
                 inDialog = false;
                 $entry.find(".image_link").focus();
-                var ig = $imageGallery.get(0).resumeAutoplay();
             });
 
             $dialog.find(".image").attr("src", imageURL);
@@ -284,22 +262,6 @@ cocktail.bind({
             );
 
             return $dialog.get(0);
-        }
-
-        if (this.galleryType == "slideshow" && !singleImage) {
-
-            this.sliderOptions.prevHtml = 
-                cocktail.instantiate("woost.views.ImageGallery.previous_button");
-
-            this.sliderOptions.nextHtml = 
-                cocktail.instantiate("woost.views.ImageGallery.next_button");
-
-            this.sudoSlider = $imageGallery.sudoSlider(this.sliderOptions);
-
-            // Move the navigation controls created by Sudo Slider into the gallery
-            $imageGallery.next()
-                .addClass("slideshow_controls")
-                .appendTo($imageGallery);
         }
 
         // Image pre-loading

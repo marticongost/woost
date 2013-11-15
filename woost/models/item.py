@@ -18,14 +18,10 @@ from cocktail.persistence import (
     PersistentMapping,
     MaxValue
 )
+from cocktail.controllers import make_uri, percent_encode_uri, Location
 from woost.models.changesets import ChangeSet, Change
 from woost.models.action import Action
-
-# Extension property that allows changing the controller that handles a
-# collection in the backoffice
-schema.Collection.edit_controller = \
-    "woost.controllers.backoffice.collectioncontroller." \
-    "CollectionController"
+from woost.models.usersession import get_current_user
 
 # Extension property that makes it easier to customize the edit view for a
 # collection in the backoffice
@@ -66,17 +62,28 @@ class Item(PersistentObject):
     # entries for this content type in the type selector
     collapsed_backoffice_menu = False
 
+    # Customization of the heading for BackOfficeItemView
+    backoffice_heading_view = "woost.views.BackOfficeItemHeading"
+
+    # Customization of the backoffice preview action
+    preview_view = "woost.views.BackOfficePreviewView"
+    preview_controller = "woost.controllers.backoffice." \
+        "previewcontroller.PreviewController"
+
     def __translate__(self, language, **kwargs):
-        if self.draft_source is not None:
-            return translations(
-                "woost.models.Item draft copy",
-                language,
-                item = self.draft_source,
-                draft_id = self._draft_id,
-                **kwargs
-            )
+        if kwargs.get("discard_generic_translation", False):
+            return ""
         else:
-            return PersistentObject.__translate__(self, language, **kwargs)
+            if self.draft_source is not None:
+                return translations(
+                    "woost.models.Item draft copy",
+                    language,
+                    item = self.draft_source,
+                    draft_id = self._draft_id,
+                    **kwargs
+                )
+            else:
+                return PersistentObject.__translate__(self, language, **kwargs)
 
     # Unique qualified name
     #--------------------------------------------------------------------------
@@ -483,7 +490,7 @@ class Item(PersistentObject):
 
     _preserved_members = frozenset([changes])
 
-    def _should_cascade_delete(self, member):
+    def _should_cascade_delete_member(self, member):
         return member.cascade_delete and not self.is_draft
 
     def _should_erase_member(self, member):
@@ -507,6 +514,106 @@ class Item(PersistentObject):
         listed_by_default = False,
         member_group = "administration"
     )
+
+    # URLs
+    #--------------------------------------------------------------------------     
+    def get_image_uri(self,
+        image_factory = None,
+        parameters = None,
+        encode = True,
+        include_extension = True,
+        host = None,):
+                
+        uri = make_uri("/images", self.id)
+        ext = None
+
+        if image_factory:
+            if isinstance(image_factory, basestring):
+                pos = image_factory.rfind(".")
+                if pos != -1:
+                    ext = image_factory[pos + 1:]
+                    image_factory = image_factory[:pos]
+                
+                from woost.models.rendering import ImageFactory
+                image_factory = \
+                    ImageFactory.require_instance(identifier = image_factory)
+
+            uri = make_uri(
+                uri,
+                image_factory.identifier or "factory%d" % image_factory.id
+            )
+
+        if include_extension:
+            from woost.models.rendering.formats import (
+                formats_by_extension,
+                extensions_by_format,
+                default_format
+            )
+
+            if not ext and image_factory and image_factory.default_format:
+                ext = extensions_by_format[image_factory.default_format]
+
+            if not ext:
+                ext = getattr(self, "file_extension", None)
+
+            if ext:
+                ext = ext.lower().lstrip(".")
+
+            if not ext or ext not in formats_by_extension:
+                ext = extensions_by_format[default_format]
+
+            uri += "." + ext
+
+        if parameters:
+            uri = make_uri(uri, **parameters)
+
+        return self._fix_uri(uri, host, encode)
+
+    def _fix_uri(self, uri, host, encode):
+
+        if encode:
+            uri = percent_encode_uri(uri)
+
+        if host:
+            if host == ".":
+                location = Location.get_current_host()
+
+                from woost.models import Site
+                site = Site.main
+                policy = site.https_policy
+
+                if (
+                    policy == "always"
+                    or (
+                        policy == "per_page" and (
+                            self.requires_https
+                            or not get_current_user().anonymous
+                        )
+                    )
+                ):
+                    location.scheme = "https"
+                else:
+                    location.scheme = "http"
+
+                host = str(location)
+            elif not "://" in host:
+                host = "http://" + host
+
+            uri = make_uri(host, uri)
+        elif "://" not in uri:
+            uri = make_uri("/", uri)
+
+        return uri
+
+    copy_excluded_members = set([
+        is_draft,
+        drafts,
+        changes,
+        author,
+        owner,
+        creation_time,
+        last_update_time
+    ])
 
 
 Item.id.versioned = False

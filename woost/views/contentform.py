@@ -7,6 +7,7 @@ u"""
 @since:			September 2008
 """
 from cocktail.schema import Collection, Reference
+from cocktail.translations import translations
 from cocktail.html import Element, templates
 
 Form = templates.get_class("cocktail.html.Form")
@@ -18,6 +19,7 @@ class ContentForm(Form):
 
     def __init__(self, *args, **kwargs):
         Form.__init__(self, *args, **kwargs)
+        self.set_member_type_display(Collection, self._get_collection_display)
         self.set_member_type_display(Reference, self._get_reference_display)
 
     def _resolve_member_display(self, obj, member):
@@ -29,6 +31,12 @@ class ContentForm(Form):
 
         return display
 
+    def _get_collection_display(self, obj, member):
+        if member.is_persistent_relation:
+            return "woost.views.ItemCollectionEditor"
+        else:
+            return "cocktail.html.CollectionEditor"
+
     def _get_reference_display(self, obj, member):
         if member.class_family is not None:
             display = templates.new("woost.views.ContentTypePickerDropdown")
@@ -37,4 +45,18 @@ class ContentForm(Form):
             display = "woost.views.ItemSelector"
     
         return display
+
+    def create_fieldset(self, group):
+        fieldset = Form.create_fieldset(self, group)
+        fieldset.set_client_param("group", group)
+        return fieldset
+
+    def get_group_label(self, group):
+
+        label = Form.get_group_label(self, group)
+
+        if not label and (not group or group == "default"):
+            label = translations(self.schema.original_member.name)
+        
+        return label
 

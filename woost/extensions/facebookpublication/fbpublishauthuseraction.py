@@ -115,8 +115,8 @@ class FBPublishAuthUserAction(UserAction):
                       % publication_target.graph_object_id
             response_data = urlopen(graph_url).read()
             json = loads(response_data)
-            fb_page_id = json["type"] == "page" and json["id"]
-            
+            fb_page_id = json["metadata"]["type"] == "page" and json["id"]
+
             location = Location.get_current(relative = False)
             location.query_string["item_action"] = self.id
 

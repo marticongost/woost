@@ -7,8 +7,14 @@
 @since:			January 2011
 -----------------------------------------------------------------------------*/
 
+cocktail.declare("woost");
+
+woost.editURI = function (itemId) {
+    return woost.backofficeURI + "/content/" + itemId + "?root_url=" + encodeURIComponent(location.href);
+}
+
 cocktail.bind(".EditPanel", function ($panel) {
-    
+
     this.getExpanded = function () {
         return $panel.hasClass("expanded");
     }

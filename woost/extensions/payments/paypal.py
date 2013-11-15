@@ -79,22 +79,34 @@ class PayPalPaymentGateway(PaymentGateway, Implementation):
         )
 
         payment = self.get_payment(payment_id)
-        order = payment.order
+        form_data = getattr(payment, 'paypal_form_data')
 
-        if order:
-            if order.address:
-                params.append(("address1", order.address[:100]))
+        if form_data:
+            if "email" in form_data:
+                params.append(("email", form_data["email"][:127]))
 
-            if order.town:
-                params.append(("city", order.town[:40]))
+            if "first_name" in form_data:
+                params.append(("first_name", form_data["first_name"][:32]))
 
-            if order.country and order.country.code:
-                params.append(("country", order.country.code))
+            if "last_name" in form_data:
+                params.append(("last_name", form_data["last_name"][:32]))
 
-            if order.postal_code:
-                params.append(("zip", order.postal_code[:32]))
+            if "address1" in form_data:
+                params.append(("address1", form_data["address1"][:100]))
 
-            if order.language:
-                params.append(("lc", order.language.upper()))
+            if "address2" in form_data:
+                params.append(("address2", form_data["address2"][:100]))
+
+            if "city" in form_data:
+                params.append(("city", form_data["city"][:40]))
+
+            if "country" in form_data:
+                params.append(("country", form_data["country"]))
+
+            if "zip" in form_data:
+                params.append(("zip", form_data["zip"][:32]))
+
+            if "lc" in form_data:
+                params.append(("lc", form_data["lc"].upper()))
 
         return url, params

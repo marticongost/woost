@@ -14,7 +14,8 @@ from optparse import OptionParser
 from cocktail.translations import translations
 from cocktail.persistence import (
     datastore,
-    mark_all_migrations_as_executed
+    mark_all_migrations_as_executed,
+    reset_incremental_id
 )
 from woost.models import (
     changeset_context,
@@ -50,6 +51,7 @@ from woost.models import (
     EmailTemplate,
     CachingPolicy,
     Extension,
+    rendering,
     load_extensions
 )
 
@@ -64,12 +66,16 @@ def init_site(
     languages = ("en",),
     uri = "/",
     template_engine = "cocktail",
-    extensions = ()):
+    extensions = (),
+    base_id = None):
  
     datastore.root.clear()
     datastore.commit()
     datastore.close()
     
+    if base_id:
+        reset_incremental_id(base_id)
+
     def set_translations(item, member, key, **kwargs):
         for language in languages:
             value = translations(
@@ -192,11 +198,10 @@ def init_site(
                 }
             ),
 
-            # Everybody can read published items
+            # Everybody can read publishable items
             ReadPermission(
                 matching_items = {
-                    "type": "woost.models.publishable.Publishable",
-                    "filter": "published"
+                    "type": "woost.models.publishable.Publishable"
                 }
             ),
             
@@ -205,12 +210,11 @@ def init_site(
             DeletePermission(matching_items = owned_items()),
             ConfirmDraftPermission(matching_items = owned_items()),
             
-            # All members allowed, except for 'local_path', 'controller' and 'qname'
+            # All members allowed, 'controller' and 'qname'
             ReadMemberPermission(
                 matching_members = [
                     "woost.models.item.Item.qname",
-                    "woost.models.publishable.Publishable.controller",
-                    "woost.models.file.File.local_path"
+                    "woost.models.publishable.Publishable.controller"
                 ],
                 authorized = False
             ),
@@ -595,6 +599,145 @@ def init_site(
         )
         file_gallery_view.insert()
     
+        # Renderers
+        #----------------------------------------------------------------------
+        content_renderer = rendering.ChainRenderer()
+        set_translations(
+            content_renderer,
+            "title",
+            "content_renderer"
+        )
+        content_renderer.renderers = [
+            rendering.ImageFileRenderer(),
+            rendering.PDFRenderer(),
+            rendering.VideoFileRenderer(),
+            rendering.ImageURIRenderer()
+        ]
+        content_renderer.insert()
+
+        icon16_renderer = rendering.IconRenderer()
+        icon16_renderer.icon_size = 16
+        set_translations(
+            icon16_renderer,
+            "title",
+            "icon16_renderer"
+        )
+        icon16_renderer.insert()
+
+        icon32_renderer = rendering.IconRenderer()
+        icon32_renderer.icon_size = 32
+        set_translations(
+            icon32_renderer,
+            "title",
+            "icon32_renderer"
+        )
+        icon32_renderer.insert()
+
+        site.renderers = [
+            content_renderer,
+            icon16_renderer,
+            icon32_renderer
+        ]
+
+        # Image factories
+        #----------------------------------------------------------------------
+        default_factory = rendering.ImageFactory(identifier = "default")
+        set_translations(default_factory, "title", "default_image_factory")
+        default_factory.insert()
+
+        icon16_factory = rendering.ImageFactory(
+            identifier = "icon16",
+            renderer = icon16_renderer
+        )
+        set_translations(icon16_factory, "title", "icon16_image_factory")
+        icon16_factory.insert()
+
+        icon32_factory = rendering.ImageFactory(
+            identifier = "icon32",
+            renderer = icon32_renderer
+        )
+        set_translations(icon32_factory, "title", "icon32_image_factory")
+        icon32_factory.insert()
+
+        backoffice_thumbnail_factory = rendering.ImageFactory(
+            identifier = "backoffice_thumbnail",
+            effects = [
+                rendering.Thumbnail(width = "100", height = "100"),
+                rendering.Frame(
+                    edge_width = 1,
+                    edge_color = "ddd",
+                    vertical_padding = "4",
+                    horizontal_padding = "4",
+                    background = "eee"
+                )
+            ],
+            fallback = icon32_factory
+        )
+        set_translations(
+            backoffice_thumbnail_factory,
+            "title",
+            "backoffice_thumbnail_image_factory"
+        )
+        backoffice_thumbnail_factory.insert()
+
+        backoffice_small_thumbnail_factory = rendering.ImageFactory(
+            identifier = "backoffice_small_thumbnail",
+            effects = [
+                rendering.Thumbnail(width = "32", height = "32")
+            ],
+            fallback = icon16_factory
+        )
+        set_translations(
+            backoffice_small_thumbnail_factory,
+            "title",
+            "backoffice_small_thumbnail_image_factory"
+        )
+        backoffice_small_thumbnail_factory.insert()
+
+        image_gallery_close_up_factory = rendering.ImageFactory(
+            identifier = "image_gallery_close_up",
+            effects = [
+                rendering.Fill(
+                    width = "900",
+                    height = "700",
+                    preserve_vertical_images = True
+                )
+            ]
+        )
+        set_translations(
+            image_gallery_close_up_factory,
+            "title",
+            "image_gallery_close_up_image_factory"
+        )
+        image_gallery_close_up_factory.insert()
+
+        image_gallery_thumbnail_factory = rendering.ImageFactory(
+            identifier = "image_gallery_thumbnail",
+            effects = [
+                rendering.Fill(
+                    width = "200",
+                    height = "150",
+                    preserve_vertical_images = True
+                )
+            ]
+        )
+        set_translations(
+            image_gallery_thumbnail_factory,
+            "title",
+            "image_gallery_thumbnail_image_factory"
+        )
+        image_gallery_thumbnail_factory.insert()
+
+        site.image_factories = [
+            default_factory,
+            icon16_factory,
+            icon32_factory,
+            backoffice_thumbnail_factory,
+            backoffice_small_thumbnail_factory,
+            image_gallery_close_up_factory,
+            image_gallery_thumbnail_factory
+        ]
+
     # Enable the selected extensions
     if extensions:
         load_extensions()
@@ -622,7 +765,10 @@ def main():
     parser.add_option("-e", "--extensions",
         default = "",
         help = "The list of extensions to enable")
-    
+    parser.add_option("-b", "--base-id",
+        type = int,
+        help = "Seed the incremental ID sequence at a non-zero value")
+
     options, args = parser.parse_args()
 
     admin_email = options.user
@@ -644,7 +790,8 @@ def main():
         admin_password,
         languages.split(),
         template_engine = options.template_engine,
-        extensions = options.extensions.split(",")
+        extensions = options.extensions.split(","),
+        base_id = options.base_id
     )
     
     print u"Your site has been successfully created. You can start it by " \

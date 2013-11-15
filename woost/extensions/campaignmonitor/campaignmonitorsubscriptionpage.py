@@ -39,7 +39,6 @@ class CampaignMonitorSubscriptionPage(Document):
         items = schema.Reference(
             type = CampaignMonitorList
         ),
-        edit_inline = True,
         member_group = "content",
         listed_by_default = False
     )   
