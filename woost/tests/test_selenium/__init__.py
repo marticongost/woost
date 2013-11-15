@@ -18,8 +18,9 @@ from cocktail.tests.seleniumtester import (
     get_selenium_site_address,
     browser
 )
+from woost import app
 from woost.models.initialization import init_site
-from woost.controllers.application import CMS
+from woost.controllers.cmscontroller import CMSController
 
 # Site defaults
 admin_email = "admin@localhost"
@@ -45,11 +46,11 @@ def setup_package():
         return
 
     # Create a temporary folder to hold site files
-    global _site_temp_path
-    _site_temp_path = mkdtemp()
+    _site_temp_path= mkdtemp()
+    app.root = _site_temp_path
 
     # Set up a temporary database
-    datastore.storage = FileStorage(join(_site_temp_path, "testdb.fs"))
+    datastore.storage = FileStorage(app.path("testdb.fs"))
 
     # Initialize site content before testing
     init_site(
@@ -69,7 +70,7 @@ def setup_package():
     })
 
     # Configure the application
-    cms = CMS(application_path = _site_temp_path)
+    cms = CMSController()
     cms.closing_item_requires_confirmation = False
 
     # Launch the site's webserver on another thread
@@ -84,11 +85,16 @@ def teardown_package():
     cherrypy.server.stop()
     cherrypy.engine.exit()
 
-    # Remove temporary site files
-    try:
-        rmtree(_site_temp_path)
-    except Exception:
-        # TODO: removal of the temporary directory fails on windows, find a
-        # way to make it work
-        pass
+    # Remove temporary site files:
+    # This will often fail on Windows, probably because we try to delete a
+    # running executable, so delay & retry a limited number of times, to give
+    # any running process a chance to end.
+    for i in range(5):
+        try:
+            rmtree(_site_temp_path)
+        except Exception:
+            from time import sleep
+            sleep(1)
+        else:
+            break
 

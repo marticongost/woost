@@ -110,7 +110,7 @@ class BackOfficeController(BaseBackOfficeController):
                     output.append(
                         [
                             item.get("title", language),
-                            cms.uri(item)
+                            item.get_uri()
                         ]
                     )
 

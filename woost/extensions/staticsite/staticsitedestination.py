@@ -19,6 +19,7 @@ from cocktail.modeling import abstractmethod
 from cocktail.translations import get_language
 from cocktail.persistence import PersistentMapping
 from cocktail.controllers import context as controller_context
+from woost import app
 from woost.models import Item, File, get_current_user
 from woost.models.file import file_hash
 from woost.models.changesets import changeset_context
@@ -554,12 +555,8 @@ class ZipDestination(StaticSiteDestination):
         )
 
         # Close the zip file before export it to the CMS
-        context["zip_file"].close()
-
-        upload_path = os.path.join(
-            controller_context["cms"].application_path,
-            u"upload"
-        )
+        context["zip_file"].close()        
+        upload_path = app.path("upload")
 
         with changeset_context(get_current_user()):
             file = File.from_path(

@@ -121,3 +121,51 @@ step.rename_member(
     "attachments"
 )
 
+#------------------------------------------------------------------------------
+
+step = MigrationStep(
+    "Apply full text indexing to elements with no translations"
+)
+
+@when(step.executing)
+def rebuild_full_text_index(e):
+    from woost.models import Item
+    Item.rebuild_full_text_indexes(True)
+
+#------------------------------------------------------------------------------
+
+step = MigrationStep(
+    "Replace EmailTemplate.attachments with EmailTemplate.initialization_code"
+)
+
+@when(step.executing)
+def relocate_attachments_code(e):
+    from woost.models import EmailTemplate
+
+    for email_template in EmailTemplate.select():
+        code = getattr(email_template, "_attachments", None)
+        if code:
+            del email_template._attachments
+            if email_template.initialization_code:
+                code = email_template.initialization_code + "\n\n" + code
+            email_template.initialization_code = code
+
+#------------------------------------------------------------------------------
+
+step = MigrationStep(
+    "Added the Role.implicit member"
+)
+
+@when(step.executing)
+def flag_implicit_roles(e):
+    from woost.models import Role
+
+    implicit_roles_qnames = set((
+        "woost.anonymous",
+        "woost.everybody",
+        "woost.authenticated"
+    ))
+
+    for role in Role.select():
+        role.implicit = (role.qname in implicit_roles_qnames)
+

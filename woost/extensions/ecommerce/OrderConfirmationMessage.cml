@@ -100,7 +100,6 @@ from woost.models import Site
         py:id="checkout_table"
         py:schema="@{self.summary_schema}"
         py:data="@{self.order}"
-        py:translated_values="${True}"
         cellspacing="0"
         cellpadding="5"
         width="100%">

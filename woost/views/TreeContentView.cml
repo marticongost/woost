@@ -52,24 +52,25 @@ from cocktail import schema
             # Set the root of the tree to any item that satisfies the query, or
             # that has one or more descendants that do. If self.root is set,
             # use it to further constraint the root of the tree.
-            items = OrderedSet(self.user_collection.subset)
-            element.filter_item = items.__contains__
+            subset = self.user_collection.subset
+            accessible_items = set(subset)
+            element.filter_item = accessible_items.__contains__
             
             if self.root is not None and not self.root:
                 # Empty root, no point in evaluating descending nodes
                 element.data = []
             else:
-                element.data = root = OrderedSet()
-                
-                for item in items:
-                    while True:
-                        parent = item.get(parent_member)
-                        if parent is None:
-                            if self.root is None or item in self.root:
-                                root.append(item)
-                            break
-                        else:
-                            item = parent
+                def is_visible_branch(item):
+                    if item in accessible_items:
+                        return True
+                    else:
+                        return any(
+                            is_visible_branch(child) 
+                            for child in item.get(self.children_collection)
+                        )
+
+                root = self.root or subset.type.select(parent_member.equal(None))
+                element.data = [item for item in root if is_visible_branch(item)]
             ?>
         </py:binding>
     </py:woost.views.ContentTree>

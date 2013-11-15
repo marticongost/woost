@@ -6,7 +6,7 @@
 @organization:	Whads/Accent SL
 @since:			September 2009
 """
-from cocktail.events import event_handler, when
+from cocktail.events import when
 from cocktail.modeling import underscore_to_capital
 from cocktail.translations import (
     translations,
@@ -60,10 +60,9 @@ class ECommerceExtension(Extension):
             "en"
         )
 
-    @event_handler
-    def handle_loading(cls, event):
+    def _load(self):
 
-        extension = event.source
+        extension = self
 
         from woost.extensions.ecommerce import (
             strings,
@@ -71,7 +70,8 @@ class ECommerceExtension(Extension):
             ecommerceorder,
             ecommercepurchase,
             ecommercebillingconcept,
-            ecommerceordercompletedtrigger
+            ecommerceordercompletedtrigger,
+            imagefactories
         )
         from woost.extensions.ecommerce.ecommerceorder import ECommerceOrder
 
@@ -151,9 +151,7 @@ class ECommerceExtension(Extension):
             extension._setup_payment_gateway()
         
         # Create the pages for the shop the first time the extension runs
-        if not extension.installed:
-            extension.create_content()
-            datastore.commit()
+        self.install()
 
     def _setup_payment_gateway(self):
             
@@ -212,7 +210,7 @@ class ECommerceExtension(Extension):
         events.insert(pos, receive_order_payment)
         events.insert(pos + 2, commit_order_payment)
 
-    def create_content(self):
+    def _install(self):
         
         catalog = self._create_document("catalog")
         catalog.controller = self._create_controller("catalog")

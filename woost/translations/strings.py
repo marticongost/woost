@@ -557,11 +557,80 @@ translations.define(
     en = u"Can't insert an element into itself."
 )
 
+def _selection_error_ca(instance):    
+    if instance.action.min and instance.selection_size < instance.action.min:
+        bound = instance.action.min
+        bound_label = "mínim"
+    else:
+        bound = instance.action.max
+        bound_label = "màxim"
+
+    return u"No es pot %s una selecció %s; el %s és %s" % (
+        translations(instance.action).lower(),
+        plural2(
+            instance.selection_size, 
+            "d'un sol element", 
+            "de %d elements" % instance.selection_size
+        ),
+        bound_label,
+        plural2(
+            bound,
+            "d'un element",
+            "de %d elements" % bound
+        )
+    )
+
+def _selection_error_es(instance):    
+    if instance.action.min and instance.selection_size < instance.action.min:
+        bound = instance.action.min
+        bound_label = "mínimo"
+    else:
+        bound = instance.action.max
+        bound_label = "máximo"
+
+    return u"No se puede %s una selección de %s; el %s es de %s" % (
+        translations(instance.action).lower(),
+        plural2(
+            instance.selection_size, 
+            "a single element", 
+            "%d elements" % instance.selection_size
+        ),
+        bound_label,
+        plural2(
+            bound,
+            "un elemento",
+            "%d elementos" % bound
+        )
+    )
+
+def _selection_error_en(instance):    
+    if instance.action.min and instance.selection_size < instance.action.min:
+        bound = instance.action.min
+        bound_label = "at least"
+    else:
+        bound = instance.action.max
+        bound_label = "no more than"
+
+    return u"Can't %s a selection consisting of %s; must select %s %s" % (
+        translations(instance.action).lower(),
+        plural2(
+            instance.selection_size, 
+            "a single element", 
+            "%d elements" % instance.selection_size
+        ),
+        bound_label,
+        plural2(
+            bound,
+            "one element",
+            "%d elements" % bound
+        )
+    )
+
 translations.define(
     "woost.controllers.backoffice.useractions.SelectionError-instance",
-    ca = lambda instance: u"Acció no disponible en el context actual",
-    es = lambda instance: u"Acción no disponible en el contexto actual",
-    en = lambda instance: u"Action not available in the current context"
+    ca = _selection_error_ca,
+    es = _selection_error_es,
+    en = _selection_error_en
 )
 
 translations.define(
@@ -586,50 +655,42 @@ translations.define(
     en = u"Restricted field"
 )
 
-translations.define("woost.views.BackOfficeDeleteView warning",
-    ca = u"S'eliminarà els elements llistats:",
-    es = u"Se eliminará los elementos listados:",
-    en = u"The listed elements will be deleted:"
+translations.define("woost.views.BackOfficeDeleteView.warning",
+    ca = u"S'eliminaran els elements indicats:",
+    es = u"Se eliminarán los elementos indicados:",
+    en = u"The following elements will be deleted:"
 )
 
-translations.define("woost.views.BackOfficeDeleteView blocked_delete",
-    ca = u"No es pot completar l'eliminació, ja que els elements següents "
-         u"tenen vinculacions que impedeixen que puguin ser eliminats:",
-    es = u"No se puede completar la eliminación, ya que los elementos "
-         u"siguientes tienen vinculaciones que impiden que puedan ser "
-         u"eliminados:",
+translations.define("woost.views.BackOfficeDeleteView.block_notice",
+    ca = u"No es pot completar l'eliminació, ja que alguns dels elements  "
+         u"seleccionats tenen contingut relacionat que impedeix que puguin "
+         u"ser eliminats:",
+    es = u"No se puede completar la eliminación, ya que algunos de los "
+         u"elementos seleccionados contienen vinculaciones que impiden que "
+         u"puedan ser eliminados:",
     en = u"The delete operation could not be executed; it is blocked by the "
          u"the following relations:"
 )
 
-translations.define("woost.views.BackOfficeDeleteView blocked_delete_item",
-    ca = lambda blocked_item, blocked_member: u"<em>%s</em> de l'element \
-        <strong>%s</strong>" \
-        % (
-            translations(blocked_member, "ca"),
-            translations(blocked_item, "ca")
-        ),
-    es = lambda blocked_item, blocked_member: u"<em>%s</em> de l'elemento \
-        <strong>%s</strong>" \
-        % (
-            translations(blocked_member, "es"),
-            translations(blocked_item, "es")
-        ),
-    en = lambda blocked_item, blocked_member: u"<em>%s</em> from the \
-        <strong>%s</strong> element" \
-        % (
-            translations(blocked_member, "en"),
-            translations(blocked_item, "en")
-        ),
+translations.define("woost.views.BackOfficeDeleteView.cascade_details",
+    ca = u"També eliminarà:",
+    es = u"También eliminará:",
+    en = u"Will also delete:"
 )
 
-translations.define("woost.views.BackOfficeDeleteView delete",
+translations.define("woost.views.BackOfficeDeleteView.block_details",
+    ca = u"Bloquejat per:",
+    es = u"Bloqueado por:",
+    en = u"Blocked by:"
+)
+
+translations.define("woost.views.BackOfficeDeleteView.confirm_delete_button",
     ca = u"Eliminar",
     es = u"Eliminar",
     en = u"Delete"
 )
 
-translations.define("woost.views.BackOfficeDeleteView cancel",
+translations.define("woost.views.BackOfficeDeleteView.cancel_button",
     ca = u"Cancel·lar",
     es = u"Cancelar",
     en = u"Cancel"
@@ -948,12 +1009,12 @@ translations.define(
 
 translations.define(
     "woost.models.initialization Password Change page body",
-    ca = u"""<p>Introdueix a continuació la teva adreça de correu electrònic per
-        iniciar el procés de canvi de contrasenya</p>""",
-    es = u"""<p>Introduce a continuación tu dirección de correo electrónico
-        para iniciar el proceso de cambio de contraseña</p>""",
-    en = u"""<p>Enter your email address below to start the password change
-        process</p>"""
+    ca = u"<p>Introdueix el teu identificador d'usuari per iniciar el "
+         u"procés de canvi de contrasenya</p>",
+    es = u"<p>Introduce a tu identificador de usuario para iniciar el "
+         u"proceso de cambio de contraseña</p>",
+    en = u"<p>Enter your user identifier below to start the password "
+         u"change process</p>"""
 )
 
 translations.define(
@@ -1387,9 +1448,9 @@ translations.define("woost.views.StandardView fallback language notice",
 )
 
 translations.define("woost.views.StandardView.phone_number",
-    ca = u"Tel:",
-    es = u"Tel:",
-    en = u"Telephone:"
+    ca = u"Tel",
+    es = u"Tel",
+    en = u"Telephone"
 )
 
 translations.define("UploadFilesForm.upload",
@@ -1714,6 +1775,12 @@ translations.define("Site.backoffice_language",
     ca = u"Idioma per defecte pel gestor de continguts",
     es = u"Idioma por defecto para el gestor de contenidos",
     en = u"Backoffice default language"
+)
+
+translations.define("Site.heed_client_language",
+    ca = u"Respectar les preferències d'idioma del navegador",
+    es = u"Respetar las preferencias de idioma del navegador",
+    en = u"Heed the language preferences from the browser"
 )
 
 translations.define("Site.home",
@@ -2256,6 +2323,24 @@ translations.define("Publishable.caching_policy-explanation",
          u"back to the site wide caching policy." 
 )
 
+translations.define("Publishable.login_page",
+    ca = u"Pàgina d'autorització",
+    es = u"Página de autorización",
+    en = u"Authorization page"
+)
+
+translations.define("Publishable.login_page-explanation",
+    ca = u"Permet dotar l'element i les seves pàgines filles d'una pàgina "
+         u"d'autenticació pròpia. Deixar buit per utilitzar el mateix "
+         u"formulari que la resta del lloc web.",
+    es = u"Permite dotar al elemento y a sus páginas hijas de una página "
+         u"de autenticación propia. Dejar vacío para utilizar el mismo "
+         u"formulario que el resto del sitio.",
+    en = u"If set, indicates an alternative authentication page to use when "
+         u"restricting access to this element or its descending pages. Leave "
+         u"blank to use the same authentication form as the rest of the site."
+)
+
 # Page
 #------------------------------------------------------------------------------
 translations.define("Document",
@@ -2619,6 +2704,20 @@ translations.define(
 )
 
 translations.define(
+    "woost.models.permission.RenderPermission-instance",
+    ca = content_permission_translation_factory(
+        "ca",
+        lambda permission, subject, **kwargs:
+            u"generar imatges " + ca_possessive(subject)
+    ),
+    es = content_permission_translation_factory(
+        "es",
+        u"generar imágenes de %s"
+    ),
+    en = content_permission_translation_factory("en", u"render %s")
+)
+
+translations.define(
     "woost.models.permission.ReadMemberPermission-instance",
     ca = member_permission_translation_factory("ca",
         lambda instance, subject, **kwargs:
@@ -2820,6 +2919,35 @@ translations.define("ConfirmDraftPermission-plural",
     ca = u"Permisos de confirmació d'esborranys",
     es = u"Permisos de confirmación de borradores",
     en = u"Confirm draft permissions"
+)
+
+# RenderPermission
+#------------------------------------------------------------------------------
+translations.define("RenderPermission",
+    ca = u"Permís de visualització d'imatges",
+    es = u"Permiso de visualización de imágenes",
+    en = u"Render permission"
+)
+
+translations.define("RenderPermission-plural",
+    ca = u"Permisos de visualització d'imatges",
+    es = u"Permisos de visualización de imágenes",
+    en = u"Render permissions"
+)
+
+translations.define("RenderPermission.image_factories",
+    ca = u"Processat",
+    es = u"Procesado",
+    en = u"Processing"
+)
+
+translations.define("RenderPermission.image_factories-explanation",
+    ca = u"Limita el permís o prohibició a un subconjunt de les diferents "
+         u"visualitzacions suportades pel lloc web.",
+    es = u"Limita el permiso o prohibición a un subconjunto de las distintas "
+         u"visualizaciones soportadas por el sitio web.",
+    en = u"Limits the permission to a specific subset of the different "
+         u"renderings supported by the site."
 )
 
 # MemberPermission
@@ -3132,7 +3260,7 @@ translations.define("BackOfficeEditForm.upload",
 translations.define("woost.views.ImageEffectsEditor.edit_button",
     ca = u"Editar imatge",
     es = u"Editar imagen",
-    en = u"Image edit"
+    en = u"Edit image effects"
 )
 
 translations.define("woost.views.ImageEffectsEditor-crop_effect",
@@ -3404,6 +3532,28 @@ translations.define("Role.child_roles",
     en = u"Derived roles"
 )
 
+translations.define("Role.hidden_content_types",
+    ca = u"Tipus ocults",
+    es = u"Tipos ocultos",
+    en = u"Hidden content types"
+)
+
+translations.define("Role.hidden_content_types-explanation",
+    ca = u"Una llista de tipus de contingut que no es mostraran a l'usuari. "
+         u"Utilitzat per filtrar les entrades del menú principal del gestor.",
+    es = u"Una lista de tipos de contenido que no se mostrarán al usuario. "
+         u"Utilizado para filtrar las entradas del menú principal del gestor.",
+    en = u"A list of content types that will be hidden from the user. Used to "
+         u"filter the visible entries in the main menu for the back office "
+         u"interface."
+)
+
+translations.define("Role.implicit",
+    ca = u"Implícit",
+    es = u"Implícito",
+    en = u"Implicit"
+)
+
 # Template
 #------------------------------------------------------------------------------
 translations.define("Template",
@@ -3496,6 +3646,12 @@ translations.define("Language.iso_code",
     ca = u"Codi ISO",
     es = u"Código ISO",
     en = u"ISO code"
+)
+
+translations.define("Language.enabled",
+    ca = u"Actiu",
+    es = u"Activo",
+    en = u"Enabled"
 )
 
 translations.define("Language.fallback",
@@ -3872,6 +4028,21 @@ translations.define("Trigger.condition-explanation",
          u"the trigger depending on its context."
 )
 
+translations.define("Trigger.custom_context",
+    ca = u"Context",
+    es = u"Contexto",
+    en = u"Context"
+)
+
+translations.define("Trigger.custom_context-explanation",
+    ca = u"Un bloc de codi Python que permet personalitzar els paràmetres "
+         u"que es passaran al disparador en el moment en que sigui executat.",
+    es = u"Un bloque de código Python que permite personalizar los parámetros "
+         u"que recibirá el disparador en el momento en que sea ejecutado.",
+    en = u"A block of Python code that allows to customize the parameters "
+         u"that the trigger will receive when it is finally executed."
+)
+
 translations.define("Trigger.responses",
     ca = u"Respostes",
     es = u"Respuestas",
@@ -4002,6 +4173,20 @@ translations.define("DeleteTrigger-plural",
     en = u"Delete triggers"
 )
 
+# ConfirmDraftTrigger
+#------------------------------------------------------------------------------
+translations.define("ConfirmDraftTrigger",
+    ca = u"Disparador de confirmació d'esborrany",
+    es = u"Disparador de confirmación de borrador",
+    en = u"Draft confirmation trigger"
+)
+
+translations.define("ConfirmDraftTrigger-plural",
+    ca = u"Disparadors de confirmació d'esborrany",
+    es = u"Disparadores de confirmación de borrador",
+    en = u"Draft confirmation triggers"
+)
+
 # TriggerResponse
 #------------------------------------------------------------------------------
 translations.define("TriggerResponse",
@@ -4112,16 +4297,32 @@ translations.define("EmailTemplate.subject",
     en = u"Subject"
 )
 
-translations.define("EmailTemplate.attachments",
-    ca = u"Fitxers adjunts",
-    es = u"Ficheros adjuntos",
-    en = u"Attachments"
-)
-
 translations.define("EmailTemplate.body",
     ca = u"Cos del missatge",
     es = u"Cuerpo del mensaje",
     en = u"Message body"
+)
+
+translations.define("EmailTemplate.initialization_code",
+    ca = u"Codi d'inicialització",
+    es = u"Código de inicialización",
+    en = u"Initialization code"
+)
+
+translations.define("EmailTemplate.initialization_code-explanation",
+    ca = u"Un bloc de codi Python que permet modificar el context que es "
+         u"facilita a la resta de camps durant la construcció del missatge "
+         u"(útil per definir variables complexes i valors comuns a diferents "
+         u"camps o traduccions).",
+    es = u"Un bloque de código Python que permite modificar el contexto que "
+         u"se facilita al resto de campos durante la construcción del "
+         u"mensaje (útil para definir variables complejas o valores comunes a "
+         u"distintos campos o traducciones).",
+    en = u"A block of Python code that makes it possible to modify the "
+         u"context supplid to the other fields when the message is "
+         u"constructed (useful in order to more comfortably define complex "
+         u"variables or values that must be shared across fields or "
+         u"translations)."
 )
 
 # Feed
@@ -4296,10 +4497,25 @@ translations.define(
 )
 
 translations.define(
-    "woost.controllers.passwordchangecontroller.UserIdentifierNotRegisteredError-instance",
+    "woost.controllers.passwordchangecontroller."
+    "UserIdentifierNotRegisteredError-instance",
     ca = u"No existeix cap usuari amb aquest identificador",
     es = u"No existe ningún usuario registrado con este identificador",
     en = u"There is no user with the indicated identifier"
+)
+
+translations.define(
+    "woost.controllers.passwordchangecontroller."
+    "UserEmailMissingError-instance",
+    ca = u"L'usuari que has indicat no té cap adreça de correu electrònic "
+         u"associada: no es pot canviar la seva contrasenya a través "
+         u"d'aquest formulari.",
+    es = u"El usuario que has indicado no tiene ninguna dirección de "
+         u"correo electrónico asociada: no se puede cambiar su contraseña a "
+         u"través de este formulario.",
+    en = u"The user you indicated has no known e-mail address. Only users "
+         u"with verified e-mail addresses can use this form to change their "
+         u"password."
 )
 
 translations.define(
@@ -4327,5 +4543,85 @@ translations.define("woost.views.EditPanel.actions_title",
     ca = u"Accions",
     es = u"Acciones",
     en = u"Actions"
+)
+
+# Image factories
+#------------------------------------------------------------------------------
+translations.define("woost.image_factory.default",
+    ca = u"Imatge sense modificar",
+    es = u"Imagen sin modificar",
+    en = u"Unmodified image"
+)
+
+translations.define("woost.image_factory.icon16",
+    ca = u"Icona de 16x16",
+    es = u"Icono de 16x16",
+    en = u"16x16 icon"
+)
+
+translations.define("woost.image_factory.icon32",
+    ca = u"Icona de 32x32",
+    es = u"Icono de 32x32",
+    en = u"32x32 icon"
+)
+
+translations.define("woost.image_factory.backoffice_thumbnail",
+    ca = u"Miniatura del panell d'administració",
+    es = u"Miniatura del panel de administración",
+    en = u"Backoffice thumbnail"
+)
+
+translations.define("woost.image_factory.backoffice_small_thumbnail",
+    ca = u"Miniatura petita del panell d'administració",
+    es = u"Miniatura pequeña del panel de administración",
+    en = u"Backoffice small thumbnail"
+)
+
+translations.define("woost.image_factory.image_gallery_close_up",
+    ca = u"Ampliació estàndar de la galeria d'imatges",
+    es = u"Ampliación estándar de la galería de imágenes",
+    en = u"Standard image gallery close up"
+)
+
+translations.define("woost.image_factory.image_gallery_thumbnail",
+    ca = u"Miniatura estàndar de la galeria d'imatges",
+    es = u"Miniatura estándar de la galería de imágenes",
+    en = u"Standard image gallery thumbnail"
+)
+
+# Agreement to terms & conditions
+#------------------------------------------------------------------------------
+translations.define("woost.controllers.formagreement",
+    ca = lambda member:
+        u"He llegit i accepto "
+        u"<a href='%s' target='_blank'>els termes i condicions</a> "
+        u"d'aquest formulari"
+        % member.agreement_document.get_uri(),
+    es = lambda member:
+        u"He leído y acepto "
+        u"<a href='%s' target='_blank'>los términos y condiciones</a> "
+        u"de este formulario"
+        % member.agreement_document.get_uri(),
+    en = lambda member:
+        u"I have read and agree to the "
+        u"<a href='%s' target='_blank'>terms and conditions</a> "
+        u"of this form"
+        % member.agreement_document.get_uri()
+)
+
+translations.define(
+    "woost.controllers.formagreement.ConsentNotGivenError-instance",
+    ca = lambda instance:
+        u"Has d'acceptar <a href='%s' target='_blank'>els termes i "
+        u"condicions</a> del formulari" 
+        % instance.member.agreement_document.get_uri(),
+    es = lambda instance:
+        u"Debes aceptar <a href='%s' target='_blank'>los términos y "
+        u"condiciones</a> de este formulario"
+        % instance.member.agreement_document.get_uri(),
+    en = lambda instance:
+        u"You must accept the <a href='%s' target='_blank'>terms & conditions "
+        u"</a> of the form"
+        % instance.member.agreement_document.get_uri()
 )
 

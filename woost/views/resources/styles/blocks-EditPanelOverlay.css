@@ -33,6 +33,11 @@
     color: #555;
 }
 
+.EditPanel .block_tree .disabled_block .entry_label {
+    color: #666 !important;
+    font-style: italic;
+}
+
 .scripted .EditPanel .block_tree .entry_label {
     color: black;
     text-decoration: none;

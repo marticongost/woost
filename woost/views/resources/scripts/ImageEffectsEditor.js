@@ -28,7 +28,7 @@ cocktail.bind(".ImageEffectsEditor", function ($editor) {
                 applyStack($editor.get(0).stack);
             }
 
-            $dialog.find(".image_processor_button").first().focus();
+            $dialog.find(".image_effect_button").first().focus();
             $editor.get(0).repaint();
         })
         .appendTo($editor);
@@ -46,9 +46,9 @@ cocktail.bind(".ImageEffectsEditor", function ($editor) {
             $dialog.find(".status_bar").empty();
         });
 
-        $dialog.find(".image_processor_button")
+        $dialog.find(".image_effect_button")
             .click(function () {
-                createProcessorControl(this.imageProcessor, function () {
+                createEffectControl(this.imageEffect, function () {
                     jQuery(this).find("input").first().focus();
                 });
             });
@@ -70,10 +70,10 @@ cocktail.bind(".ImageEffectsEditor", function ($editor) {
         return dialog;
     }
 
-    function createProcessorControl(imageProcessor, callback) {
+    function createEffectControl(imageEffect, callback) {
 
-        var processorControl = cocktail.instantiate(
-            "woost.views.ImageEffectsEditor-" + imageProcessor + "Control",
+        var effectControl = cocktail.instantiate(
+            "woost.views.ImageEffectsEditor-" + imageEffect + "Control",
             null,
             function () {
                 jQuery(this)
@@ -81,28 +81,28 @@ cocktail.bind(".ImageEffectsEditor", function ($editor) {
                     .appendTo($dialog.find(".stack_box"));
             }
         );
-        processorControl.imageProcessor = imageProcessor;
+        effectControl.imageEffect = imageEffect;
         var stackBox = $dialog.find(".stack_box").get(0);
         stackBox.scrollTop = stackBox.scrollHeight;
-        jQuery(processorControl)
+        jQuery(effectControl)
             .show("fast", function () {
                 if (callback) {
-                    callback.call(processorControl);
+                    callback.call(effectControl);
                 }
                 stackBox.scrollTop = stackBox.scrollHeight;
             });
         
-        return processorControl;
+        return effectControl;
     }
 
     this.repaint = function () {        
         var stack = getStack();
-        var imageURI = "/images/" + $editor.get(0).editedItemId + "/" + serializeStack(stack) + "?apply=off&cache=off";
+        var imageURI = "/image_effects/" + $editor.get(0).editedItemId + "/" + serializeStack(stack) + "?override=true";
         $dialog.find(".status_bar").html(cocktail.translate("woost.views.ImageEffectsEditor-loading"));
         $dialog.find(".edited_image").attr("src", imageURI);
     }
     
-    this.removeProcessor = function (index) {
+    this.removeEffect = function (index) {
         var $control = jQuery($dialog.find(".stack_box").get(0).childNodes[index]);
         $control.hide("fast", function () {
             $control.remove();
@@ -128,16 +128,16 @@ cocktail.bind(".ImageEffectsEditor", function ($editor) {
         $effectsSummary.empty();
         var stack = $editor.get(0).stack;
         for (var i = 0; i < stack.length; i++) {
-            var imageProcessor = stack[i][0];
+            var imageEffect = stack[i][0];
             jQuery("<div class='effects_summary_entry'>")
                 .append(
                     jQuery("<img>")
-                        .attr("src", "/resources/images/image-processor-" + imageProcessor + ".png")
+                        .attr("src", "/resources/images/image-effect-" + imageEffect + ".png")
                         .attr("alt", "")
                 )
                 .append(
                     jQuery("<span>")
-                        .html(cocktail.translate("woost.views.ImageEffectsEditor-" + imageProcessor + "_effect"))
+                        .html(cocktail.translate("woost.views.ImageEffectsEditor-" + imageEffect + "_effect"))
                 )
                 .appendTo($effectsSummary);
         }
@@ -149,7 +149,7 @@ cocktail.bind(".ImageEffectsEditor", function ($editor) {
 
         for (var i = 0; i < stack.length; i++) {
             var node = stack[i];
-            var control = createProcessorControl(node[0]);
+            var control = createEffectControl(node[0]);
             control.applyStackNode(node);
         }
 
@@ -161,18 +161,18 @@ cocktail.bind(".ImageEffectsEditor", function ($editor) {
         var str = "";
         
         for (var i = 0; i < stack.length; i++) {
-            var processorEntry = stack[i];
+            var effectEntry = stack[i];
             if (i > 0) {
                 str += "/";
             }
-            str += processorEntry[0];
-            if (processorEntry.length > 1) {            
+            str += effectEntry[0];
+            if (effectEntry.length > 1) {            
                 str += "(";
-                for (var j = 1; j < processorEntry.length; j++) {
+                for (var j = 1; j < effectEntry.length; j++) {
                     if (j > 1) {
                         str += ",";
                     }
-                    str += processorEntry[j];
+                    str += effectEntry[j];
                 }
                 str += ")";
             }
@@ -184,7 +184,7 @@ cocktail.bind(".ImageEffectsEditor", function ($editor) {
     updateSummary();
 });
 
-cocktail.bind(".image_effects_dialog .image_processor_control", function ($control) {
+cocktail.bind(".image_effects_dialog .image_effect_control", function ($control) {
     
     var editor = $control.closest(".image_effects_dialog").get(0).imageEffectsEditor;
         
@@ -200,14 +200,14 @@ cocktail.bind(".image_effects_dialog .image_processor_control", function ($contr
         });
     
     $control.find(".remove_button").click(function () {
-        editor.removeProcessor($control.index());
+        editor.removeEffect($control.index());
     });
 });
 
 cocktail.bind(".image_effects_dialog .brightness_control", function ($control) {
 
     this.makeStackNode = function () {
-        return [this.imageProcessor, Number($control.find("input").val()).toFixed(2)];
+        return [this.imageEffect, Number($control.find("input").val()).toFixed(2)];
     }
 
     this.applyStackNode = function (node) {
@@ -218,7 +218,7 @@ cocktail.bind(".image_effects_dialog .brightness_control", function ($control) {
 cocktail.bind(".image_effects_dialog .sharpness_control", function ($control) {
 
     this.makeStackNode = function () {
-        return [this.imageProcessor, Number($control.find("input").val()).toFixed(2)];
+        return [this.imageEffect, Number($control.find("input").val()).toFixed(2)];
     }
 
     this.applyStackNode = function (node) {
@@ -229,7 +229,7 @@ cocktail.bind(".image_effects_dialog .sharpness_control", function ($control) {
 cocktail.bind(".image_effects_dialog .color_control", function ($control) {
 
     this.makeStackNode = function () {
-        return [this.imageProcessor, Number($control.find("input").val()).toFixed(2)];
+        return [this.imageEffect, Number($control.find("input").val()).toFixed(2)];
     }
 
     this.applyStackNode = function (node) {
@@ -240,7 +240,7 @@ cocktail.bind(".image_effects_dialog .color_control", function ($control) {
 cocktail.bind(".image_effects_dialog .contrast_control", function ($control) {
 
     this.makeStackNode = function () {
-        return [this.imageProcessor, Number($control.find("input").val()).toFixed(2)];
+        return [this.imageEffect, Number($control.find("input").val()).toFixed(2)];
     }
 
     this.applyStackNode = function (node) {
@@ -251,7 +251,7 @@ cocktail.bind(".image_effects_dialog .contrast_control", function ($control) {
 cocktail.bind(".image_effects_dialog .rotate_control", function ($control) {
 
     this.makeStackNode = function () {
-        return [this.imageProcessor, Number($control.find("input").val())];
+        return [this.imageEffect, Number($control.find("input").val())];
     }
 
     this.applyStackNode = function (node) {
@@ -313,7 +313,7 @@ cocktail.bind(".image_effects_dialog .crop_control", function ($control) {
 
     this.makeStackNode = function () {
         return [
-            this.imageProcessor,
+            this.imageEffect,
             $control.find(".x1 input").val(),
             $control.find(".y1 input").val(),
             $control.find(".x2 input").val(),
@@ -429,7 +429,7 @@ cocktail.bind(".image_effects_dialog .thumbnail_control", function ($control) {
 
     this.makeStackNode = function () {
 
-        var node = [this.imageProcessor];
+        var node = [this.imageEffect];
         var option = $control.find("input[type=radio]:checked").attr("value");
 
         if (option == "absolute") {
@@ -491,7 +491,7 @@ cocktail.bind(".image_effects_dialog .fill_control", function ($control) {
 
     this.makeStackNode = function () {
         return [
-            this.imageProcessor,
+            this.imageEffect,
             Number($control.find(".width").val()),
             Number($control.find(".height").val())
         ];
@@ -517,16 +517,13 @@ cocktail.bind(".image_effects_dialog .flip_control", function ($control) {
         
     this.makeStackNode = function () {
         return [
-            this.imageProcessor,
+            this.imageEffect,
             Number($control.find("input[type=radio]:checked").attr("value"))
         ];
     }
 
     this.applyStackNode = function (node) {
-        $control.find("input[type=radio]")
-            .removeAttr("checked")
-            .find("[value=" + node[1] + "]")
-                .attr("checked", true);
+        $control.find("input[type=radio]").val([String(node[1])]);
     }
 });
 

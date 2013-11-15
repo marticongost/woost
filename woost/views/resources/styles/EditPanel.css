@@ -14,7 +14,7 @@
     border-left: none;
     -webkit-border-top-right-radius: 6px;
     -webkit-box-shadow: 2px 2px 2px #666;
-    z-index: 100;
+    z-index: 10000;
 }
 
 .EditPanel .panel_content {

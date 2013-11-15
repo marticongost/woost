@@ -16,6 +16,7 @@ from woost.models import Site, Publishable, Language
     content_language = None
     fully_translated = True
     body_end_html = ""
+    head_end_html = ""
     base_url = None
     
     def get_keywords(self):
@@ -27,6 +28,9 @@ from woost.models import Site, Publishable, Language
         if item_keywords:
             keywords.append(item_keywords)        
         return " ".join(keywords) if keywords else None
+
+    def get_content_title(self):
+        return getattr(self.publishable, "inner_title", None) or translations(self.publishable)
 
     def get_content_language(self, item, language = None):
         return item.get_common_language(self.translation_members, language)
@@ -68,10 +72,13 @@ from woost.models import Site, Publishable, Language
 
     <py:ready>
         <?py
-        if self.body_end_html:
+        if self.head_end_html or self.body_end_html:
             @self.when_document_ready
-            def add_body_end_html(document):
-                document.body.append(self.body_end_html)
+            def add_trailing_html(document):
+                if self.head_end_html:
+                    document.head.append(self.head_end_html)
+                if self.body_end_html:
+                    document.body.append(self.body_end_html)
 
         publishable = self.publishable
 
@@ -85,7 +92,7 @@ from woost.models import Site, Publishable, Language
             self.page_charset = publishable.encoding
 
             # Page title
-            self.page_title = translations(publishable)
+            self.page_title = self.get_content_title()
 
             # Meta tags
             self.set_meta("Content-Language", language)
@@ -120,7 +127,7 @@ from woost.models import Site, Publishable, Language
                 for trans_lang in publishable.translations:
                     if trans_lang in Language.codes \
                     and trans_lang != language \
-                    and publishable.get("translation_enabled", trans_lang) \
+                    and publishable.is_accessible(language = trans_lang) \
                     and self.is_fully_translated(publishable, trans_lang):
                         self.add_head_element(
                             Element("link",
@@ -155,6 +162,10 @@ from woost.models import Site, Publishable, Language
             # Base tag
             if self.base_url:
                 self.add_head_element(Element("base", href = self.base_url))
+
+            # Add a CSS class based on the page's name
+            if self.publishable.qname:
+                self.add_class(self.publishable.qname.replace(".", "-"))
         ?>
     </py:ready>
 

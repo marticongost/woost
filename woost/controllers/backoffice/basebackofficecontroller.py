@@ -19,7 +19,10 @@ from cocktail.controllers import get_parameter, CookieParameterSource
 from woost.models import Item
 from woost.controllers import BaseCMSController
 from woost.controllers.notifications import notify_user
-from woost.controllers.backoffice.useractions import get_user_action
+from woost.controllers.backoffice.useractions import (
+    get_user_action,
+    SelectionError
+)
 from woost.controllers.backoffice.editstack import (
     EditNode,
     SelectionNode,
@@ -119,7 +122,9 @@ class BaseBackOfficeController(BaseCMSController):
         
         # Go back to the root of the backoffice
         else:
-            raise cherrypy.HTTPRedirect(self.contextual_uri())
+            raise cherrypy.HTTPRedirect(
+                edit_stack and edit_stack.root_url or self.contextual_uri()
+            )
 
     # Edit stack
     #--------------------------------------------------------------------------    
@@ -177,9 +182,18 @@ class BaseBackOfficeController(BaseCMSController):
 
     def _invoke_user_action(self, action, selection):
         for error in action.get_errors(self, selection):
-            raise error
+            self._handle_user_action_error(action, selection, error)
 
         action.invoke(self, selection)
+
+    _graceful_user_action_errors = set([SelectionError])
+
+    def _handle_user_action_error(self, action, selection, error):
+        if isinstance(error, tuple(self._graceful_user_action_errors)):
+            notify_user(translations(error), "error")
+            self.go_back()
+        else:
+            raise error
 
     def _get_user_action(self, param_key = "action"):
         action = None

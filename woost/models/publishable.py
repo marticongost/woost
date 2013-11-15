@@ -23,8 +23,13 @@ from cocktail.controllers import (
     Location
 )
 from woost.models.item import Item
+from woost.models.language import Language
 from woost.models.usersession import get_current_user
-from woost.models.permission import ReadPermission, PermissionExpression
+from woost.models.permission import (
+    ReadPermission,
+    ReadTranslationPermission,
+    PermissionExpression
+)
 from woost.models.caching import CachingPolicy
 
 
@@ -52,6 +57,7 @@ class Publishable(Item):
         "path",
         "full_path",
         "hidden",
+        "login_page",
         "enabled",
         "translation_enabled",
         "start_date",
@@ -144,6 +150,11 @@ class Publishable(Item):
     hidden = schema.Boolean(
         required = True,
         default = False,
+        listed_by_default = False,
+        member_group = "navigation"
+    )
+
+    login_page = schema.Reference(        
         listed_by_default = False,
         member_group = "navigation"
     )
@@ -314,22 +325,47 @@ class Publishable(Item):
             and (self.end_date is None or self.end_date > now)
     
     def is_published(self, language = None):
-        return (
-            not self.is_draft
-            and (
-                self.get("translation_enabled", language)                
-                if self.per_language_publication
-                else self.enabled
-            )
-            and self.is_current()
-        )
+
+        if self.is_draft:
+            return False
+
+        if self.per_language_publication:
+
+            language = require_language(language)
+
+            if not self.get("translation_enabled", language):
+                return False
+
+            site_language = Language.get_instance(iso_code = language)
+            if site_language is None or not site_language.enabled:
+                return False
+           
+        elif not self.enabled:
+            return False
+
+        if not self.is_current():
+            return False
+
+        return True
 
     def is_accessible(self, user = None, language = None):
-        return self.is_published(language) \
-            and (user or get_current_user()).has_permission(
+        if user is None:
+            user = get_current_user()
+
+        return (
+            self.is_published(language)
+            and user.has_permission(
                 ReadPermission,
                 target = self
             )
+            and (
+                not self.per_language_publication
+                or user.has_permission(
+                    ReadTranslationPermission,
+                    language = require_language(language)
+                )
+            )
+        )
 
     @classmethod
     def select_accessible(cls, *args, **kwargs):
@@ -362,18 +398,30 @@ class Publishable(Item):
         return uri
 
     def get_image_uri(self,
-        effects = None,
+        image_factory = None,
         parameters = None,
-        host = None,
-        encode = True):
+        encode = True,
+        include_extension = True,
+        host = None,):
                 
         uri = make_uri("/images", self.id)
 
-        if effects:
-            if isinstance(effects, basestring):
-                uri = make_uri(uri, effects)
-            else:
-                uri = make_uri(uri, *effects)
+        if image_factory:
+            uri = make_uri(uri, image_factory)
+
+        if include_extension:
+            from woost.models.rendering.formats import (
+                formats_by_extension,
+                extensions_by_format,
+                default_format
+            )
+            ext = getattr(self, "file_extension", None)
+            if ext is not None:
+                ext = ext.lower()
+            if ext is None \
+            or ext.lstrip(".") not in formats_by_extension:
+                ext = "." + extensions_by_format[default_format]
+            uri += ext
 
         if parameters:
             uri = make_uri(uri, **parameters)
@@ -393,8 +441,15 @@ class Publishable(Item):
                 site = Site.main
                 policy = site.https_policy
 
-                if policy == "always" \
-                or (policy == "per_page" and self.requires_https):
+                if (
+                    policy == "always"
+                    or (
+                        policy == "per_page" and (
+                            self.requires_https
+                            or not get_current_user().anonymous
+                        )
+                    )
+                ):
                     location.scheme = "https"
                 else:
                     location.scheme = "http"
@@ -409,6 +464,9 @@ class Publishable(Item):
 
         return uri
 
+Publishable.login_page.type = Publishable
+Publishable.related_end = schema.Collection()
+
 
 class IsPublishedExpression(Expression):
     """An expression that tests if items are published."""
@@ -420,17 +478,28 @@ class IsPublishedExpression(Expression):
 
         def impl(dataset):
 
+
             # Exclude disabled items
             simple_pub = set(
                 Publishable.per_language_publication.index.values(key = False)
             ).intersection(Publishable.enabled.index.values(key = True))
+
+            language = get_language()
+            site_language = Language.get_instance(iso_code = language)
             per_language_pub = set(
                 Publishable.per_language_publication.index.values(key = True)
-            ).intersection(Publishable.translation_enabled.index.values(
-                    key = (get_language(), True)
-                )
             )
-            dataset.intersection_update(simple_pub | per_language_pub)
+            
+            if site_language is None or not site_language.enabled:
+                dataset.intersection_update(simple_pub)
+                dataset.difference_update(per_language_pub)
+            else:
+                per_language_pub.intersection_update(
+                    Publishable.translation_enabled.index.values(
+                        key = (language, True)
+                    )
+                )                
+                dataset.intersection_update(simple_pub | per_language_pub)
 
             # Exclude drafts
             dataset.difference_update(Item.is_draft.index.values(key = True))
@@ -476,15 +545,24 @@ class IsAccessibleExpression(Expression):
     def resolve_filter(self, query):
 
         def impl(dataset):
-            access_expr = PermissionExpression(
-                self.user or get_current_user(),
-                ReadPermission
-            )
+            user = self.user or get_current_user()
+            access_expr = PermissionExpression(user, ReadPermission)
             published_expr = IsPublishedExpression()
             dataset = access_expr.resolve_filter(query)[1](dataset)
             dataset = published_expr.resolve_filter(query)[1](dataset)
+
+            if not user.has_permission(
+                ReadTranslationPermission,
+                language = require_language()
+            ):
+                dataset.difference_update(
+                    Publishable.per_language_publication.index.values(
+                        key = True
+                    )
+                )
+
             return dataset
-        
+
         return ((-1, 1), impl)
 
 

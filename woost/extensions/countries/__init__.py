@@ -11,7 +11,6 @@ import sys
 from time import time
 from simplejson import loads
 from urllib import urlopen
-from cocktail.events import event_handler
 from cocktail.translations import translations
 from cocktail import schema
 from cocktail.persistence import datastore
@@ -73,22 +72,20 @@ class CountriesExtension(Extension):
         default = 15
     )
 
-    @event_handler
-    def handle_loading(cls, event):
+    def _load(self):
         
         from woost.extensions.countries import country, strings
 
         now = time()
-        ext = event.source
         
-        if ext.last_update is None \
-        or now - ext.last_update >= ext.update_frequency * SECONDS_IN_A_DAY:
+        if self.last_update is None \
+        or now - self.last_update >= self.update_frequency * SECONDS_IN_A_DAY:
             try:
-                ext.update_country_list()
+                self.update_country_list()
             except:
                 pass
             else:
-                ext.last_update = now
+                self.last_update = now
                 datastore.commit()
 
     def update_country_list(self):

@@ -6,7 +6,7 @@
 @organization:	Whads/Accent SL
 @since:			December 2009
 """
-from cocktail.events import event_handler, when
+from cocktail.events import when
 from cocktail import schema
 from cocktail.translations import translations
 from cocktail.controllers import context
@@ -50,11 +50,7 @@ class StaticSiteExtension(Extension):
             "en"
         )
 
-
-    @event_handler
-    def handle_loading(cls, event):
- 
-        extension = event.source
+    def _load(self):
 
         from woost.controllers.backoffice.backofficecontroller \
             import BackOfficeController
@@ -103,9 +99,9 @@ class StaticSiteExtension(Extension):
 
         # Disable interactive features from rendered pages when rendering
         # static content
-        from woost.controllers.application import CMS
+        from woost.controllers.cmscontroller import CMSController
     
-        @when(CMS.producing_output)
+        @when(CMSController.producing_output)
         def disable_user_controls(event):
             if context.get("exporting_static_site", False):
                 event.output["show_user_controls"] = False

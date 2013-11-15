@@ -3,11 +3,10 @@ u"""
 
 .. moduleauthor:: Jordi Fernández <jordi.fernandez@whads.com>
 """
-from cocktail.events import event_handler
 from cocktail.translations import translations
 from cocktail.persistence import datastore
 from cocktail.html import templates
-from woost.models import Extension, Template
+from woost.models import Extension
 
 
 translations.define("BlocksExtension",
@@ -41,19 +40,25 @@ class BlocksExtension(Extension):
             "en"
         )
 
-    @event_handler
-    def handle_loading(cls, event):
+    def _load(self):
 
         from woost.extensions.blocks import (
             strings, 
             block, 
             containerblock,
+            slideshowblock,
             imagegalleryblock,
             bannerblock,
             menublock,
             richtextblock,
             translatedrichtextblock,
-            blockspage
+            twittertimelineblock,
+            linksblock,
+            folderblock,
+            loginblock,
+            iframeblock,
+            blockspage,
+            migration
         )
 
         from woost.extensions.vimeo import VimeoExtension
@@ -61,34 +66,19 @@ class BlocksExtension(Extension):
         if VimeoExtension.instance.enabled:
             from woost.extensions.blocks import vimeoblock
 
-        extension = event.source
-
-        if not extension.installed:
-            template = extension._create_blocks_page_template()
-            template.insert()
-            datastore.commit()
-
         # Install an overlay for the frontend edit panel
         templates.get_class("woost.extensions.blocks.EditPanelOverlay")
 
-    def _create_blocks_page_template(self):
-        blocks_page_template = Template.get_instance(
+        self.install()
+
+    def _install(self):
+        from woost.models import Template, extension_translations
+
+        self._create_asset(
+            Template,
+            "blocks_page_template",
+            title = extension_translations,
+            engine = "cocktail",
             identifier = "woost.extensions.blocks.BlocksPageView"
         )
-        if blocks_page_template is None:
-            blocks_page_template = Template()
-            blocks_page_template.set(
-                "title", u"Plantilla pàgina de blocs", "ca"
-            )
-            blocks_page_template.set(
-                "title", u"Plantilla página de bloques", "es"
-            )
-            blocks_page_template.set(
-                "title", u"Blocks page template", "en"
-            )
-            blocks_page_template.identifier = \
-                "woost.extensions.blocks.BlocksPageView"
-            blocks_page_template.engine = "cocktail"
-
-        return blocks_page_template
 

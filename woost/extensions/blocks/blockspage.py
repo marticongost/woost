@@ -18,7 +18,7 @@ class BlocksPage(Document):
 
     default_template = schema.DynamicDefault(
         lambda: Template.get_instance(
-            identifier = "woost.extensions.blocks.BlocksPageView"
+            qname = "woost.extensions.blocks.blocks_page_template"
         )
     )
 

@@ -18,12 +18,12 @@ from woost.models.item import Item
 from woost.models.language import Language
 from woost.models.messagestyles import permission_doesnt_match_style
 from woost.models.usersession import get_current_user
+from woost.models.messagestyles import unauthorized_style
 
 
 class Permission(Item):
 
     instantiable = False
-    integral = True
     visible_from_root = False
 
     authorized = schema.Boolean(
@@ -52,6 +52,12 @@ class Permission(Item):
             instance = self,
             **kwargs
         ) or Item.__translate__(self, language, **kwargs)
+
+    @classmethod
+    def permission_not_found(cls, user, verbose = False, **context):
+        if verbose:
+            print unauthorized_style("unauthorized")
+        return False
 
 
 class ContentPermission(Permission):
@@ -143,6 +149,39 @@ class DeletePermission(ContentPermission):
 class ConfirmDraftPermission(ContentPermission):
     """Permission to confirm drafts of instances of a content type."""
     instantiable = True
+
+
+class RenderPermission(ContentPermission):
+    """Permission to obtain images representing instances of a content type."""
+    instantiable = True
+
+    def _image_factories_enumeration(ctx):
+        from woost.models.rendering.factories import image_factories
+        return image_factories.keys()
+
+    image_factories = schema.Collection(
+        items = schema.String(enumeration = _image_factories_enumeration),
+        searchable = False
+    )
+
+    del _image_factories_enumeration
+
+    def match(self, target, image_factory, verbose = False):
+        
+        if self.image_factories and image_factory not in self.image_factories:
+            print permission_doesnt_match_style("image_factory doesn't match")
+            return False
+
+        return ContentPermission.match(self, target, verbose)
+
+    @classmethod
+    def permission_not_found(cls, user, verbose = False, **context):
+        # If no specific render permission is found, a read permission will do
+        return user.has_permission(
+            ReadPermission,
+            target = context["target"],
+            verbose = verbose
+        )
 
 
 class TranslationPermission(Permission):
@@ -253,7 +292,12 @@ class ReadHistoryPermission(Permission):
 
 
 @contextmanager
-def restricted_modification_context(item, user = None):
+def restricted_modification_context(
+    item,
+    user = None,
+    member_subset = None,
+    verbose = False
+):
     """A context manager that restricts modifications to an item.
 
     @param item: The item to monitor.
@@ -264,6 +308,10 @@ def restricted_modification_context(item, user = None):
         L{get_current_user<woost.models.usersession.get_current_user>}
         will be used.
     @type user: L{User<woost.models.user.User>}
+
+    @param verbose: Set to True to enable debug messages for the permission
+        checks executed by this function.
+    @type verbose: True
 
     @raise L{AuthorizationError<woost.models.user.AuthorizationError}:
         Raised if attempting to execute an action on the monitored item without
@@ -286,24 +334,31 @@ def restricted_modification_context(item, user = None):
         # them, taking into account constraints that may derive from the
         # object's present state. New objects, by definition, have no present
         # state, so the test is skipped.
-        user.require_permission(ModifyPermission, target = item)
+        user.require_permission(
+            ModifyPermission,
+            target = item,
+            verbose = verbose
+        )
     
     # Creating a new item
     else:
         is_new = True
         permission_type = CreatePermission
 
-    # Add an event listeners to the edited item, to restrict changes to its
+    # Add an event listener to the edited item, to restrict changes to its
     # members
     @when(item.changed)
     def restrict_members(event):
         
-        # Require permission to modify the changed member
         member = event.member
-        user.require_permission(
-            ModifyMemberPermission,
-            member = member
-        )
+
+        # Require permission to modify the changed member
+        if member_subset is None or member.name in member_subset:
+            user.require_permission(
+                ModifyMemberPermission,
+                member = member,
+                verbose = verbose
+            )
 
         if member.translated:
             language = event.language
@@ -314,7 +369,8 @@ def restricted_modification_context(item, user = None):
                 and language not in modified_languages:
                     user.require_permission(
                         CreateTranslationPermission,
-                        language = language
+                        language = language,
+                        verbose = verbose
                     )
                     modified_languages.add(language)
 
@@ -323,7 +379,8 @@ def restricted_modification_context(item, user = None):
                 if language not in modified_languages:
                     user.require_permission(
                         ModifyTranslationPermission,
-                        language = language
+                        language = language,
+                        verbose = verbose
                     )
                     modified_languages.add(language)
 
@@ -340,13 +397,18 @@ def restricted_modification_context(item, user = None):
         for language in starting_languages - set(item.translations):
             user.require_permission(
                 DeleteTranslationPermission,
-                language = language
+                language = language,
+                verbose = verbose
             )
 
     # Restrict access *after* the object is modified, both for new and old
     # objects, to make sure the user is leaving the object in a state that
     # complies with all existing restrictions.
-    user.require_permission(permission_type, target = item)
+    user.require_permission(
+        permission_type,
+        target = item,
+        verbose = verbose
+    )
 
 def delete_validating(item, user = None, deleted_set = None):
 

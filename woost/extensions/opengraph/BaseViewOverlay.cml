@@ -23,14 +23,14 @@ from woost.extensions.opengraph import OpenGraphExtension
     @self.when_document_ready
     def add_open_graph_metadata(document):
         
-        if self.open_graph_properties:
+        if self.publishable.open_graph_enabled and self.open_graph_properties:
 
             # Add the OpenGraph and Facebook namespaces to the HTML document
             document["xmlns:og"] = "http://ogp.me/ns#"
             document["xmlns:fb"] = "http://www.facebook.com/2008/fbml"
 
             # Add the meta tags. Produce the HTML manually, instead of relying
-            # on html.Element rendeirng; this is a bit of a hack, but sadly
+            # on html.Element rendering; this is a bit of a hack, but sadly
             # Facebook's OpenGraph parser depends on a precise attribute order,
             # which element rendering can't guarantee.
             tag_closure = get_current_rendering().renderer.single_tag_closure

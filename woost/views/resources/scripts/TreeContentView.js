@@ -18,9 +18,11 @@ cocktail.bind(".TreeContentView", function ($contentView) {
         form.setParameter("expanded", "all", true);
     }
 
-    $contentView.find(".filters .search_button").click(expand);
+    var $searchForms = $contentView.find(".filters")
+                       .add($contentView.find(".simple_search"));
 
-    $contentView.find(".filters").keypress(function (e) {
+    $searchForms.find(".search_button").click(expand);
+    $searchForms.keypress(function (e) {
         if (e.keyCode == 13) {
             expand();
         }

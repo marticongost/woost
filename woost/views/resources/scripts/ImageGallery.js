@@ -11,7 +11,9 @@ cocktail.bind({
     selector: ".ImageGallery",
     behavior: function ($imageGallery) {
  
+        var inDialog = false;
         var loadedImages = {};
+        var singleImage = ($imageGallery.find(".image_entry").length < 2);
 
         $imageGallery.bind("imageLoaded", function (e, loadedImage) {
             loadedImages[loadedImage.src] = loadedImage;
@@ -88,7 +90,28 @@ cocktail.bind({
             }
         }
 
+        this.pauseAutoplay = function () {
+            // Temporarely disable the automatic slideshow, until the user
+            // closes the dialog
+            if (this.sudoSlider && this.sliderOptions.auto) {
+                this.sudoSlider.stopAuto();
+            }
+        }
+
+        this.resumeAutoplay = function () {
+            // Resume the automatic slideshow
+            if (this.sudoSlider && this.sliderOptions.auto && !inDialog) {
+                this.sudoSlider.startAuto();
+            }
+        }
+
+        $imageGallery.hover(this.pauseAutoplay, this.resumeAutoplay);
+
         this.showImage = function (entry) {
+            
+            inDialog = true;
+            this.pauseAutoplay();
+
             cocktail.closeDialog();
             var dialog = this.createImageDialog(entry);
             cocktail.showDialog(dialog);            
@@ -99,6 +122,11 @@ cocktail.bind({
             this.loadImage(
                 jQuery(entry).find(".image_link").get(0).href,
                 function (image) {
+                    $dialog.find(".image")
+                        .width(image.width)
+                        .height(image.height);
+                    $dialog.find(".footnote")
+                        .width(image.width);
                     $dialog.show();
                     cocktail.center(dialog);
                     $dialog
@@ -135,8 +163,6 @@ cocktail.bind({
                 return;
             }
 
-            var singleImage = ($imageGallery.find(".image_entry").length < 2);
-
             var $entry = jQuery(entry);
             var imageURL = $entry.find(".image_link").attr("href");
             var imageTitle = $entry.find(".image_label").html();
@@ -144,7 +170,9 @@ cocktail.bind({
             var $dialog = jQuery(cocktail.instantiate("woost.views.ImageGallery.image_dialog"));
 
             $dialog.bind("dialogClosed", function () {
+                inDialog = false;
                 $entry.find(".image_link").focus();
+                var ig = $imageGallery.get(0).resumeAutoplay();
             });
 
             $dialog.find(".image").attr("src", imageURL);
@@ -243,7 +271,7 @@ cocktail.bind({
                 function () { $dialog.find(".header").fadeOut(); },
                 1500
             );
-            
+
             $dialog.hover(
                 function () {
                     $dialogControls.show();
@@ -260,7 +288,7 @@ cocktail.bind({
             return $dialog.get(0);
         }
 
-        if (this.galleryType == "slideshow") {
+        if (this.galleryType == "slideshow" && !singleImage) {
 
             this.sliderOptions.prevHtml = 
                 cocktail.instantiate("woost.views.ImageGallery.previous_button");
@@ -277,9 +305,11 @@ cocktail.bind({
         }
 
         // Image pre-loading
-        $imageGallery.find(".image_entry .image_link").each(function () {
-            $imageGallery.get(0).loadImage(this.href);
-        });
+        if (this.closeUpPreload) {
+            $imageGallery.find(".image_entry .image_link").each(function () {
+                $imageGallery.get(0).loadImage(this.href);
+            });
+        }
     },
     children: {
         ".image_entry": function ($entry, $imageGallery) {

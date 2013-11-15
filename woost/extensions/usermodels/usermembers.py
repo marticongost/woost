@@ -10,7 +10,6 @@ from cocktail.pkgutils import import_module, import_object
 from cocktail.translations import translations
 from cocktail import schema
 from cocktail.persistence import datastore
-from cocktail.html.datadisplay import display_factory
 from woost.models import Item
 
 
@@ -145,12 +144,8 @@ class UserMember(Item):
         member_group = "definition"
     )
 
-    initialization = schema.String(
-        edit_control = display_factory(
-            "cocktail.html.CodeEditor", syntax = "python"
-        ),
-        listed_by_default = False,
-        text_search = False,
+    initialization = schema.CodeBlock(
+        language = "python",
         member_group = "code"
     )
 

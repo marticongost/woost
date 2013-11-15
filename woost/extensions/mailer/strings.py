@@ -17,6 +17,12 @@ translations.define("Action send_email",
     en = u"Send"
 )
 
+translations.define("Action create_mailing",
+    ca = u"Enviar per correu",
+    es = u"Enviar por correo",
+    en = u"Send by e-mail"
+)
+
 translations.define("woost.extensions.mailer users",
     ca = u"usuaris",
     es = u"usuarios",
@@ -112,12 +118,18 @@ translations.define("woost.extensions.mailer.SendEmailView send",
 )
 
 translations.define("woost.extensions.mailer.SendEmailView confirmation text",
-    ca = u"""Estàs a punt d'enviar el document <strong>%s</strong> en
-<strong>%s</strong> als següents grups d'usuaris:""",
-    es = u"""Estás a punto de enviar el documento <strong>%s</strong> en
-</strong>%s</strong> a los siguientes grupos de usuarios:""",
-    en = u"""You are about to send the document <strong>%s</strong>
-</strong>%s</ strong> to the following user groups:"""
+    ca = lambda mailing:
+        u"S'enviarà el document <strong>%s</strong> en <strong>%s</strong> "
+        u"als següents usuaris:"
+        % (translations(mailing.document), translations(mailing.language)),
+    es = lambda mailing:
+        u"Se enviará el documento <strong>%s</strong> en "
+        u"</strong>%s</strong> a los siguientes usuarios:"
+        % (translations(mailing.document), translations(mailing.language)),
+    en = lambda mailing:
+        u"You are about to send the document <strong>%s</strong> "
+        u"in <strong>%s</strong> to the following users:"
+        % (translations(mailing.document), translations(mailing.language))
 )
 
 translations.define("woost.extensions.mailer.SendEmailView total",
@@ -215,6 +227,17 @@ translations.define("SendEmailPermission.roles",
     ca = u"Rols",
     es = u"Roles",
     en = u"Roles"
+)
+
+translations.define("SendEmailPermission.roles-explanation",
+    ca = u"Limita el permís en funció dels destinataris de l'enviament. "
+         u"Deixar en blanc per permetre o prohibir l'enviament a tothom.",
+    es = u"Limita el permiso en función de los destinatarios del envío. "
+         u"Dejar en blanco para permitir o prohibir el envío sin importar "
+         u"los destinatarios seleccionados.",
+    en = u"Limits the groups of receivers that the user can or can't send "
+         u"email to. Leave blank to allow / disallow sending e-mail "
+         u"regardless of the selected receivers."
 )
 
 # Exceptions
