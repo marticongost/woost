@@ -9,7 +9,7 @@ from cocktail.iteration import last
 from cocktail.translations import translations
 from cocktail import schema
 from cocktail.html import templates, Element
-from woost.models import Item, Publishable, Style, Site
+from woost.models import Item, Publishable, Style, Configuration
 
 
 class Block(Item):    
@@ -179,6 +179,8 @@ class Block(Item):
                     if self.heading_type == "hidden_h1":
                         view.heading.tag = "h1"
                         view.heading.set_style("display", "none")
+                    elif self.heading_type == "generic":
+                        view.heading.tag = "div"
                     else:
                         view.heading.tag = self.heading_type
                     view.heading.append(self.heading)
@@ -197,6 +199,8 @@ class Block(Item):
         if self.heading_type == "hidden_h1":
             heading = Element("h1")
             heading.set_style("display", "none")
+        elif self.heading_type == "generic":
+            heading = Element()
         else:
             heading = Element(self.heading_type)
 
@@ -205,7 +209,7 @@ class Block(Item):
         return heading
 
     def is_common_block(self):
-        return bool(self.get(Site.common_blocks.related_end))
+        return bool(self.get(Configuration.common_blocks.related_end))
 
     def is_published(self):
         
@@ -338,4 +342,21 @@ class Block(Item):
     @property
     def name_suffix(self):
         return None
+
+    def replace_with(self, replacement):
+        """Removes this block from all slots, putting another block in the same
+        position.
+
+        @param replacement: The block to insert.
+        @type replacement: L{Block}
+        """
+        # Imported here to prevent an import cycle
+        from woost.extensions.blocks.slot import Slot
+
+        for member in self.__class__.members().itervalues():
+            related_end = getattr(member, "related_end", None)
+            if isinstance(related_end, Slot):
+                for container in self.get(member):
+                    slot_content = container.get(related_end)
+                    slot_content[slot_content.index(self)] = replacement
 

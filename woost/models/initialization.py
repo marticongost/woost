@@ -8,6 +8,7 @@ u"""
 """
 from __future__ import with_statement
 import sha
+import socket
 from string import letters, digits
 from random import choice
 from optparse import OptionParser
@@ -19,10 +20,10 @@ from cocktail.persistence import (
 )
 from woost.models import (
     changeset_context,
-    Site,
+    Configuration,
+    Website,
     HierarchicalPublicationScheme,
     DescriptiveIdPublicationScheme,
-    Language,
     Action,
     Publishable,
     Document,
@@ -114,11 +115,11 @@ def init_site(
 
     with changeset_context() as changeset:
         
-        # Create the site
-        site = Site()
-        site.qname = "woost.main_site"
-        site.insert()
-        site.secret_key = random_string(10)
+        # Create the global configuration object
+        config = Configuration()
+        config.qname = "woost.configuration"
+        config.insert()
+        config.secret_key = random_string(10)
 
         # Create the administrator user
         admin = User()
@@ -131,13 +132,22 @@ def init_site(
         admin.insert()
         
         changeset.author = admin
-        site.author = site.owner = admin
-        site.default_language = languages[0]
+        config.author = admin
+        config.owner = admin
+        config.default_language = languages[0]
+        config.languages = languages
 
-        if site.default_language in Site.backoffice_language.enumeration:
-            site.backoffice_language = site.default_language
-            admin.prefered_language = site.default_language
-        
+        if config.default_language in Configuration.backoffice_language.enumeration:
+            config.backoffice_language = config.default_language
+            admin.prefered_language = config.default_language
+     
+        # Create the default website
+        website = Website()
+        website.hosts.append(socket.getfqdn())
+        website.hosts.append("localhost")
+        website.insert()
+        config.websites.append(website)
+
         # Create the anonymous user and role
         anonymous_role = Role()
         anonymous_role.implicit = True
@@ -153,12 +163,6 @@ def init_site(
         anonymous_user.critical = True
         anonymous_user.roles.append(anonymous_role)
         anonymous_user.insert()
-
-        # Create languages
-        for code in languages:
-            language = Language(iso_code = code)
-            language.iso_code = code
-            language.insert()
  
         # Create the administrators role        
         administrators = Role()
@@ -275,7 +279,7 @@ def init_site(
             HierarchicalPublicationScheme(),
             DescriptiveIdPublicationScheme()
         ):
-            site.publication_schemes.append(pub_scheme)
+            config.publication_schemes.append(pub_scheme)
             pub_scheme.insert()
 
         # Create a trigger to purge deleted files from the filesystem
@@ -294,7 +298,7 @@ def init_site(
         set_translations(delete_files_trigger, "title",
             "delete_files_trigger"
         )
-        site.triggers.append(delete_files_trigger)
+        config.triggers.append(delete_files_trigger)
         delete_files_trigger.insert()
 
         # Create standard controllers
@@ -422,17 +426,16 @@ def init_site(
         site_stylesheet.insert()
 
         # Create the temporary home page
-        site.home = StandardPage()
-        site.home.template = std_template
-        site.home.qname = "woost.home"
-        set_translations(site.home, "title", "Home page title")
-        set_translations(site.home, "inner_title", "Home page inner title")
+        website.home = StandardPage()
+        website.home.template = std_template
+        set_translations(website.home, "title", "Home page title")
+        set_translations(website.home, "inner_title", "Home page inner title")
         set_translations(
-            site.home, "body", "Home page body",
+            website.home, "body", "Home page body",
             uri = uri + "cms"
         )
-        site.home.branch_resources.append(site_stylesheet)
-        site.home.insert()
+        website.home.branch_resources.append(site_stylesheet)
+        website.home.insert()
     
         # Create the back office interface
         back_office = Document()
@@ -440,7 +443,6 @@ def init_site(
         back_office.critical = True
         back_office.qname = "woost.backoffice"
         back_office.per_language_publication = False
-        back_office.parent = site.home
         back_office.hidden = True
         back_office.path = u"cms"
         back_office.inherit_resources = False
@@ -452,7 +454,6 @@ def init_site(
         user_styles.critical = True
         user_styles.qname = "woost.user_styles"
         user_styles.per_language_publication = False
-        user_styles.parent = site.home
         user_styles.controller = \
             Controller.get_instance(qname = "woost.styles_controller")
         user_styles.hidden = True
@@ -469,87 +470,69 @@ def init_site(
         set_translations(user_styles, "title", "User styles title")
         user_styles.insert()
 
-        # Create the web services page
-        webservices = Document()
-        webservices.critical = True
-        webservices.qname = "woost.webservices"
-        webservices.parent = site.home
-        webservices.controller = \
-            Controller.get_instance(qname = "woost.webservices_controller")
-        webservices.hidden = True
-        webservices.path = u"services"
-        webservices.mime_type = "application/json"
-        set_translations(webservices, "title", "Web services title")
-        webservices.insert()
-
         # Create the 'content not found' page
-        site.not_found_error_page = StandardPage()
-        site.not_found_error_page.parent = site.home
-        site.not_found_error_page.hidden = True
-        site.not_found_error_page.template = std_template
-        site.not_found_error_page.qname = "woost.not_found_error_page"
-        set_translations(site.not_found_error_page, "title",
+        config.not_found_error_page = StandardPage()
+        config.not_found_error_page.hidden = True
+        config.not_found_error_page.template = std_template
+        config.not_found_error_page.qname = "woost.not_found_error_page"
+        set_translations(config.not_found_error_page, "title",
             "Not found error page title")
-        set_translations(site.not_found_error_page, "body",
+        set_translations(config.not_found_error_page, "body",
             "Not found error page body")            
-        site.not_found_error_page.insert()
+        config.not_found_error_page.insert()
 
         # Create forbidden error page
-        site.forbidden_error_page = StandardPage()
-        site.forbidden_error_page.parent = site.home
-        site.forbidden_error_page.hidden = True
-        site.forbidden_error_page.template = std_template
-        site.forbidden_error_page.qname = "woost.forbidden_error_page"
-        set_translations(site.forbidden_error_page, "title",
+        config.forbidden_error_page = StandardPage()
+        config.forbidden_error_page.hidden = True
+        config.forbidden_error_page.template = std_template
+        config.forbidden_error_page.qname = "woost.forbidden_error_page"
+        set_translations(config.forbidden_error_page, "title",
             "Forbidden error page title")
-        set_translations(site.forbidden_error_page, "body",
+        set_translations(config.forbidden_error_page, "body",
             "Forbidden error page body")
-        site.forbidden_error_page.insert()
+        config.forbidden_error_page.insert()
 
         # Create the password change request page
-        site.password_change_page = StandardPage()
-        site.password_change_page.parent = site.home
-        site.password_change_page.hidden = True
-        site.password_change_page.template = password_change_request_view
-        site.password_change_page.controller = \
-            Controller.get_instance(qname='woost.passwordchange_controller')
-        site.password_change_page.qname = "woost.password_change_page"
-        site.password_change_page.per_language_publication = False
-        set_translations(site.password_change_page, "title",
+        config.password_change_page = StandardPage()
+        config.password_change_page.hidden = True
+        config.password_change_page.template = password_change_request_view
+        config.password_change_page.controller = \
+            Controller.get_instance(qname = 'woost.passwordchange_controller')
+        config.password_change_page.qname = "woost.password_change_page"
+        config.password_change_page.per_language_publication = False
+        set_translations(config.password_change_page, "title",
             "Password Change page title")
-        set_translations(site.password_change_page, "body",
+        set_translations(config.password_change_page, "body",
             "Password Change page body")
-        site.password_change_page.insert()
+        config.password_change_page.insert()
 
         # Create the password change confirmation page
-        site.password_change_confirmation_page = StandardPage()
-        site.password_change_confirmation_page.parent = site.home
-        site.password_change_confirmation_page.hidden = True
-        site.password_change_confirmation_page.per_language_publication = False
-        site.password_change_confirmation_page.template = \
+        config.password_change_confirmation_page = StandardPage()
+        config.password_change_confirmation_page.hidden = True
+        config.password_change_confirmation_page.per_language_publication = False
+        config.password_change_confirmation_page.template = \
             password_change_confirmation_view
-        site.password_change_confirmation_page.controller = \
+        config.password_change_confirmation_page.controller = \
             Controller.get_instance(
                 qname='woost.passwordchangeconfirmation_controller'
             )
-        site.password_change_confirmation_page.qname = \
+        config.password_change_confirmation_page.qname = \
             "woost.password_change_confirmation_page"
-        set_translations(site.password_change_confirmation_page, "title",
+        set_translations(config.password_change_confirmation_page, "title",
             "Password Change Confirmation page title")
-        set_translations(site.password_change_confirmation_page, "body",
+        set_translations(config.password_change_confirmation_page, "body",
             "Password Change Confirmation page body")
-        site.password_change_confirmation_page.insert()
+        config.password_change_confirmation_page.insert()
 
         # Create the login page
-        site.login_page = StandardPage()
-        site.login_page.parent = site.home
-        site.login_page.hidden = True
-        site.login_page.template = login_form_template 
-        site.login_page.controller = \
-            Controller.get_instance(qname='woost.login_controller')
-        site.login_page.qname = "woost.login_page"
-        set_translations(site.login_page, "title", "Login page title")
-        site.login_page.insert()
+        config.login_page = StandardPage()
+        config.login_page.hidden = True
+        config.login_page.template = login_form_template 
+        config.login_page.controller = \
+            Controller.get_instance(qname = "woost.login_controller")
+        config.login_page.qname = "woost.login_page"
+        set_translations(config.login_page, "title", "Login page title")
+        config.login_page.insert()
 
         # Create site-wide user views
         own_items_view = UserView()
@@ -633,7 +616,7 @@ def init_site(
         )
         icon32_renderer.insert()
 
-        site.renderers = [
+        config.renderers = [
             content_renderer,
             icon16_renderer,
             icon32_renderer
@@ -728,7 +711,7 @@ def init_site(
         )
         image_gallery_thumbnail_factory.insert()
 
-        site.image_factories = [
+        config.image_factories = [
             default_factory,
             icon16_factory,
             icon32_factory,

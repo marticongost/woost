@@ -3,10 +3,7 @@ u"""
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
-import Image
-import ImageEnhance
-import ImageFilter
-import ImageOps
+from PIL import Image, ImageEnhance, ImageFilter, ImageOps
 from cocktail.events import event_handler
 from cocktail import schema
 from cocktail.translations import translations
@@ -233,6 +230,10 @@ class Fill(ImageEffect):
         
         width = ImageSize.resolve_size(self.width, source_width)
         height = ImageSize.resolve_size(self.height, source_height)
+
+        if width == source_width and height == source_height:
+            return image
+
         target_ratio = float(width) / height
 
         if source_ratio > target_ratio:
@@ -515,6 +516,107 @@ def reduce_opacity(image, opacity):
     alpha = ImageEnhance.Brightness(alpha).enhance(opacity)
     image.putalpha(alpha)
     return image
+
+
+class Fade(ImageEffect):
+
+    instantiable = True
+
+    members_order = [
+        "top_width",
+        "right_width",
+        "bottom_width",
+        "left_width"
+    ]
+
+    top_width = schema.Integer(
+        required = True,
+        default = 0,
+        min = 0
+    )
+
+    right_width = schema.Integer(
+        required = True,
+        default = 0,
+        min = 0
+    )
+
+    bottom_width = schema.Integer(
+        required = True,
+        default = 0,
+        min = 0
+    )
+
+    left_width = schema.Integer(
+        required = True,
+        default = 0,
+        min = 0
+    )
+
+    edge_opacity = schema.Integer(
+        required = True,
+        default = 0,
+        min = 0,
+        max = 255
+    )
+
+    inner_opacity = schema.Integer(
+        required = True,
+        default = 255,
+        min = 0,
+        max = 255
+    )
+
+    def apply(self, image):
+
+        if image.mode != "RGBA":
+            image = image.convert("RGBA")
+
+        pixels = image.load()
+        w, h = image.size
+
+        tw = self.top_width
+        rw = self.right_width
+        bw = self.bottom_width
+        lw = self.left_width
+
+        inner_opacity = self.inner_opacity
+        edge_opacity = self.edge_opacity
+        opacity_delta = self.inner_opacity - edge_opacity
+
+        for x in xrange(w):
+            for y in xrange(h):
+
+                if x < lw:
+                    hor_opacity = float(x) / lw
+                elif x > w - rw:
+                    hor_opacity = float(rw - (x - (w - rw))) / rw
+                else:
+                    hor_opacity = None
+
+                if y < tw:
+                    ver_opacity = float(y) / tw
+                elif y > h - bw:
+                    ver_opacity = float(bw - (y - (h - bw))) / bw
+                else:
+                    ver_opacity = None
+
+                if hor_opacity is None and ver_opacity is None:
+                    opacity = inner_opacity
+                else:
+                    if hor_opacity is None:
+                        step = ver_opacity
+                    elif ver_opacity is None:
+                        step = hor_opacity
+                    else:
+                        step = min(ver_opacity, hor_opacity)
+
+                    opacity = int(edge_opacity + opacity_delta * step)
+
+                p = pixels[x, y]
+                pixels[x, y] = (p[0], p[1], p[2], opacity)
+
+        return image
 
 
 class Watermark(ImageEffect):

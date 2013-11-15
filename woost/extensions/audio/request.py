@@ -11,7 +11,7 @@ from cocktail.iteration import first
 from cocktail.events import when
 from cocktail.persistence import datastore
 from woost import app
-from woost.models import Site, File, User, ReadPermission
+from woost.models import Configuration, File, User, ReadPermission
 from woost.extensions.audio.audioencoder import AudioEncoder
 
 _cache_lock = Lock()
@@ -35,7 +35,7 @@ def get_audio_uri(file, encoding):
             # extension
             encoder = first(
                 enc
-                for enc in Site.main.audio_encoders
+                for enc in Configuration.instance.audio_encoders
                 if enc.extension == encoding
             )
 

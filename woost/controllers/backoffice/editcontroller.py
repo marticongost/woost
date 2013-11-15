@@ -17,8 +17,7 @@ from cocktail.translations import translations
 from cocktail.persistence import datastore
 from cocktail.controllers import request_property, get_parameter
 from woost.models import (
-    Site,
-    Language,
+    Configuration,
     changeset_context,
     ChangeSet,
     get_current_user,
@@ -56,7 +55,7 @@ class EditController(BaseBackOfficeController):
     def available_languages(self):
         user = get_current_user()
         return [language
-                for language in Language.codes
+                for language in Configuration.instance.languages
                 if user.has_permission(
                     ReadTranslationPermission,
                     language = language

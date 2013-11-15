@@ -7,7 +7,7 @@
 @since:			January 2010
 """
 from datetime import datetime
-from cocktail.modeling import getter
+from cocktail.modeling import getter, classgetter
 from cocktail.events import event_handler
 from cocktail.pkgutils import import_object
 from cocktail.translations import (
@@ -17,16 +17,24 @@ from cocktail.translations import (
 )
 from cocktail import schema
 from cocktail.schema.expressions import Expression
+from cocktail.persistence import datastore, MultipleValuesIndex
 from cocktail.controllers import (
     make_uri, 
     percent_encode_uri,
     Location
 )
+from woost import app
 from woost.models.item import Item
-from woost.models.language import Language
 from woost.models.usersession import get_current_user
-from woost.models.permission import ReadPermission, PermissionExpression
+from woost.models.websitesession import get_current_website
+from woost.models.permission import (
+    ReadPermission,
+    ReadTranslationPermission,
+    PermissionExpression
+)
 from woost.models.caching import CachingPolicy
+
+WEBSITE_PUB_INDEX_KEY = "woost.models.Publishable.per_website_publication_index"
 
 
 class Publishable(Item):
@@ -59,6 +67,7 @@ class Publishable(Item):
         "per_language_publication",
         "enabled",
         "translation_enabled",
+        "websites",
         "start_date",
         "end_date",
         "requires_https",
@@ -184,6 +193,13 @@ class Publishable(Item):
         member_group = "publication"
     )
 
+    websites = schema.Collection(
+        items = "woost.models.Website",
+        bidirectional = True,
+        related_key = "specific_content",
+        member_group = "publication"
+    )
+
     start_date = schema.DateTime(
         indexed = True,
         listed_by_default = False,
@@ -214,7 +230,7 @@ class Publishable(Item):
 
     def get_effective_caching_policy(self, **context):
         
-        from woost.models import Site
+        from woost.models import Configuration
 
         policies = [
             ((-policy.important, 1), policy)
@@ -222,7 +238,7 @@ class Publishable(Item):
         ]
         policies.extend(
             ((-policy.important, 2), policy)
-            for policy in Site.main.caching_policies
+            for policy in Configuration.instance.caching_policies
         )
         policies.sort()
 
@@ -242,12 +258,101 @@ class Publishable(Item):
         elif member.name == "parent":
             publishable._update_path(event.value, publishable.path)
 
+            # If the parent element is specific to one or more websites, its
+            # descendants will automatically share that specificity
+            if event.value:
+                publishable.websites = list(event.value.websites)
+            else:
+                publishable.websites = []
+
         elif member.name == "mime_type":
             if event.value is None:
                 publishable.resource_type = None
             else:
                 publishable.resource_type = \
                     get_category_from_mime_type(event.value)
+
+    @event_handler
+    def handle_related(cls, event):
+        if event.member is cls.websites:
+            publishable = event.source
+            website = event.related_object
+            
+            # Update the index
+            if publishable.is_inserted and website.is_inserted:
+                index = cls.per_website_publication_index
+                
+                # No longer available to any website
+                if len(publishable.websites) == 1:
+                    index.remove(None, publishable.id)
+
+                index.add(website.id, publishable.id)
+
+    @event_handler
+    def handle_unrelated(cls, event):
+        if event.member is cls.websites:
+            publishable = event.source
+            website = event.related_object
+
+            index = cls.per_website_publication_index
+            index.remove(website.id, publishable.id)
+
+            # Now available to any website            
+            if publishable.is_inserted and not publishable.websites:
+                index.add(None, publishable.id)
+
+    @event_handler
+    def handle_inserted(cls, event):
+        event.source.__insert_into_per_website_publication_index()
+
+    @event_handler
+    def handle_deleted(cls, event):
+        cls.per_website_publication_index.remove(None, event.source.id)
+
+    def __insert_into_per_website_publication_index(self):
+
+        index = self.__class__.per_website_publication_index
+
+        # Available to any website
+        if not self.websites:
+            index.add(None, self.id)
+
+        # Restricted to a subset of websites
+        else:
+            for website in self.websites:
+                if website.is_inserted:
+                    index.add(website.id, self.id)
+
+    @classgetter
+    def per_website_publication_index(cls):
+        """A database index that enumerates content exclusive to one or more
+        websites.
+        """
+        index = datastore.root.get(WEBSITE_PUB_INDEX_KEY)
+
+        if index is None:
+            index = datastore.root.get(WEBSITE_PUB_INDEX_KEY)
+            if index is None:
+                index = MultipleValuesIndex()
+                datastore.root[WEBSITE_PUB_INDEX_KEY] = index
+        
+        return index
+
+    @event_handler
+    def handle_rebuilding_indexes(cls, e):
+        cls.rebuild_per_website_publication_index(verbose = e.verbose)
+
+    @classmethod
+    def rebuild_per_website_publication_index(cls, verbose = False):
+        if verbose:
+            print "Rebuilding the Publishable/Website index"
+        del datastore.root[WEBSITE_PUB_INDEX_KEY]
+        for publishable in cls.select():
+            publishable.__insert_into_per_website_publication_index()
+
+    @classgetter
+    def per_language_publication_index(cls):
+        return datastore.root[WEBSITE_PUB_INDEX_KEY]
 
     def _update_path(self, parent, path):
 
@@ -328,6 +433,13 @@ class Publishable(Item):
 
         return False
 
+    def is_home_page(self):
+        """Indicates if the object is the home page for any website.
+        @rtype: bool
+        """
+        from woost.models import Website
+        return bool(self.get(Website.home.related_end))
+
     @getter
     def resources(self):
         """Iterates over all the resources that apply to the item.
@@ -358,7 +470,7 @@ class Publishable(Item):
         return (self.start_date is None or self.start_date <= now) \
             and (self.end_date is None or self.end_date > now)
     
-    def is_published(self, language = None):
+    def is_published(self, language = None, website = None):
 
         if self.is_draft:
             return False
@@ -370,24 +482,50 @@ class Publishable(Item):
             if not self.get("translation_enabled", language):
                 return False
 
-            site_language = Language.get_instance(iso_code = language)
-            if site_language is None or not site_language.enabled:
+            from woost.models import Configuration
+            if not Configuration.instance.language_is_enabled(language):
                 return False
-           
+
         elif not self.enabled:
             return False
 
         if not self.is_current():
             return False
 
+        websites_subset = self.websites
+        if websites_subset and website != "any":
+            if website is None:
+                website = get_current_website()
+            if website is None or website not in websites_subset:
+                return False
+
         return True
 
-    def is_accessible(self, user = None, language = None):
-        return self.is_published(language) \
-            and (user or get_current_user()).has_permission(
+    def is_accessible(self, user = None, language = None, website = None):
+
+        if user is None:
+            user = get_current_user()
+
+        return (
+            self.is_published(language, website)
+            and user.has_permission(
                 ReadPermission,
                 target = self
             )
+            and (
+                not self.per_language_publication 
+                or user.has_permission(
+                    ReadTranslationPermission,
+                    language = require_language(language)
+                )
+            )
+        )
+
+    @classmethod
+    def select_published(cls, *args, **kwargs):
+        return cls.select(filters = [
+            IsPublishedExpression()
+        ]).select(*args, **kwargs)
 
     @classmethod
     def select_accessible(cls, *args, **kwargs):
@@ -402,22 +540,66 @@ class Publishable(Item):
         host = None,
         encode = True):
         
-        from woost.models import Site
-        uri = Site.main.get_path(self, language = language)
+        from woost.models import Configuration
+        uri = Configuration.instance.get_path(self, language = language)
 
         if uri is not None:
             if self.per_language_publication:
-                uri = make_uri(require_language(language), uri)
-            
+                uri = app.language.translate_uri(
+                    path = uri,
+                    language = require_language(language)
+                )
+
             if path:
                 uri = make_uri(uri, *path)
 
             if parameters:
                 uri = make_uri(uri, **parameters)
 
+            if host == "?":
+                websites = self.websites
+                if websites and get_current_website() not in websites:
+                    host = websites[0].hosts[0]
+                else:
+                    host = None
+            elif host == "!":
+                if self.websites:
+                    host = self.websites[0].hosts[0]
+                else:
+                    from woost.models import Configuration
+                    website = (
+                        get_current_website()
+                        or Configuration.instances.websites[0]
+                    )
+                    host = website.hosts[0]
+
             uri = self._fix_uri(uri, host, encode)
 
         return uri
+
+    def translate_file_type(self, language = None):
+
+        trans = ""
+
+        mime_type = self.mime_type
+        if mime_type:
+            trans = translations("mime " + mime_type, language = language)
+
+        if not trans:
+
+            res_type = self.resource_type
+            if res_type:
+                trans = self.__class__.resource_type.translate_value(
+                    res_type,
+                    language = language
+                )
+
+                if trans and res_type != "other":
+                    ext = self.file_extension
+                    if ext:
+                        trans += " " + ext.upper().lstrip(".")
+
+        return trans
 
 Publishable.login_page.type = Publishable
 Publishable.related_end = schema.Collection()
@@ -433,32 +615,50 @@ class IsPublishedExpression(Expression):
 
         def impl(dataset):
 
+            per_lang_pub_index = Publishable.per_language_publication.index
 
             # Exclude disabled items
-            simple_pub = set(
-                Publishable.per_language_publication.index.values(key = False)
-            ).intersection(Publishable.enabled.index.values(key = True))
+            enabled_subset = set(per_lang_pub_index.values(key = False))
+            enabled_subset.intersection_update(
+                Publishable.enabled.index.values(key = True)
+            )
 
             language = get_language()
-            site_language = Language.get_instance(iso_code = language)
-            per_language_pub = set(
-                Publishable.per_language_publication.index.values(key = True)
-            )
-            
-            if site_language is None or not site_language.enabled:
-                dataset.intersection_update(simple_pub)
-                dataset.difference_update(per_language_pub)
-            else:
-                per_language_pub.intersection_update(
+
+            from woost.models import Configuration
+            if Configuration.instance.language_is_enabled(language):
+                enabled_for_current_language = set(
+                    Publishable.per_language_publication.index.values(
+                        key = True
+                    )
+                )
+                enabled_for_current_language.intersection_update(
                     Publishable.translation_enabled.index.values(
                         key = (language, True)
                     )
-                )                
-                dataset.intersection_update(simple_pub | per_language_pub)
+                )
+                enabled_subset.update(enabled_for_current_language)
+
+            dataset.intersection_update(enabled_subset)
 
             # Exclude drafts
             dataset.difference_update(Item.is_draft.index.values(key = True))
             
+            # Exclude content by website:
+            if len(Configuration.instance.websites) > 1:
+
+                website = get_current_website()
+                per_website_index = Publishable.per_website_publication_index
+
+                # - content that can be published on any website
+                website_subset = set(per_website_index.values(key = None))
+
+                # - content that can be published on the active website
+                if website:
+                    website_subset.update(per_website_index.values(key = website.id))
+
+                dataset.intersection_update(website_subset)
+
             # Remove items outside their publication window
             now = datetime.now()
             dataset.difference_update(
@@ -500,13 +700,22 @@ class IsAccessibleExpression(Expression):
     def resolve_filter(self, query):
 
         def impl(dataset):
-            access_expr = PermissionExpression(
-                self.user or get_current_user(),
-                ReadPermission
-            )
+            user = self.user or get_current_user()
+            access_expr = PermissionExpression(user, ReadPermission)
             published_expr = IsPublishedExpression()
             dataset = access_expr.resolve_filter(query)[1](dataset)
             dataset = published_expr.resolve_filter(query)[1](dataset)
+
+            if not user.has_permission(
+                ReadTranslationPermission,
+                language = require_language()
+            ):
+                dataset.difference_update(
+                    Publishable.per_language_publication.index.values(
+                        key = True
+                    )
+                )
+
             return dataset
         
         return ((-1, 1), impl)

@@ -12,7 +12,7 @@ from pkg_resources import resource_filename
 from cocktail.typemapping import TypeMapping
 from cocktail.cache import Cache
 from cocktail.persistence import PersistentObject
-from woost.models.site import Site
+from woost.models.website import Website
 from woost.models.item import Item
 from woost.models.publishable import Publishable
 from woost.models.document import Document
@@ -156,11 +156,21 @@ class IconResolver(object):
     def _resolve_publishable(self, content_type, item):
         file_names = self._resolve_item(content_type, item)
 
-        if item is not None and item.resource_type:
-            file_names.insert(0, "resource-type-" + item.resource_type)
+        if item is not None:
 
-        if item is Site.main.home:
-            file_names.insert(0, "home")
+            # Use a distinct icon for home pages
+            if item.is_home_page():
+                file_names.insert(0, "home")
+
+            # Apply icons based on the item's resource type (but icons for
+            # subclasses of Publishable / File still take precedence)
+            try:
+                pos = file_names.index("type-woost-models-file-File")
+            except ValueError:
+                pos = file_names.index("type-woost-models-publishable-Publishable")
+
+            if item.resource_type:
+                file_names.insert(pos, "resource-type-" + item.resource_type)
 
         return file_names
 

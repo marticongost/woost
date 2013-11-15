@@ -15,7 +15,6 @@ from cocktail import schema
 from cocktail.controllers.usercollection import UserCollection
 from cocktail.schema.expressions import Expression
 from woost.models.item import Item
-from woost.models.language import Language
 from woost.models.messagestyles import permission_doesnt_match_style
 from woost.models.usersession import get_current_user
 from woost.models.messagestyles import unauthorized_style
@@ -122,7 +121,8 @@ class ContentPermission(Permission):
         user_collection.allow_member_selection = False
         user_collection.allow_language_selection = False
         user_collection.params.source = matching_items.get
-        user_collection.available_languages = Language.codes
+        from woost.models.configuration import Configuration
+        user_collection.available_languages = Configuration.instance.languages
         return user_collection
 
 
@@ -187,13 +187,20 @@ class RenderPermission(ContentPermission):
 class TranslationPermission(Permission):
     """Base class for permissions that restrict operations on languages."""
     
+    def _matching_languages_enumeration(ctx):
+        from woost.models import Configuration
+        return Configuration.instance.languages
+
     matching_languages = schema.Collection(
+        edit_control = "cocktail.html.CheckList",
         items = schema.String(
-            enumeration = lambda ctx: Language.codes,
+            enumeration = _matching_languages_enumeration,
             translate_value = lambda value, language = None, **kwargs:
                 u"" if not value else translations(value, language, **kwargs)
         )
     )
+
+    del _matching_languages_enumeration
 
     def match(self, language, verbose = False):
 

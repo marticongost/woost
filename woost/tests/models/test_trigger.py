@@ -169,7 +169,7 @@ class TriggerInvocationTestCase(BaseTestCase):
             trigger = trigger_type(**kwargs)
             trigger.responses = [self.TestTriggerResponse(response_log)]
             trigger.insert()
-            self.site.triggers.append(trigger)
+            self.config.triggers.append(trigger)
             datastore.commit()
             if new_response_log:
                 return trigger, response_log

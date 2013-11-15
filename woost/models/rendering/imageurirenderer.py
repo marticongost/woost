@@ -7,7 +7,7 @@ from urllib import urlopen
 from httplib import HTTPConnection
 from time import mktime, strptime
 from cStringIO import StringIO
-import Image
+from PIL import Image
 from cocktail import schema
 from woost.models.uri import URI
 from woost.models.rendering.renderer import Renderer

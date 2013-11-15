@@ -595,7 +595,7 @@ class OpenResourceAction(UserAction):
     client_redirect = True
 
     def get_url(self, controller, selection):
-        return selection[0].get_uri()
+        return selection[0].get_uri(host = "?")
 
 
 class UploadFilesAction(UserAction):

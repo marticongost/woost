@@ -12,7 +12,7 @@ from cocktail import schema
 from cocktail.events import Event, event_handler
 from woost.models import (
     Item,
-    Site,
+    Configuration,
     User,
     get_current_user,
     ModifyMemberPermission
@@ -455,9 +455,11 @@ class ECommerceOrder(Item):
                 item.completed()
 
     def get_description_for_gateway(self):
-        if Site.main.site_name:
+        site_name = Configuration.instance.get_setting("site_name")
+        if site_name:
             return translations(
                 "woost.extensions.ECommerceOrder description for gateway"
-            ) % Site.main.site_name
+            ) % site_name
         else:
             return translations(self)
+

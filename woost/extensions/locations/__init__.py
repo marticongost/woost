@@ -130,7 +130,8 @@ class LocationsExtension(Extension):
                     **kwargs
                 )
         ),
-        text_search = False
+        text_search = False,
+        edit_control = "cocktail.html.CheckList"
     )
 
     updated_subset = schema.Collection(

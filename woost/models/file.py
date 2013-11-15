@@ -19,7 +19,6 @@ from cocktail.persistence import datastore
 from woost import app
 from woost.models.publishable import Publishable
 from woost.models.controller import Controller
-from woost.models.language import Language
 
 
 class File(Publishable):
@@ -29,6 +28,7 @@ class File(Publishable):
     edit_node_class = \
         "woost.controllers.backoffice.fileeditnode.FileEditNode"
     backoffice_heading_view = "woost.views.BackOfficeFileHeading"
+    video_player = "cocktail.html.MediaElementVideo"
 
     default_mime_type = None
 
@@ -113,7 +113,8 @@ class File(Publishable):
         # The default behavior is to translate created files into all the languages
         # defined by the site
         if languages is None:
-            languages = Language.codes
+            from woost.models import Configuration
+            languages = Configuration.instance.languages
 
         file_name = os.path.split(path)[1]
         title, ext = os.path.splitext(file_name)

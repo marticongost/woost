@@ -39,9 +39,9 @@ translations.define("woost.extensions.blocks.BlockSection.edit_slot_link",
     en = u"Edit this slot"
 )
 
-# Site
+# Configuration
 #------------------------------------------------------------------------------
-translations.define("Site.common_blocks",
+translations.define("Configuration.common_blocks",
     ca = u"Blocs comuns",
     es = u"Bloques comunes",
     en = u"Common blocks"
@@ -501,6 +501,24 @@ translations.define("SlideShowBlock.transition_duration-explanation",
     en = u"Sets the duration of the slide transition effect, in milliseconds"
 )
 
+translations.define("SlideShowBlock.transition_effect",
+    ca = u"Efecte de transició",
+    es = u"Efecto de transición",
+    en = u"Transition effect"
+)
+
+translations.define("SlideShowBlock.transition_effect=fade",
+    ca = u"Fondre",
+    es = u"Fundir",
+    en = u"Fade"
+)
+
+translations.define("SlideShowBlock.transition_effect=topBottomSlide",
+    ca = u"Lliscar de dalt a baix",
+    es = u"Deslizar de arriba abajo",
+    en = u"Top-bottom slide"
+)
+
 # MenuBlock
 #------------------------------------------------------------------------------
 translations.define("MenuBlock",
@@ -650,7 +668,7 @@ translations.define("TextBlock.image_alignment=column_left",
 
 translations.define("TextBlock.image_alignment=column_right",
     ca = u"Columna a la dreta",
-    es = u"Columna a l'esquerra",
+    es = u"Columna a la derecha",
     en = u"Top right, in their own column"
 )
 
@@ -660,6 +678,12 @@ translations.define("TextBlock.image_alignment=top_left",
     en = u"Top left"
 )
 
+translations.define("TextBlock.image_alignment=bottom_left",
+    ca = u"A sota a l'esquerra",
+    es = u"Abajo a la izquierda",
+    en = u"Bottom left"
+)
+
 translations.define("TextBlock.image_alignment=center_top",
     ca = u"Centrar a dalt",
     es = u"Centrar arriba",
@@ -667,7 +691,7 @@ translations.define("TextBlock.image_alignment=center_top",
 )
 
 translations.define("TextBlock.image_alignment=center_bottom",
-    ca = u"Centrar abaix",
+    ca = u"Centrar a sota",
     es = u"Centrar abajo",
     en = u"Bottom center"
 )
@@ -688,6 +712,12 @@ translations.define("TextBlock.image_alignment=background",
     ca = u"Imatge de fons",
     es = u"Imagen de fondo",
     en = u"Background image"
+)
+
+translations.define("TextBlock.image_alignment=fallback",
+    ca = u"Imatge amb descripció textual substitutiva",
+    es = u"Imagen con descripción textual sustitutiva",
+    en = u"Image with fallback content"
 )
 
 translations.define("TextBlock.image_thumbnail_factory",
@@ -724,6 +754,38 @@ translations.define("TextBlock.image_original_link_visible",
     ca = u"Mostrar un enllaç a la imatge sense modificar",
     es = u"Mostrar un enlace a la imagen sin modificar",
     en = u"Show a link to the original image"
+)
+
+# VideoBlock
+#------------------------------------------------------------------------------
+translations.define("VideoBlock",
+    ca = u"Vídeo",
+    es = u"Video",
+    en = u"Video"
+)
+
+translations.define("VideoBlock-plural",
+    ca = u"Vídeos",
+    es = u"Vídeos",
+    en = u"Videos"
+)
+
+translations.define("VideoBlock.element_type",
+    ca = u"Tipus d'element",
+    es = u"Tipo de elemento",
+    en = u"Element type"
+)
+
+translations.define("VideoBlock.video",
+    ca = u"Vídeo",
+    es = u"Video",
+    en = u"Video"
+)
+
+translations.define("VideoBlock.player_settings",
+    ca = u"Opcions de reproductor de vídeo",
+    es = u"Opciones de reproductor de video",
+    en = u"Video player settings"
 )
 
 # VimeoBlock
@@ -1320,7 +1382,7 @@ translations.define("NewsListing.paginated",
 
 translations.define("NewsListing.page_size",
     ca = u"Mida del llistat",
-    es = u"del listado",
+    es = u"Tamaño del listado",
     en = u"Listing size"
 )
 
@@ -1409,7 +1471,7 @@ translations.define("EventListing.paginated",
 
 translations.define("EventListing.page_size",
     ca = u"Mida del llistat",
-    es = u"del listado",
+    es = u"Tamaño del listado",
     en = u"Listing size"
 )
 
@@ -1943,5 +2005,124 @@ translations.define("YouTubeBlockRenderer-plural",
     ca = u"Pintadors de fotogrames pels blocs de YouTube",
     es = u"Pintadores de fotogramas para los bloques de YouTube",
     en = u"YouTube blocks still renderers"
+)
+
+# PublishableListing
+#------------------------------------------------------------------------------
+translations.define("PublishableListing",
+    ca = u"Llistat d'elements publicables",
+    es = u"Listado de elementos publicables",
+    en = u"Publishable elements listing"
+)
+
+translations.define("PublishableListing-plural",
+    ca = u"Llistats d'elements publicables",
+    es = u"Listados de elementos publicables",
+    en = u"Publishable elements listings"
+)
+
+translations.define("PublishableListing.listing",
+    ca = u"Llistat",
+    es = u"Listado",
+    en = u"Listing"
+)
+
+translations.define("PublishableListing.publishables",
+    ca = u"Elements publicables",
+    es = u"Elementos publicables",
+    en = u"Publishable elements"
+)
+
+translations.define("PublishableListing.item_accessibility",
+    ca = u"Control d'estat dels elements",
+    es = u"Control de estado de los elementos",
+    en = u"Item accessibility check"
+)
+
+translations.define("PublishableListing.item_accessibility=accessible",
+    ca = u"Elements publicats i amb drets de lectura",
+    es = u"Elementos publicados y con derechos de lectura",
+    en = u"Published items with read privileges"
+)
+
+translations.define("PublishableListing.item_accessibility=published",
+    ca = u"Elements publicats, tinguin o no drets de lectura",
+    es = u"Elementos publicados, tengan o no derechos de lectura",
+    en = u"Published items, regardless of read privileges"
+)
+
+translations.define("PublishableListing.item_accessibility=any",
+    ca = u"Qualsevol element",
+    es = u"Cualquier elemento",
+    en = u"Any item"
+)
+
+translations.define("PublishableListing.listing_order",
+    ca = u"Ordenació",
+    es = u"Ordenación",
+    en = u"Order"
+)
+
+translations.define("PublishableListing.listing_order=arbitrary",
+    ca = u"Arbitrària",
+    es = u"Arbitraria",
+    en = u"Arbitrary"
+)
+
+translations.define("PublishableListing.listing_order=-last_update_time",
+    ca = u"Última modificació",
+    es = u"Última modificación",
+    en = u"Last update"
+)
+
+translations.define("PublishableListing.links_open_in_new_window",
+    ca = u"Obrir els enllaços a una nova finestra",
+    es = u"Abrir los enlaces en una ventana nueva",
+    en = u"Open links in a new window"
+)
+
+translations.define("PublishableListing.paginated",
+    ca = u"Paginar els resultats",
+    es = u"Paginar los resultados",
+    en = u"Paginate results"
+)
+
+translations.define("PublishableListing.page_size",
+    ca = u"Mida del llistat",
+    es = u"Tamaño del listado",
+    en = u"Listing size"
+)
+
+translations.define("PublishableListing.view_class",
+    ca = u"Aparença",
+    es = u"Apariencia",
+    en = u"Appearence"
+)
+
+translations.define(
+    "PublishableListing.view_class=woost.views.PublishableTextualListing",
+    ca = u"Només text",
+    es = u"Solo texto",
+    en = u"Text only"
+)
+
+translations.define(
+    "PublishableListing.view_class=woost.views.PublishableIconListing",
+    ca = u"Icona i text",
+    es = u"Icono y texto",
+    en = u"Icon and text"
+)
+
+translations.define(
+    "PublishableListing.view_class=woost.views.PublishableGrid",
+    ca = u"Graella",
+    es = u"Parrilla",
+    en = u"Grid"
+)
+
+translations.define("PublishableListing.element_type",
+    ca = u"Tipus d'element",
+    es = u"Tipo de elemento",
+    en = u"Element type"
 )
 

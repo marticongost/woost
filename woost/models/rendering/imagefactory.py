@@ -3,7 +3,7 @@ u"""
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
-import Image
+from PIL import Image
 from cocktail.events import event_handler
 from cocktail.iteration import first
 from cocktail import schema
@@ -11,8 +11,8 @@ from woost.models.item import Item
 from woost.models.rendering.renderer import Renderer
 
 def _get_site_renderers():
-    from woost.models import Site
-    return Site.main.renderers
+    from woost.models import Configuration
+    return Configuration.instance.renderers
 
 
 class ImageFactory(Item):

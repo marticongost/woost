@@ -2,7 +2,7 @@
 <?py
 from cocktail.schema import RelationMember
 from woost.models import (
-    Site,
+    Configuration,
     get_current_user, 
     ModifyMemberPermission
 )
@@ -61,7 +61,7 @@ from woost.extensions.blocks.block import Block
         <?py
         self._common_blocks = [
             common_block
-            for common_block in Site.main.common_blocks
+            for common_block in Configuration.instance.common_blocks
             if self.can_create_block_type(common_block.__class__)
         ]
         ?>
@@ -83,7 +83,7 @@ from woost.extensions.blocks.block import Block
         py:client_model="woost.extensions.blocks.EditBlocksSlotList.blockPickerDialog">
         <py:ready>
             <?py
-            if Site.main.common_blocks:
+            if Configuration.instance.common_blocks:
                 element.add_class("with_common_blocks")
             ?>
         </py:ready>

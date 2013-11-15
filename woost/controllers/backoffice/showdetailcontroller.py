@@ -8,7 +8,7 @@ u"""
 """
 from cocktail.modeling import cached_getter
 from cocktail.schema import Adapter, RelationMember
-from woost.models import Language
+from woost.models import Configuration
 from woost.controllers.backoffice.editcontroller import EditController
 from woost.controllers.backoffice.useractions import get_user_action
 
@@ -55,7 +55,7 @@ class ShowDetailController(EditController):
         
         output = EditController.output(self)
         output.update(
-            translations = Language.codes,
+            translations = Configuration.instance.languages,
             detail_schema = self.detail_schema,
             selected_action = get_user_action("show_detail")
         )

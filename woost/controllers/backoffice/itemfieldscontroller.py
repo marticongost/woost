@@ -14,7 +14,6 @@ from cocktail import schema
 from cocktail.controllers import get_parameter, view_state, Location
 from woost.models import (
     get_current_user,
-    Site,
     ModifyPermission,
     CreatePermission
 )

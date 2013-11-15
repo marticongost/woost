@@ -11,7 +11,7 @@ if hasattr(os, "symlink"):
     from cocktail.persistence import datastore
     from woost import app
     from woost.models.publishable import Publishable
-    from woost.models.site import Site
+    from woost.models.configuration import Configuration
     from woost.models.file import File
     from woost.models.user import User
 
@@ -125,9 +125,8 @@ if hasattr(os, "symlink"):
                 os.remove(link)
 
     def get_links(file):    
-        site = Site.main
         return [
-            app.path("static", site.main.get_path(file, language))
+            app.path("static", Configuration.instance.get_path(file, language))
             for language in (file.translations or [None])
         ]
 
