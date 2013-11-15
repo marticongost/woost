@@ -18,7 +18,13 @@ from cocktail.persistence import (
     PersistentMapping,
     MaxValue
 )
-from cocktail.controllers import make_uri, percent_encode_uri, Location
+from cocktail.controllers import (
+    make_uri,
+    percent_encode_uri,
+    resolve_object_ref,
+    Location
+)
+from woost import app
 from woost.models.websitesession import get_current_website
 from woost.models.changesets import ChangeSet, Change
 from woost.models.action import Action
@@ -39,6 +45,10 @@ schema.Member.affects_last_update_time = True
 # Extension property that allows hiding relations in the ReferenceList view
 schema.RelationMember.visible_in_reference_list = True
 
+# Extension property to select which members should be synchronizable across
+# separate site installations
+schema.Member.synchronizable = True
+
 
 class Item(PersistentObject):
     """Base class for all CMS items. Provides basic functionality such as
@@ -47,8 +57,15 @@ class Item(PersistentObject):
     members_order = [
         "id",
         "qname",
+        "global_id",
+        "synchronizable",
         "author",
-        "owner"
+        "owner",
+        "creation_time",
+        "last_update_time",
+        "is_draft",
+        "draft_source",
+        "drafts"
     ]
 
     # Enable full text indexing for all items (although the Item class itself
@@ -74,6 +91,20 @@ class Item(PersistentObject):
     preview_controller = "woost.controllers.backoffice." \
         "previewcontroller.PreviewController"
 
+    def __init__(self, *args, **kwargs):
+        PersistentObject.__init__(self, *args, **kwargs)                
+
+        # Assign a global ID for the object (unless one was passed in as a
+        # keyword parameter)
+        if not self.global_id:
+            if not app.installation_id:
+                raise ValueError(
+                    "No value set for woost.app.installation_id; "
+                    "make sure your settings file specifies a unique "
+                    "identifier for this installation of the site."
+                )
+            self.global_id = "%s-%d" % (app.installation_id, self.id)
+
     def __translate__(self, language, **kwargs):
         if self.draft_source is not None:
             return translations(
@@ -92,6 +123,28 @@ class Item(PersistentObject):
         unique = True,
         indexed = True,
         text_search = False,
+        listed_by_default = False,
+        member_group = "administration"
+    )
+
+    # Synchronization
+    #------------------------------------------------------------------------------     
+    global_id = schema.String(
+        required = True,
+        unique = True,
+        indexed = True,
+        normalized_index = False,
+        synchronizable = False,
+        listed_by_default = False,
+        member_group = "administration"
+    )
+
+    synchronizable = schema.Boolean(
+        required = True,
+        indexed = True,
+        synchronizable = False,
+        default = True,
+        shadows_attribute = True,
         listed_by_default = False,
         member_group = "administration"
     )
@@ -161,6 +214,7 @@ class Item(PersistentObject):
         required = True,
         versioned = False,
         editable = False,
+        synchronizable = False,
         items = "woost.models.Change",
         bidirectional = True,
         visible = False
@@ -168,15 +222,17 @@ class Item(PersistentObject):
 
     creation_time = schema.DateTime(
         versioned = False,
+        indexed = True,
         editable = False,
-        member_group = "administration",
-        indexed = True
+        synchronizable = False,
+        member_group = "administration"
     )
 
     last_update_time = schema.DateTime(
         indexed = True,
         versioned = False,
         editable = False,
+        synchronizable = False,
         member_group = "administration"
     )
 
@@ -207,6 +263,7 @@ class Item(PersistentObject):
         bidirectional = True,
         cascade_delete = True,
         editable = False,
+        synchronizable = False,
         versioned = False,
         searchable = False,
         member_group = "administration"
@@ -314,6 +371,7 @@ class Item(PersistentObject):
         if member.name == "translations":
             member.editable = False
             member.searchable = False
+            member.synchronizable = False
         PersistentClass._add_member(cls, member)
 
     def _get_revision_state(self):
@@ -627,7 +685,17 @@ class Item(PersistentObject):
 
 Item.id.versioned = False
 Item.id.editable = False
+Item.id.synchronizable = False
 Item.id.listed_by_default = False
 Item.id.member_group = "administration"
 Item.changes.visible = False
+
+@resolve_object_ref.implementation_for(Item)
+def resolve_item_ref(cls, ref):
+    try:
+        ref = int(ref)
+    except ValueError:
+        return cls.get_instance(global_id = ref)
+    else:
+        return cls.get_instance(ref)
 

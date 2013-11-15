@@ -371,3 +371,31 @@ def add_multisite_support(e):
     # Preserve the remaining state
     datastore.root["woost.models.migration.multisite_leftovers"] = site_state
 
+#------------------------------------------------------------------------------
+step = MigrationStep("Store hashes using hexadecimal characters")
+
+@when(step.executing)
+def transform_hashes(e):
+    from woost.models import File, User
+    to_hex_string = lambda s: "".join(("%x" % ord(c)).zfill(2) for c in s)
+
+    for file in File.select():
+        file._file_hash = to_hex_string(f.file_hash)
+
+    for user in User.select():
+        if user.password:
+            user._password = to_hex_string(user.password)
+
+#------------------------------------------------------------------------------
+step = MigrationStep("Assign global object identifiers")
+
+@when(step.executing)
+def assign_global_identifiers(e):
+    from woost import app
+    from woost.models import Item
+
+    for item in Item.select():
+        item._global_id = app.installation_id + "-" + str(item.id)
+
+    Item.global_id.rebuild_index()
+

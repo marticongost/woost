@@ -9,6 +9,7 @@ u"""
 
 from woost import app
 app.package = "_PROJECT_MODULE_"
+app.installation_id = "_INSTALLATION_ID_"
 
 # Application server configuration
 import cherrypy

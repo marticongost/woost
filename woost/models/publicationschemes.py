@@ -11,6 +11,7 @@ from os.path import splitext
 from cocktail.modeling import abstractmethod
 from cocktail import schema
 from cocktail.translations import translations, get_language
+from cocktail.controllers import resolve_object_ref
 from woost.models.item import Item
 from woost.models.publishable import Publishable
 from woost.models.file import File
@@ -196,28 +197,15 @@ class DescriptiveIdPublicationScheme(PublicationScheme):
         text_search = False
     )
 
-    id_regexp = schema.Member(
+    id_regexp = schema.RegularExpression(
         required = True,
-        default = schema.DynamicDefault(
-            lambda: re.compile(r"(.+_)?(?P<id>\d+)(?P<ext>\.[a-zA-Z0-9]+)?$")
-        ),
-        normalization = lambda value:
-            re.compile(value) if isinstance(value, basestring) else value,
-        serialize_request_value = lambda value:
-            value.pattern if value else value
+        default = r"(.+_)?(?P<id>[^.]+)(?P<ext>\.[a-zA-Z0-9]+)?$"
     )
 
-    title_splitter_regexp = schema.Member(
+    title_splitter_regexp = schema.RegularExpression(
         required = True,
-        default = schema.DynamicDefault(
-            lambda: re.compile(r"\W+", re.UNICODE)
-        ),
-        normalization = lambda value:
-            re.compile(value, re.UNICODE)
-            if isinstance(value, basestring)
-            else value,
-        serialize_request_value = lambda value:
-            value.pattern if value else value
+        default = r"\W+", 
+        regular_expression_flags = re.UNICODE
     )
 
     format = schema.String(
@@ -260,12 +248,7 @@ class DescriptiveIdPublicationScheme(PublicationScheme):
             else:
                 id = match.group("id")
 
-            try:
-                id = int(id)
-            except:
-                return None
-
-            publishable = Publishable.get_instance(id)
+            publishable = resolve_object_ref(Publishable, id)
 
             if publishable is not None:
 
