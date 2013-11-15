@@ -26,7 +26,7 @@ body {
     background-image: -moz-linear-gradient(#f6f6f6,#ccc);
     background-image: -webkit-linear-gradient(#f6f6f6,#ccc);
     padding: 0.3em 0.7em;
-    border-radius: 0.5em;
+    border-radius: 0.3em;
     border: 1px solid #aaa;
     -moz-box-shadow: 1px 1px 4px #bbb;
     cursor: pointer;
@@ -43,14 +43,11 @@ body {
 }
 
 .BackOfficeLayout .header {
+    position: relative;
     padding: 0.6em;
     height: 1.5em;
-    background-color: rgb(245,245,245);
-    background-color: #eceeef;
     background-repeat:repeat-y;
-    background-image: url(../images/header_background.png);
-    border-bottom: 1px solid rgb(200,210,220);
-    border-bottom: 1px solid rgb(180,190,200);
+    background-color: #3e4351;
 }
 
 .BackOfficeLayout .header h1 {
@@ -58,7 +55,8 @@ body {
     font-size: 120%;
     padding: 0;
     margin: 0;
-    color: rgb(75,85,95);
+    color: white;
+    text-shadow: 0 0 6px rgba(30,30,30,0.8);
 }
 
 .BackOfficeLayout .header h1 a {
@@ -87,13 +85,15 @@ body {
 }
 
 .BackOfficeLayout .identity {
-    float: right;
-    margin-top: 0.2em;
+    position: absolute;
+    bottom: 1em;
+    right: 0.4em;
     font-size: 0.8em;
+    border-radius: 0.2em;
+    color: white;
 }
 
 .BackOfficeLayout .identity strong {
-    color: rgb(75,75,75);
     font-weight: bold;
 }
 
@@ -105,13 +105,19 @@ body {
 
 .BackOfficeLayout .identity button {
     margin-left: 0.7em !important;    
+    color: rgba(255,255,255,0.8) !important;
+    text-decoration: underline !important;
+}
+
+.BackOfficeLayout .identity button:hover {
+    color: white !important;
 }
 
 .BackOfficeLayout .user_views_bar {
     padding: 0.3em 0.8em;
     font-size: 90%;
     background-color: rgb(245,245,245);
-    border-bottom: 1px solid rgb(230,230,230);
+    border-bottom: 1px solid #ccc;
 }
 
 .BackOfficeLayout .user_views_bar {
@@ -699,7 +705,7 @@ body.scripted .BackOfficeLayout .Table .selection {
 }
 
 .BackOfficeLayout .Table {
-    border: 1px solid #eee;
+    border: 1px solid #d6d6d6;
 }
 
 .BackOfficeLayout .PropertyTable th {
@@ -719,18 +725,21 @@ body.scripted .BackOfficeLayout .Table .selection {
 }
 
 .BackOfficeLayout .Table th {
-    border: 1px solid rgb(200,205,212);
+    border: 1px solid #ccc;
 }
 
 .BackOfficeLayout .Table th a {
     text-decoration: none;
 }
 
-.BackOfficeLayout .Table th {
+.BackOfficeLayout .Table th,
+.ObjectDiff th {
     background-position: bottom left;
     background-repeat: repeat-x;
     background-image: url(../images/header.png);
-    background-color: rgb(220,223,227);
+    background-image: -webkit-linear-gradient(#eee, #d6d6d6);
+    background-image: linear-gradient(#eee, #d6d6d6);
+    background-color: #e0e0e0;
 }
 
 .BackOfficeLayout .ContentTable td,
@@ -950,12 +959,8 @@ body.scripted .BackOfficeLayout .Table .selection {
     min-width: 19em;
 }
 
-.BackOfficeLayout .Table .even td.sorted {
-    background-color: rgb(220,225,227);
-}
-
-.BackOfficeLayout .Table .odd td.sorted {
-    background-color: rgb(235,240,247);
+.BackOfficeLayout .Table th.sorted span.label {
+    font-weight: bold;
 }
 
 .BackOfficeLayout .Table tr.draft td {
@@ -1123,8 +1128,8 @@ body.scripted .BackOfficeLayout .Table .selection {
 .BackOfficeLayout .toolbar_box {
 	clear: both;
     margin-top: 1.5em;
-	background-color: rgb(242,240,235);
-	border: 1px solid rgb(232,230,225);    
+	background-color: #f2f0eb;
+	border: 1px solid #dcd9d0;
 }
 
 .BackOfficeLayout .toolbar_box .toolbar {
@@ -1132,6 +1137,10 @@ body.scripted .BackOfficeLayout .Table .selection {
     margin: 0.2em;
     border: none;
     background-color: transparent;
+}
+
+.BackOfficeLayout .toolbar.item_buttons {
+    padding: 0 0.4em;
 }
 
 .BackOfficeLayout .toolbar .action_button,
@@ -1734,7 +1743,8 @@ body.scripted .BackOfficeLayout .ThumbnailsContentView .collection_display input
 .preview-error-box,
 .BackOfficeLayout .ErrorBox,
 .BackOfficeLayout .error_box,
-.BackOfficeLayout .notification_box .error {
+.BackOfficeLayout .notification_box .error,
+.BackOfficeInstallationSyncView .sync_request_error_report {
     color: black;
     border: 1px dotted rgb(200,160,120);
     background-color: rgb(245,230,215);
@@ -2590,7 +2600,7 @@ button.TypeSelectorButton {
 }
 
 .BackOfficeLayout .stack_node.top {
-    border: 2px solid rgb(200,210,220);
+    border: 2px solid #ccc;
     background-color: white;
     padding-bottom: 0.8em;
 }
@@ -3356,5 +3366,177 @@ div.success_label {
     background-position: left center;
     padding-left: 0.8em;
     white-space: nowrap;
+}
+
+/* BackOfficeInstallationSyncView
+-----------------------------------------------------------------------------*/
+.BackOfficeInstallationSyncView .item_body {
+    padding-top: 1em;
+    padding-left: 0.5em;
+}
+
+.BackOfficeInstallationSyncView .item_body section + section {
+    margin-top: 2em;
+}
+
+.BackOfficeInstallationSyncView .item_body section > h1 {
+    font-size: 1em;
+    color: #333;
+    margin-top: 0;
+    padding-bottom: 0.2em;
+    border-bottom: 1px solid #ddd;
+}
+
+.BackOfficeInstallationSyncView .item_body .item_list {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+.BackOfficeInstallationSyncView .item_body .item_list li + li {
+    margin-top: 0.4em;
+}
+
+.BackOfficeInstallationSyncView .item_body .item_list li .item_check {
+    margin: 0;
+    margin-right: 0.3em;
+}
+
+.BackOfficeInstallationSyncView .item_body .item_list .item_description {
+    padding-right: 2em;
+}
+
+.BackOfficeInstallationSyncView .item_body .item_list select {
+    display: table-cell;
+}
+
+.BackOfficeInstallationSyncView .ObjectDiff {
+    margin-left: 1.4em;
+}
+
+.Dialog.diff_dialog {
+    top: auto;
+    left: auto;
+    right: auto;
+    bottom: auto;
+    width: auto;
+    height: auto;
+}
+
+.Dialog.diff_dialog .dialog_header {
+    padding: 0.6em 0;
+}
+
+.Dialog.diff_dialog .dialog_heading {
+    font-size: 1.2em;
+}
+
+.Dialog.diff_dialog .dialog_header .icon {
+    margin-right: 0.2em;
+    position: relative;
+    top: 0.1em;
+}
+
+.Dialog.diff_dialog .differences {
+    margin: 0;
+}
+
+.BackOfficeInstallationSyncView .ObjectDiff .differences,
+.diff_dialog .ObjectDiff .differences {
+    border-collapse: collapse;
+}
+
+.BackOfficeInstallationSyncView .ObjectDiff .differences th,
+.BackOfficeInstallationSyncView .ObjectDiff .differences td,
+.diff_dialog .ObjectDiff .differences th,
+.diff_dialog .ObjectDiff .differences td {
+    border: 1px solid #ccc;
+    padding: 0.4em 0.8em !important;
+}
+
+.BackOfficeInstallationSyncView .modified_section .diff_dialog_button {
+    font-size: 0.7em;
+    margin-left: 1em;
+    text-decoration: none;
+}
+
+.BackOfficeInstallationSyncView .selection_controls {
+    float: none;
+    margin: 0;
+    margin-top: 2em;
+    padding: 0;
+}
+
+.BackOfficeInstallationSyncView .sync_buttons {
+    margin-top: 1em;
+}
+
+/* ObjectDiff
+-----------------------------------------------------------------------------*/
+.ObjectDiff .differences {
+    margin: 1em 0;
+    font-size: 85%;
+}
+
+.ObjectDiff .differences th {
+    padding-bottom: 0.75em;
+}
+
+.ObjectDiff .diff_add {
+    color: rgb(0,125,0);
+    font-weight: bold;
+}
+
+.ObjectDiff .diff_sub {
+    color: rgb(150,0,0);
+    font-weight: bold;
+}
+
+.ObjectDiff .diff_change {
+    color: rgb(25,25,175);
+    font-weight: bold;
+}
+
+.ObjectDiff .language {
+    color: rgb(75,75,75);
+    font-style: italic;
+    font-size: 85%;
+}
+
+.ObjectDiff .differences td,
+.ObjectDiff .differences th {
+    text-align: left;
+    vertical-align: top;
+}
+
+.ObjectDiff .differences th + th,
+.ObjectDiff .differences td + td {
+    padding-left: 1em;
+}
+
+.ObjectDiff .diff_unit {
+    display: inline-block;
+}
+
+.ObjectDiff .diff_unit + .diff_unit {
+    margin-left: 0.5em;
+}
+
+.ObjectDiff .collection_diff .diff_unit {
+    display: block;
+}
+
+.ObjectDiff .collection_diff .diff_unit + .diff_unit {
+    margin-left: 0;
+}
+
+.BackOfficeDiffView .ObjectDiff .differences .check {
+    width: 1em;
+}
+
+.BackOfficeDiffView .buttons {
+    text-align: left;
+    padding: 0;
+    margin: 1em 0;
 }
 
