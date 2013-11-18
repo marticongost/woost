@@ -12,7 +12,7 @@ import datetime
 import hashlib
 import base64
 from cocktail.modeling import ListWrapper, SetWrapper, DictWrapper
-from cocktail.pkgutils import resolve
+from cocktail.pkgutils import get_full_name, resolve
 from cocktail import schema
 from woost.models.item import Item
 
@@ -115,6 +115,8 @@ class Synchronization(object):
             return self.export_value(value._items)
         elif isinstance(value, RegExp):
             return base64.b64encode(value.pattern)
+        elif isinstance(value, schema.SchemaClass):
+            return get_full_name(value)
         else:
             return value
 
@@ -151,7 +153,10 @@ class Synchronization(object):
         if value is None:
             return None
         elif isinstance(member, schema.Reference):
-            return self.get_local_copy(value)
+            if member.class_family:
+                return resolve(value)
+            else:
+                return self.get_local_copy(value)
         elif isinstance(member, schema.DateTime):
             return datetime.datetime.strptime(value, self.datetime_format)
         elif isinstance(member, schema.Date):
