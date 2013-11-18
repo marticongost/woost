@@ -1114,10 +1114,6 @@ body.scripted .BackOfficeLayout .Table .selection {
     margin-bottom: 0.5em;
 }
 
-.BackOfficeLayout .toolbar_box {
-    margin-bottom: 0.1em;    
-}
-
 .BackOfficeLayout .data_controls {
     overflow: hidden;
     width: 100%;
@@ -1132,14 +1128,20 @@ body.scripted .BackOfficeLayout .Table .selection {
 	border: 1px solid #dcd9d0;
 }
 
+.BackOfficeLayout .FlatContentView .toolbar_box,
+.BackOfficeLayout .TreeContentView .toolbar_box {
+    border-bottom: none;
+}
+
 .BackOfficeLayout .toolbar_box .toolbar {
     padding: 0;
-    margin: 0.2em;
+    margin: 0 0.6em;
     border: none;
     background-color: transparent;
 }
 
-.BackOfficeLayout .toolbar.item_buttons {
+.BackOfficeLayout .toolbar.item_buttons,
+.BackOfficeLayout .toolbar.item_bottom_buttons {
     padding: 0 0.4em;
 }
 
@@ -1148,8 +1150,13 @@ body.scripted .BackOfficeLayout .Table .selection {
     float: left;
 	font-size: 85%;
     margin: 0;
+    margin-top: 0.1em;
     padding: 0;
-    margin-right: 1em;    
+}
+
+.BackOfficeLayout .toolbar * + .action_button,
+.BackOfficeLayout .toolbar * + .additional_actions_selector {
+    margin-left: 1em;
 }
 
 .BackOfficeLayout .toolbar a {
