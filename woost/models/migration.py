@@ -380,7 +380,7 @@ def transform_hashes(e):
     to_hex_string = lambda s: "".join(("%x" % ord(c)).zfill(2) for c in s)
 
     for file in File.select():
-        file._file_hash = to_hex_string(f.file_hash)
+        file._file_hash = to_hex_string(file.file_hash)
 
     for user in User.select():
         if user.password:
