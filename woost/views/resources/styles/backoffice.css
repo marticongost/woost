@@ -2432,6 +2432,9 @@ button.TypeSelectorButton {
     margin-bottom: 0.3em;
     color: rgb(75,75,75);
     font-weight: bold;
+    font-size: 1.1em;
+    padding-bottom: 0.3em;
+    border-bottom: 1px solid #ccc;
 }
 
 .BackOfficeLayout .CollectionView .settings_box .box_items {
