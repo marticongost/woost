@@ -44,7 +44,7 @@ body {
 
 .BackOfficeLayout .header {
     position: relative;
-    padding: 0.6em;
+    padding: 0.6em 1em;
     height: 1.5em;
     background-repeat:repeat-y;
     background-color: #3e4351;
@@ -87,13 +87,13 @@ body {
 .BackOfficeLayout .identity {
     position: absolute;
     bottom: 1em;
-    right: 0.4em;
-    font-size: 0.8em;
+    right: 1em;
     border-radius: 0.2em;
     color: white;
 }
 
 .BackOfficeLayout .identity strong {
+    font-size: 0.8em;
     font-weight: bold;
 }
 
@@ -103,7 +103,8 @@ body {
     padding: 0;
 }
 
-.BackOfficeLayout .identity button {
+.BackOfficeLayout .identity form button.logout_button {
+    font-size: 0.8em;
     margin-left: 0.7em !important;    
     color: rgba(255,255,255,0.8) !important;
     text-decoration: underline !important;
@@ -115,15 +116,18 @@ body {
 
 .BackOfficeLayout .user_views_bar {
     padding: 0.3em 0.8em;
-    font-size: 90%;
     background-color: rgb(245,245,245);
     border-bottom: 1px solid #ccc;
 }
 
 .BackOfficeLayout .user_views_bar {
     margin: 0;
+    padding: 0.3em 1em;
+}
+
+.BackOfficeLayout .user_views_bar span,
+.BackOfficeLayout .user_views_bar a {
     font-size: 0.8em;
-    padding-top: 0.5em;
 }
 
 .BackOfficeLayout .user_views_label {
