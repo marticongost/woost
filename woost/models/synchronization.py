@@ -44,7 +44,15 @@ class Synchronization(object):
     def get_object_state_hash(self, obj):
         state = self.export_object_state(obj)
         state = self.__stabilize(state)
-        json = dumps(state)
+
+        try:
+            json = dumps(state)
+        except Exception, error:
+            raise ValueError("Can't serialize %r (%s)" % (
+                obj,
+                error
+            ))
+
         return hashlib.md5(json).hexdigest()
 
     def __stabilize(self, data):
