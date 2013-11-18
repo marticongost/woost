@@ -568,9 +568,10 @@ class CMSController(BaseCMSController):
         if content_type in ("text/html", "text/xhtml"):
 
             error_page, status = event.source.get_error_page(error)
-
+            response = cherrypy.response
+            
             if status:
-                cherrypy.request.status = status
+                response.status = status
 
             if error_page:
                 event.handled = True
@@ -582,10 +583,7 @@ class CMSController(BaseCMSController):
                     original_publishable = controller.context["publishable"],
                     publishable = error_page
                 )
-                
-                response = cherrypy.response
-                response.status = status 
-                
+
                 error_controller = error_page.resolve_controller()
 
                 # Instantiate class based controllers
@@ -594,7 +592,7 @@ class CMSController(BaseCMSController):
                     error_controller._rendering_format = "html"
 
                 response.body = error_controller()
-    
+
     def get_error_page(self, error):
         """Produces a custom error page for the indicated exception.
 
@@ -624,16 +622,17 @@ class CMSController(BaseCMSController):
         # Access forbidden:
         # The default behavior is to show a login page for anonymous users, and
         # a 403 error message for authenticated users.
-        elif is_http_error and error.status == 403 \
-        or isinstance(error, (AuthorizationError, AuthenticationFailedError)):
+        elif (
+            (is_http_error and error.status == 403)
+            or isinstance(error, (AuthorizationError, AuthenticationFailedError))
+        ):
             if get_current_user().anonymous:
-
                 publishable = self.context["publishable"]
 
                 while publishable is not None:
                     login_page = publishable.login_page
                     if login_page is not None:
-                        return login_page, 200
+                        return login_page, 403
                     publishable = publishable.parent
 
                 return config.get_setting("login_page"), 403
