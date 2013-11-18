@@ -1864,6 +1864,8 @@ body.scripted .BackOfficeLayout .ThumbnailsContentView .collection_display input
 .BackOfficeLayout .toolbar .close_action,
 .BackOfficeLayout .toolbar .cancel_action {
     float: right;
+    margin-left: 1em;
+    margin-right: 0;
 }
 
 .BackOfficeItemView .navigation .section_entry {
