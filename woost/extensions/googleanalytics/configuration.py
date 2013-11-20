@@ -10,6 +10,7 @@ Configuration.add_member(
     schema.String("google_analytics_account",
         text_search = False,
         member_group = "services.google_analytics",
+        synchronizable = False,
         listed_by_default = False
     )
 )
