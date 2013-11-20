@@ -154,7 +154,11 @@ from woost.models.caching import CachingPolicy, expire_cache
 
 from woost.models import rendering
 from woost.models.videoplayersettings import VideoPlayerSettings
-from woost.models.synchronization import Synchronization
+from woost.models.synchronization import (
+    Synchronization,
+    get_manifest,
+    rebuild_manifest
+)
 from woost.models import staticpublication
 from woost.models import migration
 

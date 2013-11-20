@@ -393,9 +393,11 @@ step = MigrationStep("Assign global object identifiers")
 def assign_global_identifiers(e):
     from woost import app
     from woost.models import Item
+    from woost.models.synchronization import rebuild_manifest
 
     for item in Item.select():
         item._global_id = app.installation_id + "-" + str(item.id)
 
     Item.global_id.rebuild_index()
+    Item.synchronizable.rebuild_index()
 

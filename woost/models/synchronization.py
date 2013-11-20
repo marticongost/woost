@@ -11,9 +11,16 @@ import urllib2
 import datetime
 import hashlib
 import base64
-from cocktail.modeling import ListWrapper, SetWrapper, DictWrapper
+from BTrees.OOBTree import OOBTree
+from cocktail.events import when
+from cocktail.modeling import (
+    ListWrapper,
+    SetWrapper,
+    DictWrapper
+)
 from cocktail.pkgutils import get_full_name, resolve
 from cocktail import schema
+from cocktail.persistence import datastore
 from woost.models.item import Item
 
 RegExp = type(re.compile(""))
@@ -40,6 +47,15 @@ class Synchronization(object):
             self.__local_copies.get(global_id)
             or Item.get_instance(global_id = global_id)
         )
+
+    def process_manifest(self):
+        manifest = get_manifest()
+        for global_id, object_hash in manifest.iteritems():
+            if object_hash is None:
+                obj = Item.require_instance(global_id = global_id)
+                object_hash = self.get_object_state_hash(obj)
+                manifest[global_id] = object_hash
+            yield global_id, object_hash
 
     def get_object_state_hash(self, obj):
         state = self.export_object_state(obj)
@@ -207,18 +223,24 @@ class Synchronization(object):
 
         incomming = set()
         modified = set()
+        local_manifest = get_manifest()
 
         for line in response:
             line = line.strip()
             pos = line.find(" ")
             global_id = line[:pos]
-            state_hash = line[pos + 1:].strip()
+            remote_hash = line[pos + 1:].strip()
             local_obj = Item.get_instance(global_id = global_id)
 
             if local_obj is None:
                 incomming.add(global_id)
-            elif state_hash != self.get_object_state_hash(local_obj):
-                modified.add(global_id)
+            else:
+                local_hash = local_manifest.get(global_id)
+                if local_hash is None:
+                    local_hash = self.get_object_state_hash(local_obj)
+                    local_manifest[global_id] = local_hash
+                if remote_hash != local_hash:
+                    modified.add(global_id)
 
         return {"incomming": incomming, "modified": modified}
 
@@ -280,4 +302,85 @@ class Synchronization(object):
             "incomming": self.__local_copies.values(),
             "modified": changes
         }
+
+MANIFEST_KEY = "woost.manifest"
+
+def get_manifest():
+    manifest = datastore.root.get(MANIFEST_KEY)
+
+    if manifest is None:
+        datastore.root[MANIFEST_KEY] = manifest = OOBTree()
+
+    return manifest
+
+def rebuild_manifest(eager = True):
+    datastore.root[MANIFEST_KEY] = manifest = OOBTree()
+    
+    if eager:
+        sync = Synchronization()
+
+    for obj in Item.select(Item.synchronizable.equal(True)):
+        global_id = obj.global_id
+        if global_id:
+            if eager:
+                object_hash = sync.get_object_state_hash(obj)
+                manifest[global_id] = object_hash
+            else:
+                manifest[global_id] = None
+
+@when(Item.inserting)
+def _insert_into_manifest(e):
+    obj = e.source
+    if obj.synchronizable:
+        global_id = e.source.global_id
+        if global_id:
+            get_manifest()[global_id] = None
+
+@when(Item.changed)
+def _invalidate_manifest(e):
+
+    obj = e.source
+
+    if not obj.is_inserted:
+        return
+    
+    # Elegibility for synchronization changed
+    if e.member is Item.synchronizable:
+
+        # Object becomes synchronizable: add it to the manifest
+        if e.value:
+            if obj.global_id:
+                get_manifest()[obj.global_id] = None
+        # Object ceases to be synchronizable: remove it from the manifest
+        else:
+            get_manifest().pop(obj.global_id, None)
+
+        return
+
+    elif not obj.synchronizable:
+        return
+
+    # Object global identifier changed
+    if e.member is Item.global_id:
+        manifest = get_manifest()
+
+        if e.previous_value:
+            manifest.pop(e.previous_value, None)
+
+        if e.value:
+            manifest[e.value] = None
+
+        return
+
+    elif not obj.global_id:
+        return
+
+    # Changing a synchronizable member: invalidate the stored object's hash in
+    # the manifest, if any
+    if e.member.synchronizable:
+        get_manifest()[obj.global_id] = None
+
+@when(Item.deleted)
+def _remove_from_manifest(e):
+    get_manifest().pop(e.source.global_id, None)
 

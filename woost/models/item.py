@@ -443,7 +443,7 @@ class Item(PersistentObject):
                     item.owner = changeset.author
                 
                 change.insert(event.inserted_objects)
-        
+
     # Extend item modification to make it versioning aware
     @event_handler
     def handle_changed(cls, event):
