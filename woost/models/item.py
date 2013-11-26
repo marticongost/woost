@@ -679,7 +679,8 @@ class Item(PersistentObject):
         author,
         owner,
         creation_time,
-        last_update_time
+        last_update_time,
+        global_id
     ])
 
 
