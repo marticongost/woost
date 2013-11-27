@@ -6052,7 +6052,7 @@ translations.define("woost.type_groups.misc",
 
 translations.define("woost.type_groups.publishable",
     ca = u"Elements publicables",
-    es = u"Elementos publicable",
+    es = u"Elementos publicables",
     en = u"Publishable items"
 )
 
