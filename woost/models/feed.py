@@ -15,6 +15,7 @@ from woost.models.controller import Controller
 
 class Feed(Publishable):
 
+    type_group = "setup"
     instantiable = True
 
     groups_order = ["meta", "feed_items"]

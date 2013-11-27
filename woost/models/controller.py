@@ -12,6 +12,8 @@ from woost.models.item import Item
 
 class Controller(Item):
 
+    type_group = "customization"
+
     members_order = [
         "title",
         "python_name",

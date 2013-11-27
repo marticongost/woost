@@ -14,6 +14,7 @@ from woost.models.user import User
 
 class SiteInstallation(Item):
 
+    type_group = "setup"
     edit_form = "woost.views.SiteInstallationForm"
 
     edit_node_class = (

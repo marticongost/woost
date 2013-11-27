@@ -24,6 +24,7 @@ from woost.models.controller import Controller
 class File(Publishable):
  
     instantiable = True
+    type_group = "resource"
 
     edit_node_class = \
         "woost.controllers.backoffice.fileeditnode.FileEditNode"

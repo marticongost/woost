@@ -401,3 +401,25 @@ def assign_global_identifiers(e):
     Item.global_id.rebuild_index()
     Item.synchronizable.rebuild_index()
 
+#------------------------------------------------------------------------------
+step = MigrationStep("Expose models that where hidden in the Configuration model")
+
+@when(step.executing)
+def expose_hidden_configuration(e):
+    from woost.models import Configuration
+    
+    config = Configuration.instance
+
+    # restrictedaccess extension
+    access_restrictions = getattr(config, "_access_restrictions", None)
+    if access_restrictions:
+        for restriction in access_restriction:
+            try:
+                del restriction._Configuration_access_restrictions
+            except AttributeError:
+                pass
+        try:
+            del config._access_restrictions
+        except:
+            pass
+

@@ -23,6 +23,8 @@ class Role(Item):
     permissions from its base roles, recursively. This ability makes it
     possible to grow a site's access policy by means of specialization.
     """
+    type_group = "users"
+
     members_order = [
         "title",
         "base_roles",

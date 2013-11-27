@@ -34,6 +34,8 @@ class Configuration(Item):
 
     instantiable = False
 
+    type_group = "setup"
+
     groups_order = [
         "publication",
         "publication.pages",
@@ -66,6 +68,7 @@ class Configuration(Item):
         "backoffice_language",
         "renderers",
         "image_factories",
+        "video_player_settings",
         "timezone",
         "smtp_host",
         "smtp_user",

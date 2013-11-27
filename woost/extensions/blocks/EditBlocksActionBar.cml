@@ -8,6 +8,7 @@ from woost.models import (
 )
 from woost.controllers.backoffice.editstack import EditStacksManager
 from woost.extensions.blocks.block import Block
+from woost.extensions.blocks.blocktypegroups import block_type_groups
 ?>
 
 <py:woost.views.ActionBar
@@ -95,7 +96,8 @@ from woost.extensions.blocks.block import Block
                 <py:woost.views.ItemPalette
                     py:local_id="new_blocks_palette"
                     py:types="${Block}"
-                    py:groups_order="${Block.type_groups_order}">
+                    py:type_groups="${block_type_groups}"
+                    py:required_permission="create">
                     <?py
                     @extend(element)
                     def should_include_type(new_blocks_palette, block_type):

@@ -14,6 +14,7 @@ from woost.models.role import Role
 
 class UserView(Item):
 
+    type_group = "users"
     members_order = ["title", "parameters", "roles"]
     edit_controller = \
         "woost.controllers.backoffice.userviewfieldscontroller." \

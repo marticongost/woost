@@ -54,6 +54,7 @@ class Item(PersistentObject):
     """Base class for all CMS items. Provides basic functionality such as
     authorship, group membership, draft copies and versioning.
     """
+    type_group = "setup"
     instantiable = False
 
     members_order = [

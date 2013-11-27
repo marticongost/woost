@@ -1191,6 +1191,22 @@ body.scripted .BackOfficeLayout .Table .selection {
 	vertical-align: middle;
 }
 
+.BackOfficeLayout .toolbar .new_toolbar_button {
+    font-size: 100%;
+}
+
+.BackOfficeLayout .toolbar .new_toolbar_button > .label {
+    font-size: 85%;
+}
+
+.BackOfficeLayout .toolbar .new_toolbar_button > .label > .shortcut {
+    vertical-align: top;
+}
+
+.BackOfficeLayout .toolbar .new_toolbar_button .selector_content {
+    top: 1.8em;
+}
+
 .BackOfficeLayout .toolbar .content_view,
 .BackOfficeLayout .toolbar .languages_box,
 .BackOfficeLayout .toolbar .members_box {
@@ -1258,6 +1274,17 @@ body.scripted .BackOfficeLayout .Table .selection {
 
 .BackOfficeLayout .content_type_selector {
     float: left;
+}
+
+.BackOfficeLayout .content_type_box > .content_type_selector {
+    margin-left: 0.05em;
+}
+
+.BackOfficeLayout .content_type_box > .content_type_selector > .label {
+    padding: 0.2em;
+    padding-right: 1.3em;
+    top: -0.2em;
+    background-position: right 0.9em; 
 }
 
 /* Content view selector
@@ -1412,26 +1439,60 @@ body.scripted .BackOfficeLayout .selector:hover .selector_content {
     margin-left: -0.5em;    
 }
 
-.BackOfficeLayout .ContentTypeSelector > .entry_label {
-    color: black;
-    font-weight: bold;
-    padding: 0.2em 0.5em;
-    padding-right: 1em;
+.BackOfficeLayout .ContentTypeSelector > .label {
+    display: inline-block;
+}
+
+.BackOfficeLayout .ContentTypeSelector > .label > * {
+    vertical-align: middle;
 }
 
 .BackOfficeLayout .ContentTypeSelector .selector_content {
     top: 1.4em;
     z-index: 3;
 	margin-top: -1px;
-    padding: 0.4em;
-    min-width: 16em;
+    padding: 1em;
 }
 
-.BackOfficeLayout .ContentTypeSelector .selector_content > li {
-    font-size: 85%;
+.BackOfficeLayout .ContentTypeSelector .palette > .palette_group > .nested_groups {
+    display: table;
 }
 
-.BackOfficeLayout .ContentTypeSelector .selected > .entry_label {
+.BackOfficeLayout .ContentTypeSelector .palette > .palette_group > .nested_groups > .palette_group {
+    display: table-cell;
+    padding-right: 1.5em;
+    padding-top: 0;
+    vertical-align: top;
+}
+
+.BackOfficeLayout .ContentTypeSelector .palette > .palette_group > .nested_groups > .palette_group > .group_label,
+.BackOfficeLayout .ContentTypeSelector .palette .palette_group:first-child > .group_label {
+    margin-top: 0;
+}
+
+.BackOfficeLayout .ContentTypeSelector .palette .palette_group.with_label .palette_group .group_label {
+    margin-top: 1.2em;
+}
+
+.BackOfficeLayout .ContentTypeSelector .palette > .palette_group > .nested_groups > .palette_group + .palette_group {
+    padding-left: 1.5em;
+    border-left: 1px solid #ddd;
+}
+
+.BackOfficeLayout .ContentTypeSelector .palette > .palette_group > .nested_groups > .palette_group:last-child {
+    padding-right: 0;
+}
+
+.BackOfficeLayout .ContentTypeSelector .palette_entry + .palette_entry {
+    margin-top: 0.5em;
+}
+
+.BackOfficeLayout .ContentTypeSelector a {
+    color: #333;
+    font-size: 0.9em;
+}
+
+.BackOfficeLayout .ContentTypeSelector .selected a {
     font-weight: bold;
 }
 
@@ -3243,7 +3304,8 @@ div.success_label {
 /* Item palette
 -----------------------------------------------------------------------------*/
 .ItemPalette,
-.ItemPalette .group_entries {
+.ItemPalette .group_entries,
+.ItemPalette .nested_groups {
     list-style-type: none;
     padding: 0;
     margin: 0;
@@ -3251,13 +3313,19 @@ div.success_label {
 }
 
 .ItemPalette .group_label {
-    font-size: 0.8em;
+    font-size: 0.9em;
     font-weight: bold;
-    border-bottom: 1px solid #ADB2BC;
-    padding-bottom: 0.1em;
+    color: #545F75;
+    border-bottom: 2px solid #ADB2BC;
+    padding-bottom: 0.2em;
     margin-top: 1.2em;
     margin-bottom: 0.6em;
-    color: #545F75;
+}
+
+.ItemPalette .palette_group.with_label .palette_group .group_label {
+    font-size: 0.8em;
+    color: #555;
+    border-bottom: 1px dotted #ccc;
 }
 
 .ItemPalette li {

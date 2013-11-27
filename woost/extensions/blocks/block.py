@@ -17,14 +17,6 @@ class Block(Item):
     instantiable = False
     visible_from_root = False
     type_group = "blocks.content"
-    type_groups_order = [
-        "blocks.content",
-        "blocks.layout",
-        "blocks.listings",
-        "blocks.social",
-        "blocks.forms",
-        "blocks.custom"
-    ]
     view_class = None
     block_display = "woost.extensions.blocks.BlockDisplay"
     backoffice_heading_view = "woost.extensions.blocks.BackOfficeBlockHeading"
