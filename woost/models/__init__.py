@@ -57,6 +57,8 @@ if not mimetypes.guess_extension("text/javascript"):
     mimetypes.add_type("text/javascript", ".js")
 del mimetypes
 
+from woost.models.typegroups import TypeGroup, type_groups
+
 # Base content types
 #------------------------------------------------------------------------------
 from woost.models.configuration import Configuration

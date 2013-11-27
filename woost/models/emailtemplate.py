@@ -21,6 +21,7 @@ from woost.models import Item, Configuration, File
 
 class EmailTemplate(Item):
 
+    type_group = "customization"
     encoding = "utf-8"
 
     members_order = [

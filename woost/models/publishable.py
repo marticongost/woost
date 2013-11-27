@@ -44,6 +44,8 @@ class Publishable(Item):
     edit_view = "woost.views.PublishableFieldsView"
     backoffice_heading_view = "woost.views.BackOfficePublishableHeading"
  
+    type_group = "publishable"
+
     groups_order = [
         "navigation",
         "presentation",

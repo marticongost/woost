@@ -22,6 +22,7 @@ from woost.models.messagestyles import unauthorized_style
 
 class Permission(Item):
 
+    type_group = "access"
     instantiable = False
     visible_from_root = False
 

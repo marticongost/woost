@@ -13,6 +13,8 @@ from woost.models import Item
 
 class Style(Item):
 
+    type_group = "customization"
+
     members_order = [
         "title",
         "applicable_to_text",

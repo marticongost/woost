@@ -12,6 +12,8 @@ from woost.models import Item
 
 class Template(Item):
 
+    type_group = "customization"
+
     members_order = [
         "title",
         "identifier",

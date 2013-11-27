@@ -1640,6 +1640,12 @@ translations.define("Item-plural",
     en = u"Generic elements"
 )
 
+translations.define("Item-menu",
+    ca = u"Tots els elements del web",
+    es = u"Todos los elementos de la web",
+    en = u"All elements"
+)
+
 translations.define("Item-none",
     ca = u"Cap",
     es = u"Ninguno",
@@ -2742,6 +2748,12 @@ translations.define("Publishable-plural",
     en = u"Publishable elements"
 )
 
+translations.define("Publishable-menu",
+    ca = u"Tots els elements publicables",
+    es = u"Todos los elementos publicables",
+    en = u"All publishable elements"
+)
+
 translations.define("Publishable.meta",
     ca = u"Metadades",
     es = u"Metadatos",
@@ -2996,6 +3008,12 @@ translations.define("Document-plural",
     ca = u"Documents",
     es = u"Documentos",
     en = u"Documents"
+)
+
+translations.define("Document-menu",
+    ca = u"Tots els documents",
+    es = u"Todos los documentos",
+    en = u"All documents"
 )
 
 translations.define("Document.content",
@@ -6022,5 +6040,49 @@ translations.define("woost.controllers.InstallationSyncController.success",
     ca = u"S'han sincronitzat els continguts indicats.",
     es = u"Se han sincronizado los contenidos indicados.",
     en = u"Successfully synchronized the selected content."
+)
+
+# Type groups
+#------------------------------------------------------------------------------
+translations.define("woost.type_groups.misc",
+    ca = u"Miscel·lània",
+    es = u"Miscelanea",
+    en = u"Miscellany"
+)
+
+translations.define("woost.type_groups.publishable",
+    ca = u"Elements publicables",
+    es = u"Elementos publicable",
+    en = u"Publishable items"
+)
+
+translations.define("woost.type_groups.document",
+    ca = u"Documents",
+    es = u"Documentos",
+    en = u"Documents"
+)
+
+translations.define("woost.type_groups.resource",
+    ca = u"Recursos",
+    es = u"Recursos",
+    en = u"Resources"
+)
+
+translations.define("woost.type_groups.setup",
+    ca = u"Administració",
+    es = u"Administración",
+    en = u"Setup"
+)
+
+translations.define("woost.type_groups.customization",
+    ca = u"Personalització",
+    es = u"Personalización",
+    en = u"Customization"
+)
+
+translations.define("woost.type_groups.users",
+    ca = u"Usuaris i permisos",
+    es = u"Usuarios y permisos",
+    en = u"Users and permissions"
 )
 

@@ -62,6 +62,7 @@ class Extension(Item):
     """Base model for Woost extensions."""
 
     instantiable = False
+    type_group = "setup"
     collapsed_backoffice_menu = True
     edit_node_class = "woost.controllers.backoffice.extensioneditnode." \
                       "ExtensionEditNode"

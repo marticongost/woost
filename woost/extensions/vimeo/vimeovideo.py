@@ -22,6 +22,7 @@ def extract_video_id(string):
 class VimeoVideo(Publishable):
 
     instantiable = True
+    type_group = "resource"
     uri_pattern = "http://vimeo.com/%s"
     video_player = "cocktail.html.VimeoPlayer"
 

@@ -19,6 +19,7 @@ from woost.models.controller import Controller
 class Document(Publishable):
 
     instantiable = True
+    type_group = "document"
     default_per_language_publication = True
 
     groups_order = [
