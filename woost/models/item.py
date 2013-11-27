@@ -54,6 +54,8 @@ class Item(PersistentObject):
     """Base class for all CMS items. Provides basic functionality such as
     authorship, group membership, draft copies and versioning.
     """
+    instantiable = False
+
     members_order = [
         "id",
         "qname",
@@ -116,6 +118,14 @@ class Item(PersistentObject):
             )
         else:
             return PersistentObject.__translate__(self, language, **kwargs)
+
+    @event_handler
+    def handle_inherited(cls, e):
+        if (
+            isinstance(e.schema, schema.SchemaClass)
+            and "instantiable" not in e.schema.__dict__
+        ):
+            e.schema.instantiable = True
 
     # Unique qualified name
     #--------------------------------------------------------------------------
