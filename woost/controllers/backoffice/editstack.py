@@ -856,7 +856,8 @@ class EditNode(StackNode):
         return schema.diff(
             source_form_data,
             self.form_data,
-            self.form_schema
+            self.form_schema,
+            exclude = lambda member: not member.editable
         )
 
     def relate(self, member, item):
