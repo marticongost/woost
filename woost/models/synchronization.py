@@ -304,6 +304,7 @@ class Synchronization(object):
         }
 
 MANIFEST_KEY = "woost.manifest"
+debug = False
 
 def get_manifest():
     manifest = datastore.root.get(MANIFEST_KEY)
@@ -335,9 +336,13 @@ def _insert_into_manifest(e):
         global_id = e.source.global_id
         if global_id:
             get_manifest()[global_id] = None
+            if debug:
+                print styled("Manifest: declared " + obj.global_id, "bright_green")
 
 @when(Item.changed)
 def _invalidate_manifest(e):
+
+    from cocktail.styled import styled
 
     obj = e.source
 
@@ -351,9 +356,13 @@ def _invalidate_manifest(e):
         if e.value:
             if obj.global_id:
                 get_manifest()[obj.global_id] = None
+                if debug:
+                    print styled("Manifest: declared " + obj.global_id, "bright_green")
         # Object ceases to be synchronizable: remove it from the manifest
         else:
             get_manifest().pop(obj.global_id, None)
+            if debug:
+                print styled("Manifest: removed " + obj.global_id, "magenta")
 
         return
 
@@ -366,9 +375,13 @@ def _invalidate_manifest(e):
 
         if e.previous_value:
             manifest.pop(e.previous_value, None)
+            if debug:
+                print styled("Manifest: removed " + obj.global_id, "magenta")
 
         if e.value:
             manifest[e.value] = None
+            if debug:
+                print styled("Manifest: declared " + obj.global_id, "bright_green")
 
         return
 
@@ -379,6 +392,8 @@ def _invalidate_manifest(e):
     # the manifest, if any
     if e.member.synchronizable:
         get_manifest()[obj.global_id] = None
+        if debug:
+            print styled("Manifest: invalidated " + obj.global_id, "cyan")
 
 @when(Item.deleted)
 def _remove_from_manifest(e):
