@@ -104,9 +104,14 @@ class InstallationSyncController(EditController):
                             file_downloads.add(local)
 
         # Download files from the remote copy
+        download_pattern = (
+            self.context["cms_item"].url.rstrip("/")
+            + "/cms/synchronization/file/%s"
+        )
+
         for file in file_downloads:
             urllib.urlretrieve(
-                self.context["cms_item"].url.rstrip("/") + "/" + file.global_id,
+                download_pattern % file.global_id,
                 file.file_path
             )
 
