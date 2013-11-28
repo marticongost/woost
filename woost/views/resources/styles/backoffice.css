@@ -2296,22 +2296,20 @@ button.TypeSelectorButton span {
 .BackOfficeLayout .CollectionView .filters {
     font-size: 85%;
     margin-top: 0.3em;
-    border: 1px solid #b4c0b8;    
+    border: 1px solid #ccc;
+    background-color: #eee;
+    padding: 0.5em;
 }
 
 .BackOfficeLayout .CollectionView .filters .filters_label {
-    padding: 0.4em 0.6em;
-    border-bottom: 1px solid #b2c1b7;
-    background-color: #c7cdc9;
-    background-image: -webkit-linear-gradient(#cfdad3,#c7cdc9);
-    color: #39413c;
+    padding-bottom: 0.2em;
+    color: #333;
     font-weight: bold;
+    border-bottom: 1px solid #ddd;
 }
 
 .BackOfficeLayout .CollectionView .filters .FilterBox {
-    padding: 0.5em;
     padding-top: 1em;
-    background-color: #e8ece9;
 }
 
 .BackOfficeLayout .FilterBox .filter_entry {
