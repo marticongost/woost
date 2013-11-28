@@ -217,6 +217,15 @@ class Synchronization(object):
 
         return urllib2.urlopen(request)
 
+    def download_file(self, file, chunk_size = 1024):
+        response = self._sync_request("file/" + file.global_id)
+        with open(file.file_path, "wb") as dest:
+            while True:
+                chunk = response.read(chunk_size)
+                if not chunk:
+                    break
+                dest.write(chunk)
+
     def compare_manifests(self):
 
         response = self._sync_request("manifest")
