@@ -9,13 +9,15 @@ from cocktail import schema
 from cocktail.controllers import (
     FormProcessor,
     Form,
-    request_property
+    request_property,
+    serve_file
 )
 from cocktail.persistence import transactional
 from woost.models import (
     Synchronization,
     Item,
     User,
+    File,
     get_current_user,
     InstallationSyncPermission
 )
@@ -54,6 +56,15 @@ class SiteSyncController(FormProcessor, BaseBackOfficeController):
             glue = ","
 
         yield "}"
+
+    @cherrypy.expose
+    def file(self, global_id):
+        file = File.require_instance(global_id = global_id)
+        return serve_file(
+            file.file_path,
+            name = file.file_name,
+            content_type = file.mime_type
+        )
 
     class SyncForm(Form):
 
