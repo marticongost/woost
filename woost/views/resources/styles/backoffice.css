@@ -1144,8 +1144,7 @@ body.scripted .BackOfficeLayout .Table .selection {
     background-color: transparent;
 }
 
-.BackOfficeLayout .toolbar.item_buttons,
-.BackOfficeLayout .toolbar.item_bottom_buttons {
+.BackOfficeLayout .toolbar {
     padding: 0 0.4em;
 }
 
