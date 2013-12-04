@@ -168,9 +168,16 @@ publishable_view_factory = ViewFactory()
 
 def video_player(item, parameters):
     if item.resource_type == "video":
-        player_settings = Configuration.instance.video_player_settings
+
+        player_settings = parameters.get("player_settings")
+
+        if player_settings is None:
+            player_settings_list = Configuration.instance.video_player_settings
+            if player_settings_list:
+                player_settings = player_settings_list[0]
+
         if player_settings:
-            return player_settings[0].create_player(item)
+            return player_settings.create_player(item)
 
 publishable_view_factory.register(Publishable, "video_player", video_player) 
 
