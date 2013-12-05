@@ -442,4 +442,44 @@ def remove_action_model(e):
     for change in Change.select():
         change.action = change.action.__Broken_state__["_identifier"]
 
+#------------------------------------------------------------------------------
+
+step = MigrationStep("Remove the workflow extension")
+
+@when(step.executing)
+def remove_workflow_extension(e):
+
+    from cocktail.persistence import datastore
+    from woost.models import Item, Extension
+
+    for extension in Extension.select():
+        bp = getattr(extension, "__Broken_Persistent__", None)
+
+        if bp is not None and bp.__name__ == "WorkflowExtension":
+            id = extension.__Broken_state__["_id"]
+
+            try:
+                Item.index.remove(id, None)
+            except KeyError:
+                pass
+
+            try:
+                Item.keys.remove(id)
+            except KeyError:
+                pass
+
+            try:
+                Extension.keys.remove(id)
+            except KeyError:
+                pass
+
+            break
+
+            for member in Extension.members().itervalues():
+                if member.indexed:
+                    member.rebuild_index()
+
+    for key in list(datastore.root):
+        if key.startswith("woost.extensions.workflow"):
+            datastore.root.pop(key)
 
