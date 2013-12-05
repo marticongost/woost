@@ -426,22 +426,20 @@ class FTPDestination(StaticSiteDestination):
 
     def __translate__(self, language, **kwargs):
 
-        if self.draft_source is None:
-            
-            desc = self.ftp_host
-            if desc:
-                
-                user = self.ftp_user
-                if user:
-                    desc = user + "@" + desc
-                
-                path = self.ftp_path
-                if path:
-                    if not path[0] == "/":
-                        path = "/" + path
-                    desc += path
+        desc = self.ftp_host
 
-                return "ftp://" + desc
+        if desc:            
+            user = self.ftp_user
+            if user:
+                desc = user + "@" + desc
+            
+            path = self.ftp_path
+            if path:
+                if not path[0] == "/":
+                    path = "/" + path
+                desc += path
+
+            return "ftp://" + desc
                 
         return StaticSiteDestination.__translate__(self, language, **kwargs)
 

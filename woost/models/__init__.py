@@ -97,11 +97,11 @@ from woost.models.usersession import (
 from woost.models.role import Role
 from woost.models.permission import (
     Permission,
+    ContentPermission,
     CreatePermission,
     ReadPermission,
     ModifyPermission,
     DeletePermission,
-    ConfirmDraftPermission,
     RenderPermission,
     ReadMemberPermission,
     ModifyMemberPermission,
@@ -134,8 +134,7 @@ from woost.models.trigger import (
     CreateTrigger,
     InsertTrigger,
     ModifyTrigger,
-    DeleteTrigger,
-    ConfirmDraftTrigger
+    DeleteTrigger
 )
 from woost.models.triggerresponse import (
     TriggerResponse,

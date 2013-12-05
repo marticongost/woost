@@ -47,7 +47,6 @@ from woost.models import (
     ReadHistoryPermission,
     DeleteTrigger,
     CustomTriggerResponse,
-    ConfirmDraftPermission,
     EmailTemplate,
     CachingPolicy,
     Extension,
@@ -150,7 +149,6 @@ def init_site(
             CreatePermission(matching_items = everything()),
             ModifyPermission(matching_items = everything()),
             DeletePermission(matching_items = everything()),
-            ConfirmDraftPermission(matching_items = everything()),
             ReadMemberPermission(),
             ModifyMemberPermission()
         ]
@@ -185,7 +183,6 @@ def init_site(
             # Content owners have full control
             ModifyPermission(matching_items = owned_items()),
             DeletePermission(matching_items = owned_items()),
-            ConfirmDraftPermission(matching_items = owned_items()),
             
             # All members allowed, 'controller' and 'qname'
             ReadMemberPermission(

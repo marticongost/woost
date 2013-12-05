@@ -27,12 +27,8 @@ from woost.controllers.backoffice.useractions import (
             if cls is not Item:
                 self.add_class(cls.name)
         
-        if self.edited_item.is_inserted:
-        
+        if self.edited_item.is_inserted:        
             add_view_action_context(self, "existing_item")
-
-            if self.edited_item.is_draft:
-                add_view_action_context(self, "draft")
         else:
             add_view_action_context(self, "new_item")
 

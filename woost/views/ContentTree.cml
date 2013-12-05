@@ -15,8 +15,7 @@ ACCESSIBLE_DESCENDANTS = 2
 
 <py:woost.views.ContentTable
     xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:py="http://www.whads.com/ns/cocktail/templates"
-    py:inline_draft_copies="${False}">
+    xmlns:py="http://www.whads.com/ns/cocktail/templates">
 
     <?py-class
     accessor = SchemaObjectAccessor

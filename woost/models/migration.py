@@ -5,6 +5,7 @@ u"""Defines migrations to the database schema for woost.
 """
 from cocktail.events import when
 from cocktail.persistence import MigrationStep
+from cocktail.persistence.utils import remove_broken_type
 
 def admin_members_restriction(members):
     
@@ -482,4 +483,49 @@ def remove_workflow_extension(e):
     for key in list(datastore.root):
         if key.startswith("woost.extensions.workflow"):
             datastore.root.pop(key)
+
+#------------------------------------------------------------------------------
+
+step = MigrationStep("Removed drafts")
+
+@when(step.executing)
+def remove_drafts(e):
+ 
+    from cocktail.persistence import datastore
+    from woost.models import (
+        Item,
+        Permission,
+        ContentPermission,
+        Trigger,
+        ContentTrigger
+    )
+    from woost.models.utils import remove_broken_type
+
+    remove_broken_type(
+        "woost.models.permission.ConfirmDraftPermission",
+        existing_bases = (
+            Item,
+            Permission,
+            ContentPermission
+        )
+    )
+
+    remove_broken_type(
+        "woost.models.permission.ConfirmDraftPermission",
+        existing_bases = (
+            Item,
+            Trigger,
+            ContentTrigger
+        )
+    )
+
+    for item in Item.select():
+        for key in "_is_draft", "_draft_source", "_drafts":
+            try:
+                delattr(item, key)
+            except AttributeError:
+                pass
+
+    datastore.root.pop("woost.models.item.Item.is_draft", None)
+    datastore.root.pop("woost.models.item.Item.draft_source", None)
 

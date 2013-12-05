@@ -30,8 +30,7 @@ from woost import app
         <div py:id="item_translation">
             <py:ready>
                 <?py
-                if self.item.is_inserted \
-                and not (self.item.is_draft and self.item.draft_source is None):
+                if self.item.is_inserted:
                     context_desc = translations(self.item)
                 else:
                     context_desc = translations("creating", content_type = self.item.__class__)

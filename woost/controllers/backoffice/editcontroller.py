@@ -23,8 +23,7 @@ from woost.models import (
     get_current_user,
     restricted_modification_context,
     delete_validating,
-    ReadTranslationPermission,
-    ConfirmDraftPermission
+    ReadTranslationPermission
 )
 from woost.controllers.notifications import notify_user, pop_user_notifications
 from woost.controllers.backoffice.editstack import RelationNode, EditNode
@@ -130,28 +129,13 @@ class EditController(BaseBackOfficeController):
                 self.relation_selection
             )
 
-    def save_item(self, make_draft = False):
-        
+    def save_item(self):
+
         for i in range(self.MAX_TRANSACTION_ATTEMPTS):
             user = get_current_user()
             stack_node = self.stack_node
             item = stack_node.item
             is_new = not item.is_inserted
-            
-            # Create a draft
-            if make_draft:
-
-                # From scratch
-                if is_new:
-                    item.is_draft = True
-
-                # From an existing element
-                else:
-                    item = item.make_draft()
-                
-                item.author = user
-                item.owner = user
-
             changeset = None
 
             with restricted_modification_context(
@@ -159,14 +143,8 @@ class EditController(BaseBackOfficeController):
                 user, 
                 member_subset = set(stack_node.form_schema.members())
             ):
-                # Store the changes on a draft; this skips revision control
-                if item.is_draft:       
+                with changeset_context(author = user) as changeset:
                     self._apply_changes(item)
-
-                # Operate directly on a production item
-                else:
-                    with changeset_context(author = user) as changeset:
-                        self._apply_changes(item)
             try:
                 datastore.commit()
             except ConflictError:
@@ -184,20 +162,19 @@ class EditController(BaseBackOfficeController):
         )
 
         # Application-wide event
-        if not item.is_draft:
-            if change is not None:
-                self.context["cms"].item_saved(
-                    item = item,
-                    user = user,
-                    is_new = is_new,
-                    change = change
-                )
+        if change is not None:
+            self.context["cms"].item_saved(
+                item = item,
+                user = user,
+                is_new = is_new,
+                change = change
+            )
 
         # User notification
         stack_node.item_saved_notification(is_new, change)
 
-        # A new item or draft was created
-        if is_new or make_draft:
+        # A new item was created
+        if is_new:
 
             # The edit operation was the root of the edit stack; redirect the
             # browser to the new item
@@ -205,9 +182,8 @@ class EditController(BaseBackOfficeController):
                 if self.edit_stack.root_url:
                     self.edit_stack.go_back()
                 else:
-                    params = {"edit_stack": None} if make_draft else {}
                     raise cherrypy.HTTPRedirect(
-                        self.edit_uri(item, **params)
+                        self.edit_uri(item)
                     )
 
             # The edit operation was nested; relate the created item to its
@@ -220,72 +196,6 @@ class EditController(BaseBackOfficeController):
 
         if stack_node.parent_node is None and self.edit_stack.root_url:
             self.edit_stack.go_back()
-
-    def confirm_draft(self):
-
-        draft = self.stack_node.item
-        target_item = draft.draft_source or draft
-        is_new = draft is target_item
-        user = get_current_user()
-
-        user.require_permission(ConfirmDraftPermission, target = draft)
-        member_subset = set(self.stack_node.form_schema.members())
-
-        for i in range(self.MAX_TRANSACTION_ATTEMPTS):
-
-            # Update the draft
-            with restricted_modification_context(
-                draft, 
-                user, 
-                member_subset = member_subset
-            ):
-                self._apply_changes(draft)
-
-            # Confirm the draft
-            with changeset_context(author = user) as changeset:
-                with restricted_modification_context(
-                    target_item,
-                    user,
-                    member_subset = member_subset
-                ):
-                    draft.confirm_draft()
-            try:
-                datastore.commit()
-            except ConflictError:
-                datastore.abort()
-                datastore.sync()
-            else:
-                break
-
-        # Edit stack event
-        self.stack_node.committed(
-            user = user,
-            changeset = changeset
-        )
-        
-        # Application-wide event
-        self.context["cms"].item_saved(
-            item = target_item,
-            user = user,
-            is_new = is_new,
-            change = changeset.changes.get(target_item.id)
-        )
-
-        # User notification
-        notify_user(
-            translations(
-                "woost.views.BackOfficeEditView Draft confirmed",
-                item = target_item,
-                is_new = is_new
-            ),
-            "success"
-        )
-
-        # Redirect back to the source item
-        if not is_new:
-            raise cherrypy.HTTPRedirect(
-                self.edit_uri(target_item, edit_stack = None)
-            )
 
     def _apply_changes(self, item):
         

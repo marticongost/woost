@@ -93,7 +93,7 @@ class TriggerMatchTestCase(BaseTestCase):
                 "woost.models.document.Document.title"
             ]),               
             (Item(), None, {"member": Item.owner}, True),
-            (Item(), None, {"member": Item.draft_source}, False),
+            (Item(), None, {"member": Item.global_id}, False),
             (Document(), None, {"member": Document.title}, True),
             (Document(), None, {"member": Document.hidden}, False)
         )

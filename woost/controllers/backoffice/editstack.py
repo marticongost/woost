@@ -848,7 +848,7 @@ class EditNode(StackNode):
         """
         source_form_data = {}
         self.form_adapter.export_object(
-            source or self._item.draft_source or self._item,
+            source or self._item,
             source_form_data,
             self.content_type,
             self.form_schema
@@ -907,8 +907,7 @@ class EditNode(StackNode):
             insertion (True) or an update of an existing item (False).
         @type is_new: bool
 
-        @param change: A change object describing the save operation. Will be
-            set to None when saving a draft.
+        @param change: A change object describing the save operation.
         @type change: L{Change<woost.models.changeset.Change>}            
         """
         item = self.item

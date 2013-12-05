@@ -147,11 +147,6 @@ class DeletePermission(ContentPermission):
     instantiable = True
 
 
-class ConfirmDraftPermission(ContentPermission):
-    """Permission to confirm drafts of instances of a content type."""
-    instantiable = True
-
-
 class RenderPermission(ContentPermission):
     """Permission to obtain images representing instances of a content type."""
     instantiable = True
