@@ -211,24 +211,6 @@ translations.define("cocktail.html.shortcuts action save",
     en = u"s"
 )
 
-translations.define("Action save_draft",
-    ca = u"Desar esborrany",
-    es = u"Guardar borrador",
-    en = u"Save draft"
-)
-
-translations.define("Action confirm_draft",
-    ca = u"Confirmar esborrany",
-    es = u"Confirmar borrador",
-    en = u"Confirm draft"
-)
-
-translations.define("Action discard_draft",
-    ca = u"Descartar esborrany",
-    es = u"Descartar borrador",
-    en = u"Discard draft"
-)
-
 translations.define("Action select",
     ca = u"Seleccionar",
     es = u"Seleccionar",
@@ -445,21 +427,6 @@ translations.define("woost.views.TreeContentView collapse all",
     en = u"Fold"
 )
 
-translations.define("woost.models.Item draft copy",
-    ca = lambda item, draft_id, **kwargs: u"Borrador %d %s"
-        % (draft_id, ca_possessive(translations(item, "ca"))),
-    es = lambda item, draft_id, **kwargs: u"Borrador %d de %s"
-        % (draft_id, translations(item, "es")),
-    en = lambda item, draft_id, **kwargs: u"Draft %d for %s"
-        % (draft_id, translations(item, "en"))
-)
-
-translations.define("woost.views.ContentTable draft label",
-    ca = "Esborrany %(draft_id)d",
-    es = "Borrador %(draft_id)d",
-    en = "Draft %(draft_id)d"
-)
-
 translations.define("Differences for",
     ca = lambda item: u"Canvis a <em>'%s'</em>" % translations(item, "ca"),
     es = lambda item: u"Cambios en <em>'%s'</em>" % translations(item, "es"),
@@ -494,35 +461,6 @@ translations.define("Action revert",
     ca = u"Desfer",
     es = u"Deshacer",
     en = u"Undo"
-)
-
-translations.define("Editing draft",
-    ca = u"Estàs editant un nou esborrany. L'element no esdevindrà actiu fins "
-         u"que no el confirmis.",
-    es = u"Estás editando un nuevo borrador. El elemento no se activará hasta "
-         u"que no lo confirmes.",
-    en = u"You are editing a new draft. The element won't become active until "
-         u"you confirm it."
-)
-
-translations.define("Editing draft copy",
-    ca = u"Estàs editant un esborrany d'un <a href='%(location)s'>element</a>."
-         u" Els canvis no es veuran reflectits a l'original fins que no "
-         u"confirmis l'esborrany.",
-    es = u"Estás editando un borrador de un <a href='%(location)s'>"
-         u"elemento</a>. Tus cambios no se verán reflejados en el original "
-         u"hasta que no confirmes el borrador.",
-    en = u"You are editing a draft of an <a href='%(location)s'>item</a>. "
-         u"Your changes won't be made permanent until you confirm the draft."
-)
-
-translations.define("Draft source reference",
-    ca = u"Pots accedir a la còpia original de l'element "
-         u"<a href='%(location)s'>aquí</a>.",
-    es = u"Puedes acceder a la copia original del elemento "
-         u"<a href='%(location)s'>aquí</a>.",
-    en = u"The original copy of the item can be found "
-         u"<a href='%(location)s'>here</a>."
 )
 
 translations.define("woost.views.ActionBar Additional actions",
@@ -1127,13 +1065,6 @@ translations.define(
 )
 
 translations.define(
-    "woost.models.initialization Confirm draft action title",
-    ca = u"Confirmar esborrany",
-    es = u"Confirmar borrador",
-    en = u"Confirm draft"
-)
-
-translations.define(
     "woost.models.initialization Page tree user view",
     ca = u"Arbre de pàgines",
     es = u"Árbol de páginas",
@@ -1517,34 +1448,6 @@ translations.define("woost.views.BackOfficeEditView Create another",
 )
 
 translations.define(
-    "woost.views.BackOfficeEditView Draft confirmed",
-    ca = lambda item, is_new:
-        (
-            u"S'ha creat l'element <strong>%s</strong> a partir de l'esborrany"
-            if is_new
-            else u"Els canvis de l'esborrany s'han aplicat a "
-                 u"<strong>%s</strong>"
-        )
-        % translations(item, "ca"),
-    es = lambda item, is_new:
-        (
-            u"Se ha creado el elemento <strong>%s</strong> a partir del "
-            u"borrador"
-            if is_new
-            else u"Se ha actualizado <strong>%s</strong> con los cambios del "
-                 u"borrador"
-        )
-        % translations(item, "es"),
-    en = lambda item, is_new:
-        (
-            u"Draft stored as new item <strong>%s</strong>"
-            if is_new
-            else u"Saved changes from draft to <strong>%s</strong>"
-        )
-        % translations(item, "en")
-)
-
-translations.define(
     "woost.views.BackOfficeItemView pending changes warning",
     ca = u"Hi ha canvis pendents de desar. Si abandones el formulari d'edició "
         u"els canvis es perdran.",
@@ -1707,24 +1610,6 @@ translations.define("Item.changes",
     ca = u"Canvis",
     es = u"Cambios",
     en = u"Changes"
-)
-
-translations.define("Item.is_draft",
-    ca = u"És esborrany",
-    es = u"Es borrador",
-    en = u"Is draft"
-)
-
-translations.define("Item.draft_source",
-    ca = u"Original",
-    es = u"Original",
-    en = u"Master item"
-)
-
-translations.define("Item.drafts",
-    ca = u"Esborranys",
-    es = u"Borradores",
-    en = u"Drafts"
 )
 
 translations.define("Item.creation_time",
@@ -3389,20 +3274,6 @@ translations.define(
 )
 
 translations.define(
-    "woost.models.permission.ConfirmDraftPermission-instance",
-    ca = content_permission_translation_factory(
-        "ca",
-        lambda permission, subject, **kwargs:
-            u"confirmar esborranys " + ca_possessive(subject)
-    ),
-    es = content_permission_translation_factory(
-        "es",
-        u"confirmar borradores de %s"
-    ),
-    en = content_permission_translation_factory("en", u"confirm drafts of %s")
-)
-
-translations.define(
     "woost.models.permission.RenderPermission-instance",
     ca = content_permission_translation_factory(
         "ca",
@@ -3628,20 +3499,6 @@ translations.define("DeletePermission-plural",
     ca = u"Permisos d'eliminació",
     es = u"Permisos de eliminación",
     en = u"Delete content permissions"
-)
-
-# ConfirmDraftPermission
-#------------------------------------------------------------------------------
-translations.define("ConfirmDraftPermission",
-    ca = u"Permís de confirmació d'esborranys",
-    es = u"Permiso de confirmación de borradores",
-    en = u"Confirm draft permission"
-)
-
-translations.define("ConfirmDraftPermission-plural",
-    ca = u"Permisos de confirmació d'esborranys",
-    es = u"Permisos de confirmación de borradores",
-    en = u"Confirm draft permissions"
 )
 
 # RenderPermission
@@ -4776,20 +4633,6 @@ translations.define("DeleteTrigger-plural",
     ca = u"Disparadors d'eliminació",
     es = u"Disparadores de eliminación",
     en = u"Delete triggers"
-)
-
-# ConfirmDraftTrigger
-#------------------------------------------------------------------------------
-translations.define("ConfirmDraftTrigger",
-    ca = u"Disparador de confirmació d'esborrany",
-    es = u"Disparador de confirmación de borrador",
-    en = u"Draft confirmation trigger"
-)
-
-translations.define("ConfirmDraftTrigger-plural",
-    ca = u"Disparadors de confirmació d'esborrany",
-    es = u"Disparadores de confirmación de borrador",
-    en = u"Draft confirmation triggers"
 )
 
 # TriggerResponse

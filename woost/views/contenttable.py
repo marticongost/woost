@@ -24,7 +24,6 @@ Table = templates.get_class("cocktail.html.Table")
 class ContentTable(ContentDisplayMixin, Table):
     
     base_url = None
-    inline_draft_copies = True
     entry_selector = "tbody tr.item_row"
 
     def __init__(self, *args, **kwargs):
@@ -33,28 +32,14 @@ class ContentTable(ContentDisplayMixin, Table):
         self.set_member_sortable("element", False)
         self.set_member_sortable("class", False)
 
-    def _row_added(self, index, item, row):
-        if self.inline_draft_copies and isinstance(item, Item):
-            for draft in item.drafts:
-                draft_row = self.create_row(index, draft)
-                self.body.append(draft_row)
-
     def _fill_head(self):
         Table._fill_head(self)
         if self.head_row.children:
             self.head_row.children[-1].add_class("last")
 
     def create_row(self, index, item):
-        
         row = Table.create_row(self, index, item)
         row.add_class("item_row")
-
-        if getattr(item, "is_draft", False):
-            row.add_class("draft")
-
-        if getattr(item, "draft_source", None):
-            row.add_class("nested_draft")
-
         return row
 
     def create_cell(self, item, column, language = None):        
@@ -67,19 +52,11 @@ class ContentTable(ContentDisplayMixin, Table):
         return cell
 
     def create_element_display(self, item, member):
-        
         display = templates.new("woost.views.ItemLabel")
         display.tag = "label"
         display["for"] = "selection_" + str(item.id)
         display.item = item
         display.referer = self.referer
-
-        if self.inline_draft_copies and item.draft_source:
-            display.get_label = lambda: translations(
-                "woost.views.ContentTable draft label",
-                draft_id = item.draft_id
-            )
-        
         return display
 
     def create_class_display(self, item, member):

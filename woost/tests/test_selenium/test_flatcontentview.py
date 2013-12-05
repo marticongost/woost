@@ -98,7 +98,7 @@ class FlatContentViewTestCase(object):
             set(["element"]),
             set(["element", "class"]),
             set(["element", "class", "id"]),
-            set(["id", "author", "owner", "is_draft", "drafts"]),
+            set(["id", "author", "owner"]),
             set(["element", "translations"])
         ):
             # Check / uncheck columns

@@ -51,7 +51,7 @@ schema.Member.synchronizable = True
 
 class Item(PersistentObject):
     """Base class for all CMS items. Provides basic functionality such as
-    authorship, group membership, draft copies and versioning.
+    authorship, modification timestamps, versioning and synchronization.
     """
     type_group = "setup"
     instantiable = False
@@ -64,10 +64,7 @@ class Item(PersistentObject):
         "author",
         "owner",
         "creation_time",
-        "last_update_time",
-        "is_draft",
-        "draft_source",
-        "drafts"
+        "last_update_time"
     ]
 
     # Enable full text indexing for all items (although the Item class itself
@@ -106,18 +103,6 @@ class Item(PersistentObject):
                     "identifier for this installation of the site."
                 )
             self.global_id = "%s-%d" % (app.installation_id, self.id)
-
-    def __translate__(self, language, **kwargs):
-        if self.draft_source is not None:
-            return translations(
-                "woost.models.Item draft copy",
-                language,
-                item = self.draft_source,
-                draft_id = self._draft_id,
-                **kwargs
-            )
-        else:
-            return PersistentObject.__translate__(self, language, **kwargs)
 
     @event_handler
     def handle_inherited(cls, e):
@@ -179,25 +164,6 @@ class Item(PersistentObject):
     def is_deleted(self):
         return self.__deleted
 
-    # Indexing
-    #--------------------------------------------------------------------------
- 
-    # Make sure draft copies' members don't get indexed
-    def _should_index_member(self, member):
-        return PersistentObject._should_index_member(self, member) and (
-            member.primary or self.draft_source is None
-        )
-
-    def _should_index_member_full_text(self, member):
-        return PersistentObject._should_index_member_full_text(self, member) \
-            and self.draft_source is None
-
-     # When validating unique members, ignore conflicts with the draft source
-    def _counts_as_duplicate(self, other):
-        return PersistentObject._counts_as_duplicate(self, other) \
-            and other is not self.draft_source \
-            and self is not other.draft_source
-
     # Last change timestamp
     #--------------------------------------------------------------------------
     @classmethod
@@ -245,131 +211,6 @@ class Item(PersistentObject):
         synchronizable = False,
         member_group = "administration"
     )
-
-    is_draft = schema.Boolean(
-        required = True,
-        default = False,
-        indexed = True,
-        listed_by_default = False,
-        editable = False,
-        versioned = False,
-        member_group = "administration"
-    )
-
-    draft_source = schema.Reference(
-        type = "woost.models.Item",
-        related_key = "drafts",
-        bidirectional = True,
-        editable = False,
-        listed_by_default = False,
-        indexed = True,
-        versioned = False,
-        member_group = "administration"
-    )
-
-    drafts = schema.Collection(
-        items = "woost.models.Item",
-        related_key = "draft_source",
-        bidirectional = True,
-        cascade_delete = True,
-        editable = False,
-        synchronizable = False,
-        versioned = False,
-        searchable = False,
-        member_group = "administration"
-    )
-
-    _draft_count = 0
-    _draft_id = None
-
-    @getter
-    def draft_id(self):
-        """A numerical identifier for draft copies, guaranteed to be unique
-        among their source item.
-        @type: int
-        """
-        return self._draft_id
-
-    def make_draft(self):
-        """Creates a new draft copy of the item. Subclasses can tweak the copy
-        process by overriding either this method or L{get_draft_adapter} (for
-        example, to exclude one or more members).
-
-        @return: The draft copy of the item.
-        @rtype: L{Item}
-        """
-        draft = self.__class__(bidirectional = False)
-        draft.bidirectional = True
-        draft.draft_source = self
-        draft.is_draft = True
-        draft.bidirectional = False
-        
-        self._draft_count += 1
-        draft._draft_id = self._draft_count
-
-        adapter = self.get_draft_adapter()
-        adapter.export_object(
-            self,
-            draft,
-            source_schema = self.__class__,
-            source_accessor = schema.SchemaObjectAccessor,
-            target_accessor = schema.SchemaObjectAccessor
-        )
-        
-        return draft
-
-    draft_confirmation = Event(doc = """
-        An event triggered just before a draft is confirmed.
-        """)
-
-    def confirm_draft(self):
-        """Confirms a draft. On draft copies, this applies all the changes made
-        by the draft to its source element, and deletes the draft. On brand new
-        drafts, the item itself simply drops its draft status, and otherwise
-        remains the same.
-        
-        @raise ValueError: Raised if the item is not a draft.
-        """            
-        if not self.is_draft:
-            raise ValueError("confirm_draft() must be called on a draft")
-
-        self.draft_confirmation()
-
-        if self.draft_source is None:
-            self.bidirectional = True
-            self.is_draft = False
-        else:
-            adapter = self.get_draft_adapter()
-            adapter.source_accessor = schema.SchemaObjectAccessor
-            adapter.target_accessor = schema.SchemaObjectAccessor
-            adapter.import_object(
-                self,
-                self.draft_source,
-                source_schema = self.__class__
-            )
-            self.delete()
-
-    @classmethod
-    def get_draft_adapter(cls):
-        """Produces an adapter that defines the copy process used by the
-        L{make_draft} method in order to produce draft copies of the item.
-
-        @return: An adapter with all the rules required to obtain a draft copy
-            of the item.
-        @rtype: L{Adapter<cocktail.schema.adapter.Adapter>}
-        """
-        adapter = schema.Adapter()
-        adapter.collection_copy_mode = schema.shallow
-        adapter.exclude([
-            member.name
-            for member in cls.members().itervalues()
-            if cls._should_exclude_in_draft(member)
-        ] + ["owner"])
-        return adapter
-
-    @classmethod
-    def _should_exclude_in_draft(cls, member):
-        return not member.editable or not member.visible
 
     @classmethod
     def _create_translation_schema(cls, members):
@@ -430,7 +271,7 @@ class Item(PersistentObject):
         item.set_last_instance_change(now)
         item.__deleted = False
 
-        if not item.is_draft and item.__class__.versioned:
+        if item.__class__.versioned:
             changeset = ChangeSet.current
 
             if changeset:
@@ -474,7 +315,6 @@ class Item(PersistentObject):
         if getattr(item, "_v_initializing", False) \
         or not event.member.versioned \
         or not item.is_inserted \
-        or item.is_draft \
         or not item.__class__.versioned:
             return
 
@@ -530,18 +370,18 @@ class Item(PersistentObject):
         item.set_last_instance_change(now)
         item.last_update_time = now
 
-        if not item.is_draft and item.__class__.versioned:
+        if item.__class__.versioned:
             changeset = ChangeSet.current
 
             # Add a revision for the delete operation
             if changeset:
                 change = changeset.changes.get(item.id)
 
-                if change and change.action.identifier != "delete":
+                if change and change.action != "delete":
                     del changeset.changes[item.id]
 
                 if change is None \
-                or change.action.identifier not in ("create", "delete"):
+                or change.action not in ("create", "delete"):
                     change = Change()
                     change.action = "delete"
                     change.target = item
@@ -550,28 +390,14 @@ class Item(PersistentObject):
                     change.insert()
 
         item.__deleted = True
-    
-    @event_handler
-    def handle_deleted(cls, event):
-        
-        item = event.source
-
-        # Break the relation to the draft's source. This needs to be done
-        # explicitly, because drafts are flagged as non bidirectional (to keep
-        # their changes in isolation), which prevents automatic management of
-        # referential integrity
-        if item.draft_source is not None:
-            item.draft_source.drafts.remove(item)
 
     _preserved_members = frozenset([changes])
 
-    def _should_cascade_delete_member(self, member):
-        return member.cascade_delete and not self.is_draft
-
     def _should_erase_member(self, member):
-        return PersistentObject._should_erase_member(self, member) \
-            and member not in self._preserved_members \
-            and member is not self.__class__.draft_source
+        return (
+            PersistentObject._should_erase_member(self, member)
+            and member not in self._preserved_members
+        )
 
     # Ownership and authorship
     #--------------------------------------------------------------------------
@@ -683,8 +509,6 @@ class Item(PersistentObject):
         return uri
 
     copy_excluded_members = set([
-        is_draft,
-        drafts,
         changes,
         author,
         owner,

@@ -26,7 +26,6 @@ from woost.models import (
     CreatePermission,
     ModifyPermission,
     DeletePermission,
-    ConfirmDraftPermission,
     ReadHistoryPermission,
     InstallationSyncPermission
 )
@@ -585,7 +584,6 @@ class OpenResourceAction(UserAction):
     included = frozenset(["toolbar", "item_buttons"])
     excluded = frozenset([
         "new",
-        "draft",
         "selector",
         "calendar_content_view",
         "workflow_graph_content_view",
@@ -705,7 +703,6 @@ class SaveAction(UserAction):
     ignores_selection = True
     max = None
     min = None
-    make_draft = False
 
     def is_permitted(self, user, target):
         if target.is_inserted:
@@ -727,30 +724,7 @@ class SaveAction(UserAction):
             yield error
 
     def invoke(self, controller, selection):
-        controller.save_item(make_draft = self.make_draft)
-
-
-class SaveDraftAction(SaveAction):
-    make_draft = True
-    included = frozenset(["item_buttons", "item_bottom_buttons"])
-    excluded = frozenset(["draft"])
-
-    def is_permitted(self, user, target):
-        return True
-
-class ConfirmDraftAction(SaveAction):
-    confirm_draft = True
-    included = frozenset([
-        ("item_buttons", "draft"),
-        ("item_bottom_buttons", "draft")
-    ])
-    excluded = frozenset()
-    
-    def is_permitted(self, user, target):
-        return user.has_permission(ConfirmDraftPermission, target = target)
-
-    def invoke(self, controller, selection):
-        controller.confirm_draft()
+        controller.save_item()
 
 
 class PrintAction(UserAction):
@@ -782,7 +756,5 @@ PrintAction("print").register()
 CloseAction("close").register()
 CancelAction("cancel").register()
 SaveAction("save").register()
-SaveDraftAction("save_draft").register()
-ConfirmDraftAction("confirm_draft").register()
 SelectAction("select").register()
 

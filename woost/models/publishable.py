@@ -474,9 +474,6 @@ class Publishable(Item):
     
     def is_published(self, language = None, website = None):
 
-        if self.is_draft:
-            return False
-
         if self.per_language_publication:
 
             language = require_language(language)
@@ -643,9 +640,6 @@ class IsPublishedExpression(Expression):
 
             dataset.intersection_update(enabled_subset)
 
-            # Exclude drafts
-            dataset.difference_update(Item.is_draft.index.values(key = True))
-            
             # Exclude content by website:
             if len(Configuration.instance.websites) > 1:
 

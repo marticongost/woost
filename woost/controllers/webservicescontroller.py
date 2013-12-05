@@ -106,19 +106,13 @@ class ItemWebService(PersistentClassWebService):
             PersistentClassWebService._init_new_instance(self, instance)
 
     def _store_new_instance(self, instance):
-        if instance.is_draft:
+        with changeset_context(get_current_user()):
             instance.insert()
-        else:
-            with changeset_context(get_current_user()):
-                instance.insert()
 
     def _update_instance(self, instance):
         with restricted_modification_context(instance):
-            if instance.is_draft:
+            with changeset_context(get_current_user()):
                 PersistentClassWebService._update_instance(self, instance)
-            else:
-                with changeset_context(get_current_user()):
-                    PersistentClassWebService._update_instance(self, instance)
 
     def _delete_instances(self, query):
 

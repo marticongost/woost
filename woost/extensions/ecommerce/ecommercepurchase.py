@@ -104,8 +104,6 @@ class ECommercePurchase(Item):
     )
 
     def __translate__(self, language, **kwargs):
-        if self.draft_source is not None:
-            return Item.__translate__(self, language, **kwargs)
 
         desc = u"%d x %s" % (
             self.quantity,
