@@ -15,7 +15,6 @@ from cocktail.translations import translations
 from cocktail.events import when
 from cocktail.persistence import datastore
 from cocktail.controllers import UserCollection
-from woost.models.action import Action
 from woost.models.changesets import ChangeSet
 from woost.models.item import Item
 from woost.models.role import Role

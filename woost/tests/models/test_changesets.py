@@ -37,7 +37,7 @@ class ChangeSetTests(BaseTestCase):
         assert changeset.changes.keys() == [item.id]
         change = changeset.changes[item.id]
         assert change.target is item
-        assert change.action is self.create_action
+        assert change.action == "create"
         assert change.changeset is changeset
         assert item.changes == [change]
 
@@ -80,7 +80,7 @@ class ChangeSetTests(BaseTestCase):
         assert changeset.changes.keys() == [item.id]
         change = changeset.changes[item.id]
         assert change.target is item
-        assert change.action is self.delete_action
+        assert change.action == "delete"
         assert change.changeset is changeset
         assert item.changes == [change]
 
@@ -119,7 +119,7 @@ class ChangeSetTests(BaseTestCase):
         assert modification.changes.keys() == [item.id]
         change = modification.changes[item.id]
         assert change.target is item
-        assert change.action is self.modify_action
+        assert change.action == "modify"
         assert change.changeset is modification
         assert change.changed_members == set(["title", "resource_type"])
         assert item.changes == [creation.changes[item.id], change]

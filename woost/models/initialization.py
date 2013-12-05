@@ -24,7 +24,6 @@ from woost.models import (
     Website,
     HierarchicalPublicationScheme,
     DescriptiveIdPublicationScheme,
-    Action,
     Publishable,
     Document,
     User,
@@ -86,32 +85,6 @@ def init_site(
             )
             if value:
                 item.set(member, value, language)
-
-    # Create standard actions
-    create = Action()
-    create.identifier = "create"
-    set_translations(create, "title", "Create action title")
-    create.insert()
-
-    read = Action()
-    read.identifier = "read"
-    set_translations(read, "title", "Read action title")
-    read.insert()
-
-    modify = Action()
-    modify.identifier = "modify"
-    set_translations(modify, "title", "Modify action title")
-    modify.insert()
-
-    delete = Action()
-    delete.identifier = "delete"
-    set_translations(delete, "title", "Delete action title")
-    delete.insert()
-
-    confirm_draft = Action()
-    confirm_draft.identifier = "confirm_draft"
-    set_translations(confirm_draft, "title", "Confirm draft title")
-    confirm_draft.insert()
 
     with changeset_context() as changeset:
         
