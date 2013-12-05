@@ -423,3 +423,23 @@ def expose_hidden_configuration(e):
         except:
             pass
 
+#------------------------------------------------------------------------------
+
+step = MigrationStep("Remove the Action model")
+
+@when(step.executing)
+def remove_action_model(e):
+
+    from cocktail.persistence import datastore
+    from woost.models import Change
+
+    root = datastore.root
+    root.pop("woost.models.action.Action-keys", None)
+    root.pop("woost.models.action.Action.id", None)
+    root.pop("woost.models.action.Action.identifier", None)
+    root.pop("woost.models.action.Action.title", None)
+
+    for change in Change.select():
+        change.action = change.action.__Broken_state__["_identifier"]
+
+

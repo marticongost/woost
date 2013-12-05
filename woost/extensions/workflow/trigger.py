@@ -8,7 +8,7 @@
 """
 from cocktail.events import when
 from cocktail import schema
-from woost.models import Item, Action, ChangeSet
+from woost.models import Item, ChangeSet
 from woost.models.trigger import (
     Trigger,
     actions_with_triggers,
@@ -62,7 +62,7 @@ def _trigger_transition_responses(event):
     if event.member is Item.state:
         trigger_responses(
             event.source,
-            Action.get_instance(identifier = "transition"),
+            "transition",
             ChangeSet.current_author,
             previous_state = event.previous_value
         )

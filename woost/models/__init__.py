@@ -70,7 +70,6 @@ from woost.models.websitesession import (
 from woost.models.siteinstallation import SiteInstallation
 from woost.models.changesets import ChangeSet, Change, changeset_context
 from woost.models.item import Item
-from woost.models.action import Action
 from woost.models.userview import UserView
 from woost.models.publicationschemes import (
     PublicationScheme,

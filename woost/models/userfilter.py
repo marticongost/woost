@@ -26,7 +26,6 @@ from cocktail.controllers.userfilter import (
     DescendsFromFilter
 )
 from woost.models.item import Item
-from woost.models.action import Action
 from woost.models.changesets import (
     ChangeSet,
     ChangeSetHasActionExpression,
@@ -142,10 +141,7 @@ class ChangeSetActionFilter(UserFilter):
 
     @getter
     def expression(self):
-        return ChangeSetHasActionExpression(
-            Self,
-            Action.get_instance(identifier = self.value)
-        )
+        return ChangeSetHasActionExpression(Self, self.value)
 
 
 class ChangeSetTargetFilter(UserFilter):

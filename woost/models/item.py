@@ -27,7 +27,6 @@ from cocktail.controllers import (
 from woost import app
 from woost.models.websitesession import get_current_website
 from woost.models.changesets import ChangeSet, Change
-from woost.models.action import Action
 from woost.models.usersession import get_current_user
 
 # Extension property that makes it easier to customize the edit view for a
@@ -436,7 +435,7 @@ class Item(PersistentObject):
 
             if changeset:
                 change = Change()
-                change.action = Action.get_instance(identifier = "create")
+                change.action = "create"
                 change.target = item
                 change.changed_members = set(
                     member.name
@@ -488,9 +487,9 @@ class Item(PersistentObject):
             change = changeset.changes.get(item.id)
 
             if change is None:
-                action_type = "modify"
+                action = "modify"
                 change = Change()
-                change.action = Action.get_instance(identifier = action_type)
+                change.action = action
                 change.target = item
                 change.changed_members = set()
                 change.item_state = item._get_revision_state()
@@ -500,12 +499,12 @@ class Item(PersistentObject):
                     item.last_update_time = now
                 change.insert()
             else:
-                action_type = change.action.identifier
+                action = change.action
 
-            if action_type == "modify":
+            if action == "modify":
                 change.changed_members.add(member_name)
                 
-            if action_type in ("create", "modify"):
+            if action in ("create", "modify"):
                 value = event.value
 
                 # Make a copy of mutable objects
@@ -544,7 +543,7 @@ class Item(PersistentObject):
                 if change is None \
                 or change.action.identifier not in ("create", "delete"):
                     change = Change()
-                    change.action = Action.get_instance(identifier = "delete")
+                    change.action = "delete"
                     change.target = item
                     change.changeset = changeset
                     changeset.changes[item.id] = change
