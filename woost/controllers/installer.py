@@ -10,6 +10,7 @@ import sys
 import socket
 import re
 import os
+import traceback
 from shutil import rmtree
 from subprocess import Popen, PIPE
 from pkg_resources import resource_filename
@@ -20,8 +21,9 @@ from cocktail import schema
 from cocktail.translations import set_language
 from cocktail.html import templates
 from cocktail.controllers import get_parameter
+from woost import app
 from woost.translations import installerstrings
-from woost.models.initialization import init_site
+from woost.models.initialization import SiteInitializer
 
 
 class Installer(object):
@@ -70,7 +72,7 @@ class Installer(object):
                     name = "installation_id",
                     required = True,
                     member_group = "project",
-                    default = "dev"
+                    default = "DEV"
                 ),
                 schema.String(
                     name = "admin_email",
@@ -199,12 +201,15 @@ class Installer(object):
 
                     self.install(form_data)
 
-                except Exception, ex:                    
+                except Exception, ex:
                     errors.append(ex)
                     if not isinstance(ex, InstallFolderExists):
+                        traceback.print_tb(sys.exc_info()[2])
                         try:
                             rmtree(form_data["project_path"])
                         except Exception, rmex:
+                            tb = sys.exc_info()[2]
+                            traceback.print_tb(sys.exc_info()[2])
                             errors.append(rmex)
                 else:
                     successful = True
@@ -296,13 +301,14 @@ class Installer(object):
         Popen(cmd, shell = True)
 
         __import__(params["project_module"])
-        init_site(
-            admin_email = params["admin_email"],
-            admin_password = params["admin_password"],
-            languages = params["languages"].split(),
-            template_engine = params["template_engine"],
-            base_id = params["base_id"]
-        )
+        app.installation_id = params["installation_id"]
+        site_initializer = SiteInitializer()
+        site_initializer.admin_email = params["admin_email"]
+        site_initializer.admin_password = params["admin_password"]
+        site_initializer.languages = params["languages"].split()
+        site_initializer.template_engine = params["template_engine"]
+        site_initializer.base_id = params["base_id"]
+        site_initializer.initialize()
 
     def _is_valid_local_address(self, host, port):
         s = socket.socket()

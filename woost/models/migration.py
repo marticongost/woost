@@ -529,3 +529,98 @@ def remove_drafts(e):
     datastore.root.pop("woost.models.item.Item.is_draft", None)
     datastore.root.pop("woost.models.item.Item.draft_source", None)
 
+#------------------------------------------------------------------------------
+
+step = MigrationStep(
+    "Change the qualified name of the password reset email template"
+)
+
+@when(step.executing)
+def change_qname_of_password_reset_email_template(e):
+
+    from woost.models import EmailTemplate
+
+    template = EmailTemplate.get_instance(
+        qname = "woost.views.password_change_confirmation_email_template"
+    )
+
+    if template:
+        template.qname = "woost.password_change_email_template"
+
+#------------------------------------------------------------------------------
+
+step = MigrationStep("Move the blocks extension into the woost core")
+
+@when(step.executing)
+def move_blocks_to_core(e):
+    
+    from cocktail.persistence import datastore
+    from woost.models import Item, Page, Template, Block, TextBlock
+    from woost.models.rendering import Renderer
+
+    # Consolidate StandardPage and BlocksPage into the new Page model
+    page_ids = datastore.root.pop("woost.models.standardpage.StandardPage-keys")
+    
+    if page_ids:
+        for id in page_ids:
+            Page.keys.add(id)
+            page = Page.get_instance(id)
+            page._p_changed = True
+            
+            block = TextBlock()
+
+            for lang, trans in page.translations.iteritems():
+                if hasattr(trans, "_body"):
+                    block.set("text", trans._body, lang)
+                    del trans._body
+
+            page.blocks.append(block)
+            block.insert()
+
+    page_ids = \
+        datastore.root.pop("woost.extensions.blocks.blockspage.BlocksPage-keys")
+    
+    if page_ids:
+        for id in page_ids:
+            Page.keys.add(id)
+
+    # Update references to the old template for block pages
+    for template in Template.select():
+        if template.identifier == "woost.extensions.blocks.BlocksPageView":
+            template.identifier = "woost.views.StandardView"
+
+    # Rename keys
+    for key in list(datastore.root):
+        if key.startswith("woost.extensions.blocks."):
+            new_key = key.replace(".extensions.blocks.", ".models.")
+            datastore.root[new_key] = datastore.root.pop(key)
+
+    # Remove instances of types that no longer exist. Note that we access them
+    # from the woost.models package, since we just relocated them above. It's a
+    # bit convoluted, but it helps remove_broken_type() to ignore the fact that
+    # the Block class has been relocated.
+    remove_broken_type(
+        "woost.models.youtubeblock.YouTubeBlock",
+        existing_bases = (Item, Block)
+    )
+
+    remove_broken_type(
+        "woost.models.vimeoblock.VimeoBlock",
+        existing_bases = (Item, Block)
+    )
+
+    remove_broken_type(
+        "woost.models.filelisting.FileListing",
+        existing_bases = (Item, Renderer)
+    )
+
+    remove_broken_type(
+        "woost.models.youtubeblockrenderer.YouTubeBlockRenderer",
+        existing_bases = (Item, Renderer)
+    )
+
+    remove_broken_type(
+        "woost.models.vimeoblockrenderer.VimeoBlockRenderer",
+        existing_bases = (Item, Renderer)
+    )
+

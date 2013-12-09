@@ -17,8 +17,8 @@ from cocktail.memoryutils import format_bytes
 from cocktail import schema
 from cocktail.persistence import datastore
 from woost import app
-from woost.models.publishable import Publishable
-from woost.models.controller import Controller
+from .publishable import Publishable
+from .controller import Controller
 
 
 class File(Publishable):

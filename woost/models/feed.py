@@ -8,9 +8,9 @@
 """
 from cocktail import schema
 from cocktail.controllers.usercollection import UserCollection
-from woost.models.configuration import Configuration
-from woost.models.publishable import Publishable
-from woost.models.controller import Controller
+from .configuration import Configuration
+from .publishable import Publishable
+from .controller import Controller
 
 
 class Feed(Publishable):

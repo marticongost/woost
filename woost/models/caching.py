@@ -9,7 +9,7 @@ from cocktail import schema
 from cocktail.translations import get_language
 from cocktail.controllers import Location
 from cocktail.persistence import datastore, PersistentMapping
-from woost.models.item import Item
+from .item import Item
 
 
 class CachingPolicy(Item):

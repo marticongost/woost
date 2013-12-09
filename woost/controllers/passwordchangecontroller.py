@@ -4,12 +4,14 @@ u"""Defines the `PasswordChangeController` class.
 .. moduleauthor:: Javier Marrero <javier.marrero@whads.com>
 """
 import hashlib
+import cherrypy
 from cocktail import schema
 from cocktail.schema.exceptions import ValidationError
 from cocktail.controllers import (
     request_property,
     FormProcessor,
-    Form
+    Form,
+    Controller
 )
 from woost.models.emailtemplate import EmailTemplate
 from woost.models import Configuration, User, Publishable
@@ -75,7 +77,7 @@ class PasswordChangeController(FormProcessor, DocumentController):
     
         def after_submit(self):
             confirmation_email_template = EmailTemplate.get_instance(
-                qname="woost.views.password_change_confirmation_email_template"
+                qname = "woost.password_change_email_template"
             )
             if confirmation_email_template:
                 confirmation_email_template.send({
@@ -95,4 +97,23 @@ class PasswordChangeController(FormProcessor, DocumentController):
                     "hash": generate_confirmation_hash(self.identifier)
                 }
             )
+
+class PasswordChangeBlockController(Controller):
+
+    @request_property
+    def output(self):
+        output = Controller.output(self)
+        output["forms"] = cherrypy.request.handler_chain[-1].forms
+        return output
+
+
+class PasswordChangeConfirmationBlockController(Controller):
+
+    @request_property
+    def output(self):
+        output = Controller.output(self)
+        controller_output = cherrypy.request.handler_chain[-1].output
+        for key in ("identifier", "hash", "forms"):
+            output[key] = controller_output[key]
+        return output
 

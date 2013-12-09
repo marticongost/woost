@@ -24,15 +24,15 @@ from cocktail.controllers import (
     Location
 )
 from woost import app
-from woost.models.item import Item
-from woost.models.usersession import get_current_user
-from woost.models.websitesession import get_current_website
-from woost.models.permission import (
+from .item import Item
+from .usersession import get_current_user
+from .websitesession import get_current_website
+from .permission import (
     ReadPermission,
     ReadTranslationPermission,
     PermissionExpression
 )
-from woost.models.caching import CachingPolicy
+from .caching import CachingPolicy
 
 WEBSITE_PUB_INDEX_KEY = "woost.models.Publishable.per_website_publication_index"
 

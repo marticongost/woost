@@ -7,8 +7,8 @@ u"""
 @since:			July 2008
 """
 from cocktail.schema.expressions import Expression
-from woost.models.item import Item
-from woost.models.usersession import get_current_user
+from .item import Item
+from .usersession import get_current_user
 
 
 class OwnershipExpression(Expression):

@@ -7,7 +7,7 @@
 @since:			January 2010
 """
 from cocktail import schema
-from woost.models.item import Item
+from .item import Item
 
 
 class Controller(Item):

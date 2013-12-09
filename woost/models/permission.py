@@ -14,10 +14,10 @@ from cocktail.translations import translations
 from cocktail import schema
 from cocktail.controllers.usercollection import UserCollection
 from cocktail.schema.expressions import Expression
-from woost.models.item import Item
-from woost.models.messagestyles import permission_doesnt_match_style
-from woost.models.usersession import get_current_user
-from woost.models.messagestyles import unauthorized_style
+from .item import Item
+from .messagestyles import permission_doesnt_match_style
+from .usersession import get_current_user
+from .messagestyles import unauthorized_style
 
 
 class Permission(Item):
