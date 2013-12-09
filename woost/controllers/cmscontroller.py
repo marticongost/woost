@@ -20,12 +20,13 @@ except ImportError:
 import rfc822
 import cherrypy
 from cherrypy.lib.cptools import validate_since
+from simplejson import dumps
 from pkg_resources import resource_filename, iter_entry_points
 from beaker.cache import CacheManager
 from beaker.util import parse_cache_config_options
 from beaker.middleware import SessionMiddleware
 from cocktail.events import Event, event_handler
-from cocktail.translations import get_language, set_language
+from cocktail.translations import translations, get_language, set_language
 from cocktail.controllers import (
     Dispatcher, 
     Location, 
@@ -36,6 +37,7 @@ from cocktail.controllers import (
 from cocktail.controllers.asyncupload import AsyncUploadController
 from cocktail.controllers.uriutils import percent_encode
 from cocktail.persistence import datastore
+from cocktail.html import templates
 from woost import app
 from woost.authenticationscheme import AuthenticationFailedError
 from woost.models import (
@@ -677,4 +679,17 @@ class CMSController(BaseCMSController):
 
     async_upload = AsyncUploadController()
     async_upload.uploader = async_uploader
+
+    @cherrypy.expose
+    def current_user(self):
+        cherrypy.response.headers["Content-Type"] = "text/javascript"
+        user = get_current_user()
+        return "woost.user = %s;" % dumps(
+            {
+                "id": user.id,
+                "label": translations(user),
+                "identifier": user.get(app.authentication.identifier_field)
+            }
+            if user else None
+        )
 

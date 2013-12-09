@@ -625,3 +625,50 @@ def move_blocks_to_core(e):
         existing_bases = (Item, Renderer)
     )
 
+#------------------------------------------------------------------------------
+ 
+step = MigrationStep("Remove the Item.owner field")
+
+@when(step.executing)
+def remove_owner_field(e):
+
+    from cocktail.persistence import datastore
+    from woost.models import Item, ContentPermission, MemberPermission
+
+    # Remove the owner value of every item
+    for item in Item.select():
+        try:
+            del item._owner
+        except AttributeError:
+            pass
+
+    # Drop the index for the member
+    full_member_name = "woost.models.item.Item.owner"
+    datastore.root.pop(full_member_name, None)
+
+    # Purge all references to the owner member from member permissions
+    for permission in MemberPermission.select():
+        if permission.matching_members:
+            member_count = len(permission.matching_members)
+            try:
+                permission.matching_members.remove(full_member_name)
+            except (KeyError, ValueError):
+                pass
+            else:
+                if member_count == 1:
+                    permission.delete()
+
+    # Purge the 'owned-items' expression from all permissions
+    for permission in ContentPermission.select():
+        matching_items = permission.matching_items
+        if matching_items == "owned-items":
+            permission.delete()
+        elif (
+            hasattr(matching_items, "__contains__")
+            and "owned-items" in matching_items
+        ):
+            filter_count = len(matching_items["filter"])
+            matching_items["filter"].remove("owned-items")
+            if filter_count == 1:
+                permission.delete()
+

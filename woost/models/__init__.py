@@ -109,6 +109,7 @@ from .permission import (
     ModifyPermission,
     DeletePermission,
     RenderPermission,
+    MemberPermission,
     ReadMemberPermission,
     ModifyMemberPermission,
     CreateTranslationPermission,
@@ -151,7 +152,6 @@ from .emailtemplate import EmailTemplate
 from .feed import Feed
 
 from .userfilter import (
-    OwnItemsFilter,
     IsPublishedFilter,
     TypeFilter
 )

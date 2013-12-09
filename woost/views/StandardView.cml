@@ -67,14 +67,14 @@ from woost.models import Configuration, get_current_website
             </a>
         </h1>
 
-        <div py:id="identity" py:visible="@{self.show_user_controls and self.user and not self.user.anonymous}">
-            <strong>@{self.identity.visible and translations(self.user) or ""}</strong>
-            <form py:id="logout_form" method="post" action="">
-                <div>
-                    <button py:id="logout_button" name="logout" type="submit">${translations("Logout")}</button>
-                </div>
-            </form>
-        </div>
+        <py:woost.views.IdentityBox py:id="identity">
+            <py:ready>
+                <?py
+                if not self.show_user_controls:
+                    element.visible = False
+                ?>
+            </py:ready>
+        </py:woost.views.IdentityBox>
 
         <py:woost.views.LanguageSelector py:id="language_selector"/>
     </div>

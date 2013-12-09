@@ -580,7 +580,6 @@ class EditNode(StackNode):
                 state[key] = value
         
         state["content_type"] = self._item.__class__
-        state["item_owner"] = self._item.owner
 
         if self._item.__class__.translated:
             state["item_translations"] = self._item.translations.keys()
@@ -591,7 +590,6 @@ class EditNode(StackNode):
 
         content_type = state.pop("content_type", None)
         item_translations = state.pop("item_translations", None)
-        item_owner = state.pop("item_owner", None)
 
         for key, value in state.iteritems():
             if key in self._persistent_keys:
@@ -602,7 +600,6 @@ class EditNode(StackNode):
                         value = content_type()
                         self.initialize_new_item(
                             value,
-                            item_owner,
                             item_translations
                         )
 
@@ -622,10 +619,7 @@ class EditNode(StackNode):
         """
         return self._item
 
-    def initialize_new_item(self, item, owner = None, languages = None):        
-       
-        item.owner = owner
-                
+    def initialize_new_item(self, item, languages = None):        
         if item.__class__.translated:
             for language in (
                 languages
