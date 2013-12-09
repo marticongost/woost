@@ -419,13 +419,13 @@ class SiteInitializer(object):
             qname = "woost.administrators",
             title = TranslatedValues(),
             permissions = [
-                ReadPermission(matching_items = everything()),
-                CreatePermission(matching_items = everything()),
-                ModifyPermission(matching_items = everything()),
-                DeletePermission(matching_items = everything()),
-                ReadMemberPermission(),
-                ModifyMemberPermission(),
-                InstallationSyncPermission()
+                self._create(ReadPermission, matching_items = everything()),
+                self._create(CreatePermission, matching_items = everything()),
+                self._create(ModifyPermission, matching_items = everything()),
+                self._create(DeletePermission, matching_items = everything()),
+                self._create(ReadMemberPermission),
+                self._create(ModifyMemberPermission),
+                self._create(InstallationSyncPermission)
             ]
         )
 
@@ -436,45 +436,48 @@ class SiteInitializer(object):
             qname = "woost.everybody",
             title = TranslatedValues(),
             permissions = [
-                RenderPermission(matching_items = everything()),
-                ReadPermission(
+                self._create(RenderPermission, matching_items = everything()),
+                self._create(
+                    ReadPermission,
                     matching_items = {
                         "type": "woost.models.publishable.Publishable",
                     }
                 ),
-                ModifyPermission(matching_items = owned_items()),
-                DeletePermission(matching_items = owned_items())
+                self._create(ModifyPermission, matching_items = owned_items()),
+                self._create(DeletePermission, matching_items = owned_items())
             ]
         )
 
         # Restrict readable members
         if self.restricted_members:
             role.permissions.append(
-                ReadMemberPermission(
+                self._create(
+                    ReadMemberPermission,
                     authorized = False,
                     matching_members = self.restricted_members
                 )
             )
     
-        role.permissions.append(ReadMemberPermission())
+        role.permissions.append(self._create(ReadMemberPermission))
 
         # Restrict modifiable members
         if self.read_only_members:
             role.permissions.append(
-                ModifyMemberPermission(
+                self._create(
+                    ModifyMemberPermission,
                     authorized = False,
                     matching_members = self.read_only_members
                 )
             )
 
-        role.permissions.append(ModifyMemberPermission())
+        role.permissions.append(self._create(ModifyMemberPermission))
 
         # All languages allowed
         role.permissions.extend([
-            CreateTranslationPermission(),
-            ReadTranslationPermission(),
-            ModifyTranslationPermission(),
-            DeleteTranslationPermission()
+            self._create(CreateTranslationPermission),
+            self._create(ReadTranslationPermission),
+            self._create(ModifyTranslationPermission),
+            self._create(DeleteTranslationPermission)
         ])
 
         return role
@@ -570,7 +573,8 @@ class SiteInitializer(object):
             batch_execution = True,
             matching_items = {"type": "woost.models.file.File"},
             responses = [
-                CustomTriggerResponse(
+                self._create(
+                    CustomTriggerResponse,
                     code = u"from os import remove\n"
                            u"for item in items:\n"
                            u"    remove(item.file_path)"
@@ -609,7 +613,8 @@ class SiteInitializer(object):
         )
 
         # Prevent anonymous access to the backoffice controller
-        ReadPermission(
+        self._create(
+            ReadPermission,
             role = self.anonymous_role,
             matching_items = {
                 "type": "woost.models.publishable.Publishable",
@@ -618,7 +623,7 @@ class SiteInitializer(object):
                 "filter_value0": str(self.backoffice_controller.id)
             },
             authorized = False
-        ).insert()
+        )
 
     def create_standard_template(self):
         return self._create(
@@ -653,7 +658,8 @@ class SiteInitializer(object):
             hidden = True,
             mime_type = "text/css",
             caching_policies = [
-                CachingPolicy(
+                self._create(
+                    CachingPolicy,
                     server_side_cache = True,
                     last_update_expression =
                         "from woost.models import Style\n"
@@ -823,10 +829,10 @@ class SiteInitializer(object):
             qname = "woost.content_renderer",
             title = TranslatedValues(),
             renderers = [
-                rendering.ImageFileRenderer(),
-                rendering.PDFRenderer(),
-                rendering.VideoFileRenderer(),
-                rendering.ImageURIRenderer()
+                self._create(rendering.ImageFileRenderer),
+                self._create(rendering.PDFRenderer),
+                self._create(rendering.VideoFileRenderer),
+                self._create(rendering.ImageURIRenderer)
             ]
         )
 
@@ -881,8 +887,13 @@ class SiteInitializer(object):
             title = TranslatedValues(),
             identifier = "backoffice_thumbnail",
             effects = [
-                rendering.Thumbnail(width = "100", height = "100"),
-                rendering.Frame(
+                self._create(
+                    rendering.Thumbnail,
+                    width = "100",
+                    height = "100"
+                ),
+                self._create(
+                    rendering.Frame,
                     edge_width = 1,
                     edge_color = "ddd",
                     vertical_padding = "4",
@@ -901,7 +912,11 @@ class SiteInitializer(object):
             title = TranslatedValues(),
             identifier = "backoffice_small_thumbnail",
             effects = [
-                rendering.Thumbnail(width = "32", height = "32")                
+                self._create(
+                    rendering.Thumbnail,
+                    width = "32",
+                    height = "32"
+                )
             ],
             fallback = self.icon16_image_factory,
             applicable_to_blocks = False
@@ -914,8 +929,13 @@ class SiteInitializer(object):
             title = TranslatedValues(),
             identifier = "edit_blocks_thumbnail",
             effects = [
-                rendering.Thumbnail(width = "75", height = "75"),
-                rendering.Frame(
+                self._create(
+                    rendering.Thumbnail,
+                    width = "75",
+                    height = "75"
+                ),
+                self._create(
+                    rendering.Frame,
                     edge_width = 1,
                     edge_color = "ccc",
                     vertical_padding = "4",
@@ -933,7 +953,8 @@ class SiteInitializer(object):
             title = TranslatedValues(),
             identifier = "image_gallery_close_up",
             effects = [
-                rendering.Fill(
+                self._create(
+                    rendering.Fill,
                     width = "900",
                     height = "700",
                     preserve_vertical_images = True
@@ -948,7 +969,8 @@ class SiteInitializer(object):
             title = TranslatedValues(),
             identifier = "image_gallery_thumbnail",
             effects = [
-                rendering.Fill(
+                self._create(
+                    rendering.Fill,
                     width = "200",
                     height = "150",
                     preserve_vertical_images = True
