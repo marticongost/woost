@@ -57,45 +57,51 @@ if not mimetypes.guess_extension("text/javascript"):
     mimetypes.add_type("text/javascript", ".js")
 del mimetypes
 
-from woost.models.typegroups import TypeGroup, type_groups
+from woost.models.typegroups import (
+    TypeGroup,
+    type_groups,
+    block_type_groups
+)
 
 # Base content types
 #------------------------------------------------------------------------------
-from woost.models.configuration import Configuration
-from woost.models.website import Website
-from woost.models.websitesession import (
+from .slot import Slot
+from .configuration import Configuration
+from .website import Website
+from .websitesession import (
     get_current_website,
     set_current_website
 )
-from woost.models.siteinstallation import SiteInstallation
-from woost.models.changesets import ChangeSet, Change, changeset_context
-from woost.models.item import Item
-from woost.models.userview import UserView
-from woost.models.publicationschemes import (
+from .siteinstallation import SiteInstallation
+from .changesets import ChangeSet, Change, changeset_context
+from .item import Item
+from .userview import UserView
+from .publicationschemes import (
     PublicationScheme,
     PathResolution,
     HierarchicalPublicationScheme,
     IdPublicationScheme,
     DescriptiveIdPublicationScheme
 )
-from woost.models.publishable import (
+from .style import Style
+from .publishable import (
     Publishable,
     IsPublishedExpression,
     IsAccessibleExpression
 )
-from woost.models.document import Document
-from woost.models.template import Template
-from woost.models.controller import Controller
-from woost.models.user import (
+from .document import Document
+from .template import Template
+from .controller import Controller
+from .user import (
     User,
     AuthorizationError
 )
-from woost.models.usersession import (
+from .usersession import (
     get_current_user,
     set_current_user
 )
-from woost.models.role import Role
-from woost.models.permission import (
+from .role import Role
+from .permission import (
     Permission,
     ContentPermission,
     CreatePermission,
@@ -116,19 +122,19 @@ from woost.models.permission import (
     PermissionExpression,
     ChangeSetPermissionExpression
 )
-from woost.models.standardpage import StandardPage
-from woost.models.file import File
-from woost.models.news import News
-from woost.models.event import Event
-from woost.models.uri import URI
-from woost.models.file import File
-from woost.models.style import Style
-from woost.models.extension import (
+from .page import Page
+from .standardpage import StandardPage
+from .file import File
+from .news import News
+from .event import Event
+from .uri import URI
+from .file import File
+from .extension import (
     Extension, 
     extension_translations,
     load_extensions
 )
-from woost.models.trigger import (
+from .trigger import (
     Trigger,
     ContentTrigger,
     CreateTrigger,
@@ -136,29 +142,53 @@ from woost.models.trigger import (
     ModifyTrigger,
     DeleteTrigger
 )
-from woost.models.triggerresponse import (
+from .triggerresponse import (
     TriggerResponse,
     CustomTriggerResponse,
     SendEmailTriggerResponse
 )
-from woost.models.emailtemplate import EmailTemplate
-from woost.models.feed import Feed
+from .emailtemplate import EmailTemplate
+from .feed import Feed
 
-from woost.models.userfilter import (
+from .userfilter import (
     OwnItemsFilter,
     IsPublishedFilter,
     TypeFilter
 )
 
-from woost.models.caching import CachingPolicy, expire_cache
+from .caching import CachingPolicy, expire_cache
 
-from woost.models import rendering
-from woost.models.videoplayersettings import VideoPlayerSettings
-from woost.models.synchronization import (
+from . import rendering
+from .videoplayersettings import VideoPlayerSettings
+from .synchronization import (
     Synchronization,
     get_manifest,
     rebuild_manifest
 )
-from woost.models import staticpublication
-from woost.models import migration
+from . import staticpublication
+
+# Blocks
+from .elementtype import ElementType
+from .slot import Slot
+from .block import Block
+from .containerblock import ContainerBlock
+from .blockimagefactoryreference import BlockImageFactoryReference
+from .customblock import CustomBlock
+from .eventlisting import EventListing
+from .facebooklikebox import FacebookLikeBox
+from .facebooklikebutton import FacebookLikeButton
+from .flashblock import FlashBlock
+from .htmlblock import HTMLBlock
+from .iframeblock import IFrameBlock
+from .loginblock import LoginBlock
+from .menublock import MenuBlock
+from .newslisting import NewsListing
+from .publishablelisting import PublishableListing
+from .slideshowblock import SlideShowBlock
+from .textblock import TextBlock
+from .tweetbutton import TweetButton
+from .twittertimelineblock import TwitterTimelineBlock
+from .videoblock import VideoBlock
+
+from . import migration
 

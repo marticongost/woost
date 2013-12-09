@@ -12,9 +12,9 @@ from cocktail.modeling import abstractmethod
 from cocktail import schema
 from cocktail.translations import translations, get_language
 from cocktail.controllers import resolve_object_ref
-from woost.models.item import Item
-from woost.models.publishable import Publishable
-from woost.models.file import File
+from .item import Item
+from .publishable import Publishable
+from .file import File
 
 
 class PublicationScheme(Item):

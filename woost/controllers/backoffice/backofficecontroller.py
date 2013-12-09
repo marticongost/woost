@@ -32,6 +32,10 @@ from woost.controllers.backoffice.ordercontroller import OrderController
 from woost.controllers.backoffice.movecontroller import MoveController
 from woost.controllers.backoffice.renderpreviewcontroller \
     import RenderPreviewController
+from woost.controllers.backoffice.editblockscontroller \
+    import EditBlocksController
+from woost.controllers.backoffice.dropblockcontroller \
+    import DropBlockController
 from woost.controllers.backoffice.changelogcontroller \
     import ChangeLogController
 from woost.controllers.backoffice.uploadfilescontroller \
@@ -60,6 +64,8 @@ class BackOfficeController(BaseBackOfficeController):
     render_preview = RenderPreviewController
     upload_files = UploadFilesController
     drop = DragAndDropController
+    blocks = EditBlocksController
+    drop_block = DropBlockController
 
     def submit(self):
         raise cherrypy.HTTPRedirect(

@@ -25,9 +25,9 @@ from cocktail.controllers import (
     Location
 )
 from woost import app
-from woost.models.websitesession import get_current_website
-from woost.models.changesets import ChangeSet, Change
-from woost.models.usersession import get_current_user
+from .websitesession import get_current_website
+from .changesets import ChangeSet, Change
+from .usersession import get_current_user
 
 # Extension property that makes it easier to customize the edit view for a
 # collection in the backoffice

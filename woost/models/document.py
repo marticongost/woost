@@ -11,9 +11,9 @@ from cocktail.modeling import getter
 from cocktail.iteration import first
 from cocktail.events import event_handler
 from cocktail.controllers.renderingengines import get_rendering_engine
-from woost.models.publishable import Publishable
-from woost.models.file import File
-from woost.models.controller import Controller
+from .publishable import Publishable
+from .file import File
+from .controller import Controller
 
 
 class Document(Publishable):

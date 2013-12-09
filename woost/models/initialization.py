@@ -8,16 +8,18 @@ u"""
 """
 from __future__ import with_statement
 import sha
-import socket
 from string import letters, digits
 from random import choice
 from optparse import OptionParser
+from cocktail.stringutils import random_string
 from cocktail.translations import translations
+from cocktail.iteration import first
 from cocktail.persistence import (
     datastore,
     mark_all_migrations_as_executed,
     reset_incremental_id
 )
+from woost import app
 from woost.models import (
     changeset_context,
     Configuration,
@@ -26,12 +28,16 @@ from woost.models import (
     DescriptiveIdPublicationScheme,
     Publishable,
     Document,
+    Page,    
+    TextBlock,
+    LoginBlock,
+    CustomBlock,
     User,
     Role,
-    StandardPage,
     URI,
     Controller,
     Template,
+    Style,
     UserView,
     ReadPermission,
     CreatePermission,
@@ -41,6 +47,7 @@ from woost.models import (
     ReadMemberPermission,
     ModifyMemberPermission,
     CreateTranslationPermission,
+    InstallationSyncPermission,
     ReadTranslationPermission,
     ModifyTranslationPermission,
     DeleteTranslationPermission,
@@ -54,206 +61,511 @@ from woost.models import (
     load_extensions
 )
 
-standard_template_identifiers = {
-    "cocktail": "woost.views.StandardView",
-    "genshi": "woost.views.StandardView"
-}
+def everything():
+    return {"type": "woost.models.item.Item"}
 
-def init_site(
-    admin_email = "admin@localhost",
-    admin_password = "",
-    languages = ("en",),
-    uri = "/",
-    template_engine = "cocktail",
-    extensions = (),
-    base_id = None):
- 
-    datastore.root.clear()
-    datastore.commit()
-    datastore.close()
+def owned_items():
+    return {
+        "type": "woost.models.item.Item",
+        "filter": "owned-items"
+    }
+
+
+class TranslatedValues(object):
     
-    if base_id:
-        reset_incremental_id(base_id)
+    def __init__(self, key = None, **kwargs):
+        self.key = key
+        self.kwargs = kwargs
 
-    def set_translations(item, member, key, **kwargs):
-        for language in languages:
-            value = translations(
-                "woost.models.initialization " + key,
-                language,
-                **kwargs
-            )
-            if value:
-                item.set(member, value, language)
 
-    with changeset_context() as changeset:
-        
-        # Create the global configuration object
-        config = Configuration()
-        config.qname = "woost.configuration"
-        config.insert()
-        config.secret_key = random_string(10)
+class SiteInitializer(object):
 
-        # Create the administrator user
-        admin = User()
-        admin.author = admin
-        admin.qname = "woost.administrator"
-        admin.owner = admin
-        admin.critical = True
-        admin.email = admin_email
-        admin.password = admin_password
-        admin.insert()
-        
-        changeset.author = admin
-        config.author = admin
-        config.owner = admin
-        config.default_language = languages[0]
-        config.languages = languages
+    admin_email = "admin@localhost"
+    admin_password = ""
+    languages = ["en"]
+    template_engine = "cocktail"
+    extensions = []
+    hosts = ["localhost"]
+    base_id = None
 
-        if config.default_language in Configuration.backoffice_language.enumeration:
-            config.backoffice_language = config.default_language
-            admin.prefered_language = config.default_language
-     
-        # Create the default website
-        website = Website()
-        website.hosts.append(socket.getfqdn())
-        website.hosts.append("localhost")
-        website.insert()
-        config.websites.append(website)
+    read_only_types = [
+        "woost.models.style.Style",
+        "woost.models.user.User",
+        "woost.models.template.Template",
+        "woost.models.emailtemplate.EmailTemplate",
+        "woost.models.rendering.renderer.Renderer",
+        "woost.models.rendering.imagefactory.ImageFactory",
+        "woost.models.videoplayersettings.VideoPlayerSettings"
+    ]
 
-        # Create the anonymous user and role
-        anonymous_role = Role()
-        anonymous_role.implicit = True
-        anonymous_role.critical = True
-        anonymous_role.qname = "woost.anonymous"
-        set_translations(anonymous_role, "title", "Anonymous role title")        
-        anonymous_role.insert()
+    restricted_types = [
+        "woost.models.role.Role",
+        "woost.models.controller.Controller",
+        "woost.models.permission.Permission",
+        "woost.models.publicationschemes.PublicationScheme",
+        "woost.models.caching.CachingPolicy",
+        "woost.models.siteinstallation.SiteInstallation",
+        "woost.models.trigger.Trigger",
+        "woost.models.triggerresponse.TriggerResponse",
+        "woost.models.userview.UserView",
+        "woost.models.extension.Extension"
+    ]
 
-        anonymous_user = User()
-        anonymous_user.email = "anonymous@localhost"
-        anonymous_user.qname = "woost.anonymous_user"
-        anonymous_user.anonymous = True
-        anonymous_user.critical = True
-        anonymous_user.roles.append(anonymous_role)
-        anonymous_user.insert()
+    read_only_members = [
+        "woost.models.item.Item.owner",
+        "woost.models.publishable.Publishable.mime_type",        
+        "woost.models.configuration.Configuration.login_page",
+        "woost.models.configuration.Configuration.generic_error_page",
+        "woost.models.configuration.Configuration.not_found_error_page",
+        "woost.models.configuration.Configuration.forbidden_error_page",
+        "woost.models.configuration.Configuration.maintenance_page",
+        "woost.models.website.Website.login_page",
+        "woost.models.website.Website.home",
+        "woost.models.website.Website.generic_error_page",
+        "woost.models.website.Website.not_found_error_page",
+        "woost.models.website.Website.forbidden_error_page",
+        "woost.models.website.Website.maintenance_page",
+    ]
+
+    restricted_members = [
+        "woost.models.item.Item.qname",
+        "woost.models.item.Item.global_id",
+        "woost.models.item.Item.synchronizable",
+        "woost.models.publishable.Publishable.encoding",
+        "woost.models.publishable.Publishable.login_page",
+        "woost.models.publishable.Publishable.inherit_resources",
+        "woost.models.publishable.Publishable.requires_https",
+        "woost.models.configuration.Configuration.maintenance_addresses",
+        "woost.models.configuration.Configuration.languages",
+        "woost.models.configuration.Configuration.published_languages",
+        "woost.models.configuration.Configuration.default_language",
+        "woost.models.configuration.Configuration.heed_client_language",
+        "woost.models.configuration.Configuration.timezone",
+        "woost.models.configuration.Configuration.smtp_host",
+        "woost.models.configuration.Configuration.smtp_user",
+        "woost.models.configuration.Configuration.smtp_password",
+        "woost.models.configuration.Configuration.renderers",
+        "woost.models.configuration.Configuration.image_factories",
+        "woost.models.configuration.Configuration.videoplayersettings",
+        "woost.models.website.Website.hosts",
+        "woost.models.website.Website.https_policy",
+        "woost.models.website.Website.https_persistence",
+        "woost.models.website.Website.published_languages",
+        "woost.models.website.Website.default_language",
+        "woost.models.website.Website.heed_client_language"
+    ]
+
+    image_factories = [
+        "default",
+        "icon16",
+        "icon32",
+        "backoffice_thumbnail",
+        "backoffice_small_thumbnail",
+        "edit_blocks_thumbnail",
+        "close_up",
+        "default_thumbnail",
+    ]
+
+    def main(self):
  
-        # Create the administrators role        
-        administrators = Role()
-        administrators.qname = "woost.administrators"
-        administrators.critical = True
-        set_translations(administrators, "title", "Administrators role title")
-        administrators.users.append(admin)
-        everything = lambda: {"type": "woost.models.item.Item"}
-        administrators.permissions = [
-            # Administrators have full control
-            ReadPermission(matching_items = everything()),
-            CreatePermission(matching_items = everything()),
-            ModifyPermission(matching_items = everything()),
-            DeletePermission(matching_items = everything()),
-            ReadMemberPermission(),
-            ModifyMemberPermission()
+        parser = OptionParser()
+        parser.add_option("-u", "--user", help = "Administrator email")
+        parser.add_option("-p", "--password", help = "Administrator password")
+        parser.add_option("-l", "--languages",
+            help = "Comma separated list of languages")
+        parser.add_option("-t", "--template-engine",
+            default = "cocktail",
+            help = "The buffet templating engine to use by default")
+        parser.add_option("-e", "--extensions",
+            default = "",
+            help = "The list of extensions to enable")
+        parser.add_option("-b", "--base-id",
+            type = int,
+            help = "Seed the incremental ID sequence at a non-zero value")
+        parser.add_option("-i", "--installation-id",
+            default = "DEV",
+            help = "A unique prefix for this installation, used to assign "
+                   "globally unique identifiers for objects."
+        )
+
+        options, args = parser.parse_args()
+
+        self.admin_email = options.user
+        self.admin_password = options.password
+        
+        if self.admin_email is None:
+            self.admin_email = raw_input("Administrator email: ") or "admin@localhost"
+
+        if self.admin_password is None:
+            self.admin_password = raw_input("Administrator password: ") \
+                or random_string(8)
+
+        languages = options.languages \
+            and options.languages.replace(",", " ") \
+            or raw_input("Languages: ") or "en"
+
+        self.languages = languages.split()
+        self.template_engine = options.template_engine,
+        self.extensions = options.extensions.split(",")
+        self.base_id = options.base_id
+        app.installation_id = options.installation_id
+
+        self.initialize()
+
+        print u"Your site has been successfully created. You can start it by " \
+              u"executing the 'run.py' script. An administrator account for the " \
+              u"content manager interface has been generated, with the " \
+              u"following credentials:\n\n" \
+              u"\tEmail:     %s\n" \
+              u"\tPassword:  %s\n\n" % (self.admin_email, self.admin_password)
+
+    def initialize(self):
+        self.reset_database()
+
+        with changeset_context() as changeset:
+            self.changeset = changeset
+            self.create_content()
+
+        mark_all_migrations_as_executed()
+        datastore.commit()
+
+    def reset_database(self):
+        datastore.root.clear()
+        datastore.commit()
+        datastore.close()
+        
+        if self.base_id:
+            reset_incremental_id(self.base_id)
+
+    def _create(self, _model, **values):
+        instance = _model()
+        
+        for key, value in values.iteritems():
+            if isinstance(value, TranslatedValues):
+                trans_key = "woost.initialization."
+
+                if value.key:
+                    trans_key += value.key
+                else:
+                    qname = values.get("qname")
+                    if not qname:
+                        raise ValueError(
+                            "Can't translate the values for %s without "
+                            "giving it a qname or providing an explicit "
+                            "translation key"
+                            % instance
+                        )
+                    prefix = "woost."
+                    assert qname.startswith(prefix)
+                    trans_key += qname[len(prefix):] + "." + key
+                
+                for language in self.languages:
+                    trans = translations(trans_key, language, **value.kwargs)
+                    if trans:
+                        instance.set(key, trans, language)
+            else:
+                setattr(instance, key, value)
+
+        instance.insert()
+        return instance
+
+    def create_content(self):
+        
+        # Bootstrap: create the site's configuration and administrator user
+        self.configuration = self.create_configuration()
+        self.administrator = self.create_administrator()
+
+        self.configuration.author = self.administrator
+        self.configuration.owner = self.administrator
+        self.administrator.author = self.administrator
+        self.administrator.owner = self.administrator
+        
+        # From this point, the authorship f or further objects is set
+        # automatically through the active changeset
+        self.changeset.author = self.administrator
+
+        # Default website
+        self.website = self.create_website()
+        self.configuration.websites.append(self.website)
+
+        # Roles
+        self.anonymous_role = self.create_anonymous_role()
+        self.anonymous_user = self.create_anonymous_user()
+
+        self.administrator_role = self.create_administrator_role()
+        self.administrator.roles.append(self.administrator_role)
+        
+        self.everybody_role = self.create_everybody_role()
+        self.authenticated_role = self.create_authenticated_role()
+        self.editor_role = self.create_editor_role()
+
+        # Publication schemes
+        self.create_publication_schemes()
+        
+        # File deletion trigger
+        self.file_deletion_trigger = self.create_file_deletion_trigger()
+        self.configuration.triggers.append(self.file_deletion_trigger)
+
+        # Templates and controllers
+        self.create_controllers()
+        self.standard_template = self.create_standard_template()
+        
+        # Home page
+        self.website.home = self.create_home()
+
+        # Default stylesheets
+        self.user_stylesheet = self.create_user_stylesheet()
+
+        # Backoffice
+        self.backoffice = self.create_backoffice()
+
+        # Error pages
+        self.not_found_error_page = self.create_not_found_error_page()
+        self.configuration.not_found_error_page = self.not_found_error_page
+
+        self.forbidden_error_page = self.create_forbidden_error_page()
+        self.configuration.forbidden_error_page = self.forbidden_error_page
+
+        # Password change
+        self.password_change_page = self.create_password_change_page()
+        self.password_change_confirmation_page = \
+            self.create_password_change_confirmation_page()
+        self.password_change_email_template = \
+            self.create_password_change_email_template()
+
+        # Login page
+        self.login_page = self.create_login_page()
+        self.configuration.login_page = self.login_page
+
+        # User views
+        self.own_items_user_view = self.create_own_items_user_view()
+        self.page_tree_user_view = self.create_page_tree_user_view()
+        self.create_file_gallery_user_view()
+
+        # Renderers
+        self.content_renderer = self.create_content_renderer()
+        self.icon16_renderer = self.create_icon16_renderer()
+        self.icon32_renderer = self.create_icon32_renderer()
+
+        self.configuration.renderers = [
+            self.content_renderer,
+            self.icon16_renderer,
+            self.icon32_renderer
         ]
-        administrators.insert()
 
-        # Create the 'everybody' role
-        everybody_role = Role()
-        everybody_role.implicit = True
-        everybody_role.critical = True
-        everybody_role.qname = "woost.everybody"
-        set_translations(everybody_role, "title", "Everybody role title")
-        owned_items = lambda: {
-            "type": "woost.models.item.Item",
-            "filter": "owned-items"
-        }
-        everybody_role.permissions = [
+        # Image factories
+        for image_factory_id in self.image_factories:
+            key = image_factory_id + "_image_factory"
+            method_name = "create_%s_image_factory" % image_factory_id
+            method = getattr(self, method_name)
+            image_factory = method()
+            setattr(self, key, image_factory)
+            self.configuration.image_factories.append(image_factory)
 
-            # Everybody can render any item
-            RenderPermission(
-                matching_items = {
-                    "type": "woost.models.item.Item"
-                }
-            ),
+        # Extensions
+        self.enable_extensions()
 
-            # Everybody can read publishable items
-            ReadPermission(
-                matching_items = {
-                    "type": "woost.models.publishable.Publishable"
-                }
-            ),
-            
-            # Content owners have full control
-            ModifyPermission(matching_items = owned_items()),
-            DeletePermission(matching_items = owned_items()),
-            
-            # All members allowed, 'controller' and 'qname'
-            ReadMemberPermission(
-                matching_members = [
-                    "woost.models.item.Item.qname",
-                    "woost.models.publishable.Publishable.controller"
-                ],
-                authorized = False
-            ),
+    def create_configuration(self):
+        return self._create(
+            Configuration,
+            qname = "woost.configuration",
+            secret_key = random_string(10),
+            default_language = self.languages[0],
+            languages = self.languages,
+            backoffice_language =
+                first(
+                    language 
+                    for language in self.languages
+                    if language in
+                        Configuration.backoffice_language.enumeration
+                )
+        )
 
-            # Only administrators can see the CachePolicy model
-            ReadPermission(
-                matching_items = {
-                    "type": "woost.models.caching.CachingPolicy"                    
-                },
-                authorized = False
-            ),
+    def create_administrator(self):
+        return self._create(
+            User,
+            qname = "woost.administrator",
+            email = self.admin_email,
+            password = self.admin_password
+        )
 
-            ReadMemberPermission(),
-            
-            # Only administrators can modify 'owner', 'robots_should_index',
-            # 'robots_should_follow' and 'requires_https' members
-            ModifyMemberPermission(
-                matching_members = ["woost.models.item.Item.owner"],
-                authorized = False
-            ),
-            ModifyMemberPermission(
-                matching_members = [
-                    "woost.models.publishable.Publishable.requires_https"
-                ],
-                authorized = False
-            ),
-            ModifyMemberPermission(
-                matching_members = [
-                    "woost.models.document.Document.robots_should_index",
-                    "woost.models.document.Document.robots_should_follow"
-                ],
-                authorized = False
-            ),
-            ModifyMemberPermission(),
+    def create_website(self):
+        return self._create(
+            Website,
+            site_name = TranslatedValues("website.site_name"),
+            hosts = self.hosts
+        )
 
-            # All languages allowed
+    def create_anonymous_role(self):
+        return self._create(
+            Role,
+            qname = "woost.anonymous",
+            implicit = True,
+            title = TranslatedValues()
+        )
+
+    def create_anonymous_user(self):
+        return self._create(
+            User,
+            qname = "woost.anonymous_user",
+            email = "anonymous@localhost",
+            roles = [self.anonymous_role],
+            anonymous = True
+        )
+
+    def create_administrator_role(self):
+        return self._create(
+            Role,
+            qname = "woost.administrators",
+            title = TranslatedValues(),
+            permissions = [
+                ReadPermission(matching_items = everything()),
+                CreatePermission(matching_items = everything()),
+                ModifyPermission(matching_items = everything()),
+                DeletePermission(matching_items = everything()),
+                ReadMemberPermission(),
+                ModifyMemberPermission(),
+                InstallationSyncPermission()
+            ]
+        )
+
+    def create_everybody_role(self):
+        role = self._create(
+            Role,
+            implicit = True,
+            qname = "woost.everybody",
+            title = TranslatedValues(),
+            permissions = [
+                RenderPermission(matching_items = everything()),
+                ReadPermission(
+                    matching_items = {
+                        "type": "woost.models.publishable.Publishable",
+                    }
+                ),
+                ModifyPermission(matching_items = owned_items()),
+                DeletePermission(matching_items = owned_items())
+            ]
+        )
+
+        # Restrict readable members
+        if self.restricted_members:
+            role.permissions.append(
+                ReadMemberPermission(
+                    authorized = False,
+                    matching_members = self.restricted_members
+                )
+            )
+    
+        role.permissions.append(ReadMemberPermission())
+
+        # Restrict modifiable members
+        if self.read_only_members:
+            role.permissions.append(
+                ModifyMemberPermission(
+                    authorized = False,
+                    matching_members = self.read_only_members
+                )
+            )
+
+        role.permissions.append(ModifyMemberPermission())
+
+        # All languages allowed
+        role.permissions.extend([
             CreateTranslationPermission(),
             ReadTranslationPermission(),
             ModifyTranslationPermission(),
             DeleteTranslationPermission()
-        ]
-        everybody_role.insert()
+        ])
 
-        # Create the 'authenticated' role
-        authenticated_role = Role()
-        authenticated_role.implicit = True
-        authenticated_role.critical = True
-        authenticated_role.qname = "woost.authenticated"
-        set_translations(authenticated_role, "title",
-            "Authenticated role title")
-        authenticated_role.permissions = [
-            ReadHistoryPermission()
-        ]
-        authenticated_role.insert()
+        return role
+ 
+    def create_authenticated_role(self):
+        return self._create(
+            Role,
+            qname = "woost.authenticated",
+            implicit = True,
+            title = TranslatedValues()
+        )
 
-        # Create publication schemes
-        for pub_scheme in (
-            HierarchicalPublicationScheme(),
-            DescriptiveIdPublicationScheme()
+    def create_editor_role(self):
+        role = self._create(
+            Role,
+            qname = "woost.editors",
+            title = TranslatedValues(),
+            hidden_content_types = [
+                Template,
+                Controller,
+                Style,
+                EmailTemplate
+            ]
+        )
+
+        # Restrict readable types
+        if self.restricted_types:
+            for restricted_type in self.restricted_types:
+                for permission_type in (
+                    ReadPermission,
+                    CreatePermission,
+                    ModifyPermission,
+                    DeletePermission
+                ):
+                    role.permissions.append(
+                        self._create(
+                            permission_type,
+                            authorized = False,
+                            matching_items = {
+                                "type": restricted_type
+                            }
+                        )
+                    )
+
+        # Restrict modifiable types
+        if self.read_only_types:
+            for read_only_type in self.read_only_types:
+                for permission_type in (
+                    CreatePermission,
+                    ModifyPermission,
+                    DeletePermission
+                ):
+                    role.permissions.append(
+                        self._create(
+                            permission_type,
+                            authorized = False,
+                            matching_items = {
+                                "type": read_only_type 
+                            }
+                        )
+                    )
+
+        for permission_type in (
+            ReadPermission,
+            CreatePermission,
+            ModifyPermission,
+            DeletePermission,
+            ReadHistoryPermission
         ):
-            config.publication_schemes.append(pub_scheme)
-            pub_scheme.insert()
+            role.permissions.append(self._create(permission_type))
 
-        # Create a trigger to purge deleted files from the filesystem
-        delete_files_trigger = DeleteTrigger(
+        role.permissions.append(
+            self._create(
+                InstallationSyncPermission,
+                authorized = False
+            )
+        )
+
+        return role
+
+    def create_publication_schemes(self):
+        self.configuration.publication_schemes = [
+            self._create(HierarchicalPublicationScheme),
+            self._create(DescriptiveIdPublicationScheme)
+        ]
+
+    def create_file_deletion_trigger(self):
+        return self._create(
+            DeleteTrigger,
+            qname = "woost.file_deletion_trigger",
+            title = TranslatedValues(),
             execution_point = "after",
             batch_execution = True,
             matching_items = {"type": "woost.models.file.File"},
@@ -265,363 +577,308 @@ def init_site(
                 )
             ]
         )
-        set_translations(delete_files_trigger, "title",
-            "delete_files_trigger"
-        )
-        config.triggers.append(delete_files_trigger)
-        delete_files_trigger.insert()
 
-        # Create standard controllers
+    def create_controllers(self):
         for controller_name in (
             "Document",
             "File",
             "URI",
             "Styles",
             "Feed",
-            "WebServices",
             "BackOffice",
             "FirstChildRedirection",
             "Login",
             "PasswordChange",
             "PasswordChangeConfirmation"
         ):
-            controller = Controller()
-            controller.qname = "woost.%s_controller" % controller_name.lower()          
-            set_translations(
-                controller,
-                "title",
-                controller_name + " controller title"
-            )
-            controller.python_name = \
-                "woost.controllers.%scontroller.%sController" % (
+            controller = self._create(
+                Controller,
+                qname = "woost.%s_controller" % controller_name.lower(),
+                title = TranslatedValues(),
+                python_name = "woost.controllers.%scontroller.%sController" % (
                     controller_name.lower(),
                     controller_name
                 )
-            controller.insert()
+            )
+            setattr(self, controller_name.lower() + "_controller", controller)
 
         # The backoffice controller is placed at an irregular location
-        back_office_controller = \
-            Controller.get_instance(qname = "woost.backoffice_controller")
-        back_office_controller.python_name = \
-            "woost.controllers.backoffice.backofficecontroller." \
+        self.backoffice_controller.python_name = (
+            "woost.controllers.backoffice.backofficecontroller."
             "BackOfficeController"
+        )
 
         # Prevent anonymous access to the backoffice controller
         ReadPermission(
-            role = anonymous_role,
+            role = self.anonymous_role,
             matching_items = {
                 "type": "woost.models.publishable.Publishable",
                 "filter": "member-controller",
                 "filter_operator0": "eq",
-                "filter_value0": str(back_office_controller.id)
+                "filter_value0": str(self.backoffice_controller.id)
             },
             authorized = False
         ).insert()
 
-        # Create standard templates
-        std_template = Template()
-        std_template.identifier = standard_template_identifiers.get(
-            template_engine, "StandardView"
+    def create_standard_template(self):
+        return self._create(
+            Template,
+            qname = "woost.standard_template",
+            title = TranslatedValues(),
+            engine = "cocktail",
+            identifier = "woost.views.GenericSiteLayout",
         )
-        std_template.engine = template_engine
-        std_template.qname = "woost.standard_template"
-        set_translations(std_template, "title", "Standard template title")
-        std_template.insert()
 
-        # Create Login Form view
-        login_form_template = Template()
-        login_form_template.identifier = u"woost.views.LoginFormView"
-        login_form_template.engine = u"cocktail"
-        set_translations(
-            login_form_template,
-            "title", "Login Form template title"
+    def create_home(self):
+        return self._create(
+            Page,
+            title = TranslatedValues("home.title"),
+            inner_title = TranslatedValues("home.inner_title"),
+            blocks = [
+                self._create(
+                    TextBlock,
+                    text = TranslatedValues("home.body")
+                )
+            ]
         )
-        login_form_template.insert()
 
-        # Create Password Change Request view
-        password_change_request_view = Template()
-        password_change_request_view.identifier = \
-            u"woost.views.PasswordChangeRequestView"
-        password_change_request_view.engine = u"cocktail"
-        set_translations(
-            password_change_request_view,
-            "title", "Password Change Request template title"
+    def create_user_stylesheet(self):
+        return self._create(
+            Document,
+            qname = "woost.user_styles",
+            title = TranslatedValues(),
+            per_language_publication = False,
+            controller = self.styles_controller,
+            path = "user_styles",
+            hidden = True,
+            mime_type = "text/css",
+            caching_policies = [
+                CachingPolicy(
+                    server_side_cache = True,
+                    last_update_expression =
+                        "from woost.models import Style\n"
+                        "last_update = [publishable, latest(Style)]\n"
+                )
+            ]
         )
-        password_change_request_view.insert()
 
-        # Create Password Change Email template
-        password_change_confirmation_email_template = EmailTemplate()
-        password_change_confirmation_email_template.template_engine = u"mako"
-        password_change_confirmation_email_template.qname = \
-            u"woost.views.password_change_confirmation_email_template"
-        set_translations(
-            password_change_confirmation_email_template,
-            "title", "Password Change Confirmation Email template title"
+    def create_backoffice(self):
+        return self._create(
+            Document,
+            qname = "woost.backoffice",
+            title = TranslatedValues(),
+            hidden = True,
+            path = "cms",
+            per_language_publication = False,
+            inherit_resources = False,
+            controller = self.backoffice_controller
         )
-        set_translations(
-            password_change_confirmation_email_template,
-            "subject", "Password Change Confirmation Email subject"
+
+    def create_not_found_error_page(self):
+        return self._create(
+            Page,
+            qname = "woost.not_found_error_page",
+            title = TranslatedValues(),
+            hidden = True,
+            blocks = [
+                self._create(
+                    TextBlock,
+                    text = TranslatedValues("not_found_error_page.body")
+                )
+            ]
         )
-        set_translations(
-            password_change_confirmation_email_template,
-            "body", "Password Change Confirmation Email body"
+
+    def create_forbidden_error_page(self):
+        return self._create(
+            Page,
+            qname = "woost.forbidden_error_page",
+            title = TranslatedValues(),
+            hidden = True,
+            blocks = [
+                self._create(
+                    TextBlock,
+                    text = TranslatedValues("forbidden_error_page.body")
+                )
+            ]
         )
-        password_change_confirmation_email_template.set(
-            "sender",
-            u'u"'+admin.email+'"'
+
+    def create_password_change_page(self):
+        return self._create(
+            Page,
+            qname = "woost.password_change_page",
+            title = TranslatedValues(),
+            controller = self.passwordchange_controller,
+            hidden = True,
+            blocks = [
+                self._create(
+                    TextBlock,
+                    text = TranslatedValues("password_change_page.body")
+                ),
+                self._create(
+                    CustomBlock,
+                    heading = TranslatedValues("password_change_page.form_title"),
+                    view_class = "woost.views.PasswordChangeRequestForm",
+                    controller = 
+                        "woost.controllers.passwordchangecontroller."
+                        "PasswordChangeBlockController"
+                )
+            ]
         )
-        password_change_confirmation_email_template.set(
-            "receivers",
-            u"[user.email]"
+
+    def create_password_change_confirmation_page(self):
+        return self._create(
+            Page,
+            qname = "woost.password_change_confirmation_page",
+            title = TranslatedValues(),
+            controller = self.passwordchangeconfirmation_controller,
+            hidden = True,
+            blocks = [
+                self._create(
+                    TextBlock,
+                    text = TranslatedValues("password_change_confirmation_page.body")
+                ),
+                self._create(
+                    CustomBlock,
+                    heading = TranslatedValues(
+                        "password_change_confirmation_page.form_title"
+                    ),
+                    view_class = "woost.views.PasswordChangeConfirmationForm",
+                    controller = 
+                        "woost.controllers.passwordchangecontroller."
+                        "PasswordChangeConfirmationBlockController"
+                )
+            ]
         )
-        password_change_confirmation_email_template.insert()
 
-        # Create Password Change Confirmation view
-        password_change_confirmation_view = Template()
-        password_change_confirmation_view.identifier = \
-            u"woost.views.PasswordChangeConfirmationView"
-        password_change_confirmation_view.engine = u"cocktail"
-        set_translations(
-            password_change_confirmation_view,
-            "title", "Password Change Confirmation view title"
+    def create_password_change_email_template(self):
+        return self._create(
+            EmailTemplate,
+            qname = "woost.password_change_email_template",
+            title = TranslatedValues(),
+            subject = TranslatedValues(),
+            body = TranslatedValues(),
+            sender = u'u"noreply@' + self.hosts[0] + '"',
+            receivers = u"[user.email]"
         )
-        password_change_confirmation_view.insert()
 
-        # Create the home page
-        website.home = StandardPage()
-        website.home.template = std_template
-        set_translations(website.home, "title", "Home page title")
-        set_translations(website.home, "inner_title", "Home page inner title")
-        set_translations(
-            website.home, "body", "Home page body",
-            uri = uri + "cms"
+    def create_login_page(self):
+        return self._create(
+            Page,
+            qname = "woost.login_page",
+            title = TranslatedValues(),
+            hidden = True,
+            controller = self.login_controller,
+            blocks = [
+                self._create(LoginBlock)
+            ]
         )
-        website.home.insert()
 
-        # Create standard resources
-        site_stylesheet = URI()
-        site_stylesheet.parent = website.home
-        site_stylesheet.hidden = True
-        site_stylesheet.uri = uri + "resources/styles/site.css"
-        site_stylesheet.mime_type = "text/css"
-        site_stylesheet.qname = "woost.site_stylesheet"
-        set_translations(site_stylesheet, "title", "Site style sheet title")
-        site_stylesheet.insert()
-        website.home.branch_resources.append(site_stylesheet)
-
-        # Create the back office interface
-        back_office = Document()
-        back_office.parent = website.home
-        back_office.controller = back_office_controller
-        back_office.critical = True
-        back_office.qname = "woost.backoffice"
-        back_office.per_language_publication = False
-        back_office.hidden = True
-        back_office.path = u"cms"
-        back_office.inherit_resources = False
-        set_translations(back_office, "title", "Back office title")
-        back_office.insert()
-        
-        # Create the user styles dynamic style sheet
-        user_styles = Document()
-        user_styles.parent = website.home
-        user_styles.critical = True
-        user_styles.qname = "woost.user_styles"
-        user_styles.per_language_publication = False
-        user_styles.controller = \
-            Controller.get_instance(qname = "woost.styles_controller")
-        user_styles.hidden = True
-        user_styles.path = u"user_styles"
-        user_styles.mime_type = "text/css"
-        user_styles.caching_policies.append(
-            CachingPolicy(
-                server_side_cache = True,
-                last_update_expression =
-                    "from woost.models import Style\n"
-                    "last_update = [publishable, latest(Style)]\n"
-            )
+    def create_own_items_user_view(self):
+        return self._create(
+            UserView,
+            qname = "woost.own_items_user_view",
+            title = TranslatedValues(),
+            roles = [self.everybody_role],
+            parameters = {
+                "type": "woost.models.item.Item",
+                "content_view": "flat",
+                "filter": "owned-items",
+                "order": "-last_update_time",
+                "members": None
+            }
         )
-        set_translations(user_styles, "title", "User styles title")
-        user_styles.insert()
 
-        # Create the 'content not found' page
-        config.not_found_error_page = StandardPage()
-        config.not_found_error_page.parent = website.home
-        config.not_found_error_page.hidden = True
-        config.not_found_error_page.template = std_template
-        config.not_found_error_page.qname = "woost.not_found_error_page"
-        set_translations(config.not_found_error_page, "title",
-            "Not found error page title")
-        set_translations(config.not_found_error_page, "body",
-            "Not found error page body")            
-        config.not_found_error_page.insert()
-
-        # Create forbidden error page
-        config.forbidden_error_page = StandardPage()
-        config.forbidden_error_page.parent = website.home
-        config.forbidden_error_page.hidden = True
-        config.forbidden_error_page.template = std_template
-        config.forbidden_error_page.qname = "woost.forbidden_error_page"
-        set_translations(config.forbidden_error_page, "title",
-            "Forbidden error page title")
-        set_translations(config.forbidden_error_page, "body",
-            "Forbidden error page body")
-        config.forbidden_error_page.insert()
-
-        # Create the password change request page
-        config.password_change_page = StandardPage()
-        config.password_change_page.parent = website.home
-        config.password_change_page.hidden = True
-        config.password_change_page.template = password_change_request_view
-        config.password_change_page.controller = \
-            Controller.get_instance(qname = 'woost.passwordchange_controller')
-        config.password_change_page.qname = "woost.password_change_page"
-        config.password_change_page.per_language_publication = False
-        set_translations(config.password_change_page, "title",
-            "Password Change page title")
-        set_translations(config.password_change_page, "body",
-            "Password Change page body")
-        config.password_change_page.insert()
-
-        # Create the password change confirmation page
-        config.password_change_confirmation_page = StandardPage()
-        config.password_change_confirmation_page.parent = website.home
-        config.password_change_confirmation_page.hidden = True
-        config.password_change_confirmation_page.per_language_publication = False
-        config.password_change_confirmation_page.template = \
-            password_change_confirmation_view
-        config.password_change_confirmation_page.controller = \
-            Controller.get_instance(
-                qname='woost.passwordchangeconfirmation_controller'
-            )
-        config.password_change_confirmation_page.qname = \
-            "woost.password_change_confirmation_page"
-        set_translations(config.password_change_confirmation_page, "title",
-            "Password Change Confirmation page title")
-        set_translations(config.password_change_confirmation_page, "body",
-            "Password Change Confirmation page body")
-        config.password_change_confirmation_page.insert()
-
-        # Create the login page
-        config.login_page = StandardPage()
-        config.login_page.parent = website.home
-        config.login_page.hidden = True
-        config.login_page.template = login_form_template 
-        config.login_page.controller = \
-            Controller.get_instance(qname = "woost.login_controller")
-        config.login_page.qname = "woost.login_page"
-        set_translations(config.login_page, "title", "Login page title")
-        config.login_page.insert()
-
-        # Create site-wide user views
-        own_items_view = UserView()
-        own_items_view.roles.append(everybody_role)
-        own_items_view.parameters = {
-            "type": "woost.models.item.Item",
-            "content_view": "flat",
-            "filter": "owned-items",
-            "order": "-last_update_time",
-            "members": None
-        }
-        set_translations(
-            own_items_view,
-            "title",
-            "Own items user view"
+    def create_page_tree_user_view(self):
+        return self._create(    
+            UserView,
+            qname = "woost.page_tree_user_view",
+            title = TranslatedValues(),
+            roles = [self.everybody_role],
+            parameters = {
+                "type": "woost.models.publishable.Publishable",
+                "content_view": "tree",
+                "filter": None,
+                "members": None
+            }
         )
-        own_items_view.insert()
-        
-        page_tree_view = UserView()
-        page_tree_view.roles.append(everybody_role)
-        page_tree_view.parameters = {
-            "type": "woost.models.publishable.Publishable",
-            "content_view": "tree",
-            "filter": None,
-            "members": None
-        }
-        set_translations(
-            page_tree_view,
-            "title",
-            "Page tree user view"
+
+    def create_file_gallery_user_view(self):
+        return self._create(
+            UserView,
+            qname = "woost.file_gallery_user_view",
+            title = TranslatedValues(),
+            roles = [self.everybody_role],
+            parameters = {
+                "type": "woost.models.file.File",
+                "content_view": "thumbnails",
+                "filter": None,
+                "order": None,
+                "members": None
+            }
         )
-        page_tree_view.insert()
 
-        file_gallery_view = UserView()
-        file_gallery_view.roles.append(everybody_role)
-        file_gallery_view.parameters = {
-            "type": "woost.models.file.File",
-            "content_view": "thumbnails",
-            "filter": None,
-            "order": None,
-            "members": None
-        }
-        set_translations(
-            file_gallery_view,
-            "title",
-            "File gallery user view"
+    def create_content_renderer(self):
+        return self._create(
+            rendering.ChainRenderer,
+            qname = "woost.content_renderer",
+            title = TranslatedValues(),
+            renderers = [
+                rendering.ImageFileRenderer(),
+                rendering.PDFRenderer(),
+                rendering.VideoFileRenderer(),
+                rendering.ImageURIRenderer()
+            ]
         )
-        file_gallery_view.insert()
-    
-        # Renderers
-        #----------------------------------------------------------------------
-        content_renderer = rendering.ChainRenderer()
-        set_translations(
-            content_renderer,
-            "title",
-            "content_renderer"
+
+    def create_icon16_renderer(self):
+        return self._create(
+            rendering.IconRenderer,
+            qname = "woost.icon16_renderer",
+            title = TranslatedValues(),
+            icon_size = 16
         )
-        content_renderer.renderers = [
-            rendering.ImageFileRenderer(),
-            rendering.PDFRenderer(),
-            rendering.VideoFileRenderer(),
-            rendering.ImageURIRenderer()
-        ]
-        content_renderer.insert()
 
-        icon16_renderer = rendering.IconRenderer()
-        icon16_renderer.icon_size = 16
-        set_translations(
-            icon16_renderer,
-            "title",
-            "icon16_renderer"
+    def create_icon32_renderer(self):
+        return self._create(
+            rendering.IconRenderer,
+            qname = "woost.icon32_renderer",
+            title = TranslatedValues(),
+            icon_size = 32
         )
-        icon16_renderer.insert()
 
-        icon32_renderer = rendering.IconRenderer()
-        icon32_renderer.icon_size = 32
-        set_translations(
-            icon32_renderer,
-            "title",
-            "icon32_renderer"
+    def create_default_image_factory(self):
+        return self._create(
+            rendering.ImageFactory,
+            qname = "woost.default_image_factory",
+            title = TranslatedValues(),
+            identifier = "default"
         )
-        icon32_renderer.insert()
 
-        config.renderers = [
-            content_renderer,
-            icon16_renderer,
-            icon32_renderer
-        ]
-
-        # Image factories
-        #----------------------------------------------------------------------
-        default_factory = rendering.ImageFactory(identifier = "default")
-        set_translations(default_factory, "title", "default_image_factory")
-        default_factory.insert()
-
-        icon16_factory = rendering.ImageFactory(
+    def create_icon16_image_factory(self):
+        return self._create(
+            rendering.ImageFactory,
+            qname = "woost.icon16_image_factory",
+            title = TranslatedValues(),
             identifier = "icon16",
-            renderer = icon16_renderer
+            renderer = self.icon16_renderer,
+            applicable_to_blocks = False
         )
-        set_translations(icon16_factory, "title", "icon16_image_factory")
-        icon16_factory.insert()
 
-        icon32_factory = rendering.ImageFactory(
+    def create_icon32_image_factory(self):
+        return self._create(
+            rendering.ImageFactory,
+            qname = "woost.icon32_image_factory",
+            title = TranslatedValues(),
             identifier = "icon32",
-            renderer = icon32_renderer
+            renderer = self.icon32_renderer,
+            applicable_to_blocks = False
         )
-        set_translations(icon32_factory, "title", "icon32_image_factory")
-        icon32_factory.insert()
 
-        backoffice_thumbnail_factory = rendering.ImageFactory(
+    def create_backoffice_thumbnail_image_factory(self):
+        return self._create(
+            rendering.ImageFactory,
+            qname = "woost.backoffice_thumbnail_image_factory",
+            title = TranslatedValues(),
             identifier = "backoffice_thumbnail",
             effects = [
                 rendering.Thumbnail(width = "100", height = "100"),
@@ -633,30 +890,47 @@ def init_site(
                     background = "eee"
                 )
             ],
-            fallback = icon32_factory
+            fallback = self.icon32_image_factory,
+            applicable_to_blocks = False
         )
-        set_translations(
-            backoffice_thumbnail_factory,
-            "title",
-            "backoffice_thumbnail_image_factory"
-        )
-        backoffice_thumbnail_factory.insert()
 
-        backoffice_small_thumbnail_factory = rendering.ImageFactory(
+    def create_backoffice_small_thumbnail_image_factory(self):
+        return self._create(
+            rendering.ImageFactory,
+            qname = "woost.backoffice_small_thumbnail_image_factory",
+            title = TranslatedValues(),
             identifier = "backoffice_small_thumbnail",
             effects = [
-                rendering.Thumbnail(width = "32", height = "32")
+                rendering.Thumbnail(width = "32", height = "32")                
             ],
-            fallback = icon16_factory
+            fallback = self.icon16_image_factory,
+            applicable_to_blocks = False
         )
-        set_translations(
-            backoffice_small_thumbnail_factory,
-            "title",
-            "backoffice_small_thumbnail_image_factory"
-        )
-        backoffice_small_thumbnail_factory.insert()
 
-        image_gallery_close_up_factory = rendering.ImageFactory(
+    def create_edit_blocks_thumbnail_image_factory(self):
+        return self._create(
+            rendering.ImageFactory,
+            qname = "woost.edit_blocks_thumbnail_image_factory",
+            title = TranslatedValues(),
+            identifier = "edit_blocks_thumbnail",
+            effects = [
+                rendering.Thumbnail(width = "75", height = "75"),
+                rendering.Frame(
+                    edge_width = 1,
+                    edge_color = "ccc",
+                    vertical_padding = "4",
+                    horizontal_padding = "4",
+                    background = "eee"
+                )
+            ],
+            applicable_to_blocks = False
+        )
+
+    def create_close_up_image_factory(self):
+        return self._create(
+            rendering.ImageFactory,
+            qname = "woost.close_up_image_factory",
+            title = TranslatedValues(),
             identifier = "image_gallery_close_up",
             effects = [
                 rendering.Fill(
@@ -666,14 +940,12 @@ def init_site(
                 )
             ]
         )
-        set_translations(
-            image_gallery_close_up_factory,
-            "title",
-            "image_gallery_close_up_image_factory"
-        )
-        image_gallery_close_up_factory.insert()
 
-        image_gallery_thumbnail_factory = rendering.ImageFactory(
+    def create_default_thumbnail_image_factory(self):
+        return self._create(
+            rendering.ImageFactory,
+            qname = "woost.default_thumbnail_image_factory",
+            title = TranslatedValues(),
             identifier = "image_gallery_thumbnail",
             effects = [
                 rendering.Fill(
@@ -683,86 +955,13 @@ def init_site(
                 )
             ]
         )
-        set_translations(
-            image_gallery_thumbnail_factory,
-            "title",
-            "image_gallery_thumbnail_image_factory"
-        )
-        image_gallery_thumbnail_factory.insert()
 
-        config.image_factories = [
-            default_factory,
-            icon16_factory,
-            icon32_factory,
-            backoffice_thumbnail_factory,
-            backoffice_small_thumbnail_factory,
-            image_gallery_close_up_factory,
-            image_gallery_thumbnail_factory
-        ]
-
-    # Enable the selected extensions
-    if extensions:
-        load_extensions()
-        for extension in Extension.select():
-            ext_name = extension.__class__.__name__[:-len("Extension")].lower()
-            if ext_name in extensions:
-                extension.enabled = True
-
-    mark_all_migrations_as_executed()
-    datastore.commit()
-
-def random_string(length, source = letters + digits + "!?.-$#&@*"):
-    return "".join(choice(source) for i in range(length))
-
-def main():
- 
-    parser = OptionParser()
-    parser.add_option("-u", "--user", help = "Administrator email")
-    parser.add_option("-p", "--password", help = "Administrator password")
-    parser.add_option("-l", "--languages",
-        help = "Comma separated list of languages")
-    parser.add_option("-t", "--template-engine",
-        default = "cocktail",
-        help = "The buffet templating engine to use by default")
-    parser.add_option("-e", "--extensions",
-        default = "",
-        help = "The list of extensions to enable")
-    parser.add_option("-b", "--base-id",
-        type = int,
-        help = "Seed the incremental ID sequence at a non-zero value")
-
-    options, args = parser.parse_args()
-
-    admin_email = options.user
-    admin_password = options.password
-    
-    if admin_email is None:
-        admin_email = raw_input("Administrator email: ") or "admin@localhost"
-
-    if admin_password is None:
-        admin_password = raw_input("Administrator password: ") \
-            or random_string(8)
-
-    languages = options.languages \
-        and options.languages.replace(",", " ") \
-        or raw_input("Languages: ") or "en"
-
-    init_site(
-        admin_email,
-        admin_password,
-        languages.split(),
-        template_engine = options.template_engine,
-        extensions = options.extensions.split(","),
-        base_id = options.base_id
-    )
-    
-    print u"Your site has been successfully created. You can start it by " \
-          u"executing the 'run.py' script. An administrator account for the " \
-          u"content manager interface has been generated, with the " \
-          u"following credentials:\n\n" \
-          u"\tEmail:     %s\n" \
-          u"\tPassword:  %s\n\n" % (admin_email, admin_password)
-
-if __name__ == "__main__":
-    main()
+    def enable_extensions(self):
+        # Enable the selected extensions
+        if self.extensions:
+            load_extensions()
+            for extension in Extension.select():
+                ext_name = extension.__class__.__name__[:-len("Extension")].lower()
+                if ext_name in self.extensions:
+                    extension.enabled = True
 

@@ -11,16 +11,17 @@ from decimal import Decimal
 from cocktail.modeling import classgetter
 from cocktail.translations import translations, require_language
 from cocktail import schema
-from woost.models.item import Item
-from woost.models.publishable import Publishable
-from woost.models.website import Website
-from woost.models.websitesession import get_current_website
-from woost.models.publicationschemes import PublicationScheme, PathResolution
-from woost.models.caching import CachingPolicy
-from woost.models.rendering.renderer import Renderer
-from woost.models.rendering.imagefactory import ImageFactory
-from woost.models.videoplayersettings import VideoPlayerSettings
-from woost.models.trigger import Trigger
+from .item import Item
+from .slot import Slot
+from .publishable import Publishable
+from .website import Website
+from .websitesession import get_current_website
+from .publicationschemes import PublicationScheme, PathResolution
+from .caching import CachingPolicy
+from .rendering.renderer import Renderer
+from .rendering.imagefactory import ImageFactory
+from .videoplayersettings import VideoPlayerSettings
+from .trigger import Trigger
 
 try:
     from fractions import Fraction
@@ -79,6 +80,8 @@ class Configuration(Item):
     @classgetter
     def instance(cls):
         return cls.get_instance(qname = "woost.configuration")
+
+    common_blocks = Slot()
 
     # publication
     #--------------------------------------------------------------------------

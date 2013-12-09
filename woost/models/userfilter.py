@@ -25,17 +25,17 @@ from cocktail.controllers.userfilter import (
     user_filters_registry,
     DescendsFromFilter
 )
-from woost.models.item import Item
-from woost.models.changesets import (
+from .item import Item
+from .changesets import (
     ChangeSet,
     ChangeSetHasActionExpression,
     ChangeSetHasTargetExpression,
     ChangeSetHasTargetTypeExpression
 )
-from woost.models.publishable import Publishable, IsPublishedExpression
-from woost.models.document import Document
-from woost.models.usersession import get_current_user
-from woost.models.expressions import OwnershipExpression
+from .publishable import Publishable, IsPublishedExpression
+from .document import Document
+from .usersession import get_current_user
+from .expressions import OwnershipExpression
 
 
 class OwnItemsFilter(UserFilter):
