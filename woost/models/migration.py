@@ -401,6 +401,7 @@ def assign_global_identifiers(e):
 
     Item.global_id.rebuild_index()
     Item.synchronizable.rebuild_index()
+    rebuild_manifest(True)
 
 #------------------------------------------------------------------------------
 step = MigrationStep("Expose models that where hidden in the Configuration model")
