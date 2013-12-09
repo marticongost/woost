@@ -346,15 +346,9 @@ class ContentController(BaseBackOfficeController):
         
         user = get_current_user()
         views = OrderedSet()
-        
-        # Role views
+
         for role in user.iter_roles():
             views.extend(role.user_views)
-
-        # User views
-        views.extend(UserView.select(filters = [
-            UserView.owner.equal(user)
-        ]))
 
         return views
 

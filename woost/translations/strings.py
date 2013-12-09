@@ -826,13 +826,6 @@ translations.define("woost.views.BackOfficeShowDetailView open resource",
 )
 
 translations.define(
-    "woost.models.userfilter.OwnItemsFilter-instance",
-    ca = u"Elements propis",
-    es = u"Elementos propios",
-    en = u"Owned items"
-)
-
-translations.define(
     "woost.models.userfilter.IsPublishedFilter-instance",
     ca = u"Elements publicats",
     es = u"Elementos publicados",
@@ -1734,12 +1727,6 @@ translations.define("Item.author",
     ca = u"Autor",
     es = u"Autor",
     en = u"Author"
-)
-
-translations.define("Item.owner",
-    ca = u"Propietari",
-    es = u"Propietario",
-    en = u"Owner"
 )
 
 translations.define("Item.changes",
@@ -3227,12 +3214,6 @@ translations.define("User.authored_items",
     ca = u"Contingut creat per l'usuari",
     es = u"Contingut creado por el usuario",
     en = u"Content created by the user"
-)
-
-translations.define("User.owned_items",
-    ca = u"Contingut propietat de l'usuari",
-    es = u"Contingut propiedad del usuario",
-    en = u"Content owned by the user"
 )
 
 translations.define("User.roles",
@@ -5058,13 +5039,6 @@ translations.define(
     ca = u"accessible",
     es = u"accesible",
     en = u"accessible"
-)
-
-translations.define(
-    "woost.models.expressions.OwnershipExpression-instance",
-    ca = u"propietat de l'usuari actiu",
-    es = u"propiedad del usuario activo",
-    en = u"owned by the active user"
 )
 
 # PasswordChange

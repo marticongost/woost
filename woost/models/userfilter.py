@@ -35,22 +35,6 @@ from .changesets import (
 from .publishable import Publishable, IsPublishedExpression
 from .document import Document
 from .usersession import get_current_user
-from .expressions import OwnershipExpression
-
-
-class OwnItemsFilter(UserFilter):
-
-    id = "owned-items"
-
-    @cached_getter
-    def schema(self):
-        return schema.Schema()
-
-    @cached_getter
-    def expression(self):
-        return OwnershipExpression()
-
-user_filters_registry.add(Item, OwnItemsFilter)
 
 
 class IsPublishedFilter(UserFilter):

@@ -64,12 +64,6 @@ from woost.models import (
 def everything():
     return {"type": "woost.models.item.Item"}
 
-def owned_items():
-    return {
-        "type": "woost.models.item.Item",
-        "filter": "owned-items"
-    }
-
 
 class TranslatedValues(object):
     
@@ -112,7 +106,6 @@ class SiteInitializer(object):
     ]
 
     read_only_members = [
-        "woost.models.item.Item.owner",
         "woost.models.publishable.Publishable.mime_type",        
         "woost.models.configuration.Configuration.login_page",
         "woost.models.configuration.Configuration.generic_error_page",
@@ -270,16 +263,14 @@ class SiteInitializer(object):
         return instance
 
     def create_content(self):
-        
+
         # Bootstrap: create the site's configuration and administrator user
         self.configuration = self.create_configuration()
         self.administrator = self.create_administrator()
 
         self.configuration.author = self.administrator
-        self.configuration.owner = self.administrator
         self.administrator.author = self.administrator
-        self.administrator.owner = self.administrator
-        
+
         # From this point, the authorship f or further objects is set
         # automatically through the active changeset
         self.changeset.author = self.administrator
@@ -338,7 +329,6 @@ class SiteInitializer(object):
         self.configuration.login_page = self.login_page
 
         # User views
-        self.own_items_user_view = self.create_own_items_user_view()
         self.page_tree_user_view = self.create_page_tree_user_view()
         self.create_file_gallery_user_view()
 
@@ -442,9 +432,7 @@ class SiteInitializer(object):
                     matching_items = {
                         "type": "woost.models.publishable.Publishable",
                     }
-                ),
-                self._create(ModifyPermission, matching_items = owned_items()),
-                self._create(DeletePermission, matching_items = owned_items())
+                )
             ]
         )
 
@@ -777,21 +765,6 @@ class SiteInitializer(object):
             blocks = [
                 self._create(LoginBlock)
             ]
-        )
-
-    def create_own_items_user_view(self):
-        return self._create(
-            UserView,
-            qname = "woost.own_items_user_view",
-            title = TranslatedValues(),
-            roles = [self.everybody_role],
-            parameters = {
-                "type": "woost.models.item.Item",
-                "content_view": "flat",
-                "filter": "owned-items",
-                "order": "-last_update_time",
-                "members": None
-            }
         )
 
     def create_page_tree_user_view(self):

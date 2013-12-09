@@ -62,7 +62,6 @@ class Item(PersistentObject):
         "global_id",
         "synchronizable",
         "author",
-        "owner",
         "creation_time",
         "last_update_time"
     ]
@@ -290,9 +289,6 @@ class Item(PersistentObject):
                 if item.author is None:
                     item.author = changeset.author
 
-                if item.owner is None:
-                    item.owner = changeset.author
-                
                 change.insert(event.inserted_objects)
 
     # Extend item modification to make it versioning aware
@@ -399,7 +395,7 @@ class Item(PersistentObject):
             and member not in self._preserved_members
         )
 
-    # Ownership and authorship
+    # Authorship
     #--------------------------------------------------------------------------
     author = schema.Reference(
         indexed = True,
@@ -409,13 +405,6 @@ class Item(PersistentObject):
         member_group = "administration"
     )
     
-    owner = schema.Reference(
-        indexed = True,
-        type = "woost.models.User",
-        listed_by_default = False,
-        member_group = "administration"
-    )
-
     # URLs
     #--------------------------------------------------------------------------     
     def get_image_uri(self,
@@ -511,7 +500,6 @@ class Item(PersistentObject):
     copy_excluded_members = set([
         changes,
         author,
-        owner,
         creation_time,
         last_update_time,
         global_id

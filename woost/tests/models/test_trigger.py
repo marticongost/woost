@@ -77,10 +77,12 @@ class TriggerMatchTestCase(BaseTestCase):
         self.assert_match(
             ContentTrigger(matching_items = {
                 "type": "woost.models.publishable.Publishable",
-                "filter": "owned-items"
+                "filter": "member-qname",
+                "filter_operator0": "eq",
+                "filter_value0": "foobar"
             }),
             (Publishable(), user, {}, False),
-            (Publishable(owner = user), user, {}, True)
+            (Publishable(qname = "foobar"), user, {}, True)
         )
 
     def test_modified_member(self):
@@ -89,10 +91,10 @@ class TriggerMatchTestCase(BaseTestCase):
 
         self.assert_match(
             ModifyTrigger(matching_members = [
-                "woost.models.item.Item.owner",
+                "woost.models.item.Item.qname",
                 "woost.models.document.Document.title"
             ]),               
-            (Item(), None, {"member": Item.owner}, True),
+            (Item(), None, {"member": Item.qname}, True),
             (Item(), None, {"member": Item.global_id}, False),
             (Document(), None, {"member": Document.title}, True),
             (Document(), None, {"member": Document.hidden}, False)
@@ -269,7 +271,7 @@ class BeforeTestCase(TriggerInvocationTestCase):
         item.qname = "bar"
         assert len(response_log) == 1
 
-        item.owner = User()
+        item.global_id = "foobar"
         assert len(response_log) == 2
 
         response = response_log[0]
@@ -282,7 +284,7 @@ class BeforeTestCase(TriggerInvocationTestCase):
         response = response_log[1]
         assert response["trigger"] is trigger
         assert response["items"] == [item]
-        assert response["context"]["member"] is Item.owner
+        assert response["context"]["member"] is Item.global_id
         assert response["user"] is self.user
         assert not response["batch"]
 
@@ -553,7 +555,7 @@ class AfterTestCase(TriggerInvocationTestCase):
 
         # Modify it
         item.qname = "bar"
-        item.owner = User()
+        item.global_id = "foobar"
 
         # Delete it
         item.delete()
@@ -569,7 +571,7 @@ class AfterTestCase(TriggerInvocationTestCase):
         assert response["user"] is self.user
         assert not response["batch"]
 
-        for member in (Item.qname, Item.owner):
+        for member in (Item.qname, Item.global_id):
             response = response_log.pop(0)
             assert response["trigger"] is modify_trigger
             assert response["items"] == [item]
@@ -645,7 +647,7 @@ class BatchTestCase(TriggerInvocationTestCase):
         item1.qname = "foo"
         item1.insert()
         item2 = Item()
-        item2.owner = User()
+        item2.global_id = "x1"
         item2.insert()
         datastore.commit()
         assert not response_log
@@ -653,14 +655,14 @@ class BatchTestCase(TriggerInvocationTestCase):
         # Modify the inserted items, but abort the transaction. Again, this
         # shouldn't trigger any response.
         item1.qname = "bar"
-        item2.owner = User()
+        item2.global_id = "x2"
         datastore.abort()
         assert not response_log
 
         # Modify the inserted items and commit the transaction. This should
         # trigger the response just once.
         item1.qname = "spam"
-        item2.owner = User()
+        item2.global_id = "x3"
         datastore.commit()
 
         assert len(response_log) == 1
@@ -669,7 +671,7 @@ class BatchTestCase(TriggerInvocationTestCase):
         assert response["items"] == set([item1, item2])
         assert response["context"]["modified_members"] == {
             item1: set([(Item.qname, None)]),
-            item2: set([(Item.owner, None)])
+            item2: set([(Item.global_id, None)])
         }
         assert response["user"] is self.user
         assert response["batch"]
@@ -722,7 +724,7 @@ class BatchTestCase(TriggerInvocationTestCase):
             ModifyTrigger,
             execution_point = "after",
             batch_execution = True,
-            matching_members = ["woost.models.item.Item.owner"]
+            matching_members = ["woost.models.item.Item.global_id"]
         )
 
         # Modifying a member that is not covered by the trigger should alter
@@ -731,11 +733,11 @@ class BatchTestCase(TriggerInvocationTestCase):
         item = Item()
         item.insert()
         item.qname = "foo"
-        item.owner = User()
+        item.global_id = "x1"
         datastore.commit()
 
         response = response_log[0]
         assert response["context"]["modified_members"] == {
-            item: set([(Item.qname, None), (Item.owner, None)])
+            item: set([(Item.qname, None), (Item.global_id, None)])
         }
 

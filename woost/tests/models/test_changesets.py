@@ -51,7 +51,6 @@ class ChangeSetTests(BaseTestCase):
             {"en": item.get("translation_enabled", "en")}
 
         assert item.author is author
-        assert item.owner is author
         assert item.creation_time
         assert item.last_update_time
         assert item.creation_time == item.last_update_time
@@ -70,7 +69,6 @@ class ChangeSetTests(BaseTestCase):
         item.insert()
 
         with changeset_context(author) as changeset:
-            item.owner = None
             item.delete()
         
         assert list(ChangeSet.select()) == [changeset]
@@ -134,7 +132,6 @@ class ChangeSetTests(BaseTestCase):
             {"en": item.get("translation_enabled", "en")}
 
         assert item.author is author
-        assert item.owner is author
         assert item.creation_time
         assert item.last_update_time
         assert not item.creation_time == item.last_update_time

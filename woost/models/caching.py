@@ -10,6 +10,7 @@ from cocktail.translations import get_language
 from cocktail.controllers import Location
 from cocktail.persistence import datastore, PersistentMapping
 from .item import Item
+from .usersession import get_current_user
 
 
 class CachingPolicy(Item):
@@ -81,7 +82,14 @@ class CachingPolicy(Item):
 
     def get_content_cache_key(self, publishable, **context):
 
-        cache_key = (str(Location.get_current(relative = False)),)
+        user = get_current_user()
+
+        cache_key = (
+            str(Location.get_current(relative = False)),
+            None 
+            if user is None or user.anonymous
+            else tuple(role.id for role in user.roles)
+        )
         key_qualifier = None
         expression = self.cache_key_expression
 
