@@ -3524,6 +3524,11 @@ div.success_label {
     top: 0.1em;
 }
 
+.Dialog.diff_dialog .dialog_content {
+    overflow: auto;
+    max-height: 50em;
+}
+
 .Dialog.diff_dialog .differences {
     margin: 0;
 }
