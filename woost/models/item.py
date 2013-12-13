@@ -29,25 +29,6 @@ from .websitesession import get_current_website
 from .changesets import ChangeSet, Change
 from .usersession import get_current_user
 
-# Extension property that makes it easier to customize the edit view for a
-# collection in the backoffice
-schema.Collection.edit_view = None
-
-# Extension property that sets the default type that should be shown by default
-# when opening an item selector for the indicated property
-schema.RelationMember.selector_default_type = None
-
-# Extension property that allows to indicate that specific members don't modify
-# the 'last_update_time' member of items when changed
-schema.Member.affects_last_update_time = True
-
-# Extension property that allows hiding relations in the ReferenceList view
-schema.RelationMember.visible_in_reference_list = True
-
-# Extension property to select which members should be synchronizable across
-# separate site installations
-schema.Member.synchronizable = True
-
 
 class Item(PersistentObject):
     """Base class for all CMS items. Provides basic functionality such as
