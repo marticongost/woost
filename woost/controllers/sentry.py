@@ -26,6 +26,11 @@ class Sentry(object):
 
     def __init__(self, client):
         self.client = client
+        self.tags = {
+            "framework": "woost",
+            "woost": "m0.8", 
+            "cocktail": "absinthe"
+        }
 
     def get_data_from_request(self):
         """Returns request data extracted from cherrypy.request."""
@@ -43,18 +48,23 @@ class Sentry(object):
                 }
             }
         }
-    
-    def capture_exception(self, exc_info=None, **kwargs):
+
+    def update_context(self, kwargs):
         data = kwargs.get('data')
         if data is None:
             kwargs['data'] = self.get_data_from_request()
 
+        tags = self.tags.copy()
+        if "tags" in kwargs:
+            tags.update(kwargs["tags"])
+
+        kwargs["tags"] = tags
+    
+    def capture_exception(self, exc_info=None, **kwargs):
+        self.update_context(kwargs)
         return self.client.captureException(exc_info=exc_info, **kwargs)
 
     def capture_message(self, message, **kwargs):
-        data = kwargs.get('data')
-        if data is None:
-            kwargs['data'] = self.get_data_from_request()
-
+        self.update_context(**kwargs)
         return self.client.captureMessage(message, **kwargs)
 
