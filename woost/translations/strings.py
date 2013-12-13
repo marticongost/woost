@@ -2786,12 +2786,6 @@ translations.define("Publishable.presentation.behavior",
     en = u"Behavior"
 )
 
-translations.define("Publishable.presentation.resources",
-    ca = u"Recursos",
-    es = u"Recursos",
-    en = u"Resources"
-)
-
 translations.define("Publishable.presentation.format",
     ca = u"Format",
     es = u"Formato",
@@ -2868,12 +2862,6 @@ translations.define("woost.models.Publishable.resource_type other",
     ca = u"Altre",
     es = u"Otro",
     en = u"Other"
-)
-
-translations.define("Publishable.inherit_resources",
-    ca = u"Hereda els recursos",
-    es = u"Hereda los recursos",
-    en = u"Inherit resources"
 )
 
 translations.define("Publishable.mime_type",
@@ -3070,24 +3058,6 @@ translations.define("Document.template",
     ca = u"Plantilla",
     es = u"Plantilla",
     en = u"Template"
-)
-
-translations.define("Document.attachments",
-    ca = u"Adjunts",
-    es = u"Adjuntos",
-    en = u"Attachments"
-)
-
-translations.define("Document.page_resources",
-    ca = u"Recursos de pàgina",
-    es = u"Recursos de pàgina",
-    en = u"Page resources"
-)
-
-translations.define("Document.branch_resources",
-    ca = u"Recursos de branca",
-    es = u"Recursos de rama",
-    en = u"Branch resources"
 )
 
 translations.define("Document.children",

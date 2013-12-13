@@ -672,3 +672,96 @@ def remove_owner_field(e):
             if filter_count == 1:
                 permission.delete()
 
+#------------------------------------------------------------------------------
+
+step = MigrationStep("Remove the Document.attachments member")
+
+@when(step.executing)
+def remove_attachments_member(e):
+
+    from woost.models import Document, File, MemberPermission
+
+    for document in Document.select():
+        try:
+            del document._attachments
+        except AttributeError:
+            pass
+
+    for file in File.select():
+        try:
+            del file._Document_attachments
+        except AttributeError:
+            pass
+
+    full_member_name = "woost.models.document.Document.attachment"
+
+    for permission in MemberPermission.select():
+        if permission.matching_members:
+            member_count = len(permission.matching_members)
+            try:
+                permission.matching_members.remove(full_member_name)
+            except (KeyError, ValueError):
+                pass
+            else:
+                if member_count == 1:
+                    permission.delete()
+
+#------------------------------------------------------------------------------
+
+step = MigrationStep("Remove per document resources")
+
+@when(step.executing)
+def remove_document_resources(e):
+
+    from woost.models import Publishable, Document, MemberPermission
+
+    for document in Document.select():
+
+        try:
+            del document._branch_resources
+        except AttributeError:
+            pass
+        
+        try:
+            del document._page_resources
+        except AttributeError:
+            pass
+
+    for publishable in Publishable.select():
+
+        try:
+            del publishable._Document_branch_resources
+        except AttributeError:
+            pass
+
+        try:
+            del publishable._Document_page_resources
+        except AttributeError:
+            pass
+
+        try:
+            del publishable._inherit_resources
+        except AttributeError:
+            pass
+
+    members = (
+        "woost.models.document.Document.branch_resources",
+        "woost.models.document.Document.page_resources",
+        "woost.models.publishable.Publishable.inherit_resources"
+    )
+
+    for permission in MemberPermission.select():
+        if permission.matching_members:
+            removed = False
+
+            for full_member_name in members:
+                try:
+                    permission.matching_members.remove(full_member_name)
+                except (KeyError, ValueError):
+                    pass
+                else:
+                    removed = True
+
+            if removed and not permission.matching_members:
+                permission.delete()
+

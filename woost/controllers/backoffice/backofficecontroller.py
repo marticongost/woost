@@ -7,22 +7,11 @@ u"""
 @since:			October 2008
 """
 import cherrypy
-from simplejson import dumps
 from cocktail.pkgutils import resolve
 from cocktail.events import event_handler
 from cocktail.controllers import view_state
-from cocktail.translations import (
-    translations,
-    get_language,
-    set_language
-)
-from cocktail.html import Element
-from cocktail import schema
-from woost.models import (
-    get_current_user,
-    ReadPermission,
-    Configuration
-)
+from cocktail.translations import set_language
+from woost.models import get_current_user, Configuration
 from woost.controllers.backoffice.basebackofficecontroller \
     import BaseBackOfficeController
 from woost.controllers.backoffice.contentcontroller \
@@ -96,43 +85,6 @@ class BackOfficeController(BaseBackOfficeController):
             
             if edit_stack is not None:
                 edit_stacks_manager.preserve_edit_stack(edit_stack)
-
-    @cherrypy.expose
-    def editor_attachments(self, **kwargs):
-        
-        cms = self.context["cms"]
-        node = self.stack_node
-        attachments = schema.get(node.form_data, "attachments", default = None)
-
-        resource_type = self.params.read(schema.String("resource_type"))
-            
-        language = self.params.read(schema.String("language"))
-        
-        output = []
-        cherrypy.response.headers["Content-Type"] = "text/javascript"
-
-        if attachments:
-            for attachment in attachments:
-                item = None 
-                if resource_type == "linkable" and attachment.resource_type not in ["image","video"]:
-                    item = attachment
-                elif attachment.resource_type == resource_type:
-                    item = attachment
-                
-                if item:
-                    output.append(
-                        [
-                            item.get("title", language),
-                            item.get_uri()
-                        ]
-                    )
-
-        if resource_type == "image":
-            return "var tinyMCEImageList = %s" % (dumps(output))
-        elif resource_type == "video":
-            return "var tinyMCEMediaList = %s" % (dumps(output))
-        else:
-            return "var tinyMCELinkList = %s" % (dumps(output))
 
     @cherrypy.expose
     def keep_alive(self, *args, **kwargs):
