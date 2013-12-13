@@ -9,53 +9,19 @@ Provides base and default content types for the woost CMS.
 """
 from cocktail import schema
 from cocktail.events import when
-
-# Add an extension property to control the default member visibility on item listings
-schema.Member.listed_by_default = True
-schema.Collection.listed_by_default = False
-schema.CodeBlock.listed_by_default = False
-
-# Add an extension property to show/hide the 'Element' column on listings
-schema.Schema.show_element_in_listings = True
-
-# Add an extension property to show/hide the 'Type' column on listings
-schema.Schema.show_type_in_listings = True
-
-# Add an extension property to indicate if members should be visible by users
-schema.Member.visible = True
-
-# Add an extension property to indicate if schemas should be instantiable by
-# users
-schema.Schema.instantiable = True
-
-# Add an extension property to indicate if members should be editable by users
-schema.Member.editable = True
-
-# Add an extesnion property to indiciate if members should be shown in detailed view
-schema.Member.visible_in_detail_view = True
-
-# Add an extension property to group types
-schema.Schema.type_group = None
-
-# Add an extension property to indicate if relations should be excluded if no
-# relatable elements exist
-schema.Collection.exclude_when_empty = False
-
-# Add an extension property to determine if members should participate in item
-# revisions
-schema.Member.versioned = True
-
-@when(schema.RelationMember.attached_as_orphan)
-def _hide_self_contained_relations(event):
-    if event.anonymous:
-        event.source.visible = False
-        event.source.synchronizable = False
+from . import memberextensions
 
 # Register the 'text/javascript' MIME type
 import mimetypes
 if not mimetypes.guess_extension("text/javascript"):
     mimetypes.add_type("text/javascript", ".js")
 del mimetypes
+
+@when(schema.RelationMember.attached_as_orphan)
+def _hide_self_contained_relations(event):
+    if event.anonymous:
+        event.source.visible = False
+        event.source.synchronizable = False
 
 from woost.models.typegroups import (
     TypeGroup,
