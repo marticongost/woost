@@ -13,9 +13,11 @@ class BaseTestCase(TempStorageMixin, TestCase):
 
     def setUp(self):
 
+        from woost import app
         from woost.models import Configuration, Action, User, Role
         from woost.models.trigger import set_triggers_enabled
 
+        app.installation_id = "TEST"
         set_triggers_enabled(False)
         
         TempStorageMixin.setUp(self)
