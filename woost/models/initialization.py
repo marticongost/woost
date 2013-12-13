@@ -126,7 +126,6 @@ class SiteInitializer(object):
         "woost.models.item.Item.synchronizable",
         "woost.models.publishable.Publishable.encoding",
         "woost.models.publishable.Publishable.login_page",
-        "woost.models.publishable.Publishable.inherit_resources",
         "woost.models.publishable.Publishable.requires_https",
         "woost.models.configuration.Configuration.maintenance_addresses",
         "woost.models.configuration.Configuration.languages",
@@ -139,7 +138,7 @@ class SiteInitializer(object):
         "woost.models.configuration.Configuration.smtp_password",
         "woost.models.configuration.Configuration.renderers",
         "woost.models.configuration.Configuration.image_factories",
-        "woost.models.configuration.Configuration.videoplayersettings",
+        "woost.models.configuration.Configuration.video_player_settings",
         "woost.models.website.Website.hosts",
         "woost.models.website.Website.https_policy",
         "woost.models.website.Website.https_persistence",
@@ -664,7 +663,6 @@ class SiteInitializer(object):
             hidden = True,
             path = "cms",
             per_language_publication = False,
-            inherit_resources = False,
             controller = self.backoffice_controller
         )
 

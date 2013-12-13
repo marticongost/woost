@@ -50,14 +50,12 @@ class Publishable(Item):
         "navigation",
         "presentation",
         "presentation.behavior",
-        "presentation.resources",
         "presentation.format",
         "publication"
     ]
 
     members_order = [
         "controller",
-        "inherit_resources",
         "mime_type",
         "resource_type",
         "encoding",
@@ -121,12 +119,6 @@ class Publishable(Item):
         bidirectional = True,
         listed_by_default = False,
         member_group = "presentation.behavior"
-    )
-
-    inherit_resources = schema.Boolean(
-        listed_by_default = False,
-        default = True,
-        member_group = "presentation.resources"
     )
 
     def resolve_controller(self):
@@ -441,31 +433,6 @@ class Publishable(Item):
         """
         from woost.models import Website
         return bool(self.get(Website.home.related_end))
-
-    @getter
-    def resources(self):
-        """Iterates over all the resources that apply to the item.
-        @type: L{Publishable}
-        """
-        return self.inherited_resources
-
-    @getter
-    def inherited_resources(self):
-        """Iterates over all the inherited resources that apply to the item.
-        @type: L{Publishable}
-        """
-        ancestry = []
-        publishable = self
-        
-        while publishable.parent is not None and publishable.inherit_resources:
-            ancestry.append(publishable.parent)
-            publishable = publishable.parent
-
-        ancestry.reverse()
-
-        for publishable in ancestry:
-            for resource in publishable.branch_resources:
-                yield resource
 
     def is_current(self):
         now = datetime.now()
