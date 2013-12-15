@@ -73,7 +73,7 @@ class Sentry(object):
         )
     
     def capture_exception(self, exception, **kwargs):
-        if self.should_capture_exception():
+        if self.should_capture_exception(exception):
             self.update_context(kwargs)
             return self.client.captureException(**kwargs)
 
