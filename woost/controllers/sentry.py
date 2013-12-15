@@ -6,20 +6,20 @@ u"""
 import cherrypy
 from raven import Client
 from cocktail.events import when
-from woost import app
-from woost.controllers import CMSController
+from woost.models import AuthorizationError
+from woost.controllers.authentication import AuthenticationFailedError
+from woost.controllers import CMS
 
 
 def register(dsn):
-    app.sentry = Sentry(Client(dsn))
+    sentry = Sentry(Client(dsn))
 
-    @when(CMSController.exception_raised)
+    @when(CMS.exception_raised)
     def handle_exception(event):
         error = event.exception
-        is_http_error = isinstance(error, cherrypy.HTTPError)
+        sentry.capture_exception(exception = error)
 
-        if (is_http_error and error.status == 500) or not is_http_error:
-            app.sentry.capture_exception()
+    return sentry
 
 
 class Sentry(object):
@@ -59,10 +59,24 @@ class Sentry(object):
             tags.update(kwargs["tags"])
 
         kwargs["tags"] = tags
+
+    def should_capture_exception(self, exception):
+        is_http_error = isinstance(exception, cherrypy.HTTPError)
+
+        return (
+            (is_http_error and exception.status == 500)
+            or (
+                not is_http_error
+                and not isinstance(
+                    exception, (AuthorizationError, AuthenticationFailedError)
+                )
+            )
+        )
     
-    def capture_exception(self, exc_info=None, **kwargs):
-        self.update_context(kwargs)
-        return self.client.captureException(exc_info=exc_info, **kwargs)
+    def capture_exception(self, exception, **kwargs):
+        if self.should_capture_exception:
+            self.update_context(kwargs)
+            return self.client.captureException(**kwargs)
 
     def capture_message(self, message, **kwargs):
         self.update_context(**kwargs)
