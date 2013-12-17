@@ -1148,6 +1148,10 @@ body.scripted .BackOfficeLayout .Table .selection {
     margin-left: 1em;
 }
 
+.BackOfficeLayout .toolbar .additional_actions_selector .action_button {
+    margin-left: 0 !important;
+}
+
 .BackOfficeLayout .toolbar a {
     text-decoration: none;
 }
