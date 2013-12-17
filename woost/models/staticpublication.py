@@ -17,6 +17,7 @@ if hasattr(os, "symlink"):
 
     debug = True
     filesystem_encoding = "utf-8"
+    enabled = True
 
     members_affecting_static_publication = set([
         File.title,
@@ -30,6 +31,9 @@ if hasattr(os, "symlink"):
     @when(File.changed)
     @when(File.deleting)
     def _schedule_links_update(e):
+
+        if not enabled:
+            return
      
         file = e.source
         member = getattr(e, "member", None)
