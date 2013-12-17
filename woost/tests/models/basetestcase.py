@@ -14,13 +14,16 @@ class BaseTestCase(TempStorageMixin, TestCase):
     def setUp(self):
 
         from woost import app
-        from woost.models import Configuration, Action, User, Role
+        from woost.models import \
+            Configuration, Action, User, Role, staticpublication
         from woost.models.trigger import get_triggers_enabled, set_triggers_enabled
 
         self.installation_id = app.installation_id
         self.triggers_enabled = get_triggers_enabled()
+        self.static_publication_enabled = staticpublication.enabled
         app.installation_id = "TEST"
         set_triggers_enabled(False)
+        staticpublication.enabled = False
         
         TempStorageMixin.setUp(self)
 
@@ -62,8 +65,10 @@ class BaseTestCase(TempStorageMixin, TestCase):
 
     def tearDown(self):
         from woost import app
+        from woost.models import staticpublication
         from woost.models.trigger import set_triggers_enabled
 
         app.installation_id = self.installation_id
         set_triggers_enabled(self.triggers_enabled)
+        staticpublication.enabled = self.static_publication_enabled
         
