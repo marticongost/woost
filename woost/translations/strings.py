@@ -5205,7 +5205,7 @@ translations.define("ImageFileRenderer.max_size-explanation",
 # IconRenderer
 #------------------------------------------------------------------------------
 translations.define("IconRenderer",
-    ca = u"Llibreria de icones",
+    ca = u"Llibreria d'icones",
     es = u"Librería de iconos",
     en = u"Icon library"
 )
@@ -5214,6 +5214,24 @@ translations.define("IconRenderer-plural",
     ca = u"Llibreries de icones",
     es = u"Librerías de iconos",
     en = u"Icon libraries"
+)
+
+translations.define("IconRenderer.icon_resolver_expression",
+    ca = u"Proveïdor d'icones",
+    es = u"Proveedor de iconos",
+    en = u"Icon resolver"
+)
+
+translations.define("IconRenderer.icon_resolver_expression-explanation",
+    ca = u"Referència a una instància de "
+         u"<em>woost.iconresolver.IconResolver.</em> Deixar buit per "
+         u"utilitzar <em>woost.app.icon_resolver</em>.",
+    es = u"Referencia a una instancia de "
+         u"<em>woost.iconresolver.IconResolver.</em> Dejar vacío para "
+         u"utilizar <em>woost.app.icon_resolver</em>.",
+    en = u"Reference to an instance of "
+         u"<em>woost.iconresolver.IconResolver.</em> Leave blank to use "
+         u"<em>woost.app.icon_resolver</em>."
 )
 
 translations.define("IconRenderer.icon_size",
