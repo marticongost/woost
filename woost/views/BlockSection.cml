@@ -33,11 +33,6 @@ from woost.models import (
             parameters = self.block_edit_parameters            
         )
     ?>
-    
-    <?py
-    self.add_resource("/resources/styles/EditPanelOverlay.css")
-    self.add_resource("/resources/scripts/EditPanelOverlay.js")
-    ?>
 
     <py:ready>
         <?py
