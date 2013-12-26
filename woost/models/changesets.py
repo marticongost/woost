@@ -78,7 +78,10 @@ class ChangeSet(PersistentObject):
     members_order = "id", "author", "date", "changes"
     indexed = True
 
-    changes = schema.Mapping(searchable = False)
+    changes = schema.Mapping(
+        searchable = False,
+        get_item_key = lambda change: change.target and change.target.id
+    )
     
     author = schema.Reference(
         required = True,
