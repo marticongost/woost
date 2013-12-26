@@ -274,7 +274,7 @@ class MemberPermission(Permission):
 
         return True
 
-    def iter_members(self):
+    def iter_matching_members(self):
         for compound_name in self.matching_members:
             yield _resolve_matching_member_reference(compound_name)
 
