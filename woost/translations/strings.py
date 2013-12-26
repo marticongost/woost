@@ -211,6 +211,12 @@ translations.define("cocktail.html.shortcuts action save",
     en = u"s"
 )
 
+translations.define("Action invalidate_cache",
+    ca = u"Netejar el cache",
+    es = u"Limpiar el cache",
+    en = u"Clear cache"
+)
+
 translations.define("Action select",
     ca = u"Seleccionar",
     es = u"Seleccionar",
@@ -1514,6 +1520,27 @@ translations.define(
     en = u"The edit session you were working on has been lost."
 )
 
+translations.define("woost.cache_invalidated_notice",
+    ca = lambda subset:
+        u"S'ha netejat el cache de %s"
+        % (
+            u"tota la web" if subset is None
+            else plural2(len(subset), "%d elements" % len(subset), "1 element")
+        ),
+    es = lambda subset:
+        u"Se ha limpiado el cache de %s"
+        % (
+            u"toda la web" if subset is None
+            else plural2(len(subset), "%d elementos" % len(subset), "1 elemento")
+        ),
+    en = lambda subset:
+        u"Cleared the cache for %s"
+        % (
+            u"the whole web" if subset is None
+            else plural2(len(subset), "%d elements" % len(subset), "1 element")
+        )
+)
+
 translations.define("woost.views.BaseView alternate language link",
     ca = lambda lang: u"Versió en " + translations(lang, "ca"),
     es = lambda lang: u"Versión en " + translations(lang, "es"),
@@ -2730,22 +2757,83 @@ translations.define("CachingPolicy.cache_key_expression-explanation",
          u"the active request. Leave blank to use the default expression."
 )
 
-translations.define("CachingPolicy.last_update_expression",
-    ca = u"Última modificació",
-    es = u"Última modificación",
-    en = u"Last update"
+translations.define("CachingPolicy.cache_tags_expression",
+    ca = u"Etiquetes de cache",
+    es = u"Etiquetas de cache",
+    en = u"Cache tags"
 )
 
-translations.define("CachingPolicy.last_update_expression-explanation",
-    ca = u"Una expressió que determina la data de la última modificació del "
-         u"document i el seu contingut relacionat. El contingut en cache "
-         u"anterior a aquesta data serà descartat automàticament.",
-    es = u"Una expresión que determina la fecha de la última modificación del "
-         u"documento y su contenido relacionado. El contenido en cache "
-         u"anterior a esta fecha será descartado automáticamente.",
-    en = u"An expression indicating the date of the latest revision of the "
-         u"document's content. Cached content older than this will be "
-         u"automatically discarded."
+translations.define("CachingPolicy.cache_tags_expression-explanation",
+    ca = u"""
+        <p>
+            Una expressió Python que determina les etiquetes que s'apliquen a
+            les entrades de cache generades per aquesta política.
+        </p>
+        <details>
+            <summary>Detalls</summary>
+            <p>
+                Les etiquetes permeten classificar les entrades de cache, cosa
+                que fa possible invalidar-les de forma selectiva. Mitjançant
+                aquest mecanisme és possible invalidar totes les entrades de
+                cache per un mateix element o idioma. Amb aquesta expressió
+                és possible associar les entrades de cache a altres conceptes.
+            </p>
+            <p>
+                Les etiquetes a aplicar s'han d'especificar a través de la
+                variable <em>tags</em>. De sortida, aquesta variable consisteix
+                en un conjunt (<em>set</em>) que conté les etiquetes retornades
+                pel mètode <em>get_cache_tags</em> de l'element pel que s'està
+                generant l'entrada al cache.
+            </p>
+        </details>
+        """,
+    es = u"""
+        <p>
+            Una expresión Python que determina las etiquetas que se aplican a
+            las entrades de cache generades por esta política.
+        </p>
+        <details>
+            <summary>Detalles</summary>
+            <p>
+                Las etiquetas permiten clasificar las entradas de cache, cosa
+                que hace posible invalidarlas de forma selectiva. Mediante este
+                mecanismo es posible invalidar todas las entradas del cache
+                para un mismo elemento o idioma. Con esta expresión se pueden
+                asociar las entradas a otros conceptos.
+            </p>
+            <p>
+                Las etiquetas a aplicar se especifican a través de la variable
+                <em>tags</em>. De salida, la variable consiste en un conjunto
+                (<em>set</em>) que contiene las etiquetas devueltas por el
+                método <em>get_cache_tags</em> del elemento para el que se está
+                generando la entrada de cache.
+            </p>
+        </details>
+        """,
+    en = u"""
+        <p>
+            A Python expression that determines the tags that will be applied
+            to the cache entries produced by this caching policy.
+        </p>
+        <details>
+            <summary>Details</summary>
+            <p>
+                Tags allow the classification of cache entries, which makes it
+                possible to selectively invalidate parts of the cache. By
+                default, entries are given tags indicating the item that they
+                represent, and the language of their content. With this
+                expression it is possible to bind cache entries to other
+                concepts.
+            </p>
+            <p>
+                The tags to apply are specified through the <em>tags</em>
+                variable. Out of the box, this variable will consist of a
+                <em>set</em> containing all the tags produced by the 
+                <em>get_cache_tags</em> method of the item for which the cache
+                entry is being generated.
+            </p>
+        </details>
+        """
 )
 
 # Publishable
@@ -4169,12 +4257,6 @@ translations.define("Template.identifier",
     ca = u"Identificador",
     es = u"Identificador",
     en = u"Identifier"
-)
-
-translations.define("Template.engine",
-    ca = u"Motor de pintat",
-    es = u"Motor de pintado",
-    en = u"Rendering engine"
 )
 
 translations.define("Template.documents",

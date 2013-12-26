@@ -736,3 +736,18 @@ def remove_document_resources(e):
             if removed and not permission.matching_members:
                 permission.delete()
 
+#------------------------------------------------------------------------------
+ 
+step = MigrationStep("Remove Template.engine")
+
+@when(step.executing)
+def remove_template_engine(e):
+
+    from woost.models import Template
+    
+    for template in Template.select():
+        try:
+            del template._engine
+        except AttributeError:
+            pass
+

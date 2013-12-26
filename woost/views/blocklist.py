@@ -10,6 +10,9 @@ from woost.models.blockutils import create_block_views
 class BlockList(Element):
 
     __wrap = None
+    blocks = None
+    container = None
+    slot = None
 
     def __init__(self, *args, **kwargs):
         Element.__init__(self, *args, **kwargs)
@@ -20,6 +23,16 @@ class BlockList(Element):
 
     def _ready(self):
         Element._ready(self)
+
+        if self.blocks is None:
+            if self.container is not None and self.slot is not None:
+                if isinstance(self.slot, basestring):
+                    slot = getattr(self.container.__class__, self.slot)
+                else:
+                    slot = self.slot
+
+                self.depends_on(self.container, slot.cache_part)
+                self.blocks = self.container.get(slot)
 
         if self.tag in ("ul", "ol"):
             self.__wrap = self.wrap_with_list_item

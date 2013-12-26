@@ -7,10 +7,13 @@ u"""
 @since:			June 2008
 """
 from datetime import datetime
-from cocktail.modeling import getter, ListWrapper, SetWrapper
-from cocktail.events import event_handler, Event
+from contextlib import contextmanager
+from cocktail.styled import styled
+from cocktail.modeling import getter, ListWrapper, SetWrapper, DictWrapper
+from cocktail.events import event_handler, when, Event, EventInfo
 from cocktail import schema
 from cocktail.translations import translations
+from cocktail.caching import whole_cache
 from cocktail.persistence import (
     datastore, 
     PersistentObject, 
@@ -28,6 +31,18 @@ from woost import app
 from .websitesession import get_current_website
 from .changesets import ChangeSet, Change
 from .usersession import get_current_user
+
+# Extension property to determine which members should trigger a cache
+# invalidation request
+schema.Member.invalidates_cache = True
+
+# Extension property to fine tune the reach of cache invalidation requests
+# based on a change for a specific member
+schema.Member.cache_part = None
+
+# Extension property to denote members which affect the cache expiration time
+# for its containing models
+schema.Member.affects_cache_expiration = False
 
 
 class Item(PersistentObject):
@@ -110,6 +125,7 @@ class Item(PersistentObject):
         indexed = True,
         normalized_index = False,
         synchronizable = False,
+        invalidates_cache = False,
         listed_by_default = False,
         member_group = "administration"
     )
@@ -120,6 +136,7 @@ class Item(PersistentObject):
         synchronizable = False,
         default = True,
         shadows_attribute = True,
+        invalidates_cache = False,
         listed_by_default = False,
         member_group = "administration"
     )
@@ -173,6 +190,7 @@ class Item(PersistentObject):
         synchronizable = False,
         items = "woost.models.Change",
         bidirectional = True,
+        invalidates_cache = False,
         visible = False
     )
 
@@ -181,6 +199,7 @@ class Item(PersistentObject):
         indexed = True,
         editable = False,
         synchronizable = False,
+        invalidates_cache = False,
         member_group = "administration"
     )
 
@@ -189,6 +208,7 @@ class Item(PersistentObject):
         versioned = False,
         editable = False,
         synchronizable = False,
+        invalidates_cache = False,
         member_group = "administration"
     )
 
@@ -383,6 +403,7 @@ class Item(PersistentObject):
         editable = False,
         type = "woost.models.User",
         listed_by_default = False,
+        invalidates_cache = False,
         member_group = "administration"
     )
     
@@ -486,6 +507,159 @@ class Item(PersistentObject):
         global_id
     ])
 
+    # Caching and invalidation
+    #--------------------------------------------------------------------------
+    cacheable = False
+
+    @property
+    def main_cache_tag(self):
+        """Obtains a cache tag that can be used to match all cache entries
+        related to this item.
+        """
+        return "%s-%d" % (self.__class__.__name__, self.id)
+
+    def get_cache_tags(self, language = None, cache_part = None):
+        """Obtains the list of cache tags that apply to this item.
+        
+        :param language: Indicates the language for which the cache
+            invalidation is being requested. If not set, the returned tags will
+            match all entries related to this item, regardless of the language
+            they are in.
+
+        :param cache_part: If given, the returned tags will only match cache
+            entries qualified with the specified identifier. These qualifiers
+            are tipically attached by specifying the homonimous parameter of
+            the `~woost.views.depends_on` extension method.
+        """
+        main_tag = self.main_cache_tag
+
+        if cache_part:
+            main_tag += "-" + cache_part
+
+        tags = set([main_tag])
+
+        if language:
+            tags.add("lang-" + language)
+
+        return tags
+
+    def get_cache_expiration(self):
+        expiration = None
+
+        for member in self.__class__.iter_members():
+            if member.affects_cache_expiration:
+                expiration = nearest_expiration(expiration, self.get(member))
+
+        return expiration
+
+    @classmethod
+    def get_cache_expiration_for_type(cls):
+        expiration = None
+
+        for member in cls.iter_members():
+            if member.affects_cache_expiration:
+                instance = first(
+                    cls.select(
+                        order = member,
+                        cached = False
+                    )
+                )
+                if instance is not None:
+                    expiration = nearest_expiration(
+                        expiration,
+                        instance.get(member)
+                    )
+
+        return expiration
+
+    def clear_cache(self, language = None, cache_part = None):
+        """Remove all the cached pages that are based on this item.
+        
+        :param language: Indicates the language for which the cache
+            invalidation is being requested. If not set, the invalidation will
+            affect all entries related to this item, regardless of the language
+            they are in.
+
+        :param cache_part: If given, only cache entries qualified with the
+            specified identifier will be cleared. These qualifiers are
+            tipically attached by specifying the homonimous parameter of the
+            `~woost.views.depends_on` extension method.
+        """
+        app.cache.clear(
+            scope = self.get_cache_invalidation_scope(
+                language = language,
+                cache_part = cache_part
+            )
+        )
+
+    def clear_cache_after_commit(self, language = None, cache_part = None):
+        """Remove all the cached pages that are based on this item, as soon as
+        the current database transaction is committed.
+
+        This method can be called multiple times during a single transaction.
+        All the resulting invalidation targets will be removed from the cache
+        once the transaction is committed.
+
+        :param language: Indicates the language for which the cache
+            invalidation is being requested. If not set, the invalidation will
+            affect all entries related to this item, regardless of the language
+            they are in.
+
+        :param cache_part: If given, only cache entries qualified with the
+            specified identifier will be cleared. These qualifiers are
+            tipically attached by specifying the homonimous parameter of the
+            `~woost.views.depends_on` extension method.
+        """
+        app.cache.clear_after_commit(
+            scope = self.get_cache_invalidation_scope(
+                language = language,
+                cache_part = cache_part
+            )
+        )
+
+    def get_cache_invalidation_scope(self, language = None, cache_part = None):
+        """Determine the scope of a cache invalidation request for this item.
+
+        :param language: Indicates the language for which the cache
+            invalidation is being requested. If not set, the scope will include
+            all entries related to this item, regardless of the language they
+            are in.
+
+        :param cache_part: If given, only cache entries qualified with the
+            specified identifier will be included. These qualifiers are
+            tipically attached by specifying the homonimous parameter of the
+            `~woost.views.depends_on` extension method.
+
+        :return: A cache invalidation scope. See the
+            `cocktail.caching.cache.Cache.clear` method for details on its
+            format.
+        """
+        selectors = set()
+
+        # Tags per type
+        for cls in \
+        self.__class__.ascend_inheritance(include_self = True):
+            selector = cls.full_name
+            if cache_part:
+                selector += "-" + cache_part            
+            if language:
+                selector = (selector, "lang-" + language)
+            selectors.add(selector)
+            if cls is Item:
+                break
+
+        # Tags per instance
+        selector = self.main_cache_tag
+
+        if cache_part:
+            selector += "-" + cache_part
+
+        if language:
+            selector = (selector, "lang-" + language)
+
+        selectors.add(selector)
+        return selectors
+
 
 Item.id.versioned = False
 Item.id.editable = False
@@ -502,4 +676,33 @@ def resolve_item_ref(cls, ref):
         return cls.get_instance(global_id = ref)
     else:
         return cls.get_instance(ref)
+
+# Trigger cache invalidation when items are altered
+@when(Item.inserted)
+def _clear_cache_after_insertion(e):
+    if app.cache.enabled:
+        e.source.clear_cache_after_commit()
+
+@when(Item.deleting)
+def _clear_cache_on_deletion(e):
+    if app.cache.enabled:
+        e.source.clear_cache_after_commit()
+
+@when(Item.changed)
+def _clear_cache_after_change(e):
+    if (
+        app.cache.enabled
+        and e.member.invalidates_cache
+        and e.source.is_inserted
+    ):
+        e.source.clear_cache_after_commit(
+            language = e.language,
+            cache_part = e.member.cache_part
+        )
+
+@when(Item.adding_translation)
+@when(Item.removing_translation)
+def _clear_cache_after_change(e):
+    if app.cache.enabled and e.source.is_inserted:
+        e.source.clear_cache_after_commit()
 

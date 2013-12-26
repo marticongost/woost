@@ -43,6 +43,7 @@ class PublishableListing(Block):
     publishables = schema.Collection(
         items = schema.Reference(type = Publishable),
         related_end = schema.Collection(),
+        invalidates_cache = True,
         member_group = "listing"
     )
 
@@ -101,6 +102,9 @@ class PublishableListing(Block):
         view.publishables = self.select_publishables()
         view.links_open_in_new_window = self.links_open_in_new_window
 
+        if not self.publishables:
+            view.depends_on(Publishable)
+
         if self.paginated:
             view.pagination = self.pagination
         else:
@@ -139,5 +143,4 @@ class PublishableListing(Block):
             "page_size.max": self.max_page_size,
             "items": self.select_publishables()
         })
-
 

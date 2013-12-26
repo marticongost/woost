@@ -651,6 +651,25 @@ class ExportAction(UserAction):
         )
 
 
+class InvalidateCacheAction(UserAction):
+    min = None
+    max = None
+    excluded = UserAction.excluded | frozenset(["collection"])
+
+    def invoke(self, controller, selection):
+
+        if selection is None:
+            app.cache.clear()
+        else:
+            for item in selection:
+                item.clear_cache()
+
+        notify_user(
+            translations("woost.cache_invalidated_notice", subset = selection),
+            "success"
+        )
+
+
 class SelectAction(UserAction):
     included = frozenset([("list_buttons", "selector")])
     excluded = frozenset()
@@ -864,7 +883,6 @@ class AddBlockAction(UserAction):
             node.block_anchor = controller.block
             node.initialize_new_item(
                 block,
-                get_current_user(),
                 controller.visible_languages
             )
             edit_stack.push(node)
@@ -1081,6 +1099,7 @@ DeleteAction("delete").register()
 OrderAction("order").register()
 ExportAction("export_xls", "msexcel").register()
 PrintAction("print").register()
+InvalidateCacheAction("invalidate_cache").register()
 CloseAction("close").register()
 CancelAction("cancel").register()
 SaveAction("save").register()
