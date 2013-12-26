@@ -596,35 +596,6 @@ def move_blocks_to_core(e):
             new_key = key.replace(".extensions.blocks.", ".models.")
             datastore.root[new_key] = datastore.root.pop(key)
 
-    # Remove instances of types that no longer exist. Note that we access them
-    # from the woost.models package, since we just relocated them above. It's a
-    # bit convoluted, but it helps remove_broken_type() to ignore the fact that
-    # the Block class has been relocated.
-    remove_broken_type(
-        "woost.models.youtubeblock.YouTubeBlock",
-        existing_bases = (Item, Block)
-    )
-
-    remove_broken_type(
-        "woost.models.vimeoblock.VimeoBlock",
-        existing_bases = (Item, Block)
-    )
-
-    remove_broken_type(
-        "woost.models.filelisting.FileListing",
-        existing_bases = (Item, Renderer)
-    )
-
-    remove_broken_type(
-        "woost.models.youtubeblockrenderer.YouTubeBlockRenderer",
-        existing_bases = (Item, Renderer)
-    )
-
-    remove_broken_type(
-        "woost.models.vimeoblockrenderer.VimeoBlockRenderer",
-        existing_bases = (Item, Renderer)
-    )
-
 #------------------------------------------------------------------------------
  
 step = MigrationStep("Remove the Item.owner field")
