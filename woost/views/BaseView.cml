@@ -31,7 +31,11 @@ from woost.models import Configuration, Publishable, get_current_website
         return " ".join(keywords) if keywords else None
 
     def get_content_title(self):
-        return getattr(self.publishable, "inner_title", None) or translations(self.publishable)
+        return getattr(self.publishable, "inner_title", None) or translations(self.publishable)       
+    ?>
+
+    <?py
+    self.add_resource("/resources/styles/blocks.css")
     ?>
 
     <py:ready>
