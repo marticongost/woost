@@ -4407,13 +4407,11 @@ def _translate_woost_models_change_instance_ca(action, target):
         apostrophe = target_desc[0].lower() in u"haeiouàèéíòóú"
         target_desc = u"<em>" + target_desc + u"</em>"
     
-    action_id = action.identifier
-
-    if action_id == "edit":
+    if action == "edit":
         action_desc = u"Edició"
-    elif action_id == "create":
+    elif action == "create":
         action_desc = u"Creació"
-    elif action_id == "delete":
+    elif action == "delete":
         action_desc = u"Eliminació"
     else:
         return ""
@@ -4431,14 +4429,12 @@ def _translate_woost_models_change_instance_es(action, target):
             return ""
 
         target_desc = u"<em>" + target_desc + u"</em>"
-    
-    action_id = action.identifier
 
-    if action_id == "edit":
+    if action == "edit":
         action_desc = u"Edición"
-    elif action_id == "create":
+    elif action == "create":
         action_desc = u"Creación"
-    elif action_id == "delete":
+    elif action == "delete":
         action_desc = u"Eliminación"
     else:
         return ""
@@ -4457,13 +4453,11 @@ def _translate_woost_models_change_instance_en(action, target):
         
         target_desc = u"<em>" + target_desc + u"</em>"
     
-    action_id = action.identifier
-
-    if action_id == "edit":
+    if action == "edit":
         action_desc = u"modified"
-    elif action_id == "create":
+    elif action == "create":
         action_desc = u"created"
-    elif action_id == "delete":
+    elif action == "delete":
         action_desc = u"deleted"
     else:
         return ""
