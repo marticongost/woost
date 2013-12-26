@@ -3,6 +3,7 @@ u"""
 
 .. moduleauthor:: Jordi Fernández <jordi.fernandez@whads.com>
 """
+from cocktail.events import when
 from cocktail import schema
 from cocktail.controllers import request_property
 from woost.models import Publishable, VideoPlayerSettings
@@ -20,13 +21,14 @@ class VideoBlock(Block):
 
     element_type = ElementType(
         member_group = "content"
-    )   
+    )
 
     video = schema.Reference(
         type = Publishable,
         required = True,
         relation_constraints = {"resource_type": "video"},
         related_end = schema.Collection(),
+        invalidates_cache = True,
         member_group = "content"
     )
 
@@ -34,6 +36,7 @@ class VideoBlock(Block):
         type = VideoPlayerSettings,
         required = True,
         related_end = schema.Collection(),
+        invalidates_cache = True,
         member_group = "content"
     )
 
@@ -42,4 +45,5 @@ class VideoBlock(Block):
         view.tag = self.element_type
         view.video = self.video
         view.player_settings = self.player_settings
+        view.depends_on(self.video)
 

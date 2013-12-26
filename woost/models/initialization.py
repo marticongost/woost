@@ -77,7 +77,6 @@ class SiteInitializer(object):
     admin_email = "admin@localhost"
     admin_password = ""
     languages = ["en"]
-    template_engine = "cocktail"
     extensions = []
     hosts = ["localhost"]
     base_id = None
@@ -165,9 +164,6 @@ class SiteInitializer(object):
         parser.add_option("-p", "--password", help = "Administrator password")
         parser.add_option("-l", "--languages",
             help = "Comma separated list of languages")
-        parser.add_option("-t", "--template-engine",
-            default = "cocktail",
-            help = "The buffet templating engine to use by default")
         parser.add_option("-e", "--extensions",
             default = "",
             help = "The list of extensions to enable")
@@ -197,7 +193,6 @@ class SiteInitializer(object):
             or raw_input("Languages: ") or "en"
 
         self.languages = languages.split()
-        self.template_engine = options.template_engine,
         self.extensions = options.extensions.split(",")
         self.base_id = options.base_id
         app.installation_id = options.installation_id
@@ -617,7 +612,6 @@ class SiteInitializer(object):
             Template,
             qname = "woost.standard_template",
             title = TranslatedValues(),
-            engine = "cocktail",
             identifier = "woost.views.GenericSiteLayout",
         )
 
@@ -647,10 +641,9 @@ class SiteInitializer(object):
             caching_policies = [
                 self._create(
                     CachingPolicy,
-                    server_side_cache = True,
-                    last_update_expression =
-                        "from woost.models import Style\n"
-                        "last_update = [publishable, latest(Style)]\n"
+                    cache_tags_expression =
+                        "tags.add('woost.models.style.Style')\n",
+                    server_side_cache = True
                 )
             ]
         )

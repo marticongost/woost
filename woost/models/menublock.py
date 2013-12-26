@@ -4,7 +4,6 @@ u"""
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
 from cocktail import schema
-from cocktail.modeling import getter
 from .block import Block
 from .document import Document
 

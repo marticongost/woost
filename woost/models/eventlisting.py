@@ -83,6 +83,7 @@ class EventListing(Block):
         view.tag = self.element_type
         view.name_prefix = self.name_prefix
         view.name_suffix = self.name_suffix
+        view.depends_on(Event)
 
         if self.paginated:
             view.pagination = self.pagination

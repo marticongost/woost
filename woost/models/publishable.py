@@ -41,6 +41,7 @@ class Publishable(Item):
     """Base class for all site elements suitable for publication."""
     
     instantiable = False
+    cacheable = True
     edit_view = "woost.views.PublishableFieldsView"
     backoffice_heading_view = "woost.views.BackOfficePublishableHeading"
  
@@ -566,6 +567,18 @@ class Publishable(Item):
                         trans += " " + ext.upper().lstrip(".")
 
         return trans
+
+    def get_cache_expiration(self):
+        now = datetime.now()
+        
+        start = self.start_date
+        if start is not None and start > now:
+            return start
+
+        end = self.end_date
+        if end is not None and end > now:
+            return end
+
 
 Publishable.login_page.type = Publishable
 Publishable.related_end = schema.Collection()

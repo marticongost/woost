@@ -24,6 +24,7 @@ from .controller import Controller
 class File(Publishable):
  
     instantiable = True
+    cacheable = False
     type_group = "resource"
 
     edit_node_class = \

@@ -122,7 +122,7 @@ from .userfilter import (
     TypeFilter
 )
 
-from .caching import CachingPolicy, expire_cache
+from .caching import CachingPolicy
 
 from . import rendering
 from .videoplayersettings import VideoPlayerSettings

@@ -95,14 +95,6 @@ class Installer(object):
                     member_group = "project"
                 ),
                 schema.String(
-                    name = "template_engine",
-                    required = True,
-                    default = "cocktail",
-                    enumeration = buffet.available_engines.keys(),
-                    translatable_enumeration = False,
-                    member_group = "project"
-                ),
-                schema.String(
                     name = "webserver_host",
                     required = True,
                     format = HOST_FORMAT,
@@ -306,7 +298,6 @@ class Installer(object):
         site_initializer.admin_email = params["admin_email"]
         site_initializer.admin_password = params["admin_password"]
         site_initializer.languages = params["languages"].split()
-        site_initializer.template_engine = params["template_engine"]
         site_initializer.base_id = params["base_id"]
         site_initializer.initialize()
 

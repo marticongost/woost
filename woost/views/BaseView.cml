@@ -142,7 +142,10 @@ from woost.models import Configuration, Publishable, get_current_website
     <py:woost.views.EditPanel py:id="toolbar"/>
    
     <div py:id="content">
-        <py:woost.views.BlockList py:id="block_content" py:blocks="@{self.publishable.blocks}"/>
+        <py:woost.views.BlockList
+            py:id="block_content"
+            py:container="@{self.publishable}"
+            py:slot="blocks"/>
     </div>
 
 </py:block>

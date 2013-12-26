@@ -44,6 +44,8 @@ class ChangeSetTests(BaseTestCase):
         for key in "id", "changes", "creation_time", "last_update_time":
             assert not key in change.item_state
 
+        print change.item_state
+
         assert change.item_state["title"] == {"en": u"Foo!"}
         assert change.item_state["resource_type"] == u"text/foo"
         assert change.item_state["hidden"] == True

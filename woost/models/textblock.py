@@ -63,7 +63,8 @@ class TextBlock(Block):
         items = schema.Reference(type = File),
         related_end = schema.Collection(),
         relation_constraints = [File.resource_type.equal("image")],
-        member_group = "images"
+        member_group = "images",
+        invalidates_cache = True
     )
 
     image_alignment = schema.String(
@@ -127,7 +128,8 @@ class TextBlock(Block):
     link_destination = schema.Reference(
         type = Publishable,
         related_end = schema.Collection(),
-        member_group = "link"
+        member_group = "link",
+        invalidates_cache = True
     )
 
     link_parameters = schema.String(

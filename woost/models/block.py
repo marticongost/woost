@@ -6,7 +6,7 @@ u"""Defines the `Block` model.
 from datetime import datetime
 from cocktail.pkgutils import import_object
 from cocktail.iteration import last
-from cocktail.translations import translations
+from cocktail.translations import translations, get_language
 from cocktail import schema
 from cocktail.html import templates, Element
 from .item import Item
@@ -171,6 +171,8 @@ class Block(Item):
 
         if self.heading:
             self.add_heading(view)
+
+        view.depends_on(self)
 
     def get_block_proxy(self, view):
         return view

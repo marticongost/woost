@@ -10,23 +10,44 @@ from urllib import urlencode
 import cherrypy
 from cocktail.modeling import getter
 from cocktail.events import event_handler
-from cocktail.controllers import Controller
+from cocktail.controllers import Controller, request_property
+from cocktail.html import renderers, templates
 from woost.models import Configuration
 
 
 class BaseCMSController(Controller):
     """Base class for all CMS controllers."""
 
+    @request_property
+    def view(self):
+        if self.view_class:
+            view = templates.new(self.view_class)
+            cms = self.context["cms"]
+            output = self.output
+            cms.producing_output(controller = self, output = output)
+
+            for key, value in output.iteritems():
+                setattr(view, key, value)
+
+            view.submitted = self.submitted
+            view.successful = self.successful
+            return view
+
     def _render_template(self):
 
-        # Pass the request context to the template
-        cms = self.context["cms"]
-        cms.producing_output(
-            controller = self,
-            output = self.output
-        )
+        renderer = None
+        format = self.rendering_format
 
-        return Controller._render_template(self)
+        if format:
+            if format == "html":
+                format = "default"
+            try:
+                renderer = getattr(renderers, "%s_renderer" % format)
+            except AttributeError:
+                raise ValueError("Can't render '%s' using format '%s'"
+                    % (template, format))
+
+        return self.view.render_page(renderer = renderer)
  
     def application_uri(self, *args, **kwargs):
         """Builds an absolute URI from a set of path components and parameters.

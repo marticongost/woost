@@ -6,6 +6,7 @@ u"""
 @organization:	Whads/Accent SL
 @since:			October 2008
 """
+from cocktail.events import event_handler
 from cocktail import schema
 from cocktail.modeling import getter
 from .item import Item
