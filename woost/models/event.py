@@ -7,8 +7,9 @@ u"""
 @since:			September 2008
 """
 from cocktail import schema
-from woost.models.document import Document
-from woost.models.file import File
+from .document import Document
+from .slot import Slot
+from .file import File
 
 
 class Event(Document):
@@ -19,7 +20,7 @@ class Event(Document):
         "event_location",
         "image",
         "summary",
-        "body"
+        "blocks"
     ]
 
     event_start = schema.DateTime(
@@ -53,10 +54,5 @@ class Event(Document):
         member_group = "content"
     )
 
-    body = schema.String(
-        edit_control = "woost.views.RichTextEditor",
-        translated = True,
-        listed_by_default = False,
-        member_group = "content"
-    )
+    blocks = Slot()
 

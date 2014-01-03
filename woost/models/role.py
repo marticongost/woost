@@ -7,8 +7,8 @@ u"""
 @since:			August 2008
 """
 from cocktail import schema
-from woost.models.item import Item
 from cocktail.html.datadisplay import display_factory, MULTIPLE_SELECTION
+from .item import Item
 
 
 class Role(Item):

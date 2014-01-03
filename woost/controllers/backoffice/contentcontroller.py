@@ -279,9 +279,6 @@ class ContentController(BaseBackOfficeController):
 
         hide_invisible_types(user_collection.type)
 
-        # Exclude edit drafts
-        user_collection.add_base_filter(Item.draft_source.equal(None))
-        
         node = self.stack_node
 
         if node and isinstance(node, RelationNode):
@@ -349,15 +346,9 @@ class ContentController(BaseBackOfficeController):
         
         user = get_current_user()
         views = OrderedSet()
-        
-        # Role views
+
         for role in user.iter_roles():
             views.extend(role.user_views)
-
-        # User views
-        views.extend(UserView.select(filters = [
-            UserView.owner.equal(user)
-        ]))
 
         return views
 

@@ -66,10 +66,6 @@ translations.define("Installer.languages-explanation",
     en = u"A list of ISO language codes, separated by whitespace."
 )
 
-translations.define("Installer.template_engine",
-    en = u"Default template engine"
-)
-
 translations.define("Installer.webserver",
     en = u"Web server"
 )

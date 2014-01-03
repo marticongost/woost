@@ -14,34 +14,15 @@ class BaseTestCase(TempStorageMixin, TestCase):
     def setUp(self):
 
         from woost import app
-        from woost.models import \
-            Configuration, Action, User, Role, staticpublication
+        from woost.models import Configuration, User, Role
         from woost.models.trigger import get_triggers_enabled, set_triggers_enabled
 
-        self.installation_id = app.installation_id
-        self.triggers_enabled = get_triggers_enabled()
-        self.static_publication_enabled = staticpublication.enabled
+        self.__prev_installation_id = app.installation_id
+        self.__prev_triggers_enabled = get_triggers_enabled()
         app.installation_id = "TEST"
         set_triggers_enabled(False)
-        staticpublication.enabled = False
-        
+
         TempStorageMixin.setUp(self)
-
-        # Actions
-        self.create_action = Action(identifier = "create")
-        self.create_action.insert()
-        
-        self.read_action = Action(identifier = "read")
-        self.read_action.insert()
-
-        self.modify_action = Action(identifier = "modify")
-        self.modify_action.insert()
-        
-        self.delete_action = Action(identifier = "delete")
-        self.delete_action.insert()
-
-        self.confirm_draft_action = Action(identifier = "confirm_draft")
-        self.confirm_draft_action.insert()
 
         # Configuration
         self.config = Configuration(qname = "woost.configuration")
@@ -68,7 +49,6 @@ class BaseTestCase(TempStorageMixin, TestCase):
         from woost.models import staticpublication
         from woost.models.trigger import set_triggers_enabled
 
-        app.installation_id = self.installation_id
-        set_triggers_enabled(self.triggers_enabled)
-        staticpublication.enabled = self.static_publication_enabled
-        
+        app.installation_id = self.__prev_installation_id
+        set_triggers_enabled(self.__prev_triggers_enabled)
+

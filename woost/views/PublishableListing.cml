@@ -40,6 +40,7 @@
                 py:element="self.create_entry(publishable, publishable_index)"
                 py:for="publishable in sequence">
                 <?py
+                element.depends_on(publishable)
                 publishable_index += 1
                 ?>
             </py:new>

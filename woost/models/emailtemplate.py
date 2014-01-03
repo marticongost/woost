@@ -16,7 +16,9 @@ from email.Header import Header
 from email.Utils import formatdate, parseaddr, formataddr
 from email import Encoders
 from cocktail import schema
-from woost.models import Item, Configuration, File
+from .item import Item
+from .configuration import Configuration
+from .file import File
 
 
 class EmailTemplate(Item):

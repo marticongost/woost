@@ -122,11 +122,7 @@ class ItemController(BaseBackOfficeController):
             redirect = True
             
             if not item.is_inserted:
-                node.initialize_new_item(
-                    item,
-                    get_current_user(),
-                    self.visible_languages
-                )
+                node.initialize_new_item(item, self.visible_languages)
         
         # If the stack is modified a redirection is triggered so that any
         # further request mentions the new stack position in its parameters.

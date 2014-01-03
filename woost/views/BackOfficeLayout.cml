@@ -70,10 +70,6 @@ from woost.controllers.backoffice.useractions import add_view_action_context
 
         self.page_title = self.get_page_title()
 
-        if self.backoffice:
-            for resource in self.backoffice.resources:
-                self.add_resource(self.cms.uri(resource), mime_type = resource.mime_type)
-                
         add_view_action_context(element, "nested" if self.edit_stack else "root")
         if self.cms:
             self.set_client_variable("cms_uri", self.cms.contextual_uri())
