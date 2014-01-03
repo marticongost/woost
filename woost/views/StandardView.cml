@@ -11,16 +11,10 @@ from woost.models import Configuration, get_current_website
 
     <?py-class
     show_user_controls = True
-    attachments_icon_factory = "icon16"
 
     def get_title(self):
         return get_current_website().site_name
         
-    def get_linked_attachments(self):
-        return (attachment
-                for attachment in getattr(self.publishable, "attachments", ())
-                if attachment.is_published())
-
     def get_logo(self):
         return self._website.logo
 
@@ -73,14 +67,14 @@ from woost.models import Configuration, get_current_website
             </a>
         </h1>
 
-        <div py:id="identity" py:visible="@{self.show_user_controls and self.user and not self.user.anonymous}">
-            <strong>@{self.identity.visible and translations(self.user) or ""}</strong>
-            <form py:id="logout_form" method="post" action="">
-                <div>
-                    <button py:id="logout_button" name="logout" type="submit">${translations("Logout")}</button>
-                </div>
-            </form>
-        </div>
+        <py:woost.views.IdentityBox py:id="identity">
+            <py:ready>
+                <?py
+                if not self.show_user_controls:
+                    element.visible = False
+                ?>
+            </py:ready>
+        </py:woost.views.IdentityBox>
 
         <py:woost.views.LanguageSelector py:id="language_selector"/>
     </div>
@@ -139,34 +133,9 @@ from woost.models import Configuration, get_current_website
         <?py
         element.append(self.content)
         ?>
-
-        <ul py:id="attachments" py:collapsible="${True}">
-            <py:binding>
-                <?py
-                self._attachments = list(self.get_linked_attachments())
-                if not self._attachments:
-                    element.visible = False
-                ?>
-            </py:binding>
-            <py:ready>
-                <py:new
-                    py:element="self.create_attachment_entry(attachment)"
-                    py:for="attachment in self._attachments"/>
-            </py:ready>
-        </ul>
     </div>
 
     <py:woost.views.EditLink py:def="edit_link" py:visible="@{element.visible and self.show_user_controls}"/>
-
-    <li py:def="attachment_entry" py:args="attachment">
-        <a href="${attachment.get_uri()}" title="${getattr(attachment, 'description', None)}">
-            <py:woost.views.Image
-                py:image="${attachment}"
-                py:image_factory="${self.attachments_icon_factory}"
-                alt="${translations('woost.views.StandardView attachment icon description')}"/>
-            <span>${translations(attachment)}</span>
-        </a>
-    </li>
 
     <div py:id="footer">
         <?py html5_tag(element, "footer") ?>

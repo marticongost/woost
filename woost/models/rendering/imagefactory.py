@@ -25,7 +25,8 @@ class ImageFactory(Item):
         "renderer",
         "default_format",
         "effects",
-        "fallback"
+        "fallback",
+        "applicable_to_blocks"
     ]
 
     title = schema.String(
@@ -72,6 +73,12 @@ class ImageFactory(Item):
         bidirectional = True,
         visible = False,
         synchronizable = False
+    )
+
+    applicable_to_blocks = schema.Boolean(
+        required = True,
+        default = True,
+        indexed = True
     )
 
     def render(self, item):

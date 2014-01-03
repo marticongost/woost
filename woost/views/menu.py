@@ -41,6 +41,8 @@ class Menu(TreeView):
         if self.root is None:
             website = get_current_website()
             self.root = website and website.home
+        
+        self.depends_on(self.root)
 
         if self.selection is None:
             self.selection = context["publishable"]
@@ -48,6 +50,7 @@ class Menu(TreeView):
         TreeView._ready(self)
     
     def filter_item(self, item):
+        self.depends_on(item)
         return not item.hidden and (
             item.is_accessible()
             if self.validate_permissions

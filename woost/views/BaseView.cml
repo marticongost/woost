@@ -13,7 +13,6 @@ from woost.models import Configuration, Publishable, get_current_website
     <?py-class
     publishable = None
     user = None
-    translation_members = ("body",)
     content_language = None
     fully_translated = True
     head_end_html = ""
@@ -32,7 +31,11 @@ from woost.models import Configuration, Publishable, get_current_website
         return " ".join(keywords) if keywords else None
 
     def get_content_title(self):
-        return getattr(self.publishable, "inner_title", None) or translations(self.publishable)
+        return getattr(self.publishable, "inner_title", None) or translations(self.publishable)       
+    ?>
+
+    <?py
+    self.add_resource("/resources/styles/blocks.css")
     ?>
 
     <py:ready>
@@ -116,14 +119,10 @@ from woost.models import Configuration, Publishable, get_current_website
                     )
                 )
 
-            # Resources
-            for resource in publishable.resources:
-                self.add_resource(self.cms.uri(resource), mime_type = resource.mime_type)
-
-            # User defined styles for user content
+            # Link to the stylesheet for user defined styles
             user_styles = Publishable.get_instance(qname = "woost.user_styles")
             if user_styles:
-                self.add_resource(self.cms.uri(user_styles), mime_type = user_styles.mime_type)
+                self.add_resource(user_styles.get_uri(), mime_type = user_styles.mime_type)
 
             # Base tag
             if self.base_url:
@@ -143,7 +142,10 @@ from woost.models import Configuration, Publishable, get_current_website
     <py:woost.views.EditPanel py:id="toolbar"/>
    
     <div py:id="content">
-        @{self.publishable.body}
+        <py:woost.views.BlockList
+            py:id="block_content"
+            py:container="@{self.publishable}"
+            py:slot="blocks"/>
     </div>
 
 </py:block>

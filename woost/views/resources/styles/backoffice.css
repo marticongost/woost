@@ -967,10 +967,6 @@ body.scripted .BackOfficeLayout .Table .selection {
     font-weight: bold;
 }
 
-.BackOfficeLayout .Table tr.draft td {
-    background-color: rgb(250,242,190) !important;
-}
-
 .BackOfficeLayout .Table tr.selected td {
     background-color: rgb(75,75,75) !important;
 }
@@ -980,7 +976,6 @@ body.scripted .BackOfficeLayout .Table .selection {
     color: white !important;
 }
 
-.BackOfficeLayout .draft,
 .BackOfficeLayout .changed,
 .BackOfficeItemView .tab.changed {
     background-color: rgb(250,242,190);
@@ -1046,15 +1041,6 @@ body.scripted .BackOfficeLayout .Table .selection {
 
 .BackOfficeLayout .changed {
     border: 1px solid #EBE3AF;
-}
-
-.BackOfficeLayout .FlatContentView .nested_draft td.element_column {
-    padding-left: 2em;
-}
-
-.BackOfficeLayout .FlatContentView .nested_draft td.element_column label {
-    background-image: url(../images/edit.png);
-    padding-left: 1.8em;
 }
 
 .BackOfficeLayout .Table td.element_column label {
@@ -1160,6 +1146,10 @@ body.scripted .BackOfficeLayout .Table .selection {
 .BackOfficeLayout .toolbar * + .action_button,
 .BackOfficeLayout .toolbar * + .additional_actions_selector {
     margin-left: 1em;
+}
+
+.BackOfficeLayout .toolbar .additional_actions_selector .action_button {
+    margin-left: 0 !important;
 }
 
 .BackOfficeLayout .toolbar a {
@@ -1919,8 +1909,6 @@ body.scripted .BackOfficeLayout .ThumbnailsContentView .collection_display input
 }
 
 .BackOfficeLayout .toolbar .save_action,
-.BackOfficeLayout .toolbar .save_draft_action,
-.BackOfficeLayout .toolbar .confirm_draft_action,
 .BackOfficeLayout .toolbar .close_action,
 .BackOfficeLayout .toolbar .cancel_action {
     float: right;
@@ -1953,25 +1941,6 @@ body.scripted .BackOfficeLayout .ThumbnailsContentView .collection_display input
 
 .BackOfficeItemView .edit_form {
     padding: 0;
-}
-
-.BackOfficeItemView .draft_box {
-    clear: both;
-    padding: 0.5em;
-    border: 1px solid rgb(235,227,175);
-    font-size: 85%;
-}
-
-.BackOfficeItemView .draft_box strong {
-    color: rgb(75,50,25);
-}
-
-.BackOfficeItemView .draft_box .draft_actions {
-    text-align: right;
-}
-
-.BackOfficeItemView .draft_box .draft_actions button {
-    margin-left: 0.3em;
 }
 
 .BackOfficeEditView .success {

@@ -5,6 +5,7 @@ u"""
 """
 import os
 from pkg_resources import resource_filename
+from cocktail.caching import Cache
 
 
 class Application(object):
@@ -86,4 +87,7 @@ class Application(object):
         self.__authentication = authentication
 
     authentication = property(_get_authentication, _set_authentication)
+
+    # Caching
+    cache = Cache()
 
