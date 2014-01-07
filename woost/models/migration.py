@@ -559,15 +559,30 @@ def move_blocks_to_core(e):
     from woost.models import Item, Page, Template, Block, TextBlock
     from woost.models.rendering import Renderer
 
+    # Rename keys
+    for key in list(datastore.root):
+        if key.startswith("woost.extensions.blocks."):
+            new_key = key.replace(".extensions.blocks.", ".models.")
+            datastore.root[new_key] = datastore.root.pop(key)
+
     # Consolidate StandardPage and BlocksPage into the new Page model
+    for block in Block.select():
+        try:
+            pages = block._BlocksPage_blocks
+        except AttributeError:
+            pass
+        else:
+            block._Page_blocks = pages        
+            del block._BlocksPage_blocks
+
     page_ids = datastore.root.pop("woost.models.standardpage.StandardPage-keys")
-    
+
     if page_ids:
         for id in page_ids:
             Page.keys.add(id)
             page = Page.get_instance(id)
             page._p_changed = True
-            
+
             block = TextBlock()
 
             for lang, trans in page.translations.iteritems():
@@ -578,9 +593,8 @@ def move_blocks_to_core(e):
             page.blocks.append(block)
             block.insert()
 
-    page_ids = \
-        datastore.root.pop("woost.extensions.blocks.blockspage.BlocksPage-keys")
-    
+    page_ids = datastore.root.pop("woost.models.blockspage.BlocksPage-keys")
+
     if page_ids:
         for id in page_ids:
             Page.keys.add(id)
@@ -589,12 +603,6 @@ def move_blocks_to_core(e):
     for template in Template.select():
         if template.identifier == "woost.extensions.blocks.BlocksPageView":
             template.identifier = "woost.views.StandardView"
-
-    # Rename keys
-    for key in list(datastore.root):
-        if key.startswith("woost.extensions.blocks."):
-            new_key = key.replace(".extensions.blocks.", ".models.")
-            datastore.root[new_key] = datastore.root.pop(key)
 
 #------------------------------------------------------------------------------
  
