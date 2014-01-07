@@ -96,3 +96,28 @@ def convert_video_blocks(e):
             old_block.replace_with(block)
             old_block.delete()
 
+#------------------------------------------------------------------------------
+step = MigrationStep("woost.extensions.blocks Convert file listing blocks")
+
+@when(step.executing)
+def convert_file_listing_blocks(e):
+    from woost.extensions.blocks.filelisting import FileListing
+    from woost.extensions.blocks.publishablelisting import PublishableListing
+
+    for old_block in FileListing.select():
+        block = PublishableListing()
+        block.element_type = old_block.element_type
+        block.publishables = old_block.files
+        block.links_open_in_new_window = old_block.links_open_in_new_window
+
+        if old_block.listing_order in \
+            PublishableListing.listing_order.enumeration:
+            block.listing_order = old_block.listing_order
+
+        for lang in old_block.translations:
+            title = old_block.get("heading", lang)
+            block.set("heading", title, lang)
+
+        block.insert()
+        old_block.replace_with(block)
+        old_block.delete()
