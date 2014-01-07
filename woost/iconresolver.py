@@ -10,7 +10,7 @@ Classes for choosing icons for CMS items.
 import os
 from pkg_resources import resource_filename
 from cocktail.typemapping import TypeMapping
-from cocktail.cache import Cache
+from cocktail.resourceloader import ResourceLoader
 from cocktail.persistence import PersistentObject
 from woost.models.website import Website
 from woost.models.item import Item
@@ -41,7 +41,7 @@ class IconResolver(object):
     @ivar name_resolution_cache: A cache that stores the result of the
         L{find_icon} method given a list of possible names produced by the
         L{file_resolvers} mapping.
-    @type: L{Cache<cocktail.cache.Cache>}
+    @type: L{ResourceLoader<cocktail.resourceloader.ResourceLoader>}
     """
     icon_format = "png"
     _icon_extension = None
@@ -61,7 +61,7 @@ class IconResolver(object):
         self.file_resolvers[Publishable] = self._resolve_publishable
         self.file_resolvers[Document] = self._resolve_document
         self.file_resolvers[File] = self._resolve_file
-        self.name_resolution_cache = Cache(load = self._find_icon)
+        self.name_resolution_cache = ResourceLoader(load = self._find_icon)
         
     def _get_icon_extension(self):
         return self._icon_extension or self.icon_format
