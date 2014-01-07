@@ -63,3 +63,36 @@ def model_block_styles(e):
 
             del block._css_class
 
+#------------------------------------------------------------------------------
+step = MigrationStep("woost.extensions.blocks Convert video blocks")
+
+@when(step.executing)
+def convert_video_blocks(e):
+    from woost.extensions.youtube.youtubevideo import YouTubeVideo
+    from woost.extensions.vimeo.vimeovideo import VimeoVideo
+    from woost.extensions.blocks.youtubeblock import YouTubeBlock
+    from woost.extensions.blocks.youtubeblockrenderer import YouTubeBlockRenderer
+    from woost.extensions.blocks.vimeoblock import VimeoBlock
+    from woost.extensions.blocks.vimeoblockrenderer import VimeoBlockRenderer
+    from woost.extensions.blocks.videoblock import VideoBlock
+
+    YouTubeBlockRenderer.select().delete_items()
+    VimeoBlockRenderer.select().delete_items()
+
+    for old_block_model, video_model in (
+        (YouTubeBlock, YouTubeVideo),
+        (VimeoBlock, VimeoVideo)
+    ):
+        for old_block in old_block_model.select():
+            block = VideoBlock()
+            block.video = video_model(video_id = old_block.video_id)
+
+            for lang in old_block.translations:
+                title = old_block.get("heading", lang)
+                block.video.set("title", title, lang)
+                block.set("heading", title, lang)
+
+            block.insert()
+            old_block.replace_with(block)
+            old_block.delete()
+
