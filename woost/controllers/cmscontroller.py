@@ -688,7 +688,8 @@ class CMSController(BaseCMSController):
             {
                 "id": user.id,
                 "label": translations(user),
-                "identifier": user.get(app.authentication.identifier_field)
+                "identifier": user.get(app.authentication.identifier_field),
+                "anonymous": user.anonymous
             }
             if user else None
         )
