@@ -632,16 +632,17 @@ def remove_owner_field(e):
     # Purge the 'owned-items' expression from all permissions
     for permission in ContentPermission.select():
         matching_items = permission.matching_items
-        if matching_items == "owned-items":
-            permission.delete()
-        elif (
-            hasattr(matching_items, "__contains__")
-            and "owned-items" in matching_items
-        ):
-            filter_count = len(matching_items["filter"])
-            matching_items["filter"].remove("owned-items")
-            if filter_count == 1:
-                permission.delete()
+        if matching_items:
+            try:
+                filter = permission.matching_items["filter"]
+            except KeyError:
+                pass
+            else:
+                if filter == "owned-items" or (
+                    hasattr(filter, "__contains__")
+                    and "owned-items" in filter
+                ):
+                    permission.delete()
 
 #------------------------------------------------------------------------------
 
