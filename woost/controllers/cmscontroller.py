@@ -684,7 +684,7 @@ class CMSController(BaseCMSController):
     def current_user(self):
         cherrypy.response.headers["Content-Type"] = "text/javascript"
         user = get_current_user()
-        return "woost.user = %s;" % dumps(
+        return "cocktail.declare('woost'); woost.user = %s;" % dumps(
             {
                 "id": user.id,
                 "label": translations(user),
