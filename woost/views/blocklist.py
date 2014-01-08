@@ -27,12 +27,13 @@ class BlockList(Element):
         if self.blocks is None:
             if self.container is not None and self.slot is not None:
                 if isinstance(self.slot, basestring):
-                    slot = getattr(self.container.__class__, self.slot)
+                    slot = self.container.__class__.get_member(self.slot)
                 else:
                     slot = self.slot
 
-                self.depends_on(self.container, slot.cache_part)
-                self.blocks = self.container.get(slot)
+                if slot:
+                    self.depends_on(self.container, slot.cache_part)
+                    self.blocks = getattr(self.container, slot.name, None)
 
         if self.tag in ("ul", "ol"):
             self.__wrap = self.wrap_with_list_item
