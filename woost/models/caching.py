@@ -121,11 +121,6 @@ class CachingPolicy(Item):
             exec expression in context
             expiration = context.get("expiration")
 
-        if isinstance(expiration, timedelta):
-            expiration = datetime.now() + expiration
-        elif isinstance(expiration, int):
-            expiration = datetime.now() + timedelta(minutes = expiration)
-
         return expiration
 
     def get_content_tags(self, publishable, base = None, **context):
