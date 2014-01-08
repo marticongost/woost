@@ -5,6 +5,7 @@ u"""
 """
 from cocktail.translations import translations
 from cocktail import schema
+from cocktail.caching import Cache
 from woost.models import Extension
 
 
@@ -22,6 +23,8 @@ translations.define("ShortURLsPublicationExtension-plural",
 
 
 class ShortURLsExtension(Extension):
+
+    url_cache = Cache()
 
     def __init__(self, **values):
         Extension.__init__(self, **values)
