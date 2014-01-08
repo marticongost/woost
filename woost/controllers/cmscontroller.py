@@ -54,7 +54,6 @@ from woost.models import (
     set_current_website
 )
 from woost.controllers.asyncupload import async_uploader
-from woost.controllers import get_cache_manager, set_cache_manager
 from woost.controllers.basecmscontroller import BaseCMSController
 from woost.controllers.imagescontroller import ImagesController
 
@@ -171,22 +170,6 @@ class CMSController(BaseCMSController):
                         session_key_file.write(session_key)
 
                 sconf["session.secret"] = session_key
-
-            # If the cache manager doesn't exist, create it
-            if not get_cache_manager():
-                cache_path = app.path('cache')
-
-                if not os.path.exists(cache_path):
-                    os.mkdir(cache_path)
-
-                cache_manager = CacheManager(
-                    **parse_cache_config_options({
-                        'cache.lock_dir': cache_path,
-                        'cache.regions': 'woost_cache',
-                        'cache.woost_cache.type': 'memory'
-                    })
-                )
-                set_cache_manager(cache_manager)
 
             # Create the folders for uploaded files
             upload_path = app.path("upload")
