@@ -6,14 +6,16 @@ u"""
 @organization:	Whads/Accent SL
 @since:			June 2008
 """
-from datetime import datetime
+from datetime import date, datetime
 from contextlib import contextmanager
 from cocktail.styled import styled
+from cocktail.iteration import first
 from cocktail.modeling import getter, ListWrapper, SetWrapper, DictWrapper
 from cocktail.events import event_handler, when, Event, EventInfo
 from cocktail import schema
 from cocktail.translations import translations
 from cocktail.caching import whole_cache
+from cocktail.caching.utils import nearest_expiration
 from cocktail.persistence import (
     datastore, 
     PersistentObject, 
@@ -560,12 +562,20 @@ class Item(PersistentObject):
 
         for member in cls.iter_members():
             if member.affects_cache_expiration:
+
+                if isinstance(member, schema.Date):
+                    threshold = date.today()
+                else:
+                    threshold = datetime.now()
+
                 instance = first(
                     cls.select(
+                        member.greater(threshold),
                         order = member,
                         cached = False
                     )
                 )
+
                 if instance is not None:
                     expiration = nearest_expiration(
                         expiration,
