@@ -4,7 +4,6 @@ u"""
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
 from cocktail.html import Element, first_last_classes
-from woost.models.blockutils import create_block_views
 
 
 class BlockList(Element):
@@ -47,9 +46,12 @@ class BlockList(Element):
         has_visible_blocks = False
 
         if self.blocks:
-            for block_view in create_block_views(self.blocks):
-                has_visible_blocks = True
-                self._insert_block_view(block_view)
+            for block in self.blocks:
+                self.depends_on(block)
+                if block.is_published():
+                    has_visible_blocks = True
+                    block_view = block.create_view()
+                    self._insert_block_view(block_view)
 
         if self.hide_if_empty and not has_visible_blocks:
             self.visible = False
