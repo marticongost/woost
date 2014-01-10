@@ -84,12 +84,14 @@ class Block(Item):
 
     start_date = schema.DateTime(
         indexed = True,
+        affects_cache_expiration = True,
         member_group = "behavior"
     )
 
     end_date = schema.DateTime(
         indexed = True,
         min = start_date,
+        affects_cache_expiration = True,
         member_group = "behavior"
     )
 

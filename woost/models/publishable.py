@@ -198,6 +198,7 @@ class Publishable(Item):
     start_date = schema.DateTime(
         indexed = True,
         listed_by_default = False,
+        affects_cache_expiration = True,
         member_group = "publication"
     )
 
@@ -205,6 +206,7 @@ class Publishable(Item):
         indexed = True,
         min = start_date,
         listed_by_default = False,
+        affects_cache_expiration = True,
         member_group = "publication"
     )
 
