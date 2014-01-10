@@ -13,6 +13,7 @@ class BlockList(Element):
     blocks = None
     container = None
     slot = None
+    hide_if_empty = False
 
     def __init__(self, *args, **kwargs):
         Element.__init__(self, *args, **kwargs)
@@ -43,9 +44,15 @@ class BlockList(Element):
         self._fill_blocks()
 
     def _fill_blocks(self):
+        has_visible_blocks = False
+
         if self.blocks:
             for block_view in create_block_views(self.blocks):
+                has_visible_blocks = True
                 self._insert_block_view(block_view)
+
+        if self.hide_if_empty and not has_visible_blocks:
+            self.visible = False
 
     def _insert_block_view(self, block_view):
         if self.__wrap:
