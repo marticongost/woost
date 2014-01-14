@@ -497,6 +497,7 @@ def remove_drafts(e):
         Item,
         Permission,
         ContentPermission,
+        MemberPermission,
         Trigger,
         ContentTrigger
     )
@@ -529,6 +530,12 @@ def remove_drafts(e):
 
     datastore.root.pop("woost.models.item.Item.is_draft", None)
     datastore.root.pop("woost.models.item.Item.draft_source", None)
+
+    for permission in MemberPermission.select():
+        for key in ("drafts", "draft_source", "is_draft"):
+            key = "woost.models.item.Item." + key
+            if key in permission.matching_members:
+                permission.matching_members.remove(key)
 
 #------------------------------------------------------------------------------
 
