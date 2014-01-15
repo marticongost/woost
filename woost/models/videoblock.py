@@ -40,6 +40,9 @@ class VideoBlock(Block):
         member_group = "content"
     )
 
+    def get_block_image(self):
+        return self.video
+
     def init_view(self, view):
         Block.init_view(self, view)
         view.tag = self.element_type
