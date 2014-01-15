@@ -14,7 +14,7 @@
 
     <py:woost.views.Image
         py:id="bullet_image"
-        py:image="@{self.block}"
+        py:image="@{self.block.get_block_image()}"
         py:image_factory="@{self.image_factory}"/>
 
     <span py:id="bullet_label" py:strip_whitespace="true">

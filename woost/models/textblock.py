@@ -125,6 +125,12 @@ class TextBlock(Block):
         member_group = "images"
     )
 
+    def get_block_image(self):
+        for image in self.images:
+            return image
+        else:
+            return Block.get_block_image(self)
+
     link_destination = schema.Reference(
         type = Publishable,
         related_end = schema.Collection(),

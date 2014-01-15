@@ -117,6 +117,9 @@ class Block(Item):
         member_group = "html"
     )
 
+    def get_block_image(self):
+        return self
+
     def create_view(self):
 
         if self.view_class is None:
