@@ -9,6 +9,7 @@ from cocktail.translations import translations
 from woost.models import Configuration
 from woost.controllers.filecontroller import FileController
 from woost.controllers.uricontroller import URIController
+from woost.extensions.googleanalytics import GoogleAnalyticsExtension
 
 
 class GAEventRedirection(object):
@@ -28,17 +29,14 @@ class GAEventRedirection(object):
             <head>
                 <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
                 <title>%(title)s</title>
+                %(analytics_script)s
                 <script type="text/javascript">
-                    var _gaq = _gaq || [];
-                    _gaq.push(['_setAccount', %(account)s]);
-                    _gaq.push(['_trackEvent', %(category)s, %(action)s, %(label)s]);
                     window.onload = function () {
                         setTimeout(function () {
                             location.replace(%(url)s);
                         }, %(delay)d);
                     }
                 </script>
-                <script type="text/javascript" src="http://www.google-analytics.com/ga.js"></script>
             </head>
             <body>
                 %(body)s
@@ -55,15 +53,31 @@ class GAEventRedirection(object):
             publishable = controller.context["publishable"]
 
             if self.event_tracking_is_enabled(controller, publishable):
-                url = self.get_url(controller, publishable)
+
                 cherrypy.response.headers["Content-Type"] = "text/html"
+
+                url = self.get_url(controller, publishable)
+                category = self.get_category(controller, publishable)
+                action = self.get_action(controller, publishable)
+                label = self.get_label(controller, publishable)
+
+                api = Configuration.instance.google_analytics_api
+                
+                if api == "ga.js":
+                    commands = [('_trackEvent', category, action, label)]
+                elif api == "universal":
+                    commands = [('send', 'event', category, action, label)]
+                else:
+                    raise cherrypy.HTTPRedirect(url)
 
                 return self.template % {
                     "title": self.get_title(controller, publishable),
-                    "account": dumps(self.get_account(controller, publishable)),
-                    "category": dumps(self.get_category(controller, publishable)),
-                    "action": dumps(self.get_action(controller, publishable)),
-                    "label": dumps(self.get_label(controller, publishable)),
+                    "analytics_script": 
+                        GoogleAnalyticsExtension.instance.get_analytics_script(
+                            publishable = publishable,
+                            async = False,
+                            commands = commands
+                        ),
                     "url": dumps(url),
                     "delay": self.delay,
                     "body": self.get_body(controller, publishable, url = url)
@@ -88,9 +102,6 @@ class GAEventRedirection(object):
         )
 
         return publishable.get_uri(parameters = extra_params)
-
-    def get_account(self, controller, publishable):
-        return Configuration.instance.get_setting("google_analytics_account")
 
     def get_title(self, controller, publishable):
         return translations("woost.extensions.googleanalytics.redirection_title")
