@@ -8,7 +8,6 @@ u"""
 @since:			July 2008
 """
 from os import path as _path
-from cocktail.caching.utils import nearest_expiration
 from cocktail.html import Element
 from cocktail.persistence import PersistentClass
 from woost.models import Item
@@ -39,12 +38,4 @@ def depends_on(self, tag_source, cache_part = None):
             self.depends_on(item)
 
 Element.depends_on = depends_on
-
-def update_cache_expiration(self, expiration):
-    self.cache_expiration = nearest_expiration(
-        self.cache_expiration,
-        expiration
-    )
-
-Element.update_cache_expiration = update_cache_expiration
 
