@@ -611,6 +611,11 @@ def move_blocks_to_core(e):
         if template.identifier == "woost.extensions.blocks.BlocksPageView":
             template.identifier = "woost.views.StandardView"
 
+    # Fix the name in the related end for Page.blocks
+    for block in Block.select():
+        block.Page_blocks._PersistentRelationCollection__member_name = \
+            "Page_blocks"
+
 #------------------------------------------------------------------------------
  
 step = MigrationStep("Remove the Item.owner field")
