@@ -32,6 +32,7 @@ class Role(Item):
         "users",
         "permissions",
         "user_views",
+        "default_content_type",
         "hidden_content_types"
     ]
 
@@ -70,6 +71,10 @@ class Role(Item):
     user_views = schema.Collection(
         items = "woost.models.UserView",
         bidirectional = True
+    )
+
+    default_content_type = schema.Reference(
+        class_family = Item
     )
 
     hidden_content_types = schema.Collection(
