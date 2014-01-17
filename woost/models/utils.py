@@ -3,6 +3,7 @@ u"""
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
+from ZODB.broken import Broken
 from cocktail.persistence import datastore
 from cocktail.persistence.utils import (
     is_broken,
@@ -11,6 +12,7 @@ from cocktail.persistence.utils import (
 from .item import Item
 from .configuration import Configuration
 from .changesets import Change
+from .role import Role
 
 
 def remove_broken_type(
@@ -32,6 +34,14 @@ def remove_broken_type(
         relations = relations,
         languages = languages
     )
+
+    for role in Role.select():
+        for cls in list(role.hidden_content_types):
+            if (
+                issubclass(cls, Broken)
+                and cls.__module__ + "." + cls.__name__ == full_name
+            ):
+                role.hidden_content_types.remove(cls)
 
 def delete_history():
 
