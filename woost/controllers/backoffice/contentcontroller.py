@@ -54,6 +54,7 @@ from cocktail.controllers.userfilter import GlobalSearchFilter
 from woost.models import (
     Configuration,
     Item,
+    Role,
     UserView,
     changeset_context,
     get_current_user,
@@ -224,6 +225,16 @@ class ContentController(BaseBackOfficeController):
     def user_collection(self):
 
         user_collection = BackOfficeUserCollection(self.root_content_type)
+
+        if self.root_content_type:
+            user = get_current_user()
+            for role in user.roles:
+                if role.default_content_type:
+                    if issubclass(
+                        role.default_content_type, self.root_content_type
+                    ):
+                        user_collection.default_type = role.default_content_type
+                    break
 
         if self.edit_stack and isinstance(self.stack_node, RelationNode):
             user_collection.default_type = \
