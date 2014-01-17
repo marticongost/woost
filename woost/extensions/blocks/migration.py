@@ -83,7 +83,7 @@ def convert_video_blocks(e):
         (YouTubeBlock, YouTubeVideo),
         (VimeoBlock, VimeoVideo)
     ):
-        for old_block in old_block_model.select():
+        for old_block in list(old_block_model.select()):
             block = VideoBlock()
             block.video = video_model(video_id = old_block.video_id)
 
@@ -104,7 +104,7 @@ def convert_file_listing_blocks(e):
     from woost.extensions.blocks.filelisting import FileListing
     from woost.extensions.blocks.publishablelisting import PublishableListing
 
-    for old_block in FileListing.select():
+    for old_block in list(FileListing.select()):
         block = PublishableListing()
         block.element_type = old_block.element_type
         block.publishables = old_block.files
@@ -121,3 +121,4 @@ def convert_file_listing_blocks(e):
         block.insert()
         old_block.replace_with(block)
         old_block.delete()
+
