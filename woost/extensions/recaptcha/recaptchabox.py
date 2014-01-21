@@ -15,8 +15,8 @@ from woost.extensions.recaptcha import ReCaptchaExtension
 
 class ReCaptchaBox(Element):
     
-    API_SSL_SERVER = "https://api-secure.recaptcha.net"
-    API_SERVER = "http://api.recaptcha.net"
+    API_SSL_SERVER = "https://www.google.com/recaptcha/api"
+    API_SERVER = "http://www.google.com/recaptcha/api"
     
     tag = None
 
