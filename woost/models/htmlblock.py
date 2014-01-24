@@ -13,13 +13,20 @@ class HTMLBlock(Block):
     type_group = "blocks.custom"
     view_class = "cocktail.html.Element"
 
-    html = schema.CodeBlock(
-        required = True,
+    html = schema.CodeBlock(        
+        language = "html",
+        member_group = "content"
+    )
+
+    translated_html = schema.CodeBlock(
+        translated = True,
         language = "html",
         member_group = "content"
     )
 
     def init_view(self, view):
-        Block.init_view(self, view)        
-        view.append(self.html)
+        Block.init_view(self, view)
+        html = self.translated_html or self.html
+        if html:
+            view.append(html)
 
