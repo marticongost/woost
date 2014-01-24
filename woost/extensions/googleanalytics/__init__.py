@@ -175,7 +175,7 @@ class GoogleAnalyticsExtension(Extension):
         if api == "ga.js":
             commands = [("_trackPageview",)]
         elif api == "universal":
-            commands = [("send", "pagehit")]
+            commands = [("send", "pageview")]
         else:
             return ""
 
