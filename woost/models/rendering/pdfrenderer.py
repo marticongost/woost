@@ -40,7 +40,7 @@ class PDFRenderer(Renderer):
             and item.file_name.split(".")[-1].lower() == "pdf"
         )
 
-    def render(self, item, page = 0, **parameters):
+    def render(self, item, page = 1, **parameters):
 
         timeout = self.timeout
         
@@ -88,12 +88,14 @@ class PDFTimeoutError(IOError):
 
 
 try:
-    p = Popen(["which", "convert"], stdout=PIPE)
+    p = Popen(["which", "gs"], stdout=PIPE)
     output = p.communicate()[0].replace("\n", "")
 except:
     pass
 else:
     if output:
-        PDFRenderer.command.default = \
-            output + ' -type TrueColor "%(source)s[%(page)s]" %(dest)s'
+        PDFRenderer.command.default = (
+            output + ' -dFirstPage=%(page)s -dLastPage=%(page)s'
+            ' -sDEVICE=jpeg -o %(dest)s -dJPEGQ=95 -r150x150 %(source)s'
+        )
 
