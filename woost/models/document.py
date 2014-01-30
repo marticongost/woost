@@ -7,12 +7,9 @@ u"""
 @since:			July 2008
 """
 from cocktail import schema
-from cocktail.modeling import getter
-from cocktail.iteration import first
 from cocktail.events import event_handler
-from cocktail.controllers.renderingengines import get_rendering_engine
+from cocktail.html import templates
 from .publishable import Publishable
-from .file import File
 from .controller import Controller
 
 
@@ -143,8 +140,12 @@ class Document(Publishable):
             raise ValueError("Can't render a document without a template")
         
         values["publishable"] = self
-        engine = get_rendering_engine(self.template.engine)
-        return engine.render(values, template = self.template.identifier)
+
+        view = templates.new(self.template.identifier)
+        for key, value in values.iteritems():
+            setattr(view, key, value)
+
+        return view.render_page()
 
     def find_redirection_target(self):
         mode = self.redirection_mode
