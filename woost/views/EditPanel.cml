@@ -38,6 +38,9 @@ from woost.models import (
         if self.publishable is None:
             self.publishable = context["publishable"]
 
+        if not context.get("show_user_controls", True):
+            self.visible = False
+
         if not get_current_user().has_permission(ModifyPermission, target = self.publishable):
             self.visible = False
         ?>

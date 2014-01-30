@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <?py
+from cocktail.controllers import context
 from cocktail.html.utils import html5_tag, rendering_html5
 from woost.models import Configuration, get_current_website
 ?>
@@ -10,8 +11,6 @@ from woost.models import Configuration, get_current_website
     py:tag="div">
 
     <?py-class
-    show_user_controls = True
-
     def get_title(self):
         return get_current_website().site_name
         
@@ -70,7 +69,7 @@ from woost.models import Configuration, get_current_website
         <py:woost.views.IdentityBox py:id="identity">
             <py:ready>
                 <?py
-                if not self.show_user_controls:
+                if not context.get("show_user_controls", True):
                     element.visible = False
                 ?>
             </py:ready>
@@ -134,8 +133,6 @@ from woost.models import Configuration, get_current_website
         element.append(self.content)
         ?>
     </div>
-
-    <py:woost.views.EditLink py:def="edit_link" py:visible="@{element.visible and self.show_user_controls}"/>
 
     <div py:id="footer">
         <?py html5_tag(element, "footer") ?>

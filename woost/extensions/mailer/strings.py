@@ -67,10 +67,10 @@ translations.define("Mailing.subject",
     en = u"Subject"
 )
 
-translations.define("Mailing.roles",
-    ca = u"Rols",
-    es = u"Roles",
-    en = u"Roles"
+translations.define("Mailing.lists",
+    ca = u"Llistes",
+    es = u"Listas",
+    en = u"Lists"
 )
 
 translations.define("Mailing.language",
@@ -223,13 +223,13 @@ translations.define("SendEmailPermission-plural",
     en = u"Permissions to send email"
 )
 
-translations.define("SendEmailPermission.roles",
-    ca = u"Rols",
-    es = u"Roles",
-    en = u"Roles"
+translations.define("SendEmailPermission.lists",
+    ca = u"Llistes",
+    es = u"Listas",
+    en = u"Lists"
 )
 
-translations.define("SendEmailPermission.roles-explanation",
+translations.define("SendEmailPermission.lists-explanation",
     ca = u"Limita el permís en funció dels destinataris de l'enviament. "
          u"Deixar en blanc per permetre o prohibir l'enviament a tothom.",
     es = u"Limita el permiso en función de los destinatarios del envío. "
@@ -283,5 +283,45 @@ translations.define(
     ca = u"No es pot eliminar un enviament que està en execució.",
     es = u"No se puede eliminar un envio que está en ejecución.",
     en = u"Can't delete a running mailing."
+)
+
+# MailingList
+#------------------------------------------------------------------------------
+translations.define("MailingList",
+    ca = u"Llista de correu",
+    es = u"Lista de correo",
+    en = u"Mailing list"
+)
+
+translations.define("MailingList-plural",
+    ca = u"Llistes de correu",
+    es = u"Listas de correo",
+    en = u"Mailing lists"
+)
+
+translations.define("MailingList.title",
+    ca = u"Nom",
+    es = u"Nombre",
+    en = u"Name"
+)
+
+translations.define("MailingList.mailings",
+    ca = u"Enviaments",
+    es = u"Envios",
+    en = u"Mailings"
+)
+
+translations.define("MailingList.users",
+    ca = u"Usuaris",
+    es = u"Usuarios",
+    en = u"Users"
+)
+
+# User
+#------------------------------------------------------------------------------
+translations.define("User.mailingLists",
+    ca = u"Llistes de correu",
+    es = u"Listas de correo",
+    en = u"Mailing lists"
 )
 
