@@ -30,8 +30,16 @@ from woost.models import Configuration, Publishable, get_current_website
             keywords.append(item_keywords)        
         return " ".join(keywords) if keywords else None
 
+    def get_page_title(self):
+        title = self.get_content_title()
+        if not self.publishable.is_home_page():
+            site_name = get_current_website().site_name
+            if site_name:
+                title += " | " + site_name
+        return title
+
     def get_content_title(self):
-        return getattr(self.publishable, "inner_title", None) or translations(self.publishable)       
+        return getattr(self.publishable, "inner_title", None) or translations(self.publishable)
     ?>
 
     <?py
@@ -63,7 +71,7 @@ from woost.models import Configuration, Publishable, get_current_website
             self.page_charset = publishable.encoding
 
             # Page title
-            self.page_title = self.get_content_title()
+            self.page_title = self.get_page_title()
 
             # Meta tags
             description = getattr(publishable, "description", None) \
