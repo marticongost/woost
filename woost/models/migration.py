@@ -414,7 +414,7 @@ def expose_hidden_configuration(e):
     # restrictedaccess extension
     access_restrictions = getattr(config, "_access_restrictions", None)
     if access_restrictions:
-        for restriction in access_restriction:
+        for restriction in access_restrictions:
             try:
                 del restriction._Configuration_access_restrictions
             except AttributeError:
