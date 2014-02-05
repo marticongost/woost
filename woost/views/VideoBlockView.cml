@@ -9,6 +9,13 @@
     player_settings = None
     ?>
 
+    <py:binding>
+        <?py
+        if not self.video.is_accessible():
+            self.visible = False
+        ?>
+    </py:binding>
+
     @{self.append(self.player_settings.create_player(self.video))}
 
 </div>

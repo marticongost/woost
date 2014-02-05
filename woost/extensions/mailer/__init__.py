@@ -11,7 +11,7 @@ from cocktail.events import when
 from cocktail import schema
 from cocktail.translations import translations
 from cocktail.controllers import context
-from woost.models import Extension, Document, Template, Role
+from woost.models import Extension, Document, Template, User
 from woost.models.permission import DeletePermission, ModifyPermission
 
 
@@ -74,6 +74,15 @@ class MailerExtension(Extension):
             )
         )
         Template.members_order.append("per_user_customizable")
+
+        User.add_member(
+            schema.Collection(
+                "mailingLists",
+                items = "woost.extensions.mailer.mailinglist.MailingList",
+                bidirectional = True,
+                listed_by_default = False
+            )
+        )
 
         @when(BaseBackOfficeController.exception_raised)
         def handle_exception_raised(event):                                                                                                                                                                   

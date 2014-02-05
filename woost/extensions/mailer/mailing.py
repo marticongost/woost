@@ -10,15 +10,22 @@ from email.Header import Header
 from email.Utils import formatdate
 from cocktail import schema
 from cocktail.asynctask import TaskManager
-from cocktail.modeling import cached_getter, getter
 from cocktail.controllers import context
 from cocktail.translations import translations, set_language
 from cocktail.persistence import datastore
 from cocktail.schema.exceptions import ValidationError
 from woost.models import (
-    Configuration, Item, Role, get_current_user, set_current_user
+    Configuration, 
+    Item, 
+    User,
+    get_current_user, 
+    set_current_user,
+    get_current_website,
+    set_current_website
 )
+from woost.extensions.mailer.mailinglist import MailingList
 from woost.extensions.mailer.sendemailpermission import SendEmailPermission
+from woost.extensions.mailer.htmladapter import HTMLAdapter
 
 
 logger = logging.getLogger("woost.extensions.mailer")
@@ -50,13 +57,14 @@ class PerUserCustomizableValueError(ValidationError):
             % ValidationError.__str__(self)
 
 
-def available_roles(ctx):
+def available_lists(ctx):
     user = get_current_user()
-    return [role 
-            for role in Role.select() 
-            if not role.implicit
-            and user.has_permission(SendEmailPermission, role = role) 
-            and len(get_receivers_by_roles([role]))]
+    return [mailingList 
+            for mailingList in MailingList.select() 
+            if user.has_permission(
+                SendEmailPermission, mailingList = mailingList
+            ) 
+            and len(get_receivers_by_lists([mailingList]))]
 
 
 class Mailing(Item):
@@ -66,9 +74,10 @@ class Mailing(Item):
 
     # Members
     #------------------------------------------------------------------------------
-    members_order = (
-        "sender", "subject", "document", "language", "per_user_customizable", "roles"
-    )
+    members_order = [
+        "sender", "subject", "document", "language", "per_user_customizable",
+        "lists"
+    ]
     groups_order = "content", "administration"
 
     document = schema.Reference(
@@ -98,19 +107,20 @@ class Mailing(Item):
         member_group = "content"
     )
 
-    roles = schema.Collection(
-        "roles",
+    lists = schema.Collection(
         items = schema.Reference(
-            type = "woost.models.Role",
+            type = "woost.extensions.mailer.mailinglist.MailingList",
             default_order = "title",
-            enumeration = available_roles,
+            enumeration = available_lists,
             translate_value = lambda value, language = None, **kwargs: \
                 "%s (%d %s)" % (
                     translations(value),
-                    len(get_receivers_by_roles([value])),
+                    len(get_receivers_by_lists([value])),
                     translations("woost.extensions.mailer users")
                 )
         ),
+        edit_control = "cocktail.html.CheckList",
+        bidirectional = True,
         min = 1,
         member_group = "content"
     )
@@ -126,6 +136,8 @@ class Mailing(Item):
     sent = schema.Mapping(visible = False)
 
     errors = schema.Mapping(visible = False)
+
+    total = schema.Integer(visible = False)
 
     status = schema.Integer(
         editable = False,
@@ -169,19 +181,34 @@ class Mailing(Item):
         
         if self.per_user_customizable:
             values = values.copy()
-            values["mailing_receiver"] = receiver
+            user = receiver
+        else:
+            user = User.require_instance(qname = "woost.anonymous_user")
         
-        values["show_user_controls"] = False
-        body = self.document.render(**values)
+        # Update context
+        context["show_user_controls"] = False
+        context["email_version"] = True
+
+        current_user = get_current_user()
+        try:
+            set_current_user(user)
+            body = self.document.render(**values)
+            body = self._adapt_html(body)
+        finally:
+            set_current_user(current_user)
 
         if not self.per_user_customizable:
             self.__cached_body = body
 
         return body
 
+    def _adapt_html(self, html):
+        adapter = HTMLAdapter(html)
+        return adapter.adapt()
+
     def send_message(self, smtp_server, receiver):
         message = self._get_message(receiver)
-        config = Configuratio.instance
+        config = Configuration.instance
         try:
             return smtp_server.sendmail(self.sender, [receiver.email], message.as_string())
         except smtplib.SMTPServerDisconnected, e:
@@ -216,6 +243,7 @@ class Mailing(Item):
 
         if not self.id in tasks:
             current_user = get_current_user()
+            current_website = get_current_website()
             if self.status is None:
                 self.pending = self.get_receivers()
                 self.total = len(self.pending)
@@ -230,8 +258,8 @@ class Mailing(Item):
                     mailing.id, current_user, current_user.email
                 ))
 
-                set_current_user(current_user)
-                set_language(mailing.language.iso_code)
+                set_language(mailing.language)
+                set_current_website(current_website)
                 context.update(current_context)
                 mailing.status = MAILING_STARTED
                 processed_emails = 0
@@ -280,13 +308,13 @@ class Mailing(Item):
             task.user_id = current_user.id
 
     def get_receivers(self):
-        return get_receivers_by_roles(self.roles)
+        return get_receivers_by_lists(self.lists)
 
 
-def get_receivers_by_roles(roles):
+def get_receivers_by_lists(lists):
     receivers = {}
-    for role in roles:
-        for user in role.users:
+    for mailingList in lists:
+        for user in mailingList.users:
             if user.enabled and getattr(user, "confirmed_email", True):
                 receivers.setdefault(user.email, user)
 
@@ -308,7 +336,7 @@ def language_validation(cls, instance, context):
     language = instance.get("language")
     document = instance.get("document")
 
-    if language and document and language.iso_code not in document.translations.keys():
+    if language and document and language not in document.translations.keys():
         yield LanguageValueError(
             cls.get_member("language"),
             None,

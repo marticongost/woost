@@ -8,7 +8,6 @@ u"""
 """
 import cherrypy
 from cocktail.modeling import cached_getter
-from cocktail.controllers.renderingengines import get_rendering_engine
 from woost.controllers.publishablecontroller import PublishableController
 
 

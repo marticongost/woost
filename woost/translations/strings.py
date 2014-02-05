@@ -4207,6 +4207,12 @@ translations.define("Role.child_roles",
     en = u"Derived roles"
 )
 
+translations.define("Role.default_content_type",
+    ca = u"Tipus per defecte",
+    es = u"Tipos por defecto",
+    en = u"Default content type"
+)
+
 translations.define("Role.hidden_content_types",
     ca = u"Tipus ocults",
     es = u"Tipos ocultos",
@@ -6541,6 +6547,24 @@ translations.define("HTMLBlock.html",
     ca = u"HTML",
     es = u"HTML",
     en = u"HTML"
+)
+
+translations.define("HTMLBlock.translated_html",
+    ca = u"HTML per idioma",
+    es = u"HTML por idioma",
+    en = u"Per language HTML"
+)
+
+translations.define("HTMLBlock.translated_html-explanation",
+    ca = u"Utilitzar només si cal diferenciar l'HTML produït en un idioma "
+         u"concret. Pels idiomes en que es deixi buit, s'utilitzarà el valor "
+         u"del camp <em>HTML</em>.",
+    es = u"Utilizar únicamente si es necesario distinguir el HTML producido "
+         u"en un idioma concreto. En aquellos idiomas en que se deje vacío "
+         u"se utilizará el valor del campo <em>HTML</em>.",
+    en = u"Use only to differentiate the HTML produced for specific "
+         u"languages. In languages where it is left blank, the content of the "
+         u"<em>HTML</em> field will be used instead."
 )
 
 # TextBlock
