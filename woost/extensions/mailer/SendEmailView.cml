@@ -5,7 +5,7 @@ from cocktail.controllers import view_state_form
 from woost.models import User
 from woost.controllers.backoffice.useractions import \
     add_view_action_context
-from woost.extensions.mailer.mailing import get_receivers_by_roles
+from woost.extensions.mailer.mailing import get_receivers_by_lists
 ?>
 
 <py:woost.views.BackOfficeItemView
@@ -41,8 +41,8 @@ from woost.extensions.mailer.mailing import get_receivers_by_roles
                 @{translations("woost.extensions.mailer.SendEmailView confirmation text", mailing = self.edited_item)}
                 <ul>
                     <py:ready>
-                        <li py:for="role in self.edited_item.roles">
-                            ${self.edited_item.__class__.get_member("roles").translate_value([role])}
+                        <li py:for="mailingList in self.edited_item.lists">
+                            ${self.edited_item.__class__.get_member("lists").translate_value([mailingList])}
                         </li>
                     </py:ready>
                 </ul>
@@ -55,7 +55,7 @@ from woost.extensions.mailer.mailing import get_receivers_by_roles
             <p 
                 py:id="accessibility_notice" 
                 class="notice"
-                py:visible="@{not self.edited_item.document.is_accessible(User.get_instance(qname = 'woost.anonymous_user'), language = self.edited_item.language.iso_code)}">
+                py:visible="@{not self.edited_item.document.is_accessible(User.get_instance(qname = 'woost.anonymous_user'), language = self.edited_item.language)}">
                 ${translations("woost.extensions.mailer.SendEmailView accessibility warning")}
             </p>
 
