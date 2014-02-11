@@ -79,9 +79,9 @@ class LanguageSelector(LinkSelector):
 
     def get_item_label(self, language):
         if self.translated_labels:
-            return translations(language, language)
+            return translations("locale", locale = language, language = language)
         else:
-            return translations(language)
+            return translations("locale", locale = language)
 
     def get_entry_url(self, language):
         cms = context["cms"]

@@ -37,7 +37,7 @@ from simplejson import dumps
         ?>
     </py:ready>
 
-    <div py:id="messages" py:before="self.item_body" py:collapsible="${True}">
+    <div py:id="messages" py:before="self.item_body">
 
         <!-- Errors -->
         <py:cocktail.html.ErrorBox
