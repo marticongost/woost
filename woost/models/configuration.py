@@ -62,6 +62,7 @@ class Configuration(Item):
         "languages",
         "published_languages",
         "default_language",
+        "fallback_languages",
         "heed_client_language",
         "backoffice_language",
         "renderers",
@@ -152,7 +153,7 @@ class Configuration(Item):
     #------------------------------------------------------------------------------
     languages = schema.Collection(
         items = schema.String(
-            format = "^[a-z]{2}$"
+            format = "^[a-z]{2}(-[A-Z]{2})?$"
         ),
         min = 1,
         listed_by_default = False,
@@ -174,6 +175,26 @@ class Configuration(Item):
         edit_control = "cocktail.html.TextBox",
         text_search = False,
         listed_by_default = False,
+        member_group = "language"
+    )
+
+    fallback_languages = schema.Collection(
+        items = (
+            schema.Tuple(
+                items = (
+                    schema.String(enumeration = languages),
+                    schema.Collection(
+                        items = schema.String(
+                            enumeration = languages
+                        ),
+                        request_value_separator = ","
+                    )
+                ),
+                request_value_separator = ":"
+            )
+        ),
+        request_value_separator = "\n",
+        edit_control = "cocktail.html.TextArea",
         member_group = "language"
     )
 
