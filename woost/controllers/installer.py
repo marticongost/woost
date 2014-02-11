@@ -220,10 +220,10 @@ class Installer(object):
         
         params["project_module"] = params["project_name"].lower()
 
-        self._create_project(params)
+        self.create_project(params)
         self._init_project(params)
 
-    def _create_project(self, params):
+    def create_project(self, params):
 
         vars = dict(
             ("_%s_" % key.upper(), unicode(value))
