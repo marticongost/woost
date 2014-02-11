@@ -36,7 +36,7 @@ def changeset_context(author = None):
         >>>     item3 = MyItem()
         >>> len(changeset.changes)
         3        
-        >>> changeset.changes[item3.id].action.identifier
+        >>> changeset.changes[item3.id].action
         "create"
         >>> item3.author
         some_user        
@@ -78,7 +78,10 @@ class ChangeSet(PersistentObject):
     members_order = "id", "author", "date", "changes"
     indexed = True
 
-    changes = schema.Mapping(searchable = False)
+    changes = schema.Mapping(
+        searchable = False,
+        get_item_key = lambda change: change.target and change.target.id
+    )
     
     author = schema.Reference(
         required = True,
@@ -143,9 +146,10 @@ class Change(PersistentObject):
         type = "woost.models.ChangeSet"
     )
 
-    action = schema.Reference(
+    action = schema.String(
         required = True,
-        type = "woost.models.Action"
+        indexed = True,
+        enumeration = ["create", "modify", "delete"]
     )
 
     target = schema.Reference(
@@ -175,7 +179,7 @@ class ChangeSetHasActionExpression(schema.expressions.Expression):
 
     def op(self, changeset, action):
         return any(
-            change.action is action
+            change.action == action
             for change in changeset.changes.itervalues()
         )
 

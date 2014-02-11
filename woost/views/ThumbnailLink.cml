@@ -28,6 +28,7 @@
         if self.item is None:
             self.visible = False
         else:
+            self.depends_on(self.item)
             self["href"] = self.item.get_uri()
             if self.links_open_in_new_window:
                 element["target"] = "_blank"

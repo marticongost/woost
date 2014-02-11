@@ -23,6 +23,7 @@ def extract_video_id(string):
 class TV3ALaCartaVideo(Publishable):
 
     instantiable = True
+    type_group = "resource"
     uri_pattern = "http://www.tv3.cat/videos/%s"
     video_player = "woost.extensions.tv3alacarta.TV3ALaCartaPlayer"
 

@@ -4,32 +4,99 @@ u"""
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
 import os
+from cocktail.styled import styled
+from cocktail.events import when
+from cocktail.persistence import datastore
+from woost import app
+from woost.models.publishable import Publishable
+from woost.models.file import File
+from woost.models.user import User
+
+debug = True
+enabled = True
+filesystem_encoding = "utf-8"
+
+members_affecting_static_publication = set([
+    File.title,
+    File.file_name,
+    Publishable.enabled,
+    Publishable.start_date,
+    Publishable.end_date
+])
+
+def encode_filename(link, encoding = None):
+    if encoding is None:
+        encoding = filesystem_encoding
+    return link.encode(encoding) if isinstance(link, unicode) else link
+
+def create_links(file, links = None, encoding = None):
+    
+    if not file.is_inserted:
+        return
+
+    anonymous = User.require_instance(qname = "woost.anonymous_user")
+
+    if not file.is_accessible(anonymous):
+        return
+
+    if links is None:
+        links = get_links(file)
+
+    linked_file = file.file_path
+    linked_file = encode_filename(linked_file, encoding)
+
+    for link in links:
+
+        link = encode_filename(link, encoding)
+
+        if debug:
+            print styled("STATIC PUBLICATION", "white", "green"),
+            print "Adding link for #%s (%s -> %s)" % (
+                styled(file.id, style = "bold"),
+                styled(link, "yellow"),
+                styled(linked_file, "brown")
+            )
+
+        # Delete the link if it already existed
+        try:
+            os.remove(link)
+        except OSError:
+            pass
+
+        # Create the new link
+        os.symlink(linked_file, link)
+
+def remove_links(file, links = None, encoding = None):
+    
+    if links is None:
+        links = get_links(file)
+
+    for link in links:
+        link = encode_filename(link, encoding)
+        if os.path.lexists(link):
+            if debug:
+                print styled("STATIC PUBLICATION", "white", "red"),
+                print "Removing link for #%s (%s)" % (
+                    styled(file.id, style = "bold"),
+                    styled(link, "yellow")
+                )
+            os.remove(link)
+
+def get_links(file):    
+    return [
+        app.path("static", app.url_resolver.get_path(file, language))
+        for language in (file.translations or [None])
+    ]
 
 if hasattr(os, "symlink"):
-    from cocktail.styled import styled
-    from cocktail.events import when
-    from cocktail.persistence import datastore
-    from woost import app
-    from woost.models.publishable import Publishable
-    from woost.models.configuration import Configuration
-    from woost.models.file import File
-    from woost.models.user import User
-
-    debug = True
-    filesystem_encoding = "utf-8"
-
-    members_affecting_static_publication = set([
-        File.title,
-        File.file_name,
-        Publishable.enabled,
-        Publishable.start_date,
-        Publishable.end_date
-    ])
-
+    
     @when(File.inserted)
     @when(File.changed)
     @when(File.deleting)
     def _schedule_links_update(e):
+
+        if not enabled or not app.root:
+            return
      
         file = e.source
         member = getattr(e, "member", None)
@@ -65,68 +132,4 @@ if hasattr(os, "symlink"):
         if commit_successful:
             remove_links(file, old_links)
             create_links(file)
-
-    def encode_filename(link, encoding = None):
-        if encoding is None:
-            encoding = filesystem_encoding
-        return link.encode(encoding) if isinstance(link, unicode) else link
-
-    def create_links(file, links = None, encoding = None):
-        
-        if not file.is_inserted:
-            return
-
-        anonymous = User.require_instance(qname = "woost.anonymous_user")
-
-        if not file.is_accessible(anonymous):
-            return
-
-        if links is None:
-            links = get_links(file)
-
-        linked_file = file.file_path
-        linked_file = encode_filename(linked_file, encoding)
-
-        for link in links:
-
-            link = encode_filename(link, encoding)
-
-            if debug:
-                print styled("STATIC PUBLICATION", "white", "green"),
-                print "Adding link for #%s (%s -> %s)" % (
-                    styled(file.id, style = "bold"),
-                    styled(link, "yellow"),
-                    styled(linked_file, "brown")
-                )
-
-            # Delete the link if it already existed
-            try:
-                os.remove(link)
-            except OSError:
-                pass
-
-            # Create the new link
-            os.symlink(linked_file, link)
-
-    def remove_links(file, links = None, encoding = None):
-        
-        if links is None:
-            links = get_links(file)
-
-        for link in links:
-            link = encode_filename(link, encoding)
-            if os.path.lexists(link):
-                if debug:
-                    print styled("STATIC PUBLICATION", "white", "red"),
-                    print "Removing link for #%s (%s)" % (
-                        styled(file.id, style = "bold"),
-                        styled(link, "yellow")
-                    )
-                os.remove(link)
-
-    def get_links(file):    
-        return [
-            app.path("static", Configuration.instance.get_path(file, language))
-            for language in (file.translations or [None])
-        ]
 

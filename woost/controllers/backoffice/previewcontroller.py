@@ -9,7 +9,7 @@ u"""
 from cocktail.translations import get_language
 from cocktail import schema
 from cocktail.controllers import get_parameter, request_property
-from woost.models import Publishable
+from woost.models import Publishable, Block
 from woost.controllers.backoffice.editcontroller import EditController
 from woost.controllers.backoffice.useractions import get_user_action
 
@@ -38,6 +38,13 @@ class PreviewController(EditController):
             item = getattr(node, "item", None)            
             if item is not None and isinstance(item, Publishable):
                 return item
+
+        if isinstance(self.previewed_item, Block):
+            for path in self.previewed_item.find_paths():
+                container = path[0][0]
+                if isinstance(container, Publishable):
+                    publishable = container
+                    break
 
     @request_property
     def preview_language(self):

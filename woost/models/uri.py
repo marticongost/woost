@@ -15,6 +15,7 @@ from woost.models.controller import Controller
 class URI(Publishable):
 
     instantiable = True
+    type_group = "resource"
 
     groups_order = ["content"]
 

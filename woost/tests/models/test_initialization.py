@@ -13,6 +13,9 @@ from cocktail.tests.persistence.tempstoragemixin import TempStorageMixin
 class InitializationTestCase(TempStorageMixin, TestCase):
 
     def test_init_site(self):
-        from woost.models.initialization import init_site
-        init_site()
+        from woost import app
+        from woost.models.initialization import SiteInitializer
+        app.installation_id = "T"
+        initializer = SiteInitializer()
+        initializer.initialize()
 

@@ -6,16 +6,17 @@ u"""
 @organization:	Whads/Accent SL
 @since:			June 2008
 """
-import buffet
 from cocktail import schema
 from woost.models import Item
 
+
 class Template(Item):
+
+    type_group = "customization"
 
     members_order = [
         "title",
         "identifier",
-        "engine",
         "documents"
     ]
 
@@ -34,12 +35,6 @@ class Template(Item):
         unique = True,
         indexed = True,
         max = 255,
-        text_search = False
-    )
-
-    engine = schema.String(
-        enumeration = buffet.available_engines.keys(),
-        translatable_enumeration = False,
         text_search = False
     )
 

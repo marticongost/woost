@@ -4,7 +4,8 @@ from cocktail.controllers import context
 from woost.models import (
     get_current_user,
     ModifyPermission,
-    Publishable
+    Publishable,
+    Slot
 )
 ?>
 
@@ -14,6 +15,13 @@ from woost.models import (
  
     <?py-class
     publishable = None
+
+    def get_slots(self):
+        return [
+            (member, self.publishable)
+            for member in self.publishable.__class__.ordered_members()
+            if isinstance(member, Slot) and member.visible
+        ]
     ?>
 
     <?py
@@ -29,6 +37,9 @@ from woost.models import (
 
         if self.publishable is None:
             self.publishable = context["publishable"]
+
+        if not context.get("show_user_controls", True):
+            self.visible = False
 
         if not get_current_user().has_permission(ModifyPermission, target = self.publishable):
             self.visible = False
@@ -64,7 +75,17 @@ from woost.models import (
             py:id="modify_link" 
             py:action="modify"
             py:target="@{self.publishable}"/>
+        <py:ready>
+            <py:new
+                py:element="self.create_block_section(slot, blocks_source)"
+                py:for="slot, blocks_source in self.get_slots()"/>
+        </py:ready>
     </div>
 
+    <py:woost.views.BlockSection
+        py:def="block_section"
+        py:args="slot, blocks_source"
+        py:slot="${slot}"
+        py:blocks_source="${blocks_source}"/>
 </div>
 

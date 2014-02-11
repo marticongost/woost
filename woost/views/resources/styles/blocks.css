@@ -113,6 +113,14 @@
     top: 0;
 }
 
+.TextBlockView.fallback .image_gallery li {
+    margin: 0;
+}
+
+.TextBlockView.fallback .image_gallery li img {
+    display: block;
+}
+
 /* PublishableGrid
 -----------------------------------------------------------------------------*/ 
 .PublishableGrid ul.publishable_list {

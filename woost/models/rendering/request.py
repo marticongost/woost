@@ -50,6 +50,9 @@ def _remove_dir_contents(path, pattern = None):
 
 def clear_image_cache(item = None, factory = None):
 
+    if not app.root:
+        return
+
     if debug:
         from cocktail.styled import styled
         print styled("Clearing image cache", "red"),
@@ -97,11 +100,15 @@ def clear_image_cache(item = None, factory = None):
 @when(Item.changed)
 @when(Item.deleted)
 def _clear_image_cache_after_commit(event):
-    item = event.source    
-    if item.is_inserted:
-        clear_image_cache_after_commit(item = item)
+    if app.root:
+        item = event.source
+        if item.is_inserted:
+            clear_image_cache_after_commit(item = item)
 
 def clear_image_cache_after_commit(item = None, factory = None):
+
+    if not app.root:
+        return
 
     if factory:
         factory_identifier = factory.identifier or "factory%d" % factory.id

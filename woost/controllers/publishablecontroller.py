@@ -11,7 +11,9 @@ from datetime import datetime
 from hashlib import md5
 import cherrypy
 from cherrypy.lib import cptools, http
-from woost.controllers import BaseCMSController, get_cache_manager
+from cocktail.caching import CacheKeyError
+from woost import app
+from woost.controllers import BaseCMSController
 
 
 class PublishableController(BaseCMSController):
@@ -24,140 +26,116 @@ class PublishableController(BaseCMSController):
         "Content-Length",
         "Content-Disposition",
         "Content-Encoding",
-        "Last-Modified"
+        "Last-Modified",
+        "ETag"
     )
 
-    def __call__(self, **kwargs):
-        
-        if self.cache_enabled and cherrypy.request.method == "GET":
-            content = self._apply_cache(kwargs)
-            if content is not None:
-                return content
+    def __call__(self, **kwargs):       
+        content = self._apply_cache(**kwargs)
 
-        return self._produce_content(**kwargs)
+        if content is None:
+            content = self._produce_content(**kwargs)
 
-    def _apply_cache(self, kwargs):
+        return content
 
-        if "original_publishable" in self.context:
-            return
+    def _apply_cache(self, **kwargs):
 
+        publishable = self.context["publishable"]
         request = cherrypy.request
         response = cherrypy.response
-        publishable = self.context["publishable"]
+
+        if not (
+            self.cache_enabled
+            and publishable.cacheable
+            and request.method == "GET"
+            and "original_publishable" not in self.context
+        ):
+            return None
 
         caching_context = {
             "request": request,
             "controller": self
         }
-        policy = publishable.get_effective_caching_policy(**caching_context)
 
-        if policy is not None and policy.cache_enabled:
-
-            # Find the unique cache identifier for the requested content
-            cache_key = repr(policy.get_content_cache_key(
-                publishable,
-                **caching_context
-            ))
-
-            # Find the last time that the requested element (or its related
-            # content) was modified
-            content_last_update = policy.get_content_last_update(
-                publishable,
-                **caching_context
-            )
-            
-            # Client side cache
-            timestamp = None
-            
-            if content_last_update:
-                timestamp = mktime(content_last_update.timetuple())
-                etag_hash = md5()
-                etag_hash.update(cache_key)
-                etag_hash.update(repr(timestamp))
-                response.headers["ETag"] = etag_hash.hexdigest()
-                cptools.validate_etags()
-
-            # Server side cache
-            if policy.server_side_cache:
-                
-                cached_response = \
-                    self._get_cached_content(cache_key, policy, timestamp)
-                
-                if cached_response:
-                    headers, content = cached_response
-                    cherrypy.response.headers.update(headers)
-                else:
-                    expiration = policy.get_content_expiration(
-                        publishable,
-                        **caching_context
-                    )
-                    content = self._produce_cached_content(
-                        cache_key,
-                        expiration,
-                        **kwargs
-                    )
-
-                return content
-
-    def _get_cached_content(self, cache_key, policy, timestamp = None):
-
-        publishable = self.context["publishable"]
-        cache = get_cache_manager().get_cache_region(
-            'cached_content', 'woost_cache'
+        policy = publishable.get_effective_caching_policy(
+            **caching_context
         )
 
-        # Look for a cached response for the specified key
-        cached_response = None
-        cache_hash = md5(cache_key).hexdigest()
+        if policy is None or not policy.cache_enabled:
+            return None
 
-        if cache.has_key(cache_hash):
-            cache_entry = cache.get(cache_hash)
+        # Find the unique cache identifier for the requested content
+        cache_key = repr(policy.get_content_cache_key(
+            publishable,
+            **caching_context
+        ))
+    
+        # Server side cache
+        if policy.server_side_cache:
+            
+            try:
+                cached_response = app.cache.retrieve(cache_key)
 
-            if cache_entry:
-                entry_creation_time, expiration, cached_response, cached_key = cache_entry
+            except CacheKeyError:
+                content = self.__produce_response(**kwargs)
+                view = self.view
+                expiration = policy.get_content_expiration(
+                    publishable,
+                    base = view and view.cache_expiration,
+                    **caching_context
+                )
+                tags = policy.get_content_tags(
+                    publishable,
+                    base = view and view.cache_tags,
+                    **caching_context
+                )
 
-                valid_key = (cached_key == cache_key)
+                if isinstance(content, GeneratorType):
+                    content = "".join(content)
 
-                expired = (expiration is not None
-                           and datetime.now() >= expiration)
+                # Collect headers that should be included in the cache
+                headers = {}
+                response_headers = cherrypy.response.headers
 
-                current = timestamp is None or entry_creation_time >= timestamp
+                for header_name in self.cached_headers:
+                    header_value = response_headers.get(header_name)
+                    if header_value:
+                        headers[header_name] = header_value
 
-                if expired or not current or not valid_key:
-                    cache.remove(cache_hash)
-                    cached_response = None
+                # Store the response in the cache
+                app.cache.store(
+                    cache_key,
+                    (headers, content),
+                    expiration = expiration,
+                    tags = tags
+                )
+            else:
+                headers, content = cached_response
+                cherrypy.response.headers.update(headers)
+        else:
+            content = self.__produce_response(**kwargs)
 
-        return cached_response
+        # Client side cache
+        cptools.validate_etags()
+        return content
 
-    def _produce_cached_content(self, cache_key, expiration = None, **kwargs):
-
-        cache = get_cache_manager().get_cache_region(
-            'cached_content', 'woost_cache'
-        )
+    def __produce_response(self, **kwargs):
         content = self._produce_content(**kwargs)
 
         if isinstance(content, GeneratorType):
-            content = "".join(content)
+            content_bytes = "".join(
+                chunk.encode("utf-8")
+                    if isinstance(chunk, unicode)
+                    else chunk
+                for chunk in content
+            )
+        elif isinstance(content, unicode):
+            content_bytes = content.encode("utf-8")
+        else:
+            content_bytes = content
 
-        # Collect headers that should be included in the cache
-        headers = {}
-        response_headers = cherrypy.response.headers
-        
-        for header_name in self.cached_headers:
-            header_value = response_headers.get(header_name)
-            if header_value:
-                headers[header_name] = header_value
-
-        # Store the response in the cache
-        entry_creation_time = time()
-        cached_response = (headers, content)
-        cache_hash = md5(cache_key).hexdigest()
-        cache.put(
-            cache_hash,
-            (entry_creation_time, expiration, cached_response, cache_key)
-        )
-
-        return content
+        cherrypy.response.headers["ETag"] = md5(content_bytes).hexdigest()
+        return content_bytes
 
     def _produce_content(self, **kwargs):
         return BaseCMSController.__call__(self, **kwargs)

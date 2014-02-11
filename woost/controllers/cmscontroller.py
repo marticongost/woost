@@ -20,12 +20,13 @@ except ImportError:
 import rfc822
 import cherrypy
 from cherrypy.lib.cptools import validate_since
+from simplejson import dumps
 from pkg_resources import resource_filename, iter_entry_points
 from beaker.cache import CacheManager
 from beaker.util import parse_cache_config_options
 from beaker.middleware import SessionMiddleware
 from cocktail.events import Event, event_handler
-from cocktail.translations import get_language, set_language
+from cocktail.translations import translations, get_language, set_language
 from cocktail.controllers import (
     Dispatcher, 
     Location, 
@@ -36,6 +37,7 @@ from cocktail.controllers import (
 from cocktail.controllers.asyncupload import AsyncUploadController
 from cocktail.controllers.uriutils import percent_encode
 from cocktail.persistence import datastore
+from cocktail.html import templates
 from woost import app
 from woost.authenticationscheme import AuthenticationFailedError
 from woost.models import (
@@ -52,7 +54,6 @@ from woost.models import (
     set_current_website
 )
 from woost.controllers.asyncupload import async_uploader
-from woost.controllers import get_cache_manager, set_cache_manager
 from woost.controllers.basecmscontroller import BaseCMSController
 from woost.controllers.imagescontroller import ImagesController
 
@@ -169,22 +170,6 @@ class CMSController(BaseCMSController):
                         session_key_file.write(session_key)
 
                 sconf["session.secret"] = session_key
-
-            # If the cache manager doesn't exist, create it
-            if not get_cache_manager():
-                cache_path = app.path('cache')
-
-                if not os.path.exists(cache_path):
-                    os.mkdir(cache_path)
-
-                cache_manager = CacheManager(
-                    **parse_cache_config_options({
-                        'cache.lock_dir': cache_path,
-                        'cache.regions': 'woost_cache',
-                        'cache.woost_cache.type': 'memory'
-                    })
-                )
-                set_cache_manager(cache_manager)
 
             # Create the folders for uploaded files
             upload_path = app.path("upload")
@@ -329,11 +314,10 @@ class CMSController(BaseCMSController):
         """Redirect the current request to the canonical URL for the selected
         publishable element.
         """        
-        config = Configuration.instance
         publishable = path_resolution.item
 
         # Find the canonical path for the element
-        canonical_path = config.get_path(publishable)
+        canonical_path = app.url_resolver.get_path(publishable)
 
         if canonical_path is None:
             return
@@ -394,9 +378,8 @@ class CMSController(BaseCMSController):
 
     def _resolve_path(self, path):
 
-        config = Configuration.instance
         unicode_path = [try_decode(step) for step in path]
-        path_resolution = config.resolve_path(unicode_path)
+        path_resolution = app.url_resolver.resolve_path(unicode_path)
 
         if path_resolution:
             publishable = path_resolution.item
@@ -440,7 +423,7 @@ class CMSController(BaseCMSController):
 
         # Regular elements
         else:
-            uri = Configuration.instance.get_path(publishable)
+            uri = app.url_resolver.get_path(publishable)
             
             if uri is not None:
                 
@@ -568,9 +551,10 @@ class CMSController(BaseCMSController):
         if content_type in ("text/html", "text/xhtml"):
 
             error_page, status = event.source.get_error_page(error)
-
+            response = cherrypy.response
+            
             if status:
-                cherrypy.request.status = status
+                response.status = status
 
             if error_page:
                 event.handled = True
@@ -582,10 +566,7 @@ class CMSController(BaseCMSController):
                     original_publishable = controller.context["publishable"],
                     publishable = error_page
                 )
-                
-                response = cherrypy.response
-                response.status = status 
-                
+
                 error_controller = error_page.resolve_controller()
 
                 # Instantiate class based controllers
@@ -594,7 +575,7 @@ class CMSController(BaseCMSController):
                     error_controller._rendering_format = "html"
 
                 response.body = error_controller()
-    
+
     def get_error_page(self, error):
         """Produces a custom error page for the indicated exception.
 
@@ -624,16 +605,17 @@ class CMSController(BaseCMSController):
         # Access forbidden:
         # The default behavior is to show a login page for anonymous users, and
         # a 403 error message for authenticated users.
-        elif is_http_error and error.status == 403 \
-        or isinstance(error, (AuthorizationError, AuthenticationFailedError)):
+        elif (
+            (is_http_error and error.status == 403)
+            or isinstance(error, (AuthorizationError, AuthenticationFailedError))
+        ):
             if get_current_user().anonymous:
-
                 publishable = self.context["publishable"]
 
                 while publishable is not None:
                     login_page = publishable.login_page
                     if login_page is not None:
-                        return login_page, 200
+                        return login_page, 403
                     publishable = publishable.parent
 
                 return config.get_setting("login_page"), 403
@@ -678,4 +660,18 @@ class CMSController(BaseCMSController):
 
     async_upload = AsyncUploadController()
     async_upload.uploader = async_uploader
+
+    @cherrypy.expose
+    def current_user(self):
+        cherrypy.response.headers["Content-Type"] = "text/javascript"
+        user = get_current_user()
+        return "cocktail.declare('woost'); woost.user = %s;" % dumps(
+            {
+                "id": user.id,
+                "label": translations(user),
+                "identifier": user.get(app.authentication.identifier_field),
+                "anonymous": user.anonymous
+            }
+            if user else None
+        )
 

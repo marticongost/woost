@@ -10,7 +10,7 @@ from woost.models import Item
 class AccessRestriction(Item):
 
     instantiable = True
-    visible_from_root = False
+    type_group = "users"
 
     members_order = [
         "title",

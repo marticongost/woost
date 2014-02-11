@@ -45,7 +45,8 @@ class User(Item):
     @ivar encryption_method: The hashing algorithm used to encrypt user
         passwords. Should be a reference to one of the algorithms provided
         by the L{hashlib} module.
-    """    
+    """
+    type_group = "users"
     edit_form = "woost.views.UserForm"
     edit_node_class = \
         "woost.controllers.backoffice.usereditnode.UserEditNode"

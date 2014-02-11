@@ -20,7 +20,7 @@ from cocktail.modeling import (
     ListWrapper,
     OrderedSet
 )
-from cocktail.events import Event, EventHub
+from cocktail.events import Event, EventHub, event_handler
 from cocktail.pkgutils import resolve
 from cocktail import schema
 from cocktail.translations import translations
@@ -34,6 +34,8 @@ from cocktail.persistence import (
 )
 from woost.models import (
     Configuration,
+    Item,
+    Block,
     get_current_user,
     CreatePermission,
     ReadPermission,
@@ -43,6 +45,7 @@ from woost.models import (
     ModifyMemberPermission,
     ReadTranslationPermission
 )
+from woost.models.blockutils import add_block
 from woost.controllers.notifications import notify_user, pop_user_notifications
 
 
@@ -577,7 +580,6 @@ class EditNode(StackNode):
                 state[key] = value
         
         state["content_type"] = self._item.__class__
-        state["item_owner"] = self._item.owner
 
         if self._item.__class__.translated:
             state["item_translations"] = self._item.translations.keys()
@@ -588,7 +590,6 @@ class EditNode(StackNode):
 
         content_type = state.pop("content_type", None)
         item_translations = state.pop("item_translations", None)
-        item_owner = state.pop("item_owner", None)
 
         for key, value in state.iteritems():
             if key in self._persistent_keys:
@@ -599,7 +600,6 @@ class EditNode(StackNode):
                         value = content_type()
                         self.initialize_new_item(
                             value,
-                            item_owner,
                             item_translations
                         )
 
@@ -619,10 +619,7 @@ class EditNode(StackNode):
         """
         return self._item
 
-    def initialize_new_item(self, item, owner = None, languages = None):        
-       
-        item.owner = owner
-                
+    def initialize_new_item(self, item, languages = None):        
         if item.__class__.translated:
             for language in (
                 languages
@@ -785,6 +782,14 @@ class EditNode(StackNode):
                 ):
                     return True
 
+        # Remove all relations to blocks from the edit view
+        if (
+            isinstance(member, schema.RelationMember)
+            and member.related_type
+            and issubclass(member.related_type, Block)
+        ):
+            return True
+
         return False
 
     def _adapt_collection(self, context, key, value):
@@ -848,7 +853,7 @@ class EditNode(StackNode):
         """
         source_form_data = {}
         self.form_adapter.export_object(
-            source or self._item.draft_source or self._item,
+            source or self._item,
             source_form_data,
             self.content_type,
             self.form_schema
@@ -856,7 +861,8 @@ class EditNode(StackNode):
         return schema.diff(
             source_form_data,
             self.form_data,
-            self.form_schema
+            self.form_schema,
+            exclude = lambda member: not member.editable
         )
 
     def relate(self, member, item):
@@ -906,8 +912,7 @@ class EditNode(StackNode):
             insertion (True) or an update of an existing item (False).
         @type is_new: bool
 
-        @param change: A change object describing the save operation. Will be
-            set to None when saving a draft.
+        @param change: A change object describing the save operation.
         @type change: L{Change<woost.models.changeset.Change>}            
         """
         item = self.item
@@ -1009,6 +1014,87 @@ class RelationNode(StackNode):
 
         content_type = self.get_ancestor_node(EditNode).content_type
         self.member = content_type[member_name]
+
+
+class EditBlocksNode(StackNode):
+
+    item = None
+
+    def __getstate__(self):
+        return {
+            "_stack": self._stack,
+            "_parent_node": self._parent_node,
+            "_index": self._index,
+            "item": self.item.id
+        }
+
+    def __setstate__(self, state):
+        self._stack = state["_stack"]
+        self._parent_node = state["_parent_node"]
+        self._index = state["_index"]
+        self.item = Item.require_instance(state["item"])
+
+    def uri(self, **params):
+
+        if "edit_stack" not in params:
+            params["edit_stack"] = self.stack.to_param(self.index)
+
+        return context["cms"].contextual_uri(
+            "blocks",
+            str(self.item.id),
+            **params
+        )
+
+    def back_hash(self, previous_node):
+        if isinstance(previous_node, EditNode):
+            return "block" + str(previous_node.item.id)
+
+
+class AddBlockNode(EditNode):
+
+    block_parent = None
+    block_slot = None
+    block_positioning = "append"
+    block_anchor = None
+
+    _persistent_keys = EditNode._persistent_keys | frozenset(["block_positioning"])
+
+    def __getstate__(self):
+        state = EditNode.__getstate__(self)
+        state["block_parent"] = self.block_parent.id
+        state["block_slot"] = self.block_slot.name
+
+        if self.block_anchor is not None:
+            state["block_anchor"] = self.block_anchor.id
+        else:
+            state["block_anchor"] = None
+
+        return state
+
+    def __setstate__(self, state):
+  
+        EditNode.__setstate__(self, state)
+
+        self.block_parent = Item.get_instance(state["block_parent"])
+        
+        if self.block_parent:
+            block_type = type(self.block_parent)
+            self.block_slot = block_type.get_member(state["block_slot"])
+
+        anchor_id = state.get("block_anchor")
+        if anchor_id is not None:
+            self.block_anchor = Block.get_instance(anchor_id)
+
+    @event_handler
+    def handle_saving(cls, e):
+        node = e.source
+        add_block(
+            node.item,
+            node.block_parent,
+            node.block_slot,
+            positioning = node.block_positioning,
+            anchor = node.block_anchor
+        )
 
 
 class WrongEditStackError(Exception):
