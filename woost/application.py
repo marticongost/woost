@@ -91,3 +91,24 @@ class Application(object):
     # Caching
     cache = Cache()
 
+    # URLs
+    __url_resolver = None
+
+    def _get_url_resolver(self):
+        if self.__url_resolver is None:
+            from woost.urlresolver import (
+                URLResolver,
+                HierarchicalURLScheme,
+                DescriptiveIdURLScheme
+            )
+            url_resolver = URLResolver()
+            url_resolver.add_url_scheme(HierarchicalURLScheme())
+            url_resolver.add_url_scheme(DescriptiveIdURLScheme())
+            self.__url_resolver = url_resolver
+        return self.__url_resolver
+
+    def _set_url_resolver(self, url_resolver):
+        self.__url_resolver = url_resolver
+
+    url_resolver = property(_get_url_resolver, _set_url_resolver)
+

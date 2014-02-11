@@ -9,7 +9,6 @@ from cocktail.events import when
 from cocktail.persistence import datastore
 from woost import app
 from woost.models.publishable import Publishable
-from woost.models.configuration import Configuration
 from woost.models.file import File
 from woost.models.user import User
 
@@ -85,7 +84,7 @@ def remove_links(file, links = None, encoding = None):
 
 def get_links(file):    
     return [
-        app.path("static", Configuration.instance.get_path(file, language))
+        app.path("static", app.url_resolver.get_path(file, language))
         for language in (file.translations or [None])
     ]
 

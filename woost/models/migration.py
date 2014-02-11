@@ -772,3 +772,50 @@ def remove_template_engine(e):
         except AttributeError:
             pass
 
+#------------------------------------------------------------------------------
+ 
+step = MigrationStep("Remove publication schemes")
+
+@when(step.executing)
+def remove_publication_schemes(e):
+
+    from cocktail.persistence import datastore
+    from woost.models import (
+        Item,
+        Configuration
+    )
+    from woost.models.utils import remove_broken_type
+
+    remove_broken_type(
+        "woost.models.publicationschemes.PublicationScheme",
+        existing_bases = (
+            Item,
+        )
+    )
+
+    remove_broken_type(
+        "woost.models.publicationschemes.HierarchicalPublicationScheme",
+        existing_bases = (
+            Item,
+        )
+    )
+
+    remove_broken_type(
+        "woost.models.publicationschemes.IdPublicationScheme",
+        existing_bases = (
+            Item,
+        )
+    )
+
+    remove_broken_type(
+        "woost.models.publicationschemes.DescriptiveIdPublicationScheme",
+        existing_bases = (
+            Item,
+        )
+    )
+
+    try:
+        del Configuration.instance._publication_schemes
+    except AttributeError:
+        pass
+

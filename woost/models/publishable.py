@@ -509,8 +509,7 @@ class Publishable(Item):
         host = None,
         encode = True):
         
-        from woost.models import Configuration
-        uri = Configuration.instance.get_path(self, language = language)
+        uri = app.url_resolver.get_path(self, language = language)
 
         if uri is not None:
             if self.per_language_publication:
