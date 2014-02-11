@@ -25,7 +25,7 @@ from woost.models import Configuration
     </py:with>
 
     <div py:def="translation_preview" py:args="language">
-        <div py:local_id="translation_label">${translations(language)}</div>
+        <div py:local_id="translation_label">${translations("locale", locale = language)}</div>
         <div py:local_id="translation_content">${self.block.get("text", language)}</div>
     </div>
 
