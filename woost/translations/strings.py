@@ -211,22 +211,10 @@ translations.define("cocktail.html.shortcuts action save",
     en = u"s"
 )
 
-translations.define("Action save_draft",
-    ca = u"Desar esborrany",
-    es = u"Guardar borrador",
-    en = u"Save draft"
-)
-
-translations.define("Action confirm_draft",
-    ca = u"Confirmar esborrany",
-    es = u"Confirmar borrador",
-    en = u"Confirm draft"
-)
-
-translations.define("Action discard_draft",
-    ca = u"Descartar esborrany",
-    es = u"Descartar borrador",
-    en = u"Discard draft"
+translations.define("Action invalidate_cache",
+    ca = u"Netejar el cache",
+    es = u"Limpiar el cache",
+    en = u"Clear cache"
 )
 
 translations.define("Action select",
@@ -275,6 +263,28 @@ translations.define("cocktail.html.shortcuts action print",
     ca = u"i",
     es = u"i",
     en = u"i"
+)
+
+translations.define("Action edit_blocks",
+    ca = u"Editar blocs",
+    es = u"Editar bloques",
+    en = u"Edit blocks"
+)
+
+translations.define(
+    "woost.controllers.backoffice.editstack.EditBlocksNode-instance",
+    ca = lambda instance: 
+        u"Editant els blocs " + ca_possessive(translations(instance.item)),
+    es = lambda instance:
+        u"Editando los bloques de " + translations(instance.item),
+    en = lambda instance:
+        u"Editing the blocks for " + translations(instance.item)
+)
+
+translations.define("woost.views.BlockSection.edit_slot_link",
+    ca = u"Editar aquest espai",
+    es = u"Editar este espacio",
+    en = u"Edit this slot"
 )
 
 translations.define("editing",
@@ -445,21 +455,6 @@ translations.define("woost.views.TreeContentView collapse all",
     en = u"Fold"
 )
 
-translations.define("woost.models.Item draft copy",
-    ca = lambda item, draft_id, **kwargs: u"Borrador %d %s"
-        % (draft_id, ca_possessive(translations(item, "ca"))),
-    es = lambda item, draft_id, **kwargs: u"Borrador %d de %s"
-        % (draft_id, translations(item, "es")),
-    en = lambda item, draft_id, **kwargs: u"Draft %d for %s"
-        % (draft_id, translations(item, "en"))
-)
-
-translations.define("woost.views.ContentTable draft label",
-    ca = "Esborrany %(draft_id)d",
-    es = "Borrador %(draft_id)d",
-    en = "Draft %(draft_id)d"
-)
-
 translations.define("Differences for",
     ca = lambda item: u"Canvis a <em>'%s'</em>" % translations(item, "ca"),
     es = lambda item: u"Cambios en <em>'%s'</em>" % translations(item, "es"),
@@ -496,33 +491,70 @@ translations.define("Action revert",
     en = u"Undo"
 )
 
-translations.define("Editing draft",
-    ca = u"Estàs editant un nou esborrany. L'element no esdevindrà actiu fins "
-         u"que no el confirmis.",
-    es = u"Estás editando un nuevo borrador. El elemento no se activará hasta "
-         u"que no lo confirmes.",
-    en = u"You are editing a new draft. The element won't become active until "
-         u"you confirm it."
+translations.define("Action add_block",
+    ca = u"Afegir",
+    es = u"Añadir",
+    en = u"Add"
 )
 
-translations.define("Editing draft copy",
-    ca = u"Estàs editant un esborrany d'un <a href='%(location)s'>element</a>."
-         u" Els canvis no es veuran reflectits a l'original fins que no "
-         u"confirmis l'esborrany.",
-    es = u"Estás editando un borrador de un <a href='%(location)s'>"
-         u"elemento</a>. Tus cambios no se verán reflejados en el original "
-         u"hasta que no confirmes el borrador.",
-    en = u"You are editing a draft of an <a href='%(location)s'>item</a>. "
-         u"Your changes won't be made permanent until you confirm the draft."
+translations.define("Action add_block_before",
+    ca = u"Afegir davant",
+    es = u"Añadir en frente",
+    en = u"Add before"
 )
 
-translations.define("Draft source reference",
-    ca = u"Pots accedir a la còpia original de l'element "
-         u"<a href='%(location)s'>aquí</a>.",
-    es = u"Puedes acceder a la copia original del elemento "
-         u"<a href='%(location)s'>aquí</a>.",
-    en = u"The original copy of the item can be found "
-         u"<a href='%(location)s'>here</a>."
+translations.define("Action add_block_after",
+    ca = u"Afegir darrere",
+    es = u"Añadir detrás",
+    en = u"Add after"
+)
+
+translations.define("Action edit_block",
+    ca = u"Editar",
+    es = u"Editar",
+    en = u"Edit"
+)
+
+translations.define("Action remove_block",
+    ca = u"Treure",
+    es = u"Quitar",
+    en = u"Remove"
+)
+
+translations.define("Action copy_block",
+    ca = u"Copiar",
+    es = u"Copiar",
+    en = u"Copy"
+)
+
+translations.define("Action cut_block",
+    ca = u"Retallar",
+    es = u"Cortar",
+    en = u"Cut"
+)
+
+translations.define("Action paste_block",
+    ca = u"Enganxar",
+    es = u"Pegar",
+    en = u"Paste"
+)
+
+translations.define("Action paste_block_after",
+    ca = u"Enganxar darrere",
+    es = u"Pegar detrás",
+    en = u"Paste after"
+)
+
+translations.define("Action paste_block_before",
+    ca = u"Enganxar davant",
+    es = u"Pegar delante",
+    en = u"Paste before"
+)
+
+translations.define("Action share_block",
+    ca = u"Afegir a la llibreria",
+    es = u"Añadir a la libreria",
+    en = u"Add to the library"
 )
 
 translations.define("woost.views.ActionBar Additional actions",
@@ -800,13 +832,6 @@ translations.define("woost.views.BackOfficeShowDetailView open resource",
 )
 
 translations.define(
-    "woost.models.userfilter.OwnItemsFilter-instance",
-    ca = u"Elements propis",
-    es = u"Elementos propios",
-    en = u"Owned items"
-)
-
-translations.define(
     "woost.models.userfilter.IsPublishedFilter-instance",
     ca = u"Elements publicats",
     es = u"Elementos publicados",
@@ -899,152 +924,170 @@ translations.define("woost.views.EditLink-delete",
 # Initialization content
 #------------------------------------------------------------------------------
 translations.define(
-    "woost.models.initialization Administrators role title",
-    ca = u"Administradors",
-    es = u"Administradores",
-    en = u"Administrators"
+    "woost.initialization.website.site_name",
+    ca = u"El meu lloc web",
+    es = u"Mi sitio web",
+    en = u"My website"
 )
 
 translations.define(
-    "woost.models.initialization Anonymous role title",
+    "woost.initialization.anonymous.title",
     ca = u"Anònim",
     es = u"Anónimo",
     en = u"Anonymous"
 )
 
 translations.define(
-    "woost.models.initialization Everybody role title",
+    "woost.initialization.administrators.title",
+    ca = u"Administradors",
+    es = u"Administradores",
+    en = u"Administrators"
+)
+
+translations.define(
+    "woost.initialization.everybody.title",
     ca = u"Tothom",
     es = u"Todos los usuarios",
     en = u"Everybody"
 )
 
 translations.define(
-    "woost.models.initialization Authenticated role title",
+    "woost.initialization.authenticated.title",
     ca = u"Autenticat",
     es = u"Autenticado",
     en = u"Authenticated"
 )
 
 translations.define(
-    "woost.models.initialization Back office title",
-    ca = u"Gestor de continguts",
-    es = u"Gestor de contenidos",
-    en = u"Content Manager"
+    "woost.initialization.editors.title",
+    ca = u"Editors",
+    es = u"Editores",
+    en = u"Editors"
+)
+
+translations.define("woost.initialization.file_deletion_trigger.title",
+    ca = u"Esborrar fitxers del disc quan s'elimini el seu element",
+    es = u"Borrar ficheros del disco cuando se elimine su elemento",
+    en = u"Erase files from disc when their item is deleted"
+)
+
+translations.define("woost.initialization.document_controller.title",
+    ca = u"Controlador de document",
+    es = u"Controlador de documento",
+    en = u"Document controller"
+)
+
+translations.define("woost.initialization.file_controller.title",
+    ca = u"Controlador de fitxer",
+    es = u"Controlador de fichero",
+    en = u"File controller"
+)
+
+translations.define("woost.initialization.uri_controller.title",
+    ca = u"Controlador de redirecció",
+    es = u"Controlador de redirección",
+    en = u"Redirection controller"
+)
+
+translations.define("woost.initialization.styles_controller.title",
+    ca = u"Controlador d'estils d'usuari",
+    es = u"Controlador de estilos de usuario",
+    en = u"User styles controller"
+)
+
+translations.define("woost.initialization.feed_controller.title",
+    ca = u"Controlador de sindicació de continguts",
+    es = u"Controlador de sindicación de contenidos",
+    en = u"Feed controller"
+)
+
+translations.define("woost.initialization.backoffice_controller.title",
+    ca = u"Controlador de panell administratiu",
+    es = u"Controlador de panel administrativo",
+    en = u"Backoffice controller"
+)
+
+translations.define("woost.initialization.firstchildredirection_controller.title",
+    ca = u"Controlador de redirecció automàtica al primer fill",
+    es = u"Controlador de redirección automática al primer hijo",
+    en = u"First child redirection controller"
+)
+
+translations.define("woost.initialization.login_controller.title",
+    ca = u"Controlador de autenticació d'usuari",
+    es = u"Controlador de autenticación de usuario",
+    en = u"User authentication controller"
+)
+
+translations.define("woost.initialization.passwordchange_controller.title",
+    ca = u"Controlador de canvi de contrasenya",
+    es = u"Controlador de cambio de contraseña",
+    en = u"Password change controller"
+)
+
+translations.define("woost.initialization.passwordchangeconfirmation_controller.title",
+    ca = u"Controlador de confirmació de canvi de contrasenya",
+    es = u"Controlador de confirmación de cambio de contraseña",
+    en = u"Password change confirmation controller"
 )
 
 translations.define(
-    "woost.models.initialization Standard template title",
+    "woost.initialization.standard_template.title",
     ca = u"Plantilla estàndard",
     es = u"Plantilla estándar",
     en = u"Standard template"
 )
 
 translations.define(
-    "woost.models.initialization Login Form template title",
-    ca = u"Plantilla formulario de autenticació d'usuari",
-    es = u"Plantilla formulario de autenticación de usuario",
-    en = u"Login form template"
-)
-
-translations.define(
-    "woost.models.initialization Password Change Request template title",
-    ca = u"Plantilla sol·licitud de canvi de contrasenya",
-    es = u"Plantilla solicitud de cambio de contraseña",
-    en = u"Password change request template"
-)
-
-translations.define(
-    "woost.models.initialization Password Change Confirmation Email template title",
-    ca = u"Plantilla de correu electrònic per sol·licitar el canvi de contrasenya",
-    es = u"Plantilla de correo electrónico para solicitud de cambio de contraseña",
-    en = u"Password change confirmation email template"
-)
-
-translations.define(
-    "woost.models.initialization Password Change Confirmation Email subject",
-    ca = u"Canvi de contrasenya",
-    es = u"Cambio de contraseña",
-    en = u"Password change"
-)
-
-translations.define(
-    "woost.models.initialization Password Change Confirmation Email body",
-    ca = u"""Hola ${user.email}: <br/><br/>
-        Fes clic en el següent enllaç per establir la teva nova contrasenya:<br/>
-        <a href='${confirmation_url}'>${confirmation_url}</a>""",
-    es = u"""Hola ${user.email}: <br/><br/>
-        Haz clic en el siguiente enlace para establecer tu nueva contraseña:<br/>
-        <a href='${confirmation_url}'>${confirmation_url}</a>""",
-    en = u"""Hello ${user.email}, <br/><br/>
-        Click on the following link to set your new password:<br/>
-        <a href='${confirmation_url}'> ${confirmation_url}</a>"""
-)
-
-translations.define(
-    "woost.models.initialization Password Change Confirmation view title",
-    ca = u"Plantilla formulari de canvi de contrasenya",
-    es = u"Plantilla formulario de cambio de contraseña",
-    en = u"Password change form template"
-)
-
-translations.define(
-    "woost.models.initialization Password Change Confirmation page title",
-    ca = u"Pàgina de confirmació de canvi de contrasenya",
-    es = u"Página de confirmación de cambio de contraseña",
-    en = u"Password change confirmation page"
-)
-
-translations.define(
-    "woost.models.initialization Password Change Confirmation page body",
-    ca = u"Introduïx la nova contrasenya per la teva compte d'usuari",
-    es = u"Introduce tu nueva contraseña para tu cuenta de usuario",
-    en = u"Enter the new password for your user account"
-)
-
-translations.define(
-    "woost.models.initialization Site style sheet title",
-    ca = u"Full d'estils global",
-    es = u"Hoja de estilos global",
-    en = u"Global stylesheet"
-)
-
-translations.define(
-    "woost.models.initialization Home page title",
+    "woost.initialization.home.title",
     ca = u"Lloc web",
     es = u"Sitio web",
     en = u"Web site"
 )
 
 translations.define(
-    "woost.models.initialization Home page inner title",
+    "woost.initialization.home.inner_title",
     ca = u"Benvingut!",
     es = u"Bienvenido!",
     en = u"Welcome!"
 )
 
 translations.define(
-    "woost.models.initialization Home page body",
+    "woost.initialization.home.body",
     ca = u"<p>El teu lloc web s'ha creat correctament. Ja pots començar "
-        u"a <a href='%(uri)s'>treballar-hi</a> i substituir aquesta pàgina "
+        u"a <a href='/cms'>treballar-hi</a> i substituir aquesta pàgina "
         u"amb els teus propis continguts.</p>",
     es = u"<p>Tu sitio web se ha creado correctamente. Ya puedes empezar "
-        u"a <a href='%(uri)s'>trabajar</a> en él y sustituir esta página "
+        u"a <a href='/cms'>trabajar</a> en él y sustituir esta página "
         u"con tus propios contenidos.</p>",
     en = u"<p>Your web site has been created successfully. You can start "
-        u"<a href='%(uri)s'>working on it</a> and replace this page with "
+        u"<a href='/cms'>working on it</a> and replace this page with "
         u"your own content.</p>"
 )
 
 translations.define(
-    "woost.models.initialization Not found error page title",
+    "woost.initialization.user_styles.title",
+    ca = u"Estils d'usuari",
+    es = u"Estilos de usuario",
+    en = u"User styles"
+)
+
+translations.define(
+    "woost.initialization.backoffice.title",
+    ca = u"Gestor de continguts",
+    es = u"Gestor de contenidos",
+    en = u"Content Manager"
+)
+
+translations.define(
+    "woost.initialization.not_found_error_page.title",
     ca = u"Pàgina no trobada",
     es = u"Página no encontrada",
     en = u"Page not found"
 )
 
 translations.define(
-    "woost.models.initialization Not found error page body",
+    "woost.initialization.not_found_error_page.body",
     ca = u"<p>La direcció indicada no coincideix amb cap dels continguts "
          u"del web. Si us plau, revísa-la i torna-ho a provar.</p>",
     es = u"<p>La dirección indicada no coincide con ninguno de los "
@@ -1054,28 +1097,28 @@ translations.define(
 )
 
 translations.define(
-    "woost.models.initialization Login page title",
-    ca = u"Autenticació d'usuari",
-    es = u"Autenticación de usuario",
-    en = u"User authentication"
+    "woost.initialization.forbidden_error_page.title",
+    ca = u"Accés denegat",
+    es = u"Acceso denegado",
+    en = u"Forbidden"
 )
 
 translations.define(
-    "woost.controllers.authentication.AuthenticationFailedError-instance",
-    ca = u"Usuari o contrasenya incorrectes",
-    es = u"Usuario o contraseña incorrectos",
-    en = u"Incorrect user or password"
+    "woost.initialization.forbidden_error_page.body",
+    ca = u"<p>No es permet l'accés a aquesta secció del web.</p>",
+    es = u"<p>No se permite el acceso a esta sección del sitio.</p>",
+    en = u"<p>Access denied.</p>"
 )
 
 translations.define(
-    "woost.models.initialization Password Change page title",
+    "woost.initialization.password_change_page.title",
     ca = u"Canvi de contrasenya d'usuari",
     es = u"Cambio de contraseña de usuario",
     en = u"Password change"
 )
 
 translations.define(
-    "woost.models.initialization Password Change page body",
+    "woost.initialization.password_change_page.body",
     ca = u"<p>Introdueix el teu identificador d'usuari per iniciar el "
          u"procés de canvi de contrasenya</p>",
     es = u"<p>Introduce a tu identificador de usuario para iniciar el "
@@ -1085,221 +1128,164 @@ translations.define(
 )
 
 translations.define(
-    "woost.models.initialization Forbidden error page title",
-    ca = u"Accés denegat",
-    es = u"Acceso denegado",
-    en = u"Forbidden"
+    "woost.initialization.password_change_page.form_title",
+    ca = u"Formulari de petició de canvi de contrasenya",
+    es = u"Formulario de petición de cambio de contraseña",
+    en = u"Password change request form"
 )
 
 translations.define(
-    "woost.models.initialization Forbidden error page body",
-    ca = u"<p>No es permet l'accés a aquesta secció del web.</p>",
-    es = u"<p>No se permite el acceso a esta sección del sitio.</p>",
-    en = u"<p>Access denied.</p>"
+    "woost.initialization.password_change_confirmation_page.title",
+    ca = u"Canvi de contrasenya",
+    es = u"Cambio de contraseña",
+    en = u"Change your password"
 )
 
 translations.define(
-    "woost.models.initialization Create action title",
-    ca = u"Crear",
-    es = u"Crear",
-    en = u"Create"
+    "woost.initialization.password_change_confirmation_page.body",
+    ca = u"Introduïx la nova contrasenya pel teu compte d'usuari",
+    es = u"Introduce tu nueva contraseña para tu cuenta de usuario",
+    en = u"Enter the new password for your user account"
 )
 
 translations.define(
-    "woost.models.initialization Read action title",
-    ca = u"Veure",
-    es = u"Ver",
-    en = u"Read"
+    "woost.initialization.password_change_confirmation_page.form_title",
+    ca = u"Formulari de canvi de contrasenya",
+    es = u"Formulario de cambio de contraseña",
+    en = u"Password change form"
 )
 
 translations.define(
-    "woost.models.initialization Modify action title",
-    ca = u"Modificar",
-    es = u"Modificar",
-    en = u"Modify"
+    "woost.initialization.password_change_email_template.title",
+    ca = u"Plantilla de correu electrònic per sol·licitar el canvi de contrasenya",
+    es = u"Plantilla de correo electrónico para solicitud de cambio de contraseña",
+    en = u"Password change confirmation email template"
 )
 
 translations.define(
-    "woost.models.initialization Delete action title",
-    ca = u"Eliminar",
-    es = u"Eliminar",
-    en = u"Delete"
+    "woost.initialization.password_change_email_template.subject",
+    ca = u"Canvi de contrasenya",
+    es = u"Cambio de contraseña",
+    en = u"Password change"
 )
 
 translations.define(
-    "woost.models.initialization Confirm draft action title",
-    ca = u"Confirmar esborrany",
-    es = u"Confirmar borrador",
-    en = u"Confirm draft"
+    "woost.initialization.password_change_email_template.body",
+    ca = u"""Obre l'enllaç següent per establir la teva nova contrasenya:<br/>
+        <a href='${confirmation_url}'>${confirmation_url}</a>""",
+    es = u"""Abre el enlace siguiente para establecer tu nueva contraseña:<br/>
+        <a href='${confirmation_url}'>${confirmation_url}</a>""",
+    en = u"""Open the following link to set your new password:<br/>
+        <a href='${confirmation_url}'> ${confirmation_url}</a>"""
 )
 
 translations.define(
-    "woost.models.initialization Page tree user view",
-    ca = u"Arbre de pàgines",
-    es = u"Árbol de páginas",
-    en = u"Page tree"
+    "woost.initialization.login_page.title",
+    ca = u"Autenticació d'usuari",
+    es = u"Autenticación de usuario",
+    en = u"User authentication"
 )
 
 translations.define(
-    "woost.models.initialization Own items user view",
+    "woost.initialization.own_items_user_view.title",
     ca = u"Els meus elements",
     es = u"Mis elementos",
     en = u"My items"
 )
 
 translations.define(
-    "woost.models.initialization File gallery user view",
+    "woost.initialization.page_tree_user_view.title",
+    ca = u"Arbre de pàgines",
+    es = u"Árbol de páginas",
+    en = u"Page tree"
+)
+
+translations.define(
+    "woost.initialization.file_gallery_user_view.title",
     ca = u"Galeria de fitxers",
     es = u"Galería de ficheros",
     en = u"File gallery"
 )
 
-translations.define("woost.models.initialization Document controller title",
-    ca = u"Controlador de document",
-    es = u"Controlador de documento",
-    en = u"Document controller"
-)
 
-translations.define("woost.models.initialization File controller title",
-    ca = u"Controlador de fitxer",
-    es = u"Controlador de fichero",
-    en = u"File controller"
-)
-
-translations.define("woost.models.initialization URI controller title",
-    ca = u"Controlador de redirecció",
-    es = u"Controlador de redirección",
-    en = u"Redirection controller"
-)
-
-translations.define("woost.models.initialization Styles controller title",
-    ca = u"Controlador d'estils d'usuari",
-    es = u"Controlador de estilos de usuario",
-    en = u"User styles controller"
-)
-
-translations.define("woost.models.initialization Feed controller title",
-    ca = u"Controlador de sindicació de continguts",
-    es = u"Controlador de sindicación de contenidos",
-    en = u"Feed controller"
-)
-
-translations.define("woost.models.initialization BackOffice controller title",
-    ca = u"Controlador de panell administratiu",
-    es = u"Controlador de panel administrativo",
-    en = u"Backoffice controller"
-)
-
-translations.define("woost.models.initialization WebServices controller title",
-    ca = u"Controlador de serveis web",
-    es = u"Controlador de servicios web",
-    en = u"Web services controller"
-)
-
-translations.define("woost.models.initialization FirstChildRedirection controller title",
-    ca = u"Controlador de redirecció automàtica al primer fill",
-    es = u"Controlador de redirección automática al primer hijo",
-    en = u"First child redirection controller"
-)
-
-translations.define("woost.models.initialization Login controller title",
-    ca = u"Controlador de autenticació d'usuari",
-    es = u"Controlador de autenticación de usuario",
-    en = u"User authentication controller"
-)
-
-translations.define("woost.models.initialization PasswordChange controller title",
-    ca = u"Controlador de canvi de contrasenya",
-    es = u"Controlador de cambio de contraseña",
-    en = u"Password change controller"
-)
-
-translations.define("woost.models.initialization PasswordChangeConfirmation controller title",
-    ca = u"Controlador de confirmació de canvi de contrasenya",
-    es = u"Controlador de confirmación de cambio de contraseña",
-    en = u"Password change confirmation controller"
-)
-
-translations.define("woost.models.initialization User styles title",
-    ca = u"Estils d'usuari",
-    es = u"Estilos de usuario",
-    en = u"User styles"
-)
-
-translations.define("woost.models.initialization Web services title",
-    ca = u"Serveis web",
-    es = u"Servicios web",
-    en = u"Web services"
-)
-
-translations.define("woost.models.initialization delete_files_trigger",
-    ca = u"Esborrar fitxers del disc quan s'elimini el seu element",
-    es = u"Borrar ficheros del disco cuando se elimine su elemento",
-    en = u"Erase files from disc when their item is deleted"
-)
-
-translations.define("woost.models.initialization content_renderer",
+translations.define("woost.initialization.content_renderer.title",
     ca = u"Imatge del contingut",
     es = u"Imagen del contenido",
     en = u"Content renderer"
 )
 
-translations.define("woost.models.initialization icon16_renderer",
+translations.define("woost.initialization.icon16_renderer.title",
     ca = u"Icones de 16x16",
     es = u"Iconos de 16x16",
     en = u"16x16 icons"
 )
 
-translations.define("woost.models.initialization icon32_renderer",
+translations.define("woost.initialization.icon32_renderer.title",
     ca = u"Icones de 32x32",
     es = u"Iconos de 32x32",
     en = u"32x32 icons"
 )
 
-translations.define("woost.models.initialization default_image_factory",
+translations.define("woost.initialization.default_image_factory.title",
     ca = u"Imatge sense processar",
     es = u"Imagen sin procesar",
     en = u"Unprocessed image"
 )
 
-translations.define("woost.models.initialization icon16_image_factory",
+translations.define("woost.initialization.icon16_image_factory.title",
     ca = u"Icona de 16x16",
     es = u"Icono de 16x16",
     en = u"16x16 icon"
 )
 
-translations.define("woost.models.initialization icon32_image_factory",
+translations.define("woost.initialization.icon32_image_factory.title",
     ca = u"Icona de 32x32",
     es = u"Icono de 32x32",
     en = u"32x32 icon"
 )
 
 translations.define(
-    "woost.models.initialization backoffice_thumbnail_image_factory",
+    "woost.initialization.backoffice_thumbnail_image_factory.title",
     ca = u"Vista en miniatura del panell d'administració",
     es = u"Vista en miniatura del panel de administración",
     en = u"Backoffice thumbnail"
 )
 
 translations.define(
-    "woost.models.initialization backoffice_small_thumbnail_image_factory",
+    "woost.initialization.backoffice_small_thumbnail_image_factory.title",
     ca = u"Vista en miniatura petita del panell d'administració",
     es = u"Vista en miniatura pequeña del panel de administración",
     en = u"Backoffice small thumbnail"
 )
 
 translations.define(
-    "woost.models.initialization image_gallery_close_up_image_factory",
+    "woost.initialization.edit_blocks_thumbnail_image_factory.title",
+    ca = u"Vista en miniatura de l'editor de blocs",
+    es = u"Vista en miniatura del editor de bloques",
+    en = u"Block editor thumbnail"
+)
+
+translations.define(
+    "woost.initialization.close_up_image_factory.title",
     ca = u"Ampliació estàndard de la galeria d'imatges",
     es = u"Ampliación estándar de la galería de imágenes",
     en = u"Default image gallery close up"
 )
 
 translations.define(
-    "woost.models.initialization image_gallery_thumbnail_image_factory",
+    "woost.initialization.default_thumbnail_image_factory.title",
     ca = u"Miniatura estàndard de la galeria d'imatges",
     es = u"Miniatura estándar de la galería de imágenes",
     en = u"Default image gallery thumbnail"
+)
+
+#------------------------------------------------------------------------------
+
+translations.define(
+    "woost.controllers.authentication.AuthenticationFailedError-instance",
+    ca = u"Usuari o contrasenya incorrectes",
+    es = u"Usuario o contraseña incorrectos",
+    en = u"Incorrect user or password"
 )
 
 translations.define("woost.views.ContentTable sorting header",
@@ -1517,34 +1503,6 @@ translations.define("woost.views.BackOfficeEditView Create another",
 )
 
 translations.define(
-    "woost.views.BackOfficeEditView Draft confirmed",
-    ca = lambda item, is_new:
-        (
-            u"S'ha creat l'element <strong>%s</strong> a partir de l'esborrany"
-            if is_new
-            else u"Els canvis de l'esborrany s'han aplicat a "
-                 u"<strong>%s</strong>"
-        )
-        % translations(item, "ca"),
-    es = lambda item, is_new:
-        (
-            u"Se ha creado el elemento <strong>%s</strong> a partir del "
-            u"borrador"
-            if is_new
-            else u"Se ha actualizado <strong>%s</strong> con los cambios del "
-                 u"borrador"
-        )
-        % translations(item, "es"),
-    en = lambda item, is_new:
-        (
-            u"Draft stored as new item <strong>%s</strong>"
-            if is_new
-            else u"Saved changes from draft to <strong>%s</strong>"
-        )
-        % translations(item, "en")
-)
-
-translations.define(
     "woost.views.BackOfficeItemView pending changes warning",
     ca = u"Hi ha canvis pendents de desar. Si abandones el formulari d'edició "
         u"els canvis es perdran.",
@@ -1560,6 +1518,27 @@ translations.define(
     ca = u"La sessió d'edició en que estaves treballant s'ha perdut.",
     es = u"La sesión de edición en que estabas trabajando se ha perdido.",
     en = u"The edit session you were working on has been lost."
+)
+
+translations.define("woost.cache_invalidated_notice",
+    ca = lambda subset:
+        u"S'ha netejat el cache de %s"
+        % (
+            u"tota la web" if subset is None
+            else plural2(len(subset), "%d elements" % len(subset), "1 element")
+        ),
+    es = lambda subset:
+        u"Se ha limpiado el cache de %s"
+        % (
+            u"toda la web" if subset is None
+            else plural2(len(subset), "%d elementos" % len(subset), "1 elemento")
+        ),
+    en = lambda subset:
+        u"Cleared the cache for %s"
+        % (
+            u"the whole web" if subset is None
+            else plural2(len(subset), "%d elements" % len(subset), "1 element")
+        )
 )
 
 translations.define("woost.views.BaseView alternate language link",
@@ -1626,6 +1605,86 @@ translations.define("woost.views.BackOfficeUploadFilesView.upload_another",
     en = u"Import more files"
 )
 
+# Type groups
+#------------------------------------------------------------------------------
+translations.define("woost.type_groups.misc",
+    ca = u"Miscel·lània",
+    es = u"Miscelanea",
+    en = u"Miscellany"
+)
+
+translations.define("woost.type_groups.publishable",
+    ca = u"Elements publicables",
+    es = u"Elementos publicables",
+    en = u"Publishable items"
+)
+
+translations.define("woost.type_groups.document",
+    ca = u"Documents",
+    es = u"Documentos",
+    en = u"Documents"
+)
+
+translations.define("woost.type_groups.resource",
+    ca = u"Recursos",
+    es = u"Recursos",
+    en = u"Resources"
+)
+
+translations.define("woost.type_groups.setup",
+    ca = u"Administració",
+    es = u"Administración",
+    en = u"Setup"
+)
+
+translations.define("woost.type_groups.customization",
+    ca = u"Personalització",
+    es = u"Personalización",
+    en = u"Customization"
+)
+
+translations.define("woost.type_groups.users",
+    ca = u"Usuaris i permisos",
+    es = u"Usuarios y permisos",
+    en = u"Users and permissions"
+)
+
+translations.define("woost.type_groups.blocks.content",
+    ca = u"Contingut",
+    es = u"Contenido",
+    en = u"Content"
+)
+
+translations.define("woost.type_groups.blocks.layout",
+    ca = u"Disposició",
+    es = u"Disposición",
+    en = u"Layout"
+)
+
+translations.define("woost.type_groups.blocks.listings",
+    ca = u"Llistats",
+    es = u"Listados",
+    en = u"Listings"
+)
+
+translations.define("woost.type_groups.blocks.social",
+    ca = u"Xarxes socials",
+    es = u"Redes sociales",
+    en = u"Social networks"
+)
+
+translations.define("woost.type_groups.blocks.forms",
+    ca = u"Formularis",
+    es = u"Formularios",
+    en = u"Forms"
+)
+
+translations.define("woost.type_groups.blocks.custom",
+    ca = u"Avançats",
+    es = u"Avanzados",
+    en = u"Custom"
+)
+
 # Item
 #------------------------------------------------------------------------------
 translations.define("Item",
@@ -1638,6 +1697,12 @@ translations.define("Item-plural",
     ca = u"Elements genèrics",
     es = u"Elementos genéricos",
     en = u"Generic elements"
+)
+
+translations.define("Item-menu",
+    ca = u"Tots els elements del web",
+    es = u"Todos los elementos de la web",
+    en = u"All elements"
 )
 
 translations.define("Item-none",
@@ -1691,34 +1756,10 @@ translations.define("Item.author",
     en = u"Author"
 )
 
-translations.define("Item.owner",
-    ca = u"Propietari",
-    es = u"Propietario",
-    en = u"Owner"
-)
-
 translations.define("Item.changes",
     ca = u"Canvis",
     es = u"Cambios",
     en = u"Changes"
-)
-
-translations.define("Item.is_draft",
-    ca = u"És esborrany",
-    es = u"Es borrador",
-    en = u"Is draft"
-)
-
-translations.define("Item.draft_source",
-    ca = u"Original",
-    es = u"Original",
-    en = u"Master item"
-)
-
-translations.define("Item.drafts",
-    ca = u"Esborranys",
-    es = u"Borradores",
-    en = u"Drafts"
 )
 
 translations.define("Item.creation_time",
@@ -1813,16 +1854,16 @@ translations.define("Configuration.system.smtp",
     en = u"SMTP server"
 )
 
+translations.define("Configuration.common_blocks",
+    ca = u"Blocs comuns",
+    es = u"Bloques comunes",
+    en = u"Common blocks"
+)
+
 translations.define("Configuration.websites",
     ca = u"Pàgines web",
     es = u"Páginas web",
     en = u"Websites"
-)
-
-translations.define("Configuration.publication_schemes",
-    ca = u"Esquemes de publicació",
-    es = u"Esquemas de publicación",
-    en = u"Publication schemes"
 )
 
 translations.define("Configuration.caching_policies",
@@ -2349,144 +2390,6 @@ translations.define("SiteInstallation.synchronization_password",
     en = u"Synchronization password"
 )
 
-# PublicationScheme
-#------------------------------------------------------------------------------
-translations.define("PublicationScheme",
-    ca = u"Esquema de publicació",
-    es = u"Esquema de publicación",
-    en = u"Publication scheme"
-)
-
-translations.define("PublicationScheme-plural",
-    ca = u"Esquemes de publicació",
-    es = u"Esquemas de publicación",
-    en = u"Publication schemes"
-)
-
-# HierarchicalPublicationScheme
-#------------------------------------------------------------------------------
-translations.define("HierarchicalPublicationScheme",
-    ca = u"Esquema de publicació jeràrquica",
-    es = u"Esquema de publicación jerárquica",
-    en = u"Hierarchical publication scheme"
-)
-
-translations.define("HierarchicalPublicationScheme-plural",
-    ca = u"Esquemes de publicació jeràrquica",
-    es = u"Esquemas de publicación jerárquica",
-    en = u"Hierarchical publication schemes"
-)
-
-# IdPublicationScheme
-#------------------------------------------------------------------------------
-translations.define("IdPublicationScheme",
-    ca = u"Esquema de publicació per ID",
-    es = u"Esquema de publicación por ID",
-    en = u"ID publication scheme"
-)
-
-translations.define("IdPublicationScheme-plural",
-    ca = u"Esquemes de publicació per ID",
-    es = u"Esquemas de publicación por ID",
-    en = u"ID publication schemes"
-)
-
-# DescriptiveIdPublicationScheme
-#------------------------------------------------------------------------------
-translations.define("DescriptiveIdPublicationScheme",
-    ca = u"Esquema de publicació per ID i descripció",
-    es = u"Esquema de publicación por ID y descripción",
-    en = u"ID plus description publication scheme"
-)
-
-translations.define("DescriptiveIdPublicationScheme-plural",
-    ca = u"Esquemes de publicació per ID i descripció",
-    es = u"Esquemas de publicación por ID y descripción",
-    en = u"ID plus description publication schemes"
-)
-
-translations.define("DescriptiveIdPublicationScheme.id_separator",
-    ca = u"Separador de l'ID",
-    es = u"Separador de ID",
-    en = u"ID separator"
-)
-
-translations.define("DescriptiveIdPublicationScheme.id_separator-explanation",
-    ca = u"Fragment utilitzat per separar l'identificador de la descripció a "
-         u"les URLs",
-    es = u"Fragmento utilizado para separar el identificador de la "
-         u"descripción en las URLs",
-    en = u"Token used to separate identifiers from descriptive text in URLs"
-)
-
-translations.define("DescriptiveIdPublicationScheme.word_separator",
-    ca = u"Separador de paraules",
-    es = u"Separador de palabras",
-    en = u"Word separator"
-)
-
-translations.define("DescriptiveIdPublicationScheme.word_separator-explanation",
-    ca = u"Fragment utilitzat per separar les paraules del títol a les URLs",
-    es = u"Fragmento utilizado para separar las palabras del título en las "
-         u"URLs",
-    en = u"A token used as a word separator for titles in URLs"
-)
-
-translations.define("DescriptiveIdPublicationScheme.id_regexp",
-    ca = u"Expressió d'extracció de l'ID",
-    es = u"Expresión de extracción del ID",
-    en = u"ID extraction expression"
-)
-
-translations.define("DescriptiveIdPublicationScheme.id_regexp-explanation",
-    ca = u"L'expressió regular utilitzada per obtenir l'identificador d'un "
-         u"element a partir de la seva URL. Ha de contenir un grup anomenat "
-         u"<em>id</em>.",
-    es = u"La expresión regular utilizada para obtener el identificador de un "
-         u"elemento a partir de su URL. Debe contener un grupo llamado "
-         u"<em>id</em>.",
-    en = u"The regular expression used to extract the identifier of a "
-         u"publishable item from its URL. Must define an <em>id</em> named "
-         u"group."
-)
-
-translations.define("DescriptiveIdPublicationScheme.title_splitter_regexp",
-    ca = u"Expressió de divisió del títol",
-    es = u"Expresión de separación del título",
-    en = u"Title splitter expression"
-)
-
-translations.define(
-    "DescriptiveIdPublicationScheme.title_splitter_regexp-explanation",
-    ca = u"L'expressió regular utilitzada per desestimar les parts "
-         u"irrellevants d'un títol",
-    es = u"La expresión regular utilizada para desestimar las partes "
-         u"irrelevantes de un título",
-    en = u"The regular expression used to discard irrelevant parts from a "
-         u"title"
-)
-
-translations.define("DescriptiveIdPublicationScheme.format",
-    ca = u"Format de les URLs",
-    es = u"Formato de las URLs",
-    en = u"URL format"
-)
-
-translations.define("DescriptiveIdPublicationScheme.format-explanation",
-    ca = u"Una cadena de formatat de text python. Rep <em>title</em>, "
-         u"<em>id</em> i <em>separator</em> com a paràmetres.",
-    es = u"Una cadena de formatado de texto python. Recibe <em>title</em>, "
-         u"<em>id</em> y <em>separator</em> como parámetros.",
-    en = u"A python text formatting string that takes <em>title</em>, "
-         u"<em>id</em> and <em>separator</em> parameters."
-)
-
-translations.define("DescriptiveIdPublicationScheme.include_file_extensions",
-    ca = u"Incloure extensions de fitxer",
-    es = u"Incluir extensiones de fichero",
-    en = u"Include file extensions"
-)
-
 # CachingPolicy
 #------------------------------------------------------------------------------
 translations.define("CachingPolicy",
@@ -2716,22 +2619,83 @@ translations.define("CachingPolicy.cache_key_expression-explanation",
          u"the active request. Leave blank to use the default expression."
 )
 
-translations.define("CachingPolicy.last_update_expression",
-    ca = u"Última modificació",
-    es = u"Última modificación",
-    en = u"Last update"
+translations.define("CachingPolicy.cache_tags_expression",
+    ca = u"Etiquetes de cache",
+    es = u"Etiquetas de cache",
+    en = u"Cache tags"
 )
 
-translations.define("CachingPolicy.last_update_expression-explanation",
-    ca = u"Una expressió que determina la data de la última modificació del "
-         u"document i el seu contingut relacionat. El contingut en cache "
-         u"anterior a aquesta data serà descartat automàticament.",
-    es = u"Una expresión que determina la fecha de la última modificación del "
-         u"documento y su contenido relacionado. El contenido en cache "
-         u"anterior a esta fecha será descartado automáticamente.",
-    en = u"An expression indicating the date of the latest revision of the "
-         u"document's content. Cached content older than this will be "
-         u"automatically discarded."
+translations.define("CachingPolicy.cache_tags_expression-explanation",
+    ca = u"""
+        <p>
+            Una expressió Python que determina les etiquetes que s'apliquen a
+            les entrades de cache generades per aquesta política.
+        </p>
+        <details>
+            <summary>Detalls</summary>
+            <p>
+                Les etiquetes permeten classificar les entrades de cache, cosa
+                que fa possible invalidar-les de forma selectiva. Mitjançant
+                aquest mecanisme és possible invalidar totes les entrades de
+                cache per un mateix element o idioma. Amb aquesta expressió
+                és possible associar les entrades de cache a altres conceptes.
+            </p>
+            <p>
+                Les etiquetes a aplicar s'han d'especificar a través de la
+                variable <em>tags</em>. De sortida, aquesta variable consisteix
+                en un conjunt (<em>set</em>) que conté les etiquetes retornades
+                pel mètode <em>get_cache_tags</em> de l'element pel que s'està
+                generant l'entrada al cache.
+            </p>
+        </details>
+        """,
+    es = u"""
+        <p>
+            Una expresión Python que determina las etiquetas que se aplican a
+            las entrades de cache generades por esta política.
+        </p>
+        <details>
+            <summary>Detalles</summary>
+            <p>
+                Las etiquetas permiten clasificar las entradas de cache, cosa
+                que hace posible invalidarlas de forma selectiva. Mediante este
+                mecanismo es posible invalidar todas las entradas del cache
+                para un mismo elemento o idioma. Con esta expresión se pueden
+                asociar las entradas a otros conceptos.
+            </p>
+            <p>
+                Las etiquetas a aplicar se especifican a través de la variable
+                <em>tags</em>. De salida, la variable consiste en un conjunto
+                (<em>set</em>) que contiene las etiquetas devueltas por el
+                método <em>get_cache_tags</em> del elemento para el que se está
+                generando la entrada de cache.
+            </p>
+        </details>
+        """,
+    en = u"""
+        <p>
+            A Python expression that determines the tags that will be applied
+            to the cache entries produced by this caching policy.
+        </p>
+        <details>
+            <summary>Details</summary>
+            <p>
+                Tags allow the classification of cache entries, which makes it
+                possible to selectively invalidate parts of the cache. By
+                default, entries are given tags indicating the item that they
+                represent, and the language of their content. With this
+                expression it is possible to bind cache entries to other
+                concepts.
+            </p>
+            <p>
+                The tags to apply are specified through the <em>tags</em>
+                variable. Out of the box, this variable will consist of a
+                <em>set</em> containing all the tags produced by the 
+                <em>get_cache_tags</em> method of the item for which the cache
+                entry is being generated.
+            </p>
+        </details>
+        """
 )
 
 # Publishable
@@ -2746,6 +2710,12 @@ translations.define("Publishable-plural",
     ca = u"Elements publicables",
     es = u"Elementos publicables",
     en = u"Publishable elements"
+)
+
+translations.define("Publishable-menu",
+    ca = u"Tots els elements publicables",
+    es = u"Todos los elementos publicables",
+    en = u"All publishable elements"
 )
 
 translations.define("Publishable.meta",
@@ -2764,12 +2734,6 @@ translations.define("Publishable.presentation.behavior",
     ca = u"Comportament",
     es = u"Comportamiento",
     en = u"Behavior"
-)
-
-translations.define("Publishable.presentation.resources",
-    ca = u"Recursos",
-    es = u"Recursos",
-    en = u"Resources"
 )
 
 translations.define("Publishable.presentation.format",
@@ -2848,12 +2812,6 @@ translations.define("woost.models.Publishable.resource_type other",
     ca = u"Altre",
     es = u"Otro",
     en = u"Other"
-)
-
-translations.define("Publishable.inherit_resources",
-    ca = u"Hereda els recursos",
-    es = u"Hereda los recursos",
-    en = u"Inherit resources"
 )
 
 translations.define("Publishable.mime_type",
@@ -3004,6 +2962,12 @@ translations.define("Document-plural",
     en = u"Documents"
 )
 
+translations.define("Document-menu",
+    ca = u"Tots els documents",
+    es = u"Todos los documentos",
+    en = u"All documents"
+)
+
 translations.define("Document.content",
     ca = u"Contingut",
     es = u"Contenido",
@@ -3044,24 +3008,6 @@ translations.define("Document.template",
     ca = u"Plantilla",
     es = u"Plantilla",
     en = u"Template"
-)
-
-translations.define("Document.attachments",
-    ca = u"Adjunts",
-    es = u"Adjuntos",
-    en = u"Attachments"
-)
-
-translations.define("Document.page_resources",
-    ca = u"Recursos de pàgina",
-    es = u"Recursos de pàgina",
-    en = u"Page resources"
-)
-
-translations.define("Document.branch_resources",
-    ca = u"Recursos de branca",
-    es = u"Recursos de rama",
-    en = u"Branch resources"
 )
 
 translations.define("Document.children",
@@ -3126,25 +3072,25 @@ translations.define("Redirection.uri",
     en = u"URL"
 )
 
-# StandardPage
+# Page
 #------------------------------------------------------------------------------
-translations.define("StandardPage",
-    ca = u"Pàgina estàndard",
-    es = u"Página estándar",
-    en = u"Standard page"
+translations.define("Page",
+    ca = u"Pàgina",
+    es = u"Página",
+    en = u"Page"
 )
 
-translations.define("StandardPage-plural",
-    ca = u"Pàgines estàndard",
-    es = u"Páginas estándar",
-    en = u"Standard pages"
+translations.define("Page-plural",
+    ca = u"Pàgines",
+    es = u"Páginas",
+    en = u"Pages"
 )
 
-translations.define("StandardPage-none",
+translations.define("Page-none",
     es = u"Ninguna"
 )
 
-translations.define("StandardPage.body",
+translations.define("Page.blocks",
     ca = u"Cos",
     es = u"Cuerpo",
     en = u"Body"
@@ -3188,12 +3134,6 @@ translations.define("User.authored_items",
     ca = u"Contingut creat per l'usuari",
     es = u"Contingut creado por el usuario",
     en = u"Content created by the user"
-)
-
-translations.define("User.owned_items",
-    ca = u"Contingut propietat de l'usuari",
-    es = u"Contingut propiedad del usuario",
-    en = u"Content owned by the user"
 )
 
 translations.define("User.roles",
@@ -3282,7 +3222,7 @@ def member_permission_translation_factory(
 ):
     def predicate_factory(instance, **kwargs):
         
-        members = list(instance.iter_members())
+        members = list(instance.iter_matching_members())
 
         if not members:
             target = any_predicate
@@ -3374,20 +3314,6 @@ translations.define(
     ca = content_permission_translation_factory("ca", u"eliminar %s"),
     es = content_permission_translation_factory("es", u"eliminar %s"),
     en = content_permission_translation_factory("en", u"delete %s")
-)
-
-translations.define(
-    "woost.models.permission.ConfirmDraftPermission-instance",
-    ca = content_permission_translation_factory(
-        "ca",
-        lambda permission, subject, **kwargs:
-            u"confirmar esborranys " + ca_possessive(subject)
-    ),
-    es = content_permission_translation_factory(
-        "es",
-        u"confirmar borradores de %s"
-    ),
-    en = content_permission_translation_factory("en", u"confirm drafts of %s")
 )
 
 translations.define(
@@ -3616,20 +3542,6 @@ translations.define("DeletePermission-plural",
     ca = u"Permisos d'eliminació",
     es = u"Permisos de eliminación",
     en = u"Delete content permissions"
-)
-
-# ConfirmDraftPermission
-#------------------------------------------------------------------------------
-translations.define("ConfirmDraftPermission",
-    ca = u"Permís de confirmació d'esborranys",
-    es = u"Permiso de confirmación de borradores",
-    en = u"Confirm draft permission"
-)
-
-translations.define("ConfirmDraftPermission-plural",
-    ca = u"Permisos de confirmació d'esborranys",
-    es = u"Permisos de confirmación de borradores",
-    en = u"Confirm draft permissions"
 )
 
 # RenderPermission
@@ -3877,6 +3789,12 @@ translations.define("Style.applicable_to_text",
     en = u"Applies to text"
 )
 
+translations.define("Style.applicable_to_blocks",
+    ca = u"Aplicable a blocs",
+    es = u"Aplicable a bloques",
+    en = u"Applicable to blocks"
+)
+
 translations.define("Style.custom_class_name-explanation",
     ca = u"Permet especificar el nom de la classe CSS resultant. Si no "
          u"s'indica, el sistema decidirà el nom seguint un patró "
@@ -4045,7 +3963,7 @@ translations.define("News.summary",
     en = u"Summary"
 )
 
-translations.define("News.body",
+translations.define("News.blocks",
     ca = u"Cos",
     es = u"Cuerpo",
     en = u"Body"
@@ -4095,7 +4013,7 @@ translations.define("Event.summary",
     en = u"Summary"
 )
 
-translations.define("Event.body",
+translations.define("Event.blocks",
     ca = u"Cos",
     es = u"Cuerpo",
     en = u"Body"
@@ -4151,6 +4069,12 @@ translations.define("Role.child_roles",
     en = u"Derived roles"
 )
 
+translations.define("Role.default_content_type",
+    ca = u"Tipus per defecte",
+    es = u"Tipos por defecto",
+    en = u"Default content type"
+)
+
 translations.define("Role.hidden_content_types",
     ca = u"Tipus ocults",
     es = u"Tipos ocultos",
@@ -4201,12 +4125,6 @@ translations.define("Template.identifier",
     ca = u"Identificador",
     es = u"Identificador",
     en = u"Identifier"
-)
-
-translations.define("Template.engine",
-    ca = u"Motor de pintat",
-    es = u"Motor de pintado",
-    en = u"Rendering engine"
 )
 
 translations.define("Template.documents",
@@ -4439,13 +4357,11 @@ def _translate_woost_models_change_instance_ca(action, target):
         apostrophe = target_desc[0].lower() in u"haeiouàèéíòóú"
         target_desc = u"<em>" + target_desc + u"</em>"
     
-    action_id = action.identifier
-
-    if action_id == "edit":
+    if action == "edit":
         action_desc = u"Edició"
-    elif action_id == "create":
+    elif action == "create":
         action_desc = u"Creació"
-    elif action_id == "delete":
+    elif action == "delete":
         action_desc = u"Eliminació"
     else:
         return ""
@@ -4463,14 +4379,12 @@ def _translate_woost_models_change_instance_es(action, target):
             return ""
 
         target_desc = u"<em>" + target_desc + u"</em>"
-    
-    action_id = action.identifier
 
-    if action_id == "edit":
+    if action == "edit":
         action_desc = u"Edición"
-    elif action_id == "create":
+    elif action == "create":
         action_desc = u"Creación"
-    elif action_id == "delete":
+    elif action == "delete":
         action_desc = u"Eliminación"
     else:
         return ""
@@ -4489,13 +4403,11 @@ def _translate_woost_models_change_instance_en(action, target):
         
         target_desc = u"<em>" + target_desc + u"</em>"
     
-    action_id = action.identifier
-
-    if action_id == "edit":
+    if action == "edit":
         action_desc = u"modified"
-    elif action_id == "create":
+    elif action == "create":
         action_desc = u"created"
-    elif action_id == "delete":
+    elif action == "delete":
         action_desc = u"deleted"
     else:
         return ""
@@ -4764,20 +4676,6 @@ translations.define("DeleteTrigger-plural",
     ca = u"Disparadors d'eliminació",
     es = u"Disparadores de eliminación",
     en = u"Delete triggers"
-)
-
-# ConfirmDraftTrigger
-#------------------------------------------------------------------------------
-translations.define("ConfirmDraftTrigger",
-    ca = u"Disparador de confirmació d'esborrany",
-    es = u"Disparador de confirmación de borrador",
-    en = u"Draft confirmation trigger"
-)
-
-translations.define("ConfirmDraftTrigger-plural",
-    ca = u"Disparadors de confirmació d'esborrany",
-    es = u"Disparadores de confirmación de borrador",
-    en = u"Draft confirmation triggers"
 )
 
 # TriggerResponse
@@ -5057,13 +4955,6 @@ translations.define(
     en = u"accessible"
 )
 
-translations.define(
-    "woost.models.expressions.OwnershipExpression-instance",
-    ca = u"propietat de l'usuari actiu",
-    es = u"propiedad del usuario activo",
-    en = u"owned by the active user"
-)
-
 # PasswordChange
 #------------------------------------------------------------------------------
 translations.define(
@@ -5193,7 +5084,7 @@ translations.define("ImageFileRenderer.max_size-explanation",
 # IconRenderer
 #------------------------------------------------------------------------------
 translations.define("IconRenderer",
-    ca = u"Llibreria de icones",
+    ca = u"Llibreria d'icones",
     es = u"Librería de iconos",
     en = u"Icon library"
 )
@@ -5202,6 +5093,24 @@ translations.define("IconRenderer-plural",
     ca = u"Llibreries de icones",
     es = u"Librerías de iconos",
     en = u"Icon libraries"
+)
+
+translations.define("IconRenderer.icon_resolver_expression",
+    ca = u"Proveïdor d'icones",
+    es = u"Proveedor de iconos",
+    en = u"Icon resolver"
+)
+
+translations.define("IconRenderer.icon_resolver_expression-explanation",
+    ca = u"Referència a una instància de "
+         u"<em>woost.iconresolver.IconResolver.</em> Deixar buit per "
+         u"utilitzar <em>woost.app.icon_resolver</em>.",
+    es = u"Referencia a una instancia de "
+         u"<em>woost.iconresolver.IconResolver.</em> Dejar vacío para "
+         u"utilizar <em>woost.app.icon_resolver</em>.",
+    en = u"Reference to an instance of "
+         u"<em>woost.iconresolver.IconResolver.</em> Leave blank to use "
+         u"<em>woost.app.icon_resolver</em>."
 )
 
 translations.define("IconRenderer.icon_size",
@@ -5377,6 +5286,12 @@ translations.define("ImageFactory.fallback-explanation",
          u"procesador alternativo indicado",
     en = u"If the image factory fails to produce an image, it will try to "
          u"fall back to the indicated factory to produce an alternative image"
+)
+
+translations.define("ImageFactory.applicable_to_blocks",
+    ca = u"Aplicable a blocs",
+    es = u"Aplicable a bloques",
+    en = u"Applicable to blocks"
 )
 
 # ImageEffect
@@ -6028,5 +5943,1619 @@ translations.define("woost.controllers.InstallationSyncController.success",
     ca = u"S'han sincronitzat els continguts indicats.",
     es = u"Se han sincronizado los contenidos indicados.",
     en = u"Successfully synchronized the selected content."
+)
+
+# Element types
+#------------------------------------------------------------------------------
+translations.define("woost.models.ElementType=div",
+    ca = u"Element genèric (div)",
+    es = u"Elemento genérico (div)",
+    en = u"Generic element (div)"
+)
+
+translations.define("woost.models.ElementType=section",
+    ca = u"Secció",
+    es = u"Sección",
+    en = u"Section"
+)
+
+translations.define("woost.models.ElementType=article",
+    ca = u"Article",
+    es = u"Artículo",
+    en = u"Article"
+)
+
+translations.define("woost.models.ElementType=details",
+    ca = u"Detalls",
+    es = u"Detalles",
+    en = u"Details"
+)
+
+translations.define("woost.models.ElementType=figure",
+    ca = u"Recurs complementari (figure)",
+    es = u"Recurso complementario (figure)",
+    en = u"Figure"
+)
+
+translations.define("woost.models.ElementType=aside",
+    ca = u"Contingut relacionat (aside)",
+    es = u"Contenido relacionado (aside)",
+    en = u"Tangentially related content (aside)"
+)
+
+translations.define("woost.models.ElementType=header",
+    ca = u"Capçalera",
+    es = u"Cabecera",
+    en = u"Header"
+)
+
+translations.define("woost.models.ElementType=footer",
+    ca = u"Peu",
+    es = u"Pie",
+    en = u"Footer"
+)
+
+translations.define("woost.models.ElementType=nav",
+    ca = u"Navegació",
+    es = u"Navegación",
+    en = u"Navigation"
+)
+
+translations.define("woost.models.ElementType=dd",
+    ca = u"Definició (dd)",
+    es = u"Definición (dd)",
+    en = u"Definition (dd)"
+)
+
+# Block
+#------------------------------------------------------------------------------
+translations.define("Block",
+    ca = u"Bloc",
+    es = u"Bloque",
+    en = u"Block"
+)
+
+translations.define("Block-plural",
+    ca = u"Blocs",
+    es = u"Bloques",
+    en = u"Blocks"
+)
+
+translations.define("Block.content",
+    ca = u"Contingut",
+    es = u"Contenido",
+    en = u"Content"
+)
+
+translations.define("Block.behavior",
+    ca = u"Comportament",
+    es = u"Comportamiento",
+    en = u"Behavior"
+)
+
+translations.define("Block.html",
+    ca = u"HTML",
+    es = u"HTML",
+    en = u"HTML"
+)
+
+translations.define("Block.heading",
+    ca = u"Encapçalament",
+    es = u"Encabezado",
+    en = u"Heading"
+)
+
+translations.define("Block.heading_type",
+    ca = u"Tipus d'encapçalament",
+    es = u"Tipo de encabezado",
+    en = u"Heading type"
+)
+
+translations.define("Block.heading_type=hidden",
+    ca = u"Ocult",
+    es = u"Oculto",
+    en = u"Hidden"
+)
+
+translations.define("Block.heading_type=generic",
+    ca = u"Etiqueta genèrica (div)",
+    es = u"Etiqueta genérica (div)",
+    en = u"Generic label (div)"
+)
+
+translations.define("Block.heading_type=hidden_h1",
+    ca = u"Encapçalament de secció ocult",
+    es = u"Encabezado de sección oculto",
+    en = u"Hidden section heading"
+)
+
+for level in range(1, 7):
+    translations.define("Block.heading_type=h" + str(level),
+        ca = u"Encapçalament %d" % level,
+        es = u"Encabezado %d" % level,
+        en = u"Heading %d" % level
+    )
+
+translations.define("Block.heading_type=dt",
+    ca = u"Terme (dt)",
+    es = u"Término (dt)",
+    en = u"Term (dt)"
+)
+
+translations.define("Block.heading_type=figcaption",
+    ca = u"Títol per un recurs complementari (figcaption)",
+    es = u"Título para un recurso complementario (figcaption)",
+    en = u"Figure caption"
+)
+
+translations.define("Block.html_attributes",
+    ca = u"Atributs HTML",
+    es = u"Atributos HTML",
+    en = u"HTML attributes"
+)
+
+translations.define("Block.styles",
+    ca = u"Estils",
+    es = u"Estilos",
+    en = u"Styles"
+)
+
+translations.define("Block.inline_css_styles",
+    ca = u"Estils en línia",
+    es = u"Estilos en linea",
+    en = u"Inline CSS styles"
+)
+
+translations.define("Block.enabled",
+    ca = u"Actiu",
+    es = u"Activo",
+    en = u"Active"
+)
+
+translations.define("Block.start_date",
+    ca = u"Inici de publicació",
+    es = u"Inicio de publicación",
+    en = u"Publication start"
+)
+
+translations.define("Block.end_date",
+    ca = u"Fi de publicació",
+    es = u"Fin de publicación",
+    en = u"Publication end"
+)
+
+translations.define("Block.controller",
+    ca = u"Controlador",
+    es = u"Controlador",
+    en = u"Controller"
+)
+    
+# CustomBlock
+#------------------------------------------------------------------------------
+translations.define("CustomBlock",
+    ca = u"Bloc a mida",
+    es = u"Bloque a medida",
+    en = u"Custom block"
+)
+
+translations.define("CustomBlock-plural",
+    ca = u"Blocs a mida",
+    es = u"Bloques a medida",
+    en = u"Custom blocks"
+)
+
+translations.define("CustomBlock.view_class",
+    ca = u"Vista",
+    es = u"Vista",
+    en = u"View"
+)
+
+translations.define("CustomBlock.view_class-explanation",
+    ca = u"Nom qualificat de la vista CML a mostrar",
+    es = u"Nombre cualificado de la vista CML a mostrar",
+    en = u"The qualified name of the CML view to display"
+)
+
+# ContainerBlock
+#------------------------------------------------------------------------------
+translations.define("ContainerBlock",
+    ca = u"Contenidor",
+    es = u"Contenedor",
+    en = u"Container"
+)
+
+translations.define("ContainerBlock-plural",
+    ca = u"Contenidors",
+    es = u"Contenedores",
+    en = u"Containers"
+)
+
+translations.define("ContainerBlock.blocks",
+    ca = u"Blocs fills",
+    es = u"Bloques hijos",
+    en = u"Child blocks"
+)
+
+translations.define("ContainerBlock.element_type",
+    ca = u"Tipus d'element",
+    es = u"Tipo de elemento",
+    en = u"Element type"
+)
+
+translations.define("ContainerBlock.list_type",
+    ca = u"Tipus de llista",
+    es = u"Tipo de lista",
+    en = u"List type"
+)
+
+translations.define("ContainerBlock.list_type=div",
+    ca = u"Element genèric (div)",
+    es = u"Elemento genérico (div)",
+    en = u"Generic element (div)"
+)
+
+translations.define("ContainerBlock.list_type=ul",
+    ca = u"Llista",
+    es = u"Lista",
+    en = u"List"
+)
+
+translations.define("ContainerBlock.list_type=ol",
+    ca = u"Llista ordenada",
+    es = u"Lista ordenada",
+    en = u"Ordered list"
+)
+
+translations.define("ContainerBlock.list_type=dl",
+    ca = u"Llista de definició",
+    es = u"Lista de definición",
+    en = u"Definition list"
+)
+
+# SlideShowBlock
+#------------------------------------------------------------------------------
+translations.define("SlideShowBlock",
+    ca = u"Passador",
+    es = u"Pasador",
+    en = u"Slide show"
+)
+
+translations.define("SlideShowBlock-plural",
+    ca = u"Passadors",
+    es = u"Pasadores",
+    en = u"Slide shows"
+)
+
+translations.define("SlideShowBlock.element_type",
+    ca = u"Tipus d'element",
+    es = u"Tipo de elemento",
+    en = u"Element type"
+)
+
+translations.define("SlideShowBlock.slides",
+    ca = u"Diapositives",
+    es = u"Diapositivas",
+    en = u"Slides"
+)
+
+translations.define("SlideShowBlock.transition_settings",
+    ca = u"Transicions",
+    es = u"Transiciones",
+    en = u"Transitions"
+)
+
+translations.define("SlideShowBlock.autoplay",
+    ca = u"Transicions automàtiques",
+    es = u"Transiciones automáticas",
+    en = u"Autoplay"
+)
+
+translations.define("SlideShowBlock.controls",
+    ca = u"Controls",
+    es = u"Controles",
+    en = u"Controls"
+)
+
+translations.define("SlideShowBlock.navigation_controls",
+    ca = u"Mostrar controls de navegació",
+    es = u"Mostrar controles de navegación",
+    en = u"Show navigation controls"
+)
+
+translations.define("SlideShowBlock.bullet_controls",
+    ca = u"Mostrar botons de diapositiva",
+    es = u"Mostrar botones de diapositiva",
+    en = u"Show slide bullets"
+)
+
+translations.define("SlideShowBlock.bullet_view_class",
+    ca = u"Aparença dels botons de diapositiva",
+    es = u"Apariencia de los botones de diapositiva",
+    en = u"Slide bullets appearence"
+)
+
+translations.define(
+    "SlideShowBlock.bullet_view_class=woost.views.SlideShowButtonBullet",
+    ca = u"Botó",
+    es = u"Botón",
+    en = u"Button"
+)
+
+translations.define(
+    "SlideShowBlock.bullet_view_class=woost.views.SlideShowTextBullet",
+    ca = u"Text",
+    es = u"Texto",
+    en = u"Text"
+)
+
+translations.define(
+    "SlideShowBlock.bullet_view_class=woost.views.SlideShowImageBullet",
+    ca = u"Imatge",
+    es = u"Imagen",
+    en = u"Image"
+)
+
+translations.define(
+    "SlideShowBlock.bullet_view_class=woost.views.SlideShowTextAndImageBullet",
+    ca = u"Imatge i text",
+    es = u"Imagen y texto",
+    en = u"Image and text"
+)
+
+translations.define("SlideShowBlock.bullet_image_factory",
+    ca = u"Processat d'imatge pels botons de diapositiva",
+    es = u"Procesado de imagen para los botones de diapositiva",
+    en = u"Image processing for slide bullets"
+)
+
+translations.define("SlideShowBlock.interval",
+    ca = u"Freqüència de les transicions",
+    es = u"Frecuencia de las transiciones",
+    en = u"Time between transitions"
+)
+
+translations.define("SlideShowBlock.interval-explanation",
+    ca = u"Si s'activen les transicions automàtiques, indica el nombre de "
+         u"milisegons abans que el bloc passi a la següent diapositiva.",
+    es = u"Si se activan las transiciones automáticas, indica el número de "
+         u"milisegundos antes que el bloque pase a la diapositiva siguiente.",
+    en = u"If autoplay is enabled, indicates the number of milliseconds that "
+         u"pass between automatic transitions."
+)
+
+translations.define("SlideShowBlock.transition_duration",
+    ca = u"Duració de les transicions",
+    es = u"Duración de las transiciones",
+    en = u"Transition duration"
+)
+
+translations.define("SlideShowBlock.transition_duration-explanation",
+    ca = u"Especifica la duració de l'efecte de transició, en milisegons",
+    es = u"Especifica la duración del efecto de transición, en milisegundos",
+    en = u"Sets the duration of the slide transition effect, in milliseconds"
+)
+
+translations.define("SlideShowBlock.transition_effect",
+    ca = u"Efecte de transició",
+    es = u"Efecto de transición",
+    en = u"Transition effect"
+)
+
+translations.define("SlideShowBlock.transition_effect=fade",
+    ca = u"Fondre",
+    es = u"Fundir",
+    en = u"Fade"
+)
+
+translations.define("SlideShowBlock.transition_effect=topBottomSlide",
+    ca = u"Lliscar de dalt a baix",
+    es = u"Deslizar de arriba abajo",
+    en = u"Top-bottom slide"
+)
+
+# MenuBlock
+#------------------------------------------------------------------------------
+translations.define("MenuBlock",
+    ca = u"Menú",
+    es = u"Menú",
+    en = u"Menu"
+)
+
+translations.define("MenuBlock-plural",
+    ca = u"Menús",
+    es = u"Menús",
+    en = u"Menus"
+)
+
+translations.define("MenuBlock.root",
+    ca = u"Arrel",
+    es = u"Raiz",
+    en = u"Root"
+)
+
+translations.define("MenuBlock.root_visible",
+    ca = u"Arrel visible",
+    es = u"Raiz visible",
+    en = u"Root visible"
+)
+
+translations.define("MenuBlock.max_depth",
+    ca = u"Profunditat màxima",
+    es = u"Profundidad máxima",
+    en = u"Maximum depth"
+)
+
+translations.define("MenuBlock.expanded",
+    ca = u"Expandit",
+    es = u"Expandido",
+    en = u"Expanded"
+)
+
+# HTMLBlock
+#------------------------------------------------------------------------------
+translations.define("HTMLBlock",
+    ca = u"HTML",
+    es = u"HTML",
+    en = u"HTML"
+)
+
+translations.define("HTMLBlock-plural",
+    ca = u"HTML",
+    es = u"HTML",
+    en = u"HTML"
+)
+
+translations.define("HTMLBlock.html",
+    ca = u"HTML",
+    es = u"HTML",
+    en = u"HTML"
+)
+
+translations.define("HTMLBlock.translated_html",
+    ca = u"HTML per idioma",
+    es = u"HTML por idioma",
+    en = u"Per language HTML"
+)
+
+translations.define("HTMLBlock.translated_html-explanation",
+    ca = u"Utilitzar només si cal diferenciar l'HTML produït en un idioma "
+         u"concret. Pels idiomes en que es deixi buit, s'utilitzarà el valor "
+         u"del camp <em>HTML</em>.",
+    es = u"Utilizar únicamente si es necesario distinguir el HTML producido "
+         u"en un idioma concreto. En aquellos idiomas en que se deje vacío "
+         u"se utilizará el valor del campo <em>HTML</em>.",
+    en = u"Use only to differentiate the HTML produced for specific "
+         u"languages. In languages where it is left blank, the content of the "
+         u"<em>HTML</em> field will be used instead."
+)
+
+# TextBlock
+#------------------------------------------------------------------------------
+translations.define("TextBlock",
+    ca = u"Text + imatges",
+    es = u"Texto + imágenes",
+    en = u"Text + images"
+)
+
+translations.define("TextBlock-plural",
+    ca = u"Text + imatges",
+    es = u"Texto + imágenes",
+    en = u"Text + images"
+)
+
+translations.define("TextBlock.element_type",
+    ca = u"Tipus d'element",
+    es = u"Tipo de elemento",
+    en = u"Element type"
+)
+
+translations.define("TextBlock.link",
+    ca = u"Enllaç",
+    es = u"Enlace",
+    en = u"Link"
+)
+
+translations.define("TextBlock.link_destination",
+    ca = u"Destí de l'enllaç",
+    es = u"Destino del enlace",
+    en = u"Linked resource"
+)
+
+translations.define("TextBlock.link_parameters",
+    ca = u"Paràmetres addicionals per l'enllaç",
+    es = u"Parámetros adicionales para el enlace",
+    en = u"Additional URL parameters"
+)
+
+translations.define("TextBlock.link_parameters-explanation",
+    ca = u"Un paràmetre per línia, separant el nom i el valor amb un caràcter "
+         u"'='",
+    es = u"Un parámetro por linea, separando el nombre y el valor con un "
+         u"caracter '='",
+    en = u"One parameter per line, with key and value separated by a "
+         u"'=' character"
+)
+
+translations.define("TextBlock.link_opens_in_new_window",
+    ca = u"Obrir l'enllaç a una nova finestra",
+    es = u"Abrir el enlace en una ventana nueva",
+    en = u"Open the link in a new window"
+)
+
+translations.define("TextBlock.text",
+    ca = u"Text",
+    es = u"Texto",
+    en = u"Text"
+)
+
+translations.define("TextBlock.images",
+    ca = u"Imatges",
+    es = u"Imágenes",
+    en = u"Images"
+)
+
+translations.define("TextBlock.image_alignment",
+    ca = u"Disposició de les imatges",
+    es = u"Disposición de las imágenes",
+    en = u"Image alignment"
+)
+
+translations.define("TextBlock.image_alignment=float_top_left",
+    ca = u"Flotar a l'esquerra",
+    es = u"Flotar a la izquierda",
+    en = u"Top left, floating"
+)
+
+translations.define("TextBlock.image_alignment=float_top_right",
+    ca = u"Flotar a la dreta",
+    es = u"Flotar a la derecha",
+    en = u"Top right, floating"
+)
+
+translations.define("TextBlock.image_alignment=column_left",
+    ca = u"Columna a l'esquerra",
+    es = u"Columna a la izquierda",
+    en = u"Top left, in their own column"
+)
+
+translations.define("TextBlock.image_alignment=column_right",
+    ca = u"Columna a la dreta",
+    es = u"Columna a la derecha",
+    en = u"Top right, in their own column"
+)
+
+translations.define("TextBlock.image_alignment=top_left",
+    ca = u"A dalt a l'esquerra",
+    es = u"Arriba a la izquierda",
+    en = u"Top left"
+)
+
+translations.define("TextBlock.image_alignment=bottom_left",
+    ca = u"A sota a l'esquerra",
+    es = u"Abajo a la izquierda",
+    en = u"Bottom left"
+)
+
+translations.define("TextBlock.image_alignment=center_top",
+    ca = u"Centrar a dalt",
+    es = u"Centrar arriba",
+    en = u"Top center"
+)
+
+translations.define("TextBlock.image_alignment=center_bottom",
+    ca = u"Centrar a sota",
+    es = u"Centrar abajo",
+    en = u"Bottom center"
+)
+
+translations.define("TextBlock.image_alignment=top_right",
+    ca = u"A dalt a la dreta",
+    es = u"Arriba a la derecha",
+    en = u"Top right"
+)
+
+translations.define("TextBlock.image_alignment=inline",
+    ca = u"En línia",
+    es = u"En linea",
+    en = u"Inline"
+)
+
+translations.define("TextBlock.image_alignment=background",
+    ca = u"Imatge de fons",
+    es = u"Imagen de fondo",
+    en = u"Background image"
+)
+
+translations.define("TextBlock.image_alignment=fallback",
+    ca = u"Imatge amb descripció textual substitutiva",
+    es = u"Imagen con descripción textual sustitutiva",
+    en = u"Image with fallback content"
+)
+
+translations.define("TextBlock.image_thumbnail_factory",
+    ca = u"Processat de les imatges",
+    es = u"Procesado de las imágenes",
+    en = u"Image processing"
+)
+
+translations.define("TextBlock.image_close_up_enabled",
+    ca = u"Ampliar les imatges en fer-hi clic",
+    es = u"Ampliar las imágenes al pulsarlas",
+    en = u"Click to enlarge"
+)
+
+translations.define("TextBlock.image_close_up_factory",
+    ca = u"Processat de les imatges ampliades",
+    es = u"Procesado de las imágenes ampliadas",
+    en = u"Image processing for enlarged images"
+)
+
+translations.define("TextBlock.image_close_up_preload",
+    ca = u"Precàrrega de les imatges ampliades",
+    es = u"Precarga de las imágenes ampliadas",
+    en = u"Preload enlarged images"
+)
+
+translations.define("TextBlock.image_labels_visible",
+    ca = u"Mostrar els títols de les imatges",
+    es = u"Mostrar los títulos de las imágenes",
+    en = u"Show image titles"
+)
+
+translations.define("TextBlock.image_original_link_visible",
+    ca = u"Mostrar un enllaç a la imatge sense modificar",
+    es = u"Mostrar un enlace a la imagen sin modificar",
+    en = u"Show a link to the original image"
+)
+
+# VideoBlock
+#------------------------------------------------------------------------------
+translations.define("VideoBlock",
+    ca = u"Vídeo",
+    es = u"Video",
+    en = u"Video"
+)
+
+translations.define("VideoBlock-plural",
+    ca = u"Vídeos",
+    es = u"Vídeos",
+    en = u"Videos"
+)
+
+translations.define("VideoBlock.element_type",
+    ca = u"Tipus d'element",
+    es = u"Tipo de elemento",
+    en = u"Element type"
+)
+
+translations.define("VideoBlock.video",
+    ca = u"Vídeo",
+    es = u"Video",
+    en = u"Video"
+)
+
+translations.define("VideoBlock.player_settings",
+    ca = u"Opcions de reproductor de vídeo",
+    es = u"Opciones de reproductor de video",
+    en = u"Video player settings"
+)
+
+# TwitterTimelineBlock
+#------------------------------------------------------------------------------
+translations.define("TwitterTimelineBlock",
+    ca = u"Missatges de Twitter",
+    es = u"Mensajes de Twitter",
+    en = u"Twitter timeline"
+)
+
+translations.define("TwitterTimelineBlock-plural",
+    ca = u"Missatges de Twitter",
+    es = u"Mensajes de Twitter",
+    en = u"Twitter timeline"
+)
+
+translations.define("TwitterTimelineBlock.tweet",
+    ca = u"Tuit",
+    es = u"Tuit",
+    en = u"Tweet"
+)
+
+translations.define("TwitterTimelineBlock.appearence",
+    ca = u"Aparença",
+    es = u"Apariencia",
+    en = u"Appearence"
+)
+
+translations.define("TwitterTimelineBlock.widget_id",
+    ca = u"ID del widget",
+    es = u"ID del widget",
+    en = u"Widget ID"
+)
+
+translations.define("TwitterTimelineBlock.theme",
+    ca = u"Plantilla",
+    es = u"Plantilla",
+    en = u"Theme"
+)
+
+translations.define("TwitterTimelineBlock.theme=light",
+    ca = u"Clar",
+    es = u"Claro",
+    en = u"Light"
+)
+
+translations.define("TwitterTimelineBlock.theme=dark",
+    ca = u"Fosc",
+    es = u"Oscuro",
+    en = u"Dark"
+)
+
+translations.define("TwitterTimelineBlock.link_color",
+    ca = u"Color de l'enllaç",
+    es = u"Color del enlace",
+    en = u"Link color"
+)
+
+translations.define("TwitterTimelineBlock.width",
+    ca = u"Amplada",
+    es = u"Ancho",
+    en = u"Width"
+)
+
+translations.define("TwitterTimelineBlock.height",
+    ca = u"Alçada",
+    es = u"Alto",
+    en = u"Height"
+)
+
+translations.define("TwitterTimelineBlock.related_accounts",
+    ca = u"Comptes relacionats",
+    es = u"Cuentas relacionadas",
+    en = u"Related accounts"
+)
+
+# LoginBlock
+#------------------------------------------------------------------------------
+translations.define("LoginBlock",
+    ca = u"Formulari d'autenticació d'usuari",
+    es = u"Formulario de autenticación de usuario",
+    en = u"Login form"
+)
+
+translations.define("LoginBlock-plural",
+    ca = u"Formularis d'autenticació d'usuari",
+    es = u"Formularios de autenticación de usuario",
+    en = u"Login forms"
+)
+
+translations.define("LoginBlock.login_target",
+    ca = u"Pàgina de destí",
+    es = u"Página de destino",
+    en = u"Destination page"
+)
+
+translations.define("LoginBlock.login_target-explanation",
+    ca = u"La pàgina que rebrà la petició d'autenticació de l'usuari",
+    es = u"La pàgina que recibirá la petición de autenticación del "
+         u"usuario",
+    en = u"The page that will handle the user's authentication request"
+)
+
+translations.define("LoginBlockForm.user",
+    ca = u"Usuari",
+    es = u"Usuario",
+    en = u"User"
+)
+
+translations.define("LoginBlockForm.password",
+    ca = u"Contrasenya",
+    es = u"Contraseña",
+    en = u"Password"
+)
+
+translations.define("woost.views.LoginBlockView.submit_button",
+    ca = u"Entrar",
+    es = u"Entrar",
+    en = u"Login"
+)
+
+# IFrameBlock
+#------------------------------------------------------------------------------
+translations.define("IFrameBlock",
+    ca = u"IFrame",
+    es = u"IFrame",
+    en = u"IFrame"
+)
+
+translations.define("IFrameBlock-plural",
+    ca = u"IFrames",
+    es = u"IFrames",
+    en = u"IFrames"
+)
+
+translations.define("IFrameBlock.src",
+    ca = u"Adreça a mostrar",
+    es = u"Dirección a mostrar",
+    en = u"Content URL"
+)
+
+translations.define("IFrameBlock.width",
+    ca = u"Amplada",
+    es = u"Ancho",
+    en = u"Width"
+)
+
+translations.define("IFrameBlock.height",
+    ca = u"Alçada",
+    es = u"Alto",
+    en = u"Height"
+)
+
+# EditBlocksView
+#------------------------------------------------------------------------------
+translations.define("woost.views.EditBlocksView.body_header",
+    ca = lambda item: 
+        u"Editant els blocs " + ca_possessive(translations(item)),
+    es = lambda item:
+        u"Editando los bloques de " + translations(item),
+    en = lambda item:
+        u"Editing the blocks for " + translations(item)
+)
+
+# EditBlocksSlotList
+#------------------------------------------------------------------------------
+translations.define(
+    "woost.views.EditBlocksSlotList.new_blocks_panel.panel_header",
+    ca = u"Crear un nou bloc",
+    es = u"Crear un bloque nuevo",
+    en = u"Create a new block"
+)
+
+translations.define(     
+    "woost.views.EditBlocksSlotList.common_blocks_panel.panel_header",
+    ca = u"Afegir un bloc existent",
+    es = u"Añadir un bloque existente",
+    en = u"Add an existing block"
+)
+
+translations.define(
+    "woost.views.EditBlocksSlotList.dialog_buttons.cancel_button",
+    ca = u"Cancel·lar",
+    es = u"Cancelar",
+    en = u"Cancel"
+)
+
+# BlockDisplay
+#------------------------------------------------------------------------------
+translations.define("woost.views.BlockDisplay.common_status.label",
+    ca = u"Comú",
+    es = u"Común",
+    en = u"Common"
+)
+
+translations.define("woost.views.BlockDisplay.common_status.title",
+    ca = u"Aquest bloc resideix a la llibreria de blocs comuns, i pot "
+         u"aparèixer a més d'una pàgina",
+    es = u"Este bloque reside en la libreria de bloques comunes, pudiendo "
+         u"aparecer en más de una página",
+    en = u"This block resides within the site's common blocks gallery, and "
+         u"it may appear in more than one page"
+)
+
+translations.define("woost.views.BlockDisplay.disabled_status.label",
+    ca = u"Inactiu",
+    es = u"Inactivo",
+    en = u"Disabled"
+)
+
+translations.define("woost.views.BlockDisplay.disabled_status.title",
+    ca = u"Aquest bloc està deshabilitat, no s'inclourà a la pàgina",
+    es = u"Este bloque está deshabilitado, no se incluirá en la página",
+    en = u"This block is disabled and won't be displayed in the page"
+)
+
+translations.define("woost.views.BlockDisplay.expired_status.label",
+    ca = u"Expirat",
+    es = u"Expirado",
+    en = u"Expired"
+)
+
+translations.define("woost.views.BlockDisplay.expired_status.title",
+    ca = u"Aquest bloc ha assolit la seva data d'expiració i ha deixat d'estar "
+         u"visible",
+    es = u"Este bloque ha alcanzado su fecha de expiración y ha dejado de "
+         u"estar visible",
+    en = u"This block has reached its expiration date and is no longer visible"
+)
+
+translations.define(
+    "woost.views.BlockDisplay.awaiting_publication_status.label",
+    ca = u"Esperant inici de publicació",
+    es = u"Esperando inicio de publicación",
+    en = u"Awaiting start of publication"
+)
+
+translations.define(
+    "woost.views.BlockDisplay.awaiting_publication_status.title",
+    ca = u"Aquest bloc no ha assolit la seva data d'inici de publicació i "
+         u"encara no és visible",
+    es = u"Este bloque no ha alcanzado su fecha de inicio de publicación y "
+         u"todavía no es visible",
+    en = u"This block has not reached its publication date and is not "
+         u"visible yet"
+)
+
+translations.define("woost.views.BlockDisplay.temporary_status.label",
+    ca = u"Temporal",
+    es = u"Temporal",
+    en = u"Temporary"
+)
+
+translations.define("woost.views.BlockDisplay.temporary_status.title",
+    ca = u"Aquest bloc es publica només durant una finestra de temps",
+    es = u"Este bloque solo se publicada durante una ventana de tiempo",
+    en = u"This block is only published during a certain time window"
+)
+
+translations.define("woost.block_clipboard.empty",
+    ca = u"El portaretalls no conté cap bloc",
+    es = u"El portapapeles no cotiene ningún bloque",
+    en = u"The clipboard is empty"
+)
+
+translations.define("woost.block_clipboard.error",
+    ca = u"El contingut del portaretalls no és vàlid",
+    es = u"El contenido del portapapeles no es válido",
+    en = u"The clipboard content is not valid"
+)
+
+# NewsListing
+#------------------------------------------------------------------------------
+translations.define("NewsListing",
+    ca = u"Llistat de notícies",
+    es = u"Listado de noticias",
+    en = u"News listing"
+)
+
+translations.define("NewsListing-plural",
+    ca = u"Llistats de notícies",
+    es = u"Listados de noticias",
+    en = u"News listings"
+)
+
+translations.define("NewsListing.listing",
+    ca = u"Llistat",
+    es = u"Listado",
+    en = u"Listing"
+)
+
+translations.define("NewsListing.element_type",
+    ca = u"Tipus d'element",
+    es = u"Tipo de elemento",
+    en = u"Element type"
+)
+
+translations.define("NewsListing.paginated",
+    ca = u"Paginar els resultats",
+    es = u"Paginar los resultados",
+    en = u"Paginate results"
+)
+
+translations.define("NewsListing.page_size",
+    ca = u"Mida del llistat",
+    es = u"Tamaño del listado",
+    en = u"Listing size"
+)
+
+translations.define("NewsListing.view_class",
+    ca = u"Aparença",
+    es = u"Apariencia",
+    en = u"Appearence"
+)
+
+translations.define(
+    "NewsListing.view_class=woost.views.CompactNewsListing",
+    ca = u"Compacta",
+    es = u"Compacta",
+    en = u"Compact"
+)
+
+translations.define(
+    "NewsListing.view_class=woost.views.TextOnlyNewsListing",
+    ca = u"Només text",
+    es = u"Solo texto",
+    en = u"Text only"
+)
+
+translations.define(
+    "NewsListing.view_class=woost.views.TextAndImageNewsListing",
+    ca = u"Text i imatge",
+    es = u"Texto e imagen",
+    en = u"Text and image"
+)
+
+# EventListing
+#------------------------------------------------------------------------------
+translations.define("EventListing",
+    ca = u"Llistat d'esdeveniments",
+    es = u"Listado de eventos",
+    en = u"Event listing"
+)
+
+translations.define("EventListing-plural",
+    ca = u"Llistats d'events",
+    es = u"Listados de eventos",
+    en = u"Event listings"
+)
+
+translations.define("EventListing.listing",
+    ca = u"Llistat",
+    es = u"Listado",
+    en = u"Listing"
+)
+
+translations.define("EventListing.element_type",
+    ca = u"Tipus d'element",
+    es = u"Tipo de elemento",
+    en = u"Element type"
+)
+
+translations.define("EventListing.include_expired",
+    ca = u"Incloure esdeveniments passats",
+    es = u"Incluir eventos pasados",
+    en = u"Include expired events"
+)
+
+translations.define("EventListing.listing_order",
+    ca = u"Ordenació",
+    es = u"Ordenación",
+    en = u"Order"
+)
+
+translations.define("EventListing.listing_order=event_start",
+    ca = u"Data d'inici, ascendent",
+    es = u"Fecha de inicio, ascendente",
+    en = u"Event start, ascending"
+)
+
+translations.define("EventListing.listing_order=-event_start",
+    ca = u"Data d'inici, descendent",
+    es = u"Fecha de inicio, descendente",
+    en = u"Event start, descending"
+)
+
+translations.define("EventListing.paginated",
+    ca = u"Paginar els resultats",
+    es = u"Paginar los resultados",
+    en = u"Paginate results"
+)
+
+translations.define("EventListing.page_size",
+    ca = u"Mida del llistat",
+    es = u"Tamaño del listado",
+    en = u"Listing size"
+)
+
+translations.define("EventListing.view_class",
+    ca = u"Aparença",
+    es = u"Apariencia",
+    en = u"Appearence"
+)
+
+translations.define(
+    "EventListing.view_class=woost.views.CompactEventListing",
+    ca = u"Només el títol",
+    es = u"Solo el título",
+    en = u"Title only"
+)
+
+translations.define(
+    "EventListing.view_class=woost.views.DateLocationTitleEventListing",
+    ca = u"Data, ubicació i títol",
+    es = u"Fecha, ubicación y título",
+    en = u"Date, location and title"
+)
+
+# FacebookLikeButton
+#------------------------------------------------------------------------------
+translations.define("FacebookLikeButton",
+    ca = u'Botó de "M\'agrada" de Facebook',
+    es = u'Botón de "Me gusta" de Facebook',
+    en = u"Facebook Like button"
+)
+
+translations.define("FacebookLikeButton-plural",
+    ca = u'Botons de "M\'agrada" de Facebook',
+    es = u'Botones de "Me gusta" de Facebook',
+    en = u"Facebook Like buttons"
+)
+
+translations.define("FacebookLikeButton.appearence",
+    ca = u"Aparença",
+    es = u"Apariencia",
+    en = u"Appearence"
+)
+
+translations.define("FacebookLikeButton.fb_href",
+    ca = u"Recurs",
+    es = u"Recurso",
+    en = u"Resource"
+)
+
+translations.define("FacebookLikeButton.fb_href-explanation",
+    ca = u"La pàgina a recomanar. Deixar en blanc per seleccionar la pàgina on "
+         u"es trobi el botó.",
+    es = u"La página a recomendar. Dejar en blanco para seleccionar la página "
+         u"donde se ubique el botón.",
+    en = u"The resource to like. Leave blank to assume the page that contains "
+         u"the button."
+)
+
+translations.define("FacebookLikeButton.fb_send",
+    ca = u"Mostrar el botó d'enviar",
+    es = u"Mostrar el botón de enviar",
+    en = u"Show the Send button"
+)
+
+translations.define("FacebookLikeButton.fb_layout",
+    ca = u"Disposició",
+    es = u"Disposición",
+    en = u"Layout"
+)
+
+translations.define("FacebookLikeButton.fb_layout=standard",
+    ca = u"Estàndard",
+    es = u"Estándar",
+    en = u"Standard"
+)
+
+translations.define("FacebookLikeButton.fb_layout=button_count",
+    ca = u"Recompte",
+    es = u"Recuento",
+    en = u"Button count"
+)
+
+translations.define("FacebookLikeButton.fb_layout=box_count",
+    ca = u"Recompte en caixa vertical",
+    es = u"Recuento con caja vertical",
+    en = u"Box count"
+)
+
+translations.define("FacebookLikeButton.fb_show_faces",
+    ca = u"Mostrar cares",
+    es = u"Mostrar caras",
+    en = u"Show faces"
+)
+
+translations.define("FacebookLikeButton.fb_width",
+    ca = u"Amplada",
+    es = u"Ancho",
+    en = u"Width"
+)
+
+translations.define("FacebookLikeButton.fb_action",
+    ca = u"Verb",
+    es = u"Verbo",
+    en = u"Verb"
+)
+
+translations.define("FacebookLikeButton.fb_action=like",
+    ca = u"M'agrada",
+    es = u"Me gusta",
+    en = u"Like"
+)
+
+translations.define("FacebookLikeButton.fb_action=recommend",
+    ca = u"Recomanar",
+    es = u"Recomendar",
+    en = u"Recommend"
+)
+
+translations.define("FacebookLikeButton.fb_font",
+    ca = u"Font",
+    es = u"Fuente",
+    en = u"Font"
+)
+
+translations.define("FacebookLikeButton.fb_colorscheme",
+    ca = u"Esquema de colors",
+    es = u"Esquema de colores",
+    en = u"Colorscheme"
+)
+
+translations.define("FacebookLikeButton.fb_colorscheme=light",
+    ca = u"Clar",
+    es = u"Claro",
+    en = u"Light"
+)
+
+translations.define("FacebookLikeButton.fb_colorscheme=dark",
+    ca = u"Fosc",
+    es = u"Oscuro",
+    en = u"Dark"
+)
+
+translations.define("FacebookLikeButton.fb_ref",
+    ca = u"Codi de seguiment",
+    es = u"Código de seguimiento",
+    en = u"Referral tracking label"
+)
+
+# FacebookLikeBox
+#------------------------------------------------------------------------------
+translations.define("FacebookLikeBox",
+    ca = u'Caixa de "M\'agrada" per pàgines de Facebook',
+    es = u'Caja de "Me gusta" para páginas de Facebook',
+    en = u"Facebook Like Box"
+)
+
+translations.define("FacebookLikeBox-plural",
+    ca = u'Caixes de "M\'agrada" per pàgines de Facebook',
+    es = u'Cajas de "Me gusta" para páginas de Facebook',
+    en = u"Facebook Like Boxes"
+)
+
+translations.define("FacebookLikeBox.appearence",
+    ca = u"Aparença",
+    es = u"Apariencia",
+    en = u"Appearence"
+)
+
+translations.define("FacebookLikeBox.fb_href",
+    ca = u"Pàgina de Facebook",
+    es = u"Página de Facebook",
+    en = u"Facebook page"
+)
+
+translations.define("FacebookLikeBox.fb_show_faces",
+    ca = u"Mostrar cares",
+    es = u"Mostrar caras",
+    en = u"Show faces"
+)
+
+translations.define("FacebookLikeBox.fb_stream",
+    ca = u"Mostrar entrades del mur",
+    es = u"Mostrar entradas del muro",
+    en = u"Show stream"
+)
+
+translations.define("FacebookLikeBox.fb_header",
+    ca = u"Mostrar el logo de Facebook",
+    es = u"Mostrar el logo de Facebook",
+    en = u"Show Facebook's logo"
+)
+
+translations.define("FacebookLikeBox.fb_width",
+    ca = u"Amplada",
+    es = u"Ancho",
+    en = u"Width"
+)
+
+translations.define("FacebookLikeBox.fb_height",
+    ca = u"Alçada",
+    es = u"Alto",
+    en = u"Height"
+)
+
+translations.define("FacebookLikeBox.fb_border_color",
+    ca = u"Color de la vora",
+    es = u"Color del borde",
+    en = u"Border color"
+)
+
+translations.define("FacebookLikeBox.fb_colorscheme",
+    ca = u"Esquema de colors",
+    es = u"Esquema de colores",
+    en = u"Colorscheme"
+)
+
+translations.define("FacebookLikeBox.fb_colorscheme=light",
+    ca = u"Clar",
+    es = u"Claro",
+    en = u"Light"
+)
+
+translations.define("FacebookLikeBox.fb_colorscheme=dark",
+    ca = u"Fosc",
+    es = u"Oscuro",
+    en = u"Dark"
+)
+
+# TweetButton
+#------------------------------------------------------------------------------
+translations.define("TweetButton",
+    ca = u"Botó de Twitter",
+    es = u"Botón de Twitter",
+    en = u"Twitter button"
+)
+
+translations.define("TweetButton-plural",
+    ca = u"Botons de Twitter",
+    es = u"Botones de Twitter",
+    en = u"Twitter buttons"
+)
+
+translations.define("TweetButton.tweet",
+    ca = u"Tuit",
+    es = u"Tuit",
+    en = u"Tweet"
+)
+
+translations.define("TweetButton.appearence",
+    ca = u"Aparença",
+    es = u"Apariencia",
+    en = u"Appearence"
+)
+
+translations.define("TweetButton.tw_target",
+    ca = u"Element a compartir",
+    es = u"Elemento a compartir",
+    en = u"Element to tweet"
+)
+
+translations.define("TweetButton.tw_target-explanation",
+    ca = u"Deixar en blanc per compartir la pàgina on s'ubiqui el botó",
+    es = u"Dejar en blanco para compartir la página donde se ubique el "
+         u"botón",
+    en = u"Leave blank to tweet the same page where the button resides"
+)
+
+translations.define("TweetButton.tw_via",
+    ca = u"Via",
+    es = u"Via",
+    en = u"Via"
+)
+
+translations.define("TweetButton.tw_via-explanation",
+    ca = u"Nom d'usuari al que s'atribuirà el tuit",
+    es = u"Nombre de usuario al que se atribuirá el tuit",
+    en = u"Screen name of the user to attribute the Tweet to"
+)
+
+translations.define("TweetButton.tw_related",
+    ca = u"Comptes relacionats",
+    es = u"Cuentas relacionadas",
+    en = u"Related accounts"
+)
+
+translations.define("TweetButton.tw_hashtags",
+    ca = u"Hashtags",
+    es = u"Hashtags",
+    en = u"Hashtag"
+)
+
+translations.define("TweetButton.tw_dnt",
+    ca = u"Deshabilitar el seguiment de Twitter",
+    es = u"Deshabilitar el seguimiento de Twitter",
+    en = u"Opt out of Twitter tailoring"
+)
+
+translations.define("TweetButton.tw_text",
+    ca = u"Text per defecte",
+    es = u"Texto por defecto",
+    en = u"Default text for the Tweet"
+)
+
+translations.define("TweetButton.tw_size",
+    ca = u"Mida del botó",
+    es = u"Tamaño del botón",
+    en = u"Button size"
+)
+
+translations.define("TweetButton.tw_size=medium",
+    ca = u"Mitjana",
+    es = u"Mediana",
+    en = u"Medium"
+)
+
+translations.define("TweetButton.tw_size=big",
+    ca = u"Gran",
+    es = u"Grande",
+    en = u"Big"
+)
+
+translations.define("TweetButton.tw_count",
+    ca = u"Recompte",
+    es = u"Recuento",
+    en = u"Count"
+)
+
+translations.define("TweetButton.tw_count=none",
+    ca = u"Invisible",
+    es = u"Invisible",
+    en = u"None"
+)
+
+translations.define("TweetButton.tw_count=horizontal",
+    ca = u"Horitzontal",
+    es = u"Horizontal",
+    en = u"Horizontal"
+)
+
+translations.define("TweetButton.tw_count=vertical",
+    ca = u"Vertical",
+    es = u"Vertical",
+    en = u"Vertical"
+)
+
+# FlashBlock
+#------------------------------------------------------------------------------
+translations.define("FlashBlock",
+    ca = u"Animació Flash",
+    es = u"Animación Flash",
+    en = u"Flash animation"
+)
+
+translations.define("FlashBlock-plural",
+    ca = u"Animacions Flash",
+    es = u"Animaciones Flash",
+    en = u"Flash animations"
+)
+
+translations.define("FlashBlock.swf_file",
+    ca = u"Fitxer Flash",
+    es = u"Fichero Flash",
+    en = u"Flash file"
+)
+
+translations.define("FlashBlock.swf_file",
+    ca = u"Fitxer Flash",
+    es = u"Fichero Flash",
+    en = u"Flash file"
+)
+
+translations.define("FlashBlock.width",
+    ca = u"Amplada",
+    es = u"Ancho",
+    en = u"Width"
+)
+
+translations.define("FlashBlock.height",
+    ca = u"Alçada",
+    es = u"Alto",
+    en = u"Height"
+)
+
+translations.define("FlashBlock.flash_version",
+    ca = u"Versió del reproductor Flash",
+    es = u"Versión del reproductor Flash",
+    en = u"Flash player version"
+)
+
+translations.define("FlashBlock.flash_vars",
+    ca = u"Variables Flash",
+    es = u"Variables Flash",
+    en = u"Flash variables"
+)
+
+translations.define("FlashBlock.flash_params",
+    ca = u"Paràmetres Flash",
+    es = u"Parámetros Flash",
+    en = u"Flash parameters"
+)
+
+translations.define("FlashBlock.flash_attributes",
+    ca = u"Atributs Flash",
+    es = u"Atributos Flash",
+    en = u"Flash attributes"
+)
+
+# PublishableListing
+#------------------------------------------------------------------------------
+translations.define("PublishableListing",
+    ca = u"Llistat d'elements publicables",
+    es = u"Listado de elementos publicables",
+    en = u"Publishable elements listing"
+)
+
+translations.define("PublishableListing-plural",
+    ca = u"Llistats d'elements publicables",
+    es = u"Listados de elementos publicables",
+    en = u"Publishable elements listings"
+)
+
+translations.define("PublishableListing.listing",
+    ca = u"Llistat",
+    es = u"Listado",
+    en = u"Listing"
+)
+
+translations.define("PublishableListing.publishables",
+    ca = u"Elements publicables",
+    es = u"Elementos publicables",
+    en = u"Publishable elements"
+)
+
+translations.define("PublishableListing.item_accessibility",
+    ca = u"Control d'estat dels elements",
+    es = u"Control de estado de los elementos",
+    en = u"Item accessibility check"
+)
+
+translations.define("PublishableListing.item_accessibility=accessible",
+    ca = u"Elements publicats i amb drets de lectura",
+    es = u"Elementos publicados y con derechos de lectura",
+    en = u"Published items with read privileges"
+)
+
+translations.define("PublishableListing.item_accessibility=published",
+    ca = u"Elements publicats, tinguin o no drets de lectura",
+    es = u"Elementos publicados, tengan o no derechos de lectura",
+    en = u"Published items, regardless of read privileges"
+)
+
+translations.define("PublishableListing.item_accessibility=any",
+    ca = u"Qualsevol element",
+    es = u"Cualquier elemento",
+    en = u"Any item"
+)
+
+translations.define("PublishableListing.listing_order",
+    ca = u"Ordenació",
+    es = u"Ordenación",
+    en = u"Order"
+)
+
+translations.define("PublishableListing.listing_order=arbitrary",
+    ca = u"Arbitrària",
+    es = u"Arbitraria",
+    en = u"Arbitrary"
+)
+
+translations.define("PublishableListing.listing_order=-last_update_time",
+    ca = u"Última modificació",
+    es = u"Última modificación",
+    en = u"Last update"
+)
+
+translations.define("PublishableListing.links_open_in_new_window",
+    ca = u"Obrir els enllaços a una nova finestra",
+    es = u"Abrir los enlaces en una ventana nueva",
+    en = u"Open links in a new window"
+)
+
+translations.define("PublishableListing.paginated",
+    ca = u"Paginar els resultats",
+    es = u"Paginar los resultados",
+    en = u"Paginate results"
+)
+
+translations.define("PublishableListing.page_size",
+    ca = u"Mida del llistat",
+    es = u"Tamaño del listado",
+    en = u"Listing size"
+)
+
+translations.define("PublishableListing.view_class",
+    ca = u"Aparença",
+    es = u"Apariencia",
+    en = u"Appearence"
+)
+
+translations.define(
+    "PublishableListing.view_class=woost.views.PublishableTextualListing",
+    ca = u"Només text",
+    es = u"Solo texto",
+    en = u"Text only"
+)
+
+translations.define(
+    "PublishableListing.view_class=woost.views.PublishableIconListing",
+    ca = u"Icona i text",
+    es = u"Icono y texto",
+    en = u"Icon and text"
+)
+
+translations.define(
+    "PublishableListing.view_class=woost.views.PublishableGrid",
+    ca = u"Graella",
+    es = u"Parrilla",
+    en = u"Grid"
+)
+
+translations.define("PublishableListing.element_type",
+    ca = u"Tipus d'element",
+    es = u"Tipo de elemento",
+    en = u"Element type"
 )
 

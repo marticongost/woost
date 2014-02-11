@@ -6,6 +6,7 @@
 @organization:	Whads/Accent SL
 @since:			Jun 2009
 """
+import os
 from unittest import TestCase
 from cocktail.tests.persistence.tempstoragemixin import TempStorageMixin
 
@@ -13,28 +14,21 @@ class BaseTestCase(TempStorageMixin, TestCase):
 
     def setUp(self):
 
-        from woost.models import Configuration, Action, User, Role
-        from woost.models.trigger import set_triggers_enabled
+        from woost import app
+        from woost.models import Configuration, User, Role
+        from woost.models.trigger import get_triggers_enabled, set_triggers_enabled
+        from woost.controllers.installer import Installer
 
+        self.__prev_installation_id = app.installation_id
+        self.__prev_triggers_enabled = get_triggers_enabled()
+        app.installation_id = "TEST"
         set_triggers_enabled(False)
-        
+
         TempStorageMixin.setUp(self)
 
-        # Actions
-        self.create_action = Action(identifier = "create")
-        self.create_action.insert()
-        
-        self.read_action = Action(identifier = "read")
-        self.read_action.insert()
-
-        self.modify_action = Action(identifier = "modify")
-        self.modify_action.insert()
-        
-        self.delete_action = Action(identifier = "delete")
-        self.delete_action.insert()
-
-        self.confirm_draft_action = Action(identifier = "confirm_draft")
-        self.confirm_draft_action.insert()
+        app.root = os.path.join(self._temp_dir, "test_project")
+        installer = Installer()
+        installer.create_project({"project_path": app.root})
 
         # Configuration
         self.config = Configuration(qname = "woost.configuration")
@@ -55,4 +49,14 @@ class BaseTestCase(TempStorageMixin, TestCase):
         self.authenticated_role.insert()
        
         set_triggers_enabled(True)
+
+    def tearDown(self):
+        from woost import app
+        from woost.models import staticpublication
+        from woost.models.trigger import set_triggers_enabled
+
+        app.installation_id = self.__prev_installation_id
+        set_triggers_enabled(self.__prev_triggers_enabled)
+
+        TempStorageMixin.tearDown(self)
 

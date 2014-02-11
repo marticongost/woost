@@ -104,7 +104,7 @@ class SendEmailController(EditController):
             test_email = self.params.read(schema.String("test_email"))
             # Create a fake user
             receiver = User(email = test_email)
-            set_language(mailing.language.iso_code)
+            set_language(mailing.language)
             mailing.send_message(self.smtp_server, receiver)
 
         elif self.mailer_action == "send":

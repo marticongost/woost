@@ -44,7 +44,6 @@ class RestrictedAccessExtension(Extension):
 
         from woost.extensions.restrictedaccess import (
             strings,
-            configuration,
             publishable,
             accessrestriction
         )

@@ -19,7 +19,7 @@ from cocktail.tests.seleniumtester import (
     browser
 )
 from woost import app
-from woost.models.initialization import init_site
+from woost.models.initialization import SiteInitializer
 from woost.controllers.cmscontroller import CMSController
 
 # Site defaults
@@ -53,7 +53,8 @@ def setup_package():
     datastore.storage = FileStorage(app.path("testdb.fs"))
 
     # Initialize site content before testing
-    init_site(
+    site_initializer = SiteInitializer()
+    site_initializer.initialize(
         admin_email,
         admin_password,
         site_languages

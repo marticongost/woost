@@ -14,14 +14,15 @@ from cocktail.translations import translations
 from cocktail import schema
 from cocktail.controllers.usercollection import UserCollection
 from cocktail.schema.expressions import Expression
-from woost.models.item import Item
-from woost.models.messagestyles import permission_doesnt_match_style
-from woost.models.usersession import get_current_user
-from woost.models.messagestyles import unauthorized_style
+from .item import Item
+from .messagestyles import permission_doesnt_match_style
+from .usersession import get_current_user
+from .messagestyles import unauthorized_style
 
 
 class Permission(Item):
 
+    type_group = "access"
     instantiable = False
     visible_from_root = False
 
@@ -143,11 +144,6 @@ class ModifyPermission(ContentPermission):
 
 class DeletePermission(ContentPermission):
     """Permission to delete instances of a content type."""
-    instantiable = True
-
-
-class ConfirmDraftPermission(ContentPermission):
-    """Permission to confirm drafts of instances of a content type."""
     instantiable = True
 
 
@@ -278,7 +274,7 @@ class MemberPermission(Permission):
 
         return True
 
-    def iter_members(self):
+    def iter_matching_members(self):
         for compound_name in self.matching_members:
             yield _resolve_matching_member_reference(compound_name)
 

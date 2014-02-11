@@ -46,9 +46,6 @@ class ShopOrderEntry(Item):
     )
 
     def __translate__(self, language, **kwargs):
-        if self.draft_source is not None:
-            return Item.__translate__(self, language, **kwargs)
-
         return "%s (%d)" % (
             translations(self.product, language),
             self.quantity

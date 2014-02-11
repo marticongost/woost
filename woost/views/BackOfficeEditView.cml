@@ -39,26 +39,6 @@ from simplejson import dumps
 
     <div py:id="messages" py:before="self.item_body" py:collapsible="${True}">
 
-        <!-- Draft remark -->
-        <div
-            py:id="draft_box"
-            py:visible="@{self.edited_item.is_draft}"
-            class="draft">
-            <py:ready py:if="self.draft_box.visible">
-                <?py
-                if self.edited_item.draft_source:
-                    element.append(
-                        translations(
-                            "Editing draft copy",
-                            location = self.edit_uri(self.edited_item.draft_source)
-                        )
-                    )
-                else:
-                    element.append(translations("Editing draft"))
-                ?>
-            </py:ready>
-        </div>
-
         <!-- Errors -->
         <py:cocktail.html.ErrorBox
             py:id="error_box"

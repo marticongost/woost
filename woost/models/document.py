@@ -7,18 +7,16 @@ u"""
 @since:			July 2008
 """
 from cocktail import schema
-from cocktail.modeling import getter
-from cocktail.iteration import first
 from cocktail.events import event_handler
-from cocktail.controllers.renderingengines import get_rendering_engine
-from woost.models.publishable import Publishable
-from woost.models.file import File
-from woost.models.controller import Controller
+from cocktail.html import templates
+from .publishable import Publishable
+from .controller import Controller
 
 
 class Document(Publishable):
 
     instantiable = True
+    type_group = "document"
     default_per_language_publication = True
 
     groups_order = [
@@ -32,9 +30,6 @@ class Document(Publishable):
         "template",
         "description",
         "keywords",
-        "attachments",
-        "page_resources",
-        "branch_resources",
         "children",
         "redirection_mode",
         "redirection_target",
@@ -84,40 +79,6 @@ class Document(Publishable):
         member_group = "presentation.behavior"
     )
 
-    branch_resources = schema.Collection(
-        items = schema.Reference(
-            type = Publishable,
-            required = True,
-            relation_constraints =
-                Publishable.resource_type.equal("html_resource")
-        ),
-        related_end = schema.Collection(),
-        after_member = "inherit_resources",
-        member_group = "presentation.resources"
-    )
-
-    page_resources = schema.Collection(
-        items = schema.Reference(
-            type = Publishable,
-            required = True,
-            relation_constraints =
-                Publishable.resource_type.equal("html_resource")
-        ),
-        related_end = schema.Collection(),
-        after_member = "branch_resources",
-        member_group = "presentation.resources"
-    )
-
-    attachments = schema.Collection(
-        items = schema.Reference(
-            type = Publishable,
-            required = True
-        ),
-        selector_default_type = File,
-        related_end = schema.Collection(),
-        member_group = "content"
-    )
- 
     children = schema.Collection(
         items = "woost.models.Publishable",
         bidirectional = True,
@@ -173,37 +134,18 @@ class Document(Publishable):
                 for descendant in child.descend_tree(True):
                     yield descendant
 
-    @getter
-    def resources(self):
-        """Iterates over all the resources that apply to the page.
-        @type: L{Publishable}
-        """
-        for resource in self.inherited_resources:
-            yield resource
-
-        for resource in self.branch_resources:
-            yield resource
-
-        for resource in self.page_resources:
-            yield resource
-
     def render(self, **values):
         """Renders the document using its template."""
         if self.template is None:
             raise ValueError("Can't render a document without a template")
         
         values["publishable"] = self
-        engine = get_rendering_engine(self.template.engine)
-        return engine.render(values, template = self.template.identifier)
 
-    @property
-    def default_image(self):
-        return first(
-            attachment
-            for attachment in self.attachments
-            if attachment.resource_type == "image"
-            and attachment.is_accessible()
-        )
+        view = templates.new(self.template.identifier)
+        for key, value in values.iteritems():
+            setattr(view, key, value)
+
+        return view.render_page()
 
     def find_redirection_target(self):
         mode = self.redirection_mode

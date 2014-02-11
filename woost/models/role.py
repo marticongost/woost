@@ -7,8 +7,8 @@ u"""
 @since:			August 2008
 """
 from cocktail import schema
-from woost.models.item import Item
 from cocktail.html.datadisplay import display_factory, MULTIPLE_SELECTION
+from .item import Item
 
 
 class Role(Item):
@@ -23,6 +23,8 @@ class Role(Item):
     permissions from its base roles, recursively. This ability makes it
     possible to grow a site's access policy by means of specialization.
     """
+    type_group = "users"
+
     members_order = [
         "title",
         "base_roles",
@@ -30,6 +32,7 @@ class Role(Item):
         "users",
         "permissions",
         "user_views",
+        "default_content_type",
         "hidden_content_types"
     ]
 
@@ -68,6 +71,10 @@ class Role(Item):
     user_views = schema.Collection(
         items = "woost.models.UserView",
         bidirectional = True
+    )
+
+    default_content_type = schema.Reference(
+        class_family = Item
     )
 
     hidden_content_types = schema.Collection(

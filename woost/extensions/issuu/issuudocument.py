@@ -30,6 +30,7 @@ class IssuuDocument(Publishable):
 
     instantiable = True
     default_per_language_publication = True
+    type_group = "resource"
 
     default_controller = schema.DynamicDefault(
         lambda: Controller.get_instance(qname = "woost.issuu_document_controller")

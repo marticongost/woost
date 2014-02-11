@@ -11,9 +11,16 @@ import urllib2
 import datetime
 import hashlib
 import base64
-from cocktail.modeling import ListWrapper, SetWrapper, DictWrapper
-from cocktail.pkgutils import resolve
+from BTrees.OOBTree import OOBTree
+from cocktail.events import when
+from cocktail.modeling import (
+    ListWrapper,
+    SetWrapper,
+    DictWrapper
+)
+from cocktail.pkgutils import get_full_name, resolve
 from cocktail import schema
+from cocktail.persistence import datastore
 from woost.models.item import Item
 
 RegExp = type(re.compile(""))
@@ -41,10 +48,27 @@ class Synchronization(object):
             or Item.get_instance(global_id = global_id)
         )
 
+    def process_manifest(self):
+        manifest = get_manifest()
+        for global_id, object_hash in manifest.iteritems():
+            if object_hash is None:
+                obj = Item.require_instance(global_id = global_id)
+                object_hash = self.get_object_state_hash(obj)
+                manifest[global_id] = object_hash
+            yield global_id, object_hash
+
     def get_object_state_hash(self, obj):
         state = self.export_object_state(obj)
         state = self.__stabilize(state)
-        json = dumps(state)
+
+        try:
+            json = dumps(state)
+        except Exception, error:
+            raise ValueError("Can't serialize %r (%s)" % (
+                obj,
+                error
+            ))
+
         return hashlib.md5(json).hexdigest()
 
     def __stabilize(self, data):
@@ -107,6 +131,8 @@ class Synchronization(object):
             return self.export_value(value._items)
         elif isinstance(value, RegExp):
             return base64.b64encode(value.pattern)
+        elif isinstance(value, schema.SchemaClass):
+            return get_full_name(value)
         else:
             return value
 
@@ -143,7 +169,10 @@ class Synchronization(object):
         if value is None:
             return None
         elif isinstance(member, schema.Reference):
-            return self.get_local_copy(value)
+            if member.class_family:
+                return resolve(value)
+            else:
+                return self.get_local_copy(value)
         elif isinstance(member, schema.DateTime):
             return datetime.datetime.strptime(value, self.datetime_format)
         elif isinstance(member, schema.Date):
@@ -188,24 +217,39 @@ class Synchronization(object):
 
         return urllib2.urlopen(request)
 
+    def download_file(self, file, chunk_size = 1024):
+        response = self._sync_request("file/" + file.global_id)
+        with open(file.file_path, "wb") as dest:
+            while True:
+                chunk = response.read(chunk_size)
+                if not chunk:
+                    break
+                dest.write(chunk)
+
     def compare_manifests(self):
 
         response = self._sync_request("manifest")
 
         incomming = set()
         modified = set()
+        local_manifest = get_manifest()
 
         for line in response:
             line = line.strip()
             pos = line.find(" ")
             global_id = line[:pos]
-            state_hash = line[pos + 1:].strip()
+            remote_hash = line[pos + 1:].strip()
             local_obj = Item.get_instance(global_id = global_id)
 
             if local_obj is None:
                 incomming.add(global_id)
-            elif state_hash != self.get_object_state_hash(local_obj):
-                modified.add(global_id)
+            else:
+                local_hash = local_manifest.get(global_id)
+                if local_hash is None:
+                    local_hash = self.get_object_state_hash(local_obj)
+                    local_manifest[global_id] = local_hash
+                if remote_hash != local_hash:
+                    modified.add(global_id)
 
         return {"incomming": incomming, "modified": modified}
 
@@ -267,4 +311,100 @@ class Synchronization(object):
             "incomming": self.__local_copies.values(),
             "modified": changes
         }
+
+MANIFEST_KEY = "woost.manifest"
+debug = False
+
+def get_manifest():
+    manifest = datastore.root.get(MANIFEST_KEY)
+
+    if manifest is None:
+        datastore.root[MANIFEST_KEY] = manifest = OOBTree()
+
+    return manifest
+
+def rebuild_manifest(eager = True):
+    datastore.root[MANIFEST_KEY] = manifest = OOBTree()
+    
+    if eager:
+        sync = Synchronization()
+
+    for obj in Item.select(Item.synchronizable.equal(True)):
+        global_id = obj.global_id
+        if global_id:
+            if eager:
+                object_hash = sync.get_object_state_hash(obj)
+                manifest[global_id] = object_hash
+            else:
+                manifest[global_id] = None
+
+@when(Item.inserting)
+def _insert_into_manifest(e):
+    obj = e.source
+    if obj.synchronizable:
+        global_id = e.source.global_id
+        if global_id:
+            get_manifest()[global_id] = None
+            if debug:
+                print styled("Manifest: declared " + obj.global_id, "bright_green")
+
+@when(Item.changed)
+def _invalidate_manifest(e):
+
+    from cocktail.styled import styled
+
+    obj = e.source
+
+    if not obj.is_inserted:
+        return
+    
+    # Elegibility for synchronization changed
+    if e.member is Item.synchronizable:
+
+        # Object becomes synchronizable: add it to the manifest
+        if e.value:
+            if obj.global_id:
+                get_manifest()[obj.global_id] = None
+                if debug:
+                    print styled("Manifest: declared " + obj.global_id, "bright_green")
+        # Object ceases to be synchronizable: remove it from the manifest
+        else:
+            get_manifest().pop(obj.global_id, None)
+            if debug:
+                print styled("Manifest: removed " + obj.global_id, "magenta")
+
+        return
+
+    elif not obj.synchronizable:
+        return
+
+    # Object global identifier changed
+    if e.member is Item.global_id:
+        manifest = get_manifest()
+
+        if e.previous_value:
+            manifest.pop(e.previous_value, None)
+            if debug:
+                print styled("Manifest: removed " + obj.global_id, "magenta")
+
+        if e.value:
+            manifest[e.value] = None
+            if debug:
+                print styled("Manifest: declared " + obj.global_id, "bright_green")
+
+        return
+
+    elif not obj.global_id:
+        return
+
+    # Changing a synchronizable member: invalidate the stored object's hash in
+    # the manifest, if any
+    if e.member.synchronizable:
+        get_manifest()[obj.global_id] = None
+        if debug:
+            print styled("Manifest: invalidated " + obj.global_id, "cyan")
+
+@when(Item.deleted)
+def _remove_from_manifest(e):
+    get_manifest().pop(e.source.global_id, None)
 

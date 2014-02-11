@@ -6,16 +6,20 @@ u"""
 @organization:	Whads/Accent SL
 @since:			October 2008
 """
+from cocktail.events import event_handler
 from cocktail import schema
 from cocktail.modeling import getter
-from woost.models import Item
+from .item import Item
 
 
 class Style(Item):
 
+    type_group = "customization"
+
     members_order = [
         "title",
         "applicable_to_text",
+        "applicable_to_blocks",
         "custom_class_name",
         "declarations",
         "admin_declarations"
@@ -36,6 +40,13 @@ class Style(Item):
         required = True,
         indexed = True,
         default = True,
+        listed_by_default = False
+    )
+
+    applicable_to_blocks = schema.Boolean(
+        required = True,
+        default = True,
+        indexed = True,
         listed_by_default = False
     )
 

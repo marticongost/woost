@@ -8,8 +8,9 @@ u"""
 """
 from datetime import date
 from cocktail import schema
-from woost.models.document import Document
-from woost.models.file import File
+from .document import Document
+from .file import File
+from .slot import Slot
 
 
 class News(Document):
@@ -18,7 +19,7 @@ class News(Document):
         "news_date",
         "image",
         "summary",        
-        "body"
+        "blocks"
     ]
 
     news_date = schema.Date(
@@ -42,10 +43,5 @@ class News(Document):
         member_group = "content"
     )
 
-    body = schema.String(
-        edit_control = "woost.views.RichTextEditor",
-        listed_by_default = False,
-        translated = True,
-        member_group = "content"
-    )
+    blocks = Slot()
 

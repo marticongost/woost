@@ -5,14 +5,6 @@ u"""
 """
 from cocktail.translations import translations
 
-# Configuration
-#------------------------------------------------------------------------------
-translations.define("Configuration.access_restrictions",
-    ca = u"Restriccions d'accés",
-    es = u"Restricciones de acceso",
-    en = u"Access restrictions"
-)
-
 # Publishable
 #------------------------------------------------------------------------------
 translations.define("Publishable.access_restriction",

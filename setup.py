@@ -37,7 +37,7 @@ of its features include:\n"
     * Place arbitrarily complex access restrictions
 
     * Extension framework, with several built-in extensions (comments,
-      workflow, integration with online services, and many others)
+      ecommerce, integration with online services, and many others)
 """,
     classifiers = [
         "Development Status :: 3 - Alpha",
@@ -63,7 +63,6 @@ of its features include:\n"
     include_package_data = True,
     entry_points = {
         "woost.extensions": [
-            "workflow = woost.extensions.workflow:WorkflowExtension",
             "shop = woost.extensions.shop:ShopExtension",
             "countries = woost.extensions.countries:CountriesExtension",
             "payments = woost.extensions.payments:PaymentsExtension",

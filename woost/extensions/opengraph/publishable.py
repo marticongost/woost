@@ -99,26 +99,10 @@ def _get_publishable_open_graph_image(self):
 
 Publishable.get_open_graph_image = _get_publishable_open_graph_image
 
-def _get_document_open_graph_image(self):
-    return first(attachment
-                 for attachment in self.attachments
-                 if attachment.resource_type == "image"
-                 and attachment.is_accessible())
-
-Document.get_open_graph_image = _get_document_open_graph_image
-
 def _get_publishable_open_graph_video(self):
     return None
 
 Publishable.get_open_graph_video = _get_publishable_open_graph_video
-
-def _get_document_open_graph_video(self):
-    return first(attachment
-                 for attachment in self.attachments
-                 if attachment.resource_type == "video"
-                 and attachment.is_accessible())
-
-Document.get_open_graph_video = _get_document_open_graph_video
 
 def _get_news_open_graph_image(self):
     if self.image and self.image.is_accessible():

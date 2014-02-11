@@ -29,6 +29,7 @@ def extract_video_id(string):
 class YouTubeVideo(Publishable):
 
     instantiable = True
+    type_group = "resource"
     uri_pattern = "http://www.youtube.com/watch?v=%s"
     video_player = "cocktail.html.YouTubePlayer"
 

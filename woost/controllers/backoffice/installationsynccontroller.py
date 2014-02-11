@@ -6,7 +6,6 @@ u"""
 @organization:	Whads/Accent SL
 @since:			November 2013
 """
-import urllib
 import urllib2
 import cherrypy
 from cocktail.events import event_handler
@@ -105,10 +104,7 @@ class InstallationSyncController(EditController):
 
         # Download files from the remote copy
         for file in file_downloads:
-            urllib.urlretrieve(
-                self.context["cms_item"].url.rstrip("/") + "/" + file.global_id,
-                file.file_path
-            )
+            self.synchronization.download_file(file)
 
         # Find importable content again
         self.comparision = self.synchronization.compare_content()

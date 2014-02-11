@@ -24,15 +24,15 @@ from cocktail.controllers import (
     Location
 )
 from woost import app
-from woost.models.item import Item
-from woost.models.usersession import get_current_user
-from woost.models.websitesession import get_current_website
-from woost.models.permission import (
+from .item import Item
+from .usersession import get_current_user
+from .websitesession import get_current_website
+from .permission import (
     ReadPermission,
     ReadTranslationPermission,
     PermissionExpression
 )
-from woost.models.caching import CachingPolicy
+from .caching import CachingPolicy
 
 WEBSITE_PUB_INDEX_KEY = "woost.models.Publishable.per_website_publication_index"
 
@@ -41,21 +41,22 @@ class Publishable(Item):
     """Base class for all site elements suitable for publication."""
     
     instantiable = False
+    cacheable = True
     edit_view = "woost.views.PublishableFieldsView"
     backoffice_heading_view = "woost.views.BackOfficePublishableHeading"
  
+    type_group = "publishable"
+
     groups_order = [
         "navigation",
         "presentation",
         "presentation.behavior",
-        "presentation.resources",
         "presentation.format",
         "publication"
     ]
 
     members_order = [
         "controller",
-        "inherit_resources",
         "mime_type",
         "resource_type",
         "encoding",
@@ -119,12 +120,6 @@ class Publishable(Item):
         bidirectional = True,
         listed_by_default = False,
         member_group = "presentation.behavior"
-    )
-
-    inherit_resources = schema.Boolean(
-        listed_by_default = False,
-        default = True,
-        member_group = "presentation.resources"
     )
 
     def resolve_controller(self):
@@ -203,6 +198,7 @@ class Publishable(Item):
     start_date = schema.DateTime(
         indexed = True,
         listed_by_default = False,
+        affects_cache_expiration = True,
         member_group = "publication"
     )
 
@@ -210,6 +206,7 @@ class Publishable(Item):
         indexed = True,
         min = start_date,
         listed_by_default = False,
+        affects_cache_expiration = True,
         member_group = "publication"
     )
 
@@ -440,40 +437,12 @@ class Publishable(Item):
         from woost.models import Website
         return bool(self.get(Website.home.related_end))
 
-    @getter
-    def resources(self):
-        """Iterates over all the resources that apply to the item.
-        @type: L{Publishable}
-        """
-        return self.inherited_resources
-
-    @getter
-    def inherited_resources(self):
-        """Iterates over all the inherited resources that apply to the item.
-        @type: L{Publishable}
-        """
-        ancestry = []
-        publishable = self
-        
-        while publishable.parent is not None and publishable.inherit_resources:
-            ancestry.append(publishable.parent)
-            publishable = publishable.parent
-
-        ancestry.reverse()
-
-        for publishable in ancestry:
-            for resource in publishable.branch_resources:
-                yield resource
-
     def is_current(self):
         now = datetime.now()
         return (self.start_date is None or self.start_date <= now) \
             and (self.end_date is None or self.end_date > now)
     
     def is_published(self, language = None, website = None):
-
-        if self.is_draft:
-            return False
 
         if self.per_language_publication:
 
@@ -540,8 +509,7 @@ class Publishable(Item):
         host = None,
         encode = True):
         
-        from woost.models import Configuration
-        uri = Configuration.instance.get_path(self, language = language)
+        uri = app.url_resolver.get_path(self, language = language)
 
         if uri is not None:
             if self.per_language_publication:
@@ -601,6 +569,18 @@ class Publishable(Item):
 
         return trans
 
+    def get_cache_expiration(self):
+        now = datetime.now()
+        
+        start = self.start_date
+        if start is not None and start > now:
+            return start
+
+        end = self.end_date
+        if end is not None and end > now:
+            return end
+
+
 Publishable.login_page.type = Publishable
 Publishable.related_end = schema.Collection()
 
@@ -641,9 +621,6 @@ class IsPublishedExpression(Expression):
 
             dataset.intersection_update(enabled_subset)
 
-            # Exclude drafts
-            dataset.difference_update(Item.is_draft.index.values(key = True))
-            
             # Exclude content by website:
             if len(Configuration.instance.websites) > 1:
 

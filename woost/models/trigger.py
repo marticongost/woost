@@ -15,7 +15,6 @@ from cocktail.translations import translations
 from cocktail.events import when
 from cocktail.persistence import datastore
 from cocktail.controllers import UserCollection
-from woost.models.action import Action
 from woost.models.changesets import ChangeSet
 from woost.models.item import Item
 from woost.models.role import Role
@@ -273,11 +272,6 @@ class DeleteTrigger(ContentTrigger):
     instantiable = True
 
 
-class ConfirmDraftTrigger(ContentTrigger):
-    """A trigger executed when a draft is confirmed."""
-    instantiable = True
-
-
 def trigger_responses(
     trigger_type,
     user = None,
@@ -379,7 +373,7 @@ def trigger_responses(
             # Apply user defined customizations to the context
             # This can be specially useful to allow after-commit triggers to
             # capture state as it was when they were scheduled for execution
-            # (ie. when deleting elements or confirming drafts).
+            # (for example, when deleting elements).
             if trigger.custom_context:
                 ctx = {
                     "self": trigger,
@@ -496,8 +490,4 @@ def _trigger_relation_responses(event):
 @when(Item.deleted)
 def _trigger_deletion_responses(event):
     trigger_responses(DeleteTrigger, target = event.source)
-
-@when(Item.draft_confirmation)
-def _trigger_draft_confirmation_responses(event):
-    trigger_responses(ConfirmDraftTrigger, target = event.source)
 

@@ -7,20 +7,22 @@ u"""
 @since:			July 2008
 """
 import re
+from warnings import warn
 from decimal import Decimal
 from cocktail.modeling import classgetter
 from cocktail.translations import translations, require_language
 from cocktail import schema
-from woost.models.item import Item
-from woost.models.publishable import Publishable
-from woost.models.website import Website
-from woost.models.websitesession import get_current_website
-from woost.models.publicationschemes import PublicationScheme, PathResolution
-from woost.models.caching import CachingPolicy
-from woost.models.rendering.renderer import Renderer
-from woost.models.rendering.imagefactory import ImageFactory
-from woost.models.videoplayersettings import VideoPlayerSettings
-from woost.models.trigger import Trigger
+from woost import app
+from .item import Item
+from .slot import Slot
+from .publishable import Publishable
+from .website import Website
+from .websitesession import get_current_website
+from .caching import CachingPolicy
+from .rendering.renderer import Renderer
+from .rendering.imagefactory import ImageFactory
+from .videoplayersettings import VideoPlayerSettings
+from .trigger import Trigger
 
 try:
     from fractions import Fraction
@@ -33,6 +35,8 @@ else:
 class Configuration(Item):
 
     instantiable = False
+
+    type_group = "setup"
 
     groups_order = [
         "publication",
@@ -50,7 +54,6 @@ class Configuration(Item):
 
     members_order = [
         "websites",
-        "publication_schemes",
         "caching_policies",
         "down_for_maintenance",
         "maintenance_page",
@@ -67,6 +70,7 @@ class Configuration(Item):
         "backoffice_language",
         "renderers",
         "image_factories",
+        "video_player_settings",
         "timezone",
         "smtp_host",
         "smtp_user",
@@ -78,20 +82,14 @@ class Configuration(Item):
     def instance(cls):
         return cls.get_instance(qname = "woost.configuration")
 
+    common_blocks = Slot()
+
     # publication
     #--------------------------------------------------------------------------
     websites = schema.Collection(
         items = schema.Reference(type = Website),
         related_end = schema.Collection(),
         integral = True,
-        member_group = "publication"
-    )
-
-    publication_schemes = schema.Collection(
-        items = schema.Reference(type = PublicationScheme),
-        integral = True,
-        related_end = schema.Reference(),
-        min = 1,
         member_group = "publication"
     )
 
@@ -284,65 +282,20 @@ class Configuration(Item):
         return translations(self.__class__.__name__, language, **kwargs)
 
     def resolve_path(self, path):
-        """Determines the publishable item that matches the indicated path.
-
-        This method identifies a matching publishable item by trying each
-        publication scheme defined by the site, in order. Once a scheme finds a
-        matching item, the search concludes.
-        
-        See L{PublicationScheme.resolve_path} for more details on the resolution
-        process.
- 
-        @param path: The path to evaluate; A list-like object describing a
-            a path relative to the application's root.
-        @type path: str list
-
-        @return: A structure containing the matching item and its publication
-            details. If no matching item can be found, None is returned
-            instead.
-        @rtype: L{PathResolution}
-        """
-        if not path:
-            website = get_current_website()
-            if website:
-                return PathResolution(None, website.home)
-        else:
-            for pubscheme in self.publication_schemes:
-                resolution = pubscheme.resolve_path(path)
-                if resolution is not None:
-                    return resolution
+        warn(
+            "Configuration.resolve_path is deprecated, use app.url_resolver.resolve_path instead",
+            DeprecationWarning,                                                                                                                                                           
+            stacklevel = 2 
+        )
+        return app.url_resolver.resolve_path(path)
 
     def get_path(self, publishable, language = None):
-        """Determines the canonical path of the indicated item.
-        
-        This method queries each publication scheme defined by the site, in
-        order. Once a scheme yields a matching path, the search concludes. That
-        first match will be considered the item's canonical path.
-
-        See L{PublicationScheme.get_path} for more details on how paths for
-        publishable items are determined.
-
-        @param publishable: The item to get the canonical path for.
-        @type publishable: L{Publishable<woost.models.publishable.Publishable>}
-
-        @param language: The language to get the path in (some schemes produce
-            different canonical paths for the same content in different
-            languages).
-        @type language: str
-
-        @return: The publication path for the indicated item, relative to the
-            application's root. If none of the site's publication schemes can
-            produce a suitable path for the item, None is returned instead.
-        @rtype: unicode
-        """
-        # The path to the home page is always the application root
-        if publishable.is_home_page():
-            return ""
-
-        for pubscheme in self.publication_schemes:
-            path = pubscheme.get_path(publishable, language)
-            if path is not None:
-                return path
+        warn(
+            "Configuration.get_path is deprecated, use app.url_resolver.get_path instead",
+            DeprecationWarning,                                                                                                                                                           
+            stacklevel = 2 
+        )
+        return app.url_resolver.get_path(publishable, language = language)
 
     def get_setting(self, key):
         """Obtains the value for the indicated configuration option.

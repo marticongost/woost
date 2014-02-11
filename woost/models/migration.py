@@ -5,6 +5,7 @@ u"""Defines migrations to the database schema for woost.
 """
 from cocktail.events import when
 from cocktail.persistence import MigrationStep
+from cocktail.persistence.utils import remove_broken_type
 
 def admin_members_restriction(members):
     
@@ -380,7 +381,7 @@ def transform_hashes(e):
     to_hex_string = lambda s: "".join(("%x" % ord(c)).zfill(2) for c in s)
 
     for file in File.select():
-        file._file_hash = to_hex_string(f.file_hash)
+        file._file_hash = to_hex_string(file.file_hash)
 
     for user in User.select():
         if user.password:
@@ -393,9 +394,428 @@ step = MigrationStep("Assign global object identifiers")
 def assign_global_identifiers(e):
     from woost import app
     from woost.models import Item
+    from woost.models.synchronization import rebuild_manifest
 
     for item in Item.select():
         item._global_id = app.installation_id + "-" + str(item.id)
 
     Item.global_id.rebuild_index()
+    Item.synchronizable.rebuild_index()
+    rebuild_manifest(True)
+
+#------------------------------------------------------------------------------
+step = MigrationStep("Expose models that where hidden in the Configuration model")
+
+@when(step.executing)
+def expose_hidden_configuration(e):
+    from woost.models import Configuration
+    
+    config = Configuration.instance
+
+    # restrictedaccess extension
+    access_restrictions = getattr(config, "_access_restrictions", None)
+    if access_restrictions:
+        for restriction in access_restriction:
+            try:
+                del restriction._Configuration_access_restrictions
+            except AttributeError:
+                pass
+        try:
+            del config._access_restrictions
+        except:
+            pass
+
+#------------------------------------------------------------------------------
+
+step = MigrationStep("Remove the Action model")
+
+@when(step.executing)
+def remove_action_model(e):
+
+    from cocktail.persistence import datastore
+    from woost.models import Change
+
+    root = datastore.root
+    root.pop("woost.models.action.Action-keys", None)
+    root.pop("woost.models.action.Action.id", None)
+    root.pop("woost.models.action.Action.identifier", None)
+    root.pop("woost.models.action.Action.title", None)
+
+    for change in Change.select():
+        change.action = change.action.__Broken_state__["_identifier"]
+
+#------------------------------------------------------------------------------
+
+step = MigrationStep("Remove the workflow extension")
+
+@when(step.executing)
+def remove_workflow_extension(e):
+
+    from cocktail.persistence import datastore
+    from woost.models import Item, Extension
+
+    for extension in Extension.select():
+        bp = getattr(extension, "__Broken_Persistent__", None)
+
+        if bp is not None and bp.__name__ == "WorkflowExtension":
+            id = extension.__Broken_state__["_id"]
+
+            try:
+                Item.index.remove(id, None)
+            except KeyError:
+                pass
+
+            try:
+                Item.keys.remove(id)
+            except KeyError:
+                pass
+
+            try:
+                Extension.keys.remove(id)
+            except KeyError:
+                pass
+
+            break
+
+            for member in Extension.members().itervalues():
+                if member.indexed:
+                    member.rebuild_index()
+
+    for key in list(datastore.root):
+        if key.startswith("woost.extensions.workflow"):
+            datastore.root.pop(key)
+
+#------------------------------------------------------------------------------
+
+step = MigrationStep("Removed drafts")
+
+@when(step.executing)
+def remove_drafts(e):
+ 
+    from cocktail.persistence import datastore
+    from woost.models import (
+        Item,
+        Permission,
+        ContentPermission,
+        MemberPermission,
+        Trigger,
+        ContentTrigger
+    )
+    from woost.models.utils import remove_broken_type
+
+    remove_broken_type(
+        "woost.models.permission.ConfirmDraftPermission",
+        existing_bases = (
+            Item,
+            Permission,
+            ContentPermission
+        )
+    )
+
+    remove_broken_type(
+        "woost.models.permission.ConfirmDraftPermission",
+        existing_bases = (
+            Item,
+            Trigger,
+            ContentTrigger
+        )
+    )
+
+    for item in Item.select():
+        for key in "_is_draft", "_draft_source", "_drafts":
+            try:
+                delattr(item, key)
+            except AttributeError:
+                pass
+
+    datastore.root.pop("woost.models.item.Item.is_draft", None)
+    datastore.root.pop("woost.models.item.Item.draft_source", None)
+
+    for permission in MemberPermission.select():
+        for key in ("drafts", "draft_source", "is_draft"):
+            key = "woost.models.item.Item." + key
+            if key in permission.matching_members:
+                permission.matching_members.remove(key)
+
+#------------------------------------------------------------------------------
+
+step = MigrationStep(
+    "Change the qualified name of the password reset email template"
+)
+
+@when(step.executing)
+def change_qname_of_password_reset_email_template(e):
+
+    from woost.models import EmailTemplate
+
+    template = EmailTemplate.get_instance(
+        qname = "woost.views.password_change_confirmation_email_template"
+    )
+
+    if template:
+        template.qname = "woost.password_change_email_template"
+
+#------------------------------------------------------------------------------
+
+step = MigrationStep("Move the blocks extension into the woost core")
+
+@when(step.executing)
+def move_blocks_to_core(e):
+    
+    from cocktail.persistence import datastore
+    from woost.models import Item, Page, Template, Block, TextBlock
+    from woost.models.rendering import Renderer
+
+    # Rename keys
+    for key in list(datastore.root):
+        if key.startswith("woost.extensions.blocks."):
+            new_key = key.replace(".extensions.blocks.", ".models.")
+            datastore.root[new_key] = datastore.root.pop(key)
+
+    # Consolidate StandardPage and BlocksPage into the new Page model
+    for block in Block.select():
+        try:
+            pages = block._BlocksPage_blocks
+        except AttributeError:
+            pass
+        else:
+            block._Page_blocks = pages        
+            del block._BlocksPage_blocks
+
+    page_ids = datastore.root.pop("woost.models.standardpage.StandardPage-keys")
+
+    if page_ids:
+        for id in page_ids:
+            Page.keys.add(id)
+            page = Page.get_instance(id)
+            page._p_changed = True
+
+            block = TextBlock()
+
+            for lang, trans in page.translations.iteritems():
+                if hasattr(trans, "_body"):
+                    block.set("text", trans._body, lang)
+                    del trans._body
+
+            page.blocks.append(block)
+            block.insert()
+
+    page_ids = datastore.root.pop("woost.models.blockspage.BlocksPage-keys")
+
+    if page_ids:
+        for id in page_ids:
+            Page.keys.add(id)
+
+    # Update references to the old template for block pages
+    for template in Template.select():
+        if template.identifier == "woost.extensions.blocks.BlocksPageView":
+            template.identifier = "woost.views.StandardView"
+
+    # Fix the name in the related end for Page.blocks
+    for block in Block.select():
+        block.Page_blocks._PersistentRelationCollection__member_name = \
+            "Page_blocks"
+
+#------------------------------------------------------------------------------
+ 
+step = MigrationStep("Remove the Item.owner field")
+
+@when(step.executing)
+def remove_owner_field(e):
+
+    from cocktail.persistence import datastore
+    from woost.models import Item, ContentPermission, MemberPermission
+
+    # Remove the owner value of every item
+    for item in Item.select():
+        try:
+            del item._owner
+        except AttributeError:
+            pass
+
+    # Drop the index for the member
+    full_member_name = "woost.models.item.Item.owner"
+    datastore.root.pop(full_member_name, None)
+
+    # Purge all references to the owner member from member permissions
+    for permission in MemberPermission.select():
+        if permission.matching_members:
+            member_count = len(permission.matching_members)
+            try:
+                permission.matching_members.remove(full_member_name)
+            except (KeyError, ValueError):
+                pass
+            else:
+                if member_count == 1:
+                    permission.delete()
+
+    # Purge the 'owned-items' expression from all permissions
+    for permission in ContentPermission.select():
+        matching_items = permission.matching_items
+        if matching_items:
+            try:
+                filter = permission.matching_items["filter"]
+            except KeyError:
+                pass
+            else:
+                if filter == "owned-items" or (
+                    hasattr(filter, "__contains__")
+                    and "owned-items" in filter
+                ):
+                    permission.delete()
+
+#------------------------------------------------------------------------------
+
+step = MigrationStep("Remove the Document.attachments member")
+
+@when(step.executing)
+def remove_attachments_member(e):
+
+    from woost.models import Document, File, MemberPermission
+
+    for document in Document.select():
+        try:
+            del document._attachments
+        except AttributeError:
+            pass
+
+    for file in File.select():
+        try:
+            del file._Document_attachments
+        except AttributeError:
+            pass
+
+    full_member_name = "woost.models.document.Document.attachment"
+
+    for permission in MemberPermission.select():
+        if permission.matching_members:
+            member_count = len(permission.matching_members)
+            try:
+                permission.matching_members.remove(full_member_name)
+            except (KeyError, ValueError):
+                pass
+            else:
+                if member_count == 1:
+                    permission.delete()
+
+#------------------------------------------------------------------------------
+
+step = MigrationStep("Remove per document resources")
+
+@when(step.executing)
+def remove_document_resources(e):
+
+    from woost.models import Publishable, Document, MemberPermission
+
+    for document in Document.select():
+
+        try:
+            del document._branch_resources
+        except AttributeError:
+            pass
+        
+        try:
+            del document._page_resources
+        except AttributeError:
+            pass
+
+    for publishable in Publishable.select():
+
+        try:
+            del publishable._Document_branch_resources
+        except AttributeError:
+            pass
+
+        try:
+            del publishable._Document_page_resources
+        except AttributeError:
+            pass
+
+        try:
+            del publishable._inherit_resources
+        except AttributeError:
+            pass
+
+    members = (
+        "woost.models.document.Document.branch_resources",
+        "woost.models.document.Document.page_resources",
+        "woost.models.publishable.Publishable.inherit_resources"
+    )
+
+    for permission in MemberPermission.select():
+        if permission.matching_members:
+            removed = False
+
+            for full_member_name in members:
+                try:
+                    permission.matching_members.remove(full_member_name)
+                except (KeyError, ValueError):
+                    pass
+                else:
+                    removed = True
+
+            if removed and not permission.matching_members:
+                permission.delete()
+
+#------------------------------------------------------------------------------
+ 
+step = MigrationStep("Remove Template.engine")
+
+@when(step.executing)
+def remove_template_engine(e):
+
+    from woost.models import Template
+    
+    for template in Template.select():
+        try:
+            del template._engine
+        except AttributeError:
+            pass
+
+#------------------------------------------------------------------------------
+ 
+step = MigrationStep("Remove publication schemes")
+
+@when(step.executing)
+def remove_publication_schemes(e):
+
+    from cocktail.persistence import datastore
+    from woost.models import (
+        Item,
+        Configuration
+    )
+    from woost.models.utils import remove_broken_type
+
+    remove_broken_type(
+        "woost.models.publicationschemes.PublicationScheme",
+        existing_bases = (
+            Item,
+        )
+    )
+
+    remove_broken_type(
+        "woost.models.publicationschemes.HierarchicalPublicationScheme",
+        existing_bases = (
+            Item,
+        )
+    )
+
+    remove_broken_type(
+        "woost.models.publicationschemes.IdPublicationScheme",
+        existing_bases = (
+            Item,
+        )
+    )
+
+    remove_broken_type(
+        "woost.models.publicationschemes.DescriptiveIdPublicationScheme",
+        existing_bases = (
+            Item,
+        )
+    )
+
+    try:
+        del Configuration.instance._publication_schemes
+    except AttributeError:
+        pass
 

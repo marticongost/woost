@@ -44,7 +44,7 @@ body {
 
 .BackOfficeLayout .header {
     position: relative;
-    padding: 0.6em;
+    padding: 0.6em 1em;
     height: 1.5em;
     background-repeat:repeat-y;
     background-color: #3e4351;
@@ -87,13 +87,13 @@ body {
 .BackOfficeLayout .identity {
     position: absolute;
     bottom: 1em;
-    right: 0.4em;
-    font-size: 0.8em;
+    right: 1em;
     border-radius: 0.2em;
     color: white;
 }
 
 .BackOfficeLayout .identity strong {
+    font-size: 0.8em;
     font-weight: bold;
 }
 
@@ -103,7 +103,8 @@ body {
     padding: 0;
 }
 
-.BackOfficeLayout .identity button {
+.BackOfficeLayout .identity form button.logout_button {
+    font-size: 0.8em;
     margin-left: 0.7em !important;    
     color: rgba(255,255,255,0.8) !important;
     text-decoration: underline !important;
@@ -115,15 +116,18 @@ body {
 
 .BackOfficeLayout .user_views_bar {
     padding: 0.3em 0.8em;
-    font-size: 90%;
     background-color: rgb(245,245,245);
     border-bottom: 1px solid #ccc;
 }
 
 .BackOfficeLayout .user_views_bar {
     margin: 0;
+    padding: 0.3em 1em;
+}
+
+.BackOfficeLayout .user_views_bar span,
+.BackOfficeLayout .user_views_bar a {
     font-size: 0.8em;
-    padding-top: 0.5em;
 }
 
 .BackOfficeLayout .user_views_label {
@@ -963,10 +967,6 @@ body.scripted .BackOfficeLayout .Table .selection {
     font-weight: bold;
 }
 
-.BackOfficeLayout .Table tr.draft td {
-    background-color: rgb(250,242,190) !important;
-}
-
 .BackOfficeLayout .Table tr.selected td {
     background-color: rgb(75,75,75) !important;
 }
@@ -976,7 +976,6 @@ body.scripted .BackOfficeLayout .Table .selection {
     color: white !important;
 }
 
-.BackOfficeLayout .draft,
 .BackOfficeLayout .changed,
 .BackOfficeItemView .tab.changed {
     background-color: rgb(250,242,190);
@@ -1044,15 +1043,6 @@ body.scripted .BackOfficeLayout .Table .selection {
     border: 1px solid #EBE3AF;
 }
 
-.BackOfficeLayout .FlatContentView .nested_draft td.element_column {
-    padding-left: 2em;
-}
-
-.BackOfficeLayout .FlatContentView .nested_draft td.element_column label {
-    background-image: url(../images/edit.png);
-    padding-left: 1.8em;
-}
-
 .BackOfficeLayout .Table td.element_column label {
     padding-top: 0;
     padding-bottom: 0;
@@ -1114,10 +1104,6 @@ body.scripted .BackOfficeLayout .Table .selection {
     margin-bottom: 0.5em;
 }
 
-.BackOfficeLayout .toolbar_box {
-    margin-bottom: 0.1em;    
-}
-
 .BackOfficeLayout .data_controls {
     overflow: hidden;
     width: 100%;
@@ -1132,14 +1118,19 @@ body.scripted .BackOfficeLayout .Table .selection {
 	border: 1px solid #dcd9d0;
 }
 
+.BackOfficeLayout .FlatContentView .toolbar_box,
+.BackOfficeLayout .TreeContentView .toolbar_box {
+    border-bottom: none;
+}
+
 .BackOfficeLayout .toolbar_box .toolbar {
     padding: 0;
-    margin: 0.2em;
+    margin: 0 0.6em;
     border: none;
     background-color: transparent;
 }
 
-.BackOfficeLayout .toolbar.item_buttons {
+.BackOfficeLayout .toolbar {
     padding: 0 0.4em;
 }
 
@@ -1148,8 +1139,17 @@ body.scripted .BackOfficeLayout .Table .selection {
     float: left;
 	font-size: 85%;
     margin: 0;
+    margin-top: 0.1em;
     padding: 0;
-    margin-right: 1em;    
+}
+
+.BackOfficeLayout .toolbar * + .action_button,
+.BackOfficeLayout .toolbar * + .additional_actions_selector {
+    margin-left: 1em;
+}
+
+.BackOfficeLayout .toolbar .additional_actions_selector .action_button {
+    margin-left: 0 !important;
 }
 
 .BackOfficeLayout .toolbar a {
@@ -1178,6 +1178,22 @@ body.scripted .BackOfficeLayout .Table .selection {
 
 .BackOfficeLayout .toolbar .action_button img {
 	vertical-align: middle;
+}
+
+.BackOfficeLayout .toolbar .new_toolbar_button {
+    font-size: 100%;
+}
+
+.BackOfficeLayout .toolbar .new_toolbar_button > .label {
+    font-size: 85%;
+}
+
+.BackOfficeLayout .toolbar .new_toolbar_button > .label > .shortcut {
+    vertical-align: top;
+}
+
+.BackOfficeLayout .toolbar .new_toolbar_button .selector_content {
+    top: 1.8em;
 }
 
 .BackOfficeLayout .toolbar .content_view,
@@ -1247,6 +1263,17 @@ body.scripted .BackOfficeLayout .Table .selection {
 
 .BackOfficeLayout .content_type_selector {
     float: left;
+}
+
+.BackOfficeLayout .content_type_box > .content_type_selector {
+    margin-left: 0.05em;
+}
+
+.BackOfficeLayout .content_type_box > .content_type_selector > .label {
+    padding: 0.2em;
+    padding-right: 1.3em;
+    top: -0.2em;
+    background-position: right 0.9em; 
 }
 
 /* Content view selector
@@ -1401,26 +1428,60 @@ body.scripted .BackOfficeLayout .selector:hover .selector_content {
     margin-left: -0.5em;    
 }
 
-.BackOfficeLayout .ContentTypeSelector > .entry_label {
-    color: black;
-    font-weight: bold;
-    padding: 0.2em 0.5em;
-    padding-right: 1em;
+.BackOfficeLayout .ContentTypeSelector > .label {
+    display: inline-block;
+}
+
+.BackOfficeLayout .ContentTypeSelector > .label > * {
+    vertical-align: middle;
 }
 
 .BackOfficeLayout .ContentTypeSelector .selector_content {
     top: 1.4em;
     z-index: 3;
 	margin-top: -1px;
-    padding: 0.4em;
-    min-width: 16em;
+    padding: 1em;
 }
 
-.BackOfficeLayout .ContentTypeSelector .selector_content > li {
-    font-size: 85%;
+.BackOfficeLayout .ContentTypeSelector .palette > .palette_group > .nested_groups {
+    display: table;
 }
 
-.BackOfficeLayout .ContentTypeSelector .selected > .entry_label {
+.BackOfficeLayout .ContentTypeSelector .palette > .palette_group > .nested_groups > .palette_group {
+    display: table-cell;
+    padding-right: 1.5em;
+    padding-top: 0;
+    vertical-align: top;
+}
+
+.BackOfficeLayout .ContentTypeSelector .palette > .palette_group > .nested_groups > .palette_group > .group_label,
+.BackOfficeLayout .ContentTypeSelector .palette .palette_group:first-child > .group_label {
+    margin-top: 0;
+}
+
+.BackOfficeLayout .ContentTypeSelector .palette .palette_group.with_label .palette_group .group_label {
+    margin-top: 1.2em;
+}
+
+.BackOfficeLayout .ContentTypeSelector .palette > .palette_group > .nested_groups > .palette_group + .palette_group {
+    padding-left: 1.5em;
+    border-left: 1px solid #ddd;
+}
+
+.BackOfficeLayout .ContentTypeSelector .palette > .palette_group > .nested_groups > .palette_group:last-child {
+    padding-right: 0;
+}
+
+.BackOfficeLayout .ContentTypeSelector .palette_entry + .palette_entry {
+    margin-top: 0.5em;
+}
+
+.BackOfficeLayout .ContentTypeSelector a {
+    color: #333;
+    font-size: 0.9em;
+}
+
+.BackOfficeLayout .ContentTypeSelector .selected a {
     font-weight: bold;
 }
 
@@ -1848,11 +1909,11 @@ body.scripted .BackOfficeLayout .ThumbnailsContentView .collection_display input
 }
 
 .BackOfficeLayout .toolbar .save_action,
-.BackOfficeLayout .toolbar .save_draft_action,
-.BackOfficeLayout .toolbar .confirm_draft_action,
 .BackOfficeLayout .toolbar .close_action,
 .BackOfficeLayout .toolbar .cancel_action {
     float: right;
+    margin-left: 1em;
+    margin-right: 0;
 }
 
 .BackOfficeItemView .navigation .section_entry {
@@ -1880,25 +1941,6 @@ body.scripted .BackOfficeLayout .ThumbnailsContentView .collection_display input
 
 .BackOfficeItemView .edit_form {
     padding: 0;
-}
-
-.BackOfficeItemView .draft_box {
-    clear: both;
-    padding: 0.5em;
-    border: 1px solid rgb(235,227,175);
-    font-size: 85%;
-}
-
-.BackOfficeItemView .draft_box strong {
-    color: rgb(75,50,25);
-}
-
-.BackOfficeItemView .draft_box .draft_actions {
-    text-align: right;
-}
-
-.BackOfficeItemView .draft_box .draft_actions button {
-    margin-left: 0.3em;
 }
 
 .BackOfficeEditView .success {
@@ -2222,24 +2264,28 @@ button.TypeSelectorButton span {
 .BackOfficeLayout .CollectionView .filters {
     font-size: 85%;
     margin-top: 0.3em;
-    border: 1px solid rgb(185,205,145);
-    background-color: rgb(245,245,245);
+    border: 1px solid #ccc;
+    background-color: #eee;
+    padding: 0.5em;
 }
 
 .BackOfficeLayout .CollectionView .filters .filters_label {
-    padding: 0.4em 0.6em;
-    border-bottom: 1px solid rgb(185,205,145);
-    background-image: url(../images/search_header.png);
+    padding-bottom: 0.2em;
+    color: #333;
+    font-weight: bold;
+    border-bottom: 1px solid #ddd;
 }
 
 .BackOfficeLayout .CollectionView .filters .FilterBox {
-    padding: 0.5em;
     padding-top: 1em;
-    background-color: rgb(240,240,240);
 }
 
 .BackOfficeLayout .FilterBox .filter_entry {
     clear: left;
+}
+
+.BackOfficeLayout .FilterBox .filter_entry .field {
+    margin-bottom: 0;
 }
 
 .BackOfficeLayout .FilterBox .filter_entry .filter_desc,
@@ -2421,6 +2467,9 @@ button.TypeSelectorButton {
     margin-bottom: 0.3em;
     color: rgb(75,75,75);
     font-weight: bold;
+    font-size: 1.1em;
+    padding-bottom: 0.3em;
+    border-bottom: 1px solid #ccc;
 }
 
 .BackOfficeLayout .CollectionView .settings_box .box_items {
@@ -3221,7 +3270,8 @@ div.success_label {
 /* Item palette
 -----------------------------------------------------------------------------*/
 .ItemPalette,
-.ItemPalette .group_entries {
+.ItemPalette .group_entries,
+.ItemPalette .nested_groups {
     list-style-type: none;
     padding: 0;
     margin: 0;
@@ -3229,13 +3279,19 @@ div.success_label {
 }
 
 .ItemPalette .group_label {
-    font-size: 0.8em;
+    font-size: 0.9em;
     font-weight: bold;
-    border-bottom: 1px solid #ADB2BC;
-    padding-bottom: 0.1em;
+    color: #545F75;
+    border-bottom: 2px solid #ADB2BC;
+    padding-bottom: 0.2em;
     margin-top: 1.2em;
     margin-bottom: 0.6em;
-    color: #545F75;
+}
+
+.ItemPalette .palette_group.with_label .palette_group .group_label {
+    font-size: 0.8em;
+    color: #555;
+    border-bottom: 1px dotted #ccc;
 }
 
 .ItemPalette li {
@@ -3435,6 +3491,11 @@ div.success_label {
     margin-right: 0.2em;
     position: relative;
     top: 0.1em;
+}
+
+.Dialog.diff_dialog .dialog_content {
+    overflow: auto;
+    max-height: 50em;
 }
 
 .Dialog.diff_dialog .differences {

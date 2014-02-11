@@ -6,11 +6,18 @@ u"""
 import cherrypy
 from cocktail.events import event_handler
 from cocktail import schema
-from cocktail.controllers import FormProcessor, Form
+from cocktail.controllers import (
+    FormProcessor,
+    Form,
+    request_property,
+    serve_file
+)
+from cocktail.persistence import transactional
 from woost.models import (
     Synchronization,
     Item,
     User,
+    File,
     get_current_user,
     InstallationSyncPermission
 )
@@ -20,20 +27,20 @@ from woost.controllers.backoffice.basebackofficecontroller \
 
 class SiteSyncController(FormProcessor, BaseBackOfficeController):
 
-    synchronization = Synchronization()
+    @request_property
+    def synchronization(self):
+        return Synchronization()
 
     @event_handler
     def handle_traversed(cls, e):
         get_current_user().require_permission(InstallationSyncPermission)
 
     @cherrypy.expose
+    @transactional()
     def manifest(self):
         cherrypy.response.headers["Content-Type"] = "text/plain"
-        for item in Item.select(Item.synchronizable.equal(True)):
-            yield "%s %s\n" % (
-                item.global_id,
-                self.synchronization.get_object_state_hash(item)
-            )
+        for global_id, object_hash in self.synchronization.process_manifest():
+            yield "%s %s\n" % (global_id, object_hash)
 
     @cherrypy.expose
     def state(self, identifiers):
@@ -49,6 +56,15 @@ class SiteSyncController(FormProcessor, BaseBackOfficeController):
             glue = ","
 
         yield "}"
+
+    @cherrypy.expose
+    def file(self, global_id):
+        file = File.require_instance(global_id = global_id)
+        return serve_file(
+            file.file_path,
+            name = file.file_name,
+            content_type = file.mime_type
+        )
 
     class SyncForm(Form):
 

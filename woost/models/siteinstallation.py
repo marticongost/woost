@@ -8,12 +8,13 @@ u"""
 """
 from cocktail.events import event_handler
 from cocktail import schema
-from woost.models.item import Item
-from woost.models.user import User
+from .item import Item
+from .user import User
 
 
 class SiteInstallation(Item):
 
+    type_group = "setup"
     edit_form = "woost.views.SiteInstallationForm"
 
     edit_node_class = (

@@ -16,8 +16,8 @@ from cocktail.pkgutils import resolve
 from cocktail.translations import translations
 from cocktail import schema
 from cocktail.persistence import datastore, transaction
-from woost.models.item import Item
-from woost.models.configuration import Configuration
+from .item import Item
+from .configuration import Configuration
 
 extension_translations = object()
 _loaded_extensions = set()
@@ -62,6 +62,7 @@ class Extension(Item):
     """Base model for Woost extensions."""
 
     instantiable = False
+    type_group = "setup"
     collapsed_backoffice_menu = True
     edit_node_class = "woost.controllers.backoffice.extensioneditnode." \
                       "ExtensionEditNode"
