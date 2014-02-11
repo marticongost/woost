@@ -7,7 +7,12 @@ u"""
 @since:			July 2008
 """
 import cherrypy
-from cocktail.translations import get_language, set_language
+from cocktail.translations import (
+    get_language,
+    set_language,
+    clear_fallback_languages,
+    set_fallback_languages
+)
 from cocktail.controllers import try_decode, context
 from cocktail.controllers.parameters import set_cookie_expiration
 from woost.models import Configuration
@@ -18,6 +23,8 @@ class LanguageScheme(object):
     cookie_duration = 60 * 60 * 24 * 15 # 15 days
 
     def process_request(self, path):
+
+        self.setup_language_fallback_policy()
 
         if path:
             language = self.uri_component_to_language(path[0])
@@ -142,4 +149,10 @@ class LanguageScheme(object):
 
     def uri_component_to_language(self, uri_component):
         return uri_component
+
+    def setup_language_fallback_policy(self):
+        clear_fallback_languages()
+        for language, fallback_languages \
+        in Configuration.instance.fallback_languages:
+            set_fallback_languages(language, fallback_languages)
 

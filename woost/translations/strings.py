@@ -1917,6 +1917,12 @@ translations.define("Configuration.heed_client_language",
     en = u"Heed the language preferences from the browser"
 )
 
+translations.define("Configuration.fallback_languages",
+    ca = u"Idiomes substitutius",
+    es = u"Idiomas sustitutivos",
+    en = u"Fallback languages"
+)
+
 translations.define("Configuration.backoffice_language",
     ca = u"Idioma per defecte de la interfície d'edició",
     es = u"Idioma por defecto de la interfaz de edición",

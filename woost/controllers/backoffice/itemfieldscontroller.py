@@ -10,6 +10,7 @@ import cherrypy
 from cocktail.modeling import cached_getter
 from cocktail.events import event_handler
 from cocktail.pkgutils import import_object
+from cocktail.translations import iter_language_chain
 from cocktail import schema
 from cocktail.controllers import get_parameter, view_state, Location
 from woost.models import (
@@ -79,10 +80,25 @@ class ItemFieldsController(EditController):
         # Add translations
         if added_translation and added_translation not in translations:
             translations.append(added_translation)
-            translation_data = {}
-            stack_node.content_type.translation.init_instance(translation_data)
-            for key, value in translation_data.iteritems():
-                schema.set(form_data, key, value, language = added_translation)
+
+            # Try to copy an existing fallback translation
+            for fallback_language in iter_language_chain(
+                added_translation,
+                include_self = False
+            ):
+                if fallback_language in translations:
+                    for key, member in self.fields_schema.members().iteritems():
+                        if member.translated:
+                            value = schema.get(form_data, key, language = fallback_language)
+                            schema.set(form_data, key, value, language = added_translation)
+                    break
+            # If there's no fallback translation to use, create a new
+            # translation from scratch
+            else:
+                translation_data = {}
+                stack_node.content_type.translation.init_instance(translation_data)
+                for key, value in translation_data.iteritems():
+                    schema.set(form_data, key, value, language = added_translation)
 
         # Drop references
         unlink = cherrypy.request.params.get("relation-unlink")
