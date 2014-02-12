@@ -14,7 +14,6 @@ from .elementtype import ElementType
 class VideoBlock(Block):
 
     instantiable = True
-    view_class = "woost.views.VideoBlockView"
     block_display = "woost.views.VideoBlockDisplay"
 
     member_order = ["element_type", "video", "player_settings"]
@@ -39,6 +38,19 @@ class VideoBlock(Block):
         invalidates_cache = True,
         member_group = "content"
     )
+
+    view_class = schema.String(
+        required = True,
+        shadows_attribute = True,
+        enumeration = [
+            "woost.views.VideoBlockView",
+            "woost.views.VideoPopUp"
+        ],
+        default = "woost.views.VideoBlockView",
+        edit_control = "cocktail.html.RadioSelector",
+        member_group = "content"
+    )
+
 
     def get_block_image(self):
         return self.video
