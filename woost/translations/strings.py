@@ -6634,6 +6634,24 @@ translations.define("VideoBlock.player_settings",
     en = u"Video player settings"
 )
 
+translations.define("VideoBlock.view_class",
+    ca = u"Aparença",
+    es = u"Apariencia",
+    en = u"Appearence"
+)
+
+translations.define("VideoBlock.view_class=woost.views.VideoBlockView",
+    ca = u"Incrustat",
+    es = u"Incrustado",
+    en = u"Embedded"
+)
+
+translations.define("VideoBlock.view_class=woost.views.VideoPopUp",
+    ca = u"Finestra emergent",
+    es = u"Ventana emergente",
+    en = u"Pop up"
+)
+
 # TwitterTimelineBlock
 #------------------------------------------------------------------------------
 translations.define("TwitterTimelineBlock",
