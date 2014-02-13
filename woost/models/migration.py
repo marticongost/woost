@@ -784,6 +784,7 @@ def remove_publication_schemes(e):
     from cocktail.persistence import datastore
     from woost.models import (
         Item,
+        MemberPermission,
         Configuration
     )
     from woost.models.utils import remove_broken_type
@@ -820,4 +821,23 @@ def remove_publication_schemes(e):
         del Configuration.instance._publication_schemes
     except AttributeError:
         pass
+
+    members = (
+        "woost.models.configuration.Configuration.publication_schemes",
+    )
+
+    for permission in MemberPermission.select():
+        if permission.matching_members:
+            removed = False
+
+            for full_member_name in members:
+                try:
+                    permission.matching_members.remove(full_member_name)
+                except (KeyError, ValueError):
+                    pass
+                else:
+                    removed = True
+
+            if removed and not permission.matching_members:
+                permission.delete()
 
