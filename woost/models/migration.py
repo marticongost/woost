@@ -5,6 +5,7 @@ u"""Defines migrations to the database schema for woost.
 """
 from cocktail.events import when
 from cocktail.persistence import MigrationStep
+from cocktail.persistence.migration import migration_steps
 from cocktail.persistence.utils import remove_broken_type
 
 def admin_members_restriction(members):
@@ -775,6 +776,7 @@ def remove_template_engine(e):
 #------------------------------------------------------------------------------
  
 step = MigrationStep("Remove publication schemes")
+migration_steps["Instrument non relational collections"].require(step)
 
 @when(step.executing)
 def remove_publication_schemes(e):
