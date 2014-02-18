@@ -14,6 +14,7 @@ from cocktail.schema.expressions import (
     NegativeExpression
 )
 from cocktail.html import Element, templates
+from cocktail.html.translationdisplay import TranslationDisplay
 from cocktail.controllers import view_state
 from woost.models import Item
 from woost.views.contentdisplaymixin import ContentDisplayMixin
@@ -25,6 +26,7 @@ class ContentTable(ContentDisplayMixin, Table):
     
     base_url = None
     entry_selector = "tbody tr.item_row"
+    default_display = TranslationDisplay
 
     def __init__(self, *args, **kwargs):
         Table.__init__(self, *args, **kwargs)
