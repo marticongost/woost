@@ -1095,6 +1095,10 @@ body.scripted .BackOfficeLayout .Table .selection {
     left: -100px;
 }
 
+.BackOfficeLayout .TranslationDisplay.inherited_translation {
+    opacity: 0.6;
+}
+
 /* Toolbar
 -----------------------------------------------------------------------------*/
 
@@ -1976,7 +1980,8 @@ body.scripted .BackOfficeLayout .ThumbnailsContentView .collection_display input
     list-style-type: none;
     padding-right: 0.1;
     right: 0;
-	top:2.4em;
+	top: 2.4em;
+    width: 12em;
 }
 
 .BackOfficePreviewView .translations_selector .selector_content {
@@ -1995,6 +2000,11 @@ body.scripted .BackOfficeLayout .ThumbnailsContentView .collection_display input
 .BackOfficePreviewView .translations_selector .language {
     float: left;
     height: 2em;
+}
+
+body.scripted .BackOfficeEditView .translations_selector .language:first-child,
+body.scripted .BackOfficePreviewView .translations_selector .language:first-child {
+    margin-left: 1.6em;
 }
 
 .BackOfficeEditView .translations_selector button {
@@ -2021,6 +2031,8 @@ body.scripted .BackOfficePreviewView .translations_selector .selector_content li
 
 body.scripted .BackOfficeEditView .translations_selector .selector_content li input {
     float: left;
+    position: relative;
+    top: -0.1em;
 }
 
 .BackOfficeLayout .ItemSelector {

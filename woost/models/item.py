@@ -648,15 +648,26 @@ class Item(PersistentObject):
         """
         selectors = set()
 
+        if language:
+            languages = list(self.iter_derived_translations(
+                language,
+                include_self = True
+            ))
+
         # Tags per type
         for cls in \
         self.__class__.ascend_inheritance(include_self = True):
             selector = cls.full_name
+
             if cache_part:
                 selector += "-" + cache_part            
+
             if language:
-                selector = (selector, "lang-" + language)
-            selectors.add(selector)
+                for lang in languages:
+                    selectors.add((selector, "lang-" + lang))
+            else:
+                selectors.add(selector)
+
             if cls is Item:
                 break
 
@@ -667,9 +678,11 @@ class Item(PersistentObject):
             selector += "-" + cache_part
 
         if language:
-            selector = (selector, "lang-" + language)
+            for lang in languages:
+                selectors.add((selector, "lang-" + lang))
+        else:
+            selectors.add(selector)
 
-        selectors.add(selector)
         return selectors
 
 
