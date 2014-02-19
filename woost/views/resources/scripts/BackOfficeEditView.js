@@ -10,7 +10,7 @@
 cocktail.bind(".BackOfficeEditView", function ($editView) {
 
     /* Control language visibility
-    -----------------------------------------------------------------------------*/
+    -------------------------------------------------------------------------*/
     var languageVisibility = {};
 
     function persistLanguageVisibility() {
@@ -126,5 +126,9 @@ cocktail.bind(".BackOfficeEditView", function ($editView) {
 
     jQuery(window).hashchange(trackHash);
     trackHash();
+
+    /* Focus the first available field
+    -------------------------------------------------------------------------*/
+    $editView.find(".field :input:visible:first").focus();
 });
 
