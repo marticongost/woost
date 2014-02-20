@@ -198,14 +198,6 @@ body {
     list-style-type: none;
 }
 
-.BackOfficeLayout .members_selector {
-    font-size: 0.9em;
-}
-
-.BackOfficeLayout .members_selector .group_label {
-    color: rgb(75,75,75);
-}
-
 /* Tabs */
 .scripted .BackOfficeEditView .ContentForm > .fields > fieldset {
     display: none;
@@ -326,6 +318,7 @@ body {
 
 .BackOfficeLayout .shortcut {
     text-decoration: underline;
+    vertical-align: baseline !important;
 }
 
 .BackOfficeLayout .selector a {
@@ -351,7 +344,7 @@ body {
 
 .BackOfficeLayout .CheckList .group,
 .BackOfficeLayout .RadioSelector .group {
-    margin-top: 0.8em;
+    margin-bottom: 0.8em;
 }
 
 .BackOfficeLayout .MemberList .content_type > .label {
@@ -695,6 +688,58 @@ body.modal {
     margin-right: 1em;
 }
 
+/* DropdownPanel
+-----------------------------------------------------------------------------*/
+.scripted .DropdownPanel > .panel_wrapper > .panel {
+    -moz-box-shadow: 3px 3px 7px #bbb;
+    -webkit-box-shadow: 3px 3px 7px #bbb;
+    box-shadow: 3px 3px 7px #bbb;
+    border: 1px solid rgb(190,200,210);
+    background-color: rgb(250,250,250);
+    border-radius: 0;
+    padding: 0.7em;
+}
+
+.scripted .DropdownPanel-expanded > .button,
+.scripted .DropdownPanel-expanded > .button:hover {
+    border: 1px solid rgb(190,200,210);
+    border-radius: 0;
+    border-bottom-color: rgb(250,250,250);
+    background-color: rgb(250,250,250);
+}
+
+/* SearchableCheckList
+-----------------------------------------------------------------------------*/
+.SearchableCheckList .no_match {
+    display: none;
+}
+
+.SearchableCheckList .toggle_selection_links {
+    margin: 0.5em 0;
+}
+
+.SearchableCheckList .toggle_selection_links a {
+    font-size: 0.8em;
+}
+
+.SearchableCheckList .toggle_selection_links a[disabled] {
+    opacity: 0.5;
+    text-decoration: none;
+}
+
+.SearchableCheckList .toggle_selection_links .empty_selection_link {
+    margin-left: 0.4em;
+}
+
+.BackOfficeLayout .SearchableCheckList.search_enabled .check_list {
+    max-height: 24.8em;
+    overflow: auto;
+    padding: 0.5em;
+    padding-right: 3em;
+    border: 1px solid #ddd;
+    background-color: white;
+}
+
 /* Tables
 -----------------------------------------------------------------------------*/
 
@@ -970,7 +1015,12 @@ body.scripted .BackOfficeLayout .Table .row_selection_control {
 }
 
 .BackOfficeLayout .Table tr.selected td {
-    background-color: rgb(75,75,75) !important;
+    background-color: #777 !important;
+}
+
+
+.BackOfficeLayout .Table.focused tr.selected td {
+    background-color: #4b4b4b !important;
 }
 
 .BackOfficeLayout .Table tr.selected td,
@@ -1104,40 +1154,32 @@ body.scripted .BackOfficeLayout .Table .row_selection_control {
 /* Toolbar
 -----------------------------------------------------------------------------*/
 
-.BackOfficeLayout .toolbar {
-    height: 1.8em;
-    padding-top: 0.2em;
-    margin-bottom: 0.5em;
-}
-
 .BackOfficeLayout .data_controls {
-    overflow: hidden;
-    width: 100%;
-    margin-top: 0.3em;
+    padding-top: 0.6em;
+    float: right;
 }
 
 .BackOfficeLayout .toolbar,
 .BackOfficeLayout .toolbar_box {
 	clear: both;
-    margin-top: 1.5em;
+    margin-top: 1em;
 	background-color: #f2f0eb;
 	border: 1px solid #dcd9d0;
 }
 
-.BackOfficeLayout .FlatContentView .toolbar_box,
-.BackOfficeLayout .TreeContentView .toolbar_box {
-    border-bottom: none;
-}
-
-.BackOfficeLayout .toolbar_box .toolbar {
-    padding: 0;
-    margin: 0 0.6em;
-    border: none;
-    background-color: transparent;
+.BackOfficeLayout .toolbar_box {
+    height: 2.2em;
 }
 
 .BackOfficeLayout .toolbar {
-    padding: 0 0.4em;
+    float: left;
+    padding: 0.2em;
+}
+
+.BackOfficeLayout .toolbar_box .toolbar {
+    margin: 0;
+    border: none;
+    background-color: transparent;
 }
 
 .BackOfficeLayout .toolbar .action_button,
@@ -1151,7 +1193,12 @@ body.scripted .BackOfficeLayout .Table .row_selection_control {
 
 .BackOfficeLayout .toolbar * + .action_button,
 .BackOfficeLayout .toolbar * + .additional_actions_selector {
-    margin-left: 1em;
+    margin-left: 1.5em;
+}
+
+.BackOfficeLayout .toolbar .DropdownPanel + .action_button,
+.BackOfficeLayout .toolbar .DropdownPanel + .additional_actions_selector {
+    margin-left: 0.7em;
 }
 
 .BackOfficeLayout .toolbar .additional_actions_selector .action_button {
@@ -1184,28 +1231,19 @@ body.scripted .BackOfficeLayout .Table .row_selection_control {
 
 .BackOfficeLayout .toolbar .action_button img {
 	vertical-align: middle;
+    margin-right: 0.3em;
 }
 
 .BackOfficeLayout .toolbar .new_toolbar_button {
     font-size: 100%;
 }
 
-.BackOfficeLayout .toolbar .new_toolbar_button > .label {
+.BackOfficeLayout .toolbar .new_toolbar_button > .button > .label {
     font-size: 85%;
-}
-
-.BackOfficeLayout .toolbar .new_toolbar_button > .label > .shortcut {
-    vertical-align: top;
 }
 
 .BackOfficeLayout .toolbar .new_toolbar_button .selector_content {
     top: 1.8em;
-}
-
-.BackOfficeLayout .toolbar .content_view,
-.BackOfficeLayout .toolbar .languages_box,
-.BackOfficeLayout .toolbar .members_box {
-    float: right;
 }
 
 .BackOfficeLayout .toolbar .additional_actions_selector .selector_content {
@@ -1227,87 +1265,104 @@ body.scripted .BackOfficeLayout .Table .row_selection_control {
     display: inline;
 }
 
-.BackOfficeLayout .settings_box .members_box input,
-.BackOfficeLayout .settings_box .members_box label {
-    vertical-align: top;
+/* Collection settings
+-----------------------------------------------------------------------------*/
+.BackOfficeLayout .CollectionView .collection_settings {
+    white-space: nowrap;
 }
 
-.BackOfficeLayout .settings_box .members_box .group_label,
-.BackOfficeLayout .settings_box .members_box label {
-    max-width: 20em;
-    white-space: normal;
-}
-
-.BackOfficeLayout .settings_box .members_box label {
+.BackOfficeLayout .CollectionView .collection_settings > * {
     display: inline-block;
-    padding-top: 0.5em;
+    vertical-align: middle;
+}
+
+.BackOfficeLayout .CollectionView .collection_settings > * + * {
+    margin-left: 1.5em !important;
+}
+
+.BackOfficeLayout .CollectionView .collection_settings .DropdownPanel > .button > .label {
+    font-size: 1em;
+    vertical-align: middle;
+    height: 18px;
+}
+
+.BackOfficeLayout .CollectionView .collection_settings .DropdownPanel .panel {
+    text-align: left;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+.BackOfficeLayout .CollectionView .collection_settings .DropdownPanel .panel .SearchableCheckList .search_controls {
+    margin-bottom: 0.5em;
+}
+
+.BackOfficeLayout .CollectionView .collection_settings .DropdownPanel .panel .SearchableCheckList .search_box {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    width: 100%;
+}
+
+.BackOfficeLayout .CollectionView .collection_settings .DropdownPanel .panel .SearchableCheckList .check_list label {
+    font-size: 0.8em;
+}
+
+.BackOfficeLayout .CollectionView .collection_settings .members_dropdown .check_list .group_label {
+    font-size: 0.8em;
+    color: #555;
+    border-bottom: 1px dotted #ccc;
+    padding-bottom: 0.2em;
+    margin-bottom: 0.2em;
+}
+
+.BackOfficeLayout .CollectionView .collection_settings .members_dropdown .check_list .group:first-child .group_label {
+    display: none;
+}
+
+.BackOfficeLayout .CollectionView .collection_settings .DropdownPanel .panel > .box_buttons {
+    margin-top: 0.5em;
+}
+
+.BackOfficeLayout .CollectionView .collection_settings .DropdownPanel .panel > .box_buttons button {
+    margin: 0;
+}
+
+.BackOfficeLayout .CollectionView .collection_display_container {
+    clear: both;
+    position: relative;
+    overflow: visible;
+    min-width: 100%;
+    display: inline-block;
 }
 
 /* Content type selector
 -----------------------------------------------------------------------------*/
-.BackOfficeLayout .content_type_box {
-    margin-top: 0.15em;
-    float: left;
-}
-
-.BackOfficeLayout .content_type_box > .label,
-.BackOfficeLayout .content_type_selector > .label {
+.BackOfficeLayout .content_type_selector > .button > .label {
     font-size: 85%;
 }
 
-.BackOfficeLayout .content_type_box > .label {
-    float: left;
-    padding: 0.15em 0;
-    margin-right: 0.6em;
-    font-weight: bold;
-    position: relative;
-}
-
-.BackOfficeLayout .content_type_selector > .label {
-    font-weight: normal !important;
-}
-
-.BackOfficeLayout .content_type_selector {
-    float: left;
-}
-
-.BackOfficeLayout .content_type_box > .content_type_selector {
-    margin-left: 0.05em;
-}
-
-.BackOfficeLayout .content_type_box > .content_type_selector > .label {
-    padding: 0.2em;
-    padding-right: 1.3em;
-    top: -0.2em;
-    background-position: right 0.9em; 
-}
-
-/* Content view selector
+/* Content view dropdown
 -----------------------------------------------------------------------------*/
-.BackOfficeLayout .content_view {
-    float: right;
-    white-space: nowrap;
-    text-align: right;
-    font-size: 85%;
-    margin-top: 0.3em;
+.BackOfficeLayout .collection_settings .content_view_list {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
 }
 
-.BackOfficeLayout .content_view * {
-    display: inline;
-    float: none;
+.BackOfficeLayout .collection_settings .content_view_entry {
+    display: block;
+    padding: 0.3em 0;
 }
 
-.BackOfficeLayout .content_view img {
-    vertical-align: middle;
+.BackOfficeLayout .collection_settings .content_view_entry a {
+    font-size: 0.8em;
+    text-decoration: none;
+    color: #333;
 }
 
-.BackOfficeLayout .content_view_selector div {
-    padding: 0.2em 0.3em;
-}
-
-.BackOfficeLayout .content_view_selector > div.selected {
-    border: 1px solid rgb(220,225,232);
-    background-color: rgb(235,240,247);
+.BackOfficeLayout .collection_settings .content_view_entry.selected a {
+    font-weight: bold;
 }
 
 /* Dropdown selector
@@ -1370,18 +1425,6 @@ body.scripted .BackOfficeLayout .selector:hover .selector_content {
     display: none;
 }
 
-/* Visible members dropdown
------------------------------------------------------------------------------*/
-.BackOfficeLayout .members_box .CheckList {
-    margin-bottom: 0.4em;
-}
-
-/* Content languages dropdown
------------------------------------------------------------------------------*/
-.BackOfficeLayout .languages_box .CheckList {
-    margin-bottom: 0.4em;
-}
-
 /* Link selectors
 -----------------------------------------------------------------------------*/
 .BackOfficeLayout .LinkSelector .selected {
@@ -1415,7 +1458,6 @@ body.scripted .BackOfficeLayout .selector:hover .selector_content {
 }
 
 .BackOfficeLayout .ContentTypeTree .icon,
-.BackOfficeLayout .ContentTypeSelector .icon,
 .BackOfficeLayout .ItemLabel .icon {
     position: relative;
     top: -0.1em;
@@ -1425,28 +1467,12 @@ body.scripted .BackOfficeLayout .selector:hover .selector_content {
 
 /* Content type selector
 -----------------------------------------------------------------------------*/
-.BackOfficeLayout .content_type_box,
-.BackOfficeLayout .content_view {
-    margin-bottom: 1.5em;
-}
-
-.BackOfficeLayout .ContentTypeSelector {
-    margin-left: -0.5em;    
-}
-
-.BackOfficeLayout .ContentTypeSelector > .label {
+.BackOfficeLayout .ContentTypeSelector > .button > .label {
     display: inline-block;
 }
 
-.BackOfficeLayout .ContentTypeSelector > .label > * {
+.BackOfficeLayout .ContentTypeSelector > .button > .label > * {
     vertical-align: middle;
-}
-
-.BackOfficeLayout .ContentTypeSelector .selector_content {
-    top: 1.4em;
-    z-index: 3;
-	margin-top: -1px;
-    padding: 1em;
 }
 
 .BackOfficeLayout .ContentTypeSelector .palette > .palette_group > .nested_groups {
@@ -1612,7 +1638,6 @@ body.scripted .BackOfficeLayout .selector:hover .selector_content {
 }
 
 .BackOfficeLayout .no_results {
-    margin-top: 2em;
     border: 1px dotted rgb(200,160,120);
     padding: 0.5em;
 }
@@ -1649,59 +1674,40 @@ body.scripted .BackOfficeLayout .selector:hover .selector_content {
 /* Thumbnails content view
 -----------------------------------------------------------------------------*/
 .BackOfficeLayout .ThumbnailsContentView .collection_display {
-    width: 100%;
     padding-bottom: 0.5em;
-}
-
-.BackOfficeLayout .ThumbnailsContentView .collection_display td {
-    vertical-align: top;
+    border: 1px solid #d6d6d6;
+    background-color: #fcfcfc;
 }
 
 .BackOfficeLayout .ThumbnailsContentView .collection_display .entry {
-    display: block;
-    margin: 0.5em;
-    width: 10em;
+    display: inline-block;
+    vertical-align: bottom;
+    margin: 1em;
     text-align: center;
-}
-
-.BackOfficeLayout .ThumbnailsContentView .entry.selected {
-    /*background-color: rgb(75,75,75);
-    border: 1px solid rgb(75,75,75);
-    color: white;
-    -moz-border-radius: 5px;*/
 }
 
 body.scripted .BackOfficeLayout .ThumbnailsContentView .collection_display input[type=checkbox] {
-    display: none;
-}
-
-.BackOfficeLayout .ThumbnailsContentView .collection_display .icon_frame {
-    height: 6em;
-    width: 10em;
-    text-align: center;
-    display: table-cell;
-    vertical-align: bottom;
-}
-
-.BackOfficeLayout .ThumbnailsContentView .collection_display .label {
-    display: block;
-    text-align: center;
-    margin-top: 0.2em;
-    padding: 0.2em;
+    position: absolute;
+    left: -1000px;
 }
 
 .BackOfficeLayout .ThumbnailsContentView .collection_display label {
+    display: inline-block;
+    margin-top: 0.5em;
+    padding: 0.2em 0.5em;
     white-space: normal;
     font-size: 85%;
-    margin: 0;
-    padding: 0;
 }
 
-.BackOfficeLayout .ThumbnailsContentView .collection_display .selected .label {
-    background-color: rgb(75,75,75);
+.BackOfficeLayout .ThumbnailsContentView .collection_display .selected label {
+    background-color: #777;
     color: white;
     -moz-border-radius: 5px;
     -webkit-border-radius: 5px;
+}
+
+.BackOfficeLayout .ThumbnailsContentView .collection_display.focused .selected label {
+    background-color: #4b4b4b;
 }
 
 /* Changelog
@@ -2245,20 +2251,17 @@ button.TypeSelectorButton span {
 /* Filter box
 -----------------------------------------------------------------------------*/
 .BackOfficeLayout .simple_search {
-    float: left;
+    float: right;
     height: 3em;
+    position: relative;
 }
 
-.BackOfficeLayout .simple_search input {
-    font-size: 85%;
-}
-
-.BackOfficeLayout .content_type_box + .simple_search {
-    margin-left: 2em;
+.BackOfficeLayout .simple_search input[type=search] {
+    margin: 0;
 }
 
 .BackOfficeLayout .filters {
-    clear: both;
+    clear: both;    
 }
 
 .BackOfficeLayout .ContentView .search_input {
@@ -2266,18 +2269,18 @@ button.TypeSelectorButton span {
 }
 
 .BackOfficeLayout .ContentView .advanced_search {
-    margin-left: 1.2em;
     text-decoration: underline;
     font-size: 70%;
     background-image: url(/resources/images/collapsed_block.png);
     background-repeat: no-repeat;
     background-position: 0 center;
-    padding-left: 0.6em;
+    margin-left: 1em;
+    padding-left: 0.8em;
 }
 
 .BackOfficeLayout .CollectionView .filters {
     font-size: 85%;
-    margin-top: 0.3em;
+    margin-top: 1em;
     border: 1px solid #ccc;
     background-color: #eee;
     padding: 0.5em;
@@ -2448,89 +2451,6 @@ button.TypeSelectorButton {
 
 .BackOfficeLayout .modal_selector_control .container .entry {
     margin-bottom: 0.5em;
-}
-
-/* Collection settings 
------------------------------------------------------------------------------*/
-.BackOfficeLayout .CollectionView .settings_box {
-    position: absolute;
-    top: 0;
-    right: 3px;
-    background-position: right center;
-    font-size: 80%;
-}
-
-.BackOfficeLayout .CollectionView .settings_box .label {
-    padding: 4px;
-    padding-right: 8px;
-    padding-bottom: 0;
-    display: block;
-    height: 19px;
-    width: 20px;
-}
-
-.BackOfficeLayout .CollectionView .settings_box .selector_content {
-    right: 0;
-    top: 23px;
-    width: 30em;
-}
-
-.BackOfficeLayout .CollectionView .settings_box .box_label,
-.BackOfficeLayout .Table th .selector_content .options_header {
-    display: block;
-    margin-bottom: 0.3em;
-    color: rgb(75,75,75);
-    font-weight: bold;
-    font-size: 1.1em;
-    padding-bottom: 0.3em;
-    border-bottom: 1px solid #ccc;
-}
-
-.BackOfficeLayout .CollectionView .settings_box .box_items {
-    padding-left: 0.4em;
-}
-
-.BackOfficeLayout .CollectionView .settings_box .languages_box,
-.BackOfficeLayout .CollectionView .settings_box .members_box {
-    float: left;
-}
-
-.BackOfficeLayout .CollectionView .settings_box .languages_box {
-    border-right: 1px solid rgb(225,225,225);
-    padding-right: 1em;
-}
-
-.BackOfficeLayout .CollectionView .settings_box .members_box {
-    position: relative;
-    left: -1px;
-    padding-left: 1em;    
-    border-left: 1px solid rgb(225,225,225);
-}
-
-.BackOfficeLayout .CollectionView .settings_box .selector_content > div:first-child {
-    border-left: none;
-}
-
-.BackOfficeLayout .CollectionView .settings_box .selector_content > div:last-child {
-    border-right: none;
-}
-
-.BackOfficeLayout .CollectionView .settings_box .selector_content .box_buttons {
-    clear: left;
-    text-align: right;
-    padding-top: 0.8em;
-}
-
-.BackOfficeLayout .CollectionView .collection_display_container {
-    clear: both;
-    position: relative;
-    overflow: visible;
-    min-width: 100%;
-    display: inline-block;
-}
-
-.BackOfficeLayout .CollectionView .Table th.last {
-    padding-right: 3em;
 }
 
 /* Datepicker styles */

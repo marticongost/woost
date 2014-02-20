@@ -8,9 +8,41 @@
 -----------------------------------------------------------------------------*/
 
 cocktail.bind(".ContentView", function ($contentView) {
+ 
+    // Discard the current member / language selection if their dropdown panel
+    // is collapsed before submitting the changes
+    var $panels = $contentView.find(".collection_settings .DropdownPanel");
+    $panels.find(".CheckList .entry input[type=checkbox]").each(function () {
+        this.initialCheckState = this.checked;
+    });
+    $panels.on("collapsed", function () {
+        jQuery(this).find(".CheckList .entry input[type=checkbox]").each(function () {
+            this.checked = this.initialCheckState;
+        });
+    });
+
+    var $searchBox = $contentView.find(".simple_search input[type=search]");
+
+    // Automatically focus the simple search box
+    $searchBox.focus();
+
+    // Make the down key pass from the search box to the content
+    $searchBox.keydown(function (e) {
+        if (e.keyCode == 40) {
+            var display = $contentView.find(".collection_display").get(0);
+            if (display.focusContent) {
+                display.focusContent();
+            }
+            return false;
+        }
+    });
     
+    // Make the up key pass from the first entry in the collection to the search box
+    var display = $contentView.find(".collection_display").get(0);
+    display.topControl = $searchBox.get(0);
+
     // Enable/disable buttons depending on the selected content
-    function updateToolbar() {    
+    function updateToolbar() {
         var display = $contentView.find(".collection_display").get(0);
         if (display && display.getSelection) {
             var selectionSize = display.getSelection().length;
@@ -33,10 +65,7 @@ cocktail.bind(".ContentView", function ($contentView) {
 
     $contentView.find(".collection_display").bind("selectionChanged", updateToolbar);
     updateToolbar();
-
-    // Automatically focus the simple search box
-    $contentView.find("[name=filter_value0]").focus();
-
+    
     // Replace the 'clear filters' link with a 'discard search' button
     $contentView.find(".filters").each(function () {
 
@@ -85,6 +114,30 @@ cocktail.bind(".ContentView", function ($contentView) {
     // Reset page value when a new search is done
     $contentView.find(".search_button").click(function () {
         $contentView.find("input[name=page]").val("0");
+    });
+});
+
+jQuery(function () {
+    jQuery(document).keydown(function (e) {
+
+        // Make the '/' key focus the search box
+        if (e.keyCode == 191) {
+
+            // Disabled if the event was triggered by a text input control
+            var tag = e.srcElement.nodeName;
+            if (tag == "TEXTAREA") {
+                return;
+            }
+            else if (tag == "INPUT") {
+                var type = e.srcElement.type;
+                if (type == "text" || type == "search" || type == "email" || type == "tel" || type == "number") {
+                    return;
+                }
+            }
+
+            jQuery(".ContentView .simple_search input[type=search]").focus();
+            return false;
+        }
     });
 });
 

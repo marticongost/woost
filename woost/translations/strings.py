@@ -353,10 +353,16 @@ translations.define("BackOfficeContentView.element",
     en = u"Item"
 )
 
-translations.define("woost.views.ContentView content type",
-    ca = u"Tipus:",
-    es = u"Tipo:",
-    en = u"Type:"
+translations.define("woost.views.ContentView.content_type_selector.shortcut",
+    ca = u"t",
+    es = u"t",
+    en = u"t"
+)
+
+translations.define("woost.views.ContentView.content_view_dropdown.shortcut",
+    ca = u"v",
+    es = u"v",
+    en = u"v"
 )
 
 translations.define("BackOfficeContentView.class",
@@ -1316,40 +1322,28 @@ translations.define("woost.views.Dialog.close_dialog_button",
 
 # Content views
 #------------------------------------------------------------------------------
-translations.define("View as",
-    ca = u"Visualització",
-    es = u"Visualización",
-    en = u"View as"
+translations.define("woost.content_views.flat",
+    ca = u"Llistat",
+    es = u"Listado",
+    en = u"Listing"
 )
 
-translations.define("flat content view",
-    ca = u"Veure com a llistat",
-    es = u"Ver como listado",
-    en = u"Show as listing"
+translations.define("woost.content_views.tree",
+    ca = u"Arbre",
+    es = u"Árbol",
+    en = u"Tree"
 )
 
-translations.define("tree content view",
-    ca = u"Veure com a arbre",
-    es = u"Ver como árbol",
-    en = u"Show as tree"
+translations.define("woost.content_views.thumbnails",
+    ca = u"Miniatures",
+    es = u"Miniaturas",
+    en = u"Grid"
 )
 
-translations.define("thumbnails content view",
-    ca = u"Veure com a miniatures",
-    es = u"Ver como miniaturas",
-    en = u"Show as thumbnails grid"
-)
-
-translations.define("calendar content view",
-    ca = u"Veure com a calendari",
-    es = u"Ver como calendario",
-    en = u"Show as calendar"
-)
-
-translations.define("order content view",
-    ca = u"Veure com a llista ordenable",
-    es = u"Ver como lista ordenadable",
-    en = u"Show as ordered listing"
+translations.define("woost.content_views.calendar",
+    ca = u"Calendari",
+    es = u"Calendario",
+    en = u"Calendar"
 )
 
 translations.define("woost.views.CalendarContentView current year",
