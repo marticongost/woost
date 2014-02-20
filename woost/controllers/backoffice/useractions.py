@@ -534,10 +534,6 @@ class OrderAction(UserAction):
         return params
 
 
-class ShowDetailAction(UserAction):
-    included = frozenset(["toolbar", "item_buttons"])
-
-
 class EditAction(UserAction):
     included = frozenset([
         "toolbar",
@@ -1078,7 +1074,6 @@ MoveAction("move").register()
 AddAction("add").register()
 AddIntegralAction("add_integral").register()
 RemoveAction("remove").register()
-ShowDetailAction("show_detail").register()
 OpenResourceAction("open_resource").register()
 UploadFilesAction("upload_files").register()
 AddBlockAction("add_block").register()
