@@ -27,6 +27,7 @@ class ContentTable(ContentDisplayMixin, Table):
     base_url = None
     entry_selector = "tbody tr.item_row"
     default_display = TranslationDisplay
+    use_separate_selection_column = False
 
     def __init__(self, *args, **kwargs):
         Table.__init__(self, *args, **kwargs)
