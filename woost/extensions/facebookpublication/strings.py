@@ -115,19 +115,19 @@ translations.define("FacebookPublicationTarget.targeting",
 
 # User actions
 #------------------------------------------------------------------------------
-translations.define("Action fbpublish",
+translations.define("woost.actions.fbpublish",
     ca = u"Publicar a Facebook",
     es = u"Publicar en Facebook",
     en = u"Publish to Facebook"
 )
 
-translations.define("Action fbpublish_albums",
+translations.define("woost.actions.fbpublish_albums",
     ca = u"Publicar imatges a Facebook",
     es = u"Publicar imágenes en Facebook",
     en = u"Publish pictures to Facebook"
 )
 
-translations.define("Action fbpublish_auth",
+translations.define("woost.actions.fbpublish_auth",
     ca = u"Autoritzar",
     es = u"Autorizar",
     en = u"Authorize"

@@ -11,13 +11,13 @@ from cocktail.translations.strings import member_identifier
 
 # UI
 #------------------------------------------------------------------------------
-translations.define("Action send_email",
+translations.define("woost.actions.send_email",
     ca = u"Enviar",
     es = u"Enviar",
     en = u"Send"
 )
 
-translations.define("Action create_mailing",
+translations.define("woost.actions.create_mailing",
     ca = u"Enviar per correu",
     es = u"Enviar por correo",
     en = u"Send by e-mail"
