@@ -1171,12 +1171,16 @@ body.scripted .BackOfficeLayout .Table .row_selection_control {
     height: 2.2em;
 }
 
+.BackOfficeItemView .toolbar {
+    height: 1.8em;
+}
+
 .BackOfficeLayout .toolbar {
-    float: left;
-    padding: 0.2em;
+    padding: 0.2em 0.6em;
 }
 
 .BackOfficeLayout .toolbar_box .toolbar {
+    float: left;
     margin: 0;
     border: none;
     background-color: transparent;
