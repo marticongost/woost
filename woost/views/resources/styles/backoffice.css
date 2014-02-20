@@ -698,11 +698,7 @@ body.modal {
 /* Tables
 -----------------------------------------------------------------------------*/
 
-body.scripted .BackOfficeLayout .Table .selection {
-    display: none;
-}
-
-.BackOfficeLayout .Table .target_focus {
+body.scripted .BackOfficeLayout .Table .row_selection_control {
     position: absolute;
     left: -1000px;
 }
