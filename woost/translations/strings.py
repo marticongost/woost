@@ -37,235 +37,211 @@ translations.define("Type",
     en = u"Type"
 )
 
-translations.define("Action new",
+translations.define("woost.actions.new",
     ca = u"Nou",
     es = u"Nuevo",
     en = u"New"
 )
 
-translations.define("Action installation_sync",
+translations.define("woost.actions.installation_sync",
     ca = u"Importar canvis",
     es = u"Importar cambios",
     en = u"Import changes"
 )
 
-translations.define("cocktail.html.shortcuts action new",
+translations.define("woost.actions.new.shortcut",
     ca = u"n",
     es = u"n",
     en = u"n"
 )
 
-translations.define("Action show_detail",
-    ca = u"Veure resum",
-    es = u"Ver resumen",
-    en = u"Show detail"
-)
-
-translations.define("cocktail.html.shortcuts action show_detail",
-    ca = u"v",
-    es = u"v",
-    en = u"w"
-)
-
-translations.define("Action edit",
+translations.define("woost.actions.edit",
     ca = u"Editar",
     es = u"Editar",
     en = u"Edit"
 )
 
-translations.define("cocktail.html.shortcuts action edit",
+translations.define("woost.actions.edit.shortcut",
     ca = u"e",
     es = u"e",
     en = u"e"
 )
 
-translations.define("Action order",
+translations.define("woost.actions.order",
     ca = u"Ordenar",
     es = u"Ordenar",
     en = u"Order"
 )
 
-translations.define("cocktail.html.shortcuts action order",
-    ca = u"o",
-    es = u"o",
-    en = u"o"
-)
-
-translations.define("Action move",
+translations.define("woost.actions.move",
     ca = u"Moure",
     es = u"Mover",
     en = u"Move"
 )
 
-translations.define("Action delete",
+translations.define("woost.actions.delete",
     ca = u"Eliminar",
     es = u"Eliminar",
     en = u"Delete"
 )
 
-translations.define("cocktail.html.shortcuts action delete",
-    ca = u"i",
-    es = u"i",
+translations.define("woost.actions.delete.shortcut",
+    ca = u"r",
+    es = u"r",
     en = u"d"
 )
 
-translations.define("Action changelog",
+translations.define("woost.actions.changelog",
     ca = u"Històric",
     es = u"Histórico",
     en = u"Changelog"
 )
 
-translations.define("Action add",
+translations.define("woost.actions.add",
     ca = u"Afegir",
     es = u"Añadir",
     en = u"Add"
 )
 
-translations.define("cocktail.html.shortcuts action add",
+translations.define("woost.actions.add.shortcut",
     ca = u"a",
     es = u"a",
     en = u"a"
 )
 
-translations.define("Action add_integral",
+translations.define("woost.actions.add_integral",
     ca = u"Afegir",
     es = u"Añadir",
     en = u"Add"
 )
 
-translations.define("cocktail.html.shortcuts action add_integral",
+translations.define("woost.actions.add_integral.shortcut",
     ca = u"a",
     es = u"a",
     en = u"a"
 )
 
-translations.define("Action remove",
+translations.define("woost.actions.remove",
     ca = u"Treure",
     es = u"Quitar",
     en = u"Remove"
 )
 
-translations.define("cocktail.html.shortcuts action remove",
+translations.define("woost.actions.remove.shortcut",
     ca = u"r",
     es = u"r",
     en = u"r"
 )
 
-translations.define("Action diff",
+translations.define("woost.actions.diff",
     ca = u"Veure canvis",
     es = u"Ver cambios",
     en = u"Show changes"
 )
 
-translations.define("cocktail.html.shortcuts action diff",
+translations.define("woost.actions.diff.shortcut",
     ca = u"c",
     es = u"c",
     en = u"c"
 )
 
-translations.define("Action preview",
+translations.define("woost.actions.preview",
     ca = u"Vista prèvia",
     es = u"Vista previa",
     en = u"Preview"
 )
 
-translations.define("cocktail.html.shortcuts action preview",
+translations.define("woost.actions.preview.shortcut",
     ca = u"p",
     es = u"p",
     en = u"p"
 )
 
-translations.define("Action open_resource",
+translations.define("woost.actions.open_resource",
     ca = u"Veure publicat",
     es = u"Ver publicado",
     en = u"Show published"
 )
 
-translations.define("cocktail.html.shortcuts action open_resource",
+translations.define("woost.actions.open_resource.shortcut",
     ca = u"b",
     es = u"b",
     en = u"b"
 )
 
-translations.define("Action upload_files",
+translations.define("woost.actions.upload_files",
     ca = u"Importar fitxers",
     es = u"Importar ficheros",
     en = u"Import files"
 )
 
-translations.define("Action export_xls",
+translations.define("woost.actions.export_xls",
     ca = u"Exportar a MS Excel",
     es = u"Exportar a MS Excel",
     en = u"Export to MS Excel"
 )
 
-translations.define("Action save",
+translations.define("woost.actions.save",
     ca = u"Desar",
     es = u"Guardar",
     en = u"Save"
 )
 
-translations.define("cocktail.html.shortcuts action save",
+translations.define("woost.actions.save.shortcut",
     ca = u"s",
     es = u"g",
     en = u"s"
 )
 
-translations.define("Action invalidate_cache",
+translations.define("woost.actions.invalidate_cache",
     ca = u"Netejar el cache",
     es = u"Limpiar el cache",
     en = u"Clear cache"
 )
 
-translations.define("Action select",
+translations.define("woost.actions.select",
     ca = u"Seleccionar",
     es = u"Seleccionar",
     en = u"Select"
 )
 
-translations.define("cocktail.html.shortcuts action select",
+translations.define("woost.actions.select.shortcut",
     ca = u"s",
     es = u"s",
     en = u"s"
 )
 
-translations.define("Action close",
+translations.define("woost.actions.close",
     ca = u"Tancar",
     es = u"Cerrar",
     en = u"Close"
 )
 
-translations.define("cocktail.html.shortcuts action close",
+translations.define("woost.actions.close.shortcut",
     ca = u"c",
     es = u"c",
     en = u"c"
 )
 
-translations.define("Action cancel",
+translations.define("woost.actions.cancel",
     ca = u"Cancelar",
     es = u"Cancelar",
     en = u"Cancel"
 )
 
-translations.define("cocktail.html.shortcuts action cancel",
+translations.define("woost.actions.cancel.shortcut",
     ca = u"c",
     es = u"c",
     en = u"c"
 )
 
-translations.define("Action print",
+translations.define("woost.actions.print",
     ca = u"Imprimir",
     es = u"Imprimir",
     en = u"Print"
 )
 
-translations.define("cocktail.html.shortcuts action print",
-    ca = u"i",
-    es = u"i",
-    en = u"i"
-)
-
-translations.define("Action edit_blocks",
+translations.define("woost.actions.edit_blocks",
     ca = u"Editar blocs",
     es = u"Editar bloques",
     en = u"Edit blocks"
@@ -407,12 +383,6 @@ translations.define("ContentView search",
     en = u"Search"
 )
 
-translations.define("woost.views.ContentView label",
-    ca = u"Veure com:",
-    es = u"Ver como:",
-    en = u"See as:"
-)
-
 translations.define("woost.views.ContentView show advanced search",
     ca = u"Més opcions de cerca",
     es = u"Mas opciones de búsqueda",
@@ -485,73 +455,73 @@ translations.define("woost.views.BackOfficeDiffView new value",
     en = u"New value"
 )
 
-translations.define("Action revert",
+translations.define("woost.actions.revert",
     ca = u"Desfer",
     es = u"Deshacer",
     en = u"Undo"
 )
 
-translations.define("Action add_block",
+translations.define("woost.actions.add_block",
     ca = u"Afegir",
     es = u"Añadir",
     en = u"Add"
 )
 
-translations.define("Action add_block_before",
+translations.define("woost.actions.add_block_before",
     ca = u"Afegir davant",
     es = u"Añadir en frente",
     en = u"Add before"
 )
 
-translations.define("Action add_block_after",
+translations.define("woost.actions.add_block_after",
     ca = u"Afegir darrere",
     es = u"Añadir detrás",
     en = u"Add after"
 )
 
-translations.define("Action edit_block",
+translations.define("woost.actions.edit_block",
     ca = u"Editar",
     es = u"Editar",
     en = u"Edit"
 )
 
-translations.define("Action remove_block",
+translations.define("woost.actions.remove_block",
     ca = u"Treure",
     es = u"Quitar",
     en = u"Remove"
 )
 
-translations.define("Action copy_block",
+translations.define("woost.actions.copy_block",
     ca = u"Copiar",
     es = u"Copiar",
     en = u"Copy"
 )
 
-translations.define("Action cut_block",
+translations.define("woost.actions.cut_block",
     ca = u"Retallar",
     es = u"Cortar",
     en = u"Cut"
 )
 
-translations.define("Action paste_block",
+translations.define("woost.actions.paste_block",
     ca = u"Enganxar",
     es = u"Pegar",
     en = u"Paste"
 )
 
-translations.define("Action paste_block_after",
+translations.define("woost.actions.paste_block_after",
     ca = u"Enganxar darrere",
     es = u"Pegar detrás",
     en = u"Paste after"
 )
 
-translations.define("Action paste_block_before",
+translations.define("woost.actions.paste_block_before",
     ca = u"Enganxar davant",
     es = u"Pegar delante",
     en = u"Paste before"
 )
 
-translations.define("Action share_block",
+translations.define("woost.actions.share_block",
     ca = u"Afegir a la llibreria",
     es = u"Añadir a la libreria",
     en = u"Add to the library"

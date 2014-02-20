@@ -99,7 +99,7 @@ translations.define(
 
 # UI
 #------------------------------------------------------------------------------
-translations.define("Action sync_campaign_monitor_lists",                                                                                                                                                                       
+translations.define("woost.actions.sync_campaign_monitor_lists",                                                                                                                                                                       
     ca = u"Sincronitzar amb Campaign Monitor",
     es = u"Sincronizar con Campaign Monitor",
     en = u"Synchronize with Campaign Monitor"
