@@ -7,6 +7,7 @@ u"""
 @since:			July 2008
 """
 import cherrypy
+from cocktail.schema import ErrorList
 from cocktail.controllers import session, Location
 from woost.models import User, set_current_user
 
@@ -24,8 +25,14 @@ class AuthenticationScheme(object):
             or self.anonymous_user
         )
 
-        self.process_header_based_authentication()
-        self.process_login()
+        try:
+            self.process_header_based_authentication()
+            self.process_login()
+        except AuthenticationFailedError, e:
+            authentication_errors = ErrorList()
+            authentication_errors.add(e)
+            cherrypy.request.authentication_errors = authentication_errors
+            raise
         self.process_logout()
 
     def process_header_based_authentication(self):

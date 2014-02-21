@@ -3,6 +3,7 @@ u"""
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
+import cherrypy
 from cocktail import schema
 from .block import Block
 from .publishable import Publishable
@@ -24,4 +25,6 @@ class LoginBlock(Block):
         Block.init_view(self, view)
         if self.login_target is not None:
             view["action"] = self.login_target.get_uri()
+        if hasattr(cherrypy.request, "authentication_errors"):
+            view.errors = cherrypy.request.authentication_errors
 
