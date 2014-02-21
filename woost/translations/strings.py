@@ -1282,7 +1282,7 @@ translations.define(
 #------------------------------------------------------------------------------
 
 translations.define(
-    "woost.controllers.authentication.AuthenticationFailedError-instance",
+    "woost.authenticationscheme.AuthenticationFailedError-instance",
     ca = u"Usuari o contrasenya incorrectes",
     es = u"Usuario o contraseña incorrectos",
     en = u"Incorrect user or password"
