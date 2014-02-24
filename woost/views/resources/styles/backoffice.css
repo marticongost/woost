@@ -1055,15 +1055,8 @@ body.scripted .BackOfficeLayout .Table .row_selection_control {
 
 .BackOfficeItemView h2 .item_references {
     margin-top: 0.3em;
-    margin-left: -3px;
-}
-
-.BackOfficeItemView h2 .item_references .button {
-    padding-top: 0;
-}
-
-.BackOfficeItemView h2 .item_references .button .label {
-/*    color: #666;*/
+    margin-left: -4px;
+    display: block;
 }
 
 .BackOfficeItemView h2 .item_references .panel_wrapper .panel {
@@ -3285,9 +3278,9 @@ div.success_label {
 }
 
 .BackOfficeLayout .ReferenceList .ContentLink {
-    font-size: 90%;
     text-decoration: none;
     font-size: 80%;
+    white-space: nowrap;
 }
 
 .BackOfficeLayout .ReferenceList .referrer_cell {
@@ -3297,6 +3290,7 @@ div.success_label {
 .BackOfficeLayout .ReferenceList .relation_cell {
     color: #666;
     font-size: 80%;
+    white-space: nowrap;
 }
 
 /* Content drag & drop
