@@ -782,32 +782,42 @@ body.scripted .BackOfficeLayout .Table .row_selection_control {
     display: inline-block;
 }
 
-.BackOfficeLayout .ContentTable th .selector > .label {
+.BackOfficeLayout .ContentTable th .column_dropdown > .button > .label {
     background-position: right 0.5em;
     white-space: nowrap;
 }
 
-.BackOfficeLayout .ContentTable th .selector_content > div + div {
-    margin-top: 1.2em;
+.BackOfficeLayout .ContentTable th.last .column_dropdown > .panel_wrapper > .panel {
+    left: auto;
+    right: 0;
 }
 
-.BackOfficeLayout .ContentTable th .selector_content > div > a + a {
+.BackOfficeLayout .ContentTable th .column_panel {
+    min-width: 19em;
+}
+
+.BackOfficeLayout .ContentTable th .column_panel > div + div {
+    margin-top: 1em;
+}
+
+.BackOfficeLayout .ContentTable th .column_panel .options_header {
+    margin-bottom: 0.6em;
+    padding-bottom: 0.2em;    
+    font-size: 0.9em;
+    font-weight: bold;
+    color: #555;
+    border-bottom: 1px dotted #ccc;    
+}
+
+.BackOfficeLayout .ContentTable th .column_panel > div > a + a {
     margin-top: 0.4em;
 }
 
-.BackOfficeLayout .ContentTable th .selector_content > div > a {
+.BackOfficeLayout .ContentTable th .column_panel > div > a {
     display: block;
     background-repeat: no-repeat;
     background-position: 0 -2px;
     padding-left: 18px;
-}
-
-.BackOfficeLayout .ContentTable th .selector_content {
-    top: 1.4em;
-    font-size: 85%;
-    padding-right: 1em;
-    padding-top: 1em;
-    min-width: 12em;
 }
 
 .BackOfficeLayout .ContentTable .sorting_options a.selected {
@@ -984,10 +994,6 @@ body.scripted .BackOfficeLayout .Table .row_selection_control {
 
 .BackOfficeLayout .Table th .grouping_options .sign a {
     text-decoration: underline;
-}
-
-.BackOfficeLayout .Table th .selector_content {
-    min-width: 19em;
 }
 
 .BackOfficeLayout .Table th.sorted span.label {

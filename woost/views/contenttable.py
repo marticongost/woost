@@ -90,29 +90,26 @@ class ContentTable(ContentDisplayMixin, Table):
         # Column options
         if sortable or self.get_member_searchable(column):
 
-            menu = header.menu = Element()
+            menu = header.menu = templates.new("cocktail.html.DropdownPanel")
+            menu.add_class("column_dropdown")
             header.append(menu)
-            menu.add_class("selector")
             
-            label = menu.label = Element()
-            label.add_class("label")
-            menu.append(label)
-            label.append(header.label)
+            menu.label.append(header.label)
 
             if column.translated:
-                label.append(header.translation_label)
-            
-            options = header.menu.options = self.create_header_options(
+                menu.label.append(header.translation_label)
+
+            options = header.menu.options = self.create_column_panel(
                 column,
                 language
             )
-            menu.append(options)
+            menu.panel.append(options)
 
-    def create_header_options(self, column, language):
+    def create_column_panel(self, column, language):
         
         options = Element()
-        options.add_class("selector_content")
-        
+        options.add_class("column_panel")
+
         if self.get_member_sortable(column):
             sorting_options = self.create_sorting_options(column, language)
             options.append(sorting_options)
