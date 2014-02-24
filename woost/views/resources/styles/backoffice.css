@@ -714,7 +714,7 @@ body.modal {
     max-height: 24.8em;
     overflow: auto;
     padding: 0.5em;
-    padding-right: 3em;
+    padding-right: 1em;
     border: 1px solid #ddd;
     background-color: white;
 }
