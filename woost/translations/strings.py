@@ -1395,14 +1395,69 @@ translations.define(
     en = u"Ongoing items:"
 )
 
-# Edit form
+# BackOfficeFieldsView
 #------------------------------------------------------------------------------
-translations.define("BackOfficeEditForm.translations",
+translations.define(
+    "woost.views.BackOfficeFieldsView.translations_dropdown",
     ca = u"Traduccions",
     es = u"Traducciones",
     en = u"Translations"
 )
 
+translations.define(
+    "woost.views.BackOfficeFieldsView.translations_dropdown.shortcut",
+    ca = u"t",
+    es = u"t",
+    en = u"t"
+)
+
+translations.define(
+    "woost.views.BackOfficeFieldsView.translations_dropdown.submit_button",
+    ca = u"Aplicar",
+    es = u"Aplicar",
+    en = u"Apply"
+)
+
+# ItemTranslationsSelector
+#------------------------------------------------------------------------------
+translations.define(
+    "woost.views.ItemTranslationsSelector.add_translation_button",
+    ca = u"Afegir la traducció",
+    es = u"Añadir la traducción",
+    en = u"Add this translation"
+)
+
+translations.define(
+    "woost.views.ItemTranslationsSelector.delete_translation_button",
+    ca = u"Eliminar la traducció",
+    es = u"Eliminar la traducción",
+    en = u"Delete this translation"
+)
+
+translations.define(
+    "woost.views.ItemTranslationsSelector.revert_button",
+    ca = u"Cancelar el canvi",
+    es = u"Cancelar el cambio",
+    en = u"Cancel this change"
+)
+
+translations.define(
+    "woost.views.ItemTranslationsSelector.defined_translations_filter",
+    ca = u"Només mostrar traduccions definides",
+    es = u"Mostrar solo traducciones definidas",
+    en = u"Show only defined translations"
+)
+
+translations.define(
+    "woost.views.ItemTranslationsSelector.defined_translations_filter"
+    ".shortcut",
+    ca = u"o",
+    es = u"o",
+    en = u"o"
+)
+
+# Edit form
+#------------------------------------------------------------------------------
 translations.define("BackOfficeEditForm.properties",
     ca = u"Propietats",
     es = u"Propiedades",

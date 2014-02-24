@@ -21,68 +21,44 @@ from woost.models import (
     submitted = False
     changes = None
     available_languages = ()
-    translations = ()
+    item_translations = ()
+    visible_translations = ()
+    ?>
+
+    <?py
+    self.add_resource("/resources/scripts/BackOfficeFieldsView.js")
     ?>
 
     <py:with py:element="self.item_body">
 
-        <!-- Translations selector -->
-        <!-- TODO: Promote this to its own view -->
-        <div
-            py:id="translations_selector"
-            py:index="0"
-            py:visible="@{self.edited_content_type.translated}"
-            class="selector">
-
-            <py:ready py:if="self.translations_selector.visible">
+        <!-- Translations dropdown -->
+        <py:cocktail.html.DropdownPanel
+            py:id="translations_dropdown"
+            py:index="0">
+            <py:binding>
                 <?py
-                shortcut = translations("EditView translations shortcut")
-                if shortcut:
-                    element.set_client_param("shortcut", shortcut)
+                if not self.edited_content_type.translated:
+                    element.visible = False
                 ?>
-                <span class="label">${translations("Translations")}</span>                
-                <ul class="selector_content">
-                    <li py:for="language in self.available_languages" data-language="${language}">
-                        <?py
-                        has_translation = language in self.translations
-                        ?>
-                        <div class="language">
-                            <?py
-                            if has_translation:
-                                element.add_class("selected")
-                                element.set_client_param("language", language)
-                            ?>
-                            ${translations("locale", locale = language)}
-                        </div>
-                        <?py
-                        user = get_current_user()
-                        can_add = (
-                            not has_translation
-                            and user.has_permission(CreateTranslationPermission, language = language)
-                        )
-                        can_delete = (
-                            has_translation
-                            and user.has_permission(DeleteTranslationPermission, language = language)
-                        )
-                        ?>
-                        <button
-                            py:if="can_add"
-                            name="add_translation"
-                            type="submit"
-                            value="${language}">
-                            <img src="/resources/images/add.png"/>
-                        </button>
-                        <button
-                            py:if="can_delete"
-                            name="delete_translation"
-                            type="submit"
-                            value="${language}">
-                            <img src="/resources/images/delete.png"/>
-                        </button>
-                    </li>
-                </ul>
-            </py:ready>
-        </div>
+            </py:binding>
+            <py:with
+                py:element="element.label"
+                accesskey="${translations('woost.views.BackOfficeFieldsView.translations_dropdown.shortcut')}">
+                ${translations("woost.views.BackOfficeFieldsView.translations_dropdown")}
+            </py:with>
+            <py:with py:element="element.panel">
+                <py:woost.views.ItemTranslationsSelector
+                    py:id="translations_selector"
+                    py:available_languages="@{self.available_languages}"
+                    py:item_translations="@{self.item_translations}"
+                    py:visible_translations="@{self.visible_translations}"/>
+                <div py:local_id="box_buttons">
+                    <button type="submit">
+                        ${translations("woost.views.BackOfficeFieldsView.translations_dropdown.submit_button")}
+                    </button>
+                </div>
+            </py:with>
+        </py:cocktail.html.DropdownPanel>
 
         <!-- Form -->
         <py:ready>
@@ -94,7 +70,7 @@ from woost.models import (
                 py:persistent_object="@{self.edited_item}"
                 py:schema="@{self.fields_schema}"
                 py:errors="@{self.submitted and self.errors}"
-                py:translations="@{[lang for lang in Configuration.instance.languages if lang in self.translations]}"
+                py:translations="@{[lang for lang in Configuration.instance.languages if lang in self.visible_translations]}"
                 py:edited_content_type="@{self.edited_content_type}"
                 py:name_prefix="edited_item_"
                 method="post">
