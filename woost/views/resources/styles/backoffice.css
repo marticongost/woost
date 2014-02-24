@@ -1225,10 +1225,6 @@ body.scripted .BackOfficeLayout .Table .row_selection_control {
     font-size: 85%;
 }
 
-.BackOfficeLayout .toolbar .new_toolbar_button .selector_content {
-    top: 1.8em;
-}
-
 .BackOfficeLayout .toolbar .additional_actions_selector .selector_content {
     width: 16em;
 }
@@ -1805,8 +1801,7 @@ body.scripted .BackOfficeLayout .ThumbnailsContentView .collection_display input
     border: 1px dotted rgb(200,160,120);
     background-color: rgb(245,230,215);
     padding: 0.5em;
-    margin: 0;
-    margin-bottom: 1em;
+    margin: 1em 0;
 }
 
 .preview-error-box {
@@ -1953,79 +1948,6 @@ body.scripted .BackOfficeLayout .ThumbnailsContentView .collection_display input
     padding-right: 0.3em;
 }
 
-.BackOfficeItemView .translations_selector {
-    font-size: 85%;
-    float: right;
-}
-
-.BackOfficeItemView .translations_selector .label {
-    height: 1.9em;
-    padding-top: 0.4em;
-    padding-left: 0.5em !important;
-    background-position: right 0.8em;
-    display: block;
-}
-
-.BackOfficeEditView .translations_selector .selector_content,
-.BackOfficePreviewView .translations_selector .selector_content {
-    list-style-type: none;
-    padding-right: 0.1;
-    right: 0;
-	top: 2.4em;
-    width: 12em;
-}
-
-.BackOfficePreviewView .translations_selector .selector_content {
-	min-width: inherit;
-    padding-left: .9em !important;
-}
-
-.BackOfficeEditView .translations_selector .selector_content li,
-.BackOfficePreviewView .translations_selector .selector_content li {
-    clear: both;
-    margin: 0;
-    padding: 0;
-}
-
-.BackOfficeEditView .translations_selector .language,
-.BackOfficePreviewView .translations_selector .language {
-    float: left;
-    height: 2em;
-}
-
-body.scripted .BackOfficeEditView .translations_selector .language:first-child,
-body.scripted .BackOfficePreviewView .translations_selector .language:first-child {
-    margin-left: 1.6em;
-}
-
-.BackOfficeEditView .translations_selector button {
-    float: right;
-    margin: 0;
-    padding: 0;
-    cursor: pointer;
-    border: none;
-    background: none;
-}
-
-body.scripted .BackOfficeEditView .translations_selector .selector_content,
-body.scripted .BackOfficePreviewView .translations_selector .selector_content {
-    list-style-type: none;
-    padding-right: 0.1;
-}
-
-body.scripted .BackOfficeEditView .translations_selector .selector_content li,
-body.scripted .BackOfficePreviewView .translations_selector .selector_content li{
-    clear: both;
-    margin: 0;
-    padding: 0;
-}
-
-body.scripted .BackOfficeEditView .translations_selector .selector_content li input {
-    float: left;
-    position: relative;
-    top: -0.1em;
-}
-
 .BackOfficeLayout .ItemSelector {
     padding: 0.1em;
 }
@@ -2163,6 +2085,124 @@ button.TypeSelectorButton span {
 .BackOfficeLayout .autocomplete_dropdown div:hover {
 	background-color: Highlight;
 	color: HighlightText;
+}
+
+/* ItemTranslationsSelector
+-----------------------------------------------------------------------------*/
+.BackOfficeItemView .translations_dropdown {
+    float: right;
+}
+
+.BackOfficeItemView .translations_dropdown > .panel_wrapper > .panel {
+    left: auto;
+    right: 0;
+}
+
+.BackOfficeItemView .translations_selector .search_box {
+    width: 100%;
+}
+
+.BackOfficeItemView .translations_selector .check_list {
+    min-width: 20em;
+}
+
+.BackOfficeItemView .translations_dropdown .box_buttons {
+    margin-top: 0.7em;
+}
+
+.BackOfficeItemView .translations_dropdown .box_buttons button {
+    margin: 0;
+}
+
+.ItemTranslationsSelector .defined_translations_filter {
+    margin-top: 0.4em;
+    margin-bottom: 0.8em;
+    white-space: nowrap;
+}
+
+.ItemTranslationsSelector .defined_translations_filter > * {
+    display: inline-block;
+    vertical-align: middle;
+    margin: 0;
+}
+
+.ItemTranslationsSelector .defined_translations_filter label {
+    font-size: 0.8em;
+}
+
+.ItemTranslationsSelector .check_list .entry {
+    position: relative;
+    white-space: nowrap;
+    padding: 0.2em 3em 0.2em 1.5em;
+    width: 100%;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+.ItemTranslationsSelector .check_list .entry label {
+    position: relative;
+    top: -0.2em;
+    font-size: 0.8em;
+    margin: 0;
+}
+
+.ItemTranslationsSelector .check_list .entry input[type=checkbox] {
+    position: absolute;
+    left: 0;
+    bottom: 0.2em;
+}
+
+.ItemTranslationsSelector .check_list .entry.undefined_translation label {
+    color: #666;
+}
+
+.ItemTranslationsSelector.defined_translations_only .entry.undefined_translation {
+    display: none;
+}
+
+.ItemTranslationsSelector .check_list .entry.added_translation label {
+    color: #145014;
+    font-weight: bold;
+}
+
+.ItemTranslationsSelector .check_list .entry.added_translation .add_translation_button {
+    display: none;
+}
+
+.ItemTranslationsSelector .check_list .entry.deleted_translation label {
+    color: #87230a;
+    font-weight: bold;
+}
+
+.ItemTranslationsSelector .check_list .entry.deleted_translation .delete_translation_button {
+    display: none;
+}
+
+.ItemTranslationsSelector .check_list .entry.deleted_translation input[type=checkbox] {
+    display: none;
+}
+
+.ItemTranslationsSelector .add_translation_button,
+.ItemTranslationsSelector .delete_translation_button,
+.ItemTranslationsSelector .revert_button {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    border: none;
+    background: none;
+    box-shadow: none;
+    padding: 0;
+    cursor: pointer;
+}
+
+.ItemTranslationsSelector .revert_button {
+    display: none;
+}
+
+.ItemTranslationsSelector .added_translation .revert_button,
+.ItemTranslationsSelector .deleted_translation .revert_button {
+    display: inline-block;
 }
 
 /* Order view

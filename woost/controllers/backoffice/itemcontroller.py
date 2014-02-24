@@ -115,14 +115,14 @@ class ItemController(BaseBackOfficeController):
             # Existing item
             else:
                 item = context_item
-            
+
             node_class = resolve(item.edit_node_class)
-            node = node_class(item)
+            node = node_class(
+                item,
+                visible_translations = self.visible_languages
+            )
             edit_stack.push(node)
             redirect = True
-            
-            if not item.is_inserted:
-                node.initialize_new_item(item, self.visible_languages)
         
         # If the stack is modified a redirection is triggered so that any
         # further request mentions the new stack position in its parameters.

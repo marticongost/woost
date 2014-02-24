@@ -872,15 +872,14 @@ class AddBlockAction(UserAction):
             edit_stack = edit_stacks_manager.current_edit_stack
 
             block = self.block_type()
-            node = AddBlockNode(block)
+            node = AddBlockNode(
+                block,
+                visible_translations = controller.visible_languages
+            )
             node.block_parent = controller.block_parent
             node.block_slot = controller.block_slot
             node.block_positioning = self.block_positioning
             node.block_anchor = controller.block
-            node.initialize_new_item(
-                block,
-                controller.visible_languages
-            )
             edit_stack.push(node)
 
             edit_stacks_manager.preserve_edit_stack(edit_stack)
