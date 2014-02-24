@@ -2632,24 +2632,6 @@ a.pickcolor span {
     background:url(/resources/images/icons_tiny.gif) -840px 0 !important;
 }
 
-/* workflow extension
------------------------------------------------------------------------------*/
-.BackOfficeLayout .toolbar .transition_action .selector_content a {
-    white-space: nowrap;
-    display: block;
-}
-
-.BackOfficeLayout .toolbar .transition_action .selector_content a + a {
-    margin-top: 0.5em;
-}
-
-.BackOfficeLayout .graph_frame {
-    width: 100%;
-    border: none;
-    height: 500px;
-    margin-top: 2em;
-}
-
 /* Feed edit form
 -----------------------------------------------------------------------------*/
 .FeedFields .edit_form .ttl_field input.control,
