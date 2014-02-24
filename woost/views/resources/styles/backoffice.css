@@ -3217,6 +3217,10 @@ div.success_label {
     vertical-align: middle;
 }
 
+.ItemPalette .palette_entry .button {
+    display: inline-block;
+}
+
 /* BackOfficeItemViewOverlay
 -----------------------------------------------------------------------------*/
 .BackOfficeItemView .block_map .explanation {
