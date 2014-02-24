@@ -137,7 +137,6 @@ body {
 .BackOfficeLayout .user_views_bar .add_user_view_button,
 .BackOfficeLayout .advanced_search,
 .BackOfficeEditView .discard_button,
-.BackOfficeLayout .new_filter_selector .label,
 .BackOfficeFieldsView .ItemSelector-button {
     font-size: inherit;
     background: none;
@@ -2362,31 +2361,32 @@ button.TypeSelectorButton {
 
 .BackOfficeLayout .CollectionView .filters .new_filter_selector {
     margin-right: 1em;
+    margin-left: -0.4em;
 }
 
-.BackOfficeLayout .CollectionView .filters .new_filter_selector .label {
-    padding-right: 0.3m;
-    padding-top: 0.3em;
-    padding-bottom: 0.3em;
-    padding-left: 1.5em !important;
-    background-position: 0.2em center;
+.BackOfficeLayout .CollectionView .filters .new_filter_selector > .button {
+    padding: 0.4em 0.3em;
+}
+
+.BackOfficeLayout .CollectionView .filters .new_filter_selector > .button > .label {
+    padding-left: 1.6em !important;
+    background-position: left center;
     background-image: url(../images/add.png);
-    color: rgb(50,80,110);
+    background-repeat: no-repeat;
 }
 
-.BackOfficeLayout .CollectionView .filters .new_filter_selector .selector_content {
+.BackOfficeLayout .CollectionView .filters .new_filter_selector .panel {
     overflow: auto;
     max-height: 30em;
-    min-width: 12em;
-    top: 1.5em;
+    min-width: 19em;
 }
 
-.BackOfficeLayout .CollectionView .filters .new_filter_selector .selector_content a {    
+.BackOfficeLayout .CollectionView .filters .new_filter_selector .panel a {
     border: none;
     background: none;
     display: block;
     cursor: pointer;
-    color: rgb(50,80,110);
+    text-decoration: none;
     text-align: left;
     padding: 0;
     margin: 0.8em 0;
