@@ -39,7 +39,9 @@ cocktail.bind(".ContentView", function ($contentView) {
     
     // Make the up key pass from the first entry in the collection to the search box
     var display = $contentView.find(".collection_display").get(0);
-    display.topControl = $searchBox.get(0);
+    if (display) {
+        display.topControl = $searchBox.get(0);
+    }
 
     // Enable/disable buttons depending on the selected content
     function updateToolbar() {
