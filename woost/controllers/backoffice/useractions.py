@@ -721,7 +721,6 @@ class GoBackAction(UserAction):
 class CloseAction(GoBackAction):
     included = frozenset([
         "item_buttons",
-        "item_bottom_buttons",
         "edit_blocks_toolbar"
     ])
 
@@ -737,10 +736,7 @@ class SaveAction(UserAction):
     included = frozenset([
         ("item_buttons", "new"),
         ("item_buttons", "edit"),
-        ("item_buttons", "changed"),
-        ("item_bottom_buttons", "new"),
-        ("item_bottom_buttons", "edit"),
-        ("item_bottom_buttons", "changed")
+        ("item_buttons", "changed")
     ])
     ignores_selection = True
     max = None
