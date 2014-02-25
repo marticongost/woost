@@ -604,11 +604,23 @@ body.modal {
     padding-bottom: 0.2em;
 }
 
-.BackOfficeLayout .Form label .language {
+.BackOfficeLayout .Form .language {
     color: rgb(75,75,75);
     font-style: italic;
     font-size: 75%;
+}
+
+.BackOfficeLayout .Form.redundant_translation_labels .language {
     margin-left: 0.5em;
+}
+
+.BackOfficeLayout .Form.grouped_translation_labels .language {
+    display: block;
+    margin-bottom: 0.3em;
+}
+
+.BackOfficeLayout .Form.grouped_translation_labels .field_instance-CheckBox .language {
+    display: inline-block;
 }
 
 .BackOfficeLayout .Form .required_mark {
@@ -1070,7 +1082,7 @@ body.scripted .BackOfficeLayout .Table .row_selection_control {
 }
 
 .BackOfficeLayout .changed {
-    border: 1px solid #EBE3AF;
+    outline: 1px solid #EBE3AF;
 }
 
 .BackOfficeLayout .Table td.element_column label {
