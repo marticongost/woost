@@ -3149,38 +3149,31 @@ a.pickcolor span {
 .BackOfficePreviewView iframe {
     width: 100%;
     height: 600px;
+    margin-top: 0.5em;
 }
 
 .BackOfficePreviewView .preview_language_selector {
-    float: right;
+    padding-top: 0.5em;
 }
 
-.BackOfficePreviewView .preview_language_selector span {
-    display: inline;
-    float: left;
-    font-size: 85%;
-    line-height: 2em;
-    padding: 1px;
+.BackOfficePreviewView .language_dropdown_label {
+    display: inline-block;
+    vertical-align: baseline;
+    font-size: 0.9em;
 }
 
-.BackOfficePreviewView .preview_language_selector .translations_selector {
-    display: inline;
-    float: left;
+.BackOfficePreviewView .language_dropdown > .panel_wrapper > .panel {
+    min-width: 10em;
 }
 
-.BackOfficePreviewView .preview_language_selector .translations_selector .selector_content {
-    top: 2em;
+.BackOfficePreviewView .language_dropdown .entry + .entry {
+    margin-top: 0.2em;
 }
 
-.BackOfficePreviewView .preview_language_selector .translations_selector .label {
-    line-height: 2em;
-    font-size: 100%;
-    padding-top: 0;
-}
-
-.BackOfficePreviewView .preview_language_selector .translations_selector .language {
-    height: auto;
-    line-height: 1.6em;
+.BackOfficePreviewView .language_dropdown .entry_link {
+    white-space: nowrap;
+    text-decoration: none;
+    font-size: 0.9em;
 }
 
 /* Tweaks for password change process
