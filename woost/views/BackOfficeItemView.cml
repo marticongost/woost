@@ -91,23 +91,6 @@ from woost.controllers.backoffice.useractions import (
         
         <div py:id="item_body"/>
 
-        <!-- Actions -->
-        <py:woost.views.ActionBar
-            py:id="item_bottom_buttons"
-            py:action_context="item_bottom_buttons"
-            py:action_target="@{self.edited_item}"
-            class="toolbar">
-            <py:with
-                py:def="action_button"
-                py:args="action, extra"
-                name="item_action">
-                <?py
-                if action is self.selected_action:
-                    element.add_class("selected")
-                ?>
-            </py:with>
-        </py:woost.views.ActionBar>
-
     </py:with>
 
 </py:woost.views.BackOfficeLayout>
