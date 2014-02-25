@@ -553,26 +553,31 @@ class EditNode(StackNode):
         self._item = item
 
         if item.__class__.translated:
-            user = get_current_user()
 
+            if visible_translations is None:
+                visible_translations = item.translations
+            else:
+                if item.is_inserted:
+                    visible_translations = [
+                        language
+                        for language in visible_translations
+                        if language in item.translations
+                    ]
+                else:
+                    for language in visible_translations:
+                        item.new_translation(language)
+
+            self.item_translations = set(item.translations)
+
+            user = get_current_user()
             self.visible_translations = set(
-                language 
-                for language in (
-                    visible_translations
-                        if visible_translations is not None
-                        else item.translations
-                )
+                language
+                for language in visible_translations
                 if user.has_permission(
                     ReadTranslationPermission,
                     language = language
                 )
             )
-
-            if not item.is_inserted and visible_translations is not None:
-                for language in self.visible_translations:
-                    item.new_translation(language)
-
-            self.item_translations = set(item.translations)
         else:
             self.item_translations = None
             self.visible_translations = None
