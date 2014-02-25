@@ -210,10 +210,7 @@ class EditController(BaseBackOfficeController):
             
         try:
             stack_node = self.stack_node
-            from cocktail.styled import styled
-            print styled(stack_node.form_data, "pink")
             stack_node.import_form_data(stack_node.form_data, item)
-            print styled(stack_node.form_data, "bright_green")
             item.insert()
             stack_node.saving(
                 user = get_current_user(),
