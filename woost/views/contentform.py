@@ -16,6 +16,7 @@ Form = templates.get_class("cocktail.html.Form")
 class ContentForm(Form):
 
     table_layout = False
+    redundant_translation_labels = False
 
     def __init__(self, *args, **kwargs):
         Form.__init__(self, *args, **kwargs)
