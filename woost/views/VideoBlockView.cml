@@ -16,7 +16,8 @@
         ?>
     </py:binding>
 
-    @{self.append(self.player_settings.create_player(self.video))}
-
+    <py:ready>
+        <py:new py:element="self.player_settings.create_player(self.video)"/>
+    </py:ready>
 </div>
 
