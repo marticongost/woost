@@ -10,7 +10,7 @@ from __future__ import with_statement
 import os
 import ftplib
 from shutil import copy
-from datetime import date
+from datetime import datetime
 from tempfile import mkstemp
 from zipfile import ZipFile
 from cocktail import schema
@@ -534,14 +534,18 @@ class ZipDestination(StaticSiteDestination):
     """
     instantiable = True
 
-
     def setup(self, context):
-        handle, context["temp_file"] = mkstemp('.zip')
-        os.close(handle)
-        context["zip_file"] = ZipFile(context["temp_file"], 'w')
+        self.root_folder = app.path("static", "export")
+        if not os.path.exists(self.root_folder):
+            os.mkdir(self.root_folder)
 
-    def cleanup(self, context):
-        os.unlink(context["temp_file"])
+        context["file_name"] = \
+            "%s.zip" % datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
+        zip_path = os.path.join(
+            self.root_folder,
+            context["file_name"]
+        )
+        context["zip_file"] = ZipFile(zip_path, 'w')
 
     def _export(
         self,
@@ -554,20 +558,8 @@ class ZipDestination(StaticSiteDestination):
             status_tracker = status_tracker
         )
 
-        # Close the zip file before export it to the CMS
+        # Close the zip file 
         context["zip_file"].close()        
-        upload_path = app.path("upload")
-
-        with changeset_context(get_current_user()):
-            file = File.from_path(
-                context["temp_file"], 
-                upload_path, 
-                languages = [get_language()]
-            )
-            file.title = "export-%s" % date.today().strftime("%Y%m%d")
-            file.file_name = file.title + ".zip"
-            file.insert()
-            context.update(file = file)
 
     def create_folder(self, folder, context):
         return True
@@ -588,7 +580,7 @@ class ZipDestination(StaticSiteDestination):
     def output(self, context):
         output = StaticSiteDestination.output(self)
         output.update(
-            file = context["file"]
+            file_name = context["file_name"]
         )
         return output
 
