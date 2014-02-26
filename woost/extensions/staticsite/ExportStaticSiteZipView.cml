@@ -8,12 +8,18 @@ from cocktail.translations import translations
     xmlns:py="http://www.whads.com/ns/cocktail/templates">
 
     <?py-class
-    file = None
+    file_name = None
     ?>
+
+    <py:ready>
+        <?py
+        self.file_url = "/export/%s" % self.file_name
+        ?>
+    </py:ready>
 
     <py:with py:element="self.export_log">
         <py:ready>
-        <p py:index="1">${translations("woost.extensions.staticsite download") % self.cms.uri(self.file)}</p>
+            <p py:index="1">${translations("woost.extensions.staticsite download") % self.file_url}</p>
         </py:ready>
     </py:with>
 
