@@ -93,7 +93,8 @@ of its features include:\n"
             "youtube = woost.extensions.youtube:YouTubeExtension",
             "tv3alacarta = woost.extensions.tv3alacarta:TV3ALaCartaExtension",
             "externalfiles = woost.extensions.externalfiles:ExternalFilesExtension",
-            "restrictedaccess = woost.extensions.restrictedaccess:RestrictedAccessExtension"
+            "restrictedaccess = woost.extensions.restrictedaccess:RestrictedAccessExtension",
+            "annotations = woost.extensions.annotations:AnnotationsExtension"
         ]
     },
     # Woost can't yet access view resources (images, style sheets, client
