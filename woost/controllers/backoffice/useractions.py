@@ -765,15 +765,6 @@ class SaveAction(UserAction):
         controller.save_item()
 
 
-class PrintAction(UserAction):
-    direct_link = True
-    ignores_selection = True
-    excluded = frozenset(["selector", "collection"])
-
-    def get_url(self, controller, selection):
-        return "javascript: print();"
-
-
 def focus_block(block):
     location = Location.get_current()
     location.hash = "block" + str(block.id)
@@ -1088,7 +1079,6 @@ RemoveBlockAction("remove_block").register()
 DeleteAction("delete").register()
 OrderAction("order").register()
 ExportAction("export_xls", "msexcel").register()
-PrintAction("print").register()
 InvalidateCacheAction("invalidate_cache").register()
 CloseAction("close").register()
 CancelAction("cancel").register()
