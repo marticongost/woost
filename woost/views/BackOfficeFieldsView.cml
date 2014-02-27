@@ -52,11 +52,6 @@ from woost.models import (
                     py:available_languages="@{self.available_languages}"
                     py:item_translations="@{self.item_translations}"
                     py:visible_translations="@{self.visible_translations}"/>
-                <div py:local_id="box_buttons">
-                    <button type="submit">
-                        ${translations("woost.views.BackOfficeFieldsView.translations_dropdown.submit_button")}
-                    </button>
-                </div>
             </py:with>
         </py:cocktail.html.DropdownPanel>
 

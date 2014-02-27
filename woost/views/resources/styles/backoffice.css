@@ -2108,111 +2108,112 @@ button.TypeSelectorButton span {
     right: 0;
 }
 
-.BackOfficeItemView .translations_selector .search_box {
-    width: 100%;
-}
-
-.BackOfficeItemView .translations_selector .check_list {
-    min-width: 20em;
-}
-
-.BackOfficeItemView .translations_dropdown .box_buttons {
-    margin-top: 0.7em;
-}
-
-.BackOfficeItemView .translations_dropdown .box_buttons button {
-    margin: 0;
-}
-
-.ItemTranslationsSelector .defined_translations_filter {
-    margin-top: 0.4em;
-    margin-bottom: 0.8em;
-    white-space: nowrap;
-}
-
-.ItemTranslationsSelector .defined_translations_filter > * {
+.ItemTranslationsSelector {
     display: inline-block;
-    vertical-align: middle;
-    margin: 0;
-}
-
-.ItemTranslationsSelector .defined_translations_filter label {
-    font-size: 0.8em;
-}
-
-.ItemTranslationsSelector .check_list .entry {
-    position: relative;
     white-space: nowrap;
-    padding: 0.2em 3em 0.2em 1.5em;
-    width: 100%;
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
 }
 
-.ItemTranslationsSelector .check_list .entry label {
-    position: relative;
-    top: -0.2em;
-    font-size: 0.8em;
-    margin: 0;
+.ItemTranslationsSelector .search_controls {
+    margin-bottom: 0.5em;
 }
 
-.ItemTranslationsSelector .check_list .entry input[type=checkbox] {
-    position: absolute;
-    left: 0;
-    bottom: 0.2em;
+.ItemTranslationsSelector .search_box {
+    width: 12em;
 }
 
-.ItemTranslationsSelector .check_list .entry.undefined_translation label {
-    color: #666;
+.ItemTranslationsSelector .available_languages_section,
+.ItemTranslationsSelector .defined_languages_section {
+    display: inline-block;
+    width: 18em;
 }
 
-.ItemTranslationsSelector.defined_translations_only .entry.undefined_translation {
-    display: none;
+.ItemTranslationsSelector .available_languages_section {
+    margin-left: 0.3em;
 }
 
-.ItemTranslationsSelector .check_list .entry.added_translation label {
-    color: #145014;
+.ItemTranslationsSelector .available_languages_section > .heading,
+.ItemTranslationsSelector .defined_languages_section > .heading {
     font-weight: bold;
+    font-size: 0.9em;
+    color: white;
+    background-color: #605f5d;
+    border: 1px solid #5f5742;
+    padding: 0.2em 0.8em;
 }
 
-.ItemTranslationsSelector .check_list .entry.added_translation .add_translation_button {
-    display: none;
+.ItemTranslationsSelector .toolbar {
+    margin-top: 0;
+    margin-bottom: -1px;
+    height: auto;
 }
 
-.ItemTranslationsSelector .check_list .entry.deleted_translation label {
-    color: #87230a;
-    font-weight: bold;
-}
-
-.ItemTranslationsSelector .check_list .entry.deleted_translation .delete_translation_button {
-    display: none;
-}
-
-.ItemTranslationsSelector .check_list .entry.deleted_translation input[type=checkbox] {
-    display: none;
-}
-
-.ItemTranslationsSelector .add_translation_button,
-.ItemTranslationsSelector .delete_translation_button,
-.ItemTranslationsSelector .revert_button {
-    position: absolute;
-    right: 0;
-    bottom: 0;
-    border: none;
-    background: none;
-    box-shadow: none;
+.ItemTranslationsSelector .toolbar button {
     padding: 0;
+    border: none;
+    box-shadow: none;
+    background-image: none;
+    background-color: transparent;
     cursor: pointer;
+    font-size: 0.8em;
 }
 
-.ItemTranslationsSelector .revert_button {
-    display: none;
+.ItemTranslationsSelector .toolbar button + button {
+    margin-left: 1em;
 }
 
-.ItemTranslationsSelector .added_translation .revert_button,
-.ItemTranslationsSelector .deleted_translation .revert_button {
-    display: inline-block;
+.ItemTranslationsSelector .language_list {
+    height: 20em;
+    overflow: auto;
+    border: 1px solid #e5e5e5;
+    background-color: white;
+}
+
+.ItemTranslationsSelector .language_list .entry label {
+    display: block;
+    margin: 0 !important;
+    padding: 0.3em 0.8em;
+    font-size: 0.9em;
+    color: #333;
+}
+
+.ItemTranslationsSelector .available_languages_section .language_list .entry label {
+     color: #777;
+}
+
+.ItemTranslationsSelector .language_list .entry.visible_translation label {
+    font-weight: bold;
+}
+
+.ItemTranslationsSelector .language_list .entry input[type=checkbox] {
+    position: absolute;
+    left: -10000px;
+}
+
+.ItemTranslationsSelector .language_list .entry.selected {
+    background-color: #aba2a2;
+}
+
+.ItemTranslationsSelector .language_list.focused .entry.selected {
+    background-color: #8c8383;
+}
+
+.ItemTranslationsSelector .language_list .entry.selected label {
+    color: white;
+}
+
+.ItemTranslationsSelector .selection_controls {
+    margin-top: -1px;
+    background-color: #ecebea;
+    border: 1px solid #dcd9d0;
+    padding: 0.1em 0.2em 0.3em 0.8em;
+}
+
+.ItemTranslationsSelector .selection_controls > * {
+    font-size: 0.8em;
+}
+
+.ItemTranslationsSelector .selection_controls a {
+    margin-left: 0.3em;
 }
 
 /* Order view

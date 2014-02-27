@@ -8,7 +8,7 @@ from woost.models import (
 )
 ?>
 
-<py:cocktail.html.SearchableCheckList
+<div
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:py="http://www.whads.com/ns/cocktail/templates">
 
@@ -24,135 +24,119 @@ from woost.models import (
             language = language
         )
 
-    def _can_delete_translation(self, language):
-        return get_current_user().has_permission(
-            DeleteTranslationPermission,
-            language = language
-        )
-
     def _ready(self):
 
         if self.available_languages is None:
             self.available_languages = Configuration.instance.languages
 
-        SearchableCheckList._ready(self)
-
-    def _get_available_languages(self):
-        return self.items
-
-    def _set_available_languages(self, languages):
-        self.items = languages
-
-    available_languages = property(
-        _get_available_languages,
-        _set_available_languages
-    )
-
-    def _get_visible_translations(self):
-        return self.value
-
-    def _set_visible_translations(self, languages):
-        self.value = languages
-
-    visible_translations = property(
-        _get_visible_translations,
-        _set_visible_translations
-    )
+        Element._ready(self)
     ?>
 
     <?py
+    self.add_resource("/cocktail/scripts/searchable.js")
     self.add_resource("/resources/scripts/ItemTranslationsSelector.js")
     ?>
 
-    <py:with py:element="self.check_list">
-
-        <?py
-        @extend(element)
-        def get_item_label(self, item):
-            return translations("locale", locale = item)
-
-        @extend(element)
-        def get_item_value(self, item):
-            return item
-        ?>
-
-        <py:with py:def="entry" py:args="value, label, selected">
-            <?py
-            element["data-locale"] = value
-
-            if value in self.item_translations:
-                element.add_class("defined_translation")
-                if self._can_delete_translation(value):
-                    element.delete_translation_button = self.create_delete_translation_button(value)
-                    element.append(element.delete_translation_button)
-            else:
-                element.add_class("undefined_translation")
-                element.check.visible = False
-                if self._can_add_translation(value):
-                    element.add_translation_button = self.create_add_translation_button(value)
-                    element.append(element.add_translation_button)
-            ?>        
-        </py:with>
-
-    </py:with>
-
-    <div py:id="defined_translations_filter" py:after="self.search_box">
-        <py:binding>
-            <?py
-            element.label["for"] = element.checkbox.require_id()
-            ?>
-        </py:binding>
-        <input py:local_id="checkbox" type="checkbox"/>
-        <label
-            py:local_id="label" 
-            accesskey="${translations('woost.views.ItemTranslationsSelector.defined_translations_filter.shortcut')}">
-            ${translations("woost.views.ItemTranslationsSelector.defined_translations_filter")}
-        </label>
+    <div
+        py:id="search_controls"
+        py:client_model="woost.views.ItemTranslationsSelector.searchControls">
+        <input
+            py:id="search_box"
+            type="search"/>
     </div>
 
-    <button
-        py:def="add_translation_button" py:args="language"
-        type="submit"
-        name="add_translation"
-        value="${language}">
-        <?py
-        label = translations("woost.views.ItemTranslationsSelector.add_translation_button")
-        ?>
-        <img
-            py:local_id="icon"
-            src="/resources/images/add.png"
-            alt="${label}"
-            title="${label}"/>
-    </button>
+    <div
+        py:id="selection_controls"
+        py:client_model="woost.views.ItemTranslationsSelector.selectionControls">
+        <span py:id="selection_controls_label">
+            ${translations("woost.views.ItemTranslationsSelector.selection_controls_label")}
+        </span>
+        <a
+            py:id="select_all_link"
+            href="javascript:">
+            ${translations("woost.views.ItemTranslationsSelector.select_all_link")}
+        </a>
+        <a
+            py:id="select_none_link"
+            href="javascript:">
+            ${translations("woost.views.ItemTranslationsSelector.select_none_link")}
+        </a>
+    </div>
 
-    <button
-        py:def="delete_translation_button" py:args="language"
-        type="submit"
-        name="delete_translation"
-        value="${language}">
-        <?py
-        label = translations("woost.views.ItemTranslationsSelector.delete_translation_button")
-        ?>
-        <img
-            py:local_id="icon"
-            src="/resources/images/delete.png"
-            alt="${label}"
-            title="${label}"/>
-    </button>
+    <div py:id="defined_languages_section">
+        <div py:local_id="heading">
+            ${translations("woost.views.ItemTranslationsSelector.defined_languages_section.heading")}
+        </div>
+        <div py:local_id="toolbar">
+            <button
+                py:local_id="show_translation_button"
+                type="submit"
+                name="translations_action"
+                value="show"
+                accesskey="${translations('woost.views.ItemTranslationsSelector.show_translation_button.shortcut')}">
+                ${translations("woost.views.ItemTranslationsSelector.show_translation_button")}
+            </button>
+            <button
+                py:local_id="hide_translation_button"
+                type="submit"
+                name="translations_action"
+                value="hide"
+                accesskey="${translations('woost.views.ItemTranslationsSelector.hide_translation_button.shortcut')}">
+                ${translations("woost.views.ItemTranslationsSelector.hide_translation_button")}
+            </button>
+            <button
+                py:local_id="delete_translation_button"
+                type="submit"
+                name="translations_action"
+                value="delete"
+                accesskey="${translations('woost.views.ItemTranslationsSelector.delete_translation_button.shortcut')}">
+                ${translations("woost.views.ItemTranslationsSelector.delete_translation_button")}
+            </button>
+        </div>
+        <py:new
+            py:element="self.create_language_list()"
+            py:name="translations"
+            py:items="@{self.item_translations}">
+            <py:with py:def="entry" py:args="locale, label, selected">
+                <?py
+                if locale in self.visible_translations:
+                    element.add_class("visible_translation")
+                else:
+                    element.add_class("hidden_translation")
+                ?>
+            </py:with>
+        </py:new>
+    </div>
 
-    <button
-        py:id="revert_button"
-        py:client_model="woost.views.ItemTranslationsSelector.revert_button"
-        type="button">
-        <?py
-        label = translations("woost.views.ItemTranslationsSelector.revert_button")
-        ?>
-        <img
-            py:local_id="icon"
-            src="/resources/images/revert.png"
-            alt="${label}"
-            title="${label}"/>
-    </button>
+    <div py:id="available_languages_section">
+        <div py:local_id="heading">
+            ${translations("woost.views.ItemTranslationsSelector.available_languages_section.heading")}
+        </div>
+        <div py:local_id="toolbar">
+            <button
+                py:local_id="add_translation_button"
+                type="submit"
+                accesskey="${translations('woost.views.ItemTranslationsSelector.add_translation_button.shortcut')}">
+                ${translations("woost.views.ItemTranslationsSelector.add_translation_button")}
+            </button>
+        </div>
+        <py:new
+            py:element="self.create_language_list()"
+            py:name="new_translations"
+            py:items="@{[locale for locale in self.available_languages if self._can_add_translation(locale)]}"/>
+    </div>
 
-</py:cocktail.html.SearchableCheckList>
+    <py:cocktail.html.CheckList py:def="language_list" py:exclusive_selection="${True}">
+        <?py
+        @extend(element)
+        def get_item_value(language_list, locale):
+            return locale
+
+        @extend(element)
+        def get_item_label(available_languages_list, locale):
+            return translations("locale", locale = locale)
+        ?>
+    </py:cocktail.html.CheckList>
+
+</div>
 
