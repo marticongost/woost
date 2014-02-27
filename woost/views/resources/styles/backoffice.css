@@ -743,7 +743,7 @@ body.modal {
 
 body.scripted .BackOfficeLayout .Table .row_selection_control {
     position: absolute;
-    left: -1000px;
+    left: -10000px;
 }
 
 .BackOfficeLayout .Table,
@@ -1684,7 +1684,7 @@ body.scripted .BackOfficeLayout .selector:hover .selector_content {
 
 body.scripted .BackOfficeLayout .ThumbnailsContentView .collection_display input[type=checkbox] {
     position: absolute;
-    left: -1000px;
+    left: -10000px;
 }
 
 .BackOfficeLayout .ThumbnailsContentView .collection_display label {
