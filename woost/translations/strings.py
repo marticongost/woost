@@ -1421,39 +1421,94 @@ translations.define(
 # ItemTranslationsSelector
 #------------------------------------------------------------------------------
 translations.define(
+    "woost.views.ItemTranslationsSelector.selection_controls_label",
+    ca = u"Seleccionar:",
+    es = u"Seleccionar:",
+    en = u"Select:"
+)
+
+translations.define(
+    "woost.views.ItemTranslationsSelector.select_all_link",
+    ca = u"Tots",
+    es = u"Todos",
+    en = u"All"
+)
+
+translations.define(
+    "woost.views.ItemTranslationsSelector.select_none_link",
+    ca = u"Cap",
+    es = u"Ninguno",
+    en = u"None"
+)
+
+translations.define(
+    "woost.views.ItemTranslationsSelector.available_languages_section.heading",
+    ca = u"Idiomes disponibles",
+    es = u"Idiomas disponibles",
+    en = u"Available languages"
+)
+
+translations.define(
+    "woost.views.ItemTranslationsSelector.defined_languages_section.heading",
+    ca = u"Traduccions definides",
+    es = u"Traducciones definidas",
+    en = u"Defined translations"
+)
+
+translations.define(
     "woost.views.ItemTranslationsSelector.add_translation_button",
-    ca = u"Afegir la traducció",
-    es = u"Añadir la traducción",
-    en = u"Add this translation"
+    ca = u"Afegir",
+    es = u"Añadir",
+    en = u"Add"
+)
+
+translations.define(
+    "woost.views.ItemTranslationsSelector.add_translation_button.shortcut",
+    ca = u"a",
+    es = u"a",
+    en = u"a"
 )
 
 translations.define(
     "woost.views.ItemTranslationsSelector.delete_translation_button",
-    ca = u"Eliminar la traducció",
-    es = u"Eliminar la traducción",
-    en = u"Delete this translation"
+    ca = u"Eliminar",
+    es = u"Eliminar",
+    en = u"Delete"
 )
 
 translations.define(
-    "woost.views.ItemTranslationsSelector.revert_button",
-    ca = u"Cancelar el canvi",
-    es = u"Cancelar el cambio",
-    en = u"Cancel this change"
+    "woost.views.ItemTranslationsSelector.delete_translation_button.shortcut",
+    ca = u"e",
+    es = u"e",
+    en = u"d"
 )
 
 translations.define(
-    "woost.views.ItemTranslationsSelector.defined_translations_filter",
-    ca = u"Només mostrar traduccions definides",
-    es = u"Mostrar solo traducciones definidas",
-    en = u"Show only defined translations"
+    "woost.views.ItemTranslationsSelector.show_translation_button",
+    ca = u"Mostrar",
+    es = u"Mostrar",
+    en = u"Show"
 )
 
 translations.define(
-    "woost.views.ItemTranslationsSelector.defined_translations_filter"
-    ".shortcut",
+    "woost.views.ItemTranslationsSelector.show_translation_button.shortcut",
+    ca = u"m",
+    es = u"m",
+    en = u"s"
+)
+
+translations.define(
+    "woost.views.ItemTranslationsSelector.hide_translation_button",
+    ca = u"Ocultar",
+    es = u"Ocultar",
+    en = u"Hide"
+)
+
+translations.define(
+    "woost.views.ItemTranslationsSelector.hide_translation_button.shortcut",
     ca = u"o",
     es = u"o",
-    en = u"o"
+    en = u"h"
 )
 
 # Edit form

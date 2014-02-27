@@ -37,10 +37,8 @@ class ItemFieldsController(EditController):
 
         stack_node = self.stack_node
 
-        prev_visible_translations = stack_node.visible_translations
-
         selected_translations = get_parameter(
-            schema.Collection("visible_translations",
+            schema.Collection("translations",
                 items = schema.String(
                     enumeration = stack_node.item_translations
                 ),
@@ -49,8 +47,9 @@ class ItemFieldsController(EditController):
             undefined = "skip"
         )
 
-        if selected_translations is not None:
-            stack_node.visible_translations = selected_translations
+        translations_action = get_parameter(
+            schema.String("translations_action")
+        )
 
         form_data = stack_node.form_data
 
@@ -59,24 +58,16 @@ class ItemFieldsController(EditController):
         )
 
         added_translations = self.params.read(
-            schema.Collection("add_translation",
+            schema.Collection("new_translations",
                 items = schema.String(
                     enumeration = self.available_languages
                 )
             )
         )
 
-        deleted_translations = self.params.read(
-            schema.Collection("delete_translation",
-                items = schema.String(
-                    enumeration = stack_node.item_translations
-                )
-            )
-        )
-
         # Remove translations
-        if deleted_translations:
-            for deleted_translation in deleted_translations:
+        if translations_action == "delete" and selected_translations:
+            for deleted_translation in selected_translations:
                 stack_node.item_translations.discard(deleted_translation)
                 stack_node.visible_translations.discard(deleted_translation)
                 for key, member in self.fields_schema.members().iteritems():
@@ -91,16 +82,24 @@ class ItemFieldsController(EditController):
         get_parameter(
             self.fields_schema,
             target = form_data,
-            languages = prev_visible_translations,
+            languages = stack_node.visible_translations,
             prefix = self.form_prefix,
             errors = "ignore",
             implicit_booleans = not get_method,
             undefined = "skip" if get_method else "set_none"
         )
 
+        # Show / hide translations
+        if selected_translations:
+            vis_trans = stack_node.visible_translations
+            if translations_action == "show":
+                vis_trans.update(selected_translations)
+            elif translations_action == "hide":
+                vis_trans.difference_update(selected_translations)
+
         # Add translations
         if added_translations:
-            
+
             for added_translation in added_translations:
 
                 if added_translation in stack_node.item_translations:
