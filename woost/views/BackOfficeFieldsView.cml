@@ -25,10 +25,6 @@ from woost.models import (
     visible_translations = ()
     ?>
 
-    <?py
-    self.add_resource("/resources/scripts/BackOfficeFieldsView.js")
-    ?>
-
     <py:with py:element="self.item_body">
 
         <!-- Translations dropdown -->
