@@ -235,12 +235,6 @@ translations.define("woost.actions.cancel.shortcut",
     en = u"c"
 )
 
-translations.define("woost.actions.print",
-    ca = u"Imprimir",
-    es = u"Imprimir",
-    en = u"Print"
-)
-
 translations.define("woost.actions.edit_blocks",
     ca = u"Editar blocs",
     es = u"Editar bloques",
