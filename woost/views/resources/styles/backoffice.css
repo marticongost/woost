@@ -177,6 +177,10 @@ body {
     list-style-type: none;
 }
 
+.BackOfficeLayout .no_match {
+    display: none;
+}
+
 /* Tabs */
 .scripted .BackOfficeEditView .ContentForm > .fields > fieldset {
     display: none;
@@ -708,10 +712,6 @@ body.modal {
 
 /* SearchableCheckList
 -----------------------------------------------------------------------------*/
-.SearchableCheckList .no_match {
-    display: none;
-}
-
 .SearchableCheckList .toggle_selection_links {
     margin: 0.5em 0;
 }
