@@ -300,6 +300,12 @@ body {
     vertical-align: baseline !important;
 }
 
+.BackOfficeLayout a[disabled] {
+    opacity: 0.5;
+    text-decoration: none;
+    cursor: default;
+}
+
 .BackOfficeLayout .selector a {
     text-decoration: none;
 }
