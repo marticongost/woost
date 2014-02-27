@@ -63,6 +63,6 @@ cocktail.bind(".BackOfficeEditView", function ($editView) {
 
     /* Focus the first available field
     -------------------------------------------------------------------------*/
-    $editView.find(".field :input:visible:first").focus();
+    $editView.find(".field :input:visible[tabindex!='-1']").first().focus();
 });
 
