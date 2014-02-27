@@ -22,6 +22,7 @@ cocktail.bind(".ContentView", function ($contentView) {
     });
 
     var $searchBox = $contentView.find(".simple_search input[type=search]");
+    this.searchBox = $searchBox.get(0);
 
     // Automatically focus the simple search box
     $searchBox.focus();
@@ -116,30 +117,6 @@ cocktail.bind(".ContentView", function ($contentView) {
     // Reset page value when a new search is done
     $contentView.find(".search_button").click(function () {
         $contentView.find("input[name=page]").val("0");
-    });
-});
-
-jQuery(function () {
-    jQuery(document).keydown(function (e) {
-
-        // Make the '/' key focus the search box
-        if (e.keyCode == 191) {
-
-            // Disabled if the event was triggered by a text input control
-            var tag = e.srcElement.nodeName;
-            if (tag == "TEXTAREA") {
-                return;
-            }
-            else if (tag == "INPUT") {
-                var type = e.srcElement.type;
-                if (type == "text" || type == "search" || type == "email" || type == "tel" || type == "number") {
-                    return;
-                }
-            }
-
-            jQuery(".ContentView .simple_search input[type=search]").focus();
-            return false;
-        }
     });
 });
 
