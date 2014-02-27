@@ -10,13 +10,13 @@ from __future__ import with_statement
 from itertools import chain
 from urllib import urlencode
 import cherrypy
-from cocktail.modeling import getter, cached_getter
+from cocktail.modeling import getter, cached_getter, OrderedSet
 from cocktail.iteration import first
 from cocktail.translations import translations, get_language
 from cocktail.events import event_handler
 from cocktail import schema
 from cocktail.controllers import get_parameter, CookieParameterSource
-from woost.models import Item
+from woost.models import Item, UserView, get_current_user
 from woost.controllers import BaseCMSController
 from woost.controllers.notifications import notify_user
 from woost.controllers.backoffice.useractions import (
@@ -205,6 +205,17 @@ class BaseBackOfficeController(BaseCMSController):
         return action
 
     @cached_getter
+    def user_views(self):
+        
+        user = get_current_user()
+        views = OrderedSet()
+
+        for role in user.iter_roles():
+            views.extend(role.user_views)
+
+        return views
+
+    @cached_getter
     def client_side_scripting(self):
         return get_parameter(schema.Boolean("client_side_scripting"))
 
@@ -216,6 +227,7 @@ class BaseBackOfficeController(BaseCMSController):
             section = self.section,
             edit_stack = self.edit_stack,
             edit_uri = self.edit_uri,
+            user_views = self.user_views,
             client_side_scripting = self.client_side_scripting
         )
         return output
