@@ -695,6 +695,7 @@ body.modal {
     background-color: rgb(250,250,250);
     border-radius: 0;
     padding: 0.7em;
+    overflow: hidden;
 }
 
 .scripted .DropdownPanel-expanded > .button,
