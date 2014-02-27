@@ -2,9 +2,9 @@
 <?py
 from cocktail.schema.expressions import NegativeExpression, TranslationExpression
 from cocktail.html.datadisplay import MULTIPLE_SELECTION
-from woost.models import UserView
 from woost.controllers.backoffice.useractions import \
     add_view_action_context
+from woost.models import UserView
 ?>
 
 <py:woost.views.BackOfficeLayout
@@ -20,18 +20,13 @@ from woost.controllers.backoffice.useractions import \
     content_view = None
     selection_mode = MULTIPLE_SELECTION
     search_expanded = False
-    user_views = ()
     ?>
 
     <?py
     add_view_action_context(self, "content")
     ?>
 
-    <py:woost.views.UserViewsBar
-        py:id="user_views_bar"
-        py:after="self.header"
-        py:user_views="@{self.user_views}">
-    
+    <py:with py:element="self.user_views_bar">
         <a py:id="add_user_view_button" href="@{self.edit_uri(UserView)}">
             <py:ready>
                 <?py
@@ -65,7 +60,7 @@ from woost.controllers.backoffice.useractions import \
             <img src="/resources/images/add_user_view.png"/>
             <span>${translations('woost.views.BackOfficeContentView add user view')}</span>
         </a>
-    </py:woost.views.UserViewsBar>
+    </py:with>
 
     <py:ready>
         <py:with py:element="self.user_collection.content_view"

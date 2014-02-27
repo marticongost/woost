@@ -23,8 +23,7 @@ from cocktail.modeling import (
     getter,
     cached_getter,
     ListWrapper,
-    SetWrapper,
-    OrderedSet
+    SetWrapper
 )
 from cocktail.events import event_handler
 from cocktail.translations import translations
@@ -55,7 +54,6 @@ from woost.models import (
     Configuration,
     Item,
     Role,
-    UserView,
     changeset_context,
     get_current_user,
     PermissionExpression,
@@ -351,18 +349,7 @@ class ContentController(BaseBackOfficeController):
             self.user_collection.user_filters
             or self.params.read(schema.Boolean("search_expanded"))
         )
-
-    @cached_getter
-    def user_views(self):
-        
-        user = get_current_user()
-        views = OrderedSet()
-
-        for role in user.iter_roles():
-            views.extend(role.user_views)
-
-        return views
-
+    
     # Parameter persistence
     #--------------------------------------------------------------------------    
     @cached_getter
@@ -396,8 +383,7 @@ class ContentController(BaseBackOfficeController):
             available_languages = self.available_languages,
             selection_mode = self.selection_mode,
             root_content_type = self.root_content_type,
-            search_expanded = self.search_expanded,
-            user_views = self.user_views            
+            search_expanded = self.search_expanded  
         )
         return output
     

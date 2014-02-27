@@ -365,12 +365,6 @@ translations.define("BackOfficeContentView.class",
     en = u"Type"
 )
 
-translations.define("woost.views.BackOfficeContentView user views",
-    ca = u"Vistes freqüents:",
-    es = u"Vistas frecuentes:",
-    en = u"Bookmarks:"
-)
-
 translations.define("woost.views.BackOfficeContentView add user view",
     ca = u"Crear vista",
     es = u"Crear vista",
