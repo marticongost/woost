@@ -1,20 +1,27 @@
-<?xml version="1.0" encoding="utf-8"?>
-<?py
+#-*- coding: utf-8 -*-
+u"""
+
+.. moduleauthor:: Martí Congost <marti.congost@whads.com>
+"""
 from cocktail import schema
+from cocktail.controllers import request_property
+from woost.controllers.backoffice.useractions import get_user_action
+from woost.controllers.backoffice.editcontroller import EditController
 from woost.models import (
     get_current_user,
     Item, 
     ReadPermission,
     ReadMemberPermission
 )
-?>
 
-<py:cocktail.html.DropdownPanel
-    xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:py="http://www.whads.com/ns/cocktail/templates">
 
-    <?py-class
-    item = None
+class ReferencesController(EditController):
+
+    view_class = "woost.views.BackOfficeReferencesView"
+
+    @request_property
+    def references(self):
+        return list(self._iter_references(self.stack_node.item))
 
     def _iter_references(self, obj):
         for member in obj.__class__.members().itervalues():
@@ -43,40 +50,13 @@ from woost.models import (
             and user.has_permission(ReadPermission, target = referrer)
             and user.has_permission(ReadMemberPermission, member = relation)
         )
-    ?>
 
-    <py:ready>
-        <?py
-        self.references = list(self._iter_references(self.item))
-
-        if not self.references:
-            element.visible = False
-        ?>
-    </py:ready>
-
-    <py:with py:element="self.label">
-        @{translations("woost.views.ReferenceList.summary", count = len(self.references))}
-    </py:with>
-
-    <py:with py:element="self.panel">    
-        <table py:id="references_table">
-            <py:ready>
-                <py:new
-                    py:element="self.create_reference_entry(referrer, relation)"
-                    py:for="referrer, relation in self.references"/>
-            </py:ready>
-        </table>
-    </py:with>
-
-    <tr py:def="reference_entry" py:args="referrer, relation">
-        <td py:local_id="referrer_cell">
-            <py:woost.views.ContentLink
-                py:local_id="referrer"
-                py:icon_visible="${True}"
-                py:item="${referrer}"/>
-        </td>
-        <td py:local_id="relation_cell">${translations(relation)}</td>
-    </tr>
-
-</py:cocktail.html.DropdownPanel>
+    @request_property
+    def output(self):
+        output = EditController.output(self)
+        output.update(
+            selected_action = get_user_action("references"),
+            references = self.references
+        )
+        return output
 

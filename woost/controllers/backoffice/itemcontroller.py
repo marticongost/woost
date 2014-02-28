@@ -30,6 +30,9 @@ from woost.controllers.backoffice.differencescontroller \
 from woost.controllers.backoffice.installationsynccontroller \
     import InstallationSyncController
 
+from woost.controllers.backoffice.referencescontroller \
+    import ReferencesController
+
 
 class ItemController(BaseBackOfficeController):
 
@@ -37,6 +40,7 @@ class ItemController(BaseBackOfficeController):
     
     diff = DifferencesController
     installation_sync = InstallationSyncController
+    references = ReferencesController
 
     @cached_getter
     def preview(self):

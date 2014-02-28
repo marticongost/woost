@@ -3322,25 +3322,45 @@ div.success_label {
 
 /* ReferenceList
 -----------------------------------------------------------------------------*/
-.BackOfficeLayout .ReferenceList .label {
-    font-size: 90%;
-    color: #333;
+.BackOfficeReferencesView .item_body {
+    margin: 1em;
 }
 
-.BackOfficeLayout .ReferenceList .ContentLink {
+.BackOfficeReferencesView .summary {
+    margin-bottom: 1em;
+}
+
+.BackOfficeReferencesView .references_table {
+    border-collapse: collapse;
+}
+
+.BackOfficeReferencesView .references_table .ContentLink {
     text-decoration: none;
-    font-size: 80%;
     white-space: nowrap;
 }
 
-.BackOfficeLayout .ReferenceList .referrer_cell {
+.BackOfficeReferencesView .references_table .referrer_cell {
     padding-right: 2em;
 }
 
-.BackOfficeLayout .ReferenceList .relation_cell {
+.BackOfficeReferencesView .references_table .relation_cell {
     color: #666;
     font-size: 80%;
     white-space: nowrap;
+}
+
+.BackOfficeReferencesView .references_table td,
+.BackOfficeReferencesView .references_table th {
+    text-align: left;
+    padding: 0.4em 0;
+    padding-right: 2em;
+    font-size: 0.9em;
+}
+
+.BackOfficeReferencesView .references_table th {
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 0.2em;
+    color: #333;
 }
 
 /* Content drag & drop

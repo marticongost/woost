@@ -620,6 +620,15 @@ class OpenResourceAction(UserAction):
             return target.url
 
 
+class ReferencesAction(UserAction):
+    included = frozenset([
+        "toolbar_extra",
+        "item_buttons"
+    ])
+    min = 1
+    max = 1
+
+
 class UploadFilesAction(UserAction):
     included = frozenset(["toolbar_extra"])
     content_type = File
@@ -1078,6 +1087,7 @@ DeleteAction("delete").register()
 OrderAction("order").register()
 ExportAction("export_xls", "msexcel").register()
 InvalidateCacheAction("invalidate_cache").register()
+ReferencesAction("references").register()
 OpenResourceAction("open_resource").register()
 CloseAction("close").register()
 CancelAction("cancel").register()
