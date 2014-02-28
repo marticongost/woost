@@ -1287,18 +1287,18 @@ body.scripted .BackOfficeLayout .Table .row_selection_control {
     box-sizing: border-box;
 }
 
-.BackOfficeLayout .CollectionView .collection_settings .DropdownPanel .panel .SearchableCheckList .search_controls {
+.BackOfficeLayout .DropdownPanel .panel .SearchableCheckList .search_controls {
     margin-bottom: 0.5em;
 }
 
-.BackOfficeLayout .CollectionView .collection_settings .DropdownPanel .panel .SearchableCheckList .search_box {
+.BackOfficeLayout .DropdownPanel .panel .SearchableCheckList .search_box {
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
     width: 100%;
 }
 
-.BackOfficeLayout .CollectionView .collection_settings .DropdownPanel .panel .SearchableCheckList .check_list label {
+.BackOfficeLayout .DropdownPanel .panel .SearchableCheckList .check_list label {
     font-size: 0.8em;
 }
 
@@ -1314,11 +1314,11 @@ body.scripted .BackOfficeLayout .Table .row_selection_control {
     display: none;
 }
 
-.BackOfficeLayout .CollectionView .collection_settings .DropdownPanel .panel > .box_buttons {
+.BackOfficeLayout .DropdownPanel .panel .box_buttons {
     margin-top: 0.5em;
 }
 
-.BackOfficeLayout .CollectionView .collection_settings .DropdownPanel .panel > .box_buttons button {
+.BackOfficeLayout .DropdownPanel .panel .box_buttons button {
     margin: 0;
 }
 

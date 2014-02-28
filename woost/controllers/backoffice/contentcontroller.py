@@ -51,14 +51,12 @@ from cocktail.controllers import (
 )
 from cocktail.controllers.userfilter import GlobalSearchFilter
 from woost.models import (
-    Configuration,
     Item,
     Role,
     changeset_context,
     get_current_user,
     PermissionExpression,
-    ReadPermission,
-    ReadTranslationPermission
+    ReadPermission
 )
 from woost.controllers.backoffice.basebackofficecontroller \
     import BaseBackOfficeController
@@ -200,24 +198,6 @@ class ContentController(BaseBackOfficeController):
                     return member.items.type
 
         return None
-        
-    @cached_getter
-    def available_languages(self):
-        """The list of languages that items in the listing can be displayed in.
-
-        Each language is represented using its two letter ISO code.
-
-        @type: sequence of unicode
-        """
-        user = get_current_user()
-        return [
-            language
-            for language in Configuration.instance.languages
-            if user.has_permission(
-                ReadTranslationPermission,
-                language = language
-            )
-        ]
     
     @cached_getter
     def user_collection(self):
@@ -380,7 +360,6 @@ class ContentController(BaseBackOfficeController):
         output = BaseBackOfficeController.output(self)
         output.update(
             user_collection = self.user_collection,
-            available_languages = self.available_languages,
             selection_mode = self.selection_mode,
             root_content_type = self.root_content_type,
             search_expanded = self.search_expanded  
