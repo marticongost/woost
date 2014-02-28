@@ -2107,6 +2107,7 @@ button.TypeSelectorButton span {
 -----------------------------------------------------------------------------*/
 .BackOfficeItemView .translations_dropdown {
     float: right;
+    padding-top: 0.5em;
 }
 
 .BackOfficeItemView .translations_dropdown > .panel_wrapper > .panel {
