@@ -19,7 +19,7 @@ cocktail.bind(".Form .field[data-annotation-target]", function ($field) {
         var $targetFieldInstance = jQuery($targetFieldInstances.get(index));
 
         var $dropdown = jQuery(cocktail.instantiate("woost.extensions.annotations.FormOverlay.annotationDropdown"))
-            .appendTo($targetFieldInstance.find(".field_label, .language").first());
+            .appendTo($targetFieldInstance);
 
         var $textArea = $fieldInstance.find(".control")
             .appendTo($dropdown.find(".panel"));
