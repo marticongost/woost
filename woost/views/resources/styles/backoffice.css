@@ -1913,6 +1913,7 @@ body.scripted .BackOfficeLayout .ThumbnailsContentView .collection_display input
     color: rgb(50,50,50);
 }
 
+.BackOfficeLayout .toolbar .preview_action,
 .BackOfficeLayout .toolbar .save_action,
 .BackOfficeLayout .toolbar .close_action,
 .BackOfficeLayout .toolbar .cancel_action {

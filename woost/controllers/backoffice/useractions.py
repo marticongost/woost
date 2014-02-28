@@ -736,7 +736,7 @@ class SaveAction(UserAction):
     included = frozenset([
         ("item_buttons", "new"),
         ("item_buttons", "edit"),
-        ("item_buttons", "changed")
+        ("item_buttons", "preview")
     ])
     ignores_selection = True
     max = None
@@ -1060,7 +1060,6 @@ MoveAction("move").register()
 AddAction("add").register()
 AddIntegralAction("add_integral").register()
 RemoveAction("remove").register()
-OpenResourceAction("open_resource").register()
 UploadFilesAction("upload_files").register()
 AddBlockAction("add_block").register()
 AddBlockBeforeAction("add_block_before").register()
@@ -1068,7 +1067,6 @@ AddBlockAfterAction("add_block_after").register()
 EditAction("edit").register()
 EditBlocksAction("edit_blocks").register()
 InstallationSyncAction("installation_sync").register()
-PreviewAction("preview").register()
 CopyBlockAction("copy_block").register()
 CutBlockAction("cut_block").register()
 PasteBlockAction("paste_block").register()
@@ -1080,8 +1078,10 @@ DeleteAction("delete").register()
 OrderAction("order").register()
 ExportAction("export_xls", "msexcel").register()
 InvalidateCacheAction("invalidate_cache").register()
+OpenResourceAction("open_resource").register()
 CloseAction("close").register()
 CancelAction("cancel").register()
 SaveAction("save").register()
+PreviewAction("preview").register()
 SelectAction("select").register()
 
