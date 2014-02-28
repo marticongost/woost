@@ -16,7 +16,13 @@ from cocktail.translations import translations, get_language
 from cocktail.events import event_handler
 from cocktail import schema
 from cocktail.controllers import get_parameter, CookieParameterSource
-from woost.models import Item, UserView, get_current_user
+from woost.models import (
+    Configuration,
+    Item,
+    UserView,
+    ReadTranslationPermission,
+    get_current_user
+)
 from woost.controllers import BaseCMSController
 from woost.controllers.notifications import notify_user
 from woost.controllers.backoffice.useractions import (
@@ -37,6 +43,24 @@ class BaseBackOfficeController(BaseCMSController):
     section = None
     settings_duration = 60 * 60 * 24 * 30 # ~= 1 month
     default_rendering_format = "html5"
+
+    @cached_getter
+    def available_languages(self):
+        """The list of languages that items in the listing can be displayed in.
+
+        Each language is represented using its two letter ISO code.
+
+        @type: sequence of unicode
+        """
+        user = get_current_user()
+        return [
+            language
+            for language in Configuration.instance.languages
+            if user.has_permission(
+                ReadTranslationPermission,
+                language = language
+            )
+        ]
 
     @cached_getter
     def visible_languages(self):
@@ -228,6 +252,8 @@ class BaseBackOfficeController(BaseCMSController):
             edit_stack = self.edit_stack,
             edit_uri = self.edit_uri,
             user_views = self.user_views,
+            available_languages = self.available_languages,
+            visible_languages = self.visible_languages,
             client_side_scripting = self.client_side_scripting
         )
         return output

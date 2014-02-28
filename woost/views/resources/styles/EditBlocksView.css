@@ -1,4 +1,14 @@
 
+.EditBlocksView .languages_dropdown {
+    float: right;
+    padding-top: 0.5em;
+}
+
+.EditBlocksView .languages_dropdown > .panel_wrapper > .panel {
+    left: auto;
+    right: 0;
+}
+
 .EditBlocksView .EditBlocksSlotList .slot_header {
     font-size: 0.8em;
     color: #444;
@@ -151,6 +161,7 @@
     border: 1px solid #aaa;
     border-radius: 0.3em;
     padding: 0.4em;
+    padding-top: 0.3em;
     background-color: #ddd;
     box-shadow: 0 2px 3px #ccc;
     -moz-user-select: none;
@@ -202,6 +213,10 @@
 
 .EditBlocksView .BlockDisplay .block_handle > .button > .label > * {
     vertical-align: middle;
+}
+
+.EditBlocksView .BlockDisplay .block_handle > .panel_wrapper > .panel {
+    padding: 0;
 }
 
 .EditBlocksView .BlockDisplay .slot_header {
@@ -281,17 +296,20 @@
     border-spacing: 0.5em;
 }
 
+.EditBlocksView .TextBlockDisplay .text_preview {
+    margin: -0.3em;
+}
+
 .EditBlocksView .TextBlockDisplay .translation_preview {
     display: table-cell;
     vertical-align: top;
-    padding: 0.5em;
+    padding: 0.3em;
     border: 1px solid #bbb;
     border-radius: 0.3em;
     background-color: #e8e8e8;
 }
 
 .EditBlocksView .TextBlockDisplay .translation_content {
-    min-height: 3.5em;
     max-height: 12em;
     min-width: 15em;
     overflow: auto;

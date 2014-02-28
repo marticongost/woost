@@ -19,6 +19,7 @@ from woost.controllers.backoffice.useractions import (
     block_parent = None
     block_slot = None
     edited_item = None
+    visible_languages = ()
 
     def add_status(self, status):
         self.add_class(status + "_block")
@@ -111,7 +112,8 @@ from woost.controllers.backoffice.useractions import (
         py:id="slots_list"
         py:item="@{self.block}"
         py:edited_item="@{self.edited_item}"
-        py:foldable="${True}"/>
+        py:foldable="${True}"
+        py:visible_languages="@{self.visible_languages}"/>
 
 </div>
 

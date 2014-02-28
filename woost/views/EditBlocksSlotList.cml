@@ -16,6 +16,7 @@ from woost.models import (
     item = None
     edited_item = None
     foldable = False
+    visible_languages = ()
 
     def iter_block_members(self):
 
@@ -78,6 +79,7 @@ from woost.models import (
                 py:block_parent="${self.item}"
                 py:block_slot="${member}"
                 py:edited_item="${self.edited_item}"
+                py:visible_languages="${self.visible_languages}"
                 py:for="block in blocks"/>
 
             <py:woost.views.EditBlocksActionBar
