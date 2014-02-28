@@ -4997,9 +4997,9 @@ translations.define("woost.backoffice invalid item preview",
 
 translations.define(
     "woost.views.BackOfficePreviewView.language_dropdown_label",
-    ca = u"Idioma de previsualització:",
-    es = u"Idioma de previsualización:",
-    en = u"Preview language:"
+    ca = u"Idioma:",
+    es = u"Idioma:",
+    en = u"Language:"
 )
 
 translations.define(

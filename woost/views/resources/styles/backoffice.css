@@ -3161,6 +3161,7 @@ a.pickcolor span {
 
 .BackOfficePreviewView .preview_language_selector {
     padding-top: 0.5em;
+    float: right;
 }
 
 .BackOfficePreviewView .language_dropdown_label {
@@ -3171,6 +3172,8 @@ a.pickcolor span {
 
 .BackOfficePreviewView .language_dropdown > .panel_wrapper > .panel {
     min-width: 10em;
+    left: auto;
+    right: 0;
 }
 
 .BackOfficePreviewView .language_dropdown .entry + .entry {
