@@ -689,6 +689,11 @@ body.modal {
     margin-right: 1em;
 }
 
+
+.BackOfficeEditView .ContentForm .RichTextEditor {
+    display: inline-block;
+}
+
 /* DropdownPanel
 -----------------------------------------------------------------------------*/
 .scripted .DropdownPanel > .panel_wrapper > .panel {
@@ -3554,17 +3559,19 @@ div.success_label {
 -----------------------------------------------------------------------------*/
 .BackOfficeLayout .Form .annotation_dropdown {
     position: relative;
-    left: 0.5em;
+    left: -1.9em;
     top: 0.3em;
 }
 
 .BackOfficeLayout .Form .annotation_dropdown > .button .icon {
-    opacity: 0.3;
-    margin: 0.1em 0.3em;
+    -webkit-filter: grayscale(100%);
+    filter: grayscale(100%);
+    margin: 0.1em 0.2em;
 }
 
 .BackOfficeLayout .Form .field_instance.with_annotation .annotation_dropdown > .button .icon {
-    opacity: 1;
+    -webkit-filter: none;
+    filter: none;
 }
 
 .BackOfficeLayout .Form .annotation_dropdown .dropdown_arrow {
@@ -3572,7 +3579,22 @@ div.success_label {
 }
 
 .BackOfficeLayout .Form .annotation_dropdown textarea {
-    width: 30em;
-    height: 22em;
+    width: 100%;
+    height: 16em;
+}
+
+.BackOfficeLayout .Form .annotation_dropdown > .panel_wrapper > .panel {
+    left: -15em;
+    right: -0.8em;
+}
+
+.BackOfficeLayout .Form .field_instance-RichTextEditor .annotation_dropdown {
+    left: -2.6em;
+    top: -0.2em;
+}
+
+.BackOfficeLayout .Form .field_instance-RichTextEditor .annotation_dropdown > .panel_wrapper > .panel {
+    left: -26em;
+    right: -1.4em;
 }
 
