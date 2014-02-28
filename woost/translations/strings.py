@@ -169,6 +169,18 @@ translations.define("woost.actions.open_resource.shortcut",
     en = u"b"
 )
 
+translations.define("woost.actions.references",
+    ca = u"Referències",
+    es = u"Referencias",
+    en = u"References"
+)
+
+translations.define("woost.actions.references.shortcut",
+    ca = u"f",
+    es = u"f",
+    en = u"f"
+)
+
 translations.define("woost.actions.upload_files",
     ca = u"Importar fitxers",
     es = u"Importar ficheros",
@@ -5862,24 +5874,36 @@ translations.define("woost.views.BackOfficeItemHeading.item_path.conjunction",
     en = u"in"
 )
 
-# ReferenceList
+# BackOfficeReferencesView
 #------------------------------------------------------------------------------
-translations.define("woost.views.ReferenceList.summary",
+translations.define("woost.views.BackOfficeReferencesView.summary",
     ca = lambda count:
-        u"Referenciat per <strong>%d</strong> %s" % (
+        u"Referenciat per <strong>%d</strong> %s:" % (
             count,
             plural2(count, u"element", u"elements")
         ),
     es = lambda count:
-        u"Referenciado por <strong>%d</strong> %s" % (
+        u"Referenciado por <strong>%d</strong> %s:" % (
             count,
             plural2(count, u"elemento", u"elementos")
         ),
     en = lambda count:
-        u"Referenced by <strong>%d</strong> %s" % (
+        u"Referenced by <strong>%d</strong> %s:" % (
             count,
             plural2(count, u"element", u"elements")
         )
+)
+
+translations.define("woost.views.BackOfficeReferencesView.referrer_heading",
+    ca = u"Element relacionat",
+    es = u"Elemento relacionado",
+    en = u"Referrer"
+)
+
+translations.define("woost.views.BackOfficeReferencesView.relation_heading",
+    ca = u"Relació",
+    es = u"Relación",
+    en = u"Relation"
 )
 
 # VideoPlayerSettings
