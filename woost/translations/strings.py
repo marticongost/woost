@@ -5878,19 +5878,31 @@ translations.define("woost.views.BackOfficeItemHeading.item_path.conjunction",
 #------------------------------------------------------------------------------
 translations.define("woost.views.BackOfficeReferencesView.summary",
     ca = lambda count:
-        u"Referenciat per <strong>%d</strong> %s:" % (
-            count,
-            plural2(count, u"element", u"elements")
+        u"Aquest element no és referenciat per cap altre element."
+        if not count
+        else (
+            u"Referenciat per <strong>%d</strong> %s:" % (
+                count,
+                plural2(count, u"element", u"elements")
+            )
         ),
     es = lambda count:
-        u"Referenciado por <strong>%d</strong> %s:" % (
-            count,
-            plural2(count, u"elemento", u"elementos")
+        u"Este elemento no está referenciado por ningún otro elemento."
+        if not count
+        else (
+            u"Referenciado por <strong>%d</strong> %s:" % (
+                count,
+                plural2(count, u"elemento", u"elementos")
+            )
         ),
     en = lambda count:
-        u"Referenced by <strong>%d</strong> %s:" % (
-            count,
-            plural2(count, u"element", u"elements")
+        u"This element is not referenced by any other element."
+        if not count
+        else (
+            u"Referenced by <strong>%d</strong> %s:" % (
+                count,
+                plural2(count, u"element", u"elements")
+            )
         )
 )
 
