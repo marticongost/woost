@@ -60,7 +60,7 @@ from woost.controllers.backoffice.useractions import (
             action_button.action_image = self.create_action_image(action, extra)
             label.append(action_button.action_image)
 
-        label.append(translations("woost.actions." + action.id))
+        label.append(translations(action))
         label["accesskey"] = translations("woost.actions." + action.id + ".shortcut")
         return action_button
     ?>
