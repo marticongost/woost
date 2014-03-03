@@ -207,7 +207,7 @@ class UserAction(object):
         self._id = id
 
     def __translate__(self, language, **kwargs):
-        return translations("Action " + self.id, **kwargs)
+        return translations("woost.actions." + self.id, language, **kwargs)
 
     @getter
     def id(self):
