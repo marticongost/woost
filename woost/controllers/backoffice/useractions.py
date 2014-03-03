@@ -29,6 +29,8 @@ from woost.models import (
     File,
     Block,
     get_current_user,
+    ReadPermission,
+    ReadMemberPermission,
     CreatePermission,
     ModifyPermission,
     DeletePermission,
@@ -627,6 +629,64 @@ class ReferencesAction(UserAction):
     ])
     min = 1
     max = 1
+
+    def __translate__(self, language, **kwargs):
+        label = UserAction.__translate__(self, language, **kwargs)
+        if self.stack_node is not None:
+            label += " (%d)" % len(self.references)
+        return label
+
+    @request_property
+    def stack_node(self):
+        edit_stacks_manager = \
+            controller_context.get("edit_stacks_manager")                
+        if edit_stacks_manager:
+            edit_stack = edit_stacks_manager.current_edit_stack
+            if edit_stack:
+                return edit_stack[-1]
+
+    @request_property
+    def references(self):
+        stack_node = self.stack_node
+
+        if not stack_node:
+            references = []
+        else:
+            references = list(self._iter_references(self.stack_node.item))
+            references.sort(
+                key = lambda ref:
+                    (translations(ref[0]), translations(ref[1]))
+            )
+
+        return references
+
+    def _iter_references(self, obj):
+        for member in obj.__class__.members().itervalues():
+            if (
+                isinstance(member, schema.RelationMember) 
+                and member.related_end
+                and member.related_end.visible_in_reference_list
+                and issubclass(member.related_type, Item)
+                and member.related_type.visible
+                and not member.integral
+            ):
+                value = obj.get(member)
+                if value:
+                    if isinstance(member, schema.Reference):
+                        if self._should_include_reference(value, member.related_end):
+                            yield value, member.related_end
+                    elif isinstance(member, schema.Collection):
+                        for item in value:
+                            if self._should_include_reference(item, member.related_end):
+                                yield item, member.related_end
+    
+    def _should_include_reference(self, referrer, relation):
+        user = get_current_user()
+        return (
+            relation.visible
+            and user.has_permission(ReadPermission, target = referrer)
+            and user.has_permission(ReadMemberPermission, member = relation)
+        )
 
 
 class UploadFilesAction(UserAction):
