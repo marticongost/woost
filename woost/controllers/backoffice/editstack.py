@@ -522,7 +522,8 @@ class EditNode(StackNode):
         "tab"
     ])
     _item = None
-    translations = None
+    item_translations = None
+    visible_translations = None
     section = "fields"
     tab = None
 
