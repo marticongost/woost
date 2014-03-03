@@ -614,22 +614,22 @@ body.modal {
     padding-bottom: 0.2em;
 }
 
-.BackOfficeLayout .Form .language {
+.BackOfficeLayout .Form .field_language {
     color: rgb(75,75,75);
     font-style: italic;
     font-size: 75%;
 }
 
-.BackOfficeLayout .Form.redundant_translation_labels .language {
+.BackOfficeLayout .Form.redundant_translation_labels .field_language {
     margin-left: 0.5em;
 }
 
-.BackOfficeLayout .Form.grouped_translation_labels .language {
+.BackOfficeLayout .Form.grouped_translation_labels .field_language {
     display: block;
     margin-bottom: 0.3em;
 }
 
-.BackOfficeLayout .Form.grouped_translation_labels .field_instance-CheckBox .language {
+.BackOfficeLayout .Form.grouped_translation_labels .field_instance-CheckBox .field_language {
     display: inline-block;
 }
 
