@@ -57,14 +57,22 @@ from woost.models import (
                 py:id="edit_form"
                 py:embeded="${True}"
                 py:tag="div"
-                py:data="@{self.form_data}"
-                py:persistent_object="@{self.edited_item}"
-                py:schema="@{self.fields_schema}"
-                py:errors="@{self.submitted and self.errors}"
-                py:translations="@{[lang for lang in Configuration.instance.languages if lang in self.visible_translations]}"
-                py:edited_content_type="@{self.edited_content_type}"
+                py:data="${self.form_data}"
+                py:persistent_object="${self.edited_item}"
+                py:schema="${self.fields_schema}"
+                py:errors="${self.submitted and self.errors}"
+                py:edited_content_type="${self.edited_content_type}"
                 py:name_prefix="edited_item_"
                 method="post">
+
+                <?py
+                if self.visible_translations is not None:
+                    element.translations = [
+                        lang
+                        for lang in Configuration.instance.languages
+                        if lang in self.visible_translations
+                    ]
+                ?>
 
                 <!-- Highlight changed members -->
                 <py:with py:def="field_instance" py:args="member, language = None" py:baseargs="member, language">
