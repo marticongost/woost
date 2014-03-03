@@ -12,7 +12,7 @@
         <div py:id="summary">
             @{translations("woost.views.BackOfficeReferencesView.summary", count = len(self.references))}
         </div>
-        <table py:id="references_table">
+        <table py:id="references_table" py:visible="@{len(self.references)}">
             <thead py:id="references_table_head">
                 <tr py:id="references_table_head_row">
                     <th py:id="referrer_heading">
