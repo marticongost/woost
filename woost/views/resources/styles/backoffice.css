@@ -3327,7 +3327,8 @@ div.success_label {
 }
 
 .BackOfficeReferencesView .summary {
-    margin-bottom: 1em;
+    margin-top: 2em;
+    margin-bottom: 1.5em;
 }
 
 .BackOfficeReferencesView .references_table {
