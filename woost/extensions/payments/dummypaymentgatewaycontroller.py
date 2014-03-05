@@ -26,19 +26,19 @@ class DummyPaymentGatewayController(PaymentGatewayController):
             raise cherrypy.NotFound()
 
         # Notify the payment to the application
-        notification_url = payment.get_payment_url(
+        notification_url = self.payment_gateway.get_payment_url(
             "notification",
             payment_id = str(payment.id)
         )
-        urlopen(str(notification_uri))
+        urlopen(str(notification_url))
 
         # Redirect the user after the transaction's over
         redirection = None
 
-        if gateway.payment_status == "accepted":
-            redirection = gateway.payment_successful_page
-        elif gateway.payment_status == "failed":
-            redirection = gateway.payment_failed_page
+        if self.payment_gateway.payment_status == "accepted":
+            redirection = self.payment_gateway.payment_successful_page
+        elif self.payment_gateway.payment_status == "failed":
+            redirection = self.payment_gateway.payment_failed_page
             
         if redirection is None:
             redirection = get_current_website().home
