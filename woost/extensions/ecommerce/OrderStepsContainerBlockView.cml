@@ -75,6 +75,10 @@ from woost.extensions.ecommerce.utils import catalog_current_state_uri
         ?>
         ${translations(page)}
     </li>
+
+    <py:woost.views.NotificationBox 
+        py:id="notification_box"
+        py:filter="${lambda notification: notification[1] != 'product_added'}"/>
     
     <py:woost.views.BlockList
         py:id="step_content"
