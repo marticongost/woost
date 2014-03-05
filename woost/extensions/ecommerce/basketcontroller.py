@@ -93,6 +93,7 @@ class BasketController(FormProcessor, Controller):
         """A form that removes a product from the shopping basket."""
 
         actions = "delete_purchase",
+        deleted_product = None
 
         @request_property
         def model(self):
@@ -107,17 +108,16 @@ class BasketController(FormProcessor, Controller):
         def submit(self):
             Form.submit(self)
             purchase = self.instance["purchase"]
-            product = purchase.product
+            self.deleted_product = purchase.product
             purchase.delete()
             Basket.store()
 
         def after_submit(self):
             purchase = self.instance["purchase"]
-            product = purchase.product
             notify_user(
                 translations(
                     "woost.extensions.ecommerce.delete_purchase_notice",
-                    product = product
+                    product = self.deleted_product
                 ),
                 category = "success"
             )
