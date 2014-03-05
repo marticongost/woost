@@ -11,25 +11,21 @@ from cocktail.modeling import extend, call_base
 from cocktail.translations import translations
 from cocktail import schema
 from cocktail.controllers import (
-    get_parameter,
+    Controller,
     request_property,
     FormProcessor,
     Form,
     Location
 )
-from woost.models import Publishable
-from woost.controllers.documentcontroller import DocumentController
 from woost.controllers.notifications import notify_user
-from woost.extensions.ecommerce.ecommerceproduct import ECommerceProduct
 from woost.extensions.ecommerce.ecommercepurchase import ECommercePurchase
 from woost.extensions.ecommerce.basket import Basket
 from woost.extensions.ecommerce.orderstepcontroller import (
-    ProceedForm,
-    BackForm
+    ProceedForm
 )
 
 
-class BasketController(FormProcessor, DocumentController):
+class BasketController(FormProcessor, Controller):
 
     @request_property
     def action(self):
@@ -79,6 +75,8 @@ class BasketController(FormProcessor, DocumentController):
                 purchase.quantity = quantity
 
             Basket.store()
+
+        def after_submit(self):
             notify_user(
                 translations("woost.extensions.ecommerce."
                              "set_quantities_notice"),
@@ -90,9 +88,6 @@ class BasketController(FormProcessor, DocumentController):
     
     class NextStepForm(ProceedForm):
         process_after = "set_quantities_form",
-
-    class PreviousStepForm(BackForm):
-        pass
 
     class DeletePurchaseForm(Form):
         """A form that removes a product from the shopping basket."""
@@ -115,6 +110,10 @@ class BasketController(FormProcessor, DocumentController):
             product = purchase.product
             purchase.delete()
             Basket.store()
+
+        def after_submit(self):
+            purchase = self.instance["purchase"]
+            product = purchase.product
             notify_user(
                 translations(
                     "woost.extensions.ecommerce.delete_purchase_notice",
@@ -131,6 +130,8 @@ class BasketController(FormProcessor, DocumentController):
 
         def submit(self):
             Basket.empty()
+
+        def after_submit(self):
             notify_user(
                 translations("woost.extensions.ecommerce."
                              "empty_basket_notice"),
