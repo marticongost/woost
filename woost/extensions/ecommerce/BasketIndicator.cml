@@ -14,7 +14,7 @@ from woost.extensions.ecommerce.basket import Basket
     ?>
     
     <?py
-    self.add_resource("/resources/styles/ecommerce-BasketIndicator.css")
+    self.add_resource("/ecommerce_state", mime_type = "text/javascript")
     self.add_resource("/resources/scripts/ecommerce-BasketIndicator.js")
     ?>
 
@@ -35,18 +35,7 @@ from woost.extensions.ecommerce.basket import Basket
         ?>
     </py:ready>
 
-    <span py:id="count_label">
-        <py:ready>
-            <?py
-            if self.visible:
-                element.append(
-                    translations(
-                        "woost.extensions.ecommerce.BasketIndicator",
-                        count = self.order.count_units()
-                    )
-                )
-            ?>
-        </py:ready>
-    </span>    
+    <span py:id="count_label" py:client_model="woost.extensions.ecommerce.BasketIndicator.count_label"/>
+
 </a>
 
