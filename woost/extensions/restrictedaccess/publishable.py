@@ -15,6 +15,7 @@ Publishable.add_member(
                "AccessRestriction",
         bidirectional = True,
         indexed = True,
+        listed_by_default = False,
         edit_control = display_factory(
             "cocktail.html.RadioSelector",
             empty_option_displayed = True
