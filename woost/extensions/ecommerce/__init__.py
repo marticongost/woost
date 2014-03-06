@@ -32,10 +32,6 @@ from woost.models import (
 from woost.models.rendering import ImageFactory, Thumbnail
 from woost.models.triggerresponse import SendEmailTriggerResponse
 from woost.controllers import CMSController
-from woost.extensions.ecommerce.basket import Basket
-from woost.extensions.ecommerce.ecommerceproductlisting import ECommerceProductListing
-from woost.extensions.ecommerce.orderstepscontainerblock import \
-    OrderStepsContainerBlock
 
 translations.define("ECommerceExtension",
     ca = u"Comerç online",
@@ -98,8 +94,11 @@ class ECommerceExtension(Extension):
 
     def _setup_ecommerce_state(self):
 
+        from woost.extensions.ecommerce.basket import Basket
+
         @cherrypy.expose
         def ecommerce_state(self):
+
             cherrypy.response.headers["Content-Type"] = "text/javascript"
             order = Basket.get(create_new = False)
             if order:
@@ -213,6 +212,8 @@ class ECommerceExtension(Extension):
         events.insert(pos + 2, commit_order_payment)
 
     def _install(self):
+
+        from woost.extensions.ecommerce.ecommerceproductlisting import ECommerceProductListing
 
         website = Configuration.instance.websites[0]
         
@@ -435,6 +436,9 @@ edit_url = bo.get_uri(host = ".", path = ["content", str(order.id)])
         document,
         key
     ):
+        from woost.extensions.ecommerce.orderstepscontainerblock import \
+        OrderStepsContainerBlock
+
         order_steps = OrderStepsContainerBlock()
         block = CustomBlock()
         block.qname = "woost.extensions.ecommerce.%s_block" % key
