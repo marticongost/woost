@@ -10,7 +10,7 @@ from .slot import Slot
 
 def type_is_block_container(cls):
 
-    for member in cls.members(recursive = False).itervalues():
+    for member in cls.members().itervalues():
         if (
             isinstance(member, schema.RelationMember)
             and member.related_type
