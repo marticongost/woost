@@ -819,3 +819,17 @@ def remove_publication_schemes(e):
     except AttributeError:
         pass
 
+#------------------------------------------------------------------------------
+
+step = MigrationStep("Support per language publication in blocks")
+
+@when(step.executing)
+def remove_publication_schemes(e):
+
+    from woost.models import Block
+
+    for block in Block.select():
+        block.per_language_publication = False
+        for language in block.translations:
+            block.set("translation_enabled", True, language)
+

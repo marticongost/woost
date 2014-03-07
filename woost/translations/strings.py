@@ -6212,10 +6212,22 @@ translations.define("Block.inline_css_styles",
     en = u"Inline CSS styles"
 )
 
+translations.define("Block.per_language_publication",
+    ca = u"Publicació per idiomes",
+    es = u"Publicación por idiomas",
+    en = u"Per language publication"
+)
+
 translations.define("Block.enabled",
     ca = u"Actiu",
     es = u"Activo",
     en = u"Active"
+)
+
+translations.define("Block.translation_enabled",
+    ca = u"Traducció activa",
+    es = u"Traducción activa",
+    en = u"Translation is enabled"
 )
 
 translations.define("Block.start_date",
