@@ -7290,8 +7290,8 @@ translations.define("FacebookLikeButton.fb_ref",
 # FacebookLikeBox
 #------------------------------------------------------------------------------
 translations.define("FacebookLikeBox",
-    ca = u'Caixa de "M\'agrada" per pàgines de Facebook',
-    es = u'Caja de "Me gusta" para páginas de Facebook',
+    ca = u'Caixa de "M\'agrada" de Facebook',
+    es = u'Caja de "Me gusta" de Facebook',
     en = u"Facebook Like Box"
 )
 
