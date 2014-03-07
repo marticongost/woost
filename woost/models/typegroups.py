@@ -5,6 +5,8 @@ u"""
 """
 from cocktail.translations import translations
 
+_undefined = object()
+
 
 class TypeGroup(object):
 
@@ -43,6 +45,30 @@ class TypeGroup(object):
 
         self.__children.insert(position, child)
 
+    def pop(self, child_id, default = _undefined):
+        child = None
+
+        for index, existing_child in enumerate(self.__children):
+            if existing_child.id == child_id:
+                child = existing_child
+                break
+
+        if child is not None:
+            del self.__children[index]
+            return child
+
+        if default != _undefined:
+            return default
+
+        raise KeyError("Unknown type group: " + child_id)
+
+
+    def remove(self, child):
+        if isinstance(child, basestring):
+            self.pop(child)
+        else:
+            self.__children.remove(child)
+
     def __iter__(self):
         return iter(self.__children)
 
@@ -63,6 +89,9 @@ class TypeGroup(object):
                 return child
         
         raise KeyError("Unknown type group: " + child_id)
+
+    def __delitem__(self, child):
+        self.remove(child)
 
 type_groups = TypeGroup("global", [
     TypeGroup("publishable", [
