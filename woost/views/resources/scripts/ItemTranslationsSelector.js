@@ -61,6 +61,7 @@ cocktail.bind(".ItemTranslationsSelector", function ($selector) {
         }
 
         $selector.on("searched", toggleSelectionLinks);
+        $selector.on("dropdownExpanded", toggleSelectionLinks);
         $checkList.on("selectionChanged", toggleSelectionLinks);        
 
         $checkList.on("keydown", ".entry", function (e) {
@@ -84,5 +85,11 @@ cocktail.bind(".ItemTranslationsSelector", function ($selector) {
 
     cocktail.searchable(this);
     this.applySearch($searchControls.find(".search_box").val());
+});
+
+cocktail.bind(".DropdownPanel", function ($dropdown) {
+    $dropdown.on("expanded", function () {
+        jQuery(this).find(".ItemTranslationsSelector").trigger("dropdownExpanded");
+    });
 });
 
