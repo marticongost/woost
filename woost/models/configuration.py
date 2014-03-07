@@ -149,6 +149,7 @@ class Configuration(Item):
     maintenance_addresses = schema.Collection(
         items = schema.String(),
         listed_by_default = False,
+        searchable = False,
         member_group = "publication.maintenance"
     )
 
@@ -160,6 +161,7 @@ class Configuration(Item):
         ),
         min = 1,
         listed_by_default = False,
+        searchable = False,
         member_group = "language"
     )
     
@@ -168,6 +170,7 @@ class Configuration(Item):
             enumeration = languages,
             edit_control = "cocktail.html.TextBox"
         ),
+        searchable = False,
         listed_by_default = False,
         member_group = "language"
     )
@@ -178,6 +181,7 @@ class Configuration(Item):
         edit_control = "cocktail.html.TextBox",
         text_search = False,
         listed_by_default = False,
+        searchable = False,
         member_group = "language"
     )
 
@@ -198,6 +202,7 @@ class Configuration(Item):
         ),
         request_value_separator = "\n",
         edit_control = "cocktail.html.TextArea",
+        searchable = False,
         member_group = "language"
     )
 
