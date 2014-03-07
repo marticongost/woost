@@ -19,6 +19,7 @@ class Block(Item):
 
     instantiable = False
     visible_from_root = False
+    edit_view = "woost.views.BlockFieldsView"
     type_group = "blocks.content"
     type_groups_order = [
         "blocks.content",
@@ -42,7 +43,9 @@ class Block(Item):
     members_order = [
         "heading",
         "heading_type",
+        "per_language_publication",
         "enabled",
+        "translation_enabled",
         "start_date",
         "end_date",
         "controller",
@@ -76,9 +79,22 @@ class Block(Item):
         member_group = "content"
     )
 
+    per_language_publication = schema.Boolean(
+        required = True,
+        default = False,
+        member_group = "behavior"
+    )
+
     enabled = schema.Boolean(
         required = True,
         default = True,
+        member_group = "behavior"
+    )
+
+    translation_enabled = schema.Boolean(
+        required = True,
+        default = True,
+        translated = True,
         member_group = "behavior"
     )
 
@@ -236,7 +252,10 @@ class Block(Item):
             if self.end_date and now >= self.end_date:
                 return False
 
-        return self.enabled
+        if self.per_language_publication:
+            return self.translation_enabled
+        else:
+            return self.enabled
 
     def get_member_copy_mode(self, member):
         
