@@ -834,7 +834,7 @@ class EditNode(StackNode):
         """
         return self.form_schema.get_errors(
             self.form_data,
-            languages = self.translations,
+            languages = self.item_translations,
             persistent_object = self.item
         )
 
