@@ -16,12 +16,12 @@ from woost.extensions.ecommerce.basket import Basket
     
     order_schema = schema.Schema("Basket", members = [
         schema.Reference("product", type = ECommerceProduct),
-        schema.Member("actions"),
         schema.Integer("quantity"),
         schema.Decimal("price"),
         schema.Decimal("subtotal"),
         schema.Decimal("taxes"),
-        schema.Decimal("total")
+        schema.Decimal("total"),
+        schema.Member("actions")
     ])
     currency = u"€"
     editable = False
