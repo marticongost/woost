@@ -19,9 +19,12 @@ from woost.models import (
     name = "visible_translations"
 
     def _can_add_translation(self, language):
-        return get_current_user().has_permission(
-            CreateTranslationPermission,
-            language = language
+        return (
+            get_current_user().has_permission(
+                CreateTranslationPermission,
+                language = language
+            )
+            and language not in self.visible_translations
         )
 
     def _ready(self):
