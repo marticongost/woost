@@ -11,66 +11,24 @@ from cocktail.html.selectable import selectable
     <?py-class
     content_view_id = "thumbnails"
     allow_grouping = False
-    row_width = 5
     ?>
 
-    <py:with py:element="self.settings_box" py:visible="${False}"/>
+    <py:with py:element="self.languages_dropdown" py:visible="${False}"/>
+    <py:with py:element="self.members_dropdown" py:visible="${False}"/>
 
     <py:cocktail.html.CheckList py:def="collection_display"
-        py:tag="table"
         py:items="@{self.user_collection.page_subset}"
         py:value="@{self.user_collection.selection}"
-        py:name="selection">
-
-        <py:ready>
-            <?py
-            selectable(element, mode = self.user_collection.selection_mode)
-            ?>
-        </py:ready>
-
-        <?py
-        @extend(element)
-        def _fill_entries(check_list):
-
-            i = 0
-            row = None
-
-            for item in check_list.items:
-
-                if i % self.row_width == 0:
-                    row = Element("tr")
-                    check_list.append(row)
-                
-                i += 1
-
-                value = check_list.get_item_value(item)
-                label = check_list.get_item_label(item)
-                entry = check_list.create_entry(
-                    value,
-                    label,
-                    check_list._is_selected(value)
-                )
-                cell = Element("td")
-                cell.append(entry)
-                row.append(cell)
-        ?>
+        py:name="selection"
+        py:exclusive_selection="${True}">
 
         <py:with py:def="entry" py:args="value, label, selected">
-            <?py
-            element.add_class("entry")
-            ?>
-            <div class="icon_frame">
+            <div py:local_id="icon_frame" py:index="0">
                 <?py
                 image_uri = self.cms.image_uri(value, "backoffice_thumbnail.png")
                 ?>
                 <img class="icon" src="${image_uri}"/>
-            </div>
-            <div class="label">
-                <?py
-                element.append(entry.check)
-                element.append(entry.label)
-                ?>
-            </div>
+            </div>            
         </py:with>
     </py:cocktail.html.CheckList>
 

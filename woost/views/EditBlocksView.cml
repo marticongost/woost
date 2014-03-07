@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <?py
+from cocktail.controllers.viewstate import view_state_form
 from woost.models import Block
 ?>
 
@@ -9,6 +10,8 @@ from woost.models import Block
 
     <?py-class
     edited_item = None
+    available_languages = ()
+    visible_languages = ()
     ?>
 
     <?py
@@ -22,10 +25,40 @@ from woost.models import Block
             method="POST"
             py:action_context="edit_blocks_toolbar"
             py:action_target="@{self.edited_item}"/>
+
+        <!-- Visible languages -->
+        <py:cocktail.html.DropdownPanel py:id="languages_dropdown">
+            <py:with
+                py:element="element.label"
+                accesskey="${translations('cocktail.html.CollectionView.languages_dropdown.shortcut')}">
+                ${translations("cocktail.html.CollectionView.languages_dropdown")}
+            </py:with>
+            <py:with py:element="element.panel">
+                <form method="GET">
+                    ${view_state_form(language = None)}
+                    <py:cocktail.html.SearchableCheckList
+                        py:id="languages_selector"
+                        py:name="language"
+                        py:items="@{self.available_languages}"
+                        py:value="@{self.visible_languages}">
+                        <?py
+                        @extend(element.check_list)
+                        def get_item_label(languages_selector, item):
+                            return translations("locale", locale = item)
+                        ?>
+                    </py:cocktail.html.SearchableCheckList>
+                    <div py:local_id="box_buttons">
+                        <button py:local_id="apply_button" type="submit">${translations("Submit")}</button>
+                    </div>
+                </form>
+            </py:with>
+        </py:cocktail.html.DropdownPanel>
+
         <py:woost.views.EditBlocksSlotList 
             py:id="item_slots"
             py:item="@{self.edited_item}"
-            py:edited_item="@{self.edited_item}"/>
+            py:edited_item="@{self.edited_item}"
+            py:visible_languages="@{self.visible_languages}"/>
     </py:with>
 
 </py:woost.views.BackOfficeLayout>

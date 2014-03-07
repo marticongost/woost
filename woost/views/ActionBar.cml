@@ -2,7 +2,6 @@
 
 <?py
 from itertools import chain
-from cocktail.html.shortcuts import set_translated_shortcut
 from cocktail.controllers import context
 from woost.controllers.backoffice.useractions import (
     get_view_actions, get_view_actions_context, add_view_action_context
@@ -32,49 +31,43 @@ from woost.controllers.backoffice.useractions import (
             or not action.min 
             or action.ignores_selection
         ]
+
+    def create_action_button(self, action, extra):
+
+        panel = action.get_dropdown_panel(self.action_target)
+        
+        if panel:
+            action_button = loader.new("cocktail.html.DropdownPanel")
+            label = action_button.label
+        else:
+            action_button = label = Element()
+        
+            if action.direct_link:
+                action_button.tag = "a"
+                action_button["href"] = action.get_url(context["cms"], None)
+                action_button["target"] = action.link_target
+            else:
+                action_button.tag = "button"
+                action_button["type"] = "submit"
+                action_button["name"] = self.action_parameter
+                action_button["value"] = action.id
+                action_button["formtarget"] = action.link_target
+
+        action_button.add_class("action_button")
+        action_button.add_class(action.id + "_action")
+
+        if self.button_images and not extra:
+            action_button.action_image = self.create_action_image(action, extra)
+            label.append(action_button.action_image)
+
+        label.append(translations(action))
+        label["accesskey"] = translations("woost.actions." + action.id + ".shortcut")
+        return action_button
     ?>
 
     <?py
     self.add_resource("/resources/scripts/ActionBar.js")
     ?>
-
-    <py:cocktail.html.Element
-        py:def="action_button"
-        py:args="action, extra"        
-        class="${action.id}_action">
-        <?py
-        panel = action.get_dropdown_panel(self.action_target)
-        
-        if panel:
-            element.add_class("selector")
-            label = Element("span", class_name = "label")
-            element.append(label)
-        else:
-            label = element
-        
-            if action.direct_link:
-                element.tag = "a"
-                element["href"] = action.get_url(context["cms"], None)
-                element["target"] = action.link_target
-            else:
-                element.tag = "button"
-                element["type"] = "submit"
-                element["name"] = self.action_parameter
-                element["value"] = action.id
-                element["formtarget"] = action.link_target
-
-        set_translated_shortcut(label, "action " + action.id)
-        ?>
-        <py:with py:element="label">
-            <py:new
-                py:element="self.create_action_image(action, extra)"
-                py:if="self.button_images and not extra"/>
-            ${translations("Action " + action.id)}
-        </py:with>
-        <py:new py:element="panel" py:if="panel">
-            <?py element.add_class("selector_content") ?>
-        </py:new>
-    </py:cocktail.html.Element>
 
     <img
         py:def="action_image"

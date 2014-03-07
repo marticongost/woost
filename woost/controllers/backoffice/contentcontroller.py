@@ -23,8 +23,7 @@ from cocktail.modeling import (
     getter,
     cached_getter,
     ListWrapper,
-    SetWrapper,
-    OrderedSet
+    SetWrapper
 )
 from cocktail.events import event_handler
 from cocktail.translations import translations
@@ -52,15 +51,12 @@ from cocktail.controllers import (
 )
 from cocktail.controllers.userfilter import GlobalSearchFilter
 from woost.models import (
-    Configuration,
     Item,
     Role,
-    UserView,
     changeset_context,
     get_current_user,
     PermissionExpression,
-    ReadPermission,
-    ReadTranslationPermission
+    ReadPermission
 )
 from woost.controllers.backoffice.basebackofficecontroller \
     import BaseBackOfficeController
@@ -202,24 +198,6 @@ class ContentController(BaseBackOfficeController):
                     return member.items.type
 
         return None
-        
-    @cached_getter
-    def available_languages(self):
-        """The list of languages that items in the listing can be displayed in.
-
-        Each language is represented using its two letter ISO code.
-
-        @type: sequence of unicode
-        """
-        user = get_current_user()
-        return [
-            language
-            for language in Configuration.instance.languages
-            if user.has_permission(
-                ReadTranslationPermission,
-                language = language
-            )
-        ]
     
     @cached_getter
     def user_collection(self):
@@ -351,18 +329,7 @@ class ContentController(BaseBackOfficeController):
             self.user_collection.user_filters
             or self.params.read(schema.Boolean("search_expanded"))
         )
-
-    @cached_getter
-    def user_views(self):
-        
-        user = get_current_user()
-        views = OrderedSet()
-
-        for role in user.iter_roles():
-            views.extend(role.user_views)
-
-        return views
-
+    
     # Parameter persistence
     #--------------------------------------------------------------------------    
     @cached_getter
@@ -393,11 +360,9 @@ class ContentController(BaseBackOfficeController):
         output = BaseBackOfficeController.output(self)
         output.update(
             user_collection = self.user_collection,
-            available_languages = self.available_languages,
             selection_mode = self.selection_mode,
             root_content_type = self.root_content_type,
-            search_expanded = self.search_expanded,
-            user_views = self.user_views            
+            search_expanded = self.search_expanded  
         )
         return output
     

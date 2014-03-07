@@ -64,26 +64,6 @@ body {
     color: inherit;
 }
 
-.BackOfficeLayout .header .ui_language_selector {
-    float: right;
-    font-size: 0.7em;
-    margin-top: 0.4em;
-    margin-right: 3em;
-}
-
-.BackOfficeLayout .header .ui_language_selector .label {
-    padding-right: 1.5em;
-    background-position: center right;    
-}
-
-.BackOfficeLayout .header .ui_language_selector .selector_content {
-    top: 1.4em;
-}
-
-.BackOfficeLayout .header .ui_language_selector .selector_content div + div {
-    margin-top: 0.4em;
-}
-
 .BackOfficeLayout .identity {
     position: absolute;
     bottom: 1em;
@@ -157,7 +137,6 @@ body {
 .BackOfficeLayout .user_views_bar .add_user_view_button,
 .BackOfficeLayout .advanced_search,
 .BackOfficeEditView .discard_button,
-.BackOfficeLayout .new_filter_selector .label,
 .BackOfficeFieldsView .ItemSelector-button {
     font-size: inherit;
     background: none;
@@ -198,12 +177,8 @@ body {
     list-style-type: none;
 }
 
-.BackOfficeLayout .members_selector {
-    font-size: 0.9em;
-}
-
-.BackOfficeLayout .members_selector .group_label {
-    color: rgb(75,75,75);
+.BackOfficeLayout .no_match {
+    display: none;
 }
 
 /* Tabs */
@@ -299,6 +274,7 @@ body {
 .BackOfficeLayout input[type=url],
 .BackOfficeLayout input[type=email],
 .BackOfficeLayout input[type=number],
+.BackOfficeLayout input[type=search],
 .BackOfficeLayout input[type=tel],
 .BackOfficeLayout textarea,
 .BackOfficeLayout .CodeMirror-wrapping {
@@ -306,6 +282,11 @@ body {
     padding: 0.2em;
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
+}
+
+.BackOfficeLayout input[type=search] {
+    padding-left: 1.6em !important;
+    background: white url(../images/search_box.png) 0.3em center no-repeat;
 }
 
 .BackOfficeLayout .CodeMirror-wrapping {
@@ -320,6 +301,13 @@ body {
 
 .BackOfficeLayout .shortcut {
     text-decoration: underline;
+    vertical-align: baseline !important;
+}
+
+.BackOfficeLayout a[disabled] {
+    opacity: 0.5;
+    text-decoration: none;
+    cursor: default;
 }
 
 .BackOfficeLayout .selector a {
@@ -345,7 +333,7 @@ body {
 
 .BackOfficeLayout .CheckList .group,
 .BackOfficeLayout .RadioSelector .group {
-    margin-top: 0.8em;
+    margin-bottom: 0.8em;
 }
 
 .BackOfficeLayout .MemberList .content_type > .label {
@@ -626,11 +614,23 @@ body.modal {
     padding-bottom: 0.2em;
 }
 
-.BackOfficeLayout .Form label .language {
+.BackOfficeLayout .Form .field_language {
     color: rgb(75,75,75);
     font-style: italic;
     font-size: 75%;
+}
+
+.BackOfficeLayout .Form.redundant_translation_labels .field_language {
     margin-left: 0.5em;
+}
+
+.BackOfficeLayout .Form.grouped_translation_labels .field_language {
+    display: block;
+    margin-bottom: 0.3em;
+}
+
+.BackOfficeLayout .Form.grouped_translation_labels .field_instance-CheckBox .field_language {
+    display: inline-block;
 }
 
 .BackOfficeLayout .Form .required_mark {
@@ -689,16 +689,66 @@ body.modal {
     margin-right: 1em;
 }
 
+
+.BackOfficeEditView .ContentForm .RichTextEditor {
+    display: inline-block;
+}
+
+/* DropdownPanel
+-----------------------------------------------------------------------------*/
+.scripted .DropdownPanel > .panel_wrapper > .panel {
+    -moz-box-shadow: 3px 3px 7px #bbb;
+    -webkit-box-shadow: 3px 3px 7px #bbb;
+    box-shadow: 3px 3px 7px #bbb;
+    border: 1px solid rgb(190,200,210);
+    background-color: rgb(250,250,250);
+    border-radius: 0;
+    padding: 0.7em;
+    overflow: hidden;
+}
+
+.scripted .DropdownPanel-expanded > .button,
+.scripted .DropdownPanel-expanded > .button:hover {
+    border: 1px solid rgb(190,200,210);
+    border-radius: 0;
+    border-bottom-color: rgb(250,250,250);
+    background-color: rgb(250,250,250);
+}
+
+/* SearchableCheckList
+-----------------------------------------------------------------------------*/
+.SearchableCheckList .toggle_selection_links {
+    margin: 0.5em 0;
+}
+
+.SearchableCheckList .toggle_selection_links a {
+    font-size: 0.8em;
+}
+
+.SearchableCheckList .toggle_selection_links a[disabled] {
+    opacity: 0.5;
+    text-decoration: none;
+}
+
+.SearchableCheckList .toggle_selection_links .empty_selection_link {
+    margin-left: 0.4em;
+}
+
+.BackOfficeLayout .SearchableCheckList.search_enabled .check_list {
+    max-height: 24.8em;
+    overflow: auto;
+    padding: 0.5em;
+    padding-right: 1em;
+    border: 1px solid #ddd;
+    background-color: white;
+}
+
 /* Tables
 -----------------------------------------------------------------------------*/
 
-body.scripted .BackOfficeLayout .Table .selection {
-    display: none;
-}
-
-.BackOfficeLayout .Table .target_focus {
+body.scripted .BackOfficeLayout .Table .row_selection_control {
     position: absolute;
-    left: -1000px;
+    left: -10000px;
 }
 
 .BackOfficeLayout .Table,
@@ -755,32 +805,42 @@ body.scripted .BackOfficeLayout .Table .selection {
     display: inline-block;
 }
 
-.BackOfficeLayout .ContentTable th .selector > .label {
+.BackOfficeLayout .ContentTable th .column_dropdown > .button > .label {
     background-position: right 0.5em;
     white-space: nowrap;
 }
 
-.BackOfficeLayout .ContentTable th .selector_content > div + div {
-    margin-top: 1.2em;
+.BackOfficeLayout .ContentTable th.last .column_dropdown > .panel_wrapper > .panel {
+    left: auto;
+    right: 0;
 }
 
-.BackOfficeLayout .ContentTable th .selector_content > div > a + a {
+.BackOfficeLayout .ContentTable th .column_panel {
+    min-width: 19em;
+}
+
+.BackOfficeLayout .ContentTable th .column_panel > div + div {
+    margin-top: 1em;
+}
+
+.BackOfficeLayout .ContentTable th .column_panel .options_header {
+    margin-bottom: 0.6em;
+    padding-bottom: 0.2em;    
+    font-size: 0.9em;
+    font-weight: bold;
+    color: #555;
+    border-bottom: 1px dotted #ccc;    
+}
+
+.BackOfficeLayout .ContentTable th .column_panel > div > a + a {
     margin-top: 0.4em;
 }
 
-.BackOfficeLayout .ContentTable th .selector_content > div > a {
+.BackOfficeLayout .ContentTable th .column_panel > div > a {
     display: block;
     background-repeat: no-repeat;
     background-position: 0 -2px;
     padding-left: 18px;
-}
-
-.BackOfficeLayout .ContentTable th .selector_content {
-    top: 1.4em;
-    font-size: 85%;
-    padding-right: 1em;
-    padding-top: 1em;
-    min-width: 12em;
 }
 
 .BackOfficeLayout .ContentTable .sorting_options a.selected {
@@ -959,16 +1019,17 @@ body.scripted .BackOfficeLayout .Table .selection {
     text-decoration: underline;
 }
 
-.BackOfficeLayout .Table th .selector_content {
-    min-width: 19em;
-}
-
 .BackOfficeLayout .Table th.sorted span.label {
     font-weight: bold;
 }
 
 .BackOfficeLayout .Table tr.selected td {
-    background-color: rgb(75,75,75) !important;
+    background-color: #777 !important;
+}
+
+
+.BackOfficeLayout .Table.focused tr.selected td {
+    background-color: #4b4b4b !important;
 }
 
 .BackOfficeLayout .Table tr.selected td,
@@ -985,6 +1046,7 @@ body.scripted .BackOfficeLayout .Table .selection {
     font-size: 1em;
     font-weight: normal;
     line-height: 1.2em;
+    margin-left: 0.5em;
 }
 
 .BackOfficeItemView h2 .item_icon {
@@ -1018,15 +1080,8 @@ body.scripted .BackOfficeLayout .Table .selection {
 
 .BackOfficeItemView h2 .item_references {
     margin-top: 0.3em;
-    margin-left: -3px;
-}
-
-.BackOfficeItemView h2 .item_references .button {
-    padding-top: 0;
-}
-
-.BackOfficeItemView h2 .item_references .button .label {
-/*    color: #666;*/
+    margin-left: -4px;
+    display: block;
 }
 
 .BackOfficeItemView h2 .item_references .panel_wrapper .panel {
@@ -1040,7 +1095,7 @@ body.scripted .BackOfficeLayout .Table .selection {
 }
 
 .BackOfficeLayout .changed {
-    border: 1px solid #EBE3AF;
+    outline: 1px solid #EBE3AF;
 }
 
 .BackOfficeLayout .Table td.element_column label {
@@ -1057,12 +1112,6 @@ body.scripted .BackOfficeLayout .Table .selection {
     margin-bottom: 0.75em;
 }
 
-.BackOfficeLayout .selection_controls {
-    clear: both;
-    margin-right: 1.4em;
-}
-
-.BackOfficeLayout .selection_controls,
 .BackOfficeLayout .expansion_controls {
     float: left;
     padding-left: 0.6em;
@@ -1070,7 +1119,6 @@ body.scripted .BackOfficeLayout .Table .selection {
     font-size: 75%;
 }
 
-.BackOfficeLayout .selection_controls *,
 .BackOfficeLayout .expansion_controls * {
     padding-right: 1em;
     text-decoration: none;
@@ -1095,43 +1143,42 @@ body.scripted .BackOfficeLayout .Table .selection {
     left: -100px;
 }
 
+.BackOfficeLayout .TranslationDisplay.inherited_translation {
+    opacity: 0.6;
+}
+
 /* Toolbar
 -----------------------------------------------------------------------------*/
 
-.BackOfficeLayout .toolbar {
-    height: 1.8em;
-    padding-top: 0.2em;
-    margin-bottom: 0.5em;
-}
-
 .BackOfficeLayout .data_controls {
-    overflow: hidden;
-    width: 100%;
-    margin-top: 0.3em;
+    padding-top: 0.6em;
+    float: right;
 }
 
 .BackOfficeLayout .toolbar,
 .BackOfficeLayout .toolbar_box {
 	clear: both;
-    margin-top: 1.5em;
+    margin-top: 1em;
 	background-color: #f2f0eb;
 	border: 1px solid #dcd9d0;
 }
 
-.BackOfficeLayout .FlatContentView .toolbar_box,
-.BackOfficeLayout .TreeContentView .toolbar_box {
-    border-bottom: none;
+.BackOfficeLayout .toolbar_box {
+    height: 2.2em;
+}
+
+.BackOfficeLayout .toolbar {    
+    height: 1.8em;
+    padding: 0.2em 0.6em;
 }
 
 .BackOfficeLayout .toolbar_box .toolbar {
-    padding: 0;
-    margin: 0 0.6em;
+    float: left;
+    margin: 0;
     border: none;
     background-color: transparent;
-}
-
-.BackOfficeLayout .toolbar {
-    padding: 0 0.4em;
+    height: auto;
+    padding: 0.2em;
 }
 
 .BackOfficeLayout .toolbar .action_button,
@@ -1145,7 +1192,12 @@ body.scripted .BackOfficeLayout .Table .selection {
 
 .BackOfficeLayout .toolbar * + .action_button,
 .BackOfficeLayout .toolbar * + .additional_actions_selector {
-    margin-left: 1em;
+    margin-left: 1.5em;
+}
+
+.BackOfficeLayout .toolbar .DropdownPanel + .action_button,
+.BackOfficeLayout .toolbar .DropdownPanel + .additional_actions_selector {
+    margin-left: 0.7em;
 }
 
 .BackOfficeLayout .toolbar .additional_actions_selector .action_button {
@@ -1178,28 +1230,15 @@ body.scripted .BackOfficeLayout .Table .selection {
 
 .BackOfficeLayout .toolbar .action_button img {
 	vertical-align: middle;
+    margin-right: 0.3em;
 }
 
 .BackOfficeLayout .toolbar .new_toolbar_button {
     font-size: 100%;
 }
 
-.BackOfficeLayout .toolbar .new_toolbar_button > .label {
+.BackOfficeLayout .toolbar .new_toolbar_button > .button > .label {
     font-size: 85%;
-}
-
-.BackOfficeLayout .toolbar .new_toolbar_button > .label > .shortcut {
-    vertical-align: top;
-}
-
-.BackOfficeLayout .toolbar .new_toolbar_button .selector_content {
-    top: 1.8em;
-}
-
-.BackOfficeLayout .toolbar .content_view,
-.BackOfficeLayout .toolbar .languages_box,
-.BackOfficeLayout .toolbar .members_box {
-    float: right;
 }
 
 .BackOfficeLayout .toolbar .additional_actions_selector .selector_content {
@@ -1221,87 +1260,104 @@ body.scripted .BackOfficeLayout .Table .selection {
     display: inline;
 }
 
-.BackOfficeLayout .settings_box .members_box input,
-.BackOfficeLayout .settings_box .members_box label {
-    vertical-align: top;
+/* Collection settings
+-----------------------------------------------------------------------------*/
+.BackOfficeLayout .CollectionView .collection_settings {
+    white-space: nowrap;
 }
 
-.BackOfficeLayout .settings_box .members_box .group_label,
-.BackOfficeLayout .settings_box .members_box label {
-    max-width: 20em;
-    white-space: normal;
-}
-
-.BackOfficeLayout .settings_box .members_box label {
+.BackOfficeLayout .CollectionView .collection_settings > * {
     display: inline-block;
-    padding-top: 0.5em;
+    vertical-align: middle;
+}
+
+.BackOfficeLayout .CollectionView .collection_settings > * + * {
+    margin-left: 1.5em !important;
+}
+
+.BackOfficeLayout .CollectionView .collection_settings .DropdownPanel > .button > .label {
+    font-size: 1em;
+    vertical-align: middle;
+    height: 18px;
+}
+
+.BackOfficeLayout .CollectionView .collection_settings .DropdownPanel .panel {
+    text-align: left;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+.BackOfficeLayout .DropdownPanel .panel .SearchableCheckList .search_controls {
+    margin-bottom: 0.5em;
+}
+
+.BackOfficeLayout .DropdownPanel .panel .SearchableCheckList .search_box {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    width: 100%;
+}
+
+.BackOfficeLayout .DropdownPanel .panel .SearchableCheckList .check_list label {
+    font-size: 0.8em;
+}
+
+.BackOfficeLayout .CollectionView .collection_settings .members_dropdown .check_list .group_label {
+    font-size: 0.8em;
+    color: #555;
+    border-bottom: 1px dotted #ccc;
+    padding-bottom: 0.2em;
+    margin-bottom: 0.2em;
+}
+
+.BackOfficeLayout .CollectionView .collection_settings .members_dropdown .check_list .group:first-child .group_label {
+    display: none;
+}
+
+.BackOfficeLayout .DropdownPanel .panel .box_buttons {
+    margin-top: 0.5em;
+}
+
+.BackOfficeLayout .DropdownPanel .panel .box_buttons button {
+    margin: 0;
+}
+
+.BackOfficeLayout .CollectionView .collection_display_container {
+    clear: both;
+    position: relative;
+    overflow: visible;
+    min-width: 100%;
+    display: inline-block;
 }
 
 /* Content type selector
 -----------------------------------------------------------------------------*/
-.BackOfficeLayout .content_type_box {
-    margin-top: 0.15em;
-    float: left;
-}
-
-.BackOfficeLayout .content_type_box > .label,
-.BackOfficeLayout .content_type_selector > .label {
+.BackOfficeLayout .content_type_selector > .button > .label {
     font-size: 85%;
 }
 
-.BackOfficeLayout .content_type_box > .label {
-    float: left;
-    padding: 0.15em 0;
-    margin-right: 0.6em;
-    font-weight: bold;
-    position: relative;
-}
-
-.BackOfficeLayout .content_type_selector > .label {
-    font-weight: normal !important;
-}
-
-.BackOfficeLayout .content_type_selector {
-    float: left;
-}
-
-.BackOfficeLayout .content_type_box > .content_type_selector {
-    margin-left: 0.05em;
-}
-
-.BackOfficeLayout .content_type_box > .content_type_selector > .label {
-    padding: 0.2em;
-    padding-right: 1.3em;
-    top: -0.2em;
-    background-position: right 0.9em; 
-}
-
-/* Content view selector
+/* Content view dropdown
 -----------------------------------------------------------------------------*/
-.BackOfficeLayout .content_view {
-    float: right;
-    white-space: nowrap;
-    text-align: right;
-    font-size: 85%;
-    margin-top: 0.3em;
+.BackOfficeLayout .collection_settings .content_view_list {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
 }
 
-.BackOfficeLayout .content_view * {
-    display: inline;
-    float: none;
+.BackOfficeLayout .collection_settings .content_view_entry {
+    display: block;
+    padding: 0.3em 0;
 }
 
-.BackOfficeLayout .content_view img {
-    vertical-align: middle;
+.BackOfficeLayout .collection_settings .content_view_entry a {
+    font-size: 0.8em;
+    text-decoration: none;
+    color: #333;
 }
 
-.BackOfficeLayout .content_view_selector div {
-    padding: 0.2em 0.3em;
-}
-
-.BackOfficeLayout .content_view_selector > div.selected {
-    border: 1px solid rgb(220,225,232);
-    background-color: rgb(235,240,247);
+.BackOfficeLayout .collection_settings .content_view_entry.selected a {
+    font-weight: bold;
 }
 
 /* Dropdown selector
@@ -1364,18 +1420,6 @@ body.scripted .BackOfficeLayout .selector:hover .selector_content {
     display: none;
 }
 
-/* Visible members dropdown
------------------------------------------------------------------------------*/
-.BackOfficeLayout .members_box .CheckList {
-    margin-bottom: 0.4em;
-}
-
-/* Content languages dropdown
------------------------------------------------------------------------------*/
-.BackOfficeLayout .languages_box .CheckList {
-    margin-bottom: 0.4em;
-}
-
 /* Link selectors
 -----------------------------------------------------------------------------*/
 .BackOfficeLayout .LinkSelector .selected {
@@ -1409,7 +1453,6 @@ body.scripted .BackOfficeLayout .selector:hover .selector_content {
 }
 
 .BackOfficeLayout .ContentTypeTree .icon,
-.BackOfficeLayout .ContentTypeSelector .icon,
 .BackOfficeLayout .ItemLabel .icon {
     position: relative;
     top: -0.1em;
@@ -1419,28 +1462,12 @@ body.scripted .BackOfficeLayout .selector:hover .selector_content {
 
 /* Content type selector
 -----------------------------------------------------------------------------*/
-.BackOfficeLayout .content_type_box,
-.BackOfficeLayout .content_view {
-    margin-bottom: 1.5em;
-}
-
-.BackOfficeLayout .ContentTypeSelector {
-    margin-left: -0.5em;    
-}
-
-.BackOfficeLayout .ContentTypeSelector > .label {
+.BackOfficeLayout .ContentTypeSelector > .button > .label {
     display: inline-block;
 }
 
-.BackOfficeLayout .ContentTypeSelector > .label > * {
+.BackOfficeLayout .ContentTypeSelector > .button > .label > * {
     vertical-align: middle;
-}
-
-.BackOfficeLayout .ContentTypeSelector .selector_content {
-    top: 1.4em;
-    z-index: 3;
-	margin-top: -1px;
-    padding: 1em;
 }
 
 .BackOfficeLayout .ContentTypeSelector .palette > .palette_group > .nested_groups {
@@ -1606,7 +1633,6 @@ body.scripted .BackOfficeLayout .selector:hover .selector_content {
 }
 
 .BackOfficeLayout .no_results {
-    margin-top: 2em;
     border: 1px dotted rgb(200,160,120);
     padding: 0.5em;
 }
@@ -1643,59 +1669,40 @@ body.scripted .BackOfficeLayout .selector:hover .selector_content {
 /* Thumbnails content view
 -----------------------------------------------------------------------------*/
 .BackOfficeLayout .ThumbnailsContentView .collection_display {
-    width: 100%;
     padding-bottom: 0.5em;
-}
-
-.BackOfficeLayout .ThumbnailsContentView .collection_display td {
-    vertical-align: top;
+    border: 1px solid #d6d6d6;
+    background-color: #fcfcfc;
 }
 
 .BackOfficeLayout .ThumbnailsContentView .collection_display .entry {
-    display: block;
-    margin: 0.5em;
-    width: 10em;
+    display: inline-block;
+    vertical-align: bottom;
+    margin: 1em;
     text-align: center;
-}
-
-.BackOfficeLayout .ThumbnailsContentView .entry.selected {
-    /*background-color: rgb(75,75,75);
-    border: 1px solid rgb(75,75,75);
-    color: white;
-    -moz-border-radius: 5px;*/
 }
 
 body.scripted .BackOfficeLayout .ThumbnailsContentView .collection_display input[type=checkbox] {
-    display: none;
-}
-
-.BackOfficeLayout .ThumbnailsContentView .collection_display .icon_frame {
-    height: 6em;
-    width: 10em;
-    text-align: center;
-    display: table-cell;
-    vertical-align: bottom;
-}
-
-.BackOfficeLayout .ThumbnailsContentView .collection_display .label {
-    display: block;
-    text-align: center;
-    margin-top: 0.2em;
-    padding: 0.2em;
+    position: absolute;
+    left: -10000px;
 }
 
 .BackOfficeLayout .ThumbnailsContentView .collection_display label {
+    display: inline-block;
+    margin-top: 0.5em;
+    padding: 0.2em 0.5em;
     white-space: normal;
     font-size: 85%;
-    margin: 0;
-    padding: 0;
 }
 
-.BackOfficeLayout .ThumbnailsContentView .collection_display .selected .label {
-    background-color: rgb(75,75,75);
+.BackOfficeLayout .ThumbnailsContentView .collection_display .selected label {
+    background-color: #777;
     color: white;
     -moz-border-radius: 5px;
     -webkit-border-radius: 5px;
+}
+
+.BackOfficeLayout .ThumbnailsContentView .collection_display.focused .selected label {
+    background-color: #4b4b4b;
 }
 
 /* Changelog
@@ -1810,8 +1817,7 @@ body.scripted .BackOfficeLayout .ThumbnailsContentView .collection_display input
     border: 1px dotted rgb(200,160,120);
     background-color: rgb(245,230,215);
     padding: 0.5em;
-    margin: 0;
-    margin-bottom: 1em;
+    margin: 1em 0;
 }
 
 .preview-error-box {
@@ -1908,6 +1914,7 @@ body.scripted .BackOfficeLayout .ThumbnailsContentView .collection_display input
     color: rgb(50,50,50);
 }
 
+.BackOfficeLayout .toolbar .preview_action,
 .BackOfficeLayout .toolbar .save_action,
 .BackOfficeLayout .toolbar .close_action,
 .BackOfficeLayout .toolbar .cancel_action {
@@ -1956,71 +1963,6 @@ body.scripted .BackOfficeLayout .ThumbnailsContentView .collection_display input
     height: 2em;
     padding-top: 0.3em;
     padding-right: 0.3em;
-}
-
-.BackOfficeItemView .translations_selector {
-    font-size: 85%;
-    float: right;
-}
-
-.BackOfficeItemView .translations_selector .label {
-    height: 1.9em;
-    padding-top: 0.4em;
-    padding-left: 0.5em !important;
-    background-position: right 0.8em;
-    display: block;
-}
-
-.BackOfficeEditView .translations_selector .selector_content,
-.BackOfficePreviewView .translations_selector .selector_content {
-    list-style-type: none;
-    padding-right: 0.1;
-    right: 0;
-	top:2.4em;
-}
-
-.BackOfficePreviewView .translations_selector .selector_content {
-	min-width: inherit;
-    padding-left: .9em !important;
-}
-
-.BackOfficeEditView .translations_selector .selector_content li,
-.BackOfficePreviewView .translations_selector .selector_content li {
-    clear: both;
-    margin: 0;
-    padding: 0;
-}
-
-.BackOfficeEditView .translations_selector .language,
-.BackOfficePreviewView .translations_selector .language {
-    float: left;
-    height: 2em;
-}
-
-.BackOfficeEditView .translations_selector button {
-    float: right;
-    margin: 0;
-    padding: 0;
-    cursor: pointer;
-    border: none;
-    background: none;
-}
-
-body.scripted .BackOfficeEditView .translations_selector .selector_content,
-body.scripted .BackOfficePreviewView .translations_selector .selector_content {
-    list-style-type: none;
-    padding-right: 0.1;
-}
-
-body.scripted .BackOfficeEditView .translations_selector .selector_content li,
-body.scripted .BackOfficePreviewView .translations_selector .selector_content li{
-    clear: both;
-    margin: 0;
-    padding: 0;
-}
-
-body.scripted .BackOfficeEditView .translations_selector .selector_content li input {
-    float: left;
 }
 
 .BackOfficeLayout .ItemSelector {
@@ -2113,13 +2055,8 @@ button.TypeSelectorButton span {
     margin-top: 0.3em;
 }
 
-.BackOfficeItemView .edit_form_frame,
 .BackOfficeEditView .edit_form {
-    padding: 1em;
-}
-
-.BackOfficeEditView .edit_form_frame {
-    padding: 0;
+    padding-top: 0.8em;
 }
 
 .BackOfficeFieldsView .ContentView {
@@ -2160,6 +2097,126 @@ button.TypeSelectorButton span {
 .BackOfficeLayout .autocomplete_dropdown div:hover {
 	background-color: Highlight;
 	color: HighlightText;
+}
+
+/* ItemTranslationsSelector
+-----------------------------------------------------------------------------*/
+.BackOfficeItemView .translations_dropdown {
+    float: right;
+    padding-top: 0.5em;
+}
+
+.BackOfficeItemView .translations_dropdown > .panel_wrapper > .panel {
+    left: auto;
+    right: 0;
+}
+
+.ItemTranslationsSelector {
+    display: inline-block;
+    white-space: nowrap;
+}
+
+.ItemTranslationsSelector .search_controls {
+    margin-bottom: 0.5em;
+}
+
+.ItemTranslationsSelector .search_box {
+    width: 12em;
+}
+
+.ItemTranslationsSelector .available_languages_section,
+.ItemTranslationsSelector .defined_languages_section {
+    display: inline-block;
+    width: 18em;
+}
+
+.ItemTranslationsSelector .available_languages_section {
+    margin-left: 0.3em;
+}
+
+.ItemTranslationsSelector .available_languages_section > .heading,
+.ItemTranslationsSelector .defined_languages_section > .heading {
+    font-weight: bold;
+    font-size: 0.9em;
+    color: white;
+    background-color: #605f5d;
+    border: 1px solid #5f5742;
+    padding: 0.2em 0.8em;
+}
+
+.ItemTranslationsSelector .toolbar {
+    margin-top: 0;
+    margin-bottom: -1px;
+    height: auto;
+}
+
+.ItemTranslationsSelector .toolbar button {
+    padding: 0;
+    border: none;
+    box-shadow: none;
+    background-image: none;
+    background-color: transparent;
+    cursor: pointer;
+    font-size: 0.8em;
+}
+
+.ItemTranslationsSelector .toolbar button + button {
+    margin-left: 1em;
+}
+
+.ItemTranslationsSelector .language_list {
+    height: 20em;
+    overflow: auto;
+    border: 1px solid #e5e5e5;
+    background-color: white;
+}
+
+.ItemTranslationsSelector .language_list .entry label {
+    display: block;
+    margin: 0 !important;
+    padding: 0.3em 0.8em;
+    font-size: 0.9em;
+    color: #333;
+}
+
+.ItemTranslationsSelector .available_languages_section .language_list .entry label {
+     color: #777;
+}
+
+.ItemTranslationsSelector .language_list .entry.visible_translation label {
+    font-weight: bold;
+}
+
+.ItemTranslationsSelector .language_list .entry input[type=checkbox] {
+    position: absolute;
+    left: -10000px;
+}
+
+.ItemTranslationsSelector .language_list .entry.selected {
+    background-color: #aba2a2;
+}
+
+.ItemTranslationsSelector .language_list.focused .entry.selected {
+    background-color: #8c8383;
+}
+
+.ItemTranslationsSelector .language_list .entry.selected label {
+    color: white;
+}
+
+.ItemTranslationsSelector .selection_controls {
+    margin-top: -1px;
+    background-color: #ecebea;
+    border: 1px solid #dcd9d0;
+    padding: 0.1em 0.2em 0.3em 0.8em;
+}
+
+.ItemTranslationsSelector .selection_controls > * {
+    font-size: 0.8em;
+}
+
+.ItemTranslationsSelector .selection_controls a {
+    margin-left: 0.3em;
 }
 
 /* Order view
@@ -2231,20 +2288,17 @@ button.TypeSelectorButton span {
 /* Filter box
 -----------------------------------------------------------------------------*/
 .BackOfficeLayout .simple_search {
-    float: left;
+    float: right;
     height: 3em;
+    position: relative;
 }
 
-.BackOfficeLayout .simple_search input {
-    font-size: 85%;
-}
-
-.BackOfficeLayout .content_type_box + .simple_search {
-    margin-left: 2em;
+.BackOfficeLayout .simple_search input[type=search] {
+    margin: 0;
 }
 
 .BackOfficeLayout .filters {
-    clear: both;
+    clear: both;    
 }
 
 .BackOfficeLayout .ContentView .search_input {
@@ -2252,18 +2306,18 @@ button.TypeSelectorButton span {
 }
 
 .BackOfficeLayout .ContentView .advanced_search {
-    margin-left: 1.2em;
     text-decoration: underline;
     font-size: 70%;
     background-image: url(/resources/images/collapsed_block.png);
     background-repeat: no-repeat;
     background-position: 0 center;
-    padding-left: 0.6em;
+    margin-left: 1em;
+    padding-left: 0.8em;
 }
 
 .BackOfficeLayout .CollectionView .filters {
     font-size: 85%;
-    margin-top: 0.3em;
+    margin-top: 1em;
     border: 1px solid #ccc;
     background-color: #eee;
     padding: 0.5em;
@@ -2354,31 +2408,32 @@ button.TypeSelectorButton {
 
 .BackOfficeLayout .CollectionView .filters .new_filter_selector {
     margin-right: 1em;
+    margin-left: -0.4em;
 }
 
-.BackOfficeLayout .CollectionView .filters .new_filter_selector .label {
-    padding-right: 0.3m;
-    padding-top: 0.3em;
-    padding-bottom: 0.3em;
-    padding-left: 1.5em !important;
-    background-position: 0.2em center;
+.BackOfficeLayout .CollectionView .filters .new_filter_selector > .button {
+    padding: 0.4em 0.3em;
+}
+
+.BackOfficeLayout .CollectionView .filters .new_filter_selector > .button > .label {
+    padding-left: 1.6em !important;
+    background-position: left center;
     background-image: url(../images/add.png);
-    color: rgb(50,80,110);
+    background-repeat: no-repeat;
 }
 
-.BackOfficeLayout .CollectionView .filters .new_filter_selector .selector_content {
+.BackOfficeLayout .CollectionView .filters .new_filter_selector .panel {
     overflow: auto;
     max-height: 30em;
-    min-width: 12em;
-    top: 1.5em;
+    min-width: 19em;
 }
 
-.BackOfficeLayout .CollectionView .filters .new_filter_selector .selector_content a {    
+.BackOfficeLayout .CollectionView .filters .new_filter_selector .panel a {
     border: none;
     background: none;
     display: block;
     cursor: pointer;
-    color: rgb(50,80,110);
+    text-decoration: none;
     text-align: left;
     padding: 0;
     margin: 0.8em 0;
@@ -2434,89 +2489,6 @@ button.TypeSelectorButton {
 
 .BackOfficeLayout .modal_selector_control .container .entry {
     margin-bottom: 0.5em;
-}
-
-/* Collection settings 
------------------------------------------------------------------------------*/
-.BackOfficeLayout .CollectionView .settings_box {
-    position: absolute;
-    top: 0;
-    right: 3px;
-    background-position: right center;
-    font-size: 80%;
-}
-
-.BackOfficeLayout .CollectionView .settings_box .label {
-    padding: 4px;
-    padding-right: 8px;
-    padding-bottom: 0;
-    display: block;
-    height: 19px;
-    width: 20px;
-}
-
-.BackOfficeLayout .CollectionView .settings_box .selector_content {
-    right: 0;
-    top: 23px;
-    width: 30em;
-}
-
-.BackOfficeLayout .CollectionView .settings_box .box_label,
-.BackOfficeLayout .Table th .selector_content .options_header {
-    display: block;
-    margin-bottom: 0.3em;
-    color: rgb(75,75,75);
-    font-weight: bold;
-    font-size: 1.1em;
-    padding-bottom: 0.3em;
-    border-bottom: 1px solid #ccc;
-}
-
-.BackOfficeLayout .CollectionView .settings_box .box_items {
-    padding-left: 0.4em;
-}
-
-.BackOfficeLayout .CollectionView .settings_box .languages_box,
-.BackOfficeLayout .CollectionView .settings_box .members_box {
-    float: left;
-}
-
-.BackOfficeLayout .CollectionView .settings_box .languages_box {
-    border-right: 1px solid rgb(225,225,225);
-    padding-right: 1em;
-}
-
-.BackOfficeLayout .CollectionView .settings_box .members_box {
-    position: relative;
-    left: -1px;
-    padding-left: 1em;    
-    border-left: 1px solid rgb(225,225,225);
-}
-
-.BackOfficeLayout .CollectionView .settings_box .selector_content > div:first-child {
-    border-left: none;
-}
-
-.BackOfficeLayout .CollectionView .settings_box .selector_content > div:last-child {
-    border-right: none;
-}
-
-.BackOfficeLayout .CollectionView .settings_box .selector_content .box_buttons {
-    clear: left;
-    text-align: right;
-    padding-top: 0.8em;
-}
-
-.BackOfficeLayout .CollectionView .collection_display_container {
-    clear: both;
-    position: relative;
-    overflow: visible;
-    min-width: 100%;
-    display: inline-block;
-}
-
-.BackOfficeLayout .CollectionView .Table th.last {
-    padding-right: 3em;
 }
 
 /* Datepicker styles */
@@ -2705,24 +2677,6 @@ a.browse span {
 }
 a.pickcolor span {
     background:url(/resources/images/icons_tiny.gif) -840px 0 !important;
-}
-
-/* workflow extension
------------------------------------------------------------------------------*/
-.BackOfficeLayout .toolbar .transition_action .selector_content a {
-    white-space: nowrap;
-    display: block;
-}
-
-.BackOfficeLayout .toolbar .transition_action .selector_content a + a {
-    margin-top: 0.5em;
-}
-
-.BackOfficeLayout .graph_frame {
-    width: 100%;
-    border: none;
-    height: 500px;
-    margin-top: 2em;
 }
 
 /* Feed edit form
@@ -3199,38 +3153,34 @@ a.pickcolor span {
 .BackOfficePreviewView iframe {
     width: 100%;
     height: 600px;
+    margin-top: 0.5em;
 }
 
 .BackOfficePreviewView .preview_language_selector {
+    padding-top: 0.5em;
     float: right;
 }
 
-.BackOfficePreviewView .preview_language_selector span {
-    display: inline;
-    float: left;
-    font-size: 85%;
-    line-height: 2em;
-    padding: 1px;
+.BackOfficePreviewView .language_dropdown_label {
+    display: inline-block;
+    vertical-align: baseline;
+    font-size: 0.9em;
 }
 
-.BackOfficePreviewView .preview_language_selector .translations_selector {
-    display: inline;
-    float: left;
+.BackOfficePreviewView .language_dropdown > .panel_wrapper > .panel {
+    min-width: 10em;
+    left: auto;
+    right: 0;
 }
 
-.BackOfficePreviewView .preview_language_selector .translations_selector .selector_content {
-    top: 2em;
+.BackOfficePreviewView .language_dropdown .entry + .entry {
+    margin-top: 0.2em;
 }
 
-.BackOfficePreviewView .preview_language_selector .translations_selector .label {
-    line-height: 2em;
-    font-size: 100%;
-    padding-top: 0;
-}
-
-.BackOfficePreviewView .preview_language_selector .translations_selector .language {
-    height: auto;
-    line-height: 1.6em;
+.BackOfficePreviewView .language_dropdown .entry_link {
+    white-space: nowrap;
+    text-decoration: none;
+    font-size: 0.9em;
 }
 
 /* Tweaks for password change process
@@ -3310,6 +3260,10 @@ div.success_label {
     vertical-align: middle;
 }
 
+.ItemPalette .palette_entry .button {
+    display: inline-block;
+}
+
 /* BackOfficeItemViewOverlay
 -----------------------------------------------------------------------------*/
 .BackOfficeItemView .block_map .explanation {
@@ -3368,24 +3322,46 @@ div.success_label {
 
 /* ReferenceList
 -----------------------------------------------------------------------------*/
-.BackOfficeLayout .ReferenceList .label {
-    font-size: 90%;
-    color: #333;
+.BackOfficeReferencesView .item_body {
+    margin: 1em;
 }
 
-.BackOfficeLayout .ReferenceList .ContentLink {
-    font-size: 90%;
+.BackOfficeReferencesView .summary {
+    margin-top: 2em;
+    margin-bottom: 1.5em;
+}
+
+.BackOfficeReferencesView .references_table {
+    border-collapse: collapse;
+}
+
+.BackOfficeReferencesView .references_table .ContentLink {
     text-decoration: none;
-    font-size: 80%;
+    white-space: nowrap;
 }
 
-.BackOfficeLayout .ReferenceList .referrer_cell {
+.BackOfficeReferencesView .references_table .referrer_cell {
     padding-right: 2em;
 }
 
-.BackOfficeLayout .ReferenceList .relation_cell {
+.BackOfficeReferencesView .references_table .relation_cell {
     color: #666;
     font-size: 80%;
+    white-space: nowrap;
+}
+
+.BackOfficeReferencesView .references_table td,
+.BackOfficeReferencesView .references_table th {
+    text-align: left;
+    padding: 0.4em 0;
+    padding-right: 2em;
+    font-size: 0.9em;
+}
+
+.BackOfficeReferencesView .references_table th {
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 0.2em;
+    color: #333;
 }
 
 /* Content drag & drop
@@ -3599,5 +3575,48 @@ div.success_label {
     text-align: left;
     padding: 0;
     margin: 1em 0;
+}
+
+/* Annotations extension
+-----------------------------------------------------------------------------*/
+.BackOfficeLayout .Form .annotation_dropdown {
+    position: relative;
+    left: -1.9em;
+    top: 0.3em;
+}
+
+.BackOfficeLayout .Form .annotation_dropdown > .button .icon {
+    -webkit-filter: grayscale(100%);
+    filter: grayscale(100%);
+    margin: 0.1em 0.2em;
+}
+
+.BackOfficeLayout .Form .field_instance.with_annotation .annotation_dropdown > .button .icon {
+    -webkit-filter: none;
+    filter: none;
+}
+
+.BackOfficeLayout .Form .annotation_dropdown .dropdown_arrow {
+    display: none;
+}
+
+.BackOfficeLayout .Form .annotation_dropdown textarea {
+    width: 100%;
+    height: 16em;
+}
+
+.BackOfficeLayout .Form .annotation_dropdown > .panel_wrapper > .panel {
+    left: -15em;
+    right: -0.8em;
+}
+
+.BackOfficeLayout .Form .field_instance-RichTextEditor .annotation_dropdown {
+    left: -2.6em;
+    top: -0.2em;
+}
+
+.BackOfficeLayout .Form .field_instance-RichTextEditor .annotation_dropdown > .panel_wrapper > .panel {
+    left: -26em;
+    right: -1.4em;
 }
 

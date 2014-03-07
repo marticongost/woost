@@ -99,10 +99,10 @@ class VideoFileRenderer(Renderer):
                     "Must specify a smaller position than the video duration."
                 )
     
-            command = u"%s -y -i %s -vframes 1 -ss %s -an -vcodec png -f rawvideo %s " % (
+            command = u"%s -y -ss %s -i %s -vframes 1 -an -vcodec png -f rawvideo %s " % (
                 self.ffmpeg_path, 
-                item.file_path, 
                 time.strftime("%H:%M:%S"),
+                item.file_path, 
                 temp_image_file
             )
     

@@ -68,7 +68,7 @@ from woost.models import Configuration, Block, block_type_groups
         element.set_client_param("action", action.id)
         ?>
         <img src="${action.icon_uri}"/>
-        ${translations("Action " + action.id)}
+        ${translations("woost.actions." + action.id)}
     </button>
 
     <div

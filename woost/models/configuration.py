@@ -10,7 +10,12 @@ import re
 from warnings import warn
 from decimal import Decimal
 from cocktail.modeling import classgetter
-from cocktail.translations import translations, require_language
+from cocktail.translations import (
+    translations,
+    require_language,
+    set_language,
+    set_fallback_languages
+)
 from cocktail import schema
 from woost import app
 from .item import Item
@@ -65,6 +70,7 @@ class Configuration(Item):
         "languages",
         "published_languages",
         "default_language",
+        "fallback_languages",
         "heed_client_language",
         "backoffice_language",
         "renderers",
@@ -150,7 +156,7 @@ class Configuration(Item):
     #------------------------------------------------------------------------------
     languages = schema.Collection(
         items = schema.String(
-            format = "^[a-z]{2}$"
+            format = "^[a-z]{2}(-[A-Z]{2})?$"
         ),
         min = 1,
         listed_by_default = False,
@@ -174,6 +180,31 @@ class Configuration(Item):
         listed_by_default = False,
         member_group = "language"
     )
+
+    fallback_languages = schema.Collection(
+        items = (
+            schema.Tuple(
+                items = (
+                    schema.String(enumeration = languages),
+                    schema.Collection(
+                        items = schema.String(
+                            enumeration = languages
+                        ),
+                        request_value_separator = ","
+                    )
+                ),
+                request_value_separator = ":"
+            )
+        ),
+        request_value_separator = "\n",
+        edit_control = "cocktail.html.TextArea",
+        member_group = "language"
+    )
+
+    def setup_languages(self):
+        set_language(self.default_language)
+        for language, fallback_languages in self.fallback_languages:
+            set_fallback_languages(language, fallback_languages)
 
     heed_client_language = schema.Boolean(
         required = True,

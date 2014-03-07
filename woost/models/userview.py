@@ -7,9 +7,9 @@
 @since:			June 2009
 """
 from cocktail import schema
-from cocktail.controllers.viewstate import view_state
 from woost.models.item import Item
 from woost.models.role import Role
+from woost.models.publishable import Publishable
 
 
 class UserView(Item):
@@ -77,8 +77,6 @@ class UserView(Item):
     )
 
     def uri(self, **kwargs):        
-        params = self.parameters.copy()
-        params.update(kwargs)
-        params = dict((str(key), value) for key, value in params.iteritems())
-        return "?" + view_state(**params)
+        backoffice = Publishable.require_instance(qname = "woost.backoffice")
+        return backoffice.get_uri(parameters = self.parameters)
 

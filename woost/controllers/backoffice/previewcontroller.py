@@ -65,7 +65,8 @@ class PreviewController(EditController):
             selected_action = get_user_action("preview"),
             previewed_item = self.previewed_item,
             preview_publishable = self.preview_publishable,
-            preview_language = self.preview_language
+            preview_language = self.preview_language,
+            item_translations = self.stack_node.item_translations
         )
         return output
 

@@ -270,7 +270,8 @@ class EditStack(ListWrapper):
     """A stack describing the context of an edit session. Allows to keep track
     of nested edit operations when dealing with related elements.
 
-    The stack can contain two basic kind of nodes:
+    The stack can contain several kind of nodes, the most prominent being edit
+    and relation nodes:
 
         * L{edit nodes<EditNode>} are associated with a single
           L{item<woost.models.items.Item>}, and store all the changes
@@ -278,10 +279,6 @@ class EditStack(ListWrapper):
 
         * L{relation nodes<RelationNode>} indicate a nested edit operation on a
           related item or set of items.
-
-    The first node of a stack is always an edit node. All further nodes
-    alternate their kind in succession (so the first node will be followed by a
-    relation node, then another edit node, and so on).
 
     @ivar id: A numerical identifier for the stack. It is guaranteed to be
         unique throughout the current browser session.
@@ -293,7 +290,7 @@ class EditStack(ListWrapper):
         """Adds a new node to the edit stack.
 
         @param node: The node to add.
-        @type node: L{EditNode},
+        @type node: L{StackNode},
             L{collection<cocktail.schema.schemacollections.Collection>}
             or L{relation<cocktail.schema.schemarelations.Relation>}
         """
@@ -306,7 +303,7 @@ class EditStack(ListWrapper):
         """Removes the last node from the stack and returns it.
 
         @return: The last node of the stack.
-        @rtype: L{EditNode},
+        @rtype: L{StackNode},
             L{collection<cocktail.schema.schemacollections.Collection>}
             or L{relation<cocktail.schema.schemarelations.Relation>}
 
@@ -500,10 +497,18 @@ class EditNode(StackNode):
     """An L{edit stack<EditStack>} node, used to maintain a set of changes for
     an edited item before they are finally committed.
 
-    @ivar translations: The list of translations defined by the item (note that
-        these can change during the course of an edit operation, so that's why
-        they are stored in here).
-    @type translations: str list 
+    @ivar item_translations: A list of locale codes indicating the translations
+        defined by the edited item in this edit session. Note that this can
+        differ from the list defined by the item in the database, since users
+        are able to add / delete translations during the edit operation.
+    @type item_translations: str set
+
+    @ivar visible_translations: A list of locale codes indicating the
+        translations that are included in the edit operation. This will always
+        be a subset of L{item_translations}. Translations not included in this
+        subset will not be included in the edit form, and they will be left
+        untouched when the item is finally saved.
+    @type visible_translations: str set
     """
     _persistent_keys = frozenset([
         "_stack",
@@ -511,12 +516,14 @@ class EditNode(StackNode):
         "_index",
         "_item",
         "_form_data",
-        "translations",
+        "item_translations",
+        "visible_translations",
         "section",
         "tab"
     ])
     _item = None
-    translations = None
+    item_translations = None
+    visible_translations = None
     section = "fields"
     tab = None
 
@@ -543,9 +550,38 @@ class EditNode(StackNode):
         @type changeset: L{ChangeSet<woost.models.ChangeSet>}
         """)
     
-    def __init__(self, item):        
-        assert item is not None
+    def __init__(self, item, visible_translations = None):
         self._item = item
+
+        if item.__class__.translated:
+
+            if visible_translations is None:
+                visible_translations = item.translations
+            else:
+                if item.is_inserted:
+                    visible_translations = [
+                        language
+                        for language in visible_translations
+                        if language in item.translations
+                    ]
+                else:
+                    for language in visible_translations:
+                        item.new_translation(language)
+
+            self.item_translations = set(item.translations)
+
+            user = get_current_user()
+            self.visible_translations = set(
+                language
+                for language in visible_translations
+                if user.has_permission(
+                    ReadTranslationPermission,
+                    language = language
+                )
+            )
+        else:
+            self.item_translations = None
+            self.visible_translations = None
 
     def __translate__(self, language, **kwargs):
         if self.item.is_inserted:
@@ -554,7 +590,7 @@ class EditNode(StackNode):
             return translations("creating", content_type = self.content_type)
 
     def uri(self, **params):
-        
+
         if "edit_stack" not in params:
             params["edit_stack"] = self.stack.to_param(self.index)
 
@@ -578,30 +614,21 @@ class EditNode(StackNode):
                 if key == "_item" and not value.is_inserted:
                     value = None
                 state[key] = value
-        
+
         state["content_type"] = self._item.__class__
-
-        if self._item.__class__.translated:
-            state["item_translations"] = self._item.translations.keys()
-
         return state
 
     def __setstate__(self, state):
 
         content_type = state.pop("content_type", None)
-        item_translations = state.pop("item_translations", None)
 
         for key, value in state.iteritems():
             if key in self._persistent_keys:
                 if key == "_item":
-                    if content_type is None:
-                        value = None
-                    elif value is None:
-                        value = content_type()
-                        self.initialize_new_item(
-                            value,
-                            item_translations
-                        )
+                    if value is None:
+                        value = content_type()                        
+                        for language in state["visible_translations"]:
+                            value.new_translation(language)
 
                 setattr(self, key, value)
 
@@ -619,23 +646,17 @@ class EditNode(StackNode):
         """
         return self._item
 
-    def initialize_new_item(self, item, languages = None):        
-        if item.__class__.translated:
-            for language in (
-                languages
-                or [Configuration.instance.get_setting("default_language")]
-            ):
-                item.new_translation(language)
-
     def import_form_data(self, form_data, item):
         """Update the edited item with data gathered from the form."""
+
         self.form_adapter.import_object(
             form_data,
             item,
             self.form_schema,
-            self.content_type
+            self.content_type,
+            languages = self.item_translations
         )
-        
+
         # Drop deleted translations
         if item.__class__.translated:
             user = get_current_user()
@@ -649,7 +670,7 @@ class EditNode(StackNode):
                         language = language
                     )
                 )
-                - set(self.translations)
+                - self.item_translations
             )
 
             for language in deleted_translations:
@@ -657,40 +678,12 @@ class EditNode(StackNode):
     
     def export_form_data(self, item, form_data):
         """Update the edit form with the data contained on the edited item."""
-
         self.form_adapter.export_object(
             item,
             form_data,
             self.content_type,
             self.form_schema
         )
-        
-        # Default translations
-        if self.content_type.translated:
-
-            user = get_current_user()
-            available_languages = set(
-                language
-                for language in item.translations
-                if user.has_permission(
-                    ReadTranslationPermission,
-                    language = language
-                )
-            )
-
-            if not self._item.translations:
-                default_language = \
-                    Configuration.instance.get_setting("default_language")
-                if default_language in available_languages:
-                    self._item.new_translation(default_language)
-
-            self.translations = [
-                language
-                for language in self._item.translations.keys()
-                if language in available_languages
-            ]
-        else:
-            self.translations = []
 
     @cached_getter
     def form_adapter(self):
@@ -841,7 +834,7 @@ class EditNode(StackNode):
         """
         return self.form_schema.get_errors(
             self.form_data,
-            languages = self.translations,
+            languages = self.item_translations,
             persistent_object = self.item
         )
 
