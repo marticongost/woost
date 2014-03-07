@@ -29,6 +29,8 @@ from woost.models import (
     File,
     Block,
     get_current_user,
+    ReadPermission,
+    ReadMemberPermission,
     CreatePermission,
     ModifyPermission,
     DeletePermission,
@@ -207,7 +209,7 @@ class UserAction(object):
         self._id = id
 
     def __translate__(self, language, **kwargs):
-        return translations("Action " + self.id, **kwargs)
+        return translations("woost.actions." + self.id, language, **kwargs)
 
     @getter
     def id(self):
@@ -534,10 +536,6 @@ class OrderAction(UserAction):
         return params
 
 
-class ShowDetailAction(UserAction):
-    included = frozenset(["toolbar", "item_buttons"])
-
-
 class EditAction(UserAction):
     included = frozenset([
         "toolbar",
@@ -622,6 +620,73 @@ class OpenResourceAction(UserAction):
             return target.get_uri(host = "?")
         else:
             return target.url
+
+
+class ReferencesAction(UserAction):
+    included = frozenset([
+        "toolbar_extra",
+        "item_buttons"
+    ])
+    min = 1
+    max = 1
+
+    def __translate__(self, language, **kwargs):
+        label = UserAction.__translate__(self, language, **kwargs)
+        if self.stack_node is not None:
+            label += " (%d)" % len(self.references)
+        return label
+
+    @request_property
+    def stack_node(self):
+        edit_stacks_manager = \
+            controller_context.get("edit_stacks_manager")                
+        if edit_stacks_manager:
+            edit_stack = edit_stacks_manager.current_edit_stack
+            if edit_stack:
+                return edit_stack[-1]
+
+    @request_property
+    def references(self):
+        stack_node = self.stack_node
+
+        if not stack_node:
+            references = []
+        else:
+            references = list(self._iter_references(self.stack_node.item))
+            references.sort(
+                key = lambda ref:
+                    (translations(ref[0]), translations(ref[1]))
+            )
+
+        return references
+
+    def _iter_references(self, obj):
+        for member in obj.__class__.members().itervalues():
+            if (
+                isinstance(member, schema.RelationMember) 
+                and member.related_end
+                and member.related_end.visible_in_reference_list
+                and issubclass(member.related_type, Item)
+                and member.related_type.visible
+                and not member.integral
+            ):
+                value = obj.get(member)
+                if value:
+                    if isinstance(member, schema.Reference):
+                        if self._should_include_reference(value, member.related_end):
+                            yield value, member.related_end
+                    elif isinstance(member, schema.Collection):
+                        for item in value:
+                            if self._should_include_reference(item, member.related_end):
+                                yield item, member.related_end
+    
+    def _should_include_reference(self, referrer, relation):
+        user = get_current_user()
+        return (
+            relation.visible
+            and user.has_permission(ReadPermission, target = referrer)
+            and user.has_permission(ReadMemberPermission, member = relation)
+        )
 
 
 class UploadFilesAction(UserAction):
@@ -725,7 +790,6 @@ class GoBackAction(UserAction):
 class CloseAction(GoBackAction):
     included = frozenset([
         "item_buttons",
-        "item_bottom_buttons",
         "edit_blocks_toolbar"
     ])
 
@@ -741,10 +805,7 @@ class SaveAction(UserAction):
     included = frozenset([
         ("item_buttons", "new"),
         ("item_buttons", "edit"),
-        ("item_buttons", "changed"),
-        ("item_bottom_buttons", "new"),
-        ("item_bottom_buttons", "edit"),
-        ("item_bottom_buttons", "changed")
+        ("item_buttons", "preview")
     ])
     ignores_selection = True
     max = None
@@ -771,15 +832,6 @@ class SaveAction(UserAction):
 
     def invoke(self, controller, selection):
         controller.save_item()
-
-
-class PrintAction(UserAction):
-    direct_link = True
-    ignores_selection = True
-    excluded = frozenset(["selector", "collection"])
-
-    def get_url(self, controller, selection):
-        return "javascript: print();"
 
 
 def focus_block(block):
@@ -876,15 +928,14 @@ class AddBlockAction(UserAction):
             edit_stack = edit_stacks_manager.current_edit_stack
 
             block = self.block_type()
-            node = AddBlockNode(block)
+            node = AddBlockNode(
+                block,
+                visible_translations = controller.visible_languages
+            )
             node.block_parent = controller.block_parent
             node.block_slot = controller.block_slot
             node.block_positioning = self.block_positioning
             node.block_anchor = controller.block
-            node.initialize_new_item(
-                block,
-                controller.visible_languages
-            )
             edit_stack.push(node)
 
             edit_stacks_manager.preserve_edit_stack(edit_stack)
@@ -1078,8 +1129,6 @@ MoveAction("move").register()
 AddAction("add").register()
 AddIntegralAction("add_integral").register()
 RemoveAction("remove").register()
-ShowDetailAction("show_detail").register()
-OpenResourceAction("open_resource").register()
 UploadFilesAction("upload_files").register()
 AddBlockAction("add_block").register()
 AddBlockBeforeAction("add_block_before").register()
@@ -1087,7 +1136,6 @@ AddBlockAfterAction("add_block_after").register()
 EditAction("edit").register()
 EditBlocksAction("edit_blocks").register()
 InstallationSyncAction("installation_sync").register()
-PreviewAction("preview").register()
 CopyBlockAction("copy_block").register()
 CutBlockAction("cut_block").register()
 PasteBlockAction("paste_block").register()
@@ -1098,10 +1146,12 @@ RemoveBlockAction("remove_block").register()
 DeleteAction("delete").register()
 OrderAction("order").register()
 ExportAction("export_xls", "msexcel").register()
-PrintAction("print").register()
 InvalidateCacheAction("invalidate_cache").register()
+ReferencesAction("references").register()
+OpenResourceAction("open_resource").register()
 CloseAction("close").register()
 CancelAction("cancel").register()
 SaveAction("save").register()
+PreviewAction("preview").register()
 SelectAction("select").register()
 

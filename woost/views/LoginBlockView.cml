@@ -9,6 +9,10 @@ from woost.models import get_current_user, Publishable
     xmlns:py="http://www.whads.com/ns/cocktail/templates"
     method="POST">
 
+    <?py-class
+    __first_control = True
+    ?>
+
     <py:binding>
         <?py
         if self.errors is None:
@@ -34,6 +38,14 @@ from woost.models import get_current_user, Publishable
         py:id="error_box"
         py:index="0"
         py:errors="@{self.errors}"/>
+
+    <py:with py:def="control" py:args="obj, member">
+        <?py
+        if self.__first_control:
+            self.__first_control = False
+            control["autofocus"] = True
+        ?>
+    </py:with>
 
     <py:with py:element="self.submit_button" name="authenticate">
         <?py element.empty() ?>

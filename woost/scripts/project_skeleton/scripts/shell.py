@@ -12,8 +12,7 @@ from woost.models.extension import load_extensions
 from _PROJECT_MODULE_.models import *
 
 config = Configuration.instance
-default_language = config.default_language
-set_language(default_language)
+config.setup_languages()
 set_current_user(User.require_instance(qname = "woost.anonymous_user"))
 set_current_website(config.websites[0])
 

@@ -9,7 +9,6 @@ from cocktail.controllers.viewstate import view_state
 from cocktail.controllers.usercollection import UserCollection
 from cocktail.controllers.userfilter import CollectionFilter
 from cocktail.html.datadisplay import DataDisplay
-from cocktail.html.shortcuts import set_translated_shortcut
 from woost.models import (
     get_current_user,
     Item,
@@ -179,11 +178,16 @@ from woost.controllers.backoffice.editstack import SelectionNode
         ?>
     </py:ready>
     
-    <py:block
-        py:index="0">
-
-        <div py:id="content_type_box">
-
+    <py:with py:element="self.collection_settings">
+           
+        <py:woost.views.ContentTypeSelector
+            py:id="content_type_selector"
+            py:index="0"
+            py:selection="@{self.user_collection.type}"
+            py:types="@{self.root_content_type}"
+            py:plural_labels="${True}"
+            py:required_permission="${None}"
+            py:per_role_types="${False}">
             <py:ready>
                 <?py
                 content_type = self.user_collection.type
@@ -196,99 +200,92 @@ from woost.controllers.backoffice.editstack import SelectionNode
                     element.visible = False
                 ?>
             </py:ready>
+            <py:with
+                py:element="element.button"
+                accesskey="${translations('woost.views.ContentView.content_type_selector.shortcut')}"/>
+            <py:with py:element="element.palette">
+                <?py
+                @extend(element)
+                def get_item_label(palette, content_type):
+                    return translations(content_type.name + "-menu") or call_base(content_type)
 
-            <div class="label">${translations("woost.views.ContentView content type")}</div>
-            
-            <!-- Content type selector -->
-            <py:woost.views.ContentTypeSelector
-                py:id="content_type_selector"
-                py:selection="@{self.user_collection.type}"
-                py:types="@{self.root_content_type}"
-                py:plural_labels="${True}"
-                py:required_permission="${None}"
-                py:per_role_types="${False}">
-                <py:with py:element="element.palette">
-                    <?py
-                    @extend(element)
-                    def get_item_label(palette, content_type):
-                        return translations(content_type.name + "-menu") or call_base(content_type)
+                @extend(element)
+                def should_include_type(palette, content_type):
+                    return (
+                        call_base(content_type)
+                        and self.content_type_is_selectable(content_type)
+                    )
 
-                    @extend(element)
-                    def should_include_type(palette, content_type):
-                        return (
-                            call_base(content_type)
-                            and self.content_type_is_selectable(content_type)
-                        )
+                @extend(element)
+                def should_collapse_type(palette, content_type):
+                    return content_type.collapsed_backoffice_menu
 
-                    @extend(element)
-                    def should_collapse_type(palette, content_type):
-                        return content_type.collapsed_backoffice_menu
+                @extend(element)
+                def get_item_url(palette, content_type):
+                    url = "?type=" + content_type.full_name
+                    # Clear filters
+                    url += "&filter="
+                    if self.edit_stack:
+                        url += "&edit_stack=" + self.edit_stack.to_param()
+                    return url
+                ?>
+            </py:with>
+        </py:woost.views.ContentTypeSelector>
 
-                    @extend(element)
-                    def get_item_url(palette, content_type):
-                        url = "?type=" + content_type.full_name
-                        # Clear filters
-                        url += "&filter="
-                        if self.edit_stack:
-                            url += "&edit_stack=" + self.edit_stack.to_param()
-                        return url
-                    ?>
-                </py:with>
-            </py:woost.views.ContentTypeSelector>
-        </div>
+        <!-- Content view selector -->
+        <py:cocktail.html.DropdownPanel
+            py:id="content_view_dropdown"
+            py:index="1">
+            <py:with
+                py:element="element.label"
+                accesskey="${translations('woost.views.ContentView.content_view_dropdown.shortcut')}">
+                ${translations("woost.content_views." + self.content_view_id)}
+            </py:with>
+            <py:with py:element="element.panel">
+                <ul py:id="content_view_list">
+                    <py:ready>
+                        <?py
+                        visible_content_views = self.get_visible_content_views()
+                        if len(visible_content_views) < 2:
+                            element.visible = False
+                        else:
+                            for content_view in visible_content_views:
+                                entry = self.create_content_view_entry(content_view)
+                                if content_view.content_view_id == self.content_view_id:
+                                    entry.add_class("selected")
+                                element.append(entry)
+                        ?>
+                    </py:ready>                
+                </ul>
+            </py:with>
+        </py:cocktail.html.DropdownPanel>
 
         <!-- Simple search -->
         <div py:id="simple_search"
              py:visible="@{not self.search_expanded and self.user_collection.allow_filters and (self.visible_results or self.allow_empty_search)}">
 
             <input type="hidden" name="filter" value="global_search"/>
-            <input type="text" name="filter_value0"/>
-            <input type="submit" class="search_button" value="${translations('woost.views.ContentView search button')}"/>
+            <input type="search" name="filter_value0"/>
 
             <button type="submit" class="advanced_search" name="search_expanded" value="true">
                 ${translations("woost.views.ContentView show advanced search")}
             </button>
         </div>
+        
+    </py:with>
 
-        <!-- Content view selector -->
-        <div py:id="content_view"
-            class="action_button">
+    <li py:def="content_view_entry" py:args="content_view">
+        <a href="">
+            <?py
+            params = {"content_view": content_view.content_view_id}
+            if not content_view.allow_paging:
+                params["page"] = "0"
 
-            <py:ready>
-                <?py
-                self._visible_content_views = self.get_visible_content_views()
-                element.visible = len(self._visible_content_views) > 1
-                ?>
-                <py:block py:if="element.visible">
-
-                    <span py:id="content_view_label">
-                        ${translations("woost.views.ContentView label")}
-                    </span>
-
-                    <div py:id="content_view_selector">
-                        <div py:for="content_view in self._visible_content_views">
-                            <?py
-                            if self.content_view_id == content_view.content_view_id:
-                                element.add_class("selected")
-                            ?>
-                            <a>
-                                <?py
-                                params = {"content_view": content_view.content_view_id}
-                                if not content_view.allow_paging:
-                                    params["page"] = "0"
-
-                                element["href"] = "?" + view_state(**params)                            
-                                element["title"] = translations(content_view.content_view_id + " content view")
-                                ?>
-                                <img src="/resources/images/${content_view.content_view_id.lower()}contentview.png"/>                            
-                            </a>
-                        </div>
-                    </div>
-
-                </py:block>
-            </py:ready>
-        </div>
-    </py:block>
+            element["href"] = "?" + view_state(**params)
+            ?>
+            ${translations("woost.content_views." + content_view.content_view_id)}
+        </a>
+    </li>
 
     <!-- Toolbar -->
     <py:woost.views.ActionBar
@@ -336,15 +333,16 @@ from woost.controllers.backoffice.editstack import SelectionNode
         element.add_class("action_button")
         element.add_class("action_new")
         ?>
-        <py:with py:element="element.label">
+        <py:with
+            py:element="element.label"
+            accesskey="${translations('woost.actions.' + action.id + '.shortcut')}">
             <?py
             element.empty()
-            set_translated_shortcut(element, "action " + action.id)
             ?>
             <py:new
                 py:element="self.toolbar.create_action_image(action, extra)"
                 py:if="self.toolbar.button_images and not extra"/>
-            ${translations("Action " + action.id)}
+            ${translations("woost.actions." + action.id)}
         </py:with>
         <py:with py:element="element.palette">
             <?py

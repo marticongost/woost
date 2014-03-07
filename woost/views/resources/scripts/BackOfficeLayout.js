@@ -252,3 +252,34 @@ function keepalive(edit_stack) {
 
 })();
 
+/* Focus search boxes by pressing '/'
+-----------------------------------------------------------------------------*/ 
+jQuery(function () {
+    jQuery(document).keydown(function (e) {
+
+        if (e.keyCode == 191) {
+
+            // Disabled if the event was triggered by a text input control
+            var tag = e.srcElement.nodeName;
+            if (tag == "TEXTAREA") {
+                return;
+            }
+            else if (tag == "INPUT") {
+                var type = e.srcElement.type;
+                if (type == "text" || type == "search" || type == "email" || type == "tel" || type == "number") {
+                    return;
+                }
+            }
+
+            var node = e.srcElement;
+            while (node) {
+                if (node.searchBox) {
+                    node.searchBox.focus();
+                    return false;
+                }
+                node = node.parentNode;
+            }
+        }
+    });
+});
+

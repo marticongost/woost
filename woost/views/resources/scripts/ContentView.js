@@ -8,9 +8,44 @@
 -----------------------------------------------------------------------------*/
 
 cocktail.bind(".ContentView", function ($contentView) {
+ 
+    // Discard the current member / language selection if their dropdown panel
+    // is collapsed before submitting the changes
+    var $panels = $contentView.find(".collection_settings .DropdownPanel");
+    $panels.find(".CheckList .entry input[type=checkbox]").each(function () {
+        this.initialCheckState = this.checked;
+    });
+    $panels.on("collapsed", function () {
+        jQuery(this).find(".CheckList .entry input[type=checkbox]").each(function () {
+            this.checked = this.initialCheckState;
+        });
+    });
+
+    var $searchBox = $contentView.find(".simple_search input[type=search]");
+    this.searchBox = $searchBox.get(0);
+
+    // Automatically focus the simple search box
+    $searchBox.focus();
+
+    // Make the down key pass from the search box to the content
+    $searchBox.keydown(function (e) {
+        if (e.keyCode == 40) {
+            var display = $contentView.find(".collection_display").get(0);
+            if (display.focusContent) {
+                display.focusContent();
+            }
+            return false;
+        }
+    });
     
+    // Make the up key pass from the first entry in the collection to the search box
+    var display = $contentView.find(".collection_display").get(0);
+    if (display) {
+        display.topControl = $searchBox.get(0);
+    }
+
     // Enable/disable buttons depending on the selected content
-    function updateToolbar() {    
+    function updateToolbar() {
         var display = $contentView.find(".collection_display").get(0);
         if (display && display.getSelection) {
             var selectionSize = display.getSelection().length;
@@ -33,10 +68,7 @@ cocktail.bind(".ContentView", function ($contentView) {
 
     $contentView.find(".collection_display").bind("selectionChanged", updateToolbar);
     updateToolbar();
-
-    // Automatically focus the simple search box
-    $contentView.find("[name=filter_value0]").focus();
-
+    
     // Replace the 'clear filters' link with a 'discard search' button
     $contentView.find(".filters").each(function () {
 

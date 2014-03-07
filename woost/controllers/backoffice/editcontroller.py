@@ -234,7 +234,8 @@ class EditController(BaseBackOfficeController):
             form_schema = stack_node.form_schema,
             form_data = stack_node.form_data,
             changes = set(stack_node.iter_changes()),
-            translations = stack_node.translations,
+            item_translations = stack_node.item_translations,
+            visible_translations = stack_node.visible_translations,
             section = self.section,
             tab = self.tab
         )

@@ -11,7 +11,7 @@ from woost.translations.strings import content_permission_translation_factory
 
 # UI
 #------------------------------------------------------------------------------
-translations.define("Action export_static",
+translations.define("woost.actions.export_static",
     ca = u"Exportar contingut estàtic",
     es = u"Exportar contenido estático",
     en = u"Export static content"

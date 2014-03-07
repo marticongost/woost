@@ -11,6 +11,7 @@ from woost.controllers.backoffice.editstack import (
     RelationNode
 )
 from woost.controllers.backoffice.useractions import add_view_action_context
+from woost.models import UserView
 ?>
 
 <div
@@ -25,6 +26,7 @@ from woost.controllers.backoffice.useractions import add_view_action_context
     edit_stack = None
     notifications = ()
     client_side_scripting = False
+    user_views = ()
 
     def get_page_title(self):
         return self.backoffice and self.backoffice.title
@@ -120,6 +122,10 @@ from woost.controllers.backoffice.useractions import add_view_action_context
             </py:ready>
         </div>
     </div>
+
+    <py:woost.views.UserViewsBar
+        py:id="user_views_bar"
+        py:user_views="@{self.user_views}"/>
 
     <py:woost.views.NotificationBox py:id="notification_box" />
 

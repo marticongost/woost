@@ -7,7 +7,7 @@
 @since:			November 2012
 -----------------------------------------------------------------------------*/
 
-cocktail.bind(".PublishableFieldsView", function ($view) {
+cocktail.bind(".BackOfficeFieldsView", function ($view) {
     
     var ANIMATION_SPEED = 400;
 
