@@ -6,6 +6,7 @@ u"""
 @organization:	Whads/Accent SL
 @since:			June 2008
 """
+import re
 from datetime import date, datetime
 from contextlib import contextmanager
 from cocktail.styled import styled
@@ -33,6 +34,8 @@ from woost import app
 from .websitesession import get_current_website
 from .changesets import ChangeSet, Change
 from .usersession import get_current_user
+
+_protocol_regexp = re.compile(r"^[a-z][\-a-z0-9]*:")
 
 # Extension property to determine which members should trigger a cache
 # invalidation request
@@ -470,7 +473,9 @@ class Item(PersistentObject):
         if encode:
             uri = percent_encode_uri(uri)
 
-        if "://" in uri:
+        has_protocol = _protocol_regexp.match(uri)
+
+        if has_protocol:
             host = None
 
         if host:
@@ -498,7 +503,8 @@ class Item(PersistentObject):
                 host = "%s://%s" % (scheme, host)
 
             uri = make_uri(host, uri)
-        elif "://" not in uri:
+
+        elif not has_protocol:
             uri = make_uri("/", uri)
 
         return uri
