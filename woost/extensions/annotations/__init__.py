@@ -46,5 +46,5 @@ class AnnotationsExtension(Extension):
             annotations
         )
 
-        templates.get_class("woost.extensions.annotations.FormOverlay")
+        templates.get_class("woost.extensions.annotations.BackOfficeFieldsViewOverlay")
 
