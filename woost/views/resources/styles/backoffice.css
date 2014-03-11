@@ -3589,6 +3589,14 @@ div.success_label {
     top: 0.3em;
 }
 
+.BackOfficeLayout .Form .field.annotationTarget input[type=text].control,
+.BackOfficeLayout .Form .field.annotationTarget input[type=password].control,
+.BackOfficeLayout .Form .field.annotationTarget input[type=email].control,
+.BackOfficeLayout .Form .field.annotationTarget input[type=url].control,
+.BackOfficeLayout .Form .field.annotationTarget input[type=tel].control {
+    padding-right: 2em;
+}
+
 .BackOfficeLayout .Form .annotation_dropdown > .button .icon {
     -webkit-filter: grayscale(100%);
     filter: grayscale(100%);
