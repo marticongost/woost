@@ -81,6 +81,7 @@ class TextBlock(Block):
             "center_top",
             "center_bottom",
             "inline",
+            "heading_icon",
             "background",
             "fallback"
         ],
@@ -163,4 +164,9 @@ class TextBlock(Block):
             return view.content_wrapper
         return view
 
+    def has_heading(self):
+        return self.heading or (
+            self.image_alignment == "heading_icon"
+            and any(image.is_accessible() for image in self.images)
+        )
 
