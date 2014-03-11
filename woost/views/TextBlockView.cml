@@ -96,12 +96,27 @@ from cocktail.controllers import Location
                 self.create_ie_table_layout_workaround("<td class='text_container_cell' valign='top'>").place_before(self.text_container)
                 self.create_ie_table_layout_workaround("</td>").place_after(self.text_container)
                 self.append(self.create_ie_table_layout_workaround("</tr></table>"))
-        
-        if self.block.image_alignment == "inline":
-            self.content_wrapper.tag = None
+
+        alignment = self.block.image_alignment
+
+        if alignment in ("inline", "heading_icon"):
+            if self.content_wrapper.tag != "dd":
+                self.content_wrapper.tag = None
+
             self.text_container.tag = "span"
             self.image_gallery.tag = None
             self.image_gallery.image_list.tag = None
+
+            if alignment == "heading_icon":
+                heading = getattr(self, "heading", None)
+                from cocktail.styled import styled
+                print styled(heading, "cyan")
+                if heading is None:
+                    heading = Element()
+                    heading.add_class("heading")
+                    heading.add_class("blergh")
+                    self.insert(0, heading)
+                heading.insert(0, self.image_gallery)
 
             @extend(self.image_gallery)
             def create_image_entry(image_gallery, *args, **kwargs):
