@@ -2631,7 +2631,7 @@ button.TypeSelectorButton {
 .BackOfficeLayout .stack_node.top {
     border: 2px solid #ccc;
     background-color: white;
-    padding-bottom: 0.8em;
+    padding-bottom: 2em;
 }
 
 .BackOfficeLayout .stack_node.top > .label {
@@ -3292,6 +3292,10 @@ div.success_label {
 
 /* BackOfficeItemHeading
 -----------------------------------------------------------------------------*/
+.BackOfficeItemHeading {
+    margin: 1.5em 0;
+}
+
 .BackOfficeItemHeading .item_path {
     margin-left: -0.3em;
     vertical-align: top;
