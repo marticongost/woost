@@ -747,6 +747,10 @@ body.modal {
     background-color: white;
 }
 
+.BackOfficeLayout .SearchableCheckList.search_enabled.control .check_list {
+    height: 15em;
+}
+
 /* Tables
 -----------------------------------------------------------------------------*/
 
