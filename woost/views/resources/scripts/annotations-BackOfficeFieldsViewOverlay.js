@@ -7,14 +7,15 @@
 @since:			February 2014
 -----------------------------------------------------------------------------*/
 
-cocktail.bind(".Form .field[data-annotation-target]", function ($field) {
-    
+cocktail.bind(".BackOfficeFieldsView .field[data-annotation-target]", function ($field) {
+
     var $fieldInstances = $field.find(".field_instance");
     var $targetField = $field.closest(".Form").find("." + this.getAttribute("data-annotation-target") + "_field");
+    $targetField.addClass("annotationTarget");
     var $targetFieldInstances = $targetField.find(".field_instance");
 
     $fieldInstances.each(function (index) {
-        
+
         var $fieldInstance = jQuery(this);
         var $targetFieldInstance = jQuery($targetFieldInstances.get(index));
 
@@ -34,7 +35,7 @@ cocktail.bind(".Form .field[data-annotation-target]", function ($field) {
         }
 
         $textArea.change(updateContentHint);
-        updateContentHint();        
+        updateContentHint();
     });
 
     $field.remove();
