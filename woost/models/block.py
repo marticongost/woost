@@ -190,7 +190,7 @@ class Block(Item):
         if self.qname:
             block_proxy.add_class(self.qname.replace(".", "-"))
 
-        if self.heading:
+        if self.has_heading():
             self.add_heading(view)
 
         view.depends_on(self)
@@ -198,9 +198,12 @@ class Block(Item):
     def get_block_proxy(self, view):
         return view
 
+    def has_heading(self):
+        return bool(self.heading)
+
     def add_heading(self, view):
         if self.heading_type != "hidden":
-            if hasattr(view, "heading"):
+            if hasattr(view, "heading"):                
                 if isinstance(view.heading, Element):
                     if self.heading_type == "hidden_h1":
                         view.heading.tag = "h1"
@@ -209,7 +212,10 @@ class Block(Item):
                         view.heading.tag = "div"
                     else:
                         view.heading.tag = self.heading_type
-                    view.heading.append(self.heading)
+                    
+                    label = self.heading
+                    if label:
+                        view.heading.append(label)
                 else:
                     view.heading = self.heading          
             else:
@@ -231,7 +237,11 @@ class Block(Item):
             heading = Element(self.heading_type)
 
         heading.add_class("heading")
-        heading.append(self.heading)
+
+        label = self.heading
+        if label:
+            heading.append(label)
+
         return heading
 
     def is_common_block(self):

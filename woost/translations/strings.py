@@ -6678,6 +6678,12 @@ translations.define("TextBlock.image_alignment=inline",
     en = u"Inline"
 )
 
+translations.define("TextBlock.image_alignment=heading_icon",
+    ca = u"Precedint l'encapçalament",
+    es = u"Precediendo el encabezado",
+    en = u"Preceding the heading"
+)
+
 translations.define("TextBlock.image_alignment=background",
     ca = u"Imatge de fons",
     es = u"Imagen de fondo",
