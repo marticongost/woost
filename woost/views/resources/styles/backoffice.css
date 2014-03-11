@@ -3293,7 +3293,11 @@ div.success_label {
 /* BackOfficeItemHeading
 -----------------------------------------------------------------------------*/
 .BackOfficeItemHeading {
-    margin: 1.5em 0;
+    margin-bottom: 1.5em;
+}
+
+.stack_node .BackOfficeItemHeading {
+    margin-top: 1em;
 }
 
 .BackOfficeItemHeading .item_path {
