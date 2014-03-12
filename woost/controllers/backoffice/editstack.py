@@ -627,8 +627,9 @@ class EditNode(StackNode):
                 if key == "_item":
                     if value is None:
                         value = content_type()                        
-                        for language in state["visible_translations"]:
-                            value.new_translation(language)
+                        if content_type.translated:
+                            for language in state["visible_translations"]:
+                                value.new_translation(language)
 
                 setattr(self, key, value)
 
