@@ -24,7 +24,7 @@ from woost.models import (
                 CreateTranslationPermission,
                 language = language
             )
-            and language not in self.visible_translations
+            and language not in self.item_translations
         )
 
     def _ready(self):
