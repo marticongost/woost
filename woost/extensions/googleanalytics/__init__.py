@@ -55,14 +55,23 @@ class GoogleAnalyticsExtension(Extension):
     def _load(self):
         from cocktail.events import when
         from woost.controllers import CMSController
+        from woost.extensions.googleanalytics import (
+            strings,
+            document
+        )
 
         @when(CMSController.producing_output)
         def handle_producing_output(e):
-            html = e.output.get("head_end_html", "")
-            if html:
-                html += " "
-            html += self.get_analytics_script()
-            e.output["head_end_html"] = html
+            publishable = e.output.get("publishable")
+            if (
+                publishable is None 
+                or getattr(publishable, "is_ga_tracking_enabled", lambda: True)()
+            ):
+                html = e.output.get("head_end_html", "")
+                if html:
+                    html += " "
+                html += self.get_analytics_script()
+                e.output["head_end_html"] = html
 
     def get_analytics_script(self):
         return """
