@@ -140,7 +140,8 @@ class SiteInitializer(object):
         "woost.models.website.Website.https_persistence",
         "woost.models.website.Website.published_languages",
         "woost.models.website.Website.default_language",
-        "woost.models.website.Website.heed_client_language"
+        "woost.models.website.Website.heed_client_language",
+        "woost.models.block.Block.initialization"
     ]
 
     image_factories = [
