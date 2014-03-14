@@ -117,6 +117,11 @@ class Block(Item):
         member_group = "html"
     )
 
+    initialization = schema.CodeBlock(
+        language = "python",
+        member_group = "administration"
+    )
+
     def get_block_image(self):
         return self
 
@@ -178,6 +183,10 @@ class Block(Item):
             self.add_heading(view)
 
         view.depends_on(self)
+
+        initialization = self.initialization
+        if initialization:
+            exec initialization in {"block": self, "view": view}
 
     def get_block_proxy(self, view):
         return view
