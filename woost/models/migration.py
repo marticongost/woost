@@ -841,3 +841,27 @@ def remove_publication_schemes(e):
             if removed and not permission.matching_members:
                 permission.delete()
 
+#------------------------------------------------------------------------------
+
+step = MigrationStep("Restrict access to Block.initialization")
+
+@when(step.executing)
+def restrict_block_initialization(e):
+    from woost.models import Role, ReadMemberPermission
+    role = Role.require_instance(qname = "woost.everybody")
+
+    for permission in role.permissions:
+        if (
+            isinstance(permission, ReadMemberPermission)
+            and not permission.authorized
+        ):
+            break
+    else:
+        permission = ReadMemberPermission()
+        permission.authorized = False
+        permission.insert()
+
+    permission.matching_members.append(
+        "woost.models.block.Block.initialization"
+    )
+
