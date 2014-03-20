@@ -43,8 +43,7 @@ class PreviewController(EditController):
             for path in self.previewed_item.find_paths():
                 container = path[0][0]
                 if isinstance(container, Publishable):
-                    publishable = container
-                    break
+                    return container
 
     @request_property
     def preview_language(self):
