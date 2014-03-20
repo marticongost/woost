@@ -27,8 +27,8 @@ class Sentry(object):
         self.client = client
         self.tags = {
             "framework": "woost",
-            "woost": "diablo", 
-            "cocktail": "baileys"
+            "woost": "elite", 
+            "cocktail": "cointreau"
         }
 
     def get_data_from_request(self):
