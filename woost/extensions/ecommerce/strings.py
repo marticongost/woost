@@ -115,6 +115,13 @@ translations.define("ECommerceProduct.product_data",
     fr = u"Détails sur le produit"
 )
 
+translations.define("ECommerceProduct.title",
+    ca = u"Títol",
+    es = u"Título",
+    en = u"Title",
+    fr = u"Titre"
+)
+
 translations.define("ECommerceProduct.image",
     ca = u"Imatge",
     es = u"Imagen",
