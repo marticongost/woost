@@ -24,6 +24,7 @@ class ECommerceProduct(Publishable):
     type_group = "ecommerce"
 
     members_order = [
+        "title",
         "image",
         "description",
         "price",
@@ -36,6 +37,16 @@ class ECommerceProduct(Publishable):
         lambda: Controller.get_instance(
             qname = "woost.extensions.ecommerce.product_controller"
         )
+    )
+
+    title = schema.String(
+        indexed = True,
+        normalized_index = True,
+        unique = True,
+        descriptive = True,
+        translated = True,
+        required = True,
+        member_group = "product_data"
     )
 
     image = schema.Reference(
