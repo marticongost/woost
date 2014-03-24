@@ -46,7 +46,7 @@ def remove_broken_type(
                 role.hidden_content_types.remove(cls)
 
     for permission in ContentPermission.select():
-        matching_items = permission.get("matching_items")
+        matching_items = getattr(permission, "matching_items", None)
         if matching_items:
             type = matching_items.get("type")
             if type and type == full_name:
