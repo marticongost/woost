@@ -1,5 +1,4 @@
 syntax: glob
-views/resources/scripts/tinymce
 woost.egg-info
 build
 dist
