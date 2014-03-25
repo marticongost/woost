@@ -7765,3 +7765,11 @@ translations.define("PublishableListing.element_type",
     en = u"Element type"
 )
 
+# RichTextEditor
+#------------------------------------------------------------------------------
+translations.define("woost.views.RichTextEditor.styles_menu_entry",
+    ca = u"Estils",
+    es = u"Estilos",
+    en = u"Styles"
+)
+
