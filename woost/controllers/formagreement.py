@@ -25,6 +25,7 @@ def requires_agreement(form, name = "terms", document = None):
     member = schema.Boolean(
         name = name,
         required = True,
+        edit_control = "woost.views.FormAgreementCheckBox",
         __translate__ = lambda language, **kwargs:
             schema.Boolean.__translate__(member, language, **kwargs)
             or translations(

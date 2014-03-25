@@ -5853,17 +5853,11 @@ translations.define("woost.controllers.formagreement",
 translations.define(
     "woost.controllers.formagreement.ConsentNotGivenError-instance",
     ca = lambda instance:
-        u"Has d'acceptar <a href='%s' target='_blank'>els termes i "
-        u"condicions</a> del formulari" 
-        % instance.member.agreement_document.get_uri(),
+        u"Has d'acceptar els termes i condicions del formulari",
     es = lambda instance:
-        u"Debes aceptar <a href='%s' target='_blank'>los términos y "
-        u"condiciones</a> de este formulario"
-        % instance.member.agreement_document.get_uri(),
+        u"Debes aceptar los términos y condiciones de este formulario",
     en = lambda instance:
-        u"You must accept the <a href='%s' target='_blank'>terms & conditions "
-        u"</a> of the form"
-        % instance.member.agreement_document.get_uri()
+        u"You must accept the terms & conditions of the form"
 )
 
 # BackOfficeItemHeading
