@@ -41,7 +41,7 @@
     ?>
 
     <?py
-    self.add_resource("/resources/scripts/FormAgreementCheckBox.js")
+    self.add_resource("/resources/scripts/FormAgreementWithPopUp.js")
     ?>
 
     <py:cocktail.html.CheckBox
@@ -49,7 +49,7 @@
 
     <py:woost.views.Dialog
         py:id="form_agreement_dialog"
-        py:client_model="woost.views.FormAgreementCheckBox.dialog">
+        py:client_model="woost.views.FormAgreementWithPopUp.dialog">
         <py:with py:element="element.dialog_heading">@{translations(self.member.agreement_document)}</py:with>
         <py:with py:element="element.dialog_content">
             <iframe

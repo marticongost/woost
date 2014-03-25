@@ -7,9 +7,9 @@
 @since:			March 2014
 -----------------------------------------------------------------------------*/
 
-cocktail.bind(".FormAgreementCheckBox", function ($control) {
+cocktail.bind(".FormAgreementWithPopUp", function ($control) {
 
-    var $dialog = jQuery(cocktail.instantiate("woost.views.FormAgreementCheckBox.dialog"));
+    var $dialog = jQuery(cocktail.instantiate("woost.views.FormAgreementWithPopUp.dialog"));
     $dialog.find("iframe").on("load", function (e) {
         var doc = this.contentDocument || this.contentWindow && this.contentWindow.contentDocument;
         if (doc) {
