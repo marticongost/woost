@@ -18,7 +18,9 @@ class CheckoutController(FormProcessor, Controller):
 
     class CheckoutForm(ProceedForm):
         
-        model = Basket.get().get_public_schema()
+        @request_property
+        def model(self):
+            return Basket.get().get_public_schema()
 
         @request_property
         def source_instance(self):
