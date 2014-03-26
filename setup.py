@@ -94,7 +94,8 @@ of its features include:\n"
             "tv3alacarta = woost.extensions.tv3alacarta:TV3ALaCartaExtension",
             "externalfiles = woost.extensions.externalfiles:ExternalFilesExtension",
             "restrictedaccess = woost.extensions.restrictedaccess:RestrictedAccessExtension",
-            "annotations = woost.extensions.annotations:AnnotationsExtension"
+            "annotations = woost.extensions.annotations:AnnotationsExtension",
+            "notices = woost.extensions.notices:NoticesExtension",
         ]
     },
     # Woost can't yet access view resources (images, style sheets, client
