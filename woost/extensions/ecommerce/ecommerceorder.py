@@ -413,8 +413,6 @@ class ECommerceOrder(Item):
 
     @classmethod
     def get_public_adapter(cls):
-        website = get_current_website()
-
         user = get_current_user()            
         adapter = schema.Adapter()
         adapter.exclude(["website", "customer", "status", "purchases"])
