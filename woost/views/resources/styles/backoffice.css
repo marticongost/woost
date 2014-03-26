@@ -3635,12 +3635,13 @@ div.success_label {
 }
 
 .BackOfficeLayout .Form .field_instance-RichTextEditor .annotation_dropdown {
-    left: -2.6em;
-    top: -0.2em;
+    left: -2.5em;
+    top: -1.5em;
 }
 
 .BackOfficeLayout .Form .field_instance-RichTextEditor .annotation_dropdown > .panel_wrapper > .panel {
-    left: -26em;
+    top: -0.1em;
+    left: -25.2em;
     right: -1.4em;
 }
 
