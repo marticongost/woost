@@ -37,7 +37,7 @@ class TypeGroup(object):
                         break                
                 if parts[0] == "before":
                     position = index
-                elif parts[1] == "after":
+                elif parts[0] == "after":
                     position = index + 1
 
         if not isinstance(position, int):
