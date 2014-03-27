@@ -51,11 +51,6 @@
         py:id="form_agreement_dialog"
         py:client_model="woost.views.FormAgreementWithPopUp.dialog">
         <py:with py:element="element.dialog_heading">@{translations(self.member.agreement_document)}</py:with>
-        <py:with py:element="element.dialog_content">
-            <iframe
-                py:id="form_agreement_iframe"
-                src="@{self.member.agreement_document.get_uri()}"/>
-        </py:with>
     </py:woost.views.Dialog>
 </div>
 
