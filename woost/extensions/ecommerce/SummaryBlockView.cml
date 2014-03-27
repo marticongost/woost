@@ -25,6 +25,10 @@ from woost.extensions.ecommerce.basket import Basket
         ?>
     </py:ready>
 
+    <py:cocktail.html.ErrorBox
+        py:id="notification_box"
+        py:errors="@{self.form_errors}"/>
+
     <div py:id="basket_summary">
         <py:woost.extensions.ecommerce.BasketView
             py:id="basket"/>
