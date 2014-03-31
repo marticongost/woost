@@ -298,7 +298,12 @@ class CMSController(BaseCMSController):
         if publishable.per_language_publication:
             if not request.language_specified:
                 location = Location.get_current()
-                location.path_info = app.language.translate_uri()
+                uri = app.language.translate_uri()
+                # Remove the query string from the translated uri
+                pos = uri.find("?")
+                if pos != -1:
+                    uri = uri[:pos]
+                location.path_info = uri
                 location.go()
 
         # Remove the language selection from the current URI
