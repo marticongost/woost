@@ -65,7 +65,6 @@ Website.add_member(
 Website.add_member(
     schema.Reference(
         "ecommerce_default_catalog",
-        required = True,
         type = Publishable,
         related_end = schema.Collection(),
         listed_by_default = False,

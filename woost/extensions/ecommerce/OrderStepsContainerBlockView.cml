@@ -89,7 +89,9 @@ from woost.extensions.ecommerce.utils import catalog_current_state_uri
     </div>
 
     <div py:id="step_buttons">
-        <a href="@{self.previous_step_uri}" py:id="back_link">
+        <a href="@{self.previous_step_uri}" 
+            py:id="back_link" 
+            py:visible="@{self.previous_step_uri}">
             <py:ready>
                 <?py
                 if self.current_step is self.order_steps[0]:

@@ -12,6 +12,7 @@ from cocktail.controllers import (
 )
 from woost.models import Publishable, get_current_website
 from woost.extensions.ecommerce.basket import Basket
+from woost.extensions.ecommerce.ecommerceorder import ECommerceOrder
 from woost.extensions.ecommerce.orderstepcontroller import ProceedForm
 from woost.extensions.payments import PaymentsExtension
 
@@ -23,6 +24,10 @@ class SummaryController(FormProcessor, Controller):
     class SubmitOrderForm(ProceedForm):
         
         order = None
+
+        @request_property
+        def errors(self):
+            return ECommerceOrder.get_errors(Basket.get())
 
         def submit(self):
             ProceedForm.submit(self)
