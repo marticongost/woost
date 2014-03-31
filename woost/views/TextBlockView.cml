@@ -109,8 +109,6 @@ from cocktail.controllers import Location
 
             if alignment == "heading_icon":
                 heading = getattr(self, "heading", None)
-                from cocktail.styled import styled
-                print styled(heading, "cyan")
                 if heading is None:
                     heading = Element()
                     heading.add_class("heading")
