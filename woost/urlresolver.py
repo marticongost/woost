@@ -9,6 +9,7 @@
 import re
 from os.path import splitext
 from cocktail.modeling import abstractmethod
+from cocktail.stringutils import normalize
 from cocktail.translations import translations, get_language
 from cocktail.controllers import resolve_object_ref
 from woost.models import Publishable, get_current_website
@@ -245,6 +246,7 @@ class DescriptiveIdURLScheme(URLScheme):
     id_regexp = re.compile(r"(.+_)?(?P<id>[^.]+)(?P<ext>\.[a-zA-Z0-9]+)?$")
     title_splitter_regexp = re.compile(r"\W+", re.UNICODE)
     format = "%(title)s%(separator)s%(id)d"
+    normalize = False
     include_file_extensions = True
 
     _uri_encodings = ["utf-8", "iso-8859-1"]
@@ -312,6 +314,9 @@ class DescriptiveIdURLScheme(URLScheme):
             title = None
 
         if title:
+            if self.normalize:
+                title = normalize(title)
+
             title = self.title_splitter_regexp.sub(
                 self.word_separator,
                 title
