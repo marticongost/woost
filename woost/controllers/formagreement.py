@@ -9,18 +9,15 @@ from cocktail.schema.exceptions import ValidationError
 from woost import app
 from woost.models import Publishable
 
-def requires_agreement(form, name = "terms", document = None):
+default_document = object()
 
-    if document is None:
+def requires_agreement(form, name = "terms", document = default_document):
+
+    if document is default_document:
         document = "%s.%s" % (app.package, name)
 
     if isinstance(document, basestring):
         document = Publishable.require_instance(qname = document)
-
-    if document is None:
-        raise ValueError(
-            "Must specify a document detailing the end user agreement"
-        )
 
     member = schema.Boolean(
         name = name,
