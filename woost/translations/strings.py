@@ -5835,19 +5835,37 @@ translations.define("Grayscale",
 translations.define("woost.controllers.formagreement",
     ca = lambda member:
         u"He llegit i accepto "
-        u"<a href='%s' target='_blank'>els termes i condicions</a> "
-        u"d'aquest formulari"
-        % member.agreement_document.get_uri(),
+        + (
+            (
+                u"<a href='%s' target='_blank'>els termes i condicions</a> "
+                % member.agreement_document.get_uri()
+            )
+            if member.agreement_document
+            else u"els termes i condicions "
+        )
+        + u"d'aquest formulari",
     es = lambda member:
         u"He leído y acepto "
-        u"<a href='%s' target='_blank'>los términos y condiciones</a> "
-        u"de este formulario"
-        % member.agreement_document.get_uri(),
+        + (
+            (
+                u"<a href='%s' target='_blank'>los términos y condiciones</a> "
+                % member.agreement_document.get_uri()
+            )
+            if member.agreement_document
+            else u"los términos y condiciones "
+        )        
+        + u"de este formulario",
     en = lambda member:
         u"I have read and agree to the "
-        u"<a href='%s' target='_blank'>terms and conditions</a> "
-        u"of this form"
-        % member.agreement_document.get_uri()
+        + (
+            (
+                u"<a href='%s' target='_blank'>terms and conditions</a> "
+                % member.agreement_document.get_uri()
+            )
+            if member.agreement_document
+            else u"terms and conditions "
+        )
+        + u"of this form"
 )
 
 translations.define(
