@@ -95,15 +95,9 @@ class Item(PersistentObject):
 
         # Assign a global ID for the object (unless one was passed in as a
         # keyword parameter)
-        if not self.global_id:
-            if not app.installation_id:
-                raise ValueError(
-                    "No value set for woost.app.installation_id; "
-                    "make sure your settings file specifies a unique "
-                    "identifier for this installation of the site."
-                )
-            self.global_id = "%s-%d" % (app.installation_id, self.id)
-
+        if self.global_id is None and self.id:
+            self._generate_global_id()
+            
     @event_handler
     def handle_inherited(cls, e):
         if (
@@ -134,6 +128,17 @@ class Item(PersistentObject):
         listed_by_default = False,
         member_group = "administration"
     )
+
+    def _generate_global_id(self):
+
+        if not app.installation_id:
+            raise ValueError(
+                "No value set for woost.app.installation_id; "
+                "make sure your settings file specifies a unique "
+                "identifier for this installation of the site."
+            )
+    
+        self.global_id = "%s-%d" % (app.installation_id, self.id)
 
     synchronizable = schema.Boolean(
         required = True,
@@ -363,6 +368,13 @@ class Item(PersistentObject):
                     change.item_state[member_name] = value
         elif update_timestamp:
             item.last_update_time = now
+
+        if (
+            event.member is cls.primary_member
+            and not item._v_initializing
+            and item.global_id is None
+        ):
+            item._generate_global_id()
 
     @event_handler
     def handle_deleting(cls, event):
