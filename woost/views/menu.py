@@ -60,6 +60,14 @@ class Menu(TreeView):
     def get_item_uri(self, item):
         return item.get_uri(host = "!")
 
+    def create_entry(self, item):
+        entry = TreeView.create_entry(self, item)
+
+        if item.qname:
+            entry.add_class("menu-entry-%s" % item.qname.replace(".", "-"))
+
+        return entry
+
     def create_label(self, item):
         
         if self.should_link(item):
