@@ -43,7 +43,7 @@ from woost.models import Configuration, get_current_website
                     element.visible = False
                 ?>
             </py:ready>
-            <a href="@{self._home.get_uri()}" style="position: relative">
+            <a py:id="site_home_link" href="@{self._home.get_uri()}" style="position: relative">
                 <py:woost.views.Image
                     py:id="logo"
                     py:image="@{self._logo}"
