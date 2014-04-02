@@ -27,7 +27,7 @@ class SummaryController(FormProcessor, Controller):
 
         @request_property
         def errors(self):
-            return ECommerceOrder.get_errors(Basket.get())
+            return schema.ErrorList(ECommerceOrder.get_errors(Basket.get()))
 
         def submit(self):
             ProceedForm.submit(self)
