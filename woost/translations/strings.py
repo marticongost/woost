@@ -4890,6 +4890,31 @@ translations.define("EmailTemplate.initialization_code-explanation",
          u"translations)."
 )
 
+translations.define("EmailTemplate.language",
+    ca = u"Idioma del missatge",
+    es = u"Idioma del mensaje",
+    en = u"Message language"
+)
+
+translations.define("EmailTemplate.language-explanation",
+    ca = u"Deixar en blanc per enviar el missatge en l'idioma que estigui "
+         u"actiu en el moment. Si es vol forçar l'idioma en que s'hauria "
+         u"d'enviar el missatge es pot especificar una expressió Python "
+         u"que produeixi el codi ISO de l'idioma desitjat. Cal tindre present"
+         u"que aquesta expressió s'evalua abans que el camp <em>codi "
+         u"d'inicialització</em>.",
+    es = u"Dejar en blanco para enviar el mensaje en el idioma que esté "
+         u"activo en el momento. Si se quiere forzar el idioma en que se "
+         u"debería enviar el mensaje se puede especificar una expresión "
+         u"Python que produzca el código ISO del idioma deseado. Hay que "
+         u"tener presente que esta expresión se evalua antes que el campo "
+         u"<em>código de inicialización</em>.",
+    en = u"Leave it blank to send the message in the presently active "
+         u"language. A Python expression can be used to produce the ISO code "
+         u"of the desired language. Note that this expression will be "
+         u"evaluated before the <em>initialization code</em> field."
+)
+
 # Feed
 #------------------------------------------------------------------------------
 translations.define("Feed",
