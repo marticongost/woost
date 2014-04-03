@@ -59,46 +59,28 @@ class SignUpExtension(Extension):
 
     def _load(self):
         
-        from woost.models import User
         from woost.extensions.signup import (
-            signuppage,
-            signupcontroller,
+            signupblock,
+            user,
             strings
         )
 
-        # Extend User model
-        if not hasattr(User, "confirmed_email"):
-            User.add_member(
-                schema.Boolean(
-                    "confirmed_email",
-                    default = False,
-                    Required = True
-                )
-            )
-        
         self.install()
 
     def _install(self):
 
         from woost.models import (
             extension_translations,
+            Configuration,
             User,
             Controller,
             Document,
-            StandardPage,
-            Template,
-            EmailTemplate
+            Page,
+            EmailTemplate,
+            TextBlock
         )
-        from woost.extensions.signup.signuppage import SignUpPage
+        from woost.extensions.signup.signupblock import SignUpBlock
 
-        signup_controller = self._create_asset(
-            Controller,
-            "signup_controller",
-            python_name =
-                "woost.extensions.signup.signupcontroller.SignUpController",
-            title = extension_translations
-        )
-        
         signup_confirmation_controller = self._create_asset(
             Controller,
             "signup_confirmation_controller",
@@ -108,53 +90,64 @@ class SignUpExtension(Extension):
             title = extension_translations
         )
 
-        signup_view = self._create_asset(
-            Template,
-            "signup_template",
-            identifier = "woost.extensions.signup.SignUpView",
-            engine = u"cocktail",
-            title = extension_translations
-        )
-
-        signup_confirmation_view = self._create_asset(
-            Template,
-            "signup_confirmation_template",
-            identifier = u"woost.extensions.signup.SignUpConfirmationView",
-            engine = u"cocktail",
-            title = extension_translations
-        )
-
         confirmation_email_template = self._create_asset(
             EmailTemplate,
             "signup_confirmation_email_template",
-            python_name =
-                u"woost.extensions.signup.signupconfirmationemailtemplate."
-                "SignUpConfirmationEmailTemplate",
             template_engine = u"mako",
-            sender = User.require_instance(qname="woost.administrator").email,
+            sender = "'%s'" % User.require_instance(qname="woost.administrator").email,
             receivers = u"[user.email]",
             title = extension_translations,
             subject = extension_translations,
             body = extension_translations
         )
 
-        confirmation_target = self._create_asset(
-            StandardPage,
-            "signup_confirmation_target",
+        pending_page = self._create_asset(
+            Page,
+            "signup_pending_page",
+            title = extension_translations,
+            hidden = True,
+            blocks = [
+                self._create_asset(
+                    TextBlock,
+                    "signup_pending_text_block",
+                    text = extension_translations
+                )
+            ]
+        )
+
+        confirmation_page = self._create_asset(
+            Page,
+            "signup_confirmation_page",
             title = extension_translations,
             controller = signup_confirmation_controller,
-            template = signup_confirmation_view,
-            hidden = True
+            hidden = True,
+            blocks = [
+                self._create_asset(
+                    TextBlock,
+                    "signup_confirmation_text_block",
+                    text = extension_translations
+                )
+            ]
         )
 
         signup_page = self._create_asset(
-            SignUpPage,
+            Page,
             "signup_page",
             title = extension_translations,
-            user_type = User,
-            confirmation_target = confirmation_target,
-            parent = Document.get_instance(qname="woost.home"),
+            parent = Configuration.instance.websites[0].home,
+            hidden = True,
+            blocks = [
+                self._create_asset(
+                    SignUpBlock,
+                    "signup_block",
+                    user_type = User,
+                    confirmation_email_template = confirmation_email_template,
+                    confirmation_page = confirmation_page,
+                    pending_page = pending_page,
+                    controller = "woost.extensions.signup.signupcontroller.SignUpController"
+                )
+            ]
         )
 
-        signup_page.children.append(confirmation_target)
+        signup_page.children.append(pending_page, confirmation_page)
 
