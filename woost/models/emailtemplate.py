@@ -16,6 +16,7 @@ from email.Header import Header
 from email.Utils import formatdate, parseaddr, formataddr
 from email import Encoders
 from cocktail import schema
+from cocktail.translations import language_context
 from .item import Item
 from .configuration import Configuration
 from .file import File
@@ -35,6 +36,7 @@ class EmailTemplate(Item):
         "template_engine",
         "subject",
         "body",
+        "language",
         "initialization_code"
     ]
 
@@ -97,6 +99,10 @@ class EmailTemplate(Item):
         language = "python"
     )
 
+    language = schema.CodeBlock(
+        language = "python"
+    )
+    
     def send(self, context = None):
 
         if context is None:
@@ -116,114 +122,121 @@ class EmailTemplate(Item):
         if pos != -1:
             mime_type = mime_type[pos + 1:]
 
-        # Custom initialization code
-        init_code = self.initialization_code
-        if init_code:
-            exec init_code in context
+        # Language (python expression)
+        language = eval_member("language")
+        if language not in self.translations:
+            language = None
 
-        # Subject and body (templates)
-        if self.template_engine:
-            template_engine = buffet.available_engines[self.template_engine]
-            engine = template_engine(
-                options = {"mako.output_encoding": self.encoding}
-            )
+        with language_context(language):
 
-            def render(field_name):
-                markup = self.get(field_name)
-                if markup:
-                    template = engine.load_template(
-                        "EmailTemplate." + field_name,
-                        self.get(field_name)
-                    )
-                    return engine.render(context, template = template)                    
-                else:
-                    return u""
-           
-            subject = render("subject").strip()
-            body = render("body")
-        else:
-            subject = self.subject.encode(self.encoding)
-            body = self.body.encode(self.encoding)
-            
-        message = MIMEText(body, _subtype = mime_type, _charset = self.encoding)
+            # Custom initialization code
+            init_code = self.initialization_code
+            if init_code:
+                exec init_code in context
 
-        # Attachments
-        attachments = context.get("attachments")
-        if attachments:
-            attachments = dict(
-                (cid, attachment) 
-                for cid, attachment in attachments.iteritems()
-                if attachment is not None
-            )
-            if attachments:
-                message_text = message
-                message = MIMEMultipart("related")
-                message.attach(message_text)
+            # Subject and body (templates)
+            if self.template_engine:
+                template_engine = buffet.available_engines[self.template_engine]
+                engine = template_engine(
+                    options = {"mako.output_encoding": self.encoding}
+                )
 
-                for cid, attachment in attachments.iteritems():
-                    
-                    if isinstance(attachment, File):
-                        file_path = attachment.file_path
-                        file_name = attachment.file_name
-                        mime_type = attachment.mime_type
+                def render(field_name):
+                    markup = self.get(field_name)
+                    if markup:
+                        template = engine.load_template(
+                            "EmailTemplate." + field_name,
+                            self.get(field_name)
+                        )
+                        return engine.render(context, template = template)                    
                     else:
-                        file_path = attachment
-                        file_name = os.path.basename(file_path)
-                        mime_type_guess = guess_type(file_path)
-                        if mime_type_guess:
-                            mime_type = mime_type_guess[0]
+                        return u""
+               
+                subject = render("subject").strip()
+                body = render("body")
+            else:
+                subject = self.subject.encode(self.encoding)
+                body = self.body.encode(self.encoding)
+                
+            message = MIMEText(body, _subtype = mime_type, _charset = self.encoding)
+
+            # Attachments
+            attachments = context.get("attachments")
+            if attachments:
+                attachments = dict(
+                    (cid, attachment) 
+                    for cid, attachment in attachments.iteritems()
+                    if attachment is not None
+                )
+                if attachments:
+                    message_text = message
+                    message = MIMEMultipart("related")
+                    message.attach(message_text)
+
+                    for cid, attachment in attachments.iteritems():
+                        
+                        if isinstance(attachment, File):
+                            file_path = attachment.file_path
+                            file_name = attachment.file_name
+                            mime_type = attachment.mime_type
                         else:
-                            mime_type = "application/octet-stream"
+                            file_path = attachment
+                            file_name = os.path.basename(file_path)
+                            mime_type_guess = guess_type(file_path)
+                            if mime_type_guess:
+                                mime_type = mime_type_guess[0]
+                            else:
+                                mime_type = "application/octet-stream"
 
-                    main_type, sub_type = mime_type.split('/', 1)
-                    message_attachment = MIMEBase(main_type, sub_type)
-                    message_attachment.set_payload(open(file_path).read())
-                    Encoders.encode_base64(message_attachment)
-                    message_attachment.add_header("Content-ID", "<%s>" % cid)
-                    message_attachment.add_header(
-                        'Content-Disposition',
-                        'attachment; filename="%s"' % file_name
-                    )
-                    message.attach(message_attachment)
+                        main_type, sub_type = mime_type.split('/', 1)
+                        message_attachment = MIMEBase(main_type, sub_type)
+                        message_attachment.set_payload(open(file_path).read())
+                        Encoders.encode_base64(message_attachment)
+                        message_attachment.add_header("Content-ID", "<%s>" % cid)
+                        message_attachment.add_header(
+                            'Content-Disposition',
+                            'attachment; filename="%s"' % file_name
+                        )
+                        message.attach(message_attachment)
 
-        def format_email_address(address, encoding):
-            name, address = parseaddr(address)
-            name = Header(name, encoding).encode()
-            address = address.encode('ascii')
-            return formataddr((name, address))
+            def format_email_address(address, encoding):
+                name, address = parseaddr(address)
+                name = Header(name, encoding).encode()
+                address = address.encode('ascii')
+                return formataddr((name, address))
 
-         # Receivers (python expression)
-        receivers = eval_member("receivers")
-        if receivers:
-            receivers = set(r.strip().encode(self.encoding) for r in receivers) 
+             # Receivers (python expression)
+            receivers = eval_member("receivers")
+            if receivers:
+                receivers = set(r.strip().encode(self.encoding) for r in receivers) 
 
-        if not receivers:
-            return set()
- 
-        message["To"] = ", ".join([
-            format_email_address(receiver, self.encoding) 
-            for receiver in receivers
-        ])
+            if not receivers:
+                return set()
+     
+            message["To"] = ", ".join([
+                format_email_address(receiver, self.encoding) 
+                for receiver in receivers
+            ])
 
-        # Sender (python expression)
-        sender = eval_member("sender")
-        if sender:
-            message['From'] = format_email_address(sender, self.encoding)
+            # Sender (python expression)
+            sender = eval_member("sender")
+            if sender:
+                message['From'] = format_email_address(sender, self.encoding)
 
-        # BCC (python expression)
-        bcc = eval_member("bcc")
-        if bcc:
-            receivers.update(r.strip().encode(self.encoding) for r in bcc)
+            # BCC (python expression)
+            bcc = eval_member("bcc")
+            if bcc:
+                receivers.update(r.strip().encode(self.encoding) for r in bcc)
 
-        if subject:
-            message["Subject"] = Header(subject, self.encoding).encode()
+            if subject:
+                message["Subject"] = Header(subject, self.encoding).encode()
 
-        message["Date"] = formatdate()
+            message["Date"] = formatdate()
 
-        # Send the message        
-        smtp = Configuration.instance.connect_to_smtp()
-        smtp.sendmail(sender, list(receivers), message.as_string())
-        smtp.quit()
+            # Send the message        
+            smtp = Configuration.instance.connect_to_smtp()
+            smtp.sendmail(sender, list(receivers), message.as_string())
+            smtp.quit()
 
         return receivers
 
