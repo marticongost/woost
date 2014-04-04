@@ -15,6 +15,7 @@ TinyMCE = templates.get_class("cocktail.html.TinyMCE")
 
 class RichTextEditor(TinyMCE):
 
+    styles = None
     tinymce_params = {
         "setup": "woost.richTextEditor.init",
         "plugins": "table link image fullscreen code "
@@ -61,9 +62,15 @@ class RichTextEditor(TinyMCE):
         TinyMCE._build(self)
         self.add_resource("/resources/scripts/RichTextEditor.js")
 
+    def _get_default_styles(self):
+        return list(Style.select({"applicable_to_text": True}))
+
     def _ready(self):
 
-        styles = list(Style.select({"applicable_to_text": True}))
+        styles = self.styles
+        if styles is None:
+            styles = self._get_default_styles()
+
         if styles:
             self.tinymce_params.setdefault("style_formats", [{
                 "title": translations(
