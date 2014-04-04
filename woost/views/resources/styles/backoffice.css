@@ -1228,6 +1228,10 @@ body.scripted .BackOfficeLayout .Table .row_selection_control {
     padding-top: 0.2em;
 }
 
+.BackOfficeLayout .toolbar .action_button.DropdownPanel .label {
+    display: inline;
+}
+
 .BackOfficeLayout .toolbar button.action_button {
     border: none;
     background: none;

@@ -6,6 +6,7 @@ u"""
 @organization:	Whads/Accent SL
 @since:			July 2008
 """
+import cherrypy
 from cocktail import schema
 from cocktail.events import event_handler
 from cocktail.html import templates
@@ -151,15 +152,23 @@ class Document(Publishable):
         mode = self.redirection_mode
 
         if mode == "first_child":
-            for child in self.children:
-                if child.is_accessible():
-                    if isinstance(child, Document):
-                        return child.find_redirection_target() or child
-                    else:
-                        return child
+            return self.find_first_child_redirection_target()
 
         elif mode == "custom_target":
             return self.redirection_target
+
+    def find_first_child_redirection_target(self):
+        for child in self.children:
+            if child.is_accessible():
+                if isinstance(child, Document):
+                    return child.find_redirection_target() or child
+                else:
+                    return child
+
+    def first_child_redirection(self):
+        child = self.find_first_child_redirection_target()
+        if child is not None:
+            raise cherrypy.HTTPRedirect(child.get_uri())
 
     @event_handler
     def handle_related(cls, event):
