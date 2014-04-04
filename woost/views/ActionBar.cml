@@ -39,6 +39,7 @@ from woost.controllers.backoffice.useractions import (
         if panel:
             action_button = loader.new("cocktail.html.DropdownPanel")
             label = action_button.label
+            action_button.panel.append(panel)
         else:
             action_button = label = Element()
         
