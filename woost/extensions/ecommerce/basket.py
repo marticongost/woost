@@ -48,7 +48,8 @@ class Basket(object):
 
             cherrypy.request.woost_ecommerce_order = order
 
-        order.customer = get_current_user()
+        if order:
+            order.customer = get_current_user()
         return order
     
     @classmethod
