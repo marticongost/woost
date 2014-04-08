@@ -128,7 +128,14 @@ class ECommerceExtension(Extension):
                         for purchase in order.purchases]
                     }
                 }
-                if order else None
+                if order else {
+                    "order": {
+                        "count_label": translations(
+                            "woost.extensions.ecommerce.BasketIndicator",
+                            count = 0
+                        )
+                    }
+                }
             )
 
         CMSController.ecommerce_state = ecommerce_state
