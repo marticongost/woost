@@ -529,6 +529,22 @@ class Item(PersistentObject):
         global_id
     ])
 
+    def get_member_copy_mode(self, member):
+
+        from woost.models import Block
+        mode = PersistentObject.get_member_copy_mode(self, member)
+
+        if (
+            mode
+            and mode != schema.DEEP_COPY
+            and isinstance(member, schema.RelationMember)
+            and member.is_persistent_relation
+            and issubclass(member.related_type, Block)
+        ):
+            mode = lambda block, member, value: not value.is_common_block()
+
+        return mode
+
     # Caching and invalidation
     #--------------------------------------------------------------------------
     cacheable = False
