@@ -279,7 +279,6 @@ class UserAction(object):
             otherwise.
         @rtype: bool
         """
-        
         # Context filters
         def match(tokens):
             for token in tokens:
@@ -1037,7 +1036,7 @@ class PasteBlockAction(UserAction):
                     or allows_block_type(
                         Block.require_instance(clipboard["block"]).__class__
                     )
-                ):
+                ):                    
                     return True
 
         return False
@@ -1139,8 +1138,8 @@ InstallationSyncAction("installation_sync").register()
 CopyBlockAction("copy_block").register()
 CutBlockAction("cut_block").register()
 PasteBlockAction("paste_block").register()
-PasteBlockBeforeAction("paste_block_before")
-PasteBlockAfterAction("paste_block_after")
+PasteBlockBeforeAction("paste_block_before").register()
+PasteBlockAfterAction("paste_block_after").register()
 ShareBlockAction("share_block").register()
 RemoveBlockAction("remove_block").register()
 DeleteAction("delete").register()
