@@ -881,3 +881,21 @@ def remove_publication_schemes(e):
         for language in block.translations:
             block.set("translation_enabled", True, language)
 
+#------------------------------------------------------------------------------
+
+step = MigrationStep("Initialize last_translation_update_time")
+
+@when(step.executing)
+def initialize_last_translation_update_time(e):
+
+    from datetime import datetime
+    from woost.models import Item
+    now = datetime.now()
+
+    for item in Item.select():
+        if item.__class__.translated:
+            for lang in item.translations:
+                last_update = item.get("last_translation_update_time", lang)
+                if last_update is None:
+                    item.set("last_translation_update_time", now, lang)
+
