@@ -25,7 +25,6 @@ from woost.models import (
     delete_validating,
     ReadTranslationPermission
 )
-from woost.controllers.notifications import notify_user, pop_user_notifications
 from woost.controllers.backoffice.editstack import RelationNode, EditNode
 from woost.controllers.backoffice.useractions import get_user_action
 from woost.controllers.backoffice.basebackofficecontroller \
