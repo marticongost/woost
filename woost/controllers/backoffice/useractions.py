@@ -603,7 +603,6 @@ class OpenResourceAction(UserAction):
     ])
     excluded = frozenset([
         "new",
-        "draft",
         "selector",
         "calendar_content_view",
         "workflow_graph_content_view",
