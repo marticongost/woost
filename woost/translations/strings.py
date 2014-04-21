@@ -199,7 +199,13 @@ translations.define("woost.actions.save",
     en = u"Save"
 )
 
-translations.define("woost.actions.save.shortcut",
+translations.define("woost.actions.save_and_close",
+    ca = u"Desar i tancar",
+    es = u"Guardar y cerrar",
+    en = u"Save and close"
+)
+
+translations.define("woost.actions.save_and_close.shortcut",
     ca = u"s",
     es = u"g",
     en = u"s"

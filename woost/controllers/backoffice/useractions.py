@@ -808,6 +808,7 @@ class SaveAction(UserAction):
     ignores_selection = True
     max = None
     min = None
+    close = False
 
     def is_permitted(self, user, target):
         if target.is_inserted:
@@ -829,7 +830,7 @@ class SaveAction(UserAction):
             yield error
 
     def invoke(self, controller, selection):
-        controller.save_item()
+        controller.save_item(close = self.close)
 
 
 def focus_block(block):
@@ -1147,6 +1148,9 @@ ExportAction("export_xls", "msexcel").register()
 InvalidateCacheAction("invalidate_cache").register()
 ReferencesAction("references").register()
 OpenResourceAction("open_resource").register()
+save_and_close = SaveAction("save_and_close")
+save_and_close.close = True
+save_and_close.register()
 CloseAction("close").register()
 CancelAction("cancel").register()
 SaveAction("save").register()
