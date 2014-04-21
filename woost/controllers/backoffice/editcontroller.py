@@ -128,7 +128,7 @@ class EditController(BaseBackOfficeController):
                 self.relation_selection
             )
 
-    def save_item(self):
+    def save_item(self, close = False):
 
         for i in range(self.MAX_TRANSACTION_ATTEMPTS):
             user = get_current_user()
@@ -154,6 +154,15 @@ class EditController(BaseBackOfficeController):
 
         change = changeset.changes.get(item.id) if changeset else None
 
+        # Creating a new nested object: relate the created item to its owner
+        if is_new and isinstance(stack_node.parent_node, RelationNode):
+            member = stack_node.parent_node.member
+            parent_edit_node = stack_node.get_ancestor_node(EditNode)
+            parent_edit_node.relate(member, item)
+
+        # User notification
+        stack_node.item_saved_notification(is_new, change)
+
         # Edit stack event
         stack_node.committed(
             user = user,
@@ -169,32 +178,12 @@ class EditController(BaseBackOfficeController):
                 change = change
             )
 
-        # User notification
-        stack_node.item_saved_notification(is_new, change)
-
-        # A new item was created
-        if is_new:
-
-            # The edit operation was the root of the edit stack; redirect the
-            # browser to the new item
-            if len(self.edit_stack) == 1:
-                if self.edit_stack.root_url:
-                    self.edit_stack.go_back()
-                else:
-                    raise cherrypy.HTTPRedirect(
-                        self.edit_uri(item)
-                    )
-
-            # The edit operation was nested; relate the created item to its
-            # owner, and redirect the browser to the owner
-            elif isinstance(stack_node.parent_node, RelationNode):
-                member = stack_node.parent_node.member
-                parent_edit_node = stack_node.get_ancestor_node(EditNode)
-                parent_edit_node.relate(member, item)
-                self.edit_stack.go(-3)
-
-        if stack_node.parent_node is None and self.edit_stack.root_url:
-            self.edit_stack.go_back()
+        # Close the current node, or redirect to it using a GET request (to
+        # prevent double posts)
+        if close:
+            self.go_back()
+        else:
+            raise cherrypy.HTTPRedirect(self.edit_uri(item))
 
     def _apply_changes(self, item):
         

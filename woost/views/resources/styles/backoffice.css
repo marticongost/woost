@@ -1928,6 +1928,7 @@ body.scripted .BackOfficeLayout .ThumbnailsContentView .collection_display input
 
 .BackOfficeLayout .toolbar .preview_action,
 .BackOfficeLayout .toolbar .save_action,
+.BackOfficeLayout .toolbar .save_and_close_action,
 .BackOfficeLayout .toolbar .close_action,
 .BackOfficeLayout .toolbar .cancel_action {
     float: right;
