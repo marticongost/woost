@@ -915,7 +915,6 @@ class EditNode(StackNode):
             item = item,
             is_new = is_new
         )        
-        transient = True
 
         if is_new and self.parent_node is None:
             controller = cherrypy.request.handler_chain[-1]
@@ -925,9 +924,8 @@ class EditNode(StackNode):
                     "woost.views.BackOfficeEditView Create another"
                 )
             )
-            transient = False
 
-        notify_user(msg, "success", transient)
+        notify_user(msg, "success", transient = False)
 
 
 class SelectionNode(StackNode):

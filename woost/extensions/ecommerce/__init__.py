@@ -301,11 +301,11 @@ class ECommerceExtension(Extension):
             qname = "woost.administrator"
         ).email
         template.receivers = '[items[0].customer.email]'
-        template.embeded_images = """
+        template.initialization_code = """
 from woost.models import Configuration
 logo = Configuration.instance.get_setting("logo")
 if logo:
-    images["logo"] = logo
+    attachments["logo"] = logo
 """
         template.template_engine = "mako"
 
