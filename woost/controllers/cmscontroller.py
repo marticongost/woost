@@ -549,10 +549,10 @@ class CMSController(BaseCMSController):
                 while publishable is not None:
                     login_page = publishable.login_page
                     if login_page is not None:
-                        return login_page, 200
+                        return login_page, 403
                     publishable = publishable.parent
 
-                return site.login_page, 200
+                return site.login_page, 403
             else:
                 return site.forbidden_error_page, 403
         
