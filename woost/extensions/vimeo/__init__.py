@@ -13,6 +13,7 @@ from cocktail.events import event_handler
 from cocktail.translations import translations
 from cocktail import schema
 from woost.models import (
+    Site,
     Extension,
     get_current_user,
     CreatePermission,
@@ -67,7 +68,6 @@ class VimeoExtension(Extension):
             video,
             strings,
             useraction,
-            vimeovideorenderer,
             migration
         )
 
@@ -77,6 +77,28 @@ class VimeoExtension(Extension):
         from woost.extensions.vimeo.synccontroller import SyncVimeoController
 
         BackOfficeController.sync_vimeo = SyncVimeoController
+
+        self.install()
+
+    def _install(self):
+        self._create_renderers()
+
+    def _create_renderers(self):
+
+        from woost.extensions.vimeo.vimeovideorenderer \
+            import VimeoVideoRenderer                                                                                                         
+
+        # Look for the first chain renderer
+        for renderer in Site.main.renderers:
+            if isinstance(renderer, ChainRenderer):
+
+                # Add the renderer for Vimeo videos
+                vimeo_renderer = VimeoVideoRenderer()
+                vimeo_renderer.insert()
+                renderer.renderers.append(vimeo_renderer)
+
+                break
+
 
     def synchronize(self, user_name, restricted = False):
         """Synchronizes the list of videos of the given Vimeo account with the
