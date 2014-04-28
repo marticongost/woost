@@ -16,6 +16,15 @@ Configuration.add_member(
 )
 
 Configuration.add_member(
+    schema.String("google_analytics_domain",
+        text_search = False,
+        member_group = "services.google_analytics",
+        synchronizable = False,
+        listed_by_default = False
+    )
+)
+
+Configuration.add_member(
     schema.String("google_analytics_api",
         required = True,
         enumeration = ["ga.js", "universal"],
