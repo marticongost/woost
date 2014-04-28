@@ -84,8 +84,8 @@ class GoogleAnalyticsExtension(Extension):
             """
             <script type="text/javascript">
                 var _gaq = _gaq || [];
-                _gaq.push(['_setAccount', '%(account)s']);
-                %(commands)s                
+                %(create_tracker_command)s
+                %(commands)s
                 (function() {
                 var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
                 ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
@@ -97,7 +97,7 @@ class GoogleAnalyticsExtension(Extension):
             """
             <script type="text/javascript" src="http://www.google-analytics.com/ga.js"></script>
             <script type="text/javascript">
-                _gaq.push(['_setAccount', '%(account)s']);
+                %(create_tracker_command)s
                 %(commands)s
             </script>
             """,
@@ -108,7 +108,7 @@ class GoogleAnalyticsExtension(Extension):
               (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
               m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
               })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-              ga("create", "%(account)s");
+              %(create_tracker_command)s
               %(commands)s
             </script>
             """,
@@ -119,7 +119,7 @@ class GoogleAnalyticsExtension(Extension):
               (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
               m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
               })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-              ga("create", "%(account)s");
+              %(create_tracker_command)s;
               ga(function () {
                   %(commands)s
               });
@@ -145,6 +145,8 @@ class GoogleAnalyticsExtension(Extension):
             api = api,
             publishable = publishable,
             account = config.get_setting("google_analytics_account"),
+            tracker_parameters = None if classic_api else {},
+            domain = config.get_setting("google_analytics_domain"),
             template =
                 self.inclusion_code[api + ("-async" if async else "-sync")],
             values = 
@@ -152,13 +154,32 @@ class GoogleAnalyticsExtension(Extension):
             commands = commands or []
         )
 
-        parameters = {"account": event.account}
+        if not event.account:
+            return ""
 
+        commands = event.commands
+        parameters = {}
+        
         if classic_api:
-            parameters["commands"] = \
-                self._serialize_ga_commands(event.commands)
+            create_commands = [("_setAccount", event.account)]
+
+            if event.domain:
+                create_commands.append(("_setDomainName", event.domain))
+
+            parameters["create_tracker_command"] = \
+                self._serialize_ga_commands(create_commands)
+
+            parameters["commands"] = self._serialize_ga_commands(commands)
         else:
-            commands = event.commands
+            if event.domain:
+                event.tracker_parameters["cookieDomain"] = event.domain
+
+            parameters["create_tracker_command"] = \
+                self._serialize_universal_commands([(
+                    "create",
+                    event.account,
+                    event.tracker_parameters
+                )])
 
             if event.values:
                 commands.insert(0, ("set", event.values))
