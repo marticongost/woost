@@ -861,7 +861,7 @@ def restrict_block_initialization(e):
         permission.authorized = False
         permission.insert()
 
-    permission.matching_members.append(
+    permission.matching_members.add(
         "woost.models.block.Block.initialization"
     )
 
