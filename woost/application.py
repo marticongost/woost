@@ -9,9 +9,11 @@ from cocktail.caching import Cache
 
 
 class Application(object):
-    
+
+    __package = None
     __root = None
     __icon_resolver = None
+    __custom_icon_repository = None
 
     __language = None
     __authentication = None
@@ -27,31 +29,43 @@ class Application(object):
 
     def _set_package(self, package):
         self.__package = package
-        self.root = resource_filename(package, "")
+        self.__add_custom_icon_repository()
 
     package = property(_get_package, _set_package)
 
     def _get_root(self):
+        if self.__root is None and self.__package:
+            return resource_filename(self.__package, "")
+
         return self.__root
 
     def _set_root(self, root):
-        
-        if self.__root:            
-            old_path = self.path("views", "resources", "images", "icons")
-            for path, url in self.icon_resolver.icon_repositories:
-                if path == old_path:
-                    self.icon_resolver.icon_repositories.remove((path, url))
-
         self.__root = root
-
-        if root:
-            # Add an application specific icon repository
-            self.icon_resolver.icon_repositories.insert(
-                0, (self.path("views", "resources", "images", "icons"),
-                    "/" + self.package + "_resources/images/icons")
-            )
+        self.__add_custom_icon_repository()
 
     root = property(_get_root, _set_root)
+
+    def __add_custom_icon_repository(self):
+
+        root = self.root
+        package = self.package
+
+        if root and package:
+            repository = (
+                self.path("views", "resources", "images", "icons"),
+                "/" + self.package + "_resources/images/icons"
+            )
+
+            if (
+                self.__custom_icon_repository is not None
+                and self.__custom_icon_repository != repository
+            ):
+                self.icon_resolver.icon_repositories.remove(
+                    self.__custom_icon_repository
+                )
+
+            self.__custom_icon_repository = repository
+            self.icon_resolver.icon_repositories.insert(0, repository)
 
     @property
     def icon_resolver(self):
@@ -61,8 +75,6 @@ class Application(object):
         return self.__icon_resolver
 
     # Language scheme
-    __language = None
-
     def _get_language(self):
         if self.__language is None:
             from woost.languagescheme import LanguageScheme
@@ -75,8 +87,6 @@ class Application(object):
     language = property(_get_language, _set_language)
 
     # Authentication scheme
-    __authentication = None
-
     def _get_authentication(self):
         if self.__authentication is None:
             from woost.authenticationscheme import AuthenticationScheme
@@ -90,4 +100,25 @@ class Application(object):
 
     # Caching
     cache = Cache()
+
+    # URLs
+    __url_resolver = None
+
+    def _get_url_resolver(self):
+        if self.__url_resolver is None:
+            from woost.urlresolver import (
+                URLResolver,
+                HierarchicalURLScheme,
+                DescriptiveIdURLScheme
+            )
+            url_resolver = URLResolver()
+            url_resolver.add_url_scheme(HierarchicalURLScheme())
+            url_resolver.add_url_scheme(DescriptiveIdURLScheme())
+            self.__url_resolver = url_resolver
+        return self.__url_resolver
+
+    def _set_url_resolver(self, url_resolver):
+        self.__url_resolver = url_resolver
+
+    url_resolver = property(_get_url_resolver, _set_url_resolver)
 

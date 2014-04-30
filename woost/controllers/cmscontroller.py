@@ -314,11 +314,10 @@ class CMSController(BaseCMSController):
         """Redirect the current request to the canonical URL for the selected
         publishable element.
         """        
-        config = Configuration.instance
         publishable = path_resolution.item
 
         # Find the canonical path for the element
-        canonical_path = config.get_path(publishable)
+        canonical_path = app.url_resolver.get_path(publishable)
 
         if canonical_path is None:
             return
@@ -379,9 +378,8 @@ class CMSController(BaseCMSController):
 
     def _resolve_path(self, path):
 
-        config = Configuration.instance
         unicode_path = [try_decode(step) for step in path]
-        path_resolution = config.resolve_path(unicode_path)
+        path_resolution = app.url_resolver.resolve_path(unicode_path)
 
         if path_resolution:
             publishable = path_resolution.item
@@ -425,7 +423,7 @@ class CMSController(BaseCMSController):
 
         # Regular elements
         else:
-            uri = Configuration.instance.get_path(publishable)
+            uri = app.url_resolver.get_path(publishable)
             
             if uri is not None:
                 

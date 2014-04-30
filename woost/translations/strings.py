@@ -1282,7 +1282,7 @@ translations.define(
 #------------------------------------------------------------------------------
 
 translations.define(
-    "woost.controllers.authentication.AuthenticationFailedError-instance",
+    "woost.authenticationscheme.AuthenticationFailedError-instance",
     ca = u"Usuari o contrasenya incorrectes",
     es = u"Usuario o contraseña incorrectos",
     en = u"Incorrect user or password"
@@ -1866,12 +1866,6 @@ translations.define("Configuration.websites",
     en = u"Websites"
 )
 
-translations.define("Configuration.publication_schemes",
-    ca = u"Esquemes de publicació",
-    es = u"Esquemas de publicación",
-    en = u"Publication schemes"
-)
-
 translations.define("Configuration.caching_policies",
     ca = u"Polítiques de cache",
     es = u"Políticas de cache",
@@ -2388,144 +2382,6 @@ translations.define("SiteInstallation.synchronization_password",
     ca = u"Contrasenya per la sincronització",
     es = u"Contraseña para la sincronización",
     en = u"Synchronization password"
-)
-
-# PublicationScheme
-#------------------------------------------------------------------------------
-translations.define("PublicationScheme",
-    ca = u"Esquema de publicació",
-    es = u"Esquema de publicación",
-    en = u"Publication scheme"
-)
-
-translations.define("PublicationScheme-plural",
-    ca = u"Esquemes de publicació",
-    es = u"Esquemas de publicación",
-    en = u"Publication schemes"
-)
-
-# HierarchicalPublicationScheme
-#------------------------------------------------------------------------------
-translations.define("HierarchicalPublicationScheme",
-    ca = u"Esquema de publicació jeràrquica",
-    es = u"Esquema de publicación jerárquica",
-    en = u"Hierarchical publication scheme"
-)
-
-translations.define("HierarchicalPublicationScheme-plural",
-    ca = u"Esquemes de publicació jeràrquica",
-    es = u"Esquemas de publicación jerárquica",
-    en = u"Hierarchical publication schemes"
-)
-
-# IdPublicationScheme
-#------------------------------------------------------------------------------
-translations.define("IdPublicationScheme",
-    ca = u"Esquema de publicació per ID",
-    es = u"Esquema de publicación por ID",
-    en = u"ID publication scheme"
-)
-
-translations.define("IdPublicationScheme-plural",
-    ca = u"Esquemes de publicació per ID",
-    es = u"Esquemas de publicación por ID",
-    en = u"ID publication schemes"
-)
-
-# DescriptiveIdPublicationScheme
-#------------------------------------------------------------------------------
-translations.define("DescriptiveIdPublicationScheme",
-    ca = u"Esquema de publicació per ID i descripció",
-    es = u"Esquema de publicación por ID y descripción",
-    en = u"ID plus description publication scheme"
-)
-
-translations.define("DescriptiveIdPublicationScheme-plural",
-    ca = u"Esquemes de publicació per ID i descripció",
-    es = u"Esquemas de publicación por ID y descripción",
-    en = u"ID plus description publication schemes"
-)
-
-translations.define("DescriptiveIdPublicationScheme.id_separator",
-    ca = u"Separador de l'ID",
-    es = u"Separador de ID",
-    en = u"ID separator"
-)
-
-translations.define("DescriptiveIdPublicationScheme.id_separator-explanation",
-    ca = u"Fragment utilitzat per separar l'identificador de la descripció a "
-         u"les URLs",
-    es = u"Fragmento utilizado para separar el identificador de la "
-         u"descripción en las URLs",
-    en = u"Token used to separate identifiers from descriptive text in URLs"
-)
-
-translations.define("DescriptiveIdPublicationScheme.word_separator",
-    ca = u"Separador de paraules",
-    es = u"Separador de palabras",
-    en = u"Word separator"
-)
-
-translations.define("DescriptiveIdPublicationScheme.word_separator-explanation",
-    ca = u"Fragment utilitzat per separar les paraules del títol a les URLs",
-    es = u"Fragmento utilizado para separar las palabras del título en las "
-         u"URLs",
-    en = u"A token used as a word separator for titles in URLs"
-)
-
-translations.define("DescriptiveIdPublicationScheme.id_regexp",
-    ca = u"Expressió d'extracció de l'ID",
-    es = u"Expresión de extracción del ID",
-    en = u"ID extraction expression"
-)
-
-translations.define("DescriptiveIdPublicationScheme.id_regexp-explanation",
-    ca = u"L'expressió regular utilitzada per obtenir l'identificador d'un "
-         u"element a partir de la seva URL. Ha de contenir un grup anomenat "
-         u"<em>id</em>.",
-    es = u"La expresión regular utilizada para obtener el identificador de un "
-         u"elemento a partir de su URL. Debe contener un grupo llamado "
-         u"<em>id</em>.",
-    en = u"The regular expression used to extract the identifier of a "
-         u"publishable item from its URL. Must define an <em>id</em> named "
-         u"group."
-)
-
-translations.define("DescriptiveIdPublicationScheme.title_splitter_regexp",
-    ca = u"Expressió de divisió del títol",
-    es = u"Expresión de separación del título",
-    en = u"Title splitter expression"
-)
-
-translations.define(
-    "DescriptiveIdPublicationScheme.title_splitter_regexp-explanation",
-    ca = u"L'expressió regular utilitzada per desestimar les parts "
-         u"irrellevants d'un títol",
-    es = u"La expresión regular utilizada para desestimar las partes "
-         u"irrelevantes de un título",
-    en = u"The regular expression used to discard irrelevant parts from a "
-         u"title"
-)
-
-translations.define("DescriptiveIdPublicationScheme.format",
-    ca = u"Format de les URLs",
-    es = u"Formato de las URLs",
-    en = u"URL format"
-)
-
-translations.define("DescriptiveIdPublicationScheme.format-explanation",
-    ca = u"Una cadena de formatat de text python. Rep <em>title</em>, "
-         u"<em>id</em> i <em>separator</em> com a paràmetres.",
-    es = u"Una cadena de formatado de texto python. Recibe <em>title</em>, "
-         u"<em>id</em> y <em>separator</em> como parámetros.",
-    en = u"A python text formatting string that takes <em>title</em>, "
-         u"<em>id</em> and <em>separator</em> parameters."
-)
-
-translations.define("DescriptiveIdPublicationScheme.include_file_extensions",
-    ca = u"Incloure extensions de fitxer",
-    es = u"Incluir extensiones de fichero",
-    en = u"Include file extensions"
 )
 
 # CachingPolicy
@@ -6267,7 +6123,71 @@ translations.define("Block.controller",
     es = u"Controlador",
     en = u"Controller"
 )
-    
+
+translations.define("Block.initialization",
+    ca = u"Inicialització",
+    es = u"Inicialización",
+    en = u"Initialization"
+)
+
+translations.define("Block.initialization-explanation",
+    ca = u"""
+        <p>
+            Fragment de codi Python que permet inicialitzar la vista generada
+            pel bloc.
+        </p>
+        <details>
+            <summary>Detalls</summary>
+            <p>
+                Es proporcionen les variables següents:
+            </p>
+            <dl>
+                <dt>block</dt>
+                <dd>Una referència a aquest bloc.</dd>
+                <dt>view</dt>
+                <dd>La vista a inicialitzar.</dd>
+            </dl>
+        </details>
+        """,
+    es = u"""
+        <p>
+            Fragmento de código Python que permite inicializar la vista generada
+            por el bloque.
+        </p>
+        <details>
+            <summary>Detalles</summary>
+            <p>
+                Se proporcionan las variables siguientes:
+            </p>
+            <dl>
+                <dt>block</dt>
+                <dd>Una referencia a este bloque.</dd>
+                <dt>view</dt>
+                <dd>La vista a inicializar.</dd>
+            </dl>
+        </details>
+        """,
+    en = u"""
+        <p>
+            A Python code snippet to initialize the view generated by this
+            block.
+        </p>
+        <details>
+            <summary>Details</summary>
+            <p>
+                The code snippet will have access to the following variables:
+            </p>
+            <dl>
+                <dt>block</dt>
+                <dd>A reference to this block.</dd>
+                <dt>view</dt>
+                <dd>The view to initialize.</dd>
+            </dl>
+        </details>
+        """
+)
+
+
 # CustomBlock
 #------------------------------------------------------------------------------
 translations.define("CustomBlock",
@@ -6776,6 +6696,24 @@ translations.define("VideoBlock.player_settings",
     ca = u"Opcions de reproductor de vídeo",
     es = u"Opciones de reproductor de video",
     en = u"Video player settings"
+)
+
+translations.define("VideoBlock.view_class",
+    ca = u"Aparença",
+    es = u"Apariencia",
+    en = u"Appearence"
+)
+
+translations.define("VideoBlock.view_class=woost.views.VideoBlockView",
+    ca = u"Incrustat",
+    es = u"Incrustado",
+    en = u"Embedded"
+)
+
+translations.define("VideoBlock.view_class=woost.views.VideoPopUp",
+    ca = u"Finestra emergent",
+    es = u"Ventana emergente",
+    en = u"Pop up"
 )
 
 # TwitterTimelineBlock

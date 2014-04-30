@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <?py
 from decimal import Decimal
-from cocktail.iteration import first
 from cocktail import schema
 from cocktail.html import Element, Content
 from woost.extensions.ecommerce.ecommerceproduct import ECommerceProduct
@@ -17,12 +16,12 @@ from woost.extensions.ecommerce.basket import Basket
     
     order_schema = schema.Schema("Basket", members = [
         schema.Reference("product", type = ECommerceProduct),
-        schema.Member("actions"),
         schema.Integer("quantity"),
         schema.Decimal("price"),
         schema.Decimal("subtotal"),
         schema.Decimal("taxes"),
-        schema.Decimal("total")
+        schema.Decimal("total"),
+        schema.Member("actions")
     ])
     currency = u"€"
     editable = False
@@ -61,10 +60,6 @@ from woost.extensions.ecommerce.basket import Basket
         cell = Element("td") if factory is None else factory()
         cell.add_class("%s_column" % member.name)
         return cell
-    ?>
-
-    <?py
-    self.add_resource("/resources/styles/ecommerce-BasketView.css")
     ?>
 
     <py:ready>
@@ -144,7 +139,7 @@ from woost.extensions.ecommerce.basket import Basket
                 href="${purchase.product.get_uri()}">
                 <py:woost.views.Image
                     py:local_id="product_image"
-                    py:image="${purchase.product.get_image()}"
+                    py:image="${purchase.product.image}"
                     py:image_factory="ecommerce_basket_thumbnail" />
             </a>
             <a 
