@@ -188,6 +188,7 @@ class Mailing(Item):
         # Update context
         context["show_user_controls"] = False
         context["email_version"] = True
+        values.setdefault("document_media", "email")
 
         current_user = get_current_user()
         try:
