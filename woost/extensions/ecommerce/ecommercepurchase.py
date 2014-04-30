@@ -12,6 +12,7 @@ from cocktail import schema
 from woost.models import (
     Item,
     get_current_user,
+    get_current_website,
     ModifyMemberPermission
 )
 from woost.extensions.ecommerce.ecommercebillingconcept \
@@ -20,7 +21,7 @@ from woost.extensions.ecommerce.ecommercebillingconcept \
 
 class ECommercePurchase(Item):
 
-    listed_from_root = False
+    visible_from_root = False
 
     members_order = [
         "order",
@@ -53,7 +54,7 @@ class ECommercePurchase(Item):
         default = 1
     )
 
-    total_price = schema.Decimal(
+    total_price = schema.Money(
         member_group = "billing",
         editable = False,
         listed_by_default = False
@@ -68,7 +69,7 @@ class ECommercePurchase(Item):
         editable = False
     )
 
-    total_shipping_costs = schema.Decimal(
+    total_shipping_costs = schema.Money(
         member_group = "billing",
         editable = False,
         listed_by_default = False
@@ -83,7 +84,7 @@ class ECommercePurchase(Item):
         editable = False
     )
     
-    total_taxes = schema.Decimal(
+    total_taxes = schema.Money(
         member_group = "billing",
         editable = False,
         listed_by_default = False
@@ -98,7 +99,7 @@ class ECommercePurchase(Item):
         editable = False
     )
     
-    total = schema.Decimal(
+    total = schema.Money(
         member_group = "billing",
         editable = False
     )
@@ -129,8 +130,7 @@ class ECommercePurchase(Item):
         apply_shipping_costs = True, 
         apply_taxes = True
     ):
-        from woost.extensions.ecommerce import ECommerceExtension
-        extension = ECommerceExtension.instance
+        website = get_current_website()
 
         purchase_costs = {
             "price": {
@@ -157,7 +157,7 @@ class ECommercePurchase(Item):
         purchase_price = purchase_costs["price"]
 
         if apply_pricing:
-            for pricing in extension.pricing:
+            for pricing in website.ecommerce_pricing:
                 if pricing.applies_to(self, purchase_costs):
                     pricing.apply(self, purchase_price)
 
@@ -171,7 +171,7 @@ class ECommercePurchase(Item):
         purchase_shipping_costs = purchase_costs["shipping_costs"]
 
         if apply_shipping_costs:
-            for shipping_cost in extension.shipping_costs:
+            for shipping_cost in website.ecommerce_shipping_costs:
                 if shipping_cost.applies_to(self, purchase_costs):
                     shipping_cost.apply(self, purchase_shipping_costs)
 
@@ -185,7 +185,7 @@ class ECommercePurchase(Item):
         purchase_taxes = purchase_costs["taxes"]
         
         if apply_taxes:
-            for tax in extension.taxes:
+            for tax in website.ecommerce_taxes:
                 if tax.applies_to(self, purchase_costs):
                     tax.apply(self, purchase_taxes)
 

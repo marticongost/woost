@@ -4,9 +4,10 @@ u"""Defines the `Basket` class.
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
 import cherrypy
-from cocktail.persistence import datastore
+from cocktail.persistence import transactional
 from cocktail.events import Event
 from cocktail.controllers import session
+from woost.models import get_current_website
 from woost.extensions.ecommerce.ecommerceorder import ECommerceOrder
 from woost.extensions.ecommerce.ecommercepurchase import ECommercePurchase
 from woost.extensions.ecommerce.ecommerceproduct import ECommerceProduct
@@ -61,6 +62,7 @@ class Basket(object):
         return order
 
     @classmethod
+    @transactional()
     def empty(cls):
         """Removes all products from the basket."""
         order = cls.get(create_new = False)
@@ -68,18 +70,18 @@ class Basket(object):
         if order is not None:
             for purchase in list(order.purchases):
                 purchase.delete()
-            datastore.commit()
 
     @classmethod
+    @transactional()
     def store(cls):
 
         order = cls.get()
+        order.website = get_current_website()
         order.insert()
         
         for purchase in order.purchases:
             purchase.insert()
 
-        datastore.commit()
         session[cls.session_key] = order.id
 
     @classmethod

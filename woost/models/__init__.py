@@ -42,13 +42,6 @@ from .siteinstallation import SiteInstallation
 from .changesets import ChangeSet, Change, changeset_context
 from .item import Item
 from .userview import UserView
-from .publicationschemes import (
-    PublicationScheme,
-    PathResolution,
-    HierarchicalPublicationScheme,
-    IdPublicationScheme,
-    DescriptiveIdPublicationScheme
-)
 from .style import Style
 from .publishable import (
     Publishable,

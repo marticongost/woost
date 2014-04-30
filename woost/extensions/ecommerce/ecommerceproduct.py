@@ -7,30 +7,29 @@
 @since:			September 2009
 """
 from decimal import Decimal
-from cocktail.modeling import getter
 from cocktail import schema
 from cocktail.translations import translations
 from woost.models import (
     Publishable,
-    Document,
     Controller,
-    Template,
-    File
+    File,
+    Slot,
+    get_current_website
 )
 
 
 class ECommerceProduct(Publishable):
 
     instantiable = False
+    type_group = "ecommerce"
 
     members_order = [
+        "image",
         "description",
         "price",
         "weight",
-        "attachments",
         "purchase_model",
-        "purchases",
-        "template"
+        "purchases"
     ]
 
     default_controller = schema.DynamicDefault(
@@ -39,14 +38,23 @@ class ECommerceProduct(Publishable):
         )
     )
 
-    description = schema.String(
-        translated = True,
-        edit_control = "woost.views.RichTextEditor",
+    image = schema.Reference(
+        type = File,
+        related_end = schema.Collection(),
+        relation_constraints = {"resource_type": "image"},
         member_group = "product_data"
     )
 
-    price = schema.Decimal(
+    description = schema.String(
+        translated = True,
+        edit_control = "woost.views.RichTextEditor",
+        member_group = "product_data",
+        listed_by_default = False
+    )
+
+    price = schema.Money(
         required = True,
+        indexed = True,
         default = Decimal("0"),
         member_group = "product_data"
     )
@@ -54,12 +62,6 @@ class ECommerceProduct(Publishable):
     weight = schema.Decimal(
         translate_value = lambda value, language = None, **kwargs:
             "" if not value else "%s Kg" % translations(value, language),
-        member_group = "product_data"
-    )
-
-    attachments = schema.Collection(
-        items = schema.Reference(type = File),
-        related_end = schema.Collection(),
         member_group = "product_data"
     )
 
@@ -71,7 +73,8 @@ class ECommerceProduct(Publishable):
         ),
         required = True,
         searchable = False,
-        member_group = "product_data"
+        member_group = "product_data",
+        listed_by_default = False
     )
 
     purchases = schema.Collection(
@@ -82,44 +85,11 @@ class ECommerceProduct(Publishable):
         member_group = "product_data"
     )
 
-    template = schema.Reference(
-        type = Template,
-        related_end = schema.Collection(),
-        default = schema.DynamicDefault(
-            lambda: Template.get_instance(
-                qname = "woost.extensions.ecommerce.product_template"
-            )
-        ),
-        member_group = "presentation"
-    )
-
-    def get_image(self):
-        for attachment in self.attachments:
-            if attachment.resource_type == "image" \
-            and attachment.is_accessible():
-                return attachment
+    blocks = Slot()
 
     def offers(self):
-        from woost.extensions.ecommerce import ECommerceExtension
-        for pricing in ECommerceExtension.instance.pricing:
+        website = get_current_website()
+        for pricing in website.ecommerce_pricing:
             if not pricing.hidden and pricing.applies_to(self):
                 yield pricing
-
-    @getter
-    def inherited_resources(self):
-
-        if self.inherit_resources and self.parent is None:
-            catalog = Document.get_instance(
-                qname = "woost.extensions.ecommerce.catalog_page"
-            )
-
-            if catalog:
-                for resource in catalog.inherited_resources:
-                    yield resource
-
-                for resource in catalog.branch_resources:
-                    yield resource        
-        else:
-            for resource in Publishable.inherited_resources.__get__(self):
-                yield resource
 

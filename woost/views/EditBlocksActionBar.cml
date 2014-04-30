@@ -88,7 +88,8 @@ from woost.models import Configuration, Block, block_type_groups
                 <py:woost.views.ItemPalette
                     py:local_id="new_blocks_palette"
                     py:types="${Block}"
-                    py:type_groups="${block_type_groups}">
+                    py:type_groups="${block_type_groups}"
+                    py:required_permission="create">
                     <?py
                     @extend(element)
                     def should_include_type(new_blocks_palette, block_type):

@@ -24,8 +24,6 @@ from woost.models import (
     changeset_context,
     Configuration,
     Website,
-    HierarchicalPublicationScheme,
-    DescriptiveIdPublicationScheme,
     Publishable,
     Document,
     Page,    
@@ -95,7 +93,6 @@ class SiteInitializer(object):
         "woost.models.role.Role",
         "woost.models.controller.Controller",
         "woost.models.permission.Permission",
-        "woost.models.publicationschemes.PublicationScheme",
         "woost.models.caching.CachingPolicy",
         "woost.models.siteinstallation.SiteInstallation",
         "woost.models.trigger.Trigger",
@@ -143,7 +140,8 @@ class SiteInitializer(object):
         "woost.models.website.Website.https_persistence",
         "woost.models.website.Website.published_languages",
         "woost.models.website.Website.default_language",
-        "woost.models.website.Website.heed_client_language"
+        "woost.models.website.Website.heed_client_language",
+        "woost.models.block.Block.initialization"
     ]
 
     image_factories = [
@@ -283,9 +281,6 @@ class SiteInitializer(object):
         self.authenticated_role = self.create_authenticated_role()
         self.editor_role = self.create_editor_role()
 
-        # Publication schemes
-        self.create_publication_schemes()
-        
         # File deletion trigger
         self.file_deletion_trigger = self.create_file_deletion_trigger()
         self.configuration.triggers.append(self.file_deletion_trigger)
@@ -538,12 +533,6 @@ class SiteInitializer(object):
         )
 
         return role
-
-    def create_publication_schemes(self):
-        self.configuration.publication_schemes = [
-            self._create(HierarchicalPublicationScheme),
-            self._create(DescriptiveIdPublicationScheme)
-        ]
 
     def create_file_deletion_trigger(self):
         return self._create(

@@ -21,10 +21,6 @@
             return None
     ?>
 
-    <?py
-    self.add_resource("/resources/styles/ecommerce-Discount.css")
-    ?>
-
     <span py:id="value_label">
         <py:ready>
             <?py

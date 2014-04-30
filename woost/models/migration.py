@@ -5,6 +5,7 @@ u"""Defines migrations to the database schema for woost.
 """
 from cocktail.events import when
 from cocktail.persistence import MigrationStep
+from cocktail.persistence.migration import migration_steps
 from cocktail.persistence.utils import remove_broken_type
 
 def admin_members_restriction(members):
@@ -771,4 +772,96 @@ def remove_template_engine(e):
             del template._engine
         except AttributeError:
             pass
+
+#------------------------------------------------------------------------------
+ 
+step = MigrationStep("Remove publication schemes")
+migration_steps["Instrument non relational collections"].require(step)
+
+@when(step.executing)
+def remove_publication_schemes(e):
+
+    from cocktail.persistence import datastore
+    from woost.models import (
+        Item,
+        MemberPermission,
+        Configuration
+    )
+    from woost.models.utils import remove_broken_type
+
+    remove_broken_type(
+        "woost.models.publicationschemes.PublicationScheme",
+        existing_bases = (
+            Item,
+        )
+    )
+
+    remove_broken_type(
+        "woost.models.publicationschemes.HierarchicalPublicationScheme",
+        existing_bases = (
+            Item,
+        )
+    )
+
+    remove_broken_type(
+        "woost.models.publicationschemes.IdPublicationScheme",
+        existing_bases = (
+            Item,
+        )
+    )
+
+    remove_broken_type(
+        "woost.models.publicationschemes.DescriptiveIdPublicationScheme",
+        existing_bases = (
+            Item,
+        )
+    )
+
+    try:
+        del Configuration.instance._publication_schemes
+    except AttributeError:
+        pass
+
+    members = (
+        "woost.models.configuration.Configuration.publication_schemes",
+    )
+
+    for permission in MemberPermission.select():
+        if permission.matching_members:
+            removed = False
+
+            for full_member_name in members:
+                try:
+                    permission.matching_members.remove(full_member_name)
+                except (KeyError, ValueError):
+                    pass
+                else:
+                    removed = True
+
+            if removed and not permission.matching_members:
+                permission.delete()
+
+#------------------------------------------------------------------------------
+
+step = MigrationStep("Restrict access to Block.initialization")
+
+@when(step.executing)
+def restrict_block_initialization(e):
+    from woost.models import Role, ReadMemberPermission
+    role = Role.require_instance(qname = "woost.everybody")
+
+    for permission in role.permissions:
+        if (
+            isinstance(permission, ReadMemberPermission)
+            and not permission.authorized
+        ):
+            break
+    else:
+        permission = ReadMemberPermission()
+        permission.authorized = False
+        permission.insert()
+
+    permission.matching_members.append(
+        "woost.models.block.Block.initialization"
+    )
 

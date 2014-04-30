@@ -99,7 +99,6 @@ class PublishableListing(Block):
         view.tag = self.element_type
         view.name_prefix = self.name_prefix
         view.name_suffix = self.name_suffix
-        view.publishables = self.select_publishables()
         view.links_open_in_new_window = self.links_open_in_new_window
 
         if not self.publishables:
@@ -108,7 +107,7 @@ class PublishableListing(Block):
         if self.paginated:
             view.pagination = self.pagination
         else:
-            view.news = self.select_publishables()
+            view.publishables = self.select_publishables()
 
     def select_publishables(self):
 

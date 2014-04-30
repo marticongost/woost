@@ -12,7 +12,7 @@ from cocktail.modeling import getter
 from cocktail.events import event_handler
 from cocktail.controllers import Controller, request_property
 from cocktail.html import renderers, templates
-from woost.models import Configuration
+from woost import app
 
 
 class BaseCMSController(Controller):
@@ -102,7 +102,7 @@ class BaseCMSController(Controller):
         @rtype: unicode
         """
         publishable = self.context["publishable"]
-        uri = Configuration.instance.get_path(publishable)
+        uri = app.url_resolver.get_path(publishable)
 
         if uri is None:
             return None

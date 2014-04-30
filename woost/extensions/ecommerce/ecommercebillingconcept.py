@@ -68,13 +68,7 @@ class ECommerceBillingConcept(Item):
         required = True,
         enumeration = ["order", "purchase"],
         default = "order",
-        edit_control = "cocktail.html.RadioSelector",
-        translate_value = lambda value, language = None, **kwargs:
-            "" if not value 
-               else translations(
-                        "ECommerceBillingConcept.scope-" + value, 
-                        language, 
-                        **kwargs)
+        edit_control = "cocktail.html.RadioSelector"
     )
 
     condition = schema.CodeBlock(
