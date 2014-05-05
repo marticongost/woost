@@ -1854,6 +1854,12 @@ translations.define("Item.last_update_time",
     en = u"Last updated"
 )
 
+translations.define("Item.last_translation_update_time",
+    ca = u"Última modificació de la traducció",
+    es = u"Última modificación de la traducción",
+    en = u"Translation last update"
+)
+
 # Configuration
 #------------------------------------------------------------------------------
 translations.define("Configuration",
