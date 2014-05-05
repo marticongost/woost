@@ -8,7 +8,8 @@ u"""
 @since:			July 2008
 """
 from os import path as _path
-from cocktail.html import Element
+from pkg_resources import resource_filename
+from cocktail.html import Element, resource_repositories
 from cocktail.persistence import PersistentClass
 from woost.models import Item
 
@@ -38,4 +39,10 @@ def depends_on(self, tag_source, cache_part = None):
             self.depends_on(item)
 
 Element.depends_on = depends_on
+
+resource_repositories.define(
+    "woost",
+    "/resources",
+    resource_filename("woost.views", "resources")
+)
 
