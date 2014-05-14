@@ -286,7 +286,7 @@ body {
 
 .BackOfficeLayout input[type=search] {
     padding-left: 1.6em !important;
-    background: white url(../images/search_box.png) 0.3em center no-repeat;
+    background: white url(/resources/images/search_box.png) 0.3em center no-repeat;
 }
 
 .BackOfficeLayout .CodeMirror-wrapping {
@@ -798,7 +798,7 @@ body.scripted .BackOfficeLayout .Table .row_selection_control {
 .ObjectDiff th {
     background-position: bottom left;
     background-repeat: repeat-x;
-    background-image: url(../images/header.png);
+    background-image: url(/resources/images/header.png);
     background-image: -webkit-linear-gradient(#eee, #d6d6d6);
     background-image: linear-gradient(#eee, #d6d6d6);
     background-color: #e0e0e0;
@@ -856,7 +856,7 @@ body.scripted .BackOfficeLayout .Table .row_selection_control {
 }
 
 .BackOfficeLayout .ContentTable .sorting_options .ascending {
-    background-image: url(../images/ascending.png);
+    background-image: url(/resources/images/ascending.png);
     _background-position:0 -2px;
     _background-repeat:no-repeat;
     _display:block;
@@ -864,7 +864,7 @@ body.scripted .BackOfficeLayout .Table .row_selection_control {
 }
 
 .BackOfficeLayout .ContentTable .sorting_options .descending {
-    background-image: url(../images/descending.png);
+    background-image: url(/resources/images/descending.png);
     _background-position:0 -2px;
     _background-repeat:no-repeat;
     _display:block;
@@ -872,7 +872,7 @@ body.scripted .BackOfficeLayout .Table .row_selection_control {
 }
 
 .BackOfficeLayout .ContentTable .search_options .add_filter {
-    background-image: url(../images/add.png);
+    background-image: url(/resources/images/add.png);
     _background-position:0 -2px;
     _background-repeat:no-repeat;
     _display:block;
@@ -893,7 +893,7 @@ body.scripted .BackOfficeLayout .Table .row_selection_control {
 .BackOfficeLayout .PropertyTable .type_header th {
     font-weight: bold;
     color: rgb(50,50,50);
-    background-image: url(../images/expanded_block.png);
+    background-image: url(/resources/images/expanded_block.png);
     background-repeat: no-repeat;
     background-position: 0.3em center;
     padding-left: 1.5em;
@@ -901,7 +901,7 @@ body.scripted .BackOfficeLayout .Table .row_selection_control {
 }
 
 .BackOfficeLayout .PropertyTable .type_group.collapsed .type_header th {
-    background-image: url(../images/collapsed_block.png);
+    background-image: url(/resources/images/collapsed_block.png);
     background-position: 0.6em center;
 }
 
@@ -1384,7 +1384,7 @@ body.scripted .BackOfficeLayout .Table .row_selection_control {
     position: relative;
     padding-left: 0.2em;
     padding-right: 1em;
-    background: url(../images/dropdown_arrow.png) no-repeat right 0.7em;
+    background: url(/resources/images/dropdown_arrow.png) no-repeat right 0.7em;
     border: 1px solid transparent;
     z-index: 2;
     cursor: pointer;
@@ -1912,7 +1912,7 @@ body.scripted .BackOfficeLayout .ThumbnailsContentView .collection_display input
     color: rgb(70,70,70);
     font-size: 90%;
     background-repeat: no-repeat;
-    background-image: url(../images/open_resource.png);
+    background-image: url(/resources/images/open_resource.png);
     background-position: left center;
     padding-left: 0.7em;
     padding-top: 0.2em;
@@ -2410,7 +2410,7 @@ button.TypeSelectorButton {
     padding-left: 1.6em;
     background-repeat: no-repeat;
     background-position: left center;
-    background-image: url(../images/clear.png);
+    background-image: url(/resources/images/clear.png);
 }
 
 .BackOfficeLayout .CollectionView .filters .discard_button,
@@ -2431,7 +2431,7 @@ button.TypeSelectorButton {
 .BackOfficeLayout .CollectionView .filters .new_filter_selector > .button > .label {
     padding-left: 1.6em !important;
     background-position: left center;
-    background-image: url(../images/add.png);
+    background-image: url(/resources/images/add.png);
     background-repeat: no-repeat;
 }
 
@@ -2759,7 +2759,7 @@ a.pickcolor span {
     text-align: left;
     background-position: bottom left;
     background-repeat: repeat-x;
-    background-image: url(../images/header.png);
+    background-image: url(/resources/images/header.png);
     background-color: rgb(220,223,227);
     border: 1px solid rgb(200,205,212);
 }
@@ -3052,13 +3052,13 @@ a.pickcolor span {
 
 .ExportStaticSiteView .export_log .exported .outcome_cell {
     color: rgb(20,80,20);
-    background-image: url(../images/staticsite-status-exported.png);
+    background-image: url(/resources/images/staticsite-status-exported.png);
 /*    background-color: rgb(220,240,220);    */
 }
 
 .ExportStaticSiteView .export_log .failed .outcome_cell {
     color: rgb(135,35,10);
-    background-image: url(../images/staticsite-status-failed.png);
+    background-image: url(/resources/images/staticsite-status-failed.png);
 /*    background-color: rgb(245,230,215);*/
 }
 
@@ -3373,7 +3373,7 @@ div.success_label {
 .BackOfficeLayout .dragInsertionMarker {
     position: absolute;
     background-repeat: no-repeat;
-    background-image: url(../images/insertion_marker.png);
+    background-image: url(/resources/images/insertion_marker.png);
     background-position: left center;
     padding-left: 0.8em;
     white-space: nowrap;
