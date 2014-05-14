@@ -225,7 +225,7 @@ body.scripted .BackOfficeLayout .selector.unfolded:hover a.label {
     white-space:nowrap;
 	padding-right: 1.2em !important;
 	display: inline !important;
-	background:transparent url(../images/dropdown_arrow.png) no-repeat scroll right center;
+	background:transparent url(/resources/images/dropdown_arrow.png) no-repeat scroll right center;
 }
 º
 .BackOfficeLayout .content_view_selector div.selected {
@@ -253,7 +253,7 @@ body.scripted .BackOfficeLayout .selector:hover .label {
 
 
 .BackOfficeLayout .selector a.label {
-	_background:transparent url(../images/dropdown_arrow.png) no-repeat scroll right 0.6em;
+	_background:transparent url(/resources/images/dropdown_arrow.png) no-repeat scroll right 0.6em;
 	_color:black;
 	_cursor:pointer;
 	_padding-left:0.2em;

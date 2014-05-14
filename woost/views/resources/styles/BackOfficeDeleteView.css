@@ -61,14 +61,14 @@
     color: #7c0303;
     background-color: rgb(245,230,215);
     border: 1px dotted rgb(200,160,120);
-    background-image: url(../images/error.png);
+    background-image: url(/resources/images/error.png);
 }
 
 .BackOfficeDeleteView .cascade_details > .details_label {
     color: #7c5303;
     background-color: #f7eaa9;
     border: 1px dotted #ead87d;
-    background-image: url(../images/warning.png);
+    background-image: url(/resources/images/warning.png);
 }
 
 .BackOfficeDeleteView .cascade_details .cascade_details .details_label {
