@@ -196,56 +196,64 @@ translations.define("ECommerceOrder.customer",
     ca = u"Client",
     es = u"Cliente",
     en = u"Customer",
-    fr = u"Client"
+    fr = u"Client",
+    pt = u"Cliente"
 )
 
 translations.define("ECommerceOrder.shipping_info",
     ca = u"Direcció d'enviament",
     es = u"Dirección de envío",
     en = u"Shipping address",
-    fr = u"Adresse de livraison"
+    fr = u"Adresse de livraison",
+    pt = u"Endereço de envio"
 )
 
 translations.define("ECommerceOrder.address",
     ca = u"Adreça",
     es = u"Dirección",
     en = u"Address",
-    fr = u"Adresse"
+    fr = u"Adresse",
+    pt = u"Endereço"
 )
 
 translations.define("ECommerceOrder.town",
     ca = u"Població",
     es = u"Población",
     en = u"Town",
-    fr = u"Ville"
+    fr = u"Ville",
+    pt = u"Cidade"
 )
 
 translations.define("ECommerceOrder.region",
     ca = u"Estat o província",
     es = u"Estado o provincia",
     en = u"State or province",
-    fr = u"État ou province"
+    fr = u"État ou province",
+    pt = u"Província"
 )
 
 translations.define("ECommerceOrder.country",
     ca = u"País",
     es = u"País",
     en = u"Country",
-    fr = u"Pays"
+    fr = u"Pays",
+    pt = u"País"
 )
 
 translations.define("ECommerceOrder.postal_code",
     ca = u"Codi postal",
     es = u"Código postal",
     en = u"Postal code",
-    fr = u"Code postal"
+    fr = u"Code postal",
+    pt = u"Código postal"
 )
 
 translations.define("ECommerceOrder.language",
     ca = u"Idioma",
     es = u"Idioma",
     en = u"Language",
-    fr = u"Langue"
+    fr = u"Langue",
+    pt = u"Língua"
 )
 
 translations.define("ECommerceOrder.status",
@@ -357,28 +365,32 @@ translations.define("ECommerceOrder.payment_type",
     ca = u"Tipus de pagament",
     es = u"Tipo de pago",
     en = u"Payment type",
-    fr = u"Moyen de paiement"
+    fr = u"Moyen de paiement",
+    pt = u"Formas de pagamento"
 )
 
 translations.define("ECommerceOrder.payment_type=payment_gateway",
     ca = u"Pagament en línia",
     es = u"Pago en línea",
     en = u"On-line payment",
-    fr = u"Paiment on-line "
+    fr = u"Paiment on-line ",
+    pt = u"Pagamento on-line"
 )
 
 translations.define("ECommerceOrder.payment_type=transfer",
     ca = u"Transferència",
     es = u"Transferencia",
     en = u"Transfer",
-    fr = u"Transfert"
+    fr = u"Transfert",
+    pt = u"Transferência"
 )
 
 translations.define("ECommerceOrder.payment_type=cash_on_delivery",
     ca = u"Contra reemborsament",
     es = u"Contra reembolso",
     en = u"Cash on delivery",
-    fr = u"Contre remboursement"
+    fr = u"Contre remboursement",
+    pt = u"Contra-reembolso"
 )
 
 translations.define("woost.extensions.ECommerceOrder description for gateway",
@@ -644,14 +656,16 @@ translations.define("woost.extensions.ecommerce.checkout_page.title",
     ca = u"Dades de la comanda",
     es = u"Datos del pedido",
     en = u"Checkout",
-    fr = u"Détails de la commande"
+    fr = u"Détails de la commande",
+    pt = "Dados do pedido"
 )
 
 translations.define("woost.extensions.ecommerce.checkout_block.heading",
     ca = u"Dades de la comanda",
     es = u"Datos del pedido",
     en = u"Checkout",
-    fr = u"Détails de la commande"
+    fr = u"Détails de la commande",
+    pt = "Dados do pedido"
 )
 
 translations.define("woost.extensions.ecommerce.checkout_controller.title",
@@ -672,14 +686,16 @@ translations.define("woost.extensions.ecommerce.summary_page.title",
     ca = u"Sumari de la comanda",
     es = u"Sumario del pedido",
     en = u"Order summary",
-    fr = u"Resumé de la commande"
+    fr = u"Resumé de la commande",
+    pt = u"Resumo do pedido"
 )
 
 translations.define("woost.extensions.ecommerce.summary_block.heading",
     ca = u"Sumari de la comanda",
     es = u"Sumario del pedido",
     en = u"Order summary",
-    fr = u"Resumé de la commande"
+    fr = u"Resumé de la commande",
+    pt = u"Resumo do pedido"
 )
 
 translations.define("woost.extensions.ecommerce.summary_controller.title",
@@ -785,6 +801,9 @@ translations.define(
         % translations(product),
     fr = lambda product: 
         u"<strong>%s</strong> ajouté au panier"
+        % translations(product),
+    pt = lambda product: 
+        u"Adicionado <strong>%s</strong> à cesta da compra"
         % translations(product)
 )
 
@@ -794,7 +813,8 @@ translations.define(
     ca = u"S'han actualitzat les quantitats",
     es = u"Se han actualizado las cantidades",
     en = u"Product quantities have been updated",
-    fr = u"Les montants ont été mis à jour"
+    fr = u"Les montants ont été mis à jour",
+    pt = u"Os valores foram atualizados"
 )
 
 translations.define(
@@ -810,6 +830,9 @@ translations.define(
         % translations(product),
     fr = lambda product: 
         u"<strong>%s</strong> a été effacé du panier"
+        % translations(product),
+    pt = lambda product: 
+        u"El produto <strong>%s</strong> foi removido"
         % translations(product)
 )
 
@@ -818,7 +841,8 @@ translations.define(
     ca = u"S'ha buidat la cistella",
     es = u"Se ha vaciado la cesta",
     en = u"The shopping basket has been cleared",
-    fr = u"Le panier a été effacé"
+    fr = u"Le panier a été effacé",
+    pt = u"A cesta està vazia"
 )
 
 # OrderStep
@@ -828,7 +852,8 @@ translations.define(
     ca = u"Veure més productes",
     es = u"Ver más productos",
     en = u"See more products",
-	fr = u"Voire autres articles"
+	fr = u"Voire autres articles",
+    pt = u"Ver mais produtos"
 )
 
 translations.define(
@@ -836,7 +861,8 @@ translations.define(
     ca = u"Tornar enrere",
     es = u"Volver atrás",
     en = u"Go back",
-	fr = u"Revenir"
+	fr = u"Revenir",
+    pt = u"Retorno"
 )
 
 translations.define(
@@ -844,7 +870,8 @@ translations.define(
     ca = u"Continuar la compra",
     es = u"Continuar la compra",
     en = u"Proceed",
-	fr = u"Procédez"
+	fr = u"Procédez",
+    pt = u"Continuar com a compra"
 )
 
 translations.define(
@@ -872,7 +899,8 @@ translations.define(
     ca = u"Producte",
     es = u"Producto",
     en = u"Product",
-	fr = u"Produit"
+	fr = u"Produit",
+    pt = u"Produto"
 )
 
 translations.define(
@@ -880,7 +908,8 @@ translations.define(
     ca = u"Quantitat",
     es = u"Cantidad",
     en = u"Quantity",
-	fr = u"Quantité"
+	fr = u"Quantité",
+    pt = u"Quantidade"
 )
 
 translations.define(
@@ -888,7 +917,8 @@ translations.define(
     ca = u"Preu",
     es = u"Precio",
     en = u"Price",
-	fr = u"Prix"
+	fr = u"Prix",
+    pt = u"Preço"
 )
 
 translations.define(
@@ -896,7 +926,8 @@ translations.define(
     ca = u"Subtotal",
     es = u"Subtotal",
     en = u"Subtotal",
-	fr = u"Sous-total"
+	fr = u"Sous-total",
+    pt = u"Subtotal"
 )
 
 translations.define(
@@ -904,7 +935,8 @@ translations.define(
     ca = u"Taxes",
     es = u"Tasas",
     en = u"Taxes",
-	fr = u"Impôts"
+	fr = u"Impôts",
+    pt = u"Impostos"
 )
 
 translations.define(
@@ -912,7 +944,8 @@ translations.define(
     ca = u"Total",
     es = u"Total",
     en = u"Total",
-	fr = u"Total" 
+	fr = u"Total",
+    pt = u"Total"
 )
 
 translations.define(
@@ -928,7 +961,8 @@ translations.define(
     ca = u"Total",
     es = u"Total",
     en = u"Total",
-	fr = u"Total"
+	fr = u"Total",
+    pt = u"Total"
 )
 
 translations.define(
@@ -936,7 +970,8 @@ translations.define(
     ca = u"Treure",
     es = u"Quitar",
     en = u"Remove",
-	fr = u"Supprimer"
+	fr = u"Supprimer",
+    pt = u"Eliminar"
 )
 
 translations.define(
@@ -944,7 +979,8 @@ translations.define(
     ca = u"Buidar la cistella",
     es = u"Vaciar la cesta",
     en = u"Empty the basket",
-	fr = u"Vider le panier"
+	fr = u"Vider le panier",
+    pt = u"Esvaziar a cesta"
 )
 
 translations.define(
@@ -952,7 +988,8 @@ translations.define(
     ca = u"Establir quantitats",
     es = u"Establecer cantidades",
     en = u"Set quantities",
-	fr = u"Fixer les montants"
+	fr = u"Fixer les montants",
+    pt = u"Indique quantidades"
 )
 
 translations.define(
@@ -960,21 +997,24 @@ translations.define(
     ca = u"La cistella de la compra està buida.",
     es = u"La cesta de la compra está vacía.",
     en = u"The shopping basket is empty.",
-	fr = u"Le panier est vide."
+	fr = u"Le panier est vide.",
+    pt = u"A cesta està vazia."
 )
 
 translations.define("woost.extensions.ecommerce.BasketView.shipping_costs",
     ca = u"Costos d'enviament",
     es = u"Costes de envío",
     en = u"Shipping costs",
-	fr = u"Frais d'expédition"
+	fr = u"Frais d'expédition",
+    pt = u"
 )
 
 translations.define("woost.extensions.ecommerce.BasketView.taxes",
     ca = u"Taxes",
     es = u"Tasas",
     en = u"Taxes",
-	fr = u"Taux"
+	fr = u"Taux",
+    pt = u"Impostos"
 )
 
 # Discount
@@ -1016,7 +1056,13 @@ translations.define("woost.extensions.ecommerce.BasketIndicator",
             count,
             u"<strong>1</strong> produit", 
             u"<strong>%d</strong> produits" % count
-        ) + u" au panier"
+        ) + u" au panier",
+    pt = lambda count: 
+        plural2(
+            count,
+            u"<strong>1</strong> produto", 
+            u"<strong>%d</strong> produtos" % count
+        ) + u" no cesta"
 )
 
 # SummaryOrderStep
@@ -1026,7 +1072,8 @@ translations.define(
     ca = u"Modificar el contingut de la comanda",
     es = u"Modificar el contenido del pedido",
     en = u"Edit the shopping basket",
-	fr = u"Modifier le contenu de la commande"
+	fr = u"Modifier le contenu de la commande",
+    pt = u"Modificar o pedido"
 )
 
 translations.define(
@@ -1034,7 +1081,8 @@ translations.define(
     ca = u"Modificar les dades de la comanda",
     es = u"Modificar los datos del pedido",
     en = u"Edit checkout data",
-	fr = u"Modifier les données checkout"
+	fr = u"Modifier les données checkout",
+    pt = u"Modificar dados do pedido"
 )
 
 # AddProductForm
@@ -1058,7 +1106,8 @@ translations.define(
     ca = u"Veure més productes",
     es = u"Ver más productos",
     en = u"Keep shopping",
-	fr = u"Voir plus de produits"
+	fr = u"Voir plus de produits",
+    pt = u"Ver mais produtos"
 )
 
 translations.define(
