@@ -2992,8 +2992,21 @@ a.pickcolor span {
     margin-bottom: 0.6em;
 }
 
+.ExportStaticSiteView .export_form {
+    margin-top: 1em;
+}
+
+.ExportStaticSiteView .export_form .field_instance-CheckBox .field_label {
+    font-size: 0.9em;
+}
+
+.ExportStaticSiteView .export_form .buttons {
+    text-align: left;
+    padding-left: 0;
+}
+
 .ExportStaticSiteView .Form div.field {
-    margin-bottom: 0.8em;
+    margin-bottom: 0;
 }
 
 .ExportStaticSiteView .body ul {
@@ -3053,17 +3066,11 @@ a.pickcolor span {
 .ExportStaticSiteView .export_log .exported .outcome_cell {
     color: rgb(20,80,20);
     background-image: url(/resources/images/staticsite-status-exported.png);
-/*    background-color: rgb(220,240,220);    */
 }
 
 .ExportStaticSiteView .export_log .failed .outcome_cell {
     color: rgb(135,35,10);
     background-image: url(/resources/images/staticsite-status-failed.png);
-/*    background-color: rgb(245,230,215);*/
-}
-
-.ExportStaticSiteView .export_log .not_modified .outcome_cell {
-/*    background-color: rgb(240,240,210);*/
 }
 
 .ExportStaticSiteView .export_log .error_cell {
