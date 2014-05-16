@@ -47,7 +47,10 @@ class BaseCMSController(Controller):
                 raise ValueError("Can't render '%s' using format '%s'"
                     % (template, format))
 
-        return self.view.render_page(renderer = renderer)
+        if self.render_as_fragment:
+            return self.view.render(renderer = renderer)
+        else:
+            return self.view.render_page(renderer = renderer)
  
     def application_uri(self, *args, **kwargs):
         """Builds an absolute URI from a set of path components and parameters.
