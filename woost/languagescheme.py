@@ -27,7 +27,11 @@ class LanguageScheme(object):
         self.setup_language_fallback_policy()
 
         if path:
-            language = self.pop_language(path)
+            language = self.uri_component_to_language(path[0])
+            if language in Configuration.instance.languages:
+                path.pop(0)
+            else:
+                language = None
         else:
             language = None
 
@@ -43,30 +47,6 @@ class LanguageScheme(object):
 
         set_language(language)
     
-    def pop_language(self, path):
-        language = self.uri_component_to_language(path[0])
-
-        if language in Configuration.instance.languages:
-            path.pop(0)
-        else:
-            language = None
-
-        return language
-
-    def insert_language(self, language, path):
-        
-        path_components = path.strip("/").split("/")
-        if (
-            path_components 
-            and self.uri_component_to_language(path_components[0])
-                in Configuration.instance.languages
-        ):
-            path_components.pop(0)
-
-        path_components.insert(0, self.language_to_uri_component(language))
-        path = u"/" + u"/".join(path_components)
-        return path
-
     def infer_language(self):
 
         # Check for a language preference in a cookie
@@ -142,7 +122,26 @@ class LanguageScheme(object):
         if isinstance(qs, str):
             qs = try_decode(qs)
 
-        path = self.insert_language(language, path)
+        if is_current_publishable and language != current_language:
+            publishable = context.get("original_publishable") \
+                          or context["publishable"]
+            current_uri = publishable.get_uri(
+                language = current_language,
+                encode = False
+            )
+            translation_uri = publishable.get_uri(language = language)
+            path = path.replace(current_uri, translation_uri)
+        else:
+            path_components = path.strip("/").split("/")
+            if (
+                path_components 
+                and path_components[0] in Configuration.instance.languages
+            ):
+                path_components.pop(0)
+
+            path_components.insert(0, self.language_to_uri_component(language))
+            path = u"/" + u"/".join(path_components)
+
         return path + (u"?" + qs if qs else u"")
 
     def language_to_uri_component(self, language):
