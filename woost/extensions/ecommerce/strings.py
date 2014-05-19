@@ -1005,8 +1005,7 @@ translations.define("woost.extensions.ecommerce.BasketView.shipping_costs",
     ca = u"Costos d'enviament",
     es = u"Costes de envío",
     en = u"Shipping costs",
-	fr = u"Frais d'expédition",
-    pt = u"
+    fr = u"Frais d'expédition"
 )
 
 translations.define("woost.extensions.ecommerce.BasketView.taxes",
