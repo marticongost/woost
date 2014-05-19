@@ -28,7 +28,8 @@ translations.define("Logout",
     fr = u"Log out",
     de = u"Abmelden",
     pl = u"Zaloguj się",
-    nl = u"Log uit"
+    nl = u"Log uit",
+    pt = u"Sair"
 )
 
 translations.define("Type",
@@ -6999,19 +7000,22 @@ translations.define("LoginBlock.login_target-explanation",
 translations.define("LoginBlockForm.user",
     ca = u"Usuari",
     es = u"Usuario",
-    en = u"User"
+    en = u"User",
+    pt = u"Usuário"
 )
 
 translations.define("LoginBlockForm.password",
     ca = u"Contrasenya",
     es = u"Contraseña",
-    en = u"Password"
+    en = u"Password",
+    pt = u"Chave de acesso"
 )
 
 translations.define("woost.views.LoginBlockView.submit_button",
     ca = u"Entrar",
     es = u"Entrar",
-    en = u"Login"
+    en = u"Login",
+    pt = u"Entrar"
 )
 
 # IFrameBlock
