@@ -137,7 +137,7 @@ class StaticSiteDestination(Item):
         selection,
         update_only = False,
         status_tracker = None,
-        context = {}
+        context = None
     ):
         """Exports site snapshot to this destination.
 
@@ -162,6 +162,8 @@ class StaticSiteDestination(Item):
             process to maintain its contextual information.
         @rtype: dict
         """
+        if context is None:
+            context = {}
 
         controller_context["exporting_static_site"] = True
         context["existing_folders"] = set()
