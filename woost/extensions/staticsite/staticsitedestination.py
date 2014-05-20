@@ -207,6 +207,10 @@ class StaticSiteDestination(Item):
         """
 
         update_only = context.get("update_only")
+
+        if isinstance(file, unicode):
+            file = file.encode("utf-8")
+
         hash = file_hash(file)
 
         if update_only \
@@ -365,6 +369,10 @@ class FolderDestination(StaticSiteDestination):
     )
 
     def create_folder(self, folder, context):
+
+        if isinstance(folder, unicode):
+            folder = folder.encode("utf-8")
+
         full_path = os.path.join(self.target_folder, folder)
         if not os.path.exists(full_path):
             os.mkdir(full_path)
@@ -374,7 +382,14 @@ class FolderDestination(StaticSiteDestination):
 
     def write_file(self, file, path, context):
 
-        full_path = os.path.join(self.target_folder, path)
+        target_folder = self.target_folder
+        if isinstance(target_folder, unicode):
+            target_folder = target_folder.encode("utf-8")
+
+        if isinstance(path, unicode):
+            path = path.encode("utf-8")
+
+        full_path = os.path.join(target_folder, path)
 
         # Copy local files
         if isinstance(file, basestring):
