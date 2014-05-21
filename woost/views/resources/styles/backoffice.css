@@ -696,6 +696,10 @@ body.modal {
 
 /* DropdownPanel
 -----------------------------------------------------------------------------*/
+.scripted .DropdownPanel .dropdown_arrow {
+    margin-left: 0.2em;
+}
+
 .scripted .DropdownPanel > .panel_wrapper > .panel {
     -moz-box-shadow: 3px 3px 7px #bbb;
     -webkit-box-shadow: 3px 3px 7px #bbb;
@@ -3240,6 +3244,10 @@ div.success_label {
 
 .ItemPalette .palette_entry .button {
     display: inline-block;
+}
+
+.ItemPalette .palette_entry .type_icon {
+    margin-right: 0.4em;
 }
 
 /* BackOfficeItemViewOverlay
