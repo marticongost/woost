@@ -191,6 +191,7 @@ class Configuration(Item):
                 items = (
                     schema.String(enumeration = languages),
                     schema.Collection(
+                        type = tuple,
                         items = schema.String(
                             enumeration = languages
                         ),
