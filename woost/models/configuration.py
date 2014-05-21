@@ -157,7 +157,7 @@ class Configuration(Item):
     #------------------------------------------------------------------------------
     languages = schema.Collection(
         items = schema.String(
-            format = "^[a-z]{2}(-[A-Z]{2})?$"
+            format = "^[a-z]{2}(-[A-Z]{2})?(-[a-z]+)?$"
         ),
         min = 1,
         listed_by_default = False,
