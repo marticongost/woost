@@ -219,6 +219,10 @@
     padding: 0;
 }
 
+.EditBlocksView .BlockDisplay .block_handle > .button > .label > .block_image {
+    margin-right: 0.2em;
+}
+
 .EditBlocksView .BlockDisplay .slot_header {
     font-size: 0.7em;
     margin-top: 1.2em;
