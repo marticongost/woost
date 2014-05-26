@@ -1484,6 +1484,9 @@ body.scripted .BackOfficeLayout .selector:hover .selector_content {
 
 .BackOfficeLayout .ContentTypeSelector > .button > .label > * {
     vertical-align: middle;
+}
+
+.BackOfficeLayout .ContentTypeSelector > .button > .label > img {
     margin-right: 0.4em;
 }
 
