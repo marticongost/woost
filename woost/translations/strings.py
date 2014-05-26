@@ -1275,7 +1275,8 @@ translations.define(
     "woost.authenticationscheme.AuthenticationFailedError-instance",
     ca = u"Usuari o contrasenya incorrectes",
     es = u"Usuario o contraseña incorrectos",
-    en = u"Incorrect user or password"
+    en = u"Incorrect user or password",
+    pt = u"O nome de usuário ou palavra-passe não são corretos"
 )
 
 translations.define("woost.views.ContentTable sorting header",
@@ -1556,7 +1557,8 @@ translations.define(
     "PasswordConfirmationError-instance",
     ca = u"Les contrasenyes no coincideixen",
     es = u"Las contraseñas no coinciden",
-    en = u"Passwords don't match"
+    en = u"Passwords don't match",
+    pt = u"As palavras-passe não são iguais"
 )
 
 translations.define(
