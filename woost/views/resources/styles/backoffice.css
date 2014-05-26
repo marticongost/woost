@@ -1484,6 +1484,7 @@ body.scripted .BackOfficeLayout .selector:hover .selector_content {
 
 .BackOfficeLayout .ContentTypeSelector > .button > .label > * {
     vertical-align: middle;
+    margin-right: 0.4em;
 }
 
 .BackOfficeLayout .ContentTypeSelector .palette > .palette_group > .nested_groups {
