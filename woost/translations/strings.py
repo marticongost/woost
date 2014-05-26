@@ -1083,21 +1083,24 @@ translations.define(
     "woost.initialization.forbidden_error_page.title",
     ca = u"Accés denegat",
     es = u"Acceso denegado",
-    en = u"Forbidden"
+    en = u"Forbidden",
+    pt = u"Acesso negado"
 )
 
 translations.define(
     "woost.initialization.forbidden_error_page.body",
     ca = u"<p>No es permet l'accés a aquesta secció del web.</p>",
     es = u"<p>No se permite el acceso a esta sección del sitio.</p>",
-    en = u"<p>Access denied.</p>"
+    en = u"<p>Access denied.</p>",
+    pt = u"<p>Não é permitido o acesso a esta seção do site.</p>"
 )
 
 translations.define(
     "woost.initialization.password_change_page.title",
     ca = u"Canvi de contrasenya d'usuari",
     es = u"Cambio de contraseña de usuario",
-    en = u"Password change"
+    en = u"Password change",
+    pt = u"Alterar chave de acesso"
 )
 
 translations.define(
@@ -1107,7 +1110,9 @@ translations.define(
     es = u"<p>Introduce a tu identificador de usuario para iniciar el "
          u"proceso de cambio de contraseña</p>",
     en = u"<p>Enter your user identifier below to start the password "
-         u"change process</p>"""
+         u"change process</p>""",
+    pt = u"""<p>Introduza o seu endereço eletrónico para iniciar o processo de
+    alteração da palavra-passe. Enviar-lhe-emos um e-mail para o efeito.</p>"""
 )
 
 translations.define(
@@ -1121,14 +1126,16 @@ translations.define(
     "woost.initialization.password_change_confirmation_page.title",
     ca = u"Canvi de contrasenya",
     es = u"Cambio de contraseña",
-    en = u"Change your password"
+    en = u"Change your password",
+    pt = u"Alterar chave de acesso"
 )
 
 translations.define(
     "woost.initialization.password_change_confirmation_page.body",
     ca = u"Introduïx la nova contrasenya pel teu compte d'usuari",
     es = u"Introduce tu nueva contraseña para tu cuenta de usuario",
-    en = u"Enter the new password for your user account"
+    en = u"Enter the new password for your user account",
+    pt = u"Digite a nova senha para a sua conta de usuário"
 )
 
 translations.define(
@@ -1268,7 +1275,8 @@ translations.define(
     "woost.authenticationscheme.AuthenticationFailedError-instance",
     ca = u"Usuari o contrasenya incorrectes",
     es = u"Usuario o contraseña incorrectos",
-    en = u"Incorrect user or password"
+    en = u"Incorrect user or password",
+    pt = u"O nome de usuário ou palavra-passe não são corretos"
 )
 
 translations.define("woost.views.ContentTable sorting header",
@@ -1549,7 +1557,8 @@ translations.define(
     "PasswordConfirmationError-instance",
     ca = u"Les contrasenyes no coincideixen",
     es = u"Las contraseñas no coinciden",
-    en = u"Passwords don't match"
+    en = u"Passwords don't match",
+    pt = u"As palavras-passe não são iguais"
 )
 
 translations.define(
@@ -1974,7 +1983,8 @@ translations.define("Configuration.generic_error_page",
 translations.define("Configuration.not_found_error_page",
     ca = u"Pàgina no trobada",
     es = u"Página no encontrada",
-    en = u"Not found error page"
+    en = u"Not found error page",
+    pt = u"Página não encontrada"
 )
 
 translations.define("Configuration.forbidden_error_page",
@@ -2430,7 +2440,8 @@ translations.define("woost.views.LoginFormView.main",
 translations.define("woost.views.LoginForm.forgot_password_link",
     ca = u"He oblidat la contrasenya",
     es = u"He olvidado la contraseña",
-    en = u"I forgot my password"
+    en = u"I forgot my password",
+    pt = u"Esqueceu a sua chave de acesso?"
 )
 
 translations.define("woost.views.LoginForm.submit_button",
@@ -5084,14 +5095,17 @@ translations.define(
     es = u"""Hemos enviado un correo electrónico a la dirección indicada con
         las instrucciones para reestablecer tu contraseña.""",
     en = u"""We have sent an e-mail message to the indicated account 
-        containing further instructions to reset your password."""
+        containing further instructions to reset your password.""",
+    pt = u"""Foi enviado um e-mail para o endereço indicado com as instruções
+    para redefinir a sua palavra-passe."""
 )
 
 translations.define(
     "woost.controllers.passwordchangecontroller.confirmation_message",
     ca = u"Canvi de contrasenya realitzat correctament.",
     es = u"Cambio de contraseña realizado correctamente.",
-    en = u"Password correctly changed."
+    en = u"Password correctly changed.",
+    pt = u"Alteração da palavra-passe efetuada corretamente."
 )
 
 translations.define(
@@ -5099,7 +5113,8 @@ translations.define(
     "UserIdentifierNotRegisteredError-instance",
     ca = u"No existeix cap usuari amb aquest identificador",
     es = u"No existe ningún usuario registrado con este identificador",
-    en = u"There is no user with the indicated identifier"
+    en = u"There is no user with the indicated identifier",
+    pt = u"Não existe nenhum utilizador registado com este nome"
 )
 
 translations.define(
@@ -5113,14 +5128,17 @@ translations.define(
          u"través de este formulario.",
     en = u"The user you indicated has no known e-mail address. Only users "
          u"with verified e-mail addresses can use this form to change their "
-         u"password."
+         u"password.",
+    pt = u"""O utilizador indicado não tem nenhum endereço de e-mail associado:
+    não é possível alterar a sua palavra-passe através deste formulário."""
 )
 
 translations.define(
     "PasswordChangeConfirmationForm.password_confirmation",
     ca = u"Confirmar la contrasenya",
     es = u"Confirmar la contraseña",
-    en = u"Confirm password"
+    en = u"Confirm password",
+    pt = u"Confirmar a palavra-passe"
 )
 
 # EditPanel
