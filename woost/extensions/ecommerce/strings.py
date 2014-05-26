@@ -76,7 +76,8 @@ translations.define("Website.ecommerce_payment_types=cash_on_delivery",
     ca = u"Contra reemborsament",
     es = u"Contra reembolso",
     en = u"Cash on delivery",
-    fr = u"Contre remboursement"
+    fr = u"Contre remboursement",
+    pt = u"Pagamento à cobrança"
 )
 
 translations.define("Website.ecommerce_payment_gateway",
@@ -730,14 +731,16 @@ translations.define("woost.extensions.ecommerce.failure_page.title",
     ca = u"Comanda cancel·lada",
     es = u"Pedido cancelado",
     en = u"Order cancelled",
-    fr = u"Commande annulée"
+    fr = u"Commande annulée",
+    pt = u"Pedido cancelado"
 )
 
 translations.define("woost.extensions.ecommerce.failure_page.body",
     ca = u"La teva comanda ha estat cancel·lada.",
     es = u"Tu pedido ha sido cancelado.",
     en = u"Your order has been cancelled.",
-    fr = u"Votre commande a été annulée."
+    fr = u"Votre commande a été annulée.",
+    pt = u"O seu pedido foi cancelado."
 )
 
 translations.define("woost.extensions.ecommerce.product_controller.title",
@@ -889,7 +892,8 @@ translations.define(
     ca = u"Tornar al catàleg",
     es = u"Volver al catálogo",
     en = u"Return to the catalog",
-	fr = u"Retourner au catalogue"
+	fr = u"Retourner au catalogue",
+    pt = u"Voltar ao catálogo"
 )
 
 # BasketView
@@ -953,7 +957,8 @@ translations.define(
     ca = u"No es pot demanar menys d'una unitat d'un producte",
     es = u"No se puede solicitar menos de una unidad de un producto",
     en = u"Can't request less than one unit of a product",
-	fr = u"Vous ne pouvez pas demander moins d'une unité d'un produit"
+	fr = u"Vous ne pouvez pas demander moins d'une unité d'un produit",
+    pt = u"Não é possível encomendar menos de uma unidade de um produto"
 )
 
 translations.define(
@@ -1005,7 +1010,8 @@ translations.define("woost.extensions.ecommerce.BasketView.shipping_costs",
     ca = u"Costos d'enviament",
     es = u"Costes de envío",
     en = u"Shipping costs",
-    fr = u"Frais d'expédition"
+    fr = u"Frais d'expédition",
+    pt = u"Custos de envio"
 )
 
 translations.define("woost.extensions.ecommerce.BasketView.taxes",
