@@ -7,6 +7,7 @@
 @since:			July 2009
 """
 from cocktail.translations import translations
+from cocktail.schema import ValidationContext
 from cocktail.html import Element
 from cocktail.html.checkbox import CheckBox
 from woost.models import Item
@@ -17,6 +18,7 @@ class MemberList(Element):
     root_type = Item
     name = None
     value = ()
+    __enumeration = None
 
     def _build(self):
         self.add_resource("/cocktail/scripts/autocomplete.js")
@@ -77,7 +79,21 @@ class MemberList(Element):
         return label
 
     def member_is_eligible(self, member):
-        return member.visible and member.name != "translations"
+        if self.__enumeration is None:
+            if self.member and self.member.items:
+                self.__enumeration = self.member.resolve_constraint(
+                    self.member.items.enumeration,
+                    ValidationContext(self.member.items, self.data)
+                )
+
+            if self.__enumeration is None:
+                self.__enumeration = []
+
+        if self.__enumeration:
+            key = member.schema.full_name + "." + member.name
+            return key in self.__enumeration
+        else:
+            return member.visible and member.name != "translations"
 
     def create_member_entry(self, member):
 
@@ -94,9 +110,7 @@ class MemberList(Element):
 
         entry.label = Element("label")
         entry.label["for"] = entry.check["id"]
-        entry.label.append(
-            translations(member.schema.name + "." + member.name)
-        )
+        entry.label.append(translations(member))
         entry.append(entry.label)
 
         return entry
