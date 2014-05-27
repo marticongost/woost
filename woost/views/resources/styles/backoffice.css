@@ -1265,7 +1265,7 @@ body.scripted .BackOfficeLayout .Table .row_selection_control {
     display: block;
     float: none;
     font-size: 100%;
-    margin-bottom: 0.1em;
+    padding: 0.2em 0;
 }
 
 .BackOfficeLayout .action_button[disabled] {
