@@ -268,35 +268,40 @@ translations.define("ECommerceOrder.status=shopping",
     ca = u"En curs",
     es = u"En curso",
     en = u"Shopping",
-    fr = u"En cours"
+    fr = u"En cours",
+    pt = u"Em processamento"
 )
 
 translations.define("ECommerceOrder.status=payment_pending",
     ca = u"Pendent de pagament",
     es = u"Pago pendiente",
     en = u"Payment pending",
-    fr = u"Paiement en attente"
+    fr = u"Paiement en attente",
+    pt = u"Pagamento pendente"
 )
 
 translations.define("ECommerceOrder.status=accepted",
     ca = u"Acceptada",
     es = u"Aceptada",
     en = u"Accepted",
-    fr = u"Accepté"
+    fr = u"Accepté",
+    pt = u"Aceito"
 )
 
 translations.define("ECommerceOrder.status=refund",
     ca = u"Devolució",
     es = u"Devolución",
     en = u"Refund",
-    fr = u"Remboursement"
+    fr = u"Remboursement",
+    pt = u"Devolução"
 )
 
 translations.define("ECommerceOrder.status=failed",
     ca = u"Cancel·lada",
     es = u"Cancelada",
     en = u"Cancelled",
-    fr = u"Annulé"
+    fr = u"Annulé",
+    pt = u"Cancelada"
 )
 
 translations.define("ECommerceOrder.purchases",
@@ -882,7 +887,8 @@ translations.define(
     ca = u"Confirmar la compra",
     es = u"Confirmar la compra",
     en = u"Submit order",
-	fr = u"Confirmer l'achat"
+    fr = u"Confirmer l'achat",
+    pt = u"Confirmar"
 )
 
 # BasketPage
