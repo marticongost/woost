@@ -1265,7 +1265,7 @@ body.scripted .BackOfficeLayout .Table .row_selection_control {
     display: block;
     float: none;
     font-size: 100%;
-    margin-bottom: 0.1em;
+    padding: 0.2em 0;
 }
 
 .BackOfficeLayout .action_button[disabled] {
@@ -1484,6 +1484,10 @@ body.scripted .BackOfficeLayout .selector:hover .selector_content {
 
 .BackOfficeLayout .ContentTypeSelector > .button > .label > * {
     vertical-align: middle;
+}
+
+.BackOfficeLayout .ContentTypeSelector > .button > .label > img {
+    margin-right: 0.4em;
 }
 
 .BackOfficeLayout .ContentTypeSelector .palette > .palette_group > .nested_groups {
@@ -3279,7 +3283,6 @@ div.success_label {
 }
 
 .BackOfficeItemHeading .item_path {
-    margin-left: -0.3em;
     vertical-align: top;
 }
 
@@ -3289,14 +3292,13 @@ div.success_label {
     vertical-align: top;
     padding: 0;
     margin: 0;
-    margin-left: 0.2em;
+    margin-left: 0.4em;
 }
 
 .BackOfficeItemHeading .item_path li {
     display: inline-block;
     vertical-align: top;
     padding: 0;
-    margin: 0;
 }
 
 .BackOfficeItemHeading .item_path li + li:before {
