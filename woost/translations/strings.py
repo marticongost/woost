@@ -5271,6 +5271,24 @@ translations.define("HTMLRenderer-plural",
     en = u"HTML renderers"
 )
 
+translations.define("HTMLRenderer.window_width",
+    ca = u"Amplada",
+    es = u"Ancho",
+    en = u"Width"
+)
+
+translations.define("HTMLRenderer.window_height",
+    ca = u"Alçada",
+    es = u"Alto",
+    en = u"Height"
+)
+
+translations.define("HTMLRenderer.external_urls_only",
+    ca = u"Només URLs externes",
+    es = u"Sólo URLs externals",
+    en = u"External URLs only"
+)
+
 # ImageURIRenderer
 #------------------------------------------------------------------------------
 translations.define("ImageURIRenderer",
