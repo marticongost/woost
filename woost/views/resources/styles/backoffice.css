@@ -269,6 +269,19 @@ body {
     background-repeat: no-repeat;
 }
 
+.BackOfficeLayout .ItemLabel.with_icon {
+    white-space: nowrap;
+}
+
+.BackOfficeLayout .ItemLabel.with_icon .text_wrapper {
+    white-space: normal;
+}
+
+.BackOfficeLayout .ItemLabel.with_icon > * {
+    display: inline-block;
+    vertical-align: middle;
+}
+
 .BackOfficeLayout input[type=text],
 .BackOfficeLayout input[type=password],
 .BackOfficeLayout input[type=url],
