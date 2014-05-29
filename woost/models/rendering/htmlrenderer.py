@@ -10,6 +10,7 @@ from shutil import rmtree
 from subprocess import Popen
 from cocktail import schema
 from woost.models.publishable import Publishable
+from woost.models.uri import URI
 from woost.models.user import User
 from woost.models.rendering.renderer import Renderer
 
@@ -39,9 +40,15 @@ class HTMLRenderer(Renderer):
         min = 0
     )
 
+    external_urls_only = schema.Boolean(
+        required = True,
+        default = True
+    )
+
     def can_render(self, item, **parameters):
+        cls = self.external_urls_only and URI or Publishable
         return (
-            isinstance(item, Publishable)
+            isinstance(item, cls)
             and item.mime_type in self.mime_types
             and item.is_accessible(
                 user = User.get_instance(qname = "woost.anonymous_user")
@@ -73,7 +80,7 @@ class HTMLRenderer(Renderer):
                 window_height = self.window_height
 
             if window_height is not None:
-                command += " --min-width %d" % window_height
+                command += " --min-height %d" % window_height
 
             Popen(command, shell = True).wait()
             return Image.open(temp_image_file)
