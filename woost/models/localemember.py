@@ -24,7 +24,12 @@ class LocaleMember(schema.String):
 
     def translate_value(self, value, language = None, **kwargs):
         if not value:
-            return ""
+            return schema.String.translate_value(
+                self,
+                value,
+                language = language,
+                **kwargs
+            )
         else:
             return translations(
                 "locale",

@@ -34,7 +34,8 @@ class ItemLabel(Element):
                 self.add_class("with_icon")
                 self.append(self.create_icon())
 
-            self.append(self.create_text_wrapper())
+            self.text_wrapper = self.create_text_wrapper()
+            self.append(self.text_wrapper)
 
     def create_icon(self):
         img = Element("img")
