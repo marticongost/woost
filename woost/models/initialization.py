@@ -22,6 +22,7 @@ from cocktail.persistence import (
 from woost import app
 from woost.models import (
     changeset_context,
+    Item,
     Configuration,
     Website,
     Publishable,
@@ -36,6 +37,7 @@ from woost.models import (
     Controller,
     Template,
     Style,
+    File,
     UserView,
     ReadPermission,
     CreatePermission,
@@ -58,9 +60,6 @@ from woost.models import (
     rendering,
     load_extensions
 )
-
-def everything():
-    return {"type": "woost.models.item.Item"}
 
 
 class TranslatedValues(object):
@@ -397,10 +396,10 @@ class SiteInitializer(object):
             qname = "woost.administrators",
             title = TranslatedValues(),
             permissions = [
-                self._create(ReadPermission, matching_items = everything()),
-                self._create(CreatePermission, matching_items = everything()),
-                self._create(ModifyPermission, matching_items = everything()),
-                self._create(DeletePermission, matching_items = everything()),
+                self._create(ReadPermission, content_type = Item),
+                self._create(CreatePermission, content_type = Item),
+                self._create(ModifyPermission, content_type = Item),
+                self._create(DeletePermission, content_type = Item),
                 self._create(ReadMemberPermission),
                 self._create(ModifyMemberPermission),
                 self._create(InstallationSyncPermission)
@@ -414,13 +413,8 @@ class SiteInitializer(object):
             qname = "woost.everybody",
             title = TranslatedValues(),
             permissions = [
-                self._create(RenderPermission, matching_items = everything()),
-                self._create(
-                    ReadPermission,
-                    matching_items = {
-                        "type": "woost.models.publishable.Publishable",
-                    }
-                )
+                self._create(RenderPermission, content_type = Item),
+                self._create(ReadPermission, content_type = Publishable)
             ]
         )
 
@@ -492,9 +486,7 @@ class SiteInitializer(object):
                         self._create(
                             permission_type,
                             authorized = False,
-                            matching_items = {
-                                "type": restricted_type
-                            }
+                            content_type = restricted_type
                         )
                     )
 
@@ -510,9 +502,7 @@ class SiteInitializer(object):
                         self._create(
                             permission_type,
                             authorized = False,
-                            matching_items = {
-                                "type": read_only_type 
-                            }
+                            content_type = read_only_type
                         )
                     )
 
@@ -541,7 +531,7 @@ class SiteInitializer(object):
             title = TranslatedValues(),
             execution_point = "after",
             batch_execution = True,
-            matching_items = {"type": "woost.models.file.File"},
+            content_type = File,
             responses = [
                 self._create(
                     CustomTriggerResponse,
@@ -586,12 +576,9 @@ class SiteInitializer(object):
         self._create(
             ReadPermission,
             role = self.anonymous_role,
-            matching_items = {
-                "type": "woost.models.publishable.Publishable",
-                "filter": "member-controller",
-                "filter_operator0": "eq",
-                "filter_value0": str(self.backoffice_controller.id)
-            },
+            content_type = Publishable,
+            content_expression =
+                """items.add_filter(cls.qname.equal("woost.backoffice"))""",
             authorized = False
         )
 

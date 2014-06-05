@@ -899,3 +899,32 @@ def initialize_last_translation_update_time(e):
                 if last_update is None:
                     item.set("last_translation_update_time", now, lang)
 
+#------------------------------------------------------------------------------
+ 
+step = MigrationStep("Ditch ContentPermission.matching_items")
+
+@when(step.executing)
+def ditch_content_permission_matching_items(e):
+
+    from warnings import warn
+    from cocktail.pkgutils import import_object
+    from woost.models import Item, ContentPermission
+
+    for permission in ContentPermission.select():
+        matching_items = permission._matching_items
+
+        type_ref = matching_items.pop("type", None)
+        if type_ref is None:
+            permission.content_type = Item
+        else:
+            permission.content_type = import_object(type_ref)
+
+        if not matching_items:
+            del permission._matching_items
+        else:
+            warn(
+                "Permission #%d for type %s "
+                "had custom filters that couldn't be migrated: %r"
+                % (permission.id, type_ref, matching_items)
+            )
+

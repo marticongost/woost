@@ -12,8 +12,8 @@ from cocktail.events import when
 from cocktail.pkgutils import import_object
 from cocktail.translations import translations
 from cocktail import schema
-from cocktail.controllers.usercollection import UserCollection
 from cocktail.schema.expressions import Expression
+from cocktail.persistence import PersistentObject
 from .item import Item
 from .messagestyles import permission_doesnt_match_style
 from .usersession import get_current_user
@@ -63,18 +63,18 @@ class Permission(Item):
 class ContentPermission(Permission):
     """Base class for permissions restricted to a subset of a content type."""
     
-    edit_controller = \
-        "woost.controllers.backoffice.contentpermissionfieldscontroller." \
-        "ContentPermissionFieldsController"
-    edit_view = "woost.views.ContentPermissionFields"
+    members_order = [
+        "content_type",
+        "content_expression"
+    ]
 
-    matching_items = schema.Mapping(
-        translate_value = lambda value, language = None, **kwargs:
-            ""
-            if not value
-            else translations(
-                ContentPermission._get_user_collection(value).subset
-            )
+    content_type = schema.Reference(
+        class_family = PersistentObject,
+        required = True
+    )
+    
+    content_expression = schema.CodeBlock(
+        language = "python"
     )
 
     def match(self, target, verbose = False):
@@ -86,7 +86,7 @@ class ContentPermission(Permission):
                 if verbose:
                     print permission_doesnt_match_style("type doesn't match"),
                 return False
-            elif not self.authorized and "filter" in self.matching_items:
+            elif not self.authorized and self.content_expression:
                 if verbose:
                     print permission_doesnt_match_style("partial restriction")
                 return False
@@ -108,23 +108,18 @@ class ContentPermission(Permission):
     
     def select_items(self, *args, **kwargs):
         
-        subset = self._get_user_collection(self.matching_items).subset
+        items = self.content_type.select()
+
+        expression = self.content_expression
+        if expression:
+            context = {"items": items, "cls": self.content_type}
+            exec expression in context
+            items = context["items"]
 
         if args or kwargs:
-            subset = subset.select(*args, **kwargs)
+            items = items.select(*args, **kwargs)
 
-        return subset
-
-    @classmethod
-    def _get_user_collection(self, matching_items):
-        user_collection = UserCollection(Item)
-        user_collection.allow_paging = False
-        user_collection.allow_member_selection = False
-        user_collection.allow_language_selection = False
-        user_collection.params.source = matching_items.get
-        from woost.models.configuration import Configuration
-        user_collection.available_languages = Configuration.instance.languages
-        return user_collection
+        return items
 
 
 class ReadPermission(ContentPermission):
