@@ -220,13 +220,15 @@ class CommentsExtension(Extension):
         self.install()
 
     def _install(self):
+
+        from woost.models import Role, CreatePermission
+        from woost.extensions.comments.comment import Comment
+
         self._create_asset(
             CreatePermission,
             "anonymous_comments_permission",
             role = Role.require_instance(qname = "woost.anonymous"),
             authorized = True,
-            matching_items = {
-                "type": "woost.extensions.comments.comment.Comment"
-            }
+            content_type = Comment
         )
 

@@ -95,9 +95,7 @@ class PermissionTestCase(BaseTestCase):
             # Permission granted
             role.permissions.append(
                 permission_type(
-                    matching_items = {
-                        "type": "woost.models.publishable.Publishable"
-                    },
+                    content_type = Publishable,
                     authorized = True
                 )
             )
@@ -114,9 +112,7 @@ class PermissionTestCase(BaseTestCase):
             role.permissions.insert(
                 0,
                 permission_type(
-                    matching_items = {
-                        "type": "woost.models.item.Item"
-                    },
+                    content_type = Item,
                     authorized = False
                 )
             )
@@ -259,9 +255,7 @@ class PermissionTestCase(BaseTestCase):
         
         self.everybody_role.permissions.append(
             ReadPermission(
-                matching_items = {
-                    "type": "woost.models.publishable.Publishable"
-                },
+                content_type = Publishable,
                 authorized = True
             )
         )

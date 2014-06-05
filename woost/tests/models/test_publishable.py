@@ -29,11 +29,7 @@ class IsAccessibleExpressionTestCase(BaseTestCase):
         from woost.models import Publishable, ReadPermission
         
         self.everybody_role.permissions.append(
-            ReadPermission(
-                matching_items = {
-                    "type": "woost.models.publishable.Publishable"
-                }
-            )
+            ReadPermission(content_type = Publishable)
         )
 
         a = Publishable()
@@ -64,11 +60,7 @@ class IsAccessibleExpressionTestCase(BaseTestCase):
         )
         
         self.everybody_role.permissions.append(
-            ReadPermission(
-                matching_items = {
-                    "type": "woost.models.publishable.Publishable"
-                }
-            )
+            ReadPermission(content_type = Publishable)
         )
 
         self.everybody_role.permissions.append(ReadTranslationPermission())
@@ -131,11 +123,7 @@ class IsAccessibleExpressionTestCase(BaseTestCase):
         set_current_user(self.user)
 
         self.everybody_role.permissions.append(
-            ReadPermission(
-                matching_items = {
-                    "type": "woost.models.publishable.Publishable"
-                }
-            )
+            ReadPermission(content_type = Publishable)
         )
 
         self.everybody_role.permissions.append(
@@ -180,11 +168,7 @@ class IsAccessibleExpressionTestCase(BaseTestCase):
         from datetime import datetime, timedelta
         
         self.everybody_role.permissions.append(
-            ReadPermission(
-                matching_items = {
-                    "type": "woost.models.publishable.Publishable"
-                }
-            )
+            ReadPermission(content_type = Publishable)
         )
 
         now = datetime.now()
@@ -225,12 +209,9 @@ class IsAccessibleExpressionTestCase(BaseTestCase):
 
         self.everybody_role.permissions.append(
             ReadPermission(
-                matching_items = {
-                    "type": "woost.models.publishable.Publishable",
-                    "filter": "member-id",
-                    "filter_operator0": "ne",
-                    "filter_value0": str(b.id)
-                }
+                content_type = Publishable,
+                content_expression =
+                    "items.add_filter(cls.id.not_equal(%d))" % b.id
             )
         )
         

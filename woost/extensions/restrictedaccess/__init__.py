@@ -63,12 +63,9 @@ class RestrictedAccessExtension(Extension):
             restriction.qname = qname
             restriction.authorized = False            
              
-        restriction.matching_items = {
-            "type": "woost.models.publishable.Publishable",
-            "filter": "member-access_restriction",
-            "filter_operator0": "ne",
-            "filter_value0": ""
-        }
+        restriction.content_type = Publishable
+        restriction.content_expression = \
+            """items.add_filter(cls.access_restriction.not_equal(""))"""
         restriction.insert()
 
         if restriction not in everybody_role.permissions:

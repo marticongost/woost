@@ -3580,10 +3580,16 @@ translations.define("ContentPermission-plural",
     en = u"Content permissions"
 )
 
-translations.define("ContentPermission.matching_items",
-    ca = u"Elements inclosos",
-    es = u"Elementos incluidos",
-    en = u"Included items"
+translations.define("ContentPermission.content_type",
+    ca = u"Tipus d'element",
+    es = u"Tipo de elemento",
+    en = u"Content type"
+)
+
+translations.define("ContentPermission.content_expression",
+    ca = u"Expressió de filtrat",
+    es = u"Expresión de filtrado",
+    en = u"Filtering expression"
 )
 
 # ReadPermission
