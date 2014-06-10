@@ -13,6 +13,7 @@ class BlockList(Element):
     container = None
     slot = None
     hide_if_empty = False
+    wrap_dl_entries = False
 
     def __init__(self, *args, **kwargs):
         Element.__init__(self, *args, **kwargs)
@@ -39,6 +40,8 @@ class BlockList(Element):
             self.__wrap = self.wrap_with_list_item
         elif self.tag == "table":
             self.__wrap = self.wrap_with_table_row
+        elif self.wrap_dl_entries and self.tag == "dl":
+            self.__wrap = self.wrap_with_dl_row
 
         self._fill_blocks()
 
@@ -74,4 +77,10 @@ class BlockList(Element):
         row.cell.append(block_view)
         row.append(row.cell)
         return row
+
+    def wrap_with_dl_row(self, block_view):
+        entry = Element()
+        entry.add_class("dl_entry")
+        entry.append(block_view)
+        return entry
 
