@@ -5564,6 +5564,14 @@ translations.define("Crop.bottom",
     en = u"Y2"
 )
 
+# AutoCrop
+#------------------------------------------------------------------------------
+translations.define("AutoCrop",
+    ca = u"Retallat automàtic",
+    es = u"Recorte automático",
+    en = u"Autocrop"
+)
+
 # Fill
 #------------------------------------------------------------------------------
 translations.define("Fill",

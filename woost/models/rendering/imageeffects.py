@@ -3,7 +3,8 @@ u"""
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
-from PIL import Image, ImageEnhance, ImageFilter, ImageOps
+from collections import Counter
+from PIL import Image, ImageEnhance, ImageFilter, ImageOps, ImageChops
 from cocktail.events import event_handler
 from cocktail import schema
 from cocktail.translations import translations
@@ -176,6 +177,75 @@ class Crop(ImageEffect):
             ImageSize.resolve_size(self.right, width),
             ImageSize.resolve_size(self.bottom, height)
         ))
+
+
+class AutoCrop(ImageEffect):
+
+    # Adapted from the following recipe:
+    # http://megasnippets.com/en/source-codes/python/automatically_crop_image
+
+    instantiable = True
+
+    def apply(self, image):
+
+        bbox = None
+
+        # If the image has an alpha (tranparency) layer, we use it to crop the
+        # image. Otherwise, we look at the pixels around the image (top, left,
+        # bottom and right) and use the most used color as the color to crop.
+
+        # Transparent images: use the alpha band to crop the image
+        if 'A' in image.getbands():
+            bbox = image.split()[list(image.getbands()).index('A')].getbbox()
+
+        # Images with no alpha band: use the dominant color for cropping
+        else:
+            if image.mode != "RGB":
+                image = image.convert("RGB")
+
+            # Since .getbbox() always crops the black color, we need to
+            # substract the "background" color from our image.
+            background = get_dominant_edge_color(image)
+            bg = Image.new("RGB", image.size, background)
+            diff = ImageChops.difference(image, bg)
+            bbox = diff.getbbox()
+
+        if bbox:
+            image = image.crop(bbox)
+
+        return image
+
+
+def get_dominant_edge_color(image):
+
+    if image.mode != 'RGB':
+        image = image.convert("RGB")
+
+    # Get pixels from the edges of the image:
+    width, height = image.size
+    pixels = (
+        # Left
+        image.crop((0, 1, 1, height - 1)).tostring()
+
+        # Right
+        + image.crop((width - 1, 1, width, height - 1)).tostring()
+
+        # Top
+        + image.crop((0, 0, width, 1)).tostring()
+
+        # Bottom
+        + image.crop((0, height - 1, width, height)).tostring()
+    )
+
+    # Count the number of appearences of each color in the edge
+    count = Counter()
+
+    for i in range(0, len(pixels), 3):
+        color = pixels[i] + pixels[i+1] + pixels[i+2]
+        count[color] += 1
+
+    dominant_color = count.most_common(1)[0][0]
+    return tuple(map(ord, dominant_color))
 
 
 class Fill(ImageEffect):
