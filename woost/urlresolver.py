@@ -8,7 +8,7 @@
 """
 import re
 from os.path import splitext
-from cocktail.modeling import abstractmethod
+from cocktail.modeling import abstractmethod, ListWrapper
 from cocktail.stringutils import normalize
 from cocktail.translations import translations, get_language
 from cocktail.controllers import resolve_object_ref
@@ -21,6 +21,11 @@ class URLResolver(object):
 
     def __init__(self):
         self._url_schemes = []
+        self._url_schemes_wrapper = ListWrapper(self._url_schemes)
+
+    @property
+    def url_schemes(self):
+        return self._url_schemes_wrapper
 
     def add_url_scheme(self, url_scheme):
         self._url_schemes.append(url_scheme)
