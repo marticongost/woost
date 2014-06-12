@@ -133,6 +133,9 @@ class URLScheme(object):
         @rtype: unicode
         """
 
+    def get_publishable_file_extension(self, publishable):
+        return getattr(publishable, "file_extension", None)
+
 
 class PathResolution(object):
     """A structure that provides publication information for an item.
@@ -208,25 +211,43 @@ class HierarchicalURLScheme(URLScheme):
 
 class IdURLScheme(URLScheme):
     """A url scheme that publishes items based on their id."""
-    
+
+    include_file_extensions = True
+
     def resolve_path(self, path):
         if path:
-            try:
-                id = int(path[0])
-            except:
-                pass
-            else:
-                publishable = Publishable.get_instance(id)
-                if publishable is not None:
-                    return PathResolution(
-                        self,
-                        publishable,
-                        [path[0]],
-                        path[1:]
-                    )
+            if path:
+                ref, ext = splitext(path[0])
+                try:
+                    id = int(ref)
+                except:
+                    pass
+                else:
+                    publishable = Publishable.get_instance(id)
+
+                    if ext and (
+                        not self.include_file_extensions
+                        or ext != self.get_publishable_file_extension(publishable)
+                    ):
+                        return None
+
+                    if publishable is not None:
+                        return PathResolution(
+                            self,
+                            publishable,
+                            [path[0]],
+                            path[1:]
+                        )
 
     def get_path(self, publishable, language):
-        return str(publishable.id)
+        path = str(publishable.id)
+
+        if self.include_file_extensions:
+            ext = self.get_publishable_file_extension(publishable)
+            if ext:
+                path += ext
+
+        return path
 
 
 class DescriptiveIdURLScheme(URLScheme):
@@ -341,8 +362,4 @@ class DescriptiveIdURLScheme(URLScheme):
                 ref += ext
 
         return ref
-
-    def get_publishable_file_extension(self, publishable):
-        return getattr(publishable, "file_extension", None)
-
 
