@@ -915,6 +915,7 @@ def rename_email_template_language(e):
         else:
             del tmpl._language
             tmpl._language_expression = value
+
 #------------------------------------------------------------------------------
  
 step = MigrationStep("Ditch ContentPermission.matching_items")
@@ -927,7 +928,7 @@ def ditch_content_permission_matching_items(e):
     from woost.models import Item, ContentPermission
 
     for permission in ContentPermission.select():
-        matching_items = permission._matching_items
+        matching_items = permission._matching_items.copy()
 
         type_ref = matching_items.pop("type", None)
         if type_ref is None:
