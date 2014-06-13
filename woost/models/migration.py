@@ -900,6 +900,22 @@ def initialize_last_translation_update_time(e):
                     item.set("last_translation_update_time", now, lang)
 
 #------------------------------------------------------------------------------
+
+step = MigrationStep("Rename EmailTemplate.language to .language_expression")
+
+@when(step.executing)
+def rename_email_template_language(e):
+    from woost.models import EmailTemplate
+    
+    for tmpl in EmailTemplate.select():
+        try:
+            value = tmpl._language
+        except AttributeError:
+            pass
+        else:
+            del tmpl._language
+            tmpl._language_expression = value
+#------------------------------------------------------------------------------
  
 step = MigrationStep("Ditch ContentPermission.matching_items")
 
