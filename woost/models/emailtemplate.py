@@ -36,7 +36,7 @@ class EmailTemplate(Item):
         "template_engine",
         "subject",
         "body",
-        "language",
+        "language_expression",
         "initialization_code"
     ]
 
@@ -99,7 +99,7 @@ class EmailTemplate(Item):
         language = "python"
     )
 
-    language = schema.CodeBlock(
+    language_expression = schema.CodeBlock(
         language = "python"
     )
     
@@ -123,7 +123,7 @@ class EmailTemplate(Item):
             mime_type = mime_type[pos + 1:]
 
         # Language (python expression)
-        language = eval_member("language")
+        language = eval_member("language_expression")
         if language not in self.translations:
             language = None
 
