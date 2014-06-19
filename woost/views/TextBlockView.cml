@@ -12,7 +12,10 @@ from cocktail.controllers import Location
     enable_ie_table_layout_workaround = True
 
     def insert_heading(self, heading):
-        self.block_link.insert(0, heading)
+        if self.block.heading_alignment == "inside":
+            self.text_container.insert(0, heading)
+        else:
+            self.block_link.insert(0, heading)
     ?>
 
     <?py
@@ -21,6 +24,7 @@ from cocktail.controllers import Location
 
     <py:ready>
         <?py
+        self.add_class("heading_" + self.block.heading_alignment)
         self.add_class(self.block.image_alignment)
         self._images = [image for image in self.block.images if image.is_accessible()]
         self._column_layout = (self.block.image_alignment in ("column_left", "column_right"))
