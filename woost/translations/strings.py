@@ -6725,6 +6725,24 @@ translations.define("TextBlock-plural",
     en = u"Text + images"
 )
 
+translations.define("TextBlock.heading_alignment",
+    ca = u"Disposició de l'encapçalament",
+    es = u"Disposición del encabezado",
+    en = u"Heading alignment"
+)
+
+translations.define("TextBlock.heading_alignment=top",
+    ca = u"Inici del bloc",
+    es = u"Inicio del bloque",
+    en = u"Top"
+)
+
+translations.define("TextBlock.heading_alignment=inside",
+    ca = u"Inici del text",
+    es = u"Inicio del texto",
+    en = u"Start of the text"
+)
+
 translations.define("TextBlock.element_type",
     ca = u"Tipus d'element",
     es = u"Tipo de elemento",

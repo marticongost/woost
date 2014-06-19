@@ -34,6 +34,7 @@ class TextBlock(Block):
     ]
 
     members_order = [
+        "heading_alignment",
         "element_type",
         "text",
         "images",
@@ -48,6 +49,14 @@ class TextBlock(Block):
         "link_parameters",
         "link_opens_in_new_window"
     ]
+
+    heading_alignment = schema.String(
+        required = True,
+        default = "top",
+        enumeration = ["top", "inside"],
+        edit_control = "cocktail.html.RadioSelector",
+        member_group = "content"
+    )
 
     element_type = ElementType(
         member_group = "content"
