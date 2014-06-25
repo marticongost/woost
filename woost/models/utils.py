@@ -4,6 +4,7 @@ u"""
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
 from ZODB.broken import Broken
+from cocktail import schema
 from cocktail.persistence import datastore
 from cocktail.persistence.utils import (
     is_broken,
@@ -62,4 +63,13 @@ def delete_history():
     for key in list(datastore.root):
         if key.startswith("woost.models.changesets."):
             del datastore.root[key]
+
+def restore_deleted_item(obj):
+    if obj.insert():
+        for member in obj.__class__.iter_members():
+            if (
+                isinstance(member, schema.Collection)
+                and obj.get(member) is None
+            ):
+                obj.set(member, member.produce_default(instance = obj))
 
