@@ -78,6 +78,7 @@ from cocktail.controllers import Location
                 py:close_up_factory="@{self.block.image_close_up_factory}"
                 py:close_up_preload="@{self.block.image_close_up_preload}"
                 py:labels_visible="@{self.block.image_labels_visible}"
+                py:footnotes_visible="@{self.block.image_footnotes_visible}"
                 py:original_link_visible="@{self.block.image_original_link_visible}"/>
 
             <div py:id="text_container" py:visible="@{bool(self.block.text)}">

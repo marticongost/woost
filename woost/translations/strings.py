@@ -6908,6 +6908,12 @@ translations.define("TextBlock.image_labels_visible",
     en = u"Show image titles"
 )
 
+translations.define("TextBlock.image_footnotes_visible",
+    ca = u"Mostrar els peus d'imatge",
+    es = u"Mostrar los pies de imagen",
+    en = u"Show image footnotes"
+)
+
 translations.define("TextBlock.image_original_link_visible",
     ca = u"Mostrar un enllaç a la imatge sense modificar",
     es = u"Mostrar un enlace a la imagen sin modificar",

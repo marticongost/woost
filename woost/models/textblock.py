@@ -44,6 +44,7 @@ class TextBlock(Block):
         "image_close_up_factory",
         "image_close_up_preload",
         "image_labels_visible",
+        "image_footnotes_visible",
         "image_original_link_visible",
         "link_destination",
         "link_parameters",
@@ -124,6 +125,12 @@ class TextBlock(Block):
     )
 
     image_labels_visible = schema.Boolean(
+        required = True,
+        default = False,
+        member_group = "images"
+    )
+
+    image_footnotes_visible = schema.Boolean(
         required = True,
         default = False,
         member_group = "images"
