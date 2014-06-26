@@ -173,8 +173,9 @@ cocktail.bind({
                 );
             }
 
-            if (entry.footnote) {
-                $dialog.find(".footnote").html(entry.footnote);
+            var $entryFootnote = $entry.find(".image_footnote");
+            if ($entryFootnote.length) {
+                $dialog.find(".footnote").html($entryFootnote.html());
             }
             else {
                 $dialog.find(".footnote").hide();

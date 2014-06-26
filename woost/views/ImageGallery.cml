@@ -65,11 +65,10 @@ from cocktail.controllers import context
         <?py
         cms = context["cms"]
         title = image.title or ""
+        footnote = None
 
         if self.footnotes_visible:
             footnote = self.get_footnote(image)
-            if footnote:
-                element.set_client_param("footnote", footnote)
 
         if self.original_link_visible:
             element.set_client_param(
@@ -96,6 +95,7 @@ from cocktail.controllers import context
                 py:visible="${self.labels_visible}"
                 py:collapsible="${True}">${title}</span>
         </a>
+        <div py:local_id="image_footnote" py:visible="${bool(footnote)}">${footnote or ""}</div>
     </li>
 
     <py:woost.views.Dialog 
