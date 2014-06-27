@@ -38,8 +38,11 @@ class DocumentController(PublishableController):
                     <html lang="%s">
                         <head>
                             <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
-                            <meta http-equiv="refresh" content="0; url=%s"/>
+                            <meta http-equiv="refresh" content="1; url=%s"/>
                             <title>%s</title>
+                            <script type="text/javascript">
+                                location.href = document.getElementsByTagName("a")[0];
+                            </script>
                         </head>
                         <body>
                             %s
