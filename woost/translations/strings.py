@@ -3138,6 +3138,30 @@ translations.define("Document.redirection_target",
     en = u"Redirection target"
 )
 
+translations.define("Document.redirection_method",
+    ca = u"Mètode de redirecció",
+    es = u"Método de redirección",
+    en = u"Redirection method"
+)
+
+translations.define("Document.redirection_method=temp",
+    ca = u"Temporal",
+    es = u"Temporal",
+    en = u"Temporary"
+)
+
+translations.define("Document.redirection_method=perm",
+    ca = u"Permanent",
+    es = u"Permanente",
+    en = u"Permanent"
+)
+
+translations.define("Document.redirection_method=client",
+    ca = u"Client",
+    es = u"Cliente",
+    en = u"Client"
+)
+
 translations.define("Document.robots_should_index",
     ca = u"Contingut indexable",
     es = u"Contenido indexable",
@@ -3148,6 +3172,27 @@ translations.define("Document.robots_should_follow",
     ca = u"Seguir els enllaços",
     es = u"Seguir los enlaces",
     en = u"Follow links"
+)
+
+# DocumentController
+#------------------------------------------------------------------------------
+translations.define("woost.controllers.DocumentController.redirection_title",
+    ca = u"Redirigint",
+    es = u"Redirigiendo",
+    en = u"Redirecting"
+)
+
+translations.define(
+    "woost.controllers.DocumentController.redirection_explanation",
+    ca = lambda uri:
+        u"Redirigint a la pàgina seleccionada. Si no s'obre, fes clic "
+        u"<a href='%s'>aquí</a>." % uri,
+    es = lambda uri:
+        u"Redirigiendo a la página seleccionada. Si no se abre, haz clic "
+        u"<a href='%s'>aquí</a>." % uri,
+    en = lambda uri:
+        u"Redirecting to the selected page. If it doesn't load, click "
+        u"<a href='%s'>here</a>." % uri
 )
 
 # Redirection

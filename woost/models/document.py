@@ -34,6 +34,7 @@ class Document(Publishable):
         "children",
         "redirection_mode",
         "redirection_target",
+        "redirection_method",
         "robots_should_index",
         "robots_should_follow"
     )
@@ -99,6 +100,14 @@ class Document(Publishable):
         type = Publishable,
         related_end = schema.Collection(),
         required = redirection_mode.equal("custom_target"),
+        listed_by_default = False,
+        member_group = "navigation"
+    )
+
+    redirection_method = schema.String(
+        required = True,
+        default = "temp",
+        enumeration = ["temp", "perm", "client"],
         listed_by_default = False,
         member_group = "navigation"
     )
