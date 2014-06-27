@@ -40,12 +40,12 @@ class DocumentController(PublishableController):
                             <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
                             <meta http-equiv="refresh" content="1; url=%s"/>
                             <title>%s</title>
-                            <script type="text/javascript">
-                                location.href = document.getElementsByTagName("a")[0];
-                            </script>
                         </head>
                         <body>
                             %s
+                            <script type="text/javascript">
+                                location.href = document.getElementById("woost-client-redirection").href;
+                            </script>
                         </body>
                     </html>
                 """ % (
