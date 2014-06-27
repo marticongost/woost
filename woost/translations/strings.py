@@ -3186,13 +3186,13 @@ translations.define(
     "woost.controllers.DocumentController.redirection_explanation",
     ca = lambda uri:
         u"Redirigint a la pàgina seleccionada. Si no s'obre, fes clic "
-        u"<a href='%s'>aquí</a>." % uri,
+        u"<a id='woost-client-redirection' href='%s'>aquí</a>." % uri,
     es = lambda uri:
         u"Redirigiendo a la página seleccionada. Si no se abre, haz clic "
-        u"<a href='%s'>aquí</a>." % uri,
+        u"<a id='woost-client-redirection' href='%s'>aquí</a>." % uri,
     en = lambda uri:
         u"Redirecting to the selected page. If it doesn't load, click "
-        u"<a href='%s'>here</a>." % uri
+        u"<a id='woost-client-redirection' href='%s'>here</a>." % uri
 )
 
 # Redirection
