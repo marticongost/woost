@@ -80,7 +80,7 @@ from woost.models import Configuration, get_current_website
 
     <div py:id="navigation">
         <?py html5_tag(element, "nav") ?>
-        <h1 style="display:none">
+        <h1 py:id="navigation_heading" style="display:none">
             ${translations("woost.views.StandardView.navigation_title")}
             <py:ready>
                 <?py
