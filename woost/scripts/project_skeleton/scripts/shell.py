@@ -8,6 +8,7 @@ from cocktail.translations import *
 from cocktail.persistence import *
 from woost import app
 from woost.models import *
+from woost.models.utils import *
 from woost.models.extension import load_extensions
 from _PROJECT_MODULE_.models import *
 
