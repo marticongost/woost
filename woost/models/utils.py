@@ -4,6 +4,7 @@ u"""
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
 import re
+from difflib import SequenceMatcher
 from ZODB.broken import Broken
 from cocktail.styled import styled
 from cocktail import schema
@@ -76,10 +77,7 @@ def restore_deleted_item(obj):
             ):
                 obj.set(member, member.produce_default(instance = obj))
 
-def grep(expr, objects = None):
-
-    if isinstance(expr, basestring):
-        expr = re.compile(expr)
+def iter_text(objects = None):
 
     if objects is None:
         objects = Item.select()
@@ -95,9 +93,17 @@ def grep(expr, objects = None):
                 for language in languages:
                     value = obj.get(member, language)
                     if value:
-                        matches = list(expr.finditer(value))
-                        if matches:
-                            yield obj, member, language, value, matches
+                        yield obj, member, language, value
+
+def grep(expr, objects = None):
+
+    if isinstance(expr, basestring):
+        expr = re.compile(expr)
+
+    for obj, member, language, value in iter_text(objects):
+        matches = list(expr.finditer(value))
+        if matches:
+            yield obj, member, language, value, matches
 
 def hl(expr, objects = None):
 
@@ -126,4 +132,67 @@ def hl(expr, objects = None):
             offset += len(hl_chunk) - len(original_chunk)
 
         print hl_value
+
+def replace(expr, replacement, objects = None, mode = "apply"):
+
+    if isinstance(expr, basestring):
+        expr = re.compile(expr)
+
+    if mode == "apply":
+        apply = True
+        show = False
+    elif mode == "verbose":
+        apply = True
+        show = True
+    elif mode == "show":
+        apply = False
+        show = True
+    elif mode == "confirm":
+        apply = None
+        show = True
+
+    for obj, member, language, value in iter_text(objects):
+        modified_value = expr.sub(replacement, value)
+
+        if value == modified_value:
+            continue
+
+        if show:
+            print styled("-" * 100, style = "bold")
+            print styled(translations(obj), style = "bold"),
+            print styled(member.name, "slate_blue"),
+
+            if language:
+                print styled(language, "pink")
+            else:
+                print
+
+            diff = SequenceMatcher(a = value, b = modified_value)
+            chunks = []
+
+            for op, start_a, end_a, start_b, end_b in diff.get_opcodes():
+                orig_chunk = value[start_a:end_a]
+                new_chunk = modified_value[start_b:end_b]
+
+                if op == "equal":
+                    chunks.append(orig_chunk)
+                else:
+                    if op in ("replace", "delete"):
+                        chunks.append(styled(orig_chunk, "white", "red"))
+
+                    if op in ("replace", "insert"):
+                        chunks.append(styled(new_chunk, "white", "green"))
+
+            print "".join(chunks)
+
+        if apply is None:
+            answer = None
+            while answer not in list("yn"):
+                answer = raw_input("Replace (y/n)? ")
+            if answer == "n":
+                continue
+        elif not apply:
+            continue
+
+        obj.set(member, modified_value, language)
 
