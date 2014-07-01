@@ -24,6 +24,7 @@ class RichTextEditor(TinyMCE):
         "style_formats_merge": True,
         "height": 250,
         "content_css": "/user_styles/?backoffice=1",
+        "convert_urls": False,
         "statusbar": False,
         "menubar": [
             "edit",
