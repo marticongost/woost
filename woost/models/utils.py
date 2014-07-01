@@ -3,8 +3,11 @@ u"""
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
+import re
 from ZODB.broken import Broken
+from cocktail.styled import styled
 from cocktail import schema
+from cocktail.translations import translations
 from cocktail.persistence import datastore
 from cocktail.persistence.utils import (
     is_broken,
@@ -72,4 +75,55 @@ def restore_deleted_item(obj):
                 and obj.get(member) is None
             ):
                 obj.set(member, member.produce_default(instance = obj))
+
+def grep(expr, objects = None):
+
+    if isinstance(expr, basestring):
+        expr = re.compile(expr)
+
+    if objects is None:
+        objects = Item.select()
+
+    for obj in objects:
+        for member in obj.__class__.iter_members():
+            if isinstance(member, schema.String):
+                if member.translated:
+                    languages = obj.translations.keys()
+                else:
+                    languages = (None,)
+
+                for language in languages:
+                    value = obj.get(member, language)
+                    if value:
+                        matches = list(expr.finditer(value))
+                        if matches:
+                            yield obj, member, language, value, matches
+
+def hl(expr, objects = None):
+
+    for obj, member, language, value, matches in grep(expr, objects):
+        print styled("-" * 100, style = "bold")
+        print styled(translations(obj), style = "bold"),
+        print styled(member.name, "slate_blue"),
+
+        if language:
+            print styled(language, "pink")
+        else:
+            print
+
+        hl_value = value
+        offset = 0
+
+        for match in matches:
+            start, end = match.span()
+            original_chunk = value[start:end]
+            hl_chunk = styled(original_chunk, "magenta")
+            hl_value = (
+                hl_value[:start + offset]
+                + hl_chunk
+                + hl_value[end + offset:]
+            )
+            offset += len(hl_chunk) - len(original_chunk)
+
+        print hl_value
 
