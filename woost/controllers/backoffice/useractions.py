@@ -595,7 +595,7 @@ class PreviewAction(UserAction):
 class OpenResourceAction(UserAction):
     min = 1
     max = 1
-    content_type = (Publishable, SiteInstallation)
+    content_type = (Publishable, SiteInstallation, Block)
     included = frozenset([
         "toolbar",
         "item_buttons",
@@ -616,6 +616,13 @@ class OpenResourceAction(UserAction):
 
         if isinstance(target, Publishable):
             return target.get_uri(host = "?")
+        elif isinstance(target, Block):
+            for path in target.find_paths():
+                container = path[0][0]
+                if isinstance(container, Publishable):
+                    return container.get_uri(host = "?")
+            else:
+                return "/"
         else:
             return target.url
 
