@@ -63,7 +63,6 @@ from cocktail.controllers import context
 
     <li py:def="image_entry" py:args="image">
         <?py
-        cms = context["cms"]
         title = image.title or ""
         footnote = None
 

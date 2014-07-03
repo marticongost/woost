@@ -2,7 +2,7 @@
 <?py
 from cocktail.translations import require_language
 from cocktail.html import Content
-from cocktail.controllers import context
+from woost import app
 from woost.models import Configuration, Publishable, get_current_website
 ?>
 
@@ -18,8 +18,7 @@ from woost.models import Configuration, Publishable, get_current_website
     head_end_html = ""
     body_end_html = ""
     base_url = None
-    cms = None
-    
+
     def get_keywords(self):
         keywords = []
         site_keywords = Configuration.instance.get_setting("keywords")
@@ -69,7 +68,7 @@ from woost.models import Configuration, Publishable, get_current_website
                         Element("link",
                             rel = "alternate",
                             title = translations("woost.views.BaseView alternate language link", language = trans_lang, lang = trans_lang),
-                            href = self.cms.translate_uri(language = trans_lang),
+                            href = app.language.translate_uri(language = trans_lang),
                             lang = trans_lang,
                             hreflang = trans_lang
                         )
@@ -81,7 +80,7 @@ from woost.models import Configuration, Publishable, get_current_website
             document.head_icon_link = Element("link",
                 rel = "Shortcut Icon",
                 type = icon.mime_type,
-                href = self.cms.uri(icon)
+                href = icon.get_uri()
             )
             document.head.append(document.head_icon_link)
 
@@ -92,9 +91,6 @@ from woost.models import Configuration, Publishable, get_current_website
 
     <py:ready>
         <?py
-        if self.cms is None:
-            self.cms = context["cms"]
-
         if self.head_end_html or self.body_end_html:
             @self.when_document_ready
             def add_trailing_html(document):
