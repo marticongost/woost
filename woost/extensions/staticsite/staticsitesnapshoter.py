@@ -13,7 +13,6 @@ from cocktail import schema
 from cocktail.controllers import context as controller_context
 from cocktail.modeling import abstractmethod, getter
 from cocktail.translations import translations
-from cocktail.controllers.location import Location
 from woost import app
 from woost.models import Item
 
@@ -153,10 +152,10 @@ class WgetSnapShoter(StaticSiteSnapShoter):
                 yield (file_path, relative_path)
 
     def _get_uri(self, item, context):
-        location = Location.get_current_host()                              
-        location.path_info = controller_context["cms"].uri(item)
-        
-        return unicode(location).encode("utf-8")
+        uri = item.get_uri(host = "!")
+        if isinstance(uri, unicode):
+            uri = uri.encode("utf-8")
+        return uri
 
     def cleanup(self, context):
         if os.path.exists(self.snapshot_path):
