@@ -457,8 +457,9 @@ class ECommerceOrder(Item):
         site_name = Configuration.instance.get_setting("site_name")
         if site_name:
             return translations(
-                "woost.extensions.ECommerceOrder description for gateway"
-            ) % site_name
+                "woost.extensions.ECommerceOrder description for gateway",
+                site_name
+            )
         else:
             return translations(self)
 
