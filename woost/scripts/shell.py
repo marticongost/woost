@@ -18,6 +18,9 @@ def setup_shell(env):
     set_current_website(config.websites[0])
     load_extensions()
 
+get = Item.get_instance
+req = Item.require_instance
+
 def show(target):
 
     if isinstance(target, Publishable):
