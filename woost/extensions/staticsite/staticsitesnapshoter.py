@@ -114,6 +114,7 @@ class WgetSnapShoter(StaticSiteSnapShoter):
             " --convert-links"
             " --no-host-directories"
             " --no-check-certificate"
+            " --trust-server-names"
             " --directory-prefix=%s"
             " --restrict-file-names=%s %s"
         )
