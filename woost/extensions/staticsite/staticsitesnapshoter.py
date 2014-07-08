@@ -10,6 +10,7 @@ import os
 from shutil import rmtree
 from subprocess import Popen, PIPE
 from cocktail import schema
+from cocktail.translations import language_context
 from cocktail.controllers import context as controller_context
 from cocktail.modeling import abstractmethod, getter
 from cocktail.translations import translations
@@ -127,14 +128,18 @@ class WgetSnapShoter(StaticSiteSnapShoter):
     def _snapshot(self, items, context = {}):
 
         cmd = self._get_cmd(context)
-        uris = set(
-            (
-                item
-                if isinstance(item, basestring)
-                else self._get_uri(item, context)
-            )
-            for item in items
-        )
+        uris = set()
+
+        for item in items:
+            if isinstance(item, basestring):
+                uris.add(item)
+            else:
+                if item.per_language_publication:
+                    for language in item.translations:
+                        with language_context(language):
+                            uris.add(self._get_uri(item, context))
+                else:
+                    uris.add(self._get_uri(item, context))
 
         cmd = cmd % (
             self.snapshot_path, 
