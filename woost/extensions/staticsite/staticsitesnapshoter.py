@@ -51,7 +51,7 @@ class StaticSiteSnapShoter(Item):
         @type context: dict
         """
 
-    def snapshot(self, items, context = {}):
+    def snapshot(self, items, context = None):
         """ Generates the snapshot of a site's content 
 
         @param items: The list of items which the exportation will start.
@@ -61,6 +61,9 @@ class StaticSiteSnapShoter(Item):
             with the snapshoter.
         @type context: dict
         """
+        if context is None:
+            context = {}
+
         self.setup(context)
 
         try:
@@ -69,7 +72,7 @@ class StaticSiteSnapShoter(Item):
             self.cleanup(context)
 
     @abstractmethod
-    def _snapshot(self, items, context = {}):
+    def _snapshot(self, items, context):
         """ Generates the snapshot of a site's content 
 
         @param items: The list of items which the exportation will start.
