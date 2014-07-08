@@ -125,6 +125,18 @@ translations.define("StaticSiteSnapShoter-plural",
     en = u"Static content exporters"
 )
 
+translations.define("StaticSiteSnapShoter.setup_expression",
+    ca = u"Preparació",
+    es = u"Preparación",
+    en = u"Setup"
+)
+
+translations.define("StaticSiteSnapShoter.postprocessing_expression",
+    ca = u"Postprocessat",
+    es = u"Postprocesado",
+    en = u"Postprocessing"
+)
+
 # WgetSnapShoter
 #------------------------------------------------------------------------------
 translations.define("WgetSnapShoter",
