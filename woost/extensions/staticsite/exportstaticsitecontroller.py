@@ -58,7 +58,6 @@ class ExportStaticSiteController(
 
     @request_property
     def form_model(self):
-        site_languages = Configuration.instance.languages
         return schema.Schema("ExportStaticSite", members = [
             schema.Reference(
                 "snapshoter",
