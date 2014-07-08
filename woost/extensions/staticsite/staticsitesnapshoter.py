@@ -29,6 +29,19 @@ class StaticSiteSnapShoter(Item):
     visible_from_root = False
     integral = True
 
+    members_order = [
+        "setup_expression",
+        "postprocessing_expression"
+    ]
+
+    setup_expression = schema.CodeBlock(
+        language = "python"
+    )
+
+    postprocessing_expression = schema.CodeBlock(
+        language = "python"        
+    )
+
     def setup(self, context):
         """Prepares the exporter for an export process.
 
@@ -40,6 +53,14 @@ class StaticSiteSnapShoter(Item):
             will be made available to all L{write_file} calls.
         @type context: dict
         """
+        setup_expression = self.setup_expression
+        if setup_expression:
+            setup_expression = compile(
+                setup_expression,
+                "%s #%d.setup_expression" % (self.__class__.__name__, self.id),
+                "exec"
+            )
+            exec setup_expression in context
 
     def cleanup(self, context):
         """Frees resources after an export operation.
@@ -83,6 +104,36 @@ class StaticSiteSnapShoter(Item):
             with the snapshoter.
         @type context: dict
         """
+
+    def _yield_directory(self, directory, context):
+
+        postprocessing = self.postprocessing_expression
+        if postprocessing:
+            postprocessing = compile(
+                postprocessing,
+                "%s #%d.postprocessing_expression" % (
+                    self.__class__.__name__,
+                    self.id
+                ),
+                "exec"
+            )
+
+        for root, dirs, files in os.walk(directory):
+            for file in files:
+                file_path = os.path.join(root, file)
+
+                if isinstance(file_path, str):
+                    file_path = file_path.decode("utf-8")
+
+                relative_path = os.path.relpath(file_path, directory)
+
+                if postprocessing is not None:
+                    exec_context = context.copy()
+                    exec_context["file_path"] = file_path
+                    exec_context["relative_path"] = relative_path
+                    exec postprocessing in exec_context
+
+                yield (file_path, relative_path)
 
 
 class WgetSnapShoter(StaticSiteSnapShoter):
@@ -150,15 +201,8 @@ class WgetSnapShoter(StaticSiteSnapShoter):
         p = Popen(cmd, shell=True, stdout=PIPE)
         p.communicate()
 
-        for root, dirs, files in os.walk(self.snapshot_path):
-            for file in files:
-                file_path = os.path.join(root, file)
-
-                if isinstance(file_path, str):
-                    file_path = file_path.decode("utf-8")
-
-                relative_path = os.path.relpath(file_path, self.snapshot_path)
-                yield (file_path, relative_path)
+        for item in self._yield_directory(self.snapshot_path, context):
+            yield item
 
     def _get_uri(self, item, context):
         uri = item.get_uri(host = "!")
