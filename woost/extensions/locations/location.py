@@ -120,7 +120,34 @@ class Location(Item):
 
         return False
 
-    def get_child_location(self, code):
+    def get_ancestor_of_type(self, location_type, include_self = False):
+        """Obtains the location's first ancestor of the given type.
+        
+        :param location_type: The type of location to obtain; should match one
+            of the values accepted by the `location_type` member.
+        :type location_type: str
+
+        :param include_self: If set to True, the location itself will be
+            returned if it matches the indicated type. Otherwise, the location
+            will be skipped and only its ancestors will be considered as
+            possible matches.            
+
+        :return: The first ancestor of the location that matches the indicated
+            type, or None if no such location can be found on the way to the
+            tree root.
+        :rtype: `Location`
+        """
+        location = self
+
+        if not include_self:
+            location = location.parent
+
+        while location is not None:
+            if location.location_type == location_type:
+                return location
+            location = location.parent           
+
+    def get_child_location(self, code, recursive = True):
         """Retrieves the contained location that matches the indicated code.
 
         :param code: The code of the location to retrieve.
@@ -132,10 +159,11 @@ class Location(Item):
         for child in self.locations:
             if child.code == code:
                 return child
-            for descendant in child.locations:
-                match = descendant.get_child_location(code)
-                if match:
-                    return match
+            if recursive:
+                for descendant in child.locations:
+                    match = descendant.get_child_location(code)
+                    if match:
+                        return match
 
     @classmethod
     def by_code(cls, *code):
@@ -151,7 +179,24 @@ class Location(Item):
             if location is None:
                 return None
             location = location.get_child_location(x)
-        
+
+        return location
+
+    @classmethod
+    def by_path(cls, *path):
+
+        if not path or not path[0]:
+            raise ValueError(
+                "Location.by_code() requires one or more location codes"
+            )
+
+        location = first(cls.select([Location.code.equal(path[0])]))
+
+        for x in path[1:]:
+            if location is None:
+                return None
+            location = location.get_child_location(x, recursive = False)
+
         return location
 
     def list_level(self, depth):
