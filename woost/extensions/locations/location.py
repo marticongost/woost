@@ -59,6 +59,7 @@ class Location(Item):
     parent = schema.Reference(
         type = "woost.extensions.locations.location.Location",
         bidirectional = True,
+        indexed = True,
         cycles_allowed = False
     )
 
