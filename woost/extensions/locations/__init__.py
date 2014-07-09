@@ -142,7 +142,7 @@ class LocationsExtension(Extension):
     )
 
     def _load(self):        
-        from woost.extensions.locations import location, strings
+        from woost.extensions.locations import location, strings, migration
 
         if self.should_update():
             transaction(
