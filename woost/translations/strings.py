@@ -5562,7 +5562,7 @@ translations.define(
 translations.define("Thumbnail",
     ca = u"Redimensionar",
     es = u"Redimensionar",
-    en = u"Thumbnail"
+    en = u"Resize"
 )
 
 translations.define("Thumbnail.width",
@@ -5575,6 +5575,12 @@ translations.define("Thumbnail.height",
     ca = u"Alçada",
     es = u"Alto",
     en = u"Height"
+)
+
+translations.define("Thumbnail.upscale",
+    ca = u"Permetre ampliar les imatges",
+    es = u"Permitir ampliar las imágenes",
+    en = u"Allow image upscaling"
 )
 
 # Crop
@@ -5635,6 +5641,12 @@ translations.define("Fill.height",
     ca = u"Alçada",
     es = u"Alto",
     en = u"Height"
+)
+
+translations.define("Fill.upscale",
+    ca = u"Permetre ampliar les imatges",
+    es = u"Permitir ampliar las imágenes",
+    en = u"Allow image upscaling"
 )
 
 translations.define("Fill.horizontal_alignment",
