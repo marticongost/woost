@@ -118,35 +118,51 @@ class Thumbnail(ImageEffect):
 
     members_order = [
         "width",
-        "height"
+        "height",
+        "upscale"
     ]
 
     width = ImageSize()
 
     height = ImageSize()
 
+    upscale = schema.Boolean(
+        required = True,
+        default = False
+    )
+
     filter = Image.ANTIALIAS
 
     def apply(self, image):
-    
-        im_width, im_height = image.size
+
+        source_width, source_height = image.size
 
         width = self.width
         height = self.height
 
         if width is not None:
-            width = ImageSize.resolve_size(width, im_width)
+            width = ImageSize.resolve_size(width, source_width)
 
         if height is not None:
-            height = ImageSize.resolve_size(height, im_height)
+            height = ImageSize.resolve_size(height, source_height)
 
         if width is None:
-            width = int(im_width * (float(height) / im_height))
+            width = int(source_width * (float(height) / source_height))
 
         if height is None:
-            height = int(im_height * (float(width) / im_width))
+            height = int(source_height * (float(width) / source_width))
 
-        image.thumbnail((width, height), self.filter)
+        if self.upscale and (width > source_width or height > source_height):
+            resize_ratio = min(
+                float(width) / source_width,
+                float(height) / source_height
+            )
+            width = int(source_width * resize_ratio)
+            height = int(source_height * resize_ratio)
+            image = image.resize((width, height), self.filter)
+        else:
+            image.thumbnail((width, height), self.filter)
+
         return image
 
 
@@ -255,6 +271,7 @@ class Fill(ImageEffect):
     members_order = [
         "width",
         "height",
+        "upscale",
         "horizontal_alignment",
         "vertical_alignment",
         "preserve_vertical_images"
@@ -263,6 +280,11 @@ class Fill(ImageEffect):
     width = ImageSize()
 
     height = ImageSize()
+
+    upscale = schema.Boolean(
+        required = True,
+        default = False
+    )
 
     horizontal_alignment = HorizontalAlignment(
         required = True,
@@ -276,7 +298,7 @@ class Fill(ImageEffect):
 
     preserve_vertical_images = schema.Boolean(
         required = True,
-        default = True
+        default = False
     )
     
     filter = Image.ANTIALIAS
@@ -287,33 +309,56 @@ class Fill(ImageEffect):
         source_ratio = float(source_width) / source_height
 
         if self.preserve_vertical_images and source_ratio < 1:
-            width = self.width or source_width
-            height = self.height or source_height
-            image.thumbnail(
-                (
-                    ImageSize.resolve_size(width, source_width),
-                    ImageSize.resolve_size(height, source_height)
-                ),
-                self.filter
-            )
+            
+            target_width = ImageSize.resolve_size(width, source_width)
+            target_height = ImageSize.resolve_size(height, source_height)
+
+            if (
+                self.upscale
+                and (
+                    target_width > source_width
+                    or target_height > source_height
+                )
+            ):
+                resize_ratio = min(
+                    float(target_width) / source_width,
+                    float(target_height) / source_height
+                )
+                target_width = int(source_width * resize_ratio)
+                target_height = int(source_height * resize_ratio)
+                image = image.resize((target_width, target_height), self.filter)
+            else:
+                image.thumbnail(
+                    (target_width, target_height),
+                    self.filter
+                )
+
             return image
-        
+
         width = ImageSize.resolve_size(self.width, source_width)
         height = ImageSize.resolve_size(self.height, source_height)
 
         if width == source_width and height == source_height:
             return image
 
-        target_ratio = float(width) / height
+        resize_ratio = max(
+            float(width) / source_width,
+            float(height) / source_height
+        )
+        target_width = int(source_width * resize_ratio)
+        target_height = int(source_height * resize_ratio)
 
-        if source_ratio > target_ratio:
-            target_width = int(height * source_ratio)
-            target_height = height
+        if self.upscale and (
+            target_width > source_width
+            or target_height > source_height
+        ):
+            image = image.resize((target_width, target_height), self.filter)
         else:
-            target_width = width
-            target_height = int(width * (1 / source_ratio))
-
-        image.thumbnail((target_width, target_height), self.filter)
+            width = min(source_width, width)
+            height = min(source_height, height)
+            target_width = min(source_width, target_width)
+            target_height = min(source_height, target_height)
+            image.thumbnail((target_width, target_height), self.filter)
 
         if self.horizontal_alignment == "center":
             offset_x = (target_width - width) / 2

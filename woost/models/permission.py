@@ -10,7 +10,7 @@ from contextlib import contextmanager
 from cocktail.modeling import InstrumentedSet
 from cocktail.events import when
 from cocktail.pkgutils import import_object
-from cocktail.translations import translations
+from cocktail.translations import translations, get_language
 from cocktail import schema
 from cocktail.schema.expressions import Expression
 from cocktail.persistence import PersistentObject
@@ -113,7 +113,9 @@ class ContentPermission(Permission):
         expression = self.content_expression
         if expression:
             context = {"items": items, "cls": self.content_type}
-            exec expression in context
+            label = "%s #%s" % (self.__class__.__name__, self.id)            
+            code = compile(expression, label, "exec")
+            exec code in context
             items = context["items"]
 
         if args or kwargs:
