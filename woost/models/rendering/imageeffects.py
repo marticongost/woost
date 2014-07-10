@@ -276,7 +276,7 @@ class Fill(ImageEffect):
 
     preserve_vertical_images = schema.Boolean(
         required = True,
-        default = True
+        default = False
     )
     
     filter = Image.ANTIALIAS
