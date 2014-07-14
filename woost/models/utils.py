@@ -109,7 +109,7 @@ def hl(expr, objects = None):
 
     for obj, member, language, value, matches in grep(expr, objects):
         print styled("-" * 100, style = "bold")
-        print styled(translations(obj), style = "bold"),
+        print styled(repr(obj), style = "bold"),
         print styled(member.name, "slate_blue"),
 
         if language:
