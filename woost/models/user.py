@@ -59,7 +59,8 @@ class User(Item):
         "enabled",
         "email",
         "password",
-        "prefered_language"
+        "prefered_language",
+        "backoffice_language_chain"
     ]
 
     email = schema.String(
@@ -91,6 +92,10 @@ class User(Item):
         from woost.models.configuration import Configuration
         return Configuration.backoffice_language.enumeration
 
+    def _backoffice_language_chain_enumeration(ctx):
+        from woost.models.configuration import Configuration
+        return Configuration.instance.languages
+
     prefered_language = schema.String(
         required = True,
         default = schema.DynamicDefault(_backoffice_language_default),
@@ -99,9 +104,19 @@ class User(Item):
             "" if value is None else translations(value, language, **kwargs),
         text_search = False
     )
-    
+
+    backoffice_language_chain = schema.Collection(
+        items = schema.String(
+            enumeration = _backoffice_language_chain_enumeration,
+            edit_control = "cocktail.html.TextBox"
+        ),
+        searchable = False,
+        listed_by_default = False
+    )
+
     del _backoffice_language_default
     del _backoffice_language_enumeration
+    del _backoffice_language_chain_enumeration
 
     roles = schema.Collection(
         items = "woost.models.Role",

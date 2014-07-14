@@ -73,6 +73,7 @@ class Configuration(Item):
         "fallback_languages",
         "heed_client_language",
         "backoffice_language",
+        "backoffice_language_chain",
         "renderers",
         "image_factories",
         "video_player_settings",
@@ -226,6 +227,16 @@ class Configuration(Item):
         text_search = False,
         translate_value = lambda value, language = None, **kwargs:
             u"" if not value else translations(value, language, **kwargs),
+        listed_by_default = False,
+        member_group = "language"
+    )
+
+    backoffice_language_chain = schema.Collection(
+        items = schema.String(
+            enumeration = languages,
+            edit_control = "cocktail.html.TextBox"
+        ),
+        searchable = False,
         listed_by_default = False,
         member_group = "language"
     )
