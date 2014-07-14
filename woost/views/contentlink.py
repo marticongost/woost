@@ -32,9 +32,6 @@ class ContentLink(ItemLabel):
         else:
             self.append(u"-")
 
-    def get_label(self):
-        return translations(self.item, referer = self.referer)
-
     def get_edit_url(self):
         return context["cms"].contextual_uri(
             "content", self.item.id, "fields"

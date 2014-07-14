@@ -18,12 +18,12 @@ class ItemLabel(Element):
     icon_visible = True
     thumbnail = True
     referer = None
+    language_chain = None
 
     def _ready(self):
         Element._ready(self)
 
         if self.item:
-
             self["draggable"] = "true"
             self["data-woost-item"] = self.item.id
 
@@ -67,5 +67,8 @@ class ItemLabel(Element):
         return text_wrapper
 
     def get_label(self):
-        return translations(self.item, referer = self.referer)
+        return self.item.any_translation(
+            language_chain = self.language_chain,
+            referer = self.referer
+        )
 

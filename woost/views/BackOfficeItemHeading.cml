@@ -31,7 +31,7 @@ from woost import app
             <py:ready>
                 <?py
                 if self.item.is_inserted:
-                    context_desc = translations(self.item)
+                    context_desc = self.item.any_translation()
                 else:
                     context_desc = translations("creating", content_type = self.item.__class__)
                 ?>

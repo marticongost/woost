@@ -2065,7 +2065,13 @@ translations.define("Configuration.backoffice_language",
     ca = u"Idioma per defecte de la interfície d'edició",
     es = u"Idioma por defecto de la interfaz de edición",
     en = u"Default language for the backoffice"
-)    
+)
+
+translations.define("Configuration.backoffice_language_chain",
+    ca = u"Idiomes a utilitzar en descriure el contingut",
+    es = u"Idiomas a utilizar al describir el contenido",
+    en = u"Languages to use when describing content"
+)
 
 translations.define("Configuration.renderers",
     ca = u"Pintadors",
@@ -3271,6 +3277,12 @@ translations.define("User.prefered_language",
     ca = u"Idioma del gestor de continguts",
     es = u"Idioma del gestor de contenidos",
     en = u"Back office language"
+)
+
+translations.define("User.backoffice_language_chain",
+    ca = u"Idiomes a utilitzar en descriure el contingut",
+    es = u"Idiomas a utilizar al describir el contenido",
+    en = u"Languages to use when describing content"
 )
 
 translations.define("User.authored_items",
