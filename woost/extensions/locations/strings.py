@@ -12,6 +12,10 @@ from woost.extensions.locations.location import Location
 
 def _translate_locale(locale):
 
+    trans = translations(locale)
+    if trans:
+        return trans
+
     parts = locale.split("-")
     parts[0] = translations(parts[0], default = parts[0])
 
