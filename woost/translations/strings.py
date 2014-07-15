@@ -4965,17 +4965,17 @@ translations.define("EmailTemplate.initialization_code-explanation",
          u"translations)."
 )
 
-translations.define("EmailTemplate.language",
+translations.define("EmailTemplate.language_expression",
     ca = u"Idioma del missatge",
     es = u"Idioma del mensaje",
     en = u"Message language"
 )
 
-translations.define("EmailTemplate.language-explanation",
+translations.define("EmailTemplate.language_expression-explanation",
     ca = u"Deixar en blanc per enviar el missatge en l'idioma que estigui "
          u"actiu en el moment. Si es vol forçar l'idioma en que s'hauria "
          u"d'enviar el missatge es pot especificar una expressió Python "
-         u"que produeixi el codi ISO de l'idioma desitjat. Cal tindre present"
+         u"que produeixi el codi ISO de l'idioma desitjat. Cal tindre present "
          u"que aquesta expressió s'evalua abans que el camp <em>codi "
          u"d'inicialització</em>.",
     es = u"Dejar en blanco para enviar el mensaje en el idioma que esté "
@@ -5562,7 +5562,7 @@ translations.define(
 translations.define("Thumbnail",
     ca = u"Redimensionar",
     es = u"Redimensionar",
-    en = u"Thumbnail"
+    en = u"Resize"
 )
 
 translations.define("Thumbnail.width",
@@ -5575,6 +5575,12 @@ translations.define("Thumbnail.height",
     ca = u"Alçada",
     es = u"Alto",
     en = u"Height"
+)
+
+translations.define("Thumbnail.upscale",
+    ca = u"Permetre ampliar les imatges",
+    es = u"Permitir ampliar las imágenes",
+    en = u"Allow image upscaling"
 )
 
 # Crop
@@ -5635,6 +5641,12 @@ translations.define("Fill.height",
     ca = u"Alçada",
     es = u"Alto",
     en = u"Height"
+)
+
+translations.define("Fill.upscale",
+    ca = u"Permetre ampliar les imatges",
+    es = u"Permitir ampliar las imágenes",
+    en = u"Allow image upscaling"
 )
 
 translations.define("Fill.horizontal_alignment",
