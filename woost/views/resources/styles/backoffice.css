@@ -834,13 +834,18 @@ body.modal {
     background-color: white;
 }
 
+.BackOfficeLayout .SplitSelector .split_panel_content .entry {
+    position: relative;
+}
+
 .BackOfficeLayout .SplitSelector .split_panel_content .entry label {
     padding: 0.3em 0.5em;
 }
 
 .BackOfficeLayout .SplitSelector .split_panel_content .entry input[type=checkbox] {
     position: absolute;
-    left: -10000px;
+    left: -100px;
+    top: 0;
 }
 
 .BackOfficeLayout .SplitSelector .split_panel_content .entry.selected {
