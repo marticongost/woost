@@ -768,6 +768,93 @@ body.modal {
     height: 15em;
 }
 
+/* SplitSelector
+-----------------------------------------------------------------------------*/
+.BackOfficeLayout .SplitSelector .search_box {
+    margin: 0;
+    margin-top: 0.5em;
+    margin-bottom: 0.2em;
+}
+
+.BackOfficeLayout .SplitSelector .split_panels {
+    margin-top: 0.5em;
+}
+
+.BackOfficeLayout .SplitSelector .split_panel {
+    display: inline-block;
+    background-color: #f2f0eb;
+    border: 1px solid #dcd9d0;
+}
+
+.BackOfficeLayout .SplitSelector .split_panel_heading {
+    font-weight: bold;
+    color: #333;
+    margin-left: 0.6em;
+    margin-top: 0.4em;
+    margin-bottom: 0.2em;
+}
+
+.BackOfficeLayout .SplitSelector .selected_items_panel {
+    margin-right: 0.5em;
+}
+
+.BackOfficeLayout .SplitSelector .split_panel_toolbar {    
+    padding: 0.2em 0.4em;
+}
+
+.BackOfficeLayout .SplitSelector .split_panel_toolbar button {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+}
+
+.BackOfficeLayout .SplitSelector .split_panel_toolbar .button_icon,
+.BackOfficeLayout .SplitSelector .split_panel_toolbar .button_label {
+    vertical-align: middle;
+}
+
+.BackOfficeLayout .SplitSelector .split_panel_toolbar .button_icon {
+    margin-right: 0.2em;
+}
+
+.BackOfficeLayout .SplitSelector .split_panel_toolbar .button_label {
+    font-size: 0.9em;
+}
+
+.BackOfficeLayout .SplitSelector .split_panel_toolbar button:disabled {
+    opacity: 0.5;
+}
+
+.BackOfficeLayout .SplitSelector .split_panel_content {
+    width: 18em;
+    height: 24em;
+    overflow: auto;
+    border-top: 1px solid #dcd9d0;
+    background-color: white;
+}
+
+.BackOfficeLayout .SplitSelector .split_panel_content .entry label {
+    padding: 0.3em 0.5em;
+}
+
+.BackOfficeLayout .SplitSelector .split_panel_content .entry input[type=checkbox] {
+    position: absolute;
+    left: -10000px;
+}
+
+.BackOfficeLayout .SplitSelector .split_panel_content .entry.selected {
+    background-color: #666;
+}
+
+.BackOfficeLayout .SplitSelector .split_panel_content.focused .entry.selected {
+    background-color: #333;
+}
+
+.BackOfficeLayout .SplitSelector .split_panel_content .entry.selected label {
+    color: white;
+}
+
 /* Tables
 -----------------------------------------------------------------------------*/
 
