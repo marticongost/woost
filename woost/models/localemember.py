@@ -11,15 +11,8 @@ from cocktail import schema
 class LocaleMember(schema.String):
 
     def __init__(self, *args, **kwargs):
-        from woost.models.configuration import Configuration
         kwargs.setdefault("search_control", "cocktail.html.DropdownSelector")
-        kwargs.setdefault(
-            "enumeration",
-            lambda ctx: sorted(
-                Configuration.instance.languages,
-                key = lambda locale: normalize(self.translate_value(locale))
-            )
-        )
+        kwargs.setdefault("enumeration", self._locales_enumeration)
         schema.String.__init__(self, *args, **kwargs)
 
     def translate_value(self, value, language = None, **kwargs):
@@ -37,4 +30,11 @@ class LocaleMember(schema.String):
                 language = language,
                 **kwargs
             )
+
+    def _locales_enumeration(self, ctx):
+        from woost.models.configuration import Configuration
+        return sorted(
+            Configuration.instance.languages,
+            key = lambda locale: normalize(self.translate_value(locale))
+        )
 
