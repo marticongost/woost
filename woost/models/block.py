@@ -6,15 +6,18 @@ u"""Defines the `Block` model.
 from datetime import datetime
 from cocktail.pkgutils import import_object
 from cocktail.iteration import last
-from cocktail.translations import translations, get_language
+from cocktail.translations import translations, get_language, require_language
 from cocktail import schema
 from cocktail.html import templates, Element
+from .enabledtranslations import auto_enables_translations
 from .item import Item
+from .localemember import LocaleMember
 from .publishable import Publishable
 from .style import Style
 from .slot import Slot
 
 
+@auto_enables_translations
 class Block(Item):    
 
     instantiable = False
@@ -31,6 +34,10 @@ class Block(Item):
     ]
     view_class = None
     block_display = "woost.views.BlockDisplay"
+    edit_node_class = (
+        "woost.controllers.backoffice.enabledtranslationseditnode."
+        "EnabledTranslationsEditNode"
+    )
     backoffice_heading_view = "woost.views.BackOfficeBlockHeading"
 
     groups_order = [
@@ -45,7 +52,7 @@ class Block(Item):
         "heading_type",
         "per_language_publication",
         "enabled",
-        "translation_enabled",
+        "enabled_translations",
         "start_date",
         "end_date",
         "controller",
@@ -91,10 +98,10 @@ class Block(Item):
         member_group = "behavior"
     )
 
-    translation_enabled = schema.Boolean(
-        required = True,
-        default = True,
-        translated = True,
+    enabled_translations = schema.Collection(
+        items = LocaleMember(),
+        default_type = set,
+        edit_control = "woost.views.EnabledTranslationsSelector",
         member_group = "behavior"
     )
 
@@ -272,7 +279,7 @@ class Block(Item):
                 return False
 
         if self.per_language_publication:
-            return self.translation_enabled
+            return require_language() in self.enabled_translations
         else:
             return self.enabled
 

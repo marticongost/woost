@@ -860,6 +860,13 @@ body.modal {
     color: white;
 }
 
+/* EnabledTranslationsSelector
+-----------------------------------------------------------------------------*/
+.EnabledTranslationsSelector .split_panel_content .entry.inherited_translation {
+    font-style: italic;
+    color: #666;
+}
+
 /* Tables
 -----------------------------------------------------------------------------*/
 

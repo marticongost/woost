@@ -2043,6 +2043,21 @@ translations.define("Configuration.published_languages-explanation",
          u"blank to allow publishing in any of the available languages."
 )
 
+translations.define("Configuration.virtual_languages",
+    ca = u"Idiomes virtuals",
+    es = u"Idiomas virtuales",
+    en = u"Virtual languages"
+)
+
+translations.define("Configuration.virtual_languages-explanation",
+    ca = u"Indica els idiomes que no es publiquen mai directament, si no que "
+         u"només actuen com a base per a altres idiomes.",
+    es = u"Indica los idiomas que no se publican nunca directamente, si no "
+         u"que solo actuan como base para otros idiomas.",
+    en = u"Establishes a set of languages that will never be directly "
+         u"published, and will be used instead as a base for other languages."
+)
+
 translations.define("Configuration.default_language",
     ca = u"Idioma per defecte",
     es = u"Idioma por defecto",
@@ -2936,10 +2951,10 @@ translations.define("Publishable.enabled",
     en = u"Enabled"
 )
 
-translations.define("Publishable.translation_enabled",
-    ca = u"Traducció activa",
-    es = u"Traducción activa",
-    en = u"Translation is enabled"
+translations.define("Publishable.enabled_translations",
+    ca = u"Traduccions actives",
+    es = u"Traducciones activas",
+    en = u"Enabled translations"
 )
 
 translations.define("Publishable.websites",
@@ -6393,10 +6408,10 @@ translations.define("Block.enabled",
     en = u"Active"
 )
 
-translations.define("Block.translation_enabled",
-    ca = u"Traducció activa",
-    es = u"Traducción activa",
-    en = u"Translation is enabled"
+translations.define("Block.enabled_translations",
+    ca = u"Traduccions actives",
+    es = u"Traducciones actives",
+    en = u"Enabled translations"
 )
 
 translations.define("Block.start_date",
@@ -7967,5 +7982,37 @@ translations.define("woost.views.RichTextEditor.styles_menu_entry",
     ca = u"Estils",
     es = u"Estilos",
     en = u"Styles"
+)
+
+# EnabledTranslationsSelector
+#------------------------------------------------------------------------------
+translations.define(
+    "woost.views.EnabledTranslationsSelector.selected_items_panel.heading",
+    ca = u"Traduccions actives",
+    es = u"Traducciones activas",
+    en = u"Enabled translations"
+)
+
+translations.define(
+    "woost.views.EnabledTranslationsSelector.eligible_items_panel.heading",
+    ca = u"Traduccions inactives",
+    es = u"Traducciones inactivas",
+    en = u"Disabled translations"
+)
+
+translations.define(
+    "woost.views.EnabledTranslationsSelector.selected_items_panel."
+    "toggle_button",
+    ca = u"Desactivar",
+    es = u"Desactivar",
+    en = u"Disable"
+)
+
+translations.define(
+    "woost.views.EnabledTranslationsSelector.eligible_items_panel."
+    "toggle_button",
+    ca = u"Activar",
+    es = u"Activar",
+    en = u"Enable"
 )
 

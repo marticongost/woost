@@ -24,6 +24,8 @@ from cocktail.controllers import (
     Location
 )
 from woost import app
+from .enabledtranslations import auto_enables_translations
+from .localemember import LocaleMember
 from .item import Item
 from .usersession import get_current_user
 from .websitesession import get_current_website
@@ -37,12 +39,17 @@ from .caching import CachingPolicy
 WEBSITE_PUB_INDEX_KEY = "woost.models.Publishable.per_website_publication_index"
 
 
+@auto_enables_translations
 class Publishable(Item):
     """Base class for all site elements suitable for publication."""
     
     instantiable = False
     cacheable = True
     edit_view = "woost.views.PublishableFieldsView"
+    edit_node_class = (
+        "woost.controllers.backoffice.enabledtranslationseditnode."
+        "EnabledTranslationsEditNode"
+    )
     backoffice_heading_view = "woost.views.BackOfficePublishableHeading"
  
     type_group = "publishable"
@@ -67,7 +74,7 @@ class Publishable(Item):
         "login_page",
         "per_language_publication",
         "enabled",
-        "translation_enabled",
+        "enabled_translations",
         "websites",
         "start_date",
         "end_date",
@@ -179,11 +186,11 @@ class Publishable(Item):
         member_group = "publication"
     )
 
-    translation_enabled = schema.Boolean(
-        required = True,
-        default = True,
-        translated = True,
+    enabled_translations = schema.Collection(
+        items = LocaleMember(),
+        default_type = set,
         indexed = True,
+        edit_control = "woost.views.EnabledTranslationsSelector",
         listed_by_default = False,
         member_group = "publication"
     )
@@ -447,8 +454,7 @@ class Publishable(Item):
         if self.per_language_publication:
 
             language = require_language(language)
-
-            if not self.get("translation_enabled", language):
+            if language not in self.enabled_translations:
                 return False
 
             from woost.models import Configuration
@@ -613,8 +619,8 @@ class IsPublishedExpression(Expression):
                     )
                 )
                 enabled_for_current_language.intersection_update(
-                    Publishable.translation_enabled.index.values(
-                        key = (language, True)
+                    Publishable.enabled_translations.index.values(
+                        key = language
                     )
                 )
                 enabled_subset.update(enabled_for_current_language)

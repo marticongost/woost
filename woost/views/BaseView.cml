@@ -61,8 +61,7 @@ from woost.models import Configuration, Publishable, get_current_website
             for trans_lang in publishable.translations:
                 if (
                     trans_lang != language
-                    and config.language_is_enabled(trans_lang)
-                    and publishable.get("translation_enabled", trans_lang)
+                    and publishable.is_published(trans_lang)
                 ):
                     document.head.append(
                         Element("link",
