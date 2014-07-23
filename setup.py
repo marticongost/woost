@@ -57,7 +57,8 @@ of its features include:\n"
     ],    
     extras_require = {
         'campaign_monitor_api': ["campaign_monitor_api"],
-        "twitterpublication": ["oauth2"]
+        "twitterpublication": ["oauth2"],
+        "amazon_s3_static_publication": ["boto"]
     },
     packages = find_packages(),
     include_package_data = True,

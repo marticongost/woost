@@ -275,6 +275,44 @@ translations.define(
     en = u"ZIP file"
 )
 
+# AmazonS3Destination
+#------------------------------------------------------------------------------
+translations.define("AmazonS3Destination",
+    ca = u"Amazon S3",
+    es = u"Amazon S3",
+    en = u"Amazon S3"
+)
+
+translations.define("AmazonS3Destination-plural",
+    ca = u"Amazon S3",
+    es = u"Amazon S3",
+    en = u"Amazon S3"
+)
+
+translations.define("AmazonS3Destination.aws_access_key",
+    ca = u"Clau d'accés d'AWS",
+    es = u"Clave de acceso de AWS",
+    en = u"AWS access key ID"
+)
+
+translations.define("AmazonS3Destination.aws_secret_key",
+    ca = u"Clau secreta d'AWS",
+    es = u"Clave secreta de AWS",
+    en = u"AWS secret access key"
+)
+
+translations.define("AmazonS3Destination.bucket_name",
+    ca = u"Contenidor d'Amazon S3",
+    es = u"Contenedor de Amazon S3",
+    en = u"Amazon S3 bucket"
+)
+
+translations.define("AmazonS3Destination.prefix",
+    ca = u"Prefix per les rutes",
+    es = u"Prefijo para las rutas",
+    en = u"Key prefix"
+)
+
 # ExportationPermission
 #------------------------------------------------------------------------------
 translations.define("ExportationPermission",

@@ -20,7 +20,7 @@ from zipfile import ZipFile
 from cocktail import schema
 from cocktail.events import EventHub, Event
 from cocktail.modeling import abstractmethod
-from cocktail.translations import get_language
+from cocktail.translations import translations, get_language
 from cocktail.persistence import PersistentMapping
 from cocktail.controllers import context as controller_context
 from woost import app
@@ -603,4 +603,60 @@ class ZipDestination(StaticSiteDestination):
             file_name = context["file_name"]
         )
         return output
+
+
+class AmazonS3Destination(StaticSiteDestination):
+
+    members_order = [
+        "aws_access_key",
+        "aws_secret_key",
+        "bucket_name"
+    ]
+
+    aws_access_key = schema.String(
+        required = True        
+    )
+
+    aws_secret_key = schema.String(
+        required = True
+    )
+
+    bucket_name = schema.String(
+        required = True
+    )
+
+    prefix = schema.String()
+
+    def __translate__(self, language, **kwargs):
+        return u"%s (%s)" % (
+            translations(self.__class__.__name__, language, **kwargs),
+            self.bucket_name
+        )
+
+    def setup(self, context):
+
+        from boto.s3.connection import S3Connection
+        connection = S3Connection(self.aws_access_key, self.aws_secret_key)
+        bucket = connection.get_bucket(self.bucket_name)
+
+        context["amazon_s3_connection"] = connection
+        context["amazon_s3_bucket"] = bucket
+
+    def create_folder(self, folder, context):
+        return True
+
+    def write_file(self, file, path, context):
+        from boto.s3.key import Key
+        bucket = context["amazon_s3_bucket"]
+        bucket_entry = Key(bucket)
+        bucket_entry.key = (self.prefix or "") + path
+
+        if isinstance(file, basestring):
+            bucket_entry.set_contents_from_filename(file)
+        else:
+            try:
+                data = file.read()
+            finally:
+                file.close()
+            bucket_entry.set_contents_from_string(data)
 
