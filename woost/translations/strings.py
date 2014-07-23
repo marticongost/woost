@@ -1632,9 +1632,9 @@ translations.define("woost.cache_invalidated_notice",
 )
 
 translations.define("woost.views.BaseView alternate language link",
-    ca = lambda lang: u"Versió en " + translations(lang, "ca"),
-    es = lambda lang: u"Versión en " + translations(lang, "es"),
-    en = lambda lang: translations(lang, "en") + " version"
+    ca = lambda lang: u"Versió en " + translations("locale", locale = lang),
+    es = lambda lang: u"Versión en " + translations("locale", locale = lang),
+    en = lambda lang: translations("locale", locale = lang) + u" version"
 )
 
 translations.define("woost.views.StandardView.navigation_title",
