@@ -18,6 +18,7 @@ from woost.models import Configuration, Publishable, get_current_website
     head_end_html = ""
     body_end_html = ""
     base_url = None
+    include_alternate_language_links = True
 
     def get_keywords(self):
         keywords = []
@@ -57,7 +58,11 @@ from woost.models import Configuration, Publishable, get_current_website
         publishable = self.publishable
         language = get_language()
 
-        if publishable and publishable.per_language_publication:
+        if (
+            self.include_alternate_language_links
+            and publishable is not None
+            and publishable.per_language_publication
+        ):
             for trans_lang in publishable.enabled_translations:
                 if (
                     trans_lang != language
