@@ -186,7 +186,7 @@ class WgetSnapShoter(StaticSiteSnapShoter):
                 uris.add(item)
             else:
                 if item.per_language_publication:
-                    for language in item.translations:
+                    for language in item.enabled_translations:
                         with language_context(language):
                             uris.add(self._get_uri(item, context))
                 else:
