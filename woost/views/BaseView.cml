@@ -58,7 +58,7 @@ from woost.models import Configuration, Publishable, get_current_website
         language = get_language()
 
         if publishable and publishable.per_language_publication:
-            for trans_lang in publishable.translations:
+            for trans_lang in publishable.enabled_translations:
                 if (
                     trans_lang != language
                     and publishable.is_published(trans_lang)
