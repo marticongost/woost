@@ -309,9 +309,9 @@ class Fill(ImageEffect):
         source_ratio = float(source_width) / source_height
 
         if self.preserve_vertical_images and source_ratio < 1:
-            
-            target_width = ImageSize.resolve_size(width, source_width)
-            target_height = ImageSize.resolve_size(height, source_height)
+
+            target_width = ImageSize.resolve_size(self.width, source_width)
+            target_height = ImageSize.resolve_size(self.height, source_height)
 
             if (
                 self.upscale
