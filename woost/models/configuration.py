@@ -69,6 +69,7 @@ class Configuration(Item):
         "forbidden_error_page",
         "languages",
         "published_languages",
+        "virtual_languages",
         "default_language",
         "fallback_languages",
         "heed_client_language",
@@ -167,6 +168,16 @@ class Configuration(Item):
     )
     
     published_languages = schema.Collection(
+        items = schema.String(
+            enumeration = languages,
+            edit_control = "cocktail.html.TextBox"
+        ),
+        searchable = False,
+        listed_by_default = False,
+        member_group = "language"
+    )
+
+    virtual_languages = schema.Collection(
         items = schema.String(
             enumeration = languages,
             edit_control = "cocktail.html.TextBox"

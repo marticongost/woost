@@ -8,4 +8,10 @@
     self.add_resource("/resources/scripts/publicationfields.js")
     ?>
 
+    <py:with py:def="edit_form">
+        <?py
+        element.set_member_label("enabled_translations", "")
+        ?>
+    </py:with>
+
 </py:woost.views.BackOfficeFieldsView>

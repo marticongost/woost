@@ -65,20 +65,9 @@ class ItemFieldsController(EditController):
             )
         )
 
-        # Remove translations
-        if translations_action == "delete" and selected_translations:
-            for deleted_translation in selected_translations:
-                stack_node.item_translations.discard(deleted_translation)
-                stack_node.visible_translations.discard(deleted_translation)
-                for key, member in self.fields_schema.members().iteritems():
-                    if member.translated:
-                        values = form_data.get(key)
-                        if values:
-                            values.pop(deleted_translation, None)
-                        
+        # Load form data from the request
         get_method = cherrypy.request.method.upper() == "GET"
 
-        # Load form data from the request
         get_parameter(
             self.fields_schema,
             target = form_data,
@@ -88,6 +77,11 @@ class ItemFieldsController(EditController):
             implicit_booleans = not get_method,
             undefined = "skip" if get_method else "set_none"
         )
+
+        # Remove translations
+        if translations_action == "delete" and selected_translations:
+            for deleted_translation in selected_translations:
+                stack_node.remove_translation(deleted_translation)
 
         # Show / hide translations
         if selected_translations:
@@ -99,50 +93,8 @@ class ItemFieldsController(EditController):
 
         # Add translations
         if added_translations:
-
             for added_translation in added_translations:
-
-                if added_translation in stack_node.item_translations:
-                    continue
-
-                stack_node.item_translations.add(added_translation)
-                stack_node.visible_translations.add(added_translation)
-
-                # Try to copy an existing fallback translation
-                for fallback_language in iter_language_chain(
-                    added_translation,
-                    include_self = False
-                ):
-                    if fallback_language in stack_node.item_translations:
-                        for key, member \
-                        in self.fields_schema.members().iteritems():
-                            if member.translated:
-                                value = schema.get(
-                                    form_data,
-                                    key,
-                                    language = fallback_language
-                                )
-                                schema.set(
-                                    form_data,
-                                    key,
-                                    value,
-                                    language = added_translation
-                                )
-                        break
-                # If there's no fallback translation to use, create a new
-                # translation from scratch
-                else:
-                    translation_data = {}
-                    translation_type = stack_node.content_type.translation
-                    translation_type.init_instance(translation_data)
-
-                    for key, value in translation_data.iteritems():
-                        schema.set(
-                            form_data,
-                            key,
-                            value,
-                            language = added_translation
-                        )
+                stack_node.add_translation(added_translation)
 
         # Drop references
         unlink = cherrypy.request.params.get("relation-unlink")

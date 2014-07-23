@@ -945,3 +945,32 @@ def ditch_content_permission_matching_items(e):
                 % (permission.id, type_ref, matching_items)
             )
 
+#------------------------------------------------------------------------------
+
+step = MigrationStep("Transform translation_enabled into enabled_translations")
+
+@when(step.executing)
+def initialize_enabled_translations(e):
+
+    from cocktail.translations import descend_language_tree
+    from woost.models import Publishable, Block
+
+    for cls in (Publishable, Block):
+        for item in cls.select():
+            for lang, translation in item.translations.iteritems():                
+                if (
+                    not item.per_language_publication
+                    or getattr(translation, "_translation_enabled", False)
+                ):
+                    item.enabled_translations.add(lang)
+
+                try:
+                    del translation._translation_enabled
+                except AttributeError:
+                    pass
+
+            for lang in list(item.enabled_translations):
+                item.enabled_translations.update(
+                    descend_language_tree(lang, False)
+                )
+

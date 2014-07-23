@@ -18,11 +18,11 @@ cocktail.bind(".BackOfficeFieldsView", function ($view) {
 
         if (checked) {
             $view.find(".enabled_field").hide(animationSpeed);
-            $view.find(".translation_enabled_field").show(animationSpeed);
+            $view.find(".enabled_translations_field").show(animationSpeed);
         }
         else {
             $view.find(".enabled_field").show(animationSpeed);
-            $view.find(".translation_enabled_field").hide(animationSpeed);
+            $view.find(".enabled_translations_field").hide(animationSpeed);
         }
     }
 

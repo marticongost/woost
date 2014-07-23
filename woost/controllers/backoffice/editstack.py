@@ -23,7 +23,7 @@ from cocktail.modeling import (
 from cocktail.events import Event, EventHub, event_handler
 from cocktail.pkgutils import resolve
 from cocktail import schema
-from cocktail.translations import translations
+from cocktail.translations import translations, iter_language_chain
 from cocktail.controllers import context, get_parameter, session
 from cocktail.persistence import (
     PersistentObject,
@@ -926,6 +926,63 @@ class EditNode(StackNode):
             )
 
         notify_user(msg, "success", transient = False)
+
+    def add_translation(self, language):
+
+        if language in self.item_translations:
+            return
+
+        self.item_translations.add(language)
+        self.visible_translations.add(language)
+        form_data = self.form_data
+
+        # Try to copy an existing fallback translation
+        for fallback_language in iter_language_chain(
+            language,
+            include_self = False
+        ):
+            if fallback_language in self.item_translations:
+                for key, member \
+                in self.form_schema.members().iteritems():
+                    if member.translated:
+                        value = schema.get(
+                            form_data,
+                            key,
+                            language = fallback_language
+                        )
+                        schema.set(
+                            form_data,
+                            key,
+                            value,
+                            language = language
+                        )
+                break
+        # If there's no fallback translation to use, create a new
+        # translation from scratch
+        else:
+            translation_data = {}
+            translation_type = self.content_type.translation
+            translation_type.init_instance(translation_data)
+
+            for key, value in translation_data.iteritems():
+                schema.set(
+                    form_data,
+                    key,
+                    value,
+                    language = language
+                )
+
+    def remove_translation(self, language):
+
+        self.item_translations.discard(language)
+        self.visible_translations.discard(language)
+        form_data = self.form_data
+
+        for key, member in self.form_schema.members().iteritems():
+            if member.translated:
+                values = form_data.get(key)
+                if values:
+                    values.pop(language, None)
 
 
 class SelectionNode(StackNode):

@@ -50,7 +50,7 @@ class IsAccessibleExpressionTestCase(BaseTestCase):
         
         assert self.accessible_items() == set([a, c])
 
-    def test_translation_enabled(self):
+    def test_enabled_translations(self):
 
         from cocktail.translations import language_context
         from woost.models import (
@@ -71,22 +71,24 @@ class IsAccessibleExpressionTestCase(BaseTestCase):
         with language_context("en"):
             a = Publishable()
             a.per_language_publication = True
-            a.translation_enabled = True
+            a.new_translation("en")
             a.insert()
 
             b = Publishable()
             b.per_language_publication = True
-            b.translation_enabled = False
+            b.new_translation("en")
+            b.enabled_translations.remove("en")
             b.insert()
 
             c = Publishable()
             c.per_language_publication = True
-            c.translation_enabled = True
+            c.new_translation("en")
+            c.enabled_translations.add("en")
             c.insert()
             
             d = Publishable()
             d.per_language_publication = True
-            d.set("translation_enabled", True, "de")
+            d.new_translation("de")
             d.insert()
 
             e = Publishable()
@@ -144,6 +146,7 @@ class IsAccessibleExpressionTestCase(BaseTestCase):
 
         a = Publishable()
         a.per_language_publication = True
+        a.new_translation("ca")
         a.insert()
 
         b = Publishable()
@@ -151,7 +154,6 @@ class IsAccessibleExpressionTestCase(BaseTestCase):
         b.insert()
 
         with language_context("ca"):
-            a.translation_enabled = True
             assert a.is_accessible()
             assert b.is_accessible()
             assert self.accessible_items() == set([a, b])

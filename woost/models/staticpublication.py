@@ -20,6 +20,8 @@ members_affecting_static_publication = set([
     File.title,
     File.file_name,
     Publishable.enabled,
+    Publishable.per_language_publication,
+    Publishable.enabled_translations,
     Publishable.start_date,
     Publishable.end_date
 ])
