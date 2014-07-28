@@ -29,7 +29,7 @@ from woost.models import UserView
     user_views = ()
 
     def get_page_title(self):
-        return self.backoffice and self.backoffice.title
+        return self.backoffice and self.backoffice.any_translation()
     ?>
 
     <?py
