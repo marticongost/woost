@@ -210,7 +210,3 @@ class WgetSnapShoter(StaticSiteSnapShoter):
             uri = uri.encode("utf-8")
         return uri
 
-    def cleanup(self, context):
-        if os.path.exists(self.snapshot_path):
-            rmtree(self.snapshot_path)
-
