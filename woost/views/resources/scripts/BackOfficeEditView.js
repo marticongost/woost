@@ -54,7 +54,10 @@ cocktail.bind(".BackOfficeEditView", function ($editView) {
         }
 
         if (!tabSelected) {
-            selectTab($tabStrip.children().first().get(0).group);
+            var tab = $tabStrip.children().first().get(0);
+            if (tab) {
+                selectTab(tab.group);
+            }
         }
     }
 
