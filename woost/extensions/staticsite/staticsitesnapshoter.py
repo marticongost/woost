@@ -178,6 +178,13 @@ class WgetSnapShoter(StaticSiteSnapShoter):
 
     def _snapshot(self, items, context = {}):
 
+        snapshot_path = self.snapshot_path
+
+        if os.path.exists(snapshot_path):
+            rmtree(snapshot_path)
+
+        os.mkdir(snapshot_path)
+
         cmd = self._get_cmd(context)
         uris = set()
 
@@ -193,7 +200,7 @@ class WgetSnapShoter(StaticSiteSnapShoter):
                     uris.add(self._get_uri(item, context))
 
         cmd = cmd % (
-            self.snapshot_path, 
+            snapshot_path, 
             self.file_names_mode, 
             u" ".join(uris)
         )
