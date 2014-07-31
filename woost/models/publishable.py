@@ -543,7 +543,7 @@ class Publishable(Item):
                     from woost.models import Configuration
                     website = (
                         get_current_website()
-                        or Configuration.instances.websites[0]
+                        or Configuration.instance.websites[0]
                     )
                     host = website.hosts[0]
 
