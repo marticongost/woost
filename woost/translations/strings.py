@@ -3365,7 +3365,7 @@ def permission_translation_factory(language, predicate):
 def content_permission_translation_factory(language, predicate):
     
     def predicate_factory(instance, **kwargs):
-        subject = translations(
+        subject = u"?" if instance.content_type is None else translations(
             instance.select_items(),
             language,
             **kwargs
