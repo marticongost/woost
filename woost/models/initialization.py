@@ -39,6 +39,7 @@ from woost.models import (
     Style,
     File,
     UserView,
+    Permission,
     ReadPermission,
     CreatePermission,
     ModifyPermission,
@@ -57,6 +58,10 @@ from woost.models import (
     EmailTemplate,
     CachingPolicy,
     Extension,
+    Trigger,
+    TriggerResponse,
+    SiteInstallation,
+    VideoPlayerSettings,
     rendering,
     load_extensions
 )
@@ -79,25 +84,25 @@ class SiteInitializer(object):
     base_id = None
 
     read_only_types = [
-        "woost.models.style.Style",
-        "woost.models.user.User",
-        "woost.models.template.Template",
-        "woost.models.emailtemplate.EmailTemplate",
-        "woost.models.rendering.renderer.Renderer",
-        "woost.models.rendering.imagefactory.ImageFactory",
-        "woost.models.videoplayersettings.VideoPlayerSettings"
+        Style,
+        User,
+        Template,
+        EmailTemplate,
+        rendering.Renderer,
+        rendering.ImageFactory,
+        VideoPlayerSettings
     ]
 
     restricted_types = [
-        "woost.models.role.Role",
-        "woost.models.controller.Controller",
-        "woost.models.permission.Permission",
-        "woost.models.caching.CachingPolicy",
-        "woost.models.siteinstallation.SiteInstallation",
-        "woost.models.trigger.Trigger",
-        "woost.models.triggerresponse.TriggerResponse",
-        "woost.models.userview.UserView",
-        "woost.models.extension.Extension"
+        Role,
+        Controller,
+        Permission,
+        CachingPolicy,
+        SiteInstallation,
+        Trigger,
+        TriggerResponse,
+        UserView,
+        Extension
     ]
 
     read_only_members = [
@@ -513,7 +518,12 @@ class SiteInitializer(object):
             DeletePermission,
             ReadHistoryPermission
         ):
-            role.permissions.append(self._create(permission_type))
+            role.permissions.append(
+                self._create(
+                    permission_type,
+                    content_type = Item
+                )
+            )
 
         role.permissions.append(
             self._create(
