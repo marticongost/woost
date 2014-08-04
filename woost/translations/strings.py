@@ -2094,6 +2094,12 @@ translations.define("Configuration.smtp_host",
     en = u"SMTP host"
 )
 
+translations.define("Configuration.smtp_port",
+    ca = u"Port del servidor SMTP",
+    es = u"Puerto del servidor SMTP",
+    en = u"SMTP port"
+)
+
 translations.define("Configuration.smtp_user",
     ca = u"Compte d'usuari del servidor SMTP",
     es = u"Cuenta de usuario del servidor SMTP",
