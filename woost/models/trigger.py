@@ -92,6 +92,7 @@ class Trigger(Item):
     responses = schema.Collection(
         items = "woost.models.TriggerResponse",
         bidirectional = True,
+        integral = True,
         related_key = "trigger"
     )
 

@@ -158,7 +158,7 @@ class Configuration(Item):
     #------------------------------------------------------------------------------
     languages = schema.Collection(
         items = schema.String(
-            format = "^[a-z]{2}(-[A-Z]{2})?$"
+            format = "^[a-z]{2}(-[A-Z]{2})?(-[a-z]+)?$"
         ),
         min = 1,
         listed_by_default = False,
@@ -192,6 +192,7 @@ class Configuration(Item):
                 items = (
                     schema.String(enumeration = languages),
                     schema.Collection(
+                        type = tuple,
                         items = schema.String(
                             enumeration = languages
                         ),

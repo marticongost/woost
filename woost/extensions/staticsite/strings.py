@@ -66,8 +66,8 @@ translations.define("woost.extensions.staticsite.export_status-failed",
 )
 
 translations.define("woost.extensions.staticsite export info",
-    ca = u"S'exportarà els següents elements:",
-    es = u"Se exportará los siguientes elementos:",
+    ca = u"S'exportaran els següents elements:",
+    es = u"Se exportarán los siguientes elementos:",
     en = u"The following items will be exported:"
 )
 
@@ -79,7 +79,7 @@ translations.define("ExportStaticSite.update_only",
     en = u"Only export modified content"
 )
 
-translations.define("ExportStaticSite.exporter",
+translations.define("ExportStaticSite.destination",
     ca = u"Destí",
     es = u"Destino",
     en = u"Destination"

@@ -31,9 +31,11 @@ class ItemLabel(Element):
                 self.add_class(schema.name)
 
             if self.icon_visible:
+                self.add_class("with_icon")
                 self.append(self.create_icon())
 
-            self.append(self.get_label())
+            self.text_wrapper = self.create_text_wrapper()
+            self.append(self.text_wrapper)
 
     def create_icon(self):
         img = Element("img")
@@ -57,7 +59,13 @@ class ItemLabel(Element):
             img["src"] = context["cms"].image_uri(self.item, image_factory)
 
         return img
-    
+ 
+    def create_text_wrapper(self):
+        text_wrapper = Element("span")
+        text_wrapper.add_class("text_wrapper")
+        text_wrapper.append(self.get_label())
+        return text_wrapper
+
     def get_label(self):
         return translations(self.item, referer = self.referer)
 

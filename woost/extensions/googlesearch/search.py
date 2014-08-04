@@ -30,7 +30,8 @@ def google_cse_search(
     page_size = 10,
     language = None,
     filter = True,
-    results_per_page = None):
+    results_per_page = None,
+    parser = None):
     """Returns Google CSE results for the given query.
     
     @param query: The query to search.
@@ -70,7 +71,9 @@ def google_cse_search(
 
     results = []
 
-    parser = GoogleCSEXMLParser()
+    if parser is None:
+        parser = GoogleCSEXMLParser()
+
     parseString(xml_response, parser)
 
     return GoogleSearchResultsList(
@@ -81,11 +84,19 @@ def google_cse_search(
     )
         
 
+class GoogleSearchResult(object):
+    title = ""
+    url = ""
+    context = ""
+    page_map = None
+
+
 class GoogleCSEXMLParser(ContentHandler):
 
     result_count = 0
     current_result = None
     status = None
+    result_type = GoogleSearchResult
 
     READING_TOTAL_COUNT = 1
     READING_TITLE = 2
@@ -106,7 +117,7 @@ class GoogleCSEXMLParser(ContentHandler):
         elif name == "S":
             self.status = self.READING_CONTEXT
         elif name == "R":
-            result = GoogleSearchResult()
+            result = self.result_type()
             self.results.append(result)
             self.current_result = result
             
@@ -127,6 +138,30 @@ class GoogleCSEXMLParser(ContentHandler):
             self.current_result.context = self.current_result.context.replace('<br>','')
 
 
+class PageMapGoogleCSEXMLParser(GoogleCSEXMLParser):
+
+    current_data_object = None
+
+    def startElement(self, name, attrs):
+        GoogleCSEXMLParser.startElement(self, name, attrs)
+        if name == "PageMap":
+            self.status = name
+            self.current_result.page_map = {}
+        elif name == "DataObject":
+            self.status = name
+            self.current_data_object = object_name = attrs["type"]
+            self.current_result.page_map[object_name] = {}
+        elif self.current_data_object and name == "Attribute":
+            self.status = name
+            self.current_result.page_map[self.current_data_object][attrs.get("name")] = \
+                attrs.get("value")
+
+    def endElement(self, name):
+        GoogleCSEXMLParser.endElement(self, name)
+        if name == "DataObject":
+            self.current_data_object = None
+
+
 class GoogleSearchResultsList(ListWrapper):
     
     def __init__(self, results, page, page_size, result_count):
@@ -134,10 +169,4 @@ class GoogleSearchResultsList(ListWrapper):
         self.page = page
         self.page_size = page_size
         self.result_count = result_count
-
-
-class GoogleSearchResult(object):
-    title = ""
-    url = ""
-    context = ""
 

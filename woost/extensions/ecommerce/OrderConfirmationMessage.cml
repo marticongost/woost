@@ -108,17 +108,19 @@ from woost.models import Configuration
         element.set_style("border", "2px solid #bbb")
         ?>
 
-        <py:with py:def="group_header" py:args="group" align="left">
-            <py:with py:element="element.header">
-                <?py 
-                element.set_style("color", "#444")
-                element.set_style("background-color", "#e0e0e0")
-                element.set_style("border-bottom", "1px solid #ccc")
+        <py:with py:def="group_header" py:args="group">
+            <?py
+            if element:
+                element["align"] = "left"
+
+                header = element.header
+                header.set_style("color", "#444")
+                header.set_style("background-color", "#e0e0e0")
+                header.set_style("border-bottom", "1px solid #ccc")
 
                 if group != checkout_table.schema.groups_order[0]:
-                    element.set_style("border-top", "1px solid #ccc")
-                ?>
-            </py:with>
+                    header.set_style("border-top", "1px solid #ccc")
+            ?>
         </py:with>
 
         <py:with py:def="label" align="left">

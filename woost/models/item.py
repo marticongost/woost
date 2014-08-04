@@ -64,7 +64,8 @@ class Item(PersistentObject):
         "synchronizable",
         "author",
         "creation_time",
-        "last_update_time"
+        "last_update_time",
+        "last_translation_update_time"
     ]
 
     # Enable full text indexing for all items (although the Item class itself
@@ -225,6 +226,18 @@ class Item(PersistentObject):
         member_group = "administration"
     )
 
+    last_translation_update_time = schema.DateTime(
+        translated = True,
+        indexed = True,
+        versioned = False,
+        editable = False,
+        synchronizable = False,
+        invalidates_cache = False,
+        affects_last_update_time = False,
+        listed_by_default = False,
+        member_group = "administration"
+    )
+
     @classmethod
     def _create_translation_schema(cls, members):
         members["versioned"] = False
@@ -281,6 +294,10 @@ class Item(PersistentObject):
         now = datetime.now()
         item.creation_time = now
         item.last_update_time = now
+
+        for language in item.translations:
+            item.set("last_translation_update_time", now, language)
+
         item.set_last_instance_change(now)
         item.__deleted = False
 
@@ -347,6 +364,8 @@ class Item(PersistentObject):
                 changeset.changes[item.id] = change
                 if update_timestamp:
                     item.last_update_time = now
+                    if event.member.translated:
+                        item.set("last_translation_update_time", now, event.language)
                 change.insert()
             else:
                 action = change.action
@@ -369,6 +388,8 @@ class Item(PersistentObject):
                     change.item_state[member_name] = value
         elif update_timestamp:
             item.last_update_time = now
+            if event.member.translated:
+                item.set("last_translation_update_time", now, event.language)
 
         if (
             event.member is cls.primary_member
