@@ -6,10 +6,14 @@ u"""
 @organization:  Whads/Accent SL
 @since:         March 2010
 """
-from __future__ import with_statement
+try:
+    from cStringIO import StringIO
+except ImportError:
+    from StringIO import StringIO
+
 import os
 import ftplib
-from shutil import copy
+from shutil import copy, copyfileobj
 from datetime import datetime
 from tempfile import mkstemp
 from zipfile import ZipFile
@@ -205,9 +209,23 @@ class StaticSiteDestination(Item):
             to True and the item has no changes to export.
         @rtype: bool
         """
-
         update_only = context.get("update_only")
+        needs_rewind = not isinstance(file, basestring)
+
+        if needs_rewind and not hasattr(file, "seek"):
+            buffer = StringIO()
+            copyfileobj(file, buffer, self.chunk_size)
+            buffer.seek(0)
+            file = buffer
+
+
+        if isinstance(file, unicode):
+            file = file.encode("utf-8")
+
         hash = file_hash(file)
+
+        if needs_rewind:
+            file.seek(0)
 
         if update_only \
         and hash == self.__last_export_hashes.get(file_path):
@@ -365,6 +383,10 @@ class FolderDestination(StaticSiteDestination):
     )
 
     def create_folder(self, folder, context):
+
+        if isinstance(folder, unicode):
+            folder = folder.encode("utf-8")
+
         full_path = os.path.join(self.target_folder, folder)
         if not os.path.exists(full_path):
             os.mkdir(full_path)
@@ -374,7 +396,14 @@ class FolderDestination(StaticSiteDestination):
 
     def write_file(self, file, path, context):
 
-        full_path = os.path.join(self.target_folder, path)
+        target_folder = self.target_folder
+        if isinstance(target_folder, unicode):
+            target_folder = target_folder.encode("utf-8")
+
+        if isinstance(path, unicode):
+            path = path.encode("utf-8")
+
+        full_path = os.path.join(target_folder, path)
 
         # Copy local files
         if isinstance(file, basestring):
@@ -382,15 +411,8 @@ class FolderDestination(StaticSiteDestination):
         
         # Save data from file-like objects
         else:
-            target_file = open(full_path, "wb")
-            try:
-                while True:
-                    chunk = file.read(self.chunk_size)
-                    if not chunk:
-                        break
-                    target_file.write(chunk)
-            finally:
-                target_file.close()
+            with open(full_path, "wb") as target_file:
+                copyfileobj(file, target_file, self.chunk_size)
 
 
 class FTPDestination(StaticSiteDestination):

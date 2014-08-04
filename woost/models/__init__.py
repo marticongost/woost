@@ -32,6 +32,7 @@ from woost.models.typegroups import (
 # Base content types
 #------------------------------------------------------------------------------
 from .slot import Slot
+from .localemember import LocaleMember
 from .configuration import Configuration
 from .website import Website
 from .websitesession import (

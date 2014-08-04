@@ -20,7 +20,6 @@ class TriggerResponse(Item):
     """A response action, to be executed when invoking the
     L{trigger<woost.models.Trigger>} it is bound to."""
     
-    integral = True
     instantiable = False
     visible_from_root = False
 

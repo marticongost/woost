@@ -39,11 +39,55 @@ from woost.models import Configuration, Publishable, get_current_website
         return title
 
     def get_content_title(self):
-        return getattr(self.publishable, "inner_title", None) or translations(self.publishable)
+        return getattr(self.publishable, "inner_title", None) or translations(self.publishable)    
     ?>
 
     <?py
     self.add_resource("/resources/styles/blocks.css")
+
+    @self.when_document_ready
+    def adapt_document(document):
+
+        # Links            
+        home = get_current_website().home
+        document.head_start_link = Element("link", rel = "start", title = home.title, href = home.get_uri() or "/")
+        document.head.append(document.head_start_link)
+
+        # Alternate languages
+        config = Configuration.instance
+        publishable = self.publishable
+        language = get_language()
+
+        if publishable and publishable.per_language_publication:
+            for trans_lang in publishable.translations:
+                if (
+                    trans_lang != language
+                    and config.language_is_enabled(trans_lang)
+                    and publishable.get("translation_enabled", trans_lang)
+                ):
+                    document.head.append(
+                        Element("link",
+                            rel = "alternate",
+                            title = translations("woost.views.BaseView alternate language link", language = trans_lang, lang = trans_lang),
+                            href = self.cms.translate_uri(language = trans_lang),
+                            lang = trans_lang,
+                            hreflang = trans_lang
+                        )
+                    )
+
+        # Shortcut icon
+        icon = config.get_setting("icon")
+        if icon:
+            document.head_icon_link = Element("link",
+                rel = "Shortcut Icon",
+                type = icon.mime_type,
+                href = self.cms.uri(icon)
+            )
+            document.head.append(document.head_icon_link)
+
+        # Base tag
+        if self.base_url:
+            document.head.append(Element("base", href = self.base_url))
     ?>
 
     <py:ready>
@@ -63,8 +107,6 @@ from woost.models import Configuration, Publishable, get_current_website
         config = Configuration.instance
 
         if publishable:
-
-            language = get_language()
 
             # Content type / charset
             self.page_content_type = publishable.mime_type
@@ -92,58 +134,19 @@ from woost.models import Configuration, Publishable, get_current_website
                     robots_should_follow and "follow" or "nofollow"
                 ))
 
-            # Links
-            home = get_current_website().home
-            self.add_head_element(
-                Element("link", rel = "start", title = home.title, href = home.get_uri() or "/")
-            )
+        # Link to the stylesheet for user defined styles
+        user_styles = Publishable.get_instance(qname = "woost.user_styles")
+        if user_styles:
+            self.add_resource(user_styles.get_uri(), mime_type = user_styles.mime_type)
 
-            # Alternate languages
-            if publishable.per_language_publication:
-                for trans_lang in publishable.translations:
-                    if (
-                        trans_lang != language
-                        and config.language_is_enabled(trans_lang)
-                        and publishable.get("translation_enabled", trans_lang)
-                    ):
-                        self.add_head_element(
-                            Element("link",
-                                rel = "alternate",
-                                title = translations("woost.views.BaseView alternate language link", language = trans_lang, lang = trans_lang),
-                                href = self.cms.translate_uri(language = trans_lang),
-                                lang = trans_lang,
-                                hreflang = trans_lang
-                            )
-                        )
+        # Add a CSS class based on the website's identifier
+        website = get_current_website()
+        if website and website.qname:
+            self.add_class(website.qname.replace(".", "-"))
 
-            # Shortcut icon
-            icon = config.get_setting("icon")
-            if icon:                
-                self.add_head_element(
-                    Element("link",
-                        rel = "Shortcut Icon",
-                        type = icon.mime_type,
-                        href = self.cms.uri(icon)
-                    )
-                )
-
-            # Link to the stylesheet for user defined styles
-            user_styles = Publishable.get_instance(qname = "woost.user_styles")
-            if user_styles:
-                self.add_resource(user_styles.get_uri(), mime_type = user_styles.mime_type)
-
-            # Base tag
-            if self.base_url:
-                self.add_head_element(Element("base", href = self.base_url))
-
-            # Add a CSS class based on the website's identifier
-            website = get_current_website()
-            if website and website.qname:
-                self.add_class(website.qname.replace(".", "-"))
-
-            # Add a CSS class based on the page's name
-            if self.publishable.qname:
-                self.add_class(self.publishable.qname.replace(".", "-"))
+        # Add a CSS class based on the page's name
+        if publishable and self.publishable.qname:
+            self.add_class(self.publishable.qname.replace(".", "-"))
         ?>
     </py:ready>
 

@@ -15,7 +15,7 @@ cocktail.bind(".EditBlocksSlotList", function ($slotList) {
     $slotList.find(".block_picker").click(function () {
 
         if (!$dialog) {
-            $dialog = jQuery(cocktail.instantiate("woost.views.EditBlocksSlotList.blockPickerDialog"));
+            $dialog = jQuery(cocktail.instantiate("woost.views.blockPickerDialog"));
             $dialog.addClass("EditBlocksSlotList-block_picker_dialog");
             $dialog.find(".cancel_button").click(function () { cocktail.closeDialog(); });
         }

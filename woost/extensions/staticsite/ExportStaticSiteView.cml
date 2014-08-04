@@ -11,6 +11,8 @@
     form_errors = None
     successful = False
     export_events = ()
+    eligible_destinations = ()
+    eligible_snapshoters = ()
     ?>
 
     <py:with py:element="self.body">
@@ -32,6 +34,13 @@
             py:errors="@{self.form_errors}"
             method="post"
             py:visible="@{not self.successful}">
+
+            <py:binding>
+                <?py
+                element.set_member_hidden("destination", len(self.eligible_destinations) < 2)
+                element.set_member_hidden("snapshoter", len(self.eligible_snapshoters) < 2)
+                ?>
+            </py:binding>
 
             <py:with py:element="export_form.submit_button">
                 <?py element.empty() ?>

@@ -24,6 +24,12 @@ for cls_name in ("Configuration", "Website"):
         en = u"Google Analytics account"
     )
 
+    translations.define(cls_name + ".google_analytics_domain",
+        ca = u"Domini per Google Analytics",
+        es = u"Dominio para Google Analytics",
+        en = u"Domain for Google Analytics"
+    )
+
 translations.define("Document.ga_tracking_enabled",
     ca = u"Habilitar seguiment amb Google Analytics",
     es = u"Habilitar seguimiento con Google Analytics",

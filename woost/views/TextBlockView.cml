@@ -112,7 +112,6 @@ from cocktail.controllers import Location
                 if heading is None:
                     heading = Element()
                     heading.add_class("heading")
-                    heading.add_class("blergh")
                     self.insert(0, heading)
                 heading.insert(0, self.image_gallery)
 

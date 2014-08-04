@@ -38,7 +38,10 @@ translations.define(
          u"<a href='${confirmation_url}'>${confirmation_url}</a>",
     en = u"Hello ${user.email},<br/><br/>"
          u"Click here to confirm your email account:<br/>"
-         u"<a href='${confirmation_url}'>${confirmation_url}</a>"
+         u"<a href='${confirmation_url}'>${confirmation_url}</a>",
+    pt = u"""Olá ${user.email}:<br/><br/>
+Clique para confirmar a sua conta de utilizador:<br/>
+<a href='${confirmation_url}'>${confirmation_url}</a>"""
 )
 
 translations.define(
