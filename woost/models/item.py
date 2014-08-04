@@ -126,6 +126,7 @@ class Item(PersistentObject):
         synchronizable = False,
         invalidates_cache = False,
         listed_by_default = False,
+        text_search = False,
         member_group = "administration"
     )
 

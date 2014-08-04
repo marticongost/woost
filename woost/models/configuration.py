@@ -78,6 +78,7 @@ class Configuration(Item):
         "video_player_settings",
         "timezone",
         "smtp_host",
+        "smtp_port",
         "smtp_user",
         "smtp_password",
         "triggers"
@@ -272,6 +273,11 @@ class Configuration(Item):
         member_group = "system.smtp"
     )
 
+    smtp_port = schema.Integer(
+        listed_by_default = False,
+        member_group = "system.smtp"
+    )
+
     smtp_user = schema.String(
         listed_by_default = False,
         text_search = False,
@@ -352,7 +358,18 @@ class Configuration(Item):
     def connect_to_smtp(self):
 
         import smtplib
-        smtp = smtplib.SMTP(self.get_setting("smtp_host"), smtplib.SMTP_PORT)
+        
+        port = self.get_setting("smtp_port") or smtplib.SMTP_PORT
+
+        smtp = smtplib.SMTP(
+            self.get_setting("smtp_host"),
+            port
+        )
+
+        if port == 587:
+            smtp.ehlo()
+            smtp.starttls()
+            smtp.ehlo()
 
         user = self.get_setting("smtp_user")
         password = self.get_setting("smtp_password")
