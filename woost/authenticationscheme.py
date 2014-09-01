@@ -26,14 +26,17 @@ class AuthenticationScheme(object):
         )
 
         try:
-            self.process_header_based_authentication()
-            self.process_login()
+            self.process_auth()
         except AuthenticationFailedError, e:
             authentication_errors = ErrorList()
             authentication_errors.add(e)
             cherrypy.request.authentication_errors = authentication_errors
             raise
         self.process_logout()
+
+    def process_auth(self):
+        self.process_header_based_authentication()
+        self.process_login()
 
     def process_header_based_authentication(self):
 
