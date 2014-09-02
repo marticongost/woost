@@ -168,6 +168,12 @@ class Change(PersistentObject):
         required = False
     )
 
+    is_explicit_change = schema.Boolean(
+        required = True,
+        default = False,
+        indexed = True
+    )
+
     def __translate__(self, language, **kwargs):
         return translations(
             "woost.models.changesets.Change description",

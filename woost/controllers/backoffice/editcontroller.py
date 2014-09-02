@@ -144,6 +144,9 @@ class EditController(BaseBackOfficeController):
             ):
                 with changeset_context(author = user) as changeset:
                     self._apply_changes(item)
+                    change = changeset.changes.get(item.id)
+                    if change is not None:
+                        change.is_explicit_change = True
             try:
                 datastore.commit()
             except ConflictError:

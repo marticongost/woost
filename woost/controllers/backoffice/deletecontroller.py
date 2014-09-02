@@ -64,12 +64,15 @@ class DeleteController(BaseBackOfficeController):
 
                 deleted_set = None
 
-                with changeset_context(author = user):
+                with changeset_context(author = user) as changeset:
                     for item in self.selection:
                         deleted_set = delete_validating(
                             item,
                             deleted_set = deleted_set
                         )
+                        change = changeset.changes.get(item.id)
+                        if change is not None:
+                            change.is_explicit_change = True
 
                 try:
                     datastore.commit()
@@ -77,7 +80,7 @@ class DeleteController(BaseBackOfficeController):
                     datastore.abort()
                     datastore.sync()
                 else:
-                    break       
+                    break
           
             # Purge the edit stack of references to deleted items
             if stack:
