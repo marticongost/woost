@@ -1881,6 +1881,10 @@ body.scripted .BackOfficeLayout .ThumbnailsContentView .collection_display input
     color: #900;
 }
 
+.BackOfficeChangeLogView .change_entry.explicit .change_action_label {
+    font-weight: bold;
+}
+
 /* Notifications
 -----------------------------------------------------------------------------*/
 .BackOfficeLayout .notification_box {

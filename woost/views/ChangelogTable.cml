@@ -19,6 +19,7 @@ from cocktail.stringutils import normalize
         <?py
         changes = self.get_member_value(obj, member).values()
         changes.sort(key = lambda change: (
+            0 if change.is_explicit_change else 1,
             self.action_order.get(change.action),
             normalize(translations(change.target))
         ))
@@ -29,6 +30,8 @@ from cocktail.stringutils import normalize
     <li py:def="change_entry" py:args="change">
         <?py
         element.add_class(change.action)
+        if change.is_explicit_change:
+            element.add_class("explicit")
         ?>
         <span py:local_id="change_action">
             <img

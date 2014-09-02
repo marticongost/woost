@@ -974,3 +974,12 @@ def initialize_enabled_translations(e):
                     descend_language_tree(lang, False)
                 )
 
+#------------------------------------------------------------------------------
+
+step = MigrationStep("Index Change.is_explicit_change")
+
+@when(step.executing)
+def index_is_explicit_change(e):
+    from woost.models import Change
+    Change.is_explicit_change.rebuild_index()
+

@@ -4525,6 +4525,12 @@ translations.define("Change.item_state",
     en = u"State"
 )
 
+translations.define("Change.is_explicit_change",
+    ca = u"Canvi iniciat per l'usuari",
+    es = u"Cambio iniciado por el usuario",
+    en = u"Change initiated by the user"
+)
+
 def _translate_woost_models_change_instance_ca(action, target):
     
     if isinstance(target, int):
