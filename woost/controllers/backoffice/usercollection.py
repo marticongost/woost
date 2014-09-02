@@ -174,11 +174,6 @@ class BackOfficeUserCollection(UserCollection):
         return set([member
                 for member in UserCollection.default_members(self)
                 if content_schema.get_member(member).listed_by_default])
-
-    # Filters
-    #--------------------------------------------------------------------------    
-    def should_ignore_filter(self, filter):
-        return isinstance(filter, GlobalSearchFilter) and not filter.value
     
     # Tree expansion
     #--------------------------------------------------------------------------
