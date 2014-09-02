@@ -1839,61 +1839,46 @@ body.scripted .BackOfficeLayout .ThumbnailsContentView .collection_display input
 
 /* Changelog
 -----------------------------------------------------------------------------*/
-.BackOfficeChangeLogView .id_column {
+.BackOfficeChangeLogView .ChangelogTable .id_column {
     width: 5em;
 }
 
-.BackOfficeChangeLogView .author_column {
-/*    width: 24em;*/
+.BackOfficeChangeLogView .ChangelogTable .author_column {
+    width: 20em;
 }
 
-.BackOfficeChangeLogView .date_column {
+.BackOfficeChangeLogView .ChangelogTable .date_column {
     width: 12em;
 }
 
-.BackOfficeChangeLogView .action_column {
-    width: 8em;
-}
-
-.BackOfficeChangeLogView .changes_column li {
-    padding: 0;
-    margin: 0;
-}
-
-.BackOfficeChangeLogView .changes_column li + li {
-    margin-top: 0.4em;
-}
-
-.BackOfficeChangeLogView td.changes_column.collapsed ul {
+.BackOfficeChangeLogView .changes_column.collapsed > .changes_display {
     display: none;
 }
 
-.BackOfficeChangeLogView td.changes_column.expanded ul {
-    margin-bottom: 0.4em;
+.BackOfficeChangeLogView .change_action {
+    display: inline-block;
+    margin-right: 1em;
+    width: 6em;
 }
 
-.BackOfficeChangeLogView td.action_column.create_action {
-    color: rgb(15,125,15);
+.BackOfficeChangeLogView .change_action > * {
+    vertical-align: middle;
 }
 
-.BackOfficeChangeLogView td.action_column.modify_action {
-    color: rgb(145,110,15);
+.BackOfficeChangeLogView .change_action_icon {
+    margin-right: 0.4em;
 }
 
-.BackOfficeChangeLogView td.action_column.delete_action {
-    color: rgb(150,0,0);
+.BackOfficeChangeLogView .change_entry.create .change_action_label {
+    color: #1a881a;
 }
 
-.BackOfficeChangeLogView td.create_action {
-    background-color: rgb(230,245,230);
+.BackOfficeChangeLogView .change_entry.modify .change_action_label {
+    color: #1717aa;
 }
 
-.BackOfficeChangeLogView td.modify_action {
-    background-color: rgb(250,245,205);
-}
-
-.BackOfficeChangeLogView td.delete_action {
-    background-color: rgb(240,220,200);
+.BackOfficeChangeLogView .change_entry.delete .change_action_label {
+    color: #900;
 }
 
 /* Notifications

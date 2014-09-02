@@ -119,11 +119,7 @@ class ChangeLogController(BaseBackOfficeController):
             ChangeSet,
             content_schema
         )
-        content_schema.add_member(
-            schema.Member("action"),
-            before = "changes"
-        )
-        
+
         changes = content_schema["changes"]
         changes.listed_by_default = True
         changes.searchable = True

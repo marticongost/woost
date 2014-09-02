@@ -833,18 +833,6 @@ translations.define("UserFilter.is_inherited",
     en = u"Children included"
 )
 
-translations.define("Changelog.action",
-    ca = u"Acció",
-    es = u"Acción",
-    en = u"Action"
-)
-
-translations.define("Changelog.changes",
-    ca = u"Elements",
-    es = u"Elementos",
-    en = u"Items"
-)
-
 translations.define("woost.views.BackOfficeChangeLogView title",
     ca = u"Històric",
     es = u"Histórico",
@@ -852,9 +840,9 @@ translations.define("woost.views.BackOfficeChangeLogView title",
 )
 
 translations.define("woost.views.BackOfficeChangeLogView collapsed",
-    ca = u"%(count)s elements",
-    es = u"%(count)s elementos",
-    en = u"%(count)s items"
+    ca = u"%(count)s canvis",
+    es = u"%(count)s cambios",
+    en = u"%(count)s changes"
 )
 
 translations.define("woost.views.BackOfficeChangeLogView expanded",
@@ -4501,10 +4489,28 @@ translations.define("Change.action",
     en = u"Action"
 )
 
+translations.define("Change.action=create",
+    ca = u"Creat",
+    es = u"Creado",
+    en = u"Created"
+)
+
+translations.define("Change.action=modify",
+    ca = u"Modificat",
+    es = u"Modificado",
+    en = u"Modified"
+)
+
+translations.define("Change.action=delete",
+    ca = u"Eliminat",
+    es = u"Eliminado",
+    en = u"Deleted"
+)
+
 translations.define("Change.target",
-    ca = u"Element",
-    es = u"Elemento",
-    en = u"Item"
+    ca = u"Element afectat",
+    es = u"Elemento afectado",
+    en = u"Affected item"
 )
 
 translations.define("Change.changed_members",
@@ -4616,23 +4622,23 @@ translations.define("woost delete action",
 
 translations.define(
     "woost.models.userfilter.ChangeSetActionFilter-instance",
-    ca = u"Acció",
-    es = u"Acción",
-    en = u"Action"
+    ca = u"Conté l'acció",
+    es = u"Contiene la acción",
+    en = u"Contains action"
 )
 
 translations.define(
     "woost.models.userfilter.ChangeSetTargetFilter-instance",
-    ca = u"Element",
-    es = u"Elemento",
-    en = u"Item"
+    ca = u"Element afectat",
+    es = u"Elemento afectado",
+    en = u"Affected element"
 )
 
 translations.define(
     "woost.models.userfilter.ChangeSetTargetTypeFilter-instance",
-    ca = u"Tipus d'element",
-    es = u"Tipo de elemento",
-    en = u"Item type"
+    ca = u"Tipus d'element d'afectat",
+    es = u"Tipo de elemento afectado",
+    en = u"Affected element type"
 )
 
 # Trigger
