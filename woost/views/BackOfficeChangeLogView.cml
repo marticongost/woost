@@ -24,7 +24,7 @@ from woost.controllers.backoffice.useractions import \
     self.add_client_translation("woost.views.BackOfficeChangeLogView collapsed")
     self.add_client_translation("woost.views.BackOfficeChangeLogView expanded")
     ?>
-
+    
     <py:with py:element="self.body">
 
         <h2>${translations("woost.views.BackOfficeChangeLogView title")}</h2>

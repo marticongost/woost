@@ -12,6 +12,7 @@ from cocktail.html import Element, templates
 from cocktail.html.databoundcontrol import data_bound
 from woost.models import (
     Item,
+    Publishable,
     CreatePermission,
     ModifyPermission,
     DeletePermission,
@@ -34,6 +35,11 @@ class ItemSelector(Element):
 
         self.add_resource("/resources/scripts/ItemSelector.js")
         self.set_client_param("emptyLabel", self.empty_label)
+        self.set_client_param("selectorDialogURL",
+            Publishable.require_instance(
+                qname = "woost.backoffice"
+            ).get_uri(path = ["content"])
+        )
 
         self.input = templates.new("cocktail.html.HiddenInput")
         self.append(self.input)

@@ -694,6 +694,41 @@ class ReferencesAction(UserAction):
         )
 
 
+class ShowChangelogAction(UserAction):
+    min = None
+    max = 1
+    excluded = frozenset([
+        "selector",
+        "new_item",
+        "calendar_content_view",
+        "changelog"
+    ])
+
+    def get_url(self, controller, selection):
+
+        params = self.get_url_params(controller, selection)
+
+        # Filter by target element
+        if selection:
+            params["filter"] = "member-changes"
+            params["filter_value0"] = str(selection[0].id)
+
+        # Filter by target type
+        else:
+            user_collection = getattr(controller, "user_collection", None)
+            if user_collection and user_collection.type is not Item:
+                params["filter"] = "target-type"
+                params["filter_value0"] = user_collection.type.full_name
+
+        return controller.contextual_uri(
+            "changelog",                
+            **params
+        )
+
+    def is_permitted(self, user, target):
+        return user.has_permission(ReadHistoryPermission)
+
+
 class UploadFilesAction(UserAction):
     included = frozenset(["toolbar_extra"])
     content_type = File
@@ -1154,6 +1189,7 @@ OrderAction("order").register()
 ExportAction("export_xls", "msexcel").register()
 InvalidateCacheAction("invalidate_cache").register()
 ReferencesAction("references").register()
+ShowChangelogAction("changelog").register()
 OpenResourceAction("open_resource").register()
 save_and_close = SaveAction("save_and_close")
 save_and_close.close = True
