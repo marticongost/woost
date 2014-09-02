@@ -9,7 +9,7 @@
 
 cocktail.bind(".BackOfficeChangeLogView", function ($changelogView) {
 
-    var THRESHOLD = 6;
+    var THRESHOLD = 50;
 
     $changelogView.find("td.changes_column ul").each(function () {
         
