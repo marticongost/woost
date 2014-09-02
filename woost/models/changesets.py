@@ -85,7 +85,8 @@ class ChangeSet(PersistentObject):
     
     author = schema.Reference(
         required = True,
-        type = "woost.models.User"
+        type = "woost.models.User",
+        search_control = "cocktail.html.DropdownSelector"
     )
 
     date = schema.DateTime(
