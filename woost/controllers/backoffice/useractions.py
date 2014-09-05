@@ -701,7 +701,8 @@ class ShowChangelogAction(UserAction):
         "selector",
         "new_item",
         "calendar_content_view",
-        "changelog"
+        "changelog",
+        "collection"
     ])
 
     def get_url(self, controller, selection):
