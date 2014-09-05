@@ -3,6 +3,7 @@ u"""
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
+from warnings import warn
 from cocktail.translations import translations
 from woost.models import Extension, Role, ReadPermission
 
@@ -20,6 +21,8 @@ translations.define("RestrictedAccessExtension-plural",
 
 
 class RestrictedAccessExtension(Extension):
+
+    visible = False
 
     def __init__(self, **values):
         Extension.__init__(self, **values)
@@ -41,6 +44,12 @@ class RestrictedAccessExtension(Extension):
         )
 
     def _load(self):
+        
+        warn(
+            "The 'restrictedaccess' extension has been deprecated: use "
+            "the built-in 'Publishable.authorized_roles' member instead.",
+            DeprecationWarning
+        )
 
         from woost.extensions.restrictedaccess import (
             strings,

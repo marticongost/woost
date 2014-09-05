@@ -53,6 +53,7 @@ from woost.models import (
     ModifyTranslationPermission,
     DeleteTranslationPermission,
     ReadHistoryPermission,
+    AccessLevel,
     DeleteTrigger,
     CustomTriggerResponse,
     EmailTemplate,
@@ -284,6 +285,8 @@ class SiteInitializer(object):
         self.everybody_role = self.create_everybody_role()
         self.authenticated_role = self.create_authenticated_role()
         self.editor_role = self.create_editor_role()
+        
+        self.editor_access_level = self.create_editor_access_level()
 
         # File deletion trigger
         self.file_deletion_trigger = self.create_file_deletion_trigger()
@@ -419,7 +422,13 @@ class SiteInitializer(object):
             title = TranslatedValues(),
             permissions = [
                 self._create(RenderPermission, content_type = Item),
-                self._create(ReadPermission, content_type = Publishable)
+                self._create(
+                    ReadPermission,
+                    content_type = Publishable,
+                    content_expression =
+                        "from woost.models import user_has_access_level\n"
+                        "items.add_filter(user_has_access_level)"
+                )
             ]
         )
 
@@ -533,6 +542,13 @@ class SiteInitializer(object):
         )
 
         return role
+
+    def create_editor_access_level(self):
+        return self._create(
+            AccessLevel,
+            qname = "woost.editor_access_level",
+            roles_with_access = [self.editor_role]
+        )
 
     def create_file_deletion_trigger(self):
         return self._create(
