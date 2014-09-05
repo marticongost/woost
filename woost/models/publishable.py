@@ -758,7 +758,7 @@ class UserHasAccessLevelExpression(Expression):
             for role in user.iter_roles():
                 for access_level in role.access_levels:
                     restricted_content.difference_update(
-                        index.value(key = access_level.id)
+                        index.values(key = access_level.id)
                     )
 
             dataset.difference_update(restricted_content)
