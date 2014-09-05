@@ -46,7 +46,12 @@ class ContentTypeTree(TreeView):
 
     def get_child_items(self, content_type):
         return sorted(
-            content_type.derived_schemas(recursive = False),
+            [
+                derived_schema
+                for derived_schema
+                in content_type.derived_schemas(recursive = False)
+                if not getattr(derived_schema, "translation_source", None)
+            ],
             key = lambda ct: translations(ct.__name__)
         )
 
