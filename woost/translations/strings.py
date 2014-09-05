@@ -4533,7 +4533,7 @@ translations.define("Change",
     en = u"Change"
 )
 
-translations.define("ChangeSet-plural",
+translations.define("Change-plural",
     ca = u"Canvis",
     es = u"Cambios",
     en = u"Changes"
