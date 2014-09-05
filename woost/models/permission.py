@@ -70,6 +70,7 @@ class ContentPermission(Permission):
 
     content_type = schema.Reference(
         class_family = PersistentObject,
+        default = Item,
         required = True
     )
     
