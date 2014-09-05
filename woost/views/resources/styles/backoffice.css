@@ -1365,8 +1365,20 @@ body.scripted .BackOfficeLayout .Table .row_selection_control {
     font-size: 100%;
 }
 
+.BackOfficeLayout .toolbar .action_add_integral {
+    margin-left: -0.2em;
+}
+
 .BackOfficeLayout .toolbar .new_toolbar_button > .button > .label {
     font-size: 85%;
+}
+
+.BackOfficeLayout .toolbar .action_add_integral > .button > .label {
+    font-size: 0.9em;
+}
+
+.BackOfficeLayout .toolbar .action_add_integral > .panel_wrapper > .panel {
+    top: -1px;
 }
 
 .BackOfficeLayout .toolbar .additional_actions_selector .selector_content {
