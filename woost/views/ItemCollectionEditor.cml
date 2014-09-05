@@ -113,16 +113,20 @@ from woost.controllers.backoffice.useractions import add_view_action_context
         ?>
     </py:woost.views.ActionBar>
 
-    <div py:def="new_toolbar_button"
-        py:args="action, extra"
-        class="selector action_button action_new">
-        <span class="label">
+    <py:cocktail.html.DropdownPanel py:def="new_toolbar_button"
+        py:args="action, extra">
+        <?py
+        element.add_class("action_button")
+        element.add_class("action_new")
+        element.add_class("action_add_integral")
+        ?>
+        <py:with py:element="element.label">
             <py:new
                 py:element="self.toolbar.create_action_image(action, extra)"
                 py:if="self.toolbar.button_images and not extra"/>
-            ${translations("Action " + action.id)}
-        </span>
-        <div class="selector_content">
+            ${translations("woost.actions." + action.id)}
+        </py:with>
+        <py:with py:element="element.panel">
             <py:woost.views.ContentTypeTree
                 py:id="new_item_selector"
                 py:root="@{self.member.related_type}">
@@ -137,8 +141,8 @@ from woost.controllers.backoffice.useractions import add_view_action_context
                     return self.get_new_content_uri(content_type)
                 ?>
             </py:woost.views.ContentTypeTree>
-        </div>
-    </div>
+        </py:with>
+    </py:cocktail.html.DropdownPanel>
 
     <ul py:id="entries">
         <py:ready>
