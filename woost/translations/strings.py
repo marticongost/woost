@@ -5679,6 +5679,12 @@ translations.define("Thumbnail",
     en = u"Resize"
 )
 
+translations.define("Thumbnail-plural",
+    ca = u"Efectes de redimensionat",
+    es = u"Efectos de redimensionat",
+    en = u"Resize effects"
+)
+
 translations.define("Thumbnail.width",
     ca = u"Amplada",
     es = u"Ancho",
@@ -5703,6 +5709,12 @@ translations.define("Crop",
     ca = u"Retallar",
     es = u"Recortar",
     en = u"Crop"
+)
+
+translations.define("Crop-plural",
+    ca = u"Efectes de retallat",
+    es = u"Efectos de recorte",
+    en = u"Crop effects"
 )
 
 translations.define("Crop.left",
@@ -5737,12 +5749,24 @@ translations.define("AutoCrop",
     en = u"Autocrop"
 )
 
+translations.define("AutoCrop-plural",
+    ca = u"Efectes de retallat automàtic",
+    es = u"Efectos de recorte automático",
+    en = u"Autocrop effects"
+)
+
 # Fill
 #------------------------------------------------------------------------------
 translations.define("Fill",
     ca = u"Redimensionar i retallar",
     es = u"Redimensionar y recortar",
     en = u"Thumbnail and crop"
+)
+
+translations.define("Fill-plural",
+    ca = u"Efectes de redimensionar i retallar",
+    es = u"Efectos redimensionar y recortar",
+    en = u"Thumbnail and crop effects"
 )
 
 translations.define("Fill.width",
@@ -5789,6 +5813,12 @@ translations.define("Rotate",
     en = u"Rotate"
 )
 
+translations.define("Rotate-plural",
+    ca = u"Rotacions",
+    es = u"Rotaciones",
+    en = u"Rotations"
+)
+
 translations.define("Rotate.angle",
     ca = u"Angle",
     es = u"Ángulo",
@@ -5801,6 +5831,12 @@ translations.define("Color",
     ca = u"Intensitat del color",
     es = u"Intensidad del color",
     en = u"Color intensity"
+)
+
+translations.define("Color-plural",
+    ca = u"Efectes d'intensitat del color",
+    es = u"Efectos de intensidad del color",
+    en = u"Color intensity effects"
 )
 
 translations.define("Color.level",
@@ -5817,6 +5853,12 @@ translations.define("Brightness",
     en = u"Brightness"
 )
 
+translations.define("Brightness-plural",
+    ca = u"Efectes de lluminositat",
+    es = u"Efectos de luminosidad",
+    en = u"Brightness effects"
+)
+
 translations.define("Brightness.level",
     ca = u"Nivell",
     es = u"Nivel",
@@ -5829,6 +5871,12 @@ translations.define("Contrast",
     ca = u"Contrast",
     es = u"Contraste",
     en = u"Contrast"
+)
+
+translations.define("Contrast-plural",
+    ca = u"Efectes de contrast",
+    es = u"Efectos de contraste",
+    en = u"Contrast effects"
 )
 
 translations.define("Contrast.level",
@@ -5845,6 +5893,12 @@ translations.define("Sharpness",
     en = u"Sharpness"
 )
 
+translations.define("Sharpness-plural",
+    ca = u"Efectes de definició",
+    es = u"Efectos de definición",
+    en = u"Sharpness effects"
+)
+
 translations.define("Sharpness.level",
     ca = u"Nivell",
     es = u"Nivel",
@@ -5858,6 +5912,13 @@ translations.define("Frame",
     es = u"Marco",
     en = u"Frame"
 )
+
+translations.define("Frame-plural",
+    ca = u"Marcs",
+    es = u"Marcos",
+    en = u"Frames"
+)
+
 
 translations.define("Frame.edge_width",
     ca = u"Gruix del marc",
@@ -5897,6 +5958,12 @@ translations.define("Shadow",
     en = u"Shadow"
 )
 
+translations.define("Shadow-plural",
+    ca = u"Ombres",
+    es = u"Sombras",
+    en = u"Shadows"
+)
+
 translations.define("Shadow.offset",
     ca = u"Desplaçament",
     es = u"Desplazamiento",
@@ -5923,6 +5990,12 @@ translations.define("ReducedOpacity",
     en = u"Reduce opacity"
 )
 
+translations.define("ReducedOpacity-plural",
+    ca = u"Reduccions d'opacitat",
+    es = u"Reducciones de opacidad",
+    en = u"Opacity reductions"
+)
+
 translations.define("ReducedOpacity.level",
     ca = u"Nivell",
     es = u"Nivel",
@@ -5935,6 +6008,12 @@ translations.define("Fade",
     ca = u"Esvaïr",
     es = u"Desvanecer",
     en = u"Fade"
+)
+
+translations.define("Fade-plural",
+    ca = u"Esvaïments",
+    es = u"Desvanecimientos",
+    en = u"Fade effects"
 )
 
 translations.define("Fade.top_width",
@@ -5981,6 +6060,12 @@ translations.define("Watermark",
     en = u"Watermark"
 )
 
+translations.define("Watermark-plural",
+    ca = u"Marques d'aigua",
+    es = u"Marcas de agua",
+    en = u"Watermarks"
+)
+
 translations.define("Watermark.mark",
     ca = u"Marca",
     es = u"Marca",
@@ -6025,6 +6110,12 @@ translations.define("Flip",
     en = u"Flip"
 )
 
+translations.define("Flip-plural",
+    ca = u"Efectes de capgirar",
+    es = u"Efectos de volteado",
+    en = u"Flip effects"
+)
+
 translations.define("Flip.axis",
     ca = u"Eix",
     es = u"Eje",
@@ -6046,9 +6137,15 @@ translations.define("Flip.axis=vertical",
 # Align
 #------------------------------------------------------------------------------
 translations.define("Align",
-    ca = u"Alinear",
+    ca = u"Aliniar",
     es = u"Alinear",
     en = u"Align"
+)
+
+translations.define("Align-plural",
+    ca = u"Alineaments",
+    es = u"Alineamientos",
+    en = u"Alignments"
 )
 
 translations.define("Align.width",
@@ -6084,6 +6181,12 @@ translations.define("Align.background",
 # Grayscale
 #------------------------------------------------------------------------------
 translations.define("Grayscale",
+    ca = u"Tons de gris",
+    es = u"Tonos de gris",
+    en = u"Grayscale"
+)
+
+translations.define("Grayscale-plural",
     ca = u"Tons de gris",
     es = u"Tonos de gris",
     en = u"Grayscale"
