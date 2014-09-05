@@ -47,7 +47,9 @@ from .style import Style
 from .publishable import (
     Publishable,
     IsPublishedExpression,
-    IsAccessibleExpression
+    IsAccessibleExpression,
+    UserHasAccessLevelExpression,
+    user_has_access_level
 )
 from .document import Document
 from .template import Template
@@ -61,6 +63,7 @@ from .usersession import (
     set_current_user
 )
 from .role import Role
+from .accesslevel import AccessLevel
 from .permission import (
     Permission,
     ContentPermission,

@@ -23,10 +23,12 @@ from cocktail.controllers import (
     percent_encode_uri,
     Location
 )
+from cocktail.html.datadisplay import display_factory
 from woost import app
 from .enabledtranslations import auto_enables_translations
 from .localemember import LocaleMember
 from .item import Item
+from .role import Role
 from .usersession import get_current_user
 from .websitesession import get_current_website
 from .permission import (
@@ -76,6 +78,7 @@ class Publishable(Item):
         "enabled",
         "enabled_translations",
         "websites",
+        "access_level",
         "start_date",
         "end_date",
         "requires_https",
@@ -199,6 +202,17 @@ class Publishable(Item):
         items = "woost.models.Website",
         bidirectional = True,
         related_key = "specific_content",
+        member_group = "publication"
+    )
+
+    access_level = schema.Reference(
+        type = "woost.models.AccessLevel",
+        bidirectional = True,
+        indexed = True,
+        edit_control = display_factory(
+            "cocktail.html.RadioSelector",
+            empty_option_displayed = True
+        ),
         member_group = "publication"
     )
 
@@ -702,6 +716,59 @@ class IsAccessibleExpression(Expression):
             return dataset
         
         return ((-1, 1), impl)
+
+
+class UserHasAccessLevelExpression(Expression):
+    """An expression used in resolving the restrictions imposed by the
+    `Publishable.access_level` member.
+
+    The expression determines wether the indicated user belongs to one or more
+    roles that have been authorized to access the access level assigned to the
+    evaluated content.
+
+    @ivar user: The user to test; defaults to the active user.
+    @type user: L{User<woost.models.user.User>}
+    """
+    def __init__(self, user = None):
+        Expression.__init__(self)
+        self.user = user
+
+    def eval(self, context, accessor = None):
+        
+        if accessor is None:
+            accessor = schema.get_accessor(context)
+
+        access_level = accessor.get(context, "access_level")
+
+        return access_level is None or any(
+            (role in access_level.roles_with_access)
+            for role in (self.user or get_current_user()).iter_roles()
+        )
+
+    def resolve_filter(self, query):
+
+        def impl(dataset):
+            user = self.user or get_current_user()
+            index = Publishable.access_level.index
+            restricted_content = set(index.values(
+                min = None,
+                exclude_min = True
+            ))
+
+            for role in user.iter_roles():
+                for access_level in role.access_levels:
+                    restricted_content.difference_update(
+                        index.value(key = access_level.id)
+                    )
+
+            dataset.difference_update(restricted_content)
+            return dataset
+
+        return ((-1, 1), impl)
+
+# Create a single instance of the expression, to avoid instantiating it on
+# every single permission check
+user_has_access_level = UserHasAccessLevelExpression()
 
 
 mime_type_categories = {}

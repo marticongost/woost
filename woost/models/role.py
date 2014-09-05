@@ -33,7 +33,8 @@ class Role(Item):
         "permissions",
         "user_views",
         "default_content_type",
-        "hidden_content_types"
+        "hidden_content_types",
+        "access_levels"
     ]
 
     title = schema.String(
@@ -95,6 +96,11 @@ class Role(Item):
         default = False,
         indexed = True,
         editable = False
+    )
+
+    access_levels = schema.Collection(
+        items = "woost.models.AccessLevel",
+        bidirectional = True
     )
 
     def iter_roles(self, include_self = True, recursive = True):

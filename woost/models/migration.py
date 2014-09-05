@@ -983,3 +983,95 @@ def index_is_explicit_change(e):
     from woost.models import Change
     Change.is_explicit_change.rebuild_index()
 
+#------------------------------------------------------------------------------
+
+step = MigrationStep("Introduce Publishable.access_level")
+
+@when(step.executing)
+def introduce_publishable_access_level(e):
+    
+    from warnings import warn
+    from woost.models import Role, AccessLevel, Publishable, ReadPermission
+    from woost.extensions.restrictedaccess import RestrictedAccessExtension
+
+    # Fix the "Everybody can read publishable objects" permission to take
+    # access levels into account.
+    everybody = Role.require_instance(qname = "woost.everybody")
+
+    for permission in everybody.permissions:
+        if (
+            isinstance(permission, ReadPermission)
+            and permission.content_type is Publishable
+            and permission.authorized
+            and not permission.content_expression
+        ):
+            permission.content_expression = (
+                "from woost.models import user_has_access_level\n"
+                "items.add_filter(user_has_access_level)"
+            )
+            break
+    else:
+        warn(
+            u"The migration expected to find a permission in the 'Everybody' "
+            u"role that allowed all users to read publishable objects, so it "
+            u"could be modified to take access levels into account. Since "
+            u"that permission is not present, you will have to create it "
+            u"manually, or otherwise access levels won't work. Check the "
+            u"SiteInitializer.create_everybody_role() method for clues on "
+            u"how the permission should work."
+        )
+
+    # Create the "Only for editors" access level
+    editors = Role.get_instance(qname = "woost.editors")
+    if editors is not None:
+        level = AccessLevel()
+        level.roles_with_access.append(editors)
+        level.insert()
+    else:
+        warn(
+            u"The migration wanted to create an 'Only for editors' access "
+            u"level, but the 'Editors' role can't be found. If you want it, "
+            u"you will have to create the access level on your own."
+        )
+
+    # Import access levels from the 'restrictedaccess' extension
+    if RestrictedAccessExtension.instance.enabled:
+
+        RestrictedAccessExtension.instance.enabled = False
+
+        from woost.extensions.restrictedaccess.accessrestriction \
+            import  AccessRestrition
+
+        mapping = {}
+
+        for restriction in AccessRestriction.select():
+            level = AccessLevel()
+            for lang in restriction.translations:
+                level.set("title", restriction.get("title", lang), lang)
+            level.insert()
+            mapping[restriction] = level
+
+        for publishable in Publishable.select():
+            if publishable.access_restriction:
+                publishable.access_level = \
+                    mapping[publishable.access_restriction]
+            try:
+                del publishable.access_restriction
+            except AttributeError:
+                pass
+
+        AccessRestriction.select().delete_items()
+
+        warn(
+            u"The deprecated 'restrictedaccess' extension has been disabled. "
+            u"Instances of AccessRestriction have been replaced with "
+            u"equivalent AccessLevel instances. You should relate the created "
+            u"levels to their roles, and delete or correct the existing "
+            u"permissions that were used to enforce access restrictions using "
+            u"the AccessRestriction model.\n\nAlso, *remember to reboot your "
+            u"site*!"
+        )
+
+    # Rebuild indexes
+    Publishable.access_level.rebuild_index()
+

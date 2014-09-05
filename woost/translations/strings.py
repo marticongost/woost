@@ -7,7 +7,7 @@ u"""
 @since:			July 2008
 """
 from cocktail.translations import translations
-from cocktail.translations.helpers import ca_possessive, plural2
+from cocktail.translations.helpers import ca_possessive, plural2, join
 from cocktail.modeling import OrderedDict
 from cocktail.stringutils import decapitalize
 from cocktail import schema
@@ -2960,6 +2960,18 @@ translations.define("Publishable.websites-explanation",
          u"this element across all websites."
 )
 
+translations.define("Publishable.access_level",
+    ca = u"Nivell d'accés",
+    es = u"Nivel de acceso",
+    en = u"Access level"
+)
+
+translations.define("Publishable.access_level=none",
+    ca = u"Sense restricció",
+    es = u"Sin restricción",
+    en = u"No restrictions"
+)
+
 translations.define("Publishable.hidden",
     ca = u"Ocult",
     es = u"Oculto",
@@ -4261,6 +4273,62 @@ translations.define("Role.implicit",
     en = u"Implicit"
 )
 
+translations.define("Role.access_levels",
+    ca = u"Nivells d'accés",
+    es = u"Niveles de acceso",
+    en = u"Access levels"
+)
+
+# AccessLevel
+#------------------------------------------------------------------------------
+translations.define("AccessLevel",
+    ca = u"Nivell d'accés",
+    es = u"Nivel de acceso",
+    en = u"Acces level"
+)
+
+translations.define("AccessLevel-plural",
+    ca = u"Nivells d'accés",
+    es = u"Niveles de acceso",
+    en = u"Access levels"
+)
+
+translations.define("AccessLevel.title",
+    ca = u"Nom",
+    es = u"Nombre",
+    en = u"Name"
+)
+
+translations.define("AccessLevel.roles_with_access",
+    ca = u"Rols amb accés",
+    es = u"Roles con acceso",
+    en = u"Roles with access"
+)
+
+translations.define("AccessLevel.restricted_content",
+    ca = u"Contingut restringit",
+    es = u"Contenido restringido",
+    en = u"Restricted content"
+)
+
+translations.define("woost.models.accesslevel.AccessLevel-instance",
+    ca = lambda instance:
+        u"Només per a " + join([
+            decapitalize(translations(role))
+            for role in instance.roles_with_access
+        ]),
+    es = lambda instance:
+        u"Solo para " + join([
+            decapitalize(translations(role))
+            for role in instance.roles_with_access
+        ]),
+    en = lambda instance:
+        u"Only for " + join([
+            decapitalize(translations(role))
+            for role in instance.roles_with_access
+        ])
+)
+
 # Template
 #------------------------------------------------------------------------------
 translations.define("Template",
@@ -5174,6 +5242,13 @@ translations.define(
     ca = u"accessible",
     es = u"accesible",
     en = u"accessible"
+)
+
+translations.define(
+    "woost.models.publishable.UserHasAccessLevelExpression-instance",
+    ca = u"amb nivell d'accés adequat",
+    es = u"con nivel de acceso adecuado",
+    en = u"with a valid access level"
 )
 
 # PasswordChange
