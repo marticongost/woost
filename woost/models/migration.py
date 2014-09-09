@@ -1040,7 +1040,7 @@ def introduce_publishable_access_level(e):
         RestrictedAccessExtension.instance.enabled = False
 
         from woost.extensions.restrictedaccess.accessrestriction \
-            import  AccessRestrition
+            import  AccessRestriction
 
         mapping = {}
 
