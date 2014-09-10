@@ -23,7 +23,8 @@ members_affecting_static_publication = set([
     Publishable.per_language_publication,
     Publishable.enabled_translations,
     Publishable.start_date,
-    Publishable.end_date
+    Publishable.end_date,
+    Publishable.access_level
 ])
 
 def encode_filename(link, encoding = None):
