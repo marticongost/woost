@@ -47,6 +47,11 @@ class RestrictedAccessExtension(Extension):
             publishable,
             accessrestriction
         )
+        from woost.models import Publishable, staticpublication
+
+        staticpublication.members_affecting_static_publication.add(
+            Publishable.access_restriction
+        )
 
     def _install(self):
         self.setup_permissions()
@@ -61,7 +66,7 @@ class RestrictedAccessExtension(Extension):
         if restriction is None:
             restriction = ReadPermission()
             restriction.qname = qname
-            restriction.authorized = False            
+            restriction.authorized = False 
              
         restriction.content_type = Publishable
         restriction.content_expression = \
