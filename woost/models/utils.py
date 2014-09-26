@@ -8,8 +8,10 @@ from difflib import SequenceMatcher
 from ZODB.broken import Broken
 from cocktail.styled import styled
 from cocktail import schema
-from cocktail.translations import translations
-from cocktail.persistence import datastore
+from cocktail.translations import get_language, translations, words
+from cocktail import schema
+from cocktail.schema.expressions import Self
+from cocktail.persistence import datastore, Query
 from cocktail.persistence.utils import (
     is_broken,
     remove_broken_type as cocktail_remove_broken_type
@@ -195,4 +197,58 @@ def replace(expr, replacement, objects = None, mode = "apply"):
             continue
 
         obj.set(member, modified_value, language)
+
+_word_expr = re.compile(r"\w+", re.UNICODE)
+
+def search(query_text, objects = None, languages = None, **search_kwargs):
+
+    if objects is None:
+        query = Item.select()
+    elif isinstance(objects, (schema.SchemaClass, Query)):
+        query = objects.select()
+    elif isinstance(objects, collections.Iterable):
+        query = Item.select()
+        query.base_collection = objects
+
+    if languages is None:
+        languages = (None, get_language())
+
+    query.add_filter(
+        Self.search(query_text, languages = languages, **search_kwargs)
+    )
+
+    query_stems = set()
+    for language in languages:
+        query_stems.update(words.iter_stems(query_text, language))
+
+    for result in query:
+        print styled(result, "slate_blue")
+
+        text = result.get_searchable_text(languages)
+        output = []
+        pos = 0
+        highlighted = False
+
+        while True:
+            match = _word_expr.search(text, pos)
+            if match is None:
+                break
+
+            word_start, word_end = match.span()
+            output.append(text[pos:word_start])
+            word = match.group(0)
+
+            for language in languages:
+                for stem in words.iter_stems(word, language):
+                    if stem in query_stems:
+                        highlighted = True
+                        word = styled(word, "magenta")
+                        break
+
+            output.append(word)
+            pos = word_end
+
+        if highlighted:
+            output.append(text[pos:])
+            print u"".join(output)
 
