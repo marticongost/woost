@@ -202,6 +202,7 @@ class Publishable(Item):
         items = "woost.models.Website",
         bidirectional = True,
         related_key = "specific_content",
+        edit_control = "cocktail.html.CheckList",
         member_group = "publication"
     )
 
