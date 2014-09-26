@@ -77,6 +77,7 @@ class ChangeSet(PersistentObject):
 
     members_order = "id", "author", "date", "changes"
     indexed = True
+    full_text_indexed = True
 
     changes = schema.Mapping(
         searchable = False,
@@ -86,7 +87,8 @@ class ChangeSet(PersistentObject):
     author = schema.Reference(
         required = True,
         type = "woost.models.User",
-        search_control = "cocktail.html.DropdownSelector"
+        search_control = "cocktail.html.DropdownSelector",
+        text_search = True
     )
 
     date = schema.DateTime(
@@ -120,27 +122,18 @@ class ChangeSet(PersistentObject):
             raise TypeError("Can't finalize the current changeset, there's no "
                 "changeset in place")
 
-    def get_searchable_text(self, languages, visited_objects = None):
-
-        if visited_objects is None:
-            visited_objects = set()
-        elif self in visited_objects:
-            return
-        
-        visited_objects.add(self)
-
-        # Concatenate the descriptions of change authors and targets
-        for language in languages:
-            if self.author:
-                yield translations(self.author, language)
-            for change in self.changes.itervalues():
-                yield translations(change.target, language)
+    @classmethod
+    def extract_searchable_text(cls, extractor):
+        PersistentObject.extract_searchable_text(extractor)
+        for change in extractor.current.value.changes.itervalues():
+            extractor.extract(change.__class__, change)
 
 
 class Change(PersistentObject):
     """A persistent record of an action performed on a CMS item."""
 
     indexed = True
+    full_text_indexed = True
 
     changeset = schema.Reference(
         required = True,
