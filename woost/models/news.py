@@ -36,7 +36,7 @@ class News(Document):
         member_group = "content"
     )
 
-    summary = schema.String(
+    summary = schema.HTML(
         edit_control = "woost.views.RichTextEditor",
         listed_by_default = False,
         translated = True,

@@ -28,7 +28,7 @@ class CampaignMonitorSubscriptionPage(Document):
         )
     )
 
-    body = schema.String(
+    body = schema.HTML(
         translated = True,
         listed_by_default = False,    
         edit_control = "woost.views.RichTextEditor",                                                                                                                                                           

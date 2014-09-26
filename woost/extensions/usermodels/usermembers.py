@@ -89,7 +89,7 @@ class UserMember(Item):
         member_group = "description"
     )
 
-    explanation = schema.String(
+    explanation = schema.HTML(
         translated = True,
         edit_control = "woost.views.RichTextEditor",
         listed_by_default = False,
