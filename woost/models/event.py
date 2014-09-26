@@ -47,7 +47,7 @@ class Event(Document):
         member_group = "content"
     )
 
-    summary = schema.String(
+    summary = schema.HTML(
         translated = True,
         edit_control = "woost.views.RichTextEditor",
         listed_by_default = False,

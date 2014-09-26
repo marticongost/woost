@@ -63,7 +63,7 @@ class TextBlock(Block):
         member_group = "content"
     )
 
-    text = schema.String(
+    text = schema.HTML(
         edit_control = "woost.views.RichTextEditor",
         translated = True,
         member_group = "content"
