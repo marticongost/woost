@@ -90,7 +90,7 @@ class FlatContentViewTestCase(object):
 
         all_columns = ["element", "class"] + [
             member.name
-            for member in Item.members().itervalues()
+            for member in Item.iter_members()
             if member.visible
         ]
 

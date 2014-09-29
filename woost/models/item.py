@@ -339,7 +339,7 @@ class Item(PersistentObject):
                 change.target = item
                 change.changed_members = set(
                     member.name
-                    for member in item.__class__.members().itervalues()
+                    for member in item.__class__.iter_members()
                     if member.versioned
                 )
                 change.item_state = item._get_revision_state()

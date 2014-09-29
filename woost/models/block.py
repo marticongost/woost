@@ -302,7 +302,7 @@ class Block(Item):
 
         def iter_slots(block):
 
-            for member in block.__class__.members().itervalues():
+            for member in block.__class__.iter_members():
                 if (
                     (block, member) not in visited
                     and isinstance(member, schema.RelationMember)
@@ -351,7 +351,7 @@ class Block(Item):
 
             paths = []
 
-            for member in block.__class__.members().itervalues():
+            for member in block.__class__.iter_members():
                 related_end = getattr(member, "related_end", None)
                 if isinstance(related_end, Slot):
                     parents = block.get(member)
@@ -388,7 +388,7 @@ class Block(Item):
         @param replacement: The block to insert.
         @type replacement: L{Block}
         """
-        for member in self.__class__.members().itervalues():
+        for member in self.__class__.iter_members():
             related_end = getattr(member, "related_end", None)
             if isinstance(related_end, Slot):
                 for container in self.get(member):

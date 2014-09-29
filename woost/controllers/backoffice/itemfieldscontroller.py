@@ -109,7 +109,7 @@ class ItemFieldsController(EditController):
         adapter = schema.Adapter()
         adapter.exclude([
             member.name
-            for member in self.stack_node.content_type.members().itervalues()
+            for member in self.stack_node.content_type.iter_members()
             if (
                 self.stack_node.item
                 and self.stack_node.item.is_inserted

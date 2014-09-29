@@ -55,7 +55,7 @@ class CommentsExtension(Extension):
         adapter = schema.Adapter()
         adapter.exclude(
             member.name
-            for member in comment_model.members().itervalues()
+            for member in comment_model.iter_members()
             if not member.visible 
             or not member.editable
             or not issubclass(member.schema, comment_model)

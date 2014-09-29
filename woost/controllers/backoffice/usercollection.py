@@ -74,7 +74,7 @@ class BackOfficeUserCollection(UserCollection):
         adapter = schema.Adapter()
         adapter.exclude([
             member.name
-            for member in self.type.members().itervalues()
+            for member in self.type.iter_members()
             if not member.visible
             or not user.has_permission(
                 ReadMemberPermission,

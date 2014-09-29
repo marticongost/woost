@@ -666,7 +666,7 @@ class ReferencesAction(UserAction):
         return references
 
     def _iter_references(self, obj):
-        for member in obj.__class__.members().itervalues():
+        for member in obj.__class__.iter_members():
             if (
                 isinstance(member, schema.RelationMember) 
                 and member.related_end

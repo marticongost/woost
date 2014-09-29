@@ -10,7 +10,7 @@ from .slot import Slot
 
 def type_is_block_container(cls):
 
-    for member in cls.members().itervalues():
+    for member in cls.iter_members():
         if (
             isinstance(member, schema.RelationMember)
             and member.related_type
@@ -31,7 +31,7 @@ def find_blocks(obj, slots = None):
 
     if slots is None:
         slots = (member
-                for member in obj.__class__.members().itervalues()
+                for member in obj.__class__.iter_members()
                 if isinstance(member, Slot))
 
     for slot in slots:

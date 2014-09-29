@@ -60,7 +60,7 @@ class DragAndDropController(BaseBackOfficeController):
 
         return [
             member
-            for member in target_object.__class__.members().itervalues()
+            for member in target_object.__class__.iter_members()
             if member.visible
             and isinstance(member, schema.RelationMember)            
             and member.is_persistent_relation
