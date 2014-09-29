@@ -29,7 +29,7 @@ class UploadForm(Form):
                 and issubclass(member.type, File)
         )
         return [member
-                for member in self.model.members().itervalues()
+                for member in self.model.iter_members()
                 if is_file_ref(member)
                 or (
                     isinstance(member, schema.Collection)

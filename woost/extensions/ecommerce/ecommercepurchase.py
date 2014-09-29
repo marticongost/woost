@@ -214,7 +214,7 @@ class ECommercePurchase(Item):
 
     @classmethod
     def get_options(cls):
-        for member in cls.members().itervalues():
+        for member in cls.iter_members():
             if (
                 member is not cls.product
                 and member is not cls.order

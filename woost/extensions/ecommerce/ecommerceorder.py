@@ -418,7 +418,7 @@ class ECommerceOrder(Item):
         adapter.exclude(["website", "customer", "status", "purchases"])
         adapter.exclude([
             member.name
-            for member in cls.members().itervalues()
+            for member in cls.iter_members()
             if not member.visible
             or not member.editable
             or not issubclass(member.schema, ECommerceOrder)

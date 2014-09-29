@@ -95,7 +95,7 @@ class UserFormController(FormProcessor, DocumentController):
 
             excluded_members = []
 
-            for member in self.model.members().itervalues():
+            for member in self.model.iter_members():
                 if (
                     not member.visible
                     or not member.editable

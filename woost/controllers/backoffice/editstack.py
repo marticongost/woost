@@ -696,7 +696,7 @@ class EditNode(StackNode):
         adapter.collection_copy_mode = self._adapt_collection
         adapter.exclude([
             member.name
-            for member in self.content_type.members().itervalues()
+            for member in self.content_type.iter_members()
             if self.should_exclude_member(member)
         ])
         return adapter
