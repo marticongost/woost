@@ -22,9 +22,9 @@ class TweetPermission(ContentPermission):
         after_member = "content_expression"
     )
 
-    def match(self, target, publication_target = None, verbose = False):
+    def match(self, user, target, publication_target = None, verbose = False):
 
-        if not ContentPermission.match(self, target, verbose = verbose):
+        if not ContentPermission.match(self, user, target, verbose = verbose):
             return False
 
         if publication_target is not None \
