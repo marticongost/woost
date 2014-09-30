@@ -280,7 +280,7 @@ class User(Item):
 
                 print permission_style(_describe(permission))
 
-            if permission.match(verbose = verbose, **context):
+            if permission.match(verbose = verbose, user = self, **context):
 
                 if permission.authorized:
                     if verbose:

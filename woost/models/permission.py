@@ -37,7 +37,7 @@ class Permission(Item):
         min = 1
     )
 
-    def match(self, verbose = False):
+    def match(self, **kwargs):
         """Indicates if the permission matches the given context.
 
         @return: True if the permission matches, False otherwise.
@@ -78,9 +78,9 @@ class ContentPermission(Permission):
         language = "python"
     )
 
-    def match(self, target, verbose = False):
+    def match(self, user, target, verbose = False):
         
-        query = self.select_items()
+        query = self.select_items(user = user)
 
         if isinstance(target, type):
             if not issubclass(target, query.type):
@@ -110,11 +110,12 @@ class ContentPermission(Permission):
     def select_items(self, *args, **kwargs):
         
         items = self.content_type.select()
+        user = kwargs.pop("user", None)
 
         expression = self.content_expression
         if expression:
-            context = {"items": items, "cls": self.content_type}
-            label = "%s #%s" % (self.__class__.__name__, self.id)            
+            context = {"items": items, "cls": self.content_type, "user": user}
+            label = "%s #%s" % (self.__class__.__name__, self.id)
             code = compile(expression, label, "exec")
             exec code in context
             items = context["items"]
@@ -160,13 +161,13 @@ class RenderPermission(ContentPermission):
 
     del _image_factories_enumeration
 
-    def match(self, target, image_factory, verbose = False):
+    def match(self, user, target, image_factory, verbose = False):
         
         if self.image_factories and image_factory not in self.image_factories:
             print permission_doesnt_match_style("image_factory doesn't match")
             return False
 
-        return ContentPermission.match(self, target, verbose)
+        return ContentPermission.match(self, user, target, verbose)
 
     @classmethod
     def permission_not_found(cls, user, verbose = False, **context):
@@ -196,7 +197,7 @@ class TranslationPermission(Permission):
 
     del _matching_languages_enumeration
 
-    def match(self, language, verbose = False):
+    def match(self, user, language, verbose = False):
 
         languages = self.matching_languages
 
@@ -260,7 +261,7 @@ class MemberPermission(Permission):
         edit_control = "woost.views.MemberList"
     )
 
-    def match(self, member, verbose = False):
+    def match(self, user, member, verbose = False):
  
         member = member.original_member.schema.full_name + "." + member.name
         members = self.matching_members
