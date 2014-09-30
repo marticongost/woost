@@ -34,11 +34,11 @@ class ExportationPermission(Permission):
 
     del _destination_edit_control
 
-    def match(self, destination, verbose = False):
+    def match(self, user, destination, verbose = False):
         
         if self.destination and destination is not self.destination:
             print permission_doesnt_match_style("destination doesn't match")
             return False
 
-        return Permission.match(self, verbose)
+        return Permission.match(self, user, verbose)
 

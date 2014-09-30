@@ -25,7 +25,7 @@ class SendEmailPermission(Permission):
         edit_control = "cocktail.html.CheckList"
     )
 
-    def match(self, mailingList = None, verbose = False):
+    def match(self, user, mailingList = None, verbose = False):
 
         if mailingList and self.lists and mailingList not in self.lists:
 
@@ -34,5 +34,5 @@ class SendEmailPermission(Permission):
             
             return False
 
-        return Permission.match(self, verbose)
+        return Permission.match(self, user, verbose)
 
