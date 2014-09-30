@@ -3365,11 +3365,23 @@ def permission_translation_factory(language, predicate):
 def content_permission_translation_factory(language, predicate):
     
     def predicate_factory(instance, **kwargs):
-        subject = u"?" if instance.content_type is None else translations(
-            instance.select_items(),
-            language,
-            **kwargs
-        )
+        if instance.content_type is None:
+            subject = u"?"
+        else:
+            try:
+                query = instance.select_items()
+            except:
+                subject = (
+                    translations(instance.content_type.name + "-plural")
+                    + " "
+                    + translations(
+                        "woost.models.ContentPermission"
+                        "-content_expression_error",
+                        language
+                    )
+                )
+            else:
+                subject = decapitalize(translations(query, language))
 
         if hasattr(predicate, "__call__"):
             return predicate(instance, subject, **kwargs)
@@ -3380,6 +3392,13 @@ def content_permission_translation_factory(language, predicate):
         language,
         predicate_factory
     )
+
+translations.define(
+    "woost.models.ContentPermission-content_expression_error",
+    ca = u"(expressió de filtrat incorrecta)",
+    es = u"(expresión de filtrado incorrecta)",
+    en = u"(incorrect filter)"
+)
 
 MEMBER_PERMISSION_ABBR_THRESHOLD = 4
 
