@@ -3365,23 +3365,31 @@ def permission_translation_factory(language, predicate):
 def content_permission_translation_factory(language, predicate):
     
     def predicate_factory(instance, **kwargs):
-        if instance.content_type is None:
-            subject = u"?"
-        else:
-            try:
-                query = instance.select_items()
-            except:
-                subject = (
-                    translations(instance.content_type.name + "-plural")
-                    + " "
-                    + translations(
-                        "woost.models.ContentPermission"
-                        "-content_expression_error",
-                        language
-                    )
-                )
+
+        subject = instance.get("subject_description", language)
+
+        if not subject:
+            if instance.content_type is None:
+                subject = u"?"
             else:
-                subject = decapitalize(translations(query, language))
+                try:
+                    query = instance.select_items()
+                except:
+                    subject = (
+                        decapitalize(
+                            translations(
+                                instance.content_type.name + "-plural"
+                            )
+                        )
+                        + " "
+                        + translations(
+                            "woost.models.ContentPermission"
+                            "-content_expression_error",
+                            language
+                        )
+                    )
+                else:
+                    subject = decapitalize(translations(query, language))
 
         if hasattr(predicate, "__call__"):
             return predicate(instance, subject, **kwargs)
@@ -3681,6 +3689,24 @@ translations.define("ContentPermission.content_expression",
     ca = u"Expressió de filtrat",
     es = u"Expresión de filtrado",
     en = u"Filtering expression"
+)
+
+translations.define("ContentPermission.subject_description",
+    ca = u"Descripció de l'àmbit del permís",
+    es = u"Descripción del ámbito del permiso",
+    en = u"Permission scope description"
+)
+
+translations.define("ContentPermission.subject_description-explanation",
+    ca = u"Permet explicar els elements que es veuran afectats per aquest "
+         u"permís. Deixar en blanc per utilitzar una descripció automàtica, "
+         u"basada en el tipus i expressió de filtrats seleccionats.",
+    es = u"Permite explicar los elementos que se verán afectados por este "
+         u"permiso. Dejar en blanco para utilizar una descripción automática "
+         u"basada en el tipo y expresión de filtrado seleccionados.",
+    en = u"Describes the elements that should be afected by the permission. "
+         u"Leave blank to use an automatically generated description, based "
+         u"on the selected content type and filters."
 )
 
 # ReadPermission

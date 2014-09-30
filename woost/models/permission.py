@@ -65,7 +65,8 @@ class ContentPermission(Permission):
     
     members_order = [
         "content_type",
-        "content_expression"
+        "content_expression",
+        "subject_description"
     ]
 
     content_type = schema.Reference(
@@ -76,6 +77,10 @@ class ContentPermission(Permission):
     
     content_expression = schema.CodeBlock(
         language = "python"
+    )
+
+    subject_description = schema.String(
+        translated = True
     )
 
     def match(self, user, target, verbose = False):
