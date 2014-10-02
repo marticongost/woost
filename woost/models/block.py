@@ -82,6 +82,7 @@ class Block(Item):
             "dt",
             "figcaption"
         ],
+        text_search = False,
         required = heading,
         member_group = "content"
     )
@@ -119,6 +120,7 @@ class Block(Item):
     )
 
     controller = schema.String(
+        text_search = False,
         member_group = "behavior"
     )
 
@@ -131,17 +133,20 @@ class Block(Item):
 
     inline_css_styles = schema.String(
         edit_control = "cocktail.html.TextArea",
+        text_search = False,
         member_group = "html"
     )
 
     html_attributes = schema.String(
         listed_by_default = False,
         edit_control = "cocktail.html.TextArea",
+        text_search = False,
         member_group = "html"
     )
 
     initialization = schema.CodeBlock(
         language = "python",
+        text_search = False,
         member_group = "administration"
     )
 

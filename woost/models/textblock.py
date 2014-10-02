@@ -56,6 +56,7 @@ class TextBlock(Block):
         default = "top",
         enumeration = ["top", "inside"],
         edit_control = "cocktail.html.RadioSelector",
+        text_search = False,
         member_group = "content"
     )
 
@@ -96,6 +97,7 @@ class TextBlock(Block):
             "fallback"
         ],
         edit_control = _mandatory_dropdown,
+        text_search = False,
         member_group = "images"
     )
 
@@ -157,6 +159,7 @@ class TextBlock(Block):
 
     link_parameters = schema.String(
         edit_control = "cocktail.html.TextArea",
+        text_search = False,
         member_group = "link"
     )
 

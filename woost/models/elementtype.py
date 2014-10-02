@@ -24,6 +24,10 @@ class ElementType(schema.String):
         "dd"
     ]
 
+    def __init__(self, *args, **kwargs):
+        kwargs.setdefault("text_search", False)
+        schema.String.__init__(self, *args, **kwargs)
+
     def translate_value(self, value, language = None, **kwargs):
 
         translation = schema.String.translate_value(

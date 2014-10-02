@@ -17,6 +17,7 @@ class Slot(schema.Collection):
 
         kwargs["related_end"] = schema.Collection()
         kwargs["cascade_delete"] = True
+        kwargs.setdefault("text_search", True)
         kwargs.setdefault("cascade_cache_invalidation", "always")
         kwargs.setdefault("listable", False)
         kwargs.setdefault("searchable", False)
