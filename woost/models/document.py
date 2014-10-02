@@ -93,6 +93,7 @@ class Document(Publishable):
     redirection_mode = schema.String(
         enumeration = ["first_child", "custom_target"],
         listed_by_default = False,
+        text_search = False,
         member_group = "navigation"
     )
 
@@ -109,6 +110,7 @@ class Document(Publishable):
         default = "temp",
         enumeration = ["temp", "perm", "client"],
         listed_by_default = False,
+        text_search = False,
         member_group = "navigation"
     )
 
