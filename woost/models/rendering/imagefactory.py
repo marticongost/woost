@@ -98,6 +98,22 @@ class ImageFactory(Item):
 
         return image
 
+    def can_render(self, item, **parameters):
+        """Indicates if the renderers used by the image factory are able to
+        render the given item.
+
+        @param item: The item to evaluate.
+        @type item: L{Item<woost.models.item.Item>}
+
+        @return: True if the image factory claims to be able to render the
+            item, False otherwise.
+        @rtype: bool
+        """
+        return (
+            self.renderer.can_render(item, **parameters)
+            or self.fallback and self.fallback.can_render(item, **parameters)
+        )    
+
     cache_invalidators = frozenset((
         identifier,
         renderer,
