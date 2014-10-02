@@ -9,7 +9,7 @@ from difflib import SequenceMatcher
 from ZODB.broken import Broken
 from cocktail.styled import styled
 from cocktail import schema
-from cocktail.translations import get_language, translations, words
+from cocktail.translations import get_language, translations
 from cocktail import schema
 from cocktail.schema.expressions import Self
 from cocktail.persistence import datastore, Query
@@ -199,8 +199,6 @@ def replace(expr, replacement, objects = None, mode = "apply"):
 
         obj.set(member, modified_value, language)
 
-_word_expr = re.compile(r"\w+", re.UNICODE)
-
 def search(query_text, objects = None, languages = None, **search_kwargs):
 
     if objects is None:
@@ -218,7 +216,7 @@ def search(query_text, objects = None, languages = None, **search_kwargs):
         Self.search(query_text, languages = languages, **search_kwargs)
     )
 
-    highlighter = SearchHighlighter(
+    highlighter = schema.SearchHighlighter(
         query_text,
         languages,
         lambda text: styled(text, "magenta")
@@ -229,100 +227,4 @@ def search(query_text, objects = None, languages = None, **search_kwargs):
         highlights = highlighter.highlight(result)
         if highlights:
             print highlights
-
-
-class SearchHighlighter(object):
-
-    context_radius = 8
-
-    def __init__(self,
-        query_text,
-        languages,
-        emphasis = "*%s*",
-        context_radius = None
-    ):        
-        if isinstance(emphasis, basestring):
-            self.__emphasize = lambda text: emphasis % text
-        elif callable(emphasis):
-            self.__emphasize = emphasis
-        else:
-            raise TypeError(
-                "SearchHighlighter constructor received an invalid value for "
-                "its 'emphasis' parameter: expected a formatting string or a "
-                "callable with a single parameter, got %r instead." % emphasis
-            )
-
-        if languages is None:
-            self.__languages = (None, get_language())
-        else:
-            self.__languages = languages
-
-        self.__query_stems = set()
-
-        for language in self.__languages:
-            self.__query_stems.update(words.iter_stems(query_text, language))
-
-        if context_radius is not None:
-            self.context_radius = context_radius
-
-    def emphasize(self, text):
-        return self.__emphasize(text)
-
-    def highlight(self, obj):
-
-        output = []
-
-        def word_matches_query(word):
-            for language in self.__languages:
-                for stem in words.iter_stems(word, language):
-                    if stem in self.__query_stems:
-                        return True
-            return False
-
-        extractor = schema.TextExtractor(self.__languages)
-        extractor.extract(obj.__class__, obj)
-
-        for node in extractor.nodes:
-
-            if not self.should_include(node):
-                continue
-
-            pos = 0
-            queue = []
-            trailing_context = 0
-            text = u" ".join(node.text)
-
-            # Separate the output of different nodes
-            if output:
-                text = u" " + text
-        
-            while True:
-                match = _word_expr.search(text, pos)
-                if match is None:
-                    break
-
-                word_start, word_end = match.span()
-                separator = text[pos:word_start]
-                word = match.group(0)
-                matches = word_matches_query(word)
-
-                if matches:
-                    output.extend(queue)
-                    output.append(separator + self.emphasize(word))
-                    queue = []
-                    trailing_context = self.context_radius
-                elif trailing_context:
-                    output.append(separator + word)
-                    trailing_context -= 1
-                else:
-                    if len(queue) == self.context_radius:
-                        queue.pop(0)
-                    queue.append(separator + word)
-
-                pos = word_end
-
-        return u"".join(output)
-
-    def should_include(self, node):
-        return True
 
