@@ -3,6 +3,7 @@ u"""
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
+import collections
 import re
 from difflib import SequenceMatcher
 from ZODB.broken import Broken
