@@ -141,6 +141,8 @@ class GoogleCSEXMLParser(ContentHandler):
 class PageMapGoogleCSEXMLParser(GoogleCSEXMLParser):
 
     current_data_object = None
+    attrs_copy = None
+    READING_ATTRIBUTE = "Attribute"
 
     def startElement(self, name, attrs):
         GoogleCSEXMLParser.startElement(self, name, attrs)
@@ -151,15 +153,26 @@ class PageMapGoogleCSEXMLParser(GoogleCSEXMLParser):
             self.status = name
             self.current_data_object = object_name = attrs["type"]
             self.current_result.page_map[object_name] = {}
-        elif self.current_data_object and name == "Attribute":
-            self.status = name
-            self.current_result.page_map[self.current_data_object][attrs.get("name")] = \
-                attrs.get("value")
+        elif self.current_data_object and name == self.READING_ATTRIBUTE :
+            self.status = self.READING_ATTRIBUTE
+            self.attrs_copy = attrs.copy()
+            self.current_result.context = ""
 
     def endElement(self, name):
         GoogleCSEXMLParser.endElement(self, name)
-        if name == "DataObject":
+        if self.current_data_object and name == self.READING_ATTRIBUTE:
+            self.current_result.page_map[self.current_data_object][self.attrs_copy.get("name")]\
+            = self.current_result.context
+            self.attrs_copy = None
+            self.current_result.context = ""
+        elif name == "DataObject":
             self.current_data_object = None
+
+    def characters(self, content):
+        GoogleCSEXMLParser.characters(self, content)
+        if self.status == self.READING_ATTRIBUTE:
+            self.current_result.context += content
+            self.current_result.context = self.current_result.context.replace('<br>','')
 
 
 class GoogleSearchResultsList(ListWrapper):
