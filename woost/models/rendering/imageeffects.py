@@ -3,7 +3,11 @@ u"""
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
-from collections import Counter
+try:
+    from collections import Counter
+except ImportError:
+    from backport_collections import Counter
+
 from PIL import Image, ImageEnhance, ImageFilter, ImageOps, ImageChops
 from cocktail.events import event_handler
 from cocktail import schema
