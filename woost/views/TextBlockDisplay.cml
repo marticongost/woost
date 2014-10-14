@@ -17,7 +17,8 @@
             py:id="image_gallery"
             py:images="@{self.block.images}"
             py:thumbnail_factory="edit_blocks_thumbnail.png"
-            py:labels_visible="${False}"/>
+            py:labels_visible="${False}"
+            py:footnotes_visible="${False}"/>
     </py:with>
 
     <div py:def="translation_preview" py:args="language">
