@@ -102,7 +102,7 @@ cocktail.bind({
             this.loadImage(
                 jQuery(entry).find(".image_link").get(0).href,
                 function (image) {
-                    $dialog.find(".dialog_content .image")
+                    $dialog.find(".dialog_content > .image")
                         .width(image.width)
                         .height(image.height);
                     
@@ -158,7 +158,7 @@ cocktail.bind({
                 $entry.find(".image_link").focus();
             });
 
-            $dialog.find(".dialog_content .image").attr("src", imageURL);
+            $dialog.find(".dialog_content > .image").attr("src", imageURL);
             
             if (imageTitle) {
                 $dialog.find(".dialog_heading").html(imageTitle);
