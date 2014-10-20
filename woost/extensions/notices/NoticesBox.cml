@@ -20,11 +20,9 @@ from woost.models import get_current_website
     <button
         py:id="close_notice_button"
         py:client_model="woost.extensions.notices.NoticesBox.closeNoticeButton"
-        type="button">
-        <img
-            py:id="close_notice_icon"
-            src="/resources/images/close.png"
-            alt="${translations('woost.extensions.notices.NoticesBox.close_notice_button')}"/>
+        type="button"
+        title="${translations('woost.extensions.notices.NoticesBox.close_notice_button')}">
+        ✖
     </button>
 
 </py:woost.views.BlockList>
