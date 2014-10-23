@@ -486,7 +486,17 @@ class Item(PersistentObject):
         encode = True,
         include_extension = True,
         host = None,):
-                
+
+        representative_image = self.get_representative_image(image_factory)
+        if representative_image is not None:
+            return representative_image.get_image_uri(
+                image_factory = image_factory,
+                parameters = parameters,
+                encode = encode,
+                include_extension = include_extension,
+                host = host
+            )
+
         uri = make_uri("/images", self.id)
         ext = None
 
@@ -531,6 +541,12 @@ class Item(PersistentObject):
             uri = make_uri(uri, **parameters)
 
         return self._fix_uri(uri, host, encode)
+
+    def get_representative_image(self, image_factory = None):
+        try:
+            return self.image
+        except AttributeError:
+            pass
 
     def _fix_uri(self, uri, host, encode):
 
