@@ -37,7 +37,8 @@ class EmailTemplate(Item):
         "subject",
         "body",
         "language_expression",
-        "initialization_code"
+        "initialization_code",
+        "condition"
     ]
 
     title = schema.String(
@@ -102,12 +103,26 @@ class EmailTemplate(Item):
     language_expression = schema.CodeBlock(
         language = "python"
     )
-    
+ 
+    condition = schema.CodeBlock(
+        language = "python"
+    )
+
     def send(self, context = None):
 
         if context is None:
             context = {}
-        
+
+        condition = self.condition
+        if condition:
+            condition_context = context.copy()
+            condition_context["should_send"] = True
+            label = "%s #%s" % (self.__class__.__name__, self.id)
+            code = compile(condition, label, "exec")
+            exec code in condition_context
+            if not condition_context["should_send"]:
+                return False
+
         if context.get("attachments") is None:
             context["attachments"] = {}
 
