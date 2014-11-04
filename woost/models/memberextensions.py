@@ -16,6 +16,11 @@ schema.Schema.show_element_in_listings = True
 # Add an extension property to show/hide the 'Type' column on listings
 schema.Schema.show_type_in_listings = True
 
+# Add an extension property to indicate that selecting a model on the
+# backoffice main menu should skip its listing and jump to editing its
+# singleton instance instead.
+schema.Schema.skip_listing = False
+
 # Add an extension property to indicate if members should be visible by users
 schema.Member.visible = True
 
