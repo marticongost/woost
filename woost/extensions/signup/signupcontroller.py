@@ -61,13 +61,13 @@ class SignUpController(FormProcessor, Controller):
                 # Add validation to compare password_confirmation and
                 # password fields
                 @password_confirmation_member.add_validation
-                def validate_password_confirmation(member, value, ctx):
-                    password = ctx.get_value("password")
-                    password_confirmation = value
+                def validate_password_confirmation(context):
+                    password = context.get_value("password")
+                    password_confirmation = context.value
 
                     if password and password_confirmation \
                     and password != password_confirmation:
-                        yield PasswordConfirmationError(member, value, ctx)
+                        yield PasswordConfirmationError(context)
 
             return adapted_schema
 

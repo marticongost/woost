@@ -40,20 +40,22 @@ class ReCaptcha(Schema):
             "response", 
             read_request_value = read_response
         ))
-        self.add_validation(ReCaptcha.captcha_validation_rule)
 
         self.edit_control = "woost.extensions.recaptcha.ReCaptchaBox"
 
-    def captcha_validation_rule(self, validable, context):
+    def _default_validation(context):
         """Validation rule for reCaptcha. Applies the validation rules defined 
         by all members in the schema, propagating their errors. Checks that the 
         L{response} member is valid for the L{challenge} and the L{public_key} 
         constraint.
         """
 
-        accessor = self.accessor \
-            or context.get("accessor", None) \
+        validable = context.get_object()
+        accessor = (
+            self.accessor
+            or context.get("accessor", None)
             or get_accessor(validable)
+        )
 
         challenge = accessor.get(validable, "challenge", default = None)
         response = accessor.get(validable, "response", default = None)
@@ -92,10 +94,10 @@ class ReCaptcha(Schema):
             return_code = return_values[0]
 
             if (return_code != "true"):
-                yield ReCaptchaValidationError(self, response, context)
+                yield ReCaptchaValidationError(context)
 
         else:
-            yield ReCaptchaValidationError(self, response, context)
+            yield ReCaptchaValidationError(context)
 
     def _create_default_instance(self):
         return None
