@@ -7,7 +7,6 @@ import cherrypy
 from cocktail import schema
 from cocktail.modeling import cached_getter
 from cocktail.events import Event, event_handler
-from cocktail.schema.exceptions import ValidationError
 from cocktail.controllers.parameters import get_parameter
 from cocktail.controllers.formcontrollermixin import FormControllerMixin
 from woost.models import (
