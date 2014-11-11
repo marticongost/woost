@@ -91,14 +91,6 @@ class Item(PersistentObject):
     preview_controller = "woost.controllers.backoffice." \
         "previewcontroller.PreviewController"
 
-    def __init__(self, *args, **kwargs):
-        PersistentObject.__init__(self, *args, **kwargs)                
-
-        # Assign a global ID for the object (unless one was passed in as a
-        # keyword parameter)
-        if self.global_id is None and self.id:
-            self._generate_global_id()
-            
     @event_handler
     def handle_inherited(cls, e):
         if (
@@ -358,6 +350,9 @@ class Item(PersistentObject):
 
         item = event.source
         now = None
+
+        if event.member is cls.id and not item.global_id:
+            item._generate_global_id()
 
         update_timestamp = (
             item.is_inserted
