@@ -332,15 +332,25 @@ def get_manifest():
 
     return manifest
 
-def rebuild_manifest(eager = True):
+def rebuild_manifest(eager = True, verbose = False):
+
     datastore.root[MANIFEST_KEY] = manifest = OOBTree()
     
     if eager:
         sync = Synchronization()
 
-    for obj in Item.select(Item.synchronizable.equal(True)):
+    items = Item.select(Item.synchronizable.equal(True))
+
+    if verbose:
+        i = 1
+        total = len(items)
+
+    for obj in items:
         global_id = obj.global_id
         if global_id:
+            if verbose:
+                print str(i).rjust(8), "/", total, "-", obj
+                i += 1
             if eager:
                 object_hash = sync.get_object_state_hash(obj)
                 manifest[global_id] = object_hash
