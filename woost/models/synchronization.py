@@ -20,7 +20,7 @@ from cocktail.modeling import (
 )
 from cocktail.pkgutils import get_full_name, resolve
 from cocktail import schema
-from cocktail.persistence import datastore
+from cocktail.persistence import datastore, InstanceNotFoundError
 from woost.models.item import Item
 
 RegExp = type(re.compile(""))
@@ -49,12 +49,20 @@ class Synchronization(object):
         )
 
     def process_manifest(self):
+
         manifest = get_manifest()
+
         for global_id, object_hash in manifest.iteritems():
             if object_hash is None:
-                obj = Item.require_instance(global_id = global_id)
-                object_hash = self.get_object_state_hash(obj)
-                manifest[global_id] = object_hash
+                try:
+                    obj = Item.require_instance(global_id = global_id)
+                except InstanceNotFoundError:
+                    del manifest[global_id]
+                    continue
+                else:
+                    object_hash = self.get_object_state_hash(obj)
+                    manifest[global_id] = object_hash
+
             yield global_id, object_hash
 
     def get_object_state_hash(self, obj):
