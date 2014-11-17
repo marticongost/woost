@@ -207,6 +207,7 @@ class Synchronization(object):
         )
  
         request = urllib2.Request(url)
+        request.add_header("User-Agent", "woost.synchronization")
 
         # Add authentication headers
         if self.remote_user:
