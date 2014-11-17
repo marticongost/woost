@@ -117,7 +117,7 @@ class EmailTemplate(Item):
         if condition:
             condition_context = context.copy()
             condition_context["should_send"] = True
-            label = "%s #%s" % (self.__class__.__name__, self.id)
+            label = "%s #%s.condition" % (self.__class__.__name__, self.id)
             code = compile(condition, label, "exec")
             exec code in condition_context
             if not condition_context["should_send"]:
@@ -147,6 +147,11 @@ class EmailTemplate(Item):
             # Custom initialization code
             init_code = self.initialization_code
             if init_code:
+                label = "%s #%s.initialization_code" % (
+                    self.__class__.__name__,
+                    self.id
+                )
+                init_code = compile(init_code, label, "exec")
                 exec init_code in context
 
             # Subject and body (templates)
