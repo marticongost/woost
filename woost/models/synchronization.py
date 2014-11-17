@@ -99,10 +99,10 @@ class Synchronization(object):
             "__class__": obj.__class__.full_name
         }
 
-        for key, member in obj.__class__.members().iteritems():
+        for member in obj.__class__.iter_members():
             if member.synchronizable:
                 value = self.export_member(obj, member)
-                state[key] = value
+                state[member.name] = value
 
         return state
 
