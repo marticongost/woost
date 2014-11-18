@@ -214,6 +214,7 @@ class Publishable(Item):
             "cocktail.html.RadioSelector",
             empty_option_displayed = True
         ),
+        listed_by_default = False,
         member_group = "publication"
     )
 
