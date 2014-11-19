@@ -140,6 +140,7 @@ class Publishable(Item):
         type = "woost.models.Document",
         bidirectional = True,
         related_key = "children",
+        indexed = True,
         listed_by_default = False,
         member_group = "navigation"
     )
@@ -214,6 +215,7 @@ class Publishable(Item):
             "cocktail.html.RadioSelector",
             empty_option_displayed = True
         ),
+        listed_by_default = False,
         member_group = "publication"
     )
 

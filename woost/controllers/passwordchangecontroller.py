@@ -46,14 +46,14 @@ class PasswordChangeController(FormProcessor, DocumentController):
             user_id_member.name = "user"
             
             @user_id_member.add_validation
-            def validate_user_identifier_exists(member, value, context):
-                if value and self.user is None:
-                    yield UserIdentifierNotRegisteredError(member, value, context)
+            def validate_user_identifier_exists(context):
+                if context.value and self.user is None:
+                    yield UserIdentifierNotRegisteredError(context)
 
             @user_id_member.add_validation
-            def validate_user_has_email(member, value, context):
+            def validate_user_has_email(context):
                 if self.user is not None and not self.user.email:
-                    yield UserEmailMissingError(member, value, context)
+                    yield UserEmailMissingError(context)
 
             return schema.Schema("PasswordChangeRequestForm", members = [
                 user_id_member

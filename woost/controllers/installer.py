@@ -139,20 +139,23 @@ class Installer(object):
 
         def make_address_validation(host_field, port_field, check_field):
 
-            def validate_address(schema, validable, context):
+            def validate_address(context):
 
-                if validable[check_field]:
-                    host = validable[host_field]
-                    port = validable[port_field]
-                    host_member = schema[host_field]
-                    port_member = schema[port_field]
+                if context.value[check_field]:
+                    host = context.value[host_field]
+                    port = context.value[port_field]
+                    host_member = context.member[host_field]
+                    port_member = context.member[port_field]
 
-                    if host_member.validate(host) \
-                    and port_member.validate(port) \
-                    and not self._is_valid_local_address(host, port):
+                    if (
+                        host_member.validate(host)
+                        and port_member.validate(port)
+                        and not self._is_valid_local_address(host, port)
+                    ):
                         yield WrongAddressError(
-                            schema, validable, context,
-                            host_member, port_member
+                            context,
+                            host_member,
+                            port_member
                         )
 
             return validate_address
@@ -338,12 +341,8 @@ class InstallFolderExists(Exception):
 
 class WrongAddressError(schema.exceptions.ValidationError):
  
-    def __init__(self, member, value, context, host_member, port_member):
-        
-        schema.exceptions.ValidationError.__init__(
-            self, member, value, context
-        )
-
+    def __init__(self, context, host_member, port_member):        
+        schema.exceptions.ValidationError.__init__(self, context)
         self.host_member = host_member
         self.port_member = port_member
 

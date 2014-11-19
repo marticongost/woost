@@ -515,7 +515,8 @@ class EditNode(StackNode):
         "_parent_node",
         "_index",
         "_item",
-        "_form_data",
+        "item_id",
+        "form_data",
         "item_translations",
         "visible_translations",
         "section",
@@ -582,6 +583,10 @@ class EditNode(StackNode):
         else:
             self.item_translations = None
             self.visible_translations = None
+
+        self.item_id = item.require_id()
+        self.form_data = {}
+        self.export_form_data(item, self.form_data)
 
     def __translate__(self, language, **kwargs):
         if self.item.is_inserted:
@@ -814,18 +819,6 @@ class EditNode(StackNode):
         form_schema = self.form_adapter.export_schema(self.content_type)
         form_schema.name = "BackOfficeEditForm"
         return form_schema
-
-    @cached_getter
-    def form_data(self):
-        """The data entered into the edit form."""
- 
-        form_data = {}
-
-        # First load: fill the form with data from the edited item
-        if self is self.stack[-1]:
-            self.export_form_data(self.item, form_data)
-
-        return form_data
 
     def iter_errors(self):
         """Iterates over the sequence of validation errors produced by the
