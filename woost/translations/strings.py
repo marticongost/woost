@@ -7769,6 +7769,39 @@ translations.define(
     en = u"Date, location and title"
 )
 
+translations.define(
+    "EventListing.view_class=woost.views.EventsCalendar",
+    ca = u"Calendari mensual",
+    es = u"Calendario mensual",
+    en = u"Monthly calendar"
+)
+
+# EventsCalendar
+#------------------------------------------------------------------------------
+translations.define("woost.views.EventsCalendar.previous_month_link",
+    ca = u"Mes anterior",
+    es = u"Mes anterior",
+    en = u"Previous month"
+)
+
+translations.define("woost.views.EventsCalendar.next_month_link",
+    ca = u"Mes següent",
+    es = u"Mes siguiente",
+    en = u"Next month"
+)
+
+translations.define("woost.views.EventsCalendar.previous_year_link",
+    ca = u"Any anterior",
+    es = u"Año anterior",
+    en = u"Previous year"
+)
+
+translations.define("woost.views.EventsCalendar.next_year_link",
+    ca = u"Any següent",
+    es = u"Año siguiente",
+    en = u"Next year"
+)
+
 # FacebookLikeButton
 #------------------------------------------------------------------------------
 translations.define("FacebookLikeButton",
