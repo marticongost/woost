@@ -46,9 +46,9 @@ def requires_agreement(form, name = "terms", document = default_document):
     form.adapter.exclude(name)
     return member
 
-def _validate_consent(member, value, ctx):
-    if not value:
-        yield ConsentNotGivenError(member, value, ctx)
+def _validate_consent(context):
+    if not context.value:
+        yield ConsentNotGivenError(context)
 
 
 class ConsentNotGivenError(ValidationError):

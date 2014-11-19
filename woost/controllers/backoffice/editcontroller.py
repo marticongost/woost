@@ -137,6 +137,9 @@ class EditController(BaseBackOfficeController):
             is_new = not item.is_inserted
             changeset = None
 
+            if not item.id:
+                item.id = stack_node.item_id
+
             with restricted_modification_context(
                 item, 
                 user, 
