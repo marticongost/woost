@@ -72,7 +72,7 @@ class FileEditNode(EditNode):
     @property
     def temp_file_path(self):
         return app.path("upload", "temp", "%s-%s-%s" % (
-            self.item.id,
+            self.item_id,
             session.id,
             self.stack.to_param()
         ))
