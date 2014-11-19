@@ -72,7 +72,8 @@ class EventListing(Block):
         shadows_attribute = True,
         enumeration = [
             "woost.views.CompactEventListing",
-            "woost.views.DateLocationTitleEventListing"
+            "woost.views.DateLocationTitleEventListing",
+            "woost.views.EventsCalendar"
         ],
         default = "woost.views.DateLocationTitleEventListing",
         member_group = "listing"
@@ -84,6 +85,8 @@ class EventListing(Block):
         view.name_prefix = self.name_prefix
         view.name_suffix = self.name_suffix
         view.depends_on(Event)
+        view.calendar_page = self.calendar_page
+        view.calendar_page_member = self.calendar_page_member
 
         if self.paginated:
             view.pagination = self.pagination
@@ -92,6 +95,15 @@ class EventListing(Block):
 
     def select_events(self):
         events = Event.select_accessible()
+
+        if self.calendar_page:
+            one_week = timedelta(days = 7)
+            events.add_filter(
+                Event.event_start.between(
+                    self.calendar_page.start_time() - one_week,
+                    (self.calendar_page + 1).start_time() + one_week
+                )
+            )
 
         if not self.include_expired:
 
@@ -139,4 +151,16 @@ class EventListing(Block):
             "page_size.max": self.max_page_size,
             "items": self.select_events()
         })
+
+    @request_property
+    def calendar_page_member(self):
+        return schema.CalendarPage("calendar_page",
+            default = schema.DynamicDefault(
+                lambda: schema.CalendarPage.type.current()
+            )
+        )
+
+    @request_property
+    def calendar_page(self):
+        return get_parameter(self.calendar_page_member)
 
