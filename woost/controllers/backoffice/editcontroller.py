@@ -50,16 +50,6 @@ class EditController(BaseBackOfficeController):
             return []
 
     @request_property
-    def available_languages(self):
-        user = get_current_user()
-        return [language
-                for language in Configuration.instance.languages
-                if user.has_permission(
-                    ReadTranslationPermission,
-                    language = language
-                )]
-
-    @request_property
     def action(self):
         return self._get_user_action("item_action")
 
