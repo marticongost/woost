@@ -84,7 +84,7 @@ class File(Publishable):
 
     @property
     def file_path(self):
-        return app.path("upload", str(self.id))
+        return app.path("upload", str(self.require_id()))
 
     @classmethod
     def from_path(cls,
@@ -161,7 +161,7 @@ class File(Publishable):
         if dest is None:
             upload_path = file.file_path
         else:
-            upload_path = os.path.join(dest, str(file.id))
+            upload_path = os.path.join(dest, str(file.require_id()))
 
         copy(path, upload_path)
 
