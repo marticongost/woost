@@ -4357,17 +4357,17 @@ translations.define("AccessLevel.restricted_content",
 )
 
 translations.define("woost.models.accesslevel.AccessLevel-instance",
-    ca = lambda instance:
+    ca = lambda instance, **kwargs:
         u"Només per a " + join([
             decapitalize(translations(role))
             for role in instance.roles_with_access
         ]),
-    es = lambda instance:
+    es = lambda instance, **kwargs:
         u"Solo para " + join([
             decapitalize(translations(role))
             for role in instance.roles_with_access
         ]),
-    en = lambda instance:
+    en = lambda instance, **kwargs:
         u"Only for " + join([
             decapitalize(translations(role))
             for role in instance.roles_with_access
