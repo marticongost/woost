@@ -1,0 +1,19 @@
+
+.NewsletterView {
+    margin: 0 auto;    
+}
+
+.NewsletterView td {
+    vertical-align: top;
+}
+
+.NewsletterView td > *:first-child,
+.NewsletterContentView .content_text > *:first-child {
+    margin-top: 0;
+}
+
+.NewsletterView td > *:last-child,
+.NewsletterContentView .content_text > *:last-child {
+    margin-bottom: 0;
+}
+

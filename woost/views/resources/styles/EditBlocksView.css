@@ -294,7 +294,8 @@
 /* TextBlockDisplay
 -----------------------------------------------------------------------------*/ 
 .EditBlocksView .VideoBlockDisplay .content_preview,
-.EditBlocksView .TextBlockDisplay .content_preview {
+.EditBlocksView .TextBlockDisplay .content_preview,
+.EditBlocksView .NewsletterContentDisplay .content_preview {
     display: table-row;
     border-spacing: 0.5em;
 }
@@ -303,7 +304,8 @@
     margin: -0.3em;
 }
 
-.EditBlocksView .TextBlockDisplay .translation_preview {
+.EditBlocksView .TextBlockDisplay .translation_preview,
+.EditBlocksView .NewsletterContentDisplay .translation_preview {
     display: table-cell;
     vertical-align: top;
     padding: 0.3em;
@@ -312,28 +314,29 @@
     background-color: #e8e8e8;
 }
 
-.EditBlocksView .TextBlockDisplay .translation_content {
+.EditBlocksView .TextBlockDisplay .translation_content,
+.EditBlocksView .NewsletterContentDisplay .translation_content {
     max-height: 12em;
     min-width: 15em;
     overflow: auto;
+    font-size: 0.8em;
 }
 
-.EditBlocksView .TextBlockDisplay .translation_label {
+.EditBlocksView .TextBlockDisplay .translation_label,
+.EditBlocksView .NewsletterContentDisplay .translation_label {
     font-size: 0.7em;
     font-weight: bold;
     color: #444;
     margin-bottom: 0.4em;
 }
 
-.EditBlocksView .TextBlockDisplay .translation_content {
-    font-size: 0.8em;
-}
-
-.EditBlocksView .TextBlockDisplay .translation_content p:first-child {
+.EditBlocksView .TextBlockDisplay .translation_content p:first-child,
+.EditBlocksView .NewsletterContentDisplay .translation_content p:first-child {
     margin-top: 0;
 }
 
-.EditBlocksView .TextBlockDisplay .translation_content p:last-child {
+.EditBlocksView .TextBlockDisplay .translation_content p:last-child,
+.EditBlocksView .NewsletterContentDisplay .translation_content p:last-child {
     margin-bottom: 0;
 }
 

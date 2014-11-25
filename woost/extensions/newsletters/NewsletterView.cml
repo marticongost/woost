@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?py
+from cocktail.html import EmbeddedResources
+from woost.models import Publishable
+?>
+
+<py:woost.views.BaseView
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:py="http://www.whads.com/ns/cocktail/templates"
+    py:tag="table"
+    border="0" 
+    cellpadding="0" 
+    cellspacing="0"
+    width="@{self.width}">
+
+    <?py-class
+    base_spacing = 10
+    width = 640
+
+    def create_html_document(self, *args, **kwargs):
+        document = BaseView.create_html_document(self, *args, **kwargs)
+        document.resource_sets = [
+            (EmbeddedResources, {
+                'mime_type': 'text/css',
+                'download_remote_resources': True
+            })
+        ]
+        return document
+    ?>
+
+    <?py
+    self.add_resource("/resources/styles/newsletters.css")
+    ?>
+
+    <tr py:def="content">
+        <td>
+            <py:woost.extensions.newsletters.NewsletterBlockList
+                py:id="block_content"
+                py:blocks="@{self.publishable.blocks}"
+                py:base_spacing="@{self.base_spacing}"
+                py:spacing="@{self.base_spacing * self.publishable.root_spacing_factor}"
+                py:width="@{self.width}"/>
+        </td>
+    </tr>
+
+</py:woost.views.BaseView>
