@@ -53,11 +53,14 @@ class BlockList(Element):
                 self.depends_on(block)
                 if block.is_published():
                     has_visible_blocks = True
-                    block_view = block.create_view()
+                    block_view = self.create_block_view(block)
                     self._insert_block_view(block_view)
 
         if self.hide_if_empty and not has_visible_blocks:
             self.visible = False
+
+    def create_block_view(self, block):
+        return block.create_view()
 
     def _insert_block_view(self, block_view):
         if self.__wrap:
