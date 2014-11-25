@@ -153,12 +153,17 @@ class Block(Item):
     def get_block_image(self):
         return self
 
-    def create_view(self):
+    def get_view_class(self, **kwargs):
+        return self.view_class
 
-        if self.view_class is None:
+    def create_view(self, **kwargs):
+
+        view_class = self.get_view_class(**kwargs)
+
+        if view_class is None:
             raise ValueError("No view specified for block %s" % self)
-        
-        view = templates.new(self.view_class)
+
+        view = templates.new(view_class)
         self.init_view(view)
 
         if self.controller:
