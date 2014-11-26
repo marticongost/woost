@@ -275,17 +275,24 @@ translations.define(
 # NewsletterContentImageSize
 #------------------------------------------------------------------------------ 
 translations.define(
+    "woost.extensions.newsletters.NewsletterContentImageSize=original",
+    ca = u"Mida original",
+    es = u"Tamaño original",
+    en = u"Original size"
+)
+
+translations.define(
     "woost.extensions.newsletters.NewsletterContentImageSize=one_third",
-    ca = u"Un terç",
-    es = u"Un tercio",
-    en = u"One third"
+    ca = u"Un terç del contenidor",
+    es = u"Un tercio del contenidor",
+    en = u"One third of the container"
 )
 
 translations.define(
     "woost.extensions.newsletters.NewsletterContentImageSize=one_half",
-    ca = u"La meitat",
-    es = u"La mitad",
-    en = u"One half"
+    ca = u"La meitat del contenidor",
+    es = u"La mitad del contenidor",
+    en = u"Half of the container"
 )
 
 # NewsletterContentAppearence
