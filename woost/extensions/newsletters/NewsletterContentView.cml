@@ -26,7 +26,12 @@ from decimal import Decimal
         self._heading = heading
 
     def get_image_column_width(self):
+
         image_size = self.content_image_size or "one_third"
+
+        if image_size == "original":
+            return None
+
         image_width_factor = self.image_width_factors[image_size]
         width = self.width - self.image_spacing
 
@@ -52,7 +57,9 @@ from decimal import Decimal
             layout = "image_only"
 
         if self.image:
-            if self.is_single_column and layout in ("image_top", "image_only"):
+            if self.content_image_size == "original":
+                self.image_factory = None
+            elif self.is_single_column and layout in ("image_top", "image_only"):
                 self.image_factory = "newsletter_single_column"
             else:
                 self.image_factory = "newsletter_multi_column"

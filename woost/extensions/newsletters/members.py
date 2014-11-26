@@ -43,7 +43,7 @@ class NewsletterContentLayout(schema.String):
 
 class NewsletterContentImageSize(schema.String):
 
-    sizes = ["one_third", "one_half"]
+    sizes = ["original", "one_third", "one_half"]
 
     def __init__(self, *args, **kwargs):
 
