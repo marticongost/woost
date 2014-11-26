@@ -24,8 +24,21 @@ from decimal import Decimal
 
     def insert_heading(self, heading):
         self._heading = heading
+
+    def get_image_column_width(self):
+        image_size = self.content_image_size or "one_third"
+        image_width_factor = self.image_width_factors[image_size]
+        width = self.width - self.image_spacing
+
+        if self["cellspacing"]:
+            width -= int(self["cellspacing"]) * 2
+
+        if self["cellpadding"]:
+            width -= int(self["cellpadding"]) * 2
+
+        return width * image_width_factor
     ?>
-    
+
     <py:ready>
         <?py
         layout = None
@@ -98,18 +111,16 @@ from decimal import Decimal
         border="0">
         <tr>
             <?py
-            image_size = self.content_image_size or "one_third"
-            image_width_factor = self.image_width_factors[image_size]
-            image_width = self.width * image_width_factor - self.image_spacing
+            image_column_width = self.get_image_column_width()
             ?>
             <td py:local_id="text_cell">
                 <py:new py:element="self.create_content_text()"/>
             </td>
             <td py:local_id="padding" width="${self.image_spacing}"/>
-            <td py:local_id="image_cell" width="${image_width}">
+            <td py:local_id="image_cell" width="${image_column_width}">
                 <py:new py:element="self.create_content_image()">
                     <?py
-                    element.image["width"] = image_width
+                    element.image["width"] = image_column_width
                     ?>
                 </py:new>
             </td>
@@ -123,14 +134,12 @@ from decimal import Decimal
         border="0">
         <tr>
             <?py
-            image_size = self.content_image_size or "one_third"
-            image_width_factor = self.image_width_factors[image_size]
-            image_width = self.width * image_width_factor - self.image_spacing
+            image_column_width = self.get_image_column_width()
             ?>
-            <td py:local_id="image_cell" width="${image_width}">
+            <td py:local_id="image_cell" width="${image_column_width}">
                 <py:new py:element="self.create_content_image()">
                     <?py
-                    element.image["width"] = image_width
+                    element.image["width"] = image_column_width
                     ?>
                 </py:new>
             </td>            
