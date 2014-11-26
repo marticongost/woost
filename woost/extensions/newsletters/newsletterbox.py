@@ -25,6 +25,7 @@ class NewsletterBox(Block):
         "content_layout",
         "content_image_size",
         "content_appearence",
+        "spacing_factor",
         "blocks"
     ]
 
