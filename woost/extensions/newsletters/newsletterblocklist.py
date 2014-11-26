@@ -48,10 +48,15 @@ class NewsletterBlockList(Element):
 
         if self.blocks:
             if self.width:
-                column_width = (
-                    (self.width - self.spacing * (self.column_count - 1))
-                    / self.column_count
-                )
+                width = self.width - self.spacing * (self.column_count - 1)
+
+                if self["cellspacing"]:
+                    width -= int(self["cellspacing"]) * 2
+
+                if self["cellpadding"]:
+                    width -= int(self["cellpadding"]) * 2
+
+                column_width = width / self.column_count
 
             column_index = 0
             row_index = 0
