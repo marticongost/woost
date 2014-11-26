@@ -43,6 +43,9 @@ class NewsletterBlockList(Element):
         self._fill_blocks()
 
     def _fill_blocks(self):
+
+        self.is_single_column = (self.column_count == 1)
+
         if self.blocks:
             if self.width:
                 column_width = (
@@ -107,4 +110,4 @@ class NewsletterBlockList(Element):
             parent_view = self,
             child_view = block_view
         )
-        
+
