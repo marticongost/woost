@@ -3,6 +3,10 @@
     margin: 0 auto;    
 }
 
+.NewsletterView img {
+    display: block;
+}
+
 .NewsletterView td {
     vertical-align: top;
 }
