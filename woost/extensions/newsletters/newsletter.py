@@ -57,7 +57,8 @@ class Newsletter(Document):
 
     root_spacing_factor = Spacing(
         required = True,
-        member_group = "content"
+        member_group = "content",
+        listed_by_default = False
     )
 
     blocks = Slot()
