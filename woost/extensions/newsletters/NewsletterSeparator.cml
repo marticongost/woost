@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<tr
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:py="http://www.whads.com/ns/cocktail/templates"
+    width="@{self.width}">
+
+    <?py-class
+    parent_column_count = 1
+    ?>
+
+    <td
+        py:id="newsletter_separator_cell"
+        colspan="@{self.parent_column_count}"
+        width="@{self.width}"
+        height="@{self.spacing_factor * self.base_spacing}"/>
+</tr>
+

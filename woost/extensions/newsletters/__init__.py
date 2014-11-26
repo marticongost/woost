@@ -64,7 +64,8 @@ class NewslettersExtension(Extension):
             configuration,
             newsletter,
             newsletterbox,
-            newslettercontent
+            newslettercontent,
+            newsletterseparator
         )
 
         self.install()

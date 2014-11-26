@@ -19,6 +19,8 @@ from woost.extensions.blocks.block import Block
 from woost.extensions.blocks.slot import Slot
 from woost.extensions.newsletters.newsletterbox import NewsletterBox
 from woost.extensions.newsletters.newslettercontent import NewsletterContent
+from woost.extensions.newsletters.newsletterseparator \
+    import NewsletterSeparator
 from woost.extensions.newsletters.mailingplatform import MailingPlatform
 from woost.extensions.newsletters.members import Spacing
 
@@ -66,6 +68,7 @@ class Newsletter(Document):
     allowed_block_types = (
         NewsletterBox,
         NewsletterContent,
+        NewsletterSeparator,
         CustomBlock,
         HTMLBlock
     )

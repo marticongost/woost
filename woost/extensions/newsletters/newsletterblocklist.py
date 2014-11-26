@@ -61,6 +61,7 @@ class NewsletterBlockList(Element):
             column_index = 0
             row_index = 0
             row = None
+            suppress_spacing = False
 
             for block_view in create_block_views(self.blocks):
 
@@ -71,8 +72,18 @@ class NewsletterBlockList(Element):
                 if not block_view.visible:
                     continue
 
+                # Separators
+                if block_view.tag in ("tr", "thead", "tbody", "tfoot"):
+                    self.blocks_container.append(block_view)
+                    row = None
+                    column_index = 0
+                    supress_spacing = True
+                    continue
+
                 if row is None:
-                    if row_index:
+                    if suppress_spacing:
+                        suppress_spacing = False
+                    elif row_index:
                         self.blocks_container.append(self._create_vspace())
 
                     row = Element("tr")
@@ -111,6 +122,7 @@ class NewsletterBlockList(Element):
         return block.create_view(inherited_appearence = self.content_appearence)
 
     def _init_block_view(self, block_view):
+        block_view.parent_column_count = self.column_count
         NewslettersExtension.inheriting_view_attributes(
             parent_view = self,
             child_view = block_view

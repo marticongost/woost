@@ -298,6 +298,26 @@ translations.define(
     en = u"Standard"
 )
 
+# NewsletterSeparator
+#------------------------------------------------------------------------------
+translations.define("NewsletterSeparator",
+    ca = u"Separador",
+    es = u"Separador",
+    en = u"Separator"
+)
+
+translations.define("NewsletterSeparator-plural",
+    ca = u"Separadors",
+    es = u"Separadores",
+    en = u"Separators"
+)
+
+translations.define("NewsletterSeparator.spacing_factor",
+    ca = u"Alçada",
+    es = u"Alto",
+    en = u"Height"
+)
+
 # Image Factories
 #------------------------------------------------------------------------------
 translations.define("woost.extensions.newsletters.image_factories.newsletter_single_column.title",
