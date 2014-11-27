@@ -18,7 +18,7 @@ from decimal import Decimal
         "one_third": Decimal("0.3"),
         "one_half": Decimal("0.5")
     }
-    image_spacing = 20
+    image_spacing = None
     _heading = None
 
     def insert_heading(self, heading):
@@ -32,7 +32,8 @@ from decimal import Decimal
             return None
 
         image_width_factor = self.image_width_factors[image_size]
-        width = self.width - self.image_spacing
+        image_spacing = self.image_spacing * self.base_spacing
+        width = self.width - image_spacing
 
         if self["cellspacing"]:
             width -= int(self["cellspacing"]) * 2
@@ -62,6 +63,9 @@ from decimal import Decimal
                 self.image_factory = "newsletter_single_column"
             else:
                 self.image_factory = "newsletter_multi_column"
+
+        if self.image_spacing is None:
+            self.image_spacing = 2
 
         if layout:
             layout_factory = getattr(self, "create_" + layout + "_layout")
@@ -122,7 +126,7 @@ from decimal import Decimal
             <td py:local_id="text_cell">
                 <py:new py:element="self.create_content_text()"/>
             </td>
-            <td py:local_id="padding" width="${self.image_spacing}"/>
+            <td py:local_id="padding" width="${self.image_spacing * self.base_spacing}"/>
             <td py:local_id="image_cell" width="${image_column_width}">
                 <py:new py:element="self.create_content_image()">
                     <?py
@@ -149,7 +153,7 @@ from decimal import Decimal
                     ?>
                 </py:new>
             </td>            
-            <td py:local_id="padding" width="${self.image_spacing}"/>
+            <td py:local_id="padding" width="${self.image_spacing * self.base_spacing}"/>
             <td py:local_id="text_cell">
                 <py:new py:element="self.create_content_text()"/>
             </td>

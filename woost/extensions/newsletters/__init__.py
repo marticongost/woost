@@ -161,6 +161,7 @@ def _inherit_view_attributes(e):
         "is_single_column",
         "content_layout",
         "content_image_size",
+        "image_spacing",
         "content_appearence"
     ):
         if getattr(e.child_view, attrib, None) is None:
