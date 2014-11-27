@@ -3,7 +3,7 @@ u"""
 
 .. moduleauthor:: Javier Marrero <javier.marrero@whads.com>
 """
-
+from decimal import Decimal
 from cocktail import schema
 from cocktail.iteration import first
 from woost.models import (
@@ -59,6 +59,7 @@ class Newsletter(Document):
 
     root_spacing_factor = Spacing(
         required = True,
+        default = Decimal("1.0"),
         member_group = "content",
         listed_by_default = False
     )
