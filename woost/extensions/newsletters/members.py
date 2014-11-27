@@ -126,3 +126,33 @@ class Spacing(schema.Decimal):
         kwargs.setdefault("edit_control", "cocktail.html.DropdownSelector")
         schema.Decimal.__init__(self, *args, **kwargs)
 
+
+class LinkStyle(schema.String):
+
+    link_styles = [
+        "minimal",
+        "linked_text",
+        "explicit_link"
+    ]
+
+    def __init__(self, *args, **kwargs):
+        
+        if "enumeration" not in kwargs:
+            kwargs["enumeration"] = lambda ctx: self.link_styles
+        
+        if "edit_control" not in kwargs:
+            kwargs["edit_control"] = display_factory(
+                "cocktail.html.RadioSelector",
+                empty_option_displayed = True
+            )
+
+        schema.String.__init__(self, *args, **kwargs)
+
+    def translate_value(self, value, language = None, **kwargs):
+        return translations(
+            "woost.extensions.newsletters.LinkStyle=" + value
+                if value
+                else "woost.extensions.newsletters.inherited_value",
+            language = language,
+            **kwargs
+        )
