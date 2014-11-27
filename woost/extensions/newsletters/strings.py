@@ -175,6 +175,12 @@ translations.define("NewsletterBox.content_image_size",
     en = u"Image size"
 )
 
+translations.define("NewsletterBox.image_spacing",
+    ca = u"Separació de les imatges",
+    es = u"Separación de las imágenes",
+    en = u"Image separation"
+)
+
 translations.define("NewsletterBox.content_appearence",
     ca = u"Aparença del contingut",
     es = u"Apariencia del contenido",
@@ -241,6 +247,12 @@ translations.define("NewsletterContent.image_size",
     ca = u"Mida de la imatge",
     es = u"Tamaño de la imagen",
     en = u"Image size"
+)
+
+translations.define("NewsletterContent.image_spacing",
+    ca = u"Separació de la imatges",
+    es = u"Separación de la imagen",
+    en = u"Image separation"
 )
 
 translations.define("NewsletterContent.appearence",

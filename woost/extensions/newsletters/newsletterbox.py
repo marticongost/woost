@@ -25,6 +25,7 @@ class NewsletterBox(Block):
         "view_class",
         "content_layout",
         "content_image_size",
+        "image_spacing",
         "content_appearence",
         "spacing_factor",
         "blocks"
@@ -56,6 +57,10 @@ class NewsletterBox(Block):
         member_group = "content"
     )
 
+    image_spacing = Spacing(
+        member_group = "content"
+    )
+
     content_appearence = NewsletterContentAppearence(
         member_group = "content"
     )
@@ -74,6 +79,7 @@ class NewsletterBox(Block):
         view.blocks = self.blocks
         view.content_layout = self.content_layout
         view.content_image_size = self.content_image_size
+        view.image_spacing = self.image_spacing
         view.content_appearence = self.content_appearence
         view.spacing_factor = self.spacing_factor
         return view

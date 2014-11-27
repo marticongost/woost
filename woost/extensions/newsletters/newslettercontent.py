@@ -9,7 +9,8 @@ from woost.models import Block, Publishable, File
 from woost.extensions.newsletters.members import (
     NewsletterContentLayout,
     NewsletterContentImageSize,
-    NewsletterContentAppearence
+    NewsletterContentAppearence,
+    Spacing
 )
 
 
@@ -24,6 +25,7 @@ class NewsletterContent(Block):
         "link",
         "image",
         "image_size",
+        "image_spacing",
         "layout",
         "appearence"
     ]
@@ -55,6 +57,10 @@ class NewsletterContent(Block):
         member_group = "content"
     )
 
+    image_spacing = Spacing(
+        member_group = "content"
+    )
+
     appearence = NewsletterContentAppearence(
         member_group = "content"
     )
@@ -66,6 +72,7 @@ class NewsletterContent(Block):
         view.image = self.image
         view.content_layout = self.layout
         view.content_image_size = self.image_size
+        view.image_spacing = self.image_spacing
 
     def get_view_class(self, inherited_appearence = None, **kwargs):
         return (
