@@ -3,6 +3,7 @@ u"""
 
 .. moduleauthor:: Javier Marrero <javier.marrero@whads.com>
 """
+from decimal import Decimal
 from cocktail import schema
 from woost.models import Block, Slot
 from woost.extensions.newsletters.members import (
@@ -61,6 +62,7 @@ class NewsletterBox(Block):
 
     spacing_factor = Spacing(
         required = True,
+        default = Decimal("1.0"),
         member_group = "content"
     )
 

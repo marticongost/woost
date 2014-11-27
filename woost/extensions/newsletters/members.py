@@ -123,9 +123,6 @@ class Spacing(schema.Decimal):
         if "enumeration" not in kwargs:
             kwargs["enumeration"] = lambda ctx: self.factors
 
-        if "default" not in kwargs:
-            kwargs["default"] = Decimal("1")
-
         kwargs.setdefault("edit_control", "cocktail.html.DropdownSelector")
         schema.Decimal.__init__(self, *args, **kwargs)
 
