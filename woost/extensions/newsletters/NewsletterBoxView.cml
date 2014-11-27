@@ -18,6 +18,7 @@ from woost.extensions.newsletters import NewslettersExtension
     def insert_heading(self, heading):
         self.heading_cell.append(heading)
         self.heading_row.visible = True
+        self.heading_margin_row.visible = True
         self.blocks_cell["colspan"] = 2
     ?>
 
@@ -43,7 +44,7 @@ from woost.extensions.newsletters import NewslettersExtension
                 <tr py:id="heading_row" py:visible="${False}">
                     <td py:id="heading_cell"/>
                 </tr>
-                <tr py:id="heading_margin_row">
+                <tr py:id="heading_margin_row" py:visible="${False}">
                     <td py:id="heading_margin" height="@{self.base_spacing}"/>
                 </tr>
                 <tr py:id="blocks_row">
