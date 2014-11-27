@@ -13,6 +13,7 @@ from decimal import Decimal
     <?py-class
     text = None
     link = None
+    link_style = None
     image = None
     image_width_factors = {
         "one_third": Decimal("0.3"),
@@ -67,6 +68,9 @@ from decimal import Decimal
         if self.image_spacing is None:
             self.image_spacing = 2
 
+        if self.link_style is None:
+            self.link_style = "minimal"
+
         if layout:
             layout_factory = getattr(self, "create_" + layout + "_layout")
             self.content_wrapper.append(layout_factory())
@@ -105,9 +109,30 @@ from decimal import Decimal
                 link.append(child)
             self._heading.append(link)
             element.append(self._heading)
+
+        if self.text:
+            if self.link_style == "linked_text":
+                link = self.create_content_link()
+                link.append(self.text)
+                element.append(link)
+            else:
+                element.append(self.text)
         ?>
-        ${self.text or ""}
+        <py:new
+            py:element="self.create_explicit_link()"
+            py:local_id="explicit_link"
+            py:if="self.link and self.link_style == 'explicit_link'"/>
     </div>
+
+    <table py:def="explicit_link" border="0" cellpadding="0" cellspacing="0">
+        <tr>
+            <td>
+                <py:new py:element="self.create_content_link()">
+                    ${translations("woost.extensions.newsletters.NewsletterContentView.explicit_link")}
+                </py:new>
+            </td>
+        </tr>
+    </table>
 
     <!-- Layouts -->
     <py:new py:def="text_only_layout" py:element="self.create_content_text()"/>

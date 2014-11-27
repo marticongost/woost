@@ -181,6 +181,12 @@ translations.define("NewsletterBox.image_spacing",
     en = u"Image separation"
 )
 
+translations.define("NewsletterBox.link_style",
+    ca = u"Elements enllaçats",
+    es = u"Elementos enlazados",
+    en = u"Linked elements"
+)
+
 translations.define("NewsletterBox.content_appearence",
     ca = u"Aparença del contingut",
     es = u"Apariencia del contenido",
@@ -200,9 +206,9 @@ translations.define("NewsletterBox.blocks",
 )
 
 translations.define("woost.extensions.newsletters.inherited_value",
-    ca = u"La que indiqui la caixa",
-    es = u"La que indique la caja",
-    en = u"Inherit from its containing box"
+    ca = u"El que indiqui el contenidor",
+    es = u"Lo que indique el contenedor",
+    en = u"Inherit from the container"
 )
 
 # NewsletterContent
@@ -255,6 +261,12 @@ translations.define("NewsletterContent.image_spacing",
     en = u"Image separation"
 )
 
+translations.define("NewsletterContent.link_link_style",
+    ca = u"Elements enllaçats",
+    es = u"Elementos enlazados",
+    en = u"Linked elements"
+)
+
 translations.define("NewsletterContent.appearence",
     ca = u"Aparença",
     es = u"Apariencia",
@@ -305,6 +317,26 @@ translations.define(
     ca = u"La meitat del contenidor",
     es = u"La mitad del contenidor",
     en = u"Half of the container"
+)
+
+# LinkStyle
+#------------------------------------------------------------------------------
+translations.define("woost.extensions.newsletters.LinkStyle=minimal",
+    ca = u"Títol i imatge",
+    es = u"Título e imagen",
+    en = u"Heading and image"
+)
+
+translations.define("woost.extensions.newsletters.LinkStyle=linked_text",
+    ca = u"Títol, imatge i text",
+    es = u"Título, imagen y texto",
+    en = u"Title, image and text"
+)
+
+translations.define("woost.extensions.newsletters.LinkStyle=explicit_link",
+    ca = u"Títol, imatge i enllaç explícit",
+    es = u"Títol, imagen y enlace explícito",
+    en = u"Title, image and explicit link"
 )
 
 # NewsletterContentAppearence
@@ -363,6 +395,15 @@ translations.define("woost.extensions.newsletters.NewsletterView online_version"
     ca = u"veure la versió online",
     es = u"ver la versión online",
     en = u"see the online version"
+)
+
+# NewsletterContentView
+#------------------------------------------------------------------------------
+translations.define(
+    "woost.extensions.newsletters.NewsletterContentView.explicit_link",
+    ca = u"Més",
+    es = u"Más",
+    en = u"More"
 )
 
 # Configuration
