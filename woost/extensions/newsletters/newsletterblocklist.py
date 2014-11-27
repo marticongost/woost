@@ -18,6 +18,7 @@ class NewsletterBlockList(Element):
     base_spacing = None
     spacing = None
     column_count = 1
+    fix_children_width = True
 
     def _build(self):
         self["cellpadding"] = 0
@@ -26,7 +27,6 @@ class NewsletterBlockList(Element):
         self.blocks_container = self
 
     def _ready(self):
-        self["width"] = self.width
         Element._ready(self)
 
         if self.blocks is None:
@@ -93,7 +93,9 @@ class NewsletterBlockList(Element):
                     row.append(self._create_hspace())
 
                 cell = Element("td")
-                cell["width"] = column_width
+                cell.add_class("newsletter_block_list_cell")
+                if self.fix_children_width:
+                    cell["width"] = column_width
                 cell.append(block_view)
                 row.append(cell)
 
