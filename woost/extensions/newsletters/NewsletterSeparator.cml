@@ -6,13 +6,24 @@
     width="@{self.width}">
 
     <?py-class
+    width = None
+    base_spacing = None
+    spacing = None
+    spacing_factor = None
     parent_column_count = 1
     ?>
+
+    <py:ready>
+        <?py
+        if self.spacing is None:
+            self.spacing = self.spacing_factor * self.base_spacing
+        ?>
+    </py:ready>
 
     <td
         py:id="newsletter_separator_cell"
         colspan="@{self.parent_column_count}"
         width="@{self.width}"
-        height="@{self.spacing_factor * self.base_spacing}"/>
+        height="@{self.spacing}"/>
 </tr>
 
