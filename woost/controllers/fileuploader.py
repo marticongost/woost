@@ -227,9 +227,9 @@ class FileUploader(object):
                     files = (value,)
 
                 for file in files:
-                    temp_file = self.temp_paths[file]
+                    temp_file = self.temp_paths.get(file)
 
-                    if os.path.exists(temp_file):
+                    if temp_file and os.path.exists(temp_file):
 
                         dest = file.file_path
 
