@@ -16,7 +16,7 @@ class NewsletterBlockList(Element):
     slot = None
     width = None
     base_spacing = None
-    spacing = None
+    spacing = 0
     column_count = 1
     fix_children_width = True
 
