@@ -261,7 +261,7 @@ translations.define("NewsletterContent.image_spacing",
     en = u"Image separation"
 )
 
-translations.define("NewsletterContent.link_link_style",
+translations.define("NewsletterContent.link_style",
     ca = u"Elements enllaçats",
     es = u"Elementos enlazados",
     en = u"Linked elements"
