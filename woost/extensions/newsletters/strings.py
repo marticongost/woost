@@ -137,6 +137,18 @@ translations.define("NewsletterBox-plural",
     en = u"Boxes"
 )
 
+translations.define("NewsletterBox.content.content_blocks",
+    ca = u"Configuració dels blocs de contingut",
+    es = u"Configuración de los bloques de contenido",
+    en = u"Settings for content blocks"
+)
+
+translations.define("NewsletterBox.content.separation",
+    ca = u"Separació dels blocs",
+    es = u"Separación de los bloques",
+    en = u"Block separation"
+)
+
 translations.define("NewsletterBox.column_count",
     ca = u"Número de columnes",
     es = u"Número de columnas",

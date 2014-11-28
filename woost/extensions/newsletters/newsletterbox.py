@@ -57,41 +57,41 @@ class NewsletterBox(Block):
     )
 
     heading_position = HeadingPosition(
-        member_group = "content"
+        member_group = "content.content_blocks"
     )
 
     content_layout = NewsletterContentLayout(
-        member_group = "content"
+        member_group = "content.content_blocks"
     )
 
     content_image_size = NewsletterContentImageSize(
-        member_group = "content"
+        member_group = "content.content_blocks"
     )
 
     image_spacing = Spacing(
-        member_group = "content"
+        member_group = "content.content_blocks"
     )
 
     link_style = LinkStyle(
-        member_group = "content"
+        member_group = "content.content_blocks"
     )
 
     content_appearence = NewsletterContentAppearence(
-        member_group = "content"
+        member_group = "content.content_blocks"
     )
 
     spacing_factor = Spacing(
         required = True,
         default = Decimal("1.0"),
-        member_group = "content"
+        member_group = "content.separation"
     )
 
     vertical_border_style = BorderStyle(
-        member_group = "content"
+        member_group = "content.separation"
     )
 
     horizontal_border_style = BorderStyle(
-        member_group = "content"
+        member_group = "content.separation"
     )
 
     blocks = Slot()
