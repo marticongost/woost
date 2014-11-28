@@ -163,7 +163,8 @@ def _inherit_view_attributes(e):
         "content_image_size",
         "image_spacing",
         "link_style",
-        "content_appearence"
+        "content_appearence",
+        "heading_position"
     ):
         if getattr(e.child_view, attrib, None) is None:
             setattr(

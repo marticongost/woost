@@ -7,6 +7,7 @@ from cocktail.translations import  translations
 from cocktail import schema
 from woost.models import Block, Publishable, File
 from woost.extensions.newsletters.members import (
+    HeadingPosition,
     NewsletterContentLayout,
     NewsletterContentImageSize,
     NewsletterContentAppearence,
@@ -22,6 +23,7 @@ class NewsletterContent(Block):
     type_group = "blocks.newsletter"
 
     members_order = [
+        "heading_position",
         "text",
         "link",
         "image",
@@ -31,6 +33,11 @@ class NewsletterContent(Block):
         "layout",
         "appearence"
     ]
+
+    heading_position = HeadingPosition(
+        after_member = "heading_type",
+        member_group = "content"
+    )
 
     text = schema.HTML(
         edit_control = "woost.extensions.newsletters.NewsletterRichTextEditor",
@@ -73,6 +80,7 @@ class NewsletterContent(Block):
 
     def init_view(self, view):
         Block.init_view(self, view)
+        view.heading_position = self.heading_position
         view.text = self.text
         view.link = self.link
         view.image = self.image

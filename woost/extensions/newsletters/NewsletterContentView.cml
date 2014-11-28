@@ -20,6 +20,7 @@ from decimal import Decimal
         "one_half": Decimal("0.5")
     }
     image_spacing = None
+    heading_position = None
     _heading = None
 
     def insert_heading(self, heading):
@@ -71,16 +72,40 @@ from decimal import Decimal
         if self.link_style is None:
             self.link_style = "minimal"
 
+        if self.heading_position is None:
+            self.heading_position = "top"
+        
+        self.add_class("heading_position_" + self.heading_position)
+
+        if self._heading:
+            self.add_class("with_heading")
+            link = self.create_content_link()
+            for child in self._heading.children:
+                link.append(child)
+            self._heading.append(link)
+        else:
+            self.add_class("without_heading")
+
         if layout:
             layout_factory = getattr(self, "create_" + layout + "_layout")
-            self.content_wrapper.append(layout_factory())
+            self.content_cell.append(layout_factory())
         else:
             self.visible = False
         ?>
     </py:ready>
 
-    <tr>
-        <td py:id="content_wrapper"/>
+    <tr py:id="heading_row" py:visible="@{self._heading and self.heading_position == 'top'}">
+        <td py:id="heading_cell">
+            <py:ready>
+                <?py
+                element.append(self._heading)
+                ?>
+            </py:ready>
+        </td>
+    </tr>
+
+    <tr py:id="content_row">
+        <td py:id="content_cell"/>
     </tr>
     
     <a py:def="content_link">
@@ -103,11 +128,7 @@ from decimal import Decimal
 
     <div py:def="content_text">
         <?py
-        if self._heading:
-            link = self.create_content_link()
-            for child in self._heading.children:
-                link.append(child)
-            self._heading.append(link)
+        if self._heading and self.heading_position == "inside":
             element.append(self._heading)
 
         if self.text:

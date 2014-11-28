@@ -7,6 +7,7 @@ from decimal import Decimal
 from cocktail import schema
 from woost.models import Block, Slot
 from woost.extensions.newsletters.members import (
+    HeadingPosition,
     NewsletterContentLayout,
     NewsletterContentImageSize,
     NewsletterContentAppearence,
@@ -25,6 +26,7 @@ class NewsletterBox(Block):
     members_order = [
         "column_count",
         "view_class",
+        "heading_position",
         "content_layout",
         "content_image_size",
         "image_spacing",
@@ -51,6 +53,10 @@ class NewsletterBox(Block):
             "woost.extensions.newsletters.NewsletterBoxView"
         ],
         edit_control = "cocktail.html.RadioSelector",
+        member_group = "content"
+    )
+
+    heading_position = HeadingPosition(
         member_group = "content"
     )
 
@@ -94,6 +100,7 @@ class NewsletterBox(Block):
         Block.init_view(self, view)
         view.column_count = self.column_count
         view.blocks = self.blocks
+        view.heading_position = self.heading_position
         view.content_layout = self.content_layout
         view.content_image_size = self.content_image_size
         view.image_spacing = self.image_spacing
