@@ -149,6 +149,12 @@ translations.define("NewsletterBox.view_class",
     en = u"Box appearence"
 )
 
+translations.define("NewsletterBox.heading_position",
+    ca = u"Posició dels encapçalaments",
+    es = u"Posición de los encabezados",
+    en = u"Position of block headings"
+)
+
 translations.define(
     "NewsletterBox.view_class"
     "=woost.extensions.newsletters.NewsletterBoxView",
@@ -229,6 +235,12 @@ translations.define("NewsletterContent-plural",
     ca = u"Continguts",
     es = u"Contenidos",
     en = u"Content"
+)
+
+translations.define("NewsletterContent.heading_position",
+    ca = u"Posició de l'encapçalament",
+    es = u"Posición del encabezado",
+    en = u"Heading position"
 )
 
 translations.define("NewsletterContent.text",
@@ -362,6 +374,20 @@ translations.define(
     es = u"Estándar",
     en = u"Standard"
 )
+
+# HeadingPosition
+#------------------------------------------------------------------------------
+translations.define("woost.extensions.newsletters.HeadingPosition=top",
+    ca = u"Abans del contingut",
+    es = u"Antes del contenido",
+    en = u"Before the content"
+)
+
+translations.define("woost.extensions.newsletters.HeadingPosition=inside",
+    ca = u"Dins del contingut",
+    es = u"Dentro del contenido",
+    en = u"Inside the content"
+)    
 
 # NewsletterSeparator
 #------------------------------------------------------------------------------
