@@ -22,7 +22,6 @@ from woost.extensions.newsletters.newslettercontent import NewsletterContent
 from woost.extensions.newsletters.newsletterseparator \
     import NewsletterSeparator
 from woost.extensions.newsletters.mailingplatform import MailingPlatform
-from woost.extensions.newsletters.members import Spacing
 
 
 class Newsletter(Document):
@@ -41,7 +40,6 @@ class Newsletter(Document):
     
     members_order = [
         "mailing_platform",
-        "root_spacing_factor",
         "blocks"
     ]
 
@@ -55,13 +53,6 @@ class Newsletter(Document):
         default = schema.DynamicDefault(
             lambda: first(Configuration.instance.mailing_platforms)
         )
-    )
-
-    root_spacing_factor = Spacing(
-        required = True,
-        default = Decimal("1.0"),
-        member_group = "content",
-        listed_by_default = False
     )
 
     blocks = Slot()

@@ -13,6 +13,8 @@ from woost.extensions.newsletters import NewslettersExtension
     <?py-class
     column_count = 1
     spacing_factor = None
+    vertical_border_style = None
+    horizontal_border_style = None
 
     def insert_heading(self, heading):
         self.heading_cell.append(heading)
@@ -52,7 +54,9 @@ from woost.extensions.newsletters import NewslettersExtension
                             py:container="@{self.block}"
                             py:slot="blocks"
                             py:column_count="@{self.column_count}"
-                            py:spacing="@{self.base_spacing * self.spacing_factor}">
+                            py:spacing="@{self.base_spacing * self.spacing_factor}"
+                            py:vertical_border_style="@{self.vertical_border_style}"
+                            py:horizontal_border_style="@{self.horizontal_border_style}">
                             <py:binding>
                                 <?py
                                 NewslettersExtension.inheriting_view_attributes(

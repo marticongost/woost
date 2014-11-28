@@ -11,7 +11,8 @@ from woost.extensions.newsletters.members import (
     NewsletterContentImageSize,
     NewsletterContentAppearence,
     Spacing,
-    LinkStyle
+    LinkStyle,
+    BorderStyle
 )
 
 
@@ -30,6 +31,8 @@ class NewsletterBox(Block):
         "link_style",
         "content_appearence",
         "spacing_factor",
+        "vertical_border_style",
+        "horizontal_border_style",
         "blocks"
     ]
 
@@ -77,6 +80,14 @@ class NewsletterBox(Block):
         member_group = "content"
     )
 
+    vertical_border_style = BorderStyle(
+        member_group = "content"
+    )
+
+    horizontal_border_style = BorderStyle(
+        member_group = "content"
+    )
+
     blocks = Slot()
 
     def init_view(self, view):
@@ -89,5 +100,7 @@ class NewsletterBox(Block):
         view.content_appearence = self.content_appearence
         view.spacing_factor = self.spacing_factor
         view.link_style = self.link_style
+        view.vertical_border_style = self.vertical_border_style
+        view.horizontal_border_style = self.horizontal_border_style
         return view
 
