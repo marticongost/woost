@@ -199,6 +199,18 @@ translations.define("NewsletterBox.spacing_factor",
     en = u"Block spacing"
 )
 
+translations.define("NewsletterBox.vertical_border_style",
+    ca = u"Filet vertical entre blocs",
+    es = u"Linea vertical entre bloques",
+    en = u"Vertical lines between blocks"
+)
+
+translations.define("NewsletterBox.horizontal_border_style",
+    ca = u"Filet horitzontal entre blocs",
+    es = u"Linea horizontal entre bloques",
+    en = u"Horizontal lines between blocks"
+)
+
 translations.define("NewsletterBox.blocks",
     ca = u"Blocs",
     es = u"Bloques",
@@ -339,6 +351,14 @@ translations.define("woost.extensions.newsletters.LinkStyle=explicit_link",
     en = u"Title, image and explicit link"
 )
 
+# BorderStyle
+#------------------------------------------------------------------------------
+translations.define("woost.extensions.newsletters.BorderStyle=None",
+    ca = u"Sense filet",
+    es = u"Sin lineas",
+    en = u"No border"
+)
+
 # NewsletterContentAppearence
 #------------------------------------------------------------------------------ 
 translations.define(
@@ -363,10 +383,16 @@ translations.define("NewsletterSeparator-plural",
     en = u"Separators"
 )
 
-translations.define("NewsletterSeparator.spacing_factor",
+translations.define("NewsletterSeparator.height_factor",
     ca = u"Alçada",
     es = u"Alto",
     en = u"Height"
+)
+
+translations.define("NewsletterSeparator.border_style",
+    ca = u"Filet horitzontal entre blocs",
+    es = u"Linea horizontal entre bloques",
+    en = u"Horizontal lines between blocks"
 )
 
 # Image Factories
