@@ -101,12 +101,6 @@ translations.define("Newsletter.mailing_platform",
     en = u"Sending platform"
 )
 
-translations.define("Newsletter.root_spacing_factor",
-    ca = u"Espaiat dels blocs a l'arrel",
-    es = u"Espaciado de los bloques en la raíz",
-    en = u"Spacing for root blocks"
-)
-
 translations.define("Newsletter.blocks",
     ca = u"Blocs",
     es = u"Bloques",
