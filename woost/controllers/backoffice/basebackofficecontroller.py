@@ -12,6 +12,7 @@ from urllib import urlencode
 import cherrypy
 from cocktail.modeling import getter, cached_getter, OrderedSet
 from cocktail.iteration import first
+from cocktail.stringutils import normalize
 from cocktail.translations import translations, get_language
 from cocktail.events import event_handler
 from cocktail import schema
@@ -53,14 +54,18 @@ class BaseBackOfficeController(BaseCMSController):
         @type: sequence of unicode
         """
         user = get_current_user()
-        return [
-            language
-            for language in Configuration.instance.languages
-            if user.has_permission(
-                ReadTranslationPermission,
-                language = language
-            )
-        ]
+        return sorted(
+            [
+                language
+                for language in Configuration.instance.languages
+                if user.has_permission(
+                    ReadTranslationPermission,
+                    language = language
+                )
+            ],
+            key = lambda locale:
+                normalize(translations("locale", locale = locale))
+        )
 
     @cached_getter
     def visible_languages(self):

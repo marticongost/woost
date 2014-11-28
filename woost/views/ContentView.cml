@@ -222,12 +222,17 @@ from woost.controllers.backoffice.editstack import SelectionNode
 
                 @extend(element)
                 def get_item_url(palette, content_type):
-                    url = "?type=" + content_type.full_name
-                    # Clear filters
-                    url += "&filter="
-                    if self.edit_stack:
-                        url += "&edit_stack=" + self.edit_stack.to_param()
-                    return url
+                    if content_type.skip_listing and not (
+                        self.edit_stack and isinstance(self.edit_stack[-1], SelectionNode)
+                    ):
+                        return "./content/%d" % content_type.instance.id
+                    else:
+                        url = "?type=" + content_type.full_name
+                        # Clear filters
+                        url += "&filter="
+                        if self.edit_stack:
+                            url += "&edit_stack=" + self.edit_stack.to_param()
+                        return url
                 ?>
             </py:with>
         </py:woost.views.ContentTypeSelector>

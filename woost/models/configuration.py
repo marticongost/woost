@@ -40,8 +40,8 @@ else:
 class Configuration(Item):
 
     instantiable = False
-
     type_group = "setup"
+    skip_listing = True
 
     groups_order = [
         "publication",

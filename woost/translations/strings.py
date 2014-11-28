@@ -4357,17 +4357,17 @@ translations.define("AccessLevel.restricted_content",
 )
 
 translations.define("woost.models.accesslevel.AccessLevel-instance",
-    ca = lambda instance:
+    ca = lambda instance, **kwargs:
         u"Només per a " + join([
             decapitalize(translations(role))
             for role in instance.roles_with_access
         ]),
-    es = lambda instance:
+    es = lambda instance, **kwargs:
         u"Solo para " + join([
             decapitalize(translations(role))
             for role in instance.roles_with_access
         ]),
-    en = lambda instance:
+    en = lambda instance, **kwargs:
         u"Only for " + join([
             decapitalize(translations(role))
             for role in instance.roles_with_access
@@ -5140,6 +5140,67 @@ translations.define("EmailTemplate.language_expression-explanation",
          u"language. A Python expression can be used to produce the ISO code "
          u"of the desired language. Note that this expression will be "
          u"evaluated before the <em>initialization code</em> field."
+)
+
+translations.define("EmailTemplate.condition",
+    ca = u"Condició",
+    es = u"Condición",
+    en = u"Condition"
+)
+
+translations.define("EmailTemplate.condition-explanation",
+    ca = u"""
+        <p>
+            Un bloc de codi Python que permet decidir si el missatge s'hauria
+            d'enviar o no, en funció dels paràmetres rebuts. Deixar en blanc per
+            fer que el missatge s'enviï sempre.
+        </p>
+        <details>
+            <summary>Detalls</summary>
+            <p>
+                El bloc hauria de definir una variable booleana
+                <em>should_send</em> per decidir si el missatge s'enviarà o no.
+                Es tindrà accés a tots els paràmetres passats a l'enviament;
+                tanmateix, cal tenir en compte que el bloc s'avalua abans que
+                el camp <em>codi d'inicialització</em>.
+            </p>
+        </details>
+        """,
+    es = u"""
+        <p>
+            Un bloque de código Python que permite decidir si el mensasje
+            debería enviarse o no, en función de los parámetros recibidos. Dejar
+            en blanco para que el mensaje se envíe siempre.
+        </p>
+        <details>
+            <summary>Detalles</summary>
+            <p>
+                El bloque debería definir una variable booleana
+                <em>should_send</em> para decidir si el mensaje se enviará o
+                no. Se podrá acceder a todos los parámetros pasados durante
+                el envío; sin embargo, es necesario tener en cuenta que el
+                bloque se evaluará antes que el campo <em>código de
+                inicialización</em>.
+            </p>
+        </details>
+        """,
+    en = u"""
+        <p>
+            A block of Python code that decides wether to send the message or
+            not, based on the received parameters. Leave blank if there is no
+            situation where the message should not be sent.
+        </p>
+        <details>
+            <summary>Details</summary>
+            <p>
+                The block should define a boolean <em>should_send</em>
+                variable, to indicate if the message should be sent or not. All
+                parameters given to the e-mail template will be accessible;
+                bear in mind that this field is evaluated before executing the
+                contents of the <em>initialization code</em> field.
+            </p>
+        </details>
+        """
 )
 
 # Feed
