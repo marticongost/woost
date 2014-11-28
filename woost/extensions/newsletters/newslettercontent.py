@@ -93,6 +93,6 @@ class NewsletterContent(Block):
         return (
             self.appearence
             or inherited_appearence
-            or NewsletterContentAppearence.appearences[0]
+            or NewsletterContentAppearence.enumeration[0]
         )
 

@@ -11,7 +11,7 @@ from cocktail.html.datadisplay import display_factory
 
 class NewsletterContentLayout(schema.String):
 
-    layouts = ["image_top", "image_left", "image_right"]
+    enumeration = ["image_top", "image_left", "image_right"]
 
     def __init__(self, *args, **kwargs):
 
@@ -27,7 +27,7 @@ class NewsletterContentLayout(schema.String):
             )
 
         if "enumeration" not in kwargs:
-            kwargs["enumeration"] = lambda ctx: self.layouts
+            kwargs["enumeration"] = lambda ctx: self.__class__.enumeration
 
         schema.String.__init__(self, *args, **kwargs)
 
@@ -43,7 +43,7 @@ class NewsletterContentLayout(schema.String):
 
 class NewsletterContentImageSize(schema.String):
 
-    sizes = ["original", "one_third", "one_half"]
+    enumeration = ["original", "one_third", "one_half"]
 
     def __init__(self, *args, **kwargs):
 
@@ -59,7 +59,7 @@ class NewsletterContentImageSize(schema.String):
             )
 
         if "enumeration" not in kwargs:
-            kwargs["enumeration"] = lambda ctx: self.sizes
+            kwargs["enumeration"] = lambda ctx: self.__class__.enumeration
 
         schema.String.__init__(self, *args, **kwargs)
 
@@ -75,7 +75,7 @@ class NewsletterContentImageSize(schema.String):
 
 class NewsletterContentAppearence(schema.String):
 
-    appearences = [
+    enumeration = [
         "woost.extensions.newsletters.NewsletterContentView"
     ]
 
@@ -93,7 +93,7 @@ class NewsletterContentAppearence(schema.String):
             )
 
         if "enumeration" not in kwargs:
-            kwargs["enumeration"] = lambda ctx: self.appearences
+            kwargs["enumeration"] = lambda ctx: self.__class__.enumeration
 
         schema.String.__init__(self, *args, **kwargs)
 
@@ -109,7 +109,7 @@ class NewsletterContentAppearence(schema.String):
 
 class Spacing(schema.Decimal):
 
-    factors = [
+    enumeration = [
         Decimal("0"),
         Decimal("0.5"),
         Decimal("1"),
@@ -121,7 +121,7 @@ class Spacing(schema.Decimal):
     def __init__(self, *args, **kwargs):
 
         if "enumeration" not in kwargs:
-            kwargs["enumeration"] = lambda ctx: self.factors
+            kwargs["enumeration"] = lambda ctx: self.__class__.enumeration
 
         kwargs.setdefault("edit_control", "cocktail.html.DropdownSelector")
         schema.Decimal.__init__(self, *args, **kwargs)
@@ -144,16 +144,12 @@ class Spacing(schema.Decimal):
 
 class LinkStyle(schema.String):
 
-    link_styles = [
-        "minimal",
-        "linked_text",
-        "explicit_link"
-    ]
+    enumeration = ["minimal", "linked_text", "explicit_link"]
 
     def __init__(self, *args, **kwargs):
         
         if "enumeration" not in kwargs:
-            kwargs["enumeration"] = lambda ctx: self.link_styles
+            kwargs["enumeration"] = lambda ctx: self.__class__.enumeration
         
         if "edit_control" not in kwargs:
             kwargs["edit_control"] = display_factory(
@@ -175,12 +171,12 @@ class LinkStyle(schema.String):
 
 class BorderStyle(schema.String):
 
-    border_styles = []
+    enumeration = []
 
     def __init__(self, *args, **kwargs):
 
         if "enumeration" not in kwargs:
-            kwargs["enumeration"] = lambda ctx: self.border_styles
+            kwargs["enumeration"] = lambda ctx: self.__class__.enumeration
 
         if "edit_control" not in kwargs:
             kwargs["edit_control"] = display_factory(
@@ -200,15 +196,12 @@ class BorderStyle(schema.String):
 
 class HeadingPosition(schema.String):
 
-    heading_positions = [
-        "top",
-        "inside"
-    ]
+    enumeration = ["top", "inside"]
 
     def __init__(self, *args, **kwargs):
         
         if "enumeration" not in kwargs:
-            kwargs["enumeration"] = lambda ctx: self.heading_positions
+            kwargs["enumeration"] = lambda ctx: self.__class__.enumeration
         
         if "edit_control" not in kwargs:
             kwargs["edit_control"] = display_factory(
