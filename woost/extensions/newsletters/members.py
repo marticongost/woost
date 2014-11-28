@@ -126,6 +126,21 @@ class Spacing(schema.Decimal):
         kwargs.setdefault("edit_control", "cocktail.html.DropdownSelector")
         schema.Decimal.__init__(self, *args, **kwargs)
 
+    def translate_value(self, value, language = None, **kwargs):
+        if value is None and not self.required:
+            return translations(
+                "woost.extensions.newsletters.inherited_value",
+                language = language,
+                **kwargs
+            )
+        else:
+            return schema.Decimal.translate_value(
+                self,
+                value,
+                language = language,
+                **kwargs
+            )
+
 
 class LinkStyle(schema.String):
 
