@@ -78,13 +78,13 @@ class SISPaymentGateway(PaymentGateway, Implementation):
         if self.payment_successful_page:
             return self.payment_successful_page.get_uri(
                 host = "!",
-                parameters = {"paymend_id": payment.id}
+                parameters = {"payment_id": payment.id}
             )
 
     def get_payment_failed_url(self, payment):
         if self.payment_failed_page:
             return self.payment_failed_page.get_uri(
                 host = "!",
-                parameters = {"paymend_id": payment.id}
+                parameters = {"payment_id": payment.id}
             )
 
