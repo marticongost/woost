@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<py:block
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:py="http://www.whads.com/ns/cocktail/templates"
+    width="@{self.width}">
+
+    <?py-class
+    is_separator = True
+    width = None
+    base_spacing = None
+    width_factor = None
+    border_style = None
+    ?>
+
+    <py:ready>
+        <?py
+        if self.width is None:
+            self.width = self.width_factor * self.base_spacing
+        ?>
+    </py:ready>
+
+    <td
+        py:id="horizontal_separator_left_cell"
+        width="@{self.width if self.border_style is None else self.width / 2}">
+        <py:ready>
+            <?py
+            if self.border_style:
+                element.add_class("border_style_" + self.border_style)
+            ?>
+        </py:ready>
+    </td>
+
+    <td
+        py:id="horizontal_separator_right_cell"
+        width="@{self.width / 2}"
+        py:visible="@{self.border_style is not None}"/>
+
+</py:block>
+

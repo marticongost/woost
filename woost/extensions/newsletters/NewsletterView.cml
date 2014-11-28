@@ -39,7 +39,6 @@ from woost.models import Publishable
                 py:container="@{self.publishable}"
                 py:slot="blocks"
                 py:base_spacing="@{self.base_spacing}"
-                py:spacing="@{self.base_spacing * self.publishable.root_spacing_factor}"
                 py:width="@{self.width}"/>
         </td>
     </tr>

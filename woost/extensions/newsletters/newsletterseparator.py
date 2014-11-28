@@ -6,15 +6,15 @@ u"""
 from decimal import Decimal
 from cocktail import schema
 from woost.models import Block
-from woost.extensions.newsletters.members import Spacing
+from woost.extensions.newsletters.members import Spacing, BorderStyle
 
 
 class NewsletterSeparator(Block):
 
     type_group = "blocks.newsletter"
-    view_class = "woost.extensions.newsletters.NewsletterSeparator"
+    view_class = "woost.extensions.newsletters.VerticalSeparator"
 
-    spacing_factor = Spacing(
+    height_factor = Spacing(
         default = Decimal("1"),
         required = True,
         enumeration = None,
@@ -22,7 +22,15 @@ class NewsletterSeparator(Block):
         member_group = "content"
     )
 
+    border_style = BorderStyle(
+        member_group = "content"
+    )
+
     def init_view(self, view):
         Block.init_view(self, view)
-        view.spacing_factor = self.spacing_factor
+        view.height_factor = self.height_factor
+        view.border_style = self.border_style
+
+    def get_block_proxy(self, view):
+        return view.vertical_separator_top_cell
 
