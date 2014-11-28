@@ -156,3 +156,29 @@ class LinkStyle(schema.String):
             language = language,
             **kwargs
         )
+
+
+class BorderStyle(schema.String):
+
+    border_styles = []
+
+    def __init__(self, *args, **kwargs):
+
+        if "enumeration" not in kwargs:
+            kwargs["enumeration"] = lambda ctx: self.border_styles
+
+        if "edit_control" not in kwargs:
+            kwargs["edit_control"] = display_factory(
+                "cocktail.html.RadioSelector",
+                empty_option_displayed = True
+            )
+
+        schema.String.__init__(self, *args, **kwargs)
+
+    def translate_value(self, value, language = None, **kwargs):
+        return translations(
+            "woost.extensions.newsletters.BorderStyle=" + (value or "None"),
+            language = language,
+            **kwargs
+        )
+

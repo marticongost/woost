@@ -3,7 +3,7 @@ u"""
 
 .. moduleauthor:: Javier Marrero <javier.marrero@whads.com>
 """
-from cocktail.html import Element
+from cocktail.html import Element, templates
 from woost.models.blockutils import create_block_views
 from woost.extensions.newsletters import NewslettersExtension
 
@@ -19,6 +19,8 @@ class NewsletterBlockList(Element):
     spacing = 0
     column_count = 1
     fix_children_width = True
+    vertical_border_style = None
+    horizontal_border_style = None
 
     def _build(self):
         self["cellpadding"] = 0
@@ -73,7 +75,7 @@ class NewsletterBlockList(Element):
                     continue
 
                 # Separators
-                if block_view.tag in ("tr", "thead", "tbody", "tfoot"):
+                if getattr(block_view, "is_separator", False):
                     self.blocks_container.append(block_view)
                     row = None
                     column_index = 0
@@ -83,14 +85,25 @@ class NewsletterBlockList(Element):
                 if row is None:
                     if suppress_spacing:
                         suppress_spacing = False
-                    elif row_index:
-                        self.blocks_container.append(self._create_vspace())
+                    elif (
+                        row_index
+                        and (
+                            self.spacing
+                            or self.horizontal_border_style
+                        )
+                    ):
+                        self.blocks_container.append(
+                            self._create_vertical_separator()
+                        )
 
                     row = Element("tr")
                     self.blocks_container.append(row)
 
-                if column_index:
-                    row.append(self._create_hspace())
+                if column_index and (
+                    self.spacing
+                    or self.vertical_border_style
+                ):
+                    row.append(self._create_horizontal_separator())
 
                 cell = Element("td")
                 cell.add_class("newsletter_block_list_cell")
@@ -105,26 +118,33 @@ class NewsletterBlockList(Element):
                     row = None
                     row_index += 1
 
-    def _create_vspace(self):
-        row = Element("tr")
-        cell = Element("td")
-        cell.add_class("vspace_cell")
-        cell["colspan"] = self.column_count
-        cell["height"] = self.spacing
-        row.append(cell)
-        return row
+    def _create_vertical_separator(self):
 
-    def _create_hspace(self):
-        cell = Element("td")
-        cell.add_class("hspace_cell")
-        cell["width"] = self.spacing
-        return cell
+        sep = templates.new("woost.extensions.newsletters.VerticalSeparator")
+
+        sep.width = self.width
+        sep.height = self.spacing
+        sep.border_style = self.horizontal_border_style
+        
+        columns = self.column_count
+        if self.vertical_border_style:
+            columns += (columns - 1) * 2
+        elif self.spacing:
+            columns += columns - 1
+
+        sep.parent_column_count = columns
+        return sep
+
+    def _create_horizontal_separator(self):        
+        sep = templates.new("woost.extensions.newsletters.HorizontalSeparator")
+        sep.width = self.spacing
+        sep.border_style = self.vertical_border_style
+        return sep
 
     def create_block_view(block_list, block):
         return block.create_view(inherited_appearence = self.content_appearence)
 
     def _init_block_view(self, block_view):
-        block_view.parent_column_count = self.column_count
         NewslettersExtension.inheriting_view_attributes(
             parent_view = self,
             child_view = block_view
