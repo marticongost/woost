@@ -32,9 +32,6 @@ class Template(Item):
 
     identifier = schema.String(
         required = True,
-        unique = True,
-        indexed = True,
-        max = 255,
         text_search = False
     )
 
