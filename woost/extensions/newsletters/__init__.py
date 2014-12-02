@@ -62,6 +62,7 @@ class NewslettersExtension(Extension):
             strings,
             configuration,
             imagefactory,
+            template,
             mailingplatform,
             newsletter,
             newslettercontent,

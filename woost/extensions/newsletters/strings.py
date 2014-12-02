@@ -568,6 +568,20 @@ translations.define("Configuration.mailing_platforms",
     en = u"Available platforms"
 )
 
+# Template
+#------------------------------------------------------------------------------
+translations.define("Template.newsletter_header",
+    ca = u"Capçalera de butlletí de notícies",
+    es = u"Cabecera de boletín de noticias",
+    en = u"Newsletter header"
+)
+
+translations.define("Template.newsletter_footer",
+    ca = u"Peu de butlletí de notícies",
+    es = u"Pie de boletín de noticias",
+    en = u"Newsletter footer"
+)
+
 # ImageFactory
 #------------------------------------------------------------------------------
 translations.define("ImageFactory.applicable_to_newsletters",
