@@ -50,6 +50,38 @@ class ViewFactory(object):
             "Can't create view for item: %s" % item
         )
 
+    def handler_for(self, cls, position = None):
+
+        register_args = [cls]
+
+        if position is None or position == "append":
+            register = self.register
+        elif position == "first":
+            register = self.register_first
+        elif (
+            isinstance(position, tuple)
+            and len(position) == 2
+            and position[0] in ("before", "after", "replace")
+        ):
+            register_args.append(position[1])
+            if position[0] == "before":
+                register = self.register_before
+            elif position[0] == "after":
+                register = self.register_after
+            elif position[0] == "replace":
+                register = self.replace
+        else:
+            raise ValueError(
+                "Invalid position for ViewFactory.handler_for(): %r"
+                % position
+            )
+
+        def decorator(function):
+            register(*(register_args + [function.func_name, function]))
+            return function
+
+        return decorator
+
     def register(self, cls, id, handler):
         handlers = self._type_mapping.get(cls, recursive = False)
         if handlers is None:
