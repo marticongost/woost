@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <?py
 from decimal import Decimal
+from woost.models.rendering import ImageFactory
 ?>
 
 <table
@@ -11,6 +12,8 @@ from decimal import Decimal
     border="0">
 
     <?py-class
+    heading = None
+    heading_position = None
     text = None
     link = None
     link_style = None
@@ -19,12 +22,8 @@ from decimal import Decimal
         "one_third": Decimal("0.3"),
         "one_half": Decimal("0.5")
     }
+    content_image_factory = None
     image_spacing = None
-    heading_position = None
-    _heading = None
-
-    def insert_heading(self, heading):
-        self._heading = heading
 
     def get_image_column_width(self):
 
@@ -49,7 +48,7 @@ from decimal import Decimal
     <py:ready>
         <?py
         layout = None
-        has_text = self.text or self._heading
+        has_text = self.text or self.heading
 
         if has_text and self.image:
             layout = self.content_layout or "image_top"
@@ -58,13 +57,31 @@ from decimal import Decimal
         elif self.image:
             layout = "image_only"
 
-        if self.image:
-            if self.content_image_size == "original":
-                self.image_factory = None
-            elif self.is_single_column and layout in ("image_top", "image_only"):
-                self.image_factory = "newsletter_single_column"
-            else:
-                self.image_factory = "newsletter_multi_column"
+        if self.image and self.content_image_size != "original":
+
+            if self.content_image_factory is None:
+                self.content_image_factory = ImageFactory.require_instance(
+                    identifier = "newsletter_single_column"
+                )
+            elif isinstance(self.content_image_factory, basestring):
+                self.content_image_factory = ImageFactory.require_instance(
+                    identifier = self.content_image_factory
+                )
+
+            # Use a smaller image on multi column layouts
+            if (
+                self.content_image_factory.multi_column_version
+                and not (
+                    self.is_single_column
+                    and layout in ("image_top", "image_only")
+                )
+            ):
+                self.content_image_factory = \
+                    self.content_image_factory.multi_column_version
+
+            # Hide images that can't be rendered by the seleted image factory
+            if not self.content_image_factory.can_render(self.image):
+                layout = "text_only"
 
         if self.image_spacing is None:
             self.image_spacing = 2
@@ -77,12 +94,8 @@ from decimal import Decimal
         
         self.add_class("heading_position_" + self.heading_position)
 
-        if self._heading:
+        if self.heading:
             self.add_class("with_heading")
-            link = self.create_content_link()
-            for child in self._heading.children:
-                link.append(child)
-            self._heading.append(link)
         else:
             self.add_class("without_heading")
 
@@ -94,13 +107,15 @@ from decimal import Decimal
         ?>
     </py:ready>
 
-    <tr py:id="heading_row" py:visible="@{self._heading and self.heading_position == 'top'}">
+    <tr py:id="heading_row" py:visible="@{self.heading and self.heading_position == 'top'}">
         <td py:id="heading_cell">
-            <py:ready>
-                <?py
-                element.append(self._heading)
-                ?>
-            </py:ready>
+            <py:new py:element="self.create_content_link()">
+                <py:ready>
+                    <?py
+                    element.append(self.heading)
+                    ?>
+                </py:ready>
+            </py:new>
         </td>
     </tr>
 
@@ -122,14 +137,16 @@ from decimal import Decimal
         <py:woost.views.Image
             py:local_id="image"
             py:image="${self.image}"
-            py:image_factory="${self.image_factory}"
+            py:image_factory="${self.content_image_factory}"
             width="${self.width}"/>
     </py:new>
 
     <div py:def="content_text">
         <?py
-        if self._heading and self.heading_position == "inside":
-            element.append(self._heading)
+        if self.heading and self.heading_position == "inside":
+            link = self.create_content_link()
+            link.append(self.heading)
+            element.append(link)
 
         if self.text:
             if self.link_style == "linked_text":

@@ -11,15 +11,17 @@ from woost.extensions.newsletters import NewslettersExtension
     border="0">
 
     <?py-class
+    container = None
+    slot = None
+    items = None
+    heading = None
     column_count = 1
+    content_appearence = None
+    content_view_factory = None
+    content_image_factory = None
     spacing_factor = None
     vertical_border_style = None
     horizontal_border_style = None
-
-    def insert_heading(self, heading):
-        self.heading_cell.append(heading)
-        self.heading_row.visible = True
-        self.blocks_cell["colspan"] = 2
     ?>
 
     <py:ready>
@@ -31,6 +33,11 @@ from woost.extensions.newsletters import NewslettersExtension
             self.add_class("single_column_box")
         else:
             self.add_class("multi_column_box")
+
+        if self.heading:
+            self.add_class("with_heading")
+        else:
+            self.add_class("without_heading")
         ?>
     </py:ready>
     
@@ -40,16 +47,25 @@ from woost.extensions.newsletters import NewslettersExtension
                 cellpadding="0"
                 cellspacing="0"
                 border="0">
-                <tr py:id="heading_row" py:visible="${False}">
-                    <td py:id="heading_cell"/>
+                <tr py:id="heading_row" py:visible="@{self.heading}">
+                    <td py:id="heading_cell">
+                        <py:ready>
+                            <?py
+                            element.append(self.heading)
+                            ?>
+                        </py:ready>
+                    </td>
                 </tr>
                 <tr py:id="blocks_row">
                     <td py:id="blocks_cell">
-                        <py:woost.extensions.newsletters.NewsletterBlockList
+                        <py:woost.extensions.newsletters.NewsletterGrid
                             py:id="blocks_table"
-                            py:container="@{self.block}"
-                            py:slot="blocks"
+                            py:items="@{self.items}"
+                            py:container="@{self.container}"
+                            py:slot="@{self.slot}"
                             py:column_count="@{self.column_count}"
+                            py:content_view_factory="@{self.content_view_factory}"
+                            py:content_image_factory="@{self.content_image_factory}"
                             py:spacing="@{self.base_spacing * self.spacing_factor}"
                             py:vertical_border_style="@{self.vertical_border_style}"
                             py:horizontal_border_style="@{self.horizontal_border_style}">
@@ -61,7 +77,7 @@ from woost.extensions.newsletters import NewslettersExtension
                                 )
                                 ?>
                             </py:binding>
-                        </py:woost.extensions.newsletters.NewsletterBlockList>
+                        </py:woost.extensions.newsletters.NewsletterGrid>
                     </td>
                 </tr>
             </table>
