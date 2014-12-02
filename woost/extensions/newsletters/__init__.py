@@ -60,11 +60,13 @@ class NewslettersExtension(Extension):
 
         from woost.extensions.newsletters import (
             strings,
-            mailingplatform,
             configuration,
+            imagefactory,
+            mailingplatform,
             newsletter,
-            newsletterbox,
             newslettercontent,
+            newsletterbox,
+            newsletterlisting,
             newsletterseparator
         )
 
@@ -91,20 +93,6 @@ class NewslettersExtension(Extension):
         )
 
         # Image factories
-        image_factory_single_column = self._create_asset(
-            rendering.ImageFactory,
-            "image_factories.newsletter_single_column",
-            identifier = "newsletter_single_column",
-            title = extension_translations,
-            applicable_to_blocks = False,
-            effects = [
-                self._create_asset(
-                    rendering.Thumbnail,
-                    "",
-                    width = "630"
-                )
-            ]
-        )
         image_factory_multi_column = self._create_asset(
             rendering.ImageFactory,
             "image_factories.newsletter_multi_column",
@@ -117,6 +105,23 @@ class NewslettersExtension(Extension):
                     "",
                     width = "300",
                     height = "150"
+                )
+            ]
+        )
+
+        image_factory_single_column = self._create_asset(
+            rendering.ImageFactory,
+            "image_factories.newsletter_single_column",
+            identifier = "newsletter_single_column",
+            title = extension_translations,
+            applicable_to_blocks = False,
+            applicable_to_newsletters = True,
+            multi_column_version = image_factory_multi_column,
+            effects = [
+                self._create_asset(
+                    rendering.Thumbnail,
+                    "",
+                    width = "630"
                 )
             ]
         )
@@ -159,11 +164,12 @@ def _inherit_view_attributes(e):
         "base_spacing",
         "width",
         "is_single_column",
+        "content_appearence",
         "content_layout",
         "content_image_size",
+        "content_image_factory",
         "image_spacing",
         "link_style",
-        "content_appearence",
         "heading_position"
     ):
         if getattr(e.child_view, attrib, None) is None:

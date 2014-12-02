@@ -7,6 +7,8 @@ from decimal import Decimal
 from cocktail.translations import translations
 from cocktail import schema
 from cocktail.html.datadisplay import display_factory
+from woost.models import Configuration
+from woost.models.rendering import ImageFactory
 
 
 class NewsletterContentLayout(schema.String):
@@ -216,6 +218,45 @@ class HeadingPosition(schema.String):
             "woost.extensions.newsletters.HeadingPosition=" + value
                 if value
                 else "woost.extensions.newsletters.inherited_value",
+            language = language,
+            **kwargs
+        )
+
+
+def _iter_newsletter_image_factories():
+    for factory in Configuration.instance.image_factories:
+        if factory.applicable_to_newsletters:
+            yield factory
+
+def _newsletter_image_factories_enum(ctx):
+    return list(_iter_newsletter_image_factories())
+
+
+class NewsletterImageFactory(schema.Reference):
+
+    def __init__(self, *args, **kwargs):
+        
+        kwargs.setdefault("type", ImageFactory)
+        kwargs.setdefault("enumeration", _newsletter_image_factories_enum)
+        kwargs.setdefault("edit_control", "cocktail.html.DropdownSelector")
+
+        if "bidirectional" not in kwargs and "related_end" not in kwargs:
+            kwargs["related_end"] = schema.Collection()
+        
+        schema.Reference.__init__(self, *args, **kwargs)
+
+    def translate_value(self, value, language = None, **kwargs):
+
+        if value is None:
+            return translations(
+                "woost.extensions.newsletters.inherited_value",
+                language = language,
+                **kwargs
+            )
+
+        return schema.Reference.translate_value(
+            self,
+            value,
             language = language,
             **kwargs
         )

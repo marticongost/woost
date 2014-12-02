@@ -17,7 +17,8 @@ from woost.models import (
 )
 from woost.extensions.blocks.block import Block
 from woost.extensions.blocks.slot import Slot
-from woost.extensions.newsletters.newsletterbox import NewsletterBox
+from woost.extensions.newsletters.newslettercontainer \
+    import NewsletterContainer
 from woost.extensions.newsletters.newslettercontent import NewsletterContent
 from woost.extensions.newsletters.newsletterseparator \
     import NewsletterSeparator
@@ -58,7 +59,7 @@ class Newsletter(Document):
     blocks = Slot()
 
     allowed_block_types = (
-        NewsletterBox,
+        NewsletterContainer,
         NewsletterContent,
         NewsletterSeparator,
         CustomBlock,

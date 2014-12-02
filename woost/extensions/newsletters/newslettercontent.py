@@ -11,6 +11,7 @@ from woost.extensions.newsletters.members import (
     NewsletterContentLayout,
     NewsletterContentImageSize,
     NewsletterContentAppearence,
+    NewsletterImageFactory,
     Spacing,
     LinkStyle
 )
@@ -28,6 +29,7 @@ class NewsletterContent(Block):
         "link",
         "image",
         "image_size",
+        "image_factory",
         "image_spacing",
         "link_style",
         "layout",
@@ -66,6 +68,10 @@ class NewsletterContent(Block):
         member_group = "content"
     )
 
+    image_factory = NewsletterImageFactory(
+        member_group = "content"
+    )
+
     image_spacing = Spacing(
         member_group = "content"
     )
@@ -86,6 +92,7 @@ class NewsletterContent(Block):
         view.image = self.image
         view.content_layout = self.layout
         view.content_image_size = self.image_size
+        view.content_image_factory = self.image_factory
         view.image_spacing = self.image_spacing
         view.link_style = self.link_style
 
