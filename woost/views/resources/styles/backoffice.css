@@ -925,6 +925,10 @@ body.scripted .BackOfficeLayout .Table .row_selection_control {
     cursor: default;
 }
 
+.BackOfficeLayout .ContentTable.hidden_element_column .element_column {
+    display: None;
+}
+
 .BackOfficeLayout .ContentTable .ItemLabel {
     display: inline-block;
 }
