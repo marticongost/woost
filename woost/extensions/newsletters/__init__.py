@@ -3,8 +3,7 @@ u"""
 
 .. moduleauthor:: Javier Marrero <javier.marrero@whads.com>
 """
-from cocktail.events import Event, when
-from cocktail.translations import  translations
+from cocktail.translations import translations
 from woost.models import (
     Configuration,
     Controller,
@@ -28,8 +27,6 @@ translations.define("NewslettersExtension-plural",
 
 
 class NewslettersExtension(Extension):
-
-    inheriting_view_attributes = Event()
 
     def __init__(self, **values):
         Extension.__init__(self, **values)
@@ -60,15 +57,11 @@ class NewslettersExtension(Extension):
 
         from woost.extensions.newsletters import (
             strings,
-            configuration,
             imagefactory,
-            template,
-            mailingplatform,
             newsletter,
             newslettercontent,
             newsletterbox,
-            newsletterlisting,
-            newsletterseparator
+            newsletterlisting
         )
 
         self.install()
@@ -89,26 +82,25 @@ class NewslettersExtension(Extension):
         newsletter_view = self._create_asset(
             Template,
             "newsletter_template",
-            identifier = "woost.extensions.newsletters.NewsletterView",
+            identifier = "woost.extensions.newsletters.NewsletterLayout",
             title = extension_translations
         )
 
         # Image factories
-        image_factory_multi_column = self._create_asset(
-            rendering.ImageFactory,
-            "image_factories.newsletter_multi_column",
-            identifier = "newsletter_multi_column",
-            title = extension_translations,
-            applicable_to_blocks = False,
-            effects = [
-                self._create_asset(
-                    rendering.Fill,
-                    "",
-                    width = "300",
-                    height = "150"
-                )
-            ]
-        )
+        for img_factory_name, effects in (
+            ("third", [rendering.Fill(width = "200", height = "100")]),
+            ("half", [rendering.Fill(width = "300", height = "150")]),
+            ("full", [rendering.Thumbnail(width = "600")])
+        ):
+            image_factory = self._create_asset(
+                rendering.ImageFactory,
+                "image_factories." + img_factory_name,
+                identifier = "newsletter_" + img_factory_name,
+                title = extension_translations,
+                applicable_to_blocks = False,
+                applicable_to_newsletters = True,
+                effects = effects
+            )
 
         image_factory_single_column = self._create_asset(
             rendering.ImageFactory,
@@ -157,26 +149,4 @@ class NewslettersExtension(Extension):
         config.mailing_platforms.append(campaign_monitor)
         config.mailing_platforms.append(mailchimp)
         config.mailing_platforms.append(wesend)
-
-
-@when(NewslettersExtension.inheriting_view_attributes)
-def _inherit_view_attributes(e):
-    for attrib in (
-        "base_spacing",
-        "width",
-        "is_single_column",
-        "content_appearence",
-        "content_layout",
-        "content_image_size",
-        "content_image_factory",
-        "image_spacing",
-        "link_style",
-        "heading_position"
-    ):
-        if getattr(e.child_view, attrib, None) is None:
-            setattr(
-                e.child_view,
-                attrib,
-                getattr(e.parent_view, attrib, None)
-            )
 

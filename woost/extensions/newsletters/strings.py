@@ -1,104 +1,63 @@
 #-*- coding: utf-8 -*-
 u"""
-.. moduleauthor:: Javier Marrero <javier.marrero@whads.com>
+
+.. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
-from cocktail.translations import  translations
+from cocktail.translations import translations
 
-translations.define("woost.type_groups.blocks.newsletter",
-    ca = u"Butlletí de notícies",
-    es = u"Boletín de noticias",
-    en = u"Newsletter"
-)
-
-# MailingPlatform
+# Installation
 #------------------------------------------------------------------------------
-translations.define("MailingPlatform",
-    ca = u"Plataforma d'enviament de butlletins",
-    es = u"Plataforma de envío de boletines",
-    en = u"Newsletter platform"
+translations.define("woost.extensions.newsletters.newsletter_controller.title",
+    ca = u"Controlador de butlletins",
+    es = u"Controlador de boletines",
+    en = u"Newsletter controller"
 )
 
-translations.define("MailingPlatform-plural",
-    ca = u"Plataformes d'enviament de butlletins",
-    es = u"Plataformas de envío de boletines",
-    en = u"Newsletter platforms"
+translations.define("woost.extensions.newsletters.newsletter_template.title",
+    ca = u"Plantilla de butlletí",
+    es = u"Plantilla de boletín",
+    en = u"Newsletter template"
 )
 
-translations.define("MailingPlatform.platform_name",
-    ca = u"Nom",
-    es = u"Nombre",
-    en = u"Name"
+translations.define("woost.extensions.newsletters.image_factories.third.title",
+    ca = u"Butlletí - 33%",
+    es = u"Boletín - 33%",
+    en = u"Newsletter - 33%"
 )
 
-translations.define("MailingPlatform.online_version_tag",
-    ca = u"Etiqueta de la versió online",
-    es = u"Etiqueta de la versión online",
-    en = u"Online version tag"
+translations.define("woost.extensions.newsletters.image_factories.half.title",
+    ca = u"Butlletí - 50%",
+    es = u"Boletín - 50%",
+    en = u"Newsletter - 50%"
 )
 
-translations.define("MailingPlatform.unsubscription_tag",
-    ca = u"Etiqueta de baixa de la plataforma",
-    es = u"Etiqueta de baja de la plataforma",
-    en = u"Unsubscription tag"
+translations.define(
+    "woost.extensions.newsletters.image_factories.full.title",
+    ca = u"Butlletí - 100%",
+    es = u"Boletín - 100%",
+    en = u"Newsletter - 100%"
 )
 
-# Campaign Monitor
-translations.define("woost.extensions.newsletters.campaign_monitor.online_version_tag",
-    ca = u"<webversion>versió web</webversion>",
-    es = u"<webversion>versión web</webversion>",
-    en = u"<webversion>web version</webversion>"
-)
-
-translations.define("woost.extensions.newsletters.campaign_monitor.unsubscription_tag",
-    ca = u"<unsubscribe>donar-me de baixa del butlletí</unsubscribe>",
-    es = u"<unsubscribe>darme de baja del boletín</unsubscribe>",
-    en = u"<unsubscribe>unsubscribe</unsubscribe>"
-)
-
-#MailChimp
-translations.define("woost.extensions.newsletters.mailchimp.online_version_tag",
-    ca = u"<a href='*|ARCHIVE|*'>versió web</a>",
-    es = u"<a href='*|ARCHIVE|*'>versión web</a>",
-    en = u"<a href='*|ARCHIVE|*'>web version</a>"
-)
-
-translations.define("woost.extensions.newsletters.mailchimp.unsubscription_tag",
-    ca = u"<a href='*|UNSUB|*'>donar-me de baixa del butlletí</a>",
-    es = u"<a href='*|UNSUB|*'>darme de baja del boletín</a>",
-    en = u"<a href='*|UNSUB|*'>unsubscribe</a>"
-)
-
-# WeSend
-translations.define("woost.extensions.newsletters.wesend.online_version_tag",
-    ca = u"<webversion>versió web</webversion>",
-    es = u"<webversion>versión web</webversion>",
-    en = u"<webversion>web version</webversion>"
-)
-
-translations.define("woost.extensions.newsletters.wesend.unsubscription_tag",
-    ca = u"<unsubscribe>donar-me de baixa del butlletí</unsubscribe>",
-    es = u"<unsubscribe>darme de baja del boletín</unsubscribe>",
-    en = u"<unsubscribe>unsubscribe</unsubscribe>"
+# ImageFactory
+#------------------------------------------------------------------------------
+translations.define("ImageFactory.applicable_to_newsletters",
+    ca = u"Aplicable a butlletins de notícies",
+    es = u"Aplicable a boletines de noticias",
+    en = u"Applicable to newsletters"
 )
 
 # Newsletter
 #------------------------------------------------------------------------------
 translations.define("Newsletter",
-    ca = u"Butlletí de correu electrònic",
-    es = u"Boletín de correo electrónico",
+    ca = u"Butlletí de notícies",
+    es = u"Boletín de noticias",
     en = u"Newsletter"
 )
 
 translations.define("Newsletter-plural",
-    ca = u"Butlletins de correu electrònic",
-    es = u"Boletines de correo electrónico",
+    ca = u"Butlletins de notícies",
+    es = u"Boletines de noticias",
     en = u"Newsletters"
-)
-
-translations.define("Newsletter.mailing_platform",
-    ca = u"Plataforma d'enviament",
-    es = u"Plataforma de envío",
-    en = u"Sending platform"
 )
 
 translations.define("Newsletter.blocks",
@@ -107,112 +66,80 @@ translations.define("Newsletter.blocks",
     en = u"Blocks"
 )
 
-# Newsletter Controller
+# NewsletterContent
 #------------------------------------------------------------------------------
-translations.define("woost.extensions.newsletters.newsletter_controller.title",
-    ca = u"Controlador de butlletins",
-    es = u"Controlador de boletines",
-    en = u"Newsletter controller"
+translations.define("NewsletterContent",
+    ca = u"Contingut",
+    es = u"Contenido",
+    en = u"Content"
 )
 
-# Newsletter Template
-#------------------------------------------------------------------------------
-translations.define("woost.extensions.newsletters.newsletter_template.title",
-    ca = u"Plantilla de butlletí",
-    es = u"Plantilla de boletín",
-    en = u"Newsletter template"
+translations.define("NewsletterContent-plural",
+    ca = u"Continguts",
+    es = u"Contenidos",
+    en = u"Content"
 )
 
-# NewsletterContainer
-#------------------------------------------------------------------------------
-translations.define("NewsletterContainer",
-    ca = u"Contenidor",
-    es = u"Contenedor",
-    en = u"Container"
+translations.define("NewsletterContent.view_class",
+    ca = u"Aparença",
+    es = u"Apariencia",
+    en = u"Appearence"
 )
 
-translations.define("NewsletterContainer-plural",
-    ca = u"Contenidors",
-    es = u"Contenedores",
-    en = u"Containers"
+translations.define(
+    "NewsletterContent.view_class"
+    "=woost.extensions.newsletters.NewsletterContentView",
+    ca = u"Estàndard",
+    es = u"Estándar",
+    en = u"Standard"
 )
 
-translations.define("NewsletterContainer.content.entries",
-    ca = u"Configuració dels blocs de contingut",
-    es = u"Configuración de los bloques de contenido",
-    en = u"Settings for content blocks"
+translations.define("NewsletterContent.text",
+    ca = u"Text",
+    es = u"Texto",
+    en = u"Text"
 )
 
-translations.define("NewsletterContainer.content.separation",
-    ca = u"Separació dels blocs",
-    es = u"Separación de los bloques",
-    en = u"Block separation"
+translations.define("NewsletterContent.image",
+    ca = u"Imatge",
+    es = u"Imagen",
+    en = u"Image"
 )
 
-translations.define("NewsletterContainer.column_count",
-    ca = u"Número de columnes",
-    es = u"Número de columnas",
-    en = u"Column count"
+translations.define("NewsletterContent.image_alignment",
+    ca = u"Alineament",
+    es = u"Alineamiento",
+    en = u"Alignment"
 )
 
-translations.define("NewsletterContainer.heading_position",
-    ca = u"Posició dels encapçalaments",
-    es = u"Posición de los encabezados",
-    en = u"Position of block headings"
+translations.define("NewsletterContent.image_alignment=image_left",
+    ca = u"Imatge a l'esquerra",
+    es = u"Imagen a la izquierda",
+    en = u"Image left"
 )
 
-translations.define("NewsletterContainer.content_layout",
-    ca = u"Disposició del contingut",
-    es = u"Disposición del contenido",
-    en = u"Content disposition"
+translations.define("NewsletterContent.image_alignment=image_right",
+    ca = u"Imatge a la dreta",
+    es = u"Imagen a la derecha",
+    en = u"Image right"
 )
 
-translations.define("NewsletterContainer.content_image_size",
-    ca = u"Mida de les imatges",
-    es = u"Tamaño de las imágenes",
-    en = u"Image size"
+translations.define("NewsletterContent.image_alignment=image_top",
+    ca = u"Imatge a dalt",
+    es = u"Imagen arriba",
+    en = u"Image top"
 )
 
-translations.define("NewsletterContainer.content_image_factory",
+translations.define("NewsletterContent.image_factory",
     ca = u"Processat d'imatge",
     es = u"Procesado de imagen",
     en = u"Image processing"
 )
 
-translations.define("NewsletterContainer.image_spacing",
-    ca = u"Separació de les imatges",
-    es = u"Separación de las imágenes",
-    en = u"Image separation"
-)
-
-translations.define("NewsletterContainer.link_style",
-    ca = u"Elements enllaçats",
-    es = u"Elementos enlazados",
-    en = u"Linked elements"
-)
-
-translations.define("NewsletterContainer.spacing_factor",
-    ca = u"Espaiat dels blocs",
-    es = u"Espaciado de los bloques",
-    en = u"Block spacing"
-)
-
-translations.define("NewsletterContainer.vertical_border_style",
-    ca = u"Filet vertical entre blocs",
-    es = u"Linea vertical entre bloques",
-    en = u"Vertical lines between blocks"
-)
-
-translations.define("NewsletterContainer.horizontal_border_style",
-    ca = u"Filet horitzontal entre blocs",
-    es = u"Linea horizontal entre bloques",
-    en = u"Horizontal lines between blocks"
-)
-
-translations.define("woost.extensions.newsletters.inherited_value",
-    ca = u"El que indiqui el contenidor",
-    es = u"Lo que indique el contenedor",
-    en = u"Inherit from the container"
+translations.define("NewsletterContent.link",
+    ca = u"Enllaç",
+    es = u"Enlace",
+    en = u"Link"
 )
 
 # NewsletterBox
@@ -230,14 +157,14 @@ translations.define("NewsletterBox-plural",
 )
 
 translations.define("NewsletterBox.view_class",
-    ca = u"Aparença de la caixa",
-    es = u"Apariencia de la caja",
-    en = u"Box appearence"
+    ca = u"Aparença",
+    es = u"Apariencia",
+    en = u"Appearence"
 )
 
 translations.define(
     "NewsletterBox.view_class"
-    "=woost.extensions.newsletters.NewsletterContainerView",
+    "=woost.extensions.newsletters.NewsletterBoxView",
     ca = u"Estàndard",
     es = u"Estándar",
     en = u"Standard"
@@ -247,12 +174,6 @@ translations.define("NewsletterBox.blocks",
     ca = u"Blocs",
     es = u"Bloques",
     en = u"Blocks"
-)
-
-translations.define("NewsletterBox.content_appearence",
-    ca = u"Aparença dels blocs",
-    es = u"Apariencia de los bloques",
-    en = u"Blocks appearence"
 )
 
 # NewsletterListing
@@ -270,329 +191,38 @@ translations.define("NewsletterListing-plural",
 )
 
 translations.define("NewsletterListing.view_class",
-    ca = u"Aparença del llistat",
-    es = u"Apariencia del listado",
-    en = u"Listing appearence"
+    ca = u"Aparença",
+    es = u"Apariencia",
+    en = u"Appearence"
 )
 
 translations.define(
     "NewsletterListing.view_class"
-    "=woost.extensions.newsletters.NewsletterContainerView",
-    ca = u"Estàndard",
-    es = u"Estándar",
-    en = u"Standard"
+    "=woost.extensions.newsletters.NewsletterListingTextOnlyView",
+    ca = u"Només text",
+    es = u"Solo texto",
+    en = u"Text only"
+)
+
+translations.define(
+    "NewsletterListing.view_class"
+    "=woost.extensions.newsletters.NewsletterListingTextAndIconView",
+    ca = u"Text i icona",
+    es = u"Texto e icono",
+    en = u"Text and icon"
+)
+
+translations.define(
+    "NewsletterListing.view_class"
+    "=woost.extensions.newsletters.NewsletterListingSummaryView",
+    ca = u"Resum",
+    es = u"Resumen",
+    en = u"Summary"
 )
 
 translations.define("NewsletterListing.listed_items",
     ca = u"Elements a llistar",
     es = u"Elementos a listar",
     en = u"Listed items"
-)
-
-translations.define("NewsletterListing.content_view_factory",
-    ca = u"Aparença dels elements",
-    es = u"Apariencia de los elementos",
-    en = u"Item appearence"
-)
-
-translations.define("NewsletterListing.content_view_factory=text",
-    ca = u"Text",
-    es = u"Texto",
-    en = u"Text"
-)
-
-translations.define("NewsletterListing.content_view_factory=image",
-    ca = u"Imatge",
-    es = u"Imagen",
-    en = u"Image"
-)
-
-translations.define("NewsletterListing.content_view_factory=text_and_image",
-    ca = u"Text i imatge",
-    es = u"Texto e imagen",
-    en = u"Text and image"
-)
-
-translations.define("NewsletterListing.content_view_factory=detail",
-    ca = u"Detall",
-    es = u"Detalle",
-    en = u"Detail"
-)
-
-# NewsletterContent
-#------------------------------------------------------------------------------
-translations.define("NewsletterContent",
-    ca = u"Contingut",
-    es = u"Contenido",
-    en = u"Content"
-)
-
-translations.define("NewsletterContent-plural",
-    ca = u"Continguts",
-    es = u"Contenidos",
-    en = u"Content"
-)
-
-translations.define("NewsletterContent.heading_position",
-    ca = u"Posició de l'encapçalament",
-    es = u"Posición del encabezado",
-    en = u"Heading position"
-)
-
-translations.define("NewsletterContent.text",
-    ca = u"Text",
-    es = u"Texto",
-    en = u"Text"
-)
-
-translations.define("NewsletterContent.link",
-    ca = u"Enllaç",
-    es = u"Enlace",
-    en = u"Link"
-)
-
-translations.define("NewsletterContent.image",
-    ca = u"Imatge",
-    es = u"Imagen",
-    en = u"Image"
-)
-
-translations.define("NewsletterContent.layout",
-    ca = u"Disposició",
-    es = u"Disposición",
-    en = u"Disposition"
-)
-
-translations.define("NewsletterContent.image_size",
-    ca = u"Mida de la imatge",
-    es = u"Tamaño de la imagen",
-    en = u"Image size"
-)
-
-translations.define("NewsletterContent.image_factory",
-    ca = u"Processat d'imatge",
-    es = u"Procesado de imagen",
-    en = u"Image processing"
-)
-
-translations.define("NewsletterContent.image_spacing",
-    ca = u"Separació de la imatges",
-    es = u"Separación de la imagen",
-    en = u"Image separation"
-)
-
-translations.define("NewsletterContent.link_style",
-    ca = u"Elements enllaçats",
-    es = u"Elementos enlazados",
-    en = u"Linked elements"
-)
-
-translations.define("NewsletterContent.appearence",
-    ca = u"Aparença",
-    es = u"Apariencia",
-    en = u"Appearence"
-)
-
-# NewsletterContentLayout
-#------------------------------------------------------------------------------ 
-translations.define(
-    "woost.extensions.newsletters.NewsletterContentLayout=image_top",
-    ca = u"Imatge a dalt",
-    es = u"Imagen arriba",
-    en = u"Image top"
-)
-
-translations.define(
-    "woost.extensions.newsletters.NewsletterContentLayout=image_left",
-    ca = u"Imatge a l'esquerra",
-    es = u"Imagen a la izquierda",
-    en = u"Image left"
-)
-
-translations.define(
-    "woost.extensions.newsletters.NewsletterContentLayout=image_right",
-    ca = u"Imatge a la dreta",
-    es = u"Imagen a la derecha",
-    en = u"Image right"
-)
-
-# NewsletterContentImageSize
-#------------------------------------------------------------------------------ 
-translations.define(
-    "woost.extensions.newsletters.NewsletterContentImageSize=original",
-    ca = u"Mida original",
-    es = u"Tamaño original",
-    en = u"Original size"
-)
-
-translations.define(
-    "woost.extensions.newsletters.NewsletterContentImageSize=one_third",
-    ca = u"Un terç del contenidor",
-    es = u"Un tercio del contenidor",
-    en = u"One third of the container"
-)
-
-translations.define(
-    "woost.extensions.newsletters.NewsletterContentImageSize=one_half",
-    ca = u"La meitat del contenidor",
-    es = u"La mitad del contenidor",
-    en = u"Half of the container"
-)
-
-# LinkStyle
-#------------------------------------------------------------------------------
-translations.define("woost.extensions.newsletters.LinkStyle=minimal",
-    ca = u"Títol i imatge",
-    es = u"Título e imagen",
-    en = u"Heading and image"
-)
-
-translations.define("woost.extensions.newsletters.LinkStyle=linked_text",
-    ca = u"Títol, imatge i text",
-    es = u"Título, imagen y texto",
-    en = u"Title, image and text"
-)
-
-translations.define("woost.extensions.newsletters.LinkStyle=explicit_link",
-    ca = u"Títol, imatge i enllaç explícit",
-    es = u"Títol, imagen y enlace explícito",
-    en = u"Title, image and explicit link"
-)
-
-# BorderStyle
-#------------------------------------------------------------------------------
-translations.define("woost.extensions.newsletters.BorderStyle=None",
-    ca = u"Sense filet",
-    es = u"Sin lineas",
-    en = u"No border"
-)
-
-# NewsletterContentAppearence
-#------------------------------------------------------------------------------ 
-translations.define(
-    "woost.extensions.newsletters.NewsletterContentAppearence="
-    "woost.extensions.newsletters.NewsletterContentView",
-    ca = u"Estàndard",
-    es = u"Estándar",
-    en = u"Standard"
-)
-
-# HeadingPosition
-#------------------------------------------------------------------------------
-translations.define("woost.extensions.newsletters.HeadingPosition=top",
-    ca = u"Abans del contingut",
-    es = u"Antes del contenido",
-    en = u"Before the content"
-)
-
-translations.define("woost.extensions.newsletters.HeadingPosition=inside",
-    ca = u"Dins del contingut",
-    es = u"Dentro del contenido",
-    en = u"Inside the content"
-)    
-
-# NewsletterSeparator
-#------------------------------------------------------------------------------
-translations.define("NewsletterSeparator",
-    ca = u"Separador",
-    es = u"Separador",
-    en = u"Separator"
-)
-
-translations.define("NewsletterSeparator-plural",
-    ca = u"Separadors",
-    es = u"Separadores",
-    en = u"Separators"
-)
-
-translations.define("NewsletterSeparator.height_factor",
-    ca = u"Alçada",
-    es = u"Alto",
-    en = u"Height"
-)
-
-translations.define("NewsletterSeparator.border_style",
-    ca = u"Filet horitzontal entre blocs",
-    es = u"Linea horizontal entre bloques",
-    en = u"Horizontal lines between blocks"
-)
-
-# Image Factories
-#------------------------------------------------------------------------------
-translations.define("woost.extensions.newsletters.image_factories.newsletter_single_column.title",
-    ca = u"Imatge de butlletí amb columna completa",
-    es = u"Imagen de boletín con columna completa",
-    en = u"Newsletter image with single column"
-)
-
-translations.define("woost.extensions.newsletters.image_factories.newsletter_multi_column.title",
-    ca = u"Imatge de butlletí amb múltiples columnes",
-    es = u"Imagen de boletín con múltiples columnas",
-    en = u"Newsletter image with multiple columns"
-)
-
-# NewsletterView
-#------------------------------------------------------------------------------
-translations.define("woost.extensions.newsletters.NewsletterView bad_visualization",
-    ca = u"Si no visualitzes correctament aquest correu electrònic, pots ",
-    es = u"Si no visualizas correctamente este correo electrónico, puedes ",
-    en = u"If you can't see this email correctly, you can "
-)
-
-translations.define("woost.extensions.newsletters.NewsletterView online_version",
-    ca = u"veure la versió online",
-    es = u"ver la versión online",
-    en = u"see the online version"
-)
-
-# NewsletterContentView
-#------------------------------------------------------------------------------
-translations.define(
-    "woost.extensions.newsletters.NewsletterContentView.explicit_link",
-    ca = u"Més",
-    es = u"Más",
-    en = u"More"
-)
-
-# Configuration
-#------------------------------------------------------------------------------
-translations.define("Configuration.services.mailing_platform",
-    ca = u"Plataformes d'enviament de butlletins",
-    es = u"Plataformas de envío de boletines",
-    en = u"Newsletter sending platforms"
-)
-
-translations.define("Configuration.mailing_platforms",
-    ca = u"Plataformes disponibles",
-    es = u"Plataformas disponibles",
-    en = u"Available platforms"
-)
-
-# Template
-#------------------------------------------------------------------------------
-translations.define("Template.newsletter_header",
-    ca = u"Capçalera de butlletí de notícies",
-    es = u"Cabecera de boletín de noticias",
-    en = u"Newsletter header"
-)
-
-translations.define("Template.newsletter_footer",
-    ca = u"Peu de butlletí de notícies",
-    es = u"Pie de boletín de noticias",
-    en = u"Newsletter footer"
-)
-
-# ImageFactory
-#------------------------------------------------------------------------------
-translations.define("ImageFactory.applicable_to_newsletters",
-    ca = u"Aplicable a butlletins",
-    es = u"Aplicable a boletines",
-    en = u"Applicable to newsletters"
-)
-
-translations.define("ImageFactory.multi_column_version",
-    ca = u"Versió petita per butlletins",
-    es = u"Versión pequeña para boletines",
-    en = u"Small version for newsletters"
 )
 

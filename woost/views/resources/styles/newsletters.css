@@ -1,27 +1,36 @@
 
-.NewsletterView {
-    margin: 0 auto;    
+.NewsletterLayout,
+.NewsletterLayout table {
+    width: 100%;
 }
 
-.NewsletterView img {
+.NewsletterLayout .newsletter_root_cell {
+    text-align: center;
+}
+
+.NewsletterLayout .newsletter_root_cell td {
+    text-align: left;
+}
+
+.NewsletterLayout .newsletter_blocks {
+    width: 600px;    
+}
+
+.NewsletterLayout img {
     display: block;
 }
 
-.NewsletterView td {
+.NewsletterLayout td {
     vertical-align: top;
 }
 
-.NewsletterView td > *:first-child,
+.NewsletterLayout td > *:first-child,
 .NewsletterContentView .content_text > *:first-child {
     margin-top: 0;
 }
 
-.NewsletterView td > *:last-child,
+.NewsletterLayout td > *:last-child,
 .NewsletterContentView .content_text > *:last-child {
     margin-bottom: 0;
-}
-
-.NewsletterView table {
-    width: 100%;
 }
 
