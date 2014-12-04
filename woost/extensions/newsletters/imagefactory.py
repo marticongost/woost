@@ -14,12 +14,3 @@ ImageFactory.add_member(
     )
 )
 
-ImageFactory.add_member(
-    schema.Reference("multi_column_version",
-        type = ImageFactory,
-        related_end = schema.Collection(),
-        after_member = "fallback",
-        listed_by_default = False
-    )
-)
-
