@@ -608,10 +608,10 @@ class Item(PersistentObject):
         global_id
     ])
 
-    def get_member_copy_mode(self, member):
+    def get_member_copy_mode(self, member, **kwargs):
 
         from woost.models import Block
-        mode = PersistentObject.get_member_copy_mode(self, member)
+        mode = PersistentObject.get_member_copy_mode(self, member, **kwargs)
 
         if (
             mode
