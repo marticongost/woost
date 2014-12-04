@@ -10,7 +10,7 @@ Declaration of back office actions.
 import cherrypy
 from cocktail.modeling import getter, ListWrapper
 from cocktail.translations import translations
-from cocktail.persistence import datastore
+from cocktail.persistence import datastore, transactional
 from cocktail.controllers import (
     view_state,
     Location,
@@ -564,6 +564,51 @@ class EditAction(UserAction):
 
     def get_url(self, controller, selection):
         return controller.edit_uri(selection[0])
+
+
+class DuplicateAction(UserAction):
+
+    included = frozenset([
+        "toolbar",
+        "item_buttons"
+    ])
+    min = 1
+    max = 1
+
+    def is_permitted(self, user, target):
+        if isinstance(target, type):
+            return any(
+                model.instantiable
+                and user.has_permission(CreatePermission, target = target)
+                for model in target.schema_tree()
+            )
+        else:
+            return (
+                target.__class__.instantiable
+                and user.has_permission(
+                    CreatePermission,
+                    target = target.__class__
+                )
+            )
+
+    def invoke(self, controller, selection):
+        
+        @transactional()
+        def duplicate():
+            copy = selection[0].create_copy()
+            copy.insert()
+            return copy
+
+        copy = duplicate()
+        notify_user(
+            translations(
+                "woost.duplicate_created_notice",
+                source = selection[0]
+            ),
+            "success",
+            transient = False
+        )
+        raise cherrypy.HTTPRedirect(controller.edit_uri(copy))
 
 
 class DeleteAction(UserAction):
@@ -1177,6 +1222,7 @@ AddBlockBeforeAction("add_block_before").register()
 AddBlockAfterAction("add_block_after").register()
 EditAction("edit").register()
 EditBlocksAction("edit_blocks").register()
+DuplicateAction("duplicate").register()
 InstallationSyncAction("installation_sync").register()
 CopyBlockAction("copy_block").register()
 CutBlockAction("cut_block").register()
