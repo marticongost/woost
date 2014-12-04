@@ -1,28 +1,21 @@
 #-*- coding: utf-8 -*-
 u"""
 
-.. moduleauthor:: Javier Marrero <javier.marrero@whads.com>
+.. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
-from decimal import Decimal
 from cocktail import schema
-from cocktail.iteration import first
 from woost.models import (
-    Configuration,
-    Document, 
+    Document,
+    Slot,
     Template, 
     Controller,
     CustomBlock,
     HTMLBlock,
     block_type_groups
 )
-from woost.extensions.blocks.block import Block
-from woost.extensions.blocks.slot import Slot
-from woost.extensions.newsletters.newslettercontainer \
-    import NewsletterContainer
-from woost.extensions.newsletters.newslettercontent import NewsletterContent
-from woost.extensions.newsletters.newsletterseparator \
-    import NewsletterSeparator
-from woost.extensions.newsletters.mailingplatform import MailingPlatform
+from .newslettercontent import NewsletterContent
+from .newsletterbox import NewsletterBox
+from .newsletterlisting import NewsletterListing
 
 
 class Newsletter(Document):
@@ -40,44 +33,19 @@ class Newsletter(Document):
     )
     
     members_order = [
-        "mailing_platform",
         "blocks"
     ]
-
-    mailing_platform = schema.Reference(
-        type = MailingPlatform,
-        member_group = "content",
-        enumeration = lambda ctx: Configuration.instance.mailing_platforms,
-        edit_control = "cocktail.html.RadioSelector",
-        listed_by_default = False,
-        indexed = True,
-        default = schema.DynamicDefault(
-            lambda: first(Configuration.instance.mailing_platforms)
-        )
-    )
 
     blocks = Slot()
 
     allowed_block_types = (
-        NewsletterContainer,
+        NewsletterBox,
         NewsletterContent,
-        NewsletterSeparator,
+        NewsletterListing,
         CustomBlock,
         HTMLBlock
     )
 
     def allows_block_type(self, block_type):
         return issubclass(block_type, self.allowed_block_types)
-
-    def get_unsubscription_tag(self):
-        return (
-            self.mailing_platform
-            and self.mailing_platform.unsubscription_tag
-        )
-
-    def get_online_version_tag(self):
-        return (
-            self.mailing_platform
-            and self.mailing_platform.online_version_tag
-        )
 

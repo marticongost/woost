@@ -5,83 +5,55 @@ u"""
 """
 from cocktail.translations import translations
 from cocktail.html import Element, templates
-from woost.models import Item, Publishable, News
+from woost.models import Publishable, News
 from woost.views.viewfactory import ViewFactory
 
-view_factories = {
-    "text": ViewFactory(),
-    "image": ViewFactory(),
-    "text_and_image": ViewFactory(),
-    "detail": ViewFactory()
-}
-
-# Text content factory
+# Text only
 #------------------------------------------------------------------------------
+text_only = ViewFactory()
 
-text = view_factories["text"]
-
-@text.handler_for(Publishable)
-def publishable_text_link(item, parameters):
+@text_only.handler_for(Publishable)
+def item_link(item, parameters):
     view = Element("a")
     view["href"] = item.get_uri()
     view.append(translations(item))
     return view
 
-@text.handler_for(Item)
-def item_text(item, parameters):    
-    view = Element()
-    view.append(translations(item))
-    return view
-
-# Image content factory
+# Text and icons
 #------------------------------------------------------------------------------
+text_and_icon = ViewFactory()
 
-image = view_factories["image"]
+@text_and_icon.handler_for(Publishable)
+def item_link_with_icon(item, parameters):
 
-@image.handler_for(Publishable)
-def publishable_image_link(item, parameters):
-    view = Element("a")
-    view["href"] = item.get_uri()
-    view.append(item_image(item, parameters))
+    view = templates.new(
+        "woost.extensions.newsletters.NewsletterTextAndIconLink"
+    )
+    view.item = item
+
+    image_factory = parameters.get("image_factory")
+    if image_factory is None:
+        view.image_factory = image_factory
+
     return view
 
-@image.handler_for(Item)
-def item_image(item, parameters):    
-    view = templates.new("woost.views.Image")
-    view.image = item
-    view.image_factory = parameters.get("image_factory")
-    return view
-
-# Text and image content factory
+# Summary
 #------------------------------------------------------------------------------
+summary = ViewFactory()
 
-text_and_image = view_factories["text_and_image"]
+@summary.handler_for(News)
+def news_summary(news, parameters):
 
-@text_and_image.handler_for(Publishable)
-def publishable_text_and_image_link(item, parameters):    
-    view = templates.new("woost.extensions.newsletters.NewsletterContentView")
-    view.heading = translations(item)
-    view.link = item
-    view.image = item
+    view = templates.new(
+        "woost.extensions.newsletters.NewsletterNewsSummary"
+    )
+    view.news = news
+
+    image_factory = parameters.get("image_factory")
+    if image_factory is None:
+        view.image_factory = image_factory
+
     return view
 
-@text_and_image.handler_for(Item)
-def item_text_and_image(item, parameters):
-    view = templates.new("woost.extensions.newsletters.NewsletterContentView")
-    view.heading = translations(item)
-    view.image = item
-    return view
-
-# Detail content factory
-#------------------------------------------------------------------------------
-
-detail = view_factories["detail"]
-
-@detail.handler_for(News)
-def news_detail(item, parameters):    
-    view = publishable_text_and_image_link(item, parameters)
-    view.text = item.summary
-    return view
-
-detail.register(Item, "text_and_image_default", text_and_image)
+summary.register(Publishable, "item_link", item_link)
 

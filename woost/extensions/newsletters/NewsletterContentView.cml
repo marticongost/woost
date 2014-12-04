@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <?py
-from decimal import Decimal
 from woost.models.rendering import ImageFactory
 ?>
 
@@ -13,85 +12,46 @@ from woost.models.rendering import ImageFactory
 
     <?py-class
     heading = None
-    heading_position = None
+    heading_position = "top"
     text = None
     link = None
-    link_style = None
+    linked_text = False
     image = None
-    image_width_factors = {
-        "one_third": Decimal("0.3"),
-        "one_half": Decimal("0.5")
-    }
-    content_image_factory = None
-    image_spacing = None
-
-    def get_image_column_width(self):
-
-        image_size = self.content_image_size or "one_third"
-
-        if image_size == "original":
-            return None
-
-        image_width_factor = self.image_width_factors[image_size]
-        image_spacing = self.image_spacing * self.base_spacing
-        width = self.width - image_spacing
-
-        if self["cellspacing"]:
-            width -= int(self["cellspacing"]) * 2
-
-        if self["cellpadding"]:
-            width -= int(self["cellpadding"]) * 2
-
-        return width * image_width_factor
+    image_alignment = "image_top"
+    image_factory = None
+    image_rendering_test = True
+    autohide = True
     ?>
 
     <py:ready>
         <?py
+        # Determine the layout for the block
         layout = None
         has_text = self.text or self.heading
 
         if has_text and self.image:
-            layout = self.content_layout or "image_top"
+            layout = self.image_alignment
         elif has_text:
             layout = "text_only"
         elif self.image:
             layout = "image_only"
+        elif self.autohide:
+            self.visible = True
+            return
 
-        if self.image and self.content_image_size != "original":
+        # Hide images that can't be rendered by the seleted image factory
+        if self.image and self.image_rendering_test:
+            
+            image_factory = self.image_factory
+            if isinstance(image_factory, basestring):
+                image_factory = ImageFactory.require_instance(identifier = image_factory)
+            elif image_factory is None:
+                image_factory = ImageFactory.require_instance(identifier = "default")
 
-            if self.content_image_factory is None:
-                self.content_image_factory = ImageFactory.require_instance(
-                    identifier = "newsletter_single_column"
-                )
-            elif isinstance(self.content_image_factory, basestring):
-                self.content_image_factory = ImageFactory.require_instance(
-                    identifier = self.content_image_factory
-                )
-
-            # Use a smaller image on multi column layouts
-            if (
-                self.content_image_factory.multi_column_version
-                and not (
-                    self.is_single_column
-                    and layout in ("image_top", "image_only")
-                )
-            ):
-                self.content_image_factory = \
-                    self.content_image_factory.multi_column_version
-
-            # Hide images that can't be rendered by the seleted image factory
-            if not self.content_image_factory.can_render(self.image):
+            if not image_factory.can_render(self.image):
                 layout = "text_only"
 
-        if self.image_spacing is None:
-            self.image_spacing = 2
-
-        if self.link_style is None:
-            self.link_style = "minimal"
-
-        if self.heading_position is None:
-            self.heading_position = "top"
-        
+        # Add CSS classes based on the chosen attributes
         self.add_class("heading_position_" + self.heading_position)
 
         if self.heading:
@@ -99,6 +59,7 @@ from woost.models.rendering import ImageFactory
         else:
             self.add_class("without_heading")
 
+        # Invoke the factory for the chosen layout
         if layout:
             layout_factory = getattr(self, "create_" + layout + "_layout")
             self.content_cell.append(layout_factory())
@@ -107,7 +68,18 @@ from woost.models.rendering import ImageFactory
         ?>
     </py:ready>
 
-    <tr py:id="heading_row" py:visible="@{self.heading and self.heading_position == 'top'}">
+    <!-- Top structure -->
+    <py:new
+        py:id="top_heading_row"
+        py:element="self.create_heading_row()"
+        py:visible="@{self.heading and self.heading_position == 'top'}"/>
+
+    <tr py:id="content_row">
+        <td py:id="content_cell"/>
+    </tr>
+
+    <!-- Fragments -->
+    <tr py:def="heading_row">
         <td py:id="heading_cell">
             <py:new py:element="self.create_content_link()">
                 <py:ready>
@@ -119,10 +91,6 @@ from woost.models.rendering import ImageFactory
         </td>
     </tr>
 
-    <tr py:id="content_row">
-        <td py:id="content_cell"/>
-    </tr>
-    
     <a py:def="content_link">
         <?py
         if self.link:
@@ -137,37 +105,31 @@ from woost.models.rendering import ImageFactory
         <py:woost.views.Image
             py:local_id="image"
             py:image="${self.image}"
-            py:image_factory="${self.content_image_factory}"
-            width="${self.width}"/>
+            py:image_factory="${self.image_factory}"/>
     </py:new>
 
-    <div py:def="content_text">
-        <?py
-        if self.heading and self.heading_position == "inside":
-            link = self.create_content_link()
-            link.append(self.heading)
-            element.append(link)
+    <table
+        py:def="content_text"
+        cellpadding="0"
+        cellspacing="0"
+        border="0">
 
-        if self.text:
-            if self.link_style == "linked_text":
-                link = self.create_content_link()
-                link.append(self.text)
-                element.append(link)
-            else:
-                element.append(self.text)
-        ?>
         <py:new
-            py:element="self.create_explicit_link()"
-            py:local_id="explicit_link"
-            py:if="self.link and self.link_style == 'explicit_link'"/>
-    </div>
+            py:id="inside_heading_row"
+            py:element="self.create_heading_row()"
+            py:visible="@{self.heading and self.heading_position == 'inside'}"/>
 
-    <table py:def="explicit_link" border="0" cellpadding="0" cellspacing="0">
-        <tr>
-            <td>
-                <py:new py:element="self.create_content_link()">
-                    ${translations("woost.extensions.newsletters.NewsletterContentView.explicit_link")}
-                </py:new>
+        <tr py:id="content_text_row">
+            <td py:id="content_text_cell">
+                <?py
+                if self.text:
+                    if self.linked_text:
+                        link = self.create_content_link()
+                        link.append(self.text)
+                        element.append(link)
+                    else:
+                        element.append(self.text)
+                ?>
             </td>
         </tr>
     </table>
@@ -183,19 +145,11 @@ from woost.models.rendering import ImageFactory
         cellspacing="0"
         border="0">
         <tr>
-            <?py
-            image_column_width = self.get_image_column_width()
-            ?>
             <td py:local_id="text_cell">
                 <py:new py:element="self.create_content_text()"/>
             </td>
-            <td py:local_id="padding" width="${self.image_spacing * self.base_spacing}"/>
-            <td py:local_id="image_cell" width="${image_column_width}">
-                <py:new py:element="self.create_content_image()">
-                    <?py
-                    element.image["width"] = image_column_width
-                    ?>
-                </py:new>
+            <td py:local_id="image_cell">
+                <py:new py:element="self.create_content_image()"/>
             </td>
         </tr>
     </table>
@@ -206,17 +160,9 @@ from woost.models.rendering import ImageFactory
         cellspacing="0"
         border="0">
         <tr>
-            <?py
-            image_column_width = self.get_image_column_width()
-            ?>
-            <td py:local_id="image_cell" width="${image_column_width}">
-                <py:new py:element="self.create_content_image()">
-                    <?py
-                    element.image["width"] = image_column_width
-                    ?>
-                </py:new>
+            <td py:local_id="image_cell">
+                <py:new py:element="self.create_content_image()"/>
             </td>            
-            <td py:local_id="padding" width="${self.image_spacing * self.base_spacing}"/>
             <td py:local_id="text_cell">
                 <py:new py:element="self.create_content_text()"/>
             </td>
