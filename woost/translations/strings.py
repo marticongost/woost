@@ -68,6 +68,18 @@ translations.define("woost.actions.edit.shortcut",
     en = u"e"
 )
 
+translations.define("woost.actions.duplicate",
+    ca = u"Duplicar",
+    es = u"Duplicar",
+    en = u"Duplicate"
+)
+
+translations.define("woost.actions.duplicate.shortcut",
+    ca = u"u",
+    es = u"u",
+    en = u"u"
+)
+
 translations.define("woost.actions.order",
     ca = u"Ordenar",
     es = u"Ordenar",
@@ -1617,6 +1629,15 @@ translations.define("woost.cache_invalidated_notice",
             u"the whole web" if subset is None
             else plural2(len(subset), "%d elements" % len(subset), "1 element")
         )
+)
+
+translations.define("woost.duplicate_created_notice",
+    ca = u"S'ha creat el duplicat. Assegura't de revisar-lo i editar-lo com "
+         u"correspongui.",
+    es = u"Se ha creado el duplicado. Asegurate de revisarlo y modificarlo "
+         u"como corresponda.",
+    en = u"Your duplicated element is ready. Make sure to review and modify "
+         u"it as necessary."
 )
 
 translations.define("woost.views.BaseView alternate language link",

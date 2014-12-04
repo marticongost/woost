@@ -150,6 +150,7 @@ class Item(PersistentObject):
         invalidates_cache = False,
         listed_by_default = False,
         text_search = False,
+        copy_mode = schema.DO_NOT_COPY,
         member_group = "administration"
     )
 
@@ -608,10 +609,10 @@ class Item(PersistentObject):
         global_id
     ])
 
-    def get_member_copy_mode(self, member):
+    def get_member_copy_mode(self, member, **kwargs):
 
         from woost.models import Block
-        mode = PersistentObject.get_member_copy_mode(self, member)
+        mode = PersistentObject.get_member_copy_mode(self, member, **kwargs)
 
         if (
             mode
