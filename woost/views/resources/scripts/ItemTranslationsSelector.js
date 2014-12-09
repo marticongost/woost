@@ -61,7 +61,8 @@ cocktail.bind(".ItemTranslationsSelector", function ($selector) {
         }
 
         $selector.on("searched", toggleSelectionLinks);
-        $selector.on("containingDropdownExpanded", toggleSelectionLinks);
+        $selector.addClass("exposable");
+        $selector.on("exposed", toggleSelectionLinks);
         $checkList.on("selectionChanged", toggleSelectionLinks);
 
         $checkList.on("keydown", ".entry", function (e) {
