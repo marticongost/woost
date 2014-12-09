@@ -98,7 +98,7 @@ class ImageFactory(Item):
 
         return image
 
-    def can_render(self, item, **parameters):
+    def can_render(self, item, resolve_representative = True, **parameters):
         """Indicates if the renderers used by the image factory are able to
         render the given item.
 
@@ -109,6 +109,8 @@ class ImageFactory(Item):
             item, False otherwise.
         @rtype: bool
         """
+        if resolve_representative:
+            item = item.resolve_representative_image(self)
         return (
             self.renderer.can_render(item, **parameters)
             or self.fallback and self.fallback.can_render(item, **parameters)

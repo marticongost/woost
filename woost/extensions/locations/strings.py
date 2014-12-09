@@ -5,25 +5,20 @@ u"""
 """
 from cocktail.iteration import first
 from cocktail.translations import translations, get_language
+from cocktail.translations.strings \
+    import translate_locale_component as base_translate_locale_component
 from woost.extensions.locations.location import Location
 
-# Override the translation for locales to replace country ISO codes with
-# human readable descriptions
+# Override the translation for locale components to replace country ISO codes
+# with human readable descriptions
 
-def _translate_locale(locale):
+def translate_locale_component(locale, component, index):
 
-    trans = translations(locale)
-    if trans:
-        return trans
-
-    parts = locale.split("-")
-    parts[0] = translations(parts[0], default = parts[0])
-
-    if len(parts) > 1:
+    if index == 1:
         location = first(
             Location.select({
                 "location_type": "country",
-                "code": parts[1]
+                "code": component
             })
         )
         if location is not None:
@@ -39,13 +34,12 @@ def _translate_locale(locale):
                     discard_generic_translation = True
                 )
 
-            if location_name:
-                parts[1] = location_name
+            return u" - " + location_name
 
-    return " - ".join(parts)
+    return base_translate_locale_component(locale, component, index)
 
-translations.define("locale", **dict(
-    (lang, _translate_locale)
+translations.define("locale_component", **dict(
+    (lang, translate_locale_component)
     for lang in translations
 ))
 

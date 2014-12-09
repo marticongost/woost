@@ -55,10 +55,10 @@ def add_block(block, parent, slot, positioning = "append", anchor = None):
         else:
             raise ValueError("Invalid block positioning: %s" % positioning)
 
-def create_block_views(blocks):
+def create_block_views(blocks, **kwargs):
     for block in blocks:
         if block.is_published():
-            view = block.create_view()
+            view = block.create_view(**kwargs)
             if view is not None:
                 yield view
 
