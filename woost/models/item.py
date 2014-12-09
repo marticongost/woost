@@ -150,6 +150,7 @@ class Item(PersistentObject):
         invalidates_cache = False,
         listed_by_default = False,
         text_search = False,
+        copy_mode = schema.DO_NOT_COPY,
         member_group = "administration"
     )
 
@@ -480,18 +481,24 @@ class Item(PersistentObject):
         parameters = None,
         encode = True,
         include_extension = True,
-        host = None,):
+        host = None
+    ):
+        image = self.resolve_representative_image(image_factory)
+        return image._get_image_uri(
+            image_factory = image_factory,
+            parameters = parameters,
+            encode = encode,
+            include_extension = include_extension,
+            host = host
+        )
 
-        representative_image = self.get_representative_image(image_factory)
-        if representative_image is not None:
-            return representative_image.get_image_uri(
-                image_factory = image_factory,
-                parameters = parameters,
-                encode = encode,
-                include_extension = include_extension,
-                host = host
-            )
-
+    def _get_image_uri(self,
+        image_factory = None,
+        parameters = None,
+        encode = True,
+        include_extension = True,
+        host = None
+    ):
         uri = make_uri("/images", self.id)
         ext = None
 
@@ -536,6 +543,16 @@ class Item(PersistentObject):
             uri = make_uri(uri, **parameters)
 
         return self._fix_uri(uri, host, encode)
+
+    def resolve_representative_image(self, image_factory = None):
+        
+        image = self
+        
+        while True:
+            next_image = image.get_representative_image(image_factory)
+            if next_image is None:
+                return image
+            image = next_image
 
     def get_representative_image(self, image_factory = None):
         try:
@@ -592,10 +609,10 @@ class Item(PersistentObject):
         global_id
     ])
 
-    def get_member_copy_mode(self, member):
+    def get_member_copy_mode(self, member, **kwargs):
 
         from woost.models import Block
-        mode = PersistentObject.get_member_copy_mode(self, member)
+        mode = PersistentObject.get_member_copy_mode(self, member, **kwargs)
 
         if (
             mode

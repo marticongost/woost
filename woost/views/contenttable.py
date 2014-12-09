@@ -29,6 +29,11 @@ class ContentTable(ContentDisplayMixin, Table):
     default_display = TranslationDisplay
     use_separate_selection_column = False
 
+    def _ready(self):
+        if not self.user_collection.type.show_element_in_listings:
+            self.add_class("hidden_element_column")
+        Table._ready(self)
+
     def __init__(self, *args, **kwargs):
         Table.__init__(self, *args, **kwargs)
         ContentDisplayMixin.__init__(self)

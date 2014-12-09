@@ -58,7 +58,8 @@ of its features include:\n"
     extras_require = {
         'campaign_monitor_api': ["campaign_monitor_api"],
         "twitterpublication": ["oauth2"],
-        "amazon_s3_static_publication": ["boto"]
+        "amazon_s3_static_publication": ["boto"],
+        "newsletters": ["premailer"]
     },
     packages = find_packages(),
     include_package_data = True,
@@ -97,7 +98,8 @@ of its features include:\n"
             "restrictedaccess = woost.extensions.restrictedaccess:RestrictedAccessExtension",
             "annotations = woost.extensions.annotations:AnnotationsExtension",
             "notices = woost.extensions.notices:NoticesExtension",
-            "variables = woost.extensions.variables:VariablesExtension"
+            "variables = woost.extensions.variables:VariablesExtension",
+            "newsletters = woost.extensions.newsletters:NewslettersExtension"
         ]
     },
     # Woost can't yet access view resources (images, style sheets, client
