@@ -296,15 +296,11 @@ class Publishable(Item):
         if event.member is cls.websites:
             publishable = event.source
             website = event.related_object
-            
+
             # Update the index
             if publishable.is_inserted and website.is_inserted:
                 index = cls.per_website_publication_index
-                
-                # No longer available to any website
-                if len(publishable.websites) == 1:
-                    index.remove(None, publishable.id)
-
+                index.remove(None, publishable.id)
                 index.add(website.id, publishable.id)
 
     @event_handler
