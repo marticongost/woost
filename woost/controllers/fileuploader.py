@@ -227,6 +227,9 @@ class FileUploader(object):
                     files = (value,)
 
                 for file in files:
+                    if not file.is_inserted:
+                        file.insert()
+
                     temp_file = self.temp_paths.get(file)
 
                     if temp_file and os.path.exists(temp_file):
