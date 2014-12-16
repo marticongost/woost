@@ -12,6 +12,7 @@ from cocktail.controllers.viewstate import view_state
     events = None
     calendar_page = None
     calendar_page_member = None
+    show_time = True
     ?>
 
     <div py:id="calendar_navigation">
@@ -122,6 +123,9 @@ from cocktail.controllers.viewstate import view_state
 
     <article py:def="event_info" py:args="event">
         <h1 py:local_id="event_heading">
+            <span py:local_id="event_time" py:visible="@{self.show_time}">
+                ${translations(event.event_start.time(), include_seconds = False)}
+            </span>
             <a py:local_id="event_link" href="${event.get_uri()}">
                 ${translations(event)}
             </a>
