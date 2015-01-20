@@ -10,11 +10,11 @@
     block_slot = None
     edited_item = None
 
-    def create_action_button(self, action, extra):
+    def create_action_button(self, action, extra, action_context):
         if action.id in ("add_block", "add_block_before", "add_block_after"):
             return self.create_block_picker(action)
         else:
-            button = ActionBar.create_action_button(self, action, extra)
+            button = ActionBar.create_action_button(self, action, extra, action_context)
 
             if button.tag == "button":
                 form = Element("form")
