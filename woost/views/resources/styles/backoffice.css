@@ -521,7 +521,8 @@ body.modal {
 
 .BackOfficeLayout .field input.control,
 .BackOfficeLayout .field textarea.control,
-.BackOfficeLayout .field select.control {
+.BackOfficeLayout .field select.control,
+.BackOfficeLayout .field .Autocomplete .text_box {
     width: 18em;
 }
 
