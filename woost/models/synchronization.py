@@ -20,7 +20,7 @@ from cocktail.modeling import (
 )
 from cocktail.pkgutils import get_full_name, resolve
 from cocktail import schema
-from cocktail.persistence import datastore
+from cocktail.persistence import datastore, InstanceNotFoundError
 from woost.models.item import Item
 
 RegExp = type(re.compile(""))
@@ -49,12 +49,20 @@ class Synchronization(object):
         )
 
     def process_manifest(self):
+
         manifest = get_manifest()
+
         for global_id, object_hash in manifest.iteritems():
             if object_hash is None:
-                obj = Item.require_instance(global_id = global_id)
-                object_hash = self.get_object_state_hash(obj)
-                manifest[global_id] = object_hash
+                try:
+                    obj = Item.require_instance(global_id = global_id)
+                except InstanceNotFoundError:
+                    del manifest[global_id]
+                    continue
+                else:
+                    object_hash = self.get_object_state_hash(obj)
+                    manifest[global_id] = object_hash
+
             yield global_id, object_hash
 
     def get_object_state_hash(self, obj):
@@ -91,10 +99,10 @@ class Synchronization(object):
             "__class__": obj.__class__.full_name
         }
 
-        for key, member in obj.__class__.members().iteritems():
+        for member in obj.__class__.iter_members():
             if member.synchronizable:
                 value = self.export_member(obj, member)
-                state[key] = value
+                state[member.name] = value
 
         return state
 
@@ -207,6 +215,7 @@ class Synchronization(object):
         )
  
         request = urllib2.Request(url)
+        request.add_header("User-Agent", "woost.synchronization")
 
         # Add authentication headers
         if self.remote_user:
@@ -323,15 +332,25 @@ def get_manifest():
 
     return manifest
 
-def rebuild_manifest(eager = True):
+def rebuild_manifest(eager = True, verbose = False):
+
     datastore.root[MANIFEST_KEY] = manifest = OOBTree()
     
     if eager:
         sync = Synchronization()
 
-    for obj in Item.select(Item.synchronizable.equal(True)):
+    items = Item.select(Item.synchronizable.equal(True))
+
+    if verbose:
+        i = 1
+        total = len(items)
+
+    for obj in items:
         global_id = obj.global_id
         if global_id:
+            if verbose:
+                print str(i).rjust(8), "/", total, "-", obj
+                i += 1
             if eager:
                 object_hash = sync.get_object_state_hash(obj)
                 manifest[global_id] = object_hash

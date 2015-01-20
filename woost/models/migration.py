@@ -1075,3 +1075,12 @@ def introduce_publishable_access_level(e):
     # Rebuild indexes
     Publishable.access_level.rebuild_index()
 
+#------------------------------------------------------------------------------
+
+step = MigrationStep("Index Publishable.parent")
+
+@when(step.executing)
+def index_publishable_parent(e):
+    from woost.models import Publishable
+    Publishable.parent.rebuild_index()
+

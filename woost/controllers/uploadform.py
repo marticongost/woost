@@ -79,9 +79,8 @@ class UploadForm(Form):
 
                 target_member.name = self.key
                 target_member.member_group = source_member.member_group
-                target_member.adaptation_source = source_member
-                target_member.copy_source = source_member
                 context.target_schema.add_member(target_member)
+                context.member_created(target_member, source_member)
 
         def adapt_object(self, context):
             if context.consume(self.key):

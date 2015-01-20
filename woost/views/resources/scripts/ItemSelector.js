@@ -79,8 +79,9 @@ cocktail.bind(".UserFilterEntry .ItemSelector", function ($itemSelector) {
             });
         });
         
-        var form = jQuery(this).parents("form").get(0);
-        var prevAction = form.action;
+        var $form = jQuery(this).parents("form");
+        var form = $form.get(0);
+        var prevAction = $form.attr('action');
         var prevTarget = form.target;
         param = cocktail.createElement("input", "client_side_scripting", "hidden");
         param.value = "true";
