@@ -162,7 +162,7 @@ class WebsiteSpecificContentIndexingTestCase(BaseTestCase):
         p1.insert()
         p1.websites = [w1]
         
-        assert (w1.id, p1.id) not in list(index.items())
+        assert (w1.require_id(), p1.id) not in list(index.items())
 
     def test_content_is_published_for_all_websites_by_default(self):
         

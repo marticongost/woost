@@ -325,24 +325,17 @@ def get_receivers_by_lists(lists):
 # Validations
 #------------------------------------------------------------------------------
 
-def document_validation(member, document, context):
-    if document and not document.template:
-        yield DocumentTemplateRequiredError(
-            member,
-            document,
-            context
-        )
+def document_validation(context):
+    if context.value and not context.value.template:
+        yield DocumentTemplateRequiredError(context)
 
-def language_validation(cls, instance, context):
-    language = instance.get("language")
-    document = instance.get("document")
+def language_validation(context):
+    language = context.value
+    document = context.get_value("document")
 
     if language and document and language not in document.translations.keys():
-        yield LanguageValueError(
-            cls.get_member("language"),
-            None,
-            context
-        )
+        yield LanguageValueError(context)
 
 Mailing.document.add_validation(document_validation)
-Mailing.add_validation(language_validation)
+Mailing.language.add_validation(language_validation)
+

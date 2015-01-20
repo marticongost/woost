@@ -140,6 +140,7 @@ class Publishable(Item):
         type = "woost.models.Document",
         bidirectional = True,
         related_key = "children",
+        indexed = True,
         listed_by_default = False,
         member_group = "navigation"
     )
