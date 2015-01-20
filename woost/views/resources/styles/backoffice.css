@@ -1166,6 +1166,31 @@ body.scripted .BackOfficeLayout .Table .row_selection_control {
     color: white !important;
 }
 
+.BackOfficeLayout .MappingTable table,
+.BackOfficeLayout .MappingTable td,
+.BackOfficeLayout .MappingTable th {
+    background-image: none;
+    background-color: transparent;
+    border-collapse: collapse;
+    border: none;
+    font-size: 1em;
+    padding: 0;
+    vertical-align: top;
+}
+
+.BackOfficeLayout .MappingTable th {
+    padding-right: 1.2em;
+}
+
+.BackOfficeLayout .MappingTable th,
+.BackOfficeLayout .MappingTable td {
+    padding-bottom: 0.6em;
+}
+
+.BackOfficeLayout .MappingTable td th {
+    font-weight: normal;
+}
+
 .BackOfficeLayout .changed,
 .BackOfficeItemView .tab.changed {
     background-color: rgb(250,242,190);
