@@ -356,7 +356,8 @@ def trigger_responses(
             ):
                 continue
 
-            print trigger_match_style("match")
+            if verbose:
+                print trigger_match_style("match")
 
             # Track modified / deleted items
             trigger_targets = trans_triggers.get(trigger)
