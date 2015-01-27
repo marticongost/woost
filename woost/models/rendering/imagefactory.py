@@ -25,6 +25,7 @@ class ImageFactory(Item):
         "renderer",
         "default_format",
         "effects",
+        "options_code",
         "fallback",
         "applicable_to_blocks"
     ]
@@ -61,6 +62,10 @@ class ImageFactory(Item):
         items = "woost.models.rendering.ImageEffect",
         bidirectional = True,
         integral = True,        
+    )
+
+    options_code = schema.CodeBlock(
+        language = "python"
     )
 
     fallback = schema.Reference(
