@@ -204,6 +204,7 @@ def search(
     objects = None,
     languages = None,
     match_mode = "pattern",
+    stemming = None,
     **search_kwargs
 ):
     if objects is None:
@@ -222,15 +223,20 @@ def search(
             query_text,
             languages = languages,
             match_mode = match_mode,
+            stemming = stemming,
             **search_kwargs
         )
     )
+
+    if stemming is None:
+        stemming = query.type.stemming
 
     highlighter = schema.SearchHighlighter(
         query_text,
         languages,
         lambda text: styled(text, "magenta"),
-        match_mode = match_mode
+        match_mode = match_mode,
+        stemming = stemming
     )
 
     for result in query:
