@@ -199,8 +199,13 @@ def replace(expr, replacement, objects = None, mode = "apply"):
 
         obj.set(member, modified_value, language)
 
-def search(query_text, objects = None, languages = None, **search_kwargs):
-
+def search(
+    query_text,
+    objects = None,
+    languages = None,
+    match_mode = "pattern",
+    **search_kwargs
+):
     if objects is None:
         query = Item.select()
     elif isinstance(objects, (schema.SchemaClass, Query)):
@@ -213,13 +218,19 @@ def search(query_text, objects = None, languages = None, **search_kwargs):
         languages = (None, get_language())
 
     query.add_filter(
-        Self.search(query_text, languages = languages, **search_kwargs)
+        Self.search(
+            query_text,
+            languages = languages,
+            match_mode = match_mode,
+            **search_kwargs
+        )
     )
 
     highlighter = schema.SearchHighlighter(
         query_text,
         languages,
-        lambda text: styled(text, "magenta")
+        lambda text: styled(text, "magenta"),
+        match_mode = match_mode
     )
 
     for result in query:

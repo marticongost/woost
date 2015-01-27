@@ -680,9 +680,12 @@ class ReferencesAction(UserAction):
     min = 1
     max = 1
 
-    def __translate__(self, language, **kwargs):
+    def __translate__(self, language, context = None, **kwargs):
         label = UserAction.__translate__(self, language, **kwargs)
-        if self.stack_node is not None:
+        if (
+            self.stack_node is not None
+            and context and "item_buttons" in context
+        ):
             label += " (%d)" % len(self.references)
         return label
 
