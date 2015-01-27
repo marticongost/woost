@@ -2,6 +2,7 @@
 <?py
 import re
 from cocktail.html.selectable import selectable
+from woost.models import Item
 ?>
 
 <py:woost.views.ContentView
@@ -24,10 +25,10 @@ from cocktail.html.selectable import selectable
 
         <py:with py:def="entry" py:args="value, label, selected">
             <div py:local_id="icon_frame" py:index="0">
-                <?py
-                image_uri = self.cms.image_uri(value, "backoffice_thumbnail.png")
-                ?>
-                <img class="icon" src="${image_uri}"/>
+                <py:woost.views.Image
+                    py:local_id="icon"
+                    py:image="${Item.require_instance(value)}"
+                    py:image_factory="backoffice_thumbnail.png"/>
             </div>            
         </py:with>
     </py:cocktail.html.CheckList>
