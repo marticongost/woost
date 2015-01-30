@@ -111,12 +111,15 @@ def clear_image_cache_after_commit(item = None, factory = None):
         return
 
     if factory:
-        factory_identifier = factory.identifier or "factory%d" % factory.id
+        factory_identifier = (
+            factory.identifier
+            or "factory%d" % factory.require_id()
+        )
     else:
         factory_identifier = None
 
     key = "woost.models.rendering.clear_image_cache(item=%s,factory=%s)" % (
-        item.id if item else "*",
+        item.require_id() if item else "*",
         factory_identifier or "*"
     )
 

@@ -72,14 +72,17 @@ class UserEditNode(EditNode):
                     password_conf_member.exclusive = change_password_member
             
                 @form_schema.add_validation
-                def validate_password_confirmation(form_schema, value, ctx):
-                    password = ctx.get_value("password")               
-                    password_confirmation = ctx.get_value("password_confirmation")
+                def validate_password_confirmation(context):
+                    password = context.get_value("password")
+                    password_confirmation = \
+                        context.get_value("password_confirmation")
 
-                    if password and password_confirmation \
-                    and password != password_confirmation:
-                        yield PasswordConfirmationError(
-                                form_schema, value, ctx)
+                    if (
+                        password
+                        and password_confirmation
+                        and password != password_confirmation
+                    ):
+                        yield PasswordConfirmationError(context)
 
             # No encryption: edit passwords in plain sight
             else:

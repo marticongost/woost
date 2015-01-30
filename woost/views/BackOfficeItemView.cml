@@ -80,7 +80,7 @@ from woost.controllers.backoffice.useractions import (
             class="toolbar">
             <py:with
                 py:def="action_button"
-                py:args="action, extra"
+                py:args="action, extra, action_context"
                 name="item_action">
                 <?py
                 if action is self.selected_action:

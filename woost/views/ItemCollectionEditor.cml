@@ -94,18 +94,18 @@ from woost.controllers.backoffice.useractions import add_view_action_context
             return actions
 
         @extend(toolbar)
-        def create_action_button(toolbar, action, extra):
+        def create_action_button(toolbar, action, extra, action_context):
             if action.id in ("new", "add_integral"):
                 if len(self._instantiable_content_types) > 1:
                     button = self.create_new_toolbar_button(action, extra)
                 else:
-                    button = call_base(action, extra)
+                    button = call_base(action, extra, action_context)
                     button.tag = "a"
                     del button["name"]
                     button["href"] = self.get_new_content_uri(list(self._instantiable_content_types)[0])
             else:
-                button = call_base(action, extra)
-            
+                button = call_base(action, extra, action_context)
+
             button.set_client_param("minSelection", action.min)
             button.set_client_param("maxSelection", action.max)
             button.set_client_param("ignoresSelection", action.ignores_selection)
