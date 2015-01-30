@@ -5719,6 +5719,113 @@ translations.define("ImageFactory.effects",
     en = u"Effects"
 )
 
+translations.define("ImageFactory.options_code",
+    ca = u"Opcions",
+    es = u"Opciones",
+    en = u"Options"
+)
+
+translations.define("ImageFactory.options_code-explanation",
+    ca = u"""
+        <p>
+            Fragment de codi Python que permet passar paràmetres al mètode save
+            de PIL.
+        </p>
+        <details>
+            <summary>Detalls</summary>
+            <p>
+                Es proporcionen les variables següents:
+            </p>
+            <dl>
+                <dt>options</dt>
+                <dd>Diccionari amb els paràmetres que es passaran al mètode save.
+                    Documentació:
+                    <a href='http://effbot.org/imagingbook/format-jpeg.htm'>
+                        JPEG
+                    </a>,
+                    <a href='http://effbot.org/imagingbook/format-png.htm'>
+                        PNG
+                    </a>,
+                    <a href='http://effbot.org/imagingbook/format-gif.htm'>
+                        GIF
+                    </a>
+                </dd>
+                <dt>format</dt>
+                <dd>JPEG | PNG | GIF.</dd>
+                <dt>factory</dt>
+                <dd>El processador d'imatge.</dd>
+                <dt>image</dt>
+                <dd>Referència a l'element que s'està pintant.</dd>
+            </dl>
+        </details>
+    """,
+    es = u"""
+        <p>
+            Fragmento de código Python que permite pasar parámetros al método
+            save de PIL.
+        </p>
+        <details>
+            <summary>Detalles</summary>
+            <p>
+                Se proporcionan las variables siguientes:
+            </p>
+            <dl>
+                <dt>options</dt>
+                <dd>Diccionario con los parámetros que se pasaran al método save.
+                    Documentación:
+                    <a href='http://effbot.org/imagingbook/format-jpeg.htm'>
+                        JPEG
+                    </a>,
+                    <a href='http://effbot.org/imagingbook/format-png.htm'>
+                        PNG
+                    </a>,
+                    <a href='http://effbot.org/imagingbook/format-gif.htm'>
+                        GIF
+                    </a>
+                </dd>
+                <dt>format</dt>
+                <dd>JPEG | PNG | GIF.</dd>
+                <dt>factory</dt>
+                <dd>El procesador de imagen.</dd>
+                <dt>image</dt>
+                <dd>Referencia al elemento que se está pintando.</dd>
+            </dl>
+        </details>
+    """,
+    en = u"""
+        <p>
+            A Python code snippet to pass parameters to PIL's save method.
+        </p>
+        <details>
+            <summary>Details</summary>
+            <p>
+                The code snippet will have access to the following variables:
+            </p>
+            <dl>
+                <dt>options</dt>
+                <dd>A dictionary containing the parameters to be passed to the save method.
+                    Documentation:
+                    <a href='http://effbot.org/imagingbook/format-jpeg.htm'>
+                        JPEG
+                    </a>,
+                    <a href='http://effbot.org/imagingbook/format-png.htm'>
+                        PNG
+                    </a>,
+                    <a href='http://effbot.org/imagingbook/format-gif.htm'>
+                        GIF
+                    </a>
+                </dd>
+                <dt>format</dt>
+                <dd>JPEG | PNG | GIF.</dd>
+                <dt>factory</dt>
+                <dd>The image processor.</dd>
+                <dt>image</dt>
+                <dd>A reference to the element.</dd>
+            </dl>
+        </details>
+    """,
+)
+
 translations.define("ImageFactory.fallback",
     ca = u"Processador alternatiu",
     es = u"Procesador alternativo",
