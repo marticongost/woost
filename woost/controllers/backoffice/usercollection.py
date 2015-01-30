@@ -93,13 +93,11 @@ class BackOfficeUserCollection(UserCollection):
         if content_schema is not self.type:
             
             # Descriptive column
-            content_schema.name = "BackOfficeContentView"
-            
-            if self.type.show_element_in_listings:
-                content_schema.add_member(
-                    schema.Member(name = "element", searchable = False)
-                )
-                content_schema.members_order.insert(0, "element")
+            content_schema.name = "BackOfficeContentView"            
+            content_schema.add_member(
+                schema.Member(name = "element", searchable = False)
+            )
+            content_schema.members_order.insert(0, "element")
         
             # Type column
             if self.type.show_type_in_listings \

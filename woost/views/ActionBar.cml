@@ -32,7 +32,7 @@ from woost.controllers.backoffice.useractions import (
             or action.ignores_selection
         ]
 
-    def create_action_button(self, action, extra):
+    def create_action_button(self, action, extra, action_context):
 
         panel = action.get_dropdown_panel(self.action_target)
         
@@ -61,7 +61,7 @@ from woost.controllers.backoffice.useractions import (
             action_button.action_image = self.create_action_image(action, extra)
             label.append(action_button.action_image)
 
-        label.append(translations(action))
+        label.append(translations(action, context = action_context))
         label["accesskey"] = translations("woost.actions." + action.id + ".shortcut")
         return action_button
     ?>
@@ -92,8 +92,10 @@ from woost.controllers.backoffice.useractions import (
             add_view_action_context(self, "empty_set")
 
         context = get_view_actions_context(self)        
-        actions = self.get_actions(context | set([self.action_context]))
-        additional_actions = self.get_actions(context | set([self.action_context + "_extra"]))
+        action_context = context | set([self.action_context])
+        additional_actions_context = context | set([self.action_context + "_extra"])
+        actions = self.get_actions(action_context)
+        additional_actions = self.get_actions(additional_actions_context)
 
         groupped = self.group_additional_actions
 
@@ -114,7 +116,11 @@ from woost.controllers.backoffice.useractions import (
 
         # Frequent actions
         for action in actions:
-            action_button = self.create_action_button(action, False)
+            action_button = self.create_action_button(
+                action,
+                False,
+                action_context
+            )
             self.append(action_button)
             has_actions = True
 
@@ -124,7 +130,11 @@ from woost.controllers.backoffice.useractions import (
             self.append(selector)
 
             for action in additional_actions:
-                action_button = self.create_action_button(action, True)
+                action_button = self.create_action_button(
+                    action,
+                    True,
+                    additional_actions_context
+                )
                 self.additional_actions_box.append(action_button)
                 has_actions = True
 
