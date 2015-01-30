@@ -97,7 +97,8 @@ of its features include:\n"
             "restrictedaccess = woost.extensions.restrictedaccess:RestrictedAccessExtension",
             "annotations = woost.extensions.annotations:AnnotationsExtension",
             "notices = woost.extensions.notices:NoticesExtension",
-            "variables = woost.extensions.variables:VariablesExtension"
+            "variables = woost.extensions.variables:VariablesExtension",
+            "surveys = woost.extensions.surveys:SurveysExtension"
         ]
     },
     # Woost can't yet access view resources (images, style sheets, client
