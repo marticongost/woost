@@ -197,7 +197,29 @@ def require_rendering(
                 image = image.convert('RGBA')
             elif format == 'PNG' and image.mode == "CMYK":
                 image = image.convert('RGBA')
-            image.save(image_cache_file, format)
+
+            # Obtain save options from the ImageFactory.options_code member
+            # (users can supply a dictionary of options that will be forwarded
+            # to Image.save()).
+            save_options = {}
+            options_code = factory.options_code
+
+            if options_code:
+                context = {
+                    "options": save_options,
+                    "factory": factory,
+                    "format": format,
+                    "image": image
+                }
+                label = "%s #%s.options_code" % (
+                    factory.__class__.__name__,
+                    factory.id
+                )
+                options = compile(factory.options_code, label, "exec")
+                exec options in context
+
+            # Save the image to the filesystem
+            image.save(image_cache_file, format, **save_options)
 
     # If the image is accessible to anonymous users, create a link in the
     # application's static content folder (further requests will be served
