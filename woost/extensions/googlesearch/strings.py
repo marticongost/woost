@@ -43,7 +43,7 @@ translations.define("Configuration.google_search_results_page",
 )
 
 # Website
-#------------------------------------------------------------------------------ 
+#------------------------------------------------------------------------------
 translations.define("Website.services.google_cse",
     ca = u"Google CSE",
     es = u"Google CSE",

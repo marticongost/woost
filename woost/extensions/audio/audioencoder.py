@@ -40,7 +40,7 @@ class AudioEncoder(Item):
     extension = schema.String(
         required = True
     )
-    
+
     command = schema.String(
         required = True
     )
@@ -55,7 +55,7 @@ class AudioEncoder(Item):
     )
 
     def encode(self, file, dest):
-        
+
         # Most encoders expect PCM wave files as input, so we start by finding
         # an appropiate decoder for the given file.
         mime_type = file.mime_type
@@ -83,7 +83,7 @@ class AudioEncoder(Item):
         # Encode the file and save it to the indicated location
         proc = Popen(command, shell = True, stdout = PIPE, stderr = PIPE)
         start = time()
-        
+
         while proc.poll() is None:
             if time() - start > timeout:
                 proc.terminate()

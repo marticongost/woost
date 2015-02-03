@@ -35,7 +35,7 @@ class GoogleSearchExtension(Extension):
             "ca"
         )
         self.set("description",
-            u"""Proporciona los elementos esenciales para implementar el 
+            u"""Proporciona los elementos esenciales para implementar el
             buscador de Google""",
             "es"
         )
@@ -59,7 +59,7 @@ class GoogleSearchExtension(Extension):
         filter = True,
         results_per_page = None):
         """Returns Google CSE results for the given query.
-        
+
         @param query: The query to search.
         @type query: unicode
 

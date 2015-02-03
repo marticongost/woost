@@ -51,7 +51,7 @@ class ResubscribeController(Controller):
                     date > now or diff.seconds < self.max_seconds
                 ):
                     response = subscriber.add(
-                        list.ListID, 
+                        list.ListID,
                         self.email,
                         response.Name,
                         None,

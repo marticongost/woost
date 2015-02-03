@@ -32,7 +32,7 @@ class ProductController(FormProcessor, DocumentController):
 
         @request_property
         def adapter(self):
-            
+
             adapter = Form.adapter(self)
             adapter.implicit_copy = False
 

@@ -10,7 +10,7 @@ from cocktail import schema
 from cocktail.persistence import PersistentObject
 
 class Action(PersistentObject):
-    
+
     identifier = schema.String(
         max = 10,
         required = True,
@@ -27,7 +27,7 @@ class Action(PersistentObject):
     )
 
     def __repr__(self):
-        
+
         base_repr = PersistentObject.__repr__(self)
 
         if self.identifier:

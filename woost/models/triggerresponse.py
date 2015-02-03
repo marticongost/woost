@@ -19,12 +19,12 @@ line_separator_expr = re.compile("[\r\n]+")
 class TriggerResponse(Item):
     """A response action, to be executed when invoking the
     L{trigger<woost.models.Trigger>} it is bound to."""
-    
+
     integral = True
     instantiable = False
     visible_from_root = False
 
-    trigger = schema.Reference(   
+    trigger = schema.Reference(
         type = "woost.models.Trigger",
         visible = False,
         bidirectional = True,
@@ -34,7 +34,7 @@ class TriggerResponse(Item):
     @abstractmethod
     def execute(self, items, user, batch = False, **context):
         """Executes the response with the supplied context.
-        
+
         This method will be called when the response's trigger conditions are
         met. Subclasses of trigger response are expected to override this
         method in order to implement their particular logic.

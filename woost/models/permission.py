@@ -61,7 +61,7 @@ class Permission(Item):
 
 class ContentPermission(Permission):
     """Base class for permissions restricted to a subset of a content type."""
-    
+
     edit_controller = \
         "woost.controllers.backoffice.contentpermissionfieldscontroller." \
         "ContentPermissionFieldsController"
@@ -77,7 +77,7 @@ class ContentPermission(Permission):
     )
 
     def match(self, target, verbose = False):
-        
+
         query = self.select_items()
 
         if isinstance(target, type):
@@ -94,7 +94,7 @@ class ContentPermission(Permission):
                 if verbose:
                     print permission_doesnt_match_style("type doesn't match"),
                 return False
-        
+
             for filter in query.filters:
                 if not filter.eval(target):
                     if verbose:
@@ -104,9 +104,9 @@ class ContentPermission(Permission):
                     return False
 
         return True
-    
+
     def select_items(self, *args, **kwargs):
-        
+
         subset = self._get_user_collection(self.matching_items).subset
 
         if args or kwargs:
@@ -167,7 +167,7 @@ class RenderPermission(ContentPermission):
     del _image_factories_enumeration
 
     def match(self, target, image_factory, verbose = False):
-        
+
         if self.image_factories and image_factory not in self.image_factories:
             print permission_doesnt_match_style("image_factory doesn't match")
             return False
@@ -186,7 +186,7 @@ class RenderPermission(ContentPermission):
 
 class TranslationPermission(Permission):
     """Base class for permissions that restrict operations on languages."""
-    
+
     def _matching_languages_enumeration(ctx):
         from woost.models import Configuration
         return Configuration.instance.languages
@@ -249,7 +249,7 @@ def _eligible_members():
 
 class MemberPermission(Permission):
     """Base class for permissions that restrict operations on members."""
-    
+
     matching_members = schema.Collection(
         default_type = set,
         items = schema.String(
@@ -267,7 +267,7 @@ class MemberPermission(Permission):
     )
 
     def match(self, member, verbose = False):
- 
+
         member = member.original_member.schema.full_name + "." + member.name
         members = self.matching_members
 
@@ -323,7 +323,7 @@ def restricted_modification_context(
     @raise L{AuthorizationError<woost.models.user.AuthorizationError}:
         Raised if attempting to execute an action on the monitored item without
         the proper permission.
-    """    
+    """
     if user is None:
         user = get_current_user()
 
@@ -346,7 +346,7 @@ def restricted_modification_context(
             target = item,
             verbose = verbose
         )
-    
+
     # Creating a new item
     else:
         is_new = True
@@ -356,7 +356,7 @@ def restricted_modification_context(
     # members
     @when(item.changed)
     def restrict_members(event):
-        
+
         member = event.member
 
         # Require permission to modify the changed member
@@ -481,7 +481,7 @@ class PermissionExpression(Expression):
 
 class ChangeSetPermissionExpression(Expression):
 
-    user = None    
+    user = None
 
     def __init__(self, user):
         self.user = user
@@ -500,7 +500,7 @@ class ChangeSetPermissionExpression(Expression):
         def impl(dataset):
 
             authorized_subset = set()
-            
+
             for item in Item.select([
                 PermissionExpression(self.user, ReadPermission)
             ]):

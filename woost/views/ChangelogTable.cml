@@ -15,7 +15,7 @@ from woost.models import (
     _changes_by_action = None
 
     def create_row(self, i, item):
-        
+
         changes = [
             change for change in item.changes.values()
             if get_current_user().has_permission(
@@ -41,7 +41,7 @@ from woost.models import (
 
             action_changes.append(change)
 
-        return ContentTable.create_row(self, i, item)    
+        return ContentTable.create_row(self, i, item)
     ?>
 
     <?py
@@ -72,7 +72,7 @@ from woost.models import (
 
     <ul py:def="changes_display" py:args="obj, member">
         <?py
-        action, changes = self.get_member_value(obj, member)                
+        action, changes = self.get_member_value(obj, member)
         ?>
         <li py:for="change in changes">
             <py:woost.views.ItemLabel py:item="${change.target}"/>

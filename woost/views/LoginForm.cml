@@ -21,7 +21,7 @@ from woost.models.publishable import Publishable
     ?>
 
     <py:cocktail.html.List
-        py:id="error_box"        
+        py:id="error_box"
         py:collapsible="${True}"
         py:items="@{[translations(error) for error in self.errors]}"/>
 
@@ -35,12 +35,12 @@ from woost.models.publishable import Publishable
             <?py html5_attr(element, "autofocus", True) ?>
         </py:cocktail.html.TextBox>
     </py:cocktail.html.Form>
-        
+
     <py:with py:element="self.login_form.submit_button" name="authenticate">
         <?py element.empty() ?>
         ${translations("woost.views.LoginForm.submit_button")}
     </py:with>
-    
+
     <a py:id="forgot_password_link" py:before="self.login_form.submit_button">
         <py:ready>
             <?py

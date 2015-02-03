@@ -242,7 +242,7 @@ translations.define("SendEmailPermission.roles-explanation",
 
 # Exceptions
 #------------------------------------------------------------------------------
-translations.define("woost.extensions.mailer.mailing.DocumentTemplateRequiredError-instance",                                                                                                                             
+translations.define("woost.extensions.mailer.mailing.DocumentTemplateRequiredError-instance",
     ca = lambda instance:
         u"El camp <em>%s</em> ha de tindre plantilla"
         % member_identifier(instance),
@@ -254,7 +254,7 @@ translations.define("woost.extensions.mailer.mailing.DocumentTemplateRequiredErr
         % member_identifier(instance)
 )
 
-translations.define("woost.extensions.mailer.mailing.LanguageValueError-instance",                                                                                                                             
+translations.define("woost.extensions.mailer.mailing.LanguageValueError-instance",
     ca = lambda instance:
         u"El camp <em>%s</em> no és un dels idiomes del document"
         % member_identifier(instance),
@@ -266,7 +266,7 @@ translations.define("woost.extensions.mailer.mailing.LanguageValueError-instance
         % member_identifier(instance)
 )
 
-translations.define("woost.extensions.mailer.mailing.PerUserCustomizableValueError-instance",                                                                                                                             
+translations.define("woost.extensions.mailer.mailing.PerUserCustomizableValueError-instance",
     ca = lambda instance:
         u"El camp <em>%s</em> no és vàlid pel document seleccionat"
         % member_identifier(instance),
@@ -279,7 +279,7 @@ translations.define("woost.extensions.mailer.mailing.PerUserCustomizableValueErr
 )
 
 translations.define(
-    "woost.extensions.mailer.mailing.RunningMailingError-instance",                                                                                                                                     
+    "woost.extensions.mailer.mailing.RunningMailingError-instance",
     ca = u"No es pot eliminar un enviament que està en execució.",
     es = u"No se puede eliminar un envio que está en ejecución.",
     en = u"Can't delete a running mailing."

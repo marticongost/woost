@@ -14,17 +14,17 @@ from woost.extensions.recaptcha import ReCaptchaExtension
 
 
 class ReCaptchaBox(Element):
-    
+
     API_SSL_SERVER = "https://api-secure.recaptcha.net"
     API_SERVER = "http://api.recaptcha.net"
-    
+
     tag = None
 
     def __init__(self, *args, **kwargs):
         Element.__init__(self, *args, **kwargs)
         self.recaptcha_params = {
             "public_key": ReCaptchaExtension.instance.public_key,
-            "api_server": self.API_SSL_SERVER if ReCaptchaExtension.instance.ssl 
+            "api_server": self.API_SSL_SERVER if ReCaptchaExtension.instance.ssl
                           else self.API_SERVER,
             "error_param": "&amp;error=%s" % ("",)
         }
@@ -37,7 +37,7 @@ class ReCaptchaBox(Element):
         options = self.recaptcha_options.copy()
 
         language = get_language()
-        
+
         options["lang"] = language
         if language == "ca":
             options["lang"] = "es"
@@ -60,7 +60,7 @@ class ReCaptchaBox(Element):
                     "custom_theme_widget",
                     ReCaptchaExtension.instance.custom_theme_widget
             )
-            
+
         options.setdefault("theme", ReCaptchaExtension.instance.theme)
 
         init_options = Element("script")
@@ -87,4 +87,4 @@ class ReCaptchaBox(Element):
             self.append(custom_container.render())
 
         self.append(init_script)
-    
+

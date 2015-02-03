@@ -40,8 +40,8 @@ class CatalogController(ProductController):
         def product(self):
             return get_parameter(
                 schema.Reference(
-                    "product", 
-                    type = ECommerceProduct, 
+                    "product",
+                    type = ECommerceProduct,
                     required = True
                 )
             )

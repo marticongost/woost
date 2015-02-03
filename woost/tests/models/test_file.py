@@ -23,7 +23,7 @@ class FileTestCase(BaseTestCase):
         rmtree(self.folder)
 
     def test_create_file_from_path(self):
-        
+
         from woost.models import File
         from hashlib import md5
         path = os.path.join(self.folder, "foo_bar-spam.css")
@@ -40,7 +40,7 @@ class FileTestCase(BaseTestCase):
 
         assert file.file_name == "foo_bar-spam.css"
         assert file.file_size == len(content)
-        assert file.file_hash == md5(content).digest() 
+        assert file.file_hash == md5(content).digest()
         assert file.mime_type == "text/css"
         assert file.get("title", "ca") == "Foo bar spam"
         assert file.get("title", "ca") == "Foo bar spam"

@@ -53,10 +53,10 @@ class BaseBackOfficeController(BaseCMSController):
         )
 
     # URIs and navigation
-    #--------------------------------------------------------------------------    
+    #--------------------------------------------------------------------------
     def edit_uri(self, target, *args, **kwargs):
         """Get the URI of the edit page of the specified item.
-        
+
         @param target: The item or content type to get the URI for.
         @type target: L{Item<woost.models.Item>} instance or class
 
@@ -69,7 +69,7 @@ class BaseBackOfficeController(BaseCMSController):
 
         @return: The produced URI.
         @rtype: unicode
-        """        
+        """
         params = kwargs or {}
         edit_stack = self.edit_stack
 
@@ -86,7 +86,7 @@ class BaseBackOfficeController(BaseCMSController):
         # URI for existing items
         else:
             primary_member = target.__class__.primary_member
-            
+
             if primary_member is None:
                 raise TypeError("Can't edit types without a primary member")
 
@@ -94,7 +94,7 @@ class BaseBackOfficeController(BaseCMSController):
 
             if target_id is None:
                 raise ValueError("Can't edit objects without an identifier")
-        
+
         uri = self.contextual_uri(
             "content",
             target_id,
@@ -116,8 +116,8 @@ class BaseBackOfficeController(BaseCMSController):
 
         # Go back to the parent edit state
         if edit_stack:
-            edit_stack.go_back()            
-        
+            edit_stack.go_back()
+
         # Go back to the root of the backoffice
         else:
             raise cherrypy.HTTPRedirect(
@@ -125,7 +125,7 @@ class BaseBackOfficeController(BaseCMSController):
             )
 
     # Edit stack
-    #--------------------------------------------------------------------------    
+    #--------------------------------------------------------------------------
     @getter
     def edit_stack(self):
         """The edit stack for the current request.
@@ -159,13 +159,13 @@ class BaseBackOfficeController(BaseCMSController):
         stack = self.edit_stack
         if stack:
             return stack[-1].get_ancestor_node(
-                RelationNode, 
+                RelationNode,
                 include_self = True
             )
         return None
 
     # Request flow
-    #--------------------------------------------------------------------------    
+    #--------------------------------------------------------------------------
     @event_handler
     def handle_exception_raised(cls, event):
 
@@ -196,7 +196,7 @@ class BaseBackOfficeController(BaseCMSController):
     def _get_user_action(self, param_key = "action"):
         action = None
         action_id = self.params.read(schema.String(param_key))
-        
+
         if action_id:
             action = get_user_action(action_id)
             if action and not action.enabled:

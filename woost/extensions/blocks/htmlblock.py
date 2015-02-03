@@ -21,6 +21,6 @@ class HTMLBlock(Block):
     )
 
     def init_view(self, view):
-        Block.init_view(self, view)        
+        Block.init_view(self, view)
         view.append(self.html)
 

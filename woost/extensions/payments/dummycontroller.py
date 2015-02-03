@@ -20,7 +20,7 @@ class DummyPaymentGatewayController(BaseCMSController):
     <woost.extensions.payments.dummypaymentgateway.DummyPaymentGateway>}
     instances to simulate transaction payments.
     """
-    
+
     def __call__(self, **parameters):
 
         # Get references to the gateway and payment
@@ -30,13 +30,13 @@ class DummyPaymentGatewayController(BaseCMSController):
 
         if gateway is None:
             raise ValueError("Wrong payment gateway")
-        
+
         payment_id = get_parameter(schema.String("payment_id"))
         payment = payment_id and gateway.get_payment(payment_id) or None
 
         if payment is None:
             raise ValueError("Wrong payment id (%s)" % payment_id)
-        
+
         # Notify the payment to the application
         cms = self.context["cms"]
         notification_uri = Location.get_current_host()
@@ -52,7 +52,7 @@ class DummyPaymentGatewayController(BaseCMSController):
         if gateway.payment_status == "accepted":
             redirection = gateway.payment_successful_page
         elif gateway.payment_status == "failed":
-            redirection = gateway.payment_failed_page            
+            redirection = gateway.payment_failed_page
 
         raise cherrypy.HTTPRedirect(
             (redirection and cms.uri(redirection)

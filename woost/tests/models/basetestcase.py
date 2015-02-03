@@ -17,19 +17,19 @@ class BaseTestCase(TempStorageMixin, TestCase):
         from woost.models.trigger import set_triggers_enabled
 
         set_triggers_enabled(False)
-        
+
         TempStorageMixin.setUp(self)
 
         # Actions
         self.create_action = Action(identifier = "create")
         self.create_action.insert()
-        
+
         self.read_action = Action(identifier = "read")
         self.read_action.insert()
 
         self.modify_action = Action(identifier = "modify")
         self.modify_action.insert()
-        
+
         self.delete_action = Action(identifier = "delete")
         self.delete_action.insert()
 
@@ -53,6 +53,6 @@ class BaseTestCase(TempStorageMixin, TestCase):
 
         self.authenticated_role = Role(qname = "woost.authenticated")
         self.authenticated_role.insert()
-       
+
         set_triggers_enabled(True)
 

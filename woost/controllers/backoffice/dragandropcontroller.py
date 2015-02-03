@@ -49,7 +49,7 @@ class DragAndDropController(BaseBackOfficeController):
 
     @request_property
     def eligible_members(self):
-        
+
         dragged_object = self.dragged_object
         target_object = self.target_object
 
@@ -62,14 +62,14 @@ class DragAndDropController(BaseBackOfficeController):
             member
             for member in target_object.__class__.members().itervalues()
             if member.visible
-            and isinstance(member, schema.RelationMember)            
+            and isinstance(member, schema.RelationMember)
             and member.is_persistent_relation
             and isinstance(dragged_object, member.related_type)
             and user.has_permission(ModifyMemberPermission, member = member)
         ]
-       
+
     @request_property
-    def sibling(self):        
+    def sibling(self):
         target_member = self.target_member
         if target_member and isinstance(target_member, schema.Collection):
             return get_parameter(
@@ -115,7 +115,7 @@ class DragAndDropController(BaseBackOfficeController):
                     target_object.set(target_member, dragged_object)
                 else:
                     collection = target_object.get(target_member)
-                    
+
                     sibling = self.sibling
                     relative_placement = self.relative_placement
 

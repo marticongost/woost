@@ -3,7 +3,7 @@
 from cocktail import schema
 from woost.models import (
     get_current_user,
-    Item, 
+    Item,
     ReadPermission,
     ReadMemberPermission
 )
@@ -19,7 +19,7 @@ from woost.models import (
     def _iter_references(self, obj):
         for member in obj.__class__.members().itervalues():
             if (
-                isinstance(member, schema.RelationMember) 
+                isinstance(member, schema.RelationMember)
                 and member.related_end
                 and member.related_end.visible_in_reference_list
                 and issubclass(member.related_type, Item)
@@ -35,7 +35,7 @@ from woost.models import (
                         for item in value:
                             if self._should_include_reference(item, member.related_end):
                                 yield item, member.related_end
-    
+
     def _should_include_reference(self, referrer, relation):
         user = get_current_user()
         return (
@@ -58,7 +58,7 @@ from woost.models import (
         @{translations("woost.views.ReferenceList.summary", count = len(self.references))}
     </py:with>
 
-    <py:with py:element="self.panel">    
+    <py:with py:element="self.panel">
         <table py:id="references_table">
             <py:ready>
                 <py:new

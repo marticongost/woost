@@ -8,8 +8,8 @@ from createsend import CreateSend, Subscriber, BadRequest
 from cocktail import schema
 from cocktail.pkgutils import import_object
 from cocktail.controllers import (
-    Controller, 
-    FormProcessor, 
+    Controller,
+    FormProcessor,
     Form,
     request_property
 )
@@ -80,7 +80,7 @@ class SubscriptionController(FormProcessor, Controller):
                     self.is_new = True
 
             response = subscriber.add(
-                list.list_id, 
+                list.list_id,
                 self.email,
                 self.name,
                 self.custom_fields,

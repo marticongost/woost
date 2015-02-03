@@ -26,9 +26,9 @@ from woost.controllers.backoffice.useractions import (
         for cls in self.edited_content_type.descend_inheritance(include_self = True):
             if cls is not Item:
                 self.add_class(cls.name)
-        
+
         if self.edited_item.is_inserted:
-        
+
             add_view_action_context(self, "existing_item")
 
             if self.edited_item.is_draft:
@@ -42,7 +42,7 @@ from woost.controllers.backoffice.useractions import (
             add_view_action_context(self, "unchanged")
 
         self._actions_context = get_view_actions_context(self)
-                                
+
         # Pending changes warning
         self.add_resource("/resources/scripts/BackOfficeItemView.js")
         self.set_client_param("hasPendingChanges", bool(self.changes))
@@ -53,7 +53,7 @@ from woost.controllers.backoffice.useractions import (
     <!-- Item heading -->
     <h2 py:def="page_title">
         <py:ready>
-            <py:new                
+            <py:new
                 py:element="loader.new(self.edited_item.backoffice_heading_view)"
                 py:index="0"
                 py:item="${self.edited_item}"/>
@@ -92,7 +92,7 @@ from woost.controllers.backoffice.useractions import (
                 ?>
             </py:with>
         </py:woost.views.ActionBar>
-        
+
         <div py:id="item_body"/>
 
         <!-- Actions -->
