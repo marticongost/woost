@@ -41,7 +41,7 @@ class Location(Item):
         ],
         text_search = False,
         translate_value = lambda value, language = None, **kwargs:
-            "" if not value 
+            "" if not value
             else translations(
                 "woost.extensions.locations.location_types." + value,
                 language,
@@ -79,13 +79,13 @@ class Location(Item):
         :rtype: `Location`
         """
         ascendant = self if include_self else self.parent
-        while ascendant is not None:                                                                                                                                                    
+        while ascendant is not None:
             yield ascendant
             ascendant = ascendant.parent
 
     def descend(self, include_self = False):
         """Iterates over the location's descendants.
-        
+
         :param include_self: If set to True, the location itself is yielded as
             the first element in the iteration.
         :type include_self: bool
@@ -150,11 +150,11 @@ class Location(Item):
             if location is None:
                 return None
             location = location.get_child_location(x)
-        
+
         return location
 
     def list_level(self, depth):
-        
+
         if depth == 1:
             return self.locations
         else:

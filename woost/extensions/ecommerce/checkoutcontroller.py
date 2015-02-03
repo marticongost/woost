@@ -4,7 +4,7 @@ u"""
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
 from cocktail.controllers import (
-    request_property,    
+    request_property,
     Form,
     FormProcessor
 )
@@ -22,7 +22,7 @@ from woost.extensions.ecommerce.orderstepcontroller import (
 class CheckoutController(FormProcessor, DocumentController):
 
     class CheckoutForm(ProceedForm):
-        
+
         model = Basket.get().get_public_schema()
 
         @request_property

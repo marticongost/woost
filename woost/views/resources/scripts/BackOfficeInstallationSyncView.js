@@ -8,11 +8,11 @@
 -----------------------------------------------------------------------------*/
 
 cocktail.bind(".BackOfficeInstallationSyncView", function ($view) {
-    
-    var totalItemCount = 
+
+    var totalItemCount =
           $view.find(".incomming_object").length
         + $view.find(".modified_object").length;
-   
+
     function toggleSelectionControls() {
         var selectedCount = $checks.filter(":checked").length;
 
@@ -30,7 +30,7 @@ cocktail.bind(".BackOfficeInstallationSyncView", function ($view) {
             $selectAll.show();
         }
     }
-    
+
     $view.find(".modified_section .modified_object").each(function () {
         var $entry = jQuery(this);
 

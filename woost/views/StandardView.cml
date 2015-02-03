@@ -15,7 +15,7 @@ from woost.models import Configuration, get_current_website
 
     def get_title(self):
         return get_current_website().site_name
-        
+
     def get_linked_attachments(self):
         return (attachment
                 for attachment in getattr(self.publishable, "attachments", ())
@@ -40,7 +40,7 @@ from woost.models import Configuration, get_current_website
 
         <h1 py:id="title_label">
             <py:ready>
-                <?py 
+                <?py
                 self._title = self.get_title()
                 self._logo = self.get_logo()
                 if self._logo and not self._logo.is_accessible():
@@ -92,7 +92,7 @@ from woost.models import Configuration, get_current_website
             <py:ready>
                 <?py
                 if not rendering_html5():
-                    element.visible = False                    
+                    element.visible = False
                 ?>
             </py:ready>
         </h1>
@@ -117,15 +117,15 @@ from woost.models import Configuration, get_current_website
             <py:ready>
                 <?py
                 title = None
-                
+
                 if rendering_html5():
                     element.tag = "h1"
 
-                if not self.rendering_home_page():                    
+                if not self.rendering_home_page():
                     title = self.get_content_title()
 
                 if title:
-                    element.append(title)                        
+                    element.append(title)
                 else:
                     element.visible = False
                 ?>
@@ -172,8 +172,8 @@ from woost.models import Configuration, get_current_website
         <?py html5_tag(element, "footer") ?>
         <div py:id="vcard" py:collapsible="${True}">
             <?py html5_tag(element, "address") ?>
-            <py:woost.views.Image 
-                py:id="vcard_logo" 
+            <py:woost.views.Image
+                py:id="vcard_logo"
                 class="logo"
                 py:image="@{self.get_logo()}"
                 style="display:none"/>
@@ -184,8 +184,8 @@ from woost.models import Configuration, get_current_website
                 py:visible="@{self._website.organization_name}">
                 @{self._website.organization_name}
             </a>
-            <div 
-                py:id="vcard_address" 
+            <div
+                py:id="vcard_address"
                 class="adr"
                 py:collapsible="${True}">
                 <span
@@ -225,7 +225,7 @@ from woost.models import Configuration, get_current_website
                     py:visible="@{self._website.country}">
                     @{self._website.country}
                 </span>
-            </div>            
+            </div>
             <span
                 py:id="phone_label"
                 class="tel"
@@ -234,7 +234,7 @@ from woost.models import Configuration, get_current_website
                 <span class="value">@{self._website.phone_number}</span>
             </span>
             <span class="sep" py:visible="@{self._website.phone_number and self._website.fax_number}">-</span>
-            <span 
+            <span
                 py:id="fax_label"
                 class="tel"
                 py:visible="@{self._website.fax_number}">

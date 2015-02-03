@@ -33,7 +33,7 @@ class State(Item):
         related_key = "workflow_state",
         visible = False
     )
-    
+
     outgoing_transitions = schema.Collection(
         items = "woost.extensions.workflow.transition.Transition",
         related_key = "source_state",

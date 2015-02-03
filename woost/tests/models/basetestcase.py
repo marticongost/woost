@@ -24,19 +24,19 @@ class BaseTestCase(TempStorageMixin, TestCase):
         app.installation_id = "TEST"
         set_triggers_enabled(False)
         staticpublication.enabled = False
-        
+
         TempStorageMixin.setUp(self)
 
         # Actions
         self.create_action = Action(identifier = "create")
         self.create_action.insert()
-        
+
         self.read_action = Action(identifier = "read")
         self.read_action.insert()
 
         self.modify_action = Action(identifier = "modify")
         self.modify_action.insert()
-        
+
         self.delete_action = Action(identifier = "delete")
         self.delete_action.insert()
 
@@ -60,7 +60,7 @@ class BaseTestCase(TempStorageMixin, TestCase):
 
         self.authenticated_role = Role(qname = "woost.authenticated")
         self.authenticated_role.insert()
-       
+
         set_triggers_enabled(True)
 
     def tearDown(self):
@@ -71,4 +71,4 @@ class BaseTestCase(TempStorageMixin, TestCase):
         app.installation_id = self.installation_id
         set_triggers_enabled(self.triggers_enabled)
         staticpublication.enabled = self.static_publication_enabled
-        
+

@@ -98,12 +98,12 @@ class Configuration(Item):
     )
 
     caching_policies = schema.Collection(
-        items = schema.Reference(type = CachingPolicy),        
+        items = schema.Reference(type = CachingPolicy),
         integral = True,
         related_end = schema.Reference(),
         member_group = "publication"
     )
-    
+
     login_page = schema.Reference(
         type = Publishable,
         related_end = schema.Collection(),
@@ -131,7 +131,7 @@ class Configuration(Item):
         listed_by_default = False,
         member_group = "publication.pages"
     )
-    
+
     down_for_maintenance = schema.Boolean(
         required = True,
         default = False,
@@ -161,7 +161,7 @@ class Configuration(Item):
         listed_by_default = False,
         member_group = "language"
     )
-    
+
     published_languages = schema.Collection(
         items = schema.String(
             enumeration = languages,
@@ -189,7 +189,7 @@ class Configuration(Item):
 
     backoffice_language = schema.String(
         required = True,
-        enumeration = ["en", "es", "ca"],        
+        enumeration = ["en", "es", "ca"],
         default = "en",
         text_search = False,
         translate_value = lambda value, language = None, **kwargs:
@@ -199,7 +199,7 @@ class Configuration(Item):
     )
 
     # media
-    #--------------------------------------------------------------------------     
+    #--------------------------------------------------------------------------
     renderers = schema.Collection(
         items = schema.Reference(type = Renderer),
         bidirectional = True,
@@ -254,7 +254,7 @@ class Configuration(Item):
     )
 
     # administration
-    #--------------------------------------------------------------------------         
+    #--------------------------------------------------------------------------
     triggers = schema.Collection(
         items = schema.Reference(type = Trigger),
         related_end = schema.Reference(),
@@ -271,10 +271,10 @@ class Configuration(Item):
         This method identifies a matching publishable item by trying each
         publication scheme defined by the site, in order. Once a scheme finds a
         matching item, the search concludes.
-        
+
         See L{PublicationScheme.resolve_path} for more details on the resolution
         process.
- 
+
         @param path: The path to evaluate; A list-like object describing a
             a path relative to the application's root.
         @type path: str list
@@ -296,7 +296,7 @@ class Configuration(Item):
 
     def get_path(self, publishable, language = None):
         """Determines the canonical path of the indicated item.
-        
+
         This method queries each publication scheme defined by the site, in
         order. Once a scheme yields a matching path, the search concludes. That
         first match will be considered the item's canonical path.
@@ -347,7 +347,7 @@ class Configuration(Item):
             value = getattr(website, key, None)
             if self._is_significant_setting_value(key, value):
                 return value
-        
+
         return getattr(self.instance, key, None)
 
     def _is_significant_setting_value(self, key, value):

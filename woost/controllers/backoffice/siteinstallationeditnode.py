@@ -18,7 +18,7 @@ class SiteInstallationEditNode(EditNode):
     def form_adapter(self):
 
         form_adapter = EditNode.form_adapter(self)
-        
+
         if self.item.is_inserted:
             form_adapter.exclude("change_password")
 
@@ -37,10 +37,10 @@ class SiteInstallationEditNode(EditNode):
 
     @cached_getter
     def form_schema(self):
-        
+
         form_schema = EditNode.form_schema(self)
         password_member = form_schema.get_member("synchronization_password")
-        
+
         if password_member:
 
             if User.encryption_method:
@@ -58,7 +58,7 @@ class SiteInstallationEditNode(EditNode):
                     )
                     form_schema.add_member(change_password_member)
                     order.insert(pos, "change_password")
-                    
+
                     password_member.exclusive = change_password_member
 
             # No encryption: edit passwords in plain sight
@@ -68,7 +68,7 @@ class SiteInstallationEditNode(EditNode):
         return form_schema
 
     def iter_changes(self):
-        
+
         # Discard differences in the password field
         for member, language in EditNode.iter_changes(self):
             if not User.encryption_method or member.name not in (

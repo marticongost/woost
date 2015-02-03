@@ -22,7 +22,7 @@ class TextFileExtension(Extension):
             u"Permet editar fitxers de text directament des del gestor.",
             "ca"
         )
-        self.set("description",            
+        self.set("description",
             u"Permite editar ficheros de texto directamente desde el gestor.",
             "es"
         )
@@ -30,7 +30,7 @@ class TextFileExtension(Extension):
             u"Makes it possible to edit text files from the backoffice.",
             "en"
         )
-    
+
     def _load(self):
         from woost.extensions.textfile import textfile, strings
         self.install()

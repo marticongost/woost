@@ -30,7 +30,7 @@ class SendEmailPermission(Permission):
 
             if verbose:
                 print permission_doesnt_match_style("Role doesn't match")
-            
+
             return False
 
         return Permission.match(self, verbose)

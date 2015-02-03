@@ -20,7 +20,7 @@ class VideoBlock(Block):
 
     element_type = ElementType(
         member_group = "content"
-    )   
+    )
 
     video = schema.Reference(
         type = Publishable,

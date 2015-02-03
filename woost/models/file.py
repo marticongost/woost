@@ -22,7 +22,7 @@ from woost.models.controller import Controller
 
 
 class File(Publishable):
- 
+
     instantiable = True
     type_group = "resource"
 
@@ -54,7 +54,7 @@ class File(Publishable):
         translated = True,
         member_group = "content"
     )
-    
+
     file_name = schema.String(
         required = True,
         editable = False,
@@ -95,7 +95,7 @@ class File(Publishable):
         download_temp_folder = None,
         redownload = False):
         """Imports a file into the site.
-        
+
         @param path: The path to the file that should be imported.
         @type path: str
 
@@ -106,11 +106,11 @@ class File(Publishable):
         @param languages: The set of languages that the created file will be
             translated into.
         @type languages: str set
-       
+
         @return: The created file.
         @rtype: L{File}
         """
-        
+
         # The default behavior is to translate created files into all the languages
         # defined by the site
         if languages is None:
@@ -121,7 +121,7 @@ class File(Publishable):
         title, ext = os.path.splitext(file_name)
 
         # Download remote files
-        if "://" in path:            
+        if "://" in path:
             if not download_temp_folder:
                 download_temp_folder = mkdtemp()
 
@@ -144,7 +144,7 @@ class File(Publishable):
         title = title[0].upper() + title[1:]
 
         file = cls()
-        
+
         file.file_size = os.stat(path).st_size
         file.file_hash = hash or file_hash(path)
         file.file_name = file_name
@@ -153,7 +153,7 @@ class File(Publishable):
         mime_type = guess_type(file_name, strict = False)
         if mime_type:
             file.mime_type = mime_type[0]
-        
+
         for language in languages:
             file.set("title", title, language)
 

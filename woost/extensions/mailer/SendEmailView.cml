@@ -15,7 +15,7 @@ from woost.extensions.mailer.mailing import get_receivers_by_roles
     <?py-class
     translations = ()
     task_id = None
-    ?>  
+    ?>
 
     <?py
     add_view_action_context(self, "send_email")
@@ -52,8 +52,8 @@ from woost.extensions.mailer.mailing import get_receivers_by_roles
                 </p>
             </div>
 
-            <p 
-                py:id="accessibility_notice" 
+            <p
+                py:id="accessibility_notice"
                 class="notice"
                 py:visible="@{not self.edited_item.document.is_accessible(User.get_instance(qname = 'woost.anonymous_user'), language = self.edited_item.language.iso_code)}">
                 ${translations("woost.extensions.mailer.SendEmailView accessibility warning")}
@@ -83,10 +83,10 @@ from woost.extensions.mailer.mailing import get_receivers_by_roles
 
             <div class="summary" />
 
-            <div class="progress-bar"> 
+            <div class="progress-bar">
                 <div class="progress-text">${translations("woost.extensions.mailer.SendEmailView zero per cent")}</div>
-                <div class="progress"></div> 
-            </div> 
+                <div class="progress"></div>
+            </div>
         </div>
 
     </py:with>

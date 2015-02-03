@@ -54,7 +54,7 @@ class TransitionTrigger(ContentTrigger):
             if verbose:
                 print trigger_doesnt_match_style("transition doesn't match")
             return False
-        
+
         return ContentTrigger.match(self,
             user,
             target = target,

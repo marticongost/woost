@@ -32,10 +32,10 @@ ACCESSIBLE_DESCENDANTS = 2
     __item_access = None
 
     def _is_accessible(self, item):
-        
+
         if self.__item_access is None:
             self.__item_access = {}
-        
+
         accessibility = self.__item_access.get(item)
 
         if accessibility is None:
@@ -55,7 +55,7 @@ ACCESSIBLE_DESCENDANTS = 2
         return accessibility
 
     def _fill_body(self):
-        
+
         self.__parent = None
         self.__depth = 0
         self.__index = 0
@@ -118,12 +118,12 @@ ACCESSIBLE_DESCENDANTS = 2
                 nested_container.add_class("depth_level")
                 container.append(nested_container)
                 container = nested_container
-        
+
         # Get the expansion state for the entry
         empty = is_empty(self.get_children(item))
 
         if empty:
-            element.add_class("leaf")        
+            element.add_class("leaf")
         else:
             if self.is_expanded(item):
                 state = "expanded"
@@ -136,7 +136,7 @@ ACCESSIBLE_DESCENDANTS = 2
                     (id for id in self.expanded),
                     [item.id]
                 )
-        
+
             expanded_param = ",".join(str(id) for id in expander_ids)
             element.add_class(state)
         ?>
@@ -161,7 +161,7 @@ ACCESSIBLE_DESCENDANTS = 2
                     self.__children_collection_name,
                     item.id
                 )
-            
+
             element.append(element_display)
             ?>
         </py:with>

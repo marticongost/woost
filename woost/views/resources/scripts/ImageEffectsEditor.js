@@ -37,11 +37,11 @@ cocktail.bind(".ImageEffectsEditor", function ($editor) {
         .insertBefore($editor.find(".edit_button"));
 
     function createDialog() {
-        
+
         dialog = cocktail.instantiate("woost.views.ImageEffectsEditor.imageEffectsDialog");
         dialog.imageEffectsEditor = $editor.get(0);
         $dialog = jQuery(dialog);
-        
+
         $dialog.find(".edited_image").load(function () {
             $dialog.find(".status_bar").empty();
         });
@@ -52,7 +52,7 @@ cocktail.bind(".ImageEffectsEditor", function ($editor) {
                     jQuery(this).find("input").first().focus();
                 });
             });
-        
+
         $dialog.find(".preview_button").click(function () {
             $editor.get(0).repaint();
         });
@@ -66,7 +66,7 @@ cocktail.bind(".ImageEffectsEditor", function ($editor) {
             saveStack();
             cocktail.closeDialog();
         });
-        
+
         return dialog;
     }
 
@@ -91,17 +91,17 @@ cocktail.bind(".ImageEffectsEditor", function ($editor) {
                 }
                 stackBox.scrollTop = stackBox.scrollHeight;
             });
-        
+
         return effectControl;
     }
 
-    this.repaint = function () {        
+    this.repaint = function () {
         var stack = getStack();
         var imageURI = "/image_effects/" + $editor.get(0).editedItemId + "/" + serializeStack(stack) + "?override=true";
         $dialog.find(".status_bar").html(cocktail.translate("woost.views.ImageEffectsEditor-loading"));
         $dialog.find(".edited_image").attr("src", imageURI);
     }
-    
+
     this.removeEffect = function (index) {
         var $control = jQuery($dialog.find(".stack_box").get(0).childNodes[index]);
         $control.hide("fast", function () {
@@ -157,16 +157,16 @@ cocktail.bind(".ImageEffectsEditor", function ($editor) {
     }
 
     function serializeStack(stack) {
-        
+
         var str = "";
-        
+
         for (var i = 0; i < stack.length; i++) {
             var effectEntry = stack[i];
             if (i > 0) {
                 str += "/";
             }
             str += effectEntry[0];
-            if (effectEntry.length > 1) {            
+            if (effectEntry.length > 1) {
                 str += "(";
                 for (var j = 1; j < effectEntry.length; j++) {
                     if (j > 1) {
@@ -185,20 +185,20 @@ cocktail.bind(".ImageEffectsEditor", function ($editor) {
 });
 
 cocktail.bind(".image_effects_dialog .image_effect_control", function ($control) {
-    
+
     var editor = $control.closest(".image_effects_dialog").get(0).imageEffectsEditor;
-        
+
     $control.find("input")
         .live("keydown", function (e) {
             if (
-                e.keyCode == 13 
+                e.keyCode == 13
                 && (this.type == "text" || this.type == "number")
             ) {
                 editor.repaint();
                 return false;
             }
         });
-    
+
     $control.find(".remove_button").click(function () {
         editor.removeEffect($control.index());
     });
@@ -258,7 +258,7 @@ cocktail.bind(".image_effects_dialog .rotate_control", function ($control) {
         $control.find("input").val(Number(node[1]));
         repaintAngle();
     }
- 
+
     function repaintAngle() {
         var canvas = $control.find(".angle_selector").get(0);
         var ctx = canvas.getContext('2d');
@@ -285,7 +285,7 @@ cocktail.bind(".image_effects_dialog .rotate_control", function ($control) {
         ctx.lineTo(cx + r * Math.cos(rads), cy - r * Math.sin(rads));
         ctx.stroke();
     }
-    
+
     $control.find("input")
         .change(repaintAngle)
         .blur(repaintAngle)
@@ -299,7 +299,7 @@ cocktail.bind(".image_effects_dialog .rotate_control", function ($control) {
             var cy = this.height / 2;
             var x = e.layerX - cx;
             var y = e.layerY - cy;
-            var angle = (-Math.atan2(y, x) * 180 / Math.PI).toFixed(0); 
+            var angle = (-Math.atan2(y, x) * 180 / Math.PI).toFixed(0);
             $control.find("input").val(angle);
             repaintAngle();
         });
@@ -327,7 +327,7 @@ cocktail.bind(".image_effects_dialog .crop_control", function ($control) {
         $control.find(".x2 input").val(node[3]);
         $control.find(".y2 input").val(node[4]);
     }
-    
+
     var Jcrop = null;
 
     function showCropCoordinates(c) {
@@ -358,7 +358,7 @@ cocktail.bind(".image_effects_dialog .crop_control", function ($control) {
                     onChange: showCropCoordinates,
                     setSelect: rect,
                     // Disable keyboard support, it messes with the viewport scroll
-                    keySupport: false 
+                    keySupport: false
                 });
             }
             else {
@@ -396,7 +396,7 @@ cocktail.bind(".image_effects_dialog .thumbnail_control", function ($control) {
         }
         jQuery(this).attr("for", input.id);
     });
-    
+
     var img = $dialog.find(".edited_image").get(0);
     $control.find(".width").val(img.offsetWidth);
     $control.find(".height").val(img.offsetHeight);
@@ -414,7 +414,7 @@ cocktail.bind(".image_effects_dialog .thumbnail_control", function ($control) {
             $inactive.hide();
         }
     }
-    
+
     $control.find("input[type=radio]")
         .change(function () { disableUI("fast"); })
         .click(function (e) {
@@ -456,7 +456,7 @@ cocktail.bind(".image_effects_dialog .thumbnail_control", function ($control) {
             .removeAttr("checked")
             .filter("[value=" + option + "]")
                 .attr("checked", true);
-        
+
         if (option == "absolute") {
             $control.find("input.width").val(node[1]);
             $control.find("input.height").val(node[2] || "");
@@ -484,7 +484,7 @@ cocktail.bind(".image_effects_dialog .fill_control", function ($control) {
         }
         jQuery(this).attr("for", input.id);
     });
-    
+
     var img = $dialog.find(".edited_image").get(0);
     $control.find(".width").val(img.offsetWidth);
     $control.find(".height").val(img.offsetHeight);
@@ -506,7 +506,7 @@ cocktail.bind(".image_effects_dialog .fill_control", function ($control) {
 cocktail.bind(".image_effects_dialog .flip_control", function ($control) {
 
     $control.find("input[type=radio]").attr("name", cocktail.requireId());
-    
+
     $control.find("label").each(function () {
         var input = jQuery(this).siblings("input").get(0);
         if (!input.id) {
@@ -514,7 +514,7 @@ cocktail.bind(".image_effects_dialog .flip_control", function ($control) {
         }
         jQuery(this).attr("for", input.id);
     });
-        
+
     this.makeStackNode = function () {
         return [
             this.imageEffect,

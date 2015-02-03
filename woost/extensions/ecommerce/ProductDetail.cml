@@ -34,9 +34,9 @@ from cocktail.controllers import context
 
     <ul py:id="attachments" py:collapsible="${True}">
         <py:ready>
-            <li                
+            <li
                 py:for="attachment in self.product.attachments"
-                py:where="attachment.resource_type != 'image' and attachment.is_accessible()">            
+                py:where="attachment.resource_type != 'image' and attachment.is_accessible()">
                 <a href="${attachment.get_uri()}" title="${getattr(attachment, 'description', None)}">
                     <img src="${attachment.get_image_uri('icon16')}" alt=""/>
                     <span>${translations(attachment)}</span>
