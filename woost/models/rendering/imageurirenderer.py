@@ -24,7 +24,7 @@ class ImageURIRenderer(Renderer):
         return item.uri
 
     def render(self, item, **parameters):
-        
+
         # Open the remote resource
         uri = self.get_item_uri(item)
         http_resource = urlopen(uri)

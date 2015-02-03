@@ -41,7 +41,7 @@ cocktail.bind({
                     }
                     $imageGallery.bind("imageLoaded", handler);
                 }
-                
+
                 if (!image) {
                     image = new Image();
                     loadedImages[src] = image;
@@ -98,17 +98,17 @@ cocktail.bind({
             cocktail.showDialog($dialog.get(0));
             $dialog.hide();
 
-            // Show the dialog once the image finishes loading            
+            // Show the dialog once the image finishes loading
             this.loadImage(
                 jQuery(entry).find(".image_link").get(0).href,
                 function (image) {
                     $dialog.find(".dialog_content > .image")
                         .width(image.width)
                         .height(image.height);
-                    
+
                     $dialog.find(".footnote")
                         .width(image.width);
-                    
+
                     var $next = $dialog.find(".next_button");
                     $next.css("top", image.height / 2 - $next.get(0).offsetHeight / 2 + "px");
 
@@ -129,7 +129,7 @@ cocktail.bind({
 
         this.showPreviousImage = function (entry) {
             var $entries = $imageGallery.find(".image_entry");
-            var prev = jQuery(entry).prev(".image_entry").get(0) 
+            var prev = jQuery(entry).prev(".image_entry").get(0)
                     || jQuery(entry).parent().find(".image_entry:last").get(0);
             this.showImage(prev);
         }
@@ -142,7 +142,7 @@ cocktail.bind({
         }
 
         this.createImageDialog = function (entry) {
-        
+
             if (!entry) {
                 return;
             }
@@ -159,7 +159,7 @@ cocktail.bind({
             });
 
             $dialog.find(".dialog_content > .image").attr("src", imageURL);
-            
+
             if (imageTitle) {
                 $dialog.find(".dialog_heading").html(imageTitle);
             }
@@ -252,7 +252,7 @@ cocktail.bind({
                         function () { $dialogControls.hide(); }
                     );
             }
-            
+
             return $dialog.get(0);
         }
 
@@ -267,7 +267,7 @@ cocktail.bind({
         ".image_entry": function ($entry, $imageGallery) {
 
             var $link = $entry.find(".image_link");
-            
+
             $link.click(function () {
                 $imageGallery.get(0).showImage($entry.get(0));
                 return false;

@@ -33,7 +33,7 @@ def google_cse_search(
     results_per_page = None,
     parser = None):
     """Returns Google CSE results for the given query.
-    
+
     @param query: The query to search.
     @type query: unicode
 
@@ -82,7 +82,7 @@ def google_cse_search(
         page_size,
         parser.result_count
     )
-        
+
 
 class GoogleSearchResult(object):
     title = ""
@@ -120,7 +120,7 @@ class GoogleCSEXMLParser(ContentHandler):
             result = self.result_type()
             self.results.append(result)
             self.current_result = result
-            
+
     def endElement(self, name):
         self.status = None
         if name == "R":
@@ -176,7 +176,7 @@ class PageMapGoogleCSEXMLParser(GoogleCSEXMLParser):
 
 
 class GoogleSearchResultsList(ListWrapper):
-    
+
     def __init__(self, results, page, page_size, result_count):
         ListWrapper.__init__(self, results)
         self.page = page

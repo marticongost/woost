@@ -39,19 +39,19 @@ class LanguageScheme(object):
 
         if language is None:
             language = get_language() or self.infer_language()
-        
+
         cherrypy.response.cookie["language"] = language
         cookie = cherrypy.response.cookie["language"]
         cookie["path"] = "/"
         set_cookie_expiration(cookie, seconds = self.cookie_duration)
 
         set_language(language)
-    
+
     def infer_language(self):
 
         # Check for a language preference in a cookie
         cookie = cherrypy.request.cookie.get("language")
-        
+
         if cookie:
             return cookie.value
 
@@ -94,7 +94,7 @@ class LanguageScheme(object):
                     ):
                         best_language = language
                         best_score = score
-                    
+
                 if best_language:
                     return best_language
 
@@ -134,7 +134,7 @@ class LanguageScheme(object):
         else:
             path_components = path.strip("/").split("/")
             if (
-                path_components 
+                path_components
                 and path_components[0] in Configuration.instance.languages
             ):
                 path_components.pop(0)

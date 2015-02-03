@@ -30,7 +30,7 @@ class NoticesExtension(Extension):
             u"""Permet mostrar avisos als visitants de la web.""",
             "ca"
         )
-        self.set("description",            
+        self.set("description",
             u"""Permite mostrar avisos als visitants de la web.""",
             "es"
         )

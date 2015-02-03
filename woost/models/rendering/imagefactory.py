@@ -40,7 +40,7 @@ class ImageFactory(Item):
         indexed = True,
         normalized_index = False
     )
-    
+
     renderer = schema.Reference(
         required = True,
         type = Renderer,
@@ -61,7 +61,7 @@ class ImageFactory(Item):
     effects = schema.Collection(
         items = "woost.models.rendering.ImageEffect",
         bidirectional = True,
-        integral = True,        
+        integral = True,
     )
 
     options_code = schema.CodeBlock(
@@ -87,9 +87,9 @@ class ImageFactory(Item):
     )
 
     def render(self, item):
-        
+
         image = self.renderer.render(item)
-        
+
         if image is None:
             if self.fallback:
                 image = self.fallback.render(item)
@@ -117,7 +117,7 @@ class ImageFactory(Item):
         return (
             self.renderer.can_render(item, **parameters)
             or self.fallback and self.fallback.can_render(item, **parameters)
-        )    
+        )
 
     cache_invalidators = frozenset((
         identifier,

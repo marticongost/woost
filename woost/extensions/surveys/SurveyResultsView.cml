@@ -37,7 +37,7 @@ from cocktail.controllers.viewstate import view_state
                 </py:ready>
                 ${translations("woost.extensions.surveys.SurveyResultsView.download_excel_link")}
             </a>
-     
+
             <div py:id="question_results" py:visible="@{self.result_count}">
                 <py:ready>
                     <?py
@@ -52,6 +52,6 @@ from cocktail.controllers.viewstate import view_state
         </section>
 
     </py:with>
- 
+
 </py:woost.views.BackOfficeEditView>
 

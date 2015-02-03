@@ -24,7 +24,7 @@ translations.define("woost.extensions.webconsole.template.title",
 )
 
 # WebConsolePermission
-#------------------------------------------------------------------------------ 
+#------------------------------------------------------------------------------
 translations.define("WebConsolePermission",
     ca = u"Permís d'execució de Python",
     es = u"Permiso de ejecución de Python",

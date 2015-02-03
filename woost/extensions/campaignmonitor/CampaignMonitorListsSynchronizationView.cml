@@ -30,7 +30,7 @@
     </div>
 
     <py:with py:element="self.body">
-        
+
         <div py:id="results">
             <py:ready>
                 <?py changes = self.created_lists or self.modified_lists or self.deleted_lists ?>
@@ -50,7 +50,7 @@
         <form py:id="back_form" action="" py:visible="@{self.successful}">
             <div class="buttons">
                 <button type="submit" py:id="cancel_button" name="cancel">
-                    ${translations("woost.extensions.campaignmonitor.CampaignMonitorListsSynchronizationView cancel button")}            
+                    ${translations("woost.extensions.campaignmonitor.CampaignMonitorListsSynchronizationView cancel button")}
                 </button>
             </div>
         </form>

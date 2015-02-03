@@ -30,7 +30,7 @@ class SurveysExtension(Extension):
             u"""Permet fer enquestes als visitants de la web.""",
             "ca"
         )
-        self.set("description",            
+        self.set("description",
             u"""Permite hacer encuestas a los visitantes de la web.""",
             "es"
         )

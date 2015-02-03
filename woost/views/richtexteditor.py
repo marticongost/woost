@@ -87,5 +87,5 @@ class RichTextEditor(TinyMCE):
                 ]
             }])
 
-        TinyMCE._ready(self)        
+        TinyMCE._ready(self)
 

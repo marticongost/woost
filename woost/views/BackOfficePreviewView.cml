@@ -45,9 +45,9 @@ from woost.controllers.backoffice.useractions import \
                         ?>
                     </py:cocktail.html.LinkSelector>
                 </py:with>
-            </py:cocktail.html.DropdownPanel>            
+            </py:cocktail.html.DropdownPanel>
         </div>
-        
+
         <iframe
             frameborder="0">
             <py:ready>
@@ -56,7 +56,7 @@ from woost.controllers.backoffice.useractions import \
                     "render_preview",
                     edit_stack = self.edit_stack.to_param(),
                     preview_publishable = str(self.preview_publishable.id),
-                    preview_language = self.preview_language                    
+                    preview_language = self.preview_language
                 )
                 ?>
             </py:ready>

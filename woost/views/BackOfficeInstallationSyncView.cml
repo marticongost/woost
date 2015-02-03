@@ -59,7 +59,7 @@ from woost.controllers.backoffice.useractions import \
                             type="checkbox"
                             name="sync_selection"
                             value="${obj.global_id}"
-                            checked="${obj.global_id in self.sync_selection}"/>                        
+                            checked="${obj.global_id in self.sync_selection}"/>
 
                         <py:woost.views.ContentLink
                             py:local_id="item_label"
@@ -71,7 +71,7 @@ from woost.controllers.backoffice.useractions import \
                             @extend(element)
                             def get_edit_url(item_label):
                                 return self.edited_item.url.rstrip("/") + "/cms/content/%s/fields" % item_label.item.global_id
-                            
+
                             @extend(element)
                             def create_icon(item_label):
                                 img = Element("img")
@@ -79,7 +79,7 @@ from woost.controllers.backoffice.useractions import \
                                 img["title"] = translations(item_label.item.__class__.__name__)
                                 img["src"] = self.edited_item.url.rstrip("/") + "/images/%s/%s" % (item_label.item.global_id, item_label.image_factory)
                                 return img
-                            ?> 
+                            ?>
                         </py:woost.views.ContentLink>
                     </li>
                 </py:ready>
@@ -140,7 +140,7 @@ from woost.controllers.backoffice.useractions import \
                                     link["target"] = "_blank"
                                     image = Element("img")
                                     image["src"] = local_file.get_image_uri("backoffice_thumbnail")
-                                    link.append(image)                                    
+                                    link.append(image)
                                     row.previous_value.empty()
                                     row.previous_value.append(link)
 
@@ -178,17 +178,17 @@ from woost.controllers.backoffice.useractions import \
         py:id="diff_dialog"
         py:client_model="woost.views.BackOfficeInstallationSyncView.diffDialog"/>
 
-    <a 
+    <a
         py:id="diff_dialog_button"
         py:client_model="woost.views.BackOfficeInstallationSyncView.diffDialogButton"
         href="javascript:">${translations("woost.views.BackOfficeInstallationSyncView.diff_dialog_button")}</a>
 
     <div py:id="selection_controls"
         py:client_model="woost.views.BackOfficeInstallationSyncView.selectionControls">
-        <a 
+        <a
             py:id="select_all_button"
             href="javascript:">${translations("woost.views.BackOfficeInstallationSyncView.select_all_button")}</a>
-        <a 
+        <a
             py:id="select_none_button"
             href="javascript:">${translations("woost.views.BackOfficeInstallationSyncView.select_none_button")}</a>
     </div>

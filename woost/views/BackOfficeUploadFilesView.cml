@@ -15,7 +15,7 @@
 
         <py:cocktail.html.ErrorBox py:errors="@{self.form_errors}"/>
 
-        <py:cocktail.html.Form             
+        <py:cocktail.html.Form
             py:id="upload_form"
             method="post"
             py:visible="@{not self.successful}"

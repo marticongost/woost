@@ -10,7 +10,7 @@ from cocktail.translations import DATE_STYLE_TEXT
     <?py-class
     date_style = DATE_STYLE_TEXT
     image_factory = "image_gallery_thumbnail"
-    ?>    
+    ?>
 
     <article py:def="entry" py:args="news, news_index">
 

@@ -39,7 +39,7 @@ Publishable.add_member(
             block_delete = True
         ),
         default = schema.DynamicDefault(
-            lambda: OpenGraphType.get_instance(code = "article")    
+            lambda: OpenGraphType.get_instance(code = "article")
         ),
         indexed = True,
         listed_by_default = False,

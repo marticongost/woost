@@ -8,7 +8,7 @@ from cocktail import schema
 <py:woost.views.ContentView
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:py="http://www.whads.com/ns/cocktail/templates">
-        
+
     <?py
     self.add_resource("/cocktail/styles/jquery.tablednd.css")
     self.add_resource("/cocktail/scripts/jquery.tablednd.js")
@@ -55,7 +55,7 @@ from cocktail import schema
             subset = self.user_collection.subset
             accessible_items = set(subset)
             element.filter_item = accessible_items.__contains__
-            
+
             if self.root is not None and not self.root:
                 # Empty root, no point in evaluating descending nodes
                 element.data = []
@@ -65,7 +65,7 @@ from cocktail import schema
                         return True
                     else:
                         return any(
-                            is_visible_branch(child) 
+                            is_visible_branch(child)
                             for child in item.get(self.children_collection)
                         )
 

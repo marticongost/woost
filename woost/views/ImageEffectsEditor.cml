@@ -44,7 +44,7 @@ from woost.models.rendering.effectschain import parse_effect
 
         for effect_name in self.effects:
             self.add_client_translation("woost.views.ImageEffectsEditor-%s_effect" % effect_name)
-        
+
         if self.value is None:
             stack = []
         else:
@@ -59,7 +59,7 @@ from woost.models.rendering.effectschain import parse_effect
 
     <py:cocktail.html.TextBox py:id="input" py:value="@{self.value}"/>
     <?py data_bound(self, self.input) ?>
-    
+
     <div py:id="image_effects_dialog"
         py:client_model="woost.views.ImageEffectsEditor.imageEffectsDialog">
 
@@ -72,7 +72,7 @@ from woost.models.rendering.effectschain import parse_effect
         </div>
 
         <div py:id="edit_box">
-            
+
             <div py:id="edit_box_header">
                 ${translations("woost.views.ImageEffectsEditor.edit_box_header")}
             </div>
@@ -85,7 +85,7 @@ from woost.models.rendering.effectschain import parse_effect
                 </div>
                 <py:ready>
                     <py:new py:element="self.create_image_effect_button(effect_name)"
-                        py:for="effect_name in self.effects"/>                                                
+                        py:for="effect_name in self.effects"/>
                 </py:ready>
             </div>
 
@@ -126,7 +126,7 @@ from woost.models.rendering.effectschain import parse_effect
             <button py:local_id="remove_button" type="button">
                 <img src="/resources/images/remove-image-effect.png"
                     alt="${translations('woost.views.ImageEffectsEditor.remove_effect_button')}"/>
-            </button>            
+            </button>
         </div>
     </div>
 
@@ -173,7 +173,7 @@ from woost.models.rendering.effectschain import parse_effect
 
     <py:new
         py:id="crop_control"
-        py:element="self.create_image_effect_control('crop')">        
+        py:element="self.create_image_effect_control('crop')">
         <py:with py:element="element.image_effect_container">
             <div py:local_id="x1">
                 <label for="@{element.parent.children[-1].require_id()}">X1</label>

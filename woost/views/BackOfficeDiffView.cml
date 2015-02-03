@@ -8,7 +8,7 @@ from woost.controllers.backoffice.useractions import \
 <py:woost.views.BackOfficeItemView
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:py="http://www.whads.com/ns/cocktail/templates">
-    
+
     <?py-class
     source = None
     source_accessor = None
@@ -38,7 +38,7 @@ from woost.controllers.backoffice.useractions import \
                         revert_key += "-" + language
                     ?>
                     <input type="checkbox" name="reverted_members" value="${revert_key}"/>
-                </td>                
+                </td>
             </py:with>
         </py:woost.views.ObjectDiff>
 

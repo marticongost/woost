@@ -37,7 +37,7 @@ class Variable(Item):
     )
 
     def get_value(self):
-        
+
         text = self.translated_text or self.text
 
         expr = self.expression

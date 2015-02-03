@@ -51,7 +51,7 @@ class Feed(Publishable):
         descriptive = True,
         translated = True,
         member_group = "meta"
-    )           
+    )
 
     ttl = schema.Integer(
         listed_by_default = False,
@@ -115,7 +115,7 @@ class Feed(Publishable):
     )
 
     def select_items(self):
-         
+
         user_collection = UserCollection(Publishable)
         user_collection.allow_paging = False
         user_collection.allow_member_selection = False
