@@ -19,9 +19,9 @@ class EditTestModel(Item):
     description = schema.String(
         required = True
     )
-    
+
     part = schema.Reference(
-        bidirectional = True,    
+        bidirectional = True,
         integral = True
     )
 
@@ -34,7 +34,7 @@ EditTestModel.container.type = EditTestModel
 
 
 class ItemSelectorTestCase(object):
-    
+
     @selenium_test
     def test_select(self):
 
@@ -42,7 +42,7 @@ class ItemSelectorTestCase(object):
 
         browser.open("/en/cms/content/new/?item_type=woost.models.publishable.Publishable")
         admin_login()
-        
+
         assert not browser.is_element_present(
             "css=.template_field .control .new"
         )
@@ -57,7 +57,7 @@ class ItemSelectorTestCase(object):
 
         browser.click("css=.template_field .control .select")
         browser.wait_for_page_to_load(10000)
-        
+
         assert browser.is_visible("css=.collection_display #%d" % template.id)
         browser.click("css=.collection_display #%d" % template.id)
         browser.click("css=.ContentView .select_action")
@@ -102,7 +102,7 @@ class IntegralSelectorTestCase(object):
 
     @selenium_test
     def test_new(self):
-    
+
         browser.open(
             "/en/cms/content/new/"
             "?item_type=woost.tests.test_selenium.test_edit.EditTestModel"
@@ -113,10 +113,10 @@ class IntegralSelectorTestCase(object):
         assert not browser.is_element_present("css=.part_field .control .edit")
         assert not browser.is_element_present("css=.part_field .control .delete")
         assert not browser.is_element_present("css=.part_field .control .unlink")
-        
+
         browser.click("css=.part_field .control .new")
         browser.wait_for_page_to_load(10000)
-        
+
         browser.type("edited_item_description", "Foo")
         browser.click("css=.save_action")
         browser.wait_for_page_to_load(10000)
@@ -131,14 +131,14 @@ class IntegralSelectorTestCase(object):
         datastore.sync()
         container = EditTestModel()
         container.description = "test_edit container"
-        
+
         part = EditTestModel()
         part.description = "test_edit part"
         container.part = part
-        
+
         container.insert()
         datastore.commit()
-        
+
         browser.open("/en/cms/content/%d/fields" % container.id)
         admin_login()
 
@@ -160,18 +160,18 @@ class IntegralSelectorTestCase(object):
         datastore.sync()
         assert browser.get_value("edited_item_part") == str(part.id)
         assert part.description == "modified test_edit part"
-        
+
     @selenium_test
     def test_delete(self):
-        
+
         datastore.sync()
         container = EditTestModel()
         container.description = "test_edit container"
-        
+
         part = EditTestModel()
         part.description = "test_edit part"
         container.part = part
-        
+
         container.insert()
         datastore.commit()
 

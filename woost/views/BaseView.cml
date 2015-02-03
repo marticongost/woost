@@ -27,7 +27,7 @@ from woost.models import Configuration, Publishable, get_current_website
             keywords.append(site_keywords)
         item_keywords = getattr(self.publishable, "keywords", None)
         if item_keywords:
-            keywords.append(item_keywords)        
+            keywords.append(item_keywords)
         return " ".join(keywords) if keywords else None
 
     def get_page_title(self):
@@ -39,7 +39,7 @@ from woost.models import Configuration, Publishable, get_current_website
         return title
 
     def get_content_title(self):
-        return getattr(self.publishable, "inner_title", None) or translations(self.publishable)    
+        return getattr(self.publishable, "inner_title", None) or translations(self.publishable)
     ?>
 
     <?py
@@ -48,7 +48,7 @@ from woost.models import Configuration, Publishable, get_current_website
     @self.when_document_ready
     def adapt_document(document):
 
-        # Links            
+        # Links
         home = get_current_website().home
         document.head_start_link = Element("link", rel = "start", title = home.title, href = home.get_uri() or "/")
         document.head.append(document.head_start_link)
@@ -121,11 +121,11 @@ from woost.models import Configuration, Publishable, get_current_website
 
             if description:
                 self.set_meta("description", description)
-            
+
             keywords = self.get_keywords()
             if keywords:
                 self.set_meta("keywords", keywords)
-            
+
             robots_should_index = getattr(self.publishable, "robots_should_index", True)
             robots_should_follow = getattr(self.publishable, "robots_should_follow", True)
             if not robots_should_index or not robots_should_follow:
@@ -151,7 +151,7 @@ from woost.models import Configuration, Publishable, get_current_website
     </py:ready>
 
     <py:woost.views.EditPanel py:id="toolbar"/>
-   
+
     <div py:id="content">
         <py:woost.views.BlockList
             py:id="block_content"

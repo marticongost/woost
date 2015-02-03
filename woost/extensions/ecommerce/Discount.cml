@@ -10,7 +10,7 @@
 
     def get_value(self):
         kind, value = self.pricing.parse_implementation()
-        
+
         if kind in ("override", "add"):
             return u"%s %s" % (value, self.currency)
         elif kind in ("override_percentage", "add_percentage"):
@@ -41,7 +41,7 @@
                 if self.pricing.end_date:
                     element.append(
                         translations(
-                            "woost.extensions.ecommerce.Discount.end_date", 
+                            "woost.extensions.ecommerce.Discount.end_date",
                             end_date = self.pricing.end_date.date()
                         )
                     )

@@ -12,9 +12,9 @@ from woost.extensions.audio.request import request_encoding
 
 class AudioEncodingController(BaseCMSController):
 
-    def __call__(self, file_id, encoder_id):        
+    def __call__(self, file_id, encoder_id):
         file = File.require_instance(int(file_id))
-        encoder_id = os.path.splitext(encoder_id)[0]        
+        encoder_id = os.path.splitext(encoder_id)[0]
         dest = request_encoding(file, encoder_id)
         return serve_file(dest)
 

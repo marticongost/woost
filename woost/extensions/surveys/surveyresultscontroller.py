@@ -24,7 +24,7 @@ class SurveyResultsController(EditController):
 
     @cherrypy.expose
     def render_msexcel(self):
-        
+
         survey = self.edit_node.item
         survey_schema = survey.create_survey_schema()
 

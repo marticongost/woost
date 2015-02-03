@@ -23,7 +23,7 @@ from woost.controllers.backoffice.basebackofficecontroller \
 
 
 class DeleteController(BaseBackOfficeController):
-    
+
     MAX_TRANSACTION_ATTEMPTS = 3
 
     @request_property
@@ -50,14 +50,14 @@ class DeleteController(BaseBackOfficeController):
     @request_property
     def submitted(self):
         return self.action is not None
-    
+
     def submit(self):
         # Load the edit stack before deleting any item, to ensure its
         # loaded properly
         stack = self.edit_stack
 
         if self.action == "confirm_delete":
-            
+
             user = get_current_user()
 
             for i in range(self.MAX_TRANSACTION_ATTEMPTS):
@@ -81,12 +81,12 @@ class DeleteController(BaseBackOfficeController):
                     datastore.sync()
                 else:
                     break
-          
+
             # Purge the edit stack of references to deleted items
             if stack:
                 prev_stack_size = len(stack)
                 stack.remove_references(deleted_set)
-            
+
             # Launch CMS.item_deleted events
             cms = self.context["cms"]
 
@@ -105,7 +105,7 @@ class DeleteController(BaseBackOfficeController):
                 while len(stack) > 0 \
                 and not isinstance(stack[-1], EditNode):
                     stack.pop()
-                
+
                 notify_user(
                     translations(
                         "woost.controllers.DeleteController."

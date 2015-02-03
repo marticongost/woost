@@ -246,7 +246,7 @@
 }
 
 .EditBlocksView .BlockDisplay .block_handle .panel {
-    width: 15em;    
+    width: 15em;
 }
 
 .EditBlocksView .BlockDisplay .block_menu button {
@@ -292,7 +292,7 @@
 }
 
 /* TextBlockDisplay
------------------------------------------------------------------------------*/ 
+-----------------------------------------------------------------------------*/
 .EditBlocksView .VideoBlockDisplay .content_preview,
 .EditBlocksView .TextBlockDisplay .content_preview,
 .EditBlocksView .NewsletterContentDisplay .content_preview {

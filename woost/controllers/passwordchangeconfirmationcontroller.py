@@ -26,7 +26,7 @@ class PasswordChangeConfirmationController(FormProcessor, DocumentController):
 
     @event_handler
     def handle_traversed(cls, e):
-        
+
         controller = e.source
 
         # Make sure we are given a user
@@ -46,7 +46,7 @@ class PasswordChangeConfirmationController(FormProcessor, DocumentController):
         return cms.authentication.identifier_field
 
     @request_property
-    def identifier(self):        
+    def identifier(self):
         member = self.identifier_member.copy()
         member.name = "user"
         return get_parameter(member, errors = "ignore")
@@ -61,7 +61,7 @@ class PasswordChangeConfirmationController(FormProcessor, DocumentController):
             return User.get_instance(**{
                 self.identifier_member.name: self.identifier
             })
-    
+
     class ChangePasswordForm(Form):
 
         @request_property
@@ -80,7 +80,7 @@ class PasswordChangeConfirmationController(FormProcessor, DocumentController):
                 edit_control = "cocktail.html.PasswordBox",
                 required = True
             )
-            
+
             @password_confirmation_member.add_validation
             def validate_password_confirmation(context):
                 password = context.get_value("password")
@@ -97,7 +97,7 @@ class PasswordChangeConfirmationController(FormProcessor, DocumentController):
         def submit(self):
 
             Form.submit(self)
-            
+
             # Update the user's password
             user = self.controller.user
             user.password = self.data["password"]

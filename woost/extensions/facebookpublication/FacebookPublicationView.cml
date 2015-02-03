@@ -57,10 +57,10 @@
             <py:ready>
                 <tr py:for="i, (publishable, target, language, outcome) in enumerate(self.results)">
                     <?py
-                    from cocktail.styled import styled                    
-                    
+                    from cocktail.styled import styled
+
                     group_publishable = (i and publishable is self.results[i - 1][0])
-                    
+
                     if group_publishable:
                         prev_cell = self.__publishable_starting_row.publishable_cell
                         if prev_cell["rowspan"]:
@@ -72,7 +72,7 @@
                         element.add_class("new_publishable_row")
 
                     group_target = (i and target is self.results[i - 1][1])
-                    
+
                     if group_target:
                         prev_cell = self.__target_starting_row.target_cell
                         if prev_cell["rowspan"]:
@@ -122,14 +122,14 @@
                         ${translations(language)}
                     </td>
                     <td py:local_id="outcome_cell" py:if="not group_outcome">
-                        <?py 
+                        <?py
                         error = outcome if isinstance(outcome, Exception) else None
                         if error:
                             element.add_class("publication_error")
                         elif self.action == "publish":
                             element.add_class("publication_success")
                         ?>
-                        <img py:local_id="outcome_icon" 
+                        <img py:local_id="outcome_icon"
                             py:visible="${self.action == 'publish'}"
                             src="/resources/images/facebookpublication-${'error' if error else 'success'}.png"/>
                         ${outcome_translation}
@@ -154,19 +154,19 @@
                 ${translations("woost.extensions.facebookpublication.FacebookPublicationView.publication_form.submit_button")}
             </py:with>
 
-            <button 
+            <button
                 py:id="close_button"
-                type="submit" 
-                name="action" 
+                type="submit"
+                name="action"
                 value="close"
                 py:before="publication_form.submit_button">
                 ${translations("Action close")}
             </button>
 
-            <button 
+            <button
                 py:id="check_button"
-                type="submit" 
-                name="action" 
+                type="submit"
+                name="action"
                 value="check"
                 py:before="publication_form.submit_button">
                 ${translations("woost.extensions.facebookpublication.FacebookPublicationView.publication_form.check_button")}
@@ -176,11 +176,11 @@
 
         <div py:id="loading_sign"
             class="FacebookPublicationView-loading_sign"
-            py:client_model="woost.extensions.facebookpublication.FacebookPublicationView.loading_sign">            
+            py:client_model="woost.extensions.facebookpublication.FacebookPublicationView.loading_sign">
             ${translations("woost.extensions.facebookpublication.FacebookPublicationView.loading_sign")}
         </div>
 
-        <a py:id="publish_again_link" 
+        <a py:id="publish_again_link"
             py:client_model="woost.extensions.facebookpublication.FacebookPublicationView.publish_again_link"
             href="javascript:">
             ${translations("woost.extensions.facebookpublication.FacebookPublicationView.publish_again_link")}

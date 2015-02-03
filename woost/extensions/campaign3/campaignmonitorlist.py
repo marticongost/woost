@@ -68,10 +68,10 @@ class CampaignMonitorList(Item):
             unsubscribe_page = None
 
         list.update(
-            details.Title, 
-            unsubscribe_page, 
+            details.Title,
+            unsubscribe_page,
             details.ConfirmedOptIn,
-            confirmation_success_page, 
+            confirmation_success_page,
             unsubscribe_setting=details.UnsubscribeSetting
         )
 

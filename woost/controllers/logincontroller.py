@@ -19,7 +19,7 @@ from woost.controllers.authentication import AuthenticationFailedError
 
 
 class LoginController(FormControllerMixin, DocumentController):
-    
+
     def __init__(self, *args, **kwargs):
         DocumentController.__init__(self, *args, **kwargs)
         FormControllerMixin.__init__(self)
@@ -27,7 +27,7 @@ class LoginController(FormControllerMixin, DocumentController):
     @cached_getter
     def form_errors(self):
         form_errors = FormControllerMixin.form_errors(self)
-        
+
         if not form_errors and self.submitted and get_current_user().anonymous:
             user_param = get_parameter(schema.Member("user"))
             form_errors._items.append(AuthenticationFailedError(user_param))

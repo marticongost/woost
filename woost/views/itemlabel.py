@@ -59,7 +59,7 @@ class ItemLabel(Element):
             img["src"] = context["cms"].image_uri(self.item, image_factory)
 
         return img
- 
+
     def create_text_wrapper(self):
         text_wrapper = Element("span")
         text_wrapper.add_class("text_wrapper")

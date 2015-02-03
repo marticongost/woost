@@ -29,7 +29,7 @@ from woost.models import Item
                     py:local_id="icon"
                     py:image="${Item.require_instance(value)}"
                     py:image_factory="backoffice_thumbnail.png"/>
-            </div>            
+            </div>
         </py:with>
     </py:cocktail.html.CheckList>
 

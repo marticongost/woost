@@ -19,12 +19,12 @@ def override(obj, **kwargs):
     undefined = object()
 
     prev_values = {}
-    
+
     try:
         for key, value in kwargs.iteritems():
             prev_values[key] = getattr(obj, key, undefined)
             setattr(obj, key, value)
-    
+
         yield
 
     finally:
@@ -36,7 +36,7 @@ def override(obj, **kwargs):
 
 
 class SearchTestCase(object):
-    
+
     @selenium_test
     def test_unfold_expanded_search(self):
         browser.open("/en/cms/content/?content_view=flat")
@@ -48,10 +48,10 @@ class SearchTestCase(object):
 
     @selenium_test
     def test_add_filters_from_selector(self):
-        
+
         from cocktail.schema.expressions import Self
         from cocktail.persistence import Query
-        
+
         results = Item.select([
             Item.id.greater(15),
             Self.search("@localhost", languages = ["en"])
@@ -101,15 +101,15 @@ class SearchTestCase(object):
             qname = "woost.anonymous"
         )
 
-        with override(User.roles, user_filter = MultipleChoiceFilter):           
-            
+        with override(User.roles, user_filter = MultipleChoiceFilter):
+
             browser.open("/en/cms/content/?content_view=flat&type=woost.models.user.User&search_expanded=true")
             admin_login()
 
             # Select the filter
             browser.fire_event("css=.new_filter_selector", "click")
             browser.fire_event("css=.new_filter-member-roles", "click")
-            
+
             # Select options
             browser.fire_event("css=.filters .values_field .select", "click")
             assert browser.is_visible("css=.modal_selector_dialog")
@@ -119,9 +119,9 @@ class SearchTestCase(object):
                     "css=.modal_selector_dialog input[value=%d]"
                     % role.id
                 )
-    
-            browser.fire_event("css=.modal_selector_dialog .accept", "click")                
-            
+
+            browser.fire_event("css=.modal_selector_dialog .accept", "click")
+
             for role in (administrators, anonymous):
                 assert browser.is_element_present(
                     "css=.filters .values_field input[value=%d]"
@@ -130,7 +130,7 @@ class SearchTestCase(object):
 
             browser.click("css=.filters .search_button")
             browser.wait_for_page_to_load(10000)
-            
+
             # Validate results
             results_count = len(administrators.users) + len(anonymous.users)
             rows_count = browser.jquery_count(".collection_display .item_row")
@@ -149,14 +149,14 @@ class SearchTestCase(object):
                 assert browser.is_checked(
                     "css=.modal_selector_dialog input[value=%d]"
                     % role.id
-                )            
+                )
 
     @selenium_test
     def test_item_selector(self):
 
         from woost.models import Publishable, Template
         template = list(Template.select())[0]
-        
+
         browser.open("/en/cms/content/?content_view=flat&type=woost.models.publishable.Publishable&search_expanded=true")
         admin_login()
 
@@ -184,7 +184,7 @@ class SearchTestCase(object):
 
         browser.click("css=.filters .search_button")
         browser.wait_for_page_to_load(10000)
-        
+
         rows_count = browser.jquery_count(".collection_display .item_row")
         assert rows_count == len(template.items)
 

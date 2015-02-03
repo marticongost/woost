@@ -37,14 +37,14 @@ verbose = False
 
 
 def get_triggers_enabled():
-    """Indicates if trigger activation is enabled for the current thread.    
+    """Indicates if trigger activation is enabled for the current thread.
     @rtype: bool
     """
     return getattr(_thread_data, "enabled", True)
 
 def set_triggers_enabled(enabled):
     """Enables or disables the activation of triggers for the current thread.
-    
+
     @param enabled: Wether triggers should be enabled.
     @type enabled: bool
     """
@@ -65,7 +65,7 @@ class Trigger(Item):
         "custom_context",
         "responses"
     ]
-    
+
     title = schema.String(
         translated = True,
         descriptive = True
@@ -107,7 +107,7 @@ class Trigger(Item):
     condition = schema.CodeBlock(
         language = "python"
     )
- 
+
     custom_context = schema.CodeBlock(
         language = "python"
     )
@@ -202,7 +202,7 @@ class InsertTrigger(ContentTrigger):
 
 class ModifyTrigger(ContentTrigger):
     """A trigger executed when an item is modified."""
-    
+
     instantiable = True
     members_order = ["matching_members", "matching_languages"]
 
@@ -231,7 +231,7 @@ class ModifyTrigger(ContentTrigger):
         language = None,
         verbose = False,
         **context):
-        
+
         if self.matching_members:
             if member is None:
                 if verbose:
@@ -303,7 +303,7 @@ def trigger_responses(
         # Get the data for the current transaction
         trans = datastore.connection.transaction_manager.get()
         trans_data = trans_dict.get(trans)
-        
+
         if trans_data is None:
             trans_triggers = {}
             modified_members = {}
@@ -323,7 +323,7 @@ def trigger_responses(
             if target_modified_members is None:
                 target_modified_members = set()
                 modified_members[target] = target_modified_members
-            
+
             target_modified_members.add(
                 (context["member"], context["language"])
             )
@@ -390,7 +390,7 @@ def trigger_responses(
 
             # Execute after the transaction is committed
             if trigger.execution_point == "after":
-                
+
                 if trigger.batch_execution:
 
                     # Schedule the trigger to be executed when the current

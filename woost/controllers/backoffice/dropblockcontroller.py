@@ -47,7 +47,7 @@ class DropBlockController(BaseBackOfficeController):
         block = self.block
 
         if block is None:
-            raise cherrypy.HTTPError(400, 
+            raise cherrypy.HTTPError(400,
                 "Must supply a 'block' parameter indicating the block to "
                 "relocate"
             )
@@ -55,7 +55,7 @@ class DropBlockController(BaseBackOfficeController):
         source_parent = self.source_parent
 
         if source_parent is None:
-            raise cherrypy.HTTPError(400, 
+            raise cherrypy.HTTPError(400,
                 "Must supply a 'source_parent' parameter indicating the "
                 "container that the block is being moved from"
             )
@@ -63,7 +63,7 @@ class DropBlockController(BaseBackOfficeController):
         source_slot = self.source_slot
 
         if source_slot is None:
-            raise cherrypy.HTTPError(400, 
+            raise cherrypy.HTTPError(400,
                 "Must supply a 'source_slot' parameter indicating the "
                 "reference or collection that the block is being removed from"
             )
@@ -71,7 +71,7 @@ class DropBlockController(BaseBackOfficeController):
         target_parent = self.target_parent
 
         if target_parent is None:
-            raise cherrypy.HTTPError(400, 
+            raise cherrypy.HTTPError(400,
                 "Must supply a 'target_parent' parameter indicating the "
                 "container that the block is being moved from"
             )
@@ -79,7 +79,7 @@ class DropBlockController(BaseBackOfficeController):
         target_slot = self.target_slot
 
         if target_slot is None:
-            raise cherrypy.HTTPError(400, 
+            raise cherrypy.HTTPError(400,
                 "Must supply a 'target_slot' parameter indicating the "
                 "reference or collection that the block is being removed from"
             )

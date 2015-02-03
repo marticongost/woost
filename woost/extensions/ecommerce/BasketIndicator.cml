@@ -12,7 +12,7 @@ from woost.extensions.ecommerce.basket import Basket
     hide_when_empty = True
     order = None
     ?>
-    
+
     <?py
     self.add_resource("/ecommerce_state", mime_type = "text/javascript")
     self.add_resource("/resources/scripts/ecommerce-BasketIndicator.js")

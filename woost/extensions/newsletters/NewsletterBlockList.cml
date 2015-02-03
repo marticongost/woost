@@ -10,7 +10,7 @@ from woost.models.blockutils import create_block_views
     <?py-class
     blocks = None
     container = None
-    slot = None    
+    slot = None
     disposition = "column"
     ?>
 
@@ -35,7 +35,7 @@ from woost.models.blockutils import create_block_views
                 element.append(self.create_block_row(block_view))
         elif self.disposition == "row":
             for block_view in create_block_views(self.blocks):
-                self.layout_row.append(self.create_block_cell(block_view))                
+                self.layout_row.append(self.create_block_cell(block_view))
         else:
             raise ValueError(
                 "Invalid disposition for %r; expected 'column' or 'row', got %r instead"
@@ -43,9 +43,9 @@ from woost.models.blockutils import create_block_views
             )
         ?>
     </py:ready>
-    
+
     <tr py:id="layout_row"/>
-    
+
     <tr py:def="block_row" py:args="block_view">
         <py:new py:local_id="block_cell" py:element="self.create_block_cell(block_view)"/>
     </tr>

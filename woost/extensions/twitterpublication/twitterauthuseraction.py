@@ -19,7 +19,7 @@ from woost.extensions.twitterpublication.twitterpublicationtarget \
 
 
 class TwitterAuthUserAction(UserAction):
- 
+
     content_type = TwitterPublicationTarget
 
     included = frozenset(["item_buttons"])
@@ -28,7 +28,7 @@ class TwitterAuthUserAction(UserAction):
     max = 1
 
     def invoke(self, controller, selection):
-        
+
         target = selection[0]
         consumer = Consumer(target.app_id, target.app_secret)
 

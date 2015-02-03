@@ -42,7 +42,7 @@
                     </td>
                 </tr>
             </table>
-        </td>        
+        </td>
         <td py:id="news_picture_cell" py:visible="@{self.news.image is not None}">
             <py:woost.views.Image
                 py:local_id="news_picture"

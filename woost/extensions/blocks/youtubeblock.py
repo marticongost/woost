@@ -6,6 +6,6 @@ u"""
 from woost.models import Block
 
 
-class YouTubeBlock(Block):    
+class YouTubeBlock(Block):
     visible = False
 

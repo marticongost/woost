@@ -27,11 +27,11 @@ from woost.controllers.backoffice.editstack import SelectionNode
     xmlns:py="http://www.whads.com/ns/cocktail/templates">
 
     <?py
-    self.add_resource("/resources/scripts/ContentView.js")    
+    self.add_resource("/resources/scripts/ContentView.js")
     self.add_client_translation("woost.views.ContentView show advanced search")
     self.add_client_translation("woost.views.ContentView close advanced search")
     self.add_client_translation("woost.views.ContentView search button")
-    
+
     add_view_action_context(self, "content_view")
     add_view_action_context(self, self.content_view_id + "_content_view")
     ?>
@@ -44,7 +44,7 @@ from woost.controllers.backoffice.editstack import SelectionNode
     member = None
     activation_control = ".edit_action"
     search_expanded = False
-    
+
     # User collection settings
     allow_language_selection = UserCollection.allow_language_selection
     allow_sorting = UserCollection.allow_sorting
@@ -52,7 +52,7 @@ from woost.controllers.backoffice.editstack import SelectionNode
     allow_paging = UserCollection.allow_paging
     allow_member_selection = UserCollection.allow_member_selection
     allow_grouping = UserCollection.allow_grouping
-    
+
     @classmethod
     def compatible_with(cls, user_collection):
         return True
@@ -65,11 +65,11 @@ from woost.controllers.backoffice.editstack import SelectionNode
             "item_type": content_type.full_name,
             "edit_stack": self.edit_stack.to_param() if self.edit_stack else None
         }
-        
+
         if self.member:
             params["member"] = self.member.name
 
-        return self.cms.contextual_uri('content', 'new', **params)        
+        return self.cms.contextual_uri('content', 'new', **params)
 
     def content_type_is_hidden(self, content_type):
         user = get_current_user()
@@ -106,7 +106,7 @@ from woost.controllers.backoffice.editstack import SelectionNode
     excluded_view_state_params = \
         CollectionView.excluded_view_state_params | frozenset(["ItemSelector-select", "search_expanded"])
     ?>
-    
+
     <py:ready>
         <?py
         self.set_client_param("searchExpanded", self.search_expanded)
@@ -138,7 +138,7 @@ from woost.controllers.backoffice.editstack import SelectionNode
                                 return display
                             else:
                                 return "woost.views.ItemSelector"
-                    
+
                         return call_base(obj, member)
                     ?>
                 </py:with>
@@ -162,9 +162,9 @@ from woost.controllers.backoffice.editstack import SelectionNode
         <?py
         if self.user_collection.user_filters:
             user_filter = self.user_collection.user_filters[0]
-            if user_filter.id == "global_search":                
+            if user_filter.id == "global_search":
                 self.set_client_param("searchQuery", user_filter.value)
-        
+
         self._instantiable_content_types = set(
             content_type
             for content_type in chain(
@@ -173,13 +173,13 @@ from woost.controllers.backoffice.editstack import SelectionNode
             )
             if self.content_type_is_instantiable(content_type)
         )
-        
+
         self.set_client_param("contentType", self.user_collection.type.full_name)
         ?>
     </py:ready>
-    
+
     <py:with py:element="self.collection_settings">
-           
+
         <py:woost.views.ContentTypeSelector
             py:id="content_type_selector"
             py:index="0"
@@ -260,7 +260,7 @@ from woost.controllers.backoffice.editstack import SelectionNode
                                     entry.add_class("selected")
                                 element.append(entry)
                         ?>
-                    </py:ready>                
+                    </py:ready>
                 </ul>
             </py:with>
         </py:cocktail.html.DropdownPanel>
@@ -276,7 +276,7 @@ from woost.controllers.backoffice.editstack import SelectionNode
                 ${translations("woost.views.ContentView show advanced search")}
             </button>
         </div>
-        
+
     </py:with>
 
     <li py:def="content_view_entry" py:args="content_view">

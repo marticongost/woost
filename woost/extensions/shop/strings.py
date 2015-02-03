@@ -111,7 +111,7 @@ translations.define("ShopOrder.entries",
     es = u"Contenido del pedido",
     en = u"Order entries"
 )
-    
+
 translations.define("ShopOrder.cost",
     ca = u"Cost",
     es = u"Coste",
@@ -392,7 +392,7 @@ translations.define("ShippingCostOverride",
     ca = u"Cost d'enviament absolut",
     es = u"Coste de envío absoluto",
     en = u"Shipping cost override"
-) 
+)
 
 translations.define("ShippingCostOverride-plural",
     ca = u"Costos d'enviament absoluts",

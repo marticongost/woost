@@ -38,7 +38,7 @@ class NewsletterController(DocumentController):
 
     def _produce_content(self, **kwargs):
         content = DocumentController._produce_content(self, **kwargs)
-        
+
         # Disable newsletter processing if we are "editing" it
         if not get_current_user().has_permission(
             ModifyPermission,

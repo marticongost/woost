@@ -46,14 +46,14 @@ class WebsiteHostMatchingTestCase(BaseTestCase):
 class WebsiteLanguageTestCase(BaseTestCase):
 
     def test_websites_can_override_language_visibility(self):
-        
+
         from woost.models import Configuration, Website, set_current_website
 
         w1 = Website()
         w2 = Website()
 
         self.config.languages = ["ca", "es", "en"]
-        
+
         for website in (None, w1, w2):
             set_current_website(website)
             for lang in ["ca", "es", "en"]:
@@ -83,7 +83,7 @@ class WebsiteLanguageTestCase(BaseTestCase):
 class WebsiteSpecificContentTestCase(BaseTestCase):
 
     def test_descendants_inherit_availability(self):
-        
+
         from woost.models import Website, Document
 
         w1 = Website()
@@ -101,7 +101,7 @@ class WebsiteSpecificContentTestCase(BaseTestCase):
         d3.parent = d2
         assert list(d3.websites) == [w1]
 
-        d1.websites.append(w2) 
+        d1.websites.append(w2)
         assert list(d2.websites) == [w1, w2]
         assert list(d3.websites) == [w1, w2]
 
@@ -123,13 +123,13 @@ class WebsiteSpecificContentTestCase(BaseTestCase):
         from woost.models import Website, Document
 
         d1 = Document()
-        
+
         w1 = Website()
         w1.home = d1
-        
+
         w2 = Website()
         w2.home = d1
-        
+
         assert list(d1.websites) == [w2]
 
 
@@ -161,13 +161,13 @@ class WebsiteSpecificContentIndexingTestCase(BaseTestCase):
         p1 = Publishable()
         p1.insert()
         p1.websites = [w1]
-        
+
         assert (w1.require_id(), p1.id) not in list(index.items())
 
     def test_content_is_published_for_all_websites_by_default(self):
-        
+
         from woost.models import Website, Publishable
-        
+
         index = Publishable.per_website_publication_index
 
         w1 = Website()

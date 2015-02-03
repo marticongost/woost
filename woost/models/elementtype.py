@@ -31,16 +31,16 @@ class ElementType(schema.String):
     def translate_value(self, value, language = None, **kwargs):
 
         translation = schema.String.translate_value(
-            self, 
+            self,
             value,
             language,
             **kwargs
         )
 
         if (
-            not translation 
-            and value 
-            and self.translatable_enumeration 
+            not translation
+            and value
+            and self.translatable_enumeration
             and self.enumeration
         ):
             translation = translations("woost.models.ElementType=" + value)
