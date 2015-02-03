@@ -14,7 +14,7 @@ from woost.extensions.ecommerce.utils import catalog_current_state_uri
     <?py-class
     order_steps = None
     current_step = None
-    
+
     @property
     def previous_step(self):
         steps = self.order_steps
@@ -53,8 +53,8 @@ from woost.extensions.ecommerce.utils import catalog_current_state_uri
     self.add_resource("/cocktail/scripts/form.js")
     ?>
 
-    <button 
-        py:id="default_button" 
+    <button
+        py:id="default_button"
         type="submit"
         name="action"
         value="proceed"
@@ -69,28 +69,28 @@ from woost.extensions.ecommerce.utils import catalog_current_state_uri
     </ol>
 
     <li py:def="order_step" py:args="page">
-        <?py 
+        <?py
         if page is self.current_step:
             element.add_class("current")
         ?>
         ${translations(page)}
     </li>
 
-    <py:woost.views.NotificationBox 
+    <py:woost.views.NotificationBox
         py:id="notification_box"
         py:filter="${lambda notification: notification[1] != 'product_added'}"/>
-    
+
     <py:woost.views.BlockList
         py:id="step_content"
         py:blocks="@{self.blocks}"/>
 
     <div py:id="empty_basket_notice">
-        ${translations("woost.extensions.ecommerce.BasketView.empty_basket_notice")}                                                                                                      
+        ${translations("woost.extensions.ecommerce.BasketView.empty_basket_notice")}
     </div>
 
     <div py:id="step_buttons">
-        <a href="@{self.previous_step_uri}" 
-            py:id="back_link" 
+        <a href="@{self.previous_step_uri}"
+            py:id="back_link"
             py:visible="@{self.previous_step_uri}">
             <py:ready>
                 <?py

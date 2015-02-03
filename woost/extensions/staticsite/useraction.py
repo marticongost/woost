@@ -23,7 +23,7 @@ class ExportStaticAction(UserAction):
     def is_permitted(self, user, target):
         return any([
             user.has_permission(
-                ExportationPermission, 
+                ExportationPermission,
                 destination = destination
             )
             for destination in StaticSiteDestination.select()

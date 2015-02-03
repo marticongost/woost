@@ -26,7 +26,7 @@ from woost.models import (
     Website,
     Publishable,
     Document,
-    Page,    
+    Page,
     TextBlock,
     LoginBlock,
     CustomBlock,
@@ -64,7 +64,7 @@ def everything():
 
 
 class TranslatedValues(object):
-    
+
     def __init__(self, key = None, **kwargs):
         self.key = key
         self.kwargs = kwargs
@@ -102,7 +102,7 @@ class SiteInitializer(object):
     ]
 
     read_only_members = [
-        "woost.models.publishable.Publishable.mime_type",        
+        "woost.models.publishable.Publishable.mime_type",
         "woost.models.configuration.Configuration.login_page",
         "woost.models.configuration.Configuration.generic_error_page",
         "woost.models.configuration.Configuration.not_found_error_page",
@@ -156,7 +156,7 @@ class SiteInitializer(object):
     ]
 
     def main(self):
- 
+
         parser = OptionParser()
         parser.add_option("-u", "--user", help = "Administrator email")
         parser.add_option("-p", "--password", help = "Administrator password")
@@ -178,7 +178,7 @@ class SiteInitializer(object):
 
         self.admin_email = options.user
         self.admin_password = options.password
-        
+
         if self.admin_email is None:
             self.admin_email = raw_input("Administrator email: ") or "admin@localhost"
 
@@ -223,7 +223,7 @@ class SiteInitializer(object):
 
     def _create(self, _model, **values):
         instance = _model()
-        
+
         for key, value in values.iteritems():
             if isinstance(value, TranslatedValues):
                 trans_key = "woost.initialization."
@@ -242,7 +242,7 @@ class SiteInitializer(object):
                     prefix = "woost."
                     assert qname.startswith(prefix)
                     trans_key += qname[len(prefix):] + "." + key
-                
+
                 for language in self.languages:
                     trans = translations(trans_key, language, **value.kwargs)
                     if trans:
@@ -276,7 +276,7 @@ class SiteInitializer(object):
 
         self.administrator_role = self.create_administrator_role()
         self.administrator.roles.append(self.administrator_role)
-        
+
         self.everybody_role = self.create_everybody_role()
         self.authenticated_role = self.create_authenticated_role()
         self.editor_role = self.create_editor_role()
@@ -288,7 +288,7 @@ class SiteInitializer(object):
         # Templates and controllers
         self.create_controllers()
         self.standard_template = self.create_standard_template()
-        
+
         # Home page
         self.website.home = self.create_home()
 
@@ -352,7 +352,7 @@ class SiteInitializer(object):
             languages = self.languages,
             backoffice_language =
                 first(
-                    language 
+                    language
                     for language in self.languages
                     if language in
                         Configuration.backoffice_language.enumeration
@@ -433,7 +433,7 @@ class SiteInitializer(object):
                     matching_members = self.restricted_members
                 )
             )
-    
+
         role.permissions.append(self._create(ReadMemberPermission))
 
         # Restrict modifiable members
@@ -457,7 +457,7 @@ class SiteInitializer(object):
         ])
 
         return role
- 
+
     def create_authenticated_role(self):
         return self._create(
             Role,
@@ -511,7 +511,7 @@ class SiteInitializer(object):
                             permission_type,
                             authorized = False,
                             matching_items = {
-                                "type": read_only_type 
+                                "type": read_only_type
                             }
                         )
                     )
@@ -691,7 +691,7 @@ class SiteInitializer(object):
                     CustomBlock,
                     heading = TranslatedValues("password_change_page.form_title"),
                     view_class = "woost.views.PasswordChangeRequestForm",
-                    controller = 
+                    controller =
                         "woost.controllers.passwordchangecontroller."
                         "PasswordChangeBlockController"
                 )
@@ -716,7 +716,7 @@ class SiteInitializer(object):
                         "password_change_confirmation_page.form_title"
                     ),
                     view_class = "woost.views.PasswordChangeConfirmationForm",
-                    controller = 
+                    controller =
                         "woost.controllers.passwordchangecontroller."
                         "PasswordChangeConfirmationBlockController"
                 )
@@ -747,7 +747,7 @@ class SiteInitializer(object):
         )
 
     def create_page_tree_user_view(self):
-        return self._create(    
+        return self._create(
             UserView,
             qname = "woost.page_tree_user_view",
             title = TranslatedValues(),

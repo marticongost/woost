@@ -25,7 +25,7 @@ class DocumentController(PublishableController):
 
             if redirection_target is None:
                 raise cherrypy.NotFound()
-            
+
             raise cherrypy.HTTPRedirect(redirection_target.get_uri())
 
         # No redirection, serve the document normally

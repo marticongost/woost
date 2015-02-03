@@ -128,7 +128,7 @@ translations.define("UserMember.indexing",
     es = u"Indexado",
     en = u"Indexing"
 )
- 
+
 translations.define("UserMember.constraints",
     ca = u"Restriccions",
     es = u"Restricciones",

@@ -36,7 +36,7 @@ class User(Item):
         User class is designated to represent anonymous users. This allows
         uniform treatment of both anonymous and authenticated access (ie.
         authorization checks).
-        
+
         This property indicates if the user it is invoked on is the
         instance used to represent anonymous users.
 
@@ -54,7 +54,7 @@ class User(Item):
     encryption_method = sha1
 
     anonymous = False
-    
+
     members_order = [
         "enabled",
         "email",
@@ -69,7 +69,7 @@ class User(Item):
         max = 255,
         indexed = True,
         format = "^.+@.+$"
-    )   
+    )
 
     password = schema.String(
         required = True,
@@ -99,7 +99,7 @@ class User(Item):
             "" if value is None else translations(value, language, **kwargs),
         text_search = False
     )
-    
+
     del _backoffice_language_default
     del _backoffice_language_enumeration
 
@@ -134,7 +134,7 @@ class User(Item):
 
     def test_password(self, password):
         """Indicates if the user's password matches the given string.
-        
+
         @param password: An unencrypted string to tests against the user's
             encrypted password.
         @type password: str
@@ -151,7 +151,7 @@ class User(Item):
         """Obtains all the roles that apply to the user.
 
         The following roles can be yielded:
-        
+
             * The user's L{explicit roles<roles>} will be yielded if defined
             * An 'authenticated' role will be yielded if the user is not
               L{anonymous}
@@ -163,7 +163,7 @@ class User(Item):
         @return: An iterable sequence of roles that apply to the user.
         @rtype: L{Role}
         """
-        explicit_roles = self.roles        
+        explicit_roles = self.roles
         if explicit_roles:
             if recursive:
                 for role in explicit_roles:
@@ -219,7 +219,7 @@ class User(Item):
 
     def has_permission(self,
         permission_type,
-        verbose = None,        
+        verbose = None,
         **context):
         """Determines if the user is given permission to perform an action.
 
@@ -244,7 +244,7 @@ class User(Item):
         """
         if verbose is None:
             verbose = globals()["verbose"]
-            
+
         if verbose:
             role = None
             print permission_check_style(translations(permission_type.name))
@@ -265,7 +265,7 @@ class User(Item):
         permissions = self.iter_permissions(permission_type)
 
         for permission in permissions:
-            
+
             if verbose:
                 new_role = permission.role
                 if new_role is not role:
@@ -283,7 +283,7 @@ class User(Item):
                         print authorized_style("authorized")
                     return True
                 else:
-                    break                
+                    break
 
         return permission_type.permission_not_found(
             self,

@@ -3,7 +3,7 @@
 <form
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:py="http://www.whads.com/ns/cocktail/templates">
-    
+
     <?py-class
     user_views = ()
     ?>

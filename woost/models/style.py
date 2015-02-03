@@ -62,7 +62,7 @@ class Style(Item):
         edit_control = "cocktail.html.TextArea",
         listed_by_default = False
     )
-    
+
     admin_declarations = schema.String(
         text_search = False,
         edit_control = "cocktail.html.TextArea",

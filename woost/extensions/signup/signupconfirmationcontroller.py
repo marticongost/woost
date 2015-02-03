@@ -55,4 +55,4 @@ class SignUpConfirmationController(DocumentController):
                     )
 
             raise cherrypy.HTTPError(400, "Invalid hash")
-    
+

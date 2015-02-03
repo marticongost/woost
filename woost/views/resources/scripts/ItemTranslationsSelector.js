@@ -8,7 +8,7 @@
 -----------------------------------------------------------------------------*/
 
 cocktail.bind(".ItemTranslationsSelector", function ($selector) {
-    
+
     var $searchControls = jQuery(cocktail.instantiate("woost.views.ItemTranslationsSelector.searchControls"))
         .prependTo(this);
 
@@ -21,7 +21,7 @@ cocktail.bind(".ItemTranslationsSelector", function ($selector) {
         });
 
     var $languageLists = $selector.find(".language_list");
-    
+
     $languageLists.each(function (index) {
 
         var checkList = this;

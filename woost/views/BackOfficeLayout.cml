@@ -36,7 +36,7 @@ from woost.models import UserView
     self.add_resource("/resources/styles/backoffice.css")
     self.add_resource("/cocktail/scripts/form.js")
     self.add_resource("/resources/scripts/BackOfficeLayout.js")
-    
+
     # TODO: Implement conditional comments for IE more generally
     self.add_head_element(IEConditionalComment(condition = "lt IE 8", children = [
         Element("link",
@@ -44,7 +44,7 @@ from woost.models import UserView
             type = "text/css",
             href = "/resources/styles/backoffice_ie.css")
     ]))
-    
+
     self.add_head_element(
         Element("link",
             rel = "Stylesheet",
@@ -52,7 +52,7 @@ from woost.models import UserView
             media = "print",
             href = "/resources/styles/print.css")
     )
-    
+
     self.add_resource("/cocktail/scripts/jquery.hotkeys.js")
     self.add_resource("/cocktail/scripts/jquery.query.js")
     self.add_resource("/cocktail/scripts/selectors.js")
@@ -97,7 +97,7 @@ from woost.models import UserView
         <h1>
             <a>
                 <py:ready>
-                    <?py                    
+                    <?py
                     if self.cms and not self.is_client_side_selector:
                         element["href"] = self.cms.contextual_uri()
                     else:
@@ -135,7 +135,7 @@ from woost.models import UserView
             node_container = None
 
             for node in self.edit_stack:
-                
+
                 # Only show relation nodes when they are at the top of the
                 # stack (ie. when selecting related items)
                 if isinstance(node, RelationNode):

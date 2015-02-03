@@ -62,7 +62,7 @@ class GAEventRedirection(object):
                 label = self.get_label(controller, publishable)
 
                 api = Configuration.instance.google_analytics_api
-                
+
                 if api == "ga.js":
                     commands = [('_trackEvent', category, action, label)]
                 elif api == "universal":
@@ -72,7 +72,7 @@ class GAEventRedirection(object):
 
                 return self.template % {
                     "title": self.get_title(controller, publishable),
-                    "analytics_script": 
+                    "analytics_script":
                         GoogleAnalyticsExtension.instance.get_analytics_script(
                             publishable = publishable,
                             async = False,

@@ -25,5 +25,5 @@ class ChainRenderer(Renderer):
         for renderer in self.renderers:
             if renderer.can_render(item, **parameters):
                 return renderer.render(item, **parameters)
-    
+
 

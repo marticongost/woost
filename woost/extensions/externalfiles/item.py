@@ -17,9 +17,9 @@ def get_image_uri(
 ):
     if host in (None, "!", "?"):
         host = Configuration.instance.get_setting("external_files_host")
-                
+
     return _get_image_uri(
-        self, 
+        self,
         image_factory = image_factory,
         parameters = parameters,
         encode = encode,

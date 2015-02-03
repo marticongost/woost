@@ -22,7 +22,7 @@ class RenderPermission(ContentPermission):
     )
 
     def match(self, target, image_factory, verbose = False):
-        
+
         if self.factories and image_factory not in self.factories:
             print permission_doesnt_match_style("factory doesn't match")
             return False

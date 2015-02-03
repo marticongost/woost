@@ -71,7 +71,7 @@ class EmailTemplate(Item):
         language = "python",
         required = True
     )
-    
+
     bcc = schema.CodeBlock(
         language = "python",
         listed_by_default = False
@@ -102,12 +102,12 @@ class EmailTemplate(Item):
     language = schema.CodeBlock(
         language = "python"
     )
-    
+
     def send(self, context = None):
 
         if context is None:
             context = {}
-        
+
         if context.get("attachments") is None:
             context["attachments"] = {}
 
@@ -148,23 +148,23 @@ class EmailTemplate(Item):
                             "EmailTemplate." + field_name,
                             self.get(field_name)
                         )
-                        return engine.render(context, template = template)                    
+                        return engine.render(context, template = template)
                     else:
                         return u""
-               
+
                 subject = render("subject").strip()
                 body = render("body")
             else:
                 subject = self.subject.encode(self.encoding)
                 body = self.body.encode(self.encoding)
-                
+
             message = MIMEText(body, _subtype = mime_type, _charset = self.encoding)
 
             # Attachments
             attachments = context.get("attachments")
             if attachments:
                 attachments = dict(
-                    (cid, attachment) 
+                    (cid, attachment)
                     for cid, attachment in attachments.iteritems()
                     if attachment is not None
                 )
@@ -174,7 +174,7 @@ class EmailTemplate(Item):
                     message.attach(message_text)
 
                     for cid, attachment in attachments.iteritems():
-                        
+
                         if isinstance(attachment, File):
                             file_path = attachment.file_path
                             file_name = attachment.file_name
@@ -208,13 +208,13 @@ class EmailTemplate(Item):
              # Receivers (python expression)
             receivers = eval_member("receivers")
             if receivers:
-                receivers = set(r.strip().encode(self.encoding) for r in receivers) 
+                receivers = set(r.strip().encode(self.encoding) for r in receivers)
 
             if not receivers:
                 return set()
-     
+
             message["To"] = ", ".join([
-                format_email_address(receiver, self.encoding) 
+                format_email_address(receiver, self.encoding)
                 for receiver in receivers
             ])
 
@@ -233,7 +233,7 @@ class EmailTemplate(Item):
 
             message["Date"] = formatdate()
 
-            # Send the message        
+            # Send the message
             smtp = Configuration.instance.connect_to_smtp()
             smtp.sendmail(sender, list(receivers), message.as_string())
             smtp.quit()

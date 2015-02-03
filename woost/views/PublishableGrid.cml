@@ -6,7 +6,7 @@ from woost.views.viewfactory import publishable_grid_view_factory
 <py:woost.views.PublishableListing
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:py="http://www.whads.com/ns/cocktail/templates">
-    
+
     <?py-class
     view_factory = publishable_grid_view_factory
     thumbnail_factory = "image_gallery_thumbnail"
@@ -22,7 +22,7 @@ from woost.views.viewfactory import publishable_grid_view_factory
 
     <li py:def="entry" py:args="publishable, publishable_index">
 
-        <py:new 
+        <py:new
             py:local_id="publishable_view"
             py:element="self.create_publishable_view(publishable)"/>
 

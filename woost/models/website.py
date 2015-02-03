@@ -49,7 +49,7 @@ class Website(Item):
         "fax_number",
         "email",
 
-        # publication.pages            
+        # publication.pages
         "home",
         "login_page",
         "generic_error_page",
@@ -59,7 +59,7 @@ class Website(Item):
         # publication.maintenance
         "down_for_maintenance",
         "maintenance_page",
-        
+
         # publication.https
         "https_policy",
         "https_persistence",
@@ -154,7 +154,7 @@ class Website(Item):
         member_group = "contact",
         listed_by_default = False
     )
-    
+
     postal_code = schema.String(
         member_group = "contact",
         listed_by_default = False
@@ -187,7 +187,7 @@ class Website(Item):
     home = schema.Reference(
         type = Publishable,
         required = True,
-        related_end = schema.Reference(block_delete = True), 
+        related_end = schema.Reference(block_delete = True),
         listed_by_default = False,
         member_group = "publication.pages"
     )
@@ -244,7 +244,7 @@ class Website(Item):
 
     default_language = schema.String(
         listed_by_default = False,
-        text_search = False,        
+        text_search = False,
         member_group = "language"
     )
 
@@ -262,7 +262,7 @@ class Website(Item):
             "always",
             "never",
             "per_page",
-        ],        
+        ],
         listed_by_default = False,
         member_group = "publication.https"
     )

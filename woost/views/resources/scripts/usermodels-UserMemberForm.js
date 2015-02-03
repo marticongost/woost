@@ -8,7 +8,7 @@
 -----------------------------------------------------------------------------*/
 
 (function () {
-    
+
     function normalizeText(str){
         // Adapted from http://stackoverflow.com/questions/990904/javascript-remove-accents-in-strings
         var accented = 'ÀÁÂÃÄÅàáâãäåÒÓÔÕÕÖØòóôõöøÈÉÊËèéêëðÇçÐÌÍÎÏìíîïÙÚÛÜùúûüÑñŠšŸÿýŽž';
@@ -20,10 +20,10 @@
     }
 
     function memberNameFromLabel(label, isModel) {
-        
+
         label = normalizeText(label);
         var parts = label.replace(/\W/g, " ").split(" ");
-        
+
         if (isModel) {
             var name = "";
             for (var i = 0; i < parts.length; i++) {

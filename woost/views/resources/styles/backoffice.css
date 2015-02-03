@@ -85,7 +85,7 @@ body {
 
 .BackOfficeLayout .identity form button.logout_button {
     font-size: 0.8em;
-    margin-left: 0.7em !important;    
+    margin-left: 0.7em !important;
     color: rgba(255,255,255,0.8) !important;
     text-decoration: underline !important;
 }
@@ -336,7 +336,7 @@ body {
 .BackOfficeLayout .CheckList input + label,
 .BackOfficeLayout .MemberList input + label {
     display: inline;
-    margin-left: 0.2em;    
+    margin-left: 0.2em;
 }
 
 .BackOfficeLayout .CheckList .group_label,
@@ -576,7 +576,7 @@ body.modal {
 }
 
 .BackOfficeLayout .Form tr.field {
-    clear: none;    
+    clear: none;
 }
 
 .BackOfficeLayout .Form div.field_instance {
@@ -850,11 +850,11 @@ body.scripted .BackOfficeLayout .Table .row_selection_control {
 
 .BackOfficeLayout .ContentTable th .column_panel .options_header {
     margin-bottom: 0.6em;
-    padding-bottom: 0.2em;    
+    padding-bottom: 0.2em;
     font-size: 0.9em;
     font-weight: bold;
     color: #555;
-    border-bottom: 1px dotted #ccc;    
+    border-bottom: 1px dotted #ccc;
 }
 
 .BackOfficeLayout .ContentTable th .column_panel > div > a + a {
@@ -877,7 +877,7 @@ body.scripted .BackOfficeLayout .Table .row_selection_control {
     _background-position:0 -2px;
     _background-repeat:no-repeat;
     _display:block;
-    _padding-left:18px; 
+    _padding-left:18px;
 }
 
 .BackOfficeLayout .ContentTable .sorting_options .descending {
@@ -885,7 +885,7 @@ body.scripted .BackOfficeLayout .Table .row_selection_control {
     _background-position:0 -2px;
     _background-repeat:no-repeat;
     _display:block;
-    _padding-left:18px; 
+    _padding-left:18px;
 }
 
 .BackOfficeLayout .ContentTable .search_options .add_filter {
@@ -893,7 +893,7 @@ body.scripted .BackOfficeLayout .Table .row_selection_control {
     _background-position:0 -2px;
     _background-repeat:no-repeat;
     _display:block;
-    _padding-left:18px;    
+    _padding-left:18px;
 }
 
 .BackOfficeLayout .PropertyTable th {
@@ -1192,7 +1192,7 @@ body.scripted .BackOfficeLayout .Table .row_selection_control {
     height: 2.2em;
 }
 
-.BackOfficeLayout .toolbar {    
+.BackOfficeLayout .toolbar {
     height: 1.8em;
     padding: 0.2em 0.6em;
 }
@@ -1972,7 +1972,7 @@ body.scripted .BackOfficeLayout .ThumbnailsContentView .collection_display input
     border-top: none;
     z-index: 0;
     clear: both;
-    position: absolute;    
+    position: absolute;
     top: 2.5em;
     bottom: 4em;
     left: 0;
@@ -2121,7 +2121,7 @@ button.TypeSelectorButton span {
     display: block;
 }
 
-.BackOfficeLayout .autocomplete_dropdown div {    
+.BackOfficeLayout .autocomplete_dropdown div {
     padding: 0.4em;
     white-space: nowrap;
     cursor: pointer;
@@ -2332,7 +2332,7 @@ button.TypeSelectorButton span {
 }
 
 .BackOfficeLayout .filters {
-    clear: both;    
+    clear: both;
 }
 
 .BackOfficeLayout .ContentView .search_input {
@@ -2888,7 +2888,7 @@ a.pickcolor span {
     border: 1px solid rgb(190,200,210);
     background-color: rgb(250,250,250);
     margin: 0;
-    padding: 0.6em;    
+    padding: 0.6em;
     z-index: 1;
     font-size: 100%;
     white-space: nowrap;
@@ -2923,7 +2923,7 @@ a.pickcolor span {
 }
 
 .BackOfficeLayout .CalendarContentView .ongoing_items_box li {
-    display: inline;    
+    display: inline;
 }
 
 .BackOfficeLayout .CalendarContentView .ongoing_items_box li + li:before {
@@ -2947,7 +2947,7 @@ a.pickcolor span {
     padding: 0.1em;
 }
 
-.TagCloudSelector div.selected label {    
+.TagCloudSelector div.selected label {
     color: white;
     background-color: rgb(40,80,150);
 }
@@ -2972,7 +2972,7 @@ a.pickcolor span {
 /* Syndication feed styles
 -----------------------------------------------------------------------------*/
 .Feed .item_title_expression_field .CodeMirror-wrapping,
-.Feed .item_link_expression_field .CodeMirror-wrapping, 
+.Feed .item_link_expression_field .CodeMirror-wrapping,
 .Feed .item_publication_date_expression_field .CodeMirror-wrapping,
 .Feed .item_description_expression_field .CodeMirror-wrapping {
     width: 30em !important;
