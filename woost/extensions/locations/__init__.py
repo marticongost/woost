@@ -74,13 +74,13 @@ class LocationsExtension(Extension):
             regions, actualitzada a través d'Internet.""",
             "ca"
         )
-        self.set("description",            
+        self.set("description",
             u"""Proporciona acceso a la lista de países del mundo y sus
             regiones, actualizada a través de Internet.""",
             "es"
         )
         self.set("description",
-            u"""Provides a list of world countries and their regions, 
+            u"""Provides a list of world countries and their regions,
             automatically updated from the Internet.""",
             "en"
         )
@@ -116,14 +116,14 @@ class LocationsExtension(Extension):
         items = schema.String(
             required = True,
             enumeration = [
-                "continent", 
-                "country", 
+                "continent",
+                "country",
                 "autonomous_community",
                 "province",
                 "town"
-            ],            
+            ],
             translate_value = lambda value, language = None, **kwargs:
-                "" if not value 
+                "" if not value
                 else translations(
                     "woost.extensions.locations.location_types." + value,
                     language,
@@ -140,12 +140,12 @@ class LocationsExtension(Extension):
         edit_control = "cocktail.html.TextArea"
     )
 
-    def _load(self):        
+    def _load(self):
         from woost.extensions.locations import location, strings
 
         if self.should_update():
             transaction(
-                self.sync_locations, 
+                self.sync_locations,
                 desist = lambda: not self.should_update()
             )
 
@@ -168,11 +168,11 @@ class LocationsExtension(Extension):
 
         for record in json_data:
             self._process_record(record)
-            
+
         self.last_update = time()
 
     def _process_record(self, record, parent = None, context = None):
-        
+
         from woost.extensions.locations.location import Location
 
         context = context.copy() if context else {}
@@ -187,7 +187,7 @@ class LocationsExtension(Extension):
         if self._should_add_location(record, parent, context):
 
             # Update an existing location
-            if parent: 
+            if parent:
                 location = first(
                     child
                     for child in parent.locations

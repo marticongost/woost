@@ -25,7 +25,7 @@ translations.define("woost.extensions.blocks.slots.blocks",
 
 translations.define(
     "woost.extensions.blocks.editblocksnode.EditBlocksNode-instance",
-    ca = lambda instance: 
+    ca = lambda instance:
         u"Editant els blocs " + ca_possessive(translations(instance.item)),
     es = lambda instance:
         u"Editando los bloques de " + translations(instance.item),
@@ -291,7 +291,7 @@ translations.define("Block.controller",
     es = u"Controlador",
     en = u"Controller"
 )
-    
+
 # CustomBlock
 #------------------------------------------------------------------------------
 translations.define("CustomBlock",
@@ -1012,7 +1012,7 @@ translations.define("IFrameBlock.height",
 # EditBlocksView
 #------------------------------------------------------------------------------
 translations.define("woost.extensions.blocks.EditBlocksView.body_header",
-    ca = lambda item: 
+    ca = lambda item:
         u"Editant els blocs " + ca_possessive(translations(item)),
     es = lambda item:
         u"Editando los bloques de " + translations(item),
@@ -1054,7 +1054,7 @@ translations.define(
     en = u"Create a new block"
 )
 
-translations.define(     
+translations.define(
     "woost.extensions.blocks.EditBlocksSlotList.common_blocks_panel.panel_header",
     ca = u"Afegir un bloc existent",
     es = u"Añadir un bloque existente",

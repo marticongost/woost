@@ -8,11 +8,11 @@
 -----------------------------------------------------------------------------*/
 
 cocktail.bind(".BasketIndicator", function ($indicator) {
-    
+
     var blinkInterval = null;
 
     this.blink = function () {
-    
+
         if (blinkInterval) {
             clearInterval(blinkInterval);
         }

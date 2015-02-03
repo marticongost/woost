@@ -130,7 +130,7 @@ class Thumbnail(ImageEffect):
     filter = Image.ANTIALIAS
 
     def apply(self, image):
-    
+
         im_width, im_height = image.size
 
         width = self.width
@@ -168,7 +168,7 @@ class Crop(ImageEffect):
     top = ImageSize()
 
     right = ImageSize()
-    
+
     bottom = ImageSize()
 
     def apply(self, image):
@@ -211,7 +211,7 @@ class Fill(ImageEffect):
         required = True,
         default = True
     )
-    
+
     filter = Image.ANTIALIAS
 
     def apply(self, image):
@@ -230,7 +230,7 @@ class Fill(ImageEffect):
                 self.filter
             )
             return image
-        
+
         width = ImageSize.resolve_size(self.width, source_width)
         height = ImageSize.resolve_size(self.height, source_height)
         target_ratio = float(width) / height
@@ -252,7 +252,7 @@ class Fill(ImageEffect):
             offset_x = target_width - width
         else:
             raise ValueError(
-                "Fill.horizontal_alignment = %s not implemented" 
+                "Fill.horizontal_alignment = %s not implemented"
                 % self.horizontal_alignment
             )
 
@@ -264,7 +264,7 @@ class Fill(ImageEffect):
             offset_y = target_height - height
         else:
             raise ValueError(
-                "Fill.vertical_alignment = %s not implemented" 
+                "Fill.vertical_alignment = %s not implemented"
                 % self.horizontal_alignment
             )
 
@@ -281,11 +281,11 @@ class Fill(ImageEffect):
 
 
 class Rotate(ImageEffect):
-    
+
     instantiable = True
 
     angle = schema.Integer(
-        required = True        
+        required = True
     )
 
     filter = Image.BICUBIC
@@ -301,7 +301,7 @@ class Color(ImageEffect):
     instantiable = True
 
     level = schema.Float(
-        required = True        
+        required = True
     )
 
     def apply(self, image):
@@ -313,7 +313,7 @@ class Brightness(ImageEffect):
     instantiable = True
 
     level = schema.Float(
-        required = True        
+        required = True
     )
 
     def apply(self, image):
@@ -325,7 +325,7 @@ class Contrast(ImageEffect):
     instantiable = True
 
     level = schema.Float(
-        required = True        
+        required = True
     )
 
     def apply(self, image):
@@ -337,7 +337,7 @@ class Sharpness(ImageEffect):
     instantiable = True
 
     level = schema.Float(
-        required = True        
+        required = True
     )
 
     def apply(self, image):
@@ -364,7 +364,7 @@ class Frame(ImageEffect):
 
     edge_color = schema.Color(
         required = True,
-        default = "#000000"        
+        default = "#000000"
     )
 
     vertical_padding = ImageSize(
@@ -393,7 +393,7 @@ class Frame(ImageEffect):
         vertical_offset = self.edge_width + vertical_padding
         horizontal_padding = ImageSize.resolve_size(self.horizontal_padding, width)
         horizontal_offset = self.edge_width + horizontal_padding
-        
+
         canvas = Image.new("RGBA", (
             width + horizontal_offset * 2,
             height + vertical_offset * 2
@@ -412,7 +412,7 @@ class Frame(ImageEffect):
              edge + width + horizontal_padding * 2,
              edge + height + vertical_padding * 2)
         )
-        
+
         # Paste the original image over the frame
         canvas.paste(
             image,
@@ -429,7 +429,7 @@ class Shadow(ImageEffect):
 
     offset = schema.Integer(
         required = True,
-        default = 5        
+        default = 5
     )
 
     padding = schema.Integer(
@@ -445,8 +445,8 @@ class Shadow(ImageEffect):
     iterations = 3
 
     def apply(self, image):
-    
-        # Create the backdrop image -- a box in the background colour with a 
+
+        # Create the backdrop image -- a box in the background colour with a
         # shadow on it.
         total_width = image.size[0] + abs(self.offset) + 2 * self.padding
         total_height = image.size[1] + abs(self.offset) + 2 * self.padding
@@ -459,12 +459,12 @@ class Shadow(ImageEffect):
         back.paste(self.color, [
             shadow_left,
             shadow_top,
-            shadow_left + image.size[0], 
+            shadow_left + image.size[0],
             shadow_top + image.size[1]
         ])
 
-        # Apply the filter to blur the edges of the shadow.  Since a small 
-        # kernel is used, the filter must be applied repeatedly to get a 
+        # Apply the filter to blur the edges of the shadow.  Since a small
+        # kernel is used, the filter must be applied repeatedly to get a
         # decent blur.
         for n in range(self.iterations):
             back = back.filter(ImageFilter.BLUR)
@@ -549,11 +549,11 @@ class Watermark(ImageEffect):
 
         if image.mode != 'RGBA':
             image = image.convert('RGBA')
-    
+
         # Create a transparent layer the size of the image and draw the
         # watermark in that layer.
         layer = Image.new('RGBA', image.size, (0,0,0,0))
-    
+
         if self.placement == 'tile':
             for y in range(0, image.size[1], mark_image.size[1]):
                 for x in range(0, image.size[0], mark_image.size[0]):
@@ -572,7 +572,7 @@ class Watermark(ImageEffect):
                 ((image.size[0] - w) / 2, (image.size[1] - h) / 2),
                 mark_image
             )
-        elif self.placement == 'middle':        
+        elif self.placement == 'middle':
             layer.paste(
                 mark_image,
                 (
@@ -653,7 +653,7 @@ class Align(ImageEffect):
         needs_valign = (source_height < height)
 
         if needs_halign or needs_valign:
-        
+
             if self.background:
                 background = resolve_color(self.background)
             elif image.mode == "RGBA":
@@ -663,13 +663,13 @@ class Align(ImageEffect):
 
             copy = Image.new(
                 "RGBA" if background and len(background) == 4 else "RGB",
-                (width, height), 
+                (width, height),
                 background
             )
 
             x = 0
             y = 0
-            
+
             if needs_halign:
                 if self.horizontal_alignment == "left":
                     pass

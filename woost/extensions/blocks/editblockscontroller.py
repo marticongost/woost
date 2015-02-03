@@ -69,7 +69,7 @@ class EditBlocksController(BaseBackOfficeController):
 
     @request_property
     def output(self):
-        output = BaseBackOfficeController.output(self)        
+        output = BaseBackOfficeController.output(self)
         output.update(
             edited_item = self.edited_item
         )
@@ -82,7 +82,7 @@ def get_slot_parameter(parent, parameter_name):
         if slot_name:
             slot = type(parent).get_member(slot_name)
             if (
-                slot is not None 
+                slot is not None
                 and isinstance(slot, schema.RelationMember)
                 and slot.related_type
                 and issubclass(slot.related_type, Block)

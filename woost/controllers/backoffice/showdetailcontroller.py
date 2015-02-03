@@ -47,12 +47,12 @@ class ShowDetailController(EditController):
     @cached_getter
     def view_class(self):
         return self.stack_node.item.show_detail_view
-    
+
     @cached_getter
     def output(self):
-        
+
         # TODO: Add a translation selector
-        
+
         output = EditController.output(self)
         output.update(
             translations = Language.codes,

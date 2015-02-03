@@ -53,19 +53,19 @@ translations.define(
     "TransitionPermission-instance",
     ca = content_permission_translation_factory("ca",
         lambda permission, subject, **kwargs:
-            "%s %s" % (    
+            "%s %s" % (
                 translations(permission.transition, "ca", **kwargs),
                 subject
-            )            
+            )
             if permission.transition
             else "canviar l'estat " + ca_possessive(subject),
     ),
     es = content_permission_translation_factory("es",
         lambda permission, subject, **kwargs:
-            "%s %s" % (    
+            "%s %s" % (
                 translations(permission.transition, "es", **kwargs),
                 subject
-            )            
+            )
             if permission.transition
             else "cambiar el estado de " + subject,
     ),
@@ -74,7 +74,7 @@ translations.define(
             "%s %s" % (
                 translations(permission.transition, "en", **kwargs),
                 subject
-            )            
+            )
             if permission.transition
             else "change the state of " + subject
     )
@@ -199,7 +199,7 @@ translations.define("SetStateTriggerResponse.target_state",
 # TransitionAction
 #------------------------------------------------------------------------------
 translations.define("Action transition",
-    ca = u"Transició",                                                                                                                                                                                    
+    ca = u"Transició",
     es = u"Transición",
     en = u"Transition"
 )
@@ -214,7 +214,7 @@ translations.define(
 )
 
 translations.define(
-    "woost.extensions.workflow.TransitionView cancel",                                                                                                                                                     
+    "woost.extensions.workflow.TransitionView cancel",
     ca = u"Cancel·lar",
     es = u"Cancelar",
     en = u"Cancel"

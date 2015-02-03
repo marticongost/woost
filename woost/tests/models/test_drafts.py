@@ -19,7 +19,7 @@ class DraftTestCase(BaseTestCase):
 
         class Foo(Item):
             spam = schema.Integer(indexed = True, unique = True)
- 
+
         foo = Foo()
         foo.is_draft = True
         foo.spam = 4
@@ -27,13 +27,13 @@ class DraftTestCase(BaseTestCase):
         assert set(Foo.spam.index.items()) == set([(4, foo.id)])
 
     def test_indexing_disabled_for_draft_copies(self):
-        
+
         from cocktail import schema
         from woost.models import Item
 
         class Foo(Item):
             spam = schema.Integer(indexed = True, unique = True)
- 
+
         source = Foo()
         source.spam = 4
         source.insert()
@@ -45,7 +45,7 @@ class DraftTestCase(BaseTestCase):
         foo.insert()
 
         assert set(Foo.spam.index.items()) == set([(4, source.id)])
-        
+
         foo.spam = 2
         assert set(Foo.spam.index.items()) == set([(4, source.id)])
 
@@ -57,17 +57,17 @@ class DraftTestCase(BaseTestCase):
             doc = Document()
             doc.is_draft = True
             doc.insert()
-        
+
         assert not insertion_cs.changes
 
         with changeset_context() as modification_cs:
             doc.set("title", "Hello, world!", "en")
-        
+
         assert not modification_cs.changes
 
         with changeset_context() as deletion_cs:
             doc.delete()
-        
+
         assert not deletion_cs.changes
 
     def test_copy_draft(self):
@@ -76,7 +76,7 @@ class DraftTestCase(BaseTestCase):
 
         # Create a source item
         doc = Document()
-        doc.set("title", "Test item", "en") 
+        doc.set("title", "Test item", "en")
         doc.insert()
 
         # Create a draft for the item
@@ -87,12 +87,12 @@ class DraftTestCase(BaseTestCase):
         assert draft in doc.drafts
         assert not doc.id == draft.id
         assert doc.get("title", "en") == draft.get("title", "en")
- 
+
         # Modify the draft
         draft.set("title", "Modified test item", "en")
         assert not doc.get("title", "en") == draft.get("title", "en")
         draft.confirm_draft()
-        
+
         # Confirm it
         assert draft.id not in Document.index
         assert not draft in doc.drafts
@@ -106,7 +106,7 @@ class DraftTestCase(BaseTestCase):
 
         class Foo(Item):
             spam = schema.Integer(indexed = True, unique = True)
- 
+
         source = Foo()
         source.spam = 4
         source.insert()
@@ -115,36 +115,36 @@ class DraftTestCase(BaseTestCase):
         foo.is_draft = True
         foo.spam = 4
 
-        assert len([error 
-            for error in Foo.get_errors(foo) 
+        assert len([error
+            for error in Foo.get_errors(foo)
             if isinstance(error, UniqueValueError)
             and error.member is Foo.spam
         ]) == 1
 
     def test_unique_validation_disabled_for_draft_copies(self):
-        
+
         from cocktail import schema
         from cocktail.persistence.persistentobject import UniqueValueError
         from woost.models import Item
 
         class Foo(Item):
             spam = schema.Integer(indexed = True, unique = True)
- 
+
         source = Foo()
         source.spam = 4
         source.insert()
 
         foo = source.make_draft()
 
-        assert len([error 
-            for error in Foo.get_errors(foo) 
+        assert len([error
+            for error in Foo.get_errors(foo)
             if isinstance(error, UniqueValueError)
             and error.member is Foo.spam
         ]) == 0
 
     def test_no_bidirectionality_in_default_references_for_draft_copies(self):
 
-        from cocktail import schema        
+        from cocktail import schema
         from woost.models import Item
 
         class Foo(Item):
@@ -163,7 +163,7 @@ class DraftTestCase(BaseTestCase):
                 bidirectional = True
             )
         )
-        
+
         x = Foo()
         Foo.default_parent = x
         y = Foo()

@@ -15,7 +15,7 @@ from woost.models import (
 <a
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:py="http://www.whads.com/ns/cocktail/templates">
-    
+
     <?py-class
     action = "modify"
     target = None
@@ -37,14 +37,14 @@ from woost.models import (
         backoffice = Publishable.get_instance(qname = "woost.backoffice")
         if self.action == "create":
             return context["cms"].uri(
-                backoffice, 
+                backoffice,
                 "content", "new", "fields",
                 item_type = self.target.full_name,
                 **self.edit_parameters
             )
         elif self.action == "modify":
             return context["cms"].uri(
-                backoffice, 
+                backoffice,
                 "content", self.target.id, "fields",
                 **self.edit_parameters
             )
@@ -89,6 +89,6 @@ from woost.models import (
     <span py:id="label">
         @{translations("woost.views.EditLink-" + self.action, target_desc = self.target_desc)}
     </span>
-    
+
 </a>
 

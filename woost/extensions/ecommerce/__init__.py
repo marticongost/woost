@@ -52,7 +52,7 @@ class ECommerceExtension(Extension):
             u"""Permet vendre productes des del lloc web.""",
             "ca"
         )
-        self.set("description",            
+        self.set("description",
             u"""Permite vender productos des del sitio web.""",
             "es"
         )
@@ -79,7 +79,7 @@ class ECommerceExtension(Extension):
         ECommerceExtension.members_order = [
             "payment_types",
             "pricing",
-            "shipping_costs", 
+            "shipping_costs",
             "taxes",
             "order_steps"
         ]
@@ -149,12 +149,12 @@ class ECommerceExtension(Extension):
 
         if payments_ext.enabled:
             extension._setup_payment_gateway()
-        
+
         # Create the pages for the shop the first time the extension runs
         self.install()
 
     def _setup_payment_gateway(self):
-            
+
         from tpv import (
             Currency,
             Payment,
@@ -176,7 +176,7 @@ class ECommerceExtension(Extension):
 
             if order is None:
                 raise PaymentNotFoundError(payment_id)
-            
+
             payment = Payment()
             payment.id = order.id
             payment.description = order.get_description_for_gateway()
@@ -232,7 +232,7 @@ class ECommerceExtension(Extension):
         events.insert(pos + 2, commit_order_payment)
 
     def _install(self):
-        
+
         catalog = self._create_document("catalog")
         catalog.controller = self._create_controller("catalog")
         catalog.template = self._create_template("catalog")
@@ -267,8 +267,8 @@ class ECommerceExtension(Extension):
         self._create_incoming_order_trigger().insert()
         self._create_image_factories()
 
-    def _create_document(self, name, 
-        cls = Document, 
+    def _create_document(self, name,
+        cls = Document,
         template = None,
         controller = None):
 
@@ -407,7 +407,7 @@ edit_url = bo.get_uri(host = ".", path = ["content", str(order.id)])
 
         return trigger
 
-    def _create_image_factories(self):        
+    def _create_image_factories(self):
         thumbnail = ImageFactory()
         thumbnail.qname = \
             "woost.extensions.ecommerce.ecommerce_basket_thumbnail"

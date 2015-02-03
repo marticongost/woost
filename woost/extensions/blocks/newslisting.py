@@ -30,7 +30,7 @@ class NewsListing(Block):
         "page_size",
         "view_class"
     ]
-    
+
     element_type = ElementType(
         member_group = "content"
     )
@@ -89,7 +89,7 @@ class NewsListing(Block):
 
     @request_property
     def pagination_member(self):
-        return Pagination.copy(**{            
+        return Pagination.copy(**{
             "page_size.default": self.page_size,
             "page_size.max": self.max_page_size,
             "items": self.select_news()

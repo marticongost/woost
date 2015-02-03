@@ -62,7 +62,7 @@ class YouTubeBlock(Block):
         required = True,
         default = 385,
         listed_by_default = False,
-        member_group = "video"     
+        member_group = "video"
     )
 
     allow_fullscreen = schema.Boolean(

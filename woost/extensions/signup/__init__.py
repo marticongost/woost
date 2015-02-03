@@ -38,7 +38,7 @@ class SignUpExtension(Extension):
             u"""Permet als usuaris registrar-se autònomament en el lloc web""",
             "ca"
         )
-        self.set("description",            
+        self.set("description",
             u"""Permite a los usuarios registrarse por si mismos en el sitio""",
             "es"
         )
@@ -58,7 +58,7 @@ class SignUpExtension(Extension):
         return secret_key
 
     def _load(self):
-        
+
         from woost.models import User
         from woost.extensions.signup import (
             signuppage,
@@ -75,7 +75,7 @@ class SignUpExtension(Extension):
                     Required = True
                 )
             )
-        
+
         self.install()
 
     def _install(self):
@@ -98,11 +98,11 @@ class SignUpExtension(Extension):
                 "woost.extensions.signup.signupcontroller.SignUpController",
             title = extension_translations
         )
-        
+
         signup_confirmation_controller = self._create_asset(
             Controller,
             "signup_confirmation_controller",
-            python_name = 
+            python_name =
                 "woost.extensions.signup.signupconfirmationcontroller."
                 "SignUpConfirmationController",
             title = extension_translations

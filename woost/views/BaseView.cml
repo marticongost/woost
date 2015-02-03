@@ -18,7 +18,7 @@ from woost.models import Site, Publishable, Language
     head_end_html = ""
     body_end_html = ""
     base_url = None
-    
+
     def get_keywords(self):
         keywords = []
         site_keywords = Site.main.keywords
@@ -26,7 +26,7 @@ from woost.models import Site, Publishable, Language
             keywords.append(site_keywords)
         item_keywords = getattr(self.publishable, "keywords", None)
         if item_keywords:
-            keywords.append(item_keywords)        
+            keywords.append(item_keywords)
         return " ".join(keywords) if keywords else None
 
     def get_content_title(self):
@@ -34,13 +34,13 @@ from woost.models import Site, Publishable, Language
 
     def get_content_language(self, item, language = None):
         return item.get_common_language(self.translation_members, language)
-    
+
     def is_fully_translated(self, item, language = None):
         language = require_language(language)
         return self.get_content_language(item, language) == language
 
     def member_slot(self, key, use_fallback_language = True):
-        
+
         slot = Element()
         slot.add_class(key + "_slot")
         setattr(self, key + "_slot", slot)
@@ -55,7 +55,7 @@ from woost.models import Site, Publishable, Language
             and not self.fully_translated \
             and use_fallback_language:
                 slot["lang"] = self.content_language
-            
+
             value = item.get(
                 member,
                 self.content_language
@@ -99,11 +99,11 @@ from woost.models import Site, Publishable, Language
 
             if description:
                 self.set_meta("description", description)
-            
+
             keywords = self.get_keywords()
             if keywords:
                 self.set_meta("keywords", keywords)
-            
+
             robots_should_index = getattr(self.publishable, "robots_should_index", True)
             robots_should_follow = getattr(self.publishable, "robots_should_follow", True)
             if not robots_should_index or not robots_should_follow:
@@ -139,7 +139,7 @@ from woost.models import Site, Publishable, Language
 
             # Shortcut icon
             icon = site.icon
-            if icon:                
+            if icon:
                 self.add_head_element(
                     Element("link",
                         rel = "Shortcut Icon",
@@ -168,7 +168,7 @@ from woost.models import Site, Publishable, Language
     </py:ready>
 
     <py:woost.views.EditPanel py:id="toolbar"/>
-   
+
     <div py:id="content">
         ${self.member_slot("body")}
     </div>

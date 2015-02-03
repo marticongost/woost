@@ -39,7 +39,7 @@ class PDFExtension(Extension):
             u"Permet publicar pàgines HTML en format PDF.",
             "ca"
         )
-        self.set("description",            
+        self.set("description",
             u"Permite publicar páginas HTML en formato PDF.",
             "es"
         )
@@ -89,7 +89,7 @@ class PDFExtension(Extension):
                     raise OSError("Error generating PDF"
                         + (": " + stderr) if stderr else ""
                     )
- 
+
                 # Serve the file
                 cherrypy.response.headers["Content-Type"] = "application/x-pdf"
 
@@ -102,8 +102,8 @@ class PDFExtension(Extension):
 
             finally:
                 rmtree(temp_path)
-        
-        BaseCMSController.render_pdf = render_pdf    
+
+        BaseCMSController.render_pdf = render_pdf
         BaseCMSController.allowed_rendering_formats = frozenset(
             list(BaseCMSController.allowed_rendering_formats)
           + ["pdf"]

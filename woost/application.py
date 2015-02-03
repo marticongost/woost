@@ -8,7 +8,7 @@ from pkg_resources import resource_filename
 
 
 class Application(object):
-    
+
     __root = None
     __icon_resolver = None
 
@@ -28,8 +28,8 @@ class Application(object):
         return self.__root
 
     def _set_root(self, root):
-        
-        if self.__root:            
+
+        if self.__root:
             old_path = self.path("views", "resources", "images", "icons")
             for path, url in self.icon_resolver.icon_repositories:
                 if path == old_path:

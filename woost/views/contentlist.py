@@ -17,7 +17,7 @@ class ContentList(List):
     referer = None
 
     def _fill_entries(self):
-        
+
         user = get_current_user()
         items = self.items
 
@@ -28,7 +28,7 @@ class ContentList(List):
                 if user.has_permission(ReadPermission, target = item)
             ]
 
-        if items:            
+        if items:
             List._fill_entries(self)
         else:
             self.tag = "div"

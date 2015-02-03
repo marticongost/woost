@@ -33,7 +33,7 @@ from woost.controllers.backoffice.useractions import \
         py:data="@{self.edited_item}"
         py:base_url="@{self.cms.contextual_uri()}"
         py:edit_stack="@{self.edit_stack}">
-        
+
         <!-- Highlight changed members -->
         <py:with py:def="value" py:args="member">
             <?py
@@ -43,7 +43,7 @@ from woost.controllers.backoffice.useractions import \
                     if member.translated
                     else None
             )
-            
+
             if key in self.changed_keys:
                 element.add_class("changed")
             ?>
@@ -52,7 +52,7 @@ from woost.controllers.backoffice.useractions import \
         <?py
         @extend(element)
         def _resolve_member_display(property_table, obj, member):
-        
+
             if isinstance(member, schema.Collection):
                 if member.related_type \
                 and issubclass(member.related_type, File):
@@ -75,7 +75,7 @@ from woost.controllers.backoffice.useractions import \
                 py:for="resource in resources"
                 py:if="resources"/>
         </ul>
-        
+
         <div py:def="resource_thumbnail" py:args="resource">
             <a href="${self.edit_uri(resource, edit_stack = None)}" class="thumbnail_link">
                 <img class="thumbnail" src="${resource.get_image_uri('backoffice_thumbnail')}"/>
@@ -87,5 +87,5 @@ from woost.controllers.backoffice.useractions import \
         </div>
 
     </py:woost.views.ContentPropertyTable>
-    
+
 </py:woost.views.BackOfficeItemView>

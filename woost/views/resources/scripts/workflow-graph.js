@@ -36,7 +36,7 @@
     }
 
     var clickable = document.querySelectorAll("g.node > *, g.edge > *");
-    
+
     for (var i = 0; i < clickable.length; i++) {
         var node = clickable[i];
         node.onclick = editClickedItem;
@@ -48,7 +48,7 @@
 
     function beginNewTransition(e) {
         sourceState = this.id;
-        connector = document.createElementNS(SVGNS, "line");        
+        connector = document.createElementNS(SVGNS, "line");
         var state = this.getElementsByTagName("ellipse")[0];
         var cx = state.cx.baseVal.value;
         var cy = state.cy.baseVal.value;
@@ -56,7 +56,7 @@
         connector.setAttribute("x1", cx);
         connector.setAttribute("y1", cy);
         connector.setAttribute("x2", cx);
-        connector.setAttribute("y2", cy);        
+        connector.setAttribute("y2", cy);
         this.parentNode.insertBefore(connector, this);
         e.preventDefault();
     }
@@ -66,7 +66,7 @@
             var targetState = this.id;
             console.log(targetState);
             if (targetState != sourceState) {
-                top.location.href = url 
+                top.location.href = url
                     + "new/fields/?item_type=woost.extensions.workflow.transition.Transition"
                     + "&edited_item_source_state=" + sourceState
                     + "&edited_item_target_state=" + targetState;

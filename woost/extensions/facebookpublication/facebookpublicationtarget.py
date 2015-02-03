@@ -69,7 +69,7 @@ facebook_locales = {
     "Malayalam": 50,
     "Vietnamese": 27,
     "Arabic": 28,
-    "Hebrew": 29    
+    "Hebrew": 29
 }
 
 
@@ -102,7 +102,7 @@ class FacebookPublicationTarget(Item):
     )
 
     administrator_id = schema.String(
-        listed_by_default = False        
+        listed_by_default = False
     )
 
     app_id = schema.String(
@@ -148,8 +148,8 @@ class FacebookPublicationTarget(Item):
                 % (publishable, self)
             )
 
-        graph_url = "https://graph.facebook.com/%s/feed" % self.graph_object_id                
-        post_data = self._get_publication_parameters(publishable)        
+        graph_url = "https://graph.facebook.com/%s/feed" % self.graph_object_id
+        post_data = self._get_publication_parameters(publishable)
         encoded_post_data = dict(
             (k, v.encode("utf-8") if isinstance(v, unicode) else v)
             for k, v in post_data.iteritems()
@@ -163,7 +163,7 @@ class FacebookPublicationTarget(Item):
 
         og = OpenGraphExtension.instance
         og_properties = og.get_properties(publishable)
-        
+
         post_data = {
             "access_token": self.auth_token,
             "name": og_properties.get("og:title") or translations(publishable),
@@ -187,7 +187,7 @@ class FacebookPublicationTarget(Item):
                 ),
                 "exclude_locales": (
                     lambda excluded:
-                        [loc_id 
+                        [loc_id
                         for loc_name, loc_id in facebook_locales.iteritems()
                         if loc_name not in excluded]
                 )
@@ -218,13 +218,13 @@ class FacebookPublicationTarget(Item):
         if status < 200 or status > 299:
             raise FacebookPublicationError(body)
 
-        feed_data = loads(body)        
+        feed_data = loads(body)
         return feed_data["data"]
 
     def find_post(self, publishable):
 
         uri = self._get_publication_parameters(publishable)["link"]
-           
+
         for post in self.feed_posts():
             if post.get("link") == uri:
                 return post
@@ -257,7 +257,7 @@ class FacebookPublicationTarget(Item):
         if status < 200 or status > 299:
             raise FacebookPublicationError(body)
 
-        album_id = loads(body)["id"]        
+        album_id = loads(body)["id"]
         photos_url = "https://graph.facebook.com/%s/photos" % album_id
 
         # Upload photos
@@ -291,7 +291,7 @@ class FacebookPublicationTarget(Item):
             })
             request = urllib2.Request(photos_url, datagen, headers)
             response = urllib2.urlopen(request)
-                        
+
             status = response.getcode()
             body = response.read()
             if status < 200 or status > 299:

@@ -44,7 +44,7 @@ class CampaignMonitorController(FormProcessor, DocumentController):
 
         @cached_getter
         def available_lists(self):
-            
+
             lists = getattr(
                 self.controller.context["publishable"],
                 "lists",
@@ -70,7 +70,7 @@ class CampaignMonitorController(FormProcessor, DocumentController):
             email = self.data["email"].encode("utf-8")
             name = self.data.get("name")
             name = name.encode("utf-8") if name else ""
-     
+
             api = CampaignMonitorApi(
                 extension.api_key,
                 extension.client_id
@@ -124,20 +124,20 @@ class CampaignMonitorController(FormProcessor, DocumentController):
 
                 if user_subscribed and cmlist.confirmation_success_page:
                     uri = self.get_confirmation_uri(cmlist, email = email, name = name, **encoded_custom_fields)
-                elif not user_subscribed and cmlist.pending_page:                
+                elif not user_subscribed and cmlist.pending_page:
                     uri = self.get_pending_uri(cmlist, email = email, name = name, **encoded_custom_fields)
                 else:
                     uri = self.get_default_uri(cmlist, email = email, name = name, **encoded_custom_fields)
 
                 raise cherrypy.HTTPRedirect(uri.encode("utf-8"))
-                
+
         def get_confirmation_uri(self, cmlist, **kwargs):
             return self.controller.context["cms"].uri(cmlist.confirmation_success_page)
-            
-        def get_pending_uri(self, cmlist, **kwargs):        
+
+        def get_pending_uri(self, cmlist, **kwargs):
             return self.controller.context["cms"].uri(cmlist.pending_page)
-            
+
         def get_default_uri(self, cmlist, **kwargs):
             return self.controller.context["cms"].uri(self.controller.context["publishable"])
-  
+
 

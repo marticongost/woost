@@ -31,8 +31,8 @@ class PublicationScheme(Item):
 
     @abstractmethod
     def resolve_path(self, path):
-        """Determines the publishable item that matches the indicated path.       
-        
+        """Determines the publishable item that matches the indicated path.
+
         @param path: The path to evaluate; A list-like object describing a
             a path relative to the application's root.
         @type path: str list
@@ -114,10 +114,10 @@ class HierarchicalPublicationScheme(PublicationScheme):
     instantiable = True
 
     def resolve_path(self, path):
-        
+
         remaining_path = list(path)
         extra_path = []
-        
+
         while remaining_path:
             page = Publishable.get_instance(
                 full_path = u"/".join(remaining_path)
@@ -137,7 +137,7 @@ class HierarchicalPublicationScheme(PublicationScheme):
 
 class IdPublicationScheme(PublicationScheme):
     """A publication scheme that publishes items based on their id."""
-    
+
     instantiable = True
     permanent_links = True
 
@@ -170,9 +170,9 @@ class DescriptiveIdPublicationScheme(PublicationScheme):
     @type word_separator: str
 
     @ivar id_regexp: The regular expression used to extract the unique
-        identifier from an URI. The expression must define an 'id' named group. 
+        identifier from an URI. The expression must define an 'id' named group.
     @type id_regexp: regular expression
-    
+
     @param format: A python formatting string, used for composing an item's
         URI from its unique identifier and flattened title. Receives 'title'
         and 'id' parameters.
@@ -180,7 +180,7 @@ class DescriptiveIdPublicationScheme(PublicationScheme):
     """
     instantiable = True
     permanent_links = True
-    
+
     members_order = [
         "id_separator",
         "word_separator",
@@ -240,11 +240,11 @@ class DescriptiveIdPublicationScheme(PublicationScheme):
     _uri_encodings = ["utf-8", "iso-8859-1"]
 
     def resolve_path(self, path):
-        
+
         if path:
 
             ref = path[0]
-            
+
             # Try to decode the supplied URI using a selection of different
             # string encodings
             if not isinstance(ref, unicode):
@@ -295,9 +295,9 @@ class DescriptiveIdPublicationScheme(PublicationScheme):
                     [path[0]],
                     path[1:]
                 )
-        
+
     def get_path(self, publishable, language):
- 
+
         if not language:
             language = get_language()
 
@@ -311,7 +311,7 @@ class DescriptiveIdPublicationScheme(PublicationScheme):
                 self.word_separator,
                 title
             )
-            title = title.lower()            
+            title = title.lower()
             ref = self.format % {
                 "title": title,
                 "id": publishable.id,

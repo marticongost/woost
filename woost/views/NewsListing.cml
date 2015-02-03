@@ -6,10 +6,10 @@
 
     <?py-class
     news = None
-    pagination = None   
+    pagination = None
     name_prefix = None
     name_suffix = None
-    
+
     def create_entry(self, news, news_index):
         raise TypeError("%s doesn't implement the create_entry() method" % self)
     ?>
@@ -20,15 +20,15 @@
             self.visible = False
         ?>
     </py:ready>
-    
+
     <div py:id="news_list">
         <py:ready>
             <?py
             if self.pagination:
                 sequence = self.pagination.current_page_items
             else:
-                sequence = self.news            
-            
+                sequence = self.news
+
             news_index = 0
             ?>
             <py:new

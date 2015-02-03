@@ -25,7 +25,7 @@ def get_audio_uri(file, encoding):
 
         # Format requested by file extension
         if encoding.startswith("."):
-            
+
             # The source file already matches the requested file extension,
             # use it as is
             if file.file_extension == encoding:

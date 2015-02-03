@@ -45,7 +45,7 @@ class SignUpConfirmationController(DocumentController):
                     # Autologin after confirmation
                     if self.autologin:
                         self.context["cms"].authentication.set_user_session(instance)
-    
+
     @cached_getter
     def output(self):
         output = DocumentController.output(self)

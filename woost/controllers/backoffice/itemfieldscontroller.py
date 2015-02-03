@@ -63,7 +63,7 @@ class ItemFieldsController(EditController):
                     values = form_data.get(key)
                     if values:
                         values.pop(deleted_translation, None)
-                        
+
         get_method = cherrypy.request.method.upper() == "GET"
 
         # Load form data from the request
@@ -102,7 +102,7 @@ class ItemFieldsController(EditController):
             if (
                 self.stack_node.item
                 and self.stack_node.item.is_inserted
-                and isinstance(member, (schema.RelationMember)) 
+                and isinstance(member, (schema.RelationMember))
                 and member.bidirectional and member.related_end.integral
             )
         ])
@@ -138,7 +138,7 @@ class ItemFieldsController(EditController):
         controller = event.source
         item = controller.stack_node.item
         user = get_current_user()
-        
+
         if item.is_inserted:
             user.require_permission(ModifyPermission, target = item)
         else:

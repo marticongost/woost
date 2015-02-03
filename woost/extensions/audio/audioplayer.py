@@ -31,7 +31,7 @@ class AudioPlayer(Element):
         )
 
         for encoding in self.encodings:
-            url = get_audio_uri(self.file, encoding)            
+            url = get_audio_uri(self.file, encoding)
             if url:
                 source = Element("source")
                 source["src"] = url

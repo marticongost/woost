@@ -27,8 +27,8 @@ from beaker.middleware import SessionMiddleware
 from cocktail.events import Event, event_handler
 from cocktail.translations import get_language, set_language
 from cocktail.controllers import (
-    Dispatcher, 
-    Location, 
+    Dispatcher,
+    Location,
     folder_publisher,
     try_decode,
     session
@@ -60,7 +60,7 @@ from woost.controllers.imagescontroller import ImagesController
 
 
 class CMSController(BaseCMSController):
-    
+
     application_settings = None
 
     # Application events
@@ -132,12 +132,12 @@ class CMSController(BaseCMSController):
             using_file_sessions = (sconf.get("session.type") == "file")
             using_dbm_sessions = (sconf.get("session.type") == "dbm")
             lock_dir_missing = (
-                not using_file_sessions 
+                not using_file_sessions
                 and not sconf.get("session.lock_dir")
             )
             data_dir_missing = (
                 (
-                    using_file_sessions 
+                    using_file_sessions
                     or (using_dbm_sessions and not
                         sconf.get("session.dbm_dir"))
                 )
@@ -145,7 +145,7 @@ class CMSController(BaseCMSController):
             )
 
             if lock_dir_missing or data_dir_missing:
-                
+
                 session_path = app.path("sessions")
                 if not os.path.exists(session_path):
                     os.mkdir(session_path)
@@ -165,7 +165,7 @@ class CMSController(BaseCMSController):
                 else:
                     with open(session_key_path, "w") as session_key_file:
                         session_key = sha("".join(
-                            choice(ascii_letters) 
+                            choice(ascii_letters)
                             for i in range(10)
                         )).hexdigest()
                         session_key_file.write(session_key)
@@ -208,7 +208,7 @@ class CMSController(BaseCMSController):
         resources = folder_publisher(
             resource_filename("woost.views", "resources")
         )
-        
+
         cocktail = folder_publisher(
             resource_filename("cocktail.html", "resources")
         )
@@ -217,28 +217,28 @@ class CMSController(BaseCMSController):
         return SessionMiddleware(app, session.config)
 
     def __init__(self, *args, **kwargs):
-    
+
         BaseCMSController.__init__(self, *args, **kwargs)
 
         self.language = self.LanguageModule(self)
         self.authentication = self.AuthenticationModule(self)
 
     def run(self, block = True):
-                
+
         self.mount()
-    
+
         if hasattr(cherrypy.engine, "signal_handler"):
             cherrypy.engine.signal_handler.subscribe()
 
         if hasattr(cherrypy.engine, "console_control_handler"):
             cherrypy.engine.console_control_handler.subscribe()
-    
+
         cherrypy.engine.start()
-        
+
         if block:
             cherrypy.engine.block()
         else:
-            cherrypy.engine.wait(cherrypy.engine.states.STARTED)            
+            cherrypy.engine.wait(cherrypy.engine.states.STARTED)
 
     def mount(self):
 
@@ -256,7 +256,7 @@ class CMSController(BaseCMSController):
         )
 
     def resolve(self, path):
-        
+
         # Allow application modules (ie. language) to process the URI before
         # resolving the requested publishable item
         self._process_path(path)
@@ -264,7 +264,7 @@ class CMSController(BaseCMSController):
         request = cherrypy.request
 
         # Item resolution
-        publishable = self._resolve_path(path)        
+        publishable = self._resolve_path(path)
         self.context["publishable"] = publishable
 
         # HTTP/HTTPS check
@@ -298,7 +298,7 @@ class CMSController(BaseCMSController):
     def canonical_redirection(self, path_resolution):
         """Redirect the current request to the canonical URL for the selected
         publishable element.
-        """        
+        """
         site = Site.main
         publishable = path_resolution.item
 
@@ -403,14 +403,14 @@ class CMSController(BaseCMSController):
         # Regular elements
         else:
             uri = Site.main.get_path(publishable)
-            
+
             if uri is not None:
-                
+
                 if publishable.per_language_publication:
                     uri = self.language.translate_uri(uri)
 
                 uri = self.application_uri(uri, *args, **kwargs)
- 
+
         if uri:
             uri = "".join(percent_encode(c) for c in uri)
 
@@ -438,7 +438,7 @@ class CMSController(BaseCMSController):
             raise cherrypy.NotFound()
 
         user = get_current_user()
-        
+
         user.require_permission(ReadPermission, target = publishable)
         user.require_permission(
             ReadTranslationPermission,
@@ -451,7 +451,7 @@ class CMSController(BaseCMSController):
         datastore.sync()
 
         cms = event.source
-        
+
         cms.context.update(
             cms = cms,
             publishable = None
@@ -466,7 +466,7 @@ class CMSController(BaseCMSController):
 
     @event_handler
     def handle_before_request(cls, event):
-        
+
         cms = event.source
 
         # Validate access to the requested item
@@ -524,10 +524,10 @@ class CMSController(BaseCMSController):
                     original_publishable = controller.context["publishable"],
                     publishable = error_page
                 )
-                
+
                 response = cherrypy.response
-                response.status = status 
-                
+                response.status = status
+
                 error_controller = error_page.resolve_controller()
 
                 # Instantiate class based controllers
@@ -536,7 +536,7 @@ class CMSController(BaseCMSController):
                     error_controller._rendering_format = "html"
 
                 response.body = error_controller()
-    
+
     def get_error_page(self, error):
         """Produces a custom error page for the indicated exception.
 
@@ -555,7 +555,7 @@ class CMSController(BaseCMSController):
         # Page not found
         if is_http_error and error.status == 404:
             return site.not_found_error_page, 404
-        
+
         # Service unavailable
         elif is_http_error and error.status == 503:
             return site.maintenance_page, 503
@@ -578,7 +578,7 @@ class CMSController(BaseCMSController):
                 return site.login_page, 200
             else:
                 return site.forbidden_error_page, 403
-        
+
         # Generic error
         elif is_http_error and error.status == 500 \
         or not is_http_error:
@@ -587,7 +587,7 @@ class CMSController(BaseCMSController):
         return None, None
 
     def _apply_https_policy(self, publishable):
-        
+
         site = Site.main
         policy = site.https_policy
 

@@ -60,7 +60,7 @@ class GoogleSearchExtension(Extension):
             "ca"
         )
         self.set("description",
-            u"""Proporciona los elementos esenciales para implementar el 
+            u"""Proporciona los elementos esenciales para implementar el
             buscador de Google""",
             "es"
         )
@@ -89,7 +89,7 @@ class GoogleSearchExtension(Extension):
         language = None,
         filter = True):
         """Returns Google CSE results for the given query.
-        
+
         @param query: The query to search.
         @type query: unicode
 
@@ -156,7 +156,7 @@ class GoogleSearchExtension(Extension):
                     result = GoogleSearchResult()
                     results.append(result)
                     self.current_result = result
-                    
+
             def endElement(self, name):
                 self.status = None
                 if name == "R":
@@ -182,7 +182,7 @@ class GoogleSearchExtension(Extension):
             page_size,
             sax_handler.result_count
         )
-        
+
 
 class GoogleSearchResult(object):
     title = ""
@@ -191,7 +191,7 @@ class GoogleSearchResult(object):
 
 
 class GoogleSearchResultsList(ListWrapper):
-    
+
     def __init__(self, results, page, page_size, result_count):
         ListWrapper.__init__(self, results)
         self.page = page
