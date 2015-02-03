@@ -16,4 +16,4 @@ def catalog_current_state_uri():
         if website.ecommerce_default_catalog:
             return website.ecommerce_default_catalog.get_uri()
 
- 
+

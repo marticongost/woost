@@ -46,7 +46,7 @@ class InstallationSyncController(EditController):
     def comparision(self):
         try:
             return self.synchronization.compare_content(
-                establish_relations = (self.sync_action == "sync")        
+                establish_relations = (self.sync_action == "sync")
             )
         except urllib2.HTTPError, e:
             self.sync_request_error = e
@@ -98,7 +98,7 @@ class InstallationSyncController(EditController):
                     for member, lang in change["diff"]:
                         value = schema.get(remote, member, language = lang)
                         local.set(member, value, lang)
-                        
+
                         if member in (File.file_hash, File.file_size):
                             file_downloads.add(local)
 
@@ -122,6 +122,6 @@ class InstallationSyncController(EditController):
             selected_action = get_user_action("installation_sync"),
             sync_selection = self.sync_selection,
             sync_request_error = self.sync_request_error
-        )        
+        )
         return output
 

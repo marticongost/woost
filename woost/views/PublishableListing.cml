@@ -6,7 +6,7 @@
 
     <?py-class
     publishables = ()
-    pagination = None   
+    pagination = None
     name_prefix = None
     name_suffix = None
     links_open_in_new_window = False
@@ -32,7 +32,7 @@
             if self.pagination:
                 sequence = self.pagination.current_page_items
             else:
-                sequence = self.publishables            
+                sequence = self.publishables
 
             publishable_index = 0
             ?>

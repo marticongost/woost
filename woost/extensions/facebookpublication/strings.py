@@ -390,7 +390,7 @@ translations.define(
 translations.define(
     "woost.extensions.facebookpublication.facebookpublicationtarget."
     "FacebookPublicationError-instance",
-    ca = lambda instance: u"Error de publicació: <pre>%s</pre>" 
+    ca = lambda instance: u"Error de publicació: <pre>%s</pre>"
                           % instance.response,
     es = lambda instance: u"Error de publicación: <pre>%s</pre>"
                           % instance.response,

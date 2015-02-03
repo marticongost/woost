@@ -32,8 +32,8 @@ from woost.models import Configuration, Block
             root = path[0][0]
             container = step[0]
             edit_blocks_uri = self._cms.contextual_uri("blocks", root.id)
-            
-            if isinstance(container, Block):                
+
+            if isinstance(container, Block):
                 edit_blocks_uri += "#block" + str(container.id)
             else:
                 edit_blocks_uri += "#block" + str(self.item.id)

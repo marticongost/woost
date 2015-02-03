@@ -20,13 +20,13 @@ class CampaignMonitorList(Item):
         "pending_page",
         "confirmation_success_page",
         "unsubscribe_page",
-    ]   
+    ]
 
     default_pending_page = schema.DynamicDefault(
         lambda: StandardPage.get_instance(
             qname = u"woost.extensions.campaignmonitor.pending_page"
         )
-    )   
+    )
 
     title = schema.String(
         editable = False,

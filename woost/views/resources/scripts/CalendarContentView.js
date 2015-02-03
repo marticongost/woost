@@ -8,13 +8,13 @@
 -----------------------------------------------------------------------------*/
 
 cocktail.bind(".CalendarContentView", function ($contentView) {
-        
+
     var contentView = this;
 
     $contentView.find("select[name=month]").change(function () {
         jQuery(this).parents("form").submit();
     });
-    
+
     $contentView.find(".month_calendar td").dblclick(function () {
         location.href = cms_uri + "/content/new/fields"
             + "?item_type=" + contentView.contentType
@@ -31,7 +31,7 @@ cocktail.bind(".CalendarContentView", function ($contentView) {
     });
 });
 
-cocktail.bind("body", function () {    
+cocktail.bind("body", function () {
     jQuery(document).click(function () {
         jQuery(".year_calendar .month_calendar .entries").hide();
     });

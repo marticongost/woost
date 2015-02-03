@@ -26,7 +26,7 @@ from woost.extensions.ecommerce.utils import catalog_current_state_uri
             py:id="error_box"
             py:errors="@{self.errors}"
             py:index="1"/>
-    
+
     </py:block>
 
     <py:cocktail.html.TextBox type="number" min="1" py:def="quantity_display"/>

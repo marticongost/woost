@@ -39,13 +39,13 @@ class BackOfficeController(BaseBackOfficeController):
 
     _cp_config = BaseBackOfficeController.copy_config()
     _cp_config["rendering.engine"] = "cocktail"
-    
+
     _edit_stacks_manager_class = \
         "woost.controllers.backoffice.editstack.EditStacksManager"
 
     default_section = "content"
 
-    content = ContentController    
+    content = ContentController
     delete = DeleteController
     order = OrderController
     move = MoveController
@@ -70,19 +70,19 @@ class BackOfficeController(BaseBackOfficeController):
     def handle_before_request(cls, event):
         user = get_current_user()
         language = (
-            user and user.prefered_language 
+            user and user.prefered_language
             or Configuration.instance.get_setting("backoffice_language")
         )
         set_language(language)
 
     @event_handler
     def handle_after_request(cls, event):
-        
+
         if event.error is None:
             controller = event.source
             edit_stacks_manager = controller.context["edit_stacks_manager"]
             edit_stack = edit_stacks_manager.current_edit_stack
-            
+
             if edit_stack is not None:
                 edit_stacks_manager.preserve_edit_stack(edit_stack)
 

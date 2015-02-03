@@ -50,7 +50,7 @@ class UserView(Item):
                         prev_value.append(value)
                 else:
                     params[key] = value
-        
+
         return params
 
     def _serialize_parameters(value):
@@ -76,7 +76,7 @@ class UserView(Item):
         bidirectional = True
     )
 
-    def uri(self, **kwargs):        
+    def uri(self, **kwargs):
         backoffice = Publishable.require_instance(qname = "woost.backoffice")
         return backoffice.get_uri(parameters = self.parameters)
 

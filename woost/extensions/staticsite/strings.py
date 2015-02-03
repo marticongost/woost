@@ -288,30 +288,30 @@ translations.define(
     "ExportationPermission-instance",
     ca = content_permission_translation_factory("ca",
         lambda permission, subject, **kwargs:
-            "%s %s" % (        
+            "%s %s" % (
                 translations(permission.destination, "ca", **kwargs),
                 subject
-            )                
+            )
             if permission.destination
             else "canviar l'estat " + ca_possessive(subject),
-    ),  
+    ),
     es = content_permission_translation_factory("es",
         lambda permission, subject, **kwargs:
-            "%s %s" % (        
+            "%s %s" % (
                 translations(permission.destination, "es", **kwargs),
                 subject
-            )                
+            )
             if permission.destination
             else "cambiar el estado de " + subject,
-    ),  
+    ),
     en = content_permission_translation_factory("en",
         lambda permission, subject, **kwargs:
-            "%s %s" % ( 
+            "%s %s" % (
                 translations(permission.destination, "en", **kwargs),
                 subject
-            )                
+            )
             if permission.destination
             else "change the state of " + subject
-    )   
+    )
 )
 

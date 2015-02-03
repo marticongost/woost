@@ -37,10 +37,10 @@ class URLResolver(object):
         This method identifies a matching publishable item by trying each
         url scheme defined by the site, in order. Once a scheme finds a
         matching item, the search concludes.
-        
+
         See L{URLScheme.resolve_path} for more details on the resolution
         process.
- 
+
         @param path: The path to evaluate; A list-like object describing a
             a path relative to the application's root.
         @type path: str list
@@ -62,7 +62,7 @@ class URLResolver(object):
 
     def get_path(self, publishable, language = None):
         """Determines the canonical path of the indicated item.
-        
+
         This method queries each url scheme defined by the site, in
         order. Once a scheme yields a matching path, the search concludes. That
         first match will be considered the item's canonical path.
@@ -98,8 +98,8 @@ class URLScheme(object):
 
     @abstractmethod
     def resolve_path(self, path):
-        """Determines the publishable item that matches the indicated path.       
-        
+        """Determines the publishable item that matches the indicated path.
+
         @param path: The path to evaluate; A list-like object describing a
             a path relative to the application's root.
         @type path: str list
@@ -180,10 +180,10 @@ class HierarchicalURLScheme(URLScheme):
     """
 
     def resolve_path(self, path):
-        
+
         remaining_path = list(path)
         extra_path = []
-        
+
         while remaining_path:
             page = Publishable.get_instance(
                 full_path = u"/".join(remaining_path)
@@ -203,7 +203,7 @@ class HierarchicalURLScheme(URLScheme):
 
 class IdURLScheme(URLScheme):
     """A url scheme that publishes items based on their id."""
-    
+
     def resolve_path(self, path):
         if path:
             try:
@@ -233,9 +233,9 @@ class DescriptiveIdURLScheme(URLScheme):
     @type word_separator: str
 
     @ivar id_regexp: The regular expression used to extract the unique
-        identifier from an URI. The expression must define an 'id' named group. 
+        identifier from an URI. The expression must define an 'id' named group.
     @type id_regexp: regular expression
-    
+
     @param format: A python formatting string, used for composing an item's
         URI from its unique identifier and flattened title. Receives 'title'
         and 'id' parameters.
@@ -252,11 +252,11 @@ class DescriptiveIdURLScheme(URLScheme):
     _uri_encodings = ["utf-8", "iso-8859-1"]
 
     def resolve_path(self, path):
-        
+
         if path:
 
             ref = path[0]
-            
+
             # Try to decode the supplied URI using a selection of different
             # string encodings
             if not isinstance(ref, unicode):
@@ -302,9 +302,9 @@ class DescriptiveIdURLScheme(URLScheme):
                     [path[0]],
                     path[1:]
                 )
-        
+
     def get_path(self, publishable, language):
- 
+
         if not language:
             language = get_language()
 
@@ -321,7 +321,7 @@ class DescriptiveIdURLScheme(URLScheme):
                 self.word_separator,
                 title
             )
-            title = title.lower()            
+            title = title.lower()
             ref = self.format % {
                 "title": title,
                 "id": publishable.id,

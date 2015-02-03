@@ -94,12 +94,12 @@ translations.define(
     es = u"Tu dirección ha sido eliminada con éxito de esta lista de "
          u"suscripción. No volverás a recibir mensajes de esta lista.",
     en = u"You have been successfully removed from this subscriber list. You "
-         u"will no longer receive messages from this list."         
+         u"will no longer receive messages from this list."
 )
 
 # UI
 #------------------------------------------------------------------------------
-translations.define("woost.actions.sync_campaign_monitor_lists",                                                                                                                                                                       
+translations.define("woost.actions.sync_campaign_monitor_lists",
     ca = u"Sincronitzar amb Campaign Monitor",
     es = u"Sincronizar con Campaign Monitor",
     en = u"Synchronize with Campaign Monitor"
@@ -218,7 +218,7 @@ translations.define(
 )
 
 translations.define(
-    "woost.extensions.campaignmonitor.CampaignMonitorListsSynchronizationView cancel button",                                                                                                                                
+    "woost.extensions.campaignmonitor.CampaignMonitorListsSynchronizationView cancel button",
     ca = u"Tancar",
     es = u"Cerrar",
     en = u"Close"
@@ -283,11 +283,11 @@ translations.define(
 #------------------------------------------------------------------------------
 translations.define(
     "woost.extensions.campaignmonitor.CampaignMonitorUnsubscriptionView resubscribe",
-    ca = u"""No volies donar-te de baixa? <a href="%s">Clica aquí</a> per 
+    ca = u"""No volies donar-te de baixa? <a href="%s">Clica aquí</a> per
 resubscriure't i continuar rebent comunicacions nostres.""",
-    es = u"""No querías darte de baja? <a href="%s">Clica aquí</a> para 
+    es = u"""No querías darte de baja? <a href="%s">Clica aquí</a> para
 resuscribirte y continuar recibiendo comunicaciones nuestras.""",
-    en = u"""Didn't mean to unsubscribe? <a href="%s">Click here</a> to 
+    en = u"""Didn't mean to unsubscribe? <a href="%s">Click here</a> to
 re-subscribe and continue receiving emails from us."""
 )
 

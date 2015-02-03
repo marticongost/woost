@@ -43,7 +43,7 @@ from woost import app
             @{translations(self.item.__class__.name)}
         </span>
 
-        <span py:id="item_path">            
+        <span py:id="item_path">
             ${translations("woost.views.BackOfficeItemHeading.item_path.conjunction")}
             <py:ready>
                 <?py

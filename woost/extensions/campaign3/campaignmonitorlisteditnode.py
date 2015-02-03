@@ -18,7 +18,7 @@ class CampaignMonitorListEditNode(EditNode):
         try:
             item.update()
         except Exception, e:
-            notify_user(                                                                                                                                                                      
+            notify_user(
                 translations(
                     "woost.extensions.campaignmonitorlisteditnode.CampaignMonitorListEditNode failed synchronization",
                     item = item,
@@ -28,7 +28,7 @@ class CampaignMonitorListEditNode(EditNode):
                 transient = False
             )
         else:
-            notify_user(                                                                                                                                                                      
+            notify_user(
                 translations(
                     "woost.extensions.campaignmonitorlisteditnode.CampaignMonitorListEditNode synchronized changes",
                     item = item

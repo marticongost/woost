@@ -21,9 +21,9 @@ from woost.models import Item
 class StaticSiteSnapShoter(Item):
     """A class tasked with creating a static snapshot of a site's content to
     a concrete location.
-    
+
     This is mostly an abstract class, meant to be extended by subclasses. Each
-    subclass should implement the static snapshot creation. 
+    subclass should implement the static snapshot creation.
     """
     instantiable = False
     visible_from_root = False
@@ -53,7 +53,7 @@ class StaticSiteSnapShoter(Item):
         """
 
     def snapshot(self, items, context = {}):
-        """ Generates the snapshot of a site's content 
+        """ Generates the snapshot of a site's content
 
         @param items: The list of items which the exportation will start.
         @type items: L{Publishable}
@@ -71,7 +71,7 @@ class StaticSiteSnapShoter(Item):
 
     @abstractmethod
     def _snapshot(self, items, context = {}):
-        """ Generates the snapshot of a site's content 
+        """ Generates the snapshot of a site's content
 
         @param items: The list of items which the exportation will start.
         @type items: L{Publishable}
@@ -86,12 +86,12 @@ class WgetSnapShoter(StaticSiteSnapShoter):
     """ A class that creates a static snapshot of a site's content using wget """
     instantiable = True
 
-    file_names_mode = schema.String(                                          
+    file_names_mode = schema.String(
         required = True,
         default = "unix",
         text_search = False,
         enumeration = frozenset(("unix", "windows")),
-        translate_value = lambda value, **kwargs:    
+        translate_value = lambda value, **kwargs:
             u"" if not value else translations(
                 "woost.extensions.staticsite.staticsitesnapshoter.WgetSnapShoter.file_names_mode " + value,
                 **kwargs
@@ -134,8 +134,8 @@ class WgetSnapShoter(StaticSiteSnapShoter):
         )
 
         cmd = cmd % (
-            self.snapshot_path, 
-            self.file_names_mode, 
+            self.snapshot_path,
+            self.file_names_mode,
             u" ".join(uris)
         )
 
@@ -153,9 +153,9 @@ class WgetSnapShoter(StaticSiteSnapShoter):
                 yield (file_path, relative_path)
 
     def _get_uri(self, item, context):
-        location = Location.get_current_host()                              
+        location = Location.get_current_host()
         location.path_info = controller_context["cms"].uri(item)
-        
+
         return unicode(location).encode("utf-8")
 
     def cleanup(self, context):

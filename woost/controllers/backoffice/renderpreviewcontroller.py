@@ -17,7 +17,7 @@ from woost.controllers.backoffice.basebackofficecontroller \
     import BaseBackOfficeController
 
 
-class RenderPreviewController(BaseBackOfficeController):    
+class RenderPreviewController(BaseBackOfficeController):
 
     @request_property
     def previewed_item(self):
@@ -34,7 +34,7 @@ class RenderPreviewController(BaseBackOfficeController):
     @request_property
     def preview_language(self):
         return get_parameter(
-            schema.String("preview_language", 
+            schema.String("preview_language",
                 default = get_language()
             )
         )
@@ -53,7 +53,7 @@ class RenderPreviewController(BaseBackOfficeController):
 
         # Enforce permissions
         user.require_permission(ReadPermission, target = previewed_item)
-        
+
         if publishable is not previewed_item:
             user.require_permission(ReadPermission, target = publishable)
 
@@ -69,7 +69,7 @@ class RenderPreviewController(BaseBackOfficeController):
                 class_name = "preview-error-box",
                 children = [
                     translations(
-                        "woost.backoffice invalid item preview", 
+                        "woost.backoffice invalid item preview",
                         preview_language
                     ),
                     error_box
