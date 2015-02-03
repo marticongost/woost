@@ -21,7 +21,7 @@ def html_diff(from_sequence, to_sequence, linejunk = None, charjunk = None):
 
     from_list = []
     to_list = []
-    
+
     for from_data, to_data, flag in diffs:
         from_list.append(_markup(_unescape(from_data[1])))
         to_list.append(_markup(_unescape(to_data[1])))

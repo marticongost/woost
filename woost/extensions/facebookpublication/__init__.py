@@ -30,7 +30,7 @@ class FacebookPublicationExtension(Extension):
             u"""Simplifica la publicació de continguts del lloc web al Facebook""",
             "ca"
         )
-        self.set("description",            
+        self.set("description",
             u"""Simplifica la publicación de contenidos del sitio web en
             Facebook""",
             "es"
@@ -41,14 +41,14 @@ class FacebookPublicationExtension(Extension):
         )
 
     def _load(self):
-        
+
         from woost.extensions.facebookpublication import (
             strings,
             fbpublishuseraction,
             fbpublishauthuseraction,
             facebookpublicationpermission
         )
-        
+
         from woost.extensions.facebookpublication.facebookpublicationtarget \
             import FacebookPublicationTarget
 

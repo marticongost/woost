@@ -74,7 +74,7 @@ from woost.models import Block, Configuration, block_type_groups
             </py:with>
         </py:cocktail.html.DropdownPanel>
 
-        <py:woost.views.EditBlocksSlotList 
+        <py:woost.views.EditBlocksSlotList
             py:id="item_slots"
             py:item="@{self.edited_item}"
             py:edited_item="@{self.edited_item}"
@@ -82,7 +82,7 @@ from woost.models import Block, Configuration, block_type_groups
     </py:with>
 
     <div
-        py:id="block_picker_dialog" 
+        py:id="block_picker_dialog"
         py:client_model="woost.views.blockPickerDialog">
         <py:ready>
             <?py
@@ -127,7 +127,7 @@ from woost.models import Block, Configuration, block_type_groups
                     <input type="hidden" name="block_slot" value=""/>
                     <input type="hidden" name="block" value=""/>
                     <py:ready>
-                        <py:new 
+                        <py:new
                             py:element="self.create_common_block_entry(common_block)"
                             py:for="common_block in self._common_blocks"/>
                     </py:ready>
@@ -142,12 +142,12 @@ from woost.models import Block, Configuration, block_type_groups
     </div>
 
     <div py:def="common_block_entry" py:args="common_block">
-        <button 
+        <button
             py:local_id="button"
             name="common_block"
             value="${common_block.id}"
             type="submit">
-            <py:woost.views.ItemLabel 
+            <py:woost.views.ItemLabel
                 py:local_id="label"
                 py:item="${common_block}"/>
         </button>

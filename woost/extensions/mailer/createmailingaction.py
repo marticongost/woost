@@ -23,7 +23,7 @@ class CreateMailingAction(UserAction):
 
     def get_url(self, controller, selection):
         return controller.contextual_uri(
-            'content', 'new', 
+            'content', 'new',
             item_type = Mailing.full_name,
             edited_item_document = selection[0].id
         )

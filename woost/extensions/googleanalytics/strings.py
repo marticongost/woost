@@ -4,7 +4,7 @@ u"""
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
 from cocktail.translations import translations
-    
+
 translations.define("Configuration.google_analytics_api",
     ca = u"API de Google Analytics",
     es = u"API de Google Analytics",

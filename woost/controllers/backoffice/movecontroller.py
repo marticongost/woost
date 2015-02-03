@@ -60,7 +60,7 @@ class MoveController(BaseBackOfficeController):
     @cached_getter
     def position(self):
         return self.slot and self.slot[1]
-       
+
     @cached_getter
     def action(self):
         return self.params.read(String("action"))
@@ -95,7 +95,7 @@ class MoveController(BaseBackOfficeController):
                     and item.get(related_end) is parent:
                         collection.remove(item)
 
-                    collection.insert(position, item)            
+                    collection.insert(position, item)
             try:
                 datastore.commit()
             except ConflictError:
@@ -112,7 +112,7 @@ class MoveController(BaseBackOfficeController):
 
     @event_handler
     def handle_after_request(cls, event):
-        
+
         controller = event.source
 
         if not controller.handling_ajax_request:

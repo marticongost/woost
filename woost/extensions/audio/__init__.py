@@ -30,7 +30,7 @@ class AudioExtension(Extension):
             múltiples formats.""",
             "ca"
         )
-        self.set("description",            
+        self.set("description",
             u"""Reproducción de ficheros de audio con recodificación automática
             a múltiples formatos.""",
             "es"
@@ -63,7 +63,7 @@ class AudioExtension(Extension):
     def _install(self):
         self.create_default_decoders()
         self.create_default_encoders()
-    
+
     def create_default_decoders(self):
 
         from woost.extensions.audio.audiodecoder import AudioDecoder
@@ -88,7 +88,7 @@ class AudioExtension(Extension):
         config.audio_decoders.append(flac)
 
     def create_default_encoders(self):
-        
+
         from woost.extensions.audio.audioencoder import AudioEncoder
         config = Configuration.instance
 
@@ -120,5 +120,5 @@ class AudioExtension(Extension):
                 player.file = item
                 return player
 
-        publishable_view_factory.register_first(Publishable, "audio_player", audio_player) 
+        publishable_view_factory.register_first(Publishable, "audio_player", audio_player)
 

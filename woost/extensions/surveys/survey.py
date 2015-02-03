@@ -67,7 +67,7 @@ class SurveyQuestion(Item):
         "title",
         "active"
     ]
-    
+
     survey = schema.Reference(
         type = "woost.extensions.surveys.survey.Survey",
         bidirectional = True
@@ -91,7 +91,7 @@ class SurveyQuestion(Item):
         )
 
     def create_survey_field(self, member_type, **member_kwargs):
-        
+
         if "name" not in member_kwargs:
             member_kwargs["name"] = "question%d" % self.id
 

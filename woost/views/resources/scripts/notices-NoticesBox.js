@@ -19,7 +19,7 @@ if (window.localStorage && window.JSON) {
             try {
                 var hiddenNotices = JSON.parse(hiddenNoticesStr);
             }
-            catch (ex) { 
+            catch (ex) {
             }
         }
 

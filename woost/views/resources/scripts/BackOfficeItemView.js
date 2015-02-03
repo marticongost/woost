@@ -8,7 +8,7 @@
 -----------------------------------------------------------------------------*/
 
 cocktail.bind(".BackOfficeItemView", function ($itemView) {
-    
+
     // Pending changes control
     var itemView = jQuery(".BackOfficeItemView").get(0);
 

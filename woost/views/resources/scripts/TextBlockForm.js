@@ -9,7 +9,7 @@
 
 cocktail.bind(".TextBlockForm", function ($form) {
 
-    var $closeUpfields = 
+    var $closeUpfields =
         $form.find(".image_close_up_factory_field")
         .add(".image_close_up_preload_field");
 

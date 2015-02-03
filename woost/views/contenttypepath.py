@@ -14,23 +14,23 @@ ContentTypeSelector = \
 
 
 class ContentTypePath(Element):
-    
+
     tag = "ul"
     value = None
     root = Item
 
     Entry = Element
     Selector = ContentTypeSelector
-    
+
     def _ready(self):
-        
+
         inheritance_line = []
-        
+
         for content_type in self.value.ascend_inheritance(True):
             inheritance_line.insert(0, content_type)
             if content_type is self.root:
                 break
-        
+
         for content_type in inheritance_line:
             entry = self.create_entry(content_type)
             self.append(entry)
@@ -48,11 +48,11 @@ class ContentTypePath(Element):
             self._last_entry.selector.tree.visible = False
             self._last_entry.add_class("leaf")
 
-    def create_entry(self, content_type):        
+    def create_entry(self, content_type):
         entry = self.Entry()
         entry.tag = "li"
         entry.selector = self.create_selector(content_type)
-        entry.append(entry.selector)        
+        entry.append(entry.selector)
         return entry
 
     def create_selector(self, content_type):
@@ -62,6 +62,6 @@ class ContentTypePath(Element):
 
         if content_type is self.value:
             selector.add_class("selected")
-    
+
         return selector
 

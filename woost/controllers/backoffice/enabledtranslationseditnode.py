@@ -19,7 +19,7 @@ from woost.controllers.backoffice.editstack import EditNode
 
 
 class EnabledTranslationsEditNode(EditNode):
-    
+
     @cached_getter
     def form_schema(self):
         form_schema = EditNode.form_schema(self)

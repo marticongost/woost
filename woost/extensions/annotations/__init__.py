@@ -30,7 +30,7 @@ class AnnotationsExtension(Extension):
             u"""Permet afegir annotacions als camps durant l'edició.""",
             "ca"
         )
-        self.set("description",            
+        self.set("description",
             u"""Permite añadir anotaciones a los campos durante la edición.""",
             "es"
         )

@@ -42,7 +42,7 @@ class CommentsExtension(Extension):
             u"""Afegeix suport per comentaris.""",
             "ca"
         )
-        self.set("description",            
+        self.set("description",
             u"""Añade soporte para comentarios.""",
             "es"
         )
@@ -56,7 +56,7 @@ class CommentsExtension(Extension):
         adapter.exclude(
             member.name
             for member in comment_model.iter_members()
-            if not member.visible 
+            if not member.visible
             or not member.editable
             or not issubclass(member.schema, comment_model)
         )
@@ -107,7 +107,7 @@ class CommentsExtension(Extension):
                 CommentsExtension.add_member(
                     schema.Boolean("captcha_enabled", default = False)
                 )
-       
+
         # Extend Publishable model
         Publishable.add_member(
             schema.Boolean(
@@ -136,7 +136,7 @@ class CommentsExtension(Extension):
             comments_schema = None
             comment_errors = None
             comment_data = {}
-            
+
             controller = event.source
             comment_model = \
                 resolve(getattr(controller, "comment_model", Comment))
@@ -164,7 +164,7 @@ class CommentsExtension(Extension):
                     cherrypy.request.params.update(
                         comments_page = str(comments_page)
                     )
-                
+
                 # Adapting the comments model
                 comments_schema = CommentsExtension.instance._adapt_comments_schema(comment_model)
 
@@ -173,15 +173,15 @@ class CommentsExtension(Extension):
                     comments_schema.add_member(
                         ReCaptcha("captcha")
                     )
-    
+
                 # Insert a new comment
                 if cherrypy.request.method == "POST" \
                 and "post_comment" in cherrypy.request.params:
-                    
+
                     with changeset_context(user):
                         get_parameter(
-                            comments_schema, 
-                            target = comment_data, 
+                            comments_schema,
+                            target = comment_data,
                             errors = "ignore"
                         )
 
@@ -193,7 +193,7 @@ class CommentsExtension(Extension):
                             comment = comment_model()
 
                             adapter = CommentsExtension.instance._create_comments_adapter(comment_model)
-                            adapter.import_object(                                                                                                                                                                       
+                            adapter.import_object(
                                 comment_data,
                                 comment,
                                 source_schema = comments_schema,
@@ -208,7 +208,7 @@ class CommentsExtension(Extension):
                             CommentsExtension.instance._after_process_comments(comment)
                 else:
                     comment_errors = schema.ErrorList([])
-            
+
             # Update the output
             controller.output.update(
                 comments_user_collection = comments_user_collection,

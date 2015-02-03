@@ -33,7 +33,7 @@ class ShortURLsExtension(Extension):
             u"""Integració amb serveis d'escurçat d'URLs""",
             "ca"
         )
-        self.set("description",            
+        self.set("description",
             u"""Integración con servicios de compactación de URLs""",
             "es"
         )
@@ -43,7 +43,7 @@ class ShortURLsExtension(Extension):
         )
 
     def _load(self):
-        
+
         from woost.extensions.shorturls import (
             strings,
             configuration,

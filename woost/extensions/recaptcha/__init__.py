@@ -76,7 +76,7 @@ class ReCaptchaExtension(Extension):
             u"""Afegeix suport pel servei anti-bots reCAPTCHA.""",
             "ca"
         )
-        self.set("description",            
+        self.set("description",
             u"""Añade soporte para el servicio anti-bots reCAPTCA.""",
             "es"
         )
@@ -108,7 +108,7 @@ class ReCaptchaExtension(Extension):
                 "public_key",
                 required = True,
                 text_search = False
-            )   
+            )
         )
 
         ReCaptchaExtension.add_member(
@@ -116,7 +116,7 @@ class ReCaptchaExtension(Extension):
                 "private_key",
                 required = True,
                 text_search = False
-            )   
+            )
         )
 
         ReCaptchaExtension.add_member(
@@ -128,7 +128,7 @@ class ReCaptchaExtension(Extension):
                 ),
                 default = "red",
                 text_search = False
-            )   
+            )
         )
 
         ReCaptchaExtension.add_member(
@@ -137,8 +137,8 @@ class ReCaptchaExtension(Extension):
                 exclusive = ReCaptchaExtension.theme.equal("custom"),
                 member_group = "custom_group",
                 text_search = False
-            )   
-        )  
+            )
+        )
 
         ReCaptchaExtension.add_member(
             schema.String(
@@ -147,13 +147,13 @@ class ReCaptchaExtension(Extension):
                 member_group = "custom_group",
                 default = "woost.extensions.recaptcha.RecaptchaCustomView",
                 text_search = False
-            )   
+            )
         )
 
         ReCaptchaExtension.add_member(
             schema.Boolean(
                 "ssl",
                 default = False
-            )   
+            )
         )
 

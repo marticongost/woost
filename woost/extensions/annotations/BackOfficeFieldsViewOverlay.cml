@@ -29,7 +29,7 @@ from woost.extensions.annotations.annotations import Annotation
                 <img
                     py:local_id="icon"
                     src="/resources/images/annotations.png"
-                    alt="${translations('woost.extensions.annotations.FormOverlay.annotationDropdown.label')}"/>            
+                    alt="${translations('woost.extensions.annotations.FormOverlay.annotationDropdown.label')}"/>
             </py:with>
         </py:cocktail.html.DropdownPanel>
 

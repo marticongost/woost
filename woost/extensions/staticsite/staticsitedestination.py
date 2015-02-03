@@ -32,7 +32,7 @@ from woost.models.changesets import changeset_context
 class StaticSiteDestination(Item):
     """A class tasked with publishing a static snapshot of a site's content to
     a concrete location.
-    
+
     This is mostly an abstract class, meant to be extended by subclasses. Each
     subclass should implement exporting to a concrete kind of location or
     media. Subclasses must implement L{write_file} and L{create_folder}, and
@@ -74,7 +74,7 @@ class StaticSiteDestination(Item):
             will be made available to all L{write_file} calls.
         @type context: dict
         """
-    
+
     def cleanup(self, context):
         """Frees resources after an export operation.
 
@@ -97,15 +97,15 @@ class StaticSiteDestination(Item):
             )
 
         for file, file_path in context["snapshoter"].snapshot(
-            context["selection"], 
+            context["selection"],
             context = context
         ):
             exported = None
 
             try:
                 exported = self.export_file(
-                    file, 
-                    file_path, 
+                    file,
+                    file_path,
                     context
                 )
             except Exception, error:
@@ -161,7 +161,7 @@ class StaticSiteDestination(Item):
         @param context: A dictionary used to share any contextual information
             with the exporter.
         @type context: dict
-        
+
         @return: The dictionary used by the exporter during the export
             process to maintain its contextual information.
         @rtype: dict
@@ -192,8 +192,8 @@ class StaticSiteDestination(Item):
         file_path,
         context):
         """Exports a file.
-        
-        @param file: The file's contents file to export. Can be specified using 
+
+        @param file: The file's contents file to export. Can be specified using
             a file-like object, or a filesystem path.
         @type file: file-like or str
 
@@ -251,7 +251,7 @@ class StaticSiteDestination(Item):
 
         @param context: The dictionary used by the exporter to maintain any
             contextual information it many need throgout the export process.
-        
+
             If a context is provided and it contains an 'existing_folders' key,
             it should be a set of strings representing paths that are known to
             be present at the destination. If given, folders in the set will be
@@ -324,7 +324,7 @@ class StatusTracker(object):
     beginning = Event(
         """An event triggered after an exporter has finished its preparations
         and is ready to start the export operation.
-        
+
         @ivar context: The L{context<StaticSiteDestination.setup.context>}
             used by the export operation to maintain its state.
         @type context: dict
@@ -334,7 +334,7 @@ class StatusTracker(object):
         """An event triggered after file has been processed.
 
         This event will be triggered at least once for each generated file on
-        the exportation process. 
+        the exportation process.
 
         The event will be triggered regardless of the outcome of the exporting
         process, and even if the item is discarded and not exported. Clients
@@ -360,7 +360,7 @@ class StatusTracker(object):
 
         @ivar error_handled: Only relevant if L{status} is 'failed'. Allows
             the event response code to capture an export error. If set to True,
-            the exporter will continue 
+            the exporter will continue
         @type error_handled: bool
 
         @ivar context: The L{context<StaticSiteDestination.setup.context>}
@@ -374,7 +374,7 @@ class FolderDestination(StaticSiteDestination):
     folder.
     """
     instantiable = True
-    
+
     target_folder = schema.String(
         required = True,
         unique = True,
@@ -408,7 +408,7 @@ class FolderDestination(StaticSiteDestination):
         # Copy local files
         if isinstance(file, basestring):
             copy(file, full_path)
-        
+
         # Save data from file-like objects
         else:
             with open(full_path, "wb") as target_file:
@@ -450,11 +450,11 @@ class FTPDestination(StaticSiteDestination):
 
         desc = self.ftp_host
 
-        if desc:            
+        if desc:
             user = self.ftp_user
             if user:
                 desc = user + "@" + desc
-            
+
             path = self.ftp_path
             if path:
                 if not path[0] == "/":
@@ -462,7 +462,7 @@ class FTPDestination(StaticSiteDestination):
                 desc += path
 
             return "ftp://" + desc
-                
+
         return StaticSiteDestination.__translate__(self, language, **kwargs)
 
     def setup(self, context):
@@ -476,7 +476,7 @@ class FTPDestination(StaticSiteDestination):
         context["ftp"].quit()
 
     def write_file(self, file, path, context):
-        
+
         ftp = context["ftp"]
         path = self._get_ftp_path(path)
 
@@ -485,22 +485,22 @@ class FTPDestination(StaticSiteDestination):
             ftp.delete(path)
         except ftplib.error_perm:
             pass
-        
+
         # Handle both local files and file-like objects
         if isinstance(file, basestring):
             file = open(file, "r")
             should_close = True
         else:
             should_close = False
-            
+
         try:
             ftp.storbinary("STOR " + path, file, self.chunk_size)
         finally:
             if should_close:
                 file.close()
-        
+
     def create_folder(self, folder, context):
-        
+
         ftp = context["ftp"]
         path = self._get_ftp_path(folder)
 
@@ -520,7 +520,7 @@ class FTPDestination(StaticSiteDestination):
             path += "/"
 
         path = path + "/".join(arg.strip("/") for arg in args)
-        
+
         try:
             return path.encode(self.encoding)
         except UnicodeEncodeError:
@@ -531,10 +531,10 @@ class FTPDestination(StaticSiteDestination):
         path = path.rstrip("/")
 
         if not path:
-            return True        
-        
+            return True
+
         pos = path.rfind("/")
-        
+
         if pos == -1:
             parent = "."
             name = path
@@ -543,7 +543,7 @@ class FTPDestination(StaticSiteDestination):
             name = path[pos + 1:]
 
         if not parent.endswith("/"):
-            parent = parent + "/" 
+            parent = parent + "/"
 
         return (parent + name) in ftp.nlst(parent)
 
@@ -578,8 +578,8 @@ class ZipDestination(StaticSiteDestination):
             status_tracker = status_tracker
         )
 
-        # Close the zip file 
-        context["zip_file"].close()        
+        # Close the zip file
+        context["zip_file"].close()
 
     def create_folder(self, folder, context):
         return True
@@ -614,7 +614,7 @@ class AmazonS3Destination(StaticSiteDestination):
     ]
 
     aws_access_key = schema.String(
-        required = True        
+        required = True
     )
 
     aws_secret_key = schema.String(
