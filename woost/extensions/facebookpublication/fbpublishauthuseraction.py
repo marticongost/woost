@@ -16,7 +16,7 @@ from woost.extensions.facebookpublication.facebookpublicationtarget \
 
 
 class FBPublishAuthUserAction(UserAction):
- 
+
     content_type = FacebookPublicationTarget
 
     included = frozenset(["item_buttons"])
@@ -25,7 +25,7 @@ class FBPublishAuthUserAction(UserAction):
     max = 1
 
     def invoke(self, controller, selection):
-        
+
         publication_target = selection[0]
         code = cherrypy.request.params.get("code")
         error = cherrypy.request.params.get("error")

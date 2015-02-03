@@ -23,7 +23,7 @@ variable_regex = re.compile("{{([a-z0-9A-Z.-_]+)}}")
 
 
 class VariablesExtension(Extension):
-    
+
     def __init__(self, **values):
         Extension.__init__(self, **values)
         self.extension_author = u"Whads/Accent SL"
@@ -62,9 +62,9 @@ class VariablesExtension(Extension):
 
     def replace_variables(self, content):
         return variable_regex.sub(self.__replacement, content)
-            
+
     def __replacement(self, match):
-        from woost.extensions.variables.variable import Variable        
+        from woost.extensions.variables.variable import Variable
         variable = Variable.require_instance(identifier = match.group(1))
         return variable.get_value()
 

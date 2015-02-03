@@ -8,7 +8,7 @@ from cocktail.translations import iter_derived_languages
 from cocktail import schema
 
 def auto_enables_translations(cls):
-    
+
     @when(cls.adding_translation)
     def handle_adding_translation(event):
         auto_enable_translations(

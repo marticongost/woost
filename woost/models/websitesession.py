@@ -9,7 +9,7 @@ _thread_data = local()
 
 def get_current_website():
     """Gets the active website for the present context.
-    
+
     The concept of an 'active' website is used by the publication machinery to
     limit the availability of content based on the site that is being visited.
 

@@ -30,7 +30,7 @@ class PublishableController(BaseCMSController):
         "ETag"
     )
 
-    def __call__(self, **kwargs):       
+    def __call__(self, **kwargs):
         content = self._apply_cache(**kwargs)
 
         if content is None:
@@ -69,10 +69,10 @@ class PublishableController(BaseCMSController):
             publishable,
             **caching_context
         ))
-    
+
         # Server side cache
         if policy.server_side_cache:
-            
+
             try:
                 cached_response = app.cache.retrieve(cache_key)
 

@@ -7,7 +7,7 @@ from cocktail import schema
 from woost.models import (
     Document,
     Slot,
-    Template, 
+    Template,
     Controller,
     CustomBlock,
     HTMLBlock,
@@ -31,7 +31,7 @@ class Newsletter(Document):
             qname = "woost.extensions.newsletters.newsletter_controller"
         )
     )
-    
+
     members_order = [
         "blocks"
     ]

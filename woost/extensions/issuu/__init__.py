@@ -30,11 +30,11 @@ class IssuuExtension(Extension):
         self.set("description",
             u"""Afegeix suport per documents Issuu""",
             "ca"
-        )   
-        self.set("description",                
+        )
+        self.set("description",
             u"""Añade soporte para documentos Issuu""",
             "es"
-        )   
+        )
         self.set("description",
             u"""Adds support for Issuu documents""",
             "en"
@@ -45,10 +45,10 @@ class IssuuExtension(Extension):
             strings,
             issuudocument,
             issuublock,
-        )   
+        )
         self.install()
         self.register_view_factory()
-     
+
     def _install(self):
 
         # Create the product controller
@@ -58,7 +58,7 @@ class IssuuExtension(Extension):
             value = translations(
                 "woost.extensions.issuu.issuu_document_controller.title",
                 language
-            )   
+            )
             if value:
                 controller.set("title", value, language)
         controller.python_name = \
@@ -70,7 +70,7 @@ class IssuuExtension(Extension):
     def _create_renderers(self):
 
         from woost.extensions.issuu.issuudocumentrenderer \
-            import IssuuDocumentRenderer                                                                                                     
+            import IssuuDocumentRenderer
 
         # Look for the first chain renderer
         for renderer in Configuration.instance.renderers:
@@ -96,7 +96,7 @@ class IssuuExtension(Extension):
             return viewer
 
         publishable_view_factory.register_first(
-            IssuuDocument, 
+            IssuuDocument,
             "issuu_viewer",
             issuu_viewer
         )

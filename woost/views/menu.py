@@ -15,7 +15,7 @@ TreeView = templates.get_class("cocktail.html.TreeView")
 
 class Menu(TreeView):
     """A visual component used to render navigation menus and site maps.
-    
+
     @var emphasized_selection: When set to True, adds a <strong> tag to
         highlight the selected item.
     @type emphasized_selection: bool
@@ -23,7 +23,7 @@ class Menu(TreeView):
     @var linked_selection: Indicates if the entry for the selected item should
         behave as a link or not.
     @type linked_selection: bool
-    
+
     @var linked_containers: Indicates if entries that contain other entries
         should behave as links.
     @type linked_containers: bool
@@ -41,14 +41,14 @@ class Menu(TreeView):
         if self.root is None:
             website = get_current_website()
             self.root = website and website.home
-        
+
         self.depends_on(self.root)
 
         if self.selection is None:
             self.selection = context["publishable"]
-       
+
         TreeView._ready(self)
-    
+
     def filter_item(self, item):
         self.depends_on(item)
         return not item.hidden and (
@@ -69,13 +69,13 @@ class Menu(TreeView):
         return entry
 
     def create_label(self, item):
-        
+
         if self.should_link(item):
             label = Element("a")
             label["href"] = self.get_item_uri(item)
         else:
             label = Element("span")
-        
+
         label.append(self.get_item_label(item))
 
         if self.emphasized_selection and item is self.selection:

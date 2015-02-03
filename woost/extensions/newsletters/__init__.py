@@ -36,7 +36,7 @@ class NewslettersExtension(Extension):
             electrònics (newsletters).""",
             "ca"
         )
-        self.set("description",            
+        self.set("description",
             u"""Proporciona una herramienta para la creación y edición de
             boletines electrónicos (newsletters).""",
             "es"
@@ -47,7 +47,7 @@ class NewslettersExtension(Extension):
         )
 
     def _load(self):
-        
+
         from woost.models import TypeGroup, block_type_groups
 
         block_type_groups.insert(
@@ -68,11 +68,11 @@ class NewslettersExtension(Extension):
 
     def _install(self):
 
-        # Newsletter controller        
+        # Newsletter controller
         newsletter_controller = self._create_asset(
             Controller,
             "newsletter_controller",
-            python_name = 
+            python_name =
                 "woost.extensions.newsletters.newslettercontroller."
                 "NewsletterController",
             title = extension_translations

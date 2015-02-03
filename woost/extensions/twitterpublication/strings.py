@@ -150,7 +150,7 @@ translations.define(
     es = u"Publicar en Twitter",
     en = u"Publish to Twitter"
 )
-    
+
 translations.define("TwitterPublicationForm.subset",
     ca = u"Contingut a publicar",
     es = u"Contenido a publicar",

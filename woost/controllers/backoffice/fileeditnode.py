@@ -14,7 +14,7 @@ from cocktail import schema
 from cocktail.schema.exceptions import ValidationError
 from cocktail.controllers import (
     context,
-    session, 
+    session,
     request_property,
     FileUpload
 )
@@ -46,7 +46,7 @@ class FileEditNode(EditNode):
                 hash_algorithm = "md5",
                 get_file_destination = lambda upload: self.temp_file_path,
                 member_group = "content",
-                required = 
+                required =
                     not (self.item.is_inserted and self.item.file_name)
             )
         )
@@ -54,7 +54,7 @@ class FileEditNode(EditNode):
         return form_schema
 
     def iter_changes(self, source = None):
-        
+
         for member, language in EditNode.iter_changes(self, source):
 
             # Ignore differences on the upload field if no file has been

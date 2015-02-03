@@ -39,7 +39,7 @@
 
     <button
         py:def="block_picker" py:args="action"
-        type="button">        
+        type="button">
         <?py
         element.add_class(action.id)
         element.set_client_param("action", action.id)

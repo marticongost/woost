@@ -20,9 +20,9 @@ from woost.extensions.payments import PaymentsExtension
 class SummaryController(FormProcessor, Controller):
 
     is_transactional = True
-    
+
     class SubmitOrderForm(ProceedForm):
-        
+
         order = None
 
         @request_property
@@ -39,13 +39,13 @@ class SummaryController(FormProcessor, Controller):
             payments = PaymentsExtension.instance
             website = get_current_website()
             payment_gateway = website.ecommerce_payment_gateway
-            
+
             # Redirect the user to the payment gateway
             if payments.enabled \
             and payment_gateway \
             and self.order.payment_type == "payment_gateway":
                 payment_gateway.initiate_payment(self.order.id)
-            
+
             # No payment gateway available, redirect the user to the success
             # page; the payment will have to be handled manually by the site's
             # personnel
@@ -61,7 +61,7 @@ class SummaryController(FormProcessor, Controller):
     @request_property
     def checkout_schema(self):
         return Basket.get().get_public_schema()
-        
+
     @request_property
     def output(self):
         output = Controller.output(self)

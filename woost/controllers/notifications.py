@@ -10,7 +10,7 @@ from cocktail.controllers import session
 
 def notify_user(message, category = None, transient = True):
     """Creates a new notification for the current user.
-    
+
     Notifications are stored until a proper page is served to the user. It
     is up to the views to decide how these messages should be displayed.
 
@@ -62,7 +62,7 @@ def pop_user_notifications(filter = None):
 
     if notifications is None:
         return []
-    
+
     remaining = []
 
     if filter:
@@ -84,7 +84,7 @@ def pop_user_notifications(filter = None):
         for notification in notifications:
             (matching if match(notification) else remaining).append(notification)
 
-        notifications = matching    
+        notifications = matching
 
     session["notifications"] = remaining
     return notifications

@@ -71,7 +71,7 @@ class NewsletterContent(Block):
         related_end = schema.Collection(),
         member_group = "content"
     )
-    
+
     def init_view(self, view):
         Block.init_view(self, view)
         view.text = self.text

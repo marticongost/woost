@@ -44,7 +44,7 @@ class UserModelsExtension(Extension):
         )
 
     def _load(self):
-        
+
         global models_access
 
         from woost.extensions.usermodels import strings, usermembers, userform
@@ -59,23 +59,23 @@ class UserModelsExtension(Extension):
 
         # Serialize access to models
         models_access = Door()
-        
+
         cherrypy.request.hooks.attach(
             "on_start_resource",
             models_access.enter,
             failsafe = True
         )
-        
+
         cherrypy.request.hooks.attach(
-            "on_end_request", 
+            "on_end_request",
             models_access.leave,
             failsafe = True
         )
 
     def _install(self):
-        
+
         from woost.models import Controller, Template, extension_translations
-        
+
         self._create_asset(
             Controller,
             "user_form_controller",

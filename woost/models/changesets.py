@@ -35,21 +35,21 @@ def changeset_context(author = None):
         >>>     item2.price = 5.75
         >>>     item3 = MyItem()
         >>> len(changeset.changes)
-        3        
+        3
         >>> changeset.changes[item3.id].action
         "create"
         >>> item3.author
-        some_user        
+        some_user
         >>> changeset.changes[item1.id].changed_members
-        set(["price", "stock"])        
+        set(["price", "stock"])
         >>> changeset.changes[item2.id].changed_members
-        set(["price"])        
+        set(["price"])
         >>> changeset.changes[item2.id].item_state["price"]
         5.75
     """
 
     changeset = ChangeSet.current
-    
+
     # Begin a new changeset
     if changeset is None:
         changeset = ChangeSet()
@@ -83,7 +83,7 @@ class ChangeSet(PersistentObject):
         searchable = False,
         get_item_key = lambda change: change.target and change.target.id
     )
-    
+
     author = schema.Reference(
         required = True,
         type = "woost.models.User",
@@ -95,7 +95,7 @@ class ChangeSet(PersistentObject):
         required = True,
         default = schema.DynamicDefault(datetime.now)
     )
-    
+
     _thread_data = local()
 
     @classgetter
@@ -112,7 +112,7 @@ class ChangeSet(PersistentObject):
         if self.current:
             raise TypeError("Can't begin a new changeset, another changeset "
                 "is already in place")
-        
+
         self._thread_data.current = self
 
     def end(self):

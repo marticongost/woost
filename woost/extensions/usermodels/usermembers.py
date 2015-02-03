@@ -18,7 +18,7 @@ class UserMember(Item):
     class __metaclass__(Item.__metaclass__):
         def __init__(cls, name, bases, members):
             Item.__metaclass__.__init__(cls, name, bases, members)
-            
+
             # Automatically create polymorphic members
             if cls.member_class is not schema.Member \
             and not issubclass(
@@ -36,7 +36,7 @@ class UserMember(Item):
                         name + ".member_default",
                         overwrite = False
                     )
-                    
+
                 # Enumeration
                 if not cls.get_member("member_enumeration"):
                     cls.add_member(cls.create_member_enumeration_member())
@@ -129,7 +129,7 @@ class UserMember(Item):
         listed_by_default = False,
         member_group = "definition"
     )
-    
+
     member_descriptive = schema.Boolean(
         required = True,
         default = False,
@@ -213,13 +213,13 @@ class UserMember(Item):
             )
             if not value else translations(value)
     )
-    
+
     @classmethod
     def create_member_default_member(cls):
         return cls.member_class("member_default",
             member_group = "definition",
         )
-    
+
     @classmethod
     def create_member_enumeration_member(cls):
         return schema.Collection("member_enumeration",
@@ -234,7 +234,7 @@ class UserMember(Item):
         return self.produce_member(self.get_produced_member())
 
     def produce_member(self, member = None):
-        
+
         # Instantiate a new member
         if member is None:
             member = self.member_class()
@@ -265,7 +265,7 @@ class UserMember(Item):
         finally:
             if parent_schema:
                 parent_schema.add_member(member)
-                parent_schema.members_order = prev_schema_order 
+                parent_schema.members_order = prev_schema_order
 
         # Apply user defined logic to the member
         if self.initialization:
@@ -295,7 +295,7 @@ class UserMember(Item):
         `produce_member`.
         """
         member = self.get_produced_member()
-        
+
         if member is None:
             return
 
@@ -307,7 +307,7 @@ class UserMember(Item):
             parent_collection = self.parent_collection.get_produced_member()
             if parent_collection:
                 parent_collection.items = None
-       
+
     _v_after_commit_actions = None
 
     def _after_commit(self, action, *args):
@@ -361,7 +361,7 @@ class UserBoolean(UserMember):
 
 
 class UserInteger(UserMember):
-     
+
     instantiable = True
     groups_order = UserMember.groups_order
     member_class = schema.Integer
@@ -370,7 +370,7 @@ class UserInteger(UserMember):
         listed_by_default = False,
         member_group = "constraints"
     )
-    
+
     member_max = schema.Integer(
         min = member_min,
         listed_by_default = False,
@@ -397,7 +397,7 @@ class UserDecimal(UserMember):
 
 
 class UserFloat(UserMember):
-    
+
     instantiable = True
     groups_order = UserMember.groups_order
     member_class = schema.Float
@@ -415,7 +415,7 @@ class UserFloat(UserMember):
 
 
 class UserFraction(UserMember):
-    
+
     instantiable = True
     groups_order = UserMember.groups_order
     member_class = schema.Fraction
@@ -433,7 +433,7 @@ class UserFraction(UserMember):
 
 
 class UserString(UserMember):
-    
+
     instantiable = True
     groups_order = UserMember.groups_order
     member_class = schema.String
@@ -470,7 +470,7 @@ class UserString(UserMember):
         listed_by_default = False,
         member_group = "behavior"
     )
-    
+
     member_normalized_index = schema.Boolean(
         required = True,
         default = True,
@@ -480,7 +480,7 @@ class UserString(UserMember):
 
 
 class UserDate(UserMember):
-    
+
     instantiable = True
     groups_order = UserMember.groups_order
     member_class = schema.Date
@@ -506,7 +506,7 @@ class UserDate(UserMember):
 
 
 class UserTime(UserMember):
-    
+
     instantiable = True
     groups_order = UserMember.groups_order
     member_class = schema.Time
@@ -532,7 +532,7 @@ class UserTime(UserMember):
 
 
 class UserDateTime(UserMember):
-    
+
     instantiable = True
     groups_order = UserMember.groups_order
     member_class = schema.DateTime
@@ -566,7 +566,7 @@ class UserRelation(UserMember):
     member_related_key = schema.String(
         listed_by_default = False,
         text_search = False,
-        member_group = "definition"        
+        member_group = "definition"
     )
 
     member_bidirectional = schema.Boolean(
@@ -575,7 +575,7 @@ class UserRelation(UserMember):
         listed_by_default = False,
         member_group = "definition"
     )
-    
+
     member_integral = schema.Boolean(
         required = True,
         default = False,
@@ -626,7 +626,7 @@ class UserReference(UserRelation):
 
     member_type.exclusive = member_class_family.not_()
     member_class_family = member_type.not_()
-    
+
     member_cycles_allowed = schema.Boolean(
         required = True,
         default = True,
@@ -683,7 +683,7 @@ class UserModel(UserMember):
     groups_order = UserMember.groups_order
     visible_from_root = True
     member_class = schema.Schema
-    
+
     edit_node_class = \
         "woost.extensions.usermodels.usermodeleditnode.UserModelEditNode"
 
@@ -741,7 +741,7 @@ class UserModel(UserMember):
     )
 
     def produce_member(self, member = None):
- 
+
         # Models aren't created like other regular members
         if member is None:
             member = self.base_model.__metaclass__(
@@ -778,12 +778,12 @@ class UserModel(UserMember):
         # Add or update child members
         for child_user_member in self.child_members:
             member.members_order.append(child_user_member.member_name)
-            
+
             # Look for an existing version of the child member
             child_member = member.get_member(child_user_member.member_name)
 
             if child_member:
-                
+
                 # Temporarily remove the child from the schema, in case it
                 # needs to be renamed (a member name can't be changed while the
                 # member is bound to a schema)
@@ -802,7 +802,7 @@ class UserModel(UserMember):
         return UserMember.produce_member(self, member)
 
     def get_produced_member(self):
-        
+
         full_name = self.package_name + "." + self.member_name
 
         for cls in Item.schema_tree():

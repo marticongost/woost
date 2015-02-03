@@ -25,9 +25,9 @@ class IsAccessibleExpressionTestCase(BaseTestCase):
         return set(Publishable.select(IsAccessibleExpression(self.user)))
 
     def test_enabled(self):
-        
+
         from woost.models import Publishable, ReadPermission
-        
+
         self.everybody_role.permissions.append(
             ReadPermission(content_type = Publishable)
         )
@@ -47,7 +47,7 @@ class IsAccessibleExpressionTestCase(BaseTestCase):
         d = Publishable()
         d.enabled = False
         d.insert()
-        
+
         assert self.accessible_items() == set([a, c])
 
     def test_enabled_translations(self):
@@ -58,7 +58,7 @@ class IsAccessibleExpressionTestCase(BaseTestCase):
             ReadPermission,
             ReadTranslationPermission
         )
-        
+
         self.everybody_role.permissions.append(
             ReadPermission(content_type = Publishable)
         )
@@ -85,7 +85,7 @@ class IsAccessibleExpressionTestCase(BaseTestCase):
             c.new_translation("en")
             c.enabled_translations.add("en")
             c.insert()
-            
+
             d = Publishable()
             d.per_language_publication = True
             d.new_translation("de")
@@ -104,7 +104,7 @@ class IsAccessibleExpressionTestCase(BaseTestCase):
             print e in accessible
 
             assert self.accessible_items() == set([a, c, e])
-        
+
             self.config.published_languages = ["en"]
             assert self.accessible_items() == set([a, c, e])
 
@@ -168,13 +168,13 @@ class IsAccessibleExpressionTestCase(BaseTestCase):
 
         from woost.models import Publishable, ReadPermission
         from datetime import datetime, timedelta
-        
+
         self.everybody_role.permissions.append(
             ReadPermission(content_type = Publishable)
         )
 
         now = datetime.now()
-        
+
         a = Publishable()
         a.enabled = True
         a.insert()
@@ -198,7 +198,7 @@ class IsAccessibleExpressionTestCase(BaseTestCase):
         assert self.accessible_items() == set([a, b])
 
     def test_allowed(self):
-        
+
         from woost.models import Publishable, ReadPermission
 
         a = Publishable()
@@ -216,6 +216,6 @@ class IsAccessibleExpressionTestCase(BaseTestCase):
                     "items.add_filter(cls.id.not_equal(%d))" % b.id
             )
         )
-        
+
         assert self.accessible_items() == set([a])
 

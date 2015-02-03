@@ -38,7 +38,7 @@ class FileUploader(object):
                 and member.related_type
                 and issublcass(member.related_type, File)
             ]
-        
+
         self.receiver = receiver
         self.members = members
 
@@ -150,13 +150,13 @@ class FileUploader(object):
             self.key = key
 
         def adapt_object(self, context):
-            
+
             if context.consume(self.key):
                 value = context.get(self.key, None)
 
                 if value is not None:
                     source_member = context.source_schema[self.key]
-                    
+
                     if isinstance(source_member, schema.Collection):
                         adapted_value = [
                             self.import_upload(context, upload)
@@ -164,11 +164,11 @@ class FileUploader(object):
                         ]
                     else:
                         adapted_value = self.import_upload(context, value)
-                    
+
                     self.receiver.set(self.key, adapted_value)
 
         def import_upload(self, context, upload):
-            
+
             member = context.target_schema[self.key]
             file = None
 
@@ -182,7 +182,7 @@ class FileUploader(object):
             file.mime_type = upload["mime_type"]
             file.file_size = upload["file_size"]
             file.file_hash = upload["file_hash"]
-            
+
             self.uploader.temp_paths[file] = \
                 self.uploader.get_temp_path(upload)
 

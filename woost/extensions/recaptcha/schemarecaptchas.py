@@ -33,20 +33,20 @@ class ReCaptcha(Schema):
             return reader.source("recaptcha_response_field")
 
         self.add_member(String(
-            "challenge", 
+            "challenge",
             read_request_value = read_challenge
         ))
         self.add_member(String(
-            "response", 
+            "response",
             read_request_value = read_response
         ))
 
         self.edit_control = "woost.extensions.recaptcha.ReCaptchaBox"
 
     def _default_validation(context):
-        """Validation rule for reCaptcha. Applies the validation rules defined 
-        by all members in the schema, propagating their errors. Checks that the 
-        L{response} member is valid for the L{challenge} and the L{public_key} 
+        """Validation rule for reCaptcha. Applies the validation rules defined
+        by all members in the schema, propagating their errors. Checks that the
+        L{response} member is valid for the L{challenge} and the L{public_key}
         constraint.
         """
 
@@ -66,7 +66,7 @@ class ReCaptcha(Schema):
                 if isinstance(s, unicode):
                     return s.encode('utf-8')
                 return s
-            
+
             private_key = ReCaptchaExtension.instance.private_key
             remote_ip = cherrypy.request.remote.ip
 
@@ -85,7 +85,7 @@ class ReCaptcha(Schema):
                     "User-agent": "Woost reCAPTCHA extension"
                 }
             )
-            
+
             httpresp = urllib2.urlopen(request)
 
             return_values = httpresp.read().splitlines();

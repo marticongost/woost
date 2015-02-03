@@ -20,7 +20,7 @@ cocktail.bind(".EditPanel", function ($panel) {
     }
 
     this.setExpanded = function (expanded) {
-        if (expanded) {    
+        if (expanded) {
             $panel.addClass("expanded");
             jQuery(document.body).addClass("editing");
         }
@@ -45,7 +45,7 @@ cocktail.bind(".EditPanel", function ($panel) {
         .click(function () { $panel.get(0).setExpanded(false); })
         .appendTo($panel);
 
-    // Block highlighting    
+    // Block highlighting
     var highlightedBlock = null;
 
     this.getHighlightedBlock = function () {
@@ -66,7 +66,7 @@ cocktail.bind(".EditPanel", function ($panel) {
         }
     }
 
-    $panel.find(".block_tree .entry_label") 
+    $panel.find(".block_tree .entry_label")
         .hover(
             function () {
                 var $entry = jQuery(this).closest("li");
@@ -102,7 +102,7 @@ cocktail.bind(".block", function ($block) {
 });
 
 jQuery(function () {
-    
+
     // Toggle the visibility of edit panels with a keyboard shortcut
     jQuery(document).keydown(function (e) {
         if (e.keyCode == 69 && e.shiftKey && e.altKey) {

@@ -8,7 +8,7 @@
 -----------------------------------------------------------------------------*/
 
 cocktail.bind(".ContentView", function ($contentView) {
- 
+
     // Discard the current member / language selection if their dropdown panel
     // is collapsed before submitting the changes
     var $panels = $contentView.find(".collection_settings .DropdownPanel");
@@ -37,7 +37,7 @@ cocktail.bind(".ContentView", function ($contentView) {
             return false;
         }
     });
-    
+
     // Make the up key pass from the first entry in the collection to the search box
     var display = $contentView.find(".collection_display").get(0);
     if (display) {
@@ -68,7 +68,7 @@ cocktail.bind(".ContentView", function ($contentView) {
 
     $contentView.find(".collection_display").bind("selectionChanged", updateToolbar);
     updateToolbar();
-    
+
     // Replace the 'clear filters' link with a 'discard search' button
     $contentView.find(".filters").each(function () {
 
@@ -79,21 +79,21 @@ cocktail.bind(".ContentView", function ($contentView) {
             var closeButton = document.createElement("input");
             closeButton.type = "button";
         }
-        
+
         var $discardButton = jQuery(this).find(".discard_button");
         var closeHref = $discardButton.get(0).href;
-        
+
         jQuery(closeButton).val(cocktail.translate("woost.views.ContentView close advanced search")).click(function () {
             location.href = closeHref;
         });
-        
+
         $discardButton.replaceWith(closeButton);
     });
-            
+
     // Open files in a new window
     $contentView.find(".action_button").click(function() {
         var form = jQuery(this).closest("form").get(0);
-        
+
         if (jQuery(this).hasClass(".download_action")) {
             form.target = "_new";
         }

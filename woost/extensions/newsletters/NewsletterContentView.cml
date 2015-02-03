@@ -41,7 +41,7 @@ from woost.models.rendering import ImageFactory
 
         # Hide images that can't be rendered by the seleted image factory
         if self.image and self.image_rendering_test:
-            
+
             image_factory = self.image_factory
             if isinstance(image_factory, basestring):
                 image_factory = ImageFactory.require_instance(identifier = image_factory)
@@ -153,7 +153,7 @@ from woost.models.rendering import ImageFactory
             </td>
         </tr>
     </table>
-    
+
     <table
         py:def="image_left_layout"
         cellpadding="0"
@@ -162,7 +162,7 @@ from woost.models.rendering import ImageFactory
         <tr>
             <td py:local_id="image_cell">
                 <py:new py:element="self.create_content_image()"/>
-            </td>            
+            </td>
             <td py:local_id="text_cell">
                 <py:new py:element="self.create_content_text()"/>
             </td>

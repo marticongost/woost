@@ -18,7 +18,7 @@ class News(Document):
     members_order = [
         "news_date",
         "image",
-        "summary",        
+        "summary",
         "blocks"
     ]
 

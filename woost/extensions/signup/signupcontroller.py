@@ -25,7 +25,7 @@ from woost.extensions.signup.signupconfirmationcontroller import generate_confir
 class SignUpController(FormProcessor, Controller):
 
     is_transactional = True
-    
+
     class SignUpForm(Form):
 
         @request_property
@@ -115,7 +115,7 @@ class SignUpController(FormProcessor, Controller):
             return parameters
 
         @request_property
-        def confirmation_url(self): 
+        def confirmation_url(self):
             uri = self.controller.block.confirmation_page.get_uri()
             location = Location.get_current(relative=False)
             location.path_info = uri

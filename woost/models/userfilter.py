@@ -58,7 +58,7 @@ class TypeFilter(UserFilter):
 
     @cached_getter
     def schema(self):
-        
+
         def types_search_control(parent, obj, member):
             selector = templates.new("woost.views.ContentTypePicker")
             selector.root = self.content_type
@@ -92,7 +92,7 @@ class TypeFilter(UserFilter):
 user_filters_registry.add(Item, TypeFilter)
 
 class ItemSelectorFilter(schema.Reference.user_filter):
-    
+
     def search_control(self, parent, obj, member):
         control = templates.new("woost.views.ItemSelector")
         control.existing_items_only = True
@@ -172,7 +172,7 @@ user_filters_registry.add(ChangeSet, ChangeSetTargetTypeFilter)
 
 user_filters_registry.add(Publishable, DescendsFromFilter)
 user_filters_registry.set_filter_parameter(
-    Publishable, 
+    Publishable,
     DescendsFromFilter,
     "relation", Document.children
 )

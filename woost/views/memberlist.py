@@ -32,13 +32,13 @@ class MemberList(Element):
                 self.language
             )
 
-        if self.root_type:            
+        if self.root_type:
             self.append(self.create_class_entry(self.root_type))
 
         Element._ready(self)
 
     def create_class_entry(self, cls):
-        
+
         entry = Element()
         entry.add_class("content_type")
 
@@ -47,7 +47,7 @@ class MemberList(Element):
 
         entry.members_container = Element()
         entry.members_container.add_class("members")
-        
+
         has_visible_members = False
 
         for member in cls.members(False).itervalues():
@@ -99,11 +99,11 @@ class MemberList(Element):
 
         value = member.schema.full_name + "." + member.name
 
-        entry = Element()        
+        entry = Element()
 
         entry.check = CheckBox()
         entry.check["name"] = self.name
-        entry.check.require_id()        
+        entry.check.require_id()
         entry.check.value = value in self.value
         entry.check["value"] = value
         entry.append(entry.check)

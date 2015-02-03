@@ -17,7 +17,7 @@ from woost.extensions.ecommerce.orderstepcontroller import ProceedForm
 class CheckoutController(FormProcessor, Controller):
 
     class CheckoutForm(ProceedForm):
-        
+
         @request_property
         def model(self):
             return Basket.get().get_public_schema()
