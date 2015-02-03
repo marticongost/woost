@@ -39,7 +39,7 @@ class BlocksExtension(Extension):
             u"""Permet la creació de contingut utilitzant blocs""",
             "ca"
         )
-        self.set("description",            
+        self.set("description",
             u"""Permite la creación de contenido usando bloques""",
             "es"
         )
@@ -154,7 +154,7 @@ class BlocksExtension(Extension):
     def _create_image_factories(self):
         from woost.models import extension_translations
         from woost.models.rendering import ImageFactory, Thumbnail, Frame
-         
+
         for factory_id in self.unusable_image_factories:
             factory = ImageFactory.get_instance(identifier = factory_id)
             if factory is not None:

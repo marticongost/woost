@@ -8,7 +8,7 @@
     translation_members = ()
     ?>
 
-    <py:with 
+    <py:with
         py:element="self.shopping_basket_indicator"
         py:visible="${False}"/>
 

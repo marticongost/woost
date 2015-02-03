@@ -19,7 +19,7 @@ from cocktail.controllers.viewstate import view_state
                         <div class="language">
                             <?py
                             url = "%s?%s" % (
-                                self.selected_action.id, 
+                                self.selected_action.id,
                                 view_state(preview_language = language)
                             )
                             ?>
@@ -40,7 +40,7 @@ from cocktail.controllers.viewstate import view_state
                     "render_preview",
                     edit_stack = self.edit_stack.to_param(),
                     preview_publishable = str(self.preview_publishable.id),
-                    preview_language = self.preview_language                    
+                    preview_language = self.preview_language
                 )
                 ?>
             </py:ready>

@@ -27,16 +27,16 @@ class BaseCMSController(Controller):
         )
 
         return Controller._render_template(self)
- 
+
     def application_uri(self, *args, **kwargs):
         """Builds an absolute URI from a set of path components and parameters.
-        
+
         @param args: A set of path components, relative to the application
             root. Takes any object that can be expressed as an unicode string.
 
         @param kwargs: A set of query string parameters to be included on the
             generated URI.
-        
+
         @return: The generated absolute URI.
         @rtype: unicode
         """
@@ -69,14 +69,14 @@ class BaseCMSController(Controller):
 
     def contextual_uri(self, *args, **kwargs):
         """Builds an URI relative to the currently requested publishable item.
-        
+
         @param args: A set of path components that will be appended to the
             publishable's URI. Accepts any object that can be expressed as an
             unicode string.
 
         @param kwargs: A set of query string parameters to be included on the
             generated URI.
-        
+
         @return: The generated absolute URI.
         @rtype: unicode
         """
@@ -85,7 +85,7 @@ class BaseCMSController(Controller):
 
         if uri is None:
             return None
-        
+
         return self.application_uri(
             uri,
             *args,

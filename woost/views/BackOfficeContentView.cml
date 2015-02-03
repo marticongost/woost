@@ -31,7 +31,7 @@ from woost.controllers.backoffice.useractions import \
         py:id="user_views_bar"
         py:after="self.header"
         py:user_views="@{self.user_views}">
-    
+
         <a py:id="add_user_view_button" href="@{self.edit_uri(UserView)}">
             <py:ready>
                 <?py
@@ -78,7 +78,7 @@ from woost.controllers.backoffice.useractions import \
             py:selection_mode="${self.selection_mode}"
             py:edit_stack="${self.edit_stack}"
             py:search_expanded="${self.search_expanded}">
-            <?py            
+            <?py
             @extend(element)
             def content_type_is_selectable(self, content_type):
                 return content_type.visible_from_root \

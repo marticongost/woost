@@ -25,7 +25,7 @@ _extensions_lock = RLock()
 
 def load_extensions():
     """Load all available extensions.
-    
+
     This is tipically called during application start up, and follows this
     sequence:
 
@@ -67,7 +67,7 @@ class Extension(Item):
                       "ExtensionEditNode"
 
     installed = False
-    
+
     @property
     def loaded(self):
         return self.__class__ in _loaded_extensions
@@ -103,7 +103,7 @@ class Extension(Item):
         required = True,
         default = False
     )
- 
+
     loading = Event("""An event triggered during application start up.""")
 
     installing = Event(
@@ -135,7 +135,7 @@ class Extension(Item):
                 self._install()
                 self.installing()
                 self.installed = True
-            
+
             transaction(install_extension, desist = lambda: self.installed)
 
     def _install(self):
@@ -143,7 +143,7 @@ class Extension(Item):
 
     def _create_asset(self, cls, id, **values):
         """Convenience method for creating content when installing an
-        extension.        
+        extension.
         """
         asset = cls()
         asset.qname = qname = self.full_name.rsplit(".", 1)[0] + "." + id

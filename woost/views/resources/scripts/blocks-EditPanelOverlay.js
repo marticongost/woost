@@ -29,7 +29,7 @@ cocktail.bind(".EditPanel", function ($panel) {
         }
     }
 
-    $panel.find(".block_tree .entry_label") 
+    $panel.find(".block_tree .entry_label")
         .hover(
             function () {
                 var $entry = jQuery(this).closest("li");

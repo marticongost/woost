@@ -23,7 +23,7 @@ cocktail.bind(".EditBlocksSlotList", function ($slotList) {
         $dialog.find("[name=block_parent]").val($slotList.get(0).blockParent);
         $dialog.find("[name=block_slot]").val(jQuery(this).closest(".slot").get(0).blockSlot);
         $dialog.find("[name=action]").val(this.action);
-        
+
         var blockDisplay = jQuery(this).closest(".BlockDisplay").get(0);
         if (blockDisplay) {
             $dialog.find("[name=block]").val(blockDisplay.block);
@@ -32,12 +32,12 @@ cocktail.bind(".EditBlocksSlotList", function ($slotList) {
         cocktail.showDialog($dialog);
         cocktail.center($dialog.get(0));
         return false;
-    });    
+    });
 });
 
 // Fold / unfold slot contents
 cocktail.bind(".EditBlocksSlotList.foldable .slot", function ($slot) {
-    
+
     this.getFolded = function () {
         return $slot.is(".folded");
     }
@@ -56,7 +56,7 @@ cocktail.bind(".EditBlocksSlotList.foldable .slot", function ($slot) {
     this.toggleFolded = function () {
         this.setFolded(!this.getFolded());
     }
-        
+
     $slot.children(".slot_header")
         .attr("tabindex", "0")
         .click(function () {
@@ -128,7 +128,7 @@ cocktail.bind(".EditBlocksSlotList.foldable .slot", function ($slot) {
     }
 
     function getPageTop(node) {
-        var y = 0;        
+        var y = 0;
         while (node) {
             y += node.offsetTop;
             node = node.offsetParent;
@@ -166,9 +166,9 @@ cocktail.bind(".EditBlocksSlotList.foldable .slot", function ($slot) {
             }
         }
     }
-    
+
     cocktail.bind(".BlockDisplay", function ($blockDisplay) {
-        
+
         function handleDragStart(e) {
             $blockDisplay.addClass("drag");
             e.dataTransfer.effectAllowed = "move";
@@ -194,7 +194,7 @@ cocktail.bind(".EditBlocksSlotList.foldable .slot", function ($slot) {
     });
 
     cocktail.bind(".EditBlocksSlotList .slot_blocks", function ($slot) {
-        
+
         function placeMarker(e) {
 
             var slot = $slot.get(0);
@@ -208,7 +208,7 @@ cocktail.bind(".EditBlocksSlotList.foldable .slot", function ($slot) {
             else if (e.clientY) {
                 mousePos = e.clientY + document.body.scrollTop + document.documentElement.scrollTop;
             }
-            
+
             $slot.find(".BlockDisplay").each(function () {
                 if (mousePos < getPageTop(this) + this.offsetHeight / 2) {
                     newAnchor = this;
@@ -292,7 +292,7 @@ cocktail.bind(".EditBlocksSlotList.foldable .slot", function ($slot) {
                 e.stopPropagation();
             }
         }
-        
+
         this.addEventListener("dragenter", handleDrag, false);
         this.addEventListener("dragover", handleDrag, false);
         this.addEventListener("dragleave", handleDragLeave, false);

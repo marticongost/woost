@@ -30,7 +30,7 @@ if hasattr(os, "symlink"):
     @when(File.changed)
     @when(File.deleting)
     def _schedule_links_update(e):
-     
+
         file = e.source
         member = getattr(e, "member", None)
 
@@ -40,7 +40,7 @@ if hasattr(os, "symlink"):
                 return
 
             if member not in members_affecting_static_publication:
-                return  
+                return
 
         # Store the current links, to be removed when the current transaction is
         # committed
@@ -52,7 +52,7 @@ if hasattr(os, "symlink"):
             datastore.set_transaction_value(key, old_links)
 
         old_links.update(get_links(file))
-        
+
         # Add an after commit hook to remove/create the file's links
         datastore.unique_after_commit_hook(
             "woost.models.File.update_static_links-%d" % file.id,
@@ -72,7 +72,7 @@ if hasattr(os, "symlink"):
         return link.encode(encoding) if isinstance(link, unicode) else link
 
     def create_links(file, links = None, encoding = None):
-        
+
         if not file.is_inserted:
             return
 
@@ -109,7 +109,7 @@ if hasattr(os, "symlink"):
             os.symlink(linked_file, link)
 
     def remove_links(file, links = None, encoding = None):
-        
+
         if links is None:
             links = get_links(file)
 
@@ -124,7 +124,7 @@ if hasattr(os, "symlink"):
                     )
                 os.remove(link)
 
-    def get_links(file):    
+    def get_links(file):
         return [
             app.path("static", Configuration.instance.get_path(file, language))
             for language in (file.translations or [None])

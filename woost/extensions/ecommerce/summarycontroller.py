@@ -25,7 +25,7 @@ class SummaryController(FormProcessor, DocumentController):
     @request_property
     def checkout_schema(self):
         return Basket.get().get_public_schema()
-        
+
     @request_property
     def output(self):
         output = DocumentController.output(self)
@@ -33,24 +33,24 @@ class SummaryController(FormProcessor, DocumentController):
         return output
 
     class SubmitOrderForm(ProceedForm):
-        
+
         def submit(self):
 
             ProceedForm.submit(self)
-            
+
             order = Basket.pop()
             order.status = "payment_pending"
             order.update_cost()
 
             datastore.commit()
             payments = PaymentsExtension.instance
-            
+
             # Redirect the user to the payment gateway
             if payments.enabled \
             and payments.payment_gateway \
             and order.payment_type == "payment_gateway":
                 payments.payment_request(order.id)
-            
+
             # No payment gateway available, redirect the user to the success
             # page; the payment will have to be handled manually by the site's
             # personnel

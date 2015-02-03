@@ -11,7 +11,7 @@ cocktail.bind({
     selector: ".BackOfficeLayout",
     behavior: function ($layout) {
 
-        // Disable browser's in-memory caching due to problems going backward 
+        // Disable browser's in-memory caching due to problems going backward
         // and forward between visited pages
         jQuery(window).unload(function() {});
 
@@ -52,7 +52,7 @@ function keepalive(edit_stack) {
     var knownDropLocation = false;
 
     function getPageTop(node) {
-        var y = 0;        
+        var y = 0;
         while (node) {
             y += node.offsetTop;
             node = node.offsetParent;
@@ -93,7 +93,7 @@ function keepalive(edit_stack) {
     // Dropping
     cocktail.bind("[data-woost-drop],[data-woost-relativedrop]", function ($receiver) {
 
-        // Dropping on objects 
+        // Dropping on objects
         RELATIVE_INSERT_THRESHOLD = 0.3;
         INSERT_BEFORE = -1;
         APPEND_INSIDE = 0;
@@ -105,7 +105,7 @@ function keepalive(edit_stack) {
             var dropTargetObject = parts[0];
             var dropTargetMember = parts[1];
         }
-        
+
         var relativeDropInfo = $receiver.attr("data-woost-relativedrop");
         if (relativeDropInfo) {
             var parts = relativeDropInfo.split(".");
@@ -113,9 +113,9 @@ function keepalive(edit_stack) {
             var relativeDropTargetMember = parts[1];
             var relativeDropSibling = parts[2];
         }
-        
+
         function getInsertionMode(element, e) {
-            if (relativeDropInfo) {            
+            if (relativeDropInfo) {
                 var mousePos = 0;
                 if (e.pageY) {
                     mousePos = e.pageY;
@@ -198,7 +198,7 @@ function keepalive(edit_stack) {
 
         function handleDrop(e) {
             var data = e.dataTransfer.getData("application/x-woost-item");
-            
+
             if (data) {
                 e.stopPropagation();
 
@@ -213,7 +213,7 @@ function keepalive(edit_stack) {
                     parameters.target_object = relativeDropTargetObject;
                     parameters.target_member = relativeDropTargetMember;
                     parameters.sibling = relativeDropSibling;
-                
+
                     if (mode == INSERT_BEFORE) {
                         parameters.relative_placement = "before";
                     }
@@ -225,7 +225,7 @@ function keepalive(edit_stack) {
                 jQuery.getJSON("/cms/drop", parameters, function () {
                     location.reload();
                 });
-                
+
                 return false;
             }
             knownDropLocation = true;

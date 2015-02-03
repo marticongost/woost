@@ -38,7 +38,7 @@ class SlideShowBlock(Block):
         "bullet_view_class",
         "bullet_image_factory"
     ]
-    
+
     element_type = ElementType(
         enumeration = list(ElementType.enumeration),
         member_group = "content"

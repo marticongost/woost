@@ -19,7 +19,7 @@ title_expr = re.compile("<title>.*</title>")
 class WorkflowGraphController(BaseBackOfficeController):
 
     def __call__(self, **kwargs):
-        
+
         cherrypy.response.headers["Content-Type"] = "image/svg+xml"
 
         states = get_parameter(
@@ -35,7 +35,7 @@ class WorkflowGraphController(BaseBackOfficeController):
         graph = workflow_graph(states)
         render_graph(graph, canvas, "svg")
         svg = canvas.getvalue()
-        
+
         # Add a stylesheet
         pos = svg.find("<svg")
         if pos != -1:

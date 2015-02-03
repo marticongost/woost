@@ -25,23 +25,23 @@ from woost.extensions.workflow.transitioncontroller import \
 
 
 class TransitionAction(UserAction):
- 
+
     included = frozenset(["item_buttons"])
     excluded = frozenset(["new_item"])
 
     def is_available(self, context, target):
- 
+
         # Hide the transition action unless there are one or more available
         # outgoing states for the item's current condition
         return UserAction.is_available(self, context, target) \
             and bool(self._get_outgoing_transitions(target))
-    
+
     def get_dropdown_panel(self, item):
-        
+
         panel = Element()
 
         for transition in self._get_outgoing_transitions(item):
-            
+
             button = Element("a")
 
             # Transitions with parameters: redirect to the transition form
@@ -61,7 +61,7 @@ class TransitionAction(UserAction):
                     item_action = "transition"
                 )
 
-            button.append(translations(transition))            
+            button.append(translations(transition))
             panel.append(button)
 
         return panel
@@ -88,7 +88,7 @@ class TransitionAction(UserAction):
         return transitions
 
     def invoke(self, controller, selection):
-        
+
         item = selection[0]
         draft_source = item.draft_source
 
@@ -103,7 +103,7 @@ class TransitionAction(UserAction):
                     # errors:
                     restricted = False
                 )
-            )            
+            )
         )
 
         if transition is None:

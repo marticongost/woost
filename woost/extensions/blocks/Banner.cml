@@ -37,7 +37,7 @@ from woost.models import URI
             self.append(title)
             if self.image:
                 self.set_style(
-                    "background-image", 
+                    "background-image",
                     "url('%s')" % self.image.get_image_uri(
                         self.image_factory or "default"
                     )

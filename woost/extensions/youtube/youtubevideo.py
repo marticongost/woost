@@ -44,7 +44,7 @@ class YouTubeVideo(Publishable):
         translated = True,
         member_group = "content"
     )
-    
+
     video_id = schema.String(
         required = True,
         listed_by_default = False,
