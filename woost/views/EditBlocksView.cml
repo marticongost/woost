@@ -22,7 +22,7 @@ from woost.models import Block
             method="POST"
             py:action_context="edit_blocks_toolbar"
             py:action_target="@{self.edited_item}"/>
-        <py:woost.views.EditBlocksSlotList 
+        <py:woost.views.EditBlocksSlotList
             py:id="item_slots"
             py:item="@{self.edited_item}"
             py:edited_item="@{self.edited_item}"/>

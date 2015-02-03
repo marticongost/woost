@@ -23,7 +23,7 @@ from woost.models.rendering.formats import (
 debug = False
 
 def _remove_dir_contents(path, pattern = None):
-    
+
     # os.path.lexists is not supported on windows
     from cocktail.styled import styled
     exists = getattr(os.path, "lexists", os.path.exists)
@@ -60,7 +60,7 @@ def clear_image_cache(item = None, factory = None):
         if item:
             print styled("Item:", "light_gray"),
             print styled(item, "red", style = "bold"),
-        
+
         if factory:
             print styled("Factory:", "light_gray"),
             print styled(factory, "red", style = "bold"),
@@ -75,7 +75,7 @@ def clear_image_cache(item = None, factory = None):
     # Selective drop: per item and/or factory
     else:
         paths = []
-        
+
         if item is not None:
             paths.append(app.path("image-cache", str(item.id)))
             paths.append(app.path("static", "images", str(item.id)))
@@ -88,7 +88,7 @@ def clear_image_cache(item = None, factory = None):
                     path = os.path.join(base, item)
                     if os.path.isdir(path):
                         paths.append(path)
-    
+
         if factory is None:
             pattern = None
         else:
@@ -136,21 +136,21 @@ def require_rendering(
     factory = None,
     format = None,
     parameters = None):
-    
+
     ext = None
 
     if factory is None:
         factory = ImageFactory.require_instance(identifier = "default")
 
-    if format is None:        
+    if format is None:
         if not isinstance(item, type):
             ext = getattr(item, "file_extension", None)
-            
+
             if ext is not None:
                 format = formats_by_extension.get(ext.lstrip(".").lower())
                 if format is None:
                     ext = None
-    
+
     elif format not in mime_types_by_format:
         raise BadRenderingRequest("Invalid image format: %s" % format)
 
@@ -187,7 +187,7 @@ def require_rendering(
                 os.remove(image_cache_file)
             except OSError:
                 pass
-            
+
             if hasattr(os, "symlink"):
                 os.symlink(image, image_cache_file)
             else:
@@ -210,7 +210,7 @@ def require_rendering(
             anonymous = User.require_instance(qname = "woost.anonymous_user")
 
             if anonymous.has_permission(
-                RenderPermission, 
+                RenderPermission,
                 target = item,
                 image_factory = factory
             ):

@@ -40,16 +40,16 @@ class ExportStaticSiteController(
 
     @cached_getter
     def form_model(self):
-        
+
         from woost.extensions.staticsite import StaticSiteExtension
-        extension = StaticSiteExtension.instance        
-        
+        extension = StaticSiteExtension.instance
+
         site_languages = Configuration.instance.languages
 
         def allowed_destinations():
             return [
-                destination 
-                for destination in extension.destinations 
+                destination
+                for destination in extension.destinations
                 if get_current_user().has_permission(
                     ExportationPermission,
                     destination = destination
@@ -87,17 +87,17 @@ class ExportStaticSiteController(
                 "update_only",
                 required = True,
                 default = True
-            ),            
+            ),
             schema.Boolean(
                 "follow_links",
                 required = True,
                 default = True
-            )            
+            )
         ])
 
-    def submit(self): 
+    def submit(self):
         FormControllerMixin.submit(self)
-        
+
         export_events = []
         tracker = StatusTracker()
 
@@ -114,7 +114,7 @@ class ExportStaticSiteController(
             ExportationPermission,
             destination = form["destination"]
         )
-        
+
         destination = form["destination"]
         snapshoter = form["snapshoter"]
 
@@ -130,7 +130,7 @@ class ExportStaticSiteController(
 
         # View class
         self.view_class = destination.view_class(exporter_context)
-        
+
         self.output["export_events"] = export_events
         self.output.update(
             **destination.output(exporter_context)

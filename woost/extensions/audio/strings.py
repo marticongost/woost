@@ -26,7 +26,7 @@ translations.define("Configuration.audio_encoders",
 )
 
 # AudioDecoder
-#------------------------------------------------------------------------------ 
+#------------------------------------------------------------------------------
 translations.define("AudioDecoder",
     ca = u"Decodificador d'àudio",
     es = u"Decodificador de audio",
@@ -52,7 +52,7 @@ translations.define("AudioDecoder.command",
 )
 
 # AudioEncoder
-#------------------------------------------------------------------------------ 
+#------------------------------------------------------------------------------
 translations.define("AudioEncoder",
     ca = u"Codificador d'àudio",
     es = u"Codificador de audio",

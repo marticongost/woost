@@ -11,7 +11,7 @@ from cocktail.translations import translations
     form = None
     ?>
 
-    <div class="list-errors" py:collapsible="${True}">            
+    <div class="list-errors" py:collapsible="${True}">
         <py:ready py:if="self.form.errors or self.form.campaign_monitor_errors">
             <ul>
                 <li py:if="self.form.campaign_monitor_errors">${translations("woost.extensions.campaignmonitor.CampaignMonitorSubscriptionView api error")}</li>
@@ -19,14 +19,14 @@ from cocktail.translations import translations
                     <py:block py:for="member in self.form.schema.ordered_members()">
                         <li py:for="error in self.form.errors.in_member(member)">${translations(error)}</li>
                     </py:block>
-                    <py:block py:for="error in self.form.errors">                    
+                    <py:block py:for="error in self.form.errors">
                         <li py:if="error.member not in self.form.schema.ordered_members()">${translations(error)}</li>
-                    </py:block> 
+                    </py:block>
                 </py:block>
-            </ul> 
+            </ul>
         </py:ready>
     </div>
-    
+
     <py:cocktail.html.Form
         py:id="subscription_form"
         py:data="@{self.form.data}"

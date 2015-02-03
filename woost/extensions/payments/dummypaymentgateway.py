@@ -17,7 +17,7 @@ from woost.extensions.payments.paymentgateway \
 
 class DummyPaymentGateway(CMSPaymentGateway, PaymentGateway):
     """A simulated payment gateway, useful for testing purposes."""
-    
+
     instantiable = True
     payment_gateway_controller_class = (
         "woost.extensions.payments.dummypaymentgatewaycontroller."
@@ -56,7 +56,7 @@ class DummyPaymentGateway(CMSPaymentGateway, PaymentGateway):
 
     def get_payment_form_data(self, payment_id, language = None):
         return (
-            self.get_payment_url("simulate_transaction"),                
+            self.get_payment_url("simulate_transaction"),
             (("payment_id", payment_id),)
         )
 

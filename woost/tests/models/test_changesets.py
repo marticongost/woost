@@ -29,11 +29,11 @@ class ChangeSetTests(BaseTestCase):
             item.hidden = True
             assert not changeset.changes
             item.insert()
-        
+
         assert list(ChangeSet.select()) == [changeset]
         assert changeset.author is author
         assert isinstance(changeset.date, datetime)
-        
+
         assert changeset.changes.keys() == [item.id]
         change = changeset.changes[item.id]
         assert change.target is item
@@ -66,17 +66,17 @@ class ChangeSetTests(BaseTestCase):
 
         author = User()
         author.insert()
-        
+
         item = Item()
         item.insert()
 
         with changeset_context(author) as changeset:
             item.delete()
-        
+
         assert list(ChangeSet.select()) == [changeset]
         assert changeset.author is author
         assert isinstance(changeset.date, datetime)
-        
+
         assert changeset.changes.keys() == [item.id]
         change = changeset.changes[item.id]
         assert change.target is item
@@ -103,7 +103,7 @@ class ChangeSetTests(BaseTestCase):
             item.resource_type = u"text/foo"
             item.hidden = True
             item.insert()
-        
+
         # Make sure creation_time and last_update_time don't match
         sleep(0.1)
 
@@ -115,7 +115,7 @@ class ChangeSetTests(BaseTestCase):
         assert list(ChangeSet.select()) == [creation, modification]
         assert modification.author is author
         assert isinstance(modification.date, datetime)
-        
+
         assert modification.changes.keys() == [item.id]
         change = modification.changes[item.id]
         assert change.target is item

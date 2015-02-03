@@ -47,7 +47,7 @@ class BaseTestCase(TempStorageMixin, TestCase):
 
         self.authenticated_role = Role(qname = "woost.authenticated")
         self.authenticated_role.insert()
-       
+
         set_triggers_enabled(True)
 
     def tearDown(self):

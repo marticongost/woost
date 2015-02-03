@@ -12,7 +12,7 @@ from optparse import OptionParser
 from PyQt4.QtCore import Qt, QObject, QUrl, QSize, SIGNAL
 from PyQt4.QtGui import QApplication, QPainter, QPixmap
 from PyQt4.QtWebKit import QWebView
- 
+
 _formats_by_extension = {
     ".png": "PNG",
     ".bmp": "BMP",
@@ -37,19 +37,19 @@ def render_url(url, dest, quality = -1, min_width = 800, min_height = 600):
     app = QApplication(sys.argv)
     web = QWebView()
     web.load(QUrl(url))
- 
+
     def save_image():
-        
+
         try:
             page = web.page()
             frame = page.currentFrame()
-            
+
             # Grow the viewport to make it fit the whole document
             width = min_width
             height = min_height
-            
+
             page.setViewportSize(QSize(width, height))
-            
+
             while frame.scrollBarMaximum(Qt.Horizontal) != 0:
                 width += 1
                 page.setViewportSize(QSize(width, height))
@@ -63,7 +63,7 @@ def render_url(url, dest, quality = -1, min_width = 800, min_height = 600):
             painter = QPainter()
             painter.begin(image)
             frame.render(painter)
-            painter.end()        
+            painter.end()
             image.save(dest, format, quality)
 
         finally:
@@ -81,13 +81,13 @@ def main():
 
     parser.add_option("--quality",
         help = u"The quality for the image")
-    
+
     parser.add_option("--min-width",
         help = u"The minimum width for the viewport")
-    
+
     parser.add_option("--min-height",
         help = u"The minimum height for the viewport")
-    
+
     options, args = parser.parse_args()
 
     if len(args) != 2:

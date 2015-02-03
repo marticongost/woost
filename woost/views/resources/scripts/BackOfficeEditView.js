@@ -76,9 +76,9 @@ cocktail.bind(".BackOfficeEditView", function ($editView) {
     });
 
     /* Turn first level form fieldsets into a tab strip
-    -------------------------------------------------------------------------*/     
+    -------------------------------------------------------------------------*/
     var $form = $editView.find(".ContentForm").first();
-    
+
     var $tabStrip = jQuery("<div class='tabStrip'>")
         .prependTo($form);
 
@@ -94,14 +94,14 @@ cocktail.bind(".BackOfficeEditView", function ($editView) {
     });
 
     function selectTab(group) {
-        
+
         var $tab = $tabStrip.children("." + group);
         var $fieldset = $fieldsets.filter("." + group);
 
         if ($tab.length && $fieldset.length) {
             $tabStrip.children().removeClass("selected");
             $fieldsets.removeClass("selected");
-            $tab.addClass("selected");            
+            $tab.addClass("selected");
             $fieldset.addClass("selected");
             location.hash = group;
             $editView.find("input[type=hidden][name=tab]").val(group);

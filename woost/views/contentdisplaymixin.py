@@ -31,7 +31,7 @@ class ContentDisplayMixin(object):
                 if member.is_persistent_relation \
                 and issubclass(member.type, Item):
                     return self.display_item_reference
-            
+
             if isinstance(member, Collection):
                 if member.is_persistent_relation \
                 and issubclass(member.items.type, Item):
@@ -46,7 +46,7 @@ class ContentDisplayMixin(object):
         display.referer = obj
         display.member = member
         return display
-    
+
     def display_item_collection(self, obj, member):
         display = templates.new("woost.views.ContentList")
         display.items = self.get_member_value(obj, member)

@@ -6,12 +6,12 @@ from cocktail.controllers import context
 <div
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:py="http://www.whads.com/ns/cocktail/templates">
-    
+
     <?py-class
     shop_order = None
     include_shipping = True
     include_taxes = True
-    
+
     def display_amount(self, amount):
         return translations(amount) + u" €"
     ?>
@@ -20,9 +20,9 @@ from cocktail.controllers import context
         <?py
         self.costs = self.shop_order.calculate_cost(
             include_shipping = self.include_shipping,
-            include_taxes = self.include_taxes    
+            include_taxes = self.include_taxes
         )
-    
+
         self._uri = context["cms"].contextual_uri
         ?>
     </py:ready>
@@ -35,11 +35,11 @@ from cocktail.controllers import context
         <py:new py:element="self.create_total_cell(entry, costs)"/>
     </tr>
 
-    <td py:def="product_cell" py:args="entry, costs">${translations(entry.product)}</td>    
+    <td py:def="product_cell" py:args="entry, costs">${translations(entry.product)}</td>
     <td py:def="price_cell" py:args="entry, costs">${self.display_amount(costs["price"]["total"])}</td>
     <td py:def="quantity_cell" py:args="entry, costs">${entry.quantity}</td>
     <td py:def="remove_cell" py:args="entry, costs" class="remove">
-        <a href="${self._uri('update')}?quantity=0&amp;product=${str(entry.product.id)}">${translations('woost.extensions.shop.ShoppingBasket remove entry')}</a>        
+        <a href="${self._uri('update')}?quantity=0&amp;product=${str(entry.product.id)}">${translations('woost.extensions.shop.ShoppingBasket remove entry')}</a>
     </td>
     <td py:def="total_cell" py:args="entry, costs">${self.display_amount(costs["total_price"])}</td>
 

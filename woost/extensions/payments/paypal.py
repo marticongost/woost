@@ -13,7 +13,7 @@ from woost.extensions.payments.paymentgateway import PaymentGateway
 class PayPalPaymentGateway(PaymentGateway, Implementation):
 
     instantiable = True
-    
+
     default_label = schema.DynamicDefault(
         lambda: translations("PayPalPaymentGateway.label default")
     )
@@ -43,7 +43,7 @@ class PayPalPaymentGateway(PaymentGateway, Implementation):
     def get_payment_successful_url(self, payment):
         if self.payment_successful_page:
             return self.payment_successful_page.get_uri(
-                host = "!",                
+                host = "!",
                 parameters = {"payment_id": payment.id}
             )
 

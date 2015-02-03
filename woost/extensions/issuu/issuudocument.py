@@ -116,7 +116,7 @@ class IssuuDocument(Publishable):
         return uri
 
     @event_handler
-    def handle_changed(cls, event):                                                                                                                                                       
+    def handle_changed(cls, event):
 
         item = event.source
         member = event.member
@@ -164,7 +164,7 @@ class IssuuDocument(Publishable):
                         self.issuu_config_id = issuu_config_id[0]
 
 
-class IssuuSearchAPIError(Exception):                                                                                                                                                
+class IssuuSearchAPIError(Exception):
 
     def __init__(self, response):
         Exception.__init__(self, response)

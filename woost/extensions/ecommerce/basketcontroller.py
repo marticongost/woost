@@ -67,7 +67,7 @@ class BasketController(FormProcessor, Controller):
 
         def submit(self):
             Form.submit(self)
-            
+
             for purchase, quantity in zip(
                 Basket.get().purchases,
                 self.instance["quantity"]
@@ -82,10 +82,10 @@ class BasketController(FormProcessor, Controller):
                              "set_quantities_notice"),
                 category = "success"
             )
-            
+
             if self.controller.action != "proceed":
                 Location.get_current().go("GET")
-    
+
     class NextStepForm(ProceedForm):
         process_after = "set_quantities_form",
 
@@ -98,7 +98,7 @@ class BasketController(FormProcessor, Controller):
         @request_property
         def model(self):
             return schema.Schema("DeletePurchaseForm", members = [
-                schema.Reference("purchase", 
+                schema.Reference("purchase",
                     type = ECommercePurchase,
                     required = True,
                     enumeration = lambda ctx: Basket.get().purchases

@@ -61,8 +61,8 @@ class RestrictedAccessExtension(Extension):
         if restriction is None:
             restriction = ReadPermission()
             restriction.qname = qname
-            restriction.authorized = False            
-             
+            restriction.authorized = False
+
         restriction.matching_items = {
             "type": "woost.models.publishable.Publishable",
             "filter": "member-access_restriction",

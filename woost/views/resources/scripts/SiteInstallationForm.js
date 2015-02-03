@@ -10,9 +10,9 @@
 cocktail.bind(".SiteInstallationForm", function ($form) {
 
     function togglePasswords() {
-                
+
         var $passwordField = $form.find(".synchronization_password_field");
-        
+
         $passwordField.find(".control").val("");
 
         if (this.checked) {

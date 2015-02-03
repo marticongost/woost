@@ -26,7 +26,7 @@ cocktail.bind(".BasketIndicator", function ($indicator) {
             return uri + separator + key + "=" + value;
         }
     }
-    
+
     if (woost.ecommerce && woost.ecommerce.order) {
         var $countLabel = jQuery(cocktail.instantiate("woost.extensions.ecommerce.BasketIndicator.count_label"));
         $countLabel.html(woost.ecommerce.order.count_label);
@@ -36,7 +36,7 @@ cocktail.bind(".BasketIndicator", function ($indicator) {
     var blinkInterval = null;
 
     this.blink = function () {
-    
+
         if (blinkInterval) {
             clearInterval(blinkInterval);
         }

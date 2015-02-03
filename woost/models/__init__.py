@@ -90,7 +90,7 @@ from .event import Event
 from .uri import URI
 from .file import File
 from .extension import (
-    Extension, 
+    Extension,
     extension_translations,
     load_extensions
 )

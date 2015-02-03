@@ -36,7 +36,7 @@ class ECommerceBillingConcept(Item):
         "condition",
         "implementation"
     ]
-    
+
     visible_from_root = False
 
     title = schema.String(
@@ -49,7 +49,7 @@ class ECommerceBillingConcept(Item):
         required = True,
         default = True
     )
-    
+
     start_date = schema.DateTime(
         indexed = True
     )
@@ -136,7 +136,7 @@ class ECommerceBillingConcept(Item):
                 return False
 
             order = item
-            
+
         elif self.scope == "purchase":
             from woost.extensions.ecommerce.ecommercepurchase \
                 import ECommercePurchase
@@ -155,7 +155,7 @@ class ECommerceBillingConcept(Item):
             order is None
             or order.country is None
             or not any(
-                order.country.descends_from(region) 
+                order.country.descends_from(region)
                 for region in self.eligible_countries
             )
         ):
@@ -175,7 +175,7 @@ class ECommerceBillingConcept(Item):
         # Custom condition
         if self.condition:
             context = {
-                "self": self, 
+                "self": self,
                 "order": order,
                 "purchase": purchase,
                 "product": product,
@@ -185,7 +185,7 @@ class ECommerceBillingConcept(Item):
             exec self.condition in context
             if not context["applies"]:
                 return False
-                
+
         return True
 
     def apply(self, item, costs):
@@ -193,7 +193,7 @@ class ECommerceBillingConcept(Item):
         costs["concepts"].append(self)
 
         kind, value = self.parse_implementation()
-        
+
         if kind == "override":
             applicable_concepts = []
             for concept in costs["concepts"]:
@@ -216,7 +216,7 @@ class ECommerceBillingConcept(Item):
 
             costs["concepts"] = applicable_concepts
             costs["percentage"] = value
-        
+
         elif kind == "add_percentage":
             costs["percentage"] += value
 
@@ -232,7 +232,7 @@ class ECommerceBillingConcept(Item):
     def parse_implementation(self):
 
         value = self.implementation
-        
+
         # Cost override
         match = override_regexp.match(value)
         if match:

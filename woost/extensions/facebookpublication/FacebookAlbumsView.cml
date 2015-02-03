@@ -23,7 +23,7 @@ from woost.models import File
         <h2 py:id="section_title">
             ${translations("woost.extensions.facebookpublication.FacebookAlbumsView.section_title")}
         </h2>
-        
+
         <py:cocktail.html.ErrorBox
             py:id="error_box"
             py:errors="@{self.form_errors}"/>
@@ -42,11 +42,11 @@ from woost.models import File
 
             <py:cocktail.html.CheckList py:def="subset_display">
                 <py:with py:def="entry" py:args="value, label, selected">
-                    <?py 
+                    <?py
                     element.add_class("photo")
                     element.label.visible = False
                     ?>
-                    <py:woost.views.ImageGallery 
+                    <py:woost.views.ImageGallery
                         py:local_id="image_gallery"
                         py:images="${[File.get_instance(int(value))]}"
                         py:thumbnail_width="${70}"
@@ -56,10 +56,10 @@ from woost.models import File
                 </py:with>
             </py:cocktail.html.CheckList>
 
-            <button 
+            <button
                 py:id="close_button"
-                type="submit" 
-                name="action" 
+                type="submit"
+                name="action"
                 value="close"
                 py:before="publication_form.submit_button">
                 ${translations("Action close")}
@@ -77,7 +77,7 @@ from woost.models import File
                 </th>
             </tr>
             <py:ready>
-                <tr py:for="i, (target, album_data, error) in enumerate(self.results)">                    
+                <tr py:for="i, (target, album_data, error) in enumerate(self.results)">
                     <td py:local_id="target_cell">
                         <py:woost.views.ContentLink
                             py:item="${target}"
