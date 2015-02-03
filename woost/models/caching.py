@@ -59,7 +59,7 @@ class CachingPolicy(Item):
     )
 
     condition = schema.CodeBlock(
-        language = "python"        
+        language = "python"
     )
 
     cache_key_expression = schema.CodeBlock(
@@ -102,14 +102,14 @@ class CachingPolicy(Item):
         return cache_key
 
     def get_content_last_update(self, publishable, **context):
-        
-        context["publishable"] = publishable    
+
+        context["publishable"] = publishable
         context["latest"] = latest
-        
+
         # Per model cache invalidation
         cache_expiration = datastore.root.get("woost.cache_expiration")
         dates = []
-        
+
         if cache_expiration:
             for cls in publishable.__class__.__mro__:
                 if cls is Item:
@@ -147,7 +147,7 @@ def normalize_invalidation_date(value):
                 max_date = date
 
         value = max_date
-    
+
     return value
 
 def expire_cache(cls = None):
@@ -179,14 +179,14 @@ def latest(selectable, *args, **kwargs):
 
 def menu_items(publishable):
     items = []
-    
+
     while publishable is not None:
         if hasattr(publishable, "children"):
             items.extend(publishable.children)
         if publishable.parent is None:
             items.append(publishable)
         publishable = publishable.parent
-    
+
     return items
 
 def file_date(publishable):

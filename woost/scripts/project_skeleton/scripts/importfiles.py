@@ -12,7 +12,7 @@ from woost.models import File
 import _PROJECT_NAME_
 
 def main():
-    
+
     params = argv[1:]
 
     if not params:

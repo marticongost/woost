@@ -38,7 +38,7 @@ class WebConsoleExtension(Extension):
             s'executa l'aplicació a través de la web""",
             "ca"
         )
-        self.set("description",            
+        self.set("description",
             u"""Proporciona acceso directo al intérprete de Python que ejecuta
             la aplicación a través de la web""",
             "es"
@@ -59,9 +59,9 @@ class WebConsoleExtension(Extension):
                 section = "webconsole_resources",
                 dir = resource_filename("webconsole", "resources")
             )
-        
+
     def _install(self):
-        
+
         from woost.models import extension_translations
         from woost.extensions.webconsole.webconsolepermission \
             import WebConsolePermission
@@ -116,7 +116,7 @@ def breakpoint(open_browser = False, stack_depth = 0):
     from webconsole.utils import breakpoint as webconsole_breakpoint
     from woost.models import get_current_user, Publishable, Site
     from woost.extensions.webconsole.webconsolepermission \
-        import WebConsolePermission   
+        import WebConsolePermission
 
     user = get_current_user()
 
@@ -124,12 +124,12 @@ def breakpoint(open_browser = False, stack_depth = 0):
 
         def initializer(session):
             if open_browser:
-                
+
                 # Find the web console document
                 webconsole = Publishable.require_instance(
                     qname = "woost.extensions.webconsole.page"
                 )
-                
+
                 # Determine the URI for the breakpoint session
                 webconsole_location = Location.get_current_host()
                 webconsole_location.path_info = \
@@ -139,7 +139,7 @@ def breakpoint(open_browser = False, stack_depth = 0):
                 # Open a web browser tab pointing at the URI
                 from webbrowser import open
                 open(str(webconsole_location))
-        
+
         return webconsole_breakpoint(
             initializer = initializer,
             stack_depth = stack_depth + 1

@@ -29,8 +29,8 @@ from woost.extensions.ecommerce import ECommerceExtension
         self.current_step = context["publishable"]
     ?>
 
-    <button 
-        py:id="default_button" 
+    <button
+        py:id="default_button"
         type="submit"
         name="action"
         value="proceed"
@@ -45,13 +45,13 @@ from woost.extensions.ecommerce import ECommerceExtension
     </ol>
 
     <li py:def="order_step" py:args="page">
-        <?py 
+        <?py
         if page is self.current_step:
             element.add_class("current")
         ?>
         ${translations(page)}
     </li>
-    
+
     <div py:id="step_content"></div>
 
     <div py:id="step_buttons">

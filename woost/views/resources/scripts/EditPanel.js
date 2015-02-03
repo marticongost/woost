@@ -8,13 +8,13 @@
 -----------------------------------------------------------------------------*/
 
 cocktail.bind(".EditPanel", function ($panel) {
-    
+
     this.getExpanded = function () {
         return $panel.hasClass("expanded");
     }
 
     this.setExpanded = function (expanded) {
-        if (expanded) {    
+        if (expanded) {
             $panel.addClass("expanded");
             jQuery(document.body).addClass("editing");
         }
@@ -41,7 +41,7 @@ cocktail.bind(".EditPanel", function ($panel) {
 });
 
 jQuery(function () {
-    
+
     // Toggle the visibility of edit panels with a keyboard shortcut
     jQuery(document).keydown(function (e) {
         if (e.keyCode == 69 && e.shiftKey && e.altKey) {

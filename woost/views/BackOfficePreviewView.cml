@@ -19,7 +19,7 @@ from cocktail.controllers.viewstate import view_state
                         <div class="language">
                             <?py
                             url = "%s?%s" % (
-                                self.selected_action.id, 
+                                self.selected_action.id,
                                 view_state(preview_language = language)
                             )
                             ?>

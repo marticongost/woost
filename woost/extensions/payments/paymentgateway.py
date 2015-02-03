@@ -37,7 +37,7 @@ class PaymentGateway(Item):
         required = True,
         translated = True
     )
-    
+
     test_mode = schema.Boolean(
         required = True,
         default = True

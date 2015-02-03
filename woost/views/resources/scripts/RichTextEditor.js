@@ -98,7 +98,7 @@ woost.initRichTextEditor = function (instance) {
             if (r.dx === null) {
                 return;
             }
-            
+
             var Cookie = tinymce.util.Cookie;
 
             jQuery(".field_instance-RichTextEditor:visible textarea").each(function () {

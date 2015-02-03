@@ -29,9 +29,9 @@ class ContainerBlock(Block):
                 yield descendant
 
     def create_view(self):
-        
+
         view = Block.create_view(self)
-    
+
         children_container = getattr(view, "block_content", view)
 
         for child in self.blocks:

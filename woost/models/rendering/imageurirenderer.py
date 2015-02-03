@@ -22,7 +22,7 @@ class ImageURIRenderer(ContentRenderer):
         return item.uri
 
     def render(self, item):
-        
+
         # Open the remote resource
         uri = self.get_item_uri(item)
         http_resource = urlopen(uri)
@@ -42,12 +42,12 @@ class ImageURIRenderer(ContentRenderer):
         urlparts = urlsplit(uri)
         host = urlparts[1]
         path = urlparts[2] + urlparts[3] + urlparts[4]
-        
+
         http_conn = HTTPConnection(host)
         http_conn.request("HEAD", path)
         http_date = http_conn.getresponse().getheader("last-modified")
         http_conn.close()
-        
+
         if http_date:
             return mktime(strptime(http_date, "%a, %d %b %Y %H:%M:%S %Z"))
 

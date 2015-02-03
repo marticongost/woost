@@ -27,7 +27,7 @@ class Sentry(object):
         self.client = client
         self.tags = {
             "framework": "woost",
-            "woost": "arkanoid", 
+            "woost": "arkanoid",
             "cocktail": "absinthe"
         }
 
@@ -42,7 +42,7 @@ class Sentry(object):
                 'data': request.params,
                 'headers': request.headers,
                 'env': {
-                    'SERVER_NAME': cherrypy.server.socket_host, 
+                    'SERVER_NAME': cherrypy.server.socket_host,
                     'SERVER_PORT': cherrypy.server.socket_port
                 }
             }
@@ -71,7 +71,7 @@ class Sentry(object):
                 )
             )
         )
-    
+
     def capture_exception(self, exception, **kwargs):
         if self.should_capture_exception(exception):
             self.update_context(kwargs)

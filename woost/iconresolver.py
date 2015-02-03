@@ -35,7 +35,7 @@ class IconResolver(object):
         names that would be a match for them.
     @type file_resolvers: (L{Item<woost.models.Item>} class, callable)
         L{TypeMapping<cocktail.typemapping.TypeMapping>}
-    
+
     @ivar name_resolution_cache: A cache that stores the result of the
         L{find_icon} method given a list of possible names produced by the
         L{file_resolvers} mapping.
@@ -56,7 +56,7 @@ class IconResolver(object):
         self.file_resolvers[Publishable] = self._resolve_publishable
         self.file_resolvers[File] = self._resolve_file
         self.name_resolution_cache = Cache(load = self._find_icon)
-        
+
     def _get_icon_extension(self):
         return self._icon_extension or self.icon_format
 
@@ -88,15 +88,15 @@ class IconResolver(object):
         @return: The path to the best matching icon, or None if no matching
             icon is found.
         @rtype: str
-        """        
+        """
         if isinstance(item, type):
             content_type = item
             item = None
         else:
             content_type = item.__class__
-        
+
         file_resolver = self.file_resolvers.get(content_type)
-       
+
         if file_resolver is not None:
             file_names = file_resolver(content_type, item)
             if file_names:
@@ -124,7 +124,7 @@ class IconResolver(object):
                     return icon_path
 
         return None
-        
+
     def _resolve_item(self, content_type, item):
         return [
             "type-" + cls.full_name.replace(".", "-")
@@ -148,6 +148,6 @@ class IconResolver(object):
         if item is not None and item.mime_type:
             mime = item.mime_type.replace("/", "-").replace(".", "-")
             file_names.insert(0, "mime-" + mime)
-         
+
         return file_names
 

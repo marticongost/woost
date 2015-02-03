@@ -13,7 +13,7 @@ del p
 
 def workflow_graph(states):
     """Renders the graph for the given workflow.
-    
+
     :param states: The root states to include in the graph.
     :type states: `State`
 
@@ -24,18 +24,18 @@ def workflow_graph(states):
     source.append("\trankdir=LR;")
     source.append("\tnode [shape=ellipse];")
     source.append("\tedge [arrowsize=0.7];")
-    
+
     def state_name(state):
         return "state%d" % state.id
-    
+
     visited = set()
 
     def traverse(state):
         if state in visited:
             return
-        
+
         visited.add(state)
-        
+
         source.append(
             '\t%s [label="%s", id="%d"];'
             % (state_name(state), translations(state), state.id)
@@ -59,9 +59,9 @@ def workflow_graph(states):
 
 def render_graph(markup, dest, format, command = graphviz_command):
     """Writes the specified DOT markup to the indicated file."""
-    
-    dest_is_path = isinstance(dest, basestring)    
-    
+
+    dest_is_path = isinstance(dest, basestring)
+
     cmd = [command, "-T", format]
     if dest_is_path:
         cmd.append("-o")
@@ -71,15 +71,15 @@ def render_graph(markup, dest, format, command = graphviz_command):
         cmd,
         stdin = PIPE,
         stdout = PIPE if not dest_is_path else None
-    )    
+    )
     stdout, stderr = proc.communicate(markup.encode("utf-8"))
-    
+
     if not dest_is_path:
         dest.write(stdout)
 
 
 if __name__ == "__main__":
-    
+
     import sys
     import os
     from cocktail.translations import set_language
@@ -88,7 +88,7 @@ if __name__ == "__main__":
 
     dest = sys.stdout if len(sys.argv) < 2 else sys.argv[1]
     format = None
-    
+
     if len(sys.argv) >= 3:
         format = sys.argv[2]
     elif isinstance(dest, basestring):

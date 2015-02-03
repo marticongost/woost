@@ -49,7 +49,7 @@ class UserView(Item):
                         prev_value.append(value)
                 else:
                     params[key] = value
-        
+
         return params
 
     def _serialize_parameters(value):
@@ -76,7 +76,7 @@ class UserView(Item):
         bidirectional = True
     )
 
-    def uri(self, **kwargs):        
+    def uri(self, **kwargs):
         params = self.parameters.copy()
         params.update(kwargs)
         params = dict((str(key), value) for key, value in params.iteritems())

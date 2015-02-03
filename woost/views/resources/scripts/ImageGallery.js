@@ -10,7 +10,7 @@
 cocktail.bind({
     selector: ".ImageGallery",
     behavior: function ($imageGallery) {
- 
+
         var inDialog = false;
         var loadedImages = {};
         var singleImage = ($imageGallery.find(".image_entry").length < 2);
@@ -25,8 +25,8 @@ cocktail.bind({
 
             if (image && image.loaded) {
                 if (callback) {
-                    callback.call(this, image);                    
-                }                
+                    callback.call(this, image);
+                }
             }
             else {
                 if (showStatus) {
@@ -42,7 +42,7 @@ cocktail.bind({
                     }
                     $imageGallery.bind("imageLoaded", handler);
                 }
-                
+
                 if (!image) {
                     image = new Image();
                     loadedImages[src] = image;
@@ -108,17 +108,17 @@ cocktail.bind({
         $imageGallery.hover(this.pauseAutoplay, this.resumeAutoplay);
 
         this.showImage = function (entry) {
-            
+
             inDialog = true;
             this.pauseAutoplay();
 
             cocktail.closeDialog();
             var dialog = this.createImageDialog(entry);
-            cocktail.showDialog(dialog);            
+            cocktail.showDialog(dialog);
             var $dialog = jQuery(dialog);
             $dialog.hide();
 
-            // Show the dialog once the image finishes loading            
+            // Show the dialog once the image finishes loading
             this.loadImage(
                 jQuery(entry).find(".image_link").get(0).href,
                 function (image) {
@@ -145,7 +145,7 @@ cocktail.bind({
 
         this.showPreviousImage = function (entry) {
             var $entries = $imageGallery.find(".image_entry");
-            var prev = jQuery(entry).prev(".image_entry").get(0) 
+            var prev = jQuery(entry).prev(".image_entry").get(0)
                     || jQuery(entry).parent().find(".image_entry:last").get(0);
             this.showImage(prev);
         }
@@ -158,7 +158,7 @@ cocktail.bind({
         }
 
         this.createImageDialog = function (entry) {
-        
+
             if (!entry) {
                 return;
             }
@@ -176,7 +176,7 @@ cocktail.bind({
             });
 
             $dialog.find(".image").attr("src", imageURL);
-            
+
             if (imageTitle) {
                 $dialog.find(".header .label").html(imageTitle);
             }
@@ -211,7 +211,7 @@ cocktail.bind({
             var $prev = $dialog.find(".previous_button");
             var $img = $dialog.find(".image");
             var $dialogControls = $dialog.find(".header").add($close);
-            
+
             // Close dialog button
             $close.click(cocktail.closeDialog);
 
@@ -264,7 +264,7 @@ cocktail.bind({
                         $imageGallery.get(0).showNextImage(entry);
                     });
             }
-            
+
             // Only show dialog controls when hovering over the image
             $dialogControls.filter(":not(.header)").hide();
             var hideHeaderTimer = setTimeout(
@@ -290,10 +290,10 @@ cocktail.bind({
 
         if (this.galleryType == "slideshow" && !singleImage) {
 
-            this.sliderOptions.prevHtml = 
+            this.sliderOptions.prevHtml =
                 cocktail.instantiate("woost.views.ImageGallery.previous_button");
 
-            this.sliderOptions.nextHtml = 
+            this.sliderOptions.nextHtml =
                 cocktail.instantiate("woost.views.ImageGallery.next_button");
 
             this.sudoSlider = $imageGallery.sudoSlider(this.sliderOptions);
@@ -315,7 +315,7 @@ cocktail.bind({
         ".image_entry": function ($entry, $imageGallery) {
 
             var $link = $entry.find(".image_link");
-            
+
             $link.click(function () {
                 $imageGallery.get(0).showImage($entry.get(0));
                 return false;

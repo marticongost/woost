@@ -15,7 +15,7 @@ from woost.controllers.notifications import notify_user
 
 class ExtensionEditNode(EditNode):
 
-    def item_saved_notification(self, is_new, change):                                
+    def item_saved_notification(self, is_new, change):
         if change and "enabled" in change.changed_members:
             notify_user(
                 translations(

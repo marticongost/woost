@@ -44,7 +44,7 @@ class TransitionController(FormControllerMixin, BaseBackOfficeController):
 
     @event_handler
     def handle_traversed(cls, event):
-        controller = event.source        
+        controller = event.source
         get_current_user().require_permission(
             TransitionPermission,
             target = controller.item,
@@ -53,7 +53,7 @@ class TransitionController(FormControllerMixin, BaseBackOfficeController):
 
     @cached_getter
     def item(self):
-    
+
         item = get_parameter(schema.Reference("item", type = Item))
 
         if item is None or item.workflow_state is None:
@@ -105,7 +105,7 @@ class TransitionController(FormControllerMixin, BaseBackOfficeController):
         return context
 
     def submit(self):
-        
+
         item = self.item
         draft_source = item.draft_source
 
@@ -139,7 +139,7 @@ class TransitionController(FormControllerMixin, BaseBackOfficeController):
                 ),
                 "success"
             )
-        
+
         # Redirect the user to the transitioned item's edit form
         redirect_transition(item if item.is_inserted else draft_source)
 

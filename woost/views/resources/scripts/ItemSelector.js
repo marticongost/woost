@@ -21,7 +21,7 @@ cocktail.bind(".UserFilterEntry .ItemSelector", function ($itemSelector) {
     }
 
     this.setItem = function (itemId, label) {
-        
+
         var itemLabel = $itemSelector.find(".ItemLabel").get(0);
         jQuery(itemLabel).empty();
 
@@ -45,7 +45,7 @@ cocktail.bind(".UserFilterEntry .ItemSelector", function ($itemSelector) {
             depth++;
             win = win.parent;
         }
-        
+
         selectorIframe = cocktail.createElement("iframe", "ItemSelector-frame" + depth);
         selectorIframe.className = "ItemSelector-frame";
         cocktail.showDialog(selectorIframe);
@@ -76,7 +76,7 @@ cocktail.bind(".UserFilterEntry .ItemSelector", function ($itemSelector) {
                 return false;
             });
         });
-        
+
         var form = jQuery(this).parents("form").get(0);
         var prevTarget = form.target;
         param = cocktail.createElement("input", "client_side_scripting", "hidden");

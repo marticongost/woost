@@ -56,8 +56,8 @@ class LanguageSelector(LinkSelector):
         if self.items is None:
             user = get_current_user()
             self.items = [
-                language.iso_code 
-                for language in Language.select() 
+                language.iso_code
+                for language in Language.select()
                 if language.enabled
                 and user.has_permission(
                     ReadTranslationPermission,

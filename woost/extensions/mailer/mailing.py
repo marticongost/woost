@@ -52,10 +52,10 @@ class PerUserCustomizableValueError(ValidationError):
 
 def available_roles(ctx):
     user = get_current_user()
-    return [role 
-            for role in Role.select() 
+    return [role
+            for role in Role.select()
             if not role.implicit
-            and user.has_permission(SendEmailPermission, role = role) 
+            and user.has_permission(SendEmailPermission, role = role)
             and len(get_receivers_by_roles([role]))]
 
 
@@ -143,7 +143,7 @@ class Mailing(Item):
     def delete(self, deleted_objects = None):
         if self.id in tasks and not tasks[self.id].completed:
             raise RunningMailingError("Can't delete a running mailing")
-        
+
         Item.delete(self, deleted_objects)
 
     def _get_message(self, receiver):
@@ -160,16 +160,16 @@ class Mailing(Item):
         return message
 
     def render_body(self, receiver):
-        
+
         if not self.per_user_customizable and self.__cached_body:
             return self.__cached_body
 
         values = self._v_template_values
-        
+
         if self.per_user_customizable:
             values = values.copy()
             values["mailing_receiver"] = receiver
-        
+
         values["show_user_controls"] = False
         body = self.document.render(**values)
 
@@ -235,7 +235,7 @@ class Mailing(Item):
                 processed_emails = 0
                 try:
                     for email, receiver in mailing.pending.items():
-                        try:                
+                        try:
                             mailing.send_message(smtp_server, receiver)
                         except Exception, e:
                             logger.exception("%d - %s (%s) - %s" % (

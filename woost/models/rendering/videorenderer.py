@@ -15,7 +15,7 @@ from woost.models.rendering.contentrenderersregistry import content_renderers
 class VideoRenderer(ContentRenderer):
     """A content renderer that handles video files."""
 
-    try:                                                                                                                                                                                                       
+    try:
         p = Popen(["which", "ffmpeg"], stdout=PIPE)
         ffmpeg_path = p.communicate()[0].replace("\n", "") or None
     except:
@@ -46,28 +46,28 @@ class VideoRenderer(ContentRenderer):
         m = s / 60
         s -= m*60
         return datetime.time(h, m, s, ms)
-    
+
     def _time2secs(self, d):
         return d.hour*60*60 + d.minute*60 + d.second + \
             (float(d.microsecond) / 1000000)
 
     def can_render(self, item):
         return (
-            self.ffmpeg_path 
-            and self.grep_path 
+            self.ffmpeg_path
+            and self.grep_path
             and self.cut_path
-            and self.sed_path 
-            and isinstance(item, File) 
+            and self.sed_path
+            and isinstance(item, File)
             and item.resource_type == "video"
         )
 
     def render(self, item, position = None):
-        
+
         temp_path = mkdtemp()
 
         try:
             temp_image_file = os.path.join(temp_path, "thumbnail.png")
-            
+
             command1 = "%s -i %s" % (self.ffmpeg_path, item.file_path)
             command2 = "%s Duration | %s -d ' ' -f 4 | %s 's/,//'" % (
                 self.grep_path,
@@ -82,29 +82,29 @@ class VideoRenderer(ContentRenderer):
             video_length = datetime.time(
                 int(duration_list[0]), int(duration_list[1]),
                 int(duration_list[2]), int(duration_list[3])
-            )   
+            )
 
             if position:
                 time = self._secs2time(position)
             else:
                 seconds = self._time2secs(video_length)
                 time = self._secs2time(seconds / 2)
-    
+
             if time > video_length:
                 raise ValueError(
                     "Must specify a smaller position than the video duration."
                 )
-    
+
             command = u"%s -y -i %s -vframes 1 -ss %s -an -vcodec png -f rawvideo %s " % (
-                self.ffmpeg_path, 
-                item.file_path, 
+                self.ffmpeg_path,
+                item.file_path,
                 time.strftime("%H:%M:%S"),
                 temp_image_file
             )
-    
+
             p = Popen(command.split(), stdout=PIPE)
             p.communicate()
-    
+
             return Image.open(temp_image_file)
 
         finally:

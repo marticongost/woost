@@ -29,7 +29,7 @@ from woost.extensions.ecommerce.catalogcontroller \
 
             <py:with py:def="notification">
                 <div py:local_id="product_added_buttons">
-                    <a py:local_id="product_added_back_button" 
+                    <a py:local_id="product_added_back_button"
                         class="button"
                         href="${catalog_current_state_uri()}">
                         ${translations("woost.extensions.ecommerce.AddProductForm.product_added_back_button")}
@@ -44,14 +44,14 @@ from woost.extensions.ecommerce.catalogcontroller \
                     </a>
                 </div>
             </py:with>
-        
+
         </py:woost.views.NotificationBox>
 
         <py:cocktail.html.ErrorBox
             py:id="errors"
             py:errors="@{self.errors}"
             py:index="1"/>
-    
+
     </py:block>
 
     <py:cocktail.html.TextBox type="number" min="1" py:def="quantity_display"/>

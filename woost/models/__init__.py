@@ -127,7 +127,7 @@ from woost.models.uri import URI
 from woost.models.file import File
 from woost.models.style import Style
 from woost.models.extension import (
-    Extension, 
+    Extension,
     extension_translations,
     load_extensions
 )

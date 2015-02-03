@@ -34,7 +34,7 @@ class ContentRenderersRegistry(ListWrapper):
             marker = after or before
 
             if marker is None:
-                self._items.append(renderer)            
+                self._items.append(renderer)
             else:
                 if after and before:
                     raise ValueError(
@@ -64,7 +64,7 @@ class ContentRenderersRegistry(ListWrapper):
                 elif before:
                     self._items.insert(pos, renderer)
                 else:
-                    self._items.insert(pos + 1, renderer)  
+                    self._items.insert(pos + 1, renderer)
 
     def render(self,
         item,
@@ -86,13 +86,13 @@ class ContentRenderersRegistry(ListWrapper):
         for renderer in self:
             if renderer.enabled and renderer.can_render(item):
                 image = renderer.render(item, **kwargs)
-                
+
                 # Apply rendering effects
                 if effects:
                     if isinstance(image, basestring):
                         image = Image.open(image)
                     image = apply_effects_chain(image, effects)
-                
+
                 return image
 
 

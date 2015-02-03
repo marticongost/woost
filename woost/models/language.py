@@ -13,7 +13,7 @@ from woost.models.item import Item
 
 
 class Language(Item):
- 
+
     members_order = ["iso_code", "enabled", "fallback"]
 
     iso_code = schema.String(
@@ -50,7 +50,7 @@ class Language(Item):
             or Item.__translate__(self, language, **kwargs)
 
 
-def get_common_language(self, members, language = None):    
+def get_common_language(self, members, language = None):
 
     language = require_language(language)
 

@@ -61,7 +61,7 @@ class VimeoExtension(Extension):
     default_vimeo_user_name = schema.String()
 
     def _load(self):
-        
+
         # Load extension models, translations and UI extensions
         from woost.extensions.vimeo import (
             video,
@@ -95,7 +95,7 @@ class VimeoExtension(Extension):
               preserved).
             * Videos that were instantiated in a previous run but which have
               been deleted at the Vimeo side will be removed from the database.
-                
+
         @param user_name: The Vimeo account to load the videos from.
         @type user_name: str
 
@@ -104,7 +104,7 @@ class VimeoExtension(Extension):
         @type restricted: bool
         """
         from woost.extensions.vimeo.video import VimeoVideo
-        
+
         if restricted:
             user = get_current_user()
 
@@ -119,11 +119,11 @@ class VimeoExtension(Extension):
         remote_videos = set()
 
         for video_data in loads(response):
-            
+
             video_id = video_data["id"]
             video = VimeoVideo.get_instance(vimeo_video_id = video_id)
             remote_videos.add(video_id)
-            
+
             # Check permissions
             if restricted and not user.has_permission(
                 CreatePermission if video is None else ModifyPermission,
@@ -134,7 +134,7 @@ class VimeoExtension(Extension):
             # Create new videos
             if video is None:
                 is_new = True
-                video = VimeoVideo()                
+                video = VimeoVideo()
                 video.insert()
                 video.vimeo_video_id = video_data["id"]
                 video.vimeo_user_name = video_data["user_name"]
@@ -168,7 +168,7 @@ class VimeoExtension(Extension):
             VimeoVideo.vimeo_video_id.not_one_of(remote_videos),
         ])
         missing_videos.verbose = True
-        
+
         if restricted:
             missing_videos.add_filter(
                 PermissionExpression(user, DeletePermission)

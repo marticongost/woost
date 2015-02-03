@@ -45,7 +45,7 @@ class ItemWebService(PersistentClassWebService):
         return Language.codes
 
     class JSONEncoder(PersistentClassWebService.JSONEncoder):
-                
+
         def get_member_value(self, obj, member, language = None):
 
             # Exclude the 'changes' member
@@ -64,12 +64,12 @@ class ItemWebService(PersistentClassWebService):
                 )
             ):
                 value = excluded_member
- 
+
             # Special case for user passwords
             elif member is User.password:
                 value = obj.password
                 if value:
-                    value = b64encode(value)            
+                    value = b64encode(value)
             else:
                 value = PersistentClassWebService.JSONEncoder.get_member_value(
                     self,
@@ -81,11 +81,11 @@ class ItemWebService(PersistentClassWebService):
             return value
 
     @cached_getter
-    def json_encoder(self):        
+    def json_encoder(self):
         encoder = PersistentClassWebService.json_encoder(self)
         encoder.user = get_current_user()
         return encoder
-    
+
     def _init_new_instance(self, instance):
         with restricted_modification_context(instance):
             PersistentClassWebService._init_new_instance(self, instance)
@@ -108,7 +108,7 @@ class ItemWebService(PersistentClassWebService):
     def _delete_instances(self, query):
 
         user = get_current_user()
-        
+
         class ValidatingDeletedSet(InstrumentedSet):
             def item_added(self, item):
                 user.require_permission(DeletePermission, target = item)
@@ -121,5 +121,5 @@ class ItemWebService(PersistentClassWebService):
 
 
 class CMSWebServicesController(BaseCMSController):
-    data = ItemWebService    
+    data = ItemWebService
 

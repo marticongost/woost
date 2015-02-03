@@ -27,8 +27,8 @@ class PDFRenderer(ContentRenderer):
 
     def can_render(self, item):
         return (
-            self.convert_path 
-            and isinstance(item, File) 
+            self.convert_path
+            and isinstance(item, File)
             and item.resource_type == "document"
             and item.file_name.split(".")[-1].lower() == "pdf"
         )
@@ -36,7 +36,7 @@ class PDFRenderer(ContentRenderer):
     def render(self, item, page = 0):
 
         timeout = self.timeout
-        
+
         # Increase the timeout for bigger files
         size = item.file_size
         if size:
@@ -48,7 +48,7 @@ class PDFRenderer(ContentRenderer):
         try:
             temp_image_file = os.path.join(temp_path, "thumbnail.png")
 
-            command = u'%s -type TrueColor "%s[%d]" %s' % ( 
+            command = u'%s -type TrueColor "%s[%d]" %s' % (
                 self.convert_path, item.file_path, page, temp_image_file
             )
 

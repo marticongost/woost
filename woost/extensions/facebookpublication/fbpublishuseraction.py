@@ -26,7 +26,7 @@ class BaseFBPublishUserAction(UserAction):
     ])
 
     max = None
-    
+
     def is_permitted(self, user, target):
         return user.has_permission(FacebookPublicationPermission, target = target)
 
@@ -42,7 +42,7 @@ class FBPublishAlbumsUserAction(BaseFBPublishUserAction):
     content_type = File
 
     def is_available(self, context, target):
-        
+
         if not BaseFBPublishUserAction.is_available(self, context, target):
             return False
 

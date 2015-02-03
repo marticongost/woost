@@ -187,7 +187,7 @@ translations.define("opengraph.categories.organizations",
     es = u"Organizaciones",
     en = u"Organizations"
 )
-                
+
 translations.define("opengraph.types.band",
     ca = u"Grup musical",
     es = u"Grupo musical",
@@ -279,7 +279,7 @@ translations.define("opengraph.categories.places",
     es = u"Sitios",
     en = u"Places"
 )
-                
+
 translations.define("opengraph.types.city",
     ca = u"Ciutat",
     es = u"Ciudad",
@@ -371,7 +371,7 @@ translations.define("opengraph.categories.websites",
     es = u"Sitios web",
     en = u"Web sites"
 )
-                
+
 translations.define("opengraph.types.article",
     ca = u"Article",
     es = u"Artículo",

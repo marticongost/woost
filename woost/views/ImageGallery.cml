@@ -14,7 +14,7 @@ from cocktail.controllers import context
     original_link_visible = False
     close_up_enabled = True
     close_up_preload = True
-    
+
     images = ()
     accessible_check = True
 
@@ -43,14 +43,14 @@ from cocktail.controllers import context
         if self._thumbnail_width is None:
             size = self.thumbnail_sizes.get(self.thumbnail_factory)
             return size and size[0]
-        
+
         return self._thumbnail_width
 
     def _set_thumbnail_width(self, width):
         self._thumbnail_width = width
 
     thumbnail_width = property(_get_thumbnail_width, _set_thumbnail_width)
-    
+
     def _get_thumbnail_height(self):
         if self._thumbnail_height is None:
             size = self.thumbnail_sizes.get(self.thumbnail_factory)
@@ -67,14 +67,14 @@ from cocktail.controllers import context
         if self._close_up_width is None:
             size = self.close_up_sizes.get(self.close_up_factory)
             return size and size[0]
-        
+
         return self._close_up_width
 
     def _set_close_up_width(self, width):
         self._close_up_width = width
 
     close_up_width = property(_get_close_up_width, _set_close_up_width)
-    
+
     def _get_close_up_height(self):
         if self._close_up_height is None:
             size = self.close_up_sizes.get(self.close_up_factory)
@@ -113,7 +113,7 @@ from cocktail.controllers import context
 
     <ul py:id="image_list">
         <py:ready>
-            <?py            
+            <?py
             images = self.images
             if self.accessible_check:
                 images = (img for img in self.images if img.is_accessible())
@@ -128,7 +128,7 @@ from cocktail.controllers import context
         <?py
         cms = context["cms"]
         title = image.title or ""
-        
+
         # IE 7 requires this... :'(
         if self.gallery_type == "slideshow":
             element.set_style("width", "%dpx" % self.thumbnail_width)
@@ -148,12 +148,12 @@ from cocktail.controllers import context
             href="${image.get_image_uri(self.close_up_factory)}"
             target="blank_">
 
-            <?py 
+            <?py
             if not self.close_up_enabled:
                 element.tag = None
             ?>
 
-            <py:woost.views.Image 
+            <py:woost.views.Image
                 py:local_id="image"
                 py:image="${image}"
                 py:image_factory="${self.thumbnail_factory}"
@@ -181,7 +181,7 @@ from cocktail.controllers import context
         <img src="/resources/images/ImageGallery-previous_button.png" alt=""/>
     </a>
 
-    <div py:id="image_dialog" 
+    <div py:id="image_dialog"
         py:client_model="woost.views.ImageGallery.image_dialog"
         class="ImageGallery-dialog">
         <div py:id="image_frame">
@@ -210,7 +210,7 @@ from cocktail.controllers import context
         </div>
     </div>
 
-    <div py:id="loading_sign" 
+    <div py:id="loading_sign"
         py:client_model="woost.views.ImageGallery.loading_sign"
         class="ImageGallery-loading_sign">
         ${translations("woost.views.ImageGallery.loading_sign")}

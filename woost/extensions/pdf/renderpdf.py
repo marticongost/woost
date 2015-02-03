@@ -12,7 +12,7 @@ from PyQt4.QtCore import QObject, QUrl, SIGNAL
 from PyQt4.QtGui import QApplication, QPrinter
 from PyQt4.QtNetwork import QNetworkRequest
 from PyQt4.QtWebKit import QWebView
- 
+
 def renderpdf(url, dest):
 
     app = QApplication(sys.argv)

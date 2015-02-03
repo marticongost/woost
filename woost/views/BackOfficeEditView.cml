@@ -14,7 +14,7 @@ from simplejson import dumps
     <?py
     self.add_resource("/cocktail/scripts/jquery.cookie.js")
     self.add_resource("/resources/scripts/BackOfficeEditView.js")
-    
+
     add_view_action_context(self, "edit")
     ?>
 
@@ -69,7 +69,7 @@ from simplejson import dumps
     <py:with py:element="self.item_body">
 
         <!-- Tabs -->
-        <div py:id="tabs">                        
+        <div py:id="tabs">
             <py:ready>
                  <py:new py:element="self.create_tab(member)"
                      py:for="member in [self.edited_content_type] + list(self.collections)">

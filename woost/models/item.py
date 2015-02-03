@@ -12,9 +12,9 @@ from cocktail.events import event_handler, Event
 from cocktail import schema
 from cocktail.translations import translations
 from cocktail.persistence import (
-    datastore, 
-    PersistentObject, 
-    PersistentClass, 
+    datastore,
+    PersistentObject,
+    PersistentClass,
     PersistentMapping,
     MaxValue
 )
@@ -54,7 +54,7 @@ class Item(PersistentObject):
     # Enable full text indexing for all items (although the Item class itself
     # doesn't provide any searchable text field by default, its subclasses may,
     # or it may be extended; by enabling full text indexing at the root class,
-    # heterogeneous queries on the whole Item class will use available 
+    # heterogeneous queries on the whole Item class will use available
     # indexes).
     full_text_indexed = True
 
@@ -110,7 +110,7 @@ class Item(PersistentObject):
 
     # Indexing
     #--------------------------------------------------------------------------
- 
+
     # Make sure draft copies' members don't get indexed
     def _should_index_member(self, member):
         return PersistentObject._should_index_member(self, member) and (
@@ -228,7 +228,7 @@ class Item(PersistentObject):
         draft.draft_source = self
         draft.is_draft = True
         draft.bidirectional = False
-        
+
         self._draft_count += 1
         draft._draft_id = self._draft_count
 
@@ -240,7 +240,7 @@ class Item(PersistentObject):
             source_accessor = schema.SchemaObjectAccessor,
             target_accessor = schema.SchemaObjectAccessor
         )
-        
+
         return draft
 
     draft_confirmation = Event(doc = """
@@ -252,9 +252,9 @@ class Item(PersistentObject):
         by the draft to its source element, and deletes the draft. On brand new
         drafts, the item itself simply drops its draft status, and otherwise
         remains the same.
-        
+
         @raise ValueError: Raised if the item is not a draft.
-        """            
+        """
         if not self.is_draft:
             raise ValueError("confirm_draft() must be called on a draft")
 
@@ -300,7 +300,7 @@ class Item(PersistentObject):
     def _create_translation_schema(cls, members):
         members["versioned"] = False
         PersistentObject._create_translation_schema.im_func(cls, members)
-        
+
     @classmethod
     def _add_member(cls, member):
         if member.name == "translations":
@@ -321,7 +321,7 @@ class Item(PersistentObject):
         state = PersistentMapping()
 
         for key, member in self.__class__.members().iteritems():
-           
+
             if not member.versioned:
                 continue
 
@@ -332,7 +332,7 @@ class Item(PersistentObject):
                 )
             else:
                 value = self.get(key)
-                
+
                 # Make a copy of mutable objects
                 if isinstance(
                     value, (list, set, ListWrapper, SetWrapper)
@@ -369,15 +369,15 @@ class Item(PersistentObject):
                 change.item_state = item._get_revision_state()
                 change.changeset = changeset
                 changeset.changes[item.id] = change
-                
+
                 if item.author is None:
                     item.author = changeset.author
 
                 if item.owner is None:
                     item.owner = changeset.author
-                
+
                 change.insert(event.inserted_objects)
-        
+
     # Extend item modification to make it versioning aware
     @event_handler
     def handle_changed(cls, event):
@@ -395,7 +395,7 @@ class Item(PersistentObject):
         or item.is_draft \
         or not item.__class__.versioned:
             return
-        
+
         changeset = ChangeSet.current
 
         if changeset:
@@ -421,7 +421,7 @@ class Item(PersistentObject):
 
             if action_type == "modify":
                 change.changed_members.add(member_name)
-                
+
             if action_type in ("create", "modify"):
                 value = event.value
 
@@ -440,7 +440,7 @@ class Item(PersistentObject):
 
     @event_handler
     def handle_deleting(cls, event):
-        
+
         item = event.source
 
         # Update the last time of modification for the item
@@ -468,10 +468,10 @@ class Item(PersistentObject):
                     change.insert()
 
         item.__deleted = True
-    
+
     @event_handler
     def handle_deleted(cls, event):
-        
+
         item = event.source
 
         # Break the relation to the draft's source. This needs to be done
@@ -500,7 +500,7 @@ class Item(PersistentObject):
         listed_by_default = False,
         member_group = "administration"
     )
-    
+
     owner = schema.Reference(
         indexed = True,
         type = "woost.models.User",

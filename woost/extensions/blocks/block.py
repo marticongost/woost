@@ -12,7 +12,7 @@ from woost.models import Item, Publishable
 default_tag = object()
 
 
-class Block(Item):    
+class Block(Item):
 
     instantiable = False
     collapsed_backoffice_menu = True
@@ -67,7 +67,7 @@ class Block(Item):
 
         if self.view_class is None:
             raise ValueError("No view specified for block %s" % self)
-        
+
         view = templates.new(self.view_class)
         self.init_view(view)
         return view
@@ -75,9 +75,9 @@ class Block(Item):
     def init_view(self, view):
         view.block = self
         view.set_client_param("blockId", self.id)
-        
+
         view.add_class("block")
- 
+
         if self.html_id:
             view["id"] = self.html_id
 

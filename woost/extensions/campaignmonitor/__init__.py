@@ -17,7 +17,7 @@ from woost.models import (
     Controller,
     Template,
     get_current_user,
-    CreatePermission,                                                                                                                                                                                          
+    CreatePermission,
     ModifyPermission,
     DeletePermission,
     PermissionExpression
@@ -46,7 +46,7 @@ class CampaignMonitorExtension(Extension):
             u"""Permet la integració amb el sistema de mailing Campaign Monitor""",
             "ca"
         )
-        self.set("description",            
+        self.set("description",
             u"""Permite la integración con el sistema de mailing Campaign Monitor""",
             "es"
         )
@@ -103,18 +103,18 @@ class CampaignMonitorExtension(Extension):
                 ),
                 integral = True,
                 related_end = schema.Reference()
-            )   
+            )
         )
 
         self.install()
 
     def _install(self):
 
-        # Subscription controller        
+        # Subscription controller
         campaign_monitor_controller = self._create_asset(
             Controller,
             "subscription_controller",
-            python_name = 
+            python_name =
                 "woost.extensions.campaignmonitor.campaignmonitorcontroller."
                 "CampaignMonitorController",
             title = extension_translations
@@ -124,7 +124,7 @@ class CampaignMonitorExtension(Extension):
         unsubscription_controller = self._create_asset(
             Controller,
             "unsubscription_controller",
-            python_name = 
+            python_name =
                 "woost.extensions.campaignmonitor."
                 "campaignmonitorunsubscriptioncontroller."
                 "CampaignMonitorUnsubscriptionController",
@@ -141,7 +141,7 @@ class CampaignMonitorExtension(Extension):
             engine = "cocktail",
             title = extension_translations
         )
-        
+
         # Unsubscription template
         subscription_view = self._create_asset(
             Template,
@@ -152,7 +152,7 @@ class CampaignMonitorExtension(Extension):
             engine = "cocktail",
             title = extension_translations
         )
-        
+
         # Default subscription page
         subscription_page = self._create_asset(
             CampaignMonitorSubscriptionPage,
@@ -201,8 +201,8 @@ class CampaignMonitorExtension(Extension):
             hidden = True
         )
 
-    def synchronize_lists(self, restricted = False):                                                                                                                                                      
-        """Synchronizes the list of Lists of the given Campaign Monitor account 
+    def synchronize_lists(self, restricted = False):
+        """Synchronizes the list of Lists of the given Campaign Monitor account
         with the site's database.
 
         The method queries Campaing Monitor API, retrieving the list of
@@ -210,16 +210,16 @@ class CampaignMonitorExtension(Extension):
         already known Lists (from previous executions of this method). The
         local database will be updated as follows:
 
-            * Lists declared by Campaing Monitor that are not present in the 
+            * Lists declared by Campaing Monitor that are not present in the
               database will generate new instances.
             * Lists that exist on both ends will be updated with the data
-              provided by the Campaing Monitor service (only non editable 
-              members will be updated, so that data entered by users in the 
+              provided by the Campaing Monitor service (only non editable
+              members will be updated, so that data entered by users in the
               backoffice is preserved).
             * Lists that were instantiated in a previous run but which have
-              been deleted at the Campaign Monitor side will be removed from 
+              been deleted at the Campaign Monitor side will be removed from
               the database.
-                
+
         @param restricted: Indicates if access control should be applied to the
             operations performed by the method.
         @type restricted: bool
@@ -239,7 +239,7 @@ class CampaignMonitorExtension(Extension):
         )
 
         remote_lists = set()
-        
+
         for list_data in api.client_get_lists():
 
             list_id = list_data["ListID"]
@@ -288,9 +288,9 @@ class CampaignMonitorExtension(Extension):
 
             api.list_update(
                 list_id,
-                list_detail_data.get("Title"), 
+                list_detail_data.get("Title"),
                 unsubscribe_page,
-                list_detail_data.get("ConfirmOptIn"), 
+                list_detail_data.get("ConfirmOptIn"),
                 confirmation_success_page
             )
 

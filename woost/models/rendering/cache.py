@@ -25,7 +25,7 @@ from woost.models.rendering.factories import (
 debug = False
 
 def _remove_dir_contents(path):
-    
+
     # os.path.lexists is not supported on windows
     from cocktail.styled import styled
     exists = getattr(os.path, "lexists", os.path.exists)
@@ -45,7 +45,7 @@ def _remove_dir_contents(path):
                     print styled(ex, "red")
 
 def clear_image_cache(item = None):
-    
+
     if debug:
         from cocktail.styled import styled
         if item is None:
@@ -58,7 +58,7 @@ def clear_image_cache(item = None):
     if item is None:
         _remove_dir_contents(app.path("image-cache"))
         _remove_dir_contents(app.path("static", "images"))
-    
+
     # Remove the cache for a single item
     else:
         from cocktail.styled import styled
@@ -68,7 +68,7 @@ def clear_image_cache(item = None):
 @when(Item.changed)
 @when(Item.deleted)
 def _clear_image_cache_after_commit(event):
-    item = event.source    
+    item = event.source
     if item.is_inserted:
         datastore.unique_after_commit_hook(
             "woost.models.clear_image_cache-%d" % item.id,
@@ -87,21 +87,21 @@ def require_rendering(
     parameters = None):
 
     factory = image_factories.get(factory_name)
-    
+
     if factory is None:
         raise BadRenderingRequest("Invalid image factory: %s" % factory_name)
-    
+
     ext = None
 
-    if format is None:        
+    if format is None:
         if not isinstance(item, type):
             ext = getattr(item, "file_extension", None)
-            
+
             if ext is not None:
                 format = formats_by_extension.get(ext.lstrip(".").lower())
                 if format is None:
                     ext = None
-    
+
     elif format not in mime_types_by_format:
         raise BadRenderingRequest("Invalid image format: %s" % format)
 
@@ -115,7 +115,7 @@ def require_rendering(
     if parameters:
         file_name += "." + parameters
     file_name += "." + ext
-    
+
     item_id = item.full_name if isinstance(item, type) else str(item.id)
 
     # If the image hasn't been generated yet, do so and store it in the
@@ -139,7 +139,7 @@ def require_rendering(
                 os.remove(image_cache_file)
             except OSError:
                 pass
-            
+
             if hasattr(os, "symlink"):
                 os.symlink(image, image_cache_file)
             else:
@@ -159,7 +159,7 @@ def require_rendering(
             anonymous = User.require_instance(qname ="woost.anonymous_user")
 
             if anonymous.has_permission(
-                RenderPermission, 
+                RenderPermission,
                 target = item,
                 image_factory = factory_name
             ):

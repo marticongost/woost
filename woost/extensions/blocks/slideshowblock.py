@@ -20,7 +20,7 @@ class SlideShowBlock(ContainerBlock):
         "transition_duration",
         "navigation_controls"
     ]
-    
+
     autoplay = schema.Boolean(
         required = True,
         default = True,

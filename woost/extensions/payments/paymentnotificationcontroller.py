@@ -10,7 +10,7 @@ from cocktail.controllers.controller import Controller
 
 
 class PaymentNotificationController(Controller):
-    
+
     def __call__(self, **parameters):
         from woost.extensions.payments import PaymentsExtension
         gateway = PaymentsExtension.instance.payment_gateway

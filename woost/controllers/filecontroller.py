@@ -18,12 +18,12 @@ class FileController(PublishableController):
 
     def _produce_content(self, disposition = "inline"):
         file = self.context["publishable"]
-        
+
         if file.image_effects:
-            file_path = require_rendering(file)        
+            file_path = require_rendering(file)
         else:
             file_path = file.file_path
-            
+
         return serve_file(
             file_path,
             name = file.file_name,

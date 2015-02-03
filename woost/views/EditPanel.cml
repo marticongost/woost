@@ -10,7 +10,7 @@ from woost.models import (
 <div
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:py="http://www.whads.com/ns/cocktail/templates">
- 
+
     <?py-class
     publishable = None
     ?>
@@ -30,25 +30,25 @@ from woost.models import (
         ?>
     </py:binding>
 
-    <button 
+    <button
         py:id="show_panel_button"
         py:client_model="woost.views.EditPanel.show_panel_button">
         <?py
         title = translations('woost.views.EditPanel.show_panel_button')
         ?>
-        <img 
+        <img
             src="/resources/images/edit.png"
-            alt="${title}" 
+            alt="${title}"
             title="${title} (alt + shift + e)"/>
     </button>
 
-    <button 
+    <button
         py:id="close_panel_button"
         py:client_model="woost.views.EditPanel.close_panel_button">
         <?py
         title = translations('woost.views.EditPanel.close_panel_button')
         ?>
-        <img 
+        <img
             src="/resources/images/EditPanel-close_button.png"
             alt="${title}"
             title="${title} (alt + shift + e)"/>
@@ -64,15 +64,15 @@ from woost.models import (
 
             <div py:id="actions_content" class="edit_panel_section_content">
 
-                <py:woost.views.EditLink 
-                    py:id="modify_link" 
+                <py:woost.views.EditLink
+                    py:id="modify_link"
                     py:action="modify"
                     py:target="@{self.publishable}"/>
 
-                <py:woost.views.EditLink 
-                    py:id="delete_link" 
+                <py:woost.views.EditLink
+                    py:id="delete_link"
                     py:action="delete"
-                    py:target="@{self.publishable}"/> 
+                    py:target="@{self.publishable}"/>
             </div>
         </div>
     </div>

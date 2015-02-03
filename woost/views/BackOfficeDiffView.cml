@@ -12,7 +12,7 @@ from woost.controllers.backoffice.useractions import \
 <py:woost.views.BackOfficeItemView
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:py="http://www.whads.com/ns/cocktail/templates">
-    
+
     <?py-class
     source = None
     source_accessor = None
@@ -62,11 +62,11 @@ from woost.controllers.backoffice.useractions import \
         </td>
         <td class="new_value">
             <div class="diff_unit" py:for="unit in diffs[1]">${unit}</div>
-        </td>            
+        </td>
     </tr>
 
     <py:with py:element="self.item_body">
-              
+
         <p py:id="no_differences" py:visible="@{not self.changes}">
             ${translations("No differences")}
         </p>
@@ -77,7 +77,7 @@ from woost.controllers.backoffice.useractions import \
                 <th class="member">${translations("woost.views.BackOfficeDiffView member")}</th>
                 <th class="previous_value">${translations("woost.views.BackOfficeDiffView previous value")}</th>
                 <th class="new_value">${translations("woost.views.BackOfficeDiffView new value")}</th>
-            </tr>            
+            </tr>
             <py:ready>
                 <?py
                 if self.source_accessor is None:
@@ -93,7 +93,7 @@ from woost.controllers.backoffice.useractions import \
                     py:for="member, language in diffs"/>
             </py:ready>
         </table>
-        
+
         <!-- Actions -->
         <py:woost.views.ActionBar
             py:id="item_body_buttons"

@@ -7,18 +7,18 @@ from cocktail.events import when
 from cocktail.persistence import MigrationStep
 
 def admin_members_restriction(members):
-    
+
     def add_permission(e):
 
         from woost.models import Role, ModifyMemberPermission
-        
+
         everybody_role = Role.require_instance(qname = "woost.everybody")
         permission = ModifyMemberPermission(
             matching_members = list(members),
             authorized = False
         )
         permission.insert()
-        
+
         for i, p in enumerate(everybody_role.permissions):
             if isinstance(p, ModifyMemberPermission) and p.authorized:
                 everybody_role.permissions.insert(i, permission)
@@ -101,7 +101,7 @@ def update_translations(e):
 
     for item in translated_items(PersistentObject):
         translations = TranslationMapping(
-            owner = item, 
+            owner = item,
             items = item.translations._items
         )
         item.translations._items = translations

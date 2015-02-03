@@ -19,8 +19,8 @@
     <div py:def="content">
         <div py:id="block_content">
             <py:ready>
-                <py:new 
-                    py:element="block.create_view()" 
+                <py:new
+                    py:element="block.create_view()"
                     py:for="block in self.blocks"
                     py:where="block.enabled"/>
             </py:ready>

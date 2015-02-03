@@ -28,7 +28,7 @@ class HTMLRenderer(ContentRenderer):
     def can_render(self, item):
         return (
             isinstance(item, Publishable)
-            and item.mime_type in self.mime_types            
+            and item.mime_type in self.mime_types
             and item.is_accessible(
                 user = User.get_instance(qname = "woost.anonymous_user")
             )
@@ -40,15 +40,15 @@ class HTMLRenderer(ContentRenderer):
 
         try:
             temp_image_file = os.path.join(temp_path, "thumbnail.png")
-            
+
             command = "python -m woost.models.rendering.renderurl %s %s" \
                 % (item.get_uri(host = "."), temp_image_file)
-            
+
             if window_width is not None:
                 command += " --min-width %d" % window_width
-            
+
             if window_height is not None:
-                command += " --min-width %d" % window_height 
+                command += " --min-width %d" % window_height
 
             Popen(command, shell = True).wait()
             return Image.open(temp_image_file)

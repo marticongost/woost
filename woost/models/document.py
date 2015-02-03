@@ -28,7 +28,7 @@ class Document(Publishable):
 
     members_order = (
         "title",
-        "inner_title",        
+        "inner_title",
         "template",
         "description",
         "keywords",
@@ -109,7 +109,7 @@ class Document(Publishable):
         selector_default_type = File,
         related_end = schema.Collection()
     )
- 
+
     children = schema.Collection(
         items = "woost.models.Publishable",
         bidirectional = True,
@@ -167,7 +167,7 @@ class Document(Publishable):
         """Renders the document using its template."""
         if self.template is None:
             raise ValueError("Can't render a document without a template")
-        
+
         values["publishable"] = self
         engine = get_rendering_engine(self.template.engine)
         return engine.render(values, template = self.template.identifier)

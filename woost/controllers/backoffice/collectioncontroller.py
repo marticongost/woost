@@ -17,7 +17,7 @@ from woost.controllers.backoffice.useractions import get_user_action
 
 
 class CollectionController(EditController, ContentController):
- 
+
     view_class = "woost.views.BackOfficeCollectionView"
 
     def __init__(self, member):
@@ -37,7 +37,7 @@ class CollectionController(EditController, ContentController):
     @cached_getter
     def edited_item_action(self):
         return EditController.action(self)
-    
+
     @cached_getter
     def collection_action(self):
         return self._get_user_action("collection_action")

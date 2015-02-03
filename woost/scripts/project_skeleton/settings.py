@@ -42,14 +42,14 @@ session.config["session.type"] = "file"
 #cherrypy.config.update({
 #    "global": {
 #        "request.throw_errors": True,
-#    }   
-#})  
+#    }
+#})
 #
-#_PROJECT_NAME_CMS.application_settings = { 
+#_PROJECT_NAME_CMS.application_settings = {
 #    "/": {
 #        "wsgi.pipeline": (('evalexc', evalexception.EvalException),),
-#        "wsgi.evalexc.global_conf": {}, 
+#        "wsgi.evalexc.global_conf": {},
 #        "wsgi.evalexc.xmlhttp_key": "_xml",
-#    }   
-#}   
+#    }
+#}
 

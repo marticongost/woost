@@ -28,7 +28,7 @@ class ImageFactoryMember(schema.String):
         kwargs.setdefault("enumeration", lambda ctx: image_factories.keys())
         schema.String.__init__(self, *args, **kwargs)
 
-    def translate_value(self, value, language = None, **kwargs):        
+    def translate_value(self, value, language = None, **kwargs):
         if not value:
             return ""
         else:
@@ -51,14 +51,14 @@ def parse_image_factory_parameters(parameters, string):
     chunk_count = len(chunks)
 
     for i, parameter in enumerate(parameters):
-        
+
         if i >= chunk_count:
             chunk = parameter.produce_default()
         else:
             chunk = chunks[i]
 
         value = parameter.parse_request_value(None, chunk)
-        
+
         for error in parameter.get_errors(value):
             raise error
 

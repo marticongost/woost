@@ -82,7 +82,7 @@ class ECommercePurchase(Item):
         ),
         editable = False
     )
-    
+
     total_taxes = schema.Decimal(
         member_group = "billing",
         editable = False,
@@ -97,7 +97,7 @@ class ECommercePurchase(Item):
         ),
         editable = False
     )
-    
+
     total = schema.Decimal(
         member_group = "billing",
         editable = False
@@ -125,10 +125,10 @@ class ECommercePurchase(Item):
             desc += u" (%s)" % u", ".join(options)
 
         return desc
-    
+
     def calculate_costs(self,
         apply_pricing = True,
-        apply_shipping_costs = True, 
+        apply_shipping_costs = True,
         apply_taxes = True
     ):
         from woost.extensions.ecommerce import ECommerceExtension
@@ -185,7 +185,7 @@ class ECommercePurchase(Item):
 
         # Taxes
         purchase_taxes = purchase_costs["taxes"]
-        
+
         if apply_taxes:
             for tax in extension.taxes:
                 if tax.applies_to(self, purchase_costs):
@@ -199,7 +199,7 @@ class ECommercePurchase(Item):
 
         # Total
         purchase_costs["total"] = (
-            purchase_price["total"] 
+            purchase_price["total"]
           + purchase_shipping_costs["total"]
           + purchase_taxes["total"]
         )

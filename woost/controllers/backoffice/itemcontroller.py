@@ -34,7 +34,7 @@ from woost.controllers.backoffice.differencescontroller \
 class ItemController(BaseBackOfficeController):
 
     default_section = "fields"
-    
+
     diff = DifferencesController
 
     @cached_getter
@@ -71,7 +71,7 @@ class ItemController(BaseBackOfficeController):
 
     @cached_getter
     def collections(self):
-        
+
         relation_node = self.relation_node
         stack_relation = relation_node and relation_node.member.related_end
 
@@ -81,10 +81,10 @@ class ItemController(BaseBackOfficeController):
             if isinstance(member, schema.Collection)
             and not member.edit_inline
         ]
-    
+
     @event_handler
     def handle_traversed(cls, event):
-        
+
         controller = event.source
 
         # Require an edit stack with an edit node on top
@@ -100,7 +100,7 @@ class ItemController(BaseBackOfficeController):
                 ReadPermission,
                 target = controller.stack_node.item
             )
-    
+
     def _require_edit_node(self):
 
         redirect = False
@@ -128,7 +128,7 @@ class ItemController(BaseBackOfficeController):
         if not edit_stack \
         or not isinstance(edit_stack[-1], EditNode) \
         or (context_item and context_item.id != edit_stack[-1].item.id):
-            
+
             # New item
             if context_item is None:
                 content_type = get_parameter(
@@ -138,19 +138,19 @@ class ItemController(BaseBackOfficeController):
             # Existing item
             else:
                 item = context_item
-            
+
             node_class = resolve(item.edit_node_class)
             node = node_class(item)
             edit_stack.push(node)
             redirect = True
-            
+
             if not item.is_inserted:
                 node.initialize_new_item(
                     item,
                     get_current_user(),
                     self.visible_languages
                 )
-        
+
         # If the stack is modified a redirection is triggered so that any
         # further request mentions the new stack position in its parameters.
         # However, the redirection won't occur if the controller itself is the
@@ -185,7 +185,7 @@ class ItemController(BaseBackOfficeController):
             )
         else:
             params = {}
-        
+
         raise cherrypy.HTTPRedirect(
             self.edit_uri(
                 item if item.is_inserted else item.__class__,

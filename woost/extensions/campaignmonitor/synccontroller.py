@@ -12,7 +12,7 @@ from cocktail.persistence import datastore
 from woost.models import changeset_context, get_current_user
 from woost.controllers.backoffice.basebackofficecontroller \
     import BaseBackOfficeController
-from woost.extensions.campaignmonitor import CampaignMonitorExtension 
+from woost.extensions.campaignmonitor import CampaignMonitorExtension
 from woost.extensions.campaignmonitor.campaignmonitorlist import \
     CampaignMonitorList
 
@@ -25,17 +25,17 @@ class SyncCampaignMonitorListsController(BaseBackOfficeController):
 
         if "cancel" in kwargs:
             raise cherrypy.HTTPRedirect(self.edit_uri(
-                CampaignMonitorExtension.instance, 
-                "lists", 
+                CampaignMonitorExtension.instance,
+                "lists",
                 edit_stack = None
             ))
-        
+
         return BaseBackOfficeController.__call__(self, *args, **kwargs)
 
     def submit(self):
 
         from woost.extensions.campaignmonitor import CampaignMonitorExtension
-        extension = CampaignMonitorExtension.instance    
+        extension = CampaignMonitorExtension.instance
         user = get_current_user()
 
         with changeset_context(author = user) as changeset:

@@ -45,7 +45,7 @@ class FileEditNode(PublishableEditNode):
             member_params = {"before": "image_effects"}
         else:
             member_params = {}
-        
+
         form_schema.add_member(
             FileUpload("upload",
                 hash_algorithm = "md5",
@@ -54,7 +54,7 @@ class FileEditNode(PublishableEditNode):
             ),
             **member_params
         )
-        
+
         if form_schema.get_member("local_path") \
         and not (self.item.is_inserted and not self.item.local_path):
             @form_schema.add_validation
@@ -69,7 +69,7 @@ class FileEditNode(PublishableEditNode):
         return form_schema
 
     def iter_changes(self, source = None):
-        
+
         for member, language in PublishableEditNode.iter_changes(self, source):
 
             # Ignore differences on the upload field if no file has been
@@ -100,7 +100,7 @@ class FileEditNode(PublishableEditNode):
                 cherrypy.request.params.get("image_effects")
 
         if os.path.exists(src):
-            
+
             dest = stack_node.item.file_path
 
             if os.path.exists(dest):
@@ -114,7 +114,7 @@ class ExportUploadInfo(schema.Rule):
     def adapt_object(self, context):
 
         file_name = context.get("file_name")
-        
+
         if file_name and not context.get("local_path", None):
             context.set("upload", {
                 "id": None,

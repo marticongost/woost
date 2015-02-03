@@ -26,7 +26,7 @@ class SyncVimeoController(FormControllerMixin, BaseBackOfficeController):
 
         if "cancel" in kwargs:
             raise cherrypy.HTTPRedirect(self.contextual_uri())
-        
+
         return BaseBackOfficeController.__call__(self, *args, **kwargs)
 
     @cached_getter
@@ -46,9 +46,9 @@ class SyncVimeoController(FormControllerMixin, BaseBackOfficeController):
 
         # Read form data
         FormControllerMixin.submit(self)
-        
+
         from woost.extensions.vimeo import VimeoExtension
-        extension = VimeoExtension.instance        
+        extension = VimeoExtension.instance
         user = get_current_user()
 
         with changeset_context(author = user) as changeset:
