@@ -8,7 +8,7 @@
 -----------------------------------------------------------------------------*/
 
 cocktail.bind(".ContentTypePickerDropdown", function ($dropdown) {
-    
+
     var $picker = $dropdown.find(".ContentTypePicker");
 
     function showSelection() {

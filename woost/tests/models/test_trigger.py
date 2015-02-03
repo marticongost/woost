@@ -33,7 +33,7 @@ class TriggerMatchTestCase(BaseTestCase):
     def test_user(self):
 
         from woost.models import ContentTrigger, Item, Role, User
-        
+
         r1 = Role()
         r2 = Role()
         r3 = Role(base_roles = [r2])
@@ -41,7 +41,7 @@ class TriggerMatchTestCase(BaseTestCase):
         u1 = User(roles = [r1])
         u2 = User(roles = [r2])
         u3 = User(roles = [r3])
-        
+
         self.assert_match(
             ContentTrigger(matching_roles = [r2]),
             (Item(), u2, {}, True),
@@ -60,7 +60,7 @@ class TriggerMatchTestCase(BaseTestCase):
             User,
             set_current_user
         )
-                
+
         self.assert_match(
             ContentTrigger(matching_items = {
                 "type": "woost.models.publishable.Publishable"
@@ -93,7 +93,7 @@ class TriggerMatchTestCase(BaseTestCase):
             ModifyTrigger(matching_members = [
                 "woost.models.item.Item.qname",
                 "woost.models.document.Document.title"
-            ]),               
+            ]),
             (Item(), None, {"member": Item.qname}, True),
             (Item(), None, {"member": Item.global_id}, False),
             (Document(), None, {"member": Document.title}, True),
@@ -126,7 +126,7 @@ class TriggerInvocationTestCase(BaseTestCase):
         )
 
         BaseTestCase.setUp(self)
-        
+
         class TestTriggerResponse(TriggerResponse):
 
             def __init__(self, response_log, *args, **kwargs):
@@ -155,7 +155,7 @@ class TriggerInvocationTestCase(BaseTestCase):
         datastore.commit()
 
     def make_trigger(self, trigger_type, response_log = None, **kwargs):
-        
+
         from cocktail.persistence import datastore
         from woost.models.trigger import set_triggers_enabled
 
@@ -217,7 +217,7 @@ class BeforeTestCase(TriggerInvocationTestCase):
         assert response["context"]["values"]["id"] == id
 
     def test_before_insert(self):
-        
+
         from woost.models import InsertTrigger, Item
 
         # Declare the trigger
@@ -265,7 +265,7 @@ class BeforeTestCase(TriggerInvocationTestCase):
         item.qname = "foo"
         item.insert()
         assert not response_log
-        
+
         # Modify the inserted item two times. This should trigger the response
         # twice.
         item.qname = "bar"
@@ -289,7 +289,7 @@ class BeforeTestCase(TriggerInvocationTestCase):
         assert not response["batch"]
 
     def test_before_delete(self):
-         
+
         from woost.models import DeleteTrigger, Item
 
         # Declare the trigger
@@ -302,17 +302,17 @@ class BeforeTestCase(TriggerInvocationTestCase):
         # Create and insert two items
         item1 = Item()
         item1.insert()
-        
+
         item2 = Item()
-        item2.insert()        
-        
+        item2.insert()
+
         # Delete the items. This should trigger the response twice.
         item1.delete()
         assert len(response_log) == 1
 
         item2.delete()
         assert len(response_log) == 2
-         
+
         response = response_log[0]
         assert response["trigger"] is trigger
         assert response["items"] == [item1]
@@ -339,28 +339,28 @@ class BeforeTestCase(TriggerInvocationTestCase):
 
         create_trigger = self.make_trigger(
             CreateTrigger,
-            response_log,            
+            response_log,
             execution_point = "before",
             batch_execution = False
         )
 
         insert_trigger = self.make_trigger(
             InsertTrigger,
-            response_log,            
+            response_log,
             execution_point = "before",
             batch_execution = False
         )
 
         modify_trigger = self.make_trigger(
             ModifyTrigger,
-            response_log,            
+            response_log,
             execution_point = "before",
             batch_execution = False
         )
 
         delete_trigger = self.make_trigger(
             DeleteTrigger,
-            response_log,            
+            response_log,
             execution_point = "before",
             batch_execution = False
         )
@@ -408,10 +408,10 @@ class BeforeTestCase(TriggerInvocationTestCase):
 class AfterTestCase(TriggerInvocationTestCase):
 
     def test_after_insert(self):
-        
+
         from cocktail.persistence import datastore
         from woost.models import InsertTrigger, Item
-                
+
         # Declare the trigger
         trigger, response_log = self.make_trigger(
             InsertTrigger,
@@ -441,7 +441,7 @@ class AfterTestCase(TriggerInvocationTestCase):
         assert not response["batch"]
 
     def test_after_modify(self):
-        
+
         from cocktail.persistence import datastore
         from woost.models import ModifyTrigger, Item
 
@@ -459,7 +459,7 @@ class AfterTestCase(TriggerInvocationTestCase):
         item.insert()
         datastore.commit()
         assert not response_log
-        
+
         # Modify the inserted item, but abort the transaction. Again, this
         # shouldn't trigger any response.
         item.qname = "bar"
@@ -480,7 +480,7 @@ class AfterTestCase(TriggerInvocationTestCase):
         assert not response["batch"]
 
     def test_after_delete(self):
-        
+
         from cocktail.persistence import datastore
         from woost.models import DeleteTrigger, Item
 
@@ -495,7 +495,7 @@ class AfterTestCase(TriggerInvocationTestCase):
         item = Item()
         item.insert()
         datastore.commit()
-        
+
         # Delete the item, but abort the transaction. This shouldn't trigger
         # the response.
         item.delete()
@@ -529,21 +529,21 @@ class AfterTestCase(TriggerInvocationTestCase):
 
         insert_trigger = self.make_trigger(
             InsertTrigger,
-            response_log,            
+            response_log,
             execution_point = "after",
             batch_execution = False
         )
 
         modify_trigger = self.make_trigger(
             ModifyTrigger,
-            response_log,            
+            response_log,
             execution_point = "after",
             batch_execution = False
         )
 
         delete_trigger = self.make_trigger(
             DeleteTrigger,
-            response_log,            
+            response_log,
             execution_point = "after",
             batch_execution = False
         )
@@ -592,7 +592,7 @@ class BatchTestCase(TriggerInvocationTestCase):
 
         from cocktail.persistence import datastore
         from woost.models import InsertTrigger, Item
-                
+
         # Declare the trigger
         trigger, response_log = self.make_trigger(
             InsertTrigger,
@@ -605,7 +605,7 @@ class BatchTestCase(TriggerInvocationTestCase):
         item1 = Item()
         item1.insert()
         assert not response_log
-        
+
         item2 = Item()
         item2.insert()
         assert not response_log
@@ -616,7 +616,7 @@ class BatchTestCase(TriggerInvocationTestCase):
         # Create and insert two items, and commit the transaction. The response
         # should be triggered just once.
         item1 = Item()
-        item1.insert()        
+        item1.insert()
         item2 = Item()
         item2.insert()
         datastore.commit()
@@ -651,7 +651,7 @@ class BatchTestCase(TriggerInvocationTestCase):
         item2.insert()
         datastore.commit()
         assert not response_log
-        
+
         # Modify the inserted items, but abort the transaction. Again, this
         # shouldn't trigger any response.
         item1.qname = "bar"
@@ -694,7 +694,7 @@ class BatchTestCase(TriggerInvocationTestCase):
         item2 = Item()
         item2.insert()
         datastore.commit()
-        
+
         # Delete the items, but abort the transaction. This shouldn't trigger
         # the response.
         item1.delete()

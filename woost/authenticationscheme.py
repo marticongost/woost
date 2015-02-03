@@ -52,7 +52,7 @@ class AuthenticationScheme(object):
             else:
                 set_current_user(user)
 
-    def process_login(self):        
+    def process_login(self):
         params = cherrypy.request.params
         if "authenticate" in params:
             self.login(
@@ -60,7 +60,7 @@ class AuthenticationScheme(object):
                 params.get("password")
             )
 
-            # Request the current location again, with all authentication 
+            # Request the current location again, with all authentication
             # parameters stripped
             location = Location.get_current()
             for params in (location.query_string, location.form_data):
@@ -110,7 +110,7 @@ class AuthenticationScheme(object):
             params = {self.identifier_field.name: identifier}
             user = User.get_instance(**params)
 
-            if user and user.enabled and user.test_password(password):            
+            if user and user.enabled and user.test_password(password):
                 self.set_user_session(user)
                 return user
 

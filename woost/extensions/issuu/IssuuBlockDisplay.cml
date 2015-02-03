@@ -3,8 +3,8 @@
 <py:woost.extensions.blocks.BlockDisplay
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:py="http://www.whads.com/ns/cocktail/templates">
-    
-    <py:with py:element="self.content_preview">        
+
+    <py:with py:element="self.content_preview">
         <py:woost.views.Image
             py:id="thumbnail"
             py:image="@{self.block.issuu_document}"

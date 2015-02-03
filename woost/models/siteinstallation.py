@@ -64,7 +64,7 @@ class SiteInstallation(Item):
 
     def test_password(self, password):
         """Indicates if the user's password matches the given string.
-        
+
         @param password: An unencrypted string to tests against the user's
             encrypted password.
         @type password: str

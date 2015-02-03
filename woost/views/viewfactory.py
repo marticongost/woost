@@ -80,7 +80,7 @@ class ViewFactory(object):
                 new_handlers.append((id, handler))
                 added = True
             new_handlers.append((prev_id, prev_handler))
-        
+
         self._type_mapping[cls] = new_handlers
 
         if not added:
@@ -109,7 +109,7 @@ class ViewFactory(object):
             if prev_id == anchor:
                 new_handlers.append((id, handler))
                 added = True
-        
+
         self._type_mapping[cls] = new_handlers
 
         if not added:
@@ -179,7 +179,7 @@ def video_player(item, parameters):
         if player_settings:
             return player_settings.create_player(item)
 
-publishable_view_factory.register(Publishable, "video_player", video_player) 
+publishable_view_factory.register(Publishable, "video_player", video_player)
 
 def image_gallery(item, parameters):
     if item.resource_type == "image":
@@ -188,7 +188,7 @@ def image_gallery(item, parameters):
         view.labels_visible = False
         return view
 
-publishable_view_factory.register(Publishable, "image_gallery", image_gallery) 
+publishable_view_factory.register(Publishable, "image_gallery", image_gallery)
 
 publishable_view_factory.register(
     Publishable,
@@ -206,10 +206,10 @@ def video_player_dialog(item, parameters):
         return view
 
 publishable_grid_view_factory.register(
-    Publishable, 
+    Publishable,
     "video_player_dialog",
     video_player_dialog
-) 
+)
 publishable_grid_view_factory.register(
     Publishable,
     "publishable_view_factory",

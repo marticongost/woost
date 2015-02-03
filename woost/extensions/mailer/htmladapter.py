@@ -29,7 +29,7 @@ class HTMLAdapter(object):
             href = element.get("href")
             if href:
                 element["href"] = self._transform_url(
-                    href, 
+                    href,
                     node = element
                 )
 
@@ -37,14 +37,14 @@ class HTMLAdapter(object):
             src = element.get("src")
             if src:
                 element["src"] = self._transform_url(
-                    src, 
+                    src,
                     node = element
                 )
-        
+
         return str(self.soup).decode("utf-8")
 
     def _transform_url(self, url, node = None):
- 
+
         if url.startswith("mailto:"):
             return url
 

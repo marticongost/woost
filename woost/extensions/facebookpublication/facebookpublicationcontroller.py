@@ -47,7 +47,7 @@ class FacebookPublicationController(BaseBackOfficeController):
             schema.Collection("published_languages",
                 items = schema.String(
                     translate_value = lambda value, language = None, **kwargs:
-                        "" if not value 
+                        "" if not value
                            else translations(value, language, **kwargs),
                     enumeration = lambda ctx: self.eligible_languages
                 ),
@@ -87,15 +87,15 @@ class FacebookPublicationController(BaseBackOfficeController):
 
     @event_handler
     def handle_before_request(cls, e):
-        
+
         controller = e.source
-        
+
         if not controller.allowed_publication_targets:
             raise cherrypy.HTTPError(403, "Forbidden")
 
     @request_property
     def allowed_publication_targets(self):
-            
+
         from woost.extensions.facebookpublication \
             import FacebookPublicationExtension
 
@@ -131,7 +131,7 @@ class FacebookPublicationController(BaseBackOfficeController):
     @request_property
     def selection(self):
         return get_parameter(
-            schema.Collection("selection", 
+            schema.Collection("selection",
                 items = schema.Reference(
                     type = Publishable,
                     required = True
@@ -155,7 +155,7 @@ class FacebookPublicationController(BaseBackOfficeController):
         return cherrypy.request.params.get("action")
 
     def submit(self):
-        
+
         if self.action == "close":
             self.go_back()
 
@@ -171,7 +171,7 @@ class FacebookPublicationController(BaseBackOfficeController):
             og = OpenGraphExtension.instance
 
         for target in targets:
-            
+
             if check:
                 posts = target.feed_posts()
 
@@ -183,12 +183,12 @@ class FacebookPublicationController(BaseBackOfficeController):
                                 uri = og.get_properties(publishable)["og:url"]
 
                             results.append((
-                                publishable, 
+                                publishable,
                                 target,
                                 language,
                                 first(
                                     post
-                                    for post in posts 
+                                    for post in posts
                                     if post.get("link") == uri
                                 )
                             ))

@@ -80,7 +80,7 @@ class Synchronization(object):
         elif isinstance(data, list):
             return [self.__stabilize(value) for value in data]
         else:
-            return data                
+            return data
 
     def serialize_object_state(self, obj):
         return dumps(self.export_object_state(obj))
@@ -137,7 +137,7 @@ class Synchronization(object):
             return value
 
     def import_object_state(self, obj, state):
-        
+
         if isinstance(obj.__class__, schema.Schema):
             obj_schema = obj.__class__
         else:
@@ -147,7 +147,7 @@ class Synchronization(object):
 
             if key == "__class__":
                 continue
-            
+
             member = obj_schema.get_member(key)
             if member is None:
                 continue
@@ -165,7 +165,7 @@ class Synchronization(object):
             schema.set(obj, member, value)
 
     def import_value(self, member, value):
-        
+
         if value is None:
             return None
         elif isinstance(member, schema.Reference):
@@ -201,11 +201,11 @@ class Synchronization(object):
     def _sync_request(self, action):
 
         url = (
-            self.remote_installation_url.rstrip("/") 
+            self.remote_installation_url.rstrip("/")
             + "/cms/synchronization/"
             + action
         )
- 
+
         request = urllib2.Request(url)
 
         # Add authentication headers
@@ -291,7 +291,7 @@ class Synchronization(object):
                     item_remote_state,
                     remote_state[global_id],
                 )
-                    
+
                 changes[global_id] = {
                     "local": local_copy,
                     "remote": item_remote_state,
@@ -325,7 +325,7 @@ def get_manifest():
 
 def rebuild_manifest(eager = True):
     datastore.root[MANIFEST_KEY] = manifest = OOBTree()
-    
+
     if eager:
         sync = Synchronization()
 
@@ -357,7 +357,7 @@ def _invalidate_manifest(e):
 
     if not obj.is_inserted:
         return
-    
+
     # Elegibility for synchronization changed
     if e.member is Item.synchronizable:
 

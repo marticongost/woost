@@ -4,7 +4,7 @@ from cocktail.schema import SchemaClass
 from cocktail.controllers import context
 from woost import app
 from woost.models import (
-    get_current_user,    
+    get_current_user,
     type_groups,
     Item,
     CreatePermission,

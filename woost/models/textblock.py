@@ -168,7 +168,7 @@ class TextBlock(Block):
 
     def init_view(self, view):
         Block.init_view(self, view)
-        
+
         if self.element_type == "dd":
             view.tag = None
             view.content_wrapper.tag = "dd"

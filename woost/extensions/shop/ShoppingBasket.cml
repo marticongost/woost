@@ -12,7 +12,7 @@ from cocktail.controllers import context
         self._uri = context["cms"].contextual_uri
         ?>
     </py:ready>
-    
+
     <td py:def="quantity_cell" py:args="entry, costs">
         <form action="${self._uri('update')}">
             <input class="quantity" type="text" name="quantity" value="${entry.quantity}"/>
@@ -20,6 +20,6 @@ from cocktail.controllers import context
             <input class="button" type="submit" value="${translations('woost.extensions.shop.ShoppingBasket update button')}"/>
         </form>
     </td>
-       
+
 
 </py:woost.extensions.shop.ShopOrderTable>

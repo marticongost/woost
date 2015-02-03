@@ -41,7 +41,7 @@ class PaymentGateway(Item):
         required = True,
         translated = True
     )
-    
+
     test_mode = schema.Boolean(
         required = True,
         default = True
@@ -60,7 +60,7 @@ class PaymentGateway(Item):
     def initiate_payment(self, payment_id):
         """Begin a payment transaction, redirecting the user to the payment
         gateway.
-        
+
         @param payment_id: The identifier of the payment to execute.
         """
         url, params = self.get_payment_form_data(payment_id, get_language())
@@ -71,14 +71,14 @@ class PaymentGateway(Item):
         location.go()
 
     def get_payment_url(self, *args, **kwargs):
-        
+
         website = get_current_website()
         location = Location()
         location.relative = False
 
         if website.https_policy != "never":
             location.scheme = "https"
-            
+
         location.host = website.hosts[0]
         location.path_info = "payments/" + str(self.id)
         location.join_path(*args)
