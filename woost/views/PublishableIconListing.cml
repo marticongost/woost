@@ -6,7 +6,7 @@
 
     <?py-class
     image_factory = "icon16"
-    ?>    
+    ?>
 
     <li py:def="entry" py:args="publishable, publishable_index">
 

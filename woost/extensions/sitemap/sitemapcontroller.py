@@ -23,7 +23,7 @@ class SitemapController(BaseCMSController):
         ])
 
     def __call__(self):
-        
+
         output = []
         write = output.append
 
@@ -35,13 +35,13 @@ class SitemapController(BaseCMSController):
 
         for item in self.items:
             write(u"\t<url>")
-            
+
             item_uri = base_url + u"/" + uri(item).lstrip(u"/")
             write(u"\t\t<loc>%s</loc>" % item_uri)
-            
+
             date = item.last_update_time.strftime("%Y-%m-%d")
             write(u"\t\t<lastmod>%s</lastmod>" % date)
-            
+
             frequency = item.sitemap_change_frequency
             if frequency:
                 write(u"\t\t<changefreq>%s</changefreq>" % frequency)
@@ -50,8 +50,8 @@ class SitemapController(BaseCMSController):
             if priority:
                 write(u"\t\t<priority>%s</priority>" % priority)
 
-            write(u"\t</url>") 
-        
+            write(u"\t</url>")
+
         write(u"</urlset>")
         return u"\n".join(output)
 

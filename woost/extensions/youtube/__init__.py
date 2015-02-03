@@ -29,11 +29,11 @@ class YouTubeExtension(Extension):
         self.set("description",
             u"""Afegeix suport per vídeos de YouTube""",
             "ca"
-        )   
-        self.set("description",                
+        )
+        self.set("description",
             u"""Añade soporte para videos de YouTube""",
             "es"
-        )   
+        )
         self.set("description",
             u"""Adds support for YouTube videos""",
             "en"
@@ -44,17 +44,17 @@ class YouTubeExtension(Extension):
             strings,
             youtubevideo,
             videoplayersettings
-        )   
+        )
 
         self.install()
-     
+
     def _install(self):
         self._create_renderers()
 
     def _create_renderers(self):
 
         from woost.extensions.youtube.youtubevideorenderer \
-            import YouTubeVideoRenderer                                                                                                     
+            import YouTubeVideoRenderer
 
         # Look for the first chain renderer
         for renderer in Configuration.instance.renderers:

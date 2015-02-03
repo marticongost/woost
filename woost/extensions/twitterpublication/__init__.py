@@ -30,7 +30,7 @@ class TwitterPublicationExtension(Extension):
             u"""Publica continguts del lloc web al Twitter""",
             "ca"
         )
-        self.set("description",            
+        self.set("description",
             u"""Publica contenidos del sitio web en Twitter""",
             "es"
         )
@@ -40,14 +40,14 @@ class TwitterPublicationExtension(Extension):
         )
 
     def _load(self):
-        
+
         from woost.extensions.twitterpublication import (
             strings,
             tweetuseraction,
             twitterauthuseraction,
             tweetpermission
         )
-        
+
         from woost.extensions.twitterpublication.twitterpublicationtarget \
             import TwitterPublicationTarget
 
@@ -74,14 +74,14 @@ class TwitterPublicationExtension(Extension):
         from woost.models import Role
         from woost.extensions.twitterpublication.tweetpermission \
             import TweetPermission
-        
+
         # By default, only administrator users can tweet content
         permission = TweetPermission()
         permission.matching_items = {
             "type": "woost.models.publishable.Publishable"
         }
         permission.insert()
-        
+
         admins = Role.require_instance(qname = "woost.administrators")
         admins.permissions.append(permission)
 

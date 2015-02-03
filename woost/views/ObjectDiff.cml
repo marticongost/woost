@@ -11,7 +11,7 @@ from woost.controllers.backoffice.useractions import \
 <div
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:py="http://www.whads.com/ns/cocktail/templates">
-    
+
     <?py-class
     source = None
     source_accessor = None
@@ -52,9 +52,9 @@ from woost.controllers.backoffice.useractions import \
         </td>
         <td py:local_id="new_value">
             <div class="diff_unit" py:for="unit in diffs[1]">${unit}</div>
-        </td>            
+        </td>
     </tr>
-             
+
     <p py:id="no_differences" py:visible="@{not self.changes}">
         ${translations("woost.views.ObjectDiff.no_differences")}
     </p>

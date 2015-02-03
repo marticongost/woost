@@ -15,10 +15,10 @@ cocktail.bind(".FacebookPublicationView", function ($view) {
     var closing = false;
 
     if (this.action == "publish" && $resultsTable.length) {
-        
+
         var $fields = $view.find(".publication_form .fields");
         $fields.hide();
-        
+
         $submitButtons.hide();
 
         var $publishAgainLink = jQuery(cocktail.instantiate(

@@ -30,7 +30,7 @@
                 if self._is_selected(item):
                     label.add_class("original_position")
 
-                return label 
+                return label
 
             @refine(element)
             def create_slot(self, parent, position):
@@ -110,7 +110,7 @@
                             prev_slot.visible = False
                         else:
                             position += 1
-                        
+
                         prev_slot = slot
 
             ?>

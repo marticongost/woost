@@ -9,7 +9,7 @@ from cocktail.translations import DATE_STYLE_TEXT
 
     <?py-class
     date_style = DATE_STYLE_TEXT
-    ?>    
+    ?>
 
     <article py:def="entry" py:args="news, news_index">
         <h1 py:local_id="heading">

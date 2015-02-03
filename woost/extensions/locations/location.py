@@ -41,7 +41,7 @@ class Location(Item):
         ],
         text_search = False,
         translate_value = lambda value, language = None, **kwargs:
-            "" if not value 
+            "" if not value
             else translations(
                 "woost.extensions.locations.location_types." + value,
                 language,
@@ -80,13 +80,13 @@ class Location(Item):
         :rtype: `Location`
         """
         ascendant = self if include_self else self.parent
-        while ascendant is not None:                                                                                                                                                    
+        while ascendant is not None:
             yield ascendant
             ascendant = ascendant.parent
 
     def descend(self, include_self = False):
         """Iterates over the location's descendants.
-        
+
         :param include_self: If set to True, the location itself is yielded as
             the first element in the iteration.
         :type include_self: bool
@@ -122,7 +122,7 @@ class Location(Item):
 
     def get_ancestor_of_type(self, location_type, include_self = False):
         """Obtains the location's first ancestor of the given type.
-        
+
         :param location_type: The type of location to obtain; should match one
             of the values accepted by the `location_type` member.
         :type location_type: str
@@ -130,7 +130,7 @@ class Location(Item):
         :param include_self: If set to True, the location itself will be
             returned if it matches the indicated type. Otherwise, the location
             will be skipped and only its ancestors will be considered as
-            possible matches.            
+            possible matches.
 
         :return: The first ancestor of the location that matches the indicated
             type, or None if no such location can be found on the way to the
@@ -145,7 +145,7 @@ class Location(Item):
         while location is not None:
             if location.location_type == location_type:
                 return location
-            location = location.parent           
+            location = location.parent
 
     def get_child_location(self, code, recursive = True):
         """Retrieves the contained location that matches the indicated code.
@@ -200,7 +200,7 @@ class Location(Item):
         return location
 
     def list_level(self, depth):
-        
+
         if depth == 1:
             return self.locations
         else:

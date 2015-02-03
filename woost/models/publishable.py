@@ -19,7 +19,7 @@ from cocktail import schema
 from cocktail.schema.expressions import Expression
 from cocktail.persistence import datastore, MultipleValuesIndex
 from cocktail.controllers import (
-    make_uri, 
+    make_uri,
     percent_encode_uri,
     Location
 )
@@ -39,12 +39,12 @@ WEBSITE_PUB_INDEX_KEY = "woost.models.Publishable.per_website_publication_index"
 
 class Publishable(Item):
     """Base class for all site elements suitable for publication."""
-    
+
     instantiable = False
     cacheable = True
     edit_view = "woost.views.PublishableFieldsView"
     backoffice_heading_view = "woost.views.BackOfficePublishableHeading"
- 
+
     type_group = "publishable"
 
     groups_order = [
@@ -150,7 +150,7 @@ class Publishable(Item):
         listed_by_default = False,
         member_group = "navigation"
     )
-    
+
     hidden = schema.Boolean(
         required = True,
         default = False,
@@ -158,7 +158,7 @@ class Publishable(Item):
         member_group = "navigation"
     )
 
-    login_page = schema.Reference(        
+    login_page = schema.Reference(
         listed_by_default = False,
         member_group = "navigation"
     )
@@ -226,7 +226,7 @@ class Publishable(Item):
     )
 
     def get_effective_caching_policy(self, **context):
-        
+
         from woost.models import Configuration
 
         policies = [
@@ -274,11 +274,11 @@ class Publishable(Item):
         if event.member is cls.websites:
             publishable = event.source
             website = event.related_object
-            
+
             # Update the index
             if publishable.is_inserted and website.is_inserted:
                 index = cls.per_website_publication_index
-                
+
                 # No longer available to any website
                 if len(publishable.websites) == 1:
                     index.remove(None, publishable.id)
@@ -294,7 +294,7 @@ class Publishable(Item):
             index = cls.per_website_publication_index
             index.remove(website.id, publishable.id)
 
-            # Now available to any website            
+            # Now available to any website
             if publishable.is_inserted and not publishable.websites:
                 index.add(None, publishable.id)
 
@@ -332,7 +332,7 @@ class Publishable(Item):
             if index is None:
                 index = MultipleValuesIndex()
                 datastore.root[WEBSITE_PUB_INDEX_KEY] = index
-        
+
         return index
 
     @event_handler
@@ -363,7 +363,7 @@ class Publishable(Item):
     def get_ancestor(self, depth):
         """Obtain one of the item's ancestors, given its depth in the document
         tree.
-        
+
         @param depth: The depth level of the ancestor to obtain, with 0
             indicating the root of the tree. Negative indices are accepted, and
             they reverse the traversal order (-1 will point to the item itself,
@@ -399,7 +399,7 @@ class Publishable(Item):
 
     def descend_tree(self, include_self = False):
         """Iterate over the item's descendants.
-        
+
         @param include_self: Indicates if the object itself should be included
             in the iteration.
         @type include_self: bool
@@ -441,7 +441,7 @@ class Publishable(Item):
         now = datetime.now()
         return (self.start_date is None or self.start_date <= now) \
             and (self.end_date is None or self.end_date > now)
-    
+
     def is_published(self, language = None, website = None):
 
         if self.per_language_publication:
@@ -482,7 +482,7 @@ class Publishable(Item):
                 target = self
             )
             and (
-                not self.per_language_publication 
+                not self.per_language_publication
                 or user.has_permission(
                     ReadTranslationPermission,
                     language = require_language(language)
@@ -502,13 +502,13 @@ class Publishable(Item):
             IsAccessibleExpression(get_current_user())
         ]).select(*args, **kwargs)
 
-    def get_uri(self, 
-        path = None, 
+    def get_uri(self,
+        path = None,
         parameters = None,
         language = None,
         host = None,
         encode = True):
-        
+
         uri = app.url_resolver.get_path(self, language = language)
 
         if uri is not None:
@@ -571,7 +571,7 @@ class Publishable(Item):
 
     def get_cache_expiration(self):
         now = datetime.now()
-        
+
         start = self.start_date
         if start is not None and start > now:
             return start
@@ -652,15 +652,15 @@ class IsPublishedExpression(Expression):
                     exclude_max = True
                 )
             )
-            
+
             return dataset
-        
+
         return ((-1, 1), impl)
 
 
 class IsAccessibleExpression(Expression):
     """An expression that tests that items can be accessed by a user.
-    
+
     The expression checks both the publication state of the item and the
     read permissions for the specified user.
 
@@ -694,7 +694,7 @@ class IsAccessibleExpression(Expression):
                 )
 
             return dataset
-        
+
         return ((-1, 1), impl)
 
 
@@ -747,7 +747,7 @@ for category, mime_types in (
 
 def get_category_from_mime_type(mime_type):
     """Obtains the file category that best matches the indicated MIME type.
-    
+
     @param mime_type: The MIME type to get the category for.
     @type mime_type: str
 
@@ -763,6 +763,6 @@ def get_category_from_mime_type(mime_type):
 
         if prefix in ("image", "audio", "video"):
             return prefix
-    
+
     return mime_type_categories.get(mime_type, "other")
 

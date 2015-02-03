@@ -66,8 +66,8 @@ class RestrictedAccessExtension(Extension):
         if restriction is None:
             restriction = ReadPermission()
             restriction.qname = qname
-            restriction.authorized = False 
-             
+            restriction.authorized = False
+
         restriction.content_type = Publishable
         restriction.content_expression = \
             """items.add_filter(cls.access_restriction.not_equal(""))"""

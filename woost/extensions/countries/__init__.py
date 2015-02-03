@@ -53,7 +53,7 @@ class CountriesExtension(Extension):
             actualitzada a través d'Internet.""",
             "ca"
         )
-        self.set("description",            
+        self.set("description",
             u"""Proporciona acceso a la lista de países del mundo, actualizada
             a través de Internet.""",
             "es"
@@ -73,11 +73,11 @@ class CountriesExtension(Extension):
     )
 
     def _load(self):
-        
+
         from woost.extensions.countries import country, strings
 
         now = time()
-        
+
         if self.last_update is None \
         or now - self.last_update >= self.update_frequency * SECONDS_IN_A_DAY:
             try:
@@ -91,10 +91,10 @@ class CountriesExtension(Extension):
     def update_country_list(self):
         from woost.extensions.countries.country import Country
         error = None
-        
+
         database_modified = False
         service_uri = "http://www.lonelydrops.com/drops/1.0/list/%s/countries"
-    
+
         data_expr = re.compile(
             r"var\s+drops_countries_[a-z]{2}\s*=\s*([^;]+)",
             re.DOTALL
@@ -120,7 +120,7 @@ class CountriesExtension(Extension):
 
                 json = match.group(1)
                 json = json_property_normalization.sub(r'"\1"', json)
-                
+
                 try:
                     data = loads(json)
                 except Exception, error:
@@ -152,7 +152,7 @@ class CountriesExtension(Extension):
                     elif country.get("country_name", language) != name:
                         country.set("country_name", name, language)
                         database_modified = True
-        
+
         if error:
             raise error
 

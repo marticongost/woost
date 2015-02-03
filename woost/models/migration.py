@@ -9,18 +9,18 @@ from cocktail.persistence.migration import migration_steps
 from cocktail.persistence.utils import remove_broken_type
 
 def admin_members_restriction(members):
-    
+
     def add_permission(e):
 
         from woost.models import Role, ModifyMemberPermission
-        
+
         everybody_role = Role.require_instance(qname = "woost.everybody")
         permission = ModifyMemberPermission(
             matching_members = list(members),
             authorized = False
         )
         permission.insert()
-        
+
         for i, p in enumerate(everybody_role.permissions):
             if isinstance(p, ModifyMemberPermission) and p.authorized:
                 everybody_role.permissions.insert(i, permission)
@@ -103,7 +103,7 @@ def update_translations(e):
 
     for item in translated_items(PersistentObject):
         translations = TranslationMapping(
-            owner = item, 
+            owner = item,
             items = item.translations._items
         )
         item.translations._items = translations
@@ -172,7 +172,7 @@ def flag_implicit_roles(e):
         role.implicit = (role.qname in implicit_roles_qnames)
 
 #------------------------------------------------------------------------------
- 
+
 step = MigrationStep("Removed the File.local_path member")
 
 @step.processor("woost.models.file.File")
@@ -281,7 +281,7 @@ def add_multisite_support(e):
     config.secret_key = site_state.pop("secret_key")
 
     # Settings that now belong in Configuration, as regular fields
-    for key in (        
+    for key in (
         "login_page",
         "generic_error_page",
         "not_found_error_page",
@@ -410,7 +410,7 @@ step = MigrationStep("Expose models that where hidden in the Configuration model
 @when(step.executing)
 def expose_hidden_configuration(e):
     from woost.models import Configuration
-    
+
     config = Configuration.instance
 
     # restrictedaccess extension
@@ -492,7 +492,7 @@ step = MigrationStep("Removed drafts")
 
 @when(step.executing)
 def remove_drafts(e):
- 
+
     from cocktail.persistence import datastore
     from woost.models import (
         Item,
@@ -562,7 +562,7 @@ step = MigrationStep("Move the blocks extension into the woost core")
 
 @when(step.executing)
 def move_blocks_to_core(e):
-    
+
     from cocktail.persistence import datastore
     from woost.models import Item, Page, Template, Block, TextBlock
     from woost.models.rendering import Renderer
@@ -580,7 +580,7 @@ def move_blocks_to_core(e):
         except AttributeError:
             pass
         else:
-            block._Page_blocks = pages        
+            block._Page_blocks = pages
             del block._BlocksPage_blocks
 
     page_ids = datastore.root.pop("woost.models.standardpage.StandardPage-keys")
@@ -618,7 +618,7 @@ def move_blocks_to_core(e):
             "Page_blocks"
 
 #------------------------------------------------------------------------------
- 
+
 step = MigrationStep("Remove the Item.owner field")
 
 @when(step.executing)
@@ -714,7 +714,7 @@ def remove_document_resources(e):
             del document._branch_resources
         except AttributeError:
             pass
-        
+
         try:
             del document._page_resources
         except AttributeError:
@@ -759,14 +759,14 @@ def remove_document_resources(e):
                 permission.delete()
 
 #------------------------------------------------------------------------------
- 
+
 step = MigrationStep("Remove Template.engine")
 
 @when(step.executing)
 def remove_template_engine(e):
 
     from woost.models import Template
-    
+
     for template in Template.select():
         try:
             del template._engine
@@ -774,7 +774,7 @@ def remove_template_engine(e):
             pass
 
 #------------------------------------------------------------------------------
- 
+
 step = MigrationStep("Remove publication schemes")
 migration_steps["Instrument non relational collections"].require(step)
 
@@ -906,7 +906,7 @@ step = MigrationStep("Rename EmailTemplate.language to .language_expression")
 @when(step.executing)
 def rename_email_template_language(e):
     from woost.models import EmailTemplate
-    
+
     for tmpl in EmailTemplate.select():
         try:
             value = tmpl._language
@@ -917,7 +917,7 @@ def rename_email_template_language(e):
             tmpl._language_expression = value
 
 #------------------------------------------------------------------------------
- 
+
 step = MigrationStep("Ditch ContentPermission.matching_items")
 
 @when(step.executing)

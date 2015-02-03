@@ -57,12 +57,12 @@ from cocktail.controllers import Location
                     if len(parts) == 2:
                         location.query_string[parts[0].strip()] = parts[1].strip()
                 uri = unicode(location)
-            
+
             self.block_link.tag = "a"
             self.block_link["href"] = uri
 
             if self.block.link_opens_in_new_window:
-                self.block_link["target"] = "_blank"       
+                self.block_link["target"] = "_blank"
         ?>
     </py:ready>
 

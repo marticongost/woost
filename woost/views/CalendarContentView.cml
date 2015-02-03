@@ -11,7 +11,7 @@ from cocktail.controllers import view_state
 <py:woost.views.ContentView
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:py="http://www.whads.com/ns/cocktail/templates">
-        
+
     <?py-class
     content_view_id = "calendar"
     allow_sorting = False
@@ -25,12 +25,12 @@ from cocktail.controllers import view_state
     months = range(1, 13)
     week_days = range(7)
     first_month = 1
-    
+
     excluded_view_state_params = \
         ContentView.excluded_view_state_params | frozenset(["month", "year"])
 
     def _init_user_collection(self, user_collection):
-        
+
         ContentView._init_user_collection(self, user_collection)
 
         # Hide filters based on the calendar's date members
@@ -58,7 +58,7 @@ from cocktail.controllers import view_state
         # Find the selected date range
         self.today = date.today()
         date_type = self.date_members[0].type
-        
+
         self.year = user_collection.params.read(
             schema.Integer("year", default = self.today.year)
         )
@@ -72,13 +72,13 @@ from cocktail.controllers import view_state
             self.month = user_collection.params.read(
                 schema.Integer("month", min = 1, max = 12, default = self.today.month)
             )
-            start_date = date_type(self.year, self.month, 1)            
+            start_date = date_type(self.year, self.month, 1)
             q, r = divmod(self.month, 12)
             end_date = date_type(self.year + q, r + 1, 1)
 
         self._start_date = start_date
         self._end_date = end_date
-        
+
     def get_year_dates(self, year, first_month):
         dates = []
         for i in range(first_month, first_month + 12):
@@ -90,13 +90,13 @@ from cocktail.controllers import view_state
         return member.greater_equal(start_date).and_(member.lower(end_date))
 
     def get_calendar_matches(self):
-    
+
         # Add filters to the user collection for the selected date range
         subset = self.user_collection.subset.select()
         content_type = self.user_collection.type
         ids = set()
 
-        for member in self.date_members:                        
+        for member in self.date_members:
             date_expr = self.get_date_range_expression(
                 member,
                 self._start_date,
@@ -123,10 +123,10 @@ from cocktail.controllers import view_state
         return item.get(member)
 
     def _consume_entries(self, cell_date):
-        
+
         for member in self.date_members:
             member_entries = self._entries.get(member)
-            
+
             while member_entries:
                 comp = self._compare_dates(member_entries[0][0], cell_date)
 
@@ -156,7 +156,7 @@ from cocktail.controllers import view_state
         for item in self.get_calendar_matches():
             for member in self.date_members:
                 value = self.get_item_date(item, member)
-                if value is not None:                    
+                if value is not None:
                     member_entries = self._entries.get(member)
                     if member_entries is None:
                         member_entries = []
@@ -165,7 +165,7 @@ from cocktail.controllers import view_state
 
         for member_entries in self._entries.itervalues():
             member_entries.sort()
-        
+
         # Don't hide the calendar if there are no results
         self.collection_display.visible = True
         self.data_controls.visible = True
@@ -193,17 +193,17 @@ from cocktail.controllers import view_state
                 if self.calendar_layout == "year":
                     next["year"] = self.today.year + 1
                     prev["year"] = self.today.year - 1
-                
+
                 elif self.calendar_layout == "month":
                     current["month"] = self.today.month
-                    
+
                     if self.month == 1:
                         prev["year"] = self.year - 1
                         prev["month"] = 12
                     else:
                         prev["year"] = self.year
                         prev["month"] = self.month - 1
-                        
+
                     if self.month == 12:
                         next["year"] = self.year + 1
                         next["month"] = 1
@@ -224,7 +224,7 @@ from cocktail.controllers import view_state
             </div>
 
             <div py:id="navigation_controls">
-                
+
                 <select
                     py:id="month_control"
                     name="month"
@@ -251,7 +251,7 @@ from cocktail.controllers import view_state
 
     <div py:def="collection_display">
         <py:ready>
-    
+
             <!-- Year layout -->
             <py:block py:if="self.calendar_layout == 'year'">
                 <h1><py:ready>${self.year}</py:ready></h1>
@@ -321,14 +321,14 @@ from cocktail.controllers import view_state
                         element.add_class("active" if day else "inactive")
                         element.add_class("weekday%d" % week_day)
                         cell_date = None
-                        
+
                         if day:
                             cell_date = date(year, month, day)
                             element.set_client_param("date", self.date_members[0].serialize_request_value(cell_date))
 
                             if year == self.today.year and month == self.today.month and day == self.today.day:
                                 element.add_class("today")
-                        
+
                         cell_entries = list(self._consume_entries(cell_date)) if cell_date else None
                         ?>
                         <py:new py:element="month_calendar.create_cell(cell_date, cell_entries)"/>

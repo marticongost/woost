@@ -25,12 +25,12 @@ class FeedFieldsController(ItemFieldsController, ContentController):
     @cached_getter
     def persistence_prefix(self):
         return "Feed%s" % self.stack_node.item.id
-    
+
     def _handle_form_data(self):
 
         form_data = self.stack_node.form_data
-        query_parameters = form_data["query_parameters"]        
-        ItemFieldsController._handle_form_data(self)                
+        query_parameters = form_data["query_parameters"]
+        ItemFieldsController._handle_form_data(self)
         form_data["query_parameters"] = query_parameters
 
         source = self.query_parameters_source
@@ -42,7 +42,7 @@ class FeedFieldsController(ItemFieldsController, ContentController):
         for key, value in source.iteritems():
             if key.startswith("filter_"):
                 query_parameters[key] = value
-        
+
     @cached_getter
     def query_parameters_source(self):
         source = self.stack_node.form_data["query_parameters"].copy()

@@ -58,7 +58,7 @@ def remove_broken_type(
 def delete_history():
 
     for item in Item.select():
-        if not is_broken(item):            
+        if not is_broken(item):
             try:
                 del item._changes
             except AttributeError:

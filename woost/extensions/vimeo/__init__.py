@@ -29,11 +29,11 @@ class VimeoExtension(Extension):
         self.set("description",
             u"""Afegeix suport per vídeos de Vimeo""",
             "ca"
-        )   
-        self.set("description",                
+        )
+        self.set("description",
             u"""Añade soporte para videos de Vimeo""",
             "es"
-        )   
+        )
         self.set("description",
             u"""Adds support for Vimeo videos""",
             "en"
@@ -44,17 +44,17 @@ class VimeoExtension(Extension):
             strings,
             vimeovideo,
             videoplayersettings
-        )   
+        )
 
         self.install()
-     
+
     def _install(self):
         self._create_renderers()
 
     def _create_renderers(self):
 
         from woost.extensions.vimeo.vimeovideorenderer \
-            import VimeoVideoRenderer                                                                                                     
+            import VimeoVideoRenderer
 
         # Look for the first chain renderer
         for renderer in Configuration.instance.renderers:

@@ -31,7 +31,7 @@ class SendEmailPermission(Permission):
 
             if verbose:
                 print permission_doesnt_match_style("Mailing list doesn't match")
-            
+
             return False
 
         return Permission.match(self, verbose)

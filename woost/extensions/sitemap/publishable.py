@@ -37,7 +37,7 @@ Publishable.add_member(
             "never"
         ],
         translate_value = lambda value, language = None, **kwargs:
-            "" if not value 
+            "" if not value
             else translations(
                 "woost.extensions.sitemap.change_frequency " + value,
                 language,
