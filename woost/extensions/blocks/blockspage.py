@@ -11,7 +11,7 @@ from woost.extensions.blocks.block import Block
 class BlocksPage(Document):
 
     blocks = schema.Collection(
-        items = schema.Reference(type = Block),        
+        items = schema.Reference(type = Block),
         related_end = schema.Collection(),
         member_group = "content"
     )

@@ -53,7 +53,7 @@ class ItemLabel(Element):
             img["src"] = context["cms"].image_uri(self.item, image_factory)
 
         return img
-    
+
     def get_label(self):
         return translations(self.item, referer = self.referer)
 

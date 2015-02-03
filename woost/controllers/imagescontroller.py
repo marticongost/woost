@@ -35,7 +35,7 @@ class ImagesController(BaseCMSController):
             for cls in Item.schema_tree():
                 if cls.full_name == id:
                     item = cls
-                    break            
+                    break
         else:
             item = Item.get_instance(item_id)
 
@@ -68,18 +68,18 @@ class ImagesController(BaseCMSController):
         else:
             factory_name = processing
             format = None
-    
+
         # Deny access to unauthorized elements
         get_current_user().require_permission(
             RenderPermission,
             target = item,
             image_factory = factory_name
         )
- 
+
         try:
             image_cache_file = require_rendering(
-                item, 
-                factory_name, 
+                item,
+                factory_name,
                 format,
                 parameters
             )

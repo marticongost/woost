@@ -31,7 +31,7 @@ class BlocksExtension(Extension):
             u"""Permet la creació de contingut utilitzant blocs""",
             "ca"
         )
-        self.set("description",            
+        self.set("description",
             u"""Permite la creación de contenido usando bloques""",
             "es"
         )
@@ -43,8 +43,8 @@ class BlocksExtension(Extension):
     def _load(self):
 
         from woost.extensions.blocks import (
-            strings, 
-            block, 
+            strings,
+            block,
             containerblock,
             slideshowblock,
             imagegalleryblock,

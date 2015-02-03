@@ -41,7 +41,7 @@ Trigger.add_member(
 _base_matches = Trigger.matches
 
 def _matches(self, item, action, user, **context):
-    
+
     if not _base_matches(self, item, action, user, **context):
         return False
 

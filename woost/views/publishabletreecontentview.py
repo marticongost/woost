@@ -13,7 +13,7 @@ from woost.models import Site, Document
 TreeContentView = templates.get_class("woost.views.TreeContentView")
 
 class PublishableTreeContentView(TreeContentView):
- 
+
     children_collection = Document.children
 
     def __init__(self, *args, **kwargs):

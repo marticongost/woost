@@ -17,7 +17,7 @@ from woost.extensions.payments.paymentgateway \
 
 class DummyPaymentGateway(CMSPaymentGateway, PaymentGateway):
     """A simulated payment gateway, useful for testing purposes."""
-    
+
     instantiable = True
     members_order = [
         "payment_status",

@@ -24,7 +24,7 @@ from woost.models.language import Language
 
 
 class File(Publishable):
- 
+
     instantiable = True
 
     edit_view = "woost.views.FileFieldsView"
@@ -56,7 +56,7 @@ class File(Publishable):
         translated = True,
         member_group = "content"
     )
-    
+
     file_name = schema.String(
         required = True,
         editable = False,
@@ -84,7 +84,7 @@ class File(Publishable):
         text_search = False,
         member_group = "content"
     )
-    
+
     image_effects = schema.String(
         listed_by_default = False,
         searchable = False,
@@ -113,8 +113,8 @@ class File(Publishable):
 
         if file_path:
             if not os.path.isabs(file_path):
-                file_path = app.path(file_path)            
-        else:            
+                file_path = app.path(file_path)
+        else:
             file_path = app.path("upload", str(self.id))
 
         return file_path
@@ -127,7 +127,7 @@ class File(Publishable):
         hash = None,
         encoding = "utf-8"):
         """Imports a file into the site.
-        
+
         @param path: The path to the file that should be imported.
         @type path: str
 
@@ -138,11 +138,11 @@ class File(Publishable):
         @param languages: The set of languages that the created file will be
             translated into.
         @type languages: str set
-       
+
         @return: The created file.
         @rtype: L{File}
         """
-        
+
         # The default behavior is to translate created files into all the languages
         # defined by the site
         if languages is None:
@@ -150,7 +150,7 @@ class File(Publishable):
 
         file_name = os.path.split(path)[1]
         title, ext = os.path.splitext(file_name)
-        
+
         if encoding:
             if isinstance(title, str):
                 title = title.decode(encoding)
@@ -161,7 +161,7 @@ class File(Publishable):
         title = title[0].upper() + title[1:]
 
         file = cls()
-        
+
         file.file_size = os.stat(path).st_size
         file.file_hash = hash or file_hash(path)
         file.file_name = file_name
@@ -170,7 +170,7 @@ class File(Publishable):
         mime_type = guess_type(file_name, strict = False)
         if mime_type:
             file.mime_type = mime_type[0]
-        
+
         for language in languages:
             file.set("title", title, language)
 

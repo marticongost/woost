@@ -39,7 +39,7 @@ class ImageGalleryBlock(Block):
         enumeration = ["thumbnails", "slideshow"],
         edit_control = "cocktail.html.RadioSelector",
         translate_value = lambda value, language = None, **kwargs:
-            "" if not value 
+            "" if not value
                else translations(
                    "ImageGalleryBlock.gallery_type-%s" % value,
                    language,

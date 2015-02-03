@@ -13,7 +13,7 @@ def apply_effects_chain(image, effects_chain):
     return image
 
 def normalize_effects_chain(effects_chain):
-  
+
     if not effects_chain:
         return []
 
@@ -41,7 +41,7 @@ def parse_effect(effects_string):
 
     args = []
     kwargs = {}
-    
+
     if pos != -1:
         if effects_string[-1] != ")":
             raise ValueError(
@@ -50,7 +50,7 @@ def parse_effect(effects_string):
 
         for arg in effects_string[pos + 1:-1].split(","):
             parts = arg.split("=")
-            
+
             # Positional parameters
             if len(parts) == 1:
                 value = _parse_value(arg)
@@ -75,7 +75,7 @@ def _parse_value(value):
 
     if value in ("True", "False"):
         return bool(value)
-    
+
     if "." in value:
         try:
             value = float(value)

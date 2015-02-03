@@ -83,7 +83,7 @@ class ShopOrderCostFilter(UserFilter):
                     include_discounts = self.include_discounts
                 )["total"] > self.value
             )
-        elif self.operator == "ge": 
+        elif self.operator == "ge":
             return CustomExpression(
                 lambda item: item.calculate_cost(
                     include_shipping = self.include_shipping,

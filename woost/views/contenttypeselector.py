@@ -23,8 +23,8 @@ class ContentTypeSelector(Element):
     def _build(self):
         self.add_class("selector")
 
-    def _ready(self):        
-        
+    def _ready(self):
+
         self.tree = self.create_tree()
         self.label = self.create_label()
 

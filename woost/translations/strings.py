@@ -557,7 +557,7 @@ translations.define(
     en = u"Can't insert an element into itself."
 )
 
-def _selection_error_ca(instance):    
+def _selection_error_ca(instance):
     if instance.action.min and instance.selection_size < instance.action.min:
         bound = instance.action.min
         bound_label = "mínim"
@@ -568,8 +568,8 @@ def _selection_error_ca(instance):
     return u"No es pot %s una selecció %s; el %s és %s" % (
         translations(instance.action).lower(),
         plural2(
-            instance.selection_size, 
-            "d'un sol element", 
+            instance.selection_size,
+            "d'un sol element",
             "de %d elements" % instance.selection_size
         ),
         bound_label,
@@ -580,7 +580,7 @@ def _selection_error_ca(instance):
         )
     )
 
-def _selection_error_es(instance):    
+def _selection_error_es(instance):
     if instance.action.min and instance.selection_size < instance.action.min:
         bound = instance.action.min
         bound_label = "mínimo"
@@ -591,8 +591,8 @@ def _selection_error_es(instance):
     return u"No se puede %s una selección de %s; el %s es de %s" % (
         translations(instance.action).lower(),
         plural2(
-            instance.selection_size, 
-            "a single element", 
+            instance.selection_size,
+            "a single element",
             "%d elements" % instance.selection_size
         ),
         bound_label,
@@ -603,7 +603,7 @@ def _selection_error_es(instance):
         )
     )
 
-def _selection_error_en(instance):    
+def _selection_error_en(instance):
     if instance.action.min and instance.selection_size < instance.action.min:
         bound = instance.action.min
         bound_label = "at least"
@@ -614,8 +614,8 @@ def _selection_error_en(instance):
     return u"Can't %s a selection consisting of %s; must select %s %s" % (
         translations(instance.action).lower(),
         plural2(
-            instance.selection_size, 
-            "a single element", 
+            instance.selection_size,
+            "a single element",
             "%d elements" % instance.selection_size
         ),
         bound_label,
@@ -726,7 +726,7 @@ translations.define("woost.views.ItemSelector delete",
     en = u"Delete"
 )
 
-translations.define("woost.views.BackOfficeItemSelectorView title", 
+translations.define("woost.views.BackOfficeItemSelectorView title",
     ca = lambda type: "Seleccionar " + translations(type.name, "ca").lower(),
     es = lambda type: "Seleccionar " + translations(type.name, "es").lower(),
     en = lambda type: "Select " + translations(type.name, "en").lower()
@@ -2320,7 +2320,7 @@ translations.define("Publishable.caching_policy-explanation",
          u"elemento. Si se deja en blanco se utilizará la política general "
          u"del sitio web.",
     en = u"Sets a specific caching policy for this item. Leave blank to fall "
-         u"back to the site wide caching policy." 
+         u"back to the site wide caching policy."
 )
 
 translations.define("Publishable.login_page",
@@ -2586,7 +2586,7 @@ def permission_translation_factory(language, predicate):
     return translate_permission
 
 def content_permission_translation_factory(language, predicate):
-    
+
     def predicate_factory(instance, **kwargs):
         subject = translations(
             instance.select_items(),
@@ -2607,7 +2607,7 @@ def content_permission_translation_factory(language, predicate):
 def member_permission_translation_factory(language, predicate, any_predicate):
 
     def predicate_factory(instance, **kwargs):
-        
+
         members = list(instance.iter_members())
 
         if not members:
@@ -2631,7 +2631,7 @@ def member_permission_translation_factory(language, predicate, any_predicate):
 def language_permission_translation_factory(language, predicate, any_predicate):
 
     def predicate_factory(instance, **kwargs):
-        
+
         if not instance.matching_languages:
             return any_predicate
 
@@ -2651,7 +2651,7 @@ def language_permission_translation_factory(language, predicate, any_predicate):
     )
 
 translations.define("woost.models.permission",
-    ca = lambda authorized, predicate: 
+    ca = lambda authorized, predicate:
         u"Permís per " + predicate
         if authorized
         else u"Prohibició " + ca_possessive(predicate),
@@ -2754,7 +2754,7 @@ translations.define(
         lambda instance, subject, **kwargs:
             plural2(
                 len(instance.matching_members),
-                u"modificar el membre %s", 
+                u"modificar el membre %s",
                 u"modificar els membres %s"
             ) % subject,
         u"modificar qualsevol membre"
@@ -2763,7 +2763,7 @@ translations.define(
         lambda instance, subject, **kwargs:
             plural2(
                 len(instance.matching_members),
-                u"modificar el miembro %s", 
+                u"modificar el miembro %s",
                 u"modificar los miembros %s"
             ) % subject,
         u"modificar cualquier miembro"
@@ -2772,7 +2772,7 @@ translations.define(
         lambda instance, subject, **kwargs:
             plural2(
                 len(instance.matching_members),
-                u"modify the %s member", 
+                u"modify the %s member",
                 u"modify the %s members"
             ) % subject,
         u"modify any member"
@@ -3428,7 +3428,7 @@ translations.define("News-plural",
     en = u"News"
 )
 
-translations.define("News-none",    
+translations.define("News-none",
     es = u"Ninguna"
 )
 
@@ -3833,7 +3833,7 @@ translations.define("Change.item_state",
 )
 
 def _translate_woost_models_change_instance_ca(action, target):
-    
+
     if isinstance(target, int):
         target_desc = "%d elements" % target
         apostrophe = False
@@ -3845,7 +3845,7 @@ def _translate_woost_models_change_instance_ca(action, target):
 
         apostrophe = target_desc[0].lower() in u"haeiouàèéíòóú"
         target_desc = u"<em>" + target_desc + u"</em>"
-    
+
     action_id = action.identifier
 
     if action_id == "edit":
@@ -3856,11 +3856,11 @@ def _translate_woost_models_change_instance_ca(action, target):
         action_desc = u"Eliminació"
     else:
         return ""
-    
+
     return action_desc + (" d'" if apostrophe else " de ") + target_desc
 
 def _translate_woost_models_change_instance_es(action, target):
-    
+
     if isinstance(target, int):
         target_desc = "%d elementos" % target
     else:
@@ -3870,7 +3870,7 @@ def _translate_woost_models_change_instance_es(action, target):
             return ""
 
         target_desc = u"<em>" + target_desc + u"</em>"
-    
+
     action_id = action.identifier
 
     if action_id == "edit":
@@ -3881,11 +3881,11 @@ def _translate_woost_models_change_instance_es(action, target):
         action_desc = u"Eliminación"
     else:
         return ""
-    
+
     return action_desc + u" de " + target_desc
 
 def _translate_woost_models_change_instance_en(action, target):
-    
+
     if isinstance(target, int):
         target_desc = "%d items" % target
     else:
@@ -3893,9 +3893,9 @@ def _translate_woost_models_change_instance_en(action, target):
 
         if not target_desc:
             return ""
-        
+
         target_desc = u"<em>" + target_desc + u"</em>"
-    
+
     action_id = action.identifier
 
     if action_id == "edit":
@@ -3906,7 +3906,7 @@ def _translate_woost_models_change_instance_en(action, target):
         action_desc = u"deleted"
     else:
         return ""
-    
+
     return target_desc + u" " + action_desc
 
 translations.define("woost.models.changesets.Change description",
@@ -3916,7 +3916,7 @@ translations.define("woost.models.changesets.Change description",
 )
 
 translations.define("woost create action",
-    ca = u"Creació",    
+    ca = u"Creació",
     es = u"Creación",
     en = u"Creation"
 )
@@ -4242,7 +4242,7 @@ translations.define("SendEmailTriggerResponse.email_template",
 )
 
 # EmailTemplate
-#------------------------------------------------------------------------------ 
+#------------------------------------------------------------------------------
 translations.define("EmailTemplate",
     ca = u"Plantilla de correu electrònic",
     es = u"Plantilla de correo electrónico",
@@ -4482,10 +4482,10 @@ translations.define(
 translations.define(
     "woost.controllers.passwordchangecontroller.request_sended_notification_message",
     ca = u"""Hem enviat un correu electrònic a l'adreça indicada amb les
-        instruccions per reestablir la contrasenya.""",        
+        instruccions per reestablir la contrasenya.""",
     es = u"""Hemos enviado un correo electrónico a la dirección indicada con
         las instrucciones para reestablecer tu contraseña.""",
-    en = u"""We have sent an e-mail message to the indicated account 
+    en = u"""We have sent an e-mail message to the indicated account
         containing further instructions to reset your password."""
 )
 
@@ -4613,7 +4613,7 @@ translations.define(
     "woost.controllers.formagreement.ConsentNotGivenError-instance",
     ca = lambda instance:
         u"Has d'acceptar <a href='%s' target='_blank'>els termes i "
-        u"condicions</a> del formulari" 
+        u"condicions</a> del formulari"
         % instance.member.agreement_document.get_uri(),
     es = lambda instance:
         u"Debes aceptar <a href='%s' target='_blank'>los términos y "

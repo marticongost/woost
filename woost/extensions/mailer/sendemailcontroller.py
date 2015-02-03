@@ -132,7 +132,7 @@ class SendEmailController(EditController):
     @cached_getter
     def output(self):
         output = EditController.output(self)
-        
+
         if self.task_id:
             task_id = self.task_id
         else:

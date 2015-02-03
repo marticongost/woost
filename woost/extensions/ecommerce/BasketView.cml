@@ -14,7 +14,7 @@ from woost.extensions.ecommerce.basket import Basket
 
     <?py-class
     order = None
-    
+
     order_schema = schema.Schema("Basket", members = [
         schema.Reference("product", type = ECommerceProduct),
         schema.Member("actions"),
@@ -27,7 +27,7 @@ from woost.extensions.ecommerce.basket import Basket
     currency = u"€"
     editable = False
     embeded = False
-    
+
     apply_pricing = True
     apply_shipping_costs = True
     apply_taxes = True
@@ -37,7 +37,7 @@ from woost.extensions.ecommerce.basket import Basket
 
     def format_amount(self, amount):
         return "%s %s" % (translations(amount.quantize(Decimal("1.00"))), self.currency)
-    
+
     def create_subtotal_cell(self, member):
         factory = getattr(self, "create_%s_subtotal_cell" % member.name, None)
         cell = Element("td") if factory is None else factory()
@@ -85,22 +85,22 @@ from woost.extensions.ecommerce.basket import Basket
         )
 
         self.order_subtotal = (
-            (self.apply_shipping_costs and self.costs['shipping_costs']['concepts']) 
+            (self.apply_shipping_costs and self.costs['shipping_costs']['concepts'])
             or (self.apply_taxes and self.costs["taxes"]["concepts"])
         )
 
         if self.editable:
 
             self.add_resource("/cocktail/scripts/form.js")
-            
+
             if not self.embeded:
                 self.tag = "form"
                 self["method"] = "post"
 
             self.add_class("editable")
 
-            default_button = Element("button", 
-                type = "submit", 
+            default_button = Element("button",
+                type = "submit",
                 name = "action",
                 value = "set_quantities"
             )
@@ -140,7 +140,7 @@ from woost.extensions.ecommerce.basket import Basket
         </py:binding>
 
         <py:block py:def="product_display" py:args="purchase, member">
-            <a 
+            <a
                 py:local_id="product_image_link"
                 href="${purchase.product.get_uri()}">
                 <py:woost.views.Image
@@ -148,7 +148,7 @@ from woost.extensions.ecommerce.basket import Basket
                     py:image="${purchase.product.get_image()}"
                     py:image_factory="ecommerce_basket_thumbnail" />
             </a>
-            <a 
+            <a
                 py:local_id="product_label"
                 href="${purchase.product.get_uri()}">
                 ${translations(purchase.product)}
@@ -175,20 +175,20 @@ from woost.extensions.ecommerce.basket import Basket
         ?>
 
         <div py:def="actions_display" py:args="purchase, member">
-            <button 
+            <button
                 py:local_id="delete_purchase_button"
-                type="submit" 
-                name="delete_purchase" 
+                type="submit"
+                name="delete_purchase"
                 value="${purchase.id}">
                 ${translations("woost.extensions.ecommerce.BasketView.delete_purchase_button")}
             </button>
         </div>
 
-        <py:new 
+        <py:new
             py:element="self.create_price_label(['purchases', purchase, 'price', 'cost'])"
             py:def="price_display" py:args="purchase, member"/>
 
-        <py:new 
+        <py:new
             py:element="self.create_price_label(['purchases', purchase, 'price', 'total'])"
             py:def="subtotal_display" py:args="purchase, member"/>
 
@@ -203,7 +203,7 @@ from woost.extensions.ecommerce.basket import Basket
             </ul>
         </div>
 
-        <py:new 
+        <py:new
             py:element="self.create_price_label(['purchases', purchase, 'total'])"
             py:def="total_display" py:args="purchase, member"/>
 
@@ -211,29 +211,29 @@ from woost.extensions.ecommerce.basket import Basket
             <py:ready>
                 <tr>
                     <?py element.visible = self.order_subtotal ?>
-                    <py:new 
+                    <py:new
                         py:element="self.create_subtotal_cell(member)"
                         py:for="member in self.basket_table.displayed_members"/>
                 </tr>
                 <tr>
-                    <?py 
+                    <?py
                     element.visible = (
-                        self.apply_shipping_costs 
+                        self.apply_shipping_costs
                         and self.costs['shipping_costs']['concepts']
                     )
                     ?>
-                    <py:new 
+                    <py:new
                         py:element="self.create_shipping_costs_cell(member)"
                         py:for="member in self.basket_table.displayed_members"/>
                 </tr>
                 <tr>
-                    <?py 
+                    <?py
                     element.visible = (
                         self.apply_taxes
                         and self.costs['taxes']['concepts']
                     )
                     ?>
-                    <py:new 
+                    <py:new
                         py:element="self.create_taxes_cell(member)"
                         py:for="member in self.basket_table.displayed_members"/>
                 </tr>
@@ -243,7 +243,7 @@ from woost.extensions.ecommerce.basket import Basket
         <tfoot py:id="basket_table_footer">
             <tr py:id="basket_table_footer_row">
                 <py:ready>
-                    <py:new 
+                    <py:new
                         py:element="self.create_footer_cell(member)"
                         py:for="member in self.basket_table.displayed_members"/>
                 </py:ready>
@@ -282,23 +282,23 @@ from woost.extensions.ecommerce.basket import Basket
     <td py:def="total_subtotal_cell">
         <py:new py:element="self.create_price_label(['price', 'total'])"/>
     </td>
-    
+
     <td py:def="product_shipping_costs_cell">
         ${translations("woost.extensions.ecommerce.BasketView.shipping_costs")}
     </td>
-    
+
     <td py:def="total_shipping_costs_cell">
         <py:new py:element="self.create_price_label(['shipping_costs', 'total'])"/>
     </td>
-    
+
     <td py:def="product_taxes_cell">
         ${"%s (%s)" % (translations("woost.extensions.ecommerce.BasketView.taxes"), ", ".join(translations(concept) for concept in self.costs['taxes']['concepts']))}
     </td>
-    
+
     <td py:def="total_taxes_cell">
         <py:new py:element="self.create_price_label(['taxes', 'total'])"/>
     </td>
-    
+
     <td py:def="actions_footer_cell">
         <button
             py:local_id="empty_basket_button"
@@ -308,12 +308,12 @@ from woost.extensions.ecommerce.basket import Basket
             ${translations("woost.extensions.ecommerce.BasketView.empty_basket_button")}
         </button>
     </td>
-    
+
     <td py:def="quantity_footer_cell">
         <button
             py:local_id="set_quantities_button"
-            type="submit" 
-            name="action" 
+            type="submit"
+            name="action"
             value="set_quantities"
             py:visible="${self.editable}">
             ${translations("woost.extensions.ecommerce.BasketView.set_quantities_button")}

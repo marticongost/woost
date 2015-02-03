@@ -11,7 +11,7 @@ cocktail.bind({
     selector: ".BackOfficeLayout",
     behavior: function ($layout) {
 
-        // Disable browser's in-memory caching due to problems going backward 
+        // Disable browser's in-memory caching due to problems going backward
         // and forward between visited pages
         jQuery(window).unload(function() {});
 

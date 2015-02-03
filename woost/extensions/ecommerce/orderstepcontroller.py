@@ -59,7 +59,7 @@ class ProceedForm(OrderStepForm):
 
     def submit(self):
         self.proceed()
-        
+
 
 class BackForm(OrderStepForm):
 

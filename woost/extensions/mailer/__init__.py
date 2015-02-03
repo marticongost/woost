@@ -37,7 +37,7 @@ class MailerExtension(Extension):
             u"""Permet enviar documents per correu electrònic.""",
             "ca"
         )
-        self.set("description",            
+        self.set("description",
             u"""Permite enviar documents por correo electrónico.""",
             "es"
         )
@@ -76,18 +76,18 @@ class MailerExtension(Extension):
         Template.members_order.append("per_user_customizable")
 
         @when(BaseBackOfficeController.exception_raised)
-        def handle_exception_raised(event):                                                                                                                                                                   
+        def handle_exception_raised(event):
             if isinstance(
                 event.exception,
                 RunningMailingError
-            ):  
+            ):
                 notify_user(translations(event.exception), "error")
                 raise cherrypy.HTTPRedirect(event.source.contextual_uri())
-    
+
         # Disable interactive features from rendered pages when rendering
         # static content
         from woost.controllers.cmscontroller import CMSController
-    
+
         @when(CMSController.producing_output)
         def disable_user_controls(event):
             if context.get("sending_email", False):

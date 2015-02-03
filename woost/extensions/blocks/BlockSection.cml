@@ -5,7 +5,7 @@ from cocktail.controllers import context
 from woost.models import Publishable, ModifyPermission, get_current_user
 ?>
 
-<div py:id="blocks_section" 
+<div py:id="blocks_section"
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:py="http://www.whads.com/ns/cocktail/templates"
     class="edit_panel_section">
@@ -19,10 +19,10 @@ from woost.models import Publishable, ModifyPermission, get_current_user
         backoffice = Publishable.require_instance(qname = "woost.backoffice")
         return backoffice.get_uri(
             path = ["content", block.id, "fields"],
-            parameters = self.block_edit_parameters            
+            parameters = self.block_edit_parameters
         )
     ?>
-    
+
     <?py
     self.add_resource("/resources/styles/blocks-EditPanelOverlay.css")
     self.add_resource("/resources/scripts/blocks-EditPanelOverlay.js")

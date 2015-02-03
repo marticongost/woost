@@ -21,12 +21,12 @@ from woost.extensions.ecommerce.catalogcontroller \
     self.add_resource("/resources/styles/ecommerce-ProductPage.css")
     ?>
 
-    <py:with 
-        py:element="self.menu" 
+    <py:with
+        py:element="self.menu"
         py:selection="@{Publishable.get_instance(qname = 'woost.extensions.ecommerce.catalog_page')}"/>
 
     <div py:def="content">
-        <py:woost.extensions.ecommerce.ProductDetail 
+        <py:woost.extensions.ecommerce.ProductDetail
             py:product="@{self.publishable}"
             py:currency="@{self.currency}"
             py:forms="@{self.forms}"/>

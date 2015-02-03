@@ -17,7 +17,7 @@ class Transition(Item):
     visible_from_root = False
 
     executed = Event("""An event triggered when the transition is executed.
-        
+
         @var item: The item that the transition is executed on.
         @type item: L{Item<woost.models.item.Item>}
 
@@ -66,7 +66,7 @@ class Transition(Item):
     )
 
     def execute(self, item, data = None):
-        
+
         if item.workflow_state is not self.source_state:
             raise ValueError(
                 "Can't execute the transition on the indicated item"

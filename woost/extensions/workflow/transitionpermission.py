@@ -35,7 +35,7 @@ class TransitionPermission(ContentPermission):
     del _transition_edit_control
 
     def match(self, target, transition, verbose = False):
-        
+
         if self.transition and transition is not self.transition:
             print permission_doesnt_match_style("transition doesn't match")
             return False

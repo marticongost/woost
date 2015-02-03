@@ -8,10 +8,10 @@
 -----------------------------------------------------------------------------*/
 
 cocktail.bind(".BackOfficeItemView", function ($itemView) {
-    
+
     // Pending changes control
     var itemView = jQuery(".BackOfficeItemView").get(0);
-    
+
     if (itemView.closingItemRequiresConfirmation) {
         var hasPendingChanges = itemView.hasPendingChanges;
         var NAVIGATE_AWAY = 0;

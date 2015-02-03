@@ -16,7 +16,7 @@ def image_effect(func):
     return func
 
 def resolve_px(value, size):
-    if isinstance(value, float):        
+    if isinstance(value, float):
         value = int(size * value)
     if value < 0:
         value = size + value
@@ -48,7 +48,7 @@ def resolve_color(value):
 
 @image_effect
 def thumbnail(image, width = None, height = None, filter = Image.ANTIALIAS):
-    
+
     im_width, im_height = image.size
 
     if width is None:
@@ -150,7 +150,7 @@ def frame(
     # Create the canvas
     width, height = image.size
     offset = edge + padding
-    canvas = Image.new("RGBA", (width + offset * 2, height + offset * 2))    
+    canvas = Image.new("RGBA", (width + offset * 2, height + offset * 2))
 
     # Paint the border
     if edge:
@@ -164,7 +164,7 @@ def frame(
          width + offset * 2 - edge,
          height + offset * 2 - edge)
     )
-    
+
     # Paste the original image over the frame
     canvas.paste(
         image,
@@ -180,9 +180,9 @@ def shadow(
     offset = 5,
     color = (70,70,70),
     padding = 8,
-    iterations = 3):   
-    
-    # Create the backdrop image -- a box in the background colour with a 
+    iterations = 3):
+
+    # Create the backdrop image -- a box in the background colour with a
     # shadow on it.
     total_width = image.size[0] + abs(offset) + 2 * padding
     total_height = image.size[1] + abs(offset) + 2 * padding
@@ -195,7 +195,7 @@ def shadow(
     back.paste(color, [
         shadow_left,
         shadow_top,
-        shadow_left + image.size[0], 
+        shadow_left + image.size[0],
         shadow_top + image.size[1]
     ])
 
@@ -225,7 +225,7 @@ def reduce_opacity(image, opacity):
             "must be a floating point number between 0 and 1: got %s instead"
             % opacity
         )
-    
+
     if image.mode != 'RGBA':
         image = image.convert('RGBA')
     else:
@@ -247,11 +247,11 @@ def watermark(image, mark_image, position = "middle", opacity = 1):
 
     if image.mode != 'RGBA':
         image = image.convert('RGBA')
-    
+
     # Create a transparent layer the size of the image and draw the
     # watermark in that layer.
     layer = Image.new('RGBA', image.size, (0,0,0,0))
-    
+
     if position == 'tile':
         for y in range(0, image.size[1], mark_image.size[1]):
             for x in range(0, image.size[0], mark_image.size[0]):
@@ -270,7 +270,7 @@ def watermark(image, mark_image, position = "middle", opacity = 1):
             ((image.size[0] - w) / 2, (image.size[1] - h) / 2),
             mark_image
         )
-    elif position == 'middle':        
+    elif position == 'middle':
         layer.paste(
             mark_image,
             (
@@ -309,18 +309,18 @@ def fit(image, width, height, crop = "center", filter = Image.ANTIALIAS):
 
 @image_effect
 def align(
-    image, 
-    width = None, 
-    height = None, 
-    halign = "center", 
-    valign = "center", 
+    image,
+    width = None,
+    height = None,
+    halign = "center",
+    valign = "center",
     background = None):
 
     needs_halign = (width and image.size[0] < width)
     needs_valign = (height and image.size[1] < height)
 
     if needs_halign or needs_valign:
-        
+
         if background:
             background = resolve_color(background)
         elif image.mode == "RGBA":
@@ -331,13 +331,13 @@ def align(
             (
                 width or image.size[0],
                 height or image.size[1]
-            ), 
+            ),
             background
         )
 
         x = 0
         y = 0
-            
+
         if needs_halign:
             if halign == "left":
                 pass
@@ -360,7 +360,7 @@ def align(
             else:
                 raise ValueError(
                     "Invalid parameter: align(valign = %r)" % valign
-                )       
+                )
 
         copy.paste(image, (x, y), image if image.mode == "RGBA" else None)
         return copy

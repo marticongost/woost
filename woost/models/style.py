@@ -30,12 +30,12 @@ class Style(Item):
         text_search = False,
         edit_control = "cocktail.html.TextArea"
     )
-    
+
     admin_declarations = schema.String(
         text_search = False,
         edit_control = "cocktail.html.TextArea"
     )
-    
+
     @getter
     def class_name(self):
         return "woost_style_%d" % self.id

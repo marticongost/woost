@@ -40,7 +40,7 @@ from cocktail.html.selectable import selectable
                 if i % self.row_width == 0:
                     row = Element("tr")
                     check_list.append(row)
-                
+
                 i += 1
 
                 value = check_list.get_item_value(item)

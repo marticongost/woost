@@ -23,7 +23,7 @@ class LanguageModule(Module):
 
     def __init__(self, *args, **kwargs):
         Module.__init__(self, *args, **kwargs)
-        
+
     def process_request(self, path):
 
         language = path.pop(0) if path and path[0] in Language.codes else None
@@ -31,19 +31,19 @@ class LanguageModule(Module):
 
         if language is None:
             language = get_language() or self.infer_language()
-        
+
         cherrypy.response.cookie["language"] = language
         cookie = cherrypy.response.cookie["language"]
         cookie["path"] = "/"
         set_cookie_expiration(cookie, seconds = self.cookie_duration)
 
         set_language(language)
-    
+
     def infer_language(self):
 
         # Check for a language preference in a cookie
         cookie = cherrypy.request.cookie.get("language")
-        
+
         if cookie:
             return cookie.value
 
@@ -81,7 +81,7 @@ class LanguageModule(Module):
                     ):
                         best_language = language
                         best_score = score
-                    
+
                 if best_language:
                     return best_language
 
@@ -95,7 +95,7 @@ class LanguageModule(Module):
         if path is None:
             path = cherrypy.request.path_info
             qs = cherrypy.request.query_string
-        
+
         if isinstance(path, str):
             path = try_decode(path)
 

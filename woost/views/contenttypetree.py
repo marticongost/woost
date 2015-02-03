@@ -22,7 +22,7 @@ class ContentTypeTree(TreeView):
     icon_image_factory = "icon16.png"
 
     def create_label(self, content_type):
-        
+
         label = TreeView.create_label(self, content_type)
 
         for schema in content_type.descend_inheritance(True):

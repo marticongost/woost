@@ -23,7 +23,7 @@ from woost.extensions.blocks.block import Block
 
     def get_slot_blocks(self, slot):
         blocks = getattr(self.publishable, slot, None)
-        
+
         if blocks is None:
             return ()
 

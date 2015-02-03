@@ -49,8 +49,8 @@ class ImageEffectsController(BaseCMSController):
         if isinstance(image, basestring):
             image = Image.open(image)
 
-        buffer = StringIO()        
-        cherrypy.response.headers["Content-Type"] = "image/png"        
+        buffer = StringIO()
+        cherrypy.response.headers["Content-Type"] = "image/png"
         image.save(buffer, "JPEG" if image.mode == "CMYK" else "PNG")
         return buffer.getvalue()
 
