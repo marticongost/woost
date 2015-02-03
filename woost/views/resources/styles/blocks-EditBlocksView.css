@@ -218,7 +218,7 @@
 }
 
 .EditBlocksView .BlockDisplay .block_handle .panel {
-    width: 15em;    
+    width: 15em;
 }
 
 .EditBlocksView .BlockDisplay .block_menu button {
@@ -264,7 +264,7 @@
 }
 
 /* TextBlockDisplay
------------------------------------------------------------------------------*/ 
+-----------------------------------------------------------------------------*/
 .EditBlocksView .TextBlockDisplay .content_preview {
     display: table-row;
     border-spacing: 0.5em;

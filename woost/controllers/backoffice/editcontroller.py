@@ -79,7 +79,7 @@ class EditController(BaseBackOfficeController):
         return self._relation_action_data[1]
 
     @request_property
-    def _relation_action_data(self):        
+    def _relation_action_data(self):
         for key, value in cherrypy.request.params.iteritems():
             if key.startswith("relation_action-"):
                 member_name = key.split("-", 1)[1]
@@ -95,7 +95,7 @@ class EditController(BaseBackOfficeController):
                 return action, member
 
         return None, None
-   
+
     @request_property
     def relation_selection(self):
         member = self.relation_member
@@ -119,7 +119,7 @@ class EditController(BaseBackOfficeController):
     def ready(self):
         return self.submitted and not self.errors
 
-    def submit(self):        
+    def submit(self):
         if self.action:
             self._invoke_user_action(
                 self.action,
@@ -132,13 +132,13 @@ class EditController(BaseBackOfficeController):
             )
 
     def save_item(self, make_draft = False):
-        
+
         for i in range(self.MAX_TRANSACTION_ATTEMPTS):
             user = get_current_user()
             stack_node = self.stack_node
             item = stack_node.item
             is_new = not item.is_inserted
-            
+
             # Create a draft
             if make_draft:
 
@@ -149,19 +149,19 @@ class EditController(BaseBackOfficeController):
                 # From an existing element
                 else:
                     item = item.make_draft()
-                
+
                 item.author = user
                 item.owner = user
 
             changeset = None
 
             with restricted_modification_context(
-                item, 
-                user, 
+                item,
+                user,
                 member_subset = set(stack_node.form_schema.members())
             ):
                 # Store the changes on a draft; this skips revision control
-                if item.is_draft:       
+                if item.is_draft:
                     self._apply_changes(item)
 
                 # Operate directly on a production item
@@ -236,8 +236,8 @@ class EditController(BaseBackOfficeController):
 
             # Update the draft
             with restricted_modification_context(
-                draft, 
-                user, 
+                draft,
+                user,
                 member_subset = member_subset
             ):
                 self._apply_changes(draft)
@@ -263,7 +263,7 @@ class EditController(BaseBackOfficeController):
             user = user,
             changeset = changeset
         )
-        
+
         # Application-wide event
         self.context["cms"].item_saved(
             item = target_item,
@@ -289,7 +289,7 @@ class EditController(BaseBackOfficeController):
             )
 
     def _apply_changes(self, item):
-        
+
         # Remove those instances that have been dettached from an integral
         # reference
         @when(item.changed)
@@ -298,7 +298,7 @@ class EditController(BaseBackOfficeController):
             and event.member.integral \
             and event.previous_value is not None:
                 delete_validating(event.previous_value)
-            
+
         try:
             stack_node = self.stack_node
             stack_node.import_form_data(stack_node.form_data, item)
@@ -317,7 +317,7 @@ class EditController(BaseBackOfficeController):
     @request_property
     def output(self):
         output = BaseBackOfficeController.output(self)
-        stack_node = self.stack_node 
+        stack_node = self.stack_node
         output.update(
             edited_item = stack_node.item,
             edited_content_type = stack_node.content_type,

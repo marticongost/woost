@@ -16,7 +16,7 @@
         py:id="shopping_basket_indicator"
         py:parent="self.header"/>
 
-    <py:woost.views.NotificationBox 
+    <py:woost.views.NotificationBox
         py:id="notification_box"
         py:parent="self.main"
         py:index="0"

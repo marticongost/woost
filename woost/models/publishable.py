@@ -18,7 +18,7 @@ from cocktail.translations import (
 from cocktail import schema
 from cocktail.schema.expressions import Expression
 from cocktail.controllers import (
-    make_uri, 
+    make_uri,
     percent_encode_uri,
     Location
 )
@@ -31,11 +31,11 @@ from woost.models.caching import CachingPolicy
 
 class Publishable(Item):
     """Base class for all site elements suitable for publication."""
-    
+
     instantiable = False
     edit_view = "woost.views.PublishableFieldsView"
     backoffice_heading_view = "woost.views.BackOfficePublishableHeading"
- 
+
     groups_order = [
         "navigation",
         "presentation",
@@ -146,7 +146,7 @@ class Publishable(Item):
         listed_by_default = False,
         member_group = "navigation"
     )
-    
+
     hidden = schema.Boolean(
         required = True,
         default = False,
@@ -154,7 +154,7 @@ class Publishable(Item):
         member_group = "navigation"
     )
 
-    login_page = schema.Reference(        
+    login_page = schema.Reference(
         listed_by_default = False,
         member_group = "navigation"
     )
@@ -213,7 +213,7 @@ class Publishable(Item):
     )
 
     def get_effective_caching_policy(self, **context):
-        
+
         from woost.models import Site
 
         policies = [
@@ -261,7 +261,7 @@ class Publishable(Item):
     def get_ancestor(self, depth):
         """Obtain one of the item's ancestors, given its depth in the document
         tree.
-        
+
         @param depth: The depth level of the ancestor to obtain, with 0
             indicating the root of the tree. Negative indices are accepted, and
             they reverse the traversal order (-1 will point to the item itself,
@@ -297,7 +297,7 @@ class Publishable(Item):
 
     def descend_tree(self, include_self = False):
         """Iterate over the item's descendants.
-        
+
         @param include_self: Indicates if the object itself should be included
             in the iteration.
         @type include_self: bool
@@ -342,7 +342,7 @@ class Publishable(Item):
         """
         ancestry = []
         publishable = self
-        
+
         while publishable.parent is not None and publishable.inherit_resources:
             ancestry.append(publishable.parent)
             publishable = publishable.parent
@@ -357,7 +357,7 @@ class Publishable(Item):
         now = datetime.now()
         return (self.start_date is None or self.start_date <= now) \
             and (self.end_date is None or self.end_date > now)
-    
+
     def is_published(self, language = None):
 
         if self.is_draft:
@@ -373,7 +373,7 @@ class Publishable(Item):
             site_language = Language.get_instance(iso_code = language)
             if site_language is None or not site_language.enabled:
                 return False
-           
+
         elif not self.enabled:
             return False
 
@@ -395,20 +395,20 @@ class Publishable(Item):
             IsAccessibleExpression(get_current_user())
         ]).select(*args, **kwargs)
 
-    def get_uri(self, 
-        path = None, 
+    def get_uri(self,
+        path = None,
         parameters = None,
         language = None,
         host = None,
         encode = True):
-        
+
         from woost.models import Site
         uri = Site.main.get_path(self, language = language)
 
         if uri is not None:
             if self.per_language_publication:
                 uri = make_uri(require_language(language), uri)
-            
+
             if path:
                 uri = make_uri(uri, *path)
 
@@ -444,7 +444,7 @@ class IsPublishedExpression(Expression):
             per_language_pub = set(
                 Publishable.per_language_publication.index.values(key = True)
             )
-            
+
             if site_language is None or not site_language.enabled:
                 dataset.intersection_update(simple_pub)
                 dataset.difference_update(per_language_pub)
@@ -453,12 +453,12 @@ class IsPublishedExpression(Expression):
                     Publishable.translation_enabled.index.values(
                         key = (language, True)
                     )
-                )                
+                )
                 dataset.intersection_update(simple_pub | per_language_pub)
 
             # Exclude drafts
             dataset.difference_update(Item.is_draft.index.values(key = True))
-            
+
             # Remove items outside their publication window
             now = datetime.now()
             dataset.difference_update(
@@ -475,15 +475,15 @@ class IsPublishedExpression(Expression):
                     exclude_max = True
                 )
             )
-            
+
             return dataset
-        
+
         return ((-1, 1), impl)
 
 
 class IsAccessibleExpression(Expression):
     """An expression that tests that items can be accessed by a user.
-    
+
     The expression checks both the publication state of the item and the
     read permissions for the specified user.
 
@@ -508,7 +508,7 @@ class IsAccessibleExpression(Expression):
             dataset = access_expr.resolve_filter(query)[1](dataset)
             dataset = published_expr.resolve_filter(query)[1](dataset)
             return dataset
-        
+
         return ((-1, 1), impl)
 
 
@@ -561,7 +561,7 @@ for category, mime_types in (
 
 def get_category_from_mime_type(mime_type):
     """Obtains the file category that best matches the indicated MIME type.
-    
+
     @param mime_type: The MIME type to get the category for.
     @type mime_type: str
 
@@ -577,6 +577,6 @@ def get_category_from_mime_type(mime_type):
 
         if prefix in ("image", "audio", "video"):
             return prefix
-    
+
     return mime_type_categories.get(mime_type, "other")
 

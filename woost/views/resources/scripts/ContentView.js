@@ -8,9 +8,9 @@
 -----------------------------------------------------------------------------*/
 
 cocktail.bind(".ContentView", function ($contentView) {
-    
+
     // Enable/disable buttons depending on the selected content
-    function updateToolbar() {    
+    function updateToolbar() {
         var display = $contentView.find(".collection_display").get(0);
         if (display && display.getSelection) {
             var selectionSize = display.getSelection().length;
@@ -47,21 +47,21 @@ cocktail.bind(".ContentView", function ($contentView) {
             var closeButton = document.createElement("input");
             closeButton.type = "button";
         }
-        
+
         var $discardButton = jQuery(this).find(".discard_button");
         var closeHref = $discardButton.get(0).href;
-        
+
         jQuery(closeButton).val(cocktail.translate("woost.views.ContentView close advanced search")).click(function () {
             location.href = closeHref;
         });
-        
+
         $discardButton.replaceWith(closeButton);
     });
-            
+
     // Open files in a new window
     $contentView.find(".action_button").click(function() {
         var form = jQuery(this).closest("form").get(0);
-        
+
         if (jQuery(this).hasClass(".download_action")) {
             form.target = "_new";
         }

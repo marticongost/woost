@@ -15,7 +15,7 @@ from woost.models import Site
 
     def get_title(self):
         return Site.main.home.title
-        
+
     def get_linked_attachments(self):
         return (attachment
                 for attachment in getattr(self.publishable, "attachments", ())
@@ -33,7 +33,7 @@ from woost.models import Site
 
         <h1 py:id="title_label">
             <py:ready>
-                <?py 
+                <?py
                 self._title = self.get_title()
                 self._logo = self.get_logo()
                 if self._logo and not self._logo.is_accessible():
@@ -50,7 +50,7 @@ from woost.models import Site
                     py:accessible_check="${False}"
                     alt="@{self._title}"
                     style="z-index: 1; position: relative;"/>
-                <span 
+                <span
                     py:id="title_label_text"
                     style="position: absolute; z-index: 0; left: 0; top: 0; visibility: hidden;">@{self._title}</span>
             </a>
@@ -77,7 +77,7 @@ from woost.models import Site
             <py:ready>
                 <?py
                 if not rendering_html5():
-                    element.visible = False                    
+                    element.visible = False
                 ?>
             </py:ready>
         </h1>
@@ -102,15 +102,15 @@ from woost.models import Site
             <py:ready>
                 <?py
                 title = None
-                
+
                 if rendering_html5():
                     element.tag = "h1"
 
-                if not self.rendering_home_page():                    
+                if not self.rendering_home_page():
                     title = self.get_content_title()
 
                 if title:
-                    element.append(title)                        
+                    element.append(title)
                 else:
                     element.visible = False
                 ?>
@@ -157,8 +157,8 @@ from woost.models import Site
         <?py html5_tag(element, "footer") ?>
         <div py:id="vcard" py:collapsible="${True}">
             <?py html5_tag(element, "address") ?>
-            <py:woost.views.Image 
-                py:id="vcard_logo" 
+            <py:woost.views.Image
+                py:id="vcard_logo"
                 class="logo"
                 py:image="@{self.get_logo()}"
                 style="display:none"/>
@@ -169,8 +169,8 @@ from woost.models import Site
                 py:visible="@{Site.main.organization_name}">
                 @{Site.main.organization_name}
             </a>
-            <div 
-                py:id="vcard_address" 
+            <div
+                py:id="vcard_address"
                 class="adr"
                 py:collapsible="${True}">
                 <span
@@ -201,14 +201,14 @@ from woost.models import Site
                     if Site.main.town == Site.main.region:
                         element.set_style("display", "none")
                     ?>
-                </span>                
+                </span>
                 <span
                     py:id="country_label"
                     class="country-name"
                     py:visible="@{Site.main.country}">
                     @{Site.main.country}
                 </span>
-            </div>            
+            </div>
             <span
                 py:id="phone_label"
                 class="tel"
@@ -217,7 +217,7 @@ from woost.models import Site
                 <span class="value">@{Site.main.phone_number}</span>
             </span>
             <span class="sep" py:visible="@{Site.main.phone_number and Site.main.fax_number}">-</span>
-            <span 
+            <span
                 py:id="fax_label"
                 class="tel"
                 py:visible="@{Site.main.fax_number}">

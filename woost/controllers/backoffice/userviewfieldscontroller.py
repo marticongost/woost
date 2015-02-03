@@ -22,12 +22,12 @@ class UserViewFieldsController(ItemFieldsController, ContentController):
     @cached_getter
     def persistence_prefix(self):
         return "UserView%s" % self.stack_node.item.id
-    
+
     def _handle_form_data(self):
         ItemFieldsController._handle_form_data(self)
         form_data = self.stack_node.form_data
         form_data["parameters"] = self.get_user_view_parameters()
- 
+
     @cached_getter
     def user_view_parameters_source(self):
         source = self.stack_node.form_data["parameters"].copy()
@@ -48,7 +48,7 @@ class UserViewFieldsController(ItemFieldsController, ContentController):
         for key, value in source.iteritems():
             if key.startswith("filter_"):
                 params[key] = value
-        
+
         return params
 
     @cached_getter

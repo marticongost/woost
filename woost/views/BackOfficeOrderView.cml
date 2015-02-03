@@ -48,7 +48,7 @@ from cocktail.html.datadisplay import SINGLE_SELECTION
     </py:with>
 
     <div py:def="position_entry" py:args="position, item">
-        <?py 
+        <?py
         in_movement = (item is not None and item in self.selection)
 
         if in_movement:
@@ -62,7 +62,7 @@ from cocktail.html.datadisplay import SINGLE_SELECTION
         <py:woost.views.ItemLabel
             py:if="item"
             py:item="${item}"/>
-        ${translations("BackOfficeOrderView last position") if item is None else ""}        
+        ${translations("BackOfficeOrderView last position") if item is None else ""}
     </div>
 
 </py:woost.views.BackOfficeLayout>

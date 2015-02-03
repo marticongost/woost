@@ -5,7 +5,7 @@
     xmlns:py="http://www.whads.com/ns/cocktail/templates">
 
     <?py-class
-    content_view_id = "workflow_graph"    
+    content_view_id = "workflow_graph"
     allow_sorting = False
     allow_grouping = False
     allow_paging = False
@@ -15,7 +15,7 @@
     <py:with py:element="self.settings_box" py:visible="@{False}"/>
 
     <div py:def="collection_display">
-        <iframe 
+        <iframe
             py:id="graph_frame"
             src="@{self.cms.contextual_uri('workflow_graph')}"/>
     </div>

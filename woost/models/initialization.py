@@ -68,11 +68,11 @@ def init_site(
     template_engine = "cocktail",
     extensions = (),
     base_id = None):
- 
+
     datastore.root.clear()
     datastore.commit()
     datastore.close()
-    
+
     if base_id:
         reset_incremental_id(base_id)
 
@@ -113,7 +113,7 @@ def init_site(
     confirm_draft.insert()
 
     with changeset_context() as changeset:
-        
+
         # Create the site
         site = Site()
         site.qname = "woost.main_site"
@@ -129,7 +129,7 @@ def init_site(
         admin.email = admin_email
         admin.password = admin_password
         admin.insert()
-        
+
         changeset.author = admin
         site.author = site.owner = admin
         site.default_language = languages[0]
@@ -137,13 +137,13 @@ def init_site(
         if site.default_language in Site.backoffice_language.enumeration:
             site.backoffice_language = site.default_language
             admin.prefered_language = site.default_language
-        
+
         # Create the anonymous user and role
         anonymous_role = Role()
         anonymous_role.implicit = True
         anonymous_role.critical = True
         anonymous_role.qname = "woost.anonymous"
-        set_translations(anonymous_role, "title", "Anonymous role title")        
+        set_translations(anonymous_role, "title", "Anonymous role title")
         anonymous_role.insert()
 
         anonymous_user = User()
@@ -159,8 +159,8 @@ def init_site(
             language = Language(iso_code = code)
             language.iso_code = code
             language.insert()
- 
-        # Create the administrators role        
+
+        # Create the administrators role
         administrators = Role()
         administrators.qname = "woost.administrators"
         administrators.critical = True
@@ -204,12 +204,12 @@ def init_site(
                     "type": "woost.models.publishable.Publishable"
                 }
             ),
-            
+
             # Content owners have full control
             ModifyPermission(matching_items = owned_items()),
             DeletePermission(matching_items = owned_items()),
             ConfirmDraftPermission(matching_items = owned_items()),
-            
+
             # All members allowed, 'controller' and 'qname'
             ReadMemberPermission(
                 matching_members = [
@@ -222,13 +222,13 @@ def init_site(
             # Only administrators can see the CachePolicy model
             ReadPermission(
                 matching_items = {
-                    "type": "woost.models.caching.CachingPolicy"                    
+                    "type": "woost.models.caching.CachingPolicy"
                 },
                 authorized = False
             ),
 
             ReadMemberPermission(),
-            
+
             # Only administrators can modify 'owner', 'robots_should_index',
             # 'robots_should_follow' and 'requires_https' members
             ModifyMemberPermission(
@@ -312,7 +312,7 @@ def init_site(
             "PasswordChangeConfirmation"
         ):
             controller = Controller()
-            controller.qname = "woost.%s_controller" % controller_name.lower()          
+            controller.qname = "woost.%s_controller" % controller_name.lower()
             set_translations(
                 controller,
                 "title",
@@ -433,7 +433,7 @@ def init_site(
         )
         site.home.branch_resources.append(site_stylesheet)
         site.home.insert()
-    
+
         # Create the back office interface
         back_office = Document()
         back_office.controller = back_office_controller
@@ -446,7 +446,7 @@ def init_site(
         back_office.inherit_resources = False
         set_translations(back_office, "title", "Back office title")
         back_office.insert()
-        
+
         # Create the user styles dynamic style sheet
         user_styles = Document()
         user_styles.critical = True
@@ -491,7 +491,7 @@ def init_site(
         set_translations(site.not_found_error_page, "title",
             "Not found error page title")
         set_translations(site.not_found_error_page, "body",
-            "Not found error page body")            
+            "Not found error page body")
         site.not_found_error_page.insert()
 
         # Create forbidden error page
@@ -544,7 +544,7 @@ def init_site(
         site.login_page = StandardPage()
         site.login_page.parent = site.home
         site.login_page.hidden = True
-        site.login_page.template = login_form_template 
+        site.login_page.template = login_form_template
         site.login_page.controller = \
             Controller.get_instance(qname='woost.login_controller')
         site.login_page.qname = "woost.login_page"
@@ -567,7 +567,7 @@ def init_site(
             "Own items user view"
         )
         own_items_view.insert()
-        
+
         page_tree_view = UserView()
         page_tree_view.roles.append(everybody_role)
         page_tree_view.parameters = {
@@ -598,7 +598,7 @@ def init_site(
             "File gallery user view"
         )
         file_gallery_view.insert()
-    
+
         # Renderers
         #----------------------------------------------------------------------
         content_renderer = rendering.ChainRenderer()
@@ -753,7 +753,7 @@ def random_string(length, source = letters + digits + "!?.-$#&@*"):
     return "".join(choice(source) for i in range(length))
 
 def main():
- 
+
     parser = OptionParser()
     parser.add_option("-u", "--user", help = "Administrator email")
     parser.add_option("-p", "--password", help = "Administrator password")
@@ -773,7 +773,7 @@ def main():
 
     admin_email = options.user
     admin_password = options.password
-    
+
     if admin_email is None:
         admin_email = raw_input("Administrator email: ") or "admin@localhost"
 
@@ -793,7 +793,7 @@ def main():
         extensions = options.extensions.split(","),
         base_id = options.base_id
     )
-    
+
     print u"Your site has been successfully created. You can start it by " \
           u"executing the 'run.py' script. An administrator account for the " \
           u"content manager interface has been generated, with the " \

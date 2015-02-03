@@ -34,7 +34,7 @@ class PaymentsExtension(Extension):
             u"""Afageix suport per pagaments en línia.""",
             "ca"
         )
-        self.set("description",            
+        self.set("description",
             u"""Añade soporte para pagos en linea.""",
             "es"
         )
@@ -82,7 +82,7 @@ class PaymentsExtension(Extension):
     def payment_request(self, payment_id):
         """Begin a payment transaction, redirecting the user to the payment
         gateway.
-        
+
         @param payment_id: The identifier of the payment to execute.
         """
         url, params = self.payment_gateway.get_payment_form_data(

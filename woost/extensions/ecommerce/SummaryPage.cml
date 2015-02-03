@@ -8,7 +8,7 @@
     checkout_schema = None
     ?>
 
-    <div py:def="content">        
+    <div py:def="content">
         <py:woost.extensions.ecommerce.SummaryOrderStep
             py:id="summary_step"
             py:forms="@{self.forms}"

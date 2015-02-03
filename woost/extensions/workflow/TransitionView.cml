@@ -11,9 +11,9 @@
     form_schema = None
     form_errors = None
     ?>
-    
+
     <py:with py:element="self.body">
-        
+
         <h2>@{translations("woost.extensions.workflow.TransitionView title", item = self.item, transition = self.transition)}</h2>
 
         <!-- Errors -->

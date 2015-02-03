@@ -32,7 +32,7 @@ class SitemapExtension(Extension):
             web, seguint l'estàndard sitemap.org.""",
             "ca"
         )
-        self.set("description",            
+        self.set("description",
             u"""Genera un mapa de documentos para optimizar el indexado del
             sitio, siguiendo el estándard sitemap.org.""",
             "es"
@@ -48,7 +48,7 @@ class SitemapExtension(Extension):
         self.install()
 
     def _install(self):
-        
+
         from woost.models import (
             Site,
             Publishable,
@@ -56,7 +56,7 @@ class SitemapExtension(Extension):
             Controller,
             extension_translations
         )
-        
+
         # Sitemap controller
         sitemap_controller = self._create_asset(
             Controller,

@@ -33,7 +33,7 @@ from woost.extensions.blocks.blockactions import get_clipboard_contents
 
         if not self.block.enabled:
             self.add_status("disabled")
-        
+
         if self.block.is_common_block():
             self.add_status("common")
 
@@ -88,7 +88,7 @@ from woost.extensions.blocks.blockactions import get_clipboard_contents
 
     <div py:id="status_labels"/>
 
-    <span 
+    <span
         py:def="status_label" py:args="status"
         title="${translations('woost.extensions.blocks.BlockDisplay.' + status + '_status.title')}">
         <img py:local_id="icon" src="/resources/images/blocks-status-${status}.png"/>

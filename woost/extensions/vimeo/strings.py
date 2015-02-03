@@ -100,7 +100,7 @@ translations.define("VimeoVideo",
     es = u"Video Vimeo",
     en = u"Vimeo video"
 )
- 
+
 translations.define("VimeoVideo-plural",
     ca = u"Vídeos Vimeo",
     es = u"Videos Vimeo",

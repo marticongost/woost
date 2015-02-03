@@ -50,8 +50,8 @@ class LanguageSelector(LinkSelector):
 
         if self.items is None:
             self.items = [
-                language.iso_code 
-                for language in Language.select() 
+                language.iso_code
+                for language in Language.select()
                 if language.enabled
             ]
 

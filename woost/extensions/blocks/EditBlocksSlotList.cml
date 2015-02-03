@@ -2,7 +2,7 @@
 <?py
 from cocktail.schema import RelationMember
 from woost.models import (
-    get_current_user, 
+    get_current_user,
     ModifyMemberPermission
 )
 from woost.extensions.blocks.block import Block
@@ -44,7 +44,7 @@ from woost.extensions.blocks.block import Block
     ?>
 
     <py:ready>
-        <?py 
+        <?py
         element.set_client_param("blockParent", self.item.id)
         if self.foldable:
             element.add_class("foldable")
@@ -71,9 +71,9 @@ from woost.extensions.blocks.block import Block
                 blocks = (value,)
             else:
                 blocks = value
-            ?>                
-            <py:new 
-                py:element="loader.new(block.block_display)" 
+            ?>
+            <py:new
+                py:element="loader.new(block.block_display)"
                 py:block="${block}"
                 py:block_parent="${self.item}"
                 py:block_slot="${member}"

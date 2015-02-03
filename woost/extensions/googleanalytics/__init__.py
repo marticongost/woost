@@ -38,7 +38,7 @@ class GoogleAnalyticsExtension(Extension):
             u"""Integra el lloc web amb Google Analytics.""",
             "ca"
         )
-        self.set("description",            
+        self.set("description",
             u"""Integra el sitio web con Google Analytics.""",
             "es"
         )

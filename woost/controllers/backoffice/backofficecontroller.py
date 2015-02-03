@@ -42,20 +42,20 @@ class BackOfficeController(BaseBackOfficeController):
 
     _cp_config = BaseBackOfficeController.copy_config()
     _cp_config["rendering.engine"] = "cocktail"
-    
+
     _edit_stacks_manager_class = \
         "woost.controllers.backoffice.editstack.EditStacksManager"
 
     default_section = "content"
 
-    content = ContentController    
+    content = ContentController
     delete = DeleteController
     order = OrderController
     move = MoveController
     changelog = ChangeLogController
     render_preview = RenderPreviewController
     upload_files = UploadFilesController
-    
+
     def submit(self):
         raise cherrypy.HTTPRedirect(
             self.contextual_uri(self.default_section) + "?" + view_state())
@@ -75,37 +75,37 @@ class BackOfficeController(BaseBackOfficeController):
 
     @event_handler
     def handle_after_request(cls, event):
-        
+
         if event.error is None:
             controller = event.source
             edit_stacks_manager = controller.context["edit_stacks_manager"]
             edit_stack = edit_stacks_manager.current_edit_stack
-            
+
             if edit_stack is not None:
                 edit_stacks_manager.preserve_edit_stack(edit_stack)
 
     @cherrypy.expose
     def editor_attachments(self, **kwargs):
-        
+
         cms = self.context["cms"]
         node = self.stack_node
         attachments = schema.get(node.form_data, "attachments", default = None)
 
         resource_type = self.params.read(schema.String("resource_type"))
-            
+
         language = self.params.read(schema.String("language"))
-        
+
         output = []
         cherrypy.response.headers["Content-Type"] = "text/javascript"
 
         if attachments:
             for attachment in attachments:
-                item = None 
+                item = None
                 if resource_type == "linkable" and attachment.resource_type not in ["image","video"]:
                     item = attachment
                 elif attachment.resource_type == resource_type:
                     item = attachment
-                
+
                 if item:
                     output.append(
                         [

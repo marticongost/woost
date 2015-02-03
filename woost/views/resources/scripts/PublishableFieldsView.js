@@ -8,11 +8,11 @@
 -----------------------------------------------------------------------------*/
 
 cocktail.bind(".PublishableFieldsView", function ($view) {
-    
+
     var ANIMATION_SPEED = 400;
 
     function updatePerLanguagePublication(animated) {
-        
+
         var checked = $view.find("[name=edited_item_per_language_publication]")[0].checked;
         var animationSpeed = animated && ANIMATION_SPEED;
 

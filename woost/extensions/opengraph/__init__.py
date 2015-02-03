@@ -74,7 +74,7 @@ class OpenGraphExtension(Extension):
             i altres serveis que implementin el protocol OpenGraph""",
             "ca"
         )
-        self.set("description",            
+        self.set("description",
             u"""Mejora la integración de los documentos del sitio web con
             Facebook y otros servicios que utilicen el protocolo OpenGraph""",
             "es"
@@ -88,7 +88,7 @@ class OpenGraphExtension(Extension):
     def _load(self):
 
         from woost.extensions.opengraph import (
-            strings, 
+            strings,
             publishable,
             opengraphtype,
             opengraphcategory
@@ -109,13 +109,13 @@ class OpenGraphExtension(Extension):
         templates.get_class("woost.extensions.opengraph.BaseViewOverlay")
 
         self.install()
-        
+
     def _install(self):
         self.create_default_categories(verbose = True)
         self.create_facebook_image_factory()
 
     def create_default_categories(self, verbose = False):
-        
+
         from woost.extensions.opengraph.opengraphtype import OpenGraphType
         from woost.extensions.opengraph.opengraphcategory \
             import OpenGraphCategory
@@ -181,16 +181,16 @@ class OpenGraphExtension(Extension):
             og_category = OpenGraphCategory.get_instance(code = category_id)
 
             if og_category is None:
-                
+
                 if verbose:
                     print "Creating OpenGraph category '%s'" % category_id
 
                 og_category = OpenGraphCategory()
                 og_category.code = category_id
                 og_category.insert()
-                
+
                 key = "opengraph.categories." + category_id
-                
+
                 for language in translations:
                     label = translations(key, language)
                     if label:
@@ -203,7 +203,7 @@ class OpenGraphExtension(Extension):
                 og_type = OpenGraphType.get_instance(code = type_id)
 
                 if og_type is None:
-                    
+
                     if verbose:
                         print "Creating OpenGraph type '%s.%s'" % (
                             category_id,
@@ -213,7 +213,7 @@ class OpenGraphExtension(Extension):
                     og_type = OpenGraphType()
                     og_type.code = type_id
                     og_type.insert()
-                    
+
                     key = "opengraph.types." + type_id
 
                     for language in translations:

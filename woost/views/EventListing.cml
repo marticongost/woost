@@ -9,7 +9,7 @@ from cocktail.translations import DATE_STYLE_TEXT
 
     <?py-class
     events = None
-    pagination = None   
+    pagination = None
     name_prefix = None
     name_suffix = None
     date_style = DATE_STYLE_TEXT
@@ -36,7 +36,7 @@ from cocktail.translations import DATE_STYLE_TEXT
             self.visible = False
         ?>
     </py:ready>
-    
+
     <div py:id="events_list">
         <py:ready>
             <?py
@@ -44,7 +44,7 @@ from cocktail.translations import DATE_STYLE_TEXT
                 sequence = self.pagination.current_page_items
             else:
                 sequence = self.events
-            
+
             event_index = 0
             ?>
             <py:new

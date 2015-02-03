@@ -38,7 +38,7 @@ class ShopExtension(Extension):
             electrònica.""",
             "ca"
         )
-        self.set("description",            
+        self.set("description",
             u"""Proporciona los elementos necesarios para implementar una
             tienda electrónica.""",
             "es"
@@ -120,20 +120,20 @@ class ShopExtension(Extension):
             import launch_transaction_notification_triggers
 
         payments_ext = PaymentsExtension.instance
-            
+
         def get_payment(self, payment_id):
 
             order = shoporder.ShopOrder.get_instance(int(payment_id))
 
             if order is None:
                 raise PaymentNotFoundError(payment_id)
-            
+
             payment = Payment()
             payment.id = order.id
             payment.amount = order.cost
             payment.shop_order = order
             payment.currency = Currency(payments_ext.payment_gateway.currency)
-            
+
             for entry in order.entries:
                 payment.add(PaymentItem(
                     reference = str(entry.product.id),
@@ -146,16 +146,16 @@ class ShopExtension(Extension):
 
         PaymentGateway.get_payment = get_payment
 
-        def receive_order_payment(event):            
+        def receive_order_payment(event):
             payment = event.payment
-            shop_order = payment.shop_order            
-            set_language(shop_order.language)           
+            shop_order = payment.shop_order
+            set_language(shop_order.language)
             shop_order.status = payment.status
             shop_order.gateway_parameters = payment.gateway_parameters
-        
+
         def commit_order_payment(event):
             datastore.commit()
-        
+
         events = PaymentGateway.transaction_notified
         pos = events.index(launch_transaction_notification_triggers)
         events.insert(pos, receive_order_payment)

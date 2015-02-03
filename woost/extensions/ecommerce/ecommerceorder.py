@@ -24,7 +24,7 @@ from woost.extensions.payments import PaymentsExtension
 
 def _translate_amount(amount, language = None, **kwargs):
     if amount is None:
-        return "" 
+        return ""
     else:
         return translations(
             amount.quantize(Decimal("1.00")),
@@ -43,7 +43,7 @@ class ECommerceOrder(Item):
 
     payment_types_completed_status = {
         "payment_gateway": "accepted",
-        "transfer": "payment_pending", 
+        "transfer": "payment_pending",
         "cash_on_delivery": "payment_pending"
     }
 
@@ -105,7 +105,7 @@ class ECommerceOrder(Item):
         listed_by_default = False
     )
 
-    country = schema.Reference(        
+    country = schema.Reference(
         member_group = "shipping_info",
         type = Location,
         relation_constraints = [Location.location_type.equal("country")],
@@ -151,7 +151,7 @@ class ECommerceOrder(Item):
                 **kwargs
             )
     )
-    
+
     purchases = schema.Collection(
         items = "woost.extensions.ecommerce.ecommercepurchase."
                 "ECommercePurchase",
@@ -205,7 +205,7 @@ class ECommerceOrder(Item):
         ),
         editable = False
     )
-    
+
     total_taxes = schema.Decimal(
         member_group = "billing",
         editable = False,
@@ -221,16 +221,16 @@ class ECommerceOrder(Item):
         ),
         editable = False
     )
-    
+
     total = schema.Decimal(
         member_group = "billing",
         editable = False,
         translate_value = _translate_amount
     )
 
-    def calculate_cost(self, 
+    def calculate_cost(self,
         apply_pricing = True,
-        apply_shipping_costs = True, 
+        apply_shipping_costs = True,
         apply_taxes = True
     ):
         """Calculates the costs for the order.
@@ -257,7 +257,7 @@ class ECommerceOrder(Item):
             },
             "purchases": {}
         }
-        
+
         # Per purchase costs:
         for purchase in self.purchases:
             purchase_costs = purchase.calculate_costs(
@@ -322,7 +322,7 @@ class ECommerceOrder(Item):
 
     def update_cost(self,
         apply_pricing = True,
-        apply_shipping_costs = True, 
+        apply_shipping_costs = True,
         apply_taxes = True
     ):
         costs = self.calculate_cost(
@@ -330,7 +330,7 @@ class ECommerceOrder(Item):
             apply_shipping_costs = apply_shipping_costs,
             apply_taxes = apply_taxes
         )
-        
+
         self.total_price = costs["price"]["total"]
         self.pricing = list(costs["price"]["concepts"])
 
@@ -374,7 +374,7 @@ class ECommerceOrder(Item):
                 for option in purchase.get_options()
                 if option.name != "quantity"
             ):
-                order_purchase.quantity += purchase.quantity                
+                order_purchase.quantity += purchase.quantity
                 purchase.product = None
                 if purchase.is_inserted:
                     purchase.delete()
@@ -414,7 +414,7 @@ class ECommerceOrder(Item):
     def get_public_adapter(cls):
         from woost.extensions.ecommerce import ECommerceExtension
 
-        user = get_current_user()            
+        user = get_current_user()
         adapter = schema.Adapter()
         adapter.exclude(["customer", "status", "purchases"])
         adapter.exclude([
@@ -446,7 +446,7 @@ class ECommerceOrder(Item):
         member = event.member
 
         if member.name == "status":
-            
+
             if event.previous_value == "shopping" \
             and event.value in ("payment_pending", "accepted"):
                 item.incoming()

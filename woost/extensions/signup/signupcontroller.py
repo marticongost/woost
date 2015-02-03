@@ -39,7 +39,7 @@ class SignUpController(FormControllerMixin, DocumentController):
              "password_confirmation",
              "enabled",
              "confirmed_email"]
-            + [key for key in Item.members()]    
+            + [key for key in Item.members()]
         )
         return adapter
 
@@ -117,7 +117,7 @@ class SignUpController(FormControllerMixin, DocumentController):
             raise cherrypy.HTTPRedirect(uri)
 
     @cached_getter
-    def confirmation_url(self): 
+    def confirmation_url(self):
         instance = self.form_instance
         confirmation_target = self.context["publishable"].confirmation_target
         canonical_uri = self.context["cms"].uri(confirmation_target)

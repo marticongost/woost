@@ -97,7 +97,7 @@ class Site(Item):
 
     backoffice_language = schema.String(
         required = True,
-        enumeration = ["en", "es", "ca"],        
+        enumeration = ["en", "es", "ca"],
         default = "en",
         text_search = False,
         translate_value = lambda value, language = None, **kwargs:
@@ -105,7 +105,7 @@ class Site(Item):
         listed_by_default = False,
         member_group = "language"
     )
-    
+
     heed_client_language = schema.Boolean(
         required = True,
         default = True,
@@ -139,7 +139,7 @@ class Site(Item):
         member_group = "meta.contact",
         listed_by_default = False
     )
-    
+
     postal_code = schema.String(
         member_group = "meta.contact",
         listed_by_default = False
@@ -261,9 +261,9 @@ class Site(Item):
             "per_page",
         ],
         translate_value = lambda value, language = None, **kwargs:
-            "" if not value 
+            "" if not value
                else translations(
-                        "Site.https_policy-%s" % value, 
+                        "Site.https_policy-%s" % value,
                         language,
                         **kwargs
                     ),
@@ -346,17 +346,17 @@ class Site(Item):
 
     def __translate__(self, language, **kwargs):
         return translations(self.__class__.__name__, language, **kwargs)
-    
+
     def resolve_path(self, path):
         """Determines the publishable item that matches the indicated path.
 
         This method identifies a matching publishable item by trying each
         publication scheme defined by the site, in order. Once a scheme finds a
         matching item, the search concludes.
-        
+
         See L{PublicationScheme.resolve_path} for more details on the resolution
         process.
- 
+
         @param path: The path to evaluate; A list-like object describing a
             a path relative to the application's root.
         @type path: str list
@@ -376,7 +376,7 @@ class Site(Item):
 
     def get_path(self, publishable, language = None):
         """Determines the canonical path of the indicated item.
-        
+
         This method queries each publication scheme defined by the site, in
         order. Once a scheme yields a matching path, the search concludes. That
         first match will be considered the item's canonical path.
