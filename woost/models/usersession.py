@@ -12,7 +12,7 @@ _thread_data = local()
 
 def get_current_user():
     """Gets the current user for the present context.
-    
+
     The concept of an 'active' user is used in several places to bind certain
     operations (authorization, versioning...) to an individual.
 

@@ -213,13 +213,13 @@ translations.define("SubscriptionFormBlock-plural",
     en = u"Subscription form"
 )
 
-translations.define("SubscriptionFormBlock.subscriber_model", 
+translations.define("SubscriptionFormBlock.subscriber_model",
     ca = u"Model de subscriptor",
     es = u"Modelo de suscriptor",
     en = u"Subscription model"
 )
 
-translations.define("SubscriptionFormBlock.lists", 
+translations.define("SubscriptionFormBlock.lists",
     ca = u"Llistes",
     es = u"Listas",
     en = u"Lists"

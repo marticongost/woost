@@ -39,7 +39,7 @@ from woost.extensions.ecommerce.basket import Basket
     </div>
 
     <div py:id="checkout_summary">
-        
+
         <py:cocktail.html.PropertyTable
             py:id="checkout_table"
             py:schema="@{self.checkout_schema}"

@@ -27,7 +27,7 @@ class Document(Publishable):
 
     members_order = (
         "title",
-        "inner_title",        
+        "inner_title",
         "template",
         "description",
         "keywords",
@@ -148,7 +148,7 @@ class Document(Publishable):
         """Renders the document using its template."""
         if self.template is None:
             raise ValueError("Can't render a document without a template")
-        
+
         values["publishable"] = self
 
         view = templates.new(self.template.identifier)

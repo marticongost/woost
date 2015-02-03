@@ -52,7 +52,7 @@ class ImagesController(BaseCMSController):
         parameters = None
 
         if len(parts) == 2:
-            factory_id, ext = parts            
+            factory_id, ext = parts
             format = formats_by_extension.get(ext)
             if format is None:
                 raise cherrypy.HTTPError(
@@ -62,7 +62,7 @@ class ImagesController(BaseCMSController):
         else:
             factory_id = processing
             format = None
-        
+
         factory = ImageFactory.get_instance(identifier = factory_id)
 
         if factory is None:
@@ -73,7 +73,7 @@ class ImagesController(BaseCMSController):
                     factory = ImageFactory.require_instance(factory_id)
                 except:
                     pass
-            
+
             if factory is None:
                 raise cherrypy.HTTPError(
                     400,
@@ -86,11 +86,11 @@ class ImagesController(BaseCMSController):
             target = item,
             image_factory = factory
         )
- 
+
         try:
             image_cache_file = require_rendering(
-                item, 
-                factory, 
+                item,
+                factory,
                 format,
                 parameters
             )

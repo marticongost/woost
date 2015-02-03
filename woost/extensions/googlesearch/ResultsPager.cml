@@ -26,7 +26,7 @@
 
     <py:new py:element="self.create_results_pager()" id="pager-bottom" py:id="pager_bottom" />
 
-    <py:woost.extensions.googlesearch.GooglePager 
+    <py:woost.extensions.googlesearch.GooglePager
         py:def="results_pager"
         py:page="@{self.results.page}"
         py:page_size="@{self.results.page_size}"

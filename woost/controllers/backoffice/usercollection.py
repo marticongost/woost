@@ -26,7 +26,7 @@ class BackOfficeUserCollection(UserCollection):
     @type: L{ContentViewsRegistry
              <woost.controllers.contentviews.ContentViewsRegistry>}
     """
-    content_views_registry = global_content_views    
+    content_views_registry = global_content_views
 
     # Content view dependant capabilities
     #--------------------------------------------------------------------------
@@ -37,7 +37,7 @@ class BackOfficeUserCollection(UserCollection):
     @cached_getter
     def allow_language_selection(self):
         return self.content_view.allow_language_selection
-    
+
     @cached_getter
     def allow_filters(self):
         return self.content_view.allow_filters
@@ -55,7 +55,7 @@ class BackOfficeUserCollection(UserCollection):
         return self.content_view.allow_paging
 
     # Type
-    #--------------------------------------------------------------------------    
+    #--------------------------------------------------------------------------
     @cached_getter
     def type(self):
         type = UserCollection.type(self)
@@ -89,18 +89,18 @@ class BackOfficeUserCollection(UserCollection):
         @type: L{Schema<cocktail.schema.schema.Schema>}
         """
         content_schema = UserCollection.schema(self)
-        
+
         if content_schema is not self.type:
-            
+
             # Descriptive column
             content_schema.name = "BackOfficeContentView"
-            
+
             if self.type.show_element_in_listings:
                 content_schema.add_member(
                     schema.Member(name = "element", searchable = False)
                 )
                 content_schema.members_order.insert(0, "element")
-        
+
             # Type column
             if self.type.show_type_in_listings \
             and any(cls.visible for cls in self.type.derived_schemas()):
@@ -112,18 +112,18 @@ class BackOfficeUserCollection(UserCollection):
         return content_schema
 
     # Content view
-    #--------------------------------------------------------------------------    
+    #--------------------------------------------------------------------------
     @cached_getter
     def content_view(self):
         """The selected content view for the current request (flat view, tree
         view, thumbnails view, etc).
         @type: L{ContentView<woost.views.ContentView>}
-        """ 
+        """
         content_view_type = None
         content_view_param = self.params.read(
             schema.String("content_view")
         )
-        
+
         # Explicitly chosen content view
         if content_view_param is not None:
             for content_view_type in self.available_content_views:
@@ -138,7 +138,7 @@ class BackOfficeUserCollection(UserCollection):
                 self.content_views_registry.get_default(self.type)
                 or self.available_content_views[0]
             )
-        
+
         # Instantiate and initialize the content view
         content_view = content_view_type()
 
@@ -150,15 +150,15 @@ class BackOfficeUserCollection(UserCollection):
         for key, value in params.iteritems():
             setattr(content_view, key, value)
 
-        content_view._init_user_collection(self)        
+        content_view._init_user_collection(self)
         return content_view
-    
+
     @cached_getter
     def available_content_views(self):
         """The list of all content view classes available to the selected
         content type.
         @type: sequence of L{Element<cocktail.html.element.Element>} subclasses
-        """        
+        """
         return ListWrapper([
             content_view
             for content_view
@@ -167,14 +167,14 @@ class BackOfficeUserCollection(UserCollection):
         ])
 
     # Members
-    #--------------------------------------------------------------------------    
+    #--------------------------------------------------------------------------
     @cached_getter
     def default_members(self):
         content_schema = self.schema
         return set([member
                 for member in UserCollection.default_members(self)
                 if content_schema.get_member(member).listed_by_default])
-    
+
     # Tree expansion
     #--------------------------------------------------------------------------
     @cached_getter

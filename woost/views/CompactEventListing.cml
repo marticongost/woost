@@ -7,7 +7,7 @@
     <article py:def="entry" py:args="event, event_index">
         <h1 py:local_id="heading">
             <a py:local_id="link" href="${event.get_uri()}">${translations(event)}</a>
-        </h1>        
+        </h1>
     </article>
 
 </py:woost.views.EventListing>

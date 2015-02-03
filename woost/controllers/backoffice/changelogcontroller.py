@@ -58,8 +58,8 @@ class ChangeLogController(BaseBackOfficeController):
                     if edit_stack is None:
                         edit_stack = edit_stacks_manager.create_edit_stack()
                         edit_stacks_manager.current_edit_stack = edit_stack
-                    
-                    node = SelectionNode()                    
+
+                    node = SelectionNode()
                     node.content_type = content_type
                     node.selection_parameter = selection_parameter
                     edit_stack.push(node)
@@ -69,7 +69,7 @@ class ChangeLogController(BaseBackOfficeController):
                         ),
                         client_side_scripting = self.client_side_scripting
                     ))
-                
+
         return BaseBackOfficeController.__call__(self, *args, **kwargs)
 
     @event_handler

@@ -13,7 +13,7 @@ class HTMLBlock(Block):
     type_group = "blocks.custom"
     view_class = "cocktail.html.Element"
 
-    html = schema.CodeBlock(        
+    html = schema.CodeBlock(
         language = "html",
         member_group = "content"
     )

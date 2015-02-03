@@ -62,7 +62,7 @@ class ECommerceProductListing(Block):
     listing_order = schema.String(
         default = "arbitrary",
         enumeration = [
-            "arbitrary", 
+            "arbitrary",
             "-last_update_time",
             "price",
             "-price"

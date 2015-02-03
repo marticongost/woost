@@ -15,7 +15,7 @@ class DummyPaymentGatewayController(PaymentGatewayController):
     <woost.extensions.payments.dummypaymentgateway.DummyPaymentGateway>}
     instances to simulate transaction payments.
     """
-    
+
     @cherrypy.expose
     def simulate_transaction(self, **parameters):
 
@@ -39,9 +39,9 @@ class DummyPaymentGatewayController(PaymentGatewayController):
             redirection = self.payment_gateway.payment_successful_page
         elif self.payment_gateway.payment_status == "failed":
             redirection = self.payment_gateway.payment_failed_page
-            
+
         if redirection is None:
             redirection = get_current_website().home
-        
+
         raise cherrypy.HTTPRedirect(redirection.get_uri(host = "!"))
 

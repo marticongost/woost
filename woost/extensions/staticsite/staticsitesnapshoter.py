@@ -21,9 +21,9 @@ from woost.models import Item
 class StaticSiteSnapShoter(Item):
     """A class tasked with creating a static snapshot of a site's content to
     a concrete location.
-    
+
     This is mostly an abstract class, meant to be extended by subclasses. Each
-    subclass should implement the static snapshot creation. 
+    subclass should implement the static snapshot creation.
     """
     instantiable = False
     visible_from_root = False
@@ -39,7 +39,7 @@ class StaticSiteSnapShoter(Item):
     )
 
     postprocessing_expression = schema.CodeBlock(
-        language = "python"        
+        language = "python"
     )
 
     def setup(self, context):
@@ -74,7 +74,7 @@ class StaticSiteSnapShoter(Item):
         """
 
     def snapshot(self, items, context = None):
-        """ Generates the snapshot of a site's content 
+        """ Generates the snapshot of a site's content
 
         @param items: The list of items which the exportation will start.
         @type items: L{Publishable}
@@ -95,7 +95,7 @@ class StaticSiteSnapShoter(Item):
 
     @abstractmethod
     def _snapshot(self, items, context):
-        """ Generates the snapshot of a site's content 
+        """ Generates the snapshot of a site's content
 
         @param items: The list of items which the exportation will start.
         @type items: L{Publishable}
@@ -140,12 +140,12 @@ class WgetSnapShoter(StaticSiteSnapShoter):
     """ A class that creates a static snapshot of a site's content using wget """
     instantiable = True
 
-    file_names_mode = schema.String(                                          
+    file_names_mode = schema.String(
         required = True,
         default = "unix",
         text_search = False,
         enumeration = frozenset(("unix", "windows")),
-        translate_value = lambda value, **kwargs:    
+        translate_value = lambda value, **kwargs:
             u"" if not value else translations(
                 "woost.extensions.staticsite.staticsitesnapshoter.WgetSnapShoter.file_names_mode " + value,
                 **kwargs
@@ -200,8 +200,8 @@ class WgetSnapShoter(StaticSiteSnapShoter):
                     uris.add(self._get_uri(item, context))
 
         cmd = cmd % (
-            snapshot_path, 
-            self.file_names_mode, 
+            snapshot_path,
+            self.file_names_mode,
             u" ".join(uris)
         )
 

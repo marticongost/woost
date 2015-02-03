@@ -33,7 +33,7 @@ class PaymentsExtension(Extension):
             u"""Afageix suport per pagaments en línia.""",
             "ca"
         )
-        self.set("description",            
+        self.set("description",
             u"""Añade soporte para pagos en linea.""",
             "es"
         )

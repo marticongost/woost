@@ -9,7 +9,7 @@ from cocktail import schema
 
     <?py-class
     products = ()
-    pagination = None   
+    pagination = None
     name_prefix = None
     name_suffix = None
     forms = None
@@ -59,7 +59,7 @@ from cocktail import schema
             if self.pagination:
                 sequence = self.pagination.current_page_items
             else:
-                sequence = self.products            
+                sequence = self.products
 
             product_index = 0
             ?>
@@ -87,8 +87,8 @@ from cocktail import schema
         py:form="${form}"
         method="post">
 
-        <py:with 
-            py:element="element.product_added_notifications" 
+        <py:with
+            py:element="element.product_added_notifications"
             py:visible="${False}"/>
 
         <?py

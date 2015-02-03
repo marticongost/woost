@@ -26,7 +26,7 @@ from woost.controllers.notifications import pop_user_notifications
         <?py
         if transient:
             element.add_class("transient")
-        
+
         if category:
             element.add_class(category)
         ?>

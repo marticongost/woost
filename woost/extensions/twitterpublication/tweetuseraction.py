@@ -9,7 +9,7 @@ from woost.extensions.twitterpublication.tweetpermission import TweetPermission
 
 
 class TweetUserAction(UserAction):
- 
+
     content_type = Publishable
 
     included = frozenset([
@@ -27,7 +27,7 @@ class TweetUserAction(UserAction):
     ])
 
     max = None
-    
+
     def is_permitted(self, user, target):
         return user.has_permission(TweetPermission, target = target)
 

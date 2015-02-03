@@ -26,7 +26,7 @@ class ContentForm(Form):
     def _resolve_member_display(self, obj, member):
 
         display = getattr(member, "edit_control", None)
-        
+
         if display is None:
             display = Form._resolve_member_display(self, obj, member)
 
@@ -44,7 +44,7 @@ class ContentForm(Form):
             display.content_type_picker.root = member.class_family
         else:
             display = "woost.views.ItemSelector"
-    
+
         return display
 
     def create_fieldset(self, group):
@@ -58,6 +58,6 @@ class ContentForm(Form):
 
         if not label and (not group or group == "default"):
             label = translations(self.schema.original_member.name)
-        
+
         return label
 

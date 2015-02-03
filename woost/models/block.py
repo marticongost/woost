@@ -18,7 +18,7 @@ from .slot import Slot
 
 
 @auto_enables_translations
-class Block(Item):    
+class Block(Item):
 
     instantiable = False
     visible_from_root = False
@@ -152,7 +152,7 @@ class Block(Item):
 
         if self.view_class is None:
             raise ValueError("No view specified for block %s" % self)
-        
+
         view = templates.new(self.view_class)
         self.init_view(view)
 
@@ -173,7 +173,7 @@ class Block(Item):
         block_proxy = self.get_block_proxy(view)
         block_proxy.set_client_param("blockId", self.id)
         block_proxy.add_class("block")
- 
+
         if self.html_attributes:
             for line in self.html_attributes.split("\n"):
                 try:
@@ -198,7 +198,7 @@ class Block(Item):
             block_proxy.add_class(style.class_name)
 
         block_proxy.add_class("block%d" % self.id)
-        
+
         if self.qname:
             block_proxy.add_class(self.qname.replace(".", "-"))
 
@@ -219,7 +219,7 @@ class Block(Item):
 
     def add_heading(self, view):
         if self.heading_type != "hidden":
-            if hasattr(view, "heading"):                
+            if hasattr(view, "heading"):
                 if isinstance(view.heading, Element):
                     if self.heading_type == "hidden_h1":
                         view.heading.tag = "h1"
@@ -228,12 +228,12 @@ class Block(Item):
                         view.heading.tag = "div"
                     else:
                         view.heading.tag = self.heading_type
-                    
+
                     label = self.heading
                     if label:
                         view.heading.append(label)
                 else:
-                    view.heading = self.heading          
+                    view.heading = self.heading
             else:
                 insert_heading = getattr(view, "insert_heading", None)
                 view.heading = self.create_heading()
@@ -265,15 +265,15 @@ class Block(Item):
         return bool(self.get(Configuration.common_blocks.related_end))
 
     def is_published(self):
-        
+
         # Time based publication window
         if self.start_date or self.end_date:
             now = datetime.now()
-            
+
             # Not published yet
             if self.start_date and now < self.start_date:
                 return False
-            
+
             # Expired
             if self.end_date and now >= self.end_date:
                 return False
@@ -334,7 +334,7 @@ class Block(Item):
                             else:
                                 for slot in iter_slots(value):
                                     yield slot
-        
+
         return iter_slots(self)
 
     def find_paths(self):
@@ -343,7 +343,7 @@ class Block(Item):
         @return: A list of lists, where each list represents one of the paths
             that the block descends from. Each entry in a path consists of
             container, slot pair.
-        @rtype: list of 
+        @rtype: list of
             (L{Item<woost.models.item.Item>},
             L{Slot<woost.models.slot.Slot>}) lists
         """
