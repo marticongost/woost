@@ -21,9 +21,9 @@ from cocktail.translations import iter_language_chain
 
     def get_eligible_items_toggle_button_label(self):
         return translations("woost.views.EnabledTranslationsSelector.eligible_items_panel.toggle_button")
-    
-    def get_source_locale(self, locale):        
-        for locale in iter_language_chain(locale):            
+
+    def get_source_locale(self, locale):
+        for locale in iter_language_chain(locale):
             if locale in self.defined_translations:
                 return locale
     ?>

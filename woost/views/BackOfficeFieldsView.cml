@@ -17,7 +17,7 @@ from woost.models import (
     <?py-class
     fields_schema = None
     form_data = None
-    saved = None 
+    saved = None
     submitted = False
     changes = None
     available_languages = ()
@@ -81,12 +81,12 @@ from woost.models import (
                         member.name,
                         language
                     )
-                    
+
                     if key in self.changed_keys:
                         element.add_class("changed")
                     ?>
                 </py:with>
-                
+
             </py:new>
 
         </py:ready>

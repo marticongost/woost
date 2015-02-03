@@ -6,7 +6,7 @@ u"""
 from cocktail.translations import translations
 
 # Website
-#------------------------------------------------------------------------------ 
+#------------------------------------------------------------------------------
 translations.define("Website.notices",
     ca = u"Avisos",
     es = u"Avisos",
@@ -14,7 +14,7 @@ translations.define("Website.notices",
 )
 
 # NoticesBox
-#------------------------------------------------------------------------------ 
+#------------------------------------------------------------------------------
 translations.define(
     "woost.extensions.notices.NoticesBox.close_notice_button",
     ca = u"Ocultar aquest missatge",

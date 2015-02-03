@@ -15,7 +15,7 @@ from cocktail.controllers import get_parameter
 from cocktail.controllers.fileupload import FileUpload
 from woost import app
 from woost.models import (
-    get_current_user, 
+    get_current_user,
     changeset_context,
     File
 )
@@ -32,7 +32,7 @@ class UploadFilesController(BaseBackOfficeController):
     def form_schema(self):
 
         form_schema = schema.Schema("UploadFilesForm")
-        
+
         upload = FileUpload("upload", required = True)
         upload["mime_type"].enumeration = [
             "application/zip",
@@ -61,14 +61,14 @@ class UploadFilesController(BaseBackOfficeController):
     @cached_getter
     def submitted(self):
         return cherrypy.request.method == "POST"
-    
+
     def submit(self):
-        
+
         self.imported_files = []
-        
+
         file = self.form_data["upload"]["file"]
         zip_file = ZipFile(file)
-        
+
         upload_path = app.path("upload")
         temp_dir = mkdtemp()
 
@@ -77,7 +77,7 @@ class UploadFilesController(BaseBackOfficeController):
                 for file_path in zip_file.namelist():
 
                     file_name = os.path.basename(file_path)
-                    
+
                     # Skip directories
                     if not file_name:
                         continue

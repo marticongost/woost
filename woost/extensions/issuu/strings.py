@@ -89,8 +89,8 @@ translations.define("woost.extensions.issuu.issuu_document_controller.title",
 
 translations.define(
     "woost.extensions.issuu.issuudocument."
-    "IssuuSearchAPIError-instance",                                                                                                                                                  
-    ca = lambda instance: u"Error consulta a la Search API: <pre>%s</pre>" 
+    "IssuuSearchAPIError-instance",
+    ca = lambda instance: u"Error consulta a la Search API: <pre>%s</pre>"
                           % instance.response,
     es = lambda instance: u"Error consulta a la Search API: <pre>%s</pre>"
                           % instance.response,

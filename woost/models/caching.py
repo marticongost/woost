@@ -58,7 +58,7 @@ class CachingPolicy(Item):
     )
 
     condition = schema.CodeBlock(
-        language = "python"        
+        language = "python"
     )
 
     cache_key_expression = schema.CodeBlock(
@@ -85,7 +85,7 @@ class CachingPolicy(Item):
 
         cache_key = (
             str(Location.get_current(relative = False)),
-            None 
+            None
             if user is None or user.anonymous
             else tuple(role.id for role in user.roles)
         )
@@ -160,7 +160,7 @@ def normalize_invalidation_date(value):
                 max_date = date
 
         value = max_date
-    
+
     return value
 
 def latest(selectable, *args, **kwargs):
@@ -179,14 +179,14 @@ def latest(selectable, *args, **kwargs):
 
 def menu_items(publishable):
     items = []
-    
+
     while publishable is not None:
         if hasattr(publishable, "children"):
             items.extend(publishable.children)
         if publishable.parent is None:
             items.append(publishable)
         publishable = publishable.parent
-    
+
     return items
 
 def file_date(publishable):

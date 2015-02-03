@@ -39,7 +39,7 @@ class ImageFactory(Item):
         indexed = True,
         normalized_index = False
     )
-    
+
     renderer = schema.Reference(
         required = True,
         type = Renderer,
@@ -60,7 +60,7 @@ class ImageFactory(Item):
     effects = schema.Collection(
         items = "woost.models.rendering.ImageEffect",
         bidirectional = True,
-        integral = True,        
+        integral = True,
     )
 
     fallback = schema.Reference(
@@ -82,9 +82,9 @@ class ImageFactory(Item):
     )
 
     def render(self, item):
-        
+
         image = self.renderer.render(item)
-        
+
         if image is None:
             if self.fallback:
                 image = self.fallback.render(item)

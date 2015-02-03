@@ -30,7 +30,7 @@
             </py:ready>
         </table>
     </py:with>
-    
+
     <tr py:def="reference_entry" py:args="referrer, relation">
         <td py:local_id="referrer_cell">
             <py:woost.views.ContentLink

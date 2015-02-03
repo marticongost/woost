@@ -81,7 +81,7 @@ class SignUpBlock(Block):
 
     pending_page = schema.Reference(
         type = Publishable,
-        exclusive = lambda ctx: 
+        exclusive = lambda ctx:
             ctx.validable.get("confirmation_email_template"),
         related_end = schema.Collection(),
         default = schema.DynamicDefault(

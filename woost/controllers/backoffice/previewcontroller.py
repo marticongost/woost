@@ -16,7 +16,7 @@ from woost.controllers.backoffice.useractions import get_user_action
 
 class PreviewController(EditController):
 
-    section = "preview" 
+    section = "preview"
 
     @request_property
     def previewed_item(self):
@@ -30,12 +30,12 @@ class PreviewController(EditController):
                 type = Publishable
             )
         )
-        
+
         if publishable is not None:
             return publishable
 
         for node in reversed(self.edit_stack):
-            item = getattr(node, "item", None)            
+            item = getattr(node, "item", None)
             if item is not None and isinstance(item, Publishable):
                 return item
 
@@ -48,7 +48,7 @@ class PreviewController(EditController):
     @request_property
     def preview_language(self):
         return get_parameter(
-            schema.String("preview_language", 
+            schema.String("preview_language",
                 default = get_language()
             )
         )

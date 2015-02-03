@@ -26,11 +26,11 @@ class OrderController(BaseBackOfficeController):
     @request_property
     def content_type(self):
         return self.member.items.type
-    
+
     @request_property
     def collection(self):
         return schema.get(self.edit_node.form_data, self.member)
-    
+
     @request_property
     def member(self):
         key = get_parameter(schema.String("member"))
@@ -47,7 +47,7 @@ class OrderController(BaseBackOfficeController):
                 items = schema.Reference(type = self.content_type)
             )
         )
-    
+
     @request_property
     def position(self):
         return get_parameter(
@@ -66,7 +66,7 @@ class OrderController(BaseBackOfficeController):
         return self.selection and self.position is not None
 
     def submit(self):
-        
+
         collection = self.collection
         selection = self.selection
         position = self.position
@@ -88,10 +88,10 @@ class OrderController(BaseBackOfficeController):
             self.output["error"] = translations(error)
         else:
             BaseBackOfficeController.handle_error(self, error)
-    
+
     @event_handler
     def handle_after_request(cls, event):
-        
+
         controller = event.source
 
         if not controller.handling_ajax_request:

@@ -798,19 +798,19 @@ translations.define(
 #------------------------------------------------------------------------------
 translations.define(
     "woost.extensions.ecommerce.product_added_notice",
-    ca = lambda product: 
+    ca = lambda product:
         u"S'ha afegit <strong>%s</strong> a la cistella"
         % translations(product),
-    es = lambda product: 
+    es = lambda product:
         u"Se ha añadido <strong>%s</strong> a la cesta"
         % translations(product),
-    en = lambda product: 
+    en = lambda product:
         u"<strong>%s</strong> added to the shopping basket"
         % translations(product),
-    fr = lambda product: 
+    fr = lambda product:
         u"<strong>%s</strong> ajouté au panier"
         % translations(product),
-    pt = lambda product: 
+    pt = lambda product:
         u"Adicionado <strong>%s</strong> à cesta da compra"
         % translations(product)
 )
@@ -827,19 +827,19 @@ translations.define(
 
 translations.define(
     "woost.extensions.ecommerce.delete_purchase_notice",
-    ca = lambda product: 
+    ca = lambda product:
         u"S'ha tret <strong>%s</strong> de la cistella"
         % translations(product),
-    es = lambda product: 
+    es = lambda product:
         u"Se ha quitado <strong>%s</strong> de la cesta"
         % translations(product),
-    en = lambda product: 
+    en = lambda product:
         u"<strong>%s</strong> has been removed from the shopping basket"
         % translations(product),
-    fr = lambda product: 
+    fr = lambda product:
         u"<strong>%s</strong> a été effacé du panier"
         % translations(product),
-    pt = lambda product: 
+    pt = lambda product:
         u"El produto <strong>%s</strong> foi removido"
         % translations(product)
 )
@@ -1038,40 +1038,40 @@ translations.define("woost.extensions.ecommerce.Discount.end_date",
     en = lambda end_date:
         u"until " + translations(end_date, style = DATE_STYLE_TEXT),
 	fr = lambda end_date:
-        u"jusqu'à " + translations(end_date, style = DATE_STYLE_TEXT)	
+        u"jusqu'à " + translations(end_date, style = DATE_STYLE_TEXT)
 )
 
 # Basket indicator
 #------------------------------------------------------------------------------
 translations.define("woost.extensions.ecommerce.BasketIndicator",
-    ca = lambda count: 
+    ca = lambda count:
         plural2(
             count,
-            u"<strong>1</strong> producte", 
+            u"<strong>1</strong> producte",
             u"<strong>%d</strong> productes" % count
         ) + u" a la cistella",
-    es = lambda count: 
+    es = lambda count:
         plural2(
             count,
-            u"<strong>1</strong> producto", 
+            u"<strong>1</strong> producto",
             u"<strong>%d</strong> productos" % count
         ) + u" en la cesta",
-    en = lambda count: 
+    en = lambda count:
         plural2(
             count,
-            u"<strong>1</strong> product", 
+            u"<strong>1</strong> product",
             u"<strong>%d</strong> products" % count
         ) + u" in the shopping basket",
-	fr = lambda count: 
+	fr = lambda count:
         plural2(
             count,
-            u"<strong>1</strong> produit", 
+            u"<strong>1</strong> produit",
             u"<strong>%d</strong> produits" % count
         ) + u" au panier",
-    pt = lambda count: 
+    pt = lambda count:
         plural2(
             count,
-            u"<strong>1</strong> produto", 
+            u"<strong>1</strong> produto",
             u"<strong>%d</strong> produtos" % count
         ) + u" no cesta"
 )

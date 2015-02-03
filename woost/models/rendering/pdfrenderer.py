@@ -35,7 +35,7 @@ class PDFRenderer(Renderer):
     def can_render(self, item, **parameters):
         return (
             self.command
-            and isinstance(item, File) 
+            and isinstance(item, File)
             and item.resource_type == "document"
             and item.file_name.split(".")[-1].lower() == "pdf"
         )
@@ -43,7 +43,7 @@ class PDFRenderer(Renderer):
     def render(self, item, page = 1, **parameters):
 
         timeout = self.timeout
-        
+
         # Increase the timeout for bigger files
         if self.timeout_size_factor:
             size = item.file_size

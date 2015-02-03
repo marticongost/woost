@@ -34,7 +34,7 @@ class TypeGroup(object):
             if len(parts) == 2:
                 for index, existing_child in enumerate(self.__children):
                     if existing_child.id == parts[1]:
-                        break                
+                        break
                 if parts[0] == "before":
                     position = index
                 elif parts[0] == "after":
@@ -87,7 +87,7 @@ class TypeGroup(object):
         for child in self.__children:
             if child.id == child_id:
                 return child
-        
+
         raise KeyError("Unknown type group: " + child_id)
 
     def __delitem__(self, child):

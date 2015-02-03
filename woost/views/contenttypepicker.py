@@ -18,7 +18,7 @@ from woost.views.contenttypetree import ContentTypeTree
 
 
 class ContentTypePicker(ContentTypeTree):
-    
+
     name = None
     value = None
 
@@ -32,7 +32,7 @@ class ContentTypePicker(ContentTypeTree):
         self.add_resource("/resources/scripts/ContentTypePicker.js")
 
     def _ready(self):
-        
+
         self.set_client_param("selectionMode", self.selection_mode)
         self.add_client_translation("woost.views.ContentTypePicker select")
         self.add_client_translation("woost.views.ContentTypePicker accept")
@@ -60,7 +60,7 @@ class ContentTypePicker(ContentTypeTree):
         ContentTypeTree._ready(self)
 
     def create_empty_option(self):
-        
+
         entry = Element("li")
 
         entry.control = Element("input",
@@ -83,7 +83,7 @@ class ContentTypePicker(ContentTypeTree):
         return entry
 
     def create_entry(self, content_type):
-        
+
         entry = ContentTypeTree.create_entry(self, content_type)
 
         entry.control = Element("input",

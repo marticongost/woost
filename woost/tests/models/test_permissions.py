@@ -34,8 +34,8 @@ class PermissionTestCase(BaseTestCase):
             Role,
             ReadPermission
         )
-        
-        R = lambda **kwargs: Role(permissions = [ReadPermission()], **kwargs)        
+
+        R = lambda **kwargs: Role(permissions = [ReadPermission()], **kwargs)
         r1 = R()
         r2 = R()
         r3 = R()
@@ -85,7 +85,7 @@ class PermissionTestCase(BaseTestCase):
             ReadPermission,
             ModifyPermission,
             DeletePermission
-        ]:            
+        ]:
             role = Role()
             user = User(roles = [role])
 
@@ -99,7 +99,7 @@ class PermissionTestCase(BaseTestCase):
                     authorized = True
                 )
             )
-            
+
             self.assert_authorized(user, permission_type, target = doc)
 
             # Permission denied (wrong target)
@@ -107,7 +107,7 @@ class PermissionTestCase(BaseTestCase):
 
             # Permission denied (wrong permission type)
             self.assert_not_authorized(user, TestPermission)
-            
+
             # Permission denied (prevailing negative permission)
             role.permissions.insert(
                 0,
@@ -140,7 +140,7 @@ class PermissionTestCase(BaseTestCase):
         m3 = Publishable.controller
 
         for permission_type in [ReadMemberPermission, ModifyMemberPermission]:
-            
+
             role = Role()
             user = User(roles = [role])
 
@@ -159,14 +159,14 @@ class PermissionTestCase(BaseTestCase):
                     authorized = True
                 )
             )
-            
+
             self.assert_authorized(user, permission_type, member = m1)
             self.assert_authorized(user, permission_type, member = m2)
             self.assert_not_authorized(user, permission_type, member = m3)
 
             # Permission denied (wrong permission type)
             self.assert_not_authorized(user, TestPermission)
-            
+
             # Negative permission
             role.permissions.insert(
                 0,
@@ -206,7 +206,7 @@ class PermissionTestCase(BaseTestCase):
             ReadTranslationPermission,
             ModifyTranslationPermission,
             DeleteTranslationPermission
-        ]:            
+        ]:
             role = Role()
             user = User(roles = [role])
 
@@ -222,14 +222,14 @@ class PermissionTestCase(BaseTestCase):
                     authorized = True
                 )
             )
-            
+
             self.assert_authorized(user, permission_type, language = l1)
             self.assert_authorized(user, permission_type, language = l2)
             self.assert_not_authorized(user, permission_type, language = l3)
 
             # Permission denied (wrong permission type)
             self.assert_not_authorized(user, TestPermission)
-            
+
             # Negative permission
             role.permissions.insert(
                 0,
@@ -252,7 +252,7 @@ class PermissionTestCase(BaseTestCase):
             ReadPermission,
             PermissionExpression
         )
-        
+
         self.everybody_role.permissions.append(
             ReadPermission(
                 content_type = Publishable,
@@ -264,7 +264,7 @@ class PermissionTestCase(BaseTestCase):
         i2 = Item()
         d1 = Publishable()
         d2 = Publishable()
-        
+
         i1.insert()
         i2.insert()
         d1.insert()

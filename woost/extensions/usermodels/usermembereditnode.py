@@ -26,7 +26,7 @@ class UserMemberEditNode(EditNode):
     @cached_getter
     def form_schema(self):
         form_schema = EditNode.form_schema(self)
-        
+
         edit_control = form_schema.get_member("member_edit_control")
         if edit_control:
             edit_control.enumeration = self.item.edit_controls
@@ -50,7 +50,7 @@ class UserMemberEditNode(EditNode):
         try:
             with models_access.locking:
                 return EditNode.import_form_data(self, form_data, item)
-        
+
         # Claim usage of the models once again
         finally:
             models_access.enter()

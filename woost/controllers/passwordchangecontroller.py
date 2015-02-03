@@ -44,7 +44,7 @@ class PasswordChangeController(FormProcessor, DocumentController):
 
             user_id_member = self.identifier_member.copy()
             user_id_member.name = "user"
-            
+
             @user_id_member.add_validation
             def validate_user_identifier_exists(member, value, context):
                 if value and self.user is None:
@@ -74,7 +74,7 @@ class PasswordChangeController(FormProcessor, DocumentController):
                 return User.get_instance(**{
                     self.identifier_member.name: self.identifier
                 })
-    
+
         def after_submit(self):
             confirmation_email_template = EmailTemplate.get_instance(
                 qname = "woost.password_change_email_template"

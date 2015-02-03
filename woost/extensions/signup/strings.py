@@ -60,7 +60,7 @@ translations.define(
 
 translations.define("woost.extensions.signup.signup_pending_text_block.text",
     ca = u"""
-        En breu rebrà un missatge a la bústia de 
+        En breu rebrà un missatge a la bústia de
         correu electrònic que ens ha facilitat. Segueixi les indicacions del
         correu per tal de confirmar la seva alta a la web. Gràcies.
     """,
@@ -163,7 +163,7 @@ translations.define("SignUpBlock.confirmation_email_template-explanation",
     es = u"""Asignar una plantilla de email de confirmación, activa
         automáticamente el sistema de confirmación por email en el proceso de
         alta""",
-    en = u"""Selecting a sign up email template will automatically enable the 
+    en = u"""Selecting a sign up email template will automatically enable the
         email confirmation system in the sign up process"""
 )
 
