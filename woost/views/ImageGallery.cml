@@ -50,7 +50,7 @@ from cocktail.controllers import context
 
     <ul py:id="image_list">
         <py:ready>
-            <?py            
+            <?py
             images = self.images
             if self.accessible_check:
                 images = (img for img in self.images if img.is_accessible())
@@ -81,12 +81,12 @@ from cocktail.controllers import context
             href="${image.get_image_uri(self.close_up_factory)}"
             target="blank_">
 
-            <?py 
+            <?py
             if not self.close_up_enabled:
                 element.tag = None
             ?>
 
-            <py:woost.views.Image 
+            <py:woost.views.Image
                 py:local_id="image"
                 py:image="${image}"
                 py:image_factory="${self.thumbnail_factory}"
@@ -98,8 +98,8 @@ from cocktail.controllers import context
         </a>
     </li>
 
-    <py:woost.views.Dialog 
-        py:id="image_dialog" 
+    <py:woost.views.Dialog
+        py:id="image_dialog"
         py:client_model="woost.views.ImageGallery.image_dialog">
         <?py
         element.add_class("ImageGallery-dialog")
@@ -126,7 +126,7 @@ from cocktail.controllers import context
         </py:with>
     </py:woost.views.Dialog>
 
-    <div py:id="loading_sign" 
+    <div py:id="loading_sign"
         py:client_model="woost.views.ImageGallery.loading_sign"
         class="ImageGallery-loading_sign">
         ${translations("woost.views.ImageGallery.loading_sign")}

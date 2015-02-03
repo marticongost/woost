@@ -17,13 +17,13 @@ from woost.extensions.shop.product import Product
 class Basket(object):
 
     session_key = "woost.extensions.shop basket"
-    
+
     @classmethod
     def get(cls):
         """Returns the shop order for the current user session.
 
         If the user had not started an order yet, a new one is created.
-        
+
         @rtype: L{ShopOrder<woost.extensions.shop.shoporder.ShopOrder>}
         """
         order = getattr(cherrypy.request, "woost_shop_basket", None)
@@ -37,7 +37,7 @@ class Basket(object):
             cherrypy.request.woost_shop_basket = order
 
         return order
-    
+
     @classmethod
     def drop(cls):
         """Drops the current shop order."""

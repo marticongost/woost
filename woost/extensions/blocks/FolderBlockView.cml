@@ -20,7 +20,7 @@ from cocktail.controllers import context
             and document.is_accessible()
         )
     ?>
-    
+
     <py:ready>
         <?py
         if self.document is None:
@@ -38,7 +38,7 @@ from cocktail.controllers import context
             if self.should_display_document(child):
                 has_visible_children = True
                 self.folder_content.append(self.create_entry(child))
-        
+
         if not has_visible_children and self.hide_when_empty:
             self.visible = False
         ?>

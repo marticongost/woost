@@ -74,18 +74,18 @@ class EditBlocksAction(UserAction):
     excluded = UserAction.excluded | frozenset(["new_item"])
 
     def is_available(self, context, target):
-        
+
         if UserAction.is_available(self, context, target):
 
             if isinstance(target, type):
-                content_type = target 
+                content_type = target
             else:
                 content_type = type(target)
 
                 # Prevent action nesting
                 edit_stacks_manager = \
                     controller_context.get("edit_stacks_manager")
-                
+
                 if edit_stacks_manager:
                     edit_stack = edit_stacks_manager.current_edit_stack
                     if edit_stack:
@@ -127,7 +127,7 @@ def add_block(block, parent, slot, positioning = "append", anchor = None):
         elif positioning == "after":
             collection.insert(collection.index(anchor) + 1, block)
         else:
-            raise ValueError("Invalid block positioning: %s" % positioning)        
+            raise ValueError("Invalid block positioning: %s" % positioning)
 
 
 class AddBlockNode(EditNode):
@@ -152,11 +152,11 @@ class AddBlockNode(EditNode):
         return state
 
     def __setstate__(self, state):
-  
+
         EditNode.__setstate__(self, state)
 
         self.block_parent = Item.get_instance(state["block_parent"])
-        
+
         if self.block_parent:
             block_type = type(self.block_parent)
             self.block_slot = block_type.get_member(state["block_slot"])
@@ -245,11 +245,11 @@ class RemoveBlockAction(UserAction):
     def invoke(self, controller, selection):
 
         collection = controller.block_parent.get(controller.block_slot)
-        
+
         try:
             index = collection.index(selection[0])
         except ValueError:
-            index = None        
+            index = None
 
         schema.remove(collection, selection[0])
         datastore.commit()
@@ -261,7 +261,7 @@ class RemoveBlockAction(UserAction):
             adjacent_block = collection[index - 1]
         else:
             adjacent_block = collection[0]
-        
+
         focus_block(adjacent_block)
 
 
@@ -346,7 +346,7 @@ class PasteBlockAction(UserAction):
 
                 # Add the block to its new position
                 add_block(
-                    block, 
+                    block,
                     controller.block_parent,
                     controller.block_slot,
                     positioning = self.block_positioning,
@@ -373,7 +373,7 @@ class ShareBlockAction(UserAction):
             and user.has_permission(ModifyPermission, target = config)
             and user.has_permission(ModifyPermission, target = target)
             and user.has_permission(
-                ModifyMemberPermission, 
+                ModifyMemberPermission,
                 member = Configuration.common_blocks
             )
         )

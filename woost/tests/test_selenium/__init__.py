@@ -7,7 +7,7 @@ Selenium test suite for the Woost CMS.
 @organization:	Whads/Accent SL
 @since:			May 2009
 """
-from os.path import join        
+from os.path import join
 from shutil import rmtree
 from tempfile import mkdtemp
 from ZODB.FileStorage import FileStorage
@@ -41,7 +41,7 @@ def admin_login():
 
 
 def setup_package():
-    
+
     if not get_selenium_enabled():
         return
 

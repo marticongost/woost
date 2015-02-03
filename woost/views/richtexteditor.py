@@ -50,7 +50,7 @@ class RichTextEditor(TinyMCE):
         ctx_uri = context["cms"].contextual_uri()
         current_edit_stack = \
             context["edit_stacks_manager"].current_edit_stack
-        
+
         styles = [
             "%s=%s" % (translations(style), style.class_name)
             for style in Style.select({"applicable_to_text": True})
@@ -62,8 +62,8 @@ class RichTextEditor(TinyMCE):
                 "/editor_attachments?edit_stack=%s&language=%s&resource_type=" % (
                     edit_stack_param, self.language
                 )
-            
-            d = self.tinymce_params.setdefault            
+
+            d = self.tinymce_params.setdefault
             d("theme_advanced_styles", ";".join(styles))
             d("init_instance_callback", "woost.initRichTextEditor")
             d("external_image_list_url", attachments_uri + "image")
@@ -74,9 +74,9 @@ class RichTextEditor(TinyMCE):
         load_plugin["type"] = "text/javascript"
         load_plugin.append("tinymce.PluginManager.load('advimagescale', '/resources/scripts/advimagescale/editor_plugin.js');")
         self.append(load_plugin)
-        
+
         TinyMCE._ready(self)
-        
+
     def __init__(self, *args, **kwargs):
         TinyMCE.__init__(self, *args, **kwargs)
         self.add_resource("/resources/scripts/RichTextEditor.js")

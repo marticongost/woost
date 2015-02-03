@@ -43,7 +43,7 @@ class Installer(object):
         submitted = cherrypy.request.method == "POST"
         successful = False
         errors = []
- 
+
         HOST_FORMAT = \
             re.compile(r"^([a-z]+(\.[a-z]+)*)|(\d{1,3}(\.\d{1,3}){3})$")
 
@@ -199,7 +199,7 @@ class Installer(object):
 
                     self.install(form_data)
 
-                except Exception, ex:                    
+                except Exception, ex:
                     errors.append(ex)
                     if not isinstance(ex, InstallFolderExists):
                         try:
@@ -220,7 +220,7 @@ class Installer(object):
         return view.render_page()
 
     def install(self, params):
-        
+
         params["project_module"] = params["project_name"].lower()
 
         self._create_project(params)
@@ -273,8 +273,8 @@ class Installer(object):
         # Grant execution permission for project scripts
         scripts_path = os.path.join(params["project_path"], "scripts")
 
-        for fname in os.listdir(scripts_path):            
-            if fname != "__init__.py":   
+        for fname in os.listdir(scripts_path):
+            if fname != "__init__.py":
                 script = os.path.join(scripts_path, fname)
                 if os.path.isfile(script):
                     os.chmod(script, 0774)
@@ -340,9 +340,9 @@ class InstallFolderExists(Exception):
 
 
 class WrongAddressError(schema.exceptions.ValidationError):
- 
+
     def __init__(self, member, value, context, host_member, port_member):
-        
+
         schema.exceptions.ValidationError.__init__(
             self, member, value, context
         )

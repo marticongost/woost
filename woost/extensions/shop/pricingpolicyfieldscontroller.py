@@ -22,12 +22,12 @@ class PricingPolicyFieldsController(ItemFieldsController, ContentController):
     @cached_getter
     def persistence_prefix(self):
         return "PricingPolicy%s" % self.stack_node.item.id
-    
+
     def _handle_form_data(self):
         ItemFieldsController._handle_form_data(self)
         form_data = self.stack_node.form_data
         form_data["matching_items"] = self.get_matching_items_parameters()
- 
+
     @cached_getter
     def matching_items_parameters_source(self):
         source = self.stack_node.form_data["matching_items"].copy()
@@ -43,7 +43,7 @@ class PricingPolicyFieldsController(ItemFieldsController, ContentController):
         for key, value in source.iteritems():
             if key.startswith("filter_"):
                 params[key] = value
-        
+
         return params
 
     @cached_getter

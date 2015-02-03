@@ -50,7 +50,7 @@ class ECommerceProduct(Publishable):
         default = Decimal("0"),
         member_group = "product_data"
     )
- 
+
     weight = schema.Decimal(
         translate_value = lambda value, language = None, **kwargs:
             "" if not value else "%s Kg" % translations(value, language),
@@ -118,7 +118,7 @@ class ECommerceProduct(Publishable):
                     yield resource
 
                 for resource in catalog.branch_resources:
-                    yield resource        
+                    yield resource
         else:
             for resource in Publishable.inherited_resources.__get__(self):
                 yield resource

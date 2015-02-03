@@ -44,7 +44,7 @@ def model_block_styles(e):
         style.applicable_to_blocks = False
 
     for block in Block.select():
-        
+
         value = getattr(block, "_css_class", None)
 
         if value is not None:

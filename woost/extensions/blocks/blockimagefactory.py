@@ -30,15 +30,15 @@ _mandatory_dropdown = display_factory(
 class BlockImageFactory(schema.Reference):
 
     def __init__(self, *args, **kwargs):
-        
+
         kwargs.setdefault("required", True)
         kwargs.setdefault("type", ImageFactory)
         kwargs.setdefault("enumeration", _block_image_factories_enumeration)
-        kwargs.setdefault("default", _block_image_factories_default)                
+        kwargs.setdefault("default", _block_image_factories_default)
         kwargs.setdefault("edit_control", _mandatory_dropdown)
 
         if "bidirectional" not in kwargs and "related_end" not in kwargs:
             kwargs["related_end"] = schema.Collection()
-        
+
         schema.Reference.__init__(self, *args, **kwargs)
 

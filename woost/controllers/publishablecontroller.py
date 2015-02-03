@@ -28,7 +28,7 @@ class PublishableController(BaseCMSController):
     )
 
     def __call__(self, **kwargs):
-        
+
         if self.cache_enabled and cherrypy.request.method == "GET":
             content = self._apply_cache(kwargs)
             if content is not None:
@@ -65,10 +65,10 @@ class PublishableController(BaseCMSController):
                 publishable,
                 **caching_context
             )
-            
+
             # Client side cache
             timestamp = None
-            
+
             if content_last_update:
                 timestamp = mktime(content_last_update.timetuple())
                 etag_hash = md5()
@@ -79,10 +79,10 @@ class PublishableController(BaseCMSController):
 
             # Server side cache
             if policy.server_side_cache:
-                
+
                 cached_response = \
                     self._get_cached_content(cache_key, policy, timestamp)
-                
+
                 if cached_response:
                     headers, content = cached_response
                     cherrypy.response.headers.update(headers)
@@ -142,7 +142,7 @@ class PublishableController(BaseCMSController):
         # Collect headers that should be included in the cache
         headers = {}
         response_headers = cherrypy.response.headers
-        
+
         for header_name in self.cached_headers:
             header_value = response_headers.get(header_name)
             if header_value:

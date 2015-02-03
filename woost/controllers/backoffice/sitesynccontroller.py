@@ -48,7 +48,7 @@ class SiteSyncController(FormProcessor, BaseBackOfficeController):
 
         glue = ""
         yield "{"
-        
+
         for global_id in identifiers.split(","):
             obj = Item.require_instance(global_id = global_id)
             yield '%s"%s":' % (glue, global_id)

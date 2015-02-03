@@ -64,7 +64,7 @@ from cocktail.html.datadisplay import MULTIPLE_SELECTION
                     def get_item_url(tree, content_type):
                         url = "?type=" + content_type.full_name
                         if self.edit_stack:
-                            url += "&edit_stack=" + self.edit_stack.to_param()                        
+                            url += "&edit_stack=" + self.edit_stack.to_param()
                         return url
                     ?>
                 </py:with>

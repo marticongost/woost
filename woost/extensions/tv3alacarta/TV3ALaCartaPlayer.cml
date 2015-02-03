@@ -44,7 +44,7 @@
             opcions = "true",
             expandir = "true",
             comentaris = "false",
-            hasinsereix = "true",            
+            hasinsereix = "true",
             hascomparteix = "true",
             xtm = "true"
         )
@@ -54,7 +54,7 @@
             element.flash_vars.update(
                 videoid = self.video.video_id,
                 autostart = "true" if self.autoplay else "false",
-                controlbar = "true" if self.show_player_controls else "false"                
+                controlbar = "true" if self.show_player_controls else "false"
             )
             #element.flash_vars["instancename"] = "player" + str(self.video.video_id)
             ?>

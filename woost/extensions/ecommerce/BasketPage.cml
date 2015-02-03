@@ -4,7 +4,7 @@
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:py="http://www.whads.com/ns/cocktail/templates">
 
-    <div py:def="content">        
+    <div py:def="content">
         <py:woost.extensions.ecommerce.BasketOrderStep
             py:id="basket_step"
             py:forms="@{self.forms}"

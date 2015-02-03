@@ -44,7 +44,7 @@ class TweetController(BaseBackOfficeController):
             schema.Collection("published_languages",
                 items = schema.String(
                     translate_value = lambda value, language = None, **kwargs:
-                        "" if not value 
+                        "" if not value
                            else translations(value, language, **kwargs),
                     enumeration = lambda ctx: self.eligible_languages
                 ),
@@ -84,15 +84,15 @@ class TweetController(BaseBackOfficeController):
 
     @event_handler
     def handle_before_request(cls, e):
-        
+
         controller = e.source
-        
+
         if not controller.allowed_publication_targets:
             raise cherrypy.HTTPError(403, "Forbidden")
 
     @request_property
     def allowed_publication_targets(self):
-            
+
         from woost.extensions.twitterpublication \
             import TwitterPublicationExtension
 
@@ -128,7 +128,7 @@ class TweetController(BaseBackOfficeController):
     @request_property
     def selection(self):
         return get_parameter(
-            schema.Collection("selection", 
+            schema.Collection("selection",
                 items = schema.Reference(
                     type = Publishable,
                     required = True
@@ -152,7 +152,7 @@ class TweetController(BaseBackOfficeController):
         return cherrypy.request.params.get("action")
 
     def submit(self):
-        
+
         if self.action == "close":
             self.go_back()
 
@@ -173,7 +173,7 @@ class TweetController(BaseBackOfficeController):
                                 existing_post = target.find_post(publishable)
 
                             results.append((
-                                publishable, 
+                                publishable,
                                 target,
                                 language,
                                 existing_post

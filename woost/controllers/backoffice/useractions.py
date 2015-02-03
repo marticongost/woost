@@ -58,11 +58,11 @@ def get_user_action(id):
 
 def get_user_actions(**kwargs):
     """Returns a collection of all actions registered with the site.
-    
+
     @return: The list of user actions.
     @rtype: iterable L{UserAction} sequence
     """
-    return _action_list  
+    return _action_list
 
 def get_view_actions(context, target = None):
     """Obtains the list of actions that can be displayed on a given view.
@@ -88,7 +88,7 @@ def get_view_actions(context, target = None):
 def add_view_action_context(view, clue):
     """Adds contextual information to the given view, to be gathered by
     L{get_view_actions_context} and passed to L{get_view_actions}.
-    
+
     @param view: The view that gains the context clue.
     @type view: L{Element<cocktail.html.element.Element>}
 
@@ -104,7 +104,7 @@ def add_view_action_context(view, clue):
 def get_view_actions_context(view):
     """Extracts clues on the context that applies to a given view and its
     ancestors, to supply to the L{get_view_actions} function.
-    
+
     @param view: The view to inspect.
     @type view: L{Element<cocktail.html.element.Element>}
 
@@ -118,7 +118,7 @@ def get_view_actions_context(view):
         if view_context:
             context.update(view_context)
         view = view.parent
-     
+
     return context
 
 
@@ -235,10 +235,10 @@ class UserAction(object):
         if after or before:
             if prev_action:
                 _action_list._items.remove(prev_action)
-            
+
             ref_action = _action_map[after or before]
             pos = _action_list.index(ref_action)
-            
+
             if before:
                 _action_list._items.insert(pos, self)
             else:
@@ -254,7 +254,7 @@ class UserAction(object):
 
     def is_available(self, context, target):
         """Indicates if the user action is available under a certain context.
-        
+
         @param context: A set of string identifiers, such as "context_menu",
             "toolbar", etc. Different views can make use of as many different
             identifiers as they require.
@@ -267,7 +267,7 @@ class UserAction(object):
             otherwise.
         @rtype: bool
         """
-        
+
         # Context filters
         def match(tokens):
             for token in tokens:
@@ -283,7 +283,7 @@ class UserAction(object):
 
         if self.excluded and match(self.excluded):
             return False
- 
+
         # Content type filter
         if self.content_type is not None:
             if isinstance(target, type):
@@ -292,7 +292,7 @@ class UserAction(object):
             else:
                 if not isinstance(target, self.content_type):
                     return False
-        
+
         # Authorization check
         return self.is_permitted(get_current_user(), target)
 
@@ -304,7 +304,7 @@ class UserAction(object):
 
         @param user: The user to authorize.
         @type user: L{User<woost.models.user.User>}
-    
+
         @param target: The item or content type affected by the action.
         @type target: L{Item<woost.models.item.Item>} instance or class
 
@@ -346,7 +346,7 @@ class UserAction(object):
 
             if (self.min and selection_size < self.min) \
             or (self.max is not None and selection_size > self.max):
-                yield SelectionError(self, selection_size)                       
+                yield SelectionError(self, selection_size)
 
     def invoke(self, controller, selection):
         """Delegates control of the current request to the action. Actions can
@@ -397,7 +397,7 @@ class UserAction(object):
 
     def get_url_params(self, controller, selection):
         """Produces extra URL parameters for the L{get_url} method.
-        
+
         @param controller: The controller that invokes the action.
         @type controller: L{Controller<cocktail.controllers.controller.Controller>}
 
@@ -413,7 +413,7 @@ class UserAction(object):
 
         if controller.edit_stack:
             params["edit_stack"] = controller.edit_stack.to_param()
-        
+
         return params
 
     @getter
@@ -424,7 +424,7 @@ class UserAction(object):
 class SelectionError(Exception):
     """An exception produced by the L{UserAction.get_errors} method when an
     action is attempted against an invalid number of items."""
-    
+
     def __init__(self, action, selection_size):
         Exception.__init__(self, "Can't execute action '%s' on %d item(s)."
             % (action.id, selection_size))
@@ -445,7 +445,7 @@ class CreateAction(UserAction):
     ignores_selection = True
     min = None
     max = None
-    
+
     def get_url(self, controller, selection):
         return controller.edit_uri(controller.edited_content_type)
 
@@ -473,7 +473,7 @@ class AddAction(UserAction):
     max = None
 
     def invoke(self, controller, selection):
-        
+
         # Add a relation node to the edit stack, and redirect the user
         # there
         node = RelationNode()
@@ -489,8 +489,8 @@ class AddIntegralAction(UserAction):
     ignores_selection = True
     min = None
     max = None
-    
-    def get_url(self, controller, selection):        
+
+    def get_url(self, controller, selection):
         return controller.edit_uri(controller.root_content_type)
 
 
@@ -532,11 +532,11 @@ class EditAction(UserAction):
     included = frozenset(["toolbar", "item_buttons"])
 
     def is_available(self, context, target):
-        
+
         # Prevent action nesting
         edit_stacks_manager = \
             controller_context.get("edit_stacks_manager")
-        
+
         if edit_stacks_manager:
             edit_stack = edit_stacks_manager.current_edit_stack
             if edit_stack:
@@ -568,7 +568,7 @@ class DeleteAction(UserAction):
         "changelog"
     ])
     max = None
-    
+
     def is_permitted(self, user, target):
         return user.has_permission(DeletePermission, target = target)
 
@@ -635,13 +635,13 @@ class SelectAction(UserAction):
     excluded = frozenset()
     min = None
     max = None
-    
+
     def invoke(self, controller, selection):
 
         stack = controller.edit_stack
 
         if stack:
-            
+
             node = stack[-1]
             params = {}
 
@@ -663,13 +663,13 @@ class SelectAction(UserAction):
                     )
                 else:
                     if controller.stack_node.action == "add":
-                        modify_relation = edit_state.relate 
+                        modify_relation = edit_state.relate
                     else:
-                        modify_relation = edit_state.unrelate 
+                        modify_relation = edit_state.unrelate
 
                     for item in selection:
                         modify_relation(member, item)
-            
+
             stack.go_back(**params)
 
 
@@ -745,7 +745,7 @@ class ConfirmDraftAction(SaveAction):
         ("item_bottom_buttons", "draft")
     ])
     excluded = frozenset()
-    
+
     def is_permitted(self, user, target):
         return user.has_permission(ConfirmDraftPermission, target = target)
 
@@ -763,7 +763,7 @@ class PrintAction(UserAction):
 
 
 # Action registration
-#------------------------------------------------------------------------------ 
+#------------------------------------------------------------------------------
 CreateAction("new").register()
 MoveAction("move").register()
 AddAction("add").register()

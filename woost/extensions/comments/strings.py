@@ -35,13 +35,13 @@ translations.define("Comment.user_name",
 )
 
 translations.define("Comment.user_email",
-    ca = u"Correu electrònic",                                                  
+    ca = u"Correu electrònic",
     es = u"Correo electrónico",
     en = u"E-mail address"
 )
 
 translations.define("Comment.content",
-    ca = u"Comentari",                                                  
+    ca = u"Comentari",
     es = u"Comentario",
     en = u"Comment"
 )

@@ -6,7 +6,7 @@
     overflow: hidden;
 }
 
-.OrderStep .steps_list li {    
+.OrderStep .steps_list li {
     float: left;
     list-style-position: inside;
     color: #888;

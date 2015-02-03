@@ -17,7 +17,7 @@ class Image(Element):
     accessible_check = False
 
     def _ready(self):
- 
+
         if self.image is None \
         or (self.accessible_check and not self.image.is_accessible()):
             self.visible = False
