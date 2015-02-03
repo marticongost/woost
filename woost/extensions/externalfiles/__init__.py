@@ -28,11 +28,11 @@ class ExternalFilesExtension(Extension):
         self.set("description",
             u"""Afegeix suport per fitxers externs""",
             "ca"
-        )   
-        self.set("description",                
+        )
+        self.set("description",
             u"""Añade soporte para ficheros externos""",
             "es"
-        )   
+        )
         self.set("description",
             u"""Adds support for external files""",
             "en"
@@ -45,7 +45,7 @@ class ExternalFilesExtension(Extension):
             website,
             item,
             publishable
-        )   
+        )
 
         self.install()
-     
+

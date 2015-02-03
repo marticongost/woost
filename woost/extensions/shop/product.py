@@ -30,7 +30,7 @@ class Product(Publishable):
         required = True,
         default = Decimal("0")
     )
-    
+
     categories = schema.Collection(
         items = "woost.extensions.shop.productcategory.ProductCategory",
         bidirectional = True
@@ -44,7 +44,7 @@ class Product(Publishable):
     )
 
     def discounts(self):
-        """Returns the discounts that can be applied to the product.        
+        """Returns the discounts that can be applied to the product.
         @rtype: L{Product<woost.extensions.shop.product.Product>}
         """
         from woost.extensions.shop import ShopExtension

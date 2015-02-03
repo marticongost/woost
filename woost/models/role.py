@@ -13,7 +13,7 @@ from .item import Item
 
 class Role(Item):
     """A set of capabilities assigned to one or more users.
-    
+
     Each role defines an access profile for a distinct set of application users
     (editors, moderators, administrators, etc.). By grouping users into roles,
     managing permissions and defining the access policy for a site becomes
@@ -45,18 +45,18 @@ class Role(Item):
         descriptive = True,
         translated = True
     )
-    
+
     base_roles = schema.Collection(
         items = "woost.models.Role",
         bidirectional = True
     )
-    
+
     child_roles = schema.Collection(
         items = "woost.models.Role",
         bidirectional = True,
         editable = False
     )
-    
+
     users = schema.Collection(
         items = "woost.models.User",
         bidirectional = True
@@ -141,7 +141,7 @@ class Role(Item):
         @return: An iterable sequence of permissions granted to the role and
             its bases.
         @rtype: L{Permission} sequence
-        """        
+        """
         for permission in self.permissions:
             if permission_type is None or isinstance(permission, permission_type):
                 yield permission

@@ -15,4 +15,4 @@ def catalog_current_state_uri():
         website = get_current_website()
         return website.ecommerce_default_catalog.get_uri()
 
- 
+

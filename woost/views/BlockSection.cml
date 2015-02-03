@@ -11,7 +11,7 @@ from woost.models import (
 )
 ?>
 
-<div py:id="blocks_section" 
+<div py:id="blocks_section"
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:py="http://www.whads.com/ns/cocktail/templates"
     class="edit_panel_section">
@@ -30,7 +30,7 @@ from woost.models import (
     def get_block_edit_uri(self, block):
         return self._backoffice.get_uri(
             path = ["content", block.id, "fields"],
-            parameters = self.block_edit_parameters            
+            parameters = self.block_edit_parameters
         )
     ?>
 
@@ -40,7 +40,7 @@ from woost.models import (
         self._location = unicode(Location.get_current())
         self.block_edit_parameters = self.block_edit_parameters.copy()
         self.block_edit_parameters["root_url"] = self._location
-        
+
         if isinstance(self.blocks_source, Item):
             self._blocks = self.blocks_source.get(self.slot)
         else:

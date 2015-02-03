@@ -62,7 +62,7 @@
 }
 
 .EditPanel.expanded .show_panel_button {
-    display: none;    
+    display: none;
 }
 
 .EditPanel.expanded .panel_content,
@@ -92,7 +92,7 @@
     list-style-type: none;
     border: 1px solid #aaa;
     max-height: 50%;
-    overflow: auto;    
+    overflow: auto;
     background-color: white;
 }
 

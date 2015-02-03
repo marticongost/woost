@@ -6,7 +6,7 @@
 
     <py:with py:element="self.item_body">
         <py:ready>
-            <py:with py:element="self.edit_form">                
+            <py:with py:element="self.edit_form">
                 <div py:def="matching_items_display">
                     <py:new py:element="self.user_collection.content_view"
                         py:tag="div"

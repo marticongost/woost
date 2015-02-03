@@ -8,8 +8,8 @@ from woost.models import Publishable, File, Configuration
 _get_uri = Publishable.get_uri
 
 def get_uri(
-    self, 
-    path = None, 
+    self,
+    path = None,
     parameters = None,
     language = None,
     host = None,
@@ -17,9 +17,9 @@ def get_uri(
 ):
     if isinstance(self, File) and host in (None, "!", "?"):
         host = Configuration.instance.get_setting("external_files_host")
-                    
+
     return _get_uri(
-        self, 
+        self,
         path = path,
         parameters = parameters,
         language = language,

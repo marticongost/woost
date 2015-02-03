@@ -70,7 +70,7 @@ class GoogleAnalyticsExtension(Extension):
         def handle_producing_output(e):
             publishable = e.output.get("publishable")
             if (
-                publishable is None 
+                publishable is None
                 or getattr(publishable, "is_ga_tracking_enabled", lambda: True)()
             ):
                 html = e.output.get("head_end_html", "")
@@ -85,7 +85,7 @@ class GoogleAnalyticsExtension(Extension):
             <script type="text/javascript">
                 var _gaq = _gaq || [];
                 _gaq.push(['_setAccount', '%(account)s']);
-                %(commands)s                
+                %(commands)s
                 (function() {
                 var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
                 ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
@@ -101,7 +101,7 @@ class GoogleAnalyticsExtension(Extension):
                 %(commands)s
             </script>
             """,
-        "universal-async": 
+        "universal-async":
             """
             <script type="text/javascript">
               (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -147,7 +147,7 @@ class GoogleAnalyticsExtension(Extension):
             account = config.get_setting("google_analytics_account"),
             template =
                 self.inclusion_code[api + ("-async" if async else "-sync")],
-            values = 
+            values =
                 None if classic_api else self.get_analytics_values(publishable),
             commands = commands or []
         )
@@ -169,7 +169,7 @@ class GoogleAnalyticsExtension(Extension):
         return event.template % parameters
 
     def get_analytics_page_hit_script(self, publishable = None):
-        
+
         api = Configuration.instance.google_analytics_api
 
         if api == "ga.js":

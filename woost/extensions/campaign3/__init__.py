@@ -30,26 +30,26 @@ class CampaignMonitor3Extension(Extension):
         self.set("description",
             u"""Permet la integració amb el sistema de mailing Campaign Monitor""",
             "ca"
-        )   
-        self.set("description",                
+        )
+        self.set("description",
             u"""Permite la integración con el sistema de mailing Campaign Monitor""",
             "es"
-        )   
+        )
         self.set("description",
             u"""Allows the integration with the Campaign Monitor mailing system""",
             "en"
         )
 
     def _load(self):
-     
+
         from woost.extensions.campaign3 import (
             strings,
             configuration,
             website,
             campaignmonitorlist,
             subscriptionformblock
-        )   
-     
+        )
+
     def _install(self):
         pass
 

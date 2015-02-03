@@ -77,7 +77,7 @@ class FlashBlock(Block):
     def _split_config(self, config_text):
 
         config = {}
-        
+
         if config_text:
             for line in config_text.split("\n"):
                 try:

@@ -73,7 +73,7 @@ body {
 
 .BackOfficeLayout .header .ui_language_selector .label {
     padding-right: 1.5em;
-    background-position: center right;    
+    background-position: center right;
 }
 
 .BackOfficeLayout .header .ui_language_selector .selector_content {
@@ -105,7 +105,7 @@ body {
 
 .BackOfficeLayout .identity form button.logout_button {
     font-size: 0.8em;
-    margin-left: 0.7em !important;    
+    margin-left: 0.7em !important;
     color: rgba(255,255,255,0.8) !important;
     text-decoration: underline !important;
 }
@@ -335,7 +335,7 @@ body {
 .BackOfficeLayout .CheckList input + label,
 .BackOfficeLayout .MemberList input + label {
     display: inline;
-    margin-left: 0.2em;    
+    margin-left: 0.2em;
 }
 
 .BackOfficeLayout .CheckList .group_label,
@@ -575,7 +575,7 @@ body.modal {
 }
 
 .BackOfficeLayout .Form tr.field {
-    clear: none;    
+    clear: none;
 }
 
 .BackOfficeLayout .Form div.field_instance {
@@ -792,7 +792,7 @@ body.scripted .BackOfficeLayout .Table .selection {
     _background-position:0 -2px;
     _background-repeat:no-repeat;
     _display:block;
-    _padding-left:18px; 
+    _padding-left:18px;
 }
 
 .BackOfficeLayout .ContentTable .sorting_options .descending {
@@ -800,7 +800,7 @@ body.scripted .BackOfficeLayout .Table .selection {
     _background-position:0 -2px;
     _background-repeat:no-repeat;
     _display:block;
-    _padding-left:18px; 
+    _padding-left:18px;
 }
 
 .BackOfficeLayout .ContentTable .search_options .add_filter {
@@ -808,7 +808,7 @@ body.scripted .BackOfficeLayout .Table .selection {
     _background-position:0 -2px;
     _background-repeat:no-repeat;
     _display:block;
-    _padding-left:18px;    
+    _padding-left:18px;
 }
 
 .BackOfficeLayout .PropertyTable th {
@@ -1273,7 +1273,7 @@ body.scripted .BackOfficeLayout .Table .selection {
     padding: 0.2em;
     padding-right: 1.3em;
     top: -0.2em;
-    background-position: right 0.9em; 
+    background-position: right 0.9em;
 }
 
 /* Content view selector
@@ -1425,7 +1425,7 @@ body.scripted .BackOfficeLayout .selector:hover .selector_content {
 }
 
 .BackOfficeLayout .ContentTypeSelector {
-    margin-left: -0.5em;    
+    margin-left: -0.5em;
 }
 
 .BackOfficeLayout .ContentTypeSelector > .label {
@@ -1931,7 +1931,7 @@ body.scripted .BackOfficeLayout .ThumbnailsContentView .collection_display input
     border-top: none;
     z-index: 0;
     clear: both;
-    position: absolute;    
+    position: absolute;
     top: 2.5em;
     bottom: 4em;
     left: 0;
@@ -2150,7 +2150,7 @@ button.TypeSelectorButton span {
     display: block;
 }
 
-.BackOfficeLayout .autocomplete_dropdown div {    
+.BackOfficeLayout .autocomplete_dropdown div {
     padding: 0.4em;
     white-space: nowrap;
     cursor: pointer;
@@ -2373,7 +2373,7 @@ button.TypeSelectorButton {
     top: 1.5em;
 }
 
-.BackOfficeLayout .CollectionView .filters .new_filter_selector .selector_content a {    
+.BackOfficeLayout .CollectionView .filters .new_filter_selector .selector_content a {
     border: none;
     background: none;
     display: block;
@@ -2436,7 +2436,7 @@ button.TypeSelectorButton {
     margin-bottom: 0.5em;
 }
 
-/* Collection settings 
+/* Collection settings
 -----------------------------------------------------------------------------*/
 .BackOfficeLayout .CollectionView .settings_box {
     position: absolute;
@@ -2489,7 +2489,7 @@ button.TypeSelectorButton {
 .BackOfficeLayout .CollectionView .settings_box .members_box {
     position: relative;
     left: -1px;
-    padding-left: 1em;    
+    padding-left: 1em;
     border-left: 1px solid rgb(225,225,225);
 }
 
@@ -2942,7 +2942,7 @@ a.pickcolor span {
     border: 1px solid rgb(190,200,210);
     background-color: rgb(250,250,250);
     margin: 0;
-    padding: 0.6em;    
+    padding: 0.6em;
     z-index: 1;
     font-size: 100%;
     white-space: nowrap;
@@ -2977,7 +2977,7 @@ a.pickcolor span {
 }
 
 .BackOfficeLayout .CalendarContentView .ongoing_items_box li {
-    display: inline;    
+    display: inline;
 }
 
 .BackOfficeLayout .CalendarContentView .ongoing_items_box li + li:before {
@@ -3001,7 +3001,7 @@ a.pickcolor span {
     padding: 0.1em;
 }
 
-.TagCloudSelector div.selected label {    
+.TagCloudSelector div.selected label {
     color: white;
     background-color: rgb(40,80,150);
 }
@@ -3026,7 +3026,7 @@ a.pickcolor span {
 /* Syndication feed styles
 -----------------------------------------------------------------------------*/
 .Feed .item_title_expression_field .CodeMirror-wrapping,
-.Feed .item_link_expression_field .CodeMirror-wrapping, 
+.Feed .item_link_expression_field .CodeMirror-wrapping,
 .Feed .item_publication_date_expression_field .CodeMirror-wrapping,
 .Feed .item_description_expression_field .CodeMirror-wrapping {
     width: 30em !important;

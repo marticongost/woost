@@ -21,7 +21,7 @@ cocktail.bind(".BlockDisplay", function ($block) {
     });
 
     $block.keydown(function (e) {
-        
+
         // Up: focus previous block
         if (e.keyCode == 38) {
             var $list = $block.parents(".EditBlocksSlotList").last();

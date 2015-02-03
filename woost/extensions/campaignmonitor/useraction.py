@@ -34,8 +34,8 @@ class SynchronizeCampaignMonitorListAction(UserAction):
                 CreatePermission,
                 ModifyPermission,
                 DeletePermission
-            )   
-        )   
+            )
+        )
 
 SynchronizeCampaignMonitorListAction("sync_campaign_monitor_lists").register()
 

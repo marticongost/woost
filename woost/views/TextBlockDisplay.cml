@@ -6,7 +6,7 @@ from woost.models import Configuration
 <py:woost.views.BlockDisplay
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:py="http://www.whads.com/ns/cocktail/templates">
-    
+
     <py:with py:element="self.content_preview">
         <div py:id="text_preview">
             <py:ready>

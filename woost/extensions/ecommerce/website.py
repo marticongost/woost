@@ -97,7 +97,7 @@ Website.add_member(
 Website.members_order += [
     "ecommerce_payment_types",
     "ecommerce_pricing",
-    "ecommerce_shipping_costs", 
+    "ecommerce_shipping_costs",
     "ecommerce_taxes",
     "ecommerce_default_catalog",
     "ecommerce_order_steps"

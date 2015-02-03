@@ -13,7 +13,7 @@ from cPickle import Pickler, Unpickler
 from cStringIO import StringIO
 from itertools import chain
 import cherrypy
-from cocktail.modeling import (    
+from cocktail.modeling import (
     getter,
     cached_getter,
     abstractmethod,
@@ -59,12 +59,12 @@ class EditStacksManager(object):
     _session_id_key = "woost.controllers.backoffice: edit_stacks_id"
     _persistent_id_prefix = "Persistent"
     __current_edit_stack = None
-    
+
     expiration = 30 * 60 # seconds
 
     def __init__(self):
         self.__stack_map = {}
- 
+
     def _dumps(self, obj):
         buffer = StringIO()
         pickler = Pickler(buffer)
@@ -75,7 +75,7 @@ class EditStacksManager(object):
     def __persistent_id(self, obj):
 
         if isinstance(obj, PersistentObject) and obj.is_inserted:
-            
+
             full_name = obj.__class__.full_name
             if isinstance(full_name, unicode):
                 full_name = str(full_name)
@@ -101,7 +101,7 @@ class EditStacksManager(object):
             return persistent_type.get_instance(id)
         else:
             raise ValueError("Wrong persistent id: " + key)
-    
+
     @cached_getter
     def edit_stacks(self):
         """Obtains a mapping containing all the edit stacks for the current
@@ -112,12 +112,12 @@ class EditStacksManager(object):
         """
         preserved_stacks = session.get(self._session_key)
         edit_stacks = {}
-        
+
         if preserved_stacks:
             for id, entry in preserved_stacks.iteritems():
                 stack = self._get_edit_stack(id)
                 edit_stacks[id] = stack
-        
+
         return DictWrapper(edit_stacks)
 
     def _get_edit_stack(self, stack_id, preserved_stacks = None):
@@ -148,9 +148,9 @@ class EditStacksManager(object):
                 self.__stack_map[stack_id] = edit_stack
 
         self._remove_expired_edit_stacks(preserved_stacks)
-            
+
         return edit_stack
-        
+
     def _get_current_edit_stack(self):
         if self.__current_edit_stack is None:
             self.__current_edit_stack = self.request_edit_stack
@@ -192,9 +192,9 @@ class EditStacksManager(object):
 
         if edit_stack_param:
             id, step = map(int, edit_stack_param.split("-"))
-                        
+
             edit_stack = self._get_edit_stack(id)
-    
+
             # Edit state lost
             if edit_stack is None:
                 raise WrongEditStackError(id)
@@ -203,7 +203,7 @@ class EditStacksManager(object):
             else:
                 while len(edit_stack) > step + 1:
                     edit_stack.pop()
-        
+
         return edit_stack
 
     def create_edit_stack(self):
@@ -225,7 +225,7 @@ class EditStacksManager(object):
     def preserve_edit_stack(self, edit_stack):
         """Stores changes to the given edit stack inside the current HTTP
         session, so it can be retrieved by later requests.
-        
+
         @param edit_stack: The edit stack to preserve.
         @type edit_stack: L{EditStack}
         """
@@ -243,8 +243,8 @@ class EditStacksManager(object):
         session.save()
 
     def _remove_expired_edit_stacks(
-        self, 
-        preserved_stacks = None, 
+        self,
+        preserved_stacks = None,
         current_time = None
     ):
         if self.expiration is None:
@@ -288,7 +288,7 @@ class EditStack(ListWrapper):
     """
     id = None
     root_url = None
-    
+
     def push(self, node):
         """Adds a new node to the edit stack.
 
@@ -320,15 +320,15 @@ class EditStack(ListWrapper):
 
     def go_back(self, **params):
         """Redirects the user to the parent of the topmost node in the stack.
-        
+
         If the root of the stack is reached or surpassed, the user will be
         redirected to the application's root.
-        
+
         @param params: Additional query string parameters to pass to the
             destination URI.
         """
-        if len(self._items) > 1:            
-            
+        if len(self._items) > 1:
+
             target_node = self._items[-2]
             if isinstance(target_node, RelationNode):
                 target_node = self._items[-3]
@@ -361,10 +361,10 @@ class EditStack(ListWrapper):
         @type index: int
         """
         raise cherrypy.HTTPRedirect(self.uri(index))
-    
+
     def uri(self, index = -1):
         """Gets the location of the given position in the stack.
-        
+
         @param index: The position of the stack to get the location for.
         @type index: int
 
@@ -381,7 +381,7 @@ class EditStack(ListWrapper):
             index = len(self) + index
 
         return self[index].uri()
-        
+
     def to_param(self, index = -1):
         if index < 0:
             index = len(self) + index
@@ -397,7 +397,7 @@ class EditStack(ListWrapper):
         # For each edit node in the stack
         for i, node in enumerate(self):
             if isinstance(node, EditNode):
-             
+
                 # Truncate the node and the rest of the stack if the node was
                 # editing a deleted item
                 if node.item in removed_items:
@@ -412,7 +412,7 @@ class EditStack(ListWrapper):
                 for key, member in node.item.__class__.members().iteritems():
                     if isinstance(member, schema.RelationMember) \
                     and member.is_persistent_relation:
-                        
+
                         # Clean up references (set to None)
                         if isinstance(member, schema.Reference) \
                         and form_data.get(key) in removed_items:
@@ -421,7 +421,7 @@ class EditStack(ListWrapper):
                         # Clean up collections (completely remove the indicated
                         # items)
                         elif isinstance(member, schema.Collection):
-                        
+
                             items = form_data.get(key)
                             if items:
                                 for item in removed_items:
@@ -465,7 +465,7 @@ class StackNode(object):
     def get_ancestor_node(self, node_type, include_self = False):
         """Walks up the edit stack towards its root, looking for the first node
         of the given type.
-    
+
         @param node_type: The type of node to look for.
         @type node_type: L{StackNode} subclass
 
@@ -478,19 +478,19 @@ class StackNode(object):
             if isinstance(node, node_type):
                 break
             node = node._parent_node
-        
+
         return node
 
     @abstractmethod
     def uri(self, **params):
         """Gets the URI for the stack node.
-        
+
         @param params: Additional query string parameters to include in the
             produced URI.
 
         @return: The URI for the node.
         @rtype: unicode
-        """ 
+        """
 
     def back_hash(self, previous_node):
         return None
@@ -503,7 +503,7 @@ class EditNode(StackNode):
     @ivar translations: The list of translations defined by the item (note that
         these can change during the course of an edit operation, so that's why
         they are stored in here).
-    @type translations: str list 
+    @type translations: str list
     """
     _persistent_keys = frozenset([
         "_stack",
@@ -535,15 +535,15 @@ class EditNode(StackNode):
     committed = Event("""
         An event triggered after the changes contained within the node have
         been successfully committed to the data store.
-        
+
         @ivar user: The user that makes the changes.
         @type user: L{User<woost.models.User>}
 
         @ivar changeset: The change set describing the changes.
         @type changeset: L{ChangeSet<woost.models.ChangeSet>}
         """)
-    
-    def __init__(self, item):        
+
+    def __init__(self, item):
         assert item is not None
         self._item = item
 
@@ -554,7 +554,7 @@ class EditNode(StackNode):
             return translations("creating", content_type = self.content_type)
 
     def uri(self, **params):
-        
+
         if "edit_stack" not in params:
             params["edit_stack"] = self.stack.to_param(self.index)
 
@@ -578,7 +578,7 @@ class EditNode(StackNode):
                 if key == "_item" and not value.is_inserted:
                     value = None
                 state[key] = value
-        
+
         state["content_type"] = self._item.__class__
 
         if self._item.__class__.translated:
@@ -619,7 +619,7 @@ class EditNode(StackNode):
         """
         return self._item
 
-    def initialize_new_item(self, item, languages = None):        
+    def initialize_new_item(self, item, languages = None):
         if item.__class__.translated:
             for language in (
                 languages
@@ -635,7 +635,7 @@ class EditNode(StackNode):
             self.form_schema,
             self.content_type
         )
-        
+
         # Drop deleted translations
         if item.__class__.translated:
             user = get_current_user()
@@ -654,7 +654,7 @@ class EditNode(StackNode):
 
             for language in deleted_translations:
                 del item.translations[language]
-    
+
     def export_form_data(self, item, form_data):
         """Update the edit form with the data contained on the edited item."""
 
@@ -664,7 +664,7 @@ class EditNode(StackNode):
             self.content_type,
             self.form_schema
         )
-        
+
         # Default translations
         if self.content_type.translated:
 
@@ -730,7 +730,7 @@ class EditNode(StackNode):
 
         if isinstance(member, schema.RelationMember) \
         and member.is_persistent_relation:
-            
+
             # Hide relations to invisible types
             if not member.related_type.visible:
                 return True
@@ -760,7 +760,7 @@ class EditNode(StackNode):
 
             # Integral relation
             if (
-                isinstance(member, schema.Reference) 
+                isinstance(member, schema.Reference)
                 and member.integral
                 and self.item
             ):
@@ -777,7 +777,7 @@ class EditNode(StackNode):
                         member.type, ModifyPermission
                     )
                     and class_family_permission(
-                        member.type, DeletePermission                        
+                        member.type, DeletePermission
                     )
                 ):
                     return True
@@ -824,7 +824,7 @@ class EditNode(StackNode):
     @cached_getter
     def form_data(self):
         """The data entered into the edit form."""
- 
+
         form_data = {}
 
         # First load: fill the form with data from the edited item
@@ -867,7 +867,7 @@ class EditNode(StackNode):
 
     def relate(self, member, item):
         """Adds a relation between the edited item and another item.
-        
+
         @param member: The member describing the relation between the two
             items. It should be the end nearer to the edited item.
         @type member: L{RelationMember<cocktail.schema.RelationMember>}
@@ -876,14 +876,14 @@ class EditNode(StackNode):
         @type item: L{Item<woost.models.item.Item>}
         """
         if isinstance(member, schema.Collection):
-          
+
             collection = schema.get(self.form_data, member)
-            
+
             # Editing collections with duplicate entries is not allowed
             if item in collection:
                 raise ValueError(
                     "Collections with duplicate entries are not allowed")
-           
+
             schema.add(collection, item)
         else:
             schema.set(self.form_data, member, item)
@@ -891,7 +891,7 @@ class EditNode(StackNode):
     def unrelate(self, member, item):
         """Breaks the relation between the edited item and one of its related
         items.
-        
+
         @param member: The member describing the relation between the two
             items. It should be the end nearer to the edited item.
         @type member: L{RelationMember<cocktail.schema.RelationMember>}
@@ -913,14 +913,14 @@ class EditNode(StackNode):
         @type is_new: bool
 
         @param change: A change object describing the save operation.
-        @type change: L{Change<woost.models.changeset.Change>}            
+        @type change: L{Change<woost.models.changeset.Change>}
         """
         item = self.item
         msg = translations(
             "woost.views.BackOfficeEditView Changes saved",
             item = item,
             is_new = is_new
-        )        
+        )
         transient = True
 
         if is_new and self.parent_node is None:
@@ -958,7 +958,7 @@ class SelectionNode(StackNode):
         )
 
     def uri(self, **params):
-                
+
         if "edit_stack" not in params:
             params["edit_stack"] = self.stack.to_param(self.index)
 
@@ -969,7 +969,7 @@ class SelectionNode(StackNode):
 class RelationNode(StackNode):
     """An L{edit stack<EditStack>} node, used to maintain data about an action
     affecting a relation.
-    
+
     @var member: The member describing the relation that is being modified.
     @type member: L{Collection<cocktail.schema.schemacollections.Collection>}
         or L{Reference<cocktail.schema.schemareference.Reference>}
@@ -989,7 +989,7 @@ class RelationNode(StackNode):
             )
 
     def uri(self, **params):
-                
+
         if "edit_stack" not in params:
             params["edit_stack"] = self.stack.to_param(self.index)
 
@@ -997,19 +997,19 @@ class RelationNode(StackNode):
 
     def __getstate__(self):
 
-        state = self.__dict__.copy()        
+        state = self.__dict__.copy()
         member = state.get("member")
 
         if member:
             state["member"] = member.name
 
         return state
-    
+
     def __setstate__(self, state):
 
         member_name = state.pop("member")
-        
-        for key, value in state.iteritems():            
+
+        for key, value in state.iteritems():
             setattr(self, key, value)
 
         content_type = self.get_ancestor_node(EditNode).content_type
@@ -1072,11 +1072,11 @@ class AddBlockNode(EditNode):
         return state
 
     def __setstate__(self, state):
-  
+
         EditNode.__setstate__(self, state)
 
         self.block_parent = Item.get_instance(state["block_parent"])
-        
+
         if self.block_parent:
             block_type = type(self.block_parent)
             self.block_slot = block_type.get_member(state["block_slot"])

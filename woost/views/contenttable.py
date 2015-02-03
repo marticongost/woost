@@ -22,7 +22,7 @@ Table = templates.get_class("cocktail.html.Table")
 
 
 class ContentTable(ContentDisplayMixin, Table):
-    
+
     base_url = None
     entry_selector = "tbody tr.item_row"
 
@@ -42,9 +42,9 @@ class ContentTable(ContentDisplayMixin, Table):
         row.add_class("item_row")
         return row
 
-    def create_cell(self, item, column, language = None):        
+    def create_cell(self, item, column, language = None):
         cell = Table.create_cell(self, item, column, language = language)
-        
+
         # Drag & drop information
         if isinstance(column, RelationMember):
             cell["data-woost-drop"] = "%d.%s" % (item.id, column.name)
@@ -65,15 +65,15 @@ class ContentTable(ContentDisplayMixin, Table):
                     children = [translations(item.__class__.name)])
 
     def add_header_ui(self, header, column, language):
-        
+
         # Add visual cues for sorted columns
         sortable = self.get_member_sortable(column)
-        
+
         if sortable and self.order:
             current_direction = self._sorted_columns.get(
                 (column.name, language)
             )
-                    
+
             if current_direction is not None:
 
                 header.add_class("sorted")
@@ -90,7 +90,7 @@ class ContentTable(ContentDisplayMixin, Table):
             menu = header.menu = Element()
             header.append(menu)
             menu.add_class("selector")
-            
+
             label = menu.label = Element()
             label.add_class("label")
             menu.append(label)
@@ -98,7 +98,7 @@ class ContentTable(ContentDisplayMixin, Table):
 
             if column.translated:
                 label.append(header.translation_label)
-            
+
             options = header.menu.options = self.create_header_options(
                 column,
                 language
@@ -106,10 +106,10 @@ class ContentTable(ContentDisplayMixin, Table):
             menu.append(options)
 
     def create_header_options(self, column, language):
-        
+
         options = Element()
         options.add_class("selector_content")
-        
+
         if self.get_member_sortable(column):
             sorting_options = self.create_sorting_options(column, language)
             options.append(sorting_options)
@@ -121,10 +121,10 @@ class ContentTable(ContentDisplayMixin, Table):
                 )
                 options.append(grouping_options)
 
-        if self.get_member_searchable(column):            
+        if self.get_member_searchable(column):
             search_options = self.create_search_options(column, language)
             options.append(search_options)
-            
+
         return options
 
     def create_sorting_options(self, column, language):
@@ -213,7 +213,7 @@ class ContentTable(ContentDisplayMixin, Table):
         for variant in variants:
 
             tr = Element("tr")
-            table.append(tr)                
+            table.append(tr)
 
             td = Element("td")
             td.add_class("variant")

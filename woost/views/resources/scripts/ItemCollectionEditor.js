@@ -9,7 +9,7 @@
 
 cocktail.bind(".ItemCollectionEditor", function ($editor) {
 
-    // Enable/disable buttons depending on the selected content    
+    // Enable/disable buttons depending on the selected content
     function updateToolbar() {
         var selection = $editor.get(0).getSelection();
         var selectionSize = selection.length;

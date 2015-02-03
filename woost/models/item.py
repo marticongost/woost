@@ -17,9 +17,9 @@ from cocktail.translations import translations
 from cocktail.caching import whole_cache
 from cocktail.caching.utils import nearest_expiration
 from cocktail.persistence import (
-    datastore, 
-    PersistentObject, 
-    PersistentClass, 
+    datastore,
+    PersistentObject,
+    PersistentClass,
     PersistentMapping,
     MaxValue
 )
@@ -67,7 +67,7 @@ class Item(PersistentObject):
     # Enable full text indexing for all items (although the Item class itself
     # doesn't provide any searchable text field by default, its subclasses may,
     # or it may be extended; by enabling full text indexing at the root class,
-    # heterogeneous queries on the whole Item class will use available 
+    # heterogeneous queries on the whole Item class will use available
     # indexes).
     full_text_indexed = True
 
@@ -88,7 +88,7 @@ class Item(PersistentObject):
         "previewcontroller.PreviewController"
 
     def __init__(self, *args, **kwargs):
-        PersistentObject.__init__(self, *args, **kwargs)                
+        PersistentObject.__init__(self, *args, **kwargs)
 
         # Assign a global ID for the object (unless one was passed in as a
         # keyword parameter)
@@ -120,7 +120,7 @@ class Item(PersistentObject):
     )
 
     # Synchronization
-    #------------------------------------------------------------------------------     
+    #------------------------------------------------------------------------------
     global_id = schema.String(
         required = True,
         unique = True,
@@ -220,7 +220,7 @@ class Item(PersistentObject):
     def _create_translation_schema(cls, members):
         members["versioned"] = False
         PersistentObject._create_translation_schema.im_func(cls, members)
-        
+
     @classmethod
     def _add_member(cls, member):
         if member.name == "translations":
@@ -242,7 +242,7 @@ class Item(PersistentObject):
         state = PersistentMapping()
 
         for key, member in self.__class__.members().iteritems():
-           
+
             if not member.versioned:
                 continue
 
@@ -253,7 +253,7 @@ class Item(PersistentObject):
                 )
             else:
                 value = self.get(key)
-                
+
                 # Make a copy of mutable objects
                 if isinstance(
                     value, (list, set, ListWrapper, SetWrapper)
@@ -290,7 +290,7 @@ class Item(PersistentObject):
                 change.item_state = item._get_revision_state()
                 change.changeset = changeset
                 changeset.changes[item.id] = change
-                
+
                 if item.author is None:
                     item.author = changeset.author
 
@@ -344,7 +344,7 @@ class Item(PersistentObject):
 
             if action == "modify":
                 change.changed_members.add(member_name)
-                
+
             if action in ("create", "modify"):
                 value = event.value
 
@@ -363,7 +363,7 @@ class Item(PersistentObject):
 
     @event_handler
     def handle_deleting(cls, event):
-        
+
         item = event.source
 
         # Update the last time of modification for the item
@@ -410,16 +410,16 @@ class Item(PersistentObject):
         invalidates_cache = False,
         member_group = "administration"
     )
-    
+
     # URLs
-    #--------------------------------------------------------------------------     
+    #--------------------------------------------------------------------------
     def get_image_uri(self,
         image_factory = None,
         parameters = None,
         encode = True,
         include_extension = True,
         host = None,):
-                
+
         uri = make_uri("/images", self.id)
         ext = None
 
@@ -429,7 +429,7 @@ class Item(PersistentObject):
                 if pos != -1:
                     ext = image_factory[pos + 1:]
                     image_factory = image_factory[:pos]
-                
+
                 from woost.models.rendering import ImageFactory
                 image_factory = \
                     ImageFactory.require_instance(identifier = image_factory)
@@ -477,7 +477,7 @@ class Item(PersistentObject):
             website = get_current_website()
             policy = website and website.https_policy
 
-            if (                    
+            if (
                 policy == "always"
                 or (
                     policy == "per_page" and (
@@ -524,7 +524,7 @@ class Item(PersistentObject):
 
     def get_cache_tags(self, language = None, cache_part = None):
         """Obtains the list of cache tags that apply to this item.
-        
+
         :param language: Indicates the language for which the cache
             invalidation is being requested. If not set, the returned tags will
             match all entries related to this item, regardless of the language
@@ -586,7 +586,7 @@ class Item(PersistentObject):
 
     def clear_cache(self, language = None, cache_part = None):
         """Remove all the cached pages that are based on this item.
-        
+
         :param language: Indicates the language for which the cache
             invalidation is being requested. If not set, the invalidation will
             affect all entries related to this item, regardless of the language
@@ -653,7 +653,7 @@ class Item(PersistentObject):
         self.__class__.ascend_inheritance(include_self = True):
             selector = cls.full_name
             if cache_part:
-                selector += "-" + cache_part            
+                selector += "-" + cache_part
             if language:
                 selector = (selector, "lang-" + language)
             selectors.add(selector)

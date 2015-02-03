@@ -55,7 +55,7 @@ class ECommerceExtension(Extension):
             u"""Permet vendre productes des del lloc web.""",
             "ca"
         )
-        self.set("description",            
+        self.set("description",
             u"""Permite vender productos des del sitio web.""",
             "es"
         )
@@ -88,7 +88,7 @@ class ECommerceExtension(Extension):
             self._setup_payment_gateway()
 
         self._setup_ecommerce_state()
-        
+
         # Create the pages for the shop the first time the extension runs
         self.install()
 
@@ -134,7 +134,7 @@ class ECommerceExtension(Extension):
         CMSController.ecommerce_state = ecommerce_state
 
     def _setup_payment_gateway(self):
-            
+
         from tpv import (
             Currency,
             Payment,
@@ -156,7 +156,7 @@ class ECommerceExtension(Extension):
 
             if order is None:
                 raise PaymentNotFoundError(payment_id)
-            
+
             payment = Payment()
             payment.id = order.id
             payment.description = order.get_description_for_gateway()
@@ -216,7 +216,7 @@ class ECommerceExtension(Extension):
         from woost.extensions.ecommerce.ecommerceproductlisting import ECommerceProductListing
 
         website = Configuration.instance.websites[0]
-        
+
         catalog = self._create_document("catalog")
         catalog.blocks.append(ECommerceProductListing())
         catalog.insert()
@@ -248,8 +248,8 @@ class ECommerceExtension(Extension):
         self._create_incoming_order_trigger().insert()
         self._create_image_factories()
 
-    def _create_document(self, name, 
-        cls = Page, 
+    def _create_document(self, name,
+        cls = Page,
         template = None,
         controller = None):
 
@@ -381,7 +381,7 @@ edit_url = bo.get_uri(host = ".", path = ["content", str(order.id)])
 
         return trigger
 
-    def _create_image_factories(self):        
+    def _create_image_factories(self):
         thumbnail = ImageFactory()
         thumbnail.qname = \
             "woost.extensions.ecommerce.ecommerce_basket_thumbnail"
@@ -398,11 +398,11 @@ edit_url = bo.get_uri(host = ".", path = ["content", str(order.id)])
                     obj.set(key, value)
 
     def __add_text_block(
-        self, 
+        self,
         document,
-        key, 
-        style = None, 
-        element_type = None, 
+        key,
+        style = None,
+        element_type = None,
         slot = "blocks"
     ):
         block = TextBlock()

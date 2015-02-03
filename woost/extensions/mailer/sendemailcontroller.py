@@ -33,7 +33,7 @@ class SendEmailController(EditController):
         user.require_permission(SendEmailPermission)
 
     @cached_getter
-    def smtp_server(self):        
+    def smtp_server(self):
         return Configuration.instance.connect_to_smtp()
 
     @cached_getter
@@ -123,7 +123,7 @@ class SendEmailController(EditController):
     @cached_getter
     def output(self):
         output = EditController.output(self)
-        
+
         if self.task_id:
             task_id = self.task_id
         else:
