@@ -29,8 +29,9 @@ from cocktail.translations import iter_language_chain
     ?>
 
     <py:with py:def="check_list">
-        <py:with py:def="entry" py:args="value, label, selected">
+        <py:with py:def="entry" py:args="item">
             <?py
+            value = check_list.get_item_value(item)
             if (
                 self.defined_translations is not None
                 and value not in self.defined_translations

@@ -23,11 +23,11 @@ from woost.models import Item
         py:name="selection"
         py:exclusive_selection="${True}">
 
-        <py:with py:def="entry" py:args="value, label, selected">
+        <py:with py:def="entry" py:args="item">
             <div py:local_id="icon_frame" py:index="0">
                 <py:woost.views.Image
                     py:local_id="icon"
-                    py:image="${Item.require_instance(value)}"
+                    py:image="${item}"
                     py:image_factory="backoffice_thumbnail.png"/>
             </div>
         </py:with>
