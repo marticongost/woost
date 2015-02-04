@@ -100,7 +100,7 @@ from woost.models import (
             py:element="self.create_language_list()"
             py:name="translations"
             py:items="@{self.item_translations}">
-            <py:with py:def="entry" py:args="locale, label, selected">
+            <py:with py:def="entry" py:args="locale">
                 <?py
                 if locale in self.visible_translations:
                     element.add_class("visible_translation")

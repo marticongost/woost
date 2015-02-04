@@ -41,18 +41,18 @@ from woost.models import File
             </py:with>
 
             <py:cocktail.html.CheckList py:def="subset_display">
-                <py:with py:def="entry" py:args="value, label, selected">
+                <py:with py:def="entry" py:args="item">
                     <?py
                     element.add_class("photo")
                     element.label.visible = False
                     ?>
                     <py:woost.views.ImageGallery
                         py:local_id="image_gallery"
-                        py:images="${[File.get_instance(int(value))]}"
+                        py:images="${item}"
                         py:thumbnail_width="${70}"
                         py:thumbnail_height="${50}"
                         py:labels_visible="${False}"
-                        title="${label}"/>
+                        title="${translations(item)}"/>
                 </py:with>
             </py:cocktail.html.CheckList>
 
