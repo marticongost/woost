@@ -703,6 +703,20 @@ body.modal {
     margin-right: 1em;
 }
 
+.BackOfficeLayout .ColorDisplay .example {
+    display: inline-block;
+    vertical-align: middle;
+    border-radius: 0.8em;
+    width: 1.2em;
+    height: 1.2em;
+    margin-right: 0.5em;
+}
+
+.BackOfficeLayout .ColorDisplay .label {
+    display: inline-block;
+    vertical-align: middle;
+}
+
 .BackOfficeEditView .ContentForm .RichTextEditor {
     display: inline-block;
 }
