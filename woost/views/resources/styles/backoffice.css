@@ -16,7 +16,7 @@ body {
 }
 
 .BackOfficeLayout button {
-	font-family: Bitstream Vera Sans, Arial;
+    font-family: Bitstream Vera Sans, Arial;
 }
 
 .BackOfficeLayout button.button,
@@ -703,7 +703,6 @@ body.modal {
     margin-right: 1em;
 }
 
-
 .BackOfficeEditView .ContentForm .RichTextEditor {
     display: inline-block;
 }
@@ -878,7 +877,7 @@ body.scripted .BackOfficeLayout .Table .row_selection_control {
 
 .BackOfficeLayout .Table,
 .BackOfficeLayout .PropertyTable {
-	clear: both;
+    clear: both;
     border-collapse: collapse;
     width: 100%;
 }
@@ -1049,8 +1048,8 @@ body.scripted .BackOfficeLayout .Table .row_selection_control {
 .BackOfficeLayout .PropertyTable th,
 .BackOfficeLayout .PropertyTable td {
     vertical-align: top;
-	text-align: left;
-	padding: 0.5em;
+    text-align: left;
+    padding: 0.5em;
     font-size: 85%;
 }
 
@@ -1094,7 +1093,7 @@ body.scripted .BackOfficeLayout .Table .row_selection_control {
 }
 
 .BackOfficeLayout .even {
-	background-color: rgb(245,245,245);
+    background-color: rgb(245,245,245);
 }
 
 .BackOfficeLayout .odd {
@@ -1311,10 +1310,10 @@ body.scripted .BackOfficeLayout .Table .row_selection_control {
 
 .BackOfficeLayout .toolbar,
 .BackOfficeLayout .toolbar_box {
-	clear: both;
+    clear: both;
     margin-top: 1em;
-	background-color: #f2f0eb;
-	border: 1px solid #dcd9d0;
+    background-color: #f2f0eb;
+    border: 1px solid #dcd9d0;
 }
 
 .BackOfficeLayout .toolbar_box {
@@ -1338,7 +1337,7 @@ body.scripted .BackOfficeLayout .Table .row_selection_control {
 .BackOfficeLayout .toolbar .action_button,
 .BackOfficeLayout .toolbar .additional_actions_selector {
     float: left;
-	font-size: 85%;
+    font-size: 85%;
     margin: 0;
     margin-top: 0.1em;
     padding: 0;
@@ -1387,7 +1386,7 @@ body.scripted .BackOfficeLayout .Table .row_selection_control {
 }
 
 .BackOfficeLayout .toolbar .action_button img {
-	vertical-align: middle;
+    vertical-align: middle;
     margin-right: 0.3em;
 }
 
@@ -2259,8 +2258,8 @@ button.TypeSelectorButton span {
 
 .BackOfficeLayout .autocomplete_dropdown .highlighted,
 .BackOfficeLayout .autocomplete_dropdown div:hover {
-	background-color: Highlight;
-	color: HighlightText;
+    background-color: Highlight;
+    color: HighlightText;
 }
 
 /* ItemTranslationsSelector
@@ -2658,23 +2657,23 @@ button.TypeSelectorButton {
 /* Datepicker styles */
 
 #ui-datepicker-div {
-	background-color: rgb(255, 255, 255);
-	border: 1px solid rgb(197, 203, 212);
+    background-color: rgb(255, 255, 255);
+    border: 1px solid rgb(197, 203, 212);
 }
 
 #ui-datepicker-div .ui-datepicker-links a,
 #ui-datepicker-div .ui-datepicker-header select {
-	color: rgb(0, 0, 0);
-	background-color: rgb(255, 255, 255);
+    color: rgb(0, 0, 0);
+    background-color: rgb(255, 255, 255);
 }
 
 .ui-datepicker .ui-datepicker-days-cell a {
-	color: rgb(0, 0, 0);
-	background-color: rgb(240, 240, 240);
+    color: rgb(0, 0, 0);
+    background-color: rgb(240, 240, 240);
 }
 
 .ui-datepicker .ui-datepicker-current-day a {
-	background-color: rgb(225, 225, 225);
+    background-color: rgb(225, 225, 225);
 }
 
 .ui-datepicker-next a,
