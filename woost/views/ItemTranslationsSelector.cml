@@ -36,6 +36,7 @@ from woost.models import (
     ?>
 
     <?py
+    self.add_resource("/cocktail/scripts/xregexp.js")
     self.add_resource("/cocktail/scripts/searchable.js")
     self.add_resource("/resources/scripts/ItemTranslationsSelector.js")
     ?>
