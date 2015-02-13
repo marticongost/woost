@@ -167,6 +167,7 @@ class SiteInitializer(object):
         parser.add_option("-p", "--password", help = "Administrator password")
         parser.add_option("-l", "--languages",
             help = "Comma separated list of languages")
+        parser.add_option("--hostname", help = "Hostname for the website")
         parser.add_option("-e", "--extensions",
             default = "",
             help = "The list of extensions to enable")
@@ -190,6 +191,9 @@ class SiteInitializer(object):
         if self.admin_password is None:
             self.admin_password = raw_input("Administrator password: ") \
                 or random_string(8)
+
+        if options.hostname:
+            self.hosts = [options.hostname]
 
         languages = options.languages \
             and options.languages.replace(",", " ") \
