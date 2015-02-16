@@ -437,15 +437,18 @@ body.modal {
 
 .ItemSelector-frame,
 .dialog {
-    z-index: 10001;
     border: none;
-    position: fixed;
-    top: 4%;
-    left: 4%;
-    width: 92%;
-    height: 92%;
     background-color: white;
     box-shadow: 3px 3px 7px #666;
+}
+
+.ItemSelector-frame {
+    z-index: 10001;
+    position: fixed;
+    width: 92%;
+    height: 92%;
+    top: 4%;
+    left: 4%;
 }
 
 .dialog {
@@ -3608,11 +3611,11 @@ div.success_label {
     height: auto;
 }
 
-.Dialog.diff_dialog .dialog_header {
-    padding: 0.6em 0;
+.BackOfficeLayout .Dialog .dialog_header {
+    padding: 0.9em 0;
 }
 
-.Dialog.diff_dialog .dialog_heading {
+.BackOfficeLayout .Dialog .dialog_heading {
     font-size: 1.2em;
 }
 
