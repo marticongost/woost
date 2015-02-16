@@ -1216,7 +1216,8 @@ body.scripted .BackOfficeLayout .Table .row_selection_control {
     margin-left: 0.5em;
 }
 
-.BackOfficeItemView h2 .item_icon {
+.BackOfficeItemView h2 .item_icon,
+.BackOfficeItemView h2 .item_image_gallery {
     margin-right: 0.8em;
     display: inline-block;
     vertical-align: top;
