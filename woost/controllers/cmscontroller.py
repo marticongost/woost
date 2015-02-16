@@ -56,6 +56,7 @@ from woost.models import (
 from woost.controllers.asyncupload import async_uploader
 from woost.controllers.basecmscontroller import BaseCMSController
 from woost.controllers.imagescontroller import ImagesController
+from woost.controllers.autocomplete import AutocompleteController
 
 
 class CMSController(BaseCMSController):
@@ -662,6 +663,7 @@ class CMSController(BaseCMSController):
         datastore.abort()
 
     images = ImagesController
+    autocomplete = AutocompleteController
 
     async_upload = AsyncUploadController()
     async_upload.uploader = async_uploader

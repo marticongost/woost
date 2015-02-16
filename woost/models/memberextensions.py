@@ -64,3 +64,9 @@ schema.RelationMember.visible_in_reference_list = True
 # separate site installations
 schema.Member.synchronizable = True
 
+# Extension property to customize the autocomplete behavior of members
+schema.SchemaObject.autocomplete_class = \
+    "woost.controllers.autocomplete.MemberRestrictedAutocompleteSource"
+schema.Reference.autocomplete_class = \
+    "woost.controllers.autocomplete.MemberRestrictedAutocompleteSource"
+
