@@ -9,20 +9,20 @@ from woost.controllers.cmscontroller import CMSController
 
 renderingengines.rendering_options.update({
     "mako.directories": [
-        resource_filename("_PROJECT_MODULE_", "views"),
+        resource_filename("--SETUP-PACKAGE--", "views"),
         resource_filename("woost", "views")
     ],
     "mako.output_encoding": "utf-8"
 })
 
 
-class _PROJECT_NAME_CMSController(CMSController):
+class --SETUP-WEBSITE--CMSController(CMSController):
 
     _cp_config = CMSController.copy_config()
-    _cp_config["rendering.engine"] = "_TEMPLATE_ENGINE_"
+    _cp_config["rendering.engine"] = "cocktail"
 
     class ApplicationContainer(CMSController.ApplicationContainer):
-        _PROJECT_MODULE__resources = folder_publisher(
-            resource_filename("_PROJECT_MODULE_.views", "resources")
+        --SETUP-FLAT_WEBSITE_NAME--_resources = folder_publisher(
+            resource_filename("--SETUP-PACKAGE--.views", "resources")
         )
 

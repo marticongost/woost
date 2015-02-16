@@ -1,11 +1,11 @@
 #-*- coding: utf-8 -*-
 import cherrypy
 from woost.models.extension import load_extensions
-import _PROJECT_MODULE_.models
-import _PROJECT_MODULE_.views
-from _PROJECT_MODULE_.controllers import _PROJECT_NAME_CMSController
+import --SETUP-PACKAGE--.models
+import --SETUP-PACKAGE--.views
+from --SETUP-PACKAGE--.controllers import --SETUP-WEBSITE--CMSController
 
 load_extensions()
-cms = _PROJECT_NAME_CMSController()
+cms = --SETUP-WEBSITE--CMSController()
 application = cms.mount()
 

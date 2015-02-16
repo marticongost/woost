@@ -7,7 +7,7 @@ from cocktail.persistence import MigrationStep
 
 
 if __name__ == "__main__":
-    import _PROJECT_NAME_
+    import --SETUP-PACKAGE--
     from cocktail.persistence import migrate
     migrate()
 
