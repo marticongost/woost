@@ -14,7 +14,7 @@ to reset a site's state after some changes).
 """
 
 # Load project settings
-import _PROJECT_MODULE_
+import --SETUP-PACKAGE--
 
 from woost.models.initialization import SiteInitializer
 
