@@ -94,6 +94,8 @@ class EditController(BaseBackOfficeController):
         )
         if not value:
             return []
+        elif self.relation_action.id == "edit":
+            return value
         else:
             enum = frozenset(self.stack_node.form_data.get(member.name))
             return [item for item in value if item in enum]
