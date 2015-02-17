@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <?py
 from cocktail.controllers import context
+from woost.models import Publishable
 ?>
 
 <div
@@ -53,7 +54,11 @@ from cocktail.controllers import context
             <?py
             images = self.images
             if self.accessible_check:
-                images = (img for img in self.images if img.is_accessible())
+                images = (
+                    img
+                    for img in self.images
+                    if not isinstance(img, Publishable) or img.is_accessible()
+                )
             ?>
             <py:new
                 py:element="self.create_image_entry(image)"
@@ -63,13 +68,13 @@ from cocktail.controllers import context
 
     <li py:def="image_entry" py:args="image">
         <?py
-        title = image.title or ""
+        title = getattr(image, "title", None) or ""
         footnote = None
 
         if self.footnotes_visible:
             footnote = self.get_footnote(image)
 
-        if self.original_link_visible:
+        if self.original_link_visible and isinstance(image, Publishable):
             element.set_client_param(
                 "originalImage",
                 image.get_uri(parameters = {"disposition": "attachment"})
