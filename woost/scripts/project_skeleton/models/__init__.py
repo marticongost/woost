@@ -2,5 +2,5 @@
 u"""
 Site specific models.
 """
-from _PROJECT_MODULE_.models import migration
+from --SETUP-PACKAGE--.models import migration
 

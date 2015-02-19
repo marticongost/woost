@@ -9,7 +9,7 @@ from pkg_resources import resource_filename
 from cocktail.styled import styled
 from cocktail.persistence import datastore
 from woost.models import File
-import _PROJECT_NAME_
+import --SETUP-PACKAGE--
 
 def main():
 
@@ -25,7 +25,7 @@ def main():
             try:
                 file = File.from_path(
                     path,
-                    resource_filename("_PROJECT_NAME_", "upload")
+                    resource_filename("--SETUP-PACKAGE--", "upload")
                 )
                 file.insert()
             except Exception, ex:
