@@ -8,15 +8,15 @@ u"""
 """
 
 from woost import app
-app.package = "_PROJECT_MODULE_"
-app.installation_id = "_INSTALLATION_ID_"
+app.package = "--SETUP-PACKAGE--"
+app.installation_id = "--SETUP-INSTALLATION_ID--"
 
 # Application server configuration
 import cherrypy
 cherrypy.config.update({
     "global": {
-        "server.socket_host": "_WEBSERVER_HOST_",
-        "server.socket_port": _WEBSERVER_PORT_,
+        "server.socket_host": "--SETUP-APP_SERVER_HOSTNAME--",
+        "server.socket_port": --SETUP-PORT--,
         "tools.encode.on": True,
         "tools.encode.encoding": "utf-8",
         "tools.decode.on": True,
@@ -27,30 +27,11 @@ cherrypy.config.update({
 # Object store provider
 from cocktail.persistence import datastore
 from ZEO.ClientStorage import ClientStorage
-db_host = "_DATABASE_HOST_"
-db_port = _DATABASE_PORT_
+db_host = "127.0.0.1"
+db_port = --SETUP-ZEO_PORT--
 datastore.storage = lambda: ClientStorage((db_host, db_port))
 
 # Use file based sessions
 from cocktail.controllers import session
 session.config["session.type"] = "file"
-
-# Uncomment the code below to enable the interactive debugger
-# WARNING: *THE CODE BELOW MUST BE COMMENTED ON A PRODUCTION ENVIRONMENT*
-#from paste import evalexception
-#from _PROJECT_MODULE_.controllers import _PROJECT_NAME_CMS
-#
-#cherrypy.config.update({
-#    "global": {
-#        "request.throw_errors": True,
-#    }
-#})
-#
-#_PROJECT_NAME_CMS.application_settings = {
-#    "/": {
-#        "wsgi.pipeline": (('evalexc', evalexception.EvalException),),
-#        "wsgi.evalexc.global_conf": {},
-#        "wsgi.evalexc.xmlhttp_key": "_xml",
-#    }
-#}
 

@@ -7,5 +7,5 @@ Site specific translation strings.
 @organization:	Whads/Accent SL
 @since:			December 2008
 """
-import _PROJECT_MODULE_.translations.strings
+import --SETUP-PACKAGE--.translations.strings
 
