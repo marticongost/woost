@@ -11,6 +11,7 @@ from woost.controllers.backoffice.editcontroller import EditController
 
 class ReferencesController(EditController):
 
+    section = "references"
     view_class = "woost.views.BackOfficeReferencesView"
 
     @request_property
