@@ -572,6 +572,10 @@ class DuplicateAction(UserAction):
         "toolbar",
         "item_buttons"
     ])
+    excluded = UserAction.excluded | frozenset([
+        "new_item",
+        "collection"
+    ])
     min = 1
     max = 1
 
@@ -633,7 +637,9 @@ class DeleteAction(UserAction):
 
 
 class PreviewAction(UserAction):
-    included = frozenset(["item_buttons"])
+    included = frozenset([
+        ("item_buttons", "edit")
+    ])
     content_type = (Publishable, Block)
 
 
@@ -676,6 +682,10 @@ class ReferencesAction(UserAction):
     included = frozenset([
         "toolbar_extra",
         "item_buttons"
+    ])
+    excluded = UserAction.excluded | frozenset([
+        "new_item",
+        "collection"
     ])
     min = 1
     max = 1
@@ -878,7 +888,7 @@ class GoBackAction(UserAction):
 
 class CloseAction(GoBackAction):
     included = frozenset([
-        "item_buttons",
+        ("item_buttons", "edit"),
         "edit_blocks_toolbar"
     ])
 
