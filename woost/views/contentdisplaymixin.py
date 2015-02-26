@@ -40,7 +40,7 @@ class ContentDisplayMixin(object):
             return call_base(obj, member)
 
     def display_item_reference(self, obj, member):
-        display = templates.new("woost.views.ContentLink")
+        display = templates.new(obj.backoffice_display)
         display.item = self.get_member_value(obj, member)
         display.base_url = self.base_url
         display.referer = obj

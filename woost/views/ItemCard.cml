@@ -3,13 +3,14 @@
 from woost import app
 ?>
 
-<div
+<article
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:py="http://www.whads.com/ns/cocktail/templates">
 
     <?py-class
     item = None
     icon_factory = "backoffice_thumbnail"
+    image_close_up_enabled = True
 
     def get_item_path(self, item):
         return None
@@ -32,7 +33,8 @@ from woost import app
     <py:woost.views.ImageGallery
         py:id="item_image_gallery"
         py:thumbnail_factory="@{self.icon_factory}"
-        py:labels_visible="${False}">
+        py:labels_visible="${False}"
+        py:close_up_enabled="@{self.image_close_up_enabled}">
         <py:binding>
             <?py
             if self.item and self.item.is_inserted:
@@ -42,7 +44,7 @@ from woost import app
     </py:woost.views.ImageGallery>
 
     <div py:id="item_info">
-        <div py:id="item_translation">
+        <h1 py:id="item_heading">
             <py:ready>
                 <?py
                 if self.item.is_inserted:
@@ -52,7 +54,7 @@ from woost import app
                 ?>
                 ${context_desc}
             </py:ready>
-        </div>
+        </h1>
 
         <span py:id="item_type">
             @{translations(self.item.__class__.name)}
@@ -80,5 +82,5 @@ from woost import app
     <li py:def="item_path_step" py:args="path, index, step">
         ${translations(path[index])}
     </li>
-</div>
+</article>
 

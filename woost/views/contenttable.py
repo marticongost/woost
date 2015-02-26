@@ -60,10 +60,9 @@ class ContentTable(ContentDisplayMixin, Table):
         return cell
 
     def create_element_display(self, item, member):
-        display = templates.new("woost.views.ItemLabel")
-        display.tag = "label"
-        display["for"] = "selection_" + str(item.id)
+        display = templates.new(item.backoffice_display)
         display.item = item
+        display.icon_visible = True
         display.referer = self.referer
         return display
 

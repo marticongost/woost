@@ -65,6 +65,10 @@ class BackOfficeUserCollection(UserCollection):
 
         return type
 
+    @property
+    def selection_type(self):
+        return self.root_type
+
     @cached_getter
     def adapter(self):
         """The schema adapter used to produce data suitable for listing.

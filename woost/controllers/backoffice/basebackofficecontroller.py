@@ -223,15 +223,31 @@ class BaseBackOfficeController(BaseCMSController):
             raise error
 
     def _get_user_action(self, param_key = "action"):
+
         action = None
-        action_id = self.params.read(schema.String(param_key))
+        selection = None
+        param_value = self.params.read(schema.String(param_key))
 
-        if action_id:
-            action = get_user_action(action_id)
-            if action and not action.enabled:
-                action = None
+        if param_value:
+            parts = param_value.split("-")
+            if len(parts) == 1:
+                action_id = param_value
+                selection = None
+            else:
+                action_id = parts[0]
+                selection = get_parameter(
+                    schema.Collection(
+                        items = schema.Reference(type = Item)
+                    ),
+                    source = lambda key: parts[1]
+                )
 
-        return action
+            if action_id:
+                action = get_user_action(action_id)
+                if action and not action.enabled:
+                    action = None
+
+        return action, selection
 
     @cached_getter
     def user_views(self):

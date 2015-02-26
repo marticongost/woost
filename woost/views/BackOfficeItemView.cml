@@ -27,16 +27,6 @@ from woost.controllers.backoffice.useractions import (
             if cls is not Item:
                 self.add_class(cls.name)
 
-        if self.edited_item.is_inserted:
-            add_view_action_context(self, "existing_item")
-        else:
-            add_view_action_context(self, "new_item")
-
-        if self.changes:
-            add_view_action_context(self, "changed")
-        else:
-            add_view_action_context(self, "unchanged")
-
         self._actions_context = get_view_actions_context(self)
 
         # Pending changes warning
@@ -47,14 +37,17 @@ from woost.controllers.backoffice.useractions import (
     </py:ready>
 
     <!-- Item heading -->
-    <h2 py:def="page_title">
+    <div py:def="page_title">
         <py:ready>
             <py:new
-                py:element="loader.new(self.edited_item.backoffice_heading_view)"
+                py:tag="div"
+                py:element="loader.new(self.edited_item.backoffice_card_view)"
                 py:index="0"
-                py:item="${self.edited_item}"/>
+                py:item="${self.edited_item}">
+                <py:with py:element="element.item_heading" py:tag="h2"/>
+            </py:new>
         </py:ready>
-    </h2>
+    </div>
 
     <!-- Turn the central content into a form -->
     <py:with
@@ -77,7 +70,21 @@ from woost.controllers.backoffice.useractions import (
             py:id="item_buttons"
             py:action_context="item_buttons"
             py:action_target="@{self.edited_item}"
+            py:submit_action_target="${False}"
             class="toolbar">
+            <py:binding>
+                <?py
+                if self.edited_item.is_inserted:
+                    add_view_action_context(element, "existing_item")
+                else:
+                    add_view_action_context(element, "new_item")
+
+                if self.changes:
+                    add_view_action_context(element, "changed")
+                else:
+                    add_view_action_context(element, "unchanged")
+                ?>
+            </py:binding>
             <py:with
                 py:def="action_button"
                 py:args="action, extra, action_context"

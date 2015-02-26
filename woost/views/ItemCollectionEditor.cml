@@ -60,10 +60,6 @@ from woost.controllers.backoffice.useractions import add_view_action_context
 
     <py:ready>
         <?py
-        add_view_action_context(self, "collection")
-        if self.member.integral:
-            add_view_action_context(self, "integral")
-
         self._cms = context["cms"]
         self._edit_stack = context["edit_stacks_manager"].current_edit_stack
         self._user = get_current_user()
@@ -85,6 +81,13 @@ from woost.controllers.backoffice.useractions import add_view_action_context
         py:action_target="@{self.member.related_type}"
         py:action_parameter="@{'relation_action-' + self.member.name}"
         py:empty_result_set="@{not self.value}">
+        <py:binding>
+            <?py
+            add_view_action_context(element, "collection")
+            if self.member.integral:
+                add_view_action_context(element, "integral")
+            ?>
+        </py:binding>
         <?py
         @extend(toolbar)
         def get_actions(toolbar, context):
@@ -165,14 +168,19 @@ from woost.controllers.backoffice.useractions import add_view_action_context
 
         <py:new
             py:local_id="item_display"
-            py:element="self.create_item_display()"
-            py:item="${item}"
-            for="@{entry.checkbox.require_id()}"/>
+            py:element="self.create_item_display(item)">
+            <?py
+            label_element = getattr(element, "item_label", element)
+            label_element.tag = "label"
+            label_element["for"] = entry.checkbox.require_id()
+            ?>
+        </py:new>
     </li>
 
-    <py:woost.views.ItemLabel
-        py:def="item_display"
-        py:tag="label"/>
+    <py:new
+        py:def="item_display" py:args="item"
+        py:element="loader.new(item.backoffice_display)"
+        py:item="${item}"/>
 
 </div>
 
