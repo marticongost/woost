@@ -904,6 +904,14 @@ translations.define("woost.views.EditLink-delete",
         u"Delete " + (target_desc or u"this")
 )
 
+# ItemDisplay
+#------------------------------------------------------------------------------
+translations.define("woost.views.ItemDisplay.toggle_button",
+    ca = u"Mostrar detalls de l'element",
+    es = u"Mostrar detalles del elemento",
+    en = u"Show details for this item"
+)
+
 # Initialization content
 #------------------------------------------------------------------------------
 translations.define(

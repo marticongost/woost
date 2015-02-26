@@ -121,6 +121,22 @@ class ContentController(BaseBackOfficeController):
         """The user action selected by the current HTTP request.
         @type: L{UserAction<woost.controllers.backoffice.useractions.UserAction>}
         """
+        return self.action_data[0]
+
+    @cached_getter
+    def selection(self):
+        selection = self.action_data[1]
+
+        if selection is None:
+            if self.user_collection.selection_mode == SINGLE_SELECTION:
+                selection = [self.user_collection.selection]
+            else:
+                selection = self.user_collection.selection
+
+        return selection
+
+    @cached_getter
+    def action_data(self):
         return self._get_user_action()
 
     @cached_getter
@@ -128,12 +144,7 @@ class ContentController(BaseBackOfficeController):
         return self.action is not None
 
     def submit(self):
-        if self.user_collection.selection_mode == SINGLE_SELECTION:
-            selection = [self.user_collection.selection]
-        else:
-            selection = self.user_collection.selection
-
-        self._invoke_user_action(self.action, selection)
+        self._invoke_user_action(self.action, self.selection)
 
     # Content
     #--------------------------------------------------------------------------

@@ -4,7 +4,7 @@ from cocktail.controllers import context
 from woost.models import Configuration, Block
 ?>
 
-<py:woost.views.BackOfficeItemHeading
+<py:woost.views.ItemCard
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:py="http://www.whads.com/ns/cocktail/templates">
 
@@ -44,5 +44,5 @@ from woost.models import Configuration, Block
         </a>
     </li>
 
-</py:woost.views.BackOfficeItemHeading>
+</py:woost.views.ItemCard>
 

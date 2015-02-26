@@ -690,37 +690,12 @@ class ReferencesAction(UserAction):
     min = 1
     max = 1
 
-    def __translate__(self, language, context = None, **kwargs):
-        label = UserAction.__translate__(self, language, **kwargs)
-        if (
-            self.stack_node is not None
-            and context and "item_buttons" in context
-        ):
-            label += " (%d)" % len(self.references)
-        return label
-
-    @request_property
-    def stack_node(self):
-        edit_stacks_manager = \
-            controller_context.get("edit_stacks_manager")
-        if edit_stacks_manager:
-            edit_stack = edit_stacks_manager.current_edit_stack
-            if edit_stack:
-                return edit_stack[-1]
-
-    @request_property
-    def references(self):
-        stack_node = self.stack_node
-
-        if not stack_node:
-            references = []
-        else:
-            references = list(self._iter_references(self.stack_node.item))
-            references.sort(
-                key = lambda ref:
-                    (translations(ref[0]), translations(ref[1]))
-            )
-
+    def get_references(self, target):
+        references = list(self._iter_references(target))
+        references.sort(
+            key = lambda ref:
+                (translations(ref[0]), translations(ref[1]))
+        )
         return references
 
     def _iter_references(self, obj):

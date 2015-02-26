@@ -33,13 +33,18 @@
 
     <tr py:def="reference_entry" py:args="referrer, relation">
         <td py:local_id="referrer_cell">
-            <py:woost.views.ContentLink
-                py:local_id="referrer"
-                py:icon_visible="${True}"
-                py:item="${referrer}"/>
+            <py:new
+                py:element="self.create_referrer_display(referrer, relation)"
+                py:local_id="referrer"/>
         </td>
         <td py:local_id="relation_cell">${translations(relation)}</td>
     </tr>
+
+    <py:new
+        py:def="referrer_display" py:args="referrer, relation"
+        py:element="loader.new(referrer.backoffice_display)"
+        py:item="${referrer}"
+        py:referrer="${self.edited_item}"/>
 
 </py:woost.views.BackOfficeEditView>
 

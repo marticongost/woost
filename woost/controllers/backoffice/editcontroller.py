@@ -51,11 +51,36 @@ class EditController(BaseBackOfficeController):
 
     @request_property
     def action(self):
-        return self._get_user_action("item_action")
+        return (
+            self.item_action
+            or self.relation_action
+            or self.arbitrary_action
+        )
 
     @request_property
     def action_selection(self):
+        if self.relation_action:
+            return self.relation_selection
+        elif self.arbitrary_action:
+            return self.arbitrary_selection
+
         return [self.stack_node.item]
+
+    @request_property
+    def item_action(self):
+        return self._get_user_action("item_action")[0]
+
+    @request_property
+    def arbitrary_action(self):
+        return self.arbitrary_action_data[0]
+
+    @request_property
+    def arbitrary_selection(self):
+        return self.arbitrary_action_data[1]
+
+    @request_property
+    def arbitrary_action_data(self):
+        return self._get_user_action("action")
 
     @request_property
     def relation_action(self):

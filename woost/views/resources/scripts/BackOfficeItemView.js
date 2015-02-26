@@ -14,33 +14,29 @@ cocktail.bind(".BackOfficeItemView", function ($itemView) {
 
     if (itemView.closingItemRequiresConfirmation) {
 
+        var hasPendingChanges = itemView.hasPendingChanges;
+        var exitPreservesState = undefined;
+
         $itemView.find(".ContentForm .fields").change(function () {
             hasPendingChanges = true;
         });
 
-        var hasPendingChanges = itemView.hasPendingChanges;
-        var NAVIGATE_AWAY = 0;
-        var SUBMIT_CLOSING = 1;
-        var SUBMIT_PRESERVING = 2;
-        var departureManner = NAVIGATE_AWAY;
+        $itemView.on("leavingPage", function (e) {
+            exitPreservesState = e.preservingState;
+        });
 
         $itemView.find("form").submit(function () {
-            if (departureManner != SUBMIT_CLOSING) {
-                departureManner = SUBMIT_PRESERVING;
+            if (exitPreservesState === undefined) {
+                exitPreservesState = true;
             }
         });
 
-        $itemView.find(".action_button").click(function () {
-            if (this.value == "close") {
-                departureManner = SUBMIT_CLOSING;
-            }
-            else {
-                departureManner = SUBMIT_PRESERVING;
-            }
+        $itemView.on("click", ".action_button", function () {
+            $itemView.trigger({type: "leavingPage", preservingState: this.value != 'close'});
         });
 
         window.onbeforeunload = function () {
-            if (hasPendingChanges && departureManner != SUBMIT_PRESERVING) {
+            if (hasPendingChanges && !exitPreservesState) {
                 return cocktail.translate("woost.views.BackOfficeItemView pending changes warning");
             }
         }

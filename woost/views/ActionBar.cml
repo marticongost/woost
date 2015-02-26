@@ -16,6 +16,7 @@ from woost.controllers.backoffice.useractions import (
     action_context = None
     action_target = None
     action_parameter = "action"
+    submit_action_target = True
     button_images = True
     hide_when_empty = True
     group_additional_actions = True
@@ -51,7 +52,7 @@ from woost.controllers.backoffice.useractions import (
                 action_button.tag = "button"
                 action_button["type"] = "submit"
                 action_button["name"] = self.action_parameter
-                action_button["value"] = action.id
+                action_button["value"] = self.get_action_value(action)
                 action_button["formtarget"] = action.link_target
 
         action_button.add_class("action_button")
@@ -61,9 +62,18 @@ from woost.controllers.backoffice.useractions import (
             action_button.action_image = self.create_action_image(action, extra)
             label.append(action_button.action_image)
 
-        label.append(translations(action, context = action_context))
+        label.append(translations(action, target = self.action_target, context = action_context))
         label["accesskey"] = translations("woost.actions." + action.id + ".shortcut")
         return action_button
+
+    def get_action_value(self, action):
+        value = action.id
+        if (
+            self.submit_action_target
+            and not isinstance(self.action_target, type)
+        ):
+            value += "-%d" % self.action_target.id
+        return value
     ?>
 
     <?py
