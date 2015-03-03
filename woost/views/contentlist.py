@@ -43,7 +43,10 @@ class ContentList(List, UIGenerator):
 
     def create_entry_content(self, item):
 
-        display = self.create_object_display(item, referer = self.referer)
+        display = self.create_object_display(
+            item,
+            referer = self.referer or self.data
+        )
 
         if self.referer and self.member:
             display.item_label["data-woost-relativedrop"] = "%d.%s.%d" % (
