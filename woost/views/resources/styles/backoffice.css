@@ -3525,6 +3525,11 @@ div.success_label {
     box-shadow: none;
 }
 
+.BackOfficeLayout .ItemDisplay .item_label,
+.BackOfficeLayout .ItemDisplay .item_label * {
+    cursor: context-menu;
+}
+
 .BackOfficeLayout .ContentTable td > .ItemDisplay .panel {
     font-size: 1.1764em; /* urgh... */
 }
@@ -3535,19 +3540,6 @@ div.success_label {
 
 .BackOfficeLayout .ItemDisplay .item_label:hover {
     text-decoration: none;
-}
-
-.BackOfficeLayout .ItemDisplay .panel_handle {
-    padding: 0;
-    background-image: none;
-    background-color: transparent;
-    border: none;
-    box-shadow: none;
-    margin-right: 0.3em;
-}
-
-.BackOfficeLayout .ItemDisplay .panel_handle .icon {
-    margin: 0;
 }
 
 .BackOfficeLayout .ItemDisplay .panel_connector {
