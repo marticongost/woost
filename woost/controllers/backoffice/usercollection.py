@@ -101,7 +101,7 @@ class BackOfficeUserCollection(UserCollection):
             content_schema.add_member(
                 schema.Reference(
                     name = "element",
-                    type = self.root_type,
+                    type = self.type,
                     searchable = False
                 )
             )
