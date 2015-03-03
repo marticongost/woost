@@ -10,7 +10,7 @@ from woost.controllers.backoffice.useractions import add_view_action_context
     <?py-class
     item = None
     icon_factory = "backoffice_small_thumbnail.png"
-    icon_visible = True
+    icon_visible = "auto"
     thumbnail = True
     referer = None
     language_chain = None
@@ -38,12 +38,15 @@ from woost.controllers.backoffice.useractions import add_view_action_context
 
     <py:woost.views.ItemLabel
         py:id="item_label"
-        py:item="@{self.item}"
         py:image_factory="@{self.icon_factory}"
         py:icon_visible="@{self.icon_visible}"
         py:thumbnail="@{self.thumbnail}"
         py:referer="@{self.referer}"
         py:language_chain="@{self.language_chain}"/>
+
+    <?py
+    self.data_binding_delegate = self.item_label
+    ?>
 
     <div
         py:id="panel"
