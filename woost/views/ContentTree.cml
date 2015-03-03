@@ -7,6 +7,7 @@ from cocktail.iteration import is_empty
 from cocktail.schema import Member, SchemaObjectAccessor
 from cocktail.controllers import view_state
 from cocktail.html.datadisplay import MULTIPLE_SELECTION
+from woost.views.uigeneration import backoffice_display
 
 NOT_ACCESSIBLE = 0
 ACCESSIBLE = 1
@@ -94,14 +95,11 @@ ACCESSIBLE_DESCENDANTS = 2
 
     def is_expanded(self, item):
         return self.fully_expanded or item.id in self.expanded
-
-    def create_element_display(self, item, member):
-        return self.create_element_cell(item, member)
     ?>
 
     <div
-        py:def="element_cell"
-        py:args="item, member">
+        py:def="element_display"
+        py:args="obj, member, value, **context">
 
         <?py
         # Fake an HTML hierarchy, adding dummy containers. This is a bit of a
@@ -119,21 +117,21 @@ ACCESSIBLE_DESCENDANTS = 2
                 container = nested_container
 
         # Get the expansion state for the entry
-        empty = is_empty(self.get_children(item))
+        empty = is_empty(self.get_children(value))
 
         if empty:
             element.add_class("leaf")
         else:
-            if self.is_expanded(item):
+            if self.is_expanded(value):
                 state = "expanded"
                 expander_ids = (id
                                 for id in self.expanded
-                                if id != item.id)
+                                if id != value.id)
             else:
                 state = "collapsed"
                 expander_ids = chain(
                     (id for id in self.expanded),
-                    [item.id]
+                    [value.id]
                 )
 
             expanded_param = ",".join(str(id) for id in expander_ids)
@@ -146,11 +144,16 @@ ACCESSIBLE_DESCENDANTS = 2
                 <img src="${self.cms.application_uri('resources', 'images', state + '.png')}"/>
             </a>
             <?py
-            element_display = ContentTable.create_element_display(self, item, member)
+            element_display = backoffice_display.create_member_display(
+                obj,
+                member,
+                value,
+                **context
+            )
 
             # Drag & drop information
             element_display["data-woost-drop"] = "%d.%s" % (
-                item.id,
+                value.id,
                 self.__children_collection_name
             )
 
@@ -158,7 +161,7 @@ ACCESSIBLE_DESCENDANTS = 2
                 element_display["data-woost-relativedrop"] = "%d.%s.%d" % (
                     self.__parent.id,
                     self.__children_collection_name,
-                    item.id
+                    value.id
                 )
 
             element.append(element_display)

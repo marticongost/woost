@@ -16,7 +16,6 @@ from woost.models import Item
 class MemberList(Element):
 
     root_type = Item
-    name = None
     value = ()
     __enumeration = None
 
@@ -25,12 +24,6 @@ class MemberList(Element):
         self.add_resource("/resources/scripts/MemberList.js")
 
     def _ready(self):
-
-        if not self.name and self.data_display:
-            self.name = self.data_display.get_member_name(
-                self.member,
-                self.language
-            )
 
         if self.root_type:
             self.append(self.create_class_entry(self.root_type))

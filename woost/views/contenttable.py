@@ -14,19 +14,18 @@ from cocktail.schema.expressions import (
     NegativeExpression
 )
 from cocktail.html import Element, templates
-from cocktail.html.translationdisplay import TranslationDisplay
 from cocktail.controllers import view_state
 from woost.models import Item
-from woost.views.contentdisplaymixin import ContentDisplayMixin
+from woost.views.uigeneration import backoffice_display
 
 Table = templates.get_class("cocktail.html.Table")
 
 
-class ContentTable(ContentDisplayMixin, Table):
+class ContentTable(Table):
 
     base_url = None
     entry_selector = "tbody tr.item_row"
-    default_display = TranslationDisplay
+    base_ui_generators = [backoffice_display]
     use_separate_selection_column = False
 
     def _ready(self):
@@ -36,8 +35,9 @@ class ContentTable(ContentDisplayMixin, Table):
 
     def __init__(self, *args, **kwargs):
         Table.__init__(self, *args, **kwargs)
-        ContentDisplayMixin.__init__(self)
+        self.set_member_expression("element", lambda obj: obj)
         self.set_member_sortable("element", False)
+        self.set_member_expression("class", lambda obj: obj.__class__)
         self.set_member_sortable("class", False)
 
     def _fill_head(self):
@@ -58,18 +58,6 @@ class ContentTable(ContentDisplayMixin, Table):
             cell["data-woost-drop"] = "%d.%s" % (item.id, column.name)
 
         return cell
-
-    def create_element_display(self, item, member):
-        display = templates.new(item.backoffice_display)
-        display.item = item
-        display.icon_visible = True
-        display.referer = self.referer
-        return display
-
-    def create_class_display(self, item, member):
-        return Element(
-                    tag = None,
-                    children = [translations(item.__class__.name)])
 
     def add_header_ui(self, header, column, language):
 

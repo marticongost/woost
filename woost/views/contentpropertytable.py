@@ -7,14 +7,12 @@ u"""
 @since:			February 2009
 """
 from cocktail.html import templates
-from woost.views.contentdisplaymixin import ContentDisplayMixin
+from woost.views.uigeneration import backoffice_display
 
 PropertyTable = templates.get_class("cocktail.html.PropertyTable")
 
 
-class ContentPropertyTable(ContentDisplayMixin, PropertyTable):
+class ContentPropertyTable(PropertyTable):
 
-    def __init__(self, *args, **kwargs):
-        PropertyTable.__init__(self, *args, **kwargs)
-        ContentDisplayMixin.__init__(self)
+    base_ui_generators = [backoffice_display]
 

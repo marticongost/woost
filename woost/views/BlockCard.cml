@@ -9,6 +9,8 @@ from woost.models import Configuration, Block
     xmlns:py="http://www.whads.com/ns/cocktail/templates">
 
     <?py-class
+    item = None
+
     def get_item_path(self, item):
         paths = item.find_paths()
 
@@ -18,6 +20,15 @@ from woost.models import Configuration, Block
 
         if paths:
             return paths[0]
+
+    # Make the view usable in data binding
+    def _get_value(self):
+        return self.item
+
+    def _set_value(self, value):
+        self.item = value
+
+    value = property(_get_value, _set_value)
     ?>
 
     <py:ready>
