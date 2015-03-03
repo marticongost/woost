@@ -240,6 +240,7 @@ class Item(PersistentObject):
         editable = False,
         synchronizable = False,
         invalidates_cache = False,
+        listed_by_default = False,
         member_group = "administration"
     )
 
