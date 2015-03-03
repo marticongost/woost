@@ -90,6 +90,12 @@ class Item(PersistentObject):
     # as the drop down panel of ItemDisplay
     backoffice_card_view = "woost.views.ItemCard"
 
+    # When creating listings, the backoffice will attempt to only display icons
+    # if it thinks they will be useful. Setting this hint to True tells the
+    # backoffice that the icons for this model provide relevant information,
+    # and so shouldn't be hidden.
+    icon_conveys_information = False
+
     # Customization of the backoffice preview action
     preview_view = "woost.views.BackOfficePreviewView"
     preview_controller = "woost.controllers.backoffice." \
