@@ -20,6 +20,15 @@ class ItemLabel(Element):
     referer = None
     language_chain = None
 
+    # Make the view usable as a member display
+    def _get_value(self):
+        return self.item
+
+    def _set_value(self, value):
+        self.item = value
+
+    value = property(_get_value, _set_value)
+
     def _ready(self):
         Element._ready(self)
 

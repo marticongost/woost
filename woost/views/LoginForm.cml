@@ -31,9 +31,14 @@ from woost.models.publishable import Publishable
         py:schema="@{self.schema}"
         py:errors="@{self.errors}"
         py:data="@{self.data}">
-        <py:cocktail.html.TextBox py:def="user_display">
-            <?py html5_attr(element, "autofocus", True) ?>
-        </py:cocktail.html.TextBox>
+        <?py
+        @extend(element)
+        def create_control(login_form, obj, member):
+            control = call_base(obj, member)
+            if member.name == "user" and control.tag == "input":
+                control["autofocus"] = True
+            return control
+        ?>
     </py:cocktail.html.Form>
 
     <py:with py:element="self.login_form.submit_button" name="authenticate">

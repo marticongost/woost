@@ -7,14 +7,21 @@ u"""
 @since:			February 2009
 """
 from cocktail.html import templates
+from cocktail.html.uigeneration import UIGenerator
 from woost.models import get_current_user, ReadPermission
+from woost.views.uigeneration import backoffice_display
 
 List = templates.get_class("cocktail.html.List")
 
 
-class ContentList(List):
+class ContentList(List, UIGenerator):
 
     referer = None
+    base_ui_generators = [backoffice_display]
+
+    def __init__(self, *args, **kwargs):
+        List.__init__(self, *args, **kwargs)
+        UIGenerator.__init__(self)
 
     def _fill_entries(self):
 
@@ -35,10 +42,8 @@ class ContentList(List):
             self.append(u"-")
 
     def create_entry_content(self, item):
-        display = templates.new(item.backoffice_display)
-        display.item = item
-        display.referer = self.referer
-        display.member = self.member
+
+        display = self.create_object_display(item, referer = self.referer)
 
         if self.referer and self.member:
             display.item_label["data-woost-relativedrop"] = "%d.%s.%d" % (

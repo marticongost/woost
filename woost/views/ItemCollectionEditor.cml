@@ -1,24 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <?py
 from cocktail.iteration import first
-from cocktail.html.databoundcontrol import data_bound
 from cocktail.html.selectable import selectable, MULTIPLE_SELECTION
+from cocktail.html.uigeneration import UIGenerator
 from cocktail.controllers import context
 from woost.models import get_current_user, CreatePermission
 from woost.controllers.backoffice.useractions import add_view_action_context
+from woost.views.uigeneration import backoffice_display
 ?>
 
 <div
     xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:py="http://www.whads.com/ns/cocktail/templates">
+    xmlns:py="http://www.whads.com/ns/cocktail/templates"
+    py:mixins="UIGenerator">
 
     <?py-class
     value = ()
-    name = None
-
-    def __init__(self, *args, **kwargs):
-        Element.__init__(self, *args, **kwargs)
-        data_bound(self)
+    base_ui_generators = [backoffice_display]
 
     def content_type_is_instantiable(self, content_type):
         return (
@@ -179,7 +177,7 @@ from woost.controllers.backoffice.useractions import add_view_action_context
 
     <py:new
         py:def="item_display" py:args="item"
-        py:element="loader.new(item.backoffice_display)"
+        py:element="self.create_object_display(item)"
         py:item="${item}"/>
 
 </div>

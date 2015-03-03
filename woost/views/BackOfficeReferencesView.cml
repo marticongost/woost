@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
+<?py
+from woost.views.uigeneration import backoffice_display
+?>
 
 <py:woost.views.BackOfficeEditView
     xmlns="http://www.w3.org/1999/xhtml"
@@ -42,9 +45,7 @@
 
     <py:new
         py:def="referrer_display" py:args="referrer, relation"
-        py:element="loader.new(referrer.backoffice_display)"
-        py:item="${referrer}"
-        py:referrer="${self.edited_item}"/>
+        py:element="backoffice_display.create_object_display(referrer, referer = self.edited_item)"/>
 
 </py:woost.views.BackOfficeEditView>
 

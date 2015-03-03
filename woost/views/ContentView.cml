@@ -16,6 +16,7 @@ from woost.models import (
     CreatePermission,
     ReadMemberPermission
 )
+from woost.views.uigeneration import backoffice_search_control
 from woost.views.contenttypetree import ContentTypeTree
 from woost.controllers.backoffice.useractions import \
     add_view_action_context
@@ -129,17 +130,7 @@ from woost.controllers.backoffice.editstack import SelectionNode
                 ?>
                 <py:with py:def="filter_ui" py:args="filter">
                     <?py
-                    @extend(element)
-                    def get_default_member_display(element, obj, member):
-                        if isinstance(member, Reference):
-                            if member.class_family is not None:
-                                display = loader.new("woost.views.ContentTypePickerDropdown")
-                                display.root = member.class_family
-                                return display
-                            else:
-                                return "woost.views.ItemSelector"
-
-                        return call_base(obj, member)
+                    element.base_ui_generators = [backoffice_search_control]
                     ?>
                 </py:with>
             </py:with>
