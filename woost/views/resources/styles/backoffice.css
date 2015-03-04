@@ -459,6 +459,7 @@ body.modal {
     height: 92%;
     top: 4%;
     left: 4%;
+    padding: 0;
 }
 
 .dialog {
