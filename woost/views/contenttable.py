@@ -17,6 +17,7 @@ from cocktail.html import Element, templates
 from cocktail.controllers import view_state
 from woost.models import Item
 from woost.views.uigeneration import backoffice_display
+from woost.controllers.backoffice.useractions import export_user_actions
 
 Table = templates.get_class("cocktail.html.Table")
 
@@ -27,6 +28,7 @@ class ContentTable(Table):
     entry_selector = "tbody tr.item_row"
     base_ui_generators = [backoffice_display]
     use_separate_selection_column = False
+    action_context = None
 
     def _ready(self):
         if not self.user_collection.type.show_element_in_listings:
@@ -48,6 +50,11 @@ class ContentTable(Table):
     def create_row(self, index, item):
         row = Table.create_row(self, index, item)
         row.add_class("item_row")
+
+        # Indicate to the client which actions are available on each item
+        if self.action_context:
+            export_user_actions(row, self.action_context, item)
+
         return row
 
     def create_cell(self, item, column, language = None):

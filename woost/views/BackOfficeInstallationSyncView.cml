@@ -2,8 +2,6 @@
 <?py
 from woost import app
 from woost.models import File
-from woost.controllers.backoffice.useractions import \
-    add_view_action_context
 ?>
 
 <py:woost.views.BackOfficeItemView
@@ -19,7 +17,7 @@ from woost.controllers.backoffice.useractions import \
 
     <?py
     self.add_resource("/resources/scripts/BackOfficeInstallationSyncView.js")
-    add_view_action_context(self, "installation_sync")
+    self.action_context.add("installation_sync")
     ?>
 
     <py:ready>

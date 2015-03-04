@@ -60,7 +60,7 @@ cocktail.bind(".UserFilterEntry .ItemSelector", function ($itemSelector) {
 
         jQuery(selectorIframe).load(function () {
             var iframeJQuery = this.contentWindow.jQuery;
-            iframeJQuery(".select_action").click(function () {
+            iframeJQuery("[data-woost-action='select']").click(function () {
                 var sel = iframeJQuery(".collection_display").get(0).getSelection();
                 if (sel.length) {
                     var id = sel[0].id;
@@ -73,7 +73,7 @@ cocktail.bind(".UserFilterEntry .ItemSelector", function ($itemSelector) {
                 closeDialog();
                 return false;
             });
-            iframeJQuery(".cancel_action").click(function () {
+            iframeJQuery("[data-woost-action='cancel']").click(function () {
                 closeDialog();
                 return false;
             });

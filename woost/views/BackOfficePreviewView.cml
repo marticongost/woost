@@ -1,8 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?py
-from woost.controllers.backoffice.useractions import \
-    add_view_action_context
-?>
 
 <py:woost.views.BackOfficeItemView
     xmlns="http://www.w3.org/1999/xhtml"
@@ -14,7 +10,7 @@ from woost.controllers.backoffice.useractions import \
     ?>
 
     <?py
-    add_view_action_context(self, "preview")
+    self.action_context.add("preview")
     ?>
 
     <py:with py:element="self.item_body">
