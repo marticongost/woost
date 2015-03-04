@@ -186,7 +186,6 @@ class UserAction(object):
     excluded = frozenset([
         "selector",
         "calendar_content_view",
-        "workflow_graph_content_view",
         "changelog"
     ])
     content_type = None
@@ -471,11 +470,6 @@ class InstallationSyncAction(UserAction):
         return user.has_permission(InstallationSyncPermission)
 
 
-class MoveAction(UserAction):
-    included = frozenset([("toolbar", "tree")])
-    max = None
-
-
 class AddAction(UserAction):
     included = frozenset([("toolbar", "collection")])
     excluded = frozenset(["integral"])
@@ -516,23 +510,6 @@ class RemoveAction(UserAction):
 
         for item in selection:
             stack_node.unrelate(controller.relation_member, item)
-
-
-class OrderAction(UserAction):
-    included = frozenset([("order_content_view", "toolbar")])
-    max = None
-
-    def invoke(self, controller, selection):
-        node = RelationNode()
-        node.member = controller.relation_member
-        node.action = "order"
-        controller.edit_stack.push(node)
-        UserAction.invoke(self, controller, selection)
-
-    def get_url_params(self, controller, selection):
-        params = UserAction.get_url_params(self, controller, selection)
-        params["member"] = controller.section
-        return params
 
 
 class EditAction(UserAction):
@@ -626,7 +603,6 @@ class DeleteAction(UserAction):
         "selector",
         "new_item",
         "calendar_content_view",
-        "workflow_graph_content_view",
         "changelog",
         "common_block"
     ])
@@ -656,7 +632,6 @@ class OpenResourceAction(UserAction):
         "new",
         "selector",
         "calendar_content_view",
-        "workflow_graph_content_view",
         "changelog"
     ])
     link_target = "_blank"
@@ -761,14 +736,6 @@ class ShowChangelogAction(UserAction):
 
     def is_permitted(self, user, target):
         return user.has_permission(ReadHistoryPermission)
-
-
-class UploadFilesAction(UserAction):
-    included = frozenset(["toolbar_extra"])
-    content_type = File
-    min = None
-    max = None
-    ignores_selection = True
 
 
 class ExportAction(UserAction):
@@ -1200,11 +1167,9 @@ class ShareBlockAction(UserAction):
 # Action registration
 #------------------------------------------------------------------------------
 CreateAction("new").register()
-MoveAction("move").register()
 AddAction("add").register()
 AddIntegralAction("add_integral").register()
 RemoveAction("remove").register()
-UploadFilesAction("upload_files").register()
 AddBlockAction("add_block").register()
 AddBlockBeforeAction("add_block_before").register()
 AddBlockAfterAction("add_block_after").register()
@@ -1220,7 +1185,6 @@ PasteBlockAfterAction("paste_block_after").register()
 ShareBlockAction("share_block").register()
 RemoveBlockAction("remove_block").register()
 DeleteAction("delete").register()
-OrderAction("order").register()
 ExportAction("export_xls", "msexcel").register()
 InvalidateCacheAction("invalidate_cache").register()
 ReferencesAction("references").register()

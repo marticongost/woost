@@ -188,11 +188,6 @@ class Item(PersistentObject):
 
     # Backoffice customization
     #--------------------------------------------------------------------------
-    show_detail_view = "woost.views.BackOfficeShowDetailView"
-    show_detail_controller = \
-        "woost.controllers.backoffice.showdetailcontroller." \
-        "ShowDetailController"
-    collection_view = "woost.views.BackOfficeCollectionView"
     edit_node_class = "woost.controllers.backoffice.editstack.EditNode"
     edit_view = "woost.views.BackOfficeFieldsView"
     edit_form = "woost.views.ContentForm"
