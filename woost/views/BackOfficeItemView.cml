@@ -4,9 +4,6 @@
 from cocktail.schema import Collection
 from cocktail.html import html5_attr
 from woost.models import Item
-from woost.controllers.backoffice.useractions import (
-    get_view_actions, get_view_actions_context, add_view_action_context
-)
 ?>
 
 <py:woost.views.BackOfficeLayout
@@ -26,8 +23,6 @@ from woost.controllers.backoffice.useractions import (
         for cls in self.edited_content_type.descend_inheritance(include_self = True):
             if cls is not Item:
                 self.add_class(cls.name)
-
-        self._actions_context = get_view_actions_context(self)
 
         # Pending changes warning
         self.add_resource("/resources/scripts/BackOfficeItemView.js")
@@ -68,21 +63,24 @@ from woost.controllers.backoffice.useractions import (
         <!-- Actions -->
         <py:woost.views.ActionBar
             py:id="item_buttons"
-            py:action_context="item_buttons"
             py:action_target="@{self.edited_item}"
             py:submit_action_target="${False}"
             class="toolbar">
+            <?py
+            element.action_context.add("item_buttons")
+            ?>
             <py:binding>
                 <?py
+                element.action_context.update(self.action_context)
                 if self.edited_item.is_inserted:
-                    add_view_action_context(element, "existing_item")
+                    element.action_context.add("existing_item")
                 else:
-                    add_view_action_context(element, "new_item")
+                    element.action_context.add("new_item")
 
                 if self.changes:
-                    add_view_action_context(element, "changed")
+                    element.action_context.add("changed")
                 else:
-                    add_view_action_context(element, "unchanged")
+                    element.action_context.add("unchanged")
                 ?>
             </py:binding>
             <py:with

@@ -1,7 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?py
-from woost.controllers.backoffice.useractions import add_view_action_context
-?>
 
 <div
     xmlns="http://www.w3.org/1999/xhtml"
@@ -72,10 +69,10 @@ from woost.controllers.backoffice.useractions import add_view_action_context
     <py:woost.views.ActionBar
         py:def="item_actions"
         py:action_target="@{self.item}"
-        py:action_context="item_buttons"
         py:group_additional_actions="${False}">
         <?py
-        add_view_action_context(element, "ItemDisplay")
+        element.action_context.add("item_buttons")
+        element.action_context.add("context_menu")
         ?>
     </py:woost.views.ActionBar>
 

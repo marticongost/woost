@@ -3,8 +3,6 @@
 from cocktail.translations import translations
 from cocktail.controllers import view_state_form
 from woost.models import User
-from woost.controllers.backoffice.useractions import \
-    add_view_action_context
 from woost.extensions.mailer.mailing import get_receivers_by_lists
 ?>
 
@@ -18,7 +16,7 @@ from woost.extensions.mailer.mailing import get_receivers_by_lists
     ?>
 
     <?py
-    add_view_action_context(self, "send_email")
+    self.action_context.add("send_email")
     self.add_resource("/resources/styles/SendEmailView.css")
     ?>
 

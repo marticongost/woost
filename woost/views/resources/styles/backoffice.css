@@ -2097,11 +2097,11 @@ body.scripted .BackOfficeLayout .ThumbnailsContentView .collection_display input
     color: rgb(50,50,50);
 }
 
-.BackOfficeLayout .toolbar .preview_action,
-.BackOfficeLayout .toolbar .save_action,
-.BackOfficeLayout .toolbar .save_and_close_action,
-.BackOfficeLayout .toolbar .close_action,
-.BackOfficeLayout .toolbar .cancel_action {
+.BackOfficeLayout .toolbar [data-woost-action='preview'],
+.BackOfficeLayout .toolbar [data-woost-action='save'],
+.BackOfficeLayout .toolbar [data-woost-action='save_and_close'],
+.BackOfficeLayout .toolbar [data-woost-action='close'],
+.BackOfficeLayout .toolbar [data-woost-action='cancel'] {
     float: right;
     margin-left: 1em;
     margin-right: 0;

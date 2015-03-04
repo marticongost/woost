@@ -4,8 +4,6 @@
 from difflib import IS_CHARACTER_JUNK
 from cocktail import schema
 from woost.views.htmldiff import html_diff
-from woost.controllers.backoffice.useractions import \
-    add_view_action_context
 ?>
 
 <div

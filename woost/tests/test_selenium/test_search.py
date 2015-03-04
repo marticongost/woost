@@ -170,9 +170,9 @@ class SearchTestCase(object):
 
         browser.select_frame("dom=selenium.browserbot.getCurrentWindow().frames[0]")
         browser.wait_for_element_present("css=.collection_display", 10000)
-        assert not browser.is_element_present("css=.new_action")
+        assert not browser.is_element_present("css=[data-woost-action='new']")
         browser.click("css=.collection_display #%d" % template.id)
-        browser.click("css=.select_action")
+        browser.click("css=[data-woost-action='select']")
 
         browser.select_frame("relative=parent")
         browser.wait_for_element_present("css=.collection_display", 10000)

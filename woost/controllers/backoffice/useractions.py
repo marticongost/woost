@@ -38,7 +38,11 @@ from woost.models import (
     ReadHistoryPermission,
     InstallationSyncPermission
 )
-from woost.models.blockutils import add_block, type_is_block_container
+from woost.models.blockutils import (
+    add_block,
+    type_is_block_container,
+    schema_tree_has_block_container
+)
 from woost.controllers.notifications import notify_user
 from woost.controllers.backoffice.editstack import (
     EditNode,
@@ -93,45 +97,14 @@ def get_view_actions(context, target = None):
     return (
         action
         for action in _action_list
-        if action.enabled
-            and action.is_available(context, target)
+        if action.enabled and action.is_available(context, target)
     )
 
-def add_view_action_context(view, clue):
-    """Adds contextual information to the given view, to be gathered by
-    L{get_view_actions_context} and passed to L{get_view_actions}.
-
-    @param view: The view that gains the context clue.
-    @type view: L{Element<cocktail.html.element.Element>}
-
-    @param clue: The context identifier added to the view.
-    @type clue: str
-    """
-    view_context = getattr(view, "actions_context", None)
-    if view_context is None:
-        view_context = set()
-        view.actions_context = view_context
-    view_context.add(clue)
-
-def get_view_actions_context(view):
-    """Extracts clues on the context that applies to a given view and its
-    ancestors, to supply to the L{get_view_actions} function.
-
-    @param view: The view to inspect.
-    @type view: L{Element<cocktail.html.element.Element>}
-
-    @return: The set of context identifiers for the view and its ancestors.
-    @rtype: str set
-    """
-    context = set()
-
-    while view:
-        view_context = getattr(view, "actions_context", None)
-        if view_context:
-            context.update(view_context)
-        view = view.parent
-
-    return context
+def export_user_actions(element, context, target):
+    element["data-woost-available-actions"] = " ".join(
+        action.id
+        for action in get_view_actions(context, target)
+    )
 
 
 class UserAction(object):
@@ -182,7 +155,7 @@ class UserAction(object):
     @type parameters: L{Schema<cocktail.schema.schema.Schema>}
     """
     enabled = True
-    included = frozenset(["toolbar_extra", "item_buttons_extra"])
+    included = frozenset(["toolbar", "item_buttons"])
     excluded = frozenset([
         "selector",
         "calendar_content_view",
@@ -196,6 +169,7 @@ class UserAction(object):
     client_redirect = False
     link_target = None
     parameters = None
+    show_as_primary_action = "never"
 
     def __init__(self, id):
 
@@ -263,22 +237,39 @@ class UserAction(object):
 
         _action_map[self._id] = self
 
-    def is_available(self, context, target):
-        """Indicates if the user action is available under a certain context.
+    def is_primary(self, target, context):
+        if self.show_as_primary_action == "always":
+            return True
+        elif self.show_as_primary_action == "never":
+            return False
+        elif self.show_as_primary_action == "on_content_type":
+            if isinstance(target, type):
+                return self.matches_content_type(
+                    target,
+                    accept_ancestors = False
+                )
+            else:
+                return True
+        else:
+            raise ValueError(
+                "%r has an invalid 'show_as_primary_action' attribute: "
+                "expected one of 'always', 'never' or 'on_content_type', "
+                "got %r instead"
+                % (self, self.show_as_primary_action)
+            )
+
+    def matches_context(self, context):
+        """Indicates if the action is available under a certain context.
 
         @param context: A set of string identifiers, such as "context_menu",
             "toolbar", etc. Different views can make use of as many different
             identifiers as they require.
         @type container: str set
 
-        @param target: The item or content type affected by the action.
-        @type target: L{Item<woost.models.item.Item>} instance or class
-
         @return: True if the action can be shown in the given context, False
             otherwise.
         @rtype: bool
         """
-        # Context filters
         def match(tokens):
             for token in tokens:
                 if isinstance(token, str):
@@ -294,17 +285,63 @@ class UserAction(object):
         if self.excluded and match(self.excluded):
             return False
 
-        # Content type filter
-        if self.content_type is not None:
-            if isinstance(target, type):
-                if not issubclass(target, self.content_type):
-                    return False
-            else:
-                if not isinstance(target, self.content_type):
-                    return False
+        return True
 
-        # Authorization check
-        return self.is_permitted(get_current_user(), target)
+    def matches_content_type(self, target, accept_ancestors = True):
+        """Indicates if the action applies to the indicated type.
+
+        @param target: The instance or class to evaluate.
+        @type target: L{Item<woost.models.item.Item>} instance or class
+
+        @param accept_ancestors: Indicates if an acestor type for the action's
+            stated content type should match. For example, if set to True,
+            a listing of type Item will match all actions.
+
+        @return: True if the action is applicable to the given content type,
+            False otherwise.
+        @rtype: bool
+        """
+        if self.content_type is None:
+            return True
+
+        if isinstance(target, type):
+
+            # Listing / editing a type derived from the action's type
+            if issubclass(target, self.content_type):
+                return True
+
+            # Listing / editing an ancestor type for the action's type
+            if accept_ancestors:
+                if isinstance(self.content_type, type):
+                    if issubclass(self.content_type, target):
+                        return True
+                else:
+                    for content_type in self.content_type:
+                        if issubclass(content_type, target):
+                            return True
+
+        # Listing / editing an instance of the action's type
+        elif isinstance(target, self.content_type):
+            return True
+
+        return False
+
+    def is_available(self, context, target):
+        """Indicates if the action is available for the indicated target and
+        user.
+
+        @param target: The item or content type affected by the action.
+        @type target: L{Item<woost.models.item.Item>} instance or class
+
+        @return: True if the action is applicable to the given target and can
+            be executed by the given user.
+        @rtype: bool
+        """
+        return (
+            self.matches_context(context)
+            and self.matches_content_type(target)
+            and self.is_permitted(get_current_user(), target)
+        )
 
     def is_permitted(self, user, target):
         """Determines if the given user is allowed to execute the action.
@@ -455,6 +492,7 @@ class CreateAction(UserAction):
     ignores_selection = True
     min = None
     max = None
+    show_as_primary_action = "always"
 
     def get_url(self, controller, selection):
         return controller.edit_uri(controller.edited_content_type)
@@ -465,6 +503,7 @@ class InstallationSyncAction(UserAction):
     content_type = SiteInstallation
     min = 1
     max = 1
+    show_as_primary_action = "on_content_type"
 
     def is_permitted(self, user, target):
         return user.has_permission(InstallationSyncPermission)
@@ -476,6 +515,7 @@ class AddAction(UserAction):
     ignores_selection = True
     min = None
     max = None
+    show_as_primary_action = "always"
 
     def invoke(self, controller, selection):
 
@@ -494,6 +534,7 @@ class AddIntegralAction(UserAction):
     ignores_selection = True
     min = None
     max = None
+    show_as_primary_action = "always"
 
     def get_url(self, controller, selection):
         return controller.edit_uri(controller.root_content_type)
@@ -503,6 +544,7 @@ class RemoveAction(UserAction):
     included = frozenset([("toolbar", "collection")])
     excluded = frozenset(["integral"])
     max = None
+    show_as_primary_action = "always"
 
     def invoke(self, controller, selection):
 
@@ -519,6 +561,7 @@ class EditAction(UserAction):
         "block_menu",
         "edit_blocks_toolbar"
     ])
+    show_as_primary_action = "always"
 
     def is_available(self, context, target):
 
@@ -555,6 +598,7 @@ class DuplicateAction(UserAction):
     ])
     min = 1
     max = 1
+    show_as_primary_action = "always"
 
     def is_permitted(self, user, target):
         if isinstance(target, type):
@@ -594,7 +638,7 @@ class DuplicateAction(UserAction):
 
 class DeleteAction(UserAction):
     included = frozenset([
-        ("content", "toolbar"),
+        ("content_view", "toolbar"),
         ("collection", "toolbar", "integral"),
         "item_buttons",
         "block_menu"
@@ -607,6 +651,7 @@ class DeleteAction(UserAction):
         "common_block"
     ])
     max = None
+    show_as_primary_action = "always"
 
     def is_permitted(self, user, target):
         return user.has_permission(DeletePermission, target = target)
@@ -617,6 +662,7 @@ class PreviewAction(UserAction):
         ("item_buttons", "edit")
     ])
     content_type = (Publishable, Block)
+    show_as_primary_action = "always"
 
 
 class OpenResourceAction(UserAction):
@@ -636,6 +682,7 @@ class OpenResourceAction(UserAction):
     ])
     link_target = "_blank"
     client_redirect = True
+    show_as_primary_action = "on_content_type"
 
     def get_url(self, controller, selection):
         target = selection[0]
@@ -655,7 +702,7 @@ class OpenResourceAction(UserAction):
 
 class ReferencesAction(UserAction):
     included = frozenset([
-        "toolbar_extra",
+        "toolbar",
         "item_buttons"
     ])
     excluded = UserAction.excluded | frozenset([
@@ -664,6 +711,9 @@ class ReferencesAction(UserAction):
     ])
     min = 1
     max = 1
+
+    def is_primary(self, target, context):
+        return "item_buttons" in context
 
     def get_references(self, target):
         references = list(self._iter_references(target))
@@ -739,7 +789,7 @@ class ShowChangelogAction(UserAction):
 
 
 class ExportAction(UserAction):
-    included = frozenset(["toolbar_extra"])
+    included = frozenset(["toolbar"])
     excluded = UserAction.excluded | frozenset(["collection", "empty_set"])
     min = 1
     max = None
@@ -833,6 +883,7 @@ class CloseAction(GoBackAction):
         ("item_buttons", "edit"),
         "edit_blocks_toolbar"
     ])
+    show_as_primary_action = "always"
 
 
 class CancelAction(GoBackAction):
@@ -840,6 +891,7 @@ class CancelAction(GoBackAction):
         ("list_buttons", "selector")
     ])
     excluded = frozenset()
+    show_as_primary_action = "always"
 
 
 class SaveAction(UserAction):
@@ -852,6 +904,7 @@ class SaveAction(UserAction):
     max = None
     min = None
     close = False
+    show_as_primary_action = "always"
 
     def is_permitted(self, user, target):
         if target.is_inserted:
@@ -891,31 +944,39 @@ class EditBlocksAction(UserAction):
     max = 1
     included = frozenset(["toolbar", "item_buttons"])
     excluded = UserAction.excluded | frozenset(["new_item"])
+    show_as_primary_action = "on_content_type"
+
+    def matches_content_type(self, target, accept_ancestors = True):
+        if isinstance(target, type):
+            content_type = target
+        else:
+            content_type = target.__class__
+
+        if accept_ancestors:
+            return schema_tree_has_block_container(content_type)
+        else:
+            return type_is_block_container(content_type)
 
     def is_available(self, context, target):
 
-        if UserAction.is_available(self, context, target):
+        if not UserAction.is_available(self, context, target):
+            return False
 
-            if isinstance(target, type):
-                content_type = target
-            else:
-                content_type = type(target)
+        if not isinstance(target, type):
 
-                # Prevent action nesting
-                edit_stacks_manager = \
-                    controller_context.get("edit_stacks_manager")
+            # Prevent action nesting
+            edit_stacks_manager = \
+                controller_context.get("edit_stacks_manager")
 
-                if edit_stacks_manager:
-                    edit_stack = edit_stacks_manager.current_edit_stack
-                    if edit_stack:
-                        for node in edit_stack:
-                            if isinstance(node, EditBlocksNode) \
-                            and node.item is target:
-                                return False
+            if edit_stacks_manager:
+                edit_stack = edit_stacks_manager.current_edit_stack
+                if edit_stack:
+                    for node in edit_stack:
+                        if isinstance(node, EditBlocksNode) \
+                        and node.item is target:
+                            return False
 
-            return type_is_block_container(content_type)
-
-        return False
+        return True
 
     def is_permitted(self, user, target):
         return user.has_permission(ModifyPermission, target = target)
@@ -937,6 +998,7 @@ class AddBlockAction(UserAction):
     ignore_selection = True
     included = frozenset(["blocks_slot_toolbar"])
     block_positioning = "append"
+    show_as_primary_action = "always"
 
     @request_property
     def block_type(self):
@@ -987,16 +1049,19 @@ class AddBlockAction(UserAction):
 class AddBlockBeforeAction(AddBlockAction):
     included = frozenset(["block_menu"])
     block_positioning = "before"
+    show_as_primary_action = "always"
 
 
 class AddBlockAfterAction(AddBlockAction):
     included = frozenset(["block_menu"])
     block_positioning = "after"
+    show_as_primary_action = "always"
 
 
 class RemoveBlockAction(UserAction):
     content_type = Block
     included = frozenset(["block_menu"])
+    show_as_primary_action = "always"
 
     def is_available(self, context, target):
         return (
@@ -1039,6 +1104,7 @@ def set_block_clipboard_contents(contents):
 class CopyBlockAction(UserAction):
     content_type = Block
     included = frozenset(["block_menu"])
+    show_as_primary_action = "always"
 
     def invoke(self, controller, selection):
         set_block_clipboard_contents({
@@ -1053,6 +1119,7 @@ class CopyBlockAction(UserAction):
 class CutBlockAction(UserAction):
     content_type = Block
     included = frozenset(["block_menu"])
+    show_as_primary_action = "always"
 
     def invoke(self, controller, selection):
         set_block_clipboard_contents({
@@ -1067,6 +1134,7 @@ class CutBlockAction(UserAction):
 class PasteBlockAction(UserAction):
     included = frozenset(["blocks_slot_toolbar"])
     block_positioning = "append"
+    show_as_primary_action = "always"
 
     def is_available(self, context, target):
 
@@ -1142,10 +1210,13 @@ class PasteBlockAfterAction(PasteBlockAction):
 class ShareBlockAction(UserAction):
     content_type = Block
     included = frozenset(["block_menu"])
+    show_as_primary_action = "always"
 
     def is_available(self, context, target):
-        return UserAction.is_available(self, context, target) \
+        return (
+            UserAction.is_available(self, context, target)
             and not target.is_common_block()
+        )
 
     def is_permitted(self, user, target):
         config = Configuration.instance

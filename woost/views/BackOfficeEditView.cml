@@ -2,8 +2,6 @@
 
 <?py
 from cocktail import schema
-from woost.controllers.backoffice.useractions import \
-    add_view_action_context
 from simplejson import dumps
 ?>
 
@@ -15,6 +13,7 @@ from simplejson import dumps
     self.add_resource("/cocktail/scripts/jquery.cookie.js")
     self.add_resource("/cocktail/scripts/jquery.ba-hashchange.min.js")
     self.add_resource("/resources/scripts/BackOfficeEditView.js")
+    self.action_context.add("edit")
     ?>
 
     <?py-class
@@ -22,12 +21,6 @@ from simplejson import dumps
     errors = ()
     available_languages = ()
     ?>
-
-    <py:with py:element="self.item_buttons">
-        <?py
-        add_view_action_context(element, "edit")
-        ?>
-    </py:with>
 
     <py:with py:element="self.item_body">
         <input type="hidden" name="tab" value="@{self.tab or ''}"/>
