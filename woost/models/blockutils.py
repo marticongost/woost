@@ -19,8 +19,13 @@ def type_is_block_container(cls):
         ):
             return True
 
+def schema_tree_has_block_container(cls):
+
+    if type_is_block_container(cls):
+        return True
+
     return any(
-        type_is_block_container(subclass)
+        schema_tree_has_block_container(subclass)
         for subclass in cls.derived_schemas(recursive = False)
     )
 
