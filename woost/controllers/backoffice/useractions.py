@@ -240,6 +240,17 @@ class UserAction(object):
 
             _action_map[self._id] = self
 
+    def unregister(self):
+        with _registration_lock:
+            try:
+                _action_list._items.remove(self)
+                _action_map[self._id]
+            except (KeyError, ValueError):
+                raise ValueError(
+                    "Can't unregister action %r; it is not registered",
+                    self
+                )
+
     def is_primary(self, target, context):
         if self.show_as_primary_action == "always":
             return True
