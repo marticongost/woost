@@ -62,6 +62,9 @@ class ItemLabel(Element):
             # Images
             renderer = Renderer.get_instance(qname = "woost.content_renderer")
             if renderer is not None:
+                if renderer.can_render(self.item):
+                    return True
+
                 image = self.item.get_representative_image()
                 if image is not None and renderer.can_render(image):
                     return True
