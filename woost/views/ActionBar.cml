@@ -74,6 +74,7 @@ from woost.controllers.backoffice.useractions import get_view_actions
                 action_button["name"] = self.action_parameter
                 action_button["value"] = self.get_action_value(action)
                 action_button["formtarget"] = action.link_target
+                action_button["formmethod"] = "POST"
 
         action_button.add_class("action_button")
         action_button["data-woost-action"] = action.id
