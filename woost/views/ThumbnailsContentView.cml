@@ -3,6 +3,7 @@
 import re
 from cocktail.html.selectable import selectable
 from woost.models import Item
+from woost.controllers.backoffice.useractions import export_user_actions
 ?>
 
 <py:woost.views.ContentView
@@ -24,6 +25,9 @@ from woost.models import Item
         py:exclusive_selection="${True}">
 
         <py:with py:def="entry" py:args="item">
+            <?py
+            export_user_actions(element, collection_display.action_context, item)
+            ?>
             <div py:local_id="icon_frame" py:index="0">
                 <py:woost.views.Image
                     py:local_id="icon"
