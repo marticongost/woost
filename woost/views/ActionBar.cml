@@ -79,6 +79,9 @@ from woost.controllers.backoffice.useractions import get_view_actions
         action_button.add_class("action_button")
         action_button["data-woost-action"] = action.id
 
+        if action.hidden_when_disabled:
+            action_button.add_class("hidden_when_disabled")
+
         if self.button_images and not extra:
             action_button.action_image = self.create_action_image(action, extra)
             label.append(action_button.action_image)
