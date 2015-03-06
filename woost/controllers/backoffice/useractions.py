@@ -172,6 +172,7 @@ class UserAction(object):
     link_target = None
     parameters = None
     show_as_primary_action = "never"
+    hidden_when_disabled = False
 
     def __init__(self, id):
 

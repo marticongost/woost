@@ -1446,6 +1446,10 @@ body.scripted .BackOfficeLayout .Table .row_selection_control {
     opacity: 0.3;
 }
 
+.BackOfficeLayout .action_button[disabled].hidden_when_disabled {
+    display: none;
+}
+
 .BackOfficeLayout .selector_content label {
     display: inline;
 }
