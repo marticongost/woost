@@ -7,6 +7,7 @@ Declaration of back office actions.
 @organization:	Whads/Accent SL
 @since:			December 2008
 """
+from threading import Lock
 import cherrypy
 from cocktail.modeling import getter, ListWrapper
 from cocktail.translations import translations
@@ -60,6 +61,7 @@ UserAction = None
 
 _action_list = ListWrapper([])
 _action_map = {}
+_registration_lock = Lock()
 
 def get_user_action(id):
     """Gets a user action, given its unique identifier.
@@ -215,27 +217,28 @@ class UserAction(object):
         if after and before:
             raise ValueError("Can't combine 'after' and 'before' parameters")
 
-        prev_action = get_user_action(self._id)
+        with _registration_lock:
+            prev_action = get_user_action(self._id)
 
-        if after or before:
-            if prev_action:
-                _action_list._items.remove(prev_action)
+            if after or before:
+                if prev_action:
+                    _action_list._items.remove(prev_action)
 
-            ref_action = _action_map[after or before]
-            pos = _action_list.index(ref_action)
+                ref_action = _action_map[after or before]
+                pos = _action_list.index(ref_action)
 
-            if before:
-                _action_list._items.insert(pos, self)
+                if before:
+                    _action_list._items.insert(pos, self)
+                else:
+                    _action_list._items.insert(pos + 1, self)
+
+            elif prev_action:
+                pos = _action_list.index(prev_action)
+                _action_list._items[pos] = self
             else:
-                _action_list._items.insert(pos + 1, self)
+                _action_list._items.append(self)
 
-        elif prev_action:
-            pos = _action_list.index(prev_action)
-            _action_list._items[pos] = self
-        else:
-            _action_list._items.append(self)
-
-        _action_map[self._id] = self
+            _action_map[self._id] = self
 
     def is_primary(self, target, context):
         if self.show_as_primary_action == "always":
