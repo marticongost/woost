@@ -619,7 +619,7 @@ class DuplicateAction(UserAction):
         if isinstance(target, type):
             return any(
                 model.instantiable
-                and user.has_permission(CreatePermission, target = target)
+                and user.has_permission(CreatePermission, target = model)
                 for model in target.schema_tree()
             )
         else:
