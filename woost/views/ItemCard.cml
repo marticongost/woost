@@ -34,6 +34,7 @@ from woost import app
         py:id="item_image_gallery"
         py:thumbnail_factory="@{self.icon_factory}"
         py:labels_visible="${False}"
+        py:footnotes_visible="${False}"
         py:close_up_enabled="@{self.image_close_up_enabled}">
         <py:binding>
             <?py
