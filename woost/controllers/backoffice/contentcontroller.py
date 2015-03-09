@@ -235,6 +235,7 @@ class ContentController(BaseBackOfficeController):
         user_collection.set_parameter_source("order", psource)
         user_collection.set_parameter_source("grouping", psource)
         user_collection.set_parameter_source("filter", psource)
+        user_collection.set_parameter_source("tab", psource)
         user_collection.set_parameter_source("page", psource)
         user_collection.set_parameter_source("page_size", psource)
         user_collection.set_parameter_source("expanded", psource)
