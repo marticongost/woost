@@ -27,7 +27,6 @@ cocktail.bind(".ActionBar", function ($actionBar) {
                 }
             }
 
-            console.group("toggleButtons");
             $actionBar.find(".action_button").each(function () {
                 var $button = jQuery(this);
                 if (
@@ -48,7 +47,6 @@ cocktail.bind(".ActionBar", function ($actionBar) {
                     $button.removeAttr("disabled");
                 }
             });
-            console.groupEnd();
         }
 
         $selectable.on("selectionChanged", toggleButtons);
