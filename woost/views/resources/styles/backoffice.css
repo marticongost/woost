@@ -980,7 +980,8 @@ body.scripted .BackOfficeLayout .Table .row_selection_control {
 }
 
 .BackOfficeLayout .ContentTable.hidden_element_column .element_column {
-    display: None;
+    position: absolute;
+    left: -10000px;
 }
 
 .BackOfficeLayout .ContentTable .ItemLabel {
