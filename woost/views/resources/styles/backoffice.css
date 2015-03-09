@@ -213,7 +213,7 @@ body {
 .BackOfficeLayout .tabs {
     clear: both;
     overflow: visible;
-    border-bottom: 1px solid rgb(200,210,220);
+    border-bottom: 1px solid #ccc;
     border-left: none;
     border-right: none;
     margin-top: 0.75em;
@@ -227,7 +227,7 @@ body {
     top: 1px;
     height: 1.15em;
     display: inline-block;
-    background-color: #f0f0f0;
+    background-color: #ededed;
     padding-left: 0.4em;
     padding-top: 0.4em;
     padding-bottom: 0.5em;
@@ -247,6 +247,11 @@ body {
 
 .BackOfficeLayout a.tab_strip_entry {
     text-decoration: none;
+}
+
+.BackOfficeLayout .tab_strip_entry:hover {
+    color: #333;
+    background-color: #f5f5f5;
 }
 
 .BackOfficeLayout .tab_strip_entry.selected {
