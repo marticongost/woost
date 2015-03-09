@@ -13,13 +13,13 @@ cocktail.bind(".BackOfficeEditView", function ($editView) {
     -------------------------------------------------------------------------*/
     var $form = $editView.find(".ContentForm").first();
 
-    var $tabStrip = jQuery("<div class='tabStrip'>")
+    var $tabStrip = jQuery("<div class='tab_strip'>")
         .prependTo($form);
 
     var $fieldsets = $form.find(".fields > fieldset");
 
     $fieldsets.each(function () {
-        $tab = jQuery("<button type='button' class='tab'>")
+        $tab = jQuery("<button type='button' class='tab_strip_entry'>")
             .addClass(this.group)
             .html(jQuery(this).children("legend").html())
             .appendTo($tabStrip)
