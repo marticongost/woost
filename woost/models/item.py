@@ -101,6 +101,14 @@ class Item(PersistentObject):
     preview_controller = "woost.controllers.backoffice." \
         "previewcontroller.PreviewController"
 
+    # Segment backoffice listings using tabs
+    backoffice_listing_default_tab = None
+
+    @classmethod
+    def backoffice_listing_tabs(cls):
+        if False:
+            yield (tab_id, tab_label, tab_filter)
+
     @event_handler
     def handle_inherited(cls, e):
         if (

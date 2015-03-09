@@ -302,6 +302,13 @@ class ContentController(BaseBackOfficeController):
             PermissionExpression(get_current_user(), ReadPermission)
         )
 
+        # Add tabs based on the selected type
+        user_collection.default_tab = \
+            user_collection.type.backoffice_listing_default_tab
+
+        for tab_info in user_collection.type.backoffice_listing_tabs():
+            user_collection.add_tab(*tab_info)
+
         return user_collection
 
     @cached_getter

@@ -202,9 +202,12 @@ body {
     display: block;
 }
 
-.BackOfficeEditView .tabStrip {
-    margin-bottom: 2em;
+.BackOfficeLayout .tab_strip {
     border-bottom: 1px solid #ccc;
+}
+
+.BackOfficeContentView .tab_strip {
+    margin-top: 1em;
 }
 
 .BackOfficeLayout .tabs {
@@ -218,7 +221,7 @@ body {
     height: 1.7em;
 }
 
-.BackOfficeLayout .tab {
+.BackOfficeLayout .tab_strip_entry {
     color: #666;
     position: relative;
     top: 1px;
@@ -242,11 +245,22 @@ body {
     cursor: pointer;
 }
 
-.BackOfficeLayout .tab.selected {
+.BackOfficeLayout a.tab_strip_entry {
+    text-decoration: none;
+}
+
+.BackOfficeLayout .tab_strip_entry.selected {
     color: #333;
     border-color: #ccc;
     border-bottom-color: white;
     background-color: white;
+}
+
+.BackOfficeLayout .tab_strip_entry .tab_results_count {
+    margin-left: 0.5em;
+    color: #666;
+    font-size: 0.8em;
+    font-weight: bold;
 }
 
 .BackOfficeLayout h2 {
@@ -1228,8 +1242,12 @@ body.scripted .BackOfficeLayout .Table .row_selection_control {
     font-weight: normal;
 }
 
+.BackOfficeEditView .tab_strip {
+    margin-bottom: 2em;
+}
+
 .BackOfficeLayout .changed,
-.BackOfficeItemView .tab.changed {
+.BackOfficeItemView .tab_strip_entry.changed {
     background-color: rgb(250,242,190);
 }
 
