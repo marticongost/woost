@@ -1978,20 +1978,27 @@ body.scripted .BackOfficeLayout .ThumbnailsContentView .collection_display input
 /* Notifications
 -----------------------------------------------------------------------------*/
 .BackOfficeLayout .notification_box {
-    margin: 0.8em;
+    position: fixed;
+    z-index: 5000;
+    left: 0;
+    right: 0;
+    bottom: 0;
 }
 
 .BackOfficeLayout .notification {
-    padding: 0.4em;
+    padding: 0.8em;
+    width: 50%;
+    margin: auto;
 }
 
-.BackOfficeLayout .notification .close_button {
+.BackOfficeLayout .notification .close_notification_button {
     float: right;
+    background-image: none;
+    background-color: transparent;
+    border: none;
+    box-shadow: none;
+    margin-left: 0.5em;
     cursor: pointer;
-}
-
-.BackOfficeLayout .notification + .notification {
-    margin-top: 0.4em;
 }
 
 .BackOfficeLayout .success {
@@ -2160,10 +2167,6 @@ body.scripted .BackOfficeLayout .ThumbnailsContentView .collection_display input
 
 .BackOfficeItemView .edit_form {
     padding: 0;
-}
-
-.BackOfficeEditView .success {
-    margin-bottom: 1em;
 }
 
 .BackOfficeEditView .edit_form .fields {

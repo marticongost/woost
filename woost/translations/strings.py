@@ -863,6 +863,12 @@ translations.define("woost.views.BackOfficeChangeLogView expanded",
     en = u"Fold"
 )
 
+translations.define("woost.views.NotificationBox.close_notification_button",
+    ca = u"Ocultar aquest missatge",
+    es = u"Ocultar este mensaje",
+    en = u"Hide this message"
+)
+
 # woost.views.EditLink
 #------------------------------------------------------------------------------
 translations.define("woost.views.EditLink-publishable_target",
