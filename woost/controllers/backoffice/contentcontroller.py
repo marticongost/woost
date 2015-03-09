@@ -35,6 +35,7 @@ from cocktail.controllers import (
     CookieParameterSource,
     SessionParameterSource
 )
+from cocktail.controllers.userfilter import GlobalSearchFilter
 from woost.models import (
     Item,
     get_current_user,
@@ -314,10 +315,17 @@ class ContentController(BaseBackOfficeController):
 
     @cached_getter
     def search_expanded(self):
-        return bool(
-            self.user_collection.user_filters
-            or self.params.read(schema.Boolean("search_expanded"))
-        )
+        if self.params.read(schema.Boolean("search_expanded")):
+            return True
+
+        for filter in self.user_collection.user_filters:
+            if not (
+                isinstance(filter, GlobalSearchFilter)
+                and not filter.value
+            ):
+                return True
+
+        return False
 
     # Parameter persistence
     #--------------------------------------------------------------------------
