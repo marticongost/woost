@@ -386,6 +386,11 @@ body {
 -----------------------------------------------------------------------------*/
 .CollectionEditor > .entries > .entry {
     white-space: nowrap;
+    margin-bottom: 0.5em;
+}
+
+.CollectionEditor .remove_button {
+    margin-left: 0.5em;
 }
 
 /* Item collection editor
