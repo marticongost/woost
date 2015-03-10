@@ -102,7 +102,9 @@ class Item(PersistentObject):
         "previewcontroller.PreviewController"
 
     # Segment backoffice listings using tabs
-    backoffice_listing_default_tab = None
+    @classmethod
+    def backoffice_listing_default_tab(cls):
+        return None
 
     @classmethod
     def backoffice_listing_tabs(cls):
