@@ -269,7 +269,7 @@ class FieldSet(Field):
             member.inherit(self.base_field_set.create_member())
 
         for field in self.fields:
-            member.add_member(field.create_member())
+            member.add_member(field.create_member(), append = True)
 
     def create_form_model(self):
 
