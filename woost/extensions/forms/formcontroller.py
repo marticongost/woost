@@ -12,6 +12,7 @@ from cocktail.controllers import (
     context
 )
 from woost.controllers.uploadform import UploadForm
+from woost.controllers.formagreement import requires_agreement
 
 
 class FormController(FormProcessor, Controller):
@@ -19,6 +20,15 @@ class FormController(FormProcessor, Controller):
     is_transactional = True
 
     class UserForm(UploadForm):
+
+        def __init__(self, *args, **kwargs):
+            UploadForm.__init__(self, *args, **kwargs)
+            for agreement in self.controller.block.agreements:
+                agreement_member = requires_agreement(
+                    self,
+                    name = "agreement%d" % agreement.id,
+                    document = agreement.document
+                )
 
         @property
         def model(self):
