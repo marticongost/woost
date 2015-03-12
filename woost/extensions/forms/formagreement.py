@@ -9,6 +9,7 @@ from woost.models import Item, Publishable
 
 class FormAgreement(Item):
 
+    type_group = "custom_forms"
     show_element_in_listing = False
 
     members_order = [
