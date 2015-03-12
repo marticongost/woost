@@ -61,6 +61,12 @@ translations.define("FormBlock.field_set",
     en = u"Field set"
 )
 
+translations.define("FormBlock.agreements",
+    ca = u"Termes i condicions",
+    es = u"Términos y condiciones",
+    en = u"Agreements"
+)
+
 translations.define("FormBlock.notification_receivers",
     ca = u"Receptors de la notificació",
     es = u"Receptores de la notificación",
@@ -570,5 +576,37 @@ translations.define("DateTimeField-plural",
     ca = u"Camps de data / hora",
     es = u"Campos de fecha / hora",
     en = u"Date / time fields"
+)
+
+# FormAgreement
+#------------------------------------------------------------------------------
+translations.define("FormAgreement",
+    ca = u"Termes i condicions",
+    es = u"Términos y condiciones",
+    en = u"Terms and conditions"
+)
+
+translations.define("FormAgreement-plural",
+    ca = u"Termes i condicions",
+    es = u"Términos y condiciones",
+    en = u"Terms and conditions"
+)
+
+translations.define("FormAgreement.forms",
+    ca = u"Formularis",
+    es = u"Formularios",
+    en = u"Forms"
+)
+
+translations.define("FormAgreement.title",
+    ca = u"Nom",
+    es = u"Nombre",
+    en = u"Name"
+)
+
+translations.define("FormAgreement.document",
+    ca = u"Document",
+    es = u"Documento",
+    en = u"Document"
 )
 

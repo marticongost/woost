@@ -21,6 +21,7 @@ class FormBlock(Block):
 
     members_order = [
         "field_set",
+        "agreements",
         "notification_receivers",
         "email_messages",
         "redirection",
@@ -35,6 +36,12 @@ class FormBlock(Block):
         type = FieldSet,
         related_end = schema.Collection(),
         required = True,
+        member_group = "form"
+    )
+
+    agreements = schema.Collection(
+        items = "woost.extensions.forms.formagreement.FormAgreement",
+        bidirectional = True,
         member_group = "form"
     )
 

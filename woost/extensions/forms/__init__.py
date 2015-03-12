@@ -43,6 +43,7 @@ class FormsExtension(Extension):
         from woost.extensions.forms import (
             strings,
             formblock,
+            formagreement,
             fields,
             typegroups,
             exportformdataaction
