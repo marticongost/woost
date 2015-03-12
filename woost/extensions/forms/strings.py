@@ -186,6 +186,18 @@ translations.define("Field.visible_title",
     en = u"Visible name"
 )
 
+translations.define("Field.empty_label",
+    ca = u"Valor indeterminat",
+    es = u"Valor indeterminado",
+    en = u"Empty label"
+)
+
+translations.define("Field.empty_label-explanation",
+    ca = u"El text que es mostrarà quan el camp sigui buit",
+    es = u"El texto que se mostrará cuando el campo esté vacío",
+    en = u"The text for the field's empty option"
+)
+
 translations.define("Field.explanation",
     ca = u"Explicació",
     es = u"Explicación",

@@ -28,6 +28,7 @@ class Field(Item):
     members_order = [
         "title",
         "visible_title",
+        "empty_label",
         "explanation",
         "field_set",
         "collection",
@@ -44,6 +45,12 @@ class Field(Item):
     )
 
     visible_title = schema.String(
+        translated = True,
+        member_group = "field_description",
+        listed_by_default = False
+    )
+
+    empty_label = schema.String(
         translated = True,
         member_group = "field_description",
         listed_by_default = False
@@ -198,10 +205,16 @@ class Field(Item):
 
         @extend(member)
         def __translate__(member, language, **kwargs):
-            return (
-                self.get("visible_title", language)
-                or self.get("title", language)
-            )
+            suffix = kwargs.get("suffix")
+            if suffix == "=none":
+                return self.get("empty_label", language)
+            elif suffix:
+                return call_base(language, **kwargs)
+            else:
+                return (
+                    self.get("visible_title", language)
+                    or self.get("title", language)
+                )
 
         @extend(member)
         def get_member_explanation(member, language = None, **kwargs):
@@ -416,6 +429,7 @@ class OptionsField(Field):
         items = "woost.extensions.forms.fields.OptionsFieldOption",
         bidirectional = True,
         integral = True,
+        min = 1,
         member_group = "field_properties"
     )
 
