@@ -9,7 +9,7 @@ from cocktail.translations import translations
 from cocktail.persistence import PersistentList
 from cocktail.controllers import request_property
 from woost.models import Block, EmailTemplate, Publishable
-from .fields import FieldSet
+from .fields import FieldSet, Field, OptionsFieldOption
 
 
 class FormBlock(Block):
@@ -90,6 +90,11 @@ class FormBlock(Block):
     def __init__(self, *args, **kwargs):
         Block.__init__(self, *args, **kwargs)
         self.submitted_data = PersistentList()
+
+    def init_view(self, view):
+        Block.init_view(self, view)
+        view.depends_on(Field)
+        view.depends_on(OptionsFieldOption)
 
     @request_property
     def form_model(self):
