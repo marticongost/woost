@@ -60,7 +60,7 @@ class ItemSelectorTestCase(object):
 
         assert browser.is_visible("css=.collection_display #%d" % template.id)
         browser.click("css=.collection_display #%d" % template.id)
-        browser.click("css=.ContentView .select_action")
+        browser.click("css=.ContentView [data-woost-action='select']")
         browser.wait_for_page_to_load(10000)
 
         assert translations(template, "en") \
@@ -118,7 +118,7 @@ class IntegralSelectorTestCase(object):
         browser.wait_for_page_to_load(10000)
 
         browser.type("edited_item_description", "Foo")
-        browser.click("css=.save_action")
+        browser.click("css=[data-woost-action='save'")
         browser.wait_for_page_to_load(10000)
 
         datastore.sync()
@@ -151,10 +151,10 @@ class IntegralSelectorTestCase(object):
         browser.wait_for_page_to_load(10000)
 
         browser.type("edited_item_description", "modified test_edit part")
-        browser.click("css=.save_action")
+        browser.click("css=[data-woost-action='save']")
         browser.wait_for_page_to_load(10000)
 
-        browser.click("css=.cancel_action")
+        browser.click("css=[data-woost-action='cancel']")
         browser.wait_for_page_to_load(10000)
 
         datastore.sync()
@@ -191,7 +191,7 @@ class IntegralSelectorTestCase(object):
         datastore.sync()
         assert EditTestModel.get_instance(part.id) is part
 
-        browser.click("css=.save_action")
+        browser.click("css=[data-woost-action='save']")
         browser.wait_for_page_to_load(10000)
         datastore.sync()
         assert EditTestModel.get_instance(part.id) is None

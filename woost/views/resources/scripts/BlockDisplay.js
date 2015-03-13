@@ -10,7 +10,7 @@
 cocktail.bind(".BlockDisplay", function ($block) {
 
     function activate(action) {
-        var $button = $block.children(".block_handle").find("[name=action][value=" + action + "]");
+        var $button = $block.children(".block_handle").find("[data-woost-action='" + action + "']");
         $button.click();
         return $button.length;
     }

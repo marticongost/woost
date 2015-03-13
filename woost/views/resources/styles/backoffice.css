@@ -202,15 +202,18 @@ body {
     display: block;
 }
 
-.BackOfficeEditView .tabStrip {
-    margin-bottom: 2em;
+.BackOfficeLayout .tab_strip {
     border-bottom: 1px solid #ccc;
+}
+
+.BackOfficeContentView .tab_strip {
+    margin-top: 1em;
 }
 
 .BackOfficeLayout .tabs {
     clear: both;
     overflow: visible;
-    border-bottom: 1px solid rgb(200,210,220);
+    border-bottom: 1px solid #ccc;
     border-left: none;
     border-right: none;
     margin-top: 0.75em;
@@ -218,13 +221,13 @@ body {
     height: 1.7em;
 }
 
-.BackOfficeLayout .tab {
+.BackOfficeLayout .tab_strip_entry {
     color: #666;
     position: relative;
     top: 1px;
     height: 1.15em;
     display: inline-block;
-    background-color: #f0f0f0;
+    background-color: #ededed;
     padding-left: 0.4em;
     padding-top: 0.4em;
     padding-bottom: 0.5em;
@@ -242,11 +245,27 @@ body {
     cursor: pointer;
 }
 
-.BackOfficeLayout .tab.selected {
+.BackOfficeLayout a.tab_strip_entry {
+    text-decoration: none;
+}
+
+.BackOfficeLayout .tab_strip_entry:hover {
+    color: #333;
+    background-color: #f5f5f5;
+}
+
+.BackOfficeLayout .tab_strip_entry.selected {
     color: #333;
     border-color: #ccc;
     border-bottom-color: white;
     background-color: white;
+}
+
+.BackOfficeLayout .tab_strip_entry .tab_results_count {
+    margin-left: 0.5em;
+    color: #666;
+    font-size: 0.8em;
+    font-weight: bold;
 }
 
 .BackOfficeLayout h2 {
@@ -267,6 +286,7 @@ body {
 .BackOfficeLayout .ItemLabel {
     display: inline-block;
     background-repeat: no-repeat;
+    text-decoration: none;
 }
 
 .BackOfficeLayout .ItemLabel.with_icon {
@@ -280,6 +300,10 @@ body {
 .BackOfficeLayout .ItemLabel.with_icon > * {
     display: inline-block;
     vertical-align: middle;
+}
+
+.BackOfficeLayout .ItemLabel:hover {
+    text-decoration: underline;
 }
 
 .BackOfficeLayout input[type=text],
@@ -362,6 +386,11 @@ body {
 -----------------------------------------------------------------------------*/
 .CollectionEditor > .entries > .entry {
     white-space: nowrap;
+    margin-bottom: 0.5em;
+}
+
+.CollectionEditor .remove_button {
+    margin-left: 0.5em;
 }
 
 /* Item collection editor
@@ -423,7 +452,6 @@ body.modal {
     overflow: hidden;
 }
 
-.ItemSelector-background,
 .dialog-background {
     z-index: 10000;
     position: fixed;
@@ -431,21 +459,31 @@ body.modal {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: #999;
-    opacity: 0.7;
+    background-color: #666;
+    opacity: 0.85;
+    filter: alpha(opacity=85);
 }
 
 .ItemSelector-frame,
 .dialog {
-    z-index: 10001;
-    border: none;
     position: fixed;
-    top: 4%;
-    left: 4%;
+    z-index: 10001;
+    background-color: white;
+    box-shadow: 2px 2px 3px #555;
+    border-radius: 0.5em;
+    padding: 0.5em;
+    padding-top: 0;
+    border: 1px solid #666;
+}
+
+.ItemSelector-frame {
+    z-index: 10001;
+    position: fixed;
     width: 92%;
     height: 92%;
-    background-color: white;
-    box-shadow: 3px 3px 7px #666;
+    top: 4%;
+    left: 4%;
+    padding: 0;
 }
 
 .dialog {
@@ -939,8 +977,16 @@ body.scripted .BackOfficeLayout .Table .row_selection_control {
     cursor: default;
 }
 
+.BackOfficeLayout .ContentTable td a,
+.BackOfficeLayout .ContentTable td button,
+.BackOfficeLayout .ContentTable td a *,
+.BackOfficeLayout .ContentTable td button * {
+    cursor: pointer;
+}
+
 .BackOfficeLayout .ContentTable.hidden_element_column .element_column {
-    display: None;
+    position: absolute;
+    left: -10000px;
 }
 
 .BackOfficeLayout .ContentTable .ItemLabel {
@@ -1067,6 +1113,10 @@ body.scripted .BackOfficeLayout .Table .row_selection_control {
     font-size: 85%;
 }
 
+.BackOfficeLayout .ContentTable td {
+    vertical-align: middle;
+}
+
 .BackOfficeLayout .ContentTable ul,
 .BackOfficeLayout .PropertyTable ul {
     padding: 0;
@@ -1086,9 +1136,9 @@ body.scripted .BackOfficeLayout .Table .row_selection_control {
     padding-left: 2em;
 }
 
-.BackOfficeLayout .ContentTable li,
-.BackOfficeLayout .PropertyTable li {
-    margin-bottom: 0.5em;
+.BackOfficeLayout .ContentTable li + li,
+.BackOfficeLayout .PropertyTable li + li {
+    margin-top: 0.5em;
 }
 
 /*.Table tr.translations th {*/
@@ -1174,9 +1224,8 @@ body.scripted .BackOfficeLayout .Table .row_selection_control {
     background-color: #4b4b4b !important;
 }
 
-.BackOfficeLayout .Table tr.selected td,
-.BackOfficeLayout .Table tr.selected td * {
-    color: white !important;
+.BackOfficeLayout .Table tr.selected td {
+    color: white;
 }
 
 .BackOfficeLayout .MappingTable table,
@@ -1204,8 +1253,12 @@ body.scripted .BackOfficeLayout .Table .row_selection_control {
     font-weight: normal;
 }
 
+.BackOfficeEditView .tab_strip {
+    margin-bottom: 2em;
+}
+
 .BackOfficeLayout .changed,
-.BackOfficeItemView .tab.changed {
+.BackOfficeItemView .tab_strip_entry.changed {
     background-color: rgb(250,242,190);
 }
 
@@ -1216,50 +1269,32 @@ body.scripted .BackOfficeLayout .Table .row_selection_control {
     margin-left: 0.5em;
 }
 
-.BackOfficeItemView h2 .item_icon,
-.BackOfficeItemView h2 .item_image_gallery {
+.BackOfficeItemView .page_title {
+    margin-top: 1em;
+}
+
+.BackOfficeItemView .page_title h2.item_heading {
+    margin-left: 0;
+    margin-bottom: 0.2em;
+    font-size: 1.1em;
+    font-weight: bold;
+}
+
+.BackOfficeItemView .page_title .item_icon,
+.BackOfficeItemView .page_title .item_image_gallery {
     margin-right: 0.8em;
     display: inline-block;
     vertical-align: top;
 }
 
-.BackOfficeItemView h2 .item_info {
+.BackOfficeItemView .page_title .item_info {
     display: inline-block;
     vertical-align: top;
 }
 
-.BackOfficeItemView h2 .item_translation {
-    font-size: 1.1em;
-    font-weight: bold;
-    margin-bottom: 0.2em;
-}
-
-.BackOfficeItemView h2 .item_info > span {
-    font-size: 0.9em;
+.BackOfficeItemView .page_title .item_info > span {
     margin-right: 0.3em;
-    color: #333;
     vertical-align: top;
-}
-
-.BackOfficeItemView h2 .item_path {
-    vertical-align: top;
-    display: inline-block;
-}
-
-.BackOfficeItemView h2 .item_references {
-    margin-top: 0.3em;
-    margin-left: -4px;
-    display: block;
-}
-
-.BackOfficeItemView h2 .item_references .panel_wrapper .panel {
-    padding: 0.5em;
-    min-width: 13em;
-}
-
-.BackOfficeItemView h2 .item_info .file_size,
-.BackOfficeItemView h2 .item_info .file_mime_type {
-    color: #666;
 }
 
 .BackOfficeLayout .changed {
@@ -1438,6 +1473,10 @@ body.scripted .BackOfficeLayout .Table .row_selection_control {
 
 .BackOfficeLayout .action_button[disabled] {
     opacity: 0.3;
+}
+
+.BackOfficeLayout .action_button[disabled].hidden_when_disabled {
+    display: none;
 }
 
 .BackOfficeLayout .selector_content label {
@@ -1944,20 +1983,27 @@ body.scripted .BackOfficeLayout .ThumbnailsContentView .collection_display input
 /* Notifications
 -----------------------------------------------------------------------------*/
 .BackOfficeLayout .notification_box {
-    margin: 0.8em;
+    position: fixed;
+    z-index: 5000;
+    left: 0;
+    right: 0;
+    bottom: 0;
 }
 
 .BackOfficeLayout .notification {
-    padding: 0.4em;
+    padding: 0.8em;
+    width: 50%;
+    margin: auto;
 }
 
-.BackOfficeLayout .notification .close_button {
+.BackOfficeLayout .notification .close_notification_button {
     float: right;
+    background-image: none;
+    background-color: transparent;
+    border: none;
+    box-shadow: none;
+    margin-left: 0.5em;
     cursor: pointer;
-}
-
-.BackOfficeLayout .notification + .notification {
-    margin-top: 0.4em;
 }
 
 .BackOfficeLayout .success {
@@ -2091,11 +2137,11 @@ body.scripted .BackOfficeLayout .ThumbnailsContentView .collection_display input
     color: rgb(50,50,50);
 }
 
-.BackOfficeLayout .toolbar .preview_action,
-.BackOfficeLayout .toolbar .save_action,
-.BackOfficeLayout .toolbar .save_and_close_action,
-.BackOfficeLayout .toolbar .close_action,
-.BackOfficeLayout .toolbar .cancel_action {
+.BackOfficeLayout .toolbar [data-woost-action='preview'],
+.BackOfficeLayout .toolbar [data-woost-action='save'],
+.BackOfficeLayout .toolbar [data-woost-action='save_and_close'],
+.BackOfficeLayout .toolbar [data-woost-action='close'],
+.BackOfficeLayout .toolbar [data-woost-action='cancel'] {
     float: right;
     margin-left: 1em;
     margin-right: 0;
@@ -2126,10 +2172,6 @@ body.scripted .BackOfficeLayout .ThumbnailsContentView .collection_display input
 
 .BackOfficeItemView .edit_form {
     padding: 0;
-}
-
-.BackOfficeEditView .success {
-    margin-bottom: 1em;
 }
 
 .BackOfficeEditView .edit_form .fields {
@@ -3429,21 +3471,48 @@ div.success_label {
     font-size: 0.75em;
 }
 
-/* BackOfficeItemHeading
+/* ItemCard
 -----------------------------------------------------------------------------*/
-.BackOfficeItemHeading {
-    margin-bottom: 1.5em;
+.BackOfficeLayout .ItemCard {
+    white-space: nowrap;
 }
 
-.stack_node .BackOfficeItemHeading {
-    margin-top: 1em;
+.BackOfficeLayout .ItemCard .item_image_gallery {
+    display: inline-block;
+    vertical-align: top;
+    margin-right: 1em;
 }
 
-.BackOfficeItemHeading .item_path {
+.BackOfficeLayout .ContentTable .ItemCard .item_image_gallery .image_list {
+    padding-left: 0;
+}
+
+.BackOfficeLayout .ItemCard .item_info {
+    display: inline-block;
     vertical-align: top;
 }
 
-.BackOfficeItemHeading .item_path ul {
+.BackOfficeLayout .ItemCard .item_heading {
+    margin-top: 0;
+    margin-bottom: 0.2em;
+    font-size: 1.1em;
+}
+
+.BackOfficeLayout .ItemCard .item_info > span {
+    font-size: 0.9em;
+}
+
+.BackOfficeLayout .ItemCard .item_type {
+    color: #666;
+}
+
+.BackOfficeLayout .ItemCard .item_path {
+    vertical-align: top;
+    display: inline-block;
+    margin-left: 0.5em;
+}
+
+.BackOfficeLayout .ItemCard .item_path ul {
     list-style-type: none;
     display: inline-block;
     vertical-align: top;
@@ -3452,25 +3521,125 @@ div.success_label {
     margin-left: 0.4em;
 }
 
-.BackOfficeItemHeading .item_path li {
+.BackOfficeLayout .ItemCard .item_path li {
     display: inline-block;
     vertical-align: top;
     padding: 0;
+    margin: 0;
 }
 
-.BackOfficeItemHeading .item_path li + li:before {
-    position: relative;
-    top: 0.1em;
-    content: '>';
-    margin: 0 0.4em;
-    color: #666;
-    font-weight: bold;
-    font-size: 1.2em;
+.BackOfficeLayout .ItemCard .item_path li + li {
+    margin-left: 0.6em;
+    padding-left: 1em;
+    background-image: url(../images/path.png);
+    background-repeat: no-repeat;
+    background-position: center left;
 }
 
-.BackOfficeItemHeading .item_path li a {
+.BackOfficeLayout .ItemCard .item_path li a {
     display: inline-block;
     vertical-align: top;
+}
+
+.BackOfficeLayout .FileCard .file_size,
+.BackOfficeLayout .FileCard .file_mime_type {
+    color: #666;
+    margin-left: 0.5em;
+}
+
+/* ItemDisplay
+-----------------------------------------------------------------------------*/
+.BackOfficeLayout .ItemDisplay {
+    position: relative;
+}
+
+.BackOfficeLayout .ItemDisplay .item_label {
+    margin: 0;
+    padding: 0;
+    background-image: none;
+    background-color: transparent;
+    border: none;
+    box-shadow: none;
+}
+
+.BackOfficeLayout .ItemDisplay .item_label,
+.BackOfficeLayout .ItemDisplay .item_label * {
+    cursor: context-menu;
+}
+
+.BackOfficeLayout .ContentTable td > .ItemDisplay .panel {
+    font-size: 1.1764em; /* urgh... */
+}
+
+.BackOfficeLayout .ContentTable tr.selected .ItemDisplay .item_label {
+    color: white;
+}
+
+.BackOfficeLayout .ItemDisplay .item_label:hover {
+    text-decoration: none;
+}
+
+.BackOfficeLayout .ItemDisplay .panel_connector {
+    position: absolute;
+    z-index: 10001;
+    width: 1.2em;
+    height: 0.8em;
+}
+
+.BackOfficeLayout .ItemDisplay .panel {
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    position: absolute;
+    overflow: hidden;
+    background-color: white;
+    border: 1px solid #bbb;
+    border-radius: 0.5em;
+    box-shadow: 0.3em 0.3em 0.5em rgba(0,0,0,0.2);
+    padding: 1em;
+    z-index: 10000;
+    color: #333;
+}
+
+.BackOfficeLayout .ItemDisplay[data-woost-ItemDisplay-expanded='false'] .panel,
+.BackOfficeLayout .ItemDisplay[data-woost-ItemDisplay-expanded='false'] .panel_connector {
+    display: none;
+}
+
+.BackOfficeLayout .ItemDisplay .item_actions {
+    display: block;
+    white-space: nowrap;
+    margin-top: 1em;
+    border: none;
+    border-top: 1px dotted #ddd;
+    padding-top: 0.5em;
+}
+
+.BackOfficeLayout .ItemDisplay .item_actions .action_button {
+    display: inline-block;
+    vertical-align: middle;
+    background-color: transparent;
+    background-image: none;
+    border: none;
+    box-shadow: none;
+    padding: 0.3em;
+    border-radius: 0.3em;
+    font-size: 0.8em;
+    margin-left: 0.8em;
+}
+
+.BackOfficeLayout .ItemDisplay .item_actions .action_button:first-child {
+    margin-left: -0.3em;
+}
+
+.BackOfficeLayout .ItemDisplay .item_actions .action_button:hover {
+    background-color: #333;
+    color: white;
+}
+
+.BackOfficeLayout .ItemDisplay .item_actions .action_button img {
+    vertical-align: middle;
+    margin-right: 0.3em;
 }
 
 /* ReferenceList
@@ -3608,11 +3777,11 @@ div.success_label {
     height: auto;
 }
 
-.Dialog.diff_dialog .dialog_header {
-    padding: 0.6em 0;
+.BackOfficeLayout .Dialog .dialog_header {
+    padding: 0.9em 0;
 }
 
-.Dialog.diff_dialog .dialog_heading {
+.BackOfficeLayout .Dialog .dialog_heading {
     font-size: 1.2em;
 }
 

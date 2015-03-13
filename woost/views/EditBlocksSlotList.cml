@@ -84,11 +84,14 @@ from woost.models import (
 
             <py:woost.views.EditBlocksActionBar
                 py:id="slot_toolbar"
-                py:action_context="blocks_slot_toolbar"
                 py:action_target="${self.item}"
                 py:block_parent="@{self.item}"
                 py:block_slot="${self._current_slot}"
-                py:edited_item="${self.edited_item}"/>
+                py:edited_item="${self.edited_item}">
+                <?py
+                element.action_context.add("blocks_slot_toolbar")
+                ?>
+            </py:woost.views.EditBlocksActionBar>
         </div>
     </div>
 

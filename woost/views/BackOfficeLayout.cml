@@ -10,7 +10,6 @@ from woost.controllers.backoffice.editstack import (
     SelectionNode,
     RelationNode
 )
-from woost.controllers.backoffice.useractions import add_view_action_context
 from woost.models import UserView
 ?>
 
@@ -56,6 +55,8 @@ from woost.models import UserView
     self.add_resource("/cocktail/scripts/jquery.hotkeys.js")
     self.add_resource("/cocktail/scripts/jquery.query.js")
     self.add_resource("/cocktail/scripts/selectors.js")
+
+    self.action_context = set()
     ?>
 
     <link rel="icon" type="image/png" href="/resources/images/favicon.ico"/>
@@ -72,7 +73,7 @@ from woost.models import UserView
 
         self.page_title = self.get_page_title()
 
-        add_view_action_context(element, "nested" if self.edit_stack else "root")
+        self.action_context.add("nested" if self.edit_stack else "root")
         if self.cms:
             self.set_client_variable("cms_uri", self.cms.contextual_uri())
 

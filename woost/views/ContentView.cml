@@ -16,9 +16,8 @@ from woost.models import (
     CreatePermission,
     ReadMemberPermission
 )
+from woost.views.uigeneration import backoffice_search_control
 from woost.views.contenttypetree import ContentTypeTree
-from woost.controllers.backoffice.useractions import \
-    add_view_action_context
 from woost.controllers.backoffice.editstack import SelectionNode
 ?>
 
@@ -32,8 +31,7 @@ from woost.controllers.backoffice.editstack import SelectionNode
     self.add_client_translation("woost.views.ContentView close advanced search")
     self.add_client_translation("woost.views.ContentView search button")
 
-    add_view_action_context(self, "content_view")
-    add_view_action_context(self, self.content_view_id + "_content_view")
+    self.action_context = set()
     ?>
 
     <?py-class
@@ -42,7 +40,7 @@ from woost.controllers.backoffice.editstack import SelectionNode
     root_content_type = Item
     edit_stack = None
     member = None
-    activation_control = ".edit_action"
+    activation_control = ".action_button[data-woost-action='edit']"
     search_expanded = False
 
     # User collection settings
@@ -107,12 +105,19 @@ from woost.controllers.backoffice.editstack import SelectionNode
         CollectionView.excluded_view_state_params | frozenset(["ItemSelector-select", "search_expanded"])
     ?>
 
+    <py:binding>
+        <?py
+        self.action_context.add("content_view")
+        self.action_context.add(self.content_view_id + "_content_view")
+
+        if self.edit_stack and isinstance(self.edit_stack[-1], SelectionNode):
+            self.action_context.add("existing_only")
+        ?>
+    </py:binding>
+
     <py:ready>
         <?py
         self.set_client_param("searchExpanded", self.search_expanded)
-
-        if self.edit_stack and isinstance(self.edit_stack[-1], SelectionNode):
-            add_view_action_context(self, "existing_only")
         ?>
     </py:ready>
 
@@ -129,17 +134,7 @@ from woost.controllers.backoffice.editstack import SelectionNode
                 ?>
                 <py:with py:def="filter_ui" py:args="filter">
                     <?py
-                    @extend(element)
-                    def get_default_member_display(element, obj, member):
-                        if isinstance(member, Reference):
-                            if member.class_family is not None:
-                                display = loader.new("woost.views.ContentTypePickerDropdown")
-                                display.root = member.class_family
-                                return display
-                            else:
-                                return "woost.views.ItemSelector"
-
-                        return call_base(obj, member)
+                    element.base_ui_generators = [backoffice_search_control]
                     ?>
                 </py:with>
             </py:with>
@@ -147,6 +142,9 @@ from woost.controllers.backoffice.editstack import SelectionNode
     </py:with>
 
     <py:ready>
+        <?py
+        self.toolbar.connect_selectable(self.collection_display)
+        ?>
 
         <py:with py:element="self.search_results_message" py:visible="${False}"/>
 
@@ -295,10 +293,15 @@ from woost.controllers.backoffice.editstack import SelectionNode
     <!-- Toolbar -->
     <py:woost.views.ActionBar
         py:def="toolbar"
-        py:action_context="toolbar"
         py:action_target="@{self.user_collection.type}"
         py:empty_result_set="@{not self.visible_results}"
         py:collapsible="${True}">
+        <py:binding>
+            <?py
+            element.action_context.add("toolbar")
+            element.action_context.update(self.action_context)
+            ?>
+        </py:binding>
         <?py
         @extend(toolbar)
         def get_actions(toolbar, context):
@@ -336,7 +339,7 @@ from woost.controllers.backoffice.editstack import SelectionNode
         py:per_role_types="${False}">
         <?py
         element.add_class("action_button")
-        element.add_class("action_new")
+        element["data-woost-action"] = "new"
         ?>
         <py:with
             py:element="element.label"
@@ -372,8 +375,16 @@ from woost.controllers.backoffice.editstack import SelectionNode
     <py:woost.views.ActionBar
         py:id="list_buttons"
         py:button_images="${False}"
-        py:action_context="list_buttons"
         py:action_target="@{self.user_collection.type}"
-        class="buttons"/>
+        class="buttons">
+        <?py
+        element.action_context.add("list_buttons")
+        ?>
+        <py:binding>
+            <?py
+            element.action_context.update(self.action_context)
+            ?>
+        </py:binding>
+    </py:woost.views.ActionBar>
 
 </py:cocktail.html.CollectionView>

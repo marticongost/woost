@@ -9,7 +9,6 @@ u"""
 from cocktail.modeling import extend, call_base
 from cocktail.translations import translations
 from cocktail.html import Element, templates
-from cocktail.html.databoundcontrol import data_bound
 from woost.models import (
     Item,
     Publishable,
@@ -22,7 +21,6 @@ from woost.models import (
 
 class ItemSelector(Element):
 
-    value = None
     _empty_label = None
     existing_items_only = False
 
@@ -31,7 +29,6 @@ class ItemSelector(Element):
     def _build(self):
 
         Element._build(self)
-        data_bound(self)
 
         self.add_resource("/resources/scripts/ItemSelector.js")
         self.set_client_param("emptyLabel", self.empty_label)
@@ -43,7 +40,7 @@ class ItemSelector(Element):
 
         self.input = templates.new("cocktail.html.HiddenInput")
         self.append(self.input)
-        self.binding_delegate = self.input
+        self.data_binding_delegate = self.input
 
         self.selection_label = templates.new("woost.views.ItemLabel")
         self.selection_label.tag = "span"
@@ -58,14 +55,6 @@ class ItemSelector(Element):
         Element._ready(self)
 
         if self.member:
-
-            if self.data_display:
-                self._param_name = self.data_display.get_member_name(
-                    self.member,
-                    self.language
-                )
-            else:
-                self._param_name = self.member.name
 
             if self.existing_items_only or not self.member.integral:
                 # Select
@@ -135,7 +124,7 @@ class ItemSelector(Element):
             name = "relation-select",
             type = "submit",
             class_name = "ItemSelector-button select",
-            value = self.member.type.full_name + "-" + self._param_name
+            value = self.member.type.full_name + "-" + self.name
         )
         select_button.append(
             translations("woost.views.ItemSelector select")

@@ -414,6 +414,7 @@ class SiteInitializer(object):
                 self._create(DeletePermission, content_type = Item),
                 self._create(ReadMemberPermission),
                 self._create(ModifyMemberPermission),
+                self._create(ReadHistoryPermission),
                 self._create(InstallationSyncPermission)
             ]
         )

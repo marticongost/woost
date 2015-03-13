@@ -4,22 +4,17 @@
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:py="http://www.whads.com/ns/cocktail/templates">
 
-    <?py-class
-    value = None
-    ?>
-
     <?py
     self.add_resource("/resources/scripts/ContentTypePickerDropdown.js")
     ?>
 
     <py:with py:element="self.panel">
-        <py:woost.views.ContentTypePicker
-            py:id="content_type_picker"
-            py:value="@{self.value}"
-            py:member="@{self.member}"
-            py:language="@{self.language}"
-            py:data_display="@{self.data_display}" />
+        <py:woost.views.ContentTypePicker py:id="content_type_picker"/>
     </py:with>
+
+    <?py
+    self.data_binding_delegate = self.content_type_picker
+    ?>
 
 </py:cocktail.html.DropdownPanel>
 

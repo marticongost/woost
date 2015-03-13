@@ -17,8 +17,6 @@ from woost.controllers.backoffice.basebackofficecontroller \
 from woost.controllers.backoffice.contentcontroller \
     import ContentController
 from woost.controllers.backoffice.deletecontroller import DeleteController
-from woost.controllers.backoffice.ordercontroller import OrderController
-from woost.controllers.backoffice.movecontroller import MoveController
 from woost.controllers.backoffice.renderpreviewcontroller \
     import RenderPreviewController
 from woost.controllers.backoffice.editblockscontroller \
@@ -27,8 +25,6 @@ from woost.controllers.backoffice.dropblockcontroller \
     import DropBlockController
 from woost.controllers.backoffice.changelogcontroller \
     import ChangeLogController
-from woost.controllers.backoffice.uploadfilescontroller \
-    import UploadFilesController
 from woost.controllers.backoffice.dragandropcontroller \
     import DragAndDropController
 from woost.controllers.backoffice.sitesynccontroller \
@@ -47,11 +43,8 @@ class BackOfficeController(BaseBackOfficeController):
 
     content = ContentController
     delete = DeleteController
-    order = OrderController
-    move = MoveController
     changelog = ChangeLogController
     render_preview = RenderPreviewController
-    upload_files = UploadFilesController
     drop = DragAndDropController
     blocks = EditBlocksController
     drop_block = DropBlockController

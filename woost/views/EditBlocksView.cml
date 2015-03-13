@@ -43,8 +43,16 @@ from woost.models import Block, Configuration, block_type_groups
             py:id="toolbar"
             py:tag="form"
             method="POST"
-            py:action_context="edit_blocks_toolbar"
-            py:action_target="@{self.edited_item}"/>
+            py:action_target="@{self.edited_item}">
+            <?py
+            element.action_context.add("edit_blocks_toolbar")
+            ?>
+            <py:binding>
+                <?py
+                element.action_context.update(self.action_context)
+                ?>
+            </py:binding>
+        </py:woost.views.ActionBar>
 
         <!-- Visible languages -->
         <py:cocktail.html.DropdownPanel py:id="languages_dropdown">

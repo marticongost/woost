@@ -35,6 +35,7 @@ from cocktail.controllers import (
     CookieParameterSource,
     SessionParameterSource
 )
+from cocktail.controllers.userfilter import GlobalSearchFilter
 from woost.models import (
     Item,
     get_current_user,
@@ -121,6 +122,22 @@ class ContentController(BaseBackOfficeController):
         """The user action selected by the current HTTP request.
         @type: L{UserAction<woost.controllers.backoffice.useractions.UserAction>}
         """
+        return self.action_data[0]
+
+    @cached_getter
+    def selection(self):
+        selection = self.action_data[1]
+
+        if selection is None:
+            if self.user_collection.selection_mode == SINGLE_SELECTION:
+                selection = [self.user_collection.selection]
+            else:
+                selection = self.user_collection.selection
+
+        return selection
+
+    @cached_getter
+    def action_data(self):
         return self._get_user_action()
 
     @cached_getter
@@ -128,12 +145,7 @@ class ContentController(BaseBackOfficeController):
         return self.action is not None
 
     def submit(self):
-        if self.user_collection.selection_mode == SINGLE_SELECTION:
-            selection = [self.user_collection.selection]
-        else:
-            selection = self.user_collection.selection
-
-        self._invoke_user_action(self.action, selection)
+        self._invoke_user_action(self.action, self.selection)
 
     # Content
     #--------------------------------------------------------------------------
@@ -223,6 +235,7 @@ class ContentController(BaseBackOfficeController):
         user_collection.set_parameter_source("order", psource)
         user_collection.set_parameter_source("grouping", psource)
         user_collection.set_parameter_source("filter", psource)
+        user_collection.set_parameter_source("tab", psource)
         user_collection.set_parameter_source("page", psource)
         user_collection.set_parameter_source("page_size", psource)
         user_collection.set_parameter_source("expanded", psource)
@@ -290,6 +303,13 @@ class ContentController(BaseBackOfficeController):
             PermissionExpression(get_current_user(), ReadPermission)
         )
 
+        # Add tabs based on the selected type
+        user_collection.default_tab = \
+            user_collection.type.backoffice_listing_default_tab()
+
+        for tab_info in user_collection.type.backoffice_listing_tabs():
+            user_collection.add_tab(*tab_info)
+
         return user_collection
 
     @cached_getter
@@ -303,10 +323,17 @@ class ContentController(BaseBackOfficeController):
 
     @cached_getter
     def search_expanded(self):
-        return bool(
-            self.user_collection.user_filters
-            or self.params.read(schema.Boolean("search_expanded"))
-        )
+        if self.params.read(schema.Boolean("search_expanded")):
+            return True
+
+        for filter in self.user_collection.user_filters:
+            if not (
+                isinstance(filter, GlobalSearchFilter)
+                and not filter.value
+            ):
+                return True
+
+        return False
 
     # Parameter persistence
     #--------------------------------------------------------------------------

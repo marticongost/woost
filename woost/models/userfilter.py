@@ -59,7 +59,7 @@ class TypeFilter(UserFilter):
     @cached_getter
     def schema(self):
 
-        def types_search_control(parent, obj, member):
+        def types_search_control(ui_generator, obj, member, value, **context):
             selector = templates.new("woost.views.ContentTypePicker")
             selector.root = self.content_type
             selector.selection_mode = MULTIPLE_SELECTION

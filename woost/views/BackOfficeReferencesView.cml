@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
+<?py
+from woost.views.uigeneration import backoffice_display
+?>
 
 <py:woost.views.BackOfficeEditView
     xmlns="http://www.w3.org/1999/xhtml"
@@ -33,13 +36,16 @@
 
     <tr py:def="reference_entry" py:args="referrer, relation">
         <td py:local_id="referrer_cell">
-            <py:woost.views.ContentLink
-                py:local_id="referrer"
-                py:icon_visible="${True}"
-                py:item="${referrer}"/>
+            <py:new
+                py:element="self.create_referrer_display(referrer, relation)"
+                py:local_id="referrer"/>
         </td>
         <td py:local_id="relation_cell">${translations(relation)}</td>
     </tr>
+
+    <py:new
+        py:def="referrer_display" py:args="referrer, relation"
+        py:element="backoffice_display.create_object_display(referrer, referer = self.edited_item)"/>
 
 </py:woost.views.BackOfficeEditView>
 

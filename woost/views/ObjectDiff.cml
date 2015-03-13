@@ -4,8 +4,6 @@
 from difflib import IS_CHARACTER_JUNK
 from cocktail import schema
 from woost.views.htmldiff import html_diff
-from woost.controllers.backoffice.useractions import \
-    add_view_action_context
 ?>
 
 <div
@@ -35,9 +33,6 @@ from woost.controllers.backoffice.useractions import \
             element.add_class("collection_diff")
             a = [member.items.translate_value(x) for x in a] if a else []
             b = [member.items.translate_value(x) for x in b] if b else []
-            from cocktail.styled import styled
-            print styled(a, "slate_blue")
-            print styled(b, "pink")
             diffs = html_diff(a, b)
         else:
             a = [member.translate_value(a)]

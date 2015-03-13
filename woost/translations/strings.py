@@ -863,6 +863,12 @@ translations.define("woost.views.BackOfficeChangeLogView expanded",
     en = u"Fold"
 )
 
+translations.define("woost.views.NotificationBox.close_notification_button",
+    ca = u"Ocultar aquest missatge",
+    es = u"Ocultar este mensaje",
+    en = u"Hide this message"
+)
+
 # woost.views.EditLink
 #------------------------------------------------------------------------------
 translations.define("woost.views.EditLink-publishable_target",
@@ -902,6 +908,14 @@ translations.define("woost.views.EditLink-delete",
         u"Eliminar " + (target_desc or u"esto"),
     en = lambda target_desc = None:
         u"Delete " + (target_desc or u"this")
+)
+
+# ItemDisplay
+#------------------------------------------------------------------------------
+translations.define("woost.views.ItemDisplay.toggle_button",
+    ca = u"Mostrar detalls de l'element",
+    es = u"Mostrar detalles del elemento",
+    en = u"Show details for this item"
 )
 
 # Initialization content

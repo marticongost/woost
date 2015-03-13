@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <?py
 from datetime import datetime
-from woost.controllers.backoffice.useractions import (
-    add_view_action_context,
-    get_block_clipboard_contents
-)
+from woost.controllers.backoffice.useractions import get_block_clipboard_contents
 ?>
 
 <div
@@ -81,7 +78,6 @@ from woost.controllers.backoffice.useractions import (
         <py:with py:element="element.panel">
             <py:woost.views.EditBlocksActionBar
                 py:id="block_menu"
-                py:action_context="block_menu"
                 py:action_target="@{self.block}"
                 py:block_parent="@{self.block_parent}"
                 py:block_slot="@{self.block_slot}"
@@ -89,8 +85,9 @@ from woost.controllers.backoffice.useractions import (
                 py:group_additional_actions="${False}">
                 <py:binding>
                     <?py
+                    element.action_context.add("block_menu")
                     if self.block.is_common_block():
-                        add_view_action_context(element, "common_block")
+                        element.action_context.add("common_block")
                     ?>
                 </py:binding>
             </py:woost.views.EditBlocksActionBar>

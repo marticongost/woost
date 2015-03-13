@@ -15,9 +15,9 @@ from cocktail.stringutils import normalize
     }
     ?>
 
-    <ul py:def="changes_display" py:args="obj, member">
+    <ul py:def="changes_display" py:args="obj, member, value, **context">
         <?py
-        changes = self.get_member_value(obj, member).values()
+        changes = value.values()
         changes.sort(key = lambda change: (
             0 if change.is_explicit_change else 1,
             self.action_order.get(change.action),

@@ -6,19 +6,72 @@ u"""
 @organization:	Whads/Accent SL
 @since:			November 2008
 """
+from cocktail import schema
 from cocktail.html import Element
 from cocktail.translations import translations
 from cocktail.controllers import context
+from woost.models.rendering import Renderer
 
 
 class ItemLabel(Element):
 
     item = None
     image_factory = "backoffice_small_thumbnail.png"
-    icon_visible = True
+    icon_visible = "auto"
     thumbnail = True
     referer = None
     language_chain = None
+
+    # Make the view usable as a member display
+    def _get_value(self):
+        return self.item
+
+    def _set_value(self, value):
+        self.item = value
+
+    value = property(_get_value, _set_value)
+
+    def should_display_icon(self):
+
+        if self.icon_visible == "auto":
+
+            # Models can request that their icons be always visible
+            if self.item.icon_conveys_information:
+                return True
+
+            # Distinguish types
+            if self.member:
+                count = 0
+
+                if isinstance(self.member, schema.Reference):
+                    related_type = self.member.related_type
+                elif isinstance(self.member, schema.Schema):
+                    related_type = self.member
+                else:
+                    related_type = None
+
+                if related_type is not None:
+                    for cls in related_type.schema_tree():
+                        if cls.icon_conveys_information:
+                            return True
+                        if cls.visible and cls.instantiable:
+                            count += 1
+                            if count > 1:
+                                return True
+
+            # Images
+            renderer = Renderer.get_instance(qname = "woost.content_renderer")
+            if renderer is not None:
+                if renderer.can_render(self.item):
+                    return True
+
+                image = self.item.get_representative_image()
+                if image is not None and renderer.can_render(image):
+                    return True
+
+            return False
+
+        return self.icon_visible
 
     def _ready(self):
         Element._ready(self)
@@ -30,7 +83,7 @@ class ItemLabel(Element):
             for schema in self.item.__class__.descend_inheritance(True):
                 self.add_class(schema.name)
 
-            if self.icon_visible:
+            if self.should_display_icon():
                 self.add_class("with_icon")
                 self.append(self.create_icon())
 

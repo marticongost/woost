@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <?py
 from cocktail.html.datadisplay import NO_SELECTION
-from woost.controllers.backoffice.useractions import \
-    add_view_action_context
 ?>
 
 <py:woost.views.BackOfficeLayout
@@ -18,7 +16,7 @@ from woost.controllers.backoffice.useractions import \
     ?>
 
     <?py
-    add_view_action_context(self, "changelog")
+    self.action_context.add("changelog")
 
     self.add_resource("/resources/scripts/BackOfficeChangeLogView.js")
     self.add_client_translation("woost.views.BackOfficeChangeLogView collapsed")
@@ -40,12 +38,24 @@ from woost.controllers.backoffice.useractions import \
                 py:edit_stack="${self.edit_stack}"
                 py:search_expanded="${self.search_expanded}">
 
+                <?py
+                element.action_context.update(self.action_context)
+                ?>
+
                 <py:woost.views.ActionBar
                     py:id="bottom_buttons"
                     py:button_images="${False}"
-                    py:action_context="bottom_buttons"
                     py:action_target="@{self.user_collection.type}"
-                    class="buttons"/>
+                    class="buttons">
+                    <?py
+                    element.action_context.add("bottom_buttons")
+                    ?>
+                    <py:binding>
+                        <?py
+                        element.action_context.update(self.action_context)
+                        ?>
+                    </py:binding>
+                </py:woost.views.ActionBar>
 
             </py:new>
         </py:ready>

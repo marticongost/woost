@@ -8,7 +8,6 @@ u"""
 """
 from cocktail.translations import translations
 from cocktail.html import Element
-from cocktail.html.databoundcontrol import data_bound, bind_member
 from cocktail.html.datadisplay import (
     NO_SELECTION,
     SINGLE_SELECTION,
@@ -19,15 +18,11 @@ from woost.views.contenttypetree import ContentTypeTree
 
 class ContentTypePicker(ContentTypeTree):
 
-    name = None
-    value = None
-
     selection_mode = SINGLE_SELECTION
 
     empty_option_displayed = True
 
     def _build(self):
-        data_bound(self)
         ContentTypeTree._build(self)
         self.add_resource("/resources/scripts/ContentTypePicker.js")
 
@@ -51,9 +46,6 @@ class ContentTypePicker(ContentTypeTree):
             self._control_type = "checkbox"
             self.empty_option_displayed = False
 
-        if self.member and self.name is None and self.member.name:
-            self.name = self.member.name
-
         if self.empty_option_displayed:
             self.append(self.create_empty_option())
 
@@ -69,7 +61,6 @@ class ContentTypePicker(ContentTypeTree):
             value = "",
             checked = self.value is None
         )
-        bind_member(self, entry.control)
         entry.append(entry.control)
 
         entry.label = Element("label")
@@ -97,7 +88,6 @@ class ContentTypePicker(ContentTypeTree):
             )
         )
 
-        bind_member(self, entry.control)
         entry.insert(0, entry.control)
         entry.label["for"] = entry.control.require_id()
         return entry

@@ -52,7 +52,7 @@ class Publishable(Item):
         "woost.controllers.backoffice.enabledtranslationseditnode."
         "EnabledTranslationsEditNode"
     )
-    backoffice_heading_view = "woost.views.BackOfficePublishableHeading"
+    backoffice_card_view = "woost.views.PublishableCard"
 
     type_group = "publishable"
 

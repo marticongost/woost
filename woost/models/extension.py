@@ -58,8 +58,18 @@ def load_extensions():
                 extension.load()
 
 
+class ExtensionMetaclass(Item.__metaclass__):
+
+    def __new__(meta, name, bases, members):
+        cls = Item.__metaclass__.__new__(meta, name, bases, members)
+        cls.instantiable = False
+        return cls
+
+
 class Extension(Item):
     """Base model for Woost extensions."""
+
+    __metaclass__ = ExtensionMetaclass
 
     instantiable = False
     type_group = "setup"

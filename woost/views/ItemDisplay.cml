@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<div
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:py="http://www.whads.com/ns/cocktail/templates">
+
+    <?py-class
+    item = None
+    icon_factory = "backoffice_small_thumbnail.png"
+    icon_visible = "auto"
+    thumbnail = True
+    referer = None
+    language_chain = None
+
+    # Make the view usable as a member display
+    def _get_value(self):
+        return self.item
+
+    def _set_value(self, value):
+        self.item = value
+
+    value = property(_get_value, _set_value)
+    ?>
+
+    <?py
+    self.add_resource("/resources/scripts/ItemDisplay.js")
+    ?>
+
+    <py:ready>
+        <?py
+        if self.item is None:
+            self.visible = False
+        ?>
+    </py:ready>
+
+    <py:woost.views.ItemLabel
+        py:id="item_label"
+        py:image_factory="@{self.icon_factory}"
+        py:icon_visible="@{self.icon_visible}"
+        py:thumbnail="@{self.thumbnail}"
+        py:referer="@{self.referer}"
+        py:language_chain="@{self.language_chain}"/>
+
+    <?py
+    self.data_binding_delegate = self.item_label
+    ?>
+
+    <div
+        py:id="panel"
+        py:client_model="woost.views.ItemDisplay.panel-@{str(self.item.id)}">
+
+        <py:ready>
+            <py:new
+                py:element="self.create_item_card()"
+                py:index="0">
+                <py:with py:element="element.item_info">
+                    <py:new py:element="self.create_item_actions()"/>
+                </py:with>
+            </py:new>
+        </py:ready>
+    </div>
+
+    <py:new
+        py:def="item_card"
+        py:element="loader.new(self.item.backoffice_card_view)"
+        py:item="${self.item}"
+        py:image_close_up_enabled="${False}"/>
+
+    <py:woost.views.ActionBar
+        py:def="item_actions"
+        py:action_target="@{self.item}"
+        py:group_additional_actions="${False}">
+        <?py
+        element.action_context.add("item_buttons")
+        element.action_context.add("context_menu")
+        ?>
+    </py:woost.views.ActionBar>
+
+</div>
+

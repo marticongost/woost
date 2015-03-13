@@ -14,20 +14,21 @@ from cocktail.schema.expressions import (
     NegativeExpression
 )
 from cocktail.html import Element, templates
-from cocktail.html.translationdisplay import TranslationDisplay
 from cocktail.controllers import view_state
 from woost.models import Item
-from woost.views.contentdisplaymixin import ContentDisplayMixin
+from woost.views.uigeneration import backoffice_display
+from woost.controllers.backoffice.useractions import export_user_actions
 
 Table = templates.get_class("cocktail.html.Table")
 
 
-class ContentTable(ContentDisplayMixin, Table):
+class ContentTable(Table):
 
     base_url = None
     entry_selector = "tbody tr.item_row"
-    default_display = TranslationDisplay
+    base_ui_generators = [backoffice_display]
     use_separate_selection_column = False
+    action_context = None
 
     def _ready(self):
         if not self.user_collection.type.show_element_in_listings:
@@ -36,8 +37,9 @@ class ContentTable(ContentDisplayMixin, Table):
 
     def __init__(self, *args, **kwargs):
         Table.__init__(self, *args, **kwargs)
-        ContentDisplayMixin.__init__(self)
+        self.set_member_expression("element", lambda obj: obj)
         self.set_member_sortable("element", False)
+        self.set_member_expression("class", lambda obj: obj.__class__)
         self.set_member_sortable("class", False)
 
     def _fill_head(self):
@@ -48,6 +50,11 @@ class ContentTable(ContentDisplayMixin, Table):
     def create_row(self, index, item):
         row = Table.create_row(self, index, item)
         row.add_class("item_row")
+
+        # Indicate to the client which actions are available on each item
+        if self.action_context:
+            export_user_actions(row, self.action_context, item)
+
         return row
 
     def create_cell(self, item, column, language = None):
@@ -58,19 +65,6 @@ class ContentTable(ContentDisplayMixin, Table):
             cell["data-woost-drop"] = "%d.%s" % (item.id, column.name)
 
         return cell
-
-    def create_element_display(self, item, member):
-        display = templates.new("woost.views.ItemLabel")
-        display.tag = "label"
-        display["for"] = "selection_" + str(item.id)
-        display.item = item
-        display.referer = self.referer
-        return display
-
-    def create_class_display(self, item, member):
-        return Element(
-                    tag = None,
-                    children = [translations(item.__class__.name)])
 
     def add_header_ui(self, header, column, language):
 
