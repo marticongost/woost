@@ -6,7 +6,7 @@
 
     <?py
     self.set_client_param("dblclick_target", ".buttons .select_button")
-    self.actions_context = set(["selector"])
+    self.actions_context.add("selector")
     ?>
 
     <py:ready>
@@ -20,7 +20,7 @@
             py:root_content_type="${self.root_content_type}"
             py:selection_mode="${self.selection_mode}"
             py:search_expanded="${self.search_expanded}"
-            py:activation_control=".select_action">
+            py:activation_control="[data-woost-action='select']">
             <?py
             self.set_client_param("dblclick_target", ".buttons .select_button")
             ?>

@@ -146,6 +146,10 @@ class ChangeLogController(BaseBackOfficeController):
         """The user action selected by the current HTTP request.
         @type: L{UserAction<woost.controllers.backoffice.useractions.UserAction>}
         """
+        return self._get_user_action()[0]
+
+    @cached_getter
+    def action_data(self):
         return self._get_user_action()
 
     @cached_getter

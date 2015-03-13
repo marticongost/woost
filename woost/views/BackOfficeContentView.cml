@@ -2,8 +2,6 @@
 <?py
 from cocktail.schema.expressions import NegativeExpression, TranslationExpression
 from cocktail.html.datadisplay import MULTIPLE_SELECTION
-from woost.controllers.backoffice.useractions import \
-    add_view_action_context
 from woost.models import UserView
 ?>
 
@@ -20,10 +18,6 @@ from woost.models import UserView
     content_view = None
     selection_mode = MULTIPLE_SELECTION
     search_expanded = False
-    ?>
-
-    <?py
-    add_view_action_context(self, "content")
     ?>
 
     <py:with py:element="self.user_views_bar">
@@ -74,6 +68,8 @@ from woost.models import UserView
             py:edit_stack="${self.edit_stack}"
             py:search_expanded="${self.search_expanded}">
             <?py
+            element.action_context.update(self.action_context)
+
             @extend(element)
             def content_type_is_selectable(self, content_type):
                 return content_type.visible_from_root \

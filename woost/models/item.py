@@ -83,13 +83,33 @@ class Item(PersistentObject):
     # entries for this content type in the type selector
     collapsed_backoffice_menu = False
 
-    # Customization of the heading for BackOfficeItemView
-    backoffice_heading_view = "woost.views.BackOfficeItemHeading"
+    # Default display for the item
+    backoffice_display = "woost.views.ItemDisplay"
+
+    # Summary view for the item; used as the heading of BackOfficeItemView and
+    # as the drop down panel of ItemDisplay
+    backoffice_card_view = "woost.views.ItemCard"
+
+    # When creating listings, the backoffice will attempt to only display icons
+    # if it thinks they will be useful. Setting this hint to True tells the
+    # backoffice that the icons for this model provide relevant information,
+    # and so shouldn't be hidden.
+    icon_conveys_information = False
 
     # Customization of the backoffice preview action
     preview_view = "woost.views.BackOfficePreviewView"
     preview_controller = "woost.controllers.backoffice." \
         "previewcontroller.PreviewController"
+
+    # Segment backoffice listings using tabs
+    @classmethod
+    def backoffice_listing_default_tab(cls):
+        return None
+
+    @classmethod
+    def backoffice_listing_tabs(cls):
+        if False:
+            yield (tab_id, tab_label, tab_filter)
 
     @event_handler
     def handle_inherited(cls, e):
@@ -178,11 +198,6 @@ class Item(PersistentObject):
 
     # Backoffice customization
     #--------------------------------------------------------------------------
-    show_detail_view = "woost.views.BackOfficeShowDetailView"
-    show_detail_controller = \
-        "woost.controllers.backoffice.showdetailcontroller." \
-        "ShowDetailController"
-    collection_view = "woost.views.BackOfficeCollectionView"
     edit_node_class = "woost.controllers.backoffice.editstack.EditNode"
     edit_view = "woost.views.BackOfficeFieldsView"
     edit_form = "woost.views.ContentForm"
@@ -236,6 +251,7 @@ class Item(PersistentObject):
         editable = False,
         synchronizable = False,
         invalidates_cache = False,
+        listed_by_default = False,
         member_group = "administration"
     )
 

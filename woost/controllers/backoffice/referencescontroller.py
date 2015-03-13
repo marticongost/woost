@@ -11,11 +11,13 @@ from woost.controllers.backoffice.editcontroller import EditController
 
 class ReferencesController(EditController):
 
+    section = "references"
     view_class = "woost.views.BackOfficeReferencesView"
 
     @request_property
     def references(self):
-        return get_user_action("references").references
+        item = self.stack_node.item
+        return get_user_action("references").get_references(item)
 
     @request_property
     def output(self):

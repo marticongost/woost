@@ -1,24 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <?py
 from cocktail.iteration import first
-from cocktail.html.databoundcontrol import data_bound
 from cocktail.html.selectable import selectable, MULTIPLE_SELECTION
+from cocktail.html.uigeneration import UIGenerator
 from cocktail.controllers import context
 from woost.models import get_current_user, CreatePermission
-from woost.controllers.backoffice.useractions import add_view_action_context
+from woost.views.uigeneration import backoffice_display
+from woost.controllers.backoffice.useractions import export_user_actions
 ?>
 
 <div
     xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:py="http://www.whads.com/ns/cocktail/templates">
+    xmlns:py="http://www.whads.com/ns/cocktail/templates"
+    py:mixins="UIGenerator">
 
     <?py-class
     value = ()
-    name = None
-
-    def __init__(self, *args, **kwargs):
-        Element.__init__(self, *args, **kwargs)
-        data_bound(self)
+    base_ui_generators = [backoffice_display]
 
     def content_type_is_instantiable(self, content_type):
         return (
@@ -60,10 +58,6 @@ from woost.controllers.backoffice.useractions import add_view_action_context
 
     <py:ready>
         <?py
-        add_view_action_context(self, "collection")
-        if self.member.integral:
-            add_view_action_context(self, "integral")
-
         self._cms = context["cms"]
         self._edit_stack = context["edit_stacks_manager"].current_edit_stack
         self._user = get_current_user()
@@ -81,10 +75,17 @@ from woost.controllers.backoffice.useractions import add_view_action_context
     <!-- Toolbar -->
     <py:woost.views.ActionBar
         py:id="toolbar"
-        py:action_context="toolbar"
         py:action_target="@{self.member.related_type}"
         py:action_parameter="@{'relation_action-' + self.member.name}"
         py:empty_result_set="@{not self.value}">
+        <py:binding>
+            <?py
+            element.action_context.add("toolbar")
+            element.action_context.add("collection")
+            if self.member.integral:
+                element.action_context.add("integral")
+            ?>
+        </py:binding>
         <?py
         @extend(toolbar)
         def get_actions(toolbar, context):
@@ -151,6 +152,11 @@ from woost.controllers.backoffice.useractions import add_view_action_context
     </ul>
 
     <li py:def="entry" py:args="item">
+
+        <?py
+        export_user_actions(element, self.toolbar.action_context, item)
+        ?>
+
         <input
             py:local_id="hidden"
             type="hidden"
@@ -165,14 +171,23 @@ from woost.controllers.backoffice.useractions import add_view_action_context
 
         <py:new
             py:local_id="item_display"
-            py:element="self.create_item_display()"
-            py:item="${item}"
-            for="@{entry.checkbox.require_id()}"/>
+            py:element="self.create_item_display(item)">
+            <?py
+            label_element = getattr(element, "item_label", element)
+            label_element.tag = "label"
+            label_element["for"] = entry.checkbox.require_id()
+            ?>
+        </py:new>
     </li>
 
-    <py:woost.views.ItemLabel
-        py:def="item_display"
-        py:tag="label"/>
+    <py:new
+        py:def="item_display" py:args="item"
+        py:element="self.create_object_display(item)"
+        py:item="${item}"/>
+
+    <?py
+    self.toolbar.connect_selectable(self)
+    ?>
 
 </div>
 

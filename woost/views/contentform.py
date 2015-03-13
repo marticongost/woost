@@ -9,6 +9,7 @@ u"""
 from cocktail.schema import Collection, Reference
 from cocktail.translations import translations
 from cocktail.html import Element, templates
+from woost.views.uigeneration import backoffice_edit_control
 
 Form = templates.get_class("cocktail.html.Form")
 
@@ -17,35 +18,7 @@ class ContentForm(Form):
 
     table_layout = False
     redundant_translation_labels = False
-
-    def __init__(self, *args, **kwargs):
-        Form.__init__(self, *args, **kwargs)
-        self.set_member_type_display(Collection, self._get_collection_display)
-        self.set_member_type_display(Reference, self._get_reference_display)
-
-    def _resolve_member_display(self, obj, member):
-
-        display = getattr(member, "edit_control", None)
-
-        if display is None:
-            display = Form._resolve_member_display(self, obj, member)
-
-        return display
-
-    def _get_collection_display(self, obj, member):
-        if member.is_persistent_relation:
-            return "woost.views.ItemCollectionEditor"
-        else:
-            return "cocktail.html.CollectionEditor"
-
-    def _get_reference_display(self, obj, member):
-        if member.class_family is not None:
-            display = templates.new("woost.views.ContentTypePickerDropdown")
-            display.content_type_picker.root = member.class_family
-        else:
-            display = "woost.views.ItemSelector"
-
-        return display
+    base_ui_generators = [backoffice_edit_control]
 
     def create_fieldset(self, group):
         fieldset = Form.create_fieldset(self, group)

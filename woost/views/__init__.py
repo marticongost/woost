@@ -12,6 +12,7 @@ from pkg_resources import resource_filename
 from cocktail.html import Element, resource_repositories
 from cocktail.persistence import PersistentClass
 from woost.models import Item
+from woost.views import uigeneration
 
 def depends_on(self, tag_source, cache_part = None):
     if tag_source is None:

@@ -12,20 +12,20 @@ from os.path import join, isdir
 
 setup(
     name = "woost",
-    version = "joust",
+    version = "kungfu",
     author = "Whads/Accent SL",
     author_email = "tech@whads.com",
     maintainer = "Marti Congost",
     maintainer_email = "marti.congost@whads.com",
     url = "http://woost.info",
     description = "Model driven multilanguage CMS.",
-    long_description = 
+    long_description =
 """Woost is a Content Management System designed from the ground up  to be able
 to publish arbitrary data models, including content in multiple languages. Some
 of its features include:\n"
 
     * Use inheritance, relations and validations to define complex models
-    
+
     * Automatically generate forms and listings for your models from a schema
       description
 
@@ -53,8 +53,8 @@ of its features include:\n"
     ],
     install_requires = [
         "simplejson",
-        "cocktail==gin"
-    ],    
+        "cocktail==horilka"
+    ],
     extras_require = {
         'campaign_monitor_api': ["campaign_monitor_api"],
         "twitterpublication": ["oauth2"],

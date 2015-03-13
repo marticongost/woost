@@ -44,31 +44,6 @@ cocktail.bind(".ContentView", function ($contentView) {
         display.topControl = $searchBox.get(0);
     }
 
-    // Enable/disable buttons depending on the selected content
-    function updateToolbar() {
-        var display = $contentView.find(".collection_display").get(0);
-        if (display && display.getSelection) {
-            var selectionSize = display.getSelection().length;
-            $contentView.find(".action_button").each(function () {
-                if (
-                    !this.ignoresSelection
-                    && (
-                        (this.minSelection && selectionSize < this.minSelection)
-                        || (this.maxSelection && selectionSize > this.maxSelection)
-                    )
-                ) {
-                    this.setAttribute("disabled", "disabled");
-                }
-                else {
-                    this.removeAttribute("disabled");
-                }
-            });
-        }
-    }
-
-    $contentView.find(".collection_display").bind("selectionChanged", updateToolbar);
-    updateToolbar();
-
     // Replace the 'clear filters' link with a 'discard search' button
     $contentView.find(".filters").each(function () {
 
@@ -88,18 +63,6 @@ cocktail.bind(".ContentView", function ($contentView) {
         });
 
         $discardButton.replaceWith(closeButton);
-    });
-
-    // Open files in a new window
-    $contentView.find(".action_button").click(function() {
-        var form = jQuery(this).closest("form").get(0);
-
-        if (jQuery(this).hasClass(".download_action")) {
-            form.target = "_new";
-        }
-        else {
-            form.target = "_self";
-        }
     });
 
     // Client side implementation for the addition of filters from table

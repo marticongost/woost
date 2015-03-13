@@ -16,7 +16,6 @@ ContentTypeSelector = \
 class ContentTypePath(Element):
 
     tag = "ul"
-    value = None
     root = Item
 
     Entry = Element
