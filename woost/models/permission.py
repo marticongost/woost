@@ -458,11 +458,12 @@ class PermissionExpression(Expression):
 
             authorized_subset = set()
             queried_type = query.type
+            user = self.user
 
             for permission in reversed(list(
-                self.user.iter_permissions(self.permission_type)
+                user.iter_permissions(self.permission_type)
             )):
-                permission_query = permission.select_items()
+                permission_query = permission.select_items(user = user)
 
                 if query.verbose:
                     permission_query.verbose = True
