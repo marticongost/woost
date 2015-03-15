@@ -492,6 +492,19 @@ class StackNode(object):
     def back_hash(self, previous_node):
         return None
 
+    def push_to_stack(self, edit_stack = None):
+        edit_stacks_manager = context["edit_stacks_manager"]
+
+        if edit_stack is None:
+            edit_stack = edit_stacks_manager.current_edit_stack
+            if edit_stack is None:
+                edit_stack = edit_stacks_manager.create_edit_stack()
+                edit_stacks_manager.current_edit_stack = edit_stack
+
+        edit_stack.push(self)
+        edit_stacks_manager.preserve_edit_stack(edit_stack)
+        edit_stack.go()
+
 
 class EditNode(StackNode):
     """An L{edit stack<EditStack>} node, used to maintain a set of changes for
