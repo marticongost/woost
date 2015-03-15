@@ -135,6 +135,10 @@ class UserAction(object):
         indicated content type or its subclasses.
     @type content_type: L{Item<woost.models.Item>} subclass
 
+    @ivar excluded_content_types: A set of content types that the action should
+        never match (ie. execptions to the `content_type` property).
+    @type excluded_content_types: set of L{Item<woost.models.Item>} subclasses
+
     @ivar ignores_selection: Set to True for actions that don't operate on a
         selection of content.
     @type ignores_selection: bool
@@ -164,6 +168,7 @@ class UserAction(object):
         "changelog"
     ])
     content_type = None
+    excluded_content_types = None
     ignores_selection = False
     min = 1
     max = 1
@@ -183,6 +188,7 @@ class UserAction(object):
             raise TypeError("User action identifiers must be strings, not %s"
                             % type(id))
         self._id = id
+        self.excluded_content_types = set()
 
     def __translate__(self, language, **kwargs):
         return translations("woost.actions." + self.id, language, **kwargs)
@@ -316,6 +322,14 @@ class UserAction(object):
             False otherwise.
         @rtype: bool
         """
+        if self.excluded_content_types:
+            excluded_types = tuple(self.excluded_content_types)
+            if isinstance(target, type):
+                if issubclass(target, excluded_types):
+                    return False
+            elif isinstance(target, excluded_types):
+                return False
+
         if self.content_type is None:
             return True
 
