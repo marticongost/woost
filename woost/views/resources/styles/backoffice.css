@@ -1868,8 +1868,11 @@ body.scripted .BackOfficeLayout .selector:hover .selector_content {
 -----------------------------------------------------------------------------*/
 
 .BackOfficeLayout .TreeContentView .expander {
-    margin-left: -0.1em;
     float: left;
+    position: relative;
+    z-index: 2;
+    margin-left: -0.1em;
+    margin-right: 0.3em;
 }
 
 .BackOfficeLayout .TreeContentView .expander + label {

@@ -144,7 +144,7 @@ ACCESSIBLE_DESCENDANTS = 2
                 <img src="${self.cms.application_uri('resources', 'images', state + '.png')}"/>
             </a>
             <?py
-            element_display = backoffice_display.create_member_display(
+            inner_display = backoffice_display.create_member_display(
                 obj,
                 member,
                 value,
@@ -152,19 +152,19 @@ ACCESSIBLE_DESCENDANTS = 2
             )
 
             # Drag & drop information
-            element_display["data-woost-drop"] = "%d.%s" % (
+            inner_display["data-woost-drop"] = "%d.%s" % (
                 value.id,
                 self.__children_collection_name
             )
 
             if self.__parent:
-                element_display["data-woost-relativedrop"] = "%d.%s.%d" % (
+                inner_display["data-woost-relativedrop"] = "%d.%s.%d" % (
                     self.__parent.id,
                     self.__children_collection_name,
                     value.id
                 )
 
-            element.append(element_display)
+            element.append(inner_display)
             ?>
         </py:with>
 
