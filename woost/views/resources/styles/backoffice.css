@@ -1215,16 +1215,16 @@ body.scripted .BackOfficeLayout .Table .row_selection_control {
     font-weight: bold;
 }
 
-.BackOfficeLayout .Table tr.selected td {
+.BackOfficeLayout .Table tr.selected > td {
     background-color: #777 !important;
 }
 
 
-.BackOfficeLayout .Table.focused tr.selected td {
+.BackOfficeLayout .Table.focused tr.selected > td {
     background-color: #4b4b4b !important;
 }
 
-.BackOfficeLayout .Table tr.selected td {
+.BackOfficeLayout .Table tr.selected > td {
     color: white;
 }
 
@@ -3572,10 +3572,7 @@ div.success_label {
 
 .BackOfficeLayout .ContentTable td > .ItemDisplay .panel {
     font-size: 1.1764em; /* urgh... */
-}
-
-.BackOfficeLayout .ContentTable tr.selected .ItemDisplay .item_label {
-    color: white;
+    color: black;
 }
 
 .BackOfficeLayout .ItemDisplay .item_label:hover {
