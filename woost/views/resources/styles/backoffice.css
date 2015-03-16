@@ -810,6 +810,8 @@ body.modal {
 .BackOfficeLayout .SearchableCheckList.search_enabled .check_list {
     max-height: 24.8em;
     overflow: auto;
+    overflow-y: auto;
+    overflow-x: hidden;
     padding: 0.5em;
     padding-right: 1em;
     border: 1px solid #ddd;
@@ -818,6 +820,16 @@ body.modal {
 
 .BackOfficeLayout .SearchableCheckList.search_enabled.control .check_list {
     height: 15em;
+}
+
+.BackOfficeLayout .SearchableCheckList.search_enabled .check_list .entry > input {
+    vertical-align: top;
+}
+
+.BackOfficeLayout .SearchableCheckList.search_enabled .check_list .entry > label {
+    white-space: normal;
+    display: inline-block;
+    vertical-align: top;
 }
 
 /* SplitSelector
