@@ -55,7 +55,7 @@ class URI(Publishable):
         host = None,
         encode = True):
 
-        uri = self.language_specific_uri or self.uri
+        uri = self.get("language_specific_uri", language) or self.uri
 
         if uri is not None:
 
