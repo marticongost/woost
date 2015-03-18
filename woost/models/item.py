@@ -236,7 +236,7 @@ class Item(PersistentObject):
     changes = schema.Collection(
         required = True,
         versioned = False,
-        editable = False,
+        editable = schema.NOT_EDITABLE,
         synchronizable = False,
         items = "woost.models.Change",
         bidirectional = True,
@@ -248,7 +248,7 @@ class Item(PersistentObject):
     creation_time = schema.DateTime(
         versioned = False,
         indexed = True,
-        editable = False,
+        editable = schema.READ_ONLY,
         synchronizable = False,
         invalidates_cache = False,
         listed_by_default = False,
@@ -258,7 +258,7 @@ class Item(PersistentObject):
     last_update_time = schema.DateTime(
         indexed = True,
         versioned = False,
-        editable = False,
+        editable = schema.READ_ONLY,
         synchronizable = False,
         invalidates_cache = False,
         affects_last_update_time = False,
@@ -269,7 +269,7 @@ class Item(PersistentObject):
         translated = True,
         indexed = True,
         versioned = False,
-        editable = False,
+        editable = schema.READ_ONLY,
         synchronizable = False,
         invalidates_cache = False,
         affects_last_update_time = False,
@@ -285,7 +285,7 @@ class Item(PersistentObject):
     @classmethod
     def _add_member(cls, member):
         if member.name == "translations":
-            member.editable = False
+            member.editable = schema.NOT_EDITABLE
             member.searchable = False
             member.synchronizable = False
         PersistentClass._add_member(cls, member)
@@ -483,7 +483,7 @@ class Item(PersistentObject):
     #--------------------------------------------------------------------------
     author = schema.Reference(
         indexed = True,
-        editable = False,
+        editable = schema.READ_ONLY,
         type = "woost.models.User",
         listed_by_default = False,
         invalidates_cache = False,
@@ -817,7 +817,7 @@ class Item(PersistentObject):
 
 
 Item.id.versioned = False
-Item.id.editable = False
+Item.id.editable = schema.READ_ONLY
 Item.id.synchronizable = False
 Item.id.listed_by_default = False
 Item.id.member_group = "administration"

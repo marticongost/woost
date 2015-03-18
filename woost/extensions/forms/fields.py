@@ -70,14 +70,14 @@ class Field(Item):
     field_set = schema.Reference(
         type = "woost.extensions.forms.fields.FieldSet",
         bidirectional = True,
-        editable = False,
+        editable = schema.NOT_EDITABLE,
         member_group = "field_structure"
     )
 
     collection = schema.Reference(
         type = "woost.extensions.forms.fields.CollectionField",
         bidirectional = True,
-        editable = False,
+        editable = schema.NOT_EDITABLE,
         member_group = "field_structure",
         listed_by_default = False
     )
@@ -241,7 +241,7 @@ class FieldSet(Field):
     derived_field_sets = schema.Collection(
         items = "woost.extensions.forms.fields.FieldSet",
         bidirectional = True,
-        editable = False,
+        editable = schema.NOT_EDITABLE,
         member_group = "field_structure",
         listed_by_default = False
     )

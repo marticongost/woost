@@ -38,7 +38,7 @@ class Template(Item):
     documents = schema.Collection(
         items = "woost.models.Document",
         bidirectional = True,
-        editable = False,
+        editable = schema.NOT_EDITABLE,
         synchronizable = False,
         visible_in_reference_list = False
     )

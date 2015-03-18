@@ -33,7 +33,7 @@ class AccessLevel(Item):
     restricted_content = schema.Collection(
         items = "woost.models.Publishable",
         bidirectional = True,
-        editable = False
+        editable = schema.NOT_EDITABLE
     )
 
     def __translate__(self, language, **kwargs):

@@ -21,7 +21,7 @@ class FormAgreement(Item):
     forms = schema.Collection(
         items = "woost.extensions.forms.formblock.FormBlock",
         bidirectional = True,
-        editable = False
+        editable = schema.NOT_EDITABLE
     )
 
     title = schema.String(

@@ -62,13 +62,13 @@ class ShopOrder(Item):
     cost = schema.Decimal(
         required = True,
         default = Decimal("0"),
-        editable = False
+        editable = schema.READ_ONLY
     )
 
     language = schema.String(
         required = True,
         format = "^[a-z]{2}$",
-        editable = False,
+        editable = schema.READ_ONLY,
         default = schema.DynamicDefault(get_language),
         text_search = False,
         translate_value = lambda value, language = None, **kwargs:

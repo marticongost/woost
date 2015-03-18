@@ -29,14 +29,14 @@ class CampaignMonitorList(Item):
     )
 
     title = schema.String(
-        editable = False,
+        editable = schema.READ_ONLY,
         listed_by_default = False,
         descriptive = True
     )
 
     list_id = schema.String(
         unique = True,
-        editable = False,
+        editable = schema.READ_ONLY,
         text_search = False
     )
 
