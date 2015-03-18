@@ -28,6 +28,6 @@ class AccessRestriction(Item):
     restricted_content = schema.Collection(
         items = "woost.models.Publishable",
         bidirectional = True,
-        editable = False
+        editable = schema.NOT_EDITABLE
     )
 

@@ -540,6 +540,7 @@ class EditNode(StackNode):
     visible_translations = None
     section = "fields"
     tab = None
+    verbose_member_mode = False
 
     saving = Event("""
         An event triggered when saving the changes contained within the node,
@@ -645,6 +646,7 @@ class EditNode(StackNode):
                 if key == "_item":
                     if value is None:
                         value = content_type()
+                        value.id = self.item_id
                         if content_type.translated:
                             for language in state["visible_translations"]:
                                 value.new_translation(language)
@@ -712,40 +714,77 @@ class EditNode(StackNode):
         """
         adapter = schema.Adapter()
         adapter.collection_copy_mode = self._adapt_collection
-        adapter.exclude([
-            member.name
-            for member in self.content_type.iter_members()
-            if self.should_exclude_member(member)
-        ])
+        adapter.implicit_copy = False
+
+        for member in self.content_type.iter_members():
+            mode = self.get_member_edit_mode(member)
+            if mode == schema.EDITABLE:
+                adapter.copy(
+                    member.name,
+                    properties =
+                        None
+                        if member.editable == schema.EDITABLE
+                        else {"editable": schema.EDITABLE}
+                )
+            elif mode == schema.READ_ONLY:
+                adapter.export_read_only(member.name)
+
         return adapter
 
-    def should_exclude_member(self, member):
+    def get_member_edit_mode(self, member):
 
-        if not member.editable:
-            return True
+        if self.verbose_member_mode:
+            from cocktail.styled import styled
+            print "Member mode for",
+            print styled(member.name, style = "bold"),
+            print "is",
+
+        if member.editable == schema.NOT_EDITABLE:
+            if self.verbose_member_mode:
+                print styled("NOT_EDITABLE", "magenta", style = "bold")
+                print styled("(specified by the member)\n", "pink")
+            return schema.NOT_EDITABLE
 
         if not member.visible:
-            return True
+            if self.verbose_member_mode:
+                print styled("NOT_EDITABLE", "magenta", style = "bold")
+                print styled("(not visible)\n", "pink")
+            return schema.NOT_EDITABLE
 
         # Hide relations with relation nodes in the stack
         relation_node = self.get_ancestor_node(RelationNode)
         if relation_node and member is relation_node.member.related_end:
-            return True
+            if self.verbose_member_mode:
+                print styled("NOT_EDITABLE", "magenta", style = "bold")
+                print styled("(relation in stack)\n", "pink")
+            return schema.NOT_EDITABLE
 
         user = get_current_user()
 
         if not user.has_permission(ReadMemberPermission, member = member):
-            return True
+            if self.verbose_member_mode:
+                print styled("NOT_EDITABLE", "magenta", style = "bold")
+                print styled("(not authorized to read this member)\n", "pink")
+            return schema.NOT_EDITABLE
 
         if not user.has_permission(ModifyMemberPermission, member = member):
-            return True
+            if self.verbose_member_mode:
+                print styled("READ_ONLY", "yellow", style = "bold")
+                print styled(
+                    "(not authorized to modify this member)\n",
+                    "pink"
+                )
+            return schema.READ_ONLY
 
         if isinstance(member, schema.RelationMember) \
         and member.is_persistent_relation:
 
             # Hide relations to invisible types
             if not member.related_type.visible:
-                return True
+                if self.verbose_member_mode:
+                    print styled("NOT_EDITABLE", "magenta", style = "bold")
+                    print styled("(related type is invisible)\n", "pink")
+                return schema.NOT_EDITABLE
 
             # Hide empty collections with the exclude_when_empty flag
             # set
@@ -756,7 +795,10 @@ class EditNode(StackNode):
                     parent = self.item
                 )
             ):
-                return True
+                if self.verbose_member_mode:
+                    print styled("NOT_EDITABLE", "magenta", style = "bold")
+                    print styled("(exclude empty collection)\n", "pink")
+                return schema.NOT_EDITABLE
 
             def class_family_permission(root, permission_type):
                 return any(
@@ -768,7 +810,13 @@ class EditNode(StackNode):
             if not class_family_permission(
                 member.related_type, ReadPermission
             ):
-                return True
+                if self.verbose_member_mode:
+                    print styled("NOT_EDITABLE", "magenta", style = "bold")
+                    print styled(
+                        "(not authorized to read related type)\n",
+                        "pink"
+                    )
+                return schema.NOT_EDITABLE
 
             # Integral relation
             if (
@@ -783,7 +831,13 @@ class EditNode(StackNode):
                         member.type,
                         CreatePermission
                     ):
-                        return True
+                        if self.verbose_member_mode:
+                            print styled("READ_ONLY", "yellow", style = "bold")
+                            print styled(
+                                "(can't create integral component)\n",
+                                "pink"
+                            )
+                        return schema.READ_ONLY
                 elif not (
                     class_family_permission(
                         member.type, ModifyPermission
@@ -792,7 +846,13 @@ class EditNode(StackNode):
                         member.type, DeletePermission
                     )
                 ):
-                    return True
+                    if self.verbose_member_mode:
+                        print styled("READ_ONLY", "yellow", style = "bold")
+                        print styled(
+                            "(can't modify or delete integral component)\n",
+                            "pink"
+                        )
+                    return schema.READ_ONLY
 
         # Remove all relations to blocks from the edit view
         if (
@@ -800,9 +860,25 @@ class EditNode(StackNode):
             and member.related_type
             and issubclass(member.related_type, Block)
         ):
-            return True
+            if self.verbose_member_mode:
+                print styled("NOT_EDITABLE", "magenta", style = "bold")
+                print styled("(is a block slot)\n", "pink")
+            return schema.NOT_EDITABLE
 
-        return False
+        if not user.has_permission(ModifyPermission, target = self.item):
+            if self.verbose_member_mode:
+                print styled("READ_ONLY", "yellow", style = "bold")
+                print styled("(not authorized to modify this object)\n", "pink")
+            return schema.READ_ONLY
+
+        if self.verbose_member_mode:
+            if member.editable == schema.EDITABLE:
+                print styled("EDITABLE\n", "bright_green", style = "bold")
+            elif member.editable == schema.READ_ONLY:
+                print styled("READ_ONLY", "yellow", style = "bold")
+                print styled("(specified by the member)\n", "pink")
+
+        return member.editable
 
     def _adapt_collection(self, context, key, value):
         return self._copy_collection(value)
@@ -862,7 +938,7 @@ class EditNode(StackNode):
             source_form_data,
             self.form_data,
             self.form_schema,
-            exclude = lambda member: not member.editable
+            exclude = lambda member: member.editable != schema.EDITABLE
         )
 
     def relate(self, member, item):

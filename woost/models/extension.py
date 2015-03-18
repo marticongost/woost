@@ -92,21 +92,21 @@ class Extension(Item):
     )
 
     extension_author = schema.String(
-        editable = False,
+        editable = schema.READ_ONLY,
         listed_by_default = False
     )
 
     license = schema.String(
-        editable = False,
+        editable = schema.READ_ONLY,
         listed_by_default = False
     )
 
     web_page = schema.String(
-        editable = False
+        editable = schema.READ_ONLY
     )
 
     description = schema.String(
-        editable = False,
+        editable = schema.READ_ONLY,
         translated = True
     )
 

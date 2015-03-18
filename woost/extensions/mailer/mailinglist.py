@@ -30,7 +30,7 @@ class MailingList(Item):
     mailings = schema.Collection(
         items = "woost.extensions.mailer.mailing.Mailing",
         bidirectional = True,
-        editable = False,
+        editable = schema.NOT_EDITABLE,
         listed_by_default = False
     )
 
