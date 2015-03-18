@@ -29,6 +29,7 @@ backoffice_display = UIGenerator(
     "backoffice_display",
     base_ui_generators = [default_display],
     member_type_displays = {
+        schema.Member: "cocktail.html.TranslationDisplay",
         schema.Collection: _collection_backoffice_display
     }
 )
