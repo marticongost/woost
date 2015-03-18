@@ -58,13 +58,13 @@ class File(Publishable):
 
     file_name = schema.String(
         required = True,
-        editable = False,
+        editable = schema.READ_ONLY,
         member_group = "content"
     )
 
     file_size = schema.Integer(
         required = True,
-        editable = False,
+        editable = schema.READ_ONLY,
         translate_value = lambda size, language = None, **kwargs:
             "" if size in (None, "") else format_bytes(size),
         min = 0,

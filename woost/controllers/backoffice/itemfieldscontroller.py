@@ -15,7 +15,7 @@ from cocktail import schema
 from cocktail.controllers import get_parameter, view_state, Location
 from woost.models import (
     get_current_user,
-    ModifyPermission,
+    ReadPermission,
     CreatePermission
 )
 from woost.controllers.backoffice.useractions import get_user_action
@@ -96,6 +96,9 @@ class ItemFieldsController(EditController):
             for added_translation in added_translations:
                 stack_node.add_translation(added_translation)
 
+        # Add read only data
+        self._export_read_only_data(form_data)
+
         # Drop references
         unlink = cherrypy.request.params.get("relation-unlink")
 
@@ -103,6 +106,19 @@ class ItemFieldsController(EditController):
             form_data[unlink] = None
 
         return form_data
+
+    def _export_read_only_data(self, form_data):
+        node = self.stack_node
+        for member in self.fields_schema.iter_members():
+            if member.editable == schema.READ_ONLY:
+                key = member.name
+                if member.translated:
+                    form_data[key] = dict(
+                        (lang, node.item.get(key, lang))
+                        for lang in node.item_translations
+                    )
+                else:
+                    form_data[key] = node.item.get(key)
 
     @cached_getter
     def fields_adapter(self):
@@ -154,7 +170,7 @@ class ItemFieldsController(EditController):
         user = get_current_user()
 
         if item.is_inserted:
-            user.require_permission(ModifyPermission, target = item)
+            user.require_permission(ReadPermission, target = item)
         else:
             user.require_permission(CreatePermission, target = item.__class__)
 

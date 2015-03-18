@@ -58,7 +58,7 @@ class TwitterPublicationTarget(Item):
     )
 
     auth_token = schema.String(
-        editable = False,
+        editable = schema.NOT_EDITABLE,
         text_search = False,
         translate_value = lambda value, language = None, **kwargs:
             translations(

@@ -136,7 +136,7 @@ class ECommerceOrder(Item):
     language = schema.String(
         required = True,
         format = "^[a-z]{2}$",
-        editable = False,
+        editable = schema.READ_ONLY,
         default = schema.DynamicDefault(get_language),
         text_search = False,
         translate_value = lambda value, language = None, **kwargs:

@@ -35,7 +35,7 @@ class Controller(Item):
     published_items = schema.Collection(
         items = "woost.models.Publishable",
         bidirectional = True,
-        editable = False,
+        editable = schema.NOT_EDITABLE,
         synchronizable = False,
         visible_in_reference_list = False
     )

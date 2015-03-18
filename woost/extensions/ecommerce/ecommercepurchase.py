@@ -56,7 +56,7 @@ class ECommercePurchase(Item):
 
     total_price = schema.Money(
         member_group = "billing",
-        editable = False,
+        editable = schema.READ_ONLY,
         listed_by_default = False
     )
 
@@ -66,12 +66,12 @@ class ECommercePurchase(Item):
         related_end = schema.Collection(
             block_delete = True
         ),
-        editable = False
+        editable = schema.READ_ONLY
     )
 
     total_shipping_costs = schema.Money(
         member_group = "billing",
-        editable = False,
+        editable = schema.READ_ONLY,
         listed_by_default = False
     )
 
@@ -81,12 +81,12 @@ class ECommercePurchase(Item):
         related_end = schema.Collection(
             block_delete = True
         ),
-        editable = False
+        editable = schema.READ_ONLY
     )
 
     total_taxes = schema.Money(
         member_group = "billing",
-        editable = False,
+        editable = schema.READ_ONLY,
         listed_by_default = False
     )
 
@@ -96,12 +96,12 @@ class ECommercePurchase(Item):
         related_end = schema.Collection(
             block_delete = True
         ),
-        editable = False
+        editable = schema.READ_ONLY
     )
 
     total = schema.Money(
         member_group = "billing",
-        editable = False
+        editable = schema.READ_ONLY
     )
 
     def __translate__(self, language, **kwargs):

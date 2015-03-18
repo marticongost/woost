@@ -608,9 +608,6 @@ class EditAction(UserAction):
 
         return UserAction.is_available(self, context, target)
 
-    def is_permitted(self, user, target):
-        return user.has_permission(ModifyPermission, target = target)
-
     def get_url(self, controller, selection):
         return controller.edit_uri(selection[0])
 
