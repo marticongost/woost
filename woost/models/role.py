@@ -95,7 +95,7 @@ class Role(Item):
         required = True,
         default = False,
         indexed = True,
-        editable = schema.READ_ONLY
+        editable = schema.NOT_EDITABLE
     )
 
     access_levels = schema.Collection(
