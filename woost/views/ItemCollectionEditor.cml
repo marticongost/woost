@@ -99,6 +99,7 @@ from woost.controllers.backoffice.useractions import export_user_actions
             if action.id in ("new", "add_integral"):
                 if len(self._instantiable_content_types) > 1:
                     button = self.create_new_toolbar_button(action, extra)
+                    button["data-woost-action"] = action.id
                 else:
                     button = call_base(action, extra, action_context)
                     button.tag = "a"
