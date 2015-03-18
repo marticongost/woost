@@ -55,7 +55,7 @@ class Role(Item):
     child_roles = schema.Collection(
         items = "woost.models.Role",
         bidirectional = True,
-        editable = False
+        editable = schema.NOT_EDITABLE
     )
 
     users = schema.Collection(
@@ -95,7 +95,7 @@ class Role(Item):
         required = True,
         default = False,
         indexed = True,
-        editable = False
+        editable = schema.READ_ONLY
     )
 
     access_levels = schema.Collection(

@@ -57,8 +57,8 @@ translations.define("woost.actions.new.shortcut",
 )
 
 translations.define("woost.actions.edit",
-    ca = u"Editar",
-    es = u"Editar",
+    ca = u"Fitxa",
+    es = u"Ficha",
     en = u"Edit"
 )
 

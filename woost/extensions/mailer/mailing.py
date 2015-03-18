@@ -140,7 +140,7 @@ class Mailing(Item):
     total = schema.Integer(visible = False)
 
     status = schema.Integer(
-        editable = False,
+        editable = schema.READ_ONLY,
         enumeration = (MAILING_STARTED, MAILING_FINISHED),
         translate_value = lambda value, language = None, **kwargs: \
             "" if value is None else translations(

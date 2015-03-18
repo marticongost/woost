@@ -42,7 +42,7 @@ class ShopOrderEntry(Item):
     cost = schema.Decimal(
         required = True,
         default = Decimal("0"),
-        editable = False
+        editable = schema.READ_ONLY
     )
 
     def __translate__(self, language, **kwargs):

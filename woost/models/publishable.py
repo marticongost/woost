@@ -97,7 +97,7 @@ class Publishable(Item):
     resource_type = schema.String(
         indexed = True,
         text_search = False,
-        editable = False,
+        editable = schema.READ_ONLY,
         enumeration = (
             "document",
             "image",
@@ -156,7 +156,7 @@ class Publishable(Item):
     full_path = schema.String(
         indexed = True,
         unique = True,
-        editable = False,
+        editable = schema.READ_ONLY,
         text_search = False,
         listed_by_default = False,
         member_group = "navigation"

@@ -68,7 +68,7 @@ class IssuuDocument(Publishable):
     )
 
     issuu_document_id = schema.String(
-        editable = False,
+        editable = schema.NOT_EDITABLE,
         unique = True,
         indexed = True,
         searchable = False,
@@ -77,7 +77,7 @@ class IssuuDocument(Publishable):
     )
 
     issuu_config_id = schema.String(
-        editable = False,
+        editable = schema.NOT_EDITABLE,
         searchable = False,
         member_group = "content",
         listed_by_default = False
