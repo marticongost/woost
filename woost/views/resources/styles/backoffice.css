@@ -3586,6 +3586,14 @@ div.success_label {
     cursor: context-menu;
 }
 
+.BackOfficeLayout .ItemDisplay .item_label .text_wrapper {
+    border-bottom: 1px dotted #aaa;
+}
+
+.BackOfficeLayout .ItemDisplay .item_label:hover .text_wrapper {
+    border-bottom-style: solid;
+}
+
 .BackOfficeLayout .ContentTable td > .ItemDisplay .panel {
     font-size: 1.1764em; /* urgh... */
     color: black;
