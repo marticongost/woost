@@ -18,6 +18,7 @@ class ItemLabel(Element):
     item = None
     image_factory = "backoffice_small_thumbnail.png"
     icon_visible = "auto"
+    label_visible = True
     thumbnail = True
     referer = None
     language_chain = None
@@ -87,8 +88,9 @@ class ItemLabel(Element):
                 self.add_class("with_icon")
                 self.append(self.create_icon())
 
-            self.text_wrapper = self.create_text_wrapper()
-            self.append(self.text_wrapper)
+            if self.label_visible:
+                self.text_wrapper = self.create_text_wrapper()
+                self.append(self.text_wrapper)
 
     def create_icon(self):
         img = Element("img")
