@@ -288,6 +288,8 @@ class Item(PersistentObject):
             member.editable = schema.NOT_EDITABLE
             member.searchable = False
             member.synchronizable = False
+            member.backoffice_display = "woost.views.TranslationsList"
+            member.member_group = "administration"
         PersistentClass._add_member(cls, member)
 
     def _get_revision_state(self):
