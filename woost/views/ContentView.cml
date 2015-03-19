@@ -150,12 +150,7 @@ from woost.controllers.backoffice.editstack import SelectionNode
 
         <py:with py:element="self.collection_display"
             py:referer="${self.referer}"
-            py:filters="${self.user_collection.user_filters}">
-            <?py
-            if isinstance(element, DataDisplay):
-                element.set_member_label("element", translations(self.user_collection.type.name))
-            ?>
-        </py:with>
+            py:filters="${self.user_collection.user_filters}"/>
 
         <?py
         if self.user_collection.user_filters:

@@ -993,16 +993,19 @@ body.scripted .BackOfficeLayout .Table .row_selection_control {
     cursor: default;
 }
 
+.BackOfficeLayout .ContentTable[data-woost-descriptive-handler='false'] .element_column {
+    width: 1em;
+}
+
+.BackOfficeLayout .ContentTable[data-woost-descriptive-handler='false'] .element_column .ItemLabel .text_wrapper {
+    display: none;
+}
+
 .BackOfficeLayout .ContentTable td a,
 .BackOfficeLayout .ContentTable td button,
 .BackOfficeLayout .ContentTable td a *,
 .BackOfficeLayout .ContentTable td button * {
     cursor: pointer;
-}
-
-.BackOfficeLayout .ContentTable.hidden_element_column .element_column {
-    position: absolute;
-    left: -10000px;
 }
 
 .BackOfficeLayout .ContentTable .ItemLabel {
@@ -1242,6 +1245,23 @@ body.scripted .BackOfficeLayout .Table .row_selection_control {
 
 .BackOfficeLayout .Table tr.selected > td {
     color: white;
+}
+
+.BackOfficeLayout td.element_column {
+    background-color: #e5e5e5;
+    border-top: 1px solid #d5d5d5;
+}
+
+.BackOfficeLayout .ContentTable tr.selected > td {
+    border-top: 1px solid #777;
+}
+
+.BackOfficeLayout .ContentTable.focused tr.selected > td {
+    border-top: 1px solid #4b4b4b;
+}
+
+.BackOfficeLayout .ContentTable[data-woost-descriptive-handler='false'] td.element_column {
+    text-align: center;
 }
 
 .BackOfficeLayout .MappingTable table,
@@ -3569,10 +3589,8 @@ div.success_label {
 /* ItemDisplay
 -----------------------------------------------------------------------------*/
 .BackOfficeLayout .ItemDisplay {
+    display: inline-block;
     position: relative;
-}
-
-.BackOfficeLayout .ItemDisplay .item_label {
     margin: 0;
     padding: 0;
     background-image: none;
@@ -3581,36 +3599,56 @@ div.success_label {
     box-shadow: none;
 }
 
-.BackOfficeLayout .ItemDisplay .item_label,
-.BackOfficeLayout .ItemDisplay .item_label * {
-    cursor: context-menu;
+.BackOfficeLayout .ItemDisplay,
+.BackOfficeLayout .ItemDisplay *,
+.BackOfficeLayout .ContentTable td .ItemDisplay,
+.BackOfficeLayout .ContentTable td .ItemDisplay * {
+    cursor: pointer;
 }
 
-.BackOfficeLayout .ItemDisplay .item_label .text_wrapper {
-    border-bottom: 1px dotted #aaa;
-}
-
-.BackOfficeLayout .ItemDisplay .item_label:hover .text_wrapper {
-    border-bottom-style: solid;
-}
-
-.BackOfficeLayout .ContentTable td > .ItemDisplay .panel {
-    font-size: 1.1764em; /* urgh... */
-    color: black;
-}
-
-.BackOfficeLayout .ItemDisplay .item_label:hover {
+.BackOfficeLayout .ItemDisplay:hover {
     text-decoration: none;
 }
 
-.BackOfficeLayout .ItemDisplay .panel_connector {
+.BackOfficeLayout .ItemDisplay > .text_wrapper {
+    border-bottom: 1px dotted #aaa;
+}
+
+.BackOfficeLayout .ItemDisplay:hover .text_wrapper {
+    border-bottom-style: solid;
+}
+
+.BackOfficeLayout .ItemDisplay.item_context_menu_expanded > .text_wrapper {
+    background-color: #d9d9d9;
+    border-radius: 0.4em;
+    border: none;
+    padding: 0.4em;
+}
+
+/* ItemContextMenu
+-----------------------------------------------------------------------------*/
+.BackOfficeLayout [data-woost-context-menu] {
+    position: relative;
+}
+
+.BackOfficeLayout .ItemContextMenu {
+    position: absolute;
+    text-align: left;
+}
+
+.BackOfficeLayout .ItemContextMenu .panel_connector {
     position: absolute;
     z-index: 10001;
     width: 1.2em;
     height: 0.8em;
 }
 
-.BackOfficeLayout .ItemDisplay .panel {
+.BackOfficeLayout .ContentTable td > .ItemContextMenu .panel {
+    font-size: 1.1764em; /* urgh... */
+    color: black;
+}
+
+.BackOfficeLayout .ItemContextMenu .panel {
     box-sizing: border-box;
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
@@ -3625,12 +3663,11 @@ div.success_label {
     color: #333;
 }
 
-.BackOfficeLayout .ItemDisplay[data-woost-ItemDisplay-expanded='false'] .panel,
-.BackOfficeLayout .ItemDisplay[data-woost-ItemDisplay-expanded='false'] .panel_connector {
+.BackOfficeLayout .ItemContextMenu[data-woost-context-menu-state='closed'] {
     display: none;
 }
 
-.BackOfficeLayout .ItemDisplay .item_actions {
+.BackOfficeLayout .ItemContextMenu .item_actions {
     display: block;
     white-space: nowrap;
     margin-top: 1em;
@@ -3639,7 +3676,7 @@ div.success_label {
     padding-top: 0.5em;
 }
 
-.BackOfficeLayout .ItemDisplay .item_actions .action_button {
+.BackOfficeLayout .ItemContextMenu .item_actions .action_button {
     display: inline-block;
     vertical-align: middle;
     background-color: transparent;
@@ -3652,16 +3689,16 @@ div.success_label {
     margin-left: 0.8em;
 }
 
-.BackOfficeLayout .ItemDisplay .item_actions .action_button:first-child {
+.BackOfficeLayout .ItemContextMenu .item_actions .action_button:first-child {
     margin-left: -0.3em;
 }
 
-.BackOfficeLayout .ItemDisplay .item_actions .action_button:hover {
+.BackOfficeLayout .ItemContextMenu .item_actions .action_button:hover {
     background-color: #333;
     color: white;
 }
 
-.BackOfficeLayout .ItemDisplay .item_actions .action_button img {
+.BackOfficeLayout .ItemContextMenu .item_actions .action_button img {
     vertical-align: middle;
     margin-right: 0.3em;
 }

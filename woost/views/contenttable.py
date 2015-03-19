@@ -24,6 +24,7 @@ from woost.views.uigeneration import (
 from woost.controllers.backoffice.useractions import export_user_actions
 
 Table = templates.get_class("cocktail.html.Table")
+ItemContextMenu = templates.get_class("woost.views.ItemContextMenu")
 
 
 class ContentTable(Table):
@@ -33,6 +34,7 @@ class ContentTable(Table):
     base_ui_generators = [backoffice_display]
     use_separate_selection_column = False
     action_context = None
+    requires_descriptive_handler = None
 
     def __init__(self, *args, **kwargs):
         Table.__init__(self, *args, **kwargs)
@@ -44,10 +46,21 @@ class ContentTable(Table):
             base_ui_generators = [backoffice_element_column_display]
         )
 
+    def _ready(self):
+        Table._ready(self)
+        requires_descriptive_handler = self.requires_descriptive_handler
+        if requires_descriptive_handler is None:
+            requires_descriptive_handler = self.user_collection.type.requires_descriptive_handler
+        self["data-woost-descriptive-handler"] = (
+            "true"
+            if requires_descriptive_handler
+            else "false"
+        )
+
     def create_element_display(self, obj, member, value, **context):
         context.setdefault(
             "requires_descriptive_handler",
-            self.data.type.requires_descriptive_handler
+            self.user_collection.type.requires_descriptive_handler
         )
         return self.element_column_ui_generator.create_member_display(
             obj,
@@ -69,7 +82,16 @@ class ContentTable(Table):
         if self.action_context:
             export_user_actions(row, self.action_context, item)
 
+        row.context_menu = self.create_row_context_menu(item)
+        row.children[0].append(row.context_menu)
         return row
+
+    def create_row_context_menu(self, item):
+        menu = ItemContextMenu()
+        menu.item = item
+        menu.menu_owner_selector = "tr"
+        menu.effect_on_selection = "change"
+        return menu
 
     def create_cell(self, item, column, language = None):
         cell = Table.create_cell(self, item, column, language = language)
