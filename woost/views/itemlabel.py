@@ -10,6 +10,7 @@ from cocktail import schema
 from cocktail.html import Element
 from cocktail.translations import translations
 from cocktail.controllers import context
+from woost import app
 from woost.models.rendering import Renderer
 
 
@@ -42,7 +43,6 @@ class ItemLabel(Element):
 
             # Distinguish types
             if self.member:
-                count = 0
 
                 if isinstance(self.member, schema.Reference):
                     related_type = self.member.related_type
@@ -52,12 +52,14 @@ class ItemLabel(Element):
                     related_type = None
 
                 if related_type is not None:
+                    icons = set()
+
                     for cls in related_type.schema_tree():
                         if cls.icon_conveys_information:
                             return True
                         if cls.visible and cls.instantiable:
-                            count += 1
-                            if count > 1:
+                            icons.add(app.icon_resolver.find_icon(cls, 16))
+                            if len(icons) > 1:
                                 return True
 
             # Images
