@@ -12,6 +12,7 @@ from cocktail.html.uigeneration import (
     default_edit_control,
     default_search_control
 )
+from woost.models import Item
 
 # Custom read only display for the backoffice
 #------------------------------------------------------------------------------
@@ -29,8 +30,23 @@ backoffice_display = UIGenerator(
     "backoffice_display",
     base_ui_generators = [default_display],
     member_type_displays = {
+        Item: "woost.views.ItemDisplay",
         schema.Member: "cocktail.html.TranslationDisplay",
         schema.Collection: _collection_backoffice_display
+    }
+)
+
+# Display for the 'Element' column of backoffice listings
+#------------------------------------------------------------------------------
+def _element_column_display(ui_generator, obj, member, value, **context):
+    display = templates.new("woost.views.ItemLabel")
+    display.icon_visible = True
+    return display
+
+backoffice_element_column_display = UIGenerator(
+    base_ui_generators = [backoffice_display],
+    member_type_displays = {
+        Item: _element_column_display
     }
 )
 
