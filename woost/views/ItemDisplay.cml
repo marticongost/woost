@@ -8,6 +8,7 @@
     item = None
     icon_factory = "backoffice_small_thumbnail.png"
     icon_visible = "auto"
+    label_visible = True
     thumbnail = True
     referer = None
     language_chain = None
@@ -37,6 +38,7 @@
         py:id="item_label"
         py:image_factory="@{self.icon_factory}"
         py:icon_visible="@{self.icon_visible}"
+        py:label_visible="@{self.label_visible}"
         py:thumbnail="@{self.thumbnail}"
         py:referer="@{self.referer}"
         py:language_chain="@{self.language_chain}"/>
