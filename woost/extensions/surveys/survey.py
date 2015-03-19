@@ -12,8 +12,6 @@ from woost.models import Item
 
 class Survey(Item):
 
-    show_element_in_listings = False
-
     members_order = [
         "title",
         "questions"

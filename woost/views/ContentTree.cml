@@ -25,6 +25,7 @@ ACCESSIBLE_DESCENDANTS = 2
     expanded = ()
     filter_item = None
     fully_expanded = False
+    requires_descriptive_handler = True
 
     def get_children(self, item):
         return item.get(self.children_collection)
@@ -144,7 +145,7 @@ ACCESSIBLE_DESCENDANTS = 2
                 <img src="${self.cms.application_uri('resources', 'images', state + '.png')}"/>
             </a>
             <?py
-            inner_display = backoffice_display.create_member_display(
+            inner_display = self.element_column_ui_generator.create_member_display(
                 obj,
                 member,
                 value,

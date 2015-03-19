@@ -10,9 +10,6 @@ schema.Member.listed_by_default = True
 schema.Collection.listed_by_default = False
 schema.CodeBlock.listed_by_default = False
 
-# Add an extension property to show/hide the 'Element' column on listings
-schema.Schema.show_element_in_listings = True
-
 # Add an extension property to show/hide the 'Type' column on listings
 schema.Schema.show_type_in_listings = True
 

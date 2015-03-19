@@ -47,6 +47,7 @@ class Publishable(Item):
 
     instantiable = False
     cacheable = True
+    requires_descriptive_handler = True
     edit_view = "woost.views.PublishableFieldsView"
     edit_node_class = (
         "woost.controllers.backoffice.enabledtranslationseditnode."
