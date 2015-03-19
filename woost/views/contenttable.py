@@ -14,9 +14,13 @@ from cocktail.schema.expressions import (
     NegativeExpression
 )
 from cocktail.html import Element, templates
+from cocktail.html.uigeneration import UIGenerator
 from cocktail.controllers import view_state
 from woost.models import Item
-from woost.views.uigeneration import backoffice_display
+from woost.views.uigeneration import (
+    backoffice_display,
+    backoffice_element_column_display
+)
 from woost.controllers.backoffice.useractions import export_user_actions
 
 Table = templates.get_class("cocktail.html.Table")
@@ -30,17 +34,27 @@ class ContentTable(Table):
     use_separate_selection_column = False
     action_context = None
 
-    def _ready(self):
-        if not self.user_collection.type.show_element_in_listings:
-            self.add_class("hidden_element_column")
-        Table._ready(self)
-
     def __init__(self, *args, **kwargs):
         Table.__init__(self, *args, **kwargs)
         self.set_member_expression("element", lambda obj: obj)
         self.set_member_sortable("element", False)
         self.set_member_expression("class", lambda obj: obj.__class__)
         self.set_member_sortable("class", False)
+        self.element_column_ui_generator = UIGenerator(
+            base_ui_generators = [backoffice_element_column_display]
+        )
+
+    def create_element_display(self, obj, member, value, **context):
+        context.setdefault(
+            "requires_descriptive_handler",
+            self.data.type.requires_descriptive_handler
+        )
+        return self.element_column_ui_generator.create_member_display(
+            obj,
+            member,
+            value,
+            **context
+        )
 
     def _fill_head(self):
         Table._fill_head(self)

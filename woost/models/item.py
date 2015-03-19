@@ -83,9 +83,6 @@ class Item(PersistentObject):
     # entries for this content type in the type selector
     collapsed_backoffice_menu = False
 
-    # Default display for the item
-    backoffice_display = "woost.views.ItemDisplay"
-
     # Summary view for the item; used as the heading of BackOfficeItemView and
     # as the drop down panel of ItemDisplay
     backoffice_card_view = "woost.views.ItemCard"
