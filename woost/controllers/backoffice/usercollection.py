@@ -8,6 +8,8 @@
 """
 from cocktail.modeling import cached_getter, ListWrapper
 from cocktail import schema
+from cocktail.html import TranslatedValue
+from cocktail.html.uigeneration import display_factory
 from cocktail.controllers import UserCollection
 from cocktail.controllers.userfilter import GlobalSearchFilter
 from woost.models import (
@@ -96,28 +98,66 @@ class BackOfficeUserCollection(UserCollection):
 
         if content_schema is not self.type:
 
-            # Descriptive column
             content_schema.name = "BackOfficeContentView"
-            content_schema.add_member(
-                schema.Reference(
-                    name = "element",
-                    type = self.type,
-                    searchable = False
+            extra_members = []
+
+            if self.content_view.content_view_id == "tree":
+
+                # Tree column
+                content_schema.add_member(
+                    schema.Reference(
+                        name = "tree",
+                        type = self.type,
+                        searchable = False,
+                        listed_by_default = True
+                    )
                 )
-            )
-            content_schema.members_order.insert(0, "element")
+                extra_members.append("tree")
+            else:
+                # Thumbnail column
+                content_schema.add_member(
+                    schema.Member(
+                        name = "thumbnail",
+                        searchable = False,
+                        backoffice_display = display_factory(
+                            "woost.views.Image",
+                            image_factory = "backoffice_small_thumbnail.png"
+                        ),
+                        listed_by_default =
+                            self.type.backoffice_listing_includes_thumbnail_column
+                    )
+                )
+                extra_members.append("thumbnail")
+
+                # Descriptive column
+                content_schema.add_member(
+                    schema.Reference(
+                        name = "element",
+                        type = self.type,
+                        searchable = False,
+                        backoffice_display = TranslatedValue,
+                        listed_by_default =
+                            self.type.backoffice_listing_includes_element_column
+                    )
+                )
+                extra_members.append("element")
 
             # Type column
-            if self.type.show_type_in_listings \
-            and any(cls.visible for cls in self.type.derived_schemas()):
+            if (
+                self.type.show_type_in_listings
+                and any(cls.visible for cls in self.type.derived_schemas())
+            ):
                 content_schema.add_member(
                     schema.Reference(
                         name = "class",
                         class_family = self.root_type,
-                        searchable = False
+                        searchable = False,
+                        backoffice_display = "woost.views.TypeLabel"
                     )
                 )
-                content_schema.members_order.insert(1, "class")
+                extra_members.append("class")
+
+            content_schema.members_order = extra_members + content_schema.members_order
 
         return content_schema
 

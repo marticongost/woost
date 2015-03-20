@@ -993,14 +993,6 @@ body.scripted .BackOfficeLayout .Table .row_selection_control {
     cursor: default;
 }
 
-.BackOfficeLayout .ContentTable[data-woost-descriptive-handler='false'] .element_column {
-    width: 1em;
-}
-
-.BackOfficeLayout .ContentTable[data-woost-descriptive-handler='false'] .element_column .ItemLabel .text_wrapper {
-    display: none;
-}
-
 .BackOfficeLayout .ContentTable td a,
 .BackOfficeLayout .ContentTable td button,
 .BackOfficeLayout .ContentTable td a *,
@@ -1247,20 +1239,11 @@ body.scripted .BackOfficeLayout .Table .row_selection_control {
     color: white;
 }
 
-.BackOfficeLayout td.element_column {
-    background-color: #e5e5e5;
-    border-top: 1px solid #d5d5d5;
+.BackOfficeLayout .ContentTable .thumbnail_column {
+    width: 1em;
 }
 
-.BackOfficeLayout .ContentTable tr.selected > td {
-    border-top: 1px solid #777;
-}
-
-.BackOfficeLayout .ContentTable.focused tr.selected > td {
-    border-top: 1px solid #4b4b4b;
-}
-
-.BackOfficeLayout .ContentTable[data-woost-descriptive-handler='false'] td.element_column {
+.BackOfficeLayout .ContentTable td.thumbnail_column {
     text-align: center;
 }
 

@@ -87,8 +87,11 @@ class Item(PersistentObject):
     # as the drop down panel of ItemDisplay
     backoffice_card_view = "woost.views.ItemCard"
 
-    # Show/hide descriptive text in the 'Element' column on backoffice listings
-    requires_descriptive_handler = True
+    # Show/hide the descriptive text column on backoffice listings
+    backoffice_listing_includes_element_column = True
+
+    # Show/hide the thumbnail column on backoffice listings
+    backoffice_listing_includes_thumbnail_column = True
 
     # When creating listings, the backoffice will attempt to only display icons
     # if it thinks they will be useful. Setting this hint to True tells the
@@ -114,10 +117,16 @@ class Item(PersistentObject):
     @event_handler
     def handle_inherited(cls, e):
         if isinstance(e.schema, schema.SchemaClass):
+
             if "instantiable" not in e.schema.__dict__:
                 e.schema.instantiable = True
-            if "requires_descriptive_handler" not in e.schema.__dict__:
-                e.schema.requires_descriptive_handler = False
+
+            for key in (
+                "backoffice_listing_includes_element_column",
+                "backoffice_listing_includes_thumbnail_column"
+            ):
+                if key not in e.schema.__dict__:
+                    setattr(e.schema, key, False)
 
     def any_translation(self, language_chain = None, **kwargs):
 

@@ -26,6 +26,7 @@ class File(Publishable):
     instantiable = True
     cacheable = False
     type_group = "resource"
+    backoffice_listing_includes_thumbnail_column = True
 
     edit_node_class = \
         "woost.controllers.backoffice.fileeditnode.FileEditNode"
