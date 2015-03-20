@@ -16,6 +16,15 @@ class Image(Element):
     styled_class = False
     accessible_check = False
 
+    # Make the class usable as a control
+    def _get_value(self):
+        return self.image
+
+    def _set_value(self, value):
+        self.image = value
+
+    value = property(_get_value, _set_value)
+
     def _ready(self):
 
         if self.image is None \
