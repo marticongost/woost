@@ -9,7 +9,7 @@
 
 (function () {
     var PREFIX = "data-woost-context-menu";
-    var MIN_CONNECTOR_POSITION = 12;
+    var MIN_CONNECTOR_POSITION = 14;
 
     var ALIGNMENTS = [
         ["bottom", "right"],
@@ -90,7 +90,8 @@
                 $connector.css("left",
                     (currentConnectorPosition === undefined ?
                         $origin.outerWidth() / 2
-                        : (
+                        : Math.min(
+                            $panel.outerWidth() - MIN_CONNECTOR_POSITION,
                             halign == "right" ?
                                 currentConnectorPosition
                                 : $panel.outerWidth() - $origin[0].offsetWidth + currentConnectorPosition
