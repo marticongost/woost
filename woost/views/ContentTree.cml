@@ -7,7 +7,6 @@ from cocktail.iteration import is_empty
 from cocktail.schema import Member, SchemaObjectAccessor
 from cocktail.controllers import view_state
 from cocktail.html.datadisplay import MULTIPLE_SELECTION
-from woost.views.uigeneration import backoffice_display
 
 NOT_ACCESSIBLE = 0
 ACCESSIBLE = 1
@@ -25,7 +24,6 @@ ACCESSIBLE_DESCENDANTS = 2
     expanded = ()
     filter_item = None
     fully_expanded = False
-    requires_descriptive_handler = True
 
     def get_children(self, item):
         return item.get(self.children_collection)
@@ -98,8 +96,13 @@ ACCESSIBLE_DESCENDANTS = 2
         return self.fully_expanded or item.id in self.expanded
     ?>
 
+    <?py
+    self.set_member_expression("tree", lambda obj: obj)
+    self.set_member_sortable("tree", False)
+    ?>
+
     <div
-        py:def="element_display"
+        py:def="tree_display"
         py:args="obj, member, value, **context">
 
         <?py
@@ -145,30 +148,31 @@ ACCESSIBLE_DESCENDANTS = 2
                 <img src="${self.cms.application_uri('resources', 'images', state + '.png')}"/>
             </a>
             <?py
-            inner_display = self.element_column_ui_generator.create_member_display(
-                obj,
-                member,
-                value,
-                **context
-            )
-
-            # Drag & drop information
-            inner_display["data-woost-drop"] = "%d.%s" % (
-                value.id,
-                self.__children_collection_name
-            )
-
-            if self.__parent:
-                inner_display["data-woost-relativedrop"] = "%d.%s.%d" % (
-                    self.__parent.id,
-                    self.__children_collection_name,
-                    value.id
-                )
-
-            element.append(inner_display)
+            tree_display.tree_label = self.create_tree_label(value)
+            element.append(tree_display.tree_label)
             ?>
         </py:with>
 
     </div>
+
+    <py:woost.views.ItemLabel
+        py:def="tree_label" py:args="item"
+        py:item="@{item}"
+        py:icon_visible="${True}"
+        data-woost-drop="${str(item.id)}.${self.__children_collection_name}">
+        <?py
+        # Drag & drop information
+        element["data-woost-drop"] = "%d.%s" % (
+            item.id,
+            self.__children_collection_name
+        )
+        if self.__parent:
+            element["data-woost-relativedrop"] = "%d.%s.%d" % (
+                self.__parent.id,
+                self.__children_collection_name,
+                item.id
+            )
+        ?>
+    </py:woost.views.ItemLabel>
 
 </py:woost.views.ContentTable>

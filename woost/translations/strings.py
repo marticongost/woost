@@ -372,10 +372,28 @@ translations.define("woost.views.ContentTable add column filter",
     en = u"Add a filter"
 )
 
+translations.define("BackOfficeContentView.class",
+    ca = u"Tipus",
+    es = u"Tipo",
+    en = u"Type"
+)
+
+translations.define("BackOfficeContentView.tree",
+    ca = u"Estructura",
+    es = u"Estructura",
+    en = u"Tree"
+)
+
 translations.define("BackOfficeContentView.element",
-    ca = u"Element",
-    es = u"Elemento",
-    en = u"Item"
+    ca = u"Descripció de l'objecte",
+    es = u"Descripción del objeto",
+    en = u"Object description"
+)
+
+translations.define("BackOfficeContentView.thumbnail",
+    ca = u"Miniatura",
+    es = u"Miniatura",
+    en = u"Thumbnail"
 )
 
 translations.define("woost.views.ContentView.content_type_selector.shortcut",
@@ -388,12 +406,6 @@ translations.define("woost.views.ContentView.content_view_dropdown.shortcut",
     ca = u"v",
     es = u"v",
     en = u"v"
-)
-
-translations.define("BackOfficeContentView.class",
-    ca = u"Tipus",
-    es = u"Tipo",
-    en = u"Type"
 )
 
 translations.define("woost.views.BackOfficeContentView add user view",

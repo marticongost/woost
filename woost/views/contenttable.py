@@ -17,10 +17,7 @@ from cocktail.html import Element, templates
 from cocktail.html.uigeneration import UIGenerator
 from cocktail.controllers import view_state
 from woost.models import Item
-from woost.views.uigeneration import (
-    backoffice_display,
-    backoffice_element_column_display
-)
+from woost.views.uigeneration import backoffice_display
 from woost.controllers.backoffice.useractions import export_user_actions
 
 Table = templates.get_class("cocktail.html.Table")
@@ -34,40 +31,15 @@ class ContentTable(Table):
     base_ui_generators = [backoffice_display]
     use_separate_selection_column = False
     action_context = None
-    requires_descriptive_handler = None
 
     def __init__(self, *args, **kwargs):
         Table.__init__(self, *args, **kwargs)
-        self.set_member_expression("element", lambda obj: obj)
-        self.set_member_sortable("element", False)
         self.set_member_expression("class", lambda obj: obj.__class__)
         self.set_member_sortable("class", False)
-        self.element_column_ui_generator = UIGenerator(
-            base_ui_generators = [backoffice_element_column_display]
-        )
-
-    def _ready(self):
-        Table._ready(self)
-        requires_descriptive_handler = self.requires_descriptive_handler
-        if requires_descriptive_handler is None:
-            requires_descriptive_handler = self.user_collection.type.requires_descriptive_handler
-        self["data-woost-descriptive-handler"] = (
-            "true"
-            if requires_descriptive_handler
-            else "false"
-        )
-
-    def create_element_display(self, obj, member, value, **context):
-        context.setdefault(
-            "requires_descriptive_handler",
-            self.user_collection.type.requires_descriptive_handler
-        )
-        return self.element_column_ui_generator.create_member_display(
-            obj,
-            member,
-            value,
-            **context
-        )
+        self.set_member_expression("element", lambda obj: obj)
+        self.set_member_sortable("element", False)
+        self.set_member_expression("thumbnail", lambda obj: obj)
+        self.set_member_sortable("thumbnail", False)
 
     def _fill_head(self):
         Table._fill_head(self)
