@@ -11,7 +11,7 @@ cocktail.bind(".ItemCollectionEditor", function ($editor) {
 
     // Double click to edit
     $editor.bind("activated", function () {
-        $editor.find("[data-woost-action='edit']").click();
+        $editor.find("[data-woost-action='edit']").first().click();
     });
 
     // Enable drag & drop sorting
