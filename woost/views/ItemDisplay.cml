@@ -1,11 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<py:woost.views.ItemLabel
+<div
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:py="http://www.whads.com/ns/cocktail/templates">
 
-    <?py
-    self.add_resource("/resources/scripts/ItemDisplay.js")
+    <?py-class
+    item = None
+    image_factory = "backoffice_small_thumbnail.png"
+    icon_visible = "auto"
+    label_visible = True
+    thumbnail = True
+    referer = None
+    language_chain = None
+
+    # Make the view usable as a member display
+    def _get_value(self):
+        return self.item
+
+    def _set_value(self, value):
+        self.item = value
+
+    value = property(_get_value, _set_value)
     ?>
 
     <py:ready>
@@ -13,14 +28,28 @@
         if self.item is None:
             self.visible = False
         else:
-            self["data-woost-default-action"] = "edit-%d" % self.item.id
+            self.label["value"] = "edit-%d" % self.item.id
         ?>
     </py:ready>
+
+    <py:woost.views.ItemLabel
+        xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:py="http://www.whads.com/ns/cocktail/templates"
+        py:id="label"
+        py:tag="button"
+        type="submit"
+        name="action"
+        py:item="@{self.item}"
+        py:image_factory="@{self.image_factory}"
+        py:icon_visible="@{self.icon_visible}"
+        py:label_visible="@{self.label_visible}"
+        py:referer="@{self.referer}"
+        py:language_chain="@{self.language_chain}"/>
 
     <py:woost.views.ItemContextMenu
         py:id="item_context_menu"
         py:item="@{self.item}"
         py:menu_origin_selector=".text_wrapper"/>
 
-</py:woost.views.ItemLabel>
+</div>
 

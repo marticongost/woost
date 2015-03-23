@@ -3589,15 +3589,27 @@ div.success_label {
     text-decoration: none;
 }
 
-.BackOfficeLayout .ItemDisplay > .text_wrapper {
+.BackOfficeLayout .ItemDisplay > .label {
+    display: inline-block;
+    position: relative;
+    margin: 0;
+    padding: 0;
+    background-image: none;
+    background-color: transparent;
+    border: none;
+    box-shadow: none;
+}
+
+.BackOfficeLayout .ItemDisplay > .label .text_wrapper {
     border-bottom: 1px dotted #aaa;
+    display: inline-block;
 }
 
 .BackOfficeLayout .ItemDisplay:hover .text_wrapper {
     border-bottom-style: solid;
 }
 
-.BackOfficeLayout .ItemDisplay.item_context_menu_expanded > .text_wrapper {
+.BackOfficeLayout .ItemDisplay.item_context_menu_expanded .text_wrapper {
     background-color: #d9d9d9;
     border-radius: 0.4em;
     border: none;
