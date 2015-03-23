@@ -90,11 +90,30 @@ backoffice_edit_control = EditControlGenerator(
 
 # Custom search controls for the backoffice
 #------------------------------------------------------------------------------
+def _reference_backoffice_search_control(
+    ui_generator,
+    obj,
+    member,
+    value,
+    **context
+):
+    if member.class_family is None and member.related_type is not None:
+        display = templates.new("woost.views.Autocomplete")
+        display.ajax_search_threshold = None
+        display.ajax_url = (
+            "/autocomplete/%s/QUERY"
+            % member.related_type.get_qualified_name(include_ns = True)
+        )
+        return display
+
 backoffice_search_control = EditControlGenerator(
     "backoffice_search_control",
     base_ui_generators = [
         default_search_control,
         backoffice_edit_control
-    ]
+    ],
+    member_type_displays = {
+        schema.Reference: _reference_backoffice_search_control
+    }
 )
 
