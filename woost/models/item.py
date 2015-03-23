@@ -9,7 +9,6 @@ u"""
 import re
 from datetime import date, datetime
 from contextlib import contextmanager
-from cocktail.styled import styled
 from cocktail.iteration import first
 from cocktail.modeling import getter, ListWrapper, SetWrapper, DictWrapper
 from cocktail.events import event_handler, when, Event, EventInfo
