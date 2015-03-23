@@ -53,19 +53,6 @@
                 }
                 currentConnectorPosition = connectorPosition;
 
-                // Consume all "click" events on the panel; only allow
-                // clicks on buttons to pass through.
-                $panel.click(function (e) {
-                    var node = e.srcElement;
-                    while (node != $panel[0]) {
-                        if (node.tagName == "BUTTON" || (node.tagName == "INPUT" && node.type == "submit")) {
-                            return true;
-                        }
-                        node = node.parentNode;
-                    }
-                    return false;
-                });
-
                 if (!$connector) {
                     $connector = jQuery("<canvas>")
                         .addClass("panel_connector")
@@ -185,6 +172,19 @@
                 });
             }
 
+            return false;
+        });
+
+        // Consume all "click" events on the panel; only allow
+        // clicks on buttons to pass through.
+        $panel.click(function (e) {
+            var node = e.srcElement;
+            while (node != $panel[0]) {
+                if (node.tagName == "BUTTON" || (node.tagName == "INPUT" && node.type == "submit")) {
+                    return true;
+                }
+                node = node.parentNode;
+            }
             return false;
         });
 
