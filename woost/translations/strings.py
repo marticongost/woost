@@ -372,12 +372,6 @@ translations.define("woost.views.ContentTable add column filter",
     en = u"Add a filter"
 )
 
-translations.define("BackOfficeContentView.class",
-    ca = u"Tipus",
-    es = u"Tipo",
-    en = u"Type"
-)
-
 translations.define("BackOfficeContentView.tree",
     ca = u"Estructura",
     es = u"Estructura",

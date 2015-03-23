@@ -142,21 +142,6 @@ class BackOfficeUserCollection(UserCollection):
                 )
                 extra_members.append("element")
 
-            # Type column
-            if (
-                self.type.show_type_in_listings
-                and any(cls.visible for cls in self.type.derived_schemas())
-            ):
-                content_schema.add_member(
-                    schema.Reference(
-                        name = "class",
-                        class_family = self.root_type,
-                        searchable = False,
-                        backoffice_display = "woost.views.TypeLabel"
-                    )
-                )
-                extra_members.append("class")
-
             content_schema.members_order = extra_members + content_schema.members_order
 
         return content_schema
