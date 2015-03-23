@@ -20,7 +20,6 @@ class ItemLabel(Element):
     image_factory = "backoffice_small_thumbnail.png"
     icon_visible = "auto"
     label_visible = True
-    thumbnail = True
     referer = None
     language_chain = None
 
