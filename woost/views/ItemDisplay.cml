@@ -51,5 +51,9 @@
         py:item="@{self.item}"
         py:menu_origin_selector=".text_wrapper"/>
 
+    <?py
+    self.data_binding_delegate = self.label
+    ?>
+
 </div>
 
