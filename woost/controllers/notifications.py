@@ -6,7 +6,9 @@
 @organization:	Whads/Accent SL
 @since:			February 2010
 """
+from warnings import warn
 from cocktail.controllers import session
+from cocktail.html import templates
 
 def notify_user(message, category = None, transient = True):
     """Creates a new notification for the current user.
@@ -26,66 +28,142 @@ def notify_user(message, category = None, transient = True):
         closed by the user (False).
     @type transient: bool
     """
-    notifications = session.get("notifications")
-
-    if notifications is None:
-        session["notifications"] = notifications = []
-
-    notifications.append((message, category, transient))
+    warn(
+        "notify_user() is deprecated; use the Notification class instead",
+        DeprecationWarning,
+        stacklevel = 2
+    )
+    Notification(message, category, transient).emit()
 
 def pop_user_notifications(filter = None):
-    """Retrieves pending notification messages that were stored through the
-    L{notify_user} method.
+    warn(
+        "pop_user_notifications() is deprecated; "
+        "use the Notification class instead",
+        DeprecationWarning,
+        stacklevel = 2
+    )
+    return Notification.pop(filter)
 
-    Retrieved messages are considered to be consumed, and therefore they
-    are removed from the list of pending notifications.
 
-    @param filter: If given, only those notifications matching the specified
-        criteria will be retrieved. The criteria matches as follows:
+class Notification(object):
 
-            * If set to a string, it designates a single notification category
-              to retrieve.
-            * If set to a sequence (list, tuple, set), it designates a set of
-              categories; notifications belonging to any of the specified
-              categories will be retrieved.
-            * If set to a callable, it will be used as filter function, taking
-              a notification tuple as its single parameter, and returning True
-              if the notification is to be retrieved, or False if it should be
-              ignored.
+    def __init__(self, message = None, category = None, transient = True):
+        self.message = message
+        self.category = category
+        self.transient = transient
 
-    @return: The sequence of pending notification messages. Each message
-        consists of a tuple with the message text, its category and wether
-        or not it should be treated as a transient message.
-    @rtype: sequence of (tuple of (unicode, unicode or None, bool))
-    """
-    notifications = session.get("notifications")
+    def __len__(self):
+        # Required for backwards compatibility; notifications used to be tuples
+        return 3
 
-    if notifications is None:
-        return []
+    def __iter__(self):
+        # Required for backwards compatibility; notifications used to be tuples
+        warn(
+            "Notifications are no longer tuples; used the provided attributes "
+            "instead",
+            DeprecationWarning,
+            stacklevel = 2
+        )
+        yield self.message
+        yield self.category
+        yield self.transient
 
-    remaining = []
+    def __getitem__(self, index):
+        # Required for backwards compatibility; notifications used to be tuples
+        warn(
+            "Notifications are no longer tuples; used the provided attributes "
+            "instead",
+            DeprecationWarning,
+            stacklevel = 2
+        )
+        if index == 0:
+            return self.message
+        elif index == 1:
+            return self.category
+        elif index == 2:
+            return self.transient
 
-    if filter:
-        matching = []
+    def emit(self):
+        """Stores the notification, so it can be retrieved by a call to
+        L{pop}.
+        """
+        session["notifications"].append(self)
 
-        if isinstance(filter, basestring):
-            match = lambda notification: notification[1] == filter
-        elif callable(filter):
-            match = filter
-        elif hasattr("__contains__", filter):
-            match = lambda notification: notification[1] in filter
-        else:
-            raise TypeError(
-                "The 'filter' parameter for the pop_user_notifications() "
-                "function should be a string, a sequence or callable, got "
-                "%s instead" % type(filter)
-            )
+    @classmethod
+    def pop(cls, filter = None):
+        """Retrieves pending notification messages that were stored through the
+        L{notify_user} method.
 
-        for notification in notifications:
-            (matching if match(notification) else remaining).append(notification)
+        Retrieved messages are considered to be consumed, and therefore they
+        are removed from the list of pending notifications.
 
-        notifications = matching
+        @param filter: If given, only those notifications matching the
+            specified criteria will be retrieved. The criteria matches as
+            follows:
 
-    session["notifications"] = remaining
-    return notifications
+                * If set to a string, it designates a single notification
+                  category to retrieve.
+                * If set to a subclass of L{Notification}, only notifications
+                  that are instances of that type will be retrieved.
+                * If set to a tuple of subclasses of L{Notification}, only
+                  notifications that are instances of any of the indicated
+                  types will be retrieved.
+                * If set to a callable, it will be used as filter function,
+                  taking a L{Notification} as its single parameter, and
+                  returning True if the notification is to be retrieved, or
+                  False if it should be ignored.
+                * If set to a sequence (list, tuple, set), it designates a set
+                  of categories; notifications belonging to any of the
+                  specified categories will be retrieved.
+
+        @return: The list of pending notification messages.
+        @rtype: L{Notification} list
+        """
+        notifications = session.get("notifications")
+
+        if notifications is None:
+            return []
+
+        remaining = []
+
+        if filter:
+            matching = []
+
+            if isinstance(filter, basestring):
+                match = lambda notification: notification.category == filter
+            elif (
+                isinstance(filter, type) and issubclass(filter, Notification)
+                or (
+                    isinstance(filter, tuple)
+                    and filter
+                    and isinstance(filter[0], type)
+                    and issubclass(filter[0], Notification)
+                )
+            ):
+                match = lambda notification: isinstance(notification, filter)
+            elif callable(filter):
+                match = filter
+            elif hasattr("__contains__", filter):
+                match = lambda notification: notification.category in filter
+            else:
+                raise TypeError(
+                    "The 'filter' parameter for the pop_user_notifications() "
+                    "function should be a string, a sequence or callable, got "
+                    "%s instead" % type(filter)
+                )
+
+            for notification in notifications:
+                (matching if match(notification) else remaining).append(notification)
+
+            notifications = matching
+
+        session["notifications"] = remaining
+        return notifications
+
+    view_class = "woost.views.Notification"
+
+    def create_view(self):
+        view = templates.new(self.view_class)
+        view.notification = self
+        return view
 

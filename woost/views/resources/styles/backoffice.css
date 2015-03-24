@@ -2020,13 +2020,13 @@ body.scripted .BackOfficeLayout .ThumbnailsContentView .collection_display input
     bottom: 0;
 }
 
-.BackOfficeLayout .notification {
+.BackOfficeLayout .notification_entry {
     padding: 0.8em;
     width: 50%;
     margin: auto;
 }
 
-.BackOfficeLayout .notification .close_notification_button {
+.BackOfficeLayout .notification_entry .close_notification_button {
     float: right;
     background-image: none;
     background-color: transparent;

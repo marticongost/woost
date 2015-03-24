@@ -19,7 +19,6 @@ from cocktail.controllers import (
     Location
 )
 from woost.models import File, Configuration, get_current_user
-from woost.controllers.notifications import notify_user
 from woost.controllers.backoffice.basebackofficecontroller \
     import BaseBackOfficeController
 from woost.extensions.facebookpublication import FacebookPublicationExtension

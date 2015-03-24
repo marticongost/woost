@@ -9,17 +9,17 @@
 
 cocktail.bind(".NotificationBox", function ($notificationBox) {
 
-    $notificationBox.find(".notification").each(function () {
+    $notificationBox.find(".notification_entry").each(function () {
         jQuery(cocktail.instantiate("woost.views.NotificationBox.close_notification_button"))
             .click(function () {
-                jQuery(this).closest(".notification").remove();
+                jQuery(this).closest(".notification_entry").remove();
             })
             .appendTo(this);
     });
 
     // Hide transient notifications
     setTimeout(
-        function () { $notificationBox.find(".notification.transient").hide("slow"); },
+        function () { $notificationBox.find(".notification_entry.transient").hide("slow"); },
         this.notificationTimeout || 2000
     );
 });

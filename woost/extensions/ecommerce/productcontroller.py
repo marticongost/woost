@@ -8,7 +8,7 @@ from cocktail.translations import translations
 from cocktail.controllers import request_property, Location
 from cocktail.controllers.formprocessor import FormProcessor, Form
 from woost.models import Publishable
-from woost.controllers.notifications import notify_user
+from woost.controllers.notifications import Notification
 from woost.controllers.publishablecontroller import PublishableController
 from woost.extensions.ecommerce.ecommerceproduct import ECommerceProduct
 from woost.extensions.ecommerce.ecommercepurchase import ECommercePurchase
@@ -51,14 +51,14 @@ class ProductController(FormProcessor, PublishableController):
             Basket.get().add_purchase(self.instance)
             Basket.store()
 
-            notify_user(
+            Notification(
                 translations(
                     "woost.extensions.ecommerce.product_added_notice",
                     product = self.product
                 ),
                 "product_added",
                 transient = False
-            )
+            ).emit()
 
             if self.redirect_to_basket:
                 raise cherrypy.HTTPRedirect(

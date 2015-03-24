@@ -9,7 +9,7 @@ from simplejson import loads
 from cocktail.persistence import datastore
 from cocktail.translations import translations
 from cocktail.controllers import Location
-from woost.controllers.notifications import notify_user
+from woost.controllers.notifications import Notification
 from woost.controllers.backoffice.useractions import UserAction
 from woost.extensions.facebookpublication.facebookpublicationtarget \
     import FacebookPublicationTarget
@@ -34,14 +34,13 @@ class FBPublishAuthUserAction(UserAction):
 
         # Authorization failed
         if error:
-            notify_user(
+            Notification(
                 translations(
                     "woost.extensions.facebookauthentication."
                     "fbpublish_auth.error",
                 ),
-                category = "error",
-                transient = False
-            )
+                category = "error"
+            ).emit()
 
         # Authorization successful
         elif code:
@@ -66,15 +65,14 @@ class FBPublishAuthUserAction(UserAction):
             response_body = response.read()
 
             if response_status < 200 or response_status > 299:
-                notify_user(
+                Notification(
                     translations(
                         "woost.extensions.facebookauthentication."
                         "fbpublish_auth.oauth_error",
                         response = response_body
                     ),
-                    category = "error",
-                    transient = False
-                )
+                    category = "error"
+                ).emit()
                 return
 
             auth_token = response_body.split("&")[0].split("=")[1]
@@ -100,13 +98,13 @@ class FBPublishAuthUserAction(UserAction):
             publication_target.auth_token = auth_token
             datastore.commit()
 
-            notify_user(
+            Notification(
                 translations(
                     "woost.extensions.facebookauthentication."
                     "fbpublish_auth.success"
                 ),
                 category = "success"
-            )
+            ).emit()
 
         # Begin authorization request
         else:

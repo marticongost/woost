@@ -875,6 +875,12 @@ translations.define("woost.views.NotificationBox.close_notification_button",
     en = u"Hide this message"
 )
 
+translations.define("woost.controllers.notifications.Notification-instance",
+    ca = lambda instance: instance.message,
+    es = lambda instance: instance.message,
+    en = lambda instance: instance.message
+)
+
 # woost.views.EditLink
 #------------------------------------------------------------------------------
 translations.define("woost.views.EditLink-publishable_target",

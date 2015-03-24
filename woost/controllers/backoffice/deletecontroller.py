@@ -16,7 +16,7 @@ from woost.models import (
     delete_validating,
     get_current_user
 )
-from woost.controllers.notifications import notify_user
+from woost.controllers.notifications import Notification
 from woost.controllers.backoffice.editstack import EditNode
 from woost.controllers.backoffice.basebackofficecontroller \
     import BaseBackOfficeController
@@ -106,14 +106,13 @@ class DeleteController(BaseBackOfficeController):
                 and not isinstance(stack[-1], EditNode):
                     stack.pop()
 
-                notify_user(
+                Notification(
                     translations(
                         "woost.controllers.DeleteController."
                         "node_deleted_notice"
                     ),
-                    category = "error",
-                    transient = True
-                )
+                    category = "error"
+                ).emit()
 
         if stack:
             stack.go()
