@@ -362,13 +362,13 @@ class Item(PersistentObject):
                     for member in item.__class__.iter_members()
                     if member.versioned
                 )
-                change.item_state = item._get_revision_state()
-                change.changeset = changeset
-                changeset.changes[item.id] = change
 
                 if item.author is None:
                     item.author = changeset.author
 
+                change.item_state = item._get_revision_state()
+                change.changeset = changeset
+                changeset.changes[item.id] = change
                 change.insert(event.inserted_objects)
 
     # Extend item modification to make it versioning aware

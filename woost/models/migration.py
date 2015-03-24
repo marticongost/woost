@@ -1084,3 +1084,19 @@ def index_publishable_parent(e):
     from woost.models import Publishable
     Publishable.parent.rebuild_index()
 
+#------------------------------------------------------------------------------
+
+step = MigrationStep("Fix 'author' member in Change.item_state")
+
+@when(step.executing)
+def fix_author_in_change_item_state(e):
+    from woost.models import Change
+    for change in Change.select():
+        if (
+            change.action == "create"
+            and change.target is not None
+            and change.item_state is not None
+            and change.item_state.get("author") is None
+        ):
+            change.item_state["author"] = change.target.author
+
