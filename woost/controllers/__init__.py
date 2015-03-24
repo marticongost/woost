@@ -12,6 +12,6 @@ from cocktail.controllers import context
 from woost.controllers.cmscontroller import CMSController
 from woost.controllers.module import Module
 from woost.controllers.basecmscontroller import BaseCMSController
-from woost.controllers.notifications import notify_user
+from woost.controllers.notifications import notify_user, Notification
 from woost.controllers.asyncupload import async_uploader
 

@@ -17,7 +17,7 @@ from cocktail.controllers import (
     Form,
     Location
 )
-from woost.controllers.notifications import notify_user
+from woost.controllers.notifications import Notification
 from woost.extensions.ecommerce.ecommercepurchase import ECommercePurchase
 from woost.extensions.ecommerce.basket import Basket
 from woost.extensions.ecommerce.orderstepcontroller import (
@@ -77,11 +77,11 @@ class BasketController(FormProcessor, Controller):
             Basket.store()
 
         def after_submit(self):
-            notify_user(
+            Notification(
                 translations("woost.extensions.ecommerce."
                              "set_quantities_notice"),
                 category = "success"
-            )
+            ).emit()
 
             if self.controller.action != "proceed":
                 Location.get_current().go("GET")

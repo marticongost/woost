@@ -15,7 +15,7 @@ from woost.models import (
     changeset_context,
     get_current_user
 )
-from woost.controllers.notifications import notify_user
+from woost.controllers.notifications import Notification
 from woost.controllers.backoffice.basebackofficecontroller \
     import BaseBackOfficeController
 
@@ -146,7 +146,7 @@ class DragAndDropController(BaseBackOfficeController):
                         collection.append(dragged_object)
         relate()
 
-        notify_user(
+        Notification(
             translations(
                 "woost.controllers.backoffice.DragAndDropController"
                 ".drop_notification",
@@ -154,9 +154,8 @@ class DragAndDropController(BaseBackOfficeController):
                 target_object = self.target_object,
                 target_member = self.target_member
             ),
-            "success",
-            transient = False
-        )
+            "success"
+        ).emit()
 
     @request_property
     def output(self):

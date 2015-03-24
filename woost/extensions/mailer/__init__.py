@@ -48,7 +48,7 @@ class MailerExtension(Extension):
 
     def _load(self):
 
-        from woost.controllers.notifications import notify_user
+        from woost.controllers.notifications import Notification
         from woost.controllers.backoffice.basebackofficecontroller import \
             BaseBackOfficeController
         from woost.controllers.backoffice.itemcontroller import \
@@ -90,7 +90,7 @@ class MailerExtension(Extension):
                 event.exception,
                 RunningMailingError
             ):
-                notify_user(translations(event.exception), "error")
+                Notification(translations(event.exception), "error").emit()
                 raise cherrypy.HTTPRedirect(event.source.contextual_uri())
 
         # Disable interactive features from rendered pages when rendering

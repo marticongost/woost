@@ -44,7 +44,7 @@ from woost.models.blockutils import (
     type_is_block_container,
     schema_tree_has_block_container
 )
-from woost.controllers.notifications import notify_user
+from woost.controllers.notifications import Notification
 from woost.controllers.backoffice.editstack import (
     EditNode,
     SelectionNode,
@@ -651,14 +651,13 @@ class DuplicateAction(UserAction):
             return copy
 
         copy = duplicate()
-        notify_user(
+        Notification(
             translations(
                 "woost.duplicate_created_notice",
                 source = selection[0]
             ),
-            "success",
-            transient = False
-        )
+            "success"
+        ).emit()
         raise cherrypy.HTTPRedirect(controller.edit_uri(copy))
 
 
@@ -846,10 +845,10 @@ class InvalidateCacheAction(UserAction):
             for item in selection:
                 item.clear_cache()
 
-        notify_user(
+        Notification(
             translations("woost.cache_invalidated_notice", subset = selection),
             "success"
-        )
+        ).emit()
 
 
 class SelectAction(UserAction):
@@ -1182,20 +1181,20 @@ class PasteBlockAction(UserAction):
         clipboard = get_block_clipboard_contents()
 
         if not clipboard:
-            notify_user(
+            Notification(
                 translations("woost.block_clipboard.empty"),
                 "error"
-            )
+            ).emit()
         else:
             try:
                 block = Block.require_instance(clipboard["block"])
                 src_parent = Item.require_instance(clipboard["block_parent"])
                 src_slot = type(src_parent).get_member(clipboard["block_slot"])
             except:
-                notify_user(
+                Notification(
                     translations("woost.block_clipboard.error"),
                     "error"
-                )
+                ).emit()
             else:
                 # Remove the block from the source location
                 if clipboard["mode"] == "cut":

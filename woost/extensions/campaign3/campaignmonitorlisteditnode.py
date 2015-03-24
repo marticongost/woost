@@ -6,7 +6,7 @@ u"""
 from cocktail.events import event_handler
 from cocktail.translations import translations
 from woost.controllers.backoffice.editstack import EditNode
-from woost.controllers.notifications import notify_user
+from woost.controllers.notifications import Notification
 
 
 class CampaignMonitorListEditNode(EditNode):
@@ -18,20 +18,19 @@ class CampaignMonitorListEditNode(EditNode):
         try:
             item.update()
         except Exception, e:
-            notify_user(
+            Notification(
                 translations(
                     "woost.extensions.campaignmonitorlisteditnode.CampaignMonitorListEditNode failed synchronization",
                     item = item,
                     exception = e
                 ),
-                "error",
-                transient = False
-            )
+                "error"
+            ).emit()
         else:
-            notify_user(
+            Notification(
                 translations(
                     "woost.extensions.campaignmonitorlisteditnode.CampaignMonitorListEditNode synchronized changes",
                     item = item
                 ),
                 "success"
-            )
+            ).emit()

@@ -10,14 +10,14 @@ import cherrypy
 from cocktail.events import event_handler
 from cocktail.translations import translations
 from woost.controllers.backoffice.editstack import EditNode
-from woost.controllers.notifications import notify_user
+from woost.controllers.notifications import Notification
 
 
 class ExtensionEditNode(EditNode):
 
     def item_saved_notification(self, is_new, change):
         if change and "enabled" in change.changed_members:
-            notify_user(
+            Notification(
                 translations(
                     "woost.controllers.backoffice.ExtensionEditNode "
                     "%s extension needs reloading"
@@ -26,7 +26,7 @@ class ExtensionEditNode(EditNode):
                 ),
                 "notice",
                 transient = False
-            )
+            ).emit()
         else:
             EditNode.item_saved_notification(self, is_new, change)
 

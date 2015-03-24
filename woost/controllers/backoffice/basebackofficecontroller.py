@@ -25,7 +25,7 @@ from woost.models import (
     get_current_user
 )
 from woost.controllers import BaseCMSController
-from woost.controllers.notifications import notify_user
+from woost.controllers.notifications import Notification
 from woost.controllers.backoffice.useractions import (
     get_user_action,
     SelectionError
@@ -204,7 +204,7 @@ class BaseBackOfficeController(BaseCMSController):
             event.exception,
             WrongEditStackError
         ):
-            notify_user(translations(event.exception), "error")
+            Notification(translations(event.exception), "error").emit()
             raise cherrypy.HTTPRedirect(event.source.contextual_uri())
 
     def _invoke_user_action(self, action, selection):
@@ -217,7 +217,7 @@ class BaseBackOfficeController(BaseCMSController):
 
     def _handle_user_action_error(self, action, selection, error):
         if isinstance(error, tuple(self._graceful_user_action_errors)):
-            notify_user(translations(error), "error")
+            Notification(translations(error), "error").emit()
             self.go_back()
         else:
             raise error

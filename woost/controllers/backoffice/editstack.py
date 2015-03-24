@@ -46,7 +46,7 @@ from woost.models import (
     ReadTranslationPermission
 )
 from woost.models.blockutils import add_block
-from woost.controllers.notifications import notify_user, pop_user_notifications
+from woost.controllers.notifications import Notification
 
 
 class EditStacksManager(object):
@@ -344,7 +344,7 @@ class EditStack(ListWrapper):
                 # clearly not ideal, but the alternative (having them stack up
                 # and show all at once whenever the user opens the backoffice)
                 # is not that great either.
-                pop_user_notifications()
+                Notification.pop()
                 raise cherrypy.HTTPRedirect(self.root_url)
             else:
                 raise cherrypy.HTTPRedirect(
@@ -1006,8 +1006,11 @@ class EditNode(StackNode):
                     "woost.views.BackOfficeEditView Create another"
                 )
             )
+            transient = False
+        else:
+            transient = True
 
-        notify_user(msg, "success", transient = False)
+        Notification(msg, "success", transient = transient).emit()
 
     def add_translation(self, language):
 

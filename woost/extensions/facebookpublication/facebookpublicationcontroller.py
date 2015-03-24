@@ -16,7 +16,6 @@ from cocktail.controllers import (
     Location
 )
 from woost.models import Publishable, get_current_user
-from woost.controllers.notifications import notify_user
 from woost.controllers.backoffice.basebackofficecontroller \
     import BaseBackOfficeController
 from woost.extensions.opengraph import OpenGraphExtension

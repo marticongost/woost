@@ -11,7 +11,7 @@ from simplejson import loads
 from cocktail.persistence import datastore
 from cocktail.translations import translations
 from cocktail.controllers import Location, session
-from woost.controllers.notifications import notify_user
+from woost.controllers.notifications import Notification
 from woost.controllers.backoffice.useractions import UserAction
 from woost.extensions.twitterpublication.exceptions import TwitterAPIError
 from woost.extensions.twitterpublication.twitterpublicationtarget \
@@ -83,19 +83,19 @@ class TwitterAuthUserAction(UserAction):
                 datastore.commit()
 
         except TwitterAPIError, ex:
-            notify_user(
+            Notification(
                 translations(ex),
                 category = "error",
                 transient = False
-            )
+            ).emit()
         else:
-            notify_user(
+            Notification(
                 translations(
                     "woost.extensions.twitterpublication."
                     "successful_authorization_notice"
                 ),
                 category = "success"
-            )
+            ).emit()
 
 TwitterAuthUserAction("twitter_auth").register()
 

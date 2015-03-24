@@ -20,7 +20,7 @@ from woost.models import (
     InstallationSyncPermission
 )
 from woost.models.synchronization import Synchronization
-from woost.controllers.notifications import notify_user
+from woost.controllers.notifications import Notification
 from woost.controllers.backoffice.editcontroller import EditController
 from woost.controllers.backoffice.useractions import get_user_action
 
@@ -109,10 +109,10 @@ class InstallationSyncController(EditController):
         # Find importable content again
         self.comparision = self.synchronization.compare_content()
 
-        notify_user(
+        Notification(
             translations("woost.controllers.InstallationSyncController.success"),
             "success"
-        )
+        ).emit()
 
     @request_property
     def output(self):
