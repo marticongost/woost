@@ -3605,7 +3605,7 @@ div.success_label {
     display: inline-block;
 }
 
-.BackOfficeLayout .ItemDisplay:hover .text_wrapper {
+.BackOfficeLayout .ItemDisplay:hover > .label .text_wrapper {
     border-bottom-style: solid;
 }
 
