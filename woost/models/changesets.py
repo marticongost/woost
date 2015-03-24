@@ -167,6 +167,39 @@ class Change(PersistentObject):
         indexed = True
     )
 
+    def get_previous_change(self):
+        target = self.target
+        if target is not None:
+            changes = target.changes
+            index = changes.index(self)
+            if index > 0:
+                return changes[index - 1]
+
+    def diff(self, other_change = None):
+
+        if other_change is None:
+            other_change = self.get_previous_change()
+
+        if other_change is None:
+            raise ValueError(
+                "Can't obtain the diff for %r, it has no parent change"
+            )
+
+        model = self.target.__class__
+        adapter = schema.Adapter()
+        adapter.exclude([
+            member.name
+            for member in model.iter_members()
+            if not member.versioned
+        ])
+        diff_schema = adapter.export_schema(model)
+
+        return schema.diff(
+            self.item_state,
+            other_change.item_state,
+            diff_schema
+        )
+
     def __translate__(self, language, **kwargs):
         return translations(
             "woost.models.changesets.Change description",
