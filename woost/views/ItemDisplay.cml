@@ -39,6 +39,7 @@
         py:tag="button"
         type="submit"
         name="action"
+        formmethod="post"
         py:item="@{self.item}"
         py:image_factory="@{self.image_factory}"
         py:icon_visible="@{self.icon_visible}"
