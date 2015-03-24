@@ -306,6 +306,14 @@ body {
     text-decoration: underline;
 }
 
+.BackOfficeLayout .ContentTable tr.selected td .ItemLabel .text_wrapper {
+    color: white;
+}
+
+.BackOfficeLayout .ContentTable tr.selected td .ItemContextMenu .ItemLabel .text_wrapper {
+    color: black;
+}
+
 .BackOfficeLayout input[type=text],
 .BackOfficeLayout input[type=password],
 .BackOfficeLayout input[type=url],
