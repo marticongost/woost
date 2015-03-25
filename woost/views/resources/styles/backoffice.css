@@ -2022,17 +2022,22 @@ body.scripted .BackOfficeLayout .ThumbnailsContentView .collection_display input
 
 .BackOfficeLayout .notification_entry {
     padding: 0.8em;
+    padding-right: 2em;
     width: 50%;
     margin: auto;
+    position: relative
 }
 
 .BackOfficeLayout .notification_entry .close_notification_button {
-    float: right;
+    position: absolute;
+    top: 0.5em;
+    right: 0.5em;
+    padding: 0;
+    margin: 0;
     background-image: none;
     background-color: transparent;
     border: none;
     box-shadow: none;
-    margin-left: 0.5em;
     cursor: pointer;
 }
 
