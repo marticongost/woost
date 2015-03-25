@@ -100,10 +100,11 @@ def _reference_backoffice_search_control(
     if member.class_family is None and member.related_type is not None:
         display = templates.new("woost.views.Autocomplete")
         display.ajax_search_threshold = None
-        display.ajax_url = (
-            "/autocomplete/%s/QUERY"
-            % member.related_type.get_qualified_name(include_ns = True)
-        )
+        if not member.original_member.get_qualified_name():
+            display.ajax_url = (
+                "/autocomplete/%s/QUERY"
+                % member.related_type.get_qualified_name(include_ns = True)
+            )
         return display
 
 backoffice_search_control = EditControlGenerator(
