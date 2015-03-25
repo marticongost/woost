@@ -87,7 +87,11 @@ class Notification(object):
         """Stores the notification, so it can be retrieved by a call to
         L{pop}.
         """
-        session["notifications"].append(self)
+        notifications = session.get("notifications")
+        if notifications is None:
+            session["notifications"] = [self]
+        else:
+            notifications.append(self)
 
     @classmethod
     def pop(cls, filter = None):
