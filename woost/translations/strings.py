@@ -1588,34 +1588,28 @@ translations.define(
 )
 
 translations.define(
-    "woost.views.BackOfficeEditView Changes saved",
-    ca = lambda item, is_new:
+    "woost.controllers.backoffice.editstack.ItemSavedNotification-instance",
+    ca = lambda instance:
         (
             u"S'ha creat l'element <strong>%s</strong>"
-            if is_new
+            if instance.item_is_new
             else u"Canvis a <strong>%s</strong> desats"
         )
-        % translations(item, "ca"),
-    es = lambda item, is_new:
+        % translations(instance.item),
+    es = lambda instance:
         (
             u"Se ha creado el elemento <strong>%s</strong>"
-            if is_new
+            if instance.item_is_new
             else u"Cambios en <strong>%s</strong> guardados"
         )
-        % translations(item, "es"),
+        % translations(instance.item),
     en = lambda item, is_new:
         (
             u"New item <strong>%s</strong> stored"
-            if is_new
+            if instance.item_is_new
             else u"Saved changes to <strong>%s</strong>"
         )
-        % translations(item, "en")
-)
-
-translations.define("woost.views.BackOfficeEditView Create another",
-    ca = u"Crear un altre element",
-    es = u"Crear otro elemento",
-    en = u"Create another item"
+        % translations(item.instance)
 )
 
 translations.define(
