@@ -771,6 +771,11 @@ body.modal {
     display: inline-block;
 }
 
+.BackOfficeLayout .ContentForm ul.control {
+    margin: 0.2em 0;
+    padding-left: 1.5em;
+}
+
 /* DropdownPanel
 -----------------------------------------------------------------------------*/
 .scripted .DropdownPanel .dropdown_arrow {
