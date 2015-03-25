@@ -2221,6 +2221,10 @@ body.scripted .BackOfficeLayout .ThumbnailsContentView .collection_display input
     padding-right: 0.3em;
 }
 
+.BackOfficeItemView .item_buttons.toolbar {
+    margin-top: 2em;
+}
+
 .BackOfficeLayout .ItemSelector {
     padding: 0.1em;
 }
