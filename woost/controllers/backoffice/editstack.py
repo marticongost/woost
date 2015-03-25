@@ -24,7 +24,12 @@ from cocktail.events import Event, EventHub, event_handler
 from cocktail.pkgutils import resolve
 from cocktail import schema
 from cocktail.translations import translations, iter_language_chain
-from cocktail.controllers import context, get_parameter, session
+from cocktail.controllers import (
+    context,
+    get_parameter,
+    session,
+    request_property
+)
 from cocktail.persistence import (
     PersistentObject,
     PersistentList, PersistentRelationList,
@@ -35,6 +40,7 @@ from cocktail.persistence import (
 from woost.models import (
     Configuration,
     Item,
+    Change,
     Block,
     get_current_user,
     CreatePermission,
@@ -991,26 +997,12 @@ class EditNode(StackNode):
         @param change: A change object describing the save operation.
         @type change: L{Change<woost.models.changeset.Change>}
         """
-        item = self.item
-        msg = translations(
-            "woost.views.BackOfficeEditView Changes saved",
-            item = item,
-            is_new = is_new
-        )
+        notification = self.create_item_saved_notification(is_new, change)
+        if notification is not None:
+            notification.emit()
 
-        if is_new and self.parent_node is None:
-            controller = cherrypy.request.handler_chain[-1]
-            msg += '. <a href="%s">%s</a>.' % (
-                controller.edit_uri(item.__class__, edit_stack = None),
-                translations(
-                    "woost.views.BackOfficeEditView Create another"
-                )
-            )
-            transient = False
-        else:
-            transient = True
-
-        Notification(msg, "success", transient = transient).emit()
+    def create_item_saved_notification(self, is_new, change):
+        return ItemSavedNotification(self.item, is_new, change)
 
     def add_translation(self, language):
 
@@ -1242,4 +1234,38 @@ class WrongEditStackError(Exception):
     def __init__(self, stack_id):
         Exception.__init__(self, "Can't find edit stack %s" % stack_id)
         self.stack_id = stack_id
+
+
+class ItemSavedNotification(Notification):
+    """A notification displayed when an object is saved using the backoffice
+    interface.
+    """
+
+    def __init__(self,
+        item,
+        item_is_new,
+        change,
+        category = "success",
+        transient = False
+    ):
+        Notification.__init__(
+            self,
+            category = category,
+            transient = transient
+        )
+        self.__item_id = item.id
+        self.__item_is_new = item_is_new
+        self.__change_id = None if change is None else change.id
+
+    @property
+    def item(self):
+        return Item.get_instance(self.__item_id)
+
+    @property
+    def item_is_new(self):
+        return self.__item_is_new
+
+    @request_property
+    def change(self):
+        return self.__change_id and Change.get_instance(self.__change_id)
 
