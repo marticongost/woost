@@ -3625,6 +3625,7 @@ div.success_label {
 .BackOfficeLayout .ItemDisplay > .label .text_wrapper {
     border-bottom: 1px dotted #aaa;
     display: inline-block;
+    white-space: nowrap;
 }
 
 .BackOfficeLayout .ItemDisplay:hover > .label .text_wrapper {
