@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?py
+from cocktail import schema
+from cocktail.stringutils import decapitalize
+from woost.views.uigeneration import backoffice_display
+?>
+
+<py:woost.views.ItemCard
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:py="http://www.whads.com/ns/cocktail/templates">
+
+    <?py
+    self.add_resource("/resources/styles/TranslationWorkflowRequestCard.css")
+    ?>
+
+    <py:with py:element="self.item_info">
+        <span py:id="translation_workflow_request_state_label">
+            @{decapitalize(translations(self.item.state))}
+        </span>
+        <span py:id="translation_workflow_request_assigned_translator_label">
+            <py:ready>
+                <?py
+                text = translations(
+                    "woost.views.TranslationWorkflowRequestCard."
+                    "translation_workflow_request_assigned_translator_label",
+                    translator = self.item.assigned_translator
+                )
+                if text:
+                    element.append(u", " + text)
+                else:
+                    element.visible = False
+                ?>
+            </py:ready>
+        </span>
+    </py:with>
+
+</py:woost.views.ItemCard>
+

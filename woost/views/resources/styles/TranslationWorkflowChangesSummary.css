@@ -1,0 +1,24 @@
+
+.NotificationBox .TranslationWorkflowChangesSummary {
+    margin-top: 1em;
+    padding-top: 1em;
+    border-top: 1px solid #aca;
+}
+
+.TranslationWorkflowChangesSummary .request_changes_list {
+    margin-top: 0.5em;
+    margin-left: 1em;
+}
+
+.TranslationWorkflowChangesSummary .request_cell {
+    padding-right: 1em;
+}
+
+.TranslationWorkflowChangesSummary .request_display {
+    font-weight: bold;
+}
+
+.TranslationWorkflowChangesSummary .request_change_cell {
+    font-size: 0.9em;
+}
+

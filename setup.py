@@ -101,7 +101,8 @@ of its features include:\n"
             "variables = woost.extensions.variables:VariablesExtension",
             "surveys = woost.extensions.surveys:SurveysExtension",
             "newsletters = woost.extensions.newsletters:NewslettersExtension",
-            "forms = woost.extensions.forms:FormsExtension"
+            "forms = woost.extensions.forms:FormsExtension",
+            "translationworkflow = woost.extensions.translationworkflow:TranslationWorkflowExtension"
         ]
     },
     # Woost can't yet access view resources (images, style sheets, client

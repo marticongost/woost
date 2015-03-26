@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?py
+from woost.controllers.backoffice.editstack import ItemSavedNotification
+?>
+
+<py:overlay
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:py="http://www.whads.com/ns/cocktail/templates"
+    py:class="woost.views.Notification">
+
+    <py:ready>
+        <py:woost.extensions.translationworkflow.TranslationWorkflowChangesSummary
+            py:id="translation_workflow_changes_summary"
+            py:if="isinstance(self.notification, ItemSavedNotification) and self.notification.change"
+            py:changeset="${self.notification.change.changeset}"/>
+    </py:ready>
+
+</py:overlay>
+
