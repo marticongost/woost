@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?py
+from cocktail import schema
+from woost.views.uigeneration import backoffice_display
+from woost.extensions.translationworkflow.utils \
+    import iter_changeset_translation_requests
+?>
+
+<div
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:py="http://www.whads.com/ns/cocktail/templates">
+
+    <?py-class
+    changeset = None
+    _request_changes = None
+    ?>
+
+    <?py
+    self.add_resource("/resources/styles/TranslationWorkflowChangesSummary.css")
+    ?>
+
+    <py:binding>
+        <?py
+        if self.changeset is None:
+            self.visible = False
+        else:
+            self._request_changes = iter_changeset_translation_requests(self.changeset)
+            if not self._request_changes:
+                self.visible = False
+        ?>
+    </py:binding>
+
+    <div py:id="explanation">
+        ${translations("woost.extensions.translationworkflow.TranslationWorkflowChangesSummary.explanation")}
+    </div>
+
+    <table py:id="request_changes_list">
+        <py:ready>
+            <py:new
+                py:element="self.create_entry(request, request_change)"
+                py:for="request, request_change in self._request_changes"/>
+        </py:ready>
+    </table>
+
+    <tr py:def="entry" py:args="request, request_change">
+        <td py:local_id="request_cell">
+            <py:new
+                py:local_id="request_display"
+                py:element="backoffice_display.create_object_display(request)"/>:
+        </td>
+        <td py:local_id="request_change_cell">
+            ${translations("woost.extensions.translationworkflow.TranslationWorkflowChangesSummary.entry.request_change_label-" + request_change)}
+        </td>
+    </tr>
+
+</div>
+

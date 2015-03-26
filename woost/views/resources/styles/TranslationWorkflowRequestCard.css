@@ -1,0 +1,11 @@
+
+.BackOfficeLayout .TranslationWorkflowRequestCard .translation_workflow_request_state_label,
+.BackOfficeLayout .TranslationWorkflowRequestCard .translation_workflow_request_assigned_translator_label {
+    color: #666;
+}
+
+.BackOfficeLayout .TranslationWorkflowRequestCard .translation_workflow_request_state_label {
+    margin-left: 0.3em;
+    font-weight: bold;
+}
+
