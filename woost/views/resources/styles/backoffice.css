@@ -3677,8 +3677,12 @@ div.success_label {
     color: #333;
 }
 
-.BackOfficeLayout .ItemContextMenu[data-woost-context-menu-state='closed'] {
+.scripted .BackOfficeLayout .ItemContextMenu {
     display: none;
+}
+
+.BackOfficeLayout .ItemContextMenu[data-woost-context-menu-state='expanded'] {
+    display: block;
 }
 
 .BackOfficeLayout .ItemContextMenu .item_actions {
