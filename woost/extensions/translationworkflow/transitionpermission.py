@@ -34,6 +34,7 @@ class TranslationWorkflowTransitionPermission(ContentPermission):
                 print permission_doesnt_match_style(
                     "transition doesn't match"
                 )
+            return False
 
         return True
 
