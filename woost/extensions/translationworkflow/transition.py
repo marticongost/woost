@@ -9,8 +9,6 @@ from cocktail import schema
 from cocktail.persistence import datastore
 from cocktail.controllers import request_property
 from woost.models import Item, File
-from woost.controllers.backoffice.useractions import get_user_action
-from .transitionaction import TranslationWorkflowTransitionAction
 
 
 class TranslationWorkflowTransition(Item):
@@ -91,16 +89,4 @@ class TranslationWorkflowTransition(Item):
             }
 
         self.executed(request = request, data = data)
-
-    def register_user_action(self):
-        action = self.get_user_action()
-        if action is None:
-            action = TranslationWorkflowTransitionAction(
-                "translation_workflow_transition_%d" % self.id
-            )
-            action._transition_id = self.id
-            action.register()
-
-    def get_user_action(self):
-        return get_user_action("translation_workflow_transition_%d" % self.id)
 

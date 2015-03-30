@@ -7,7 +7,10 @@ from cocktail.translations import translations
 from cocktail.persistence import transaction
 from cocktail.controllers import request_property, context, Location
 from woost.controllers.notifications import Notification
-from woost.controllers.backoffice.useractions import UserAction
+from woost.controllers.backoffice.useractions import (
+    UserAction,
+    get_user_action
+)
 from .request import TranslationWorkflowRequest
 
 
@@ -88,4 +91,18 @@ class TranslationWorkflowTransitionAction(UserAction):
         ).emit()
 
         Location.get_current().go("GET")
+
+    @classmethod
+    def register_transition_action(cls, transition):
+        action = cls.get_transition_action(transition)
+        if action is None:
+            action = cls("translation_workflow_transition_%d" % transition.id)
+            action._transition_id = transition.id
+            action.register()
+
+    @classmethod
+    def get_transition_action(cls, transition):
+        return get_user_action(
+            "translation_workflow_transition_%d" % transition.id
+        )
 
