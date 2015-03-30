@@ -12,6 +12,7 @@ from woost.controllers.backoffice.useractions import (
     get_user_action
 )
 from .request import TranslationWorkflowRequest
+from .transitionpermission import TranslationWorkflowTransitionPermission
 
 
 class TranslationWorkflowTransitionAction(UserAction):
@@ -59,6 +60,13 @@ class TranslationWorkflowTransitionAction(UserAction):
                 return False
 
         return UserAction.is_available(self, context, target)
+
+    def is_permitted(self, user, target):
+        return user.has_permission(
+            TranslationWorkflowTransitionPermission,
+            translation_request = None if isinstance(target, type) else target,
+            transition = self.transition
+        )
 
     def invoke(self, controller, selection):
 
