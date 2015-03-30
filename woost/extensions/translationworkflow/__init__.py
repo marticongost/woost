@@ -131,13 +131,14 @@ class TranslationWorkflowExtension(Extension):
         from woost.controllers.backoffice.basebackofficecontroller \
             import BaseBackOfficeController
         from .transition import TranslationWorkflowTransition
-        from .transitionaction import TranslationWorkflowTransitionAction
+        from .transitionaction \
+            import TranslationWorkflowTransitionAction as TWTransAction
 
         @when(BaseBackOfficeController.before_request)
         def register_transition_user_actions(e):
             for action in get_user_actions():
                 if (
-                    isinstance(action, TranslationWorkflowTransitionAction)
+                    isinstance(action, TWTransAction)
                     and action.transition is None
                 ):
                     action.enabled = False
@@ -145,7 +146,7 @@ class TranslationWorkflowExtension(Extension):
             for transition in TranslationWorkflowTransition.select(
                 order = "relative_order"
             ):
-                transition.register_user_action()
+                TWTransAction.register_transition_action(transition)
 
         # Install the transition controller
         from woost.controllers.backoffice.backofficecontroller \
