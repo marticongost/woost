@@ -29,7 +29,7 @@ class TranslationWorkflowTransitionPermission(ContentPermission):
         ):
             return False
 
-        if transition not in self.transitions:
+        if self.transitions and transition not in self.transitions:
             if verbose:
                 print permission_doesnt_match_style(
                     "transition doesn't match"
