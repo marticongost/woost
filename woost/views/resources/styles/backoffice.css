@@ -1536,6 +1536,15 @@ body.scripted .BackOfficeLayout .Table .row_selection_control {
     height: 18px;
 }
 
+.BackOfficeLayout .CollectionView .collection_settings .content_type_selector {
+    margin-right: 2em;
+}
+
+.BackOfficeLayout .CollectionView .collection_settings .content_type_selector > .button > .label {
+    font-size: 1.1em;
+    font-weight: bold;
+}
+
 .BackOfficeLayout .CollectionView .collection_settings .DropdownPanel .panel {
     text-align: left;
     -webkit-box-sizing: border-box;
