@@ -565,7 +565,7 @@ body.modal {
     padding: 0.5em;
 }
 
-.BackOfficeLayout .Form .control[cocktail-editable='read_only'] {
+.BackOfficeLayout .Form .control[data-cocktail-editable='read_only'] {
     color: #555;
 }
 

@@ -88,6 +88,8 @@ backoffice_edit_control = EditControlGenerator(
     }
 )
 
+backoffice_edit_control.read_only_ui_generator = backoffice_display
+
 # Custom search controls for the backoffice
 #------------------------------------------------------------------------------
 def _reference_backoffice_search_control(
