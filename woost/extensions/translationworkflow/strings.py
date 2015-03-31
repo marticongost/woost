@@ -27,6 +27,23 @@ translations.define("woost.actions.translation_workflow_requests",
     en = u"Translation requests"
 )
 
+translations.define("woost.extensions.translationworkflow.translation_path",
+    ca = lambda source_language, target_language, **kwargs:
+        ca_possessive(translations("locale", locale = source_language).lower())
+        + u" a "
+        + translations("locale", locale = target_language).lower(),
+    es = lambda source_language, target_language, **kwargs:
+        u"De "
+        + translations("locale", locale = source_language).lower()
+        + u" a "
+        + translations("locale", locale = target_language).lower(),
+    en = lambda source_language, target_language, **kwargs:
+        u"From "
+        + translations("locale", locale = source_language).lower()
+        + u" to "
+        + translations("locale", locale = target_language).lower()
+)
+
 # Configuration
 #------------------------------------------------------------------------------
 translations.define("Configuration.translation_workflow_paths",
