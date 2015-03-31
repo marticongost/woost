@@ -659,18 +659,21 @@ def _selection_error_ca(instance):
         bound = instance.action.max
         bound_label = u"màxim"
 
-    return u"No es pot %s una selecció %s; el %s és %s" % (
-        translations(instance.action).lower(),
-        plural2(
-            instance.selection_size,
-            u"d'un sol element",
-            u"de %d elements" % instance.selection_size
-        ),
-        bound_label,
-        plural2(
-            bound,
-            u"d'un element",
-            u"de %d elements" % bound
+    return (
+        u"No es pot aplicar l'acció <em>%s</em> a una selecció %s; "
+        u"el %s és %s" % (
+            translations(instance.action).lower(),
+            plural2(
+                instance.selection_size,
+                u"d'un sol element",
+                u"de %d elements" % instance.selection_size
+            ),
+            bound_label,
+            plural2(
+                bound,
+                u"d'un element",
+                u"de %d elements" % bound
+            )
         )
     )
 
@@ -682,18 +685,21 @@ def _selection_error_es(instance):
         bound = instance.action.max
         bound_label = u"máximo"
 
-    return u"No se puede %s una selección de %s; el %s es de %s" % (
-        translations(instance.action).lower(),
-        plural2(
-            instance.selection_size,
-            u"de un solo elemento",
-            u"%d elementos" % instance.selection_size
-        ),
-        bound_label,
-        plural2(
-            bound,
-            u"un elemento",
-            u"%d elementos" % bound
+    return (
+        u"No se puede aplicar la acción <em>%s</em> a una selección de %s; "
+        u"el %s es de %s" % (
+            translations(instance.action).lower(),
+            plural2(
+                instance.selection_size,
+                u"de un solo elemento",
+                u"%d elementos" % instance.selection_size
+            ),
+            bound_label,
+            plural2(
+                bound,
+                u"un elemento",
+                u"%d elementos" % bound
+            )
         )
     )
 
@@ -705,18 +711,21 @@ def _selection_error_en(instance):
         bound = instance.action.max
         bound_label = u"no more than"
 
-    return u"Can't %s a selection consisting of %s; must select %s %s" % (
-        translations(instance.action).lower(),
-        plural2(
-            instance.selection_size,
-            u"a single element",
-            u"%d elements" % instance.selection_size
-        ),
-        bound_label,
-        plural2(
-            bound,
-            u"one element",
-            u"%d elements" % bound
+    return (
+        u"Can't apply action <em>%s</em> to a selection consisting of %s; "
+        u"must select %s %s" % (
+            translations(instance.action).lower(),
+            plural2(
+                instance.selection_size,
+                u"a single element",
+                u"%d elements" % instance.selection_size
+            ),
+            bound_label,
+            plural2(
+                bound,
+                u"one element",
+                u"%d elements" % bound
+            )
         )
     )
 
