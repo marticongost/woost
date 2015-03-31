@@ -52,8 +52,15 @@ class TranslationWorkflowTransitionController(
     class TransitionForm(Form):
 
         @request_property
+        def transition_setup(self):
+            return (
+                resolve(self.controller.transition.transition_setup_class)
+                (self.controller.transition, self.controller.requests)
+            )
+
+        @request_property
         def schema(self):
-            return resolve(self.controller.transition.transition_schema)
+            return self.transition_setup.transition_schema
 
         def submit(self):
             Form.submit(self)
