@@ -41,6 +41,14 @@ translations.define("Configuration.translation_workflow_paths-explanation",
     en = u"Language pairings to generate translation requests."
 )
 
+# User
+#------------------------------------------------------------------------------
+translations.define("User.translation_proficiencies",
+    ca = u"Traduccions que pot realitzar",
+    es = u"Traducciones que puede realizar",
+    en = u"Translations he/she can perform"
+)
+
 # Item
 #------------------------------------------------------------------------------
 translations.define("Item.translation_requests",
@@ -296,10 +304,10 @@ translations.define("TranslationWorkflowTransition.relative_order",
     en = u"Relative order"
 )
 
-translations.define("TranslationWorkflowTransition.transition_schema",
-    ca = u"Esquema de transició",
-    es = u"Esquema de transición",
-    en = u"Transition schema"
+translations.define("TranslationWorkflowTransition.transition_setup_class",
+    ca = u"Codi de preparació de la transició",
+    es = u"Código de preparación de la transición",
+    en = u"Transition setup code"
 )
 
 translations.define("TranslationWorkflowTransition.transition_code",
@@ -358,10 +366,11 @@ translations.define(
 )
 
 translations.define(
-    "woost.extensions.translationworkflow.assign_translator_schema.translator",
-    ca = u"Traductor",
-    es = u"Traductor",
-    en = u"Translator"
+    "woost.extensions.translationworkflow."
+    "TranslationWorkflowAssignTransitionSetup.assignments",
+    ca = u"Assignació de traductors per idiomes",
+    es = u"Asignación de traductores por idiomas",
+    en = u"Per language translator assignments"
 )
 
 # TranslationWorkflowTransitionPermission
@@ -503,5 +512,23 @@ translations.define(
     ca = u"Cap (petició silenciada)",
     es = u"Ninguno (petición silenciada)",
     en = u"None (silenced request)"
+)
+
+# TranslationWorkflowPathEditor
+#------------------------------------------------------------------------------
+translations.define(
+    "woost.extensions.translationworkflow.TranslationWorkflowPathEditor."
+    "source_language_label",
+    ca = u"De",
+    es = u"De",
+    en = u"From"
+)
+
+translations.define(
+    "woost.extensions.translationworkflow.TranslationWorkflowPathEditor."
+    "target_language_label",
+    ca = u"a",
+    es = u"a",
+    en = u"to"
 )
 

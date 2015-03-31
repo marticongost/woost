@@ -58,9 +58,12 @@ class TranslationWorkflowExtension(Extension):
             "source_states": ["selected", "applied"],
             "target_state": "in_translation",
             "icon": "forward",
-            "schema": "woost.extensions.translationworkflow."
-                      "assigntranslatorschema.assign_translator_schema",
-            "code": "request.assigned_translator = data['translator']"
+            "setup": "woost.extensions.translationworkflow."
+                     "assigntransitionsetup."
+                     "TranslationWorkflowAssignTransitionSetup",
+            "code":
+                "path = request.source_language, request.target_language"
+                "request.assigned_translator = data['assignments'][path]"
         }),
         ("propose", {
             "source_states": ["in_translation"],
@@ -106,6 +109,7 @@ class TranslationWorkflowExtension(Extension):
             strings,
             typegroups,
             configuration,
+            user,
             item,
             role,
             request,
@@ -234,7 +238,7 @@ class TranslationWorkflowExtension(Extension):
                 ),
                 target_state = states[transition_data["target_state"]],
                 relative_order = rel_order,
-                transition_schema = transition_data.get("schema"),
+                transition_setup_class = transition_data.get("setup"),
                 transition_code = transition_data.get("code"),
                 icon = icon
             )

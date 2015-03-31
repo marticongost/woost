@@ -4,6 +4,7 @@ u"""
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
 from cocktail.translations import translations
+from cocktail.pkgutils import resolve
 from cocktail.persistence import transaction
 from cocktail.controllers import request_property, context, Location
 from woost.controllers.notifications import Notification
@@ -13,6 +14,7 @@ from woost.controllers.backoffice.useractions import (
 )
 from .request import TranslationWorkflowRequest
 from .transitionpermission import TranslationWorkflowTransitionPermission
+from .transitionnode import TranslationWorkflowTransitionNode
 
 
 class TranslationWorkflowTransitionAction(UserAction):
@@ -70,23 +72,34 @@ class TranslationWorkflowTransitionAction(UserAction):
 
     def invoke(self, controller, selection):
 
-        # If the transition requires parameters, spawn a new node in the edit
-        # stack and redirect the user
-        if self.transition.transition_schema:
-            from .transitionnode import TranslationWorkflowTransitionNode
-            node = TranslationWorkflowTransitionNode()
-            node.requests = selection
-            node.transition = self.transition
-            node.push_to_stack()
-            node.go()
+        transition_data = None
+
+        # Initialize the transition process. If the transition requires
+        # parameters, spawn a new node in the edit stack and redirect the user
+        # to a form.
+        if self.transition.transition_setup_class:
+            transition_setup = (
+                resolve(self.transition.transition_setup_class)
+                (self.transition, selection)
+            )
+            if transition_setup.multiple_choices:
+                node = TranslationWorkflowTransitionNode()
+                node.requests = selection
+                node.transition = self.transition
+                node.push_to_stack()
+                node.go()
+
+            transition_schema = transition_setup.transition_schema
+            if transition_schema is not None:
+                transition_data = {}
+                transition_schema.init_instance(transition_data)
 
         # Otherwise, execute the transition right away
-
         @transaction
         def execute_transition():
             transition = self.transition
             for request in selection:
-                transition.execute(request)
+                transition.execute(request, transition_data)
 
         Notification(
             translations(
