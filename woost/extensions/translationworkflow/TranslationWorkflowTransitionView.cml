@@ -33,13 +33,13 @@ from woost.views.uigeneration import backoffice_display
             py:id="transition_errors"
             py:errors="@{self.forms['transition_form'].errors}"/>
 
-        <py:cocktail.html.Form
+        <py:woost.views.ContentForm
             py:id="transition_form"
             py:form="@{self.forms['transition_form']}"
             method="POST">
             <input type="hidden" name="transition" value="@{str(self.transition.id)}"/>
             <input type="hidden" name="requests" value="@{','.join(str(request.id) for request in self.requests)}"/>
-        </py:cocktail.html.Form>
+        </py:woost.views.ContentForm>
 
     </py:with>
 
