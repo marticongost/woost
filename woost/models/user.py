@@ -56,9 +56,9 @@ class User(Item):
     anonymous = False
 
     members_order = [
-        "enabled",
         "email",
         "password",
+        "enabled",
         "prefered_language",
         "backoffice_language_chain"
     ]
@@ -102,7 +102,8 @@ class User(Item):
         enumeration = _backoffice_language_enumeration,
         translate_value = lambda value, language = None, **kwargs:
             "" if value is None else translations(value, language, **kwargs),
-        text_search = False
+        text_search = False,
+        listed_by_default = False
     )
 
     backoffice_language_chain = schema.Collection(
@@ -120,12 +121,14 @@ class User(Item):
 
     roles = schema.Collection(
         items = "woost.models.Role",
-        bidirectional = True
+        bidirectional = True,
+        listed_by_default = True
     )
 
     enabled = schema.Boolean(
         required = True,
-        default = True
+        default = True,
+        listed_by_default = False
     )
 
     @classmethod
