@@ -42,7 +42,6 @@ class EmailTemplate(Item):
     ]
 
     title = schema.String(
-        listed_by_default = False,
         required = True,
         unique = True,
         indexed = True,
@@ -87,7 +86,8 @@ class EmailTemplate(Item):
 
     subject = schema.String(
         translated = True,
-        edit_control = "cocktail.html.TextArea"
+        edit_control = "cocktail.html.TextArea",
+        listed_by_default = False
     )
 
     body = schema.String(

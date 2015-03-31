@@ -21,7 +21,6 @@ class VideoPlayerSettings(Item):
     ]
 
     title = schema.String(
-        listed_by_default = False,
         required = True,
         unique = True,
         indexed = True,

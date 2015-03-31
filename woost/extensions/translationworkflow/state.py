@@ -24,8 +24,7 @@ class TranslationWorkflowState(Item):
         unique = True,
         indexed = True,
         normalized_index = True,
-        descriptive = True,
-        listed_by_default = False
+        descriptive = True
     )
 
     plural_title = schema.String(

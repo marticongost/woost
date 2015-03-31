@@ -32,8 +32,7 @@ class Style(Item):
         normalized_index = True,
         full_text_indexed = True,
         descriptive = True,
-        translated = True,
-        listed_by_default = False
+        translated = True
     )
 
     applicable_to_text = schema.Boolean(
