@@ -17,6 +17,7 @@ from woost.controllers.backoffice.useractions import get_view_actions
     selectable = None
     submit_action_target = True
     button_images = True
+    keyboard_shortcuts = True
     hide_when_empty = True
     group_additional_actions = True
     min_frequent_actions = 1
@@ -87,7 +88,10 @@ from woost.controllers.backoffice.useractions import get_view_actions
             label.append(action_button.action_image)
 
         label.append(translations(action, target = self.action_target, context = action_context))
-        label["accesskey"] = translations("woost.actions." + action.id + ".shortcut")
+
+        if self.keyboard_shortcuts:
+            label["accesskey"] = translations("woost.actions." + action.id + ".shortcut")
+
         return action_button
 
     def get_action_value(self, action):
