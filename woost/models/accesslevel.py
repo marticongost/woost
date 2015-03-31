@@ -11,6 +11,7 @@ from woost.models import Item
 class AccessLevel(Item):
 
     type_group = "users"
+    backoffice_listing_includes_element_column = True
 
     members_order = [
         "title",

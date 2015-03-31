@@ -75,8 +75,7 @@ class Website(Item):
     site_name = schema.String(
         translated = True,
         descriptive = True,
-        member_group = "website",
-        listed_by_default = False
+        member_group = "website"
     )
 
     hosts = schema.Collection(
