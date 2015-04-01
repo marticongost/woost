@@ -2391,6 +2391,10 @@ button.TypeSelectorButton span {
     top: 0.4em;
 }
 
+.Autocomplete [data-autocomplete-entry] .text_wrapper {
+    white-space: nowrap;
+}
+
 .Autocomplete [data-autocomplete-entry] .type_label {
     margin-top: 0.2em;
     font-size: 0.8em;
