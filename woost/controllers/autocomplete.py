@@ -20,9 +20,10 @@ from woost.models import (
 )
 
 
-class MemberRestrictedAutocompleteSource(MemberAutocompleteSource):
+class CMSAutocompleteSource(MemberAutocompleteSource):
 
     publishable_check = False
+    include_entry_type = True
 
     @request_property
     def items(self):
@@ -42,6 +43,11 @@ class MemberRestrictedAutocompleteSource(MemberAutocompleteSource):
             )
 
         return items
+
+    def get_entry(self, item):
+        entry = MemberAutocompleteSource.get_entry(self, item)
+        entry["type"] = item.__class__.get_qualified_name(include_ns = True)
+        return entry
 
 
 class AutocompleteController(BaseAutocompleteController):

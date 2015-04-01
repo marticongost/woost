@@ -60,7 +60,7 @@ schema.Member.synchronizable = True
 
 # Extension property to customize the autocomplete behavior of members
 schema.SchemaObject.autocomplete_class = \
-    "woost.controllers.autocomplete.MemberRestrictedAutocompleteSource"
+    "woost.controllers.autocomplete.CMSAutocompleteSource"
 schema.Reference.autocomplete_class = \
-    "woost.controllers.autocomplete.MemberRestrictedAutocompleteSource"
+    "woost.controllers.autocomplete.CMSAutocompleteSource"
 
