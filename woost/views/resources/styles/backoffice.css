@@ -2254,6 +2254,7 @@ body.scripted .BackOfficeLayout .ThumbnailsContentView .collection_display input
 
 .BackOfficeFieldsView .ItemSelector-button {
     margin-right: 0.6em;
+    display: inline-block;
 }
 
 .BackOfficeFieldsView button.ItemSelector-button,
@@ -2274,6 +2275,7 @@ body.scripted .BackOfficeLayout .ThumbnailsContentView .collection_display input
     color: rgb(50,80,110);
     padding-left: 0.4em;
     padding-top: 0.2em;
+    padding-right: 1.2em;
 }
 
 .BackOfficeFieldsView .ItemSelector .new .selector_content {
