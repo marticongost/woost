@@ -57,6 +57,7 @@ from woost.controllers.asyncupload import async_uploader
 from woost.controllers.basecmscontroller import BaseCMSController
 from woost.controllers.imagescontroller import ImagesController
 from woost.controllers.autocomplete import AutocompleteController
+from woost.controllers.cmsmetadatacontroller import CMSMetadataController
 
 
 class CMSController(BaseCMSController):
@@ -681,4 +682,6 @@ class CMSController(BaseCMSController):
             }
             if user else None
         )
+
+    cms_metadata = CMSMetadataController()
 
