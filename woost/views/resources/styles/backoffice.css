@@ -2362,6 +2362,31 @@ button.TypeSelectorButton span {
     color: HighlightText;
 }
 
+/* Autocomplete
+-----------------------------------------------------------------------------*/
+.Autocomplete[data-woost-autocomplete-icon-factory] .text_box {
+    padding-left: 1.8em;
+    background-repeat: no-repeat;
+    background-position: 0.3em center;
+}
+
+.Autocomplete[data-woost-autocomplete-icon-factory] [data-autocomplete-entry] {
+    padding-left: 2.4em;
+    position: relative;
+}
+
+.Autocomplete [data-autocomplete-entry] .icon {
+    position: absolute;
+    left: 0.6em;
+    top: 0.4em;
+}
+
+.Autocomplete [data-autocomplete-entry] .type_label {
+    margin-top: 0.2em;
+    font-size: 0.8em;
+    color: #666;
+}
+
 /* ItemTranslationsSelector
 -----------------------------------------------------------------------------*/
 .BackOfficeItemView .translations_dropdown {
