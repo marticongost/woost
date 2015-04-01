@@ -2366,10 +2366,18 @@ button.TypeSelectorButton span {
 
 /* Autocomplete
 -----------------------------------------------------------------------------*/
+.Autocomplete[data-woost-autocomplete-icon-factory] {
+    position: relative;
+}
+
 .Autocomplete[data-woost-autocomplete-icon-factory] .text_box {
     padding-left: 1.8em;
-    background-repeat: no-repeat;
-    background-position: 0.3em center;
+}
+
+.Autocomplete[data-woost-autocomplete-icon-factory] .selection_icon {
+    position: absolute;
+    left: 0.4em;
+    top: 0.3em;
 }
 
 .Autocomplete[data-woost-autocomplete-icon-factory] [data-autocomplete-entry] {
