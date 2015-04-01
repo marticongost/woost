@@ -48,7 +48,6 @@ class TranslationWorkflowRequest(Item):
         type = Item,
         indexed = True,
         bidirectional = True,
-        editable = schema.READ_ONLY,
         text_search = True,
         relation_constraints = lambda ctx: [
             expr.IsInstanceExpression(
