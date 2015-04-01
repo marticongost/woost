@@ -6,6 +6,7 @@ u"""
 from cocktail.modeling import cached_getter
 from woost.models import Item
 from woost.controllers.backoffice.useractions import UserAction
+from .utils import get_models_included_in_translation_workflow
 
 
 class TranslationWorkflowRequestsAction(UserAction):
@@ -18,15 +19,7 @@ class TranslationWorkflowRequestsAction(UserAction):
 
     @cached_getter
     def content_type(self):
-        return tuple(
-            cls
-            for cls in Item.schema_tree()
-            if any(
-                member.translated
-                and member.included_in_translation_workflow
-                for member in cls.iter_members(recursive = False)
-            )
-        )
+        return get_models_included_in_translation_workflow()
 
     def get_url(self, controller, selection):
         return controller.contextual_uri(
