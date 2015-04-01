@@ -122,18 +122,7 @@ class ItemFieldsController(EditController):
 
     @cached_getter
     def fields_adapter(self):
-        adapter = schema.Adapter()
-        adapter.exclude([
-            member.name
-            for member in self.stack_node.content_type.iter_members()
-            if (
-                self.stack_node.item
-                and self.stack_node.item.is_inserted
-                and isinstance(member, (schema.RelationMember))
-                and member.bidirectional and member.related_end.integral
-            )
-        ])
-        return adapter
+        return schema.Adapter()
 
     @cached_getter
     def fields_schema(self):

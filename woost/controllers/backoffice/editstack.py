@@ -767,6 +767,17 @@ class EditNode(StackNode):
 
         user = get_current_user()
 
+        if (
+            self.item
+            and self.item.is_inserted
+            and isinstance(member, schema.RelationMember)
+            and member.bidirectional and member.related_end.integral
+        ):
+            if self.verbose_member_mode:
+                print styled("READ_ONLY", "yellow", style = "bold")
+                print styled("(integral related end)\n", "pink")
+            return schema.READ_ONLY
+
         if not user.has_permission(ReadMemberPermission, member = member):
             if self.verbose_member_mode:
                 print styled("NOT_EDITABLE", "magenta", style = "bold")
