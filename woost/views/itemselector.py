@@ -52,44 +52,27 @@ class ItemSelector(Element):
 
         if self.member:
 
+            user = get_current_user()
+
+            # New
+            if (
+                not self.existing_items_only
+                and any(
+                    user.has_permission(CreatePermission, target = cls)
+                    for cls in self.member.type.schema_tree()
+                )
+            ):
+                self.new_button = self.create_new_button()
+                self.buttons.append(self.new_button)
+
+            # Select
             if self.existing_items_only or not self.member.integral:
-                # Select
                 self.select_button = self.create_select_button()
                 self.buttons.append(self.select_button)
 
             if not self.existing_items_only:
 
-                user = get_current_user()
-
-                if self.member.integral:
-
-                    if self.value is None:
-                        # New
-                        if any(
-                            user.has_permission(CreatePermission, target = cls)
-                            for cls in self.member.type.schema_tree()
-                        ):
-                            self.new_button = self.create_new_button()
-                            self.buttons.append(self.new_button)
-                    else:
-                        # Edit
-                        if any(
-                            user.has_permission(ModifyPermission, target = cls)
-                            for cls in self.member.type.schema_tree()
-                        ):
-                            self.edit_button = self.create_edit_button()
-                            self.buttons.append(self.edit_button)
-
-                        # Delete
-                        if any(
-                            user.has_permission(DeletePermission, target = cls)
-                            for cls in self.member.type.schema_tree()
-                        ):
-                            self.delete_button = self.create_delete_button()
-                            self.buttons.append(self.delete_button)
-
-                elif self.value is not None:
-
+                if self.value is not None:
                     # Edit
                     if any(
                         user.has_permission(ModifyPermission, target = cls)
@@ -98,9 +81,14 @@ class ItemSelector(Element):
                         self.edit_button = self.create_edit_button()
                         self.buttons.append(self.edit_button)
 
-                    # Unlink
-                    self.unlink_button = self.create_unlink_button()
-                    self.buttons.append(self.unlink_button)
+                    # Delete
+                    if self.member.integral:
+                        if any(
+                            user.has_permission(DeletePermission, target = cls)
+                            for cls in self.member.type.schema_tree()
+                        ):
+                            self.delete_button = self.create_delete_button()
+                            self.buttons.append(self.delete_button)
 
         if self.value is None:
             self.add_class("empty_selection")

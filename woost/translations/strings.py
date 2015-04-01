@@ -805,12 +805,6 @@ translations.define("woost.views.ItemSelector select",
     en = u"Listing"
 )
 
-translations.define("woost.views.ItemSelector unlink",
-    ca = u"Desvincular",
-    es = u"Desvincular",
-    en = u"Unlink"
-)
-
 translations.define("woost.views.ItemSelector new",
     ca = u"Nou",
     es = u"Nuevo",
