@@ -9,16 +9,21 @@
 
 cocktail.bind(".Autocomplete", function ($autocomplete) {
 
+    var $selectionIcon = jQuery("<img>")
+        .addClass("selection_icon")
+        .hide()
+        .appendTo($autocomplete);
+
     function showSelectionIcon() {
         var entry = $autocomplete[0].selectedEntry;
         var iconFactory = $autocomplete.data("woost-autocomplete-icon-factory");
         if (entry && iconFactory) {
-            $autocomplete.find(".text_box").css(
-                "background-image", "url('/images/" + entry.value + "/icon16.png')"
-            );
+            $selectionIcon
+                .attr("src", "/images/" + entry.value + "/icon16.png")
+                .show();
         }
         else {
-            $autocomplete.find(".text_box").css("background-image", "none");
+            $selectionIcon.hide();
         }
     }
 
