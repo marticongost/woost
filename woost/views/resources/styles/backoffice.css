@@ -2238,17 +2238,17 @@ body.scripted .BackOfficeLayout .ThumbnailsContentView .collection_display input
     padding: 0.1em;
 }
 
-.BackOfficeLayout .ItemSelector .selection_label,
+.BackOfficeLayout .ItemSelector .selection_wrapper,
 .BackOfficeLayout .ItemSelector-buttons {
     display: inline-block;
 }
 
-.BackOfficeLayout .ItemSelector .selection_label {
+.BackOfficeLayout .ItemSelector .selection_wrapper {
     margin-top: 0.05em;
     margin-right: 1.4em;
 }
 
-.BackOfficeLayout .ItemSelector .selection_label:empty {
+.BackOfficeLayout .ItemSelector .selection_wrapper:empty {
     margin-right: 0;
 }
 
@@ -2287,7 +2287,7 @@ body.scripted .BackOfficeLayout .ThumbnailsContentView .collection_display input
     cursor: pointer;
 }
 
-.BackOfficeLayout .filters .ItemSelector .selection_label {
+.BackOfficeLayout .filters .ItemSelector .selection_wrapper {
     margin-top: 0.3em;
 }
 
@@ -2300,12 +2300,6 @@ button.TypeSelectorButton {
     text-align: left;
 }
 
-.BackOfficeLayout .ItemSelector .selection_label {
-    background-repeat: no-repeat;
-    color: rgb(75,75,75);
-}
-
-.BackOfficeLayout .ItemSelector .empty_selection,
 button.TypeSelectorButton span {
     padding-left: 0;
     font-style: italic;

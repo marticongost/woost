@@ -800,9 +800,9 @@ translations.define("woost.views.BackOfficeDeleteView.cancel_button",
 )
 
 translations.define("woost.views.ItemSelector select",
-    ca = u"Seleccionar",
-    es = u"Seleccionar",
-    en = u"Select"
+    ca = u"Llistat",
+    es = u"Listado",
+    en = u"Listing"
 )
 
 translations.define("woost.views.ItemSelector unlink",
