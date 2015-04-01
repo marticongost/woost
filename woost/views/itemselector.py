@@ -9,6 +9,7 @@ u"""
 from cocktail.modeling import extend, call_base
 from cocktail.translations import translations
 from cocktail.html import Element, templates
+from cocktail.html.hiddeninput import HiddenInput
 from woost.models import (
     Item,
     Publishable,
@@ -17,38 +18,33 @@ from woost.models import (
     DeletePermission,
     get_current_user
 )
+from woost.views.uigeneration import (
+    backoffice_selection_control,
+    backoffice_integral_selection_control
+)
 
 
 class ItemSelector(Element):
 
-    _empty_label = None
     existing_items_only = False
-
-    empty_label = ""
+    selection_ui_generator = backoffice_selection_control
+    integral_selection_ui_generator = backoffice_integral_selection_control
 
     def _build(self):
 
         Element._build(self)
 
-        self.add_resource("/resources/scripts/ItemSelector.js")
-        self.set_client_param("emptyLabel", self.empty_label)
-        self.set_client_param("selectorDialogURL",
-            Publishable.require_instance(
-                qname = "woost.backoffice"
-            ).get_uri(path = ["content"])
-        )
-
-        self.input = templates.new("cocktail.html.HiddenInput")
-        self.append(self.input)
-        self.data_binding_delegate = self.input
-
-        self.selection_label = templates.new("woost.views.ItemLabel")
-        self.selection_label.tag = "span"
-        self.selection_label.add_class("selection_label")
-        self.append(self.selection_label)
+        self.selection_wrapper = self.create_selection_wrapper()
+        self.append(self.selection_wrapper)
 
         self.buttons = self.create_buttons()
         self.append(self.buttons)
+
+    def _binding(self):
+        if self.member is not None:
+            self.selection_display = self.create_selection_display()
+            self.selection_wrapper.append(self.selection_display)
+            self.data_binding_delegate = self.selection_display
 
     def _ready(self):
 
@@ -107,11 +103,39 @@ class ItemSelector(Element):
                     self.buttons.append(self.unlink_button)
 
         if self.value is None:
-            self.selection_label.add_class("empty_selection")
-            self.selection_label.append(self.empty_label)
+            self.add_class("empty_selection")
+
+    def create_selection_wrapper(self):
+        selection_wrapper = Element()
+        selection_wrapper.add_class("selection_wrapper")
+        return selection_wrapper
+
+    def create_selection_display(self):
+
+        if self.member.integral:
+            ui_generator = self.integral_selection_ui_generator
         else:
-            self.input["value"] = self.value.id
-            self.selection_label.item = self.value
+            ui_generator = self.selection_ui_generator
+
+        selection_display = ui_generator.create_member_display(
+            self.data,
+            self.member,
+            self.value
+        )
+        selection_display.add_class("selection_display")
+
+        # Displays for integral relations will typically be read only; add a
+        # hidden input to hold their value if required.
+        if self.member.integral:
+            element = selection_display
+            while element.data_binding_delegate is not None:
+                element = element.data_binding_delegate
+            if not element.is_form_control:
+                hidden_input = HiddenInput()
+                selection_display.append(hidden_input)
+                selection_display.data_binding_delegate = hidden_input
+
+        return selection_display
 
     def create_buttons(self):
         buttons = Element()

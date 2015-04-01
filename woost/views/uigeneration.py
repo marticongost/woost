@@ -90,6 +90,20 @@ backoffice_edit_control = EditControlGenerator(
 
 backoffice_edit_control.read_only_ui_generator = backoffice_display
 
+# Custom selection controls for the item selector
+#------------------------------------------------------------------------------
+backoffice_selection_control = UIGenerator(
+    "backoffice_selection_control",
+    member_type_displays = {
+        schema.Reference: "woost.views.Autocomplete"
+    }
+)
+
+backoffice_integral_selection_control = UIGenerator(
+    "backoffice_integral_selection_control",
+    base_ui_generators = [backoffice_display]
+)
+
 # Custom search controls for the backoffice
 #------------------------------------------------------------------------------
 def _reference_backoffice_search_control(
