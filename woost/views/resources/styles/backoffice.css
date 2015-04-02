@@ -2028,7 +2028,7 @@ body.scripted .BackOfficeLayout .ThumbnailsContentView .collection_display input
 -----------------------------------------------------------------------------*/
 .BackOfficeLayout .notification_box {
     position: fixed;
-    z-index: 5000;
+    z-index: 500;
     left: 0;
     right: 0;
     bottom: 0;
