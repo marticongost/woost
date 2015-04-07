@@ -28,6 +28,10 @@ class TranslationWorkflowRequest(Item):
         "woost.extensions.translationworkflow.requesteditnode."
         "TranslationWorkflowRequestEditNode"
     )
+    edit_form = (
+        "woost.extensions.translationworkflow."
+        "TranslationWorkflowRequestForm"
+    )
 
     groups_order = [
         "translated_values",
