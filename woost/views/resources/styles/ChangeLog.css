@@ -1,0 +1,79 @@
+
+.ChangeLog ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.ChangeLog .changeset_group_heading {
+    font-weight: bold;
+    color: #555;
+    padding-bottom: 0.2em;
+    border-bottom: 2px solid #ccc;
+    margin-bottom: 0.8em;
+}
+
+.ChangeLog .changeset_group + .changeset_group {
+    margin-top: 2em;
+}
+
+.ChangeLog .changeset_list_entry + .changeset_list_entry {
+    padding-top: 0.8em;
+    border-top: 1px solid #ddd;
+    margin-top: 0.8em;
+}
+
+.ChangeLog .changeset_time_display,
+.ChangeLog .changeset_author_display {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.ChangeLog .changeset_time_display {
+    width: 3.5em;
+    color: #777;
+}
+
+.ChangeLog .change_list {
+    margin-top: 0.5em;
+    padding-left: 3.5em;
+}
+
+.ChangeLog .change_action_display,
+.ChangeLog .change_target_display {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.ChangeLog .change_action_display {
+    opacity: 0.5;
+}
+
+.ChangeLog [data-woost-ChangeLog-explicit='true'] .change_action_display {
+    opacity: 1;
+}
+
+.ChangeLog [data-woost-ChangeLog-action='create'] .change_action_display {
+    color: #060;
+}
+
+.ChangeLog [data-woost-ChangeLog-action='modify'] .change_action_display {
+    color: #226;
+}
+
+.ChangeLog [data-woost-ChangeLog-action='delete'] .change_action_display {
+    color: #600;
+}
+
+.ChangeLog .change_target_display {
+    margin-left: 0.4em !important;
+}
+
+.ChangeLog .change_diff {
+    margin-top: 0.6em;
+    margin-bottom: 1.5em;
+    border: 1px solid #ddd;
+    padding: 0.4em;
+    box-shadow: 0 2px 2px #ddd;
+}
+

@@ -39,11 +39,15 @@ from woost.views.htmldiff import html_diff
             b = [member.translate_value(b)]
             diffs = a, b
         ?>
-        <td py:local_id="member">${translations(member)}
-            <span class="language" py:if="member.translated">(${translations(language)})</span>
+        <td py:local_id="member">
+            <span py:local_id="member_label">${translations(member)}</span>
+            <span py:local_id="language_label" py:if="member.translated">${u" (%s)" % translations(language)}</span>:
         </td>
         <td py:local_id="previous_value">
             <div class="diff_unit" py:for="unit in diffs[0]">${unit}</div>
+        </td>
+        <td py:local_id="arrow_cell">
+            →
         </td>
         <td py:local_id="new_value">
             <div class="diff_unit" py:for="unit in diffs[1]">${unit}</div>
@@ -55,11 +59,6 @@ from woost.views.htmldiff import html_diff
     </p>
 
     <table py:id="differences" py:visible="@{self.changes}">
-        <tr py:local_id="header_row">
-            <th py:local_id="member">${translations("woost.views.BackOfficeDiffView member")}</th>
-            <th py:local_id="previous_value">${translations("woost.views.BackOfficeDiffView previous value")}</th>
-            <th py:local_id="new_value">${translations("woost.views.BackOfficeDiffView new value")}</th>
-        </tr>
         <py:ready>
             <?py
             if self.source_accessor is None:
