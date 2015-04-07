@@ -52,7 +52,7 @@ class TranslatedValuesExportRule(TranslatedValuesRule):
         adapter.copy(self.translation_map, properties = {
             "required": False,
             "translated": False,
-            "member_group": "translated_values"
+            "member_group": "translation_request.translated_values"
         })
         return adapter
 

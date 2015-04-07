@@ -10,7 +10,7 @@
 
     <py:with py:def="field_instance" py:args="member, language = None">
         <py:new
-            py:if="member.member_group == 'translated_values'"
+            py:if="member.member_group == 'translation_request.translated_values'"
             py:local_id="translation_source_display"
             py:element="self.create_translation_source_display(member)"
             py:before="field_instance.control"/>
