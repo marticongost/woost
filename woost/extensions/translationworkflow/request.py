@@ -34,7 +34,8 @@ class TranslationWorkflowRequest(Item):
     )
 
     groups_order = [
-        "translated_values",
+        "translation_request.info",
+        "translation_request.translated_values",
         "administration"
     ]
 
@@ -58,19 +59,22 @@ class TranslationWorkflowRequest(Item):
                 expr.Self,
                 get_models_included_in_translation_workflow()
             )
-        ]
+        ],
+        member_group = "translation_request.info"
     )
 
     source_language = LocaleMember(
         required = True,
         indexed = True,
-        editable = schema.READ_ONLY
+        editable = schema.READ_ONLY,
+        member_group = "translation_request.info"
     )
 
     target_language = LocaleMember(
         required = True,
         indexed = True,
-        editable = schema.READ_ONLY
+        editable = schema.READ_ONLY,
+        member_group = "translation_request.info"
     )
 
     state = schema.Reference(
@@ -86,7 +90,8 @@ class TranslationWorkflowRequest(Item):
         search_control = "cocktail.html.DropdownSelector",
         editable = schema.READ_ONLY,
         searchable = False,
-        listed_by_default = False
+        listed_by_default = False,
+        member_group = "translation_request.info"
     )
 
     assigned_translator = schema.Reference(
@@ -95,7 +100,8 @@ class TranslationWorkflowRequest(Item):
         indexed = True,
         editable = schema.READ_ONLY,
         edit_control = "cocktail.html.Autocomplete",
-        search_control = "cocktail.html.Autocomplete"
+        search_control = "cocktail.html.Autocomplete",
+        member_group = "translation_request.info"
     )
 
     comments = schema.Collection(
@@ -103,13 +109,15 @@ class TranslationWorkflowRequest(Item):
                 "TranslationWorkflowComment",
         bidirectional = True,
         integral = True,
-        editable = schema.NOT_EDITABLE
+        editable = schema.NOT_EDITABLE,
+        member_group = "translation_request.info"
     )
 
     translated_values = schema.Mapping(
         searchable = False,
         display = "woost.extensions.translationworkflow."
-                  "TranslationWorkflowTable"
+                  "TranslationWorkflowTable",
+        member_group = "translation_request.translated_values"
     )
 
     def apply_translated_values(self):

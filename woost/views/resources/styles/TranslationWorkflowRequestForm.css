@@ -26,3 +26,13 @@
     height: 8.1em;
 }
 
+.TranslationWorkflowRequestForm fieldset.translation_request fieldset {
+    display: inline-block;
+    vertical-align: top;
+    margin-top: 0;
+}
+
+.TranslationWorkflowRequestForm fieldset.translation_request fieldset + fieldset {
+    margin-left: 2em;
+}
+

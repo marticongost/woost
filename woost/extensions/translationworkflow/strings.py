@@ -108,6 +108,24 @@ translations.define("TranslationWorkflowRequest.tabs.all",
     en = u"All"
 )
 
+translations.define("TranslationWorkflowRequest.translation_request",
+    ca = u"Petició de traducció",
+    es = u"Petición de traducción",
+    en = u"Translation request"
+)
+
+translations.define("TranslationWorkflowRequest.translation_request.info",
+    ca = u"Dades de la petició",
+    es = u"Datos de la petición",
+    en = u"Request data"
+)
+
+translations.define("TranslationWorkflowRequest.translation_request.translated_values",
+    ca = u"Textos",
+    es = u"Textos",
+    en = u"Text"
+)
+
 translations.define("TranslationWorkflowRequest.translated_item",
     ca = u"Element a traduir",
     es = u"Elemento a traducir",
