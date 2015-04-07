@@ -10,7 +10,7 @@ import re
 from datetime import date, datetime
 from contextlib import contextmanager
 from cocktail.iteration import first
-from cocktail.modeling import getter, ListWrapper, SetWrapper, DictWrapper
+from cocktail.modeling import getter, copy_mutable_containers
 from cocktail.events import event_handler, when, Event, EventInfo
 from cocktail import schema
 from cocktail.translations import translations
@@ -323,13 +323,7 @@ class Item(PersistentObject):
                     for language, translation in self.translations.iteritems()
                 )
             else:
-                value = self.get(key)
-
-                # Make a copy of mutable objects
-                if isinstance(
-                    value, (list, set, ListWrapper, SetWrapper)
-                ):
-                    value = list(value)
+                value = copy_mutable_containers(self.get(key))
 
             state[key] = value
 
@@ -426,13 +420,7 @@ class Item(PersistentObject):
                 change.changed_members.add(member_name)
 
             if action in ("create", "modify"):
-                value = event.value
-
-                # Make a copy of mutable objects
-                if isinstance(
-                    value, (list, set, ListWrapper, SetWrapper)
-                ):
-                    value = list(value)
+                value = copy_mutable_containers(event.value)
 
                 if language:
                     change.item_state[member_name][language] = value
