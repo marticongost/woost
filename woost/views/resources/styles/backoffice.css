@@ -991,8 +991,7 @@ body.scripted .BackOfficeLayout .Table .row_selection_control {
     text-decoration: none;
 }
 
-.BackOfficeLayout .Table th,
-.ObjectDiff th {
+.BackOfficeLayout .Table th {
     background-position: bottom left;
     background-repeat: repeat-x;
     background-image: url(/resources/images/header.png);
@@ -3926,9 +3925,7 @@ div.success_label {
     border-collapse: collapse;
 }
 
-.BackOfficeInstallationSyncView .ObjectDiff .differences th,
 .BackOfficeInstallationSyncView .ObjectDiff .differences td,
-.diff_dialog .ObjectDiff .differences th,
 .diff_dialog .ObjectDiff .differences td {
     border: 1px solid #ccc;
     padding: 0.4em 0.8em !important;
@@ -3954,12 +3951,11 @@ div.success_label {
 /* ObjectDiff
 -----------------------------------------------------------------------------*/
 .ObjectDiff .differences {
-    margin: 1em 0;
-    font-size: 85%;
+    border-collapse: collapse;
 }
 
-.ObjectDiff .differences th {
-    padding-bottom: 0.75em;
+.ObjectDiff .differences .member_label {
+    font-weight: bold;
 }
 
 .ObjectDiff .diff_add {

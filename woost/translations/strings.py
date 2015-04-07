@@ -468,24 +468,6 @@ translations.define("woost.views.ObjectDiff.no_differences",
     en = u"The item has no changes."
 )
 
-translations.define("woost.views.BackOfficeDiffView member",
-    ca = u"Membre",
-    es = u"Miembro",
-    en = u"Member"
-)
-
-translations.define("woost.views.BackOfficeDiffView previous value",
-    ca = u"Valor anterior",
-    es = u"Valor anterior",
-    en = u"Previous value"
-)
-
-translations.define("woost.views.BackOfficeDiffView new value",
-    ca = u"Valor nou",
-    es = u"Valor nuevo",
-    en = u"New value"
-)
-
 translations.define("woost.actions.revert",
     ca = u"Desfer",
     es = u"Deshacer",
