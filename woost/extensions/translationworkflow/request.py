@@ -36,6 +36,7 @@ class TranslationWorkflowRequest(Item):
     groups_order = [
         "translation_request.info",
         "translation_request.translated_values",
+        "translation_request.changelog",
         "administration"
     ]
 
