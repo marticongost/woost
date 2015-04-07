@@ -87,6 +87,7 @@ class TranslatedValuesExportRule(TranslatedValuesRule):
 class TranslatedValuesImportRule(TranslatedValuesRule):
 
     def adapt_object(self, context):
+        context.consume(self.key)
         values = self.request.translated_values
         if values is None:
             self.request.translated_values = values = {}
