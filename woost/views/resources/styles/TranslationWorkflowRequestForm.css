@@ -32,7 +32,7 @@
     margin-top: 0;
 }
 
-.TranslationWorkflowRequestForm fieldset.translation_request fieldset + fieldset {
-    margin-left: 2em;
+.TranslationWorkflowRequestForm fieldset.translation_request fieldset {
+    margin-right: 2em;
 }
 
