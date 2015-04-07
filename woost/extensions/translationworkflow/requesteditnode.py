@@ -5,6 +5,7 @@ u"""
 """
 from cocktail.modeling import cached_getter
 from cocktail import schema
+from cocktail.html.uigeneration import display_factory
 from woost.controllers.backoffice.editstack import EditNode
 
 
@@ -13,8 +14,36 @@ class TranslationWorkflowRequestEditNode(EditNode):
     translated_values_key = "translated_values"
 
     @cached_getter
+    def form_schema(self):
+        form_schema = EditNode.form_schema(self)
+
+        # Show the changelog for the request and its source item
+        form_schema.add_member(
+            schema.Member(
+                "translation_workflow_changelog",
+                editable = schema.READ_ONLY,
+                member_group = "translation_request.changelog",
+                backoffice_display = display_factory(
+                    "woost.views.ChangeLog",
+                    changes = [
+                        change
+                        for change in (
+                              list(self.item.changes)
+                            + list(self.item.translated_item.changes)
+                        )
+                        if change.is_explicit_change
+                    ],
+                    show_all_changes = False
+                )
+            )
+        )
+
+        return form_schema
+
+    @cached_getter
     def form_adapter(self):
         adapter = EditNode.form_adapter(self)
+
         adapter.export_rules.add_rule(
             TranslatedValuesExportRule(self.item),
             position = 0

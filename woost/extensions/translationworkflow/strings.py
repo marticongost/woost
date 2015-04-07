@@ -126,6 +126,12 @@ translations.define("TranslationWorkflowRequest.translation_request.translated_v
     en = u"Text"
 )
 
+translations.define("TranslationWorkflowRequest.translation_request.changelog",
+    ca = u"Històric",
+    es = u"Histórico",
+    en = u"Change log"
+)
+
 translations.define("TranslationWorkflowRequest.translated_item",
     ca = u"Element a traduir",
     es = u"Elemento a traducir",
