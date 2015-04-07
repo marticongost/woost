@@ -128,16 +128,8 @@ class ItemFieldsController(EditController):
                     form_data[key] = node.item.get(key)
 
     @cached_getter
-    def fields_adapter(self):
-        return schema.Adapter()
-
-    @cached_getter
     def fields_schema(self):
-        fields_schema = self.fields_adapter.export_schema(
-            self.stack_node.form_schema
-        )
-        fields_schema.name = "BackOfficeEditForm"
-        return fields_schema
+        return self.stack_node.form_schema
 
     @cached_getter
     def output(self):
