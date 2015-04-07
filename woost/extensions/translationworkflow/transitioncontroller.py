@@ -12,7 +12,7 @@ from cocktail.controllers import (
     Form,
     request_property
 )
-from woost.models import get_current_user
+from woost.models import get_current_user, changeset_context
 from woost.controllers.notifications import Notification
 from woost.controllers.backoffice.basebackofficecontroller \
     import BaseBackOfficeController
@@ -68,8 +68,10 @@ class TranslationWorkflowTransitionController(
             transition = self.controller.transition
             transition_data = self.data
 
-            for request in self.controller.requests:
-                transition.execute(request, transition_data)
+            with changeset_context(author = get_current_user()) as changeset:
+                for request in self.controller.requests:
+                    transition.execute(request, transition_data)
+                    changeset.changes[request.id].is_explicit_change = True
 
         def after_submit(self):
             Notification(

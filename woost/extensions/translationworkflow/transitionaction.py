@@ -7,6 +7,7 @@ from cocktail.translations import translations
 from cocktail.pkgutils import resolve
 from cocktail.persistence import transaction
 from cocktail.controllers import request_property, context, Location
+from woost.models import changeset_context, get_current_user
 from woost.controllers.notifications import Notification
 from woost.controllers.backoffice.useractions import (
     UserAction,
@@ -98,8 +99,10 @@ class TranslationWorkflowTransitionAction(UserAction):
         @transaction
         def execute_transition():
             transition = self.transition
-            for request in selection:
-                transition.execute(request, transition_data)
+            with changeset_context(author = get_current_user()) as changeset:
+                for request in selection:
+                    transition.execute(request, transition_data)
+                    changeset.changes.get(request.id).is_explicit_change = True
 
         Notification(
             translations(
