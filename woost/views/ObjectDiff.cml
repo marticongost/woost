@@ -29,7 +29,7 @@ from woost.views.htmldiff import html_diff
             a = a.split("\n") if a else []
             b = b.split("\n") if b else []
             diffs = html_diff(a, b, charjunk = IS_CHARACTER_JUNK)
-        elif isinstance(member, schema.Collection):
+        elif isinstance(member, schema.Collection) and not isinstance(member, schema.Mapping):
             element.add_class("collection_diff")
             a = [member.items.translate_value(x) for x in a] if a else []
             b = [member.items.translate_value(x) for x in b] if b else []
