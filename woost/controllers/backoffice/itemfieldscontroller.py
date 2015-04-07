@@ -110,7 +110,14 @@ class ItemFieldsController(EditController):
     def _export_read_only_data(self, form_data):
         node = self.stack_node
         for member in self.fields_schema.iter_members():
-            if member.editable == schema.READ_ONLY:
+            if (
+                member.editable == schema.READ_ONLY
+                and isinstance(member.original_member.schema, type)
+                and issubclass(
+                    node.item.__class__,
+                    member.original_member.schema
+                )
+            ):
                 key = member.name
                 if member.translated:
                     form_data[key] = dict(
