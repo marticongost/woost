@@ -22,6 +22,7 @@ from .configuration import Configuration
 from .permission import ContentPermission
 from .changesets import Change
 from .role import Role
+from .usersession import get_current_user
 
 
 def remove_broken_type(
@@ -244,4 +245,33 @@ def search(
         highlights = highlighter.highlight(result)
         if highlights:
             print highlights
+
+def any_translation(obj, language_chain = None, **kwargs):
+
+    if language_chain is None:
+        user = get_current_user()
+        language_chain = (
+            user
+            and user.backoffice_language_chain
+            or Configuration.instance.backoffice_language_chain
+        )
+
+    if not language_chain:
+        return translations(obj, **kwargs)
+    else:
+        for language in language_chain:
+            label = translations(
+                obj,
+                language = language,
+                discard_generic_translation = True,
+                **kwargs
+            )
+            if label:
+                return label
+        else:
+            return translations(
+                obj,
+                language = language_chain[0],
+                **kwargs
+            )
 
