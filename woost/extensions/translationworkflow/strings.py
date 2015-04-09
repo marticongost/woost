@@ -292,6 +292,12 @@ translations.define("TranslationWorkflowState.state_after_source_change",
     en = u"State after the translated item is modified"
 )
 
+translations.define("TranslationWorkflowState.requests",
+    ca = u"Peticions de traducció",
+    es = u"Peticiones de traducción",
+    en = u"Translation requests"
+)
+
 # TranslationWorkflowTransition
 #------------------------------------------------------------------------------
 translations.define("TranslationWorkflowTransition",
