@@ -794,15 +794,15 @@ class ShowChangelogAction(UserAction):
 
         # Filter by target element
         if selection:
-            params["filter"] = "member-changes"
-            params["filter_value0"] = str(selection[0].id)
+            params["filter"] = "changeset-change"
+            params["filter_target0"] = str(selection[0].id)
 
         # Filter by target type
         else:
             user_collection = getattr(controller, "user_collection", None)
             if user_collection and user_collection.type is not Item:
-                params["filter"] = "target-type"
-                params["filter_value0"] = user_collection.type.full_name
+                params["filter"] = "changeset-change"
+                params["filter_target_type0"] = user_collection.type.full_name
 
         return controller.contextual_uri(
             "changelog",

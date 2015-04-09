@@ -9,10 +9,14 @@ u"""
 from datetime import datetime
 from threading import local
 from contextlib import contextmanager
+from BTrees.IIBTree import IIBTree
 from cocktail.modeling import classgetter
+from cocktail.events import event_handler
 from cocktail import schema
 from cocktail.translations import translations
-from cocktail.persistence import PersistentObject
+from cocktail.persistence import PersistentObject, datastore
+
+CHANGES_INDEX_KEY = "woost.models.changesets.ChangeSet.changes-index"
 
 @contextmanager
 def changeset_context(author = None):
@@ -128,6 +132,15 @@ class ChangeSet(PersistentObject):
         for change in extractor.current.value.changes.itervalues():
             extractor.extract(change.__class__, change)
 
+    @classgetter
+    def changes_index(cls):
+        try:
+            return datastore.root[CHANGES_INDEX_KEY]
+        except KeyError:
+            index = IIBTree()
+            datastore.root[CHANGES_INDEX_KEY] = index
+            return index
+
 
 class Change(PersistentObject):
     """A persistent record of an action performed on a CMS item."""
@@ -137,6 +150,7 @@ class Change(PersistentObject):
 
     changeset = schema.Reference(
         required = True,
+        indexed = True,
         type = "woost.models.ChangeSet"
     )
 
@@ -149,12 +163,14 @@ class Change(PersistentObject):
     target = schema.Reference(
         required = True,
         type = "woost.models.Item",
+        indexed = True,
         bidirectional = True
     )
 
     changed_members = schema.Collection(
         type = set,
-        items = schema.String()
+        items = schema.String(),
+        indexed = True
     )
 
     item_state = schema.Mapping(
@@ -175,7 +191,7 @@ class Change(PersistentObject):
             if index > 0:
                 return changes[index - 1]
 
-    def diff(self, other_change = None):
+    def diff(self, other_change = None, diff_schema = None):
 
         if other_change is None:
             other_change = self.get_previous_change()
@@ -185,14 +201,15 @@ class Change(PersistentObject):
                 "Can't obtain the diff for %r, it has no parent change"
             )
 
-        model = self.target.__class__
-        adapter = schema.Adapter()
-        adapter.exclude([
-            member.name
-            for member in model.iter_members()
-            if not member.versioned
-        ])
-        diff_schema = adapter.export_schema(model)
+        if diff_schema is None:
+            model = self.target.__class__
+            adapter = schema.Adapter()
+            adapter.exclude([
+                member.name
+                for member in model.iter_members()
+                if not member.visible or not member.versioned
+            ])
+            diff_schema = adapter.export_schema(model)
 
         return schema.diff(
             self.item_state,
@@ -207,34 +224,89 @@ class Change(PersistentObject):
             target = self.target
         ) or PersistentObject.__translate__(self, language, **kwargs)
 
+    @event_handler
+    def handle_changed(cls, e):
+        change = e.source
+        member = e.member
+        value = e.value
 
-class ChangeSetHasActionExpression(schema.expressions.Expression):
+        if member is cls.changeset:
+            if e.previous_value is not None:
+                raise ValueError("Can't move a change between changesets")
+            if value is not None and change.is_inserted:
+                ChangeSet.changes_index.insert(change.id, value.id)
+
+    @event_handler
+    def handle_inserted(cls, e):
+        change = e.source
+        changeset = change.changeset
+        if changeset is not None:
+            ChangeSet.changes_index.insert(change.id, changeset.id)
+
+    @event_handler
+    def handle_deleting(cls, e):
+        try:
+            del ChangeSet.changes_index[e.source.id]
+        except KeyError:
+            pass
+
+
+class ChangeSetHasChangeExpression(schema.expressions.Expression):
+
+    def __init__(self, target = None, action = None, include_implicit = True):
+        self.target = target
+        self.action = action
+        self.include_implicit = include_implicit
 
     def op(self, changeset, action):
-        return any(
-            change.action == action
-            for change in changeset.changes.itervalues()
-        )
+        for change in changeset.changes.itervalues():
+            if (
+                # Filter by target
+                (
+                    self.target is None
+                    or (
+                        isinstance(change.target, self.target)
+                        if isinstance(self.target, type)
+                        else change.target is self.target
+                    )
+                )
+                # Filter by action
+                and (
+                    self.action is None
+                    or change.action == self.action
+                )
+            ):
+                return True
 
+        return False
 
-class ChangeSetHasTargetExpression(schema.expressions.Expression):
+    def resolve_filter(self, query):
 
-    def op(self, changeset, target):
-        return any(
-            change.target is target
-            for change in changeset.changes.itervalues()
-        )
+        def impl(dataset):
 
-    # TODO: optimize queries
+            changes = Change.select()
 
+            # Exclude implicit changes
+            if not self.include_implicit:
+                changes.add_filter(Change.is_explicit_change.equal(True))
 
-class ChangeSetHasTargetTypeExpression(schema.expressions.Expression):
+            # Filter by target / target type
+            if isinstance(self.target, type):
+                changes.add_filter(Change.target.one_of(self.target.select()))
+            elif self.target is not None:
+                changes.add_filter(Change.target.equal(self.target))
 
-    def op(self, changeset, cls):
-        return any(
-            isinstance(change.target, cls)
-            for change in changeset.changes.itervalues()
-        )
+            # Filter by action
+            if self.action:
+                changes.add_filter(Change.action.equal(self.action))
 
-    # TODO: optimize queries
+            # Intersect with the changesets owning the matching changes
+            change_index = ChangeSet.changes_index
+            subset = set(
+                change_index[change_id] for change_id in changes.execute()
+            )
+            dataset.intersection_update(subset)
+            return dataset
+
+        return ((0, 0), impl)
 

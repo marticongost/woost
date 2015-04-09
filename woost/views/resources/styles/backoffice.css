@@ -1975,52 +1975,22 @@ body.scripted .BackOfficeLayout .ThumbnailsContentView .collection_display input
     background-color: #4b4b4b;
 }
 
-/* Changelog
+/* BackOfficeChangeLogView
 -----------------------------------------------------------------------------*/
-.BackOfficeChangeLogView .ChangelogTable .id_column {
-    width: 5em;
+.BackOfficeChangeLogView .ChangeLog {
+    margin-top: 1em;
 }
 
-.BackOfficeChangeLogView .ChangelogTable .author_column {
-    width: 20em;
+.BackOfficeChangeLogView .ChangeLog .ObjectDiff {
+    font-size: 0.9em;
 }
 
-.BackOfficeChangeLogView .ChangelogTable .date_column {
-    width: 12em;
+.BackOfficeChangeLogView .ChangeLog .change_action_display {
+    font-size: 0.9em;
 }
 
-.BackOfficeChangeLogView .changes_column.collapsed > .changes_display {
-    display: none;
-}
-
-.BackOfficeChangeLogView .change_action {
-    display: inline-block;
-    margin-right: 1em;
-    width: 6em;
-}
-
-.BackOfficeChangeLogView .change_action > * {
-    vertical-align: middle;
-}
-
-.BackOfficeChangeLogView .change_action_icon {
-    margin-right: 0.4em;
-}
-
-.BackOfficeChangeLogView .change_entry.create .change_action_label {
-    color: #1a881a;
-}
-
-.BackOfficeChangeLogView .change_entry.modify .change_action_label {
-    color: #1717aa;
-}
-
-.BackOfficeChangeLogView .change_entry.delete .change_action_label {
-    color: #900;
-}
-
-.BackOfficeChangeLogView .change_entry.explicit .change_action_label {
-    font-weight: bold;
+.BackOfficeChangeLogView .ChangeLog .change_targets_display {
+    font-size: 0.85em;
 }
 
 /* Notifications

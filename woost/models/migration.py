@@ -1100,3 +1100,15 @@ def fix_author_in_change_item_state(e):
         ):
             change.item_state["author"] = change.target.author
 
+#------------------------------------------------------------------------------
+
+step = MigrationStep("Changeset indexing")
+
+@when(step.executing)
+def index_changesets(e):
+    from woost.models import ChangeSet, Change
+    for change in Change.select():
+        ChangeSet.changes_index[change.id] = change.changeset.id
+    ChangeSet.rebuild_indexes()
+    Change.rebuild_indexes()
+
