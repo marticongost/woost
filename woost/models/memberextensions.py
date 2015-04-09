@@ -64,3 +64,7 @@ schema.SchemaObject.autocomplete_class = \
 schema.Reference.autocomplete_class = \
     "woost.controllers.autocomplete.CMSAutocompleteSource"
 
+# Summary view for the item; used as the heading of BackOfficeItemView and
+# as the drop down panel of ItemDisplay
+schema.SchemaObject.backoffice_card_view = "woost.views.ItemCard"
+
