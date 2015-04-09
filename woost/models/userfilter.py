@@ -26,12 +26,7 @@ from cocktail.controllers.userfilter import (
     DescendsFromFilter
 )
 from .item import Item
-from .changesets import (
-    ChangeSet,
-    ChangeSetHasActionExpression,
-    ChangeSetHasTargetExpression,
-    ChangeSetHasTargetTypeExpression
-)
+from .changesets import ChangeSet, ChangeSetHasChangeExpression
 from .publishable import Publishable, IsPublishedExpression
 from .document import Document
 from .usersession import get_current_user
@@ -108,67 +103,48 @@ def _collection_search_control(self, parent, obj, member):
 CollectionFilter.search_control = _collection_search_control
 
 
-class ChangeSetActionFilter(UserFilter):
+class ChangeSetHasChangeFilter(UserFilter):
+
+    id = "changeset-change"
 
     @cached_getter
     def schema(self):
-        return schema.Schema("UserFilter", members = [
+        return schema.Schema("ChangeSetHasChangeFilter", members = [
+            schema.Reference(
+                "target",
+                type = Item
+            ),
+            schema.Reference(
+                "target_type",
+                class_family = Item
+            ),
             schema.String(
-                "value",
-                required = True,
+                "action",
                 enumeration = ["create", "modify", "delete"],
-                translate_value = lambda value:
-                    "" if not value
-                    else translations("woost %s action" % value)
+                translate_value = lambda value, language = None, **kwargs:
+                    translations(
+                        "ChangeSetHasChangeFilter.action=none",
+                        language,
+                        **kwargs
+                    )
+                    if not value
+                    else translations(
+                        "woost %s action" % value,
+                        language,
+                        **kwargs
+                    )
             )
         ])
 
     @getter
     def expression(self):
-        return ChangeSetHasActionExpression(Self, self.value)
+        return ChangeSetHasChangeExpression(
+            self.target or self.target_type,
+            self.action,
+            include_implicit = False
+        )
 
-
-class ChangeSetTargetFilter(UserFilter):
-
-    @cached_getter
-    def schema(self):
-        return schema.Schema("UserFilter", members = [
-            schema.Reference(
-                "value",
-                type = Item,
-                required = True
-            )
-        ])
-
-    def search_control(self, parent, obj, member):
-        control = templates.new("woost.views.ItemSelector")
-        control.existing_items_only = True
-        return control
-
-    @getter
-    def expression(self):
-        return ChangeSetHasTargetExpression(Self, self.value)
-
-
-class ChangeSetTargetTypeFilter(UserFilter):
-
-    id = "target-type"
-
-    @cached_getter
-    def schema(self):
-        return schema.Schema("UserFilter", members = [
-            schema.Reference(
-                "value",
-                class_family = Item,
-                required = True
-            )
-        ])
-
-    @getter
-    def expression(self):
-        return ChangeSetHasTargetTypeExpression(Self, Constant(self.value))
-
-user_filters_registry.add(ChangeSet, ChangeSetTargetTypeFilter)
+user_filters_registry.add(ChangeSet, ChangeSetHasChangeFilter)
 
 user_filters_registry.add(Publishable, DescendsFromFilter)
 user_filters_registry.set_filter_parameter(

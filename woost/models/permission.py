@@ -15,6 +15,7 @@ from cocktail import schema
 from cocktail.schema.expressions import Expression
 from cocktail.persistence import PersistentObject
 from .item import Item
+from .changesets import ChangeSet, Change
 from .messagestyles import permission_doesnt_match_style
 from .usersession import get_current_user
 from .messagestyles import unauthorized_style
@@ -504,16 +505,19 @@ class ChangeSetPermissionExpression(Expression):
     def resolve_filter(self, query):
 
         def impl(dataset):
+            authorized_changes = Change.select(
+                Change.target.one_of(
+                    Item.select(
+                        PermissionExpression(self.user, ReadPermission)
+                    )
+                )
+            )
+            authorized_changesets = set()
+            for change_id in authorized_changes.execute():
+                changeset_id = ChangeSet.changes_index[change_id]
+                authorized_changesets.add(changeset_id)
 
-            authorized_subset = set()
-
-            for item in Item.select([
-                PermissionExpression(self.user, ReadPermission)
-            ]):
-                for change in item.changes:
-                    authorized_subset.add(change.changeset.id)
-
-            dataset.intersection_update(authorized_subset)
+            dataset.intersection_update(authorized_changesets)
             return dataset
 
         return ((0, 0), impl)

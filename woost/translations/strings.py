@@ -4766,24 +4766,40 @@ translations.define("woost delete action",
 )
 
 translations.define(
-    "woost.models.userfilter.ChangeSetActionFilter-instance",
-    ca = u"Conté l'acció",
-    es = u"Contiene la acción",
-    en = u"Contains action"
+    "woost.models.userfilter.ChangeSetHasChangeFilter-instance",
+    ca = u"Canvis efectuats",
+    es = u"Cambios efectuados",
+    en = u"Applied changes"
 )
 
-translations.define(
-    "woost.models.userfilter.ChangeSetTargetFilter-instance",
+translations.define("ChangeSetHasChangeFilter.target",
     ca = u"Element afectat",
     es = u"Elemento afectado",
-    en = u"Affected element"
+    en = u"Target object"
 )
 
-translations.define(
-    "woost.models.userfilter.ChangeSetTargetTypeFilter-instance",
-    ca = u"Tipus d'element d'afectat",
-    es = u"Tipo de elemento afectado",
-    en = u"Affected element type"
+translations.define("ChangeSetHasChangeFilter.target_type",
+    ca = u"Tipus afectat",
+    es = u"Tipo afectado",
+    en = u"Target type"
+)
+
+translations.define("ChangeSetHasChangeFilter.target_type=none",
+    ca = u"Qualsevol tipus",
+    es = u"Cualquier tipo",
+    en = u"Any type"
+)
+
+translations.define("ChangeSetHasChangeFilter.action",
+    ca = u"Acció",
+    es = u"Acción",
+    en = u"Action"
+)
+
+translations.define("ChangeSetHasChangeFilter.action=none",
+    ca = u"Qualsevol acció",
+    es = u"Cualquier acción",
+    en = u"Any action"
 )
 
 # Trigger

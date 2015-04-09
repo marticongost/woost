@@ -20,10 +20,6 @@ from woost.models import (
     ReadHistoryPermission,
     ChangeSetPermissionExpression
 )
-from woost.models.userfilter import (
-    ChangeSetActionFilter,
-    ChangeSetTargetFilter
-)
 from woost.controllers.backoffice.editstack import SelectionNode
 from woost.controllers.backoffice.basebackofficecontroller \
     import BaseBackOfficeController
@@ -88,17 +84,6 @@ class ChangeLogController(BaseBackOfficeController):
             allow_language_selection = False
             available_languages = Configuration.instance.languages
 
-            @cached_getter
-            def available_user_filters(self):
-                filters = BackOfficeUserCollection.available_user_filters(self)
-                cs_action_filter = ChangeSetActionFilter()
-                cs_action_filter.id = "member-action"
-                cs_target_filter = ChangeSetTargetFilter()
-                cs_target_filter.id = "member-changes"
-                filters.append(cs_action_filter)
-                filters.append(cs_target_filter)
-                return filters
-
         user_collection = ChangeLogUserCollection(ChangeSet)
         user_collection.params.source = SessionParameterSource(
             key_prefix = user_collection.persistence_prefix
@@ -106,6 +91,7 @@ class ChangeLogController(BaseBackOfficeController):
         user_collection.add_base_filter(
             ChangeSetPermissionExpression(get_current_user())
         )
+        user_collection.subset.verbose = True
         return user_collection
 
     @cached_getter

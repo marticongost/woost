@@ -20,11 +20,9 @@ from woost.models import ChangeSet
     <py:with py:element="self.languages_dropdown" py:visible="@{False}"/>
     <py:with py:element="self.members_dropdown" py:visible="@{False}"/>
 
-    <py:woost.views.ChangelogTable
+    <py:woost.views.ChangeLog
         py:def="collection_display"
-        py:base_url="@{self.cms.contextual_uri()}"
-        py:accessor="${SchemaObjectAccessor}"
-        py:translations="@{self.user_collection.languages}"/>
+        py:changesets="@{self.user_collection.page_subset}"/>
 
 </py:woost.views.ContentView>
 

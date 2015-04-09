@@ -422,7 +422,7 @@ class Item(PersistentObject):
                 change = changeset.changes.get(item.id)
 
                 if change and change.action != "delete":
-                    del changeset.changes[item.id]
+                    change.delete()
 
                 if change is None \
                 or change.action not in ("create", "delete"):

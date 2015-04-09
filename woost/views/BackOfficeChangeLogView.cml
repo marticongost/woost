@@ -42,21 +42,6 @@ from cocktail.html.datadisplay import NO_SELECTION
                 element.action_context.update(self.action_context)
                 ?>
 
-                <py:woost.views.ActionBar
-                    py:id="bottom_buttons"
-                    py:button_images="${False}"
-                    py:action_target="@{self.user_collection.type}"
-                    class="buttons">
-                    <?py
-                    element.action_context.add("bottom_buttons")
-                    ?>
-                    <py:binding>
-                        <?py
-                        element.action_context.update(self.action_context)
-                        ?>
-                    </py:binding>
-                </py:woost.views.ActionBar>
-
             </py:new>
         </py:ready>
     </py:with>
