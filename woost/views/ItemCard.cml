@@ -17,7 +17,8 @@ from woost.models.utils import any_translation
         return None
 
     def get_item_images(self):
-        image = self.item.resolve_representative_image(self.icon_factory)
+        get_image = getattr(self.item, "resolve_representative_image", None)
+        image = None if get_image is None else get_image(self.icon_factory)
         return [image] if image else []
     ?>
 
