@@ -8478,3 +8478,21 @@ translations.define(
     en = u"Enable"
 )
 
+# woost.views.ChangeLog
+#------------------------------------------------------------------------------
+translations.define(
+    "woost.views.ChangeLog.change_list_grouped_entry.change_targets_display",
+    ca = lambda model, count:
+        str(count) + u" " + translations(
+            model.name + plural2(count, "", "-plural")
+        ),
+    es = lambda model, count:
+        str(count) + u" " + translations(
+            model.name + plural2(count, "", "-plural")
+        ),
+    en = lambda model, count:
+        str(count) + u" " + translations(
+            model.name + plural2(count, "", "-plural")
+        )
+)
+
