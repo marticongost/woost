@@ -11,7 +11,6 @@ from woost.controllers.backoffice.editstack import (
     SelectionNode,
     RelationNode
 )
-from woost.models import UserView
 ?>
 
 <div
