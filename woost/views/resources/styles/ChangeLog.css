@@ -65,15 +65,15 @@
     color: #600;
 }
 
-.ChangeLog .change_target_display {
-    margin-left: 0.4em !important;
+.ChangeLog .change_action_display {
+    margin-right: 0.4em !important;
 }
 
 .ChangeLog .change_diff {
     margin-top: 0.6em;
     margin-bottom: 1.5em;
-    border: 1px solid #ddd;
     padding: 0.4em;
-    box-shadow: 0 2px 2px #ddd;
+    background-color: #eee;
+    border: 1px solid #e5e5e5;
 }
 
