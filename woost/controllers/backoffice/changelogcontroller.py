@@ -135,6 +135,10 @@ class ChangeLogController(BaseBackOfficeController):
         return self._get_user_action()[0]
 
     @cached_getter
+    def selection(self):
+        return self._get_user_action()[1]
+
+    @cached_getter
     def action_data(self):
         return self._get_user_action()
 
@@ -143,5 +147,5 @@ class ChangeLogController(BaseBackOfficeController):
         return self.action is not None
 
     def submit(self):
-        self._invoke_user_action(self.action, [])
+        self._invoke_user_action(self.action, self.selection)
 
