@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
+<?py
+from woost.models.utils import any_translation
+?>
 
 <form
     xmlns="http://www.w3.org/1999/xhtml"
@@ -11,7 +14,7 @@
     <ul py:id="user_views_list" py:collapsible="${True}">
         <py:ready>
             <li py:for="user_view in self.user_views">
-                <a href="${user_view.uri()}">${user_view.any_translation()}</a>
+                <a href="${user_view.uri()}">${any_translation(user_view)}</a>
             </li>
         </py:ready>
     </ul>

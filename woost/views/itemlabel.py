@@ -12,6 +12,7 @@ from cocktail.translations import translations
 from cocktail.controllers import context
 from woost import app
 from woost.models.rendering import Renderer
+from woost.models.utils import any_translation
 
 
 class ItemLabel(Element):
@@ -123,7 +124,8 @@ class ItemLabel(Element):
         return text_wrapper
 
     def get_label(self):
-        return self.item.any_translation(
+        return any_translation(
+            self.item,
             language_chain = self.language_chain,
             referer = self.referer
         )

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <?py
 from woost import app
+from woost.models.utils import any_translation
 ?>
 
 <article
@@ -49,7 +50,7 @@ from woost import app
             <py:ready>
                 <?py
                 if self.item.is_inserted:
-                    context_desc = self.item.any_translation()
+                    context_desc = any_translation(self.item)
                 else:
                     context_desc = translations("creating", content_type = self.item.__class__)
                 ?>

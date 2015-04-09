@@ -127,36 +127,6 @@ class Item(PersistentObject):
                 if key not in e.schema.__dict__:
                     setattr(e.schema, key, False)
 
-    def any_translation(self, language_chain = None, **kwargs):
-
-        if language_chain is None:
-            from woost.models import Configuration
-            user = get_current_user()
-            language_chain = (
-                user
-                and user.backoffice_language_chain
-                or Configuration.instance.backoffice_language_chain
-            )
-
-        if not language_chain:
-            return translations(self, **kwargs)
-        else:
-            for language in language_chain:
-                label = translations(
-                    self,
-                    language = language,
-                    discard_generic_translation = True,
-                    **kwargs
-                )
-                if label:
-                    return label
-            else:
-                return translations(
-                    self,
-                    language = language_chain[0],
-                    **kwargs
-                )
-
     # Unique qualified name
     #--------------------------------------------------------------------------
     qname = schema.String(

@@ -5,6 +5,7 @@ from cocktail.translations import get_language, translations
 from cocktail.html.ieconditionalcomment import IEConditionalComment
 from cocktail.schema import Collection
 from woost import app
+from woost.models.utils import any_translation
 from woost.controllers.backoffice.editstack import (
     EditNode,
     SelectionNode,
@@ -28,7 +29,7 @@ from woost.models import UserView
     user_views = ()
 
     def get_page_title(self):
-        return self.backoffice and self.backoffice.any_translation()
+        return self.backoffice and any_translation(self.backoffice)
     ?>
 
     <?py
