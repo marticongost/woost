@@ -3,6 +3,7 @@ u"""
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
+import cherrypy
 from cocktail.translations import translations
 from cocktail.pkgutils import resolve
 from cocktail.persistence import transaction
@@ -75,6 +76,13 @@ class TranslationWorkflowTransitionAction(UserAction):
 
         transition_data = None
 
+        # Save the edit stack
+        if hasattr(controller, "save_item"):
+            try:
+                controller.save_item()
+            except cherrypy.HTTPRedirect:
+                pass
+
         # Initialize the transition process. If the transition requires
         # parameters, spawn a new node in the edit stack and redirect the user
         # to a form.
@@ -115,6 +123,15 @@ class TranslationWorkflowTransitionAction(UserAction):
         ).emit()
 
         Location.get_current().go("GET")
+
+    def get_errors(self, controller, selection):
+        for error in UserAction.get_errors(self, controller, selection):
+            yield error
+
+        stack_node = getattr(controller, "stack_node", None)
+        if stack_node is not None:
+            for error in stack_node.iter_errors():
+                yield error
 
     @classmethod
     def register_transition_action(cls, transition):
