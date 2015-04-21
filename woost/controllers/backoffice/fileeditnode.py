@@ -29,9 +29,24 @@ class FileEditNode(EditNode):
     @request_property
     def form_adapter(self):
         adapter = EditNode.form_adapter(self)
-        adapter.exclude(["mime_type"])
         adapter.import_rules.add_rule(ImportUploadInfo())
         return adapter
+
+    def get_member_edit_mode(self, member):
+
+        mode = EditNode.get_member_edit_mode(self, member)
+
+        if mode != schema.NOT_EDITABLE and member.name in (
+            "mime_type",
+            "file_name",
+            "file_size"
+        ):
+            if self.item.is_inserted:
+                mode = schema.READ_ONLY
+            else:
+                mode = schema.NOT_EDITABLE
+
+        return mode
 
     @request_property
     def form_schema(self):
