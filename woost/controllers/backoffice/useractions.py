@@ -26,6 +26,7 @@ from woost.models import (
     Item,
     SiteInstallation,
     Publishable,
+    Document,
     URI,
     File,
     Block,
@@ -970,6 +971,12 @@ class EditBlocksAction(UserAction):
     included = frozenset(["toolbar", "item_buttons"])
     excluded = UserAction.excluded | frozenset(["new_item"])
     show_as_primary_action = "on_content_type"
+
+    def is_primary(self, target, context):
+        return (
+            target in (Publishable, Document)
+            or UserAction.is_primary(self, target, context)
+        )
 
     def matches_content_type(self, target, accept_ancestors = True):
         if isinstance(target, type):
