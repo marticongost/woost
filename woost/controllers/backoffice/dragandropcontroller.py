@@ -62,6 +62,7 @@ class DragAndDropController(BaseBackOfficeController):
             member
             for member in target_object.__class__.iter_members()
             if member.visible
+            and member.editable == schema.EDITABLE
             and isinstance(member, schema.RelationMember)
             and member.is_persistent_relation
             and isinstance(dragged_object, member.related_type)
