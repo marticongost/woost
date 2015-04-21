@@ -221,8 +221,8 @@ from woost.controllers.backoffice.editstack import SelectionNode
                         return "./content/%d" % content_type.instance.id
                     else:
                         url = "?type=" + content_type.full_name
-                        # Clear filters
-                        url += "&filter="
+                        # Clear filters and tabs
+                        url += "&filter=&tab="
                         if self.edit_stack:
                             url += "&edit_stack=" + self.edit_stack.to_param()
                         return url
