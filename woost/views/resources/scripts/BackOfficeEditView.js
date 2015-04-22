@@ -69,6 +69,11 @@ cocktail.bind(".BackOfficeEditView", function ($editView) {
 
     /* Focus the first available field
     -------------------------------------------------------------------------*/
-    $editView.find(".field :input:visible[tabindex!='-1']").first().focus();
+    $editView.find(".field :input:visible[tabindex!='-1']").each(function () {
+        if (!jQuery(this).parents("[data-cocktail-editable='read_only']").length) {
+            this.focus();
+            return false;
+        }
+    });
 });
 
