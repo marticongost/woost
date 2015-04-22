@@ -206,12 +206,22 @@ class ItemFieldsController(EditController):
             rel_node.member = current_node.content_type[member_name]
             controller.edit_stack.push(rel_node)
 
+            # All related_item_XYZ parameters ara forwarded as edited_item_XYZ
+            # parameters (for form prefilling)
+            prefill = dict(
+                ("edited" + key[len("related"):], value)
+                for key, value in cherrypy.request.params.iteritems()
+                if key.startswith("related_item_")
+            )
+
             raise cherrypy.HTTPRedirect(
                 controller.context["cms"].contextual_uri(
                     "content",
                     "new",
+                    "fields",
                     item_type = content_type_name,
-                    edit_stack = controller.edit_stack.to_param()
+                    edit_stack = controller.edit_stack.to_param(),
+                    **prefill
                 )
             )
 
