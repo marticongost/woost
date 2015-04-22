@@ -7,7 +7,7 @@ u"""
 @since:			December 2008
 """
 from cocktail.modeling import extend, call_base
-from cocktail.translations import translations
+from cocktail.translations import translations, require_language
 from cocktail.html import Element, templates
 from cocktail.html.hiddeninput import HiddenInput
 from woost.models import (
@@ -29,6 +29,8 @@ class ItemSelector(Element):
     existing_items_only = False
     selection_ui_generator = backoffice_selection_control
     integral_selection_ui_generator = backoffice_integral_selection_control
+    descriptive_member = None
+    descriptive_member_language = None
 
     def _build(self):
 
@@ -49,6 +51,23 @@ class ItemSelector(Element):
     def _ready(self):
 
         Element._ready(self)
+
+        if (
+            self.descriptive_member is None
+            and self.member
+            and self.member.related_type
+        ):
+            self.descriptive_member = \
+                self.member.related_type.descriptive_member
+
+        if self.descriptive_member:
+            self.add_resource("/resources/scripts/ItemSelector.js")
+
+            key = self.descriptive_member.name
+            if self.descriptive_member.translated:
+                key += "-" + require_language(self.descriptive_member_language)
+
+            self.set_client_param("descriptiveMember", key)
 
         if self.member:
 
