@@ -6,6 +6,7 @@ u"""
 import cherrypy
 from cocktail.translations import translations
 from cocktail.pkgutils import resolve
+from cocktail import schema
 from cocktail.persistence import transaction
 from cocktail.controllers import request_property, context, Location
 from woost.models import changeset_context, get_current_user
@@ -130,7 +131,21 @@ class TranslationWorkflowTransitionAction(UserAction):
 
         stack_node = getattr(controller, "stack_node", None)
         if stack_node is not None:
-            for error in stack_node.iter_errors():
+
+            if self.transition.requires_valid_text:
+                adapter = schema.Adapter()
+                action_schema = adapter.export_schema(stack_node.form_schema)
+                for member in action_schema.iter_members():
+                    if member.name.startswith("translated_values_"):
+                        member.required = True
+            else:
+                action_schema = stack_node.form_schema
+
+            for error in action_schema.get_errors(
+                stack_node.form_data,
+                languages = stack_node.item_translations,
+                persistent_object = stack_node.item
+            ):
                 yield error
 
     @classmethod

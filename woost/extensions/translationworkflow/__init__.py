@@ -68,7 +68,8 @@ class TranslationWorkflowExtension(Extension):
         ("propose", {
             "source_states": ["in_translation"],
             "target_state": "proposed",
-            "icon": "forward"
+            "icon": "forward",
+            "requires_valid_text": True
         }),
         ("cancel_proposal", {
             "source_states": ["proposed"],
@@ -240,6 +241,10 @@ class TranslationWorkflowExtension(Extension):
                 relative_order = rel_order,
                 transition_setup_class = transition_data.get("setup"),
                 transition_code = transition_data.get("code"),
+                requires_valid_text = transition_data.get(
+                    "requires_valid_text",
+                    False
+                ),
                 icon = icon
             )
 

@@ -363,6 +363,12 @@ translations.define("TranslationWorkflowTransition.relative_order",
     en = u"Relative order"
 )
 
+translations.define("TranslationWorkflowTransition.requires_valid_text",
+    ca = u"Requereix validació del text",
+    es = u"Requiere validación del texto",
+    en = u"Requires text validation"
+)
+
 translations.define("TranslationWorkflowTransition.transition_setup_class",
     ca = u"Codi de preparació de la transició",
     es = u"Código de preparación de la transición",
