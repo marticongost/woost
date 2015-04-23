@@ -17,10 +17,14 @@ cocktail.bind(".Autocomplete", function ($autocomplete) {
     function showSelectionIcon() {
         var entry = $autocomplete[0].selectedEntry;
         var iconFactory = $autocomplete.data("woost-autocomplete-icon-factory");
-        if (entry && iconFactory) {
-            $selectionIcon
-                .attr("src", "/images/" + entry.value + "/icon16.png")
-                .show();
+        if (iconFactory) {
+            if (entry) {
+                $selectionIcon.attr("src", "/images/" + entry.value + "/icon16.png");
+            }
+            else {
+                $selectionIcon.attr("src", "/resources/images/empty_set.png");
+            }
+            $selectionIcon.show();
         }
         else {
             $selectionIcon.hide();
