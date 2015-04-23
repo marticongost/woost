@@ -27,6 +27,7 @@ from cocktail.schema.expressions import (
     InclusionExpression,
     Self
 )
+from cocktail.schema.io import default_msexcel_exporter
 from cocktail.html.datadisplay import (
     SINGLE_SELECTION,
     MULTIPLE_SELECTION
@@ -392,7 +393,17 @@ class ContentController(BaseBackOfficeController):
 
         buffer = StringIO()
         self.user_collection.export_file(
-            buffer, mime_type = content_type, languages = languages
+            buffer,
+            mime_type = content_type,
+            members = [
+                member
+                for member in self.user_collection.type.ordered_members()
+                if member.included_in_backoffice_msexcel_export
+                and member.name in self.user_collection.members
+            ],
+            languages = languages,
+            msexcel_exporter =
+                self.user_collection.type.backoffice_msexcel_exporter
         )
         return buffer.getvalue()
 
