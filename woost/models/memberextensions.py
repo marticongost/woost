@@ -4,6 +4,7 @@ u"""
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
 from cocktail import schema
+from cocktail.schema.io import default_msexcel_exporter
 
 # Add an extension property to control the default member visibility on item listings
 schema.Member.listed_by_default = True
@@ -67,4 +68,12 @@ schema.Reference.autocomplete_class = \
 # Summary view for the item; used as the heading of BackOfficeItemView and
 # as the drop down panel of ItemDisplay
 schema.SchemaObject.backoffice_card_view = "woost.views.ItemCard"
+
+# Extension property to control the columns and formatting when exporting
+# backoffice listings to MS Excel
+schema.Member.backoffice_msexcel_exporter = default_msexcel_exporter
+
+# Extension property that determines wether to include the member when
+# exporting backoffice listings to MS Excel
+schema.Member.included_in_backoffice_msexcel_export = True
 

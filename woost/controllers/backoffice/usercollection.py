@@ -123,6 +123,7 @@ class BackOfficeUserCollection(UserCollection):
                             "woost.views.Image",
                             image_factory = "backoffice_small_thumbnail.png"
                         ),
+                        included_in_backoffice_msexcel_export = False,
                         listed_by_default =
                             self.type.backoffice_listing_includes_thumbnail_column
                     )
