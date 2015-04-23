@@ -7,6 +7,7 @@ from cocktail.modeling import OrderedSet
 from cocktail.translations import translations
 from cocktail import schema
 from cocktail.schema import expressions as expr
+from cocktail.schema.io import MSExcelExporter
 from woost.models import (
     Item,
     Role,
@@ -160,4 +161,39 @@ class TranslationWorkflowRequest(Item):
         if states:
             for state in states:
                 yield str(state.id), state.plural_title, cls.state.equal(state)
+
+
+class TranslationWorkflowRequestMSExcelExporter(MSExcelExporter):
+
+    def get_member_columns(self, member, languages):
+        if member.name == "translated_values":
+            yield (
+                translations("TranslationWorkflowRequest.msexcel.source"),
+                self.header_style,
+                lambda obj: (
+                    [obj.translated_item.get(key)
+                     for key in sorted(obj.translated_values.keys())],
+                    self.regular_style
+                )
+            )
+            yield (
+                translations("TranslationWorkflowRequest.msexcel.target"),
+                self.header_style,
+                lambda obj: (
+                    [obj.translated_values[key]
+                     for key in sorted(obj.translated_values.keys())],
+                    self.regular_style
+                )
+            )
+        else:
+            for column in MSExcelExporter.get_member_columns(
+                self,
+                member,
+                languages
+            ):
+                yield column
+
+
+TranslationWorkflowRequest.backoffice_msexcel_exporter = \
+    TranslationWorkflowRequestMSExcelExporter()
 
