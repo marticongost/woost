@@ -100,15 +100,16 @@ from woost.views.uigeneration import backoffice_display
     <ul py:id="changelog_entries">
         <py:ready>
             <?py
-            changeset_group = None
-            current_date = None
-            for changeset in self.changesets:
-                changeset_date = changeset.date.date()
-                if changeset_group is None or changeset_date != current_date:
-                    changeset_group = self.create_changeset_group(changeset_date)
-                    current_date = changeset_date
-                    element.append(changeset_group)
-                changeset_group.changeset_list.append(self.create_changeset_list_entry(changeset))
+            if self.changesets:
+                changeset_group = None
+                current_date = None
+                for changeset in self.changesets:
+                    changeset_date = changeset.date.date()
+                    if changeset_group is None or changeset_date != current_date:
+                        changeset_group = self.create_changeset_group(changeset_date)
+                        current_date = changeset_date
+                        element.append(changeset_group)
+                    changeset_group.changeset_list.append(self.create_changeset_list_entry(changeset))
             ?>
         </py:ready>
     </ul>
