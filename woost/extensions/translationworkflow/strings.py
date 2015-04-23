@@ -248,6 +248,18 @@ translations.define(
         )
 )
 
+translations.define("TranslationWorkflowRequest.msexcel.source",
+    ca = u"Text original",
+    es = u"Texto original",
+    en = u"Source text"
+)
+
+translations.define("TranslationWorkflowRequest.msexcel.target",
+    ca = u"Traducció",
+    es = u"Traducción",
+    en = u"Translation"
+)
+
 # TranslationWorkflowState
 #------------------------------------------------------------------------------
 translations.define("TranslationWorkflowState",
