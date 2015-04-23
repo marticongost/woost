@@ -1284,6 +1284,20 @@ body.scripted .BackOfficeLayout .Table .row_selection_control {
     font-weight: normal;
 }
 
+.BackOfficeLayout .field_label + .MappingEditor {
+    margin-top: 1em;
+}
+
+.BackOfficeLayout .MappingEditor .key_control {
+    margin-right: 2em;
+}
+
+.BackOfficeLayout .MappingEditor .key_control,
+.BackOfficeLayout .MappingEditor .value_control {
+    display: inline-block;
+    vertical-align: middle;
+}
+
 .BackOfficeEditView .tab_strip {
     margin-bottom: 2em;
 }
