@@ -26,6 +26,7 @@ class TranslationWorkflowTransition(Item):
         "target_state",
         "icon",
         "relative_order",
+        "requires_valid_text",
         "transition_setup_class",
         "transition_code"
     ]
@@ -61,6 +62,12 @@ class TranslationWorkflowTransition(Item):
     relative_order = schema.Integer(
         default = 0,
         indexed = True
+    )
+
+    requires_valid_text = schema.Boolean(
+        required = True,
+        default = False,
+        listed_by_default = False
     )
 
     transition_setup_class = schema.String(
