@@ -32,7 +32,8 @@ backoffice_display = UIGenerator(
     member_type_displays = {
         Item: "woost.views.ItemDisplay",
         schema.Member: "cocktail.html.TranslationDisplay",
-        schema.Collection: _collection_backoffice_display
+        schema.Collection: _collection_backoffice_display,
+        schema.BaseDateTime: "cocktail.html.RelativeTimeDisplay"
     }
 )
 
