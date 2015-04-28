@@ -5,11 +5,13 @@ u"""
 """
 from cocktail.pkgutils import resolve
 from cocktail import schema
+from cocktail.persistence.query import Query
 from cocktail.controllers import get_parameter, request_property
 from cocktail.controllers.autocomplete import (
     MemberAutocompleteSource,
     AutocompleteController as BaseAutocompleteController,
 )
+from woost import app
 from woost.models import (
     get_current_user,
     Item,
@@ -28,25 +30,38 @@ class CMSAutocompleteSource(MemberAutocompleteSource):
     @request_property
     def items(self):
         items = MemberAutocompleteSource.items(self)
+        user = get_current_user()
 
-        if (
-            self.publishable_check
-            and issubclass(self.member.type, Publishable)
-        ):
-            items.add_filter(IsAccessibleExpression())
+        if self._listing_types:
+            items = [
+                item
+                for item in items
+                if user.has_permission(ReadPermission, target = item)
+            ]
         else:
-            items.add_filter(
-                PermissionExpression(
-                    get_current_user(),
-                    ReadPermission
+            if (
+                self.publishable_check
+                and issubclass(self.member.type, Publishable)
+            ):
+                items.add_filter(IsAccessibleExpression())
+            else:
+                items.add_filter(
+                    PermissionExpression(
+                        user,
+                        ReadPermission
+                    )
                 )
-            )
 
         return items
 
     def get_entry(self, item):
         entry = MemberAutocompleteSource.get_entry(self, item)
-        entry["type"] = item.__class__.get_qualified_name(include_ns = True)
+
+        if self._listing_types:
+            entry["icon"] = app.icon_resolver.find_icon_url(item, 16)
+        else:
+            entry["type"] = item.__class__.get_qualified_name(include_ns = True)
+
         return entry
 
 

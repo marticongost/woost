@@ -53,13 +53,6 @@ class TypeFilter(UserFilter):
 
     @cached_getter
     def schema(self):
-
-        def types_search_control(ui_generator, obj, member, value, **context):
-            selector = templates.new("woost.views.ContentTypePicker")
-            selector.root = self.content_type
-            selector.selection_mode = MULTIPLE_SELECTION
-            return selector
-
         return schema.Schema("UserFilter", members = [
             schema.String(
                 "operator",
@@ -68,8 +61,9 @@ class TypeFilter(UserFilter):
             ),
             schema.Collection(
                 "types",
-                items = schema.Reference("item_type", class_family = Item),
-                search_control = types_search_control
+                items = schema.Reference("item_type",
+                    class_family = self.content_type
+                )
             ),
             schema.Boolean(
                 "is_inherited"
