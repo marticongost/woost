@@ -11,6 +11,9 @@ cocktail.bind(".ItemSelector", function ($itemSelector) {
 
     var member = this.descriptiveMember;
     var $textBox = $itemSelector.find(".text_box");
+    var $editButton = $itemSelector.find(".ItemSelector-button.edit");
+    var $deleteButton = $itemSelector.find(".ItemSelector-button.delete");
+    var $selectionDisplay = $itemSelector.find(".selection_display");
 
     if (member) {
         $itemSelector.on("click", "[name='relation-new']", function () {
@@ -20,5 +23,33 @@ cocktail.bind(".ItemSelector", function ($itemSelector) {
                 .appendTo($itemSelector);
         });
     }
+
+    function updateButtons() {
+
+        if ($selectionDisplay.is(".Autocomplete")) {
+            var hasValue = $selectionDisplay[0].selectedEntry;
+        }
+        else if ($selectionDisplay.is("select")) {
+            var hasValue = $selectionDisplay.find("option:selected").length;
+        }
+        else if ($selectionDisplay.is(".RadioSelector")) {
+            var hasValue = $selectionDisplay.find("input:checked").length;
+        }
+        else {
+            var hasValue = $selectionDisplay.val()
+        }
+
+        if (hasValue) {
+            $editButton.show();
+            $deleteButton.show();
+        }
+        else {
+            $editButton.hide();
+            $deleteButton.hide();
+        }
+    }
+
+    $itemSelector.change(updateButtons);
+    updateButtons();
 });
 
