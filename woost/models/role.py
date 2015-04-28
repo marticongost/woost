@@ -44,7 +44,8 @@ class Role(Item):
         normalized_index = True,
         full_text_indexed = True,
         descriptive = True,
-        translated = True
+        translated = True,
+        spellcheck = True
     )
 
     base_roles = schema.Collection(

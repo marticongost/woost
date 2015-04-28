@@ -37,7 +37,8 @@ class PricingPolicy(Item):
 
     title = schema.String(
         translated = True,
-        descriptive = True
+        descriptive = True,
+        spellcheck = True
     )
 
     enabled = schema.Boolean(

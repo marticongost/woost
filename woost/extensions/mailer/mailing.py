@@ -95,6 +95,7 @@ class Mailing(Item):
 
     subject = schema.String(
         required = True,
+        spellcheck = True,
         member_group = "content"
     )
 

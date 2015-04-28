@@ -35,7 +35,8 @@ class SiteInstallation(Item):
         indexed = True,
         unique = True,
         descriptive = True,
-        required = True
+        required = True,
+        spellcheck = True
     )
 
     url = schema.URL(

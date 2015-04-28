@@ -28,6 +28,7 @@ class TranslationWorkflowComment(Item):
 
     text = schema.HTML(
         required = True,
-        descriptive = True
+        descriptive = True,
+        spellcheck = True
     )
 

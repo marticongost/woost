@@ -24,7 +24,8 @@ class Controller(Item):
         unique = True,
         required = True,
         descriptive = True,
-        translated = True
+        translated = True,
+        spellcheck = True
     )
 
     python_name = schema.String(

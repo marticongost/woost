@@ -27,7 +27,8 @@ class Template(Item):
         normalized_index = True,
         full_text_indexed = True,
         descriptive = True,
-        translated = True
+        translated = True,
+        spellcheck = True
     )
 
     identifier = schema.String(

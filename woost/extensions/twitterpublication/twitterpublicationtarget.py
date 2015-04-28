@@ -37,6 +37,7 @@ class TwitterPublicationTarget(Item):
         required = True,
         unique = True,
         indexed = True,
+        spellcheck = True,
         normalized_index = True,
         descriptive = True
     )

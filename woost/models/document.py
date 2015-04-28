@@ -50,18 +50,21 @@ class Document(Publishable):
         descriptive = True,
         translated = True,
         required = True,
+        spellcheck = True,
         member_group = "content"
     )
 
     inner_title = schema.String(
         translated = True,
         listed_by_default = False,
+        spellcheck = True,
         member_group = "content"
     )
 
     description = schema.String(
         translated = True,
         listed_by_default = False,
+        spellcheck = True,
         edit_control = "cocktail.html.TextArea",
         member_group = "meta"
     )
@@ -69,6 +72,7 @@ class Document(Publishable):
     keywords = schema.String(
         translated = True,
         listed_by_default = False,
+        spellcheck = True,
         edit_control = "cocktail.html.TextArea",
         member_group = "meta"
     )

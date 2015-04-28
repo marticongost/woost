@@ -64,6 +64,7 @@ class Block(Item):
     heading = schema.String(
         descriptive = True,
         translated = True,
+        spellcheck = True,
         member_group = "content"
     )
 

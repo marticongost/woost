@@ -35,6 +35,7 @@ class URI(Publishable):
         full_text_indexed = True,
         descriptive = True,
         translated = True,
+        spellcheck = True,
         member_group = "content"
     )
 

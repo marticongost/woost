@@ -103,6 +103,7 @@ class Website(Item):
 
     keywords = schema.String(
         translated = True,
+        spellcheck = True,
         listed_by_default = False,
         edit_control = "cocktail.html.TextArea",
         member_group = "website"
@@ -110,6 +111,7 @@ class Website(Item):
 
     description = schema.String(
         translated = True,
+        spellcheck = True,
         listed_by_default = False,
         edit_control = "cocktail.html.TextArea",
         member_group = "website"

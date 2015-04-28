@@ -48,7 +48,8 @@ class EmailTemplate(Item):
         normalized_index = True,
         full_text_indexed = True,
         descriptive = True,
-        translated = True
+        translated = True,
+        spellcheck = True
     )
 
     mime_type = schema.String(
@@ -87,12 +88,14 @@ class EmailTemplate(Item):
     subject = schema.String(
         translated = True,
         edit_control = "cocktail.html.TextArea",
+        spellcheck = True,
         listed_by_default = False
     )
 
     body = schema.String(
         translated = True,
         listed_by_default = False,
+        spellcheck = True,
         edit_control = "cocktail.html.TextArea"
     )
 

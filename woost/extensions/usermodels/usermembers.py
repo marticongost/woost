@@ -86,6 +86,7 @@ class UserMember(Item):
         required = True,
         translated = True,
         descriptive = True,
+        spellcheck = True,
         member_group = "description"
     )
 
@@ -93,6 +94,7 @@ class UserMember(Item):
         translated = True,
         edit_control = "woost.views.RichTextEditor",
         listed_by_default = False,
+        spellcheck = True,
         member_group = "description"
     )
 

@@ -23,6 +23,7 @@ class Survey(Item):
         indexed = True,
         unique = True,
         normalized_index = True,
+        spellcheck = True,
         descriptive = True
     )
 

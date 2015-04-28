@@ -46,6 +46,7 @@ class ECommerceProduct(Publishable):
         descriptive = True,
         translated = True,
         required = True,
+        spellcheck = True,
         member_group = "product_data"
     )
 
@@ -60,6 +61,7 @@ class ECommerceProduct(Publishable):
         translated = True,
         edit_control = "woost.views.RichTextEditor",
         member_group = "product_data",
+        spellcheck = True,
         listed_by_default = False
     )
 

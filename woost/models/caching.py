@@ -34,6 +34,7 @@ class CachingPolicy(Item):
     description = schema.String(
         descriptive = True,
         translated = True,
+        spellcheck = True,
         listed_by_default = False
     )
 

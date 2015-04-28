@@ -42,7 +42,8 @@ class ECommerceBillingConcept(Item):
     title = schema.String(
         translated = True,
         descriptive = True,
-        required = True
+        required = True,
+        spellcheck = True
     )
 
     enabled = schema.Boolean(

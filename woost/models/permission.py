@@ -81,7 +81,8 @@ class ContentPermission(Permission):
     )
 
     subject_description = schema.String(
-        translated = True
+        translated = True,
+        spellcheck = True
     )
 
     def match(self, user, target, verbose = False):

@@ -18,7 +18,8 @@ class MailingList(Item):
         normalized_index = True,
         full_text_indexed = True,
         descriptive = True,
-        translated = True
+        translated = True,
+        spellcheck = True
     )
 
     users = schema.Collection(

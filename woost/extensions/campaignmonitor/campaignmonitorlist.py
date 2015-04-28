@@ -31,7 +31,8 @@ class CampaignMonitorList(Item):
     title = schema.String(
         editable = schema.READ_ONLY,
         listed_by_default = False,
-        descriptive = True
+        descriptive = True,
+        spellcheck = True
     )
 
     list_id = schema.String(

@@ -32,6 +32,7 @@ class CampaignMonitorSubscriptionPage(Document):
         translated = True,
         listed_by_default = False,
         edit_control = "woost.views.RichTextEditor",
+        spellcheck = True,
         member_group = "content"
     )
 

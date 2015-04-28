@@ -25,7 +25,8 @@ class UserView(Item):
         descriptive = True,
         translated = True,
         required = True,
-        unique = True
+        unique = True,
+        spellcheck = True
     )
 
     def _parse_parameters(form_reader, data):
