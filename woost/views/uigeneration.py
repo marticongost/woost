@@ -73,8 +73,9 @@ def _reference_backoffice_edit_control(
     **context
 ):
     if member.class_family is not None:
-        display = templates.new("woost.views.ContentTypePickerDropdown")
-        display.content_type_picker.root = member.class_family
+        display = templates.new("woost.views.Autocomplete")
+        display.ajax_search = False
+        display.show_types = False
         return display
     else:
         return "woost.views.ItemSelector"
