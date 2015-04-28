@@ -68,7 +68,8 @@ class Trigger(Item):
 
     title = schema.String(
         translated = True,
-        descriptive = True
+        descriptive = True,
+        spellcheck = True
     )
 
     execution_point = schema.String(

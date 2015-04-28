@@ -50,6 +50,7 @@ class Feed(Publishable):
         full_text_indexed = True,
         descriptive = True,
         translated = True,
+        spellcheck = True,
         member_group = "meta"
     )
 
@@ -69,6 +70,7 @@ class Feed(Publishable):
         required = True,
         translated = True,
         listed_by_default = False,
+        spellcheck = True,
         edit_control = "cocktail.html.TextArea",
         member_group = "meta"
     )

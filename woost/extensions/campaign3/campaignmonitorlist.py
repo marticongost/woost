@@ -24,7 +24,8 @@ class CampaignMonitorList(Item):
 
     title = schema.String(
         required = True,
-        descriptive = True
+        descriptive = True,
+        spellcheck = True
     )
 
     list_id = schema.String(

@@ -36,6 +36,7 @@ class NewsletterContent(Block):
     text = schema.HTML(
         edit_control = "woost.extensions.newsletters.NewsletterRichTextEditor",
         translated = True,
+        spellcheck = True,
         member_group = "content"
     )
 

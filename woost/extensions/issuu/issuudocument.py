@@ -49,6 +49,7 @@ class IssuuDocument(Publishable):
         descriptive = True,
         translated = True,
         required = True,
+        spellcheck = True,
         member_group = "content"
     )
 

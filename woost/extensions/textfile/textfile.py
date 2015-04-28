@@ -25,6 +25,7 @@ class TextFile(Publishable):
     title = schema.String(
         translated = True,
         descriptive = True,
+        spellcheck = True,
         listed_by_default = False,
         member_group = "content"
     )

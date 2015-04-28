@@ -21,6 +21,7 @@ class OpenGraphCategory(Item):
         required = True,
         unique = True,
         translated = True,
+        spellcheck = True,
         descriptive = True
     )
 

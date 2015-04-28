@@ -32,6 +32,7 @@ class Comment(Item):
 
     content = schema.String(
         required = True,
+        spellcheck = True,
         edit_control = "cocktail.html.TextArea"
     )
 

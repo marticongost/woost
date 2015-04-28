@@ -94,6 +94,7 @@ class FacebookPublicationTarget(Item):
         indexed = True,
         normalized_index = True,
         descriptive = True,
+        spellcheck = True,
         listed_by_default = False
     )
 

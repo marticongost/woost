@@ -25,6 +25,7 @@ class ProductCategory(Item):
         normalized_index = True,
         full_text_indexed = True,
         descriptive = True,
+        spellcheck = True,
         translated = True
     )
 

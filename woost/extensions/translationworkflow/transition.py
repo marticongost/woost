@@ -34,7 +34,8 @@ class TranslationWorkflowTransition(Item):
     title = schema.String(
         required = True,
         translated = True,
-        descriptive = True
+        descriptive = True,
+        spellcheck = True
     )
 
     source_states = schema.Collection(

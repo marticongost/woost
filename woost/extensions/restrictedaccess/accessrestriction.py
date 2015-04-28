@@ -22,6 +22,7 @@ class AccessRestriction(Item):
         required = True,
         unique = True,
         indexed = True,
+        spellcheck = True,
         descriptive = True
     )
 

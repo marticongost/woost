@@ -30,6 +30,7 @@ class FormAgreement(Item):
         translated = True,
         unique = True,
         indexed = True,
+        spellcheck = True,
         normalized_index = True
     )
 

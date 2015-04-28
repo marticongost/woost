@@ -24,7 +24,8 @@ class TranslationWorkflowState(Item):
         unique = True,
         indexed = True,
         normalized_index = True,
-        descriptive = True
+        descriptive = True,
+        spellcheck = True
     )
 
     plural_title = schema.String(
@@ -33,7 +34,8 @@ class TranslationWorkflowState(Item):
         unique = True,
         indexed = True,
         normalized_index = True,
-        listed_by_default = False
+        listed_by_default = False,
+        spellcheck = True
     )
 
     incomming_transitions = schema.Collection(

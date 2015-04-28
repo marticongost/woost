@@ -41,6 +41,7 @@ class Field(Item):
         translated = True,
         required = True,
         descriptive = True,
+        spellcheck = True,
         member_group = "field_description"
     )
 
@@ -58,6 +59,7 @@ class Field(Item):
 
     explanation = schema.HTML(
         translated = True,
+        spellcheck = True,
         edit_control = "woost.views.RichTextEditor",
         member_group = "field_description"
     )
@@ -410,6 +412,7 @@ class OptionsFieldOption(Item):
 
     title = schema.String(
         required = True,
+        spellcheck = True,
         descriptive = True,
         translated = True
     )
