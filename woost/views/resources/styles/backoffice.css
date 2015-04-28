@@ -2684,6 +2684,19 @@ button.TypeSelectorButton {
     font-size: 95%;
 }
 
+.BackOfficeLayout .CollectionView .filters .CollectionEditor > .entries,
+.BackOfficeLayout .CollectionView .filters .CollectionEditor > .add_button {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.BackOfficeLayout .CollectionView .filters .CollectionEditor > .entries > .entry {
+    display: inline-block;
+    vertical-align: middle;
+    margin: 0;
+    margin-right: 0.5em;
+}
+
 .BackOfficeLayout .CollectionView .filters .discard_button {
     padding-left: 1.6em;
     background-repeat: no-repeat;
