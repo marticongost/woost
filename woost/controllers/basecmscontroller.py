@@ -73,7 +73,12 @@ class BaseCMSController(Controller):
         if kwargs:
             uri += "?" + urlencode(
                 dict(
-                    (key, value)
+                    (
+                        key,
+                        value.encode("utf-8")
+                            if isinstance(value, unicode)
+                            else value
+                    )
                     for key, value in kwargs.iteritems()
                     if not value is None
                 ),
