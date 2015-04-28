@@ -14,16 +14,36 @@ cocktail.bind(".Autocomplete", function ($autocomplete) {
         .hide()
         .appendTo($autocomplete);
 
+    this.getEntryIcon = function (entry) {
+
+        var icon;
+
+        if (entry) {
+            icon = entry.icon;
+            if (!icon) {
+                var iconFactory = $autocomplete.data("woost-autocomplete-icon-factory");
+                if (iconFactory) {
+                    icon = "/images/" + entry.value + "/icon16.png";
+                }
+            }
+        }
+
+        return icon;
+    }
+
     function showSelectionIcon() {
-        var entry = $autocomplete[0].selectedEntry;
-        var iconFactory = $autocomplete.data("woost-autocomplete-icon-factory");
-        if (iconFactory) {
-            if (entry) {
-                $selectionIcon.attr("src", "/images/" + entry.value + "/icon16.png");
+
+        var icon;
+
+        if ($autocomplete.data("woost-autocomplete-show-icons")) {
+            icon = $autocomplete[0].getEntryIcon($autocomplete[0].selectedEntry);
+            if (!icon) {
+                icon = "/resources/images/empty_set.png";
             }
-            else {
-                $selectionIcon.attr("src", "/resources/images/empty_set.png");
-            }
+        }
+
+        if (icon) {
+            $selectionIcon.attr("src", icon);
             $selectionIcon.show();
         }
         else {
@@ -45,7 +65,7 @@ cocktail.bind(".Autocomplete", function ($autocomplete) {
         if (iconFactory) {
             var $icon = jQuery("<img>")
                 .addClass("icon")
-                .attr("src", "/images/" + entry.value + "/" + iconFactory)
+                .attr("src", this.getEntryIcon(entry))
                 .appendTo($label);
         }
 

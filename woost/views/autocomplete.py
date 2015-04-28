@@ -12,6 +12,7 @@ class Autocomplete(BaseAutocomplete):
 
     ajax_search = True
     ajax_search_threshold = 100
+    show_icons = True
     show_types = True
     icon_factory = "icon16"
 
@@ -23,6 +24,8 @@ class Autocomplete(BaseAutocomplete):
         BaseAutocomplete._ready(self)
         self["data-woost-autocomplete-show-types"] = \
             "true" if self.show_types else "false"
+        self["data-woost-autocomplete-show-icons"] = \
+            "true" if self.show_icons else "false"
         self["data-woost-autocomplete-icon-factory"] = self.icon_factory
         if self.show_types:
             self.add_resource(
