@@ -30,10 +30,9 @@ from woost.controllers.notifications import Notification
     <button
         py:id="close_notification_button"
         py:client_model="woost.views.NotificationBox.close_notification_button"
-        type="button">
-        <img
-            src="/resources/images/close.png"
-            alt="${translations('woost.views.NotificationBox.close_notification_button')}"/>
+        type="button"
+        title="${translations('woost.views.NotificationBox.close_notification_button')}">
+        ✖
     </button>
 
 </div>

@@ -2027,13 +2027,19 @@ body.scripted .BackOfficeLayout .ThumbnailsContentView .collection_display input
     padding-right: 2em;
     width: 50%;
     margin: auto;
-    position: relative
+    position: relative;
+}
+
+.BackOfficeLayout .notification_box .notification_entry {
+    border-bottom: none !important;
+    box-shadow: 0 14px 14px rgba(20,20,20,0.3);
 }
 
 .BackOfficeLayout .notification_entry .close_notification_button {
     position: absolute;
-    top: 0.5em;
-    right: 0.5em;
+    font-size: 1.2em;
+    top: 0.6em;
+    right: 0.6em;
     padding: 0;
     margin: 0;
     background-image: none;
@@ -2044,7 +2050,7 @@ body.scripted .BackOfficeLayout .ThumbnailsContentView .collection_display input
 }
 
 .BackOfficeLayout .success {
-    border: 3px solid rgb(70, 131, 70);
+    border: 2px solid #94b393;
     background-color: rgb(220,240,220);
 }
 
@@ -2053,6 +2059,14 @@ body.scripted .BackOfficeLayout .ThumbnailsContentView .collection_display input
     color: rgb(20,80,20);
     font-weight: bold;
     font-style: normal;
+}
+
+.BackOfficeLayout .notification_entry.success .close_notification_button {
+    color: #536f52;
+}
+
+.BackOfficeLayout .notification_entry.success .close_notification_button:hover {
+    color: #274126;
 }
 
 .BackOfficeLayout .notification_box .error {
