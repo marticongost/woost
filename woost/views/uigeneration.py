@@ -37,6 +37,11 @@ backoffice_display = UIGenerator(
     }
 )
 
+backoffice_read_only_control = UIGenerator(
+    "backoffice_read_only_control",
+    base_ui_generators = [backoffice_display]
+)
+
 # Display for the 'Element' column of backoffice listings
 #------------------------------------------------------------------------------
 def _element_column_display(ui_generator, obj, member, value, **context):
@@ -90,7 +95,7 @@ backoffice_edit_control = EditControlGenerator(
     }
 )
 
-backoffice_edit_control.read_only_ui_generator = backoffice_display
+backoffice_edit_control.read_only_ui_generator = backoffice_read_only_control
 
 # Custom selection controls for the item selector
 #------------------------------------------------------------------------------
