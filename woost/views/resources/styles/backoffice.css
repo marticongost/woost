@@ -302,10 +302,6 @@ body {
     vertical-align: middle;
 }
 
-.BackOfficeLayout .ItemLabel:hover {
-    text-decoration: underline;
-}
-
 .BackOfficeLayout .ContentTable tr.selected td .ItemLabel .text_wrapper {
     color: white;
 }
@@ -3675,10 +3671,6 @@ div.success_label {
     cursor: pointer;
 }
 
-.BackOfficeLayout .ItemDisplay:hover {
-    text-decoration: none;
-}
-
 .BackOfficeLayout .ItemDisplay > .label {
     display: inline-block;
     position: relative;
@@ -3697,7 +3689,7 @@ div.success_label {
 }
 
 .BackOfficeLayout .ItemDisplay:hover > .label .text_wrapper {
-    border-bottom-style: solid;
+    border-bottom: 1px solid #666;
 }
 
 .BackOfficeLayout .ItemDisplay.item_context_menu_expanded .text_wrapper {
