@@ -171,6 +171,8 @@ from woost.controllers.backoffice.useractions import export_user_actions
             name="relation_selection-${self.member.name}"
             value="${item.id}"/>
 
+        <span py:local_id="checkbox_wrapper" py:wrap="entry.checkbox"/>
+
         <py:new
             py:local_id="item_display"
             py:element="self.create_item_display(item)">
