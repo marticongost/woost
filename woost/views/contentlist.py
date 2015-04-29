@@ -48,7 +48,11 @@ class ContentList(List, UIGenerator):
             referer = self.referer or self.data
         )
 
-        if self.referer and self.member:
+        if (
+            self.referer
+            and self.member
+            and getattr(display, "item_label", None)
+        ):
             display.item_label["data-woost-relativedrop"] = "%d.%s.%d" % (
                 self.referer.id,
                 self.member.name,
