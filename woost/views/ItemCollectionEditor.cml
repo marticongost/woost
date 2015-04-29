@@ -17,6 +17,7 @@ from woost.controllers.backoffice.useractions import export_user_actions
     <?py-class
     value = ()
     base_ui_generators = [backoffice_element_column_display]
+    referer = None
 
     def content_type_is_instantiable(self, content_type):
         return (
@@ -187,7 +188,7 @@ from woost.controllers.backoffice.useractions import export_user_actions
 
     <py:new
         py:def="item_display" py:args="item"
-        py:element="self.create_object_display(item)"
+        py:element="self.create_object_display(item, referer = self.referer)"
         py:item="${item}"/>
 
     <py:woost.views.ItemContextMenu

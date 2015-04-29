@@ -19,6 +19,11 @@ class ContentForm(Form):
     table_layout = False
     redundant_translation_labels = False
     base_ui_generators = [backoffice_edit_control]
+    referer = None
+
+    def create_member_display(self, obj, member, value, **context):
+        context.setdefault("referer", self.persistent_object)
+        return Form.create_member_display(self, obj, member, value, **context)
 
     def create_fieldset(self, group):
         fieldset = Form.create_fieldset(self, group)
