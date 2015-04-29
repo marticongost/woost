@@ -427,8 +427,15 @@ body {
     color: white;
 }
 
+.scripted .ItemCollectionEditor ul.entries li .checkbox_wrapper {
+    position: relative;
+    overflow: hidden;
+}
+
 .scripted .ItemCollectionEditor ul.entries li input[type=checkbox] {
-    display: none;
+    position: absolute;
+    left: -100px;
+    top: -100px;
 }
 
 .ItemCollectionEditor ul.entries li label {
