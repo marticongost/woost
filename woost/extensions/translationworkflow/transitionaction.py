@@ -78,7 +78,14 @@ class TranslationWorkflowTransitionAction(UserAction):
         transition_data = None
 
         # Save the edit stack
-        if hasattr(controller, "save_item"):
+        if (
+            controller.edit_node
+            and isinstance(
+                controller.edit_node.item,
+                TranslationWorkflowRequest
+            )
+            and hasattr(controller, "save_item")
+        ):
             try:
                 controller.save_item()
             except cherrypy.HTTPRedirect:
