@@ -1654,6 +1654,10 @@ body.scripted .BackOfficeLayout .Table .row_selection_control {
     margin: 0;
 }
 
+.BackOfficeLayout .CollectionView .collection_settings .page_size_selector label {
+    font-size: 0.9em;
+}
+
 .BackOfficeLayout .CollectionView .collection_display_container {
     clear: both;
     position: relative;

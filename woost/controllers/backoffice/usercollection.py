@@ -28,6 +28,7 @@ class BackOfficeUserCollection(UserCollection):
     @type: L{ContentViewsRegistry
              <woost.controllers.contentviews.ContentViewsRegistry>}
     """
+    page_sizes = [15, 50, 100, 250]
     content_views_registry = global_content_views
 
     # Content view dependant capabilities
