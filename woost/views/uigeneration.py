@@ -44,15 +44,10 @@ backoffice_read_only_control = UIGenerator(
 
 # Display for the 'Element' column of backoffice listings
 #------------------------------------------------------------------------------
-def _element_column_display(ui_generator, obj, member, value, **context):
-    display = templates.new("woost.views.ItemLabel")
-    display.icon_visible = True
-    return display
-
 backoffice_element_column_display = UIGenerator(
     base_ui_generators = [backoffice_display],
     member_type_displays = {
-        Item: _element_column_display
+        Item: "woost.views.ItemLabel"
     }
 )
 
