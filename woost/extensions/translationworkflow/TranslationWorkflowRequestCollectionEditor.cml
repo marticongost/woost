@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?py
+from cocktail.modeling import OrderedSet
+from cocktail.stringutils import normalize
+from cocktail.html.grouping import Grouping, GroupByMember
+from woost.models import get_current_user
+from woost.extensions.translationworkflow.request \
+    import TranslationWorkflowRequest
+?>
+
+<py:woost.views.ItemCollectionEditor
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:py="http://www.whads.com/ns/cocktail/templates">
+
+    <?py-class
+    class grouping(GroupByMember):
+        member = TranslationWorkflowRequest.state
+
+        class grouping(Grouping):
+            def __translate__(self, language, **kwargs):
+                return self.key.get("plural_title", language)
+    ?>
+
+    <?py
+    self.add_resource("/resources/styles/TranslationWorkflowRequestCollectionEditor.css")
+    ?>
+
+</py:woost.views.ItemCollectionEditor>
+

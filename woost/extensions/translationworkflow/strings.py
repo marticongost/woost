@@ -21,12 +21,6 @@ translations.define("woost.actions.translation_workflow_transition",
     en = u"Change state"
 )
 
-translations.define("woost.actions.translation_workflow_requests",
-    ca = u"Peticions de traducció",
-    es = u"Peticiones de traducción",
-    en = u"Translation requests"
-)
-
 translations.define("woost.extensions.translationworkflow.translation_path",
     ca = lambda source_language, target_language, **kwargs:
         ca_possessive(translations("locale", locale = source_language).lower())

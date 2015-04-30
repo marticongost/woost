@@ -118,8 +118,7 @@ class TranslationWorkflowExtension(Extension):
             state,
             transition,
             transitionpermission,
-            transitionaction,
-            requestsaction
+            transitionaction
         )
 
         # Disable user actions for translation requests
