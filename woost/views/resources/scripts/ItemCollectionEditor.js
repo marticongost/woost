@@ -15,6 +15,8 @@ cocktail.bind(".ItemCollectionEditor", function ($editor) {
     });
 
     // Enable drag & drop sorting
-    $editor.find("ul.entries").sortable({axis: "y"});
+    if (!$editor.data("cocktail-grouped")) {
+        $editor.find(".entries").sortable({axis: "y"});
+    }
 });
 

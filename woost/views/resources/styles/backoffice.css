@@ -403,48 +403,94 @@ body {
     margin-bottom: 0;
 }
 
-.ItemCollectionEditor ul.entries {
+.ItemCollectionEditor .entries {
     display: block;
     list-style-type: none;
     padding: 0;
     margin: 0;
     background-color: white;
+    border: 1px solid #ddd;
+    border-top: none;
 }
 
-.ItemCollectionEditor ul.entries li {
+.ItemCollectionEditor .group,
+.ItemCollectionEditor .group_entries {
+    padding: 0;
+}
+
+.ItemCollectionEditor .group_entries {
+    list-style-type: none;
+}
+
+.ItemCollectionEditor .group .group {
+    margin: 0.5em;
+}
+
+.ItemCollectionEditor .entries > .group > .group_heading {
+    background-color: #ccc;
+    background-image: linear-gradient(#eee,#ddd);
+    padding: 0.4em;
+    font-weight: bold;
+    color: #333;
+    border-top: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+}
+
+.ItemCollectionEditor .group .group > .group_heading {
+    font-weight: bold;
+    padding-bottom: 0.2em;
+    border-bottom: 1px solid #aaa;
+}
+
+.ItemCollectionEditor .group:first-child .group_heading {
+    border-top: none;
+}
+
+.ItemCollectionEditor .entry {
     cursor: pointer;
     display: block;
     padding: 0;
     margin: 0;
-    border: 1px solid #ddd;
-    border-top: none;
     padding: 0.4em;
+    border-top: 1px solid #ddd;
 }
 
-.ItemCollectionEditor ul.entries li.selected {
+.ItemCollectionEditor .entry:first-child {
+    border-top: none;
+}
+
+.ItemCollectionEditor .entry.selected {
     background-color: #4b4b4b;
     border-color: #4b4b4b;
     color: white;
 }
 
-.scripted .ItemCollectionEditor ul.entries li .checkbox_wrapper {
+.scripted .ItemCollectionEditor .checkbox_wrapper {
     position: relative;
     overflow: hidden;
 }
 
-.scripted .ItemCollectionEditor ul.entries li input[type=checkbox] {
+.scripted .ItemCollectionEditor .checkbox_wrapper input[type=checkbox] {
     position: absolute;
     left: -100px;
     top: -100px;
 }
 
-.ItemCollectionEditor ul.entries li label {
+.ItemCollectionEditor .entry label {
     margin: 0;
     padding: 0 !important;
     font-size: 0.9em;
 }
 
-.ItemCollectionEditor ul.entries li.ui-sortable-helper {
+.ItemCollectionEditor[data-cocktail-editable='read_only'] .entry label {
+    color: black;
+}
+
+.ItemCollectionEditor[data-cocktail-editable='read_only'] .entry.selected label {
+    color: white;
+}
+
+.ItemCollectionEditor li.ui-sortable-helper {
     width: 100%;
     border-top: 1px solid #ddd;
     background-color: white;
