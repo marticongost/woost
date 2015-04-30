@@ -16,7 +16,8 @@ class TranslationWorkflowTransitionPermission(ContentPermission):
         items = schema.Reference(
             type = TranslationWorkflowTransition
         ),
-        related_end = schema.Collection()
+        related_end = schema.Collection(),
+        after_member = "content_expression"
     )
 
     def match(

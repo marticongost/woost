@@ -487,6 +487,12 @@ translations.define(
     )
 )
 
+translations.define("TranslationWorkflowTransitionPermission.transitions",
+    ca = u"Transicions",
+    es = u"Transiciones",
+    en = u"Transitions"
+)
+
 # TranslationWorkflowComment
 #------------------------------------------------------------------------------
 translations.define("TranslationWorkflowComment",
