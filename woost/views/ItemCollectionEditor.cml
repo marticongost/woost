@@ -18,6 +18,7 @@ from woost.controllers.backoffice.useractions import export_user_actions
     value = ()
     base_ui_generators = [backoffice_element_column_display]
     referer = None
+    grouping = None
 
     def content_type_is_instantiable(self, content_type):
         return (
@@ -50,7 +51,7 @@ from woost.controllers.backoffice.useractions import export_user_actions
     selectable(
         self,
         mode = MULTIPLE_SELECTION,
-        entry_selector = "ul.entries li"
+        entry_selector = ".entries .entry"
     )
 
     self.add_resource("/cocktail/scripts/jquery-ui.js")
@@ -70,6 +71,14 @@ from woost.controllers.backoffice.useractions import export_user_actions
             for content_type in self.member.related_type.schema_tree()
             if self.content_type_is_instantiable(content_type)
         )
+
+        if self.grouping:
+            if isinstance(self.grouping, type):
+                self.grouping = self.grouping()
+            if self.value:
+                self.grouping.populate(self.value)
+
+        element["data-cocktail-grouped"] = "true" if self.grouping else "false"
         ?>
     </py:ready>
 
@@ -149,8 +158,33 @@ from woost.controllers.backoffice.useractions import export_user_actions
 
     <ul py:id="entries">
         <py:ready>
-            <py:new py:element="self.create_entry(item)" py:for="item in self.value"/>
+            <?py
+            if self.grouping:
+                for grouping in self.grouping.groups:
+                    element.append(self.create_group(grouping))
+                for item in self.grouping.items:
+                    element.append(self.create_entry(item))
+            else:
+                for item in self.value:
+                    element.append(self.create_entry(item))
+            ?>
         </py:ready>
+    </ul>
+
+    <li py:def="group" py:args="grouping">
+        <py:new py:element="self.create_group_heading(grouping)"/>
+        <py:new py:element="self.create_group_entries(grouping)"/>
+    </li>
+
+    <div py:def="group_heading" py:args="grouping">
+        <span py:local_id="group_heading_text">
+            ${translations(grouping)}
+        </span>
+    </div>
+
+    <ul py:def="group_entries" py:args="grouping">
+        <py:new py:element="self.create_group(child)" py:for="child in grouping.groups"/>
+        <py:new py:element="self.create_entry(item)" py:for="item in grouping.items"/>
     </ul>
 
     <li py:def="entry" py:args="item">
