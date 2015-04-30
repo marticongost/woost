@@ -543,34 +543,26 @@ translations.define(
 #------------------------------------------------------------------------------
 translations.define(
     "woost.extensions.translationworkflow.TranslationWorkflowChangesSummary."
-    "explanation",
-    ca = u"Efecte sobre el circuït de traducció:",
-    es = u"Efecto sobre el circuito de traducción:",
-    en = u"Translation workflow effects:"
+    "changes.created",
+    ca = u"Noves peticions de traducció",
+    es = u"Nuevas peticiones de traducción",
+    en = u"New translation requests"
 )
 
 translations.define(
     "woost.extensions.translationworkflow.TranslationWorkflowChangesSummary."
-    "entry.request_change_label-created",
-    ca = u"Nova petició",
-    es = u"Nueva petición",
-    en = u"New request"
+    "changes.invalidated",
+    ca = u"Peticions de traducció invalidades",
+    es = u"Peticiones de traducción invalidadas",
+    en = u"Invalidated translation requests"
 )
 
 translations.define(
     "woost.extensions.translationworkflow.TranslationWorkflowChangesSummary."
-    "entry.request_change_label-invalidated",
-    ca = u"Petició invalidada",
-    es = u"Petición invalidada",
-    en = u"Invalidated request"
-)
-
-translations.define(
-    "woost.extensions.translationworkflow.TranslationWorkflowChangesSummary."
-    "entry.request_change_label-silenced",
-    ca = u"Cap (petició silenciada)",
-    es = u"Ninguno (petición silenciada)",
-    en = u"None (silenced request)"
+    "changes.silenced",
+    ca = u"Peticions de traducció silenciades",
+    es = u"Peticiones de traducción silenciadas",
+    en = u"Silenced translation requests"
 )
 
 # TranslationWorkflowPathEditor

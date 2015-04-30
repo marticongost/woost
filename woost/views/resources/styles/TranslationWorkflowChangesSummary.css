@@ -14,11 +14,18 @@
     padding-right: 1em;
 }
 
-.TranslationWorkflowChangesSummary .request_display {
-    font-weight: bold;
-}
-
 .TranslationWorkflowChangesSummary .request_change_cell {
     font-size: 0.9em;
+}
+
+.TranslationWorkflowChangesSummary .group {
+    display: inline-block;
+    vertical-align: top;
+}
+
+.TranslationWorkflowChangesSummary .group + .group {
+    margin-left: 1em;
+    padding-left: 1em;
+    border-left: 1px dotted #bbb;
 }
 

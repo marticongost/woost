@@ -12,7 +12,8 @@ from woost.controllers.backoffice.editstack import ItemSavedNotification
         <py:woost.extensions.translationworkflow.TranslationWorkflowChangesSummary
             py:id="translation_workflow_changes_summary"
             py:if="isinstance(self.notification, ItemSavedNotification) and self.notification.change"
-            py:changeset="${self.notification.change.changeset}"/>
+            py:changeset="${self.notification.change.changeset}"
+            py:referer="${self.notification.change.target}"/>
     </py:ready>
 
 </py:overlay>

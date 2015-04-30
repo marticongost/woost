@@ -163,7 +163,7 @@ class TranslationWorkflowExtension(Extension):
 
         # Install overlays
         from cocktail.html import templates
-        for overlay_id in ("BackOfficeLayout", "ContentView"):
+        for overlay_id in ("BackOfficeLayout", "ContentView", "Notification"):
             templates.get_class(
                 "woost.extensions.translationworkflow.%sOverlay"
                 % overlay_id
