@@ -21,6 +21,9 @@ Item.add_member(
         bidirectional = True,
         integral = True,
         editable = schema.READ_ONLY,
+        backoffice_read_only_control =
+            "woost.extensions.translationworkflow."
+            "TranslationWorkflowRequestCollectionEditor",
         member_group = "administration"
     )
 )
