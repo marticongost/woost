@@ -408,31 +408,53 @@ translations.define("TranslationWorkflowTransition.transition_code",
 )
 
 translations.define(
-    "woost.extensions.translationworkflow.transition_executed_notice",
-    ca = lambda transition, requests:
+    "woost.extensions.translationworkflow.transitions_notice",
+    ca = lambda new_state, count:
         plural2(
-            len(requests),
+            count,
             u"Una petició passada",
-            u"%d peticions passades" % len(requests)
+            u"%d peticions passades" % count
         )
         + u" a l'estat <em>%s</em>."
-          % decapitalize(translations(transition.target_state)),
-    es = lambda transition, requests:
+          % decapitalize(translations(new_state)),
+    es = lambda new_state, count:
         plural2(
-            len(requests),
+            count,
             u"Una petición pasada",
-            u"%d peticiones pasadas" % len(requests)
+            u"%d peticiones pasadas" % count
         )
         + u" al estado <em>%s</em>."
-          % decapitalize(translations(transition.target_state)),
-    en = lambda transition, requests:
+          % decapitalize(translations(new_state)),
+    en = lambda new_state, count:
         plural2(
-            len(requests),
+            count,
             u"One request",
-            u"%d requests" % len(requests)
+            u"%d requests" % count
         )
         + u" transitioned to the <em>%s</em> state."
-          % decapitalize(translations(transition.target_state))
+          % decapitalize(translations(new_state))
+)
+
+translations.define(
+    "woost.extensions.translationworkflow.silence_notice",
+    ca = lambda count:
+        plural2(
+            len(requests),
+            u"S'ha ignorat un canvi a una petició silenciada",
+            u"S'han ignorat %d canvis a peticions silenciades" % count
+        ),
+    es = lambda count:
+        plural2(
+            count,
+            u"Se ha ignorado un cambio a una petición silenciada",
+            u"Se han ignorado %d cambios a peticiones silenciadas" % count
+        ),
+    en = lambda count:
+        plural2(
+            count,
+            u"A change to a silenced request has been ignored",
+            u"%d changes to silenced requests have been ignored" % count
+        )
 )
 
 # Transition controller
@@ -575,32 +597,6 @@ translations.define(
     en = lambda translator:
         "" if translator is None
         else u"assigned to " + translations(translator)
-)
-
-# TranslationWorkflowChangesSummary
-#------------------------------------------------------------------------------
-translations.define(
-    "woost.extensions.translationworkflow.TranslationWorkflowChangesSummary."
-    "changes.created",
-    ca = u"Noves peticions de traducció",
-    es = u"Nuevas peticiones de traducción",
-    en = u"New translation requests"
-)
-
-translations.define(
-    "woost.extensions.translationworkflow.TranslationWorkflowChangesSummary."
-    "changes.invalidated",
-    ca = u"Peticions de traducció invalidades",
-    es = u"Peticiones de traducción invalidadas",
-    en = u"Invalidated translation requests"
-)
-
-translations.define(
-    "woost.extensions.translationworkflow.TranslationWorkflowChangesSummary."
-    "changes.silenced",
-    ca = u"Peticions de traducció silenciades",
-    es = u"Peticiones de traducción silenciadas",
-    en = u"Silenced translation requests"
 )
 
 # TranslationWorkflowPathEditor

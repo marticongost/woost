@@ -10,7 +10,6 @@ from cocktail import schema
 from cocktail.persistence import transaction
 from cocktail.controllers import request_property, context, Location
 from woost.models import changeset_context, get_current_user
-from woost.controllers.notifications import Notification
 from woost.controllers.backoffice.basebackofficecontroller \
     import BaseBackOfficeController
 from woost.controllers.backoffice.useractions import (
@@ -20,7 +19,10 @@ from woost.controllers.backoffice.useractions import (
 from .request import TranslationWorkflowRequest
 from .transitionpermission import TranslationWorkflowTransitionPermission
 from .transitionnode import TranslationWorkflowTransitionNode
-from .utils import member_is_included_in_translation_workflow
+from .utils import (
+    member_is_included_in_translation_workflow,
+    notify_translation_request_changes
+)
 
 
 class TranslationWorkflowTransitionAction(UserAction):
@@ -115,24 +117,16 @@ class TranslationWorkflowTransitionAction(UserAction):
                 transition_schema.init_instance(transition_data)
 
         # Otherwise, execute the transition right away
-        @transaction
         def execute_transition():
             transition = self.transition
             with changeset_context(author = get_current_user()) as changeset:
                 for request in selection:
                     transition.execute(request, transition_data)
                     changeset.changes.get(request.id).is_explicit_change = True
+            return changeset
 
-        Notification(
-            translations(
-                "woost.extensions.translationworkflow."
-                "transition_executed_notice",
-                transition = self.transition,
-                requests = selection
-            ),
-            "success"
-        ).emit()
-
+        changeset = transaction(execute_transition)
+        notify_translation_request_changes(changeset)
         Location.get_current().go("GET")
 
     def get_errors(self, controller, selection):

@@ -166,8 +166,7 @@ class TranslationWorkflowExtension(Extension):
         for overlay_id in (
             "BackOfficeLayout",
             "BackOfficeEditView",
-            "ContentView",
-            "Notification"
+            "ContentView"
         ):
             templates.get_class(
                 "woost.extensions.translationworkflow.%sOverlay"
@@ -213,6 +212,17 @@ class TranslationWorkflowExtension(Extension):
                             )
                         ):
                             transition.execute(request)
+
+        # Count affected translation requests after editing an item
+        from cocktail.events import when
+        from woost.controllers.backoffice.editstack import EditNode
+        from woost.extensions.translationworkflow.utils \
+            import notify_translation_request_changes
+
+        @when(EditNode.committed)
+        def show_edit_effects_on_translation_workflow(e):
+            if e.changeset is not None:
+                notify_translation_request_changes(e.changeset)
 
     def _install(self):
         self.create_standard_graph()
