@@ -47,7 +47,7 @@ def pop_user_notifications(filter = None):
 
 class Notification(object):
 
-    def __init__(self, message = None, category = None, transient = True):
+    def __init__(self, message = None, category = None, transient = False):
         self.message = message
         self.category = category
         self.transient = transient
