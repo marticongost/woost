@@ -37,3 +37,11 @@ Role.add_member(
     append = True
 )
 
+Role.add_member(
+    schema.CodeBlock("translation_workflow_default_transition_condition",
+        language = "python",
+        listed_by_default = False
+    ),
+    append = True
+)
+

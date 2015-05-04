@@ -174,44 +174,10 @@ class TranslationWorkflowExtension(Extension):
             )
 
         # Optional automatic transition on edit controllers
-        from cocktail import schema
-        from cocktail.controllers import get_parameter
-        from woost.models import get_current_user
-        from woost.controllers.backoffice.editcontroller \
-            import EditController
-        from woost.extensions.translationworkflow.transition \
-            import TranslationWorkflowTransition
-        from woost.extensions.translationworkflow.transitionpermission \
-            import TranslationWorkflowTransitionPermission
-        from woost.extensions.translationworkflow.utils \
-            import iter_changeset_translation_requests
-
-        @when(EditController.saving_item)
-        def auto_transition(e):
-            if e.change is not None:
-                transition = get_parameter(
-                    schema.Reference(
-                        "translation_workflow_auto_transition",
-                        type = TranslationWorkflowTransition
-                    )
-                )
-                if transition is not None:
-                    user = get_current_user()
-                    for request in list(
-                        iter_changeset_translation_requests(e.change.changeset)
-                    ):
-                        if (
-                            (
-                                not transition.source_states
-                                or request.state in transition.source_states
-                            )
-                            and user.has_permission(
-                                TranslationWorkflowTransitionPermission,
-                                transition = transition,
-                                translation_request = request
-                            )
-                        ):
-                            transition.execute(request)
+        from woost.controllers.backoffice.editcontroller import EditController
+        from woost.extensions.translationworkflow.defaulttransition \
+            import apply_default_transition
+        EditController.saving_item.append(apply_default_transition)
 
         # Count affected translation requests after editing an item
         from cocktail.events import when
@@ -358,6 +324,10 @@ class TranslationWorkflowExtension(Extension):
             TranslationWorkflowTransition.require_instance(
                 qname = prefix + "transitions.select"
             )
+        )
+        editors.translation_workflow_default_transition_condition = (
+            "applies = (request.state.qname == "
+            "'woost.extensions.translationworkflow.states.pending')"
         )
         editors.permissions.append(
             # Allow editors to execute a subset of transitions
