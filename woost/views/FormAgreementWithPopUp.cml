@@ -47,10 +47,16 @@
     <py:cocktail.html.CheckBox
         py:id="input"/>
 
+    <py:binding>
+        <?py self.require_id() ?>
+    </py:binding>
+
     <py:woost.views.Dialog
         py:id="form_agreement_dialog"
-        py:client_model="woost.views.FormAgreementWithPopUp.dialog">
-        <py:with py:element="element.dialog_heading">@{translations(self.member.agreement_document)}</py:with>
+        py:client_model="woost.views.FormAgreementWithPopUp.dialog-@{self['id']}">
+        <py:with py:element="element.dialog_heading">
+            @{translations(self.member.agreement_document)}
+        </py:with>
     </py:woost.views.Dialog>
 </div>
 
