@@ -8,6 +8,10 @@ from woost.models import get_current_user, Role
     xmlns:py="http://www.whads.com/ns/cocktail/templates"
     py:class="woost.views.BackOfficeLayout">
 
+    <?py
+    self.add_resource("/resources/styles/translationworkflow.css")
+    ?>
+
     <py:with py:element="self.user_views_bar">
         <py:binding>
             <?py
