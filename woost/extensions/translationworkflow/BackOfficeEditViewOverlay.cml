@@ -22,7 +22,7 @@ from woost.extensions.translationworkflow.utils \
             for role in get_current_user().iter_roles():
                 if role.translation_workflow_default_transition is not None:
                     transition = role.translation_workflow_default_transition
-                    break
+                break
 
         self.translation_workflow_default_transition = transition
 
