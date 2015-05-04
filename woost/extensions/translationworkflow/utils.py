@@ -33,7 +33,7 @@ def object_is_included_in_translation_workflow(obj):
 
 def iter_changeset_translation_requests(changeset):
 
-    silenced_state = TranslationWorkflowState.require_instance(
+    silenced_state = TranslationWorkflowState.get_instance(
         qname = "woost.extensions.translationworkflow.states.silenced"
     )
 
@@ -70,7 +70,10 @@ def iter_changeset_translation_requests(changeset):
                         if request is not None:
                             request_change = changeset.changes.get(request.id)
                             if request_change is None:
-                                if request.state is silenced_state:
+                                if (
+                                    silenced_state is not None
+                                    and request.state is silenced_state
+                                ):
                                     yield request, "silenced"
                             elif request_change.action == "create":
                                 yield request, "created",
