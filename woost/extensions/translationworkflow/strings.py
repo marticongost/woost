@@ -109,9 +109,15 @@ translations.define("Role.translation_workflow_default_state",
 )
 
 translations.define("Role.translation_workflow_default_transition",
-    ca = u"Transició per defecte",
-    es = u"Transición por defecto",
-    en = u"Default transition"
+    ca = u"Transició per defecte del circuït de traducció",
+    es = u"Transición por defecto del circuito de traducción",
+    en = u"Translation workflow default transition"
+)
+
+translations.define("Role.translation_workflow_default_transition_condition",
+    ca = u"Condició per la transició per defecte del circuït de traducció",
+    es = u"Condición para la transición por defecto del circuito de traducción",
+    en = u"Condition for the translation workflow default transition"
 )
 
 # TranslationWorkflowRequest
