@@ -38,6 +38,32 @@ translations.define("woost.extensions.translationworkflow.translation_path",
         + translations("locale", locale = target_language).lower()
 )
 
+translations.define(
+    "woost.extensions.translationworkflow.transitionaction."
+    "TranslationWorkflowInvalidTextError-instance",
+    ca = lambda instance:
+        u"<em>%s</em> conté errors que impedeixen passar-la a l'estat "
+        u"<em>%s</em> (%s)" % (
+            translations(instance.request),
+            translations(instance.transition.target_state).lower(),
+            translations(instance.error)
+        ),
+    es = lambda instance:
+        u"<em>%s</em> contiene errores que impiden pasarla al estado "
+        u"<em>%s</em> (%s)" % (
+            translations(instance.request),
+            translations(instance.transition.target_state).lower(),
+            translations(instance.error)
+        ),
+    en = lambda instance:
+        u"<em>%s</em> contains errors that prevent its transition to the "
+        u"<em>%s</em> state (%s)" % (
+            translations(instance.request),
+            translations(instance.transition.target_state).lower(),
+            translations(instance.error)
+        )
+)
+
 # Configuration
 #------------------------------------------------------------------------------
 translations.define("Configuration.translation_workflow_paths",
