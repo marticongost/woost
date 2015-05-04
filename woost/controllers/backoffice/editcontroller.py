@@ -9,7 +9,7 @@ u"""
 from __future__ import with_statement
 import cherrypy
 from ZODB.POSException import ConflictError
-from cocktail.events import event_handler, when
+from cocktail.events import event_handler, when, Event
 from cocktail.schema import (
     Adapter, ErrorList, DictAccessor, Collection, Reference
 )
@@ -35,6 +35,8 @@ class EditController(BaseBackOfficeController):
 
     MAX_TRANSACTION_ATTEMPTS = 3
     section = None
+
+    saving_item = Event()
 
     @event_handler
     def handle_processed(cls, event):
@@ -167,6 +169,8 @@ class EditController(BaseBackOfficeController):
                     change = changeset.changes.get(item.id)
                     if change is not None:
                         change.is_explicit_change = True
+
+                    self.saving_item(change = change)
             try:
                 datastore.commit()
             except ConflictError:
