@@ -34,8 +34,11 @@ def object_is_included_in_translation_workflow(obj):
         and isinstance(obj, get_models_included_in_translation_workflow())
     )
 
-def iter_changeset_translation_requests(changeset, include_silenced = True):
-
+def iter_changeset_translation_requests(
+    changeset,
+    include_silenced = False,
+    include_unchanged = False
+):
     from .request import TranslationWorkflowRequest
 
     # Yield created or modified requests
@@ -44,42 +47,49 @@ def iter_changeset_translation_requests(changeset, include_silenced = True):
             yield change.target
 
     # Yield silenced requests that would have been affected by the changeset
-    if include_silenced:
+    if include_silenced or include_unchanged:
         silenced_state = TranslationWorkflowState.get_instance(
             qname = "woost.extensions.translationworkflow.states.silenced"
         )
-        if silenced_state is not None:
-            for item_id, change in changeset.changes.iteritems():
-                if (
-                    change.action == "modify"
-                    and change.target
-                    and change.target.is_inserted
-                    and object_is_included_in_translation_workflow(change.target)
-                ):
-                    source_languages = set()
-                    for member, language in change.diff():
-                        if member_is_included_in_translation_workflow(member):
-                            source_languages.add(language)
 
-                    language_paths = \
-                        Configuration.instance.translation_workflow_paths
+        for item_id, change in changeset.changes.iteritems():
+            if (
+                change.action == "modify"
+                and change.target
+                and change.target.is_inserted
+                and object_is_included_in_translation_workflow(change.target)
+            ):
+                source_languages = set()
+                for member, language in change.diff():
+                    if member_is_included_in_translation_workflow(member):
+                        source_languages.add(language)
 
-                    for source_language in source_languages:
-                        target_languages = language_paths.get(source_language)
-                        if target_languages:
-                            for target_language in target_languages:
-                                request = change.target.get_translation_request(
-                                    source_language,
-                                    target_language
-                                )
+                language_paths = \
+                    Configuration.instance.translation_workflow_paths
+
+                for source_language in source_languages:
+                    target_languages = language_paths.get(source_language)
+                    if target_languages:
+                        for target_language in target_languages:
+                            request = change.target.get_translation_request(
+                                source_language,
+                                target_language
+                            )
+                            if request is not None:
                                 if (
-                                    request is not None
-                                    and request.state is silenced_state
+                                    (
+                                        silenced_state is not None
+                                        and request.state is silenced_state
+                                    )
+                                    or include_unchanged
                                 ):
                                     yield request
 
-def iter_changeset_translation_request_changes(changeset):
-
+def iter_changeset_translation_request_changes(
+    changeset,
+    include_silenced = False,
+    include_unchanged = False
+):
     silenced_state = TranslationWorkflowState.get_instance(
         qname = "woost.extensions.translationworkflow.states.silenced"
     )
@@ -91,7 +101,10 @@ def iter_changeset_translation_request_changes(changeset):
                 silenced_state is not None
                 and request.state is silenced_state
             ):
-                yield request, "silenced"
+                if include_unchanged:
+                    yield request, "silenced"
+            elif include_unchanged:
+                yield request, "unchanged"
         elif request_change.action == "create":
             yield request, "created",
         elif request_change.action == "modify":
