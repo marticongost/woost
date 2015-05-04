@@ -11,6 +11,8 @@ from cocktail.persistence import transaction
 from cocktail.controllers import request_property, context, Location
 from woost.models import changeset_context, get_current_user
 from woost.controllers.notifications import Notification
+from woost.controllers.backoffice.basebackofficecontroller \
+    import BaseBackOfficeController
 from woost.controllers.backoffice.useractions import (
     UserAction,
     get_user_action
@@ -18,6 +20,7 @@ from woost.controllers.backoffice.useractions import (
 from .request import TranslationWorkflowRequest
 from .transitionpermission import TranslationWorkflowTransitionPermission
 from .transitionnode import TranslationWorkflowTransitionNode
+from .utils import member_is_included_in_translation_workflow
 
 
 class TranslationWorkflowTransitionAction(UserAction):
@@ -133,27 +136,69 @@ class TranslationWorkflowTransitionAction(UserAction):
         Location.get_current().go("GET")
 
     def get_errors(self, controller, selection):
+
         for error in UserAction.get_errors(self, controller, selection):
             yield error
 
-        stack_node = getattr(controller, "stack_node", None)
-        if stack_node is not None:
+        # Some transitions (ie. "apply") can't proceed unless the text in the
+        # request is complete and valid
+        if self.transition.requires_valid_text:
+            stack_node = getattr(controller, "stack_node", None)
 
-            if self.transition.requires_valid_text:
+            # Applying the transition on a request that is being edited:
+            # validate the edit state
+            if stack_node is not None and selection == [stack_node.item]:
                 adapter = schema.Adapter()
-                action_schema = adapter.export_schema(stack_node.form_schema)
-                for member in action_schema.iter_members():
+                adapter.implicit_copy = False
+                for member in stack_node.form_schema.iter_members():
                     if member.name.startswith("translated_values_"):
-                        member.required = True
-            else:
-                action_schema = stack_node.form_schema
+                        adapter.copy(
+                            member.name,
+                            properties = {"required": True}
+                        )
+                val_schema = adapter.export_schema(stack_node.form_schema)
+                for error in val_schema.get_errors(
+                    stack_node.form_data,
+                    languages = stack_node.item_translations,
+                    persistent_object = stack_node.item
+                ):
+                    yield TranslationWorkflowInvalidTextError(
+                        stack_node.item,
+                        self.transition,
+                        error
+                    )
 
-            for error in action_schema.get_errors(
-                stack_node.form_data,
-                languages = stack_node.item_translations,
-                persistent_object = stack_node.item
-            ):
-                yield error
+            # Applying the transition outside an edit form
+            else:
+                val_schemas = {}
+
+                for request in selection:
+                    translated_model = request.translated_item.__class__
+                    val_schema = val_schemas.get(translated_model)
+
+                    if val_schema is None:
+                        adapter = schema.Adapter()
+                        adapter.implicit_copy = False
+                        for member in translated_model.iter_members():
+                            if member_is_included_in_translation_workflow(member):
+                                adapter.copy(
+                                    member.name,
+                                    properties = {
+                                        "required": True,
+                                        "translated": False
+                                    }
+                                )
+                        val_schema = adapter.export_schema(translated_model)
+                        val_schemas[translated_model] = val_schema
+
+                    for error in val_schema.get_errors(
+                        request.translated_values
+                    ):
+                        yield TranslationWorkflowInvalidTextError(
+                            request,
+                            self.transition,
+                            error
+                        )
 
     @classmethod
     def register_transition_action(cls, transition):
@@ -168,4 +213,17 @@ class TranslationWorkflowTransitionAction(UserAction):
         return get_user_action(
             "translation_workflow_transition_%d" % transition.id
         )
+
+
+class TranslationWorkflowInvalidTextError(Exception):
+
+    def __init__(self, request, transition, error):
+        self.request = request
+        self.transition = transition
+        self.error = error
+
+
+BaseBackOfficeController._graceful_user_action_errors.add(
+    TranslationWorkflowInvalidTextError
+)
 
