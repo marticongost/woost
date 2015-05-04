@@ -3,7 +3,7 @@
 from cocktail import schema
 from woost.views.uigeneration import backoffice_display
 from woost.extensions.translationworkflow.utils \
-    import iter_changeset_translation_requests
+    import iter_changeset_translation_request_changes
 ?>
 
 <div
@@ -25,7 +25,7 @@ from woost.extensions.translationworkflow.utils \
         if self.changeset is None:
             self.visible = False
         else:
-            self._request_changes = list(iter_changeset_translation_requests(self.changeset))
+            self._request_changes = list(iter_changeset_translation_request_changes(self.changeset))
             if not self._request_changes:
                 self.visible = False
         ?>
