@@ -108,6 +108,12 @@ translations.define("Role.translation_workflow_default_state",
     en = u"Translation workflow default state"
 )
 
+translations.define("Role.translation_workflow_default_transition",
+    ca = u"Transició per defecte",
+    es = u"Transición por defecto",
+    en = u"Default transition"
+)
+
 # TranslationWorkflowRequest
 #------------------------------------------------------------------------------
 translations.define("TranslationWorkflowRequest",
@@ -613,5 +619,15 @@ translations.define(
     ca = u"a",
     es = u"a",
     en = u"to"
+)
+
+# BackOfficeEditViewOverlay
+#------------------------------------------------------------------------------
+translations.define(
+    "woost.extensions.translationworkflow.BackOfficeEditViewOverlay."
+    "translation_workflow_auto_transition_label",
+    ca = lambda transition: u"%s automàticament" % translations(transition),
+    es = lambda transition: u"%s automaticamente" % translations(transition),
+    en = lambda transition: u"%s automatically" % translations(transition)
 )
 

@@ -1,0 +1,19 @@
+
+.BackOfficeEditView .translation_workflow_controls {
+    padding-top: 0.6em;
+    float: right;
+    vertical-align: middle;
+    margin-right: 2em;
+}
+
+.BackOfficeEditView .translation_workflow_controls label {
+    font-size: 0.9em;
+}
+
+.BackOfficeEditView .translation_workflow_controls input[type=checkbox] {
+    position: relative;
+    top: 0.2em;
+    margin: 0;
+    margin-right: 0.3em;
+}
+
