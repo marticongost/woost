@@ -4318,7 +4318,7 @@ translations.define("Role.child_roles",
 
 translations.define("Role.default_content_type",
     ca = u"Tipus per defecte",
-    es = u"Tipos por defecto",
+    es = u"Tipo por defecto",
     en = u"Default content type"
 )
 
