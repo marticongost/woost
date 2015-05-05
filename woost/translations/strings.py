@@ -3326,6 +3326,12 @@ translations.define("User.backoffice_language_chain",
     en = u"Languages to use when describing content"
 )
 
+translations.define("User.backoffice_visible_translations",
+    ca = u"Idiomes sempre visibles en editar",
+    es = u"Idiomas siempre visibles al editar",
+    en = u"Always-on translations"
+)
+
 translations.define("User.authored_items",
     ca = u"Contingut creat per l'usuari",
     es = u"Contingut creado por el usuario",

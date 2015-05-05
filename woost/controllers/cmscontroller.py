@@ -107,6 +107,20 @@ class CMSController(BaseCMSController):
         @type output: dict
         """)
 
+    choosing_visible_translations = Event("""
+        An event triggered by the backoffice to determine which translations
+        should start out as visible when editing an item.
+
+        Event handlers can modify the X{visible_translations} attribute in
+        place, or override it altogether.
+
+        @ivar item: The item that is being edited.
+        @type item: L{Item<woost.models.Item>}
+
+        @ivar visible_translations: The set of translations to show.
+        @type visible_translations: str set
+        """)
+
     # Application modules
     LanguageModule = None
     AuthenticationModule = None
