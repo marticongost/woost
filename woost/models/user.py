@@ -12,6 +12,7 @@ from cocktail.translations import translations
 from cocktail import schema
 from woost.models.item import Item
 from woost.models.role import Role
+from woost.models.localemember import LocaleMember
 from woost.models.messagestyles import (
     role_style,
     permission_style,
@@ -60,7 +61,8 @@ class User(Item):
         "password",
         "enabled",
         "prefered_language",
-        "backoffice_language_chain"
+        "backoffice_language_chain",
+        "backoffice_visible_translations"
     ]
 
     email = schema.String(
@@ -118,6 +120,12 @@ class User(Item):
     del _backoffice_language_default
     del _backoffice_language_enumeration
     del _backoffice_language_chain_enumeration
+
+    backoffice_visible_translations = schema.Collection(
+        items = LocaleMember(),
+        edit_control = "cocktail.html.CheckList",
+        searchable = False
+    )
 
     roles = schema.Collection(
         items = "woost.models.Role",

@@ -116,10 +116,18 @@ class ItemController(BaseBackOfficeController):
             else:
                 item = context_item
 
+            e = self.context["cms"].choosing_visible_translations(
+                item = item,
+                visible_translations = set(
+                    get_current_user().backoffice_visible_translations
+                    or self.visible_languages
+                )
+            )
+
             node_class = resolve(item.edit_node_class)
             node = node_class(
                 item,
-                visible_translations = self.visible_languages
+                visible_translations = e.visible_translations
             )
             edit_stack.push(node)
             redirect = True
