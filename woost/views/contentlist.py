@@ -43,10 +43,18 @@ class ContentList(List, UIGenerator):
 
     def create_entry_content(self, item):
 
-        display = self.create_object_display(
-            item,
-            referer = self.referer or self.data
-        )
+        if self.member is not None and self.member.items is not None:
+            display = self.create_member_display(
+                None,
+                self.member.items,
+                item,
+                referer = self.referer or self.data
+            )
+        else:
+            display = self.create_object_display(
+                item,
+                referer = self.referer or self.data
+            )
 
         if (
             self.referer
