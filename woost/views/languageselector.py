@@ -71,7 +71,9 @@ class LanguageSelector(LinkSelector):
         if self.value is None:
             self.value = get_language()
 
-        if not self.autohide or len(self.items) > 1:
+        if self.autohide and len(self.items) < 2:
+            self.visible = False
+        else:
             LinkSelector._ready(self)
 
             # Hack for IE <= 6
