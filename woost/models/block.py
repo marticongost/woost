@@ -158,6 +158,15 @@ class Block(Item):
             for key, value in controller.output.iteritems():
                 setattr(view, key, value)
 
+        initialization = self.initialization
+        if initialization:
+            code = compile(
+                initialization,
+                "%s #%d.initialization" % (self.__class__.__name__, self.id),
+                "exec"
+            )
+            exec code in {"block": self, "view": view}
+
         return view
 
     def init_view(self, view):
@@ -199,15 +208,6 @@ class Block(Item):
             self.add_heading(view)
 
         view.depends_on(self)
-
-        initialization = self.initialization
-        if initialization:
-            code = compile(
-                initialization,
-                "%s #%d.initialization" % (self.__class__.__name__, self.id),
-                "exec"
-            )
-            exec code in {"block": self, "view": view}
 
     def get_block_proxy(self, view):
         return view
