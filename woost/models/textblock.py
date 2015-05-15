@@ -159,6 +159,19 @@ class TextBlock(Block):
         else:
             view.tag = self.element_type
 
+        view.text = self.text
+        view.images = self.images
+        view.image_alignment = self.image_alignment
+        view.image_thumbnail_factory = self.image_thumbnail_factory
+        view.image_close_up_factory = self.image_close_up_factory
+        view.image_close_up_enabled = self.image_close_up_enabled
+        view.image_close_up_preload = self.image_close_up_preload
+        view.image_labels_visible = self.image_labels_visible
+        view.image_original_link_visible = self.image_original_link_visible
+        view.link_destination = self.link_destination
+        view.link_parameters = self.link_parameters
+        view.link_opens_in_new_window = self.link_opens_in_new_window
+
     def get_block_proxy(self, view):
         if self.element_type == "dd":
             return view.content_wrapper
