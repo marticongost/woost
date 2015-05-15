@@ -202,7 +202,12 @@ class Block(Item):
 
         initialization = self.initialization
         if initialization:
-            exec initialization in {"block": self, "view": view}
+            code = compile(
+                initialization,
+                "%s #%d.initialization" % (self.__class__.__name__, self.id),
+                "exec"
+            )
+            exec code in {"block": self, "view": view}
 
     def get_block_proxy(self, view):
         return view
