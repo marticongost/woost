@@ -51,11 +51,14 @@ class Menu(TreeView):
 
     def filter_item(self, item):
         self.depends_on(item)
-        return not item.hidden and (
+        return not self.item_is_hidden(item) and (
             item.is_accessible()
             if self.validate_permissions
             else item.is_published()
         )
+
+    def item_is_hidden(self, item):
+        return item.hidden
 
     def get_item_uri(self, item):
         return item.get_uri(host = "!")
