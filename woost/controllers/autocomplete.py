@@ -79,7 +79,7 @@ class AutocompleteController(BaseAutocompleteController):
         autocomplete_class = resolve(self.member.autocomplete_class)
         return autocomplete_class(self.member, query)
 
-    def __call__(self, member_ref, query = ""):
+    def __call__(self, member_ref, query = "", lang = None):
         self.member = get_parameter(
             schema.MemberReference(
                 required = True,
@@ -88,5 +88,5 @@ class AutocompleteController(BaseAutocompleteController):
             source = lambda name: member_ref,
             errors = "raise"
         )
-        return BaseAutocompleteController.__call__(self, query)
+        return BaseAutocompleteController.__call__(self, query, lang)
 
