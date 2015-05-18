@@ -1588,13 +1588,13 @@ translations.define(
             else u"Cambios en <strong>%s</strong> guardados"
         )
         % translations(instance.item),
-    en = lambda item, is_new:
+    en = lambda instance:
         (
             u"New item <strong>%s</strong> stored"
             if instance.item_is_new
             else u"Saved changes to <strong>%s</strong>"
         )
-        % translations(item.instance)
+        % translations(instance.item)
 )
 
 translations.define(
