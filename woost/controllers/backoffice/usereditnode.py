@@ -17,21 +17,23 @@ class UserEditNode(EditNode):
     def form_adapter(self):
 
         form_adapter = EditNode.form_adapter(self)
-        form_adapter.exclude("password_confirmation")
 
-        if self.item.is_inserted:
-            form_adapter.exclude("change_password")
+        if self.item.encryption_method:
+            form_adapter.exclude("password_confirmation")
 
-            if self.item.encryption_method:
-                kwargs = {
-                    "export_condition": False,
-                    "import_condition": lambda context:
-                        context.get("change_password", default = None)
-                }
-            else:
-                kwargs = {}
+            if self.item.is_inserted:
+                form_adapter.exclude("change_password")
 
-            form_adapter.copy("password", **kwargs)
+                password = self.content_type.get_member("password")
+                mode = self.get_member_edit_mode(password)
+                if mode == schema.EDITABLE:
+                    kwargs = {
+                        "rule_position": 0,
+                        "export_condition": False,
+                        "import_condition": lambda context:
+                            context.get("change_password", default = None)
+                    }
+                    form_adapter.copy("password", **kwargs)
 
         return form_adapter
 
