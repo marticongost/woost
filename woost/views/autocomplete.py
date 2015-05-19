@@ -4,7 +4,7 @@ u"""
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
 from cocktail.pkgutils import resolve
-from cocktail.translations import get_language
+from cocktail.translations import require_language
 from cocktail.html.autocomplete import Autocomplete as BaseAutocomplete
 
 
@@ -29,14 +29,20 @@ class Autocomplete(BaseAutocomplete):
         self["data-woost-autocomplete-icon-factory"] = self.icon_factory
         if self.show_types:
             self.add_resource(
-                "/cms_metadata?language=%s&format=javascript" % get_language(),
+                "/cms_metadata?language=%s&format=javascript"
+                % require_language(),
                 mime_type = "text/javascript"
             )
 
     def get_default_ajax_url(self):
         return (
-            "/autocomplete/%s/QUERY"
-            % self.member.original_member.get_qualified_name(include_ns = True)
+            "/autocomplete/%s/QUERY?lang=%s"
+            % (
+                self.member.original_member.get_qualified_name(
+                    include_ns = True
+                ),
+                require_language()
+            )
         )
 
     def create_autocomplete_source(self):
