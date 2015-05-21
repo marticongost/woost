@@ -287,6 +287,8 @@ body {
     display: inline-block;
     background-repeat: no-repeat;
     text-decoration: none;
+    user-select: text;
+    -webkit-user-select: text;
 }
 
 .BackOfficeLayout .ItemLabel.with_icon {
