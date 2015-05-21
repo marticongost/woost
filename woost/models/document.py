@@ -20,8 +20,8 @@ class Document(Publishable):
     type_group = "document"
     default_per_language_publication = True
 
-    groups_order = [
-        "content", "navigation", "presentation", "publication", "meta",
+    groups_order = list(Publishable.groups_order) + [
+        "meta",
         "robots"
     ]
 
