@@ -4,6 +4,8 @@ u"""
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
 import collections
+import os
+import shutil
 import re
 from difflib import SequenceMatcher
 from ZODB.broken import Broken
@@ -12,17 +14,26 @@ from cocktail import schema
 from cocktail.translations import get_language, translations
 from cocktail import schema
 from cocktail.schema.expressions import Self
-from cocktail.persistence import datastore, Query
+from cocktail.persistence import (
+    datastore,
+    Query,
+    PersistentObject,
+    reset_incremental_id,
+    incremental_id
+)
 from cocktail.persistence.utils import (
     is_broken,
     remove_broken_type as cocktail_remove_broken_type
 )
+from woost import app
 from .item import Item
 from .configuration import Configuration
 from .permission import ContentPermission
 from .changesets import Change
 from .role import Role
+from .file import File
 from .usersession import get_current_user
+from . import staticpublication
 
 
 def remove_broken_type(
@@ -274,4 +285,83 @@ def any_translation(obj, language_chain = None, **kwargs):
                 language = language_chain[0],
                 **kwargs
             )
+
+def rebase_id(base_id, verbose = False):
+
+    # Remove all static publication links
+    if verbose:
+        print "Removing static publication links"
+
+    for file in File.select():
+        staticpublication.remove_links(file)
+
+    reset_incremental_id(base_id)
+    id_map = {}
+
+    # Change ids in the database
+    for root_model in PersistentObject.derived_schemas(recursive = False):
+        if root_model.indexed:
+
+            if verbose:
+                print "Rebasing", root_model.__name__
+
+            # Rebuild the object map
+            pairs = list(root_model.index.items())
+            root_model.index = root_model.index.__class__()
+            for old_id, obj in pairs:
+                id_map[old_id] = new_id = incremental_id()
+                obj._id = new_id
+                if verbose:
+                    print "\t", old_id, ">", new_id
+                root_model.index.add(new_id, obj)
+
+            # Rebuild the .keys set for all models
+            for model in root_model.schema_tree():
+                if verbose:
+                    print "\t", "Rebuilding .keys for", model.__name__
+                keys = list(model.keys)
+                model.keys.clear()
+                for old_id in keys:
+                    model.keys.insert(id_map[old_id])
+
+            # Rebuild indexes
+            root_model.rebuild_indexes(
+                recursive = True,
+                verbose = verbose
+            )
+            root_model.rebuild_full_text_indexes(
+                recursive = True,
+                verbose = verbose
+            )
+
+    if verbose:
+        print "Committing transaction"
+
+    datastore.commit()
+
+    # Rename uploaded files
+    upload_path = app.path("upload")
+    uploads = []
+    for file_name in os.listdir(upload_path):
+        file_path = os.path.join(upload_path, file_name)
+        if os.path.isfile(file_path):
+            uploads.append(int(file_name))
+
+    uploads.sort()
+    uploads.reverse()
+
+    for old_upload_id in uploads:
+        new_upload_id = id_map[old_upload_id]
+        old_path = os.path.join(upload_path, str(old_upload_id))
+        new_path = os.path.join(upload_path, str(new_upload_id))
+        if verbose:
+            print "Moving upload %s to %s" % (old_path, new_path)
+        shutil.move(old_path, new_path)
+
+    # Recreate static publication links
+    if verbose:
+        print "Creating static publication links"
+
+    for file in File.select():
+        staticpublication.create_links(file)
 
