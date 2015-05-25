@@ -74,6 +74,7 @@ class Extension(Item):
     instantiable = False
     type_group = "setup"
     collapsed_backoffice_menu = True
+    backoffice_listing_includes_element_column = True
     edit_node_class = "woost.controllers.backoffice.extensioneditnode." \
                       "ExtensionEditNode"
 
