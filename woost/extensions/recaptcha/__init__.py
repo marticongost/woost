@@ -127,7 +127,8 @@ class ReCaptchaExtension(Extension):
                     "red", "white", "blackglass", "clean", "custom"
                 ),
                 default = "red",
-                text_search = False
+                text_search = False,
+                translatable_enumeration = False
             )
         )
 
