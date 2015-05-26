@@ -809,6 +809,10 @@ body.modal {
     margin-right: 1em;
 }
 
+.BackOfficeLayout .MoneyBox input {
+    margin-right: 0.5em;
+}
+
 .BackOfficeLayout .ColorDisplay .example {
     display: inline-block;
     vertical-align: middle;
