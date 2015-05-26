@@ -32,9 +32,8 @@ class CountryReference(schema.Reference):
                     "code": value.upper()
                 })
             )
-            if country is None:
-                raise ValueError("No country with code %r exists" % value)
-            value = country
+            if country is not None:
+                value = country
 
         return value
 
