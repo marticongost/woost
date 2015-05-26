@@ -43,7 +43,7 @@ class ReCaptcha(Schema):
 
         self.edit_control = "woost.extensions.recaptcha.ReCaptchaBox"
 
-    def _default_validation(context):
+    def _default_validation(self, context):
         """Validation rule for reCaptcha. Applies the validation rules defined
         by all members in the schema, propagating their errors. Checks that the
         L{response} member is valid for the L{challenge} and the L{public_key}
