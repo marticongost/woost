@@ -177,6 +177,24 @@
     background-color: #777 !important;
 }
 
+/* PublishableCollage
+-----------------------------------------------------------------------------*/
+.PublishableCollage .publishable_list {
+    list-style-type: none;
+    padding: 0;
+    line-height: 0;
+}
+
+.PublishableCollage .entry {
+    display: inline-block;
+    margin: 0;
+}
+
+.PublishableCollage[data-cocktail-collage-layout=rows] .entry .ThumbnailLink,
+.PublishableCollage[data-cocktail-collage-layout=rows] .entry .ThumbnailLink > .thumbnail {
+    display: block;
+}
+
 /* PublishablePopUp
 -----------------------------------------------------------------------------*/
 .PublishablePopUp {

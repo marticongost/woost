@@ -88,7 +88,8 @@ class PublishableListing(Block):
         enumeration = [
             "woost.views.PublishableTextualListing",
             "woost.views.PublishableIconListing",
-            "woost.views.PublishableGrid"
+            "woost.views.PublishableGrid",
+            "woost.views.PublishableCollage"
         ],
         default = "woost.views.PublishableTextualListing",
         member_group = "listing"
