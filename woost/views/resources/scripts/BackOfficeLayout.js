@@ -16,8 +16,12 @@ cocktail.bind({
         jQuery(window).unload(function() {});
 
         // Keep alive the current edit_stack
-        if (this.edit_stack)
-            setTimeout("keepalive('" + this.edit_stack + "')", 300000);
+        if (this.edit_stack) {
+            setInterval(
+                "jQuery.get('/cms/keep_alive?edit_stack=" + this.edit_stack + "')",
+                300000
+            );
+        }
     },
     parts: {
         ".notification:not(.transient)": function ($notification) {
@@ -33,11 +37,6 @@ cocktail.bind({
         }
     }
 });
-
-function keepalive(edit_stack) {
-    var remoteURL = '/cms/keep_alive?edit_stack=' + edit_stack;
-    jQuery.get(remoteURL, function(data) { setTimeout("keepalive('" + edit_stack + "')", 300000); });
-}
 
 /* Content drag & drop
 -----------------------------------------------------------------------------*/
