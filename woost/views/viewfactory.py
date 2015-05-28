@@ -213,14 +213,14 @@ def video_player(item, parameters):
 
 publishable_view_factory.register(Publishable, "video_player", video_player)
 
-def image_gallery(item, parameters):
+def image_close_up(item, parameters):
     if item.resource_type == "image":
-        view = templates.new("woost.views.ImageGallery")
-        view.images = [item]
-        view.labels_visible = False
+        view = templates.new("woost.views.Image")
+        view.image = item
+        view.image_factory = "image_gallery_close_up"
         return view
 
-publishable_view_factory.register(Publishable, "image_gallery", image_gallery)
+publishable_view_factory.register(Publishable, "image_close_up", image_close_up)
 
 publishable_view_factory.register(
     Publishable,
@@ -230,8 +230,8 @@ publishable_view_factory.register(
 
 publishable_grid_view_factory = ViewFactory()
 
-def video_player_dialog(item, parameters):
-    if item.resource_type == "video":
+def publishable_popup(item, parameters):
+    if item.resource_type == "image" or item.resource_type == "video":
         view = templates.new("woost.views.PublishablePopUp")
         view.item = item
         view.view_factory = publishable_view_factory
@@ -239,8 +239,8 @@ def video_player_dialog(item, parameters):
 
 publishable_grid_view_factory.register(
     Publishable,
-    "video_player_dialog",
-    video_player_dialog
+    "publishable_popup",
+    publishable_popup
 )
 publishable_grid_view_factory.register(
     Publishable,
