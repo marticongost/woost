@@ -158,6 +158,7 @@ class SiteInitializer(object):
         "edit_blocks_thumbnail",
         "close_up",
         "default_thumbnail",
+        "collage"
     ]
 
     def main(self):
@@ -944,6 +945,21 @@ class SiteInitializer(object):
                     width = "200",
                     height = "150",
                     preserve_vertical_images = True
+                )
+            ]
+        )
+
+    def create_collage_image_factory(self):
+        return self._create(
+            rendering.ImageFactory,
+            qname = "woost.collage_image_factory",
+            title = TranslatedValues(),
+            identifier = "collage",
+            effects = [
+                self._create(
+                    rendering.Thumbnail,
+                    height = "350",
+                    upscale = True
                 )
             ]
         )

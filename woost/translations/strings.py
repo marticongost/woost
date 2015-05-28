@@ -1280,6 +1280,13 @@ translations.define(
     en = u"Default image gallery thumbnail"
 )
 
+translations.define(
+    "woost.initialization.collage_image_factory.title",
+    ca = u"Peça de collage",
+    es = u"Pieza de collage",
+    en = u"Collage piece"
+)
+
 #------------------------------------------------------------------------------
 
 translations.define(
@@ -8452,6 +8459,13 @@ translations.define(
     ca = u"Graella",
     es = u"Parrilla",
     en = u"Grid"
+)
+
+translations.define(
+    "PublishableListing.view_class=woost.views.PublishableCollage",
+    ca = u"Collage",
+    es = u"Collage",
+    en = u"Collage"
 )
 
 translations.define("PublishableListing.element_type",
