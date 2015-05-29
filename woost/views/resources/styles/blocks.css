@@ -179,6 +179,14 @@
 
 /* PublishableCollage
 -----------------------------------------------------------------------------*/
+.scripted .PublishableCollage {
+    visibility: hidden;
+}
+
+.scripted .PublishableCollage.layout_ready {
+    visibility: visible;
+}
+
 .PublishableCollage .publishable_list {
     list-style-type: none;
     padding: 0;
