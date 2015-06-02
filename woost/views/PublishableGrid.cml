@@ -26,7 +26,7 @@ from woost.views.viewfactory import publishable_grid_view_factory
             py:local_id="publishable_view"
             py:element="self.create_publishable_view(publishable)"/>
 
-        <a py:local_id="publishable_link" href="${publishable.get_uri()}">
+        <a py:local_id="publishable_link" href="${self.get_item_uri(publishable)}">
             <?py
             if self.links_open_in_new_window:
                 element["target"] = "_blank"
