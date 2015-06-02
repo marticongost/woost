@@ -57,6 +57,7 @@ class Publishable(Item):
     type_group = "publishable"
 
     groups_order = [
+        "content",
         "navigation",
         "presentation",
         "presentation.behavior",
