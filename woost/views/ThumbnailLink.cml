@@ -8,6 +8,7 @@
     <?py-class
     item = None
     links_open_in_new_window = False
+    links_force_download = False
     thumbnail_factory = "image_gallery_thumbnail"
 
     def _get_value(self):
@@ -30,7 +31,13 @@
             self.visible = False
         else:
             self.depends_on(self.item)
-            self["href"] = self.item.get_uri()
+            self["href"] = self.item.get_uri(
+                parameters = (
+                    {"disposition": "attachment"}
+                    if self.links_force_download
+                    else None
+                )
+            )
             if self.links_open_in_new_window:
                 element["target"] = "_blank"
         ?>
