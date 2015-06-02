@@ -8367,6 +8367,12 @@ translations.define("PublishableListing.links_open_in_new_window",
     en = u"Open links in a new window"
 )
 
+translations.define("PublishableListing.links_force_download",
+    ca = u"Forçar descàrrega",
+    es = u"Forzar descarga",
+    en = u"Force download"
+)
+
 translations.define("PublishableListing.paginated",
     ca = u"Paginar els resultats",
     es = u"Paginar los resultados",
