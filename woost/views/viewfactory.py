@@ -6,7 +6,7 @@ u"""
 from cocktail.html import templates
 from cocktail.translations import translations
 from cocktail.typemapping import TypeMapping
-from woost.models import Configuration, Publishable
+from woost.models import Configuration, Publishable, File
 
 
 class ViewFactory(object):
@@ -214,7 +214,10 @@ def video_player(item, parameters):
 publishable_view_factory.register(Publishable, "video_player", video_player)
 
 def image_gallery(item, parameters):
-    if item.resource_type == "image":
+    if (
+        item.resource_type == "image"
+        and not parameters.get("links_force_download", False)
+    ):
         view = templates.new("woost.views.ImageGallery")
         view.images = [item]
         view.labels_visible = False
@@ -231,7 +234,13 @@ publishable_view_factory.register(
 publishable_grid_view_factory = ViewFactory()
 
 def video_player_dialog(item, parameters):
-    if item.resource_type == "video":
+    if (
+        item.resource_type == "video"
+        and (
+            not isinstance(item, File)
+            or not parameters.get("links_force_download", False)
+        )
+    ):
         view = templates.new("woost.views.PublishablePopUp")
         view.item = item
         view.view_factory = publishable_view_factory
