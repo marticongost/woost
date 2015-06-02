@@ -15,7 +15,8 @@ from woost.views.viewfactory import publishable_grid_view_factory
         view = self.view_factory.create_view(
             publishable,
             thumbnail_factory = self.thumbnail_factory,
-            links_open_in_new_window = self.links_open_in_new_window
+            links_open_in_new_window = self.links_open_in_new_window,
+            links_force_download = self.links_force_download
         )
         return view
     ?>
@@ -26,7 +27,7 @@ from woost.views.viewfactory import publishable_grid_view_factory
             py:local_id="publishable_view"
             py:element="self.create_publishable_view(publishable)"/>
 
-        <a py:local_id="publishable_link" href="${publishable.get_uri()}">
+        <a py:local_id="publishable_link" href="${self.get_item_uri(publishable)}">
             <?py
             if self.links_open_in_new_window:
                 element["target"] = "_blank"

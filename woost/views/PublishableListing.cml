@@ -10,6 +10,16 @@
     name_prefix = None
     name_suffix = None
     links_open_in_new_window = False
+    links_force_download = False
+
+    def get_item_uri(self, item):
+        return item.get_uri(
+            parameters = (
+                {"disposition": "attachment"}
+                if self.links_force_download
+                else None
+            )
+        )
 
     def create_entry(self, publishable, publishable_index):
         raise TypeError("%s doesn't implement the create_entry() method" % self)

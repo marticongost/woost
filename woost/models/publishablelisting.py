@@ -31,6 +31,7 @@ class PublishableListing(Block):
         "item_accessibility",
         "listing_order",
         "links_open_in_new_window",
+        "links_force_download",
         "paginated",
         "page_size",
         "view_class"
@@ -70,6 +71,12 @@ class PublishableListing(Block):
         member_group = "listing"
     )
 
+    links_force_download = schema.Boolean(
+        required = True,
+        default = False,
+        member_group = "listing"
+    )
+
     paginated = schema.Boolean(
         required = True,
         default = False,
@@ -101,6 +108,7 @@ class PublishableListing(Block):
         view.name_prefix = self.name_prefix
         view.name_suffix = self.name_suffix
         view.links_open_in_new_window = self.links_open_in_new_window
+        view.links_force_download = self.links_force_download
 
         if not self.publishables:
             view.depends_on(Publishable)
