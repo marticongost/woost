@@ -171,13 +171,6 @@ class TextBlock(Block):
     )
 
     def init_view(self, view):
-        Block.init_view(self, view)
-
-        if self.element_type == "dd":
-            view.tag = None
-            view.content_wrapper.tag = "dd"
-        else:
-            view.tag = self.element_type
 
         view.text = self.text
         view.heading_alignment = self.heading_alignment
@@ -193,7 +186,15 @@ class TextBlock(Block):
         view.link_destination = self.link_destination
         view.link_parameters = self.link_parameters
         view.link_opens_in_new_window = self.link_opens_in_new_window
+    
+        Block.init_view(self, view)
 
+        if self.element_type == "dd":
+            view.tag = None
+            view.content_wrapper.tag = "dd"
+        else:
+            view.tag = self.element_type
+        
     def get_block_proxy(self, view):
         if self.element_type == "dd":
             return view.content_wrapper
