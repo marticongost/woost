@@ -47,7 +47,7 @@ from woost.views.htmldiff import html_diff
             <div class="diff_unit" py:for="unit in diffs[0]">${unit}</div>
         </td>
         <td py:local_id="arrow_cell">
-            →
+            <span py:local_id="arrow">→</span>
         </td>
         <td py:local_id="new_value">
             <div class="diff_unit" py:for="unit in diffs[1]">${unit}</div>

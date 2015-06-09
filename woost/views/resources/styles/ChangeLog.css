@@ -77,3 +77,39 @@
     border: 1px solid #e5e5e5;
 }
 
+.ChangeLog .differences {
+    width: 100%;
+}
+
+.ChangeLog .differences td {
+    padding: 0.5em;
+}
+
+.ChangeLog .differences tr + tr td {
+    border-top: 1px solid #ccc;
+}
+
+.ChangeLog .differences td.member {
+    width: 15%;
+}
+
+.ChangeLog .differences td.previous_value {
+    width: 40%;
+}
+
+.ChangeLog .differences td.arrow_cell {
+    width: 5%;
+    vertical-align: middle;
+}
+
+.ChangeLog .differences td.arrow_cell .arrow {
+    color: #666;
+    font-size: 1.8em;
+    font-weight: bold;
+    line-height: 0.5em;
+}
+
+.ChangeLog .differences td.new_value {
+    width: 40%;
+}
+
