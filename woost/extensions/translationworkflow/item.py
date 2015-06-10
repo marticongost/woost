@@ -14,6 +14,8 @@ from .utils import (
     member_is_included_in_translation_workflow
 )
 
+Item.translation_workflow_request_class = TranslationWorkflowRequest
+
 Item.add_member(
     schema.Collection("translation_requests",
         items = "woost.extensions.translationworkflow."
@@ -42,7 +44,7 @@ Item.get_translation_request = get_translation_request
 def require_translation_request(self, source_language, target_language):
     request = self.get_translation_request(source_language, target_language)
     if request is None:
-        request = TranslationWorkflowRequest()
+        request = self.translation_workflow_request_class()
         request.translated_item = self
         request.source_language = source_language
         request.target_language = target_language
@@ -141,7 +143,7 @@ def generate_translation_requests_for_new_item(e):
                     target_languages = language_paths.get(source_language)
                     if target_languages:
                         for target_language in target_languages:
-                            request = TranslationWorkflowRequest()
+                            request = e.source.translation_workflow_request_class()
                             request.translated_item = e.source
                             request.source_language = source_language
                             request.target_language = target_language
