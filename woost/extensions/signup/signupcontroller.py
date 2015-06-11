@@ -78,7 +78,7 @@ class SignUpController(FormProcessor, Controller):
             # Adding roles
             for role in block.roles:
                 if role not in self.instance.roles:
-                    self.instance.roles.append(block.roles)
+                    self.instance.roles.append(role)
 
             # If require email confirmation, disabled authenticated access
             confirmation_email_template = block.confirmation_email_template
