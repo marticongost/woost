@@ -79,8 +79,6 @@ class LocationGrouping(Grouping):
                     self.grouping.add_group(branch)
                 for leaf in leaves:
                     self.grouping.add_item(leaf)
-
-        self.grouping.print_tree()
         ?>
     </py:binding>
 
