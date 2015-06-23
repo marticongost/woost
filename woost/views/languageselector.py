@@ -51,6 +51,21 @@ class LanguageSelector(LinkSelector):
 
         return entry
 
+    def get_languages(self):
+        config = Configuration.instance
+        user = get_current_user()
+        return [
+            language
+            for language in (
+                config.get_setting("published_languages")
+                or config.languages
+            )
+            if user.has_permission(
+                ReadTranslationPermission,
+                language = language
+            )
+        ]
+
     def _ready(self):
 
         if self.items is None:
