@@ -26,13 +26,29 @@
     height: 8.2em;
 }
 
-.TranslationWorkflowRequestForm fieldset.translation_request fieldset {
+.TranslationWorkflowRequestForm fieldset.translation_request > .fieldset_fields > fieldset {
     display: inline-block;
     vertical-align: top;
     margin-top: 0;
 }
 
-.TranslationWorkflowRequestForm fieldset.translation_request fieldset {
-    margin-right: 2em;
+.TranslationWorkflowRequestForm fieldset.translation_request > .fieldset_fields > fieldset.translation_request-info {
+    width: 20%;
+}
+
+.TranslationWorkflowRequestForm fieldset.translation_request > .fieldset_fields > fieldset.translation_request-changelog {
+    width: 30%;
+}
+
+.TranslationWorkflowRequestForm fieldset.translation_request > .fieldset_fields > fieldset.translation_request-translated_values {
+    width: 40%;
+}
+
+.TranslationWorkflowRequestForm fieldset.translation_request > .fieldset_fields > fieldset.translation_request-info {
+    width: 15%;
+}
+
+.TranslationWorkflowRequestForm fieldset.translation_request > .fieldset_fields > fieldset + fieldset {
+    margin-left: 2%;
 }
 
