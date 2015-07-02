@@ -384,10 +384,6 @@ class ContentController(BaseBackOfficeController):
         cd = 'attachment; filename="%s"' % (
             translations(self.user_collection.type.name + "-plural") + ".xls"
         )
-        languages = self.params.read(
-            schema.Collection("language", items = schema.String())
-        )
-
         cherrypy.response.headers['Content-Type'] = content_type
         cherrypy.response.headers["Content-Disposition"] = cd
 
@@ -401,7 +397,7 @@ class ContentController(BaseBackOfficeController):
                 if member.included_in_backoffice_msexcel_export
                 and member.name in self.user_collection.members
             ],
-            languages = languages,
+            languages = self.user_collection.languages,
             msexcel_exporter =
                 self.user_collection.type.backoffice_msexcel_exporter
         )
