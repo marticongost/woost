@@ -25,5 +25,18 @@ from woost.extensions.translationworkflow.request \
     self.add_resource("/resources/styles/TranslationWorkflowRequestCollectionEditor.css")
     ?>
 
+    <py:with py:element="self.toolbar">
+        <?py
+        @extend(element)
+        def get_actions(toolbar, context):
+            return [
+                action
+                for action in call_base(context)
+                if action.id not in ("new", "add_integral", "add", "remove", "delete")
+            ]
+            return actions
+        ?>
+    </py:with>
+
 </py:woost.views.ItemCollectionEditor>
 
