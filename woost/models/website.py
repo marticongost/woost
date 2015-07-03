@@ -119,6 +119,7 @@ class Website(Item):
 
     specific_content = schema.Collection(
         items = schema.Reference(type = Publishable),
+        default_type = set,
         bidirectional = True,
         editable = schema.NOT_EDITABLE,
         synchronizable = False,
