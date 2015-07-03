@@ -1084,3 +1084,21 @@ def index_publishable_parent(e):
     from woost.models import Publishable
     Publishable.parent.rebuild_index()
 
+#------------------------------------------------------------------------------
+
+step = MigrationStep(
+    "Use sets for Website.specific_content and Publishable.websites"
+)
+
+@when(step.executing)
+def use_sets_for_publishable_website_relations(e):
+    from woost.models import Website, Publishable
+
+    for website in Website.select():
+        del website._specific_content
+
+    for publishable in Publishable.select():
+        websites = set(publishable.websites)
+        del publishable._websites
+        publishable.websites = websites
+
