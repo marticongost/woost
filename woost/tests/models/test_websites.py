@@ -101,7 +101,7 @@ class WebsiteSpecificContentTestCase(BaseTestCase):
         d3.parent = d2
         assert list(d3.websites) == [w1]
 
-        d1.websites.append(w2)
+        d1.websites.add(w2)
         assert list(d2.websites) == [w1, w2]
         assert list(d3.websites) == [w1, w2]
 
