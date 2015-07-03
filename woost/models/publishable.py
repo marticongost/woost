@@ -202,6 +202,7 @@ class Publishable(Item):
 
     websites = schema.Collection(
         items = "woost.models.Website",
+        default_type = set,
         bidirectional = True,
         related_key = "specific_content",
         edit_control = "cocktail.html.CheckList",
