@@ -284,9 +284,9 @@ class Publishable(Item):
             # If the parent element is specific to one or more websites, its
             # descendants will automatically share that specificity
             if event.value:
-                publishable.websites = list(event.value.websites)
+                publishable.websites = set(event.value.websites)
             else:
-                publishable.websites = []
+                publishable.websites = set()
 
         elif member.name == "mime_type":
             if event.value is None:
@@ -545,22 +545,36 @@ class Publishable(Item):
             if parameters:
                 uri = make_uri(uri, **parameters)
 
-            if host == "?":
-                websites = self.websites
-                if websites and get_current_website() not in websites:
-                    host = websites[0].hosts[0]
+            if host in ("!", "?"):
+                current_website = get_current_website()
+                acceptable_websites = self.websites
+                valid_website = (
+                    current_website is not None and (
+                        not acceptable_websites
+                        or current_website in acceptable_websites
+                    )
+                )
+
+                if (
+                    host == "!"
+                    or (host == "?" and not valid_website)
+                ):
+                    if valid_website:
+                        host = current_website.hosts[0]
+                    else:
+                        from woost.models import Configuration
+                        config_websites = Configuration.instance.websites
+                        for website in config_websites:
+                            if (
+                                not acceptable_websites
+                                or website in acceptable_websites
+                            ):
+                                host = website.hosts[0]
+                                break
+                        else:
+                            host = None
                 else:
                     host = None
-            elif host == "!":
-                if self.websites:
-                    host = self.websites[0].hosts[0]
-                else:
-                    from woost.models import Configuration
-                    website = (
-                        get_current_website()
-                        or Configuration.instance.websites[0]
-                    )
-                    host = website.hosts[0]
 
             uri = self._fix_uri(uri, host, encode)
 
