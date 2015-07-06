@@ -189,13 +189,12 @@ class Document(Publishable):
     def handle_related(cls, event):
         if event.member is cls.websites:
             for child in event.source.children:
-                child.websites = list(event.source.websites)
+                child.websites = set(event.source.websites)
 
     @event_handler
     def handle_unrelated(cls, event):
         if not event.source.is_deleted:
             if event.member is cls.websites:
                 for child in event.source.children:
-                    child.websites = list(event.source.websites)
-
+                    child.websites = set(event.source.websites)
 

@@ -7,6 +7,7 @@ from cocktail import schema
 from cocktail.iteration import first
 from cocktail.translations import translations
 from cocktail.html.datadisplay import display_factory
+from cocktail.html.grouping import GroupByMember
 from woost.models import Publishable, Document, News, File
 from woost.extensions.opengraph.opengraphtype import OpenGraphType
 from woost.extensions.opengraph.utils import (
@@ -21,6 +22,11 @@ Publishable.members_order += [
     "open_graph_enabled",
     "open_graph_type"
 ]
+
+
+class GroupByOpenGraphCategory(GroupByMember):
+    member = OpenGraphType.category
+
 
 Publishable.add_member(
     schema.Boolean("open_graph_enabled",
@@ -46,7 +52,7 @@ Publishable.add_member(
         member_group = "meta.open_graph",
         edit_control = display_factory(
             "cocktail.html.DropdownSelector",
-            grouping = lambda type: type.category
+            grouping = GroupByOpenGraphCategory
         )
     )
 )
