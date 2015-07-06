@@ -18,6 +18,7 @@ from cocktail.persistence import (
     datastore,
     Query,
     PersistentObject,
+    PersistentClass,
     reset_incremental_id,
     incremental_id
 )
@@ -364,4 +365,82 @@ def rebase_id(base_id, verbose = False):
 
     for file in File.select():
         staticpublication.create_links(file)
+
+def show_translation_coverage(
+    objects = None,
+    languages = None,
+    styles = (
+        (100, {'foreground': 'bright_green'}),
+        (90,  {'foreground': 'yellow'}),
+        (66,  {'foreground': 'brown'}),
+        (33,  {'foreground': 'pink'}),
+        (0,   {'foreground': 'magenta'})
+    )
+):
+    count = collections.Counter()
+
+    if objects is None:
+        translated_models = {}
+
+        def model_is_translated(model):
+            try:
+                return translated_models[model]
+            except KeyError:
+                for member in model.iter_members():
+                    if (
+                        member is not Item.last_translation_update_time
+                        and member.translated
+                    ):
+                        translated = True
+                        break
+                    else:
+                        translated = False
+                translated_models[model] = translated
+                return translated
+
+        objects = (
+            item
+            for item in Item.select()
+            if model_is_translated(item.__class__)
+        )
+    elif isinstance(objects, PersistentClass):
+        objects = objects.select()
+
+    if languages is None:
+        languages = Configuration.instance.languages
+
+    for lang in languages:
+        count[lang] = 0
+
+    for obj in objects:
+        for lang in languages:
+            if lang in obj.translations:
+                count[lang] += 1
+
+    results = count.most_common()
+    total = results[0][1]
+    table = []
+    longest_label_length = 0
+
+    for lang, n in results:
+        label = translations("locale", locale = lang)
+        longest_label_length = max(longest_label_length, len(label))
+        percent = float(n) / total * 100
+        table.append((label, percent))
+
+    for label, percent in table:
+
+        line = (
+            (label + ":").ljust(longest_label_length + 1)
+            + " "
+            + ("%.2f%%" % percent).rjust(7)
+        )
+
+        if styles:
+            for threshold, style in styles:
+                if percent >= threshold:
+                    line = styled(line, **style)
+                    break
+
+        print line
 
