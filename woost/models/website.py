@@ -292,5 +292,5 @@ class Website(Item):
             if event.previous_value:
                 event.previous_value.websites.remove(event.source)
             if event.value:
-                event.value.websites = [event.source]
+                event.value.websites = set([event.source])
 
