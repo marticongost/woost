@@ -24,15 +24,15 @@ def export_content(content):
     return content
 
 def get_publishable_website(publishable):
-    if publishable.websites:
-        if len(publishable.websites) == 1:
-            return publishable.websites[0]
-        else:
-            current_website = get_current_website()
-            if current_website in publishable.websites:
-                return current_website
 
-    config = Configuration.instance
-    if len(config.websites) == 1:
-        return config.websites[0]
+    acceptable_websites = publishable.websites
+
+    current_website = get_current_website()
+    if current_website is not None:
+        if not acceptable_websites or current_website in acceptable_websites:
+            return current_website
+
+    for website in Configuration.instance.websites:
+        if not acceptable_websites or website in acceptable_websites:
+            return website
 

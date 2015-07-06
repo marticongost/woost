@@ -119,6 +119,7 @@ class Website(Item):
 
     specific_content = schema.Collection(
         items = schema.Reference(type = Publishable),
+        default_type = set,
         bidirectional = True,
         editable = schema.NOT_EDITABLE,
         synchronizable = False,
@@ -291,5 +292,5 @@ class Website(Item):
             if event.previous_value:
                 event.previous_value.websites.remove(event.source)
             if event.value:
-                event.value.websites = [event.source]
+                event.value.websites = set([event.source])
 
