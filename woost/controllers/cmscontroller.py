@@ -635,13 +635,18 @@ class CMSController(BaseCMSController):
         return None, None
 
     def _apply_website_exclusiveness(self, publishable):
-        if (
-            publishable.websites
-            and get_current_website() not in publishable.websites
-        ):
-            raise cherrypy.HTTPRedirect(
-                publishable.get_uri(host = publishable.websites[0].hosts[0])
-            )
+        acceptable_websites = publishable.websites
+        if acceptable_websites:
+            current_website = get_current_website()
+            if (
+                current_website is None
+                or current_website not in acceptable_websites
+            ):
+                for website in Configuration.instance.websites:
+                    if website in acceptable_websites:
+                        raise cherrypy.HTTPRedirect(
+                            publishable.get_uri(host = website.hosts[0])
+                        )
 
     def _apply_https_policy(self, publishable):
 
