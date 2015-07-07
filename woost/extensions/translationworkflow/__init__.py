@@ -165,7 +165,7 @@ class TranslationWorkflowExtension(Extension):
         from cocktail.html import templates
         for overlay_id in (
             "BackOfficeLayout",
-            "BackOfficeEditView",
+            "BackOfficeFieldsView",
             "ContentView"
         ):
             templates.get_class(
