@@ -691,12 +691,9 @@ body.modal {
     padding: 0.2em;
 }
 
-.BackOfficeLayout .Form div.field_instance + div.field_instance {
-    margin-left: 1.5em;
-}
-
 .BackOfficeLayout .Form .translated div.field_instance {
     margin-bottom: 0.5em;
+    margin-right: 1.5em;
 }
 
 .BackOfficeLayout .Form td.field_instance {
