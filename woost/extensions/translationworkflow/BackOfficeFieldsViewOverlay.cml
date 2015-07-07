@@ -8,10 +8,10 @@ from woost.extensions.translationworkflow.utils \
 <py:overlay
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:py="http://www.whads.com/ns/cocktail/templates"
-    py:class="woost.views.BackOfficeEditView">
+    py:class="woost.views.BackOfficeFieldsView">
 
     <?py
-    self.add_resource("/resources/scripts/translationworkflow-BackOfficeEditViewOverlay.js")
+    self.add_resource("/resources/scripts/translationworkflow-BackOfficeFieldsViewOverlay.js")
     ?>
 
     <py:binding>

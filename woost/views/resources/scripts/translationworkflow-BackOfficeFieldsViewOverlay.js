@@ -7,7 +7,7 @@
 @since:         May 2015
 -----------------------------------------------------------------------------*/
 
-cocktail.bind(".BackOfficeEditView", function ($editView) {
+cocktail.bind(".BackOfficeFieldsView", function ($editView) {
 
     if (typeof(localStorage) != "undefined") {
 
