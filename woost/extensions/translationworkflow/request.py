@@ -7,7 +7,7 @@ from cocktail.modeling import OrderedSet
 from cocktail.translations import translations
 from cocktail import schema
 from cocktail.schema import expressions as expr
-from cocktail.schema.io import MSExcelExporter
+from cocktail.schema.io import MSExcelExporter, MSExcelColumn
 from woost.models import (
     Item,
     Role,
@@ -163,27 +163,35 @@ class TranslationWorkflowRequest(Item):
                 yield str(state.id), state.plural_title, cls.state.equal(state)
 
 
+class MSExcelTranslationWorkflowSourceValuesColumn(MSExcelColumn):
+
+    def get_cell_value(self, obj):
+        return [
+            obj.translated_item.get(key)
+            for key in sorted(obj.translated_values.keys())
+        ]
+
+
+class MSExcelTranslationWorkflowTargetValuesColumn(MSExcelColumn):
+
+    def get_cell_value(self, obj):
+        return [
+            obj.translated_values[key]
+            for key in sorted(obj.translated_values.keys())
+        ]
+
+
 class TranslationWorkflowRequestMSExcelExporter(MSExcelExporter):
 
     def get_member_columns(self, member, languages):
         if member.name == "translated_values":
-            yield (
-                translations("TranslationWorkflowRequest.msexcel.source"),
-                self.header_style,
-                lambda obj: (
-                    [obj.translated_item.get(key)
-                     for key in sorted(obj.translated_values.keys())],
-                    self.regular_style
-                )
+            yield MSExcelTranslationWorkflowSourceValuesColumn(
+                self,
+                heading = translations("TranslationWorkflowRequest.msexcel.source")
             )
-            yield (
-                translations("TranslationWorkflowRequest.msexcel.target"),
-                self.header_style,
-                lambda obj: (
-                    [obj.translated_values[key]
-                     for key in sorted(obj.translated_values.keys())],
-                    self.regular_style
-                )
+            yield MSExcelTranslationWorkflowTargetValuesColumn(
+                self,
+                heading = translations("TranslationWorkflowRequest.msexcel.target")
             )
         else:
             for column in MSExcelExporter.get_member_columns(
