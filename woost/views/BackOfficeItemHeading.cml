@@ -32,7 +32,8 @@ from woost import app
     <py:woost.views.ImageGallery
         py:id="item_image_gallery"
         py:thumbnail_factory="@{self.icon_factory}"
-        py:labels_visible="${False}">
+        py:labels_visible="${False}"
+        py:footnotes_visible="${False}">
         <py:binding>
             <?py
             if self.item and self.item.is_inserted:
