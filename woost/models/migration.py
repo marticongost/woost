@@ -1097,8 +1097,13 @@ def use_sets_for_publishable_website_relations(e):
     for website in Website.select():
         del website._specific_content
 
+    pub_websites = {}
+
     for publishable in Publishable.select():
-        websites = set(publishable.websites)
+        pub_websites[publishable] = set(publishable.websites)
         del publishable._websites
+
+    for publishable, websites in pub_websites.iteritems():
         publishable.websites = websites
+
 
