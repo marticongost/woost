@@ -33,6 +33,10 @@ class TranslationWorkflowRequestEditNode(EditNode):
                         )
                         if change.is_explicit_change
                     ],
+                    language_subset = (
+                        self.item.source_language,
+                        self.item.target_language
+                    ),
                     show_all_changes = False
                 )
             )
