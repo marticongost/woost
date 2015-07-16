@@ -22,6 +22,7 @@ from woost.views.uigeneration import backoffice_display
     <?py-class
     items = None
     language_subset = None
+    exclude_member = None
     changes = None
     changesets = None
     base_ui_generators = [backoffice_display]
@@ -194,11 +195,23 @@ from woost.views.uigeneration import backoffice_display
         if self.show_diffs and change.action == "modify":
             previous_change = change.get_previous_change()
             if previous_change is not None:
+
+                def exclude(member):
+
+                    if member.name == "translations":
+                        return True
+
+                    if self.exclude_member:
+                        return self.exclude_member(member)
+
+                    return False
+
                 state_changes = list(
                     change.diff(
                         previous_change,
                         self.get_revision_schema(change.target.__class__),
-                        language_subset = self.language_subset
+                        language_subset = self.language_subset,
+                        exclude = exclude
                     )
                 )
         ?>
