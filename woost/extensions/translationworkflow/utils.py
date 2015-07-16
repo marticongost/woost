@@ -88,7 +88,8 @@ def iter_changeset_translation_requests(
 def iter_changeset_translation_request_changes(
     changeset,
     include_silenced = False,
-    include_unchanged = False
+    include_unchanged = False,
+    only_changed_states = False
 ):
     silenced_state = TranslationWorkflowState.get_instance(
         qname = "woost.extensions.translationworkflow.states.silenced"
@@ -108,7 +109,11 @@ def iter_changeset_translation_request_changes(
         elif request_change.action == "create":
             yield request, "created",
         elif request_change.action == "modify":
-            yield request, "invalidated"
+            if (
+                not only_changed_states
+                or "state" in request_change.changed_members
+            ):
+                yield request, "invalidated"
 
 def notify_translation_request_changes(changeset):
 
@@ -116,7 +121,10 @@ def notify_translation_request_changes(changeset):
     state_count = Counter()
 
     for request, request_change \
-    in iter_changeset_translation_request_changes(changeset):
+    in iter_changeset_translation_request_changes(
+        changeset,
+        only_changed_states = True
+    ):
         if request_change == "silenced":
             silenced_count += 1
         else:
