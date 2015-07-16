@@ -48,14 +48,18 @@ class TranslationWorkflowRequestEditNode(EditNode):
     def form_adapter(self):
         adapter = EditNode.form_adapter(self)
 
-        adapter.export_rules.add_rule(
-            TranslatedValuesExportRule(self.item),
-            position = 0
+        editable = self.get_member_edit_mode(
+            self.item.__class__.translated_values
         )
-        adapter.import_rules.add_rule(
-            TranslatedValuesImportRule(self.item),
-            position = 0
-        )
+        if editable == schema.EDITABLE:
+            adapter.export_rules.add_rule(
+                TranslatedValuesExportRule(self.item),
+                position = 0
+            )
+            adapter.import_rules.add_rule(
+                TranslatedValuesImportRule(self.item),
+                position = 0
+            )
         return adapter
 
 
