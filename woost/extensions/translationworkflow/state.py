@@ -4,7 +4,7 @@ u"""
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
 from cocktail import schema
-from woost.models import Item
+from woost.models import Item, File
 
 
 class TranslationWorkflowState(Item):
@@ -14,6 +14,7 @@ class TranslationWorkflowState(Item):
     members_order = [
         "title",
         "plural_title",
+        "color",
         "incomming_transitions",
         "outgoing_transitions"
     ]
@@ -36,6 +37,12 @@ class TranslationWorkflowState(Item):
         normalized_index = True,
         listed_by_default = False,
         spellcheck = True
+    )
+
+    color = schema.Color(
+        required = True,
+        default = "#ffffff",
+        listed_by_default = False
     )
 
     incomming_transitions = schema.Collection(

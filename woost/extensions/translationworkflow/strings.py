@@ -318,6 +318,12 @@ translations.define("TranslationWorkflowState.plural_title",
     en = u"Plural name"
 )
 
+translations.define("TranslationWorkflowState.color",
+    ca = u"Color",
+    es = u"Color",
+    en = u"Color"
+)
+
 translations.define("TranslationWorkflowState.incomming_transitions",
     ca = u"Transicions entrants",
     es = u"Transiciones entrantes",
