@@ -22,15 +22,15 @@ translations.define("TranslationWorkflowExtension-plural",
 
 class TranslationWorkflowExtension(Extension):
 
-    standard_states = [
-        "pending",
-        "ignored",
-        "silenced",
-        "selected",
-        "in_translation",
-        "proposed",
-        "applied"
-    ]
+    standard_states = (
+        {"id": "pending", "color": "#c71e1e"},
+        {"id": "ignored", "color": "#666666"},
+        {"id": "silenced", "color": "#333333"},
+        {"id": "selected", "color": "#e37e20"},
+        {"id": "in_translation", "color": "#e6ce18"},
+        {"id": "proposed", "color": "#189627"},
+        {"id": "applied", "color": "#ffffff"}
+    )
 
     # transition_id: (source_states, target_state)
     standard_transitions = (
@@ -208,12 +208,14 @@ class TranslationWorkflowExtension(Extension):
         # Create all the possible states
         states = {}
 
-        for state_id in self.standard_states:
+        for state_data in self.standard_states:
+            state_id = state_data["id"]
             state = self._create_asset(
                 TranslationWorkflowState,
                 "states." + state_id,
                 title = extension_translations,
-                plural_title = extension_translations
+                plural_title = extension_translations,
+                color = state_data["color"]
             )
             states[state_id] = state
 
