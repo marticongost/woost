@@ -37,6 +37,8 @@ class TranslationWorkflowRequestEditNode(EditNode):
                         self.item.source_language,
                         self.item.target_language
                     ),
+                    exclude_member = lambda member:
+                        member.name == "translation_requests",
                     show_all_changes = False
                 )
             )
