@@ -54,18 +54,14 @@ class BaseBackOfficeController(BaseCMSController):
         @type: sequence of unicode
         """
         user = get_current_user()
-        return sorted(
-            [
-                language
-                for language in Configuration.instance.languages
-                if user.has_permission(
-                    ReadTranslationPermission,
-                    language = language
-                )
-            ],
-            key = lambda locale:
-                normalize(translations("locale", locale = locale))
-        )
+        return [
+            language
+            for language in Configuration.instance.languages
+            if user.has_permission(
+                ReadTranslationPermission,
+                language = language
+            )
+        ]
 
     @cached_getter
     def visible_languages(self):
