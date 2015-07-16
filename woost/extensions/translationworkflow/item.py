@@ -61,6 +61,7 @@ def require_all_translation_requests(
     cls,
     language_paths = None,
     policy = REQUIRE_MISSING_TRANSLATIONS,
+    state = None,
     verbose = False
 ):
     if language_paths is None:
@@ -109,6 +110,9 @@ def require_all_translation_requests(
                     )
 
                     is_new_request = request.insert()
+
+                    if state is not None and is_new_request:
+                        request.state = state
 
                     if verbose and is_new_request:
                         if not printed_heading:
