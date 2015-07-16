@@ -166,7 +166,8 @@ class TranslationWorkflowExtension(Extension):
         for overlay_id in (
             "BackOfficeLayout",
             "BackOfficeFieldsView",
-            "ContentView"
+            "ContentView",
+            "TranslationDisplay"
         ):
             templates.get_class(
                 "woost.extensions.translationworkflow.%sOverlay"
