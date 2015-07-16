@@ -21,6 +21,7 @@
 .BackOfficeLayout .Table .TranslationWorkflowTable th {
     font-weight: bold;
     color: #333;
+    text-align: left;
 }
 
 .BackOfficeLayout .TranslationWorkflowTable .header_cell {
@@ -35,5 +36,9 @@
 .BackOfficeLayout .TranslationWorkflowTable .missing_translation_notice {
     color: #999;
     font-style: italic;
+}
+
+.BackOfficeLayout .Form .field_instance-TranslationWorkflowTable {
+    float: none !important;
 }
 

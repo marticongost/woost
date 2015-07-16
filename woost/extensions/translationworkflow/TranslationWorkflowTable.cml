@@ -17,13 +17,14 @@ from woost.models import get_current_user, ReadMemberPermission
     <py:ready>
         <?py
         user = get_current_user()
-        translated_model = self.data.translated_item.__class__
+        self._translated_item = schema.get(self.data, "translated_item")
+        self._translated_model = type(self._translated_item)
         adapter = schema.Adapter()
         adapter.implicit_copy = False
         adapter.copy(
             [
                 member.name
-                for member in translated_model.iter_members()
+                for member in self._translated_model.iter_members()
                 if (
                     member.translated
                     and member.visible
@@ -36,7 +37,7 @@ from woost.models import get_current_user, ReadMemberPermission
             ],
             properties = {"translated": False}
         )
-        self.translation_schema = adapter.export_schema(translated_model)
+        self.translation_schema = adapter.export_schema(self._translated_model)
         self.translation_schema.name = "TranslationWorkflowTable"
         ?>
         <py:new
@@ -75,9 +76,9 @@ from woost.models import get_current_user, ReadMemberPermission
     <?py-class
     def create_source_display(self, member):
         return self.create_member_display(
-            self.data.translated_item,
+            self._translated_item,
             member,
-            self.get_member_value(self.data.translated_item, member)
+            self.get_member_value(self._translated_item, member)
         )
 
     def create_translation_display(self, member):
