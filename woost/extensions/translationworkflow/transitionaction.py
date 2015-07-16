@@ -9,7 +9,7 @@ from cocktail.pkgutils import resolve
 from cocktail import schema
 from cocktail.persistence import transaction
 from cocktail.controllers import request_property, context, Location
-from woost.models import changeset_context, get_current_user
+from woost.models import changeset_context, get_current_user, ModifyPermission
 from woost.controllers.backoffice.basebackofficecontroller \
     import BaseBackOfficeController
 from woost.controllers.backoffice.useractions import (
@@ -81,15 +81,21 @@ class TranslationWorkflowTransitionAction(UserAction):
     def invoke(self, controller, selection):
 
         transition_data = None
+        user = get_current_user()
 
         # Save the edit stack
         if (
-            controller.edit_node
+            len(selection) == 1
+            and controller.edit_node
             and isinstance(
                 controller.edit_node.item,
                 TranslationWorkflowRequest
             )
             and hasattr(controller, "save_item")
+            and user.has_permission(
+                ModifyPermission,
+                target = selection[0]
+            )
         ):
             try:
                 controller.save_item()
@@ -119,7 +125,7 @@ class TranslationWorkflowTransitionAction(UserAction):
         # Otherwise, execute the transition right away
         def execute_transition():
             transition = self.transition
-            with changeset_context(author = get_current_user()) as changeset:
+            with changeset_context(author = user) as changeset:
                 for request in selection:
                     transition.execute(request, transition_data)
                     changeset.changes.get(request.id).is_explicit_change = True
