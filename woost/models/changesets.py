@@ -191,7 +191,12 @@ class Change(PersistentObject):
             if index > 0:
                 return changes[index - 1]
 
-    def diff(self, other_change = None, diff_schema = None):
+    def diff(self,
+        other_change = None,
+        diff_schema = None,
+        exclude = None,
+        language_subset = None
+    ):
 
         if other_change is None:
             other_change = self.get_previous_change()
@@ -214,7 +219,9 @@ class Change(PersistentObject):
         return schema.diff(
             self.item_state,
             other_change.item_state,
-            diff_schema
+            diff_schema,
+            exclude = exclude,
+            language_subset = language_subset
         )
 
     def __translate__(self, language, **kwargs):
