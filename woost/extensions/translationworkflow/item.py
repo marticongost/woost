@@ -77,8 +77,13 @@ def require_all_translation_requests(
             print " - ", model.__name__
 
     for instance in cls.select():
+
         if not isinstance(instance, models):
             continue
+
+        if verbose:
+            printed_heading = False
+
         for source_language, target_languages in language_paths.iteritems():
             if source_language in instance.translations:
                 for target_language in target_languages:
@@ -106,10 +111,13 @@ def require_all_translation_requests(
                     is_new_request = request.insert()
 
                     if verbose and is_new_request:
-                        print u"Added translation from %s to %s for %s" % (
+                        if not printed_heading:
+                            print
+                            print instance
+                            printed_heading = True
+                        print u"  %s -> %s" % (
                             source_language,
-                            target_language,
-                            instance
+                            target_language
                         )
 
 Item.require_all_translation_requests = require_all_translation_requests
