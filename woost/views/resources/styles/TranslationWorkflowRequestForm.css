@@ -15,7 +15,12 @@
 .TranslationWorkflowRequestForm .field_instance-TextArea .translation_source_display,
 .TranslationWorkflowRequestForm .translation_source_display + textarea {
     margin-top: 0.3em;
-    width: 16em;
+}
+
+.TranslationWorkflowRequestForm .translation_source_display,
+.TranslationWorkflowRequestForm .translation_source_display + textarea,
+.TranslationWorkflowRequestForm .translation_source_display + input {
+    width: 45% !important;
 }
 
 .TranslationWorkflowRequestForm .field_instance-TextArea .translation_source_display {
@@ -42,6 +47,10 @@
 
 .TranslationWorkflowRequestForm fieldset.translation_request > .fieldset_fields > fieldset.translation_request-translated_values {
     width: 40%;
+}
+
+.TranslationWorkflowRequestForm fieldset.translation_request > .fieldset_fields > fieldset.translation_request-translated_values .field_instance {
+    float: none;
 }
 
 .TranslationWorkflowRequestForm fieldset.translation_request > .fieldset_fields > fieldset.translation_request-info {
