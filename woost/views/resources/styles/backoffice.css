@@ -1455,6 +1455,12 @@ body.scripted .BackOfficeLayout .Table .row_selection_control {
     opacity: 0.6;
 }
 
+.BackOfficeLayout .TranslationDisplay.empty,
+.BackOfficeLayout .TranslationDisplay.empty[data-cocktail-editable='read_only'] {
+    font-style: italic;
+    color: #666;
+}
+
 /* Toolbar
 -----------------------------------------------------------------------------*/
 
