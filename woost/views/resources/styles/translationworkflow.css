@@ -21,7 +21,7 @@
     margin-right: 0.8em;
 }
 
-.BackOfficeLayout .TranslationWorkflowRequestStateSign > .label > .text_wrapper {
+.BackOfficeLayout .TranslationWorkflowStateSign {
     display: inline-block;
     vertical-align: middle;
     border: none !important;
