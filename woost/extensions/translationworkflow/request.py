@@ -56,6 +56,7 @@ class TranslationWorkflowRequest(Item):
         indexed = True,
         bidirectional = True,
         text_search = True,
+        editable = schema.NOT_EDITABLE,
         relation_constraints = lambda ctx: [
             expr.IsInstanceExpression(
                 expr.Self,
@@ -68,14 +69,14 @@ class TranslationWorkflowRequest(Item):
     source_language = LocaleMember(
         required = True,
         indexed = True,
-        editable = schema.READ_ONLY,
+        editable = schema.NOT_EDITABLE,
         member_group = "translation_request.info"
     )
 
     target_language = LocaleMember(
         required = True,
         indexed = True,
-        editable = schema.READ_ONLY,
+        editable = schema.NOT_EDITABLE,
         member_group = "translation_request.info"
     )
 
@@ -90,7 +91,7 @@ class TranslationWorkflowRequest(Item):
             )
         ),
         search_control = "cocktail.html.DropdownSelector",
-        editable = schema.READ_ONLY,
+        editable = schema.NOT_EDITABLE,
         searchable = False,
         listed_by_default = False,
         member_group = "translation_request.info"
@@ -100,7 +101,7 @@ class TranslationWorkflowRequest(Item):
         type = User,
         related_end = schema.Collection(),
         indexed = True,
-        editable = schema.READ_ONLY,
+        editable = schema.NOT_EDITABLE,
         edit_control = "cocktail.html.Autocomplete",
         search_control = "cocktail.html.Autocomplete",
         member_group = "translation_request.info"

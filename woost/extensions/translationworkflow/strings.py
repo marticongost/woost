@@ -153,9 +153,9 @@ translations.define("TranslationWorkflowRequest.translation_request.info",
 )
 
 translations.define("TranslationWorkflowRequest.translation_request.translated_values",
-    ca = u"Textos",
-    es = u"Textos",
-    en = u"Text"
+    ca = u"Traducció",
+    es = u"Traducción",
+    en = u"Translation"
 )
 
 translations.define("TranslationWorkflowRequest.translation_request.changelog",
@@ -598,17 +598,11 @@ translations.define(
 # TranslationWorkflowRequestCard
 #------------------------------------------------------------------------------
 translations.define(
-    "woost.views.TranslationWorkflowRequestCard."
-    "translation_workflow_request_assigned_translator_label",
-    ca = lambda translator:
-        "" if translator is None
-        else u"assignada a " + translations(translator),
-    es = lambda translator:
-        "" if translator is None
-        else u"asignada a " + translations(translator),
-    en = lambda translator:
-        "" if translator is None
-        else u"assigned to " + translations(translator)
+    "woost.extensions.translationworkflow.TranslationWorkflowRequestCard."
+    "request_language_field.field_label",
+    ca = u"Idioma",
+    es = u"Idioma",
+    en = u"Language"
 )
 
 # TranslationWorkflowPathEditor
