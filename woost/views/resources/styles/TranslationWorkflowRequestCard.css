@@ -1,12 +1,28 @@
 
-.BackOfficeLayout .TranslationWorkflowRequestCard .translation_workflow_request_state_label {
-    margin-right: 0 !important;
-    font-weight: bold;
-    margin-left: 0.3em;
+.TranslationWorkflowRequestCard .request_fields {
+    margin-top: 1em;
 }
 
-.BackOfficeLayout .TranslationWorkflowRequestCard .translation_workflow_request_state_label,
-.BackOfficeLayout .TranslationWorkflowRequestCard .translation_workflow_request_assigned_translator_label {
-    color: #666;
+.TranslationWorkflowRequestCard .request_field {
+    margin-top: 0.5em;
 }
 
+.TranslationWorkflowRequestCard .request_field .field_label {
+    display: inline-block;
+    vertical-align: top;
+    width: 12em;
+    color: #333;
+}
+
+.TranslationWorkflowRequestCard .request_field .field_label:after {
+    content: ':';
+}
+
+.TranslationWorkflowRequestCard .request_field .field_value {
+    display: inline-block;
+    vertical-align: top;
+}
+
+.BackOfficeItemView .page_title .TranslationWorkflowRequestCard .request_language_field .field_value {
+    font-size: 0.9em;
+}
