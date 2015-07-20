@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <?py
 from woost.models import get_current_user, Role
+from woost.extensions.translationworkflow.request import TranslationWorkflowRequest
 ?>
 
 <py:overlay
@@ -37,6 +38,19 @@ from woost.models import get_current_user, Role
             ?>
         </py:binding>
     </py:with>
+
+    <py:with py:def="tab_strip_entry" py:args="tab">
+        <?py
+        if issubclass(self.user_collection.type, TranslationWorkflowRequest) and tab.state:
+            element.tab_state_sign = self.create_tab_state_sign(tab.state)
+            element.insert(0, element.tab_state_sign)
+        ?>
+    </py:with>
+
+    <py:woost.extensions.translationworkflow.TranslationWorkflowStateSign
+        py:def="tab_state_sign"
+        py:args="state"
+        py:value="${state}"/>
 
 </py:overlay>
 

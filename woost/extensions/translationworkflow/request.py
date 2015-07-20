@@ -155,12 +155,22 @@ class TranslationWorkflowRequest(Item):
             states.extend(role.translation_workflow_relevant_states)
 
         if not states:
-            yield "all", translations("TranslationWorkflowRequest.tabs.all"), None
+            yield (
+                "all",
+                translations("TranslationWorkflowRequest.tabs.all"),
+                None,
+                {"state": None}
+            )
             states = TranslationWorkflowState.select()
 
         if states:
             for state in states:
-                yield str(state.id), state.plural_title, cls.state.equal(state)
+                yield (
+                    str(state.id),
+                    state.plural_title,
+                    cls.state.equal(state),
+                    {"state": state}
+                )
 
 
 class MSExcelTranslationWorkflowSourceValuesColumn(MSExcelColumn):
