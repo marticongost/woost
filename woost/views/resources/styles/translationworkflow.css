@@ -1,4 +1,8 @@
 
+.BackOfficeLayout .ContentView .tab_state_sign {
+    margin-right: 0.6em;
+}
+
 .BackOfficeEditView .translation_workflow_controls {
     padding-top: 0.6em;
     float: right;
