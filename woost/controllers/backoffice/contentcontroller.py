@@ -309,7 +309,11 @@ class ContentController(BaseBackOfficeController):
             user_collection.type.backoffice_listing_default_tab()
 
         for tab_info in user_collection.type.backoffice_listing_tabs():
-            user_collection.add_tab(*tab_info)
+            if len(tab_info) == 4:
+                tab_info, tab_kwargs = tab_info[:3], tab_info[3]
+            else:
+                tab_kwargs = {}
+            user_collection.add_tab(*tab_info, **tab_kwargs)
 
         return user_collection
 
