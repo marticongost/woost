@@ -8,6 +8,7 @@ from cocktail.translations import translations
 from cocktail import schema
 from cocktail.schema import expressions as expr
 from cocktail.schema.io import MSExcelExporter, MSExcelColumn
+from cocktail.html import templates
 from woost.models import (
     Item,
     Role,
@@ -15,8 +16,20 @@ from woost.models import (
     LocaleMember,
     get_current_user
 )
+from woost.views.htmldiff import iter_diff_rows
 from .state import TranslationWorkflowState
 from .utils import get_models_included_in_translation_workflow
+
+
+class TranslationWorkflowRequestValues(schema.Mapping):
+
+    def __init__(self, *args, **kwargs):
+        kwargs.setdefault("searchable", False)
+        kwargs.setdefault(
+            "display",
+            "woost.extensions.translationworkflow.TranslationWorkflowTable"
+        )
+        schema.Mapping.__init__(self, *args, **kwargs)
 
 
 class TranslationWorkflowRequest(Item):
@@ -116,10 +129,7 @@ class TranslationWorkflowRequest(Item):
         member_group = "translation_request.info"
     )
 
-    translated_values = schema.Mapping(
-        searchable = False,
-        display = "woost.extensions.translationworkflow."
-                  "TranslationWorkflowTable",
+    translated_values = TranslationWorkflowRequestValues(
         member_group = "translation_request.translated_values"
     )
 
@@ -215,4 +225,42 @@ class TranslationWorkflowRequestMSExcelExporter(MSExcelExporter):
 
 TranslationWorkflowRequest.backoffice_msexcel_exporter = \
     TranslationWorkflowRequestMSExcelExporter()
+
+
+@iter_diff_rows.implementation_for(TranslationWorkflowRequestValues)
+def iter_diff_rows(self, language, source, target, source_value, target_value):
+
+    keys = set()
+    translated_item = schema.get(source, "translated_item")
+
+    if translated_item is not None:
+
+        translated_model = type(translated_item)
+
+        if source_value is not None:
+            keys.update(source_value)
+
+        if target_value is not None:
+            keys.update(target_value)
+
+        for key in keys:
+
+            if source_value is None:
+                source_subvalue = None
+            else:
+                source_subvalue = source_value.get(key)
+
+            if target_value is None:
+                target_subvalue = None
+            else:
+                target_subvalue = target_value.get(key)
+
+            if source_value != target_value:
+                row = templates.new("woost.views.MemberDiffRow")
+                row.diff_member = translated_model.get_member(key)
+                row.diff_source = source
+                row.diff_target = target
+                row.diff_source_value = source_subvalue
+                row.diff_target_value = target_subvalue
+                yield row
 
