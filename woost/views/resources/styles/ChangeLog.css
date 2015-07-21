@@ -1,42 +1,54 @@
 
+.ChangeLog * {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
 .ChangeLog ul {
     list-style-type: none;
     padding: 0;
     margin: 0;
 }
 
-.ChangeLog .changeset_group_heading {
-    font-weight: bold;
-    color: #555;
-    padding-bottom: 0.2em;
-    border-bottom: 2px solid #ccc;
-    margin-bottom: 0.8em;
-}
-
-.ChangeLog .changeset_group + .changeset_group {
+.ChangeLog .changeset_list_entry + .changeset_list_entry {
     margin-top: 2em;
 }
 
-.ChangeLog .changeset_list_entry + .changeset_list_entry {
-    padding-top: 0.8em;
-    border-top: 1px solid #ddd;
-    margin-top: 0.8em;
-}
-
-.ChangeLog .changeset_time_display,
+.ChangeLog .changeset_date_display,
 .ChangeLog .changeset_author_display {
     display: inline-block;
     vertical-align: middle;
+    font-size: 0.9em;
 }
 
-.ChangeLog .changeset_time_display {
-    width: 3.5em;
+.ChangeLog .changeset_date_display {
+    margin-right: 0.4em;
+    color: #777;
+}
+
+.ChangeLog .changeset_author_display .text_wrapper {
     color: #777;
 }
 
 .ChangeLog .change_list {
     margin-top: 0.5em;
-    padding-left: 3.5em;
+}
+
+.ChangeLog .change_list_grouped_entry,
+.ChangeLog .change_list_entry {
+    display: table;
+    width: 100%;
+    background-color: #f0f0f0;
+    border: 1px solid #e0e0e0;
+}
+
+.ChangeLog .change_info {
+    padding: 0.4em;
+    display: table-cell;
+    vertical-align: top;
+    width: 30%;
+    background-color: #e5e5e5;
 }
 
 .ChangeLog .change_action_display,
@@ -49,6 +61,7 @@
     opacity: 0.5;
 }
 
+.ChangeLog .change_list_grouped_entry .change_action_display,
 .ChangeLog [data-woost-ChangeLog-explicit='true'] .change_action_display {
     opacity: 1;
 }
@@ -70,11 +83,9 @@
 }
 
 .ChangeLog .change_diff {
-    margin-top: 0.6em;
-    margin-bottom: 1.5em;
-    padding: 0.4em;
-    background-color: #eee;
-    border: 1px solid #e5e5e5;
+    display: table-cell;
+    vertical-align: top;
+    width: 70%;
 }
 
 .ChangeLog .differences {
@@ -82,11 +93,11 @@
 }
 
 .ChangeLog .differences td {
-    padding: 0.5em;
+    padding: 0.5em 0.7em;
 }
 
 .ChangeLog .differences tr + tr td {
-    border-top: 1px solid #ccc;
+    border-top: 1px solid #ddd;
 }
 
 .ChangeLog .differences td.member {
@@ -111,5 +122,9 @@
 
 .ChangeLog .differences td.new_value {
     width: 40%;
+}
+
+.ChangeLog .differences .member_label {
+    color: #555;
 }
 
