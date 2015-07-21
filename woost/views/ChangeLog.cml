@@ -2,7 +2,6 @@
 <?py
 from collections import Counter
 from cocktail.stringutils import normalize
-from cocktail.translations import DATE_STYLE_TEXT
 from cocktail import schema
 from cocktail.html.uigeneration import UIGenerator
 from woost.models import (
@@ -99,35 +98,20 @@ from woost.views.uigeneration import backoffice_display
         ?>
     </py:ready>
 
-    <ul py:id="changelog_entries">
+    <ul py:id="changeset_list">
         <py:ready>
-            <?py
-            if self.changesets:
-                changeset_group = None
-                current_date = None
-                for changeset in self.changesets:
-                    changeset_date = changeset.date.date()
-                    if changeset_group is None or changeset_date != current_date:
-                        changeset_group = self.create_changeset_group(changeset_date)
-                        current_date = changeset_date
-                        element.append(changeset_group)
-                    changeset_group.changeset_list.append(self.create_changeset_list_entry(changeset))
-            ?>
+            <py:new
+                py:element="self.create_changeset_list_entry(changeset)"
+                py:for="changeset in self.changesets"/>
         </py:ready>
     </ul>
 
-    <li py:def="changeset_group" py:args="date">
-        <div py:local_id="changeset_group_heading">
-            ${translations(date, style = DATE_STYLE_TEXT)}
-        </div>
-        <ul py:local_id="changeset_list"/>
-    </li>
-
     <li py:def="changeset_list_entry" py:args="changeset">
         <div py:local_id="changeset_info">
-            <div py:local_id="changeset_time_display">
-                ${translations(changeset.date.time(), include_seconds = False)}
-            </div>
+            <py:cocktail.html.RelativeTimeDisplay
+                py:local_id="changeset_date_display"
+                py:value="${changeset.date}"
+                py:member="${changeset.__class__.date}"/>
             <py:new
                 py:local_id="changeset_author_display"
                 py:element="self.create_member_display(changeset, ChangeSet.author, changeset.author)"/>
@@ -183,12 +167,14 @@ from woost.views.uigeneration import backoffice_display
         element["data-woost-ChangeLog-action"] = change.action
         element["data-woost-ChangeLog-explicit"] = "true" if change.is_explicit_change else "false"
         ?>
-        <py:new
-            py:local_id="change_action_display"
-            py:element="self.create_member_display(change, Change.action, change.action)"/>
-        <py:new
-            py:local_id="change_target_display"
-            py:element="self.create_member_display(change, Change.target, change.target)"/>
+        <div py:local_id="change_info">
+            <py:new
+                py:local_id="change_action_display"
+                py:element="self.create_member_display(change, Change.action, change.action)"/>
+            <py:new
+                py:local_id="change_target_display"
+                py:element="self.create_member_display(change, Change.target, change.target)"/>
+        </div>
 
         <?py
         state_changes = None
@@ -225,12 +211,17 @@ from woost.views.uigeneration import backoffice_display
     </li>
 
     <li py:def="change_list_grouped_entry" py:args="action, model, count">
-        <py:new
-            py:local_id="change_action_display"
-            py:element="self.create_member_display(None, Change.action, action)"/>
-        <span py:local_id="change_targets_display">
-            ${translations("woost.views.ChangeLog.change_list_grouped_entry.change_targets_display", model = model, count = count)}
-        </span>
+        <?py
+        element["data-woost-ChangeLog-action"] = action
+        ?>
+        <div py:local_id="change_info">
+            <py:new
+                py:local_id="change_action_display"
+                py:element="self.create_member_display(None, Change.action, action)"/>
+            <span py:local_id="change_targets_display">
+                ${translations("woost.views.ChangeLog.change_list_grouped_entry.change_targets_display", model = model, count = count)}
+            </span>
+        </div>
     </li>
 
 </div>
