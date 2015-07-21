@@ -95,6 +95,7 @@ from woost.views.uigeneration import backoffice_display
             changesets.update(change.changeset for change in self.changes)
             self.changesets = list(changesets)
             self.changesets.sort(key = lambda changeset: changeset.date)
+            self.changesets.reverse()
         ?>
     </py:ready>
 
