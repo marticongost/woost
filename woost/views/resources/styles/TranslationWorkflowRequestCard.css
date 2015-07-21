@@ -12,6 +12,7 @@
     vertical-align: top;
     width: 12em;
     color: #333;
+    font-size: 0.9em;
 }
 
 .TranslationWorkflowRequestCard .request_field .field_label:after {
@@ -23,6 +24,7 @@
     vertical-align: top;
 }
 
-.BackOfficeItemView .page_title .TranslationWorkflowRequestCard .request_language_field .field_value {
+.TranslationWorkflowRequestCard .request_language_field .field_value {
     font-size: 0.9em;
 }
+
