@@ -249,6 +249,22 @@ def _eligible_members():
                 yield cls.full_name + "." + name
 
 
+def _translate_member_permission_matching_members(
+    value,
+    language = None,
+    **kwargs
+):
+    if not value:
+        return ""
+
+    try:
+        member = _resolve_matching_member_reference(value)
+    except:
+        return "?"
+    else:
+        return translations(member, language, qualified = True)
+
+
 class MemberPermission(Permission):
     """Base class for permissions that restrict operations on members."""
 
@@ -256,14 +272,7 @@ class MemberPermission(Permission):
         default_type = set,
         items = schema.String(
             enumeration = lambda ctx: set(_eligible_members()),
-            translate_value = lambda value, language = None, **kwargs:
-                ""
-                if not value
-                else translations(
-                    _resolve_matching_member_reference(value),
-                    language,
-                    qualified = True
-                )
+            translate_value = _translate_member_permission_matching_members
         ),
         edit_control = "woost.views.MemberList"
     )
