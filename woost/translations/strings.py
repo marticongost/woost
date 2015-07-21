@@ -3458,7 +3458,7 @@ def member_permission_translation_factory(
 ):
     def predicate_factory(instance, **kwargs):
 
-        members = list(instance.iter_matching_members())
+        members = list(instance.iter_matching_members(ignore_invalid = True))
 
         if not members:
             target = any_predicate
