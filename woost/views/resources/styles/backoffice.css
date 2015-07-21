@@ -4048,10 +4048,57 @@ div.success_label {
 -----------------------------------------------------------------------------*/
 .ObjectDiff .differences {
     border-collapse: collapse;
+    width: 100%;
 }
 
-.ObjectDiff .differences .member_label {
+.ObjectDiff .differences td,
+.ObjectDiff .differences th {
+    text-align: left;
+    vertical-align: top;
+}
+
+.ObjectDiff .differences td {
+    padding: 0.5em 0.7em;
+}
+
+.ObjectDiff .differences tr + tr td {
+    border-top: 1px solid #ddd;
+}
+
+.ObjectDiff .differences th + th,
+.ObjectDiff .differences td + td {
+    padding-left: 1em;
+}
+
+.ObjectDiff .differences td.subject_cell {
+    width: 15%;
     font-weight: bold;
+    color: #555;
+}
+
+.ObjectDiff .differences td.previous_value_cell {
+    width: 40%;
+}
+
+.ObjectDiff .differences td.arrow_cell {
+    width: 5%;
+    vertical-align: middle;
+}
+
+.ObjectDiff .differences td.arrow_cell .arrow {
+    color: #666;
+    font-size: 1.8em;
+    font-weight: bold;
+    line-height: 0.5em;
+}
+
+.ObjectDiff .differences td.new_value_cell {
+    width: 40%;
+}
+
+.ObjectDiff .differences .language_label {
+    margin-left: 0.4em;
+    font-weight: normal;
 }
 
 .ObjectDiff .diff_add {
@@ -4073,43 +4120,6 @@ div.success_label {
     color: rgb(75,75,75);
     font-style: italic;
     font-size: 85%;
-}
-
-.ObjectDiff .differences td,
-.ObjectDiff .differences th {
-    text-align: left;
-    vertical-align: top;
-}
-
-.ObjectDiff .differences th + th,
-.ObjectDiff .differences td + td {
-    padding-left: 1em;
-}
-
-.ObjectDiff .diff_unit {
-    display: inline-block;
-}
-
-.ObjectDiff .diff_unit + .diff_unit {
-    margin-left: 0.5em;
-}
-
-.ObjectDiff .collection_diff .diff_unit {
-    display: block;
-}
-
-.ObjectDiff .collection_diff .diff_unit + .diff_unit {
-    margin-left: 0;
-}
-
-.BackOfficeDiffView .ObjectDiff .differences .check {
-    width: 1em;
-}
-
-.BackOfficeDiffView .buttons {
-    text-align: left;
-    padding: 0;
-    margin: 1em 0;
 }
 
 /* Annotations extension

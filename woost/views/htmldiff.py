@@ -9,6 +9,8 @@ u"""
 import re
 import htmlentitydefs
 from difflib import _mdiff
+from cocktail.modeling import GenericMethod
+from cocktail.html import templates
 
 def html_diff(from_sequence, to_sequence, linejunk = None, charjunk = None):
 
@@ -60,6 +62,17 @@ def _unescape(text):
                 pass
         return text # leave as is
     return re.sub("&#?\w+;", fixup, text)
+
+@GenericMethod
+def iter_diff_rows(self, language, source, target, source_value, target_value):
+    row = templates.new("woost.views.MemberDiffRow")
+    row.diff_member = self
+    row.diff_language = language
+    row.diff_source = source
+    row.diff_target = target
+    row.diff_source_value = source_value
+    row.diff_target_value = target_value
+    yield row
 
 if __name__ == "__main__":
     from_seq = ["Hello universe!"]
