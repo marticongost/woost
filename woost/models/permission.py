@@ -280,9 +280,15 @@ class MemberPermission(Permission):
 
         return True
 
-    def iter_matching_members(self):
+    def iter_matching_members(self, ignore_invalid = False):
         for compound_name in self.matching_members:
-            yield _resolve_matching_member_reference(compound_name)
+            try:
+                member = _resolve_matching_member_reference(compound_name)
+            except:
+                if not ignore_invalid:
+                    raise
+            else:
+                yield member
 
 
 class ReadMemberPermission(MemberPermission):
