@@ -17,7 +17,10 @@ from woost.models import get_current_user, ReadMemberPermission
     <py:ready>
         <?py
         user = get_current_user()
-        self._translated_item = schema.get(self.data, "translated_item")
+        self._translated_item = schema.get(
+            getattr(self, "persistent_object", None) or self.data,
+            "translated_item"
+        )
         self._translated_model = type(self._translated_item)
         adapter = schema.Adapter()
         adapter.implicit_copy = False
