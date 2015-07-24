@@ -31,13 +31,15 @@ Item.add_member(
 )
 
 def get_translation_request(self, source_language, target_language):
-    requests = TranslationWorkflowRequest.select([
-        TranslationWorkflowRequest.translated_item.equal(self),
-        TranslationWorkflowRequest.source_language.equal(source_language),
-        TranslationWorkflowRequest.target_language.equal(target_language)
-    ])
-    for request in requests:
-        return request
+
+    for request in self.translation_requests:
+        if (
+            request.source_language == source_language
+            and request.target_language == target_language
+        ):
+            return request
+
+    return None
 
 Item.get_translation_request = get_translation_request
 
