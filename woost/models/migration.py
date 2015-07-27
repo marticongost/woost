@@ -1135,3 +1135,14 @@ def index_changesets(e):
     ChangeSet.rebuild_indexes()
     Change.rebuild_indexes()
 
+#------------------------------------------------------------------------------
+
+step = MigrationStep("Make Item.translations not versioned")
+
+@when(step.executing)
+def make_item_translations_not_versioned(e):
+    from woost.models import Change
+    for change in Change.select(Change.action.equal("modify")):
+        change.changed_members.discard("translations")
+        change.item_state.pop("translations", None)
+
