@@ -52,13 +52,12 @@ class FormAgreement(schema.Boolean):
 
     def __translate__(self, language, **kwargs):
         return (
-            schema.Boolean.__translate__(member, language, **kwargs)
+            schema.Boolean.__translate__(self, language, **kwargs)
             or translations(
-                "woost.controllers.formagreement.%s" % member.name,
-                member = member
+                "woost.controllers.formagreement.%s" % self.name,
+                member = self
             )
-            or translations("woost.controllers.formagreement", member =
-                member)
+            or translations("woost.controllers.formagreement", member = self)
         )
 
     def parse_request_value(self, reader, value):
