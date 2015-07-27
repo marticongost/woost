@@ -19,21 +19,10 @@ def requires_agreement(form, name = "terms", document = default_document):
     if isinstance(document, basestring):
         document = Publishable.require_instance(qname = document)
 
-    member = schema.Boolean(
+    member = FormAgreement(
         name = name,
-        required = True,
-        __translate__ = lambda language, **kwargs:
-            schema.Boolean.__translate__(member, language, **kwargs)
-            or translations(
-                "woost.controllers.formagreement.%s" % member.name,
-                member = member
-            )
-            or translations("woost.controllers.formagreement", member =
-                member),
-        member_group = "form_agreement"
+        agreement_document = document
     )
-    member.agreement_document = document
-    member.add_validation(_validate_consent)
 
     form.schema.add_member(member)
 
@@ -46,9 +35,33 @@ def requires_agreement(form, name = "terms", document = default_document):
     form.adapter.exclude(name)
     return member
 
-def _validate_consent(context):
-    if not context.value:
-        yield ConsentNotGivenError(context)
+
+class FormAgreement(schema.Boolean):
+
+    agreement_document = None
+
+    def __init__(self, *args, **kwargs):
+        kwargs.setdefault("required", True)
+        kwargs.setdefault("member_group", "form_agreement")
+        schema.Boolean.__init__(self, *args, **kwargs)
+
+    def _default_validation(self, context):
+        if not context.value:
+            yield ConsentNotGivenError(context)
+
+    def __translate__(self, language, **kwargs):
+        return (
+            schema.Boolean.__translate__(self, language, **kwargs)
+            or translations(
+                "woost.controllers.formagreement.%s" % self.name,
+                member = self
+            )
+            or translations("woost.controllers.formagreement", member =
+                self)
+        )
+
+    def parse_request_value(self, reader, value):
+        return schema.Boolean.parse_request_value(self, reader, value) or False
 
 
 class ConsentNotGivenError(ValidationError):
