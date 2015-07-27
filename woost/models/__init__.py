@@ -21,6 +21,7 @@ del mimetypes
 def _hide_self_contained_relations(event):
     if event.anonymous:
         event.source.visible = False
+        event.source.versioned = False
         event.source.synchronizable = False
 
 from woost.models.typegroups import (
