@@ -1146,3 +1146,31 @@ def make_item_translations_not_versioned(e):
         change.changed_members.discard("translations")
         change.item_state.pop("translations", None)
 
+#------------------------------------------------------------------------------
+
+step = MigrationStep("Make anonymous relation ends not versioned")
+
+@when(step.executing)
+def make_anonymous_relation_ends_not_versioned(e):
+
+    from cocktail import schema
+    from woost.models import Change
+
+    keys_cache = {}
+
+    for change in Change.select(Change.action.equal("modify")):
+        model = change.target.__class__
+        keys = keys_cache.get(model)
+        if keys is None:
+            keys = [
+                member.name
+                for member in model.iter_members()
+                if isinstance(member, schema.RelationMember)
+                and member.anonymous
+            ]
+            keys_cache[model] = keys
+
+        for key in keys:
+            change.changed_members.discard(key)
+            change.item_state.pop(key, None)
+
