@@ -259,6 +259,7 @@ class Item(PersistentObject):
     @classmethod
     def _add_member(cls, member):
         if member.name == "translations":
+            member.versioned = False
             member.editable = schema.NOT_EDITABLE
             member.searchable = False
             member.synchronizable = False
