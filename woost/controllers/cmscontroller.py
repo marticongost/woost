@@ -295,25 +295,6 @@ class CMSController(BaseCMSController):
         if controller is None:
             raise cherrypy.NotFound()
 
-        # Add the selected language to the current URI
-        if publishable.per_language_publication:
-            if not request.language_specified:
-                location = Location.get_current()
-                uri = app.language.translate_uri()
-                # Remove the query string from the translated uri
-                pos = uri.find("?")
-                if pos != -1:
-                    uri = uri[:pos]
-                location.path_info = uri
-                location.go()
-
-        # Remove the language selection from the current URI
-        elif request.language_specified:
-            location = Location.get_current()
-            location.path_info = \
-                "/" + "/".join(location.path_info.strip("/").split("/")[1:])
-            location.go()
-
         return controller
 
     def canonical_redirection(self, path_resolution):
@@ -510,6 +491,25 @@ class CMSController(BaseCMSController):
         publishable = cms.context.get("publishable")
 
         if publishable is not None:
+
+            # Add the selected language to the current URI
+            if publishable.per_language_publication:
+                if not cherrypy.request.language_specified:
+                    location = Location.get_current()
+                    uri = app.language.translate_uri()
+                    # Remove the query string from the translated uri
+                    pos = uri.find("?")
+                    if pos != -1:
+                        uri = uri[:pos]
+                    location.path_info = uri
+                    location.go()
+
+            # Remove the language selection from the current URI
+            elif cherrypy.request.language_specified:
+                location = Location.get_current()
+                location.path_info = \
+                    "/" + "/".join(location.path_info.strip("/").split("/")[1:])
+                location.go()
 
             # Possibly redirect to another website, if the selected publishable is
             # specific to another website
