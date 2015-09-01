@@ -407,6 +407,12 @@ translations.define("TranslationWorkflowTransition.requires_valid_text",
     en = u"Requires text validation"
 )
 
+translations.define("TranslationWorkflowTransition.requires_different_state",
+    ca = u"Deshabilitar per peticions a l'estat destí",
+    es = u"Deshabilitar para peticiones en el estado destino",
+    en = u"Disable for requests in the target state"
+)
+
 translations.define("TranslationWorkflowTransition.transition_setup_class",
     ca = u"Codi de preparació de la transició",
     es = u"Código de preparación de la transición",

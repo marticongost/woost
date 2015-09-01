@@ -60,7 +60,10 @@ class TranslationWorkflowTransitionAction(UserAction):
         if isinstance(target, TranslationWorkflowRequest):
             transition = self.transition
 
-            if target.state is transition.target_state:
+            if (
+                transition.requires_different_state
+                and target.state is transition.target_state
+            ):
                 return False
 
             if (
