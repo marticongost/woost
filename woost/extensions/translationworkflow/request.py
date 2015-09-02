@@ -188,7 +188,7 @@ class MSExcelTranslationWorkflowSourceValuesColumn(MSExcelColumn):
 
     def get_cell_value(self, obj):
         return [
-            obj.translated_item.get(key)
+            obj.translated_item.get(key, language = obj.source_language)
             for key in sorted(obj.translated_values.keys())
         ]
 
