@@ -18,7 +18,10 @@ from woost.models import (
 )
 from woost.views.htmldiff import iter_diff_rows
 from .state import TranslationWorkflowState
-from .utils import get_models_included_in_translation_workflow
+from .utils import (
+    get_models_included_in_translation_workflow,
+    member_is_included_in_translation_workflow
+)
 
 
 class TranslationWorkflowRequestValues(schema.Mapping):
@@ -188,8 +191,9 @@ class MSExcelTranslationWorkflowSourceValuesColumn(MSExcelColumn):
 
     def get_cell_value(self, obj):
         return [
-            obj.translated_item.get(key, language = obj.source_language)
-            for key in sorted(obj.translated_values.keys())
+            obj.translated_item.get(member, language = obj.source_language)
+            for member in obj.translated_item.__class__.ordered_members()
+            if member_is_included_in_translation_workflow(member)
         ]
 
 
@@ -197,8 +201,9 @@ class MSExcelTranslationWorkflowTargetValuesColumn(MSExcelColumn):
 
     def get_cell_value(self, obj):
         return [
-            obj.translated_values[key]
-            for key in sorted(obj.translated_values.keys())
+            obj.translated_values.get(member.name)
+            for member in obj.translated_item.__class__.ordered_members()
+            if member_is_included_in_translation_workflow(member)
         ]
 
 
