@@ -16,6 +16,7 @@ from cocktail.schema.expressions import (
 from cocktail.html import Element, templates
 from cocktail.html.uigeneration import UIGenerator
 from cocktail.controllers import view_state
+from cocktail.controllers.userfilter import user_filters_registry
 from woost.models import Item
 from woost.views.uigeneration import backoffice_display
 from woost.controllers.backoffice.useractions import export_user_actions
@@ -175,12 +176,18 @@ class ContentTable(Table):
 
     def create_search_options(self, column, language):
 
-        filters = [filter.id for filter in self.filters] \
-            if self.filters \
+        filters = (
+            [filter.id for filter in self.filters]
+            if self.filters
             else []
+        )
 
-        filter_id = "member-" + column.name
-        filters.append(filter_id)
+        filter_state = user_filters_registry.get_new_filter_view_state(
+            self.schema,
+            filters,
+            column
+        )
+        filter_state["page"] = "0"
 
         options = Element()
         options.add_class("search_options")
@@ -192,11 +199,11 @@ class ContentTable(Table):
 
         add_filter = Element("a")
         add_filter.add_class("add_filter")
-        add_filter["href"] = "?" + view_state(filter = filters, page = 0)
+        add_filter["href"] = "?" + view_state(**filter_state)
         add_filter.append(
             translations("woost.views.ContentTable add column filter")
         )
-        add_filter.set_client_param("filterId", filter_id)
+        add_filter.set_client_param("filterId", "member-" + column.name)
         options.append(add_filter)
 
         return options
