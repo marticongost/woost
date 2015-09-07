@@ -16,7 +16,7 @@ def extract_video_id(string):
         if match:
             string = match.group(1)
 
-    return string
+    return None
 
 
 class VimeoVideo(Publishable):
@@ -43,7 +43,7 @@ class VimeoVideo(Publishable):
     video_id = schema.String(
         required = True,
         listed_by_default = False,
-        normalization = extract_video_id,
+        normalization = lambda value: extract_video_id(value) or value,
         member_group = "content"
     )
 
