@@ -23,7 +23,7 @@ def extract_video_id(string):
     except:
         pass
 
-    return string
+    return None
 
 
 class YouTubeVideo(Publishable):
@@ -50,7 +50,7 @@ class YouTubeVideo(Publishable):
     video_id = schema.String(
         required = True,
         listed_by_default = False,
-        normalization = extract_video_id,
+        normalization = lambda value: extract_video_id(value) or value,
         member_group = "content"
     )
 
