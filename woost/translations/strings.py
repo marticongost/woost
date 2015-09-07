@@ -4017,6 +4017,12 @@ translations.define("URI.language_specific_uri",
     en = u"Language specific address"
 )
 
+translations.define("URI.image",
+    ca = u"Imatge",
+    es = u"Imagen",
+    en = u"Image"
+)
+
 # Style
 #------------------------------------------------------------------------------
 translations.define("Style",
