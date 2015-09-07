@@ -9,6 +9,7 @@ u"""
 from cocktail import schema
 from cocktail.controllers import make_uri
 from woost.models.publishable import Publishable
+from woost.models.file import File
 from woost.models.controller import Controller
 
 
@@ -20,7 +21,8 @@ class URI(Publishable):
     members_order = [
         "title",
         "uri",
-        "language_specific_uri"
+        "language_specific_uri",
+        "image"
     ]
 
     default_controller = schema.DynamicDefault(
@@ -45,6 +47,13 @@ class URI(Publishable):
     language_specific_uri = schema.String(
         translated = True,
         member_group = "content"
+    )
+
+    image = schema.Reference(
+        type = File,
+        related_end = schema.Collection(),
+        relation_constraints = {"resource_type": "image"},
+        listed_by_default = False
     )
 
     def get_uri(self,
