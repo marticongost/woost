@@ -36,7 +36,7 @@ class FileUploader(object):
                 for member in receiver.__class__.ordered_members()
                 if isinstance(member, schema.RelationMember)
                 and member.related_type
-                and issublcass(member.related_type, File)
+                and issubclass(member.related_type, File)
             ]
 
         self.receiver = receiver
