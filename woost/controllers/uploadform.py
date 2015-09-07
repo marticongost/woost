@@ -150,7 +150,10 @@ class UploadForm(Form):
 
         def create_file(self, context):
             member = context.target_schema[self.key]
-            return member.related_type()
+            file_type = member.related_type
+            if not issubclass(file_type, File):
+                file_type = File
+            return file_type()
 
     def submit(self):
         Form.submit(self)
