@@ -15,11 +15,14 @@ from woost.controllers import async_uploader
 
 class UploadForm(Form):
 
-    upload_options = {
+    default_upload_options = {
         "async": True,
         "async_uploader": async_uploader,
-        "async_upload_url": "/async_upload"
+        "async_upload_url": "/async_upload",
+        "hash_algorithm": "md5"
     }
+
+    upload_options = {}
 
     @request_property
     def upload_members(self):
@@ -43,15 +46,17 @@ class UploadForm(Form):
         for member in self.upload_members:
             key = member.name
             export_rule = self.ExportUploadInfo(self, key)
-            export_rule.upload_options = self.upload_options
             adapter.export_rules.add_rule(export_rule)
             adapter.import_rules.add_rule(self.ImportUploadInfo(self, key))
 
         return adapter
 
-    class ExportUploadInfo(schema.Rule):
+    def get_upload_options(self):
+        options = self.default_upload_options.copy()
+        options.update(self.upload_options)
+        return options
 
-        upload_options = {}
+    class ExportUploadInfo(schema.Rule):
 
         def __init__(self, form, key):
             self.form = form
@@ -61,14 +66,13 @@ class UploadForm(Form):
 
             if context.consume(self.key):
                 source_member = context.source_schema[self.key]
-                target_member = FileUpload(
-                    required = source_member.required,
-                    hash_algorithm = "md5",
-                    get_file_destination = self.form.get_temp_path
-                )
 
-                for key, value in self.upload_options.iteritems():
-                    setattr(target_member, key, value)
+                upload_options = self.form.get_upload_options()
+                upload_options["required"] = source_member.required
+                upload_options["get_file_destination"] = \
+                    self.form.get_temp_path
+
+                target_member = FileUpload(**upload_options)
 
                 if isinstance(source_member, schema.Collection):
                     target_member = schema.Collection(
