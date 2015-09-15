@@ -153,6 +153,6 @@ from .textblock import TextBlock
 from .tweetbutton import TweetButton
 from .twittertimelineblock import TwitterTimelineBlock
 from .videoblock import VideoBlock
-
+from .importurl import url_importer
 from . import migration
 
