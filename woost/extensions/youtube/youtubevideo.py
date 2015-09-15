@@ -5,7 +5,7 @@ u"""
 """
 from cocktail import schema
 from cocktail.controllers import Location
-from woost.models.publishable import Publishable
+from woost.models import Publishable, url_importer
 
 
 def extract_video_id(string):
@@ -23,7 +23,7 @@ def extract_video_id(string):
     except:
         pass
 
-    return string
+    return None
 
 
 class YouTubeVideo(Publishable):
@@ -50,7 +50,7 @@ class YouTubeVideo(Publishable):
     video_id = schema.String(
         required = True,
         listed_by_default = False,
-        normalization = extract_video_id,
+        normalization = lambda value: extract_video_id(value) or value,
         member_group = "content"
     )
 
@@ -61,4 +61,18 @@ class YouTubeVideo(Publishable):
         host = None,
         encode = True):
         return self.uri_pattern % (self.video_id,)
+
+
+def import_url_as_yotube_video(url_import):
+
+    video_id = extract_video_id(url_import.url)
+    if video_id:
+        item = YouTubeVideo()
+        url_import.apply_scraped_info(item)
+        item.video_id = video_id
+        return item
+
+    return None
+
+url_importer.prepend_handler(import_url_as_yotube_video)
 

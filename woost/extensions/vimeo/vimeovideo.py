@@ -5,7 +5,7 @@ u"""
 """
 import re
 from cocktail import schema
-from woost.models.publishable import Publishable
+from woost.models import Publishable, url_importer
 
 _video_id_expr = re.compile(r"/(\d+)")
 
@@ -16,7 +16,7 @@ def extract_video_id(string):
         if match:
             string = match.group(1)
 
-    return string
+    return None
 
 
 class VimeoVideo(Publishable):
@@ -43,7 +43,7 @@ class VimeoVideo(Publishable):
     video_id = schema.String(
         required = True,
         listed_by_default = False,
-        normalization = extract_video_id,
+        normalization = lambda value: extract_video_id(value) or value,
         member_group = "content"
     )
 
@@ -54,4 +54,18 @@ class VimeoVideo(Publishable):
         host = None,
         encode = True):
         return self.uri_pattern % (self.video_id,)
+
+
+def import_url_as_vimeo_video(url_import):
+
+    video_id = extract_video_id(url_import.url)
+    if video_id:
+        item = VimeoVideo()
+        url_import.apply_scraped_info(item)
+        item.vimeo_id = vimeo_id
+        return item
+
+    return None
+
+url_importer.prepend_handler(import_url_as_vimeo_video)
 
