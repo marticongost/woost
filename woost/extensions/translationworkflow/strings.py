@@ -86,6 +86,18 @@ translations.define("User.translation_proficiencies",
     en = u"Translations he/she can perform"
 )
 
+translations.define("User.managed_translation_agency",
+    ca = u"Agència de traducció que gestiona",
+    es = u"Agencia de traducción que gestiona",
+    en = u"Managed translation agency"
+)
+
+translations.define("User.translation_agency",
+    ca = u"Agència de traducció per la que treballa",
+    es = u"Agencia de traducción para la que trabaja",
+    en = u"Translation agency he/she works for"
+)
+
 # Item
 #------------------------------------------------------------------------------
 translations.define("Item.translation_requests",
@@ -186,6 +198,12 @@ translations.define("TranslationWorkflowRequest.state",
     ca = u"Estat",
     es = u"Estado",
     en = u"State"
+)
+
+translations.define("TranslationWorkflowRequest.assigned_agency",
+    ca = u"Agència de traducció",
+    es = u"Agencia de traducción",
+    en = u"Translation agency"
 )
 
 translations.define("TranslationWorkflowRequest.assigned_translator",
@@ -473,6 +491,44 @@ translations.define(
             u"A change to a silenced request has been ignored",
             u"%d changes to silenced requests have been ignored" % count
         )
+)
+
+# TranslationAgency
+#------------------------------------------------------------------------------
+translations.define("TranslationAgency",
+    ca = u"Agència de traducció",
+    es = u"Agencia de traducción",
+    en = u"Translation agency"
+)
+
+translations.define("TranslationAgency-plural",
+    ca = u"Agències de traducció",
+    es = u"Agencias de traducción",
+    en = u"Translation agencies"
+)
+
+translations.define("TranslationAgency.title",
+    ca = u"Nom",
+    es = u"Nombre",
+    en = u"Name"
+)
+
+translations.define("TranslationAgency.managers",
+    ca = u"Gestors",
+    es = u"Gestores",
+    en = u"Managers"
+)
+
+translations.define("TranslationAgency.translators",
+    ca = u"Traductors",
+    es = u"Traductores",
+    en = u"Translators"
+)
+
+translations.define("TranslationAgency.translation_proficiencies",
+    ca = u"Traduccions que pot realitzar",
+    es = u"Traducciones que puede realizar",
+    en = u"Translations it can perform"
 )
 
 # Transition controller
