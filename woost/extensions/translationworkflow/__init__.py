@@ -62,8 +62,14 @@ class TranslationWorkflowExtension(Extension):
                      "assigntransitionsetup."
                      "TranslationWorkflowAssignTransitionSetup",
             "code":
-                "path = request.source_language, request.target_language"
-                "request.assigned_translator = data['assignments'][path]"
+                "from woost.extensions.translationworkflow.translationagency "
+                "import TranslationAgency\n"
+                "path = request.source_language, request.target_language\n"
+                "translator = data['assignments'][path]\n"
+                "if isinstance(translator, TranslationAgency):\n"
+                "    request.assigned_agency = translator\n"
+                "else:\n"
+                "    request.assigned_translator = translator"
         }),
         ("propose", {
             "source_states": ["in_translation"],
@@ -118,8 +124,10 @@ class TranslationWorkflowExtension(Extension):
             state,
             transition,
             transitionpermission,
-            transitionaction
+            transitionaction,
         )
+        from woost.extensions.translationworkflow.translationagency \
+            import TranslationAgency
 
         # Disable user actions for translation requests
         from woost.controllers.backoffice.useractions import get_user_action
@@ -190,6 +198,30 @@ class TranslationWorkflowExtension(Extension):
         def show_edit_effects_on_translation_workflow(e):
             if e.changeset is not None:
                 notify_translation_request_changes(e.changeset)
+
+        # When the manager of a translation agency creates a user, set it up as
+        # a translator for the agency automatically
+        from woost.models import User, Role
+        from woost.controllers.backoffice.editstack import EditNode
+
+        @when(EditNode.saving)
+        def link_to_translation_agency(e):
+
+            if e.is_new and isinstance(e.item, User):
+                agency = e.user.managed_translation_agency
+                if agency is not None:
+
+                    # Register a user as a translator for the agency
+                    if e.item not in agency.translators:
+                        agency.translators.append(e.item)
+
+                    # Grant the user translator rights
+                    translator_role = Role.get_instance(
+                        qname = "woost.extensions.translationworkflow."
+                                "roles.translators"
+                    )
+                    if translator_role is not None and not e.item.roles:
+                        e.item.roles.append(translator_role)
 
     def _install(self):
         self.create_standard_graph()

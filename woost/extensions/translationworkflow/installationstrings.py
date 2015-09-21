@@ -64,6 +64,20 @@ translations.define(
 )
 
 translations.define(
+    "woost.extensions.translationworkflow.states.sent_to_agency.title",
+    ca = u"Enviada a agència",
+    es = u"Enviada a agencia",
+    en = u"Sent to agency"
+)
+
+translations.define(
+    "woost.extensions.translationworkflow.states.sent_to_agency.plural_title",
+    ca = u"Enviades a agència",
+    es = u"Enviadas a agencia",
+    en = u"Sent to agency"
+)
+
+translations.define(
     "woost.extensions.translationworkflow.states.in_translation.title",
     ca = u"En curs",
     es = u"En curso",

@@ -8,7 +8,7 @@ from cocktail import schema
 from cocktail.html import templates
 from cocktail.html.uigeneration import display_factory
 from cocktail.html.readonlydisplay import read_only_display
-from woost.models import User
+from woost.models import Item
 from .path import TranslationWorkflowPath
 from .transitionsetup import TranslationWorkflowTransitionSetup
 
@@ -51,7 +51,7 @@ class TranslationWorkflowAssignTransitionSetup(
                 edit_control = read_only_display
             ),
             values = schema.Reference("translator",
-                type = User,
+                type = Item,
                 required = True,
                 # Limit the translator selection to translators who are able to
                 # deal with each particular path
