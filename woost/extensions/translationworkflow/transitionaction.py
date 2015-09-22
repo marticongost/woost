@@ -131,7 +131,9 @@ class TranslationWorkflowTransitionAction(UserAction):
             with changeset_context(author = user) as changeset:
                 for request in selection:
                     transition.execute(request, transition_data)
-                    changeset.changes.get(request.id).is_explicit_change = True
+                    change = changeset.changes.get(request.id)
+                    if change is not None:
+                        change.is_explicit_change = True
             return changeset
 
         changeset = transaction(execute_transition)
