@@ -10,10 +10,10 @@
 cocktail.bind(".UserForm", function ($form) {
 
     function togglePasswords() {
-                
+
         var $passwordField = $form.find(".password_field");
         var $passwordConfirmationField = $form.find(".password_confirmation_field");
-        
+
         $passwordField.find(".control").val("");
         $passwordConfirmationField.find(".control").val("");
 

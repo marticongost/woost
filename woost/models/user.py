@@ -10,7 +10,6 @@ from hashlib import sha1
 from cocktail.events import event_handler
 from cocktail.translations import translations
 from cocktail import schema
-from woost.models.site import Site
 from woost.models.item import Item
 from woost.models.role import Role
 from woost.models.messagestyles import (
@@ -37,7 +36,7 @@ class User(Item):
         User class is designated to represent anonymous users. This allows
         uniform treatment of both anonymous and authenticated access (ie.
         authorization checks).
-        
+
         This property indicates if the user it is invoked on is the
         instance used to represent anonymous users.
 
@@ -46,7 +45,8 @@ class User(Item):
     @ivar encryption_method: The hashing algorithm used to encrypt user
         passwords. Should be a reference to one of the algorithms provided
         by the L{hashlib} module.
-    """    
+    """
+    type_group = "users"
     edit_form = "woost.views.UserForm"
     edit_node_class = \
         "woost.controllers.backoffice.usereditnode.UserEditNode"
@@ -54,7 +54,7 @@ class User(Item):
     encryption_method = sha1
 
     anonymous = False
-    
+
     members_order = [
         "enabled",
         "email",
@@ -69,7 +69,7 @@ class User(Item):
         max = 255,
         indexed = True,
         format = "^.+@.+$"
-    )   
+    )
 
     password = schema.String(
         required = True,
@@ -77,21 +77,31 @@ class User(Item):
         listed_by_default = False,
         searchable = False,
         text_search = False,
+        synchronizable = False,
         min = 8,
         visible_in_detail_view = False,
         edit_control = "cocktail.html.PasswordBox"
     )
 
+    def _backoffice_language_default():
+        from woost.models.configuration import Configuration
+        return Configuration.instance.backoffice_language
+
+    def _backoffice_language_enumeration(ctx):
+        from woost.models.configuration import Configuration
+        return Configuration.backoffice_language.enumeration
+
     prefered_language = schema.String(
         required = True,
-        default = schema.DynamicDefault(
-            lambda: Site.main.backoffice_language
-        ),
-        enumeration = lambda ctx: Site.backoffice_language.enumeration,
+        default = schema.DynamicDefault(_backoffice_language_default),
+        enumeration = _backoffice_language_enumeration,
         translate_value = lambda value, language = None, **kwargs:
             "" if value is None else translations(value, language, **kwargs),
         text_search = False
     )
+
+    del _backoffice_language_default
+    del _backoffice_language_enumeration
 
     roles = schema.Collection(
         items = "woost.models.Role",
@@ -103,14 +113,15 @@ class User(Item):
         default = True
     )
 
-    def encryption(self, data):
+    @classmethod
+    def encryption(cls, data):
 
-        if self.encryption_method:
+        if cls.encryption_method:
 
             if isinstance(data, unicode):
                 data = data.encode("utf-8")
 
-            data = self.encryption_method(data).digest()
+            data = cls.encryption_method(data).hexdigest()
 
         return data
 
@@ -119,11 +130,11 @@ class User(Item):
 
         if event.member is cls.password \
         and event.value is not None:
-            event.value = event.source.encryption(event.value)
+            event.value = cls.encryption(event.value)
 
     def test_password(self, password):
         """Indicates if the user's password matches the given string.
-        
+
         @param password: An unencrypted string to tests against the user's
             encrypted password.
         @type password: str
@@ -140,7 +151,7 @@ class User(Item):
         """Obtains all the roles that apply to the user.
 
         The following roles can be yielded:
-        
+
             * The user's L{explicit roles<roles>} will be yielded if defined
             * An 'authenticated' role will be yielded if the user is not
               L{anonymous}
@@ -152,7 +163,7 @@ class User(Item):
         @return: An iterable sequence of roles that apply to the user.
         @rtype: L{Role}
         """
-        explicit_roles = self.roles        
+        explicit_roles = self.roles
         if explicit_roles:
             if recursive:
                 for role in explicit_roles:
@@ -162,10 +173,29 @@ class User(Item):
                 for role in explicit_roles:
                     yield role
 
+        for role in self.iter_implicit_roles():
+            yield role
+
+    def iter_implicit_roles(self):
+
         if not self.anonymous:
             yield Role.require_instance(qname = "woost.authenticated")
 
         yield Role.require_instance(qname = "woost.everybody")
+
+    def has_role(self, role):
+        """Determines if the user has been granted the indicated role.
+
+        This takes into account inherited and implicit roles.
+
+        @return: True if the user possesses the given role, False otherwise.
+        @rtype: bool
+        """
+        for user_role in self.iter_roles():
+            if user_role is role:
+                return True
+
+        return False
 
     def iter_permissions(self, permission_type = None):
         """Iterates over the permissions granted to the user's roles.
@@ -189,7 +219,7 @@ class User(Item):
 
     def has_permission(self,
         permission_type,
-        verbose = None,        
+        verbose = None,
         **context):
         """Determines if the user is given permission to perform an action.
 
@@ -214,37 +244,26 @@ class User(Item):
         """
         if verbose is None:
             verbose = globals()["verbose"]
-            
+
         if verbose:
             role = None
             print permission_check_style(translations(permission_type.name))
             print permission_param_style("user", translations(self))
 
             for key, value in context.iteritems():
-                if isinstance(value, type):
-                    value = translations(value.name)
-                else:
-                    trans = translations(value)
-                    if trans and isinstance(value, Item):
-                        value = u"%s (%s)" % (unicode(value), trans)
-                    else:
-                        value = trans or unicode(value)
-
-                print permission_param_style(key, value)
+                print permission_param_style(key, _describe(value))
 
         permissions = self.iter_permissions(permission_type)
 
         for permission in permissions:
-            
+
             if verbose:
                 new_role = permission.role
                 if new_role is not role:
                     role = new_role
-                    print role_style(translations(role))
+                    print role_style(_describe(role))
 
-                print permission_style(
-                    "#%d. %s" % (permission.id, translations(permission))
-                )
+                print permission_style(_describe(permission))
 
             if permission.match(verbose = verbose, **context):
 
@@ -253,7 +272,7 @@ class User(Item):
                         print authorized_style("authorized")
                     return True
                 else:
-                    break                
+                    break
 
         return permission_type.permission_not_found(
             self,
@@ -321,4 +340,11 @@ class AuthorizationError(Exception):
         self.user = user
         self.permission_type = permission_type
         self.context = context
+
+
+def _describe(value):
+    text = repr(value)
+    if isinstance(text, str):
+        text = text.decode("utf-8")
+    return text
 

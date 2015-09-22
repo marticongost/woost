@@ -10,11 +10,11 @@ import cherrypy
 from cocktail.modeling import cached_getter
 from cocktail.events import event_handler
 from cocktail.pkgutils import import_object
+from cocktail.translations import iter_language_chain
 from cocktail import schema
 from cocktail.controllers import get_parameter, view_state, Location
 from woost.models import (
     get_current_user,
-    Site,
     ModifyPermission,
     CreatePermission
 )
@@ -29,63 +29,123 @@ class ItemFieldsController(EditController):
     form_prefix = "edited_item_"
 
     def __call__(self, *args, **kwargs):
+        self.stack_node.tab = self.tab
         self._handle_form_data()
         return EditController.__call__(self, *args, **kwargs)
 
     def _handle_form_data(self):
 
         stack_node = self.stack_node
+
+        selected_translations = get_parameter(
+            schema.Collection("translations",
+                items = schema.String(
+                    enumeration = stack_node.item_translations
+                ),
+                type = set
+            ),
+            undefined = "skip"
+        )
+
+        translations_action = get_parameter(
+            schema.String("translations_action")
+        )
+
         form_data = stack_node.form_data
-        translations = stack_node.translations
 
         section = self.params.read(
             schema.String("section", default = "fields")
         )
 
-        added_translation = self.params.read(
-            schema.String("add_translation",
-                enumeration = self.available_languages
-            )
-        )
-
-        deleted_translation = self.params.read(
-            schema.String("delete_translation",
-                enumeration = translations
+        added_translations = self.params.read(
+            schema.Collection("new_translations",
+                items = schema.String(
+                    enumeration = self.available_languages
+                )
             )
         )
 
         # Remove translations
-        if deleted_translation:
-            translations.remove(deleted_translation)
-            for key, member in self.fields_schema.members().iteritems():
-                if member.translated:
-                    values = form_data.get(key)
-                    if values:
-                        values.pop(deleted_translation, None)
-                        
+        if translations_action == "delete" and selected_translations:
+            for deleted_translation in selected_translations:
+                stack_node.item_translations.discard(deleted_translation)
+                stack_node.visible_translations.discard(deleted_translation)
+                for key, member in self.fields_schema.members().iteritems():
+                    if member.translated:
+                        values = form_data.get(key)
+                        if values:
+                            values.pop(deleted_translation, None)
+
         get_method = cherrypy.request.method.upper() == "GET"
 
         # Load form data from the request
         get_parameter(
             self.fields_schema,
             target = form_data,
-            languages = translations,
+            languages = stack_node.visible_translations,
             prefix = self.form_prefix,
             errors = "ignore",
             implicit_booleans = not get_method,
             undefined = "skip" if get_method else "set_none"
         )
 
+        # Show / hide translations
+        if selected_translations:
+            vis_trans = stack_node.visible_translations
+            if translations_action == "show":
+                vis_trans.update(selected_translations)
+            elif translations_action == "hide":
+                vis_trans.difference_update(selected_translations)
+
         # Add translations
-        if added_translation and added_translation not in translations:
-            translations.append(added_translation)
-            translation_data = {}
-            stack_node.content_type.translation.init_instance(translation_data)
-            for key, value in translation_data.iteritems():
-                schema.set(form_data, key, value, language = added_translation)
+        if added_translations:
+
+            for added_translation in added_translations:
+
+                if added_translation in stack_node.item_translations:
+                    continue
+
+                stack_node.item_translations.add(added_translation)
+                stack_node.visible_translations.add(added_translation)
+
+                # Try to copy an existing fallback translation
+                for fallback_language in iter_language_chain(
+                    added_translation,
+                    include_self = False
+                ):
+                    if fallback_language in stack_node.item_translations:
+                        for key, member \
+                        in self.fields_schema.members().iteritems():
+                            if member.translated:
+                                value = schema.get(
+                                    form_data,
+                                    key,
+                                    language = fallback_language
+                                )
+                                schema.set(
+                                    form_data,
+                                    key,
+                                    value,
+                                    language = added_translation
+                                )
+                        break
+                # If there's no fallback translation to use, create a new
+                # translation from scratch
+                else:
+                    translation_data = {}
+                    translation_type = stack_node.content_type.translation
+                    translation_type.init_instance(translation_data)
+
+                    for key, value in translation_data.iteritems():
+                        schema.set(
+                            form_data,
+                            key,
+                            value,
+                            language = added_translation
+                        )
 
         # Drop references
-        unlink = cherrypy.request.params.get("ItemSelector-unlink")
+        unlink = cherrypy.request.params.get("relation-unlink")
 
         if unlink:
             form_data[unlink] = None
@@ -99,13 +159,9 @@ class ItemFieldsController(EditController):
             member.name
             for member in self.stack_node.content_type.members().itervalues()
             if (
-                isinstance(member, schema.Collection) 
-                and not member.edit_inline
-            )
-            or (
                 self.stack_node.item
                 and self.stack_node.item.is_inserted
-                and isinstance(member, (schema.RelationMember)) 
+                and isinstance(member, (schema.RelationMember))
                 and member.bidirectional and member.related_end.integral
             )
         ])
@@ -121,10 +177,13 @@ class ItemFieldsController(EditController):
 
     @cached_getter
     def output(self):
+        stack_node = self.stack_node
         output = EditController.output(self)
         output.update(
             submitted = self.submitted,
             available_languages = self.available_languages,
+            item_translations = stack_node.item_translations,
+            visible_translations = stack_node.visible_translations,
             fields_schema = self.fields_schema,
             selected_action = get_user_action("edit")
         )
@@ -141,7 +200,7 @@ class ItemFieldsController(EditController):
         controller = event.source
         item = controller.stack_node.item
         user = get_current_user()
-        
+
         if item.is_inserted:
             user.require_permission(ModifyPermission, target = item)
         else:
@@ -151,7 +210,7 @@ class ItemFieldsController(EditController):
     def handle_processed(cls, event):
 
         controller = event.source
-        rel = cherrypy.request.params.get("ItemSelector-select")
+        rel = cherrypy.request.params.get("relation-select")
 
         # Open the item selector
         if rel:
@@ -174,11 +233,11 @@ class ItemFieldsController(EditController):
                     selection = value.id if value is not None else None,
                     edit_stack = controller.edit_stack.to_param(),
                     client_side_scripting = controller.client_side_scripting
-                )
+                ) + "#default"
             )
 
         # Open an editor for a new nested item
-        new = cherrypy.request.params.get("ItemSelector-new")
+        new = cherrypy.request.params.get("relation-new")
 
         if new:
             pos = new.find("-")
@@ -201,7 +260,7 @@ class ItemFieldsController(EditController):
             )
 
         # Open an editor for an existing nested item
-        edit = cherrypy.request.params.get("ItemSelector-edit")
+        edit = cherrypy.request.params.get("relation-edit")
 
         if edit:
             raise cherrypy.HTTPRedirect(

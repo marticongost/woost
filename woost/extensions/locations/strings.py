@@ -3,7 +3,51 @@ u"""
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
-from cocktail.translations import translations
+from cocktail.iteration import first
+from cocktail.translations import translations, get_language
+from woost.extensions.locations.location import Location
+
+# Override the translation for locales to replace country ISO codes with
+# human readable descriptions
+
+def _translate_locale(locale):
+
+    trans = translations(locale)
+    if trans:
+        return trans
+
+    parts = locale.split("-")
+    parts[0] = translations(parts[0], default = parts[0])
+
+    if len(parts) > 1:
+        location = first(
+            Location.select({
+                "location_type": "country",
+                "code": parts[1]
+            })
+        )
+        if location is not None:
+            location_name = translations(
+                location,
+                discard_generic_translation = True
+            )
+
+            if not location_name and get_language() != "en":
+                location_name = translations(
+                    location,
+                    "en",
+                    discard_generic_translation = True
+                )
+
+            if location_name:
+                parts[1] = location_name
+
+    return " - ".join(parts)
+
+translations.define("locale", **dict(
+    (lang, _translate_locale)
+    for lang in translations
+))
 
 # Location
 #------------------------------------------------------------------------------

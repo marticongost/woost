@@ -9,7 +9,7 @@
 from decimal import Decimal
 from cocktail.translations import get_language, translations
 from cocktail import schema
-from woost.models import Item, Site
+from woost.models import Item
 from woost.extensions.countries.country import Country
 from woost.extensions.shop.shoporderentry import ShopOrderEntry
 
@@ -44,7 +44,7 @@ class ShopOrder(Item):
         listed_by_default = False
     )
 
-    country = schema.Reference(        
+    country = schema.Reference(
         member_group = "shipping_info",
         type = Country,
         related_end = schema.Collection(),
@@ -88,7 +88,7 @@ class ShopOrder(Item):
                 **kwargs
             )
     )
-    
+
     entries = schema.Collection(
         items = "woost.extensions.shop.shoporderentry.ShopOrderEntry",
         integral = True,
@@ -97,9 +97,9 @@ class ShopOrder(Item):
     )
 
     def calculate_cost(
-        self, 
-        include_shipping = True, 
-        include_taxes = True, 
+        self,
+        include_shipping = True,
+        include_taxes = True,
         include_discounts = True
     ):
         """Calculates the costs for the order.
@@ -138,12 +138,12 @@ class ShopOrder(Item):
 
         from woost.extensions.shop import ShopExtension
         shop_ext = ShopExtension.instance
-        
+
         policies = list()
 
         if include_discounts:
             policies.extend(shop_ext.discounts)
-        
+
         if include_shipping:
             policies.extend(shop_ext.shipping_costs)
 
@@ -162,7 +162,7 @@ class ShopOrder(Item):
                     if pricing_policy.applies_to(entry.product):
                         pricing_policy.apply(entry.product, entry_costs)
                         entry_costs["pricing_policies"].append(pricing_policy)
-        
+
         # Total price
         def apply_percentage(costs):
             cost = costs["cost"]
@@ -171,7 +171,7 @@ class ShopOrder(Item):
                 cost += cost * percentage / 100
             costs["total"] = cost
             return cost
-        
+
         total_price = apply_percentage(costs["price"])
 
         for entry_costs in costs["entries"]:
@@ -185,7 +185,7 @@ class ShopOrder(Item):
         # Total taxes
         total_taxes = costs["tax"]["cost"] \
                     + total_price * costs["tax"]["percentage"] / 100
-        
+
         for entry_costs in costs["entries"]:
             quantity = entry_costs["paid_quantity"]
             entry_price = entry_costs["price"]["total"] * quantity

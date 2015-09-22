@@ -15,9 +15,10 @@ to reset a site's state after some changes).
 
 # Load project settings
 import _PROJECT_MODULE_
-    
-from woost.models.initialization import main
+
+from woost.models.initialization import SiteInitializer
 
 if __name__ == "__main__":
-    main()
+    site_initializer = SiteInitializer()
+    site_initializer.main()
 

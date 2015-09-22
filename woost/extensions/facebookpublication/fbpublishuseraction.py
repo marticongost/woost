@@ -3,7 +3,7 @@ u"""
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
-from woost.models import Document, File, User
+from woost.models import Publishable, File, User
 from woost.controllers.backoffice.useractions import UserAction
 from woost.extensions.facebookpublication.facebookpublicationpermission \
     import FacebookPublicationPermission
@@ -26,13 +26,13 @@ class BaseFBPublishUserAction(UserAction):
     ])
 
     max = None
-    
+
     def is_permitted(self, user, target):
         return user.has_permission(FacebookPublicationPermission, target = target)
 
 
 class FBPublishUserAction(BaseFBPublishUserAction):
-    content_type = Document
+    content_type = Publishable
 
 FBPublishUserAction("fbpublish").register()
 
@@ -42,7 +42,7 @@ class FBPublishAlbumsUserAction(BaseFBPublishUserAction):
     content_type = File
 
     def is_available(self, context, target):
-        
+
         if not BaseFBPublishUserAction.is_available(self, context, target):
             return False
 

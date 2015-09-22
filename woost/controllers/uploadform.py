@@ -69,9 +69,13 @@ class UploadForm(Form):
 
                 for key, value in self.upload_options.iteritems():
                     setattr(target_member, key, value)
-                
+
                 if isinstance(source_member, schema.Collection):
-                    target_member = schema.Collection(items = target_member)
+                    target_member = schema.Collection(
+                        items = target_member,
+                        min = source_member.min,
+                        max = source_member.max
+                    )
 
                 target_member.name = self.key
                 target_member.member_group = source_member.member_group
@@ -108,13 +112,13 @@ class UploadForm(Form):
             self.key = key
 
         def adapt_object(self, context):
-            
+
             if context.consume(self.key):
                 value = context.get(self.key, None)
 
                 if value is not None:
                     source_member = context.source_schema[self.key]
-                    
+
                     if isinstance(source_member, schema.Collection):
                         adapted_value = [
                             self.import_upload(context, upload)
@@ -122,11 +126,11 @@ class UploadForm(Form):
                         ]
                     else:
                         adapted_value = self.import_upload(context, value)
-                    
+
                     context.set(self.key, adapted_value)
 
         def import_upload(self, context, upload):
-            
+
             member = context.target_schema[self.key]
             file = None
 
@@ -140,7 +144,7 @@ class UploadForm(Form):
             file.mime_type = upload["mime_type"]
             file.file_size = upload["file_size"]
             file.file_hash = upload["file_hash"]
-            
+
             self.form.temp_paths[file] = self.form.get_temp_path(upload)
 
             return file
@@ -176,10 +180,10 @@ class UploadForm(Form):
         try:
             for member in self.upload_members:
 
-                value = schema.get(self.instance, member)
-
-                if value is None:
+                if schema.get(self.data, member) is None:
                     continue
+
+                value = schema.get(self.instance, member)
 
                 if isinstance(member, schema.Collection):
                     files = value

@@ -18,8 +18,7 @@ from woost.models import (
     changeset_context,
     Item,
     User,
-    Site,
-    Language,
+    Configuration,
     get_current_user,
     restricted_modification_context,
     PermissionExpression,
@@ -42,10 +41,10 @@ class ItemWebService(PersistentClassWebService):
 
     @cached_getter
     def languages(self):
-        return Language.codes
+        return Configuration.instance.languages
 
     class JSONEncoder(PersistentClassWebService.JSONEncoder):
-                
+
         def get_member_value(self, obj, member, language = None):
 
             # Exclude the 'changes' member
@@ -64,12 +63,12 @@ class ItemWebService(PersistentClassWebService):
                 )
             ):
                 value = excluded_member
- 
+
             # Special case for user passwords
             elif member is User.password:
                 value = obj.password
                 if value:
-                    value = b64encode(value)            
+                    value = b64encode(value)
             else:
                 value = PersistentClassWebService.JSONEncoder.get_member_value(
                     self,
@@ -81,34 +80,28 @@ class ItemWebService(PersistentClassWebService):
             return value
 
     @cached_getter
-    def json_encoder(self):        
+    def json_encoder(self):
         encoder = PersistentClassWebService.json_encoder(self)
         encoder.user = get_current_user()
         return encoder
-    
+
     def _init_new_instance(self, instance):
         with restricted_modification_context(instance):
             PersistentClassWebService._init_new_instance(self, instance)
 
     def _store_new_instance(self, instance):
-        if instance.is_draft:
+        with changeset_context(get_current_user()):
             instance.insert()
-        else:
-            with changeset_context(get_current_user()):
-                instance.insert()
 
     def _update_instance(self, instance):
         with restricted_modification_context(instance):
-            if instance.is_draft:
+            with changeset_context(get_current_user()):
                 PersistentClassWebService._update_instance(self, instance)
-            else:
-                with changeset_context(get_current_user()):
-                    PersistentClassWebService._update_instance(self, instance)
 
     def _delete_instances(self, query):
 
         user = get_current_user()
-        
+
         class ValidatingDeletedSet(InstrumentedSet):
             def item_added(self, item):
                 user.require_permission(DeletePermission, target = item)
@@ -121,5 +114,5 @@ class ItemWebService(PersistentClassWebService):
 
 
 class CMSWebServicesController(BaseCMSController):
-    data = ItemWebService    
+    data = ItemWebService
 

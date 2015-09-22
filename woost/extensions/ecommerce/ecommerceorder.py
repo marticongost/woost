@@ -12,19 +12,21 @@ from cocktail import schema
 from cocktail.events import Event, event_handler
 from woost.models import (
     Item,
-    Site,
+    Configuration,
     User,
     get_current_user,
+    get_current_website,
     ModifyMemberPermission
 )
 from woost.extensions.locations.location import Location
+from woost.extensions.ecommerce.website import Website
 from woost.extensions.ecommerce.ecommercebillingconcept \
     import ECommerceBillingConcept
 from woost.extensions.payments import PaymentsExtension
 
 def _translate_amount(amount, language = None, **kwargs):
     if amount is None:
-        return "" 
+        return ""
     else:
         return translations(
             amount.quantize(Decimal("1.00")),
@@ -33,17 +35,19 @@ def _translate_amount(amount, language = None, **kwargs):
         )
 
 def _get_default_payment_type():
-    from woost.extensions.ecommerce import ECommerceExtension
-    payment_types = ECommerceExtension.instance.payment_types
+    website = get_current_website()
+    payment_types = website.ecommerce_payment_types
     if len(payment_types) == 1:
         return payment_types[0]
 
 
 class ECommerceOrder(Item):
 
+    type_group = "ecommerce"
+
     payment_types_completed_status = {
         "payment_gateway": "accepted",
-        "transfer": "payment_pending", 
+        "transfer": "payment_pending",
         "cash_on_delivery": "payment_pending"
     }
 
@@ -80,6 +84,13 @@ class ECommerceOrder(Item):
         "total"
     ]
 
+    website = schema.Reference(
+        type = "woost.models.website.Website",
+        bidirectional = True,
+        required = True,
+        listed_by_default = False
+    )
+
     customer = schema.Reference(
         type = User,
         related_end = schema.Collection(),
@@ -105,7 +116,7 @@ class ECommerceOrder(Item):
         listed_by_default = False
     )
 
-    country = schema.Reference(        
+    country = schema.Reference(
         member_group = "shipping_info",
         type = Location,
         relation_constraints = [Location.location_type.equal("country")],
@@ -143,15 +154,9 @@ class ECommerceOrder(Item):
             "refund"
         ],
         default = "shopping",
-        text_search = False,
-        translate_value = lambda value, language = None, **kwargs:
-            u"" if not value else translations(
-                "ECommerceOrder.status-" + value,
-                language,
-                **kwargs
-            )
+        text_search = False
     )
-    
+
     purchases = schema.Collection(
         items = "woost.extensions.ecommerce.ecommercepurchase."
                 "ECommercePurchase",
@@ -163,18 +168,14 @@ class ECommerceOrder(Item):
     payment_type = schema.String(
         member_group = "billing",
         required = True,
-        translate_value = lambda value, language = None, **kwargs:
-            translations(
-                "ECommerceOrder.payment_type-%s" % value,
-                language = language
-            ),
+        enumeration = Website.ecommerce_payment_types.items.enumeration,
         default = schema.DynamicDefault(_get_default_payment_type),
         text_search = False,
         edit_control = "cocktail.html.RadioSelector",
         listed_by_default = False
     )
 
-    total_price = schema.Decimal(
+    total_price = schema.Money(
         member_group = "billing",
         editable = False,
         listed_by_default = False,
@@ -190,7 +191,7 @@ class ECommerceOrder(Item):
         editable = False
     )
 
-    total_shipping_costs = schema.Decimal(
+    total_shipping_costs = schema.Money(
         member_group = "billing",
         editable = False,
         listed_by_default = False,
@@ -205,8 +206,8 @@ class ECommerceOrder(Item):
         ),
         editable = False
     )
-    
-    total_taxes = schema.Decimal(
+
+    total_taxes = schema.Money(
         member_group = "billing",
         editable = False,
         listed_by_default = False,
@@ -221,23 +222,22 @@ class ECommerceOrder(Item):
         ),
         editable = False
     )
-    
-    total = schema.Decimal(
+
+    total = schema.Money(
         member_group = "billing",
         editable = False,
         translate_value = _translate_amount
     )
 
-    def calculate_cost(self, 
+    def calculate_cost(self,
         apply_pricing = True,
-        apply_shipping_costs = True, 
+        apply_shipping_costs = True,
         apply_taxes = True
     ):
         """Calculates the costs for the order.
         :rtype: dict
         """
-        from woost.extensions.ecommerce import ECommerceExtension
-        extension = ECommerceExtension.instance
+        website = get_current_website()
 
         order_costs = {
             "price": {
@@ -257,7 +257,7 @@ class ECommerceOrder(Item):
             },
             "purchases": {}
         }
-        
+
         # Per purchase costs:
         for purchase in self.purchases:
             purchase_costs = purchase.calculate_costs(
@@ -276,7 +276,7 @@ class ECommerceOrder(Item):
         order_price = order_costs["price"]
 
         if apply_pricing:
-            for pricing in extension.pricing:
+            for pricing in website.ecommerce_pricing:
                 if pricing.applies_to(self):
                     pricing.apply(self, order_price)
 
@@ -289,7 +289,7 @@ class ECommerceOrder(Item):
         order_shipping_costs = order_costs["shipping_costs"]
 
         if apply_shipping_costs:
-            for shipping_cost in extension.shipping_costs:
+            for shipping_cost in website.ecommerce_shipping_costs:
                 if shipping_cost.applies_to(self):
                     shipping_cost.apply(self, order_shipping_costs)
 
@@ -302,7 +302,7 @@ class ECommerceOrder(Item):
         order_taxes = order_costs["taxes"]
 
         if apply_taxes:
-            for tax in extension.taxes:
+            for tax in website.ecommerce_taxes:
                 if tax.applies_to(self):
                     tax.apply(self, order_taxes)
 
@@ -322,7 +322,7 @@ class ECommerceOrder(Item):
 
     def update_cost(self,
         apply_pricing = True,
-        apply_shipping_costs = True, 
+        apply_shipping_costs = True,
         apply_taxes = True
     ):
         costs = self.calculate_cost(
@@ -330,7 +330,7 @@ class ECommerceOrder(Item):
             apply_shipping_costs = apply_shipping_costs,
             apply_taxes = apply_taxes
         )
-        
+
         self.total_price = costs["price"]["total"]
         self.pricing = list(costs["price"]["concepts"])
 
@@ -374,7 +374,7 @@ class ECommerceOrder(Item):
                 for option in purchase.get_options()
                 if option.name != "quantity"
             ):
-                order_purchase.quantity += purchase.quantity                
+                order_purchase.quantity += purchase.quantity
                 purchase.product = None
                 if purchase.is_inserted:
                     purchase.delete()
@@ -393,14 +393,15 @@ class ECommerceOrder(Item):
         payment_type = public_schema.get_member("payment_type")
         if payment_type:
             payments = PaymentsExtension.instance
+            website = get_current_website()
 
-            if payments.enabled and payments.payment_gateway:
+            if payments.enabled and website.ecommerce_payment_gateway:
 
                 translate_value = payment_type.translate_value
 
                 def payment_type_translate_value(value, language = None, **kwargs):
                     if value == "payment_gateway":
-                        return payments.payment_gateway.label
+                        return website.ecommerce_payment_gateway.label
                     else:
                         return translate_value(
                             value, language = language, **kwargs
@@ -412,11 +413,9 @@ class ECommerceOrder(Item):
 
     @classmethod
     def get_public_adapter(cls):
-        from woost.extensions.ecommerce import ECommerceExtension
-
-        user = get_current_user()            
+        user = get_current_user()
         adapter = schema.Adapter()
-        adapter.exclude(["customer", "status", "purchases"])
+        adapter.exclude(["website", "customer", "status", "purchases"])
         adapter.exclude([
             member.name
             for member in cls.members().itervalues()
@@ -428,7 +427,7 @@ class ECommerceOrder(Item):
                 member = member
             )
         ])
-        if len(ECommerceExtension.instance.payment_types) == 1:
+        if len(get_current_website().ecommerce_payment_types) == 1:
             adapter.exclude(["payment_type"])
         return adapter
 
@@ -446,7 +445,7 @@ class ECommerceOrder(Item):
         member = event.member
 
         if member.name == "status":
-            
+
             if event.previous_value == "shopping" \
             and event.value in ("payment_pending", "accepted"):
                 item.incoming()
@@ -455,9 +454,12 @@ class ECommerceOrder(Item):
                 item.completed()
 
     def get_description_for_gateway(self):
-        if Site.main.site_name:
+        site_name = Configuration.instance.get_setting("site_name")
+        if site_name:
             return translations(
-                "woost.extensions.ECommerceOrder description for gateway"
-            ) % Site.main.site_name
+                "woost.extensions.ECommerceOrder description for gateway",
+                site_name
+            )
         else:
             return translations(self)
+

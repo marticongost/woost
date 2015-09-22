@@ -19,19 +19,19 @@ class ProductsController(ShopController):
     """A controller used to browse a shop's product catalog."""
 
     def resolve(self, path):
-        
+
         # Product detail
         if path:
             product_id = path.pop(0)
-            
+
             try:
                 product_id = int(product_id)
                 product = Product.require_instance(product_id)
             except:
                 raise cherrypy.NotFound()
- 
-            return self.get_detail_controller(product)        
-       
+
+            return self.get_detail_controller(product)
+
         # Product listing
         return self
 
@@ -52,7 +52,7 @@ class ProductsController(ShopController):
 
 class ProductDetailController(ShopController):
     """A controller that provides a detailed view over a single product.
-    
+
     @ivar product: The selected product.
     @type product: L{Product<woost.extensions.shop.product.Product>}
     """

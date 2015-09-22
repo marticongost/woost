@@ -13,7 +13,7 @@ from cocktail.controllers.location import Location
 from cocktail.translations import translations, get_language
 from woost.models import (
     Feed,
-    Site,
+    Configuration,
     PermissionExpression,
     ReadPermission,
     get_current_user
@@ -25,15 +25,15 @@ class FeedController(PublishableController):
 
     def _produce_content(self, **kwargs):
 
-        site = Site.main
         cms = self.context["cms"]
         feed = self.context["publishable"]
-        
+
         location = Location.get_current()
         location.relative = False
 
+        tz = Configuration.instance.get_setting("timezone") or "Z"
+
         def rfc822_date(date):
-            tz = "Z" if site.timezone is None else site.timezone
             return date.strftime("%d %%s %Y %H:%M:%S %%s") % (
                 ("Jan", "Feb", "Mar", "Apr", "May", "Jun",
                  "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")[date.month - 1],
@@ -52,7 +52,7 @@ class FeedController(PublishableController):
         location.query_string = None
         base_url = unicode(location)
         params["base_url"] = base_url
-        
+
         output = []
         output.append(u"""<?xml version='1.0' encoding='utf-8'?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
@@ -64,10 +64,10 @@ class FeedController(PublishableController):
         <pubDate>%(now)s</pubDate>
         <atom:link href="%(url)s" rel="self" type="application/rss+xml" />
 """ % params)
-        
+
         if feed.image:
             image_uri = feed.image.uri
-            
+
             if image_uri.startswith("/"):
                 image_uri = base_url + image_uri[1:]
 
@@ -121,21 +121,21 @@ class FeedController(PublishableController):
             "Feed #%d item_description_expression" % feed.id,
             "eval"
         )
-       
+
         for item in items:
             context["item"] = item
-            
-            title = eval(item_title_code, context)            
+
+            title = eval(item_title_code, context)
             if not title:
                 continue
-            
+
             link = eval(item_link_code, context)
             if not link:
                 continue
 
             if link.startswith("/"):
                 link = base_url + link[1:]
-            
+
             output.append(
 u"""        <item>
             <title><![CDATA[%(title)s]]></title>
@@ -145,7 +145,7 @@ u"""        <item>
                 "title": title,
                 "url": link
             })
-            
+
             pub_date = eval(item_publication_date_code, context)
             if pub_date:
                 output.append(

@@ -8,26 +8,17 @@ from cocktail.controllers import context
     xmlns:py="http://www.whads.com/ns/cocktail/templates">
 
     <?py-class
-    gallery_type = "thumbnails" # Either "thumbnails" or "slideshow"
     labels_visible = True
     footnotes_visible = True
     original_link_visible = False
     close_up_enabled = True
-    
+    close_up_preload = True
+
     images = ()
     accessible_check = True
 
     close_up_factory = "image_gallery_close_up"
-    close_up_width = 900
-    close_up_height = 700
-    
     thumbnail_factory = "image_gallery_thumbnail"
-    thumbnail_width = 200
-    thumbnail_height = 150
-
-    slider_options = {
-        "continuous": False
-    }
 
     def get_footnote(self, image):
         return getattr(image, "description", None)
@@ -36,8 +27,7 @@ from cocktail.controllers import context
     <?py
     self.add_resource("/resources/styles/ImageGallery.css")
     self.add_resource("/resources/scripts/ImageGallery.js")
-
-    self.slider_options = self.slider_options.copy()
+    self.set_client_param("publishableActivationSelector", "a")
     ?>
 
     <py:ready>
@@ -45,19 +35,22 @@ from cocktail.controllers import context
         if not self.images:
             self.visible = False
 
-        self.add_class(self.gallery_type)
-        self.set_client_param("galleryType", self.gallery_type)
+        if self.thumbnail_factory:
+            if isinstance(self.thumbnail_factory, basestring):
+                factory_name = self.thumbnail_factory
+            else:
+                factory_name = self.thumbnail_factory.identifier
 
-        if self.gallery_type == "slideshow":
-            self.add_resource("/cocktail/scripts/jquery.sudoSlider.js")
-            self.set_client_param("sliderOptions", self.slider_options)
-            element.add_client_code("this.style.width = '%dpx'" % self.thumbnail_width)
+            if factory_name:
+                self.add_class("thumbnail_factory-" + factory_name)
+
+        self.set_client_param("closeUpPreload", self.close_up_preload)
         ?>
     </py:ready>
 
     <ul py:id="image_list">
         <py:ready>
-            <?py            
+            <?py
             images = self.images
             if self.accessible_check:
                 images = (img for img in self.images if img.is_accessible())
@@ -70,17 +63,11 @@ from cocktail.controllers import context
 
     <li py:def="image_entry" py:args="image">
         <?py
-        cms = context["cms"]
         title = image.title or ""
-        
-        # IE 7 requires this... :'(
-        if self.gallery_type == "slideshow":
-            element.set_style("width", "%dpx" % self.thumbnail_width)
+        footnote = None
 
         if self.footnotes_visible:
             footnote = self.get_footnote(image)
-            if footnote:
-                element.set_client_param("footnote", footnote)
 
         if self.original_link_visible:
             element.set_client_param(
@@ -92,12 +79,12 @@ from cocktail.controllers import context
             href="${image.get_image_uri(self.close_up_factory)}"
             target="blank_">
 
-            <?py 
+            <?py
             if not self.close_up_enabled:
                 element.tag = None
             ?>
 
-            <py:woost.views.Image 
+            <py:woost.views.Image
                 py:local_id="image"
                 py:image="${image}"
                 py:image_factory="${self.thumbnail_factory}"
@@ -107,54 +94,38 @@ from cocktail.controllers import context
                 py:visible="${self.labels_visible}"
                 py:collapsible="${True}">${title}</span>
         </a>
+        <div py:local_id="image_footnote" py:visible="${bool(footnote)}">${footnote or ""}</div>
     </li>
 
-    <a py:id="next_button"
-        py:client_model="woost.views.ImageGallery.next_button"
-        py:visible="@{self.gallery_type == 'slideshow'}"
-        href="javascript:"
-        title="${translations('woost.views.ImageGallery.next_button')}">
-        <img src="/resources/images/ImageGallery-next_button.png" alt=""/>
-    </a>
-
-    <a py:id="previous_button"
-        py:client_model="woost.views.ImageGallery.previous_button"
-        py:visible="@{self.gallery_type == 'slideshow'}"
-        href="javascript:"
-        title="${translations('woost.views.ImageGallery.previous_button')}">
-        <img src="/resources/images/ImageGallery-previous_button.png" alt=""/>
-    </a>
-
-    <div py:id="image_dialog" 
-        py:client_model="woost.views.ImageGallery.image_dialog"
-        class="ImageGallery-dialog">
-        <div py:id="image_frame">
-            <div py:local_id="header">
-                <span py:local_id="index"></span>
-                <span py:local_id="label"></span>
-            </div>
-            <button py:local_id="close_button" title="${translations('woost.views.ImageGallery.close_button')}">
-                <img src="/resources/images/ImageGallery-close_button.png" alt=""/>
-            </button>
+    <py:woost.views.Dialog
+        py:id="image_dialog"
+        py:client_model="woost.views.ImageGallery.image_dialog">
+        <?py
+        element.add_class("ImageGallery-dialog")
+        ?>
+        <py:with py:element="element.dialog_header">
+            <span py:local_id="index" py:index="0"/>
+        </py:with>
+        <py:with py:element="element.dialog_content">
             <img py:local_id="image"/>
             <button
                 py:local_id="previous_button"
                 title="${translations('woost.views.ImageGallery.previous_button')}">
-                <img src="/resources/images/ImageGallery-previous_button.png" alt=""/>
+                <img py:local_id="image" src="/resources/images/ImageGallery-previous_button.png" alt=""/>
             </button>
             <button
                 py:local_id="next_button"
                 title="${translations('woost.views.ImageGallery.next_button')}">
-                <img src="/resources/images/ImageGallery-next_button.png" alt=""/>
+                <img py:local_id="image" src="/resources/images/ImageGallery-next_button.png" alt=""/>
             </button>
-        </div>
-        <div py:local_id="footnote"></div>
-        <div py:local_id="original_image_link">
-            <a py:local_id="link">${translations("woost.views.ImageGallery.original_image_link")}</a>
-        </div>
-    </div>
+            <div py:local_id="footnote"/>
+            <div py:local_id="original_image_link">
+                <a py:local_id="link">${translations("woost.views.ImageGallery.original_image_link")}</a>
+            </div>
+        </py:with>
+    </py:woost.views.Dialog>
 
-    <div py:id="loading_sign" 
+    <div py:id="loading_sign"
         py:client_model="woost.views.ImageGallery.loading_sign"
         class="ImageGallery-loading_sign">
         ${translations("woost.views.ImageGallery.loading_sign")}

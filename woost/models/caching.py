@@ -4,18 +4,17 @@ u"""
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
 import os
-from datetime import datetime
+from datetime import datetime, timedelta
 from cocktail import schema
 from cocktail.translations import get_language
+from cocktail.caching import Cache
 from cocktail.controllers import Location
 from cocktail.persistence import datastore, PersistentMapping
-from cocktail.html.datadisplay import display_factory
-from woost.models.item import Item
+from .item import Item
+from .usersession import get_current_user
 
 
 class CachingPolicy(Item):
-
-    # TODO: combine per type filtering with a per item condition
 
     visible_from_root = False
     edit_form = "woost.views.CachingPolicyForm"
@@ -26,8 +25,8 @@ class CachingPolicy(Item):
         "important",
         "cache_enabled",
         "server_side_cache",
-        "cache_expiration",
-        "last_update_expression",
+        "expiration_expression",
+        "cache_tags_expression",
         "cache_key_expression",
         "condition"
     ]
@@ -54,39 +53,20 @@ class CachingPolicy(Item):
         listed_by_default = False
     )
 
-    cache_expiration = schema.Integer(
-        min = 1,
-        listed_by_default = False
+    expiration_expression = schema.CodeBlock(
+        language = "python"
     )
 
-    condition = schema.String(
-        edit_control = display_factory(
-            "cocktail.html.CodeEditor",
-            syntax = "python",
-            cols = 80
-        ),
-        listed_by_default = False,
-        text_search = False
+    condition = schema.CodeBlock(
+        language = "python"
     )
 
-    cache_key_expression = schema.String(
-        edit_control = display_factory(
-            "cocktail.html.CodeEditor",
-            syntax = "python",
-            cols = 80
-        ),
-        listed_by_default = False,
-        text_search = False
+    cache_key_expression = schema.CodeBlock(
+        language = "python"
     )
 
-    last_update_expression = schema.String(
-         edit_control = display_factory(
-            "cocktail.html.CodeEditor",
-            syntax = "python",
-            cols = 80
-        ),
-        listed_by_default = False,
-        text_search = False
+    cache_tags_expression = schema.CodeBlock(
+        language = "python"
     )
 
     def applies_to(self, publishable, **context):
@@ -101,10 +81,15 @@ class CachingPolicy(Item):
 
     def get_content_cache_key(self, publishable, **context):
 
-        cache_key = (str(Location.get_current()),)
+        user = get_current_user()
 
+        cache_key = (
+            str(Location.get_current(relative = False)),
+            None
+            if user is None or user.anonymous
+            else tuple(role.id for role in user.roles)
+        )
         key_qualifier = None
-        
         expression = self.cache_key_expression
 
         if expression:
@@ -122,37 +107,44 @@ class CachingPolicy(Item):
 
         return cache_key
 
-    def get_content_last_update(self, publishable, **context):
-        
-        context["publishable"] = publishable    
-        context["latest"] = latest
-        
-        # Per model cache invalidation
-        cache_expiration = datastore.root.get("woost.cache_expiration")
-        dates = []
-        
-        if cache_expiration:
-            for cls in publishable.__class__.__mro__:
-                if cls is Item:
-                    break
-                dates.append(cache_expiration.get(cls.full_name))
+    def get_content_expiration(self, publishable, base = None, **context):
 
-        # Custom expression
-        expression = self.last_update_expression
+        expression = self.expiration_expression
+        expiration = base
+
         if expression:
             expression = expression.replace("\r", "")
+            context["expiration"] = expiration
+            context["publishable"] = publishable
+            context["datetime"] = datetime
+            context["timedelta"] = timedelta
             exec expression in context
-            dates.append(context.get("last_update"))
+            expiration = context.get("expiration")
 
-        # By default, only check the item's own last update date
-        else:
-            dates.append(publishable.last_update_time)
+        return expiration
 
-        return normalize_invalidation_date(dates)
+    def get_content_tags(self, publishable, base = None, **context):
 
-# Utility functions for last update expressions
+        tags = publishable.get_cache_tags(
+            language = context.get("language") or get_language()
+        )
+
+        tags.add(self.main_cache_tag)
+
+        if base:
+            tags.update(base)
+
+        expression = self.cache_tags_expression
+        if expression:
+            context["tags"] = tags
+            exec expression in context
+            tags = context.get("tags")
+
+        return tags
+
+
+# Utility functions
 #------------------------------------------------------------------------------
-
 def normalize_invalidation_date(value):
 
     if isinstance(value, Item):
@@ -168,21 +160,8 @@ def normalize_invalidation_date(value):
                 max_date = date
 
         value = max_date
-    
+
     return value
-
-def expire_cache(cls = None):
-
-    if cls is None:
-        from woost.models.publishable import Publishable as cls
-
-    cache_expiration = datastore.root.get("woost.cache_expiration")
-
-    if cache_expiration is None:
-        cache_expiration = PersistentMapping()
-        datastore.root["woost.cache_expiration"] = cache_expiration
-
-    cache_expiration[cls.full_name] = datetime.now()
 
 def latest(selectable, *args, **kwargs):
 
@@ -200,14 +179,14 @@ def latest(selectable, *args, **kwargs):
 
 def menu_items(publishable):
     items = []
-    
+
     while publishable is not None:
         if hasattr(publishable, "children"):
             items.extend(publishable.children)
         if publishable.parent is None:
             items.append(publishable)
         publishable = publishable.parent
-    
+
     return items
 
 def file_date(publishable):

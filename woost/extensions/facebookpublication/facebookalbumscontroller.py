@@ -18,7 +18,7 @@ from cocktail.controllers import (
     get_parameter,
     Location
 )
-from woost.models import File, Language, get_current_user
+from woost.models import File, Configuration, get_current_user
 from woost.controllers.notifications import notify_user
 from woost.controllers.backoffice.basebackofficecontroller \
     import BaseBackOfficeController
@@ -38,9 +38,9 @@ class FacebookAlbumsController(BaseBackOfficeController):
     def form_schema(self):
         return schema.Schema("FacebookAlbumsForm", members = [
             schema.String("album_title",
-                required = True                
+                required = True
             ),
-            schema.String("album_description",                
+            schema.String("album_description",
                 edit_control = "cocktail.html.TextArea"
             ),
             schema.Collection("subset",
@@ -57,12 +57,14 @@ class FacebookAlbumsController(BaseBackOfficeController):
                 min = 1,
                 items = schema.String(
                     required = True,
-                    enumeration = lambda ctx: Language.codes,
+                    enumeration = lambda ctx: Configuration.instance.languages,
                     translate_value = lambda value, language = None, **kwargs:
-                        "" if not value 
+                        "" if not value
                            else translations(value, language, **kwargs)
                 ),
-                default = schema.DynamicDefault(lambda: Language.codes)
+                default = schema.DynamicDefault(
+                    lambda: Configuration.instance.languages
+                )
             ),
             schema.Boolean("generate_story",
                 required = True,
@@ -100,15 +102,15 @@ class FacebookAlbumsController(BaseBackOfficeController):
 
     @event_handler
     def handle_before_request(cls, e):
-        
+
         controller = e.source
-        
+
         if not controller.allowed_publication_targets:
             raise cherrypy.HTTPError(403, "Forbidden")
 
     @request_property
     def allowed_publication_targets(self):
-            
+
         from woost.extensions.facebookpublication \
             import FacebookPublicationExtension
 
@@ -129,7 +131,7 @@ class FacebookAlbumsController(BaseBackOfficeController):
     @request_property
     def selection(self):
         return get_parameter(
-            schema.Collection("selection", 
+            schema.Collection("selection",
                 items = schema.Reference(
                     type = File,
                     required = True
@@ -153,7 +155,7 @@ class FacebookAlbumsController(BaseBackOfficeController):
         return cherrypy.request.params.get("action")
 
     def submit(self):
-        
+
         if self.action == "close":
             self.go_back()
 
