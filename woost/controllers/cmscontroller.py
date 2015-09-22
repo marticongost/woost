@@ -366,7 +366,7 @@ class CMSController(BaseCMSController):
             canonical_uri = canonical_uri + \
                 "?" + cherrypy.request.query_string
 
-        raise cherrypy.HTTPRedirect(canonical_uri)
+        raise cherrypy.HTTPRedirect(canonical_uri, status = 301)
 
     def _process_path(self, path):
 
