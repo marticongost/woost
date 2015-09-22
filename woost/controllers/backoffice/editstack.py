@@ -556,6 +556,13 @@ class EditNode(StackNode):
         @ivar user: The user that makes the changes.
         @type user: L{User<woost.models.User>}
 
+        @ivar item: The item being saved.
+        @type item: L{Item<woost.models.Item>}
+
+        @ivar is_new: Indicates if the item is being created (True) or modified
+            (False).
+        @type is_new: bool
+
         @ivar changeset: The change set describing the changes.
         @type changeset: L{ChangeSet<woost.models.ChangeSet>}
         """)

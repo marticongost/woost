@@ -4,7 +4,8 @@ u"""
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
 from cocktail.modeling import cached_getter
-from woost.models import User
+from woost.models import User, get_current_user
+from .translationagency import TranslationAgency
 
 
 class TranslationWorkflowTransitionSetup(object):
@@ -30,11 +31,30 @@ class TranslationWorkflowTransitionSetup(object):
 
     @cached_getter
     def eligible_translators(self):
+
+        user = get_current_user()
+        agency = user.managed_translation_agency
+
+        # Coordinators can assign to freelance translators and to translation
+        # agencies
+        if agency is None:
+            all_translators = (
+                list(TranslationAgency.select())
+                + list(User.select({
+                    "enabled": True,
+                    "translation_agency": None
+                }))
+            )
+        # Translation agency managers can assign to their agency's translators
+        else:
+            all_translators = agency.translators
+
+        # Filter translators / agencies by language proficiencies
         return dict(
             (translation_path, [
-                user
-                for user in User.select(User.enabled.equal(True))
-                if translation_path in user.translation_proficiencies
+                translator
+                for translator in all_translators
+                if translation_path in translator.translation_proficiencies
             ])
             for translation_path in self.translation_paths
         )

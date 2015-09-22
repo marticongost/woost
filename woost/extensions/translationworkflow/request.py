@@ -18,6 +18,7 @@ from woost.models import (
 )
 from woost.views.htmldiff import iter_diff_rows
 from .state import TranslationWorkflowState
+from .translationagency import TranslationAgency
 from .utils import (
     get_models_included_in_translation_workflow,
     member_is_included_in_translation_workflow
@@ -62,6 +63,7 @@ class TranslationWorkflowRequest(Item):
         "source_language",
         "target_language",
         "state",
+        "assigned_agency",
         "assigned_translator",
         "comments",
         "translated_values"
@@ -110,6 +112,14 @@ class TranslationWorkflowRequest(Item):
         editable = schema.NOT_EDITABLE,
         searchable = False,
         listed_by_default = False,
+        member_group = "translation_request.info"
+    )
+
+    assigned_agency = schema.Reference(
+        type = TranslationAgency,
+        related_end = schema.Collection(),
+        indexed = True,
+        editable = schema.NOT_EDITABLE,
         member_group = "translation_request.info"
     )
 

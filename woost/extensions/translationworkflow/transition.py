@@ -50,8 +50,7 @@ class TranslationWorkflowTransition(Item):
         type = "woost.extensions.translationworkflow."
                "state.TranslationWorkflowState",
         bidirectional = True,
-        related_key = "incomming_transitions",
-        required = True
+        related_key = "incomming_transitions"
     )
 
     icon = schema.Reference(
@@ -92,6 +91,7 @@ class TranslationWorkflowTransition(Item):
 
     def execute(self, request, data = None):
 
+        previous_state = request.state
         request.state = self.target_state
 
         if self.transition_code:
@@ -100,8 +100,24 @@ class TranslationWorkflowTransition(Item):
             exec code in {
                 "transition": self,
                 "request": request,
+                "previous_state": previous_state,
                 "data": data
             }
 
+        if request.state is None:
+            raise TransitionWithNoTargetStateError(self, request)
+
         self.executed(request = request, data = data)
+
+
+class TransitionWithNoTargetStateError(Exception):
+
+    def __init__(self, transition, request):
+        self.transition = transition
+        self.request = request
+        Exception.__init__(
+            self,
+            u"%r failed to select a target state for %r"
+            % (transition, request)
+        )
 

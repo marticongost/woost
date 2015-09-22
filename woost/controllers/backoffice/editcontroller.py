@@ -226,9 +226,12 @@ class EditController(BaseBackOfficeController):
         try:
             stack_node = self.stack_node
             stack_node.import_form_data(stack_node.form_data, item)
+            is_new = not item.is_inserted
             item.insert()
             stack_node.saving(
                 user = get_current_user(),
+                item = item,
+                is_new = is_new,
                 changeset = ChangeSet.current
             )
         finally:

@@ -10,6 +10,7 @@ from hashlib import sha1
 from cocktail.events import event_handler
 from cocktail.translations import translations
 from cocktail import schema
+from cocktail.html.uigeneration import display_factory
 from woost.models.item import Item
 from woost.models.role import Role
 from woost.models.localemember import LocaleMember
@@ -83,7 +84,10 @@ class User(Item):
         synchronizable = False,
         min = 8,
         visible_in_detail_view = False,
-        edit_control = "cocktail.html.PasswordBox"
+        edit_control = display_factory(
+            "cocktail.html.PasswordBox",
+            autocomplete = "off"
+        )
     )
 
     def _backoffice_language_default():
