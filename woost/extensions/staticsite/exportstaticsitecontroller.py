@@ -9,17 +9,13 @@
 from datetime import datetime
 from cStringIO import StringIO
 import cherrypy
-from cocktail.modeling import cached_getter
 from cocktail.events import when
 from cocktail.translations import translations
 from cocktail import schema
+from cocktail.controllers import request_property
 from cocktail.controllers.formcontrollermixin import FormControllerMixin
 from cocktail.persistence import datastore
-from woost.models import (
-    Publishable,
-    Language,
-    get_current_user
-)
+from woost.models import Configuration, Publishable, get_current_user
 from woost.controllers.backoffice.basebackofficecontroller \
     import BaseBackOfficeController
 from woost.extensions.staticsite.staticsitedestination import StatusTracker
@@ -41,25 +37,27 @@ class ExportStaticSiteController(
             schema.Collection("selection", items = schema.Reference(type = Publishable))
         )
 
-
-    @cached_getter
-    def form_model(self):
-        
+    @request_property
+    def eligible_destinations(self):
         from woost.extensions.staticsite import StaticSiteExtension
-        extension = StaticSiteExtension.instance        
-        
-        site_languages = Language.codes
+        extension = StaticSiteExtension.instance
+        return [
+            destination
+            for destination in extension.destinations
+            if get_current_user().has_permission(
+                ExportationPermission,
+                destination = destination
+            )
+        ]
 
-        def allowed_destinations():
-            return [
-                destination 
-                for destination in extension.destinations 
-                if get_current_user().has_permission(
-                    ExportationPermission,
-                    destination = destination
-                )
-            ]
+    @request_property
+    def eligible_snapshoters(self):
+        from woost.extensions.staticsite import StaticSiteExtension
+        extension = StaticSiteExtension.instance
+        return extension.snapshoters
 
+    @request_property
+    def form_model(self):
         return schema.Schema("ExportStaticSite", members = [
             schema.Reference(
                 "snapshoter",
@@ -67,12 +65,9 @@ class ExportStaticSiteController(
                     "woost.extensions.staticsite.staticsitesnapshoter."
                     "StaticSiteSnapShoter",
                 required = True,
-                enumeration = lambda ctx: extension.snapshoters,
-                edit_control =
-                    "cocktail.html.RadioSelector"
-                    if len(allowed_destinations()) > 1
-                    else "cocktail.html.HiddenInput",
-                default = schema.DynamicDefault(lambda: extension.snapshoters[0])
+                enumeration = self.eligible_snapshoters,
+                edit_control = "cocktail.html.RadioSelector",
+                default = self.eligible_snapshoters[0]
             ),
             schema.Reference(
                 "destination",
@@ -80,28 +75,25 @@ class ExportStaticSiteController(
                     "woost.extensions.staticsite.staticsitedestination."
                     "StaticSiteDestination",
                 required = True,
-                enumeration = lambda ctx: allowed_destinations(),
-                edit_control =
-                    "cocktail.html.RadioSelector"
-                    if len(allowed_destinations()) > 1
-                    else "cocktail.html.HiddenInput",
-                default = schema.DynamicDefault(lambda: allowed_destinations()[0])
+                enumeration = self.eligible_destinations,
+                edit_control = "cocktail.html.RadioSelector",
+                default = self.eligible_destinations[0]
             ),
             schema.Boolean(
                 "update_only",
                 required = True,
                 default = True
-            ),            
+            ),
             schema.Boolean(
                 "follow_links",
                 required = True,
                 default = True
-            )            
+            )
         ])
 
-    def submit(self): 
+    def submit(self):
         FormControllerMixin.submit(self)
-        
+
         export_events = []
         tracker = StatusTracker()
 
@@ -118,7 +110,7 @@ class ExportStaticSiteController(
             ExportationPermission,
             destination = form["destination"]
         )
-        
+
         destination = form["destination"]
         snapshoter = form["snapshoter"]
 
@@ -134,7 +126,7 @@ class ExportStaticSiteController(
 
         # View class
         self.view_class = destination.view_class(exporter_context)
-        
+
         self.output["export_events"] = export_events
         self.output.update(
             **destination.output(exporter_context)
@@ -142,11 +134,13 @@ class ExportStaticSiteController(
 
         datastore.commit()
 
-    @cached_getter
+    @request_property
     def output(self):
         output = BaseBackOfficeController.output(self)
         output.update(
-            selection = self.selection
+            selection = self.selection,
+            eligible_destinations = self.eligible_destinations,
+            eligible_snapshoters = self.eligible_snapshoters
         )
         return output
 

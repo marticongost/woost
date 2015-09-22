@@ -23,8 +23,7 @@ from cocktail.modeling import (
     getter,
     cached_getter,
     ListWrapper,
-    SetWrapper,
-    OrderedSet
+    SetWrapper
 )
 from cocktail.events import event_handler
 from cocktail.translations import translations
@@ -52,15 +51,12 @@ from cocktail.controllers import (
 )
 from cocktail.controllers.userfilter import GlobalSearchFilter
 from woost.models import (
-    Site,
-    Language,
     Item,
-    UserView,
+    Role,
     changeset_context,
     get_current_user,
     PermissionExpression,
-    ReadPermission,
-    ReadTranslationPermission
+    ReadPermission
 )
 from woost.controllers.backoffice.basebackofficecontroller \
     import BaseBackOfficeController
@@ -87,27 +83,27 @@ class ContentController(BaseBackOfficeController):
         return self._item_controller_class()
 
     def resolve(self, path):
-        
+
         if not path:
             return self
         else:
             component = path.pop(0)
             try:
-                item_id = int(component)
+                kwargs = {"id": int(component)}
             except ValueError:
+                kwargs = {"global_id": component}
+
+            item = self.root_content_type.get_instance(**kwargs)
+
+            if item is None:
                 return None
-            else:
-                item = self.root_content_type.get_instance(item_id)
 
-                if item is None:
-                    return None
-
-                self.context["cms_item"] = item
-                return self._item_controller_class()
+            self.context["cms_item"] = item
+            return self._item_controller_class()
 
     def __call__(self, *args, **kwargs):
 
-        rel = cherrypy.request.params.get("ItemSelector-select")
+        rel = cherrypy.request.params.get("relation-select")
 
         # Open the item selector
         if rel:
@@ -128,8 +124,8 @@ class ContentController(BaseBackOfficeController):
                     if edit_stack is None:
                         edit_stack = edit_stacks_manager.create_edit_stack()
                         edit_stacks_manager.current_edit_stack = edit_stack
-                    
-                    node = SelectionNode()                    
+
+                    node = SelectionNode()
                     node.content_type = content_type
                     node.selection_parameter = selection_parameter
                     edit_stack.push(node)
@@ -139,7 +135,7 @@ class ContentController(BaseBackOfficeController):
                         ),
                         client_side_scripting = self.client_side_scripting
                     ))
-                
+
         return BaseBackOfficeController.__call__(self, **kwargs)
 
     @cached_getter
@@ -160,18 +156,18 @@ class ContentController(BaseBackOfficeController):
             selection = self.user_collection.selection
 
         self._invoke_user_action(self.action, selection)
-    
+
     # Content
-    #--------------------------------------------------------------------------    
+    #--------------------------------------------------------------------------
     @cached_getter
     def root_content_type(self):
         """The most basic possible content type for listed items.
-        
+
         This property is used to constrain the set of eligible content types to
         all types that descend from the indicated type (inclusive).
 
         @type: L{Item<woost.models.Item>} subclass
-        """        
+        """
         root_content_type = self.stack_content_type
 
         if root_content_type is None:
@@ -179,12 +175,12 @@ class ContentController(BaseBackOfficeController):
                 schema.String("root_content_type")
             )
             root_content_type = resolve(root_content_type_param)
-    
+
         return root_content_type or Item
 
     @cached_getter
     def stack_content_type(self):
-        """The content type of listed items indicated by the active edit stack.        
+        """The content type of listed items indicated by the active edit stack.
         @type: L{Item<woost.models.Item>} subclass
         """
         node = self.stack_node
@@ -202,29 +198,21 @@ class ContentController(BaseBackOfficeController):
                     return member.items.type
 
         return None
-        
-    @cached_getter
-    def available_languages(self):
-        """The list of languages that items in the listing can be displayed in.
 
-        Each language is represented using its two letter ISO code.
-
-        @type: sequence of unicode
-        """
-        user = get_current_user()
-        return [
-            language
-            for language in Language.codes
-            if user.has_permission(
-                ReadTranslationPermission,
-                language = language
-            )
-        ]
-    
     @cached_getter
     def user_collection(self):
 
         user_collection = BackOfficeUserCollection(self.root_content_type)
+
+        if self.root_content_type:
+            user = get_current_user()
+            for role in user.roles:
+                if role.default_content_type:
+                    if issubclass(
+                        role.default_content_type, self.root_content_type
+                    ):
+                        user_collection.default_type = role.default_content_type
+                    break
 
         if self.edit_stack and isinstance(self.stack_node, RelationNode):
             user_collection.default_type = \
@@ -246,7 +234,7 @@ class ContentController(BaseBackOfficeController):
         type_prefix = user_collection.type.full_name
         if prefix:
             type_prefix += "-" + prefix
-        
+
         user_collection.persistence_prefix = type_prefix
         user_collection.persistent_source = psource = SessionParameterSource(
             key_prefix = type_prefix
@@ -280,13 +268,10 @@ class ContentController(BaseBackOfficeController):
 
         hide_invisible_types(user_collection.type)
 
-        # Exclude edit drafts
-        user_collection.add_base_filter(Item.draft_source.equal(None))
-        
         node = self.stack_node
 
         if node and isinstance(node, RelationNode):
-            
+
             relation = node.member
             is_collection = isinstance(relation, schema.Collection)
             edit_node = self.edit_stack[-2]
@@ -306,9 +291,9 @@ class ContentController(BaseBackOfficeController):
             # Add relation constraints
             if relation.enumeration:
                 enumeration = relation.resolve_constraint(
-                    relation.enumeration, 
+                    relation.enumeration,
                     ValidationContext(
-                        edit_node.item.__class__, 
+                        edit_node.item.__class__,
                         edit_node.item,
                         persistent_object = edit_node.item
                     )
@@ -326,7 +311,7 @@ class ContentController(BaseBackOfficeController):
         user_collection.add_base_filter(
             PermissionExpression(get_current_user(), ReadPermission)
         )
-       
+
         return user_collection
 
     @cached_getter
@@ -345,25 +330,8 @@ class ContentController(BaseBackOfficeController):
             or self.params.read(schema.Boolean("search_expanded"))
         )
 
-    @cached_getter
-    def user_views(self):
-        
-        user = get_current_user()
-        views = OrderedSet()
-        
-        # Role views
-        for role in user.iter_roles():
-            views.extend(role.user_views)
-
-        # User views
-        views.extend(UserView.select(filters = [
-            UserView.owner.equal(user)
-        ]))
-
-        return views
-
     # Parameter persistence
-    #--------------------------------------------------------------------------    
+    #--------------------------------------------------------------------------
     @cached_getter
     def persistence_prefix(self):
         stack = self.edit_stack
@@ -392,14 +360,12 @@ class ContentController(BaseBackOfficeController):
         output = BaseBackOfficeController.output(self)
         output.update(
             user_collection = self.user_collection,
-            available_languages = self.available_languages,
             selection_mode = self.selection_mode,
             root_content_type = self.root_content_type,
-            search_expanded = self.search_expanded,
-            user_views = self.user_views            
+            search_expanded = self.search_expanded
         )
         return output
-    
+
     # TODO: Move MS Excel rendering to an extension
     allowed_rendering_formats = (
         BaseBackOfficeController.allowed_rendering_formats
@@ -407,7 +373,7 @@ class ContentController(BaseBackOfficeController):
     )
 
     def render_msexcel(self):
-        
+
         content_type = mimetypes.types_map.get(".xls")
         cd = 'attachment; filename="%s"' % (
             translations(self.user_collection.type.name + "-plural") + ".xls"

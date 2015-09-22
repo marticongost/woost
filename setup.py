@@ -12,7 +12,7 @@ from os.path import join, isdir
 
 setup(
     name = "woost",
-    version = "0.8",
+    version = "gauntlet",
     author = "Whads/Accent SL",
     author_email = "tech@whads.com",
     maintainer = "Marti Congost",
@@ -37,7 +37,7 @@ of its features include:\n"
     * Place arbitrarily complex access restrictions
 
     * Extension framework, with several built-in extensions (comments,
-      workflow, integration with online services, and many others)
+      ecommerce, integration with online services, and many others)
 """,
     classifiers = [
         "Development Status :: 3 - Alpha",
@@ -53,8 +53,8 @@ of its features include:\n"
     ],
     install_requires = [
         "simplejson",
-        "cocktail==0.6"
-    ],    
+        "cocktail==damassine"
+    ],
     extras_require = {
         'campaign_monitor_api': ["campaign_monitor_api"],
         "twitterpublication": ["oauth2"]
@@ -63,7 +63,6 @@ of its features include:\n"
     include_package_data = True,
     entry_points = {
         "woost.extensions": [
-            "workflow = woost.extensions.workflow:WorkflowExtension",
             "shop = woost.extensions.shop:ShopExtension",
             "countries = woost.extensions.countries:CountriesExtension",
             "payments = woost.extensions.payments:PaymentsExtension",
@@ -86,7 +85,17 @@ of its features include:\n"
             "ecommerce = woost.extensions.ecommerce:ECommerceExtension",
             "facebookpublication = woost.extensions.facebookpublication:FacebookPublicationExtension",
             "shorturls = woost.extensions.shorturls:ShortURLsExtension",
-            "twitterpublication = woost.extensions.twitterpublication:TwitterPublicationExtension"
+            "twitterpublication = woost.extensions.twitterpublication:TwitterPublicationExtension",
+            "textfile = woost.extensions.textfile:TextFileExtension",
+            "audio = woost.extensions.audio:AudioExtension",
+            "issuu = woost.extensions.issuu:IssuuExtension",
+            "campaign3 = woost.extensions.campaign3:CampaignMonitor3Extension",
+            "youtube = woost.extensions.youtube:YouTubeExtension",
+            "tv3alacarta = woost.extensions.tv3alacarta:TV3ALaCartaExtension",
+            "externalfiles = woost.extensions.externalfiles:ExternalFilesExtension",
+            "restrictedaccess = woost.extensions.restrictedaccess:RestrictedAccessExtension",
+            "annotations = woost.extensions.annotations:AnnotationsExtension",
+            "notices = woost.extensions.notices:NoticesExtension",
         ]
     },
     # Woost can't yet access view resources (images, style sheets, client

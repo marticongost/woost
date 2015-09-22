@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <?py
 from woost.models import Publishable
-from woost.extensions.ecommerce.catalogcontroller \
-    import catalog_current_state_uri
+from woost.extensions.ecommerce.utils import catalog_current_state_uri
 ?>
 
 <py:cocktail.html.Form
@@ -13,10 +12,6 @@ from woost.extensions.ecommerce.catalogcontroller \
     product = None
     ?>
 
-    <?py
-    self.add_resource("/resources/styles/ecommerce-AddProductForm.css")
-    ?>
-
     <py:block py:index="0">
 
         <div py:id="add_product_form_title">
@@ -25,33 +20,13 @@ from woost.extensions.ecommerce.catalogcontroller \
 
         <py:woost.views.NotificationBox
             py:id="product_added_notifications"
-            py:filter="product_added">
-
-            <py:with py:def="notification">
-                <div py:local_id="product_added_buttons">
-                    <a py:local_id="product_added_back_button" 
-                        class="button"
-                        href="${catalog_current_state_uri()}">
-                        ${translations("woost.extensions.ecommerce.AddProductForm.product_added_back_button")}
-                    </a>
-                    <a py:local_id="product_added_forward_button" class="button">
-                        <?py
-                        element["href"] = Publishable.require_instance(
-                            qname = "woost.extensions.ecommerce.basket_page"
-                        ).get_uri()
-                        ?>
-                        ${translations("woost.extensions.ecommerce.AddProductForm.product_added_forward_button")}
-                    </a>
-                </div>
-            </py:with>
-        
-        </py:woost.views.NotificationBox>
+            py:filter="product_added"/>
 
         <py:cocktail.html.ErrorBox
-            py:id="errors"
+            py:id="error_box"
             py:errors="@{self.errors}"
             py:index="1"/>
-    
+
     </py:block>
 
     <py:cocktail.html.TextBox type="number" min="1" py:def="quantity_display"/>

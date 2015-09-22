@@ -24,18 +24,23 @@ from woost.controllers.backoffice.basebackofficecontroller \
 
 from woost.controllers.backoffice.editstack import EditNode, RelationNode
 
-from woost.controllers.backoffice.showdetailcontroller \
-    import ShowDetailController
-
 from woost.controllers.backoffice.differencescontroller \
     import DifferencesController
+
+from woost.controllers.backoffice.installationsynccontroller \
+    import InstallationSyncController
+
+from woost.controllers.backoffice.referencescontroller \
+    import ReferencesController
 
 
 class ItemController(BaseBackOfficeController):
 
     default_section = "fields"
-    
+
     diff = DifferencesController
+    installation_sync = InstallationSyncController
+    references = ReferencesController
 
     @cached_getter
     def preview(self):
@@ -49,42 +54,9 @@ class ItemController(BaseBackOfficeController):
     def fields(self):
         return resolve(self.stack_node.item.edit_controller)
 
-    def resolve(self, path):
-
-        if path:
-            collection_name = path.pop(0)
-
-            try:
-                member = self.stack_node.content_type[collection_name]
-            except KeyError:
-                pass
-            else:
-                if any(
-                    collection.name == member.name
-                    for collection in self.collections
-                ):
-                    return self._get_collection_controller(member)
-
-    def _get_collection_controller(self, member):
-        controller_class = resolve(member.edit_controller)
-        return controller_class(member)
-
-    @cached_getter
-    def collections(self):
-        
-        relation_node = self.relation_node
-        stack_relation = relation_node and relation_node.member.related_end
-
-        return [
-            member
-            for member in self.stack_node.form_schema.ordered_members()
-            if isinstance(member, schema.Collection)
-            and not member.edit_inline
-        ]
-    
     @event_handler
     def handle_traversed(cls, event):
-        
+
         controller = event.source
 
         # Require an edit stack with an edit node on top
@@ -100,7 +72,7 @@ class ItemController(BaseBackOfficeController):
                 ReadPermission,
                 target = controller.stack_node.item
             )
-    
+
     def _require_edit_node(self):
 
         redirect = False
@@ -121,6 +93,15 @@ class ItemController(BaseBackOfficeController):
             if member_name:
                 node = RelationNode()
                 node.member = edit_stack[-1].content_type[member_name]
+
+                # Preserve the selected tab
+                group = node.member.member_group
+                if group:
+                    pos = group.find(".")
+                    if pos != -1:
+                        group = group[:pos]
+                edit_stack[-1].tab = group
+
                 edit_stack.push(node)
                 redirect = True
 
@@ -128,7 +109,7 @@ class ItemController(BaseBackOfficeController):
         if not edit_stack \
         or not isinstance(edit_stack[-1], EditNode) \
         or (context_item and context_item.id != edit_stack[-1].item.id):
-            
+
             # New item
             if context_item is None:
                 content_type = get_parameter(
@@ -138,19 +119,15 @@ class ItemController(BaseBackOfficeController):
             # Existing item
             else:
                 item = context_item
-            
+
             node_class = resolve(item.edit_node_class)
-            node = node_class(item)
+            node = node_class(
+                item,
+                visible_translations = self.visible_languages
+            )
             edit_stack.push(node)
             redirect = True
-            
-            if not item.is_inserted:
-                node.initialize_new_item(
-                    item,
-                    get_current_user(),
-                    self.visible_languages
-                )
-        
+
         # If the stack is modified a redirection is triggered so that any
         # further request mentions the new stack position in its parameters.
         # However, the redirection won't occur if the controller itself is the
@@ -161,6 +138,7 @@ class ItemController(BaseBackOfficeController):
             location.method = "GET"
             location.params["edit_stack"] = edit_stack.to_param()
             location.params.pop("member", None)
+            location.hash = Location.empty_hash
             location.go()
 
         return edit_stack
@@ -175,10 +153,22 @@ class ItemController(BaseBackOfficeController):
 
     def switch_section(self, section):
         item = self.stack_node.item
+
+        # Preserve form initialization parameters
+        if cherrypy.request.method == "GET":
+            params = dict(
+                (key, value)
+                for key, value in cherrypy.request.params.iteritems()
+                if key.startswith("edited_item_")
+            )
+        else:
+            params = {}
+
         raise cherrypy.HTTPRedirect(
             self.edit_uri(
                 item if item.is_inserted else item.__class__,
-                section
+                section,
+                **params
             )
         )
 

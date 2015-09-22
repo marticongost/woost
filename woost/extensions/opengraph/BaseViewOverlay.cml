@@ -19,11 +19,11 @@ from woost.extensions.opengraph import OpenGraphExtension
     <?py
     # Each instance of the template automatically gets its own properties dictionary
     self.open_graph_properties = self.open_graph_properties.copy()
-    
+
     @self.when_document_ready
     def add_open_graph_metadata(document):
-        
-        if self.open_graph_properties:
+
+        if self.publishable.open_graph_enabled and self.open_graph_properties:
 
             # Add the OpenGraph and Facebook namespaces to the HTML document
             document["xmlns:og"] = "http://ogp.me/ns#"
@@ -35,11 +35,11 @@ from woost.extensions.opengraph import OpenGraphExtension
             # which element rendering can't guarantee.
             tag_closure = get_current_rendering().renderer.single_tag_closure
             meta_template = '<meta property="%s" content="%s"' + tag_closure
-            
+
             for name, value in self.open_graph_properties.iteritems():
                 if value is not None:
                     meta = meta_template % (
-                        escape_attrib(name), 
+                        escape_attrib(name),
                         escape_attrib(value)
                     )
                     document.meta_container.append(meta)

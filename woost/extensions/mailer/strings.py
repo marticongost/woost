@@ -11,10 +11,16 @@ from cocktail.translations.strings import member_identifier
 
 # UI
 #------------------------------------------------------------------------------
-translations.define("Action send_email",
+translations.define("woost.actions.send_email",
     ca = u"Enviar",
     es = u"Enviar",
     en = u"Send"
+)
+
+translations.define("woost.actions.create_mailing",
+    ca = u"Enviar per correu",
+    es = u"Enviar por correo",
+    en = u"Send by e-mail"
 )
 
 translations.define("woost.extensions.mailer users",
@@ -61,10 +67,10 @@ translations.define("Mailing.subject",
     en = u"Subject"
 )
 
-translations.define("Mailing.roles",
-    ca = u"Rols",
-    es = u"Roles",
-    en = u"Roles"
+translations.define("Mailing.lists",
+    ca = u"Llistes",
+    es = u"Listas",
+    en = u"Lists"
 )
 
 translations.define("Mailing.language",
@@ -112,12 +118,18 @@ translations.define("woost.extensions.mailer.SendEmailView send",
 )
 
 translations.define("woost.extensions.mailer.SendEmailView confirmation text",
-    ca = u"""Estàs a punt d'enviar el document <strong>%s</strong> en
-<strong>%s</strong> als següents grups d'usuaris:""",
-    es = u"""Estás a punto de enviar el documento <strong>%s</strong> en
-</strong>%s</strong> a los siguientes grupos de usuarios:""",
-    en = u"""You are about to send the document <strong>%s</strong>
-</strong>%s</ strong> to the following user groups:"""
+    ca = lambda mailing:
+        u"S'enviarà el document <strong>%s</strong> en <strong>%s</strong> "
+        u"als següents usuaris:"
+        % (translations(mailing.document), translations(mailing.language)),
+    es = lambda mailing:
+        u"Se enviará el documento <strong>%s</strong> en "
+        u"</strong>%s</strong> a los siguientes usuarios:"
+        % (translations(mailing.document), translations(mailing.language)),
+    en = lambda mailing:
+        u"You are about to send the document <strong>%s</strong> "
+        u"in <strong>%s</strong> to the following users:"
+        % (translations(mailing.document), translations(mailing.language))
 )
 
 translations.define("woost.extensions.mailer.SendEmailView total",
@@ -211,15 +223,26 @@ translations.define("SendEmailPermission-plural",
     en = u"Permissions to send email"
 )
 
-translations.define("SendEmailPermission.roles",
-    ca = u"Rols",
-    es = u"Roles",
-    en = u"Roles"
+translations.define("SendEmailPermission.lists",
+    ca = u"Llistes",
+    es = u"Listas",
+    en = u"Lists"
+)
+
+translations.define("SendEmailPermission.lists-explanation",
+    ca = u"Limita el permís en funció dels destinataris de l'enviament. "
+         u"Deixar en blanc per permetre o prohibir l'enviament a tothom.",
+    es = u"Limita el permiso en función de los destinatarios del envío. "
+         u"Dejar en blanco para permitir o prohibir el envío sin importar "
+         u"los destinatarios seleccionados.",
+    en = u"Limits the groups of receivers that the user can or can't send "
+         u"email to. Leave blank to allow / disallow sending e-mail "
+         u"regardless of the selected receivers."
 )
 
 # Exceptions
 #------------------------------------------------------------------------------
-translations.define("woost.extensions.mailer.mailing.DocumentTemplateRequiredError-instance",                                                                                                                             
+translations.define("woost.extensions.mailer.mailing.DocumentTemplateRequiredError-instance",
     ca = lambda instance:
         u"El camp <em>%s</em> ha de tindre plantilla"
         % member_identifier(instance),
@@ -231,7 +254,7 @@ translations.define("woost.extensions.mailer.mailing.DocumentTemplateRequiredErr
         % member_identifier(instance)
 )
 
-translations.define("woost.extensions.mailer.mailing.LanguageValueError-instance",                                                                                                                             
+translations.define("woost.extensions.mailer.mailing.LanguageValueError-instance",
     ca = lambda instance:
         u"El camp <em>%s</em> no és un dels idiomes del document"
         % member_identifier(instance),
@@ -243,7 +266,7 @@ translations.define("woost.extensions.mailer.mailing.LanguageValueError-instance
         % member_identifier(instance)
 )
 
-translations.define("woost.extensions.mailer.mailing.PerUserCustomizableValueError-instance",                                                                                                                             
+translations.define("woost.extensions.mailer.mailing.PerUserCustomizableValueError-instance",
     ca = lambda instance:
         u"El camp <em>%s</em> no és vàlid pel document seleccionat"
         % member_identifier(instance),
@@ -256,9 +279,49 @@ translations.define("woost.extensions.mailer.mailing.PerUserCustomizableValueErr
 )
 
 translations.define(
-    "woost.extensions.mailer.mailing.RunningMailingError-instance",                                                                                                                                     
+    "woost.extensions.mailer.mailing.RunningMailingError-instance",
     ca = u"No es pot eliminar un enviament que està en execució.",
     es = u"No se puede eliminar un envio que está en ejecución.",
     en = u"Can't delete a running mailing."
+)
+
+# MailingList
+#------------------------------------------------------------------------------
+translations.define("MailingList",
+    ca = u"Llista de correu",
+    es = u"Lista de correo",
+    en = u"Mailing list"
+)
+
+translations.define("MailingList-plural",
+    ca = u"Llistes de correu",
+    es = u"Listas de correo",
+    en = u"Mailing lists"
+)
+
+translations.define("MailingList.title",
+    ca = u"Nom",
+    es = u"Nombre",
+    en = u"Name"
+)
+
+translations.define("MailingList.mailings",
+    ca = u"Enviaments",
+    es = u"Envios",
+    en = u"Mailings"
+)
+
+translations.define("MailingList.users",
+    ca = u"Usuaris",
+    es = u"Usuarios",
+    en = u"Users"
+)
+
+# User
+#------------------------------------------------------------------------------
+translations.define("User.mailingLists",
+    ca = u"Llistes de correu",
+    es = u"Listas de correo",
+    en = u"Mailing lists"
 )
 

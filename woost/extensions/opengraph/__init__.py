@@ -4,13 +4,17 @@ published with Woost.
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
-from cocktail.events import event_handler
 from cocktail.translations import translations
 from cocktail import schema
 from cocktail.html import templates
 from cocktail.persistence import datastore
-from woost.models import Site, Extension, File
-
+from woost.models import (
+    Configuration,
+    File,
+    Extension,
+    extension_translations,
+    rendering
+)
 
 translations.define("OpenGraphExtension",
     ca = u"OpenGraph",
@@ -70,7 +74,7 @@ class OpenGraphExtension(Extension):
             i altres serveis que implementin el protocol OpenGraph""",
             "ca"
         )
-        self.set("description",            
+        self.set("description",
             u"""Mejora la integración de los documentos del sitio web con
             Facebook y otros servicios que utilicen el protocolo OpenGraph""",
             "es"
@@ -81,11 +85,10 @@ class OpenGraphExtension(Extension):
             "en"
         )
 
-    @event_handler
-    def handle_loading(cls, event):
+    def _load(self):
 
         from woost.extensions.opengraph import (
-            strings, 
+            strings,
             publishable,
             opengraphtype,
             opengraphcategory
@@ -105,11 +108,14 @@ class OpenGraphExtension(Extension):
         # metadata to HTML documents
         templates.get_class("woost.extensions.opengraph.BaseViewOverlay")
 
-        if not event.source.installed:
-            event.source.create_default_categories(verbose = True)
+        self.install()
+
+    def _install(self):
+        self.create_default_categories(verbose = True)
+        self.create_facebook_image_factory()
 
     def create_default_categories(self, verbose = False):
-        
+
         from woost.extensions.opengraph.opengraphtype import OpenGraphType
         from woost.extensions.opengraph.opengraphcategory \
             import OpenGraphCategory
@@ -175,16 +181,16 @@ class OpenGraphExtension(Extension):
             og_category = OpenGraphCategory.get_instance(code = category_id)
 
             if og_category is None:
-                
+
                 if verbose:
                     print "Creating OpenGraph category '%s'" % category_id
 
                 og_category = OpenGraphCategory()
                 og_category.code = category_id
                 og_category.insert()
-                
+
                 key = "opengraph.categories." + category_id
-                
+
                 for language in translations:
                     label = translations(key, language)
                     if label:
@@ -197,7 +203,7 @@ class OpenGraphExtension(Extension):
                 og_type = OpenGraphType.get_instance(code = type_id)
 
                 if og_type is None:
-                    
+
                     if verbose:
                         print "Creating OpenGraph type '%s.%s'" % (
                             category_id,
@@ -207,7 +213,7 @@ class OpenGraphExtension(Extension):
                     og_type = OpenGraphType()
                     og_type.code = type_id
                     og_type.insert()
-                    
+
                     key = "opengraph.types." + type_id
 
                     for language in translations:
@@ -221,39 +227,20 @@ class OpenGraphExtension(Extension):
 
     def get_global_properties(self):
 
-        site = Site.main
-
         properties = {}
+        config = Configuration.instance
 
-        if site.site_name:
-            properties["og:site_name"] = site.site_name
+        site_name = config.get_setting("site_name")
+        if site_name:
+            properties["og:site_name"] = site_name
 
-        if site.logo:
-            properties["og:image"] = site.logo.get_uri(host = ".")
+        logo = config.get_setting("logo")
+        if logo:
+            properties["og:image"] = logo.get_uri(host = ".")
 
-        if site.email:
-            properties["og:email"] = site.email
-
-        if site.phone_number:
-            properties["og:phone_number"] = site.phone_number
-
-        if site.fax_number:
-            properties["og:fax_number"] = site.fax_number
-
-        if site.address:
-            properties["og:street-address"] = site.address
-
-        if site.town:
-            properties["og:locality"] = site.town
-
-        if site.region:
-            properties["og:region"] = site.region
-
-        if site.postal_code:
-            properties["og:postal-code"] = site.postal_code
-
-        if site.country:
-            properties["og:country-name"] = site.country
+        email = config.get_setting("email")
+        if email:
+            properties["og:email"] = email
 
         if self.facebook_administrators:
             properties["fb:admins"] = self.facebook_administrators
@@ -267,4 +254,25 @@ class OpenGraphExtension(Extension):
         properties = self.get_global_properties()
         properties.update(publishable.get_open_graph_properties())
         return properties
+
+    def create_facebook_image_factory(self):
+        Configuration.instance.image_factories.append(
+            self._create_asset(
+                rendering.ImageFactory,
+                "image_factory",
+                title = extension_translations,
+                identifier = "facebook",
+                effects = [
+                    rendering.Fill(
+                        width = "200",
+                        height = "200"
+                    ),
+                    rendering.Align(
+                        width = "200",
+                        height = "200",
+                        background = "fff"
+                    )
+                ]
+            )
+        )
 

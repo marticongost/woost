@@ -19,8 +19,7 @@ class TweetPermission(ContentPermission):
     publication_targets = schema.Collection(
         items = schema.Reference(type = TwitterPublicationTarget),
         related_end = schema.Collection(),
-        edit_inline = True,
-        after_member = "matching_items"
+        after_member = "content_expression"
     )
 
     def match(self, target, publication_target = None, verbose = False):

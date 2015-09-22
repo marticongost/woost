@@ -6,11 +6,15 @@ u"""
 @organization:  Whads/Accent SL
 @since:         March 2010
 """
-from __future__ import with_statement
+try:
+    from cStringIO import StringIO
+except ImportError:
+    from StringIO import StringIO
+
 import os
 import ftplib
-from shutil import copy
-from datetime import date
+from shutil import copy, copyfileobj
+from datetime import datetime
 from tempfile import mkstemp
 from zipfile import ZipFile
 from cocktail import schema
@@ -28,7 +32,7 @@ from woost.models.changesets import changeset_context
 class StaticSiteDestination(Item):
     """A class tasked with publishing a static snapshot of a site's content to
     a concrete location.
-    
+
     This is mostly an abstract class, meant to be extended by subclasses. Each
     subclass should implement exporting to a concrete kind of location or
     media. Subclasses must implement L{write_file} and L{create_folder}, and
@@ -70,7 +74,7 @@ class StaticSiteDestination(Item):
             will be made available to all L{write_file} calls.
         @type context: dict
         """
-    
+
     def cleanup(self, context):
         """Frees resources after an export operation.
 
@@ -93,15 +97,15 @@ class StaticSiteDestination(Item):
             )
 
         for file, file_path in context["snapshoter"].snapshot(
-            context["selection"], 
+            context["selection"],
             context = context
         ):
             exported = None
 
             try:
                 exported = self.export_file(
-                    file, 
-                    file_path, 
+                    file,
+                    file_path,
                     context
                 )
             except Exception, error:
@@ -157,7 +161,7 @@ class StaticSiteDestination(Item):
         @param context: A dictionary used to share any contextual information
             with the exporter.
         @type context: dict
-        
+
         @return: The dictionary used by the exporter during the export
             process to maintain its contextual information.
         @rtype: dict
@@ -188,8 +192,8 @@ class StaticSiteDestination(Item):
         file_path,
         context):
         """Exports a file.
-        
-        @param file: The file's contents file to export. Can be specified using 
+
+        @param file: The file's contents file to export. Can be specified using
             a file-like object, or a filesystem path.
         @type file: file-like or str
 
@@ -205,9 +209,23 @@ class StaticSiteDestination(Item):
             to True and the item has no changes to export.
         @rtype: bool
         """
-
         update_only = context.get("update_only")
+        needs_rewind = not isinstance(file, basestring)
+
+        if needs_rewind and not hasattr(file, "seek"):
+            buffer = StringIO()
+            copyfileobj(file, buffer, self.chunk_size)
+            buffer.seek(0)
+            file = buffer
+
+
+        if isinstance(file, unicode):
+            file = file.encode("utf-8")
+
         hash = file_hash(file)
+
+        if needs_rewind:
+            file.seek(0)
 
         if update_only \
         and hash == self.__last_export_hashes.get(file_path):
@@ -233,7 +251,7 @@ class StaticSiteDestination(Item):
 
         @param context: The dictionary used by the exporter to maintain any
             contextual information it many need throgout the export process.
-        
+
             If a context is provided and it contains an 'existing_folders' key,
             it should be a set of strings representing paths that are known to
             be present at the destination. If given, folders in the set will be
@@ -245,9 +263,9 @@ class StaticSiteDestination(Item):
         existing_folders = context.get("existing_folders")
 
         def ascend(folder):
-            if folder and \
-            (existing_folders is None or folder not in existing_folders):
-                ascend(os.path.dirname(folder))
+            if existing_folders is None or folder not in existing_folders:
+                if folder:
+                    ascend(os.path.dirname(folder))
                 created = self.create_folder(folder, context)
                 if existing_folders and created:
                     existing_folders.add(folder)
@@ -290,10 +308,10 @@ class StaticSiteDestination(Item):
         @type context: dict
         """
 
-    def view_class(self):
+    def view_class(self, context):
         return "woost.extensions.staticsite.ExportStaticSiteView"
 
-    def output(self):
+    def output(self, context):
         return {}
 
 
@@ -306,7 +324,7 @@ class StatusTracker(object):
     beginning = Event(
         """An event triggered after an exporter has finished its preparations
         and is ready to start the export operation.
-        
+
         @ivar context: The L{context<StaticSiteDestination.setup.context>}
             used by the export operation to maintain its state.
         @type context: dict
@@ -316,7 +334,7 @@ class StatusTracker(object):
         """An event triggered after file has been processed.
 
         This event will be triggered at least once for each generated file on
-        the exportation process. 
+        the exportation process.
 
         The event will be triggered regardless of the outcome of the exporting
         process, and even if the item is discarded and not exported. Clients
@@ -342,7 +360,7 @@ class StatusTracker(object):
 
         @ivar error_handled: Only relevant if L{status} is 'failed'. Allows
             the event response code to capture an export error. If set to True,
-            the exporter will continue 
+            the exporter will continue
         @type error_handled: bool
 
         @ivar context: The L{context<StaticSiteDestination.setup.context>}
@@ -356,7 +374,7 @@ class FolderDestination(StaticSiteDestination):
     folder.
     """
     instantiable = True
-    
+
     target_folder = schema.String(
         required = True,
         unique = True,
@@ -365,6 +383,10 @@ class FolderDestination(StaticSiteDestination):
     )
 
     def create_folder(self, folder, context):
+
+        if isinstance(folder, unicode):
+            folder = folder.encode("utf-8")
+
         full_path = os.path.join(self.target_folder, folder)
         if not os.path.exists(full_path):
             os.mkdir(full_path)
@@ -374,23 +396,23 @@ class FolderDestination(StaticSiteDestination):
 
     def write_file(self, file, path, context):
 
-        full_path = os.path.join(self.target_folder, path)
+        target_folder = self.target_folder
+        if isinstance(target_folder, unicode):
+            target_folder = target_folder.encode("utf-8")
+
+        if isinstance(path, unicode):
+            path = path.encode("utf-8")
+
+        full_path = os.path.join(target_folder, path)
 
         # Copy local files
         if isinstance(file, basestring):
             copy(file, full_path)
-        
+
         # Save data from file-like objects
         else:
-            target_file = open(full_path, "wb")
-            try:
-                while True:
-                    chunk = file.read(self.chunk_size)
-                    if not chunk:
-                        break
-                    target_file.write(chunk)
-            finally:
-                target_file.close()
+            with open(full_path, "wb") as target_file:
+                copyfileobj(file, target_file, self.chunk_size)
 
 
 class FTPDestination(StaticSiteDestination):
@@ -426,23 +448,21 @@ class FTPDestination(StaticSiteDestination):
 
     def __translate__(self, language, **kwargs):
 
-        if self.draft_source is None:
-            
-            desc = self.ftp_host
-            if desc:
-                
-                user = self.ftp_user
-                if user:
-                    desc = user + "@" + desc
-                
-                path = self.ftp_path
-                if path:
-                    if not path[0] == "/":
-                        path = "/" + path
-                    desc += path
+        desc = self.ftp_host
 
-                return "ftp://" + desc
-                
+        if desc:
+            user = self.ftp_user
+            if user:
+                desc = user + "@" + desc
+
+            path = self.ftp_path
+            if path:
+                if not path[0] == "/":
+                    path = "/" + path
+                desc += path
+
+            return "ftp://" + desc
+
         return StaticSiteDestination.__translate__(self, language, **kwargs)
 
     def setup(self, context):
@@ -456,7 +476,7 @@ class FTPDestination(StaticSiteDestination):
         context["ftp"].quit()
 
     def write_file(self, file, path, context):
-        
+
         ftp = context["ftp"]
         path = self._get_ftp_path(path)
 
@@ -465,22 +485,22 @@ class FTPDestination(StaticSiteDestination):
             ftp.delete(path)
         except ftplib.error_perm:
             pass
-        
+
         # Handle both local files and file-like objects
         if isinstance(file, basestring):
             file = open(file, "r")
             should_close = True
         else:
             should_close = False
-            
+
         try:
             ftp.storbinary("STOR " + path, file, self.chunk_size)
         finally:
             if should_close:
                 file.close()
-        
+
     def create_folder(self, folder, context):
-        
+
         ftp = context["ftp"]
         path = self._get_ftp_path(folder)
 
@@ -500,7 +520,7 @@ class FTPDestination(StaticSiteDestination):
             path += "/"
 
         path = path + "/".join(arg.strip("/") for arg in args)
-        
+
         try:
             return path.encode(self.encoding)
         except UnicodeEncodeError:
@@ -511,10 +531,10 @@ class FTPDestination(StaticSiteDestination):
         path = path.rstrip("/")
 
         if not path:
-            return True        
-        
+            return True
+
         pos = path.rfind("/")
-        
+
         if pos == -1:
             parent = "."
             name = path
@@ -523,7 +543,7 @@ class FTPDestination(StaticSiteDestination):
             name = path[pos + 1:]
 
         if not parent.endswith("/"):
-            parent = parent + "/" 
+            parent = parent + "/"
 
         return (parent + name) in ftp.nlst(parent)
 
@@ -534,14 +554,18 @@ class ZipDestination(StaticSiteDestination):
     """
     instantiable = True
 
-
     def setup(self, context):
-        handle, context["temp_file"] = mkstemp('.zip')
-        os.close(handle)
-        context["zip_file"] = ZipFile(context["temp_file"], 'w')
+        self.root_folder = app.path("static", "export")
+        if not os.path.exists(self.root_folder):
+            os.mkdir(self.root_folder)
 
-    def cleanup(self, context):
-        os.unlink(context["temp_file"])
+        context["file_name"] = \
+            "%s.zip" % datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
+        zip_path = os.path.join(
+            self.root_folder,
+            context["file_name"]
+        )
+        context["zip_file"] = ZipFile(zip_path, 'w')
 
     def _export(
         self,
@@ -554,20 +578,8 @@ class ZipDestination(StaticSiteDestination):
             status_tracker = status_tracker
         )
 
-        # Close the zip file before export it to the CMS
-        context["zip_file"].close()        
-        upload_path = app.path("upload")
-
-        with changeset_context(get_current_user()):
-            file = File.from_path(
-                context["temp_file"], 
-                upload_path, 
-                languages = [get_language()]
-            )
-            file.title = "export-%s" % date.today().strftime("%Y%m%d")
-            file.file_name = file.title + ".zip"
-            file.insert()
-            context.update(file = file)
+        # Close the zip file
+        context["zip_file"].close()
 
     def create_folder(self, folder, context):
         return True
@@ -588,7 +600,7 @@ class ZipDestination(StaticSiteDestination):
     def output(self, context):
         output = StaticSiteDestination.output(self)
         output.update(
-            file = context["file"]
+            file_name = context["file_name"]
         )
         return output
 

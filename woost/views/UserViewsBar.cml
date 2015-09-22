@@ -3,14 +3,10 @@
 <form
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:py="http://www.whads.com/ns/cocktail/templates">
-    
+
     <?py-class
     user_views = ()
     ?>
-
-    <span py:id="user_views_label">
-        ${translations("woost.views.BackOfficeContentView user views")}
-    </span>
 
     <ul py:id="user_views_list" py:collapsible="${True}">
         <py:ready>

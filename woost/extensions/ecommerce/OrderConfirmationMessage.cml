@@ -2,13 +2,13 @@
 <?py
 from cocktail import schema
 from cocktail.controllers import Location
-from woost.models import Site
+from woost.models import Configuration
 ?>
 
 <div
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:py="http://www.whads.com/ns/cocktail/templates">
-    
+
     <?py-class
     order = None
     summary_schema = None
@@ -21,9 +21,9 @@ from woost.models import Site
     </py:ready>
 
     <img
-        py:id="logo_image" 
-        py:visible="@{Site.main.logo is not None}"
-        alt="${translations(Site.main.logo)}"
+        py:id="logo_image"
+        py:visible="@{Configuration.instance.get_setting('logo') is not None}"
+        alt="${translations(Configuration.instance.get_setting('logo'))}"
         src="cid:logo"/>
 
     <div py:id="introduction">
@@ -42,11 +42,11 @@ from woost.models import Site
             cellspacing="0"
             cellpadding="5"
             width="100%">
-            <?py 
+            <?py
             element.set_style("border", "2px solid #bbb")
             ?>
-            <py:with 
-                py:def="header" 
+            <py:with
+                py:def="header"
                 py:args="column, language = None"
                 align="${'left' if column.name == 'product' else 'right'}">
                 <?py
@@ -56,7 +56,7 @@ from woost.models import Site
                 ?>
             </py:with>
             <py:with
-                py:def="cell" 
+                py:def="cell"
                 py:args="item, column, language = None"
                 align="${'left' if column.name == 'product' else 'right'}"
                 valign="top">
@@ -93,33 +93,34 @@ from woost.models import Site
             <?py
             element.set_style("font-weight", "bold")
             ?>
-        </py:with>    
+        </py:with>
     </py:woost.extensions.ecommerce.BasketView>
 
     <py:cocktail.html.PropertyTable
         py:id="checkout_table"
         py:schema="@{self.summary_schema}"
         py:data="@{self.order}"
-        py:translated_values="${True}"
         cellspacing="0"
         cellpadding="5"
         width="100%">
-        <?py 
+        <?py
         element.set_style("margin-top", "1em")
         element.set_style("border", "2px solid #bbb")
         ?>
 
-        <py:with py:def="group_header" py:args="group" align="left">
-            <py:with py:element="element.header">
-                <?py 
-                element.set_style("color", "#444")
-                element.set_style("background-color", "#e0e0e0")
-                element.set_style("border-bottom", "1px solid #ccc")
+        <py:with py:def="group_header" py:args="group">
+            <?py
+            if element:
+                element["align"] = "left"
+
+                header = element.header
+                header.set_style("color", "#444")
+                header.set_style("background-color", "#e0e0e0")
+                header.set_style("border-bottom", "1px solid #ccc")
 
                 if group != checkout_table.schema.groups_order[0]:
-                    element.set_style("border-top", "1px solid #ccc")
-                ?>
-            </py:with>
+                    header.set_style("border-top", "1px solid #ccc")
+            ?>
         </py:with>
 
         <py:with py:def="label" align="left">

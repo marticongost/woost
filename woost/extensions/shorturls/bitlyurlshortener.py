@@ -22,7 +22,7 @@ class BitlyURLShortener(URLShortener):
     ]
 
     login = schema.String(
-        required = True        
+        required = True
     )
 
     api_key = schema.String(

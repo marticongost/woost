@@ -1,44 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<?py
-from cocktail.translations import translations
-?>
-
 <div
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:py="http://www.whads.com/ns/cocktail/templates">
 
     <?py-class
-    schema = None
-    errors = ()
-    data = None
-    submitted = False
-    publishable = None
+    forms = None
+    form_errors = None
     ?>
 
-    <?py self.add_resource("/resources/styles/SignUpView.css") ?>
-
-    <ul py:id="error_box" py:collapsible="${True}">
-        <py:ready py:if="self.errors">
-            <li py:for="error in self.errors">
-                ${translations(error)}
-            </li>
-        </py:ready>
-    </ul>
+    <py:cocktail.html.ErrorBox
+        py:id="error_box"
+        py:errors="@{self.form_errors}"/>
 
     <py:cocktail.html.Form
-        py:visible="@{not self.submitted or self.errors}"
-        py:id="signup_form"
-        py:data="@{self.data}"
-        py:schema="@{self.schema}"
-        py:errors="@{self.errors}"
-        method="post" />
-
-    <py:ready py:if="self.submitted and not self.errors">
-        <p>${translations("woost.extensions.signup.SignupSuccessfulMessage")}</p>
-        <py:ready py:if="self.publishable.confirmation_email_template">
-            <p>${translations("woost.extensions.signup.SignupConfirmationMessageNotice")}</p>
-        </py:ready>
-    </py:ready>
+        method="post"
+        py:id="sign_up_form"
+        py:form="@{self.forms['sign_up_form']}"/>
 
 </div>

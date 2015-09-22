@@ -9,62 +9,20 @@ from cocktail.events import when
 from cocktail.persistence import datastore
 from woost import app
 from woost.models.publishable import Publishable
-from woost.models.site import Site
 from woost.models.file import File
 from woost.models.user import User
-from woost.models.rendering.cache import require_rendering
 
 debug = True
+enabled = True
 filesystem_encoding = "utf-8"
 
 members_affecting_static_publication = set([
     File.title,
     File.file_name,
-    File.image_effects,
     Publishable.enabled,
     Publishable.start_date,
     Publishable.end_date
 ])
-
-@when(File.inserted)
-@when(File.changed)
-@when(File.deleting)
-def _schedule_links_update(e):
- 
-    file = e.source
-    member = getattr(e, "member", None)
-
-    if member is not None:
-
-        if not file.is_inserted:
-            return
-
-        if member not in members_affecting_static_publication:
-            return  
-
-    # Store the current links, to be removed when the current transaction is
-    # committed
-    key = "woost.models.File.old_links-%d" % file.id
-    old_links = datastore.get_transaction_value(key)
-
-    if old_links is None:
-        old_links = set()
-        datastore.set_transaction_value(key, old_links)
-
-    old_links.update(get_links(file))
-    
-    # Add an after commit hook to remove/create the file's links
-    datastore.unique_after_commit_hook(
-        "woost.models.File.update_static_links-%d" % file.id,
-        _update_links_after_commit,
-        file,
-        old_links
-    )
-
-def _update_links_after_commit(commit_successful, file, old_links):
-    if commit_successful:
-        remove_links(file, old_links)
-        create_links(file)
 
 def encode_filename(link, encoding = None):
     if encoding is None:
@@ -72,7 +30,7 @@ def encode_filename(link, encoding = None):
     return link.encode(encoding) if isinstance(link, unicode) else link
 
 def create_links(file, links = None, encoding = None):
-    
+
     if not file.is_inserted:
         return
 
@@ -84,11 +42,7 @@ def create_links(file, links = None, encoding = None):
     if links is None:
         links = get_links(file)
 
-    if file.image_effects:
-        linked_file = require_rendering(file)
-    else:
-        linked_file = file.file_path
-
+    linked_file = file.file_path
     linked_file = encode_filename(linked_file, encoding)
 
     for link in links:
@@ -113,7 +67,7 @@ def create_links(file, links = None, encoding = None):
         os.symlink(linked_file, link)
 
 def remove_links(file, links = None, encoding = None):
-    
+
     if links is None:
         links = get_links(file)
 
@@ -128,10 +82,54 @@ def remove_links(file, links = None, encoding = None):
                 )
             os.remove(link)
 
-def get_links(file):    
-    site = Site.main
+def get_links(file):
     return [
-        app.path("static", site.main.get_path(file, language))
+        app.path("static", app.url_resolver.get_path(file, language))
         for language in (file.translations or [None])
     ]
+
+if hasattr(os, "symlink"):
+
+    @when(File.inserted)
+    @when(File.changed)
+    @when(File.deleting)
+    def _schedule_links_update(e):
+
+        if not enabled or not app.root:
+            return
+
+        file = e.source
+        member = getattr(e, "member", None)
+
+        if member is not None:
+
+            if not file.is_inserted:
+                return
+
+            if member not in members_affecting_static_publication:
+                return
+
+        # Store the current links, to be removed when the current transaction is
+        # committed
+        key = "woost.models.File.old_links-%d" % file.id
+        old_links = datastore.get_transaction_value(key)
+
+        if old_links is None:
+            old_links = set()
+            datastore.set_transaction_value(key, old_links)
+
+        old_links.update(get_links(file))
+
+        # Add an after commit hook to remove/create the file's links
+        datastore.unique_after_commit_hook(
+            "woost.models.File.update_static_links-%d" % file.id,
+            _update_links_after_commit,
+            file,
+            old_links
+        )
+
+    def _update_links_after_commit(commit_successful, file, old_links):
+        if commit_successful:
+            remove_links(file, old_links)
+            create_links(file)
 

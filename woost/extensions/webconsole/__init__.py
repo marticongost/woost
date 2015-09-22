@@ -6,10 +6,9 @@ u"""
 from pkg_resources import resource_filename
 import cherrypy
 from cocktail import schema
-from cocktail.events import event_handler
 from cocktail.translations import translations
 from woost.models import (
-    Site,
+    Configuration,
     Extension,
     Role,
     Document,
@@ -39,7 +38,7 @@ class WebConsoleExtension(Extension):
             s'executa l'aplicació a través de la web""",
             "ca"
         )
-        self.set("description",            
+        self.set("description",
             u"""Proporciona acceso directo al intérprete de Python que ejecuta
             la aplicación a través de la web""",
             "es"
@@ -50,10 +49,7 @@ class WebConsoleExtension(Extension):
             "en"
         )
 
-    @event_handler
-    def handle_loading(cls, event):
-
-        extension = event.source
+    def _load(self):
 
         from woost.extensions.webconsole import strings
         from woost.controllers.cmscontroller import CMSController
@@ -63,55 +59,52 @@ class WebConsoleExtension(Extension):
                 section = "webconsole_resources",
                 dir = resource_filename("webconsole", "resources")
             )
-        
-        if not extension.installed:
-            
-            def apply_translations(item, member):
-                for lang in translations:
-                    trans = translations("%s.%s" % (item.qname, member), lang)
-                    if trans:
-                        item.set(member, trans, lang)
 
-            # Permissions: by default, only administrators can use the web
-            # console
-            from woost.extensions.webconsole.webconsolepermission \
-                import WebConsolePermission
+    def _install(self):
 
-            administrators = Role.get_instance(qname = "woost.administrators")
+        from woost.models import extension_translations
+        from woost.extensions.webconsole.webconsolepermission \
+            import WebConsolePermission
 
-            if administrators:
-                web_console_permission = WebConsolePermission()
-                web_console_permission.insert()
-                administrators.permissions.append(web_console_permission)
+        # Permissions: by default, only administrators can use the web
+        # console
+        administrators = Role.get_instance(qname = "woost.administrators")
 
-            # Controller
-            controller = Controller()
-            controller.qname = "woost.extensions.webconsole.controller"
-            controller.python_name = \
-                "woost.extensions.webconsole.cmswebconsole.CMSWebConsole"
-            apply_translations(controller, "title")
-            controller.insert()
+        if administrators:
+            web_console_permission = WebConsolePermission()
+            web_console_permission.insert()
+            administrators.permissions.append(web_console_permission)
 
-            # Template
-            template = Template()
-            template.qname = "woost.extensions.webconsole.template"
-            template.engine = "cocktail"
-            template.identifier = "webconsole.WebConsole"
-            apply_translations(template, "title")
-            template.insert()
+        # Controller
+        controller = self._create_asset(
+            Controller,
+            "controller",
+            python_name = \
+                "woost.extensions.webconsole.cmswebconsole.CMSWebConsole",
+            title = extension_translations
+        )
 
-            # Page
-            page = Document()
-            page.qname = "woost.extensions.webconsole.page"
-            page.parent = Site.main.home
-            page.path = "webconsole"
-            page.hidden = True
-            page.requires_https = True
-            page.controller = controller
-            page.template = template
-            page.per_language_publication = False
-            apply_translations(page, "title")
-            page.insert()
+        # Template
+        template = self._create_asset(
+            Template,
+            "template",
+            engine = "cocktail",
+            identifier = "webconsole.WebConsole",
+            title = extension_translations
+        )
+
+        # Page
+        page = self._create_asset(
+            Document,
+            "page",
+            path = "webconsole",
+            hidden = True,
+            requires_https = True,
+            controller = controller,
+            template = template,
+            per_language_publication = False,
+            title = extension_translations
+        )
 
 
 def breakpoint(open_browser = False, stack_depth = 0):
@@ -120,9 +113,9 @@ def breakpoint(open_browser = False, stack_depth = 0):
     """
     from cocktail.controllers import Location
     from webconsole.utils import breakpoint as webconsole_breakpoint
-    from woost.models import get_current_user, Publishable, Site
+    from woost.models import get_current_user, Publishable
     from woost.extensions.webconsole.webconsolepermission \
-        import WebConsolePermission   
+        import WebConsolePermission
 
     user = get_current_user()
 
@@ -130,22 +123,21 @@ def breakpoint(open_browser = False, stack_depth = 0):
 
         def initializer(session):
             if open_browser:
-                
+
                 # Find the web console document
                 webconsole = Publishable.require_instance(
                     qname = "woost.extensions.webconsole.page"
                 )
-                
+
                 # Determine the URI for the breakpoint session
                 webconsole_location = Location.get_current_host()
-                webconsole_location.path_info = \
-                    u"/" + Site.main.get_path(webconsole)
+                webconsole_location.path_info = webconsole.get_uri()
                 webconsole_location.query_string["session_id"] = session.id
 
                 # Open a web browser tab pointing at the URI
                 from webbrowser import open
                 open(str(webconsole_location))
-        
+
         return webconsole_breakpoint(
             initializer = initializer,
             stack_depth = stack_depth + 1

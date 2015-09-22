@@ -7,10 +7,9 @@ from time import time
 from simplejson import loads
 from urllib import urlopen
 from cocktail.iteration import first
-from cocktail.events import event_handler
 from cocktail.translations import translations
 from cocktail import schema
-from cocktail.persistence import datastore
+from cocktail.persistence import transaction
 from woost.models import Extension
 
 translations.define("LocationsExtension",
@@ -75,13 +74,13 @@ class LocationsExtension(Extension):
             regions, actualitzada a través d'Internet.""",
             "ca"
         )
-        self.set("description",            
+        self.set("description",
             u"""Proporciona acceso a la lista de países del mundo y sus
             regiones, actualizada a través de Internet.""",
             "es"
         )
         self.set("description",
-            u"""Provides a list of world countries and their regions, 
+            u"""Provides a list of world countries and their regions,
             automatically updated from the Internet.""",
             "en"
         )
@@ -107,7 +106,6 @@ class LocationsExtension(Extension):
     )
 
     updated_location_types = schema.Collection(
-        edit_inline = True,
         default = [
             "continent",
             "country",
@@ -118,21 +116,22 @@ class LocationsExtension(Extension):
         items = schema.String(
             required = True,
             enumeration = [
-                "continent", 
-                "country", 
+                "continent",
+                "country",
                 "autonomous_community",
                 "province",
                 "town"
-            ],            
+            ],
             translate_value = lambda value, language = None, **kwargs:
-                "" if not value 
+                "" if not value
                 else translations(
                     "woost.extensions.locations.location_types." + value,
                     language,
                     **kwargs
                 )
         ),
-        text_search = False
+        text_search = False,
+        edit_control = "cocktail.html.CheckList"
     )
 
     updated_subset = schema.Collection(
@@ -142,22 +141,24 @@ class LocationsExtension(Extension):
         edit_control = "cocktail.html.TextArea"
     )
 
-    @event_handler
-    def handle_loading(cls, event):
-        
-        from woost.extensions.locations import location, strings
+    def _load(self):
+        from woost.extensions.locations import location, strings, migration
 
-        now = time()
-        ext = event.source
+        if self.should_update():
+            transaction(
+                self.sync_locations,
+                desist = lambda: not self.should_update()
+            )
 
-        if ext.last_update is None \
-        or (
-            ext.update_frequency is not None
-            and now - ext.last_update >= ext.update_frequency * SECONDS_IN_A_DAY
-        ):
-            ext.sync_locations()
-            ext.last_update = now
-            datastore.commit()
+    def should_update(self):
+
+        if self.last_update is None:
+            return True
+
+        if self.update_frequency is None:
+            return False
+
+        return time() - self.last_update >= self.update_frequency * SECONDS_IN_A_DAY
 
     def sync_locations(self):
         """Populate the locations database with the data provided by the web
@@ -169,8 +170,10 @@ class LocationsExtension(Extension):
         for record in json_data:
             self._process_record(record)
 
+        self.last_update = time()
+
     def _process_record(self, record, parent = None, context = None):
-        
+
         from woost.extensions.locations.location import Location
 
         context = context.copy() if context else {}
@@ -185,7 +188,7 @@ class LocationsExtension(Extension):
         if self._should_add_location(record, parent, context):
 
             # Update an existing location
-            if parent: 
+            if parent:
                 location = first(
                     child
                     for child in parent.locations

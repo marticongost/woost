@@ -10,16 +10,25 @@ from __future__ import with_statement
 from itertools import chain
 from urllib import urlencode
 import cherrypy
-from cocktail.modeling import getter, cached_getter
+from cocktail.modeling import getter, cached_getter, OrderedSet
 from cocktail.iteration import first
 from cocktail.translations import translations, get_language
 from cocktail.events import event_handler
 from cocktail import schema
 from cocktail.controllers import get_parameter, CookieParameterSource
-from woost.models import Item
+from woost.models import (
+    Configuration,
+    Item,
+    UserView,
+    ReadTranslationPermission,
+    get_current_user
+)
 from woost.controllers import BaseCMSController
 from woost.controllers.notifications import notify_user
-from woost.controllers.backoffice.useractions import get_user_action
+from woost.controllers.backoffice.useractions import (
+    get_user_action,
+    SelectionError
+)
 from woost.controllers.backoffice.editstack import (
     EditNode,
     SelectionNode,
@@ -33,6 +42,25 @@ class BaseBackOfficeController(BaseCMSController):
 
     section = None
     settings_duration = 60 * 60 * 24 * 30 # ~= 1 month
+    default_rendering_format = "html5"
+
+    @cached_getter
+    def available_languages(self):
+        """The list of languages that items in the listing can be displayed in.
+
+        Each language is represented using its two letter ISO code.
+
+        @type: sequence of unicode
+        """
+        user = get_current_user()
+        return [
+            language
+            for language in Configuration.instance.languages
+            if user.has_permission(
+                ReadTranslationPermission,
+                language = language
+            )
+        ]
 
     @cached_getter
     def visible_languages(self):
@@ -49,10 +77,10 @@ class BaseBackOfficeController(BaseCMSController):
         )
 
     # URIs and navigation
-    #--------------------------------------------------------------------------    
+    #--------------------------------------------------------------------------
     def edit_uri(self, target, *args, **kwargs):
         """Get the URI of the edit page of the specified item.
-        
+
         @param target: The item or content type to get the URI for.
         @type target: L{Item<woost.models.Item>} instance or class
 
@@ -65,7 +93,7 @@ class BaseBackOfficeController(BaseCMSController):
 
         @return: The produced URI.
         @rtype: unicode
-        """        
+        """
         params = kwargs or {}
         edit_stack = self.edit_stack
 
@@ -82,7 +110,7 @@ class BaseBackOfficeController(BaseCMSController):
         # URI for existing items
         else:
             primary_member = target.__class__.primary_member
-            
+
             if primary_member is None:
                 raise TypeError("Can't edit types without a primary member")
 
@@ -90,7 +118,7 @@ class BaseBackOfficeController(BaseCMSController):
 
             if target_id is None:
                 raise ValueError("Can't edit objects without an identifier")
-        
+
         uri = self.contextual_uri(
             "content",
             target_id,
@@ -103,7 +131,7 @@ class BaseBackOfficeController(BaseCMSController):
                 True
             )
 
-        return uri
+        return uri + "#default"
 
     def go_back(self):
         """Redirects the user to its previous significant location."""
@@ -111,18 +139,17 @@ class BaseBackOfficeController(BaseCMSController):
         edit_stack = self.edit_stack
 
         # Go back to the parent edit state
-        if edit_stack and len(edit_stack) > 1:
-            if isinstance(edit_stack[-2], RelationNode):
-                edit_stack.go(-3)
-            else:
-                edit_stack.go(-2)
-        
+        if edit_stack:
+            edit_stack.go_back()
+
         # Go back to the root of the backoffice
         else:
-            raise cherrypy.HTTPRedirect(self.contextual_uri())
+            raise cherrypy.HTTPRedirect(
+                edit_stack and edit_stack.root_url or self.contextual_uri()
+            )
 
     # Edit stack
-    #--------------------------------------------------------------------------    
+    #--------------------------------------------------------------------------
     @getter
     def edit_stack(self):
         """The edit stack for the current request.
@@ -156,13 +183,13 @@ class BaseBackOfficeController(BaseCMSController):
         stack = self.edit_stack
         if stack:
             return stack[-1].get_ancestor_node(
-                RelationNode, 
+                RelationNode,
                 include_self = True
             )
         return None
 
     # Request flow
-    #--------------------------------------------------------------------------    
+    #--------------------------------------------------------------------------
     @event_handler
     def handle_exception_raised(cls, event):
 
@@ -177,20 +204,40 @@ class BaseBackOfficeController(BaseCMSController):
 
     def _invoke_user_action(self, action, selection):
         for error in action.get_errors(self, selection):
-            raise error
+            self._handle_user_action_error(action, selection, error)
 
         action.invoke(self, selection)
+
+    _graceful_user_action_errors = set([SelectionError])
+
+    def _handle_user_action_error(self, action, selection, error):
+        if isinstance(error, tuple(self._graceful_user_action_errors)):
+            notify_user(translations(error), "error")
+            self.go_back()
+        else:
+            raise error
 
     def _get_user_action(self, param_key = "action"):
         action = None
         action_id = self.params.read(schema.String(param_key))
-        
+
         if action_id:
             action = get_user_action(action_id)
             if action and not action.enabled:
                 action = None
 
         return action
+
+    @cached_getter
+    def user_views(self):
+
+        user = get_current_user()
+        views = OrderedSet()
+
+        for role in user.iter_roles():
+            views.extend(role.user_views)
+
+        return views
 
     @cached_getter
     def client_side_scripting(self):
@@ -204,6 +251,9 @@ class BaseBackOfficeController(BaseCMSController):
             section = self.section,
             edit_stack = self.edit_stack,
             edit_uri = self.edit_uri,
+            user_views = self.user_views,
+            available_languages = self.available_languages,
+            visible_languages = self.visible_languages,
             client_side_scripting = self.client_side_scripting
         )
         return output

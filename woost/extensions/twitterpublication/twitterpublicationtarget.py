@@ -11,7 +11,7 @@ from cocktail.events import when
 from cocktail.iteration import first
 from cocktail.translations import translations
 from cocktail import schema
-from woost.models import Item, Language
+from woost.models import Configuration, Item
 from woost.extensions.shorturls import ShortURLsExtension
 from woost.extensions.shorturls.urlshortener import URLShortener
 from woost.extensions.twitterpublication.exceptions import TwitterAPIError
@@ -75,7 +75,7 @@ class TwitterPublicationTarget(Item):
 
     languages = schema.Collection(
         items = schema.String(
-            enumeration = lambda ctx: Language.codes,
+            enumeration = lambda ctx: Configuration.instance.languages,
             translate_value = lambda value, language = None, **kwargs:
                 "" if not value else translations(value)
         )
@@ -84,7 +84,7 @@ class TwitterPublicationTarget(Item):
     url_shortener = None
 
     def publish(self, publishable):
-        
+
         if self.auth_token is None:
             raise ValueError(
                 "Can't publish %s to %s: authorization token missing"
@@ -112,7 +112,7 @@ class TwitterPublicationTarget(Item):
             raise TwitterAPIError(body)
 
     def find_post(self, publishable):
-        
+
         query = "from:%s %s" % (self.account, self.get_uri(publishable))
 
         response = urlopen(
@@ -126,7 +126,7 @@ class TwitterPublicationTarget(Item):
 
         if status != 200:
             raise TwitterAPIError(body)
-        
+
         posts = loads(body)["results"]
         return posts and posts[0] or None
 
@@ -140,10 +140,10 @@ class TwitterPublicationTarget(Item):
         return translations(publishable)
 
     def get_uri(self, publishable, *args, **kwargs):
-        
+
         kwargs.setdefault("host", ".")
         url = publishable.get_uri(*args, **kwargs)
-        
+
         if self.url_shortener:
             url = self.url_shortener.shorten_url(url)
 
@@ -172,7 +172,7 @@ def add_url_shortener_reference(e):
                 type = URLShortener,
                 related_end = schema.Collection(),
                 listed_by_default = False,
-                
+
                 # Default to the first defined service, if one exists
                 default = schema.DynamicDefault(
                     lambda: first(URLShortener.select())

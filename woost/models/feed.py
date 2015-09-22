@@ -8,14 +8,14 @@
 """
 from cocktail import schema
 from cocktail.controllers.usercollection import UserCollection
-from cocktail.html.datadisplay import display_factory
-from woost.models.publishable import Publishable
-from woost.models.language import Language
-from woost.models.controller import Controller
+from .configuration import Configuration
+from .publishable import Publishable
+from .controller import Controller
 
 
 class Feed(Publishable):
 
+    type_group = "setup"
     instantiable = True
 
     groups_order = ["meta", "feed_items"]
@@ -51,7 +51,7 @@ class Feed(Publishable):
         descriptive = True,
         translated = True,
         member_group = "meta"
-    )           
+    )
 
     ttl = schema.Integer(
         listed_by_default = False,
@@ -86,58 +86,43 @@ class Feed(Publishable):
         member_group = "feed_items"
     )
 
-    item_title_expression = schema.String(
+    item_title_expression = schema.CodeBlock(
+        language = "python",
         required = True,
         default = "translations(item)",
-        listed_by_default = False,
-        edit_control = display_factory(
-            "cocktail.html.CodeEditor", syntax = "python"
-        ),
-        text_search = False,
         member_group = "feed_items"
     )
 
-    item_link_expression = schema.String(
+    item_link_expression = schema.CodeBlock(
+        language = "python",
         required = True,
         default = "cms.uri(item)",
-        listed_by_default = False,
-        edit_control = display_factory(
-            "cocktail.html.CodeEditor", syntax = "python"
-        ),
-        text_search = False,
         member_group = "feed_items"
     )
 
-    item_publication_date_expression = schema.String(
+    item_publication_date_expression = schema.CodeBlock(
+        language = "python",
         required = True,
         default = "item.start_date or item.creation_time",
-        listed_by_default = False,
-        edit_control = display_factory(
-            "cocktail.html.CodeEditor", syntax = "python"
-        ),
-        text_search = False,
         member_group = "feed_items"
     )
 
-    item_description_expression = schema.String(
+    item_description_expression = schema.CodeBlock(
+        language = "python",
         required = True,
         default = "item.description",
-        listed_by_default = False,
-        edit_control = display_factory(
-            "cocktail.html.CodeEditor", syntax = "python"
-        ),
-        text_search = False,
         member_group = "feed_items"
     )
 
     def select_items(self):
-         
+
         user_collection = UserCollection(Publishable)
         user_collection.allow_paging = False
         user_collection.allow_member_selection = False
         user_collection.allow_language_selection = False
         user_collection.params.source = self.query_parameters.get
-        user_collection.available_languages = Language.codes
+        user_collection.available_languages = \
+            Configuration.instance.get_enabled_languages()
         items = user_collection.subset
 
         if self.limit:
