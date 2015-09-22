@@ -124,7 +124,6 @@ from woost.models import Site, Publishable, Language
 
                 for trans_lang in publishable.translations:
                     if trans_lang in Language.codes \
-                    and trans_lang != language \
                     and publishable.get("translation_enabled", trans_lang) \
                     and self.is_fully_translated(publishable, trans_lang):
                         self.add_head_element(
