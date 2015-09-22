@@ -9,7 +9,6 @@ from cocktail import schema
 from cocktail.translations import get_language
 from cocktail.controllers import Location
 from cocktail.persistence import datastore, PersistentMapping
-from cocktail.html.datadisplay import display_factory
 from woost.models.item import Item
 
 
@@ -59,34 +58,16 @@ class CachingPolicy(Item):
         listed_by_default = False
     )
 
-    condition = schema.String(
-        edit_control = display_factory(
-            "cocktail.html.CodeEditor",
-            syntax = "python",
-            cols = 80
-        ),
-        listed_by_default = False,
-        text_search = False
+    condition = schema.CodeBlock(
+        language = "python"        
     )
 
-    cache_key_expression = schema.String(
-        edit_control = display_factory(
-            "cocktail.html.CodeEditor",
-            syntax = "python",
-            cols = 80
-        ),
-        listed_by_default = False,
-        text_search = False
+    cache_key_expression = schema.CodeBlock(
+        language = "python"
     )
 
-    last_update_expression = schema.String(
-         edit_control = display_factory(
-            "cocktail.html.CodeEditor",
-            syntax = "python",
-            cols = 80
-        ),
-        listed_by_default = False,
-        text_search = False
+    last_update_expression = schema.CodeBlock(
+        language = "python"
     )
 
     def applies_to(self, publishable, **context):

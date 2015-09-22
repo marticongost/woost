@@ -13,6 +13,7 @@ cocktail.bind({
  
         var inDialog = false;
         var loadedImages = {};
+        var singleImage = ($imageGallery.find(".image_entry").length < 2);
 
         $imageGallery.bind("imageLoaded", function (e, loadedImage) {
             loadedImages[loadedImage.src] = loadedImage;
@@ -121,6 +122,11 @@ cocktail.bind({
             this.loadImage(
                 jQuery(entry).find(".image_link").get(0).href,
                 function (image) {
+                    $dialog.find(".image")
+                        .width(image.width)
+                        .height(image.height);
+                    $dialog.find(".footnote")
+                        .width(image.width);
                     $dialog.show();
                     cocktail.center(dialog);
                     $dialog
@@ -133,7 +139,7 @@ cocktail.bind({
 
             // Synchronize the gallery and the image dialog
             if (this.sudoSlider) {
-                this.sudoSlider.goToSlide(jQuery(entry).index());
+                this.sudoSlider.goToSlide(jQuery(entry).index() + 1);
             }
         }
 
@@ -156,8 +162,6 @@ cocktail.bind({
             if (!entry) {
                 return;
             }
-
-            var singleImage = ($imageGallery.find(".image_entry").length < 2);
 
             var $entry = jQuery(entry);
             var imageURL = $entry.find(".image_link").attr("href");
@@ -267,7 +271,7 @@ cocktail.bind({
                 function () { $dialog.find(".header").fadeOut(); },
                 1500
             );
-            
+
             $dialog.hover(
                 function () {
                     $dialogControls.show();
@@ -284,7 +288,7 @@ cocktail.bind({
             return $dialog.get(0);
         }
 
-        if (this.galleryType == "slideshow") {
+        if (this.galleryType == "slideshow" && !singleImage) {
 
             this.sliderOptions.prevHtml = 
                 cocktail.instantiate("woost.views.ImageGallery.previous_button");

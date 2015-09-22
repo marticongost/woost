@@ -16,7 +16,7 @@ from cocktail.controllers import context
     <py:woost.views.ImageGallery
         py:id="image_gallery"
         py:gallery_type="slideshow"
-        py:images="@{a for a in self.product.attachments if a.resource_type == 'image'}"/>
+        py:images="@{[a for a in self.product.attachments if a.resource_type == 'image']}"/>
 
     <span py:id="price_label">@{self.product.price} @{self.currency}</span>
 
