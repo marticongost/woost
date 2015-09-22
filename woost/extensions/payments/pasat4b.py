@@ -6,9 +6,9 @@
 @organization:	Whads/Accent SL
 @since:			October 2009
 """
-from tpv.pasat4b import Pasat4bPaymentGateway as Implementation
 from cocktail import schema
 from cocktail.translations import translations
+from tpv.pasat4b import Pasat4bPaymentGateway as Implementation
 from woost.extensions.payments.paymentgateway import PaymentGateway
 
 

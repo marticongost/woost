@@ -6,7 +6,6 @@
 @organization:	Whads/Accent SL
 @since:			February 2010
 """
-from cocktail.events import event_handler
 from cocktail.translations import translations
 from cocktail import schema
 from woost.models import Extension
@@ -40,7 +39,7 @@ class PDFExtension(Extension):
             u"Permet publicar pàgines HTML en format PDF.",
             "ca"
         )
-        self.set("description",            
+        self.set("description",
             u"Permite publicar páginas HTML en formato PDF.",
             "es"
         )
@@ -56,10 +55,7 @@ class PDFExtension(Extension):
         text_search = False
     )
 
-    @event_handler
-    def handle_loading(cls, event):
-
-        extension = event.source
+    def _load(self):
 
         import os
         from shutil import rmtree
@@ -68,6 +64,8 @@ class PDFExtension(Extension):
         import cherrypy
         from cocktail.controllers import Location, serve_file
         from woost.controllers import BaseCMSController
+
+        extension = self
 
         def render_pdf(self):
 
@@ -91,7 +89,7 @@ class PDFExtension(Extension):
                     raise OSError("Error generating PDF"
                         + (": " + stderr) if stderr else ""
                     )
- 
+
                 # Serve the file
                 cherrypy.response.headers["Content-Type"] = "application/x-pdf"
 
@@ -104,8 +102,8 @@ class PDFExtension(Extension):
 
             finally:
                 rmtree(temp_path)
-        
-        BaseCMSController.render_pdf = render_pdf    
+
+        BaseCMSController.render_pdf = render_pdf
         BaseCMSController.allowed_rendering_formats = frozenset(
             list(BaseCMSController.allowed_rendering_formats)
           + ["pdf"]

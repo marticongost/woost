@@ -7,7 +7,9 @@ u"""
 @since:			September 2008
 """
 from cocktail import schema
-from woost.models.document import Document
+from .document import Document
+from .slot import Slot
+from .file import File
 
 
 class Event(Document):
@@ -16,16 +18,20 @@ class Event(Document):
         "event_start",
         "event_end",
         "event_location",
-        "body"
+        "image",
+        "summary",
+        "blocks"
     ]
 
     event_start = schema.DateTime(
-        member_group = "content"
+        member_group = "content",
+        indexed = True
     )
 
     event_end = schema.DateTime(
         member_group = "content",
-        min = event_start
+        min = event_start,
+        indexed = True
     )
 
     event_location = schema.String(
@@ -34,9 +40,19 @@ class Event(Document):
         member_group = "content"
     )
 
-    body = schema.String(
-        edit_control = "woost.views.RichTextEditor",
-        translated = True,
+    image = schema.Reference(
+        type = File,
+        relation_constraints = {"resource_type": "image"},
+        listed_by_default = False,
         member_group = "content"
     )
+
+    summary = schema.HTML(
+        translated = True,
+        edit_control = "woost.views.RichTextEditor",
+        listed_by_default = False,
+        member_group = "content"
+    )
+
+    blocks = Slot()
 

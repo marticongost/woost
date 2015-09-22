@@ -14,6 +14,7 @@ from cocktail.html import templates
 from woost.models import (
     Item,
     Publishable,
+    Document,
     Event,
     ChangeSet
 )
@@ -39,10 +40,10 @@ class ContentViewsRegistry(object):
         if type_views is None:
             type_views = set()
             self.__views[item_type] = type_views
-        
+
         type_views.add(content_view)
         self.__inheritance[(item_type, content_view)] = inherited
-        
+
         if params:
             self.set_params(item_type, content_view, params)
 
@@ -53,7 +54,7 @@ class ContentViewsRegistry(object):
         self.__views[item_type].remove(content_view)
 
     def get(self, item_type):
-        
+
         views = set()
 
         for cls in getmro(item_type):
@@ -71,7 +72,7 @@ class ContentViewsRegistry(object):
     def get_default(self, item_type):
         for cls in getmro(item_type):
             default = self.__default_views.get(cls)
-            
+
             if default is not None \
             and (cls is item_type or self.__inheritance.get((cls, default))):
                 return templates.get_class(default)
@@ -96,7 +97,7 @@ class ContentViewsRegistry(object):
 
         params = None
         cv_params = self.__params.get(content_view)
-        
+
         if cv_params is not None:
             params = cv_params.get(item_type)
 
@@ -108,13 +109,13 @@ class ContentViewsRegistry(object):
             content_view = templates.get_class(content_view)
 
         content_view = get_full_name(content_view)
-        
+
         cv_params = self.__params.get(content_view)
 
         if cv_params is None:
             cv_params = TypeMapping()
             self.__params[content_view] = cv_params
-        
+
         cv_params[item_type] = params
 
 
@@ -135,6 +136,13 @@ global_content_views.add(
 
 global_content_views.add(
     Publishable,
+    "woost.views.PublishableTreeContentView",
+    is_default = True,
+    inherited = False
+)
+
+global_content_views.add(
+    Document,
     "woost.views.PublishableTreeContentView",
     is_default = True,
     inherited = False

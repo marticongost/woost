@@ -1,26 +1,26 @@
 #-*- coding: utf-8 -*-
-"""
+u"""
 
-@author:		Martí Congost
-@contact:		marti.congost@whads.com
-@organization:	Whads/Accent SL
-@since:			February 2010
+.. moduleauthor:: Jordi Fernández <jordi.fernandez@whads.com>
 """
-from woost.models.rendering import (
-    content_renderers,
-    ImageURIRenderer,
-    HTMLRenderer
-)
-from woost.extensions.vimeo.video import VimeoVideo
+from json import loads
+from urllib2 import urlopen
+from woost.models.rendering import ImageURIRenderer
+from woost.extensions.vimeo.vimeovideo import VimeoVideo
+
+METADATA_URL_PATTERN = "http://vimeo.com/api/v2/video/%s.json"
+
+def get_video_metadata(video_id, timeout = 15):
+    url = METADATA_URL_PATTERN % video_id
+    json = urlopen(url, timeout = timeout).read()
+    return loads(json)[0]
 
 
 class VimeoVideoRenderer(ImageURIRenderer):
 
-    def can_render(self, item):
-        return isinstance(item, VimeoVideo)
+    def can_render(self, item, **parameters):
+        return isinstance(item, VimeoVideo) and item.video_id
 
     def get_item_uri(self, item):
-        return item.large_thumbnail_uri
-
-content_renderers.register(VimeoVideoRenderer(), before = HTMLRenderer)
+        return get_video_metadata(item.video_id)["thumbnail_large"]
 

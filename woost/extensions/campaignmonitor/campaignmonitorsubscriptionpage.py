@@ -13,14 +13,14 @@ from woost.extensions.campaignmonitor.campaignmonitorlist import \
 
 
 class CampaignMonitorSubscriptionPage(Document):
-    
+
     members_order = "lists", "subscription_form", "body"
 
     default_template = schema.DynamicDefault(
         lambda: Template.get_instance(
             qname = u"woost.extensions.campaignmonitor.subscription_template"
         )
-    )   
+    )
 
     default_controller = schema.DynamicDefault(
         lambda: Controller.get_instance(
@@ -28,10 +28,10 @@ class CampaignMonitorSubscriptionPage(Document):
         )
     )
 
-    body = schema.String(
+    body = schema.HTML(
         translated = True,
-        listed_by_default = False,    
-        edit_control = "woost.views.RichTextEditor",                                                                                                                                                           
+        listed_by_default = False,
+        edit_control = "woost.views.RichTextEditor",
         member_group = "content"
     )
 
@@ -39,10 +39,9 @@ class CampaignMonitorSubscriptionPage(Document):
         items = schema.Reference(
             type = CampaignMonitorList
         ),
-        edit_inline = True,
         member_group = "content",
         listed_by_default = False
-    )   
+    )
 
     subscription_form = schema.String(
         member_group = "content",

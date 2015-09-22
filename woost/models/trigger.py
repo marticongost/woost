@@ -15,13 +15,9 @@ from cocktail.translations import translations
 from cocktail.events import when
 from cocktail.persistence import datastore
 from cocktail.controllers import UserCollection
-from cocktail.html.datadisplay import display_factory
-from woost.models.action import Action
 from woost.models.changesets import ChangeSet
-from woost.models.site import Site
 from woost.models.item import Item
 from woost.models.role import Role
-from woost.models.language import Language
 from woost.models.usersession import get_current_user
 from woost.models.messagestyles import (
     trigger_style,
@@ -41,14 +37,14 @@ verbose = False
 
 
 def get_triggers_enabled():
-    """Indicates if trigger activation is enabled for the current thread.    
+    """Indicates if trigger activation is enabled for the current thread.
     @rtype: bool
     """
     return getattr(_thread_data, "enabled", True)
 
 def set_triggers_enabled(enabled):
     """Enables or disables the activation of triggers for the current thread.
-    
+
     @param enabled: Wether triggers should be enabled.
     @type enabled: bool
     """
@@ -69,7 +65,7 @@ class Trigger(Item):
         "custom_context",
         "responses"
     ]
-    
+
     title = schema.String(
         translated = True,
         descriptive = True
@@ -93,15 +89,10 @@ class Trigger(Item):
         required = True
     )
 
-    site = schema.Reference(
-        type = "woost.models.Site",
-        bidirectional = True,
-        visible = False
-    )
-
     responses = schema.Collection(
         items = "woost.models.TriggerResponse",
         bidirectional = True,
+        integral = True,
         related_key = "trigger"
     )
 
@@ -110,26 +101,15 @@ class Trigger(Item):
             type = Role,
             required = True
         ),
-        related_end = schema.Collection(),
-        edit_inline = True
+        related_end = schema.Collection()
     )
 
-    condition = schema.String(
-        edit_control = display_factory(
-            "cocktail.html.CodeEditor",
-            syntax = "python",
-            cols = 80
-        ),
-        text_search = False
+    condition = schema.CodeBlock(
+        language = "python"
     )
- 
-    custom_context = schema.String(
-        edit_control = display_factory(
-            "cocktail.html.CodeEditor",
-            syntax = "python",
-            cols = 80
-        ),
-        text_search = False
+
+    custom_context = schema.CodeBlock(
+        language = "python"
     )
 
     def match(self, user, verbose = False, **context):
@@ -176,7 +156,8 @@ class ContentTrigger(Trigger):
         user_collection.allow_member_selection = False
         user_collection.allow_language_selection = False
         user_collection.params.source = self.matching_items.get
-        user_collection.available_languages = Language.codes
+        from woost.models import Configuration
+        user_collection.available_languages = Configuration.instance.languages
         return user_collection.subset
 
     def match(self, user, target = None, verbose = False, **context):
@@ -221,7 +202,7 @@ class InsertTrigger(ContentTrigger):
 
 class ModifyTrigger(ContentTrigger):
     """A trigger executed when an item is modified."""
-    
+
     instantiable = True
     members_order = ["matching_members", "matching_languages"]
 
@@ -230,13 +211,19 @@ class ModifyTrigger(ContentTrigger):
         edit_control = "woost.views.MemberList"
     )
 
+    def _matching_languages_enumeration(ctx):
+        from woost.models import Configuration
+        return Configuration.instance.languages
+
     matching_languages = schema.Collection(
         items = schema.String(
-            enumeration = lambda ctx: Language.codes,
+            enumeration = lambda ctx: _matching_languages_enumeration,
             translate_value = lambda value, language = None, **kwargs:
                 u"" if not value else translations(value, language, **kwargs)
         )
     )
+
+    del _matching_languages_enumeration
 
     def match(self, user,
         target = None,
@@ -244,7 +231,7 @@ class ModifyTrigger(ContentTrigger):
         language = None,
         verbose = False,
         **context):
-        
+
         if self.matching_members:
             if member is None:
                 if verbose:
@@ -286,11 +273,6 @@ class DeleteTrigger(ContentTrigger):
     instantiable = True
 
 
-class ConfirmDraftTrigger(ContentTrigger):
-    """A trigger executed when a draft is confirmed."""
-    instantiable = True
-
-
 def trigger_responses(
     trigger_type,
     user = None,
@@ -321,7 +303,7 @@ def trigger_responses(
         # Get the data for the current transaction
         trans = datastore.connection.transaction_manager.get()
         trans_data = trans_dict.get(trans)
-        
+
         if trans_data is None:
             trans_triggers = {}
             modified_members = {}
@@ -341,16 +323,18 @@ def trigger_responses(
             if target_modified_members is None:
                 target_modified_members = set()
                 modified_members[target] = target_modified_members
-            
+
             target_modified_members.add(
                 (context["member"], context["language"])
             )
 
-        if not Site.main:
+        from woost.models.configuration import Configuration
+        config = Configuration.instance
+        if not config:
             return None
 
         # Execute or schedule matching triggers
-        for trigger in Site.main.triggers:
+        for trigger in config.triggers:
 
             if not isinstance(trigger, trigger_type):
                 continue
@@ -390,7 +374,7 @@ def trigger_responses(
             # Apply user defined customizations to the context
             # This can be specially useful to allow after-commit triggers to
             # capture state as it was when they were scheduled for execution
-            # (ie. when deleting elements or confirming drafts).
+            # (for example, when deleting elements).
             if trigger.custom_context:
                 ctx = {
                     "self": trigger,
@@ -405,7 +389,7 @@ def trigger_responses(
 
             # Execute after the transaction is committed
             if trigger.execution_point == "after":
-                
+
                 if trigger.batch_execution:
 
                     # Schedule the trigger to be executed when the current
@@ -507,8 +491,4 @@ def _trigger_relation_responses(event):
 @when(Item.deleted)
 def _trigger_deletion_responses(event):
     trigger_responses(DeleteTrigger, target = event.source)
-
-@when(Item.draft_confirmation)
-def _trigger_draft_confirmation_responses(event):
-    trigger_responses(ConfirmDraftTrigger, target = event.source)
 

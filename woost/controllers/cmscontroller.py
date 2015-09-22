@@ -20,15 +20,16 @@ except ImportError:
 import rfc822
 import cherrypy
 from cherrypy.lib.cptools import validate_since
+from simplejson import dumps
 from pkg_resources import resource_filename, iter_entry_points
 from beaker.cache import CacheManager
 from beaker.util import parse_cache_config_options
 from beaker.middleware import SessionMiddleware
 from cocktail.events import Event, event_handler
-from cocktail.translations import get_language, set_language
+from cocktail.translations import translations, get_language, set_language
 from cocktail.controllers import (
-    Dispatcher, 
-    Location, 
+    Dispatcher,
+    Location,
     folder_publisher,
     try_decode,
     session
@@ -36,32 +37,29 @@ from cocktail.controllers import (
 from cocktail.controllers.asyncupload import AsyncUploadController
 from cocktail.controllers.uriutils import percent_encode
 from cocktail.persistence import datastore
+from cocktail.html import templates
 from woost import app
+from woost.authenticationscheme import AuthenticationFailedError
 from woost.models import (
     Item,
     Publishable,
     URI,
-    Site,
+    File,
+    Configuration,
     ReadPermission,
     ReadTranslationPermission,
     AuthorizationError,
-    get_current_user
+    get_current_user,
+    get_current_website,
+    set_current_website
 )
-from woost.models.icons import IconResolver
 from woost.controllers.asyncupload import async_uploader
-from woost.controllers import get_cache_manager, set_cache_manager
 from woost.controllers.basecmscontroller import BaseCMSController
-from woost.controllers.language import LanguageModule
-from woost.controllers.authentication import (
-    AuthenticationModule,
-    AuthenticationFailedError
-)
 from woost.controllers.imagescontroller import ImagesController
-from woost.controllers.imageeffectscontroller import ImageEffectsController
 
 
 class CMSController(BaseCMSController):
-    
+
     application_settings = None
 
     # Application events
@@ -108,8 +106,8 @@ class CMSController(BaseCMSController):
         """)
 
     # Application modules
-    LanguageModule = LanguageModule
-    AuthenticationModule = AuthenticationModule
+    LanguageModule = None
+    AuthenticationModule = None
 
     # Webserver configuration
     virtual_path = "/"
@@ -133,12 +131,12 @@ class CMSController(BaseCMSController):
             using_file_sessions = (sconf.get("session.type") == "file")
             using_dbm_sessions = (sconf.get("session.type") == "dbm")
             lock_dir_missing = (
-                not using_file_sessions 
+                not using_file_sessions
                 and not sconf.get("session.lock_dir")
             )
             data_dir_missing = (
                 (
-                    using_file_sessions 
+                    using_file_sessions
                     or (using_dbm_sessions and not
                         sconf.get("session.dbm_dir"))
                 )
@@ -146,7 +144,7 @@ class CMSController(BaseCMSController):
             )
 
             if lock_dir_missing or data_dir_missing:
-                
+
                 session_path = app.path("sessions")
                 if not os.path.exists(session_path):
                     os.mkdir(session_path)
@@ -166,28 +164,12 @@ class CMSController(BaseCMSController):
                 else:
                     with open(session_key_path, "w") as session_key_file:
                         session_key = sha("".join(
-                            choice(ascii_letters) 
+                            choice(ascii_letters)
                             for i in range(10)
                         )).hexdigest()
                         session_key_file.write(session_key)
 
                 sconf["session.secret"] = session_key
-
-            # If the cache manager doesn't exist, create it
-            if not get_cache_manager():
-                cache_path = app.path('cache')
-
-                if not os.path.exists(cache_path):
-                    os.mkdir(cache_path)
-
-                cache_manager = CacheManager(
-                    **parse_cache_config_options({
-                        'cache.lock_dir': cache_path,
-                        'cache.regions': 'woost_cache',
-                        'cache.woost_cache.type': 'memory'
-                    })
-                )
-                set_cache_manager(cache_manager)
 
             # Create the folders for uploaded files
             upload_path = app.path("upload")
@@ -209,7 +191,7 @@ class CMSController(BaseCMSController):
         resources = folder_publisher(
             resource_filename("woost.views", "resources")
         )
-        
+
         cocktail = folder_publisher(
             resource_filename("cocktail.html", "resources")
         )
@@ -217,29 +199,61 @@ class CMSController(BaseCMSController):
     def session_middleware(self, app):
         return SessionMiddleware(app, session.config)
 
+    @property
+    def language(self):
+        warn(
+            "CMSController.language is deprecated, use app.language instead",
+            DeprecationWarning,
+            stacklevel = 2
+        )
+        return app.language
+
+    @property
+    def authentication(self):
+        warn(
+            "CMSController.authentication is deprecated, use "
+            "app.authentication instead",
+            DeprecationWarning,
+            stacklevel = 2
+        )
+        return app.authentication
+
     def __init__(self, *args, **kwargs):
-    
+
         BaseCMSController.__init__(self, *args, **kwargs)
 
-        self.language = self.LanguageModule(self)
-        self.authentication = self.AuthenticationModule(self)
+        if self.LanguageModule:
+            warn(
+                "CMSController.LanguageModule is deprecated, use "
+                "app.language instead",
+                DeprecationWarning
+            )
+            app.language = self.LanguageModule()
+
+        if self.AuthenticationModule:
+            warn(
+                "CMSController.AuthenticationModule is deprecated, use "
+                "app.authentication instead",
+                DeprecationWarning
+            )
+            app.authentication = self.AuthenticationModule()
 
     def run(self, block = True):
-                
+
         self.mount()
-    
+
         if hasattr(cherrypy.engine, "signal_handler"):
             cherrypy.engine.signal_handler.subscribe()
 
         if hasattr(cherrypy.engine, "console_control_handler"):
             cherrypy.engine.console_control_handler.subscribe()
-    
+
         cherrypy.engine.start()
-        
+
         if block:
             cherrypy.engine.block()
         else:
-            cherrypy.engine.wait(cherrypy.engine.states.STARTED)            
+            cherrypy.engine.wait(cherrypy.engine.states.STARTED)
 
     def mount(self):
 
@@ -257,32 +271,22 @@ class CMSController(BaseCMSController):
         )
 
     def resolve(self, path):
-        
+
         # Allow application modules (ie. language) to process the URI before
         # resolving the requested publishable item
         self._process_path(path)
- 
-        site = Site.main
+
         request = cherrypy.request
-        unicode_path = [try_decode(step) for step in path]
 
         # Item resolution
-        path_resolution = site.resolve_path(unicode_path)
-
-        if path_resolution:
-            publishable = path_resolution.item
-
-            for step in path_resolution.matching_path:
-                path.pop(0)
-
-            self.canonical_redirection(path_resolution)        
-        else:
-            publishable = site.home
-        
+        publishable = self._resolve_path(path)
         self.context["publishable"] = publishable
 
         # HTTP/HTTPS check
         self._apply_https_policy(publishable)
+
+        # Check maintenance mode
+        self._maintenance_check(publishable)
 
         # Controller resolution
         controller = publishable.resolve_controller()
@@ -290,31 +294,16 @@ class CMSController(BaseCMSController):
         if controller is None:
             raise cherrypy.NotFound()
 
-        # Add the selected language to the current URI
-        if publishable.per_language_publication:
-            if not request.language_specified:
-                location = Location.get_current()
-                location.path_info = "/" + get_language() + location.path_info
-                location.go()
-
-        # Remove the language selection from the current URI
-        elif request.language_specified:
-            location = Location.get_current()
-            location.path_info = \
-                "/" + "/".join(location.path_info.strip("/").split("/")[1:])
-            location.go()
-
         return controller
 
     def canonical_redirection(self, path_resolution):
         """Redirect the current request to the canonical URL for the selected
         publishable element.
-        """        
-        site = Site.main
+        """
         publishable = path_resolution.item
 
         # Find the canonical path for the element
-        canonical_path = site.get_path(publishable)
+        canonical_path = app.url_resolver.get_path(publishable)
 
         if canonical_path is None:
             return
@@ -341,7 +330,7 @@ class CMSController(BaseCMSController):
 
         if publishable.per_language_publication:
             canonical_uri = \
-                self.language.translate_uri(canonical_uri)
+                app.language.translate_uri(canonical_uri)
 
         if cherrypy.request.query_string:
             canonical_uri = canonical_uri + \
@@ -352,7 +341,44 @@ class CMSController(BaseCMSController):
     def _process_path(self, path):
 
         # Invoke the language module to set the active language
-        self.language.process_request(path)
+        app.language.process_request(path)
+
+    def _maintenance_check(self, publishable):
+
+        if isinstance(publishable, File):
+            return
+
+        config = Configuration.instance
+        website = get_current_website()
+
+        if (
+            config.down_for_maintenance
+            or (website and website.down_for_maintenance)
+        ):
+            headers = cherrypy.request.headers
+            client_ip = headers.get("X-Forwarded-For") \
+                     or headers.get("Remote-Addr")
+
+            if client_ip not in config.maintenance_addresses:
+                raise cherrypy.HTTPError(503, "Site down for maintenance")
+
+    def _resolve_path(self, path):
+
+        unicode_path = [try_decode(step) for step in path]
+        path_resolution = app.url_resolver.resolve_path(unicode_path)
+
+        if path_resolution:
+            publishable = path_resolution.item
+
+            for step in path_resolution.matching_path:
+                path.pop(0)
+
+            self.canonical_redirection(path_resolution)
+        else:
+            website = get_current_website()
+            publishable = website.home if website else None
+
+        return publishable
 
     def uri(self, publishable, *args, **kwargs):
         """Obtains the canonical absolute URI for the given item.
@@ -383,15 +409,15 @@ class CMSController(BaseCMSController):
 
         # Regular elements
         else:
-            uri = Site.main.get_path(publishable)
-            
+            uri = app.url_resolver.get_path(publishable)
+
             if uri is not None:
-                
+
                 if publishable.per_language_publication:
-                    uri = self.language.translate_uri(uri)
+                    uri = app.language.translate_uri(uri)
 
                 uri = self.application_uri(uri, *args, **kwargs)
- 
+
         if uri:
             uri = "".join(percent_encode(c) for c in uri)
 
@@ -399,7 +425,7 @@ class CMSController(BaseCMSController):
 
     def translate_uri(self, path = None, language = None):
         return self.application_uri(
-            self.language.translate_uri(path = path, language = language)
+            app.language.translate_uri(path = path, language = language)
         )
 
     def image_uri(self, element, factory = "default"):
@@ -419,12 +445,20 @@ class CMSController(BaseCMSController):
             raise cherrypy.NotFound()
 
         user = get_current_user()
-        
+
         user.require_permission(ReadPermission, target = publishable)
         user.require_permission(
             ReadTranslationPermission,
             language = get_language()
         )
+
+    def _establish_active_website(self):
+        location = Location.get_current_host()
+        website = Configuration.instance.get_website_by_host(location.host)
+        set_current_website(website)
+
+        if website is None:
+            raise cherrypy.HTTPError(404, "Unknown hostname: " + location.host)
 
     @event_handler
     def handle_traversed(cls, event):
@@ -432,27 +466,55 @@ class CMSController(BaseCMSController):
         datastore.sync()
 
         cms = event.source
-        
+
         cms.context.update(
             cms = cms,
             publishable = None
         )
 
-        # Set the default language as soon as possible
-        language = cms.language.infer_language()
+        # Determine the active website
+        cms._establish_active_website()
+
+        # Set the default language
+        language = app.language.infer_language()
         set_language(language)
 
         # Invoke the authentication module
-        cms.authentication.process_request()
+        app.authentication.process_request()
 
     @event_handler
     def handle_before_request(cls, event):
-        
+
         cms = event.source
 
-        # Validate access to the requested item
         publishable = cms.context.get("publishable")
+
         if publishable is not None:
+
+            # Add the selected language to the current URI
+            if publishable.per_language_publication:
+                if not cherrypy.request.language_specified:
+                    location = Location.get_current()
+                    uri = app.language.translate_uri()
+                    # Remove the query string from the translated uri
+                    pos = uri.find("?")
+                    if pos != -1:
+                        uri = uri[:pos]
+                    location.path_info = uri
+                    location.go()
+
+            # Remove the language selection from the current URI
+            elif cherrypy.request.language_specified:
+                location = Location.get_current()
+                location.path_info = \
+                    "/" + "/".join(location.path_info.strip("/").split("/")[1:])
+                location.go()
+
+            # Possibly redirect to another website, if the selected publishable is
+            # specific to another website
+            cms._apply_website_exclusiveness(publishable)
+
+            # Validate access to the requested item
             cms.validate_publishable(publishable)
 
             # Set the content type and encoding
@@ -471,13 +533,16 @@ class CMSController(BaseCMSController):
         cms = event.source
         event.output.update(
             cms = cms,
-            site = Site.main,
             user = get_current_user(),
             publishable = event.controller.context.get("publishable")
         )
 
     @event_handler
     def handle_exception_raised(cls, event):
+
+        # Couldn't establish the active website: show a generic error
+        if get_current_website() is None:
+            return
 
         error = event.exception
         controller = event.source
@@ -491,9 +556,10 @@ class CMSController(BaseCMSController):
         if content_type in ("text/html", "text/xhtml"):
 
             error_page, status = event.source.get_error_page(error)
+            response = cherrypy.response
 
             if status:
-                cherrypy.request.status = status
+                response.status = status
 
             if error_page:
                 event.handled = True
@@ -505,10 +571,7 @@ class CMSController(BaseCMSController):
                     original_publishable = controller.context["publishable"],
                     publishable = error_page
                 )
-                
-                response = cherrypy.response
-                response.status = status 
-                
+
                 error_controller = error_page.resolve_controller()
 
                 # Instantiate class based controllers
@@ -517,7 +580,7 @@ class CMSController(BaseCMSController):
                     error_controller._rendering_format = "html"
 
                 response.body = error_controller()
-    
+
     def get_error_page(self, error):
         """Produces a custom error page for the indicated exception.
 
@@ -530,42 +593,68 @@ class CMSController(BaseCMSController):
             changed, respectively.
         @rtype: (L{Document<woost.models.Document>}, int)
         """
-        site = Site.main
         is_http_error = isinstance(error, cherrypy.HTTPError)
+        config = Configuration.instance
+        page = None
+        page_name = None
+        status = None
 
         # Page not found
         if is_http_error and error.status == 404:
-            return site.not_found_error_page, 404
-        
+            return config.get_setting("not_found_error_page"), 404
+
+        # Service unavailable
+        elif is_http_error and error.status == 503:
+            return config.get_setting("maintenance_page"), 503
+
         # Access forbidden:
         # The default behavior is to show a login page for anonymous users, and
         # a 403 error message for authenticated users.
-        elif is_http_error and error.status == 403 \
-        or isinstance(error, (AuthorizationError, AuthenticationFailedError)):
+        elif (
+            (is_http_error and error.status == 403)
+            or isinstance(error, (AuthorizationError, AuthenticationFailedError))
+        ):
             if get_current_user().anonymous:
-                return site.login_page, 200
+                publishable = self.context["publishable"]
+
+                while publishable is not None:
+                    login_page = publishable.login_page
+                    if login_page is not None:
+                        return login_page, 403
+                    publishable = publishable.parent
+
+                return config.get_setting("login_page"), 403
             else:
-                return site.forbidden_error_page, 403
-        
+                return config.get_setting("forbidden_error_page"), 403
+
         # Generic error
-        else:
-            return site.generic_error_page, 500
+        elif (is_http_error and error.status == 500) or not is_http_error:
+            return config.get_setting("generic_error_page"), 500
 
         return None, None
 
+    def _apply_website_exclusiveness(self, publishable):
+        if (
+            publishable.websites
+            and get_current_website() not in publishable.websites
+        ):
+            raise cherrypy.HTTPRedirect(
+                publishable.get_uri(host = publishable.websites[0].hosts[0])
+            )
+
     def _apply_https_policy(self, publishable):
-        
-        site = Site.main
-        policy = site.https_policy
+
+        policy = Configuration.instance.get_setting("https_policy")
+        website = get_current_website()
 
         if policy == "always":
             Location.require_https()
         elif policy == "never":
             Location.require_http()
         elif policy == "per_page":
-            if publishable.requires_https:
+            if publishable.requires_https or not get_current_user().anonymous:
                 Location.require_https()
-            elif not site.https_persistence:
+            elif not website.https_persistence:
                 Location.require_http()
 
     @event_handler
@@ -573,8 +662,21 @@ class CMSController(BaseCMSController):
         datastore.abort()
 
     images = ImagesController
-    image_effects = ImageEffectsController
 
     async_upload = AsyncUploadController()
     async_upload.uploader = async_uploader
+
+    @cherrypy.expose
+    def current_user(self):
+        cherrypy.response.headers["Content-Type"] = "text/javascript"
+        user = get_current_user()
+        return "cocktail.declare('woost'); woost.user = %s;" % dumps(
+            {
+                "id": user.id,
+                "label": translations(user),
+                "identifier": user.get(app.authentication.identifier_field),
+                "anonymous": user.anonymous
+            }
+            if user else None
+        )
 

@@ -7,13 +7,14 @@
 @since:			June 2009
 """
 from cocktail import schema
-from cocktail.controllers.viewstate import view_state
 from woost.models.item import Item
 from woost.models.role import Role
+from woost.models.publishable import Publishable
 
 
 class UserView(Item):
 
+    type_group = "users"
     members_order = ["title", "parameters", "roles"]
     edit_controller = \
         "woost.controllers.backoffice.userviewfieldscontroller." \
@@ -49,7 +50,7 @@ class UserView(Item):
                         prev_value.append(value)
                 else:
                     params[key] = value
-        
+
         return params
 
     def _serialize_parameters(value):
@@ -64,8 +65,7 @@ class UserView(Item):
             return ""
 
     parameters = schema.Mapping(
-        keys = schema.String(),
-        edit_inline = True
+        keys = schema.String()
     )
 
     del _parse_parameters
@@ -76,9 +76,7 @@ class UserView(Item):
         bidirectional = True
     )
 
-    def uri(self, **kwargs):        
-        params = self.parameters.copy()
-        params.update(kwargs)
-        params = dict((str(key), value) for key, value in params.iteritems())
-        return "?" + view_state(**params)
+    def uri(self, **kwargs):
+        backoffice = Publishable.require_instance(qname = "woost.backoffice")
+        return backoffice.get_uri(parameters = self.parameters)
 

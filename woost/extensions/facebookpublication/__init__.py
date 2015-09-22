@@ -3,7 +3,6 @@ u"""Defines the `FacebookPublicationExtension` class.
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
-from cocktail.events import event_handler
 from cocktail.translations import translations
 from cocktail import schema
 from woost.models import Extension
@@ -31,7 +30,7 @@ class FacebookPublicationExtension(Extension):
             u"""Simplifica la publicació de continguts del lloc web al Facebook""",
             "ca"
         )
-        self.set("description",            
+        self.set("description",
             u"""Simplifica la publicación de contenidos del sitio web en
             Facebook""",
             "es"
@@ -41,16 +40,15 @@ class FacebookPublicationExtension(Extension):
             "en"
         )
 
-    @event_handler
-    def handle_loading(cls, event):
-        
+    def _load(self):
+
         from woost.extensions.facebookpublication import (
             strings,
             fbpublishuseraction,
             fbpublishauthuseraction,
             facebookpublicationpermission
         )
-        
+
         from woost.extensions.facebookpublication.facebookpublicationtarget \
             import FacebookPublicationTarget
 

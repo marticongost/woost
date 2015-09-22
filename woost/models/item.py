@@ -6,50 +6,72 @@ u"""
 @organization:	Whads/Accent SL
 @since:			June 2008
 """
-from datetime import datetime
-from cocktail.modeling import getter, ListWrapper, SetWrapper
-from cocktail.events import event_handler, Event
+import re
+from datetime import date, datetime
+from contextlib import contextmanager
+from cocktail.styled import styled
+from cocktail.iteration import first
+from cocktail.modeling import getter, ListWrapper, SetWrapper, DictWrapper
+from cocktail.events import event_handler, when, Event, EventInfo
 from cocktail import schema
 from cocktail.translations import translations
+from cocktail.caching import whole_cache
+from cocktail.caching.utils import nearest_expiration
 from cocktail.persistence import (
-    datastore, 
-    PersistentObject, 
-    PersistentClass, 
+    datastore,
+    PersistentObject,
+    PersistentClass,
     PersistentMapping,
     MaxValue
 )
-from woost.models.changesets import ChangeSet, Change
-from woost.models.action import Action
+from cocktail.controllers import (
+    make_uri,
+    percent_encode_uri,
+    resolve_object_ref,
+    Location
+)
+from woost import app
+from .websitesession import get_current_website
+from .changesets import ChangeSet, Change
+from .usersession import get_current_user
 
-# Extension property that allows changing the controller that handles a
-# collection in the backoffice
-schema.Collection.edit_controller = \
-    "woost.controllers.backoffice.collectioncontroller." \
-    "CollectionController"
+_protocol_regexp = re.compile(r"^[a-z][\-a-z0-9]*:")
 
-# Extension property that makes it easier to customize the edit view for a
-# collection in the backoffice
-schema.Collection.edit_view = None
+# Extension property to determine which members should trigger a cache
+# invalidation request
+schema.Member.invalidates_cache = True
 
-# Extension property that sets the default type that should be shown by default
-# when opening an item selector for the indicated property
-schema.RelationMember.selector_default_type = None
+# Extension property to fine tune the reach of cache invalidation requests
+# based on a change for a specific member
+schema.Member.cache_part = None
+
+# Extension property to denote members which affect the cache expiration time
+# for its containing models
+schema.Member.affects_cache_expiration = False
+
 
 class Item(PersistentObject):
     """Base class for all CMS items. Provides basic functionality such as
-    authorship, group membership, draft copies and versioning.
+    authorship, modification timestamps, versioning and synchronization.
     """
+    type_group = "setup"
+    instantiable = False
+
     members_order = [
         "id",
         "qname",
+        "global_id",
+        "synchronizable",
         "author",
-        "owner"
+        "creation_time",
+        "last_update_time",
+        "last_translation_update_time"
     ]
 
     # Enable full text indexing for all items (although the Item class itself
     # doesn't provide any searchable text field by default, its subclasses may,
     # or it may be extended; by enabling full text indexing at the root class,
-    # heterogeneous queries on the whole Item class will use available 
+    # heterogeneous queries on the whole Item class will use available
     # indexes).
     full_text_indexed = True
 
@@ -57,17 +79,63 @@ class Item(PersistentObject):
     # the backoffice root view
     visible_from_root = True
 
-    def __translate__(self, language, **kwargs):
-        if self.draft_source is not None:
-            return translations(
-                "woost.models.Item draft copy",
-                language,
-                item = self.draft_source,
-                draft_id = self._draft_id,
-                **kwargs
+    # Extension property that indicates if the backoffice should show child
+    # entries for this content type in the type selector
+    collapsed_backoffice_menu = False
+
+    # Customization of the heading for BackOfficeItemView
+    backoffice_heading_view = "woost.views.BackOfficeItemHeading"
+
+    # Customization of the backoffice preview action
+    preview_view = "woost.views.BackOfficePreviewView"
+    preview_controller = "woost.controllers.backoffice." \
+        "previewcontroller.PreviewController"
+
+    def __init__(self, *args, **kwargs):
+        PersistentObject.__init__(self, *args, **kwargs)
+
+        # Assign a global ID for the object (unless one was passed in as a
+        # keyword parameter)
+        if self.global_id is None and self.id:
+            self._generate_global_id()
+
+    @event_handler
+    def handle_inherited(cls, e):
+        if (
+            isinstance(e.schema, schema.SchemaClass)
+            and "instantiable" not in e.schema.__dict__
+        ):
+            e.schema.instantiable = True
+
+    def any_translation(self, language_chain = None, **kwargs):
+
+        if language_chain is None:
+            from woost.models import Configuration
+            user = get_current_user()
+            language_chain = (
+                user
+                and user.backoffice_language_chain
+                or Configuration.instance.backoffice_language_chain
             )
+
+        if not language_chain:
+            return translations(self, **kwargs)
         else:
-            return PersistentObject.__translate__(self, language, **kwargs)
+            for language in language_chain:
+                label = translations(
+                    self,
+                    language = language,
+                    discard_generic_translation = True,
+                    **kwargs
+                )
+                if label:
+                    return label
+            else:
+                return translations(
+                    self,
+                    language = language_chain[0],
+                    **kwargs
+                )
 
     # Unique qualified name
     #--------------------------------------------------------------------------
@@ -75,6 +143,42 @@ class Item(PersistentObject):
         unique = True,
         indexed = True,
         text_search = False,
+        listed_by_default = False,
+        member_group = "administration"
+    )
+
+    # Synchronization
+    #------------------------------------------------------------------------------
+    global_id = schema.String(
+        required = True,
+        unique = True,
+        indexed = True,
+        normalized_index = False,
+        synchronizable = False,
+        invalidates_cache = False,
+        listed_by_default = False,
+        text_search = False,
+        member_group = "administration"
+    )
+
+    def _generate_global_id(self):
+
+        if not app.installation_id:
+            raise ValueError(
+                "No value set for woost.app.installation_id; "
+                "make sure your settings file specifies a unique "
+                "identifier for this installation of the site."
+            )
+
+        self.global_id = "%s-%d" % (app.installation_id, self.id)
+
+    synchronizable = schema.Boolean(
+        required = True,
+        indexed = True,
+        synchronizable = False,
+        default = True,
+        shadows_attribute = True,
+        invalidates_cache = False,
         listed_by_default = False,
         member_group = "administration"
     )
@@ -98,25 +202,6 @@ class Item(PersistentObject):
     @getter
     def is_deleted(self):
         return self.__deleted
-
-    # Indexing
-    #--------------------------------------------------------------------------
- 
-    # Make sure draft copies' members don't get indexed
-    def _should_index_member(self, member):
-        return PersistentObject._should_index_member(self, member) and (
-            member.primary or self.draft_source is None
-        )
-
-    def _should_index_member_full_text(self, member):
-        return PersistentObject._should_index_member_full_text(self, member) \
-            and self.draft_source is None
-
-     # When validating unique members, ignore conflicts with the draft source
-    def _counts_as_duplicate(self, other):
-        return PersistentObject._counts_as_duplicate(self, other) \
-            and other is not self.draft_source \
-            and self is not other.draft_source
 
     # Last change timestamp
     #--------------------------------------------------------------------------
@@ -144,159 +229,56 @@ class Item(PersistentObject):
         required = True,
         versioned = False,
         editable = False,
+        synchronizable = False,
         items = "woost.models.Change",
         bidirectional = True,
-        visible = False
+        invalidates_cache = False,
+        visible = False,
+        affects_last_update_time = False
     )
 
     creation_time = schema.DateTime(
         versioned = False,
+        indexed = True,
         editable = False,
-        member_group = "administration",
-        indexed = True
+        synchronizable = False,
+        invalidates_cache = False,
+        member_group = "administration"
     )
 
     last_update_time = schema.DateTime(
         indexed = True,
         versioned = False,
         editable = False,
+        synchronizable = False,
+        invalidates_cache = False,
+        affects_last_update_time = False,
         member_group = "administration"
     )
 
-    is_draft = schema.Boolean(
-        required = True,
-        default = False,
-        indexed = True,
-        listed_by_default = False,
-        editable = False,
-        versioned = False,
-        member_group = "administration"
-    )
-
-    draft_source = schema.Reference(
-        type = "woost.models.Item",
-        related_key = "drafts",
-        bidirectional = True,
-        editable = False,
-        listed_by_default = False,
+    last_translation_update_time = schema.DateTime(
+        translated = True,
         indexed = True,
         versioned = False,
-        member_group = "administration"
-    )
-
-    drafts = schema.Collection(
-        items = "woost.models.Item",
-        related_key = "draft_source",
-        bidirectional = True,
-        cascade_delete = True,
         editable = False,
-        versioned = False,
-        searchable = False,
+        synchronizable = False,
+        invalidates_cache = False,
+        affects_last_update_time = False,
+        listed_by_default = False,
         member_group = "administration"
     )
-
-    _draft_count = 0
-    _draft_id = None
-
-    @getter
-    def draft_id(self):
-        """A numerical identifier for draft copies, guaranteed to be unique
-        among their source item.
-        @type: int
-        """
-        return self._draft_id
-
-    def make_draft(self):
-        """Creates a new draft copy of the item. Subclasses can tweak the copy
-        process by overriding either this method or L{get_draft_adapter} (for
-        example, to exclude one or more members).
-
-        @return: The draft copy of the item.
-        @rtype: L{Item}
-        """
-        draft = self.__class__(bidirectional = False)
-        draft.bidirectional = True
-        draft.draft_source = self
-        draft.is_draft = True
-        draft.bidirectional = False
-        
-        self._draft_count += 1
-        draft._draft_id = self._draft_count
-
-        adapter = self.get_draft_adapter()
-        adapter.export_object(
-            self,
-            draft,
-            source_schema = self.__class__,
-            source_accessor = schema.SchemaObjectAccessor,
-            target_accessor = schema.SchemaObjectAccessor
-        )
-        
-        return draft
-
-    draft_confirmation = Event(doc = """
-        An event triggered just before a draft is confirmed.
-        """)
-
-    def confirm_draft(self):
-        """Confirms a draft. On draft copies, this applies all the changes made
-        by the draft to its source element, and deletes the draft. On brand new
-        drafts, the item itself simply drops its draft status, and otherwise
-        remains the same.
-        
-        @raise ValueError: Raised if the item is not a draft.
-        """            
-        if not self.is_draft:
-            raise ValueError("confirm_draft() must be called on a draft")
-
-        self.draft_confirmation()
-
-        if self.draft_source is None:
-            self.bidirectional = True
-            self.is_draft = False
-        else:
-            adapter = self.get_draft_adapter()
-            adapter.source_accessor = schema.SchemaObjectAccessor
-            adapter.target_accessor = schema.SchemaObjectAccessor
-            adapter.import_object(
-                self,
-                self.draft_source,
-                source_schema = self.__class__
-            )
-            self.delete()
-
-    @classmethod
-    def get_draft_adapter(cls):
-        """Produces an adapter that defines the copy process used by the
-        L{make_draft} method in order to produce draft copies of the item.
-
-        @return: An adapter with all the rules required to obtain a draft copy
-            of the item.
-        @rtype: L{Adapter<cocktail.schema.adapter.Adapter>}
-        """
-        adapter = schema.Adapter()
-        adapter.collection_copy_mode = schema.shallow
-        adapter.exclude([
-            member.name
-            for member in cls.members().itervalues()
-            if cls._should_exclude_in_draft(member)
-        ] + ["owner"])
-        return adapter
-
-    @classmethod
-    def _should_exclude_in_draft(cls, member):
-        return not member.editable or not member.visible
 
     @classmethod
     def _create_translation_schema(cls, members):
         members["versioned"] = False
         PersistentObject._create_translation_schema.im_func(cls, members)
-        
+
     @classmethod
     def _add_member(cls, member):
         if member.name == "translations":
             member.editable = False
             member.searchable = False
+            member.synchronizable = False
         PersistentClass._add_member(cls, member)
 
     def _get_revision_state(self):
@@ -312,7 +294,7 @@ class Item(PersistentObject):
         state = PersistentMapping()
 
         for key, member in self.__class__.members().iteritems():
-           
+
             if not member.versioned:
                 continue
 
@@ -323,7 +305,7 @@ class Item(PersistentObject):
                 )
             else:
                 value = self.get(key)
-                
+
                 # Make a copy of mutable objects
                 if isinstance(
                     value, (list, set, ListWrapper, SetWrapper)
@@ -342,33 +324,34 @@ class Item(PersistentObject):
         now = datetime.now()
         item.creation_time = now
         item.last_update_time = now
+
+        for language in item.translations:
+            item.set("last_translation_update_time", now, language)
+
         item.set_last_instance_change(now)
         item.__deleted = False
 
-        if not item.is_draft and item.__class__.versioned:
+        if item.__class__.versioned:
             changeset = ChangeSet.current
 
             if changeset:
                 change = Change()
-                change.action = Action.get_instance(identifier = "create")
+                change.action = "create"
                 change.target = item
                 change.changed_members = set(
                     member.name
-                    for member in item.__class__.members().itervalues()
+                    for member in item.__class__.iter_members()
                     if member.versioned
                 )
                 change.item_state = item._get_revision_state()
                 change.changeset = changeset
                 changeset.changes[item.id] = change
-                
+
                 if item.author is None:
                     item.author = changeset.author
 
-                if item.owner is None:
-                    item.owner = changeset.author
-                
                 change.insert(event.inserted_objects)
-        
+
     # Extend item modification to make it versioning aware
     @event_handler
     def handle_changed(cls, event):
@@ -376,17 +359,22 @@ class Item(PersistentObject):
         item = event.source
         now = None
 
-        if item.is_inserted:
+        update_timestamp = (
+            item.is_inserted
+            and event.member.affects_last_update_time
+            and not getattr(item, "_v_is_producing_default", False)
+        )
+
+        if update_timestamp:
             now = datetime.now()
             item.set_last_instance_change(now)
 
         if getattr(item, "_v_initializing", False) \
         or not event.member.versioned \
         or not item.is_inserted \
-        or item.is_draft \
         or not item.__class__.versioned:
             return
-        
+
         changeset = ChangeSet.current
 
         if changeset:
@@ -396,23 +384,26 @@ class Item(PersistentObject):
             change = changeset.changes.get(item.id)
 
             if change is None:
-                action_type = "modify"
+                action = "modify"
                 change = Change()
-                change.action = Action.get_instance(identifier = action_type)
+                change.action = action
                 change.target = item
                 change.changed_members = set()
                 change.item_state = item._get_revision_state()
                 change.changeset = changeset
                 changeset.changes[item.id] = change
-                item.last_update_time = now or datetime.now()
+                if update_timestamp:
+                    item.last_update_time = now
+                    if event.member.translated:
+                        item.set("last_translation_update_time", now, event.language)
                 change.insert()
             else:
-                action_type = change.action.identifier
+                action = change.action
 
-            if action_type == "modify":
+            if action == "modify":
                 change.changed_members.add(member_name)
-                
-            if action_type in ("create", "modify"):
+
+            if action in ("create", "modify"):
                 value = event.value
 
                 # Make a copy of mutable objects
@@ -425,12 +416,21 @@ class Item(PersistentObject):
                     change.item_state[member_name][language] = value
                 else:
                     change.item_state[member_name] = value
-        else:
-            item.last_update_time = datetime.now()
+        elif update_timestamp:
+            item.last_update_time = now
+            if event.member.translated:
+                item.set("last_translation_update_time", now, event.language)
+
+        if (
+            event.member is cls.primary_member
+            and not item._v_initializing
+            and item.global_id is None
+        ):
+            item._generate_global_id()
 
     @event_handler
     def handle_deleting(cls, event):
-        
+
         item = event.source
 
         # Update the last time of modification for the item
@@ -438,70 +438,398 @@ class Item(PersistentObject):
         item.set_last_instance_change(now)
         item.last_update_time = now
 
-        if not item.is_draft and item.__class__.versioned:
+        if item.__class__.versioned:
             changeset = ChangeSet.current
 
             # Add a revision for the delete operation
             if changeset:
                 change = changeset.changes.get(item.id)
 
-                if change and change.action.identifier != "delete":
+                if change and change.action != "delete":
                     del changeset.changes[item.id]
 
                 if change is None \
-                or change.action.identifier not in ("create", "delete"):
+                or change.action not in ("create", "delete"):
                     change = Change()
-                    change.action = Action.get_instance(identifier = "delete")
+                    change.action = "delete"
                     change.target = item
                     change.changeset = changeset
                     changeset.changes[item.id] = change
                     change.insert()
 
         item.__deleted = True
-    
-    @event_handler
-    def handle_deleted(cls, event):
-        
-        item = event.source
-
-        # Break the relation to the draft's source. This needs to be done
-        # explicitly, because drafts are flagged as non bidirectional (to keep
-        # their changes in isolation), which prevents automatic management of
-        # referential integrity
-        if item.draft_source is not None:
-            item.draft_source.drafts.remove(item)
 
     _preserved_members = frozenset([changes])
 
-    def _should_cascade_delete(self, member):
-        return member.cascade_delete and not self.is_draft
-
     def _should_erase_member(self, member):
-        return PersistentObject._should_erase_member(self, member) \
-            and member not in self._preserved_members \
-            and member is not self.__class__.draft_source
+        return (
+            PersistentObject._should_erase_member(self, member)
+            and member not in self._preserved_members
+        )
 
-    # Ownership and authorship
+    # Authorship
     #--------------------------------------------------------------------------
     author = schema.Reference(
         indexed = True,
         editable = False,
         type = "woost.models.User",
         listed_by_default = False,
+        invalidates_cache = False,
         member_group = "administration"
     )
-    
-    owner = schema.Reference(
-        indexed = True,
-        type = "woost.models.User",
-        listed_by_default = False,
-        member_group = "administration"
-    )
+
+    # URLs
+    #--------------------------------------------------------------------------
+    def get_image_uri(self,
+        image_factory = None,
+        parameters = None,
+        encode = True,
+        include_extension = True,
+        host = None,):
+
+        representative_image = self.get_representative_image(image_factory)
+        if representative_image is not None:
+            return representative_image.get_image_uri(
+                image_factory = image_factory,
+                parameters = parameters,
+                encode = encode,
+                include_extension = include_extension,
+                host = host
+            )
+
+        uri = make_uri("/images", self.id)
+        ext = None
+
+        if image_factory:
+            if isinstance(image_factory, basestring):
+                pos = image_factory.rfind(".")
+                if pos != -1:
+                    ext = image_factory[pos + 1:]
+                    image_factory = image_factory[:pos]
+
+                from woost.models.rendering import ImageFactory
+                image_factory = \
+                    ImageFactory.require_instance(identifier = image_factory)
+
+            uri = make_uri(
+                uri,
+                image_factory.identifier or "factory%d" % image_factory.id
+            )
+
+        if include_extension:
+            from woost.models.rendering.formats import (
+                formats_by_extension,
+                extensions_by_format,
+                default_format
+            )
+
+            if not ext and image_factory and image_factory.default_format:
+                ext = extensions_by_format[image_factory.default_format]
+
+            if not ext:
+                ext = getattr(self, "file_extension", None)
+
+            if ext:
+                ext = ext.lower().lstrip(".")
+
+            if not ext or ext not in formats_by_extension:
+                ext = extensions_by_format[default_format]
+
+            uri += "." + ext
+
+        if parameters:
+            uri = make_uri(uri, **parameters)
+
+        return self._fix_uri(uri, host, encode)
+
+    def get_representative_image(self, image_factory = None):
+        try:
+            return self.image
+        except AttributeError:
+            pass
+
+    def _fix_uri(self, uri, host, encode):
+
+        if encode:
+            uri = percent_encode_uri(uri)
+
+        has_protocol = _protocol_regexp.match(uri)
+
+        if has_protocol:
+            host = None
+
+        if host:
+            website = get_current_website()
+            policy = website and website.https_policy
+
+            if (
+                policy == "always"
+                or (
+                    policy == "per_page" and (
+                        getattr(self, 'requires_https', False)
+                        or not get_current_user().anonymous
+                    )
+                )
+            ):
+                scheme = "https"
+            else:
+                scheme = "http"
+
+            if host == ".":
+                location = Location.get_current_host()
+                location.scheme = scheme
+                host = str(location)
+            elif not "://" in host:
+                host = "%s://%s" % (scheme, host)
+
+            uri = make_uri(host, uri)
+
+        elif not has_protocol:
+            uri = make_uri("/", uri)
+
+        return uri
+
+    copy_excluded_members = set([
+        changes,
+        author,
+        creation_time,
+        last_update_time,
+        global_id
+    ])
+
+    def get_member_copy_mode(self, member):
+
+        from woost.models import Block
+        mode = PersistentObject.get_member_copy_mode(self, member)
+
+        if (
+            mode
+            and mode != schema.DEEP_COPY
+            and isinstance(member, schema.RelationMember)
+            and member.is_persistent_relation
+            and issubclass(member.related_type, Block)
+        ):
+            mode = lambda block, member, value: not value.is_common_block()
+
+        return mode
+
+    # Caching and invalidation
+    #--------------------------------------------------------------------------
+    cacheable = False
+
+    @property
+    def main_cache_tag(self):
+        """Obtains a cache tag that can be used to match all cache entries
+        related to this item.
+        """
+        return "%s-%d" % (self.__class__.__name__, self.id)
+
+    def get_cache_tags(self, language = None, cache_part = None):
+        """Obtains the list of cache tags that apply to this item.
+
+        :param language: Indicates the language for which the cache
+            invalidation is being requested. If not set, the returned tags will
+            match all entries related to this item, regardless of the language
+            they are in.
+
+        :param cache_part: If given, the returned tags will only match cache
+            entries qualified with the specified identifier. These qualifiers
+            are tipically attached by specifying the homonimous parameter of
+            the `~woost.views.depends_on` extension method.
+        """
+        main_tag = self.main_cache_tag
+
+        if cache_part:
+            main_tag += "-" + cache_part
+
+        tags = set([main_tag])
+
+        if language:
+            tags.add("lang-" + language)
+
+        return tags
+
+    def get_cache_expiration(self):
+        expiration = None
+
+        for member in self.__class__.iter_members():
+            if member.affects_cache_expiration:
+                expiration = nearest_expiration(expiration, self.get(member))
+
+        return expiration
+
+    @classmethod
+    def get_cache_expiration_for_type(cls):
+        expiration = None
+
+        for member in cls.iter_members():
+            if member.affects_cache_expiration:
+
+                if isinstance(member, schema.Date):
+                    threshold = date.today()
+                else:
+                    threshold = datetime.now()
+
+                instance = first(
+                    cls.select(
+                        member.greater(threshold),
+                        order = member,
+                        cached = False
+                    )
+                )
+
+                if instance is not None:
+                    expiration = nearest_expiration(
+                        expiration,
+                        instance.get(member)
+                    )
+
+        return expiration
+
+    def clear_cache(self, language = None, cache_part = None):
+        """Remove all the cached pages that are based on this item.
+
+        :param language: Indicates the language for which the cache
+            invalidation is being requested. If not set, the invalidation will
+            affect all entries related to this item, regardless of the language
+            they are in.
+
+        :param cache_part: If given, only cache entries qualified with the
+            specified identifier will be cleared. These qualifiers are
+            tipically attached by specifying the homonimous parameter of the
+            `~woost.views.depends_on` extension method.
+        """
+        app.cache.clear(
+            scope = self.get_cache_invalidation_scope(
+                language = language,
+                cache_part = cache_part
+            )
+        )
+
+    def clear_cache_after_commit(self, language = None, cache_part = None):
+        """Remove all the cached pages that are based on this item, as soon as
+        the current database transaction is committed.
+
+        This method can be called multiple times during a single transaction.
+        All the resulting invalidation targets will be removed from the cache
+        once the transaction is committed.
+
+        :param language: Indicates the language for which the cache
+            invalidation is being requested. If not set, the invalidation will
+            affect all entries related to this item, regardless of the language
+            they are in.
+
+        :param cache_part: If given, only cache entries qualified with the
+            specified identifier will be cleared. These qualifiers are
+            tipically attached by specifying the homonimous parameter of the
+            `~woost.views.depends_on` extension method.
+        """
+        app.cache.clear_after_commit(
+            scope = self.get_cache_invalidation_scope(
+                language = language,
+                cache_part = cache_part
+            )
+        )
+
+    def get_cache_invalidation_scope(self, language = None, cache_part = None):
+        """Determine the scope of a cache invalidation request for this item.
+
+        :param language: Indicates the language for which the cache
+            invalidation is being requested. If not set, the scope will include
+            all entries related to this item, regardless of the language they
+            are in.
+
+        :param cache_part: If given, only cache entries qualified with the
+            specified identifier will be included. These qualifiers are
+            tipically attached by specifying the homonimous parameter of the
+            `~woost.views.depends_on` extension method.
+
+        :return: A cache invalidation scope. See the
+            `cocktail.caching.cache.Cache.clear` method for details on its
+            format.
+        """
+        selectors = set()
+
+        if language:
+            languages = list(self.iter_derived_translations(
+                language,
+                include_self = True
+            ))
+
+        # Tags per type
+        for cls in \
+        self.__class__.ascend_inheritance(include_self = True):
+            selector = cls.full_name
+
+            if cache_part:
+                selector += "-" + cache_part
+
+            if language:
+                for lang in languages:
+                    selectors.add((selector, "lang-" + lang))
+            else:
+                selectors.add(selector)
+
+            if cls is Item:
+                break
+
+        # Tags per instance
+        selector = self.main_cache_tag
+
+        if cache_part:
+            selector += "-" + cache_part
+
+        if language:
+            for lang in languages:
+                selectors.add((selector, "lang-" + lang))
+        else:
+            selectors.add(selector)
+
+        return selectors
 
 
 Item.id.versioned = False
 Item.id.editable = False
+Item.id.synchronizable = False
 Item.id.listed_by_default = False
 Item.id.member_group = "administration"
 Item.changes.visible = False
+
+@resolve_object_ref.implementation_for(Item)
+def resolve_item_ref(cls, ref):
+    try:
+        ref = int(ref)
+    except ValueError:
+        return cls.get_instance(global_id = ref)
+    else:
+        return cls.get_instance(ref)
+
+# Trigger cache invalidation when items are altered
+@when(Item.inserted)
+def _clear_cache_after_insertion(e):
+    if app.cache.enabled:
+        e.source.clear_cache_after_commit()
+
+@when(Item.deleting)
+def _clear_cache_on_deletion(e):
+    if app.cache.enabled:
+        e.source.clear_cache_after_commit()
+
+@when(Item.changed)
+def _clear_cache_after_change(e):
+    if (
+        app.cache.enabled
+        and e.member.invalidates_cache
+        and e.source.is_inserted
+    ):
+        e.source.clear_cache_after_commit(
+            language = e.language,
+            cache_part = e.member.cache_part
+        )
+
+@when(Item.adding_translation)
+@when(Item.removing_translation)
+def _clear_cache_after_change(e):
+    if app.cache.enabled and e.source.is_inserted:
+        e.source.clear_cache_after_commit()
 

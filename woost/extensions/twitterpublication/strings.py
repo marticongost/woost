@@ -109,7 +109,7 @@ translations.define("TwitterPublicationTarget.languages",
 
 # twitter_auth user action
 #------------------------------------------------------------------------------
-translations.define("Action twitter_auth",
+translations.define("woost.actions.twitter_auth",
     ca = u"Autoritzar",
     es = u"Autorizar",
     en = u"Authorize"
@@ -124,7 +124,7 @@ translations.define(
 
 # tweet user action
 #------------------------------------------------------------------------------
-translations.define("Action tweet",
+translations.define("woost.actions.tweet",
     ca = u"Publicar a Twitter",
     es = u"Publicar en Twitter",
     en = u"Tweet"
@@ -150,7 +150,7 @@ translations.define(
     es = u"Publicar en Twitter",
     en = u"Publish to Twitter"
 )
-    
+
 translations.define("TwitterPublicationForm.subset",
     ca = u"Contingut a publicar",
     es = u"Contenido a publicar",

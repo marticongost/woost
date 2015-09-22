@@ -7,6 +7,7 @@
 @since:			July 2009
 """
 from cocktail.translations import translations
+from cocktail.schema import ValidationContext
 from cocktail.html import Element
 from cocktail.html.checkbox import CheckBox
 from woost.models import Item
@@ -17,6 +18,7 @@ class MemberList(Element):
     root_type = Item
     name = None
     value = ()
+    __enumeration = None
 
     def _build(self):
         self.add_resource("/cocktail/scripts/autocomplete.js")
@@ -30,13 +32,13 @@ class MemberList(Element):
                 self.language
             )
 
-        if self.root_type:            
+        if self.root_type:
             self.append(self.create_class_entry(self.root_type))
 
         Element._ready(self)
 
     def create_class_entry(self, cls):
-        
+
         entry = Element()
         entry.add_class("content_type")
 
@@ -45,7 +47,7 @@ class MemberList(Element):
 
         entry.members_container = Element()
         entry.members_container.add_class("members")
-        
+
         has_visible_members = False
 
         for member in cls.members(False).itervalues():
@@ -77,26 +79,38 @@ class MemberList(Element):
         return label
 
     def member_is_eligible(self, member):
-        return member.visible and member.name != "translations"
+        if self.__enumeration is None:
+            if self.member and self.member.items:
+                self.__enumeration = self.member.resolve_constraint(
+                    self.member.items.enumeration,
+                    ValidationContext(self.member.items, self.data)
+                )
+
+            if self.__enumeration is None:
+                self.__enumeration = []
+
+        if self.__enumeration:
+            key = member.schema.full_name + "." + member.name
+            return key in self.__enumeration
+        else:
+            return member.visible and member.name != "translations"
 
     def create_member_entry(self, member):
 
         value = member.schema.full_name + "." + member.name
 
-        entry = Element()        
+        entry = Element()
 
         entry.check = CheckBox()
         entry.check["name"] = self.name
-        entry.check.require_id()        
+        entry.check.require_id()
         entry.check.value = value in self.value
         entry.check["value"] = value
         entry.append(entry.check)
 
         entry.label = Element("label")
         entry.label["for"] = entry.check["id"]
-        entry.label.append(
-            translations(member.schema.name + "." + member.name)
-        )
+        entry.label.append(translations(member))
         entry.append(entry.label)
 
         return entry

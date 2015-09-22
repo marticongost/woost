@@ -95,7 +95,7 @@ class UserFormController(FormProcessor, DocumentController):
 
             excluded_members = []
 
-            for member in self.model.members().itervalues():
+            for member in self.model.iter_members():
                 if (
                     not member.visible
                     or not member.editable
@@ -105,7 +105,7 @@ class UserFormController(FormProcessor, DocumentController):
                         member = member
                     )
                     or not user.has_permission(
-                        ModifyMemberPermission,                     
+                        ModifyMemberPermission,
                         member = member
                     )
                 ):
@@ -113,7 +113,7 @@ class UserFormController(FormProcessor, DocumentController):
 
             if document.excluded_members:
                 excluded_members.extend(document.excluded_members)
-            
+
             if excluded_members:
                 adapter.exclude(excluded_members)
 
@@ -128,7 +128,7 @@ class UserFormController(FormProcessor, DocumentController):
                     UploadForm.submit(self)
                     self.instance.insert()
                 datastore.commit()
-            
+
             # Do not write to the database, only process form data
             else:
                 UploadForm.submit(self)
@@ -146,8 +146,8 @@ class UserFormController(FormProcessor, DocumentController):
                     self.controller.context["cms"].uri(
                         document.redirection,
                         form = document.id,
-                        instance = None 
-                                   if not document.should_save_instances 
+                        instance = None
+                                   if not document.should_save_instances
                                    else self.instance.id
                     )
                 )

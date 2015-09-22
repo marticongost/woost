@@ -6,7 +6,9 @@
 @organization:	Whads/Accent SL
 @since:			September 2009
 """
-from cocktail.events import event_handler, when
+import cherrypy
+from decimal import Decimal
+from simplejson import dumps
 from cocktail.modeling import underscore_to_capital
 from cocktail.translations import (
     translations,
@@ -16,18 +18,20 @@ from cocktail.translations import (
 from cocktail import schema
 from cocktail.persistence import datastore
 from woost.models import (
-    Site,
+    Configuration,
     Extension,
     Publishable,
-    Document,
-    StandardPage,
+    Page,
     Template,
     Controller,
     EmailTemplate,
     User,
-    Language
+    TextBlock,
+    CustomBlock
 )
+from woost.models.rendering import ImageFactory, Thumbnail
 from woost.models.triggerresponse import SendEmailTriggerResponse
+from woost.controllers import CMSController
 
 translations.define("ECommerceExtension",
     ca = u"Comerç online",
@@ -51,7 +55,7 @@ class ECommerceExtension(Extension):
             u"""Permet vendre productes des del lloc web.""",
             "ca"
         )
-        self.set("description",            
+        self.set("description",
             u"""Permite vender productos des del sitio web.""",
             "es"
         )
@@ -60,87 +64,19 @@ class ECommerceExtension(Extension):
             "en"
         )
 
-    @event_handler
-    def handle_loading(cls, event):
-
-        extension = event.source
+    def _load(self):
 
         from woost.extensions.ecommerce import (
             strings,
+            typegroups,
+            website,
             ecommerceproduct,
             ecommerceorder,
             ecommercepurchase,
             ecommercebillingconcept,
             ecommerceordercompletedtrigger,
-            imagefactories
-        )
-        from woost.extensions.ecommerce.ecommerceorder import ECommerceOrder
-
-        # Add the necessary members to define pricing policies
-        ECommerceExtension.members_order = [
-            "payment_types",
-            "pricing",
-            "shipping_costs", 
-            "taxes",
-            "order_steps"
-        ]
-
-        available_payment_types = ("payment_gateway", "transfer", "cash_on_delivery")
-        ECommerceOrder.payment_type.enumeration = available_payment_types
-
-        ECommerceExtension.add_member(
-            schema.Collection(
-                "payment_types",
-                items = schema.String(
-                    enumeration = available_payment_types,
-                    translate_value = lambda value, language = None, **kwargs:
-                        translations(
-                            "ECommerceExtension.payment_types-%s" % value,
-                            language = language
-                        ),
-                ),
-                min = 1
-            )
-        )
-
-        ECommerceExtension.add_member(
-            schema.Collection("pricing",
-                items = schema.Reference(
-                    type = ecommercebillingconcept.ECommerceBillingConcept
-                ),
-                bidirectional = True,
-                related_end = schema.Collection(),
-                integral = True
-            )
-        )
-
-        ECommerceExtension.add_member(
-            schema.Collection("shipping_costs",
-                items = schema.Reference(
-                    type = ecommercebillingconcept.ECommerceBillingConcept
-                ),
-                bidirectional = True,
-                related_end = schema.Collection(),
-                integral = True
-            )
-        )
-
-        ECommerceExtension.add_member(
-            schema.Collection("taxes",
-                items = schema.Reference(
-                    type = ecommercebillingconcept.ECommerceBillingConcept
-                ),
-                bidirectional = True,
-                related_end = schema.Collection(),
-                integral = True
-            )
-        )
-
-        ECommerceExtension.add_member(
-            schema.Collection("order_steps",
-                items = schema.Reference(type = Publishable),
-                related_end = schema.Collection()
-            )
+            orderstepscontainerblock,
+            ecommerceproductlisting,
         )
 
         # If the payments extension is enabled, setup the payment gateway for
@@ -149,15 +85,63 @@ class ECommerceExtension(Extension):
         payments_ext = PaymentsExtension.instance
 
         if payments_ext.enabled:
-            extension._setup_payment_gateway()
-        
+            self._setup_payment_gateway()
+
+        self._setup_ecommerce_state()
+
         # Create the pages for the shop the first time the extension runs
-        if not extension.installed:
-            extension.create_content()
-            datastore.commit()
+        self.install()
+
+    def _setup_ecommerce_state(self):
+
+        from woost.extensions.ecommerce.basket import Basket
+
+        @cherrypy.expose
+        def ecommerce_state(self):
+
+            cherrypy.response.headers["Content-Type"] = "text/javascript"
+            order = Basket.get(create_new = False)
+            if order:
+                order.update_cost()
+
+            def format_amount(amount):
+                return str(amount.quantize(Decimal("1.00")))
+
+            return "cocktail.declare('woost.ecommerce'); woost.ecommerce = %s;" % dumps(
+                {
+                    "order": {
+                        "id": order.id,
+                        "total": format_amount(order.total),
+                        "count_label": translations(
+                            "woost.extensions.ecommerce.BasketIndicator",
+                            count = order.count_units()
+                        ),
+                        "purchases": [{
+                            "id": purchase.id,
+                            "product": {
+                                "id": purchase.product.id,
+                                "label": translations(purchase.product)
+                            },
+                            "quantity": purchase.quantity,
+                            "total": format_amount(purchase.total)
+                        }
+                        for purchase in order.purchases]
+                    }
+                }
+                if order else {
+                    "order": {
+                        "count_label": translations(
+                            "woost.extensions.ecommerce.BasketIndicator",
+                            count = 0
+                        )
+                    }
+                }
+            )
+
+        CMSController.ecommerce_state = ecommerce_state
 
     def _setup_payment_gateway(self):
-            
+
         from tpv import (
             Currency,
             Payment,
@@ -169,8 +153,9 @@ class ECommerceExtension(Extension):
             import launch_transaction_notification_triggers
         from woost.extensions.ecommerce.ecommerceorder import ECommerceOrder
         from woost.extensions.payments import PaymentsExtension
+        from woost.extensions.payments.paypal import PayPalPaymentGateway
 
-        payments_ext = PaymentsExtension.instance
+        ecommerce_ext = self
 
         def get_payment(self, payment_id):
 
@@ -178,14 +163,34 @@ class ECommerceExtension(Extension):
 
             if order is None:
                 raise PaymentNotFoundError(payment_id)
-            
+
             payment = Payment()
             payment.id = order.id
             payment.description = order.get_description_for_gateway()
             payment.amount = order.total
             payment.order = order
-            payment.currency = Currency(payments_ext.payment_gateway.currency)
-            
+            payment.currency = Currency(self.currency)
+
+            # PayPal form data
+            if isinstance(self, PayPalPaymentGateway):
+                paypal_form_data = {}
+                if order.address:
+                    paypal_form_data["address1"] = order.address
+
+                if order.town:
+                    paypal_form_data["city"] = order.town
+
+                if order.country and order.country.code:
+                    paypal_form_data["country"] = order.country.code
+
+                if order.postal_code:
+                    paypal_form_data["zip"] = order.postal_code
+
+                if order.language:
+                    paypal_form_data["lc"] = order.language
+
+                payment.paypal_form_data = paypal_form_data
+
             for purchase in order.purchases:
                 payment.add(PaymentItem(
                     reference = str(purchase.product.id),
@@ -213,13 +218,16 @@ class ECommerceExtension(Extension):
         events.insert(pos, receive_order_payment)
         events.insert(pos + 2, commit_order_payment)
 
-    def create_content(self):
-        
+    def _install(self):
+
+        from woost.extensions.ecommerce.ecommerceproductlisting import ECommerceProductListing
+
+        website = Configuration.instance.websites[0]
+
         catalog = self._create_document("catalog")
-        catalog.controller = self._create_controller("catalog")
-        catalog.template = self._create_template("catalog")
-        catalog.parent = Site.main.home
+        catalog.blocks.append(ECommerceProductListing())
         catalog.insert()
+        website.ecommerce_default_catalog = catalog
 
         for child_name in (
             "basket",
@@ -227,29 +235,28 @@ class ECommerceExtension(Extension):
             "summary"
         ):
             child = self._create_document(child_name)
+            self.__add_ecommerce_step_blocks(child, child_name)
             child.hidden = True
-            child.template = self._create_template(child_name)
-            child.controller = self._create_controller(child_name)
             child.parent = catalog
             child.insert()
-            self.order_steps.append(child)
+            website.ecommerce_order_steps.append(child)
 
         for child_name in (
             "success",
             "failure"
         ):
-            child = self._create_document(child_name, StandardPage)
+            child = self._create_document(child_name)
             child.hidden = True
             child.parent = catalog
             child.insert()
 
         self._create_controller("product").insert()
-        self._create_template("product").insert()
         self._create_ecommerceorder_completed_trigger().insert()
         self._create_incoming_order_trigger().insert()
+        self._create_image_factories()
 
-    def _create_document(self, name, 
-        cls = Document, 
+    def _create_document(self, name,
+        cls = Page,
         template = None,
         controller = None):
 
@@ -258,19 +265,10 @@ class ECommerceExtension(Extension):
 
         self.__translate_field(document, "title")
 
-        if isinstance(document, StandardPage):
-            self.__translate_field(document, "body")
+        if isinstance(document, Page):
+            self.__add_text_block(document, "body")
 
         return document
-
-    def _create_template(self, name):
-        template = Template()
-        template.qname = "woost.extensions.ecommerce.%s_template" % name
-        self.__translate_field(template, "title")
-        template.engine = "cocktail"
-        template.identifier = \
-            "woost.extensions.ecommerce.%sPage" % underscore_to_capital(name)
-        return template
 
     def _create_controller(self, name):
         controller = Controller( )
@@ -290,7 +288,7 @@ class ECommerceExtension(Extension):
         trigger.qname = \
             "woost.extensions.ecommerce.ecommerceorder_completed_trigger"
         self.__translate_field(trigger, "title")
-        trigger.site = Site.main
+        Configuration.instance.triggers.append(trigger)
         trigger.condition = "target.customer and not target.customer.anonymous and target.customer.email"
         trigger.matching_items = {'type': u'woost.extensions.ecommerce.ecommerceorder.ECommerceOrder'}
 
@@ -303,13 +301,15 @@ class ECommerceExtension(Extension):
             qname = "woost.administrator"
         ).email
         template.receivers = '[items[0].customer.email]'
-        template.embeded_images = """
-from woost.models import Site
-images["logo"] = Site.main.logo
+        template.initialization_code = """
+from woost.models import Configuration
+logo = Configuration.instance.get_setting("logo")
+if logo:
+    attachments["logo"] = logo
 """
-        template.template_engine = "cocktail"
+        template.template_engine = "mako"
 
-        for language in translations:
+        for language in Configuration.instance.languages:
             with language_context(language):
                 template.subject = template.title
                 template.body = """
@@ -347,7 +347,7 @@ order_summary.order = order
         trigger = IncomingOrderTrigger( )
         trigger.qname = "woost.extensions.ecommerce.incoming_order.trigger"
         self.__translate_field(trigger, "title")
-        trigger.site = Site.main
+        Configuration.instance.triggers.append(trigger)
         trigger.matching_items = {'type': u'woost.extensions.ecommerce.ecommerceorder.ECommerceOrder'}
 
         # EmailTemplate
@@ -358,9 +358,9 @@ order_summary.order = order
         admin = User.require_instance(qname = "woost.administrator")
         template.sender = repr(admin.email)
         template.receivers = repr([admin.email])
-        template.template_engine = "cocktail"
+        template.template_engine = "mako"
 
-        for language in translations:
+        for language in Configuration.instance.languages:
             with language_context(language):
                 template.subject = template.title
                 template.body = """
@@ -388,10 +388,75 @@ edit_url = bo.get_uri(host = ".", path = ["content", str(order.id)])
 
         return trigger
 
+    def _create_image_factories(self):
+        thumbnail = ImageFactory()
+        thumbnail.qname = \
+            "woost.extensions.ecommerce.ecommerce_basket_thumbnail"
+        self.__translate_field(thumbnail, "title")
+        thumbnail.identifier = "ecommerce_basket_thumbnail"
+        thumbnail.effects = [Thumbnail(width = "75", height = "75")]
+        thumbnail.insert()
+
     def __translate_field(self, obj, key):
-        for language in translations:
+        for language in Configuration.instance.languages:
             with language_context(language):
                 value = translations("%s.%s" % (obj.qname, key))
                 if value:
                     obj.set(key, value)
+
+    def __add_text_block(
+        self,
+        document,
+        key,
+        style = None,
+        element_type = None,
+        slot = "blocks"
+    ):
+        block = TextBlock()
+        if slot:
+            blocks = document.get(slot)
+        else:
+            blocks = document.blocks
+
+        has_text = False
+        for language in Configuration.instance.languages:
+            with language_context(language):
+                value = translations("%s.%s" % (document.qname, key))
+                if value:
+                    block.set("text", value)
+                    has_text = True
+
+        if not has_text:
+            return
+
+        if element_type:
+            block.element_type = element_type
+
+        if style:
+            block.styles.append(style)
+
+        blocks.append(block)
+        block.insert()
+
+    def __add_ecommerce_step_blocks(
+        self,
+        document,
+        key
+    ):
+        from woost.extensions.ecommerce.orderstepscontainerblock import \
+        OrderStepsContainerBlock
+
+        order_steps = OrderStepsContainerBlock()
+        block = CustomBlock()
+        block.qname = "woost.extensions.ecommerce.%s_block" % key
+        self.__translate_field(block, "heading")
+        block.view_class = \
+            "woost.extensions.ecommerce.%sBlockView" % key.capitalize()
+        block.controller = \
+            "woost.extensions.ecommerce.%scontroller.%sController" % (
+                key, key.capitalize()
+            )
+        order_steps.blocks.append(block)
+        document.blocks.append(order_steps)
+        order_steps.insert()
 

@@ -6,28 +6,30 @@
 @organization:	Whads/Accent SL
 @since:			October 2009
 """
-from tpv.sis import SISPaymentGateway as Implementation
-from cocktail import schema
 from cocktail.translations import translations
-from cocktail.modeling import getter
-from cocktail.controllers import context
-from cocktail.controllers.location import Location
+from cocktail import schema
+from tpv.sis import SISPaymentGateway as Implementation
 from woost.models import Document
 from woost.extensions.payments.paymentgateway import PaymentGateway
 
 
 class SISPaymentGateway(PaymentGateway, Implementation):
 
-    members_order = [
-        "merchant_name", "merchant_code", "merchant_terminal",
-        "merchant_secret_key", "payment_successful_page", "payment_failed_page"
-    ]
-
     instantiable = True
 
     default_label = schema.DynamicDefault(
         lambda: translations("SISPaymentGateway.label default")
     )
+
+    members_order = [
+        "merchant_name",
+        "merchant_code",
+        "merchant_terminal",
+        "merchant_secret_key",
+        "pay_methods",
+        "payment_successful_page",
+        "payment_failed_page"
+    ]
 
     merchant_code = schema.String(
         required = True,
@@ -52,6 +54,16 @@ class SISPaymentGateway(PaymentGateway, Implementation):
         text_search = False
     )
 
+    pay_methods = schema.Collection(
+        shadows_attribute = True,
+        items = schema.String(
+            enumeration = ["T", "D", "R"],
+            translate_value = lambda value, language = None, **kwargs: \
+                translations("SISPaymentGateway.pay_methods=%s" % (value,))
+        ),
+        edit_control = "cocktail.html.CheckList"
+    )
+
     payment_successful_page = schema.Reference(
         type = Document,
         related_end = schema.Reference()
@@ -62,35 +74,17 @@ class SISPaymentGateway(PaymentGateway, Implementation):
         related_end = schema.Reference()
     )
 
-    def _base_url(self):
-        location = Location.get_current()
-        location.relative = False
-        location.path_info = context["cms"].application_uri()
-        location.query_string = None
-
-        return unicode(location)[:-1]
-
-    @getter
-    def notification_url(self):
-        return self._base_url() + context["cms"].application_uri("payment_notification")
-
-    @getter
-    def payment_successful_url(self):
-
+    def get_payment_successful_url(self, payment):
         if self.payment_successful_page:
-            return self._base_url() \
-                + context["cms"].uri(self.payment_successful_page) \
-                + "?payment_id=%(payment_id)s"
+            return self.payment_successful_page.get_uri(
+                host = "!",
+                parameters = {"payment_id": payment.id}
+            )
 
-        return None
-
-    @getter
-    def payment_failed_url(self):
-
+    def get_payment_failed_url(self, payment):
         if self.payment_failed_page:
-            return self._base_url() \
-                + context["cms"].uri(self.payment_failed_page) \
-                + "?payment_id=%(payment_id)s"
-
-        return None
+            return self.payment_failed_page.get_uri(
+                host = "!",
+                parameters = {"payment_id": payment.id}
+            )
 

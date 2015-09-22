@@ -8,12 +8,13 @@ u"""
 """
 from cocktail.pkgutils import resolve
 from cocktail.translations import translations
-from cocktail.schema import Reference
+from cocktail.schema import RelationMember
 from cocktail.schema.expressions import (
     PositiveExpression,
     NegativeExpression
 )
 from cocktail.html import Element, templates
+from cocktail.html.translationdisplay import TranslationDisplay
 from cocktail.controllers import view_state
 from woost.models import Item
 from woost.views.contentdisplaymixin import ContentDisplayMixin
@@ -22,11 +23,11 @@ Table = templates.get_class("cocktail.html.Table")
 
 
 class ContentTable(ContentDisplayMixin, Table):
-    
+
     base_url = None
-    inline_draft_copies = True
     entry_selector = "tbody tr.item_row"
-    resizable_rows_selector = "tbody tr.item_row"
+    default_display = TranslationDisplay
+    use_separate_selection_column = False
 
     def __init__(self, *args, **kwargs):
         Table.__init__(self, *args, **kwargs)
@@ -34,44 +35,31 @@ class ContentTable(ContentDisplayMixin, Table):
         self.set_member_sortable("element", False)
         self.set_member_sortable("class", False)
 
-    def _row_added(self, index, item, row):
-        if self.inline_draft_copies and isinstance(item, Item):
-            for draft in item.drafts:
-                draft_row = self.create_row(index, draft)
-                self.body.append(draft_row)
-
     def _fill_head(self):
         Table._fill_head(self)
         if self.head_row.children:
             self.head_row.children[-1].add_class("last")
 
     def create_row(self, index, item):
-        
         row = Table.create_row(self, index, item)
         row.add_class("item_row")
-
-        if getattr(item, "is_draft", False):
-            row.add_class("draft")
-
-        if getattr(item, "draft_source", None):
-            row.add_class("nested_draft")
-
         return row
 
+    def create_cell(self, item, column, language = None):
+        cell = Table.create_cell(self, item, column, language = language)
+
+        # Drag & drop information
+        if isinstance(column, RelationMember):
+            cell["data-woost-drop"] = "%d.%s" % (item.id, column.name)
+
+        return cell
+
     def create_element_display(self, item, member):
-        
         display = templates.new("woost.views.ItemLabel")
         display.tag = "label"
         display["for"] = "selection_" + str(item.id)
         display.item = item
         display.referer = self.referer
-
-        if self.inline_draft_copies and item.draft_source:
-            display.get_label = lambda: translations(
-                "woost.views.ContentTable draft label",
-                draft_id = item.draft_id
-            )
-        
         return display
 
     def create_class_display(self, item, member):
@@ -80,15 +68,15 @@ class ContentTable(ContentDisplayMixin, Table):
                     children = [translations(item.__class__.name)])
 
     def add_header_ui(self, header, column, language):
-        
+
         # Add visual cues for sorted columns
         sortable = self.get_member_sortable(column)
-        
+
         if sortable and self.order:
             current_direction = self._sorted_columns.get(
                 (column.name, language)
             )
-                    
+
             if current_direction is not None:
 
                 header.add_class("sorted")
@@ -102,29 +90,26 @@ class ContentTable(ContentDisplayMixin, Table):
         # Column options
         if sortable or self.get_member_searchable(column):
 
-            menu = header.menu = Element()
+            menu = header.menu = templates.new("cocktail.html.DropdownPanel")
+            menu.add_class("column_dropdown")
             header.append(menu)
-            menu.add_class("selector")
-            
-            label = menu.label = Element()
-            label.add_class("label")
-            menu.append(label)
-            label.append(header.label)
+
+            menu.label.append(header.label)
 
             if column.translated:
-                label.append(header.translation_label)
-            
-            options = header.menu.options = self.create_header_options(
+                menu.label.append(header.translation_label)
+
+            options = header.menu.options = self.create_column_panel(
                 column,
                 language
             )
-            menu.append(options)
+            menu.panel.append(options)
 
-    def create_header_options(self, column, language):
-        
+    def create_column_panel(self, column, language):
+
         options = Element()
-        options.add_class("selector_content")
-        
+        options.add_class("column_panel")
+
         if self.get_member_sortable(column):
             sorting_options = self.create_sorting_options(column, language)
             options.append(sorting_options)
@@ -136,10 +121,10 @@ class ContentTable(ContentDisplayMixin, Table):
                 )
                 options.append(grouping_options)
 
-        if self.get_member_searchable(column):            
+        if self.get_member_searchable(column):
             search_options = self.create_search_options(column, language)
             options.append(search_options)
-            
+
         return options
 
     def create_sorting_options(self, column, language):
@@ -228,7 +213,7 @@ class ContentTable(ContentDisplayMixin, Table):
         for variant in variants:
 
             tr = Element("tr")
-            table.append(tr)                
+            table.append(tr)
 
             td = Element("td")
             td.add_class("variant")

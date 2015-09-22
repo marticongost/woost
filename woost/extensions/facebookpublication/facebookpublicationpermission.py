@@ -19,13 +19,12 @@ class FacebookPublicationPermission(ContentPermission):
     publication_targets = schema.Collection(
         items = schema.Reference(type = FacebookPublicationTarget),
         related_end = schema.Collection(),
-        edit_inline = True,
-        after_member = "matching_items"
+        after_member = "content_expression"
     )
 
-    def match(self, target, publication_target = None, verbose = False):
+    def match(self, user, target, publication_target = None, verbose = False):
 
-        if not ContentPermission.match(self, target, verbose = verbose):
+        if not ContentPermission.match(self, user, target, verbose = verbose):
             return False
 
         if publication_target is not None \

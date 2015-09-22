@@ -4,9 +4,10 @@ u"""Defines the `Basket` class.
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
 import cherrypy
-from cocktail.persistence import datastore
+from cocktail.persistence import transactional
 from cocktail.events import Event
 from cocktail.controllers import session
+from woost.models import get_current_website, get_current_user
 from woost.extensions.ecommerce.ecommerceorder import ECommerceOrder
 from woost.extensions.ecommerce.ecommercepurchase import ECommercePurchase
 from woost.extensions.ecommerce.ecommerceproduct import ECommerceProduct
@@ -15,7 +16,7 @@ from woost.extensions.ecommerce.ecommerceproduct import ECommerceProduct
 class Basket(object):
 
     session_key = "woost.extensions.ecommerce.basket"
-    
+
     created = Event(doc = """
         An event triggered on the class when a new instance is created.
 
@@ -29,12 +30,12 @@ class Basket(object):
         """Obtains the shop order for the current user session.
 
         If the user had not started an order yet, a new one is created.
-        
+
         :rtype: `~woost.extensions.ecommerce.ecommerceorder.ECommerceOrder`
         """
         order = getattr(
             cherrypy.request,
-            "woost_ecommerce_order", 
+            "woost_ecommerce_order",
             None
         )
 
@@ -47,8 +48,10 @@ class Basket(object):
 
             cherrypy.request.woost_ecommerce_order = order
 
+        if order:
+            order.customer = get_current_user()
         return order
-    
+
     @classmethod
     def pop(cls):
         """Remove the current shop order from the session."""
@@ -61,6 +64,7 @@ class Basket(object):
         return order
 
     @classmethod
+    @transactional()
     def empty(cls):
         """Removes all products from the basket."""
         order = cls.get(create_new = False)
@@ -68,18 +72,18 @@ class Basket(object):
         if order is not None:
             for purchase in list(order.purchases):
                 purchase.delete()
-            datastore.commit()
 
     @classmethod
+    @transactional()
     def store(cls):
 
         order = cls.get()
+        order.website = get_current_website()
         order.insert()
-        
+
         for purchase in order.purchases:
             purchase.insert()
 
-        datastore.commit()
         session[cls.session_key] = order.id
 
     @classmethod

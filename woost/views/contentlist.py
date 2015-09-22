@@ -17,7 +17,7 @@ class ContentList(List):
     referer = None
 
     def _fill_entries(self):
-        
+
         user = get_current_user()
         items = self.items
 
@@ -28,7 +28,7 @@ class ContentList(List):
                 if user.has_permission(ReadPermission, target = item)
             ]
 
-        if items:            
+        if items:
             List._fill_entries(self)
         else:
             self.tag = "div"
@@ -36,8 +36,17 @@ class ContentList(List):
 
     def create_entry_content(self, item):
         link = templates.new("woost.views.ContentLink")
+        link.icon_visible = True
         link.item = item
         link.referer = self.referer
         link.member = self.member
+
+        if self.referer and self.member:
+            link["data-woost-relativedrop"] = "%d.%s.%d" % (
+                self.referer.id,
+                self.member.name,
+                item.id
+            )
+
         return link
 

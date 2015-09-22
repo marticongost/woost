@@ -3,62 +3,62 @@
     form {
         margin: 0;
     }
-    
+
 
 /* Login data and logout button alignment (6 & 7) */
 
     .BackOfficeLayout .identity {
     	vertical-align: middle;
     }
-    
+
     .BackOfficeLayout .identity * {
     	vertical-align: middle;
     }
-    
+
     .BackOfficeLayout .identity form button {
     	padding-top: 1px;
     }
-    
+
     .translations_selector { display: none; }
 
 
 /* No results module width fix (6 & 7) */
-    
+
     .no_results {
         height: 1%;
     }
-    
-    
+
+
 /* Main type selector margin correction (6 & 7) */
-    
+
     .BackOfficeLayout .ContentTypeSelector {
         _margin-left: 0;
     }
-    
-    
+
+
 /* Tab height correction (6 & 7) */
 
     .tabs button {
     	height: 2em !important;
     	_margin-bottom: -1px;
     }
-    
-    
+
+
 /* Edit path height (6) */
 
     .BackOfficeLayout ul.edit_path {
         _height: 1.2em;
     }
-    
-    
-    
+
+
+
 /* Item count alignment */
 
     .BackOfficeLayout .item_count {
         float: right;
     }
-    
-    
+
+
 /* Alignment correction for breadcrumb and filter dropdowns */
 
     .BackOfficeLayout .ContentTypePath .selector_content,
@@ -66,32 +66,32 @@
     	left: 0;
     	top: 20px;
     }
-    
+
     .BackOfficeLayout .ContentTypeSelector .selector_content {
         left: 0 !important;
         top: 21px !important;
     }
-    
+
     .content_type_box {
         margin-bottom: 1em;
     }
-    
+
     .content_type_box .label {
         width: auto;
         float: left;
         _font-size: 12px;
     }
-    
+
     .content_type_box div.label {
         _font-weight: bold;
         _margin-right: .5em;
     }
-    
+
     .ActionBar {
-        border: 1px solid red;        
+        border: 1px solid red;
         margin: 0;
     }
-        
+
     .BackOfficeLayout .toolbar_box {
         display: block;
         width: 100%;
@@ -99,39 +99,39 @@
         border-left: none;
         border-right: none;
     }
-    
+
     table th div {
         width: auto !important;
     }
-        
+
     .collection_display_container {
         position: relative;
         z-index: 1 !important;
     }
-    
+
     .entry_label {
         display: block;
     }
-           
-    
+
+
 /* Breadcrumb and dropdown selection overlay correction */
 
     .ContentTypeSelector {
     	position: relative;
     	z-index: 12;
     }
-        
+
     .additional_actions_selector,
     .new_filter_selector {
         position: relative;
     	z-index: 11;
     }
-    
+
     .new_toolbar_button {
         position: relative;
     	z-index: 10;
     }
-    
+
     .new_toolbar_button .selector_content,
     .additional_actions_selector .selector_content {
         margin-top: -1px;
@@ -142,24 +142,24 @@
         right: .6em;
     }
 /* Content view selector */
-    
+
     .content_view {
         line-height: 3em;
     }
-    
-    
-    
-    .BackOfficeLayout .CollectionView .filters {        
+
+
+
+    .BackOfficeLayout .CollectionView .filters {
         width: 100%;
         overflow: hidden;
         float: left;
     }
-    
+
     .BackOfficeLayout .CollectionView .filters .new_filter_selector .label {
         background-repeat: no-repeat !important;
     }
-    
-    
+
+
 /* Dropdown image alignment */
 
     .ContentTypeTree li a {
@@ -172,11 +172,11 @@
 
     .BackOfficeLayout h2 {
         font-size: 100%;
-    }   
-    
-    
+    }
+
+
 /* Fixed selector width */
-    
+
     .new_toolbar_button,
     .additional_actions_selector {
         _width: 100px !important;
@@ -205,8 +205,8 @@ body.scripted .BackOfficeLayout .selector.unfolded:hover .selector_content {
     z-index:1000;
 }
 
-.BackOfficeLayout .selector:hover a.label, 
-body.scripted .BackOfficeLayout .selector.unfolded a.label, 
+.BackOfficeLayout .selector:hover a.label,
+body.scripted .BackOfficeLayout .selector.unfolded a.label,
 body.scripted .BackOfficeLayout .selector.unfolded:hover a.label {
     _background-color:#FAFAFA !important;
     _border-color:#BEC8D2 #BEC8D2 #FAFAFA !important;
@@ -225,7 +225,7 @@ body.scripted .BackOfficeLayout .selector.unfolded:hover a.label {
     white-space:nowrap;
 	padding-right: 1.2em !important;
 	display: inline !important;
-	background:transparent url(../images/dropdown_arrow.png) no-repeat scroll right center;
+	background:transparent url(/resources/images/dropdown_arrow.png) no-repeat scroll right center;
 }
 º
 .BackOfficeLayout .content_view_selector div.selected {
@@ -253,11 +253,11 @@ body.scripted .BackOfficeLayout .selector:hover .label {
 
 
 .BackOfficeLayout .selector a.label {
-	_background:transparent url(../images/dropdown_arrow.png) no-repeat scroll right 0.6em;
+	_background:transparent url(/resources/images/dropdown_arrow.png) no-repeat scroll right 0.6em;
 	_color:black;
 	_cursor:pointer;
 	_padding-left:0.2em;
-	_padding-right:1em;	
+	_padding-right:1em;
 	_position:relative;
 	_z-index:2;
 }
@@ -293,7 +293,7 @@ body.scripted .BackOfficeLayout .selector:hover .label {
 .BackOfficeLayout .CheckList label,
 .BackOfficeLayout .MemberList label {
     _display: inline;
-    _margin-left: 0.2em;    
+    _margin-left: 0.2em;
 }
 
 .BackOfficeLayout .MemberList .content_type .label {
@@ -365,4 +365,14 @@ body.scripted .BackOfficeLayout .selector:hover .label {
 
 .BackOfficeLayout .stack_node > .label {
     height: 1%;
+}
+
+/* Remove height limitation for solving an overflow issue in toolbars */
+
+.BackOfficeLayout .toolbar,
+.BackOfficeLayout .data_controls,
+.BackOfficeLayout .item_buttons,
+.BackOfficeLayout .toolbar_box {
+    overflow: hidden;
+    height: auto;
 }

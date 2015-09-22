@@ -15,61 +15,61 @@ from cocktail.translations import (
     translations
 )
 from cocktail import schema
-from cocktail.html.datadisplay import display_factory
-from woost.models import Item, Language
+from woost.models import Item, Configuration
 from woost.extensions.opengraph import OpenGraphExtension
 
 facebook_locales = {
-    "Catalan": "1",
-    "Czech": "2",
-    "Welsh": "3",
-    "Danish": "4",
-    "German": "5",
-    "English (Upside Down)": "51",
-    "English (US)": "6",
-    "Spanish": "23",
-    "Spanish (Spain)": "7",
-    "Finnish": "8",
-    "French (France)": "9",
-    "Hungarian": "30",
-    "Italian": "10",
-    "Japanese": "11",
-    "Korean": "12",
-    "Norwegian (bokmal)": "13",
-    "Dutch": "14",
-    "Polish": "15",
-    "Portuguese (Brazil)": "16",
-    "Portuguese (Portugal)": "31",
-    "Romanian": "32",
-    "Russian": "17",
-    "Slovak": "33",
-    "Slovenian": "34",
-    "Swedish": "18",
-    "Thai": "35",
-    "Turkish": "19",
-    "Simplified Chinese (China)": "20",
-    "Traditional Chinese (Hong Kong)": "21",
-    "Traditional Chinese (Taiwan)": "22",
-    "Afrikaans": "36",
-    "Bengali": "45",
-    "Bulgarian": "37",
-    "Croatian": "38",
-    "English (UK)": "24",
-    "French (Canada)": "44",
-    "Greek": "39",
-    "Hindi": "46",
-    "Indonesian": "25",
-    "Lithuanian": "40",
-    "Malay": "41",
-    "Punjabi": "47",
-    "Serbian": "42",
-    "Filipino": "26",
-    "Tamil": "48",
-    "Telugu": "49",
-    "Malayalam": "50",
-    "Vietnamese": "27",
-    "Arabic": "28",
-    "Hebrew": "29"    
+    "Catalan": 1,
+    "Czech": 2,
+    "Welsh": 3,
+    "Danish": 4,
+    "German": 5,
+    "English (Upside Down)": 51,
+    "English (US)": 6,
+    "Spanish": 23,
+    "Spanish (Spain)": 7,
+    "Spanish (All)": 1002,
+    "Finnish": 8,
+    "French (France)": 9,
+    "Hungarian": 30,
+    "Italian": 10,
+    "Japanese": 11,
+    "Korean": 12,
+    "Norwegian (bokmal)": 13,
+    "Dutch": 14,
+    "Polish": 15,
+    "Portuguese (Brazil)": 16,
+    "Portuguese (Portugal)": 31,
+    "Romanian": 32,
+    "Russian": 17,
+    "Slovak": 33,
+    "Slovenian": 34,
+    "Swedish": 18,
+    "Thai": 35,
+    "Turkish": 19,
+    "Simplified Chinese (China)": 20,
+    "Traditional Chinese (Hong Kong)": 21,
+    "Traditional Chinese (Taiwan)": 22,
+    "Afrikaans": 36,
+    "Bengali": 45,
+    "Bulgarian": 37,
+    "Croatian": 38,
+    "English (UK)": 24,
+    "French (Canada)": 44,
+    "Greek": 39,
+    "Hindi": 46,
+    "Indonesian": 25,
+    "Lithuanian": 40,
+    "Malay": 41,
+    "Punjabi": 47,
+    "Serbian": 42,
+    "Filipino": 26,
+    "Tamil": 48,
+    "Telugu": 49,
+    "Malayalam": 50,
+    "Vietnamese": 27,
+    "Arabic": 28,
+    "Hebrew": 29
 }
 
 
@@ -102,7 +102,7 @@ class FacebookPublicationTarget(Item):
     )
 
     administrator_id = schema.String(
-        listed_by_default = False        
+        listed_by_default = False
     )
 
     app_id = schema.String(
@@ -130,20 +130,14 @@ class FacebookPublicationTarget(Item):
 
     languages = schema.Collection(
         items = schema.String(
-            enumeration = lambda ctx: Language.codes,
+            enumeration = lambda ctx: Configuration.instance.languages,
             translate_value = lambda value, language = None, **kwargs:
                 "" if not value else translations(value)
         )
     )
 
-    targeting = schema.String(
-        edit_control = display_factory(
-            "cocktail.html.CodeEditor",
-            syntax = "python",
-            cols = 80
-        ),
-        text_search = False,
-        listed_by_default = False
+    targeting = schema.CodeBlock(
+        language = "python"
     )
 
     def publish(self, publishable):
@@ -154,8 +148,8 @@ class FacebookPublicationTarget(Item):
                 % (publishable, self)
             )
 
-        graph_url = "https://graph.facebook.com/%s/feed" % self.graph_object_id                
-        post_data = self._get_publication_parameters(publishable)        
+        graph_url = "https://graph.facebook.com/%s/feed" % self.graph_object_id
+        post_data = self._get_publication_parameters(publishable)
         encoded_post_data = dict(
             (k, v.encode("utf-8") if isinstance(v, unicode) else v)
             for k, v in post_data.iteritems()
@@ -169,7 +163,7 @@ class FacebookPublicationTarget(Item):
 
         og = OpenGraphExtension.instance
         og_properties = og.get_properties(publishable)
-        
+
         post_data = {
             "access_token": self.auth_token,
             "name": og_properties.get("og:title") or translations(publishable),
@@ -188,23 +182,21 @@ class FacebookPublicationTarget(Item):
                 "publishable": publishable,
                 "locales": facebook_locales,
                 "include_locales": (
-                    lambda included: ",".join(
-                        facebook_locales[loc_name] for loc_name in included
-                    )
+                    lambda included:
+                        [facebook_locales[loc_name] for loc_name in included]
                 ),
                 "exclude_locales": (
-                    lambda excluded: ",".join(
-                        loc_id 
+                    lambda excluded:
+                        [loc_id
                         for loc_name, loc_id in facebook_locales.iteritems()
-                        if loc_name not in excluded
-                    )
+                        if loc_name not in excluded]
                 )
             }
             targeting_code = self.targeting.replace("\r\n", "\n")
             exec targeting_code in context
             targeting = context.get("targeting")
             if targeting:
-                post_data["targeting"] = dumps(targeting)
+                post_data["feed_targeting"] = dumps(targeting)
 
         return post_data
 
@@ -226,13 +218,13 @@ class FacebookPublicationTarget(Item):
         if status < 200 or status > 299:
             raise FacebookPublicationError(body)
 
-        feed_data = loads(body)        
+        feed_data = loads(body)
         return feed_data["data"]
 
     def find_post(self, publishable):
 
         uri = self._get_publication_parameters(publishable)["link"]
-           
+
         for post in self.feed_posts():
             if post.get("link") == uri:
                 return post
@@ -265,7 +257,7 @@ class FacebookPublicationTarget(Item):
         if status < 200 or status > 299:
             raise FacebookPublicationError(body)
 
-        album_id = loads(body)["id"]        
+        album_id = loads(body)["id"]
         photos_url = "https://graph.facebook.com/%s/photos" % album_id
 
         # Upload photos
@@ -299,7 +291,7 @@ class FacebookPublicationTarget(Item):
             })
             request = urllib2.Request(photos_url, datagen, headers)
             response = urllib2.urlopen(request)
-                        
+
             status = response.getcode()
             body = response.read()
             if status < 200 or status > 299:

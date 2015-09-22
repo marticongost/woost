@@ -15,7 +15,7 @@ from cocktail.controllers.parameters import SessionParameterSource
 from woost.models import (
     Item,
     ChangeSet,
-    Language,
+    Configuration,
     get_current_user,
     ReadHistoryPermission,
     ChangeSetPermissionExpression
@@ -58,8 +58,8 @@ class ChangeLogController(BaseBackOfficeController):
                     if edit_stack is None:
                         edit_stack = edit_stacks_manager.create_edit_stack()
                         edit_stacks_manager.current_edit_stack = edit_stack
-                    
-                    node = SelectionNode()                    
+
+                    node = SelectionNode()
                     node.content_type = content_type
                     node.selection_parameter = selection_parameter
                     edit_stack.push(node)
@@ -69,7 +69,7 @@ class ChangeLogController(BaseBackOfficeController):
                         ),
                         client_side_scripting = self.client_side_scripting
                     ))
-                
+
         return BaseBackOfficeController.__call__(self, *args, **kwargs)
 
     @event_handler
@@ -86,7 +86,7 @@ class ChangeLogController(BaseBackOfficeController):
             allow_sorting = False
             allow_type_selection = False
             allow_language_selection = False
-            available_languages = Language.codes
+            available_languages = Configuration.instance.languages
 
             @cached_getter
             def available_user_filters(self):
@@ -119,11 +119,7 @@ class ChangeLogController(BaseBackOfficeController):
             ChangeSet,
             content_schema
         )
-        content_schema.add_member(
-            schema.Member("action"),
-            before = "changes"
-        )
-        
+
         changes = content_schema["changes"]
         changes.listed_by_default = True
         changes.searchable = True

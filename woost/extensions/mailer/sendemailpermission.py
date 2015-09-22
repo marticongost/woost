@@ -7,8 +7,9 @@
 @since:			September 2010
 """
 from cocktail import schema
-from woost.models.permission import Permission
+from woost.models import Permission
 from woost.models.messagestyles import permission_doesnt_match_style
+from woost.extensions.mailer.mailinglist import MailingList
 
 
 class SendEmailPermission(Permission):
@@ -16,18 +17,22 @@ class SendEmailPermission(Permission):
 
     instantiable = True
 
-    roles = schema.Collection(
-        items = schema.Reference(type = "woost.models.Role"),
-        related_key = schema.Collection()
+    lists = schema.Collection(
+        items = schema.Reference(
+            type = MailingList,
+        ),
+        related_end = schema.Collection(),
+        edit_control = "cocktail.html.CheckList"
     )
 
-    def match(self, role = None, verbose = False):
+    def match(self, user, mailingList = None, verbose = False):
 
-        if role and role not in self.roles:
-            print permission_doesnt_match_style("Role doesn't match")
+        if mailingList and self.lists and mailingList not in self.lists:
+
+            if verbose:
+                print permission_doesnt_match_style("Mailing list doesn't match")
+
             return False
 
-        return Permission.match(self, verbose)
-
-    
+        return Permission.match(self, user, verbose)
 

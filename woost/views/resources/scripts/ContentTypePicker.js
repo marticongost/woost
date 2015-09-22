@@ -23,7 +23,7 @@ cocktail.bind(".ContentTypePicker", function ($picker) {
         this.toggle = function (speed /* optional */) {
             this.setCollapsed(!collapsed, speed);
         }
-        
+
         this.getCollapsed = function () {
             return collapsed;
         }
@@ -36,7 +36,7 @@ cocktail.bind(".ContentTypePicker", function ($picker) {
             jQuery(this).children("ul")[collapsed ? "hide" : "show"](speed);
         }
 
-        jQuery(this).children("input").change(redrawSelection);           
+        jQuery(this).children("input").change(redrawSelection);
 
         if (jQuery(this).children("ul").length) {
             var $img = jQuery("<img>")

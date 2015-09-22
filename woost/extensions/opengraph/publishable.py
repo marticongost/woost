@@ -9,7 +9,10 @@ from cocktail.translations import translations
 from cocktail.html.datadisplay import display_factory
 from woost.models import Publishable, Document, News, File
 from woost.extensions.opengraph.opengraphtype import OpenGraphType
-from woost.extensions.opengraph.utils import export_content
+from woost.extensions.opengraph.utils import (
+    export_content,
+    get_publishable_website
+)
 
 File.default_open_graph_enabled = False
 File.default_open_graph_type = None
@@ -24,7 +27,7 @@ Publishable.add_member(
         required = True,
         default = True,
         listed_by_default = False,
-        member_group = "open_graph"
+        member_group = "meta.open_graph"
     )
 )
 
@@ -36,11 +39,11 @@ Publishable.add_member(
             block_delete = True
         ),
         default = schema.DynamicDefault(
-            lambda: OpenGraphType.get_instance(code = "article")    
+            lambda: OpenGraphType.get_instance(code = "article")
         ),
         indexed = True,
         listed_by_default = False,
-        member_group = "open_graph",
+        member_group = "meta.open_graph",
         edit_control = display_factory(
             "cocktail.html.DropdownSelector",
             grouping = lambda type: type.category
@@ -56,11 +59,20 @@ def _get_publishable_properties(self):
         "og:url": self.get_uri(host = ".")
     }
 
+    description = self.get_open_graph_description()
+    if description:
+        properties["og:description"] = description
+
     image = self.get_open_graph_image()
     if image:
         if isinstance(image, Publishable):
-            image = image.get_uri(host = ".")
-        properties["og:image"] = image
+            if image.is_accessible():
+                image = image.get_image_uri("facebook", host = ".")
+            else:
+                image = None
+
+        if image:
+            properties["og:image"] = image
 
     video = self.get_open_graph_video()
     if video:
@@ -72,53 +84,46 @@ def _get_publishable_properties(self):
 
 Publishable.get_open_graph_properties = _get_publishable_properties
 
-def _get_document_properties(self):
+def _get_publishable_description(self):
+    website = get_publishable_website(self)
+    if website:
+        return website.description
 
-    properties = Publishable.get_open_graph_properties(self)
+Publishable.get_open_graph_description = _get_publishable_description
 
+def _get_document_description(self):
     if self.description:
-        properties["og:description"] = export_content(self.description)
+        return export_content(self.description)
 
-    return properties
+    return Publishable.get_open_graph_description(self)
 
-Document.get_open_graph_properties = _get_document_properties
+Document.get_open_graph_description = _get_document_description
 
-def _get_news_properties(self):
-
-    properties = Document.get_open_graph_properties(self)
+def _get_news_description(self):
 
     if self.summary:
-        properties["og:description"] = export_content(self.summary)
+        return export_content(self.summary)
 
-    return properties
+    return Document.get_open_graph_description(self)
 
-News.get_open_graph_properties = _get_news_properties
+News.get_open_graph_description = _get_news_description
 
 def _get_publishable_open_graph_image(self):
-    return None
+    website = get_publishable_website(self)
+    if website:
+        return website.logo
 
 Publishable.get_open_graph_image = _get_publishable_open_graph_image
-
-def _get_document_open_graph_image(self):
-    return first(attachment
-                 for attachment in self.attachments
-                 if attachment.resource_type == "image"
-                 and attachment.is_accessible())
-
-Document.get_open_graph_image = _get_document_open_graph_image
 
 def _get_publishable_open_graph_video(self):
     return None
 
 Publishable.get_open_graph_video = _get_publishable_open_graph_video
 
-def _get_document_open_graph_video(self):
-    return first(attachment
-                 for attachment in self.attachments
-                 if attachment.resource_type == "video"
-                 and attachment.is_accessible())
+def _get_news_open_graph_image(self):
+    return self.image
 
-Document.get_open_graph_video = _get_document_open_graph_video
+News.get_open_graph_image = _get_news_open_graph_image
 
 # Metadata for shop products (only if the 'shop' extension is enabled)
 from woost.extensions.shop import ShopExtension

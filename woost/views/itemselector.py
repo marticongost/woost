@@ -12,6 +12,7 @@ from cocktail.html import Element, templates
 from cocktail.html.databoundcontrol import data_bound
 from woost.models import (
     Item,
+    Publishable,
     CreatePermission,
     ModifyPermission,
     DeletePermission,
@@ -22,28 +23,33 @@ from woost.models import (
 class ItemSelector(Element):
 
     value = None
-    _empty_label = None    
+    _empty_label = None
     existing_items_only = False
 
     empty_label = ""
 
     def _build(self):
-    
+
         Element._build(self)
         data_bound(self)
 
         self.add_resource("/resources/scripts/ItemSelector.js")
         self.set_client_param("emptyLabel", self.empty_label)
+        self.set_client_param("selectorDialogURL",
+            Publishable.require_instance(
+                qname = "woost.backoffice"
+            ).get_uri(path = ["content"])
+        )
 
         self.input = templates.new("cocktail.html.HiddenInput")
         self.append(self.input)
         self.binding_delegate = self.input
-        
+
         self.selection_label = templates.new("woost.views.ItemLabel")
         self.selection_label.tag = "span"
         self.selection_label.add_class("selection_label")
         self.append(self.selection_label)
-    
+
         self.buttons = self.create_buttons()
         self.append(self.buttons)
 
@@ -52,7 +58,7 @@ class ItemSelector(Element):
         Element._ready(self)
 
         if self.member:
- 
+
             if self.data_display:
                 self._param_name = self.data_display.get_member_name(
                     self.member,
@@ -65,9 +71,9 @@ class ItemSelector(Element):
                 # Select
                 self.select_button = self.create_select_button()
                 self.buttons.append(self.select_button)
-            
+
             if not self.existing_items_only:
-                
+
                 user = get_current_user()
 
                 if self.member.integral:
@@ -126,7 +132,7 @@ class ItemSelector(Element):
     def create_select_button(self):
 
         select_button = Element("button",
-            name = "ItemSelector-select",
+            name = "relation-select",
             type = "submit",
             class_name = "ItemSelector-button select",
             value = self.member.type.full_name + "-" + self._param_name
@@ -137,9 +143,9 @@ class ItemSelector(Element):
         return select_button
 
     def create_unlink_button(self):
-        
+
         unlink_button = Element("button",
-            name = "ItemSelector-unlink",
+            name = "relation-unlink",
             type = "submit",
             class_name = "ItemSelector-button unlink",
             value = self.member.name
@@ -152,7 +158,7 @@ class ItemSelector(Element):
     def create_new_button(self):
 
         new_button = Element(class_name = "ItemSelector-button new")
-        
+
         instantiable_types = set(
             content_type
             for content_type in (
@@ -167,14 +173,14 @@ class ItemSelector(Element):
         )
 
         if len(instantiable_types) > 1:
-            
+
             new_button.add_class("selector")
             label = Element("span", class_name = "label")
             new_button.append(label)
 
             container = Element(class_name = "selector_content")
             new_button.append(container)
-                        
+
             content_type_tree = templates.new("woost.views.ContentTypeTree")
             content_type_tree.root = self.member.type
             content_type_tree.filter_item = instantiable_types.__contains__
@@ -184,15 +190,15 @@ class ItemSelector(Element):
                 label = call_base(content_type)
                 label.tag = "button"
                 label["type"] = "submit"
-                label["name"] = "ItemSelector-new"
+                label["name"] = "relation-new"
                 label["value"] = self.member.name + "-" + content_type.full_name
                 return label
-            
+
             container.append(content_type_tree)
         else:
             new_button.tag = "button"
             new_button["type"] = "submit"
-            new_button["name"] = "ItemSelector-new"
+            new_button["name"] = "relation-new"
             new_button["value"] = \
                 self.member.name + "-" + list(instantiable_types)[0].full_name
             label = new_button
@@ -204,7 +210,7 @@ class ItemSelector(Element):
     def create_edit_button(self):
 
         edit_button = Element("button",
-            name = "ItemSelector-edit",
+            name = "relation-edit",
             type = "submit",
             class_name = "ItemSelector-button edit",
             value = self.member.name
@@ -217,7 +223,7 @@ class ItemSelector(Element):
     def create_delete_button(self):
 
         delete_button = Element("button",
-            name = "ItemSelector-unlink",
+            name = "relation-unlink",
             type = "submit",
             class_name = "ItemSelector-button delete",
             value = self.member.name

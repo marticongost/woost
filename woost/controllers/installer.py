@@ -10,6 +10,7 @@ import sys
 import socket
 import re
 import os
+import traceback
 from shutil import rmtree
 from subprocess import Popen, PIPE
 from pkg_resources import resource_filename
@@ -20,8 +21,9 @@ from cocktail import schema
 from cocktail.translations import set_language
 from cocktail.html import templates
 from cocktail.controllers import get_parameter
+from woost import app
 from woost.translations import installerstrings
-from woost.models.initialization import init_site
+from woost.models.initialization import SiteInitializer
 
 
 class Installer(object):
@@ -43,7 +45,7 @@ class Installer(object):
         submitted = cherrypy.request.method == "POST"
         successful = False
         errors = []
- 
+
         HOST_FORMAT = \
             re.compile(r"^([a-z]+(\.[a-z]+)*)|(\d{1,3}(\.\d{1,3}){3})$")
 
@@ -62,8 +64,15 @@ class Installer(object):
                     name = "python_package_repository",
                     required = True,
                     enumeration = paths,
+                    translatable_enumeration = False,
                     default = paths and paths[0] or None,
                     member_group = "project"
+                ),
+                schema.String(
+                    name = "installation_id",
+                    required = True,
+                    member_group = "project",
+                    default = "DEV"
                 ),
                 schema.String(
                     name = "admin_email",
@@ -83,13 +92,6 @@ class Installer(object):
                     required = True,
                     default = "en",
                     format = r"^[a-zA-Z]{2}(\W+[a-zA-Z]{2})*$",
-                    member_group = "project"
-                ),
-                schema.String(
-                    name = "template_engine",
-                    required = True,
-                    default = "cocktail",
-                    enumeration = buffet.available_engines.keys(),
                     member_group = "project"
                 ),
                 schema.String(
@@ -126,6 +128,10 @@ class Installer(object):
                 schema.Boolean(
                     name = "validate_database_address",
                     default = True,
+                    member_group = "database"
+                ),
+                schema.Integer(
+                    name = "base_id",
                     member_group = "database"
                 )
             ]
@@ -187,12 +193,15 @@ class Installer(object):
 
                     self.install(form_data)
 
-                except Exception, ex:                    
+                except Exception, ex:
                     errors.append(ex)
                     if not isinstance(ex, InstallFolderExists):
+                        traceback.print_tb(sys.exc_info()[2])
                         try:
                             rmtree(form_data["project_path"])
                         except Exception, rmex:
+                            tb = sys.exc_info()[2]
+                            traceback.print_tb(sys.exc_info()[2])
                             errors.append(rmex)
                 else:
                     successful = True
@@ -208,13 +217,13 @@ class Installer(object):
         return view.render_page()
 
     def install(self, params):
-        
+
         params["project_module"] = params["project_name"].lower()
 
-        self._create_project(params)
+        self.create_project(params)
         self._init_project(params)
 
-    def _create_project(self, params):
+    def create_project(self, params):
 
         vars = dict(
             ("_%s_" % key.upper(), unicode(value))
@@ -252,14 +261,17 @@ class Installer(object):
 
         copy(self.skeleton_path, params["project_path"])
 
-        # Create the folder for the database
+        # Create empty folders
         os.mkdir(os.path.join(params["project_path"], "data"))
+        os.mkdir(os.path.join(params["project_path"], "static"))
+        os.mkdir(os.path.join(params["project_path"], "static", "images"))
+        os.mkdir(os.path.join(params["project_path"], "image-cache"))
 
         # Grant execution permission for project scripts
         scripts_path = os.path.join(params["project_path"], "scripts")
 
-        for fname in os.listdir(scripts_path):            
-            if fname != "__init__.py":   
+        for fname in os.listdir(scripts_path):
+            if fname != "__init__.py":
                 script = os.path.join(scripts_path, fname)
                 if os.path.isfile(script):
                     os.chmod(script, 0774)
@@ -281,12 +293,13 @@ class Installer(object):
         Popen(cmd, shell = True)
 
         __import__(params["project_module"])
-        init_site(
-            admin_email = params["admin_email"],
-            admin_password = params["admin_password"],
-            languages = params["languages"].split(),
-            template_engine = params["template_engine"]
-        )
+        app.installation_id = params["installation_id"]
+        site_initializer = SiteInitializer()
+        site_initializer.admin_email = params["admin_email"]
+        site_initializer.admin_password = params["admin_password"]
+        site_initializer.languages = params["languages"].split()
+        site_initializer.base_id = params["base_id"]
+        site_initializer.initialize()
 
     def _is_valid_local_address(self, host, port):
         s = socket.socket()
@@ -324,9 +337,9 @@ class InstallFolderExists(Exception):
 
 
 class WrongAddressError(schema.exceptions.ValidationError):
- 
+
     def __init__(self, member, value, context, host_member, port_member):
-        
+
         schema.exceptions.ValidationError.__init__(
             self, member, value, context
         )

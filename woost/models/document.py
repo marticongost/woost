@@ -6,18 +6,18 @@ u"""
 @organization:	Whads/Accent SL
 @since:			July 2008
 """
+import cherrypy
 from cocktail import schema
-from cocktail.modeling import getter
 from cocktail.events import event_handler
-from cocktail.controllers.renderingengines import get_rendering_engine
-from woost.models.publishable import Publishable
-from woost.models.file import File
-from woost.models.controller import Controller
+from cocktail.html import templates
+from .publishable import Publishable
+from .controller import Controller
 
 
 class Document(Publishable):
 
     instantiable = True
+    type_group = "document"
     default_per_language_publication = True
 
     groups_order = [
@@ -27,14 +27,14 @@ class Document(Publishable):
 
     members_order = (
         "title",
-        "inner_title",        
+        "inner_title",
         "template",
         "description",
         "keywords",
-        "attachments",
-        "page_resources",
-        "branch_resources",
         "children",
+        "redirection_mode",
+        "redirection_target",
+        "redirection_method",
         "robots_should_index",
         "robots_should_follow"
     )
@@ -77,57 +77,55 @@ class Document(Publishable):
         type = "woost.models.Template",
         bidirectional = True,
         listed_by_default = False,
-        member_group = "presentation"
+        after_member = "controller",
+        member_group = "presentation.behavior"
     )
 
-    branch_resources = schema.Collection(
-        items = schema.Reference(
-            type = Publishable,
-            required = True,
-            relation_constraints =
-                Publishable.resource_type.equal("html_resource")
-        ),
-        related_end = schema.Collection()
-    )
-
-    page_resources = schema.Collection(
-        items = schema.Reference(
-            type = Publishable,
-            required = True,
-            relation_constraints =
-                Publishable.resource_type.equal("html_resource")
-        ),
-        related_end = schema.Collection()
-    )
-
-    attachments = schema.Collection(
-        items = schema.Reference(
-            type = Publishable,
-            required = True
-        ),
-        selector_default_type = File,
-        related_end = schema.Collection()
-    )
- 
     children = schema.Collection(
         items = "woost.models.Publishable",
         bidirectional = True,
         related_key = "parent",
-        cascade_delete = True
+        cascade_delete = True,
+        after_member = "parent",
+        member_group = "navigation"
+    )
+
+    redirection_mode = schema.String(
+        enumeration = ["first_child", "custom_target"],
+        listed_by_default = False,
+        text_search = False,
+        member_group = "navigation"
+    )
+
+    redirection_target = schema.Reference(
+        type = Publishable,
+        related_end = schema.Collection(),
+        required = redirection_mode.equal("custom_target"),
+        listed_by_default = False,
+        member_group = "navigation"
+    )
+
+    redirection_method = schema.String(
+        required = True,
+        default = "temp",
+        enumeration = ["temp", "perm", "client"],
+        listed_by_default = False,
+        text_search = False,
+        member_group = "navigation"
     )
 
     robots_should_index = schema.Boolean(
         required = True,
         default = True,
         listed_by_default = False,
-        member_group = "robots"
+        member_group = "meta.robots"
     )
 
     robots_should_follow = schema.Boolean(
         required = True,
         default = True,
         listed_by_default = False,
-        member_group = "robots"
+        member_group = "meta.robots"
     )
 
     def _update_path(self, parent, path):
@@ -148,26 +146,52 @@ class Document(Publishable):
                 for descendant in child.descend_tree(True):
                     yield descendant
 
-    @getter
-    def resources(self):
-        """Iterates over all the resources that apply to the page.
-        @type: L{Publishable}
-        """
-        for resource in self.inherited_resources:
-            yield resource
-
-        for resource in self.branch_resources:
-            yield resource
-
-        for resource in self.page_resources:
-            yield resource
-
     def render(self, **values):
         """Renders the document using its template."""
         if self.template is None:
             raise ValueError("Can't render a document without a template")
-        
+
         values["publishable"] = self
-        engine = get_rendering_engine(self.template.engine)
-        return engine.render(values, template = self.template.identifier)
+
+        view = templates.new(self.template.identifier)
+        for key, value in values.iteritems():
+            setattr(view, key, value)
+
+        return view.render_page()
+
+    def find_redirection_target(self):
+        mode = self.redirection_mode
+
+        if mode == "first_child":
+            return self.find_first_child_redirection_target()
+
+        elif mode == "custom_target":
+            return self.redirection_target
+
+    def find_first_child_redirection_target(self):
+        for child in self.children:
+            if child.is_accessible():
+                if isinstance(child, Document):
+                    return child.find_redirection_target() or child
+                else:
+                    return child
+
+    def first_child_redirection(self):
+        child = self.find_first_child_redirection_target()
+        if child is not None:
+            raise cherrypy.HTTPRedirect(child.get_uri())
+
+    @event_handler
+    def handle_related(cls, event):
+        if event.member is cls.websites:
+            for child in event.source.children:
+                child.websites = list(event.source.websites)
+
+    @event_handler
+    def handle_unrelated(cls, event):
+        if not event.source.is_deleted:
+            if event.member is cls.websites:
+                for child in event.source.children:
+                    child.websites = list(event.source.websites)
+
 

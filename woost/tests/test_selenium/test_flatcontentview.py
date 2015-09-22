@@ -12,21 +12,21 @@ from woost.tests.test_selenium import admin_login
 
 
 class FlatContentViewTestCase(object):
-    
+
     @selenium_test
     def test_show_all(self):
         all = len(Item.select())
         browser.open("/en/cms/content/?content_view=flat&page_size=%d" % all)
-        admin_login() 
+        admin_login()
         assert browser.jquery_count(".collection_display tr.item_row") == all
 
     @selenium_test
     def test_sort_by_id(self):
-        
+
         browser.open(
             "/en/cms/content/?content_view=flat"
             "&page_size=%d"
-            "&members=element&members=id"   
+            "&members=element&members=id"
             % len(Item.select())
         )
         admin_login()
@@ -90,7 +90,7 @@ class FlatContentViewTestCase(object):
 
         all_columns = ["element", "class"] + [
             member.name
-            for member in Item.members().itervalues()
+            for member in Item.iter_members()
             if member.visible
         ]
 
@@ -98,7 +98,7 @@ class FlatContentViewTestCase(object):
             set(["element"]),
             set(["element", "class"]),
             set(["element", "class", "id"]),
-            set(["id", "author", "owner", "is_draft", "drafts"]),
+            set(["id", "author", "qname"]),
             set(["element", "translations"])
         ):
             # Check / uncheck columns
@@ -109,7 +109,7 @@ class FlatContentViewTestCase(object):
                     browser.check(locator)
                 else:
                     browser.uncheck(locator)
-            
+
             # Apply the member selection
             browser.click("css=.settings_box button[type=submit]")
             browser.wait_for_page_to_load(10000)

@@ -11,7 +11,7 @@ other specialized pricing policies for a shop.
 from datetime import datetime
 from cocktail import schema
 from cocktail.controllers.usercollection import UserCollection
-from woost.models import Item, Site
+from woost.models import Configuration, Item
 from woost.extensions.shop.shoporder import ShopOrder
 from woost.extensions.shop.shoporderentry import ShopOrderEntry
 
@@ -39,7 +39,7 @@ class PricingPolicy(Item):
         translated = True,
         descriptive = True
     )
-    
+
     enabled = schema.Boolean(
         required = True,
         default = True
@@ -53,7 +53,7 @@ class PricingPolicy(Item):
         indexed = True,
         min = start_date
     )
-     
+
     matching_items = schema.Mapping()
 
     # TODO: Validate issubclass(matching_items["type"], (ShopOrder, Product))
@@ -68,16 +68,16 @@ class PricingPolicy(Item):
         user_collection.allow_member_selection = False
         user_collection.allow_language_selection = False
         user_collection.params.source = self.matching_items.get
-        #user_collection.available_languages = Language.codes # <- required?
+        #user_collection.available_languages = Configuration.instance.languages # <- required?
         return user_collection.subset
-    
+
     def match_item(self, item):
 
         if self.matching_items:
             for filter in self.select_matching_items().filters:
                 if not filter.eval(item):
                     return False
-        
+
         return True
 
     def applies_to(self, item):
@@ -106,11 +106,11 @@ class PriceOverride(Discount):
 class RelativeDiscount(Discount):
 
     instantiable = True
-    
+
     amount = schema.Decimal(
         required = True
     )
-    
+
     def apply(self, item, costs):
         costs["price"]["cost"] -= self.amount
 
@@ -137,7 +137,7 @@ class FreeUnitsDiscount(Discount):
         "free_units",
         "repeated"
     ]
-    
+
     paid_units = schema.Integer(
         required = True,
         min = 0
@@ -158,7 +158,7 @@ class FreeUnitsDiscount(Discount):
         paid = self.paid_units
         free = self.free_units
         quantity = costs["paid_quantity"]
-        
+
         if self.repeated:
             quantity -= (quantity / (paid + free)) * free
         elif quantity > paid:
@@ -168,17 +168,17 @@ class FreeUnitsDiscount(Discount):
 
 
 class ShippingCost(PricingPolicy):
-    pass   
+    pass
 
 
 class ShippingCostOverride(ShippingCost):
-    
+
     instantiable = True
-    
+
     cost = schema.Decimal(
         required = True
     )
-    
+
     def apply(self, item, costs):
         costs["shipping"] = self.cost
 
@@ -214,7 +214,7 @@ class CumulativeTax(Tax):
 class PercentageTax(Tax):
 
     instantiable = True
-        
+
     percentage = schema.Decimal(
         required = True
     )

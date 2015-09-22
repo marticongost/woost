@@ -19,8 +19,7 @@ class DifferencesController(EditController):
 
     @cached_getter
     def source_item(self):
-        item = self.stack_node.item
-        return item.draft_source or item
+        return self.stack_node.item
 
     @cached_getter
     def output(self):
