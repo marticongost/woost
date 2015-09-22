@@ -10,7 +10,6 @@ from datetime import datetime
 from cocktail.modeling import abstractmethod
 from cocktail.translations import translations
 from cocktail import schema
-from cocktail.html.datadisplay import display_factory
 from woost.models import Item, Role
 from woost.extensions.locations.location import Location
 from woost.extensions.ecommerce.ecommerceproduct import ECommerceProduct
@@ -78,10 +77,8 @@ class ECommerceBillingConcept(Item):
                         **kwargs)
     )
 
-    condition = schema.String(
-        edit_control = display_factory(
-            "cocktail.html.CodeEditor", syntax = "python"
-        )
+    condition = schema.CodeBlock(
+        language = "python"
     )
 
     eligible_countries = schema.Collection(
@@ -102,10 +99,8 @@ class ECommerceBillingConcept(Item):
         related_end = schema.Collection()
     )
 
-    implementation = schema.String(
-        edit_control = display_factory(
-            "cocktail.html.CodeEditor", syntax = "python"
-        )
+    implementation = schema.CodeBlock(
+        language = "python"
     )
 
     def is_current(self):

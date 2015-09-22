@@ -178,7 +178,7 @@ from woost.models import Site
                 py:id="phone_label"
                 class="tel"
                 py:visible="@{Site.main.phone_number}">
-                <span>${translations("woost.views.StandardView.phone_number")}</span>: 
+                <span>${translations("woost.views.StandardView.phone_number")}</span> 
                 <span class="value">@{Site.main.phone_number}</span>
             </span>
             <span class="sep" py:visible="@{Site.main.phone_number and Site.main.fax_number}">-</span>
@@ -186,7 +186,7 @@ from woost.models import Site
                 py:id="fax_label"
                 class="tel"
                 py:visible="@{Site.main.fax_number}">
-                <span class="type">Fax</span>:
+                <span class="type">${translations("woost.views.StandardView.fax_number")}</span>
                 <span class="value">@{Site.main.fax_number}</span>
             </span>
             <br/>

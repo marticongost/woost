@@ -51,6 +51,24 @@ class CommentsExtension(Extension):
             "en"
         )
 
+    def _create_comments_adapter(self, comment_model):
+        adapter = schema.Adapter()
+        adapter.exclude(
+            member.name
+            for member in comment_model.members().itervalues()
+            if not member.visible 
+            or not member.editable
+            or not issubclass(member.schema, comment_model)
+        )
+        adapter.exclude(["publishable","captcha"])
+        return adapter
+
+    def _adapt_comments_schema(self, comment_model):
+        adapter = self._create_comments_adapter(comment_model)
+        comments_schema = schema.Schema(comment_model.name + "Form")
+        adapter.export_schema(comment_model, comments_schema)
+        return comments_schema
+
     def _after_process_comments(self, comment):
         raise cherrypy.HTTPRedirect(
             "%s#comment-%s" % (
@@ -171,18 +189,7 @@ class CommentsExtension(Extension):
                     )
                 
                 # Adapting the comments model
-                adapter = schema.Adapter()
-                adapter.exclude(
-                    member.name
-                    for member in comment_model.members().itervalues()
-                    if not member.visible 
-                    or not member.editable
-                    or not issubclass(member.schema, comment_model)
-                )
-                adapter.exclude(["publishable","captcha"])
-
-                comments_schema = schema.Schema(comment_model.name + "Form")
-                adapter.export_schema(comment_model, comments_schema)
+                comments_schema = CommentsExtension.instance._adapt_comments_schema(comment_model)
 
                 if user.anonymous \
                 and getattr(CommentsExtension.instance, "captcha_enabled", False):
