@@ -9,13 +9,13 @@ from cocktail.controllers import request_property, Location
 from cocktail.controllers.formprocessor import FormProcessor, Form
 from woost.models import Publishable
 from woost.controllers.notifications import notify_user
-from woost.controllers.documentcontroller import DocumentController
+from woost.controllers.publishablecontroller import PublishableController
 from woost.extensions.ecommerce.ecommerceproduct import ECommerceProduct
 from woost.extensions.ecommerce.ecommercepurchase import ECommercePurchase
 from woost.extensions.ecommerce.basket import Basket
 
 
-class ProductController(FormProcessor, DocumentController):
+class ProductController(FormProcessor, PublishableController):
 
     class AddProductForm(Form):
 
@@ -32,7 +32,7 @@ class ProductController(FormProcessor, DocumentController):
 
         @request_property
         def adapter(self):
-            
+
             adapter = Form.adapter(self)
             adapter.implicit_copy = False
 

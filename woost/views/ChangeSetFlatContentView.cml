@@ -15,6 +15,11 @@ from woost.models import ChangeSet
     root_content_type = ChangeSet
     ?>
 
+    <py:with py:element="self.content_type_selector" py:visible="@{False}"/>
+    <py:with py:element="self.content_view_dropdown" py:visible="@{False}"/>
+    <py:with py:element="self.languages_dropdown" py:visible="@{False}"/>
+    <py:with py:element="self.members_dropdown" py:visible="@{False}"/>
+
     <py:woost.views.ChangelogTable
         py:def="collection_display"
         py:base_url="@{self.cms.contextual_uri()}"

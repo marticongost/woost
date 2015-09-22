@@ -11,7 +11,7 @@ from woost.translations.strings import content_permission_translation_factory
 
 # UI
 #------------------------------------------------------------------------------
-translations.define("Action export_static",
+translations.define("woost.actions.export_static",
     ca = u"Exportar contingut estàtic",
     es = u"Exportar contenido estático",
     en = u"Export static content"
@@ -66,8 +66,8 @@ translations.define("woost.extensions.staticsite.export_status-failed",
 )
 
 translations.define("woost.extensions.staticsite export info",
-    ca = u"S'exportarà els següents elements:",
-    es = u"Se exportará los siguientes elementos:",
+    ca = u"S'exportaran els següents elements:",
+    es = u"Se exportarán los siguientes elementos:",
     en = u"The following items will be exported:"
 )
 
@@ -79,7 +79,7 @@ translations.define("ExportStaticSite.update_only",
     en = u"Only export modified content"
 )
 
-translations.define("ExportStaticSite.exporter",
+translations.define("ExportStaticSite.destination",
     ca = u"Destí",
     es = u"Destino",
     en = u"Destination"
@@ -123,6 +123,18 @@ translations.define("StaticSiteSnapShoter-plural",
     ca = u"Exportadors de contingut estàtic",
     es = u"Exportadores de contenido estático",
     en = u"Static content exporters"
+)
+
+translations.define("StaticSiteSnapShoter.setup_expression",
+    ca = u"Preparació",
+    es = u"Preparación",
+    en = u"Setup"
+)
+
+translations.define("StaticSiteSnapShoter.postprocessing_expression",
+    ca = u"Postprocessat",
+    es = u"Postprocesado",
+    en = u"Postprocessing"
 )
 
 # WgetSnapShoter
@@ -263,6 +275,44 @@ translations.define(
     en = u"ZIP file"
 )
 
+# AmazonS3Destination
+#------------------------------------------------------------------------------
+translations.define("AmazonS3Destination",
+    ca = u"Amazon S3",
+    es = u"Amazon S3",
+    en = u"Amazon S3"
+)
+
+translations.define("AmazonS3Destination-plural",
+    ca = u"Amazon S3",
+    es = u"Amazon S3",
+    en = u"Amazon S3"
+)
+
+translations.define("AmazonS3Destination.aws_access_key",
+    ca = u"Clau d'accés d'AWS",
+    es = u"Clave de acceso de AWS",
+    en = u"AWS access key ID"
+)
+
+translations.define("AmazonS3Destination.aws_secret_key",
+    ca = u"Clau secreta d'AWS",
+    es = u"Clave secreta de AWS",
+    en = u"AWS secret access key"
+)
+
+translations.define("AmazonS3Destination.bucket_name",
+    ca = u"Contenidor d'Amazon S3",
+    es = u"Contenedor de Amazon S3",
+    en = u"Amazon S3 bucket"
+)
+
+translations.define("AmazonS3Destination.prefix",
+    ca = u"Prefix per les rutes",
+    es = u"Prefijo para las rutas",
+    en = u"Key prefix"
+)
+
 # ExportationPermission
 #------------------------------------------------------------------------------
 translations.define("ExportationPermission",
@@ -288,30 +338,30 @@ translations.define(
     "ExportationPermission-instance",
     ca = content_permission_translation_factory("ca",
         lambda permission, subject, **kwargs:
-            "%s %s" % (        
+            "%s %s" % (
                 translations(permission.destination, "ca", **kwargs),
                 subject
-            )                
+            )
             if permission.destination
             else "canviar l'estat " + ca_possessive(subject),
-    ),  
+    ),
     es = content_permission_translation_factory("es",
         lambda permission, subject, **kwargs:
-            "%s %s" % (        
+            "%s %s" % (
                 translations(permission.destination, "es", **kwargs),
                 subject
-            )                
+            )
             if permission.destination
             else "cambiar el estado de " + subject,
-    ),  
+    ),
     en = content_permission_translation_factory("en",
         lambda permission, subject, **kwargs:
-            "%s %s" % ( 
+            "%s %s" % (
                 translations(permission.destination, "en", **kwargs),
                 subject
-            )                
+            )
             if permission.destination
             else "change the state of " + subject
-    )   
+    )
 )
 

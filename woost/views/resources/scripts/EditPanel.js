@@ -7,14 +7,20 @@
 @since:			January 2011
 -----------------------------------------------------------------------------*/
 
+cocktail.declare("woost");
+
+woost.editURI = function (itemId) {
+    return woost.backofficeURI + "/content/" + itemId + "?root_url=" + encodeURIComponent(location.href);
+}
+
 cocktail.bind(".EditPanel", function ($panel) {
-    
+
     this.getExpanded = function () {
         return $panel.hasClass("expanded");
     }
 
     this.setExpanded = function (expanded) {
-        if (expanded) {    
+        if (expanded) {
             $panel.addClass("expanded");
             jQuery(document.body).addClass("editing");
         }
@@ -38,10 +44,65 @@ cocktail.bind(".EditPanel", function ($panel) {
     jQuery(cocktail.instantiate("woost.views.EditPanel.close_panel_button"))
         .click(function () { $panel.get(0).setExpanded(false); })
         .appendTo($panel);
+
+    // Block highlighting
+    var highlightedBlock = null;
+
+    this.getHighlightedBlock = function () {
+        return highlightedBlock;
+    }
+
+    this.setHighlightedBlock = function (block) {
+        if (block != highlightedBlock) {
+            if (highlightedBlock) {
+                $panel.find(".block_entry_" + highlightedBlock.blockId).removeClass("highlighted");
+                jQuery(highlightedBlock).removeClass("highlighted_block");
+            }
+            if (block) {
+                $panel.find(".block_entry_" + block.blockId).addClass("highlighted");
+                jQuery(block).addClass("highlighted_block");
+            }
+            highlightedBlock = block;
+        }
+    }
+
+    $panel.find(".block_tree .entry_label")
+        .hover(
+            function () {
+                var $entry = jQuery(this).closest("li");
+                $panel.get(0).setHighlightedBlock(
+                    jQuery(".block" + $entry.get(0).blockId).get(0)
+                );
+            },
+            function () {
+                $panel.get(0).setHighlightedBlock(null);
+            }
+        );
+});
+
+cocktail.bind(".block", function ($block) {
+    $block
+        .click(function (e) {
+            if (jQuery(this).closest("body.editing").length) {
+                location.href = woost.editURI(this.blockId);
+                return false;
+            }
+        })
+        .mouseenter(function () {
+            if (jQuery(this).closest("body.editing").length) {
+                jQuery(".EditPanel").get(0).setHighlightedBlock(this);
+            }
+        })
+        .mouseleave(function (e) {
+            if (jQuery(this).closest("body.editing").length) {
+                var nextBlock = jQuery(e.relatedTarget).closest(".block").get(0);
+                jQuery(".EditPanel").get(0).setHighlightedBlock(nextBlock);
+            }
+        });
 });
 
 jQuery(function () {
-    
+
     // Toggle the visibility of edit panels with a keyboard shortcut
     jQuery(document).keydown(function (e) {
         if (e.keyCode == 69 && e.shiftKey && e.altKey) {

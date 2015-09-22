@@ -12,7 +12,7 @@ from campaign_monitor_api import CampaignMonitorApi
 from cocktail import schema
 from cocktail.modeling import cached_getter
 from cocktail.controllers import context
-from woost.models import Site, StandardPage
+from woost.models import StandardPage, get_current_website
 from woost.controllers.documentcontroller import DocumentController
 from woost.extensions.campaignmonitor import CampaignMonitorExtension
 from woost.extensions.campaignmonitor.campaignmonitorsubscriptionpage \
@@ -36,7 +36,7 @@ class CampaignMonitorUnsubscriptionController(DocumentController):
         if self.action == "resubscribe" and self.subscriber:
             self.resubscribe(self.subscriber)
 
-    
+
     def resubscribe(self, email):
         extension = CampaignMonitorExtension.instance
 
@@ -65,7 +65,7 @@ class CampaignMonitorUnsubscriptionController(DocumentController):
                 name = subscriber[0].get("Name")
                 date = subscriber[0].get("Date")
                 state = subscriber[0].get("State")
-                
+
                 cm_context["lists"].append({
                     "list_id": list.get("ListID"),
                     "name": name,
@@ -87,20 +87,20 @@ class CampaignMonitorUnsubscriptionController(DocumentController):
                         for key, value in custom_fields.items():
                             encoded_key = (
                                 key.encode("utf-8") if isinstance(key, unicode) else key
-                            )       
+                            )
                             encoded_value = (
                                 value.encode("utf-8") if isinstance(value, unicode) else value
-                            )           
+                            )
                             encoded_custom_fields[encoded_key] = encoded_value
-                            
+
                             cm_context["lists"][i].update(**encoded_custom_fields)
 
                         try:
                             # Resubscribe
                             resubscribed_lists += 1
                             api.subscriber_add_and_resubscribe(
-                                list.get("ListID"), 
-                                email.encode("utf-8"), 
+                                list.get("ListID"),
+                                email.encode("utf-8"),
                                 name.encode("utf-8") if name else name,
                                 encoded_custom_fields
                             )
@@ -115,10 +115,8 @@ class CampaignMonitorUnsubscriptionController(DocumentController):
             uri = self.get_pending_uri(**cm_context)
 
         if uri is None:
-            uri = context["cms"].uri(
-                Site.main.home
-            )
-            
+            uri = get_current_website().home.get_uri()
+
         raise cherrypy.HTTPRedirect(uri.encode("utf-8"))
 
     def get_subscription_uri(self, **kwargs):

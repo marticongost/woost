@@ -9,17 +9,17 @@
 
 cocktail.bind(".BackOfficeChangeLogView", function ($changelogView) {
 
-    var THRESHOLD = 6;
+    var THRESHOLD = 50;
 
     $changelogView.find("td.changes_column ul").each(function () {
-        
+
         var count = jQuery(this).find("li").length;
 
         if (count > THRESHOLD) {
-            
+
             var list = this;
             var collapsed;
-            
+
             var toggle = document.createElement("a");
             toggle.href = "javascript:";
             toggle.className = "toggle";

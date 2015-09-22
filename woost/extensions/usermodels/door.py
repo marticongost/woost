@@ -29,7 +29,7 @@ class Door(object):
         with self.__lock:
             self.__concurrency += 1
             self.__empty.clear()
-    
+
     def leave(self):
         """Notify the end of access to the shared state."""
         with self.__lock:
@@ -39,11 +39,11 @@ class Door(object):
 
     def lock(self):
         """Prevent concurrent access to the shared state.
-        
+
         The method waits until no other thread is accessing the shared state
         (ie. no one's inside) and then prevents further access to it until the
         `unlock` method is called.
-        """ 
+        """
         while True:
             self.__empty.wait()
             self.__lock.acquire()

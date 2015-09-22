@@ -14,6 +14,7 @@ cocktail.bind(".UserFilterEntry .ItemSelector", function ($itemSelector) {
 
     var selectorIframe;
     var param;
+    var selectorDialogURL = this.selectorDialogURL;
 
     this.clear = function () {
         $itemSelector.find(".ItemLabel").html(this.emptyLabel);
@@ -21,7 +22,7 @@ cocktail.bind(".UserFilterEntry .ItemSelector", function ($itemSelector) {
     }
 
     this.setItem = function (itemId, label) {
-        
+
         var itemLabel = $itemSelector.find(".ItemLabel").get(0);
         jQuery(itemLabel).empty();
 
@@ -45,13 +46,14 @@ cocktail.bind(".UserFilterEntry .ItemSelector", function ($itemSelector) {
             depth++;
             win = win.parent;
         }
-        
+
         selectorIframe = cocktail.createElement("iframe", "ItemSelector-frame" + depth);
         selectorIframe.className = "ItemSelector-frame";
         cocktail.showDialog(selectorIframe);
 
         function closeDialog() {
             cocktail.closeDialog();
+            form.action = prevAction;
             form.target = prevTarget;
             form.removeChild(param);
         }
@@ -76,12 +78,14 @@ cocktail.bind(".UserFilterEntry .ItemSelector", function ($itemSelector) {
                 return false;
             });
         });
-        
+
         var form = jQuery(this).parents("form").get(0);
+        var prevAction = form.action;
         var prevTarget = form.target;
         param = cocktail.createElement("input", "client_side_scripting", "hidden");
         param.value = "true";
         form.appendChild(param);
+        form.action = selectorDialogURL;
         form.target = selectorIframe.name;
     });
 });

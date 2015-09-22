@@ -6,7 +6,8 @@
 @organization:	Whads/Accent SL
 @since:			December 2009
 """
-from cocktail.events import event_handler, when
+import cherrypy
+from cocktail.events import when
 from cocktail import schema
 from cocktail.translations import translations
 from cocktail.controllers import context
@@ -31,6 +32,9 @@ translations.define("StaticSiteExtension.file_extension",
     en = u"File extension"
 )
 
+def generating_static_site():
+    return bool(cherrypy.request.headers.get("X-Woost-StaticSiteSnapShoter"))
+
 
 class StaticSiteExtension(Extension):
 
@@ -41,7 +45,7 @@ class StaticSiteExtension(Extension):
             u"""Permet exportar una versió estàtica del lloc web.""",
             "ca"
         )
-        self.set("description",            
+        self.set("description",
             u"""Permite exportar una versión estática del sitio web.""",
             "es"
         )
@@ -50,11 +54,7 @@ class StaticSiteExtension(Extension):
             "en"
         )
 
-
-    @event_handler
-    def handle_loading(cls, event):
- 
-        extension = event.source
+    def _load(self):
 
         from woost.controllers.backoffice.backofficecontroller \
             import BackOfficeController
@@ -64,7 +64,7 @@ class StaticSiteExtension(Extension):
             strings,
             staticsitesnapshoter,
             exportationpermission,
-            exportstaticsitecontroller 
+            exportstaticsitecontroller
         )
 
         from woost.extensions.staticsite.staticsitesnapshoter \
@@ -74,12 +74,12 @@ class StaticSiteExtension(Extension):
 
         BackOfficeController.export_static = \
             exportstaticsitecontroller.ExportStaticSiteController
-    
+
         StaticSiteExtension.add_member(
             schema.Collection(
                 "snapshoters",
                 items = schema.Reference(
-                    type = StaticSiteSnapShoter,                    
+                    type = StaticSiteSnapShoter,
                 ),
                 bidirectional = True,
                 integral = True,
@@ -92,7 +92,7 @@ class StaticSiteExtension(Extension):
             schema.Collection(
                 "destinations",
                 items = schema.Reference(
-                    type = StaticSiteDestination,                    
+                    type = StaticSiteDestination,
                 ),
                 bidirectional = True,
                 integral = True,
@@ -104,7 +104,7 @@ class StaticSiteExtension(Extension):
         # Disable interactive features from rendered pages when rendering
         # static content
         from woost.controllers.cmscontroller import CMSController
-    
+
         @when(CMSController.producing_output)
         def disable_user_controls(event):
             if context.get("exporting_static_site", False):

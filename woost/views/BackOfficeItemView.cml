@@ -2,6 +2,7 @@
 
 <?py
 from cocktail.schema import Collection
+from cocktail.html import html5_attr
 from woost.models import Item
 from woost.controllers.backoffice.useractions import (
     get_view_actions, get_view_actions_context, add_view_action_context
@@ -25,13 +26,9 @@ from woost.controllers.backoffice.useractions import (
         for cls in self.edited_content_type.descend_inheritance(include_self = True):
             if cls is not Item:
                 self.add_class(cls.name)
-        
-        if self.edited_item.is_inserted:
-        
-            add_view_action_context(self, "existing_item")
 
-            if self.edited_item.is_draft:
-                add_view_action_context(self, "draft")
+        if self.edited_item.is_inserted:
+            add_view_action_context(self, "existing_item")
         else:
             add_view_action_context(self, "new_item")
 
@@ -41,14 +38,24 @@ from woost.controllers.backoffice.useractions import (
             add_view_action_context(self, "unchanged")
 
         self._actions_context = get_view_actions_context(self)
-                                
+
         # Pending changes warning
         self.add_resource("/resources/scripts/BackOfficeItemView.js")
         self.set_client_param("hasPendingChanges", bool(self.changes))
         self.add_client_translation("woost.views.BackOfficeItemView pending changes warning")
         ?>
     </py:ready>
-    
+
+    <!-- Item heading -->
+    <h2 py:def="page_title">
+        <py:ready>
+            <py:new
+                py:element="loader.new(self.edited_item.backoffice_heading_view)"
+                py:index="0"
+                py:item="${self.edited_item}"/>
+        </py:ready>
+    </h2>
+
     <!-- Turn the central content into a form -->
     <py:with
         py:element="self.body"
@@ -56,26 +63,14 @@ from woost.controllers.backoffice.useractions import (
         method="post"
         autocomplete="off">
 
+        <?py html5_attr(element, "novalidate", "novalidate") ?>
+
         <!-- Default button (hidden) -->
         <button
             py:index="0"
             type="submit"
             name="item_action" value="save"
-            style="display: none"/>
-
-        <!-- Title -->
-        <h2 py:parent="self.body" py:position="0">
-            <py:ready>
-                <?py
-                if self.edited_item.is_inserted \
-                and not (self.edited_item.is_draft and self.edited_item.draft_source is None):
-                    context_desc = translations(self.edited_item)
-                else:
-                    context_desc = translations("creating", content_type = self.edited_content_type)
-                ?>
-                ${context_desc}
-            </py:ready>
-        </h2>
+            style="position: absolute; left: -1000px; top: -1000px"/>
 
         <!-- Actions -->
         <py:woost.views.ActionBar
@@ -93,25 +88,8 @@ from woost.controllers.backoffice.useractions import (
                 ?>
             </py:with>
         </py:woost.views.ActionBar>
-        
-        <div py:id="item_body"/>
 
-        <!-- Actions -->
-        <py:woost.views.ActionBar
-            py:id="item_bottom_buttons"
-            py:action_context="item_bottom_buttons"
-            py:action_target="@{self.edited_item}"
-            class="toolbar">
-            <py:with
-                py:def="action_button"
-                py:args="action, extra"
-                name="item_action">
-                <?py
-                if action is self.selected_action:
-                    element.add_class("selected")
-                ?>
-            </py:with>
-        </py:woost.views.ActionBar>
+        <div py:id="item_body"/>
 
     </py:with>
 

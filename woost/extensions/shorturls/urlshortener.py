@@ -5,7 +5,9 @@ u"""Defines the `URLShortener` model.
 """
 from cocktail.modeling import abstractmethod
 from cocktail import schema
+from cocktail.caching import CacheKeyError
 from woost.models import Item
+from woost.extensions.shorturls import ShortURLsExtension
 
 
 class URLShortener(Item):
@@ -21,6 +23,20 @@ class URLShortener(Item):
         normalized_index = True,
         descriptive = True
     )
+
+    def request(self, url):
+
+        short_url = None
+        cache_key = (self.id, url)
+
+        if short_url is None:
+            try:
+                short_url = ShortURLsExtension.url_cache.retrieve(cache_key)
+            except CacheKeyError:
+                short_url = self.shorten_url(url)
+                ShortURLsExtension.url_cache.store(cache_key, short_url)
+
+        return short_url
 
     @abstractmethod
     def shorten_url(self, url):

@@ -9,19 +9,26 @@ u"""
 from cocktail.translations import translations, get_language
 from cocktail.html.element import Element
 from cocktail.html import templates
+from cocktail.html.utils import rendering_xml
 from cocktail.controllers import context
-from woost.models import Language, Site
+from woost.models import (
+    Configuration,
+    get_current_user,
+    ReadTranslationPermission
+)
 
 LinkSelector = templates.get_class("cocktail.html.LinkSelector")
 
 
 class LanguageSelector(LinkSelector):
 
-    translated_labels = True
     tag = "ul"
+    translated_labels = True
+    missing_translations = "redirect" # "redirect", "hide", "disable"
+    autohide = True
 
-    def create_entry(self, value, label, selected):        
-        
+    def create_entry(self, value, label, selected):
+
         entry = Element("li")
         link = self.create_entry_link(value, label)
 
@@ -32,45 +39,73 @@ class LanguageSelector(LinkSelector):
         else:
             entry.append(link)
 
+        if self.missing_translations != "redirect":
+            publishable = context["publishable"]
+            if not publishable.is_accessible(language = value):
+                if self.missing_translations == "hide":
+                    entry.visible = False
+                elif self.missing_translations == "disable":
+                    link.tag = "span"
+                    link["href"] = None
+
         return entry
 
     def _ready(self):
-        
+
         if self.items is None:
-            self.items = Language.codes
+            config = Configuration.instance
+            user = get_current_user()
+            self.items = [
+                language
+                for language in (
+                    config.get_setting("published_languages")
+                    or config.languages
+                )
+                if user.has_permission(
+                    ReadTranslationPermission,
+                    language = language
+                )
+            ]
 
         if self.value is None:
             self.value = get_language()
 
-        LinkSelector._ready(self)
+        if self.autohide and len(self.items) < 2:
+            self.visible = False
+        else:
+            LinkSelector._ready(self)
 
-        # Hack for IE <= 6
-        if self.children:
-            self.children[-1].add_class("last")
+            # Hack for IE <= 6
+            if self.children:
+                self.children[-1].add_class("last")
 
     def get_item_label(self, language):
         if self.translated_labels:
-            return translations(language, language)
+            return translations("locale", locale = language, language = language)
         else:
-            return translations(language)
+            return translations("locale", locale = language)
 
     def get_entry_url(self, language):
         cms = context["cms"]
         publishable = context["publishable"]
-        return cms.translate_uri(
-            path = (None
-                    if publishable.is_accessible(language = language)
-                    else "/"),
-            language = language
-        )
-        
-    def create_entry_link(self, value, label):
 
+        if self.missing_translations == "redirect" \
+        and not publishable.is_accessible(language = language):
+            path = "/"
+        else:
+            path = None
+
+        return cms.translate_uri(path = path, language = language)
+
+    def create_entry_link(self, value, label):
         link = LinkSelector.create_entry_link(self, value, label)
         link["lang"] = value
         link["hreflang"] = value
-        link["xml:lang"] = value
-        return link
-    
 
-        
+        @link.when_ready
+        def set_xml_lang():
+            if rendering_xml():
+                link["xml:lang"] = value
+
+        return link
+

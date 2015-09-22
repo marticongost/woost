@@ -36,6 +36,20 @@ translations.define("Installer.python_package_repository-explanation",
     installed."""
 )
 
+translations.define("Installer.installation_id",
+    en = u"Installation identifier"
+)
+
+translations.define("Installer.installation_id-explanation",
+    en = u"A short string that uniquely identifies this instance of the site. "
+         u"Each installation of the site should be given a distinct "
+         u"identifier, following a convention fitting your workflow and "
+         u"site deployment specifics. For example, once could use "
+         u"<em>dev-john</em>, <em>dev-mary</em> and <em>prod</em> to "
+         u"distinguish between a couple of development "
+         u"copies and the production environment."
+)
+
 translations.define("Installer.admin_email",
     en = u"Administrator email"
 )
@@ -50,10 +64,6 @@ translations.define("Installer.languages",
 
 translations.define("Installer.languages-explanation",
     en = u"A list of ISO language codes, separated by whitespace."
-)
-
-translations.define("Installer.template_engine",
-    en = u"Default template engine"
 )
 
 translations.define("Installer.webserver",
@@ -86,6 +96,16 @@ translations.define("Installer.database_port",
 
 translations.define("Installer.validate_database_address",
     en = u"Test address availability"
+)
+
+translations.define("Installer.base_id",
+    en = u"Base object ID"
+)
+
+translations.define("Installer.base_id-explanation",
+    en = u"Start the incremental ID sequence at a non-zero value. "
+         u"May be useful to preserve the identifiers of old objects "
+         u"when importing existing content into a new site."
 )
 
 translations.define("Install",

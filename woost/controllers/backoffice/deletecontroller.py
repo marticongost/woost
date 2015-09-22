@@ -23,7 +23,7 @@ from woost.controllers.backoffice.basebackofficecontroller \
 
 
 class DeleteController(BaseBackOfficeController):
-    
+
     MAX_TRANSACTION_ATTEMPTS = 3
 
     @request_property
@@ -50,26 +50,29 @@ class DeleteController(BaseBackOfficeController):
     @request_property
     def submitted(self):
         return self.action is not None
-    
+
     def submit(self):
         # Load the edit stack before deleting any item, to ensure its
         # loaded properly
         stack = self.edit_stack
 
         if self.action == "confirm_delete":
-            
+
             user = get_current_user()
 
             for i in range(self.MAX_TRANSACTION_ATTEMPTS):
 
                 deleted_set = None
 
-                with changeset_context(author = user):
+                with changeset_context(author = user) as changeset:
                     for item in self.selection:
                         deleted_set = delete_validating(
                             item,
                             deleted_set = deleted_set
                         )
+                        change = changeset.changes.get(item.id)
+                        if change is not None:
+                            change.is_explicit_change = True
 
                 try:
                     datastore.commit()
@@ -77,13 +80,13 @@ class DeleteController(BaseBackOfficeController):
                     datastore.abort()
                     datastore.sync()
                 else:
-                    break       
-          
+                    break
+
             # Purge the edit stack of references to deleted items
             if stack:
                 prev_stack_size = len(stack)
                 stack.remove_references(deleted_set)
-            
+
             # Launch CMS.item_deleted events
             cms = self.context["cms"]
 
@@ -102,7 +105,7 @@ class DeleteController(BaseBackOfficeController):
                 while len(stack) > 0 \
                 and not isinstance(stack[-1], EditNode):
                     stack.pop()
-                
+
                 notify_user(
                     translations(
                         "woost.controllers.DeleteController."

@@ -6,14 +6,14 @@
 @organization:	Whads/Accent SL
 @since:			September 2009
 """
-from cocktail.events import event_handler, when
+from cocktail.events import when
 from cocktail.translations import (
     translations,
     set_language
 )
 from cocktail import schema
 from cocktail.persistence import datastore
-from woost.models import Extension, Language, Controller
+from woost.models import Extension, Configuration, Controller
 
 translations.define("ShopExtension",
     ca = u"Botiga",
@@ -38,7 +38,7 @@ class ShopExtension(Extension):
             electrònica.""",
             "ca"
         )
-        self.set("description",            
+        self.set("description",
             u"""Proporciona los elementos necesarios para implementar una
             tienda electrónica.""",
             "es"
@@ -49,8 +49,7 @@ class ShopExtension(Extension):
             "en"
         )
 
-    @event_handler
-    def handle_loading(cls, event):
+    def _load(self):
 
         from woost.extensions import shop
         from woost.extensions.shop import (
@@ -121,20 +120,20 @@ class ShopExtension(Extension):
             import launch_transaction_notification_triggers
 
         payments_ext = PaymentsExtension.instance
-            
+
         def get_payment(self, payment_id):
 
             order = shoporder.ShopOrder.get_instance(int(payment_id))
 
             if order is None:
                 raise PaymentNotFoundError(payment_id)
-            
+
             payment = Payment()
             payment.id = order.id
             payment.amount = order.cost
             payment.shop_order = order
             payment.currency = Currency(payments_ext.payment_gateway.currency)
-            
+
             for entry in order.entries:
                 payment.add(PaymentItem(
                     reference = str(entry.product.id),
@@ -147,36 +146,36 @@ class ShopExtension(Extension):
 
         PaymentGateway.get_payment = get_payment
 
-        def receive_order_payment(event):            
+        def receive_order_payment(event):
             payment = event.payment
-            shop_order = payment.shop_order            
-            set_language(shop_order.language)           
+            shop_order = payment.shop_order
+            set_language(shop_order.language)
             shop_order.status = payment.status
             shop_order.gateway_parameters = payment.gateway_parameters
-        
+
         def commit_order_payment(event):
             datastore.commit()
-        
+
         events = PaymentGateway.transaction_notified
         pos = events.index(launch_transaction_notification_triggers)
         events.insert(pos, receive_order_payment)
         events.insert(pos + 2, commit_order_payment)
 
-        if not event.source.installed:
-            create_product_controller()
-            datastore.commit()
+        self.install()
 
-def create_product_controller():
-    # Create the product controller
-    controller = Controller()
-    controller.qname = "woost.product_controller"
-    for language in Language.codes:
-        value = translations(
-            "woost.extensions.shop Product controller title",
-            language
-        )
-        if value:
-            controller.set("title", value, language)
-    controller.python_name = \
-        "woost.extensions.shop.productcontroller.ProductController"
-    controller.insert()
+    def _install(self):
+
+        # Create the product controller
+        controller = Controller()
+        controller.qname = "woost.product_controller"
+        for language in Configuration.instance.languages:
+            value = translations(
+                "woost.extensions.shop Product controller title",
+                language
+            )
+            if value:
+                controller.set("title", value, language)
+        controller.python_name = \
+            "woost.extensions.shop.productcontroller.ProductController"
+        controller.insert()
+

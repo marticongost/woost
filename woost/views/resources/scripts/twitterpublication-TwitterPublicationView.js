@@ -15,7 +15,7 @@ cocktail.bind(".TwitterPublicationView", function ($view) {
     var closing = false;
 
     if (this.action == "publish" && $resultsTable.length) {
-        
+
         var $fields = $view.find(".publication_form .fields");
         $fields.hide();
 
@@ -38,7 +38,7 @@ cocktail.bind(".TwitterPublicationView", function ($view) {
     });
 
     $view.find(".publication_form").submit(function () {
-        
+
         if (!closing) {
             var $sign = jQuery(cocktail.instantiate(
                 "woost.extensions.twitterpublication.TwitterPublicationView.loading_sign"

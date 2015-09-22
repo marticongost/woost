@@ -7,7 +7,7 @@ Selenium test suite for the Woost CMS.
 @organization:	Whads/Accent SL
 @since:			May 2009
 """
-from os.path import join        
+from os.path import join
 from shutil import rmtree
 from tempfile import mkdtemp
 from ZODB.FileStorage import FileStorage
@@ -19,7 +19,7 @@ from cocktail.tests.seleniumtester import (
     browser
 )
 from woost import app
-from woost.models.initialization import init_site
+from woost.models.initialization import SiteInitializer
 from woost.controllers.cmscontroller import CMSController
 
 # Site defaults
@@ -41,7 +41,7 @@ def admin_login():
 
 
 def setup_package():
-    
+
     if not get_selenium_enabled():
         return
 
@@ -53,7 +53,8 @@ def setup_package():
     datastore.storage = FileStorage(app.path("testdb.fs"))
 
     # Initialize site content before testing
-    init_site(
+    site_initializer = SiteInitializer()
+    site_initializer.initialize(
         admin_email,
         admin_password,
         site_languages

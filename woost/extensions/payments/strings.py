@@ -8,14 +8,6 @@
 """
 from cocktail.translations import translations
 
-# Payments extension
-#------------------------------------------------------------------------------
-translations.define("PaymentsExtension.payment_gateway",
-    ca = u"Passarel·la de pagaments",
-    es = u"Pasarela de pagos",
-    en = u"Payment gateway"
-)
-
 # TransactionNotifiedTrigger
 #------------------------------------------------------------------------------
 translations.define("TransactionNotifiedTrigger",
@@ -132,6 +124,30 @@ translations.define("SISPaymentGateway.merchant_secret_key",
     en = u"Secret key"
 )
 
+translations.define("SISPaymentGateway.pay_methods",
+    ca = u"Tipus de pagament acceptats",
+    es = u"Formas de pago aceptadas",
+    en = u"Allowed payment methods"
+)
+
+translations.define("SISPaymentGateway.pay_methods=T",
+    ca = u"Targeta de crèdit",
+    es = u"Tarjeta de crédito",
+    en = u"Credit card"
+)
+
+translations.define("SISPaymentGateway.pay_methods=D",
+    ca = u"Domiciliació bancària",
+    es = u"Domiciliación bancaria",
+    en = u"Direct debit"
+)
+
+translations.define("SISPaymentGateway.pay_methods=R",
+    ca = u"Transferència",
+    es = u"Transferencia",
+    en = u"Transfer"
+)
+
 translations.define("SISPaymentGateway.payment_successful_page",
     ca = u"Pàgina de confirmació de pagament",
     es = u"Página de confirmación de pago",
@@ -153,14 +169,14 @@ translations.define("SISPaymentGateway.label default",
 # DummyPaymentGateway
 #------------------------------------------------------------------------------
 translations.define("DummyPaymentGateway",
-    ca = u"Passarel·la de pagaments fictícia",
-    es = u"Pasarela de pagos ficticia",
+    ca = u"Passarel·la de pagaments simulada",
+    es = u"Pasarela de pagos simulada",
     en = u"Dummy payment gateway"
 )
 
 translations.define("DummyPaymentGateway-plural",
-    ca = u"Passarel·les de pagaments fictícies",
-    es = u"Pasarelas de pagos ficticias",
+    ca = u"Passarel·les de pagaments simulades",
+    es = u"Pasarelas de pagos simuladas",
     en = u"Dummy payment gateways"
 )
 

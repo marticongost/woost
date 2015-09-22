@@ -10,23 +10,42 @@ Declaration of back office actions.
 import cherrypy
 from cocktail.modeling import getter, ListWrapper
 from cocktail.translations import translations
-from cocktail.controllers import view_state
+from cocktail.persistence import datastore
+from cocktail.controllers import (
+    view_state,
+    Location,
+    context as controller_context,
+    request_property,
+    get_parameter,
+    session,
+)
 from cocktail import schema
 from woost.models import (
+    Configuration,
     Item,
+    SiteInstallation,
     Publishable,
     URI,
     File,
+    Block,
     get_current_user,
+    ReadPermission,
+    ReadMemberPermission,
     CreatePermission,
     ModifyPermission,
     DeletePermission,
-    ConfirmDraftPermission,
-    ReadHistoryPermission
+    ModifyMemberPermission,
+    ReadHistoryPermission,
+    InstallationSyncPermission
 )
+from woost.models.blockutils import add_block, type_is_block_container
+from woost.controllers.notifications import notify_user
 from woost.controllers.backoffice.editstack import (
+    EditNode,
     SelectionNode,
-    RelationNode
+    RelationNode,
+    EditBlocksNode,
+    AddBlockNode
 )
 
 # User action model declaration
@@ -51,11 +70,11 @@ def get_user_action(id):
 
 def get_user_actions(**kwargs):
     """Returns a collection of all actions registered with the site.
-    
+
     @return: The list of user actions.
     @rtype: iterable L{UserAction} sequence
     """
-    return _action_list  
+    return _action_list
 
 def get_view_actions(context, target = None):
     """Obtains the list of actions that can be displayed on a given view.
@@ -81,7 +100,7 @@ def get_view_actions(context, target = None):
 def add_view_action_context(view, clue):
     """Adds contextual information to the given view, to be gathered by
     L{get_view_actions_context} and passed to L{get_view_actions}.
-    
+
     @param view: The view that gains the context clue.
     @type view: L{Element<cocktail.html.element.Element>}
 
@@ -97,7 +116,7 @@ def add_view_action_context(view, clue):
 def get_view_actions_context(view):
     """Extracts clues on the context that applies to a given view and its
     ancestors, to supply to the L{get_view_actions} function.
-    
+
     @param view: The view to inspect.
     @type view: L{Element<cocktail.html.element.Element>}
 
@@ -111,7 +130,7 @@ def get_view_actions_context(view):
         if view_context:
             context.update(view_context)
         view = view.parent
-     
+
     return context
 
 
@@ -175,6 +194,8 @@ class UserAction(object):
     min = 1
     max = 1
     direct_link = False
+    client_redirect = False
+    link_target = None
     parameters = None
 
     def __init__(self, id):
@@ -186,6 +207,9 @@ class UserAction(object):
             raise TypeError("User action identifiers must be strings, not %s"
                             % type(id))
         self._id = id
+
+    def __translate__(self, language, **kwargs):
+        return translations("woost.actions." + self.id, language, **kwargs)
 
     @getter
     def id(self):
@@ -223,10 +247,10 @@ class UserAction(object):
         if after or before:
             if prev_action:
                 _action_list._items.remove(prev_action)
-            
+
             ref_action = _action_map[after or before]
             pos = _action_list.index(ref_action)
-            
+
             if before:
                 _action_list._items.insert(pos, self)
             else:
@@ -242,7 +266,7 @@ class UserAction(object):
 
     def is_available(self, context, target):
         """Indicates if the user action is available under a certain context.
-        
+
         @param context: A set of string identifiers, such as "context_menu",
             "toolbar", etc. Different views can make use of as many different
             identifiers as they require.
@@ -255,7 +279,6 @@ class UserAction(object):
             otherwise.
         @rtype: bool
         """
-        
         # Context filters
         def match(tokens):
             for token in tokens:
@@ -271,7 +294,7 @@ class UserAction(object):
 
         if self.excluded and match(self.excluded):
             return False
- 
+
         # Content type filter
         if self.content_type is not None:
             if isinstance(target, type):
@@ -280,7 +303,7 @@ class UserAction(object):
             else:
                 if not isinstance(target, self.content_type):
                     return False
-        
+
         # Authorization check
         return self.is_permitted(get_current_user(), target)
 
@@ -292,7 +315,7 @@ class UserAction(object):
 
         @param user: The user to authorize.
         @type user: L{User<woost.models.user.User>}
-    
+
         @param target: The item or content type affected by the action.
         @type target: L{Item<woost.models.item.Item>} instance or class
 
@@ -334,7 +357,7 @@ class UserAction(object):
 
             if (self.min and selection_size < self.min) \
             or (self.max is not None and selection_size > self.max):
-                yield SelectionError(self, selection_size)                       
+                yield SelectionError(self, selection_size)
 
     def invoke(self, controller, selection):
         """Delegates control of the current request to the action. Actions can
@@ -344,8 +367,9 @@ class UserAction(object):
         @param controller: The controller that invokes the action.
         @type controller: L{Controller<cocktail.controllers.controller.Controller>}
         """
-        raise cherrypy.HTTPRedirect(self.get_url(controller, selection))
-    
+        location = Location(self.get_url(controller, selection))
+        location.go(client_redirect = self.client_redirect)
+
     def get_url(self, controller, selection):
         """Produces the URL of the controller that handles the action
         execution. This is used by the default implementation of the L{invoke}
@@ -384,7 +408,7 @@ class UserAction(object):
 
     def get_url_params(self, controller, selection):
         """Produces extra URL parameters for the L{get_url} method.
-        
+
         @param controller: The controller that invokes the action.
         @type controller: L{Controller<cocktail.controllers.controller.Controller>}
 
@@ -400,18 +424,18 @@ class UserAction(object):
 
         if controller.edit_stack:
             params["edit_stack"] = controller.edit_stack.to_param()
-        
+
         return params
 
     @getter
     def icon_uri(self):
-        return "/resources/images/%s_small.png" % self.id
+        return "/resources/images/%s.png" % self.id
 
 
 class SelectionError(Exception):
     """An exception produced by the L{UserAction.get_errors} method when an
     action is attempted against an invalid number of items."""
-    
+
     def __init__(self, action, selection_size):
         Exception.__init__(self, "Can't execute action '%s' on %d item(s)."
             % (action.id, selection_size))
@@ -432,21 +456,19 @@ class CreateAction(UserAction):
     ignores_selection = True
     min = None
     max = None
-    
+
     def get_url(self, controller, selection):
         return controller.edit_uri(controller.edited_content_type)
 
 
-#class CreateBeforeAction(CreateAction):
-#   ignores_selection = False
+class InstallationSyncAction(UserAction):
+    included = frozenset(["toolbar", "item_buttons"])
+    content_type = SiteInstallation
+    min = 1
+    max = 1
 
-
-#class CreateInsideAction(CreateAction):
-#   ignores_selection = False
-
-
-#class CreateAfterAction(CreateAction):
-#   ignores_selection = False
+    def is_permitted(self, user, target):
+        return user.has_permission(InstallationSyncPermission)
 
 
 class MoveAction(UserAction):
@@ -462,11 +484,11 @@ class AddAction(UserAction):
     max = None
 
     def invoke(self, controller, selection):
-        
+
         # Add a relation node to the edit stack, and redirect the user
         # there
         node = RelationNode()
-        node.member = controller.member
+        node.member = controller.relation_member
         node.action = "add"
         controller.edit_stack.push(node)
         controller.edit_stack.go()
@@ -478,8 +500,8 @@ class AddIntegralAction(UserAction):
     ignores_selection = True
     min = None
     max = None
-    
-    def get_url(self, controller, selection):        
+
+    def get_url(self, controller, selection):
         return controller.edit_uri(controller.root_content_type)
 
 
@@ -493,10 +515,7 @@ class RemoveAction(UserAction):
         stack_node = controller.stack_node
 
         for item in selection:
-            stack_node.unrelate(controller.member, item)
-
-        controller.user_collection.base_collection = \
-            schema.get(stack_node.form_data, controller.member)
+            stack_node.unrelate(controller.relation_member, item)
 
 
 class OrderAction(UserAction):
@@ -505,7 +524,7 @@ class OrderAction(UserAction):
 
     def invoke(self, controller, selection):
         node = RelationNode()
-        node.member = controller.member
+        node.member = controller.relation_member
         node.action = "order"
         controller.edit_stack.push(node)
         UserAction.invoke(self, controller, selection)
@@ -516,12 +535,29 @@ class OrderAction(UserAction):
         return params
 
 
-class ShowDetailAction(UserAction):
-    included = frozenset(["toolbar", "item_buttons"])
-
-
 class EditAction(UserAction):
-    included = frozenset(["toolbar", "item_buttons"])
+    included = frozenset([
+        "toolbar",
+        "item_buttons",
+        "block_menu",
+        "edit_blocks_toolbar"
+    ])
+
+    def is_available(self, context, target):
+
+        # Prevent action nesting
+        edit_stacks_manager = \
+            controller_context.get("edit_stacks_manager")
+
+        if edit_stacks_manager:
+            edit_stack = edit_stacks_manager.current_edit_stack
+            if edit_stack:
+                for node in edit_stack[:-1]:
+                    if isinstance(node, EditNode) \
+                    and node.item is target:
+                        return False
+
+        return UserAction.is_available(self, context, target)
 
     def is_permitted(self, user, target):
         return user.has_permission(ModifyPermission, target = target)
@@ -534,19 +570,128 @@ class DeleteAction(UserAction):
     included = frozenset([
         ("content", "toolbar"),
         ("collection", "toolbar", "integral"),
-        "item_buttons"
+        "item_buttons",
+        "block_menu"
     ])
     excluded = frozenset([
         "selector",
         "new_item",
         "calendar_content_view",
         "workflow_graph_content_view",
-        "changelog"
+        "changelog",
+        "common_block"
     ])
     max = None
-    
+
     def is_permitted(self, user, target):
         return user.has_permission(DeletePermission, target = target)
+
+
+class PreviewAction(UserAction):
+    included = frozenset(["item_buttons"])
+    content_type = (Publishable, Block)
+
+
+class OpenResourceAction(UserAction):
+    min = 1
+    max = 1
+    content_type = (Publishable, SiteInstallation, Block)
+    included = frozenset([
+        "toolbar",
+        "item_buttons",
+        "edit_blocks_toolbar"
+    ])
+    excluded = frozenset([
+        "new",
+        "selector",
+        "calendar_content_view",
+        "workflow_graph_content_view",
+        "changelog"
+    ])
+    link_target = "_blank"
+    client_redirect = True
+
+    def get_url(self, controller, selection):
+        target = selection[0]
+
+        if isinstance(target, Publishable):
+            return target.get_uri(host = "?")
+        elif isinstance(target, Block):
+            for path in target.find_paths():
+                container = path[0][0]
+                if isinstance(container, Publishable):
+                    return container.get_uri(host = "?")
+            else:
+                return "/"
+        else:
+            return target.url
+
+
+class ReferencesAction(UserAction):
+    included = frozenset([
+        "toolbar_extra",
+        "item_buttons"
+    ])
+    min = 1
+    max = 1
+
+    def __translate__(self, language, **kwargs):
+        label = UserAction.__translate__(self, language, **kwargs)
+        if self.stack_node is not None:
+            label += " (%d)" % len(self.references)
+        return label
+
+    @request_property
+    def stack_node(self):
+        edit_stacks_manager = \
+            controller_context.get("edit_stacks_manager")
+        if edit_stacks_manager:
+            edit_stack = edit_stacks_manager.current_edit_stack
+            if edit_stack:
+                return edit_stack[-1]
+
+    @request_property
+    def references(self):
+        stack_node = self.stack_node
+
+        if not stack_node:
+            references = []
+        else:
+            references = list(self._iter_references(self.stack_node.item))
+            references.sort(
+                key = lambda ref:
+                    (translations(ref[0]), translations(ref[1]))
+            )
+
+        return references
+
+    def _iter_references(self, obj):
+        for member in obj.__class__.iter_members():
+            if (
+                isinstance(member, schema.RelationMember)
+                and member.related_end
+                and member.related_end.visible_in_reference_list
+                and issubclass(member.related_type, Item)
+                and member.related_type.visible
+                and not member.integral
+            ):
+                value = obj.get(member)
+                if value:
+                    if isinstance(member, schema.Reference):
+                        if self._should_include_reference(value, member.related_end):
+                            yield value, member.related_end
+                    elif isinstance(member, schema.Collection):
+                        for item in value:
+                            if self._should_include_reference(item, member.related_end):
+                                yield item, member.related_end
+
+    def _should_include_reference(self, referrer, relation):
+        user = get_current_user()
+        return (
+            relation.visible
+            and user.has_permission(ReadPermission, target = referrer)
+            and user.has_permission(ReadMemberPermission, member = relation)
+        )
 
 
 class ShowChangelogAction(UserAction):
@@ -556,8 +701,8 @@ class ShowChangelogAction(UserAction):
         "selector",
         "new_item",
         "calendar_content_view",
-        "workflow_graph_content_view",
-        "changelog"
+        "changelog",
+        "collection"
     ])
 
     def get_url(self, controller, selection):
@@ -577,88 +722,12 @@ class ShowChangelogAction(UserAction):
                 params["filter_value0"] = user_collection.type.full_name
 
         return controller.contextual_uri(
-            "changelog",                
+            "changelog",
             **params
         )
 
     def is_permitted(self, user, target):
         return user.has_permission(ReadHistoryPermission)
-
-
-class DiffAction(UserAction):
-    included = frozenset(["item_buttons"])
-    
-    def is_permitted(self, user, target):
-        return user.has_permission(ModifyPermission, target = target)
-
-
-class RevertAction(UserAction):
-    included = frozenset([("diff", "item_body_buttons", "changed")])
-    
-    def is_permitted(self, user, target):
-        return user.has_permission(ModifyPermission, target = target)
-
-    def invoke(self, controller, selection):
-
-        reverted_members = controller.params.read(
-            schema.Collection("reverted_members",
-                type = set,
-                items = schema.String
-            )
-        )
-
-        stack_node = controller.stack_node
-
-        form_data = stack_node.form_data
-        form_schema = stack_node.form_schema
-        languages = set(
-            list(stack_node.translations)
-            + list(stack_node.item.translations.keys())
-        )
-
-        source = {}
-        stack_node.export_form_data(stack_node.item, source)
-        
-        for member in form_schema.members().itervalues():
-                      
-            if member.translated:
-                for lang in languages:
-                    if (member.name + "-" + lang) in reverted_members:
-                        schema.set(
-                            form_data,
-                            member.name,
-                            schema.get(source, member.name, language = lang),
-                            language = lang
-                        )
-            elif member.name in reverted_members:
-                schema.set(
-                    form_data,
-                    member.name,
-                    schema.get(source, member.name)
-                )
-
-
-class PreviewAction(UserAction):
-    included = frozenset(["toolbar_extra", "item_buttons"])
-    content_type = Publishable
-
-
-class OpenResourceAction(UserAction):
-    min = 1
-    max = 1
-    content_type = Publishable
-    included = frozenset(["toolbar", "item_buttons"])
-    excluded = frozenset([
-        "new",
-        "draft",
-        "selector",
-        "calendar_content_view",
-        "workflow_graph_content_view",
-        "changelog"
-    ])
-
-    def get_url(self, controller, selection):
-        return controller.context["cms"].uri(selection[0])
 
 
 class UploadFilesAction(UserAction):
@@ -671,6 +740,7 @@ class UploadFilesAction(UserAction):
 
 class ExportAction(UserAction):
     included = frozenset(["toolbar_extra"])
+    excluded = UserAction.excluded | frozenset(["collection", "empty_set"])
     min = 1
     max = None
     ignores_selection = True
@@ -687,18 +757,37 @@ class ExportAction(UserAction):
         )
 
 
+class InvalidateCacheAction(UserAction):
+    min = None
+    max = None
+    excluded = UserAction.excluded | frozenset(["collection"])
+
+    def invoke(self, controller, selection):
+
+        if selection is None:
+            app.cache.clear()
+        else:
+            for item in selection:
+                item.clear_cache()
+
+        notify_user(
+            translations("woost.cache_invalidated_notice", subset = selection),
+            "success"
+        )
+
+
 class SelectAction(UserAction):
     included = frozenset([("list_buttons", "selector")])
     excluded = frozenset()
     min = None
     max = None
-    
+
     def invoke(self, controller, selection):
 
         stack = controller.edit_stack
 
         if stack:
-            
+
             node = stack[-1]
             params = {}
 
@@ -720,13 +809,13 @@ class SelectAction(UserAction):
                     )
                 else:
                     if controller.stack_node.action == "add":
-                        modify_relation = edit_state.relate 
+                        modify_relation = edit_state.relate
                     else:
-                        modify_relation = edit_state.unrelate 
+                        modify_relation = edit_state.unrelate
 
                     for item in selection:
                         modify_relation(member, item)
-            
+
             stack.go_back(**params)
 
 
@@ -740,19 +829,15 @@ class GoBackAction(UserAction):
 
 
 class CloseAction(GoBackAction):
-    included = frozenset(["item_buttons", ("changelog", "bottom_buttons")])
-    excluded = frozenset(["changed", "new", "edit"])
+    included = frozenset([
+        "item_buttons",
+        "edit_blocks_toolbar"
+    ])
 
 
 class CancelAction(GoBackAction):
     included = frozenset([
-        ("list_buttons", "selector"),
-        ("item_buttons", "edit"),
-        ("item_buttons", "changed"),
-        ("item_buttons", "new"),
-        ("item_bottom_buttons", "edit"),
-        ("item_bottom_buttons", "changed"),
-        ("item_bottom_buttons", "new")
+        ("list_buttons", "selector")
     ])
     excluded = frozenset()
 
@@ -761,15 +846,12 @@ class SaveAction(UserAction):
     included = frozenset([
         ("item_buttons", "new"),
         ("item_buttons", "edit"),
-        ("item_buttons", "changed"),
-        ("item_bottom_buttons", "new"),
-        ("item_bottom_buttons", "edit"),
-        ("item_bottom_buttons", "changed")
+        ("item_buttons", "preview")
     ])
     ignores_selection = True
     max = None
     min = None
-    make_draft = False
+    close = False
 
     def is_permitted(self, user, target):
         if target.is_inserted:
@@ -791,64 +873,331 @@ class SaveAction(UserAction):
             yield error
 
     def invoke(self, controller, selection):
-        controller.save_item(make_draft = self.make_draft)
+        controller.save_item(close = self.close)
 
 
-class SaveDraftAction(SaveAction):
-    make_draft = True
-    included = frozenset(["item_buttons", "item_bottom_buttons"])
-    excluded = frozenset(["draft"])
+def focus_block(block):
+    location = Location.get_current()
+    location.hash = "block" + str(block.id)
+    location.query_string.pop("action", None)
+    location.query_string.pop("block_parent", None)
+    location.query_string.pop("block_slot", None)
+    location.query_string.pop("block", None)
+    location.go("GET")
+
+
+class EditBlocksAction(UserAction):
+    min = 1
+    max = 1
+    included = frozenset(["toolbar", "item_buttons"])
+    excluded = UserAction.excluded | frozenset(["new_item"])
+
+    def is_available(self, context, target):
+
+        if UserAction.is_available(self, context, target):
+
+            if isinstance(target, type):
+                content_type = target
+            else:
+                content_type = type(target)
+
+                # Prevent action nesting
+                edit_stacks_manager = \
+                    controller_context.get("edit_stacks_manager")
+
+                if edit_stacks_manager:
+                    edit_stack = edit_stacks_manager.current_edit_stack
+                    if edit_stack:
+                        for node in edit_stack:
+                            if isinstance(node, EditBlocksNode) \
+                            and node.item is target:
+                                return False
+
+            return type_is_block_container(content_type)
+
+        return False
 
     def is_permitted(self, user, target):
-        return True
-
-class ConfirmDraftAction(SaveAction):
-    confirm_draft = True
-    included = frozenset([
-        ("item_buttons", "draft"),
-        ("item_bottom_buttons", "draft")
-    ])
-    excluded = frozenset()
-    
-    def is_permitted(self, user, target):
-        return user.has_permission(ConfirmDraftPermission, target = target)
-
-    def invoke(self, controller, selection):
-        controller.confirm_draft()
-
-
-class PrintAction(UserAction):
-    direct_link = True
-    ignore_selection = True
-    excluded = frozenset(["selector"])
+        return user.has_permission(ModifyPermission, target = target)
 
     def get_url(self, controller, selection):
-        return "javascript: print();"
 
+        params = {}
+        edit_stack = controller.edit_stack
+
+        if edit_stack:
+            params["edit_stack"] = edit_stack.to_param()
+
+        return controller.contextual_uri("blocks", selection[0].id, **params)
+
+
+class AddBlockAction(UserAction):
+    min = None
+    max = None
+    ignore_selection = True
+    included = frozenset(["blocks_slot_toolbar"])
+    block_positioning = "append"
+
+    @request_property
+    def block_type(self):
+        return get_parameter(
+            schema.Reference("block_type", class_family = Block)
+        )
+
+    @request_property
+    def common_block(self):
+        return get_parameter(schema.Reference("common_block", type = Block))
+
+    def invoke(self, controller, selection):
+
+        common_block = self.common_block
+
+        # Add a reference to a common block
+        if common_block:
+            add_block(
+                common_block,
+                controller.block_parent,
+                controller.block_slot,
+                positioning = self.block_positioning,
+                anchor = controller.block
+            )
+            datastore.commit()
+            focus_block(common_block)
+
+        # Add a new block: set up an edit stack node and redirect the user
+        else:
+            edit_stacks_manager = controller.context["edit_stacks_manager"]
+            edit_stack = edit_stacks_manager.current_edit_stack
+
+            block = self.block_type()
+            node = AddBlockNode(
+                block,
+                visible_translations = controller.visible_languages
+            )
+            node.block_parent = controller.block_parent
+            node.block_slot = controller.block_slot
+            node.block_positioning = self.block_positioning
+            node.block_anchor = controller.block
+            edit_stack.push(node)
+
+            edit_stacks_manager.preserve_edit_stack(edit_stack)
+            edit_stack.go()
+
+
+class AddBlockBeforeAction(AddBlockAction):
+    included = frozenset(["block_menu"])
+    block_positioning = "before"
+
+
+class AddBlockAfterAction(AddBlockAction):
+    included = frozenset(["block_menu"])
+    block_positioning = "after"
+
+
+class RemoveBlockAction(UserAction):
+    content_type = Block
+    included = frozenset(["block_menu"])
+
+    def is_available(self, context, target):
+        return (
+            UserAction.is_available(self, context, target)
+            and target.is_common_block()
+        )
+
+    def invoke(self, controller, selection):
+
+        collection = controller.block_parent.get(controller.block_slot)
+
+        try:
+            index = collection.index(selection[0])
+        except ValueError:
+            index = None
+
+        schema.remove(collection, selection[0])
+        datastore.commit()
+
+        # Focus the block that was nearest to the removed block
+        if index is None or not collection:
+            adjacent_block = controller.block_parent
+        elif index > 0:
+            adjacent_block = collection[index - 1]
+        else:
+            adjacent_block = collection[0]
+
+        focus_block(adjacent_block)
+
+
+BLOCK_CLIPBOARD_SESSION_KEY = "woost.block_clipboard"
+
+def get_block_clipboard_contents():
+    return session.get(BLOCK_CLIPBOARD_SESSION_KEY)
+
+def set_block_clipboard_contents(contents):
+    session[BLOCK_CLIPBOARD_SESSION_KEY] = contents
+
+
+class CopyBlockAction(UserAction):
+    content_type = Block
+    included = frozenset(["block_menu"])
+
+    def invoke(self, controller, selection):
+        set_block_clipboard_contents({
+            "mode": "copy",
+            "block": controller.block.id,
+            "block_parent": controller.block_parent.id,
+            "block_slot": controller.block_slot.name
+        })
+        focus_block(controller.block)
+
+
+class CutBlockAction(UserAction):
+    content_type = Block
+    included = frozenset(["block_menu"])
+
+    def invoke(self, controller, selection):
+        set_block_clipboard_contents({
+            "mode": "cut",
+            "block": controller.block.id,
+            "block_parent": controller.block_parent.id,
+            "block_slot": controller.block_slot.name
+        })
+        focus_block(controller.block)
+
+
+class PasteBlockAction(UserAction):
+    included = frozenset(["blocks_slot_toolbar"])
+    block_positioning = "append"
+
+    def is_available(self, context, target):
+
+        if UserAction.is_available(self, context, target):
+            clipboard = get_block_clipboard_contents()
+            if clipboard:
+                allows_block_type = getattr(target, "allows_block_type", None)
+                if (
+                    allows_block_type is None
+                    or allows_block_type(
+                        Block.require_instance(clipboard["block"]).__class__
+                    )
+                ):
+                    return True
+
+        return False
+
+    def invoke(self, controller, selection):
+        clipboard = get_block_clipboard_contents()
+
+        if not clipboard:
+            notify_user(
+                translations("woost.block_clipboard.empty"),
+                "error"
+            )
+        else:
+            try:
+                block = Block.require_instance(clipboard["block"])
+                src_parent = Item.require_instance(clipboard["block_parent"])
+                src_slot = type(src_parent).get_member(clipboard["block_slot"])
+            except:
+                notify_user(
+                    translations("woost.block_clipboard.error"),
+                    "error"
+                )
+            else:
+                # Remove the block from the source location
+                if clipboard["mode"] == "cut":
+                    if isinstance(src_slot, schema.Reference):
+                        src_parent.set(src_slot, None)
+                    elif isinstance(src_slot, schema.Collection):
+                        src_collection = src_parent.get(src_slot)
+                        schema.remove(src_collection, block)
+                # Or copy it
+                elif clipboard["mode"] == "copy":
+                    block = block.create_copy()
+                    block.insert()
+
+                # Add the block to its new position
+                add_block(
+                    block,
+                    controller.block_parent,
+                    controller.block_slot,
+                    positioning = self.block_positioning,
+                    anchor = controller.block
+                )
+
+                datastore.commit()
+                del session[BLOCK_CLIPBOARD_SESSION_KEY]
+                focus_block(block)
+
+
+class PasteBlockBeforeAction(PasteBlockAction):
+    included = frozenset(["block_menu"])
+    block_positioning = "before"
+
+
+class PasteBlockAfterAction(PasteBlockAction):
+    included = frozenset(["block_menu"])
+    block_positioning = "after"
+
+
+class ShareBlockAction(UserAction):
+    content_type = Block
+    included = frozenset(["block_menu"])
+
+    def is_available(self, context, target):
+        return UserAction.is_available(self, context, target) \
+            and not target.is_common_block()
+
+    def is_permitted(self, user, target):
+        config = Configuration.instance
+        return (
+            UserAction.is_permitted(self, user, target)
+            and user.has_permission(ModifyPermission, target = config)
+            and user.has_permission(ModifyPermission, target = target)
+            and user.has_permission(
+                ModifyMemberPermission,
+                member = Configuration.common_blocks
+            )
+        )
+
+    def invoke(self, controller, selection):
+        Configuration.instance.common_blocks.append(selection[0])
+        datastore.commit()
+        focus_block(selection[0])
 
 # Action registration
-#------------------------------------------------------------------------------ 
+#------------------------------------------------------------------------------
 CreateAction("new").register()
 MoveAction("move").register()
 AddAction("add").register()
 AddIntegralAction("add_integral").register()
 RemoveAction("remove").register()
-ShowDetailAction("show_detail").register()
-PreviewAction("preview").register()
-OpenResourceAction("open_resource").register()
 UploadFilesAction("upload_files").register()
+AddBlockAction("add_block").register()
+AddBlockBeforeAction("add_block_before").register()
+AddBlockAfterAction("add_block_after").register()
 EditAction("edit").register()
-DiffAction("diff").register()
-RevertAction("revert").register()
-ShowChangelogAction("changelog").register()
+EditBlocksAction("edit_blocks").register()
+InstallationSyncAction("installation_sync").register()
+CopyBlockAction("copy_block").register()
+CutBlockAction("cut_block").register()
+PasteBlockAction("paste_block").register()
+PasteBlockBeforeAction("paste_block_before").register()
+PasteBlockAfterAction("paste_block_after").register()
+ShareBlockAction("share_block").register()
+RemoveBlockAction("remove_block").register()
 DeleteAction("delete").register()
 OrderAction("order").register()
 ExportAction("export_xls", "msexcel").register()
-PrintAction("print").register()
+InvalidateCacheAction("invalidate_cache").register()
+ReferencesAction("references").register()
+ShowChangelogAction("changelog").register()
+OpenResourceAction("open_resource").register()
+save_and_close = SaveAction("save_and_close")
+save_and_close.close = True
+save_and_close.register()
 CloseAction("close").register()
 CancelAction("cancel").register()
 SaveAction("save").register()
-SaveDraftAction("save_draft").register()
-ConfirmDraftAction("confirm_draft").register()
+PreviewAction("preview").register()
 SelectAction("select").register()
 

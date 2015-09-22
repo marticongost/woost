@@ -8,123 +8,119 @@
 """
 import cherrypy
 from cocktail import schema
-from cocktail.persistence import datastore
-from cocktail.modeling import cached_getter
+from cocktail.controllers import (
+    Controller,
+    FormProcessor,
+    Form,
+    request_property,
+    context
+)
 from cocktail.controllers.location import Location
-from cocktail.controllers.formcontrollermixin import FormControllerMixin
-from woost.controllers.documentcontroller import DocumentController
+from woost import app
+from woost.models import Item
 from woost.controllers.backoffice.usereditnode import PasswordConfirmationError
 from woost.extensions.signup.signupconfirmationcontroller import generate_confirmation_hash
-from woost.extensions.signup.signuppage import SignUpPage
 
-from woost.models import Item, Site, Language, User
 
-class SignUpController(FormControllerMixin, DocumentController):
+class SignUpController(FormProcessor, Controller):
 
-    def __init__(self, *args, **kwargs):
-        DocumentController.__init__(self, *args, **kwargs)
-        FormControllerMixin.__init__(self)
+    is_transactional = True
 
-    @cached_getter
-    def form_model(self):
-        return self.context["publishable"].user_type
+    class SignUpForm(Form):
 
-    @cached_getter
-    def form_adapter(self):
+        @request_property
+        def model(self):
+            return self.controller.block.user_type
 
-        adapter = FormControllerMixin.form_adapter(self)
-        adapter.exclude(
-            ["prefered_language",
-             "roles",
-             "password_confirmation",
-             "enabled",
-             "confirmed_email"]
-            + [key for key in Item.members()]    
-        )
-        return adapter
+        @request_property
+        def adapter(self):
+            adapter = Form.adapter(self)
+            adapter.implicit_copy = False
+            adapter.copy(("email", "password"))
+            return adapter
 
-    @cached_getter
-    def form_schema(self):
+        @request_property
+        def schema(self):
+            adapted_schema = Form.schema(self)
 
-        form_schema = FormControllerMixin.form_schema(self)
+            # Set schema name in order to keep always the same value
+            # although change value of form_model member
+            adapted_schema.name = u"SignUpForm"
 
-        # Set schema name in order to keep always the same value
-        # although change value of form_model member
-        form_schema.name = u"SignUpForm"
+            # Adding extra field for password confirmation
+            if adapted_schema.get_member("password"):
 
-        # Adding extra field for password confirmation
-        if form_schema.get_member("password"):
+                password_confirmation_member = schema.String(
+                    name = "password_confirmation",
+                    edit_control = "cocktail.html.PasswordBox",
+                    required = adapted_schema.get_member("password"),
+                    after_member = "password"
+                )
+                adapted_schema.add_member(password_confirmation_member)
 
-            password_confirmation_member = schema.String(
-                name = "password_confirmation",
-                edit_control = "cocktail.html.PasswordBox",
-                required = form_schema.get_member("password")
-            )
-            form_schema.add_member(password_confirmation_member)
+                # Add validation to compare password_confirmation and
+                # password fields
+                @password_confirmation_member.add_validation
+                def validate_password_confirmation(member, value, ctx):
+                    password = ctx.get_value("password")
+                    password_confirmation = value
 
-            # Set password_confirmation position just after
-            # password member position
-            order_list = form_schema.members_order
-            pos = order_list.index("password")
-            order_list.insert(pos + 1, "password_confirmation")
+                    if password and password_confirmation \
+                    and password != password_confirmation:
+                        yield PasswordConfirmationError(member, value, ctx)
 
-            # Add validation to compare password_confirmation and
-            # password fields
-            @password_confirmation_member.add_validation
-            def validate_password_confirmation(member, value, ctx):
-                password = ctx.get_value("password")
-                password_confirmation = value
+            return adapted_schema
 
-                if password and password_confirmation \
-                and password != password_confirmation:
-                    yield PasswordConfirmationError(
-                            member, value, ctx)
+        def submit(self):
+            Form.submit(self)
+            block = self.controller.block
 
-        return form_schema
+            # Adding roles
+            for role in block.roles:
+                if role not in self.instance.roles:
+                    self.instance.roles.append(block.roles)
 
-    def submit(self):
-        FormControllerMixin.submit(self)
-        publishable = self.context["publishable"]
+            # If require email confirmation, disabled authenticated access
+            confirmation_email_template = block.confirmation_email_template
+            if confirmation_email_template:
+                self.instance.enabled = False
+                self.instance.confirmed_email = False
+            else:
+                self.instance.enabled = True
 
-        # Adding roles
-        instance = self.form_instance
-        instance.roles.extend(publishable.roles)
+            self.instance.insert()
 
-        # If require email confirmation, disabled authenticated access
-        # and send email confirmation message
-        confirmation_email_template = publishable.confirmation_email_template
-        if confirmation_email_template:
-            instance.enabled = False
-            instance.confirmed_email = False
-            confirmation_email_template.send({
-                "user": instance,
+        def after_submit(self):
+            block = self.controller.block
+
+            # If require email confirmation send email confirmation message
+            confirmation_email_template = block.confirmation_email_template
+            if confirmation_email_template:
+                confirmation_email_template.send(self.email_parameters)
+                success_page = block.pending_page
+            else:
+                success_page = block.confirmation_page
+                # Autologin
+                app.authentication.set_user_session(self.instance)
+
+            # Redirecting to the success page
+            raise cherrypy.HTTPRedirect(success_page.get_uri())
+
+        @request_property
+        def email_parameters(self):
+            parameters = {
+                "user": self.instance,
                 "confirmation_url": self.confirmation_url
-            })
-            # Storing instance
-            instance.insert()
-            datastore.commit()
-        else:
-            # Storing instance
-            instance.insert()
-            datastore.commit()
-            # Getting confirmation target uri
-            confirmation_target = self.context["publishable"].confirmation_target
-            uri = self.context["cms"].uri(confirmation_target)
-            # Enabling user and autologin
-            instance.enabled = True
-            self.context["cms"].authentication.set_user_session(instance)
-            # Redirecting to confirmation target
-            raise cherrypy.HTTPRedirect(uri)
+            }
+            return parameters
 
-    @cached_getter
-    def confirmation_url(self): 
-        instance = self.form_instance
-        confirmation_target = self.context["publishable"].confirmation_target
-        canonical_uri = self.context["cms"].uri(confirmation_target)
-        location = Location.get_current(relative=False)
-        location.path_info = canonical_uri
-        location.query_string = {
-            "email": instance.email,
-            "hash": generate_confirmation_hash(instance.email)
-        }
-        return str(location)
+        @request_property
+        def confirmation_url(self):
+            uri = self.controller.block.confirmation_page.get_uri()
+            location = Location.get_current(relative=False)
+            location.path_info = uri
+            location.query_string = {
+                "email": self.instance.email,
+                "hash": generate_confirmation_hash(self.instance.email)
+            }
+            return str(location)

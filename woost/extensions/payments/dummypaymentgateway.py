@@ -17,8 +17,13 @@ from woost.extensions.payments.paymentgateway \
 
 class DummyPaymentGateway(CMSPaymentGateway, PaymentGateway):
     """A simulated payment gateway, useful for testing purposes."""
-    
+
     instantiable = True
+    payment_gateway_controller_class = (
+        "woost.extensions.payments.dummypaymentgatewaycontroller."
+        "DummyPaymentGatewayController"
+    )
+
     members_order = [
         "payment_status",
         "payment_successful_page",
@@ -51,11 +56,8 @@ class DummyPaymentGateway(CMSPaymentGateway, PaymentGateway):
 
     def get_payment_form_data(self, payment_id, language = None):
         return (
-            context["cms"].application_uri("dummy_payment_gateway"),
-            (
-                ("gateway_id", self.id),
-                ("payment_id", payment_id)
-            )
+            self.get_payment_url("simulate_transaction"),
+            (("payment_id", payment_id),)
         )
 
     def process_notification(self, parameters):

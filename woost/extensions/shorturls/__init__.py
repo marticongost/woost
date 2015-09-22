@@ -3,9 +3,9 @@ u"""
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
-from cocktail.events import event_handler
 from cocktail.translations import translations
 from cocktail import schema
+from cocktail.caching import Cache
 from woost.models import Extension
 
 
@@ -24,6 +24,8 @@ translations.define("ShortURLsPublicationExtension-plural",
 
 class ShortURLsExtension(Extension):
 
+    url_cache = Cache()
+
     def __init__(self, **values):
         Extension.__init__(self, **values)
         self.extension_author = u"Whads/Accent SL"
@@ -31,7 +33,7 @@ class ShortURLsExtension(Extension):
             u"""Integració amb serveis d'escurçat d'URLs""",
             "ca"
         )
-        self.set("description",            
+        self.set("description",
             u"""Integración con servicios de compactación de URLs""",
             "es"
         )
@@ -40,11 +42,11 @@ class ShortURLsExtension(Extension):
             "en"
         )
 
-    @event_handler
-    def handle_loading(cls, event):
-        
+    def _load(self):
+
         from woost.extensions.shorturls import (
             strings,
+            configuration,
             urlshortener,
             bitlyurlshortener
         )
