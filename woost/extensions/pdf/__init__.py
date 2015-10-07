@@ -55,6 +55,9 @@ class PDFExtension(Extension):
         text_search = False
     )
 
+    def get_filename(self, publishable):
+        return translations(publishable) + ".pdf"
+
     def _load(self):
 
         import os
@@ -97,7 +100,7 @@ class PDFExtension(Extension):
                     pdf_file_path,
                     content_type = "application/x-pdf",
                     disposition = "attachment",
-                    name = translations(self.context["publishable"]) + ".pdf"
+                    name = extension.get_filename(self.context["publishable"])
                 )
 
             finally:
