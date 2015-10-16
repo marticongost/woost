@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?py
+from woost.models import Configuration
+?>
+
+<py:overlay
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:py="http://www.whads.com/ns/cocktail/templates"
+    py:class="woost.views.LoginBlockView">
+
+    <?py-class
+    identity_providers = None
+    ?>
+
+    <py:binding>
+        <?py
+        if self.identity_providers is None:
+            self.identity_providers = Configuration.instance.get_setting("identity_providers")
+        ?>
+    </py:binding>
+
+    <div py:id="identity_providers_box">
+        <py:ready>
+            <py:new
+                py:element="self.create_identity_provider_button(provider)"
+                py:for="provider in self.identity_providers"/>
+        </py:ready>
+    </div>
+
+    <a  py:def="identity_provider_button" py:args="provider" href="${provider.get_auth_url()}">
+        ${provider.provider_name}
+    </a>
+
+</py:overlay>
+
