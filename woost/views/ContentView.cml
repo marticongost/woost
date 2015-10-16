@@ -329,7 +329,7 @@ from woost.controllers.backoffice.editstack import SelectionNode
     <py:woost.views.ContentTypeSelector
         py:def="new_toolbar_button"
         py:args="action, extra"
-        py:types="@{self.root_content_type}"
+        py:types="@{self.user_collection.type}"
         py:required_permission="${None}"
         py:per_role_types="${False}">
         <?py
