@@ -59,7 +59,8 @@ of its features include:\n"
         'campaign_monitor_api': ["campaign_monitor_api"],
         "twitterpublication": ["oauth2"],
         "amazon_s3_static_publication": ["boto"],
-        "newsletters": ["premailer"]
+        "newsletters": ["premailer"],
+        "identity": ["google-api-python-client"]
     },
     packages = find_packages(),
     include_package_data = True,
@@ -102,7 +103,8 @@ of its features include:\n"
             "surveys = woost.extensions.surveys:SurveysExtension",
             "newsletters = woost.extensions.newsletters:NewslettersExtension",
             "forms = woost.extensions.forms:FormsExtension",
-            "translationworkflow = woost.extensions.translationworkflow:TranslationWorkflowExtension"
+            "translationworkflow = woost.extensions.translationworkflow:TranslationWorkflowExtension",
+            "identity = woost.extensions.identity:IdentityExtension"
         ]
     },
     # Woost can't yet access view resources (images, style sheets, client
