@@ -57,6 +57,7 @@ of its features include:\n"
     ],
     extras_require = {
         'campaign_monitor_api': ["campaign_monitor_api"],
+        'campaign3': ["createsend"],
         "twitterpublication": ["oauth2"],
         "amazon_s3_static_publication": ["boto"],
         "newsletters": ["premailer"],
