@@ -9,6 +9,7 @@ from woost.models import Configuration
 
     <?py-class
     identity_providers = None
+    target_url = None
     ?>
 
     <?py
@@ -31,7 +32,7 @@ from woost.models import Configuration
 
     <a
         py:def="identity_provider_button" py:args="provider"
-        href="${provider.get_auth_url()}"
+        href="${provider.get_auth_url(self.target_url)}"
         data-woost-identity-provider="${provider.__class__.__name__.replace('IdentityProvider', '')}">
 
         <img
