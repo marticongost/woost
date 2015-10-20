@@ -1143,10 +1143,10 @@ translations.define(
 
 translations.define(
     "woost.initialization.password_change_confirmation_page.body",
-    ca = u"Introduïx la nova contrasenya pel teu compte d'usuari",
-    es = u"Introduce tu nueva contraseña para tu cuenta de usuario",
-    en = u"Enter the new password for your user account",
-    pt = u"Digite a nova senha para a sua conta de usuário"
+    ca = u"<p>Introduïx la nova contrasenya pel teu compte d'usuari:</p>",
+    es = u"<p>Introduce tu nueva contraseña para tu cuenta de usuario:</p>",
+    en = u"<p>Enter the new password for your user account:</p>",
+    pt = u"<p>Digite a nova senha para a sua conta de usuário:</p>"
 )
 
 translations.define(
@@ -5422,22 +5422,38 @@ translations.define(
 #------------------------------------------------------------------------------
 translations.define(
     "woost.controllers.passwordchangecontroller.request_sended_notification_message",
-    ca = u"""Hem enviat un correu electrònic a l'adreça indicada amb les
-        instruccions per reestablir la contrasenya.""",
-    es = u"""Hemos enviado un correo electrónico a la dirección indicada con
-        las instrucciones para reestablecer tu contraseña.""",
-    en = u"""We have sent an e-mail message to the indicated account
-        containing further instructions to reset your password.""",
-    pt = u"""Foi enviado um e-mail para o endereço indicado com as instruções
-    para redefinir a sua palavra-passe."""
+    ca = u"""
+        <p>
+            Hem enviat un correu electrònic a l'adreça indicada amb les
+            instruccions per reestablir la contrasenya.
+        </p>
+        """,
+    es = u"""
+        <p>
+            Hemos enviado un correo electrónico a la dirección indicada con
+            las instrucciones para reestablecer tu contraseña.
+        </p>
+        """,
+    en = u"""
+        <p>
+            We have sent an e-mail message to the indicated account
+            containing further instructions to reset your password.
+        </p>
+        """,
+    pt = u"""
+        <p>
+            Foi enviado um e-mail para o endereço indicado com as instruções
+            para redefinir a sua palavra-passe.
+        </p>
+        """
 )
 
 translations.define(
     "woost.controllers.passwordchangecontroller.confirmation_message",
-    ca = u"Canvi de contrasenya realitzat correctament.",
-    es = u"Cambio de contraseña realizado correctamente.",
-    en = u"Password correctly changed.",
-    pt = u"Alteração da palavra-passe efetuada corretamente."
+    ca = u"<p>Canvi de contrasenya realitzat correctament.</p>",
+    es = u"<p>Cambio de contraseña realizado correctamente.</p>",
+    en = u"<p>Password correctly changed.</p>",
+    pt = u"<p>Alteração da palavra-passe efetuada corretamente.</p>"
 )
 
 translations.define(
