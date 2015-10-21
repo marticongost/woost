@@ -7,6 +7,7 @@ import cherrypy
 from oauth2client.client import OAuth2WebServerFlow
 import httplib2
 from googleapiclient import discovery
+from cocktail.styled import styled
 from cocktail.controllers import Controller, Location, session
 from woost import app
 from woost.models import get_current_website
@@ -74,8 +75,18 @@ class GoogleOAuthProviderController(Controller):
         if not code:
             raise cherrypy.HTTPRedirect(flow.step1_get_authorize_url())
 
+        if self.provider.debug_mode:
+            print styled("Google authorization code:", "magenta"), code
+
         credentials = flow.step2_exchange(code)
         session[SESSION_PREFIX + "credentials"] = credentials
+
+        if self.provider.debug_mode:
+            print styled("Google refresh token:", "magenta"),
+            print credentials.refresh_token
+            print styled("Google access token:", "magenta"),
+            print credentials.access_token
+
         raise cherrypy.HTTPRedirect(self.step_url(2))
 
     @cherrypy.expose
@@ -89,6 +100,9 @@ class GoogleOAuthProviderController(Controller):
         http_auth = credentials.authorize(httplib2.Http())
         oauth2_service = discovery.build('oauth2', 'v2', http_auth)
         user_data = oauth2_service.userinfo().get().execute()
+
+        if self.provider.debug_mode:
+            print styled("Google user profile:", "magenta"), user_data
 
         user = self.provider.process_user_data(user_data)
         app.authentication.set_user_session(user)
