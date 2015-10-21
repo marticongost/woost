@@ -33,6 +33,12 @@ translations.define("IdentityProvider.title",
     en = u"Name"
 )
 
+translations.define("IdentityProvider.debug_mode",
+    ca = u"Mostrar informació per desenvolupadors",
+    es = u"Mostrar información para desarrolladores",
+    en = "Enable debugging"
+)
+
 # FacebookIdentityProvider
 #------------------------------------------------------------------------------
 translations.define("FacebookIdentityProvider",
