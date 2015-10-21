@@ -5,7 +5,6 @@ u"""
 """
 from urllib import urlencode
 from cocktail import schema
-from cocktail.persistence import transaction
 from cocktail.controllers import Location
 from woost.extensions.identity.identityprovider import IdentityProvider
 
