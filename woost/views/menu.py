@@ -45,7 +45,10 @@ class Menu(TreeView):
         self.depends_on(self.root)
 
         if self.selection is None:
-            self.selection = context["publishable"]
+            self.selection = (
+                context.get("original_publishable")
+                or context["publishable"]
+            )
 
         TreeView._ready(self)
 
