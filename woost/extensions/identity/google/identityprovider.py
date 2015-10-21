@@ -18,7 +18,8 @@ class GoogleIdentityProvider(IdentityProvider):
     members_order = [
         "client_id",
         "client_secret",
-        "scope"
+        "scope",
+        "access_type"
     ]
 
     client_id = schema.String(
@@ -35,6 +36,13 @@ class GoogleIdentityProvider(IdentityProvider):
         min = 1,
         default = schema.DynamicDefault(lambda: ["profile", "email"]),
         items = schema.String()
+    )
+
+    access_type = schema.String(
+        required = True,
+        default = "online",
+        enumeration = ["online", "offline"],
+        edit_control = "cocktail.html.RadioSelector"
     )
 
     def get_auth_url(self, target_url = None):

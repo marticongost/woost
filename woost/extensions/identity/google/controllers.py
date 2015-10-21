@@ -70,7 +70,7 @@ class GoogleOAuthProviderController(Controller):
             self.provider.scope,
             redirect_uri = self.step_url(1)
         )
-        flow.params["access_type"] = "online"
+        flow.params["access_type"] = self.provider.access_type
 
         if not code:
             raise cherrypy.HTTPRedirect(flow.step1_get_authorize_url())

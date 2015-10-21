@@ -151,3 +151,21 @@ translations.define("GoogleIdentityProvider.scope",
     en = u"Requested scope"
 )
 
+translations.define("GoogleIdentityProvider.access_type",
+    ca = u"Tipus d'accés",
+    es = u"Tipo de acceso",
+    en = u"Access type"
+)
+
+translations.define("GoogleIdentityProvider.access_type=online",
+    ca = u"En línia",
+    es = u"En línea",
+    en = u"Online"
+)
+
+translations.define("GoogleIdentityProvider.access_type=offline",
+    ca = u"Fora de línia",
+    es = u"Fuera de línea",
+    en = u"Offline"
+)
+
