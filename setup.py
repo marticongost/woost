@@ -53,6 +53,7 @@ of its features include:\n"
     ],
     install_requires = [
         "simplejson",
+        "enum34",
         "cocktail==izarra"
     ],
     extras_require = {
