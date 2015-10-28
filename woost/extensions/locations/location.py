@@ -7,6 +7,7 @@ from cocktail.iteration import first
 from cocktail.translations import translations
 from cocktail import schema
 from woost.models import Item
+from woost.models.objectio import get_object_ref, resolve_object_ref
 from woost.controllers.backoffice.contentviews import global_content_views
 
 
@@ -219,4 +220,33 @@ global_content_views.add(
         "children_collection": Location.locations
     }
 )
+
+
+@get_object_ref.implementation_for(Location)
+def get_location_ref(location):
+
+    ref = get_object_ref.default(location)
+
+    path = []
+    for item in location.ascend(include_self = True):
+        if item.code:
+            path.append(item.code)
+    path.reverse
+
+    if path:
+        ref["@woost.extensions.locations.path"] = path
+
+    return ref
+
+@resolve_object_ref.implementation_for(Location)
+def resolve_object_ref(cls, ref):
+
+    obj = get_object_ref.default(cls, ref)
+
+    if obj is None:
+        path = ref.get("@woost.extensions.locations.path")
+        if path:
+            obj = cls.by_path(*path)
+
+    return obj
 
