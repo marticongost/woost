@@ -7,9 +7,12 @@ import collections
 import os
 import shutil
 import re
+from collections import Sequence, Set
 from difflib import SequenceMatcher
+import clipboard
 from ZODB.broken import Broken
 from cocktail.styled import styled
+from cocktail.modeling import ListWrapper, SetWrapper
 from cocktail import schema
 from cocktail.translations import get_language, translations
 from cocktail import schema
@@ -35,6 +38,7 @@ from .role import Role
 from .file import File
 from .usersession import get_current_user
 from . import staticpublication
+from . import objectio
 
 
 def remove_broken_type(
@@ -443,4 +447,57 @@ def show_translation_coverage(
                     break
 
         print line
+
+def export_json(
+    obj,
+    exporter = None,
+    json_encoder_settings = None,
+    **kwargs
+):
+    kwargs.setdefault("verbose", True)
+
+    exporter = exporter or objectio.ObjectExporter()
+    for key, value in kwargs.iteritems():
+        setattr(exporter, key, value)
+
+    if json_encoder_settings is None:
+        json_encoder_settings = {"indent": 2, "sort_keys": True}
+
+    if isinstance(obj, (Sequence, Set, ListWrapper, SetWrapper)):
+        exporter.add_all(obj)
+    elif isinstance(obj, PersistentClass):
+        exporter.add_all(obj.select())
+    else:
+        exporter.add(obj)
+
+    json = exporter.dumps(**json_encoder_settings)
+    return json
+
+def import_json(json, importer = None, **kwargs):
+
+    kwargs.setdefault(
+        "unknown_member_policy",
+        objectio.UnknownMemberPolicy.report
+    )
+
+    kwargs.setdefault(
+        "missing_object_policy",
+        objectio.MissingObjectPolicy.report
+    )
+
+    kwargs.setdefault("verbose", True)
+
+    importer = importer or objectio.ObjectImporter()
+    for key, value in kwargs.iteritems():
+        setattr(importer, key, value)
+
+    importer.loads(json)
+
+def copy_to_clipboard(*args, **kwargs):
+    json = export_json(*args, **kwargs)
+    clipboard.copy(json.encode("utf-8"))
+
+def paste_from_clipboard(**kwargs):
+    json = clipboard.paste().decode("utf-8")
+    import_json(json, **kwargs)
 
