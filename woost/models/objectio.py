@@ -20,7 +20,13 @@ import enum
 from cocktail.typemapping import TypeMapping
 from cocktail.styled import styled, ProgressBar
 from cocktail.pkgutils import get_full_name, resolve
-from cocktail.modeling import ListWrapper, SetWrapper
+from cocktail.modeling import (
+    ListWrapper,
+    SetWrapper,
+    GenericMethod,
+    GenericClassMethod,
+    frozen
+)
 from cocktail import schema
 from cocktail.persistence import datastore, transaction
 from woost.models import (
@@ -56,6 +62,51 @@ class MissingObjectPolicy(enum.Enum):
     create = 5
 
 
+@GenericMethod
+def get_object_ref(obj):
+
+    ref = {
+        "@class": get_full_name(obj.__class__)
+    }
+
+    for member in obj.__class__.iter_members():
+        if (
+            member is not Item.id
+            and member.unique
+            and isinstance(member, (schema.String, schema.Integer))
+        ):
+            value = obj.get(member)
+            if value is not None:
+                ref[member.name] = value
+
+    return ref
+
+@GenericClassMethod
+def resolve_object_ref(cls, ref):
+
+    for key, value in ref.iteritems():
+        if not key.startswith("@"):
+            member = cls.get_member(key)
+            if member.unique:
+                obj = cls.get_instance(**{key: value})
+                if obj is not None:
+                    return obj
+
+    return None
+
+@GenericClassMethod
+def create_object_from_ref(cls, ref):
+
+    obj = cls()
+
+    for key, value in ref.iteritems():
+        if not ref.startswith("@"):
+            obj.set(key, value)
+
+    obj.insert()
+    return obj
+
+
 class ObjectExporter(object):
 
     verbose = False
@@ -74,7 +125,7 @@ class ObjectExporter(object):
             Item.changes: ExportMode.ignore
         }
         self.__model_export_modes = TypeMapping()
-        self.__objects = {}
+        self.__exported_data = {}
         self.json_encoder_defaults = self.json_encoder_defaults.copy()
 
     def dump(self, dest, **kwargs):
@@ -84,14 +135,14 @@ class ObjectExporter(object):
 
         if isinstance(dest, basestring):
             with open(dest, "w") as file:
-                json.dump(self.__objects, file, **options)
+                json.dump(self.__exported_data.values(), file, **options)
         else:
-            json.dump(self.__objects, dest, **options)
+            json.dump(self.__exported_data.values(), dest, **options)
 
     def dumps(self, **kwargs):
         options = self.json_encoder_defaults.copy()
         options.update(kwargs)
-        return json.dumps(self.__objects, **options)
+        return json.dumps(self.__exported_data.values(), **options)
 
     def add_all(self, objects):
 
@@ -118,12 +169,10 @@ class ObjectExporter(object):
             node = ExportNode(self, obj)
             node._export_mode = ExportMode.expand
 
-        id = self._require_global_id(obj)
-
-        if id in self.__objects:
+        if obj in self.__exported_data:
             return False
 
-        self.__objects[id] = data = {
+        self.__exported_data[obj] = data = {
             "@class": get_full_name(node.value.__class__)
         }
 
@@ -174,11 +223,8 @@ class ObjectExporter(object):
             buffer.seek(0)
             data["@file_data"] = buffer.getvalue()
 
-    def _require_global_id(self, obj):
-        id = obj.global_id
-        if not id:
-            raise ValueError("Can't export %r; object has no global id" % obj)
-        return id
+    def _get_object_ref(self, node):
+        return get_object_ref(node.value)
 
     def _export_value(self, node, expand_object = False):
 
@@ -188,10 +234,7 @@ class ObjectExporter(object):
             if isinstance(value, type):
                 value = get_full_name(value)
             elif isinstance(value, schema.SchemaObject):
-                qname = value.qname
-                value = self._require_global_id(value)
-                if qname:
-                    value += " " + qname
+                value = self._get_object_ref(node)
                 if expand_object:
                     self.add(node)
             elif not isinstance(value, basestring) and isinstance(
@@ -428,7 +471,6 @@ class ObjectImporter(object):
     datetime_format = ObjectExporter.datetime_format
 
     def __init__(self):
-        self.__objects = {}
         self.__qname_mapping = {}
         self.missing_references = Counter()
         self.missing_members = defaultdict(Counter)
@@ -449,20 +491,24 @@ class ObjectImporter(object):
         data = json.loads(string)
         return self.load_objects(data)
 
-    def load_objects(self, data):
+    def load_objects(self, object_list):
 
         # Make a first pass to pregenerate all new objects
         if self.verbose:
-            print "Resolving or creating %d objects" % len(data)
-            bar = ProgressBar(len(data))
+            print "Resolving or creating %d objects" % len(object_list)
+            bar = ProgressBar(len(object_list))
             bar.update()
 
-        for id, object_data in data.iteritems():
-            self.__objects[id] = self.resolve_ref(
-                id,
-                resolve(object_data.get("@class")),
-                missing_object_policy = MissingObjectPolicy.create
-            )
+        objects = []
+
+        for object_data in object_list:
+            objects.append((
+                self.resolve_object_ref(
+                    object_data,
+                    missing_object_policy = MissingObjectPolicy.create
+                ),
+                object_data
+            ))
             if self.verbose:
                 bar.update(1)
 
@@ -472,11 +518,11 @@ class ObjectImporter(object):
         # And a second pass to load object state
         if self.verbose:
             print "Importing object state"
-            bar = ProgressBar(len(data))
+            bar = ProgressBar(len(objects))
             bar.update()
 
-        for id, object_data in data.iteritems():
-            self.import_object_data(self.__objects[id], object_data)
+        for obj, object_data in objects:
+            self.import_object_data(obj, object_data)
             if self.verbose:
                 bar.update(1)
 
@@ -609,7 +655,7 @@ class ObjectImporter(object):
             if member.class_family:
                 return resolve(value)
             else:
-                return self.resolve_ref(value)
+                return self.resolve_object_ref(value)
         elif isinstance(member, schema.DateTime):
             return datetime.strptime(value, self.datetime_format)
         elif isinstance(member, schema.Date):
@@ -619,40 +665,21 @@ class ObjectImporter(object):
 
         return value
 
-    def resolve_ref(self, ref, cls = None, missing_object_policy = None):
+    def resolve_object_ref(self, ref, missing_object_policy = None):
 
-        ref_parts = ref.split()
-
-        if len(ref_parts) == 1:
-            global_id = ref
-            qname = None
-        elif len(ref_parts) == 2:
-            global_id, qname = ref_parts
-            qname = self.__qname_mapping.get(qname) or qname
-        else:
-            raise ValueError("Invalid ref: %s" % ref)
-
-        if missing_object_policy is None:
-            missing_object_policy = self.missing_object_policy
-
-        obj = (
-            (qname and (cls or Item).get_instance(qname = qname))
-            or
-            (global_id and (cls or Item).get_instance(global_id = global_id))
-        )
+        cls = resolve(ref["@class"])
+        obj = resolve_object_ref(cls, ref)
 
         if obj is None:
             obj = self._handle_missing_object(
-                ref,
-                global_id,
-                qname,
                 cls,
-                missing_object_policy
+                ref,
+                missing_object_policy or self.missing_object_policy
             )
 
         return obj
 
-    def _handle_missing_object(self, ref, global_id, qname, cls, policy):
+    def _handle_missing_object(self, cls, ref, policy):
 
         if policy == MissingObjectPolicy.create:
 
@@ -662,16 +689,14 @@ class ObjectImporter(object):
                     % ref
                 )
 
-            obj = cls(global_id = id, qname = qname)
-            obj.insert()
-            return obj
+            return create_object_from_ref(cls, ref)
 
         elif policy == MissingObjectPolicy.warn:
             warn("Can't find an object matching the reference %r" % ref)
             return ExportMode.ignore
 
         elif policy == MissingObjectPolicy.report:
-            self.missing_references[ref] += 1
+            self.missing_references[frozen(ref)] += 1
             return ExportMode.ignore
 
         elif policy == MissingObjectPolicy.fail:
