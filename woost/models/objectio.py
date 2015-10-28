@@ -127,10 +127,12 @@ class ObjectExporter(object):
             "@class": get_full_name(node.value.__class__)
         }
 
-        self._export_object_data(obj, data)
+        self._export_object_data(node, data)
         return True
 
-    def _export_object_data(self, obj, data):
+    def _export_object_data(self, node, data):
+
+        obj = node.value
 
         for member in obj.__class__.iter_members():
             if member.translated:
