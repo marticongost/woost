@@ -127,6 +127,11 @@ class ObjectExporter(object):
             "@class": get_full_name(node.value.__class__)
         }
 
+        self._export_object_data(obj, data)
+        return True
+
+    def _export_object_data(self, obj, data):
+
         for member in obj.__class__.iter_members():
             if member.translated:
                 translated_values = {}
@@ -166,8 +171,6 @@ class ObjectExporter(object):
                 base64.encode(file, buffer)
             buffer.seek(0)
             data["@file_data"] = buffer.getvalue()
-
-        return True
 
     def _require_global_id(self, obj):
         id = obj.global_id
