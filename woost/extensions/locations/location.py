@@ -231,7 +231,7 @@ def get_location_ref(location):
     for item in location.ascend(include_self = True):
         if item.code:
             path.append(item.code)
-    path.reverse
+    path.reverse()
 
     if path:
         ref["@woost.extensions.locations.path"] = path
