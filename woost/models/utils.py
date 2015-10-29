@@ -9,7 +9,10 @@ import shutil
 import re
 from collections import Sequence, Set
 from difflib import SequenceMatcher
-import clipboard
+try:
+    import clipboard
+except ImportError:
+    clipboard = None
 from ZODB.broken import Broken
 from cocktail.styled import styled
 from cocktail.modeling import ListWrapper, SetWrapper
