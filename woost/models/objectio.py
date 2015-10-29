@@ -747,18 +747,19 @@ class ObjectImporter(object):
             "--author"
         )
         parser.add_argument(
+            "--errors", "-e"
+        )
+        parser.add_argument(
             "--missing-objects",
             choices = [
                 choice
                 for choice in MissingObjectPolicy.__members__
                 if choice != "create"
-            ],
-            default = self.missing_object_policy.name
+            ]
         )
         parser.add_argument(
             "--unknown-members",
-            choices = UnknownMemberPolicy.__members__.keys(),
-            default = self.unknown_member_policy.name
+            choices = UnknownMemberPolicy.__members__.keys()
         )
         return parser
 
@@ -766,15 +767,19 @@ class ObjectImporter(object):
 
         self.verbose = args.verbose
 
-        self.missing_object_policy = getattr(
-            MissingObjectPolicy,
-            args.missing_objects
-        )
+        missing_objects_key = args.missing_objects or args.errors
+        if missing_objects_key:
+            self.missing_object_policy = getattr(
+                MissingObjectPolicy,
+                missing_objects_key
+            )
 
-        self.unknown_member_policy = getattr(
-            UnknownMemberPolicy,
-            args.unknown_members
-        )
+        unknown_members_key = args.unknown_members or args.errors
+        if unknown_members_key:
+            self.unknown_member_policy = getattr(
+                UnknownMemberPolicy,
+                unknown_members_key
+            )
 
 
 def _store_file_contents_after_commit(successful):
