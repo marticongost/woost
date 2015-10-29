@@ -3,6 +3,7 @@ u"""Defines the `Location` class.
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
+from warnings import warn
 from cocktail.iteration import first
 from cocktail.translations import translations
 from cocktail import schema
@@ -169,6 +170,12 @@ class Location(Item):
     @classmethod
     def by_code(cls, *code):
 
+        warn(
+            "Location.by_code is deprecated, use Location.by_full_path instead",
+            DeprecationWarning,
+            stacklevel = 2
+        )
+
         if not code or not code[0]:
             raise ValueError(
                 "Location.by_code() requires one or more location codes"
@@ -186,12 +193,37 @@ class Location(Item):
     @classmethod
     def by_path(cls, *path):
 
+        warn(
+            "Location.by_path is deprecated, use Location.by_full_path instead",
+            DeprecationWarning,
+            stacklevel = 2
+        )
+
         if not path or not path[0]:
             raise ValueError(
-                "Location.by_code() requires one or more location codes"
+                "Location.by_path() requires one or more location codes"
             )
 
         location = first(cls.select([Location.code.equal(path[0])]))
+
+        for x in path[1:]:
+            if location is None:
+                return None
+            location = location.get_child_location(x, recursive = False)
+
+        return location
+
+    @classmethod
+    def by_abs_path(cls, path):
+
+        if not path or not path[0]:
+            raise ValueError(
+                "Location.by_abs_path() requires one or more location codes"
+            )
+
+        location = first(
+            cls.select({"code": path[0], "parent": None})
+        )
 
         for x in path[1:]:
             if location is None:
@@ -239,14 +271,14 @@ def get_location_ref(location):
     return ref
 
 @resolve_object_ref.implementation_for(Location)
-def resolve_object_ref(cls, ref):
+def resolve_location_ref(cls, ref):
 
-    obj = get_object_ref.default(cls, ref)
+    obj = resolve_object_ref.default(cls, ref)
 
     if obj is None:
         path = ref.get("@woost.extensions.locations.path")
         if path:
-            obj = cls.by_path(*path)
+            obj = cls.by_abs_path(path)
 
     return obj
 
