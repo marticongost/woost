@@ -2897,41 +2897,53 @@ button.TypeSelectorButton {
 #ui-datepicker-div {
     background-color: rgb(255, 255, 255);
     border: 1px solid rgb(197, 203, 212);
+    padding: 0.5em;
 }
 
-#ui-datepicker-div .ui-datepicker-links a,
-#ui-datepicker-div .ui-datepicker-header select {
-    color: rgb(0, 0, 0);
-    background-color: rgb(255, 255, 255);
+#ui-datepicker-div a {
+    text-decoration: none;
+    color: #333;
+    cursor: pointer;
 }
 
-.ui-datepicker .ui-datepicker-days-cell a {
-    color: rgb(0, 0, 0);
-    background-color: rgb(240, 240, 240);
+#ui-datepicker-div a:hover {
+    text-decoration: underline;
 }
 
-.ui-datepicker .ui-datepicker-current-day a {
-    background-color: rgb(225, 225, 225);
+.ui-datepicker-header {
+    overflow: hidden;
+    margin: 0.5em 0;
 }
 
-.ui-datepicker-next a,
-.ui-datepicker-prev a {
-    border: none;
+.ui-datepicker-title {
+    font-size: 1.2em;
+    text-align: center;
 }
 
-.ui-datepicker-prev a,
-.ui-datepicker-prev a:hover {
-    background: url(/resources/images/date_arrow_left.gif) 50% 50% no-repeat;
+.ui-datepicker-prev {
+    float: left;
 }
 
-.ui-datepicker-next a,
-.ui-datepicker-next a:hover {
-    background: url(/resources/images/date_arrow_right.gif) 50% 50% no-repeat;
+.ui-datepicker-next {
+    float: right;
 }
 
-.ui-datepicker-prev a:active,
-.ui-datepicker-next a:active {
-    background: none;
+#ui-datepicker-div th {
+    color: #444;
+}
+
+#ui-datepicker-div th,
+#ui-datepicker-div td {
+    padding: 0.3em;
+    text-align: center;
+}
+
+.ui-datepicker-today {
+    background-color: #ccc;
+}
+
+.ui-datepicker-current-day {
+    border: 1px solid #999;
 }
 
 /* File form
