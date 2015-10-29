@@ -96,13 +96,7 @@ def resolve_object_ref(cls, ref):
 
 @GenericClassMethod
 def create_object_from_ref(cls, ref):
-
     obj = cls()
-
-    for key, value in ref.iteritems():
-        if not ref.startswith("@"):
-            obj.set(key, value)
-
     obj.insert()
     return obj
 
