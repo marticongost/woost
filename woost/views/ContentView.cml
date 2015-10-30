@@ -121,6 +121,19 @@ from woost.controllers.backoffice.editstack import SelectionNode
         ?>
     </py:ready>
 
+    <py:with py:def="filters_selector">
+        <py:with py:element="element.search_button">
+            <?py
+            element.add_class("button")
+            ?>
+        </py:with>
+        <py:with py:element="element.discard_button">
+            <?py
+            element.add_class("button")
+            ?>
+        </py:with>
+    </py:with>
+
     <py:with py:element="self.filters" py:visible="@{self.search_expanded}">
         <py:ready>
             <py:with py:element="self.filters_selector"

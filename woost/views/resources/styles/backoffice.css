@@ -15,11 +15,8 @@ body {
     font-size: 11pt;
 }
 
-.BackOfficeLayout button {
-    font-family: Bitstream Vera Sans, Arial;
-}
-
 .BackOfficeLayout button.button,
+.BackOfficeLayout a.button,
 .BackOfficeLayout input[type=submit],
 .BackOfficeLayout .AsyncFileUploader .button {
     background-color: #ddd;
@@ -31,10 +28,13 @@ body {
     -moz-box-shadow: 1px 1px 4px #bbb;
     cursor: pointer;
     font-size: 0.9em;
+    font-family: Bitstream Vera Sans, Arial, Sans Serif;
     color: #222;
+    text-decoration: none;
 }
 
 .BackOfficeLayout button.button:hover,
+.BackOfficeLayout a.button:hover,
 .BackOfficeLayout input[type=submit]:hover,
 .BackOfficeLayout .AsyncFileUploader .button:hover {
     background-color: #eee;
@@ -2784,14 +2784,6 @@ button.TypeSelectorButton {
     margin-right: 0.5em;
 }
 
-.BackOfficeLayout .CollectionView .filters .discard_button {
-    padding-left: 1.6em;
-    background-repeat: no-repeat;
-    background-position: left center;
-    background-image: url(/resources/images/clear.png);
-}
-
-.BackOfficeLayout .CollectionView .filters .discard_button,
 .BackOfficeLayout .CollectionView .filters .new_filter_selector {
     float: left;
 }
