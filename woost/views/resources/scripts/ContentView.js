@@ -44,27 +44,6 @@ cocktail.bind(".ContentView", function ($contentView) {
         display.topControl = $searchBox.get(0);
     }
 
-    // Replace the 'clear filters' link with a 'discard search' button
-    $contentView.find(".filters").each(function () {
-
-        if (jQuery.browser.msie) {
-            var closeButton = document.createElement("<input type='button'>");
-        }
-        else {
-            var closeButton = document.createElement("input");
-            closeButton.type = "button";
-        }
-
-        var $discardButton = jQuery(this).find(".discard_button");
-        var closeHref = $discardButton.get(0).href;
-
-        jQuery(closeButton).val(cocktail.translate("woost.views.ContentView close advanced search")).click(function () {
-            location.href = closeHref;
-        });
-
-        $discardButton.replaceWith(closeButton);
-    });
-
     // Client side implementation for the addition of filters from table
     // column headers
     if (this.searchExpanded) {
