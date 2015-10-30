@@ -9,10 +9,6 @@ import shutil
 import re
 from collections import Sequence, Set
 from difflib import SequenceMatcher
-try:
-    import clipboard
-except ImportError:
-    clipboard = None
 from ZODB.broken import Broken
 from cocktail.styled import styled
 from cocktail.modeling import ListWrapper, SetWrapper
@@ -497,10 +493,12 @@ def import_json(json, importer = None, **kwargs):
     importer.loads(json)
 
 def copy_to_clipboard(*args, **kwargs):
+    import clipboard
     json = export_json(*args, **kwargs)
     clipboard.copy(json.encode("utf-8"))
 
 def paste_from_clipboard(**kwargs):
+    import clipboard
     json = clipboard.paste().decode("utf-8")
     import_json(json, **kwargs)
 
