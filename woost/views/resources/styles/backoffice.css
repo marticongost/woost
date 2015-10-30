@@ -15,8 +15,8 @@ body {
     font-size: 11pt;
 }
 
-.BackOfficeLayout button.button,
-.BackOfficeLayout a.button,
+.BackOfficeLayout button.button_appearence,
+.BackOfficeLayout a.button_appearence,
 .BackOfficeLayout input[type=submit],
 .BackOfficeLayout .AsyncFileUploader .button {
     background-color: #ddd;
@@ -33,8 +33,8 @@ body {
     text-decoration: none;
 }
 
-.BackOfficeLayout button.button:hover,
-.BackOfficeLayout a.button:hover,
+.BackOfficeLayout button.button_appearence:hover
+.BackOfficeLayout a.button_appearence:hover,
 .BackOfficeLayout input[type=submit]:hover,
 .BackOfficeLayout .AsyncFileUploader .button:hover {
     background-color: #eee;

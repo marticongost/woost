@@ -124,12 +124,12 @@ from woost.controllers.backoffice.editstack import SelectionNode
     <py:with py:def="filters_selector">
         <py:with py:element="element.search_button">
             <?py
-            element.add_class("button")
+            element.add_class("button_appearence")
             ?>
         </py:with>
         <py:with py:element="element.discard_button">
             <?py
-            element.add_class("button")
+            element.add_class("button_appearence")
             ?>
         </py:with>
     </py:with>
@@ -388,6 +388,11 @@ from woost.controllers.backoffice.editstack import SelectionNode
         <?py
         element.action_context.add("list_buttons")
         ?>
+        <py:with py:def="action_button">
+            <?py
+            element.add_class("button_appearence")
+            ?>
+        </py:with>
         <py:binding>
             <?py
             element.action_context.update(self.action_context)
