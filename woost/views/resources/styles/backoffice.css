@@ -2887,6 +2887,7 @@ button.TypeSelectorButton {
 /* Datepicker styles */
 
 #ui-datepicker-div {
+    display: none;
     background-color: rgb(255, 255, 255);
     border: 1px solid rgb(197, 203, 212);
     padding: 0.5em;
