@@ -60,15 +60,7 @@ class GAEventRedirection(object):
                 category = self.get_category(controller, publishable)
                 action = self.get_action(controller, publishable)
                 label = self.get_label(controller, publishable)
-
-                api = Configuration.instance.google_analytics_api
-
-                if api == "ga.js":
-                    commands = [('_trackEvent', category, action, label)]
-                elif api == "universal":
-                    commands = [('send', 'event', category, action, label)]
-                else:
-                    raise cherrypy.HTTPRedirect(url)
+                commands = [('send', 'event', category, action, label)]
 
                 return self.template % {
                     "title": self.get_title(controller, publishable),

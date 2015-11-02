@@ -13,43 +13,20 @@ def add_event(
     label = None,
     value = None
 ):
-    api = Configuration.instance.google_analytics_api
+    event_data = {
+        "hitType": "event",
+        "eventCategory": category,
+        "eventAction": action
+    }
 
-    if api == "ga.js":
+    if label is not None:
+        event_data["eventLabel"] = label
 
-        event_command = [
-            '_trackEvent',
-            category,
-            action
-        ]
+    if value is not None:
+        event_data["value"] = value
 
-        if label is not None:
-            event_command.append(label)
-
-        if value is not None:
-            event_command.append(value)
-
-        element.add_client_code(
-            "jQuery(this).click(function () { _gaq.push(%s); });"
-            % dumps(event_command)
-        )
-
-    elif api == "universal":
-
-        event_data = {
-            "hitType": "event",
-            "eventCategory": category,
-            "eventAction": action
-        }
-
-        if label is not None:
-            event_data["eventLabel"] = label
-
-        if value is not None:
-            event_data["value"] = value
-
-        element.add_client_code(
-            "jQuery(this).click(function () { ga('send', %s); });"
-            % dumps(event_data)
-        )
+    element.add_client_code(
+        "jQuery(this).click(function () { ga('send', %s); });"
+        % dumps(event_data)
+    )
 
