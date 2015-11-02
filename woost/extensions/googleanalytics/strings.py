@@ -5,12 +5,6 @@ u"""
 """
 from cocktail.translations import translations
 
-translations.define("Configuration.google_analytics_api",
-    ca = u"API de Google Analytics",
-    es = u"API de Google Analytics",
-    en = u"Google Analytics API"
-)
-
 for cls_name in ("Configuration", "Website"):
     translations.define(cls_name + ".services.google_analytics",
         ca = u"Google Analytics",

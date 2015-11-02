@@ -80,28 +80,7 @@ class GoogleAnalyticsExtension(Extension):
                 e.output["head_end_html"] = html
 
     inclusion_code = {
-        "ga.js-async":
-            """
-            <script type="text/javascript">
-                var _gaq = _gaq || [];
-                %(create_tracker_command)s
-                %(commands)s
-                (function() {
-                var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-                ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-                var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-                })();
-            </script>
-            """,
-        "ga.js-sync":
-            """
-            <script type="text/javascript" src="http://www.google-analytics.com/ga.js"></script>
-            <script type="text/javascript">
-                %(create_tracker_command)s
-                %(commands)s
-            </script>
-            """,
-        "universal-async":
+        "async":
             """
             <script type="text/javascript">
               (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -112,7 +91,7 @@ class GoogleAnalyticsExtension(Extension):
               %(commands)s
             </script>
             """,
-        "universal-sync":
+        "sync":
             """
             <script type="text/javascript">
               (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -135,22 +114,18 @@ class GoogleAnalyticsExtension(Extension):
         async = True
     ):
         config = Configuration.instance
-        api = config.google_analytics_api
-        classic_api = (api == "ga.js")
 
         if publishable is None:
             publishable = context.get("publishable")
 
         event = self.declaring_tracker(
-            api = api,
             publishable = publishable,
             account = config.get_setting("google_analytics_account"),
-            tracker_parameters = None if classic_api else {},
+            tracker_parameters = {},
             domain = config.get_setting("google_analytics_domain"),
             template =
-                self.inclusion_code[api + ("-async" if async else "-sync")],
-            values =
-                None if classic_api else self.get_analytics_values(publishable),
+                self.inclusion_code["async" if async else "sync"],
+            values = self.get_analytics_values(publishable),
             commands = commands or []
         )
 
@@ -160,49 +135,26 @@ class GoogleAnalyticsExtension(Extension):
         commands = event.commands
         parameters = {}
 
-        if classic_api:
-            create_commands = [("_setAccount", event.account)]
+        if event.domain:
+            event.tracker_parameters["cookieDomain"] = event.domain
 
-            if event.domain:
-                create_commands.append(("_setDomainName", event.domain))
+        parameters["create_tracker_command"] = \
+            self._serialize_commands([(
+                "create",
+                event.account,
+                event.tracker_parameters
+            )])
 
-            parameters["create_tracker_command"] = \
-                self._serialize_ga_commands(create_commands)
+        if event.values:
+            commands.insert(0, ("set", event.values))
 
-            parameters["commands"] = self._serialize_ga_commands(commands)
-        else:
-            if event.domain:
-                event.tracker_parameters["cookieDomain"] = event.domain
-
-            parameters["create_tracker_command"] = \
-                self._serialize_universal_commands([(
-                    "create",
-                    event.account,
-                    event.tracker_parameters
-                )])
-
-            if event.values:
-                commands.insert(0, ("set", event.values))
-
-            parameters["commands"] = \
-                self._serialize_universal_commands(commands)
-
+        parameters["commands"] = self._serialize_commands(commands)
         return event.template % parameters
 
     def get_analytics_page_hit_script(self, publishable = None):
-
-        api = Configuration.instance.google_analytics_api
-
-        if api == "ga.js":
-            commands = [("_trackPageview",)]
-        elif api == "universal":
-            commands = [("send", "pageview")]
-        else:
-            return ""
-
         return self.get_analytics_script(
             publishable = publishable,
-            commands = commands
+            commands = [("send", "pageview")]
         )
 
     def get_analytics_values(self, publishable):
@@ -212,30 +164,24 @@ class GoogleAnalyticsExtension(Extension):
 
             # Custom dimension: roles
             "dimension2":
-                self.serialize_collection(
+                self._serialize_collection(
                     role.id for role in get_current_user().iter_roles()
                 ),
 
             # Custom dimension: path
             "dimension3":
                 "" if publishable is None
-                else self.serialize_collection(
+                else self._serialize_collection(
                     ancestor.id
                     for ancestor
                     in reversed(list(publishable.ascend_tree(True)))
                 )
         }
 
-    def serialize_collection(self, value):
+    def _serialize_collection(self, value):
         return "-" + "-".join(str(item) for item in value) + "-"
 
-    def _serialize_ga_commands(self, commands):
-        return "\n".join(
-            "_gaq.push([%s]);" % (", ".join(dumps(arg) for arg in cmd))
-            for cmd in commands
-        )
-
-    def _serialize_universal_commands(self, commands):
+    def _serialize_commands(self, commands):
         return "\n".join(
             "ga(%s);" % (", ".join(dumps(arg) for arg in cmd))
             for cmd in commands

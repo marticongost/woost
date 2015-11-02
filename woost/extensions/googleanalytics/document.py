@@ -16,3 +16,4 @@ Document.add_member(
 )
 
 Document.is_ga_tracking_enabled = lambda self: self.ga_tracking_enabled
+
