@@ -23,7 +23,7 @@ def add_event(
         event_data["eventLabel"] = label
 
     if value is not None:
-        event_data["value"] = value
+        event_data["eventValue"] = value
 
     element.add_client_code(
         "jQuery(this).click(function () { ga('send', %s); });"
