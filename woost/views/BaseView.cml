@@ -37,6 +37,8 @@ from woost.models import Configuration, Publishable, get_current_website
     ?>
 
     <?py
+    self.set_meta("generator", "woost")
+
     @self.when_document_ready
     def adapt_document(document):
 
