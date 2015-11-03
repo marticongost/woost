@@ -79,3 +79,35 @@ translations.define("woost.extensions.googleanalytics.redirection_body",
         % url
 )
 
+# TextBlock
+#------------------------------------------------------------------------------
+translations.define("TextBlock.google_analytics",
+    ca = u"Google Analytics",
+    es = u"Google Analytics",
+    en = u"Google Analytics"
+)
+
+translations.define("TextBlock.generates_google_analytics_event",
+    ca = u"Genera esdeveniments de Google Analytics",
+    es = u"Genera eventos de Google Analytics",
+    en = u"Generates Google Analytics events"
+)
+
+translations.define("TextBlock.google_analytics_event_category",
+    ca = u"Categoria",
+    es = u"Categoría",
+    en = u"Category"
+)
+
+translations.define("TextBlock.google_analytics_event_action",
+    ca = u"Acció",
+    es = u"Acción",
+    en = u"Action"
+)
+
+translations.define("TextBlock.google_analytics_event_label",
+    ca = u"Etiqueta",
+    es = u"Etiqueta",
+    en = u"Label"
+)
+
