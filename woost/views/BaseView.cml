@@ -2,6 +2,7 @@
 <?py
 from cocktail.translations import require_language
 from cocktail.html import Content
+from woost import app
 from woost.models import Site, Publishable, Language
 ?>
 
@@ -68,6 +69,14 @@ from woost.models import Site, Publishable, Language
 
         slot.when_ready(_fill_slot)
         return slot
+    ?>
+
+    <?py
+    @self.when_document_ready
+    def adapt_document(document):
+
+        if app.splash:
+            document.head.insert(0, Content("<!--\n" + app.splash + "\n-->"))
     ?>
 
     <py:ready>
