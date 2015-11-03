@@ -44,6 +44,7 @@ from woost.models import Configuration, Publishable, get_current_website
 
     <?py
     self.add_resource("/resources/styles/blocks.css")
+    self.set_meta("generator", "woost")
 
     @self.when_document_ready
     def adapt_document(document):
