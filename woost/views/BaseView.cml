@@ -72,6 +72,8 @@ from woost.models import Site, Publishable, Language
     ?>
 
     <?py
+    self.set_meta("generator", "woost")
+
     @self.when_document_ready
     def adapt_document(document):
 
