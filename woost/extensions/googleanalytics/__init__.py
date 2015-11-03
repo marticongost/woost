@@ -60,7 +60,15 @@ class GoogleAnalyticsExtension(Extension):
             configuration,
             website,
             document,
+            textblock,
             eventredirection
+        )
+
+        # Install an overlay for text blocks to automatically generate events
+        # when their block link is clicked
+        from cocktail.html import templates
+        templates.get_class(
+            "woost.extensions.googleanalytics.TextBlockViewOverlay"
         )
 
         from cocktail.events import when
