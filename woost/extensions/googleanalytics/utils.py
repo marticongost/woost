@@ -25,8 +25,9 @@ def add_event(
     if value is not None:
         event_data["eventValue"] = value
 
+    element.add_resource("/resources/scripts/googleanalytics.js")
     element.add_client_code(
-        "jQuery(this).click(function () { ga('send', %s); });"
+        "woost.ga.triggerEventOnClick(this, %s);"
         % dumps(event_data)
     )
 
