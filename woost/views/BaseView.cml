@@ -47,6 +47,9 @@ from woost.models import Configuration, Publishable, get_current_website
     @self.when_document_ready
     def adapt_document(document):
 
+        if app.splash:
+            document.head.insert(0, Content("<!--\n" + app.splash + "\n-->"))
+
         # Links
         home = get_current_website().home
         document.head_start_link = Element("link", rel = "start", title = home.title, href = home.get_uri() or "/")
