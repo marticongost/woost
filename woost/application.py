@@ -15,6 +15,16 @@ class Application(object):
     __language = None
     __authentication = None
 
+    splash = """\
+Made with                     _
+__        __ ___   ___   ___ | |_
+\ \  __  / // _ \ / _ \ / __||  _|
+ \ \/  \/ /| (_) | (_) |___ \| |__
+  \__/\__/  \___/ \___/|____/\___/
+
+http://woost.info
+"""
+
     def path(self, *args):
         return os.path.join(self.root, *args)
 

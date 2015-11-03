@@ -3,6 +3,7 @@
 from cocktail.translations import require_language
 from cocktail.html import Content
 from cocktail.controllers import context
+from woost import app
 from woost.models import Configuration, Publishable, get_current_website
 ?>
 
@@ -33,6 +34,14 @@ from woost.models import Configuration, Publishable, get_current_website
 
     def get_content_title(self):
         return getattr(self.publishable, "inner_title", None) or translations(self.publishable)
+    ?>
+
+    <?py
+    @self.when_document_ready
+    def adapt_document(document):
+
+        if app.splash:
+            document.head.insert(0, Content("<!--\n" + app.splash + "\n-->"))
     ?>
 
     <py:ready>
