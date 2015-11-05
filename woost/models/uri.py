@@ -7,9 +7,10 @@ u"""
 @since:			February 2009
 """
 from cocktail import schema
-from cocktail.controllers import make_uri
+from cocktail.controllers import Location, make_uri
 from woost.models.publishable import Publishable
 from woost.models.controller import Controller
+from woost.models.website import Website
 
 
 class URI(Publishable):
@@ -68,4 +69,17 @@ class URI(Publishable):
             uri = self._fix_uri(uri, host, encode)
 
         return uri
+
+    def is_internal_content(self, language = None):
+
+        uri = self.get_uri(host = "!", language = language)
+        location = Location(uri)
+
+        if not location.host:
+            return True
+
+        return any(
+            location.host in website.hosts
+            for website in Website.select()
+        )
 

@@ -456,6 +456,12 @@ class Publishable(Item):
         from woost.models import Website
         return bool(self.get(Website.home.related_end))
 
+    def is_internal_content(self, language = None):
+        """Indicates if the object represents content from this site.
+        @rtype: bool
+        """
+        return True
+
     def is_current(self):
         now = datetime.now()
         return (self.start_date is None or self.start_date <= now) \
