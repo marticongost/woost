@@ -55,3 +55,6 @@ class TV3ALaCartaVideo(Publishable):
         encode = True):
         return self.uri_pattern % self.video_id
 
+    def is_internal_content(self, language = None):
+        return False
+
