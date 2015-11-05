@@ -164,6 +164,9 @@ class IssuuDocument(Publishable):
                     if issuu_config_id:
                         self.issuu_config_id = issuu_config_id[0]
 
+    def is_internal_content(self, language = None):
+        return False
+
 
 class IssuuSearchAPIError(Exception):
 
