@@ -9,6 +9,7 @@ u"""
 import cherrypy
 from cocktail.translations import get_language, translations
 from cocktail.modeling import cached_getter
+from cocktail.controllers import get_state
 from woost.controllers.publishablecontroller import PublishableController
 
 
@@ -27,7 +28,12 @@ class DocumentController(PublishableController):
             if redirection_target is None:
                 raise cherrypy.NotFound()
 
-            uri = redirection_target.get_uri()
+            if redirection_target.is_internal_content():
+                parameters = get_state()
+            else:
+                parameters = None
+
+            uri = redirection_target.get_uri(parameters = parameters)
             method = document.redirection_method
 
             if method == "perm":
