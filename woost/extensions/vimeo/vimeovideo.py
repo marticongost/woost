@@ -55,6 +55,9 @@ class VimeoVideo(Publishable):
         encode = True):
         return self.uri_pattern % (self.video_id,)
 
+    def is_internal_content(self, language = None):
+        return False
+
 
 def import_url_as_vimeo_video(url_import):
 
