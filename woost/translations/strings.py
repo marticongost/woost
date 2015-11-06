@@ -1929,6 +1929,12 @@ translations.define("Configuration.language",
     en = u"Language"
 )
 
+translations.define("Configuration.meta",
+    ca = u"Metadades",
+    es = u"Metadatos",
+    en = u"Metadata"
+)
+
 translations.define("Configuration.media",
     ca = u"Multimèdia",
     es = u"Multimedia",
@@ -2030,6 +2036,12 @@ translations.define("Configuration.maintenance_addresses",
     ca = u"Adreces IP que ignoren el mode de manteniment",
     es = u"Direcciones IP que ignoran el modo de mantenimiento",
     en = u"IP addresses that ignore maintenance mode"
+)
+
+translations.define("Configuration.meta_tags",
+    ca = u"Meta tags",
+    es = u"Meta tags",
+    en = u"Meta tags"
 )
 
 translations.define("Configuration.languages",
@@ -2236,6 +2248,12 @@ translations.define("Website.publication.https",
     en = u"HTTPS"
 )
 
+translations.define("Website.meta",
+    ca = u"Metadades",
+    es = u"Metadatos",
+    en = u"Metadata"
+)
+
 translations.define("Website.language",
     ca = u"Idioma",
     es = u"Idioma",
@@ -2439,6 +2457,12 @@ translations.define("Website.https_persistence-explanation",
     en = u"This option will only be taken into account if "
          u"<em>HTTPS policy</em> is set to <em>Decide on a per-page "
          u"basis</em>."
+)
+
+translations.define("Website.meta_tags",
+    ca = u"Meta tags",
+    es = u"Meta tags",
+    en = u"Meta tags"
 )
 
 translations.define("Website.default_language",
@@ -3142,6 +3166,12 @@ translations.define("Document.inner_title",
     ca = u"Títol interior",
     es = u"Título interior",
     en = u"Inner title"
+)
+
+translations.define("Document.meta_tags",
+    ca = u"Meta tags",
+    es = u"Meta tags",
+    en = u"Meta tags"
 )
 
 translations.define("Document.description",

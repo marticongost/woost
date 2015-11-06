@@ -12,6 +12,7 @@ from cocktail.events import event_handler
 from cocktail.html import templates
 from .publishable import Publishable
 from .controller import Controller
+from .metatags import MetaTags
 
 
 class Document(Publishable):
@@ -29,6 +30,7 @@ class Document(Publishable):
         "title",
         "inner_title",
         "template",
+        "meta_tags",
         "description",
         "keywords",
         "children",
@@ -59,6 +61,10 @@ class Document(Publishable):
         listed_by_default = False,
         spellcheck = True,
         member_group = "content"
+    )
+
+    meta_tags = MetaTags(
+        member_group = "meta"
     )
 
     description = schema.String(

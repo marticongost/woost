@@ -9,6 +9,7 @@ from cocktail import schema
 from woost.models.item import Item
 from woost.models.file import File
 from woost.models.publishable import Publishable
+from woost.models.metatags import MetaTags
 
 
 class Website(Item):
@@ -63,6 +64,9 @@ class Website(Item):
         # publication.https
         "https_policy",
         "https_persistence",
+
+        # meta
+        "meta_tags",
 
         # language
         "published_languages",
@@ -237,7 +241,13 @@ class Website(Item):
         member_group = "publication.maintenance"
     )
 
-    # publication.language
+    # meta
+    #------------------------------------------------------------------------------
+    meta_tags = MetaTags(
+        member_group = "meta"
+    )
+
+    # language
     #--------------------------------------------------------------------------
     published_languages = schema.Collection(
         items = schema.String(required = True),
