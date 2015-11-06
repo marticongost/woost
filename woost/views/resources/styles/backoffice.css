@@ -784,6 +784,10 @@ body.modal {
     width: 100%;
 }
 
+.BackOfficeLayout .Form .field textarea.control.MetaTags {
+    width: 38.1em;
+}
+
 .BackOfficeLayout .Form td .DatePicker {
     width: 8em;
     margin-right: 0.5em;
