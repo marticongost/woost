@@ -28,6 +28,7 @@ from .rendering.renderer import Renderer
 from .rendering.imagefactory import ImageFactory
 from .videoplayersettings import VideoPlayerSettings
 from .trigger import Trigger
+from .metatags import MetaTags
 
 try:
     from fractions import Fraction
@@ -47,6 +48,7 @@ class Configuration(Item):
         "publication",
         "publication.pages",
         "publication.maintenance",
+        "meta",
         "language",
         "media.images",
         "media.video",
@@ -153,6 +155,12 @@ class Configuration(Item):
         listed_by_default = False,
         searchable = False,
         member_group = "publication.maintenance"
+    )
+
+    # meta
+    #------------------------------------------------------------------------------
+    meta_tags = MetaTags(
+        member_group = "meta"
     )
 
     # language
