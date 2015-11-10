@@ -13,6 +13,18 @@ from cocktail.translations import translations
 from cocktail.persistence import PersistentObject
 from woost.models import Configuration
 
+def get_ga_custom_values(publishable, env = None):
+
+    values = {}
+
+    for i, custom_def in enumerate(
+        Configuration.instance.google_analytics_custom_definitions
+    ):
+        if custom_def.enabled and custom_def.applies(publishable):
+            custom_def.apply(publishable, values, i + 1, env = env)
+
+    return values
+
 def add_event(
     element,
     category,

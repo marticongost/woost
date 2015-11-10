@@ -165,6 +165,8 @@ class GoogleAnalyticsExtension(Extension):
         commands = None,
         async = True
     ):
+        from .utils import get_ga_custom_values
+
         config = Configuration.instance
 
         if publishable is None:
@@ -176,7 +178,7 @@ class GoogleAnalyticsExtension(Extension):
             tracker_parameters = {},
             domain = config.get_setting("google_analytics_domain"),
             template = self.inclusion_code["async" if async else "sync"],
-            values = self.get_analytics_values(publishable),
+            values = get_ga_custom_values(publishable),
             commands = commands or []
         )
 
@@ -207,18 +209,6 @@ class GoogleAnalyticsExtension(Extension):
             publishable = publishable,
             commands = [("send", "pageview")]
         )
-
-    def get_analytics_values(self, publishable):
-
-        values = {}
-
-        for i, custom_def in enumerate(
-            Configuration.instance.google_analytics_custom_definitions
-        ):
-            if custom_def.enabled and custom_def.applies(publishable):
-                custom_def.apply(publishable, values, i + 1)
-
-        return values
 
     def _serialize_commands(self, commands):
         return "\n".join(
