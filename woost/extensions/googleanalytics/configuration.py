@@ -5,6 +5,7 @@ u"""
 """
 from cocktail import schema
 from woost.models import Configuration, LocaleMember
+from .customdefinition import GoogleAnalyticsCustomDefinition
 
 Configuration.add_member(
     schema.String("google_analytics_account",
@@ -26,6 +27,17 @@ Configuration.add_member(
 
 Configuration.add_member(
     LocaleMember("google_analytics_language",
+        member_group = "services.google_analytics",
+        synchronizable = False,
+        listed_by_default = False
+    )
+)
+
+Configuration.add_member(
+    schema.Collection("google_analytics_custom_definitions",
+        items = schema.Reference(type = GoogleAnalyticsCustomDefinition),
+        related_end = schema.Reference(),
+        integral = True,
         member_group = "services.google_analytics",
         synchronizable = False,
         listed_by_default = False
