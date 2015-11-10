@@ -12,7 +12,9 @@ from cocktail.events import Event
 from cocktail.controllers import context
 from woost.models import (
     Extension,
+    extension_translations,
     Configuration,
+    Publishable,
     get_current_user
 )
 
@@ -61,7 +63,8 @@ class GoogleAnalyticsExtension(Extension):
             website,
             document,
             textblock,
-            eventredirection
+            eventredirection,
+            customdefinition
         )
 
         # Install an overlay for text blocks to automatically generate events
@@ -86,6 +89,47 @@ class GoogleAnalyticsExtension(Extension):
                     html += " "
                 html += self.get_analytics_page_hit_script(publishable)
                 e.output["head_end_html"] = html
+
+    def _install(self):
+        from woost.extensions.googleanalytics import installationstrings
+        self._create_default_custom_definitions()
+
+    def _create_default_custom_definitions(self):
+
+        from .customdefinition import GoogleAnalyticsCustomDefinition
+
+        Configuration.instance.google_analytics_custom_definitions.extend([
+            self._create_asset(
+                GoogleAnalyticsCustomDefinition,
+                "default_custom_definitions.locale",
+                title = extension_translations,
+                initialization =
+                    "from cocktail.translations import get_language\n"
+                    "value = get_language()"
+            ),
+            self._create_asset(
+                GoogleAnalyticsCustomDefinition,
+                "default_custom_definitions.roles",
+                title = extension_translations,
+                initialization =
+                    "from woost.models import get_current_user\n"
+                    "value = set(get_current_user().iter_roles())"
+            ),
+            self._create_asset(
+                GoogleAnalyticsCustomDefinition,
+                "default_custom_definitions.path",
+                title = extension_translations,
+                initialization =
+                    "value = reversed(list(publishable.ascend_tree(True)))"
+            ),
+            self._create_asset(
+                GoogleAnalyticsCustomDefinition,
+                "default_custom_definitions.publishable",
+                title = extension_translations,
+                initialization =
+                    "value = publishable"
+            )
+        ])
 
     inclusion_code = {
         "async":
@@ -131,8 +175,7 @@ class GoogleAnalyticsExtension(Extension):
             account = config.get_setting("google_analytics_account"),
             tracker_parameters = {},
             domain = config.get_setting("google_analytics_domain"),
-            template =
-                self.inclusion_code["async" if async else "sync"],
+            template = self.inclusion_code["async" if async else "sync"],
             values = self.get_analytics_values(publishable),
             commands = commands or []
         )
@@ -166,28 +209,16 @@ class GoogleAnalyticsExtension(Extension):
         )
 
     def get_analytics_values(self, publishable):
-        return {
-            # Custom dimension: language
-            "dimension1": get_language() or "",
 
-            # Custom dimension: roles
-            "dimension2":
-                self._serialize_collection(
-                    role.id for role in get_current_user().iter_roles()
-                ),
+        values = {}
 
-            # Custom dimension: path
-            "dimension3":
-                "" if publishable is None
-                else self._serialize_collection(
-                    ancestor.id
-                    for ancestor
-                    in reversed(list(publishable.ascend_tree(True)))
-                )
-        }
+        for i, custom_def in enumerate(
+            Configuration.instance.google_analytics_custom_definitions
+        ):
+            if custom_def.enabled and custom_def.applies(publishable):
+                custom_def.apply(publishable, values, i + 1)
 
-    def _serialize_collection(self, value):
-        return "-" + "-".join(str(item) for item in value) + "-"
+        return values
 
     def _serialize_commands(self, commands):
         return "\n".join(

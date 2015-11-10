@@ -7,6 +7,7 @@ from cocktail.events import when
 from cocktail.persistence import MigrationStep
 from cocktail.persistence.migration import migration_steps
 from cocktail.persistence.utils import remove_broken_type
+from warnings import warn
 
 def admin_members_restriction(members):
 
@@ -1173,4 +1174,25 @@ def make_anonymous_relation_ends_not_versioned(e):
         for key in keys:
             change.changed_members.discard(key)
             change.item_state.pop(key, None)
+
+#------------------------------------------------------------------------------
+
+step = MigrationStep(
+    "woost.extensions.googleanalytics: Create default custom definitions"
+)
+
+@when(step.executing)
+def create_default_custom_definitions(e):
+
+    from woost.extensions.googleanalytics import GoogleAnalyticsExtension
+    extension = GoogleAnalyticsExtension.instance
+
+    if extension.enabled:
+        extension._create_default_custom_definitions()
+        warn(
+            "You must declare any custom dimensions/metrics that were added "
+            "by your site using the declaring_tracker event. Also, be sure "
+            "to replicate any definition using the administration panel of "
+            "your Google Analytics property."
+        )
 
