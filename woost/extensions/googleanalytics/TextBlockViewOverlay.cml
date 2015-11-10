@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <?py
 from woost.models import Configuration
-from woost.extensions.googleanalytics.utils import add_event, fix_identifier
+from woost.extensions.googleanalytics.utils import add_event, get_ga_value
 ?>
 
 <py:overlay
@@ -26,12 +26,7 @@ from woost.extensions.googleanalytics.utils import add_event, fix_identifier
             if self.google_analytics_event_category is None:
                 self.google_analytics_event_category = (
                     self.block.google_analytics_event_category
-                    or fix_identifier(
-                        translations(
-                            self.block.__class__.__name__,
-                            language = language
-                        )
-                    )
+                    or get_ga_value(self.block.__class__)
                 )
 
             if self.google_analytics_event_action is None:
@@ -43,18 +38,7 @@ from woost.extensions.googleanalytics.utils import add_event, fix_identifier
             if self.google_analytics_event_label is None:
                 self.google_analytics_event_label = (
                     self.block.google_analytics_event_label
-                    or (
-                        u"%s --%d--" % (
-                            fix_identifier(
-                                translations(
-                                    self.block,
-                                    language = language,
-                                    discard_generic_translation = True
-                                )
-                            ),
-                            self.block.id
-                        )
-                    ).strip()
+                    or get_ga_value(self.block)
                 )
     ?>
 
