@@ -5,7 +5,7 @@ u"""
 """
 from cocktail import schema
 from woost.models import TextBlock
-from .utils import fix_identifier
+from .utils import escape_ga_string
 
 TextBlock.members_order += [
     "generates_google_analytics_event",
@@ -23,21 +23,21 @@ TextBlock.add_member(
 
 TextBlock.add_member(
     schema.String("google_analytics_event_category",
-        normalization = fix_identifier,
+        normalization = escape_ga_string,
         member_group = "google_analytics"
     )
 )
 
 TextBlock.add_member(
     schema.String("google_analytics_event_action",
-        normalization = fix_identifier,
+        normalization = escape_ga_string,
         member_group = "google_analytics"
     )
 )
 
 TextBlock.add_member(
     schema.String("google_analytics_event_label",
-        normalization = fix_identifier,
+        normalization = escape_ga_string,
         member_group = "google_analytics"
     )
 )
