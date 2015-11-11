@@ -3,9 +3,9 @@
 <py:overlay
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:py="http://www.whads.com/ns/cocktail/templates"
-    py:class="woost.views.TextBlockView">
+    py:class="woost.views.NewsListing">
 
-    <py:with py:element="self.block_link" py:ga_event_parent_context="${self}"/>
+    <py:with py:def="news_link" py:ga_event_parent_context="${self}"/>
 
 </py:overlay>
 
