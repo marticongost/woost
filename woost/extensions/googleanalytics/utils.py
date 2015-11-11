@@ -6,22 +6,39 @@ u"""
 import re
 from json import dumps
 from decimal import Decimal
-from collections import Iterable
+from collections import Iterable, Mapping
 from cocktail.modeling import ListWrapper, SetWrapper
 from cocktail.stringutils import normalize, html_to_plain_text
 from cocktail.translations import translations
+from cocktail import schema
 from cocktail.persistence import PersistentObject
 from woost.models import Configuration
 
-def get_ga_custom_values(publishable, env = None):
+def get_ga_custom_values(source, overrides = None, env = None):
 
     values = {}
     config = Configuration.instance
     custom_defs = config.get_setting("google_analytics_custom_definitions")
 
+    if isinstance(source, Mapping):
+        overrides = source
+        source = None
+
     for i, custom_def in enumerate(custom_defs):
-        if custom_def.enabled and custom_def.applies(publishable):
-            custom_def.apply(publishable, values, i + 1, env = env)
+
+        if not custom_def.enabled:
+            continue
+
+        if overrides is not None and custom_def.identifier:
+            value = overrides.get(custom_def.identifier, schema.undefined)
+            if value is not schema.undefined:
+                key = custom_def.definition_type + str(i + 1)
+                value = get_ga_value(value)
+                values[key] = value
+                continue
+
+        if source is not None and custom_def.applies(source):
+            custom_def.apply(source, values, i + 1, env = env)
 
     return values
 
