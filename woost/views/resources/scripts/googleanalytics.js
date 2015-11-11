@@ -48,3 +48,8 @@ woost.ga.triggerEventOnClick = function (element, eventData) {
     });
 }
 
+cocktail.bind("[data-woost-ga-event]", function ($element) {
+    woost.ga.triggerEventOnClick(this, $element.data("woost-ga-event"));
+});
+
+

@@ -68,10 +68,7 @@ def add_event(
         event_data["eventValue"] = value
 
     element.add_resource("/resources/scripts/googleanalytics.js")
-    element.add_client_code(
-        "woost.ga.triggerEventOnClick(this, %s);"
-        % dumps(event_data)
-    )
+    element["data-woost-ga-event"] = dumps(event_data)
 
 _escape_ga_string_nonword_expr = re.compile("\W", re.UNICODE)
 _escape_ga_string_repeat_expr = re.compile("--+")
