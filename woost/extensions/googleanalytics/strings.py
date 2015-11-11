@@ -52,27 +52,27 @@ for cls_name in ("Configuration", "Website"):
              u"language that should be used to obtain those texts."
     )
 
-translations.define("Configuration.google_analytics_custom_definitions",
-    ca = u"Definicions personalitzades",
-    es = u"Definiciones personalizadas",
-    en = u"Custom definitions"
-)
+    translations.define(cls_name + ".google_analytics_custom_definitions",
+        ca = u"Definicions personalitzades",
+        es = u"Definiciones personalizadas",
+        en = u"Custom definitions"
+    )
 
-translations.define(
-    "Configuration.google_analytics_custom_definitions-explanation",
-    ca = u"Afegeix dimensions o mètriques personalitzades a les "
-         u"estadístiques. Important: s'han de replicar les definicions "
-         u"manualment a la configuració de la propietat de Google Analytics,"
-         u"en el mateix ordre en que es defineixin aquí.",
-    es = u"Añade dimensiones o métricas personalizadas a las estadísticas. "
-         u"Importante: las definiciones deben replicarse manualmente en la "
-         u"configuración de la propiedad de Google Analytics, en el mismo "
-         u"orden en que se definan aquí.",
-    en = u"Adds custom dimensions or metrics to the page hit / event "
-         u"statistics. Important: all definitions must be manually replicated "
-         u"on the configuration of the Google Analytics property, in the same "
-         u"order they are defined here."
-)
+    translations.define(
+        cls_name + ".google_analytics_custom_definitions-explanation",
+        ca = u"Afegeix dimensions o mètriques personalitzades a les "
+             u"estadístiques. Important: s'han de replicar les definicions "
+             u"manualment a la configuració de la propietat de Google Analytics,"
+             u"en el mateix ordre en que es defineixin aquí.",
+        es = u"Añade dimensiones o métricas personalizadas a las estadísticas. "
+             u"Importante: las definiciones deben replicarse manualmente en la "
+             u"configuración de la propiedad de Google Analytics, en el mismo "
+             u"orden en que se definan aquí.",
+        en = u"Adds custom dimensions or metrics to the page hit / event "
+             u"statistics. Important: all definitions must be manually replicated "
+             u"on the configuration of the Google Analytics property, in the same "
+             u"order they are defined here."
+    )
 
 translations.define("Document.ga_tracking_enabled",
     ca = u"Habilitar seguiment amb Google Analytics",

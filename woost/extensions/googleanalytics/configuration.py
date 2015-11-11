@@ -37,7 +37,6 @@ Configuration.add_member(
     schema.Collection("google_analytics_custom_definitions",
         items = schema.Reference(type = GoogleAnalyticsCustomDefinition),
         related_end = schema.Reference(),
-        integral = True,
         member_group = "services.google_analytics",
         synchronizable = False,
         listed_by_default = False
