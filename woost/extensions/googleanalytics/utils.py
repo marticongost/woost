@@ -16,10 +16,10 @@ from woost.models import Configuration
 def get_ga_custom_values(publishable, env = None):
 
     values = {}
+    config = Configuration.instance
+    custom_defs = config.get_setting("google_analytics_custom_definitions")
 
-    for i, custom_def in enumerate(
-        Configuration.instance.google_analytics_custom_definitions
-    ):
+    for i, custom_def in enumerate(custom_defs):
         if custom_def.enabled and custom_def.applies(publishable):
             custom_def.apply(publishable, values, i + 1, env = env)
 
