@@ -47,13 +47,19 @@ def add_event(
     category,
     action,
     label = None,
-    value = None
+    value = None,
+    event_data = None
 ):
-    event_data = {
-        "hitType": "event",
-        "eventCategory": category,
-        "eventAction": action
-    }
+    if event_data is None:
+        event_data = {}
+    else:
+        event_data = event_data.copy()
+
+    event_data.update(
+        hitType = "event",
+        eventCategory = category,
+        eventAction = action
+    )
 
     if label is not None:
         event_data["eventLabel"] = label
