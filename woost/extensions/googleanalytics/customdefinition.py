@@ -14,6 +14,7 @@ class GoogleAnalyticsCustomDefinition(Item):
 
     members_order = [
         "title",
+        "identifier",
         "definition_type",
         "enabled",
         "content_types",
@@ -28,6 +29,8 @@ class GoogleAnalyticsCustomDefinition(Item):
         translated = True,
         descriptive = True
     )
+
+    identifier = schema.String()
 
     definition_type = schema.String(
         required = True,

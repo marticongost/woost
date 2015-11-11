@@ -155,6 +155,12 @@ translations.define("GoogleAnalyticsCustomDefinition.title",
     en = u"Name"
 )
 
+translations.define("GoogleAnalyticsCustomDefinition.identifier",
+    ca = u"Identificador",
+    es = u"Identificador",
+    en = u"Identifier"
+)
+
 translations.define("GoogleAnalyticsCustomDefinition.definition_type",
     ca = u"Tipus de definició",
     es = u"Tipo de definición",
