@@ -128,6 +128,18 @@ class GoogleAnalyticsExtension(Extension):
                 title = extension_translations,
                 initialization =
                     "value = publishable"
+            ),
+            self._create_asset(
+                GoogleAnalyticsCustomDefinition,
+                "default_custom_definitions.type",
+                title = extension_translations,
+                initialization =
+                    "from woost.models import Publishable\n"
+                    "value = [\n"
+                    "   cls\n"
+                    "   for cls in publishable.__class__.__mro__\n"
+                    "   if cls is not Publishable and issubclass(cls, Publishable)\n"
+                    "]"
             )
         ])
 

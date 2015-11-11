@@ -37,3 +37,11 @@ translations.define(
     en = u"Woost: publishable"
 )
 
+translations.define(
+    "woost.extensions.googleanalytics."
+    "default_custom_definitions.type.title",
+    ca = u"Woost: tipus",
+    es = u"Woost: tipo",
+    en = u"Woost: type"
+)
+
