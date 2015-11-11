@@ -62,16 +62,26 @@ class GoogleAnalyticsExtension(Extension):
             configuration,
             website,
             document,
-            textblock,
+            block,
+            element,
             eventredirection,
             customdefinition
         )
 
-        # Install an overlay for text blocks to automatically generate events
-        # when their block link is clicked
+        # Install overlays to generate events for links pointing to
+        # publishable elements
         from cocktail.html import templates
         templates.get_class(
+            "woost.extensions.googleanalytics.LinkOverlay"
+        )
+        templates.get_class(
             "woost.extensions.googleanalytics.TextBlockViewOverlay"
+        )
+        templates.get_class(
+            "woost.extensions.googleanalytics.NewsListingOverlay"
+        )
+        templates.get_class(
+            "woost.extensions.googleanalytics.EventListingOverlay"
         )
 
         from cocktail.events import when
@@ -103,6 +113,7 @@ class GoogleAnalyticsExtension(Extension):
                 GoogleAnalyticsCustomDefinition,
                 "default_custom_definitions.locale",
                 title = extension_translations,
+                identifier = "woost.locale",
                 initialization =
                     "from cocktail.translations import get_language\n"
                     "value = get_language()"
@@ -111,6 +122,7 @@ class GoogleAnalyticsExtension(Extension):
                 GoogleAnalyticsCustomDefinition,
                 "default_custom_definitions.roles",
                 title = extension_translations,
+                identifier = "woost.roles",
                 initialization =
                     "from woost.models import get_current_user\n"
                     "value = set(get_current_user().iter_roles())"
@@ -119,6 +131,7 @@ class GoogleAnalyticsExtension(Extension):
                 GoogleAnalyticsCustomDefinition,
                 "default_custom_definitions.path",
                 title = extension_translations,
+                identifier = "woost.path",
                 initialization =
                     "value = reversed(list(publishable.ascend_tree(True)))"
             ),
@@ -126,6 +139,7 @@ class GoogleAnalyticsExtension(Extension):
                 GoogleAnalyticsCustomDefinition,
                 "default_custom_definitions.publishable",
                 title = extension_translations,
+                identifier = "woost.publishable",
                 initialization =
                     "value = publishable"
             ),
@@ -133,6 +147,7 @@ class GoogleAnalyticsExtension(Extension):
                 GoogleAnalyticsCustomDefinition,
                 "default_custom_definitions.type",
                 title = extension_translations,
+                identifier = "woost.type",
                 initialization =
                     "from woost.models import Publishable\n"
                     "value = [\n"
