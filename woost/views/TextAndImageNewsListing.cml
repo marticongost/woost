@@ -18,16 +18,22 @@ from cocktail.translations import DATE_STYLE_TEXT
         news_uri = self.get_news_uri(news)
         ?>
 
-        <a py:local_id="image_link" href="${news_uri}">
+        <<py:new
+            py:element="self.create_news_link(news)"
+            py:local_id="image_link">
             <py:woost.views.Image
                 py:local_id="image"
                 py:image="${news.image}"
                 py:image_factory="${self.image_factory}"/>
-        </a>
+        </py:new>
 
         <div py:local_id="text_wrapper">
             <h1 py:local_id="heading">
-                <a py:local_id="link" href="${news_uri}">${news.title}</a>
+                <py:new
+                    py:element="self.create_news_link(news)"
+                    py:local_id="link">
+                    ${news.title}
+                </py:new>
             </h1>
 
             <div py:local_id="date" py:visible="${bool(news.news_date)}">

@@ -61,29 +61,30 @@ from cocktail.controllers import Location
             image_uri = self._images[0].get_image_uri(self.image_thumbnail_factory)
             element.set_style("background-image", "url(%s)" % image_uri)
 
-        if self.link_destination:
+        if self.link_parameters:
 
-            uri = self.link_destination.get_uri()
+            parameters = {}
 
-            # Add additional parameters
-            if self.link_parameters:
-                location = Location(uri)
-                for chunk in self.link_parameters.split("\n"):
-                    parts = chunk.split("=")
-                    if len(parts) == 2:
-                        location.query_string[parts[0].strip()] = parts[1].strip()
-                uri = unicode(location)
+            for chunk in self.link_parameters.split("\n"):
+                parts = chunk.split("=")
+                if len(parts) == 2:
+                    parameters[parts[0].strip()] = parts[1].strip()
 
-            self.block_link.tag = "a"
-            self.block_link["href"] = uri
+            self.block_link.parameters = parameters
 
             if self.link_opens_in_new_window:
                 self.block_link["target"] = "_blank"
         ?>
     </py:ready>
 
-    <py:block py:id="block_link">
+    <py:woost.views.Link
+        py:id="block_link"
+        py:inactive_behavior="${element.BECOME_TRANSPARENT}"
+        py:content_check="${element.NO_CHECK}"
+        py:value="@{self.link_destination}">
+
         <py:block py:id="content_wrapper">
+
             <py:woost.views.ImageGallery
                 py:id="image_gallery"
                 py:images="@{self._images}"
@@ -100,8 +101,10 @@ from cocktail.controllers import Location
             <div py:id="text_container" py:visible="@{bool(self.text)}">
                 @{self.text}
             </div>
+
         </py:block>
-    </py:block>
+
+    </py:woost.views.Link>
 
     <py:ready>
         <?py

@@ -18,7 +18,11 @@
             ${event.event_location}
         </div>
         <h1 py:local_id="heading">
-            <a py:local_id="link" href="${event.get_uri()}">${translations(event)}</a>
+            <py:new
+                py:element="self.create_event_link(event)"
+                py:local_id="link">
+                ${translations(event)}
+            </py:new>
         </h1>
     </article>
 
