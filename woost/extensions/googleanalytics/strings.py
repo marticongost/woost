@@ -209,3 +209,11 @@ translations.define(
     en = u"language-selector"
 )
 
+translations.define(
+    "woost.extensions.googleanalytics."
+    "LanguageSelectorOverlay.ga_event_action",
+    ca = u"seleccionar-idioma",
+    es = u"seleccionar-idioma",
+    en = u"select-language"
+)
+
