@@ -74,6 +74,7 @@ class GoogleAnalyticsExtension(Extension):
         templates.get_class("woost.extensions.googleanalytics.BaseViewOverlay")
         templates.get_class("woost.extensions.googleanalytics.LinkOverlay")
         templates.get_class("woost.extensions.googleanalytics.TextBlockViewOverlay")
+        templates.get_class("woost.extensions.googleanalytics.LanguageSelectorOverlay")
 
         from cocktail.events import when
         from woost.controllers import CMSController
