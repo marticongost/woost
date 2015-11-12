@@ -3,9 +3,11 @@
 <py:overlay
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:py="http://www.whads.com/ns/cocktail/templates"
-    py:class="woost.views.NewsListing">
+    py:class="woost.views.BaseView">
 
-    <py:with py:def="news_link" py:ga_event_parent_context="${self}"/>
+    <?py
+    self.add_resource("/resources/scripts/googleanalytics.js")
+    ?>
 
 </py:overlay>
 

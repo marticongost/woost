@@ -111,12 +111,6 @@ translations.define("Block.google_analytics",
     en = u"Google Analytics"
 )
 
-translations.define("Block.generates_ga_events",
-    ca = u"Genera esdeveniments de Google Analytics",
-    es = u"Genera eventos de Google Analytics",
-    en = u"Generates Google Analytics events"
-)
-
 translations.define("Block.ga_event_category",
     ca = u"Categoria",
     es = u"Categoría",
@@ -203,5 +197,15 @@ translations.define("GoogleAnalyticsCustomDefinition.initialization",
     ca = u"Inicialització",
     es = u"Inicialización",
     en = u"Initialization"
+)
+
+# LanguageSelectorOverlay
+#------------------------------------------------------------------------------
+translations.define(
+    "woost.extensions.googleanalytics."
+    "LanguageSelectorOverlay.ga_event_category",
+    ca = u"selector-idiomes",
+    es = u"selector-de-idiomas",
+    en = u"language-selector"
 )
 

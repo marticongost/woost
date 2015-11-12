@@ -68,21 +68,12 @@ class GoogleAnalyticsExtension(Extension):
             customdefinition
         )
 
-        # Install overlays to generate events for links pointing to
+        # Install an overlay to generate events for links pointing to
         # publishable elements
         from cocktail.html import templates
-        templates.get_class(
-            "woost.extensions.googleanalytics.LinkOverlay"
-        )
-        templates.get_class(
-            "woost.extensions.googleanalytics.TextBlockViewOverlay"
-        )
-        templates.get_class(
-            "woost.extensions.googleanalytics.NewsListingOverlay"
-        )
-        templates.get_class(
-            "woost.extensions.googleanalytics.EventListingOverlay"
-        )
+        templates.get_class("woost.extensions.googleanalytics.BaseViewOverlay")
+        templates.get_class("woost.extensions.googleanalytics.LinkOverlay")
+        templates.get_class("woost.extensions.googleanalytics.TextBlockViewOverlay")
 
         from cocktail.events import when
         from woost.controllers import CMSController

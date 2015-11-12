@@ -4,10 +4,9 @@ u"""
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
 import re
-from json import dumps
 from decimal import Decimal
 from collections import Iterable, Mapping
-from cocktail.modeling import ListWrapper, SetWrapper
+from cocktail.modeling import SetWrapper
 from cocktail.stringutils import normalize, html_to_plain_text
 from cocktail.translations import translations
 from cocktail import schema
@@ -41,34 +40,6 @@ def get_ga_custom_values(source, overrides = None, env = None):
             custom_def.apply(source, values, i + 1, env = env)
 
     return values
-
-def add_event(
-    element,
-    category,
-    action,
-    label = None,
-    value = None,
-    event_data = None
-):
-    if event_data is None:
-        event_data = {}
-    else:
-        event_data = event_data.copy()
-
-    event_data.update(
-        hitType = "event",
-        eventCategory = category,
-        eventAction = action
-    )
-
-    if label is not None:
-        event_data["eventLabel"] = label
-
-    if value is not None:
-        event_data["eventValue"] = value
-
-    element.add_resource("/resources/scripts/googleanalytics.js")
-    element["data-woost-ga-event"] = dumps(event_data)
 
 _escape_ga_string_nonword_expr = re.compile("\W", re.UNICODE)
 _escape_ga_string_repeat_expr = re.compile("--+")

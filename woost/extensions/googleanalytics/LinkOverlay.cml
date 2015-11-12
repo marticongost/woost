@@ -1,35 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?py
-from woost.extensions.googleanalytics.utils import add_event, get_ga_custom_values
-?>
 
 <py:overlay
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:py="http://www.whads.com/ns/cocktail/templates"
     py:class="woost.views.Link">
 
-    <py:ready>
-        <?py
-        if (
-            self.generates_ga_events
-            and self.visible
-            and self.tag == "a"
-            and self.ga_event_category
-            and self.ga_event_action
-        ):
-            add_event(
-                self,
-                self.ga_event_category,
-                self.ga_event_action,
-                self.ga_event_label,
-                event_data = get_ga_custom_values(
-                    self.value,
-                    overrides = self.ga_event_overrides,
-                    env = self.ga_event_env
-                )
-            )
-        ?>
-    </py:ready>
+    <?py-class
+    @property
+    def ga_event_source(self):
+        return self.value
+    ?>
 
 </py:overlay>
 

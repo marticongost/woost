@@ -32,6 +32,11 @@ woost.ga.activateWithEvent = function (element, eventData) {
             element.form.submit();
         }
     }
+    else if (element.tagName == "FORM") {
+        options.hitCallback = function () {
+            element.submit();
+        }
+    }
 
     ga("send", "event", options);
 
@@ -41,15 +46,60 @@ woost.ga.activateWithEvent = function (element, eventData) {
     }
 }
 
-woost.ga.triggerEventOnClick = function (element, eventData) {
-    jQuery(element).on("click", function (e) {
-        woost.ga.activateWithEvent(this, eventData);
-        e.preventDefault();
-    });
+woost.ga.getEventData = function (element) {
+
+    if (element.parentNode && element.parentNode.getAttribute) {
+        var data = woost.ga.getEventData(element.parentNode);
+        var json = element.getAttribute("data-ga-event-data");
+        if (json) {
+            var customData = jQuery.parseJSON(json);
+            for (var key in customData) {
+                data[key] = customData[key];
+            }
+        }
+    }
+    else {
+        var json = element.getAttribute("data-ga-event-data");
+        var data = json ? jQuery.parseJSON(json) : {};
+        if (!data.hitType) {
+            data.hitType = "event";
+        }
+    }
+
+    if (element.hasAttribute("data-ga-event-category")) {
+        data.eventCategory = element.getAttribute("data-ga-event-category");
+    }
+
+    if (element.hasAttribute("data-ga-event-action")) {
+        data.eventAction = element.getAttribute("data-ga-event-action");
+    }
+
+    if (element.hasAttribute("data-ga-event-label")) {
+        data.eventLabel = element.getAttribute("data-ga-event-label");
+    }
+
+    if (!data.eventLabel && element.tagName == "A") {
+        data.eventLabel = element.innerText;
+    }
+
+    var value = element.getAttribute("data-ga-event-value");
+    if (value) {
+        data["eventValue"] = value;
+    }
+
+    return data;
 }
 
-cocktail.bind("[data-woost-ga-event]", function ($element) {
-    woost.ga.triggerEventOnClick(this, $element.data("woost-ga-event"));
-});
+woost.ga.eventTrigger = function (e) {
+    var gaEvent = woost.ga.getEventData(this);
+    if (gaEvent.eventCategory && gaEvent.eventAction) {
+        woost.ga.activateWithEvent(this, gaEvent);
+        e.preventDefault();
+    }
+}
 
+jQuery(function () {
+    jQuery(document).on("click", "a, button[type=button]", woost.ga.eventTrigger);
+    jQuery(document).on("submit", "form", woost.ga.eventTrigger);
+});
 
