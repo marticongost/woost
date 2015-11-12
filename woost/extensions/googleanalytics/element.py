@@ -3,48 +3,54 @@ u"""
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
+from json import dumps
 from cocktail.html import Element
+from .utils import get_ga_custom_values
 
-Element.ga_event_parent_context = None
-Element.ga_event_inherited_value = object()
+Element.ga_event_category = None
+Element.ga_event_action = None
+Element.ga_event_label = None
+Element.ga_event_value = None
+Element.ga_event_source = None
+Element.ga_event_env = None
+Element.ga_event_overrides = None
 
-class GoogleAnalyticsEventProperty(object):
+Element._ga_event_data = None
 
-    def __init__(self, name, default = None, doc = None):
-        self.name = name
-        self.default = default
-        self.__private_key = "_" + name
-        self.__doc__ = doc
+def _get_element_ga_event_data(self):
+    if self._ga_event_data is None and (
+        self.ga_event_source
+        or self.ga_event_overrides
+    ):
+        return get_ga_custom_values(
+            self.ga_event_source,
+            overrides = self.ga_event_overrides,
+            env = self.ga_event_env
+        )
+    return self._ga_event_data
 
-    def __get__(self, obj, type = None):
-        if obj is None:
-            return self
-        else:
-            value = getattr(
-                obj,
-                self.__private_key,
-                Element.ga_event_inherited_value
-            )
+def _set_element_ga_event_data(self, data):
+    self._ga_event_data = data
 
-            if value is Element.ga_event_inherited_value:
-                if obj.ga_event_parent_context:
-                    value = getattr(obj.ga_event_parent_context, self.name)
-                else:
-                    value = self.default
+Element.ga_event_data = property(
+    _get_element_ga_event_data,
+    _set_element_ga_event_data
+)
 
-            return value
+_base_ready_element = Element._ready
 
-    @classmethod
-    def declare(cls, name, default = None, doc = None):
-        prop = cls(name, default, doc)
-        setattr(Element, name, prop)
-        setattr(Element, prop.__private_key, Element.ga_event_inherited_value)
-        return prop
+def _ready_element(self):
 
-GoogleAnalyticsEventProperty.declare("generates_ga_events", False)
-GoogleAnalyticsEventProperty.declare("ga_event_category")
-GoogleAnalyticsEventProperty.declare("ga_event_action", "click")
-GoogleAnalyticsEventProperty.declare("ga_event_label")
-GoogleAnalyticsEventProperty.declare("ga_event_env")
-GoogleAnalyticsEventProperty.declare("ga_event_overrides")
+    _base_ready_element(self)
+
+    self["data-ga-event-category"] = self.ga_event_category
+    self["data-ga-event-action"] = self.ga_event_action
+    self["data-ga-event-label"] = self.ga_event_label
+    self["data-ga-event-value"] = self.ga_event_value
+
+    data = self.ga_event_data
+    if data:
+        self["data-ga-event-data"] = dumps(data)
+
+Element._ready = _ready_element
 

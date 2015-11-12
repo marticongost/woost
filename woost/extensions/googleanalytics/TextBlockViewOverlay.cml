@@ -5,7 +5,13 @@
     xmlns:py="http://www.whads.com/ns/cocktail/templates"
     py:class="woost.views.TextBlockView">
 
-    <py:with py:element="self.block_link" py:ga_event_parent_context="${self}"/>
+    <!--
+    The block's event label shouldn't propagate to its contents;
+    links, buttons or other event triggers within the block's body
+    should provide their own label, or use their text as a fallback,
+    so they can be distinguished.
+    -->
+    <py:with py:element="self.text_container" py:ga_event_label=""/>
 
 </py:overlay>
 

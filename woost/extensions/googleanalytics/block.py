@@ -8,18 +8,10 @@ from woost.models import Block
 from .utils import escape_ga_string, get_ga_value
 
 Block.members_order += [
-    "generates_ga_events",
     "ga_event_category",
     "ga_event_action",
     "ga_event_label"
 ]
-
-Block.add_member(
-    schema.Boolean("generates_ga_events",
-        default = True,
-        member_group = "google_analytics"
-    )
-)
 
 Block.add_member(
     schema.String("ga_event_category",
@@ -45,8 +37,6 @@ Block.add_member(
 base_init_view = Block.init_view
 
 def init_view(self, view):
-
-    view.generates_ga_events = self.generates_ga_events
 
     view.ga_event_category = (
         self.ga_event_category
