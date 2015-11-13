@@ -161,12 +161,6 @@ translations.define("GoogleAnalyticsCustomDefinition.content_types",
     en = u"Content types"
 )
 
-translations.define("GoogleAnalyticsCustomDefinition.websites",
-    ca = u"Llocs web",
-    es = u"Sitios web",
-    en = u"Websites"
-)
-
 translations.define("GoogleAnalyticsCustomDefinition.initialization",
     ca = u"Inicialització",
     es = u"Inicialización",

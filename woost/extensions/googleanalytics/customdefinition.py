@@ -18,7 +18,6 @@ class GoogleAnalyticsCustomDefinition(Item):
         "definition_type",
         "enabled",
         "content_types",
-        "websites",
         "initialization"
     ]
 
@@ -49,30 +48,13 @@ class GoogleAnalyticsCustomDefinition(Item):
         min = 1
     )
 
-    websites = schema.Collection(
-        items = schema.Reference(type = Website),
-        related_end = schema.Collection(),
-        edit_control = "cocktail.html.CheckList"
-    )
-
     initialization = schema.CodeBlock(
         required = True,
         language = "python"
     )
 
     def applies(self, publishable, website = None):
-
-        if not isinstance(publishable, tuple(self.content_types)):
-            return False
-
-        websites = self.websites
-        if websites:
-            if website is None:
-                website = get_current_website()
-            if website not in websites:
-                return False
-
-        return True
+        return isinstance(publishable, tuple(self.content_types))
 
     def apply(self, publishable, values, index = None, env = None):
 
