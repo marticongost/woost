@@ -103,32 +103,6 @@ translations.define("woost.extensions.googleanalytics.redirection_body",
         % url
 )
 
-# Block
-#------------------------------------------------------------------------------
-translations.define("Block.google_analytics",
-    ca = u"Google Analytics",
-    es = u"Google Analytics",
-    en = u"Google Analytics"
-)
-
-translations.define("Block.ga_event_category",
-    ca = u"Categoria",
-    es = u"Categoría",
-    en = u"Category"
-)
-
-translations.define("Block.ga_event_action",
-    ca = u"Acció",
-    es = u"Acción",
-    en = u"Action"
-)
-
-translations.define("Block.ga_event_label",
-    ca = u"Etiqueta",
-    es = u"Etiqueta",
-    en = u"Label"
-)
-
 # GoogleAnalyticsCustomDefinition
 #------------------------------------------------------------------------------
 translations.define("GoogleAnalyticsCustomDefinition",
