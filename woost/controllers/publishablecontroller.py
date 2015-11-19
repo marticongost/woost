@@ -31,6 +31,8 @@ class PublishableController(BaseCMSController):
     )
 
     def __call__(self, **kwargs):
+
+        cherrypy.response.headers["Cache-Control"] = "no-cache"
         content = self._apply_cache(**kwargs)
 
         if content is None:
