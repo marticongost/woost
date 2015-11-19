@@ -691,6 +691,7 @@ class CMSController(BaseCMSController):
     @cherrypy.expose
     def current_user(self):
         cherrypy.response.headers["Content-Type"] = "text/javascript"
+        cherrypy.response.headers["Cache-Control"] = "no-store"
         user = get_current_user()
         return "cocktail.declare('woost'); woost.user = %s;" % dumps(
             {
