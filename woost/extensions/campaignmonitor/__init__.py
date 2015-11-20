@@ -9,13 +9,13 @@
 
 from cocktail import schema
 from cocktail.translations import translations
+from woost import app
 from woost.models import (
     Extension,
     extension_translations,
     StandardPage,
     Controller,
     Template,
-    get_current_user,
     CreatePermission,
     ModifyPermission,
     DeletePermission,
@@ -226,7 +226,7 @@ class CampaignMonitorExtension(Extension):
             CampaignMonitorList
 
         if restricted:
-            user = get_current_user()
+            user = app.user
 
         api = CampaignMonitorApi(
             self.api_key,

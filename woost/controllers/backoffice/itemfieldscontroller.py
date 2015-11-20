@@ -13,8 +13,8 @@ from cocktail.pkgutils import import_object
 from cocktail.translations import iter_language_chain
 from cocktail import schema
 from cocktail.controllers import get_parameter, view_state, Location
+from woost import app
 from woost.models import (
-    get_current_user,
     ReadPermission,
     CreatePermission
 )
@@ -155,7 +155,7 @@ class ItemFieldsController(EditController):
         # Restrict access to the edited item
         controller = event.source
         item = controller.stack_node.item
-        user = get_current_user()
+        user = app.user
 
         if item.is_inserted:
             user.require_permission(ReadPermission, target = item)

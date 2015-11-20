@@ -7,7 +7,7 @@ import cherrypy
 from cocktail.persistence import transactional
 from cocktail.events import Event
 from cocktail.controllers import session
-from woost.models import get_current_website, get_current_user
+from woost import app
 from woost.extensions.ecommerce.ecommerceorder import ECommerceOrder
 from woost.extensions.ecommerce.ecommercepurchase import ECommercePurchase
 from woost.extensions.ecommerce.ecommerceproduct import ECommerceProduct
@@ -49,7 +49,7 @@ class Basket(object):
             cherrypy.request.woost_ecommerce_order = order
 
         if order:
-            order.customer = get_current_user()
+            order.customer = app.user
         return order
 
     @classmethod
@@ -78,7 +78,7 @@ class Basket(object):
     def store(cls):
 
         order = cls.get()
-        order.website = get_current_website()
+        order.website = app.website
         order.insert()
 
         for purchase in order.purchases:

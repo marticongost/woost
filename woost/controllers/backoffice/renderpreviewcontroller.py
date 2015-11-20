@@ -12,7 +12,8 @@ from cocktail.translations import translations, get_language, set_language
 from cocktail import schema
 from cocktail.controllers import get_parameter, request_property
 from cocktail.html import Element, templates
-from woost.models import get_current_user, ReadPermission, Publishable
+from woost import app
+from woost.models import ReadPermission, Publishable
 from woost.controllers.backoffice.basebackofficecontroller \
     import BaseBackOfficeController
 
@@ -45,7 +46,7 @@ class RenderPreviewController(BaseBackOfficeController):
         previewed_item = self.previewed_item
         publishable = self.preview_publishable
         preview_language = self.preview_language
-        user = get_current_user()
+        user = app.user
 
         # Set the language for the preview
         if preview_language:
@@ -81,10 +82,8 @@ class RenderPreviewController(BaseBackOfficeController):
         # Update the edited item with the data to preview
         node.import_form_data(node.form_data, previewed_item)
 
-        self.context.update(
-            original_publishable = self.context["publishable"],
-            publishable = publishable
-        )
+        app.original_publishable = app.publishable
+        app.publishable = publishable
 
         controller = publishable.resolve_controller()
 

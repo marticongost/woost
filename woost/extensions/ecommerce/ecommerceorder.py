@@ -10,12 +10,11 @@ from decimal import Decimal
 from cocktail.translations import get_language, translations
 from cocktail import schema
 from cocktail.events import Event, event_handler
+from woost import app
 from woost.models import (
     Item,
     Configuration,
     User,
-    get_current_user,
-    get_current_website,
     ModifyMemberPermission
 )
 from woost.extensions.locations.location import Location
@@ -35,7 +34,7 @@ def _translate_amount(amount, language = None, **kwargs):
         )
 
 def _get_default_payment_type():
-    website = get_current_website()
+    website = app.website
     payment_types = website.ecommerce_payment_types
     if len(payment_types) == 1:
         return payment_types[0]
@@ -95,7 +94,7 @@ class ECommerceOrder(Item):
         type = User,
         related_end = schema.Collection(),
         required = True,
-        default = schema.DynamicDefault(get_current_user)
+        default = schema.DynamicDefault(lambda: app.user)
     )
 
     address = schema.String(
@@ -237,7 +236,7 @@ class ECommerceOrder(Item):
         """Calculates the costs for the order.
         :rtype: dict
         """
-        website = get_current_website()
+        website = app.website
 
         order_costs = {
             "price": {
@@ -393,7 +392,7 @@ class ECommerceOrder(Item):
         payment_type = public_schema.get_member("payment_type")
         if payment_type:
             payments = PaymentsExtension.instance
-            website = get_current_website()
+            website = app.website
 
             if payments.enabled and website.ecommerce_payment_gateway:
 
@@ -413,7 +412,7 @@ class ECommerceOrder(Item):
 
     @classmethod
     def get_public_adapter(cls):
-        user = get_current_user()
+        user = app.user
         adapter = schema.Adapter()
         adapter.exclude(["website", "customer", "status", "purchases"])
         adapter.exclude([
@@ -427,7 +426,7 @@ class ECommerceOrder(Item):
                 member = member
             )
         ])
-        if len(get_current_website().ecommerce_payment_types) == 1:
+        if len(app.website.ecommerce_payment_types) == 1:
             adapter.exclude(["payment_type"])
         return adapter
 

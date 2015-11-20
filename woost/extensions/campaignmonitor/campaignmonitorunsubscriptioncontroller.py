@@ -12,7 +12,8 @@ from campaign_monitor_api import CampaignMonitorApi
 from cocktail import schema
 from cocktail.modeling import cached_getter
 from cocktail.controllers import context
-from woost.models import StandardPage, get_current_website
+from woost import app
+from woost.models import StandardPage
 from woost.controllers.documentcontroller import DocumentController
 from woost.extensions.campaignmonitor import CampaignMonitorExtension
 from woost.extensions.campaignmonitor.campaignmonitorsubscriptionpage \
@@ -115,7 +116,7 @@ class CampaignMonitorUnsubscriptionController(DocumentController):
             uri = self.get_pending_uri(**cm_context)
 
         if uri is None:
-            uri = get_current_website().home.get_uri()
+            uri = app.website.home.get_uri()
 
         raise cherrypy.HTTPRedirect(uri.encode("utf-8"))
 

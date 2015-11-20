@@ -5,7 +5,7 @@ u"""
 """
 from cocktail import schema
 from cocktail.controllers import get_parameter
-from woost.models import get_current_user
+from woost import app
 from .transition import TranslationWorkflowTransition
 from .transitionpermission import TranslationWorkflowTransitionPermission
 from .utils import iter_changeset_translation_requests
@@ -20,7 +20,7 @@ def apply_default_transition(e):
     ):
         return
 
-    user = get_current_user()
+    user = app.user
 
     if user is None:
         return

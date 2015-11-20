@@ -22,7 +22,6 @@ from .item import Item
 from .slot import Slot
 from .publishable import Publishable
 from .website import Website
-from .websitesession import get_current_website
 from .caching import CachingPolicy
 from .rendering.renderer import Renderer
 from .rendering.imagefactory import ImageFactory
@@ -347,7 +346,7 @@ class Configuration(Item):
         """Obtains the value for the indicated configuration option.
 
         The method will search the active website first (see
-        L{woost.models.get_current_website}), and the site's L{Configuration}
+        L{woost.Application.website}), and the site's L{Configuration}
         if there is no active website, or if the website provides no
         significant value. Significant values include numbers, booleans, and
         any object that evaluates to True on a boolean context.
@@ -358,7 +357,7 @@ class Configuration(Item):
 
         @return: The value for the indicated configuration option.
         """
-        website = get_current_website()
+        website = app.website
 
         if website is not None:
             value = getattr(website, key, None)

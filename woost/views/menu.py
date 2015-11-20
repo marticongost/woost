@@ -8,7 +8,7 @@ u"""
 """
 from cocktail.html import templates, Element
 from cocktail.controllers import context
-from woost.models import get_current_website
+from woost import app
 
 TreeView = templates.get_class("cocktail.html.TreeView")
 
@@ -39,16 +39,13 @@ class Menu(TreeView):
     def _ready(self):
 
         if self.root is None:
-            website = get_current_website()
+            website = app.website
             self.root = website and website.home
 
         self.depends_on(self.root)
 
         if self.selection is None:
-            self.selection = (
-                context.get("original_publishable")
-                or context["publishable"]
-            )
+            self.selection = app.original_publishable or app.publishable
 
         TreeView._ready(self)
 

@@ -14,10 +14,10 @@ from cocktail.translations import translations, get_language
 from cocktail import schema
 from cocktail.schema.expressions import Expression
 from cocktail.persistence import PersistentObject
+from woost import app
 from .item import Item
 from .changesets import ChangeSet, Change
 from .messagestyles import permission_doesnt_match_style
-from .usersession import get_current_user
 from .messagestyles import unauthorized_style
 
 
@@ -333,9 +333,7 @@ def restricted_modification_context(
     @type item: L{Item<woost.models.item.Item>}
 
     @param user: The user that performs the modifications. If no user is
-        provided, the user returned by
-        L{get_current_user<woost.models.usersession.get_current_user>}
-        will be used.
+        provided, the active user will be used instead.
     @type user: L{User<woost.models.user.User>}
 
     @param verbose: Set to True to enable debug messages for the permission
@@ -347,7 +345,7 @@ def restricted_modification_context(
         the proper permission.
     """
     if user is None:
-        user = get_current_user()
+        user = app.user
 
     if item.__class__.translated:
         starting_languages = set(item.translations.keys())
@@ -442,7 +440,7 @@ def restricted_modification_context(
 def delete_validating(item, user = None, deleted_set = None):
 
     if user is None:
-        user = get_current_user()
+        user = app.user
 
     if deleted_set is None:
         class ValidatingDeletedSet(InstrumentedSet):

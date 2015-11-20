@@ -4,7 +4,7 @@ u"""
 .. moduleauthor:: Jordi Fernández <jordi.fernandez@whads.com>
 """
 import cherrypy
-from woost.models import get_current_website
+from woost import app
 
 
 def catalog_current_state_uri():
@@ -12,7 +12,7 @@ def catalog_current_state_uri():
     if catalog_url:
         return catalog_url
     else:
-        website = get_current_website()
+        website = app.website
         if website.ecommerce_default_catalog:
             return website.ecommerce_default_catalog.get_uri()
 

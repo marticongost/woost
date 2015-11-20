@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <?py
 from cocktail.schema import RelationMember
+from woost import app
 from woost.models import (
-    get_current_user,
     Block,
     ModifyMemberPermission
 )
@@ -20,7 +20,7 @@ from woost.models import (
 
     def iter_block_members(self):
 
-        user = get_current_user()
+        user = app.user
 
         for member in self.item.__class__.ordered_members():
             if (

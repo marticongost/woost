@@ -14,12 +14,12 @@ from cocktail.controllers.webservices import (
     PersistentClassWebService,
     excluded_member
 )
+from woost import app
 from woost.models import (
     changeset_context,
     Item,
     User,
     Configuration,
-    get_current_user,
     restricted_modification_context,
     PermissionExpression,
     ReadPermission,
@@ -36,7 +36,7 @@ class ItemWebService(PersistentClassWebService):
     def _init_user_collection(self, user_collection):
         PersistentClassWebService._init_user_collection(self, user_collection)
         user_collection.add_base_filter(
-            PermissionExpression(get_current_user(), ReadPermission)
+            PermissionExpression(app.user, ReadPermission)
         )
 
     @cached_getter
@@ -82,7 +82,7 @@ class ItemWebService(PersistentClassWebService):
     @cached_getter
     def json_encoder(self):
         encoder = PersistentClassWebService.json_encoder(self)
-        encoder.user = get_current_user()
+        encoder.user = app.user
         return encoder
 
     def _init_new_instance(self, instance):
@@ -90,17 +90,17 @@ class ItemWebService(PersistentClassWebService):
             PersistentClassWebService._init_new_instance(self, instance)
 
     def _store_new_instance(self, instance):
-        with changeset_context(get_current_user()):
+        with changeset_context(app.user):
             instance.insert()
 
     def _update_instance(self, instance):
         with restricted_modification_context(instance):
-            with changeset_context(get_current_user()):
+            with changeset_context(app.user):
                 PersistentClassWebService._update_instance(self, instance)
 
     def _delete_instances(self, query):
 
-        user = get_current_user()
+        user = app.user
 
         class ValidatingDeletedSet(InstrumentedSet):
             def item_added(self, item):

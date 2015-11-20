@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <?py
-from woost.models import get_current_user, Role
+from woost import app
+from woost.models import Role
 ?>
 
 <py:overlay
@@ -18,7 +19,7 @@ from woost.models import get_current_user, Role
             translators = Role.get_instance(
                 qname = "woost.extensions.translationworkflow.roles.translators"
             )
-            if translators is not None and translators in get_current_user().roles:
+            if translators is not None and translators in app.user.roles:
                 element.visible = False
             ?>
         </py:binding>

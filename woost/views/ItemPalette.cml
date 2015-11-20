@@ -4,7 +4,6 @@ from cocktail.schema import SchemaClass
 from cocktail.controllers import context
 from woost import app
 from woost.models import (
-    get_current_user,
     type_groups,
     Item,
     CreatePermission,
@@ -73,7 +72,7 @@ from woost.models import (
         else:
             types = set(self.types)
 
-        self._user = get_current_user()
+        self._user = app.user
 
         # Hide content types based on the main role of the current user
         if self.per_role_types:

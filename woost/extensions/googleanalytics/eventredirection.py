@@ -6,6 +6,7 @@ u"""
 from simplejson import dumps
 import cherrypy
 from cocktail.translations import translations
+from woost import app
 from woost.models import Configuration
 from woost.controllers.filecontroller import FileController
 from woost.controllers.uricontroller import URIController
@@ -50,7 +51,7 @@ class GAEventRedirection(object):
 
         def __call__(controller, **kwargs):
 
-            publishable = controller.context["publishable"]
+            publishable = app.publishable
 
             if self.event_tracking_is_enabled(controller, publishable):
 

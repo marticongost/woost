@@ -2,12 +2,12 @@
 <?py
 from cocktail.controllers import Location
 from cocktail.controllers import context
+from woost import app
 from woost.models import (
     Item,
     Publishable,
     Slot,
-    ModifyPermission,
-    get_current_user
+    ModifyPermission
 )
 ?>
 
@@ -73,7 +73,7 @@ from woost.models import (
             py:root="@{self._blocks}"
             py:root_visibility="${TreeView.ITERABLE_ROOT}"
             py:get_item_url="${lambda item: self.get_block_edit_uri(item)}"
-            py:filter_item="${lambda item: get_current_user().has_permission(ModifyPermission, target = item)}">
+            py:filter_item="${lambda item: app.user.has_permission(ModifyPermission, target = item)}">
 
             <?py
             @extend(element)

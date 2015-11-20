@@ -30,9 +30,7 @@ from cocktail.controllers import (
     Location
 )
 from woost import app
-from .websitesession import get_current_website
 from .changesets import ChangeSet, Change
-from .usersession import get_current_user
 
 _protocol_regexp = re.compile(r"^[a-z][\-a-z0-9]*:")
 
@@ -552,7 +550,7 @@ class Item(PersistentObject):
             host = None
 
         if host:
-            website = get_current_website()
+            website = app.website
             policy = website and website.https_policy
 
             if (
@@ -560,7 +558,7 @@ class Item(PersistentObject):
                 or (
                     policy == "per_page" and (
                         getattr(self, 'requires_https', False)
-                        or not get_current_user().anonymous
+                        or not app.user.anonymous
                     )
                 )
             ):

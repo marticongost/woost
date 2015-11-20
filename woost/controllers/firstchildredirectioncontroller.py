@@ -8,6 +8,7 @@ u"""
 """
 from warnings import warn
 import cherrypy
+from woost import app
 from woost.controllers import BaseCMSController
 
 
@@ -21,9 +22,9 @@ class FirstChildRedirectionController(BaseCMSController):
             DeprecationWarning
         )
 
-        publishable = self.context["publishable"]
+        publishable = app.publishable
 
-        if hasattr(publishable,"children"):
+        if hasattr(publishable, "children"):
 
             for child in publishable.children:
                 if child.is_accessible():

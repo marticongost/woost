@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <?py
 from cocktail.translations import translations
-from woost.models import get_current_user
+from woost import app
 from woost.models.standardpage import StandardPage
 ?>
 

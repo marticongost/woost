@@ -9,10 +9,10 @@ from cocktail.modeling import cached_getter
 from cocktail.events import Event, event_handler
 from cocktail.controllers.parameters import get_parameter
 from cocktail.controllers.formcontrollermixin import FormControllerMixin
+from woost import app
 from woost.models import (
     User,
-    AuthorizationError,
-    get_current_user
+    AuthorizationError
 )
 from woost.controllers.documentcontroller import DocumentController
 from woost.controllers.authentication import AuthenticationFailedError
@@ -28,7 +28,7 @@ class LoginController(FormControllerMixin, DocumentController):
     def form_errors(self):
         form_errors = FormControllerMixin.form_errors(self)
 
-        if not form_errors and self.submitted and get_current_user().anonymous:
+        if not form_errors and self.submitted and app.user.anonymous:
             user_param = get_parameter(schema.Member("user"))
             form_errors._items.append(AuthenticationFailedError(user_param))
 

@@ -10,8 +10,9 @@ from cocktail.iteration import first, last
 from cocktail.translations import translations, get_language
 from cocktail.persistence import PersistentObject
 from cocktail.controllers import request_property
+from woost import app
 from woost.controllers.documentcontroller import DocumentController
-from woost.models import Configuration, get_current_user
+from woost.models import Configuration
 from woost.extensions.webconsole.webconsolepermission \
     import WebConsolePermission
 
@@ -20,7 +21,7 @@ class CMSWebConsole(DocumentController, WebConsoleController):
 
     @event_handler
     def handle_traversed(self, event):
-        get_current_user().require_permission(WebConsolePermission)
+        app.user.require_permission(WebConsolePermission)
 
     submit = WebConsoleController.submit
     submitted = WebConsoleController.submitted
@@ -32,7 +33,7 @@ class CMSWebConsole(DocumentController, WebConsoleController):
 
         session.context.update(
             config = Configuration.instance,
-            user = get_current_user(),
+            user = app.user,
             language = get_language(),
             translations = translations,
             first = first,

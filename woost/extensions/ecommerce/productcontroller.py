@@ -7,6 +7,7 @@ import cherrypy
 from cocktail.translations import translations
 from cocktail.controllers import request_property, Location
 from cocktail.controllers.formprocessor import FormProcessor, Form
+from woost import app
 from woost.models import Publishable
 from woost.controllers.notifications import Notification
 from woost.controllers.publishablecontroller import PublishableController
@@ -24,7 +25,7 @@ class ProductController(FormProcessor, PublishableController):
 
         @request_property
         def product(self):
-            return self.controller.context["publishable"]
+            return app.publishable
 
         @request_property
         def model(self):

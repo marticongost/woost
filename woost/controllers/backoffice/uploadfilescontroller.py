@@ -15,7 +15,6 @@ from cocktail.controllers import get_parameter
 from cocktail.controllers.fileupload import FileUpload
 from woost import app
 from woost.models import (
-    get_current_user,
     changeset_context,
     File
 )
@@ -73,7 +72,7 @@ class UploadFilesController(BaseBackOfficeController):
         temp_dir = mkdtemp()
 
         try:
-            with changeset_context(get_current_user()):
+            with changeset_context(app.user):
                 for file_path in zip_file.namelist():
 
                     file_name = os.path.basename(file_path)

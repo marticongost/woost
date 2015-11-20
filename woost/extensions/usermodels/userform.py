@@ -8,9 +8,9 @@ from cocktail.modeling import cached_getter
 from cocktail import schema
 from cocktail.persistence import datastore
 from cocktail.controllers import FormProcessor
+from woost import app
 from woost.models import (
     changeset_context,
-    get_current_user,
     ReadMemberPermission,
     ModifyMemberPermission,
     Publishable,
@@ -85,13 +85,13 @@ class UserFormController(FormProcessor, DocumentController):
 
         @cached_getter
         def model(self):
-            return self.controller.context["publishable"].form_model
+            return app.publishable.form_model
 
         @cached_getter
         def adapter(self):
             adapter = UploadForm.adapter(self)
-            document = self.controller.context["publishable"]
-            user = get_current_user()
+            document = app.publishable
+            user = app.user
 
             excluded_members = []
 
@@ -120,11 +120,11 @@ class UserFormController(FormProcessor, DocumentController):
             return adapter
 
         def submit(self):
-            document = self.controller.context["publishable"]
+            document = app.publishable
 
             # Write to the database
             if document.should_save_instances:
-                with changeset_context(get_current_user()):
+                with changeset_context(app.user):
                     UploadForm.submit(self)
                     self.instance.insert()
                 datastore.commit()

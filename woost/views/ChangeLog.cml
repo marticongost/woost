@@ -4,11 +4,11 @@ from collections import Counter
 from cocktail.stringutils import normalize
 from cocktail import schema
 from cocktail.html.uigeneration import UIGenerator
+from woost import app
 from woost.models import (
     ChangeSet,
     Change,
-    ReadMemberPermission,
-    get_current_user
+    ReadMemberPermission
 )
 from woost.views.uigeneration import backoffice_display
 ?>
@@ -62,7 +62,7 @@ from woost.views.uigeneration import backoffice_display
 
     def create_revision_adapter(self, model):
         adapter = schema.Adapter()
-        user = get_current_user()
+        user = app.user
         adapter.exclude([
             member.name
             for member in model.iter_members()

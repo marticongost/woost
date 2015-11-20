@@ -17,12 +17,12 @@ from cocktail.translations import translations, get_language
 from cocktail.events import event_handler
 from cocktail import schema
 from cocktail.controllers import get_parameter, CookieParameterSource
+from woost import app
 from woost.models import (
     Configuration,
     Item,
     UserView,
-    ReadTranslationPermission,
-    get_current_user
+    ReadTranslationPermission
 )
 from woost.controllers import BaseCMSController
 from woost.controllers.notifications import Notification
@@ -53,7 +53,7 @@ class BaseBackOfficeController(BaseCMSController):
 
         @type: sequence of unicode
         """
-        user = get_current_user()
+        user = app.user
         return [
             language
             for language in Configuration.instance.languages
@@ -248,7 +248,7 @@ class BaseBackOfficeController(BaseCMSController):
     @cached_getter
     def user_views(self):
 
-        user = get_current_user()
+        user = app.user
         views = OrderedSet()
 
         for role in user.iter_roles():
@@ -264,7 +264,7 @@ class BaseBackOfficeController(BaseCMSController):
     def output(self):
         output = BaseCMSController.output(self)
         output.update(
-            backoffice = self.context["publishable"],
+            backoffice = app.publishable,
             section = self.section,
             edit_stack = self.edit_stack,
             edit_uri = self.edit_uri,

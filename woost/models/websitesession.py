@@ -3,9 +3,8 @@ u"""
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
-from threading import local
-
-_thread_data = local()
+from warnings import warn
+from woost import app
 
 def get_current_website():
     """Gets the active website for the present context.
@@ -15,7 +14,12 @@ def get_current_website():
 
     @rtype: L{Website}
     """
-    return getattr(_thread_data, "website", None)
+    warn(
+        "get_current_website() has been deprecated; use app.website instead",
+        DeprecationWarning,
+        stacklevel = 2
+    )
+    return app.website
 
 def set_current_website(website):
     """Sets the active website for the present context. See
@@ -24,5 +28,10 @@ def set_current_website(website):
     @param website: The website to set as active.
     @type website: L{Website}
     """
-    _thread_data.website = website
+    warn(
+        "set_current_website() has been deprecated; use app.website instead",
+        DeprecationWarning,
+        stacklevel = 2
+    )
+    app.website = website
 

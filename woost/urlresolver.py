@@ -12,7 +12,8 @@ from cocktail.modeling import abstractmethod, ListWrapper
 from cocktail.stringutils import normalize
 from cocktail.translations import translations, get_language
 from cocktail.controllers import resolve_object_ref
-from woost.models import Publishable, get_current_website
+from woost import app
+from woost.models import Publishable
 
 
 class URLResolver(object):
@@ -56,7 +57,7 @@ class URLResolver(object):
         @rtype: L{PathResolution}
         """
         if not path:
-            website = get_current_website()
+            website = app.website
             if website:
                 return PathResolution(None, website.home)
         else:

@@ -9,7 +9,8 @@ from cocktail.pkgutils import resolve
 from cocktail import schema
 from cocktail.persistence import transaction
 from cocktail.controllers import request_property, context, Location
-from woost.models import changeset_context, get_current_user, ModifyPermission
+from woost import app
+from woost.models import changeset_context, ModifyPermission
 from woost.controllers.backoffice.basebackofficecontroller \
     import BaseBackOfficeController
 from woost.controllers.backoffice.useractions import (
@@ -84,7 +85,7 @@ class TranslationWorkflowTransitionAction(UserAction):
     def invoke(self, controller, selection):
 
         transition_data = None
-        user = get_current_user()
+        user = app.user
 
         # Save the edit stack
         if (

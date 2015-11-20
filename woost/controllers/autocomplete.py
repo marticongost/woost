@@ -13,7 +13,6 @@ from cocktail.controllers.autocomplete import (
 )
 from woost import app
 from woost.models import (
-    get_current_user,
     Item,
     Publishable,
     ReadPermission,
@@ -30,7 +29,7 @@ class CMSAutocompleteSource(MemberAutocompleteSource):
     @request_property
     def items(self):
         items = MemberAutocompleteSource.items(self)
-        user = get_current_user()
+        user = app.user
 
         if self._listing_types:
             items = [

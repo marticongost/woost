@@ -100,7 +100,7 @@ class PDFExtension(Extension):
                     pdf_file_path,
                     content_type = "application/x-pdf",
                     disposition = "attachment",
-                    name = extension.get_filename(self.context["publishable"])
+                    name = extension.get_filename(app.publishable)
                 )
 
             finally:

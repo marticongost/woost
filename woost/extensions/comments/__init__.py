@@ -12,6 +12,7 @@ from cocktail import schema
 from cocktail.events import when
 from cocktail.translations import translations
 from cocktail.controllers import Location
+from woost import app
 from woost.models import Extension
 
 translations.define("CommentsExtension",
@@ -82,11 +83,11 @@ class CommentsExtension(Extension):
         from cocktail.persistence import datastore
         from cocktail.controllers import UserCollection, get_parameter
         from cocktail.pkgutils import resolve
+        from woost import app
         from woost.models import (
             Publishable,
             Role,
-            CreatePermission,
-            get_current_user
+            CreatePermission
         )
         from woost.models.changesets import changeset_context
         from woost.controllers.basecmscontroller import BaseCMSController
@@ -140,8 +141,8 @@ class CommentsExtension(Extension):
             controller = event.source
             comment_model = \
                 resolve(getattr(controller, "comment_model", Comment))
-            publishable = controller.context["publishable"]
-            user = get_current_user()
+            publishable = app.publishable
+            user = app.user
 
             if publishable is not None and publishable.allow_comments:
 

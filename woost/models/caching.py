@@ -10,8 +10,8 @@ from cocktail.translations import get_language
 from cocktail.caching import Cache
 from cocktail.controllers import Location
 from cocktail.persistence import datastore, PersistentMapping
+from woost import app
 from .item import Item
-from .usersession import get_current_user
 
 
 class CachingPolicy(Item):
@@ -82,7 +82,7 @@ class CachingPolicy(Item):
 
     def get_content_cache_key(self, publishable, **context):
 
-        user = get_current_user()
+        user = app.user
 
         cache_key = (
             str(Location.get_current(relative = False)),

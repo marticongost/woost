@@ -50,9 +50,7 @@ class SignUpConfirmationController(DocumentController):
                     if self.autologin:
                         app.authentication.set_user_session(instance)
 
-                    raise cherrypy.HTTPRedirect(
-                        self.context["publishable"].get_uri()
-                    )
+                    raise cherrypy.HTTPRedirect(app.publishable.get_uri())
 
             raise cherrypy.HTTPError(400, "Invalid hash")
 
