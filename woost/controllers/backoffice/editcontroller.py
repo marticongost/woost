@@ -16,11 +16,11 @@ from cocktail.schema import (
 from cocktail.translations import translations
 from cocktail.persistence import datastore
 from cocktail.controllers import request_property, get_parameter
+from woost import app
 from woost.models import (
     Configuration,
     changeset_context,
     ChangeSet,
-    get_current_user,
     restricted_modification_context,
     delete_validating,
     ReadTranslationPermission
@@ -150,7 +150,7 @@ class EditController(BaseBackOfficeController):
     def save_item(self, close = False):
 
         for i in range(self.MAX_TRANSACTION_ATTEMPTS):
-            user = get_current_user()
+            user = app.user
             stack_node = self.stack_node
             item = stack_node.item
             is_new = not item.is_inserted
@@ -229,7 +229,7 @@ class EditController(BaseBackOfficeController):
             is_new = not item.is_inserted
             item.insert()
             stack_node.saving(
-                user = get_current_user(),
+                user = app.user,
                 item = item,
                 is_new = is_new,
                 changeset = ChangeSet.current

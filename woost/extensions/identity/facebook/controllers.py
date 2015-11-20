@@ -9,7 +9,6 @@ import urllib
 import cherrypy
 from cocktail.controllers import Controller, Location, session
 from woost import app
-from woost.models import get_current_website
 from woost.controllers import CMSController
 from .identityprovider import FacebookIdentityProvider
 
@@ -43,7 +42,7 @@ class FacebookOAuthProviderController(Controller):
         self.provider = provider
         self.target_url = (
             session.get(SESSION_PREFIX + "target_url")
-            or get_current_website().home.get_uri()
+            or app.website.home.get_uri()
         )
 
     def step_url(self, step_number):

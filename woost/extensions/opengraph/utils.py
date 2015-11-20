@@ -4,7 +4,8 @@ u"""
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
 import re
-from woost.models import Configuration, get_current_website
+from woost import app
+from woost.models import Configuration
 
 html_expr = re.compile(r"</?[a-z][^>]*>")
 li_expr = re.compile(r"<li(\s+[^>]*)?>")
@@ -27,7 +28,7 @@ def get_publishable_website(publishable):
 
     acceptable_websites = publishable.websites
 
-    current_website = get_current_website()
+    current_website = app.website
     if current_website is not None:
         if not acceptable_websites or current_website in acceptable_websites:
             return current_website

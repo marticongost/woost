@@ -14,8 +14,8 @@ from woost.models.extension import load_extensions
 def setup_shell(env):
     env["config"] = config = Configuration.instance
     config.setup_languages()
-    set_current_user(User.require_instance(qname = "woost.anonymous_user"))
-    set_current_website(config.websites[0])
+    app.user = User.require_instance(qname = "woost.anonymous_user")
+    app.website = config.websites[0]
     load_extensions()
 
 get = Item.get_instance

@@ -35,7 +35,6 @@ from .permission import ContentPermission
 from .changesets import Change
 from .role import Role
 from .file import File
-from .usersession import get_current_user
 from . import staticpublication
 from . import objectio
 
@@ -264,7 +263,7 @@ def search(
 def any_translation(obj, language_chain = None, **kwargs):
 
     if language_chain is None:
-        user = get_current_user()
+        user = app.user
         language_chain = (
             user
             and user.backoffice_language_chain

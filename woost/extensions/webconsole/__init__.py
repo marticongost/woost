@@ -113,11 +113,12 @@ def breakpoint(open_browser = False, stack_depth = 0):
     """
     from cocktail.controllers import Location
     from webconsole.utils import breakpoint as webconsole_breakpoint
-    from woost.models import get_current_user, Publishable
+    from woost import app
+    from woost.models import Publishable
     from woost.extensions.webconsole.webconsolepermission \
         import WebConsolePermission
 
-    user = get_current_user()
+    user = app.user
 
     if user and user.has_permission(WebConsolePermission):
 

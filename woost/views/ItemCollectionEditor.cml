@@ -4,7 +4,8 @@ from cocktail.iteration import first
 from cocktail.html.selectable import selectable, MULTIPLE_SELECTION
 from cocktail.html.uigeneration import UIGenerator
 from cocktail.controllers import context
-from woost.models import get_current_user, CreatePermission
+from woost import app
+from woost.models import CreatePermission
 from woost.views.uigeneration import backoffice_element_column_display
 from woost.controllers.backoffice.useractions import export_user_actions
 ?>
@@ -62,7 +63,7 @@ from woost.controllers.backoffice.useractions import export_user_actions
         <?py
         self._cms = context["cms"]
         self._edit_stack = context["edit_stacks_manager"].current_edit_stack
-        self._user = get_current_user()
+        self._user = app.user
         role = self._user.roles and self._user.roles[0]
         self._hidden_content_types = role and getattr(role, "hidden_content_types", None)
 

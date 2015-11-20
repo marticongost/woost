@@ -37,12 +37,12 @@ from cocktail.persistence import (
     PersistentMapping, PersistentRelationMapping,
     PersistentOrderedSet, PersistentRelationOrderedSet
 )
+from woost import app
 from woost.models import (
     Configuration,
     Item,
     Change,
     Block,
-    get_current_user,
     CreatePermission,
     ReadPermission,
     ModifyPermission,
@@ -598,7 +598,7 @@ class EditNode(StackNode):
 
             self.item_translations = set(item.translations)
 
-            user = get_current_user()
+            user = app.user
             self.visible_translations = set(
                 language
                 for language in visible_translations
@@ -693,7 +693,7 @@ class EditNode(StackNode):
 
         # Drop deleted translations
         if item.__class__.translated:
-            user = get_current_user()
+            user = app.user
 
             deleted_translations = (
                 set(
@@ -772,7 +772,7 @@ class EditNode(StackNode):
                 print styled("(relation in stack)\n", "pink")
             return schema.NOT_EDITABLE
 
-        user = get_current_user()
+        user = app.user
 
         if (
             self.item

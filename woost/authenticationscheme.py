@@ -9,7 +9,8 @@ u"""
 import cherrypy
 from cocktail.schema import ErrorList
 from cocktail.controllers import session, Location
-from woost.models import User, set_current_user
+from woost import app
+from woost.models import User
 
 
 class AuthenticationScheme(object):
@@ -20,7 +21,7 @@ class AuthenticationScheme(object):
 
     def process_request(self):
 
-        set_current_user(
+        app.user = (
             self.get_user_from_session()
             or self.anonymous_user
         )
@@ -50,7 +51,7 @@ class AuthenticationScheme(object):
             if user is None or not user.password == password_header:
                 raise AuthenticationFailedError(user_header)
             else:
-                set_current_user(user)
+                app.user = user
 
     def process_login(self):
         params = cherrypy.request.params
@@ -84,7 +85,7 @@ class AuthenticationScheme(object):
 
     def set_user_session(self, user):
         session[self.SESSION_KEY] = user.id
-        set_current_user(user)
+        app.user = user
 
     def login(self, identifier, password):
         """Attempts to establish a new user session, using the given user
@@ -119,7 +120,7 @@ class AuthenticationScheme(object):
     def logout(self):
         """Ends the current user session."""
         session.delete()
-        set_current_user(self.anonymous_user)
+        app.user = self.anonymous_user
 
 
 class AuthenticationFailedError(Exception):

@@ -8,7 +8,7 @@ from cocktail.controllers import (
     request_property,
     Form
 )
-from woost.models import get_current_website
+from woost import app
 from woost.controllers.notifications import pop_user_notifications
 
 
@@ -16,11 +16,11 @@ class OrderStepForm(Form):
 
     @request_property
     def order_steps(self):
-        return get_current_website().ecommerce_order_steps
+        return app.website.ecommerce_order_steps
 
     @request_property
     def current_step(self):
-        return self.controller.context["publishable"]
+        return app.publishable
 
     @request_property
     def next_step(self):

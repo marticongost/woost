@@ -12,7 +12,8 @@ from cocktail.events import Event
 from cocktail.translations import translations, get_language
 from cocktail import schema
 from cocktail.controllers import Location
-from woost.models import Item, get_current_website
+from woost import app
+from woost.models import Item
 
 
 class PaymentGateway(Item):
@@ -72,7 +73,7 @@ class PaymentGateway(Item):
 
     def get_payment_url(self, *args, **kwargs):
 
-        website = get_current_website()
+        website = app.website
         location = Location()
         location.relative = False
 

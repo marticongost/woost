@@ -2,8 +2,8 @@
 
 <?py
 from cocktail.modeling import extend, call_base
+from woost import app
 from woost.models import (
-    get_current_user,
     CreateTranslationPermission,
     DeleteTranslationPermission,
     Configuration

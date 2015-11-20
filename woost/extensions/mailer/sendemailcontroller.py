@@ -14,7 +14,8 @@ from cocktail.events import event_handler
 from cocktail.modeling import cached_getter
 from cocktail.translations import set_language
 from cocktail.controllers.location import Location
-from woost.models import Configuration, User, get_current_user
+from woost import app
+from woost.models import Configuration, User
 from woost.models.permission import ReadPermission
 from woost.controllers.backoffice.editcontroller import EditController
 from woost.extensions.mailer.mailing import Mailing, MAILING_STARTED, MAILING_FINISHED, tasks
@@ -29,7 +30,7 @@ class SendEmailController(EditController):
 
     @event_handler
     def handle_traversed(cls, event):
-        user = get_current_user()
+        user = app.user
         user.require_permission(SendEmailPermission)
 
     @cached_getter
@@ -77,7 +78,7 @@ class SendEmailController(EditController):
         if mailing is None:
             return dumps({})
 
-        user = get_current_user()
+        user = app.user
         if not user.has_permission(ReadPermission, target = mailing):
             raise cherrypy.HTTPError(403, "Forbidden")
 

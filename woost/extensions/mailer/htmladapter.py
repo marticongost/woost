@@ -4,14 +4,14 @@ u"""
 .. moduleauthor:: Jordi Fernández <jordi.fernandez@whads.com>
 """
 from bs4 import BeautifulSoup, Comment
-from woost.models import get_current_website
+from woost import app
 
 class HTMLAdapter(object):
 
     def __init__(self, html):
         self.soup = BeautifulSoup(html)
         self.absolute_url_prefix = \
-            "http://" + get_current_website().hosts[0]
+            "http://" + app.website.hosts[0]
 
     def adapt(self):
 

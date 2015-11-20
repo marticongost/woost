@@ -15,6 +15,7 @@ from cocktail.translations import (
 )
 from cocktail.controllers import try_decode, context
 from cocktail.controllers.parameters import set_cookie_expiration
+from woost import app
 from woost.models import Configuration
 
 
@@ -123,8 +124,7 @@ class LanguageScheme(object):
             qs = try_decode(qs)
 
         if is_current_publishable and language != current_language:
-            publishable = context.get("original_publishable") \
-                          or context["publishable"]
+            publishable = app.original_publishable or app.publishable
             current_uri = publishable.get_uri(
                 language = current_language,
                 encode = False

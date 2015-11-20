@@ -9,7 +9,8 @@
 from __future__ import with_statement
 import cherrypy
 from cocktail.persistence import datastore
-from woost.models import changeset_context, get_current_user
+from woost import app
+from woost.models import changeset_context
 from woost.controllers.backoffice.basebackofficecontroller \
     import BaseBackOfficeController
 from woost.extensions.campaignmonitor import CampaignMonitorExtension
@@ -36,7 +37,7 @@ class SyncCampaignMonitorListsController(BaseBackOfficeController):
 
         from woost.extensions.campaignmonitor import CampaignMonitorExtension
         extension = CampaignMonitorExtension.instance
-        user = get_current_user()
+        user = app.user
 
         with changeset_context(author = user) as changeset:
             extension.synchronize_lists(

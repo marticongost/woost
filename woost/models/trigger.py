@@ -15,10 +15,10 @@ from cocktail.translations import translations
 from cocktail.events import when
 from cocktail.persistence import datastore
 from cocktail.controllers import UserCollection
+from woost import app
 from woost.models.changesets import ChangeSet
 from woost.models.item import Item
 from woost.models.role import Role
-from woost.models.usersession import get_current_user
 from woost.models.messagestyles import (
     trigger_style,
     trigger_context_style,
@@ -283,7 +283,7 @@ def trigger_responses(
     target = context.get("target")
 
     if user is None:
-        user = get_current_user()
+        user = app.user
 
     if verbose is None:
         verbose = globals()["verbose"]

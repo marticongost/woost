@@ -48,10 +48,7 @@ from woost.models import (
     Configuration,
     ReadPermission,
     ReadTranslationPermission,
-    AuthorizationError,
-    get_current_user,
-    get_current_website,
-    set_current_website
+    AuthorizationError
 )
 from woost.controllers.asyncupload import async_uploader
 from woost.controllers.basecmscontroller import BaseCMSController
@@ -296,7 +293,7 @@ class CMSController(BaseCMSController):
 
         # Item resolution
         publishable = self._resolve_path(path)
-        self.context["publishable"] = publishable
+        app.publishable = publishable
 
         # HTTP/HTTPS check
         self._apply_https_policy(publishable)
@@ -365,7 +362,7 @@ class CMSController(BaseCMSController):
             return
 
         config = Configuration.instance
-        website = get_current_website()
+        website = app.website
 
         if (
             config.down_for_maintenance
@@ -391,7 +388,7 @@ class CMSController(BaseCMSController):
 
             self.canonical_redirection(path_resolution)
         else:
-            website = get_current_website()
+            website = app.website
             publishable = website.home if website else None
 
         return publishable
@@ -460,7 +457,7 @@ class CMSController(BaseCMSController):
         if not publishable.is_published():
             raise cherrypy.NotFound()
 
-        user = get_current_user()
+        user = app.user
 
         user.require_permission(ReadPermission, target = publishable)
         user.require_permission(
@@ -471,7 +468,7 @@ class CMSController(BaseCMSController):
     def _establish_active_website(self):
         location = Location.get_current_host()
         website = Configuration.instance.get_website_by_host(location.host)
-        set_current_website(website)
+        app.website = website
 
         if website is None:
             raise cherrypy.HTTPError(404, "Unknown hostname: " + location.host)
@@ -482,11 +479,14 @@ class CMSController(BaseCMSController):
         datastore.sync()
 
         cms = event.source
+        cms.context.update(cms = cms)
 
-        cms.context.update(
-            cms = cms,
-            publishable = None
-        )
+        # Reset all contextual properties
+        app.user = None
+        app.publishable = None
+        app.original_publishable = None
+        app.website = None
+        app.navigation_point = None
 
         # Determine the active website
         cms._establish_active_website()
@@ -503,7 +503,7 @@ class CMSController(BaseCMSController):
 
         cms = event.source
 
-        publishable = cms.context.get("publishable")
+        publishable = app.publishable
 
         if publishable is not None:
 
@@ -549,15 +549,15 @@ class CMSController(BaseCMSController):
         cms = event.source
         event.output.update(
             cms = cms,
-            user = get_current_user(),
-            publishable = event.controller.context.get("publishable")
+            user = app.user,
+            publishable = app.publishable
         )
 
     @event_handler
     def handle_exception_raised(cls, event):
 
         # Couldn't establish the active website: show a generic error
-        if get_current_website() is None:
+        if app.website is None:
             return
 
         error = event.exception
@@ -583,11 +583,8 @@ class CMSController(BaseCMSController):
                 # HTTP/HTTPS check
                 controller._apply_https_policy(error_page)
 
-                controller.context.update(
-                    original_publishable = controller.context["publishable"],
-                    publishable = error_page
-                )
-
+                app.original_publishable = app.publishable
+                app.publishable = error_page
                 error_controller = error_page.resolve_controller()
 
                 # Instantiate class based controllers
@@ -630,8 +627,8 @@ class CMSController(BaseCMSController):
             (is_http_error and error.status == 403)
             or isinstance(error, (AuthorizationError, AuthenticationFailedError))
         ):
-            if get_current_user().anonymous:
-                publishable = self.context["publishable"]
+            if app.user.anonymous:
+                publishable = app.publishable
 
                 while publishable is not None:
                     login_page = publishable.login_page
@@ -652,7 +649,7 @@ class CMSController(BaseCMSController):
     def _apply_website_exclusiveness(self, publishable):
         acceptable_websites = publishable.websites
         if acceptable_websites:
-            current_website = get_current_website()
+            current_website = app.website
             if (
                 current_website is None
                 or current_website not in acceptable_websites
@@ -666,14 +663,14 @@ class CMSController(BaseCMSController):
     def _apply_https_policy(self, publishable):
 
         policy = Configuration.instance.get_setting("https_policy")
-        website = get_current_website()
+        website = app.website
 
         if policy == "always":
             Location.require_https()
         elif policy == "never":
             Location.require_http()
         elif policy == "per_page":
-            if publishable.requires_https or not get_current_user().anonymous:
+            if publishable.requires_https or not app.user.anonymous:
                 Location.require_https()
             elif not website.https_persistence:
                 Location.require_http()
@@ -692,7 +689,7 @@ class CMSController(BaseCMSController):
     def current_user(self):
         cherrypy.response.headers["Content-Type"] = "text/javascript"
         cherrypy.response.headers["Cache-Control"] = "no-store"
-        user = get_current_user()
+        user = app.user
         return "cocktail.declare('woost'); woost.user = %s;" % dumps(
             {
                 "id": user.id,

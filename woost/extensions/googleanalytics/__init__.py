@@ -10,10 +10,10 @@ from simplejson import dumps
 from cocktail.translations import translations, get_language
 from cocktail.events import Event
 from cocktail.controllers import context
+from woost import app
 from woost.models import (
     Extension,
-    Configuration,
-    get_current_user
+    Configuration
 )
 
 translations.define("GoogleAnalyticsExtension",
@@ -124,7 +124,7 @@ class GoogleAnalyticsExtension(Extension):
         config = Configuration.instance
 
         if publishable is None:
-            publishable = context.get("publishable")
+            publishable = app.publishable
 
         event = self.declaring_tracker(
             publishable = publishable,
@@ -173,7 +173,7 @@ class GoogleAnalyticsExtension(Extension):
             # Custom dimension: roles
             "dimension2":
                 self._serialize_collection(
-                    role.id for role in get_current_user().iter_roles()
+                    role.id for role in app.user.iter_roles()
                 ),
 
             # Custom dimension: path

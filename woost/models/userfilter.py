@@ -25,11 +25,11 @@ from cocktail.controllers.userfilter import (
     user_filters_registry,
     DescendsFromFilter
 )
+from woost import app
 from .item import Item
 from .changesets import ChangeSet, ChangeSetHasChangeExpression
 from .publishable import Publishable, IsPublishedExpression
 from .document import Document
-from .usersession import get_current_user
 
 
 class IsPublishedFilter(UserFilter):
@@ -42,7 +42,7 @@ class IsPublishedFilter(UserFilter):
 
     @cached_getter
     def expression(self):
-        return IsPublishedExpression(get_current_user())
+        return IsPublishedExpression(app.user)
 
 user_filters_registry.add(Publishable, IsPublishedFilter)
 

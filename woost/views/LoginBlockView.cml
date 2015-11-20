@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <?py
 from cocktail import schema
-from woost.models import get_current_user, Publishable
+from woost import app
+from woost.models import Publishable
 ?>
 
 <py:cocktail.html.Form
@@ -18,7 +19,7 @@ from woost.models import get_current_user, Publishable
         if self.errors is None:
             self.errors = schema.ErrorList()
 
-        if not get_current_user().anonymous:
+        if not app.user.anonymous:
             self.visible = False
         else:
             if self.schema is None:

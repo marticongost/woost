@@ -12,6 +12,7 @@ from cocktail import schema
 from cocktail.modeling import cached_getter
 from cocktail.pkgutils import import_object
 from cocktail.controllers import FormProcessor, Form
+from woost import app
 from woost.controllers.documentcontroller import DocumentController
 from woost.extensions.campaignmonitor import CampaignMonitorExtension
 
@@ -24,12 +25,12 @@ class CampaignMonitorController(FormProcessor, DocumentController):
 
         @cached_getter
         def model(self):
-            return import_object(self.controller.context["publishable"].subscription_form)
+            return import_object(app.publishable.subscription_form)
 
         @cached_getter
         def schema(self):
             form_schema = Form.schema(self)
-            publishable = self.controller.context["publishable"]
+            publishable = app.publishable
 
             form_schema.add_member(schema.Reference(
                 "list",
@@ -46,7 +47,7 @@ class CampaignMonitorController(FormProcessor, DocumentController):
         def available_lists(self):
 
             lists = getattr(
-                self.controller.context["publishable"],
+                app.publishable,
                 "lists",
                 None
             )
@@ -138,6 +139,5 @@ class CampaignMonitorController(FormProcessor, DocumentController):
             return self.controller.context["cms"].uri(cmlist.pending_page)
 
         def get_default_uri(self, cmlist, **kwargs):
-            return self.controller.context["cms"].uri(self.controller.context["publishable"])
-
+            return self.controller.context["cms"].uri(app.publishable)
 

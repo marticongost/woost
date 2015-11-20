@@ -2,7 +2,8 @@
 <?py
 from cocktail.controllers import context
 from cocktail.html.utils import html5_tag, rendering_html5
-from woost.models import Configuration, get_current_website
+from woost import app
+from woost.models import Configuration
 ?>
 
 <py:woost.views.BaseView
@@ -12,7 +13,7 @@ from woost.models import Configuration, get_current_website
 
     <?py-class
     def get_title(self):
-        return get_current_website().site_name
+        return app.website.site_name
 
     def get_logo(self):
         return self._website.logo
@@ -23,7 +24,7 @@ from woost.models import Configuration, get_current_website
 
     <py:ready>
         <?py
-        self._website = get_current_website()
+        self._website = app.website
         self._home = self._website.home
         ?>
     </py:ready>

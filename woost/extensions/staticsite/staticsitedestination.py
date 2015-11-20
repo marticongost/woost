@@ -24,7 +24,7 @@ from cocktail.translations import translations, get_language
 from cocktail.persistence import PersistentMapping
 from cocktail.controllers import context as controller_context
 from woost import app
-from woost.models import Item, File, get_current_user
+from woost.models import Item, File
 from woost.models.file import file_hash
 from woost.models.changesets import changeset_context
 

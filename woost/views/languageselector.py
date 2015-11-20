@@ -11,9 +11,9 @@ from cocktail.html.element import Element
 from cocktail.html import templates
 from cocktail.html.utils import rendering_xml
 from cocktail.controllers import context
+from woost import app
 from woost.models import (
     Configuration,
-    get_current_user,
     ReadTranslationPermission
 )
 
@@ -40,7 +40,7 @@ class LanguageSelector(LinkSelector):
             entry.append(link)
 
         if self.missing_translations != "redirect":
-            publishable = context["publishable"]
+            publishable = app.publishable
             value = self.get_item_value(item)
             if not publishable.is_accessible(language = value):
                 if self.missing_translations == "hide":
@@ -53,7 +53,7 @@ class LanguageSelector(LinkSelector):
 
     def get_languages(self):
         config = Configuration.instance
-        user = get_current_user()
+        user = app.user
         return [
             language
             for language in (
@@ -91,7 +91,7 @@ class LanguageSelector(LinkSelector):
 
     def get_entry_url(self, language):
         cms = context["cms"]
-        publishable = context["publishable"]
+        publishable = app.publishable
 
         if self.missing_translations == "redirect" \
         and not publishable.is_accessible(language = language):

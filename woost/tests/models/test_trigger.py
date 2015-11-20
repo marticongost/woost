@@ -52,13 +52,13 @@ class TriggerMatchTestCase(BaseTestCase):
 
     def test_target(self):
 
+        from woost import app
         from woost.models import (
             ContentTrigger,
             Item,
             Publishable,
             StandardPage,
-            User,
-            set_current_user
+            User
         )
 
         self.assert_match(
@@ -72,7 +72,7 @@ class TriggerMatchTestCase(BaseTestCase):
         )
 
         user = User()
-        set_current_user(user)
+        app.user = user
 
         self.assert_match(
             ContentTrigger(matching_items = {

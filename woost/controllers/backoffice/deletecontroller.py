@@ -11,10 +11,10 @@ from cocktail.translations import translations
 from cocktail.schema import String, Collection
 from cocktail.persistence import datastore, delete_dry_run
 from cocktail.controllers import request_property
+from woost import app
 from woost.models import (
     changeset_context,
-    delete_validating,
-    get_current_user
+    delete_validating
 )
 from woost.controllers.notifications import Notification
 from woost.controllers.backoffice.editstack import EditNode
@@ -58,7 +58,7 @@ class DeleteController(BaseBackOfficeController):
 
         if self.action == "confirm_delete":
 
-            user = get_current_user()
+            user = app.user
 
             for i in range(self.MAX_TRANSACTION_ATTEMPTS):
 

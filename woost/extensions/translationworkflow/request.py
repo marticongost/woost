@@ -9,12 +9,12 @@ from cocktail import schema
 from cocktail.schema import expressions as expr
 from cocktail.schema.io import MSExcelExporter, MSExcelColumn
 from cocktail.html import templates
+from woost import app
 from woost.models import (
     Item,
     Role,
     User,
-    LocaleMember,
-    get_current_user
+    LocaleMember
 )
 from woost.views.htmldiff import iter_diff_rows
 from .state import TranslationWorkflowState
@@ -164,7 +164,7 @@ class TranslationWorkflowRequest(Item):
 
     @classmethod
     def backoffice_listing_default_tab(cls):
-        for role in get_current_user().iter_roles():
+        for role in app.user.iter_roles():
             default = role.translation_workflow_default_state
             if default is not None:
                 return str(default.id)
@@ -175,7 +175,7 @@ class TranslationWorkflowRequest(Item):
     def backoffice_listing_tabs(cls):
 
         states = OrderedSet()
-        for role in get_current_user().iter_roles():
+        for role in app.user.iter_roles():
             states.extend(role.translation_workflow_relevant_states)
 
         if not states:

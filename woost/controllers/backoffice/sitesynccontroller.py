@@ -13,12 +13,12 @@ from cocktail.controllers import (
     serve_file
 )
 from cocktail.persistence import transactional
+from woost import app
 from woost.models import (
     Synchronization,
     Item,
     User,
     File,
-    get_current_user,
     InstallationSyncPermission
 )
 from woost.controllers.backoffice.basebackofficecontroller \
@@ -33,7 +33,7 @@ class SiteSyncController(FormProcessor, BaseBackOfficeController):
 
     @event_handler
     def handle_traversed(cls, e):
-        get_current_user().require_permission(InstallationSyncPermission)
+        app.user.require_permission(InstallationSyncPermission)
 
     @cherrypy.expose
     @transactional()

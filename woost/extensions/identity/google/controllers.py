@@ -10,7 +10,6 @@ from googleapiclient import discovery
 from cocktail.styled import styled
 from cocktail.controllers import Controller, Location, session
 from woost import app
-from woost.models import get_current_website
 from woost.controllers import CMSController
 from .identityprovider import GoogleIdentityProvider
 
@@ -46,7 +45,7 @@ class GoogleOAuthProviderController(Controller):
         self.provider = provider
         self.target_url = (
             session.get(SESSION_PREFIX + "target_url")
-            or get_current_website().home.get_uri()
+            or app.website.home.get_uri()
         )
 
     def step_url(self, step_number):

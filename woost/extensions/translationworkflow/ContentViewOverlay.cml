@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <?py
-from woost.models import get_current_user, Role
+from woost import app
+from woost.models import Role
 from woost.extensions.translationworkflow.request import TranslationWorkflowRequest
 ?>
 
@@ -16,7 +17,7 @@ from woost.extensions.translationworkflow.request import TranslationWorkflowRequ
         )
         self._user_is_translator = (
             translators is not None
-            and translators in get_current_user().roles
+            and translators in app.user.roles
         )
         ?>
     </py:ready>

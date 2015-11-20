@@ -13,9 +13,9 @@ from cocktail import schema
 from cocktail.translations import translations
 from cocktail.persistence import transactional
 from cocktail.controllers import request_property
+from woost import app
 from woost.models import (
     changeset_context,
-    get_current_user,
     File,
     InstallationSyncPermission
 )
@@ -31,7 +31,7 @@ class InstallationSyncController(EditController):
 
     @event_handler
     def handle_traversed(cls, e):
-        get_current_user().require_permission(InstallationSyncPermission)
+        app.user.require_permission(InstallationSyncPermission)
 
     @request_property
     def synchronization(self):
@@ -81,7 +81,7 @@ class InstallationSyncController(EditController):
         file_downloads = set()
         selection = self.sync_selection
 
-        with changeset_context(get_current_user()):
+        with changeset_context(app.user):
 
             for obj in cmp["incomming"]:
                 if obj.global_id in selection:
