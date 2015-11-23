@@ -45,7 +45,7 @@ class Menu(TreeView):
         self.depends_on(self.root)
 
         if self.selection is None:
-            self.selection = app.original_publishable or app.publishable
+            self.selection = app.navigation_point
 
         TreeView._ready(self)
 
