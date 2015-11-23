@@ -29,6 +29,13 @@ woost.ga.activateWithEvent = function (element, eventData) {
         && element.form
     ) {
         options.hitCallback = function () {
+            if (element.name) {
+                jQuery("<input>")
+                    .attr("type", "hidden")
+                    .attr("name", element.name)
+                    .attr("value", element.value)
+                    .appendTo(element.form);
+            }
             element.form.submit();
         }
     }
@@ -99,7 +106,7 @@ woost.ga.eventTrigger = function (e) {
 }
 
 jQuery(function () {
-    jQuery(document).on("click", "a, button[type=button]", woost.ga.eventTrigger);
+    jQuery(document).on("click", "a, button, input[type='submit']", woost.ga.eventTrigger);
     jQuery(document).on("submit", "form", woost.ga.eventTrigger);
 });
 
