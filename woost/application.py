@@ -6,6 +6,7 @@ u"""
 import os
 from threading import local
 from pkg_resources import resource_filename
+from cocktail.modeling import GenericMethod
 from cocktail.caching import Cache
 from cocktail.controllers import context
 
@@ -177,6 +178,7 @@ http://woost.info
 
     def _set_publishable(self, publishable):
         self._thread_data.publishable = publishable
+        self.navigation_point = get_navigation_point(publishable)
 
         # Required to preserve backward compatibility
         context["publishable"] = publishable
@@ -197,6 +199,7 @@ http://woost.info
 
     def _set_original_publishable(self, original_publishable):
         self._thread_data.original_publishable = original_publishable
+        self.navigation_point = get_navigation_point(original_publishable)
 
         # Required to preserve backward compatibility
         context["original_publishable"] = original_publishable
@@ -213,4 +216,33 @@ http://woost.info
         .. type:: `woost.models.original_publishable`
         """
     )
+
+    # Active navigation point
+    def _get_navigation_point(self):
+        return getattr(self._thread_data, "navigation_point", None)
+
+    def _set_navigation_point(self, navigation_point):
+        self._thread_data.navigation_point = navigation_point
+
+    navigation_point = property(_get_navigation_point, _set_navigation_point, doc =
+        """Gets or sets the active navigation point for the current context.
+
+        The navigation point is the publishable that should be highlighted as
+        the active element in the navigation controls of the site's user
+        interface. This will usually be the same as the active publishable,
+        but not always: news items are a typical use case where the active
+        publishable (the piece of news) and the highlighted page (the news
+        listing) will differ.
+
+        "Context" is typically an HTTP request, but the property can also be
+        used outside a web request/response cycle.
+
+        .. type:: `woost.models.navigation_point`
+        """
+    )
+
+
+@GenericMethod
+def get_navigation_point(self):
+    return self
 
