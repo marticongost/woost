@@ -1,78 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?py
-from woost.models import Configuration
-from woost.extensions.googleanalytics.utils import add_event, fix_identifier
-?>
 
 <py:overlay
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:py="http://www.whads.com/ns/cocktail/templates"
     py:class="woost.views.TextBlockView">
 
-    <?py-class
-    generates_google_analytics_event = None
-    google_analytics_event_category = None
-    google_analytics_event_action = None
-    google_analytics_event_label = None
-
-    def init_google_analytics_event(self):
-
-        if self.generates_google_analytics_event is None:
-            self.generates_google_analytics_event = self.block.generates_google_analytics_event
-
-        if self.generates_google_analytics_event:
-            language = Configuration.instance.get_setting("google_analytics_language")
-
-            if self.google_analytics_event_category is None:
-                self.google_analytics_event_category = (
-                    self.block.google_analytics_event_category
-                    or fix_identifier(
-                        translations(
-                            self.block.__class__.__name__,
-                            language = language
-                        )
-                    )
-                )
-
-            if self.google_analytics_event_action is None:
-                self.google_analytics_event_action = (
-                    self.block.google_analytics_event_action
-                    or "click"
-                )
-
-            if self.google_analytics_event_label is None:
-                self.google_analytics_event_label = (
-                    self.block.google_analytics_event_label
-                    or (
-                        u"%s --%d--" % (
-                            fix_identifier(
-                                translations(
-                                    self.block,
-                                    language = language,
-                                    discard_generic_translation = True
-                                )
-                            ),
-                            self.block.id
-                        )
-                    ).strip()
-                )
-    ?>
-
-    <py:with py:element="self.block_link">
-        <py:ready>
-            <?py
-            if element.tag == "a":
-                self.init_google_analytics_event()
-                if self.generates_google_analytics_event:
-                    add_event(
-                        element,
-                        self.google_analytics_event_category,
-                        self.google_analytics_event_action,
-                        self.google_analytics_event_label
-                    )
-            ?>
-        </py:ready>
-    </py:with>
+    <!--
+    The block's event label shouldn't propagate to its contents;
+    links, buttons or other event triggers within the block's body
+    should provide their own label, or use their text as a fallback,
+    so they can be distinguished.
+    -->
+    <py:with py:element="self.text_container" py:ga_event_label=""/>
 
 </py:overlay>
 

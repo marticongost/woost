@@ -14,7 +14,7 @@ from cocktail.translations import DATE_STYLE_TEXT
     name_suffix = None
     date_style = DATE_STYLE_TEXT
 
-    def create_entry(self, news, news_index):
+    def create_entry(self, event, event_index):
         raise TypeError("%s doesn't implement the create_entry() method" % self)
 
     def translate_event_dates(self, event):
@@ -62,6 +62,11 @@ from cocktail.translations import DATE_STYLE_TEXT
         py:pagination="@{self.pagination}"
         py:name_prefix="@{self.name_prefix}"
         py:name_suffix="@{self.name_suffix}"/>
+
+    <py:woost.views.Link
+        py:def="event_link" py:args="event"
+        py:value="${event}"
+        py:content_check="${element.NO_CHECK}"/>
 
 </div>
 

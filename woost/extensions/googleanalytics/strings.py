@@ -5,6 +5,8 @@ u"""
 """
 from cocktail.translations import translations
 
+# Configuration / Website
+#------------------------------------------------------------------------------
 for cls_name in ("Configuration", "Website"):
     translations.define(cls_name + ".services.google_analytics",
         ca = u"Google Analytics",
@@ -50,6 +52,28 @@ for cls_name in ("Configuration", "Website"):
              u"language that should be used to obtain those texts."
     )
 
+    translations.define(cls_name + ".google_analytics_custom_definitions",
+        ca = u"Definicions personalitzades",
+        es = u"Definiciones personalizadas",
+        en = u"Custom definitions"
+    )
+
+    translations.define(
+        cls_name + ".google_analytics_custom_definitions-explanation",
+        ca = u"Afegeix dimensions o mètriques personalitzades a les "
+             u"estadístiques. Important: s'han de replicar les definicions "
+             u"manualment a la configuració de la propietat de Google Analytics,"
+             u"en el mateix ordre en que es defineixin aquí.",
+        es = u"Añade dimensiones o métricas personalizadas a las estadísticas. "
+             u"Importante: las definiciones deben replicarse manualmente en la "
+             u"configuración de la propiedad de Google Analytics, en el mismo "
+             u"orden en que se definan aquí.",
+        en = u"Adds custom dimensions or metrics to the page hit / event "
+             u"statistics. Important: all definitions must be manually replicated "
+             u"on the configuration of the Google Analytics property, in the same "
+             u"order they are defined here."
+    )
+
 translations.define("Document.ga_tracking_enabled",
     ca = u"Habilitar seguiment amb Google Analytics",
     es = u"Habilitar seguimiento con Google Analytics",
@@ -79,35 +103,85 @@ translations.define("woost.extensions.googleanalytics.redirection_body",
         % url
 )
 
-# TextBlock
+# GoogleAnalyticsCustomDefinition
 #------------------------------------------------------------------------------
-translations.define("TextBlock.google_analytics",
-    ca = u"Google Analytics",
-    es = u"Google Analytics",
-    en = u"Google Analytics"
+translations.define("GoogleAnalyticsCustomDefinition",
+    ca = u"Definició personalitzada de Google Analytics",
+    es = u"Definición personalizada de Google Analytics",
+    en = u"Custom definition for Google Analytics"
 )
 
-translations.define("TextBlock.generates_google_analytics_event",
-    ca = u"Genera esdeveniments de Google Analytics",
-    es = u"Genera eventos de Google Analytics",
-    en = u"Generates Google Analytics events"
+translations.define("GoogleAnalyticsCustomDefinition-plural",
+    ca = u"Definicions personalitzada de Google Analytics",
+    es = u"Definiciones personalizadas de Google Analytics",
+    en = u"Custom definitions for Google Analytics"
 )
 
-translations.define("TextBlock.google_analytics_event_category",
-    ca = u"Categoria",
-    es = u"Categoría",
-    en = u"Category"
+translations.define("GoogleAnalyticsCustomDefinition.title",
+    ca = u"Nom",
+    es = u"Nombre",
+    en = u"Name"
 )
 
-translations.define("TextBlock.google_analytics_event_action",
-    ca = u"Acció",
-    es = u"Acción",
-    en = u"Action"
+translations.define("GoogleAnalyticsCustomDefinition.identifier",
+    ca = u"Identificador",
+    es = u"Identificador",
+    en = u"Identifier"
 )
 
-translations.define("TextBlock.google_analytics_event_label",
-    ca = u"Etiqueta",
-    es = u"Etiqueta",
-    en = u"Label"
+translations.define("GoogleAnalyticsCustomDefinition.definition_type",
+    ca = u"Tipus de definició",
+    es = u"Tipo de definición",
+    en = u"Definition type"
+)
+
+translations.define(
+    "GoogleAnalyticsCustomDefinition.definition_type=dimension",
+    ca = u"Dimensió",
+    es = u"Dimensión",
+    en = u"Dimension"
+)
+
+translations.define(
+    "GoogleAnalyticsCustomDefinition.definition_type=metric",
+    ca = u"Mètrica",
+    es = u"Métrica",
+    en = u"Metric"
+)
+
+translations.define("GoogleAnalyticsCustomDefinition.enabled",
+    ca = u"Activa",
+    es = u"Activa",
+    en = u"Enabled"
+)
+
+translations.define("GoogleAnalyticsCustomDefinition.content_types",
+    ca = u"Tipus d'element",
+    es = u"Tipos de elemento",
+    en = u"Content types"
+)
+
+translations.define("GoogleAnalyticsCustomDefinition.initialization",
+    ca = u"Inicialització",
+    es = u"Inicialización",
+    en = u"Initialization"
+)
+
+# LanguageSelectorOverlay
+#------------------------------------------------------------------------------
+translations.define(
+    "woost.extensions.googleanalytics."
+    "LanguageSelectorOverlay.ga_event_category",
+    ca = u"selector-idiomes",
+    es = u"selector-de-idiomas",
+    en = u"language-selector"
+)
+
+translations.define(
+    "woost.extensions.googleanalytics."
+    "LanguageSelectorOverlay.ga_event_action",
+    ca = u"seleccionar-idioma",
+    es = u"seleccionar-idioma",
+    en = u"select-language"
 )
 
