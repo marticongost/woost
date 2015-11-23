@@ -9,10 +9,9 @@
 from decimal import Decimal
 from cocktail.translations import translations
 from cocktail import schema
+from woost import app
 from woost.models import (
     Item,
-    get_current_user,
-    get_current_website,
     ModifyMemberPermission
 )
 from woost.extensions.ecommerce.ecommercebillingconcept \
@@ -130,7 +129,7 @@ class ECommercePurchase(Item):
         apply_shipping_costs = True,
         apply_taxes = True
     ):
-        website = get_current_website()
+        website = app.website
 
         purchase_costs = {
             "price": {
@@ -221,7 +220,7 @@ class ECommercePurchase(Item):
                 and member.visible
                 and member.editable
                 and issubclass(member.schema, ECommercePurchase)
-                and get_current_user().has_permission(
+                and app.user.has_permission(
                     ModifyMemberPermission,
                     member = member
                 )

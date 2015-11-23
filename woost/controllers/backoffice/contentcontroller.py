@@ -37,9 +37,9 @@ from cocktail.controllers import (
     SessionParameterSource
 )
 from cocktail.controllers.userfilter import GlobalSearchFilter
+from woost import app
 from woost.models import (
     Item,
-    get_current_user,
     PermissionExpression,
     ReadPermission
 )
@@ -196,7 +196,7 @@ class ContentController(BaseBackOfficeController):
         user_collection = BackOfficeUserCollection(self.root_content_type)
 
         if self.root_content_type:
-            user = get_current_user()
+            user = app.user
             for role in user.roles:
                 if role.default_content_type:
                     if issubclass(
@@ -301,7 +301,7 @@ class ContentController(BaseBackOfficeController):
 
         # Filter unauthorized items
         user_collection.add_base_filter(
-            PermissionExpression(get_current_user(), ReadPermission)
+            PermissionExpression(app.user, ReadPermission)
         )
 
         # Add tabs based on the selected type

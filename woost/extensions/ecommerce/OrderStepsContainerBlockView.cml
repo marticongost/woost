@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <?py
 from cocktail.controllers import context
-from woost.models import get_current_website
+from woost import app
 from woost.extensions.ecommerce.basket import Basket
 from woost.extensions.ecommerce.utils import catalog_current_state_uri
 ?>
@@ -33,11 +33,11 @@ from woost.extensions.ecommerce.utils import catalog_current_state_uri
     <py:ready>
         <?py
         if self.order_steps is None:
-            website = get_current_website()
+            website = app.website
             self.order_steps = website.ecommerce_order_steps
 
         if self.current_step is None:
-            self.current_step = context["publishable"]
+            self.current_step = app.publishable
 
         order = Basket.get()
         if not order.purchases:

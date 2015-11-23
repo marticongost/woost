@@ -14,14 +14,11 @@ from cocktail.controllers import context
 from cocktail.translations import translations, set_language
 from cocktail.persistence import datastore
 from cocktail.schema.exceptions import ValidationError
+from woost import app
 from woost.models import (
     Configuration,
     Item,
-    User,
-    get_current_user,
-    set_current_user,
-    get_current_website,
-    set_current_website
+    User
 )
 from woost.extensions.mailer.mailinglist import MailingList
 from woost.extensions.mailer.sendemailpermission import SendEmailPermission
@@ -58,7 +55,7 @@ class PerUserCustomizableValueError(ValidationError):
 
 
 def available_lists(ctx):
-    user = get_current_user()
+    user = app.user
     return [mailingList
             for mailingList in MailingList.select()
             if user.has_permission(
@@ -191,13 +188,13 @@ class Mailing(Item):
         context["email_version"] = True
         values.setdefault("document_media", "email")
 
-        current_user = get_current_user()
+        current_user = app.user
         try:
-            set_current_user(user)
+            app.user = user
             body = self.document.render(**values)
             body = self._adapt_html(body)
         finally:
-            set_current_user(current_user)
+            app.user = current_user
 
         if not self.per_user_customizable:
             self.__cached_body = body
@@ -244,8 +241,8 @@ class Mailing(Item):
     def send(self, smtp_server, template_values, current_context):
 
         if not self.id in tasks:
-            current_user = get_current_user()
-            current_website = get_current_website()
+            current_user = app.user
+            current_website = app.website
             if self.status is None:
                 self.pending = self.get_receivers()
                 self.total = len(self.pending)
@@ -261,7 +258,7 @@ class Mailing(Item):
                 ))
 
                 set_language(mailing.language)
-                set_current_website(current_website)
+                app.website = current_website
                 context.update(current_context)
                 mailing.status = MAILING_STARTED
                 processed_emails = 0

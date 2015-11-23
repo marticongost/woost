@@ -115,14 +115,14 @@ class IsAccessibleExpressionTestCase(BaseTestCase):
     def test_translation_permitted(self):
 
         from cocktail.translations import language_context
+        from woost import app
         from woost.models import (
             Publishable,
             ReadPermission,
-            ReadTranslationPermission,
-            set_current_user
+            ReadTranslationPermission
         )
 
-        set_current_user(self.user)
+        app.user = self.user
 
         self.everybody_role.permissions.append(
             ReadPermission(content_type = Publishable)

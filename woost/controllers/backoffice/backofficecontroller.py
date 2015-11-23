@@ -11,7 +11,8 @@ from cocktail.pkgutils import resolve
 from cocktail.events import event_handler
 from cocktail.controllers import view_state
 from cocktail.translations import set_language
-from woost.models import get_current_user, Configuration
+from woost import app
+from woost.models import Configuration
 from woost.controllers.backoffice.basebackofficecontroller \
     import BaseBackOfficeController
 from woost.controllers.backoffice.contentcontroller \
@@ -61,7 +62,7 @@ class BackOfficeController(BaseBackOfficeController):
 
     @event_handler
     def handle_before_request(cls, event):
-        user = get_current_user()
+        user = app.user
         language = (
             user and user.prefered_language
             or Configuration.instance.get_setting("backoffice_language")

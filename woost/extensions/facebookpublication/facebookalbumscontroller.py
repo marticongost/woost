@@ -18,7 +18,8 @@ from cocktail.controllers import (
     get_parameter,
     Location
 )
-from woost.models import File, Configuration, get_current_user
+from woost import app
+from woost.models import File, Configuration
 from woost.controllers.backoffice.basebackofficecontroller \
     import BaseBackOfficeController
 from woost.extensions.facebookpublication import FacebookPublicationExtension
@@ -113,7 +114,7 @@ class FacebookAlbumsController(BaseBackOfficeController):
         from woost.extensions.facebookpublication \
             import FacebookPublicationExtension
 
-        user = get_current_user()
+        user = app.user
 
         return [fb_target
                 for fb_target in FacebookPublicationExtension.instance.targets

@@ -7,7 +7,8 @@ u"""
 @since:			March 2009
 """
 from cocktail.html import templates
-from woost.models import get_current_user, ReadPermission
+from woost import app
+from woost.models import ReadPermission
 
 TreeView = templates.get_class("cocktail.html.TreeView")
 
@@ -18,7 +19,7 @@ class ContentTreeView(TreeView):
     edit_stack = None
 
     def filter(self, item):
-        return get_current_user().has_permission(ReadPermission, target = item)
+        return app.user.has_permission(ReadPermission, target = item)
 
     def create_label(self, item):
         label = templates.new("woost.views.ContentLink")

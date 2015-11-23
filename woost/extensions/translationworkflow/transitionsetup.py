@@ -4,7 +4,8 @@ u"""
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
 from cocktail.modeling import cached_getter
-from woost.models import User, get_current_user
+from woost import app
+from woost.models import User
 from .translationagency import TranslationAgency
 
 
@@ -32,7 +33,7 @@ class TranslationWorkflowTransitionSetup(object):
     @cached_getter
     def eligible_translators(self):
 
-        user = get_current_user()
+        user = app.user
         agency = user.managed_translation_agency
 
         # Coordinators can assign to freelance translators and to translation

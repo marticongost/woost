@@ -8,7 +8,8 @@ u"""
 """
 from cocktail.html import templates
 from cocktail.html.uigeneration import UIGenerator
-from woost.models import get_current_user, ReadPermission
+from woost import app
+from woost.models import ReadPermission
 from woost.views.uigeneration import backoffice_display
 
 List = templates.get_class("cocktail.html.List")
@@ -25,7 +26,7 @@ class ContentList(List, UIGenerator):
 
     def _fill_entries(self):
 
-        user = get_current_user()
+        user = app.user
         items = self.items
 
         if items is not None:

@@ -11,12 +11,12 @@ from datetime import datetime
 import cherrypy
 from cocktail.controllers.location import Location
 from cocktail.translations import translations, get_language
+from woost import app
 from woost.models import (
     Feed,
     Configuration,
     PermissionExpression,
-    ReadPermission,
-    get_current_user
+    ReadPermission
 )
 from woost.controllers.publishablecontroller import PublishableController
 
@@ -26,7 +26,7 @@ class FeedController(PublishableController):
     def _produce_content(self, **kwargs):
 
         cms = self.context["cms"]
-        feed = self.context["publishable"]
+        feed = app.publishable
 
         location = Location.get_current()
         location.relative = False
@@ -93,7 +93,7 @@ class FeedController(PublishableController):
 
         items = feed.select_items()
         items.add_filter(PermissionExpression(
-            get_current_user(),
+            app.user,
             ReadPermission)
         )
 

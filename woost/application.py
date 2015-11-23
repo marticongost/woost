@@ -4,8 +4,11 @@ u"""
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
 import os
+from threading import local
 from pkg_resources import resource_filename
+from cocktail.modeling import GenericMethod
 from cocktail.caching import Cache
+from cocktail.controllers import context
 
 
 class Application(object):
@@ -30,6 +33,9 @@ __        __ ___   ___   ___ | |_
 
 http://woost.info
 """
+
+    def __init__(self):
+        self._thread_data = local()
 
     def path(self, *args):
         return os.path.join(self.root, *args)
@@ -131,4 +137,112 @@ http://woost.info
         self.__url_resolver = url_resolver
 
     url_resolver = property(_get_url_resolver, _set_url_resolver)
+
+    # Active user
+    def _get_user(self):
+        return getattr(self._thread_data, "user", None)
+
+    def _set_user(self, user):
+        self._thread_data.user = user
+
+    user = property(_get_user, _set_user, doc =
+        """Gets or sets the active user for the current context.
+
+        "Context" is typically an HTTP request, but the property can also be
+        used outside a web request/response cycle.
+
+        .. type:: `woost.models.User`
+        """
+    )
+
+    # Active website
+    def _get_website(self):
+        return getattr(self._thread_data, "website", None)
+
+    def _set_website(self, website):
+        self._thread_data.website = website
+
+    website = property(_get_website, _set_website, doc =
+        """Gets or sets the active website for the current context.
+
+        "Context" is typically an HTTP request, but the property can also be
+        used outside a web request/response cycle.
+
+        .. type:: `woost.models.Website`
+        """
+    )
+
+    # Active publishable
+    def _get_publishable(self):
+        return getattr(self._thread_data, "publishable", None)
+
+    def _set_publishable(self, publishable):
+        self._thread_data.publishable = publishable
+        self.navigation_point = get_navigation_point(publishable)
+
+        # Required to preserve backward compatibility
+        context["publishable"] = publishable
+
+    publishable = property(_get_publishable, _set_publishable, doc =
+        """Gets or sets the active publishable for the current context.
+
+        "Context" is typically an HTTP request, but the property can also be
+        used outside a web request/response cycle.
+
+        .. type:: `woost.models.publishable`
+        """
+    )
+
+    # Active original publishable
+    def _get_original_publishable(self):
+        return getattr(self._thread_data, "original_publishable", None)
+
+    def _set_original_publishable(self, original_publishable):
+        self._thread_data.original_publishable = original_publishable
+        self.navigation_point = get_navigation_point(original_publishable)
+
+        # Required to preserve backward compatibility
+        context["original_publishable"] = original_publishable
+
+    original_publishable = property(
+        _get_original_publishable,
+        _set_original_publishable,
+        doc = """
+        Gets or sets the active original_publishable for the current context.
+
+        "Context" is typically an HTTP request, but the property can also be
+        used outside a web request/response cycle.
+
+        .. type:: `woost.models.original_publishable`
+        """
+    )
+
+    # Active navigation point
+    def _get_navigation_point(self):
+        return getattr(self._thread_data, "navigation_point", None)
+
+    def _set_navigation_point(self, navigation_point):
+        self._thread_data.navigation_point = navigation_point
+
+    navigation_point = property(_get_navigation_point, _set_navigation_point, doc =
+        """Gets or sets the active navigation point for the current context.
+
+        The navigation point is the publishable that should be highlighted as
+        the active element in the navigation controls of the site's user
+        interface. This will usually be the same as the active publishable,
+        but not always: news items are a typical use case where the active
+        publishable (the piece of news) and the highlighted page (the news
+        listing) will differ.
+
+        "Context" is typically an HTTP request, but the property can also be
+        used outside a web request/response cycle.
+
+        .. type:: `woost.models.navigation_point`
+        """
+    )
+
+
+@GenericMethod
+def get_navigation_point(self):
+    return self
 

@@ -21,6 +21,7 @@ from cocktail.controllers import (
     session,
 )
 from cocktail import schema
+from woost import app
 from woost.models import (
     Configuration,
     Item,
@@ -30,7 +31,6 @@ from woost.models import (
     URI,
     File,
     Block,
-    get_current_user,
     ReadPermission,
     ReadMemberPermission,
     CreatePermission,
@@ -370,7 +370,7 @@ class UserAction(object):
         return (
             self.matches_context(context)
             and self.matches_content_type(target)
-            and self.is_permitted(get_current_user(), target)
+            and self.is_permitted(app.user, target)
         )
 
     def is_permitted(self, user, target):
@@ -770,7 +770,7 @@ class ReferencesAction(UserAction):
                                 yield item, member.related_end
 
     def _should_include_reference(self, referrer, relation):
-        user = get_current_user()
+        user = app.user
         return (
             relation.visible
             and user.has_permission(ReadPermission, target = referrer)

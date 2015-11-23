@@ -11,6 +11,7 @@ from cocktail.controllers import (
     request_property,
     context
 )
+from woost import app
 from woost.controllers.uploadform import UploadForm
 from woost.controllers.formagreement import requires_agreement
 
@@ -105,7 +106,7 @@ class FormController(FormProcessor, Controller):
 
             # Redirection
             if redirection is None:
-                publishable = context["publishable"]
+                publishable = app.publishable
                 redirection = publishable.find_first_child_redirection_target()
 
             if redirection is not None:

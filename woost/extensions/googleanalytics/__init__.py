@@ -9,13 +9,12 @@
 from simplejson import dumps
 from cocktail.translations import translations, get_language
 from cocktail.events import Event
-from cocktail.controllers import context
+from woost import app
 from woost.models import (
     Extension,
     extension_translations,
     Configuration,
-    Publishable,
-    get_current_user
+    Publishable
 )
 
 translations.define("GoogleAnalyticsExtension",
@@ -116,8 +115,8 @@ class GoogleAnalyticsExtension(Extension):
                 title = extension_translations,
                 identifier = "woost.roles",
                 initialization =
-                    "from woost.models import get_current_user\n"
-                    "value = set(get_current_user().iter_roles())"
+                    "from woost import app\n"
+                    "value = set(app.user.iter_roles())"
             ),
             self._create_asset(
                 GoogleAnalyticsCustomDefinition,
@@ -189,7 +188,7 @@ class GoogleAnalyticsExtension(Extension):
         config = Configuration.instance
 
         if publishable is None:
-            publishable = context.get("publishable")
+            publishable = app.publishable
 
         event = self.declaring_tracker(
             publishable = publishable,

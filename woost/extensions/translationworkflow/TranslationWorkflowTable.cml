@@ -2,7 +2,8 @@
 <?py
 from cocktail import schema
 from cocktail.html.datadisplay import DataDisplay
-from woost.models import get_current_user, ReadMemberPermission
+from woost import app
+from woost.models import ReadMemberPermission
 ?>
 
 <table
@@ -16,7 +17,7 @@ from woost.models import get_current_user, ReadMemberPermission
 
     <py:ready>
         <?py
-        user = get_current_user()
+        user = app.user
         self._translation_request = getattr(self, "persistent_object", None) or self.data
         self._translated_item = schema.get(self._translation_request, "translated_item")
         self._translated_model = type(self._translated_item)

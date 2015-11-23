@@ -42,7 +42,7 @@ class PublishableController(BaseCMSController):
 
     def _apply_cache(self, **kwargs):
 
-        publishable = self.context["publishable"]
+        publishable = app.publishable
         request = cherrypy.request
         response = cherrypy.response
 
@@ -50,7 +50,7 @@ class PublishableController(BaseCMSController):
             self.cache_enabled
             and publishable.cacheable
             and request.method == "GET"
-            and "original_publishable" not in self.context
+            and app.original_publishable is None
         ):
             return None
 

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <?py
 from cocktail.controllers import context
+from woost import app
 from woost.models import (
-    get_current_user,
     ModifyPermission,
     Publishable,
     Slot
@@ -36,12 +36,12 @@ from woost.models import (
             self.set_client_variable("woost.backofficeURI", backoffice.get_uri())
 
         if self.publishable is None:
-            self.publishable = context["publishable"]
+            self.publishable = app.publishable
 
         if not context.get("show_user_controls", True):
             self.visible = False
 
-        if not get_current_user().has_permission(ModifyPermission, target = self.publishable):
+        if not app.user.has_permission(ModifyPermission, target = self.publishable):
             self.visible = False
         ?>
     </py:binding>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <?py
-from woost.models import get_current_user
+from woost import app
 from woost.extensions.translationworkflow.utils \
     import object_is_included_in_translation_workflow
 ?>
@@ -19,7 +19,7 @@ from woost.extensions.translationworkflow.utils \
         transition = None
 
         if object_is_included_in_translation_workflow(self.edited_item):
-            for role in get_current_user().iter_roles():
+            for role in app.user.iter_roles():
                 if role.translation_workflow_default_transition is not None:
                     transition = role.translation_workflow_default_transition
                 break

@@ -10,13 +10,13 @@ from cocktail.modeling import extend, call_base
 from cocktail.translations import translations, require_language
 from cocktail.html import Element, templates
 from cocktail.html.hiddeninput import HiddenInput
+from woost import app
 from woost.models import (
     Item,
     Publishable,
     CreatePermission,
     ModifyPermission,
-    DeletePermission,
-    get_current_user
+    DeletePermission
 )
 from woost.views.uigeneration import (
     backoffice_selection_control,
@@ -71,7 +71,7 @@ class ItemSelector(Element):
 
         if self.member:
 
-            user = get_current_user()
+            user = app.user
 
             # New
             if (
@@ -185,7 +185,7 @@ class ItemSelector(Element):
             )
             if content_type.visible
             and content_type.instantiable
-            and get_current_user().has_permission(
+            and app.user.has_permission(
                 CreatePermission,
                 target = content_type
             )

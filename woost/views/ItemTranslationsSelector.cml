@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <?py
+from woost import app
 from woost.models import (
     Configuration,
     CreateTranslationPermission,
-    DeleteTranslationPermission,
-    get_current_user
+    DeleteTranslationPermission
 )
 ?>
 
@@ -20,7 +20,7 @@ from woost.models import (
 
     def _can_add_translation(self, language):
         return (
-            get_current_user().has_permission(
+            app.user.has_permission(
                 CreateTranslationPermission,
                 language = language
             )

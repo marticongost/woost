@@ -9,12 +9,12 @@
 from decimal import Decimal
 from cocktail import schema
 from cocktail.translations import translations
+from woost import app
 from woost.models import (
     Publishable,
     Controller,
     File,
-    Slot,
-    get_current_website
+    Slot
 )
 
 
@@ -101,7 +101,7 @@ class ECommerceProduct(Publishable):
     blocks = Slot()
 
     def offers(self):
-        website = get_current_website()
+        website = app.website
         for pricing in website.ecommerce_pricing:
             if not pricing.hidden and pricing.applies_to(self):
                 yield pricing

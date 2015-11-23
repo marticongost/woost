@@ -109,7 +109,7 @@ class BaseCMSController(Controller):
         @return: The generated absolute URI.
         @rtype: unicode
         """
-        publishable = self.context["publishable"]
+        publishable = app.publishable
         uri = app.url_resolver.get_path(publishable)
 
         if uri is None:

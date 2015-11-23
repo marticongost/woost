@@ -10,7 +10,8 @@ import os
 import cherrypy
 import re
 from cocktail.controllers import serve_file, resolve_object_ref
-from woost.models import Item, get_current_user, RenderPermission
+from woost import app
+from woost.models import Item, RenderPermission
 from woost.models.rendering import (
     require_rendering,
     ImageFactory,
@@ -81,7 +82,7 @@ class ImagesController(BaseCMSController):
                 )
 
         # Deny access to unauthorized elements
-        get_current_user().require_permission(
+        app.user.require_permission(
             RenderPermission,
             target = item,
             image_factory = factory

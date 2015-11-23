@@ -10,6 +10,7 @@ from cocktail.controllers import (
     Form,
     request_property
 )
+from woost import app
 
 
 class SurveyController(FormProcessor, Controller):
@@ -36,5 +37,5 @@ class SurveyController(FormProcessor, Controller):
                     self.controller.block.redirection.get_uri()
                 )
             else:
-                self.controller.context["publishable"].first_child_redirection()
+                app.publishable.first_child_redirection()
 
