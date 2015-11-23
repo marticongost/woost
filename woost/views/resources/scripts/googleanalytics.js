@@ -9,51 +9,6 @@
 
 cocktail.declare("woost.ga");
 
-woost.ga.eventActivationTimeout = 1000;
-
-woost.ga.activateWithEvent = function (element, eventData) {
-
-    var options = {};
-    for (var key in eventData) {
-        options[key] = eventData[key];
-    }
-    options.transport = "beacon";
-
-    if (element.tagName == "A") {
-        options.hitCallback = function () {
-            location.href = element.href;
-        }
-    }
-    else if (
-        (element.tagName == "INPUT" || element.tagName == "BUTTON")
-        && element.type == "submit"
-        && element.form
-    ) {
-        options.hitCallback = function () {
-            if (element.name) {
-                jQuery("<input>")
-                    .attr("type", "hidden")
-                    .attr("name", element.name)
-                    .attr("value", element.value)
-                    .appendTo(element.form);
-            }
-            element.form.submit();
-        }
-    }
-    else if (element.tagName == "FORM") {
-        options.hitCallback = function () {
-            element.submit();
-        }
-    }
-
-    ga("send", "event", options);
-
-    // In case GA takes a while to respond...
-    if (woost.ga.eventActivationTimeout && options.hitCallback) {
-        setTimeout(options.hitCallback, woost.ga.eventActivationTimeout);
-    }
-}
-
 woost.ga.getEventData = function (element) {
 
     if (element.parentNode && element.parentNode.getAttribute) {
