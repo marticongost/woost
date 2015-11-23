@@ -10,7 +10,8 @@ from cocktail.controllers import (
     request_property,
     FormProcessor
 )
-from woost.models import Publishable, get_current_website
+from woost import app
+from woost.models import Publishable
 from woost.extensions.ecommerce.basket import Basket
 from woost.extensions.ecommerce.ecommerceorder import ECommerceOrder
 from woost.extensions.ecommerce.orderstepcontroller import ProceedForm
@@ -37,7 +38,7 @@ class SummaryController(FormProcessor, Controller):
 
         def after_submit(self):
             payments = PaymentsExtension.instance
-            website = get_current_website()
+            website = app.website
             payment_gateway = website.ecommerce_payment_gateway
 
             # Redirect the user to the payment gateway

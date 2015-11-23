@@ -2,10 +2,10 @@
 
 <?py
 from cocktail.controllers import context, Location
+from woost import app
 from woost.models import (
     Publishable,
     Configuration,
-    get_current_user,
     CreatePermission,
     ModifyPermission,
     DeletePermission
@@ -28,7 +28,7 @@ from woost.models import (
     edit_parameters = {}
 
     def is_permitted(self):
-        return get_current_user().has_permission(
+        return app.user.has_permission(
             self.action_permissions[self.action],
             target = self.target
         )
@@ -63,10 +63,10 @@ from woost.models import (
             self.edit_parameters = self.edit_parameters.copy()
 
         if self.target is None:
-            self.target = context["publishable"]
+            self.target = app.publishable
 
         if self.target_desc is None:
-            if self.target is context["publishable"]:
+            if self.target is app.publishable:
                 self.target_desc = translations("woost.views.EditLink-publishable_target")
             else:
                 self.target_desc = translations(self.target)

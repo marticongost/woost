@@ -3,7 +3,7 @@
 from cocktail.modeling import OrderedSet
 from cocktail.stringutils import normalize
 from cocktail.html.grouping import Grouping, GroupByMember
-from woost.models import get_current_user
+from woost import app
 from woost.extensions.translationworkflow.request \
     import TranslationWorkflowRequest
 ?>

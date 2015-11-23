@@ -12,11 +12,11 @@ from cocktail.events import event_handler
 from cocktail import schema
 from cocktail.schema.expressions import NegativeExpression
 from cocktail.controllers.parameters import SessionParameterSource
+from woost import app
 from woost.models import (
     Item,
     ChangeSet,
     Configuration,
-    get_current_user,
     ReadHistoryPermission,
     ChangeSetPermissionExpression
 )
@@ -70,7 +70,7 @@ class ChangeLogController(BaseBackOfficeController):
 
     @event_handler
     def handle_traversed(cls, event):
-        get_current_user().require_permission(ReadHistoryPermission)
+        app.user.require_permission(ReadHistoryPermission)
 
     @cached_getter
     def user_collection(self):
@@ -89,7 +89,7 @@ class ChangeLogController(BaseBackOfficeController):
             key_prefix = user_collection.persistence_prefix
         )
         user_collection.add_base_filter(
-            ChangeSetPermissionExpression(get_current_user())
+            ChangeSetPermissionExpression(app.user)
         )
         user_collection.subset.verbose = True
         return user_collection

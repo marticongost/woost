@@ -5,7 +5,7 @@ u"""
 """
 from urllib import urlopen
 import cherrypy
-from woost.models import get_current_website
+from woost import app
 from woost.extensions.payments.paymentgatewaycontroller \
     import PaymentGatewayController
 
@@ -41,7 +41,7 @@ class DummyPaymentGatewayController(PaymentGatewayController):
             redirection = self.payment_gateway.payment_failed_page
 
         if redirection is None:
-            redirection = get_current_website().home
+            redirection = app.website.home
 
         raise cherrypy.HTTPRedirect(redirection.get_uri(host = "!"))
 

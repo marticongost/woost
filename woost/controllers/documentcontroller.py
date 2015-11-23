@@ -10,6 +10,7 @@ import cherrypy
 from cocktail.translations import get_language, translations
 from cocktail.modeling import cached_getter
 from cocktail.controllers import get_state
+from woost import app
 from woost.controllers.publishablecontroller import PublishableController
 
 
@@ -19,7 +20,7 @@ class DocumentController(PublishableController):
     def __call__(self, **kwargs):
 
         # Document specified redirection
-        document = self.context["publishable"]
+        document = app.publishable
 
         if document.redirection_mode:
 
@@ -71,7 +72,7 @@ class DocumentController(PublishableController):
 
     @cached_getter
     def page_template(self):
-        template = self.context["publishable"].template
+        template = app.publishable.template
 
         if template is None:
             raise cherrypy.NotFound()

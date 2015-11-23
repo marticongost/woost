@@ -13,10 +13,10 @@ from cocktail.events import event_handler
 from cocktail.pkgutils import resolve
 from cocktail import schema
 from cocktail.controllers import view_state, Location, get_parameter
+from woost import app
 from woost.models import (
     Item,
-    ReadPermission,
-    get_current_user
+    ReadPermission
 )
 
 from woost.controllers.backoffice.basebackofficecontroller \
@@ -64,7 +64,7 @@ class ItemController(BaseBackOfficeController):
 
         # Restrict access
         if controller.stack_node.item.is_inserted:
-            get_current_user().require_permission(
+            app.user.require_permission(
                 ReadPermission,
                 target = controller.stack_node.item
             )
@@ -119,7 +119,7 @@ class ItemController(BaseBackOfficeController):
             e = self.context["cms"].choosing_visible_translations(
                 item = item,
                 visible_translations = set(
-                    get_current_user().backoffice_visible_translations
+                    app.user.backoffice_visible_translations
                     or self.visible_languages
                 )
             )

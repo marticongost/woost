@@ -9,7 +9,7 @@ from cocktail.controllers import (
     Form,
     FormProcessor
 )
-from woost.models import get_current_website
+from woost import app
 from woost.extensions.ecommerce.basket import Basket
 from woost.extensions.ecommerce.orderstepcontroller import ProceedForm
 
@@ -32,7 +32,7 @@ class CheckoutController(FormProcessor, Controller):
             payment_type = schema.get_member("payment_type")
             if payment_type:
                 payment_type.enumeration = \
-                    get_current_website().ecommerce_payment_types
+                    app.website.ecommerce_payment_types
             return schema
 
         def submit(self):

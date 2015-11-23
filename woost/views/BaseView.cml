@@ -3,7 +3,7 @@
 from cocktail.translations import require_language
 from cocktail.html import Content
 from woost import app
-from woost.models import Configuration, Publishable, get_current_website
+from woost.models import Configuration, Publishable
 ?>
 
 <py:block
@@ -33,7 +33,7 @@ from woost.models import Configuration, Publishable, get_current_website
     def get_page_title(self):
         title = self.get_content_title()
         if not self.publishable.is_home_page():
-            site_name = get_current_website().site_name
+            site_name = app.website.site_name
             if site_name:
                 title += " | " + site_name
         return title
@@ -53,7 +53,7 @@ from woost.models import Configuration, Publishable, get_current_website
             document.head.insert(0, Content("<!--\n" + app.splash + "\n-->"))
 
         # Links
-        home = get_current_website().home
+        home = app.website.home
         document.head_start_link = Element("link", rel = "start", title = home.title, href = home.get_uri() or "/")
         document.head.append(document.head_start_link)
 
@@ -106,7 +106,7 @@ from woost.models import Configuration, Publishable, get_current_website
 
         publishable = self.publishable
         config = Configuration.instance
-        website = get_current_website()
+        website = app.website
 
         for key, value in config.meta_tags:
             self.set_meta(key, value)

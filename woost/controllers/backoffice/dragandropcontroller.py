@@ -8,12 +8,12 @@ from cocktail import schema
 from cocktail.translations import translations
 from cocktail.persistence import transactional
 from cocktail.controllers import request_property, get_parameter
+from woost import app
 from woost.models import (
     Item,
     ModifyPermission,
     ModifyMemberPermission,
-    changeset_context,
-    get_current_user
+    changeset_context
 )
 from woost.controllers.notifications import Notification
 from woost.controllers.backoffice.basebackofficecontroller \
@@ -56,7 +56,7 @@ class DragAndDropController(BaseBackOfficeController):
         if not dragged_object or not target_object:
             return []
 
-        user = get_current_user()
+        user = app.user
 
         return [
             member
@@ -107,7 +107,7 @@ class DragAndDropController(BaseBackOfficeController):
             target_object = self.target_object
             target_member = self.target_member
 
-            user = get_current_user()
+            user = app.user
             user.require_permission(ModifyPermission, target = dragged_object)
             user.require_permission(ModifyPermission, target = target_object)
 

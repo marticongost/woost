@@ -47,7 +47,8 @@ class WebsiteLanguageTestCase(BaseTestCase):
 
     def test_websites_can_override_language_visibility(self):
 
-        from woost.models import Configuration, Website, set_current_website
+        from woost import app
+        from woost.models import Configuration, Website
 
         w1 = Website()
         w2 = Website()
@@ -55,26 +56,26 @@ class WebsiteLanguageTestCase(BaseTestCase):
         self.config.languages = ["ca", "es", "en"]
 
         for website in (None, w1, w2):
-            set_current_website(website)
+            app.website = website
             for lang in ["ca", "es", "en"]:
                 assert self.config.language_is_enabled(lang)
 
         self.config.published_languages = ["en"]
 
         for website in (None, w1, w2):
-            set_current_website(website)
+            app.website = website
             assert self.config.language_is_enabled("en")
             assert not self.config.language_is_enabled("ca")
             assert not self.config.language_is_enabled("es")
 
         w1.published_languages = ["ca"]
 
-        set_current_website(w1)
+        app.website = w1
         assert self.config.language_is_enabled("ca")
         assert not self.config.language_is_enabled("es")
         assert not self.config.language_is_enabled("en")
 
-        set_current_website(w2)
+        app.website = w2
         assert self.config.language_is_enabled("en")
         assert not self.config.language_is_enabled("ca")
         assert not self.config.language_is_enabled("es")

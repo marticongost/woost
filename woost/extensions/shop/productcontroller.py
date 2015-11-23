@@ -5,6 +5,7 @@ u"""
 """
 import cherrypy
 from cocktail.controllers import request_property
+from woost import app
 from woost.controllers.publishablecontroller import PublishableController
 from woost.extensions.shop.basket import Basket
 
@@ -14,7 +15,7 @@ class ProductController(PublishableController):
 
     @request_property
     def view_class(self):
-        view_class = self.context["publishable"].view_class
+        view_class = app.publishable.view_class
 
         if view_class is None:
             raise cherrypy.NotFound()

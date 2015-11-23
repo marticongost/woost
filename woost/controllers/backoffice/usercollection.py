@@ -12,10 +12,8 @@ from cocktail.html import TranslatedValue
 from cocktail.html.uigeneration import display_factory
 from cocktail.controllers import UserCollection
 from cocktail.controllers.userfilter import GlobalSearchFilter
-from woost.models import (
-    ReadMemberPermission,
-    get_current_user
-)
+from woost import app
+from woost.models import ReadMemberPermission
 from woost.controllers.backoffice.contentviews import global_content_views
 
 
@@ -77,7 +75,7 @@ class BackOfficeUserCollection(UserCollection):
         """The schema adapter used to produce data suitable for listing.
         @type: L{SchemaAdapter<cocktail.schema.adapter.SchemaAdapter>}
         """
-        user = get_current_user()
+        user = app.user
         adapter = schema.Adapter()
         adapter.exclude([
             member.name

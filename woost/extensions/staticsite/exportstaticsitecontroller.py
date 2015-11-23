@@ -15,7 +15,8 @@ from cocktail import schema
 from cocktail.controllers import request_property
 from cocktail.controllers.formcontrollermixin import FormControllerMixin
 from cocktail.persistence import datastore
-from woost.models import Configuration, Publishable, get_current_user
+from woost import app
+from woost.models import Configuration, Publishable
 from woost.controllers.backoffice.basebackofficecontroller \
     import BaseBackOfficeController
 from woost.extensions.staticsite.staticsitedestination import StatusTracker
@@ -44,7 +45,7 @@ class ExportStaticSiteController(
         return [
             destination
             for destination in extension.destinations
-            if get_current_user().has_permission(
+            if app.user.has_permission(
                 ExportationPermission,
                 destination = destination
             )
@@ -105,7 +106,7 @@ class ExportStaticSiteController(
 
         form = self.form_data
 
-        user = get_current_user()
+        user = app.user
         user.require_permission(
             ExportationPermission,
             destination = form["destination"]

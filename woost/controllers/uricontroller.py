@@ -8,6 +8,7 @@ u"""
 """
 import cherrypy
 from cocktail.controllers import get_state
+from woost import app
 from woost.controllers import BaseCMSController
 
 
@@ -20,6 +21,6 @@ class URIController(BaseCMSController):
         else:
             parameters = None
 
-        uri = self.context["publishable"].get_uri(parameters = parameters)
+        uri = app.publishable.get_uri(parameters = parameters)
         raise cherrypy.HTTPRedirect(uri)
 

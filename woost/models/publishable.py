@@ -29,8 +29,6 @@ from .enabledtranslations import auto_enables_translations
 from .localemember import LocaleMember
 from .item import Item
 from .role import Role
-from .usersession import get_current_user
-from .websitesession import get_current_website
 from .permission import (
     ReadPermission,
     ReadTranslationPermission,
@@ -493,7 +491,7 @@ class Publishable(Item):
         websites_subset = self.websites
         if websites_subset and website != "any":
             if website is None:
-                website = get_current_website()
+                website = app.website
             if website is None or website not in websites_subset:
                 return False
 
@@ -502,7 +500,7 @@ class Publishable(Item):
     def is_accessible(self, user = None, language = None, website = None):
 
         if user is None:
-            user = get_current_user()
+            user = app.user
 
         return (
             self.is_published(language, website)
@@ -528,7 +526,7 @@ class Publishable(Item):
     @classmethod
     def select_accessible(cls, *args, **kwargs):
         return cls.select(filters = [
-            IsAccessibleExpression(get_current_user())
+            IsAccessibleExpression(app.user)
         ]).select(*args, **kwargs)
 
     def get_uri(self,
@@ -554,7 +552,7 @@ class Publishable(Item):
                 uri = make_uri(uri, **parameters)
 
             if host in ("!", "?"):
-                current_website = get_current_website()
+                current_website = app.website
                 acceptable_websites = self.websites
                 valid_website = (
                     current_website is not None and (
@@ -667,7 +665,7 @@ class IsPublishedExpression(Expression):
             # Exclude content by website:
             if len(Configuration.instance.websites) > 1:
 
-                website = get_current_website()
+                website = app.website
                 per_website_index = Publishable.per_website_publication_index
 
                 # - content that can be published on any website
@@ -720,7 +718,7 @@ class IsAccessibleExpression(Expression):
     def resolve_filter(self, query):
 
         def impl(dataset):
-            user = self.user or get_current_user()
+            user = self.user or app.user
             access_expr = PermissionExpression(user, ReadPermission)
             published_expr = IsPublishedExpression()
             dataset = access_expr.resolve_filter(query)[1](dataset)
@@ -765,13 +763,13 @@ class UserHasAccessLevelExpression(Expression):
 
         return access_level is None or any(
             (role in access_level.roles_with_access)
-            for role in (self.user or get_current_user()).iter_roles()
+            for role in (self.user or app.user).iter_roles()
         )
 
     def resolve_filter(self, query):
 
         def impl(dataset):
-            user = self.user or get_current_user()
+            user = self.user or app.user
             index = Publishable.access_level.index
             restricted_content = set(index.values(
                 min = None,

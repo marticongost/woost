@@ -8,7 +8,8 @@ import cherrypy
 from bs4 import BeautifulSoup, Comment
 from premailer import *
 from cocktail.controllers import request_property, Location
-from woost.models import get_current_user, ModifyPermission
+from woost import app
+from woost.models import ModifyPermission
 from woost.controllers.documentcontroller import DocumentController
 
 
@@ -40,9 +41,9 @@ class NewsletterController(DocumentController):
         content = DocumentController._produce_content(self, **kwargs)
 
         # Disable newsletter processing if we are "editing" it
-        if not get_current_user().has_permission(
+        if not app.user.has_permission(
             ModifyPermission,
-            target = self.context["publishable"]
+            target = app.publishable
         ):
             content = self.process_newsletter_html(content)
 
