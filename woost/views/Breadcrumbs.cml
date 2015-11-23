@@ -44,7 +44,8 @@ from woost import app
 
     <py:woost.views.Link
         py:def="breadcrumbs_entry_link" py:args="item"
-        py:value="${item}">
+        py:value="${item}"
+        py:content_check="${element.NO_CHECK}">
         <py:new
             py:local_id="label"
             py:element="self.create_breadcrumbs_entry_label(item)"/>
