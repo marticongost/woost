@@ -12,7 +12,9 @@ from cocktail.events import Event
 from cocktail.controllers import context
 from woost.models import (
     Extension,
+    extension_translations,
     Configuration,
+    Publishable,
     get_current_user
 )
 
@@ -60,16 +62,19 @@ class GoogleAnalyticsExtension(Extension):
             configuration,
             website,
             document,
-            textblock,
-            eventredirection
+            block,
+            element,
+            eventredirection,
+            customdefinition
         )
 
-        # Install an overlay for text blocks to automatically generate events
-        # when their block link is clicked
+        # Install an overlay to generate events for links pointing to
+        # publishable elements
         from cocktail.html import templates
-        templates.get_class(
-            "woost.extensions.googleanalytics.TextBlockViewOverlay"
-        )
+        templates.get_class("woost.extensions.googleanalytics.BaseViewOverlay")
+        templates.get_class("woost.extensions.googleanalytics.LinkOverlay")
+        templates.get_class("woost.extensions.googleanalytics.TextBlockViewOverlay")
+        templates.get_class("woost.extensions.googleanalytics.LanguageSelectorOverlay")
 
         from cocktail.events import when
         from woost.controllers import CMSController
@@ -86,6 +91,64 @@ class GoogleAnalyticsExtension(Extension):
                     html += " "
                 html += self.get_analytics_page_hit_script(publishable)
                 e.output["head_end_html"] = html
+
+    def _install(self):
+        from woost.extensions.googleanalytics import installationstrings
+        self._create_default_custom_definitions()
+
+    def _create_default_custom_definitions(self):
+
+        from .customdefinition import GoogleAnalyticsCustomDefinition
+
+        Configuration.instance.google_analytics_custom_definitions.extend([
+            self._create_asset(
+                GoogleAnalyticsCustomDefinition,
+                "default_custom_definitions.locale",
+                title = extension_translations,
+                identifier = "woost.locale",
+                initialization =
+                    "from cocktail.translations import get_language\n"
+                    "value = get_language()"
+            ),
+            self._create_asset(
+                GoogleAnalyticsCustomDefinition,
+                "default_custom_definitions.roles",
+                title = extension_translations,
+                identifier = "woost.roles",
+                initialization =
+                    "from woost.models import get_current_user\n"
+                    "value = set(get_current_user().iter_roles())"
+            ),
+            self._create_asset(
+                GoogleAnalyticsCustomDefinition,
+                "default_custom_definitions.path",
+                title = extension_translations,
+                identifier = "woost.path",
+                initialization =
+                    "value = reversed(list(publishable.ascend_tree(True)))"
+            ),
+            self._create_asset(
+                GoogleAnalyticsCustomDefinition,
+                "default_custom_definitions.publishable",
+                title = extension_translations,
+                identifier = "woost.publishable",
+                initialization =
+                    "value = publishable"
+            ),
+            self._create_asset(
+                GoogleAnalyticsCustomDefinition,
+                "default_custom_definitions.type",
+                title = extension_translations,
+                identifier = "woost.type",
+                initialization =
+                    "from woost.models import Publishable\n"
+                    "value = [\n"
+                    "   cls\n"
+                    "   for cls in publishable.__class__.__mro__\n"
+                    "   if cls is not Publishable and issubclass(cls, Publishable)\n"
+                    "]"
+            )
+        ])
 
     inclusion_code = {
         "async":
@@ -121,6 +184,8 @@ class GoogleAnalyticsExtension(Extension):
         commands = None,
         async = True
     ):
+        from .utils import get_ga_custom_values
+
         config = Configuration.instance
 
         if publishable is None:
@@ -131,9 +196,8 @@ class GoogleAnalyticsExtension(Extension):
             account = config.get_setting("google_analytics_account"),
             tracker_parameters = {},
             domain = config.get_setting("google_analytics_domain"),
-            template =
-                self.inclusion_code["async" if async else "sync"],
-            values = self.get_analytics_values(publishable),
+            template = self.inclusion_code["async" if async else "sync"],
+            values = get_ga_custom_values(publishable),
             commands = commands or []
         )
 
@@ -164,30 +228,6 @@ class GoogleAnalyticsExtension(Extension):
             publishable = publishable,
             commands = [("send", "pageview")]
         )
-
-    def get_analytics_values(self, publishable):
-        return {
-            # Custom dimension: language
-            "dimension1": get_language() or "",
-
-            # Custom dimension: roles
-            "dimension2":
-                self._serialize_collection(
-                    role.id for role in get_current_user().iter_roles()
-                ),
-
-            # Custom dimension: path
-            "dimension3":
-                "" if publishable is None
-                else self._serialize_collection(
-                    ancestor.id
-                    for ancestor
-                    in reversed(list(publishable.ascend_tree(True)))
-                )
-        }
-
-    def _serialize_collection(self, value):
-        return "-" + "-".join(str(item) for item in value) + "-"
 
     def _serialize_commands(self, commands):
         return "\n".join(
