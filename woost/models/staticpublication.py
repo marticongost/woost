@@ -6,7 +6,6 @@ u"""
 import os
 from cocktail.styled import styled
 from cocktail.events import when
-from cocktail.preprocessing import preprocessors
 from cocktail.persistence import datastore
 from woost import app
 from woost.models.publishable import Publishable
@@ -40,9 +39,6 @@ def create_links(file, links = None, encoding = None):
 
     anonymous = User.require_instance(qname = "woost.anonymous_user")
     if not file.is_accessible(anonymous):
-        return
-
-    if preprocessors.get(file.mime_type):
         return
 
     if links is None:
