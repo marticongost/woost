@@ -246,14 +246,12 @@ def publishable_popup(item, parameters):
         )
      ):
         view = templates.new("woost.views.PublishablePopUp")
-        view.item = item
-        view.view_factory = publishable_view_factory
-        return view
     else:
         view = templates.new("woost.views.ThumbnailLink")
-        view.item = item
-        view.view_factory = publishable_view_factory
-        return view
+
+    view.item = item
+    view.view_factory = publishable_view_factory
+    return view
 
 publishable_grid_view_factory.register(
     Publishable,
