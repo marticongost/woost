@@ -16,7 +16,7 @@ class URIController(BaseCMSController):
 
     def __call__(self, *args, **kwargs):
 
-        if self.is_internal_content():
+        if app.publishable.is_internal_content():
             parameters = get_state()
         else:
             parameters = None
