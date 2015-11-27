@@ -1188,6 +1188,7 @@ def create_default_custom_definitions(e):
     extension = GoogleAnalyticsExtension.instance
 
     if extension.enabled:
+        from woost.extensions.googleanalytics import installationstrings
         extension._create_default_custom_definitions()
         warn(
             "You must declare any custom dimensions/metrics that were added "
