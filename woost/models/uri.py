@@ -54,7 +54,8 @@ class URI(Publishable):
         type = File,
         related_end = schema.Collection(),
         relation_constraints = {"resource_type": "image"},
-        listed_by_default = False
+        listed_by_default = False,
+        member_group = "content"
     )
 
     def get_uri(self,
