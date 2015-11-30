@@ -73,6 +73,7 @@ def get_object_ref(obj):
         if (
             member is not Item.id
             and member.unique
+            and not member.translated
             and isinstance(member, (schema.String, schema.Integer))
         ):
             value = obj.get(member)
@@ -87,7 +88,7 @@ def resolve_object_ref(cls, ref):
     for key, value in ref.iteritems():
         if not key.startswith("@"):
             member = cls.get_member(key)
-            if member.unique:
+            if member.unique and not member.translated:
                 obj = cls.get_instance(**{key: value})
                 if obj is not None:
                     return obj
