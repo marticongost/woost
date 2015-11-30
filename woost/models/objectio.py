@@ -102,7 +102,7 @@ def create_object_from_ref(cls, ref):
     for key, value in ref.iteritems():
         if not key.startswith("@"):
             member = obj.__class__.get_member(key)
-            if member.unique:
+            if member.unique and not member.translated:
                 obj.set(key, value)
 
     obj.insert()
