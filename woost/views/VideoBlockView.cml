@@ -11,7 +11,7 @@
 
     <py:binding>
         <?py
-        if not self.video.is_accessible():
+        if self.video is None or not self.video.is_accessible():
             self.visible = False
         ?>
     </py:binding>
