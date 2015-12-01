@@ -162,7 +162,11 @@ class EditController(BaseBackOfficeController):
             with restricted_modification_context(
                 item,
                 user,
-                member_subset = set(stack_node.form_schema.members())
+                member_subset = set(
+                    member
+                    for member in stack_node.form_schema.iter_members()
+                    if member.editable == schema.EDITABLE
+                )
             ):
                 with changeset_context(author = user) as changeset:
                     self._apply_changes(item)
