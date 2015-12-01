@@ -482,6 +482,7 @@ class CMSController(BaseCMSController):
         cms.context.update(cms = cms)
 
         # Reset all contextual properties
+        app.error = None
         app.user = None
         app.publishable = None
         app.original_publishable = None
@@ -556,11 +557,12 @@ class CMSController(BaseCMSController):
     @event_handler
     def handle_exception_raised(cls, event):
 
+        app.error = error = event.exception
+
         # Couldn't establish the active website: show a generic error
         if app.website is None:
             return
 
-        error = event.exception
         controller = event.source
 
         content_type = cherrypy.response.headers.get("Content-Type")

@@ -138,6 +138,23 @@ http://woost.info
 
     url_resolver = property(_get_url_resolver, _set_url_resolver)
 
+    # Last error
+    def _get_error(self):
+        return getattr(self._thread_data, "error", None)
+
+    def _set_error(self, error):
+        self._thread_data.error = error
+
+    error = property(_get_error, _set_error, doc =
+        """Gets or sets the last error for the current context.
+
+        "Context" is typically an HTTP request, but the property can also be
+        used outside a web request/response cycle.
+
+        .. type:: Exception
+        """
+    )
+
     # Active user
     def _get_user(self):
         return getattr(self._thread_data, "user", None)
