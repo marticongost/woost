@@ -10,10 +10,8 @@ from __future__ import with_statement
 import cherrypy
 from ZODB.POSException import ConflictError
 from cocktail.events import event_handler, when, Event
-from cocktail.schema import (
-    Adapter, ErrorList, DictAccessor, Collection, Reference
-)
 from cocktail.translations import translations
+from cocktail import schema
 from cocktail.persistence import datastore
 from cocktail.controllers import request_property, get_parameter
 from woost import app
@@ -47,7 +45,9 @@ class EditController(BaseBackOfficeController):
     @request_property
     def errors(self):
         if self.action:
-            return ErrorList(self.action.get_errors(self, self.action_selection))
+            return schema.ErrorList(
+                self.action.get_errors(self, self.action_selection)
+            )
         else:
             return []
 
@@ -103,7 +103,7 @@ class EditController(BaseBackOfficeController):
                     action = None
 
                 member = self.stack_node.content_type.get_member(member_name)
-                if not isinstance(member, (Collection, Reference)):
+                if not isinstance(member, (schema.Collection, schema.Reference)):
                     member = None
 
                 return action, member
@@ -114,9 +114,9 @@ class EditController(BaseBackOfficeController):
     def relation_selection(self):
         member = self.relation_member
         value = get_parameter(
-            Collection(
+            schema.Collection(
                 name = "relation_selection-" + member.name,
-                items = Reference(type = member.related_type)
+                items = schema.Reference(type = member.related_type)
             )
         )
         if not value:
@@ -218,9 +218,11 @@ class EditController(BaseBackOfficeController):
         # reference
         @when(item.changed)
         def delete_replaced_integral_children(event):
-            if isinstance(event.member, Reference) \
-            and event.member.integral \
-            and event.previous_value is not None:
+            if (
+                isinstance(event.member, schema.Reference)
+                and event.member.integral
+                and event.previous_value is not None
+            ):
                 delete_validating(event.previous_value)
 
         try:
