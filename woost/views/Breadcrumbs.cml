@@ -12,9 +12,16 @@ from woost import app
     autohide = True
 
     def get_path(self, item):
-        path = list(item.ascend_tree(include_self = True))
+        path = list(
+            item
+            for item in item.ascend_tree(include_self = True)
+            if self.should_include_item(item)
+        )
         path.reverse()
         return path
+
+    def should_include_item(self, item):
+        return True
 
     def get_item_label(self, item):
         return translations(item)
