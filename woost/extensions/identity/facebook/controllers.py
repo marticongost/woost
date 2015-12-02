@@ -85,6 +85,12 @@ class FacebookOAuthProviderController(Controller):
         json_file = urllib.urlopen(token_uri).readline()
         token_data = json.loads(json_file)
 
+        if not token_data.get("access_token"):
+            raise FacebookOAuthBadResponseException(
+                token_data,
+                "Expected an 'access_token' key"
+            )
+
         session[SESSION_PREFIX + "credentials"] = token_data
 
         raise cherrypy.HTTPRedirect(self.step_url(2))
@@ -143,4 +149,15 @@ CMSController.facebook_oauth = FacebookOAuthController
 
 class FacebookOAuthException(Exception):
     pass
+
+
+class FacebookOAuthBadResponseException(FacebookOAuthException):
+
+    def __init__(self, data, message):
+        Exception.__init__(
+            self,
+            "Facebook returned %s; %s" % (json.dumps(data), message)
+        )
+        self.data = data
+        self.message = message
 
