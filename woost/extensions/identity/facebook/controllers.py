@@ -7,6 +7,7 @@ import json
 import urllib
 
 import cherrypy
+from cocktail.styled import styled
 from cocktail.controllers import Controller, Location, session
 from woost import app
 from woost.models import get_current_website
@@ -17,6 +18,7 @@ SESSION_PREFIX = "woost.extensions.identity.facebook."
 
 
 class FacebookOAuthController(Controller):
+
     def resolve(self, path):
 
         if not path:
@@ -38,6 +40,7 @@ class FacebookOAuthController(Controller):
 
 
 class FacebookOAuthProviderController(Controller):
+
     def __init__(self, provider):
         Controller.__init__(self)
         self.provider = provider
@@ -74,6 +77,9 @@ class FacebookOAuthProviderController(Controller):
 
             raise cherrypy.HTTPRedirect(login_uri)
 
+        if self.provider.debug_mode:
+            print styled("Facebook authorization code:", "magenta"), code
+
         params = {
             'client_id': self.provider.client_id,
             'redirect_uri': self.step_url(1),
@@ -93,6 +99,10 @@ class FacebookOAuthProviderController(Controller):
             )
 
         session[SESSION_PREFIX + "credentials"] = token_data
+
+        if self.provider.debug_mode:
+            print styled("Facebook token data:", "magenta"),
+            print token_data
 
         raise cherrypy.HTTPRedirect(self.step_url(2))
 
@@ -115,6 +125,9 @@ class FacebookOAuthProviderController(Controller):
         user_data = json.loads(user_data_file)
 
         self.check_step2_errors(user_data)
+
+        if self.provider.debug_mode:
+            print styled("Facebook user profile:", "magenta"), user_data
 
         user = self.provider.process_user_data(user_data)
         app.authentication.set_user_session(user)
