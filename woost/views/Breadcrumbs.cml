@@ -21,7 +21,7 @@ from woost import app
         return path
 
     def should_include_item(self, item):
-        return True
+        return not item.hidden
 
     def get_item_label(self, item):
         return translations(item)
