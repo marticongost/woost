@@ -124,7 +124,7 @@ class FacebookOAuthProviderController(Controller):
             else:
                 msg = result.get('error_user_msg', 'Facebook user '
                                                    'authentification error')
-                raise FaceBookOAuthException(msg)
+                raise FacebookOAuthException(msg)
 
     def check_step1_errors(self, **kwargs):
 
@@ -136,11 +136,12 @@ class FacebookOAuthProviderController(Controller):
                 location.path_info = '/cms'
                 raise cherrypy.HTTPRedirect(unicode(location).decode("utf-8"))
             else:
-                raise FaceBookOAuthException(error_reason)
+                raise FacebookOAuthException(error_reason)
 
 
 CMSController.facebook_oauth = FacebookOAuthController
 
 
-class FaceBookOAuthException(Exception):
+class FacebookOAuthException(Exception):
     pass
+
