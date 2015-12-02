@@ -137,9 +137,7 @@ class FacebookOAuthProviderController(Controller):
             error_reason = kwargs.get('error_reason', 'Error')
 
             if error_reason == u'user_denied':
-                location = Location.get_current_host()
-                location.path_info = '/cms'
-                raise cherrypy.HTTPRedirect(unicode(location).decode("utf-8"))
+                raise cherrypy.HTTPRedirect(self.target_url)
             else:
                 raise FacebookOAuthException(error_reason)
 
