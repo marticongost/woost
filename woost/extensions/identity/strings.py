@@ -13,6 +13,20 @@ translations.define("Configuration.identity_providers",
     en = u"User authentication services"
 )
 
+# User
+#------------------------------------------------------------------------------
+translations.define("User.google_user_id",
+    ca = u"Id de Google",
+    es = u"Id de Google",
+    en = u"Google ID"
+)
+
+translations.define("User.facebook_user_id",
+    ca = u"Id de Facebook",
+    es = u"Id de Facebook",
+    en = u"Facebook ID"
+)
+
 # IdentityProvider
 #------------------------------------------------------------------------------
 translations.define("IdentityProvider",
