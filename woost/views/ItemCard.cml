@@ -37,7 +37,8 @@ from woost.models.utils import any_translation
         py:thumbnail_factory="@{self.icon_factory}"
         py:labels_visible="${False}"
         py:footnotes_visible="${False}"
-        py:close_up_enabled="@{self.image_close_up_enabled}">
+        py:close_up_enabled="@{self.image_close_up_enabled}"
+        py:close_up_preload="${False}">
         <py:binding>
             <?py
             if self.item and self.item.is_inserted:
