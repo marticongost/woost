@@ -77,7 +77,7 @@ def get_object_ref(obj):
             and isinstance(member, (schema.String, schema.Integer))
         ):
             value = obj.get(member)
-            if value is not None:
+            if value is not None and value != "":
                 ref[member.name] = value
 
     return ref
@@ -86,7 +86,7 @@ def get_object_ref(obj):
 def resolve_object_ref(cls, ref):
 
     for key, value in ref.iteritems():
-        if not key.startswith("@"):
+        if value is not None and value != "" and not key.startswith("@"):
             member = cls.get_member(key)
             if member.unique and not member.translated:
                 obj = cls.get_instance(**{key: value})
@@ -266,6 +266,8 @@ class ObjectExporter(object):
                         )
                         items.append(item_copy)
                 value = items
+            elif isinstance(value, date):
+                return value.strftime(self.date_format)
             elif isinstance(value, datetime):
                 return value.strftime(self.datetime_format)
             elif isinstance(value, time):
