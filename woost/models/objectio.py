@@ -268,8 +268,6 @@ class ObjectExporter(object):
                 value = items
             elif isinstance(value, datetime):
                 return value.strftime(self.datetime_format)
-            elif isinstance(value, date):
-                return value.strftime(self.date_format)
             elif isinstance(value, time):
                 return value.strftime(self.time_format)
 
