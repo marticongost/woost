@@ -10,7 +10,8 @@ User.add_member(
     schema.String("facebook_user_id",
         indexed = True,
         unique = True,
-        visible = False
+        editable = schema.READ_ONLY,
+        listed_by_default = False
     )
 )
 
