@@ -6,7 +6,8 @@ u"""
 from ZODB.POSException import ConflictError
 from cocktail.events import Event
 from cocktail import schema
-from cocktail.persistence import datastore
+from cocktail.persistence import transaction
+from woost import app
 from woost.models import Item, User
 
 MAX_COMMIT_ATTEMPTS = 5
@@ -17,18 +18,22 @@ class IdentityProvider(Item):
     instantiable = False
     visible_from_root = False
 
-    user_created = Event(
-        """An event triggered when a new `user <woost.models.User>` is
-        created by the provider.
+    user_authenticated = Event(
+        """An event triggered when the provider resolves a user.
 
         .. attribute:: user
 
-            The `user <woost.models.User>` created by the provider.
+            The `user <woost.models.User>` resolved by the provider.
 
         .. attribute:: data
 
-            The profile data obtained by the provider (a dictionary with
+            The user's profile data supplied by the provider (a dictionary with
             provider specific keys).
+
+        .. attribute:: first_login
+
+            Indicates if this is the first time that this user has logged in
+            using this provider.
         """
     )
 
@@ -57,29 +62,12 @@ class IdentityProvider(Item):
             % self
         )
 
-    def process_user_data(self, data):
-
-        conflict_error = None
-
-        for i in range(MAX_COMMIT_ATTEMPTS):
-            try:
-                user = self.user_from_data(data)
-                if not user.is_inserted:
-                    user.insert()
-                    datastore.commit()
-            except ConflictError, error:
-                conflict_error = error
-                datastore.sync()
-            else:
-                conflict_error = None
-                break
-
-        if conflict_error:
-            raise conflict_error
-
+    def login(self, data):
+        user = transaction(self.process_user_data, (data,))
+        app.authentication.set_user_session(user)
         return user
 
-    def user_from_data(self, data):
+    def process_user_data(self, data):
 
         id = data[self.user_data_id_field]
         email = data.get(self.user_data_email_field)
@@ -92,15 +80,21 @@ class IdentityProvider(Item):
         )
 
         if user is None:
-            user = self.create_user(data)
+            user = User()
 
+        if not user.get(self.user_identifier):
+            user.set(self.user_identifier, id)
+            if not user.email:
+                user.email = email
+            first_login = True
+        else:
+            first_login = False
+
+        self.user_authenticated(
+            user = user,
+            data = data,
+            first_login = first_login
+        )
+        user.insert()
         return user
 
-    def create_user(self, data):
-        # TODO: store additional user data (need to add the extra fields in
-        # the User model)
-        user = User()
-        setattr(user, self.user_identifier, data[self.user_data_id_field])
-        user.email = data.get(self.user_data_email_field)
-        self.user_created(user = user, data = data)
-        return user
