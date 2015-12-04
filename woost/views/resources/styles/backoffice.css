@@ -1392,12 +1392,12 @@ body.scripted .BackOfficeLayout .Table .row_selection_control {
     vertical-align: top;
 }
 
-.BackOfficeItemView .page_title .item_info {
+.BackOfficeItemView .page_title .item_content {
     display: inline-block;
     vertical-align: top;
 }
 
-.BackOfficeItemView .page_title .item_info > span {
+.BackOfficeItemView .page_title .item_content > span {
     margin-right: 0.3em;
     vertical-align: top;
 }
@@ -3668,7 +3668,7 @@ div.success_label {
     padding-left: 0;
 }
 
-.BackOfficeLayout .ItemCard .item_info {
+.BackOfficeLayout .ItemCard .item_content {
     display: inline-block;
     vertical-align: top;
 }
