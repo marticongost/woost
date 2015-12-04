@@ -32,7 +32,7 @@
             <py:new
                 py:element="self.create_item_card()"
                 py:index="0">
-                <py:with py:element="element.item_info">
+                <py:with py:element="element.item_content">
                     <py:new py:element="self.create_item_actions()"/>
                 </py:with>
             </py:new>
