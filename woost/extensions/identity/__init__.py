@@ -59,4 +59,5 @@ class IdentityExtension(Extension):
         )
 
         templates.get_class("woost.extensions.identity.LoginBlockViewOverlay")
+        templates.get_class("woost.extensions.identity.ItemCardOverlay")
 
