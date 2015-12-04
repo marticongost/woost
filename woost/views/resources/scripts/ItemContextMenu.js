@@ -178,14 +178,14 @@
         // Consume all "click" events on the panel; only allow
         // clicks on buttons to pass through.
         $panel.click(function (e) {
-            var node = e.srcElement;
+            var node = e.target;
             while (node != $panel[0]) {
                 if (node.tagName == "BUTTON" || (node.tagName == "INPUT" && node.type == "submit")) {
                     return true;
                 }
                 node = node.parentNode;
             }
-            return false;
+            e.stopPropagation();
         });
 
         this.setExpanded(false);
