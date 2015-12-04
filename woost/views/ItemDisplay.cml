@@ -49,8 +49,7 @@
 
     <py:woost.views.ItemContextMenu
         py:id="item_context_menu"
-        py:item="@{self.item}"
-        py:menu_origin_selector=".text_wrapper"/>
+        py:item="@{self.item}"/>
 
     <?py
     self.data_binding_delegate = self.label
