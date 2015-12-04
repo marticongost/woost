@@ -104,8 +104,7 @@ class GoogleOAuthProviderController(Controller):
         if self.provider.debug_mode:
             print styled("Google user profile:", "magenta"), user_data
 
-        user = self.provider.process_user_data(user_data)
-        app.authentication.set_user_session(user)
+        self.provider.login(user_data)
         del session[SESSION_PREFIX + "credentials"]
 
         raise cherrypy.HTTPRedirect(self.target_url)
