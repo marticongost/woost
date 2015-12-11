@@ -195,7 +195,8 @@ http://woost.info
 
     def _set_publishable(self, publishable):
         self._thread_data.publishable = publishable
-        self.navigation_point = get_navigation_point(publishable)
+        if self.original_publishable is None:
+            self.navigation_point = get_navigation_point(publishable)
 
         # Required to preserve backward compatibility
         context["publishable"] = publishable
