@@ -6,7 +6,6 @@ u"""
 import json
 import urllib
 import urllib2
-
 from cocktail import schema
 from cocktail.controllers import Location
 from woost.extensions.identity.identityprovider import IdentityProvider
@@ -62,7 +61,7 @@ class GoogleIdentityProvider(IdentityProvider):
     def get_code_from_browser(self, redirect_uri = None):
         """
         Opens the browser to get user authorization and shows the
-        authotization code.
+        authorization code.
         """
         OAUTH_URL = "https://accounts.google.com/o/oauth2/auth"
         REDIRECT_URI = "urn:ietf:wg:oauth:2.0:oob"
@@ -126,3 +125,4 @@ class GoogleIdentityProvider(IdentityProvider):
         access_token = json.loads(json_file)
 
         return access_token
+
