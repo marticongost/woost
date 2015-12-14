@@ -14,7 +14,7 @@ def extract_video_id(string):
     if string:
         match = _video_id_expr.search(string)
         if match:
-            string = match.group(1)
+            return match.group(1)
 
     return None
 
