@@ -108,6 +108,21 @@ class GoogleOAuthProviderController(Controller):
 
         raise cherrypy.HTTPRedirect(self.target_url)
 
+    @cherrypy.expose
+    def refresh_token(self, code):
+        response = self.provider.get_refresh_token(code)
+        return (
+            """
+            <input id="code" type="text" autofocus value="%s">
+            <script type="text/javascript">
+                window.onload = function () {
+                    document.getElementById("code").select();
+                }
+            </script>
+            """
+            % response["refresh_token"]
+        )
+
 
 CMSController.google_oauth = GoogleOAuthController
 
