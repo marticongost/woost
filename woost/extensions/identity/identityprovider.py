@@ -39,11 +39,17 @@ class IdentityProvider(Item):
 
     members_order = [
         "title",
+        "hidden",
         "debug_mode"
     ]
 
     title = schema.String(
         descriptive = True
+    )
+
+    hidden = schema.Boolean(
+        required = True,
+        default = False
     )
 
     debug_mode = schema.Boolean(

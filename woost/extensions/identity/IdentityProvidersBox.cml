@@ -27,7 +27,8 @@ from woost.models import Configuration
         <py:new
             py:if="self.identity_providers"
             py:element="self.create_identity_provider_button(provider)"
-            py:for="provider in self.identity_providers"/>
+            py:for="provider in self.identity_providers"
+            py:where="not provider.hidden"/>
     </py:ready>
 
     <a
