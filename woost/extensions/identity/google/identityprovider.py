@@ -140,7 +140,18 @@ class GoogleIdentityProvider(IdentityProvider):
         }
 
         request = urllib2.Request(url=TOKEN_URL, data=urllib.urlencode(params))
-        json_file = urllib2.urlopen(request).read()
+
+        try:
+            json_file = urllib2.urlopen(request).read()
+        except urllib2.HTTPError, e:
+            if self.debug_mode:
+                print styled(
+                    "Error while obtaining a Google access token from a "
+                    "refresh token:",
+                    "magenta"
+                )
+                print e.read()
+
         access_token = json.loads(json_file)
 
         if self.debug_mode:
