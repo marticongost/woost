@@ -238,7 +238,7 @@ class Change(PersistentObject):
         value = e.value
 
         if member is cls.changeset:
-            if e.previous_value is not None:
+            if e.previous_value is not None and value is not None:
                 raise ValueError("Can't move a change between changesets")
             if value is not None and change.is_inserted:
                 ChangeSet.changes_index.insert(change.id, value.id)
