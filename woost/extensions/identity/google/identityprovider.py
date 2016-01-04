@@ -159,6 +159,7 @@ class GoogleIdentityProvider(IdentityProvider):
                     "magenta"
                 )
                 print e.read()
+            raise
 
         access_token = json.loads(json_file)
 
