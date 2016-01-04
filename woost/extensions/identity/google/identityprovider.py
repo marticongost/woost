@@ -61,10 +61,10 @@ class GoogleIdentityProvider(IdentityProvider):
             )
         )
 
-    def get_code_from_browser(self, redirect_uri = None):
+    def get_refresh_token_url(self, redirect_uri = None):
         """
-        Opens the browser to get user authorization and shows the
-        authorization code.
+        Produces the URL to initiate a browser driven request to get a refresh
+        code.
         """
         OAUTH_URL = "https://accounts.google.com/o/oauth2/auth"
 
@@ -84,8 +84,16 @@ class GoogleIdentityProvider(IdentityProvider):
             "approval_prompt": "force"
         }
 
+        return "{}?{}".format(OAUTH_URL, urllib.urlencode(params))
+
+    def get_refresh_token_from_browser(self, redirect_uri = None):
+        """
+        Opens the browser to get user authorization and shows the
+        authorization code.
+        """
         import webbrowser
-        webbrowser.open("{}?{}".format(OAUTH_URL, urllib.urlencode(params)))
+        url = self.get_refresh_token_url(redirect_uri)
+        webbrowser.open(url)
 
     def get_refresh_token(self, code, redirect_uri = None):
         """
