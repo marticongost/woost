@@ -49,6 +49,7 @@ class Website(Item):
         "phone_number",
         "fax_number",
         "email",
+        "technical_contact_email",
 
         # publication.pages
         "home",
@@ -183,6 +184,11 @@ class Website(Item):
     )
 
     email = schema.EmailAddress(
+        member_group = "contact",
+        listed_by_default = False
+    )
+
+    technical_contact_email = schema.EmailAddress(
         member_group = "contact",
         listed_by_default = False
     )

@@ -1197,3 +1197,40 @@ def create_default_custom_definitions(e):
             "your Google Analytics property."
         )
 
+#------------------------------------------------------------------------------
+
+step = MigrationStep("Grant debug permission to administrators and editors")
+
+@when(step.executing)
+def grant_debug_permission(e):
+
+    from woost.models import Role, DebugPermission
+
+    for key in "editors", "administrators":
+        role = Role.get_instance(qname = "woost." + key)
+        permission = DebugPermission()
+        permission.insert()
+        role.permissions.append(permission)
+
+#------------------------------------------------------------------------------
+
+step = MigrationStep("Create generic error page")
+
+@when(step.executing)
+def create_generic_error_page(e):
+
+    from woost.models import Configuration, CustomBlock
+    from woost.models.initialization import SiteInitializer
+
+    config = Configuration.instance
+
+    if config.generic_error_page is None:
+        init = SiteInitializer()
+        init.languages = config.languages
+        config.generic_error_page = init.create_generic_error_page()
+    else:
+        tb_block = CustomBlock()
+        tb_block.view_class = "woost.views.Traceback"
+        tb_block.insert()
+        config.generic_error_page.blocks.append(tb_block)
+

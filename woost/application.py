@@ -155,6 +155,25 @@ http://woost.info
         """
     )
 
+    traceback_link_style = "disabled"
+
+    # Last traceback
+    def _get_traceback(self):
+        return getattr(self._thread_data, "traceback", None)
+
+    def _set_traceback(self, traceback):
+        self._thread_data.traceback = traceback
+
+    traceback = property(_get_traceback, _set_traceback, doc =
+        """Gets or sets the last traceback for the current context.
+
+        "Context" is typically an HTTP request, but the property can also be
+        used outside a web request/response cycle.
+
+        .. type:: Traceback
+        """
+    )
+
     # Active user
     def _get_user(self):
         return getattr(self._thread_data, "user", None)

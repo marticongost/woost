@@ -1074,6 +1074,31 @@ translations.define(
 )
 
 translations.define(
+    "woost.initialization.generic_error_page.title",
+    ca = u"Error",
+    es = u"Error",
+    en = u"Error"
+)
+
+translations.define(
+    "woost.initialization.generic_error_page.body",
+    ca = u"<p>Ho sentim, s'ha produït un error que ha impedit completar la "
+         u"sol·licitud. Els nostres tècnics han estat alertats de la "
+         u"incidència i intentaran resoldre-la el més aviat possible. Si el "
+         u"problema persisteix pots contactar amb nosaltres [CONTACT] per tal "
+         u"que t'assistim.</p>",
+    es = u"<p>Lo sentimos, se ha producido un error que ha impedido completar "
+         u"la solicitud. Nuestros técnicos han sido alertados de la "
+         u"incidencia y intentarán resolverla lo antes posible. Si el "
+         u"problema persiste puedes contactar con nosotros [CONTACT] para que "
+         u"te asistamos.</p>",
+    en = u"<p>Sorry, an error occurred that prevented your request from being "
+         u"completed. Our technical staff has been alerted of the problem and "
+         u"will try to address it as soon as possible. If the problem "
+         u"persists, please contact us [CONTACT] so that we can assist you.</p>"
+)
+
+translations.define(
     "woost.initialization.not_found_error_page.title",
     ca = u"Pàgina no trobada",
     es = u"Página no encontrada",
@@ -2375,6 +2400,12 @@ translations.define("Website.email",
     ca = u"Correu electrònic",
     es = u"Correo electrónico",
     en = u"Email"
+)
+
+translations.define("Website.technical_contact_email",
+    ca = u"Correu electrònic per notificar errors",
+    es = u"Correo electrónico para notificar errores",
+    en = u"E-mail address for reporting errors"
 )
 
 translations.define("Website.home",
@@ -4007,6 +4038,26 @@ translations.define("InstallationSyncPermission",
     ca = u"Permís de sincronització",
     es = u"Permiso de sincronización",
     en = u"Synchronization permission"
+)
+
+# DebugPermission
+#------------------------------------------------------------------------------
+translations.define("DebugPermission",
+    ca = u"Permís de depuració de codi",
+    es = u"Permiso de depuración del código",
+    en = u"Debug permission"
+)
+
+translations.define("DebugPermission-plural",
+    ca = u"Permisos de depuració de codi",
+    es = u"Permisos de depuración del código",
+    en = u"Debug permissions"
+)
+
+translations.define("woost.models.permission.DebugPermission-instance",
+    ca = u"Permís de depuració de codi",
+    es = u"Permiso de depuración del código",
+    en = u"Debug permission"
 )
 
 # URI

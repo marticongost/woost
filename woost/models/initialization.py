@@ -49,6 +49,7 @@ from woost.models import (
     ModifyMemberPermission,
     CreateTranslationPermission,
     InstallationSyncPermission,
+    DebugPermission,
     ReadTranslationPermission,
     ModifyTranslationPermission,
     DeleteTranslationPermission,
@@ -311,6 +312,9 @@ class SiteInitializer(object):
         self.backoffice = self.create_backoffice()
 
         # Error pages
+        self.generic_error_page = self.create_generic_error_page()
+        self.configuration.generic_error_page = self.generic_error_page
+
         self.not_found_error_page = self.create_not_found_error_page()
         self.configuration.not_found_error_page = self.not_found_error_page
 
@@ -416,7 +420,8 @@ class SiteInitializer(object):
                 self._create(ReadMemberPermission),
                 self._create(ModifyMemberPermission),
                 self._create(ReadHistoryPermission),
-                self._create(InstallationSyncPermission)
+                self._create(InstallationSyncPermission),
+                self._create(DebugPermission)
             ]
         )
 
@@ -547,6 +552,8 @@ class SiteInitializer(object):
             )
         )
 
+        role.permissions.append(self._create(DebugPermission))
+
         return role
 
     def create_editor_access_level(self):
@@ -664,6 +671,33 @@ class SiteInitializer(object):
             path = "cms",
             per_language_publication = False,
             controller = self.backoffice_controller
+        )
+
+    def create_generic_error_page(self):
+        return self._create(
+            Page,
+            qname = "woost.generic_error_page",
+            title = TranslatedValues(),
+            hidden = True,
+            blocks = [
+                self._create(
+                    TextBlock,
+                    text = TranslatedValues("generic_error_page.body"),
+                    initialization =
+                        "from woost.models import Configuration\n"
+                        "setting = Configuration.instance.get_setting\n"
+                        "email = setting('technical_contact_email') or setting('email')\n"
+                        "if email:\n"
+                        "    repl = '(<a href=\"mailto:' + email + '\">' + email + '</a>)'\n"
+                        "else:\n"
+                        "    repl = ''\n"
+                        "view.text = view.text.replace('[CONTACT]', repl)"
+                ),
+                self._create(
+                    CustomBlock,
+                    view_class = "woost.views.Traceback"
+                )
+            ]
         )
 
     def create_not_found_error_page(self):

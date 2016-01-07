@@ -85,7 +85,8 @@ from .permission import (
     restricted_modification_context,
     delete_validating,
     PermissionExpression,
-    ChangeSetPermissionExpression
+    ChangeSetPermissionExpression,
+    DebugPermission
 )
 from .page import Page
 from .standardpage import StandardPage
