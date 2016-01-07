@@ -6,6 +6,7 @@ u"""
 import cherrypy
 from raven import Client
 from cocktail.events import when
+from pkg_resources import get_distribution
 from woost import app
 from woost.models import AuthorizationError
 from woost.authenticationscheme import AuthenticationFailedError
@@ -27,8 +28,8 @@ class Sentry(object):
         self.client = client
         self.tags = {
             "framework": "woost",
-            "woost": "frogger",
-            "cocktail": "damassine"
+            "woost": get_distribution("woost").version,
+            "cocktail": get_distribution("cocktail").version
         }
 
     def get_data_from_request(self):
