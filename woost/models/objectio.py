@@ -292,6 +292,10 @@ class ObjectExporter(object):
             if mode:
                 return mode
 
+            # Exclude calculated fields
+            if node.member.expression is not None:
+                return ExportMode.ignore
+
             # Ignore anonymous relations
             if (
                 isinstance(node.member, schema.RelationMember)
