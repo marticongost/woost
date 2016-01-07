@@ -182,8 +182,7 @@ class Website(Item):
         listed_by_default = False
     )
 
-    email = schema.String(
-        format = "^.+@.+$",
+    email = schema.EmailAddress(
         member_group = "contact",
         listed_by_default = False
     )
