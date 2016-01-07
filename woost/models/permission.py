@@ -536,3 +536,9 @@ class ChangeSetPermissionExpression(Expression):
 
         return ((0, 0), impl)
 
+
+class DebugPermission(Permission):
+    """Permission to obtain technical details about exceptions and the site's
+    internal state.
+    """
+

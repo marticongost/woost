@@ -6,6 +6,7 @@ u"""
 @organization:	Whads/Accent SL
 @since:			July 2008
 """
+import sys
 import os.path
 from string import ascii_letters
 from sha import sha
@@ -483,6 +484,7 @@ class CMSController(BaseCMSController):
 
         # Reset all contextual properties
         app.error = None
+        app.traceback = None
         app.user = None
         app.publishable = None
         app.original_publishable = None
@@ -558,6 +560,7 @@ class CMSController(BaseCMSController):
     def handle_exception_raised(cls, event):
 
         app.error = error = event.exception
+        app.traceback = sys.exc_info()[2]
 
         # Couldn't establish the active website: show a generic error
         if app.website is None:
