@@ -49,8 +49,13 @@ from woost.models import Configuration
                     py:id="logo"
                     py:image="@{self._logo}"
                     py:accessible_check="${False}"
-                    alt="@{self._title}"
-                    style="z-index: 1; position: relative;"/>
+                    style="z-index: 1; position: relative;">
+                    <py:ready>
+                        <?py
+                        element["alt"] = ""
+                        ?>
+                    </py:ready>
+                </py:woost.views.Image>
                 <span py:id="title_label_text">
                     <py:ready>
                         <?py
