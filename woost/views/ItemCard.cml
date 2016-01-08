@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <?py
 from woost import app
+from woost.models import Publishable
 from woost.models.utils import any_translation
+from woost.views.viewfactory import item_card_view_factory
 ?>
 
 <article
@@ -12,40 +14,39 @@ from woost.models.utils import any_translation
     item = None
     icon_factory = "backoffice_thumbnail"
     image_close_up_enabled = True
+    view_factory = item_card_view_factory
 
     def get_item_path(self, item):
         return None
 
-    def get_item_images(self):
-        get_image = getattr(self.item, "resolve_representative_image", None)
-        image = None if get_image is None else get_image(self.icon_factory)
-        return [image] if image else []
+    def create_item_display(self):
+
+        if not self.item.is_inserted or not isinstance(self.item, Publishable):
+            display = self.create_item_icon()
+        else:
+            display = self.view_factory.create_view(
+                self.item,
+                thumbnail_factory = self.icon_factory,
+                links_open_in_new_window = True
+            )
+
+        display.add_class("item_display")
+        return display
     ?>
 
-    <img
-        py:id="item_icon"
-        py:visible="@{self.item and not self.item.is_inserted}">
-        <py:ready>
-            <?py
-            element["src"] = app.icon_resolver.find_icon_url(self.item.__class__, 32)
-            ?>
-        </py:ready>
-    </img>
+    <py:ready>
+        <?py
+        if self.item:
+            self.item_display = self.create_item_display()
+            self.insert(0, self.item_display)
+        ?>
+    </py:ready>
 
-    <py:woost.views.ImageGallery
-        py:id="item_image_gallery"
-        py:thumbnail_factory="@{self.icon_factory}"
-        py:labels_visible="${False}"
-        py:footnotes_visible="${False}"
-        py:close_up_enabled="@{self.image_close_up_enabled}"
-        py:close_up_preload="${False}">
-        <py:binding>
-            <?py
-            if self.item and self.item.is_inserted:
-                element.images = self.get_item_images()
-            ?>
-        </py:binding>
-    </py:woost.views.ImageGallery>
+    <img py:def="item_icon">
+        <?py
+        element["src"] = app.icon_resolver.find_icon_url(self.item.__class__, 32)
+        ?>
+    </img>
 
     <div py:id="item_content">
         <div py:id="item_info">

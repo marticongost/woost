@@ -266,3 +266,10 @@ publishable_grid_view_factory.register(
     publishable_view_factory
 )
 
+item_card_view_factory = ViewFactory()
+item_card_view_factory.register(
+    Publishable,
+    "publishable_grid_view_factory",
+    publishable_grid_view_factory
+)
+
