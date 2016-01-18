@@ -304,6 +304,8 @@ class CollectionField(Field):
         "max"
     ]
 
+    member_type = schema.Collection
+
     field_edit_controls = [
         "cocktail.html.CollectionEditor",
         "cocktail.html.CheckList"
