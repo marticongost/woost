@@ -287,8 +287,12 @@ class FieldSet(Field):
 
         @extend(member)
         def translate_group(member, group):
-            field_set_id = int(group.split(".")[-1])
-            return translations(FieldSet.require_instance(field_set_id))
+            try:
+                field_set_id = int(group.split(".")[-1])
+            except:
+                return call_base(group)
+            else:
+                return translations(FieldSet.require_instance(field_set_id))
 
     def create_form_model(self):
 
