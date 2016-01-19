@@ -175,6 +175,9 @@ class Field(Item):
 
         return enumeration_member
 
+    def generate_members(self):
+        yield self.create_member()
+
     def create_member(self):
 
         member = self.member_type(
@@ -263,6 +266,15 @@ class FieldSet(Field):
     def create_field_enumeration_member(cls):
         pass
 
+    def generate_members(self):
+        for field in self.fields:
+            for member in field.generate_members():
+                if not member.member_group:
+                    member.member_group = str(self.id)
+                else:
+                    member.member_group = str(self.id) + "." + member.member_group
+                yield member
+
     def _init_member(self, member):
 
         Field._init_member(self, member)
@@ -270,8 +282,13 @@ class FieldSet(Field):
         if self.base_field_set:
             member.inherit(self.base_field_set.create_member())
 
-        for field in self.fields:
-            member.add_member(field.create_member(), append = True)
+        for child_member in self.generate_members():
+            member.add_member(child_member, append = True)
+
+        @extend(member)
+        def translate_group(member, group):
+            field_set_id = int(group.split(".")[-1])
+            return translations(FieldSet.require_instance(field_set_id))
 
     def create_form_model(self):
 
