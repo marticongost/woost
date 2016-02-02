@@ -112,10 +112,6 @@ from woost.models import Configuration
             </py:ready>
         </h1>
 
-        <div py:id="fallback_language_notice" class="notice" py:visible="@{not self.fully_translated}">
-            @{"" if self.fully_translated else translations("woost.views.StandardView fallback language notice", fallback = self.content_language)}
-        </div>
-
         <?py
         element.append(self.content)
         ?>
