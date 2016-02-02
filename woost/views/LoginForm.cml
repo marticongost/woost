@@ -2,7 +2,6 @@
 
 <?py
 from cocktail.translations import translations
-from cocktail.html import html5_attr
 from woost.models.publishable import Publishable
 ?>
 

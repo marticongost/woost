@@ -2,7 +2,6 @@
 
 <?py
 from cocktail.schema import Collection
-from cocktail.html import html5_attr
 from woost.models import Item
 ?>
 
@@ -49,9 +48,8 @@ from woost.models import Item
         py:element="self.body"
         py:tag="form"
         method="post"
-        autocomplete="off">
-
-        <?py html5_attr(element, "novalidate", "novalidate") ?>
+        autocomplete="off"
+        novalidate="novalidate">
 
         <!-- Default button (hidden) -->
         <button
