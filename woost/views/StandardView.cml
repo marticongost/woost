@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <?py
 from cocktail.controllers import context
-from cocktail.html.utils import html5_tag, rendering_html5
 from woost import app
 from woost.models import Configuration
 ?>
@@ -29,8 +28,7 @@ from woost.models import Configuration
         ?>
     </py:ready>
 
-    <div py:id="header">
-        <?py html5_tag(element, "header") ?>
+    <header py:id="header">
 
         <h1 py:id="title_label">
             <py:ready>
@@ -82,43 +80,26 @@ from woost.models import Configuration
         </py:woost.views.IdentityBox>
 
         <py:woost.views.LanguageSelector py:id="language_selector"/>
-    </div>
+    </header>
 
-    <div py:id="navigation">
-        <?py html5_tag(element, "nav") ?>
+    <nav py:id="navigation">
+
         <h1 py:id="navigation_heading" style="display:none">
             ${translations("woost.views.StandardView.navigation_title")}
-            <py:ready>
-                <?py
-                if not rendering_html5():
-                    element.visible = False
-                ?>
-            </py:ready>
         </h1>
+
         <py:woost.views.Menu
             py:id="menu"
             py:root_visible="${False}"
             py:collapsible="${True}"/>
-    </div>
+    </nav>
 
-    <div py:id="main">
+    <article py:id="main" role="main">
 
-        <py:ready>
-            <?py
-            if rendering_html5():
-                element["role"] = "main"
-                if not self.rendering_home_page():
-                    element.tag = "article"
-            ?>
-        </py:ready>
-
-        <h2 py:id="content_title_label">
+        <h1 py:id="content_title_label">
             <py:ready>
                 <?py
                 title = None
-
-                if rendering_html5():
-                    element.tag = "h1"
 
                 if not self.rendering_home_page():
                     title = self.get_content_title()
@@ -129,7 +110,7 @@ from woost.models import Configuration
                     element.visible = False
                 ?>
             </py:ready>
-        </h2>
+        </h1>
 
         <div py:id="fallback_language_notice" class="notice" py:visible="@{not self.fully_translated}">
             @{"" if self.fully_translated else translations("woost.views.StandardView fallback language notice", fallback = self.content_language)}
@@ -138,12 +119,10 @@ from woost.models import Configuration
         <?py
         element.append(self.content)
         ?>
-    </div>
+    </article>
 
-    <div py:id="footer">
-        <?py html5_tag(element, "footer") ?>
-        <div py:id="vcard" py:collapsible="${True}">
-            <?py html5_tag(element, "address") ?>
+    <footer>
+        <address py:id="vcard" py:collapsible="${True}">
             <py:woost.views.Image
                 py:id="vcard_logo"
                 class="logo"
@@ -221,8 +200,8 @@ from woost.models import Configuration
                 py:visible="@{self._website.email}">
                 @{self._website.email}
             </a>
-        </div>
-    </div>
+        </address>
+    </footer>
 
 </py:woost.views.BaseView>
 
