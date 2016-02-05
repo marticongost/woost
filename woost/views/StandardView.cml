@@ -2,7 +2,6 @@
 <?py
 from cocktail.controllers import context
 from woost import app
-from woost.models import Configuration
 ?>
 
 <py:woost.views.BaseView
@@ -11,61 +10,62 @@ from woost.models import Configuration
     py:tag="div">
 
     <?py-class
-    def get_title(self):
-        return app.website.site_name
-
-    def get_logo(self):
+    def get_site_logo(self):
         return self._website.logo
 
-    def rendering_home_page(self):
-        return self.publishable is self._home
+    def get_main_heading_title(self):
+        return self.get_main_title()
     ?>
 
     <py:ready>
         <?py
         self._website = app.website
         self._home = self._website.home
+        self._site_title = self.get_site_title()
+        self._site_logo = self.get_site_logo()
+
+        if self._site_logo and not self._site_logo.is_accessible():
+            self._site_logo = None
         ?>
     </py:ready>
 
-    <header py:id="header">
+    <header py:id="site_header">
 
-        <h1 py:id="title_label">
+        <h1 py:id="site_title">
             <py:ready>
                 <?py
-                self._title = self.get_title()
-                self._logo = self.get_logo()
-                if self._logo and not self._logo.is_accessible():
-                    self._logo = None
-
-                if not self._title and not self._logo:
+                if not self._site_title and not self._site_logo:
                     element.visible = False
+                elif not self._site_title:
+                    element.tag = "div"
                 ?>
             </py:ready>
-            <a py:id="site_home_link" href="@{self._home.get_uri()}" style="position: relative">
+            <a py:id="home_link" href="@{self._home.get_uri()}" style="position: relative">
                 <py:woost.views.Image
                     py:id="logo"
-                    py:image="@{self._logo}"
+                    py:image="@{self._site_logo}"
                     py:accessible_check="${False}"
                     style="z-index: 1; position: relative;">
                     <py:ready>
                         <?py
-                        element["alt"] = ""
+                        element["alt"] = self._site_title
                         ?>
                     </py:ready>
                 </py:woost.views.Image>
-                <span py:id="title_label_text">
+                <span py:id="site_title_text">
                     <py:ready>
                         <?py
-                        if self._logo is not None:
+                        if self._site_logo is not None and self._site_title:
                             element.set_style("position", "absolute")
                             element.set_style("z-index", "0")
                             element.set_style("left", "0")
                             element.set_style("top", "0")
                             element.set_style("visibility", "hidden")
+                            element.append(self._site_title)
+                        else:
+                            element.visible = False
                         ?>
                     </py:ready>
-                    @{self._title}
                 </span>
             </a>
         </h1>
@@ -82,47 +82,49 @@ from woost.models import Configuration
         <py:woost.views.LanguageSelector py:id="language_selector"/>
     </header>
 
-    <nav py:id="navigation">
+    <nav py:id="site_navigation">
 
-        <h1 py:id="navigation_heading" style="display:none">
-            ${translations("woost.views.StandardView.navigation_title")}
+        <h1 py:id="site_navigation_heading" style="display:none">
+            ${translations("woost.views.StandardView.site_navigation_title")}
         </h1>
 
         <py:woost.views.Menu
             py:id="menu"
-            py:root_visible="${False}"
             py:collapsible="${True}"/>
     </nav>
 
-    <article py:id="main" role="main">
-
-        <h1 py:id="content_title_label">
+    <main py:id="main">
+        <article py:id="main_article">
             <py:ready>
                 <?py
-                title = None
-
-                if not self.rendering_home_page():
-                    title = self.get_content_title()
-
-                if title:
-                    element.append(title)
-                else:
-                    element.visible = False
+                if self.rendering_home_page():
+                    element.tag = "div"
                 ?>
             </py:ready>
-        </h1>
+            <h1 py:id="main_heading">
+                <py:ready>
+                    <?py
+                    title = self.get_main_heading_title()
 
-        <?py
-        element.append(self.content)
-        ?>
-    </article>
+                    if title:
+                        element.append(title)
+                    else:
+                        element.visible = False
+                    ?>
+                </py:ready>
+            </h1>
+            <?py
+            element.append(self.main_content)
+            ?>
+        </article>
+    </main>
 
-    <footer>
+    <footer py:id="site_footer">
         <address py:id="vcard" py:collapsible="${True}">
             <py:woost.views.Image
                 py:id="vcard_logo"
                 class="logo"
-                py:image="@{self.get_logo()}"
+                py:image="@{self._site_logo}"
                 style="display:none"/>
             <a
                 py:id="organization_label"
