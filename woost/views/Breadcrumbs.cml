@@ -5,7 +5,8 @@ from woost import app
 
 <ul
     xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:py="http://www.whads.com/ns/cocktail/templates">
+    xmlns:py="http://www.whads.com/ns/cocktail/templates"
+    role="navigation">
 
     <?py-class
     value = None
