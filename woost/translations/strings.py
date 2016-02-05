@@ -1683,7 +1683,7 @@ translations.define("woost.views.BaseView alternate language link",
     en = lambda lang: translations("locale", locale = lang) + u" version"
 )
 
-translations.define("woost.views.StandardView.navigation_title",
+translations.define("woost.views.StandardView.site_navigation_title",
     ca = u"Menú principal",
     es = u"Menú principal",
     en = u"Main navigation"

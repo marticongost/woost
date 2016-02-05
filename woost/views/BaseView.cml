@@ -18,7 +18,27 @@ from woost.models import Configuration, Publishable
     base_url = None
     include_alternate_language_links = True
 
-    def get_keywords(self):
+    def get_site_title(self):
+        return app.website.site_name
+
+    def get_main_title(self):
+        if self.rendering_home_page():
+            return None
+        else:
+            return (
+                getattr(self.publishable, "inner_title", None)
+                or translations(self.publishable)
+            )
+
+    def get_page_title(self):
+        site_title = self.get_site_title()
+        main_title = self.get_main_title()
+        if site_title and main_title:
+            return main_title + " | " + site_title
+        else:
+            return site_title or main_title
+
+    def get_page_keywords(self):
         keywords = []
         site_keywords = Configuration.instance.get_setting("keywords")
         if site_keywords:
@@ -28,16 +48,17 @@ from woost.models import Configuration, Publishable
             keywords.append(item_keywords)
         return " ".join(keywords) if keywords else None
 
-    def get_page_title(self):
-        title = self.get_content_title()
-        if not self.publishable.is_home_page():
-            site_name = app.website.site_name
-            if site_name:
-                title += " | " + site_name
-        return title
+    def get_page_description(self):
+        return (
+            getattr(self.publishable, "description", None)
+            or Configuration.instance.get_setting("description")
+        )
 
-    def get_content_title(self):
-        return getattr(self.publishable, "inner_title", None) or translations(self.publishable)
+    def get_page_icon(self):
+        return Configuration.instance.get_setting("icon")
+
+    def rendering_home_page(self):
+        return self.publishable.is_home_page()
     ?>
 
     <?py
@@ -52,7 +73,7 @@ from woost.models import Configuration, Publishable
 
         # Links
         home = app.website.home
-        document.head_start_link = Element("link", rel = "start", title = home.title, href = home.get_uri() or "/")
+        document.head_start_link = Element("link", rel = "start", title = translations(home), href = home.get_uri() or "/")
         document.head.append(document.head_start_link)
 
         # Alternate languages
@@ -78,7 +99,7 @@ from woost.models import Configuration, Publishable
                     )
 
         # Shortcut icon
-        icon = config.get_setting("icon")
+        icon = self.get_page_icon()
         if icon:
             document.head_icon_link = Element("link",
                 rel = "Shortcut Icon",
@@ -127,13 +148,11 @@ from woost.models import Configuration, Publishable
                 for key, value in meta_tags:
                     self.set_meta(key, value)
 
-            description = getattr(publishable, "description", None) \
-                          or config.get_setting("description")
-
+            description = self.get_page_description()
             if description:
                 self.set_meta("description", description)
 
-            keywords = self.get_keywords()
+            keywords = self.get_page_keywords()
             if keywords:
                 self.set_meta("keywords", keywords)
 
@@ -160,11 +179,11 @@ from woost.models import Configuration, Publishable
         ?>
     </py:ready>
 
-    <py:woost.views.EditPanel py:id="toolbar"/>
+    <py:woost.views.EditPanel py:id="cms_edit_panel"/>
 
-    <div py:id="content">
+    <div py:id="main_content">
         <py:woost.views.BlockList
-            py:id="block_content"
+            py:id="main_blocks"
             py:container="@{self.publishable}"
             py:slot="blocks"/>
     </div>
