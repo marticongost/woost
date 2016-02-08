@@ -12,6 +12,7 @@ from cocktail.modeling import abstractmethod, ListWrapper
 from cocktail.stringutils import normalize
 from cocktail.translations import translations, get_language
 from cocktail.controllers import resolve_object_ref
+from .application import get_navigation_point
 from woost import app
 from woost.models import Publishable
 
@@ -269,11 +270,13 @@ class DescriptiveIdURLScheme(URLScheme):
     @type format: str
     """
     id_separator = "_"
+    component_separator = "/"
     word_separator = "-"
     id_regexp = re.compile(r"(.+_)?(?P<id>[^.]+)(?P<ext>\.[a-zA-Z0-9]+)?$")
     title_splitter_regexp = re.compile(r"\W+", re.UNICODE)
     format = "%(title)s%(separator)s%(id)d"
-    normalize = False
+    normalize = True
+    include_full_path = True
     include_file_extensions = True
 
     _uri_encodings = ["utf-8", "iso-8859-1"]
@@ -281,54 +284,58 @@ class DescriptiveIdURLScheme(URLScheme):
     def resolve_path(self, path):
 
         if path:
+            for i in xrange(len(path)):
+                ref = "/".join(path[:i + 1])
 
-            ref = path[0]
-
-            # Try to decode the supplied URI using a selection of different
-            # string encodings
-            if not isinstance(ref, unicode):
-                for encoding in self._uri_encodings:
-                    try:
-                        ref = ref.decode(encoding)
-                    except UnicodeDecodeError, ex:
-                        pass
+                # Try to decode the supplied URI using a selection of different
+                # string encodings
+                if not isinstance(ref, unicode):
+                    for encoding in self._uri_encodings:
+                        try:
+                            ref = ref.decode(encoding)
+                        except UnicodeDecodeError, ex:
+                            pass
+                        else:
+                            break
                     else:
-                        break
-                else:
-                    raise ex
+                        raise ex
 
-            # Discard descriptive text
-            match = self.id_regexp.match(ref)
+                # Discard descriptive text
+                match = self.id_regexp.match(ref)
 
-            if match is None:
-                return None
-            else:
-                id = match.group("id")
+                if match:
 
-            publishable = resolve_object_ref(Publishable, id)
+                    id = match.group("id")
+                    publishable = resolve_object_ref(Publishable, id)
 
-            if publishable is not None:
+                    if publishable is not None:
 
-                # A file extension was provided, but either the scheme doesn't
-                # accept them, or the selected item doesn't match the requested
-                # file type: 404
-                try:
-                    ext = match.group("ext")
-                except:
-                    ext = None
+                        try:
+                            ext = match.group("ext")
+                        except:
+                            ext = None
 
-                if ext and (
-                    not self.include_file_extensions
-                    or ext != self.get_publishable_file_extension(publishable)
-                ):
-                    return None
+                        # A file extension was provided, but either the scheme
+                        # doesn't accept them, or the selected item doesn't match
+                        # the requested file type: 404
+                        if ext and (
+                            not self.include_file_extensions
+                            or ext !=
+                               self.get_publishable_file_extension(publishable)
+                        ):
+                            return None
 
-                return PathResolution(
-                    self,
-                    publishable,
-                    [path[0]],
-                    path[1:]
-                )
+                        return PathResolution(
+                            self,
+                            publishable,
+                            path[:i + 1],
+                            path[i + 1:]
+                        )
+
+                if self.component_separator != "/":
+                    break
+
+        return None
 
     def get_path(self, publishable, language):
 
@@ -336,19 +343,15 @@ class DescriptiveIdURLScheme(URLScheme):
             language = get_language()
 
         if language:
-            title = translations(publishable, language)
+            if self.include_full_path:
+                components = self.iter_components(publishable)
+                title = self.component_separator.join(components)
+            else:
+                title = self.get_component(publishable)
         else:
             title = None
 
         if title:
-            if self.normalize:
-                title = normalize(title)
-
-            title = self.title_splitter_regexp.sub(
-                self.word_separator,
-                title
-            )
-            title = title.lower()
             ref = self.format % {
                 "title": title,
                 "id": publishable.id,
@@ -363,4 +366,50 @@ class DescriptiveIdURLScheme(URLScheme):
                 ref += ext
 
         return ref
+
+    def iter_components(self, publishable):
+
+        for item in self.iter_publishable_hierarchy(publishable):
+            component = self.get_component(item)
+            if component:
+                yield component
+
+    def iter_publishable_hierarchy(self, publishable):
+
+        navigation_point = get_navigation_point(publishable)
+        path = []
+
+        for item in navigation_point.ascend_tree(include_self = True):
+            if item.is_home_page():
+                break
+            path.append(item)
+
+        for item in reversed(path):
+            yield item
+
+        if (
+            publishable is not navigation_point
+            and not publishable.is_home_page()
+        ):
+            yield publishable
+
+    def get_component(self, publishable):
+
+        component = translations(
+            publishable,
+            discard_generic_translation = True
+        )
+
+        if not component:
+            return ""
+
+        if self.normalize:
+            component = normalize(component)
+
+        component = self.title_splitter_regexp.sub(
+            self.word_separator,
+            component
+        )
+
+        return component.lower()
 
