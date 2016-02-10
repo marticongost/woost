@@ -82,7 +82,7 @@ class PDFExtension(Extension):
 
                 # Create the file
                 command = extension.command % {
-                    "url": unicode(location),
+                    "url": unicode("'%s'" % location),
                     "output_file": pdf_file_path
                 }
                 proc = Popen(command.encode("utf-8"),
