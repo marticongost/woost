@@ -8,6 +8,9 @@ in python.
 @organization:	Whads/Accent SL
 @since:			October 2008
 """
+
+__version__ = "2.4"
+
 from woost.application import Application
 from woost.translations import strings
 
